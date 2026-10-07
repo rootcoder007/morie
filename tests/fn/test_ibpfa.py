@@ -1,7 +1,5 @@
 """Tests for ibpfa.indian_buffet_factor."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ibpfa import indian_buffet_factor
 
 

@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_semipara_bvm"]
@@ -29,10 +28,14 @@ def ghosal_semipara_bvm(n=2000, alpha=2.0, n_sim=400, seed=42):
         devs.append(math.sqrt(n) * (post_mean - 0.5))
     m = sum(devs) / n_sim
     v = sum((d - m) ** 2 for d in devs) / (n_sim - 1)
-    res = RichResult(payload={"estimate": v,
-                              "efficient_variance": 1.0 / 12.0,
-                              "gap": abs(v - 1.0 / 12.0),
-                              "method": "semiparametric BvM (GvdV 2017 sec. 12.3)"})
+    res = RichResult(
+        payload={
+            "estimate": v,
+            "efficient_variance": 1.0 / 12.0,
+            "gap": abs(v - 1.0 / 12.0),
+            "method": "semiparametric BvM (GvdV 2017 sec. 12.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c12_4")
 
 

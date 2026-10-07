@@ -1,7 +1,6 @@
 """Test kaiming_init."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.kaimg import kaimg, kaiming_init
 

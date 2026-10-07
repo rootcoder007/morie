@@ -1,7 +1,6 @@
 """Tests for morie.fn.gmrss -- GMRES solver."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gmrss import gmres_solve, gmrss
 

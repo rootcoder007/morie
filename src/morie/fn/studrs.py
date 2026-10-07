@@ -54,10 +54,17 @@ def studentized_residual(y, X):
         den = math.sqrt(si2 * (1.0 - h[i])) if si2 > 0 else float("nan")
         t.append(resid[i] / den if den == den and den > 0 else float("nan"))
     big = max(range(n), key=lambda i: abs(t[i]) if t[i] == t[i] else -1.0)
-    return RichResult(payload={
-        "estimate": t[big], "t": t, "leverage": h, "sigma": math.sqrt(s2),
-        "df": n - p - 1, "n": n,
-        "method": "Externally studentized residuals"})
+    return RichResult(
+        payload={
+            "estimate": t[big],
+            "t": t,
+            "leverage": h,
+            "sigma": math.sqrt(s2),
+            "df": n - p - 1,
+            "n": n,
+            "method": "Externally studentized residuals",
+        }
+    )
 
 
 def cheatsheet():

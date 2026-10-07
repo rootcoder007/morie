@@ -6,66 +6,64 @@ one-function modules named after book coordinates; the public
 symbols are unchanged.
 """
 
-from math import cos, exp, fsum, log, pi, sin, sqrt
+from math import cos, exp, fsum, pi, sin
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._rgcore import aslist, gridint
 from ._richresult import RichResult
 
 __all__ = [
-    'amsig',
-    'rangayyan_am_signal',
-    'linconv',
-    'rangayyan_linear_convolution',
-    'fmsig',
-    'rangayyan_fm_signal',
-    'tvlsi',
-    'rangayyan_tvlsi',
-    'diracdelta',
-    'rangayyan_ch3_dirac_delta_definition',
-    'deltaarea',
-    'rangayyan_ch3_dirac_delta_unit_area',
-    'deltalim',
-    'rangayyan_ch3_dirac_delta_limit_form',
-    'ustep',
-    'rangayyan_ch3_unit_step_continuous',
-    'sifting',
-    'rangayyan_ch3_sifting_property',
-    'contconv',
-    'rangayyan_ch3_continuous_convolution',
-    'contconvalt',
-    'rangayyan_ch3_continuous_convolution_alt',
-    'rangayyan_ch3_causal_convolution',
-    'rangayyan_ch3_causal_convolution_alt',
-    'kdelta',
-    'rangayyan_ch3_discrete_delta',
-    'stepseq',
-    'rangayyan_ch3_discrete_unit_step',
-    'rangayyan_ch3_discrete_convolution_causal',
-    'rangayyan_ch3_discrete_convolution_causal_alt',
-    'sincostest',
-    'rangayyan_ch3_test_signal_sin_cos',
-    'lsiser',
-    'rangayyan_ch3_lsi_series_intermediate',
-    'lsisery',
-    'rangayyan_ch3_lsi_series_total',
-    'lsipar',
-    'rangayyan_ch3_lsi_parallel_branch_1',
-    'lsipar2',
-    'rangayyan_ch3_lsi_parallel_branch_2',
-    'lsipary',
-    'rangayyan_ch3_lsi_parallel_total',
-    'ltiprod',
-    'rangayyan_ch3_lti_convolution_property',
-    'perconv',
-    'rangayyan_ch3_periodic_convolution',
-    'rangayyan_ch4_test_signal_three_events',
-    'compsig',
-    'rangayyan_ch4_composite_signal_in_terms_of_g',
-    'rangayyantvlsi',
+    "amsig",
+    "rangayyan_am_signal",
+    "linconv",
+    "rangayyan_linear_convolution",
+    "fmsig",
+    "rangayyan_fm_signal",
+    "tvlsi",
+    "rangayyan_tvlsi",
+    "diracdelta",
+    "rangayyan_ch3_dirac_delta_definition",
+    "deltaarea",
+    "rangayyan_ch3_dirac_delta_unit_area",
+    "deltalim",
+    "rangayyan_ch3_dirac_delta_limit_form",
+    "ustep",
+    "rangayyan_ch3_unit_step_continuous",
+    "sifting",
+    "rangayyan_ch3_sifting_property",
+    "contconv",
+    "rangayyan_ch3_continuous_convolution",
+    "contconvalt",
+    "rangayyan_ch3_continuous_convolution_alt",
+    "rangayyan_ch3_causal_convolution",
+    "rangayyan_ch3_causal_convolution_alt",
+    "kdelta",
+    "rangayyan_ch3_discrete_delta",
+    "stepseq",
+    "rangayyan_ch3_discrete_unit_step",
+    "rangayyan_ch3_discrete_convolution_causal",
+    "rangayyan_ch3_discrete_convolution_causal_alt",
+    "sincostest",
+    "rangayyan_ch3_test_signal_sin_cos",
+    "lsiser",
+    "rangayyan_ch3_lsi_series_intermediate",
+    "lsisery",
+    "rangayyan_ch3_lsi_series_total",
+    "lsipar",
+    "rangayyan_ch3_lsi_parallel_branch_1",
+    "lsipar2",
+    "rangayyan_ch3_lsi_parallel_branch_2",
+    "lsipary",
+    "rangayyan_ch3_lsi_parallel_total",
+    "ltiprod",
+    "rangayyan_ch3_lti_convolution_property",
+    "perconv",
+    "rangayyan_ch3_periodic_convolution",
+    "rangayyan_ch4_test_signal_three_events",
+    "compsig",
+    "rangayyan_ch4_composite_signal_in_terms_of_g",
+    "rangayyantvlsi",
 ]
-
 
 
 # -- rgam: Amplitude-modulated (AM) signal model.
@@ -106,21 +104,24 @@ def amsig(x, fc, fs, conventional=False, depth=1.0):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the carrier must satisfy 0 < fc < fs/2, got "
-                         "fc=%g with fs=%g" % (fcv, fsv))
+        raise ValueError(f"the carrier must satisfy 0 < fc < fs/2, got fc={fcv:g} with fs={fsv:g}")
     w = 2.0 * pi * fcv / fsv
     carrier = [cos(w * n) for n in range(len(xs))]
-    if conventional:
-        y = [(1.0 + depth * v) * c for v, c in zip(xs, carrier)]
-    else:
-        y = [v * c for v, c in zip(xs, carrier)]
+    y = [(1.0 + depth * v) * c for v, c in zip(xs, carrier)] if conventional else [v * c for v, c in zip(xs, carrier)]
     demod = [v * c for v, c in zip(y, carrier)]
-    return RichResult(payload={
-        "y": y, "carrier": carrier, "demodulated": demod,
-        "fc": fcv, "fs": fsv, "suppressed_carrier": not conventional,
-        "baseband_gain": 0.5,
-        "image_frequency": 2.0 * fcv,
-        "method": "Rangayyan (2024) Section 5.5.1"})
+    return RichResult(
+        payload={
+            "y": y,
+            "carrier": carrier,
+            "demodulated": demod,
+            "fc": fcv,
+            "fs": fsv,
+            "suppressed_carrier": not conventional,
+            "baseband_gain": 0.5,
+            "image_frequency": 2.0 * fcv,
+            "method": "Rangayyan (2024) Section 5.5.1",
+        }
+    )
 
 
 rangayyan_am_signal = amsig  # pre-policy spelling
@@ -159,13 +160,18 @@ def linconv(x, h, causal=True):
     for k in range(n + m - 1):
         lo, hi = max(0, k - n + 1), min(k, m - 1)
         swapped.append(fsum(hs[i] * xs[k - i] for i in range(lo, hi + 1)))
-    return RichResult(payload={
-        "y": y, "n": n + m - 1, "n_x": n, "n_h": m,
-        "contributions": contributions,
-        "commutes": max(abs(a - b) for a, b in zip(y, swapped)) <= 1e-12
-        * (1 + max(abs(v) for v in y)),
-        "causal": bool(causal),
-        "method": "Rangayyan (2024) eqs. (3.36)-(3.39)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "n": n + m - 1,
+            "n_x": n,
+            "n_h": m,
+            "contributions": contributions,
+            "commutes": max(abs(a - b) for a, b in zip(y, swapped)) <= 1e-12 * (1 + max(abs(v) for v in y)),
+            "causal": bool(causal),
+            "method": "Rangayyan (2024) eqs. (3.36)-(3.39)",
+        }
+    )
 
 
 rangayyan_linear_convolution = linconv  # pre-policy spelling
@@ -200,20 +206,26 @@ def fmsig(m, fc, fs, kf=1.0, amplitude=1.0):
         raise ValueError("the carrier must satisfy 0 < fc < fs/2")
     dt = 1.0 / fsv
     phase, acc = [], 0.0
-    for i, v in enumerate(ms):
+    for i, _v in enumerate(ms):
         if i:
             acc += 0.5 * (ms[i] + ms[i - 1]) * dt
         phase.append(2.0 * pi * fcv * i * dt + 2.0 * pi * kf * acc)
     y = [amplitude * cos(p) for p in phase]
     finst = [fcv + kf * v for v in ms]
-    return RichResult(payload={
-        "y": y, "phase": phase, "instantaneous_frequency": finst,
-        "fc": fcv, "fs": fsv, "kf": float(kf),
-        "max_instantaneous_frequency": max(finst),
-        "min_instantaneous_frequency": min(finst),
-        "aliases": max(abs(v) for v in finst) >= fsv / 2.0,
-        "method": "standard FM model; Rangayyan (2024) names FM as a "
-                  "signal model without printing this equation"})
+    return RichResult(
+        payload={
+            "y": y,
+            "phase": phase,
+            "instantaneous_frequency": finst,
+            "fc": fcv,
+            "fs": fsv,
+            "kf": float(kf),
+            "max_instantaneous_frequency": max(finst),
+            "min_instantaneous_frequency": min(finst),
+            "aliases": max(abs(v) for v in finst) >= fsv / 2.0,
+            "method": "standard FM model; Rangayyan (2024) names FM as a signal model without printing this equation",
+        }
+    )
 
 
 rangayyan_fm_signal = fmsig  # pre-policy spelling
@@ -249,27 +261,28 @@ def tvlsi(x, h):
     n = len(xs)
     if not n:
         raise ValueError("need at least one sample")
-    rows = [aslist(r) for r in h] if h and hasattr(h[0], "__len__") \
-        else [aslist(h)] * n
+    rows = [aslist(r) for r in h] if h and hasattr(h[0], "__len__") else [aslist(h)] * n
     if len(rows) == 1:
         rows = rows * n
     if len(rows) != n:
-        raise ValueError("give one impulse response per sample (%d), or "
-                         "one response for all; got %d" % (n, len(rows)))
+        raise ValueError(
+            f"give one impulse response per sample ({int(n)}), or one response for all; got {int(len(rows))}"
+        )
     y = []
     for i in range(n):
         row = rows[i]
-        y.append(fsum(row[mm] * xs[i - mm] for mm in range(len(row))
-                      if 0 <= i - mm < n))
+        y.append(fsum(row[mm] * xs[i - mm] for mm in range(len(row)) if 0 <= i - mm < n))
     first = rows[0]
-    invariant = all(len(r) == len(first)
-                    and all(abs(a - b) < 1e-12 for a, b in zip(r, first))
-                    for r in rows)
-    return RichResult(payload={
-        "y": y, "n": n, "kernel_lengths": [len(r) for r in rows],
-        "shift_invariant": invariant,
-        "method": "time-variant convolution; contrast Rangayyan (2024) "
-                  "eq. (3.36)"})
+    invariant = all(len(r) == len(first) and all(abs(a - b) < 1e-12 for a, b in zip(r, first)) for r in rows)
+    return RichResult(
+        payload={
+            "y": y,
+            "n": n,
+            "kernel_lengths": [len(r) for r in rows],
+            "shift_invariant": invariant,
+            "method": "time-variant convolution; contrast Rangayyan (2024) eq. (3.36)",
+        }
+    )
 
 
 rangayyan_tvlsi = tvlsi  # pre-policy spelling
@@ -293,18 +306,24 @@ def diracdelta(t, width=None):
     ts = aslist(t)
     if width is None:
         vals = [None if v == 0.0 else 0.0 for v in ts]
-        return RichResult(payload={
-            "delta": vals, "t": ts, "undefined_at_zero": True,
-            "method": "Rangayyan (2024) eq. (3.24)"})
+        return RichResult(
+            payload={"delta": vals, "t": ts, "undefined_at_zero": True, "method": "Rangayyan (2024) eq. (3.24)"}
+        )
     w = float(width)
     if w <= 0:
         raise ValueError("width must be positive")
     h = 1.0 / w
     vals = [h if abs(v) <= w / 2.0 else 0.0 for v in ts]
-    return RichResult(payload={
-        "delta": vals, "t": ts, "width": w, "height": h,
-        "undefined_at_zero": False,
-        "method": "Rangayyan (2024) eq. (3.24), rectangular approximation"})
+    return RichResult(
+        payload={
+            "delta": vals,
+            "t": ts,
+            "width": w,
+            "height": h,
+            "undefined_at_zero": False,
+            "method": "Rangayyan (2024) eq. (3.24), rectangular approximation",
+        }
+    )
 
 
 rangayyan_ch3_dirac_delta_definition = diracdelta  # pre-policy spelling
@@ -328,9 +347,9 @@ def deltaarea(t=None, values=None, width=None):
         if t is None:
             raise ValueError("give the grid t alongside values")
         area = gridint(values, t)
-        return RichResult(payload={
-            "area": float(area), "unit_area": abs(area - 1.0) <= 1e-6,
-            "method": "Rangayyan (2024) eq. (3.25)"})
+        return RichResult(
+            payload={"area": float(area), "unit_area": abs(area - 1.0) <= 1e-6, "method": "Rangayyan (2024) eq. (3.25)"}
+        )
     if width is not None:
         w = float(width)
         if w <= 0:
@@ -346,13 +365,15 @@ def deltaarea(t=None, values=None, width=None):
         for lo_e, hi_e in zip(edges[:-1], edges[1:]):
             mid = 0.5 * (lo_e + hi_e)
             area += (hi_e - lo_e) * ((1.0 / w) if abs(mid) <= w / 2.0 else 0.0)
-        return RichResult(payload={
-            "area": float(area), "width": w,
-            "unit_area": abs(area - 1.0) <= 1e-9,
-            "method": "Rangayyan (2024) eq. (3.25)"})
-    return RichResult(payload={
-        "area": 1.0, "unit_area": True,
-        "method": "Rangayyan (2024) eq. (3.25)"})
+        return RichResult(
+            payload={
+                "area": float(area),
+                "width": w,
+                "unit_area": abs(area - 1.0) <= 1e-9,
+                "method": "Rangayyan (2024) eq. (3.25)",
+            }
+        )
+    return RichResult(payload={"area": 1.0, "unit_area": True, "method": "Rangayyan (2024) eq. (3.25)"})
 
 
 rangayyan_ch3_dirac_delta_unit_area = deltaarea  # pre-policy spelling
@@ -376,14 +397,18 @@ def deltalim(t, a):
     av = float(a)
     if av <= 0:
         raise ValueError("a must be positive")
-    vals = [None if v == 0.0 else 0.5 * av * abs(v) ** (av - 1.0)
-            for v in ts]
+    vals = [None if v == 0.0 else 0.5 * av * abs(v) ** (av - 1.0) for v in ts]
     lim = max((abs(v) for v in ts), default=1.0) or 1.0
-    return RichResult(payload={
-        "values": vals, "t": ts, "a": av,
-        "area_symmetric": lim ** av,
-        "half_width": lim,
-        "method": "Rangayyan (2024) eq. (3.26)"})
+    return RichResult(
+        payload={
+            "values": vals,
+            "t": ts,
+            "a": av,
+            "area_symmetric": lim**av,
+            "half_width": lim,
+            "method": "Rangayyan (2024) eq. (3.26)",
+        }
+    )
 
 
 rangayyan_ch3_dirac_delta_limit_form = deltalim  # pre-policy spelling
@@ -404,10 +429,15 @@ def ustep(t, shift=0.0):
     """
     ts = aslist(t)
     s = float(shift)
-    return RichResult(payload={
-        "u": [1.0 if v - s > 0.0 else 0.0 for v in ts], "t": ts,
-        "shift": s, "value_at_origin": 0.0,
-        "method": "Rangayyan (2024) eq. (3.27)"})
+    return RichResult(
+        payload={
+            "u": [1.0 if v - s > 0.0 else 0.0 for v in ts],
+            "t": ts,
+            "shift": s,
+            "value_at_origin": 0.0,
+            "method": "Rangayyan (2024) eq. (3.27)",
+        }
+    )
 
 
 rangayyan_ch3_unit_step_continuous = ustep  # pre-policy spelling
@@ -441,10 +471,16 @@ def sifting(x, t0, lower, upper):
     if hi <= lo:
         raise ValueError("upper must exceed lower")
     inside = lo < t < hi
-    return RichResult(payload={
-        "value": float(x(t)) if inside else 0.0, "inside": inside,
-        "t0": t, "lower": lo, "upper": hi,
-        "method": "Rangayyan (2024) eq. (3.28)"})
+    return RichResult(
+        payload={
+            "value": float(x(t)) if inside else 0.0,
+            "inside": inside,
+            "t0": t,
+            "lower": lo,
+            "upper": hi,
+            "method": "Rangayyan (2024) eq. (3.28)",
+        }
+    )
 
 
 rangayyan_ch3_sifting_property = sifting  # pre-policy spelling
@@ -484,10 +520,17 @@ def contconv(x, h, dt=1.0, t=None):
     t_out = [i * step for i in range(len(y))]
     if t is not None and len(ts):
         t_out = [ts[0] + i * step for i in range(len(y))]
-    return RichResult(payload={
-        "y": y, "t": t_out, "dt": step, "n": n, "m": m,
-        "integral": gridint(y, t_out) if len(y) > 1 else 0.0,
-        "method": "Rangayyan (2024) eq. (3.30)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "t": t_out,
+            "dt": step,
+            "n": n,
+            "m": m,
+            "integral": gridint(y, t_out) if len(y) > 1 else 0.0,
+            "method": "Rangayyan (2024) eq. (3.30)",
+        }
+    )
 
 
 rangayyan_ch3_continuous_convolution = contconv  # pre-policy spelling
@@ -513,8 +556,7 @@ def contconvalt(x, h, dt=1.0, t=None):
     diff = max((abs(p - q) for p, q in zip(a, b)), default=0.0)
     out = dict(swapped)
     out["max_difference"] = diff
-    out["commutes"] = diff <= 1e-12 * max(
-        1.0, max((abs(v) for v in b), default=1.0))
+    out["commutes"] = diff <= 1e-12 * max(1.0, max((abs(v) for v in b), default=1.0))
     out["method"] = "Rangayyan (2024) eq. (3.31)"
     return RichResult(payload=out)
 
@@ -618,15 +660,17 @@ def kdelta(n, shift=0, amplitude=1.0):
     amplitude : float
         Scale factor.
     """
-    if isinstance(n, int):
-        idx = list(range(n))
-    else:
-        idx = [int(v) for v in n]
+    idx = list(range(n)) if isinstance(n, int) else [int(v) for v in n]
     s, a = int(shift), float(amplitude)
-    return RichResult(payload={
-        "delta": [a if i == s else 0.0 for i in idx], "n": idx,
-        "shift": s, "amplitude": a,
-        "method": "Rangayyan (2024) eq. (3.34)"})
+    return RichResult(
+        payload={
+            "delta": [a if i == s else 0.0 for i in idx],
+            "n": idx,
+            "shift": s,
+            "amplitude": a,
+            "method": "Rangayyan (2024) eq. (3.34)",
+        }
+    )
 
 
 rangayyan_ch3_discrete_delta = kdelta  # pre-policy spelling
@@ -644,17 +688,20 @@ def stepseq(n, shift=0):
     of this sequence is the discrete impulse of eq. (3.34), which is
     returned as a cross-check.
     """
-    if isinstance(n, int):
-        idx = list(range(n))
-    else:
-        idx = [int(v) for v in n]
+    idx = list(range(n)) if isinstance(n, int) else [int(v) for v in n]
     s = int(shift)
     u = [1.0 if i - s >= 0 else 0.0 for i in idx]
     diff = [u[0]] + [u[i] - u[i - 1] for i in range(1, len(u))]
-    return RichResult(payload={
-        "u": u, "n": idx, "shift": s, "first_difference": diff,
-        "value_at_origin": 1.0,
-        "method": "Rangayyan (2024) eq. (3.35)"})
+    return RichResult(
+        payload={
+            "u": u,
+            "n": idx,
+            "shift": s,
+            "first_difference": diff,
+            "value_at_origin": 1.0,
+            "method": "Rangayyan (2024) eq. (3.35)",
+        }
+    )
 
 
 rangayyan_ch3_discrete_unit_step = stepseq  # pre-policy spelling
@@ -732,8 +779,7 @@ def rangayyan_ch3_discrete_convolution_causal_alt(x, h, n=None):
 
 
 # -- rng038: Synthetic test signal: sum of a sine and a cosine..
-def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0,
-               duration=1.0):
+def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0, duration=1.0):
     """Synthetic test signal, a sine plus a cosine.
 
         x(t) = a1 sin(2 pi f1 t) + a2 cos(2 pi f2 t)
@@ -750,8 +796,7 @@ def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0,
         raise ValueError("fs must be positive")
     for f in (f1, f2):
         if abs(float(f)) >= fsv / 2.0:
-            raise ValueError("component at %g Hz is at or above the "
-                             "Nyquist frequency %g Hz" % (f, fsv / 2.0))
+            raise ValueError(f"component at {f:g} Hz is at or above the Nyquist frequency {fsv / 2.0:g} Hz")
     if n is not None:
         N = int(n)
     else:
@@ -762,14 +807,21 @@ def sincostest(n=None, f1=1.0, f2=2.0, a1=1.0, a2=1.0, fs=100.0,
     if N < 2:
         raise ValueError("need at least two samples")
     t = [i / fsv for i in range(N)]
-    x = [float(a1) * sin(2.0 * pi * float(f1) * v)
-         + float(a2) * cos(2.0 * pi * float(f2) * v) for v in t]
-    return RichResult(payload={
-        "x": x, "t": t, "n": N, "fs": fsv,
-        "f1": float(f1), "f2": float(f2),
-        "a1": float(a1), "a2": float(a2),
-        "components_are_known_by_construction": True,
-        "method": "Rangayyan (2024) Ch. 3 (synthetic test signal)"})
+    x = [float(a1) * sin(2.0 * pi * float(f1) * v) + float(a2) * cos(2.0 * pi * float(f2) * v) for v in t]
+    return RichResult(
+        payload={
+            "x": x,
+            "t": t,
+            "n": N,
+            "fs": fsv,
+            "f1": float(f1),
+            "f2": float(f2),
+            "a1": float(a1),
+            "a2": float(a2),
+            "components_are_known_by_construction": True,
+            "method": "Rangayyan (2024) Ch. 3 (synthetic test signal)",
+        }
+    )
 
 
 rangayyan_ch3_test_signal_sin_cos = sincostest  # pre-policy spelling
@@ -807,11 +859,17 @@ def lsiser(x, h1, h2):
     h = conv(a, b)
     direct = conv(xs, h)
     gap = max(abs(u - v) for u, v in zip(y, direct))
-    return RichResult(payload={
-        "s": s, "y": y, "h": h, "y_via_combined": direct,
-        "max_difference": gap,
-        "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
-        "method": "Rangayyan (2024) eqs. (3.43)-(3.45)"})
+    return RichResult(
+        payload={
+            "s": s,
+            "y": y,
+            "h": h,
+            "y_via_combined": direct,
+            "max_difference": gap,
+            "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
+            "method": "Rangayyan (2024) eqs. (3.43)-(3.45)",
+        }
+    )
 
 
 rangayyan_ch3_lsi_series_intermediate = lsiser  # pre-policy spelling
@@ -831,10 +889,16 @@ def lsisery(x, h1, h2):
     single filter.
     """
     r = lsiser(x, h1, h2)
-    return RichResult(payload={
-        "y": r["y"], "h": r["h"], "s": r["s"],
-        "equivalent": r["equivalent"], "max_difference": r["max_difference"],
-        "method": "Rangayyan (2024) eqs. (3.44)-(3.45)"})
+    return RichResult(
+        payload={
+            "y": r["y"],
+            "h": r["h"],
+            "s": r["s"],
+            "equivalent": r["equivalent"],
+            "max_difference": r["max_difference"],
+            "method": "Rangayyan (2024) eqs. (3.44)-(3.45)",
+        }
+    )
 
 
 rangayyan_ch3_lsi_series_total = lsisery  # pre-policy spelling
@@ -868,19 +932,24 @@ def lsipar(x, h1, h2):
         return out
 
     m = max(len(a), len(b))
-    h = [(a[i] if i < len(a) else 0.0) + (b[i] if i < len(b) else 0.0)
-         for i in range(m)]
+    h = [(a[i] if i < len(a) else 0.0) + (b[i] if i < len(b) else 0.0) for i in range(m)]
     s1, s2 = conv(xs, a), conv(xs, b)
     ny = max(len(s1), len(s2))
-    y = [(s1[i] if i < len(s1) else 0.0) + (s2[i] if i < len(s2) else 0.0)
-         for i in range(ny)]
+    y = [(s1[i] if i < len(s1) else 0.0) + (s2[i] if i < len(s2) else 0.0) for i in range(ny)]
     direct = conv(xs, h)
     gap = max(abs(u - v) for u, v in zip(y, direct))
-    return RichResult(payload={
-        "s1": s1, "s2": s2, "y": y, "h": h, "y_via_combined": direct,
-        "max_difference": gap,
-        "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
-        "method": "Rangayyan (2024) eqs. (3.46)-(3.49)"})
+    return RichResult(
+        payload={
+            "s1": s1,
+            "s2": s2,
+            "y": y,
+            "h": h,
+            "y_via_combined": direct,
+            "max_difference": gap,
+            "equivalent": gap <= 1e-9 * (1 + max(abs(v) for v in y)),
+            "method": "Rangayyan (2024) eqs. (3.46)-(3.49)",
+        }
+    )
 
 
 rangayyan_ch3_lsi_parallel_branch_1 = lsipar  # pre-policy spelling
@@ -903,9 +972,7 @@ def lsipar2(x, h2):
     for k in range(len(xs) + len(b) - 1):
         lo, hi = max(0, k - len(b) + 1), min(k, len(xs) - 1)
         out.append(fsum(xs[i] * b[k - i] for i in range(lo, hi + 1)))
-    return RichResult(payload={
-        "s2": out, "n": len(out),
-        "method": "Rangayyan (2024) eq. (3.47)"})
+    return RichResult(payload={"s2": out, "n": len(out), "method": "Rangayyan (2024) eq. (3.47)"})
 
 
 rangayyan_ch3_lsi_parallel_branch_2 = lsipar2  # pre-policy spelling
@@ -924,10 +991,17 @@ def lsipary(x, h1, h2):
     inside :func:`lsipar` and compared, so the equivalence is measured.
     """
     r = lsipar(x, h1, h2)
-    return RichResult(payload={
-        "y": r["y"], "h": r["h"], "s1": r["s1"], "s2": r["s2"],
-        "equivalent": r["equivalent"], "max_difference": r["max_difference"],
-        "method": "Rangayyan (2024) eqs. (3.48)-(3.49)"})
+    return RichResult(
+        payload={
+            "y": r["y"],
+            "h": r["h"],
+            "s1": r["s1"],
+            "s2": r["s2"],
+            "equivalent": r["equivalent"],
+            "max_difference": r["max_difference"],
+            "method": "Rangayyan (2024) eqs. (3.48)-(3.49)",
+        }
+    )
 
 
 rangayyan_ch3_lsi_parallel_total = lsipary  # pre-policy spelling
@@ -991,13 +1065,19 @@ def ltiprod(x, h, s=None, omega=None, dt=1.0):
     H = [lap(hs, p) for p in pts]
     prod = [a * b for a, b in zip(X, H)]
     gap = max(abs(a - b) for a, b in zip(Y, prod))
-    return RichResult(payload={
-        "y": y, "Y": Y[0] if scalar else Y, "X": X[0] if scalar else X,
-        "H": H[0] if scalar else H, "XH": prod[0] if scalar else prod,
-        "s": (pts[0] if scalar else pts),
-        "max_difference": gap,
-        "holds": gap <= 1e-8 * (1 + max(abs(v) for v in prod)),
-        "method": "Rangayyan (2024) eqs. (3.50), (3.53)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "Y": Y[0] if scalar else Y,
+            "X": X[0] if scalar else X,
+            "H": H[0] if scalar else H,
+            "XH": prod[0] if scalar else prod,
+            "s": (pts[0] if scalar else pts),
+            "max_difference": gap,
+            "holds": gap <= 1e-8 * (1 + max(abs(v) for v in prod)),
+            "method": "Rangayyan (2024) eqs. (3.50), (3.53)",
+        }
+    )
 
 
 rangayyan_ch3_lti_convolution_property = ltiprod  # pre-policy spelling
@@ -1109,58 +1189,67 @@ def compsig(g, shifts, scales=None, n=None):
     if len(a) != len(ds):
         raise ValueError("give one scale per shift, or none")
     N = int(n) if n is not None else max(ds) + len(gs)
-    if N < max(ds) + len(gs):
+    if max(ds) + len(gs) > N:
         raise ValueError("n is too short to hold every shifted copy")
     x = [0.0] * N
     for amp, d in zip(a, ds):
         for i, v in enumerate(gs):
             x[d + i] += amp * v
-    overlaps = sum(1 for i in range(len(ds)) for j in range(i + 1, len(ds))
-                   if abs(ds[i] - ds[j]) < len(gs))
-    return RichResult(payload={
-        "x": x, "n": N, "pattern": list(gs), "shifts": ds, "scales": a,
-        "pattern_length": len(gs), "n_copies": len(ds),
-        "overlapping_pairs": overlaps, "copies_add": True,
-        "peaks_expected_at": [d + len(gs) - 1 for d in ds],
-        "method": "Rangayyan (2024) Ch. 4 (composite test signal)"})
+    overlaps = sum(1 for i in range(len(ds)) for j in range(i + 1, len(ds)) if abs(ds[i] - ds[j]) < len(gs))
+    return RichResult(
+        payload={
+            "x": x,
+            "n": N,
+            "pattern": list(gs),
+            "shifts": ds,
+            "scales": a,
+            "pattern_length": len(gs),
+            "n_copies": len(ds),
+            "overlapping_pairs": overlaps,
+            "copies_add": True,
+            "peaks_expected_at": [d + len(gs) - 1 for d in ds],
+            "method": "Rangayyan (2024) Ch. 4 (composite test signal)",
+        }
+    )
 
 
 rangayyan_ch4_composite_signal_in_terms_of_g = compsig  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgam: Amplitude-modulated (AM) signal model.',
-    'rgconv: Linear convolution of two finite-length sequences.',
-    'rgfm: Frequency-modulated (FM) signal model for respiratory sounds.',
-    'rgstvar: Time-variant linear system (TV-LSI) characterization.',
-    'rng024: Continuous-time Dirac delta function (Rangayyan eq. 3.24).',
-    'rng025: Unit-area property of the Dirac delta (Rangayyan eq. 3.25).',
-    'rng026: Dirac delta as a limit of a power function (Rangayyan eq. 3.26).',
-    'rng027: Continuous-time unit step function (Rangayyan eq. 3.27).',
-    'rng028: Sifting property of the Dirac delta (Rangayyan eq. 3.28).',
-    'rng030: Continuous-time convolution (Rangayyan eq. 3.30).',
-    'rng031: Commuted form of continuous-time convolution (Rangayyan eq. 3.31).',
-    'rng032: Causal continuous-time convolution form (lower limit 0, upper limit t).',
-    'rng033: Equivalent causal continuous-time convolution with swapped arguments.',
-    'rng034: Discrete-time unit impulse function (Rangayyan eq. 3.34).',
-    'rng035: Discrete-time unit step function (Rangayyan eq. 3.35).',
-    'rng036: Discrete-time causal convolution sum.',
-    'rng037: Equivalent discrete-time causal convolution with swapped arguments.',
-    'synthetic sine-plus-cosine test signal',
-    'rng041: Intermediate output of the first LSI system in a series cascade..',
-    'rng042: Output of two LSI systems in series equals input convolved with combined response..',
-    'rng044: Output of the first branch in a parallel LSI configuration..',
-    'rng045: Output of the second branch in a parallel LSI configuration..',
-    'rng046: Output of two LSI systems in parallel equals input convolved with sum of responses..',
-    'rng051: LTI convolution maps to multiplication in s-domain and frequency domain..',
-    'rng079: Circular (periodic) convolution of two N-periodic discrete signals..',
-    'rng223: Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51).',
-    'composite signal of delayed scaled patterns',
+    "rgam: Amplitude-modulated (AM) signal model.",
+    "rgconv: Linear convolution of two finite-length sequences.",
+    "rgfm: Frequency-modulated (FM) signal model for respiratory sounds.",
+    "rgstvar: Time-variant linear system (TV-LSI) characterization.",
+    "rng024: Continuous-time Dirac delta function (Rangayyan eq. 3.24).",
+    "rng025: Unit-area property of the Dirac delta (Rangayyan eq. 3.25).",
+    "rng026: Dirac delta as a limit of a power function (Rangayyan eq. 3.26).",
+    "rng027: Continuous-time unit step function (Rangayyan eq. 3.27).",
+    "rng028: Sifting property of the Dirac delta (Rangayyan eq. 3.28).",
+    "rng030: Continuous-time convolution (Rangayyan eq. 3.30).",
+    "rng031: Commuted form of continuous-time convolution (Rangayyan eq. 3.31).",
+    "rng032: Causal continuous-time convolution form (lower limit 0, upper limit t).",
+    "rng033: Equivalent causal continuous-time convolution with swapped arguments.",
+    "rng034: Discrete-time unit impulse function (Rangayyan eq. 3.34).",
+    "rng035: Discrete-time unit step function (Rangayyan eq. 3.35).",
+    "rng036: Discrete-time causal convolution sum.",
+    "rng037: Equivalent discrete-time causal convolution with swapped arguments.",
+    "synthetic sine-plus-cosine test signal",
+    "rng041: Intermediate output of the first LSI system in a series cascade..",
+    "rng042: Output of two LSI systems in series equals input convolved with combined response..",
+    "rng044: Output of the first branch in a parallel LSI configuration..",
+    "rng045: Output of the second branch in a parallel LSI configuration..",
+    "rng046: Output of two LSI systems in parallel equals input convolved with sum of responses..",
+    "rng051: LTI convolution maps to multiplication in s-domain and frequency domain..",
+    "rng079: Circular (periodic) convolution of two N-periodic discrete signals..",
+    "rng223: Rangayyan Ch. 4 synthetic three-event test signal (Eq. 4.51).",
+    "composite signal of delayed scaled patterns",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

@@ -78,10 +78,7 @@ def dr_clustered_did(y, D, X=None, cluster=None):
             labels.append(c)
     G = len(labels)
     nk = 1 + (k.ncol(k.mat(X)) if X is not None else 0)
-    if G < 2 or n <= nk:
-        adj = 1.0
-    else:
-        adj = (G / (G - 1.0)) * ((n - 1.0) / (n - nk))
+    adj = 1.0 if G < 2 or n <= nk else G / (G - 1.0) * ((n - 1.0) / (n - nk))
     v = 0.0
     for c in labels:
         s = 0.0
@@ -99,8 +96,8 @@ def dr_clustered_did(y, D, X=None, cluster=None):
         summary_lines=[("clusters", G)],
         payload={
             "estimate": fit["tau"],
-            "se": v_cr ** 0.5,
-            "se_iid": v_iid ** 0.5,
+            "se": v_cr**0.5,
+            "se_iid": v_iid**0.5,
             "vif": (v_cr / v_iid) if v_iid > 0.0 else float("nan"),
             "n_clusters": G,
             "dof_adj": adj,

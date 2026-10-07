@@ -1,7 +1,5 @@
 """Tests for eslo63.esl_oob_632."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.eslo63 import esl_oob_632
 
 
@@ -26,7 +24,7 @@ def test_eslo63_edge():
     err_boot = 0.5
     # dichotomous no-information rate from (7.59): p1*(1-q1) + (1-p1)*q1
     p1, q1 = 0.5, 0.5
-    gamma = p1 * (1 - q1) + (1 - p1) * q1
+    p1 * (1 - q1) + (1 - p1) * q1
     result = esl_oob_632(err_train, err_boot, p1=p1, q1=q1)
     assert isinstance(result, dict)
     assert result["err_632_plus"] is not None

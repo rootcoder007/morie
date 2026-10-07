@@ -58,31 +58,27 @@ def mfird(a, d=None, P=None, inverse=False):
     if any(len(r) != m for r in A):
         raise ValueError("a must be rectangular")
     if P is None:
-        Pm = [[1.0 if i == j else 0.0 for j in range(m)]
-              for i in range(m)]
+        Pm = [[1.0 if i == j else 0.0 for j in range(m)] for i in range(m)]
     else:
         Pm = [[float(v) for v in row] for row in P]
     out = []
     norming = []
     comms = []
     for i in range(n):
-        quad = sum(A[i][r] * Pm[r][c] * A[i][c]
-                   for r in range(m) for c in range(m))
+        quad = sum(A[i][r] * Pm[r][c] * A[i][c] for r in range(m) for c in range(m))
         if inverse:
             if quad >= 1.0:
-                raise ValueError("loadings imply communality >= 1 "
-                                 "(item %d)" % i)
+                raise ValueError(f"loadings imply communality >= 1 (item {int(i)})")
             s = math.sqrt(1.0 - quad)
-            out.append([A[i][l] / s for l in range(m)])
+            out.append([A[i][ell] / s for ell in range(m)])
             norming.append(s)
             comms.append(quad)
         else:
             s = math.sqrt(1.0 + quad)
-            lam = [A[i][l] / s for l in range(m)]
+            lam = [A[i][ell] / s for ell in range(m)]
             out.append(lam)
             norming.append(s)
-            comms.append(sum(lam[r] * Pm[r][c] * lam[c]
-                             for r in range(m) for c in range(m)))
+            comms.append(sum(lam[r] * Pm[r][c] * lam[c] for r in range(m) for c in range(m)))
     thresholds = None
     if d is not None and not inverse:
         dv = [float(v) for v in d]
@@ -90,14 +86,16 @@ def mfird(a, d=None, P=None, inverse=False):
             raise ValueError("need one intercept per item")
         thresholds = [-dv[i] / norming[i] for i in range(n)]
     key = "discriminations" if inverse else "loadings"
-    return RichResult(payload={
-        key: out,
-        "norming": norming,
-        "thresholds": thresholds,
-        "communalities": comms,
-        "inverse": bool(inverse),
-        "method": "MIRT a <-> lambda (Reckase Eq. 2.28 / Eqs. 6.11-6.12)",
-    })
+    return RichResult(
+        payload={
+            key: out,
+            "norming": norming,
+            "thresholds": thresholds,
+            "communalities": comms,
+            "inverse": bool(inverse),
+            "method": "MIRT a <-> lambda (Reckase Eq. 2.28 / Eqs. 6.11-6.12)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -106,6 +104,7 @@ mirt_factor_loadings = mfird
 
 def cheatsheet():
     return "mfird: lambda = a/sqrt(1 + a P a'); tau = -d/sqrt(1 + a P a')"
+
 
 # public names resolved by fn/_lazy_map.json
 mirt_factor_loading = mfird

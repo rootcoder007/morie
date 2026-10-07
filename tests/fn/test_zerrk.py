@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerrk -- Relative risk kernel ratio"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zerrk import relative_risk_kern
 
 

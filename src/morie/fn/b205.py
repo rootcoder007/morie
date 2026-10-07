@@ -63,18 +63,15 @@ def burkov_lm_ch2_perplexity(D, k=None, t=None, log_probs=None, base="e"):
     >>> float(round(burkov_lm_ch2_perplexity(np.log([0.5, 0.5]))["perplexity"], 6))
     2.0
     """
-    lp = np.asarray(D if log_probs is None else log_probs,
-                    dtype=float).ravel()
+    lp = np.asarray(D if log_probs is None else log_probs, dtype=float).ravel()
     if lp.size == 0:
         raise ValueError("need at least one token log-probability.")
     if base not in ("e", "2"):
-        raise ValueError("base must be 'e' or '2', got %r." % base)
+        raise ValueError(f"base must be 'e' or '2', got {base!r}.")
     if base == "2":
         lp = lp * np.log(2.0)
     if np.any(lp > 1e-9):
-        raise ValueError(
-            "log-probabilities must be non-positive; got a value above zero."
-        )
+        raise ValueError("log-probabilities must be non-positive; got a value above zero.")
     ce = float(-np.mean(lp))
     return RichResult(
         payload={
@@ -96,14 +93,10 @@ def burkov_lm_ch2_perplexity(D, k=None, t=None, log_probs=None, base="e"):
             "uniform_ceiling": None,
             "context_window": None if k is None else int(k),
             "n_tokens": int(lp.size),
-            "method": "Perplexity from per-token log-probabilities "
-                      "(Burkov eq 2.5)",
+            "method": "Perplexity from per-token log-probabilities (Burkov eq 2.5)",
         }
     )
 
 
 def cheatsheet():
-    return (
-        "b205: perplexity as the exponentiated mean NLL, with why it is not "
-        "comparable across tokenisations"
-    )
+    return "b205: perplexity as the exponentiated mean NLL, with why it is not comparable across tokenisations"

@@ -1,7 +1,6 @@
 """Tests for morie.fn.hazard — Hazard rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hazard import hazard, hazard_rate
 
 

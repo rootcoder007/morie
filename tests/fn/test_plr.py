@@ -1,11 +1,11 @@
 """Tests for morie.fn.plr — Partially Linear Regression ATE via DoubleML."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
-try:
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 
+try:
     HAS_DML = True
 except ImportError:
     HAS_DML = False

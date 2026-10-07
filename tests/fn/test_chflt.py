@@ -1,7 +1,6 @@
 """Tests for chflt -- Chebyshev type I filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.chflt import chflt
 
@@ -24,7 +23,7 @@ def test_chflt_lowpass_attenuates(signal_1khz):
 
 
 def test_chflt_highpass():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     fs = 1000
     t = np.arange(0, 1.0, 1 / fs)
     x = np.sin(2 * np.pi * 10 * t) + np.sin(2 * np.pi * 200 * t)

@@ -5,10 +5,10 @@ implementation of the same closed form; the test itself is checked for
 size under the null and power against location and shape differences.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.otprm import _w1, ot_permutation_test_w1
 
 
@@ -60,7 +60,9 @@ def test_p_value_is_a_rank_and_cannot_be_zero():
 def test_seed_makes_it_reproducible():
     rng = np.random.default_rng(7)
     a, b = rng.normal(0, 1, 40), rng.normal(0, 1, 40)
-    assert ot_permutation_test_w1(a, b, B=99, seed=5)["p_value"] == ot_permutation_test_w1(a, b, B=99, seed=5)["p_value"]
+    assert (
+        ot_permutation_test_w1(a, b, B=99, seed=5)["p_value"] == ot_permutation_test_w1(a, b, B=99, seed=5)["p_value"]
+    )
 
 
 def test_validates_inputs():

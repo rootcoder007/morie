@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.cluster_mean_from_total import (
     cluster_mean_from_total,
 )

@@ -820,5 +820,6 @@ def cheatsheet() -> str:
         "breach_depressions / height_above_drainage -> hydrology."
     )
 
+
 # alias kept from the retired placeholder of the same name
 flow_duration = flow_duration_curve

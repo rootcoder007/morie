@@ -101,13 +101,13 @@ def holt_winters_mult(y, period=4, alpha=0.3, beta=0.1, gamma=0.1, horizon=None)
     if horizon < 1:
         raise ValueError("horizon must be at least 1")
 
-    MULT = 'multiplicative' == "multiplicative"
+    MULT = "multiplicative" == "multiplicative"
     if MULT and np.any(y <= 0):
         raise ValueError("multiplicative seasonality needs strictly positive data")
 
     # Classical initialisation from the first two full seasons.
     s0 = y[:m].mean()
-    s1 = y[m:2 * m].mean()
+    s1 = y[m : 2 * m].mean()
     level = s0
     trend = (s1 - s0) / m
     season = (y[:m] / s0) if MULT else (y[:m] - s0)
@@ -133,14 +133,21 @@ def holt_winters_mult(y, period=4, alpha=0.3, beta=0.1, gamma=0.1, horizon=None)
     resid = y - fitted
     return RichResult(
         title="Holt-Winters (multiplicative)",
-        summary_lines=[("n", int(y.size)), ("period", m),
-                       ("level", float(level)), ("trend", float(trend))],
+        summary_lines=[("n", int(y.size)), ("period", m), ("level", float(level)), ("trend", float(trend))],
         payload={
-            "forecast": fc, "level": float(level), "trend": float(trend),
-            "seasonal": np.array(seas[-m:]), "fitted": fitted,
-            "residuals": resid, "sse": float(np.sum(resid**2)),
-            "alpha": float(alpha), "beta": float(beta), "gamma": float(gamma),
-            "period": m, "horizon": horizon, "method": "holt_winters_mult",
+            "forecast": fc,
+            "level": float(level),
+            "trend": float(trend),
+            "seasonal": np.array(seas[-m:]),
+            "fitted": fitted,
+            "residuals": resid,
+            "sse": float(np.sum(resid**2)),
+            "alpha": float(alpha),
+            "beta": float(beta),
+            "gamma": float(gamma),
+            "period": m,
+            "horizon": horizon,
+            "method": "holt_winters_mult",
         },
     )
 

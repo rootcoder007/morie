@@ -61,8 +61,10 @@ def tmle_baseline_adj(y, D, X, baseline):
     g = [S.clip(S.expit(C.dot(W[i], gb)), 0.025, 0.975) for i in range(n)]
     des = [[Dv[i]] + list(W[i]) for i in range(n)]
     qb, _, _, _ = C.lstsq(des, yv)
+
     def qhat(d):
         return [C.dot([d] + list(W[i]), qb) for i in range(n)]
+
     Q1 = qhat(1.0)
     Q0 = qhat(0.0)
     Q = [Q1[i] if Dv[i] > 0.5 else Q0[i] for i in range(n)]
@@ -76,9 +78,15 @@ def tmle_baseline_adj(y, D, X, baseline):
     ic = [H[i] * (yv[i] - Qs[i]) + Q1s[i] - Q0s[i] - psi for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "n": n,
-        "method": "TMLE with a pre-treatment-only initial outcome model"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n": n,
+            "method": "TMLE with a pre-treatment-only initial outcome model",
+        }
+    )
 
 
 def cheatsheet():

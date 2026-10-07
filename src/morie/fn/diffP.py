@@ -64,8 +64,7 @@ def diffpool(A, X, K_clusters=2, S=None, seed=42):
         raise ValueError("K_clusters must be at least 1")
     rng = np.random.default_rng(seed)
     if S is None:
-        logit = [[float(rng.normal(0.0, 1.0)) for _ in range(K)]
-                 for _ in range(n)]
+        logit = [[float(rng.normal(0.0, 1.0)) for _ in range(K)] for _ in range(n)]
     else:
         logit = core.mat(S)
         if len(logit) != n or len(logit[0]) != K:
@@ -79,26 +78,26 @@ def diffpool(A, X, K_clusters=2, S=None, seed=42):
                 for j in range(n):
                     acc += Sm[i][r] * Am[i][j] * Sm[j][s]
             Ap[r][s] = acc
-    Hp = [[sum(Sm[i][r] * Xm[i][t] for i in range(n)) for t in range(f)]
-          for r in range(K)]
+    Hp = [[sum(Sm[i][r] * Xm[i][t] for i in range(n)) for t in range(f)] for r in range(K)]
     ll = 0.0
     for i in range(n):
         for j in range(n):
             ll += (Am[i][j] - sum(Sm[i][r] * Sm[j][r] for r in range(K))) ** 2
     ll = math.sqrt(ll) / n
-    ent = -sum(sum(v * math.log(v + 1e-300) for v in Sm[i])
-               for i in range(n)) / n
-    return RichResult(payload={
-        "estimate": ll,
-        "S": Sm,
-        "A_pool": Ap,
-        "H_pool": Hp,
-        "link_loss": ll,
-        "entropy_loss": ent,
-        "n": n,
-        "K": K,
-        "method": "DiffPool differentiable graph pooling",
-    })
+    ent = -sum(sum(v * math.log(v + 1e-300) for v in Sm[i]) for i in range(n)) / n
+    return RichResult(
+        payload={
+            "estimate": ll,
+            "S": Sm,
+            "A_pool": Ap,
+            "H_pool": Hp,
+            "link_loss": ll,
+            "entropy_loss": ent,
+            "n": n,
+            "K": K,
+            "method": "DiffPool differentiable graph pooling",
+        }
+    )
 
 
 def cheatsheet():

@@ -61,7 +61,7 @@ def vol_noise_variance(r_intraday, K=None):
     n = r.size
     if n < 30:
         raise ValueError(f"need at least 30 intraday returns, got {n}.")
-    rv_all = float(np.sum(r ** 2))
+    rv_all = float(np.sum(r**2))
     noise_var = rv_all / (2.0 * n)
     KK = max(2, int(round(n ** (2.0 / 3.0)))) if K is None else int(K)
     if not 2 <= KK <= n // 2:
@@ -78,20 +78,25 @@ def vol_noise_variance(r_intraday, K=None):
     rv_avg = float(np.mean(rvs))
     nbar = float(np.mean(counts))
     iv_ts = rv_avg - (nbar / n) * rv_all
-    return RichResult(payload={
-        "noise_variance": noise_var,
-        "noise_sd": float(np.sqrt(noise_var)),
-        "rv_all": rv_all, "rv_subsampled": rv_avg,
-        "iv_two_scale": iv_ts, "K": int(KK),
-        "noise_share_of_rv": float(2 * n * noise_var / rv_all),
-        "signature_note": "E[RV_all] = IV + 2n E[eps^2]: at the finest grid "
-                          "the noise term dominates, which is why naive RV "
-                          "gets WORSE as sampling gets finer",
-        "ts_note": "the two-scale IV debiases the subsampled RV with the "
-                   "fine-grid RV (ZMA 2005); a negative value at small n "
-                   "means noise swamps signal at this K",
-        "n": int(n),
-        "method": "Noise variance RV_all/(2n) and two-scale IV (ZMA 2005; AMZ 2005)"})
+    return RichResult(
+        payload={
+            "noise_variance": noise_var,
+            "noise_sd": float(np.sqrt(noise_var)),
+            "rv_all": rv_all,
+            "rv_subsampled": rv_avg,
+            "iv_two_scale": iv_ts,
+            "K": int(KK),
+            "noise_share_of_rv": float(2 * n * noise_var / rv_all),
+            "signature_note": "E[RV_all] = IV + 2n E[eps^2]: at the finest grid "
+            "the noise term dominates, which is why naive RV "
+            "gets WORSE as sampling gets finer",
+            "ts_note": "the two-scale IV debiases the subsampled RV with the "
+            "fine-grid RV (ZMA 2005); a negative value at small n "
+            "means noise swamps signal at this K",
+            "n": int(n),
+            "method": "Noise variance RV_all/(2n) and two-scale IV (ZMA 2005; AMZ 2005)",
+        }
+    )
 
 
 def cheatsheet():

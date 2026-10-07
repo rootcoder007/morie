@@ -57,12 +57,9 @@ Haveliwala, T. H. (2002) "Topic-sensitive PageRank", *WWW '02*,
 personalisation being differenced.
 """
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tripartite_graph", "adapted_pagerank", "folkrank",
-           "preference_vector"]
+__all__ = ["tripartite_graph", "adapted_pagerank", "folkrank", "preference_vector"]
 
 _EPS = 1e-12
 
@@ -76,8 +73,8 @@ def tripartite_graph(triples):
     degree dominates.
     """
     nodes, edges = set(), {}
-    for (u, t, r) in triples:
-        nu, nt, nr = ("u:%s" % u, "t:%s" % t, "r:%s" % r)
+    for u, t, r in triples:
+        nu, nt, nr = (f"u:{u}", f"t:{t}", f"r:{r}")
         nodes.update([nu, nt, nr])
         for a, b in ((nu, nt), (nt, nr), (nu, nr)):
             edges[(a, b)] = edges.get((a, b), 0) + 1
@@ -85,10 +82,13 @@ def tripartite_graph(triples):
     adj = {}
     for (a, b), w in edges.items():
         adj.setdefault(a, {})[b] = float(w)
-    return {"adjacency": adj, "nodes": sorted(nodes),
-            "n_nodes": len(nodes), "n_triples": len(list(triples)),
-            "note": "a triadic hyperedge flattened to three "
-                    "undirected edges, so weight flows both ways"}
+    return {
+        "adjacency": adj,
+        "nodes": sorted(nodes),
+        "n_nodes": len(nodes),
+        "n_triples": len(list(triples)),
+        "note": "a triadic hyperedge flattened to three undirected edges, so weight flows both ways",
+    }
 
 
 def preference_vector(nodes, focus, weight=0.9):
@@ -100,29 +100,25 @@ def preference_vector(nodes, focus, weight=0.9):
     N = list(nodes)
     F = [f for f in focus if f in set(N)]
     if not F:
-        raise ValueError("tagRC: none of the focus nodes are in the "
-                         "graph")
+        raise ValueError("tagRC: none of the focus nodes are in the graph")
     w = float(weight)
     if not 0.0 < w < 1.0:
         raise ValueError("tagRC: the focus weight must lie in (0,1)")
     rest = len(N) - len(F)
     p = {}
     for n in N:
-        p[n] = (w / len(F)) if n in F else \
-            ((1.0 - w) / rest if rest else 0.0)
+        p[n] = (w / len(F)) if n in F else ((1.0 - w) / rest if rest else 0.0)
     return {"p": p, "focus": F, "mass": sum(p.values())}
 
 
-def adapted_pagerank(adjacency, nodes, p=None, d=0.7, iters=200,
-                     tol=1e-12):
+def adapted_pagerank(adjacency, nodes, p=None, d=0.7, iters=200, tol=1e-12):
     r"""Weight spreading on the undirected tripartite graph."""
     N = list(nodes)
     n = len(N)
     if n == 0:
         raise ValueError("tagRC: the graph is empty")
     if not 0.0 < float(d) < 1.0:
-        raise ValueError("tagRC: the damping factor must lie in "
-                         "(0,1)")
+        raise ValueError("tagRC: the damping factor must lie in (0,1)")
     pref = {u: 1.0 / n for u in N} if p is None else dict(p)
     w = {u: 1.0 / n for u in N}
     deg = {u: sum(adjacency.get(u, {}).values()) for u in N}
@@ -134,8 +130,7 @@ def adapted_pagerank(adjacency, nodes, p=None, d=0.7, iters=200,
                 a = adjacency.get(v, {}).get(u, 0.0)
                 if a > 0.0 and deg[v] > _EPS:
                     s += w[v] * a / deg[v]
-            nxt[u] = float(d) * s + (1.0 - float(d)) * pref.get(u,
-                                                                0.0)
+            nxt[u] = float(d) * s + (1.0 - float(d)) * pref.get(u, 0.0)
         tot = sum(nxt.values()) or 1.0
         nxt = {u: v / tot for u, v in nxt.items()}
         delta = max(abs(nxt[u] - w[u]) for u in N)
@@ -167,34 +162,40 @@ def folkrank(triples, focus, d=0.7, weight=0.9, iters=200):
     without = {"w": wo, "ranking": sorted(N, key=lambda u: -wo[u])}
     diff = {u: with_p["w"][u] - without["w"][u] for u in N}
     order = sorted(N, key=lambda u: -diff[u])
-    return RichResult(payload={
-        "estimate": order, "ranking": order, "difference": diff,
-        "with_preference": with_p["w"],
-        "without_preference": without["w"],
-        "undifferenced_ranking": with_p["ranking"],
-        "baseline_ranking": without["ranking"],
-        "focus": pv["focus"], "n_nodes": g["n_nodes"],
-        "method": "FolkRank differential ranking; Hotho, Jaschke, "
-                  "Schmitz & Stumme (2006)",
-        "note": "PageRank cannot be applied directly -- undirected "
-                "triadic hyperedges, not directed binary edges -- and "
-                "on this graph degree dominates, which is what the "
-                "difference removes",
-    })
+    return RichResult(
+        payload={
+            "estimate": order,
+            "ranking": order,
+            "difference": diff,
+            "with_preference": with_p["w"],
+            "without_preference": without["w"],
+            "undifferenced_ranking": with_p["ranking"],
+            "baseline_ranking": without["ranking"],
+            "focus": pv["focus"],
+            "n_nodes": g["n_nodes"],
+            "method": "FolkRank differential ranking; Hotho, Jaschke, Schmitz & Stumme (2006)",
+            "note": "PageRank cannot be applied directly -- undirected "
+            "triadic hyperedges, not directed binary edges -- and "
+            "on this graph degree dominates, which is what the "
+            "difference removes",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tagRC: a folksonomy is (user, tag, resource) TRIPLES, so "
-            "the structure is an undirected triadic HYPEREDGE, not a "
-            "directed binary link -- PageRank cannot be applied "
-            "directly. Flatten each triple to three undirected edges; "
-            "because they are undirected, DEGREE dominates the "
-            "stationary distribution and a topic preference vector "
-            "still returns the globally popular nodes. FOLKRANK is the "
-            "difference of two runs, WITH and WITHOUT the preference "
-            "vector: whatever is popular regardless of the query "
-            "cancels, and what the preference actually pulled up "
-            "survives. Keep ||p||_1 = ||w||_1.")
+    return (
+        "tagRC: a folksonomy is (user, tag, resource) TRIPLES, so "
+        "the structure is an undirected triadic HYPEREDGE, not a "
+        "directed binary link -- PageRank cannot be applied "
+        "directly. Flatten each triple to three undirected edges; "
+        "because they are undirected, DEGREE dominates the "
+        "stationary distribution and a topic preference vector "
+        "still returns the globally popular nodes. FOLKRANK is the "
+        "difference of two runs, WITH and WITHOUT the preference "
+        "vector: whatever is popular regardless of the query "
+        "cancels, and what the preference actually pulled up "
+        "survives. Keep ||p||_1 = ||w||_1."
+    )
 
 
 # compact alias per ledger/NAMING.md

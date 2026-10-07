@@ -1,7 +1,6 @@
 """Tests for morie.fn.bnorm -- Bayesian normal model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnorm import bayesian_normal
 
 

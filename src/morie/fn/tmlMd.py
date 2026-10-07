@@ -74,10 +74,17 @@ def tmle_mediation(Y, X, M, Cc):
     ic = [H[i] * (yv[i] - Qs[i]) + Q1M0[i] - Q0M0[i] - nde for i in range(n)]
     mi = sum(ic) / n
     se = math.sqrt(sum((v - mi) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": nde, "nie": nie, "total": nde + nie, "se": se,
-        "eps": eps, "n": n,
-        "method": "TMLE for natural direct and indirect effects"})
+    return RichResult(
+        payload={
+            "estimate": nde,
+            "nie": nie,
+            "total": nde + nie,
+            "se": se,
+            "eps": eps,
+            "n": n,
+            "method": "TMLE for natural direct and indirect effects",
+        }
+    )
 
 
 tmlemediation = tmle_mediation

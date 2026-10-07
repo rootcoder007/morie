@@ -1,8 +1,8 @@
 """Tests for median_abs_dev."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.medab import median_abs_dev
 
 

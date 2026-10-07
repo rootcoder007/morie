@@ -97,18 +97,26 @@ def multilevel_pseudo_variance_ratio(y, X, cluster):
     ssw = sum(t * t for t in yw)
     s2_null = ssw / (n - J)
     if s2_null <= 0.0:
-        raise ValueError("the null model has no within-cluster variance; "
-                         "the ratio is undefined")
+        raise ValueError("the null model has no within-cluster variance; the ratio is undefined")
     Xw = [sweep([Xm[i][j] for i in range(n)]) for j in range(p)]
     dm = [[Xw[j][i] for j in range(p)] for i in range(n)]
     resid = C.lstsq(dm, yw)[2]
     s2_full = sum(t * t for t in resid) / (n - J - p)
     pr = (s2_null - s2_full) / s2_null
-    return RichResult(payload={
-        "estimate": pr, "pr": pr, "sigma2_null": s2_null,
-        "sigma2_full": s2_full, "df_null": n - J, "df_full": n - J - p,
-        "n_clusters": J, "p": p, "n": n,
-        "method": "Proportional reduction in level-1 variance"})
+    return RichResult(
+        payload={
+            "estimate": pr,
+            "pr": pr,
+            "sigma2_null": s2_null,
+            "sigma2_full": s2_full,
+            "df_null": n - J,
+            "df_full": n - J - p,
+            "n_clusters": J,
+            "p": p,
+            "n": n,
+            "method": "Proportional reduction in level-1 variance",
+        }
+    )
 
 
 multilevelpseudovarianceratio = multilevel_pseudo_variance_ratio

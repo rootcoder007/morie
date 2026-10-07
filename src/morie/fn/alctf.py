@@ -22,22 +22,24 @@ def alammar_c_tfidf(term_counts_by_class, corpus_freq=None, A=None):
     M = np.atleast_2d(np.asarray(term_counts_by_class, dtype=float))
     if np.any(M < 0):
         raise ValueError("counts must be non-negative.")
-    f_t = (np.asarray(corpus_freq, dtype=float) if corpus_freq is not None
-           else M.sum(axis=0))
+    f_t = np.asarray(corpus_freq, dtype=float) if corpus_freq is not None else M.sum(axis=0)
     if len(f_t) != M.shape[1]:
         raise ValueError("corpus_freq must have one entry per term.")
     if np.any(f_t <= 0):
-        raise ValueError(
-            "a term with zero corpus frequency cannot be weighted; drop "
-            "it before calling.")
+        raise ValueError("a term with zero corpus frequency cannot be weighted; drop it before calling.")
     a = float(A) if A is not None else float(M.sum(axis=1).mean())
     W = M * np.log1p(a / f_t)[None, :]
-    return RichResult(payload={
-        "weights": [[float(v) for v in r] for r in W],
-        "A": a, "corpus_freq": [float(v) for v in f_t],
-        "top_term_per_class": [int(i) for i in np.argmax(W, axis=1)],
-        "estimate": float(W[0, 0]), "n": M.shape[0],
-        "method": "c-TF-IDF (Grootendorst 2022, Eq 3)"})
+    return RichResult(
+        payload={
+            "weights": [[float(v) for v in r] for r in W],
+            "A": a,
+            "corpus_freq": [float(v) for v in f_t],
+            "top_term_per_class": [int(i) for i in np.argmax(W, axis=1)],
+            "estimate": float(W[0, 0]),
+            "n": M.shape[0],
+            "method": "c-TF-IDF (Grootendorst 2022, Eq 3)",
+        }
+    )
 
 
 def cheatsheet():

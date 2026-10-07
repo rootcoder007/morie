@@ -1,8 +1,6 @@
 """Tests for gh_c6_9.ghosal_kl_perm."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gh_c6_9 import ghosal_kl_perm
 
 

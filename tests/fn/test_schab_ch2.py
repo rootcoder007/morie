@@ -1,18 +1,27 @@
 """Ch. 2 definitional family. Schabenberger & Gotway (2005) Secs 2.3, 2.4."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spcont import schabenberger_spatial_continuity as continuity
-from morie.fn.spmsd import schabenberger_mean_square_diff as differentiability
 from morie.fn.spcovf import schabenberger_covariance_function as covfun
+from morie.fn.spmsd import schabenberger_mean_square_diff as differentiability
 
-EXPO = lambda h: np.exp(-3 * np.asarray(h, dtype=float))
-GAUSS = lambda h: np.exp(-3 * np.asarray(h, dtype=float) ** 2)
-SPH = lambda h: np.where(np.asarray(h, float) <= 1,
-                         1 - 1.5 * np.asarray(h, float)
-                         + 0.5 * np.asarray(h, float) ** 3, 0.0)
-NUGGET = lambda h: np.where(np.asarray(h, float) == 0, 1.3, EXPO(h))
+
+def EXPO(h):
+    return np.exp(-3 * np.asarray(h, dtype=float))
+
+
+def GAUSS(h):
+    return np.exp(-3 * np.asarray(h, dtype=float) ** 2)
+
+
+def SPH(h):
+    return np.where(np.asarray(h, float) <= 1, 1 - 1.5 * np.asarray(h, float) + 0.5 * np.asarray(h, float) ** 3, 0.0)
+
+
+def NUGGET(h):
+    return np.where(np.asarray(h, float) == 0, 1.3, EXPO(h))
 
 
 @pytest.mark.parametrize("cov", [EXPO, GAUSS, SPH])
@@ -22,7 +31,7 @@ def test_continuous_covariances_give_ms_continuity(cov):
 
 
 def test_a_nugget_destroys_mean_square_continuity():
-    """"A process that exhibits a discontinuity at the origin cannot be
+    """ "A process that exhibits a discontinuity at the origin cannot be
     mean square continuous" (p. 50)."""
     r = continuity(NUGGET)
     assert not r["is_continuous"]
@@ -36,8 +45,8 @@ def test_a_nugget_destroys_mean_square_continuity():
 def test_the_decision_is_shrinkage_not_a_fixed_threshold():
     """A continuous C still has a nonzero gap at any finite h; a nugget's
     gap plateaus. The ratio separates them."""
-    assert continuity(EXPO)["gap_ratio"] < 0.1     # shrinking
-    assert continuity(NUGGET)["gap_ratio"] > 0.5   # plateau
+    assert continuity(EXPO)["gap_ratio"] < 0.1  # shrinking
+    assert continuity(NUGGET)["gap_ratio"] > 0.5  # plateau
 
 
 def test_gaussian_covariance_is_mean_square_differentiable():
@@ -53,14 +62,14 @@ def test_kinked_covariances_are_not_differentiable(cov):
     """No second derivative at 0, so not MS differentiable (Stein 1999)."""
     r = differentiability(cov, m=1)
     assert not r["is_differentiable"]
-    assert r["growth_ratio"] > 1.5      # diverges as the stencil shrinks
+    assert r["growth_ratio"] > 1.5  # diverges as the stencil shrinks
 
 
 def test_derivative_field_covariance_sign():
     """Cov of the m-th derivative field is (-1)^m d^{2m}C/dh^{2m}."""
     r = differentiability(GAUSS, m=1)
     assert r["derivative_cov"] == pytest.approx(-r["derivative_2m"])
-    assert r["derivative_cov"] > 0      # a variance
+    assert r["derivative_cov"] > 0  # a variance
 
 
 def test_differentiability_input_validation():
@@ -88,8 +97,7 @@ def test_implied_semivariogram_matches_the_direct_estimate():
     z = rng.normal(0, 2.0, 500)
     r = covfun(coords, z, n_bins=6)
     ok = ~np.isnan(r["covariance"]) & ~np.isnan(r["semivariogram"])
-    assert np.max(np.abs(r["semivariogram"][ok]
-                         - r["implied_semivariogram"][ok])) < 0.5
+    assert np.max(np.abs(r["semivariogram"][ok] - r["implied_semivariogram"][ok])) < 0.5
 
 
 def test_covariance_input_validation():

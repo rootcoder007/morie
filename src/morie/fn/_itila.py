@@ -26,14 +26,15 @@ def _log2(x: float) -> float:
 
 # --- ch. 1: the repetition codes R3 / RN (pp. 5-20) -------------------
 
+
 def r3post(r, f):
     """(1.18) p.9 -- posterior over the source bit of an R3 codeword."""
     r = [int(b) for b in r]
     if len(r) != 3 or any(b not in (0, 1) for b in r):
-        raise ValueError("r must be three bits, got %r" % (r,))
+        raise ValueError(f"r must be three bits, got {r!r}")
     f = float(f)
     if not 0.0 < f < 1.0:
-        raise ValueError("f must lie strictly in (0, 1), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 1), got {f!r}")
     lik = []
     for s in (0, 1):
         p = 1.0
@@ -54,8 +55,8 @@ def cbcapx(n):
     """(1.40) p.17 -- Gaussian approximation to the central binomial."""
     n = int(n)
     if n < 1:
-        raise ValueError("n must be at least 1, got %r" % (n,))
-    approx = 2.0 ** n / math.sqrt(2.0 * math.pi * n / 4.0)
+        raise ValueError(f"n must be at least 1, got {n!r}")
+    approx = 2.0**n / math.sqrt(2.0 * math.pi * n / 4.0)
     exact = float(math.comb(n, n // 2))
     return {
         "approx": approx,
@@ -76,7 +77,7 @@ def binsumga(n):
     """
     n = int(n)
     if n < 1:
-        raise ValueError("n must be at least 1, got %r" % (n,))
+        raise ValueError(f"n must be at least 1, got {n!r}")
     var = n / 4.0
     gsum = math.sqrt(2.0 * math.pi * var)
     exact = float(math.comb(n, n // 2))
@@ -85,7 +86,7 @@ def binsumga(n):
         "sd": math.sqrt(var),
         "gsum": gsum,
         "total": 2.0 ** (-n) * exact * gsum,
-        "cbcapprox": 2.0 ** n / gsum,
+        "cbcapprox": 2.0**n / gsum,
     }
 
 
@@ -94,13 +95,13 @@ def repcpb(n, f):
     n = int(n)
     f = float(f)
     if n < 1 or n % 2 == 0:
-        raise ValueError("n must be a positive odd integer, got %r" % (n,))
+        raise ValueError(f"n must be a positive odd integer, got {n!r}")
     if not 0.0 < f < 1.0:
-        raise ValueError("f must lie strictly in (0, 1), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 1), got {f!r}")
     k = (n + 1) // 2
-    leading = math.comb(n, k) * f ** k * (1.0 - f) ** (n - k)
+    leading = math.comb(n, k) * f**k * (1.0 - f) ** (n - k)
     half = (n - 1) / 2.0
-    approx1 = (2.0 ** n / math.sqrt(math.pi * n / 2.0)) * f * (f * (1.0 - f)) ** half
+    approx1 = (2.0**n / math.sqrt(math.pi * n / 2.0)) * f * (f * (1.0 - f)) ** half
     approx2 = (1.0 / math.sqrt(math.pi * n / 8.0)) * f * (4.0 * f * (1.0 - f)) ** half
     return {
         "leading": leading,
@@ -120,9 +121,9 @@ def repcn(pb, f, n0=68.0, iters=3):
     pb = float(pb)
     f = float(f)
     if not 0.0 < pb < 1.0:
-        raise ValueError("pb must lie strictly in (0, 1), got %r" % (pb,))
+        raise ValueError(f"pb must lie strictly in (0, 1), got {pb!r}")
     if not 0.0 < f < 0.5:
-        raise ValueError("f must lie strictly in (0, 0.5), got %r" % (f,))
+        raise ValueError(f"f must lie strictly in (0, 0.5), got {f!r}")
     n = float(n0)
     denom = math.log10(4.0 * f * (1.0 - f))
     half = float("nan")
@@ -133,6 +134,7 @@ def repcn(pb, f, n0=68.0, iters=3):
 
 
 # --- ch. 2: inferring which urn (pp. 27-31) ---------------------------
+
 
 def urnpost(nb, ntot, nurns=10):
     """(2.25)-(2.26) p.28 -- posterior over the urn index u."""
@@ -145,7 +147,7 @@ def urnpost(nb, ntot, nurns=10):
     joint = []
     for u in range(nurns + 1):
         fu = u / float(nurns)
-        joint.append(prior * math.comb(ntot, nb) * fu ** nb * (1.0 - fu) ** (ntot - nb))
+        joint.append(prior * math.comb(ntot, nb) * fu**nb * (1.0 - fu) ** (ntot - nb))
     evid = sum(joint)
     post = [j / evid for j in joint]
     return {
@@ -167,6 +169,7 @@ def urnpred(nb, ntot, nurns=10):
 
 # --- ch. 3: the bent coin and model comparison (pp. 50-53, 63) --------
 
+
 def bcoinlik(pa, fa, fb):
     """(3.8) p.51 -- bent-coin likelihood P(s | p_a, F, H1)."""
     pa = float(pa)
@@ -174,11 +177,10 @@ def bcoinlik(pa, fa, fb):
     fb = int(fb)
     if not 0.0 <= pa <= 1.0 or fa < 0 or fb < 0:
         raise ValueError("need pa in [0, 1] and non-negative counts")
-    lik = pa ** fa * (1.0 - pa) ** fb
+    lik = pa**fa * (1.0 - pa) ** fb
     return {
         "likelihood": lik,
-        "loglik": (fa * math.log(pa) if fa else 0.0)
-        + (fb * math.log1p(-pa) if fb else 0.0),
+        "loglik": (fa * math.log(pa) if fa else 0.0) + (fb * math.log1p(-pa) if fb else 0.0),
         "fa": fa,
         "fb": fb,
     }
@@ -269,6 +271,7 @@ def lrprod(num, den):
 
 # --- ch. 4: the typical set (p. 80) -----------------------------------
 
+
 def typset(p, n, h, beta):
     """(4.29) p.80 -- membership test for the typical set T_{N beta}."""
     p = float(p)
@@ -287,6 +290,7 @@ def typset(p, n, h, beta):
 
 
 # --- ch. 11: the Gaussian channel (p. 182) ----------------------------
+
 
 def gchpost(y, v, s2):
     """(11.27)-(11.29) p.182 -- posterior over a Gaussian channel input."""
@@ -315,7 +319,7 @@ def sexbeta(gamma):
     """(19.7) p.271 -- dynamic-equilibrium variance factor 1/(1 - gamma)."""
     gamma = float(gamma)
     if not 0.0 <= gamma < 1.0:
-        raise ValueError("gamma must lie in [0, 1), got %r" % (gamma,))
+        raise ValueError(f"gamma must lie in [0, 1), got {gamma!r}")
     onep = 1.0 / (1.0 - gamma)
     return {"onepbeta": onep, "beta": onep - 1.0, "gamma": gamma}
 
@@ -369,6 +373,7 @@ def sexfsol(t, g, f0, eta=None, c=None):
 
 # --- ch. 24: exact marginalization in Gaussians (pp. 319-320) ---------
 
+
 def gllsuff(xbar, s, n, mu, sigma):
     """(24.5)-(24.6) p.319 -- Gaussian log likelihood via (xbar, S)."""
     n = int(n)
@@ -376,9 +381,7 @@ def gllsuff(xbar, s, n, mu, sigma):
     if n < 1 or sigma <= 0.0:
         raise ValueError("need n >= 1 and sigma > 0")
     s = float(s)
-    ll = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - (
-        n * (float(mu) - float(xbar)) ** 2 + s
-    ) / (2.0 * sigma ** 2)
+    ll = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - (n * (float(mu) - float(xbar)) ** 2 + s) / (2.0 * sigma**2)
     return {"loglik": ll, "n": n, "s": s, "sigman": math.sqrt(s / n)}
 
 
@@ -388,7 +391,7 @@ def mupostsg(xbar, n, sigma):
     sigma = float(sigma)
     if n < 1 or sigma <= 0.0:
         raise ValueError("need n >= 1 and sigma > 0")
-    var = sigma ** 2 / n
+    var = sigma**2 / n
     return {"mean": float(xbar), "var": var, "se": math.sqrt(var), "n": n}
 
 
@@ -400,12 +403,13 @@ def sigevid(s, n, sigma, sigmamu=1.0):
     if n < 1 or sigma <= 0.0 or sigmamu <= 0.0:
         raise ValueError("need n >= 1, sigma > 0, sigmamu > 0")
     s = float(s)
-    bestfit = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - s / (2.0 * sigma ** 2)
+    bestfit = -n * math.log(math.sqrt(2.0 * math.pi) * sigma) - s / (2.0 * sigma**2)
     occam = math.log(math.sqrt(2.0 * math.pi) * sigma / math.sqrt(n) / sigmamu)
     return {"logevidence": bestfit + occam, "bestfit": bestfit, "logoccam": occam}
 
 
 # --- ch. 28: model comparison and the razor (pp. 344-352) -------------
+
 
 def postgapx(dw, a):
     """(28.5) p.344 -- quadratic (Gaussian) approximation to the posterior."""
@@ -414,7 +418,7 @@ def postgapx(dw, a):
     k = int(np.shape(dw)[0])
     sh = np.shape(a)
     if sh[0] != k or sh[1] != k:
-        raise ValueError("A must be %d x %d to match dw" % (k, k))
+        raise ValueError(f"A must be {int(k)} x {int(k)} to match dw")
     quad = float(np.dot(dw, np.dot(a, dw)))
     cov = np._pinv(a)
     sd = [math.sqrt(abs(float(cov[i][i]))) for i in range(k)]
@@ -486,14 +490,8 @@ def linevid(x, t, sigma=1.0, slope=True, priorsd=1.0):
     if sigma <= 0.0 or priorsd <= 0.0:
         raise ValueError("sigma and priorsd must be positive")
     cols = [[1.0] * n, xs] if slope else [[1.0] * n]
-    pv = priorsd ** 2
-    cov = [
-        [
-            pv * sum(c[i] * c[j] for c in cols) + (sigma ** 2 if i == j else 0.0)
-            for j in range(n)
-        ]
-        for i in range(n)
-    ]
+    pv = priorsd**2
+    cov = [[pv * sum(c[i] * c[j] for c in cols) + (sigma**2 if i == j else 0.0) for j in range(n)] for i in range(n)]
     cova = np.asarray(cov, dtype=float)
     _sign, logdet = np._lu_slogdet(cova)
     sol = np.dot(np._pinv(cova), np.asarray(ts, dtype=float))
@@ -510,6 +508,7 @@ def linevid(x, t, sigma=1.0, slope=True, priorsd=1.0):
 
 # --- ch. 29: why uniform sampling fails (p. 366) ----------------------
 
+
 def rminsamp(n, h):
     """(29.19) p.366 -- uniform draws needed to hit the typical set once."""
     n = float(n)
@@ -520,5 +519,5 @@ def rminsamp(n, h):
     return {
         "log2rmin": log2r,
         "log10rmin": log2r * _LN2 / math.log(10.0),
-        "rmin": 2.0 ** log2r if log2r < 1000.0 else float("inf"),
+        "rmin": 2.0**log2r if log2r < 1000.0 else float("inf"),
     }

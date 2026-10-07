@@ -1,7 +1,6 @@
 """Tests for gh_c11_12.ghosal_selfsim_gp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_12 import ghosal_selfsim_gp
 
 

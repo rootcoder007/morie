@@ -21,13 +21,17 @@ def burkov_unit_vector(a):
     a = np.atleast_1d(np.asarray(a, dtype=float))
     n = float(np.linalg.norm(a))
     if n == 0.0:
-        raise ValueError("the zero vector has no direction and cannot "
-                         "be normalised.")
+        raise ValueError("the zero vector has no direction and cannot be normalised.")
     u = a / n
-    return RichResult(payload={
-        "unit": [float(v) for v in u], "estimate": float(u[0]),
-        "norm": n, "n": len(a),
-        "method": "Unit vector a/||a|| (Burkov Ch 1)"})
+    return RichResult(
+        payload={
+            "unit": [float(v) for v in u],
+            "estimate": float(u[0]),
+            "norm": n,
+            "n": len(a),
+            "method": "Unit vector a/||a|| (Burkov Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

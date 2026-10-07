@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Randomized decision rule attaining an exact significance level."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['randtest', 'gibbons_rz_test']
+__all__ = ["randtest", "gibbons_rz_test"]
 
 
 def randtest(pmf, alpha=0.05, pmf_alt=None):

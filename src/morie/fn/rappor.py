@@ -83,19 +83,18 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["rappor_encode", "rappor_decode", "rappor_epsilon",
-           "rappor_star_probs", "rappor"]
+__all__ = ["rappor_encode", "rappor_decode", "rappor_epsilon", "rappor_star_probs", "rappor"]
 
 _VARIANTS = ("full", "one-time", "basic")
 
 
 def _check_params(f, p, q):
     if not (0.0 <= f <= 1.0):
-        raise ValueError("rappor: f must lie in [0, 1], got %r" % (f,))
+        raise ValueError(f"rappor: f must lie in [0, 1], got {f!r}")
     if not (0.0 <= p <= 1.0):
-        raise ValueError("rappor: p must lie in [0, 1], got %r" % (p,))
+        raise ValueError(f"rappor: p must lie in [0, 1], got {p!r}")
     if not (0.0 <= q <= 1.0):
-        raise ValueError("rappor: q must lie in [0, 1], got %r" % (q,))
+        raise ValueError(f"rappor: q must lie in [0, 1], got {q!r}")
 
 
 def rappor_star_probs(f, p, q):
@@ -110,21 +109,17 @@ def rappor_epsilon(h, f, p=None, q=None):
     r"""Theorem 1 and, when ``p``/``q`` are given, Theorem 2."""
     h = int(h)
     if h < 1:
-        raise ValueError("rappor: h must be at least 1, got %r" % (h,))
+        raise ValueError(f"rappor: h must be at least 1, got {h!r}")
     f = float(f)
     if not (0.0 < f < 2.0):
-        raise ValueError(
-            "rappor: f must lie in (0, 2) for eps_inf to be finite, got %r"
-            % (f,))
+        raise ValueError(f"rappor: f must lie in (0, 2) for eps_inf to be finite, got {f!r}")
     half_f = 0.5 * f
     eps_inf = 2.0 * h * math.log((1.0 - half_f) / half_f)
     out = {"eps_infinity": eps_inf}
     if p is not None and q is not None:
         qs, ps = rappor_star_probs(f, p, q)
         if not (0.0 < ps < 1.0) or not (0.0 < qs < 1.0):
-            raise ValueError(
-                "rappor: q* and p* must lie strictly in (0, 1); got "
-                "q*=%r p*=%r" % (qs, ps))
+            raise ValueError(f"rappor: q* and p* must lie strictly in (0, 1); got q*={qs!r} p*={ps!r}")
         out["eps_1"] = h * math.log((qs * (1.0 - ps)) / (ps * (1.0 - qs)))
         out["q_star"] = qs
         out["p_star"] = ps
@@ -153,8 +148,7 @@ def _bloom(value, k, h, cohort=0):
     return sorted(set(bits))
 
 
-def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
-                  variant="full", seed=0, client_ids=None):
+def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1, variant="full", seed=0, client_ids=None):
     r"""Run steps 1-4 for a list of client values.
 
     Returns the reports, the per-cohort per-bit counts the server sees,
@@ -169,9 +163,7 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
     """
     var = str(variant).lower()
     if var not in _VARIANTS:
-        raise ValueError(
-            "rappor_encode: variant must be one of %s, got %r"
-            % (", ".join(_VARIANTS), variant))
+        raise ValueError("rappor_encode: variant must be one of {}, got {!r}".format(", ".join(_VARIANTS), variant))
     vals = list(values)
     n = len(vals)
     if n == 0:
@@ -180,7 +172,7 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
     h = int(h)
     m = int(cohorts)
     if k < 1:
-        raise ValueError("rappor_encode: k must be at least 1, got %r" % (k,))
+        raise ValueError(f"rappor_encode: k must be at least 1, got {k!r}")
     if m < 1:
         raise ValueError("rappor_encode: cohorts must be at least 1")
     f, p, q = float(f), float(p), float(q)
@@ -201,9 +193,7 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
     else:
         ids = [str(c) for c in client_ids]
         if len(ids) != n:
-            raise ValueError(
-                "rappor_encode: %d values but %d client_ids"
-                % (n, len(ids)))
+            raise ValueError(f"rappor_encode: {int(n)} values but {int(len(ids))} client_ids")
 
     rng = np.random.default_rng(seed)
     prr_memo = {}
@@ -265,22 +255,26 @@ def rappor_encode(values, k=16, h=2, f=0.5, p=0.5, q=0.75, cohorts=1,
         for i in range(k):
             counts[j][i] += S[i]
 
-    return RichResult(payload={
-        "estimate": counts,
-        "reports": reports,
-        "counts": counts,
-        "cohort_sizes": sizes,
-        "cohort_of": cohort_of,
-        "client_ids": list(ids),
-        "k": int(k),
-        "h": int(h),
-        "cohorts": int(m),
-        "alphabet": alphabet,
-        "variant": var,
-        "f": f, "p": p, "q": q,
-        "n": int(n),
-        "method": "RAPPOR encode (Erlingsson, Pihur & Korolova 2014, Sec. 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": counts,
+            "reports": reports,
+            "counts": counts,
+            "cohort_sizes": sizes,
+            "cohort_of": cohort_of,
+            "client_ids": list(ids),
+            "k": int(k),
+            "h": int(h),
+            "cohorts": int(m),
+            "alphabet": alphabet,
+            "variant": var,
+            "f": f,
+            "p": p,
+            "q": q,
+            "n": int(n),
+            "method": "RAPPOR encode (Erlingsson, Pihur & Korolova 2014, Sec. 2)",
+        }
+    )
 
 
 def rappor_decode(counts, sizes, f=0.5, p=0.5, q=0.75):
@@ -294,33 +288,36 @@ def rappor_decode(counts, sizes, f=0.5, p=0.5, q=0.75):
     if denom == 0.0:
         raise ValueError(
             "rappor_decode: (1 - f)(q - p) is zero, so the reports carry no "
-            "signal and no unbiased estimate exists (f=%r, p=%r, q=%r)"
-            % (f, p, q))
+            f"signal and no unbiased estimate exists (f={f!r}, p={p!r}, q={q!r})"
+        )
     shift = p + 0.5 * f * q - 0.5 * f * p
     rows = [list(r) for r in counts]
     N = [float(v) for v in sizes]
     if len(rows) != len(N):
-        raise ValueError(
-            "rappor_decode: %d count rows but %d cohort sizes"
-            % (len(rows), len(N)))
-    est = [[(float(c) - shift * N[j]) / denom for c in rows[j]]
-           for j in range(len(rows))]
-    return RichResult(payload={
-        "estimate": est,
-        "t": est,
-        "shift": shift,
-        "denominator": denom,
-        "cohort_sizes": [int(v) for v in N],
-        "f": f, "p": p, "q": q,
-        "method": "RAPPOR decode (Erlingsson, Pihur & Korolova 2014, Sec. 4)",
-    })
+        raise ValueError(f"rappor_decode: {int(len(rows))} count rows but {int(len(N))} cohort sizes")
+    est = [[(float(c) - shift * N[j]) / denom for c in rows[j]] for j in range(len(rows))]
+    return RichResult(
+        payload={
+            "estimate": est,
+            "t": est,
+            "shift": shift,
+            "denominator": denom,
+            "cohort_sizes": [int(v) for v in N],
+            "f": f,
+            "p": p,
+            "q": q,
+            "method": "RAPPOR decode (Erlingsson, Pihur & Korolova 2014, Sec. 4)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rappor: PRR B'=1/0 w.p. f/2 each else B; IRR P(S=1)=q|p; "
-            "eps_inf=2h ln((1-f/2)/(f/2)), eps_1=h log(q*(1-p*)/(p*(1-q*))); "
-            "decode t=(c-(p+fq/2-fp/2)N)/((1-f)(q-p)); "
-            "variants full/one-time/basic.")
+    return (
+        "rappor: PRR B'=1/0 w.p. f/2 each else B; IRR P(S=1)=q|p; "
+        "eps_inf=2h ln((1-f/2)/(f/2)), eps_1=h log(q*(1-p*)/(p*(1-q*))); "
+        "decode t=(c-(p+fq/2-fp/2)N)/((1-f)(q-p)); "
+        "variants full/one-time/basic."
+    )
 
 
 rappor = rappor_encode

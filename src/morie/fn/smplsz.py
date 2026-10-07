@@ -56,9 +56,17 @@ def nsamp(e, S, N=float("inf"), level=0.95):
     n0 = z * z * S * S / (e * e)
     N = float(N)
     n = n0 if math.isinf(N) else n0 / (1.0 + n0 / N)
-    return RichResult(payload={
-        "n": float(math.ceil(n - 1e-12)), "n0": n0, "z": z, "e": e, "S": S,
-        "N": N, "method": "Cochran sample size n0/(1 + n0/N)"})
+    return RichResult(
+        payload={
+            "n": float(math.ceil(n - 1e-12)),
+            "n0": n0,
+            "z": z,
+            "e": e,
+            "S": S,
+            "N": N,
+            "method": "Cochran sample size n0/(1 + n0/N)",
+        }
+    )
 
 
 sample_size_calc = nsamp

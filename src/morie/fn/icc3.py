@@ -62,17 +62,20 @@ def icc_two_way_mixed(y, subject, rater):
     if den == 0.0:
         raise ValueError("icc_two_way_mixed: the ratings carry no variance")
     out = dict(ms)
-    out.update({
-        "estimate": (ms["bms"] - ms["ems"]) / den,
-        "n": n,
-        "k": k,
-        "method": "ICC(3,1) two-way mixed single rater (consistency)",
-    })
+    out.update(
+        {
+            "estimate": (ms["bms"] - ms["ems"]) / den,
+            "n": n,
+            "k": k,
+            "method": "ICC(3,1) two-way mixed single rater (consistency)",
+        }
+    )
     return RichResult(payload=out)
 
 
 def cheatsheet():
     return "icc3: ICC(3,1) two-way mixed single rater (consistency)"
+
 
 # public names resolved by fn/_lazy_map.json
 icctwowaymixed = icc_two_way_mixed

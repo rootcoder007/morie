@@ -44,5 +44,3 @@ def test_rghgate_edge():
         assert at["n"] == pytest.approx(near["n"], rel=1e-4)
     with pytest.raises(ValueError, match="dt must be positive"):
         rangayyan_hh_gating(-65.0, dt=0.0)
-
-

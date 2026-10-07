@@ -1,7 +1,6 @@
 """Tests for ramsw.ramsay_weight."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ramsw import ramsay_weight
 
 

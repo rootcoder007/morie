@@ -86,13 +86,11 @@ the roughness matrix used here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from . import _stats_core as _st
 from ._richresult import RichResult
 
-__all__ = ["funBand", "functional_band", "influence_matrix", "gcv_score",
-           "cheatsheet"]
+__all__ = ["funBand", "functional_band", "influence_matrix", "gcv_score", "cheatsheet"]
 
 
 def _qr_bands(x):
@@ -100,16 +98,14 @@ def _qr_bands(x):
     natural cubic spline, Green & Silverman Sec. 2.1.2."""
     n = len(x)
     if n < 4:
-        raise ValueError("funBand: a cubic smoothing spline needs at least "
-                         "four distinct design points, got %d" % n)
+        raise ValueError(f"funBand: a cubic smoothing spline needs at least four distinct design points, got {int(n)}")
     h = [x[i + 1] - x[i] for i in range(n - 1)]
     if any(v <= 0.0 for v in h):
-        raise ValueError("funBand: the design points must be strictly "
-                         "increasing and distinct")
+        raise ValueError("funBand: the design points must be strictly increasing and distinct")
     m = n - 2
     Q = [[0.0] * m for _ in range(n)]
     R = [[0.0] * m for _ in range(m)]
-    for j in range(m):          # column j corresponds to interior knot j+1
+    for j in range(m):  # column j corresponds to interior knot j+1
         Q[j][j] = 1.0 / h[j]
         Q[j + 1][j] = -1.0 / h[j] - 1.0 / h[j + 1]
         Q[j + 2][j] = 1.0 / h[j + 1]
@@ -129,8 +125,7 @@ def _roughness(x):
     Z = []
     for i in range(n):
         Z.append(k.cholsolve(R, [Q[i][j] for j in range(m)]))
-    K = [[sum(Q[i][t] * Z[j][t] for t in range(m)) for j in range(n)]
-         for i in range(n)]
+    K = [[sum(Q[i][t] * Z[j][t] for t in range(m)) for j in range(n)] for i in range(n)]
     # symmetrise against round-off: K is symmetric by construction
     for i in range(n):
         for j in range(i + 1, n):
@@ -175,10 +170,8 @@ def influence_matrix(x, lam):
     # lambda; the tolerance is the usual rank cut, n * eps * max|d|.
     dmax = max(abs(v) for v in d) if d else 0.0
     tol = n * 2.220446049250313e-16 * dmax
-    w = [1.0 if abs(v) <= tol else 1.0 / (1.0 + lm * (v if v > 0.0 else 0.0))
-         for v in d]
-    A = [[sum(U[i][t] * w[t] * U[j][t] for t in range(n))
-          for j in range(n)] for i in range(n)]
+    w = [1.0 if abs(v) <= tol else 1.0 / (1.0 + lm * (v if v > 0.0 else 0.0)) for v in d]
+    A = [[sum(U[i][t] * w[t] * U[j][t] for t in range(n)) for j in range(n)] for i in range(n)]
     for i in range(n):
         for j in range(i + 1, n):
             v = 0.5 * (A[i][j] + A[j][i])
@@ -198,8 +191,7 @@ def gcv_score(y, A):
     return (rss / n) / ((tr_ia / n) ** 2)
 
 
-def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None,
-            n_lambda=40, log_lambda_range=(-8.0, 8.0)):
+def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None, n_lambda=40, log_lambda_range=(-8.0, 8.0)):
     r"""Smoothing-spline fit with Wahba's Bayesian confidence intervals.
 
     Parameters
@@ -239,26 +231,22 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None,
     y = [float(v) for v in k.vec(Y)]
     n = len(y)
     if n < 4:
-        raise ValueError("funBand: need at least four observations, got %d"
-                         % n)
+        raise ValueError(f"funBand: need at least four observations, got {int(n)}")
     a = float(alpha)
     if not 0.0 < a < 1.0:
-        raise ValueError("funBand: alpha must lie in (0, 1), got %g" % a)
+        raise ValueError(f"funBand: alpha must lie in (0, 1), got {a:g}")
     if x is None:
         xs = [(i + 1.0) / n for i in range(n)]
     else:
         xs = [float(v) for v in k.vec(x)]
         if len(xs) != n:
-            raise ValueError("funBand: %d observations but %d design points"
-                             % (n, len(xs)))
+            raise ValueError(f"funBand: {int(n)} observations but {int(len(xs))} design points")
     if quantile not in ("t", "normal"):
-        raise ValueError("funBand: quantile must be 't' or 'normal', got %r"
-                         % (quantile,))
+        raise ValueError(f"funBand: quantile must be 't' or 'normal', got {quantile!r}")
 
     if lam is None:
         lo, hi = (float(v) for v in log_lambda_range)
-        grid = [10.0 ** (lo + (hi - lo) * t / (int(n_lambda) - 1.0))
-                for t in range(int(n_lambda))]
+        grid = [10.0 ** (lo + (hi - lo) * t / (int(n_lambda) - 1.0)) for t in range(int(n_lambda))]
         best = None
         for lm in grid:
             A = influence_matrix(xs, lm)
@@ -277,16 +265,12 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None,
     tr_a = sum(A[i][i] for i in range(n))
     edf_err = float(n) - tr_a
     if lam_used <= 0.0 or edf_err <= 0.0:  # lambda = 0 interpolates exactly; n - tr(A) is then rounding noise
-        raise ValueError("funBand: the fit has no residual degrees of "
-                         "freedom; lambda is too small for these data")
+        raise ValueError("funBand: the fit has no residual degrees of freedom; lambda is too small for these data")
     sigma2 = rss / edf_err
     sigma = math.sqrt(sigma2)
     diag = [A[i][i] for i in range(n)]
 
-    if quantile == "normal":
-        z = _st.norm.ppf(1.0 - a / 2.0)
-    else:
-        z = _st.t.ppf(1.0 - a / 2.0, edf_err)
+    z = _st.norm.ppf(1.0 - a / 2.0) if quantile == "normal" else _st.t.ppf(1.0 - a / 2.0, edf_err)
     half = [z * sigma * math.sqrt(v if v > 0.0 else 0.0) for v in diag]
     lower = [fit[i] - half[i] for i in range(n)]
     upper = [fit[i] + half[i] for i in range(n)]
@@ -295,41 +279,45 @@ def funBand(Y, alpha=0.05, x=None, lam=None, quantile="t", truth=None,
     if truth is not None:
         g = [float(v) for v in k.vec(truth)]
         if len(g) != n:
-            raise ValueError("funBand: %d observations but %d true values"
-                             % (n, len(g)))
-        cover = sum(1 for i in range(n)
-                    if lower[i] <= g[i] <= upper[i]) / float(n)
+            raise ValueError(f"funBand: {int(n)} observations but {int(len(g))} true values")
+        cover = sum(1 for i in range(n) if lower[i] <= g[i] <= upper[i]) / float(n)
 
-    return RichResult(payload={
-        "estimate": list(fit),
-        "fitted": list(fit),
-        "lower": lower,
-        "upper": upper,
-        "half_width": half,
-        "residuals": resid,
-        "diag_A": diag,
-        "posterior_variance": [sigma2 * v for v in diag],
-        "sigma2": sigma2,
-        "sigma": sigma,
-        "lambda": lam_used,
-        "gcv": gcv,
-        "edf_signal": tr_a,
-        "edf_error": edf_err,
-        "rss": rss,
-        "multiplier": z,
-        "quantile": quantile,
-        "coverage": cover,
-        "alpha": a,
-        "n": n,
-        "x": xs,
-        "method": ("Bayesian confidence intervals for the cross-validated "
-                   "smoothing spline, Wahba (1983) Theorem 1 with GCV "
-                   "eq. (2.16)"),
-        "note": ("cov(g_hat | Y) = sigma^2 A(lambda), so the band uses the "
-                 "DIAGONAL of the influence matrix; coverage is measured "
-                 "ACROSS THE FUNCTION -- the fraction of the n true values "
-                 "covered -- and is not a pointwise coverage probability"),
-    })
+    return RichResult(
+        payload={
+            "estimate": list(fit),
+            "fitted": list(fit),
+            "lower": lower,
+            "upper": upper,
+            "half_width": half,
+            "residuals": resid,
+            "diag_A": diag,
+            "posterior_variance": [sigma2 * v for v in diag],
+            "sigma2": sigma2,
+            "sigma": sigma,
+            "lambda": lam_used,
+            "gcv": gcv,
+            "edf_signal": tr_a,
+            "edf_error": edf_err,
+            "rss": rss,
+            "multiplier": z,
+            "quantile": quantile,
+            "coverage": cover,
+            "alpha": a,
+            "n": n,
+            "x": xs,
+            "method": (
+                "Bayesian confidence intervals for the cross-validated "
+                "smoothing spline, Wahba (1983) Theorem 1 with GCV "
+                "eq. (2.16)"
+            ),
+            "note": (
+                "cov(g_hat | Y) = sigma^2 A(lambda), so the band uses the "
+                "DIAGONAL of the influence matrix; coverage is measured "
+                "ACROSS THE FUNCTION -- the fraction of the n true values "
+                "covered -- and is not a pointwise coverage probability"
+            ),
+        }
+    )
 
 
 # the descriptive name kept as an alias, per the naming rules
@@ -338,10 +326,12 @@ functionalband = funBand
 
 
 def cheatsheet():
-    return ("funBand: smoothing-spline band. Theorem 1 of Wahba (1983): "
-            "cov(g_hat|Y) = sigma^2 A(lambda), so the interval at t_i is "
-            "g_hat +- z sigma_hat sqrt(a_ii) using the DIAGONAL of the "
-            "influence matrix. sigma_hat^2 = RSS/Tr(I-A); lambda by GCV "
-            "eq. (2.16) V = n^-1||(I-A)y||^2 / [n^-1 Tr(I-A)]^2. Coverage "
-            "is ACROSS THE FUNCTION, not pointwise. A reproduces straight "
-            "lines exactly at every lambda.")
+    return (
+        "funBand: smoothing-spline band. Theorem 1 of Wahba (1983): "
+        "cov(g_hat|Y) = sigma^2 A(lambda), so the interval at t_i is "
+        "g_hat +- z sigma_hat sqrt(a_ii) using the DIAGONAL of the "
+        "influence matrix. sigma_hat^2 = RSS/Tr(I-A); lambda by GCV "
+        "eq. (2.16) V = n^-1||(I-A)y||^2 / [n^-1 Tr(I-A)]^2. Coverage "
+        "is ACROSS THE FUNCTION, not pointwise. A reproduces straight "
+        "lines exactly at every lambda."
+    )

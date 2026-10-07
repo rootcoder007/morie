@@ -121,8 +121,7 @@ def geron_grid_search_cv(X, y, param_grid, K, fit_score, shuffle=False, seed=0):
 
     return RichResult(
         title="Grid search (CV)",
-        summary_lines=[("Candidates", len(combos)), ("Folds", len(splits)),
-                       ("Best score", float(mean[best]))],
+        summary_lines=[("Candidates", len(combos)), ("Folds", len(splits)), ("Best score", float(mean[best]))],
         payload={
             "best_params": combos[best],
             "best_score": float(mean[best]),

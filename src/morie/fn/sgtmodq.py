@@ -68,13 +68,14 @@ def sgt_modularity_q(A, labels):
     for v in lab:
         if v not in comms:
             comms.append(v)
-    return RichResult(payload={
-        "Q": q, "estimate": q, "n_communities": len(comms), "n": n,
-        "method": "Newman-Girvan modularity Q"})
+    return RichResult(
+        payload={"Q": q, "estimate": q, "n_communities": len(comms), "n": n, "method": "Newman-Girvan modularity Q"}
+    )
 
 
 def cheatsheet():
     return "sgtmodq: Newman-Girvan modularity Q"
+
 
 # public names resolved by fn/_lazy_map.json
 sgtmodularityq = sgt_modularity_q

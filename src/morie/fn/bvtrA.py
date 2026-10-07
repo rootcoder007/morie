@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['biasvardec', 'bias_variance_tradeoff']
+__all__ = ["biasvardec", "bias_variance_tradeoff"]
 
 
 def biasvardec(F, f, sigma2):
@@ -49,15 +49,23 @@ def biasvardec(F, f, sigma2):
         vv.append(sum((v - m) ** 2 for v in col) / R)
     bias2 = sum(b2) / n
     var = sum(vv) / n
-    return RichResult(payload={
-        "bias2": bias2, "variance": var, "irreducible": s2,
-        "total": s2 + bias2 + var, "bias2_point": b2, "variance_point": vv,
-        "R": R, "n": n,
-        "method": "Bias-variance decomposition, MVSML Sect. 4.2"})
+    return RichResult(
+        payload={
+            "bias2": bias2,
+            "variance": var,
+            "irreducible": s2,
+            "total": s2 + bias2 + var,
+            "bias2_point": b2,
+            "variance_point": vv,
+            "R": R,
+            "n": n,
+            "method": "Bias-variance decomposition, MVSML Sect. 4.2",
+        }
+    )
 
 
 bias_variance_tradeoff = biasvardec
 
 
 def cheatsheet():
-    return 'bvtrA: Bias-variance decomposition of the expected prediction error.'
+    return "bvtrA: Bias-variance decomposition of the expected prediction error."

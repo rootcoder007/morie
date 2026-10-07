@@ -1,7 +1,6 @@
 """Tests for morie.fn.pabrd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pabrd import pabrd
 
 

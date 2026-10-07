@@ -1,7 +1,6 @@
 """Tests for l2reg.l2_weight_regularization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.l2reg import l2_weight_regularization
 
 

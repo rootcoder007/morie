@@ -1,7 +1,5 @@
 """Tests for bezout.bezout."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bezout import bezout
 
 

@@ -8,8 +8,10 @@ from morie.fn.bsaclass import rangayyan_lin_discr_sep
 
 
 def _data():
-    X = [[math.sin(0.1 * i) + 0.3 * math.cos(0.37 * i), 0.5 * math.sin(0.1 * i) + 0.2 * math.cos(0.9 * i)]
-         for i in range(40)]
+    X = [
+        [math.sin(0.1 * i) + 0.3 * math.cos(0.37 * i), 0.5 * math.sin(0.1 * i) + 0.2 * math.cos(0.9 * i)]
+        for i in range(40)
+    ]
     y = [0] * 20 + [1] * 20
     return [[v + (1.5 if c else 0.0) for v in row] for row, c in zip(X, y)], y
 

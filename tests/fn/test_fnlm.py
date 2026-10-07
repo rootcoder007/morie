@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.fnlm import function_on_function
 
 
@@ -17,8 +16,7 @@ def test_fnlm_basic():
     basis_Y = rng.normal(0, 1, (nt, K2))
     result = function_on_function(X, Y, basis_X, basis_Y)
     assert isinstance(result, dict)
-    for key in ("estimate", "B", "beta", "Z", "fitted",
-                "residual", "sse", "ssy", "r2"):
+    for key in ("estimate", "B", "beta", "Z", "fitted", "residual", "sse", "ssy", "r2"):
         assert key in result
     assert len(result["B"]) == K1
     assert all(len(row) == K2 for row in result["B"])

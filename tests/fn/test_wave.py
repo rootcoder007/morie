@@ -31,13 +31,11 @@ def test_wave_basic():
             lag = sum(h[k] * h[k + 2 * m] for k in range(flen - 2 * m))
             assert lag == pytest.approx(0.0, abs=1e-12)
         for p in range(flen // 2):
-            mom = sum((-1.0) ** k * (k ** p if p else 1.0) * h[k]
-                      for k in range(flen))
+            mom = sum((-1.0) ** k * (k**p if p else 1.0) * h[k] for k in range(flen))
             assert mom == pytest.approx(0.0, abs=1e-12)
         # quadrature mirror g_k = (-1)^k h_{L-1-k}
         for k in range(flen):
-            assert g[k] == pytest.approx((-1.0) ** k * h[flen - 1 - k],
-                                         abs=1e-15)
+            assert g[k] == pytest.approx((-1.0) ** k * h[flen - 1 - k], abs=1e-15)
 
         # the payload residuals agree with those recomputations
         assert result["orthonormality"] < 1e-12
@@ -52,12 +50,9 @@ def test_wave_basic():
         assert len(W) == 16 and len(W[0]) == 16
         for i in range(16):
             assert co[i] == pytest.approx(_dot(W[i], y), abs=1e-12)
-        assert result["energy_out"] == pytest.approx(result["energy_in"],
-                                                     rel=1e-12)
-        assert result["energy_in"] == pytest.approx(
-            sum(v * v for v in y), rel=1e-12)
-        assert result["estimate"] == pytest.approx(result["energy_out"],
-                                                   rel=1e-12)
+        assert result["energy_out"] == pytest.approx(result["energy_in"], rel=1e-12)
+        assert result["energy_in"] == pytest.approx(sum(v * v for v in y), rel=1e-12)
+        assert result["estimate"] == pytest.approx(result["energy_out"], rel=1e-12)
         # W' W = I, so W' c reconstructs the signal exactly
         for j in range(16):
             rec = sum(W[i][j] * co[i] for i in range(16))
@@ -69,8 +64,7 @@ def test_wave_haar_one_level_is_sums_and_differences():
     y = [1.0, 2.0, 3.0, 4.0]
     res = wavelet_basis(y, "db1", level=1)
     r2 = math.sqrt(2.0)
-    expected = [(1.0 + 2.0) / r2, (3.0 + 4.0) / r2,
-                (1.0 - 2.0) / r2, (3.0 - 4.0) / r2]
+    expected = [(1.0 + 2.0) / r2, (3.0 + 4.0) / r2, (1.0 - 2.0) / r2, (3.0 - 4.0) / r2]
     for got, want in zip(res["coefficients"], expected):
         assert got == pytest.approx(want, abs=1e-13)
     assert res["level"] == 1
@@ -79,8 +73,7 @@ def test_wave_haar_one_level_is_sums_and_differences():
     # scaled mean, since Haar averaging applied twice divides by 2.
     full = wavelet_basis(y, "db1")
     assert full["level"] == 2
-    assert full["coefficients"][0] == pytest.approx(
-        (1.0 + 2.0 + 3.0 + 4.0) / 2.0, abs=1e-13)
+    assert full["coefficients"][0] == pytest.approx((1.0 + 2.0 + 3.0 + 4.0) / 2.0, abs=1e-13)
 
 
 def test_wave_edge():
@@ -93,9 +86,9 @@ def test_wave_edge():
     assert res["n"] == 2 and res["level"] == 1
 
     with pytest.raises(ValueError):
-        wavelet_basis([1.0] * 100, "db2")        # not a power of two
+        wavelet_basis([1.0] * 100, "db2")  # not a power of two
     with pytest.raises(ValueError):
-        wavelet_basis([1.0] * 16, "morl")        # unknown wavelet
+        wavelet_basis([1.0] * 16, "morl")  # unknown wavelet
     with pytest.raises(ValueError):
         wavelet_basis([1.0] * 16, "db2", level=0)
     with pytest.raises(ValueError):

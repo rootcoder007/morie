@@ -77,9 +77,8 @@ def _target_of(tree: ast.Module) -> str:
     imports nothing from morie.fn (a hand-written test may not).
     """
     for node in tree.body:
-        if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("morie.fn."):
-            if node.names:
-                return node.names[0].name
+        if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("morie.fn.") and node.names:
+            return node.names[0].name
     return ""
 
 
@@ -128,11 +127,7 @@ def _skeletons() -> tuple[dict[tuple[str, str], str], collections.Counter]:
                 continue
             # Drop the docstring: two functions differing only in prose are
             # the same body.
-            body = [
-                s
-                for s in node.body
-                if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))
-            ]
+            body = [s for s in node.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
             if not body:
                 continue
             module = ast.Module(body=body, type_ignores=[])
@@ -237,10 +232,7 @@ def main() -> int:
         writer.writerows(rows)
     counts = collections.Counter(r["target_kind"] for r in rows)
     print(f"{len(rows)} trivial tests -> {OUT.relative_to(REPO)}")
-    print(
-        f"  target real={counts['real']}  stub={counts['stub']}  "
-        f"unknown={counts['unknown']}"
-    )
+    print(f"  target real={counts['real']}  stub={counts['stub']}  unknown={counts['unknown']}")
     print("  'real' rows are the actionable ones; 'stub' rows are blocked on")
     print("  the stub itself and are out of scope for the red series.")
     return 0

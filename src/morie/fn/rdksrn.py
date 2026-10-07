@@ -107,22 +107,31 @@ def sharp_rdd(y, x, cutoff=0.0, bandwidth=1.0):
     if len(xv) != len(yv):
         raise ValueError("sharp_rdd: x must have one entry per observation")
     r, w, left, right, h = _rdd_sides(xv, cutoff, bandwidth, "sharp_rdd")
-    aR, bR, vR, sR, nR = _wls_side([r[i] for i in right], [yv[i] for i in right],
-                                   [w[i] for i in right])
-    aL, bL, vL, sL, nL = _wls_side([r[i] for i in left], [yv[i] for i in left],
-                                   [w[i] for i in left])
+    aR, bR, vR, sR, nR = _wls_side([r[i] for i in right], [yv[i] for i in right], [w[i] for i in right])
+    aL, bL, vL, sL, nL = _wls_side([r[i] for i in left], [yv[i] for i in left], [w[i] for i in left])
     tau = aR - aL
     se = math.sqrt(vR + vL)
-    return RichResult(payload={
-        "estimate": tau, "tau": tau, "se": se,
-        "z": tau / se if se > 0.0 else float("nan"),
-        "mu_right": aR, "mu_left": aL, "slope_right": bR, "slope_left": bL,
-        "n_right": nR, "n_left": nL, "bandwidth": h,
-        "method": "Sharp RDD, triangular-kernel local linear"})
+    return RichResult(
+        payload={
+            "estimate": tau,
+            "tau": tau,
+            "se": se,
+            "z": tau / se if se > 0.0 else float("nan"),
+            "mu_right": aR,
+            "mu_left": aL,
+            "slope_right": bR,
+            "slope_left": bL,
+            "n_right": nR,
+            "n_left": nL,
+            "bandwidth": h,
+            "method": "Sharp RDD, triangular-kernel local linear",
+        }
+    )
 
 
 def cheatsheet():
     return "rdksrn: Sharp RDD with local linear regression"
+
 
 # public names resolved by fn/_lazy_map.json
 sharprdd = sharp_rdd

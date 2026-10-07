@@ -134,8 +134,11 @@ def test_pipeline_temporal_audit_runs_over_periods():
 def test_pipeline_xai_flags_protected_driver():
     rng = np.random.default_rng(30)
     X = rng.normal(size=(600, 3))  # cols: age, prior, race
+
     # a model that leans hard on the protected feature (race, col 2)
-    predict = lambda A: 3.0 * A[:, 2] + 0.2 * A[:, 1]
+    def predict(A):
+        return 3.0 * A[:, 2] + 0.2 * A[:, 1]
+
     res = xai_permutation_importance(predict, X, feature_names=["age", "prior", "race"], protected=["race"], seed=1)
     assert res.payload["ranking"][0] == "race"
     assert any("protected" in w for w in res.warnings)

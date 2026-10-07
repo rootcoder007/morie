@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["map_theta_estimator"]
 
 
-def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
-                        bounds=(-6.0, 6.0)):
+def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0), bounds=(-6.0, 6.0)):
     r"""Maximum a posteriori (Bayes modal) estimate of :math:`\theta`
     -- the mode of
 
@@ -76,12 +75,11 @@ def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
         raise ValueError("a, b, c must each have one entry per item.")
     mu, sd = float(prior[0]), float(prior[1])
     if sd <= 0:
-        raise ValueError(f"the prior standard deviation must be positive, "
-                         f"got {sd}.")
+        raise ValueError(f"the prior standard deviation must be positive, got {sd}.")
     grid = np.linspace(float(bounds[0]), float(bounds[1]), 401)
     P = np.clip(logistic_3pl(grid, av, bv, cv), 1e-12, 1 - 1e-12)
     ll = (yv * np.log(P) + (1 - yv) * np.log(1 - P)).sum(axis=1)
-    post = ll - (grid - mu) ** 2 / (2 * sd ** 2)
+    post = ll - (grid - mu) ** 2 / (2 * sd**2)
     th = float(grid[int(np.argmax(post))])
     # quadratic refinement on the winning triple
     i = int(np.argmax(post))
@@ -89,48 +87,51 @@ def map_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
         y0, y1, y2 = post[i - 1], post[i], post[i + 1]
         denom = y0 - 2 * y1 + y2
         if denom != 0:
-            th = float(grid[i] - 0.5 * (grid[1] - grid[0])
-                       * (y2 - y0) / denom)
+            th = float(grid[i] - 0.5 * (grid[1] - grid[0]) * (y2 - y0) / denom)
     # polish the grid mode to the root of the posterior score by Fisher
     # scoring: d/dtheta log post = sum a (y - P)(P - c)/(P (1 - c))
     # - (theta - mu)/sd^2, curvature -(I(theta) + 1/sd^2)
     lo_b, hi_b = float(bounds[0]), float(bounds[1])
     for _ in range(50):
-        Pn = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
-                     1e-12, 1 - 1e-12)
+        Pn = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
         dPn = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
-        sc = float(np.sum((yv - Pn) * dPn / (Pn * (1 - Pn)))) \
-            - (th - mu) / sd ** 2
-        fi = float(np.sum(dPn ** 2 / (Pn * (1 - Pn)))) + 1.0 / sd ** 2
+        sc = float(np.sum((yv - Pn) * dPn / (Pn * (1 - Pn)))) - (th - mu) / sd**2
+        fi = float(np.sum(dPn**2 / (Pn * (1 - Pn)))) + 1.0 / sd**2
         step = sc / fi
         th = min(max(th + step, lo_b), hi_b)
         if abs(step) < 1e-14:
             break
-    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0],
-                 1e-12, 1 - 1e-12)
+    Pt = np.clip(logistic_3pl(np.array([th]), av, bv, cv)[0], 1e-12, 1 - 1e-12)
     dP = logistic_3pl_deriv(np.array([th]), av, bv, cv)[0]
-    info = float(np.sum(dP ** 2 / (Pt * (1 - Pt))))
-    post_info = info + 1.0 / sd ** 2
+    info = float(np.sum(dP**2 / (Pt * (1 - Pt))))
+    post_info = info + 1.0 / sd**2
     shrink = None
     if not (np.all(yv == 1) or np.all(yv == 0)):
         from .mleth import mle_theta_estimator
+
         ml = mle_theta_estimator(y, a=av, b=bv, c=cv, bounds=bounds)
         if ml["finite"]:
             shrink = float(th - ml["theta"])
-    return RichResult(payload={
-        "theta": th, "se": float(1 / np.sqrt(post_info)),
-        "prior_mean": mu, "prior_sd": sd,
-        "information": info, "posterior_information": post_info,
-        "shrinkage_vs_ml": shrink,
-        "exists_for_perfect_patterns": True,
-        "why_it_exists": "the normal prior makes the posterior log-concave "
-                         "in the tails whatever the pattern, so a mode "
-                         "exists where the likelihood's maximum does not",
-        "shrinkage_note": "the price is bias toward the prior mean, largest "
-                          "where information is smallest -- short tests and "
-                          "extreme patterns",
-        "n_items": int(m),
-        "method": "MAP (Bayes modal) theta under a normal prior"})
+    return RichResult(
+        payload={
+            "theta": th,
+            "se": float(1 / np.sqrt(post_info)),
+            "prior_mean": mu,
+            "prior_sd": sd,
+            "information": info,
+            "posterior_information": post_info,
+            "shrinkage_vs_ml": shrink,
+            "exists_for_perfect_patterns": True,
+            "why_it_exists": "the normal prior makes the posterior log-concave "
+            "in the tails whatever the pattern, so a mode "
+            "exists where the likelihood's maximum does not",
+            "shrinkage_note": "the price is bias toward the prior mean, largest "
+            "where information is smallest -- short tests and "
+            "extreme patterns",
+            "n_items": int(m),
+            "method": "MAP (Bayes modal) theta under a normal prior",
+        }
+    )
 
 
 def cheatsheet():

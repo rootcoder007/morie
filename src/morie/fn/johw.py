@@ -18,8 +18,7 @@ def _squash(x):
 __all__ = ["joseph_holt_winters"]
 
 
-def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
-                        seasonal="additive"):
+def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1, seasonal="additive"):
     r"""Holt-Winters seasonal method.
 
     Additive form:
@@ -101,12 +100,9 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
     # per-position mean absorbs 0.5 * position of slope and the
     # resulting indices come out phase-shifted (Hyndman &
     # Athanasopoulos Sec. 3.4, classical decomposition).
-    half = m // 2
+    m // 2
     trend_ma = np.full(n, np.nan)
-    if m % 2 == 0:
-        w = np.r_[0.5, np.ones(m - 1), 0.5] / m
-    else:
-        w = np.ones(m) / m
+    w = np.r_[0.5, np.ones(m - 1), 0.5] / m if m % 2 == 0 else np.ones(m) / m
     valid = np.convolve(y, w, mode="valid")
     start = (w.size - 1) // 2
     trend_ma[start : start + valid.size] = valid
@@ -116,10 +112,8 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
         vals = detr[j::m]
         vals = vals[np.isfinite(vals)]
         s0[j] = np.mean(vals) if vals.size else (1.0 if mult else 0.0)
-    if mult:
-        s0 = s0 / s0.mean()
-    else:
-        s0 = s0 - s0.mean()  # centre so the level is identified
+    # centre so the level is identified
+    s0 = s0 / s0.mean() if mult else s0 - s0.mean()
 
     def run(a, b, g):
         lev = np.empty(n)
@@ -143,14 +137,14 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
         return lev, tr, se, fit
 
     if alpha is None or beta is None or gamma is None:
+
         def sse(x):
             a, b, g = _squash(x)
             _, _, _, f = run(a, b, g)
             r = y[m:] - f[m:]
             return float(np.sum(r**2)) if np.all(np.isfinite(f)) else 1e18
 
-        res = optimize.minimize(sse, [0.0, -2.0, -1.0], method="Nelder-Mead",
-                                options={"maxiter": 800})
+        res = optimize.minimize(sse, [0.0, -2.0, -1.0], method="Nelder-Mead", options={"maxiter": 800})
         ah, bh, gh = _squash(res.x)
         alpha = ah if alpha is None else float(alpha)
         beta = bh if beta is None else float(beta)
@@ -170,10 +164,18 @@ def joseph_holt_winters(y, alpha=None, beta=None, gamma=None, m=12, horizon=1,
     return RichResult(
         payload={
             "forecast": base * sf if mult else base + sf,
-            "level": lev, "trend": tr, "season": se[:n], "fitted": fit,
-            "residuals": y - fit, "sse": float(np.sum((y[m:] - fit[m:]) ** 2)),
-            "alpha": alpha, "beta": beta, "gamma": gamma, "m": m,
-            "seasonal": seasonal, "n": int(n),
+            "level": lev,
+            "trend": tr,
+            "season": se[:n],
+            "fitted": fit,
+            "residuals": y - fit,
+            "sse": float(np.sum((y[m:] - fit[m:]) ** 2)),
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gamma,
+            "m": m,
+            "seasonal": seasonal,
+            "n": int(n),
             "method": f"Holt-Winters {seasonal} seasonal method (m = {m})",
         }
     )

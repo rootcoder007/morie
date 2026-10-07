@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 14.9.1, kernel stick-breaking.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c14_18 import ghosal_ksbp_def

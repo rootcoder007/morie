@@ -7,9 +7,11 @@ so module tests run on CI without private data.
 
 from __future__ import annotations
 
+import inspect
 import os
 import random
 import sys
+import warnings
 from pathlib import Path
 
 # Keep the suite hermetic: morie's import-time update check must not
@@ -72,9 +74,6 @@ def synthetic_cpads_csv(tmp_path_factory) -> Path:
     df.to_csv(path, index=False)
     return path
 
-
-import inspect
-import warnings
 
 _TRIVIAL_PATTERNS = {
     "assert True",
@@ -147,3 +146,27 @@ def _isolate_hosted_credentials(tmp_path, monkeypatch):
     except Exception:  # pragma: no cover - import guard
         pass
     yield
+
+
+@pytest.fixture(autouse=True, scope="session")
+def _no_recursive_delete_of_the_checkout():
+    """No test may remove the checkout, its parents or the home directory (one once removed the repo)."""
+    import shutil
+
+    root = Path(__file__).resolve().parents[1]
+    real = shutil.rmtree
+
+    def guarded(path, *args, **kwargs):
+        p = Path(path).expanduser().resolve()
+        if (
+            p == root
+            or p in root.parents
+            or p == Path.home().resolve()
+            or (root in p.parents and p.relative_to(root).parts[0] in {"src", "tests", ".git", "docs", "r-package"})
+        ):
+            raise RuntimeError(f"a test tried to remove {p}, part of the morie checkout")
+        return real(path, *args, **kwargs)
+
+    shutil.rmtree = guarded
+    yield
+    shutil.rmtree = real

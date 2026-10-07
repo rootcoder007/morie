@@ -5,9 +5,6 @@ Implements sec. 14.2.1 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,10 +20,14 @@ def ghosal_ssp_post(counts, alpha=2.0):
     n = sum(ns)
     seen = [v / (alpha + n) for v in ns]
     new = alpha / (alpha + n)
-    res = RichResult(payload={"estimate": new,
-                              "seen_weights": seen,
-                              "total": sum(seen) + new,
-                              "method": "SSP posterior predictive (GvdV 2017 sec. 14.2.1)"})
+    res = RichResult(
+        payload={
+            "estimate": new,
+            "seen_weights": seen,
+            "total": sum(seen) + new,
+            "method": "SSP posterior predictive (GvdV 2017 sec. 14.2.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_6")
 
 

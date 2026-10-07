@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def stratified_variance(stratum_variances, stratum_weights):
     """
     value = _brus.stratified_variance(stratum_variances, stratum_weights)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (4.4)"
     return RichResult(
-        title='Variance of the stratified estimator',
+        title="Variance of the stratified estimator",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r4e4: V_hat = sum_h w_h^2 V_hat(zbar_hat_h) [Brus 2022, eq. 4.4]'
+    return "r4e4: V_hat = sum_h w_h^2 V_hat(zbar_hat_h) [Brus 2022, eq. 4.4]"

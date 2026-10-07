@@ -18,10 +18,8 @@ def test_likelihood_ratio_and_pearson_statistics_for_independence():
     rows = [30.0, 70.0]
     cols = [40.0, 60.0]
     e = [[rows[i] * cols[j] / total for j in range(2)] for i in range(2)]
-    g2 = 2.0 * sum(table[i][j] * math.log(table[i][j] / e[i][j])
-                   for i in range(2) for j in range(2))
-    chi = sum((table[i][j] - e[i][j]) ** 2 / e[i][j]
-              for i in range(2) for j in range(2))
+    g2 = 2.0 * sum(table[i][j] * math.log(table[i][j] / e[i][j]) for i in range(2) for j in range(2))
+    chi = sum((table[i][j] - e[i][j]) ** 2 / e[i][j] for i in range(2) for j in range(2))
     res = hedderich_chapter_8_equation_95(table)
     assert res["g2"] == pytest.approx(g2, rel=1e-10)
     assert res["chisq"] == pytest.approx(chi, rel=1e-10)

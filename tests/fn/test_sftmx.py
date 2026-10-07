@@ -1,8 +1,8 @@
 """Tests for morie.fn.sftmx — softmax with temperature scaling."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sftmx import softmax
 
 

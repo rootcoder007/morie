@@ -65,13 +65,11 @@ def alphafold_template_embed(t, z, wq, wk, wv, wo):
             arow, orow = [], []
             for j in range(n):
                 q = A.lin(z[i][j], wq[h])
-                logits = [scale * A.vdot(q, A.lin(t[st][i][j], wk[h]))
-                          for st in range(nt)]
+                logits = [scale * A.vdot(q, A.lin(t[st][i][j], wk[h])) for st in range(nt)]
                 a = A.smax(logits)
                 vv = [A.lin(t[st][i][j], wv[h]) for st in range(nt)]
                 arow.append(a)
-                orow.append([sum(a[st] * vv[st][u] for st in range(nt))
-                             for u in range(c)])
+                orow.append([sum(a[st] * vv[st][u] for st in range(nt)) for u in range(c)])
             ah.append(arow)
             oh.append(orow)
         attn.append(ah)

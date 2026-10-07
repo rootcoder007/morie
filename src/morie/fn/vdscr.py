@@ -51,7 +51,7 @@ def validity_discriminant(
 
     # AVE per subscale
     aves = np.zeros(k)
-    for i, (name, cols) in enumerate(subscales.items()):
+    for i, (_name, cols) in enumerate(subscales.items()):
         X = np.asarray(data[cols], dtype=np.float64)
         if X.shape[1] < 2:
             aves[i] = np.nan

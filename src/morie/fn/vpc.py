@@ -50,18 +50,20 @@ def vpc(sigma2_u, link="logit"):
         raise ValueError("sigma2_u must be non-negative")
     lk = str(link).lower()
     if lk == "logit":
-        s2e = math.pi ** 2 / 3.0
+        s2e = math.pi**2 / 3.0
     elif lk == "probit":
         s2e = 1.0
     else:
         raise ValueError("link must be 'logit' or 'probit'")
-    return RichResult(payload={
-        "estimate": s2u / (s2u + s2e),
-        "sigma2_u": s2u,
-        "sigma2_e": s2e,
-        "link": lk,
-        "method": "latent-variable VPC (Goldstein et al. 2002, Method D)",
-    })
+    return RichResult(
+        payload={
+            "estimate": s2u / (s2u + s2e),
+            "sigma2_u": s2u,
+            "sigma2_e": s2e,
+            "link": lk,
+            "method": "latent-variable VPC (Goldstein et al. 2002, Method D)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

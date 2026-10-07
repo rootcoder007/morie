@@ -13,7 +13,12 @@ def _leaf(y, criterion):
     y = np.asarray(y)
     if criterion == "mse":
         yv = y.astype(float)
-        return {"leaf": True, "value": float(yv.mean()), "n": int(y.size), "impurity": float(np.mean((yv - yv.mean()) ** 2))}
+        return {
+            "leaf": True,
+            "value": float(yv.mean()),
+            "n": int(y.size),
+            "impurity": float(np.mean((yv - yv.mean()) ** 2)),
+        }
     classes, counts = np.unique(y, return_counts=True)
     p = counts / y.size
     imp = float(1.0 - np.sum(p * p)) if criterion == "gini" else float(-np.sum(p * np.log2(p)))
@@ -58,11 +63,7 @@ def _best_split(X, y, criterion, min_samples_leaf):
 
 def _grow(X, y, criterion, max_depth, min_samples_split, min_samples_leaf, min_impurity_decrease, depth, stats):
     node_imp = _leaf(y, criterion)["impurity"]
-    stop = (
-        (max_depth is not None and depth >= max_depth)
-        or y.size < min_samples_split
-        or node_imp <= 0.0
-    )
+    stop = (max_depth is not None and depth >= max_depth) or y.size < min_samples_split or node_imp <= 0.0
     if not stop:
         best = _best_split(X, y, criterion, min_samples_leaf)
         if best is not None and not (best["impurity_decrease"] < min_impurity_decrease):
@@ -76,8 +77,28 @@ def _grow(X, y, criterion, max_depth, min_samples_split, min_samples_leaf, min_i
                 "impurity_decrease": best["impurity_decrease"],
                 "n": int(y.size),
                 "depth": depth,
-                "left": _grow(X[mask], y[mask], criterion, max_depth, min_samples_split, min_samples_leaf, min_impurity_decrease, depth + 1, stats),
-                "right": _grow(X[~mask], y[~mask], criterion, max_depth, min_samples_split, min_samples_leaf, min_impurity_decrease, depth + 1, stats),
+                "left": _grow(
+                    X[mask],
+                    y[mask],
+                    criterion,
+                    max_depth,
+                    min_samples_split,
+                    min_samples_leaf,
+                    min_impurity_decrease,
+                    depth + 1,
+                    stats,
+                ),
+                "right": _grow(
+                    X[~mask],
+                    y[~mask],
+                    criterion,
+                    max_depth,
+                    min_samples_split,
+                    min_samples_leaf,
+                    min_impurity_decrease,
+                    depth + 1,
+                    stats,
+                ),
             }
             return node
     lf = _leaf(y, criterion)
@@ -204,7 +225,9 @@ def geron_cart_algorithm(
         raise ValueError(f"geron_cart_algorithm: min_samples_leaf must be >= 1, got {min_samples_leaf!r}")
     mid = float(min_impurity_decrease)
     if mid < 0:
-        raise ValueError(f"geron_cart_algorithm: min_impurity_decrease must be non-negative, got {min_impurity_decrease!r}")
+        raise ValueError(
+            f"geron_cart_algorithm: min_impurity_decrease must be non-negative, got {min_impurity_decrease!r}"
+        )
 
     stats = {"leaves": 0, "splits": 0, "max_depth": 0}
     tree = _grow(Xa, ya, criterion, md, mss, msl, mid, 0, stats)

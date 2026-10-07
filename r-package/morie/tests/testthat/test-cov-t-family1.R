@@ -31,7 +31,7 @@ test_that("morie_taphonomy_morphosource_search builds the query and parses the r
          body = '{"response":{"media":[{"id":"000A","title":"skull"},{"id":"000B","title":"femur"}],"pages":{"total_pages":3}}}')
   }
   testthat::local_mocked_bindings(.morie_dataset_http_text_with_status = fake,
-                                  .package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie")
+                                  .package = if (isNamespaceLoaded("morie")) "morie" else "morie")
   withr::local_envvar(MORPHOSOURCE_API_URL = "https://ms.invalid/api", MORPHOSOURCE_API_KEY = "")
   r <- morie_taphonomy_morphosource_search("femur", media_type = "Mesh", per_page = 5, page = 2, api_key = "tok")
   expect_equal(seen$url, "https://ms.invalid/api/media")
@@ -46,7 +46,7 @@ test_that("morie_taphonomy_morphosource_search builds the query and parses the r
   expect_length(seen$headers, 0)
   expect_equal(po$n, 0L)
   testthat::local_mocked_bindings(.morie_dataset_http_text_with_status = function(...) list(status_code = 404L, body = ""),
-                                  .package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie")
+                                  .package = if (isNamespaceLoaded("morie")) "morie" else "morie")
   expect_error(morie_taphonomy_morphosource_search("x"), "HTTP 404")
 })
 

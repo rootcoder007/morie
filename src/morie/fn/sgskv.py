@@ -55,7 +55,7 @@ def simple_kriging_variance(
             return sill * np.exp(-((h / rng) ** 2)) + nug * (h == 0)
         return sill * np.exp(-h / rng) + nug * (h == 0)
 
-    n = len(coords)
+    len(coords)
     dist_obs = np.sqrt(((coords[:, None, :] - coords[None, :, :]) ** 2).sum(-1))
     C = _cov(dist_obs)
     d0 = np.sqrt(((coords - target) ** 2).sum(-1))

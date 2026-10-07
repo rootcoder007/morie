@@ -84,18 +84,19 @@ def cross_spectrum(x, y):
         amp.append(sqrt(re * re + im * im))
         ph.append(atan2(im, re))
 
-    return RichResult(payload={
-        "omega": omega,
-        "cospectrum": co,
-        "quadrature": qu,
-        "amplitude": amp,
-        "phase": ph,
-        "means_removed": True,
-        "raw_not_consistent": True,
-        "n": n,
-        "method": ("Raw cross-periodogram (Brillinger 2001, Ch. 7); NOT "
-                   "in Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "omega": omega,
+            "cospectrum": co,
+            "quadrature": qu,
+            "amplitude": amp,
+            "phase": ph,
+            "means_removed": True,
+            "raw_not_consistent": True,
+            "n": n,
+            "method": ("Raw cross-periodogram (Brillinger 2001, Ch. 7); NOT in Schabenberger & Gotway"),
+        }
+    )
 
 
 def cheatsheet():

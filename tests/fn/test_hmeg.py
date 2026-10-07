@@ -1,7 +1,6 @@
 """Tests for hmeg.geron_epsilon_greedy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmeg import geron_epsilon_greedy
 
 

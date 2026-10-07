@@ -1,7 +1,6 @@
 """Tests for gb621t.gibbons_ww2_ties."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb621t import gibbons_ww2_ties
 
 
@@ -12,6 +11,8 @@ def test_gb621t_basic():
     result = gibbons_ww2_ties(x, y)
     assert isinstance(result, dict)
     assert "rmin" in result
+
+
 def test_gb621t_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

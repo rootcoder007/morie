@@ -41,7 +41,9 @@ def causal_mask(n):
     return np.triu(np.ones((n, n), dtype=bool), k=1)
 
 
-def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257, max_len=1024, d_ff=None, tie_embeddings=True):
+def geron_decoder_only(
+    X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257, max_len=1024, d_ff=None, tie_embeddings=True
+):
     """
     Decoder-only transformer (GPT family).
 
@@ -127,7 +129,7 @@ def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257
     Géron Ch 15
     """
     A = np.asarray(X)
-    if A.ndim == 0 or A.size == 0:
+    if np.ndim(X) == 0 or A.size == 0:
         raise ValueError("geron_decoder_only: X must contain at least one token")
     T = int(A.shape[-1])
     L = int(n_layers)
@@ -148,7 +150,9 @@ def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257
     if M < 1:
         raise ValueError(f"geron_decoder_only: max_len must be >= 1, got {max_len!r}")
     if T > M:
-        raise ValueError(f"geron_decoder_only: sequence length {T} exceeds max_len {M}; there is no positional entry for it")
+        raise ValueError(
+            f"geron_decoder_only: sequence length {T} exceeds max_len {M}; there is no positional entry for it"
+        )
 
     per = block_params(d, d_ff=d_ff, cross_attention=False)
     emb = V * d + M * d
@@ -159,11 +163,18 @@ def geron_decoder_only(X, n_layers=12, n_heads=12, d_model=768, vocab_size=50257
     return RichResult(
         title="Decoder-only transformer",
         summary_lines=[("Layers", L), ("d_model", d), ("Total parameters", total)],
-        tables=[{
-            "title": "Parameter budget",
-            "headers": ["part", "params"],
-            "rows": [["embeddings", emb], ["blocks", L * per["total"]], ["final norm", final_norm], ["output head", head]],
-        }],
+        tables=[
+            {
+                "title": "Parameter budget",
+                "headers": ["part", "params"],
+                "rows": [
+                    ["embeddings", emb],
+                    ["blocks", L * per["total"]],
+                    ["final norm", final_norm],
+                    ["output head", head],
+                ],
+            }
+        ],
         interpretation="Each block costs about 12 d^2 parameters; the causal mask is what makes next-token training parallel.",
         payload={
             "total_params": total,

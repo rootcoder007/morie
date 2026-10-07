@@ -84,7 +84,6 @@ def huffc(pmf: np.ndarray, symbols: list = None) -> dict:
         codebook = codes
 
     avg_len = sum(pmf[i] * len(codebook[symbols[i]]) for i in range(n))
-    eps = 1e-300
     entropy = -np.sum(pmf[pmf > 0] * np.log2(pmf[pmf > 0]))
     efficiency = entropy / avg_len if avg_len > 0 else 0.0
 

@@ -1,12 +1,10 @@
 """Tests for crfvar.causal_forest_variance."""
 
-from morie.fn import _array_core as np
-
 import math
-import pytest
 
-from morie.fn.crfvar import causal_forest_variance
+from morie.fn import _array_core as np
 from morie.fn.cfst import causal_forest
+from morie.fn.crfvar import causal_forest_variance
 
 
 def _build_forest(n=120, p=2, n_trees=20, seed=0):
@@ -26,8 +24,16 @@ def test_crfvar_basic():
     result = causal_forest_variance(forest, X_test)
 
     expected_keys = {
-        "variance", "se", "ci_lower", "ci_upper", "predictions",
-        "variance_raw", "bias_raw", "correction_share", "n_trees", "reliable",
+        "variance",
+        "se",
+        "ci_lower",
+        "ci_upper",
+        "predictions",
+        "variance_raw",
+        "bias_raw",
+        "correction_share",
+        "n_trees",
+        "reliable",
     }
     assert expected_keys.issubset(set(result.keys()))
 
@@ -61,7 +67,15 @@ def test_crfvar_edge():
 
     # all expected keys are present
     expected_keys = {
-        "variance", "se", "ci_lower", "ci_upper", "predictions",
-        "variance_raw", "bias_raw", "correction_share", "n_trees", "reliable",
+        "variance",
+        "se",
+        "ci_lower",
+        "ci_upper",
+        "predictions",
+        "variance_raw",
+        "bias_raw",
+        "correction_share",
+        "n_trees",
+        "reliable",
     }
     assert expected_keys.issubset(set(result.keys()))

@@ -17,7 +17,7 @@ def test_the_byte_count_is_the_ceiling_of_the_bit_count():
     idx = [1] * 11
     res = pack_indices(idx, 3)
     assert res["bits_used"] == 33
-    assert res["n_bytes"] == 5                 # ceil(33 / 8)
+    assert res["n_bytes"] == 5  # ceil(33 / 8)
     assert res["padding_bits"] == 7
 
 
@@ -42,11 +42,13 @@ def test_a_single_bit_packs_eight_values_to_a_byte():
 
 
 def test_validation():
-    for call in (lambda: pack_indices([0], 0),
-                 lambda: pack_indices([0], 33),
-                 lambda: pack_indices([1.5], 4),
-                 lambda: pack_indices([16], 4),
-                 lambda: unpack_indices([0], 0, 1)):
+    for call in (
+        lambda: pack_indices([0], 0),
+        lambda: pack_indices([0], 33),
+        lambda: pack_indices([1.5], 4),
+        lambda: pack_indices([16], 4),
+        lambda: unpack_indices([0], 0, 1),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

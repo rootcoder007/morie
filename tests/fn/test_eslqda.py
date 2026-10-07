@@ -1,14 +1,13 @@
 """Tests for eslqda.esl_qda."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslqda import esl_qda
 
 
 def test_eslqda_basic():
     """Test basic functionality."""
     rng_x = np.random.default_rng(42)
-    rng_y = np.random.default_rng(43)
+    np.random.default_rng(43)
     n0, n1 = 50, 50
     p = 5
     X0 = rng_x.normal(loc=-1.0, scale=1.0, size=(n0, p))
@@ -47,7 +46,7 @@ def test_eslqda_basic():
 def test_eslqda_edge():
     """Test edge cases: one class with too few observations."""
     rng_x = np.random.default_rng(42)
-    rng_y = np.random.default_rng(43)
+    np.random.default_rng(43)
     n0, n1 = 50, 50
     p = 5
     X0 = rng_x.normal(loc=-1.0, scale=1.0, size=(n0, p))

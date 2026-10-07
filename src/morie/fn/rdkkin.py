@@ -85,18 +85,29 @@ def kink_rdd(y, x, D=None, cutoff=0.0, bandwidth=1.0):
     if abs(den) < 1e-10:
         raise ValueError("kink_rdd: no kink in assignment; the denominator is zero")
     tau = num / den
-    se = math.sqrt(vn / (den * den) + (num * num) * vd / (den ** 4))
-    return RichResult(payload={
-        "estimate": tau, "tau": tau, "se": se,
-        "z": tau / se if se > 0.0 else float("nan"),
-        "slope_Y_right": byR, "slope_Y_left": byL,
-        "slope_D_right": bdR, "slope_D_left": bdL, "first_stage": den,
-        "n_right": nR, "n_left": nL, "bandwidth": h,
-        "method": "Regression kink design, ratio of local linear slope changes"})
+    se = math.sqrt(vn / (den * den) + (num * num) * vd / (den**4))
+    return RichResult(
+        payload={
+            "estimate": tau,
+            "tau": tau,
+            "se": se,
+            "z": tau / se if se > 0.0 else float("nan"),
+            "slope_Y_right": byR,
+            "slope_Y_left": byL,
+            "slope_D_right": bdR,
+            "slope_D_left": bdL,
+            "first_stage": den,
+            "n_right": nR,
+            "n_left": nL,
+            "bandwidth": h,
+            "method": "Regression kink design, ratio of local linear slope changes",
+        }
+    )
 
 
 def cheatsheet():
     return "rdkkin: Regression kink design (RKD)"
+
 
 # public names resolved by fn/_lazy_map.json
 kinkrdd = kink_rdd

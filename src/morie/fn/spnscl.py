@@ -66,11 +66,17 @@ def schabenberger_neyman_scott(r, rho=10.0, mu=5.0, sigma=0.1):
     excess = (1.0 - np.exp(-(r**2) / (4.0 * sigma**2))) / rho
     return RichResult(
         title="Neyman-Scott cluster process",
-        summary_lines=[("rho", rho), ("mu", mu), ("sigma", sigma),
-                       ("lambda", rho * mu)],
-        payload={"r": r, "k": np.pi * r**2 + excess, "k_csr": np.pi * r**2,
-                 "excess": excess, "lambda": float(rho * mu),
-                 "rho": float(rho), "mu": float(mu), "sigma": float(sigma)},
+        summary_lines=[("rho", rho), ("mu", mu), ("sigma", sigma), ("lambda", rho * mu)],
+        payload={
+            "r": r,
+            "k": np.pi * r**2 + excess,
+            "k_csr": np.pi * r**2,
+            "excess": excess,
+            "lambda": float(rho * mu),
+            "rho": float(rho),
+            "mu": float(mu),
+            "sigma": float(sigma),
+        },
     )
 
 

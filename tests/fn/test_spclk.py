@@ -1,7 +1,6 @@
 """Tests for spclk.schabenberger_composite_likelihood."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spclk import schabenberger_composite_likelihood
 
 

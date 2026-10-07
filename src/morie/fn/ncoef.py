@@ -18,10 +18,7 @@ def normalize_coefficients(beta) -> DescriptiveResult:
 
     b = np.asarray(beta, dtype=float).ravel()
     norm = float(np.linalg.norm(b))
-    if norm > 0:
-        unit = b / norm
-    else:
-        unit = b.copy()
+    unit = b / norm if norm > 0 else b.copy()
     return DescriptiveResult(
         name="normalize_coefficients",
         value=norm,

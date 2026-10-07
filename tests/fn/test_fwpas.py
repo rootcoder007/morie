@@ -1,7 +1,6 @@
 """Tests for fwpas.forward_pass_dense."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fwpas import forward_pass_dense
 
 

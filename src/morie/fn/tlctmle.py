@@ -64,8 +64,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["candidate_sequence", "targeted_loss", "ctmle",
-           "instrument_penalty"]
+__all__ = ["candidate_sequence", "targeted_loss", "ctmle", "instrument_penalty"]
 
 _EPS = 1e-12
 
@@ -109,8 +108,7 @@ def targeted_loss(Q_star, Y):
     tot = 0.0
     for i in range(n):
         p = min(max(q[i], _EPS), 1.0 - _EPS)
-        tot += -(y[i] * math.log(p) + (1.0 - y[i])
-                 * math.log(1.0 - p))
+        tot += -(y[i] * math.log(p) + (1.0 - y[i]) * math.log(1.0 - p))
     return tot / n
 
 
@@ -127,16 +125,12 @@ def candidate_sequence(A, W, g_models):
         X = [[rows[i][j] for j in cols] for i in range(len(a))]
         try:
             b = k.logit_irls(k.design(X, len(a)), a)
-            g = [_expit(sum(k.design(X, len(a))[i][j] * b[j]
-                            for j in range(len(b))))
-                 for i in range(len(a))]
+            g = [_expit(sum(k.design(X, len(a))[i][j] * b[j] for j in range(len(b)))) for i in range(len(a))]
         except Exception:
             m = sum(a) / len(a)
             g = [m] * len(a)
         g = [min(max(v, 0.01), 0.99) for v in g]
-        out.append({"covariates": list(cols), "g": g,
-                    "max_clever": max(
-                        max(1.0 / v, 1.0 / (1.0 - v)) for v in g)})
+        out.append({"covariates": list(cols), "g": g, "max_clever": max(max(1.0 / v, 1.0 / (1.0 - v)) for v in g)})
     return out
 
 
@@ -146,13 +140,9 @@ def instrument_penalty(g_small, g_large):
     Reported as the ratio of the largest clever covariates, which is
     the quantity that actually degrades the estimator.
     """
-    a = max(max(1.0 / v, 1.0 / (1.0 - v))
-            for v in k.vec(g_small))
-    b = max(max(1.0 / v, 1.0 / (1.0 - v))
-            for v in k.vec(g_large))
-    return {"small": a, "large": b, "ratio": b / a,
-            "note": "a pure instrument raises this without removing "
-                    "any bias"}
+    a = max(max(1.0 / v, 1.0 / (1.0 - v)) for v in k.vec(g_small))
+    b = max(max(1.0 / v, 1.0 / (1.0 - v)) for v in k.vec(g_large))
+    return {"small": a, "large": b, "ratio": b / a, "note": "a pure instrument raises this without removing any bias"}
 
 
 def ctmle(A, Y, Q1, Q0, W, g_models, V=5, seed=0, penalty=True):
@@ -180,7 +170,7 @@ def ctmle(A, Y, Q1, Q0, W, g_models, V=5, seed=0, penalty=True):
     for i in range(n - 1, 0, -1):
         j = int(float(rng.uniform()) * (i + 1)) % (i + 1)
         idx[i], idx[j] = idx[j], idx[i]
-    folds = [idx[v::int(V)] for v in range(int(V))]
+    folds = [idx[v :: int(V)] for v in range(int(V))]
     risks, losses, pens = [], [], []
     for c in cands:
         g = c["g"]
@@ -217,35 +207,44 @@ def ctmle(A, Y, Q1, Q0, W, g_models, V=5, seed=0, penalty=True):
         qas = q1s[i] if a[i] == 1.0 else q0s[i]
         d.append(H[i] * (y[i] - qas) + q1s[i] - q0s[i] - psi)
     m = sum(d) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in d) / n ** 2)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "selected": best,
-        "selected_covariates": cands[best]["covariates"],
-        "cv_risks": risks, "cv_losses": losses,
-        "variance_penalties": pens, "penalized": bool(penalty),
-        "epsilon": e, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "mean_eic": m, "solves_eic": abs(m) < 1e-6,
-        "max_clever_covariate": max(abs(v) for v in H),
-        "method": "C-TMLE selecting g by the cross-validated loss of "
-                  "the TARGETED outcome fit; van der Laan & Rose "
-                  "(2018) Chap. 10",
-        "note": "collaboration changes WHICH g is targeted against, "
-                "not whether the score equation is solved",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in d) / n**2)
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "selected": best,
+            "selected_covariates": cands[best]["covariates"],
+            "cv_risks": risks,
+            "cv_losses": losses,
+            "variance_penalties": pens,
+            "penalized": bool(penalty),
+            "epsilon": e,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "mean_eic": m,
+            "solves_eic": abs(m) < 1e-6,
+            "max_clever_covariate": max(abs(v) for v in H),
+            "method": "C-TMLE selecting g by the cross-validated loss of "
+            "the TARGETED outcome fit; van der Laan & Rose "
+            "(2018) Chap. 10",
+            "note": "collaboration changes WHICH g is targeted against, not whether the score equation is solved",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlctmle: fitting g as well as possible ON ITS OWN TERMS "
-            "is the wrong objective -- a covariate that predicts "
-            "treatment but not the outcome removes no bias and "
-            "inflates the clever covariate. Build an ORDERED sequence "
-            "of candidate g's (continuously indexed by a "
-            "variation-norm bound) and select by the cross-validated "
-            "loss of the TARGETED OUTCOME FIT, not by g's own fit. "
-            "That criterion rejects instruments automatically. The "
-            "selected C-TMLE still solves the efficient score "
-            "equation.")
+    return (
+        "tlctmle: fitting g as well as possible ON ITS OWN TERMS "
+        "is the wrong objective -- a covariate that predicts "
+        "treatment but not the outcome removes no bias and "
+        "inflates the clever covariate. Build an ORDERED sequence "
+        "of candidate g's (continuously indexed by a "
+        "variation-norm bound) and select by the cross-validated "
+        "loss of the TARGETED OUTCOME FIT, not by g's own fit. "
+        "That criterion rejects instruments automatically. The "
+        "selected C-TMLE still solves the efficient score "
+        "equation."
+    )
 
 
 # compact alias per ledger/NAMING.md

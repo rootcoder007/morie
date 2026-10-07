@@ -31,8 +31,7 @@ def _chunks(pairs):
         return 0
     ch = 1
     for k in range(1, len(pairs)):
-        if not (pairs[k][0] == pairs[k - 1][0] + 1
-                and pairs[k][1] == pairs[k - 1][1] + 1):
+        if not (pairs[k][0] == pairs[k - 1][0] + 1 and pairs[k][1] == pairs[k - 1][1] + 1):
             ch += 1
     return ch
 
@@ -83,10 +82,8 @@ def meteor(candidate, reference, lowercase=True):
     example). Local source:
     library/pdf/fetched-wave3/Banerjee-Lavie-2005-METEOR-ACL.pdf.
     """
-    cand = (candidate.split() if isinstance(candidate, str)
-            else [str(w) for w in candidate])
-    ref = (reference.split() if isinstance(reference, str)
-           else [str(w) for w in reference])
+    cand = candidate.split() if isinstance(candidate, str) else [str(w) for w in candidate]
+    ref = reference.split() if isinstance(reference, str) else [str(w) for w in reference]
     if lowercase:
         cand = [w.lower() for w in cand]
         ref = [w.lower() for w in ref]
@@ -95,35 +92,46 @@ def meteor(candidate, reference, lowercase=True):
     pairs = _match(cand, ref)
     m = len(pairs)
     if m == 0:
-        return RichResult(payload={
-            "score": 0.0, "fmean": 0.0, "penalty": 0.0,
-            "precision": 0.0, "recall": 0.0, "matches": 0,
-            "chunks": 0, "len_candidate": len(cand),
-            "len_reference": len(ref),
-            "method": "METEOR exact-match stage (Banerjee-Lavie 2005)",
-        })
+        return RichResult(
+            payload={
+                "score": 0.0,
+                "fmean": 0.0,
+                "penalty": 0.0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "matches": 0,
+                "chunks": 0,
+                "len_candidate": len(cand),
+                "len_reference": len(ref),
+                "method": "METEOR exact-match stage (Banerjee-Lavie 2005)",
+            }
+        )
     prec = m / float(len(cand))
     rec = m / float(len(ref))
     fmean = 10.0 * prec * rec / (rec + 9.0 * prec)
     ch = _chunks(pairs)
     penalty = 0.5 * (ch / float(m)) ** 3
-    return RichResult(payload={
-        "score": fmean * (1.0 - penalty),
-        "fmean": fmean,
-        "penalty": penalty,
-        "precision": prec,
-        "recall": rec,
-        "matches": m,
-        "chunks": ch,
-        "len_candidate": len(cand),
-        "len_reference": len(ref),
-        "method": "METEOR exact-match stage (Banerjee-Lavie 2005)",
-    })
+    return RichResult(
+        payload={
+            "score": fmean * (1.0 - penalty),
+            "fmean": fmean,
+            "penalty": penalty,
+            "precision": prec,
+            "recall": rec,
+            "matches": m,
+            "chunks": ch,
+            "len_candidate": len(cand),
+            "len_reference": len(ref),
+            "method": "METEOR exact-match stage (Banerjee-Lavie 2005)",
+        }
+    )
 
 
 meteor_score = meteor
 
 
 def cheatsheet():
-    return ("meteor(candidate, reference) -> Fmean = 10PR/(R+9P), "
-            "Penalty = 0.5 (chunks/matches)^3, Score = Fmean (1 - Penalty).")
+    return (
+        "meteor(candidate, reference) -> Fmean = 10PR/(R+9P), "
+        "Penalty = 0.5 (chunks/matches)^3, Score = Fmean (1 - Penalty)."
+    )

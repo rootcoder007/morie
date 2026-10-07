@@ -7,7 +7,7 @@ implementation would agree with the first at 1e-9 forever and establish
 nothing, so this module forwards.
 """
 
-from .crrcim import aalen_johansen, cumulative_incidence
+from .crrcim import cumulative_incidence
 
 __all__ = ["cumulative_incidence_function"]
 

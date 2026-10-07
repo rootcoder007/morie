@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """General rank-based confidence interval by test inversion."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['rankci', 'gibbons_rank_ci']
+__all__ = ["rankci", "gibbons_rank_ci"]
 
 
 def rankci(values, k, level=None):

@@ -1,7 +1,6 @@
 """Tests for sefrq.py - spectral edge frequency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sefrq import sefrq, spectral_edge_freq
 
 

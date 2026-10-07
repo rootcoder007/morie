@@ -1,7 +1,6 @@
 """Test peak_to_peak (spp)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.spp import peak_to_peak, spp
 

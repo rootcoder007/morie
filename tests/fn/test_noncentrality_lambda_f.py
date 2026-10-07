@@ -1,7 +1,5 @@
 """Tests for noncentrality_lambda_f.noncentrality_lambda_f."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.noncentrality_lambda_f import noncentrality_lambda_f
 
 

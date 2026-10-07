@@ -1,7 +1,6 @@
 """Tests for miprgr.mip_branch_bound."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.miprgr import mip_branch_bound
 
 

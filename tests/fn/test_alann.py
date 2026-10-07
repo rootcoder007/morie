@@ -13,7 +13,7 @@ def test_alann_basic():
 
 def test_alann_edge():
     import pytest
+
     pts = [[0.0], [1.0]]
     with pytest.raises(ValueError, match="entry point"):
-        alammar_approximate_nearest_neighbor([0.0],
-            {"points": pts, "neighbors": [[1], [0]], "entry": 5})
+        alammar_approximate_nearest_neighbor([0.0], {"points": pts, "neighbors": [[1], [0]], "entry": 5})

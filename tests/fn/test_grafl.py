@@ -1,7 +1,5 @@
 """Tests for grafl.graphlet_kernel."""
 
-
-
 from morie.fn.grafl import graphlet_kernel
 
 
@@ -15,7 +13,7 @@ def _build_graph(n_nodes, edges, seed=0):
     random data so we can assert numerical results.
     """
     A = [[0] * n_nodes for _ in range(n_nodes)]
-    for (u, v) in edges:
+    for u, v in edges:
         A[u][v] = 1
         A[v][u] = 1
     return A
@@ -35,7 +33,7 @@ def _enumerate_all(k_size):
         # Build induced subgraph adjacency.
         local = {g: i for i, g in enumerate(subset)}
         sub = [[0] * k_size for _ in range(k_size)]
-        for (u, v) in G_EDGES:
+        for u, v in G_EDGES:
             if u in local and v in local:
                 a, b = local[u], local[v]
                 sub[a][b] = 1

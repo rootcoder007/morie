@@ -52,18 +52,24 @@ def wasserman_posterior_mean(posterior):
     if grid.size != dens.size or grid.size < 2:
         raise ValueError("the posterior needs matching grid/density arrays with >= 2 points.")
     dx = np.diff(grid)
+
     def _quad(y):
         return float(0.5 * np.sum(dx * (y[1:] + y[:-1])))
+
     Z = _quad(dens)
     if Z <= 0:
         raise ValueError("the posterior has zero mass.")
     m1 = _quad(grid * dens) / Z
-    m2 = _quad(grid ** 2 * dens) / Z
-    var = max(m2 - m1 ** 2, 0.0)
-    return RichResult(payload={
-        "estimate": float(m1), "posterior_sd": float(var ** 0.5),
-        "mass_drift": float(abs(Z - 1.0)),
-        "method": "posterior mean by trapezoid quadrature (self-normalising)"})
+    m2 = _quad(grid**2 * dens) / Z
+    var = max(m2 - m1**2, 0.0)
+    return RichResult(
+        payload={
+            "estimate": float(m1),
+            "posterior_sd": float(var**0.5),
+            "mass_drift": float(abs(Z - 1.0)),
+            "method": "posterior mean by trapezoid quadrature (self-normalising)",
+        }
+    )
 
 
 def cheatsheet():

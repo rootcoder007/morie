@@ -1,7 +1,6 @@
 """Tests for morie.fn.drstr -- multiverse bootstrap."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.drstr import drstr, multiverse_bootstrap
 

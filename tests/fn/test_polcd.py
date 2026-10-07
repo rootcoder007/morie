@@ -1,8 +1,8 @@
 """Tests for morie.fn.polcd — polar code construction."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.polcd import polcd
 
 

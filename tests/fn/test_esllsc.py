@@ -1,20 +1,21 @@
 """Tests for esllsc.esl_lda_disc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esllsc import esl_lda_disc
 
 
 def test_esllsc_basic():
     """Test basic functionality."""
     rng_x = np.random.default_rng(42)
-    rng_y = np.random.default_rng(43)
+    np.random.default_rng(43)
     # Two well-separated classes in 5-D so n > K and the pooled covariance
     # is well defined.
-    X = np.vstack([
-        rng_x.normal(loc=-2.0, scale=1.0, size=(50, 5)),
-        rng_x.normal(loc=+2.0, scale=1.0, size=(50, 5)),
-    ])
+    X = np.vstack(
+        [
+            rng_x.normal(loc=-2.0, scale=1.0, size=(50, 5)),
+            rng_x.normal(loc=+2.0, scale=1.0, size=(50, 5)),
+        ]
+    )
     y = np.array([0] * 50 + [1] * 50)
     result = esl_lda_disc(X, y)
     assert isinstance(result, dict)
@@ -57,8 +58,7 @@ def test_esllsc_basic():
     S = S / (n - K)
     Sinv = np.linalg.inv(S)
     x0 = X[0]
-    D0 = [float(x0 @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_))
-          for m, pi_ in zip(means, priors)]
+    D0 = [float(x0 @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_)) for m, pi_ in zip(means, priors)]
     expected_first_pred = classes[int(np.argmax(np.array(D0)))]
     assert result["prediction"][0] == expected_first_pred
 
@@ -66,10 +66,12 @@ def test_esllsc_basic():
 def test_esllsc_edge():
     """Test edge cases: querying a new point."""
     rng = np.random.default_rng(42)
-    X = np.vstack([
-        rng.normal(loc=-3.0, scale=1.0, size=(40, 3)),
-        rng.normal(loc=+3.0, scale=1.0, size=(40, 3)),
-    ])
+    X = np.vstack(
+        [
+            rng.normal(loc=-3.0, scale=1.0, size=(40, 3)),
+            rng.normal(loc=+3.0, scale=1.0, size=(40, 3)),
+        ]
+    )
     y = np.array([0] * 40 + [1] * 40)
     # A query point sits between the two class means.
     query = [[0.0, 0.0, 0.0]]
@@ -96,7 +98,6 @@ def test_esllsc_edge():
     S = S / (n - K)
     Sinv = np.linalg.inv(S)
     q = np.asarray(query, dtype=float).reshape(-1, p)[0]
-    expected_disc = [float(q @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_))
-                     for mu, pi_ in zip(means, priors)]
+    expected_disc = [float(q @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_)) for mu, pi_ in zip(means, priors)]
     expected_pred = classes[int(np.argmax(np.array(expected_disc)))]
     assert result["prediction"][0] == expected_pred

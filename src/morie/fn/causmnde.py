@@ -53,10 +53,20 @@ def causal_natural_decomposition(X, M, Y, Cc=None, a=1.0, astar=0.0, m=0.0):
     cde, intref, intmed, pie, te = S.fourway(theta, beta, cbar, a, astar, m)
     nde = cde + intref
     nie = pie + intmed
-    return RichResult(payload={
-        "NDE": nde, "NIE": nie, "PDE": nde, "PIE": pie, "estimate": te,
-        "cde": cde, "intref": intref, "intmed": intmed, "n": len(C.vec(Y)),
-        "method": "Natural effects with pure and interaction parts"})
+    return RichResult(
+        payload={
+            "NDE": nde,
+            "NIE": nie,
+            "PDE": nde,
+            "PIE": pie,
+            "estimate": te,
+            "cde": cde,
+            "intref": intref,
+            "intmed": intmed,
+            "n": len(C.vec(Y)),
+            "method": "Natural effects with pure and interaction parts",
+        }
+    )
 
 
 def cheatsheet():

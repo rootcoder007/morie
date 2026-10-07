@@ -119,7 +119,7 @@ def gp_optimize(
 
         f_min = np.min(y_norm)
 
-        def neg_ei(x_cand):
+        def neg_ei(x_cand, *, X_obs=X_obs, f_min=f_min, y_norm=y_norm):
             x_cand = np.atleast_2d(x_cand)
             mu, var = _gp_predict(X_obs, y_norm, x_cand, length_scale, 1.0, noise)
             sigma = np.sqrt(var)

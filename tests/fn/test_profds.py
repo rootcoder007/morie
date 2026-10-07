@@ -1,10 +1,10 @@
 """Tests for morie.fn.profds — dataset profiling."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
 from morie.dataset import DatasetProfile
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.profds import profds, profile_dataset
 
 

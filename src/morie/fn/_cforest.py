@@ -71,8 +71,7 @@ class CausalForest:
     estimation)
     """
 
-    def __init__(self, n_trees=200, min_leaf=10, max_depth=6, mtry=None, subsample=0.5,
-                 imbalance_penalty=0.0, seed=0):
+    def __init__(self, n_trees=200, min_leaf=10, max_depth=6, mtry=None, subsample=0.5, imbalance_penalty=0.0, seed=0):
         if n_trees < 1:
             raise ValueError(f"n_trees must be at least 1, got {n_trees}.")
         if min_leaf < 1:
@@ -218,19 +217,14 @@ class CausalForest:
             Xl = [[float(v) for v in row] for row in self._X.tolist()]
             out = []
             for i in range(self._n):
-                vals = [
-                    self._walk(t, Xl[i])
-                    for t, bag in zip(self.trees_, self.in_bag_)
-                    if not bag[i]
-                ]
+                vals = [self._walk(t, Xl[i]) for t, bag in zip(self.trees_, self.in_bag_) if not bag[i]]
                 out.append(sum(vals) / len(vals) if vals else float("nan"))
             return np.array(out)
         Xq = self._X if X is None else np.asarray(X, dtype=float)
         if Xq.ndim == 1:
             Xq = Xq[:, None]
         rows = [[float(v) for v in row] for row in Xq.tolist()]
-        return np.array([sum(self._walk(t, row) for t in self.trees_) / len(self.trees_)
-                         for row in rows])
+        return np.array([sum(self._walk(t, row) for t in self.trees_) / len(self.trees_) for row in rows])
 
 
 def cheatsheet():

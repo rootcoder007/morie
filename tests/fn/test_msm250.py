@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm250 import mvsml_reproducing_kernel_eq_10_12
 
-
 X = [[1.0, 2.0]]
 Y = [[1.0]]
 W = [[[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]]]
@@ -34,8 +33,7 @@ def test_the_output_delta_is_the_error_times_the_activation_slope():
     v, out = _forward()
     res = mvsml_reproducing_kernel_eq_10_12(X, Y, W, eta=0.1)
     delta = 1.0 - out
-    assert list(res["delta_w"][0]) == pytest.approx(
-        [0.1 * delta * vj for vj in v], rel=1e-12)
+    assert list(res["delta_w"][0]) == pytest.approx([0.1 * delta * vj for vj in v], rel=1e-12)
 
 
 def test_the_gradient_is_the_delta_step_turned_around():
@@ -47,8 +45,7 @@ def test_the_gradient_is_the_delta_step_turned_around():
 def test_a_perfect_prediction_asks_for_no_change_at_all():
     _, out = _forward()
     res = mvsml_reproducing_kernel_eq_10_12(X, [[out]], W, eta=0.1)
-    assert list(res["delta_w"][0]) == pytest.approx([0.0, 0.0],
-                                                     abs=1e-12)
+    assert list(res["delta_w"][0]) == pytest.approx([0.0, 0.0], abs=1e-12)
 
 
 def test_the_step_points_the_output_towards_the_target():

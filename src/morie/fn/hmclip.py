@@ -72,29 +72,29 @@ def geron_clip(images, texts, tau=0.07, normalize=True, class_prompts=None):
     ----------
     Géron Ch 16
     """
-    I = np.atleast_2d(np.asarray(images, dtype=float))
+    I_ = np.atleast_2d(np.asarray(images, dtype=float))
     T = np.atleast_2d(np.asarray(texts, dtype=float))
-    if I.shape != T.shape:
-        raise ValueError(f"geron_clip: images has shape {I.shape} but texts has shape {T.shape}; rows must be paired")
-    if I.size == 0:
+    if I_.shape != T.shape:
+        raise ValueError(f"geron_clip: images has shape {I_.shape} but texts has shape {T.shape}; rows must be paired")
+    if I_.size == 0:
         raise ValueError("geron_clip: no embeddings supplied")
 
-    base = geron_clip_contrastive_loss(I, T, tau=tau, normalize=normalize)
+    base = geron_clip_contrastive_loss(I_, T, tau=tau, normalize=normalize)
     S = np.asarray(base["similarity"], dtype=float)
     matched = np.diag(S).tolist()
 
     zs = None
     if class_prompts is not None:
         P = np.atleast_2d(np.asarray(class_prompts, dtype=float))
-        if P.shape[1] != I.shape[1]:
-            raise ValueError(f"geron_clip: class_prompts width {P.shape[1]} != embedding width {I.shape[1]}")
+        if P.shape[1] != I_.shape[1]:
+            raise ValueError(f"geron_clip: class_prompts width {P.shape[1]} != embedding width {I_.shape[1]}")
         if P.shape[0] == 0:
             raise ValueError("geron_clip: class_prompts is empty")
         if not np.all(np.isfinite(P)):
             raise ValueError("geron_clip: class_prompts contains non-finite values")
-        In = I / np.linalg.norm(I, axis=1, keepdims=True) if normalize else I
+        In = I_ / np.linalg.norm(I_, axis=1, keepdims=True) if normalize else I_
         Pn = P / np.linalg.norm(P, axis=1, keepdims=True) if normalize else P
-        if normalize and (np.any(np.linalg.norm(I, axis=1) == 0) or np.any(np.linalg.norm(P, axis=1) == 0)):
+        if normalize and (np.any(np.linalg.norm(I_, axis=1) == 0) or np.any(np.linalg.norm(P, axis=1) == 0)):
             raise ValueError("geron_clip: cannot cosine-normalise a zero embedding")
         sim = In @ Pn.T
         zs = {
@@ -105,7 +105,7 @@ def geron_clip(images, texts, tau=0.07, normalize=True, class_prompts=None):
 
     return RichResult(
         title="CLIP contrastive pretraining",
-        summary_lines=[("Loss", float(base["loss"])), ("Batch", int(I.shape[0])), ("tau", float(tau))],
+        summary_lines=[("Loss", float(base["loss"])), ("Batch", int(I_.shape[0])), ("tau", float(tau))],
         interpretation="The batch's off-diagonal pairs are the negatives, so a bigger batch is a harder task.",
         payload={
             "loss": float(base["loss"]),
@@ -119,7 +119,7 @@ def geron_clip(images, texts, tau=0.07, normalize=True, class_prompts=None):
             "zero_shot": zs,
             "tau": float(tau),
             "estimate": float(base["loss"]),
-            "n": int(I.shape[0]),
+            "n": int(I_.shape[0]),
             "method": "CLIP symmetric InfoNCE (delegated to grclp) plus zero-shot prompt matching",
         },
     )

@@ -75,10 +75,7 @@ def sisls(
     for iteration in range(max_iter):
         idx_vals = X @ beta
 
-        if bandwidth is None:
-            h = _silverman_bw(idx_vals)
-        else:
-            h = bandwidth
+        h = _silverman_bw(idx_vals) if bandwidth is None else bandwidth
 
         diff = idx_vals[:, None] - idx_vals[None, :]
         W = k_fn(diff / h)
@@ -87,7 +84,7 @@ def sisls(
         denom = np.where(denom < 1e-15, 1.0, denom)
         g_hat = (W @ y) / denom
 
-        def obj(b):
+        def obj(b, *, h=h):
             b_norm = b / (np.linalg.norm(b) + 1e-15)
             idx_v = X @ b_norm
             d = idx_v[:, None] - idx_v[None, :]
@@ -110,10 +107,7 @@ def sisls(
 
     idx_final = X @ beta
 
-    if bandwidth is None:
-        h = _silverman_bw(idx_final)
-    else:
-        h = bandwidth
+    h = _silverman_bw(idx_final) if bandwidth is None else bandwidth
     diff = idx_final[:, None] - idx_final[None, :]
     W = k_fn(diff / h)
     np.fill_diagonal(W, 0.0)

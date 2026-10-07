@@ -1,8 +1,8 @@
 """Tests for morie.fn.f1_ -- F1 score."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.f1_ import f1_score
 
 

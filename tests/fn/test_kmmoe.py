@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmmoe import kamath_moe_router_softmax
 
 
@@ -25,9 +24,17 @@ def test_kmmoe_basic():
 
     result = kamath_moe_router_softmax(x, Wr, experts, k)
 
-    expected_keys = ("output", "gate_weights", "selected_experts",
-                     "n_active", "experts_evaluated", "estimate",
-                     "k", "n", "method")
+    expected_keys = (
+        "output",
+        "gate_weights",
+        "selected_experts",
+        "n_active",
+        "experts_evaluated",
+        "estimate",
+        "k",
+        "n",
+        "method",
+    )
     for key in expected_keys:
         assert key in result
 
@@ -56,9 +63,17 @@ def test_kmmoe_edge():
 
     result = kamath_moe_router_softmax(x, Wr, experts, k)
 
-    expected_keys = ("output", "gate_weights", "selected_experts",
-                     "n_active", "experts_evaluated", "estimate",
-                     "k", "n", "method")
+    expected_keys = (
+        "output",
+        "gate_weights",
+        "selected_experts",
+        "n_active",
+        "experts_evaluated",
+        "estimate",
+        "k",
+        "n",
+        "method",
+    )
     for key in expected_keys:
         assert key in result
 
@@ -83,7 +98,7 @@ import morie.fn.kmmoe as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

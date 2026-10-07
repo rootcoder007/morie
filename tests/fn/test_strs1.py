@@ -1,7 +1,6 @@
 """Tests for morie.fn.strs1 -- Kruskal stress-1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.strs1 import stress1_measure, strs1
 
 

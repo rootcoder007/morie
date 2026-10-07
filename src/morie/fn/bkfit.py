@@ -82,7 +82,7 @@ def bkfit(
     converged = False
     it = 0
 
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         max_change = 0.0
         for j in range(p):
             partial_resid = Y - intercept - sum(components[k] for k in range(p) if k != j)

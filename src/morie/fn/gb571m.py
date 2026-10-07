@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['wsrmom', 'gibbons_wsrt_mean']
+__all__ = ["wsrmom", "gibbons_wsrt_mean"]
 
 
 def wsrmom(n):

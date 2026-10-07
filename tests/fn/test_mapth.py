@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.mapth import map_theta_estimator
 
 
@@ -15,9 +14,7 @@ def test_mapth_basic():
     a = rng.uniform(0.5, 2.0, size=m)
     b = rng.normal(0.0, 1.0, size=m)
     c = rng.uniform(0.0, 0.3, size=m)
-    result = map_theta_estimator(
-        y, a=a, b=b, c=c, prior=(0.0, 1.0), bounds=(-6.0, 6.0)
-    )
+    result = map_theta_estimator(y, a=a, b=b, c=c, prior=(0.0, 1.0), bounds=(-6.0, 6.0))
     assert isinstance(result, dict)
     for key in (
         "theta",

@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def amplitude_hist(x: np.ndarray, n_bins: int = 50) -> DescriptiveResult:
-    """Our greatest glory is not in never falling, but in rising every time we fall. -- Confucius"""
+    """Amplitude histogram of a signal: counts of its sample amplitudes in ``n_bins`` bins."""
     from morie._waveform import amplitude_histogram as _backend
 
     hist_dict = _backend(x, n_bins=n_bins)

@@ -87,15 +87,24 @@ def bound_moment_qed(y, D, X, quantile):
         b = band(gy, gd)
         if b[1] - b[0] > mw:
             mw = b[1] - b[0]
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "max_width": mw,
-        "n_strata": len(grp), "p_observed": p1, "n": n,
-        "method": "Quantile-equivariant bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "max_width": mw,
+            "n_strata": len(grp),
+            "p_observed": p1,
+            "n": n,
+            "method": "Quantile-equivariant bound",
+        }
+    )
 
 
 def cheatsheet():
     return "bndmoq: Quantile-equivariant bound"
+
 
 # public names resolved by fn/_lazy_map.json
 boundmomentqed = bound_moment_qed

@@ -97,9 +97,7 @@ def geron_dqn_loss(Q, Q_target, batch, gamma=0.99):
         elif len(tr) == 5:
             s, a, r, s2, done = tr
         else:
-            raise ValueError(
-                f"batch[{k}] must be (s, a, r, s_next[, done]), got {len(tr)} items."
-            )
+            raise ValueError(f"batch[{k}] must be (s, a, r, s_next[, done]), got {len(tr)} items.")
         s, a, s2 = int(s), int(a), int(s2)
         for name, v, hi in (("s", s, nS), ("s_next", s2, nS), ("a", a, nA)):
             if not (0 <= v < hi):
@@ -120,8 +118,7 @@ def geron_dqn_loss(Q, Q_target, batch, gamma=0.99):
 
     return RichResult(
         title="DQN loss",
-        summary_lines=[("Loss", loss), ("Transitions", len(rows)),
-                       ("Terminal", n_term)],
+        summary_lines=[("Loss", loss), ("Transitions", len(rows)), ("Terminal", n_term)],
         payload={
             "loss": loss,
             "targets": tgt.tolist(),

@@ -57,8 +57,7 @@ def posterior_predictive_check(y, y_rep, statistic="mean"):
     """
     v = k.vec(y)
     R = k.mat(y_rep)
-    f = statistic if callable(statistic) else _STATS.get(str(statistic),
-                                                         _STATS["mean"])
+    f = statistic if callable(statistic) else _STATS.get(str(statistic), _STATS["mean"])
     tobs = float(f(v))
     trep = [float(f(list(row))) for row in R]
     ge = 0.0
@@ -69,9 +68,11 @@ def posterior_predictive_check(y, y_rep, statistic="mean"):
     return RichResult(
         title="Posterior predictive check",
         summary_lines=[("p_B", p), ("T(y)", tobs)],
-        interpretation=("The posterior predictive p-value is conservative: "
-                        "under the model its distribution is concentrated "
-                        "around 1/2, so only extreme values are informative."),
+        interpretation=(
+            "The posterior predictive p-value is conservative: "
+            "under the model its distribution is concentrated "
+            "around 1/2, so only extreme values are informative."
+        ),
         payload={
             "estimate": p,
             "p_value": p,

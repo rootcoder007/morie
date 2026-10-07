@@ -60,10 +60,10 @@ def mhfit(f, majorizer, x0, tol=1e-6, max_iter=100, full_output=False):
     x = np.atleast_1d(x0).astype(float)
 
     for iteration in range(max_iter):
-        f_x = f(x)
+        f(x)
 
         # Minimize majorizer via simple grid/gradient search
-        def maj_obj(x_new):
+        def maj_obj(x_new, *, x=x):
             return majorizer(x_new, x)
 
         from ._sci_core import minimize as scipy_minimize

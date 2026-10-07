@@ -1,7 +1,6 @@
 """Tests for ceemf.py - Complete EEMD."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ceemf import ceemd_decompose, ceemf
 
 

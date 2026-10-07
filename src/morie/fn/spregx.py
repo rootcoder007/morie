@@ -565,5 +565,6 @@ def cheatsheet() -> str:
         "spatial regression extras and the Satorra-Bentler scaled chi-square."
     )
 
+
 # alias kept from the retired placeholder of the same name
 sem_sb_chi_sq = satorra_bentler

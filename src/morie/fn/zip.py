@@ -43,7 +43,7 @@ def zero_inflated_poisson(
         tau = np.where(y == 0, pi / (pi + (1 - pi) * pois_0 + 1e-12), 0.0)
 
         w = 1 - tau
-        w_sum = w.sum() + 1e-12
+        w.sum() + 1e-12
         pi_new = tau.sum() / n
 
         for _irls in range(10):

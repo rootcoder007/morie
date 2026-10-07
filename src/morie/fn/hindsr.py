@@ -69,25 +69,34 @@ def _as_states(seq, name):
         v = np.atleast_1d(np.asarray(s, dtype=float))
         out.append([float(t) for t in v])
     if not out:
-        raise ValueError("hindsr: %s must be non-empty" % name)
+        raise ValueError(f"hindsr: {name} must be non-empty")
     return out
 
 
 def _sparse_reward(s, a, s_next, g, tol):
     r"""r(s, a, g) = -[f_g(s') = 0], with f_g the goal test."""
     if len(s_next) != len(g):
-        raise ValueError("hindsr: goal has length %d but state has %d; "
-                         "pass a state_to_goal mapping" % (len(g),
-                                                           len(s_next)))
+        raise ValueError(
+            f"hindsr: goal has length {int(len(g))} but state has {int(len(s_next))}; pass a state_to_goal mapping"
+        )
     for i in range(len(g)):
         if abs(s_next[i] - g[i]) > tol:
             return -1.0
     return 0.0
 
 
-def hindsr(episodes, actions=None, goals=None, strategy="future", k=4,
-           tol=1e-6, reward_fn=None, state_to_goal=None, seed=0,
-           history=None):
+def hindsr(
+    episodes,
+    actions=None,
+    goals=None,
+    strategy="future",
+    k=4,
+    tol=1e-6,
+    reward_fn=None,
+    state_to_goal=None,
+    seed=0,
+    history=None,
+):
     r"""Build the HER replay buffer for a batch of episodes.
 
     Parameters
@@ -139,8 +148,7 @@ def hindsr(episodes, actions=None, goals=None, strategy="future", k=4,
     section 4.5.
     """
     if strategy not in _STRATEGIES:
-        raise ValueError("hindsr: strategy must be one of %r, got %r"
-                         % (_STRATEGIES, strategy))
+        raise ValueError(f"hindsr: strategy must be one of {_STRATEGIES!r}, got {strategy!r}")
     k = int(k)
     if k < 1:
         raise ValueError("hindsr: k must be >= 1")
@@ -150,6 +158,7 @@ def hindsr(episodes, actions=None, goals=None, strategy="future", k=4,
         raise TypeError("hindsr: state_to_goal must be callable")
     rf = reward_fn
     if rf is None:
+
         def rf(s, a, s_next, g):
             return _sparse_reward(s, a, s_next, g, tol)
     elif not callable(rf):
@@ -158,33 +167,27 @@ def hindsr(episodes, actions=None, goals=None, strategy="future", k=4,
     eps = [_as_states(e, "episode") for e in episodes]
     for i, e in enumerate(eps):
         if len(e) < 2:
-            raise ValueError("hindsr: episode %d has %d states; need at "
-                             "least s_0 and s_1" % (i, len(e)))
+            raise ValueError(f"hindsr: episode {int(i)} has {int(len(e))} states; need at least s_0 and s_1")
     n_ep = len(eps)
     if actions is None:
         acts = [list(range(len(e) - 1)) for e in eps]
     else:
         acts = [list(a) for a in actions]
         if len(acts) != n_ep:
-            raise ValueError("hindsr: got %d action sequences for %d "
-                             "episodes" % (len(acts), n_ep))
+            raise ValueError(f"hindsr: got {int(len(acts))} action sequences for {int(n_ep)} episodes")
         for i in range(n_ep):
             if len(acts[i]) != len(eps[i]) - 1:
-                raise ValueError("hindsr: episode %d has %d states but %d "
-                                 "actions" % (i, len(eps[i]), len(acts[i])))
+                raise ValueError(
+                    f"hindsr: episode {int(i)} has {int(len(eps[i]))} states but {int(len(acts[i]))} actions"
+                )
     if goals is None:
         gs = [m(e[-1]) for e in eps]
     else:
-        gs = [[float(t) for t in np.atleast_1d(np.asarray(g, dtype=float))]
-              for g in goals]
+        gs = [[float(t) for t in np.atleast_1d(np.asarray(g, dtype=float))] for g in goals]
         if len(gs) != n_ep:
-            raise ValueError("hindsr: got %d goals for %d episodes"
-                             % (len(gs), n_ep))
+            raise ValueError(f"hindsr: got {int(len(gs))} goals for {int(n_ep)} episodes")
 
-    if history is None:
-        pool = [s for e in eps for s in e]
-    else:
-        pool = _as_states(history, "history")
+    pool = [s for e in eps for s in e] if history is None else _as_states(history, "history")
 
     rng = np.random.default_rng(seed)
     buf = []
@@ -201,19 +204,21 @@ def hindsr(episodes, actions=None, goals=None, strategy="future", k=4,
 
     rewards = [tr[2] for tr in buf]
     n_success = sum(1 for r in rewards if r > -1.0 + 1e-12)
-    return RichResult(payload={
-        "estimate": len(buf),
-        "transitions": buf,
-        "n_transitions": len(buf),
-        "n_original": len(buf) - n_relabelled,
-        "n_relabelled": n_relabelled,
-        "rewards": rewards,
-        "success_rate": float(n_success) / len(buf) if buf else 0.0,
-        "strategy": strategy,
-        "k": k,
-        "n_episodes": n_ep,
-        "method": "HER (Andrychowicz et al. 2017, Algorithm 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": len(buf),
+            "transitions": buf,
+            "n_transitions": len(buf),
+            "n_original": len(buf) - n_relabelled,
+            "n_relabelled": n_relabelled,
+            "rewards": rewards,
+            "success_rate": float(n_success) / len(buf) if buf else 0.0,
+            "strategy": strategy,
+            "k": k,
+            "n_episodes": n_ep,
+            "method": "HER (Andrychowicz et al. 2017, Algorithm 1)",
+        }
+    )
 
 
 def _sample_goals(strategy, episode, t, T, k, m, pool, rng):
@@ -226,8 +231,7 @@ def _sample_goals(strategy, episode, t, T, k, m, pool, rng):
         lo, hi = t + 1, T
         if hi < lo:
             return []
-        return [m(episode[lo + int(rng.random() * (hi - lo + 1))])
-                for _ in range(k)]
+        return [m(episode[lo + int(rng.random() * (hi - lo + 1))]) for _ in range(k)]
     if strategy == "episode":
         return [m(episode[int(rng.random() * (T + 1))]) for _ in range(k)]
     n = len(pool)
@@ -235,11 +239,13 @@ def _sample_goals(strategy, episode, t, T, k, m, pool, rng):
 
 
 def cheatsheet():
-    return ("hindsr: HER (Andrychowicz 2017 Alg. 1). Store each "
-            "transition with the original goal, then again for each "
-            "g' in S(episode) with the reward RECOMPUTED under g'. "
-            "S in {final, future (k, best), episode, random}; "
-            "r(s,a,g) = -[f_g(s') = 0].")
+    return (
+        "hindsr: HER (Andrychowicz 2017 Alg. 1). Store each "
+        "transition with the original goal, then again for each "
+        "g' in S(episode) with the reward RECOMPUTED under g'. "
+        "S in {final, future (k, best), episode, random}; "
+        "r(s,a,g) = -[f_g(s') = 0]."
+    )
 
 
 # compact alias per ledger/NAMING.md

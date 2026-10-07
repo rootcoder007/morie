@@ -74,10 +74,19 @@ def gmsbound(mbar, sigma, n, kappa=None):
     xi = [t[j] / k for j in range(J)]
     keep = [1 if xi[j] > -1.0 else 0 for j in range(J)]
     S = sum(max(t[j], 0.0) ** 2 for j in range(J) if keep[j])
-    return RichResult(payload={
-        "S": S, "t": t, "xi": xi, "retained": keep,
-        "nretained": sum(keep), "kappa": k, "n": n, "J": J,
-        "method": "Generalised moment selection (Andrews-Soares 2010)"})
+    return RichResult(
+        payload={
+            "S": S,
+            "t": t,
+            "xi": xi,
+            "retained": keep,
+            "nretained": sum(keep),
+            "kappa": k,
+            "n": n,
+            "J": J,
+            "method": "Generalised moment selection (Andrews-Soares 2010)",
+        }
+    )
 
 
 bound_gmm_alt = gmsbound

@@ -23,11 +23,12 @@ Rosenbaum, P. R. (2002). Observational Studies (2nd ed.). Springer.
 """
 
 import math
-import warnings
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as scipy_stats
+
+from ._frames import as_frame
 
 
 class _MissingDep:
@@ -37,32 +38,29 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
+    sm = _MissingDep("sm")
 try:
     from morie.fn._glm_core import formula as smf
 except ImportError:
-    smf = _MissingDep('smf')
+    smf = _MissingDep("smf")
 try:
     from morie.fn._ml_core import LinearRegression, LogisticRegression
 except ImportError:
-    LinearRegression = _MissingDep('LinearRegression')
-    LogisticRegression = _MissingDep('LogisticRegression')
+    LinearRegression = _MissingDep("LinearRegression")
+    LogisticRegression = _MissingDep("LogisticRegression")
 try:
     from morie.fn._ml_core import StandardScaler
 except ImportError:
-    StandardScaler = _MissingDep('StandardScaler')
+    StandardScaler = _MissingDep("StandardScaler")
 
 
 def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: str) -> tuple[float, float]:
@@ -80,6 +78,7 @@ def estimate_ate(data: pd.DataFrame, outcome: str, treatment: str, weights_col: 
     :return: A tuple containing the estimated ATE coefficient and its standard error.
     :rtype: tuple[float, float]
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     formula = f"{outcome} ~ {treatment}"
     # HC3 robust covariance: corrects for heteroskedasticity introduced by
     # unequal IPTW weights.  Plain OLS/WLS SEs are downward-biased when
@@ -111,10 +110,12 @@ def estimate_plr(
     :return: dict with ``ate``, ``se``, ``ci_lower``, ``ci_upper``,
         ``pval``, ``n_obs``.
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     from morie.fn.plr import estimate_plr as _native
-    return _native(data, treatment=treatment, outcome=outcome,
-                   covariates=covariates, n_folds=n_folds,
-                   random_state=random_state)
+
+    return _native(
+        data, treatment=treatment, outcome=outcome, covariates=covariates, n_folds=n_folds, random_state=random_state
+    )
 
 
 def estimate_pliv(
@@ -136,10 +137,18 @@ def estimate_pliv(
     :return: dict with ``late``, ``se``, ``ci_lower``, ``ci_upper``,
         ``pval``, ``n_obs``, ``method``.
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     from morie.fn.pliv import estimate_pliv as _native
-    return _native(data, treatment=treatment, outcome=outcome,
-                   instrument=instrument, covariates=covariates,
-                   n_folds=n_folds, random_state=random_state)
+
+    return _native(
+        data,
+        treatment=treatment,
+        outcome=outcome,
+        instrument=instrument,
+        covariates=covariates,
+        n_folds=n_folds,
+        random_state=random_state,
+    )
 
 
 def estimate_ate_gcomputation(
@@ -165,8 +174,10 @@ def estimate_ate_gcomputation(
         \\widehat{\\text{ATE}} = \\frac{1}{n} \\sum_i
         \\left(\\hat{Y}_i(1) - \\hat{Y}_i(0)\\right)
 
-    Standard error is estimated via non-parametric bootstrap (500 iterations
-    with seed = 42) on the full three-step procedure.
+    The outcome model is the unpenalised GLM (OLS or logistic) and the standard error is the
+    M-estimation sandwich of ``stdReg::stdGlm`` (Sjolander 2016) -- the GLM score equations stacked
+    with the two standardisation equations, so the outcome model's own uncertainty is included --
+    the same estimate and SE as the R arm.
 
     :param data: DataFrame containing all required columns.
     :param treatment: Column name of the binary treatment indicator (0/1).
@@ -185,6 +196,7 @@ def estimate_ate_gcomputation(
     Hernan, M. A., & Robins, J. M. (2020). Causal Inference: What If.
         Chapman & Hall/CRC. (Chapter 13.)
     """
+    data = as_frame(data)  # a DataFrame, a dict of columns or a CSV path
     valid_models = {"linear", "logistic"}
     if outcome_model not in valid_models:
         raise ValueError(f"outcome_model must be one of {valid_models}.")
@@ -199,77 +211,68 @@ def estimate_ate_gcomputation(
     if n_obs < 10:
         raise ValueError("G-computation requires at least 10 complete observations.")
 
-    feature_cols = [treatment] + covariates
+    return _gformula_std(df, treatment, outcome, covariates, outcome_model, n_obs)
 
-    def _fit_and_predict_ate(df_boot: pd.DataFrame) -> float:
-        X = df_boot[feature_cols].astype(float).values
-        y = df_boot[outcome].astype(float).values
 
-        scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(X)
+def _gformula_std(df, treatment, outcome, covariates, outcome_model, n_obs):
+    """Regression standardisation with the M-estimation sandwich of stdReg::stdGlm (Sjolander
+    2016): the GLM score equations stacked with the two standardisation equations,
+    V = I^-1 J I^-T / n, the ATE's SE by the delta method -- the R arm's .morie_gformula_std."""
+    from morie.fn import _glm_core
 
-        if outcome_model == "linear":
-            model = LinearRegression()
-        else:
-            model = LogisticRegression(max_iter=500, solver="lbfgs", random_state=42)
-
-        model.fit(X_scaled, y)
-
-        # Counterfactual datasets: all treated / all control
-        X_t1 = df_boot[feature_cols].astype(float).copy()
-        X_t0 = df_boot[feature_cols].astype(float).copy()
-        X_t1[treatment] = 1.0
-        X_t0[treatment] = 0.0
-
-        X_t1_scaled = scaler.transform(X_t1.values)
-        X_t0_scaled = scaler.transform(X_t0.values)
-
-        if outcome_model == "linear":
-            y1_hat = model.predict(X_t1_scaled)
-            y0_hat = model.predict(X_t0_scaled)
-        else:
-            y1_hat = model.predict_proba(X_t1_scaled)[:, 1]
-            y0_hat = model.predict_proba(X_t0_scaled)[:, 1]
-
-        return float(np.mean(y1_hat - y0_hat))
-
-    # Point estimate
-    ate = _fit_and_predict_ate(df)
-
-    # Bootstrap SE (500 iterations, seeded for reproducibility)
-    rng = np.random.default_rng(42)
-    boot_ates = []
-    for _ in range(500):
-        idx = rng.integers(0, n_obs, size=n_obs)
-        boot_df = df.iloc[idx].reset_index(drop=True)
-        try:
-            boot_ates.append(_fit_and_predict_ate(boot_df))
-        except Exception:
-            continue
-
-    if len(boot_ates) < 50:
-        warnings.warn(
-            "Fewer than 50 successful bootstrap iterations; SE may be unreliable.",
-            stacklevel=2,
-        )
-
-    se = float(np.std(boot_ates, ddof=1)) if len(boot_ates) > 1 else float("nan")
-    ci_lower = float(np.percentile(boot_ates, 2.5)) if boot_ates else float("nan")
-    ci_upper = float(np.percentile(boot_ates, 97.5)) if boot_ates else float("nan")
-
+    fam = "gaussian" if outcome_model == "linear" else "binomial"
+    F = _glm_core.FAMILIES[fam]
+    cols = [treatment, *covariates]
+    X = [[1.0] + [float(df[c].iloc[i]) for c in cols] for i in range(n_obs)]
+    y = [float(v) for v in df[outcome].tolist()]
+    fit = _glm_core.glm(y, [r[1:] for r in X], family=fam, add_intercept=True)
+    beta = [float(v) for v in fit["coef"]] if "coef" in fit else [float(v) for v in fit["coefficients"]]
+    k = len(beta)
+    n = n_obs
+    pred = [[0.0, 0.0] for _ in range(n)]
+    si = [[0.0] * k for _ in range(2)]
+    for a in (0, 1):
+        for i in range(n):
+            xa = list(X[i])
+            xa[1] = float(a)
+            eta = sum(xa[j] * beta[j] for j in range(k))
+            pred[i][a] = F["linkinv"](eta)
+            d = F["mu_eta"](eta)
+            for j in range(k):
+                si[a][j] += d * xa[j] / n
+    est = [sum(pred[i][a] for i in range(n)) / n for a in (0, 1)]
+    mu = [F["linkinv"](sum(X[i][j] * beta[j] for j in range(k))) for i in range(n)]
+    scores = [
+        [pred[i][0] - est[0], pred[i][1] - est[1]] + [X[i][j] * (y[i] - mu[i]) for j in range(k)] for i in range(n)
+    ]
+    m = len(scores[0])
+    cm = [sum(r[j] for r in scores) / n for j in range(m)]
+    J = [[sum((r[x] - cm[x]) * (r[yy] - cm[yy]) for r in scores) / (n - 1) for yy in range(m)] for x in range(m)]
+    ww = fit["working_weights"]
+    XtWX = [[sum(ww[i] * X[i][x] * X[i][yy] for i in range(n)) for yy in range(k)] for x in range(k)]
+    info = [[0.0] * m for _ in range(m)]
+    for a in (0, 1):
+        info[a][a] = -1.0
+        for j in range(k):
+            info[a][2 + j] = si[a][j]
+    for x in range(k):
+        for yy in range(k):
+            info[2 + x][2 + yy] = -XtWX[x][yy] / n
+    Ii = _glm_core._inv(info)
+    IJ = [[sum(Ii[x][z] * J[z][yy] for z in range(m)) for yy in range(m)] for x in range(m)]
+    V = [[sum(IJ[x][z] * Ii[yy][z] for z in range(m)) / n for yy in range(m)] for x in range(m)]
+    ate = est[1] - est[0]
+    se = math.sqrt(V[0][0] + V[1][1] - 2 * V[0][1])
+    z = 1.959963984540054
     return {
         "ate": ate,
         "se": se,
-        "ci_lower": ci_lower,
-        "ci_upper": ci_upper,
+        "ci_lower": ate - z * se,
+        "ci_upper": ate + z * se,
         "n_obs": n_obs,
         "outcome_model": outcome_model,
+        "method": "g-formula, sandwich SE (stdReg's estimator, native)",
     }
-
-
-# ===========================================================================
-# SECTION 5 -- ROSENBAUM BOUNDS
-# ===========================================================================
 
 
 def sensitivity_rosenbaum(

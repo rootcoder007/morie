@@ -23,7 +23,7 @@ def dist_correlation(X, *, ndim=2):
     eigvals = np.sort(eigvals)[::-1]
     k = min(ndim, n - 1)
     coords = eigvals[:k]
-    stress = float(np.sqrt(max(0, 1.0 - np.sum(coords**2) / (np.sum(D**2) / 2 + 1e-10))))
+    float(np.sqrt(max(0, 1.0 - np.sum(coords**2) / (np.sum(D**2) / 2 + 1e-10))))
     return DescriptiveResult(
         name="msdcr",
         value=0.0 if isinstance(0.0, (int, float)) else 0.0,

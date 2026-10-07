@@ -14,8 +14,9 @@ def test_sirstn_basic():
     z = 0.5
     for _ in range(200):
         z = 1 - math.exp(-2 * z)
-    big = [f for f in (sir_stochastic(995, 5, 0.4, 0.2, 1e9, seed=s)["estimate"] / 1000
-                       for s in range(1, 61)) if f > 0.3]
+    big = [
+        f for f in (sir_stochastic(995, 5, 0.4, 0.2, 1e9, seed=s)["estimate"] / 1000 for s in range(1, 61)) if f > 0.3
+    ]
     assert abs(sum(big) / len(big) - z) < 0.02
 
 
@@ -31,5 +32,3 @@ def test_sirstn_edge():
     assert sir_stochastic(95, 5, 0.5, 0.25, 20.0, seed=4)["R"] == r["R"]
     with pytest.raises(ValueError, match="non-negative"):
         sir_stochastic(-1, 5, 0.5, 0.25, 10.0)
-
-

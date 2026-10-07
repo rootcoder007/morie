@@ -1,7 +1,6 @@
 """Tests for msm157.mvsml_categorical_count_eq_8_10."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm157 import mvsml_categorical_count_eq_8_10
 
 

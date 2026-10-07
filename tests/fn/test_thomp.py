@@ -37,8 +37,7 @@ def test_thomp_deterministic_rewards_with_unit_probs():
 def test_thomp_overwhelming_prior_pins_first_arm():
     # Beta(1000, 1) on arm 0 vs Beta(1, 1000) on arm 1: theta_0 is
     # essentially 1 and theta_1 essentially 0 every period.
-    r = thomp([0.5, 0.5], 25, alpha0=[1000.0, 1.0],
-              beta0=[1.0, 1000.0], seed=9)
+    r = thomp([0.5, 0.5], 25, alpha0=[1000.0, 1.0], beta0=[1.0, 1000.0], seed=9)
     assert r["counts"][0] == 25.0
 
 

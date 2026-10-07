@@ -59,12 +59,18 @@ def ppcrep(t_obs, t_rep):
         raise ValueError("t_obs must be a scalar or have one value per draw")
     k = sum(1 for s in range(S) if tr[s] >= to[s])
     p = k / S
-    return RichResult(payload={
-        "p_value": p, "p_two_sided": 2.0 * min(p, 1.0 - p),
-        "n_extreme": float(k), "t_obs_mean": sum(to) / S,
-        "t_rep_mean": sum(tr) / S, "S": float(S),
-        "extreme": 1.0 if (p < 0.01 or p > 0.99) else 0.0,
-        "method": "Posterior predictive p-value, BDA3 Section 6.3"})
+    return RichResult(
+        payload={
+            "p_value": p,
+            "p_two_sided": 2.0 * min(p, 1.0 - p),
+            "n_extreme": float(k),
+            "t_obs_mean": sum(to) / S,
+            "t_rep_mean": sum(tr) / S,
+            "S": float(S),
+            "extreme": 1.0 if (p < 0.01 or p > 0.99) else 0.0,
+            "method": "Posterior predictive p-value, BDA3 Section 6.3",
+        }
+    )
 
 
 posterior_predictive_replication = ppcrep

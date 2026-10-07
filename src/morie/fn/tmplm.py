@@ -7,7 +7,7 @@ from ._containers import DescriptiveResult
 
 
 def template_match_detect(x: np.ndarray, template: np.ndarray, threshold: float = 0.7) -> DescriptiveResult:
-    """Knowing yourself is the beginning of all wisdom. -- Aristotle"""
+    """Detect where ``template`` matches the signal ``x`` with a correlation of at least ``threshold``."""
     from morie._detection import template_match as _backend
 
     indices, corr = _backend(x, template, threshold=threshold)

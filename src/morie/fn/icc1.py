@@ -89,20 +89,23 @@ def icc_one_way(y, cluster):
     den = bms + (k - 1) * wms
     if den == 0.0:
         raise ValueError("icc_one_way: the ratings carry no variance")
-    return RichResult(payload={
-        "estimate": (bms - wms) / den,
-        "bms": bms,
-        "wms": wms,
-        "sst": sst,
-        "ssa": ssa,
-        "n": n,
-        "k": k,
-        "method": "ICC(1) one-way random-effects model",
-    })
+    return RichResult(
+        payload={
+            "estimate": (bms - wms) / den,
+            "bms": bms,
+            "wms": wms,
+            "sst": sst,
+            "ssa": ssa,
+            "n": n,
+            "k": k,
+            "method": "ICC(1) one-way random-effects model",
+        }
+    )
 
 
 def cheatsheet():
     return "icc1: ICC(1) one-way random-effects model"
+
 
 # public names resolved by fn/_lazy_map.json
 icconeway = icc_one_way

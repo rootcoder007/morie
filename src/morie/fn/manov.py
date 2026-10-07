@@ -62,10 +62,7 @@ def manova(data: np.ndarray, groups: np.ndarray, cdf=None) -> DescriptiveResult:
     if wilks > 0:
         num = p**2 * (k - 1) ** 2 - 4
         den = p**2 + (k - 1) ** 2 - 5
-        if den == 0 or num < 0:
-            t = 1.0
-        else:
-            t = float(np.sqrt(max(num / den, 1)))
+        t = 1.0 if den == 0 or num < 0 else float(np.sqrt(max(num / den, 1)))
         lam_t = wilks ** (1 / t) if t > 0 else wilks
         df2_approx = max((n - 1 - (p + k) / 2) * t - (df1 - 2) / 2, 1)
         F_val = max((1 - lam_t) / lam_t * df2_approx / df1, 0) if lam_t > 0 else 0

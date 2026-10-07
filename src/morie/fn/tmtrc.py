@@ -13,7 +13,7 @@ def trace_over_time(X_sessions, time_labels) -> DescriptiveResult:
     from morie.fn import _array_core as np
 
     trajectories = []
-    for i, X in enumerate(X_sessions):
+    for _i, X in enumerate(X_sessions):
         X = np.asarray(X, dtype=float)
         if X.ndim == 1:
             X = X.reshape(-1, 1)

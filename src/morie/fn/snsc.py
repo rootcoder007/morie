@@ -66,8 +66,7 @@ def sn_scale(x):
     # lomed_i: floor((n+1)/2)-th order statistic, 1-indexed
     lo_idx = (n + 1) // 2 - 1
     stat = float(np.sort(inner)[lo_idx])
-    small = {2: 0.743, 3: 1.851, 4: 0.954, 5: 1.351,
-             6: 0.993, 7: 1.198, 8: 1.005, 9: 1.131}
+    small = {2: 0.743, 3: 1.851, 4: 0.954, 5: 1.351, 6: 0.993, 7: 1.198, 8: 1.005, 9: 1.131}
     if n <= 9:
         corr = small[n]
     elif n % 2 == 1:
@@ -75,16 +74,22 @@ def sn_scale(x):
     else:
         corr = 1.0
     value = SN_C * corr * stat
-    return RichResult(payload={
-        "value": value, "c": SN_C, "correction": float(corr),
-        "breakdown": 0.5, "gaussian_efficiency": 0.58,
-        "location_free": True,
-        "median_conventions": "himed is the (n//2 + 1)-st order statistic "
-                              "over all n values including the diagonal "
-                              "zero; lomed the floor((n+1)/2)-th. Either "
-                              "convention wrong changes every even-n answer",
-        "n": int(n),
-        "method": "Sn = c * lomed_i himed_j |x_i - x_j| (Rousseeuw-Croux 1993)"})
+    return RichResult(
+        payload={
+            "value": value,
+            "c": SN_C,
+            "correction": float(corr),
+            "breakdown": 0.5,
+            "gaussian_efficiency": 0.58,
+            "location_free": True,
+            "median_conventions": "himed is the (n//2 + 1)-st order statistic "
+            "over all n values including the diagonal "
+            "zero; lomed the floor((n+1)/2)-th. Either "
+            "convention wrong changes every even-n answer",
+            "n": int(n),
+            "method": "Sn = c * lomed_i himed_j |x_i - x_j| (Rousseeuw-Croux 1993)",
+        }
+    )
 
 
 def cheatsheet():

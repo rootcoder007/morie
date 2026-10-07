@@ -14,10 +14,10 @@ def test_swinmw_bias_index_anchor():
     T = [[10.0, 20.0, 30.0], [40.0, 50.0, 60.0], [70.0, 80.0, 90.0]]
     r = swinmw(X, 2, relative_bias=T)
     B = r["bias"]
-    assert B[0][3] == 10.0   # (0,0) vs (1,1): di=dj=-1
-    assert B[0][0] == 50.0   # same token: di=dj=0
-    assert B[3][0] == 90.0   # (1,1) vs (0,0): di=dj=+1
-    assert B[1][2] == 30.0   # (0,1) vs (1,0): di=-1, dj=+1
+    assert B[0][3] == 10.0  # (0,0) vs (1,1): di=dj=-1
+    assert B[0][0] == 50.0  # same token: di=dj=0
+    assert B[3][0] == 90.0  # (1,1) vs (0,0): di=dj=+1
+    assert B[1][2] == 30.0  # (0,1) vs (1,0): di=-1, dj=+1
 
 
 def test_swinmw_reductions():

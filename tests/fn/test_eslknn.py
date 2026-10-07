@@ -1,7 +1,6 @@
 """Tests for eslknn.esl_knn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslknn import esl_knn
 
 

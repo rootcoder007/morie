@@ -55,10 +55,8 @@ import math
 
 from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["sample_ibp", "expected_features", "left_ordered_form",
-           "ibp_log_probability", "gibbs_feature_update"]
+__all__ = ["sample_ibp", "expected_features", "left_ordered_form", "ibp_log_probability", "gibbs_feature_update"]
 
 _EPS = 1e-12
 
@@ -96,9 +94,15 @@ def sample_ibp(n, alpha, seed=0):
         rows.append(row)
     K = len(counts)
     Z = [r + [0] * (K - len(r)) for r in rows]
-    return {"Z": Z, "K": K, "counts": counts, "alpha": a, "n": N,
-            "features_per_object": [sum(r) for r in Z],
-            "note": "the number of features is INFERRED, not fixed"}
+    return {
+        "Z": Z,
+        "K": K,
+        "counts": counts,
+        "alpha": a,
+        "n": N,
+        "features_per_object": [sum(r) for r in Z],
+        "note": "the number of features is INFERRED, not fixed",
+    }
 
 
 def expected_features(n, alpha):
@@ -113,12 +117,13 @@ def expected_features(n, alpha):
     if N < 1 or a <= 0.0:
         raise ValueError("ibpfa: need n >= 1 and alpha > 0")
     H = sum(1.0 / i for i in range(1, N + 1))
-    return {"expected_total_features": a * H,
-            "harmonic": H,
-            "expected_per_object": a,
-            "expected_nonzeros": a * N,
-            "note": "total grows like alpha log n; per object it is "
-                    "CONSTANT at alpha"}
+    return {
+        "expected_total_features": a * H,
+        "harmonic": H,
+        "expected_per_object": a,
+        "expected_nonzeros": a * N,
+        "note": "total grows like alpha log n; per object it is CONSTANT at alpha",
+    }
 
 
 def left_ordered_form(Z):
@@ -140,10 +145,11 @@ def left_ordered_form(Z):
         hist.append((h, kk))
     hist.sort(key=lambda t: (-t[0], t[1]))
     order = [kk for _, kk in hist]
-    return {"Z": [[M[i][kk] for kk in order] for i in range(n)],
-            "order": order,
-            "note": "columns are an unordered SET; left-ordering "
-                    "picks the canonical representative"}
+    return {
+        "Z": [[M[i][kk] for kk in order] for i in range(n)],
+        "order": order,
+        "note": "columns are an unordered SET; left-ordering picks the canonical representative",
+    }
 
 
 def ibp_log_probability(Z, alpha):
@@ -163,8 +169,7 @@ def ibp_log_probability(Z, alpha):
         m = sum(M[i][kk] for i in range(n))
         if m == 0:
             continue
-        lp += (k.lgamma(n - m + 1) + k.lgamma(m)
-               - k.lgamma(n + 1))
+        lp += k.lgamma(n - m + 1) + k.lgamma(m) - k.lgamma(n + 1)
     return lp
 
 
@@ -180,9 +185,11 @@ def gibbs_feature_update(Z, i, kk, likelihood, alpha):
     n = len(M)
     m_minus = sum(M[j][kk] for j in range(n) if j != i)
     if m_minus == 0:
-        return {"z": 0, "prior": 0.0,
-                "note": "a feature held by nobody else is dropped; "
-                        "new ones arrive through the Poisson draw"}
+        return {
+            "z": 0,
+            "prior": 0.0,
+            "note": "a feature held by nobody else is dropped; new ones arrive through the Poisson draw",
+        }
     prior = m_minus / float(n)
     on, off = [list(r) for r in M], [list(r) for r in M]
     on[i][kk], off[i][kk] = 1, 0
@@ -190,23 +197,27 @@ def gibbs_feature_update(Z, i, kk, likelihood, alpha):
     l0 = float(likelihood(off)) + math.log(max(1.0 - prior, _EPS))
     mx = max(l1, l0)
     p1 = math.exp(l1 - mx) / (math.exp(l1 - mx) + math.exp(l0 - mx))
-    return {"p_on": p1, "prior": prior,
-            "z": 1 if p1 > 0.5 else 0,
-            "note": "exchangeability is what licenses treating i as "
-                    "the last customer"}
+    return {
+        "p_on": p1,
+        "prior": prior,
+        "z": 1 if p1 > 0.5 else 0,
+        "note": "exchangeability is what licenses treating i as the last customer",
+    }
 
 
 def cheatsheet():
-    return ("ibpfa: objects have SEVERAL latent features, and how many "
-            "exist is unknown -- so use a distribution over binary "
-            "matrices with unboundedly many columns. Customer i takes "
-            "an existing dish with probability m_k/i (popularity "
-            "self-reinforces) and Poisson(alpha/i) NEW dishes (the "
-            "flow decays as 1/i). Two different numbers: expected "
-            "TOTAL features alpha*H_n ~ alpha log n, expected features "
-            "PER OBJECT constant at alpha. The left-ordered form is "
-            "EXCHANGEABLE, which is what licenses Gibbs sampling by "
-            "treating any object as the last to arrive.")
+    return (
+        "ibpfa: objects have SEVERAL latent features, and how many "
+        "exist is unknown -- so use a distribution over binary "
+        "matrices with unboundedly many columns. Customer i takes "
+        "an existing dish with probability m_k/i (popularity "
+        "self-reinforces) and Poisson(alpha/i) NEW dishes (the "
+        "flow decays as 1/i). Two different numbers: expected "
+        "TOTAL features alpha*H_n ~ alpha log n, expected features "
+        "PER OBJECT constant at alpha. The left-ordered form is "
+        "EXCHANGEABLE, which is what licenses Gibbs sampling by "
+        "treating any object as the last to arrive."
+    )
 
 
 # compact alias per ledger/NAMING.md

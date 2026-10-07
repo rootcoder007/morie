@@ -51,10 +51,7 @@ def breusch_pagan_test(
     e2_norm = e2 / np.mean(e2)
 
     # Add intercept if not present
-    if not np.all(Xm[:, 0] == 1):
-        Xm_aug = np.column_stack([np.ones(n), Xm])
-    else:
-        Xm_aug = Xm
+    Xm_aug = np.column_stack([np.ones(n), Xm]) if not np.all(Xm[:, 0] == 1) else Xm
 
     k = Xm_aug.shape[1] - 1  # df = number of regressors (excl intercept)
 

@@ -55,8 +55,12 @@ def gibbons_kendall_ties(x, y):
         raise ValueError("all pairs are tied; tau_b is undefined.")
     return RichResult(
         payload={
-            "tau_b": float((P - Q) / denom), "P": P, "Q": Q,
-            "T_x": Tx, "T_y": Ty, "n": int(n),
+            "tau_b": float((P - Q) / denom),
+            "P": P,
+            "Q": Q,
+            "T_x": Tx,
+            "T_y": Ty,
+            "n": int(n),
             "method": "Kendall tau_b = (P-Q)/sqrt((P+Q+Tx)(P+Q+Ty))",
         }
     )

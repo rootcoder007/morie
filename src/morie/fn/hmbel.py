@@ -70,8 +70,7 @@ def geron_bellman_optimality(V, P, R, gamma, tol=1e-10, max_iter=10000):
     if not np.allclose(rowsum, 1.0, atol=1e-8):
         bad = np.argwhere(np.abs(rowsum - 1.0) > 1e-8)[0]
         raise ValueError(
-            f"geron_bellman_optimality: P[{bad[0]}, {bad[1]}, :] sums to "
-            f"{rowsum[bad[0], bad[1]]!r}, not 1"
+            f"geron_bellman_optimality: P[{bad[0]}, {bad[1]}, :] sums to {rowsum[bad[0], bad[1]]!r}, not 1"
         )
     g = float(gamma)
     if not (0.0 <= g < 1.0):
@@ -80,7 +79,7 @@ def geron_bellman_optimality(V, P, R, gamma, tol=1e-10, max_iter=10000):
     residual = np.inf
     it = 0
     Q = Rm + g * (Pm @ Vv)
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         Q = Rm + g * (Pm @ Vv)
         Vn = Q.max(axis=1)
         residual = float(np.max(np.abs(Vn - Vv)))

@@ -1,7 +1,6 @@
 """Tests for hrztf.horowitz_both_nonpar_transform."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrztf import horowitz_both_nonpar_transform
 
 

@@ -1,16 +1,13 @@
 """Tests for gh_c11_1.ghosal_gp_def_rkhs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_1 import ghosal_gp_def_rkhs
 
 
 def test_gh_c11_1_basic():
     """Test basic functionality."""
     # W ~ N(0, Sigma): build a small symmetric covariance and two vectors a, b.
-    Sigma = np.array([[2.0, 0.5, 0.0],
-                      [0.5, 1.0, 0.25],
-                      [0.0, 0.25, 3.0]])
+    Sigma = np.array([[2.0, 0.5, 0.0], [0.5, 1.0, 0.25], [0.0, 0.25, 3.0]])
     a = np.array([1.0, -2.0, 0.5])
     b = np.array([0.5, 1.0, -1.0])
 

@@ -27,11 +27,15 @@ def kamath_ch8_bertscore_precision(x, xhat, normalize=False):
     1.0
     """
     r = kamath_ch8_bertscore_recall(xhat, x, normalize=normalize)
-    return RichResult(payload={
-        "estimate": r["estimate"], "per_token": r["per_token"],
-        "greedy_match": r["greedy_match"], "n": r["n"],
-        "method": "BERTScore precision (Kamath Eq 8.8; km119 with the "
-                  "texts swapped)"})
+    return RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "per_token": r["per_token"],
+            "greedy_match": r["greedy_match"],
+            "n": r["n"],
+            "method": "BERTScore precision (Kamath Eq 8.8; km119 with the texts swapped)",
+        }
+    )
 
 
 def cheatsheet():

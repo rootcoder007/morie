@@ -47,8 +47,7 @@ def _t(A):
 
 def _mm(A, B):
     Bt = _t(B)
-    return [[sum(a * b for a, b in zip(row, col)) for col in Bt]
-            for row in A]
+    return [[sum(a * b for a, b in zip(row, col)) for col in Bt] for row in A]
 
 
 def _mv(A, v):
@@ -73,15 +72,13 @@ def _solve(A, b):
         return [float(v) for v in x._flat()]
     except Exception:
         P = np.linalg.pinv(np.marr(Am))
-        Pl = [[float(v) for v in row] for row in P._tolist()] \
-            if hasattr(P, "_tolist") else _mat(P)
+        Pl = [[float(v) for v in row] for row in P._tolist()] if hasattr(P, "_tolist") else _mat(P)
         return _mv(Pl, bv)
 
 
 def _inv(A):
     n = len(A)
-    cols = [_solve(A, [1.0 if r == c else 0.0 for r in range(n)])
-            for c in range(n)]
+    cols = [_solve(A, [1.0 if r == c else 0.0 for r in range(n)]) for c in range(n)]
     return _t(cols)
 
 
@@ -110,16 +107,15 @@ def one_way_summary(groups):
     ms_within = ss_within / (n - a)
     sigma2_b = max((ms_between - ms_within) / r, 0.0)
     return {
-        "grand_mean": grand,                       # eq. (1.2) beta-hat
-        "sd_single_mean": math.sqrt(
-            (ss_between + ss_within) / (n - 1)),   # eq. (1.2) sigma-hat
-        "group_means": means,                      # eq. (1.3) beta_i
-        "sd_residual": math.sqrt(ms_within),       # eq. (1.3)/(1.5)
+        "grand_mean": grand,  # eq. (1.2) beta-hat
+        "sd_single_mean": math.sqrt((ss_between + ss_within) / (n - 1)),  # eq. (1.2) sigma-hat
+        "group_means": means,  # eq. (1.3) beta_i
+        "sd_residual": math.sqrt(ms_within),  # eq. (1.3)/(1.5)
         "deviations": [m - grand for m in means],  # eq. (1.4)
-        "sigma2_b": sigma2_b,                      # eq. (1.5)
-        "icc": sigma2_b / (sigma2_b + ms_within)
-        if sigma2_b + ms_within > 0 else 0.0,
-        "ms_between": ms_between, "ms_within": ms_within,
+        "sigma2_b": sigma2_b,  # eq. (1.5)
+        "icc": sigma2_b / (sigma2_b + ms_within) if sigma2_b + ms_within > 0 else 0.0,
+        "ms_between": ms_between,
+        "ms_within": ms_within,
     }
 
 
@@ -139,11 +135,7 @@ def mme_solve(X, Z, y, Sigma_inv, R_inv=None):
     n = len(y)
     p = len(X[0])
     q = len(Z[0])
-    if R_inv is None:
-        R_inv = [[1.0 if i == j else 0.0 for j in range(n)]
-                 for i in range(n)]
-    else:
-        R_inv = _mat(R_inv)
+    R_inv = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)] if R_inv is None else _mat(R_inv)
     Xt = _t(X)
     Zt = _t(Z)
     XtRi = _mm(Xt, R_inv)
@@ -156,8 +148,7 @@ def mme_solve(X, Z, y, Sigma_inv, R_inv=None):
     for i in range(q):
         for j in range(q):
             A22[i][j] += S[i][j]
-    LHS = [A11[i] + A12[i] for i in range(p)] + \
-        [A21[i] + A22[i] for i in range(q)]
+    LHS = [A11[i] + A12[i] for i in range(p)] + [A21[i] + A22[i] for i in range(q)]
     RHS = _mv(XtRi, y) + _mv(ZtRi, y)
     sol = _solve(LHS, RHS)
     return sol[:p], sol[p:]
@@ -172,8 +163,7 @@ def blue_blup_via_v(X, Z, y, Sigma, R=None):
     y = _flat(y)
     n = len(y)
     if R is None:
-        R = [[1.0 if i == j else 0.0 for j in range(n)]
-             for i in range(n)]
+        R = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     V = _mm(_mm(Z, _mat(Sigma)), _t(Z))
     for i in range(n):
         for j in range(n):
@@ -224,11 +214,9 @@ def gblup_gebv(X, y, G, sigma2_g, sigma2_e=1.0, use_mme=False):
     Sigma = [[sigma2_g * G[i][j] for j in range(q)] for i in range(q)]
     if use_mme:
         Gi = _inv(_mat(G))
-        Sig_inv = [[Gi[i][j] * sigma2_e / sigma2_g for j in range(q)]
-                   for i in range(q)]
+        Sig_inv = [[Gi[i][j] * sigma2_e / sigma2_g for j in range(q)] for i in range(q)]
         return mme_solve(X, Z, y, Sig_inv)
-    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
-         for i in range(n)]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)] for i in range(n)]
     return blue_blup_via_v(X, Z, y, Sigma, R)
 
 
@@ -238,10 +226,8 @@ def snp_blup_gebv(X, y, M, sigma2_m, sigma2_e=1.0):
     Mm = _mat(M)
     p = len(Mm[0])
     n = len(_flat(y))
-    Sigma = [[sigma2_m if i == j else 0.0 for j in range(p)]
-             for i in range(p)]
-    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
-         for i in range(n)]
+    Sigma = [[sigma2_m if i == j else 0.0 for j in range(p)] for i in range(p)]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)] for i in range(n)]
     beta, u = blue_blup_via_v(X, Mm, y, Sigma, R)
     return beta, u, _mv(Mm, u)
 
@@ -254,10 +240,7 @@ def scale_columns(M, center=True, scale=True):
     out_cols = []
     for c in _t(Mm):
         mu = sum(c) / n if center else 0.0
-        if scale:
-            sd = math.sqrt(sum((v - mu) ** 2 for v in c) / (n - 1))
-        else:
-            sd = 1.0
+        sd = math.sqrt(sum((v - mu) ** 2 for v in c) / (n - 1)) if scale else 1.0
         out_cols.append([(v - mu) / sd if sd > 0 else 0.0 for v in c])
     return _t(out_cols)
 
@@ -274,8 +257,7 @@ def pca_compress(X, k=None, use_correlation=True):
     Q = [[v / (n - 1) for v in row] for row in Q]
     vals, vecs = np.linalg.eigh(np.marr(Q))
     lam = [float(v) for v in vals._flat()]
-    W = [[float(v) for v in row] for row in vecs._tolist()] \
-        if hasattr(vecs, "_tolist") else _mat(vecs)
+    W = [[float(v) for v in row] for row in vecs._tolist()] if hasattr(vecs, "_tolist") else _mat(vecs)
     order = sorted(range(p), key=lambda i: -lam[i])
     lam = [lam[i] for i in order]
     W = _t([[W[r][i] for r in range(p)] for i in order])
@@ -300,7 +282,7 @@ def pca_compress(X, k=None, use_correlation=True):
         "scores": PC,
         "compressed": [row[:k] for row in PC],
         "prop_variance": [v / tot for v in lam],
-        "cum_variance": [sum(lam[:i + 1]) / tot for i in range(p)],
+        "cum_variance": [sum(lam[: i + 1]) / tot for i in range(p)],
     }
 
 
@@ -324,17 +306,18 @@ def ols_fit(X, y, add_intercept=False):
     sigma2 = rss / dof if dof > 0 else float("nan")
     XtXi = _inv(XtX)
     return {
-        "beta": beta, "fitted": fitted, "residuals": resid,
-        "rss": rss, "sigma2": sigma2,
-        "sigma2_ml": rss / n,                    # p.75 ML estimate
-        "var_beta": [[sigma2 * XtXi[i][j] for j in range(p1)]
-                     for i in range(p1)],
+        "beta": beta,
+        "fitted": fitted,
+        "residuals": resid,
+        "rss": rss,
+        "sigma2": sigma2,
+        "sigma2_ml": rss / n,  # p.75 ML estimate
+        "var_beta": [[sigma2 * XtXi[i][j] for j in range(p1)] for i in range(p1)],
         "se_beta": [math.sqrt(sigma2 * XtXi[i][i]) for i in range(p1)],
     }
 
 
-def gradient_descent_ols(X, y, alpha=1e-2, tol=1e-8, max_iter=100000,
-                         optimal_step=False, add_intercept=False):
+def gradient_descent_ols(X, y, alpha=1e-2, tol=1e-8, max_iter=100000, optimal_step=False, add_intercept=False):
     """sec. 3.4 p.76: eta_{t+1} = eta_t - alpha grad f(eta_t) for the
     residual sum of squares; with ``optimal_step`` the exact line-search
     step of the book's R code is used,
@@ -353,7 +336,7 @@ def gradient_descent_ols(X, y, alpha=1e-2, tol=1e-8, max_iter=100000,
     while gap > tol and it < max_iter:
         it += 1
         e = [a - b for a, b in zip(y, _mv(Xm, beta))]
-        g = _mv(Xt, e)                       # X'e = -0.5 grad RSS
+        g = _mv(Xt, e)  # X'e = -0.5 grad RSS
         if optimal_step:
             num = sum(v * v for v in g)
             den = sum(a * b for a, b in zip(g, _mv(XtX, g)))
@@ -374,8 +357,7 @@ def expected_prediction_error(sigma2, x_star, eigenvalues):
     lam = _flat(eigenvalues)
     if any(v <= 0 for v in lam):
         raise ValueError("eigenvalues must be positive")
-    return float(sigma2) * (1.0 + sum(v * v / l
-                                      for v, l in zip(xs, lam)))
+    return float(sigma2) * (1.0 + sum(v * v / ell for v, ell in zip(xs, lam)))
 
 
 def ridge_fit(X, y, lam, add_intercept=True):
@@ -395,10 +377,8 @@ def ridge_fit(X, y, lam, add_intercept=True):
     fitted = _mv(Xm, beta)
     resid = [a - b for a, b in zip(y, fitted)]
     rss = sum(v * v for v in resid)
-    pen = float(lam) * sum(b * b for j, b in enumerate(beta)
-                           if not (add_intercept and j == 0))
-    return {"beta": beta, "fitted": fitted, "rss": rss,
-            "penalty": pen, "prss": rss + pen}
+    pen = float(lam) * sum(b * b for j, b in enumerate(beta) if not (add_intercept and j == 0))
+    return {"beta": beta, "fitted": fitted, "rss": rss, "penalty": pen, "prss": rss + pen}
 
 
 # ------------------------------- classification metrics (ch. 4)
@@ -423,12 +403,14 @@ def class_metrics(conf, i):
     C = len(conf)
     tfn = sum(conf[i][j] for j in range(C) if j != i)
     tfp = sum(conf[j][i] for j in range(C) if j != i)
-    ttn = sum(conf[j][k] for j in range(C) for k in range(C)
-              if j != i and k != i)
+    ttn = sum(conf[j][k] for j in range(C) for k in range(C) if j != i and k != i)
     ttp = sum(conf[j][j] for j in range(C))
     total = sum(sum(row) for row in conf)
     return {
-        "TFN": tfn, "TFP": tfp, "TTN": ttn, "TTP_all": ttp,
+        "TFN": tfn,
+        "TFP": tfp,
+        "TTN": ttn,
+        "TTP_all": ttp,
         "precision": ttp / (ttp + tfp) if ttp + tfp else 0.0,
         "sensitivity": ttp / (ttp + tfn) if ttp + tfn else 0.0,
         "specificity": ttn / (ttn + tfp) if ttn + tfp else 0.0,
@@ -452,7 +434,10 @@ def binary_metrics(y_true, y_pred, positive=1):
     p0 = (tp + tn) / n
     pe = (tp + fn) / n * (tp + fp) / n + (fp + tn) / n * (fn + tn) / n
     return {
-        "tp": tp, "fp": fp, "tn": tn, "fn": fn,
+        "tp": tp,
+        "fp": fp,
+        "tn": tn,
+        "fn": fn,
         "pccc": p0,
         "sensitivity": tp / (tp + fn) if tp + fn else 0.0,
         "specificity": tn / (tn + fp) if tn + fp else 0.0,
@@ -460,9 +445,7 @@ def binary_metrics(y_true, y_pred, positive=1):
         "neg_pred_value": tn / (tn + fn) if tn + fn else 0.0,
         "prevalence": (tp + fn) / n,
         "detection_rate": tp / n,
-        "balanced_accuracy": 0.5 * ((tp / (tp + fn) if tp + fn else 0.0)
-                                    + (tn / (tn + fp) if tn + fp
-                                       else 0.0)),
+        "balanced_accuracy": 0.5 * ((tp / (tp + fn) if tp + fn else 0.0) + (tn / (tn + fp) if tn + fp else 0.0)),
         "kappa": (p0 - pe) / (1.0 - pe) if pe < 1.0 else 0.0,
     }
 
@@ -518,8 +501,8 @@ def kron(A, B):
     for i in range(ra):
         for j in range(ca):
             for k in range(rb):
-                for l in range(cb):
-                    out[i * rb + k][j * cb + l] = A[i][j] * B[k][l]
+                for ell in range(cb):
+                    out[i * rb + k][j * cb + ell] = A[i][j] * B[k][ell]
     return out
 
 
@@ -550,8 +533,7 @@ def lmm_marginal_v(Z, D, R=None):
     n = len(Z)
     V = _mm(_mm(Z, _mat(D)), _t(Z))
     if R is None:
-        R = [[1.0 if i == j else 0.0 for j in range(n)]
-             for i in range(n)]
+        R = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
     R = _mat(R)
     return [[V[i][j] + R[i][j] for j in range(n)] for i in range(n)]
 
@@ -571,8 +553,7 @@ def lmm_loglik(X, Z, y, D, beta=None, R=None):
         beta = _solve(_mm(XtVi, Xm), _mv(XtVi, y))
     r = [a - b for a, b in zip(y, _mv(Xm, beta))]
     quad = sum(a * b for a, b in zip(r, _mv(Vi, r)))
-    return (-0.5 * n * math.log(2.0 * math.pi) - 0.5 * _logdet(V)
-            - 0.5 * quad), beta
+    return (-0.5 * n * math.log(2.0 * math.pi) - 0.5 * _logdet(V) - 0.5 * quad), beta
 
 
 def reml_loglik(X, Z, y, D, R=None):
@@ -608,57 +589,45 @@ def em_lmm(X, Z, y, D0=None, sigma2_0=1.0, n_iter=200, tol=1e-10):
     y = _flat(y)
     n = len(y)
     q = len(Zm[0])
-    D = _mat(D0) if D0 is not None else \
-        [[1.0 if i == j else 0.0 for j in range(q)] for i in range(q)]
+    D = _mat(D0) if D0 is not None else [[1.0 if i == j else 0.0 for j in range(q)] for i in range(q)]
     s2 = float(sigma2_0)
     XtX = _mm(_t(Xm), Xm)
     ZtZ = _mm(_t(Zm), Zm)
     beta = _solve(XtX, _mv(_t(Xm), y))
-    for it in range(int(n_iter)):
+    for it in range(int(n_iter)):  # noqa: B007 - read after the loop
         Di = _inv(D)
-        A = [[Di[i][j] + ZtZ[i][j] / s2 for j in range(q)]
-             for i in range(q)]
+        A = [[Di[i][j] + ZtZ[i][j] / s2 for j in range(q)] for i in range(q)]
         Dt = _inv(A)
         resid = [a - b for a, b in zip(y, _mv(Xm, beta))]
         bt = [v / s2 for v in _mv(Dt, _mv(_t(Zm), resid))]
-        beta_new = _solve(XtX, _mv(_t(Xm),
-                                   [a - b for a, b in
-                                    zip(y, _mv(Zm, bt))]))
-        e = [a - b - c for a, b, c in zip(y, _mv(Xm, beta_new),
-                                          _mv(Zm, bt))]
+        beta_new = _solve(XtX, _mv(_t(Xm), [a - b for a, b in zip(y, _mv(Zm, bt))]))
+        e = [a - b - c for a, b, c in zip(y, _mv(Xm, beta_new), _mv(Zm, bt))]
         ZDZ = _mm(_mm(Zm, Dt), _t(Zm))
         tr = sum(ZDZ[i][i] for i in range(n))
         s2_new = (tr + sum(v * v for v in e)) / n
-        D_new = [[Dt[i][j] + bt[i] * bt[j] for j in range(q)]
-                 for i in range(q)]
-        gap = max(abs(s2_new - s2),
-                  max(abs(a - b) for a, b in zip(beta_new, beta)))
+        D_new = [[Dt[i][j] + bt[i] * bt[j] for j in range(q)] for i in range(q)]
+        gap = max(abs(s2_new - s2), max(abs(a - b) for a, b in zip(beta_new, beta)))
         beta, s2, D = beta_new, s2_new, D_new
         if gap < tol:
             break
-    return {"beta": beta, "sigma2": s2, "D": D, "b": bt,
-            "iterations": it + 1}
+    return {"beta": beta, "sigma2": s2, "D": D, "b": bt, "iterations": it + 1}
 
 
-def gblup_model(y, Z_L, G, sigma2_g, sigma2_e=1.0, mu_only=True,
-                X=None):
+def gblup_model(y, Z_L, G, sigma2_g, sigma2_e=1.0, mu_only=True, X=None):
     """eq. (5.3) p.148: Y = 1_n mu + Z_L b + eps with
     b ~ N_J(0, sigma2_g G) and R = sigma2 I_n.  Returns the BLUE of
     the intercept and the BLUP of the genotypic effects."""
     y = _flat(y)
     n = len(y)
-    Xm = [[1.0] for _ in range(n)] if (mu_only or X is None) \
-        else _mat(X)
+    Xm = [[1.0] for _ in range(n)] if (mu_only or X is None) else _mat(X)
     q = len(G)
     Sigma = [[sigma2_g * G[i][j] for j in range(q)] for i in range(q)]
-    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
-         for i in range(n)]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)] for i in range(n)]
     beta, b = blue_blup_via_v(Xm, Z_L, y, Sigma, R)
     return {"mu": beta[0], "beta": beta, "b": b}
 
 
-def gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
-                   sigma2_e=1.0):
+def gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e=1.0):
     """eq. (5.4) p.150: Y = 1_n mu + X_E beta_E + Z_L b_1 + Z_EL b_2
     + eps with b_1 ~ N_J(0, sigma2_g G) and b_2 ~ N(0, Sigma_E (x) G),
     Sigma_E the genetic covariance between environments.  The two
@@ -680,8 +649,7 @@ def gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E,
     for i in range(q2):
         for j in range(q2):
             Sigma[q1 + i][q1 + j] = S2[i][j]
-    R = [[sigma2_e if i == j else 0.0 for j in range(n)]
-         for i in range(n)]
+    R = [[sigma2_e if i == j else 0.0 for j in range(n)] for i in range(n)]
     beta, b = blue_blup_via_v(Xm, Z, y, Sigma, R)
     return {"beta": beta, "b_lines": b[:q1], "b_gxe": b[q1:]}
 
@@ -699,8 +667,7 @@ def multitrait_model(Y, Z, G, Sigma_T, R_T, X=None):
     nT = len(Ym[0])
     y = [v for row in Ym for v in row]
     n = J * nT
-    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)]
-            for i in range(nT)]
+    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
     ones = [[1.0] for _ in range(J)]
     Xm = kron(ones, I_nT)
     if X is not None:
@@ -708,17 +675,13 @@ def multitrait_model(Y, Z, G, Sigma_T, R_T, X=None):
         Xm = [Xm[i] + Xadd[i] for i in range(n)]
     Zm = kron(Z, I_nT)
     Sigma = kron(G, Sigma_T)
-    I_J = [[1.0 if i == j else 0.0 for j in range(J)]
-           for i in range(J)]
+    I_J = [[1.0 if i == j else 0.0 for j in range(J)] for i in range(J)]
     R = kron(I_J, R_T)
     beta, b = blue_blup_via_v(Xm, Zm, y, Sigma, R)
-    return {"mu": beta[:nT], "beta": beta, "b": b,
-            "b_by_line": [b[i * nT:(i + 1) * nT]
-                          for i in range(len(b) // nT)]}
+    return {"mu": beta[:nT], "beta": beta, "b": b, "b_by_line": [b[i * nT : (i + 1) * nT] for i in range(len(b) // nT)]}
 
 
-def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E,
-                         Sigma_2T, R_T, I_env, X=None):
+def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E, Sigma_2T, R_T, I_env, X=None):
     """eq. (5.6) p.155: Y = (1 (x) I_nT) mu + X beta + Z_L b_1
     + Z_EL b_2 + eps with b_1 ~ N(0, G (x) Sigma_T) and
     b_2 ~ N(0, Sigma_E (x) G (x) Sigma_2T).  With Sigma_T, Sigma_2T,
@@ -729,8 +692,7 @@ def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E,
     nT = len(Ym[0])
     y = [v for row in Ym for v in row]
     n = rows * nT
-    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)]
-            for i in range(nT)]
+    I_nT = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
     ones = [[1.0] for _ in range(rows)]
     Xm = kron(ones, I_nT)
     if X is not None:
@@ -749,12 +711,10 @@ def gxe_multitrait_model(Y, Z_L, Z_EL, G, Sigma_T, Sigma_E,
     for i in range(q2):
         for j in range(q2):
             Sigma[q1 + i][q1 + j] = S2[i][j]
-    I_rows = [[1.0 if i == j else 0.0 for j in range(rows)]
-              for i in range(rows)]
+    I_rows = [[1.0 if i == j else 0.0 for j in range(rows)] for i in range(rows)]
     R = kron(I_rows, R_T)
     beta, b = blue_blup_via_v(Xm, Z, y, Sigma, R)
-    return {"mu": beta[:nT], "beta": beta,
-            "b_lines": b[:q1], "b_gxe": b[q1:]}
+    return {"mu": beta[:nT], "beta": beta, "b_lines": b[:q1], "b_gxe": b[q1:]}
 
 
 # --------------------------- Bayesian genomic regression (ch. 6)
@@ -769,8 +729,7 @@ def scaled_inv_chisq(rng, nu, S):
     return float(S) / max(_rchisq(rng, float(nu)), 1e-300)
 
 
-def brr_hyperparameters(y, R2=0.5, nu=5.0, nu_beta=5.0, p=None,
-                        sum_var_x=None):
+def brr_hyperparameters(y, R2=0.5, nu=5.0, nu_beta=5.0, p=None, sum_var_x=None):
     """The BGLR defaults quoted on pp.175 and 184:
     S = Var(Y)(1 - R2)(nu + 2) and, for the BRR,
     S_beta = Var(Y) R2 (nu_beta + 2); for BayesC the scale is divided
@@ -784,12 +743,10 @@ def brr_hyperparameters(y, R2=0.5, nu=5.0, nu_beta=5.0, p=None,
     S_beta = var_y * R2 * (nu_beta + 2.0)
     if sum_var_x:
         S_beta = S_beta / float(sum_var_x)
-    return {"S": S, "S_beta": S_beta, "nu": nu, "nu_beta": nu_beta,
-            "var_y": var_y}
+    return {"S": S, "S_beta": S_beta, "nu": nu, "nu_beta": nu_beta, "var_y": var_y}
 
 
-def bayes_ridge_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
-                      nu_beta=5.0, R2=0.5, seed=42):
+def bayes_ridge_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0, nu_beta=5.0, R2=0.5, seed=42):
     """The BRR Gibbs sampler of eq. (6.3), steps 1-6 on pp.174-175:
 
     sigma2_beta | . ~ chi^-2(nu_beta + p, S_beta + b'b)
@@ -821,27 +778,22 @@ def bayes_ridge_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
     kept = 0
     for it in range(int(n_iter)):
         # sigma2_beta
-        s2b = scaled_inv_chisq(rng, nu_beta + p,
-                               hp["S_beta"]
-                               + sum(b * b for b in beta))
+        s2b = scaled_inv_chisq(rng, nu_beta + p, hp["S_beta"] + sum(b * b for b in beta))
         # beta (joint normal draw via the Cholesky of Sigma-tilde)
-        A = [[XtX[i][j] / s2 + ((1.0 / s2b) if i == j else 0.0)
-              for j in range(p)] for i in range(p)]
+        A = [[XtX[i][j] / s2 + ((1.0 / s2b) if i == j else 0.0) for j in range(p)] for i in range(p)]
         resid = [a - mu for a in ys]
         rhs = [v / s2 for v in _mv(Xt, resid)]
         mean = _solve(A, rhs)
         Ai = _inv(A)
         L = _chol(Ai)
         z = [float(rng.normal(0, 1)) for _ in range(p)]
-        beta = [mean[i] + sum(L[i][k] * z[k] for k in range(p))
-                for i in range(p)]
+        beta = [mean[i] + sum(L[i][k] * z[k] for k in range(p)) for i in range(p)]
         # mu
         r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
         mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
         # sigma2
         e = [a - mu for a in r]
-        s2 = scaled_inv_chisq(rng, nu + n,
-                              hp["S"] + sum(v * v for v in e))
+        s2 = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -849,10 +801,14 @@ def bayes_ridge_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
             acc_s2b += s2b
             for i in range(p):
                 acc_beta[i] += beta[i]
-    return {"mu": acc_mu / kept,
-            "beta": [v / kept for v in acc_beta],
-            "sigma2": acc_s2 / kept, "sigma2_beta": acc_s2b / kept,
-            "n_kept": kept, "hyper": hp}
+    return {
+        "mu": acc_mu / kept,
+        "beta": [v / kept for v in acc_beta],
+        "sigma2": acc_s2 / kept,
+        "sigma2_beta": acc_s2b / kept,
+        "n_kept": kept,
+        "hyper": hp,
+    }
 
 
 def _chol(A):
@@ -876,23 +832,20 @@ def cholesky_lower(A):
     return _chol(A)
 
 
-def bayes_gblup_gibbs(y, G, n_iter=2000, burn_in=500, nu=5.0,
-                      nu_g=5.0, R2=0.5, seed=42):
+def bayes_gblup_gibbs(y, G, n_iter=2000, burn_in=500, nu=5.0, nu_g=5.0, R2=0.5, seed=42):
     """Bayesian GBLUP of eq. (6.4) p.176: Y = 1 mu + g + eps with
     g | sigma2_g ~ N(0, sigma2_g G).  The book (p.177) notes this is
     the BRR of eq. (6.3) run on the design X = L, where G = L L' is
     the Cholesky factorization, so that is exactly how it is fitted
     here; the genomic values are g = L beta."""
     L = _chol(G)
-    fit = bayes_ridge_gibbs(y, L, n_iter=n_iter, burn_in=burn_in,
-                            nu=nu, nu_beta=nu_g, R2=R2, seed=seed)
+    fit = bayes_ridge_gibbs(y, L, n_iter=n_iter, burn_in=burn_in, nu=nu, nu_beta=nu_g, R2=R2, seed=seed)
     fit["g"] = _mv(L, fit["beta"])
     fit["sigma2_g"] = fit.pop("sigma2_beta")
     return fit
 
 
-def bayes_a_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
-                  nu_beta=5.0, R2=0.5, seed=42):
+def bayes_a_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0, nu_beta=5.0, R2=0.5, seed=42):
     """BayesA of sec. 6.4 p.178: a separate variance per marker,
     beta_j | sigma2_bj ~ N(0, sigma2_bj) with
     sigma2_bj ~ chi^-2(nu_beta, S_beta).  Step 2.1 of p.178 draws
@@ -916,23 +869,18 @@ def bayes_a_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
     kept = 0
     for it in range(int(n_iter)):
         for j in range(p):
-            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0,
-                                      hp["S_beta"] + beta[j] ** 2)
+            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0, hp["S_beta"] + beta[j] ** 2)
         # single-site updates of beta (p.181 form)
         for j in range(p):
-            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
-                                        for k in range(p) if k != j)
-                       for i in range(n)]
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             prec = 1.0 / s2j[j] + col_ss[j] / s2
             var = 1.0 / prec
-            mean = var * sum(Xm[i][j] * partial[i]
-                             for i in range(n)) / s2
+            mean = var * sum(Xm[i][j] * partial[i] for i in range(n)) / s2
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
         mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
         e = [a - mu for a in r]
-        s2 = scaled_inv_chisq(rng, nu + n,
-                              hp["S"] + sum(v * v for v in e))
+        s2 = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -940,15 +888,17 @@ def bayes_a_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
             for j in range(p):
                 acc_beta[j] += beta[j]
                 acc_s2j[j] += s2j[j]
-    return {"mu": acc_mu / kept,
-            "beta": [v / kept for v in acc_beta],
-            "sigma2": acc_s2 / kept,
-            "sigma2_beta_j": [v / kept for v in acc_s2j],
-            "n_kept": kept, "hyper": hp}
+    return {
+        "mu": acc_mu / kept,
+        "beta": [v / kept for v in acc_beta],
+        "sigma2": acc_s2 / kept,
+        "sigma2_beta_j": [v / kept for v in acc_s2j],
+        "n_kept": kept,
+        "hyper": hp,
+    }
 
 
-def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
-                  nu_beta=5.0, R2=0.5, pi0=0.5, phi0=10.0, seed=42):
+def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0, nu_beta=5.0, R2=0.5, pi0=0.5, phi0=10.0, seed=42):
     """BayesC of sec. 6.5 pp.180-183: beta_j is a spike-and-slab,
     pi N(0, sigma2_beta) + (1 - pi) DG(0), with a latent Bernoulli
     Z_j.  The joint (beta_j, Z_j) update of p.182 is used, drawing
@@ -979,24 +929,16 @@ def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
     kept = 0
     for it in range(int(n_iter)):
         for j in range(p):
-            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
-                                        for k in range(p) if k != j)
-                       for i in range(n)]
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             prec = 1.0 / s2b + col_ss[j] / s2
             var = 1.0 / prec
-            mean = var * sum(Xm[i][j] * partial[i]
-                             for i in range(n)) / s2
-            ratio = math.sqrt(var / s2b) \
-                * math.exp(min(mean * mean / (2.0 * var), 700.0))
-            pt = pi * ratio / (pi * ratio + (1.0 - pi)) \
-                if pi < 1.0 else 1.0
+            mean = var * sum(Xm[i][j] * partial[i] for i in range(n)) / s2
+            ratio = math.sqrt(var / s2b) * math.exp(min(mean * mean / (2.0 * var), 700.0))
+            pt = pi * ratio / (pi * ratio + (1.0 - pi)) if pi < 1.0 else 1.0
             z[j] = 1 if float(rng.uniform(0, 1)) < pt else 0
-            beta[j] = (mean + math.sqrt(var)
-                       * float(rng.normal(0, 1))) if z[j] else 0.0
+            beta[j] = (mean + math.sqrt(var) * float(rng.normal(0, 1))) if z[j] else 0.0
         zbar = sum(z) / p
-        s2b = scaled_inv_chisq(
-            rng, nu_beta + p * zbar,
-            hp["S_beta"] + sum(zj * b * b for zj, b in zip(z, beta)))
+        s2b = scaled_inv_chisq(rng, nu_beta + p * zbar, hp["S_beta"] + sum(zj * b * b for zj, b in zip(z, beta)))
         if pi0 < 1.0:
             a = phi0 * pi0 + p * zbar
             b_ = phi0 * (1.0 - pi0) + p * (1.0 - zbar)
@@ -1006,8 +948,7 @@ def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
         r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
         mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
         e = [a - mu for a in r]
-        s2 = scaled_inv_chisq(rng, nu + n,
-                              hp["S"] + sum(v * v for v in e))
+        s2 = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -1017,16 +958,19 @@ def bayes_c_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
             for j in range(p):
                 acc_beta[j] += beta[j]
                 acc_z[j] += z[j]
-    return {"mu": acc_mu / kept,
-            "beta": [v / kept for v in acc_beta],
-            "sigma2": acc_s2 / kept, "sigma2_beta": acc_s2b / kept,
-            "pi": acc_pi / kept,
-            "inclusion_prob": [v / kept for v in acc_z],
-            "n_kept": kept, "hyper": hp}
+    return {
+        "mu": acc_mu / kept,
+        "beta": [v / kept for v in acc_beta],
+        "sigma2": acc_s2 / kept,
+        "sigma2_beta": acc_s2b / kept,
+        "pi": acc_pi / kept,
+        "inclusion_prob": [v / kept for v in acc_z],
+        "n_kept": kept,
+        "hyper": hp,
+    }
 
 
-def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
-                  phi0=10.0, seed=42, **kw):
+def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5, phi0=10.0, seed=42, **kw):
     """BayesB of p.183: BayesA with a mixture prior, i.e. the
     spike-and-slab of BayesC combined with a marker-specific slab
     variance.  With pi0 = 1 it reduces to BayesA (p.183)."""
@@ -1036,8 +980,7 @@ def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
     p = len(Xm[0])
     nu = kw.get("nu", 5.0)
     nu_beta = kw.get("nu_beta", 5.0)
-    hp = brr_hyperparameters(ys, R2=kw.get("R2", 0.5), nu=nu,
-                             nu_beta=nu_beta)
+    hp = brr_hyperparameters(ys, R2=kw.get("R2", 0.5), nu=nu, nu_beta=nu_beta)
     rng = np.random.default_rng(seed)
     mu = sum(ys) / n
     beta = [0.0] * p
@@ -1053,22 +996,15 @@ def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
     kept = 0
     for it in range(int(n_iter)):
         for j in range(p):
-            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0,
-                                      hp["S_beta"] + beta[j] ** 2)
-            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
-                                        for k in range(p) if k != j)
-                       for i in range(n)]
+            s2j[j] = scaled_inv_chisq(rng, nu_beta + 1.0, hp["S_beta"] + beta[j] ** 2)
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             prec = 1.0 / s2j[j] + col_ss[j] / s2
             var = 1.0 / prec
-            mean = var * sum(Xm[i][j] * partial[i]
-                             for i in range(n)) / s2
-            ratio = math.sqrt(var / s2j[j]) \
-                * math.exp(min(mean * mean / (2.0 * var), 700.0))
-            pt = pi * ratio / (pi * ratio + (1.0 - pi)) \
-                if pi < 1.0 else 1.0
+            mean = var * sum(Xm[i][j] * partial[i] for i in range(n)) / s2
+            ratio = math.sqrt(var / s2j[j]) * math.exp(min(mean * mean / (2.0 * var), 700.0))
+            pt = pi * ratio / (pi * ratio + (1.0 - pi)) if pi < 1.0 else 1.0
             z[j] = 1 if float(rng.uniform(0, 1)) < pt else 0
-            beta[j] = (mean + math.sqrt(var)
-                       * float(rng.normal(0, 1))) if z[j] else 0.0
+            beta[j] = (mean + math.sqrt(var) * float(rng.normal(0, 1))) if z[j] else 0.0
         if pi0 < 1.0:
             zbar = sum(z) / p
             a = phi0 * pi0 + p * zbar
@@ -1079,8 +1015,7 @@ def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
         r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
         mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
         e = [a - mu for a in r]
-        s2 = scaled_inv_chisq(rng, nu + n,
-                              hp["S"] + sum(v * v for v in e))
+        s2 = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -1089,15 +1024,18 @@ def bayes_b_gibbs(y, X, n_iter=2000, burn_in=500, pi0=0.5,
             for j in range(p):
                 acc_beta[j] += beta[j]
                 acc_z[j] += z[j]
-    return {"mu": acc_mu / kept,
-            "beta": [v / kept for v in acc_beta],
-            "sigma2": acc_s2 / kept, "pi": acc_pi / kept,
-            "inclusion_prob": [v / kept for v in acc_z],
-            "n_kept": kept, "hyper": hp}
+    return {
+        "mu": acc_mu / kept,
+        "beta": [v / kept for v in acc_beta],
+        "sigma2": acc_s2 / kept,
+        "pi": acc_pi / kept,
+        "inclusion_prob": [v / kept for v in acc_z],
+        "n_kept": kept,
+        "hyper": hp,
+    }
 
 
-def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
-                      R2=0.5, lam2=1.0, seed=42):
+def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0, R2=0.5, lam2=1.0, seed=42):
     """The Bayesian Lasso of sec. 6.6 p.184 in the Park and Casella
     (2008) scale-mixture form quoted there -- Park, T. & Casella, G.
     (2008) "The Bayesian Lasso", *Journal of the American Statistical
@@ -1131,19 +1069,15 @@ def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
             shape = 0.5
             scale = 2.0 / (lam2 + b2 / max(s2, 1e-300))
             tau[j] = max(float(rng.gamma(shape, scale)), 1e-12)
-            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k]
-                                        for k in range(p) if k != j)
-                       for i in range(n)]
+            partial = [ys[i] - mu - sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             prec = 1.0 / (tau[j] * s2) + col_ss[j] / s2
             var = 1.0 / prec
-            mean = var * sum(Xm[i][j] * partial[i]
-                             for i in range(n)) / s2
+            mean = var * sum(Xm[i][j] * partial[i] for i in range(n)) / s2
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         r = [a - b for a, b in zip(ys, _mv(Xm, beta))]
         mu = sum(r) / n + math.sqrt(s2 / n) * float(rng.normal(0, 1))
         e = [a - mu for a in r]
-        s2 = scaled_inv_chisq(rng, nu + n,
-                              hp["S"] + sum(v * v for v in e))
+        s2 = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -1151,11 +1085,14 @@ def bayes_lasso_gibbs(y, X, n_iter=2000, burn_in=500, nu=5.0,
             for j in range(p):
                 acc_beta[j] += beta[j]
                 acc_tau[j] += tau[j]
-    return {"mu": acc_mu / kept,
-            "beta": [v / kept for v in acc_beta],
-            "sigma2": acc_s2 / kept,
-            "tau": [v / kept for v in acc_tau],
-            "n_kept": kept, "hyper": hp}
+    return {
+        "mu": acc_mu / kept,
+        "beta": [v / kept for v in acc_beta],
+        "sigma2": acc_s2 / kept,
+        "tau": [v / kept for v in acc_tau],
+        "n_kept": kept,
+        "hyper": hp,
+    }
 
 
 def extended_predictor(n, X_E=None, X=None, X_EM=None):
@@ -1164,18 +1101,15 @@ def extended_predictor(n, X_E=None, X=None, X_EM=None):
     order and reports the block widths, so each block can be given its
     own prior (FIXED, BRR, BayesA/B/C, BL) as the book describes."""
     blocks = [("intercept", [[1.0] for _ in range(n)])]
-    for name, B in (("environments", X_E), ("markers", X),
-                    ("env_x_marker", X_EM)):
+    for name, B in (("environments", X_E), ("markers", X), ("env_x_marker", X_EM)):
         if B is not None:
             blocks.append((name, _mat(B)))
     design = [sum((blk[i] for _, blk in blocks), []) for i in range(n)]
     widths = {name: len(blk[0]) for name, blk in blocks}
-    return {"design": design, "widths": widths,
-            "n_columns": len(design[0])}
+    return {"design": design, "widths": widths, "n_columns": len(design[0])}
 
 
-def rkhs_covariances(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0,
-                     sigma2_ge=1.0):
+def rkhs_covariances(Z_L, G, Z_LE=None, I_env=None, sigma2_g=1.0, sigma2_ge=1.0):
     """eq. (6.7) p.186: under the RKHS parameterization the predictor
     terms Z_L g and Z_LE gE enter through their covariance matrices
     K_L = Z_L G Z_L' and K_LE = Z_LE (I (x) G) Z_LE', which is the
@@ -1212,9 +1146,9 @@ def inv_wishart_draw(rng, nu, S):
     return _inv(W)
 
 
-def multitrait_bayes_gibbs(Y, Z1, G, X=None, n_iter=1500,
-                           burn_in=400, nu_T=None, S_T=None,
-                           nu_R=None, S_R=None, seed=42):
+def multitrait_bayes_gibbs(
+    Y, Z1, G, X=None, n_iter=1500, burn_in=400, nu_T=None, S_T=None, nu_R=None, S_R=None, seed=42
+):
     """The Gibbs sampler of eq. (6.9), steps 1-6 on p.193.
 
     Y = 1_J mu' + X B + Z_1 b_1 + E with
@@ -1242,18 +1176,12 @@ def multitrait_bayes_gibbs(Y, Z1, G, X=None, n_iter=1500,
     rng = np.random.default_rng(seed)
     nu_T = float(nu_T if nu_T is not None else nT + 2)
     nu_R = float(nu_R if nu_R is not None else nT + 2)
-    S_T = _mat(S_T) if S_T is not None else \
-        [[1.0 if i == j else 0.0 for j in range(nT)]
-         for i in range(nT)]
-    S_R = _mat(S_R) if S_R is not None else \
-        [[1.0 if i == j else 0.0 for j in range(nT)]
-         for i in range(nT)]
+    S_T = _mat(S_T) if S_T is not None else [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
+    S_R = _mat(S_R) if S_R is not None else [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
     mu = [sum(row[t] for row in Ym) / J for t in range(nT)]
     b1 = [[0.0] * nT for _ in range(q)]
-    Sig_T = [[1.0 if i == j else 0.0 for j in range(nT)]
-             for i in range(nT)]
-    R = [[1.0 if i == j else 0.0 for j in range(nT)]
-         for i in range(nT)]
+    Sig_T = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
+    R = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
     ZtZ = _mm(_t(Z), Z)
     acc_mu = [0.0] * nT
     acc_b1 = [[0.0] * nT for _ in range(q)]
@@ -1264,55 +1192,38 @@ def multitrait_bayes_gibbs(Y, Z1, G, X=None, n_iter=1500,
         Rinv = _inv(R)
         STinv = _inv(Sig_T)
         # 2. mu
-        resid = [[Ym[i][t] - sum(Z[i][k] * b1[k][t]
-                                 for k in range(q))
-                  for t in range(nT)] for i in range(J)]
+        resid = [[Ym[i][t] - sum(Z[i][k] * b1[k][t] for k in range(q)) for t in range(nT)] for i in range(J)]
         cm = [sum(row[t] for row in resid) / J for t in range(nT)]
-        Lmu = _chol([[R[i][j] / J for j in range(nT)]
-                     for i in range(nT)])
+        Lmu = _chol([[R[i][j] / J for j in range(nT)] for i in range(nT)])
         z = [float(rng.normal(0, 1)) for _ in range(nT)]
-        mu = [cm[t] + sum(Lmu[t][k] * z[k] for k in range(nT))
-              for t in range(nT)]
+        mu = [cm[t] + sum(Lmu[t][k] * z[k] for k in range(nT)) for t in range(nT)]
         # 3. g = vec(b1): (Sigma_T^-1 (x) G^-1) + (R^-1 (x) Z1'Z1)
         A = [[0.0] * (q * nT) for _ in range(q * nT)]
         for s in range(nT):
             for t in range(nT):
                 for a in range(q):
                     for b in range(q):
-                        A[s * q + a][t * q + b] = \
-                            STinv[s][t] * Ginv[a][b] \
-                            + Rinv[s][t] * ZtZ[a][b]
-        Ycen = [[Ym[i][t] - mu[t] for t in range(nT)]
-                for i in range(J)]
+                        A[s * q + a][t * q + b] = STinv[s][t] * Ginv[a][b] + Rinv[s][t] * ZtZ[a][b]
+        Ycen = [[Ym[i][t] - mu[t] for t in range(nT)] for i in range(J)]
         rhs = [0.0] * (q * nT)
         ZtY = _mm(_t(Z), Ycen)
         for s in range(nT):
             for a in range(q):
-                rhs[s * q + a] = sum(Rinv[s][t] * ZtY[a][t]
-                                     for t in range(nT))
+                rhs[s * q + a] = sum(Rinv[s][t] * ZtY[a][t] for t in range(nT))
         mean = _solve(A, rhs)
         Ai = _inv(A)
         L = _chol(Ai)
         zz = [float(rng.normal(0, 1)) for _ in range(q * nT)]
-        g = [mean[i] + sum(L[i][k] * zz[k] for k in range(q * nT))
-             for i in range(q * nT)]
+        g = [mean[i] + sum(L[i][k] * zz[k] for k in range(q * nT)) for i in range(q * nT)]
         b1 = [[g[t * q + a] for t in range(nT)] for a in range(q)]
         # 4. Sigma_T ~ IW(nu_T + J, b1' G^-1 b1 + S_T)
         GB = _mm(Ginv, b1)
         BtGB = _mm(_t(b1), GB)
-        Sig_T = inv_wishart_draw(
-            rng, nu_T + q,
-            [[BtGB[i][j] + S_T[i][j] for j in range(nT)]
-             for i in range(nT)])
+        Sig_T = inv_wishart_draw(rng, nu_T + q, [[BtGB[i][j] + S_T[i][j] for j in range(nT)] for i in range(nT)])
         # 5. R ~ IW(nu_R + J, S_R + E'E)
-        E = [[Ycen[i][t] - sum(Z[i][k] * b1[k][t]
-                               for k in range(q))
-              for t in range(nT)] for i in range(J)]
+        E = [[Ycen[i][t] - sum(Z[i][k] * b1[k][t] for k in range(q)) for t in range(nT)] for i in range(J)]
         EtE = _mm(_t(E), E)
-        R = inv_wishart_draw(
-            rng, nu_R + J,
-            [[EtE[i][j] + S_R[i][j] for j in range(nT)]
-             for i in range(nT)])
+        R = inv_wishart_draw(rng, nu_R + J, [[EtE[i][j] + S_R[i][j] for j in range(nT)] for i in range(nT)])
         if it >= burn_in:
             kept += 1
             for t in range(nT):
@@ -1323,11 +1234,13 @@ def multitrait_bayes_gibbs(Y, Z1, G, X=None, n_iter=1500,
             for a in range(q):
                 for t in range(nT):
                     acc_b1[a][t] += b1[a][t]
-    return {"mu": [v / kept for v in acc_mu],
-            "b1": [[v / kept for v in row] for row in acc_b1],
-            "Sigma_T": [[v / kept for v in row] for row in acc_ST],
-            "R": [[v / kept for v in row] for row in acc_R],
-            "n_kept": kept}
+    return {
+        "mu": [v / kept for v in acc_mu],
+        "b1": [[v / kept for v in row] for row in acc_b1],
+        "Sigma_T": [[v / kept for v in row] for row in acc_ST],
+        "R": [[v / kept for v in row] for row in acc_R],
+        "n_kept": kept,
+    }
 
 
 def multitrait_ridge_form(Z1, G):
@@ -1340,9 +1253,9 @@ def multitrait_ridge_form(Z1, G):
     return {"X1": X1, "L_G": L}
 
 
-def bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None,
-                       b1=None, b2=None, nu_T=None, S_T=None,
-                       nu_E=None, S_E=None):
+def bmtme_conditionals(
+    Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None, b1=None, b2=None, nu_T=None, S_T=None, nu_E=None, S_E=None
+):
     """eq. (6.11) p.195 and its Gibbs steps p.196 (BMTME).
 
     Y = 1_IJ mu' + X B + Z_1 b_1 + Z_2 b_2 + E with
@@ -1360,41 +1273,28 @@ def bmtme_conditionals(Y, Z1, Z2, G, Sigma_T, Sigma_E, R, mu=None,
     Gm = _mat(G)
     Ginv = _inv(Gm)
     J = len(Gm)
-    b1 = _mat(b1) if b1 is not None else \
-        [[0.0] * nT for _ in range(J)]
+    b1 = _mat(b1) if b1 is not None else [[0.0] * nT for _ in range(J)]
     q2 = len(_mat(Z2)[0])
-    b2 = _mat(b2) if b2 is not None else \
-        [[0.0] * nT for _ in range(q2)]
+    b2 = _mat(b2) if b2 is not None else [[0.0] * nT for _ in range(q2)]
     SEinv = _inv(_mat(Sigma_E))
-    I = len(SEinv)
+    I_ = len(SEinv)
     nu_T = float(nu_T if nu_T is not None else nT + 2)
-    nu_E = float(nu_E if nu_E is not None else I + 2)
-    S_T = _mat(S_T) if S_T is not None else \
-        [[1.0 if i == j else 0.0 for j in range(nT)]
-         for i in range(nT)]
-    S_E = _mat(S_E) if S_E is not None else \
-        [[1.0 if i == j else 0.0 for j in range(I)]
-         for i in range(I)]
+    nu_E = float(nu_E if nu_E is not None else I_ + 2)
+    S_T = _mat(S_T) if S_T is not None else [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)]
+    S_E = _mat(S_E) if S_E is not None else [[1.0 if i == j else 0.0 for j in range(I_)] for i in range(I_)]
     # b1' G^-1 b1
     term1 = _mm(_t(b1), _mm(Ginv, b1))
     # b2' (Sigma_E^-1 (x) G^-1) b2
     K = kron(SEinv, Ginv)
     term2 = _mm(_t(b2), _mm(K, b2))
-    scale_T = [[term1[i][j] + term2[i][j] + S_T[i][j]
-                for j in range(nT)] for i in range(nT)]
+    scale_T = [[term1[i][j] + term2[i][j] + S_T[i][j] for j in range(nT)] for i in range(nT)]
     # Sigma_E scale uses b2 reshaped so that vec(b2*') = vec(b2')
     STinv = _inv(_mat(Sigma_T))
-    b2s = [[b2[e * J + a][t] if e * J + a < len(b2) else 0.0
-            for t in range(nT) for a in range(J)]
-           for e in range(I)]
+    b2s = [[b2[e * J + a][t] if e * J + a < len(b2) else 0.0 for t in range(nT) for a in range(J)] for e in range(I_)]
     KE = kron(Ginv, STinv)
     inner = _mm(b2s, _mm(KE, _t(b2s)))
-    scale_E = [[inner[i][j] + S_E[i][j] for j in range(I)]
-               for i in range(I)]
-    return {"nu_T_post": nu_T + J + len(b2),
-            "scale_T": scale_T,
-            "nu_E_post": nu_E + J * I,
-            "scale_E": scale_E}
+    scale_E = [[inner[i][j] + S_E[i][j] for j in range(I_)] for i in range(I_)]
+    return {"nu_T_post": nu_T + J + len(b2), "scale_T": scale_T, "nu_E_post": nu_E + J * I_, "scale_E": scale_E}
 
 
 # ------------- ordinal / categorical / count models (ch. 7)
@@ -1409,35 +1309,49 @@ def _norm_ppf(u):
         return -40.0
     if u >= 1.0:
         return 40.0
-    a = [-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00]
-    b = [-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01]
-    c = [-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-         4.374664141464968e+00, 2.938163982698783e+00]
-    d = [7.784695709041462e-03, 3.224671290700398e-01,
-         2.445134137142996e+00, 3.754408661907416e+00]
+    a = [
+        -3.969683028665376e01,
+        2.209460984245205e02,
+        -2.759285104469687e02,
+        1.383577518672690e02,
+        -3.066479806614716e01,
+        2.506628277459239e00,
+    ]
+    b = [
+        -5.447609879822406e01,
+        1.615858368580409e02,
+        -1.556989798598866e02,
+        6.680131188771972e01,
+        -1.328068155288572e01,
+    ]
+    c = [
+        -7.784894002430293e-03,
+        -3.223964580411365e-01,
+        -2.400758277161838e00,
+        -2.549732539343734e00,
+        4.374664141464968e00,
+        2.938163982698783e00,
+    ]
+    d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e00, 3.754408661907416e00]
     pl, ph = 0.02425, 1.0 - 0.02425
     if u < pl:
         q = math.sqrt(-2.0 * math.log(u))
-        x = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q
-              + c[4]) * q + c[5]) / \
-            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0)
+        x = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0
+        )
     elif u > ph:
         q = math.sqrt(-2.0 * math.log(1.0 - u))
-        x = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q
-               + c[4]) * q + c[5]) / \
-            ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0)
+        x = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1.0
+        )
     else:
         q = u - 0.5
         r = q * q
-        x = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r
-              + a[4]) * r + a[5]) * q / \
-            (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r
-              + b[4]) * r + 1.0)
+        x = (
+            (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5])
+            * q
+            / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1.0)
+        )
     e = _norm_cdf(x) - u
     pdf = math.exp(-0.5 * x * x) / math.sqrt(2.0 * math.pi)
     if pdf > 0:
@@ -1452,13 +1366,11 @@ def ordinal_probabilities(eta, thresholds, link="probit"):
     ordinal probit model) or the standard logistic CDF (the ordinal
     logistic model), both given on p.210."""
     g = _flat(thresholds)
-    F = _norm_cdf if link == "probit" else \
-        (lambda z: 1.0 / (1.0 + math.exp(-z)))
+    F = _norm_cdf if link == "probit" else (lambda z: 1.0 / (1.0 + math.exp(-z)))
     out = []
     for e in _flat(eta):
         cuts = [0.0] + [F(gc + e) for gc in g] + [1.0]
-        out.append([cuts[c + 1] - cuts[c]
-                    for c in range(len(g) + 1)])
+        out.append([cuts[c + 1] - cuts[c] for c in range(len(g) + 1)])
     return out
 
 
@@ -1478,8 +1390,7 @@ def _rtruncnorm(rng, mean, sd, lo, hi):
     return mean + sd * _norm_ppf(u)
 
 
-def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400,
-                         nu_beta=5.0, S_beta=None, seed=42):
+def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400, nu_beta=5.0, S_beta=None, seed=42):
     """The Gibbs sampler for the Bayesian ordinal probit model of
     eq. (7.1), steps 1-6 on pp.212-213 (Albert and Chib 1993):
 
@@ -1506,7 +1417,7 @@ def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400,
     beta = [0.0] * p
     s2b = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     Xt = _t(Xm)
     col_ss = [sum(v * v for v in col) for col in Xt]
     acc_beta = [0.0] * p
@@ -1519,26 +1430,20 @@ def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400,
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -eta[i], 1.0, lo, hi)
+            ell[i] = _rtruncnorm(rng, -eta[i], 1.0, lo, hi)
         for j in range(p):
-            e_j = [l[i] + sum(Xm[i][k] * beta[k]
-                              for k in range(p) if k != j)
-                   for i in range(n)]
+            e_j = [ell[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
             var = 1.0 / (1.0 / s2b + col_ss[j])
             mean = -var * sum(Xm[i][j] * e_j[i] for i in range(n))
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c],
-                      default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
-                      default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
-                gamma[c - 1] = lo + (hi - lo) \
-                    * float(rng.uniform(0, 1))
-        s2b = scaled_inv_chisq(rng, nu_beta + p,
-                               S_beta + sum(b * b for b in beta))
+                gamma[c - 1] = lo + (hi - lo) * float(rng.uniform(0, 1))
+        s2b = scaled_inv_chisq(rng, nu_beta + p, S_beta + sum(b * b for b in beta))
         if it >= burn_in:
             kept += 1
             acc_s2b += s2b
@@ -1546,14 +1451,16 @@ def ordinal_probit_gibbs(y, X, n_iter=1500, burn_in=400,
                 acc_beta[j] += beta[j]
             for c in range(len(gamma)):
                 acc_gamma[c] += gamma[c]
-    return {"beta": [v / kept for v in acc_beta],
-            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
-            "sigma2_beta": acc_s2b / kept, "n_kept": kept,
-            "n_categories": C}
+    return {
+        "beta": [v / kept for v in acc_beta],
+        "gamma": [v / kept for v in acc_gamma[: len(gamma)]],
+        "sigma2_beta": acc_s2b / kept,
+        "n_kept": kept,
+        "n_categories": C,
+    }
 
 
-def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
-                               nu_g=5.0, S_g=None, seed=42):
+def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400, nu_g=5.0, S_g=None, seed=42):
     """The ordinal probit GBLUP of eq. (7.2) p.214:
     p_ic = Phi(gamma_c + b_i) - Phi(gamma_{c-1} + b_i) with
     b | sigma2_g ~ N(0, sigma2_g G).  Gibbs steps 1-6 on p.214:
@@ -1576,7 +1483,7 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
     b = [0.0] * n
     s2g = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     acc_b = [0.0] * n
     acc_gamma = [0.0] * max(len(gamma), 1)
     acc_s2g = 0.0
@@ -1586,27 +1493,21 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -b[i], 1.0, lo, hi)
-        A = [[Ginv[i][j] / s2g + (1.0 if i == j else 0.0)
-              for j in range(n)] for i in range(n)]
+            ell[i] = _rtruncnorm(rng, -b[i], 1.0, lo, hi)
+        A = [[Ginv[i][j] / s2g + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
         Sig = _inv(A)
-        mean = [-v for v in _mv(Sig, l)]
+        mean = [-v for v in _mv(Sig, ell)]
         L = _chol(Sig)
         z = [float(rng.normal(0, 1)) for _ in range(n)]
-        b = [mean[i] + sum(L[i][k] * z[k] for k in range(n))
-             for i in range(n)]
+        b = [mean[i] + sum(L[i][k] * z[k] for k in range(n)) for i in range(n)]
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c],
-                      default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
-                      default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
-                gamma[c - 1] = lo + (hi - lo) \
-                    * float(rng.uniform(0, 1))
-        quad = sum(b[i] * sum(Ginv[i][j] * b[j] for j in range(n))
-                   for i in range(n))
+                gamma[c - 1] = lo + (hi - lo) * float(rng.uniform(0, 1))
+        quad = sum(b[i] * sum(Ginv[i][j] * b[j] for j in range(n)) for i in range(n))
         s2g = scaled_inv_chisq(rng, nu_g + n, S_g + quad)
         if it >= burn_in:
             kept += 1
@@ -1615,10 +1516,13 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=1500, burn_in=400,
                 acc_b[i] += b[i]
             for c in range(len(gamma)):
                 acc_gamma[c] += gamma[c]
-    return {"b": [v / kept for v in acc_b],
-            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
-            "sigma2_g": acc_s2g / kept, "n_kept": kept,
-            "n_categories": C}
+    return {
+        "b": [v / kept for v in acc_b],
+        "gamma": [v / kept for v in acc_gamma[: len(gamma)]],
+        "sigma2_g": acc_s2g / kept,
+        "n_kept": kept,
+        "n_categories": C,
+    }
 
 
 # ------- ordinal logistic / multinomial / Poisson (ch. 7 pp.221-233)
@@ -1638,8 +1542,7 @@ def _rpolya_gamma(rng, b, c, n_terms=120):
     return tot / (2.0 * math.pi * math.pi)
 
 
-def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200,
-                           nu_beta=5.0, S_beta=1.0, seed=42):
+def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200, nu_beta=5.0, S_beta=1.0, seed=42):
     """The ordinal logistic Gibbs sampler of sec. 7.3, steps 1-7 on
     p.224, using the Polya-Gamma augmentation of p.222:
 
@@ -1662,7 +1565,7 @@ def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200,
     beta = [0.0] * p
     s2b = 1.0
     gamma = [float(c) - C / 2.0 for c in range(1, C)]
-    l = [0.0] * n
+    ell = [0.0] * n
     omega = [1.0] * n
     acc_beta = [0.0] * p
     acc_gamma = [0.0] * max(len(gamma), 1)
@@ -1670,50 +1573,42 @@ def ordinal_logistic_gibbs(y, X, n_iter=800, burn_in=200,
     for it in range(int(n_iter)):
         eta = _mv(Xm, beta)
         for i in range(n):
-            omega[i] = max(_rpolya_gamma(rng, 2.0, l[i] + eta[i]),
-                           1e-9)
+            omega[i] = max(_rpolya_gamma(rng, 2.0, ell[i] + eta[i]), 1e-9)
         for i in range(n):
             c = ys[i]
             lo = gamma[c - 2] if c >= 2 else -1e300
             hi = gamma[c - 1] if c <= C - 1 else 1e300
-            l[i] = _rtruncnorm(rng, -eta[i],
-                               1.0 / math.sqrt(omega[i]), lo, hi)
+            ell[i] = _rtruncnorm(rng, -eta[i], 1.0 / math.sqrt(omega[i]), lo, hi)
         for j in range(p):
-            e_j = [l[i] + sum(Xm[i][k] * beta[k]
-                              for k in range(p) if k != j)
-                   for i in range(n)]
-            prec = 1.0 / s2b + sum(omega[i] * Xm[i][j] ** 2
-                                   for i in range(n))
+            e_j = [ell[i] + sum(Xm[i][k] * beta[k] for k in range(p) if k != j) for i in range(n)]
+            prec = 1.0 / s2b + sum(omega[i] * Xm[i][j] ** 2 for i in range(n))
             var = 1.0 / prec
-            mean = -var * sum(omega[i] * Xm[i][j] * e_j[i]
-                              for i in range(n))
+            mean = -var * sum(omega[i] * Xm[i][j] * e_j[i] for i in range(n))
             beta[j] = mean + math.sqrt(var) * float(rng.normal(0, 1))
         for c in range(1, C):
-            a_c = max([l[i] for i in range(n) if ys[i] == c],
-                      default=-1e300)
-            b_c = min([l[i] for i in range(n) if ys[i] == c + 1],
-                      default=1e300)
+            a_c = max([ell[i] for i in range(n) if ys[i] == c], default=-1e300)
+            b_c = min([ell[i] for i in range(n) if ys[i] == c + 1], default=1e300)
             lo = max(a_c, gamma[c - 2] if c >= 2 else -1e300)
             hi = min(b_c, gamma[c] if c <= C - 2 else 1e300)
             if hi > lo:
-                gamma[c - 1] = lo + (hi - lo) \
-                    * float(rng.uniform(0, 1))
-        s2b = scaled_inv_chisq(rng, nu_beta + p,
-                               S_beta + sum(b * b for b in beta))
+                gamma[c - 1] = lo + (hi - lo) * float(rng.uniform(0, 1))
+        s2b = scaled_inv_chisq(rng, nu_beta + p, S_beta + sum(b * b for b in beta))
         if it >= burn_in:
             kept += 1
             for j in range(p):
                 acc_beta[j] += beta[j]
             for c in range(len(gamma)):
                 acc_gamma[c] += gamma[c]
-    return {"beta": [v / kept for v in acc_beta],
-            "gamma": [v / kept for v in acc_gamma[:len(gamma)]],
-            "omega_mean": sum(omega) / n, "n_kept": kept,
-            "n_categories": C}
+    return {
+        "beta": [v / kept for v in acc_beta],
+        "gamma": [v / kept for v in acc_gamma[: len(gamma)]],
+        "omega_mean": sum(omega) / n,
+        "n_kept": kept,
+        "n_categories": C,
+    }
 
 
-def ordinal_latent_predictor(n, X_E=None, X=None, X_EM=None,
-                             Z_L=None, L_g=None):
+def ordinal_latent_predictor(n, X_E=None, X=None, X_EM=None, Z_L=None, L_g=None):
     """The latent-scale predictors of eq. (7.3)-(7.5), pp.219-221:
 
       (7.3)  L = X_E beta_E + X beta + X_EM beta_EM + eps
@@ -1733,16 +1628,12 @@ def ordinal_latent_predictor(n, X_E=None, X=None, X_EM=None,
     if X_EM is not None:
         blocks.append(("env_x_marker", _mat(X_EM)))
     if Z_L is not None:
-        Zg = _mm(_mat(Z_L), _mat(L_g)) if L_g is not None \
-            else _mat(Z_L)
+        Zg = _mm(_mat(Z_L), _mat(L_g)) if L_g is not None else _mat(Z_L)
         blocks.append(("genetic", Zg))
     if not blocks:
         raise ValueError("the predictor needs at least one block")
-    design = [sum((blk[i] for _, blk in blocks), [])
-              for i in range(n)]
-    return {"design": design,
-            "widths": {name: len(blk[0]) for name, blk in blocks},
-            "n_columns": len(design[0])}
+    design = [sum((blk[i] for _, blk in blocks), []) for i in range(n)]
+    return {"design": design, "widths": {name: len(blk[0]) for name, blk in blocks}, "n_columns": len(design[0])}
 
 
 def multinomial_probabilities(X, beta0, beta, baseline_last=True):
@@ -1758,8 +1649,7 @@ def multinomial_probabilities(X, beta0, beta, baseline_last=True):
         B = B + [[0.0] * len(Xm[0])]
     out = []
     for row in Xm:
-        eta = [b0[c] + sum(a * b for a, b in zip(row, B[c]))
-               for c in range(len(b0))]
+        eta = [b0[c] + sum(a * b for a, b in zip(row, B[c])) for c in range(len(b0))]
         m = max(eta)
         ex = [math.exp(v - m) for v in eta]
         s = sum(ex)
@@ -1773,28 +1663,20 @@ def multinomial_loglik(X, y, beta0, beta, baseline_last=True):
     + x_i'beta_l)."""
     P = multinomial_probabilities(X, beta0, beta, baseline_last)
     ys = [int(v) for v in _flat(y)]
-    return sum(math.log(max(P[i][ys[i]], 1e-300))
-               for i in range(len(ys)))
+    return sum(math.log(max(P[i][ys[i]], 1e-300)) for i in range(len(ys)))
 
 
-def penalized_multinomial_loglik(X, y, beta0, beta, lam,
-                                 penalty="ridge",
-                                 baseline_last=True):
+def penalized_multinomial_loglik(X, y, beta0, beta, lam, penalty="ridge", baseline_last=True):
     """eq. (7.7) p.226 (ridge): l_p = l(beta; y)
     - lambda sum_c beta_c'beta_c, and eq. (7.10) p.227 (lasso):
     l_p = l(beta; y) - lambda sum_c sum_j |beta_cj|.  Only the slopes
     are penalized, never the intercepts (p.226)."""
     ll = multinomial_loglik(X, y, beta0, beta, baseline_last)
-    if penalty == "lasso":
-        pen = sum(abs(v) for row in beta for v in row)
-    else:
-        pen = sum(v * v for row in beta for v in row)
-    return {"loglik": ll, "penalty": float(lam) * pen,
-            "penalized_loglik": ll - float(lam) * pen}
+    pen = sum(abs(v) for row in beta for v in row) if penalty == "lasso" else sum(v * v for row in beta for v in row)
+    return {"loglik": ll, "penalty": float(lam) * pen, "penalized_loglik": ll - float(lam) * pen}
 
 
-def multinomial_block_update(X, y, beta0, beta, lam, cls,
-                             baseline_last=True):
+def multinomial_block_update(X, y, beta0, beta, lam, cls, baseline_last=True):
     """eq. (7.9) p.227, the block-coordinate update of class c:
     beta*_c = (X*'W_c X* + lambda D)^-1 X*'W_c y*, where
     X* = [1_n, X], W_c = Diag(w_1c..w_nc) with
@@ -1818,14 +1700,16 @@ def multinomial_block_update(X, y, beta0, beta, lam, cls,
         eta = b_cur[0] + sum(a * b for a, b in zip(Xm[i], b_cur[1:]))
         w.append(wi)
         ystar.append(eta + ((1.0 if ys[i] == c else 0.0) - pc) / wi)
-    A = [[sum(w[i] * Xs[i][a] * Xs[i][b] for i in range(n))
-          + (float(lam) if (a == b and a > 0) else 0.0)
-          for b in range(p + 1)] for a in range(p + 1)]
-    rhs = [sum(w[i] * Xs[i][a] * ystar[i] for i in range(n))
-           for a in range(p + 1)]
+    A = [
+        [
+            sum(w[i] * Xs[i][a] * Xs[i][b] for i in range(n)) + (float(lam) if (a == b and a > 0) else 0.0)
+            for b in range(p + 1)
+        ]
+        for a in range(p + 1)
+    ]
+    rhs = [sum(w[i] * Xs[i][a] * ystar[i] for i in range(n)) for a in range(p + 1)]
     sol = _solve(A, rhs)
-    return {"beta0": sol[0], "beta": sol[1:],
-            "weights": w, "working_response": ystar}
+    return {"beta0": sol[0], "beta": sol[1:], "weights": w, "working_response": ystar}
 
 
 def poisson_pmf(y, lam):
@@ -1838,9 +1722,7 @@ def poisson_pmf(y, lam):
     return math.exp(y * math.log(lam) - lam - math.lgamma(y + 1.0))
 
 
-def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge",
-                          n_iter=100, tol=1e-10,
-                          add_intercept=True):
+def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge", n_iter=100, tol=1e-10, add_intercept=True):
     """The penalized Poisson log-linear model of sec. 7.5 p.232:
     l_p = sum_i y_i(beta_0 + x_i'beta) - sum_i exp(beta_0 + x_i'beta)
     - sum_i log(y_i!) - (lambda/2) sum_j beta_j^2, fitted by the
@@ -1857,43 +1739,40 @@ def penalized_poisson_fit(X, y, lam=1.0, penalty="ridge",
     beta = [0.0] * p
     if add_intercept:
         beta[0] = math.log(max(sum(ys) / n, 1e-6))
-    for it in range(int(n_iter)):
+    for it in range(int(n_iter)):  # noqa: B007 - read after the loop
         eta = _mv(Xm, beta)
         mu = [math.exp(min(v, 700.0)) for v in eta]
         w = [max(m, 1e-9) for m in mu]
         z = [eta[i] + (ys[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              + (float(lam) if (a == b
-                                and not (add_intercept and a == 0))
-                 else 0.0)
-              for b in range(p)] for a in range(p)]
-        rhs = [sum(w[i] * Xm[i][a] * z[i] for i in range(n))
-               for a in range(p)]
+        A = [
+            [
+                sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
+                + (float(lam) if (a == b and not (add_intercept and a == 0)) else 0.0)
+                for b in range(p)
+            ]
+            for a in range(p)
+        ]
+        rhs = [sum(w[i] * Xm[i][a] * z[i] for i in range(n)) for a in range(p)]
         new = _solve(A, rhs)
         if penalty == "lasso":
-            new = [new[0]] + [math.copysign(max(abs(v) - lam, 0.0),
-                                            v) for v in new[1:]] \
-                if add_intercept else \
-                [math.copysign(max(abs(v) - lam, 0.0), v)
-                 for v in new]
+            new = (
+                [new[0]] + [math.copysign(max(abs(v) - lam, 0.0), v) for v in new[1:]]
+                if add_intercept
+                else [math.copysign(max(abs(v) - lam, 0.0), v) for v in new]
+            )
         gap = max(abs(a - b) for a, b in zip(new, beta))
         beta = new
         if gap < tol:
             break
     eta = _mv(Xm, beta)
     mu = [math.exp(min(v, 700.0)) for v in eta]
-    ll = sum(ys[i] * eta[i] - mu[i] - math.lgamma(ys[i] + 1.0)
-             for i in range(n))
-    pen = float(lam) * sum(
-        v * v for j, v in enumerate(beta)
-        if not (add_intercept and j == 0)) / 2.0
-    return {"beta": beta, "fitted": mu, "loglik": ll,
-            "penalized_loglik": ll - pen, "iterations": it + 1}
+    ll = sum(ys[i] * eta[i] - mu[i] - math.lgamma(ys[i] + 1.0) for i in range(n))
+    pen = float(lam) * sum(v * v for j, v in enumerate(beta) if not (add_intercept and j == 0)) / 2.0
+    return {"beta": beta, "fitted": mu, "loglik": ll, "penalized_loglik": ll - pen, "iterations": it + 1}
 
 
 # ------------------ RKHS regression and kernels (ch. 8 pp.252-255)
-def kernel_matrix(X, kernel="linear", gamma=None, degree=2,
-                  coef0=1.0, Z=None):
+def kernel_matrix(X, kernel="linear", gamma=None, degree=2, coef0=1.0, Z=None):
     """The Gram matrix K with K_ij = K(x_i, x_j) (sec. 8.2.2 p.255).
 
     A kernel is an inner product in an expanded feature space,
@@ -1917,18 +1796,14 @@ def kernel_matrix(X, kernel="linear", gamma=None, degree=2,
                 d2 = sum((u - w) ** 2 for u, w in zip(a, b))
                 v = math.exp(-gamma * d2)
             elif kernel == "polynomial":
-                v = (gamma * sum(u * w for u, w in zip(a, b))
-                     + coef0) ** degree
+                v = (gamma * sum(u * w for u, w in zip(a, b)) + coef0) ** degree
             elif kernel == "exponential":
-                d = math.sqrt(sum((u - w) ** 2
-                                  for u, w in zip(a, b)))
+                d = math.sqrt(sum((u - w) ** 2 for u, w in zip(a, b)))
                 v = math.exp(-gamma * d)
             elif kernel == "sigmoid":
-                v = math.tanh(gamma * sum(u * w
-                                          for u, w in zip(a, b))
-                              + coef0)
+                v = math.tanh(gamma * sum(u * w for u, w in zip(a, b)) + coef0)
             else:
-                raise ValueError("unknown kernel: %s" % kernel)
+                raise ValueError(f"unknown kernel: {kernel}")
             row.append(v)
         out.append(row)
     return out
@@ -1940,8 +1815,7 @@ def is_positive_semidefinite(K, tol=1e-9):
     eigenvalues of the symmetrized matrix."""
     Km = _mat(K)
     n = len(Km)
-    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)]
-         for i in range(n)]
+    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)] for i in range(n)]
     vals, _ = np.linalg.eigh(np.marr(S))
     lam = [float(v) for v in vals._flat()]
     return min(lam) >= -tol, lam
@@ -1952,15 +1826,13 @@ def rkhs_norm(beta, K):
     ||f||_H^2 = sum_ij beta_i beta_j K(x_i, x_j) = beta' K beta."""
     b = _flat(beta)
     Km = _mat(K)
-    return sum(b[i] * Km[i][j] * b[j]
-               for i in range(len(b)) for j in range(len(b)))
+    return sum(b[i] * Km[i][j] * b[j] for i in range(len(b)) for j in range(len(b)))
 
 
 def rkhs_predict(K_new, beta, eta0=0.0):
     """The representer-theorem prediction of eq. (8.2) p.254:
     f(x_i) = eta_0 + sum_j beta_j K(x_i, x_j) = eta_0 + k_i'beta."""
-    return [float(eta0) + sum(k * b for k, b in zip(row, _flat(beta)))
-            for row in _mat(K_new)]
+    return [float(eta0) + sum(k * b for k, b in zip(row, _flat(beta))) for row in _mat(K_new)]
 
 
 def rkhs_fit_squared_loss(K, y, lam=1.0):
@@ -1986,19 +1858,21 @@ def rkhs_fit_squared_loss(K, y, lam=1.0):
     for a in range(n):
         A[1 + a][0] = colsum[a] * 2.0 / n
         for b in range(n):
-            A[1 + a][1 + b] = 2.0 * KtK[a][b] / n \
-                + float(lam) * Km[a][b]
+            A[1 + a][1 + b] = 2.0 * KtK[a][b] / n + float(lam) * Km[a][b]
         rhs[1 + a] = 2.0 * Kty[a] / n
     sol = _solve(A, rhs)
     eta0, beta = sol[0], sol[1:]
     fitted = rkhs_predict(Km, beta, eta0)
     resid = [a - b for a, b in zip(ys, fitted)]
-    return {"eta0": eta0, "beta": beta, "fitted": fitted,
-            "residuals": resid,
-            "loss": sum(v * v for v in resid) / n,
-            "penalty": 0.5 * float(lam) * rkhs_norm(beta, Km),
-            "objective": sum(v * v for v in resid) / n
-            + 0.5 * float(lam) * rkhs_norm(beta, Km)}
+    return {
+        "eta0": eta0,
+        "beta": beta,
+        "fitted": fitted,
+        "residuals": resid,
+        "loss": sum(v * v for v in resid) / n,
+        "penalty": 0.5 * float(lam) * rkhs_norm(beta, Km),
+        "objective": sum(v * v for v in resid) / n + 0.5 * float(lam) * rkhs_norm(beta, Km),
+    }
 
 
 def generalized_kernel_model(K, beta, eta0=0.0, link="identity"):
@@ -2018,7 +1892,7 @@ def generalized_kernel_model(K, beta, eta0=0.0, link="identity"):
     elif link == "log":
         mu = [math.exp(min(v, 700.0)) for v in eta]
     else:
-        raise ValueError("unknown link: %s" % link)
+        raise ValueError(f"unknown link: {link}")
     return {"eta": eta, "mu": mu, "link": link}
 
 
@@ -2063,8 +1937,7 @@ def arccos_kernel(X, Z=None, depth=1, normalize_median=False):
         c = min(max(c, -1.0), 1.0)
         return nu * nv * J(math.acos(c)) / math.pi
 
-    K = [[ak1(a, b, na[i], nb[j]) for j, b in enumerate(B)]
-         for i, a in enumerate(A)]
+    K = [[ak1(a, b, na[i], nb[j]) for j, b in enumerate(B)] for i, a in enumerate(A)]
     if same:
         dA = [K[i][i] for i in range(len(A))]
         dB = dA
@@ -2089,8 +1962,7 @@ def arccos_kernel(X, Z=None, depth=1, normalize_median=False):
     if normalize_median:
         flat = sorted(v for row in K for v in row)
         n = len(flat)
-        med = flat[n // 2] if n % 2 else 0.5 * (flat[n // 2 - 1]
-                                                + flat[n // 2])
+        med = flat[n // 2] if n % 2 else 0.5 * (flat[n // 2 - 1] + flat[n // 2])
         if med:
             K = [[v / med for v in row] for row in K]
     return K
@@ -2099,14 +1971,12 @@ def arccos_kernel(X, Z=None, depth=1, normalize_median=False):
 def hadamard(A, B):
     """Element-wise (Hadamard) product, written "o" on p.285."""
     Am, Bm = _mat(A), _mat(B)
-    return [[Am[i][j] * Bm[i][j] for j in range(len(Am[0]))]
-            for i in range(len(Am))]
+    return [[Am[i][j] * Bm[i][j] for j in range(len(Am[0]))] for i in range(len(Am))]
 
 
-def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
-                         X=None, n_iter=1200, burn_in=300,
-                         nu=5.0, nu_u=5.0, R2=0.5, seed=42,
-                         gibbs=True):
+def bayesian_kernel_blup(
+    y, K, sigma2_u=1.0, sigma2_e=1.0, X=None, n_iter=1200, burn_in=300, nu=5.0, nu_u=5.0, R2=0.5, seed=42, gibbs=True
+):
     """The Bayesian kernel BLUP of eq. (8.8) p.281:
     y = 1 mu + u + e with u ~ N(0, sigma2_u K) and
     e ~ N(0, sigma2_e I), i.e. kernel ridge regression under a
@@ -2133,8 +2003,7 @@ def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
     hp = brr_hyperparameters(ys, R2=R2, nu=nu, nu_beta=nu_u)
 
     def posterior_u(mu, s2u, s2e):
-        A = [[Kinv[i][j] / s2u + ((1.0 / s2e) if i == j else 0.0)
-              for j in range(n)] for i in range(n)]
+        A = [[Kinv[i][j] / s2u + ((1.0 / s2e) if i == j else 0.0) for j in range(n)] for i in range(n)]
         Kt = _inv(A)
         ut = [v / s2e for v in _mv(Kt, [a - mu for a in ys])]
         return ut, Kt
@@ -2142,8 +2011,7 @@ def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
     if not gibbs:
         mu = sum(ys) / n
         ut, Kt = posterior_u(mu, sigma2_u, sigma2_e)
-        return {"mu": mu, "u": ut, "K_tilde": Kt,
-                "sigma2_u": sigma2_u, "sigma2_e": sigma2_e}
+        return {"mu": mu, "u": ut, "K_tilde": Kt, "sigma2_u": sigma2_u, "sigma2_e": sigma2_e}
 
     mu = sum(ys) / n
     s2u, s2e = sigma2_u, sigma2_e
@@ -2156,18 +2024,13 @@ def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
         ut, Kt = posterior_u(mu, s2u, s2e)
         L = _chol(Kt)
         z = [float(rng.normal(0, 1)) for _ in range(n)]
-        u = [ut[i] + sum(L[i][k] * z[k] for k in range(n))
-             for i in range(n)]
+        u = [ut[i] + sum(L[i][k] * z[k] for k in range(n)) for i in range(n)]
         resid = [a - b for a, b in zip(ys, u)]
-        mu = sum(resid) / n + math.sqrt(s2e / n) \
-            * float(rng.normal(0, 1))
+        mu = sum(resid) / n + math.sqrt(s2e / n) * float(rng.normal(0, 1))
         e = [a - mu for a in resid]
-        s2e = scaled_inv_chisq(rng, nu + n,
-                               hp["S"] + sum(v * v for v in e))
-        quad = sum(u[i] * sum(Kinv[i][j] * u[j] for j in range(n))
-                   for i in range(n))
-        s2u = scaled_inv_chisq(rng, nu_u + n,
-                               hp["S_beta"] + quad)
+        s2e = scaled_inv_chisq(rng, nu + n, hp["S"] + sum(v * v for v in e))
+        quad = sum(u[i] * sum(Kinv[i][j] * u[j] for j in range(n)) for i in range(n))
+        s2u = scaled_inv_chisq(rng, nu_u + n, hp["S_beta"] + quad)
         if it >= burn_in:
             kept += 1
             acc_mu += mu
@@ -2175,9 +2038,13 @@ def bayesian_kernel_blup(y, K, sigma2_u=1.0, sigma2_e=1.0,
             acc_s2e += s2e
             for i in range(n):
                 acc_u[i] += u[i]
-    return {"mu": acc_mu / kept, "u": [v / kept for v in acc_u],
-            "sigma2_u": acc_s2u / kept, "sigma2_e": acc_s2e / kept,
-            "n_kept": kept}
+    return {
+        "mu": acc_mu / kept,
+        "u": [v / kept for v in acc_u],
+        "sigma2_u": acc_s2u / kept,
+        "sigma2_e": acc_s2e / kept,
+        "n_kept": kept,
+    }
 
 
 def kernel_blup_replicated(Z, K, sigma2_u=1.0):
@@ -2203,9 +2070,11 @@ def kernel_blup_gxe(Z_u1, K, Z_E, sigma2_u1=1.0, sigma2_u2=1.0):
     K1 = _mm(_mm(Zu, _mat(K)), _t(Zu))
     KE = _mm(ZE, _t(ZE))
     K2 = hadamard(K1, KE)
-    return {"K1": [[sigma2_u1 * v for v in row] for row in K1],
-            "K2": [[sigma2_u2 * v for v in row] for row in K2],
-            "K_env": KE}
+    return {
+        "K1": [[sigma2_u1 * v for v in row] for row in K1],
+        "K2": [[sigma2_u2 * v for v in row] for row in K2],
+        "K_env": KE,
+    }
 
 
 def kernel_eigen_design(K, tol=1e-10):
@@ -2218,18 +2087,14 @@ def kernel_eigen_design(K, tol=1e-10):
     """
     Km = _mat(K)
     n = len(Km)
-    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)]
-         for i in range(n)]
+    S = [[0.5 * (Km[i][j] + Km[j][i]) for j in range(n)] for i in range(n)]
     vals, vecs = np.linalg.eigh(np.marr(S))
     lam = [float(v) for v in vals._flat()]
-    V = [[float(v) for v in row] for row in vecs._tolist()] \
-        if hasattr(vecs, "_tolist") else _mat(vecs)
+    V = [[float(v) for v in row] for row in vecs._tolist()] if hasattr(vecs, "_tolist") else _mat(vecs)
     order = sorted(range(n), key=lambda i: -lam[i])
     keep = [i for i in order if lam[i] > tol]
-    P = [[V[r][i] * math.sqrt(lam[i]) for i in keep]
-         for r in range(n)]
-    return {"P": P, "rank": len(keep),
-            "eigenvalues": [lam[i] for i in keep]}
+    P = [[V[r][i] * math.sqrt(lam[i]) for i in keep] for r in range(n)]
+    return {"P": P, "rank": len(keep), "eigenvalues": [lam[i] for i in keep]}
 
 
 def nystrom_kernel(X, m_index, kernel="linear", gamma=None):
@@ -2258,10 +2123,8 @@ def nystrom_kernel(X, m_index, kernel="linear", gamma=None):
     Xm = [A[i] for i in idx]
     p = len(A[0])
     if kernel == "linear":
-        Kmm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm]
-               for u in Xm]
-        Knm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm]
-               for u in A]
+        Kmm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm] for u in Xm]
+        Knm = [[sum(a * b for a, b in zip(u, v)) / p for v in Xm] for u in A]
     else:
         Kmm = kernel_matrix(Xm, kernel=kernel, gamma=gamma)
         Knm = kernel_matrix(A, kernel=kernel, gamma=gamma, Z=Xm)
@@ -2270,8 +2133,7 @@ def nystrom_kernel(X, m_index, kernel="linear", gamma=None):
     return {"Q": Q, "K_mm": Kmm, "K_nm": Knm, "rank": len(idx)}
 
 
-def sparse_kernel_design(X, m_index, kernel="linear", gamma=None,
-                         tol=1e-10):
+def sparse_kernel_design(X, m_index, kernel="linear", gamma=None, tol=1e-10):
     """eq. (8.12) p.291, steps 1-5: build K_{m,m} from m training
     lines, K_{n,m} against all n, take the eigendecomposition
     K_{m,m}^-1 = U S^(-1/2) S^(-1/2) U', and form the design
@@ -2282,24 +2144,19 @@ def sparse_kernel_design(X, m_index, kernel="linear", gamma=None,
     ny = nystrom_kernel(X, m_index, kernel=kernel, gamma=gamma)
     Kmm = ny["K_mm"]
     m = len(Kmm)
-    S = [[0.5 * (Kmm[i][j] + Kmm[j][i]) for j in range(m)]
-         for i in range(m)]
+    S = [[0.5 * (Kmm[i][j] + Kmm[j][i]) for j in range(m)] for i in range(m)]
     vals, vecs = np.linalg.eigh(np.marr(S))
     lam = [float(v) for v in vals._flat()]
-    V = [[float(v) for v in row] for row in vecs._tolist()] \
-        if hasattr(vecs, "_tolist") else _mat(vecs)
+    V = [[float(v) for v in row] for row in vecs._tolist()] if hasattr(vecs, "_tolist") else _mat(vecs)
     order = sorted(range(m), key=lambda i: -lam[i])
     keep = [i for i in order if lam[i] > tol]
     # U S^(-1/2) using the eigenvalues of K_mm
-    US = [[V[r][i] / math.sqrt(lam[i]) for i in keep]
-          for r in range(m)]
+    US = [[V[r][i] / math.sqrt(lam[i]) for i in keep] for r in range(m)]
     P = _mm(ny["K_nm"], US)
-    return {"P": P, "Q": ny["Q"], "rank": len(keep),
-            "K_mm": Kmm, "K_nm": ny["K_nm"]}
+    return {"P": P, "Q": ny["Q"], "rank": len(keep), "K_mm": Kmm, "K_nm": ny["K_nm"]}
 
 
-def rkhs_mixed_equations(C, K, y, lam=1.0, sigma2_e=1.0,
-                         form="direct"):
+def rkhs_mixed_equations(C, K, y, lam=1.0, sigma2_e=1.0, form="direct"):
     """The RKHS regression estimating equations of sec. 8.6 p.276.
 
     Minimizing J[theta, beta | lambda] = (1/(2 sigma2_e))
@@ -2331,14 +2188,12 @@ def rkhs_mixed_equations(C, K, y, lam=1.0, sigma2_e=1.0,
     if form == "direct":
         KtC = _mm(_t(Km), Cm)
         KtK = _mm(_t(Km), Km)
-        A22 = [[KtK[i][j] + lam * Km[i][j] * sigma2_e
-                for j in range(n)] for i in range(n)]
+        A22 = [[KtK[i][j] + lam * Km[i][j] * sigma2_e for j in range(n)] for i in range(n)]
         rhs = _mv(Ct, ys) + _mv(_t(Km), ys)
         top = [CtC[i] + CtK[i] for i in range(q)]
         bot = [KtC[i] + A22[i] for i in range(n)]
     elif form == "reduced":
-        A22 = [[Km[i][j] + (lam * sigma2_e if i == j else 0.0)
-                for j in range(n)] for i in range(n)]
+        A22 = [[Km[i][j] + (lam * sigma2_e if i == j else 0.0) for j in range(n)] for i in range(n)]
         rhs = _mv(Ct, ys) + ys
         top = [CtC[i] + CtK[i] for i in range(q)]
         bot = [list(Cm[i]) + A22[i] for i in range(n)]
@@ -2346,10 +2201,9 @@ def rkhs_mixed_equations(C, K, y, lam=1.0, sigma2_e=1.0,
         raise ValueError("form must be 'direct' or 'reduced'")
     sol = _solve(top + bot, rhs)
     theta, beta = sol[:q], sol[q:]
-    u = _mv(Km, beta)                 # reparameterization II: u = K beta
+    u = _mv(Km, beta)  # reparameterization II: u = K beta
     fitted = [a + b for a, b in zip(_mv(Cm, theta), u)]
-    return {"theta": theta, "beta": beta, "u": u, "fitted": fitted,
-            "sigma2_beta": 1.0 / lam if lam else float("inf")}
+    return {"theta": theta, "beta": beta, "u": u, "fitted": fitted, "sigma2_beta": 1.0 / lam if lam else float("inf")}
 
 
 def rkhs_predict_new(K_star, beta):
@@ -2366,8 +2220,7 @@ def hyperplane_side(X, beta0, beta):
     when beta_0 + beta_1 x_1 + ... + beta_p x_p > 0 and on the other
     when it is < 0, so the sign of the left-hand side says which."""
     B = _flat(beta)
-    return [1 if (float(beta0) + sum(a * b for a, b in zip(row, B)))
-            > 0 else -1 for row in _mat(X)]
+    return [1 if (float(beta0) + sum(a * b for a, b in zip(row, B))) > 0 else -1 for row in _mat(X)]
 
 
 def svm_decision_values(X, beta0, beta):
@@ -2375,8 +2228,7 @@ def svm_decision_values(X, beta0, beta):
     function whose sign classifies a new observation and whose
     magnitude expresses confidence."""
     B = _flat(beta)
-    return [float(beta0) + sum(a * b for a, b in zip(row, B))
-            for row in _mat(X)]
+    return [float(beta0) + sum(a * b for a, b in zip(row, B)) for row in _mat(X)]
 
 
 def svm_label_matrix(X, y):
@@ -2396,10 +2248,8 @@ def svm_dual_objective(alpha, X, y, K=None):
     a = _flat(alpha)
     ys = _flat(y)
     n = len(a)
-    G = _mat(K) if K is not None else \
-        _mm(_mat(X), _t(_mat(X)))
-    quad = sum(a[i] * a[j] * ys[i] * ys[j] * G[i][j]
-               for i in range(n) for j in range(n))
+    G = _mat(K) if K is not None else _mm(_mat(X), _t(_mat(X)))
+    quad = sum(a[i] * a[j] * ys[i] * ys[j] * G[i][j] for i in range(n) for j in range(n))
     return sum(a) - 0.5 * quad
 
 
@@ -2411,9 +2261,12 @@ def svm_dual_constraints_ok(alpha, y, C=None, tol=1e-8):
     nonneg = all(v >= -tol for v in a)
     bounded = True if C is None else all(v <= C + tol for v in a)
     balanced = abs(sum(ai * yi for ai, yi in zip(a, ys))) < 1e-6
-    return {"nonnegative": nonneg, "bounded": bounded,
-            "balanced": balanced,
-            "feasible": nonneg and bounded and balanced}
+    return {
+        "nonnegative": nonneg,
+        "bounded": bounded,
+        "balanced": balanced,
+        "feasible": nonneg and bounded and balanced,
+    }
 
 
 def svm_beta_from_alpha(alpha, X, y):
@@ -2425,8 +2278,7 @@ def svm_beta_from_alpha(alpha, X, y):
     ys = _flat(y)
     Xm = _mat(X)
     p = len(Xm[0])
-    return [sum(a[i] * ys[i] * Xm[i][j] for i in range(len(a)))
-            for j in range(p)]
+    return [sum(a[i] * ys[i] * Xm[i][j] for i in range(len(a))) for j in range(p)]
 
 
 def svm_intercept(alpha, X, y, K=None, tol=1e-8):
@@ -2441,12 +2293,10 @@ def svm_intercept(alpha, X, y, K=None, tol=1e-8):
     S = [i for i in range(n) if a[i] > tol]
     if not S:
         return 0.0
-    return sum(ys[i] - sum(a[j] * ys[j] * G[i][j] for j in S)
-               for i in S) / len(S)
+    return sum(ys[i] - sum(a[j] * ys[j] * G[i][j] for j in S) for i in S) / len(S)
 
 
-def svm_fit_dual(X, y, C=None, n_iter=4000, tol=1e-9, K=None,
-                 lr=None):
+def svm_fit_dual(X, y, C=None, n_iter=4000, tol=1e-9, K=None, lr=None):
     """Maximize the dual (9.32) subject to (9.33) by projected
     gradient ascent, keeping sum_i alpha_i y_i = 0 on every step.
 
@@ -2460,15 +2310,13 @@ def svm_fit_dual(X, y, C=None, n_iter=4000, tol=1e-9, K=None,
     ys = _flat(y)
     n = len(ys)
     G = _mat(K) if K is not None else _mm(Xm, _t(Xm))
-    H = [[ys[i] * ys[j] * G[i][j] for j in range(n)]
-         for i in range(n)]
+    H = [[ys[i] * ys[j] * G[i][j] for j in range(n)] for i in range(n)]
     scale = max(abs(H[i][i]) for i in range(n)) or 1.0
-    step = (lr if lr is not None else 1.0 / (n * scale))
+    step = lr if lr is not None else 1.0 / (n * scale)
     a = [0.0] * n
     yy = sum(v * v for v in ys)
     for _ in range(int(n_iter)):
-        grad = [1.0 - sum(H[i][j] * a[j] for j in range(n))
-                for i in range(n)]
+        grad = [1.0 - sum(H[i][j] * a[j] for j in range(n)) for i in range(n)]
         # project the gradient onto {g : g . y = 0} (eq. 9.33)
         gy = sum(g * v for g, v in zip(grad, ys)) / yy
         grad = [g - gy * v for g, v in zip(grad, ys)]
@@ -2481,15 +2329,18 @@ def svm_fit_dual(X, y, C=None, n_iter=4000, tol=1e-9, K=None,
     beta = svm_beta_from_alpha(a, Xm, ys)
     b0 = svm_intercept(a, Xm, ys, K=K)
     sv = [i for i in range(n) if a[i] > 1e-6]
-    return {"alpha": a, "beta": beta, "beta0": b0,
-            "support_vectors": sv,
-            "objective": svm_dual_objective(a, Xm, ys, K=K)}
+    return {
+        "alpha": a,
+        "beta": beta,
+        "beta0": b0,
+        "support_vectors": sv,
+        "objective": svm_dual_objective(a, Xm, ys, K=K),
+    }
 
 
 def svm_predict(X_new, beta0, beta):
     """p.350: y-hat = sign[f-hat(x)] with f-hat from eq. (9.5)."""
-    return [1 if v > 0 else -1
-            for v in svm_decision_values(X_new, beta0, beta)]
+    return [1 if v > 0 else -1 for v in svm_decision_values(X_new, beta0, beta)]
 
 
 # ------------- artificial neural networks (ch. 10 pp.385, 409-412)
@@ -2506,7 +2357,7 @@ def _act(name, z, deriv=False):
         return 1.0 - t * t if deriv else t
     if name == "relu":
         return (1.0 if z > 0 else 0.0) if deriv else max(0.0, z)
-    raise ValueError("unknown activation: %s" % name)
+    raise ValueError(f"unknown activation: {name}")
 
 
 def ann_forward(X, W, activations=None):
@@ -2528,13 +2379,10 @@ def ann_forward(X, W, activations=None):
     nets = []
     for li, Wl in enumerate(W):
         Wm = _mat(Wl)
-        z = [[sum(Wm[u][v] * row[v] for v in range(len(Wm[0])))
-              for u in range(len(Wm))] for row in layers[-1]]
+        z = [[sum(Wm[u][v] * row[v] for v in range(len(Wm[0]))) for u in range(len(Wm))] for row in layers[-1]]
         nets.append(z)
-        layers.append([[_act(acts[li], v) for v in row]
-                       for row in z])
-    return {"output": layers[-1], "layers": layers, "nets": nets,
-            "activations": acts}
+        layers.append([[_act(acts[li], v) for v in row] for row in z])
+    return {"output": layers[-1], "layers": layers, "nets": nets, "activations": acts}
 
 
 def ann_sse(y_hat, y):
@@ -2543,8 +2391,7 @@ def ann_sse(y_hat, y):
     minimizes."""
     P = _mat(y_hat)
     Y = _mat(y)
-    return 0.5 * sum((P[i][j] - Y[i][j]) ** 2
-                     for i in range(len(P)) for j in range(len(P[0])))
+    return 0.5 * sum((P[i][j] - Y[i][j]) ** 2 for i in range(len(P)) for j in range(len(P[0])))
 
 
 def ann_backprop_gradients(X, y, W, activations=None):
@@ -2566,33 +2413,33 @@ def ann_backprop_gradients(X, y, W, activations=None):
     n = len(Y)
     L = len(W)
     # delta at the output: dE/dz = (y-hat - y) g'(z)
-    d = [[(layers[-1][i][j] - Y[i][j])
-          * _act(acts[-1], nets[-1][i][j], deriv=True)
-          for j in range(len(Y[0]))] for i in range(n)]
+    d = [
+        [(layers[-1][i][j] - Y[i][j]) * _act(acts[-1], nets[-1][i][j], deriv=True) for j in range(len(Y[0]))]
+        for i in range(n)
+    ]
     grads = [None] * L
     for li in range(L - 1, -1, -1):
         Wm = _mat(W[li])
         prev = layers[li]
-        grads[li] = [[sum(d[i][u] * prev[i][v] for i in range(n))
-                      for v in range(len(Wm[0]))]
-                     for u in range(len(Wm))]
+        grads[li] = [[sum(d[i][u] * prev[i][v] for i in range(n)) for v in range(len(Wm[0]))] for u in range(len(Wm))]
         if li > 0:
-            d = [[sum(d[i][u] * Wm[u][v] for u in range(len(Wm)))
-                  * _act(acts[li - 1], nets[li - 1][i][v],
-                         deriv=True)
-                  for v in range(len(Wm[0]))] for i in range(n)]
-    return {"gradients": grads, "loss": ann_sse(layers[-1], Y),
-            "output": layers[-1]}
+            d = [
+                [
+                    sum(d[i][u] * Wm[u][v] for u in range(len(Wm))) * _act(acts[li - 1], nets[li - 1][i][v], deriv=True)
+                    for v in range(len(Wm[0]))
+                ]
+                for i in range(n)
+            ]
+    return {"gradients": grads, "loss": ann_sse(layers[-1], Y), "output": layers[-1]}
 
 
-def ann_train(X, y, W, eta=0.1, n_iter=500, activations=None,
-              tol=1e-12):
+def ann_train(X, y, W, eta=0.1, n_iter=500, activations=None, tol=1e-12):
     """The weight updates of eq. (10.13) and (10.17):
     w^(t+1) = w^(t) + eta delta V and w^(t+1) = w^(t) + eta psi x,
     iterated until the loss stops decreasing."""
     Wc = [[list(map(float, row)) for row in _mat(Wl)] for Wl in W]
     hist = []
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         g = ann_backprop_gradients(X, y, Wc, activations)
         hist.append(g["loss"])
         for li in range(len(Wc)):
@@ -2602,8 +2449,7 @@ def ann_train(X, y, W, eta=0.1, n_iter=500, activations=None,
         if len(hist) > 1 and abs(hist[-2] - hist[-1]) < tol:
             break
     final = ann_backprop_gradients(X, y, Wc, activations)
-    return {"W": Wc, "loss": final["loss"], "history": hist,
-            "output": final["output"], "iterations": len(hist)}
+    return {"W": Wc, "loss": final["loss"], "history": hist, "output": final["output"], "iterations": len(hist)}
 
 
 def ann_numeric_gradient(X, y, W, activations=None, eps=1e-6):
@@ -2616,14 +2462,11 @@ def ann_numeric_gradient(X, y, W, activations=None, eps=1e-6):
         for u in range(len(Wm)):
             for v in range(len(Wm[0])):
                 for sign in (1, -1):
-                    Wp = [[list(map(float, r)) for r in _mat(A)]
-                          for A in W]
+                    Wp = [[list(map(float, r)) for r in _mat(A)] for A in W]
                     Wp[li][u][v] += sign * eps
-                    e = ann_sse(ann_forward(X, Wp,
-                                            activations)["output"],
-                                y)
+                    e = ann_sse(ann_forward(X, Wp, activations)["output"], y)
                     G[u][v] += sign * e
-                G[u][v] /= (2.0 * eps)
+                G[u][v] /= 2.0 * eps
         out.append(G)
     return out
 
@@ -2642,13 +2485,17 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
     translational invariance: the same filter detects the feature
     wherever it appears.  Output size is (H - F)/stride + 1.
     """
-    I = [[list(map(float, ch)) for ch in row] for row in image] \
-        if isinstance(image[0][0], (list, tuple)) else \
-        [[[float(v)] for v in row] for row in image]
-    K = [[list(map(float, ch)) for ch in row] for row in kernel] \
-        if isinstance(kernel[0][0], (list, tuple)) else \
-        [[[float(v)] for v in row] for row in kernel]
-    H, W, C = len(I), len(I[0]), len(I[0][0])
+    I_ = (
+        [[list(map(float, ch)) for ch in row] for row in image]
+        if isinstance(image[0][0], (list, tuple))
+        else [[[float(v)] for v in row] for row in image]
+    )
+    K = (
+        [[list(map(float, ch)) for ch in row] for row in kernel]
+        if isinstance(kernel[0][0], (list, tuple))
+        else [[[float(v)] for v in row] for row in kernel]
+    )
+    H, W, C = len(I_), len(I_[0]), len(I_[0][0])
     F, Fw = len(K), len(K[0])
     out_h = (H - F) // stride + 1
     out_w = (W - Fw) // stride + 1
@@ -2662,8 +2509,7 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
             for a in range(F):
                 for b in range(Fw):
                     for ch in range(C):
-                        z += K[a][b][ch] * \
-                            I[r * stride + a][c * stride + b][ch]
+                        z += K[a][b][ch] * I_[r * stride + a][c * stride + b][ch]
             row.append(_act(activation, z) if activation else z)
         out.append(row)
     return out
@@ -2672,8 +2518,7 @@ def conv2d(image, kernel, bias=0.0, stride=1, activation=None):
 def conv_output_size(input_size, filter_size, stride=1, padding=0):
     """p.551: a 256 x 256 image with a 7 x 7 filter gives a 250 x 250
     feature map, i.e. (H - F + 2P)/S + 1."""
-    return (int(input_size) - int(filter_size)
-            + 2 * int(padding)) // int(stride) + 1
+    return (int(input_size) - int(filter_size) + 2 * int(padding)) // int(stride) + 1
 
 
 def conv_parameter_count(filter_size, channels, n_filters=1):
@@ -2694,8 +2539,7 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
         raise ValueError("t is empty.")
     L = int(n_basis)
     if L < 1:
-        raise ValueError("n_basis must be a positive integer; got %r"
-                         % (n_basis,))
+        raise ValueError(f"n_basis must be a positive integer; got {n_basis!r}")
     lo, hi = min(ts), max(ts)
     span = (hi - lo) or 1.0
     if period is None:
@@ -2706,27 +2550,24 @@ def fda_basis_matrix(t, n_basis, kind="fourier", period=None):
         # sine argument. R clamped non-positive to 1. Both now refuse it.
         P = float(period)
         if not (P > 0.0) or P != P or P in (float("inf"), float("-inf")):
-            raise ValueError("period must be a finite positive number; "
-                             "got %r" % (period,))
+            raise ValueError(f"period must be a finite positive number; got {period!r}")
     out = []
     for tv in ts:
         row = []
-        for l in range(L):
+        for ell in range(L):
             if kind == "fourier":
-                if l == 0:
+                if ell == 0:
                     row.append(1.0)
-                elif l % 2 == 1:
-                    row.append(math.sin(2.0 * math.pi
-                                        * ((l + 1) // 2) * tv / P))
+                elif ell % 2 == 1:
+                    row.append(math.sin(2.0 * math.pi * ((ell + 1) // 2) * tv / P))
                 else:
-                    row.append(math.cos(2.0 * math.pi
-                                        * (l // 2) * tv / P))
+                    row.append(math.cos(2.0 * math.pi * (ell // 2) * tv / P))
             elif kind in ("poly", "polynomial"):
                 # "poly" is the spelling R's own @param documents; Python
                 # accepted only "polynomial" and raised on the other.
-                row.append(((tv - lo) / span) ** l)
+                row.append(((tv - lo) / span) ** ell)
             else:
-                raise ValueError("unknown basis: %s" % kind)
+                raise ValueError(f"unknown basis: {kind}")
         out.append(row)
     return out
 
@@ -2749,14 +2590,13 @@ def fda_inner_product_matrix(t, L1, L2, kind="fourier"):
     Psi = fda_basis_matrix(ts, L2, kind=kind)
     m = len(ts)
     Q = [[0.0] * L2 for _ in range(L1)]
-    for l in range(L1):
+    for ell in range(L1):
         for o in range(L2):
             s = 0.0
             for j in range(m - 1):
                 dt = ts[j + 1] - ts[j]
-                s += 0.5 * dt * (Phi[j][l] * Psi[j][o]
-                                 + Phi[j + 1][l] * Psi[j + 1][o])
-            Q[l][o] = s
+                s += 0.5 * dt * (Phi[j][ell] * Psi[j][o] + Phi[j + 1][ell] * Psi[j + 1][o])
+            Q[ell][o] = s
     return Q
 
 
@@ -2771,9 +2611,7 @@ def fda_design_matrix(t, X_curves, L1, L2, kind="fourier"):
     for curve in _mat(X_curves):
         c = fda_basis_coefficients(Psi, curve)
         rows.append(_mv(Q, c))
-    return {"X": rows,
-            "X_star": [[1.0] + r for r in rows],
-            "Q": Q, "Psi": Psi}
+    return {"X": rows, "X_star": [[1.0] + r for r in rows], "Q": Q, "Psi": Psi}
 
 
 def fda_fit(t, X_curves, y, L1=3, L2=5, kind="fourier"):
@@ -2791,8 +2629,7 @@ def fda_fit(t, X_curves, y, L1=3, L2=5, kind="fourier"):
     fitted = _mv(Xs, beta)
     resid = [a - b for a, b in zip(ys, fitted)]
     s2 = sum(v * v for v in resid) / n
-    return {"beta": beta, "fitted": fitted, "residuals": resid,
-            "sigma2": s2, "X_star": Xs, "Q": d["Q"]}
+    return {"beta": beta, "fitted": fitted, "residuals": resid, "sigma2": s2, "X_star": Xs, "Q": d["Q"]}
 
 
 def fda_beta_function(t, beta_coefs, L1, kind="fourier"):
@@ -2800,15 +2637,13 @@ def fda_beta_function(t, beta_coefs, L1, kind="fourier"):
     basis-based estimate of the coefficient function."""
     Phi = fda_basis_matrix(t, L1, kind=kind)
     b = _flat(beta_coefs)
-    return [sum(Phi[j][l] * b[l] for l in range(L1))
-            for j in range(len(Phi))]
+    return [sum(Phi[j][ell] * b[ell] for ell in range(L1)) for j in range(len(Phi))]
 
 
 def fda_bic(loglik, n_params, n_obs):
     """p.582: BIC = -2 l(beta-hat, sigma2-hat; y) + (L + 1) log(n);
     the basis size with the lowest BIC is preferred."""
-    return -2.0 * float(loglik) + (int(n_params) + 1) \
-        * math.log(int(n_obs))
+    return -2.0 * float(loglik) + (int(n_params) + 1) * math.log(int(n_obs))
 
 
 def fda_loocv(t, x_t, L2, kind="fourier"):
@@ -2829,12 +2664,11 @@ def fda_loocv(t, x_t, L2, kind="fourier"):
         period = 1.0
     tot = 0.0
     for j in range(m):
-        t_j = ts[:j] + ts[j + 1:]
-        x_j = xs[:j] + xs[j + 1:]
+        t_j = ts[:j] + ts[j + 1 :]
+        x_j = xs[:j] + xs[j + 1 :]
         Psi_j = fda_basis_matrix(t_j, L2, kind=kind, period=period)
         c = fda_basis_coefficients(Psi_j, x_j)
-        psi_at_j = fda_basis_matrix([ts[j]], L2, kind=kind,
-                                    period=period)[0]
+        psi_at_j = fda_basis_matrix([ts[j]], L2, kind=kind, period=period)[0]
         pred = sum(psi_at_j[o] * c[o] for o in range(L2))
         tot += (xs[j] - pred) ** 2
     return tot
@@ -2860,13 +2694,10 @@ def zero_truncated_poisson_loglik(y_positive, mu):
     mu = float(mu)
     if mu <= 0 or n == 0:
         return float("-inf")
-    return (-n * math.log(1.0 - math.exp(-mu))
-            + math.log(mu) * sum(ys) - n * mu
-            - sum(math.lgamma(v + 1.0) for v in ys))
+    return -n * math.log(1.0 - math.exp(-mu)) + math.log(mu) * sum(ys) - n * mu - sum(math.lgamma(v + 1.0) for v in ys)
 
 
-def zero_truncated_poisson_mle(y_positive, tol=1e-12,
-                               max_iter=200):
+def zero_truncated_poisson_mle(y_positive, tol=1e-12, max_iter=200):
     """p.652: the estimate of mu solves dLL+/dmu = 0, which reduces to
     (sum_i Y_i+)/N+ = mu/(1 - exp(-mu)); solved here by bisection on
     that identity."""
@@ -2907,14 +2738,12 @@ def zap_best_split(y, x, candidates=None):
         R = [ys[i] for i in range(len(ys)) if xs[i] > v and ys[i] > 0]
         if not L or not R:
             continue
-        ll = (zero_truncated_poisson_loglik(
-                  L, zero_truncated_poisson_mle(L))
-              + zero_truncated_poisson_loglik(
-                  R, zero_truncated_poisson_mle(R)))
+        ll = zero_truncated_poisson_loglik(L, zero_truncated_poisson_mle(L)) + zero_truncated_poisson_loglik(
+            R, zero_truncated_poisson_mle(R)
+        )
         if best is None or ll > best[1]:
             best = (v, ll)
-    return {"threshold": best[0] if best else None,
-            "loglik": best[1] if best else float("-inf")}
+    return {"threshold": best[0] if best else None, "loglik": best[1] if best else float("-inf")}
 
 
 def zap_predict(theta_hat, mu_hat):
@@ -2966,13 +2795,11 @@ def zapc_predict(theta_hat, mu_hat, threshold=0.5):
     theta-hat > 0.5 and mu-hat otherwise -- the probability is
     converted to a zero rather than to a binary label, and the 0.5
     threshold assumes no prior information."""
-    return 0.0 if float(theta_hat) > float(threshold) \
-        else float(mu_hat)
+    return 0.0 if float(theta_hat) > float(threshold) else float(mu_hat)
 
 
 # --------- marginal structural models (Robins et al. 2000)
-def msm_weighted_glm(y, X, weights=None, family="gaussian",
-                     offset=None, n_iter=60, tol=1e-10):
+def msm_weighted_glm(y, X, weights=None, family="gaussian", offset=None, n_iter=60, tol=1e-10):
     """Weighted GLM by iteratively reweighted least squares, the
     outcome stage of a marginal structural model.
 
@@ -2993,54 +2820,39 @@ def msm_weighted_glm(y, X, weights=None, family="gaussian",
     off = [0.0] * n if offset is None else _flat(offset)
     beta = [0.0] * p
     if family == "gaussian":
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
-        rhs = [sum(w[i] * Xm[i][a] * (ys[i] - off[i])
-                   for i in range(n)) for a in range(p)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * (ys[i] - off[i]) for i in range(n)) for a in range(p)]
         beta = _solve(A, rhs)
-        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p))
-               for i in range(n)]
+        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
         mu = eta
     else:
         if family == "poisson":
-            beta[0] = math.log(max(sum(w[i] * ys[i]
-                                       for i in range(n))
-                                   / max(sum(w), 1e-9), 1e-6))
+            beta[0] = math.log(max(sum(w[i] * ys[i] for i in range(n)) / max(sum(w), 1e-9), 1e-6))
         for _ in range(int(n_iter)):
-            eta = [off[i] + sum(Xm[i][j] * beta[j]
-                                for j in range(p))
-                   for i in range(n)]
+            eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
             if family == "binomial":
-                mu = [1.0 / (1.0 + math.exp(-max(min(v, 700.0),
-                                                 -700.0)))
-                      for v in eta]
-                Wd = [max(mu[i] * (1.0 - mu[i]), 1e-9)
-                      for i in range(n)]
+                mu = [1.0 / (1.0 + math.exp(-max(min(v, 700.0), -700.0))) for v in eta]
+                Wd = [max(mu[i] * (1.0 - mu[i]), 1e-9) for i in range(n)]
             elif family == "poisson":
                 mu = [math.exp(min(v, 700.0)) for v in eta]
                 Wd = [max(mu[i], 1e-9) for i in range(n)]
             else:
-                raise ValueError("unknown family: %s" % family)
-            z = [eta[i] - off[i] + (ys[i] - mu[i]) / Wd[i]
-                 for i in range(n)]
+                raise ValueError(f"unknown family: {family}")
+            z = [eta[i] - off[i] + (ys[i] - mu[i]) / Wd[i] for i in range(n)]
             ww = [w[i] * Wd[i] for i in range(n)]
-            A = [[sum(ww[i] * Xm[i][a] * Xm[i][b]
-                      for i in range(n)) for b in range(p)]
-                 for a in range(p)]
-            rhs = [sum(ww[i] * Xm[i][a] * z[i] for i in range(n))
-                   for a in range(p)]
+            A = [[sum(ww[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
+            rhs = [sum(ww[i] * Xm[i][a] * z[i] for i in range(n)) for a in range(p)]
             new = _solve(A, rhs)
             gap = max(abs(new[j] - beta[j]) for j in range(p))
             beta = new
             if gap < tol:
                 break
-        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p))
-               for i in range(n)]
-        mu = [1.0 / (1.0 + math.exp(-max(min(v, 700.0), -700.0)))
-              if family == "binomial"
-              else math.exp(min(v, 700.0)) for v in eta]
-    return {"beta": beta, "fitted": mu, "eta": eta,
-            "weights": w, "family": family}
+        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
+        mu = [
+            1.0 / (1.0 + math.exp(-max(min(v, 700.0), -700.0))) if family == "binomial" else math.exp(min(v, 700.0))
+            for v in eta
+        ]
+    return {"beta": beta, "fitted": mu, "eta": eta, "weights": w, "family": family}
 
 
 def msm_design(treatment_history, extra=None):
@@ -3057,8 +2869,7 @@ def msm_design(treatment_history, extra=None):
     return {"X": rows, "a_bar": abar}
 
 
-def msm_cox_weighted(time, event, treatment_history, weights=None,
-                     n_iter=60, tol=1e-10):
+def msm_cox_weighted(time, event, treatment_history, weights=None, n_iter=60, tol=1e-10):
     """A weighted Cox marginal structural model: the partial
     likelihood is weighted by the stabilized IPT weights, so the
     hazard ratio it returns is marginal (causal) rather than
@@ -3077,11 +2888,9 @@ def msm_cox_weighted(time, event, treatment_history, weights=None,
             if ev[idx] <= 0:
                 continue
             risk = [j for j in range(n) if ts[j] >= ts[idx]]
-            num = sum(w[j] * a[j] * math.exp(beta * a[j])
-                      for j in risk)
+            num = sum(w[j] * a[j] * math.exp(beta * a[j]) for j in risk)
             den = sum(w[j] * math.exp(beta * a[j]) for j in risk)
-            num2 = sum(w[j] * a[j] * a[j] * math.exp(beta * a[j])
-                       for j in risk)
+            num2 = sum(w[j] * a[j] * a[j] * math.exp(beta * a[j]) for j in risk)
             if den <= 0:
                 continue
             g += w[idx] * (a[idx] - num / den)
@@ -3106,21 +2915,16 @@ def msm_gmm(y, X, Z, weights=None, n_iter=60, tol=1e-10):
     ys = _flat(y)
     n = len(ys)
     w = [1.0] * n if weights is None else _flat(weights)
-    ZtWX = [[sum(w[i] * Zm[i][a] * Xm[i][b] for i in range(n))
-             for b in range(len(Xm[0]))] for a in range(len(Zm[0]))]
-    ZtWy = [sum(w[i] * Zm[i][a] * ys[i] for i in range(n))
-            for a in range(len(Zm[0]))]
+    ZtWX = [[sum(w[i] * Zm[i][a] * Xm[i][b] for i in range(n)) for b in range(len(Xm[0]))] for a in range(len(Zm[0]))]
+    ZtWy = [sum(w[i] * Zm[i][a] * ys[i] for i in range(n)) for a in range(len(Zm[0]))]
     if len(Zm[0]) == len(Xm[0]):
         beta = _solve(ZtWX, ZtWy)
-    else:                       # over-identified: two-step GMM
+    else:  # over-identified: two-step GMM
         A = _mm(_t(ZtWX), ZtWX)
         b = _mv(_t(ZtWX), ZtWy)
         beta = _solve(A, b)
-    resid = [ys[i] - sum(Xm[i][j] * beta[j]
-                         for j in range(len(beta)))
-             for i in range(n)]
-    moments = [sum(w[i] * Zm[i][a] * resid[i] for i in range(n)) / n
-               for a in range(len(Zm[0]))]
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(len(beta))) for i in range(n)]
+    moments = [sum(w[i] * Zm[i][a] * resid[i] for i in range(n)) / n for a in range(len(Zm[0]))]
     return {"beta": beta, "moments": moments, "residuals": resid}
 
 
@@ -3141,8 +2945,7 @@ def khatri_rao_rows(A, B):
     return [[u * v for u in ra for v in rb] for ra, rb in zip(Am, Bm)]
 
 
-def approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel="linear",
-                           gamma=None, tol=1e-10):
+def approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel="linear", gamma=None, tol=1e-10):
     """eq. (8.13) p.296: y = mu 1 + Z_E beta_E + P_u1 f + P_u2 l + eps.
 
     Steps 1-7 of the summary on p.296.  P = K_{L,m} U S^(-1/2) is the
@@ -3154,21 +2957,22 @@ def approx_kernel_extended(X, m_index, Z_u1, Z_E, kernel="linear",
     stacked design under ridge, which is what the returned blocks are
     for.
     """
-    sk = sparse_kernel_design(X, m_index, kernel=kernel, gamma=gamma,
-                              tol=tol)
+    sk = sparse_kernel_design(X, m_index, kernel=kernel, gamma=gamma, tol=tol)
     P = sk["P"]
     Zu1 = _mat(Z_u1)
     ZE = _mat(Z_E)
     Pu1 = _mm(Zu1, P)
     Pu2 = khatri_rao_rows(Pu1, ZE)
     n = len(Pu1)
-    design = [[1.0] + list(ZE[i]) + list(Pu1[i]) + list(Pu2[i])
-              for i in range(n)]
-    return {"P": P, "P_u1": Pu1, "P_u2": Pu2, "design": design,
-            "widths": {"intercept": 1, "environments": len(ZE[0]),
-                       "lines": len(Pu1[0]),
-                       "line_x_env": len(Pu2[0])},
-            "rank": sk["rank"]}
+    design = [[1.0] + list(ZE[i]) + list(Pu1[i]) + list(Pu2[i]) for i in range(n)]
+    return {
+        "P": P,
+        "P_u1": Pu1,
+        "P_u2": Pu2,
+        "design": design,
+        "widths": {"intercept": 1, "environments": len(ZE[0]), "lines": len(Pu1[0]), "line_x_env": len(Pu2[0])},
+        "rank": sk["rank"],
+    }
 
 
 def hyperplane_value(X, beta0, beta):
@@ -3182,17 +2986,16 @@ def hyperplane_value(X, beta0, beta):
     """
     B = _flat(beta)
     nb = math.sqrt(sum(b * b for b in B))
-    vals = [float(beta0) + sum(a * b for a, b in zip(row, B))
-            for row in _mat(X)]
-    return {"value": vals,
-            "side": [1 if v > 0 else (-1 if v < 0 else 0)
-                     for v in vals],
-            "below": [v < 0 for v in vals],
-            "above": [v > 0 for v in vals],
-            "on_plane": [abs(v) <= 1e-12 for v in vals],
-            "distance": [abs(v) / nb if nb > 0 else float("inf")
-                         for v in vals],
-            "norm_beta": nb}
+    vals = [float(beta0) + sum(a * b for a, b in zip(row, B)) for row in _mat(X)]
+    return {
+        "value": vals,
+        "side": [1 if v > 0 else (-1 if v < 0 else 0) for v in vals],
+        "below": [v < 0 for v in vals],
+        "above": [v > 0 for v in vals],
+        "on_plane": [abs(v) <= 1e-12 for v in vals],
+        "distance": [abs(v) / nb if nb > 0 else float("inf") for v in vals],
+        "norm_beta": nb,
+    }
 
 
 def max_margin_classifier(X, y, **kw):
@@ -3209,22 +3012,24 @@ def max_margin_classifier(X, y, **kw):
     beta, b0 = fit["beta"], fit["beta0"]
     nb = math.sqrt(sum(b * b for b in beta))
     ys = _flat(y)
-    f = [b0 + sum(a * b for a, b in zip(row, beta))
-         for row in _mat(X)]
+    f = [b0 + sum(a * b for a, b in zip(row, beta)) for row in _mat(X)]
     fm = [ys[i] * f[i] for i in range(len(ys))]
-    return {"beta": beta, "beta0": b0, "norm_beta": nb,
-            "margin": 1.0 / nb if nb > 0 else float("inf"),
-            "street_width": 2.0 / nb if nb > 0 else float("inf"),
-            "objective": 0.5 * nb * nb,
-            "functional_margin": fm,
-            "min_functional_margin": min(fm),
-            "constraint_ok": min(fm) >= 1.0 - 1e-6,
-            "alpha": fit["alpha"],
-            "support_vectors": fit["support_vectors"]}
+    return {
+        "beta": beta,
+        "beta0": b0,
+        "norm_beta": nb,
+        "margin": 1.0 / nb if nb > 0 else float("inf"),
+        "street_width": 2.0 / nb if nb > 0 else float("inf"),
+        "objective": 0.5 * nb * nb,
+        "functional_margin": fm,
+        "min_functional_margin": min(fm),
+        "constraint_ok": min(fm) >= 1.0 - 1e-6,
+        "alpha": fit["alpha"],
+        "support_vectors": fit["support_vectors"],
+    }
 
 
-def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None,
-               lam=None, alpha=None):
+def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None, lam=None, alpha=None):
     """eqs. (9.9)-(9.14) pp.346-347, the general Wolfe dual.
 
     (9.9) minimizes f(x) over x in R^n subject to the m equalities
@@ -3254,8 +3059,7 @@ def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None,
     gf = _flat(grad_f)
     Gh = _mat(grad_h) if grad_h is not None else []
     Gg = _mat(grad_g) if grad_g is not None else []
-    L = float(f) - sum(l * v for l, v in zip(lm, hv)) \
-        - sum(a * v for a, v in zip(al, gv))
+    L = float(f) - sum(ell * v for ell, v in zip(lm, hv)) - sum(a * v for a, v in zip(al, gv))
     stat = []
     for j in range(len(gf)):
         s = gf[j]
@@ -3264,11 +3068,14 @@ def wolfe_dual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None,
         for i in range(len(Gg)):
             s -= al[i] * Gg[i][j]
         stat.append(s)
-    return {"L": L, "stationarity": stat,
-            "max_stationarity": max((abs(v) for v in stat),
-                                    default=0.0),
-            "alpha_nonnegative": all(a >= -1e-12 for a in al),
-            "n_equality": len(hv), "n_inequality": len(gv)}
+    return {
+        "L": L,
+        "stationarity": stat,
+        "max_stationarity": max((abs(v) for v in stat), default=0.0),
+        "alpha_nonnegative": all(a >= -1e-12 for a in al),
+        "n_equality": len(hv),
+        "n_inequality": len(gv),
+    }
 
 
 def qp_one_linear_constraint(a, c):
@@ -3293,13 +3100,16 @@ def qp_one_linear_constraint(a, c):
         raise ValueError("constraint vector a must be nonzero")
     alpha = float(c) / aa
     z = [alpha * v for v in av]
-    return {"x": z, "alpha": alpha,
-            "dual_quadratic": -aa, "dual_linear": 2.0 * float(c),
-            "dual_value": -aa * alpha * alpha
-                          + 2.0 * float(c) * alpha,
-            "primal_value": sum(v * v for v in z),
-            "constraint": sum(u * v for u, v in zip(av, z)),
-            "active": True}
+    return {
+        "x": z,
+        "alpha": alpha,
+        "dual_quadratic": -aa,
+        "dual_linear": 2.0 * float(c),
+        "dual_value": -aa * alpha * alpha + 2.0 * float(c) * alpha,
+        "primal_value": sum(v * v for v in z),
+        "constraint": sum(u * v for u, v in zip(av, z)),
+        "active": True,
+    }
 
 
 def svm_lagrangian(X, y, beta0, beta, alpha):
@@ -3312,19 +3122,16 @@ def svm_lagrangian(X, y, beta0, beta, alpha):
     B = _flat(beta)
     ys = _flat(y)
     Xm = _mat(X)
-    f = [float(beta0) + sum(u * v for u, v in zip(row, B))
-         for row in Xm]
+    f = [float(beta0) + sum(u * v for u, v in zip(row, B)) for row in Xm]
     al = _flat(alpha)
     slack = [ys[i] * f[i] - 1.0 for i in range(len(ys))]
-    return {"L": 0.5 * sum(b * b for b in B)
-                 - sum(al[i] * slack[i] for i in range(len(al))),
-            "quadratic_term": 0.5 * sum(b * b for b in B),
-            "slack": slack,
-            "grad_beta": [B[j] - sum(al[i] * ys[i] * Xm[i][j]
-                                     for i in range(len(al)))
-                          for j in range(len(B))],
-            "grad_beta0": -sum(al[i] * ys[i]
-                               for i in range(len(al)))}
+    return {
+        "L": 0.5 * sum(b * b for b in B) - sum(al[i] * slack[i] for i in range(len(al))),
+        "quadratic_term": 0.5 * sum(b * b for b in B),
+        "slack": slack,
+        "grad_beta": [B[j] - sum(al[i] * ys[i] * Xm[i][j] for i in range(len(al))) for j in range(len(B))],
+        "grad_beta0": -sum(al[i] * ys[i] for i in range(len(al))),
+    }
 
 
 def soft_margin_classifier(X, y, T, **kw):
@@ -3347,17 +3154,21 @@ def soft_margin_classifier(X, y, T, **kw):
     beta, b0 = fit["beta"], fit["beta0"]
     nb = math.sqrt(sum(b * b for b in beta))
     ys = _flat(y)
-    f = [b0 + sum(u * v for u, v in zip(row, beta))
-         for row in _mat(X)]
+    f = [b0 + sum(u * v for u, v in zip(row, beta)) for row in _mat(X)]
     zeta = [max(0.0, 1.0 - ys[i] * f[i]) for i in range(len(ys))]
-    return {"beta": beta, "beta0": b0, "norm_beta": nb,
-            "margin": 1.0 / nb if nb > 0 else float("inf"),
-            "zeta": zeta, "slack_sum": sum(zeta),
-            "n_violating": sum(1 for z in zeta if z > 1e-9),
-            "n_misclassified": sum(1 for z in zeta if z > 1.0),
-            "alpha": fit["alpha"],
-            "support_vectors": fit["support_vectors"],
-            "objective": fit["objective"]}
+    return {
+        "beta": beta,
+        "beta0": b0,
+        "norm_beta": nb,
+        "margin": 1.0 / nb if nb > 0 else float("inf"),
+        "zeta": zeta,
+        "slack_sum": sum(zeta),
+        "n_violating": sum(1 for z in zeta if z > 1e-9),
+        "n_misclassified": sum(1 for z in zeta if z > 1.0),
+        "alpha": fit["alpha"],
+        "support_vectors": fit["support_vectors"],
+        "objective": fit["objective"],
+    }
 
 
 def soft_margin_kkt(X, y, beta0, beta, alpha, delta, zeta, T):
@@ -3382,25 +3193,32 @@ def soft_margin_kkt(X, y, beta0, beta, alpha, delta, zeta, T):
     Xm = _mat(X)
     al, dl, zt = _flat(alpha), _flat(delta), _flat(zeta)
     n = len(ys)
-    f = [float(beta0) + sum(u * v for u, v in zip(row, B))
-         for row in Xm]
+    f = [float(beta0) + sum(u * v for u, v in zip(row, B)) for row in Xm]
     inner = [ys[i] * f[i] - 1.0 + zt[i] for i in range(n)]
-    L = 0.5 * sum(b * b for b in B) + float(T) * sum(zt) \
-        - sum(al[i] * inner[i] for i in range(n)) \
+    L = (
+        0.5 * sum(b * b for b in B)
+        + float(T) * sum(zt)
+        - sum(al[i] * inner[i] for i in range(n))
         - sum(dl[i] * zt[i] for i in range(n))
-    r39 = [B[j] - sum(al[i] * ys[i] * Xm[i][j] for i in range(n))
-           for j in range(len(B))]
+    )
+    r39 = [B[j] - sum(al[i] * ys[i] * Xm[i][j] for i in range(n)) for j in range(len(B))]
     r40 = sum(al[i] * ys[i] for i in range(n))
     r41 = [al[i] + dl[i] - float(T) for i in range(n)]
     r42 = [al[i] * inner[i] for i in range(n)]
     r43 = [dl[i] * zt[i] for i in range(n)]
-    worst = max([abs(v) for v in r39] + [abs(r40)]
-                + [abs(v) for v in r41] + [abs(v) for v in r42]
-                + [abs(v) for v in r43])
-    return {"L": L, "stationarity_beta": r39, "balance": r40,
-            "multiplier_sum": r41, "complementary_alpha": r42,
-            "complementary_delta": r43, "max_residual": worst,
-            "kkt_satisfied": worst < 1e-6}
+    worst = max(
+        [abs(v) for v in r39] + [abs(r40)] + [abs(v) for v in r41] + [abs(v) for v in r42] + [abs(v) for v in r43]
+    )
+    return {
+        "L": L,
+        "stationarity_beta": r39,
+        "balance": r40,
+        "multiplier_sum": r41,
+        "complementary_alpha": r42,
+        "complementary_delta": r43,
+        "max_residual": worst,
+        "kkt_satisfied": worst < 1e-6,
+    }
 
 
 def svm_soft_dual(X, y, T, K=None, **kw):
@@ -3414,13 +3232,16 @@ def svm_soft_dual(X, y, T, K=None, **kw):
     fit = svm_fit_dual(X, y, C=float(T), K=K, **kw)
     a = fit["alpha"]
     ys = _flat(y)
-    return {"alpha": a, "beta": fit["beta"], "beta0": fit["beta0"],
-            "objective": fit["objective"],
-            "support_vectors": fit["support_vectors"],
-            "balance": sum(a[i] * ys[i] for i in range(len(a))),
-            "bounded": all(-1e-9 <= v <= float(T) + 1e-9 for v in a),
-            "at_bound": [i for i in range(len(a))
-                         if a[i] > float(T) - 1e-6]}
+    return {
+        "alpha": a,
+        "beta": fit["beta"],
+        "beta0": fit["beta0"],
+        "objective": fit["objective"],
+        "support_vectors": fit["support_vectors"],
+        "balance": sum(a[i] * ys[i] for i in range(len(a))),
+        "bounded": all(-1e-9 <= v <= float(T) + 1e-9 for v in a),
+        "at_bound": [i for i in range(len(a)) if a[i] > float(T) - 1e-6],
+    }
 
 
 def ksvm_dual(X, y, T, kernel="linear", gamma=None, K=None, **kw):
@@ -3432,8 +3253,7 @@ def ksvm_dual(X, y, T, kernel="linear", gamma=None, K=None, **kw):
     The decision rule of p.360 is
     f(x) = sum_{i in S} alpha_i y_i K(x_i, x) + beta_0.
     """
-    Km = _mat(K) if K is not None else \
-        kernel_matrix(X, kernel=kernel, gamma=gamma)
+    Km = _mat(K) if K is not None else kernel_matrix(X, kernel=kernel, gamma=gamma)
     fit = svm_soft_dual(X, y, T, K=Km, **kw)
     fit["K"] = Km
     fit["kernel"] = kernel if K is None else "precomputed"
@@ -3456,12 +3276,10 @@ def fda_integral(t, x_values, beta_values, mu=0.0):
     for j in range(len(ts) - 1):
         dt = ts[j + 1] - ts[j]
         s += 0.5 * dt * (xs[j] * bs[j] + xs[j + 1] * bs[j + 1])
-    return {"integral": s, "fitted": float(mu) + s,
-            "mu": float(mu), "n_points": len(ts)}
+    return {"integral": s, "fitted": float(mu) + s, "mu": float(mu), "n_points": len(ts)}
 
 
-def fda_basis_derivative(t, n_basis, p=1, kind="fourier",
-                         period=None):
+def fda_basis_derivative(t, n_basis, p=1, kind="fourier", period=None):
     """The p-th derivative of the basis functions of eq. (14.2) p.579,
     needed by the roughness penalty (14.11) p.601.  For the Fourier
     basis used by fda_basis_matrix, phi_0 = 1,
@@ -3480,35 +3298,33 @@ def fda_basis_derivative(t, n_basis, p=1, kind="fourier",
     out = []
     for tv in ts:
         row = []
-        for l in range(L):
+        for ell in range(L):
             if kind == "fourier":
-                if l == 0:
+                if ell == 0:
                     row.append(1.0 if p == 0 else 0.0)
                     continue
-                k = (l + 1) // 2 if l % 2 == 1 else l // 2
+                k = (ell + 1) // 2 if ell % 2 == 1 else ell // 2
                 w = 2.0 * math.pi * k / P
                 phase = w * tv + 0.5 * math.pi * p
-                if l % 2 == 1:
-                    row.append((w ** p) * math.sin(phase))
+                if ell % 2 == 1:
+                    row.append((w**p) * math.sin(phase))
                 else:
-                    row.append((w ** p) * math.cos(phase))
+                    row.append((w**p) * math.cos(phase))
             elif kind == "polynomial":
-                if p > l:
+                if p > ell:
                     row.append(0.0)
                 else:
                     c = 1.0
                     for j in range(p):
-                        c *= (l - j)
-                    row.append(c * (((tv - lo) / span) ** (l - p))
-                               / (span ** p))
+                        c *= ell - j
+                    row.append(c * (((tv - lo) / span) ** (ell - p)) / (span**p))
             else:
-                raise ValueError("unknown basis: %s" % kind)
+                raise ValueError(f"unknown basis: {kind}")
         out.append(row)
     return out
 
 
-def fda_penalty_matrix(t, L1, p=2, kind="fourier", period=None,
-                       beta=None):
+def fda_penalty_matrix(t, L1, p=2, kind="fourier", period=None, beta=None):
     """eq. (14.11) p.601: the roughness penalty
     J_beta = int_0^T [ d^p beta(t) / dt^p ]^2 dt.  With the basis
     expansion (14.2) the book writes J_beta = beta' P beta, where P is
@@ -3526,15 +3342,13 @@ def fda_penalty_matrix(t, L1, p=2, kind="fourier", period=None,
             s = 0.0
             for q in range(m - 1):
                 dt = ts[q + 1] - ts[q]
-                s += 0.5 * dt * (D[q][i] * D[q][j]
-                                 + D[q + 1][i] * D[q + 1][j])
+                s += 0.5 * dt * (D[q][i] * D[q][j] + D[q + 1][i] * D[q + 1][j])
             P[i][j] = s
             P[j][i] = s
     out = {"P": P, "order": p, "L1": L}
     if beta is not None:
         b = _flat(beta)
-        out["J"] = sum(b[i] * P[i][j] * b[j]
-                       for i in range(L) for j in range(L))
+        out["J"] = sum(b[i] * P[i][j] * b[j] for i in range(L) for j in range(L))
     return out
 
 
@@ -3550,15 +3364,18 @@ def fda_penalized_sse(y, X, beta, lam, P, mu=0.0):
     Xm = _mat(X)
     b = _flat(beta)
     Pm = _mat(P)
-    fitted = [float(mu) + sum(u * v for u, v in zip(row, b))
-              for row in Xm]
+    fitted = [float(mu) + sum(u * v for u, v in zip(row, b)) for row in Xm]
     resid = [ys[i] - fitted[i] for i in range(len(ys))]
-    J = sum(b[i] * Pm[i][j] * b[j]
-            for i in range(len(b)) for j in range(len(b)))
+    J = sum(b[i] * Pm[i][j] * b[j] for i in range(len(b)) for j in range(len(b)))
     sse = sum(r * r for r in resid)
-    return {"sse": sse, "penalty": J, "lambda": float(lam),
-            "objective": sse + float(lam) * J,
-            "fitted": fitted, "residuals": resid}
+    return {
+        "sse": sse,
+        "penalty": J,
+        "lambda": float(lam),
+        "objective": sse + float(lam) * J,
+        "fitted": fitted,
+        "residuals": resid,
+    }
 
 
 def fda_penalized_fit(y, X, P, lam, mu=None, tol=1e-10):
@@ -3578,12 +3395,10 @@ def fda_penalized_fit(y, X, P, lam, mu=None, tol=1e-10):
     n = len(ys)
     Pm = _mat(P)
     L = len(Pm)
-    S = [[0.5 * (Pm[i][j] + Pm[j][i]) for j in range(L)]
-         for i in range(L)]
+    S = [[0.5 * (Pm[i][j] + Pm[j][i]) for j in range(L)] for i in range(L)]
     vals, vecs = np.linalg.eigh(np.marr(S))
     d = [float(v) for v in vals._flat()]
-    G = [[float(v) for v in row] for row in vecs._tolist()] \
-        if hasattr(vecs, "_tolist") else _mat(vecs)
+    G = [[float(v) for v in row] for row in vecs._tolist()] if hasattr(vecs, "_tolist") else _mat(vecs)
     m = float(sum(ys) / n) if mu is None else float(mu)
     Xs = _mm(Xm, G)
     A = _mm(_t(Xs), Xs)
@@ -3592,17 +3407,24 @@ def fda_penalized_fit(y, X, P, lam, mu=None, tol=1e-10):
     rhs = _mv(_t(Xs), [v - m for v in ys])
     bstar = _solve(A, rhs)
     beta = _mv(G, bstar)
-    fitted = [m + sum(u * v for u, v in zip(row, beta))
-              for row in Xm]
+    fitted = [m + sum(u * v for u, v in zip(row, beta)) for row in Xm]
     resid = [ys[i] - fitted[i] for i in range(n)]
     sse = sum(r * r for r in resid)
-    pen = sum(float(lam) * d[i] * bstar[i] * bstar[i]
-              for i in range(L))
-    return {"beta": beta, "beta_star": bstar, "Gamma": G,
-            "eigenvalues": d, "X_star": Xs, "mu": m,
-            "fitted": fitted, "residuals": resid, "sse": sse,
-            "penalty": pen, "objective": sse + pen,
-            "rank": sum(1 for v in d if v > tol)}
+    pen = sum(float(lam) * d[i] * bstar[i] * bstar[i] for i in range(L))
+    return {
+        "beta": beta,
+        "beta_star": bstar,
+        "Gamma": G,
+        "eigenvalues": d,
+        "X_star": Xs,
+        "mu": m,
+        "fitted": fitted,
+        "residuals": resid,
+        "sse": sse,
+        "penalty": pen,
+        "objective": sse + pen,
+        "rank": sum(1 for v in d if v > tol),
+    }
 
 
 def fda_env_interaction_design(X, env, reference=True):
@@ -3637,8 +3459,7 @@ def fda_env_interaction_design(X, env, reference=True):
             for j in range(L):
                 block[k * L + j] = row[j]
         out.append(block)
-    return {"X_EF": out, "levels": levels, "kept_levels": keep,
-            "reference": reference, "n_columns": len(out[0])}
+    return {"X_EF": out, "levels": levels, "kept_levels": keep, "reference": reference, "n_columns": len(out[0])}
 
 
 def fda_env_model(y, X, X_E, X_EF=None, lam=0.0, P=None):
@@ -3659,8 +3480,7 @@ def fda_env_model(y, X, X_E, X_EF=None, lam=0.0, P=None):
     XE = _mat(X_E)
     n = len(ys)
     blocks = [[1.0] for _ in range(n)]
-    widths = {"intercept": 1, "environments": len(XE[0]),
-              "functional": len(Xm[0])}
+    widths = {"intercept": 1, "environments": len(XE[0]), "functional": len(Xm[0])}
     D = [blocks[i] + list(XE[i]) + list(Xm[i]) for i in range(n)]
     if X_EF is not None:
         XF = _mat(X_EF)
@@ -3678,13 +3498,22 @@ def fda_env_model(y, X, X_E, X_EF=None, lam=0.0, P=None):
     fitted = _mv(D, coef)
     resid = [ys[i] - fitted[i] for i in range(n)]
     off = 1
-    beta_E = coef[off:off + widths["environments"]]
+    beta_E = coef[off : off + widths["environments"]]
     off += widths["environments"]
-    beta = coef[off:off + widths["functional"]]
+    beta = coef[off : off + widths["functional"]]
     off += widths["functional"]
     beta_EF = coef[off:] if X_EF is not None else []
-    return {"coef": coef, "mu": coef[0], "beta_E": beta_E,
-            "beta": beta, "beta_EF": beta_EF, "widths": widths,
-            "design": D, "fitted": fitted, "residuals": resid,
-            "sse": sum(r * r for r in resid), "n_columns": k,
-            "has_interaction": X_EF is not None}
+    return {
+        "coef": coef,
+        "mu": coef[0],
+        "beta_E": beta_E,
+        "beta": beta,
+        "beta_EF": beta_EF,
+        "widths": widths,
+        "design": D,
+        "fitted": fitted,
+        "residuals": resid,
+        "sse": sum(r * r for r in resid),
+        "n_columns": k,
+        "has_interaction": X_EF is not None,
+    }

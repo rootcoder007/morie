@@ -78,20 +78,16 @@ def tree_predict(tree, x):
     while not _leaf(node):
         try:
             i, br = node["feature"], node["branches"]
-        except (KeyError, TypeError):
-            raise ValueError("attrInf: a node needs 'feature' and "
-                             "'branches', or 'label' for a leaf")
+        except (KeyError, TypeError) as exc:
+            raise ValueError("attrInf: a node needs 'feature' and 'branches', or 'label' for a leaf") from exc
         try:
             v = x[i]
-        except (IndexError, KeyError):
-            raise ValueError("attrInf: no value supplied for feature %r, "
-                             "which the tree needs" % (i,))
+        except (IndexError, KeyError) as exc:
+            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs") from exc
         if v is None:
-            raise ValueError("attrInf: no value supplied for feature %r, "
-                             "which the tree needs" % (i,))
+            raise ValueError(f"attrInf: no value supplied for feature {i!r}, which the tree needs")
         if v not in br:
-            raise ValueError("attrInf: no branch for value %r of feature "
-                             "%r" % (v, i))
+            raise ValueError(f"attrInf: no branch for value {v!r} of feature {i!r}")
         node = br[v]
     return node["label"]
 
@@ -107,8 +103,7 @@ def tree_paths(tree):
 
     def walk(node, cons):
         if _leaf(node):
-            out.append({"constraints": dict(cons), "label": node["label"],
-                        "count": float(node.get("count", 0.0))})
+            out.append({"constraints": dict(cons), "label": node["label"], "count": float(node.get("count", 0.0))})
             return
         i, br = node["feature"], node["branches"]
         for v, child in br.items():
@@ -173,13 +168,11 @@ def map_invert(model, y, known, candidates, err, priors, sensitive=0):
             if p is not None:
                 prod *= p.get(val, 0.0)
         scores[v] = e * prod
-    best = max(sorted(scores, key=lambda v: str(v)),
-               key=lambda v: scores[v])
+    best = max(sorted(scores, key=lambda v: str(v)), key=lambda v: scores[v])
     return {"scores": scores, "estimate": best}
 
 
-def wbwc_invert(tree, known, candidates, priors, sensitive=0,
-                unknown=None):
+def wbwc_invert(tree, known, candidates, priors, sensitive=0, unknown=None):
     r"""Equation 1: the white-box-with-counts estimator.
 
     ``unknown`` lists any further features the attacker does not know;
@@ -190,8 +183,7 @@ def wbwc_invert(tree, known, candidates, priors, sensitive=0,
     paths = tree_paths(tree)
     N = sum(p["count"] for p in paths)
     if N <= 0:
-        raise ValueError("attrInf: white-box inversion needs path counts; "
-                         "give each leaf a 'count'")
+        raise ValueError("attrInf: white-box inversion needs path counts; give each leaf a 'count'")
     unknown = list(unknown or [])
     scores = {}
     for v in candidates:
@@ -215,41 +207,36 @@ def wbwc_invert(tree, known, candidates, priors, sensitive=0,
             total += pi
         prior = priors.get(sensitive, {}).get(v, 0.0)
         denom = active if active > 0 else 1.0
-        scores[v] = (active / denom) * active * prior if active > 0 \
-            else 0.0
-    best = max(sorted(scores, key=lambda v: str(v)),
-               key=lambda v: scores[v])
-    return {"scores": scores, "estimate": best, "n_paths": len(paths),
-            "N": N}
+        scores[v] = (active / denom) * active * prior if active > 0 else 0.0
+    best = max(sorted(scores, key=lambda v: str(v)), key=lambda v: scores[v])
+    return {"scores": scores, "estimate": best, "n_paths": len(paths), "N": N}
 
 
-def attrInf(tree, targets, priors, confusion=None, labels=None,
-            sensitive=0, mode="blackbox", candidates=None, unknown=None):
+def attrInf(
+    tree, targets, priors, confusion=None, labels=None, sensitive=0, mode="blackbox", candidates=None, unknown=None
+):
     """Run the attack over a set of targets and score it.
 
     Each target is ``{"known": {...}, "label": y}`` plus, when the truth
     is known and the attack is being evaluated, ``"truth"``.
     """
     if mode not in _MODES:
-        raise ValueError("attrInf: mode must be one of %s" % (_MODES,))
+        raise ValueError(f"attrInf: mode must be one of {_MODES}")
     paths = tree_paths(tree)
     if candidates is None:
-        cand = sorted(set(c[sensitive] for p in paths
-                          for c in [p["constraints"]]
-                          if sensitive in c), key=lambda v: str(v))
+        cand = sorted(
+            set(c[sensitive] for p in paths for c in [p["constraints"]] if sensitive in c), key=lambda v: str(v)
+        )
         if not cand:
-            cand = sorted(priors.get(sensitive, {}),
-                          key=lambda v: str(v))
+            cand = sorted(priors.get(sensitive, {}), key=lambda v: str(v))
     else:
         cand = list(candidates)
     if not cand:
-        raise ValueError("attrInf: no candidate values for the sensitive "
-                         "feature")
+        raise ValueError("attrInf: no candidate values for the sensitive feature")
     err = None
     if mode == "blackbox":
         if confusion is None:
-            raise ValueError("attrInf: the black-box attack needs a "
-                             "confusion matrix")
+            raise ValueError("attrInf: the black-box attack needs a confusion matrix")
         err = confusion_error(confusion, labels)
 
     guesses, correct, n_truth = [], 0, 0
@@ -259,11 +246,9 @@ def attrInf(tree, targets, priors, confusion=None, labels=None,
         known = dict(t.get("known", {}))
         y = t.get("label")
         if mode == "blackbox":
-            got = map_invert(lambda x: tree_predict(tree, x), y, known,
-                             cand, err, priors, sensitive)
+            got = map_invert(lambda x: tree_predict(tree, x), y, known, cand, err, priors, sensitive)
         else:
-            got = wbwc_invert(tree, known, cand, priors, sensitive,
-                              unknown)
+            got = wbwc_invert(tree, known, cand, priors, sensitive, unknown)
         guesses.append(got["estimate"])
         if "truth" in t:
             n_truth += 1
@@ -278,40 +263,47 @@ def attrInf(tree, targets, priors, confusion=None, labels=None,
     acc = (correct / float(n_truth)) if n_truth else None
     prec = (tp / float(tp + fp)) if (tp + fp) else None
     rec = (tp / float(tp + fn)) if (tp + fn) else None
-    return RichResult(payload={
-        "estimate": guesses,
-        "guesses": guesses,
-        "accuracy": acc,
-        "precision": prec,
-        "recall": rec,
-        "false_positives": fp,
-        "true_positives": tp,
-        "mode": mode,
-        "candidates": cand,
-        "n_paths": len(paths),
-        "n_targets": len(targets),
-        "method": ("model inversion (Fredrikson, Jha & Ristenpart 2015): "
-                   "%s MAP estimate of the sensitive feature"
-                   % ("generic Figure 2" if mode == "blackbox"
-                      else "white-box-with-counts, Equation 1")),
-        "note": ("the black-box route uses err(y, y') from the confusion "
-                 "matrix and the paper reports it has a prohibitively "
-                 "high false positive rate; the white-box route adds the "
-                 "per-path training counts, which carry joint-"
-                 "distribution information the marginals cannot"),
-    })
+    return RichResult(
+        payload={
+            "estimate": guesses,
+            "guesses": guesses,
+            "accuracy": acc,
+            "precision": prec,
+            "recall": rec,
+            "false_positives": fp,
+            "true_positives": tp,
+            "mode": mode,
+            "candidates": cand,
+            "n_paths": len(paths),
+            "n_targets": len(targets),
+            "method": (
+                "model inversion (Fredrikson, Jha & Ristenpart 2015): "
+                "%s MAP estimate of the sensitive feature"
+                % ("generic Figure 2" if mode == "blackbox" else "white-box-with-counts, Equation 1")
+            ),
+            "note": (
+                "the black-box route uses err(y, y') from the confusion "
+                "matrix and the paper reports it has a prohibitively "
+                "high false positive rate; the white-box route adds the "
+                "per-path training counts, which carry joint-"
+                "distribution information the marginals cannot"
+            ),
+        }
+    )
 
 
 attribute_inference = attrInf
 
 
 def cheatsheet():
-    return ("attrInf: model inversion (Fredrikson, Jha & Ristenpart "
-            "2015). Figure 2 scores each candidate value v of the "
-            "sensitive feature by err(y, f(v, x_2..x_t)) times the "
-            "product of the marginal priors and takes the arg max -- the "
-            "least-biased MAP estimate. Against a tree the error model "
-            "is the confusion matrix (black box); the white-box-with-"
-            "counts estimator of eq.1 instead weights each root-to-leaf "
-            "path by n_i/N, which carries joint information the "
-            "marginals do not.")
+    return (
+        "attrInf: model inversion (Fredrikson, Jha & Ristenpart "
+        "2015). Figure 2 scores each candidate value v of the "
+        "sensitive feature by err(y, f(v, x_2..x_t)) times the "
+        "product of the marginal priors and takes the arg max -- the "
+        "least-biased MAP estimate. Against a tree the error model "
+        "is the confusion matrix (black box); the white-box-with-"
+        "counts estimator of eq.1 instead weights each root-to-leaf "
+        "path by n_i/N, which carries joint information the "
+        "marginals do not."
+    )

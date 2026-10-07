@@ -1,8 +1,8 @@
 """Tests for drbqs.dr_did_quantile."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.drbqs import dr_did_quantile
 
 

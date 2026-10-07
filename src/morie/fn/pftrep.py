@@ -54,7 +54,6 @@ unbiasedness of the likelihood estimate matters.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 from .prtcl import particle_filter
@@ -80,8 +79,7 @@ def logmeanexp(values):
     return mx + math.log(sum(math.exp(x - mx) for x in v) / len(v))
 
 
-def replicated_pfilter(y, n_particles, init, step, loglik,
-                       n_reps=10, seed=0, **kw):
+def replicated_pfilter(y, n_particles, init, step, loglik, n_reps=10, seed=0, **kw):
     r"""Run the filter several times and combine on the right scale.
 
     Returns both the log of the mean likelihood and the mean of the
@@ -90,29 +88,34 @@ def replicated_pfilter(y, n_particles, init, step, loglik,
     """
     R = int(n_reps)
     if R < 1:
-        raise ValueError("pftrep: need at least 1 replicate, got %d" % R)
+        raise ValueError(f"pftrep: need at least 1 replicate, got {int(R)}")
     lls, minless = [], []
     for r in range(R):
-        res = particle_filter(y, n_particles, init, step, loglik,
-                              seed=seed * 1013 + r, **kw)
+        res = particle_filter(y, n_particles, init, step, loglik, seed=seed * 1013 + r, **kw)
         lls.append(res["loglik"])
         minless.append(res["min_ess"])
     lme = logmeanexp(lls)
     mean_ll = sum(lls) / R
     se = (k.sd(lls) / math.sqrt(R)) if R > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": lme, "loglik": lme, "logmeanexp": lme,
-        "mean_loglik": mean_ll, "jensen_gap": lme - mean_ll,
-        "se": se, "replicates": lls, "n_reps": R,
-        "n_particles": int(n_particles),
-        "min_ess": min(minless), "mean_min_ess": sum(minless) / R,
-        "method": "replicated particle filtering, King, Nguyen & "
-                  "Ionides (2016)",
-    })
+    return RichResult(
+        payload={
+            "estimate": lme,
+            "loglik": lme,
+            "logmeanexp": lme,
+            "mean_loglik": mean_ll,
+            "jensen_gap": lme - mean_ll,
+            "se": se,
+            "replicates": lls,
+            "n_reps": R,
+            "n_particles": int(n_particles),
+            "min_ess": min(minless),
+            "mean_min_ess": sum(minless) / R,
+            "method": "replicated particle filtering, King, Nguyen & Ionides (2016)",
+        }
+    )
 
 
-def loglik_profile(y, grid, make_model, n_particles=200, n_reps=5,
-                   seed=0, **kw):
+def loglik_profile(y, grid, make_model, n_particles=200, n_reps=5, seed=0, **kw):
     r"""Profile the likelihood over a parameter grid.
 
     ``make_model(theta) -> (init, step, loglik)``. Each grid point
@@ -122,33 +125,39 @@ def loglik_profile(y, grid, make_model, n_particles=200, n_reps=5,
     """
     g = [float(v) for v in grid]
     if len(g) < 2:
-        raise ValueError("pftrep: need at least 2 grid points, got %d"
-                         % len(g))
+        raise ValueError(f"pftrep: need at least 2 grid points, got {int(len(g))}")
     vals, ses = [], []
     for t, th in enumerate(g):
         init, step, loglik = make_model(th)
-        r = replicated_pfilter(y, n_particles, init, step, loglik,
-                               n_reps=n_reps, seed=seed + 97 * t, **kw)
+        r = replicated_pfilter(y, n_particles, init, step, loglik, n_reps=n_reps, seed=seed + 97 * t, **kw)
         vals.append(r["loglik"])
         ses.append(r["se"])
     best = max(range(len(g)), key=lambda i: vals[i])
-    return RichResult(payload={
-        "estimate": g[best], "mle": g[best], "grid": g,
-        "loglik": vals, "se": ses, "max_loglik": vals[best],
-        "n_particles": int(n_particles), "n_reps": int(n_reps),
-        "method": "particle-filter likelihood profile, King, Nguyen & "
-                  "Ionides (2016)",
-    })
+    return RichResult(
+        payload={
+            "estimate": g[best],
+            "mle": g[best],
+            "grid": g,
+            "loglik": vals,
+            "se": ses,
+            "max_loglik": vals[best],
+            "n_particles": int(n_particles),
+            "n_reps": int(n_reps),
+            "method": "particle-filter likelihood profile, King, Nguyen & Ionides (2016)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("pftrep: a POMP needs only a SIMULATOR for the latent "
-            "process plus a measurement density -- never the transition "
-            "density, which is what plug-and-play means. Replicate the "
-            "filter and combine with logmeanexp (log of the MEAN "
-            "likelihood), not the mean of the logs, which compounds the "
-            "Jensen bias. The gap between them IS the Monte Carlo "
-            "error.")
+    return (
+        "pftrep: a POMP needs only a SIMULATOR for the latent "
+        "process plus a measurement density -- never the transition "
+        "density, which is what plug-and-play means. Replicate the "
+        "filter and combine with logmeanexp (log of the MEAN "
+        "likelihood), not the mean of the logs, which compounds the "
+        "Jensen bias. The gap between them IS the Monte Carlo "
+        "error."
+    )
 
 
 # compact alias per ledger/NAMING.md

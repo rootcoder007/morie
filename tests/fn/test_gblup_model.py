@@ -1,7 +1,6 @@
 """Tests for gblup_model.gblup_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gblup_model import gblup_model
 
 

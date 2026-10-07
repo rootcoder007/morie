@@ -78,8 +78,7 @@ def spatial_cluster_lisa(x, w, alpha=0.05):
     z = vec(x, "x")
     n = len(z)
     if n < 4:
-        raise ValueError("at least 4 sites are needed; the conditional "
-                         "variance divides by n-2")
+        raise ValueError("at least 4 sites are needed; the conditional variance divides by n-2")
     ww = sqmat(w, n, "w")
     for i in range(n):
         if ww[i][i] != 0.0:
@@ -139,22 +138,26 @@ def spatial_cluster_lisa(x, w, alpha=0.05):
     for k in ("HH", "LL", "HL", "LH", "NS"):
         counts[k] = float(len([t for t in labels if t == k]))
 
-    return RichResult(payload={
-        "labels": labels,
-        "local": local,
-        "z": zs,
-        "p_value": ps,
-        "lagged_mean": lagm,
-        "counts": counts,
-        "alpha": alpha,
-        "conditional_randomization": True,
-        "hl_and_lh_are_outliers_not_clusters": True,
-        "n": n,
-        "method": ("Local Moran eq (1.17) of Schabenberger & Gotway (2005) "
-                   "Sec. 1.3.3 with exact conditional-randomization "
-                   "moments; the HH/LL/HL/LH labels are Anselin (1996), "
-                   "not in that book"),
-    })
+    return RichResult(
+        payload={
+            "labels": labels,
+            "local": local,
+            "z": zs,
+            "p_value": ps,
+            "lagged_mean": lagm,
+            "counts": counts,
+            "alpha": alpha,
+            "conditional_randomization": True,
+            "hl_and_lh_are_outliers_not_clusters": True,
+            "n": n,
+            "method": (
+                "Local Moran eq (1.17) of Schabenberger & Gotway (2005) "
+                "Sec. 1.3.3 with exact conditional-randomization "
+                "moments; the HH/LL/HL/LH labels are Anselin (1996), "
+                "not in that book"
+            ),
+        }
+    )
 
 
 def cheatsheet():

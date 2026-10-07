@@ -70,10 +70,22 @@ from fractions import Fraction
 
 from ._richresult import RichResult
 
-__all__ = ["poly", "monomials", "leading_term", "leading_monomial",
-           "leading_coeff", "add", "sub", "mul", "spoly",
-           "divide", "buchberger", "reduce_basis", "ideal_member",
-           "groebner"]
+__all__ = [
+    "poly",
+    "monomials",
+    "leading_term",
+    "leading_monomial",
+    "leading_coeff",
+    "add",
+    "sub",
+    "mul",
+    "spoly",
+    "divide",
+    "buchberger",
+    "reduce_basis",
+    "ideal_member",
+    "groebner",
+]
 
 ORDERS = ("lex", "grlex", "grevlex")
 
@@ -87,8 +99,7 @@ def _key(order):
         # total degree, then the NEGATED reversed exponents: a > b
         # when the rightmost non-zero entry of a - b is negative.
         return lambda e: (sum(e),) + tuple(-x for x in reversed(e))
-    raise ValueError("groebn: order must be one of %s, got %r"
-                     % (", ".join(ORDERS), order))
+    raise ValueError("groebn: order must be one of {}, got {!r}".format(", ".join(ORDERS), order))
 
 
 def poly(terms, nvars=None):
@@ -97,27 +108,22 @@ def poly(terms, nvars=None):
     Zero coefficients are dropped, so equality of the returned dicts
     is equality of polynomials.
     """
-    if isinstance(terms, dict):
-        items = terms.items()
-    else:
-        items = list(terms)
+    items = terms.items() if isinstance(terms, dict) else list(terms)
     out = {}
     n = None
     for e, cf in items:
         ev = tuple(int(x) for x in e)
         if any(x < 0 for x in ev):
-            raise ValueError("groebn: negative exponent in %r" % (e,))
+            raise ValueError(f"groebn: negative exponent in {e!r}")
         if n is None:
             n = len(ev)
         elif len(ev) != n:
-            raise ValueError("groebn: exponent vectors of differing "
-                             "length, %d and %d" % (n, len(ev)))
+            raise ValueError(f"groebn: exponent vectors of differing length, {int(n)} and {int(len(ev))}")
         out[ev] = out.get(ev, Fraction(0)) + Fraction(cf)
     if nvars is not None:
         n = int(nvars) if n is None else n
         if out and n != int(nvars):
-            raise ValueError("groebn: %d variables declared but the "
-                             "exponents have %d" % (int(nvars), n))
+            raise ValueError(f"groebn: {int(int(nvars))} variables declared but the exponents have {int(n)}")
     return {e: c for e, c in out.items() if c != 0}
 
 
@@ -192,14 +198,11 @@ def _lcm(a, b):
 def spoly(f, g, order="lex"):
     r"""The S-polynomial, built to cancel the two leading terms."""
     if not f or not g:
-        raise ValueError("groebn: the S-polynomial of the zero "
-                         "polynomial is not defined")
+        raise ValueError("groebn: the S-polynomial of the zero polynomial is not defined")
     lf, lg = leading_monomial(f, order), leading_monomial(g, order)
     L = _lcm(lf, lg)
-    a = {tuple(x - y for x, y in zip(L, lf)):
-         Fraction(1) / leading_coeff(f, order)}
-    b = {tuple(x - y for x, y in zip(L, lg)):
-         Fraction(1) / leading_coeff(g, order)}
+    a = {tuple(x - y for x, y in zip(L, lf)): Fraction(1) / leading_coeff(f, order)}
+    b = {tuple(x - y for x, y in zip(L, lg)): Fraction(1) / leading_coeff(g, order)}
     return sub(mul(a, f), mul(b, g))
 
 
@@ -221,8 +224,7 @@ def divide(f, G, order="lex"):
         for i, g in enumerate(Gs):
             lg = leading_monomial(g, order)
             if _divides(lg, lm):
-                t = {tuple(x - y for x, y in zip(lm, lg)):
-                     lc / leading_coeff(g, order)}
+                t = {tuple(x - y for x, y in zip(lm, lg)): lc / leading_coeff(g, order)}
                 q[i] = add(q[i], t)
                 p = sub(p, mul(t, g))
                 break
@@ -251,8 +253,7 @@ def buchberger(F, order="lex", prune=True, reduced=True):
     for g in G:
         for e in g:
             if len(e) != n:
-                raise ValueError("groebn: generators in different "
-                                 "numbers of variables")
+                raise ValueError("groebn: generators in different numbers of variables")
     pairs = [(i, j) for i in range(len(G)) for j in range(i + 1, len(G))]
     n_pairs = n_skipped = n_reductions = 0
     while pairs:
@@ -271,15 +272,20 @@ def buchberger(F, order="lex", prune=True, reduced=True):
             G.append(r)
             pairs.extend((k, len(G) - 1) for k in range(len(G) - 1))
     basis = reduce_basis(G, order) if reduced else G
-    return RichResult(payload={
-        "estimate": basis, "basis": basis, "order": order,
-        "size": len(basis), "reduced": bool(reduced),
-        "n_pairs": n_pairs, "n_reductions": n_reductions,
-        "n_skipped": n_skipped, "pruned": bool(prune),
-        "method": "Buchberger (1965) completion"
-                  + (" with the 1979 coprimality criterion"
-                     if prune else ""),
-    })
+    return RichResult(
+        payload={
+            "estimate": basis,
+            "basis": basis,
+            "order": order,
+            "size": len(basis),
+            "reduced": bool(reduced),
+            "n_pairs": n_pairs,
+            "n_reductions": n_reductions,
+            "n_skipped": n_skipped,
+            "pruned": bool(prune),
+            "method": "Buchberger (1965) completion" + (" with the 1979 coprimality criterion" if prune else ""),
+        }
+    )
 
 
 def reduce_basis(G, order="lex"):
@@ -291,20 +297,19 @@ def reduce_basis(G, order="lex"):
     keep = []
     for i, g in enumerate(H):
         lg = leading_monomial(g, order)
-        if not any(i != j and _divides(leading_monomial(h, order), lg)
-                   for j, h in enumerate(H)
-                   if not (j > i
-                           and leading_monomial(h, order) == lg)):
+        if not any(
+            i != j and _divides(leading_monomial(h, order), lg)
+            for j, h in enumerate(H)
+            if not (j > i and leading_monomial(h, order) == lg)
+        ):
             keep.append(g)
     out = []
     for i, g in enumerate(keep):
         rest = [h for j, h in enumerate(keep) if j != i] + out
         r = normal_form(g, rest, order) if rest else g
         if r:
-            out.append(scale(r, Fraction(1)
-                             / leading_coeff(r, order)))
-    return sorted(out, key=lambda p: _key(order)(
-        leading_monomial(p, order)), reverse=True)
+            out.append(scale(r, Fraction(1) / leading_coeff(r, order)))
+    return sorted(out, key=lambda p: _key(order)(leading_monomial(p, order)), reverse=True)
 
 
 def ideal_member(f, F, order="lex", basis=None):
@@ -316,18 +321,21 @@ def ideal_member(f, F, order="lex", basis=None):
     """
     G = basis if basis is not None else buchberger(F, order)["basis"]
     r = normal_form(f, G, order)
-    return RichResult(payload={
-        "estimate": not r, "member": not r, "remainder": r,
-        "order": order, "basis": G,
-        "method": "Buchberger (1965): zero normal form over a "
-                  "Groebner basis is necessary and sufficient",
-    })
+    return RichResult(
+        payload={
+            "estimate": not r,
+            "member": not r,
+            "remainder": r,
+            "order": order,
+            "basis": G,
+            "method": "Buchberger (1965): zero normal form over a Groebner basis is necessary and sufficient",
+        }
+    )
 
 
 def groebner(polys, order="lex", prune=True, reduced=True):
     r"""Entry point: the Gröbner basis of ``polys`` in ``order``."""
-    return buchberger(polys, order=order, prune=prune,
-                      reduced=reduced)
+    return buchberger(polys, order=order, prune=prune, reduced=reduced)
 
 
 def cheatsheet() -> str:

@@ -1,7 +1,6 @@
 """Tests for Hermite polynomials."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sghrmt import sghrmt
 
 

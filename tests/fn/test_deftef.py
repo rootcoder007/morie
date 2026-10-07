@@ -1,7 +1,6 @@
 """Tests for deftef.design_effect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.deftef import design_effect
 
 

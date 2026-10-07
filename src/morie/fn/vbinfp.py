@@ -109,8 +109,7 @@ def variational_bound(X, Y, q=None):
             px[i] += joint[j][i]
             py[j] += joint[j][i]
     if q is None:
-        Q = [[(joint[j][i] / py[j] if py[j] > 0.0 else 0.0) for i in range(nx)]
-             for j in range(ny)]
+        Q = [[(joint[j][i] / py[j] if py[j] > 0.0 else 0.0) for i in range(nx)] for j in range(ny)]
     else:
         Q = core.mat(q)
         if len(Q) != ny or any(len(r) != nx for r in Q):
@@ -136,8 +135,7 @@ def variational_bound(X, Y, q=None):
         for i in range(nx):
             if joint[j][i] > 0.0:
                 if not (Q[j][i] > 0.0):
-                    raise ValueError(
-                        "variational_bound: q assigns zero probability to an observed pair")
+                    raise ValueError("variational_bound: q assigns zero probability to an observed pair")
                 elq += joint[j][i] * math.log(Q[j][i])
     hxy = 0.0
     for j in range(ny):

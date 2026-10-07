@@ -1,7 +1,6 @@
 """Tests for morie.fn.nomut — NOMINATE utility."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nomut import nomut
 
 

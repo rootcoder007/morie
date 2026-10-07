@@ -1,7 +1,6 @@
 """Tests for difef — DIF effect size."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.difef import difef
 
 

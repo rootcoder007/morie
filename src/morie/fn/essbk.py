@@ -73,15 +73,19 @@ def effective_sample_size_bulk(chains):
     total = m * n
     return RichResult(
         title="Bulk effective sample size",
-        summary_lines=[("draws", int(total)), ("bulk ESS", float(ess)),
-                       ("efficiency", float(ess / total))],
-        warnings=([f"bulk ESS below 100 per chain ({ess:.0f} for {m} chains); "
-                   "central summaries are unreliable"] if ess < 100 * m else []),
+        summary_lines=[("draws", int(total)), ("bulk ESS", float(ess)), ("efficiency", float(ess / total))],
+        warnings=(
+            [f"bulk ESS below 100 per chain ({ess:.0f} for {m} chains); central summaries are unreliable"]
+            if ess < 100 * m
+            else []
+        ),
         payload={
-            "ess_bulk": float(ess), "n_draws": int(total),
+            "ess_bulk": float(ess),
+            "n_draws": int(total),
             "efficiency": float(ess / total),
             "sufficient": bool(ess >= 100 * m),
-            "n_chains": int(m), "method": "effective_sample_size_bulk",
+            "n_chains": int(m),
+            "method": "effective_sample_size_bulk",
         },
     )
 

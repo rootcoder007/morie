@@ -76,8 +76,7 @@ def alphafold_distogram(z, w, bins=None, dtrue=None):
 
     loss = None
     if dtrue is not None:
-        loss = sum(A.xent(A.onehotnb(dtrue[i][j], bins), ps[i][j])
-                   for i in range(n) for j in range(n)) / (n * n)
+        loss = sum(A.xent(A.onehotnb(dtrue[i][j], bins), ps[i][j]) for i in range(n) for j in range(n)) / (n * n)
 
     flat = [dd[i][j] for i in range(n) for j in range(n)]
     return RichResult(

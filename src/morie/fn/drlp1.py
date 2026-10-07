@@ -99,8 +99,8 @@ def dr_lp_did(y, D, unit, time, horizon=3, X=None):
                     continue
                 if (z, tc) not in dof or (z, th) not in dof:
                     continue
-                new = (dof[(z, tc)] >= 0.5 and dof[(z, tp)] < 0.5)
-                clean = (dof[(z, th)] < 0.5)
+                new = dof[(z, tc)] >= 0.5 and dof[(z, tp)] < 0.5
+                clean = dof[(z, th)] < 0.5
                 if not (new or clean):
                     continue
                 dys.append(val[(z, th)] - val[(z, tp)])

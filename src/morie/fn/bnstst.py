@@ -62,11 +62,19 @@ def bound_test_inference(lower, upper, se=0.0, cdf=0.05):
     lo = float(r["lower"])
     hi = float(r["upper"])
     covers = 1.0 if (lo <= t0 and t0 <= hi) else 0.0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "covers": covers, "reject": 1.0 - covers, "c": float(r["c"]),
-        "theta_0": t0, "n": int(r["n"]),
-        "method": "Inference on an interval-identified parameter"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "covers": covers,
+            "reject": 1.0 - covers,
+            "c": float(r["c"]),
+            "theta_0": t0,
+            "n": int(r["n"]),
+            "method": "Inference on an interval-identified parameter",
+        }
+    )
 
 
 def cheatsheet():

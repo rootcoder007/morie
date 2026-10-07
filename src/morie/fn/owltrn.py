@@ -139,12 +139,9 @@ def outcome_weighted_learning(y, D, W, pi=None, lam=0.01, n_iter=2000):
         for k in range(p):
             beta[k] -= eta * gr[k]
 
-    hinge = sum(w[i] * max(0.0, 1.0 - lab[i]
-                           * sum(Wm[i][k] * beta[k] for k in range(p)))
-                for i in range(n)) / n
+    hinge = sum(w[i] * max(0.0, 1.0 - lab[i] * sum(Wm[i][k] * beta[k] for k in range(p))) for i in range(n)) / n
     hinge += lm * sum(beta[k] * beta[k] for k in range(1, p))
-    rule = [1.0 if sum(Wm[i][k] * beta[k] for k in range(p)) > 0.0 else 0.0
-            for i in range(n)]
+    rule = [1.0 if sum(Wm[i][k] * beta[k] for k in range(p)) > 0.0 else 0.0 for i in range(n)]
 
     def value(rec):
         num = 0.0
@@ -155,13 +152,22 @@ def outcome_weighted_learning(y, D, W, pi=None, lam=0.01, n_iter=2000):
             den += m / pv[i]
         return num / den if den > 0.0 else float("nan")
 
-    return RichResult(payload={
-        "beta": beta, "estimate": value(rule), "value": value(rule),
-        "value_all_treated": value([1.0] * n),
-        "value_all_control": value([0.0] * n), "rule": rule,
-        "n_treated_by_rule": float(sum(rule)), "hinge": hinge,
-        "shift": shift, "n": n, "p": p,
-        "method": "Outcome-weighted learning, weighted hinge (Zhao et al. 2012)"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "estimate": value(rule),
+            "value": value(rule),
+            "value_all_treated": value([1.0] * n),
+            "value_all_control": value([0.0] * n),
+            "rule": rule,
+            "n_treated_by_rule": float(sum(rule)),
+            "hinge": hinge,
+            "shift": shift,
+            "n": n,
+            "p": p,
+            "method": "Outcome-weighted learning, weighted hinge (Zhao et al. 2012)",
+        }
+    )
 
 
 def cheatsheet():

@@ -3,13 +3,12 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_glmm import bym_identifiability_note, bym_map, bym_median_log_prior, neighbour_structure, smr
+from ._schab_glmm import bym_identifiability_note, bym_map, bym_median_log_prior, smr
 
 __all__ = ["schabenberger_bym"]
 
 
-def schabenberger_bym(counts, expected, adjacency, kappa, lam,
-                      max_iter=200, tol=1e-11):
+def schabenberger_bym(counts, expected, adjacency, kappa, lam, max_iter=200, tol=1e-11):
     """Fit the BYM convolution model, Besag, York and Mollie (1991) Sec. 4.
 
     For i = 1, ..., n areas, with y_i the observed count and c_i the
@@ -91,38 +90,41 @@ def schabenberger_bym(counts, expected, adjacency, kappa, lam,
     payload["lam"] = float(lam)
     payload["identifiability"] = bym_identifiability_note()
     payload["n_neighbours"] = np.asarray(adjacency, dtype=float).sum(axis=1)
-    payload["median_log_prior"] = bym_median_log_prior(fit["u"], adjacency,
-                                                       kappa)
-    payload["shrinkage"] = float(
-        np.std(np.log(payload["smr"] + 1e-12)) - np.std(fit["x"]))
+    payload["median_log_prior"] = bym_median_log_prior(fit["u"], adjacency, kappa)
+    payload["shrinkage"] = float(np.std(np.log(payload["smr"] + 1e-12)) - np.std(fit["x"]))
 
     total_gap = abs(fit["fitted_total"] - fit["observed_total"])
-    lines = [("areas", y.size), ("kappa", kappa), ("lambda", lam),
-             ("iterations", fit["n_iter"]), ("converged", fit["converged"]),
-             ("sum of v* (should be 0)", fit["sum_v"]),
-             ("fitted total vs observed",
-              "%.6f vs %.6f" % (fit["fitted_total"], fit["observed_total"]))]
+    lines = [
+        ("areas", y.size),
+        ("kappa", kappa),
+        ("lambda", lam),
+        ("iterations", fit["n_iter"]),
+        ("converged", fit["converged"]),
+        ("sum of v* (should be 0)", fit["sum_v"]),
+        ("fitted total vs observed", "{:.6f} vs {:.6f}".format(fit["fitted_total"], fit["observed_total"])),
+    ]
 
     problems = []
     if not fit["converged"]:
         problems.append("Newton did not converge")
     if abs(fit["sum_v"]) > 1e-6:
-        problems.append("sum of v* is %.3g, not 0" % fit["sum_v"])
+        problems.append("sum of v* is {:.3g}, not 0".format(fit["sum_v"]))
     if total_gap > 1e-5 * max(fit["observed_total"], 1.0):
-        problems.append("fitted total misses the observed total by %.3g"
-                        % total_gap)
+        problems.append(f"fitted total misses the observed total by {total_gap:.3g}")
     if problems:
         payload["warning"] = (
-            "the Sec. 4 stationarity identities do not hold, so this is not "
-            "a maximum of (4.5): " + "; ".join(problems))
+            "the Sec. 4 stationarity identities do not hold, so this is not a maximum of (4.5): " + "; ".join(problems)
+        )
 
-    return RichResult(title="Besag-York-Mollie convolution model",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Besag-York-Mollie convolution model", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spbym: Besag-York-Mollie convolution for disease mapping "
-            "(BYM 1991 Sec. 4) -- ICAR u plus exchangeable v, MAP by Newton")
+    return (
+        "spbym: Besag-York-Mollie convolution for disease mapping "
+        "(BYM 1991 Sec. 4) -- ICAR u plus exchangeable v, MAP by Newton"
+    )
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

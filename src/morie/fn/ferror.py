@@ -78,16 +78,18 @@ def fader_renewable(incidence, Rt, gen_int):
     for t in range(S, n):
         L = sum(inc[t - s] * w[s - 1] for s in range(1, S + 1))
         Rimp.append(inc[t] / L if L > 0.0 else float("nan"))
-    return RichResult(payload={
-        "estimate": sum(fc),
-        "forecast": fc,
-        "lambda_": lam,
-        "total": sum(fc),
-        "Rt_implied": Rimp,
-        "horizon": H,
-        "n": n,
-        "method": "Renewal-equation forecast",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(fc),
+            "forecast": fc,
+            "lambda_": lam,
+            "total": sum(fc),
+            "Rt_implied": Rimp,
+            "horizon": H,
+            "n": n,
+            "method": "Renewal-equation forecast",
+        }
+    )
 
 
 def cheatsheet():

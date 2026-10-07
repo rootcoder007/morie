@@ -1,10 +1,11 @@
 """Synthetic control cluster: caussc, scmaba, ascmcl, gscmcl, causscg,
 causscss."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ascmcl import augmented_synthetic_control
 from morie.fn.caussc import causal_synthetic_control
 from morie.fn.causscg import causal_generalised_sc

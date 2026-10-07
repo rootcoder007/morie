@@ -52,20 +52,20 @@ def kosorok_ch2_bootstrap_donsker_iff(X, t=None, n_boot=400, rng=None, F=None):
     n_boot = int(n_boot)
     if n_boot < 20:
         raise ValueError(f"n_boot must be at least 20, got {n_boot}.")
-    tt = np.array([0.25, 0.5, 0.75]) if t is None else np.atleast_1d(
-        np.asarray(t, dtype=float)
-    )
+    tt = np.array([0.25, 0.5, 0.75]) if t is None else np.atleast_1d(np.asarray(t, dtype=float))
     rng = np.random.default_rng(0) if rng is None else rng
-    draws = np.array([
-        bootstrap_multiplier_process(X, tt, rng=rng, F=F) for _ in range(n_boot)
-    ])
+    draws = np.array([bootstrap_multiplier_process(X, tt, rng=rng, F=F) for _ in range(n_boot)])
     bcov = np.cov(draws.T) if tt.size > 1 else np.array([[float(np.var(draws))]])
     theo = np.array([[float(bridge_cov(a, b, F)) for b in tt] for a in tt])
     return RichResult(
-        payload={"bootstrap_cov": bcov, "bridge_cov": theo,
-                 "max_abs_gap": float(np.max(np.abs(bcov - theo))),
-                 "t": tt, "n_boot": n_boot,
-                 "method": "Bootstrap covariance vs the bridge; the iff is two-way"}
+        payload={
+            "bootstrap_cov": bcov,
+            "bridge_cov": theo,
+            "max_abs_gap": float(np.max(np.abs(bcov - theo))),
+            "t": tt,
+            "n_boot": n_boot,
+            "method": "Bootstrap covariance vs the bridge; the iff is two-way",
+        }
     )
 
 

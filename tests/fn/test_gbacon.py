@@ -1,7 +1,6 @@
 """Tests for gbacon.goodman_bacon_decomp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gbacon import goodman_bacon_decomp
 
 

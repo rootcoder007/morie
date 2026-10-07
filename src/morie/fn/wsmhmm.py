@@ -83,24 +83,41 @@ def wasserman_hmm_forward(obs, A, B, pi):
     ll = 0.0
     c = float(np.sum(alpha))
     if c == 0:
-        return RichResult(payload={"estimate": float("-inf"),
-                                   "filtered": [0.0] * S, "T": len(obs),
-                                   "S": int(S), "method": "forward (impossible sequence)"})
+        return RichResult(
+            payload={
+                "estimate": float("-inf"),
+                "filtered": [0.0] * S,
+                "T": len(obs),
+                "S": int(S),
+                "method": "forward (impossible sequence)",
+            }
+        )
     alpha /= c
     ll += np.log(c)
     for o in obs[1:]:
         alpha = (alpha @ A) * B[:, o]
         c = float(np.sum(alpha))
         if c == 0:
-            return RichResult(payload={"estimate": float("-inf"),
-                                       "filtered": [0.0] * S, "T": len(obs),
-                                       "S": int(S), "method": "forward (impossible sequence)"})
+            return RichResult(
+                payload={
+                    "estimate": float("-inf"),
+                    "filtered": [0.0] * S,
+                    "T": len(obs),
+                    "S": int(S),
+                    "method": "forward (impossible sequence)",
+                }
+            )
         alpha /= c
         ll += np.log(c)
-    return RichResult(payload={
-        "estimate": float(ll), "filtered": [float(v) for v in alpha],
-        "T": len(obs), "S": int(S),
-        "method": "scaled forward algorithm; exact log-likelihood"})
+    return RichResult(
+        payload={
+            "estimate": float(ll),
+            "filtered": [float(v) for v in alpha],
+            "T": len(obs),
+            "S": int(S),
+            "method": "scaled forward algorithm; exact log-likelihood",
+        }
+    )
 
 
 def cheatsheet():

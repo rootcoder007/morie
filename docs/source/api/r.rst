@@ -17,7 +17,7 @@ https://rootcoder007.github.io/rmorie/reference/ .
 Assistant, hosted LLM tier and command line
 -------------------------------------------
 
-The R side of :doc:`../hosted`: the provider chain, sign-in and the
+The R side of :doc:`../hosted`: the provider chain, the key and the
 ``rmorie`` shell command shipped inside the package.
 
 .. r:function:: morie_llm_ask

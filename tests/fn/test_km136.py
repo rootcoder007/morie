@@ -15,8 +15,7 @@ from morie.fn.km136 import kamath_ch9_mml_vlm_loss
 def test_the_vision_language_loss_sums_both_halves():
     # L = -sum_Pos log p(aligned) - sum_Neg log p(unaligned)
     res = kamath_ch9_mml_vlm_loss([0.9], [0.8])
-    assert res["estimate"] == pytest.approx(
-        -math.log(0.9) - math.log(0.8), rel=1e-12)
+    assert res["estimate"] == pytest.approx(-math.log(0.9) - math.log(0.8), rel=1e-12)
 
 
 def test_certainty_on_both_sides_costs_nothing():

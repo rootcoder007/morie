@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_param_np_bf"]
@@ -35,12 +34,15 @@ def ghosal_param_np_bf(n=1500, parametric_truth=True, seed=42):
     l0 = sum(c * math.log(0.25) for c in counts)
     # H1 evidence: Dirichlet(1,1,1,1) marginal =
     # Gamma(4) prod Gamma(1+c) / Gamma(4+n)
-    l1 = math.lgamma(4.0) - math.lgamma(4.0 + n) \
-        + sum(math.lgamma(1.0 + c) for c in counts)
+    l1 = math.lgamma(4.0) - math.lgamma(4.0 + n) + sum(math.lgamma(1.0 + c) for c in counts)
     log_bf_np = l1 - l0
-    res = RichResult(payload={"estimate": log_bf_np,
-                              "nonparametric_wins": log_bf_np > 0,
-                              "method": "parametric-vs-NP Bayes factor (GvdV 2017 sec. 10.5.3)"})
+    res = RichResult(
+        payload={
+            "estimate": log_bf_np,
+            "nonparametric_wins": log_bf_np > 0,
+            "method": "parametric-vs-NP Bayes factor (GvdV 2017 sec. 10.5.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c10_14")
 
 

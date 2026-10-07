@@ -25,10 +25,7 @@ def gradient_clip(
 
     total_norm = np.sqrt(sum(float(np.sum(g**2)) for g in grads))
     clip_coef = max_norm / max(total_norm, 1e-12)
-    if clip_coef < 1.0:
-        clipped = [g * clip_coef for g in grads]
-    else:
-        clipped = [g.copy() for g in grads]
+    clipped = [g * clip_coef for g in grads] if clip_coef < 1.0 else [g.copy() for g in grads]
 
     return DescriptiveResult(
         name="gradient_clip",

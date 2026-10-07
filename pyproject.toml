@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "morie"
-version = "1.3.9"
+version = "1.4.0"
 description = "Multi-domain scientific computing toolkit (Python + R) for observational inference and intervention analysis. Provides causal estimators (ATE, ATT, AIPW, DML, G-computation), survey sampling, propensity-score and doubly-robust methods, sensitivity analysis, spatial statistics, Hawkes point processes, and psychometrics, with a unified RichResult output."
 authors = [
   { name="Vansh Singh Ruhela", email="vsruhela@proton.me" }
@@ -97,7 +97,7 @@ Documentation = "https://rootcoder007.github.io/morie/"
 "Issue tracker" = "https://github.com/rootcoder007/morie/issues"
 Changelog     = "https://github.com/rootcoder007/morie/releases"
 "Download"    = "https://pypi.org/project/morie/#files"
-"R package"   = "https://rootcoder007.r-universe.dev/morie"
+"R package"   = "https://rootcoder007.r-universe.dev/rmorie"
 "Container (GHCR)" = "https://github.com/rootcoder007/morie/pkgs/container/morie"
 
 
@@ -122,6 +122,11 @@ wheel.exclude = [
   "morie/fn/describe_*.md",
   "morie/fn/*.py",
   "!morie/fn/_*.py",
+  "morie/tests/",
+  "morie/*.c",
+  "morie/*.h",
+  "morie/Makefile",
+  "morie/Modelfile*",
   "!morie/fn/__init__.py",
   "!morie/fn/describe.py",
   # The interactive/agent layer runs user/LLM-supplied code (exec + shell -c)
@@ -136,21 +141,44 @@ wheel.exclude = [
   "morie/_exec_guard.py",
   "morie/repl_init.py",
 ]
+# The sdist is a build input, not a repository snapshot: the package, the C++ core,
+# the CMake file and the one script CMake runs. Tests, docs, CI, the audit trail,
+# the legacy bash launcher and the R package live on GitHub. (Registry scanners
+# score everything inside the tarball; shipping the whole tree made the package
+# look like it executed shell, eval and network code it never ships.)
 sdist.exclude = [
+  "*",
+  "!/pyproject.toml",
+  "!/CMakeLists.txt",
+  "!/README.md",
+  "!/LICENSE",
+  "!/CITATION.cff",
+  "!/VERSION",
+  "!/WHATS_NEW.md",
+  "!/libmorie/",
+  "!/libmorie/**",
+  "!/scripts/",
+  "!/scripts/bundle_fn.py",
+  "!/src/",
+  "!/src/morie/",
+  "!/src/morie/**",
+  "/build/",
+  "/build/**",
+  "/r-package/",
+  "/r-package/**",
+  # the interactive layer runs user/LLM-supplied code and stays out of every artifact
   "src/morie/polyglot.py",
   "src/morie/agent.py",
   "src/morie/tui.py",
   "src/morie/_exec_guard.py",
   "src/morie/repl_init.py",
-  # Test files for the excised modules carry exec/payload strings that
-  # re-trigger gptMalware/gptAnomaly on scan even though the source is gone.
-  "tests/test_polyglot.py",
-  "tests/test_exec_guard.py",
-  # Docs page for the excised REPL module -- describes a feature the
-  # published artifact does not contain.
-  "docs/source/methods/polyglot.rst",
+  # the placeholder test package ships in neither artifact; listed after the "!/src/morie/**"
+  # re-include because the last matching pattern wins
+  "/src/morie/tests/",
+  "/src/morie/tests/**",
 ]
-sdist.include = ["libmorie/", "CMakeLists.txt", "scripts/bundle_fn.py"]
+# anchored: an unanchored "libmorie/" also re-included build/*/libmorie/*.o and the R package's CMake files
+sdist.include = ["/libmorie/", "/CMakeLists.txt", "/scripts/bundle_fn.py", "/LICENSE", "/CITATION.cff"]
 
 [tool.cibuildwheel]
 # Build CPython wheels for the supported range; skip musl, 32-bit, PyPy.
@@ -162,6 +190,8 @@ build-frontend = "build"
 target-version = "py310"
 line-length = 120
 src = ["src"]
+# Python sources only: ruff 0.16 would also reformat the python blocks inside the docs Markdown
+include = ["*.py", "*.pyi"]
 
 [tool.ruff.lint]
 select = [
@@ -184,7 +214,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["N", "B"]  # relaxed naming in tests
+"tests/**" = ["N", "B", "E402"]  # relaxed naming; E402: pytest.importorskip() must run before the guarded import
 "src/morie/fn/**" = ["N"]  # short names are intentional
 
 [tool.ruff.lint.isort]

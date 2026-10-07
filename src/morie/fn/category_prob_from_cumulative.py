@@ -27,17 +27,16 @@ def category_prob_from_cumulative(cum_probs, j):
     """
     value = _acd.category_prob_from_cumulative(cum_probs, j)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.12)"
     return RichResult(
-        title='Category probability pi_j = P(Y <= j) - P(Y <= j-1)',
+        title="Category probability pi_j = P(Y <= j) - P(Y <= j-1)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e12: pi_j = P(Y <= j) - P(Y <= j-1) [Bilder & Loughin 2025, eq. 3.12]'
+    return "3e12: pi_j = P(Y <= j) - P(Y <= j-1) [Bilder & Loughin 2025, eq. 3.12]"

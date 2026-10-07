@@ -13,6 +13,6 @@ def test_algqa_basic():
 
 def test_algqa_edge():
     import pytest
+
     with pytest.raises(ValueError, match="divisible"):
-        alammar_grouped_query_attention([[[1.0]]] * 3, [[[1.0]]] * 2,
-                                        [[[1.0]]] * 2, 3, 2)
+        alammar_grouped_query_attention([[[1.0]]] * 3, [[[1.0]]] * 2, [[[1.0]]] * 2, 3, 2)

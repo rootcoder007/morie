@@ -1,7 +1,6 @@
 """Tests for dpunit.dp_unit_definition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpunit import dp_unit_definition
 
 
@@ -12,6 +11,8 @@ def test_dpunit_basic():
     result = dp_unit_definition(unit, records)
     assert isinstance(result, dict)
     assert "n_records" in result
+
+
 def test_dpunit_edge():
     """Test edge cases."""
     unit = np.random.default_rng(42).normal(0, 1, 100)

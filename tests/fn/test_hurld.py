@@ -1,7 +1,6 @@
 """Tests for hurdle_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hurld import hurdle_model
 
 

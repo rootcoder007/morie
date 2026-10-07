@@ -117,6 +117,11 @@ installed and working. Pick by what you have:
   ([section 4](#4-pypi-manual-pip)).
 - **You want the R package** — install **R** (Step 1), then
   [section 6](#6-r-r-universe--cran).
+- **Whatever you pick** — finish with `morie interactive install`
+  ([section 7](#7-the-interactive-layer-repl-exec-agent-tui)): it adds the
+  REPL, exec, agent and TUI modules that every channel leaves out. The
+  one-liner runs it for you; a verb that needs them prints the command and,
+  on a terminal, offers to run it.
 
 ## Install channels
 
@@ -328,7 +333,7 @@ Segmentation fault (core dumped)
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a version for reproducibility
-docker run --rm ghcr.io/rootcoder007/morie:1.3.9 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.4.0 morie --help
 ```
 
 The image is published on every release with both `:latest` and `:<version>` tags. Multi-arch (linux/amd64). Includes morie + the full SciPy + R stack + R 4.5.
@@ -361,7 +366,8 @@ Every channel above installs morie without five modules: `polyglot.py`, `agent.p
 model type, and package scanners flag that surface, so they are kept out of the
 wheel, the sdist, the Homebrew formula, the deb/rpm and the container image.
 Without them `morie repl`, `morie exec`, `morie agent` and `morie tui` say so,
-print the command below, and on a terminal offer to run it for you.
+print the command below, and on a terminal offer to run it for you. The
+curl one-liner (section 1) runs it as its last step.
 
 Add them for your user:
 
@@ -459,11 +465,12 @@ Every helper returns a DataFrame from morie's own pandas-compatible frame core (
 morie modules name canonical concepts ("weight", "alcohol_past12m", "age_group"…) but your dataset probably uses different names. You don't have to rename your columns — morie's schema layer handles it:
 
 ```python
-import pandas as pd
+from morie.fn import _frame_core as pd  # pandas is optional; pandas.read_csv works the same
 import morie.schema as ms
 from morie.cpads import CPADS_REQUIRED_VARIABLES
 
-your_df = pd.read_csv("your-data.csv")  # has columns like 'wt', 'binge30', 'sex'
+# your own file: pd.read_csv("your-data.csv"); a two-row stand-in here
+your_df = pd.DataFrame({"wt": [1.2, 0.8], "binge30": [0, 1], "sex": ["F", "M"]})
 
 # Let morie figure out the mapping
 mapping, scores = ms.infer_mapping(your_df, canonical=CPADS_REQUIRED_VARIABLES)
@@ -475,6 +482,10 @@ canon_df = ms.apply_mapping(your_df, mapping)
 Or be explicit if you don't trust the fuzzy match:
 
 ```python
+import morie.schema as ms
+from morie.fn import _frame_core as pd
+
+your_df = pd.DataFrame({"wt": [1.2, 0.8], "binge30": [0, 1], "sex": ["F", "M"]})  # as above
 canon_df = ms.apply_mapping(your_df, {
     "wt": "weight",
     "binge30": "heavy_drinking_30d",
@@ -486,12 +497,10 @@ The same works for any morie-supported domain: pass the canonical list for your 
 
 ## Languages
 
-morie's CLI is bilingual (EN/FR) by default and ships translations for **English, French, Spanish, German, Mandarin (Simplified), Portuguese (pt-BR), Japanese, Arabic, Hindi**. Set `MORIE_LOCALE`:
+morie's CLI carries French, Spanish, German, Portuguese, Japanese, Arabic, Hindi and Mandarin (Simplified) strings for the cheatsheet section headings, the `doctor` heading, `pull`'s row summary and the network-error line; everything else, `explain` included, is English. Set `MORIE_LOCALE`:
 
 ```bash
 MORIE_LOCALE=fr morie cheatsheet
-MORIE_LOCALE=es morie doctor
-MORIE_LOCALE=zh morie tutorial
 ```
 
 Methodology documentation (the JSS papers, in-depth method descriptions) is English-only for now — translating dense statistical prose is its own scoped project. Help us add it: every locale is one dict edit at [`src/morie/i18n.py`](src/morie/i18n.py).
@@ -525,7 +534,7 @@ morie ingest ckan --portal https://open.canada.ca/data \
                   --search "alcohol"
 
 morie ingest ckan --portal https://open.canada.ca/data \
-                  --package canadian-postsecondary-alcohol-and-drug-use-survey \
+                  --package 736fa9b2-62e4-4e31-aea4-51869605b363 \
                   --out ./cpads/
 
 # Toronto Police Service ArcGIS open-data layers
@@ -535,7 +544,7 @@ morie ingest tps --layer major-crime --year 2024 \
 
 # Special Investigations Unit director's-report mining
 morie ingest siu --list                                 # index → CSV
-morie ingest siu --report-id 22-OFD-001 --out report/   # text + structured fields
+morie ingest siu --report-id 17-OVI-201 --out report/   # text + structured fields
 ```
 
 Each adapter is also importable as `morie.ingest.{ckan,tps,siu}` for use inside Python scripts.
@@ -574,5 +583,5 @@ remove.packages(c("rmorie", "rmoriebricklayer", "rmoriedata"))
 - PyPI: <https://pypi.org/project/morie/>
 - `import morie` checks PyPI once a day for a newer release; set `MORIE_NO_UPDATE_CHECK=1` to disable it.
 - r-universe: <https://rootcoder007.r-universe.dev/rmorie>
-- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models: <https://llm.rmorie.com>
+- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models (last resort, key on request at <https://rmorie.com/access>): <https://llm.rmorie.com>
 - Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>

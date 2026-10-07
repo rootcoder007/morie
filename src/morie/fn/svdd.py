@@ -79,14 +79,12 @@ def _mat(X, name):
     # convention every SVDD reference assumes, so match it here.
     arr = np.asarray(X, dtype=float)
     flat = getattr(arr, "ndim", None) == 1 or (
-        isinstance(X, (list, tuple)) and X
-        and not isinstance(X[0], (list, tuple))
-        and not hasattr(X[0], "__len__"))
+        isinstance(X, (list, tuple)) and X and not isinstance(X[0], (list, tuple)) and not hasattr(X[0], "__len__")
+    )
     if flat:
         rows = [[float(v)] for v in np.asarray(X, dtype=float)]
     else:
-        rows = [[float(v) for v in r]
-                for r in np.atleast_2d(arr)]
+        rows = [[float(v) for v in r] for r in np.atleast_2d(arr)]
     if not rows or not rows[0]:
         raise ValueError(f"svdd: {name} must be a non-empty (n, p) matrix")
     w = len(rows[0])
@@ -96,8 +94,7 @@ def _mat(X, name):
     return rows
 
 
-def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
-         coef0=1.0, tol=1e-10, max_iter=20000):
+def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3, coef0=1.0, tol=1e-10, max_iter=20000):
     r"""Fit a Support Vector Data Description.
 
     Parameters
@@ -154,7 +151,8 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
 
     References
     ----------
-    Tax & Duin (2004), *Machine Learning* 54(1), 45-66: eqs. 1-15.
+    Tax, D. M. J. & Duin, R. P. W. (2004). Support vector data description.
+    *Machine Learning* 54(1), 45-66: eqs. 1-15.
     """
     rows = _mat(X, "X")
     n = len(rows)
@@ -170,19 +168,17 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
         C = 1.0
     C = float(C)
     if C <= 0.0:
-        raise ValueError("svdd: C must be > 0, got %r" % (C,))
+        raise ValueError(f"svdd: C must be > 0, got {C!r}")
     if C * n < 1.0:
-        raise ValueError("svdd: C = %g with n = %d makes sum(alpha) = 1 "
-                         "infeasible under alpha_i <= C; need C >= 1/n"
-                         % (C, n))
+        raise ValueError(
+            f"svdd: C = {C:g} with n = {int(n)} makes sum(alpha) = 1 infeasible under alpha_i <= C; need C >= 1/n"
+        )
     if kernel not in ("rbf", "linear", "poly"):
-        raise ValueError("svdd: kernel must be rbf, linear or poly, got %r"
-                         % (kernel,))
+        raise ValueError(f"svdd: kernel must be rbf, linear or poly, got {kernel!r}")
     if gamma is None:
         gamma = 1.0 / p
 
-    K = kernel_matrix(rows, kernel=kernel, gamma=gamma, degree=degree,
-                      coef0=coef0)
+    K = kernel_matrix(rows, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
     K = [[float(v) for v in r] for r in K]
 
     alpha = _solve_dual(K, C, n, tol, max_iter)
@@ -246,14 +242,10 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
         """||z - a||^2 - R^2 via eq. 14. Negative means accepted."""
         zr = _mat(Z, "Z")
         if len(zr[0]) != p:
-            raise ValueError("svdd: test data has %d columns, training had "
-                             "%d" % (len(zr[0]), p))
-        Kz = kernel_matrix(zr, rows, kernel=kernel, gamma=gamma,
-                           degree=degree, coef0=coef0)
-        Kzz = kernel_matrix(zr, kernel=kernel, gamma=gamma, degree=degree,
-                            coef0=coef0)
-        return [dist2_row([float(v) for v in Kz[t]], float(Kzz[t][t])) - R2
-                for t in range(len(zr))]
+            raise ValueError(f"svdd: test data has {int(len(zr[0]))} columns, training had {int(p)}")
+        Kz = kernel_matrix(zr, rows, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
+        Kzz = kernel_matrix(zr, kernel=kernel, gamma=gamma, degree=degree, coef0=coef0)
+        return [dist2_row([float(v) for v in Kz[t]], float(Kzz[t][t])) - R2 for t in range(len(zr))]
 
     def predict(Z):
         """True where the object is accepted as a member of the class."""
@@ -262,28 +254,30 @@ def svdd(X, C=None, nu=None, kernel="rbf", gamma=None, degree=3,
         return [v <= 1e-8 for v in decision(Z)]
 
     n_out = sum(1 for i in range(n) if d2[i] > R2 + 1e-8)
-    return RichResult(payload={
-        "estimate": alpha,
-        "alpha": alpha,
-        "R2": float(R2),
-        "radius": float(math.sqrt(R2)),
-        "center": center,
-        "support_": support,
-        "boundary_": boundary,
-        "bounded_": bounded,
-        "n_support": len(support),
-        "degenerate": bool(degenerate),
-        "distance2": d2,
-        "outlier_fraction": float(n_out) / n,
-        "outlier_bound": min(1.0, 1.0 / (C * n)),
-        "decision": decision,
-        "predict": predict,
-        "C": C,
-        "kernel": kernel,
-        "gamma": gamma,
-        "n": n,
-        "method": "SVDD (Tax & Duin 2004)",
-    })
+    return RichResult(
+        payload={
+            "estimate": alpha,
+            "alpha": alpha,
+            "R2": float(R2),
+            "radius": float(math.sqrt(R2)),
+            "center": center,
+            "support_": support,
+            "boundary_": boundary,
+            "bounded_": bounded,
+            "n_support": len(support),
+            "degenerate": bool(degenerate),
+            "distance2": d2,
+            "outlier_fraction": float(n_out) / n,
+            "outlier_bound": min(1.0, 1.0 / (C * n)),
+            "decision": decision,
+            "predict": predict,
+            "C": C,
+            "kernel": kernel,
+            "gamma": gamma,
+            "n": n,
+            "method": "SVDD (Tax & Duin 2004)",
+        }
+    )
 
 
 def _solve_dual(K, C, n, tol, max_iter):
@@ -295,7 +289,7 @@ def _solve_dual(K, C, n, tol, max_iter):
     opposite directions.
     """
     alpha = [1.0 / n] * n
-    if C < 1.0 / n:
+    if 1.0 / n > C:
         raise ValueError("svdd: infeasible C")
     # Ka[i] = sum_j alpha_j K_ij, kept incrementally.
     Ka = [sum(alpha[j] * K[i][j] for j in range(n)) for i in range(n)]
@@ -321,10 +315,7 @@ def _solve_dual(K, C, n, tol, max_iter):
         # objective along alpha_i += d, alpha_j -= d is a downward
         # parabola; its unconstrained maximiser is
         denom = 2.0 * (K[i][i] - 2.0 * K[i][j] + K[j][j])
-        if denom <= 1e-15:
-            d = alpha[j] if g[i] > g[j] else 0.0
-        else:
-            d = (g[i] - g[j]) / denom
+        d = (alpha[j] if g[i] > g[j] else 0.0) if denom <= 1e-15 else (g[i] - g[j]) / denom
         d = min(d, C - alpha[i], alpha[j])
         if d <= 1e-15:
             break
@@ -345,13 +336,15 @@ def _solve_dual(K, C, n, tol, max_iter):
 
 
 def cheatsheet():
-    return ("svdd: smallest enclosing sphere, min R^2 + C sum xi "
-            "(Tax & Duin 2004 eqs. 3-4). Dual: max sum a_i K_ii - "
-            "sum a_i a_j K_ij, sum a = 1, 0 <= a_i <= C (eqs. 9-10). "
-            "KKT eqs. 11-13 label interior / boundary / bounded; R^2 "
-            "comes from an UNBOUNDED support vector (eq. 15). At most "
-            "1/(CN) of the data can be rejected, so C = 1/(nu N) "
-            "makes nu the outlier fraction. C >= 1 gives the exact MEB.")
+    return (
+        "svdd: smallest enclosing sphere, min R^2 + C sum xi "
+        "(Tax & Duin 2004 eqs. 3-4). Dual: max sum a_i K_ii - "
+        "sum a_i a_j K_ij, sum a = 1, 0 <= a_i <= C (eqs. 9-10). "
+        "KKT eqs. 11-13 label interior / boundary / bounded; R^2 "
+        "comes from an UNBOUNDED support vector (eq. 15). At most "
+        "1/(CN) of the data can be rejected, so C = 1/(nu N) "
+        "makes nu the outlier fraction. C >= 1 gives the exact MEB."
+    )
 
 
 # compact alias per ledger/NAMING.md

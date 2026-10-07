@@ -41,13 +41,17 @@ def kamath_ch4_kronecker_product(A, B):
     (2, 4)
     """
     W, Am, Bm = _kron(A, B)
-    return RichResult(payload={
-        "W": [[float(v) for v in row] for row in W],
-        "shape": (int(W.shape[0]), int(W.shape[1])),
-        "rank": int(np.linalg.matrix_rank(W)),
-        "n_params": int(Am.size + Bm.size),
-        "estimate": float(W[0, 0]), "n": int(W.size),
-        "method": "Kronecker product (Kamath Eq 4.6)"})
+    return RichResult(
+        payload={
+            "W": [[float(v) for v in row] for row in W],
+            "shape": (int(W.shape[0]), int(W.shape[1])),
+            "rank": int(np.linalg.matrix_rank(W)),
+            "n_params": int(Am.size + Bm.size),
+            "estimate": float(W[0, 0]),
+            "n": int(W.size),
+            "method": "Kronecker product (Kamath Eq 4.6)",
+        }
+    )
 
 
 def cheatsheet():

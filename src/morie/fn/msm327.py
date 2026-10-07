@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,8 +25,7 @@ def mvsml_functional_regression_eq_15_3(theta_hat, mu_hat):
     on pp.651-652 where the book contradicts its own printed form.
     Keys: estimate."""
     v = _gp.zap_predict(theta_hat, mu_hat)
-    res = RichResult(payload={"estimate": v, "y_hat": v,
-                              "method": "ZAP_RF prediction (MVSML 2022 eq. 15.3)"})
+    res = RichResult(payload={"estimate": v, "y_hat": v, "method": "ZAP_RF prediction (MVSML 2022 eq. 15.3)"})
     return with_describe_pointer(res, "msm327")
 
 

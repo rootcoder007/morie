@@ -1,8 +1,6 @@
 """Tests for bayhier.hierarchical_pooling."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bayhier import hierarchical_pooling
 
 
@@ -13,8 +11,7 @@ def test_bayhier_basic():
     # equality, so use integer group labels (not continuous random
     # noise) and choose enough groups and observations to leave
     # positive residual degrees of freedom for sigma2.
-    y = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
-                  11.0, 12.0])
+    y = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0])
     group = np.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2])
 
     result = hierarchical_pooling(y, group)
@@ -85,18 +82,12 @@ def test_bayhier_basic():
     den = 0.0
     for ng, ybg in zip(n_g, ybar):
         denom = tau2_expected + sigma2_expected / ng
-        if denom > 0.0:
-            w = 1.0 / denom
-        else:
-            w = 0.0
+        w = 1.0 / denom if denom > 0.0 else 0.0
         num += w * ybg
         den += w
     mu_expected = num / den if den > 0.0 else grand
 
-    theta_expected = [
-        lam_expected[j] * ybar[j] + (1.0 - lam_expected[j]) * mu_expected
-        for j in range(G)
-    ]
+    theta_expected = [lam_expected[j] * ybar[j] + (1.0 - lam_expected[j]) * mu_expected for j in range(G)]
 
     # Variance hyperparameters agree with the independent formula.
     assert abs(result["sigma2"] - sigma2_expected) < 1e-10
@@ -120,8 +111,7 @@ def test_bayhier_basic():
 def test_bayhier_edge():
     """Test edge cases."""
     # Use a valid configuration with positive residual df.
-    y = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
-                  11.0, 12.0])
+    y = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0])
     group = np.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2])
 
     result = hierarchical_pooling(y, group)

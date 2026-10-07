@@ -62,8 +62,7 @@ def ghosal_gauss_ker(x, grid=None, alpha=1.0, K=50, seed=0, n_draws=200):
     if a <= 0:
         raise ValueError(f"alpha must be positive, got {a}.")
     kk = int(K)
-    g = np.linspace(xv.min() - 1, xv.max() + 1, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(xv.min() - 1, xv.max() + 1, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     rng = np.random.default_rng(int(seed))
     m0, s0 = float(xv.mean()), float(xv.std(ddof=1))
     if s0 <= 0:
@@ -75,15 +74,21 @@ def ghosal_gauss_ker(x, grid=None, alpha=1.0, K=50, seed=0, n_draws=200):
         lost += 1.0 - float(w.sum())
         mu = rng.normal(m0, s0, kk)
         sg = np.abs(rng.normal(s0, 0.3 * s0, kk)) + 1e-6
-        comp = np.exp(-0.5 * ((g[:, None] - mu) / sg) ** 2) / \
-            (sg * np.sqrt(2 * np.pi))
+        comp = np.exp(-0.5 * ((g[:, None] - mu) / sg) ** 2) / (sg * np.sqrt(2 * np.pi))
         dens += comp @ w
     dens /= float(n_draws)
-    return RichResult(payload={
-        "grid": g, "density": dens, "alpha": a, "K": kk,
-        "truncation_mass": float(lost / n_draws),
-        "is_density": True, "n": int(xv.size),
-        "method": "DP mixture of a Gaussian location-scale kernel (Sec. 5.5), truncated stick-breaking"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "alpha": a,
+            "K": kk,
+            "truncation_mass": float(lost / n_draws),
+            "is_density": True,
+            "n": int(xv.size),
+            "method": "DP mixture of a Gaussian location-scale kernel (Sec. 5.5), truncated stick-breaking",
+        }
+    )
 
 
 def cheatsheet():

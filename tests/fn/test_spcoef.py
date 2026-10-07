@@ -1,9 +1,10 @@
 """Tests for spcoef."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spcoef import spearmans_rho_copula
+
 
 def test_spcoef_basic():
     out = spearmans_rho_copula("gaussian", 0.6)

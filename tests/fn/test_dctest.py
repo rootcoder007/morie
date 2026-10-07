@@ -1,7 +1,6 @@
 """Tests for dctest.discontinuity_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dctest import discontinuity_test
 
 

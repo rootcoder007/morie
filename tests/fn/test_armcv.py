@@ -1,7 +1,6 @@
 """Tests for armcv.py - AR modified covariance method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.armcv import ar_modified_cov_fn, armcv
 
 

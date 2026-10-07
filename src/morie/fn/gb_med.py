@@ -54,8 +54,10 @@ def gibbons_median_dist(x, n, F=None):
     scalar = np.isscalar(x) or np.ndim(x) == 0
     return RichResult(
         payload={
-            "cdf": float(cdf[0]) if scalar else cdf, "m": m,
-            "beta_params": (m + 1, m + 1), "n": n,
+            "cdf": float(cdf[0]) if scalar else cdf,
+            "m": m,
+            "beta_params": (m + 1, m + 1),
+            "n": n,
             "method": "F_med(x) = I_F(x)(m+1, m+1), odd n (Gibbons Ch. 2.7.1)",
         }
     )

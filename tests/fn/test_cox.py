@@ -1,7 +1,6 @@
 """Tests for morie.fn.cox — Cox proportional hazards."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cox import cox, cox_ph
 
 

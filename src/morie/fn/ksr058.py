@@ -64,10 +64,15 @@ def kosorok_ch2_law_iterated_logarithm(X=None, n=None, F=None, rng=None):
     s = sup_norm(X, F)
     denom = np.sqrt(2.0 * ll)
     return RichResult(
-        payload={"sup_norm": s, "lil_ratio": float(s / denom), "lil_bound": 0.5,
-                 "chung_liminf_constant": float(np.pi / 2),
-                 "loglog_term": float(denom), "n": int(n),
-                 "method": "||G_n||_inf / sqrt(2 log log n) vs the 1/2 bound (eq. 2.21)"}
+        payload={
+            "sup_norm": s,
+            "lil_ratio": float(s / denom),
+            "lil_bound": 0.5,
+            "chung_liminf_constant": float(np.pi / 2),
+            "loglog_term": float(denom),
+            "n": int(n),
+            "method": "||G_n||_inf / sqrt(2 log log n) vs the 1/2 bound (eq. 2.21)",
+        }
     )
 
 

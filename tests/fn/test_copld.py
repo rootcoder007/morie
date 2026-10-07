@@ -1,7 +1,6 @@
 """Tests for morie.fn.copld — Copeland method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.copld import copld
 
 

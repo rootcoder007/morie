@@ -64,7 +64,7 @@ def bridgs(draws1, draws2, log_q1, log_q2, tol=1e-12, max_iter=1000):
     r = 1.0
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         num = sum(v / (s1 * v + s2 * r) for v in l2) / n2
         den = sum(1.0 / (s1 * v + s2 * r) for v in l1) / n1
         r_new = num / den
@@ -74,12 +74,17 @@ def bridgs(draws1, draws2, log_q1, log_q2, tol=1e-12, max_iter=1000):
             break
         r = r_new
     log_ratio = float(np.log(r) + shift)
-    return RichResult(payload={
-        "ratio": float(np.exp(log_ratio)), "log_ratio": log_ratio,
-        "iterations": int(it), "converged": bool(converged),
-        "n1": int(n1), "n2": int(n2),
-        "method": "Meng-Wong iterative optimal bridge (eq. 3.5 / Sec. 4)",
-    })
+    return RichResult(
+        payload={
+            "ratio": float(np.exp(log_ratio)),
+            "log_ratio": log_ratio,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n1": int(n1),
+            "n2": int(n2),
+            "method": "Meng-Wong iterative optimal bridge (eq. 3.5 / Sec. 4)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

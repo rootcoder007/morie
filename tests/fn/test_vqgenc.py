@@ -1,7 +1,6 @@
 """Tests for vqgenc.vqgan_encode."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vqgenc import vqgan_encode
 
 

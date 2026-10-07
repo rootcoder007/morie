@@ -37,10 +37,7 @@ def butterworth_filter(x, cutoff, fs, order: int = 4, btype: str = "low") -> Sig
 
     x = np.asarray(x, dtype=float)
     nyq = fs / 2.0
-    if isinstance(cutoff, (list, tuple, np.ndarray)):
-        Wn = [float(c) / nyq for c in cutoff]
-    else:
-        Wn = float(cutoff) / nyq
+    Wn = [float(c) / nyq for c in cutoff] if isinstance(cutoff, (list, tuple, np.ndarray)) else float(cutoff) / nyq
     sos = butter(order, Wn, btype=btype, output="sos")
     y = sosfiltfilt(sos, x)
     return SignalResult(

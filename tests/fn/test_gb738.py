@@ -1,7 +1,5 @@
 """Tests for gb738.gibbons_chernoff_savage."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb738 import gibbons_chernoff_savage
 
 

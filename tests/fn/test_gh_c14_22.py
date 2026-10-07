@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 14.9.5, the nested Dirichlet process.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c14_22 import ghosal_nested_dp
 
 

@@ -1,7 +1,6 @@
 """Tests for rgtwave.rangayyan_t_wave_detect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_t_wave_detect
 
 

@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_subgradient"]
 
 
-def boyd_subgradient(f, x, g, y_samples=None, n_probe=64, radius=1.0,
-                     seed=0):
+def boyd_subgradient(f, x, g, y_samples=None, n_probe=64, radius=1.0, seed=0):
     r"""Verify that g is a subgradient of f at x:
 
     .. math::
@@ -98,14 +97,15 @@ def boyd_subgradient(f, x, g, y_samples=None, n_probe=64, radius=1.0,
     viol = int(np.sum(gaps < -1e-09))
     return RichResult(
         title="Subgradient check",
-        summary_lines=[("probes", int(ys.shape[0])), ("violations", viol),
-                       ("worst gap", float(gaps.min()))],
-        warnings=["this samples the inequality: it can refute the "
-                  "subgradient claim but never establish it"],
+        summary_lines=[("probes", int(ys.shape[0])), ("violations", viol), ("worst gap", float(gaps.min()))],
+        warnings=["this samples the inequality: it can refute the subgradient claim but never establish it"],
         payload={
-            "is_subgradient": bool(viol == 0), "violations": viol,
-            "worst_gap": float(gaps.min()), "n_tested": int(ys.shape[0]),
-            "gaps": gaps, "f_at_x": fx,
+            "is_subgradient": bool(viol == 0),
+            "violations": viol,
+            "worst_gap": float(gaps.min()),
+            "n_tested": int(ys.shape[0]),
+            "gaps": gaps,
+            "f_at_x": fx,
             "method": "boyd_subgradient",
         },
     )

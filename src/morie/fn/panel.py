@@ -59,8 +59,8 @@ def panel_regression(
         XtX = X_dm.T @ X_dm
         try:
             beta = np.linalg.solve(XtX + np.eye(p) * 1e-12, X_dm.T @ y_dm)
-        except np.linalg.LinAlgError:
-            raise ValueError("X'X singular after demeaning.")
+        except np.linalg.LinAlgError as exc:
+            raise ValueError("X'X singular after demeaning.") from exc
 
         resid = y_dm - X_dm @ beta
         dof = n - N - p
@@ -137,10 +137,7 @@ def panel_regression(
             se_arr = np.full(kk, float("nan"))
 
         fitted = X_re @ beta
-        if add_intercept:
-            names = ["(Intercept)"] + [f"x{j}" for j in range(p)]
-        else:
-            names = [f"x{j}" for j in range(p)]
+        names = ["(Intercept)"] + [f"x{j}" for j in range(p)] if add_intercept else [f"x{j}" for j in range(p)]
     else:
         raise ValueError("method must be 'fe' or 're'.")
 

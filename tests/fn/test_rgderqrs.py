@@ -1,7 +1,6 @@
 """Tests for rgderqrs.rangayyan_deriv_qrs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_deriv_qrs
 
 

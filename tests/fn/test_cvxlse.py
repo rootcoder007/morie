@@ -1,7 +1,6 @@
 """Tests for cvxlse.boyd_lse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxlse import boyd_lse
 
 
@@ -11,6 +10,8 @@ def test_cvxlse_basic():
     result = boyd_lse(x)
     assert isinstance(result, dict)
     assert "value" in result
+
+
 def test_cvxlse_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

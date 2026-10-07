@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 
 import pytest
 
@@ -106,18 +107,22 @@ def test_run_module_materialises_dataset_key_and_cached_pumf_for_the_r_bridge(mo
 
     def fake_bridge(module_name, cpads_csv=None, output_dir=None):
         seen["csv"] = str(cpads_csv)
+        seen["frame"] = pd.read_csv(cpads_csv)  # read now: the staged copy is removed when the run ends
         return {"ok": pd.DataFrame({"x": [1]})}
 
     monkeypatch.setattr(modules, "_run_r_module", fake_bridge)
+    monkeypatch.setattr(modules, "_r_route_ready", lambda: None)  # the bridge is faked; R need not exist
     monkeypatch.setattr("morie.data.load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}))
     monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
     modules.run_module("descriptive-statistics", dataset_key="ocp21")
-    assert seen["csv"].endswith("morie-dataset-ocp21.csv")
-    assert pd.read_csv(seen["csv"])["k"].tolist() == ["ocp21"]
+    staged = Path(seen["csv"])
+    assert staged.name == "ocp21.csv" and staged.parent.name.startswith("morie-dataset-")
+    assert seen["frame"]["k"].tolist() == ["ocp21"]
+    assert not staged.parent.exists()  # a private directory, removed after the run
     # a real PUMF already in the Python store beats the shipped synthetic frame
     monkeypatch.setattr("morie.data.cached_cpads", lambda: pd.DataFrame({"real": [1, 2]}))
     modules.run_module("descriptive-statistics")
-    assert seen["csv"].endswith("morie-dataset-ocp21-cached.csv")
+    assert Path(seen["csv"]).name == "ocp21-cached.csv" and seen["frame"]["real"].tolist() == [1, 2]
     # nothing cached: the synthetic path goes through unchanged
     monkeypatch.setattr("morie.data.cached_cpads", lambda: None)
     modules.run_module("descriptive-statistics")

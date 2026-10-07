@@ -71,7 +71,7 @@ def pql_spatial_glmm(
             w = mu * (1 - mu)
 
         y_tilde = eta + (Z - mu) / np.maximum(w, 1e-10)
-        R_inv = np.diag(w)
+        np.diag(w)
         V = G + np.diag(1.0 / np.maximum(w, 1e-10))
         V_inv = np.linalg.inv(V)
         XtViX = X.T @ V_inv @ X

@@ -3,13 +3,12 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.spthom import schabenberger_thomas_process
 
 
 def _k_exact(r, rho, sigma):
     """K(r) = pi r^2 + (1 - exp(-r^2 / (4 sigma^2))) / rho."""
-    return math.pi * r * r + (1.0 - math.exp(-(r * r) / (4.0 * sigma ** 2))) / rho
+    return math.pi * r * r + (1.0 - math.exp(-(r * r) / (4.0 * sigma**2))) / rho
 
 
 def test_spthom_basic():
@@ -47,14 +46,13 @@ def test_spthom_edge():
     assert len(k) == 1
     assert abs(k[0] - _k_exact(0.5, 2.0, 0.25)) < 1e-12
 
-    for bad in (dict(rho=0.0), dict(mu=0.0), dict(sigma=0.0),
-                dict(rho=-1.0), dict(sigma=-0.5)):
+    for bad in (dict(rho=0.0), dict(mu=0.0), dict(sigma=0.0), dict(rho=-1.0), dict(sigma=-0.5)):
         try:
             schabenberger_thomas_process([1.0], **bad)
         except ValueError:
             pass
         else:
-            raise AssertionError("expected ValueError for %r" % (bad,))
+            raise AssertionError(f"expected ValueError for {bad!r}")
 
     try:
         schabenberger_thomas_process([-1.0])

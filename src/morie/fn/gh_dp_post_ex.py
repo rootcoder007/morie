@@ -59,12 +59,15 @@ def ghosal_dp_posterior_exact(x, alpha=1.0, grid=None):
     if xv.size < 1:
         raise ValueError("need at least one observation.")
     out = dp_predictive(xv, alpha=alpha, grid=grid)
-    return RichResult(payload={
-        **out, "is_density": False,
-        "limit_note": "alpha -> 0 gives the empirical distribution; "
-                      "alpha -> infinity gives G_0",
-        "n": int(xv.size),
-        "method": "Polya urn predictive (Sec. 4.1.4); atoms at the distinct values, mass n/(alpha+n)"})
+    return RichResult(
+        payload={
+            **out,
+            "is_density": False,
+            "limit_note": "alpha -> 0 gives the empirical distribution; alpha -> infinity gives G_0",
+            "n": int(xv.size),
+            "method": "Polya urn predictive (Sec. 4.1.4); atoms at the distinct values, mass n/(alpha+n)",
+        }
+    )
 
 
 def cheatsheet():

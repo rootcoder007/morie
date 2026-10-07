@@ -181,20 +181,32 @@ def _stored_provider() -> dict:
 
 
 def _api_base_url() -> str | None:
-    """The generic OpenAI-compatible base URL: LLM_API_BASE_URL, else the attached endpoint."""
-    url = os.environ.get("LLM_API_BASE_URL", "").strip() or str(_stored_provider().get("api_base_url", "")).strip()
+    """The generic OpenAI-compatible base URL: LLM_API_BASE_URL, else MORIE_LLM_BASE_URL (the
+    name rmoriebricklayer, rmoriedata and rmorie read), else the attached endpoint."""
+    url = (
+        os.environ.get("LLM_API_BASE_URL", "").strip()
+        or os.environ.get("MORIE_LLM_BASE_URL", "").strip()
+        or str(_stored_provider().get("api_base_url", "")).strip()
+    )
     return url.rstrip("/") if url else None
 
 
 def _api_key() -> str | None:
-    """The key for that endpoint: LLM_API_KEY, else the attached endpoint's key."""
-    return os.environ.get("LLM_API_KEY", "").strip() or str(_stored_provider().get("api_key", "")).strip() or None
+    """The key for that endpoint: LLM_API_KEY, else MORIE_LLM_API_KEY, else the attached endpoint's key."""
+    return (
+        os.environ.get("LLM_API_KEY", "").strip()
+        or os.environ.get("MORIE_LLM_API_KEY", "").strip()
+        or str(_stored_provider().get("api_key", "")).strip()
+        or None
+    )
 
 
 def _api_model() -> str:
-    """The model for that endpoint: MORIE_API_MODEL, else the attached endpoint's model, else the default."""
+    """The model for that endpoint: MORIE_API_MODEL, else MORIE_LLM_MODEL, else the attached
+    endpoint's model, else the default."""
     return (
         os.environ.get("MORIE_API_MODEL", "").strip()
+        or os.environ.get("MORIE_LLM_MODEL", "").strip()
         or str(_stored_provider().get("api_model", "")).strip()
         or DEFAULT_API_MODEL
     )
@@ -268,13 +280,16 @@ def _probe_ollama(timeout: float = _PROBE_TIMEOUT) -> bool:
 def detect_available_provider() -> str:
     """Detect which LLM provider is currently available.
 
-    The detection order mirrors the provider chain priority:
+    The detection order mirrors the provider chain priority: a local model first,
+    then every key of the user's own, then the hosted MORIE tier as a last resort.
 
     1. **ollama**  -- a local Ollama instance is reachable (probed via HTTP).
-    2. **hosted**  -- the user ran ``morie login`` and llm.rmorie.com answers.
-    3. **gemini**  -- ``GEMINI_API_KEY`` is set.
-    4. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
-    5. **openai**  -- ``OPENAI_API_KEY`` is set.
+    2. **gemini**  -- ``GEMINI_API_KEY`` is set.
+    3. **api**     -- ``LLM_API_BASE_URL`` and ``LLM_API_KEY`` are set.
+    4. **openai**  -- ``OPENAI_API_KEY`` is set.
+    5. **hosted**  -- the user holds a MORIE key (issued on request at
+       https://rmorie.com/access, or minted by ``morie login``) and the hosted
+       gateway, found through the signed services document, answers.
     6. **local**   -- no live provider; MORIE will return static help text.
 
     Returns
@@ -292,9 +307,6 @@ def detect_available_provider() -> str:
     if _probe_ollama():
         return _PROVIDER_OLLAMA
 
-    if _hosted_ready():
-        return _PROVIDER_HOSTED
-
     if _gemini_key():
         return _PROVIDER_GEMINI
 
@@ -303,6 +315,10 @@ def detect_available_provider() -> str:
 
     if _openai_key():
         return _PROVIDER_OPENAI
+
+    # the hosted tier is a last resort, behind every key of the user's own
+    if _hosted_ready():
+        return _PROVIDER_HOSTED
 
     return _PROVIDER_LOCAL
 
@@ -681,9 +697,9 @@ def _current_dataset_schema() -> dict[str, str] | None:
 def _stat_command_summary() -> list[str]:
     """Return top stat command names grouped concisely."""
     try:
-        from .stat_commands import list_all_commands
+        from .stat_commands import all_command_names
 
-        return list_all_commands()[:100]
+        return all_command_names()[:100]
     except Exception:
         try:
             from .stat_commands import COMMAND_REGISTRY
@@ -759,6 +775,12 @@ def _build_messages(
     if system_prompt is None:
         context_block = _format_context_block(context)
         system_prompt = _MORIE_SYSTEM_PROMPT_TEMPLATE.format(context_block=context_block)
+    elif context and context.get("module_list"):
+        mods = "\n".join(f"- {m['name']}: {m['description']}" for m in context["module_list"])
+        system_prompt = (
+            f"{system_prompt}\n\nmorie's analysis modules (`morie run-module NAME`); recommend only these, "
+            f"and say so when none fits:\n{mods}"
+        )
 
     return [
         {"role": "system", "content": system_prompt},
@@ -1046,6 +1068,75 @@ def _local_fallback(prompt: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+class ModelNotOnKeyError(RuntimeError):
+    """The hosted gateway refused a model the caller named: it is not on this key."""
+
+
+def _model_not_on_key(exc: Exception, base_url: str, model: str | None) -> bool:
+    """A named model the hosted gateway answers 403/404 for: say so rather than try the next provider."""
+    if not model or not isinstance(exc, httpx.HTTPStatusError):
+        return False
+    hosted = _hosted_attempt(model)
+    return bool(hosted) and base_url == hosted[0] and exc.response.status_code in (403, 404)
+
+
+def _provider_attempts(provider: str, model: str | None) -> list[tuple[str, str, str | None]]:
+    """The ordered (base_url, model, api_key) attempts for a provider, the same for ask() and ask_multi()."""
+    attempts: list[tuple[str, str, str | None]] = []
+    if provider == _PROVIDER_OLLAMA:
+        attempts.append(
+            (
+                _ollama_base_url(),
+                model or _ollama_model(),
+                None,
+            )
+        )
+        # Fallback chain if Ollama fails at request time: the user's own keys, then the hosted tier.
+        if _gemini_key():
+            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
+        if _api_base_url() and _api_key():
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
+        if _openai_key():
+            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+
+    elif provider == _PROVIDER_HOSTED:
+        # asked for by name, or nothing of the user's own answered: the hosted tier alone
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+
+    elif provider == _PROVIDER_GEMINI:
+        key = _gemini_key()
+        if key:
+            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
+        # Fallback to generic API, then OpenAI, then the hosted tier if Gemini fails.
+        if _api_base_url() and _api_key():
+            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
+        if _openai_key():
+            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+
+    elif provider == _PROVIDER_API:
+        base = _api_base_url()
+        key = _api_key()
+        if base and key:
+            attempts.append((base, model or _api_model(), key))
+        if _openai_key():
+            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+
+    elif provider == _PROVIDER_OPENAI:
+        key = _openai_key()
+        if key:
+            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, key))
+        if _hosted_attempt(model):
+            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
+    return attempts
+
+
 def ask(
     prompt: str,
     context: dict[str, Any] | None = None,
@@ -1094,13 +1185,15 @@ def ask(
 
     Examples
     --------
+    Needs a provider (a stored MORIE key, a local Ollama, or a provider key):
+
     >>> # Non-streaming (returns full text)
-    >>> response = ask("What is AIPW?")
-    >>> isinstance(response, str)
+    >>> response = ask("What is AIPW?")  # doctest: +SKIP
+    >>> isinstance(response, str)  # doctest: +SKIP
     True
 
-    >>> # Streaming
-    >>> for chunk in ask("Explain TMLE", stream=True):
+    >>> # Streaming: chunks print as they arrive
+    >>> for chunk in ask("Explain TMLE", stream=True):  # doctest: +SKIP
     ...     print(chunk, end="")
     """
     if provider is None:
@@ -1130,59 +1223,7 @@ def ask(
 
     messages = _build_messages(prompt, context=context, system_prompt=system_prompt)
 
-    # Build the ordered list of (base_url, model, api_key) to try.
-    attempts: list[tuple[str, str, str | None]] = []
-
-    if provider == _PROVIDER_OLLAMA:
-        attempts.append(
-            (
-                _ollama_base_url(),
-                model or _ollama_model(),
-                None,
-            )
-        )
-        # Fallback chain if Ollama fails at request time.
-        if _hosted_attempt(model):
-            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
-        if _gemini_key():
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-
-    elif provider == _PROVIDER_HOSTED:
-        if _hosted_attempt(model):
-            attempts.append(_hosted_attempt(model))  # type: ignore[arg-type]
-        if _gemini_key():
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-
-    elif provider == _PROVIDER_GEMINI:
-        key = _gemini_key()
-        if key:
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
-        # Fallback to generic API then OpenAI if Gemini fails.
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-
-    elif provider == _PROVIDER_API:
-        base = _api_base_url()
-        key = _api_key()
-        if base and key:
-            attempts.append((base, model or _api_model(), key))
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-
-    elif provider == _PROVIDER_OPENAI:
-        key = _openai_key()
-        if key:
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, key))
+    attempts = _provider_attempts(provider, model)
 
     if not attempts:
         result = _local_fallback(prompt)
@@ -1217,6 +1258,10 @@ def ask(
                 )
 
         except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswerError) as exc:
+            if _model_not_on_key(exc, base_url, model):
+                raise ModelNotOnKeyError(
+                    f"model {model!r} is not available on your hosted key; `morie models` lists the ones it can use"
+                ) from None
             last_error = exc
             logger.warning(
                 "Provider at %s failed: %s. Trying next provider.",
@@ -1280,36 +1325,7 @@ def ask_multi(
         result = _local_fallback(prompt)
         return iter([result]) if stream else result
 
-    # Build the ordered list of (base_url, model, api_key) to try.
-    attempts: list[tuple[str, str, str | None]] = []
-
-    if provider == _PROVIDER_OLLAMA:
-        attempts.append((_ollama_base_url(), model or _ollama_model(), None))
-        if _gemini_key():
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-    elif provider == _PROVIDER_GEMINI:
-        key = _gemini_key()
-        if key:
-            attempts.append((GEMINI_BASE_URL, model or _gemini_model(), key))
-        if _api_base_url() and _api_key():
-            attempts.append((_api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-    elif provider == _PROVIDER_API:
-        base = _api_base_url()
-        key = _api_key()
-        if base and key:
-            attempts.append((base, model or _api_model(), key))
-        if _openai_key():
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-    elif provider == _PROVIDER_OPENAI:
-        key = _openai_key()
-        if key:
-            attempts.append((OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, key))
+    attempts = _provider_attempts(provider, model)
 
     if not attempts:
         user_msgs = [m for m in messages if m.get("role") == "user"]
@@ -1336,6 +1352,10 @@ def ask_multi(
                     timeout=timeout,
                 )
         except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswerError) as exc:
+            if _model_not_on_key(exc, base_url, model):
+                raise ModelNotOnKeyError(
+                    f"model {model!r} is not available on your hosted key; `morie models` lists the ones it can use"
+                ) from None
             logger.warning("Provider at %s failed: %s", base_url, exc)
             continue
 

@@ -68,14 +68,10 @@ solved.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from . import mehtad as ip
 from ._richresult import RichResult
 
-__all__ = ["solve_relaxation", "fractional_variable",
-           "round_relaxation", "branch_and_bound",
-           "enumerate_integer"]
+__all__ = ["solve_relaxation", "fractional_variable", "round_relaxation", "branch_and_bound", "enumerate_integer"]
 
 _EPS = 1e-7
 
@@ -141,7 +137,7 @@ def _simplex(A, b, c, tol=1e-9, max_iter=20000):
             z = reduced(obj)
             enter = -1
             for j in allowed:
-                if z[j] < -tol:      # Bland: lowest eligible index
+                if z[j] < -tol:  # Bland: lowest eligible index
                     enter = j
                     break
             if enter < 0:
@@ -150,12 +146,14 @@ def _simplex(A, b, c, tol=1e-9, max_iter=20000):
             for i in range(m):
                 if T[i][enter] > tol:
                     r = T[i][-1] / T[i][enter]
-                    if (ratio is None or r < ratio - tol
-                            or (abs(r - ratio) <= tol and leave >= 0
-                                and basis[i] < basis[leave])):
+                    if (
+                        ratio is None
+                        or r < ratio - tol
+                        or (abs(r - ratio) <= tol and leave >= 0 and basis[i] < basis[leave])
+                    ):
                         ratio, leave = r, i
             if leave < 0:
-                return False          # unbounded
+                return False  # unbounded
             pivot(leave, enter)
         return False
 
@@ -165,11 +163,10 @@ def _simplex(A, b, c, tol=1e-9, max_iter=20000):
             phase1[n + m + a] = 1.0
         if not run(phase1, list(range(n + m))):
             return {"feasible": False, "x": None, "value": None}
-        infeas = sum(T[i][-1] for i in range(m)
-                     if basis[i] >= n + m)
+        infeas = sum(T[i][-1] for i in range(m) if basis[i] >= n + m)
         if infeas > 1e-7:
             return {"feasible": False, "x": None, "value": None}
-        for i in range(m):            # drive artificials out
+        for i in range(m):  # drive artificials out
             if basis[i] >= n + m:
                 for j in range(n + m):
                     if abs(T[i][j]) > tol:
@@ -184,8 +181,7 @@ def _simplex(A, b, c, tol=1e-9, max_iter=20000):
     for i in range(m):
         if basis[i] < n:
             x[basis[i]] = T[i][-1]
-    return {"feasible": True, "x": x,
-            "value": sum(float(c[j]) * x[j] for j in range(n))}
+    return {"feasible": True, "x": x, "value": sum(float(c[j]) * x[j] for j in range(n))}
 
 
 def _standard_form(A, b, c, bounds, n):
@@ -194,7 +190,7 @@ def _standard_form(A, b, c, bounds, n):
     for i in range(len(A)):
         rows.append([float(v) for v in A[i]])
         rhs.append(float(b[i]))
-    for (j, sense, val) in bounds:
+    for j, sense, val in bounds:
         r = [0.0] * n
         r[int(j)] = 1.0 if sense == "le" else -1.0
         rows.append(r)
@@ -202,13 +198,11 @@ def _standard_form(A, b, c, bounds, n):
     m = len(rows)
     full = []
     for i in range(m):
-        full.append(rows[i] + [1.0 if t == i else 0.0
-                               for t in range(m)])
+        full.append(rows[i] + [1.0 if t == i else 0.0 for t in range(m)])
     return full, rhs, [float(v) for v in c] + [0.0] * m
 
 
-def solve_relaxation(A, b, c, bounds=(), n=None, maximise=True,
-                     solver="simplex"):
+def solve_relaxation(A, b, c, bounds=(), n=None, maximise=True, solver="simplex"):
     r"""The LP relaxation at one node.
 
     ``solver="simplex"`` is the default and the only one safe for
@@ -223,37 +217,42 @@ def solve_relaxation(A, b, c, bounds=(), n=None, maximise=True,
         for i in range(len(A)):
             rows.append([float(v) for v in A[i]])
             rhs2.append(float(b[i]))
-        for (j, sense, val) in bounds:
+        for j, sense, val in bounds:
             r = [0.0] * nn
             r[int(j)] = 1.0 if sense == "le" else -1.0
             rows.append(r)
-            rhs2.append(float(val) if sense == "le"
-                        else -float(val))
+            rhs2.append(float(val) if sense == "le" else -float(val))
         sgn = 1.0 if maximise else -1.0
         out = _simplex(rows, rhs2, [sgn * float(v) for v in c])
         if not out["feasible"]:
-            return {"feasible": False, "x": None, "value": None,
-                    "note": "the relaxation is infeasible, so every "
-                            "integer point below this node is too"}
+            return {
+                "feasible": False,
+                "x": None,
+                "value": None,
+                "note": "the relaxation is infeasible, so every integer point below this node is too",
+            }
         x = [max(0.0, v) for v in out["x"]]
-        return {"feasible": True, "x": x,
-                "value": sum(float(c[j]) * x[j] for j in range(nn)),
-                "note": "a valid BOUND on every integer point below "
-                        "this node"}
+        return {
+            "feasible": True,
+            "x": x,
+            "value": sum(float(c[j]) * x[j] for j in range(nn)),
+            "note": "a valid BOUND on every integer point below this node",
+        }
     if solver != "interior":
-        raise ValueError("miprgr: solver must be simplex or "
-                         "interior, got %r" % (solver,))
+        raise ValueError(f"miprgr: solver must be simplex or interior, got {solver!r}")
     M, rhs, cc = _standard_form(A, b, c, list(bounds), nn)
     obj = [-v for v in cc] if maximise else list(cc)
     try:
         r = ip.solve_lp(M, rhs, obj, tol=1e-10, max_iter=200)
     except ValueError:
-        return {"feasible": False, "x": None, "value": None,
-                "note": "the relaxation is infeasible, so every "
-                        "integer point below this node is too"}
+        return {
+            "feasible": False,
+            "x": None,
+            "value": None,
+            "note": "the relaxation is infeasible, so every integer point below this node is too",
+        }
     if not r["converged"]:
-        return {"feasible": False, "x": None, "value": None,
-                "note": "no interior optimum found"}
+        return {"feasible": False, "x": None, "value": None, "note": "no interior optimum found"}
     x = [max(0.0, r["x"][j]) for j in range(nn)]
     # Feasibility is checked on the SOLUTION, not on the sign of the
     # right-hand side: a >= branch is written -x_j + slack = -val, so
@@ -262,22 +261,20 @@ def solve_relaxation(A, b, c, bounds=(), n=None, maximise=True,
     # still terminate and still report an optimum, just the wrong
     # one.
     for i in range(len(A)):
-        if sum(float(A[i][j]) * x[j]
-               for j in range(nn)) > float(b[i]) + 1e-6:
-            return {"feasible": False, "x": None, "value": None,
-                    "note": "the relaxation violates an original "
-                            "constraint"}
-    for (j, sense, val) in bounds:
+        if sum(float(A[i][j]) * x[j] for j in range(nn)) > float(b[i]) + 1e-6:
+            return {
+                "feasible": False,
+                "x": None,
+                "value": None,
+                "note": "the relaxation violates an original constraint",
+            }
+    for j, sense, val in bounds:
         if sense == "le" and x[int(j)] > float(val) + 1e-6:
-            return {"feasible": False, "x": None, "value": None,
-                    "note": "branch bound violated"}
+            return {"feasible": False, "x": None, "value": None, "note": "branch bound violated"}
         if sense == "ge" and x[int(j)] < float(val) - 1e-6:
-            return {"feasible": False, "x": None, "value": None,
-                    "note": "branch bound violated"}
+            return {"feasible": False, "x": None, "value": None, "note": "branch bound violated"}
     val = sum(float(c[j]) * x[j] for j in range(nn))
-    return {"feasible": True, "x": x, "value": val,
-            "note": "a valid BOUND on every integer point below this "
-                    "node"}
+    return {"feasible": True, "x": x, "value": val, "note": "a valid BOUND on every integer point below this node"}
 
 
 def fractional_variable(x, integer_vars, tol=_EPS):
@@ -289,8 +286,7 @@ def fractional_variable(x, integer_vars, tol=_EPS):
         f = abs(v - round(v))
         if f > tol and f > gap:
             best, gap = j, f
-    return {"index": best, "fractionality": gap,
-            "integral": best is None}
+    return {"index": best, "fractionality": gap, "integral": best is None}
 
 
 def round_relaxation(x, A, b, integer_vars):
@@ -307,12 +303,10 @@ def round_relaxation(x, A, b, integer_vars):
         lhs = sum(float(A[i][j]) * xr[j] for j in range(len(xr)))
         if lhs > float(b[i]) + _EPS:
             viol.append({"row": i, "lhs": lhs, "rhs": float(b[i])})
-    return {"x": xr, "feasible": not viol, "violations": viol,
-            "note": "rounding is not a substitute for branching"}
+    return {"x": xr, "feasible": not viol, "violations": viol, "note": "rounding is not a substitute for branching"}
 
 
-def enumerate_integer(A, b, c, integer_vars, upper=10,
-                      maximise=True):
+def enumerate_integer(A, b, c, integer_vars, upper=10, maximise=True):
     r"""Brute force over a small integer box, for checking.
 
     Not a method -- a way to know the right answer independently of
@@ -324,27 +318,24 @@ def enumerate_integer(A, b, c, integer_vars, upper=10,
     while stack:
         pre = stack.pop()
         if len(pre) == n:
-            ok = all(sum(float(A[i][j]) * pre[j]
-                         for j in range(n)) <= float(b[i]) + _EPS
-                     for i in range(len(A)))
+            ok = all(sum(float(A[i][j]) * pre[j] for j in range(n)) <= float(b[i]) + _EPS for i in range(len(A)))
             if ok:
                 val = sum(float(c[j]) * pre[j] for j in range(n))
-                if (maximise and val > best) or \
-                        (not maximise and val < best):
+                if (maximise and val > best) or (not maximise and val < best):
                     best, best_x = val, list(pre)
             continue
         j = len(pre)
-        rng = range(0, int(upper) + 1) if j in integer_vars else \
-            range(0, int(upper) + 1)
+        rng = range(0, int(upper) + 1) if j in integer_vars else range(0, int(upper) + 1)
         for v in rng:
             stack.append(pre + [float(v)])
-    return {"value": best, "x": best_x,
-            "note": "exhaustive over the box, so the search can be "
-                    "checked against something other than itself"}
+    return {
+        "value": best,
+        "x": best_x,
+        "note": "exhaustive over the box, so the search can be checked against something other than itself",
+    }
 
 
-def branch_and_bound(A, b, c, integer_vars, maximise=True,
-                     prune=True, max_nodes=5000, solver="simplex"):
+def branch_and_bound(A, b, c, integer_vars, maximise=True, prune=True, max_nodes=5000, solver="simplex"):
     r"""Dakin's Fig. 2, step for step, with the marked LIST.
 
     The list is the part worth copying. Each entry holds one variable
@@ -362,103 +353,108 @@ def branch_and_bound(A, b, c, integer_vars, maximise=True,
     not to change the answer.
     """
     n = len(c)
-    I = sorted(set(int(v) for v in integer_vars))
-    if any(j < 0 or j >= n for j in I):
-        raise ValueError("miprgr: an integer index is outside the "
-                         "variable set")
-    better = ((lambda a, bb: a > bb + _EPS) if maximise
-              else (lambda a, bb: a < bb - _EPS))
+    I_ = sorted(set(int(v) for v in integer_vars))
+    if any(j < 0 or j >= n for j in I_):
+        raise ValueError("miprgr: an integer index is outside the variable set")
+    better = (lambda a, bb: a > bb + _EPS) if maximise else (lambda a, bb: a < bb - _EPS)
     incumbent = (-float("inf")) if maximise else float("inf")
     inc_x = None
-    lst = []                                   # step 1: list empty
+    lst = []  # step 1: list empty
     nodes, pruned, max_len = 0, 0, 0
     root_bound = None
     while nodes < int(max_nodes):
         bounds = [(e["var"], e["sense"], e["value"]) for e in lst]
-        rel = solve_relaxation(A, b, c, bounds, n, maximise,
-                               solver)          # step 2
+        rel = solve_relaxation(A, b, c, bounds, n, maximise, solver)  # step 2
         nodes += 1
         max_len = max(max_len, len(lst))
         if root_bound is None and rel["feasible"]:
             root_bound = rel["value"]
         descend = False
-        if rel["feasible"]:                     # step 3
-            cut = (prune and inc_x is not None
-                   and not better(rel["value"], incumbent))
+        if rel["feasible"]:  # step 3
+            cut = prune and inc_x is not None and not better(rel["value"], incumbent)
             if cut:
                 pruned += 1
             else:
-                fv = fractional_variable(rel["x"], I)   # step 4
+                fv = fractional_variable(rel["x"], I_)  # step 4
                 if fv["integral"]:
                     if better(rel["value"], incumbent):  # step 5
                         incumbent = rel["value"]
-                        inc_x = [float(round(v)) if j in I
-                                 else float(v)
-                                 for j, v in enumerate(rel["x"])]
-                else:                            # step 6
+                        inc_x = [float(round(v)) if j in I_ else float(v) for j, v in enumerate(rel["x"])]
+                else:  # step 6
                     j = fv["index"]
                     v = rel["x"][j]
-                    lst.append({"var": j, "sense": "le",
-                                "value": float(math.floor(v)),
-                                "alt": ("ge",
-                                        float(math.ceil(v))),
-                                "marked": False})
+                    lst.append(
+                        {
+                            "var": j,
+                            "sense": "le",
+                            "value": float(math.floor(v)),
+                            "alt": ("ge", float(math.ceil(v))),
+                            "marked": False,
+                        }
+                    )
                     descend = True
         if descend:
             continue
-        while True:                              # step 7
+        while True:  # step 7
             if not lst:
-                return RichResult(payload={      # step 8
-                    "estimate": incumbent if inc_x is not None
-                    else None,
-                    "value": incumbent if inc_x is not None
-                    else None,
-                    "x": inc_x, "feasible": inc_x is not None,
-                    "nodes": nodes, "pruned": pruned,
-                    "pruning": bool(prune),
-                    "max_list_length": max_len,
-                    "root_bound": root_bound,
-                    "method": "branch and bound; Land & Doig (1960), "
-                              "Dakin (1965) Fig. 2",
-                    "note": "the list holds the current PATH, so its "
-                            "length is the tree depth, not the "
-                            "number of open nodes",
-                })
+                return RichResult(
+                    payload={  # step 8
+                        "estimate": incumbent if inc_x is not None else None,
+                        "value": incumbent if inc_x is not None else None,
+                        "x": inc_x,
+                        "feasible": inc_x is not None,
+                        "nodes": nodes,
+                        "pruned": pruned,
+                        "pruning": bool(prune),
+                        "max_list_length": max_len,
+                        "root_bound": root_bound,
+                        "method": "branch and bound; Land & Doig (1960), Dakin (1965) Fig. 2",
+                        "note": "the list holds the current PATH, so its "
+                        "length is the tree depth, not the "
+                        "number of open nodes",
+                    }
+                )
             last = lst[-1]
-            if last["marked"]:                   # step 9 -> 10
+            if last["marked"]:  # step 9 -> 10
                 lst.pop()
                 continue
-            sense, val = last["alt"]             # step 11
+            sense, val = last["alt"]  # step 11
             last["alt"] = (last["sense"], last["value"])
             last["sense"], last["value"] = sense, val
             last["marked"] = True
             break
-    return RichResult(payload={
-        "estimate": incumbent if inc_x is not None else None,
-        "value": incumbent if inc_x is not None else None,
-        "x": inc_x, "feasible": inc_x is not None, "nodes": nodes,
-        "pruned": pruned, "pruning": bool(prune),
-        "max_list_length": max_len, "root_bound": root_bound,
-        "truncated": True,
-        "method": "branch and bound; Land & Doig (1960), Dakin "
-                  "(1965) Fig. 2",
-        "note": "node limit reached, so the result is NOT proven "
-                "optimal",
-    })
+    return RichResult(
+        payload={
+            "estimate": incumbent if inc_x is not None else None,
+            "value": incumbent if inc_x is not None else None,
+            "x": inc_x,
+            "feasible": inc_x is not None,
+            "nodes": nodes,
+            "pruned": pruned,
+            "pruning": bool(prune),
+            "max_list_length": max_len,
+            "root_bound": root_bound,
+            "truncated": True,
+            "method": "branch and bound; Land & Doig (1960), Dakin (1965) Fig. 2",
+            "note": "node limit reached, so the result is NOT proven optimal",
+        }
+    )
 
 
 def cheatsheet():
-    return ("miprgr: the LP relaxation is easy and usually FRACTIONAL, "
-            "and ROUNDING is not a fix -- the rounded point is often "
-            "infeasible and, when feasible, often strictly worse. "
-            "BOUND: the relaxation's value bounds every integer point "
-            "below that node, so once an incumbent exists any node no "
-            "better than it can be discarded UNEXPLORED. BRANCH: Land "
-            "and Doig enumerated values; DAKIN's dichotomy x_j <= "
-            "floor(v) OR x_j >= ceil(v) excludes the fractional point, "
-            "keeps every integer point, and leaves each node an LP -- "
-            "so the whole search is a binary tree of LPs. Pruning must "
-            "not change the optimum: run without it and compare.")
+    return (
+        "miprgr: the LP relaxation is easy and usually FRACTIONAL, "
+        "and ROUNDING is not a fix -- the rounded point is often "
+        "infeasible and, when feasible, often strictly worse. "
+        "BOUND: the relaxation's value bounds every integer point "
+        "below that node, so once an incumbent exists any node no "
+        "better than it can be discarded UNEXPLORED. BRANCH: Land "
+        "and Doig enumerated values; DAKIN's dichotomy x_j <= "
+        "floor(v) OR x_j >= ceil(v) excludes the fractional point, "
+        "keeps every integer point, and leaves each node an LP -- "
+        "so the whole search is a binary tree of LPs. Pruning must "
+        "not change the optimum: run without it and compare."
+    )
 
 
 # compact alias per ledger/NAMING.md

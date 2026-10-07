@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ties in the Wald-Wolfowitz runs test: the range of attainable R."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['wwties', 'gibbons_ww2_ties']
+__all__ = ["wwties", "gibbons_ww2_ties"]
 
 
 def wwties(x, y):

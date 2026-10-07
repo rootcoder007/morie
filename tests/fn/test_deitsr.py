@@ -1,7 +1,6 @@
 """Tests for deitsr.deit_distill."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.deitsr import deit_distill
 
 

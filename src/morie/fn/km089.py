@@ -33,8 +33,7 @@ def kamath_ch6_sgs_invariance(Yhat_i, Yhat_j, psi=None):
     """
     match = (lambda u, v: float(u == v)) if psi is None else psi
     if not callable(match):
-        raise ValueError("psi must be a callable (Yhat_i, Yhat_j) -> "
-                         "invariance in [0, 1].")
+        raise ValueError("psi must be a callable (Yhat_i, Yhat_j) -> invariance in [0, 1].")
     if isinstance(Yhat_i, str) or isinstance(Yhat_j, str):
         pairs = [(Yhat_i, Yhat_j)]
     else:
@@ -43,22 +42,25 @@ def kamath_ch6_sgs_invariance(Yhat_i, Yhat_j, psi=None):
             raise ValueError("no outputs to compare.")
         if len(a) != len(b):
             raise ValueError(
-                f"the original produced {len(a)} outputs and the "
-                f"counterfactual {len(b)}; they must be paired.")
+                f"the original produced {len(a)} outputs and the counterfactual {len(b)}; they must be paired."
+            )
         pairs = list(zip(a, b))
     vals = []
     for u, v in pairs:
         r = float(match(u, v))
         if not (0.0 <= r <= 1.0):
-            raise ValueError(
-                f"psi returned {r:.6g}; an invariance metric lies in "
-                "[0, 1].")
+            raise ValueError(f"psi returned {r:.6g}; an invariance metric lies in [0, 1].")
         vals.append(r)
     arr = np.asarray(vals, dtype=float)
-    return RichResult(payload={
-        "estimate": float(arr.mean()), "per_pair": vals,
-        "n_invariant": int(np.sum(arr == 1.0)), "n": len(vals),
-        "method": "Social Group Substitution invariance (Kamath Eq 6.13)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr.mean()),
+            "per_pair": vals,
+            "n_invariant": int(np.sum(arr == 1.0)),
+            "n": len(vals),
+            "method": "Social Group Substitution invariance (Kamath Eq 6.13)",
+        }
+    )
 
 
 def cheatsheet():

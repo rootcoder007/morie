@@ -85,8 +85,7 @@ def rangayyan_qrs_detect(x, fs=360.0):
     min_samples = max(int(round(fs)), 40)
     if x.size < min_samples:
         raise ValueError(
-            f"need at least {min_samples} samples (1 s at fs={fs:g} Hz) to "
-            f"detect QRS complexes, got {x.size}."
+            f"need at least {min_samples} samples (1 s at fs={fs:g} Hz) to detect QRS complexes, got {x.size}."
         )
     # 1) bandpass 5–15 Hz
     sos = butter(3, [5.0 / nyq, min(15.0, nyq * 0.95) / nyq], btype="band", output="sos")

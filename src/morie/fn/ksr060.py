@@ -53,15 +53,11 @@ def kosorok_ch2_u_process_measure(f, X, m=2, n=None):
     m = int(m)
     if m < 1:
         raise ValueError(f"m must be at least 1, got {m}.")
-    if N < m:
+    if m > N:
         raise ValueError(f"need at least m = {m} observations, got {N}.")
     if comb(N, m) > 200000:
-        raise ValueError(
-            f"C({N}, {m}) = {comb(N, m)} subsets is too many to enumerate "
-            "exactly; subsample first."
-        )
-    vals = np.array([f(*X[list(idx)]) for idx in combinations(range(N), m)],
-                    dtype=float)
+        raise ValueError(f"C({N}, {m}) = {comb(N, m)} subsets is too many to enumerate exactly; subsample first.")
+    vals = np.array([f(*X[list(idx)]) for idx in combinations(range(N), m)], dtype=float)
     U = float(vals.mean())
     # zeta1 = Var(E[f(X1,...,Xm) | X1]), estimated by conditioning on
     # each observation in turn
@@ -74,9 +70,15 @@ def kosorok_ch2_u_process_measure(f, X, m=2, n=None):
     g = np.where(cnt > 0, g / np.maximum(cnt, 1), U)
     zeta1 = float(np.var(g, ddof=1)) if N > 1 else 0.0
     return RichResult(
-        payload={"U": U, "n_subsets": int(comb(N, m)), "zeta1": zeta1,
-                 "hajek_var": float(m**2 * zeta1 / N), "m": m, "n": int(N),
-                 "method": "U_{n,m}(f) over all m-subsets, with the Hajek variance"}
+        payload={
+            "U": U,
+            "n_subsets": int(comb(N, m)),
+            "zeta1": zeta1,
+            "hajek_var": float(m**2 * zeta1 / N),
+            "m": m,
+            "n": int(N),
+            "method": "U_{n,m}(f) over all m-subsets, with the Hajek variance",
+        }
     )
 
 

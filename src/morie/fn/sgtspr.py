@@ -35,8 +35,7 @@ __all__ = ["sgt_spectral_radius_bound"]
 
 
 def _matmul(X, Y, n):
-    return [[sum(X[i][k] * Y[k][j] for k in range(n)) for j in range(n)]
-            for i in range(n)]
+    return [[sum(X[i][k] * Y[k][j] for k in range(n)) for j in range(n)] for i in range(n)]
 
 
 def sgt_spectral_radius_bound(A):
@@ -70,8 +69,7 @@ def sgt_spectral_radius_bound(A):
                 raise ValueError("adjacency matrix must be symmetric")
 
     # breadth-first two-colouring
-    adj = [[j for j in range(n) if j != i and A[i][j] != 0.0]
-           for i in range(n)]
+    adj = [[j for j in range(n) if j != i and A[i][j] != 0.0] for i in range(n)]
     colour = [0] * n
     ncomp = 0
     combinatorial = True
@@ -109,7 +107,8 @@ def sgt_spectral_radius_bound(A):
         raise ValueError(
             "the spectral and combinatorial bipartiteness tests disagree; "
             "this should be impossible for a symmetric 0/1 adjacency "
-            "matrix and means the input is not one")
+            "matrix and means the input is not one"
+        )
 
     return RichResult(
         payload={
@@ -117,13 +116,11 @@ def sgt_spectral_radius_bound(A):
             "evidence": evidence,
             "max_odd_trace": max_odd,
             "colouring": colour,
-            "part_sizes": [sum(1 for c in colour if c == 1),
-                           sum(1 for c in colour if c == -1)],
+            "part_sizes": [sum(1 for c in colour if c == 1), sum(1 for c in colour if c == -1)],
             "n_components": ncomp,
             "n": n,
             "m": sum(sum(row) for row in A) / 2.0,
-            "method": "bipartite detection; spectrum symmetric about zero "
-                      "iff every odd trace(A^k) vanishes",
+            "method": "bipartite detection; spectrum symmetric about zero iff every odd trace(A^k) vanishes",
         }
     )
 

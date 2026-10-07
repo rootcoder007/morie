@@ -1,7 +1,6 @@
 """Tests for dunnett_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dnntt import dunnett_test
 
 

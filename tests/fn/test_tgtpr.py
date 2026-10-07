@@ -1,7 +1,6 @@
 """Tests for morie.fn.tgtpr — targeting parameter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tgtpr import tgtpr
 
 

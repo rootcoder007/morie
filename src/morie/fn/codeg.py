@@ -49,7 +49,7 @@ def wigner_semicircle(
 
     R = 2.0
     x_grid = np.linspace(-R, R, 200)
-    semicircle_pdf = np.where(
+    np.where(
         np.abs(x_grid) <= R,
         2 / (np.pi * R**2) * np.sqrt(np.maximum(R**2 - x_grid**2, 0)),
         0.0,

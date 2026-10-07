@@ -1,8 +1,8 @@
 """Tests for lead service-line risk screen."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.leadsl import lead_service_line_risk, leadsl
 
 

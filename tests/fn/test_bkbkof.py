@@ -11,5 +11,6 @@ def test_bkbkof_basic():
 
 def test_bkbkof_edge():
     import pytest
+
     with pytest.raises(ValueError, match="nowhere left"):
         burkov_ngram_backoff([(0, 5)])

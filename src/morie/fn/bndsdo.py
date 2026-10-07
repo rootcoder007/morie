@@ -64,11 +64,20 @@ def bound_skewed_outcome(y, D, skew=1.0):
         lo, hi = wlo, naive
     else:
         lo, hi = naive, whi
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "naive": naive,
-        "wc_lower": wlo, "wc_upper": whi, "p_treated": p1, "n": len(yv),
-        "method": "Skewed-outcome bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "naive": naive,
+            "wc_lower": wlo,
+            "wc_upper": whi,
+            "p_treated": p1,
+            "n": len(yv),
+            "method": "Skewed-outcome bound",
+        }
+    )
 
 
 def cheatsheet():

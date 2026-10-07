@@ -65,42 +65,41 @@ def schabenberger_mantel_test(coords, x, w=None, u=None):
     if w is None:
         cc = mat(coords, "coords")
         if len(cc) != n:
-            raise ValueError("`coords` has %d rows but `x` has %d values"
-                             % (len(cc), n))
-        ww = [[eucdist(cc[i], cc[j]) if i != j else 0.0 for j in range(n)]
-              for i in range(n)]
+            raise ValueError(f"`coords` has {int(len(cc))} rows but `x` has {int(n)} values")
+        ww = [[eucdist(cc[i], cc[j]) if i != j else 0.0 for j in range(n)] for i in range(n)]
     else:
         ww = sqmat(w, n, "w")
         for i in range(n):
             if ww[i][i] != 0.0:
                 raise ValueError("`w` must have a zero diagonal (W_ii = 0)")
     if u is None:
-        uu = [[abs(z[i] - z[j]) if i != j else 0.0 for j in range(n)]
-              for i in range(n)]
+        uu = [[abs(z[i] - z[j]) if i != j else 0.0 for j in range(n)] for i in range(n)]
     else:
         uu = sqmat(u, n, "u")
         for i in range(n):
             if uu[i][i] != 0.0:
                 raise ValueError("`u` must have a zero diagonal (U_ii = 0)")
 
-    m1 = fsum([ww[i][j] * uu[i][j] for i in range(n - 1)
-               for j in range(i + 1, n)])
+    m1 = fsum([ww[i][j] * uu[i][j] for i in range(n - 1) for j in range(i + 1, n)])
     m2 = fsum([ww[i][j] * uu[i][j] for i in range(n) for j in range(n)])
     sw2 = fsum([ww[i][j] * ww[i][j] for i in range(n) for j in range(n)])
     if sw2 <= 0:
         raise ValueError("all spatial proximities are zero; beta undefined")
 
-    return RichResult(payload={
-        "m1": m1,
-        "m2": m2,
-        "beta": m2 / sw2,
-        "sw2": sw2,
-        "s0": fsum([fsum(row) for row in ww]),
-        "mean_attribute": mean(z),
-        "n": n,
-        "method": ("Mantel statistics M1 and M2, Schabenberger & Gotway "
-                   "(2005) eqs (1.4)-(1.5), Sec. 1.3.1; Mantel (1967)"),
-    })
+    return RichResult(
+        payload={
+            "m1": m1,
+            "m2": m2,
+            "beta": m2 / sw2,
+            "sw2": sw2,
+            "s0": fsum([fsum(row) for row in ww]),
+            "mean_attribute": mean(z),
+            "n": n,
+            "method": (
+                "Mantel statistics M1 and M2, Schabenberger & Gotway (2005) eqs (1.4)-(1.5), Sec. 1.3.1; Mantel (1967)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

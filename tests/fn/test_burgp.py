@@ -1,7 +1,6 @@
 """Tests for burgp -- Burg AR spectral estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bsaar import burg_psd
 

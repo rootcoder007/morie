@@ -81,9 +81,7 @@ def alphafold_recycling(m1, z, x, wd, bins=None, ncycle=1):
         for i in range(n):
             for j in range(n):
                 d[i][j] = math.sqrt(A.vnorm2(A.vsub(x[i], x[j])))
-        zc = [[A.vadd(A.lin(A.onehotnb(d[i][j], bins), wd),
-                      A.lnorm(zc[i][j])) for j in range(n)]
-              for i in range(n)]
+        zc = [[A.vadd(A.lin(A.onehotnb(d[i][j], bins), wd), A.lnorm(zc[i][j])) for j in range(n)] for i in range(n)]
         mc = [A.lnorm(mc[i]) for i in range(n)]
 
     flat = [zc[i][j][t] for i in range(n) for j in range(n) for t in range(cz)]

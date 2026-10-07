@@ -1,7 +1,6 @@
 """Tests for alnnw.needleman_wunsch."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alnnw import needleman_wunsch
 
 

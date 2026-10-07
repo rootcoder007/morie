@@ -70,8 +70,7 @@ def geron_batch_normalization(x, gamma=1.0, beta=0.0, eps=1e-5, momentum=0.9, ru
     denom = np.sqrt(var + e)
     if np.any(denom == 0):
         raise ValueError(
-            "geron_batch_normalization: a feature has zero variance and eps=0, so the scale is undefined; "
-            "pass eps > 0"
+            "geron_batch_normalization: a feature has zero variance and eps=0, so the scale is undefined; pass eps > 0"
         )
     x_hat = (X - mu) / denom
     y = g * x_hat + b

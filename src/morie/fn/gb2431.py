@@ -3,7 +3,6 @@
 
 from math import comb
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._sci_core import special
 
@@ -50,8 +49,12 @@ def gibbons_binomial_beta_link(t, r, n):
     ib = float(special.betainc(r, n - r + 1, t))
     return RichResult(
         payload={
-            "binomial_tail": tail, "incomplete_beta": ib,
-            "agree": bool(abs(tail - ib) < 1e-12), "t": t, "r": r, "n": n,
+            "binomial_tail": tail,
+            "incomplete_beta": ib,
+            "agree": bool(abs(tail - ib) < 1e-12),
+            "t": t,
+            "r": r,
+            "n": n,
             "method": "sum_{i>=r} C(n,i)t^i(1-t)^(n-i) = I_t(r, n-r+1)",
         }
     )

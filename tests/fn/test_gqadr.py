@@ -1,7 +1,6 @@
 """Test gauss_quadrature (gqadr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gqadr import gauss_quadrature, gqadr
 

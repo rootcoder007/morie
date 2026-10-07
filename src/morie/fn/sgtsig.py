@@ -85,10 +85,8 @@ def sgt_signless_laplacian(A):
             if abs(A[i][j] - A[j][i]) > 1e-12 * (1.0 + abs(A[i][j])):
                 raise ValueError("adjacency matrix must be symmetric")
     deg = [sum(A[i]) for i in range(n)]
-    Q = [[A[i][j] + (deg[i] if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
-    adj = [[j for j in range(n) if j != i and A[i][j] != 0.0]
-           for i in range(n)]
+    Q = [[A[i][j] + (deg[i] if i == j else 0.0) for j in range(n)] for i in range(n)]
+    adj = [[j for j in range(n) if j != i and A[i][j] != 0.0] for i in range(n)]
     _comp, _col, bip, ncomp = _components_and_colouring(adj, n)
     nbip = sum(1 for b in bip if b)
     return RichResult(

@@ -1,7 +1,6 @@
 """Test cosine_decompose (cosdc)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cosdc import cosdc, cosine_decompose
 

@@ -33,12 +33,10 @@ def kamath_groundedness_reward(y_tokens, ctx_tokens, lowercase=True):
     ctx = list(ctx_tokens)
     if not y:
         raise ValueError(
-            "the answer has no tokens; groundedness is 0/0 and a reward "
-            "for saying nothing is undefined, not 1.")
+            "the answer has no tokens; groundedness is 0/0 and a reward for saying nothing is undefined, not 1."
+        )
     if not ctx:
-        raise ValueError(
-            "the context has no tokens; every answer token would be "
-            "ungrounded by construction.")
+        raise ValueError("the context has no tokens; every answer token would be ungrounded by construction.")
     if lowercase:
         y = [str(t).lower() for t in y]
         ctx = [str(t).lower() for t in ctx]
@@ -48,13 +46,16 @@ def kamath_groundedness_reward(y_tokens, ctx_tokens, lowercase=True):
     cset = set(ctx)
     flags = [t in cset for t in y]
     hit = int(sum(flags))
-    return RichResult(payload={
-        "estimate": hit / len(y),
-        "n_grounded": hit,
-        "n_tokens": len(y),
-        "ungrounded": sorted({t for t, ok in zip(y, flags) if not ok}),
-        "n": len(y),
-        "method": "Groundedness reward (answer tokens found in context)"})
+    return RichResult(
+        payload={
+            "estimate": hit / len(y),
+            "n_grounded": hit,
+            "n_tokens": len(y),
+            "ungrounded": sorted({t for t, ok in zip(y, flags) if not ok}),
+            "n": len(y),
+            "method": "Groundedness reward (answer tokens found in context)",
+        }
+    )
 
 
 def cheatsheet():

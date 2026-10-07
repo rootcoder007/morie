@@ -88,9 +88,7 @@ def esl_mdl(loglik, theta, n=None, prior_sd=None):
         if prior_sd <= 0:
             raise ValueError("prior_sd must be positive")
         th = np.asarray(theta, dtype=float).ravel()
-        model_cost = float(
-            0.5 * np.sum(th**2) / prior_sd**2 + d * np.log(prior_sd * np.sqrt(2 * np.pi))
-        )
+        model_cost = float(0.5 * np.sum(th**2) / prior_sd**2 + d * np.log(prior_sd * np.sqrt(2 * np.pi)))
     elif n is not None:
         if n < 1:
             raise ValueError("n must be at least 1")
@@ -104,10 +102,14 @@ def esl_mdl(loglik, theta, n=None, prior_sd=None):
         title="Minimum description length",
         summary_lines=[("d", d), ("MDL (nats)", mdl), ("BIC", bic)],
         payload={
-            "mdl": mdl, "bits": mdl / np.log(2),
-            "data_cost": -ll, "model_cost": model_cost,
-            "bic": bic, "aic": float(2 * d - 2 * ll),
-            "d": d, "loglik": ll,
+            "mdl": mdl,
+            "bits": mdl / np.log(2),
+            "data_cost": -ll,
+            "model_cost": model_cost,
+            "bic": bic,
+            "aic": float(2 * d - 2 * ll),
+            "d": d,
+            "loglik": ll,
             "method": "esl_mdl",
         },
     )

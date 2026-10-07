@@ -8,8 +8,7 @@ import pytest
 
 from morie.fn import _array_core as np
 from morie.fn.bndsmw import S_function, hypercube_instruments, weighted_moments
-from morie.fn.bnskmt import (bound_kernel_moment, compare_forms,
-                             ks_confidence_set, ks_statistic)
+from morie.fn.bnskmt import bound_kernel_moment, compare_forms, ks_confidence_set, ks_statistic
 
 X = [[0.05], [0.2], [0.3], [0.45], [0.55], [0.7], [0.8], [0.95]]
 M = [[0.5], [-1.0], [0.2], [-0.3], [0.9], [-0.8], [0.1], [-0.4]]
@@ -45,8 +44,7 @@ def test_ks_confidence_set_recovers_theta_below_the_mean():
     rng = np.random.default_rng(5)
     Xs = [[float(v)] for v in rng.uniform(0.0, 1.0, size=200)]
     W = [2.0 + float(v) for v in rng.normal(0.0, 1.0, size=200)]
-    res = ks_confidence_set(lambda th: [[w - th] for w in W],
-                            [0.5, 1.5, 3.5], Xs, n_levels=2, reps=60)
+    res = ks_confidence_set(lambda th: [[w - th] for w in W], [0.5, 1.5, 3.5], Xs, n_levels=2, reps=60)
     assert 0.5 in res["set"] and 1.5 in res["set"]
     assert 3.5 not in res["set"]
     assert bound_kernel_moment is ks_confidence_set

@@ -1,8 +1,8 @@
 """Tests for tmllng."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tmllng import tmle_longitudinal
 from morie.fn.tmltvc import tmle_time_varying_confound
 

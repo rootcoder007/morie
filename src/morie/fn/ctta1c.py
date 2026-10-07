@@ -93,11 +93,18 @@ def ctt_alpha_classic(X):
     if tv <= 0.0:
         raise ValueError("total score has zero variance; alpha is undefined")
     alpha = (k / (k - 1.0)) * (1.0 - sv / tv)
-    return RichResult(payload={
-        "alpha": float(alpha), "estimate": float(alpha),
-        "item_var": [float(v) for v in iv], "sum_item_var": float(sv),
-        "total_var": float(tv), "n_items": k, "n": n,
-        "method": "Cronbach (1951) alpha = k/(k-1) (1 - sum V_i / V_t)"})
+    return RichResult(
+        payload={
+            "alpha": float(alpha),
+            "estimate": float(alpha),
+            "item_var": [float(v) for v in iv],
+            "sum_item_var": float(sv),
+            "total_var": float(tv),
+            "n_items": k,
+            "n": n,
+            "method": "Cronbach (1951) alpha = k/(k-1) (1 - sum V_i / V_t)",
+        }
+    )
 
 
 def cheatsheet():

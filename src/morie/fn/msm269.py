@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,11 +23,10 @@ def mvsml_convolutional_nn_eq_14_6(t, c, L2=None, kind="fourier"):
     cs = _gp._flat(c)
     L = len(cs) if L2 is None else int(L2)
     Psi = _gp.fda_basis_matrix(t, L, kind=kind)
-    vals = [sum(Psi[j][o] * cs[o] for o in range(L))
-            for j in range(len(Psi))]
-    res = RichResult(payload={"estimate": vals[0], "x_t": vals,
-                              "Psi": Psi,
-                              "method": "curve basis expansion (MVSML 2022 eq. 14.6)"})
+    vals = [sum(Psi[j][o] * cs[o] for o in range(L)) for j in range(len(Psi))]
+    res = RichResult(
+        payload={"estimate": vals[0], "x_t": vals, "Psi": Psi, "method": "curve basis expansion (MVSML 2022 eq. 14.6)"}
+    )
     return with_describe_pointer(res, "msm269")
 
 

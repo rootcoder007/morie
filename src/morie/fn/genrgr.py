@@ -63,14 +63,21 @@ def calibration_greg(y, x, weights, totals):
     A = (w[:, None] * X).T @ X
     B = np.linalg.pinv(A) @ ((w[:, None] * X).T @ yv)
     corr = float((T - Tx_hat) @ B)
-    return RichResult(payload={
-        "total": ht + corr, "ht_total": ht, "correction": corr, "B": B,
-        "residual_totals": T - Tx_hat,
-        "design_consistent_regardless_of_model": True,
-        "model_role": "the working model sets B and therefore the EFFICIENCY; "
-                      "it does not affect design consistency",
-        "n": int(n), "p": int(p),
-        "method": "GREG (Sarndal); design-consistent whether or not the working model holds"})
+    return RichResult(
+        payload={
+            "total": ht + corr,
+            "ht_total": ht,
+            "correction": corr,
+            "B": B,
+            "residual_totals": T - Tx_hat,
+            "design_consistent_regardless_of_model": True,
+            "model_role": "the working model sets B and therefore the EFFICIENCY; "
+            "it does not affect design consistency",
+            "n": int(n),
+            "p": int(p),
+            "method": "GREG (Sarndal); design-consistent whether or not the working model holds",
+        }
+    )
 
 
 def cheatsheet():

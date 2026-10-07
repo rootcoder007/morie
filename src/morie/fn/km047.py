@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 3.6: the translation prefix prompt template."""
 
-from . import _array_core as np
-from ._richresult import RichResult
 from .km046 import _fill_template, _result
 
 __all__ = ["kamath_ch3_translate_prefix_prompt"]

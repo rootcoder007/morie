@@ -1,7 +1,6 @@
 """Tests for MSPE kriging."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgmspe import sgmspe
 
 

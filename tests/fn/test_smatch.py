@@ -1,14 +1,13 @@
 """smatch -- Poisson form and sample size. Source: Whitaker, H. J.,
 Farrington, C. P., Spiessens, B. & Musonda, P. (2006) Statistics in
 Medicine 25, 1768-1797, doi:10.1002/sim.2302."""
+
 import math
 
 import pytest
 
 from morie.fn.sccsno import sccs_fit
-from morie.fn.smatch import (poisson_design, power,
-                             relative_efficiency, sample_size,
-                             sccs_poisson_fit)
+from morie.fn.smatch import poisson_design, power, relative_efficiency, sample_size, sccs_poisson_fit
 
 RISK = [(0.0, 42.0)]
 
@@ -20,8 +19,7 @@ def series(n=150):
     for i in range(n):
         v = 20.0 + (i % 30)
         t = (v + 10.0) if (i % 3) else (v + 120.0)
-        out.append({"start": 0.0, "end": 200.0, "exposure": v,
-                    "events": [t]})
+        out.append({"start": 0.0, "end": 200.0, "exposure": v, "events": [t]})
     return out
 
 
@@ -30,25 +28,20 @@ def test_poisson_fit_matches_the_conditional_fit():
     # well-conditioned series
     c = []
     for _ in range(120):
-        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0,
-                  "events": [25.0]})
+        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0, "events": [25.0]})
     for _ in range(180):
-        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0,
-                  "events": [80.0]})
+        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0, "events": [80.0]})
     a = sccs_fit(c, RISK, [])["log_ri"][0]
     b = sccs_poisson_fit(c, RISK, [])["log_ri"][0]
     assert a == pytest.approx(b, abs=1e-5)
 
 
 def test_poisson_fit_also_hits_the_closed_form():
-    import math as _m
     c = []
     for _ in range(120):
-        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0,
-                  "events": [25.0]})
+        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0, "events": [25.0]})
     for _ in range(180):
-        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0,
-                  "events": [80.0]})
+        c.append({"start": 0.0, "end": 100.0, "exposure": 20.0, "events": [80.0]})
     got = sccs_poisson_fit(c, RISK, [])["relative_incidence"][0]
     assert got == pytest.approx((120 / 42.0) / (180 / 58.0), rel=1e-4)
 
@@ -76,13 +69,11 @@ def test_sample_size_rho_matches_its_closed_form():
 
 
 def test_B_tends_to_one_as_the_effect_shrinks():
-    assert sample_size(1e-4, 0.1, 0.5)["B"] == pytest.approx(1.0,
-                                                             abs=1e-4)
+    assert sample_size(1e-4, 0.1, 0.5)["B"] == pytest.approx(1.0, abs=1e-4)
 
 
 def test_C_is_one_when_everyone_is_exposed():
-    assert sample_size(math.log(2.0), 0.1, 1.0)["C"] == pytest.approx(
-        1.0, abs=1e-13)
+    assert sample_size(math.log(2.0), 0.1, 1.0)["C"] == pytest.approx(1.0, abs=1e-13)
 
 
 def test_a_rarer_exposure_needs_more_events():
@@ -105,8 +96,7 @@ def test_more_power_needs_more_events():
 
 def test_power_inverts_sample_size():
     n = sample_size(math.log(2.0), 0.1, 0.5, power=0.85)["n_events"]
-    assert power(n, math.log(2.0), 0.1, 0.5)["power"] == pytest.approx(
-        0.85, abs=1e-6)
+    assert power(n, math.log(2.0), 0.1, 0.5)["power"] == pytest.approx(0.85, abs=1e-6)
 
 
 def test_a_short_risk_period_keeps_efficiency_high():
@@ -137,5 +127,4 @@ def test_an_out_of_range_power_is_refused():
 
 def test_a_design_with_no_events_is_refused():
     with pytest.raises(ValueError):
-        poisson_design([{"start": 0.0, "end": 1.0, "exposure": 0.5,
-                         "events": []}], RISK)
+        poisson_design([{"start": 0.0, "end": 1.0, "exposure": 0.5, "events": []}], RISK)

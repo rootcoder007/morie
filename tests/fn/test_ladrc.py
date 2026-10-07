@@ -16,5 +16,3 @@ def test_ladrc_basic():
 def test_ladrc_edge():
     with pytest.raises(ValueError, match="rung"):
         ladder_of_causation(4)
-
-

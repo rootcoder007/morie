@@ -1,8 +1,8 @@
 """Tests for morie.fn.qjl — QJL random projection."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qjl import qjl_project
 
 

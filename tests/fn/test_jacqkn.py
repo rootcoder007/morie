@@ -1,8 +1,8 @@
 """Tests for jacqkn.jacquez_k_nn_test (Jacquez 1996)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.jacqkn import _knn_indicator, jacquez_k_nn_test
 
 
@@ -58,7 +58,9 @@ def test_identical_space_and_time_orderings_saturate_the_count():
 def test_seed_makes_it_reproducible():
     rng = np.random.default_rng(6)
     c, t = rng.uniform(0, 1, (30, 2)), rng.uniform(0, 10, 30)
-    assert jacquez_k_nn_test(c, t, k=3, B=49, seed=9)["p_value"] == jacquez_k_nn_test(c, t, k=3, B=49, seed=9)["p_value"]
+    assert (
+        jacquez_k_nn_test(c, t, k=3, B=49, seed=9)["p_value"] == jacquez_k_nn_test(c, t, k=3, B=49, seed=9)["p_value"]
+    )
 
 
 def test_validates_inputs():

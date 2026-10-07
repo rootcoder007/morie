@@ -1,7 +1,6 @@
 """Tests for evtsthr.evt_threshold_select_lvar."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evtsthr import evt_threshold_select_lvar
 
 

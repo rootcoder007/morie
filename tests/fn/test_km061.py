@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 4.8, the KronA layer output. Exp
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km061 import kamath_ch4_krona_output

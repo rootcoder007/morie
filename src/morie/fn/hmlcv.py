@@ -165,8 +165,7 @@ def geron_learning_curves(X, y, n_splits=10, val_fraction=0.2, fit=None, predict
             ("Verdict", verdict),
         ],
         interpretation=(
-            "Curves that plateau high and together mean more data will not help; a wide persistent "
-            "gap means it will."
+            "Curves that plateau high and together mean more data will not help; a wide persistent gap means it will."
         ),
         payload={
             "train_sizes": sizes,

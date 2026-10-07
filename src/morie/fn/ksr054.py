@@ -67,20 +67,23 @@ def kosorok_lipschitz_envelope(m, m_dot, thetas, x):
             if d == 0:
                 continue
             pairs += 1
-            lhs = np.abs(np.asarray([float(m(ths[i], v)) for v in xs]) -
-                         np.asarray([float(m(ths[j], v)) for v in xs]))
+            lhs = np.abs(np.asarray([float(m(ths[i], v)) for v in xs]) - np.asarray([float(m(ths[j], v)) for v in xs]))
             bound = env * d
             with np.errstate(divide="ignore", invalid="ignore"):
                 r = np.where(bound > 0, lhs / bound, 0.0)
             worst = max(worst, float(np.nanmax(r)))
-    return RichResult(payload={
-        "worst_ratio": worst, "holds": bool(worst <= 1.0 + 1e-9),
-        "envelope_square_integrable": bool(np.isfinite(np.mean(env ** 2))),
-        "n_pairs": pairs,
-        "implication": "makes {m_theta} Donsker, so the indexed empirical process converges",
-        "counterexample_note": "a criterion with a jump in theta, e.g. 1{theta'x > 0}, "
-                               "has no such envelope -- which is why maximum score is not root-n",
-        "method": "Lipschitz envelope (Eq. 2.18); the condition that buys the Donsker property"})
+    return RichResult(
+        payload={
+            "worst_ratio": worst,
+            "holds": bool(worst <= 1.0 + 1e-9),
+            "envelope_square_integrable": bool(np.isfinite(np.mean(env**2))),
+            "n_pairs": pairs,
+            "implication": "makes {m_theta} Donsker, so the indexed empirical process converges",
+            "counterexample_note": "a criterion with a jump in theta, e.g. 1{theta'x > 0}, "
+            "has no such envelope -- which is why maximum score is not root-n",
+            "method": "Lipschitz envelope (Eq. 2.18); the condition that buys the Donsker property",
+        }
+    )
 
 
 def cheatsheet():

@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -26,18 +25,17 @@ def confidence_interval(estimate, variance, u_crit):
     eq. (3.15).
     """
     payload = dict(_brus.confidence_interval(estimate, variance, u_crit))
-    value = payload['lower']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["lower"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (3.15)"
     return RichResult(
-        title='Confidence interval estimate +/- u sqrt(V)',
+        title="Confidence interval estimate +/- u sqrt(V)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r3e15: zbar_hat -/+ u_(alpha/2) sqrt(V(zbar_hat)) [Brus 2022, eq. 3.15]'
+    return "r3e15: zbar_hat -/+ u_(alpha/2) sqrt(V(zbar_hat)) [Brus 2022, eq. 3.15]"

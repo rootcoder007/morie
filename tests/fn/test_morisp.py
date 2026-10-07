@@ -1,8 +1,8 @@
 """morisp: Moran's I (Schabenberger & Gotway Eq. 1.14 p.21; Moran 1950)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.morisp import morans_i
 
 
@@ -81,9 +81,7 @@ def test_morisp_is_invariant_to_affine_rescaling_of_x():
     rng = np.random.default_rng(9)
     x = rng.standard_normal(25)
     W = _rook(5, 5)
-    assert morans_i(3.0 * x + 7.0, W)["estimate"] == pytest.approx(
-        morans_i(x, W)["estimate"]
-    )
+    assert morans_i(3.0 * x + 7.0, W)["estimate"] == pytest.approx(morans_i(x, W)["estimate"])
 
 
 def test_morisp_constant_x_is_undefined_not_zero():

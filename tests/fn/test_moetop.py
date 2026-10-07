@@ -1,7 +1,5 @@
 """Tests for moetop (GShard top-k routing + Switch aux loss)."""
 
-import math
-
 from morie.fn.moetop import moe_topk_routing, moetop
 
 E0 = [[1.0, 0.0], [0.0, 1.0]]
@@ -35,8 +33,7 @@ def test_moetop_k1_and_dense_reduction():
     r3 = moetop(X, Wg, [E0, E1, E2], k=3)
     g = r3["gates"][0]
     assert abs(sum(g) - 1.0) < 1e-12
-    dense = [sum(g[i] * sum(X[0][a] * [E0, E1, E2][i][a][c] for a in range(2))
-                 for i in range(3)) for c in range(2)]
+    dense = [sum(g[i] * sum(X[0][a] * [E0, E1, E2][i][a][c] for a in range(2)) for i in range(3)) for c in range(2)]
     assert all(abs(u - v) < 1e-12 for u, v in zip(r3["output"][0], dense))
 
 

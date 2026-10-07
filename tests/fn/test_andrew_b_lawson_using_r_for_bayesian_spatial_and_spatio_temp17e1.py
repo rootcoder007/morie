@@ -6,6 +6,8 @@ import pytest
 
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp17e1 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_17_equation_1 as eq17_1,
+)
+from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp17e1 import (
     logitre,
 )
 

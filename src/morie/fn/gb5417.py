@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['signmedci', 'gibbons_sign_median_ci']
+__all__ = ["signmedci", "gibbons_sign_median_ci"]
 
 
 def signmedci(x, alpha=0.05):
@@ -57,8 +57,13 @@ def signmedci(x, alpha=0.05):
     if r == 0:
         return RichResult(
             payload={
-                "lower": float("nan"), "upper": float("nan"), "r": 0, "s": 0,
-                "coverage": float("nan"), "tail": 0.0, "n": n,
+                "lower": float("nan"),
+                "upper": float("nan"),
+                "r": 0,
+                "s": 0,
+                "coverage": float("nan"),
+                "tail": 0.0,
+                "n": n,
                 "method": "sign-test median CI: n too small for alpha",
             }
         )

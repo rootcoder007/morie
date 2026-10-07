@@ -5,9 +5,9 @@ Algorithm source: mgwr (Oshan, Li, Kang, Wolf & Fotheringham), mgwr/search.py
 (Fotheringham, Yang & Kang 2017) is paywalled and was not read.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_gwr import gwr_fit, pairwise_distances, select_bandwidth
 from morie.fn.spgwrb import schabenberger_gwr_bandwidth as select
 from morie.fn.spmsim import schabenberger_mgwr_bandwidth as mgwr
@@ -75,7 +75,8 @@ def test_backfitting_matches_the_reference_and_separates_the_scales():
     r = mgwr(X, y, coords, max_iter=40)
     bws = np.asarray(r["bandwidths"])
     assert r["converged"] is True and r["at_search_boundary"] is False
-    assert bws[1] < bws[0] / 1.5          # the fast-varying slope is narrower
+    assert bws[1] < bws[0] / 1.5  # the fast-varying slope is narrower
+
 
 def test_a_healthy_fit_is_not_flagged_at_the_boundary():
     X, y, coords = _two_scales(seed=5)
@@ -136,8 +137,7 @@ def test_standardization_can_be_turned_off():
     r = mgwr(X, y, coords, max_iter=40, standardize=False)
     assert r["standardized"] is False
     assert r["y_scale"] == 1.0 and r["y_centre"] == 0.0
-    assert np.allclose(r["fitted"],
-                       np.sum(np.asarray(r["local_coefficients"]) * X, axis=1))
+    assert np.allclose(r["fitted"], np.sum(np.asarray(r["local_coefficients"]) * X, axis=1))
 
 
 def test_fitted_and_resid_stay_in_the_units_of_y_either_way():
@@ -165,8 +165,7 @@ def test_mgwr_usually_fits_better_than_the_gwr_it_started_from():
     for seed in (5, 11, 13, 17, 23, 29, 31, 37):
         X, y, coords = _two_scales(seed=seed)
         r = mgwr(X, y, coords, max_iter=40)
-        gwr_rss = float(np.sum(
-            gwr_fit(y, X, pairwise_distances(coords), r["bandwidth_gwr"])["resid"] ** 2))
+        gwr_rss = float(np.sum(gwr_fit(y, X, pairwise_distances(coords), r["bandwidth_gwr"])["resid"] ** 2))
         wins += r["rss"] < gwr_rss
     assert wins >= 6
 
@@ -244,8 +243,7 @@ def test_mgwr_beats_gwr_on_a_draw_where_backfitting_separates_the_scales():
     r = mgwr(X, y, coords, max_iter=40)
     assert r["at_search_boundary"] is False
     gwr_bw = select(X, y, coords, criterion="aicc")["optimal_bandwidth"]
-    gwr_rss = float(np.sum(
-        gwr_fit(y, X, pairwise_distances(coords), gwr_bw)["resid"] ** 2))
+    gwr_rss = float(np.sum(gwr_fit(y, X, pairwise_distances(coords), gwr_bw)["resid"] ** 2))
     assert r["rss"] < gwr_rss
 
 

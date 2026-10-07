@@ -30,32 +30,32 @@ def kamath_constitutional_ai_loop(initial_response, constitution, model):
     ('no!!', 2)
     """
     if not callable(model):
-        raise ValueError("model must be callable model(stage, "
-                         "principle, response, critique).")
+        raise ValueError("model must be callable model(stage, principle, response, critique).")
     principles = list(constitution)
     if len(principles) == 0:
-        raise ValueError("the constitution is empty; there is nothing "
-                         "to critique against.")
+        raise ValueError("the constitution is empty; there is nothing to critique against.")
     y = initial_response
     history = []
     for p in principles:
         crit = model("critique", p, y, None)
         if crit is None:
-            raise ValueError(f"the model returned no critique for "
-                             f"principle {p!r}.")
+            raise ValueError(f"the model returned no critique for principle {p!r}.")
         rev = model("revise", p, y, crit)
         if rev is None:
-            raise ValueError(f"the model returned no revision for "
-                             f"principle {p!r}.")
-        history.append({"principle": p, "critique": crit,
-                        "response_before": y, "response_after": rev})
+            raise ValueError(f"the model returned no revision for principle {p!r}.")
+        history.append({"principle": p, "critique": crit, "response_before": y, "response_after": rev})
         y = rev
-    return RichResult(payload={
-        "estimate": y, "revised_response": y,
-        "initial_response": initial_response, "history": history,
-        "n_revisions": len(principles), "n": len(principles),
-        "method": "Constitutional AI critique-revise loop "
-                  "(Kamath Ch 5)"})
+    return RichResult(
+        payload={
+            "estimate": y,
+            "revised_response": y,
+            "initial_response": initial_response,
+            "history": history,
+            "n_revisions": len(principles),
+            "n": len(principles),
+            "method": "Constitutional AI critique-revise loop (Kamath Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

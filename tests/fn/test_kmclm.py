@@ -1,8 +1,8 @@
 """Tests for kmclm.kamath_causal_lm_loss."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kmclm import kamath_causal_lm_loss
 
 

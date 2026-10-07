@@ -64,21 +64,17 @@ def k_fold_cross_validation(y, fold_predictions, folds, task="regression"):
     n = yv.size
     if not (pv.size == fv.size == n):
         raise ValueError(
-            "y, fold_predictions and folds must agree in length, got "
-            "%d, %d and %d." % (n, pv.size, fv.size)
+            f"y, fold_predictions and folds must agree in length, got {int(n)}, {int(pv.size)} and {int(fv.size)}."
         )
     if task not in ("regression", "classification"):
-        raise ValueError(
-            "task must be 'regression' or 'classification', got %r." % task
-        )
+        raise ValueError(f"task must be 'regression' or 'classification', got {task!r}.")
     keys = list(dict.fromkeys(fv.tolist()))
     K = len(keys)
     if K < 2:
-        raise ValueError("need at least 2 folds, got %d." % K)
+        raise ValueError(f"need at least 2 folds, got {int(K)}.")
 
     def loss(a, b):
-        return (a != b).astype(float) if task == "classification" \
-            else (a - b) ** 2
+        return (a != b).astype(float) if task == "classification" else (a - b) ** 2
 
     per = []
     sizes = []
@@ -95,9 +91,9 @@ def k_fold_cross_validation(y, fold_predictions, folds, task="regression"):
         payload={
             "estimate": cv,
             "cv_error": cv,
-            "cv_score": (1.0 - cv if task == "classification"
-                         else 1.0 - cv / float(np.var(yv))
-                         if np.var(yv) > 0 else np.nan),
+            "cv_score": (
+                1.0 - cv if task == "classification" else 1.0 - cv / float(np.var(yv)) if np.var(yv) > 0 else np.nan
+            ),
             "fold_errors": per,
             "fold_sizes": sizes,
             "se": se,
@@ -109,14 +105,11 @@ def k_fold_cross_validation(y, fold_predictions, folds, task="regression"):
             ),
             "row_weighted_error": row,
             "weighting_note": (
-                "cv_error averages over FOLDS, row_weighted_error over ROWS; "
-                "they differ whenever the folds are unequal"
+                "cv_error averages over FOLDS, row_weighted_error over ROWS; they differ whenever the folds are unequal"
             ),
             "train_fraction": float((K - 1) / K),
             "pessimism_note": (
-                "CV estimates the error of a model trained on %d%% of the "
-                "data, which is pessimistic for the model fitted on all of "
-                "it" % round(100 * (K - 1) / K)
+                f"CV estimates the error of a model trained on {int(round(100 * (K - 1) / K))}% of the data, which is pessimistic for the model fitted on all of it"
             ),
             "k": int(K),
             "n": int(n),

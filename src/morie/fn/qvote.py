@@ -23,13 +23,13 @@ def quadratic_voting(intensities, budget: float = 100.0) -> DescriptiveResult:
 
     .. epigraph:: Give me a place to stand and I will move the earth. -- Archimedes
     """
-    I = np.asarray(intensities, dtype=float)
-    if I.ndim != 2:
+    I_ = np.asarray(intensities, dtype=float)
+    if I_.ndim != 2:
         raise ValueError("intensities must be 2D (voters x issues).")
-    n_voters, n_issues = I.shape
+    n_voters, n_issues = I_.shape
 
-    signs = np.sign(I)
-    abs_I = np.abs(I)
+    signs = np.sign(I_)
+    abs_I = np.abs(I_)
     sqrt_I = np.sqrt(abs_I)
     row_sums = sqrt_I.sum(axis=1, keepdims=True)
     row_sums = np.where(row_sums > 0, row_sums, 1.0)

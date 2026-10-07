@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grmha import geron_multi_head_attention
 
 
@@ -58,10 +57,10 @@ def test_grmha_basic():
 
 def test_grmha_edge():
     """Test edge case: a single head with identity projections on the smallest valid width."""
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     Kv = [[1.0, 0.0], [0.0, 1.0]]
     # d_model = 2, h = 1, d_head = 2, d_out = 2
-    result = geron_multi_head_attention([[1.0, 0.0]], Kv, Kv, I, I, I, I, h=1)
+    result = geron_multi_head_attention([[1.0, 0.0]], Kv, Kv, I_, I_, I_, I_, h=1)
 
     assert isinstance(result, dict)
     for key in (
@@ -106,7 +105,7 @@ import morie.fn.grmha as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

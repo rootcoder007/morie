@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Special results for k x 2 contingency tables -- eq. (14.3.2)."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['chik2', 'gibbons_k2_contingency']
+__all__ = ["chik2", "gibbons_k2_contingency"]
 
 
 def chik2(successes, ns):
@@ -52,9 +50,7 @@ def chik2(successes, ns):
     ph = sum(y) / nn
     if not 0.0 < ph < 1.0:
         raise ValueError("the pooled proportion must lie inside (0, 1).")
-    q = sum(y[i] ** 2 / nv[i] for i in range(k)) / (ph * (1.0 - ph)) - (
-        nn * ph / (1.0 - ph)
-    )
+    q = sum(y[i] ** 2 / nv[i] for i in range(k)) / (ph * (1.0 - ph)) - (nn * ph / (1.0 - ph))
     df = k - 1
     return RichResult(
         payload={

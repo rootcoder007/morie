@@ -104,12 +104,16 @@ def geron_classification_localization(image, model, n_classes=None, gt_class=Non
     Géron Ch 12
     """
     if not callable(model):
-        raise ValueError("geron_classification_localization: model must be a callable model(image) -> [p..., x, y, w, h]")
+        raise ValueError(
+            "geron_classification_localization: model must be a callable model(image) -> [p..., x, y, w, h]"
+        )
     out = np.asarray(model(image), dtype=float)
     if out.ndim == 1:
         out = out[None, :]
     if out.ndim != 2 or out.size == 0:
-        raise ValueError(f"geron_classification_localization: model must return a vector or (B, K+4) array, got shape {out.shape}")
+        raise ValueError(
+            f"geron_classification_localization: model must return a vector or (B, K+4) array, got shape {out.shape}"
+        )
     if not np.all(np.isfinite(out)):
         raise ValueError("geron_classification_localization: model returned non-finite values")
     B, width = out.shape
@@ -138,7 +142,9 @@ def geron_classification_localization(image, model, n_classes=None, gt_class=Non
     P = np.exp(logp)
 
     def corners(b):
-        return np.stack([b[:, 0] - b[:, 2] / 2, b[:, 1] - b[:, 3] / 2, b[:, 0] + b[:, 2] / 2, b[:, 1] + b[:, 3] / 2], axis=1)
+        return np.stack(
+            [b[:, 0] - b[:, 2] / 2, b[:, 1] - b[:, 3] / 2, b[:, 0] + b[:, 2] / 2, b[:, 1] + b[:, 3] / 2], axis=1
+        )
 
     C = corners(box)
 
@@ -162,7 +168,9 @@ def geron_classification_localization(image, model, n_classes=None, gt_class=Non
     if gt_class is not None:
         y = np.asarray(gt_class).ravel().astype(int)
         if y.size != B:
-            raise ValueError(f"geron_classification_localization: gt_class has {y.size} entries but there are {B} images")
+            raise ValueError(
+                f"geron_classification_localization: gt_class has {y.size} entries but there are {B} images"
+            )
         if y.min() < 0 or y.max() >= K:
             raise ValueError(f"geron_classification_localization: a label lies outside 0..{K - 1}")
         loss_cls = float(-np.mean(logp[np.arange(B), y]))

@@ -72,10 +72,16 @@ def tmle_nde_interventional(y, D, M, X, a_ref=0.0):
     mi = sum(ic) / n
     se = math.sqrt(sum((v - mi) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
     shift = sum(Mhat[i] - Mv[i] for i in range(n)) / n
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps,
-        "m_shift": shift, "n": n,
-        "method": "TMLE for an interventional direct effect"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "m_shift": shift,
+            "n": n,
+            "method": "TMLE for an interventional direct effect",
+        }
+    )
 
 
 def cheatsheet():

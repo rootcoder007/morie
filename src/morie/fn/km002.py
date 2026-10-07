@@ -27,19 +27,25 @@ def kamath_ch2_context_vector(h_1_h_T, mapping="mean"):
         c = np.atleast_1d(np.asarray(mapping(H), dtype=float))
         name = "callable"
     elif mapping == "mean":
-        c = H.mean(axis=0); name = "mean"
+        c = H.mean(axis=0)
+        name = "mean"
     elif mapping == "last":
-        c = H[-1]; name = "last"
+        c = H[-1]
+        name = "last"
     elif mapping == "max":
-        c = H.max(axis=0); name = "max"
+        c = H.max(axis=0)
+        name = "max"
     else:
-        raise ValueError(
-            f"mapping must be mean, last, max or a callable; got "
-            f"{mapping!r}.")
-    return RichResult(payload={
-        "context": [float(v) for v in c], "mapping": name,
-        "estimate": float(c[0]), "n": H.shape[0],
-        "method": "Context vector c = m(h_1..h_T) (Kamath Eq 2.2)"})
+        raise ValueError(f"mapping must be mean, last, max or a callable; got {mapping!r}.")
+    return RichResult(
+        payload={
+            "context": [float(v) for v in c],
+            "mapping": name,
+            "estimate": float(c[0]),
+            "n": H.shape[0],
+            "method": "Context vector c = m(h_1..h_T) (Kamath Eq 2.2)",
+        }
+    )
 
 
 def cheatsheet():

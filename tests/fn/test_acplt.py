@@ -1,7 +1,6 @@
 """Tests for morie.fn.acplt -- Autocorrelation data."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.acplt import autocorrelation_data
 
 

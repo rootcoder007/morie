@@ -1,7 +1,6 @@
 """Tests for gh_c8_10.ghosal_wn_crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_10 import ghosal_wn_crt
 
 
@@ -17,8 +16,9 @@ def test_gh_c8_10_basic():
     expected_exponent = 2.0 * min(a, s_true) / (2.0 * a + 1.0)
     assert np.allclose(np.asarray(est, dtype=float), np.asarray(expected_exponent, dtype=float), atol=0.1)
     assert "expected_exponent" in result
-    assert np.allclose(np.asarray(float(result["expected_exponent"]), dtype=float),
-                       np.asarray(expected_exponent, dtype=float))
+    assert np.allclose(
+        np.asarray(float(result["expected_exponent"]), dtype=float), np.asarray(expected_exponent, dtype=float)
+    )
     assert "risk_by_n" in result
     assert len(result["risk_by_n"]) == 2
     assert "method" in result

@@ -1,7 +1,6 @@
 """Tests for morie.fn.spkpf -- single-peaked check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spkpf import single_peaked_check, spkpf
 
 

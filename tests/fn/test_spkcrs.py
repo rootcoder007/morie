@@ -1,8 +1,8 @@
 """spkcrs -- cross K-function, Schabenberger & Gotway Sec. 3.4.4."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_pp import ripley_weight, ripley_weights
 from morie.fn.spkcrs import schabenberger_cross_k_function as ck
 
@@ -22,8 +22,12 @@ def test_ripley_weight_is_the_circumference_proportion():
         p = rs.uniform(0.05, 0.95, 2)
         t = rs.uniform(0.05, 0.6)
         th = np.linspace(0, 2 * np.pi, 400001)[:-1]
-        num = np.mean((p[0] + t * np.cos(th) >= 0) & (p[0] + t * np.cos(th) <= 1)
-                      & (p[1] + t * np.sin(th) >= 0) & (p[1] + t * np.sin(th) <= 1))
+        num = np.mean(
+            (p[0] + t * np.cos(th) >= 0)
+            & (p[0] + t * np.cos(th) <= 1)
+            & (p[1] + t * np.sin(th) >= 0)
+            & (p[1] + t * np.sin(th) <= 1)
+        )
         assert ripley_weight(p, REG, t) == pytest.approx(num, abs=5e-5)
 
 
@@ -48,7 +52,7 @@ def test_independent_patterns_track_pi_h_squared():
     """
     a, b, _ = _pair()
     res = ck(a, b, region=REG, r=R)
-    rel = np.abs(res["estimate"] - np.pi * R ** 2) / (np.pi * R ** 2)
+    rel = np.abs(res["estimate"] - np.pi * R**2) / (np.pi * R**2)
     assert rel.max() < 0.20
     assert np.abs(res["L_minus_h"]).max() < 0.02
 

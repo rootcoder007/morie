@@ -1,7 +1,5 @@
 """Tests for ghs018.ghosal_ch3_tree_splitting_variables."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ghs018 import ghosal_ch3_tree_splitting_variables
 
 

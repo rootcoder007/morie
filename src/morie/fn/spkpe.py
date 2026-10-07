@@ -13,10 +13,18 @@ def _cov(D, model, nug, ps, rng):
     return (nug + ps) - _vgm(D, model, nug, ps, rng)
 
 
-def schabenberger_kriging_pred_error(coords, z, target,
-                                     variogram_model="exponential",
-                                     nugget=None, psill=None, rng=None,
-                                     jitter=0.05, n_jitter=24, seed=0):
+def schabenberger_kriging_pred_error(
+    coords,
+    z,
+    target,
+    variogram_model="exponential",
+    nugget=None,
+    psill=None,
+    rng=None,
+    jitter=0.05,
+    n_jitter=24,
+    seed=0,
+):
     r"""Ordinary kriging with an honest prediction error, section 5.5.4.
 
     The plug-in kriging variance
@@ -105,7 +113,7 @@ def schabenberger_kriging_pred_error(coords, z, target,
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     P = np.atleast_2d(np.asarray(coords, dtype=float))
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
@@ -115,14 +123,12 @@ def schabenberger_kriging_pred_error(coords, z, target,
     if T.shape[1] != P.shape[1]:
         T = T.T
     if T.shape[1] != P.shape[1]:
-        raise ValueError(
-            "target has %d coordinate columns, coords has %d."
-            % (T.shape[1], P.shape[1])
-        )
+        raise ValueError(f"target has {int(T.shape[1])} coordinate columns, coords has {int(P.shape[1])}.")
 
     estimated = nugget is None or psill is None or rng is None
     if estimated:
         from ._schaben import fit_variogram_wls, matheron
+
         lag, gam, npair, _ = matheron(P, zz)
         f = fit_variogram_wls(lag, gam, npair, model)
         nugget, psill, rng = f["nugget"], f["psill"], f["range"]
@@ -138,8 +144,7 @@ def schabenberger_kriging_pred_error(coords, z, target,
         Cic = np.linalg.solve(C, c0)
         denom = float(np.sum(Ci1))
         lam = Cic + np.outer(Ci1, (1.0 - np.sum(Cic, axis=0)) / denom)
-        var = ((t[0] + t[1]) - np.sum(c0 * Cic, axis=0)
-               + (1.0 - np.sum(Cic, axis=0)) ** 2 / denom)
+        var = (t[0] + t[1]) - np.sum(c0 * Cic, axis=0) + (1.0 - np.sum(Cic, axis=0)) ** 2 / denom
         return lam, np.maximum(var, 0.0)
 
     lam, mse_plug = _krige(theta)
@@ -160,9 +165,7 @@ def schabenberger_kriging_pred_error(coords, z, target,
 
     # B: mse of theta-hat, approximated by perturbation
     gen = np.random.default_rng(int(seed))
-    draws = theta[None, :] * (
-        1.0 + float(jitter) * gen.normal(size=(int(n_jitter), 3))
-    )
+    draws = theta[None, :] * (1.0 + float(jitter) * gen.normal(size=(int(n_jitter), 3)))
     draws = np.maximum(draws, 1e-10)
     Bmat = np.cov((draws - theta[None, :]).T, bias=True)
     Bmat = np.atleast_2d(Bmat)
@@ -170,10 +173,10 @@ def schabenberger_kriging_pred_error(coords, z, target,
     corr = np.zeros(m)
     Cth = _cov(D, model, *theta) + np.eye(n) * 1e-10 * max(theta[:2].sum(), 1e-12)
     for j in range(m):
-        G = dlam[:, :, j]                      # (3, n)
-        A = G @ Cth @ G.T                      # Var[d omega / d theta]
+        G = dlam[:, :, j]  # (3, n)
+        A = G @ Cth @ G.T  # Var[d omega / d theta]
         corr[j] = float(np.trace(A @ Bmat))
-    mse = mse_plug + 2.0 * corr                # equation (5.53)
+    mse = mse_plug + 2.0 * corr  # equation (5.53)
     with np.errstate(divide="ignore", invalid="ignore"):
         share = np.where(mse > 0, 2.0 * corr / mse, np.nan)
     return RichResult(
@@ -195,14 +198,12 @@ def schabenberger_kriging_pred_error(coords, z, target,
                 "would apply if theta were known -- not of the EBLUP "
                 "actually being used, which is why it is biased downward"
             ),
-            "parameters": {"nugget": float(theta[0]), "psill": float(theta[1]),
-                           "range": float(theta[2])},
+            "parameters": {"nugget": float(theta[0]), "psill": float(theta[1]), "range": float(theta[2])},
             "parameters_estimated": bool(estimated),
             "model": model,
             "n": n,
             "n_target": int(m),
-            "method": "Ordinary kriging with Prasad-Rao corrected prediction "
-                      "error",
+            "method": "Ordinary kriging with Prasad-Rao corrected prediction error",
         }
     )
 

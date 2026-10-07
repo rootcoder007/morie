@@ -69,9 +69,11 @@ def ma_leave_one_out(yi, vi, method="PM"):
             t2 = dersimonian_laird(yy, vv)
         elif method == "PM":
             from .mapaule import ma_paule_mandel
+
             t2 = ma_paule_mandel(yy, vv)["tau2"]
         else:
             from .mareml import ma_random_reml
+
             t2 = ma_random_reml(yy, vv)["tau2"]
         w = 1.0 / (vv + t2)
         mu = float(np.sum(w * yy) / np.sum(w))
@@ -94,22 +96,29 @@ def ma_leave_one_out(yi, vi, method="PM"):
         ci_l[i] = (mu_i - z * se_i, mu_i + z * se_i)
         flips[i] = bool(abs(mu_i) > z * se_i) != sig_full
     d = mu_l - mu_f
-    return RichResult(payload={
-        "mu_full": mu_f, "tau2_full": t2_f,
-        "mu_loo": mu_l, "tau2_loo": t2_l, "ci_loo": ci_l,
-        "delta_mu": d, "flips_significance": flips,
-        "most_influential": int(np.argmax(np.abs(d))),
-        "max_abs_delta": float(np.max(np.abs(d))),
-        "significant_full": sig_full,
-        "refit_note": "each fit re-estimates tau^2, so deleting a study "
-                      "changes ALL the weights -- recomputing with the "
-                      "full-data tau^2 misses that channel",
-        "what_to_read": "not the largest shift in isolation but whether any "
-                        "single deletion changes a CONCLUSION, which "
-                        "flips_significance records",
-        "method_used": method, "k": int(k),
-        "method": "Leave-one-out influence for random-effects meta-analysis "
-                  "(Viechtbauer-Cheung 2010)"})
+    return RichResult(
+        payload={
+            "mu_full": mu_f,
+            "tau2_full": t2_f,
+            "mu_loo": mu_l,
+            "tau2_loo": t2_l,
+            "ci_loo": ci_l,
+            "delta_mu": d,
+            "flips_significance": flips,
+            "most_influential": int(np.argmax(np.abs(d))),
+            "max_abs_delta": float(np.max(np.abs(d))),
+            "significant_full": sig_full,
+            "refit_note": "each fit re-estimates tau^2, so deleting a study "
+            "changes ALL the weights -- recomputing with the "
+            "full-data tau^2 misses that channel",
+            "what_to_read": "not the largest shift in isolation but whether any "
+            "single deletion changes a CONCLUSION, which "
+            "flips_significance records",
+            "method_used": method,
+            "k": int(k),
+            "method": "Leave-one-out influence for random-effects meta-analysis (Viechtbauer-Cheung 2010)",
+        }
+    )
 
 
 def cheatsheet():

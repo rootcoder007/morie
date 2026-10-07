@@ -1,7 +1,6 @@
 """Tests for alprv — alert prevalence by group."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.alprv import alprev
 
 

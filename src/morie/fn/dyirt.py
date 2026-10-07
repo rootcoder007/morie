@@ -22,7 +22,7 @@ def dynamic_irt_estimate(votes=None, *, time_periods=None, dims=1, n=10, m=5):
     result = _dynamic_irt(votes, time_periods=time_periods)
     return DescriptiveResult(
         name="Dynamic IRT",
-        value=result.get("loglik", 0.0),
+        value=sum(result["tau2"]) / len(result["tau2"]),
         extra={"dims": dims, "n_periods": len(time_periods), **result},
     )
 

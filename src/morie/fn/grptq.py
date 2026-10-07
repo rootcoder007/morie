@@ -94,9 +94,7 @@ def geron_static_ptq(model, calibration_data, bits=8, percentile=100.0):
         if not np.all(np.isfinite(nxt)):
             raise ValueError(f"model[{i}] returned non-finite activations.")
         if nxt.shape[0] != acts.shape[0]:
-            raise ValueError(
-                f"model[{i}] changed the batch size from {acts.shape[0]} to {nxt.shape[0]}."
-            )
+            raise ValueError(f"model[{i}] changed the batch size from {acts.shape[0]} to {nxt.shape[0]}.")
         acts = nxt
         ranges.append(_range(acts))
         outputs.append(acts)
@@ -106,8 +104,7 @@ def geron_static_ptq(model, calibration_data, bits=8, percentile=100.0):
     for r in ranges:
         if r == 0:
             raise ValueError(
-                "an activation tensor is identically zero on the calibration set; "
-                "its scale would be zero."
+                "an activation tensor is identically zero on the calibration set; its scale would be zero."
             )
         scales.append(r / qmax)
 

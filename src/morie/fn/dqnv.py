@@ -58,14 +58,10 @@ reinforcement learning, planning and teaching", *Machine Learning* 8,
 293-321, doi:10.1007/BF00992699. Experience replay.
 """
 
-import math
-
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["ReplayBuffer", "td_target", "clip_reward",
-           "q_learning", "bellman_residual"]
+__all__ = ["ReplayBuffer", "td_target", "clip_reward", "q_learning", "bellman_residual"]
 
 _EPS = 1e-12
 
@@ -92,8 +88,7 @@ class ReplayBuffer:
         if not self.data:
             raise ValueError("dqnv: the buffer is empty")
         m = min(int(n), len(self.data))
-        return [self.data[int(float(rng.uniform()) * len(self.data))
-                          % len(self.data)] for _ in range(m)]
+        return [self.data[int(float(rng.uniform()) * len(self.data)) % len(self.data)] for _ in range(m)]
 
     def __len__(self):
         return len(self.data)
@@ -127,15 +122,26 @@ def bellman_residual(Q, P, R, gamma=0.99):
     worst = 0.0
     for s in range(nS):
         for a in range(nA):
-            t = R[s][a] + float(gamma) * sum(
-                P[s][a][s2] * max(Q[s2]) for s2 in range(nS))
+            t = R[s][a] + float(gamma) * sum(P[s][a][s2] * max(Q[s2]) for s2 in range(nS))
             worst = max(worst, abs(Q[s][a] - t))
     return worst
 
 
-def q_learning(P, R, n_states, n_actions, gamma=0.99, alpha=0.1,
-               steps=20000, C=100, buffer_size=1000, batch=16,
-               seed=0, use_replay=True, use_target=True):
+def q_learning(
+    P,
+    R,
+    n_states,
+    n_actions,
+    gamma=0.99,
+    alpha=0.1,
+    steps=20000,
+    C=100,
+    buffer_size=1000,
+    batch=16,
+    seed=0,
+    use_replay=True,
+    use_target=True,
+):
     r"""Tabular Q-learning with both devices switchable.
 
     Turning either off is what lets the anchor show what each buys.
@@ -159,9 +165,8 @@ def q_learning(P, R, n_states, n_actions, gamma=0.99, alpha=0.1,
                 break
         r = clip_reward(R[s][a])
         buf.add(s, a, r, s2)
-        batchset = (buf.sample(batch, rng) if use_replay
-                    else [(s, a, r, s2, False)])
-        for (bs, ba, br, bs2, bd) in batchset:
+        batchset = buf.sample(batch, rng) if use_replay else [(s, a, r, s2, False)]
+        for bs, ba, br, bs2, bd in batchset:
             y = td_target(br, bs2, Qt if use_target else Q, gamma, bd)
             Q[bs][ba] += float(alpha) * (y - Q[bs][ba])
         if use_target and (t + 1) % int(C) == 0:
@@ -169,30 +174,34 @@ def q_learning(P, R, n_states, n_actions, gamma=0.99, alpha=0.1,
         if (t + 1) % max(1, int(steps) // 20) == 0:
             hist.append(bellman_residual(Q, P, R, gamma))
         s = s2
-    return RichResult(payload={
-        "estimate": Q, "Q": Q, "residual_history": hist,
-        "final_residual": hist[-1] if hist else float("nan"),
-        "greedy_policy": [max(range(nA), key=lambda a: Q[s][a])
-                          for s in range(nS)],
-        "used_replay": bool(use_replay),
-        "used_target_network": bool(use_target),
-        "C": int(C),
-        "method": "Q-learning with experience replay and a frozen "
-                  "target network; Mnih et al. (2015)",
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "Q": Q,
+            "residual_history": hist,
+            "final_residual": hist[-1] if hist else float("nan"),
+            "greedy_policy": [max(range(nA), key=lambda a: Q[s][a]) for s in range(nS)],
+            "used_replay": bool(use_replay),
+            "used_target_network": bool(use_target),
+            "C": int(C),
+            "method": "Q-learning with experience replay and a frozen target network; Mnih et al. (2015)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dqnv: the LEARNING RULE is ordinary Q-learning; what "
-            "changed is the data and the target. EXPERIENCE REPLAY "
-            "samples transitions UNIFORMLY from a finite buffer, "
-            "breaking the correlation between consecutive frames and "
-            "smoothing distribution shift. The TARGET NETWORK is a "
-            "frozen copy refreshed every C steps -- without it the "
-            "network chases its own output, since raising Q(s,a) "
-            "immediately raises the target at the neighbouring state. "
-            "Rewards clipped to [-1,1] so one learning rate spans "
-            "games, at the cost of indifference to magnitude.")
+    return (
+        "dqnv: the LEARNING RULE is ordinary Q-learning; what "
+        "changed is the data and the target. EXPERIENCE REPLAY "
+        "samples transitions UNIFORMLY from a finite buffer, "
+        "breaking the correlation between consecutive frames and "
+        "smoothing distribution shift. The TARGET NETWORK is a "
+        "frozen copy refreshed every C steps -- without it the "
+        "network chases its own output, since raising Q(s,a) "
+        "immediately raises the target at the neighbouring state. "
+        "Rewards clipped to [-1,1] so one learning rate spans "
+        "games, at the cost of indifference to magnitude."
+    )
 
 
 # compact alias per ledger/NAMING.md

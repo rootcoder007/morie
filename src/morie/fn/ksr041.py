@@ -8,8 +8,7 @@ from .ksr040 import kosorok_ch2_bootstrap_donsker_iff
 __all__ = ["kosorok_ch2_bootstrap_donsker_almost_sure"]
 
 
-def kosorok_ch2_bootstrap_donsker_almost_sure(X, t=None, n_boot=400, rng=None,
-                                              F=None, envelope_sq_mean=None):
+def kosorok_ch2_bootstrap_donsker_almost_sure(X, t=None, n_boot=400, rng=None, F=None, envelope_sq_mean=None):
     r"""Outer-almost-sure bootstrap characterisation:
 
     :math:`\mathcal F` is P-Donsker **and**
@@ -50,20 +49,20 @@ def kosorok_ch2_bootstrap_donsker_almost_sure(X, t=None, n_boot=400, rng=None,
     Semiparametric Inference*. Springer. Ch. 2 (outer almost sure bootstrap convergence).
     """
     base = kosorok_ch2_bootstrap_donsker_iff(X, t=t, n_boot=n_boot, rng=rng, F=F)
-    if envelope_sq_mean is None:
-        # indicator class: |1{X <= t} - F(t)| <= 1, so the centred
-        # envelope's square has mean at most 1
-        env = 1.0
-    else:
-        env = float(envelope_sq_mean)
+    # indicator class: |1{X <= t} - F(t)| <= 1, so the centred
+    # envelope's square has mean at most 1
+    env = 1.0 if envelope_sq_mean is None else float(envelope_sq_mean)
     env_ok = bool(np.isfinite(env))
     return RichResult(
-        payload={"max_abs_gap": base["max_abs_gap"],
-                 "bootstrap_cov": base["bootstrap_cov"],
-                 "bridge_cov": base["bridge_cov"],
-                 "envelope_sq_mean": env, "envelope_condition_met": env_ok,
-                 "both_conditions_met": bool(env_ok),
-                 "method": "a.s. version needs Donsker AND a square-integrable envelope"}
+        payload={
+            "max_abs_gap": base["max_abs_gap"],
+            "bootstrap_cov": base["bootstrap_cov"],
+            "bridge_cov": base["bridge_cov"],
+            "envelope_sq_mean": env,
+            "envelope_condition_met": env_ok,
+            "both_conditions_met": bool(env_ok),
+            "method": "a.s. version needs Donsker AND a square-integrable envelope",
+        }
     )
 
 

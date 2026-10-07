@@ -1,7 +1,6 @@
 """Tests for npbsr.np_bayes_survival."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.npbsr import np_bayes_survival
 
 

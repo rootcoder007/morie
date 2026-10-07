@@ -12,13 +12,11 @@ import pytest
 NR, NC = 5, 4
 N = NR * NC
 # rook adjacency on a 5 x 4 grid, sites numbered row by row
-W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0
-      for j in range(N)] for i in range(N)]
+W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0 for j in range(N)] for i in range(N)]
 Z = [((i * 37) % 17) / 3 + 0.5 * (i // NC) for i in range(N)]
 X1 = [float((i * 5) % 9) for i in range(N)]
 X2 = [math.cos(i) for i in range(N)]
-Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC)
-     for i, (a, b) in enumerate(zip(X1, X2))]
+Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC) for i, (a, b) in enumerate(zip(X1, X2))]
 X = [[1.0, a, b] for a, b in zip(X1, X2)]
 
 from morie.fn.spmani import schabenberger_mantel_standard
@@ -46,6 +44,5 @@ def test_spmani_edge():
     """A supplied u is used verbatim and switches the Z-test off."""
     u = [[float(i * j % 3) for j in range(N)] for i in range(N)]
     r = schabenberger_mantel_standard(None, Z, W, u=u)
-    assert r["m2"] == pytest.approx(
-        sum(W[i][j] * u[i][j] for i in range(N) for j in range(N)), rel=1e-15)
+    assert r["m2"] == pytest.approx(sum(W[i][j] * u[i][j] for i in range(N) for j in range(N)), rel=1e-15)
     assert r["z"] is None and r["p_value"] is None

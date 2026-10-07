@@ -1,7 +1,6 @@
 """Tests for sensSlp.sen_slope."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sensSlp import sen_slope
 
 

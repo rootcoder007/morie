@@ -2,8 +2,6 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
 from morie.fn.grmgd import geron_minibatch_gradient_descent
 
@@ -17,9 +15,7 @@ def test_grmgd_basic():
     eta = 0.01
     b = 8
     n_iter = 50
-    result = geron_minibatch_gradient_descent(
-        X, y, theta, eta, b, n_iter, seed=0
-    )
+    result = geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed=0)
     assert isinstance(result, dict)
     assert "theta" in result
     assert "final_cost" in result
@@ -41,9 +37,7 @@ def test_grmgd_edge():
     eta = 0.01
     b = 40  # b == m: full-batch edge
     n_iter = 1
-    result = geron_minibatch_gradient_descent(
-        X, y, theta, eta, b, n_iter, seed=0
-    )
+    result = geron_minibatch_gradient_descent(X, y, theta, eta, b, n_iter, seed=0)
     assert isinstance(result, dict)
     assert "theta" in result
     assert "final_cost" in result
@@ -65,7 +59,7 @@ import morie.fn.grmgd as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

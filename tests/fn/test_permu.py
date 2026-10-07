@@ -1,12 +1,11 @@
 """Tests for morie.fn.permu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.permu import permu
 
 
 def test_permu_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = permu(n=5, k=3)
     assert result is not None
     assert hasattr(result, "name")

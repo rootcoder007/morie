@@ -1,9 +1,10 @@
 """Tests for mhrate.mantel_haenszel_rate."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mhrate import mantel_haenszel_rate
 
 
@@ -20,8 +21,18 @@ def test_mhrate_basic():
         strata.append((a, T1, b, T0))
     result = mantel_haenszel_rate(strata)
     assert isinstance(result, dict)
-    for key in ("estimate", "ln_estimate", "se_ln", "ci_lower", "ci_upper",
-                "numerator", "denominator", "n_strata", "confidence", "method"):
+    for key in (
+        "estimate",
+        "ln_estimate",
+        "se_ln",
+        "ci_lower",
+        "ci_upper",
+        "numerator",
+        "denominator",
+        "n_strata",
+        "confidence",
+        "method",
+    ):
         assert key in result
     assert result["n_strata"] == n_strata
     assert math.isfinite(result["estimate"])

@@ -1,7 +1,5 @@
 """Tests for gb_pgl.gibbons_page_exact."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_pgl import gibbons_page_exact
 
 
@@ -34,7 +32,7 @@ def test_gb_pgl_edge():
 
     # mean and variance must be computed from the returned support/pmf
     mean_from_pmf = sum(s * p for s, p in zip(support, pmf))
-    var_from_pmf = sum(s * s * p for s, p in zip(support, pmf)) - mean_from_pmf ** 2
+    var_from_pmf = sum(s * s * p for s, p in zip(support, pmf)) - mean_from_pmf**2
     assert abs(result["mean"] - mean_from_pmf) < 1e-12
     assert abs(result["var"] - var_from_pmf) < 1e-12
     assert result["var"] >= 0.0

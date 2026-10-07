@@ -1,7 +1,6 @@
 """Tests for hermitS.hermite_basis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hermitS import hermite_basis
 
 

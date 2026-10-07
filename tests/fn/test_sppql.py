@@ -1,9 +1,8 @@
 """sppql -- pseudo-likelihood for spatial GLMMs, Schabenberger Sec. 6.3.5."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn import _schab_glmm as gm
+from morie.fn import _array_core as np
 from morie.fn.sppql import schabenberger_pql
 
 
@@ -65,8 +64,7 @@ def test_marginal_and_conditional_specifications_are_distinguished():
     grid = np.linspace(0, 8, n)
     d = np.abs(grid[:, None] - grid[None, :])
     cond = schabenberger_pql(y, X, Sigma_S, family="poisson")
-    marg = schabenberger_pql(y, X, 1e-8 * np.eye(n), family="poisson",
-                             R=np.exp(-d / 2.5))
+    marg = schabenberger_pql(y, X, 1e-8 * np.eye(n), family="poisson", R=np.exp(-d / 2.5))
     assert cond["specification"] == "conditional"
     assert marg["specification"] == "marginal"
 

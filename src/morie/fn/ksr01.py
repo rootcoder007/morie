@@ -60,12 +60,18 @@ def empproc(x, t, F):
         raise ValueError("t must be non-decreasing")
     Fn = [sum(1 for v in x if v <= t[j]) / n for j in range(k)]
     Gn = [math.sqrt(n) * (Fn[j] - F[j]) for j in range(k)]
-    cov = [[min(F[i], F[j]) - F[i] * F[j] for j in range(k)]
-           for i in range(k)]
-    return RichResult(payload={
-        "Fn": Fn, "Gn": Gn, "cov": cov,
-        "sup_abs": max(abs(v) for v in Gn), "n": n, "k": k,
-        "method": "Empirical process, Kosorok Section 2.1"})
+    cov = [[min(F[i], F[j]) - F[i] * F[j] for j in range(k)] for i in range(k)]
+    return RichResult(
+        payload={
+            "Fn": Fn,
+            "Gn": Gn,
+            "cov": cov,
+            "sup_abs": max(abs(v) for v in Gn),
+            "n": n,
+            "k": k,
+            "method": "Empirical process, Kosorok Section 2.1",
+        }
+    )
 
 
 kosorok_empirical_process = empproc

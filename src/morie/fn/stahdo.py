@@ -71,8 +71,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["median", "mad", "outlyingness", "stahel_donoho",
-           "DIRECTIONS", "stahel_donoho_outlyingness"]
+__all__ = ["median", "mad", "outlyingness", "stahel_donoho", "DIRECTIONS", "stahel_donoho_outlyingness"]
 
 DIRECTIONS = ("subsample", "random")
 _CONSISTENCY = 1.4826  # MAD -> sigma at the normal
@@ -109,6 +108,7 @@ def _prep(X):
 def _subsample_dirs(M, n, p, n_dirs, seed):
     """Normals to hyperplanes through p observations."""
     import itertools
+
     combos = None
     total = 1
     for i in range(p):
@@ -119,8 +119,7 @@ def _subsample_dirs(M, n, p, n_dirs, seed):
         rng = np.random.default_rng(int(seed))
         seen, combos = set(), []
         while len(combos) < int(n_dirs):
-            idx = tuple(sorted({int(rng.random() * n) % n
-                                for _ in range(p * 3)}))
+            idx = tuple(sorted({int(rng.random() * n) % n for _ in range(p * 3)}))
             if len(idx) < p:
                 continue
             idx = idx[:p]
@@ -131,15 +130,14 @@ def _subsample_dirs(M, n, p, n_dirs, seed):
     dirs = []
     for idx in combos:
         base = M[idx[0]]
-        rows = [[M[i][k] - base[k] for k in range(p)]
-                for i in idx[1:]]
+        rows = [[M[i][k] - base[k] for k in range(p)] for i in idx[1:]]
         a = _null_vector(rows, p)
         if a is not None:
             dirs.append(a)
     if not dirs:
-        raise ValueError("stahdo: every sampled subset was degenerate "
-                         "-- the data may lie in a lower-dimensional "
-                         "subspace")
+        raise ValueError(
+            "stahdo: every sampled subset was degenerate -- the data may lie in a lower-dimensional subspace"
+        )
     return dirs, (combos is not None and total <= max(int(n_dirs), 1))
 
 
@@ -189,8 +187,7 @@ def _random_dirs(p, n_dirs, seed):
     return out
 
 
-def outlyingness(X, directions="subsample", n_directions=500,
-                 seed=1):
+def outlyingness(X, directions="subsample", n_directions=500, seed=1):
     r"""The Stahel-Donoho outlyingness of every observation.
 
     A lower bound on the supremum, over whichever directions were
@@ -198,8 +195,7 @@ def outlyingness(X, directions="subsample", n_directions=500,
     reported.
     """
     if directions not in DIRECTIONS:
-        raise ValueError("stahdo: directions must be one of %s, got "
-                         "%r" % (", ".join(DIRECTIONS), directions))
+        raise ValueError("stahdo: directions must be one of {}, got {!r}".format(", ".join(DIRECTIONS), directions))
     M, n, p = _prep(X)
     if p == 1:
         dirs, exhaustive = [[1.0]], True
@@ -210,11 +206,10 @@ def outlyingness(X, directions="subsample", n_directions=500,
     r = [0.0] * n
     used = 0
     for a in dirs:
-        proj = [sum(M[i][k] * a[k] for k in range(p))
-                for i in range(n)]
+        proj = [sum(M[i][k] * a[k] for k in range(p)) for i in range(n)]
         s = mad(proj)
         if s <= 1e-12:
-            continue      # a direction in which the data is constant
+            continue  # a direction in which the data is constant
         used += 1
         m = median(proj)
         for i in range(n):
@@ -222,11 +217,14 @@ def outlyingness(X, directions="subsample", n_directions=500,
             if d > r[i]:
                 r[i] = d
     if used == 0:
-        raise ValueError("stahdo: every searched direction has zero "
-                         "MAD, so no outlyingness is defined")
-    return {"outlyingness": r, "n_directions": len(dirs),
-            "n_used": used, "exhaustive": exhaustive,
-            "directions": directions}
+        raise ValueError("stahdo: every searched direction has zero MAD, so no outlyingness is defined")
+    return {
+        "outlyingness": r,
+        "n_directions": len(dirs),
+        "n_used": used,
+        "exhaustive": exhaustive,
+        "directions": directions,
+    }
 
 
 def _weight(r, cutoff):
@@ -234,36 +232,40 @@ def _weight(r, cutoff):
     return 1.0 if r <= c else (c / r) ** 2
 
 
-def stahel_donoho(X, directions="subsample", n_directions=500,
-                  seed=1, cutoff=None):
+def stahel_donoho(X, directions="subsample", n_directions=500, seed=1, cutoff=None):
     r"""The weighted location and scatter."""
     M, n, p = _prep(X)
     o = outlyingness(X, directions, n_directions, seed)
     r = o["outlyingness"]
-    c = (math.sqrt(_chi2_median(p)) if cutoff is None
-         else float(cutoff))
+    c = math.sqrt(_chi2_median(p)) if cutoff is None else float(cutoff)
     if c <= 0:
         raise ValueError("stahdo: the cutoff must be positive")
     w = [_weight(x, c) for x in r]
     sw = sum(w)
     if sw <= 0:
-        raise ValueError("stahdo: every observation was downweighted "
-                         "to zero")
-    loc = [sum(w[i] * M[i][k] for i in range(n)) / sw
-           for k in range(p)]
-    cov = [[sum(w[i] * (M[i][a] - loc[a]) * (M[i][b] - loc[b])
-                for i in range(n)) / sw
-            for b in range(p)] for a in range(p)]
-    return RichResult(payload={
-        "estimate": loc, "location": loc, "scatter": cov,
-        "outlyingness": r, "weights": w, "cutoff": c,
-        "n_directions": o["n_directions"], "n_used": o["n_used"],
-        "exhaustive": o["exhaustive"], "directions": directions,
-        "n_downweighted": sum(1 for x in w if x < 1.0),
-        "n": n, "p": p,
-        "method": "Stahel-Donoho estimator (Maronna & Yohai 1995) "
-                  "with %s directions" % directions,
-    })
+        raise ValueError("stahdo: every observation was downweighted to zero")
+    loc = [sum(w[i] * M[i][k] for i in range(n)) / sw for k in range(p)]
+    cov = [
+        [sum(w[i] * (M[i][a] - loc[a]) * (M[i][b] - loc[b]) for i in range(n)) / sw for b in range(p)] for a in range(p)
+    ]
+    return RichResult(
+        payload={
+            "estimate": loc,
+            "location": loc,
+            "scatter": cov,
+            "outlyingness": r,
+            "weights": w,
+            "cutoff": c,
+            "n_directions": o["n_directions"],
+            "n_used": o["n_used"],
+            "exhaustive": o["exhaustive"],
+            "directions": directions,
+            "n_downweighted": sum(1 for x in w if x < 1.0),
+            "n": n,
+            "p": p,
+            "method": f"Stahel-Donoho estimator (Maronna & Yohai 1995) with {directions} directions",
+        }
+    )
 
 
 def _chi2_median(p):
@@ -313,9 +315,7 @@ def _chi2_cdf(x, k):
     return 1.0 - q
 
 
-def stahel_donoho_outlyingness(X, directions="subsample",
-                               n_directions=500, seed=1,
-                               cutoff=None):
+def stahel_donoho_outlyingness(X, directions="subsample", n_directions=500, seed=1, cutoff=None):
     r"""Entry point: see :func:`stahel_donoho`."""
     return stahel_donoho(X, directions, n_directions, seed, cutoff)
 

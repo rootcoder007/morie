@@ -80,3 +80,18 @@ def test_update_entry_points_exist():
     import morie.runner as runner
 
     assert callable(runner.main)
+
+
+def test_refresh_thread_is_joined_at_exit(tmp_path, monkeypatch):
+    """The PyPI refresh must not run in a daemon thread: a fast command
+    (``morie list-modules``) exited while the thread was inside OpenSSL and
+    Python 3.13 segfaulted at finalisation (CI Debian leg, 2026-10-03)."""
+    cache = tmp_path / "update_check.json"
+    monkeypatch.setattr(uc, "_cache_path", lambda: str(cache))
+    monkeypatch.setattr(uc, "check_pypi_latest", lambda timeout=0: "9.9.9")
+    uc._refresh_cache_async()
+    t = uc._REFRESH_THREAD
+    assert t is not None and not t.daemon
+    t.join(5.0)
+    assert not t.is_alive()
+    assert uc._read_cache()["latest"] == "9.9.9"

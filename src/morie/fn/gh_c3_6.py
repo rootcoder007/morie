@@ -20,16 +20,19 @@ def ghosal_dense_subset_prior(x, n_atoms=200, seed=42):
     atoms = []
     level = 1
     while len(atoms) < n_atoms:
-        atoms += [i / 2.0 ** level for i in range(1, 2 ** level, 2)]
+        atoms += [i / 2.0**level for i in range(1, 2**level, 2)]
         level += 1
     atoms = atoms[:n_atoms]
-    w = _bnp.normalize_weights(
-        [2.0 ** (-(j + 1)) * float(rng.gamma(1.0, 1.0))
-         for j in range(n_atoms)])
+    w = _bnp.normalize_weights([2.0 ** (-(j + 1)) * float(rng.gamma(1.0, 1.0)) for j in range(n_atoms)])
     mean = sum(wi * t for wi, t in zip(w, atoms))
-    res = RichResult(payload={"estimate": mean, "atoms": atoms[:16],
-                              "weights_head": w[:16],
-                              "method": "dense-subset atom prior (GvdV 2017 sec. 3.4.1)"})
+    res = RichResult(
+        payload={
+            "estimate": mean,
+            "atoms": atoms[:16],
+            "weights_head": w[:16],
+            "method": "dense-subset atom prior (GvdV 2017 sec. 3.4.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_6")
 
 

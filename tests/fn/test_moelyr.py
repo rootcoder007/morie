@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.moelyr import moe_layer
 
 
@@ -11,10 +10,10 @@ def test_moelyr_basic():
     """Test basic functionality with a small MoE layer."""
     rng = np.random.default_rng(42)
     n = 10  # input dimension
-    m = 5   # number of experts
-    d = 3   # output dimension per expert
-    x = rng.normal(0, 1, n)             # input vector
-    W_g = rng.normal(0, 1, (n, m))      # gate weights (n_inputs x n_experts)
+    m = 5  # number of experts
+    d = 3  # output dimension per expert
+    x = rng.normal(0, 1, n)  # input vector
+    W_g = rng.normal(0, 1, (n, m))  # gate weights (n_inputs x n_experts)
     experts = rng.normal(0, 1, (m, d))  # expert outputs (n_experts x n_outputs)
     top_k = 2
     result = moe_layer(x, W_g=W_g, experts=experts, top_k=top_k)

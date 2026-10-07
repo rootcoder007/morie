@@ -13,7 +13,10 @@ from morie.fn.km049 import kamath_ch3_top1_prompt_metric
 def test_top_one_accuracy_counts_argmax_agreements():
     # Eq 3.4: A(t) = (1/|R|) sum 1[y = argmax_y' P_LM(y'|x, t)]
     R = [("a", "pos"), ("b", "neg")]
-    P = lambda x, t: {"pos": 0.9, "neg": 0.1}
+
+    def P(x, t):
+        return {"pos": 0.9, "neg": 0.1}
+
     res = kamath_ch3_top1_prompt_metric(R, "T1", P)
     # the model always prefers "pos", so it is right on exactly one
     assert res["estimate"] == pytest.approx(0.5, rel=1e-12)
@@ -23,13 +26,18 @@ def test_top_one_accuracy_counts_argmax_agreements():
 
 def test_a_model_that_always_names_the_gold_label_scores_one():
     gold = {"a": "pos", "b": "neg"}
-    P = lambda x, t: {k: (1.0 if k == gold[x] else 0.0) for k in ("pos", "neg")}
+
+    def P(x, t):
+        return {k: (1.0 if k == gold[x] else 0.0) for k in ("pos", "neg")}
+
     res = kamath_ch3_top1_prompt_metric([("a", "pos"), ("b", "neg")], "T", P)
     assert res["estimate"] == pytest.approx(1.0, rel=1e-12)
 
 
 def test_a_model_that_always_names_the_other_label_scores_zero():
-    P = lambda x, t: {"pos": 0.0, "neg": 1.0}
+    def P(x, t):
+        return {"pos": 0.0, "neg": 1.0}
+
     res = kamath_ch3_top1_prompt_metric([("a", "pos"), ("b", "pos")], "T", P)
     assert res["estimate"] == pytest.approx(0.0, abs=1e-15)
 
@@ -61,7 +69,7 @@ import morie.fn.km049 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

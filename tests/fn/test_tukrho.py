@@ -1,7 +1,6 @@
 """Tests for tukrho.tukey_biweight."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tukrho import tukey_biweight
 
 

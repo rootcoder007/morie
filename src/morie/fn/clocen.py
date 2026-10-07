@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Closeness centrality."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['clocent', 'closeness_centrality']
+__all__ = ["clocent", "closeness_centrality"]
 
 
 def clocent(A):
@@ -42,9 +40,11 @@ def clocent(A):
     for s in range(n):
         dist = [-1] * n
         dist[s] = 0
-        q = [s]; h = 0
+        q = [s]
+        h = 0
         while h < len(q):
-            v = q[h]; h += 1
+            v = q[h]
+            h += 1
             for w in adj[v]:
                 if dist[w] < 0:
                     dist[w] = dist[v] + 1
@@ -54,9 +54,9 @@ def clocent(A):
         tot.append(float(sum(d)))
         reach.append(r)
         clos.append((r - 1.0) / sum(d) if d else float("nan"))
-    return RichResult(payload={
-        "closeness": clos, "reachable": reach, "total_distance": tot, "n": n,
-        "method": "Closeness centrality"})
+    return RichResult(
+        payload={"closeness": clos, "reachable": reach, "total_distance": tot, "n": n, "method": "Closeness centrality"}
+    )
 
 
 closeness_centrality = clocent

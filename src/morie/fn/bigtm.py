@@ -102,15 +102,11 @@ Griffiths, T. L. & Steyvers, M. (2004) "Finding scientific topics",
 approximate the intractable sum over z.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["dirichlet_predictive", "lda_predictive",
-           "bigram_topic_predictive", "gibbs_bigram_topic",
-           "log_evidence"]
+__all__ = ["dirichlet_predictive", "lda_predictive", "bigram_topic_predictive", "gibbs_bigram_topic", "log_evidence"]
 
 _EPS = 1e-300
 _PRIORS = (1, 2)
@@ -125,22 +121,21 @@ def dirichlet_predictive(N_ij, N_j, beta, m):
     n = [float(v) for v in k.vec(N_ij)]
     mm = [float(v) for v in k.vec(m)]
     if len(n) != len(mm):
-        raise ValueError("bigtm: %d counts for %d prior weights"
-                         % (len(n), len(mm)))
+        raise ValueError(f"bigtm: {int(len(n))} counts for {int(len(mm))} prior weights")
     if abs(sum(mm) - 1.0) > 1e-9:
-        raise ValueError("bigtm: m must sum to 1, got %.9f" % sum(mm))
+        raise ValueError(f"bigtm: m must sum to 1, got {sum(mm):.9f}")
     b, Nj = float(beta), float(N_j)
     if b <= 0.0:
         raise ValueError("bigtm: beta must be positive")
     lam = b / (Nj + b)
     f = [v / Nj if Nj > 0 else 0.0 for v in n]
-    return {"predictive": [(n[i] + b * mm[i]) / (Nj + b)
-                           for i in range(len(n))],
-            "lambda": lam, "f": f,
-            "interpolated": [lam * mm[i] + (1.0 - lam) * f[i]
-                             for i in range(len(n))],
-            "note": "eq. (6): lambda_j m_i + (1 - lambda_j) f_{i|j}, "
-                    "so m_i plays the role of the marginal frequency"}
+    return {
+        "predictive": [(n[i] + b * mm[i]) / (Nj + b) for i in range(len(n))],
+        "lambda": lam,
+        "f": f,
+        "interpolated": [lam * mm[i] + (1.0 - lam) * f[i] for i in range(len(n))],
+        "note": "eq. (6): lambda_j m_i + (1 - lambda_j) f_{i|j}, so m_i plays the role of the marginal frequency",
+    }
 
 
 def lda_predictive(N_ik, N_k, beta, m):
@@ -157,14 +152,14 @@ def lda_predictive(N_ik, N_k, beta, m):
         raise ValueError("bigtm: beta must be positive")
     lam = b / (Nk + b)
     f = [v / Nk if Nk > 0 else 0.0 for v in n]
-    return {"predictive": [(n[i] + b * mm[i]) / (Nk + b)
-                           for i in range(len(n))],
-            "lambda": lam,
-            "eq15_as_printed": [lam * f[i] + (1.0 - lam) * mm[i]
-                                for i in range(len(n))],
-            "note": "eq. (15) as printed puts weight lambda_k on "
-                    "f_{i|k}; expanding eq. (13) puts it on m_i, as "
-                    "eq. (6) does. Eq. (13) is used."}
+    return {
+        "predictive": [(n[i] + b * mm[i]) / (Nk + b) for i in range(len(n))],
+        "lambda": lam,
+        "eq15_as_printed": [lam * f[i] + (1.0 - lam) * mm[i] for i in range(len(n))],
+        "note": "eq. (15) as printed puts weight lambda_k on "
+        "f_{i|k}; expanding eq. (13) puts it on m_i, as "
+        "eq. (6) does. Eq. (13) is used.",
+    }
 
 
 def bigram_topic_predictive(N_ijk, N_jk, beta, m, prior=1):
@@ -176,18 +171,17 @@ def bigram_topic_predictive(N_ijk, N_jk, beta, m, prior=1):
     ``beta`` and ``m`` are the ones for that topic.
     """
     if int(prior) not in _PRIORS:
-        raise ValueError("bigtm: prior must be 1 or 2, got %r"
-                         % (prior,))
+        raise ValueError(f"bigtm: prior must be 1 or 2, got {prior!r}")
     n = [float(v) for v in k.vec(N_ijk)]
     mm = [float(v) for v in k.vec(m)]
     b = float(beta)
-    return {"predictive": [(n[i] + b * mm[i]) / (float(N_jk) + b)
-                           for i in range(len(n))],
-            "prior": int(prior),
-            "smoothed_by": ("m_i, the same for every context"
-                            if int(prior) == 1
-                            else "m_{i|k}, which varies with the "
-                                 "topic")}
+    return {
+        "predictive": [(n[i] + b * mm[i]) / (float(N_jk) + b) for i in range(len(n))],
+        "prior": int(prior),
+        "smoothed_by": (
+            "m_i, the same for every context" if int(prior) == 1 else "m_{i|k}, which varies with the topic"
+        ),
+    }
 
 
 def _counts(docs, T, V, z):
@@ -205,16 +199,14 @@ def _counts(docs, T, V, z):
     return N_ijk, N_jk, N_kd, N_d
 
 
-def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None,
-                       n=None, prior=1, iters=200, seed=0, burn=50):
+def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None, n=None, prior=1, iters=200, seed=0, burn=50):
     r"""Eq. (28)/(29): Gibbs sampling for the topic assignments.
 
     The first token of each document has no preceding word, so it is
     not assigned; sampling runs over positions :math:`t \ge 2`.
     """
     if int(prior) not in _PRIORS:
-        raise ValueError("bigtm: prior must be 1 or 2, got %r"
-                         % (prior,))
+        raise ValueError(f"bigtm: prior must be 1 or 2, got {prior!r}")
     D = [[int(v) for v in d] for d in docs]
     if not D:
         raise ValueError("bigtm: no documents given")
@@ -222,8 +214,7 @@ def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None,
     if Tn < 1 or Vn < 1:
         raise ValueError("bigtm: T and V must be at least 1")
     if any(v < 0 or v >= Vn for d in D for v in d):
-        raise ValueError("bigtm: a word index is outside the "
-                         "vocabulary of %d" % Vn)
+        raise ValueError(f"bigtm: a word index is outside the vocabulary of {int(Vn)}")
     mm = [1.0 / Vn] * Vn if m is None else [float(v) for v in k.vec(m)]
     nn = [1.0 / Tn] * Tn if n is None else [float(v) for v in k.vec(n)]
     if abs(sum(mm) - 1.0) > 1e-9 or abs(sum(nn) - 1.0) > 1e-9:
@@ -244,8 +235,7 @@ def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None,
                 N_kd[d][old] -= 1.0
                 p = []
                 for kk in range(Tn):
-                    w = ((N_ijk.get((i, j, kk), 0.0) + b * mm[i])
-                         / (N_jk.get((j, kk), 0.0) + b))
+                    w = (N_ijk.get((i, j, kk), 0.0) + b * mm[i]) / (N_jk.get((j, kk), 0.0) + b)
                     p.append(w * (N_kd[d][kk] + a * nn[kk]))
                 s = sum(p)
                 u = float(rng.uniform()) * s
@@ -264,22 +254,28 @@ def gibbs_bigram_topic(docs, T, V, alpha=0.5, beta=0.5, m=None,
             for d in range(len(D)):
                 for t in range(1, len(D[d])):
                     acc[d][t][z[d][t]] += 1.0
-    post = [[[v / kept for v in acc[d][t]] if kept else acc[d][t]
-             for t in range(len(D[d]))] for d in range(len(D))]
-    theta = [[(N_kd[d][kk] + a * nn[kk]) / (N_d[d] + a)
-              for kk in range(Tn)] for d in range(len(D))]
-    return RichResult(payload={
-        "estimate": z, "z": z, "topic_posterior": post,
-        "theta": theta, "N_ijk": N_ijk, "N_jk": N_jk,
-        "T": Tn, "V": Vn, "prior": int(prior),
-        "iterations": int(iters), "burn_in": int(burn),
-        "samples_kept": kept,
-        "method": "Gibbs sampling for the bigram topic model; "
-                  "Wallach (2006) eqs. (28)-(29)",
-        "caveat": "eq. (28) as printed divides by {N_k}_-t + beta; "
-                  "the context count N_{j,k} + beta is used, "
-                  "following eqs. (25) and (29)",
-    })
+    post = [[[v / kept for v in acc[d][t]] if kept else acc[d][t] for t in range(len(D[d]))] for d in range(len(D))]
+    theta = [[(N_kd[d][kk] + a * nn[kk]) / (N_d[d] + a) for kk in range(Tn)] for d in range(len(D))]
+    return RichResult(
+        payload={
+            "estimate": z,
+            "z": z,
+            "topic_posterior": post,
+            "theta": theta,
+            "N_ijk": N_ijk,
+            "N_jk": N_jk,
+            "T": Tn,
+            "V": Vn,
+            "prior": int(prior),
+            "iterations": int(iters),
+            "burn_in": int(burn),
+            "samples_kept": kept,
+            "method": "Gibbs sampling for the bigram topic model; Wallach (2006) eqs. (28)-(29)",
+            "caveat": "eq. (28) as printed divides by {N_k}_-t + beta; "
+            "the context count N_{j,k} + beta is used, "
+            "following eqs. (25) and (29)",
+        }
+    )
 
 
 def log_evidence(docs, T, V, z, alpha=0.5, beta=0.5, m=None, n=None):
@@ -301,22 +297,23 @@ def log_evidence(docs, T, V, z, alpha=0.5, beta=0.5, m=None, n=None):
     for d in range(len(D)):
         tot += k.lgamma(a) - k.lgamma(N_d[d] + a)
         for kk in range(Tn):
-            tot += k.lgamma(N_kd[d][kk] + a * nn[kk]) \
-                - k.lgamma(a * nn[kk])
+            tot += k.lgamma(N_kd[d][kk] + a * nn[kk]) - k.lgamma(a * nn[kk])
     return tot
 
 
 def cheatsheet():
-    return ("bigtm: LDA where each topic holds W distributions, one "
-            "per PRECEDING word, so P(w_t = i | w_{t-1} = j, z_t = k). "
-            "Word order helps topic inference -- 'department chair' vs "
-            "'chair department' have identical unigram statistics -- "
-            "and it stops function words dominating the topics. Two "
-            "priors, both implemented: ONE beta*m shared across all "
-            "contexts (prior 1), or one per TOPIC (prior 2), which "
-            "shares information only within a topic. Gibbs EM. Note "
-            "eqs. (15) and (28) as printed contradict eqs. (13) and "
-            "(25); the algebra is followed, not the typography.")
+    return (
+        "bigtm: LDA where each topic holds W distributions, one "
+        "per PRECEDING word, so P(w_t = i | w_{t-1} = j, z_t = k). "
+        "Word order helps topic inference -- 'department chair' vs "
+        "'chair department' have identical unigram statistics -- "
+        "and it stops function words dominating the topics. Two "
+        "priors, both implemented: ONE beta*m shared across all "
+        "contexts (prior 1), or one per TOPIC (prior 2), which "
+        "shares information only within a topic. Gibbs EM. Note "
+        "eqs. (15) and (28) as printed contradict eqs. (13) and "
+        "(25); the algebra is followed, not the typography."
+    )
 
 
 # compact alias per ledger/NAMING.md

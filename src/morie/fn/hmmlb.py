@@ -111,9 +111,7 @@ def geron_multilabel(X, Y, k=3, Y_pred=None):
         raise ValueError(f"geron_multilabel: X has {A.shape[0]} rows but Y has {YY.shape[0]}")
     Yb = np.asarray(YY, dtype=float)
     if not np.all(np.isin(Yb, (0.0, 1.0))):
-        raise ValueError(
-            f"geron_multilabel: Y must be binary; got distinct values {np.unique(Yb).tolist()}"
-        )
+        raise ValueError(f"geron_multilabel: Y must be binary; got distinct values {np.unique(Yb).tolist()}")
     Yb = Yb.astype(int)
     m, K = Yb.shape
 
@@ -128,16 +126,14 @@ def geron_multilabel(X, Y, k=3, Y_pred=None):
     else:
         kk = int(k)
         if not (1 <= kk <= m - 1):
-            raise ValueError(
-                f"geron_multilabel: k must lie in 1..{m - 1} for leave-one-out prediction, got {k!r}"
-            )
+            raise ValueError(f"geron_multilabel: k must lie in 1..{m - 1} for leave-one-out prediction, got {k!r}")
         D = np.sqrt(np.clip(np.sum((A[:, None, :] - A[None, :, :]) ** 2, axis=2), 0.0, None))
         np.fill_diagonal(D, np.inf)
         nn = np.argsort(D, axis=1, kind="mergesort")[:, :kk]
         P = (Yb[nn].mean(axis=1) >= 0.5).astype(int)
         source = f"leave-one-out {kk}-NN binary relevance"
 
-    correct_cells = P == Yb
+    correct_cells = Yb == P
     hamming = float(1.0 - np.mean(correct_cells))
     subset = float(np.mean(np.all(correct_cells, axis=1)))
 

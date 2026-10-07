@@ -26,17 +26,21 @@ def burkov_repetition_penalty(logits, prev_tokens, penalty=1.2):
     r = float(penalty)
     if r <= 0:
         raise ValueError(f"penalty must be positive; got {penalty}.")
-    prev = sorted({int(t) for t in np.atleast_1d(
-        np.asarray(prev_tokens)).astype(int)})
+    prev = sorted({int(t) for t in np.atleast_1d(np.asarray(prev_tokens)).astype(int)})
     for t in prev:
         if not 0 <= t < len(z):
-            raise ValueError(
-                f"token index {t} is out of range for {len(z)} logits.")
+            raise ValueError(f"token index {t} is out of range for {len(z)} logits.")
         z[t] = z[t] / r if z[t] > 0 else z[t] * r
-    return RichResult(payload={
-        "penalised": [float(v) for v in z], "estimate": float(z[0]),
-        "penalty": r, "tokens_hit": prev, "n": len(z),
-        "method": "Repetition penalty on logits (Burkov Ch 5)"})
+    return RichResult(
+        payload={
+            "penalised": [float(v) for v in z],
+            "estimate": float(z[0]),
+            "penalty": r,
+            "tokens_hit": prev,
+            "n": len(z),
+            "method": "Repetition penalty on logits (Burkov Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

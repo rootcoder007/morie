@@ -8,7 +8,6 @@ numbers cited per function).
 
 from __future__ import annotations
 
-import itertools
 import math
 
 from . import _array_core as np
@@ -40,7 +39,7 @@ def binomial_pmf(w, n, p):
     """P(W = w) = C(n, w) p^w (1-p)^(n-w), eq (1.1)."""
     if not 0 <= w <= n or not 0 <= p <= 1:
         raise ValueError("need 0 <= w <= n and 0 <= p <= 1")
-    return float(math.comb(n, w) * p ** w * (1.0 - p) ** (n - w))
+    return float(math.comb(n, w) * p**w * (1.0 - p) ** (n - w))
 
 
 def mle_variance_pi(pi_hat, n):
@@ -56,18 +55,15 @@ def wilson_interval(w, n, z):
         raise ValueError("invalid inputs")
     p_hat = w / n
     p_tilde = (w + z * z / 2.0) / (n + z * z)
-    half = (z * math.sqrt(n) / (n + z * z)) \
-        * math.sqrt(p_hat * (1 - p_hat) + z * z / (4.0 * n))
-    return {"estimate": p_tilde, "lower": p_tilde - half,
-            "upper": p_tilde + half}
+    half = (z * math.sqrt(n) / (n + z * z)) * math.sqrt(p_hat * (1 - p_hat) + z * z / (4.0 * n))
+    return {"estimate": p_tilde, "lower": p_tilde - half, "upper": p_tilde + half}
 
 
 def beta_pdf(v, a, b):
     """Beta density Gamma(a+b)/(Gamma(a)Gamma(b)) v^(a-1)(1-v)^(b-1), eq (1.5)."""
     if not 0 < v < 1 or a <= 0 or b <= 0:
         raise ValueError("invalid inputs")
-    ln = (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
-          + (a - 1) * math.log(v) + (b - 1) * math.log(1 - v))
+    ln = math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + (a - 1) * math.log(v) + (b - 1) * math.log(1 - v)
     return math.exp(ln)
 
 
@@ -124,9 +120,12 @@ def or_wald_interval(w1, n1, w2, n2, z):
         raise ValueError("need interior cell counts")
     or_hat = (w1 / (n1 - w1)) / (w2 / (n2 - w2))
     se = math.sqrt(1 / w1 + 1 / (n1 - w1) + 1 / w2 + 1 / (n2 - w2))
-    return {"or": float(or_hat),
-            "lower": float(or_hat * math.exp(-z * se)),
-            "upper": float(or_hat * math.exp(z * se)), "se_log": se}
+    return {
+        "or": float(or_hat),
+        "lower": float(or_hat * math.exp(-z * se)),
+        "upper": float(or_hat * math.exp(z * se)),
+        "se_log": se,
+    }
 
 
 # --------------------------------------------------------- ch 2: logistic
@@ -135,8 +134,7 @@ def or_wald_interval(w1, n1, w2, n2, z):
 def bernoulli_likelihood(pis, ys):
     """L = prod pi_i^y_i (1 - pi_i)^(1-y_i), eq (2.1) (returned as log)."""
     pis, ys = _v(pis), _v(ys)
-    if pis.shape != ys.shape or not np.isin(ys, (0.0, 1.0)).all() \
-            or ((pis <= 0) | (pis >= 1)).any():
+    if pis.shape != ys.shape or not np.isin(ys, (0.0, 1.0)).all() or ((pis <= 0) | (pis >= 1)).any():
         raise ValueError("invalid inputs")
     return float(np.sum(ys * np.log(pis) + (1 - ys) * np.log(1 - pis)))
 
@@ -218,8 +216,7 @@ def or_ci_logistic(b1, var_b1, c, z):
     if var_b1 < 0 or z <= 0:
         raise ValueError("invalid inputs")
     half = abs(c) * z * math.sqrt(var_b1)
-    return {"or": math.exp(c * b1), "lower": math.exp(c * b1 - half),
-            "upper": math.exp(c * b1 + half)}
+    return {"or": math.exp(c * b1), "lower": math.exp(c * b1 - half), "upper": math.exp(c * b1 + half)}
 
 
 def linear_predictor_variance(xs, cov):
@@ -239,8 +236,7 @@ def pi_wald_interval(xb, var_xb, z):
     if var_xb < 0 or z <= 0:
         raise ValueError("invalid inputs")
     half = z * math.sqrt(var_xb)
-    return {"pi": _expit(xb), "lower": _expit(xb - half),
-            "upper": _expit(xb + half)}
+    return {"pi": _expit(xb), "lower": _expit(xb - half), "upper": _expit(xb + half)}
 
 
 def interaction_logit(b, x1, x2, z1, z2):
@@ -252,8 +248,7 @@ def interaction_logit(b, x1, x2, z1, z2):
     b = _v(b)
     if b.size != 9:
         raise ValueError("need 9 coefficients")
-    terms = np.array([1, x1, x2, z1, z2, x1 * z1, x1 * z2, x2 * z1,
-                      x2 * z2], float)
+    terms = np.array([1, x1, x2, z1, z2, x1 * z1, x1 * z2, x2 * z1, x2 * z2], float)
     return float(np.dot(b, terms))
 
 
@@ -264,8 +259,7 @@ def multinomial_pmf(counts, probs):
     """P(N1 = n1, ..., NJ = nJ) = n!/(prod n_j!) prod p_j^n_j, eq (3.1)."""
     counts = np.asarray(counts)
     probs = _v(probs)
-    if counts.shape != probs.shape or (counts < 0).any() \
-            or abs(probs.sum() - 1.0) > 1e-8 or (probs < 0).any():
+    if counts.shape != probs.shape or (counts < 0).any() or abs(probs.sum() - 1.0) > 1e-8 or (probs < 0).any():
         raise ValueError("invalid inputs")
     n = int(counts.sum())
     ln = math.lgamma(n + 1)
@@ -382,8 +376,7 @@ def poisson_loglik(b, x, y):
     if x.ndim == 1:
         x = x[:, None]
     xb = x @ b
-    return float(np.sum(-np.exp(xb) + y * xb
-                        - np.array([math.lgamma(v + 1) for v in y])))
+    return float(np.sum(-np.exp(xb) + y * xb - np.array([math.lgamma(v + 1) for v in y])))
 
 
 def loglinear_independence_mean(b0, beta_x_i, beta_z_j):
@@ -446,8 +439,7 @@ def model_averaged_variance(taus, thetas, variances):
 
 def prevalence_from_apparent(pi, se, sp):
     """pi_tilde = (pi + Sp - 1)/(Se + Sp - 1), eqs (6.1), (6.3)."""
-    if not 0 <= pi <= 1 or not 0 < se <= 1 or not 0 < sp <= 1 \
-            or se + sp <= 1:
+    if not 0 <= pi <= 1 or not 0 < se <= 1 or not 0 < sp <= 1 or se + sp <= 1:
         raise ValueError("need Se + Sp > 1 and probabilities in range")
     return float((pi + sp - 1.0) / (se + sp - 1.0))
 
@@ -474,8 +466,7 @@ def exact_conditional_pmf(t_values, counts, beta, t_obs):
     ln -= ln.max()
     probs = np.exp(ln)
     probs /= probs.sum()
-    idx = [i for i, t in enumerate(ts)
-           if abs(t - t_obs) <= 1e-8 + 1e-5 * abs(t_obs)]
+    idx = [i for i, t in enumerate(ts) if abs(t - t_obs) <= 1e-8 + 1e-5 * abs(t_obs)]
     if not idx:
         raise ValueError("t_obs not among t_values")
     return {"probs": probs, "p_at_t": float(probs[idx[0]])}
@@ -503,7 +494,7 @@ def survey_proportion_variance(var_ni, var_n, cov_ni_n, pi_hat, n_hat):
     """Var(pi_hat_i) = (Var(N_i) + pi^2 Var(N) - 2 pi Cov)/N^2, eq (6.9)."""
     if n_hat <= 0:
         raise ValueError("N_hat must be positive")
-    out = (var_ni + pi_hat ** 2 * var_n - 2 * pi_hat * cov_ni_n) / n_hat ** 2
+    out = (var_ni + pi_hat**2 * var_n - 2 * pi_hat * cov_ni_n) / n_hat**2
     return float(out)
 
 
@@ -516,8 +507,7 @@ def kott_carr_interval(pi_hat, var_pi, t_crit):
     centre = 2 * n_eff * pi_hat + t2
     half = t_crit * math.sqrt(t2 + 4 * n_eff * pi_hat * (1 - pi_hat))
     den = 2 * (n_eff + t2)
-    return {"n_effective": n_eff, "lower": (centre - half) / den,
-            "upper": (centre + half) / den}
+    return {"n_effective": n_eff, "lower": (centre - half) / den, "upper": (centre + half) / den}
 
 
 def spmi_loglinear_mean(b0, beta_w_a, beta_y_b):
@@ -562,8 +552,7 @@ def bayes_estimate_binomial(w, n, a, b):
     if not 0 <= w <= n or a <= 0 or b <= 0 or n <= 0:
         raise ValueError("invalid inputs")
     direct = (w + a) / (n + a + b)
-    weighted = (n / (n + a + b)) * (w / n) \
-        + ((a + b) / (n + a + b)) * (a / (a + b))
+    weighted = (n / (n + a + b)) * (w / n) + ((a + b) / (n + a + b)) * (a / (a + b))
     if abs(direct - weighted) > 1e-12:
         raise AssertionError("decomposition identity violated")
     return float(direct)
@@ -586,11 +575,9 @@ def posterior_kernel_regression(logliks, log_priors):
 
 def group_testing_expected_tests(i_size, se, sp, pi_tilde):
     """E(T_k) = 1 + I [Se + (1 - Se - Sp)(1 - pi_tilde)^I], eq (6.26)."""
-    if i_size < 1 or not 0 <= pi_tilde <= 1 or not 0 < se <= 1 \
-            or not 0 < sp <= 1:
+    if i_size < 1 or not 0 <= pi_tilde <= 1 or not 0 < se <= 1 or not 0 < sp <= 1:
         raise ValueError("invalid inputs")
-    return float(1.0 + i_size * (se + (1 - se - sp)
-                                 * (1 - pi_tilde) ** i_size))
+    return float(1.0 + i_size * (se + (1 - se - sp) * (1 - pi_tilde) ** i_size))
 
 
 def group_testing_logit(b0, bs, xs):
@@ -606,7 +593,7 @@ def piecewise_cubic(x, knot, coef_left, coef_right):
     c = _v(coef_left if x <= knot else coef_right)
     if c.size != 4:
         raise ValueError("each piece needs 4 coefficients")
-    return float(c[0] + c[1] * x + c[2] * x ** 2 + c[3] * x ** 3)
+    return float(c[0] + c[1] * x + c[2] * x**2 + c[3] * x**3)
 
 
 def truncated_power_spline(x, betas, knots):
@@ -615,7 +602,7 @@ def truncated_power_spline(x, betas, knots):
     k = _v(knots)
     if b.size != 4 + k.size:
         raise ValueError("need 4 + D coefficients")
-    out = b[0] + b[1] * x + b[2] * x ** 2 + b[3] * x ** 3
+    out = b[0] + b[1] * x + b[2] * x**2 + b[3] * x**3
     for d, kd in enumerate(k):
         if x > kd:
             out += b[4 + d] * (x - kd) ** 3

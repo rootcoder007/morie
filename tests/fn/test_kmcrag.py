@@ -1,15 +1,16 @@
 """Tests for kmcrag.kamath_corrective_rag."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmcrag import kamath_corrective_rag
 
 
 def test_kmcrag_basic():
     """Test basic functionality."""
-    query = 'q'
-    docs = ['d1', 'd2']
-    clf = lambda q, d: 0.9 if d == 'd1' else 0.1
+    query = "q"
+    docs = ["d1", "d2"]
+
+    def clf(q, d):
+        return 0.9 if d == "d1" else 0.1
+
     tau_hi = 0.8
     tau_lo = 0.2
     result = kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo)
@@ -19,9 +20,12 @@ def test_kmcrag_basic():
 
 def test_kmcrag_edge():
     """Test edge cases."""
-    query = 'q'
-    docs = ['d1', 'd2']
-    clf = lambda q, d: 0.9 if d == 'd1' else 0.1
+    query = "q"
+    docs = ["d1", "d2"]
+
+    def clf(q, d):
+        return 0.9 if d == "d1" else 0.1
+
     tau_hi = 0.8
     tau_lo = 0.2
     result = kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo)
@@ -40,7 +44,7 @@ import morie.fn.kmcrag as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

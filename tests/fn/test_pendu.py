@@ -1,12 +1,11 @@
 """Tests for morie.fn.pendu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pendu import pendulum
 
 
 def test_pendu_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = pendulum(theta0=0.3)
     assert result is not None
     assert hasattr(result, "name")

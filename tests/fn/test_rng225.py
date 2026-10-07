@@ -1,7 +1,6 @@
 """Tests for rng225.rangayyan_ch4_composite_signal_in_terms_of_g."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsasig import rangayyan_ch4_composite_signal_in_terms_of_g
 
 

@@ -1,18 +1,15 @@
 """Tests for intlpa.interior_point_lp."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.intlpa import interior_point_lp
-
 import math
 
 import pytest
+
+from morie.fn.intlpa import interior_point_lp
 
 
 def test_intlpa_basic():
     """Test basic functionality with a feasible LP."""
     n = 3
-    m = 2
     c = [1.0, 1.0, 1.0]
     # Use orthogonal rows to guarantee a well-conditioned Hessian
     A = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
@@ -31,8 +28,6 @@ def test_intlpa_basic():
 
 def test_intlpa_edge():
     """Test that tau=0 raises ValueError."""
-    n = 3
-    m = 2
     c = [1.0, 1.0, 1.0]
     A = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
     x0 = [2.0, 2.0, 2.0]

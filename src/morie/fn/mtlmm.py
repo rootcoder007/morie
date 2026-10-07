@@ -5,7 +5,7 @@ from . import _gp_core as GC
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['mtlmmfit', 'multi_trait_lmm', 'multitraitlmm']
+__all__ = ["mtlmmfit", "multi_trait_lmm", "multitraitlmm"]
 
 
 def mtlmmfit(Y, Z, G, Sigma_T, R_T, X=None):
@@ -39,10 +39,16 @@ def mtlmmfit(Y, Z, G, Sigma_T, R_T, X=None):
     """
     out = GC.multitrait_model(Y, Z, G, Sigma_T, R_T, X=X)
     Ym = C.mat(Y)
-    return RichResult(payload={
-        "mu": out["mu"], "beta": out["beta"], "b": out["b"],
-        "J": len(Ym), "T": len(Ym[0]),
-        "method": "Multi-trait linear mixed model, MVSML Eq. (5.5)"})
+    return RichResult(
+        payload={
+            "mu": out["mu"],
+            "beta": out["beta"],
+            "b": out["b"],
+            "J": len(Ym),
+            "T": len(Ym[0]),
+            "method": "Multi-trait linear mixed model, MVSML Eq. (5.5)",
+        }
+    )
 
 
 multi_trait_lmm = mtlmmfit
@@ -50,4 +56,4 @@ multitraitlmm = mtlmmfit
 
 
 def cheatsheet():
-    return 'mtlmm: Multi-trait linear mixed model.'
+    return "mtlmm: Multi-trait linear mixed model."

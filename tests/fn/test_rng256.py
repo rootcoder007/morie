@@ -1,7 +1,6 @@
 """Tests for rng256.rangayyan_ch4_power_spectrum_signal_echo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_ch4_power_spectrum_signal_echo
 
 

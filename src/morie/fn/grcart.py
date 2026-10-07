@@ -102,16 +102,12 @@ def geron_cart_split_cost(X, y, feature, threshold, criterion="gini"):
         raise ValueError(f"y has {y.size} entries but X has {X.shape[0]} rows.")
     feature = int(feature)
     if not (0 <= feature < X.shape[1]):
-        raise ValueError(
-            f"feature index {feature} out of range for {X.shape[1]} columns."
-        )
+        raise ValueError(f"feature index {feature} out of range for {X.shape[1]} columns.")
     threshold = float(threshold)
     if not np.isfinite(threshold):
         raise ValueError(f"threshold must be finite, got {threshold}.")
     if criterion not in _CRITERIA:
-        raise ValueError(
-            f"criterion must be one of {sorted(_CRITERIA)}, got {criterion!r}."
-        )
+        raise ValueError(f"criterion must be one of {sorted(_CRITERIA)}, got {criterion!r}.")
     col = np.asarray(X[:, feature], dtype=float)
     if not np.all(np.isfinite(col)):
         raise ValueError(f"column {feature} of X contains non-finite values.")
@@ -132,9 +128,9 @@ def geron_cart_split_cost(X, y, feature, threshold, criterion="gini"):
     return RichResult(
         title="CART split cost",
         summary_lines=[("Cost", cost), ("Left / right", f"{ml} / {mr}")],
-        warnings=[] if ml and mr else [
-            f"threshold {threshold} sends every instance to one side; the split is degenerate."
-        ],
+        warnings=[]
+        if ml and mr
+        else [f"threshold {threshold} sends every instance to one side; the split is degenerate."],
         payload={
             "cost": float(cost),
             "impurity_left": gl,

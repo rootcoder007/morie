@@ -133,9 +133,7 @@ def geron_backpropagation(X, y, weights, activations, loss="mse"):
     if acts[-1] == "softmax" and loss != "ce":
         raise ValueError("geron_backpropagation: softmax output requires loss='ce'")
     if A0.shape[1] != Ws[0].shape[0]:
-        raise ValueError(
-            f"geron_backpropagation: X has {A0.shape[1]} features but layer 0 expects {Ws[0].shape[0]}"
-        )
+        raise ValueError(f"geron_backpropagation: X has {A0.shape[1]} features but layer 0 expects {Ws[0].shape[0]}")
     for i in range(1, L):
         if Ws[i - 1].shape[1] != Ws[i].shape[0]:
             raise ValueError(
@@ -195,12 +193,12 @@ def geron_backpropagation(X, y, weights, activations, loss="mse"):
     grads_W = [None] * L
     grads_b = [None] * L
     deltas = [None] * L
-    for l in range(L - 1, -1, -1):
-        deltas[l] = delta
-        grads_W[l] = As[l].T @ delta
-        grads_b[l] = delta.sum(axis=0)
-        if l > 0:
-            delta = (delta @ Ws[l].T) * _act_deriv(As[l], Zs[l - 1], acts[l - 1])
+    for ell in range(L - 1, -1, -1):
+        deltas[ell] = delta
+        grads_W[ell] = As[ell].T @ delta
+        grads_b[ell] = delta.sum(axis=0)
+        if ell > 0:
+            delta = (delta @ Ws[ell].T) * _act_deriv(As[ell], Zs[ell - 1], acts[ell - 1])
 
     return RichResult(
         title="Backpropagation",

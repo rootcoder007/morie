@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import math as _math
+import os
 import shutil
 import subprocess
 import tempfile
@@ -455,11 +456,18 @@ def _run_r_module(
             f"--cpads-csv={cpads_csv}",
             f"--output-dir={output_dir}",
         ]
-        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True)
+        env = dict(os.environ, MORIE_R_PACKAGE=_R_PACKAGE) if _R_PACKAGE else None
+        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True, env=env)
         if proc.returncode != 0:
             raise RuntimeError(
                 f"R-backed module run failed for {module_name}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
             )
+        import warnings
+
+        # the R module says when it ran on stand-in data ("... synthetic ... not findings"): pass that on
+        for line in (proc.stderr or "").splitlines():
+            if "synthetic" in line.lower():
+                warnings.warn(line.strip(), UserWarning, stacklevel=2)
         return _load_written_outputs(module_name, output_dir)
     finally:
         if _tmp_ctx is not None:
@@ -475,6 +483,72 @@ def _write_outputs(outputs: dict[str, pd.DataFrame], output_dir: str | Path | No
         if isinstance(table, pd.DataFrame):
             table.to_csv(output_dir / f"{name}.csv", index=False)
     return outputs
+
+
+_GENDER_LABELS = {1: "Female", 2: "Male", 3: "Non-binary"}
+
+
+def _gender_label(g) -> str:
+    """The CPADS code as its label (1 -> Female); a frame that already holds labels keeps them."""
+    try:
+        return _GENDER_LABELS.get(int(g), str(g))
+    except (TypeError, ValueError):
+        return str(g)
+
+
+def _two_proportion_rows(df, outcome: str, g1, g2) -> list[dict]:
+    """One power row for two gender groups, as the R route writes it.
+
+    p1, p2 are weighted prevalences; h is Cohen's h; n_eq the per-group n for 80% power
+    at alpha 0.05 with equal allocation, 2((z_a + z_b)/h)^2; power_srs the power the observed
+    n1, n2 give, Phi(|h| / sqrt(1/n1 + 1/n2) - z_a); the design-effect columns inflate
+    both by Kish's deff = n sum(w^2) / (sum w)^2 over the two groups' weights.
+    """
+    from statistics import NormalDist
+
+    nd = NormalDist()
+    rows: list[dict] = []
+    groups = list(df["gender"])
+    ys = list(df[outcome])
+    ws = list(df["weight"])
+
+    def _pick(g):
+        out = []
+        for gv, yv, wv in zip(groups, ys, ws):
+            if gv == g and yv == yv and yv is not None and wv == wv and wv is not None:
+                out.append((float(yv), float(wv)))
+        return out
+
+    a, b = _pick(g1), _pick(g2)
+    if not a or not b:
+        return rows
+    p1 = sum(y * w for y, w in a) / sum(w for _, w in a)
+    p2 = sum(y * w for y, w in b) / sum(w for _, w in b)
+    h = 2 * _math.asin(_math.sqrt(p1)) - 2 * _math.asin(_math.sqrt(p2))
+    z_a, z_b = nd.inv_cdf(0.975), nd.inv_cdf(0.80)
+    w_all = [w for _, w in a] + [w for _, w in b]
+    deff = len(w_all) * sum(w * w for w in w_all) / sum(w_all) ** 2
+    n1, n2 = len(a), len(b)
+    n_eq = 2 * ((z_a + z_b) / abs(h)) ** 2 if h != 0 else float("nan")
+    se_unit = _math.sqrt(1 / n1 + 1 / n2)
+    rows.append(
+        {
+            "group1": _gender_label(g1),
+            "group2": _gender_label(g2),
+            "p1": p1,
+            "p2": p2,
+            "h": h,
+            "n1": n1,
+            "n2": n2,
+            "n_eq": n_eq,
+            "power_srs": nd.cdf(abs(h) / se_unit - z_a),
+            "n_eq_eff": n_eq * deff,
+            "power_deff": nd.cdf(abs(h) / (se_unit * _math.sqrt(deff)) - z_a),
+            "analysis_mode": "observational",
+            "power_scope": outcome,
+        }
+    )
+    return rows
 
 
 def run_power_design_module(
@@ -521,17 +595,14 @@ def run_power_design_module(
                         "power": power,
                     }
                 )
-            pair_rows.append(
-                {
-                    "group1": ref["gender"],
-                    "group2": other["gender"],
-                    "p1": ref["weighted_prevalence"],
-                    "p2": other["weighted_prevalence"],
-                    "effect_size_h": effect,
-                    "n1": ref["n"],
-                    "n2": other["n"],
-                }
-            )
+            pair_rows.extend(_two_proportion_rows(analysis, "heavy_drinking_30d", ref["gender"], other["gender"]))
+    if "ebac_legal" in frame.columns and "alcohol_past12m" in frame.columns and len(gender_summary) >= 2:
+        # eBAC over the past-year drinkers, as the R route scopes it
+        drinkers = frame.dropna(subset=["gender", "weight", "ebac_legal", "alcohol_past12m"])
+        drinkers = drinkers[drinkers["alcohol_past12m"] == 1]
+        levels = list(gender_summary["gender"])
+        for g2 in levels[1:]:
+            pair_rows.extend(_two_proportion_rows(drinkers, "ebac_legal", levels[0], g2))
 
     overall_prev = float((analysis["heavy_drinking_30d"] * analysis["weight"]).sum() / analysis["weight"].sum())
 
@@ -932,6 +1003,96 @@ _PY_FALLBACK_MODULES = frozenset(
 )
 
 
+_R_INSTALL_HINT = (
+    "install R, then `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"
+)
+
+
+_R_READY: bool | None = None
+_R_PACKAGE: str | None = None  # the R package the bridge loads: rmorie or morie, whichever matches this version
+
+
+def _r_route_ready() -> None:
+    """Raise at once when Rscript or a matching R package (rmorie or morie) is missing; cached per process.
+
+    Both R arms carry the modules. The one whose version equals this morie's is used (rmorie when both
+    match); another version computes other numbers without saying so, so it is refused unless
+    ``MORIE_ALLOW_R_VERSION_MISMATCH`` is set.
+    """
+    global _R_READY, _R_PACKAGE
+    if _R_READY:
+        return
+    rscript = _rscript_bin()
+    if rscript is None:
+        raise RuntimeError("Rscript is not available on PATH.")
+    probe = subprocess.run(
+        [
+            rscript,
+            "--vanilla",
+            "-e",
+            'for (p in c("rmorie", "morie")) if (requireNamespace(p, quietly = TRUE)) '
+            'cat(p, as.character(utils::packageVersion(p)), "\\n")',
+        ],
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    found = [ln.split()[:2] for ln in probe.stdout.splitlines() if len(ln.split()) >= 2]
+    if not found:
+        raise RuntimeError("No R package for the R-backed modules is installed (install rmorie, or morie's R package)")
+    from . import __version__ as py_version
+
+    match = next((pkg for pkg, ver in found if ver == py_version), None)
+    if match is None:
+        if not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
+            have = ", ".join(f"{pkg} {ver}" for pkg, ver in found)
+            raise RuntimeError(
+                f"R {have} {'is' if len(found) == 1 else 'are'} installed, but this is morie {py_version}: "
+                f"the R-backed modules need the same version (run `morie r-install`; "
+                f"MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
+            )
+        match = found[0][0]
+    _R_PACKAGE = match
+    _R_READY = True
+
+
+def _r_package_absent(exc: BaseException) -> bool:
+    """True when the R route failed only because R or its package is not installed."""
+    text = str(exc)
+    return (
+        "Rscript is not available" in text
+        or "No R package for the R-backed modules is installed" in text
+        or "there is no package called" in text
+    )
+
+
+def r_route_problem(module_name: str, exc: BaseException) -> str:
+    """One line for the terminal when an R-backed module cannot run."""
+    if "the R-backed modules need the same version" in str(exc):
+        return f"{module_name}: {exc}"
+    if _r_package_absent(exc):
+        hint = (
+            "run `morie r-install` (rmorie from r-universe, prebuilt on macOS and Windows) and run the module again"
+            if _rscript_bin()
+            else _R_INSTALL_HINT
+        )
+        return (
+            f"{module_name} runs in R and this machine has no R package for it: {hint}. "
+            f"The Python-only modules are: {', '.join(sorted(_PY_FALLBACK_MODULES))}."
+        )
+    text = str(exc)
+    tail = ""
+    if "STDERR:" in text:
+        err_lines = [ln for ln in text.split("STDERR:", 1)[1].splitlines() if ln.strip()]
+        tail = f": {err_lines[-1].strip()}" if err_lines else ""
+    return f"{module_name}: the R-backed run failed{tail} (`morie doctor` checks the R side)"
+
+
+# directories made by _cpads_csv_for_run, the only ones run_module may remove
+_STAGED_DIRS: set[Path] = set()
+
+
 def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | Path:
     """The CSV the module stages (R bridge or Python) will read.
 
@@ -955,7 +1116,11 @@ def _cpads_csv_for_run(cpads_csv: str | Path, dataset_key: str | None) -> str | 
         label = "ocp21-cached"
     if frame is None:
         return cpads_csv
-    dest = Path(tempfile.gettempdir()) / f"morie-dataset-{label}.csv"
+    # a private directory (mode 0700), removed when the run ends: a fixed name in the shared
+    # temp dir let runs overwrite each other's input and left the copy behind
+    staging = Path(tempfile.mkdtemp(prefix="morie-dataset-"))
+    _STAGED_DIRS.add(staging)
+    dest = staging / f"{label.replace('/', '__')}.csv"
     frame.to_csv(dest, index=False)
     return dest
 
@@ -985,8 +1150,34 @@ def run_module(
         valid = ", ".join(sorted(MODULE_SPECS))
         raise ValueError(f"Unknown module: {module_name}. Valid modules: {valid}")
 
-    cpads_csv = _cpads_csv_for_run(cpads_csv, dataset_key)
+    if dataset_key:
+        # a key that names nothing is the user's mistake, reported before anything about R
+        from .data import _fuzzy_match_key
+        from .datahub import is_hosted_key
+
+        if _fuzzy_match_key(dataset_key) is None and not is_hosted_key(dataset_key):
+            raise KeyError(f"Unknown dataset key: {dataset_key!r} (morie list-datasets shows the keys)")
+    if module_name not in _PY_FALLBACK_MODULES:
+        _r_route_ready()  # R and its package first: loading the frame took 10-14 s before this failed
+    staged = _cpads_csv_for_run(cpads_csv, dataset_key)
     try:
+        return _run_module_on(module_name, staged, dataset_key, output_dir)
+    finally:
+        # only a directory _cpads_csv_for_run made itself: never a caller's (a path's parent can be ".")
+        staging = Path(staged).parent
+        if staging in _STAGED_DIRS:
+            _STAGED_DIRS.discard(staging)
+            from ._safe_rm import rmtree_owned
+
+            rmtree_owned(staging, owned=True)
+
+
+def _run_module_on(module_name: str, cpads_csv, dataset_key, output_dir) -> dict[str, object]:
+    """``run_module`` once its input CSV is staged."""
+    try:
+        # the same version rule for every module: a Python-capable one takes the Python route
+        # instead of running another version of the R arm
+        _r_route_ready()
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
     except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
         # Only these exception classes mean "the R stage itself failed"
@@ -994,13 +1185,18 @@ def run_module(
         # in OUR code and must not be masked by the Python fallback.
         if module_name not in _PY_FALLBACK_MODULES:
             raise
-        logging.getLogger(__name__).warning(
-            "R implementation of %s failed (%s); falling back to the "
-            "Python implementation. An R-side regression would otherwise "
-            "be invisible - investigate if unexpected.",
-            module_name,
-            str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
-        )
+        if _r_package_absent(exc) or "the R-backed modules need the same version" in str(exc):
+            logging.getLogger(__name__).info(
+                "%s: no R package of this version is installed; using the Python implementation", module_name
+            )
+        else:
+            logging.getLogger(__name__).warning(
+                "R implementation of %s failed (%s); falling back to the "
+                "Python implementation. An R-side regression would otherwise "
+                "be invisible - investigate if unexpected.",
+                module_name,
+                str(exc).splitlines()[0] if str(exc) else type(exc).__name__,
+            )
 
     if module_name == "power-design":
         return run_power_design_module(cpads_csv, output_dir=output_dir)

@@ -6,12 +6,11 @@ numbers in as "reads", and asserted only that the result was a dict. It
 had never been updated when the module was actually implemented.
 """
 
-from morie.fn.asmnvr import (asmnvr, de_bruijn_graph, de_novo_assembly,
-                             eulerian_path)
+from morie.fn.asmnvr import asmnvr, de_bruijn_graph, de_novo_assembly, eulerian_path
 
 
 def _tile(seq, read_len):
-    return [seq[i:i + read_len] for i in range(len(seq) - read_len + 1)]
+    return [seq[i : i + read_len] for i in range(len(seq) - read_len + 1)]
 
 
 def test_reads_tiling_a_sequence_reassemble_it_exactly():
@@ -30,7 +29,7 @@ def test_de_bruijn_vertices_are_k_minus_one_mers():
     assert all(len(v) == 3 for v in verts)
     # every 4-mer of the sequence is an edge from its first 3 to its last 3
     for i in range(len(seq) - 3):
-        mer = seq[i:i + 4]
+        mer = seq[i : i + 4]
         assert mer[1:] in edges.get(mer[:-1], {})
 
 
@@ -59,7 +58,7 @@ def test_multiplicity_set_versus_count():
 
 def test_a_branching_graph_is_reported_not_resolved():
     res = asmnvr(["ATGC", "ATGA", "TGCC", "TGAA"], k=3)
-    assert res["sequence"] is None          # no Eulerian path
+    assert res["sequence"] is None  # no Eulerian path
     assert res["unambiguous"] is False
     assert res["branching"] == ["TG"]
     # the unitigs are still available
@@ -80,7 +79,7 @@ def test_eulerian_path_existence_condition():
 
 
 def test_a_cycle_has_an_eulerian_circuit():
-    seq = "ATGCA"          # ATG -> TGC -> GCA, plus the wrap
+    seq = "ATGCA"  # ATG -> TGC -> GCA, plus the wrap
     res = asmnvr(_tile(seq, 4), k=3)
     assert res["sequence"] == seq
 

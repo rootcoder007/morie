@@ -80,8 +80,7 @@ def geron_adam_update(theta, grad, m, s, t, eta, b1=0.9, b2=0.999, eps=1e-8):
     t = int(t)
     if t < 1:
         raise ValueError(
-            f"t is the 1-based step counter and must be >= 1 (bias correction "
-            f"divides by 1 - beta^t), got {t}."
+            f"t is the 1-based step counter and must be >= 1 (bias correction divides by 1 - beta^t), got {t}."
         )
     eta = float(eta)
     if not np.isfinite(eta) or eta <= 0:

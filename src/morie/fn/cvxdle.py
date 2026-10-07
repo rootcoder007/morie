@@ -74,14 +74,19 @@ def boyd_dual_norm(norm, z):
     if flat.size == 0:
         raise ValueError("z must be non-empty")
     if norm in ("fro", "frobenius"):
-        val = float(np.sqrt(np.sum(zv ** 2)))
+        val = float(np.sqrt(np.sum(zv**2)))
         x = zv / val if val > 0 else np.zeros_like(zv)
         return RichResult(
             title="Dual norm (Frobenius)",
             summary_lines=[("value", val), ("dual of", "fro")],
-            payload={"value": val, "dual_of": "fro",
-                     "conjugate_exponent": 2.0, "maximizer": x,
-                     "method": "boyd_dual_norm"})
+            payload={
+                "value": val,
+                "dual_of": "fro",
+                "conjugate_exponent": 2.0,
+                "maximizer": x,
+                "method": "boyd_dual_norm",
+            },
+        )
     if norm in ("inf", np.inf, float("inf")):
         val = float(np.sum(np.abs(flat)))
         x = np.sign(flat)
@@ -95,8 +100,7 @@ def boyd_dual_norm(norm, z):
             x = np.zeros_like(flat)
             # The supremum of z'x over the l1 ball is attained at a VERTEX,
             # a signed unit basis vector, not in the interior.
-            x[int(np.argmax(np.abs(flat)))] = float(np.sign(
-                flat[int(np.argmax(np.abs(flat)))]) or 1.0)
+            x[int(np.argmax(np.abs(flat)))] = float(np.sign(flat[int(np.argmax(np.abs(flat)))]) or 1.0)
             dual_of, q = "inf", float("inf")
         else:
             q = p / (p - 1.0)
@@ -109,10 +113,13 @@ def boyd_dual_norm(norm, z):
     return RichResult(
         title=f"Dual norm (of l{norm})",
         summary_lines=[("value", val), ("dual of", dual_of)],
-        payload={"value": val, "dual_of": dual_of,
-                 "conjugate_exponent": q,
-                 "maximizer": x.reshape(zv.shape) if zv.ndim > 1 else x,
-                 "method": "boyd_dual_norm"},
+        payload={
+            "value": val,
+            "dual_of": dual_of,
+            "conjugate_exponent": q,
+            "maximizer": x.reshape(zv.shape) if zv.ndim > 1 else x,
+            "method": "boyd_dual_norm",
+        },
     )
 
 

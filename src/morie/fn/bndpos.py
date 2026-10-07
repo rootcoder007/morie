@@ -54,10 +54,17 @@ def bound_pos_treatment(y, D, y_max):
     lo0 = m0 * p0 + y0 * p1
     lo = 0.0
     hi = hi1 - lo0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "p_treated": p1, "n": len(yv),
-        "method": "Positive-only treatment bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "p_treated": p1,
+            "n": len(yv),
+            "method": "Positive-only treatment bound",
+        }
+    )
 
 
 def cheatsheet():

@@ -81,9 +81,9 @@ def _next_odd(v):
     return v if v % 2 == 1 else v + 1
 
 
-def stl_decompose(x, period, s_window=7, t_window=None, l_window=None,
-                  s_degree=1, t_degree=1, l_degree=1,
-                  inner=2, outer=0):
+def stl_decompose(
+    x, period, s_window=7, t_window=None, l_window=None, s_degree=1, t_degree=1, l_degree=1, inner=2, outer=0
+):
     """
     STL: seasonal-trend decomposition based on loess. Full inner loop
     (Cleveland, Cleveland, McRae & Terpenning 1990, Sec. 2.3, Steps
@@ -94,13 +94,12 @@ def stl_decompose(x, period, s_window=7, t_window=None, l_window=None,
     ys = [float(v) for v in xv]
     N = len(ys)
     np_ = int(period)
-    if np_ < 2 or N < 2 * np_:
+    if np_ < 2 or 2 * np_ > N:
         raise ValueError("need period >= 2 and at least two full cycles")
     n_s = int(s_window)
     if n_s % 2 == 0:
         n_s += 1
-    n_t = int(t_window) if t_window is not None else _next_odd(
-        1.5 * np_ / (1.0 - 1.5 / n_s))
+    n_t = int(t_window) if t_window is not None else _next_odd(1.5 * np_ / (1.0 - 1.5 / n_s))
     if n_t % 2 == 0:
         n_t += 1
     n_l = int(l_window) if l_window is not None else _next_odd(np_)
@@ -125,8 +124,7 @@ def stl_decompose(x, period, s_window=7, t_window=None, l_window=None,
                 sys_ = [det[v] for v in pos]
                 srho = [rho[v] for v in pos] if use_rho is not None else None
                 for j in range(0, ncs + 2):
-                    val = _loess_at(sxs, sys_, float(j), n_s, s_degree,
-                                    srho)
+                    val = _loess_at(sxs, sys_, float(j), n_s, s_degree, srho)
                     # j = 0 maps to position p - np_ in the extended
                     # series (index p in C since C starts at -np_+...)
                     C[p + j * np_] = val
@@ -136,16 +134,14 @@ def stl_decompose(x, period, s_window=7, t_window=None, l_window=None,
             L2 = _ma(L1, np_)
             L3 = _ma(L2, 3)
             lxs = [float(i + 1) for i in range(len(L3))]
-            L = [_loess_at(lxs, L3, float(v + 1), n_l, l_degree)
-                 for v in range(N)]
+            L = [_loess_at(lxs, L3, float(v + 1), n_l, l_degree) for v in range(N)]
             # Step 4: detrending of smoothed cycle-subseries
             S = [C[np_ + v] - L[v] for v in range(N)]
             # Step 5: deseasonalising
             des = [ys[v] - S[v] for v in range(N)]
             # Step 6: trend smoothing
             txs = [float(v + 1) for v in range(N)]
-            T = [_loess_at(txs, des, float(v + 1), n_t, t_degree,
-                           use_rho) for v in range(N)]
+            T = [_loess_at(txs, des, float(v + 1), n_t, t_degree, use_rho) for v in range(N)]
         R = [ys[v] - T[v] - S[v] for v in range(N)]
         if it_outer < outer:
             # robustness weights: h = 6 median|R|, rho = B(|R|/h)
@@ -164,12 +160,18 @@ def stl_decompose(x, period, s_window=7, t_window=None, l_window=None,
                     else:
                         t = 1.0 - u * u
                         rho.append(t * t)
-    return {"seasonal": S, "trend": T, "remainder": R, "weights": rho,
-            "s_window": n_s, "t_window": n_t, "l_window": n_l}
+    return {
+        "seasonal": S,
+        "trend": T,
+        "remainder": R,
+        "weights": rho,
+        "s_window": n_s,
+        "t_window": n_t,
+        "l_window": n_l,
+    }
 
 
-def stlAn(x, period, s_window=7, k=3.0, inner=2, outer=0,
-          t_window=None, l_window=None):
+def stlAn(x, period, s_window=7, k=3.0, inner=2, outer=0, t_window=None, l_window=None):
     """
     STL decomposition with residual-based outlier flags.
 
@@ -227,8 +229,7 @@ def stlAn(x, period, s_window=7, k=3.0, inner=2, outer=0,
     and hochenbaum-vallis-kejariwal-2017-twitter-shesd-anomaly-
     arxiv1704.07706.pdf
     """
-    fit = stl_decompose(x, period, s_window=s_window, t_window=t_window,
-                        l_window=l_window, inner=inner, outer=outer)
+    fit = stl_decompose(x, period, s_window=s_window, t_window=t_window, l_window=l_window, inner=inner, outer=outer)
     R = fit["remainder"]
     N = len(R)
     sr = sorted(R)
@@ -238,22 +239,23 @@ def stlAn(x, period, s_window=7, k=3.0, inner=2, outer=0,
     mad = ad[mid] if N % 2 == 1 else 0.5 * (ad[mid - 1] + ad[mid])
     sigma = 1.4826 * mad
     thr = k * sigma
-    outl = [v + 1 for v in range(N) if abs(R[v] - med) > thr] \
-        if sigma > 0.0 else []
-    return RichResult(payload={
-        "seasonal": fit["seasonal"],
-        "trend": fit["trend"],
-        "remainder": R,
-        "outliers": outl,
-        "threshold": thr,
-        "sigma_hat": sigma,
-        "s_window": fit["s_window"],
-        "t_window": fit["t_window"],
-        "l_window": fit["l_window"],
-        "estimate": outl,
-        "n": N,
-        "method": "STL + MAD residual outliers (Cleveland et al. 1990)",
-    })
+    outl = [v + 1 for v in range(N) if abs(R[v] - med) > thr] if sigma > 0.0 else []
+    return RichResult(
+        payload={
+            "seasonal": fit["seasonal"],
+            "trend": fit["trend"],
+            "remainder": R,
+            "outliers": outl,
+            "threshold": thr,
+            "sigma_hat": sigma,
+            "s_window": fit["s_window"],
+            "t_window": fit["t_window"],
+            "l_window": fit["l_window"],
+            "estimate": outl,
+            "n": N,
+            "method": "STL + MAD residual outliers (Cleveland et al. 1990)",
+        }
+    )
 
 
 def stl_anomaly(x, period, **kw):
@@ -263,6 +265,7 @@ def stl_anomaly(x, period, **kw):
 
 def cheatsheet():
     return "stlAn(x, period) -> STL seasonal/trend/remainder + MAD outlier flags"
+
 
 # public names resolved by fn/_lazy_map.json
 stlanomaly = stl_decompose

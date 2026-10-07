@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.grtmp import geron_temperature_sampling
 
 
@@ -16,8 +15,7 @@ def test_grtmp_basic():
     T = 1.0
     result = geron_temperature_sampling(logits, T)
     assert isinstance(result, dict)
-    for key in ("probabilities", "entropy", "argmax", "perplexity",
-                "estimate", "n", "method", "temperature"):
+    for key in ("probabilities", "entropy", "argmax", "perplexity", "estimate", "n", "method", "temperature"):
         assert key in result
     probs = result["probabilities"]
     assert len(probs) == 50
@@ -61,7 +59,7 @@ import morie.fn.grtmp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

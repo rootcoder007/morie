@@ -1,7 +1,6 @@
 """Tests for least_median_sq."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lms import least_median_sq
 
 

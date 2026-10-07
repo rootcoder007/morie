@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmglv import kamath_glove_cost
 
 
@@ -17,8 +16,7 @@ def test_kmglv_basic():
     W_tilde = rng.normal(0, 1, (C, d))
     b = rng.normal(0, 1, V)
     b_tilde = rng.normal(0, 1, C)
-    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde,
-                               x_max=100.0, alpha=0.75)
+    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max=100.0, alpha=0.75)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert "n_nonzero" in result
@@ -38,8 +36,7 @@ def test_kmglv_edge():
     W_tilde = rng.normal(0, 1, (C, d))
     b = rng.normal(0, 1, V)
     b_tilde = rng.normal(0, 1, C)
-    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde,
-                               x_max=50.0, alpha=0.5)
+    result = kamath_glove_cost(X, W, W_tilde, b, b_tilde, x_max=50.0, alpha=0.5)
     assert isinstance(result, dict)
     assert "estimate" in result
     assert math.isfinite(result["estimate"])
@@ -58,7 +55,7 @@ import morie.fn.kmglv as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -55,7 +55,7 @@ def decision_split(
         return -(p * np.log2(p + eps) + (1 - p) * np.log2(1 - p + eps))
 
     order = np.argsort(x)
-    x_s, y_s = x[order], y[order]
+    x_s, _y_s = x[order], y[order]
     thresholds = (x_s[:-1] + x_s[1:]) / 2
     mask = x_s[:-1] != x_s[1:]
     thresholds = thresholds[mask]

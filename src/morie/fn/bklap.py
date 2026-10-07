@@ -17,7 +17,9 @@ def burkov_laplace_add_one(counts_ngram, counts_prefix, V):
     >>> burkov_laplace_add_one(0, 0, 4)["estimate"]
     0.25
     """
-    c = float(counts_ngram); p = float(counts_prefix); v = int(V)
+    c = float(counts_ngram)
+    p = float(counts_prefix)
+    v = int(V)
     if c < 0 or p < 0:
         raise ValueError("counts must be non-negative.")
     if v < 1:
@@ -25,10 +27,16 @@ def burkov_laplace_add_one(counts_ngram, counts_prefix, V):
     if c > p:
         raise ValueError("count(ngram) cannot exceed count(prefix).")
     est = (c + 1.0) / (p + v)
-    return RichResult(payload={
-        "estimate": est, "count_ngram": c, "count_prefix": p,
-        "vocab_size": v, "n": int(p),
-        "method": "Laplace add-1 smoothing (Burkov Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "count_ngram": c,
+            "count_prefix": p,
+            "vocab_size": v,
+            "n": int(p),
+            "method": "Laplace add-1 smoothing (Burkov Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

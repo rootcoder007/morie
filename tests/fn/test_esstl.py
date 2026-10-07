@@ -1,7 +1,6 @@
 """Tests for esstl.effective_sample_size_tail."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esstl import effective_sample_size_tail
 
 
@@ -11,6 +10,8 @@ def test_esstl_basic():
     result = effective_sample_size_tail(chains)
     assert isinstance(result, dict)
     assert "ess_tail" in result
+
+
 def test_esstl_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

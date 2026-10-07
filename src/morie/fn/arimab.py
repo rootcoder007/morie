@@ -65,7 +65,7 @@ def arimahr(y, p=1, q=1, d=0, m=None):
     w = _difference(y, d)
     nw = len(w)
     if m is None:
-        m = max(p + q + 1, int(nw ** 0.5) + 1)
+        m = max(p + q + 1, int(nw**0.5) + 1)
     m = int(m)
     if nw <= m + max(p, q) + 1:
         raise ValueError("series too short for the requested orders")
@@ -87,11 +87,21 @@ def arimahr(y, p=1, q=1, d=0, m=None):
     b, fb_f, res, fb_x = C.lstsq(Xb, yb)
     nobs = len(yb)
     k = p + q + 1
-    return RichResult(payload={
-        "phi": b[1:1 + p], "theta": b[1 + p:1 + p + q], "intercept": b[0],
-        "sigma2": sum(v * v for v in res) / max(nobs - k, 1),
-        "resid": res, "m": m, "p": p, "q": q, "d": d, "nobs": nobs,
-        "method": "Hannan-Rissanen ARMA estimation (Hannan-Rissanen 1982)"})
+    return RichResult(
+        payload={
+            "phi": b[1 : 1 + p],
+            "theta": b[1 + p : 1 + p + q],
+            "intercept": b[0],
+            "sigma2": sum(v * v for v in res) / max(nobs - k, 1),
+            "resid": res,
+            "m": m,
+            "p": p,
+            "q": q,
+            "d": d,
+            "nobs": nobs,
+            "method": "Hannan-Rissanen ARMA estimation (Hannan-Rissanen 1982)",
+        }
+    )
 
 
 arima_box_jenkins = arimahr

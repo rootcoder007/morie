@@ -26,21 +26,20 @@ def pi_wald_interval(xb, var_xb, z):
     eq. (2.15).
     """
     payload = dict(_acd.pi_wald_interval(xb, var_xb, z))
-    value = float(payload['pi'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["pi"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.15)"
     return RichResult(
-        title='Wald confidence interval for pi via the logit scale',
+        title="Wald confidence interval for pi via the logit scale",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e15: expit(Xb +/- z sqrt(Var(Xb))) [Bilder & Loughin 2025, eq. 2.15]'
+    return "2e15: expit(Xb +/- z sqrt(Var(Xb))) [Bilder & Loughin 2025, eq. 2.15]"
 
 
 # compact alias per ledger/NAMING.md

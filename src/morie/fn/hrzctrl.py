@@ -79,8 +79,7 @@ def horowitz_control_function(x, y, w, bandwidth=None, iters=30):
     w = np.asarray(w, dtype=float).ravel()
     n = int(x.size)
     if y.size != n or w.size != n:
-        raise ValueError(
-            f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
+        raise ValueError(f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
     if n < 4:
         raise ValueError(f"need at least 4 observations, got {n}.")
     iters = int(iters)
@@ -92,8 +91,7 @@ def horowitz_control_function(x, y, w, bandwidth=None, iters=30):
 
     # First stage: V_hat = X - E_hat(X | W).
     ex_w = H.ll_smooth(w, x, w, hw)
-    v_hat = np.asarray([float(x[i]) - float(ex_w[i]) for i in range(n)],
-                       dtype=float)
+    v_hat = np.asarray([float(x[i]) - float(ex_w[i]) for i in range(n)], dtype=float)
 
     hv = float(bandwidth) if bandwidth is not None else HZ.silverman_bw(v_hat)
 
@@ -120,19 +118,21 @@ def horowitz_control_function(x, y, w, bandwidth=None, iters=30):
         ss += (float(y[i]) - fitted[i]) ** 2
     resid_sd = (ss / n) ** 0.5
 
-    return RichResult(payload={
-        "g_hat": g,
-        "h_hat": hh,
-        "v_hat": [float(t) for t in v_hat],
-        "intercept": ybar,
-        "fitted": fitted,
-        "resid_sd": resid_sd,
-        "bandwidth_x": hx,
-        "bandwidth_v": hv,
-        "bandwidth_w": hw,
-        "n": n,
-        "method": "Horowitz (2009) eqs. (5.92)-(5.93), nonparametric control function",
-    })
+    return RichResult(
+        payload={
+            "g_hat": g,
+            "h_hat": hh,
+            "v_hat": [float(t) for t in v_hat],
+            "intercept": ybar,
+            "fitted": fitted,
+            "resid_sd": resid_sd,
+            "bandwidth_x": hx,
+            "bandwidth_v": hv,
+            "bandwidth_w": hw,
+            "n": n,
+            "method": "Horowitz (2009) eqs. (5.92)-(5.93), nonparametric control function",
+        }
+    )
 
 
 def cheatsheet():

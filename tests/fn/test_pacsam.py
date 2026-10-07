@@ -1,7 +1,6 @@
 """Tests for pacsam.sample_partial_autocorr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pacsam import sample_partial_autocorr
 
 

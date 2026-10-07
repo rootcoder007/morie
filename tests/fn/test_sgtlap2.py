@@ -1,7 +1,6 @@
 """Tests for sgtlap2.sgt_laplacian_eigenmaps."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtlap2 import sgt_laplacian_eigenmaps
 
 

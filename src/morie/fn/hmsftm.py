@@ -57,9 +57,7 @@ def geron_softmax_function(scores, axis=-1):
     if not (-s.ndim <= ax < s.ndim):
         raise ValueError(f"geron_softmax_function: axis {ax} is out of range for a {s.ndim}-D array")
     if s.shape[ax] < 2:
-        raise ValueError(
-            f"geron_softmax_function: softmax needs at least 2 classes along axis {ax}, got {s.shape[ax]}"
-        )
+        raise ValueError(f"geron_softmax_function: softmax needs at least 2 classes along axis {ax}, got {s.shape[ax]}")
 
     e = np.exp(s - np.max(s, axis=ax, keepdims=True))
     p = e / np.sum(e, axis=ax, keepdims=True)

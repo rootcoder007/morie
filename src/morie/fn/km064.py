@@ -38,20 +38,21 @@ def kamath_ch4_loftq_objective(W, Q, A, B):
     if Qm.shape != Wm.shape:
         raise ValueError(f"Q is {Qm.shape} but W is {Wm.shape}.")
     if Am.shape[1] != Bm.shape[1]:
-        raise ValueError(
-            f"A is {Am.shape} and B is {Bm.shape}; A B^T needs a shared "
-            "rank dimension.")
+        raise ValueError(f"A is {Am.shape} and B is {Bm.shape}; A B^T needs a shared rank dimension.")
     low = Am @ Bm.T
     if low.shape != Wm.shape:
-        raise ValueError(
-            f"A B^T is {low.shape} but W is {Wm.shape}.")
+        raise ValueError(f"A B^T is {low.shape} but W is {Wm.shape}.")
     resid = Wm - Qm - low
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(resid, "fro")),
-        "residual": [[float(v) for v in row] for row in resid],
-        "quantisation_error": float(np.linalg.norm(Wm - Qm, "fro")),
-        "r": int(Am.shape[1]), "n": int(Wm.size),
-        "method": "LoftQ Frobenius objective (Kamath Eq 4.11)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(resid, "fro")),
+            "residual": [[float(v) for v in row] for row in resid],
+            "quantisation_error": float(np.linalg.norm(Wm - Qm, "fro")),
+            "r": int(Am.shape[1]),
+            "n": int(Wm.size),
+            "method": "LoftQ Frobenius objective (Kamath Eq 4.11)",
+        }
+    )
 
 
 def cheatsheet():

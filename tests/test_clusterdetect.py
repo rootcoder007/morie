@@ -63,8 +63,8 @@ def test_fixed_circle_gam_poisson_tail():
     P = [(0.0, 0.0), (0.5, 0.0), (5.0, 5.0), (9.0, 1.0)]
     r = fixed_circle_scan(P, [6, 5, 1, 0], [10, 10, 10, 10], [1.0], overlap=0.5, alpha=1.0)
     for c in r.circles:
-        O, E = c["observed"], c["expected"]
-        tail = 1 - sum(math.exp(-E) * E**j / math.factorial(j) for j in range(int(O)))
+        obs_n, exp_n = c["observed"], c["expected"]
+        tail = 1 - sum(math.exp(-exp_n) * exp_n**j / math.factorial(j) for j in range(int(obs_n)))
         assert c["pvalue"] == pytest.approx(tail, abs=1e-12)
     with pytest.raises(ValueError):
         fixed_circle_scan(P, [1] * 4, [1] * 4, [1.0], method="bad")

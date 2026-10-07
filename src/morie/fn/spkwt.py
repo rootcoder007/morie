@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["schabenberger_kriging_weights"]
 
 
-def schabenberger_kriging_weights(cov_matrix, cov_target, coords=None,
-                                  unbiased=False):
+def schabenberger_kriging_weights(cov_matrix, cov_target, coords=None, unbiased=False):
     r"""
     Solve the kriging system for the weights.
 
@@ -51,8 +50,7 @@ def schabenberger_kriging_weights(cov_matrix, cov_target, coords=None,
         return RichResult(
             title="Simple kriging weights",
             summary_lines=[("n", n), ("sum of weights", float(lam.sum()))],
-            payload={"weights": lam, "weight_sum": float(lam.sum()),
-                     "lagrange": None, "unbiased": False},
+            payload={"weights": lam, "weight_sum": float(lam.sum()), "lagrange": None, "unbiased": False},
         )
     A = np.zeros((n + 1, n + 1))
     A[:n, :n] = Sigma
@@ -64,8 +62,7 @@ def schabenberger_kriging_weights(cov_matrix, cov_target, coords=None,
     return RichResult(
         title="Ordinary kriging weights",
         summary_lines=[("n", n), ("sum of weights", float(lam.sum()))],
-        payload={"weights": lam, "weight_sum": float(lam.sum()),
-                 "lagrange": float(sol[n]), "unbiased": True},
+        payload={"weights": lam, "weight_sum": float(lam.sum()), "lagrange": float(sol[n]), "unbiased": True},
     )
 
 

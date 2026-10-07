@@ -77,8 +77,7 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["openfold_msa_pair", "outer_product_mean", "pair_bias",
-           "msa_row_attention", "softmax", "cheatsheet"]
+__all__ = ["openfold_msa_pair", "outer_product_mean", "pair_bias", "msa_row_attention", "softmax", "cheatsheet"]
 
 
 def _shape(msa):
@@ -136,8 +135,7 @@ def outer_product_mean(msa):
             cell = []
             for a in range(c):
                 for b in range(c):
-                    cell.append(_w.csum(msa[k][i][a] * msa[k][j][b]
-                                        for k in range(s)) / s)
+                    cell.append(_w.csum(msa[k][i][a] * msa[k][j][b] for k in range(s)) / s)
             row.append(cell)
         out.append(row)
     return out
@@ -188,8 +186,7 @@ def msa_row_attention(msa, bias, scale=None, gate=None):
         scale = 1.0 / math.sqrt(float(c))
     scale = float(scale)
     if len(bias) != r or any(len(row) != r for row in bias):
-        raise ValueError("the bias must be one scalar per ordered pair of "
-                         "positions")
+        raise ValueError("the bias must be one scalar per ordered pair of positions")
     if gate is not None and len(gate) != c:
         raise ValueError("the gate must be one multiplier per channel")
     attn = []
@@ -197,24 +194,21 @@ def msa_row_attention(msa, bias, scale=None, gate=None):
     for k in range(s):
         seq = msa[k]
         A = []
-        O = []
+        O_ = []
         for i in range(r):
-            logits = [_w.dot(seq[i], seq[j]) * scale + bias[i][j]
-                      for j in range(r)]
+            logits = [_w.dot(seq[i], seq[j]) * scale + bias[i][j] for j in range(r)]
             a = softmax(logits)
             A.append(a)
-            row = [_w.csum(a[j] * seq[j][d] for j in range(r))
-                   for d in range(c)]
+            row = [_w.csum(a[j] * seq[j][d] for j in range(r)) for d in range(c)]
             if gate is not None:
                 row = [row[d] * float(gate[d]) for d in range(c)]
-            O.append(row)
+            O_.append(row)
         attn.append(A)
-        out.append(O)
+        out.append(O_)
     return attn, out
 
 
-def openfold_msa_pair(msa, pair, w_bias=None, w_opm=None, scale=None,
-                      gate=None):
+def openfold_msa_pair(msa, pair, w_bias=None, w_opm=None, scale=None, gate=None):
     """One Evoformer MSA-pair head, both directions.
 
     Parameters
@@ -250,8 +244,7 @@ def openfold_msa_pair(msa, pair, w_bias=None, w_opm=None, scale=None,
     """
     s, r, c = _shape(msa)
     if len(pair) != r or any(len(row) != r for row in pair):
-        raise ValueError("the pair representation must be square over the "
-                         "alignment's positions")
+        raise ValueError("the pair representation must be square over the alignment's positions")
     cz = len(pair[0][0])
 
     opm = outer_product_mean(msa)
@@ -263,13 +256,12 @@ def openfold_msa_pair(msa, pair, w_bias=None, w_opm=None, scale=None,
         updated = False
     else:
         if any(len(row) != c * c for row in w_opm):
-            raise ValueError("each projection row must span the whole outer "
-                             "product")
+            raise ValueError("each projection row must span the whole outer product")
         if len(w_opm) != cz:
             raise ValueError("the projection must land on the pair width")
-        pair_out = [[[pair[i][j][d] + _w.dot(w_opm[d], opm[i][j])
-                      for d in range(cz)] for j in range(r)]
-                    for i in range(r)]
+        pair_out = [
+            [[pair[i][j][d] + _w.dot(w_opm[d], opm[i][j]) for d in range(cz)] for j in range(r)] for i in range(r)
+        ]
         updated = True
 
     # The mass the alignment puts on the diagonal: how much each
@@ -277,26 +269,29 @@ def openfold_msa_pair(msa, pair, w_bias=None, w_opm=None, scale=None,
     # the one summary of the attention that reads the same regardless of
     # how many sequences or positions there are.
     diag = _w.csum(attn[k][i][i] for k in range(s) for i in range(r))
-    return RichResult(payload={
-        "opm": opm,
-        "bias": b,
-        "attn": attn,
-        "msa_out": msa_out,
-        "pair_out": pair_out,
-        "pair_updated": updated,
-        "self_attention": diag / float(s * r),
-        "n_seq": s,
-        "n_pos": r,
-        "n_channel": c,
-        "n_pair_channel": cz,
-        "scale": (1.0 / math.sqrt(float(c))) if scale is None
-                 else float(scale),
-        "gated": gate is not None,
-        "method": "OpenFold Evoformer MSA-pair head",
-    })
+    return RichResult(
+        payload={
+            "opm": opm,
+            "bias": b,
+            "attn": attn,
+            "msa_out": msa_out,
+            "pair_out": pair_out,
+            "pair_updated": updated,
+            "self_attention": diag / float(s * r),
+            "n_seq": s,
+            "n_pos": r,
+            "n_channel": c,
+            "n_pair_channel": cz,
+            "scale": (1.0 / math.sqrt(float(c))) if scale is None else float(scale),
+            "gated": gate is not None,
+            "method": "OpenFold Evoformer MSA-pair head",
+        }
+    )
 
 
 def cheatsheet():
-    return ("alfomg: OpenFold MSA-pair head. Outer product mean for "
-            "MSA->pair, row attention with a pair bias for pair->MSA; "
-            "trained weights are parameters, not constants")
+    return (
+        "alfomg: OpenFold MSA-pair head. Outer product mean for "
+        "MSA->pair, row attention with a pair bias for pair->MSA; "
+        "trained weights are parameters, not constants"
+    )

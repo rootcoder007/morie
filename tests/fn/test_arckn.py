@@ -1,7 +1,6 @@
 """Tests for arckn.arc_cosine_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.arckn import arc_cosine_kernel
 
 
@@ -11,6 +10,8 @@ def test_arckn_basic():
     result = arc_cosine_kernel(X)
     assert isinstance(result, dict)
     assert "K" in result
+
+
 def test_arckn_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

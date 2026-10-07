@@ -37,8 +37,9 @@ from ._richresult import RichResult
 __all__ = ["hierarchical_rl"]
 
 
-def hierarchical_rl(env, options=None, meta=None, rewards=None, gamma=0.99,
-                    alpha=0.1, Q=None, q_next=None, k_steps=None):
+def hierarchical_rl(
+    env, options=None, meta=None, rewards=None, gamma=0.99, alpha=0.1, Q=None, q_next=None, k_steps=None
+):
     """SMDP option-value backup for one executed option.
 
     Parameters
@@ -90,11 +91,11 @@ def hierarchical_rl(env, options=None, meta=None, rewards=None, gamma=0.99,
         kk = len(R)
     r = 0.0
     for t in range(kk):
-        r += (g ** t) * R[t]
+        r += (g**t) * R[t]
     q0 = float(Q if Q is not None else (meta if meta is not None else 0.0))
     qn = k.vec(q_next) if q_next is not None else []
     mx = max(qn) if qn else 0.0
-    target = r + (g ** kk) * mx
+    target = r + (g**kk) * mx
     td = target - q0
     return RichResult(
         title="Options framework (SMDP backup)",

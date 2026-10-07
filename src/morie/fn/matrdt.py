@@ -17,7 +17,6 @@ forward direction would pass on code that had no idea what a matroid
 was.
 """
 
-import math
 from itertools import chain, combinations
 
 from ._richresult import RichResult
@@ -78,11 +77,16 @@ def is_matroid(ground, independent):
     if frozenset() not in fam:
         return RichResult(
             title="Matroid axiom check",
-            payload={"is_matroid": False, "hereditary": False,
-                     "exchange": None, "estimate": 0.0,
-                     "heredity_violation": "the empty set is not independent",
-                     "exchange_violation": None, "n": len(g),
-                     "method": _METHOD},
+            payload={
+                "is_matroid": False,
+                "hereditary": False,
+                "exchange": None,
+                "estimate": 0.0,
+                "heredity_violation": "the empty set is not independent",
+                "exchange_violation": None,
+                "n": len(g),
+                "method": _METHOD,
+            },
             summary_lines=[("Is a matroid", False)],
         )
 
@@ -211,8 +215,7 @@ def uniform_matroid(n, k):
         raise ValueError("n and k must be non-negative.")
     g = list(range(n))
     ind = [list(s) for s in _subsets(g) if len(s) <= k]
-    return {"ground": g, "independent": ind, "rank": min(k, n),
-            "name": f"U({k},{n})"}
+    return {"ground": g, "independent": ind, "rank": min(k, n), "name": f"U({k},{n})"}
 
 
 def graphic_matroid(edges, n_vertices):
@@ -245,8 +248,7 @@ def graphic_matroid(edges, n_vertices):
         return True
 
     ind = [list(s) for s in _subsets(range(m)) if acyclic(s)]
-    return {"ground": list(range(m)), "independent": ind, "edges": E,
-            "n_vertices": n, "name": "graphic"}
+    return {"ground": list(range(m)), "independent": ind, "edges": E, "n_vertices": n, "name": "graphic"}
 
 
 def greedy_independent_set(ground, independent, weights):

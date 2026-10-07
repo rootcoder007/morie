@@ -1,7 +1,6 @@
 """Tests for surprl.surprisal."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.surprl import surprisal
 
 

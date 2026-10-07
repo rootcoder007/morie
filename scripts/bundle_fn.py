@@ -15,6 +15,7 @@ Outputs (into --out, default = --src):
 Run from the repo root or via CMake at build time. Idempotent. The loaders
 fall back to loose files, so generating these is purely a packaging step.
 """
+
 from __future__ import annotations
 
 import argparse

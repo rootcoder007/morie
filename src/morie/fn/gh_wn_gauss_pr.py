@@ -5,9 +5,6 @@ Implements sec. 9.5.4 (conjugate Gaussian computation) of Ghosal & van der Vaart
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,15 +24,15 @@ def ghosal_white_noise_gauss_prior(Y, n, prior_sd):
         c = sd * sd
         means.append(c / (c + 1.0 / n) * y)
         vars_.append(1.0 / (1.0 / c + n))
-    res = RichResult(payload={"estimate": means[0],
-                              "posterior_mean": means,
-                              "posterior_var": vars_,
-                              "shrinkage": [c and m / y
-                                            for m, y, c in
-                                            zip(means, ys,
-                                                [1] * len(ys))
-                                            if y != 0],
-                              "method": "white-noise GP posterior (GvdV 2017 sec. 9.5.4)"})
+    res = RichResult(
+        payload={
+            "estimate": means[0],
+            "posterior_mean": means,
+            "posterior_var": vars_,
+            "shrinkage": [c and m / y for m, y, c in zip(means, ys, [1] * len(ys)) if y != 0],
+            "method": "white-noise GP posterior (GvdV 2017 sec. 9.5.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_wn_gauss_pr")
 
 

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["esl_random_forest"]
 
 
-def esl_random_forest(X, y, B=100, mtry=None, max_depth=8, min_node=5,
-                      newdata=None, seed=0):
+def esl_random_forest(X, y, B=100, mtry=None, max_depth=8, min_node=5, newdata=None, seed=0):
     r"""Random forest, ESL Algorithm 15.1.
 
     For ``b = 1..B``: draw a bootstrap sample :math:`Z^*` of size N,
@@ -90,8 +89,7 @@ def esl_random_forest(X, y, B=100, mtry=None, max_depth=8, min_node=5,
     m = default_mtry(p, "regression") if mtry is None else int(mtry)
     if not 1 <= m <= p:
         raise ValueError(f"mtry must lie in 1..{p}, got {m}.")
-    Q = A if newdata is None else np.atleast_2d(
-        np.asarray(newdata, dtype=float))
+    Q = A if newdata is None else np.atleast_2d(np.asarray(newdata, dtype=float))
     if Q.shape[1] != p:
         raise ValueError(f"newdata has {Q.shape[1]} columns, expected {p}.")
 
@@ -110,26 +108,30 @@ def esl_random_forest(X, y, B=100, mtry=None, max_depth=8, min_node=5,
     pred /= Bn
     has_oob = oob_cnt > 0
     oob_pred = np.where(has_oob, oob_sum / np.maximum(oob_cnt, 1), np.nan)
-    oob_mse = (float(np.mean((yv[has_oob] - oob_pred[has_oob]) ** 2))
-               if has_oob.any() else np.nan)
+    oob_mse = float(np.mean((yv[has_oob] - oob_pred[has_oob]) ** 2)) if has_oob.any() else np.nan
     train_pred = pred if newdata is None else None
-    return RichResult(payload={
-        "prediction": pred,
-        "oob_prediction": oob_pred, "oob_mse": oob_mse,
-        "train_mse": (float(np.mean((yv - train_pred) ** 2))
-                      if train_pred is not None else None),
-        "mtry": int(m),
-        "mtry_rule": "floor(p/3) for regression; floor(sqrt(p)) is the "
-                     "CLASSIFICATION default. They cross at p = 9; above "
-                     "it the regression rule is the larger of the two",
-        "subset_drawn_per": "node",
-        "why_per_node": "averaging B identically distributed trees leaves "
-                        "rho sigma^2 behind, so the gain is bounded by how "
-                        "decorrelated they are; a per-tree subset "
-                        "decorrelates far less than a per-node one",
-        "n_oob_missing": int((~has_oob).sum()),
-        "B": Bn, "n": int(n), "p": int(p),
-        "method": "ESL Algorithm 15.1 random forest for regression"})
+    return RichResult(
+        payload={
+            "prediction": pred,
+            "oob_prediction": oob_pred,
+            "oob_mse": oob_mse,
+            "train_mse": (float(np.mean((yv - train_pred) ** 2)) if train_pred is not None else None),
+            "mtry": int(m),
+            "mtry_rule": "floor(p/3) for regression; floor(sqrt(p)) is the "
+            "CLASSIFICATION default. They cross at p = 9; above "
+            "it the regression rule is the larger of the two",
+            "subset_drawn_per": "node",
+            "why_per_node": "averaging B identically distributed trees leaves "
+            "rho sigma^2 behind, so the gain is bounded by how "
+            "decorrelated they are; a per-tree subset "
+            "decorrelates far less than a per-node one",
+            "n_oob_missing": int((~has_oob).sum()),
+            "B": Bn,
+            "n": int(n),
+            "p": int(p),
+            "method": "ESL Algorithm 15.1 random forest for regression",
+        }
+    )
 
 
 def cheatsheet():

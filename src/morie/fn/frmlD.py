@@ -40,10 +40,17 @@ def formal_derivative(poly):
     deg = len(d) - 1
     while deg > 0 and d[deg] == 0.0:
         deg -= 1
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(d[deg]), "coefficients": d, "degree": deg,
-        "method": "formal derivative of a polynomial",
-    }), "frmlD")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(d[deg]),
+                "coefficients": d,
+                "degree": deg,
+                "method": "formal derivative of a polynomial",
+            }
+        ),
+        "frmlD",
+    )
 
 
 def cheatsheet():

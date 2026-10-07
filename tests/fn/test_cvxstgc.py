@@ -1,8 +1,6 @@
 """Tests for cvxstgc.boyd_strong_convex."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.cvxstgc import boyd_strong_convex
 
 
@@ -13,8 +11,12 @@ def test_cvxstgc_basic():
     # Quadratic f(z) = 0.5 * z^T Q z with Q = diag(2, 5).
     # Its strong-convexity modulus is m = lambda_min(Q) = 2.
     Q = np.diag([2.0, 5.0])
-    f = lambda z: 0.5 * float(z @ Q @ z)
-    gf = lambda z: Q @ z
+
+    def f(z):
+        return 0.5 * float(z @ Q @ z)
+
+    def gf(z):
+        return Q @ z
 
     x = np.array([1.0, 1.0])
     m = 2.0  # exact modulus -> inequality holds for all y
@@ -52,14 +54,16 @@ def test_cvxstgc_basic():
 def test_cvxstgc_edge():
     """Test edge cases."""
     Q = np.diag([2.0, 5.0])
-    f = lambda z: 0.5 * float(z @ Q @ z)
-    gf = lambda z: Q @ z
+
+    def f(z):
+        return 0.5 * float(z @ Q @ z)
+
+    def gf(z):
+        return Q @ z
 
     x = np.array([1.0, 1.0])
     m_too_large = 5.5  # exceeds lambda_min(Q)=2 -> inequality fails somewhere
-    ys = np.array([[1.0, 1.0],
-                   [1.0 + 1.0, 1.0],
-                   [1.0, 1.0 + 1.0]])
+    ys = np.array([[1.0, 1.0], [1.0 + 1.0, 1.0], [1.0, 1.0 + 1.0]])
 
     result = boyd_strong_convex(f, gf, x, m_too_large, y_samples=ys)
 

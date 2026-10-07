@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['linbylin', 'gibbons_ordered_categories']
+__all__ = ["linbylin", "gibbons_ordered_categories"]
 
 
 def linbylin(table, scores=None):
@@ -73,10 +73,7 @@ def linbylin(table, scores=None):
     t = sum(w[j] * tb[0][j] for j in range(c))
     wbar = sum(cs[j] * w[j] for j in range(c)) / nn
     mean = n1 * wbar
-    var = (
-        n1 * n2 / (nn * (nn - 1.0))
-        * sum(cs[j] * (w[j] - wbar) ** 2 for j in range(c))
-    )
+    var = n1 * n2 / (nn * (nn - 1.0)) * sum(cs[j] * (w[j] - wbar) ** 2 for j in range(c))
     sd = math.sqrt(var) if var > 0 else float("nan")
     z = (t - mean) / sd if var > 0 else float("nan")
     return RichResult(

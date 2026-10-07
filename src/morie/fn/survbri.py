@@ -45,12 +45,16 @@ def brier_score(time, event, predicted_S, t_grid):
     48(6):1029-1040.  <https://doi.org/10.1002/bimj.200610301>
     """
     r = brier(time, event, predicted_S, t_grid)
-    return RichResult(payload={
-        "estimate": r["brier_score"], "brier_score": r["brier_score"],
-        "scaled_brier": r["scaled_brier"],
-        "integrated_brier": r["integrated_brier"],
-        "eval_time": r["eval_time"],
-        "method": "IPCW Brier score [Graf et al. 1999; Gerds & Schumacher 2006]"})
+    return RichResult(
+        payload={
+            "estimate": r["brier_score"],
+            "brier_score": r["brier_score"],
+            "scaled_brier": r["scaled_brier"],
+            "integrated_brier": r["integrated_brier"],
+            "eval_time": r["eval_time"],
+            "method": "IPCW Brier score [Graf et al. 1999; Gerds & Schumacher 2006]",
+        }
+    )
 
 
 # CANONICAL TEST

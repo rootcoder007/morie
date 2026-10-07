@@ -144,23 +144,28 @@ def horowitz_semipar_rank(x, y, variant="mrc", M=None, n_restarts=8, seed=0):
         order = np.argsort(thr)
         thr_s = thr[order]
         cum = base + np.concatenate([[0.0], np.cumsum(sign[order])])
-        grid = np.linspace(-GRID_SCAN_HALF_WIDTH, GRID_SCAN_HALF_WIDTH,
-                           GRID_SCAN_POINTS)
+        grid = np.linspace(-GRID_SCAN_HALF_WIDTH, GRID_SCAN_HALF_WIDTH, GRID_SCAN_POINTS)
         vals = cum[np.searchsorted(thr_s, grid, side="right")] / denom
         k = int(np.argmax(vals))
         beta = np.array([1.0, float(grid[k])])
         negval = -float(vals[k])
     else:
-        beta, negval = optimize_scale_normalized(lambda b: -score(b), d,
-                                                 n_restarts=n_restarts,
-                                                 seed=seed)
-    return RichResult(payload={
-        "beta": beta, "objective": -negval, "variant": variant,
-        "requires_bandwidth": False,
-        "asymptotically_efficient": False,
-        "rate_exponent": -0.5, "inference": "bootstrap", "se": None,
-        "n": int(n), "d": int(d),
-        "method": "Rank correlation over orderings; no bandwidth, but not efficient and no analytic SE"})
+        beta, negval = optimize_scale_normalized(lambda b: -score(b), d, n_restarts=n_restarts, seed=seed)
+    return RichResult(
+        payload={
+            "beta": beta,
+            "objective": -negval,
+            "variant": variant,
+            "requires_bandwidth": False,
+            "asymptotically_efficient": False,
+            "rate_exponent": -0.5,
+            "inference": "bootstrap",
+            "se": None,
+            "n": int(n),
+            "d": int(d),
+            "method": "Rank correlation over orderings; no bandwidth, but not efficient and no analytic SE",
+        }
+    )
 
 
 def cheatsheet():

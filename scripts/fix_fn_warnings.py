@@ -29,10 +29,7 @@ def warns(src, path):
             compile(src, path, "exec")
         except SyntaxError:
             return "SYNTAX_ERROR"
-        for w in caught:
-            if issubclass(w.category, SyntaxWarning):
-                return True
-        return False
+        return any(issubclass(w.category, SyntaxWarning) for w in caught)
 
 
 def fix_first(src):

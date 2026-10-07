@@ -1,7 +1,6 @@
 """Tests for hmipca.geron_incremental_pca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmipca import geron_incremental_pca
 
 

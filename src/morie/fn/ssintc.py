@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Turnbull NPMLE for interval-censored survival."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -67,11 +65,19 @@ def interval_censored_survival(L, R, event=None, n_iter=200):
     regs = sorted(set(regs))
     m = len(regs)
     if m == 0:
-        return RichResult(payload={
-            "estimate": float("nan"), "p": [], "surv": [], "q": [], "r": [],
-            "n": n, "m": 0, "method": "Turnbull NPMLE, interval censoring"})
-    alpha = [[1.0 if (Lv[i] <= regs[j][0] and regs[j][1] <= Rv[i]) else 0.0
-              for j in range(m)] for i in range(n)]
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "p": [],
+                "surv": [],
+                "q": [],
+                "r": [],
+                "n": n,
+                "m": 0,
+                "method": "Turnbull NPMLE, interval censoring",
+            }
+        )
+    alpha = [[1.0 if (Lv[i] <= regs[j][0] and regs[j][1] <= Rv[i]) else 0.0 for j in range(m)] for i in range(n)]
     p = [1.0 / m] * m
     for _ in range(int(n_iter)):
         new = [0.0] * m
@@ -93,10 +99,18 @@ def interval_censored_survival(L, R, event=None, n_iter=200):
         if surv[j] <= 0.5:
             med = regs[j][1]
             break
-    return RichResult(payload={
-        "estimate": med, "p": p, "surv": surv,
-        "q": [g[0] for g in regs], "r": [g[1] for g in regs], "n": n, "m": m,
-        "method": "Turnbull NPMLE, interval censoring"})
+    return RichResult(
+        payload={
+            "estimate": med,
+            "p": p,
+            "surv": surv,
+            "q": [g[0] for g in regs],
+            "r": [g[1] for g in regs],
+            "n": n,
+            "m": m,
+            "method": "Turnbull NPMLE, interval censoring",
+        }
+    )
 
 
 def cheatsheet():

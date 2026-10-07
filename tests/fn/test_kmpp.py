@@ -1,7 +1,6 @@
 """Tests for morie.fn.kmpp — k-means++."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmpp import kmeans_pp
 
 

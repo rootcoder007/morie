@@ -1,7 +1,6 @@
 """Tests for ndcg.ndcg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ndcg import ndcg
 
 

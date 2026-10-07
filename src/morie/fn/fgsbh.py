@@ -89,22 +89,29 @@ def fine_gray_subdistribution_hazard(time, cause, X, of_cause=1, **kwargs):
 
     from ._surv import baseline_hazard
 
-    times, dH, H = baseline_hazard(t, e, Xm, fit["beta"],
-                                   offset=np.log(np.maximum(fit["weights"], 1e-12)))
+    times, dH, H = baseline_hazard(t, e, Xm, fit["beta"], offset=np.log(np.maximum(fit["weights"], 1e-12)))
     base_cif = 1.0 - np.exp(-H)
     lin = np.exp(np.clip(Xm @ fit["beta"], -500, 500))
     cif = 1.0 - np.exp(-np.outer(lin, H))
     return RichResult(
         title=f"Fine-Gray cumulative incidence (cause {of_cause})",
-        summary_lines=[("n", int(t.size)), ("event times", int(times.size)),
-                       ("max baseline CIF", float(base_cif[-1]) if base_cif.size else float("nan"))],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("event times", int(times.size)),
+            ("max baseline CIF", float(base_cif[-1]) if base_cif.size else float("nan")),
+        ],
         warnings=list(fit.warnings),
         payload={
-            "beta": fit["beta"], "se": fit["se"], "p_value": fit["p_value"],
+            "beta": fit["beta"],
+            "se": fit["se"],
+            "p_value": fit["p_value"],
             "subdistribution_hazard_ratio": fit["subdistribution_hazard_ratio"],
-            "times": times, "baseline_cif": base_cif,
-            "cumulative_incidence": cif, "cumhazard": H,
-            "cause": of_cause, "n": int(t.size),
+            "times": times,
+            "baseline_cif": base_cif,
+            "cumulative_incidence": cif,
+            "cumhazard": H,
+            "cause": of_cause,
+            "n": int(t.size),
             "method": "fine_gray_subdistribution_hazard",
         },
     )

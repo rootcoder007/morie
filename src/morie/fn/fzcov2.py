@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Covariance of the second cumulative-survival estimator with the survival estimator (Eq. 4.22)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["srvcov2", "fauzi_cov_surv_est2"]

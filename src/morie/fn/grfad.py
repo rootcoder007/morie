@@ -53,8 +53,7 @@ class Dual:
 
     def __mul__(self, o):
         o = self._lift(o)
-        return Dual(self.value * o.value,
-                    self.deriv * o.value + self.value * o.deriv)
+        return Dual(self.value * o.value, self.deriv * o.value + self.value * o.deriv)
 
     __rmul__ = __mul__
 
@@ -62,8 +61,7 @@ class Dual:
         o = self._lift(o)
         if o.value == 0:
             raise ValueError("division by a dual number with value 0 is undefined.")
-        return Dual(self.value / o.value,
-                    (self.deriv * o.value - self.value * o.deriv) / (o.value**2))
+        return Dual(self.value / o.value, (self.deriv * o.value - self.value * o.deriv) / (o.value**2))
 
     def __rtruediv__(self, o):
         return self._lift(o) / self

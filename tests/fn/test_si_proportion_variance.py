@@ -1,7 +1,5 @@
 """Tests for si_proportion_variance.si_proportion_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.si_proportion_variance import (
     si_proportion_variance,
 )

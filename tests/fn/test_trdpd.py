@@ -13,7 +13,7 @@ def test_trdpd_basic():
     assert r["n_saturated"] == 3.0
     assert r["saturated"] == pytest.approx(3 / 8, abs=1e-15)
     assert r["mean_depth"] == pytest.approx(51 / 8, abs=1e-15)
-    lf = [2.0 ** v for v in d]
+    lf = [2.0**v for v in d]
     assert r["total_leapfrog"] == sum(lf)
     assert r["mean_leapfrog"] == pytest.approx(sum(lf) / 8, abs=1e-12)
     assert r["warn"] == 1.0 and r["max_observed"] == 10

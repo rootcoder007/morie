@@ -1,8 +1,8 @@
 """Tests for morie.fn.eig_ — eigenvalue analysis."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.eig_ import eigen_analysis
 
 

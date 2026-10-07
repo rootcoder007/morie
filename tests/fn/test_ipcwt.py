@@ -1,8 +1,8 @@
 """Tests for ipcwt: IPCW weights."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ipcwt import ipcwt
 
 

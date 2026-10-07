@@ -76,9 +76,8 @@ def dp_histogram(x, bins=10, epsilon=1.0, range_=None, seed=None, nonneg=True):
     """
     epsilon, _ = check_budget(epsilon)
     v = np.atleast_1d(np.asarray(x, dtype=float)).ravel()
-    if np.isscalar(bins) or (isinstance(bins, (int, np.integer))):
-        if int(bins) < 1:
-            raise ValueError("bins must be a positive integer or an array of edges")
+    if (np.isscalar(bins) or (isinstance(bins, (int, np.integer)))) and int(bins) < 1:
+        raise ValueError("bins must be a positive integer or an array of edges")
     counts, edges = np.histogram(v, bins=bins, range=range_)
     # Disjoint bins -> parallel composition: sensitivity 2 for the whole vector.
     sens = 2.0
@@ -88,12 +87,16 @@ def dp_histogram(x, bins=10, epsilon=1.0, range_=None, seed=None, nonneg=True):
     rel = np.maximum(raw, 0.0) if nonneg else raw
     return RichResult(
         title="DP histogram",
-        summary_lines=[("epsilon", epsilon), ("bins", int(counts.size)),
-                       ("noise scale", scale)],
+        summary_lines=[("epsilon", epsilon), ("bins", int(counts.size)), ("noise scale", scale)],
         payload={
-            "release": rel, "raw": raw, "true_counts": counts,
-            "edges": edges, "noise_scale": scale, "sensitivity": sens,
-            "epsilon": epsilon, "method": "dp_histogram",
+            "release": rel,
+            "raw": raw,
+            "true_counts": counts,
+            "edges": edges,
+            "noise_scale": scale,
+            "sensitivity": sens,
+            "epsilon": epsilon,
+            "method": "dp_histogram",
         },
     )
 

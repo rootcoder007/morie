@@ -1,7 +1,6 @@
 """Tests for rgcpulse.rangayyan_carotid_pulse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_carotid_pulse
 
 

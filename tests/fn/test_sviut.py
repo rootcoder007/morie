@@ -1,7 +1,6 @@
 """Tests for morie.fn.sviut."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sviut import sviut
 
 

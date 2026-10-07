@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_frs_reg"]
@@ -23,14 +22,16 @@ def ghosal_frs_reg(n=600, seed=42):
     xs = [(i + 0.5) / n for i in range(n)]
     f0 = [math.sin(2.0 * math.pi * x) for x in xs]
     ys = [f + 0.4 * float(rng.normal(0, 1)) for f in f0]
+
     def phi(x, k):
         return math.sqrt(2.0) * math.cos((k + 1) * math.pi * x)
+
     best = None
     for K in range(1, 9):
         coef = []
         for k in range(K):
             num = sum(y * phi(x, k) for x, y in zip(xs, ys)) / n
-            coef.append(num * n / (n + 1.0))     # ridge w/ unit prior
+            coef.append(num * n / (n + 1.0))  # ridge w/ unit prior
         rss = 0.0
         for x, y in zip(xs, ys):
             fx = sum(c * phi(x, k) for k, c in enumerate(coef))
@@ -40,10 +41,10 @@ def ghosal_frs_reg(n=600, seed=42):
         if best is None or ev > best[0]:
             best = (ev, K, coef)
     _, K_hat, coef = best
-    risk = sum((sum(c * phi(x, k) for k, c in enumerate(coef))
-                - f) ** 2 for x, f in zip(xs, f0)) / n
-    res = RichResult(payload={"estimate": risk, "K_hat": K_hat,
-                              "method": "finite random series regression (GvdV 2017 sec. 10.4.2)"})
+    risk = sum((sum(c * phi(x, k) for k, c in enumerate(coef)) - f) ** 2 for x, f in zip(xs, f0)) / n
+    res = RichResult(
+        payload={"estimate": risk, "K_hat": K_hat, "method": "finite random series regression (GvdV 2017 sec. 10.4.2)"}
+    )
     return with_describe_pointer(res, "gh_c10_8")
 
 

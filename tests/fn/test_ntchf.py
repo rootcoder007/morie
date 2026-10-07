@@ -1,7 +1,6 @@
 """Test notch_filter (ntchf)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.ntchf import notch_filter, ntchf
 

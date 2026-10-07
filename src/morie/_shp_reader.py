@@ -22,9 +22,18 @@ import struct
 from pathlib import Path
 
 _SHAPE_NAMES = {
-    0: "NULL", 1: "POINT", 3: "POLYLINE", 5: "POLYGON",
-    8: "MULTIPOINT", 11: "POINTZ", 13: "POLYLINEZ", 15: "POLYGONZ",
-    18: "MULTIPOINTZ", 21: "POINTM", 23: "POLYLINEM", 25: "POLYGONM",
+    0: "NULL",
+    1: "POINT",
+    3: "POLYLINE",
+    5: "POLYGON",
+    8: "MULTIPOINT",
+    11: "POINTZ",
+    13: "POLYLINEZ",
+    15: "POLYGONZ",
+    18: "MULTIPOINTZ",
+    21: "POINTM",
+    23: "POLYLINEM",
+    25: "POLYGONM",
     28: "MULTIPOINTM",
 }
 
@@ -34,11 +43,10 @@ class ShapeRecord:
 
     def __init__(self, shape_type, points, parts, attributes):
         self.shape_type = shape_type
-        self.shape_type_name = _SHAPE_NAMES.get(shape_type,
-                                                str(shape_type))
-        self.points = points          # [(x, y), ...]
-        self.parts = parts            # part start indices into points
-        self.record = attributes      # dict of dbf fields
+        self.shape_type_name = _SHAPE_NAMES.get(shape_type, str(shape_type))
+        self.points = points  # [(x, y), ...]
+        self.parts = parts  # part start indices into points
+        self.record = attributes  # dict of dbf fields
 
     @property
     def bbox(self):
@@ -53,40 +61,33 @@ def _read_shp(path):
     data = Path(path).read_bytes()
     (code,) = struct.unpack(">i", data[0:4])
     if code != 9994:
-        raise ValueError("%s is not a shapefile (file code %d != 9994)"
-                         % (path, code))
+        raise ValueError(f"{path} is not a shapefile (file code {int(code)} != 9994)")
     shapes = []
     off = 100
     n = len(data)
     while off + 8 <= n:
-        (_recno, content_words) = struct.unpack(">ii", data[off:off + 8])
+        (_recno, content_words) = struct.unpack(">ii", data[off : off + 8])
         off += 8
         end = off + content_words * 2
-        (stype,) = struct.unpack("<i", data[off:off + 4])
+        (stype,) = struct.unpack("<i", data[off : off + 4])
         base = stype % 10 if stype else 0
         pts, parts = [], [0]
-        if base == 1 and stype != 0:                       # Point*
-            x, y = struct.unpack("<dd", data[off + 4:off + 20])
+        if base == 1 and stype != 0:  # Point*
+            x, y = struct.unpack("<dd", data[off + 4 : off + 20])
             pts = [(x, y)]
             parts = [0]
-        elif base in (3, 5):                               # Poly*
-            nparts, npts = struct.unpack("<ii",
-                                         data[off + 36:off + 44])
+        elif base in (3, 5):  # Poly*
+            nparts, npts = struct.unpack("<ii", data[off + 36 : off + 44])
             p0 = off + 44
-            parts = list(struct.unpack("<%di" % nparts,
-                                       data[p0:p0 + 4 * nparts]))
+            parts = list(struct.unpack(f"<{int(nparts)}i", data[p0 : p0 + 4 * nparts]))
             q0 = p0 + 4 * nparts
-            flat = struct.unpack("<%dd" % (2 * npts),
-                                 data[q0:q0 + 16 * npts])
-            pts = [(flat[2 * i], flat[2 * i + 1])
-                   for i in range(npts)]
-        elif base == 8:                                    # MultiPoint*
-            (npts,) = struct.unpack("<i", data[off + 36:off + 40])
+            flat = struct.unpack(f"<{int(2 * npts)}d", data[q0 : q0 + 16 * npts])
+            pts = [(flat[2 * i], flat[2 * i + 1]) for i in range(npts)]
+        elif base == 8:  # MultiPoint*
+            (npts,) = struct.unpack("<i", data[off + 36 : off + 40])
             q0 = off + 40
-            flat = struct.unpack("<%dd" % (2 * npts),
-                                 data[q0:q0 + 16 * npts])
-            pts = [(flat[2 * i], flat[2 * i + 1])
-                   for i in range(npts)]
+            flat = struct.unpack(f"<{int(2 * npts)}d", data[q0 : q0 + 16 * npts])
+            pts = [(flat[2 * i], flat[2 * i + 1]) for i in range(npts)]
             parts = [0]
         shapes.append((stype, pts, parts))
         off = end
@@ -102,7 +103,7 @@ def _read_dbf(path):
     fields = []
     off = 32
     while off < hdr_size - 1 and data[off] != 0x0D:
-        raw = data[off:off + 32]
+        raw = data[off : off + 32]
         name = raw[0:11].split(b"\x00")[0].decode("ascii", "replace")
         ftype = chr(raw[11])
         flen = raw[16]
@@ -114,20 +115,19 @@ def _read_dbf(path):
     for _ in range(nrec):
         if off + rec_size > len(data):
             break
-        row = data[off:off + rec_size]
+        row = data[off : off + rec_size]
         off += rec_size
-        if row[0:1] == b"*":            # deleted record
+        if row[0:1] == b"*":  # deleted record
             continue
         rec = {}
         pos = 1
         for name, ftype, flen, fdec in fields:
-            cell = row[pos:pos + flen]
+            cell = row[pos : pos + flen]
             pos += flen
             txt = cell.decode("latin-1").strip()
             if ftype in ("N", "F") and txt:
                 try:
-                    rec[name] = float(txt) if ("." in txt or fdec) \
-                        else int(txt)
+                    rec[name] = float(txt) if ("." in txt or fdec) else int(txt)
                 except ValueError:
                     rec[name] = txt
             elif ftype == "L":
@@ -165,8 +165,7 @@ class Reader:
         return out
 
     def shapes(self):
-        return [ShapeRecord(st, pts, parts, {})
-                for st, pts, parts in self._shapes]
+        return [ShapeRecord(st, pts, parts, {}) for st, pts, parts in self._shapes]
 
     def __iter__(self):
         return iter(self.shapeRecords())

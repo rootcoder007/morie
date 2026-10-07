@@ -1,7 +1,6 @@
 """Tests for mexht.py - Mexican hat wavelet."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mexht import mexht, mexican_hat
 
 

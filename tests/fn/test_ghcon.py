@@ -1,7 +1,6 @@
 """Tests for ghcon.ghosal_posterior_consistency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghcon import ghosal_posterior_consistency
 
 

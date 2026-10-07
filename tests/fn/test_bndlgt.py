@@ -2,7 +2,6 @@
 
 import math
 
-import pytest
 from morie.fn import _array_core as np
 from morie.fn.bndlgt import bound_logistic
 
@@ -16,9 +15,19 @@ def test_bndlgt_basic():
     X = rng.integers(0, 3, n)
     result = bound_logistic(y, D, X)
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "p1_lower", "p1_upper", "p0_lower", "p0_upper",
-                "n_strata", "n", "method"):
+    for key in (
+        "lower",
+        "upper",
+        "width",
+        "estimate",
+        "p1_lower",
+        "p1_upper",
+        "p0_lower",
+        "p0_upper",
+        "n_strata",
+        "n",
+        "method",
+    ):
         assert key in result
     assert result["n"] == n
     assert 1 <= result["n_strata"] <= 3

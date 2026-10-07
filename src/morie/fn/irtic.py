@@ -51,10 +51,7 @@ def irtic(
         logit = np.clip(a * (theta - b), -700, 700)
         P_star = 1.0 / (1.0 + np.exp(-logit))
 
-        if model == "3PL" and c > 0:
-            P = c + (1.0 - c) * P_star
-        else:
-            P = P_star
+        P = c + (1.0 - c) * P_star if model == "3PL" and c > 0 else P_star
 
         result[name] = P
 

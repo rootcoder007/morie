@@ -51,17 +51,23 @@ def schabenberger_wls_variogram(empirical_variogram, variogram_model="exponentia
     Schabenberger Ch 4, Sec 4.5.1
     """
     lags, ghat, counts = as_empirical_variogram(empirical_variogram)
-    nugget, sill, rng, obj, ok = fit_semivariogram(
-        lags, ghat, counts, model=variogram_model, kind="wls")
+    nugget, sill, rng, obj, ok = fit_semivariogram(lags, ghat, counts, model=variogram_model, kind="wls")
     fitted = semivariogram(lags, nugget, sill, rng, variogram_model)
     return RichResult(
         title="WLS semivariogram fit",
-        summary_lines=[("nugget", nugget), ("partial sill", sill),
-                       ("range", rng), ("weighted sum of squares", obj)],
-        payload={"nugget": nugget, "partial_sill": sill, "sill": nugget + sill,
-                 "range": rng, "objective": obj, "converged": ok,
-                 "n_lags": int(np.size(lags)), "fitted": fitted,
-                 "model": variogram_model, "method": "weighted least squares"},
+        summary_lines=[("nugget", nugget), ("partial sill", sill), ("range", rng), ("weighted sum of squares", obj)],
+        payload={
+            "nugget": nugget,
+            "partial_sill": sill,
+            "sill": nugget + sill,
+            "range": rng,
+            "objective": obj,
+            "converged": ok,
+            "n_lags": int(np.size(lags)),
+            "fitted": fitted,
+            "model": variogram_model,
+            "method": "weighted least squares",
+        },
     )
 
 

@@ -42,7 +42,7 @@ def secant_method(
     f0 = f(x0)
     f1 = f(x1)
     converged = False
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         if abs(f1 - f0) < 1e-30:
             break
         x2 = x1 - f1 * (x1 - x0) / (f1 - f0)

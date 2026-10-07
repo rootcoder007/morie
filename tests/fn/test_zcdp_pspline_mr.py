@@ -1,4 +1,5 @@
 """zCDP accounting, P-splines, and inverse-variance weighted MR."""
+
 import importlib
 import math
 
@@ -63,13 +64,16 @@ def test_the_conversions_do_not_round_trip():
     assert Z.round_trip(1.0, 1e-6)["inflation"] > 1.0
 
 
-@pytest.mark.parametrize("call", [
-    lambda: Z.to_approx_dp(0.1, 0.0),
-    lambda: Z.to_approx_dp(0.1, 1.0),
-    lambda: Z.zcdp_of_gaussian(1.0, 0.0),
-    lambda: Z.group_privacy(0.1, 0),
-    lambda: Z.compose([-0.1]),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: Z.to_approx_dp(0.1, 0.0),
+        lambda: Z.to_approx_dp(0.1, 1.0),
+        lambda: Z.zcdp_of_gaussian(1.0, 0.0),
+        lambda: Z.group_privacy(0.1, 0),
+        lambda: Z.compose([-0.1]),
+    ],
+)
 def test_invalid_privacy_parameters_are_refused(call):
     with pytest.raises(ValueError):
         call()
@@ -78,8 +82,7 @@ def test_invalid_privacy_parameters_are_refused(call):
 def test_the_released_noise_has_the_promised_scale():
     g = Z.gaussian_mechanism(10.0, 1.0, 0.5, seed=1, n=3000)
     m = sum(g["release"]) / len(g["release"])
-    sd = math.sqrt(sum((v - m) ** 2 for v in g["release"])
-                   / len(g["release"]))
+    sd = math.sqrt(sum((v - m) ** 2 for v in g["release"]) / len(g["release"]))
     assert sd == pytest.approx(g["sigma"], rel=0.08)
 
 
@@ -116,20 +119,17 @@ def test_a_second_order_penalty_annihilates_a_line():
     D = S.difference_matrix(6, 2)
     line = [1.0 + 2.0 * k for k in range(6)]
     for row in D:
-        assert sum(row[c] * line[c] for c in range(6)) == \
-            pytest.approx(0.0, abs=1e-12)
+        assert sum(row[c] * line[c] for c in range(6)) == pytest.approx(0.0, abs=1e-12)
 
 
 def test_the_infinite_lambda_limit_is_the_ols_line():
     f = S.fit(X, Y, 10, 3, lam=1e12, order=2)
     mx = sum(X) / N
     my = sum(Y) / N
-    b1 = (sum((X[i] - mx) * (Y[i] - my) for i in range(N))
-          / sum((v - mx) ** 2 for v in X))
+    b1 = sum((X[i] - mx) * (Y[i] - my) for i in range(N)) / sum((v - mx) ** 2 for v in X)
     b0 = my - b1 * mx
     for i in range(N):
-        assert f["fitted"][i] == pytest.approx(b0 + b1 * X[i],
-                                               abs=1e-4)
+        assert f["fitted"][i] == pytest.approx(b0 + b1 * X[i], abs=1e-4)
 
 
 def test_a_first_order_penalty_gives_the_mean():
@@ -151,7 +151,7 @@ def test_leave_one_out_matches_the_hat_diagonal_shortcut():
     quick = S.cross_validation(f)["cv"]
     tot = 0.0
     for i in range(N):
-        fi = S.fit(X[:i] + X[i + 1:], Y[:i] + Y[i + 1:], 8, 3, 1.0, 2)
+        fi = S.fit(X[:i] + X[i + 1 :], Y[:i] + Y[i + 1 :], 8, 3, 1.0, 2)
         tot += (Y[i] - S.predict(fi, [X[i]])[0]) ** 2
     assert quick == pytest.approx(math.sqrt(tot / N), rel=0.1)
 
@@ -174,10 +174,8 @@ def test_choose_lambda_returns_the_grid_minimum():
 # -------------------------------------------------------------- mtr2sx
 def test_ivw_equals_the_weighted_regression_through_the_origin():
     r = M.ivw(BX, SX, BY, SY, model="fixed")
-    assert r["estimate"] == pytest.approx(r["regression_estimate"],
-                                          abs=1e-14)
-    assert r["se"] == pytest.approx(r["regression_se_fixed"],
-                                    abs=1e-14)
+    assert r["estimate"] == pytest.approx(r["regression_estimate"], abs=1e-14)
+    assert r["se"] == pytest.approx(r["regression_se_fixed"], abs=1e-14)
 
 
 def test_one_variant_gives_its_own_ratio():
@@ -187,8 +185,7 @@ def test_one_variant_gives_its_own_ratio():
 
 
 def test_the_ratio_estimates_are_beta_y_over_beta_x():
-    assert M.ratio_estimates([0.2, 0.5], [0.1, 0.2]) == \
-        pytest.approx([0.5, 0.4])
+    assert M.ratio_estimates([0.2, 0.5], [0.1, 0.2]) == pytest.approx([0.5, 0.4])
 
 
 def test_fixed_and_multiplicative_share_the_point_estimate():
@@ -208,8 +205,7 @@ def test_heterogeneity_widens_the_multiplicative_interval_exactly():
     by = [0.05, 0.30, 0.02, 0.40]
     f = M.ivw(BX, SX, by, SY, model="fixed")
     m = M.ivw(BX, SX, by, SY, model="multiplicative")
-    assert m["se"] == pytest.approx(f["se"]
-                                    * math.sqrt(m["Q"] / m["df"]))
+    assert m["se"] == pytest.approx(f["se"] * math.sqrt(m["Q"] / m["df"]))
 
 
 def test_the_additive_model_moves_the_estimate():
@@ -226,13 +222,16 @@ def test_second_order_weights_differ_from_first_order():
     assert abs(a["estimate"] - b["estimate"]) > 1e-8
 
 
-@pytest.mark.parametrize("call", [
-    lambda: M.ivw([0.0, 0.2], SX[:2], BY[:2], SY[:2]),
-    lambda: M.ivw(BX, SX, BY[:2], SY),
-    lambda: M.ivw(BX, SX, BY, [0.0] * 4),
-    lambda: M.ivw(BX, SX, BY, SY, model="bayesian"),
-    lambda: M.ivw(BX, SX, BY, SY, weights="third_order"),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: M.ivw([0.0, 0.2], SX[:2], BY[:2], SY[:2]),
+        lambda: M.ivw(BX, SX, BY[:2], SY),
+        lambda: M.ivw(BX, SX, BY, [0.0] * 4),
+        lambda: M.ivw(BX, SX, BY, SY, model="bayesian"),
+        lambda: M.ivw(BX, SX, BY, SY, weights="third_order"),
+    ],
+)
 def test_invalid_mr_inputs_are_refused(call):
     with pytest.raises(ValueError):
         call()

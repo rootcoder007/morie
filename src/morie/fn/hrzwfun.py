@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_nls_weight_function"]
 
 
-def horowitz_nls_weight_function(x, y, bandwidth=None, weights=None,
-                                 beta_hat=None):
+def horowitz_nls_weight_function(x, y, bandwidth=None, weights=None, beta_hat=None):
     r"""The efficient weight function for semiparametric weighted NLS
     in a single-index model (Horowitz Sec. 2.5.2):
 
@@ -118,8 +117,7 @@ def horowitz_nls_weight_function(x, y, bandwidth=None, weights=None,
         if b.size != d:
             raise ValueError(f"beta_hat has {b.size} entries for {d}.")
         if b[0] == 0:
-            raise ValueError("the scale normalisation needs a nonzero first "
-                             "coefficient.")
+            raise ValueError("the scale normalisation needs a nonzero first coefficient.")
         b = b / abs(b[0])
 
     z = X @ b
@@ -153,9 +151,7 @@ def horowitz_nls_weight_function(x, y, bandwidth=None, weights=None,
     gp[o] = np.gradient(Ghat[o], z[o])
     # dG/db_tilde = G'(z) * (X_tilde - E[X_tilde | index])
     Xt = X[:, 1:]
-    Xbar = np.column_stack([
-        nw_regression(z, Xt[:, j], grid=z, h=hh)[1]
-        for j in range(d - 1)])
+    Xbar = np.column_stack([nw_regression(z, Xt[:, j], grid=z, h=hh)[1] for j in range(d - 1)])
     dG = gp[:, None] * (Xt - Xbar)
 
     C = 2.0 * (dG * w[:, None]).T @ dG / n
@@ -165,15 +161,25 @@ def horowitz_nls_weight_function(x, y, bandwidth=None, weights=None,
     # the bound (2.32): {E[1(X in A_x)/sigma^2 dG dG']}^{-1}
     omega_si = np.linalg.pinv((dG / np.maximum(s2, 1e-12)[:, None]).T @ dG / n)
 
-    return RichResult(payload={
-        "beta": b, "weights": w, "sigma2_hat": s2,
-        "omega": omega, "omega_SI": omega_si, "C": C, "D": D,
-        "max_weight": float(np.max(w)),
-        "efficient_weight_used": efficient,
-        "efficiency_loss_from_unknown_G": True,
-        "rate_loss_from_unknown_G": False,
-        "bandwidth": hh, "n": int(n), "d": int(d),
-        "method": "W = 1/sigma^2 attains Omega_SI; a two-step estimate of sigma^2 loses nothing"})
+    return RichResult(
+        payload={
+            "beta": b,
+            "weights": w,
+            "sigma2_hat": s2,
+            "omega": omega,
+            "omega_SI": omega_si,
+            "C": C,
+            "D": D,
+            "max_weight": float(np.max(w)),
+            "efficient_weight_used": efficient,
+            "efficiency_loss_from_unknown_G": True,
+            "rate_loss_from_unknown_G": False,
+            "bandwidth": hh,
+            "n": int(n),
+            "d": int(d),
+            "method": "W = 1/sigma^2 attains Omega_SI; a two-step estimate of sigma^2 loses nothing",
+        }
+    )
 
 
 def cheatsheet():

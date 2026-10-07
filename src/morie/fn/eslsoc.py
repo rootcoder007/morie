@@ -90,7 +90,7 @@ def esl_self_organize(X, grid=(5, 5), eta=0.5, n_epochs=50, sigma0=None, seed=0)
     if rows < 1 or cols < 1:
         raise ValueError("grid dimensions must be positive")
     K = rows * cols
-    if K > n:
+    if n < K:
         raise ValueError(f"grid has {K} nodes but there are only {n} observations")
 
     lattice = np.array([(i, j) for i in range(rows) for j in range(cols)], dtype=float)
@@ -118,13 +118,16 @@ def esl_self_organize(X, grid=(5, 5), eta=0.5, n_epochs=50, sigma0=None, seed=0)
     te = float(np.mean(Dlat[order[:, 0], order[:, 1]] > 2.0))
     return RichResult(
         title="Self-organizing map",
-        summary_lines=[("n", n), ("grid", f"{rows}x{cols}"),
-                       ("quantization error", qe), ("topographic error", te)],
+        summary_lines=[("n", n), ("grid", f"{rows}x{cols}"), ("quantization error", qe), ("topographic error", te)],
         payload={
-            "prototypes": M, "lattice": lattice, "assignment": assign,
-            "quantization_error": qe, "topographic_error": te,
+            "prototypes": M,
+            "lattice": lattice,
+            "assignment": assign,
+            "quantization_error": qe,
+            "topographic_error": te,
             "counts": np.bincount(assign, minlength=K),
-            "grid": (rows, cols), "n_epochs": int(n_epochs),
+            "grid": (rows, cols),
+            "n_epochs": int(n_epochs),
             "method": "esl_self_organize",
         },
     )

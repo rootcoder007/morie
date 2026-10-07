@@ -9,8 +9,7 @@ from morie.fn.rmsdtr import rmsdtr
 
 
 def _shape():
-    return [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
-            [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]]
+    return [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]]
 
 
 def _rotate_z(P, ang):
@@ -29,7 +28,7 @@ def test_a_pure_rotation_and_translation_is_removed():
     Q = [[v + 5.0 for v in p] for p in _rotate_z(P, 0.7)]
     res = rmsdtr(P, Q)
     assert res["estimate"] < 1e-9
-    assert abs(res["det"] - 1.0) < 1e-9      # a proper rotation
+    assert abs(res["det"] - 1.0) < 1e-9  # a proper rotation
 
 
 def test_the_rotation_matrix_is_orthonormal():
@@ -39,8 +38,7 @@ def test_the_rotation_matrix_is_orthonormal():
     for i in range(3):
         assert abs(sum(R[i][k] ** 2 for k in range(3)) - 1.0) < 1e-9
         for j in range(i + 1, 3):
-            assert abs(sum(R[i][k] * R[j][k]
-                           for k in range(3))) < 1e-9
+            assert abs(sum(R[i][k] * R[j][k] for k in range(3))) < 1e-9
 
 
 def test_a_real_deformation_leaves_a_positive_rmsd():
@@ -73,10 +71,12 @@ def test_a_reflection_is_not_used():
 
 def test_validation():
     P = _shape()
-    for call in (lambda: rmsdtr(P[:2], P[:2]),
-                 lambda: rmsdtr(P, [p[:2] for p in P]),
-                 lambda: rmsdtr(P, P, weights=[0.0] * 5),
-                 lambda: rmsdtr(P, P, weights=[-1.0] * 5)):
+    for call in (
+        lambda: rmsdtr(P[:2], P[:2]),
+        lambda: rmsdtr(P, [p[:2] for p in P]),
+        lambda: rmsdtr(P, P, weights=[0.0] * 5),
+        lambda: rmsdtr(P, P, weights=[-1.0] * 5),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

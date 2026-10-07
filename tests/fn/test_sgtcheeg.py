@@ -8,8 +8,14 @@ import pytest
 from morie.fn.sgtcheeg import sgt_cheeger_constant
 
 # two triangles joined by the bridge 2-3
-A = [[0, 1, 1, 0, 0, 0], [1, 0, 1, 0, 0, 0], [1, 1, 0, 1, 0, 0],
-     [0, 0, 1, 0, 1, 1], [0, 0, 0, 1, 0, 1], [0, 0, 0, 1, 1, 0]]
+A = [
+    [0, 1, 1, 0, 0, 0],
+    [1, 0, 1, 0, 0, 0],
+    [1, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 1, 1],
+    [0, 0, 0, 1, 0, 1],
+    [0, 0, 0, 1, 1, 0],
+]
 
 
 def _h_exact():

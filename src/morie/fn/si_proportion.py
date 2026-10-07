@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def si_proportion(y):
     """
     value = _brus.si_proportion(y)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (3.6)"
     return RichResult(
-        title='Sample proportion from 0/1 indicators',
+        title="Sample proportion from 0/1 indicators",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r3e6: p_hat = (1/n) sum y_k [Brus 2022, eq. 3.6]'
+    return "r3e6: p_hat = (1/n) sum y_k [Brus 2022, eq. 3.6]"
 
 
 # compact alias per ledger/NAMING.md

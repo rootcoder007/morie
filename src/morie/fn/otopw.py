@@ -20,15 +20,13 @@ from __future__ import annotations
 import math
 
 from . import _array_core as np  # noqa: F401
-from . import _s03core as k
 from ._richresult import RichResult
 from .otsklog import ot_sinkhorn_log
 
 __all__ = ["ot_optimised_potentials_warm"]
 
 
-def ot_optimised_potentials_warm(a, b, C, epsilon=0.1, f0=None, g0=None,
-                                 max_iter=200, tol=1e-13):
+def ot_optimised_potentials_warm(a, b, C, epsilon=0.1, f0=None, g0=None, max_iter=200, tol=1e-13):
     """Resume Sinkhorn from (f0, g0), and report what the warm start saved.
 
     Returns
@@ -46,8 +44,7 @@ def ot_optimised_potentials_warm(a, b, C, epsilon=0.1, f0=None, g0=None,
     v = [math.exp(x / e) for x in warm["g"]]
     return RichResult(
         title="Warm-started Sinkhorn",
-        summary_lines=[("iterations", warm["n_iter"]),
-                       ("cold-start iterations", cold["n_iter"])],
+        summary_lines=[("iterations", warm["n_iter"]), ("cold-start iterations", cold["n_iter"])],
         payload={
             "T": warm["T"],
             "f": warm["f"],

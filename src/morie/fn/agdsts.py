@@ -85,10 +85,19 @@ def distilkl(teacher, student, temperature=2.0, label=None, alpha=0.5):
         q1 = _softmax(s, 1.0)
         hard = -math.log(q1[j])
         total = a * T * T * ce + (1.0 - a) * hard
-    return RichResult(payload={
-        "softce": ce, "kl": kl, "hardce": hard, "total": total,
-        "teacherprob": p, "studentprob": q, "temperature": T, "k": k,
-        "method": "Temperature-scaled distillation loss (Hinton et al. 2015 Sect. 2)"})
+    return RichResult(
+        payload={
+            "softce": ce,
+            "kl": kl,
+            "hardce": hard,
+            "total": total,
+            "teacherprob": p,
+            "studentprob": q,
+            "temperature": T,
+            "k": k,
+            "method": "Temperature-scaled distillation loss (Hinton et al. 2015 Sect. 2)",
+        }
+    )
 
 
 alphazero_distill_student = distilkl

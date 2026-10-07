@@ -14,8 +14,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_poi_ker"]
 
 
-def ghosal_poi_ker(k_values, lambdas=None, weights=None, alpha=1.0,
-                   n_terms=100, seed=42):
+def ghosal_poi_ker(k_values, lambdas=None, weights=None, alpha=1.0, n_terms=100, seed=42):
     """f(k) = int Poi(k; lambda) dG(lambda), G ~ DP (eq. 5.1 with a
     Poisson kernel, sec. 5.5): evaluates the mixture pmf either at
     supplied atoms/weights or at a stick-breaking draw with a gamma
@@ -30,13 +29,12 @@ def ghosal_poi_ker(k_values, lambdas=None, weights=None, alpha=1.0,
     else:
         lambdas = _bnp._flat(lambdas)
         weights = _bnp.normalize_weights(weights)
+
     def poi(k, lam):
-        return math.exp(-lam + k * math.log(lam)
-                        - math.lgamma(k + 1.0))
-    pmf = [sum(w * poi(k, l) for w, l in zip(weights, lambdas))
-           for k in ks]
-    res = RichResult(payload={"estimate": pmf[0], "pmf": pmf,
-                              "method": "Poisson DP mixture (GvdV 2017 sec. 5.5)"})
+        return math.exp(-lam + k * math.log(lam) - math.lgamma(k + 1.0))
+
+    pmf = [sum(w * poi(k, ell) for w, ell in zip(weights, lambdas)) for k in ks]
+    res = RichResult(payload={"estimate": pmf[0], "pmf": pmf, "method": "Poisson DP mixture (GvdV 2017 sec. 5.5)"})
     return with_describe_pointer(res, "gh_c5_10")
 
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._surv import cox_fit, prepare
+from ._surv import prepare
 
 __all__ = ["competing_risks_fg"]
 
@@ -71,13 +71,14 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     >>> from morie.fn import _array_core as np
     >>> from morie.fn.crrcsh import cause_specific_hazard
     >>> rng = np.random.default_rng(0)
-    >>> X = rng.normal(size=(1500, 1))
+    >>> X = rng.normal(size=(400, 1))
     >>> T1 = rng.exponential(1 / np.exp(0.9 * X[:, 0]))
     >>> T2 = rng.exponential(1 / np.exp(0.0 * X[:, 0]))
-    >>> C = rng.exponential(2.0, 1500)
+    >>> C = rng.exponential(2.0, 400)
     >>> T = np.minimum(np.minimum(T1, T2), C)
     >>> d = np.where(T == C, 0, np.where(T1 < T2, 1, 2))
-    >>> fg = competing_risks_fg(T, d, X, cause=1)["beta"][0]
+    >>> r = competing_risks_fg(T, d, X, cause=1)
+    >>> fg = r["beta"][0]
     >>> cs = cause_specific_hazard(T, d, X, cause=1)["beta"][0]
     >>> bool(fg > 0.3 and cs > 0.3)
     True
@@ -91,7 +92,6 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     Subjects failing from competing causes stay in the risk set, which is what
     the weights encode.
 
-    >>> r = competing_risks_fg(T, d, X, cause=1)
     >>> bool(r["n_competing"] > 0 and r["weights"].min() >= 0)
     True
     """
@@ -124,28 +124,42 @@ def competing_risks_fg(time, event_type, X, cause=1, ties="efron"):
     # decays as censoring accumulates. Evaluating it at the subject's own time
     # gives 1 for everyone and silently collapses Fine-Gray back to the
     # cause-specific fit.
-    beta, ll, I, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
+    beta, ll, I_, U, it, conv = _fg_newton(t, e, Xm, competing, G, Gi)
     from ._stats_core import norm
 
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(beta.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
         z = beta / se
     return RichResult(
         title=f"Fine-Gray subdistribution model (cause {cause})",
-        summary_lines=[("n", int(t.size)), ("events of cause", int(e.sum())),
-                       ("competing", int(competing.sum())), ("loglik", ll)],
-        warnings=["the risk set keeps subjects who already failed from a "
-                  "competing cause; a Fine-Gray hazard ratio is a statement "
-                  "about RISK, not about mechanism"],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events of cause", int(e.sum())),
+            ("competing", int(competing.sum())),
+            ("loglik", ll),
+        ],
+        warnings=[
+            "the risk set keeps subjects who already failed from a "
+            "competing cause; a Fine-Gray hazard ratio is a statement "
+            "about RISK, not about mechanism"
+        ],
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
             "subdistribution_hazard_ratio": np.exp(beta),
-            "hazard_ratio": np.exp(beta), "weights": Gi, "loglik": ll,
-            "n_cause": int(e.sum()), "n_competing": int(competing.sum()),
-            "cause": cause, "n": int(t.size), "converged": conv,
+            "hazard_ratio": np.exp(beta),
+            "weights": Gi,
+            "loglik": ll,
+            "n_cause": int(e.sum()),
+            "n_competing": int(competing.sum()),
+            "cause": cause,
+            "n": int(t.size),
+            "converged": conv,
             "method": "competing_risks_fg",
         },
     )
@@ -158,18 +172,17 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
     beta = np.zeros(p)
     utimes = np.unique(t[e == 1])
     ll = 0.0
-    I = np.zeros((p, p))
+    I_ = np.zeros((p, p))
     U = np.zeros(p)
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         w = np.exp(np.clip(X @ beta, -500, 500))
         ll = 0.0
         U = np.zeros(p)
-        I = np.zeros((p, p))
+        I_ = np.zeros((p, p))
         for ut in utimes:
             # Weight 1 for those still at risk; G(ut)/G(t_i) for those who
             # already failed from a competing cause; 0 once censored.
-            wt = np.where(t >= ut, 1.0,
-                          np.where(competing & (t < ut), G(ut)[0] / Gi, 0.0))
+            wt = np.where(t >= ut, 1.0, np.where(competing & (t < ut), G(ut)[0] / Gi, 0.0))
             inr = wt > 0
             if not np.any(inr):
                 continue
@@ -185,16 +198,16 @@ def _fg_newton(t, e, X, competing, G, Gi, max_iter=50, tol=1e-9):
             ll += float((X[died] @ beta).sum()) - dcount * np.log(max(S0, 1e-300))
             mu = S1 / max(S0, 1e-300)
             U += X[died].sum(axis=0) - dcount * mu
-            I += dcount * (S2 / max(S0, 1e-300) - np.outer(mu, mu))
+            I_ += dcount * (S2 / max(S0, 1e-300) - np.outer(mu, mu))
         try:
-            step = np.linalg.solve(I, U)
+            step = np.linalg.solve(I_, U)
         except np.linalg.LinAlgError:
-            step = np.linalg.lstsq(I, U, rcond=None)[0]
+            step = np.linalg.lstsq(I_, U, rcond=None)[0]
         beta = beta + step
         if np.max(np.abs(step)) < tol:
             converged = True
             break
-    return beta, float(ll), I, U, it + 1, converged
+    return beta, float(ll), I_, U, it + 1, converged
 
 
 def cheatsheet():

@@ -144,17 +144,21 @@ def causal_iptw_atoweights(treat, ps, estimand="ato", trim=None, stabilize=True)
     share = float(w.max() / tot) if tot > 0 else float("nan")
     ess = float(tot**2 / max(float(np.sum(w**2)), 1e-300))
     if share > 0.1:
-        warn.append(f"one unit carries {share:.1%} of the total weight; the "
-                    "estimate is dominated by a handful of observations")
+        warn.append(
+            f"one unit carries {share:.1%} of the total weight; the estimate is dominated by a handful of observations"
+        )
     return RichResult(
         title=f"Propensity weights ({estimand.upper()})",
-        summary_lines=[("n", int(tr.size)), ("estimand", estimand.upper()),
-                       ("ESS", ess), ("max weight share", share)],
+        summary_lines=[("n", int(tr.size)), ("estimand", estimand.upper()), ("ESS", ess), ("max weight share", share)],
         warnings=warn,
         payload={
-            "weights": w, "estimand": estimand, "ess": ess,
-            "max_weight_share": share, "n_trimmed": int((~keep).sum()),
-            "kept": keep, "n": int(tr.size),
+            "weights": w,
+            "estimand": estimand,
+            "ess": ess,
+            "max_weight_share": share,
+            "n_trimmed": int((~keep).sum()),
+            "kept": keep,
+            "n": int(tr.size),
             "method": "causal_iptw_atoweights",
         },
     )

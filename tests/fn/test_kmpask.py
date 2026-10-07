@@ -1,7 +1,5 @@
 """Tests for kmpask.kamath_pass_at_k."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmpask import kamath_pass_at_k
 
 
@@ -36,7 +34,7 @@ import morie.fn.kmpask as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

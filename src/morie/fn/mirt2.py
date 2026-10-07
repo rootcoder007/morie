@@ -84,10 +84,7 @@ def mirt_2d_compensatory(y, theta, a, d, c=0.0, D=1.0):
         raise ValueError("c must lie in [0, 1)")
     dd = float(d)
     Dm = float(D)
-    if m == 1:
-        th = [[v] for v in C.vec(theta)]
-    else:
-        th = C.mat(theta)
+    th = [[v] for v in C.vec(theta)] if m == 1 else C.mat(theta)
     if len(th) != n:
         raise ValueError("theta must have one row per response")
     for row in th:
@@ -106,10 +103,18 @@ def mirt_2d_compensatory(y, theta, a, d, c=0.0, D=1.0):
         p.append(pi)
         ll += math.log(pi) if yv[i] == 1.0 else math.log(1.0 - pi)
     pbar = sum(p) / n
-    return RichResult(payload={
-        "estimate": ll, "loglik": ll, "p": p, "pbar": pbar,
-        "deviance": -2.0 * ll, "n": n, "m": m,
-        "method": "Compensatory multidimensional IRT (Chalmers 2012 eq. 1)"})
+    return RichResult(
+        payload={
+            "estimate": ll,
+            "loglik": ll,
+            "p": p,
+            "pbar": pbar,
+            "deviance": -2.0 * ll,
+            "n": n,
+            "m": m,
+            "method": "Compensatory multidimensional IRT (Chalmers 2012 eq. 1)",
+        }
+    )
 
 
 mirt2dcompensatory = mirt_2d_compensatory

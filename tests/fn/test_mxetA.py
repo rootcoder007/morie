@@ -8,8 +8,7 @@ from morie.fn.mxetA import mxetA
 
 def _spectral(n_t=5, m=3):
     # m spectral functions over n_t sites, all non-negative
-    return [[1.0 + 0.5 * ((t + k) % 3) for k in range(m)]
-            for t in range(n_t)]
+    return [[1.0 + 0.5 * ((t + k) % 3) for k in range(m)] for t in range(n_t)]
 
 
 def test_the_fields_have_the_right_shape():
@@ -29,6 +28,7 @@ def test_the_values_are_positive():
 def test_the_margins_are_unit_frechet():
     # P(Z <= z) = exp(-1/z), so the median is 1 / log 2 = 1.4427
     import math
+
     res = mxetA(_spectral(n_t=1, m=1), n_sim=400, seed=3)
     vals = sorted(f[0] for f in res["fields"])
     median = vals[len(vals) // 2]
@@ -47,9 +47,11 @@ def test_scales_are_reported():
 
 
 def test_validation():
-    for call in (lambda: mxetA([[1.0, 2.0], [1.0]]),
-                 lambda: mxetA([[-1.0, 2.0], [1.0, 1.0]]),
-                 lambda: mxetA([[0.0, 0.0], [0.0, 0.0]])):
+    for call in (
+        lambda: mxetA([[1.0, 2.0], [1.0]]),
+        lambda: mxetA([[-1.0, 2.0], [1.0, 1.0]]),
+        lambda: mxetA([[0.0, 0.0], [0.0, 0.0]]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

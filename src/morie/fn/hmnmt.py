@@ -90,7 +90,9 @@ def geron_encoder_decoder_nmt(src, tgt, model, max_len=None, eos=None):
         if p.size == 0:
             raise ValueError(f"geron_encoder_decoder_nmt: decode returned no probabilities at step {i}")
         if np.any(p < 0) or not np.isclose(float(p.sum()), 1.0, atol=1e-6):
-            raise ValueError(f"geron_encoder_decoder_nmt: decode must return a probability vector; step {i} sums to {p.sum()}")
+            raise ValueError(
+                f"geron_encoder_decoder_nmt: decode must return a probability vector; step {i} sums to {p.sum()}"
+            )
         if not (0 <= t[i] < p.size):
             raise ValueError(f"geron_encoder_decoder_nmt: target token {t[i]} is outside the {p.size}-token vocabulary")
         losses.append(float(-np.log(max(float(p[t[i]]), 1e-300))))
@@ -110,7 +112,11 @@ def geron_encoder_decoder_nmt(src, tgt, model, max_len=None, eos=None):
     mean = total / len(t)
     return RichResult(
         title="Encoder-decoder NMT",
-        summary_lines=[("Teacher-forced loss", total), ("Perplexity", float(np.exp(mean))), ("Greedy length", len(greedy))],
+        summary_lines=[
+            ("Teacher-forced loss", total),
+            ("Perplexity", float(np.exp(mean))),
+            ("Greedy length", len(greedy)),
+        ],
         interpretation="Teacher forcing conditions on the true prefix; greedy decoding does not, and that gap is exposure bias.",
         payload={
             "loss": total,

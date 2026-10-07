@@ -82,8 +82,7 @@ def causal_iv_liml(y, X, Z, exog=None, fuller=None, endog=None):
     n, k = Xm.shape
     m = Zm.shape[1]
     if m < k:
-        raise ValueError(
-            f"the order condition fails: {m} instruments for {k} regressors.")
+        raise ValueError(f"the order condition fails: {m} instruments for {k} regressors.")
     # Ybar holds y and the ENDOGENOUS regressors only. Including an
     # exogenous column -- the constant above all -- puts a column in
     # Ybar that M_W annihilates exactly, so B is singular, its
@@ -115,9 +114,9 @@ def causal_iv_liml(y, X, Z, exog=None, fuller=None, endog=None):
             "no endogenous regressor was identified: every column of X also "
             "appears in Z, so there is nothing to instrument and LIML "
             "reduces to least squares. Pass endog explicitly if the "
-            "detection is wrong.")
-    W = (add_intercept(Xm[:, is_exog]) if exog is None
-         else add_intercept(np.atleast_2d(np.asarray(exog, dtype=float))))
+            "detection is wrong."
+        )
+    W = add_intercept(Xm[:, is_exog]) if exog is None else add_intercept(np.atleast_2d(np.asarray(exog, dtype=float)))
     Ybar = np.column_stack([yv, Xm[:, ~is_exog]])
     A = Ybar.T @ annihilator(Zm, Ybar)
     B = Ybar.T @ annihilator(W, Ybar)
@@ -138,24 +137,32 @@ def causal_iv_liml(y, X, Z, exog=None, fuller=None, endog=None):
     A2 = Xm.T @ Xm - kappa * (Xm.T @ MzX)
     bread = np.linalg.pinv(A2)
     Xt = Xm - kappa * MzX
-    V = bread @ (Xt.T @ (Xt * (u ** 2)[:, None])) @ bread
+    V = bread @ (Xt.T @ (Xt * (u**2)[:, None])) @ bread
     se = np.sqrt(np.maximum(np.diag(V), 0.0))
-    return RichResult(payload={
-        "beta": beta, "se": se, "residuals": u,
-        "kappa": kappa, "kappa_minus_one": kappa - 1.0,
-        "just_identified": bool(nres == 0),
-        "endogenous_columns": np.flatnonzero(~is_exog),
-        "equals_2sls": bool(abs(kappa - 1.0) < 1e-9),
-        "fuller_a": None if fuller is None else float(fuller),
-        "n_overid_restrictions": int(nres),
-        "kappa_fact": "kappa >= 1 always, and equals 1 exactly when the "
-                      "model is just identified, where LIML IS 2SLS",
-        "versus_2sls": "2SLS is biased toward OLS and the bias grows with "
-                       "the instrument count; LIML is approximately "
-                       "median-unbiased there but has heavier tails and, "
-                       "with irrelevant instruments, no finite moments",
-        "n": int(n), "k": int(k), "m": int(m),
-        "method": "LIML as the k-class estimator with k = the Anderson-Rubin ratio"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "residuals": u,
+            "kappa": kappa,
+            "kappa_minus_one": kappa - 1.0,
+            "just_identified": bool(nres == 0),
+            "endogenous_columns": np.flatnonzero(~is_exog),
+            "equals_2sls": bool(abs(kappa - 1.0) < 1e-9),
+            "fuller_a": None if fuller is None else float(fuller),
+            "n_overid_restrictions": int(nres),
+            "kappa_fact": "kappa >= 1 always, and equals 1 exactly when the "
+            "model is just identified, where LIML IS 2SLS",
+            "versus_2sls": "2SLS is biased toward OLS and the bias grows with "
+            "the instrument count; LIML is approximately "
+            "median-unbiased there but has heavier tails and, "
+            "with irrelevant instruments, no finite moments",
+            "n": int(n),
+            "k": int(k),
+            "m": int(m),
+            "method": "LIML as the k-class estimator with k = the Anderson-Rubin ratio",
+        }
+    )
 
 
 def cheatsheet():

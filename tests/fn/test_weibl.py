@@ -1,7 +1,6 @@
 """Tests for morie.fn.weibl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.weibl import weibl
 
 

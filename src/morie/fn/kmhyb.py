@@ -32,9 +32,7 @@ def kamath_hybrid_retrieval_fusion(s_dense, s_sparse, lam, normalize=False):
     s = np.atleast_1d(np.asarray(s_sparse, dtype=float)).ravel()
     lam = float(lam)
     if d.size != s.size:
-        raise ValueError(
-            f"the two arms score different numbers of documents: "
-            f"{d.size} dense vs {s.size} sparse.")
+        raise ValueError(f"the two arms score different numbers of documents: {d.size} dense vs {s.size} sparse.")
     if d.size == 0:
         raise ValueError("no documents to fuse.")
     if not 0.0 <= lam <= 1.0:
@@ -47,19 +45,24 @@ def kamath_hybrid_retrieval_fusion(s_dense, s_sparse, lam, normalize=False):
         if hi == lo:
             raise ValueError(
                 "an arm gives every document the same score, so min-max "
-                "normalisation is 0/0; fuse the raw scores instead.")
+                "normalisation is 0/0; fuse the raw scores instead."
+            )
         return (v - lo) / (hi - lo)
 
     dd, ss = (mm(d), mm(s)) if normalize else (d, s)
     fused = lam * dd + (1.0 - lam) * ss
     order = np.argsort(-fused, kind="stable")
-    return RichResult(payload={
-        "scores": [float(v) for v in fused],
-        "ranking": [int(i) for i in order],
-        "estimate": float(fused[order[0]]),
-        "lam": lam, "normalized": bool(normalize),
-        "n": int(fused.size),
-        "method": "Hybrid dense/sparse score fusion"})
+    return RichResult(
+        payload={
+            "scores": [float(v) for v in fused],
+            "ranking": [int(i) for i in order],
+            "estimate": float(fused[order[0]]),
+            "lam": lam,
+            "normalized": bool(normalize),
+            "n": int(fused.size),
+            "method": "Hybrid dense/sparse score fusion",
+        }
+    )
 
 
 def cheatsheet():

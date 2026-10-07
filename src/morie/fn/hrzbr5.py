@@ -97,7 +97,7 @@ def horowitz_bias_reduction_deconv(bandwidth, kernel_order):
         raise ValueError("horowitz_bias_reduction_deconv: bandwidth must be positive")
     poly = [0.0] * (r - 1)
     for j in range(r // 2):
-        w = ((-1.0) ** j) / ((2.0 ** j) * math.factorial(j))
+        w = ((-1.0) ** j) / ((2.0**j) * math.factorial(j))
         hc = _hermite_coeffs(2 * j)
         for i in range(len(hc)):
             poly[i] += w * hc[i]
@@ -112,8 +112,8 @@ def horowitz_bias_reduction_deconv(bandwidth, kernel_order):
         title="Higher-order kernel bias reduction",
         summary_lines=[("order", r), ("bandwidth", h)],
         payload={
-            "estimate": h ** r,
-            "reduced_bias_estimate": h ** r,
+            "estimate": h**r,
+            "reduced_bias_estimate": h**r,
             "bias_order": r,
             "kernel_order": r,
             "bandwidth": h,

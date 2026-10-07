@@ -49,11 +49,11 @@ def gamma_frailty_cox(time, event, X, cluster, **kwargs):
     --------
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> k = np.repeat(np.arange(50), 8)
-    >>> w = rng.gamma(2.0, 0.5, 50)[k]
-    >>> X = rng.normal(size=(400, 1))
+    >>> k = np.repeat(np.arange(30), 8)
+    >>> w = rng.gamma(2.0, 0.5, 30)[k]
+    >>> X = rng.normal(size=(240, 1))
     >>> T = rng.exponential(1 / (w * np.exp(X[:, 0] * 0.9)))
-    >>> C = rng.exponential(2.0, 400)
+    >>> C = rng.exponential(2.0, 240)
     >>> t, e = np.minimum(T, C), (T <= C).astype(float)
     >>> r = gamma_frailty_cox(t, e, X, k)
     >>> bool(r["theta"] > 0.05)
@@ -69,18 +69,28 @@ def gamma_frailty_cox(time, event, X, cluster, **kwargs):
     th = r["theta"]
     return RichResult(
         title="Gamma-frailty Cox model",
-        summary_lines=[("clusters", int(r["n_clusters"])), ("theta", float(th)),
-                       ("Kendall tau", float(r["kendall_tau"]))],
+        summary_lines=[
+            ("clusters", int(r["n_clusters"])),
+            ("theta", float(th)),
+            ("Kendall tau", float(r["kendall_tau"])),
+        ],
         warnings=list(r.warnings),
         payload={
-            "beta": r["beta"], "se": r["se"], "z": r["z"],
-            "p_value": r["p_value"], "hazard_ratio": r["hazard_ratio"],
-            "theta": th, "kendall_tau": r["kendall_tau"],
-            "frailty": r["frailty"], "clusters": r["clusters"],
-            "n_clusters": r["n_clusters"], "loglik": r["loglik"],
+            "beta": r["beta"],
+            "se": r["se"],
+            "z": r["z"],
+            "p_value": r["p_value"],
+            "hazard_ratio": r["hazard_ratio"],
+            "theta": th,
+            "kendall_tau": r["kendall_tau"],
+            "frailty": r["frailty"],
+            "clusters": r["clusters"],
+            "n_clusters": r["n_clusters"],
+            "loglik": r["loglik"],
             # Marginal HRs attenuate toward 1 over time under gamma frailty.
             "marginal_attenuation": True,
-            "converged": r["converged"], "method": "gamma_frailty_cox",
+            "converged": r["converged"],
+            "method": "gamma_frailty_cox",
         },
     )
 

@@ -5,9 +5,7 @@ import math
 import pytest
 
 from morie.fn.grsig import geron_sigmoid
-
 from morie.fn.grsnt import geron_sentiment_binary
-
 
 E = [[1.0, -0.5], [2.0, 0.0], [-1.0, 3.0]]
 W = [0.8, -0.3]
@@ -32,5 +30,3 @@ def test_grsnt_edge():
     assert isinstance(geron_sigmoid(1.5)["sigma"], float)
     with pytest.raises(ValueError, match="pooling"):
         geron_sentiment_binary([0], E, W, pooling="median")
-
-

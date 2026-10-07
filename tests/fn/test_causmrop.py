@@ -1,8 +1,8 @@
 """Tests for causmrop.causal_robins_g_formula."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causmrop import causal_robins_g_formula
 
 

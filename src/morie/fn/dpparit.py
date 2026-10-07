@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Pitman-Yor two-parameter seating process."""
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -65,14 +63,16 @@ def pitman_yor_process(n=100, alpha=1.0, sigma=0.5, seed=42):
             counts.append(0)
         counts[pick] += 1
     K = len(counts)
-    return RichResult(payload={
-        "estimate": K,
-        "K": K,
-        "counts": counts,
-        "p_new": (alpha + sigma * K) / (n + alpha),
-        "n": n,
-        "method": "Pitman-Yor two-parameter seating process",
-    })
+    return RichResult(
+        payload={
+            "estimate": K,
+            "K": K,
+            "counts": counts,
+            "p_new": (alpha + sigma * K) / (n + alpha),
+            "n": n,
+            "method": "Pitman-Yor two-parameter seating process",
+        }
+    )
 
 
 def cheatsheet():

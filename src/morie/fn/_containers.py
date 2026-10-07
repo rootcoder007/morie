@@ -123,7 +123,7 @@ class ESRes:
 
 
 @dataclass
-class TestResult:  # noqa: pytest collection disabled via __test__ = False
+class TestResult:  # pytest collection disabled via __test__ = False
     """Result from a hypothesis test."""
 
     __test__ = False
@@ -241,8 +241,8 @@ class TimeSeriesResult:
     def __getattr__(self, item: str):
         try:
             return object.__getattribute__(self, "extra")[item]
-        except KeyError:
-            raise AttributeError(f"'TimeSeriesResult' object has no attribute {item!r}")
+        except KeyError as exc:
+            raise AttributeError(f"'TimeSeriesResult' object has no attribute {item!r}") from exc
 
     def summary(self) -> str:
         n = len(self.values) if self.values is not None else 0
@@ -545,7 +545,7 @@ class SIRResult:
     model: str  # "SIR", "SEIR", etc.
     t: np.ndarray | None = None  # time points
     S: np.ndarray | None = None  # susceptible
-    I: np.ndarray | None = None  # infected
+    I: np.ndarray | None = None  # infected  # noqa: E741
     R: np.ndarray | None = None  # recovered
     E: np.ndarray | None = None  # exposed (SEIR only)
     R0: float | None = None

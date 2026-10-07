@@ -1,10 +1,10 @@
 """Tests for copExt."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn._copula import copula_cdf
 from morie.fn.copExt import extremal_copula
+
 
 def test_copExt_basic():
     c = extremal_copula(0.4, 0.7, "gumbel", 2.0)

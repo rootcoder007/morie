@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Gene-set enrichment analysis (GSEA) running-sum statistic."""
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 from ._rrng_core import RRandom
@@ -127,8 +125,7 @@ def gnsetenr(correlations, in_set, p=1.0, nperm=0, seed=None):
                 same_sign += 1
                 if abs(es_p) >= abs(es):
                     as_extreme += 1
-        payload["pvalue"] = (float(as_extreme) / float(same_sign)
-                             if same_sign > 0 else float("nan"))
+        payload["pvalue"] = float(as_extreme) / float(same_sign) if same_sign > 0 else float("nan")
     return RichResult(payload=payload)
 
 
@@ -136,6 +133,8 @@ geneset_enrichment = gnsetenr
 
 
 def cheatsheet():
-    return ("gnsetenr(correlations, in_set, p=1, nperm=0, seed=None) -> "
-            "GSEA weighted KS enrichment score with sign-separated "
-            "permutation p-value.")
+    return (
+        "gnsetenr(correlations, in_set, p=1, nperm=0, seed=None) -> "
+        "GSEA weighted KS enrichment score with sign-separated "
+        "permutation p-value."
+    )

@@ -13,9 +13,7 @@ def test_mrgdrv_basic():
     t = 2.0
     result = martingale_concentration(c, t)
     assert isinstance(result, dict)
-    assert any(
-        isinstance(v, (int, float)) and math.isfinite(v) for v in result.values()
-    )
+    assert any(isinstance(v, (int, float)) and math.isfinite(v) for v in result.values())
 
 
 def test_mrgdrv_edge():
@@ -25,6 +23,4 @@ def test_mrgdrv_edge():
     t = 1.0
     result = martingale_concentration(c, t)
     assert isinstance(result, dict)
-    assert any(
-        isinstance(v, (int, float)) and math.isfinite(v) for v in result.values()
-    )
+    assert any(isinstance(v, (int, float)) and math.isfinite(v) for v in result.values())

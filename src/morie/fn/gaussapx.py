@@ -45,4 +45,6 @@ def gaussapx(x, n):
 
 
 def cheatsheet():
-    return "gaussapx: Gaussian form e^(-x^2/n)/sqrt(pi n) vs the exact centred binomial. Morin (2016) eqs (5.4), (5.13)."
+    return (
+        "gaussapx: Gaussian form e^(-x^2/n)/sqrt(pi n) vs the exact centred binomial. Morin (2016) eqs (5.4), (5.13)."
+    )

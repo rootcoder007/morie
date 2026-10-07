@@ -10,6 +10,8 @@ def test_gb_kscl_basic():
     result = gibbons_ks_critical_values(n, alpha)
     assert isinstance(result, dict)
     assert "dcrit" in result
+
+
 def test_gb_kscl_edge():
     """Test edge cases."""
     n = 100

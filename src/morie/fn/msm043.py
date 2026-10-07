@@ -8,7 +8,6 @@ Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 
 import math
 
-from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mvsml_bayesian_regression_eq_6_2"]
@@ -25,10 +24,15 @@ def mvsml_bayesian_regression_eq_6_2(sigma2, beta=None):
     if s2 <= 0:
         raise ValueError("sigma2 must be positive")
     dens = 1.0 / s2
-    res = RichResult(payload={"estimate": dens, "density": dens,
-                              "log_density": -math.log(s2),
-                              "proper": False,
-                              "method": "non-informative prior (MVSML 2022 eq. 6.2)"})
+    res = RichResult(
+        payload={
+            "estimate": dens,
+            "density": dens,
+            "log_density": -math.log(s2),
+            "proper": False,
+            "method": "non-informative prior (MVSML 2022 eq. 6.2)",
+        }
+    )
     return with_describe_pointer(res, "msm043")
 
 

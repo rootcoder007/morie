@@ -81,14 +81,21 @@ def clrmedian(X, steps=100, eps=1e-12):
         if den == 0.0:
             break
         m = [v / den for v in num]
-    obj = sum(math.sqrt(sum((Y[i][j] - m[j]) ** 2 for j in range(D)))
-              for i in range(n))
+    obj = sum(math.sqrt(sum((Y[i][j] - m[j]) ** 2 for j in range(D))) for i in range(n))
     e = [math.exp(v) for v in m]
     se = sum(e)
-    return RichResult(payload={
-        "median": [v / se for v in e], "clrmed": m, "objective": obj,
-        "clrmean": cmean, "n": n, "D": D, "steps": int(steps),
-        "method": "Spatial median in clr coordinates (Weiszfeld iteration)"})
+    return RichResult(
+        payload={
+            "median": [v / se for v in e],
+            "clrmed": m,
+            "objective": obj,
+            "clrmean": cmean,
+            "n": n,
+            "D": D,
+            "steps": int(steps),
+            "method": "Spatial median in clr coordinates (Weiszfeld iteration)",
+        }
+    )
 
 
 compositional_median = clrmedian

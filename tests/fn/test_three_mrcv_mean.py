@@ -1,7 +1,5 @@
 """Tests for three_mrcv_mean.three_mrcv_mean."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.three_mrcv_mean import (
     three_mrcv_mean,
 )

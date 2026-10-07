@@ -49,10 +49,17 @@ def bound_naive_gross(y, D):
     y0, y1 = B.support(yv)
     lo = m1 - y1
     hi = m1 - y0
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "p_treated": p1, "n": len(yv),
-        "method": "Naive gross treatment-effect bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "p_treated": p1,
+            "n": len(yv),
+            "method": "Naive gross treatment-effect bound",
+        }
+    )
 
 
 def cheatsheet():

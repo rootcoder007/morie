@@ -76,15 +76,20 @@ def general_estimating_eq_surv(time, event, x, cluster=None):
     fit = variance_cox_estimator(b, X, tv, ev, robust=True, cluster=cluster)
     nc = None if cluster is None else int(np.unique(np.asarray(cluster)).size)
     infl = fit["ratio"]
-    return RichResult(payload={
-        "beta": b, "se_model": fit["se"], "se_robust": fit["robust_se"],
-        "variance_inflation": infl, "n_clusters": nc,
-        "working_model": "independence: the score ignores the clustering and "
-                         "the variance repairs it afterwards",
-        "when_it_matters": "only when clusters are informative; the inflation "
-                           "is near one when they are not",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Cox point estimate with a cluster-robust GEE sandwich"})
+    return RichResult(
+        payload={
+            "beta": b,
+            "se_model": fit["se"],
+            "se_robust": fit["robust_se"],
+            "variance_inflation": infl,
+            "n_clusters": nc,
+            "working_model": "independence: the score ignores the clustering and the variance repairs it afterwards",
+            "when_it_matters": "only when clusters are informative; the inflation is near one when they are not",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Cox point estimate with a cluster-robust GEE sandwich",
+        }
+    )
 
 
 def cheatsheet():

@@ -64,8 +64,7 @@ def schabenberger_nested_variogram(h, components=None):
     return RichResult(
         title="Nested semivariogram (linear model of regionalization)",
         summary_lines=[("components", len(parts)), ("total sill", sill_sum)],
-        payload={"gamma": total, "components": parts,
-                 "total_sill": float(sill_sum)},
+        payload={"gamma": total, "components": parts, "total_sill": float(sill_sum)},
     )
 
 

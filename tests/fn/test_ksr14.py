@@ -1,7 +1,6 @@
 """Tests for ksr14.kosorok_profile_likelihood."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr14 import kosorok_profile_likelihood
 
 

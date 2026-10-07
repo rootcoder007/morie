@@ -91,12 +91,10 @@ def _mdp(T, gamma):
         for a in range(nA):
             row = T[s][a]
             if len(row) != nS:
-                raise ValueError("birl: a transition row has the wrong "
-                                 "length")
+                raise ValueError("birl: a transition row has the wrong length")
             tot = sum(row)
             if abs(tot - 1.0) > 1e-8 or min(row) < 0:
-                raise ValueError("birl: transition rows must be "
-                                 "probability distributions")
+                raise ValueError("birl: transition rows must be probability distributions")
     if not 0.0 <= gamma < 1.0:
         raise ValueError("birl: gamma must be in [0, 1)")
     return nS, nA
@@ -128,16 +126,14 @@ def policy_values(T, R, gamma, policy):
     nS, _nA = _mdp(T, gamma)
     if len(policy) != nS or len(R) != nS:
         raise ValueError("birl: policy and reward need one entry per state")
-    A = [[(1.0 if i == j else 0.0) - gamma * T[i][policy[i]][j]
-          for j in range(nS)] for i in range(nS)]
+    A = [[(1.0 if i == j else 0.0) - gamma * T[i][policy[i]][j] for j in range(nS)] for i in range(nS)]
     return _solve(A, [float(v) for v in R])
 
 
 def q_values(T, R, gamma, V):
     r""":math:`Q(s, a) = R(s) + \gamma \sum_{s'} T(s, a, s') V(s')`."""
     nS, nA = _mdp(T, gamma)
-    return [[R[s] + gamma * sum(T[s][a][j] * V[j] for j in range(nS))
-             for a in range(nA)] for s in range(nS)]
+    return [[R[s] + gamma * sum(T[s][a][j] * V[j] for j in range(nS)) for a in range(nA)] for s in range(nS)]
 
 
 def policy_iteration(T, R, gamma, policy=None, max_iter=200):
@@ -158,8 +154,7 @@ def policy_iteration(T, R, gamma, policy=None, max_iter=200):
             return {"policy": pi, "V": V, "Q": Q, "sweeps": sweeps}
         pi = new
     V = policy_values(T, R, gamma, pi)
-    return {"policy": pi, "V": V, "Q": q_values(T, R, gamma, V),
-            "sweeps": sweeps}
+    return {"policy": pi, "V": V, "Q": q_values(T, R, gamma, V), "sweeps": sweeps}
 
 
 def log_likelihood(Q, observations, alpha=1.0):
@@ -179,16 +174,14 @@ def log_likelihood(Q, observations, alpha=1.0):
             raise ValueError("birl: an observation is out of range")
         row = [alpha * v for v in Q[s]]
         m = max(row)
-        total += row[a] - (m + math.log(sum(math.exp(v - m)
-                                            for v in row)))
+        total += row[a] - (m + math.log(sum(math.exp(v - m) for v in row)))
     return total
 
 
-def log_prior(R, prior="uniform", scale=1.0, r_max=None, J=0.1, H=0.0,
-              neighbours=None):
+def log_prior(R, prior="uniform", scale=1.0, r_max=None, J=0.1, H=0.0, neighbours=None):
     """Log prior over reward vectors, up to a constant."""
     if prior not in PRIORS:
-        raise ValueError("birl: prior must be one of %s" % (PRIORS,))
+        raise ValueError(f"birl: prior must be one of {PRIORS}")
     if scale <= 0:
         raise ValueError("birl: scale must be positive")
     if prior == "uniform":
@@ -209,12 +202,26 @@ def _rng(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
-def policy_walk(T, observations, gamma, n_iter=1000, delta=0.25,
-                alpha=1.0, prior="uniform", scale=1.0, r_max=1.0,
-                J=0.1, H=0.0, burn=None, seed=0, R0=None):
+def policy_walk(
+    T,
+    observations,
+    gamma,
+    n_iter=1000,
+    delta=0.25,
+    alpha=1.0,
+    prior="uniform",
+    scale=1.0,
+    r_max=1.0,
+    J=0.1,
+    H=0.0,
+    burn=None,
+    seed=0,
+    R0=None,
+):
     """Figure 3: PolicyWalk.
 
     Returns the samples plus a count of how often step 3(c) had to run
@@ -234,8 +241,7 @@ def policy_walk(T, observations, gamma, n_iter=1000, delta=0.25,
         return round(v / delta) * delta
 
     # 1. pick a random reward vector on the grid
-    R = [grid((2.0 * rnd() - 1.0) * r_max) for _ in range(nS)] \
-        if R0 is None else [grid(float(v)) for v in R0]
+    R = [grid((2.0 * rnd() - 1.0) * r_max) for _ in range(nS)] if R0 is None else [grid(float(v)) for v in R0]
     # 2. pi := PolicyIteration(M, R)
     got = policy_iteration(T, R, gamma)
     pi, Q = got["policy"], got["Q"]
@@ -261,8 +267,7 @@ def policy_walk(T, observations, gamma, n_iter=1000, delta=0.25,
         Vp = policy_values(T, cand, gamma, pi)
         Qp = q_values(T, cand, gamma, Vp)
         # 3(c) is pi still optimal for cand?
-        changed = any(Qp[st][pi[st]] < max(Qp[st]) - 1e-12
-                      for st in range(nS))
+        changed = any(Qp[st][pi[st]] < max(Qp[st]) - 1e-12 for st in range(nS))
         if changed:
             repolicy += 1
             got2 = policy_iteration(T, cand, gamma, pi)
@@ -277,64 +282,88 @@ def policy_walk(T, observations, gamma, n_iter=1000, delta=0.25,
             samples.append(list(R))
     if not samples:
         samples = [list(R)]
-    return {"samples": samples, "acceptance": accepted / float(n_iter),
-            "policy_iterations": repolicy, "n_proposals": int(n_iter),
-            "final_policy": pi}
+    return {
+        "samples": samples,
+        "acceptance": accepted / float(n_iter),
+        "policy_iterations": repolicy,
+        "n_proposals": int(n_iter),
+        "final_policy": pi,
+    }
 
 
-def birl(T, observations, gamma=0.9, n_iter=1000, delta=0.25, alpha=1.0,
-         prior="uniform", scale=1.0, r_max=1.0, J=0.1, H=0.0, burn=None,
-         seed=0, R0=None):
+def birl(
+    T,
+    observations,
+    gamma=0.9,
+    n_iter=1000,
+    delta=0.25,
+    alpha=1.0,
+    prior="uniform",
+    scale=1.0,
+    r_max=1.0,
+    J=0.1,
+    H=0.0,
+    burn=None,
+    seed=0,
+    R0=None,
+):
     """Recover the reward and the policy it implies (Theorem 3)."""
     nS, nA = _mdp(T, gamma)
     obs = [(int(s), int(a)) for s, a in observations]
-    walk = policy_walk(T, obs, gamma, n_iter, delta, alpha, prior, scale,
-                       r_max, J, H, burn, seed, R0)
+    walk = policy_walk(T, obs, gamma, n_iter, delta, alpha, prior, scale, r_max, J, H, burn, seed, R0)
     S = walk["samples"]
     n = float(len(S))
     mean = [sum(r[i] for r in S) / n for i in range(nS)]
-    var = [sum((r[i] - mean[i]) ** 2 for r in S) / max(n - 1.0, 1.0)
-           for i in range(nS)]
+    var = [sum((r[i] - mean[i]) ** 2 for r in S) / max(n - 1.0, 1.0) for i in range(nS)]
     # Theorem 3: the policy to report is the optimal one for E_P[R]
     got = policy_iteration(T, mean, gamma)
-    return RichResult(payload={
-        "estimate": mean,
-        "reward_mean": mean,
-        "reward_sd": [math.sqrt(v) for v in var],
-        "policy": got["policy"],
-        "V": got["V"],
-        "Q": got["Q"],
-        "samples": S,
-        "acceptance": walk["acceptance"],
-        "policy_iterations": walk["policy_iterations"],
-        "n_proposals": walk["n_proposals"],
-        "n_samples": len(S),
-        "prior": prior,
-        "alpha": float(alpha),
-        "delta": float(delta),
-        "method": ("Bayesian IRL (Ramachandran & Amir 2007): Boltzmann "
-                   "expert likelihood, PolicyWalk over the reward grid, "
-                   "posterior mean reward per Theorem 3"),
-        "note": ("Theorem 3 says the reported policy is the optimal one "
-                 "for the posterior MEAN reward, not the mode and not "
-                 "any single sample; policy_iterations counts how often "
-                 "step 3(c) actually had to recompute the policy"),
-    })
+    return RichResult(
+        payload={
+            "estimate": mean,
+            "reward_mean": mean,
+            "reward_sd": [math.sqrt(v) for v in var],
+            "policy": got["policy"],
+            "V": got["V"],
+            "Q": got["Q"],
+            "samples": S,
+            "acceptance": walk["acceptance"],
+            "policy_iterations": walk["policy_iterations"],
+            "n_proposals": walk["n_proposals"],
+            "n_samples": len(S),
+            "prior": prior,
+            "alpha": float(alpha),
+            "delta": float(delta),
+            "method": (
+                "Bayesian IRL (Ramachandran & Amir 2007): Boltzmann "
+                "expert likelihood, PolicyWalk over the reward grid, "
+                "posterior mean reward per Theorem 3"
+            ),
+            "note": (
+                "Theorem 3 says the reported policy is the optimal one "
+                "for the posterior MEAN reward, not the mode and not "
+                "any single sample; policy_iterations counts how often "
+                "step 3(c) actually had to recompute the policy"
+            ),
+        }
+    )
 
 
 bayesian_irl = birl
 
 
 def cheatsheet():
-    return ("birl: Bayesian IRL (Ramachandran & Amir 2007). The expert "
-            "is Boltzmann in the optimal action-value, Pr(O|R) = "
-            "exp(alpha sum_i Q*(s_i,a_i,R))/Z, whose Z factorises into "
-            "per-state softmaxes; the posterior is that times a prior "
-            "(uniform, gaussian, laplacian or ising). PolicyWalk walks "
-            "the reward grid and only recomputes the policy when the "
-            "proposal makes some action beat pi(s). By Theorem 3 the "
-            "answer to report is the optimal policy for the posterior "
-            "MEAN reward.")
+    return (
+        "birl: Bayesian IRL (Ramachandran & Amir 2007). The expert "
+        "is Boltzmann in the optimal action-value, Pr(O|R) = "
+        "exp(alpha sum_i Q*(s_i,a_i,R))/Z, whose Z factorises into "
+        "per-state softmaxes; the posterior is that times a prior "
+        "(uniform, gaussian, laplacian or ising). PolicyWalk walks "
+        "the reward grid and only recomputes the policy when the "
+        "proposal makes some action beat pi(s). By Theorem 3 the "
+        "answer to report is the optimal policy for the posterior "
+        "MEAN reward."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 bayesianirl = birl

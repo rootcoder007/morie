@@ -39,9 +39,11 @@ def gibbons_kendall_tau_var(n):
     var_tau = 2.0 * (2 * n + 5) / (9.0 * n * (n - 1))
     return RichResult(
         payload={
-            "var_tau": float(var_tau), "sd_tau": float(np.sqrt(var_tau)),
+            "var_tau": float(var_tau),
+            "sd_tau": float(np.sqrt(var_tau)),
             "var_score": float(n * (n - 1) * (2 * n + 5) / 18.0),
-            "n": n, "method": "Var(T) = 2(2n+5)/(9n(n-1)) (Gibbons Ch. 11.2)",
+            "n": n,
+            "method": "Var(T) = 2(2n+5)/(9n(n-1)) (Gibbons Ch. 11.2)",
         }
     )
 

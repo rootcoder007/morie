@@ -66,16 +66,23 @@ def wasserman_ridge(X, y, lambda_):
     G = X.T @ X + lam * np.eye(p)
     try:
         Ginv = np.linalg.inv(G)
-    except np.linalg.LinAlgError:
-        raise ValueError("X'X + lambda I is singular; increase lambda or fix the design.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("X'X + lambda I is singular; increase lambda or fix the design.") from exc
     beta = Ginv @ X.T @ y
     H = X @ Ginv @ X.T
     resid = y - X @ beta
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "effective_df": float(np.trace(H)), "rss": float(resid @ resid),
-        "lambda": lam, "n": int(n), "p": int(p),
-        "method": "ridge (X'X + lambda I)^-1 X'y; edf = tr(H)"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "effective_df": float(np.trace(H)),
+            "rss": float(resid @ resid),
+            "lambda": lam,
+            "n": int(n),
+            "p": int(p),
+            "method": "ridge (X'X + lambda I)^-1 X'y; edf = tr(H)",
+        }
+    )
 
 
 def cheatsheet():

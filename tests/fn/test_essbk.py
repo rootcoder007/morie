@@ -1,7 +1,6 @@
 """Tests for essbk.effective_sample_size_bulk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.essbk import effective_sample_size_bulk
 
 
@@ -11,6 +10,8 @@ def test_essbk_basic():
     result = effective_sample_size_bulk(chains)
     assert isinstance(result, dict)
     assert "ess_bulk" in result
+
+
 def test_essbk_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

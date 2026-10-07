@@ -1,8 +1,8 @@
 """Tests for otmxh.ot_mixture_w2."""
 
 import math
-from morie.fn import _array_core as np
 
+from morie.fn import _array_core as np
 from morie.fn.otmxh import ot_mixture_w2
 
 

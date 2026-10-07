@@ -24,13 +24,16 @@ def msm_logistic(y, treatment_history, covariate_history=None, weights=None):
     weighted IRLS.  exp(beta_a) is a causal odds ratio per unit of
     cumulative treatment. Keys: estimate."""
     d = _gp.msm_design(treatment_history)
-    f = _gp.msm_weighted_glm(y, d["X"], weights=weights,
-                             family="binomial")
-    res = RichResult(payload={"estimate": f["beta"][1],
-                              "beta": f["beta"],
-                              "odds_ratio": math.exp(f["beta"][1]),
-                              "fitted": f["fitted"],
-                              "method": "logistic MSM (Robins et al. 2000)"})
+    f = _gp.msm_weighted_glm(y, d["X"], weights=weights, family="binomial")
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][1],
+            "beta": f["beta"],
+            "odds_ratio": math.exp(f["beta"][1]),
+            "fitted": f["fitted"],
+            "method": "logistic MSM (Robins et al. 2000)",
+        }
+    )
     return with_describe_pointer(res, "msmlog")
 
 

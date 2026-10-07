@@ -1,7 +1,7 @@
 """Tests for hrztpar.horowitz_parametric_T."""
 
 import math
-import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.hrztpar import horowitz_parametric_T
 

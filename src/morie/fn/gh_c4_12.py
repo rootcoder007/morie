@@ -5,8 +5,6 @@ Implements Theorem 4.14 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
@@ -24,11 +22,14 @@ def ghosal_dp_discrete(n_terms, alpha, seed=42):
     V = [float(rng.beta(1.0, M)) for _ in range(int(n_terms))]
     W = _bnp.stick_breaking(V)
     biggest = max(W)
-    res = RichResult(payload={"estimate": biggest,
-                              "largest_atom": biggest,
-                              "atoms_carry_all_mass": sum(W) > 1.0
-                              - (M / (M + 1.0)) ** int(n_terms) - 1e-9,
-                              "method": "DP discreteness via atoms (GvdV 2017 Thm 4.14)"})
+    res = RichResult(
+        payload={
+            "estimate": biggest,
+            "largest_atom": biggest,
+            "atoms_carry_all_mass": sum(W) > 1.0 - (M / (M + 1.0)) ** int(n_terms) - 1e-9,
+            "method": "DP discreteness via atoms (GvdV 2017 Thm 4.14)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_12")
 
 

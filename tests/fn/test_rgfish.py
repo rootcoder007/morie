@@ -1,7 +1,6 @@
 """Tests for rgfish.rangayyan_fisher_criterion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_fisher_criterion
 
 

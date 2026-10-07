@@ -115,35 +115,36 @@ def meta1l(y, w, X, ps=None):
     d0 = D0 @ b1 - y0
     t1 = _ols(D1, d1)
     t0 = _ols(D0, d0)
-    if ps is not None:
-        g = np.asarray(ps, dtype=float)
-    else:
-        g = np.full(n, float(np.mean(wv)))
+    g = np.asarray(ps, dtype=float) if ps is not None else np.full(n, float(np.mean(wv)))
     cate_x = g * (D @ t0) + (1.0 - g) * (D @ t1)
 
     # R-learner: Robinson residualization + OLS on the R-loss
     m_hat = D @ _ols(D, yv)
-    if ps is not None:
-        e_hat = np.asarray(ps, dtype=float)
-    else:
-        e_hat = D @ _ols(D, wv)
+    e_hat = np.asarray(ps, dtype=float) if ps is not None else D @ _ols(D, wv)
     ry = yv - m_hat
     rw = wv - e_hat
     Dr = np.stack([D[i] * rw[i] for i in range(n)], axis=0)
     br = _ols(Dr, ry)
     cate_r = D @ br
 
-    return RichResult(payload={
-        "estimate": {
-            "s": float(np.mean(cate_s)), "t": float(np.mean(cate_t)),
-            "x": float(np.mean(cate_x)), "r": float(np.mean(cate_r)),
-        },
-        "cate_s": cate_s, "cate_t": cate_t,
-        "cate_x": cate_x, "cate_r": cate_r,
-        "coef_r": br,
-        "n": n, "n_treat": len(i1),
-        "method": "S/T/X (Kunzel et al. 2019) + R (Nie-Wager 2021) metalearners, OLS base learners",
-    })
+    return RichResult(
+        payload={
+            "estimate": {
+                "s": float(np.mean(cate_s)),
+                "t": float(np.mean(cate_t)),
+                "x": float(np.mean(cate_x)),
+                "r": float(np.mean(cate_r)),
+            },
+            "cate_s": cate_s,
+            "cate_t": cate_t,
+            "cate_x": cate_x,
+            "cate_r": cate_r,
+            "coef_r": br,
+            "n": n,
+            "n_treat": len(i1),
+            "method": "S/T/X (Kunzel et al. 2019) + R (Nie-Wager 2021) metalearners, OLS base learners",
+        }
+    )
 
 
 metalearner_ensemble = meta1l
@@ -151,6 +152,7 @@ metalearner_ensemble = meta1l
 
 def cheatsheet():
     return "meta1l(y, w, X, ps) -> S/T/X/R metalearner CATEs with OLS base learners."
+
 
 # public names resolved by fn/_lazy_map.json
 meta_learner_ensemble = meta1l

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Criterion-function set estimate for moment inequalities."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -83,10 +81,20 @@ def qcritset(mbar, se=None, n=1, cutoff=None):
     am = nQ.index(mn)
     cut = mn if cutoff is None else float(cutoff)
     ins = [1 if nQ[i] <= cut else 0 for i in range(g)]
-    return RichResult(payload={
-        "Q": Q, "nQ": nQ, "argmin": am, "minQ": mn, "inset": ins,
-        "nin": sum(ins), "cutoff": cut, "g": g, "J": J,
-        "method": "Criterion-function set estimate (Chernozhukov-Hong-Tamer 2007)"})
+    return RichResult(
+        payload={
+            "Q": Q,
+            "nQ": nQ,
+            "argmin": am,
+            "minQ": mn,
+            "inset": ins,
+            "nin": sum(ins),
+            "cutoff": cut,
+            "g": g,
+            "J": J,
+            "method": "Criterion-function set estimate (Chernozhukov-Hong-Tamer 2007)",
+        }
+    )
 
 
 bound_intersection = qcritset

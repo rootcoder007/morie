@@ -27,18 +27,17 @@ def ca_chapter_11_equation_45(ys_by_group, ws_by_group):
     ch.11 eq.11.45
     """
     payload = dict(_ca_crim.q_within_between(ys_by_group, ws_by_group))
-    value = payload['q_within']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["q_within"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.45)"
     return RichResult(
-        title='Q_within for the analog-to-the-ANOVA',
+        title="Q_within for the analog-to-the-ANOVA",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e45: Q_within = sum_j sum_i w_ij (y_ij - ybar_j)^2 [Weisburd et al. 2022, eq. 11.45]'
+    return "ca11e45: Q_within = sum_j sum_i w_ij (y_ij - ybar_j)^2 [Weisburd et al. 2022, eq. 11.45]"

@@ -36,10 +36,7 @@ def seasonal_decompose(x, *, period: int = 12, model: str = "additive") -> TimeS
         else:
             trend[i] = np.mean(x[i - half : i + half + 1])
     # Seasonal component
-    if model == "additive":
-        detrended = x - trend
-    else:
-        detrended = x / np.where(trend > 0, trend, np.nan)
+    detrended = x - trend if model == "additive" else x / np.where(trend > 0, trend, np.nan)
     seasonal = np.zeros(n)
     for s in range(period):
         idx = np.arange(s, n, period)

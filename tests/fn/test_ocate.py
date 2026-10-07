@@ -1,7 +1,6 @@
 """Tests for morie.fn.ocate — CATE by risk score tercile."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.ocate import otis_cate_risk
 
 

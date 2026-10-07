@@ -64,11 +64,19 @@ def lppd(logdens):
     tot = sum(pl)
     pw = sum(pv)
     el = tot - pw
-    return RichResult(payload={
-        "lppd": tot, "p_waic": pw, "elpd_waic": el, "waic": -2.0 * el,
-        "pointwise_lppd": pl, "pointwise_var": pv, "S": float(S),
-        "n": float(n),
-        "method": "lppd and WAIC, BDA3 Section 7.2 equation (7.5)"})
+    return RichResult(
+        payload={
+            "lppd": tot,
+            "p_waic": pw,
+            "elpd_waic": el,
+            "waic": -2.0 * el,
+            "pointwise_lppd": pl,
+            "pointwise_var": pv,
+            "S": float(S),
+            "n": float(n),
+            "method": "lppd and WAIC, BDA3 Section 7.2 equation (7.5)",
+        }
+    )
 
 
 log_pointwise_predictive_density = lppd

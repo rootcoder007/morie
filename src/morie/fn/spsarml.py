@@ -125,25 +125,21 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     True
     """
     if model not in MODELS:
-        raise ValueError("model must be 'error' or 'lag', got %r." % model)
+        raise ValueError(f"model must be 'error' or 'lag', got {model!r}.")
     X = np.atleast_2d(np.asarray(x, dtype=float))
     yy = np.asarray(y, dtype=float).ravel()
     n = yy.size
     if X.shape[0] != n:
         X = X.T
     if X.shape[0] != n:
-        raise ValueError("x has %d rows for %d responses." % (X.shape[0], n))
+        raise ValueError(f"x has {int(X.shape[0])} rows for {int(n)} responses.")
     if not np.any(np.all(np.isclose(X, 1.0), axis=0)):
         X = np.column_stack([np.ones(n), X])
     W = np.asarray(w, dtype=float)
     if W.shape != (n, n):
-        raise ValueError(
-            "w must be %d by %d, got %s." % (n, n, W.shape)
-        )
+        raise ValueError(f"w must be {int(n)} by {int(n)}, got {W.shape}.")
     if np.any(np.abs(np.diag(W)) > 1e-12):
-        raise ValueError(
-            "w must have a zero diagonal; a site cannot be its own neighbour."
-        )
+        raise ValueError("w must have a zero diagonal; a site cannot be its own neighbour.")
 
     rs = bool(np.allclose(W.sum(axis=1), 1.0))
     ev = np.linalg.eigvals(W).real
@@ -160,8 +156,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     gr = (np.sqrt(5.0) - 1.0) / 2.0
     c, d = b - gr * (b - a), a + gr * (b - a)
     for _ in range(200):
-        if _concentrated(yy, X, W, c, model)[0] < _concentrated(
-                yy, X, W, d, model)[0]:
+        if _concentrated(yy, X, W, c, model)[0] < _concentrated(yy, X, W, d, model)[0]:
             b, d = d, c
             c = b - gr * (b - a)
         else:
@@ -190,7 +185,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     if model == "error":
         Xe = A @ X
         cov_beta = s2 * np.linalg.inv(Xe.T @ Xe)
-        info = np.array([[n / (2.0 * s2 ** 2), tr1 / s2], [tr1 / s2, t2]])
+        info = np.array([[n / (2.0 * s2**2), tr1 / s2], [tr1 / s2, t2]])
         v_rho = float(np.linalg.inv(info)[1, 1])
     else:
         WXb = WA @ (X @ b_)
@@ -199,7 +194,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
         xw = (X.T @ WXb) / s2
         info[:p_, p_ + 1] = xw
         info[p_ + 1, :p_] = xw
-        info[p_, p_] = n / (2.0 * s2 ** 2)
+        info[p_, p_] = n / (2.0 * s2**2)
         info[p_, p_ + 1] = info[p_ + 1, p_] = tr1 / s2
         info[p_ + 1, p_ + 1] = t2 + float(WXb @ WXb) / s2
         inv = np.linalg.inv(info)
@@ -252,13 +247,10 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
                 "here because Z and upsilon are not independent, which is "
                 "the reason for maximum likelihood"
             ),
-            "jacobian_note": (
-                "the ln|I - rho W| term is exactly what least squares drops"
-            ),
+            "jacobian_note": ("the ln|I - rho W| term is exactly what least squares drops"),
             "spatial_lag_mean": float(np.mean(Wy)),
             "n": n,
-            "method": "Spatial autoregressive (%s) model by maximum "
-                      "likelihood" % model,
+            "method": f"Spatial autoregressive ({model}) model by maximum likelihood",
         }
     )
 

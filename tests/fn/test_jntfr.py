@@ -1,7 +1,5 @@
 """Tests for jntfr.joint_frailty."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.jntfr import joint_frailty
 
 

@@ -1,7 +1,5 @@
 """Tests for irt4pl.four_parameter_logistic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.irt4pl import four_parameter_logistic
 
 

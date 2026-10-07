@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dinocenter', 'dino_centering']
+__all__ = ["dinocenter", "dino_centering"]
 
 
 def dinocenter(g_t, center=None, m=0.9, tau_t=0.04):
@@ -42,7 +42,8 @@ def dinocenter(g_t, center=None, m=0.9, tau_t=0.04):
     and Algorithm 1's pseudocode for the order of centre-then-sharpen.
     """
     G = C.mat(g_t)
-    B = len(G); K = len(G[0])
+    B = len(G)
+    K = len(G[0])
     c = [0.0] * K if center is None else C.vec(center)
     if len(c) != K:
         raise ValueError("center must have length K")
@@ -55,9 +56,17 @@ def dinocenter(g_t, center=None, m=0.9, tau_t=0.04):
         P.append([v / s for v in e])
     bm = [sum(G[i][j] for i in range(B)) / B for j in range(K)]
     newc = [float(m) * c[j] + (1.0 - float(m)) * bm[j] for j in range(K)]
-    return RichResult(payload={
-        "p_t": P, "center": newc, "center_old": c, "batch_mean": bm,
-        "B": B, "K": K, "method": "DINO teacher centring and sharpening"})
+    return RichResult(
+        payload={
+            "p_t": P,
+            "center": newc,
+            "center_old": c,
+            "batch_mean": bm,
+            "B": B,
+            "K": K,
+            "method": "DINO teacher centring and sharpening",
+        }
+    )
 
 
 dino_centering = dinocenter

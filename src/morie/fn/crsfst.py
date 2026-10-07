@@ -113,8 +113,9 @@ def make_folds(n, k, seed=0):
     return fold
 
 
-def crs_forest(time, event, D, X, K=3, tau=None, n_trees=8, min_leaf=3,
-               max_depth=3, honest=True, seed=0, rule="logrank"):
+def crs_forest(
+    time, event, D, X, K=3, tau=None, n_trees=8, min_leaf=3, max_depth=3, honest=True, seed=0, rule="logrank"
+):
     """Cross-fitted treatment effect on restricted mean survival time.
 
     Parameters
@@ -184,9 +185,7 @@ def crs_forest(time, event, D, X, K=3, tau=None, n_trees=8, min_leaf=3,
             sx = [xs[i] for i in rows]
             st = [t[i] for i in rows]
             se = [e[i] for i in rows]
-            trees = survival_forest(sx, st, se, n_trees, None, min_leaf,
-                                    max_depth, honest, seed + 100 * f + arm,
-                                    rule)
+            trees = survival_forest(sx, st, se, n_trees, None, min_leaf, max_depth, honest, seed + 100 * f + arm, rule)
             if not trees:
                 continue
             for i in te:
@@ -201,44 +200,47 @@ def crs_forest(time, event, D, X, K=3, tau=None, n_trees=8, min_leaf=3,
 
     got = [v for v in cate if v == v]
     if not got:
-        raise ValueError("no fold produced a comparable pair of arms; "
-                         "the sample is too small or too unbalanced")
+        raise ValueError("no fold produced a comparable pair of arms; the sample is too small or too unbalanced")
     ate = _w.csum(got) / len(got)
     if len(got) > 1:
         v = _w.csum((g - ate) * (g - ate) for g in got) / (len(got) - 1)
         se = math.sqrt(v / len(got))
     else:
         se = float("nan")
-    return RichResult(payload={
-        "cate": cate,
-        "rmst_treated": r1,
-        "rmst_control": r0,
-        "estimate": ate,
-        "se": se,
-        "ci_lower": ate - 1.959963984540054 * se if se == se else float("nan"),
-        "ci_upper": ate + 1.959963984540054 * se if se == se else float("nan"),
-        "fold": fold,
-        "tau": tau,
-        "n_scored": used,
-        "n_leaked": leaked,
-        "n": n,
-        "n_treated": n1,
-        "n_control": n - n1,
-        "n_events": sum(e),
-        "K": int(K),
-        "honest": bool(honest),
-        "rule": rule,
-        "method": "cross-fitted random survival forest",
-    })
+    return RichResult(
+        payload={
+            "cate": cate,
+            "rmst_treated": r1,
+            "rmst_control": r0,
+            "estimate": ate,
+            "se": se,
+            "ci_lower": ate - 1.959963984540054 * se if se == se else float("nan"),
+            "ci_upper": ate + 1.959963984540054 * se if se == se else float("nan"),
+            "fold": fold,
+            "tau": tau,
+            "n_scored": used,
+            "n_leaked": leaked,
+            "n": n,
+            "n_treated": n1,
+            "n_control": n - n1,
+            "n_events": sum(e),
+            "K": int(K),
+            "honest": bool(honest),
+            "rule": rule,
+            "method": "cross-fitted random survival forest",
+        }
+    )
 
 
 crsfst = crs_forest
 
 
 def cheatsheet():
-    return ("crsfst: cross-fitted random survival forest. K-fold "
-            "out-of-fold prediction, effect on restricted mean survival "
-            "time up to tau")
+    return (
+        "crsfst: cross-fitted random survival forest. K-fold "
+        "out-of-fold prediction, effect on restricted mean survival "
+        "time up to tau"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

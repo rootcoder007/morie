@@ -1,7 +1,6 @@
 """Tests for morie.fn.netcm — Community detection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netcm import network_communities
 
 

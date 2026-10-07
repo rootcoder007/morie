@@ -103,7 +103,7 @@ def hzrat(
 
     beta = result["beta"]
     se = result["se"]
-    z = result["z"]
+    result["z"]
     p_val = result["p_value"]
     ll = result["log_likelihood"]
 

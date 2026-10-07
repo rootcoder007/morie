@@ -125,7 +125,9 @@ def multi_depot_vrp(depots, customers, demand, capacity: float) -> RichResult:
     ----------
     Gillett, B. E. and Johnson, J. G. (1976). Multi-terminal vehicle-dispatch
     algorithm. *Omega*, 4, 711-718.
-    Clarke, G. and Wright, J. W. (1964). *Operations Research*, 12, 568-581.
+    Clarke, G. and Wright, J. W. (1964). Scheduling of vehicles from a central
+    depot to a number of delivery points. *Operations Research*, 12(4),
+    568-581.
 
     Examples
     --------

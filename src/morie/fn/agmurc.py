@@ -50,10 +50,15 @@ def mzrecur(state, action, dynamics, prediction=None):
     """
     r, s = dynamics(state, action)
     p, v = (None, None) if prediction is None else prediction(s)
-    return RichResult(payload={
-        "state": s, "reward": float(r), "policy": p,
-        "value": None if v is None else float(v),
-        "method": "MuZero recurrent inference (Schrittwieser et al. 2020)"})
+    return RichResult(
+        payload={
+            "state": s,
+            "reward": float(r),
+            "policy": p,
+            "value": None if v is None else float(v),
+            "method": "MuZero recurrent inference (Schrittwieser et al. 2020)",
+        }
+    )
 
 
 muzero_recurrent_inf = mzrecur

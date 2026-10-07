@@ -124,7 +124,11 @@ def geron_oob_score(X, y, models, task="auto"):
 
     return RichResult(
         title="Out-of-bag evaluation",
-        summary_lines=[(label, score), ("Rows covered", float(np.mean(covered))), ("Mean OOB votes", float(votes[covered].mean()))],
+        summary_lines=[
+            (label, score),
+            ("Rows covered", float(np.mean(covered))),
+            ("Mean OOB votes", float(votes[covered].mean())),
+        ],
         interpretation="Each row is judged by the ~37 % of estimators that excluded it, so the score runs pessimistic.",
         payload={
             "oob_score": score,

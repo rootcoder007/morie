@@ -1,7 +1,6 @@
 """Tests for causrdd.causal_rdd_local_lin."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causrdd import causal_rdd_local_lin
 
 

@@ -45,8 +45,7 @@ def test_atrope_edge():
     """The inner product depends only on the relative position m - n."""
     K = [0.4, -1.3, 2.0, 0.0, -0.7, 0.9]
     for shift in (0.0, 3.0, -5.0):
-        a = _dot(rope(Q, 7 + shift, THETA)["q"],
-                 rope(K, 2 + shift, THETA)["q"])
+        a = _dot(rope(Q, 7 + shift, THETA)["q"], rope(K, 2 + shift, THETA)["q"])
         b = _dot(rope(Q, 7, THETA)["q"], rope(K, 2, THETA)["q"])
         assert abs(a - b) < 1e-9
     # theta = 0 leaves every pair alone whatever the position

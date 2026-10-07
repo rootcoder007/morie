@@ -1,7 +1,6 @@
 """Test homomorphic_filter (hmflt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.hmflt import hmflt, homomorphic_filter
 

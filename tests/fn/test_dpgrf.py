@@ -32,8 +32,7 @@ def test_car_precision_is_tau_times_d_minus_rho_w():
     rho, tau = 0.9, 2.0
     out = car_precision(PATH, rho=rho, tau=tau)
     D = [1.0, 2.0, 2.0, 1.0]
-    want = [[tau * ((D[i] if i == j else 0.0) - rho * PATH[i][j])
-             for j in range(4)] for i in range(4)]
+    want = [[tau * ((D[i] if i == j else 0.0) - rho * PATH[i][j]) for j in range(4)] for i in range(4)]
     assert out["Q"] == want
     ev = real.linalg.eigvalsh(real.asarray(want))
     assert out["min_eigenvalue"] == pytest.approx(ev.min(), abs=1e-10)

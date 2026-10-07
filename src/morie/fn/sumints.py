@@ -37,9 +37,13 @@ def sumints(N):
     nxt = (N + 1) * (N + 2) // 2
     if explicit != closed or closed + (N + 1) != nxt:
         raise AssertionError("the induction step failed")
-    payload = {"n": float(N), "explicit_sum": float(explicit),
-               "closed_form": float(closed), "next_closed_form": float(nxt),
-               "forms_agree": 1.0}
+    payload = {
+        "n": float(N),
+        "explicit_sum": float(explicit),
+        "closed_form": float(closed),
+        "next_closed_form": float(nxt),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Sum of the first N integers = N(N+1)/2.",
         summary_lines=[("N", N), ("sum", closed)],

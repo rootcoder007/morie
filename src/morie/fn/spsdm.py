@@ -40,5 +40,4 @@ def schabenberger_spatial_durbin_model(x, y, w):
 
 
 def cheatsheet():
-    return ("spsdm: spatial Durbin model; delegates to "
-            "spatial_durbin_model (sgdbn).")
+    return "spsdm: spatial Durbin model; delegates to spatial_durbin_model (sgdbn)."

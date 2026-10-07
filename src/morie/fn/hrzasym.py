@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_one_step_efficient"]
 
 
-def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None,
-                                n_steps=1):
+def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None, n_steps=1):
     r"""One Newton step from any root-n-consistent start, to
     asymptotic efficiency (Horowitz Sec. 2.6.4), equation (2.52):
 
@@ -88,6 +87,7 @@ def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None,
 
     if initial_estimator is None:
         from .hrzade import hrz_average_derivative
+
         delta = hrz_average_derivative(X, yv)["delta"]
         b0 = np.atleast_1d(np.asarray(delta, dtype=float)).ravel()
     else:
@@ -95,8 +95,7 @@ def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None,
     if b0.size != d:
         raise ValueError(f"initial_estimator has {b0.size} entries for {d}.")
     if b0[0] == 0:
-        raise ValueError("the scale normalisation needs a nonzero first "
-                         "coefficient in the initial estimator.")
+        raise ValueError("the scale normalisation needs a nonzero first coefficient in the initial estimator.")
     b0 = b0 / abs(b0[0])
     b_init = b0.copy()
 
@@ -111,15 +110,12 @@ def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None,
         z = X @ b
         Ghat = nw_regression(z, yv, grid=z, h=hh)[1]
         resid = yv - Ghat
-        s2 = np.maximum(
-            nw_regression(z, resid**2, grid=z, h=hh)[1], 1e-12)
+        s2 = np.maximum(nw_regression(z, resid**2, grid=z, h=hh)[1], 1e-12)
         w = 1.0 / s2
         o = np.argsort(z)
         gp = np.zeros(n)
         gp[o] = np.gradient(Ghat[o], z[o])
-        Xbar = np.column_stack([
-            nw_regression(z, Xt[:, j], grid=z, h=hh)[1]
-            for j in range(d - 1)])
+        Xbar = np.column_stack([nw_regression(z, Xt[:, j], grid=z, h=hh)[1] for j in range(d - 1)])
         dG = gp[:, None] * (Xt - Xbar)
         # S_n = (1/n) sum W_i [Y_i - G(X_i'b)]^2
         grad = -2.0 * (dG * (w * resid)[:, None]).sum(axis=0) / n
@@ -127,14 +123,22 @@ def horowitz_one_step_efficient(x, y, bandwidth=None, initial_estimator=None,
         b = np.r_[1.0, b[1:] - np.linalg.pinv(hess) @ grad]
 
     omega = np.linalg.pinv(hess)
-    return RichResult(payload={
-        "beta": b, "beta_initial": b_init,
-        "step": b[1:] - b_init[1:],
-        "omega": omega, "se": np.sqrt(np.maximum(np.diag(omega), 0.0) / n),
-        "attains_omega_SI": True,
-        "theory_requires_steps": 1, "n_steps": steps,
-        "bandwidth": hh, "n": int(n), "d": int(d),
-        "method": "(2.52): ONE Newton step from any root-n start attains Omega_SI; iterating adds nothing"})
+    return RichResult(
+        payload={
+            "beta": b,
+            "beta_initial": b_init,
+            "step": b[1:] - b_init[1:],
+            "omega": omega,
+            "se": np.sqrt(np.maximum(np.diag(omega), 0.0) / n),
+            "attains_omega_SI": True,
+            "theory_requires_steps": 1,
+            "n_steps": steps,
+            "bandwidth": hh,
+            "n": int(n),
+            "d": int(d),
+            "method": "(2.52): ONE Newton step from any root-n start attains Omega_SI; iterating adds nothing",
+        }
+    )
 
 
 def cheatsheet():

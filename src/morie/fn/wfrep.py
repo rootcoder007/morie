@@ -44,10 +44,7 @@ def weighted_frequency(y, weights=None, cells=None):
     n = len(lab)
     if n == 0:
         raise ValueError("weighted_frequency: y is empty")
-    if weights is None:
-        w = [1.0] * n
-    else:
-        w = C.vec(weights)
+    w = [1.0] * n if weights is None else C.vec(weights)
     if len(w) != n:
         raise ValueError("weighted_frequency: y and weights differ in length")
     lv = [_lab(v) for v in cells] if cells is not None else sorted(set(lab))
@@ -61,11 +58,18 @@ def weighted_frequency(y, weights=None, cells=None):
             freq[j] += w[i]
     tot = sum(freq)
     prop = [(v / tot if tot > 0.0 else float("nan")) for v in freq]
-    return RichResult(payload={
-        "estimate": float(max(freq)) if freq else float("nan"),
-        "levels": lv, "freq": freq, "prop": prop,
-        "sumw": float(sum(w)), "n": n, "k": len(lv),
-        "method": "weighted cell frequencies, f_k = sum_{i in k} w_i [Lohr 2010]"})
+    return RichResult(
+        payload={
+            "estimate": float(max(freq)) if freq else float("nan"),
+            "levels": lv,
+            "freq": freq,
+            "prop": prop,
+            "sumw": float(sum(w)),
+            "n": n,
+            "k": len(lv),
+            "method": "weighted cell frequencies, f_k = sum_{i in k} w_i [Lohr 2010]",
+        }
+    )
 
 
 def _lab(v):

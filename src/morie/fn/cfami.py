@@ -70,7 +70,7 @@ def cfa_modindex(
 
     # Cross-loadings: items loading on factors they don't belong to
     factor_names = list(structure.keys())
-    for fi, fname in enumerate(factor_names):
+    for _fi, fname in enumerate(factor_names):
         for i in range(p):
             if (item_names[i], fname) not in specified:
                 # Approximate MI from residual covariance

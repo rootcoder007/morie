@@ -83,9 +83,9 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     cen = 1.0 - e
     if cen.sum() == 0:
         raise ValueError("there are no censored observations to model")
-    b_c, ll, I, _, _, conv = cox_fit(t, cen, Xm, ties=ties)
+    b_c, ll, I_, _, _, conv = cox_fit(t, cen, Xm, ties=ties)
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(b_c.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -94,16 +94,23 @@ def dependent_censoring_hazard(time, event, X, ties="efron"):
     flagged = int(np.sum(p < 0.05))
     return RichResult(
         title="Dependent-censoring diagnostic",
-        summary_lines=[("n", int(t.size)), ("censored", int(cen.sum())),
-                       ("covariates predicting censoring", flagged)],
-        warnings=["censoring that depends on the unobserved event time is "
-                  "undetectable by any diagnostic; a null result here does not "
-                  "establish independent censoring"],
+        summary_lines=[("n", int(t.size)), ("censored", int(cen.sum())), ("covariates predicting censoring", flagged)],
+        warnings=[
+            "censoring that depends on the unobserved event time is "
+            "undetectable by any diagnostic; a null result here does not "
+            "establish independent censoring"
+        ],
         payload={
-            "beta_censoring": b_c, "se": se, "z": z, "p_value": p,
-            "beta_event": b_ev, "dependent": bool(flagged > 0),
-            "n_flagged": flagged, "n_censored": int(cen.sum()),
-            "converged": conv, "method": "dependent_censoring_hazard",
+            "beta_censoring": b_c,
+            "se": se,
+            "z": z,
+            "p_value": p,
+            "beta_event": b_ev,
+            "dependent": bool(flagged > 0),
+            "n_flagged": flagged,
+            "n_censored": int(cen.sum()),
+            "converged": conv,
+            "method": "dependent_censoring_hazard",
         },
     )
 

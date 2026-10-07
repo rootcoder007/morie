@@ -1,7 +1,6 @@
 """Tests for km089.kamath_ch6_sgs_invariance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km089 import kamath_ch6_sgs_invariance
 
 

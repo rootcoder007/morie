@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shared d-separation helper on top of the bdcrt path machinery."""
 
-from .bdcrt import _blocked, _descendants, _has_cycle, _parse, _paths
+from .bdcrt import _blocked, _has_cycle, _parse, _paths
 
 __all__ = ["d_separated"]
 

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["bound_variance_term"]
 
 
-def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n,
-                        alpha=0.05):
+def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n, alpha=0.05):
     r"""The Imbens-Manski confidence interval for a parameter that is
     only known to lie in :math:`[\theta_l, \theta_u]`:
 
@@ -70,8 +69,7 @@ def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n,
     nn = int(n)
     a = float(alpha)
     if tu < tl:
-        raise ValueError(
-            f"upper_hat must be at least lower_hat, got [{tl}, {tu}].")
+        raise ValueError(f"upper_hat must be at least lower_hat, got [{tl}, {tu}].")
     if sl <= 0 or su <= 0:
         raise ValueError("both standard deviations must be positive.")
     if nn < 2:
@@ -95,21 +93,26 @@ def bound_variance_term(lower_hat, upper_hat, se_lower, se_upper, n,
     else:
         c = float(optimize.brentq(gap, z1, z2, xtol=1e-12))
     ci = (tl - c * sl / np.sqrt(nn), tu + c * su / np.sqrt(nn))
-    return RichResult(payload={
-        "ci": ci, "c": c, "z_one_sided": z1, "z_two_sided": z2,
-        "delta": delta,
-        "covers": "the TRUE PARAMETER at 1 - alpha; a set-covering interval "
-                  "would use the two-sided z throughout and be wider",
-        "interpolation": "c equals the one-sided z when the identified set "
-                         "is wide relative to noise and rises to the "
-                         "two-sided z as it collapses to a point",
-        "stoye_caveat": "the interpolation presumes delta_hat's own sampling "
-                        "error is negligible or the bound superefficient "
-                        "(Stoye 2009); with a noisy delta_hat use his "
-                        "modified construction",
-        "n": nn,
-        "method": "Imbens-Manski (2004) Eq. (6) confidence interval for a "
-                  "partially identified parameter"})
+    return RichResult(
+        payload={
+            "ci": ci,
+            "c": c,
+            "z_one_sided": z1,
+            "z_two_sided": z2,
+            "delta": delta,
+            "covers": "the TRUE PARAMETER at 1 - alpha; a set-covering interval "
+            "would use the two-sided z throughout and be wider",
+            "interpolation": "c equals the one-sided z when the identified set "
+            "is wide relative to noise and rises to the "
+            "two-sided z as it collapses to a point",
+            "stoye_caveat": "the interpolation presumes delta_hat's own sampling "
+            "error is negligible or the bound superefficient "
+            "(Stoye 2009); with a noisy delta_hat use his "
+            "modified construction",
+            "n": nn,
+            "method": "Imbens-Manski (2004) Eq. (6) confidence interval for a partially identified parameter",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for btscr.boot_score_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btscr import boot_score_test
 
 
@@ -9,7 +8,10 @@ def test_btscr_basic():
     """Test basic functionality."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     fit0 = np.random.default_rng(42).normal(0, 1, 100)
-    score_fn = lambda v: float(np.mean(v))
+
+    def score_fn(v):
+        return float(np.mean(v))
+
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_score_test(x, fit0, score_fn, B)
     assert isinstance(result, dict)
@@ -20,7 +22,10 @@ def test_btscr_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     fit0 = np.random.default_rng(42).normal(0, 1, 100)
-    score_fn = lambda v: float(np.mean(v))
+
+    def score_fn(v):
+        return float(np.mean(v))
+
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_score_test(x, fit0, score_fn, B)
     assert isinstance(result, dict)

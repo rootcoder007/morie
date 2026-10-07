@@ -3,14 +3,18 @@
 Anchors PDF-verified in Kosorok (2008): bridge covariance
 F(s^t)-F(s)F(t), LIL eq. (2.21) bound 1/2, Chung liminf pi/2."""
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
 from morie.fn._kosorok import (
-    bootstrap_multiplier_process, bracketing_number_monotone, bridge_cov,
-    cox_score, covering_number_grid, empirical_df, empirical_process,
-    hadamard_derivative, sup_norm,
+    bootstrap_multiplier_process,
+    bracketing_number_monotone,
+    bridge_cov,
+    covering_number_grid,
+    empirical_df,
+    empirical_process,
+    hadamard_derivative,
+    sup_norm,
 )
 from morie.fn.ksr020 import kosorok_ch1_linear_regression_model
 from morie.fn.ksr024 import kosorok_ch1_partly_linear_logistic
@@ -94,9 +98,7 @@ def test_multiplier_bootstrap_is_centred_and_matches_the_bridge():
     rng = np.random.default_rng(4)
     X = rng.random(300)
     t = np.array([0.25, 0.5, 0.75])
-    draws = np.array([
-        bootstrap_multiplier_process(X, t, rng=rng) for _ in range(1200)
-    ])
+    draws = np.array([bootstrap_multiplier_process(X, t, rng=rng) for _ in range(1200)])
     # mean-centred weights => the process is centred
     assert np.abs(draws.mean(axis=0)).max() < 0.15
     # and reproduces the bridge covariance structure
@@ -153,9 +155,7 @@ def test_cox_score_vanishes_at_the_partial_likelihood_estimator():
     assert prof["beta_hat"][0] == pytest.approx(0.8, abs=0.25)  # recovers beta
     assert prof["information"][0, 0] > 0
     # the efficient score module agrees at the same beta
-    eff = kosorok_ch3_cox_efficient_score_beta(
-        Z, time=time, event=event, beta=prof["beta_hat"]
-    )
+    eff = kosorok_ch3_cox_efficient_score_beta(Z, time=time, event=event, beta=prof["beta_hat"])
     assert np.abs(eff["score"]).max() < 1e-6
     assert eff["efficient_information"] == pytest.approx(prof["information"])
     with pytest.raises(ValueError):
@@ -177,9 +177,7 @@ def test_cox_information_matches_the_sampling_variance():
 
 
 def test_profile_expansion_is_quadratic_and_calibrated():
-    out = kosorok_ch3_log_profile_expansion(
-        theta_bar_n=[0.5], theta_hat_n=[0.4], I_tilde=[[4.0]], n=100
-    )
+    out = kosorok_ch3_log_profile_expansion(theta_bar_n=[0.5], theta_hat_n=[0.4], I_tilde=[[4.0]], n=100)
     assert out["quadratic_term"] == pytest.approx(0.5 * 100 * 0.01 * 4.0)
     assert out["lrt_statistic"] == pytest.approx(2 * out["quadratic_term"])
     # at the maximiser the drop is exactly zero
@@ -198,8 +196,7 @@ def test_linear_model_assumption_checks_fire_correctly():
     assert out["bounded_cond_var"] is True  # homoscedastic by construction
     # heteroscedastic data: the conditional-variance check must notice
     Yh = Z @ np.array([1.5, -0.5]) + rng.standard_normal(300) * np.exp(2 * Z[:, 0])
-    assert kosorok_ch1_linear_regression_model(Yh, Z)["cond_var_ratio"] > \
-        out["cond_var_ratio"]
+    assert kosorok_ch1_linear_regression_model(Yh, Z)["cond_var_ratio"] > out["cond_var_ratio"]
     with pytest.raises(ValueError):
         kosorok_ch1_linear_regression_model(Y[:10], Z)  # length mismatch
 

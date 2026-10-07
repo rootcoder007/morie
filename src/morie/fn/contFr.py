@@ -79,12 +79,20 @@ def continued_fraction(x, n):
         r = 1.0 / r
     conv = _convergents(terms)
     h, k = conv[-1]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": h / float(k), "terms": terms,
-        "convergents": conv, "reliable_terms": reliable,
-        "residual": float(v - h / float(k)), "n": len(terms),
-        "method": "simple continued fraction expansion",
-    }), "contFr")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": h / float(k),
+                "terms": terms,
+                "convergents": conv,
+                "reliable_terms": reliable,
+                "residual": float(v - h / float(k)),
+                "n": len(terms),
+                "method": "simple continued fraction expansion",
+            }
+        ),
+        "contFr",
+    )
 
 
 def cheatsheet():

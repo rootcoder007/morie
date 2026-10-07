@@ -1,7 +1,5 @@
 """Tests for fzt21.fauzi_thm2_1_expected_kdfe."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzt21 import fauzi_thm2_1_expected_kdfe
 
 
@@ -28,7 +26,7 @@ def test_fzt21_basic():
     # estimate = jh**t1 * jah**t2, with t1 + t2 = 1.
     expected_t1 = (a * a) / (a * a - 1.0)
     expected_t2 = -1.0 / (a * a - 1.0)
-    expected_est = (jh ** expected_t1) * (jah ** expected_t2)
+    expected_est = (jh**expected_t1) * (jah**expected_t2)
 
     assert result["t1"] == expected_t1
     assert result["t2"] == expected_t2
@@ -53,7 +51,7 @@ def test_fzt21_edge():
     # Same closed-form check; estimate is well defined even for small values.
     expected_t1 = (a * a) / (a * a - 1.0)
     expected_t2 = -1.0 / (a * a - 1.0)
-    expected_est = (jh ** expected_t1) * (jah ** expected_t2)
+    expected_est = (jh**expected_t1) * (jah**expected_t2)
 
     assert result["t1"] == expected_t1
     assert result["t2"] == expected_t2

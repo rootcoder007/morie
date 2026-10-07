@@ -11,8 +11,9 @@ __all__ = ["sarsa", "sarsa_control"]
 _METHOD = "Tabular SARSA, epsilon-greedy on-policy TD control"
 
 
-def sarsa_control(P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100,
-                  start=0, terminal=(), max_steps=1000, seed=0, Q0=None):
+def sarsa_control(
+    P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100, start=0, terminal=(), max_steps=1000, seed=0, Q0=None
+):
     r"""
     Tabular SARSA on an explicit finite MDP.
 
@@ -131,14 +132,16 @@ def sarsa_control(P, R, gamma, alpha=0.1, epsilon=0.1, n_episodes=100,
         b = _greedy(Q[s], A)
         pol[s] = float(b)
         V[s] = float(Q[s, b])
-    return RichResult(payload={
-        "estimate": Q,
-        "policy": pol,
-        "v": V,
-        "n_steps": n_steps,
-        "n_episodes": int(n_episodes),
-        "method": _METHOD,
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "policy": pol,
+            "v": V,
+            "n_steps": n_steps,
+            "n_episodes": int(n_episodes),
+            "method": _METHOD,
+        }
+    )
 
 
 sarsa = sarsa_control

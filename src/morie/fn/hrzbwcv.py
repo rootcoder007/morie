@@ -40,8 +40,7 @@ def _gauss(u):
     return np.exp(-0.5 * u * u) / np.sqrt(2.0 * np.pi)
 
 
-def simbwcv(x, y, beta, grid=None, nh=15, lo=0.25, hi=4.0, weights=None,
-            P=2, d=None):
+def simbwcv(x, y, beta, grid=None, nh=15, lo=0.25, hi=4.0, weights=None, P=2, d=None):
     """Leave-one-out CV bandwidth for the index regression.
 
     Parameters
@@ -81,17 +80,19 @@ def simbwcv(x, y, beta, grid=None, nh=15, lo=0.25, hi=4.0, weights=None,
     if yv.size != n:
         raise ValueError("y must have one entry per row of x.")
     W = np.ones(n) if weights is None else np.asarray(weights, dtype=float).ravel()
-    href = float(n ** -0.2)
-    hs = (np.asarray(grid, dtype=float).ravel() if grid is not None
-          else href * np.exp(np.linspace(np.log(float(lo)), np.log(float(hi)),
-                                         int(nh))))
+    href = float(n**-0.2)
+    hs = (
+        np.asarray(grid, dtype=float).ravel()
+        if grid is not None
+        else href * np.exp(np.linspace(np.log(float(lo)), np.log(float(hi)), int(nh)))
+    )
     z = X @ b
 
     cv = np.zeros(hs.size)
     for t in range(int(hs.size)):
         hh = float(hs[t])
         K = _gauss((z[:, None] - z[None, :]) / hh)
-        np.fill_diagonal(K, 0.0)                     # leave one out
+        np.fill_diagonal(K, 0.0)  # leave one out
         den = np.sum(K, axis=1)
         den = np.where(den > 1e-300, den, 1e-300)
         gh = (K @ yv) / den
@@ -101,11 +102,16 @@ def simbwcv(x, y, beta, grid=None, nh=15, lo=0.25, hi=4.0, weights=None,
     dim = int(dd) if d is None else int(d)
     return RichResult(
         title="Cross-validated bandwidth for a single-index model",
-        payload={"bandwidth": float(hs[k]), "cv": float(cv[k]),
-                 "grid": hs, "cvcurve": cv, "hreference": href,
-                 "hstokerform": float(n ** (-2.0 / (2 * int(P) + dim + 2))),
-                 "n": n,
-                 "method": "Horowitz (2009) Section 2.7 and Appendix A.2.1 TR(h)"},
+        payload={
+            "bandwidth": float(hs[k]),
+            "cv": float(cv[k]),
+            "grid": hs,
+            "cvcurve": cv,
+            "hreference": href,
+            "hstokerform": float(n ** (-2.0 / (2 * int(P) + dim + 2))),
+            "n": n,
+            "method": "Horowitz (2009) Section 2.7 and Appendix A.2.1 TR(h)",
+        },
     )
 
 
@@ -119,8 +125,7 @@ def cheatsheet():
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
     n = 200
-    X = np.column_stack([np.linspace(-2, 2, n),
-                         np.cos(np.arange(1, n + 1) * 0.7)])
+    X = np.column_stack([np.linspace(-2, 2, n), np.cos(np.arange(1, n + 1) * 0.7)])
     b = np.array([1.0, 0.5])
     z = X @ b
     y = np.sin(z)

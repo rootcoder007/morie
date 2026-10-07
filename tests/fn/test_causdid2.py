@@ -1,8 +1,8 @@
 """Tests for causdid2.causal_did_2x2."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causdid2 import causal_did_2x2
 
 

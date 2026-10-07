@@ -49,12 +49,17 @@ def ma_freeman_tukey(x, n):
         nv = nv * len(xv)
     ft, var = [], []
     for xi, ni in zip(xv, nv):
-        ft.append(math.asin(math.sqrt(xi / (ni + 1.0)))
-                  + math.asin(math.sqrt((xi + 1.0) / (ni + 1.0))))
+        ft.append(math.asin(math.sqrt(xi / (ni + 1.0))) + math.asin(math.sqrt((xi + 1.0) / (ni + 1.0))))
         var.append(1.0 / (ni + 0.5))
-    return RichResult(payload={
-        "ft": ft, "var": var, "se": [math.sqrt(v) for v in var], "k": len(ft),
-        "method": "Freeman-Tukey double arcsine transform"})
+    return RichResult(
+        payload={
+            "ft": ft,
+            "var": var,
+            "se": [math.sqrt(v) for v in var],
+            "k": len(ft),
+            "method": "Freeman-Tukey double arcsine transform",
+        }
+    )
 
 
 mafreemantukey = ma_freeman_tukey

@@ -69,7 +69,7 @@ def ghosal_spec_dens_con(x, spectral_density=None, grid=None):
         k = max(3, per0.size // 10)
         pad = np.r_[per0[:k][::-1], per0, per0[-k:][::-1]]
         sm = np.convolve(pad, np.ones(2 * k + 1) / (2 * k + 1), mode="same")
-        sm = sm[k:k + per0.size]
+        sm = sm[k : k + per0.size]
         floor = max(float(np.mean(per0)) * 1e-3, 1e-12)
         ref = np.maximum(sm, floor)
 
@@ -79,15 +79,18 @@ def ghosal_spec_dens_con(x, spectral_density=None, grid=None):
         sd = spectral_density
     ll, wout, perout = whittle_loglik(xv, sd)
     g = wout if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
-    return RichResult(payload={
-        "freqs": g,
-        "periodogram": perout if grid is None else np.interp(g, wout, perout),
-        "spectral_density": np.array([float(sd(v)) for v in g]),
-        "whittle_loglik": ll, "exact": False,
-        "periodogram_independence": "asymptotically independent exponentials "
-                                    "with mean f(omega_j)",
-        "n": int(n),
-        "method": "Whittle likelihood (Sec. 7.3.3); an approximation, and consistency is its own theorem"})
+    return RichResult(
+        payload={
+            "freqs": g,
+            "periodogram": perout if grid is None else np.interp(g, wout, perout),
+            "spectral_density": np.array([float(sd(v)) for v in g]),
+            "whittle_loglik": ll,
+            "exact": False,
+            "periodogram_independence": "asymptotically independent exponentials with mean f(omega_j)",
+            "n": int(n),
+            "method": "Whittle likelihood (Sec. 7.3.3); an approximation, and consistency is its own theorem",
+        }
+    )
 
 
 def cheatsheet():

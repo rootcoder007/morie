@@ -6,9 +6,9 @@ magnitude of the analytic signal, so it bounds |x| from above and recovers
 the modulator of an AM signal.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsatf import rangayyan_envelope
 
 

@@ -1,7 +1,6 @@
 """Tests for marve.ma_robust_variance_est."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.marve import ma_robust_variance_est
 
 

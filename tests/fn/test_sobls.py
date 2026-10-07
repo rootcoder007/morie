@@ -1,8 +1,6 @@
 """sobls: Sobol low-discrepancy sequence."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.sobls import sobol_sequence as sob
 
 
@@ -19,7 +17,10 @@ def test_sobls_beats_iid_on_integration_error():
     faster than the 1/sqrt(N) of plain random sampling."""
     rng = np.random.default_rng(7)
     N, d = 1024, 3
-    f = lambda p: np.exp(-(p**2).sum(axis=1))
+
+    def f(p):
+        return np.exp(-(p**2).sum(axis=1))
+
     truth_mc = np.mean(f(rng.random((400_000, d))))
     q = np.asarray(sob(N=N, d=d, scramble=True, seed=1)["sample"])
     qmc_err = abs(np.mean(f(q)) - truth_mc)

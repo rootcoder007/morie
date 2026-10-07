@@ -13,6 +13,8 @@ def test_km009_doctest():
 
 def test_km009_edge():
     import pytest
+
     from morie.fn.km009 import kamath_ch2_softmax_element
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_softmax_element(*([None] * 2))

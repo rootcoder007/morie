@@ -67,10 +67,7 @@ def case_control(cases, controls, exposed=None, unexposed=None, conf=0.95):
     n = a + b + c + d
     if n <= 0:
         raise ValueError("the 2x2 table is empty")
-    if b * c == 0.0:
-        orr = float("inf") if a * d > 0.0 else float("nan")
-    else:
-        orr = (a * d) / (b * c)
+    orr = (float("inf") if a * d > 0.0 else float("nan")) if b * c == 0.0 else a * d / (b * c)
     if min(a, b, c, d) > 0.0:
         se = math.sqrt(1.0 / a + 1.0 / b + 1.0 / c + 1.0 / d)
         lo = math.log(orr)
@@ -84,23 +81,25 @@ def case_control(cases, controls, exposed=None, unexposed=None, conf=0.95):
         ci_h = float("nan")
     r1, r2 = a + b, c + d
     c1, c2 = a + c, b + d
-    if min(r1, r2, c1, c2) > 0.0:
-        chi = n * (a * d - b * c) ** 2 / (r1 * r2 * c1 * c2)
-    else:
-        chi = float("nan")
+    chi = n * (a * d - b * c) ** 2 / (r1 * r2 * c1 * c2) if min(r1, r2, c1, c2) > 0.0 else float("nan")
     sig = 1 if (chi == chi and chi > 3.841458820694124) else 0
-    return RichResult(payload={
-        "estimate": orr,
-        "a": a, "b": b, "c": c, "d": d,
-        "log_or": lo,
-        "se_log": se,
-        "ci_low": ci_l,
-        "ci_high": ci_h,
-        "chisq": chi,
-        "significant": sig,
-        "n": n,
-        "method": "unmatched case-control odds ratio",
-    })
+    return RichResult(
+        payload={
+            "estimate": orr,
+            "a": a,
+            "b": b,
+            "c": c,
+            "d": d,
+            "log_or": lo,
+            "se_log": se,
+            "ci_low": ci_l,
+            "ci_high": ci_h,
+            "chisq": chi,
+            "significant": sig,
+            "n": n,
+            "method": "unmatched case-control odds ratio",
+        }
+    )
 
 
 def cheatsheet():

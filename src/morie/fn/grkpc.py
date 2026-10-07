@@ -86,7 +86,7 @@ def geron_kernel_pca_rbf(X, gamma=1.0, d=2):
     K = np.exp(-gamma * sq)
     one = np.full((m, m), 1.0 / m)
     Kc = K - one @ K - K @ one + one @ K @ one
-    Kc = (Kc + Kc.T) / 2.0                   # symmetrise away round-off
+    Kc = (Kc + Kc.T) / 2.0  # symmetrise away round-off
 
     vals, vecs = np.linalg.eigh(Kc)
     idx = np.argsort(vals)[::-1][:d]
@@ -100,8 +100,7 @@ def geron_kernel_pca_rbf(X, gamma=1.0, d=2):
 
     return RichResult(
         title="Kernel PCA (RBF)",
-        summary_lines=[("gamma", gamma), ("Components", d),
-                       ("Top eigenvalue", float(lam[0]))],
+        summary_lines=[("gamma", gamma), ("Components", d), ("Top eigenvalue", float(lam[0]))],
         payload={
             "projected": Z.tolist(),
             "eigenvalues": lam.tolist(),

@@ -57,7 +57,7 @@ def alcove_model(
 
     correct_total = 0
     total = 0
-    for epoch in range(n_epochs):
+    for _epoch in range(n_epochs):
         order = rng.permutation(n)
         for idx in order:
             xi = X[idx]

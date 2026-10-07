@@ -5,8 +5,6 @@ TensorFlow*, 3rd edition, ch 4, eq. 4.23, the cross entropy gradient. Expected v
 the test body and the docstring's own worked value is asserted too.
 """
 
-import math
-
 import pytest
 
 from morie.fn.grn024 import geron_ch4_cross_entropy_gradient_vector
@@ -16,26 +14,23 @@ def test_the_gradient_is_the_mean_error_times_the_features():
     # a uniform model over three classes under-predicts the true one by
     # 1/3 - 1 = -2/3
     res = geron_ch4_cross_entropy_gradient_vector([[1.0]], [0], [[0.0, 0.0, 0.0]], k=0)
-    assert list(res["gradient"]) == pytest.approx([1.0 / 3.0 - 1.0],
-                                                   rel=1e-9)
-    assert [round(v, 6) for v in res["gradient"]] == pytest.approx(
-        [-0.666667], abs=1e-6)
-    assert round(res["mean_error"], 6) == pytest.approx(-0.666667,
-                                                         abs=1e-6)
+    assert list(res["gradient"]) == pytest.approx([1.0 / 3.0 - 1.0], rel=1e-9)
+    assert [round(v, 6) for v in res["gradient"]] == pytest.approx([-0.666667], abs=1e-6)
+    assert round(res["mean_error"], 6) == pytest.approx(-0.666667, abs=1e-6)
 
 
 def test_a_class_nobody_belongs_to_gets_a_positive_gradient():
     res = geron_ch4_cross_entropy_gradient_vector([[1.0]], [0], [[0.0, 0.0, 0.0]], k=1)
     assert res["gradient"][0] == pytest.approx(1.0 / 3.0, rel=1e-9)
-    assert round(res["gradient"][0], 6) == pytest.approx(0.333333,
-                                                          abs=1e-6)
+    assert round(res["gradient"][0], 6) == pytest.approx(0.333333, abs=1e-6)
 
 
 def test_the_gradients_over_all_classes_cancel_out():
     # every row's probabilities sum to one and exactly one label is set,
     # so the errors across classes must sum to zero
-    total = sum(geron_ch4_cross_entropy_gradient_vector([[1.0]], [0], [[0.0, 0.0, 0.0]], k=k)["gradient"][0]
-                for k in range(3))
+    total = sum(
+        geron_ch4_cross_entropy_gradient_vector([[1.0]], [0], [[0.0, 0.0, 0.0]], k=k)["gradient"][0] for k in range(3)
+    )
     assert total == pytest.approx(0.0, abs=1e-9)
 
 
@@ -56,7 +51,7 @@ import morie.fn.grn024 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

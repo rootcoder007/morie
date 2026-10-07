@@ -26,8 +26,7 @@ def _norm_laplacian(A, who):
         if s <= 0.0:
             raise ValueError(who + ": every node must have positive degree")
         d.append(s)
-    L = [[(1.0 if i == j else 0.0) - M[i][j] / math.sqrt(d[i] * d[j])
-          for j in range(n)] for i in range(n)]
+    L = [[(1.0 if i == j else 0.0) - M[i][j] / math.sqrt(d[i] * d[j]) for j in range(n)] for i in range(n)]
     return M, L, d, n
 
 
@@ -69,10 +68,16 @@ def sgt_laplacian_eigenmaps(A, k=2):
         raise ValueError("sgt_laplacian_eigenmaps: need 1 <= k <= n - 1")
     vals, vecs = core.jacobi(L)
     Y = [[vecs[i][j + 1] for j in range(k)] for i in range(n)]
-    return RichResult(payload={
-        "Y": Y, "eigvals": [vals[j + 1] for j in range(k)],
-        "lambda1": vals[0], "k": k, "n": n,
-        "method": "Laplacian eigenmaps on L_sym"})
+    return RichResult(
+        payload={
+            "Y": Y,
+            "eigvals": [vals[j + 1] for j in range(k)],
+            "lambda1": vals[0],
+            "k": k,
+            "n": n,
+            "method": "Laplacian eigenmaps on L_sym",
+        }
+    )
 
 
 def cheatsheet():

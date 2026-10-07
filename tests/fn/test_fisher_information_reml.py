@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.fisher_information_reml import (
     fisher_information_reml,
 )
@@ -11,7 +10,7 @@ from morie.fn.fisher_information_reml import (
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r24e2_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     n = 5
     # Covariance matrix A: identity is a valid positive-definite covariance
     a = np.eye(n)
@@ -25,7 +24,7 @@ def test_the_r_series_dick_j_brus_spatial_sampling_with_r24e2_basic():
 
 def test_the_r_series_dick_j_brus_spatial_sampling_with_r24e2_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     n = 3
     # Smallest reasonable positive-definite covariance matrix
     a = np.eye(n)

@@ -71,8 +71,9 @@ def _tri(v, M):
     return L
 
 
-def gp_classification_svgp(X, y, X_test=None, M=3, lengthscale=1.0, variance=1.0,
-                           iters=40, step=0.05, nodes=11, jitter=1e-8):
+def gp_classification_svgp(
+    X, y, X_test=None, M=3, lengthscale=1.0, variance=1.0, iters=40, step=0.05, nodes=11, jitter=1e-8
+):
     """Variational sparse GP classifier with a probit likelihood."""
     A = core.mat(X)
     n = len(A)

@@ -102,7 +102,7 @@ def geron_encoder_decoder_transformer(
     """
     S = np.asarray(src)
     Tg = np.asarray(tgt)
-    if S.ndim == 0 or S.size == 0 or Tg.ndim == 0 or Tg.size == 0:
+    if np.ndim(src) == 0 or S.size == 0 or Tg.ndim == 0 or Tg.size == 0:
         raise ValueError("geron_encoder_decoder_transformer: src and tgt must each contain at least one token")
     Ts, Tt = int(S.shape[-1]), int(Tg.shape[-1])
     L, Hh, d = int(n_layers), int(n_heads), int(d_model)
@@ -112,9 +112,7 @@ def geron_encoder_decoder_transformer(
     if d % Hh:
         raise ValueError(f"geron_encoder_decoder_transformer: d_model={d} is not divisible by n_heads={Hh}")
     if Ts > M or Tt > M:
-        raise ValueError(
-            f"geron_encoder_decoder_transformer: sequence lengths ({Ts}, {Tt}) exceed max_len {M}"
-        )
+        raise ValueError(f"geron_encoder_decoder_transformer: sequence lengths ({Ts}, {Tt}) exceed max_len {M}")
 
     enc = block_params(d, d_ff=d_ff, cross_attention=False)
     dec = block_params(d, d_ff=d_ff, cross_attention=True)

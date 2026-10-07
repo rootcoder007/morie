@@ -1,7 +1,6 @@
 """Tests for negctc.negative_control_outcome."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.negctc import negative_control_outcome
 
 

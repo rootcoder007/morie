@@ -63,13 +63,24 @@ order and its subterm/precedence cases as implemented in
 """
 
 from ._richresult import RichResult
-from .unifAlg import VAR, app, apply_subst, const, is_var, match, substitute, unify, var, variables
+from .unifAlg import VAR, app, apply_subst, is_var, match, substitute, unify, var, variables
 
-__all__ = ["rule", "positions", "subterm_at", "replace_at",
-           "rewrite_step", "normal_form", "lpo_greater",
-           "critical_pairs", "joinable", "is_locally_confluent",
-           "is_terminating", "complete", "decides",
-           "term_rewriting"]
+__all__ = [
+    "rule",
+    "positions",
+    "subterm_at",
+    "replace_at",
+    "rewrite_step",
+    "normal_form",
+    "lpo_greater",
+    "critical_pairs",
+    "joinable",
+    "is_locally_confluent",
+    "is_terminating",
+    "complete",
+    "decides",
+    "term_rewriting",
+]
 
 STRATEGIES = ("innermost", "outermost")
 
@@ -77,13 +88,12 @@ STRATEGIES = ("innermost", "outermost")
 def rule(lhs, rhs):
     r"""A rewrite rule, checked for the two conditions rules need."""
     if is_var(lhs):
-        raise ValueError("trmRew: a rule cannot have a bare variable "
-                         "on the left -- it would match everything")
+        raise ValueError("trmRew: a rule cannot have a bare variable on the left -- it would match everything")
     extra = set(variables(rhs)) - set(variables(lhs))
     if extra:
-        raise ValueError("trmRew: the right-hand side introduces the "
-                         "unbound variable(s) %s"
-                         % ", ".join(sorted(extra)))
+        raise ValueError(
+            "trmRew: the right-hand side introduces the unbound variable(s) {}".format(", ".join(sorted(extra)))
+        )
     return (lhs, rhs)
 
 
@@ -101,8 +111,7 @@ def subterm_at(t, pos):
     cur = t
     for i in pos:
         if is_var(cur) or i >= len(cur[2]):
-            raise ValueError("trmRew: position %r does not exist in "
-                             "the term" % (pos,))
+            raise ValueError(f"trmRew: position {pos!r} does not exist in the term")
         cur = cur[2][i]
     return cur
 
@@ -112,8 +121,7 @@ def replace_at(t, pos, new):
     if not pos:
         return new
     if is_var(t) or pos[0] >= len(t[2]):
-        raise ValueError("trmRew: position %r does not exist in the "
-                         "term" % (pos,))
+        raise ValueError(f"trmRew: position {pos!r} does not exist in the term")
     args = list(t[2])
     args[pos[0]] = replace_at(args[pos[0]], pos[1:], new)
     return app(t[1], *args)
@@ -127,19 +135,17 @@ def rewrite_step(t, rules, strategy="innermost"):
     normal form, which the anchor checks.
     """
     if strategy not in STRATEGIES:
-        raise ValueError("trmRew: strategy must be one of %s, got %r"
-                         % (", ".join(STRATEGIES), strategy))
+        raise ValueError("trmRew: strategy must be one of {}, got {!r}".format(", ".join(STRATEGIES), strategy))
     pos = positions(t)
     pos.sort(key=len, reverse=(strategy == "innermost"))
     for p in pos:
         s = subterm_at(t, p)
         if is_var(s):
             continue
-        for i, (l, r) in enumerate(rules):
-            m = match(l, s)
+        for i, (ell, r) in enumerate(rules):
+            m = match(ell, s)
             if m is not None:
-                return {"term": replace_at(t, p, substitute(r, m)),
-                        "position": p, "rule": i, "binding": m}
+                return {"term": replace_at(t, p, substitute(r, m)), "position": p, "rule": i, "binding": m}
     return None
 
 
@@ -151,13 +157,12 @@ def normal_form(t, rules, strategy="innermost", max_steps=10000):
     for _ in range(int(max_steps)):
         st = rewrite_step(cur, rules, strategy)
         if st is None:
-            return {"normal_form": cur, "steps": len(trace),
-                    "trace": trace}
+            return {"normal_form": cur, "steps": len(trace), "trace": trace}
         trace.append((st["rule"], st["position"]))
         cur = st["term"]
-    raise ValueError("trmRew: no normal form after %d steps -- the "
-                     "system does not terminate on this term"
-                     % int(max_steps))
+    raise ValueError(
+        f"trmRew: no normal form after {int(int(max_steps))} steps -- the system does not terminate on this term"
+    )
 
 
 def _prec(precedence, sym):
@@ -188,8 +193,7 @@ def lpo_greater(s, t, precedence):
     for a, b in zip(s[2], t[2]):
         if a == b:
             continue
-        return (lpo_greater(a, b, precedence)
-                and all(lpo_greater(s, c, precedence) for c in t[2]))
+        return lpo_greater(a, b, precedence) and all(lpo_greater(s, c, precedence) for c in t[2])
     return False
 
 
@@ -199,11 +203,12 @@ def is_terminating(rules, precedence):
     Sufficient, not necessary: a ``False`` means this order does not
     prove termination, not that the system loops.
     """
-    bad = [i for i, (l, r) in enumerate(rules)
-           if not lpo_greater(l, r, precedence)]
-    return {"terminating": not bad, "unoriented": bad,
-            "method": "lexicographic path order (Baader & Nipkow "
-                      "1998 Ch. 5); sufficient, not necessary"}
+    bad = [i for i, (ell, r) in enumerate(rules) if not lpo_greater(ell, r, precedence)]
+    return {
+        "terminating": not bad,
+        "unoriented": bad,
+        "method": "lexicographic path order (Baader & Nipkow 1998 Ch. 5); sufficient, not necessary",
+    }
 
 
 def _rename(t, tag):
@@ -265,13 +270,16 @@ def joinable(a, b, rules, max_steps=10000):
 def is_locally_confluent(rules, max_steps=10000):
     r"""The Critical Pair Lemma, applied."""
     cps = critical_pairs(rules)
-    bad = [c for c in cps
-           if not joinable(c["left"], c["right"], rules, max_steps)]
-    return RichResult(payload={
-        "estimate": not bad, "locally_confluent": not bad,
-        "n_critical_pairs": len(cps), "unjoinable": bad,
-        "method": "Knuth & Bendix (1970) Critical Pair Lemma",
-    })
+    bad = [c for c in cps if not joinable(c["left"], c["right"], rules, max_steps)]
+    return RichResult(
+        payload={
+            "estimate": not bad,
+            "locally_confluent": not bad,
+            "n_critical_pairs": len(cps),
+            "unjoinable": bad,
+            "method": "Knuth & Bendix (1970) Critical Pair Lemma",
+        }
+    )
 
 
 def is_confluent(rules, precedence, max_steps=10000):
@@ -281,19 +289,20 @@ def is_confluent(rules, precedence, max_steps=10000):
     term = is_terminating(rules, precedence)
     lc = is_locally_confluent(rules, max_steps)
     yes = term["terminating"] and lc["locally_confluent"]
-    return RichResult(payload={
-        "estimate": yes, "confluent": yes,
-        "terminating": term["terminating"],
-        "locally_confluent": lc["locally_confluent"],
-        "n_critical_pairs": lc["n_critical_pairs"],
-        "unjoinable": lc["unjoinable"],
-        "method": "Newman (1942): terminating + locally confluent "
-                  "implies confluent",
-    })
+    return RichResult(
+        payload={
+            "estimate": yes,
+            "confluent": yes,
+            "terminating": term["terminating"],
+            "locally_confluent": lc["locally_confluent"],
+            "n_critical_pairs": lc["n_critical_pairs"],
+            "unjoinable": lc["unjoinable"],
+            "method": "Newman (1942): terminating + locally confluent implies confluent",
+        }
+    )
 
 
-def complete(equations, precedence, max_rules=60, max_steps=10000,
-             max_iter=4000):
+def complete(equations, precedence, max_rules=60, max_steps=10000, max_iter=4000):
     r"""Knuth-Bendix completion of a set of equations.
 
     Huet's form of the procedure: rules are kept interreduced as they
@@ -306,16 +315,20 @@ def complete(equations, precedence, max_rules=60, max_steps=10000,
     otherwise would be a lie.
     """
     rules = []
-    queue = [(l, r) for l, r in equations]
+    queue = [(ell, r) for ell, r in equations]
     for _ in range(int(max_iter)):
         if not queue:
             rules = _interreduce(rules, precedence)
-            return RichResult(payload={
-                "estimate": rules, "rules": rules, "complete": True,
-                "reason": None, "n_rules": len(rules),
-                "method": "Knuth & Bendix (1970) completion, oriented "
-                          "by the lexicographic path order",
-            })
+            return RichResult(
+                payload={
+                    "estimate": rules,
+                    "rules": rules,
+                    "complete": True,
+                    "reason": None,
+                    "n_rules": len(rules),
+                    "method": "Knuth & Bendix (1970) completion, oriented by the lexicographic path order",
+                }
+            )
         s_, t_ = queue.pop(0)
         s_ = normal_form(s_, rules, max_steps=max_steps)["normal_form"]
         t_ = normal_form(t_, rules, max_steps=max_steps)["normal_form"]
@@ -326,18 +339,15 @@ def complete(equations, precedence, max_rules=60, max_steps=10000,
         elif lpo_greater(t_, s_, precedence):
             new = rule(t_, s_)
         else:
-            return _incomplete(rules, "unorientable equation"
-                               if not rules else
-                               "unorientable critical pair", (s_, t_))
+            return _incomplete(rules, "unorientable equation" if not rules else "unorientable critical pair", (s_, t_))
         # Collapse: a rule whose left-hand side the new rule can
         # rewrite is no longer a rule; it goes back into the queue.
         keep = []
-        for l, r in rules:
-            if rewrite_step(l, [new]) is not None:
-                queue.append((l, r))
+        for ell, r in rules:
+            if rewrite_step(ell, [new]) is not None:
+                queue.append((ell, r))
             else:
-                keep.append((l, normal_form(
-                    r, [new], max_steps=max_steps)["normal_form"]))
+                keep.append((ell, normal_form(r, [new], max_steps=max_steps)["normal_form"]))
         rules = keep + [new]
         if len(rules) > int(max_rules):
             return _incomplete(rules, "rule budget exhausted", None)
@@ -351,22 +361,27 @@ def complete(equations, precedence, max_rules=60, max_steps=10000,
 
 
 def _incomplete(rules, why, pair):
-    return RichResult(payload={
-        "estimate": None, "rules": rules, "complete": False,
-        "reason": why, "pair": pair, "n_rules": len(rules),
-        "method": "Knuth & Bendix (1970) completion, oriented by the "
-                  "lexicographic path order",
-    })
+    return RichResult(
+        payload={
+            "estimate": None,
+            "rules": rules,
+            "complete": False,
+            "reason": why,
+            "pair": pair,
+            "n_rules": len(rules),
+            "method": "Knuth & Bendix (1970) completion, oriented by the lexicographic path order",
+        }
+    )
 
 
 def _canonical(rules):
     """Rename variables to x0, x1, ... so completion output does not
     carry the bookkeeping suffixes renaming apart introduced."""
     out = []
-    for l, r in rules:
-        names = variables(l)
-        sub = {n: var("x%d" % i) for i, n in enumerate(names)}
-        out.append((substitute(l, sub), substitute(r, sub)))
+    for ell, r in rules:
+        names = variables(ell)
+        sub = {n: var(f"x{int(i)}") for i, n in enumerate(names)}
+        out.append((substitute(ell, sub), substitute(r, sub)))
     return out
 
 
@@ -376,15 +391,15 @@ def _interreduce(rules, precedence):
     while changed:
         changed = False
         for i in range(len(out)):
-            rest = out[:i] + out[i + 1:]
-            l, r = out[i]
-            nr = (normal_form(r, rest)["normal_form"] if rest else r)
-            if rest and rewrite_step(l, rest) is not None:
+            rest = out[:i] + out[i + 1 :]
+            ell, r = out[i]
+            nr = normal_form(r, rest)["normal_form"] if rest else r
+            if rest and rewrite_step(ell, rest) is not None:
                 out = rest
                 changed = True
                 break
             if nr != r:
-                out[i] = (l, nr)
+                out[i] = (ell, nr)
                 changed = True
                 break
     return _canonical(out)
@@ -401,16 +416,19 @@ def decides(s, t, rules, max_steps=10000):
     return {"equal": a == b, "left": a, "right": b}
 
 
-def term_rewriting(term, rules, strategy="innermost",
-                   max_steps=10000):
+def term_rewriting(term, rules, strategy="innermost", max_steps=10000):
     r"""Entry point: reduce ``term`` under ``rules``."""
     nf = normal_form(term, rules, strategy, max_steps)
-    return RichResult(payload={
-        "estimate": nf["normal_form"], "normal_form": nf["normal_form"],
-        "steps": nf["steps"], "trace": nf["trace"],
-        "strategy": strategy,
-        "method": "leftmost-%s rewriting to normal form" % strategy,
-    })
+    return RichResult(
+        payload={
+            "estimate": nf["normal_form"],
+            "normal_form": nf["normal_form"],
+            "steps": nf["steps"],
+            "trace": nf["trace"],
+            "strategy": strategy,
+            "method": f"leftmost-{strategy} rewriting to normal form",
+        }
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

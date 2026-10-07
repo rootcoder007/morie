@@ -1,8 +1,8 @@
 """Tests for morie.fn.varfit — vector autoregression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.varfit import var_fit
 
 

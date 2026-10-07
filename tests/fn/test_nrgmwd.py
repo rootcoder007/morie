@@ -1,7 +1,6 @@
 """Tests for nrgmwd.normalized_random_measure."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nrgmwd import normalized_random_measure
 
 

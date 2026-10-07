@@ -1,7 +1,6 @@
 """Tests for morie.fn.spectc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spectc import spectc
 
 

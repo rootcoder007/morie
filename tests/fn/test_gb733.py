@@ -1,7 +1,6 @@
 """Tests for gb733.gibbons_linrank_covariance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb733 import gibbons_linrank_covariance
 
 
@@ -30,9 +29,7 @@ def test_gb733_basic():
     bv = [float(v) for v in b]
     nn = m + n
     k = m * n / (float(nn) ** 2 * (nn - 1.0))
-    expected_cov = k * (
-        nn * sum(av[i] * bv[i] for i in range(nn)) - sum(av) * sum(bv)
-    )
+    expected_cov = k * (nn * sum(av[i] * bv[i] for i in range(nn)) - sum(av) * sum(bv))
     expected_va = k * (nn * sum(v * v for v in av) - sum(av) ** 2)
     expected_vb = k * (nn * sum(v * v for v in bv) - sum(bv) ** 2)
     expected_corr = expected_cov / (expected_va * expected_vb) ** 0.5

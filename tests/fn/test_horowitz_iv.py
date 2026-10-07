@@ -1,9 +1,10 @@
 """Horowitz deconvolution, average derivative and nonparametric IV."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hrzade import hrz_average_derivative
 from morie.fn.hrzades import hrz_average_derivative_hat
 from morie.fn.hrzdcnm import hrz_deconv_normality
@@ -88,7 +89,7 @@ def test_npiv_operator_singular_values_show_the_ill_posedness():
     out = hrz_npiv_operator(X, W, K=6)
     sv = out["singular_values"]
     assert sv.size == 6
-    assert out["decay_ratio"] < 1.0      # the decay IS the ill-posedness
+    assert out["decay_ratio"] < 1.0  # the decay IS the ill-posedness
     assert out["severity"] in ("mild", "severe")
     with pytest.raises(ValueError):
         hrz_npiv_operator(X, W[:10])
@@ -107,7 +108,7 @@ def test_tikhonov_and_sieve_are_two_regularisations_of_one_problem():
 
     tik = hrz_tikhonov_iv(T, b, alpha=1e-3)
     assert tik["ill_posed"] is True
-    assert tik["condition_number"] > 1e6      # genuinely ill-conditioned
+    assert tik["condition_number"] > 1e6  # genuinely ill-conditioned
     assert len(tik["l_curve"]) >= 4
     # more regularisation => smaller solution norm, larger residual
     small_a = hrz_tikhonov_iv(T, b, alpha=1e-6)
@@ -150,7 +151,7 @@ def test_instrument_check_separates_relevance_from_exogeneity():
     s = hrz_instrument_check(strong, Z)
     w = hrz_instrument_check(weak, Z)
     assert s["relevant"] is True
-    assert w["relevant"] is False          # weak instrument caught
+    assert w["relevant"] is False  # weak instrument caught
     assert s["first_stage_F"] > w["first_stage_F"]
     # exogeneity is explicitly NOT claimed to be testable
     assert s["exogeneity_testable"] is False

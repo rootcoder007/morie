@@ -1,7 +1,6 @@
 """Tests for aftwbl.aft_weibull."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aftwbl import aft_weibull
 
 

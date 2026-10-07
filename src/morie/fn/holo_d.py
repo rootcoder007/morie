@@ -28,12 +28,7 @@ def holo_dag(
     ----------
     Pearl, J. (2009). *Causality* (2nd ed.). Cambridge University Press.
     """
-    try:
-        from morie.fn import _plot_core as plt
-        from morie.fn._plot_core import patches as mpatches
-    except ImportError:
-        print("holo_dag requires matplotlib. Install via: pip install matplotlib")
-        return None
+    from morie.fn import _plot_core as plt
 
     nodes = list(dict.fromkeys(n for edge in edges for n in edge))
     n = len(nodes)

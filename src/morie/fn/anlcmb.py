@@ -142,8 +142,7 @@ def dominant_singularity_growth(denominator, coefficients=None):
     """
     Q = [float(c) for c in denominator]
     if not Q or Q[0] == 0:
-        raise ValueError("the denominator must have a non-zero constant "
-                         "term.")
+        raise ValueError("the denominator must have a non-zero constant term.")
 
     def q(x):
         acc = 0.0
@@ -298,16 +297,14 @@ def stirling_series_error(n, terms=3):
             "number would be a promise the theory never made."
         )
     # B2, B4, B6, B8, B10
-    bern = [Fraction(1, 6), Fraction(-1, 30), Fraction(1, 42),
-            Fraction(-1, 30), Fraction(5, 66)]
+    bern = [Fraction(1, 6), Fraction(-1, 30), Fraction(1, 42), Fraction(-1, 30), Fraction(5, 66)]
     base = n * math.log(n) - n + 0.5 * math.log(2.0 * math.pi * n)
     approx = base
     for k in range(1, K + 1):
         b = bern[k - 1]
         approx += float(b) / (2 * k * (2 * k - 1) * n ** (2 * k - 1))
     kk = K + 1
-    bound = abs(float(bern[kk - 1])) / (2 * kk * (2 * kk - 1)
-                                        * n ** (2 * kk - 1))
+    bound = abs(float(bern[kk - 1])) / (2 * kk * (2 * kk - 1) * n ** (2 * kk - 1))
     truth = math.lgamma(n + 1)
     err = abs(approx - truth)
     # the series bound falls below double resolution quickly -- at
@@ -315,7 +312,7 @@ def stirling_series_error(n, terms=3):
     # whose representable neighbours are 3e-14 apart. The achieved
     # error can never be judged below that floor, so the check is
     # against bound + floor and the floor is reported separately.
-    floor = 8.0 * abs(truth) * 2.0 ** -53
+    floor = 8.0 * abs(truth) * 2.0**-53
     return RichResult(
         title=f"Stirling series at n = {n}, {K} correction terms",
         summary_lines=[
@@ -420,8 +417,7 @@ def hardy_ramanujan_partitions(n):
     if n < 1:
         raise ValueError(f"n must be positive; got {n}.")
     exact = _partition_count_exact(n)[n]
-    asym = math.exp(math.pi * math.sqrt(2.0 * n / 3.0)) / (4.0 * n
-                                                           * math.sqrt(3.0))
+    asym = math.exp(math.pi * math.sqrt(2.0 * n / 3.0)) / (4.0 * n * math.sqrt(3.0))
     return RichResult(
         title=f"Partitions of {n}",
         summary_lines=[

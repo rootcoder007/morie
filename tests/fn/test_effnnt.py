@@ -1,7 +1,6 @@
 """Tests for effnnt.efficientnet_block."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.effnnt import efficientnet_block
 
 

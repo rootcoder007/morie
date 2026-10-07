@@ -1,6 +1,5 @@
 """Tests for gh_ap_k1.ghosal_fano_ineq."""
 
-from morie.fn import _array_core as np
 from morie.fn.gh_ap_k1 import ghosal_fano_ineq
 
 
@@ -12,6 +11,7 @@ def test_gh_ap_k1_basic():
     assert isinstance(result, dict)
     # Compute expected values independently from the documented formula.
     import math
+
     log_M = math.log(M)
     log2 = math.log(2.0)
     raw = 1.0 - (mutual_info + log2) / log_M
@@ -38,6 +38,7 @@ def test_gh_ap_k1_edge():
     result = ghosal_fano_ineq(M, mutual_info)
     assert isinstance(result, dict)
     import math
+
     raw = 1.0 - (mutual_info + math.log(2.0)) / math.log(M)
     expected_bound = min(1.0, max(0.0, raw))
     expected_informative = 1.0 if raw > 0.0 else 0.0

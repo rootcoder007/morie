@@ -4,9 +4,9 @@ Fauzi & Maesono (2023), *Statistical Inference Based on Kernel Distribution
 Function Estimators*, Ch. 5.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fzcvm import fauzi_cvm_smoothed as cvm
 
 
@@ -33,10 +33,7 @@ def test_fzcvm_grows_with_the_size_of_the_misfit():
     the discrepancy monotonically."""
     rng = np.random.default_rng(2811)
     base = rng.standard_normal(400)
-    stats_ = [
-        cvm(base + shift, cdf="norm", args=(0.0, 1.0))["statistic"]
-        for shift in (0.0, 0.5, 1.0, 2.0)
-    ]
+    stats_ = [cvm(base + shift, cdf="norm", args=(0.0, 1.0))["statistic"] for shift in (0.0, 0.5, 1.0, 2.0)]
     assert stats_ == sorted(stats_)
 
 

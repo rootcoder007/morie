@@ -1,7 +1,6 @@
 """Tests for rfpmi.rf_permutation_importance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rfpmi import rf_permutation_importance
 
 

@@ -70,14 +70,21 @@ def potM(y, u, return_periods=(10.0, 100.0)):
             rl[m] = u + sigma * math.log(m * rate)
         else:
             rl[m] = u + sigma / xi * ((m * rate) ** xi - 1.0)
-    return RichResult(payload={
-        "sigma": sigma, "xi": xi,
-        "loglik": fit["loglik"], "cov": fit["cov"],
-        "n_exceedances": k, "n": n, "rate": rate,
-        "return_levels": rl, "threshold": u,
-        "converged": fit["converged"],
-        "method": "POT/GPD (Davison-Smith 1990; Coles Eq. 4.13)",
-    })
+    return RichResult(
+        payload={
+            "sigma": sigma,
+            "xi": xi,
+            "loglik": fit["loglik"],
+            "cov": fit["cov"],
+            "n_exceedances": k,
+            "n": n,
+            "rate": rate,
+            "return_levels": rl,
+            "threshold": u,
+            "converged": fit["converged"],
+            "method": "POT/GPD (Davison-Smith 1990; Coles Eq. 4.13)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

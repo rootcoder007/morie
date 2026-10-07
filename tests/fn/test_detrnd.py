@@ -1,7 +1,6 @@
 """Tests for detrnd.detrend_climate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.detrnd import detrend_climate
 
 

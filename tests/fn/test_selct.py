@@ -1,7 +1,6 @@
 """Tests for selct.genomic_selection_accuracy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.selct import genomic_selection_accuracy
 
 

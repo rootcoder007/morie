@@ -1,7 +1,5 @@
 """Tests for recapTOA.toa_radiation_balance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.recapTOA import toa_radiation_balance
 
 

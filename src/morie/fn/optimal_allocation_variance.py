@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def optimal_allocation_variance(weights, s_h, c_h, n):
     """
     value = _brus.optimal_allocation_variance(weights, s_h, c_h, n)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (13.10)"
     return RichResult(
-        title='Variance under optimal allocation with costs',
+        title="Variance under optimal allocation with costs",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r13e10: V = (1/n)(sum w S sqrt(c))(sum w S/sqrt(c)) [Brus 2022, eq. 13.10]'
+    return "r13e10: V = (1/n)(sum w S sqrt(c))(sum w S/sqrt(c)) [Brus 2022, eq. 13.10]"

@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.3, the argmax answer search. E
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km044 import kamath_ch3_prompt_search_argmax
@@ -14,8 +12,9 @@ from morie.fn.km044 import kamath_ch3_prompt_search_argmax
 def test_the_search_returns_the_highest_scoring_answer():
     # Eq 3.3: z_hat = argmax_z P(f_fill(x, z); theta)
     scores = {"good": 0.9, "bad": 0.2, "fine": 0.5}
-    res = kamath_ch3_prompt_search_argmax("x", list(scores), lambda filled: scores[filled.split("|")[-1]],
-               f_fill=lambda x, z: x + "|" + z)
+    res = kamath_ch3_prompt_search_argmax(
+        "x", list(scores), lambda filled: scores[filled.split("|")[-1]], f_fill=lambda x, z: x + "|" + z
+    )
     assert res["z_hat"] == "good"
     assert res["estimate"] == pytest.approx(0.9, rel=1e-12)
     for z, v in scores.items():

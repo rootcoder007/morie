@@ -93,10 +93,29 @@ def activate(package_path: list, version: str) -> bool:
     d = data_dir()
     if installed_version(d) != version:
         return False
+    if changed_files(d):
+        return False  # edited since a verified install: never load it (``status`` names the files)
     p = str(d)
     if p not in package_path:
         package_path.append(p)
     return True
+
+
+def changed_files(d: Path | None = None) -> list[str]:
+    """Files of a verified install that no longer match the bundled manifest.
+
+    A layer installed with verification is re-checked at every ``import morie``
+    (five files, about 400 KB of SHA-256), so a file edited after install is not
+    loaded. A layer installed with ``--no-verify`` is the user's explicit choice
+    and is not checked.
+    """
+    d = d or data_dir()
+    if not (d / "VERIFIED").is_file():
+        return []
+    expected = manifest()
+    if not expected:
+        return []
+    return [n for n in FILES if not (d / n).is_file() or sha256_of(d / n) != expected.get(n)]
 
 
 def _download(url: str, dest: Path, label: str) -> None:
@@ -105,7 +124,17 @@ def _download(url: str, dest: Path, label: str) -> None:
     download_url(url, dest, label, timeout=60)
 
 
-def install(ref: str | None = None, source: str | None = None, verify: bool = True, out=print) -> int:
+def _textual_available() -> bool:
+    try:
+        import textual  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+def install(
+    ref: str | None = None, source: str | None = None, verify: bool = True, out=print, force: bool = False
+) -> int:
     """Fetch, verify and enable the five files. Returns a process exit code."""
     from urllib.error import HTTPError, URLError
 
@@ -113,6 +142,18 @@ def install(ref: str | None = None, source: str | None = None, verify: bool = Tr
     ref = ref or default_ref(version)
     expected = manifest()
     d = data_dir()
+    if (
+        not force
+        and not source
+        and expected
+        and installed_version(d) == version
+        and len(present(d)) == len(FILES)
+        and all(sha256_of(d / n) == expected.get(n) for n in FILES)
+    ):
+        out(
+            f"The interactive layer for morie {version} is already installed in {d} (verified). Pass --force to fetch it again."
+        )
+        return 0
     if verify and not expected:
         out("This build carries no manifest for the interactive layer, so the files cannot be verified.")
         out("Pass --no-verify to install them on trust, or run morie from a source checkout.")
@@ -132,9 +173,16 @@ def install(ref: str | None = None, source: str | None = None, verify: bool = Tr
                 _download(url, tmpd / name, name)
             except HTTPError as exc:
                 if exc.code == 404:
-                    out(
-                        f"{url} does not exist: the ref {ref!r} has no such file. Pass --ref (a tag, branch or commit)."
-                    )
+                    if ref == default_ref(version) and ref != "main":
+                        out(
+                            f"morie {version} has no release tag {ref} on GitHub yet (a pre-release build), so its "
+                            "interactive layer cannot be fetched by version. Install it from the branch it was "
+                            "built from: morie interactive install --ref <branch> --no-verify"
+                        )
+                    else:
+                        out(
+                            f"{url} does not exist: the ref {ref!r} has no such file. Pass --ref (a tag, branch or commit)."
+                        )
                 else:
                     out(f"download of {name} failed: HTTP {exc.code}")
                 return 1
@@ -154,10 +202,18 @@ def install(ref: str | None = None, source: str | None = None, verify: bool = Tr
         for name in FILES:
             shutil.copyfile(tmpd / name, d / name)
         (d / "VERSION").write_text(version + "\n", encoding="utf-8")
+        marker = d / "VERIFIED"
+        if verify:
+            marker.write_text("sha256 against the bundled manifest\n", encoding="utf-8")
+        elif marker.exists():
+            marker.unlink()
     where = "a local directory" if source else ref
     checked = "verified against the bundled manifest" if verify else "not verified"
     out(f"Installed the interactive layer for morie {version} from {where} into {d} ({checked}).")
-    out('morie repl, morie exec and morie agent work now; morie tui also needs: pip install "morie[interactive]"')
+    if _textual_available():
+        out("morie repl, morie exec, morie agent and morie tui work now.")
+    else:
+        out('morie repl, morie exec and morie agent work now; morie tui also needs: pip install "morie[interactive]"')
     out("Remove it again with: morie interactive remove")
     return 0
 
@@ -167,7 +223,15 @@ def remove(out=print) -> int:
     if not d.exists():
         out(f"Nothing to remove: {d} does not exist.")
         return 0
-    shutil.rmtree(d)
+    from ._safe_rm import refuse_reason, rmtree_owned
+
+    # the installer writes VERSION: without it the directory (MORIE_INTERACTIVE_DIR can point anywhere) is not ours
+    why = None if (d / "VERSION").is_file() else "it holds no interactive layer (no VERSION file)"
+    why = why or refuse_reason(d)
+    if why:
+        out(f"Not removing {d}: {why}.")
+        return 1
+    rmtree_owned(d, owned=True)
     out(f"Removed {d}.")
     return 0
 
@@ -193,5 +257,14 @@ def status(out=print) -> int:
     if iv != version:
         out(f"state: installed for morie {iv}, this is morie {version}; run: morie interactive install")
         return 0
-    out(f"state: active for morie {version} (files: {', '.join(FILES)})")
+    bad = changed_files(d)
+    if bad:
+        out(f"state: NOT loaded: {', '.join(bad)} changed since the verified install; run: morie interactive install")
+        return 1
+    checked = (
+        "verified against the bundled manifest"
+        if (d / "VERIFIED").is_file()
+        else "NOT verified (installed with --no-verify)"
+    )
+    out(f"state: active for morie {version}, {checked} (files: {', '.join(FILES)})")
     return 0

@@ -66,11 +66,9 @@ linear-Gaussian model, which is how it is checked here.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["systematic_resample", "effective_sample_size",
-           "particle_filter", "kalman_filter_1d"]
+__all__ = ["systematic_resample", "effective_sample_size", "particle_filter", "kalman_filter_1d"]
 
 _EPS = 1e-300
 
@@ -95,14 +93,12 @@ def systematic_resample(weights, u=None, rng=None):
     J = len(weights)
     tot = sum(weights)
     if tot <= 0.0:
-        raise ValueError("prtcl: all particle weights are zero; the "
-                         "filter has lost the signal")
+        raise ValueError("prtcl: all particle weights are zero; the filter has lost the signal")
     w = [v / tot for v in weights]
     if u is None:
         u = float(rng.uniform()) if rng is not None else 0.5
     if not 0.0 <= u < 1.0:
-        raise ValueError("prtcl: the offset must lie in [0, 1), got %r"
-                         % (u,))
+        raise ValueError(f"prtcl: the offset must lie in [0, 1), got {u!r}")
     idx = []
     cum = w[0]
     j = 0
@@ -115,8 +111,7 @@ def systematic_resample(weights, u=None, rng=None):
     return idx
 
 
-def particle_filter(y, n_particles, init, step, loglik, seed=0,
-                    resample_threshold=1.0, systematic=True):
+def particle_filter(y, n_particles, init, step, loglik, seed=0, resample_threshold=1.0, systematic=True):
     r"""Algorithm 1, returning the filtered mean and the likelihood.
 
     Parameters
@@ -142,12 +137,11 @@ def particle_filter(y, n_particles, init, step, loglik, seed=0,
     N = len(obs)
     J = int(n_particles)
     if J < 2:
-        raise ValueError("prtcl: need at least 2 particles, got %d" % J)
+        raise ValueError(f"prtcl: need at least 2 particles, got {int(J)}")
     if N == 0:
         raise ValueError("prtcl: no observations")
     if not 0.0 < resample_threshold <= 1.0:
-        raise ValueError("prtcl: resample_threshold must be in (0, 1], "
-                         "got %r" % (resample_threshold,))
+        raise ValueError(f"prtcl: resample_threshold must be in (0, 1], got {resample_threshold!r}")
     rng = np.random.default_rng(seed)
     parts = [init(rng) for _ in range(J)]
     ll = 0.0
@@ -157,32 +151,37 @@ def particle_filter(y, n_particles, init, step, loglik, seed=0,
         lw = [loglik(parts[j], obs[n], n) for j in range(J)]
         mx = max(lw)
         if mx == float("-inf"):
-            raise ValueError("prtcl: every particle has zero likelihood "
-                             "at observation %d" % n)
+            raise ValueError(f"prtcl: every particle has zero likelihood at observation {int(n)}")
         w = [math.exp(v - mx) for v in lw]
         tot = sum(w)
         # log mean weight: the one-step predictive density
         ll += mx + math.log(tot / J)
         ess = effective_sample_size(w)
         esss.append(ess)
-        means.append(sum(w[j] * _scalar(parts[j])
-                         for j in range(J)) / tot)
+        means.append(sum(w[j] * _scalar(parts[j]) for j in range(J)) / tot)
         if ess < resample_threshold * J:
-            idx = (systematic_resample(w, rng=rng) if systematic
-                   else _multinomial(w, rng))
+            idx = systematic_resample(w, rng=rng) if systematic else _multinomial(w, rng)
             parts = [parts[i] for i in idx]
             resampled.append(True)
         else:
             resampled.append(False)
-    return RichResult(payload={
-        "estimate": means, "filtered_mean": means, "loglik": ll,
-        "ess": esss, "min_ess": min(esss), "resampled": resampled,
-        "n_particles": J, "n_obs": N, "systematic": bool(systematic),
-        "particles": parts,
-        "method": "bootstrap particle filter, King, Nguyen & Ionides "
-                  "(2016) Algorithm 1 with systematic resampling "
-                  "(Algorithm 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": means,
+            "filtered_mean": means,
+            "loglik": ll,
+            "ess": esss,
+            "min_ess": min(esss),
+            "resampled": resampled,
+            "n_particles": J,
+            "n_obs": N,
+            "systematic": bool(systematic),
+            "particles": parts,
+            "method": "bootstrap particle filter, King, Nguyen & Ionides "
+            "(2016) Algorithm 1 with systematic resampling "
+            "(Algorithm 2)",
+        }
+    )
 
 
 def _scalar(state):
@@ -228,13 +227,15 @@ def kalman_filter_1d(y, a, q, c, r, m0=0.0, p0=1.0):
 
 
 def cheatsheet():
-    return ("prtcl: propagate, weight by the measurement density, "
-            "resample (pomp Alg. 1). Mean weight per step gives an "
-            "UNBIASED likelihood -- so its LOG is biased DOWNWARD by "
-            "Jensen, and comparing models at different particle counts "
-            "compares the counts. Systematic resampling (Alg. 2) gives "
-            "each particle a count within 1 of J*w_j deterministically. "
-            "Watch ESS: a degenerate filter still returns numbers.")
+    return (
+        "prtcl: propagate, weight by the measurement density, "
+        "resample (pomp Alg. 1). Mean weight per step gives an "
+        "UNBIASED likelihood -- so its LOG is biased DOWNWARD by "
+        "Jensen, and comparing models at different particle counts "
+        "compares the counts. Systematic resampling (Alg. 2) gives "
+        "each particle a count within 1 of J*w_j deterministically. "
+        "Watch ESS: a degenerate filter still returns numbers."
+    )
 
 
 # compact alias per ledger/NAMING.md

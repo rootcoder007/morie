@@ -26,18 +26,17 @@ def poisson_score_interval(mu_hat, n, z):
     eq. (4.1).
     """
     payload = dict(_acd.poisson_score_interval(mu_hat, n, z))
-    value = float(payload['lower'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["lower"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.1)"
     return RichResult(
-        title='Score confidence interval for a Poisson mean',
+        title="Score confidence interval for a Poisson mean",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '4e1: mu_hat + z^2/2n +/- z sqrt((mu_hat + z^2/4n)/n) [Bilder & Loughin 2025, eq. 4.1]'
+    return "4e1: mu_hat + z^2/2n +/- z sqrt((mu_hat + z^2/4n)/n) [Bilder & Loughin 2025, eq. 4.1]"

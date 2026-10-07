@@ -3,6 +3,7 @@
 Every literal is a summary(glm(...)) value from the same 40-observation
 fixture, at full precision.
 """
+
 import math
 
 import pytest
@@ -13,14 +14,132 @@ N = 40
 X1 = [((i * 7) % 11) / 5 - 1 for i in range(N)]
 X2 = [((i * 5) % 7) / 3 - 1 for i in range(N)]
 X = [[X1[i], X2[i]] for i in range(N)]
-YB = [0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1,
-      1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1]
-YC = [2, 0, 3, 1, 4, 2, 1, 0, 5, 3, 2, 1, 6, 2, 0, 3, 4, 1, 2, 5,
-      1, 3, 0, 2, 4, 2, 1, 3, 2, 6, 0, 2, 3, 1, 4, 2, 5, 1, 3, 2]
-YG = [1.2, 3.4, 0.8, 2.1, 5.6, 1.9, 2.7, 0.5, 4.3, 3.1,
-      1.4, 2.2, 6.1, 1.7, 0.9, 3.3, 4.8, 1.1, 2.5, 5.2,
-      1.6, 3.7, 0.7, 2.4, 4.1, 1.8, 2.9, 3.6, 2.0, 6.4,
-      0.6, 2.3, 3.9, 1.3, 4.5, 2.6, 5.1, 1.5, 3.2, 2.8]
+YB = [
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+]
+YC = [
+    2,
+    0,
+    3,
+    1,
+    4,
+    2,
+    1,
+    0,
+    5,
+    3,
+    2,
+    1,
+    6,
+    2,
+    0,
+    3,
+    4,
+    1,
+    2,
+    5,
+    1,
+    3,
+    0,
+    2,
+    4,
+    2,
+    1,
+    3,
+    2,
+    6,
+    0,
+    2,
+    3,
+    1,
+    4,
+    2,
+    5,
+    1,
+    3,
+    2,
+]
+YG = [
+    1.2,
+    3.4,
+    0.8,
+    2.1,
+    5.6,
+    1.9,
+    2.7,
+    0.5,
+    4.3,
+    3.1,
+    1.4,
+    2.2,
+    6.1,
+    1.7,
+    0.9,
+    3.3,
+    4.8,
+    1.1,
+    2.5,
+    5.2,
+    1.6,
+    3.7,
+    0.7,
+    2.4,
+    4.1,
+    1.8,
+    2.9,
+    3.6,
+    2.0,
+    6.4,
+    0.6,
+    2.3,
+    3.9,
+    1.3,
+    4.5,
+    2.6,
+    5.1,
+    1.5,
+    3.2,
+    2.8,
+]
 
 
 def test_logistic_matches_glm_binomial():
@@ -108,8 +227,7 @@ def test_gaussian_glm_is_least_squares():
     assert abs(f["se"][1] - 0.371965530972281) < 1e-12
     assert abs(f["deviance"] - 84.3547827104239) < 1e-12
     # deviance IS the residual sum of squares for this family
-    assert abs(f["deviance"]
-               - sum(r * r for r in f["residuals"])) < 1e-10
+    assert abs(f["deviance"] - sum(r * r for r in f["residuals"])) < 1e-10
 
 
 def test_gaussian_dispersion_is_estimated_so_the_statistic_is_t():
@@ -167,11 +285,11 @@ def test_glm_inputs_are_validated():
     with pytest.raises(ValueError):
         G.glm(YB[:5], X, "binomial")
     with pytest.raises(ValueError):
-        G.glm([2.0] * N, X, "binomial")          # outside [0, 1]
+        G.glm([2.0] * N, X, "binomial")  # outside [0, 1]
     with pytest.raises(ValueError):
-        G.glm([-1.0] * N, X, "poisson")          # negative count
+        G.glm([-1.0] * N, X, "poisson")  # negative count
     with pytest.raises(ValueError):
-        G.glm(YB[:2], X[:2], "binomial")         # n <= p
+        G.glm(YB[:2], X[:2], "binomial")  # n <= p
 
 
 def test_collinear_predictors_are_refused_not_silently_fudged():

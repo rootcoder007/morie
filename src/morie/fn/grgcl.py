@@ -71,23 +71,26 @@ def geron_gradient_clipping(gradients, c):
         raise ValueError(f"c must be a positive finite threshold, got {c}.")
     if isinstance(gradients, (list, tuple)) and len(gradients) == 0:
         raise ValueError("gradients is empty.")
-    listed = isinstance(gradients, (list, tuple)) and any(
-        np.ndim(g) > 0 for g in gradients
+    listed = isinstance(gradients, (list, tuple)) and any(np.ndim(g) > 0 for g in gradients)
+    flat = (
+        np.concatenate([np.asarray(g, dtype=float).ravel() for g in gradients])
+        if listed
+        else np.asarray(gradients, dtype=float).ravel()
     )
-    flat = np.concatenate([np.asarray(g, dtype=float).ravel() for g in gradients]) \
-        if listed else np.asarray(gradients, dtype=float).ravel()
     if flat.size == 0:
         raise ValueError("gradients is empty.")
     if not np.all(np.isfinite(flat)):
         raise ValueError(
-            "gradients contain non-finite values; clipping cannot rescue an "
-            "inf/nan gradient, fix the forward pass."
+            "gradients contain non-finite values; clipping cannot rescue an inf/nan gradient, fix the forward pass."
         )
 
     inner = gradient_clipping(gradients, max_norm=c)
     clipped = inner["tensor"]
-    flat_c = np.concatenate([np.asarray(g, dtype=float).ravel() for g in clipped]) \
-        if listed else np.asarray(clipped, dtype=float).ravel()
+    flat_c = (
+        np.concatenate([np.asarray(g, dtype=float).ravel() for g in clipped])
+        if listed
+        else np.asarray(clipped, dtype=float).ravel()
+    )
 
     n0 = float(np.linalg.norm(flat))
     n1 = float(np.linalg.norm(flat_c))
@@ -100,7 +103,8 @@ def geron_gradient_clipping(gradients, c):
         summary_lines=[("||g||", n0), ("Threshold", c), ("Clipped", n0 > c)],
         payload={
             "clipped": [np.asarray(g, dtype=float).tolist() for g in clipped]
-            if listed else np.asarray(clipped, dtype=float).tolist(),
+            if listed
+            else np.asarray(clipped, dtype=float).tolist(),
             "total_norm": n0,
             "clipped_norm": n1,
             "clip_coef": float(inner["clip_coef"]),

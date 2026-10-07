@@ -5,8 +5,6 @@ provide. Rewritten against deep_survival_machines.
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.survvae import deep_survival_machines, log_survival
 
 
@@ -37,6 +35,5 @@ def test_the_elbo_lower_bounds_the_exact_loglikelihood():
 
 def test_survival_is_monotone_non_increasing_in_time():
     """S(t) is a survival function; it cannot rise."""
-    prev = 0.0
     vals = [float(log_survival(t, 1.5, 2.0, "weibull")) for t in (0.5, 1.0, 2.0, 4.0)]
     assert all(b <= a + 1e-12 for a, b in zip(vals, vals[1:]))

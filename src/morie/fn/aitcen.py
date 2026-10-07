@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['compcen', 'aitchison_center']
+__all__ = ["compcen", "aitchison_center"]
 
 
 def compcen(X, total=1.0):
@@ -38,15 +38,22 @@ def compcen(X, total=1.0):
     var{log(x_i/x_j)}.
     """
     X = C.mat(X)
-    n = len(X); D = len(X[0])
+    n = len(X)
+    D = len(X[0])
     for row in X:
         if any(v <= 0 for v in row):
             raise ValueError("compositions must be strictly positive")
     g = [math.exp(sum(math.log(X[i][j]) for i in range(n)) / n) for j in range(D)]
     s = sum(g)
-    return RichResult(payload={
-        "center": [float(total) * v / s for v in g], "geometric_mean": g,
-        "n": n, "D": D, "method": "Compositional centre (closed geometric mean)"})
+    return RichResult(
+        payload={
+            "center": [float(total) * v / s for v in g],
+            "geometric_mean": g,
+            "n": n,
+            "D": D,
+            "method": "Compositional centre (closed geometric mean)",
+        }
+    )
 
 
 aitchison_center = compcen

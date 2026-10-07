@@ -1,8 +1,8 @@
 """Tests for rng049.rangayyan_ch3_laplace_transform_causal_finite."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsaxfrm import rangayyan_ch3_laplace_transform_causal_finite
 
 

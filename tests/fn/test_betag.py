@@ -1,8 +1,8 @@
 """Tests for morie.fn.betag — Beta regression."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.betag import beta_regression
 
 
@@ -12,8 +12,8 @@ def test_beta_regression_recovers_direction():
     X = rng.standard_normal((n, 1))
     mu = 1 / (1 + np.exp(-(0.5 + 1.0 * X[:, 0])))
     phi = 20.0
-    a = mu * phi
-    b = (1 - mu) * phi
+    mu * phi
+    (1 - mu) * phi
     # The shim's rng.beta does not accept array shape parameters; draw from
     # a symmetric Beta(2, 2) which is concentrated away from the {0, 1} edges
     # and then squash mu into the response via the identity y = mu (a degenerate

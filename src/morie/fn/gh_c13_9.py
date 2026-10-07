@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,9 +21,9 @@ def ghosal_ntr_levy(f_vals, nu_masses):
     ms = _bnp._flat(nu_masses)
     exponent = sum(m * (1.0 - math.exp(-f)) for f, m in zip(fs, ms))
     val = math.exp(-exponent)
-    res = RichResult(payload={"estimate": val,
-                              "exponent": exponent,
-                              "method": "NTR Laplace functional (GvdV 2017 sec. 13.4)"})
+    res = RichResult(
+        payload={"estimate": val, "exponent": exponent, "method": "NTR Laplace functional (GvdV 2017 sec. 13.4)"}
+    )
     return with_describe_pointer(res, "gh_c13_9")
 
 

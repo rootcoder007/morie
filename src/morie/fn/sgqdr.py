@@ -31,8 +31,8 @@ def quadrat_count_test(points, window, nx=5, ny=5, cdf=None):
     n = pts.shape[0]
     xmin, xmax, ymin, ymax = window
 
-    xedges = np.linspace(xmin, xmax, nx + 1)
-    yedges = np.linspace(ymin, ymax, ny + 1)
+    np.linspace(xmin, xmax, nx + 1)
+    np.linspace(ymin, ymax, ny + 1)
 
     counts = np.zeros((ny, nx), dtype=int)
     for k in range(n):

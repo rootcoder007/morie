@@ -1,7 +1,6 @@
 """Tests for morie.fn.intcn -- Interval censoring (Turnbull)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.intcn import intcn
 
 

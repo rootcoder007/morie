@@ -1,7 +1,6 @@
 """Tests for agrec.andersen_gill_recurrent."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agrec import andersen_gill_recurrent
 
 

@@ -84,8 +84,7 @@ def cbs_statistic(x):
     v = _vec(x)
     n = len(v)
     if n < 3:
-        raise ValueError("copynm: need at least 3 points to test for a "
-                         "change")
+        raise ValueError("copynm: need at least 3 points to test for a change")
     S = [0.0] * (n + 1)
     for t in range(n):
         S[t + 1] = S[t] + v[t]
@@ -116,12 +115,11 @@ def _binary_supported(v, cut, alpha, perms, rng):
         return False
     S = sum(v)
     Sc = sum(v[:cut])
-    z = abs(Sc / cut - (S - Sc) / (n - cut)) / math.sqrt(
-        1.0 / cut + 1.0 / (n - cut))
+    z = abs(Sc / cut - (S - Sc) / (n - cut)) / math.sqrt(1.0 / cut + 1.0 / (n - cut))
     # permutation reference for the one-change statistic
     exceed = 0
     limit = alpha * perms
-    for p in range(int(perms)):
+    for _p in range(int(perms)):
         w = list(v)
         for t in range(n - 1, 0, -1):
             u = int(rng.random() * (t + 1))
@@ -131,8 +129,7 @@ def _binary_supported(v, cut, alpha, perms, rng):
         run = 0.0
         for c in range(1, n):
             run += w[c - 1]
-            zz = abs(run / c - (Sw - run) / (n - c)) / math.sqrt(
-                1.0 / c + 1.0 / (n - c))
+            zz = abs(run / c - (Sw - run) / (n - c)) / math.sqrt(1.0 / c + 1.0 / (n - c))
             if zz > best:
                 best = zz
         if best >= z - 1e-12:
@@ -142,8 +139,7 @@ def _binary_supported(v, cut, alpha, perms, rng):
     return True
 
 
-def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True,
-           seed=0, max_depth=50):
+def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True, seed=0, max_depth=50):
     r"""Segment a copy-number profile by circular binary segmentation.
 
     Parameters
@@ -226,7 +222,7 @@ def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True,
         exceed = 0
         limit = alpha * permutations
         used = 0
-        for p in range(permutations):
+        for _p in range(permutations):
             w = list(seg)
             for t in range(n - 1, 0, -1):
                 u = int(rng.random() * (t + 1))
@@ -251,11 +247,9 @@ def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True,
         # tested for viability as a binary split.
         if undo_splits and len(new) == 2:
             keep = []
-            if _binary_supported(v[a:a + j], i, alpha,
-                                 max(50, permutations // 10), rng):
+            if _binary_supported(v[a : a + j], i, alpha, max(50, permutations // 10), rng):
                 keep.append(a + i)
-            if _binary_supported(v[a + i:b], j - i, alpha,
-                                 max(50, permutations // 10), rng):
+            if _binary_supported(v[a + i : b], j - i, alpha, max(50, permutations // 10), rng):
                 keep.append(a + j)
             new = keep
             if not new:
@@ -279,32 +273,36 @@ def copynm(x, alpha=0.01, permutations=1000, min_width=2, undo_splits=True,
         segs.append((a, b, m))
         for q in range(a, b):
             fitted[q] = m
-    return RichResult(payload={
-        "estimate": segs,
-        "segments": segs,
-        "changepoints": sorted(cuts),
-        "n_segments": len(segs),
-        "fitted": fitted,
-        "pvalues": dict((c, pvals[c]) for c in sorted(cuts)),
-        "alpha": alpha,
-        "n": len(v),
-        "multiplicity_note": "alpha is the type I error for a SINGLE "
-                             "segment; the recursion is not corrected "
-                             "for multiple testing (Olshen et al. 2004)",
-        "method": "circular binary segmentation (Olshen et al. 2004)",
-    })
+    return RichResult(
+        payload={
+            "estimate": segs,
+            "segments": segs,
+            "changepoints": sorted(cuts),
+            "n_segments": len(segs),
+            "fitted": fitted,
+            "pvalues": dict((c, pvals[c]) for c in sorted(cuts)),
+            "alpha": alpha,
+            "n": len(v),
+            "multiplicity_note": "alpha is the type I error for a SINGLE "
+            "segment; the recursion is not corrected "
+            "for multiple testing (Olshen et al. 2004)",
+            "method": "circular binary segmentation (Olshen et al. 2004)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("copynm: circular binary segmentation (Olshen 2004). Splice "
-            "the segment into a circle and test the arc i+1..j against "
-            "its complement with Z_ij; Z_C = max|Z_ij| covers BOTH a "
-            "single change (j=n) and the epidemic/square-wave "
-            "alternative (j<n), which plain binary segmentation misses "
-            "for a small aberration in the middle. Permutation "
-            "reference with early stopping; ternary splits are undone "
-            "if the change-point is not viable as a binary split. "
-            "alpha is per-segment and NOT corrected for multiplicity.")
+    return (
+        "copynm: circular binary segmentation (Olshen 2004). Splice "
+        "the segment into a circle and test the arc i+1..j against "
+        "its complement with Z_ij; Z_C = max|Z_ij| covers BOTH a "
+        "single change (j=n) and the epidemic/square-wave "
+        "alternative (j<n), which plain binary segmentation misses "
+        "for a small aberration in the middle. Permutation "
+        "reference with early stopping; ternary splits are undone "
+        "if the change-point is not viable as a binary split. "
+        "alpha is per-segment and NOT corrected for multiplicity."
+    )
 
 
 # compact alias per ledger/NAMING.md

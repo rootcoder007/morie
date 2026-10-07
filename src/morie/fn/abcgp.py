@@ -117,9 +117,17 @@ from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = [
-    "abc_gp_emulator", "gabc_log_likelihood", "synthetic_log_likelihood",
-    "gp_fit", "gp_predict", "implausible", "history_match",
-    "sobol_sequence", "design_from_prior", "gps_abc", "synthetic_abc",
+    "abc_gp_emulator",
+    "gabc_log_likelihood",
+    "synthetic_log_likelihood",
+    "gp_fit",
+    "gp_predict",
+    "implausible",
+    "history_match",
+    "sobol_sequence",
+    "design_from_prior",
+    "gps_abc",
+    "synthetic_abc",
 ]
 
 _METHODS = ("wilkinson", "gps", "adaptive", "synthetic")
@@ -130,7 +138,7 @@ _KERNELS = ("sqexp", "matern32", "matern52")
 # Dimension 1 is the plain van der Corput sequence in base 2 and needs no
 # polynomial. Eight dimensions is well beyond what an ABC design uses.
 _SOBOL_POLY = [
-    None,                       # dimension 1: no polynomial, m_k = 1
+    None,  # dimension 1: no polynomial, m_k = 1
     (1, 0, [1]),
     (2, 1, [1, 3]),
     (3, 1, [1, 3, 1]),
@@ -143,7 +151,7 @@ _SOBOL_POLY = [
 
 def _lse(values):
     """log(sum(exp(v))) with Wilkinson's footnote-1 shift."""
-    vals = [v for v in values if v == v]          # drop nan
+    vals = [v for v in values if v == v]  # drop nan
     if not vals:
         return float("-inf")
     a = max(vals)
@@ -155,6 +163,7 @@ def _lse(values):
 # --------------------------------------------------------------------
 # design
 # --------------------------------------------------------------------
+
 
 def sobol_sequence(n, dim, skip=0):
     """The first `n` points of the Sobol sequence in [0, 1)^dim.
@@ -181,11 +190,11 @@ def sobol_sequence(n, dim, skip=0):
     n = int(n)
     dim = int(dim)
     if n < 1:
-        raise ValueError("sobol_sequence: n must be at least 1, got %r" % n)
+        raise ValueError(f"sobol_sequence: n must be at least 1, got {n!r}")
     if not 1 <= dim <= len(_SOBOL_POLY):
         raise ValueError(
-            "sobol_sequence: dim must be between 1 and %d (the direction "
-            "numbers tabulated here), got %r" % (len(_SOBOL_POLY), dim))
+            f"sobol_sequence: dim must be between 1 and {int(len(_SOBOL_POLY))} (the direction numbers tabulated here), got {dim!r}"
+        )
     total = n + int(skip)
     bits = max(1, int(math.ceil(math.log(total + 1, 2))) + 1)
 
@@ -194,7 +203,7 @@ def sobol_sequence(n, dim, skip=0):
     for d in range(dim):
         entry = _SOBOL_POLY[d]
         if entry is None:
-            m = [1] * bits           # dimension 1 is plain base-2 radical
+            m = [1] * bits  # dimension 1 is plain base-2 radical
         else:
             degree, coeff, m_init = entry
             m = list(m_init)
@@ -232,32 +241,28 @@ def design_from_prior(n, prior_ppf, dim=None, skip=1):
     density function to each parameter" -- or a pair ``(lo, hi)``, the
     linear transformation he gives for a product of uniforms.
     """
-    if isinstance(prior_ppf, tuple) and len(prior_ppf) == 2 \
-            and not callable(prior_ppf[0]):
+    if isinstance(prior_ppf, tuple) and len(prior_ppf) == 2 and not callable(prior_ppf[0]):
         lo = [float(v) for v in np.atleast_1d(np.asarray(prior_ppf[0]))]
         hi = [float(v) for v in np.atleast_1d(np.asarray(prior_ppf[1]))]
         if len(lo) != len(hi):
             raise ValueError("design_from_prior: lo and hi differ in length")
         u = sobol_sequence(n, len(lo), skip=skip)
-        return np.asarray([[lo[j] + (hi[j] - lo[j]) * row[j]
-                            for j in range(len(lo))]
-                           for row in u.tolist()], dtype=float)
+        return np.asarray(
+            [[lo[j] + (hi[j] - lo[j]) * row[j] for j in range(len(lo))] for row in u.tolist()], dtype=float
+        )
     fns = list(prior_ppf)
     if dim is not None and int(dim) != len(fns):
-        raise ValueError("design_from_prior: dim=%r but %d quantile "
-                         "functions given" % (dim, len(fns)))
+        raise ValueError(f"design_from_prior: dim={dim!r} but {int(len(fns))} quantile functions given")
     u = sobol_sequence(n, len(fns), skip=skip)
-    return np.asarray([[float(fns[j](row[j])) for j in range(len(fns))]
-                       for row in u.tolist()], dtype=float)
+    return np.asarray([[float(fns[j](row[j])) for j in range(len(fns))] for row in u.tolist()], dtype=float)
 
 
 # --------------------------------------------------------------------
 # the ABC likelihood being emulated
 # --------------------------------------------------------------------
 
-def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0,
-                        summary=None, kernel="gaussian", seed=0,
-                        bootstrap=25):
+
+def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0, summary=None, kernel="gaussian", seed=0, bootstrap=25):
     r"""Wilkinson eq. (1): log of the Monte Carlo GABC likelihood.
 
     Returns ``(log_lik, nugget_variance)``. The second value is the
@@ -271,8 +276,7 @@ def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0,
     :math:`\pi(D\mid X)\propto 1_{\rho(D,X)\le\epsilon}`.
     """
     if kernel not in ("gaussian", "uniform"):
-        raise ValueError("gabc_log_likelihood: kernel must be 'gaussian' "
-                         "or 'uniform', got %r" % (kernel,))
+        raise ValueError(f"gabc_log_likelihood: kernel must be 'gaussian' or 'uniform', got {kernel!r}")
     eps = float(epsilon)
     if eps <= 0.0:
         raise ValueError("gabc_log_likelihood: epsilon must be positive")
@@ -284,8 +288,8 @@ def gabc_log_likelihood(sim, obs, theta, n_sim=50, epsilon=1.0,
         s = _summarise(x, summary)
         if len(s) != len(d_obs):
             raise ValueError(
-                "gabc_log_likelihood: simulator summary has length %d but "
-                "the observed summary has length %d" % (len(s), len(d_obs)))
+                f"gabc_log_likelihood: simulator summary has length {int(len(s))} but the observed summary has length {int(len(d_obs))}"
+            )
         rho = math.sqrt(sum((a - b) ** 2 for a, b in zip(s, d_obs)))
         if kernel == "uniform":
             terms.append(0.0 if rho <= eps else float("-inf"))
@@ -325,16 +329,13 @@ def synthetic_log_likelihood(draws, obs, epsilon=0.0, summary=None):
     rows = [_summarise(x, summary) for x in draws]
     S = len(rows)
     if S < 2:
-        raise ValueError("synthetic_log_likelihood: need at least 2 "
-                         "simulations to form a covariance, got %d" % S)
+        raise ValueError(f"synthetic_log_likelihood: need at least 2 simulations to form a covariance, got {int(S)}")
     J = len(rows[0])
     y = _summarise(obs, summary)
     if len(y) != J:
-        raise ValueError("synthetic_log_likelihood: %d observed summaries "
-                         "but %d simulated" % (len(y), J))
+        raise ValueError(f"synthetic_log_likelihood: {int(len(y))} observed summaries but {int(J)} simulated")
     mu = [sum(r[j] for r in rows) / S for j in range(J)]
-    cov = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in rows) / (S - 1)
-            for b in range(J)] for a in range(J)]
+    cov = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in rows) / (S - 1) for b in range(J)] for a in range(J)]
     e2 = float(epsilon) ** 2
     for j in range(J):
         cov[j][j] += e2
@@ -386,6 +387,7 @@ def _mvn_logpdf(y, mu, cov):
 # the emulator
 # --------------------------------------------------------------------
 
+
 def _corr(a, b, lengthscale, kernel):
     r2 = 0.0
     for i in range(len(a)):
@@ -406,8 +408,7 @@ def _basis(theta):
     return [1.0] + list(theta) + [t * t for t in theta]
 
 
-def gp_fit(design, values, nugget=None, lengthscale=None, kernel="sqexp",
-           tau2=None):
+def gp_fit(design, values, nugget=None, lengthscale=None, kernel="sqexp", tau2=None):
     r"""Fit the GP of Sec. 2.1 to an ensemble
     :math:`E=\{(\theta_i,\hat l_M(\theta_i))\}`.
 
@@ -420,54 +421,59 @@ def gp_fit(design, values, nugget=None, lengthscale=None, kernel="sqexp",
     `nugget` is :math:`v^2` from :func:`gabc_log_likelihood`, per point.
     """
     if kernel not in _KERNELS:
-        raise ValueError("gp_fit: kernel must be one of %r, got %r"
-                         % (_KERNELS, kernel))
-    X = [[float(v) for v in row]
-         for row in np.atleast_2d(np.asarray(design, dtype=float)).tolist()]
+        raise ValueError(f"gp_fit: kernel must be one of {_KERNELS!r}, got {kernel!r}")
+    X = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(design, dtype=float)).tolist()]
     y = [float(v) for v in np.atleast_1d(np.asarray(values, dtype=float))]
     n = len(X)
     if n != len(y):
-        raise ValueError("gp_fit: %d design points but %d values"
-                         % (n, len(y)))
+        raise ValueError(f"gp_fit: {int(n)} design points but {int(len(y))} values")
     if n < 3:
-        raise ValueError("gp_fit: need at least 3 design points, got %d" % n)
+        raise ValueError(f"gp_fit: need at least 3 design points, got {int(n)}")
     p = len(X[0])
     if lengthscale is None:
         lengthscale = _mle_lengthscale(X, y, nugget, kernel)
-    ls = [float(v) for v in np.atleast_1d(np.asarray(lengthscale,
-                                                     dtype=float))]
+    ls = [float(v) for v in np.atleast_1d(np.asarray(lengthscale, dtype=float))]
     if len(ls) == 1:
         ls = ls * p
     if any(v <= 0.0 for v in ls):
         raise ValueError("gp_fit: length-scales must be positive")
     nug = _as_nugget(nugget, n)
 
-    A = [[_corr(X[i], X[j], ls, kernel) + (nug[i] if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    A = [[_corr(X[i], X[j], ls, kernel) + (nug[i] if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = _chol(A)
     H = [_basis(x) for x in X]
     q = len(H[0])
     if n <= q:
         raise ValueError(
-            "gp_fit: the quadratic mean has %d coefficients and only %d "
-            "design points; add points or the mean is not identified"
-            % (q, n))
+            f"gp_fit: the quadratic mean has {int(q)} coefficients and only {int(n)} design points; add points or the mean is not identified"
+        )
     Ainv_y = _chol_solve(L, y)
     Ainv_H = [_chol_solve(L, [H[i][k] for i in range(n)]) for k in range(q)]
-    HtAinvH = [[sum(H[i][a] * Ainv_H[b][i] for i in range(n))
-                for b in range(q)] for a in range(q)]
+    HtAinvH = [[sum(H[i][a] * Ainv_H[b][i] for i in range(n)) for b in range(q)] for a in range(q)]
     HtAinvy = [sum(H[i][a] * Ainv_y[i] for i in range(n)) for a in range(q)]
     Lh = _chol(HtAinvH)
     beta = _chol_solve(Lh, HtAinvy)
-    resid = [y[i] - sum(H[i][k] * beta[k] for k in range(q))
-             for i in range(n)]
+    resid = [y[i] - sum(H[i][k] * beta[k] for k in range(q)) for i in range(n)]
     Ainv_r = _chol_solve(L, resid)
     if tau2 is None:
         tau2 = sum(resid[i] * Ainv_r[i] for i in range(n)) / float(n - q)
-    return {"design": X, "values": y, "beta": beta, "tau2": float(tau2),
-            "lengthscale": ls, "kernel": kernel, "nugget": nug,
-            "chol": L, "Ainv_r": Ainv_r, "Ainv_H": Ainv_H, "H": H,
-            "HtAinvH_chol": Lh, "n": n, "q": q, "dim": p}
+    return {
+        "design": X,
+        "values": y,
+        "beta": beta,
+        "tau2": float(tau2),
+        "lengthscale": ls,
+        "kernel": kernel,
+        "nugget": nug,
+        "chol": L,
+        "Ainv_r": Ainv_r,
+        "Ainv_H": Ainv_H,
+        "H": H,
+        "HtAinvH_chol": Lh,
+        "n": n,
+        "q": q,
+        "dim": p,
+    }
 
 
 def _as_nugget(nugget, n):
@@ -477,15 +483,13 @@ def _as_nugget(nugget, n):
     if len(v) == 1:
         v = v * n
     if len(v) != n:
-        raise ValueError("gp_fit: %d nugget values for %d points"
-                         % (len(v), n))
+        raise ValueError(f"gp_fit: {int(len(v))} nugget values for {int(n)} points")
     return [max(float(t), 1e-12) for t in v]
 
 
 def _profile_nll(X, y, ls, nug, kernel):
     n = len(X)
-    A = [[_corr(X[i], X[j], ls, kernel) + (nug[i] if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    A = [[_corr(X[i], X[j], ls, kernel) + (nug[i] if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = _chol(A)
     H = [_basis(x) for x in X]
     q = len(H[0])
@@ -493,15 +497,13 @@ def _profile_nll(X, y, ls, nug, kernel):
         return float("inf")
     Ainv_y = _chol_solve(L, y)
     Ainv_H = [_chol_solve(L, [H[i][k] for i in range(n)]) for k in range(q)]
-    HtAinvH = [[sum(H[i][a] * Ainv_H[b][i] for i in range(n))
-                for b in range(q)] for a in range(q)]
+    HtAinvH = [[sum(H[i][a] * Ainv_H[b][i] for i in range(n)) for b in range(q)] for a in range(q)]
     HtAinvy = [sum(H[i][a] * Ainv_y[i] for i in range(n)) for a in range(q)]
     try:
         beta = _chol_solve(_chol(HtAinvH), HtAinvy)
     except (ValueError, ZeroDivisionError):
         return float("inf")
-    resid = [y[i] - sum(H[i][k] * beta[k] for k in range(q))
-             for i in range(n)]
+    resid = [y[i] - sum(H[i][k] * beta[k] for k in range(q)) for i in range(n)]
     Ainv_r = _chol_solve(L, resid)
     s2 = sum(resid[i] * Ainv_r[i] for i in range(n)) / float(n - q)
     if s2 <= 0.0:
@@ -556,12 +558,10 @@ def gp_predict(fit, theta):
     ls, kern = fit["lengthscale"], fit["kernel"]
     t = [float(v) for v in np.atleast_1d(np.asarray(theta, dtype=float))]
     if len(t) != fit["dim"]:
-        raise ValueError("gp_predict: theta has %d entries, design has %d"
-                         % (len(t), fit["dim"]))
+        raise ValueError("gp_predict: theta has {} entries, design has {}".format(int(len(t)), int(fit["dim"])))
     k = [_corr(t, X[i], ls, kern) for i in range(fit["n"])]
     h = _basis(t)
-    mean = sum(h[j] * fit["beta"][j] for j in range(fit["q"])) \
-        + sum(k[i] * fit["Ainv_r"][i] for i in range(fit["n"]))
+    mean = sum(h[j] * fit["beta"][j] for j in range(fit["q"])) + sum(k[i] * fit["Ainv_r"][i] for i in range(fit["n"]))
     Ainv_k = _chol_solve(fit["chol"], k)
     var = 1.0 - sum(k[i] * Ainv_k[i] for i in range(fit["n"]))
     # h - H' A^-1 k, the correction for the estimated mean coefficients.
@@ -570,8 +570,7 @@ def gp_predict(fit, theta):
     # uncertain at points it has actually visited, which switches off
     # the implausibility rule of eq. (3).
     H = fit["H"]
-    hh = [h[j] - sum(H[i][j] * Ainv_k[i] for i in range(fit["n"]))
-          for j in range(fit["q"])]
+    hh = [h[j] - sum(H[i][j] * Ainv_k[i] for i in range(fit["n"])) for j in range(fit["q"])]
     w = _chol_solve(fit["HtAinvH_chol"], hh)
     var += sum(hh[j] * w[j] for j in range(fit["q"]))
     var = fit["tau2"] * max(var, 0.0)
@@ -581,6 +580,7 @@ def gp_predict(fit, theta):
 # --------------------------------------------------------------------
 # history matching
 # --------------------------------------------------------------------
+
 
 def implausible(fit, theta, threshold=10.0, n_sd=3.0):
     """Wilkinson eq. (3). True means `theta` is ruled out.
@@ -593,9 +593,21 @@ def implausible(fit, theta, threshold=10.0, n_sd=3.0):
     return bool(m + float(n_sd) * sd < max(fit["values"]) - float(threshold))
 
 
-def history_match(sim, obs, prior_ppf, n_waves=3, n_design=32, n_sim=50,
-                  epsilon=1.0, summary=None, threshold=10.0, n_sd=3.0,
-                  kernel="sqexp", accept_kernel="gaussian", seed=0):
+def history_match(
+    sim,
+    obs,
+    prior_ppf,
+    n_waves=3,
+    n_design=32,
+    n_sim=50,
+    epsilon=1.0,
+    summary=None,
+    threshold=10.0,
+    n_sd=3.0,
+    kernel="sqexp",
+    accept_kernel="gaussian",
+    seed=0,
+):
     """Sec. 3.2: waves of design, emulate, rule out, redesign.
 
     Each wave extends the design *inside what the previous wave did not
@@ -608,35 +620,38 @@ def history_match(sim, obs, prior_ppf, n_waves=3, n_design=32, n_sim=50,
     waves = []
     fit = None
     for w in range(int(n_waves)):
-        cand = design_from_prior(int(n_design) * 4, prior_ppf,
-                                 skip=1 + w * int(n_design) * 4)
+        cand = design_from_prior(int(n_design) * 4, prior_ppf, skip=1 + w * int(n_design) * 4)
         rows = [list(r) for r in cand.tolist()]
         if fit is not None:
-            keep = [r for r in rows
-                    if not implausible(fit, r, threshold, n_sd)]
+            keep = [r for r in rows if not implausible(fit, r, threshold, n_sd)]
             ruled = len(rows) - len(keep)
-            rows = keep if keep else rows[:int(n_design)]
+            rows = keep if keep else rows[: int(n_design)]
         else:
             ruled = 0
-        rows = rows[:int(n_design)]
+        rows = rows[: int(n_design)]
         for i, th in enumerate(rows):
             ll, v = gabc_log_likelihood(
-                sim, obs, th, n_sim=n_sim, epsilon=epsilon, summary=summary,
-                kernel=accept_kernel, seed=int(seed) + 1000 * w + i)
+                sim,
+                obs,
+                th,
+                n_sim=n_sim,
+                epsilon=epsilon,
+                summary=summary,
+                kernel=accept_kernel,
+                seed=int(seed) + 1000 * w + i,
+            )
             if ll > float("-inf"):
                 ensemble_x.append(th)
                 ensemble_y.append(ll)
                 ensemble_v.append(v)
         if len(ensemble_x) < 3:
             raise ValueError(
-                "history_match: wave %d left %d usable points; every "
-                "simulation was rejected, so epsilon is too small for this "
-                "simulator" % (w, len(ensemble_x)))
-        fit = gp_fit(ensemble_x, ensemble_y, nugget=ensemble_v,
-                     kernel=kernel)
-        waves.append({"wave": w, "n_ensemble": len(ensemble_x),
-                      "ruled_implausible": ruled,
-                      "max_log_lik": max(ensemble_y)})
+                f"history_match: wave {int(w)} left {int(len(ensemble_x))} usable points; every simulation was rejected, so epsilon is too small for this simulator"
+            )
+        fit = gp_fit(ensemble_x, ensemble_y, nugget=ensemble_v, kernel=kernel)
+        waves.append(
+            {"wave": w, "n_ensemble": len(ensemble_x), "ruled_implausible": ruled, "max_log_lik": max(ensemble_y)}
+        )
     return fit, waves
 
 
@@ -644,9 +659,9 @@ def history_match(sim, obs, prior_ppf, n_waves=3, n_design=32, n_sim=50,
 # Meeds & Welling
 # --------------------------------------------------------------------
 
+
 def _alpha_terms(log_prior, theta, theta_p, ll, ll_p, log_q, log_q_p):
-    return min(0.0, (log_prior(theta_p) + ll_p + log_q_p)
-               - (log_prior(theta) + ll + log_q))
+    return min(0.0, (log_prior(theta_p) + ll_p + log_q_p) - (log_prior(theta) + ll + log_q))
 
 
 def _expected_error(alphas, tau, n_grid=101):
@@ -659,10 +674,7 @@ def _expected_error(alphas, tau, n_grid=101):
     total = 0.0
     for i in range(n_grid):
         u = (i + 0.5) / n_grid
-        if u <= tau:
-            err = sum(1 for a in alphas if a < u) / float(M)
-        else:
-            err = sum(1 for a in alphas if a >= u) / float(M)
+        err = sum(1 for a in alphas if a < u) / float(M) if u <= tau else sum(1 for a in alphas if a >= u) / float(M)
         total += err
     return total / n_grid
 
@@ -673,20 +685,47 @@ def _median(v):
     return s[n // 2] if n % 2 else 0.5 * (s[n // 2 - 1] + s[n // 2])
 
 
-def synthetic_abc(sim, obs, log_prior, theta0, n_iter=200, n_sim=20,
-                  epsilon=0.0, proposal_sd=0.5, summary=None, seed=0):
+def synthetic_abc(
+    sim, obs, log_prior, theta0, n_iter=200, n_sim=20, epsilon=0.0, proposal_sd=0.5, summary=None, seed=0
+):
     """Meeds & Welling Algorithm 1: fixed S, no surrogate, no adaptation.
 
     The reference the other two must reproduce as S grows.
     """
-    return _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
-                       proposal_sd, summary, seed, adaptive=False,
-                       xi=None, delta_s=0, n_alpha=0)
+    return _mw_sampler(
+        sim,
+        obs,
+        log_prior,
+        theta0,
+        n_iter,
+        n_sim,
+        epsilon,
+        proposal_sd,
+        summary,
+        seed,
+        adaptive=False,
+        xi=None,
+        delta_s=0,
+        n_alpha=0,
+    )
 
 
-def gps_abc(sim, obs, log_prior, theta0, n_iter=200, n_sim=10, epsilon=0.0,
-            proposal_sd=0.5, summary=None, seed=0, xi=0.05, delta_s=10,
-            n_alpha=64, max_sim=400):
+def gps_abc(
+    sim,
+    obs,
+    log_prior,
+    theta0,
+    n_iter=200,
+    n_sim=10,
+    epsilon=0.0,
+    proposal_sd=0.5,
+    summary=None,
+    seed=0,
+    xi=0.05,
+    delta_s=10,
+    n_alpha=64,
+    max_sim=400,
+):
     """Meeds & Welling Algorithm 2, the adaptive synthetic-likelihood step.
 
     Simulations are added in blocks of `delta_s` until the expected
@@ -696,17 +735,44 @@ def gps_abc(sim, obs, log_prior, theta0, n_iter=200, n_sim=10, epsilon=0.0,
     step that never reached `xi` made its decision under more
     uncertainty than was asked for.
     """
-    return _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
-                       proposal_sd, summary, seed, adaptive=True, xi=xi,
-                       delta_s=delta_s, n_alpha=n_alpha, max_sim=max_sim)
+    return _mw_sampler(
+        sim,
+        obs,
+        log_prior,
+        theta0,
+        n_iter,
+        n_sim,
+        epsilon,
+        proposal_sd,
+        summary,
+        seed,
+        adaptive=True,
+        xi=xi,
+        delta_s=delta_s,
+        n_alpha=n_alpha,
+        max_sim=max_sim,
+    )
 
 
-def _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
-                proposal_sd, summary, seed, adaptive, xi, delta_s,
-                n_alpha, max_sim=None):
+def _mw_sampler(
+    sim,
+    obs,
+    log_prior,
+    theta0,
+    n_iter,
+    n_sim,
+    epsilon,
+    proposal_sd,
+    summary,
+    seed,
+    adaptive,
+    xi,
+    delta_s,
+    n_alpha,
+    max_sim=None,
+):
     rng = np.random.default_rng(int(seed))
-    theta = [float(v) for v in np.atleast_1d(np.asarray(theta0,
-                                                        dtype=float))]
+    theta = [float(v) for v in np.atleast_1d(np.asarray(theta0, dtype=float))]
     p = len(theta)
     sd = np.atleast_1d(np.asarray(proposal_sd, dtype=float)).tolist()
     if len(sd) == 1:
@@ -715,7 +781,7 @@ def _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
     n_accept = 0
     unresolved = 0
     sims_used = 0
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         prop = [theta[j] + sd[j] * rng.standard_normal() for j in range(p)]
         if log_prior(prop) == float("-inf"):
             chain.append(list(theta))
@@ -725,14 +791,11 @@ def _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
             cur = [sim(theta, rng) for _ in range(S)]
             new = [sim(prop, rng) for _ in range(S)]
             sims_used += 2 * S
-            ll_c, mu_c, cov_c = synthetic_log_likelihood(
-                cur, obs, epsilon=epsilon, summary=summary)
-            ll_p, mu_p, cov_p = synthetic_log_likelihood(
-                new, obs, epsilon=epsilon, summary=summary)
+            ll_c, mu_c, cov_c = synthetic_log_likelihood(cur, obs, epsilon=epsilon, summary=summary)
+            ll_p, mu_p, cov_p = synthetic_log_likelihood(new, obs, epsilon=epsilon, summary=summary)
             if not adaptive:
                 # Algorithm 1: eq. (10), the plug-in accept probability.
-                loga = _alpha_terms(log_prior, theta, prop, ll_c, ll_p,
-                                    0.0, 0.0)
+                loga = _alpha_terms(log_prior, theta, prop, ll_c, ll_p, 0.0, 0.0)
                 tau = math.exp(loga)
                 break
             # eq. (11): mu | data ~ N(mu_hat, Sigma_hat / S)
@@ -741,14 +804,15 @@ def _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
             for _ in range(int(n_alpha)):
                 mc = _draw_mean(mu_c, cov_c, S, rng)
                 mp = _draw_mean(mu_p, cov_p, S, rng)
-                a = min(0.0, (log_prior(prop) + _mvn_logpdf(y, mp, cov_p))
-                        - (log_prior(theta) + _mvn_logpdf(y, mc, cov_c)))
+                a = min(
+                    0.0, (log_prior(prop) + _mvn_logpdf(y, mp, cov_p)) - (log_prior(theta) + _mvn_logpdf(y, mc, cov_c))
+                )
                 alphas.append(math.exp(a))
             tau = _median(alphas)
             err = _expected_error(alphas, tau)
             if err < float(xi):
                 break
-            if max_sim is not None and S >= int(max_sim):
+            if max_sim is not None and int(max_sim) <= S:
                 unresolved += 1
                 break
             S += int(delta_s)
@@ -756,8 +820,12 @@ def _mw_sampler(sim, obs, log_prior, theta0, n_iter, n_sim, epsilon,
             theta = prop
             n_accept += 1
         chain.append(list(theta))
-    return {"chain": chain, "acceptance_rate": n_accept / float(n_iter),
-            "n_simulations": sims_used, "unresolved_steps": unresolved}
+    return {
+        "chain": chain,
+        "acceptance_rate": n_accept / float(n_iter),
+        "n_simulations": sims_used,
+        "unresolved_steps": unresolved,
+    }
 
 
 def _draw_mean(mu, cov, S, rng):
@@ -766,20 +834,38 @@ def _draw_mean(mu, cov, S, rng):
     scaled = [[cov[i][j] / float(S) for j in range(n)] for i in range(n)]
     L = _chol(scaled)
     z = [rng.standard_normal() for _ in range(n)]
-    return [mu[i] + sum(L[i][k] * z[k] for k in range(i + 1))
-            for i in range(n)]
+    return [mu[i] + sum(L[i][k] * z[k] for k in range(i + 1)) for i in range(n)]
 
 
 # --------------------------------------------------------------------
 # front end
 # --------------------------------------------------------------------
 
-def abc_gp_emulator(sim, obs, X_grid=None, kernel="sqexp",
-                    method="wilkinson", prior_ppf=None, log_prior=None,
-                    theta0=None, n_sim=50, epsilon=1.0, summary=None,
-                    n_waves=3, n_design=32, threshold=10.0, n_sd=3.0,
-                    accept_kernel="gaussian", n_iter=200, proposal_sd=0.5,
-                    xi=0.05, delta_s=10, n_alpha=64, seed=0):
+
+def abc_gp_emulator(
+    sim,
+    obs,
+    X_grid=None,
+    kernel="sqexp",
+    method="wilkinson",
+    prior_ppf=None,
+    log_prior=None,
+    theta0=None,
+    n_sim=50,
+    epsilon=1.0,
+    summary=None,
+    n_waves=3,
+    n_design=32,
+    threshold=10.0,
+    n_sd=3.0,
+    accept_kernel="gaussian",
+    n_iter=200,
+    proposal_sd=0.5,
+    xi=0.05,
+    delta_s=10,
+    n_alpha=64,
+    seed=0,
+):
     """ABC with a GP surrogate; four published routes, `method` picks.
 
     ``"wilkinson"`` (default) emulates the log-likelihood and returns
@@ -805,11 +891,9 @@ def abc_gp_emulator(sim, obs, X_grid=None, kernel="sqexp",
         r["estimate"]           # posterior mode, near 2.0
     """
     if method not in _METHODS:
-        raise ValueError("abc_gp_emulator: method must be one of %r, got %r"
-                         % (_METHODS, method))
+        raise ValueError(f"abc_gp_emulator: method must be one of {_METHODS!r}, got {method!r}")
     if not callable(sim):
-        raise ValueError("abc_gp_emulator: sim must be a callable "
-                         "simulator sim(theta, rng)")
+        raise ValueError("abc_gp_emulator: sim must be a callable simulator sim(theta, rng)")
 
     if method == "wilkinson":
         if prior_ppf is None:
@@ -817,19 +901,30 @@ def abc_gp_emulator(sim, obs, X_grid=None, kernel="sqexp",
                 "abc_gp_emulator: method='wilkinson' needs prior_ppf, "
                 "either (lo, hi) or per-parameter quantile functions -- "
                 "the Sobol design of Sec. 2.2 is defined on the prior "
-                "support and there is no default support to guess")
+                "support and there is no default support to guess"
+            )
         fit, waves = history_match(
-            sim, obs, prior_ppf, n_waves=n_waves, n_design=n_design,
-            n_sim=n_sim, epsilon=epsilon, summary=summary,
-            threshold=threshold, n_sd=n_sd, kernel=kernel,
-            accept_kernel=accept_kernel, seed=seed)
+            sim,
+            obs,
+            prior_ppf,
+            n_waves=n_waves,
+            n_design=n_design,
+            n_sim=n_sim,
+            epsilon=epsilon,
+            summary=summary,
+            threshold=threshold,
+            n_sd=n_sd,
+            kernel=kernel,
+            accept_kernel=accept_kernel,
+            seed=seed,
+        )
         if X_grid is None:
             grid = fit["design"]
         else:
-            grid = [[float(v) for v in np.atleast_1d(np.asarray(r,
-                                                                dtype=float))]
-                    for r in np.atleast_2d(np.asarray(X_grid,
-                                                      dtype=float)).tolist()]
+            grid = [
+                [float(v) for v in np.atleast_1d(np.asarray(r, dtype=float))]
+                for r in np.atleast_2d(np.asarray(X_grid, dtype=float)).tolist()
+            ]
         means, sds = [], []
         for th in grid:
             m, s = gp_predict(fit, th)
@@ -838,57 +933,77 @@ def abc_gp_emulator(sim, obs, X_grid=None, kernel="sqexp",
         top = max(range(len(means)), key=lambda i: means[i])
         lse = _lse(means)
         post = [math.exp(m - lse) for m in means]
-        return RichResult(payload={
-            "estimate": grid[top],
-            "grid": grid,
-            "log_likelihood": means,
-            "log_likelihood_sd": sds,
-            "posterior": post,
-            "waves": waves,
-            "ensemble_size": fit["n"],
-            "lengthscale": fit["lengthscale"],
-            "tau2": fit["tau2"],
-            "beta": fit["beta"],
-            "n_simulations": sum(w["n_ensemble"] for w in waves) * int(n_sim),
-            "method": "ABC GP emulator, Wilkinson (2014) with sequential "
-                      "history matching",
-        })
+        return RichResult(
+            payload={
+                "estimate": grid[top],
+                "grid": grid,
+                "log_likelihood": means,
+                "log_likelihood_sd": sds,
+                "posterior": post,
+                "waves": waves,
+                "ensemble_size": fit["n"],
+                "lengthscale": fit["lengthscale"],
+                "tau2": fit["tau2"],
+                "beta": fit["beta"],
+                "n_simulations": sum(w["n_ensemble"] for w in waves) * int(n_sim),
+                "method": "ABC GP emulator, Wilkinson (2014) with sequential history matching",
+            }
+        )
 
     if log_prior is None or theta0 is None:
         raise ValueError(
-            "abc_gp_emulator: method=%r is a Metropolis-Hastings sampler "
-            "and needs log_prior and theta0" % (method,))
+            f"abc_gp_emulator: method={method!r} is a Metropolis-Hastings sampler and needs log_prior and theta0"
+        )
     if method == "synthetic":
-        out = synthetic_abc(sim, obs, log_prior, theta0, n_iter=n_iter,
-                            n_sim=n_sim, epsilon=epsilon,
-                            proposal_sd=proposal_sd, summary=summary,
-                            seed=seed)
+        out = synthetic_abc(
+            sim,
+            obs,
+            log_prior,
+            theta0,
+            n_iter=n_iter,
+            n_sim=n_sim,
+            epsilon=epsilon,
+            proposal_sd=proposal_sd,
+            summary=summary,
+            seed=seed,
+        )
         label = "synthetic-likelihood ABC-MH, Meeds & Welling Algorithm 1"
     else:
-        out = gps_abc(sim, obs, log_prior, theta0, n_iter=n_iter,
-                      n_sim=n_sim, epsilon=epsilon,
-                      proposal_sd=proposal_sd, summary=summary, seed=seed,
-                      xi=xi, delta_s=delta_s, n_alpha=n_alpha)
-        label = ("GPS-ABC adaptive MH, Meeds & Welling (2014) "
-                 "Algorithm 2, eqs. 11-16")
+        out = gps_abc(
+            sim,
+            obs,
+            log_prior,
+            theta0,
+            n_iter=n_iter,
+            n_sim=n_sim,
+            epsilon=epsilon,
+            proposal_sd=proposal_sd,
+            summary=summary,
+            seed=seed,
+            xi=xi,
+            delta_s=delta_s,
+            n_alpha=n_alpha,
+        )
+        label = "GPS-ABC adaptive MH, Meeds & Welling (2014) Algorithm 2, eqs. 11-16"
     chain = out["chain"]
     p = len(chain[0])
     burn = len(chain) // 2
     kept = chain[burn:]
     est = [sum(r[j] for r in kept) / len(kept) for j in range(p)]
     payload = dict(out)
-    payload.update({"estimate": est, "posterior_mean": est,
-                    "burn_in": burn, "method": label})
+    payload.update({"estimate": est, "posterior_mean": est, "burn_in": burn, "method": label})
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return ("abcgp: GP surrogate ABC. wilkinson = GP on log GABC "
-            "likelihood (eq.1) + history matching (m+3s < max l - T, "
-            "T=10) on a Sobol design; gps/adaptive = Meeds-Welling "
-            "randomized-acceptance MH (eq.11 mu~N(mu_hat,S_hat/S), "
-            "tau=median(alpha), stop when E(alpha)<xi); synthetic = "
-            "their fixed-S Algorithm 1.")
+    return (
+        "abcgp: GP surrogate ABC. wilkinson = GP on log GABC "
+        "likelihood (eq.1) + history matching (m+3s < max l - T, "
+        "T=10) on a Sobol design; gps/adaptive = Meeds-Welling "
+        "randomized-acceptance MH (eq.11 mu~N(mu_hat,S_hat/S), "
+        "tau=median(alpha), stop when E(alpha)<xi); synthetic = "
+        "their fixed-S Algorithm 1."
+    )
 
 
 # compact alias per ledger/NAMING.md

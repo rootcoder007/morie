@@ -1,8 +1,8 @@
 """Tests for morie.fn.fzinf -- Mamdani fuzzy inference (Mamdani & Assilian 1975)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fzinf import fzinf
 
 
@@ -37,8 +37,8 @@ def test_fzinf_firing_strength_is_the_min_over_antecedents():
         rules=[
             _rule(
                 [
-                    (0, "triangular", (0.0, 0.5, 1.0)),   # at 0.50 -> 1.0
-                    (1, "triangular", (0.0, 0.5, 1.0)),   # at 0.75 -> 0.5
+                    (0, "triangular", (0.0, 0.5, 1.0)),  # at 0.50 -> 1.0
+                    (1, "triangular", (0.0, 0.5, 1.0)),  # at 0.75 -> 0.5
                 ],
                 ("triangular", (0.0, 0.5, 1.0)),
             )

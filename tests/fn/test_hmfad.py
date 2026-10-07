@@ -2,13 +2,15 @@
 
 import math
 
-from morie.fn import _array_core as np
 from morie.fn.hmfad import geron_forward_autodiff
 
 
 def test_hmfad_basic():
     """Test basic functionality."""
-    f = lambda v: v[0] ** 2
+
+    def f(v):
+        return v[0] ** 2
+
     result = geron_forward_autodiff(f, [3.0])
     assert isinstance(result, dict)
     assert "value" in result
@@ -21,7 +23,10 @@ def test_hmfad_basic():
 
 def test_hmfad_edge():
     """Test edge cases."""
-    f = lambda v: v[0] * v[1] + v[0].exp()
+
+    def f(v):
+        return v[0] * v[1] + v[0].exp()
+
     result = geron_forward_autodiff(f, [0.0, 3.0])
     assert isinstance(result, dict)
     assert "value" in result
@@ -45,7 +50,7 @@ import morie.fn.hmfad as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

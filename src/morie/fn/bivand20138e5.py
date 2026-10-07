@@ -58,10 +58,18 @@ def spatrend(X, z, addintercept=True):
         raise ValueError("need more observations than columns")
     beta, fitted, resid, xtxinv = C.lstsq(Xm, z)
     rss = sum(v * v for v in resid)
-    return RichResult(payload={
-        "beta": beta, "fitted": fitted, "resid": resid, "rss": rss,
-        "sigma2": rss / (n - p), "n": n, "p": p,
-        "method": "Spatial trend surface (Bivand et al. 2013 eq. 8.5)"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "fitted": fitted,
+            "resid": resid,
+            "rss": rss,
+            "sigma2": rss / (n - p),
+            "n": n,
+            "p": p,
+            "method": "Spatial trend surface (Bivand et al. 2013 eq. 8.5)",
+        }
+    )
 
 
 bivand2013_chapter_8_equation_5 = spatrend

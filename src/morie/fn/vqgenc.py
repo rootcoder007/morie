@@ -56,12 +56,10 @@ straight-through estimator this builds on.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["quantize", "straight_through", "codebook_loss",
-           "commitment_loss", "sequence_length", "encode"]
+__all__ = ["quantize", "straight_through", "codebook_loss", "commitment_loss", "sequence_length", "encode"]
 
 _EPS = 1e-12
 
@@ -76,23 +74,26 @@ def quantize(vectors, codebook):
     if not Z:
         raise ValueError("vqgenc: the codebook is empty")
     if len(Z[0]) != len(V[0]):
-        raise ValueError("vqgenc: codebook entries are %d-wide but "
-                         "the encoder output is %d"
-                         % (len(Z[0]), len(V[0])))
+        raise ValueError(
+            f"vqgenc: codebook entries are {int(len(Z[0]))}-wide but the encoder output is {int(len(V[0]))}"
+        )
     idx, codes, dists = [], [], []
     for v in V:
-        d = [sum((v[a] - z[a]) ** 2 for a in range(len(v)))
-             for z in Z]
+        d = [sum((v[a] - z[a]) ** 2 for a in range(len(v))) for z in Z]
         j = min(range(len(d)), key=lambda i: d[i])
         idx.append(j)
         codes.append(list(Z[j]))
         dists.append(math.sqrt(d[j]))
     used = len(set(idx))
-    return {"indices": idx, "codes": codes, "distance": dists,
-            "codebook_size": len(Z), "used": used,
-            "usage_fraction": used / float(len(Z)),
-            "note": "an argmin, hence not differentiable -- see "
-                    "straight_through"}
+    return {
+        "indices": idx,
+        "codes": codes,
+        "distance": dists,
+        "codebook_size": len(Z),
+        "used": used,
+        "usage_fraction": used / float(len(Z)),
+        "note": "an argmin, hence not differentiable -- see straight_through",
+    }
 
 
 def straight_through(encoder_output, quantized, upstream_gradient):
@@ -105,12 +106,13 @@ def straight_through(encoder_output, quantized, upstream_gradient):
     q = [float(v) for v in k.vec(quantized)]
     g = [float(v) for v in k.vec(upstream_gradient)]
     if not (len(e) == len(q) == len(g)):
-        raise ValueError("vqgenc: the encoder output, code and "
-                         "gradient differ in length")
-    return {"forward": list(q), "backward": list(g),
-            "jacobian_is_identity": True,
-            "note": "forward passes the CODE, backward passes the "
-                    "gradient through as if quantisation were absent"}
+        raise ValueError("vqgenc: the encoder output, code and gradient differ in length")
+    return {
+        "forward": list(q),
+        "backward": list(g),
+        "jacobian_is_identity": True,
+        "note": "forward passes the CODE, backward passes the gradient through as if quantisation were absent",
+    }
 
 
 def codebook_loss(encoder_output, quantized):
@@ -119,9 +121,11 @@ def codebook_loss(encoder_output, quantized):
     q = [float(v) for v in k.vec(quantized)]
     if len(e) != len(q):
         raise ValueError("vqgenc: the vectors differ in length")
-    return {"loss": sum((e[i] - q[i]) ** 2 for i in range(len(e))),
-            "gradient_flows_to": "codebook",
-            "note": "sg on the encoder side, so only z_q moves"}
+    return {
+        "loss": sum((e[i] - q[i]) ** 2 for i in range(len(e))),
+        "gradient_flows_to": "codebook",
+        "note": "sg on the encoder side, so only z_q moves",
+    }
 
 
 def commitment_loss(encoder_output, quantized, beta=0.25):
@@ -137,65 +141,71 @@ def commitment_loss(encoder_output, quantized, beta=0.25):
     b = float(beta)
     if b < 0.0:
         raise ValueError("vqgenc: beta cannot be negative")
-    return {"loss": b * sum((e[i] - q[i]) ** 2
-                            for i in range(len(e))),
-            "beta": b, "gradient_flows_to": "encoder",
-            "note": "sg on the code side, so only E(x) moves"}
+    return {
+        "loss": b * sum((e[i] - q[i]) ** 2 for i in range(len(e))),
+        "beta": b,
+        "gradient_flows_to": "encoder",
+        "note": "sg on the code side, so only E(x) moves",
+    }
 
 
 def sequence_length(height, width, downsample=16):
     r"""The compression that brings a transformer into range."""
     H, W, f = int(height), int(width), int(downsample)
     if f < 1 or H % f or W % f:
-        raise ValueError("vqgenc: %dx%d is not divisible by the "
-                         "downsampling factor %d" % (H, W, f))
+        raise ValueError(f"vqgenc: {int(H)}x{int(W)} is not divisible by the downsampling factor {int(f)}")
     n = (H // f) * (W // f)
-    return {"tokens": n, "pixels": H * W,
-            "compression": (H * W) / float(n),
-            "attention_cost_pixels": (H * W) ** 2,
-            "attention_cost_tokens": n * n,
-            "speedup": ((H * W) ** 2) / float(n * n),
-            "note": "attention is quadratic, so the saving is the "
-                    "SQUARE of the compression"}
+    return {
+        "tokens": n,
+        "pixels": H * W,
+        "compression": (H * W) / float(n),
+        "attention_cost_pixels": (H * W) ** 2,
+        "attention_cost_tokens": n * n,
+        "speedup": ((H * W) ** 2) / float(n * n),
+        "note": "attention is quadratic, so the saving is the SQUARE of the compression",
+    }
 
 
 def encode(vectors, codebook, beta=0.25, target=None):
     r"""Quantise a grid of encoder outputs and report the VQ loss."""
     q = quantize(vectors, codebook)
     V = [[float(v) for v in r] for r in k.mat(vectors)]
-    cb = sum(codebook_loss(V[i], q["codes"][i])["loss"]
-             for i in range(len(V)))
-    cm = sum(commitment_loss(V[i], q["codes"][i], beta)["loss"]
-             for i in range(len(V)))
+    cb = sum(codebook_loss(V[i], q["codes"][i])["loss"] for i in range(len(V)))
+    cm = sum(commitment_loss(V[i], q["codes"][i], beta)["loss"] for i in range(len(V)))
     rec = 0.0
     if target is not None:
         T = [[float(v) for v in r] for r in k.mat(target)]
-        rec = sum((T[i][a] - q["codes"][i][a]) ** 2
-                  for i in range(len(T)) for a in range(len(T[0])))
-    return RichResult(payload={
-        "estimate": q["indices"], "indices": q["indices"],
-        "codes": q["codes"], "codebook_loss": cb,
-        "commitment_loss": cm, "reconstruction": rec,
-        "loss": rec + cb + cm, "usage_fraction": q["usage_fraction"],
-        "method": "VQ-GAN encoder and codebook; Esser, Rombach & "
-                  "Ommer (2021)",
-        "note": "three terms; the stop-gradients decide whether the "
-                "codebook or the encoder moves",
-    })
+        rec = sum((T[i][a] - q["codes"][i][a]) ** 2 for i in range(len(T)) for a in range(len(T[0])))
+    return RichResult(
+        payload={
+            "estimate": q["indices"],
+            "indices": q["indices"],
+            "codes": q["codes"],
+            "codebook_loss": cb,
+            "commitment_loss": cm,
+            "reconstruction": rec,
+            "loss": rec + cb + cm,
+            "usage_fraction": q["usage_fraction"],
+            "method": "VQ-GAN encoder and codebook; Esser, Rombach & Ommer (2021)",
+            "note": "three terms; the stop-gradients decide whether the codebook or the encoder moves",
+        }
+    )
 
 
 def cheatsheet():
-    return ("vqgenc: transformers have no locality prior and cost "
-            "O(n^2), so shorten the SEQUENCE rather than cheapen the "
-            "attention -- a convolutional encoder compresses the image "
-            "to a grid of indices into a learned CODEBOOK of visual "
-            "parts. Quantisation is nearest-neighbour and NOT "
-            "differentiable, so gradients cross by a STRAIGHT-THROUGH "
-            "estimator (forward the code, backward the identity). The "
-            "loss is reconstruction + ||sg[E(x)] - z_q||^2 (moves the "
-            "CODEBOOK) + ||sg[z_q] - E(x)||^2 (the COMMITMENT loss, "
-            "moves the ENCODER). Compression f=16 turns 256x256 into "
-            "256 tokens; the attention saving is its SQUARE.")
+    return (
+        "vqgenc: transformers have no locality prior and cost "
+        "O(n^2), so shorten the SEQUENCE rather than cheapen the "
+        "attention -- a convolutional encoder compresses the image "
+        "to a grid of indices into a learned CODEBOOK of visual "
+        "parts. Quantisation is nearest-neighbour and NOT "
+        "differentiable, so gradients cross by a STRAIGHT-THROUGH "
+        "estimator (forward the code, backward the identity). The "
+        "loss is reconstruction + ||sg[E(x)] - z_q||^2 (moves the "
+        "CODEBOOK) + ||sg[z_q] - E(x)||^2 (the COMMITMENT loss, "
+        "moves the ENCODER). Compression f=16 turns 256x256 into "
+        "256 tokens; the attention saving is its SQUARE."
+    )
 
 
 # compact alias per ledger/NAMING.md

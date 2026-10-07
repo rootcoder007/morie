@@ -1,7 +1,6 @@
 """Tests for vol_a — volatility by age."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.vol_a import vol_age
 
 

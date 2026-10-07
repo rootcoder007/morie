@@ -1,7 +1,6 @@
 """Tests for vconv -- convergent validity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import ESRes
 from morie.fn.vconv import convergent_validity
 

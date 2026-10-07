@@ -1,7 +1,6 @@
 """Tests for prehay.preacher_hayes_indirect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prehay import preacher_hayes_indirect
 
 

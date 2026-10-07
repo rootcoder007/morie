@@ -59,10 +59,15 @@ def wasserman_empirical_quantile(data, p):
         raise ValueError(f"quantile levels must lie in (0, 1]; got {bad}.")
     idx = np.ceil(p * n).astype(int) - 1
     vals = data[idx]
-    return RichResult(payload={
-        "estimate": float(vals[0]), "values": [float(v) for v in vals],
-        "p": [float(v) for v in p], "n": int(n),
-        "method": "type-1 quantile q_p = X_(ceil(np))"})
+    return RichResult(
+        payload={
+            "estimate": float(vals[0]),
+            "values": [float(v) for v in vals],
+            "p": [float(v) for v in p],
+            "n": int(n),
+            "method": "type-1 quantile q_p = X_(ceil(np))",
+        }
+    )
 
 
 def cheatsheet():

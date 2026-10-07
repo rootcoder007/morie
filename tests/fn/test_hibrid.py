@@ -1,7 +1,6 @@
 """Tests for hibrid.hibrid_prediction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hibrid import hibrid_prediction
 
 

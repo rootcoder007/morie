@@ -88,10 +88,7 @@ def kscvs(
     rng = np.random.default_rng(seed)
     boot_stats = np.empty(n_boot)
     for b_idx in range(n_boot):
-        if cdf_func == "normal":
-            boot_sample = rng.normal(mu, max(sig, 1e-10), n)
-        else:
-            boot_sample = rng.uniform(a, b, n)
+        boot_sample = rng.normal(mu, max(sig, 1e-10), n) if cdf_func == "normal" else rng.uniform(a, b, n)
         bkcdf = _kernel_cdf(boot_sample, x_grid, bw)
         if cdf_func == "normal":
             bmu, bsig = np.mean(boot_sample), np.std(boot_sample, ddof=1)

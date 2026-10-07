@@ -77,8 +77,15 @@ from ._richresult import RichResult
 from .alfrf2 import ddpm_schedule
 from .avalon import parse_smiles
 
-__all__ = ["generative_chemistry", "sample_latent", "kl_divergence",
-           "elbo", "optimise_latent", "validity", "cheatsheet"]
+__all__ = [
+    "generative_chemistry",
+    "sample_latent",
+    "kl_divergence",
+    "elbo",
+    "optimise_latent",
+    "validity",
+    "cheatsheet",
+]
 
 _ROUTES = ("vae", "diffusion")
 
@@ -109,8 +116,7 @@ def elbo(reconstruction, mu, logvar, beta=1.0):
     space at the cost of reconstruction, and it is a parameter because
     that trade is the caller's to make.
     """
-    return float(reconstruction) - float(beta) * kl_divergence(mu,
-                                                               logvar)
+    return float(reconstruction) - float(beta) * kl_divergence(mu, logvar)
 
 
 def sample_latent(mu, logvar, n=1, temperature=1.0, seed=0):
@@ -161,8 +167,7 @@ def optimise_latent(z0, property_fn, steps=20, lr=0.1, eps=1e-4):
             dn = list(z)
             up[i] += eps
             dn[i] -= eps
-            g.append((float(property_fn(up)) - float(property_fn(dn)))
-                     / (2.0 * eps))
+            g.append((float(property_fn(up)) - float(property_fn(dn))) / (2.0 * eps))
         z = [z[i] + lr * g[i] for i in range(len(z))]
         traj.append(list(z))
         vals.append(float(property_fn(z)))
@@ -188,9 +193,9 @@ def validity(smiles_list):
     return flags
 
 
-def generative_chemistry(model, n_samples, conditions=None,
-                         route="vae", temperature=1.0, seed=0,
-                         steps=20, T=10, beta=1.0):
+def generative_chemistry(
+    model, n_samples, conditions=None, route="vae", temperature=1.0, seed=0, steps=20, T=10, beta=1.0
+):
     """Sample molecules from a latent model and score what came back.
 
     Parameters
@@ -249,14 +254,10 @@ def generative_chemistry(model, n_samples, conditions=None,
                 # claim to be anybody's generative model.
                 x0 = list(mu)
                 c1 = math.sqrt(abar[t - 1]) * betas[t] / (1.0 - abar[t])
-                c2 = (math.sqrt(alphas[t]) * (1.0 - abar[t - 1])
-                      / (1.0 - abar[t]))
-                sd = math.sqrt(betas[t] * (1.0 - abar[t - 1])
-                               / (1.0 - abar[t]))
+                c2 = math.sqrt(alphas[t]) * (1.0 - abar[t - 1]) / (1.0 - abar[t])
+                sd = math.sqrt(betas[t] * (1.0 - abar[t - 1]) / (1.0 - abar[t]))
                 z = [rng.normal() for _ in range(d)]
-                x = [c1 * x0[i] + c2 * x[i]
-                     + (temperature * sd * z[i] if t > 1 else 0.0)
-                     for i in range(d)]
+                x = [c1 * x0[i] + c2 * x[i] + (temperature * sd * z[i] if t > 1 else 0.0) for i in range(d)]
             zs.append(x)
 
     trajs = []
@@ -271,24 +272,37 @@ def generative_chemistry(model, n_samples, conditions=None,
         zs = moved
 
     if dec is None:
-        return RichResult(payload={
-            "latents": zs,
-            "smiles": [],
-            "valid": [],
-            "reason": ("the model carries no decoder, so there is "
-                       "nothing to turn a latent vector into a "
-                       "molecule: a decoder is a trained network and "
-                       "none is shipped here. Pass one as the "
-                       "model's decoder."),
-            "n_samples": n, "n_valid": 0, "n_unique": 0, "n_novel": 0,
-            "validity": 0.0, "uniqueness": 0.0, "novelty": 0.0,
-            "kl": kl_divergence(mu, logvar),
-            "elbo": None, "property": props, "trajectory": trajs,
-            "route": route, "temperature": float(temperature),
-            "beta": float(beta), "n_latent": len(mu),
-            "has_decoder": False,
-            "method": "latent generative chemistry sampler",
-        })
+        return RichResult(
+            payload={
+                "latents": zs,
+                "smiles": [],
+                "valid": [],
+                "reason": (
+                    "the model carries no decoder, so there is "
+                    "nothing to turn a latent vector into a "
+                    "molecule: a decoder is a trained network and "
+                    "none is shipped here. Pass one as the "
+                    "model's decoder."
+                ),
+                "n_samples": n,
+                "n_valid": 0,
+                "n_unique": 0,
+                "n_novel": 0,
+                "validity": 0.0,
+                "uniqueness": 0.0,
+                "novelty": 0.0,
+                "kl": kl_divergence(mu, logvar),
+                "elbo": None,
+                "property": props,
+                "trajectory": trajs,
+                "route": route,
+                "temperature": float(temperature),
+                "beta": float(beta),
+                "n_latent": len(mu),
+                "has_decoder": False,
+                "method": "latent generative chemistry sampler",
+            }
+        )
 
     smiles = [str(dec(z)) for z in zs]
     flags = validity(smiles)
@@ -300,35 +314,39 @@ def generative_chemistry(model, n_samples, conditions=None,
     for f in flags:
         if f:
             nv += 1
-    return RichResult(payload={
-        "latents": zs,
-        "smiles": smiles,
-        "valid": flags,
-        "reason": "",
-        "n_samples": n,
-        "n_valid": nv,
-        "n_unique": len(uniq),
-        "n_novel": len(novel),
-        "validity": nv / float(n),
-        "uniqueness": (len(uniq) / float(nv)) if nv else 0.0,
-        "novelty": (len(novel) / float(len(uniq))) if uniq else 0.0,
-        "unique": uniq,
-        "novel": novel,
-        "kl": kl_divergence(mu, logvar),
-        "elbo": elbo(nv / float(n), mu, logvar, beta),
-        "property": props,
-        "trajectory": trajs,
-        "route": route,
-        "temperature": float(temperature),
-        "beta": float(beta),
-        "n_latent": len(mu),
-        "has_decoder": True,
-        "method": "latent generative chemistry sampler",
-    })
+    return RichResult(
+        payload={
+            "latents": zs,
+            "smiles": smiles,
+            "valid": flags,
+            "reason": "",
+            "n_samples": n,
+            "n_valid": nv,
+            "n_unique": len(uniq),
+            "n_novel": len(novel),
+            "validity": nv / float(n),
+            "uniqueness": (len(uniq) / float(nv)) if nv else 0.0,
+            "novelty": (len(novel) / float(len(uniq))) if uniq else 0.0,
+            "unique": uniq,
+            "novel": novel,
+            "kl": kl_divergence(mu, logvar),
+            "elbo": elbo(nv / float(n), mu, logvar, beta),
+            "property": props,
+            "trajectory": trajs,
+            "route": route,
+            "temperature": float(temperature),
+            "beta": float(beta),
+            "n_latent": len(mu),
+            "has_decoder": True,
+            "method": "latent generative chemistry sampler",
+        }
+    )
 
 
 def cheatsheet():
-    return ("genmol: generative chemistry. Reparameterised latent "
-            "sampling or a latent diffusion, gradient ascent on any "
-            "property by central differences, validity checked by "
-            "parsing")
+    return (
+        "genmol: generative chemistry. Reparameterised latent "
+        "sampling or a latent diffusion, gradient ascent on any "
+        "property by central differences, validity checked by "
+        "parsing"
+    )

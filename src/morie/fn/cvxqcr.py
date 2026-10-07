@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_quadratic_constraint"]
 
 
-def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
-                              require_convex=True):
+def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None, require_convex=True):
     r"""Solve :math:`\min \tfrac12 x^{\top}P_0x + q_0^{\top}x` subject to
     :math:`\tfrac12 x^{\top}P_ix + q_i^{\top}x + r_i \le 0`.
 
@@ -107,14 +106,12 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
     if P0m.shape != (n, n):
         raise ValueError(f"P0 has shape {P0m.shape}, expected ({n}, {n})")
     P0m = 0.5 * (P0m + P0m.T)
-    Ps = [0.5 * (np.atleast_2d(np.asarray(Pi, dtype=float))
-                 + np.atleast_2d(np.asarray(Pi, dtype=float)).T) for Pi in P]
+    Ps = [0.5 * (np.atleast_2d(np.asarray(Pi, dtype=float)) + np.atleast_2d(np.asarray(Pi, dtype=float)).T) for Pi in P]
     qs = [np.atleast_1d(np.asarray(qi, dtype=float)).ravel() for qi in q]
     rs = np.atleast_1d(np.asarray(r, dtype=float)).ravel() if len(Ps) else np.zeros(0)
     m = len(Ps)
     if not (len(qs) == rs.size == m):
-        raise ValueError(
-            f"P, q, r must have the same length; got {m}, {len(qs)}, {rs.size}")
+        raise ValueError(f"P, q, r must have the same length; got {m}, {len(qs)}, {rs.size}")
     for i in range(m):
         if Ps[i].shape != (n, n):
             raise ValueError(f"P[{i}] has shape {Ps[i].shape}, expected ({n}, {n})")
@@ -127,7 +124,8 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
         raise ValueError(
             f"P0 has an indefinite Hessian (min eigenvalue {lam0:g}), so the "
             f"objective is nonconvex; pass require_convex=False to accept a "
-            f"local solution")
+            f"local solution"
+        )
     if require_convex and m and np.min(lams) < -1e-10:
         bad = int(np.argmin(lams))
         raise ValueError(
@@ -135,41 +133,50 @@ def boyd_quadratic_constraint(P0, q0, P=(), q=(), r=(), x0=None,
             f"{lams[bad]:g}), so the QCQP is nonconvex and NP-hard in "
             f"general; pass require_convex=False to accept a local "
             f"solution, or use boyd_qcqp_relaxation for a certified "
-            f"lower bound")
+            f"lower bound"
+        )
 
     def obj(x):
         return float(0.5 * x @ P0m @ x + q0v @ x)
 
-    cons = [{
-        "type": "ineq",
-        # SLSQP wants g(x) >= 0, so the sign flips relative to the
-        # f_i(x) <= 0 convention the problem is stated in.
-        "fun": lambda x, Pi=Ps[i], qi=qs[i], ri=rs[i]: -(
-            0.5 * float(x @ Pi @ x) + float(qi @ x) + float(ri)),
-        "jac": lambda x, Pi=Ps[i], qi=qs[i]: -(Pi @ x + qi),
-    } for i in range(m)]
-    z0 = (np.zeros(n) if x0 is None
-          else np.atleast_1d(np.asarray(x0, dtype=float)).ravel())
+    cons = [
+        {
+            "type": "ineq",
+            # SLSQP wants g(x) >= 0, so the sign flips relative to the
+            # f_i(x) <= 0 convention the problem is stated in.
+            "fun": lambda x, Pi=Ps[i], qi=qs[i], ri=rs[i]: -(0.5 * float(x @ Pi @ x) + float(qi @ x) + float(ri)),
+            "jac": lambda x, Pi=Ps[i], qi=qs[i]: -(Pi @ x + qi),
+        }
+        for i in range(m)
+    ]
+    z0 = np.zeros(n) if x0 is None else np.atleast_1d(np.asarray(x0, dtype=float)).ravel()
     if z0.size != n:
         raise ValueError(f"x0 has {z0.size} entries, expected {n}")
-    res = minimize(obj, z0, jac=lambda x: P0m @ x + q0v, constraints=cons,
-                   method="SLSQP", options={"maxiter": 1000, "ftol": 1e-12})
+    res = minimize(
+        obj, z0, jac=lambda x: P0m @ x + q0v, constraints=cons, method="SLSQP", options={"maxiter": 1000, "ftol": 1e-12}
+    )
     x = np.asarray(res.x, dtype=float)
-    vals = np.array([0.5 * float(x @ Ps[i] @ x) + float(qs[i] @ x) + float(rs[i])
-                     for i in range(m)])
+    vals = np.array([0.5 * float(x @ Ps[i] @ x) + float(qs[i] @ x) + float(rs[i]) for i in range(m)])
     tolv = 1e-07 * np.maximum(1.0, np.abs(rs)) if m else np.zeros(0)
     return RichResult(
         title="Quadratically constrained QP",
-        summary_lines=[("n", int(n)), ("constraints", int(m)),
-                       ("objective", obj(x)), ("convex", convex),
-                       ("active", int(np.sum(np.abs(vals) <= tolv)))],
+        summary_lines=[
+            ("n", int(n)),
+            ("constraints", int(m)),
+            ("objective", obj(x)),
+            ("convex", convex),
+            ("active", int(np.sum(np.abs(vals) <= tolv))),
+        ],
         payload={
-            "x": x, "objective": obj(x), "constraints": vals,
+            "x": x,
+            "objective": obj(x),
+            "constraints": vals,
             "active": np.abs(vals) <= tolv,
             "feasible": bool(np.all(vals <= tolv)) if m else True,
             "convex": convex,
             "min_eigenvalues": np.r_[lam0, lams],
-            "converged": bool(res.success), "message": str(res.message),
+            "converged": bool(res.success),
+            "message": str(res.message),
             "method": "boyd_quadratic_constraint",
         },
     )

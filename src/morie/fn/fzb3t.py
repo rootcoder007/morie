@@ -66,15 +66,20 @@ def fauzi_b3_coefficient(t, f_X, f_X_prime=None, S_X=None, transform="log"):
         raise ValueError(f"S_X has {sx.size} entries for {tv.size}.")
     if np.any((sx < 0) | (sx > 1)):
         raise ValueError("S_X must lie in [0, 1].")
-    b3 = gp ** 2 * fx - gpp * sx
+    b3 = gp**2 * fx - gpp * sx
 
-    return RichResult(payload={
-        "t": tv, "b_3": b3, "g_prime": gp, "g_double_prime": gpp,
-        "bias_order": "O(h^2) everywhere, including the boundary region",
-        "contrast": "the naive kernel estimator degrades to O(h) or O(1) "
-                    "at the boundary (Remark 4.5)",
-        "transform": tr["name"],
-        "method": "b_3 from Eq. (4.21); the transformation makes the bias constant computable"})
+    return RichResult(
+        payload={
+            "t": tv,
+            "b_3": b3,
+            "g_prime": gp,
+            "g_double_prime": gpp,
+            "bias_order": "O(h^2) everywhere, including the boundary region",
+            "contrast": "the naive kernel estimator degrades to O(h) or O(1) at the boundary (Remark 4.5)",
+            "transform": tr["name"],
+            "method": "b_3 from Eq. (4.21); the transformation makes the bias constant computable",
+        }
+    )
 
 
 def cheatsheet():

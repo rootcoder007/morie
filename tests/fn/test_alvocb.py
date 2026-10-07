@@ -10,5 +10,6 @@ def test_alvocb_basic():
 
 def test_alvocb_edge():
     import pytest
+
     with pytest.raises(ValueError, match="empty"):
         alammar_tokenizer_vocab_overlap([], [])

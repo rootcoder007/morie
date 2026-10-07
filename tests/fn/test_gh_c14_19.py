@@ -1,7 +1,6 @@
 """Tests for gh_c14_19.ghosal_local_dp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_19 import ghosal_local_dp
 
 

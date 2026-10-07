@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["cold_start_user"]
 
 
-def cold_start_user(user, mode="popular", R=None, item_features=None,
-                    user_features=None, min_ratings=3, topn=3):
+def cold_start_user(user, mode="popular", R=None, item_features=None, user_features=None, min_ratings=3, topn=3):
     """
     Cold-start user fallback
 
@@ -68,8 +67,7 @@ def cold_start_user(user, mode="popular", R=None, item_features=None,
     rated = [j for j in range(ni) if Rm[u][j] != 0.0]
     is_cold = 1 if len(rated) < int(min_ratings) else 0
     if mode == "popular":
-        scores = [sum(1.0 for i in range(nu) if Rm[i][j] != 0.0)
-                  for j in range(ni)]
+        scores = [sum(1.0 for i in range(nu) if Rm[i][j] != 0.0) for j in range(ni)]
     elif mode == "content":
         if item_features is None:
             raise ValueError("content mode needs item_features")
@@ -78,16 +76,14 @@ def cold_start_user(user, mode="popular", R=None, item_features=None,
             raise ValueError("item_features must have one row per item")
         f = len(F[0])
         if rated:
-            prof = [sum(Rm[u][j] * F[j][t] for j in rated) /
-                    sum(Rm[u][j] for j in rated) for t in range(f)]
+            prof = [sum(Rm[u][j] * F[j][t] for j in rated) / sum(Rm[u][j] for j in rated) for t in range(f)]
         else:
             prof = [sum(F[j][t] for j in range(ni)) / ni for t in range(f)]
         pn = math.sqrt(sum(v * v for v in prof))
         scores = []
         for j in range(ni):
             fn = math.sqrt(sum(v * v for v in F[j]))
-            scores.append(sum(prof[t] * F[j][t] for t in range(f)) / (pn * fn)
-                          if pn > 0.0 and fn > 0.0 else 0.0)
+            scores.append(sum(prof[t] * F[j][t] for t in range(f)) / (pn * fn) if pn > 0.0 and fn > 0.0 else 0.0)
     else:
         if user_features is None:
             raise ValueError("metadata mode needs user_features")
@@ -99,28 +95,29 @@ def cold_start_user(user, mode="popular", R=None, item_features=None,
         sim = []
         for i in range(nu):
             vn = math.sqrt(sum(v * v for v in U[i]))
-            sim.append(sum(U[u][t] * U[i][t] for t in range(g)) / (un * vn)
-                       if un > 0.0 and vn > 0.0 else 0.0)
+            sim.append(sum(U[u][t] * U[i][t] for t in range(g)) / (un * vn) if un > 0.0 and vn > 0.0 else 0.0)
         tot = sum(sim[i] for i in range(nu) if i != u)
-        scores = [sum(sim[i] * Rm[i][j] for i in range(nu) if i != u) /
-                  (tot if tot != 0.0 else 1.0) for j in range(ni)]
+        scores = [sum(sim[i] * Rm[i][j] for i in range(nu) if i != u) / (tot if tot != 0.0 else 1.0) for j in range(ni)]
     order = sorted(range(ni), key=lambda j: (-scores[j], j))
-    rec = [j for j in order if j not in rated][:int(topn)]
-    return RichResult(payload={
-        "estimate": scores[rec[0]] if rec else float("nan"),
-        "is_cold": is_cold,
-        "n_rated": len(rated),
-        "scores": scores,
-        "recommended": rec,
-        "mode": mode,
-        "n_users": nu,
-        "n_items": ni,
-        "method": "cold-start recommendation fallback",
-    })
+    rec = [j for j in order if j not in rated][: int(topn)]
+    return RichResult(
+        payload={
+            "estimate": scores[rec[0]] if rec else float("nan"),
+            "is_cold": is_cold,
+            "n_rated": len(rated),
+            "scores": scores,
+            "recommended": rec,
+            "mode": mode,
+            "n_users": nu,
+            "n_items": ni,
+            "method": "cold-start recommendation fallback",
+        }
+    )
 
 
 def cheatsheet():
     return "colE: cold-start recommendation fallback"
+
 
 # public names resolved by fn/_lazy_map.json
 coldstartuser = cold_start_user

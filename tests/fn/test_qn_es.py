@@ -1,8 +1,8 @@
 """Tests for qn_estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.qn_es import qn_estimator
 
 

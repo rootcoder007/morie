@@ -1,7 +1,5 @@
 """Tests for mle_variance_pi.mle_variance_pi."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mle_variance_pi import (
     mle_variance_pi,
 )

@@ -18,8 +18,10 @@ def test_hmfmap_basic():
     result = geron_feature_map(x, K, b=b, activation="tanh", stride=2, padding=1)
     assert isinstance(result, dict)
     xp = [[0.0] * 7] + [[0.0] + r + [0.0] for r in x] + [[0.0] * 7]
-    pre = [[b + sum(xp[2 * i + u][2 * j + v] * K[u][v] for u in range(3) for v in range(3))
-            for j in range(3)] for i in range(3)]
+    pre = [
+        [b + sum(xp[2 * i + u][2 * j + v] * K[u][v] for u in range(3) for v in range(3)) for j in range(3)]
+        for i in range(3)
+    ]
     assert result["out_shape"] == (3, 3)
     fm = result["feature_map"]
     for i in range(3):
@@ -33,8 +35,7 @@ def test_hmfmap_edge():
     zeros in the map, counted here."""
     x, K = _x(), [[1.0, -1.0], [-1.0, 1.0]]
     r = geron_feature_map(x, K, b=0.0)
-    pre = [[x[i][j] - x[i][j + 1] - x[i + 1][j] + x[i + 1][j + 1] for j in range(4)]
-           for i in range(4)]
+    pre = [[x[i][j] - x[i][j + 1] - x[i + 1][j] + x[i + 1][j + 1] for j in range(4)] for i in range(4)]
     relu = [[max(v, 0.0) for v in row] for row in pre]
     assert r["feature_map"] == relu
     zeros = sum(1 for row in relu for v in row if v == 0.0)
@@ -50,7 +51,7 @@ import morie.fn.hmfmap as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

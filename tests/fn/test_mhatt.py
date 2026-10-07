@@ -1,7 +1,6 @@
 """Test multi-head attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mhatt import mhatt
 
 
@@ -64,7 +63,6 @@ def test_mhatt_each_head_attends_on_its_own_slice():
 # --- appended: the module's own worked example as a gate -----------
 
 import doctest as _doctest
-
 import importlib as _importlib
 
 _doctest_module = _importlib.import_module("morie.fn.mhatt")
@@ -72,7 +70,7 @@ _doctest_module = _importlib.import_module("morie.fn.mhatt")
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

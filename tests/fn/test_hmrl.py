@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmrl import geron_reinforcement_learning
 
 
@@ -25,7 +23,10 @@ def _make_env():
 def test_hmrl_basic():
     """Test basic functionality."""
     env = _make_env()
-    pi = lambda s: 0
+
+    def pi(s):
+        return 0
+
     result = geron_reinforcement_learning(env, pi, gamma=0.5)
     assert isinstance(result, dict)
     assert "mean_return" in result
@@ -40,7 +41,10 @@ def test_hmrl_basic():
 def test_hmrl_edge():
     """Test edge cases."""
     env = _make_env()
-    pi = lambda s: 0
+
+    def pi(s):
+        return 0
+
     # Undiscounted case: each episode returns 3.0 (3 steps of reward 1)
     result = geron_reinforcement_learning(env, pi, gamma=1.0, n_episodes=3)
     assert isinstance(result, dict)
@@ -62,7 +66,7 @@ import morie.fn.hmrl as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -5,17 +5,21 @@ import math
 
 import pytest
 
-from morie.fn.comet import (comet, estimator_score, kendall_tau,
-                            pooled_features, reference_free, triplet_loss)
+from morie.fn.comet import comet, estimator_score, kendall_tau, pooled_features, reference_free, triplet_loss
 
 H, S, R = [1.0, -2.0, 0.5], [0.5, 1.0, 0.5], [2.0, -1.0, 0.0]
 
 
 def _features(h, s, r):
     d = range(len(h))
-    return (list(h) + list(r) + [h[i] * r[i] for i in d]
-            + [abs(h[i] - r[i]) for i in d]
-            + [h[i] * s[i] for i in d] + [abs(h[i] - s[i]) for i in d])
+    return (
+        list(h)
+        + list(r)
+        + [h[i] * r[i] for i in d]
+        + [abs(h[i] - r[i]) for i in d]
+        + [h[i] * s[i] for i in d]
+        + [abs(h[i] - s[i]) for i in d]
+    )
 
 
 def test_comet_basic():
@@ -42,7 +46,10 @@ def test_estimator_head_is_the_linear_map_of_the_features():
 def test_triplet_loss_is_two_hinges_on_euclidean_distances():
     better, worse = [1.0, 0.0], [3.0, 0.0]
     src, ref = [0.0, 0.0], [1.0, 1.0]
-    d = lambda a, b: math.dist(a, b)
+
+    def d(a, b):
+        return math.dist(a, b)
+
     want_s = max(0.0, d(better, src) - d(worse, src) + 1.0)
     want_r = max(0.0, d(better, ref) - d(worse, ref) + 1.0)
     out = triplet_loss(better, worse, src, ref, margin=1.0)

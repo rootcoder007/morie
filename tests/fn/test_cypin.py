@@ -1,7 +1,5 @@
 """Tests for cypin.cyp450_inhibition."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.cypin import cyp450_inhibition
 
 

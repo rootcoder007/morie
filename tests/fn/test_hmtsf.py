@@ -1,7 +1,6 @@
 """Tests for hmtsf.geron_time_series_forecast."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmtsf import geron_time_series_forecast
 
 

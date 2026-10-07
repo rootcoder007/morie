@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Significance test for the coefficient of concordance W."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsignif', 'gibbons_concordance_signif']
+__all__ = ["wsignif", "gibbons_concordance_signif"]
 
 
 def wsignif(w, k, n):

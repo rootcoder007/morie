@@ -1,12 +1,11 @@
 """Tests for morie.fn.ptinp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ptinp import ptinp
 
 
 def test_ptinp_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = ptinp(point=(0.5, 0.5), polygon=np.array([[0, 0], [2, 0], [2, 2], [0, 2]], dtype=float))
     assert result is not None
     assert hasattr(result, "name")

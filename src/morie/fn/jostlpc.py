@@ -57,7 +57,11 @@ def stldecomp(x, period, robust=False, iters=2):
     res = _core.stldecomp(x=x, period=period, robust=robust, iters=iters)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("seasonalstrength", res["seasonalstrength"]), ("remaindervar", res["remaindervar"]), ("seasonalrange", res["seasonalrange"])],
+        summary_lines=[
+            ("seasonalstrength", res["seasonalstrength"]),
+            ("remaindervar", res["remaindervar"]),
+            ("seasonalrange", res["seasonalrange"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

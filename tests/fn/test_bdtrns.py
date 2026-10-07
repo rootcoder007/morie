@@ -38,11 +38,13 @@ def test_bounds_always_contain_the_observed_mean_when_it_is_inside():
 
 
 def test_validation():
-    for call in (lambda: bdtrns([], 0.5, 0.0, 1.0),
-                 lambda: bdtrns([1.0], 1.5, 0.0, 1.0),
-                 lambda: bdtrns([1.0], -0.1, 0.0, 1.0),
-                 lambda: bdtrns([1.0], 0.5, 5.0, 1.0),
-                 lambda: bdtrns([99.0], 0.5, 0.0, 1.0)):
+    for call in (
+        lambda: bdtrns([], 0.5, 0.0, 1.0),
+        lambda: bdtrns([1.0], 1.5, 0.0, 1.0),
+        lambda: bdtrns([1.0], -0.1, 0.0, 1.0),
+        lambda: bdtrns([1.0], 0.5, 5.0, 1.0),
+        lambda: bdtrns([99.0], 0.5, 0.0, 1.0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

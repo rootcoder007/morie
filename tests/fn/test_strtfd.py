@@ -1,7 +1,5 @@
 """Tests for strtfd.stratified_design."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.strtfd import stratified_design
 
 

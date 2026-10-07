@@ -10,8 +10,7 @@ __all__ = ["geron_prioritized_experience_weight"]
 _METHOD = "Prioritized experience replay IS weights"
 
 
-def geron_prioritized_experience_weight(priorities, N=None, alpha=0.6, beta=0.4, eps=1e-6,
-                                        are_td_errors=True):
+def geron_prioritized_experience_weight(priorities, N=None, alpha=0.6, beta=0.4, eps=1e-6, are_td_errors=True):
     r"""Sampling probabilities and bias-correcting weights.
 
     .. math::
@@ -98,7 +97,7 @@ def geron_prioritized_experience_weight(priorities, N=None, alpha=0.6, beta=0.4,
     if N is None:
         N = d.size
     N = int(N)
-    if N < d.size:
+    if d.size > N:
         raise ValueError(f"N={N} is smaller than the {d.size} priorities supplied.")
 
     w = (N * P) ** (-beta)

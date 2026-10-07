@@ -1,7 +1,6 @@
 """Tests for gearyl.local_gearys_c."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gearyl import local_gearys_c
 
 
@@ -22,12 +21,9 @@ def test_gearyl_basic():
     mu = sum(x) / n
     # sample standard deviation (ddof=1) per the function's reference impl
     var = sum((v - mu) ** 2 for v in x) / (n - 1)
-    sd = var ** 0.5
+    sd = var**0.5
     z = [(v - mu) / sd for v in x]
-    expected_local = [
-        sum(W[i][j] * (z[i] - z[j]) ** 2 for j in range(n))
-        for i in range(n)
-    ]
+    expected_local = [sum(W[i][j] * (z[i] - z[j]) ** 2 for j in range(n)) for i in range(n)]
     s0 = sum(sum(row) for row in W)
     expected_global = sum(expected_local) / (2.0 * s0)
 

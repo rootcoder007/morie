@@ -71,7 +71,7 @@ def geron_ch4_softmax_function(s, k, K=None):
     p = softmax_vector(s)
     if K is not None:
         K = int(K)
-        if K != p.size:
+        if p.size != K:
             raise ValueError(f"K={K} but the score vector has {p.size} entries.")
     k = int(k)
     if not (0 <= k < p.size):

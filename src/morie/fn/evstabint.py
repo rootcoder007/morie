@@ -6,7 +6,6 @@ Modeling of Extreme Values*, Springer (equation checked against the
 library PDF).
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,6 +21,7 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
 
     from . import _sci_core as sci
     from ._stats_core import chi2 as _chi2
+
     xs = _ev._flat(x)
     crit = float(_chi2.ppf(1.0 - alpha, 1)) / 2.0
 
@@ -32,10 +32,8 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
         def prof(xi):
             def nll(th):
                 return -_ev.gev_loglik(xs, th[0], math.exp(th[1]), xi)
-            r = sci.minimize(nll, [fit["mu"],
-                                   math.log(fit["sigma"])],
-                             method="Nelder-Mead",
-                             options={"maxiter": 2000})
+
+            r = sci.minimize(nll, [fit["mu"], math.log(fit["sigma"])], method="Nelder-Mead", options={"maxiter": 2000})
             return -float(r.fun)
     else:
         fit = _ev.gpd_mle(xs)
@@ -44,9 +42,8 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
         def prof(xi):
             def nll(th):
                 return -_ev.gpd_loglik(xs, math.exp(th[0]), xi)
-            r = sci.minimize(nll, [math.log(fit["sigma"])],
-                             method="Nelder-Mead",
-                             options={"maxiter": 2000})
+
+            r = sci.minimize(nll, [math.log(fit["sigma"])], method="Nelder-Mead", options={"maxiter": 2000})
             return -float(r.fun)
 
     def edge(direction):
@@ -68,11 +65,16 @@ def evt_xi_ci_profile(x, alpha=0.05, model="gev"):
 
     lo = edge(-1.0)
     hi = edge(+1.0)
-    res = RichResult(payload={"ci_lo": float(min(lo, hi)),
-                              "ci_hi": float(max(lo, hi)),
-                              "xi_hat": float(xi_hat),
-                              "alpha": float(alpha), "model": model,
-                              "method": "profile-likelihood xi interval (Coles 2001 sec. 2.6.5)"})
+    res = RichResult(
+        payload={
+            "ci_lo": float(min(lo, hi)),
+            "ci_hi": float(max(lo, hi)),
+            "xi_hat": float(xi_hat),
+            "alpha": float(alpha),
+            "model": model,
+            "method": "profile-likelihood xi interval (Coles 2001 sec. 2.6.5)",
+        }
+    )
     return with_describe_pointer(res, "evstabint")
 
 

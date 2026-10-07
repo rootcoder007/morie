@@ -1,8 +1,6 @@
 """Tests for tsnrd.tsne_reduction."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.tsnrd import tsne_reduction
 
 

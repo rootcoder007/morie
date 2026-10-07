@@ -1,10 +1,10 @@
 """Kosorok tranche 4: bootstrap Donsker, quantile Hadamard bounds,
 DQM/LAN and efficient influence functions."""
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.ksr040 import kosorok_ch2_bootstrap_donsker_iff
 from morie.fn.ksr041 import kosorok_ch2_bootstrap_donsker_almost_sure
 from morie.fn.ksr043 import kosorok_ch2_quantile_hadamard_inequality
@@ -38,16 +38,17 @@ def test_almost_sure_version_carries_the_extra_envelope_condition():
     assert out["both_conditions_met"] is True
     # an infinite envelope moment breaks the a.s. version even though
     # the in-probability version (ksr040) is unaffected
-    bad = kosorok_ch2_bootstrap_donsker_almost_sure(
-        X, n_boot=300, rng=rng, envelope_sq_mean=np.inf
-    )
+    bad = kosorok_ch2_bootstrap_donsker_almost_sure(X, n_boot=300, rng=rng, envelope_sq_mean=np.inf)
     assert bad["envelope_condition_met"] is False
     assert bad["both_conditions_met"] is False
 
 
 def test_quantile_sandwich_brackets_the_level():
     F = stats.norm.cdf
-    h = lambda z: 0.1 * stats.norm.pdf(z)  # a valid perturbation direction
+
+    def h(z):
+        return 0.1 * stats.norm.pdf(z)  # a valid perturbation direction
+
     out = kosorok_ch2_quantile_hadamard_inequality(F, h, t_n=0.01, p=0.7)
     assert out["sandwich_holds"] is True
     assert out["lower"] <= out["upper"]
@@ -61,7 +62,10 @@ def test_quantile_sandwich_brackets_the_level():
 
 def test_quantile_bounds_collapse_onto_the_hadamard_derivative():
     F = stats.norm.cdf
-    h = lambda z: 0.1 * stats.norm.pdf(z)
+
+    def h(z):
+        return 0.1 * stats.norm.pdf(z)
+
     p = 0.6
     gaps = []
     for t in (0.05, 0.01, 0.002):
@@ -69,9 +73,7 @@ def test_quantile_bounds_collapse_onto_the_hadamard_derivative():
         gaps.append(abs(out["gap"]))
         # the implied derivative is -h(xi_p)/f(xi_p), independent of t
         xi = stats.norm.ppf(p)
-        assert out["implied_derivative"] == pytest.approx(
-            -h(xi) / stats.norm.pdf(xi), rel=1e-3
-        )
+        assert out["implied_derivative"] == pytest.approx(-h(xi) / stats.norm.pdf(xi), rel=1e-3)
     # the bracket tightens as t shrinks
     assert gaps[-1] < gaps[0]
     with pytest.raises(ValueError):
@@ -85,8 +87,11 @@ def test_bootstrap_delta_method_centres_at_the_sample_not_the_truth():
     xbar = float(X.mean())
     boots = [float(rng.choice(X, size=400, replace=True).mean()) for _ in range(300)]
     out = kosorok_ch2_functional_delta_bootstrap(
-        lambda z: z**2, np.array(xbar), [np.array(b) for b in boots],
-        r_n=np.sqrt(400), mu=np.array(mu),
+        lambda z: z**2,
+        np.array(xbar),
+        [np.array(b) for b in boots],
+        r_n=np.sqrt(400),
+        mu=np.array(mu),
     )
     # correctly centred: mean near zero
     assert abs(out["mean"]) < 0.6
@@ -100,8 +105,12 @@ def test_bootstrap_delta_method_centres_at_the_sample_not_the_truth():
 
 def test_dqm_holds_for_a_normal_location_family():
     # N(theta, 1): score is (x - theta), DQM integral -> 0
-    dens = lambda x, th: float(stats.norm.pdf(x, loc=th))
-    score = lambda x: float(x)
+    def dens(x, th):
+        return float(stats.norm.pdf(x, loc=th))
+
+    def score(x):
+        return float(x)
+
     out = kosorok_ch3_differentiable_quadratic_mean(dens, score, theta=0.0)
     assert out["shrinking"] is True
     assert out["dqm_integrals"][-1] < 1e-3  # converging to zero

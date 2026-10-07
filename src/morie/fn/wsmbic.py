@@ -58,11 +58,16 @@ def wasserman_bic(loglik, k, n):
         raise ValueError(f"the parameter count cannot be negative; got {k}.")
     if n < 2:
         raise ValueError(f"BIC needs n >= 2; got {n}.")
-    return RichResult(payload={
-        "estimate": float(-2.0 * loglik + k * math.log(n)),
-        "bic_wasserman": float(loglik - 0.5 * k * math.log(n)),
-        "loglik": loglik, "k": k, "n": n,
-        "method": "BIC = -2 log L + k log n; Wasserman form alongside"})
+    return RichResult(
+        payload={
+            "estimate": float(-2.0 * loglik + k * math.log(n)),
+            "bic_wasserman": float(loglik - 0.5 * k * math.log(n)),
+            "loglik": loglik,
+            "k": k,
+            "n": n,
+            "method": "BIC = -2 log L + k log n; Wasserman form alongside",
+        }
+    )
 
 
 def cheatsheet():

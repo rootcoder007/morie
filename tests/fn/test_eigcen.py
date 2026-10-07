@@ -1,7 +1,6 @@
 """Tests for eigcen.eigenvector_centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eigcen import eigenvector_centrality
 
 
@@ -11,6 +10,8 @@ def test_eigcen_basic():
     result = eigenvector_centrality(G)
     assert isinstance(result, dict)
     assert "centrality" in result
+
+
 def test_eigcen_edge():
     """Test edge cases."""
     G = np.eye(10)

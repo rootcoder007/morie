@@ -574,6 +574,7 @@ def cheatsheet() -> str:
         "spatial functional, topological, graph and multilevel methods."
     )
 
+
 # alias kept from the retired placeholder of the same name
 fda_spatial = curve_fpca
 

@@ -5,10 +5,10 @@ gb_sp2 gb_spv gb_wcin gb_blt. Oracles: scipy kendalltau/spearmanr,
 exact enumeration, and the Gibbons closed forms (Ch 11-12,
 PDF-verified eq. 12.4.4)."""
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.gb1121 import gibbons_kendall_tau
 from morie.fn.gb1122t import gibbons_kendall_ties
 from morie.fn.gb1131n import gibbons_spearman_asymp
@@ -49,9 +49,7 @@ def test_tau_b_matches_scipy_with_ties_and_reduces_without():
     # no ties: tau_b == plain tau
     a = np.array([3.0, 1.0, 4.0, 1.5, 5.0])
     b = np.array([2.0, 7.0, 1.0, 8.0, 2.5])
-    assert gibbons_kendall_ties(a, b)["tau_b"] == pytest.approx(
-        gibbons_kendall_tau(a, b)["tau"]
-    )
+    assert gibbons_kendall_ties(a, b)["tau_b"] == pytest.approx(gibbons_kendall_tau(a, b)["tau"])
     with pytest.raises(ValueError):
         gibbons_kendall_ties([1, 1, 1], [1, 1, 1])
 
@@ -60,9 +58,7 @@ def test_kendall_exact_enumeration_matches_the_closed_form_variance():
     for n in (4, 5, 6):
         out = gibbons_kendall_exact(n)
         assert out["mean"] == pytest.approx(0.0, abs=1e-12)
-        assert out["var"] == pytest.approx(
-            gibbons_kendall_tau_var(n)["var_tau"], abs=1e-12
-        )
+        assert out["var"] == pytest.approx(gibbons_kendall_tau_var(n)["var_tau"], abs=1e-12)
         assert np.sum(out["pmf"]) == pytest.approx(1.0)
         # symmetry of the null distribution
         assert out["support"] == pytest.approx(-out["support"][::-1])
@@ -143,16 +139,20 @@ def test_concordance_w_endpoints_and_chi2():
 def test_incomplete_concordance_agreement_beats_disagreement():
     nan = np.nan
     # judges agree on overlapping subsets
-    agree = np.array([
-        [1, 2, 3, nan],
-        [nan, 1, 2, 3],
-        [1, 2, nan, 3],
-    ])
-    disagree = np.array([
-        [3, 2, 1, nan],
-        [nan, 3, 2, 1],
-        [1, 2, nan, 3],
-    ])
+    agree = np.array(
+        [
+            [1, 2, 3, nan],
+            [nan, 1, 2, 3],
+            [1, 2, nan, 3],
+        ]
+    )
+    disagree = np.array(
+        [
+            [3, 2, 1, nan],
+            [nan, 3, 2, 1],
+            [1, 2, nan, 3],
+        ]
+    )
     wa = gibbons_concordance_incomplete(agree)
     wd = gibbons_concordance_incomplete(disagree)
     assert wa["W"] > wd["W"]
@@ -164,31 +164,37 @@ def test_incomplete_concordance_agreement_beats_disagreement():
 def test_bib_concordance_validates_the_design():
     nan = np.nan
     # symmetric BIB: n = 4 objects, b = 4 blocks of m = 3, r = 3, lam = 2
-    bib_perfect = np.array([
-        [1, 2, 3, nan],
-        [1, 2, nan, 3],
-        [1, nan, 2, 3],
-        [nan, 1, 2, 3],
-    ])
+    bib_perfect = np.array(
+        [
+            [1, 2, 3, nan],
+            [1, 2, nan, 3],
+            [1, nan, 2, 3],
+            [nan, 1, 2, 3],
+        ]
+    )
     out = gibbons_balance_incomplete(bib_perfect)
     assert out["lambda_"] == 2
     assert out["m_per_block"] == 3
     assert out["r_per_object"] == 3
     assert 0 < out["W_b"] <= 1
     # scrambled blocks give lower W_b
-    bib_noise = np.array([
-        [3, 1, 2, nan],
-        [2, 3, nan, 1],
-        [1, nan, 3, 2],
-        [nan, 3, 1, 2],
-    ])
+    bib_noise = np.array(
+        [
+            [3, 1, 2, nan],
+            [2, 3, nan, 1],
+            [1, nan, 3, 2],
+            [nan, 3, 1, 2],
+        ]
+    )
     assert gibbons_balance_incomplete(bib_noise)["W_b"] < out["W_b"]
     # a non-BIB layout raises instead of being scored with BIB constants
-    bad = np.array([
-        [1, 2, 3, nan],
-        [1, 2, 3, nan],
-        [1, nan, 2, 3],
-        [nan, 1, 2, 3],
-    ])
+    bad = np.array(
+        [
+            [1, 2, 3, nan],
+            [1, 2, 3, nan],
+            [1, nan, 2, 3],
+            [nan, 1, 2, 3],
+        ]
+    )
     with pytest.raises(ValueError):
         gibbons_balance_incomplete(bad)

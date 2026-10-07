@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['agestd', 'age_standardize']
+__all__ = ["agestd", "age_standardize"]
 
 
 def agestd(rates, standard_pop, person_time=None):
@@ -39,7 +39,8 @@ def agestd(rates, standard_pop, person_time=None):
     standardisation estimator and its Poisson variance are the standard
     published forms.
     """
-    r = C.vec(rates); w = C.vec(standard_pop)
+    r = C.vec(rates)
+    w = C.vec(standard_pop)
     k = len(r)
     if k != len(w):
         raise ValueError("rates and standard_pop must be the same length")
@@ -56,10 +57,18 @@ def agestd(rates, standard_pop, person_time=None):
         se = math.sqrt(var)
         z = C.qnorm(0.975)
         lo, hi = asr - z * se, asr + z * se
-    return RichResult(payload={
-        "asr": asr, "variance": var, "se": se, "ci_lower": lo,
-        "ci_upper": hi, "weights": [v / sw for v in w], "k": k,
-        "method": "Directly age-standardised rate"})
+    return RichResult(
+        payload={
+            "asr": asr,
+            "variance": var,
+            "se": se,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "weights": [v / sw for v in w],
+            "k": k,
+            "method": "Directly age-standardised rate",
+        }
+    )
 
 
 age_standardize = agestd

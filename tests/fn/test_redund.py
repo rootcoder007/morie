@@ -8,7 +8,7 @@ from morie.fn.redund import redundancy
 def test_redund_basic():
     """Test basic functionality."""
     # uniform pmf over three symbols
-    p = [1/3, 1/3, 1/3]
+    p = [1 / 3, 1 / 3, 1 / 3]
     result = redundancy(p)
     # check that result has the expected keys
     for key in ("estimate", "entropy", "hmax", "relative", "n", "method"):

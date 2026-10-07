@@ -4,8 +4,6 @@ import doctest as _doctest
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmrhf import kamath_rlhf_pipeline
 
 
@@ -15,10 +13,13 @@ def test_kmrhf_basic():
     preferences = [("a", "b"), ("c", "d"), ("e", "f")]
     pi0 = "pi0"
     result = kamath_rlhf_pipeline(
-        demos, preferences, pi0,
+        demos,
+        preferences,
+        pi0,
         sft=lambda p, d: p + "+sft",
-        train_rm=lambda prefs: (lambda y: len(y)),
-        ppo=lambda pi, rm, ref: pi + "+ppo")
+        train_rm=lambda prefs: lambda y: len(y),
+        ppo=lambda pi, rm, ref: pi + "+ppo",
+    )
     assert isinstance(result, dict)
     assert result["policy"] == "pi0+sft+ppo"
     assert result["policy_sft"] == "pi0+sft"
@@ -31,17 +32,20 @@ def test_kmrhf_basic():
 
 def test_kmrhf_edge():
     """Test edge cases: empty inputs raise ValueError."""
-    sft = lambda p, d: p + "+sft"
-    train_rm = lambda prefs: (lambda y: len(y))
-    ppo = lambda pi, rm, ref: pi + "+ppo"
+
+    def sft(p, d):
+        return p + "+sft"
+
+    def train_rm(prefs):
+        return lambda y: len(y)
+
+    def ppo(pi, rm, ref):
+        return pi + "+ppo"
+
     with pytest.raises(ValueError):
-        kamath_rlhf_pipeline(
-            [], [("a", "b")], "pi0",
-            sft=sft, train_rm=train_rm, ppo=ppo)
+        kamath_rlhf_pipeline([], [("a", "b")], "pi0", sft=sft, train_rm=train_rm, ppo=ppo)
     with pytest.raises(ValueError):
-        kamath_rlhf_pipeline(
-            ["d1"], [], "pi0",
-            sft=sft, train_rm=train_rm, ppo=ppo)
+        kamath_rlhf_pipeline(["d1"], [], "pi0", sft=sft, train_rm=train_rm, ppo=ppo)
 
 
 # --- appended: the module's own worked example as a gate -----------
@@ -54,7 +58,7 @@ import morie.fn.kmrhf as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

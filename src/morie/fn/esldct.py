@@ -18,7 +18,7 @@ def _best_split(X, y, min_leaf):
         xs, ys = X[order, j], y[order]
         for i in range(min_leaf, n - min_leaf + 1):
             if xs[i - 1] == xs[i]:
-                continue                       # cannot split inside a tie
+                continue  # cannot split inside a tie
             L, R = ys[:i], ys[i:]
             sse = float(np.sum((L - L.mean()) ** 2) + np.sum((R - R.mean()) ** 2))
             if best is None or sse < best[0] - 1e-15:
@@ -109,18 +109,22 @@ def esl_decision_tree(X, y, max_depth=3, min_leaf=1, min_impurity_decrease=0.0):
     def grow(idx, depth):
         yy = y[idx]
         node_n = int(idx.size)
-        if (depth >= max_depth or node_n < 2 * min_leaf
-                or float(np.ptp(yy)) == 0.0):
+        if depth >= max_depth or node_n < 2 * min_leaf or float(np.ptp(yy)) == 0.0:
             return {"leaf": True, "value": float(yy.mean()), "n": node_n}
         best = _best_split(X[idx], yy, min_leaf)
         if best is None or best[3] <= float(min_impurity_decrease):
             return {"leaf": True, "value": float(yy.mean()), "n": node_n}
         _, j, thr, gain = best
         mask = X[idx, j] <= thr
-        return {"leaf": False, "feature": int(j), "threshold": float(thr),
-                "n": node_n, "impurity_decrease": float(gain),
-                "left": grow(idx[mask], depth + 1),
-                "right": grow(idx[~mask], depth + 1)}
+        return {
+            "leaf": False,
+            "feature": int(j),
+            "threshold": float(thr),
+            "n": node_n,
+            "impurity_decrease": float(gain),
+            "left": grow(idx[mask], depth + 1),
+            "right": grow(idx[~mask], depth + 1),
+        }
 
     tree = grow(np.arange(n), 0)
     fitted = np.asarray(esl_tree_predict(tree, X), dtype=float)
@@ -132,11 +136,18 @@ def esl_decision_tree(X, y, max_depth=3, min_leaf=1, min_impurity_decrease=0.0):
     def deep(node):
         return 0 if node["leaf"] else 1 + max(deep(node["left"]), deep(node["right"]))
 
-    return RichResult(payload={
-        "estimate": float(resid @ resid), "tree": tree,
-        "n_leaves": count(tree), "depth": deep(tree),
-        "fitted": [float(v) for v in fitted], "n": int(n), "p": int(p),
-        "method": "CART regression tree, greedy SSE splits, stopping rules (not pruned)"})
+    return RichResult(
+        payload={
+            "estimate": float(resid @ resid),
+            "tree": tree,
+            "n_leaves": count(tree),
+            "depth": deep(tree),
+            "fitted": [float(v) for v in fitted],
+            "n": int(n),
+            "p": int(p),
+            "method": "CART regression tree, greedy SSE splits, stopping rules (not pruned)",
+        }
+    )
 
 
 def esl_tree_predict(tree, X):

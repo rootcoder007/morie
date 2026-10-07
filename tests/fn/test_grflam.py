@@ -1,10 +1,9 @@
 """Tests for grflam.geron_flamingo_cross_modal_attn."""
 
-from morie.fn import _array_core as np
-
-from morie.fn.grflam import geron_flamingo_cross_modal_attn
-
 import math
+
+from morie.fn import _array_core as np
+from morie.fn.grflam import geron_flamingo_cross_modal_attn
 
 
 def test_grflam_basic():
@@ -36,10 +35,10 @@ def test_grflam_edge():
     """Test edge cases."""
     # Identity at alpha = 0: hidden states must come back unchanged
     # and the layer must flag itself as the identity mapping.
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     vis = [[5.0, 5.0], [-5.0, 3.0]]
     h = [[1.0, 0.0]]
-    weights = {"WQ": I, "WK": I, "WV": I}
+    weights = {"WQ": I_, "WK": I_, "WV": I_}
     result = geron_flamingo_cross_modal_attn(h, vis, 0.0, weights)
     assert isinstance(result, dict)
     assert result["is_identity"] is True
@@ -60,7 +59,7 @@ import morie.fn.grflam as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

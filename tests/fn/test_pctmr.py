@@ -1,7 +1,6 @@
 """Tests for pctmr.percentile_modified_rank."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pctmr import percentile_modified_rank
 
 

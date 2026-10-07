@@ -113,17 +113,23 @@ def dp_changepoint(y, epsilon=1.0, bounds=None, min_segment=5, seed=None):
     best = float(util.max())
     return RichResult(
         title="DP changepoint",
-        summary_lines=[("epsilon", epsilon), ("n", int(n)),
-                       ("changepoint", int(cand[pick]))],
-        warnings=warn + ["the mechanism always returns a location; compare "
-                         "best_utility against what noise alone would give "
-                         "before believing there is a changepoint"],
+        summary_lines=[("epsilon", epsilon), ("n", int(n)), ("changepoint", int(cand[pick]))],
+        warnings=warn
+        + [
+            "the mechanism always returns a location; compare "
+            "best_utility against what noise alone would give "
+            "before believing there is a changepoint"
+        ],
         payload={
-            "changepoint": int(cand[pick]), "utility": float(util[pick]),
+            "changepoint": int(cand[pick]),
+            "utility": float(util[pick]),
             "best_utility": best,
             "utility_ratio": float(util[pick] / best) if best > 0 else float("nan"),
-            "candidates": cand, "probabilities": p,
-            "epsilon": epsilon, "n": int(n), "method": "dp_changepoint",
+            "candidates": cand,
+            "probabilities": p,
+            "epsilon": epsilon,
+            "n": int(n),
+            "method": "dp_changepoint",
         },
     )
 

@@ -11,8 +11,7 @@ import pytest
 from morie.fn.lggvls import laggedval_iptw
 from morie.fn.tdcvar import time_dep_covariate
 
-from ._msm_fixture import N, TH1, dose, feedback  # noqa: F401
-
+from ._msm_fixture import N
 
 
 def test_lggvls_matches_the_full_history_and_the_lag_bites(feedback):
@@ -22,14 +21,12 @@ def test_lggvls_matches_the_full_history_and_the_lag_bites(feedback):
     assert g["estimate"] == pytest.approx(feedback["truth"], abs=0.12)
     # lag=0 drops L0 from the time-1 model, so the weights must differ
     g0 = laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"], lag=0)
-    assert max(abs(g0["weights"][i] - g["weights"][i])
-               for i in range(N)) > 1e-6
+    assert max(abs(g0["weights"][i] - g["weights"][i]) for i in range(N)) > 1e-6
 
 
 def test_lggvls_contrasts_differ(feedback):
     cum = laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"])
-    ever = laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"],
-                          contrast="everexposed")
+    ever = laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"], contrast="everexposed")
     assert abs(ever["estimate"] - cum["estimate"]) > 0.05
 
 
@@ -37,8 +34,7 @@ def test_lggvls_argument_checks(feedback):
     with pytest.raises(ValueError):
         laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"], lag=-1)
     with pytest.raises(ValueError):
-        laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"],
-                       contrast="nope")
+        laggedval_iptw(feedback["Y"], feedback["A"], feedback["L"], contrast="nope")
 
 
 # ----------------------------------------------------------- polkrn

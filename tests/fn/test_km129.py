@@ -5,8 +5,6 @@ recomputed in the test body and the docstring's own worked value is
 asserted too.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km129 import kamath_ch9_modality_encoder

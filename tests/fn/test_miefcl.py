@@ -58,10 +58,12 @@ def test_the_barnard_rubin_df_is_used_when_the_complete_df_is_given():
 
 
 def test_validation():
-    for call in (lambda: miefcl([1.0], [0.1]),
-                 lambda: miefcl([1.0, 2.0], [0.1]),
-                 lambda: miefcl([1.0, 2.0], [-0.1, 0.1]),
-                 lambda: miefcl([1.0, 1.0], [0.0, 0.0])):
+    for call in (
+        lambda: miefcl([1.0], [0.1]),
+        lambda: miefcl([1.0, 2.0], [0.1]),
+        lambda: miefcl([1.0, 2.0], [-0.1, 0.1]),
+        lambda: miefcl([1.0, 1.0], [0.0, 0.0]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

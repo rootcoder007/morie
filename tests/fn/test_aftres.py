@@ -5,8 +5,8 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.aftwbl import aft_weibull
 from morie.fn.aftres import aft_residuals
+from morie.fn.aftwbl import aft_weibull
 
 
 def test_aftres_basic():

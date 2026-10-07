@@ -11,16 +11,15 @@ __all__ = ["alammar_umap_projection"]
 
 
 def _lcg_stream(seed, n):
-    s = int(seed) % 2 ** 32
+    s = int(seed) % 2**32
     out = np.empty(n)
     for i in range(n):
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        out[i] = (s + 0.5) / 2 ** 32
+        s = (1664525 * s + 1013904223) % 2**32
+        out[i] = (s + 0.5) / 2**32
     return out
 
 
-def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
-                            n_steps=200, learning_rate=0.05, seed=1):
+def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2, n_steps=200, learning_rate=0.05, seed=1):
     """Minimise CE(fuzzy graph of X, fuzzy graph of Z) over Z.
 
     High-dimensional weights: w_ij = exp(-(d_ij - rho_i)/sigma_i) over
@@ -48,7 +47,7 @@ def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
     W = np.zeros((n, n))
     log2k = np.log2(k)
     for i in range(n):
-        nb = order[i, 1:k + 1]
+        nb = order[i, 1 : k + 1]
         dists = D[i, nb]
         rho = dists[0]
         lo, hi = 1e-8, 1e4
@@ -61,7 +60,7 @@ def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
                 lo = sig
         sig = 0.5 * (lo + hi)
         W[i, nb] = np.exp(-(np.maximum(dists - rho, 0.0)) / sig)
-    P = W + W.T - W * W.T          # probabilistic union
+    P = W + W.T - W * W.T  # probabilistic union
     a = 1.0 / (float(min_dist) ** 2 + 1e-12) if min_dist > 0 else 100.0
 
     u = _lcg_stream(seed, n * dd)
@@ -80,11 +79,11 @@ def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
     lr = float(learning_rate)
     for _ in range(int(n_steps)):
         diff = Z[:, None, :] - Z[None, :, :]
-        dz2 = (diff ** 2).sum(axis=2)
+        dz2 = (diff**2).sum(axis=2)
         Q = 1.0 / (1.0 + a * dz2)
         eps = 1e-12
         # dCE/d(dz2): attractive from P, repulsive from (1-P)
-        coeff = (P * a * Q - (1 - P) * a * Q * Q / (1 - Q + eps))
+        coeff = P * a * Q - (1 - P) * a * Q * Q / (1 - Q + eps)
         np.fill_diagonal(coeff, 0.0)
         # Clip each pairwise contribution to [-4, 4] exactly as the
         # reference implementation does (McInnes et al. 2018,
@@ -95,13 +94,17 @@ def alammar_umap_projection(X, n_neighbors=5, min_dist=0.1, d_out=2,
         grad = np.clip(2.0 * coeff[:, :, None] * diff, -4.0, 4.0).sum(axis=1)
         Z = Z - lr * grad
     obj1 = objective(Z)
-    return RichResult(payload={
-        "embedding": [[float(v) for v in r] for r in Z],
-        "objective_initial": obj0, "objective_final": obj1,
-        "objective_decreased": obj1 < obj0,
-        "estimate": obj1, "n": n,
-        "method": "UMAP fuzzy cross-entropy, full-batch descent "
-                  "(McInnes et al. 2018, simplified)"})
+    return RichResult(
+        payload={
+            "embedding": [[float(v) for v in r] for r in Z],
+            "objective_initial": obj0,
+            "objective_final": obj1,
+            "objective_decreased": obj1 < obj0,
+            "estimate": obj1,
+            "n": n,
+            "method": "UMAP fuzzy cross-entropy, full-batch descent (McInnes et al. 2018, simplified)",
+        }
+    )
 
 
 def cheatsheet():

@@ -55,10 +55,15 @@ def mzworld(observation, actions, representation, dynamics):
         r, s = dynamics(s, a)
         rewards.append(float(r))
         states.append(s)
-    return RichResult(payload={
-        "states": states, "rewards": rewards, "root": s0,
-        "K": len(rewards),
-        "method": "MuZero world-model rollout (Schrittwieser et al. 2020 eq. 1)"})
+    return RichResult(
+        payload={
+            "states": states,
+            "rewards": rewards,
+            "root": s0,
+            "K": len(rewards),
+            "method": "MuZero world-model rollout (Schrittwieser et al. 2020 eq. 1)",
+        }
+    )
 
 
 muzero_world_model = mzworld

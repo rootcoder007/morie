@@ -74,9 +74,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["stick_breaking", "truncation_error",
-           "sticks_for_tolerance", "decay_diagnostics",
-           "truncated_dp"]
+__all__ = ["stick_breaking", "truncation_error", "sticks_for_tolerance", "decay_diagnostics", "truncated_dp"]
 
 _EPS = 1e-12
 
@@ -104,11 +102,16 @@ def stick_breaking(alpha, K, rng=None, seed=0):
         v = _beta_1_alpha(r, a)
         Vs.append(v)
         p.append(v * rest)
-        rest *= (1.0 - v)
-    return {"weights": p, "V": Vs, "remaining": rest,
-            "kept_mass": sum(p), "K": n, "alpha": a,
-            "note": "the remaining stick is the mass truncation "
-                    "throws away"}
+        rest *= 1.0 - v
+    return {
+        "weights": p,
+        "V": Vs,
+        "remaining": rest,
+        "kept_mass": sum(p),
+        "K": n,
+        "alpha": a,
+        "note": "the remaining stick is the mass truncation throws away",
+    }
 
 
 def truncation_error(alpha, K):
@@ -121,10 +124,14 @@ def truncation_error(alpha, K):
     if a <= 0.0 or n < 1:
         raise ValueError("slowdp: need alpha > 0 and K >= 1")
     e = (a / (1.0 + a)) ** n
-    return {"expected_tail": e, "kept": 1.0 - e, "alpha": a, "K": n,
-            "per_stick_factor": a / (1.0 + a),
-            "note": "a more diffuse process needs more sticks for "
-                    "the same fidelity"}
+    return {
+        "expected_tail": e,
+        "kept": 1.0 - e,
+        "alpha": a,
+        "K": n,
+        "per_stick_factor": a / (1.0 + a),
+        "note": "a more diffuse process needs more sticks for the same fidelity",
+    }
 
 
 def sticks_for_tolerance(alpha, tol=1e-3):
@@ -137,10 +144,12 @@ def sticks_for_tolerance(alpha, tol=1e-3):
         raise ValueError("slowdp: the tolerance must lie in (0,1)")
     f = a / (1.0 + a)
     K = int(math.ceil(math.log(t) / math.log(f)))
-    return {"K": max(1, K), "expected_tail":
-            truncation_error(a, max(1, K))["expected_tail"],
-            "tolerance": t,
-            "note": "chosen from the closed form, not guessed"}
+    return {
+        "K": max(1, K),
+        "expected_tail": truncation_error(a, max(1, K))["expected_tail"],
+        "tolerance": t,
+        "note": "chosen from the closed form, not guessed",
+    }
 
 
 def decay_diagnostics(weights, alpha):
@@ -156,18 +165,17 @@ def decay_diagnostics(weights, alpha):
     exp_tail = truncation_error(alpha, K)["expected_tail"]
     realised = max(0.0, 1.0 - sum(p))
     biggest_late = max(range(K), key=lambda i: p[i])
-    return {"realised_tail": realised, "expected_tail": exp_tail,
-            "ratio": realised / exp_tail if exp_tail > _EPS
-            else float("inf"),
-            "largest_index": biggest_late,
-            "monotone": all(p[i] >= p[i + 1] - _EPS
-                            for i in range(K - 1)),
-            "note": "the sticks are NOT ordered; a late large stick "
-                    "is exactly what a mean-based truncation misses"}
+    return {
+        "realised_tail": realised,
+        "expected_tail": exp_tail,
+        "ratio": realised / exp_tail if exp_tail > _EPS else float("inf"),
+        "largest_index": biggest_late,
+        "monotone": all(p[i] >= p[i + 1] - _EPS for i in range(K - 1)),
+        "note": "the sticks are NOT ordered; a late large stick is exactly what a mean-based truncation misses",
+    }
 
 
-def truncated_dp(alpha, K, base_sampler=None, rng=None, seed=0,
-                 renormalise=True):
+def truncated_dp(alpha, K, base_sampler=None, rng=None, seed=0, renormalise=True):
     r"""A truncated DP draw, with the discarded mass reported."""
     r = rng if rng is not None else np.random.default_rng(seed)
     sb = stick_breaking(alpha, K, r)
@@ -178,33 +186,37 @@ def truncated_dp(alpha, K, base_sampler=None, rng=None, seed=0,
         if z <= _EPS:
             raise ValueError("slowdp: the kept sticks carry no mass")
         p = [v / z for v in p]
-    atoms = ([base_sampler(r) for _ in range(int(K))]
-             if base_sampler is not None else list(range(int(K))))
-    return RichResult(payload={
-        "estimate": p, "weights": p, "atoms": atoms,
-        "discarded_mass": tail,
-        "expected_discarded": truncation_error(alpha,
-                                               K)["expected_tail"],
-        "renormalised": bool(renormalise), "K": int(K),
-        "alpha": float(alpha),
-        "method": "truncated stick-breaking; Sethuraman (1994)",
-        "note": "renormalising moves the discarded mass onto the "
-                "survivors, which is why the amount is returned",
-    })
+    atoms = [base_sampler(r) for _ in range(int(K))] if base_sampler is not None else list(range(int(K)))
+    return RichResult(
+        payload={
+            "estimate": p,
+            "weights": p,
+            "atoms": atoms,
+            "discarded_mass": tail,
+            "expected_discarded": truncation_error(alpha, K)["expected_tail"],
+            "renormalised": bool(renormalise),
+            "K": int(K),
+            "alpha": float(alpha),
+            "method": "truncated stick-breaking; Sethuraman (1994)",
+            "note": "renormalising moves the discarded mass onto the survivors, which is why the amount is returned",
+        }
+    )
 
 
 def cheatsheet():
-    return ("slowdp: Sethuraman writes the DP as a PROGRAM -- "
-            "p_k = V_k prod(1 - V_l) with V_k ~ Beta(1, alpha) and "
-            "atoms from the base measure, summing to 1 almost surely. "
-            "Truncating at K leaves an expected tail of EXACTLY "
-            "(alpha/(1+alpha))^K: geometric in K, and worse for larger "
-            "alpha, so a diffuse process needs more sticks. Invert it "
-            "to CHOOSE K rather than guess. But the decay is only in "
-            "EXPECTATION and the sticks are NOT ordered -- a single "
-            "draw can put a large stick late, which is what "
-            "'slow-decreasing' names. Renormalising the survivors "
-            "silently absorbs the discarded mass, so report it.")
+    return (
+        "slowdp: Sethuraman writes the DP as a PROGRAM -- "
+        "p_k = V_k prod(1 - V_l) with V_k ~ Beta(1, alpha) and "
+        "atoms from the base measure, summing to 1 almost surely. "
+        "Truncating at K leaves an expected tail of EXACTLY "
+        "(alpha/(1+alpha))^K: geometric in K, and worse for larger "
+        "alpha, so a diffuse process needs more sticks. Invert it "
+        "to CHOOSE K rather than guess. But the decay is only in "
+        "EXPECTATION and the sticks are NOT ordered -- a single "
+        "draw can put a large stick late, which is what "
+        "'slow-decreasing' names. Renormalising the survivors "
+        "silently absorbs the discarded mass, so report it."
+    )
 
 
 # compact alias per ledger/NAMING.md

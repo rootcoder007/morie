@@ -18,8 +18,9 @@ def _pp(t, e, x):
     """Person-period expansion: one Bernoulli row per subject per event
     time at which it is still at risk."""
     et = sorted({ti for ti, ei in zip(t, e) if ei})
-    rows = [(k, xi, 1.0 if (ti == tk and ei) else 0.0)
-            for ti, ei, xi in zip(t, e, x) for k, tk in enumerate(et) if ti >= tk]
+    rows = [
+        (k, xi, 1.0 if (ti == tk and ei) else 0.0) for ti, ei, xi in zip(t, e, x) for k, tk in enumerate(et) if ti >= tk
+    ]
     return et, rows
 
 
@@ -44,7 +45,7 @@ def test_survlnk_basic(link):
     K = len(et)
     th = [float(v) for v in r["alpha"]] + [float(r["estimate"][0])]
     U = [0.0] * (K + 1)
-    I = [[0.0] * (K + 1) for _ in range(K + 1)]
+    I_ = [[0.0] * (K + 1) for _ in range(K + 1)]
     for k, xi, y in rows:
         h, dh = _h_dh(th[k] + th[K] * xi, link)
         g = [0.0] * (K + 1)
@@ -52,9 +53,9 @@ def test_survlnk_basic(link):
         for a in range(K + 1):
             U[a] += (y - h) / (h * (1 - h)) * dh * g[a]
             for b in range(K + 1):
-                I[a][b] += dh * dh / (h * (1 - h)) * g[a] * g[b]
+                I_[a][b] += dh * dh / (h * (1 - h)) * g[a] * g[b]
     assert max(abs(u) for u in U) < 1e-8
-    M = [row[:] + [1.0 if i == K else 0.0] for i, row in enumerate(I)]
+    M = [row[:] + [1.0 if i == K else 0.0] for i, row in enumerate(I_)]
     for c in range(K + 1):
         p = max(range(c, K + 1), key=lambda q: abs(M[q][c]))
         M[c], M[p] = M[p], M[c]

@@ -1,7 +1,6 @@
 """Test greedy decoding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.greed import greed
 
 

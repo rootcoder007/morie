@@ -1,7 +1,5 @@
 """Tests for se_fisher_z.se_fisher_z."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.se_fisher_z import se_fisher_z
 
 

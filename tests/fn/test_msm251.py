@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm251 import mvsml_reproducing_kernel_eq_10_13
 
-
 X = [[1.0, 2.0]]
 Y = [[1.0]]
 W = [[[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]]]
@@ -32,10 +31,10 @@ def _forward():
 def test_the_update_adds_the_adjustment_to_the_current_weight():
     # eq 10.13: w(t+1) = w(t) + Delta w
     from morie.fn.msm250 import mvsml_ann_output_delta as delta
+
     step = delta(X, Y, W, eta=0.1)["delta_w"][0]
     res = mvsml_reproducing_kernel_eq_10_13(X, Y, W, eta=0.1)
-    assert list(res["W"][1][0]) == pytest.approx(
-        [W[1][0][j] + step[j] for j in range(2)], rel=1e-9)
+    assert list(res["W"][1][0]) == pytest.approx([W[1][0][j] + step[j] for j in range(2)], rel=1e-9)
 
 
 def test_a_zero_learning_rate_leaves_every_weight_where_it_was():
@@ -46,6 +45,7 @@ def test_a_zero_learning_rate_leaves_every_weight_where_it_was():
 
 def test_one_step_of_descent_lowers_the_loss():
     from morie.fn.msm246 import mvsml_ann_gradient as grad
+
     before = grad(X, Y, W, eta=0.1)["loss"]
     res = mvsml_reproducing_kernel_eq_10_13(X, Y, W, eta=0.1)
     assert res["loss"] < before
@@ -53,6 +53,6 @@ def test_one_step_of_descent_lowers_the_loss():
 
 def test_the_history_records_the_loss_before_the_step():
     from morie.fn.msm246 import mvsml_ann_gradient as grad
+
     res = mvsml_reproducing_kernel_eq_10_13(X, Y, W, eta=0.1)
-    assert res["history"][0] == pytest.approx(
-        grad(X, Y, W, eta=0.1)["loss"], rel=1e-12)
+    assert res["history"][0] == pytest.approx(grad(X, Y, W, eta=0.1)["loss"], rel=1e-12)

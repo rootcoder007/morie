@@ -75,7 +75,7 @@ you'd typically hit the GeoJSON variant via \code{sf::st_read()}
 yourself rather than going through this loader).
 }
 \examples{
-\dontshow{if (morie_has("chicago_police_districts.csv")) withAutoprint(\{ # examplesIf}
+\dontshow{if (morie_has("data:chicago_police_districts.csv")) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_police_districts(offline = TRUE)
 head(df)
 \dontshow{\}) # examplesIf}

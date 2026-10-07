@@ -70,8 +70,7 @@ def thiessen_polygons(coords, bbox=None, values=None):
         ys = [P[i][1] for i in range(n)]
         mx = (max(xs) - min(xs)) or 1.0
         my = (max(ys) - min(ys)) or 1.0
-        bbox = [min(xs) - 0.5 * mx, min(ys) - 0.5 * my,
-                max(xs) + 0.5 * mx, max(ys) + 0.5 * my]
+        bbox = [min(xs) - 0.5 * mx, min(ys) - 0.5 * my, max(xs) + 0.5 * mx, max(ys) + 0.5 * my]
     x0, y0, x1, y1 = [float(v) for v in bbox]
     areas = []
     cells = []

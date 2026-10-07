@@ -23,8 +23,7 @@ def cosine(a, b):
 
 def test_the_papers_where_example():
     """Sec. 3.2 prints this decomposition; it must match exactly."""
-    assert subwords("where", 3, 3) == ["<wh", "whe", "her", "ere",
-                                       "re>", "<where>"]
+    assert subwords("where", 3, 3) == ["<wh", "whe", "her", "ere", "re>", "<where>"]
 
 
 def test_boundaries_separate_prefix_from_interior():
@@ -36,13 +35,11 @@ def test_boundaries_separate_prefix_from_interior():
     assert "<her>" in subwords("her", 3, 3)
     assert "<her>" not in subwords("where", 3, 3)
     # dropping the boundaries merges them
-    assert subwords("where", 3, 3, boundary=False) == [
-        "whe", "her", "ere", "where"]
+    assert subwords("where", 3, 3, boundary=False) == ["whe", "her", "ere", "where"]
 
 
 def test_ngram_range_is_inclusive():
-    lens = set(len(g) for g in
-               subwords("abcdefgh", 3, 6, whole_word=False))
+    lens = set(len(g) for g in subwords("abcdefgh", 3, 6, whole_word=False))
     assert lens == {3, 4, 5, 6}
     with pytest.raises(ValueError):
         subwords("x", 4, 2)
@@ -60,8 +57,7 @@ def test_out_of_vocabulary_words_get_vectors():
     f = fasttext(DOCS, dim=12, epochs=4, seed=1)
     v = f["oov"]("catt")
     assert any(abs(t) > 1e-12 for t in v)
-    assert (cosine(v, f["vectors"][f["index"]["cat"]])
-            > cosine(v, f["vectors"][f["index"]["far"]]))
+    assert cosine(v, f["vectors"][f["index"]["cat"]]) > cosine(v, f["vectors"][f["index"]["far"]])
 
 
 def test_a_word_sharing_nothing_gets_exact_zero():

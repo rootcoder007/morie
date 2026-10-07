@@ -99,8 +99,7 @@ def geron_gan_minimax(real, fake, D_real, D_fake, eps=1e-12):
 
     return RichResult(
         title="GAN minimax objective",
-        summary_lines=[("V(D, G)", value), ("D loss", d_loss),
-                       ("G loss (non-sat)", g_nonsat)],
+        summary_lines=[("V(D, G)", value), ("D loss", d_loss), ("G loss (non-sat)", g_nonsat)],
         payload={
             "value": value,
             "d_loss": d_loss,

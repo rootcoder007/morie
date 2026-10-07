@@ -3,9 +3,9 @@
 Gibbons & Chakraborti 5e, Ch 14 (Analysis of Count Data).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ordct import ordered_categories as oc
 
 

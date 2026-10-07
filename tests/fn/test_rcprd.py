@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcprd -- predicted choice."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rcprd import predicted_choice, rcprd
 
 

@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.vaeCF import vae_cf
 
-
 R = [[1, 0, 2, 0, 1, 0], [0, 1, 0, 0, 3, 1], [2, 2, 0, 1, 0, 0], [0, 0, 1, 1, 1, 0]]
 
 
@@ -16,9 +15,9 @@ def test_vaeCF_basic():
     KL term is the Gaussian closed form 1/2 sum(mu^2 + exp(logvar) - 1 -
     logvar) at the encoder's own mu, logvar; ELBO = loglik - beta KL."""
     r = vae_cf(R, K=2, latent_dim=2, beta=0.3, w_scale=0.0)
-    I = 6
+    I_ = 6
     for u, row in enumerate(R):
-        assert r["loglik_per_user"][u] == pytest.approx(sum(row) * math.log(1 / I), abs=1e-12)
+        assert r["loglik_per_user"][u] == pytest.approx(sum(row) * math.log(1 / I_), abs=1e-12)
         mu, lv = r["mu"][u], r["logvar"][u]
         kl = 0.5 * sum(m * m + math.exp(v) - 1 - v for m, v in zip(mu, lv))
         assert r["kl_per_user"][u] == pytest.approx(kl, abs=1e-12)

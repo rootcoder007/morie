@@ -1,7 +1,9 @@
 """Tests for btnpqr.boot_quantile_regression."""
 
 import math
+
 import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.btnpqr import boot_quantile_regression
 
@@ -18,8 +20,18 @@ def test_btnpqr_basic():
     result = boot_quantile_regression(X, y, tau=tau, B=B, alpha=alpha, seed=seed)
     assert isinstance(result, dict)
     expected_keys = (
-        "beta_b", "beta_hat", "se", "lo", "hi", "loss",
-        "tau", "n", "p", "B", "estimate", "method",
+        "beta_b",
+        "beta_hat",
+        "se",
+        "lo",
+        "hi",
+        "loss",
+        "tau",
+        "n",
+        "p",
+        "B",
+        "estimate",
+        "method",
     )
     for key in expected_keys:
         assert key in result

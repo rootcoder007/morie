@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grqpi import geron_action_value_function
 
 
@@ -23,18 +22,13 @@ def test_grqpi_basic():
     # repeat used by policy_evaluation only supports axis=0 broadcast.
     # Constant per-(s,a) reward, broadcast over next-state axis.
     base_rewards = rng.normal(0, 1, (S, A))
-    rewards = [
-        [[base_rewards[s][a] for _ in range(S)] for a in range(A)]
-        for s in range(S)
-    ]
+    rewards = [[[base_rewards[s][a] for _ in range(S)] for a in range(A)] for s in range(S)]
     # deterministic policy shape (S,)
     policy = [int(rng.integers(0, A)) for _ in range(S)]
     state = 0
     action = 0
     gamma = 0.9
-    result = geron_action_value_function(
-        state, action, policy, transitions, rewards, gamma
-    )
+    result = geron_action_value_function(state, action, policy, transitions, rewards, gamma)
     assert isinstance(result, dict)
     assert "q_value" in result
     assert "q_values" in result
@@ -64,9 +58,7 @@ def test_grqpi_edge():
     state = 0
     action = 1
     gamma = 0.5
-    result = geron_action_value_function(
-        state, action, policy, transitions, rewards, gamma
-    )
+    result = geron_action_value_function(state, action, policy, transitions, rewards, gamma)
     assert isinstance(result, dict)
     assert "q_value" in result
     assert "q_values" in result

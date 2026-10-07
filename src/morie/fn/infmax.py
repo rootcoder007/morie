@@ -65,12 +65,10 @@ Donsker-Varadhan estimator being replaced.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["softplus", "jsd_estimator", "dv_estimator",
-           "global_objective", "local_objective"]
+__all__ = ["softplus", "jsd_estimator", "dv_estimator", "global_objective", "local_objective"]
 
 _EPS = 1e-12
 
@@ -78,8 +76,7 @@ _EPS = 1e-12
 def softplus(z):
     r""":math:`\log(1+e^z)`, computed without overflowing."""
     v = float(z)
-    return v + math.log1p(math.exp(-v)) if v > 0 else \
-        math.log1p(math.exp(v))
+    return v + math.log1p(math.exp(-v)) if v > 0 else math.log1p(math.exp(v))
 
 
 def jsd_estimator(joint_scores, marginal_scores):
@@ -92,13 +89,16 @@ def jsd_estimator(joint_scores, marginal_scores):
     J = [float(v) for v in k.vec(joint_scores)]
     M = [float(v) for v in k.vec(marginal_scores)]
     if not J or not M:
-        raise ValueError("infmax: both joint and marginal samples "
-                         "are needed")
+        raise ValueError("infmax: both joint and marginal samples are needed")
     pos = sum(-softplus(-v) for v in J) / len(J)
     neg = sum(softplus(v) for v in M) / len(M)
-    return {"estimate": pos - neg, "positive": pos, "negative": neg,
-            "bounded": True,
-            "note": "each term is bounded by construction"}
+    return {
+        "estimate": pos - neg,
+        "positive": pos,
+        "negative": neg,
+        "bounded": True,
+        "note": "each term is bounded by construction",
+    }
 
 
 def dv_estimator(joint_scores, marginal_scores):
@@ -112,21 +112,21 @@ def dv_estimator(joint_scores, marginal_scores):
     J = [float(v) for v in k.vec(joint_scores)]
     M = [float(v) for v in k.vec(marginal_scores)]
     if not J or not M:
-        raise ValueError("infmax: both joint and marginal samples "
-                         "are needed")
+        raise ValueError("infmax: both joint and marginal samples are needed")
     mx = max(M)
     lse = mx + math.log(sum(math.exp(v - mx) for v in M) / len(M))
     mean_m = sum(M) / len(M)
     var = sum((v - mean_m) ** 2 for v in M) / max(len(M) - 1, 1)
-    return {"estimate": sum(J) / len(J) - lse,
-            "log_sum_exp": lse, "negative_variance": var,
-            "bounded": False,
-            "note": "unbounded above; large scores dominate the "
-                    "log-mean-exp"}
+    return {
+        "estimate": sum(J) / len(J) - lse,
+        "log_sum_exp": lse,
+        "negative_variance": var,
+        "bounded": False,
+        "note": "unbounded above; large scores dominate the log-mean-exp",
+    }
 
 
-def global_objective(global_features, feature_maps, critic,
-                     estimator="jsd"):
+def global_objective(global_features, feature_maps, critic, estimator="jsd"):
     r"""MI between the global vector and the WHOLE feature map.
 
     Invariant to any invertible transformation of the map, which is
@@ -137,24 +137,23 @@ def global_objective(global_features, feature_maps, critic,
     F = [[float(v) for v in k.vec(m)] for m in feature_maps]
     n = len(G)
     if len(F) != n:
-        raise ValueError("infmax: %d globals but %d feature maps"
-                         % (n, len(F)))
+        raise ValueError(f"infmax: {int(n)} globals but {int(len(F))} feature maps")
     if n < 2:
-        raise ValueError("infmax: negatives come from other examples "
-                         "in the batch, so at least 2 are needed")
+        raise ValueError("infmax: negatives come from other examples in the batch, so at least 2 are needed")
     joint = [float(critic(G[i], F[i])) for i in range(n)]
-    marg = [float(critic(G[i], F[j])) for i in range(n)
-            for j in range(n) if i != j]
-    est = (jsd_estimator if estimator == "jsd" else dv_estimator)
+    marg = [float(critic(G[i], F[j])) for i in range(n) for j in range(n) if i != j]
+    est = jsd_estimator if estimator == "jsd" else dv_estimator
     r = est(joint, marg)
-    return {"objective": r["estimate"], "estimator": estimator,
-            "n_positive": len(joint), "n_negative": len(marg),
-            "note": "one score per image; the spatial structure is "
-                    "discarded"}
+    return {
+        "objective": r["estimate"],
+        "estimator": estimator,
+        "n_positive": len(joint),
+        "n_negative": len(marg),
+        "note": "one score per image; the spatial structure is discarded",
+    }
 
 
-def local_objective(global_features, feature_maps, critic,
-                    estimator="jsd"):
+def local_objective(global_features, feature_maps, critic, estimator="jsd"):
     r"""MI between the global vector and EACH LOCAL patch, averaged.
 
     A feature that explains one patch of noise scores nothing here,
@@ -163,49 +162,51 @@ def local_objective(global_features, feature_maps, critic,
     features.
     """
     G = [[float(v) for v in r] for r in k.mat(global_features)]
-    M = [[[float(v) for v in k.vec(p)] for p in m]
-         for m in feature_maps]
+    M = [[[float(v) for v in k.vec(p)] for p in m] for m in feature_maps]
     n = len(G)
     if len(M) != n:
-        raise ValueError("infmax: %d globals but %d feature maps"
-                         % (n, len(M)))
+        raise ValueError(f"infmax: {int(n)} globals but {int(len(M))} feature maps")
     if n < 2:
-        raise ValueError("infmax: at least 2 examples are needed for "
-                         "negatives")
+        raise ValueError("infmax: at least 2 examples are needed for negatives")
     L = len(M[0])
     if any(len(m) != L for m in M):
-        raise ValueError("infmax: the feature maps have differing "
-                         "numbers of locations")
+        raise ValueError("infmax: the feature maps have differing numbers of locations")
     joint, marg = [], []
     for i in range(n):
-        for l in range(L):
-            joint.append(float(critic(G[i], M[i][l])))
+        for ell in range(L):
+            joint.append(float(critic(G[i], M[i][ell])))
             for j in range(n):
                 if j != i:
-                    marg.append(float(critic(G[i], M[j][l])))
-    est = (jsd_estimator if estimator == "jsd" else dv_estimator)
+                    marg.append(float(critic(G[i], M[j][ell])))
+    est = jsd_estimator if estimator == "jsd" else dv_estimator
     r = est(joint, marg)
-    return RichResult(payload={
-        "estimate": r["estimate"], "objective": r["estimate"],
-        "estimator": estimator, "n_locations": L,
-        "n_positive": len(joint), "n_negative": len(marg),
-        "method": "Deep InfoMax local objective; Hjelm et al. (2019)",
-        "note": "the global feature predicts ALL locations at once, "
-                "with ONE estimator and no autoregression",
-    })
+    return RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "objective": r["estimate"],
+            "estimator": estimator,
+            "n_locations": L,
+            "n_positive": len(joint),
+            "n_negative": len(marg),
+            "method": "Deep InfoMax local objective; Hjelm et al. (2019)",
+            "note": "the global feature predicts ALL locations at once, with ONE estimator and no autoregression",
+        }
+    )
 
 
 def cheatsheet():
-    return ("infmax: maximising MI between input and representation is "
-            "a bad objective alone -- MI is invariant to invertible "
-            "maps, so memorising noise scores as well as capturing "
-            "content. Measure it LOCALLY instead: between the global "
-            "summary and each patch of the feature map, so a feature "
-            "must pay off at many locations. Use the JENSEN-SHANNON "
-            "estimator, -sp(-T) minus sp(T), which is BOUNDED, rather "
-            "than Donsker-Varadhan, whose expectation sits inside a "
-            "log and whose variance explodes. Unlike CPC there is ONE "
-            "global feature, ONE estimator, and no autoregression.")
+    return (
+        "infmax: maximising MI between input and representation is "
+        "a bad objective alone -- MI is invariant to invertible "
+        "maps, so memorising noise scores as well as capturing "
+        "content. Measure it LOCALLY instead: between the global "
+        "summary and each patch of the feature map, so a feature "
+        "must pay off at many locations. Use the JENSEN-SHANNON "
+        "estimator, -sp(-T) minus sp(T), which is BOUNDED, rather "
+        "than Donsker-Varadhan, whose expectation sits inside a "
+        "log and whose variance explodes. Unlike CPC there is ONE "
+        "global feature, ONE estimator, and no autoregression."
+    )
 
 
 # compact alias per ledger/NAMING.md

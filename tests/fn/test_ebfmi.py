@@ -1,7 +1,6 @@
 """Tests for ebfmi.energy_bayesian_fmi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ebfmi import energy_bayesian_fmi
 
 
@@ -11,6 +10,8 @@ def test_ebfmi_basic():
     result = energy_bayesian_fmi(chains)
     assert isinstance(result, dict)
     assert "ebfmi" in result
+
+
 def test_ebfmi_edge():
     """Test edge cases."""
     chains = np.random.default_rng(42).normal(0, 1, 100)

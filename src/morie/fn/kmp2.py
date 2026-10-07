@@ -40,44 +40,45 @@ def kamath_p_tuning_v2(prefixes_by_layer, inputs_by_layer):
         raise ValueError("no prefixes supplied.")
     if len(pre) != len(inp):
         raise ValueError(
-            f"{len(pre)} prefix layers for {len(inp)} input layers; "
-            "p-tuning v2 needs one prefix per layer.")
+            f"{len(pre)} prefix layers for {len(inp)} input layers; p-tuning v2 needs one prefix per layer."
+        )
     Ks, Vs, plens = [], [], []
     trainable = 0
-    for l, (p_pair, i_pair) in enumerate(zip(pre, inp)):
+    for ell, (p_pair, i_pair) in enumerate(zip(pre, inp)):
         if len(p_pair) != 2 or len(i_pair) != 2:
-            raise ValueError(
-                f"layer {l}: expected (K, V) pairs on both sides.")
+            raise ValueError(f"layer {ell}: expected (K, V) pairs on both sides.")
         PK = np.atleast_2d(np.asarray(p_pair[0], dtype=float))
         PV = np.atleast_2d(np.asarray(p_pair[1], dtype=float))
         K = np.atleast_2d(np.asarray(i_pair[0], dtype=float))
         V = np.atleast_2d(np.asarray(i_pair[1], dtype=float))
         if PK.shape[0] != PV.shape[0]:
             raise ValueError(
-                f"layer {l}: the key prefix has {PK.shape[0]} rows and "
+                f"layer {ell}: the key prefix has {PK.shape[0]} rows and "
                 f"the value prefix {PV.shape[0]}; they are the same "
-                "virtual tokens.")
+                "virtual tokens."
+            )
         if K.shape[0] != V.shape[0]:
-            raise ValueError(
-                f"layer {l}: {K.shape[0]} input keys but {V.shape[0]} "
-                "input values.")
+            raise ValueError(f"layer {ell}: {K.shape[0]} input keys but {V.shape[0]} input values.")
         if PK.shape[1] != K.shape[1]:
-            raise ValueError(
-                f"layer {l}: key prefix width {PK.shape[1]} != input key "
-                f"width {K.shape[1]}.")
+            raise ValueError(f"layer {ell}: key prefix width {PK.shape[1]} != input key width {K.shape[1]}.")
         if PV.shape[1] != V.shape[1]:
-            raise ValueError(
-                f"layer {l}: value prefix width {PV.shape[1]} != input "
-                f"value width {V.shape[1]}.")
+            raise ValueError(f"layer {ell}: value prefix width {PV.shape[1]} != input value width {V.shape[1]}.")
         Ks.append([[float(v) for v in row] for row in np.vstack([PK, K])])
         Vs.append([[float(v) for v in row] for row in np.vstack([PV, V])])
         plens.append(int(PK.shape[0]))
         trainable += int(PK.size + PV.size)
-    return RichResult(payload={
-        "K": Ks, "V": Vs, "prefix_len": plens,
-        "n_layers": len(pre), "n_trainable": trainable,
-        "estimate": trainable, "n": len(pre),
-        "method": "P-tuning v2 deep prefix concatenation"})
+    return RichResult(
+        payload={
+            "K": Ks,
+            "V": Vs,
+            "prefix_len": plens,
+            "n_layers": len(pre),
+            "n_trainable": trainable,
+            "estimate": trainable,
+            "n": len(pre),
+            "method": "P-tuning v2 deep prefix concatenation",
+        }
+    )
 
 
 def cheatsheet():

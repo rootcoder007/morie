@@ -5,9 +5,6 @@ Implements Appendix A of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP (appendices).
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,9 +22,9 @@ def ghosal_prohorov_metric(p, q):
     tv = 0.5 * sum(abs(a - b) for a, b in zip(p, q))
     # on a common finite support with separation > eps: d_P = min(tv,
     # largest eps needed) -- for same-support case d_P <= tv
-    res = RichResult(payload={"estimate": tv,
-                              "upper_bound_by_tv": True,
-                              "method": "Prohorov metric bound (GvdV 2017 App A)"})
+    res = RichResult(
+        payload={"estimate": tv, "upper_bound_by_tv": True, "method": "Prohorov metric bound (GvdV 2017 App A)"}
+    )
     return with_describe_pointer(res, "gh_ap_a2")
 
 

@@ -65,14 +65,20 @@ def mznstep(rewards, values, n=5, gamma=0.997):
         s = 0.0
         for j in range(n):
             if t + j < T:
-                s += (g ** j) * u[t + j]
+                s += (g**j) * u[t + j]
         if t + n < T:
-            s += (g ** n) * v[t + n]
+            s += (g**n) * v[t + n]
         z.append(s)
-    return RichResult(payload={
-        "target": z, "T": T, "n": n, "gamma": g,
-        "mean": sum(z) / T if T else float("nan"),
-        "method": "MuZero n-step value target (Schrittwieser et al. 2020)"})
+    return RichResult(
+        payload={
+            "target": z,
+            "T": T,
+            "n": n,
+            "gamma": g,
+            "mean": sum(z) / T if T else float("nan"),
+            "method": "MuZero n-step value target (Schrittwieser et al. 2020)",
+        }
+    )
 
 
 muzero_n_step_value = mznstep

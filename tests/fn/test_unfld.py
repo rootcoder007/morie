@@ -1,7 +1,6 @@
 """Tests for morie.fn.unfld — Unfolding model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.unfld import unfld
 
 

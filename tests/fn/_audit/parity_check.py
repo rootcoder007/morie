@@ -100,14 +100,12 @@ def stale_wrapper_claims(tree: pathlib.Path):
     out = []
     for p in sorted(tree.glob("*.R")):
         text = p.read_text(errors="replace")
-        code = "\n".join(l for l in text.splitlines()
-                         if not l.strip().startswith("#"))
+        code = "\n".join(ell for ell in text.splitlines() if not ell.strip().startswith("#"))
         for lineno, line in enumerate(text.splitlines(), 1):
             if not _CLAIM.search(line):
                 continue
             named = {g for t in _PKGREF.findall(line) for g in t if g}
-            live = {n for n in named
-                    if re.search(rf'["\']{re.escape(n)}["\']|{re.escape(n)}::', code)}
+            live = {n for n in named if re.search(rf'["\']{re.escape(n)}["\']|{re.escape(n)}::', code)}
             if named and not live:
                 out.append((p.name, lineno, sorted(named), line.strip()))
     return out
@@ -115,10 +113,8 @@ def stale_wrapper_claims(tree: pathlib.Path):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--strict", action="store_true",
-                    help="exit 1 if the two R trees have drifted")
-    ap.add_argument("--wrappers", action="store_true",
-                    help="report roxygen claiming delegation the code cannot do")
+    ap.add_argument("--strict", action="store_true", help="exit 1 if the two R trees have drifted")
+    ap.add_argument("--wrappers", action="store_true", help="report roxygen claiming delegation the code cannot do")
     args = ap.parse_args()
 
     if args.wrappers:
@@ -141,8 +137,7 @@ def main() -> int:
         return 0
     drifted, _, _ = audit()
     if args.strict and drifted:
-        print(f"\nFAIL: {len(drifted)} module(s) differ between the two R trees.",
-              file=sys.stderr)
+        print(f"\nFAIL: {len(drifted)} module(s) differ between the two R trees.", file=sys.stderr)
         return 1
     return 0
 

@@ -1,7 +1,6 @@
 """Tests for vdisc -- discriminant validity (HTMT)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.vdisc import discriminant_validity
 

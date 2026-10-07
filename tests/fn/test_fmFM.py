@@ -1,7 +1,6 @@
 """Tests for fmFM.factorization_machines."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fmFM import factorization_machines
 
 

@@ -16,15 +16,16 @@ Sequence-Level Metrics
 
 .. code-block:: python
 
-   from morie.fn import gc, maf, hw
+   from morie.fn import gc_content_calc, maf_calculation, hardy_weinberg_test
+   from morie.fn import _array_core as np
 
-   gc_ratio = gc("ATGCGCTATGCGC")
-   print(f"GC content: {gc_ratio:.3f}")   # 0.615
+   gc = gc_content_calc("ATGCGCTATGCGC")
+   print(f"GC content: {gc.estimate:.3f}")   # 0.615
 
-   freq = maf(genotypes=[0, 0, 1, 1, 2, 0, 1])
-   print(f"MAF: {freq:.3f}")
+   markers = np.array([[0, 1, 2], [1, 1, 0], [2, 0, 1], [0, 1, 1]])   # individuals x SNPs, 0/1/2 copies
+   print(maf_calculation(markers))
 
-   hwe = hw(observed=[45, 40, 15])  # AA, Aa, aa counts
+   hwe = hardy_weinberg_test(45, 40, 15)   # AA, Aa, aa counts
    print(f"HWE chi2={hwe.statistic:.2f}, p={hwe.p_value:.4f}")
 
 Population Differentiation
@@ -35,15 +36,10 @@ Population Differentiation
 
 .. code-block:: python
 
-   from morie.fn import fst, tajd
+   from morie.fn import tajimas_d
 
-   result = fst(allele_freqs_pop1, allele_freqs_pop2,
-                n_pop1=100, n_pop2=120)
-   print(f"Fst = {result.statistic:.4f}")
-
-   taj = tajd(segregating_sites=42, n_sequences=50,
-              pairwise_diffs=18.5)
-   print(f"Tajima's D = {taj.statistic:.3f}, p = {taj.p_value:.4f}")
+   taj = tajimas_d(S=42, n=50, pi=18.5)   # segregating sites, sequences, mean pairwise differences
+   print(f"Tajima's D = {taj.statistic:.3f}")
 
 Linkage Disequilibrium
 ----------------------
@@ -53,10 +49,11 @@ Linkage Disequilibrium
 
 .. code-block:: python
 
-   from morie.fn import ld
+   from morie.fn import linkage_disequilibrium
 
-   result = ld(genotypes_snp1, genotypes_snp2)
-   print(f"D' = {result.d_prime:.3f}, r2 = {result.r_squared:.3f}")
+   # haplotype alleles (0/1) at two loci, one entry per chromosome
+   result = linkage_disequilibrium([0, 0, 1, 1, 1, 0, 1, 1], [0, 1, 1, 1, 1, 0, 1, 0])
+   print(f"r2 = {result.statistic:.3f}")
 
 Genome-Wide Association Studies
 -------------------------------
@@ -66,15 +63,14 @@ Genome-Wide Association Studies
 
 .. code-block:: python
 
-   from morie.fn import gwas, prs
+   from morie.fn import gwas_single_snp
+   from morie.fn import _array_core as np
 
-   results = gwas(genotype_matrix, phenotype, covariates=None,
-                  model="linear", correction="bonferroni")
-   sig = results[results["p_adj"] < 0.05]
-   print(f"Significant SNPs: {len(sig)}")
-
-   scores = prs(genotypes, effect_sizes, risk_alleles)
-   print(f"Mean PRS: {scores.mean():.3f}")
+   genotypes = np.array([0, 1, 2, 1, 0, 2, 1, 1, 0, 2])
+   phenotype = np.array([1.2, 1.9, 3.1, 2.2, 0.8, 2.9, 1.7, 2.3, 1.1, 3.0])
+   hit = gwas_single_snp(genotypes, phenotype)   # additive linear model, one SNP
+   print(f"beta = {hit.extra['beta']:.3f}, p = {hit.p_value:.2e}")
+   # prs_cs(beta_hat, D, psi, n) gives continuous-shrinkage polygenic effects from summary statistics
 
 **GWAS pipeline:**
 

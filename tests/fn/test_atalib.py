@@ -1,8 +1,6 @@
 """Tests for atalib.alibi_position_bias."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.atalib import alibi_position_bias
 
 
@@ -52,7 +50,7 @@ def test_atalib_basic():
 
     # Cross-check the first head output against a plain-numpy computation
     # built from the same formula: softmax(QK'/sqrt(d) + B) V.
-    sc = 1.0 / (d ** 0.5)
+    sc = 1.0 / (d**0.5)
     Qp = Q.tolist()
     Kp = K.tolist()
     Vp = V.tolist()

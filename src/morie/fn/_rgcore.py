@@ -45,8 +45,7 @@ def aslistc(x):
     if hasattr(x, "tolist"):
         x = x.tolist()
     try:
-        return [v if isinstance(v, complex) else complex(float(v))
-                for v in x]
+        return [v if isinstance(v, complex) else complex(float(v)) for v in x]
     except TypeError:
         try:
             iter(x)
@@ -66,10 +65,7 @@ def gridint(y, x=None):
     n = len(y)
     if n < 2:
         raise ValueError("need at least two grid points")
-    if x is None:
-        x = [float(i) for i in range(n)]
-    else:
-        x = aslist(x)
+    x = [float(i) for i in range(n)] if x is None else aslist(x)
     if len(x) != n:
         raise ValueError("x and y must have the same length")
     h = [x[i + 1] - x[i] for i in range(n - 1)]
@@ -93,10 +89,7 @@ def pdfint(f, pdf=None, x=None, lower=-inf, upper=inf):
     """
     if x is not None:
         xs = aslist(x)
-        if callable(pdf):
-            ps = [float(pdf(v)) for v in xs]
-        else:
-            ps = aslist(pdf)
+        ps = [float(pdf(v)) for v in xs] if callable(pdf) else aslist(pdf)
         if len(ps) != len(xs):
             raise ValueError("pdf and x must have the same length")
         return gridint([f(v) * p for v, p in zip(xs, ps)], xs)

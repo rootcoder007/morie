@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -87,7 +85,7 @@ def slope_one(R, u, i):
 
     def rated(a, b):
         v = M[a][b]
-        return not (v != v)  # NaN check without importing math.isnan on lists
+        return v == v  # NaN check without importing math.isnan on lists
 
     rated_items = [b for b in range(ni) if b != i and rated(u, b)]
     own = [M[u][b] for b in range(ni) if rated(u, b)]

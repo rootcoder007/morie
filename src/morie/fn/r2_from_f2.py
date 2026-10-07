@@ -28,20 +28,19 @@ def r2_from_f2(f2):
     """
     value = _ca_crim.r2_from_f2(f2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.7)"
     return RichResult(
-        title='Proportion of variance R^2 = f^2 / (1 + f^2)',
+        title="Proportion of variance R^2 = f^2 / (1 + f^2)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca8e7: R^2 = f^2 / (1 + f^2) [Weisburd et al. 2022, eq. 8.7]'
+    return "ca8e7: R^2 = f^2 / (1 + f^2) [Weisburd et al. 2022, eq. 8.7]"
 
 
 # compact alias per ledger/NAMING.md

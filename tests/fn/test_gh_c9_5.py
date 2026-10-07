@@ -1,7 +1,6 @@
 """Tests for gh_c9_5.ghosal_norm_mix_apx."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c9_5 import ghosal_norm_mix_apx
 
 
@@ -50,9 +49,7 @@ def test_gh_c9_5_basic():
             t = grid[j]
             z = (x - t) / s
             conv += p0(t) * (2.5066282746310002 * inv_sqrt2pi) * 0.0
-            conv += p0(t) * (1.0 / (s * (2.0 * 3.141592653589793) ** 0.5)) * (
-                2.718281828459045 ** (-0.5 * z * z)
-            )
+            conv += p0(t) * (1.0 / (s * (2.0 * 3.141592653589793) ** 0.5)) * (2.718281828459045 ** (-0.5 * z * z))
         conv /= n_quad
         gap_indep += abs(conv - p0(x)) * 2.0 / n_int_local
 

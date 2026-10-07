@@ -1,7 +1,6 @@
 """Test eog_detect (eogdt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.eogdt import eog_detect, eogdt
 

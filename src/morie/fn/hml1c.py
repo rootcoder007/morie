@@ -101,9 +101,7 @@ def geron_one_cycle(t, T, lr_max, lr_min, mom_max=0.95, mom_min=0.85):
             ("Momentum", float(inner["momentum_schedule"][t_int])),
             ("Phase", phase),
         ],
-        interpretation=(
-            "Momentum is the mirror image of the learning rate: it dips exactly where the rate peaks."
-        ),
+        interpretation=("Momentum is the mirror image of the learning rate: it dips exactly where the rate peaks."),
         payload={
             "lr": float(inner["lr_schedule"][t_int]),
             "momentum": float(inner["momentum_schedule"][t_int]),

@@ -39,7 +39,7 @@ def grover_search(oracle, N):
         if v not in (0, 1):
             raise ValueError("grover_search: oracle entries must be 0 or 1")
     M = sum(mark)
-    if M == 0 or M == n:
+    if M == 0 or n == M:
         raise ValueError("grover_search: need at least one marked and one unmarked item")
     theta = math.asin(math.sqrt(M / float(n)))
     kopt = int(math.floor(math.pi / (4.0 * theta) - 0.5 + 0.5))

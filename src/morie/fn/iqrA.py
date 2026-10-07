@@ -12,10 +12,12 @@ def _hinges(x):
     x = sorted(x)
     n = len(x)
     n4 = math_floor((n + 3) / 2.0) / 2.0
+
     def at(d):
         lo = int(math_floor(d)) - 1
         hi = int(math_ceil(d)) - 1
         return 0.5 * (x[lo] + x[hi])
+
     return at(n4), at(n + 1 - n4)
 
 
@@ -67,10 +69,18 @@ def iqr_outlier(x, k=1.5):
     hi = hu + k * spread
     flags = [1.0 if (t < lo or t > hi) else 0.0 for t in v]
     nout = int(sum(flags))
-    return RichResult(payload={
-        "estimate": nout / n, "n_out": nout, "lower": lo, "upper": hi,
-        "iqr": spread, "flags": flags, "n": n,
-        "method": "Tukey fences on the hinges"})
+    return RichResult(
+        payload={
+            "estimate": nout / n,
+            "n_out": nout,
+            "lower": lo,
+            "upper": hi,
+            "iqr": spread,
+            "flags": flags,
+            "n": n,
+            "method": "Tukey fences on the hinges",
+        }
+    )
 
 
 iqroutlier = iqr_outlier

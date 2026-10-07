@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -22,12 +21,14 @@ def ghosal_cox_model(beta=0.7, z=(0.0, 1.0), t=1.0, c=2.0):
     zs = _bnp._flat(z)
     H = [t * math.exp(beta * zi) for zi in zs]
     ratio = H[1] / H[0]
-    res = RichResult(payload={"estimate": ratio,
-                              "cum_hazards": H,
-                              "proportional": abs(ratio
-                                                  - math.exp(beta))
-                              < 1e-12,
-                              "method": "Cox with BP baseline (GvdV 2017 sec. 13.6)"})
+    res = RichResult(
+        payload={
+            "estimate": ratio,
+            "cum_hazards": H,
+            "proportional": abs(ratio - math.exp(beta)) < 1e-12,
+            "method": "Cox with BP baseline (GvdV 2017 sec. 13.6)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_13")
 
 

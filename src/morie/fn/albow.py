@@ -37,11 +37,16 @@ def alammar_bag_of_words(tokens, vocab):
             bow[idx[t]] += 1
         else:
             oov += 1
-    return RichResult(payload={
-        "bow_vector": bow, "oov_count": oov,
-        "estimate": float(bow[0]), "vocab_size": len(voc),
-        "n": len(toks),
-        "method": "Bag-of-words counts over a fixed vocabulary (Alammar Ch 1)"})
+    return RichResult(
+        payload={
+            "bow_vector": bow,
+            "oov_count": oov,
+            "estimate": float(bow[0]),
+            "vocab_size": len(voc),
+            "n": len(toks),
+            "method": "Bag-of-words counts over a fixed vocabulary (Alammar Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

@@ -60,13 +60,15 @@ def survival_competing_validation(time, event_type, predicted_F):
                     tied += 1.0
     if comp == 0:
         raise ValueError("no comparable pairs")
-    return RichResult(payload={
-        "estimate": (conc + 0.5 * tied) / comp,
-        "concordant": conc,
-        "tied": tied,
-        "comparable": comp,
-        "method": "Wolbers et al (2014) competing-risks concordance",
-    })
+    return RichResult(
+        payload={
+            "estimate": (conc + 0.5 * tied) / comp,
+            "concordant": conc,
+            "tied": tied,
+            "comparable": comp,
+            "method": "Wolbers et al (2014) competing-risks concordance",
+        }
+    )
 
 
 sscompv = survival_competing_validation

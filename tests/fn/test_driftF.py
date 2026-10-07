@@ -1,7 +1,6 @@
 """Tests for driftF.drift_forecast."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.driftF import drift_forecast
 
 
@@ -11,6 +10,8 @@ def test_driftF_basic():
     result = drift_forecast(y)
     assert isinstance(result, dict)
     assert "forecast" in result
+
+
 def test_driftF_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

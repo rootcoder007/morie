@@ -135,8 +135,7 @@ def _chol(A):
             if i == j:
                 s += jit
                 if s <= 0.0:
-                    raise ValueError("cmlmer: the covariance matrix is not "
-                                     "positive definite")
+                    raise ValueError("cmlmer: the covariance matrix is not positive definite")
                 L[i][i] = math.sqrt(s)
             else:
                 L[i][j] = s / L[j][j]
@@ -184,7 +183,7 @@ def _upgma(K, g):
                     best, bi, bj = d, alive[ai], alive[aj]
         na, nb = len(members[bi]), len(members[bj])
         for c in alive:
-            if c == bi or c == bj:
+            if c in (bi, bj):
                 continue
             nd = _snap12((na * D[bi][c] + nb * D[bj][c]) / (na + nb))
             D[bi][c] = nd
@@ -207,13 +206,11 @@ def _reml_at(logdelta, Vk, y, X):
     n = len(y)
     p = len(X[0])
     delta = math.exp(logdelta)
-    V = [[Vk[i][j] + (delta if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    V = [[Vk[i][j] + (delta if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = _chol(V)
     Viy = _solve(L, y)
     ViX = [_solve(L, [X[i][a] for i in range(n)]) for a in range(p)]
-    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)]
-             for a in range(p)]
+    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
     XtViy = [sum(X[i][a] * Viy[i] for i in range(n)) for a in range(p)]
     Lx = _chol(XtViX)
     beta = _solve(Lx, XtViy)
@@ -222,13 +219,13 @@ def _reml_at(logdelta, Vk, y, X):
     rss = sum(r[i] * Vir[i] for i in range(n))
     dfr = n - p
     s2g = rss / dfr
-    ll = -0.5 * (dfr * math.log(max(s2g, 1e-300)) + _logdet(L)
-                 + _logdet(Lx) + dfr)
+    ll = -0.5 * (dfr * math.log(max(s2g, 1e-300)) + _logdet(L) + _logdet(Lx) + dfr)
     return ll, delta, beta, s2g, L, XtViX
 
 
-def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
-                   log_delta_lo=-10.0, log_delta_hi=10.0, max_iter=200):
+def compressed_lmm(
+    y, M, K, clusters=None, X=None, compare_levels=None, log_delta_lo=-10.0, log_delta_hi=10.0, max_iter=200
+):
     r"""Fit a compressed MLM and scan the markers under it.
 
     Parameters
@@ -257,28 +254,21 @@ def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
         raise ValueError("cmlmer: no observations")
     Km = [[float(v) for v in row] for row in k.mat(K)]
     if len(Km) != n or any(len(r) != n for r in Km):
-        raise ValueError("cmlmer: K must be %d by %d" % (n, n))
-    asym = max(abs(Km[i][j] - Km[j][i])
-               for i in range(n) for j in range(n))
+        raise ValueError(f"cmlmer: K must be {int(n)} by {int(n)}")
+    asym = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
     if asym > 1e-8:
-        raise ValueError("cmlmer: K is not symmetric (largest asymmetry "
-                         "%.3g)" % asym)
-    Mm = ([] if M is None else [[float(v) for v in row]
-                                for row in k.mat(M)]) if M is not None else []
+        raise ValueError(f"cmlmer: K is not symmetric (largest asymmetry {asym:.3g})")
+    Mm = ([] if M is None else [[float(v) for v in row] for row in k.mat(M)]) if M is not None else []
     if Mm and len(Mm) != n:
-        raise ValueError("cmlmer: %d phenotypes but %d marker rows"
-                         % (n, len(Mm)))
+        raise ValueError(f"cmlmer: {int(n)} phenotypes but {int(len(Mm))} marker rows")
     nm = len(Mm[0]) if Mm else 0
-    Xm = ([[1.0] for _ in range(n)] if X is None
-          else [[float(v) for v in row] for row in k.mat(X)])
+    Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     p = len(Xm[0])
     if n - p - 1 < 1:
-        raise ValueError("cmlmer: too few observations for %d fixed effects "
-                         "plus a marker" % p)
+        raise ValueError(f"cmlmer: too few observations for {int(p)} fixed effects plus a marker")
     g = n if clusters is None else int(clusters)
     if g < 1 or g > n:
-        raise ValueError("cmlmer: the number of groups must be between 1 "
-                         "and %d, got %d" % (n, g))
+        raise ValueError(f"cmlmer: the number of groups must be between 1 and {int(n)}, got {int(g)}")
 
     lab, groups = _upgma(Km, g)
     ng = len(groups)
@@ -286,23 +276,20 @@ def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
     Kg = [[0.0] * ng for _ in range(ng)]
     for a in range(ng):
         for b in range(ng):
-            Kg[a][b] = (sum(Km[i][j] for i in groups[a] for j in groups[b])
-                        / (len(groups[a]) * len(groups[b])))
+            Kg[a][b] = sum(Km[i][j] for i in groups[a] for j in groups[b]) / (len(groups[a]) * len(groups[b]))
     # Z Kg Z' -- the compressed covariance written at the sample size
     ZKZ = [[Kg[lab[i]][lab[j]] for j in range(n)] for i in range(n)]
 
     # max_iter is accepted and ignored: the grid schedule fixes the
     # evaluation count, and dropping the argument would break callers.
-    logdelta = _gridmax(lambda t: _reml_at(t, ZKZ, yv, Xm)[0],
-                        log_delta_lo, log_delta_hi)
+    logdelta = _gridmax(lambda t: _reml_at(t, ZKZ, yv, Xm)[0], log_delta_lo, log_delta_hi)
     ll, delta, beta0, s2g, L, _ = _reml_at(logdelta, ZKZ, yv, Xm)
     s2e = delta * s2g
     h2 = s2g / (s2g + s2e)
 
     profile = []
     for t in range(21):
-        lt = (float(log_delta_lo)
-              + (float(log_delta_hi) - float(log_delta_lo)) * t / 20.0)
+        lt = float(log_delta_lo) + (float(log_delta_hi) - float(log_delta_lo)) * t / 20.0
         profile.append([lt, _reml_at(lt, ZKZ, yv, Xm)[0]])
 
     # ---- per-marker GLS test under the fitted covariance
@@ -311,8 +298,7 @@ def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
         Xj = [Xm[i] + [Mm[i][j]] for i in range(n)]
         q = p + 1
         ViX = [_solve(L, [Xj[i][a] for i in range(n)]) for a in range(q)]
-        A = [[sum(Xj[i][a] * ViX[b][i] for i in range(n)) for b in range(q)]
-             for a in range(q)]
+        A = [[sum(Xj[i][a] * ViX[b][i] for i in range(n)) for b in range(q)] for a in range(q)]
         Viy = _solve(L, yv)
         rhs = [sum(Xj[i][a] * Viy[i] for i in range(n)) for a in range(q)]
         try:
@@ -324,8 +310,7 @@ def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
             mp.append(float("nan"))
             continue
         bj = _solve(Lj, rhs)
-        r = [yv[i] - sum(Xj[i][a] * bj[a] for a in range(q))
-             for i in range(n)]
+        r = [yv[i] - sum(Xj[i][a] * bj[a] for a in range(q)) for i in range(n)]
         Vir = _solve(L, r)
         s2 = sum(r[i] * Vir[i] for i in range(n)) / (n - q)
         e = [0.0] * q
@@ -336,59 +321,71 @@ def compressed_lmm(y, M, K, clusters=None, X=None, compare_levels=None,
         mb.append(bj[q - 1])
         mse.append(se)
         mt.append(tj)
-        mp.append(2.0 * (1.0 - k.pnorm(abs(tj))) if tj == tj
-                  else float("nan"))
+        mp.append(2.0 * (1.0 - k.pnorm(abs(tj))) if tj == tj else float("nan"))
 
     levels = []
     if compare_levels:
         for gl in compare_levels:
             gl = int(gl)
             if gl < 1 or gl > n:
-                raise ValueError("cmlmer: compare_levels entry %d is outside "
-                                 "1..%d" % (gl, n))
+                raise ValueError(f"cmlmer: compare_levels entry {int(gl)} is outside 1..{int(n)}")
             lab2, gr2 = _upgma(Km, gl)
             ng2 = len(gr2)
-            Kg2 = [[sum(Km[i][j] for i in gr2[a] for j in gr2[b])
-                    / (len(gr2[a]) * len(gr2[b])) for b in range(ng2)]
-                   for a in range(ng2)]
-            ZKZ2 = [[Kg2[lab2[i]][lab2[j]] for j in range(n)]
-                    for i in range(n)]
+            Kg2 = [
+                [sum(Km[i][j] for i in gr2[a] for j in gr2[b]) / (len(gr2[a]) * len(gr2[b])) for b in range(ng2)]
+                for a in range(ng2)
+            ]
+            ZKZ2 = [[Kg2[lab2[i]][lab2[j]] for j in range(n)] for i in range(n)]
             best = None
             for t in range(41):
-                lt = (float(log_delta_lo)
-                      + (float(log_delta_hi) - float(log_delta_lo))
-                      * t / 40.0)
+                lt = float(log_delta_lo) + (float(log_delta_hi) - float(log_delta_lo)) * t / 40.0
                 v = _reml_at(lt, ZKZ2, yv, Xm)[0]
                 if best is None or v > best:
                     best = v
             levels.append([gl, best])
 
-    return RichResult(payload={
-        "estimate": mb, "beta": mb, "se": mse, "t": mt, "p_value": mp,
-        "group": [float(v) for v in lab], "n_groups": ng,
-        "group_sizes": [len(gr) for gr in groups],
-        "group_kinship": Kg,
-        "coefficients": beta0, "delta": delta,
-        "sigma2_g": s2g, "sigma2_e": s2e, "h2": h2,
-        "reml_loglik": ll, "reml_profile": profile,
-        "level_loglik": levels,
-        "n": n, "n_markers": nm, "p": p, "clusters_requested": g,
-        "method": "compressed mixed linear model: average-linkage grouping "
-                  "on 1 - K, a per-group random effect with the average "
-                  "between-group kinship, the variance ratio profiled out "
-                  "by REML, and a GLS t-test per marker (Zhang et al. 2010; "
-                  "Yu et al. 2006)",
-        "note": "with one group per individual Z is the identity and the "
-                "group kinship is K itself, so the compressed model "
-                "contains the uncompressed one exactly rather than "
-                "approximating it",
-    })
+    return RichResult(
+        payload={
+            "estimate": mb,
+            "beta": mb,
+            "se": mse,
+            "t": mt,
+            "p_value": mp,
+            "group": [float(v) for v in lab],
+            "n_groups": ng,
+            "group_sizes": [len(gr) for gr in groups],
+            "group_kinship": Kg,
+            "coefficients": beta0,
+            "delta": delta,
+            "sigma2_g": s2g,
+            "sigma2_e": s2e,
+            "h2": h2,
+            "reml_loglik": ll,
+            "reml_profile": profile,
+            "level_loglik": levels,
+            "n": n,
+            "n_markers": nm,
+            "p": p,
+            "clusters_requested": g,
+            "method": "compressed mixed linear model: average-linkage grouping "
+            "on 1 - K, a per-group random effect with the average "
+            "between-group kinship, the variance ratio profiled out "
+            "by REML, and a GLS t-test per marker (Zhang et al. 2010; "
+            "Yu et al. 2006)",
+            "note": "with one group per individual Z is the identity and the "
+            "group kinship is K itself, so the compressed model "
+            "contains the uncompressed one exactly rather than "
+            "approximating it",
+        }
+    )
 
 
 def cheatsheet():
-    return ("cmlmer: compressed_lmm(y, M, K, clusters) -> compressed MLM "
-            "genome scan with REML variance components (Zhang et al. 2010, "
-            "Nature Genetics 42:355-360)")
+    return (
+        "cmlmer: compressed_lmm(y, M, K, clusters) -> compressed MLM "
+        "genome scan with REML variance components (Zhang et al. 2010, "
+        "Nature Genetics 42:355-360)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

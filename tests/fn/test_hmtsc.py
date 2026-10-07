@@ -1,4 +1,5 @@
 """Tests for hmtsc.geron_torchscript."""
+
 import doctest as _doctest
 import math
 
@@ -13,8 +14,7 @@ def test_hmtsc_basic():
     example_inputs = [[1.0, -1.0]]
     result = geron_torchscript(model, example_inputs)
     assert isinstance(result, dict)
-    for key in ("graph", "output", "replay", "max_diff", "n_nodes",
-                "shapes", "estimate", "n", "method"):
+    for key in ("graph", "output", "replay", "max_diff", "n_nodes", "shapes", "estimate", "n", "method"):
         assert key in result
     assert result["n_nodes"] == 2
     assert math.isfinite(float(result["max_diff"]))
@@ -40,7 +40,7 @@ def test_hmtsc_edge():
 # --- appended: the module's own worked example as a gate -----------
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

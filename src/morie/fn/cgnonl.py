@@ -128,6 +128,7 @@ def _dot(a, b):
 # the beta rules
 # --------------------------------------------------------------------------
 
+
 def beta_fletcher_reeves(g_new, g_old):
     r"""Equation 20: :math:`\beta_i = g_{i+1}' g_{i+1} / (g_i' g_i)`."""
     den = _dot(g_old, g_old)
@@ -167,12 +168,13 @@ def _beta(rule, g_new, g_old):
         return beta_polak_ribiere(g_new, g_old, plus=False)
     if rule == "polak-ribiere-plus":
         return beta_polak_ribiere(g_new, g_old, plus=True)
-    raise ValueError("cgnonl: beta must be one of %s" % (BETA_RULES,))
+    raise ValueError(f"cgnonl: beta must be one of {BETA_RULES}")
 
 
 # --------------------------------------------------------------------------
 # the line search
 # --------------------------------------------------------------------------
+
 
 def cubic_interpolate(ta, fa, da, tb, fb, db):
     r"""The paper's third stage: cubic fit through value and slope at
@@ -198,8 +200,7 @@ def cubic_interpolate(ta, fa, da, tb, fb, db):
     return t
 
 
-def line_search_fr(f, grad, x, p, f0, g0, est=None, max_double=60,
-                   max_cubic=40, tol=1e-12):
+def line_search_fr(f, grad, x, p, f0, g0, est=None, max_double=60, max_cubic=40, tol=1e-12):
     r"""Equations 21-25: the three-stage search along :math:`x + t p`.
 
     Stage one sets the tentative step :math:`h` from equations 24-25,
@@ -210,18 +211,17 @@ def line_search_fr(f, grad, x, p, f0, g0, est=None, max_double=60,
     n = len(x)
     slope0 = _dot(p, g0)
     if slope0 >= 0.0:
-        raise ValueError("cgnonl: the search direction is not a descent "
-                         "direction (p'g = %g >= 0)" % slope0)
+        raise ValueError(f"cgnonl: the search direction is not a descent direction (p'g = {slope0:g} >= 0)")
     pnorm = math.sqrt(_dot(p, p))
     if pnorm <= 0.0:
         raise ValueError("cgnonl: the search direction is zero")
 
-    unit = 1.0 / pnorm            # unit length along p in x-space
+    unit = 1.0 / pnorm  # unit length along p in x-space
     if est is None:
         h = unit
     else:
-        k = 2.0 * (float(est) - f0) / slope0     # eq. 24
-        h = k if 0.0 < k < unit else unit        # eq. 25
+        k = 2.0 * (float(est) - f0) / slope0  # eq. 24
+        h = k if 0.0 < k < unit else unit  # eq. 25
 
     def psi(t):
         xt = [x[i] + t * p[i] for i in range(n)]
@@ -275,9 +275,9 @@ def _exact_quadratic_step(x, p, g, hess_vec):
     ap = hess_vec(p)
     den = _dot(p, ap)
     if den <= 0.0:
-        raise ValueError("cgnonl: p'Ap = %g is not positive; the exact "
-                         "quadratic step needs a positive definite A"
-                         % den)
+        raise ValueError(
+            f"cgnonl: p'Ap = {den:g} is not positive; the exact quadratic step needs a positive definite A"
+        )
     return -_dot(p, g) / den
 
 
@@ -285,10 +285,20 @@ def _exact_quadratic_step(x, p, g, hess_vec):
 # the method itself
 # --------------------------------------------------------------------------
 
-def nonlinear_cg(f, grad, x0, beta="fletcher-reeves", restart=None,
-                 max_iter=None, tol=1e-10, est=None,
-                 line_search="fletcher-reeves", hess_vec=None,
-                 keep_path=False):
+
+def nonlinear_cg(
+    f,
+    grad,
+    x0,
+    beta="fletcher-reeves",
+    restart=None,
+    max_iter=None,
+    tol=1e-10,
+    est=None,
+    line_search="fletcher-reeves",
+    hess_vec=None,
+    keep_path=False,
+):
     r"""Fletcher & Reeves' equation 20, with their restart rule.
 
     Parameters
@@ -324,13 +334,11 @@ def nonlinear_cg(f, grad, x0, beta="fletcher-reeves", restart=None,
         ``n_feval``, ``converged``, and the ``beta`` history.
     """
     if beta not in BETA_RULES:
-        raise ValueError("cgnonl: beta must be one of %s" % (BETA_RULES,))
+        raise ValueError(f"cgnonl: beta must be one of {BETA_RULES}")
     if line_search not in _SEARCHES:
-        raise ValueError("cgnonl: line_search must be one of %s"
-                         % (_SEARCHES,))
+        raise ValueError(f"cgnonl: line_search must be one of {_SEARCHES}")
     if line_search == "exact-quadratic" and hess_vec is None:
-        raise ValueError("cgnonl: line_search='exact-quadratic' needs "
-                         "hess_vec, the map p -> Ap")
+        raise ValueError("cgnonl: line_search='exact-quadratic' needs hess_vec, the map p -> Ap")
     x = [float(v) for v in x0]
     n = len(x)
     if n == 0:
@@ -364,8 +372,7 @@ def nonlinear_cg(f, grad, x0, beta="fletcher-reeves", restart=None,
             g_new = [float(v) for v in grad(x_new)]
             evals += 1
         else:
-            t, x_new, f_new, g_new, ev = line_search_fr(
-                f, grad, x, p, fx, g, est=est)
+            t, x_new, f_new, g_new, ev = line_search_fr(f, grad, x, p, fx, g, est=est)
             evals += ev
 
         g_old = g
@@ -391,46 +398,52 @@ def nonlinear_cg(f, grad, x0, beta="fletcher-reeves", restart=None,
                 p = [-v for v in g]
                 restarts += 1
 
-    return RichResult(payload={
-        "x": x,
-        "fun": fx,
-        "grad": g,
-        "gnorm": math.sqrt(_dot(g, g)),
-        "n_iter": it,
-        "n_restart": restarts,
-        "n_feval": evals,
-        "converged": bool(converged),
-        "betas": betas,
-        "path": path,
-        "beta_rule": beta,
-        "line_search": line_search,
-        "restart_every": restart,
-        "method": ("Fletcher & Reeves (1964) eq. 20, nonlinear conjugate "
-                   "gradients"),
-        "note": ("storage is three vectors -- x, g and p -- which is the "
-                 "paper's stated advantage over Davidon-Fletcher-Powell; "
-                 "restarts to steepest descent every n+1 iterations, "
-                 "which preserves quadratic convergence because they are "
-                 "no more frequent than every n"),
-    })
+    return RichResult(
+        payload={
+            "x": x,
+            "fun": fx,
+            "grad": g,
+            "gnorm": math.sqrt(_dot(g, g)),
+            "n_iter": it,
+            "n_restart": restarts,
+            "n_feval": evals,
+            "converged": bool(converged),
+            "betas": betas,
+            "path": path,
+            "beta_rule": beta,
+            "line_search": line_search,
+            "restart_every": restart,
+            "method": ("Fletcher & Reeves (1964) eq. 20, nonlinear conjugate gradients"),
+            "note": (
+                "storage is three vectors -- x, g and p -- which is the "
+                "paper's stated advantage over Davidon-Fletcher-Powell; "
+                "restarts to steepest descent every n+1 iterations, "
+                "which preserves quadratic convergence because they are "
+                "no more frequent than every n"
+            ),
+        }
+    )
 
 
 cgnonl = nonlinear_cg
 
 
 def cheatsheet():
-    return ("cgnonl: nonlinear conjugate gradients, Fletcher & Reeves "
-            "(1964) eq. 20. p_0 = -g_0; search the line through x_i "
-            "along p_i; beta_i = g'_{i+1} g_{i+1} / (g'_i g_i); "
-            "p_{i+1} = -g_{i+1} + beta_i p_i. Guaranteed to minimise "
-            "any quadratic in n variables in at most n iterations, and "
-            "it stores only three vectors. Restarts to steepest descent "
-            "every n+1 iterations -- their fix for Rosenbrock's valley, "
-            "where successive directions went nearly parallel. "
-            "beta='polak-ribiere' is Polak & Ribiere (1969) eq. 3.20, "
-            "gamma = (|r_{i+1}|^2 - r'_{i+1} r_i) / |r_i|^2; the "
-            "'-plus' max(beta, 0) safeguard is Shewchuk sec. 14.1. On a "
-            "quadratic the two coincide, which that paper proves.")
+    return (
+        "cgnonl: nonlinear conjugate gradients, Fletcher & Reeves "
+        "(1964) eq. 20. p_0 = -g_0; search the line through x_i "
+        "along p_i; beta_i = g'_{i+1} g_{i+1} / (g'_i g_i); "
+        "p_{i+1} = -g_{i+1} + beta_i p_i. Guaranteed to minimise "
+        "any quadratic in n variables in at most n iterations, and "
+        "it stores only three vectors. Restarts to steepest descent "
+        "every n+1 iterations -- their fix for Rosenbrock's valley, "
+        "where successive directions went nearly parallel. "
+        "beta='polak-ribiere' is Polak & Ribiere (1969) eq. 3.20, "
+        "gamma = (|r_{i+1}|^2 - r'_{i+1} r_i) / |r_i|^2; the "
+        "'-plus' max(beta, 0) safeguard is Shewchuk sec. 14.1. On a "
+        "quadratic the two coincide, which that paper proves."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 nonlinearcg = nonlinear_cg

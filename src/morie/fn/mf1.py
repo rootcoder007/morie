@@ -62,7 +62,7 @@ def multiclass_f1(y_true, y_pred, *, average="macro", labels=None, **kwargs) -> 
         measure=f"f1_{average}",
         estimate=result,
         n=len(yt),
-        extra={"per_class": dict(zip([str(l) for l in labels], per_class_f1)), "average": average},
+        extra={"per_class": dict(zip([str(ell) for ell in labels], per_class_f1)), "average": average},
     )
 
 

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['lrankcov', 'gibbons_linrank_covariance']
+__all__ = ["lrankcov", "gibbons_linrank_covariance"]
 
 
 def lrankcov(a, b, m, n):

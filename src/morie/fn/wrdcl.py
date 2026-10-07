@@ -126,9 +126,8 @@ def word_cloud_data(
     tokens = []
     for w in text.lower().split():
         cleaned = "".join(c for c in w if c.isalnum())
-        if len(cleaned) >= min_length:
-            if not remove_stopwords or cleaned not in _STOP_WORDS:
-                tokens.append(cleaned)
+        if len(cleaned) >= min_length and (not remove_stopwords or cleaned not in _STOP_WORDS):
+            tokens.append(cleaned)
 
     counts = Counter(tokens)
     top = counts.most_common(top_k)

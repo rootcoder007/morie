@@ -27,18 +27,17 @@ def ca_chapter_2_equation_7(r_y1, r_y2, r_12, s_y, s_1, s_2):
     ch.2 eq.2.7
     """
     payload = dict(_ca_crim.ols_two_iv(r_y1, r_y2, r_12, s_y, s_1, s_2))
-    value = payload['b1']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["b1"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.7)"
     return RichResult(
-        title='Two-IV regression coefficient for x1 from correlations',
+        title="Two-IV regression coefficient for x1 from correlations",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e7: b_x1 = ((r_y1 - r_y2 r_12)/(1 - r_12^2)) (s_y/s_1) [Weisburd et al. 2022, eq. 2.7]'
+    return "ca2e7: b_x1 = ((r_y1 - r_y2 r_12)/(1 - r_12^2)) (s_y/s_1) [Weisburd et al. 2022, eq. 2.7]"

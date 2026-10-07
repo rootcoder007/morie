@@ -1,7 +1,6 @@
 """Tests for insft.py - Instantaneous frequency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.insft import insft, instantaneous_freq
 
 

@@ -1,7 +1,6 @@
 """Tests for flmtst.fleming_harrington."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.flmtst import fleming_harrington
 
 

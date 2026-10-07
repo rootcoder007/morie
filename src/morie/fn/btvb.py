@@ -41,17 +41,23 @@ def boot_var_estimator(theta_b):
     if B < 2:
         raise ValueError(f"need at least 2 replicates, got {B}.")
     if not np.all(np.isfinite(r)):
-        raise ValueError("every replicate must be finite; a failed "
-                         "refit should be dropped before this point, "
-                         "and dropping it changes the estimand.")
+        raise ValueError(
+            "every replicate must be finite; a failed "
+            "refit should be dropped before this point, "
+            "and dropping it changes the estimand."
+        )
     v = float(np.var(r, ddof=1))
-    return RichResult(payload={
-        "value": v, "se": float(np.sqrt(v)),
-        "mean_replicate": float(r.mean()),
-        "B": int(B), "denominator": "B - 1",
-        "denominator_note": "B - 1, not B: the replicates are centred at "
-                            "their own mean (Efron-Tibshirani Eq. 6.5)",
-        "method": "Bootstrap variance from replicates, Efron-Tibshirani (6.5)"})
+    return RichResult(
+        payload={
+            "value": v,
+            "se": float(np.sqrt(v)),
+            "mean_replicate": float(r.mean()),
+            "B": int(B),
+            "denominator": "B - 1",
+            "denominator_note": "B - 1, not B: the replicates are centred at their own mean (Efron-Tibshirani Eq. 6.5)",
+            "method": "Bootstrap variance from replicates, Efron-Tibshirani (6.5)",
+        }
+    )
 
 
 def cheatsheet():

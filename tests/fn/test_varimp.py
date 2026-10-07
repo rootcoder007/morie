@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.varimp import var_impulse_response
 
-
 A1 = [[0.5, 0.1], [0.3, 0.4]]
 A2 = [[-0.2, 0.0], [0.0, 0.1]]
 COEF = [[0.1] + A1[0] + A2[0], [-0.2] + A1[1] + A2[1]]
@@ -51,5 +50,3 @@ def test_varimp_edge():
         var_impulse_response([0.1, 0.5], SIGMA)
     with pytest.raises(ValueError):
         var_impulse_response(COEF, [[1.0]])
-
-

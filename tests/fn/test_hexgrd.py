@@ -1,7 +1,6 @@
 """Tests for hexgrd.hexagonal_grid."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hexgrd import hexagonal_grid
 
 

@@ -37,13 +37,16 @@ def kamath_ch9_modality_encoder(I_X, ME_X):
     if F.size == 0:
         raise ValueError("the modality encoder returned no features.")
     if not np.all(np.isfinite(F)):
-        raise ValueError("the modality encoder returned non-finite "
-                         "features.")
-    return RichResult(payload={
-        "estimate": float(np.linalg.norm(F)),
-        "features": [float(v) for v in F.ravel()],
-        "shape": list(F.shape), "n": int(F.size),
-        "method": "modality encoder F_X = ME_X(I_X) (Kamath Eq 9.1)"})
+        raise ValueError("the modality encoder returned non-finite features.")
+    return RichResult(
+        payload={
+            "estimate": float(np.linalg.norm(F)),
+            "features": [float(v) for v in F.ravel()],
+            "shape": list(F.shape),
+            "n": int(F.size),
+            "method": "modality encoder F_X = ME_X(I_X) (Kamath Eq 9.1)",
+        }
+    )
 
 
 def cheatsheet():

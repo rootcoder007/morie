@@ -58,7 +58,12 @@ def cqr(callo, calhi, caly, lo, hi, alpha=0.1):
     res = _core.cqr(callo=callo, calhi=calhi, caly=caly, lo=lo, hi=hi, alpha=alpha)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("qhat", res["qhat"]), ("k", res["k"]), ("meanwidth", res["meanwidth"]), ("widening", res["widening"])],
+        summary_lines=[
+            ("qhat", res["qhat"]),
+            ("k", res["k"]),
+            ("meanwidth", res["meanwidth"]),
+            ("widening", res["widening"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

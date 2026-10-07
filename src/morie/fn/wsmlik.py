@@ -61,17 +61,25 @@ def wasserman_likelihood(data, f, theta):
     if f is None:
         if theta <= 0:
             raise ValueError(f"the exponential model needs theta > 0; got {theta}.")
-        f = lambda x, th: np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
+        def f(x, th):
+            return np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
     dens = np.asarray(f(data, theta), dtype=float)
     if np.any(dens < 0):
         raise ValueError("a density cannot be negative.")
     with np.errstate(divide="ignore"):
         ll = float(np.sum(np.log(dens)))
     L = float(np.exp(ll)) if np.isfinite(ll) else 0.0
-    return RichResult(payload={
-        "estimate": L, "log_likelihood": ll, "theta": theta,
-        "n": int(data.size),
-        "method": "L(theta) = prod f(X_i;theta) via log domain"})
+    return RichResult(
+        payload={
+            "estimate": L,
+            "log_likelihood": ll,
+            "theta": theta,
+            "n": int(data.size),
+            "method": "L(theta) = prod f(X_i;theta) via log domain",
+        }
+    )
 
 
 def cheatsheet():

@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
 Deep Dive, eq. 8.9, the BERTScore F1. Expected values are recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km121 import kamath_ch8_bertscore_f1

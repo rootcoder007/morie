@@ -38,12 +38,10 @@ def csp_backtrack(
 
     def is_consistent(assignment, var, val):
         for v1, v2, check in constraints:
-            if v1 == var and v2 in assignment:
-                if not check(val, assignment[v2]):
-                    return False
-            if v2 == var and v1 in assignment:
-                if not check(assignment[v1], val):
-                    return False
+            if v1 == var and v2 in assignment and not check(val, assignment[v2]):
+                return False
+            if v2 == var and v1 in assignment and not check(assignment[v1], val):
+                return False
         return True
 
     def backtrack(assignment):

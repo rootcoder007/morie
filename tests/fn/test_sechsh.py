@@ -1,7 +1,6 @@
 """Tests for sechsh.hash_chain_audit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sechsh import hash_chain_audit
 
 

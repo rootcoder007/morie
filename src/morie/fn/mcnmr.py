@@ -34,10 +34,7 @@ def mcnemar_test(before: np.ndarray, after: np.ndarray, cdf=None, *, correction:
             test_name="McNemar", statistic=0.0, p_value=1.0, df=1.0, method="McNemar exact", n=len(before)
         )
 
-    if correction:
-        chi2 = (abs(b - c) - 1) ** 2 / (b + c)
-    else:
-        chi2 = (b - c) ** 2 / (b + c)
+    chi2 = (abs(b - c) - 1) ** 2 / (b + c) if correction else (b - c) ** 2 / (b + c)
 
     p = float(sp_stats.chi2.sf(chi2, 1))
 

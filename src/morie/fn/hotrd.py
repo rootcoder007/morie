@@ -45,7 +45,7 @@ def newton_convergence(
     history = [x]
     errors = []
 
-    for i in range(max_iter):
+    for _i in range(max_iter):
         fx = f(x)
         dfx = fprime(x)
         if abs(dfx) < 1e-30:
@@ -54,10 +54,7 @@ def newton_convergence(
         if fprime2 is not None:
             d2fx = fprime2(x)
             denom = 2 * dfx**2 - fx * d2fx
-            if abs(denom) < 1e-30:
-                step = fx / dfx
-            else:
-                step = 2 * fx * dfx / denom
+            step = fx / dfx if abs(denom) < 1e-30 else 2 * fx * dfx / denom
         else:
             step = fx / dfx
 

@@ -83,8 +83,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["e_step", "m_step", "log_likelihood", "fit_plsa",
-           "joint_probability", "perplexity"]
+__all__ = ["e_step", "m_step", "log_likelihood", "fit_plsa", "joint_probability", "perplexity"]
 
 _EPS = 1e-300
 
@@ -150,8 +149,7 @@ def joint_probability(Pz, Pd_z, Pw_z):
     r"""Eq. (2): :math:`P(d,w) = \sum_z P(z)P(d\mid z)P(w\mid z)`."""
     K = len(Pz)
     D, V = len(Pd_z[0]), len(Pw_z[0])
-    return [[sum(Pz[z] * Pd_z[z][d] * Pw_z[z][w] for z in range(K))
-             for w in range(V)] for d in range(D)]
+    return [[sum(Pz[z] * Pd_z[z][d] * Pw_z[z][w] for z in range(K)) for w in range(V)] for d in range(D)]
 
 
 def log_likelihood(n_dw, Pz, Pd_z, Pw_z):
@@ -181,13 +179,11 @@ def fit_plsa(n_dw, K, iters=100, tol=1e-8, seed=0):
         return [x / s for x in v]
 
     Pz = norm([0.5 + float(rng.uniform()) for _ in range(int(K))])
-    Pd_z = [norm([0.5 + float(rng.uniform()) for _ in range(D)])
-            for _ in range(int(K))]
-    Pw_z = [norm([0.5 + float(rng.uniform()) for _ in range(V)])
-            for _ in range(int(K))]
+    Pd_z = [norm([0.5 + float(rng.uniform()) for _ in range(D)]) for _ in range(int(K))]
+    Pw_z = [norm([0.5 + float(rng.uniform()) for _ in range(V)]) for _ in range(int(K))]
     hist, prev = [], None
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         post = e_step(N, Pz, Pd_z, Pw_z)
         Pz, Pd_z, Pw_z = m_step(N, post, int(K))
         ll = log_likelihood(N, Pz, Pd_z, Pw_z)
@@ -195,18 +191,25 @@ def fit_plsa(n_dw, K, iters=100, tol=1e-8, seed=0):
         if prev is not None and abs(ll - prev) < float(tol):
             break
         prev = ll
-    return RichResult(payload={
-        "estimate": Pw_z, "P_z": Pz, "P_d_given_z": Pd_z,
-        "P_w_given_z": Pw_z, "loglik_history": hist,
-        "final_loglik": hist[-1], "iterations": it,
-        "K": int(K), "n_docs": D, "vocab": V,
-        "n_parameters": int(K) * (D + V) + int(K),
-        "method": "EM for the aspect model; Hofmann (1999) eqs. "
-                  "(3)-(6)",
-        "caveat": "P(z|d) is a per-document PARAMETER, so the count "
-                  "grows with the corpus and an unseen document needs "
-                  "EM re-run -- the gap LDA's Dirichlet prior closes",
-    })
+    return RichResult(
+        payload={
+            "estimate": Pw_z,
+            "P_z": Pz,
+            "P_d_given_z": Pd_z,
+            "P_w_given_z": Pw_z,
+            "loglik_history": hist,
+            "final_loglik": hist[-1],
+            "iterations": it,
+            "K": int(K),
+            "n_docs": D,
+            "vocab": V,
+            "n_parameters": int(K) * (D + V) + int(K),
+            "method": "EM for the aspect model; Hofmann (1999) eqs. (3)-(6)",
+            "caveat": "P(z|d) is a per-document PARAMETER, so the count "
+            "grows with the corpus and an unseen document needs "
+            "EM re-run -- the gap LDA's Dirichlet prior closes",
+        }
+    )
 
 
 def perplexity(n_dw, Pz, Pd_z, Pw_z):
@@ -217,14 +220,16 @@ def perplexity(n_dw, Pz, Pd_z, Pw_z):
 
 
 def cheatsheet():
-    return ("plsa: the ASPECT model. P(d,w) = sum_z P(z)P(d|z)P(w|z) "
-            "-- d and w independent GIVEN z, with |z| small so z is a "
-            "bottleneck. EM: E step is Bayes over z, M step is "
-            "expected-count normalisation. Fixes LSA's missing "
-            "likelihood and gives non-negative parameters. Does NOT "
-            "fix generalisation: P(z|d) is a per-document parameter, "
-            "so parameters grow with the corpus -- that is what LDA's "
-            "Dirichlet prior removes.")
+    return (
+        "plsa: the ASPECT model. P(d,w) = sum_z P(z)P(d|z)P(w|z) "
+        "-- d and w independent GIVEN z, with |z| small so z is a "
+        "bottleneck. EM: E step is Bayes over z, M step is "
+        "expected-count normalisation. Fixes LSA's missing "
+        "likelihood and gives non-negative parameters. Does NOT "
+        "fix generalisation: P(z|d) is a per-document parameter, "
+        "so parameters grow with the corpus -- that is what LDA's "
+        "Dirichlet prior removes."
+    )
 
 
 # compact alias per ledger/NAMING.md

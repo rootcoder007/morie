@@ -1,7 +1,6 @@
 """Tests for esllso.esl_lasso."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esllso import esl_lasso
 
 
@@ -15,9 +14,19 @@ def test_esllso_basic():
     result = esl_lasso(X, y, lambda_)
     assert isinstance(result, dict)
     # Documented return keys
-    for key in ("estimate", "beta", "n_nonzero", "active_set",
-                "objective", "iterations", "converged",
-                "lambda", "n", "p", "method"):
+    for key in (
+        "estimate",
+        "beta",
+        "n_nonzero",
+        "active_set",
+        "objective",
+        "iterations",
+        "converged",
+        "lambda",
+        "n",
+        "p",
+        "method",
+    ):
         assert key in result, f"missing documented key: {key}"
     assert result["n"] == 100
     assert result["p"] == 5

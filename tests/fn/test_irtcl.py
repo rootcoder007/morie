@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Tests for morie.fn.irtcl — IRT calibration."""
 
 from morie.fn.irtcl import irt_calibrate

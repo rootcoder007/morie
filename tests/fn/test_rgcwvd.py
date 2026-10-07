@@ -1,7 +1,6 @@
 """Tests for rgcwvd.rangayyan_cohen_class."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_cohen_class
 
 

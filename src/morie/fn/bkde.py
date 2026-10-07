@@ -79,7 +79,7 @@ def bkde(
             x_aug = np.concatenate([x_aug, 2 * lower - x])
         if upper is not None:
             x_aug = np.concatenate([x_aug, 2 * upper - x])
-        n_aug = len(x_aug)
+        len(x_aug)
         u = (x_eval[:, None] - x_aug[None, :]) / bandwidth
         density = k_fn(u).sum(axis=1) / (n * bandwidth)
     else:

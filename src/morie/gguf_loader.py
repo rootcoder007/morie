@@ -11,6 +11,7 @@ References
 
 from __future__ import annotations
 
+import contextlib
 import mmap
 import struct
 from dataclasses import dataclass
@@ -22,6 +23,44 @@ from morie.fn._array_core import NDArray
 
 # GGUF magic number: "GGUF" in little-endian
 GGUF_MAGIC = 0x46554747  # 'G','G','U','F'
+
+
+def find_local_gguf(root: str | Path | None = None) -> Path | None:
+    """The first GGUF model file on this machine, or None.
+
+    Looks in Ollama's model store (``$OLLAMA_MODELS``, else ``~/.ollama/models``) for a blob
+    that starts with the GGUF magic, largest first (the weights, not a projector or adapter).
+
+    Examples:
+        >>> import tempfile
+        >>> d = Path(tempfile.mkdtemp())
+        >>> (d / "blobs").mkdir()
+        >>> _ = (d / "blobs" / "sha256-a").write_bytes(b"GGUF" + bytes(12))
+        >>> _ = (d / "blobs" / "sha256-b").write_bytes(b"{}")
+        >>> find_local_gguf(d).name
+        'sha256-a'
+        >>> find_local_gguf(d / "nowhere") is None
+        True
+    """
+    import os
+
+    base = (
+        Path(root) if root is not None else Path(os.environ.get("OLLAMA_MODELS") or Path.home() / ".ollama" / "models")
+    )
+    blobs = base / "blobs"
+    if not blobs.is_dir():
+        return None
+    found = []
+    for f in blobs.iterdir():
+        try:
+            if f.is_file():
+                with open(f, "rb") as fh:
+                    if struct.unpack("<I", fh.read(4).ljust(4, b"\0"))[0] == GGUF_MAGIC:
+                        found.append(f)
+        except OSError:
+            continue
+    return max(found, key=lambda f: f.stat().st_size) if found else None
+
 
 # GGML tensor types
 GGML_TYPE_F32 = 0
@@ -110,11 +149,13 @@ class GGUFModel:
 
     Examples
     --------
-    >>> model = GGUFModel("~/.ollama/models/blobs/sha256-abc123")
-    >>> print(model.config)
+    Needs a GGUF model file on disk (the path below is a placeholder):
+
+    >>> model = GGUFModel("~/.ollama/models/blobs/sha256-abc123")  # doctest: +SKIP
+    >>> print(model.config)  # doctest: +SKIP
     {'architecture': 'llama', 'n_layers': 32, ...}
-    >>> names = model.tensor_names()
-    >>> weight = model.get_tensor("token_embd.weight")
+    >>> names = model.tensor_names()  # doctest: +SKIP
+    >>> weight = model.get_tensor("token_embd.weight")  # doctest: +SKIP
     """
 
     def __init__(self, path: str | Path):
@@ -128,7 +169,7 @@ class GGUFModel:
         if not self.path.exists():
             raise FileNotFoundError(f"GGUF file not found: {self.path}")
 
-        self._fp = open(self.path, "rb")
+        self._fp = open(self.path, "rb")  # noqa: SIM115 -- the reader keeps it open; close() closes it
 
         self._parse_header()
 
@@ -373,10 +414,7 @@ class GGUFModel:
             out_offset = i * super_block_size
             for j in range(8):
                 sub_start = j * 32
-                if j < 4:
-                    q_bytes = qs[j * 16 : j * 16 + 16]
-                else:
-                    q_bytes = qs[(j - 4) * 16 + 64 : (j - 4) * 16 + 80]
+                q_bytes = qs[j * 16 : j * 16 + 16] if j < 4 else qs[(j - 4) * 16 + 64 : (j - 4) * 16 + 80]
                 lo = (q_bytes & 0x0F).astype(np.float32)
                 hi = ((q_bytes >> 4) & 0x0F).astype(np.float32)
                 # Sequential layout: first 16 from lo nibbles, next 16 from hi
@@ -436,16 +474,12 @@ class GGUFModel:
 
     def close(self) -> None:
         if self._mm:
-            try:
+            with contextlib.suppress(Exception):
                 self._mm.close()
-            except Exception:
-                pass
             self._mm = None
         if self._fp:
-            try:
+            with contextlib.suppress(Exception):
                 self._fp.close()
-            except Exception:
-                pass
             self._fp = None
 
     def __del__(self):

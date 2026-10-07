@@ -1,7 +1,6 @@
 """Tests for gail.gail."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gail import gail
 
 

@@ -26,8 +26,7 @@ from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["mantel_haenszel_rate"]
 
-_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054,
-      0.99: 2.5758293035489004}
+_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054, 0.99: 2.5758293035489004}
 
 
 def _zcrit(confidence):
@@ -42,8 +41,7 @@ def _stratum(s):
     """Accept either a mapping with keys a, T1, b, T0 or a positional
     sequence (a, T1, b, T0)."""
     if hasattr(s, "get"):
-        return (float(s["a"]), float(s["T1"]),
-                float(s["b"]), float(s["T0"]))
+        return (float(s["a"]), float(s["T1"]), float(s["b"]), float(s["T0"]))
     t = list(s)
     if len(t) != 4:
         raise ValueError("each stratum needs (a, T1, b, T0)")
@@ -88,15 +86,23 @@ def mantel_haenszel_rate(strata, confidence=0.95):
     irr = num / den
     se = math.sqrt(vnum) / math.sqrt(num * den)
     z = _zcrit(confidence)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(irr), "ln_estimate": float(math.log(irr)),
-        "se_ln": float(se),
-        "ci_lower": float(irr * math.exp(-z * se)),
-        "ci_upper": float(irr * math.exp(z * se)),
-        "numerator": float(num), "denominator": float(den),
-        "n_strata": len(rows), "confidence": float(confidence),
-        "method": "Mantel-Haenszel rate ratio (Greenland & Robins 1985)",
-    }), "mhrate")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(irr),
+                "ln_estimate": float(math.log(irr)),
+                "se_ln": float(se),
+                "ci_lower": float(irr * math.exp(-z * se)),
+                "ci_upper": float(irr * math.exp(z * se)),
+                "numerator": float(num),
+                "denominator": float(den),
+                "n_strata": len(rows),
+                "confidence": float(confidence),
+                "method": "Mantel-Haenszel rate ratio (Greenland & Robins 1985)",
+            }
+        ),
+        "mhrate",
+    )
 
 
 def cheatsheet():

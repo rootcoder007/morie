@@ -32,7 +32,7 @@ def varimax(
     p, k = A.shape
     R = np.eye(k)
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         B = A @ R
         B2 = B**2
         cm = B2.mean(axis=0)

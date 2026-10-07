@@ -62,21 +62,25 @@ def ghosal_empirical_bayes_np(x, alpha_grid=None, sigma=1.0):
         raise ValueError(f"need at least 2 observations, got {n}.")
     _, counts = np.unique(xv, return_counts=True)
     k = counts.size
-    ag = np.logspace(-2, 2, 200) if alpha_grid is None else \
-        np.atleast_1d(np.asarray(alpha_grid, dtype=float))
+    ag = np.logspace(-2, 2, 200) if alpha_grid is None else np.atleast_1d(np.asarray(alpha_grid, dtype=float))
     if np.any(ag <= 0):
         raise ValueError("alpha values must be positive.")
     # log marginal of the partition under the Polya urn (Antoniak):
     # k log alpha + log Gamma(alpha) - log Gamma(alpha + n) + const
     lm = k * np.log(ag) + gammaln(ag) - gammaln(ag + n)
     j = int(np.argmax(lm))
-    return RichResult(payload={
-        "alpha_hat": float(ag[j]), "alpha_grid": ag, "log_marginal": lm,
-        "n_clusters": int(k),
-        "understates_uncertainty": True,
-        "fully_bayes_alternative": "put a prior on alpha and integrate it out",
-        "n": int(n),
-        "method": "Empirical Bayes for the DP concentration; the marginal depends on the CLUSTER count"})
+    return RichResult(
+        payload={
+            "alpha_hat": float(ag[j]),
+            "alpha_grid": ag,
+            "log_marginal": lm,
+            "n_clusters": int(k),
+            "understates_uncertainty": True,
+            "fully_bayes_alternative": "put a prior on alpha and integrate it out",
+            "n": int(n),
+            "method": "Empirical Bayes for the DP concentration; the marginal depends on the CLUSTER count",
+        }
+    )
 
 
 def cheatsheet():

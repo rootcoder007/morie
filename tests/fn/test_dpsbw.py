@@ -1,7 +1,5 @@
 """Tests for dpsbw.stick_breaking_weights."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dpsbw import stick_breaking_weights
 
 

@@ -4,9 +4,9 @@ Linear-Gaussian DGPs (models correctly specified) with time-varying
 confounding where the naive regression is provably biased; recovery
 asserted as rates over seeds."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.causmrop import causal_robins_g_formula
 from morie.fn.gctvc import g_computation_time_varying
 from morie.fn.gforml import robins_g_formula

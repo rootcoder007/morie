@@ -1,7 +1,6 @@
 """Tests for msdef.mse_metric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msdef import mse_metric
 
 

@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kruskal-Wallis one-way ANOVA by ranks."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['kwh', 'gibbons_kruskal_wallis']
+__all__ = ["kwh", "gibbons_kruskal_wallis"]
 
 
 def kwh(samples, correct=True):
@@ -71,14 +69,10 @@ def kwh(samples, correct=True):
     for idx, (_, grp) in enumerate(flat):
         rs[grp] += ranks[idx]
     ns = [len(s) for s in ss]
-    h = 12.0 / (nn * (nn + 1.0)) * sum(
-        rs[i] ** 2 / ns[i] for i in range(k)
-    ) - 3.0 * (nn + 1.0)
+    h = 12.0 / (nn * (nn + 1.0)) * sum(rs[i] ** 2 / ns[i] for i in range(k)) - 3.0 * (nn + 1.0)
     corr = 1.0
     if correct and ties:
-        corr = 1.0 - sum(
-            t * (t * t - 1.0) for t in ties
-        ) / (nn * (float(nn) ** 2 - 1.0))
+        corr = 1.0 - sum(t * (t * t - 1.0) for t in ties) / (nn * (float(nn) ** 2 - 1.0))
     hc = h / corr if corr > 0 else float("nan")
     return RichResult(
         payload={

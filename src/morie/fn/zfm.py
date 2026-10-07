@@ -1,8 +1,5 @@
 """Z-transform of a discrete-time sequence."""
 
-from . import _array_core as np
-from ._richresult import RichResult
-
 __all__ = ["z_transform"]
 
 
@@ -58,8 +55,7 @@ def z_transform(x, z, n0=0):
     from .bsaxfrm import ztrans
 
     if z is None:
-        raise ValueError("z must be given; use bsaxfrm.ztrans for the "
-                         "coefficients-only form")
+        raise ValueError("z must be given; use bsaxfrm.ztrans for the coefficients-only form")
     return ztrans(x, z=z, n0=n0)
 
 

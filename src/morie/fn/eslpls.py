@@ -75,7 +75,7 @@ def esl_pls(X, y, M):
     # because after the first step phi lives in the DEFLATED space.
     W, P, q = [], [], []
     fit = np.zeros(n)
-    for m in range(M):
+    for _m in range(M):
         phi = Xw.T @ yc
         nrm = float(np.linalg.norm(phi))
         if nrm <= 0:
@@ -87,23 +87,32 @@ def esl_pls(X, y, M):
             break
         theta = float(z @ yc) / zz
         load = (Xw.T @ z) / zz
-        W.append(phi); P.append(load); q.append(theta)
+        W.append(phi)
+        P.append(load)
+        q.append(theta)
         fit = fit + theta * z
         Xw = Xw - np.outer(z, load)
     if W:
-        Wm = np.column_stack(W); Pm = np.column_stack(P)
+        Wm = np.column_stack(W)
+        Pm = np.column_stack(P)
         qv = np.asarray(q, dtype=float)
         beta = Wm @ np.linalg.solve(Pm.T @ Wm, qv)
     else:
         beta = np.zeros(p)
     T = W
     tss = float(yc @ yc)
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "intercept": ybar - float(xbar @ beta),
-        "y_variance_explained": float((fit @ fit) / tss) if tss > 0 else float("nan"),
-        "M": len(T), "n": int(n), "p": int(p),
-        "method": "PLS (ESL Alg. 3.3): directions maximise Cov(z, y), deflate X"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "intercept": ybar - float(xbar @ beta),
+            "y_variance_explained": float((fit @ fit) / tss) if tss > 0 else float("nan"),
+            "M": len(T),
+            "n": int(n),
+            "p": int(p),
+            "method": "PLS (ESL Alg. 3.3): directions maximise Cov(z, y), deflate X",
+        }
+    )
 
 
 def cheatsheet():

@@ -48,8 +48,7 @@ def _log_ndtr(z):
         return _math.log(c) if z < 5.0 else _math.log1p(-0.5 * _math.erfc(z / _math.sqrt(2.0)))
     z2 = z * z
     # past |z| = 1e8 the correction is below 1e-16 (and z2**5 would overflow)
-    series = 1.0 if z2 > 1e16 else \
-        1.0 - 1.0 / z2 + 3.0 / z2 ** 2 - 15.0 / z2 ** 3 + 105.0 / z2 ** 4 - 945.0 / z2 ** 5
+    series = 1.0 if z2 > 1e16 else 1.0 - 1.0 / z2 + 3.0 / z2**2 - 15.0 / z2**3 + 105.0 / z2**4 - 945.0 / z2**5
     return -0.5 * z2 - _math.log(-z) - 0.5 * _math.log(2.0 * _math.pi) + _math.log(series)
 
 
@@ -66,6 +65,7 @@ def _norm_ppf(p):
     The import is local so this module still loads without _rng.
     """
     from ._rng import normal_quantile as _ppnd16
+
     if not (0.0 < p < 1.0):
         raise ValueError("p must lie strictly inside (0, 1)")
     z = _ppnd16(p)
@@ -165,8 +165,10 @@ def _stirling_tail(z):
     """ln Gamma(z) - [(z - 1/2) ln z - z + ln(2 pi)/2]: the Stirling
     series, accurate to double precision for z >= 20."""
     z2 = z * z
-    return (1.0 / 12.0 - (1.0 / 360.0 - (1.0 / 1260.0 - (1.0 / 1680.0
-            - (1.0 / 1188.0 - 691.0 / 360360.0 / z2) / z2) / z2) / z2) / z2) / z
+    return (
+        1.0 / 12.0
+        - (1.0 / 360.0 - (1.0 / 1260.0 - (1.0 / 1680.0 - (1.0 / 1188.0 - 691.0 / 360360.0 / z2) / z2) / z2) / z2) / z2
+    ) / z
 
 
 def _lbeta(a, b):
@@ -182,11 +184,16 @@ def _lbeta(a, b):
         return _math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)
     if a >= 20.0:
         # both large: Stirling on all three terms
-        return (0.5 * _math.log(2.0 * _math.pi) + (a - 0.5) * _math.log(a)
-                + (b - 0.5) * _math.log(b) - (a + b - 0.5) * _math.log(a + b)
-                + _stirling_tail(a) + _stirling_tail(b) - _stirling_tail(a + b))
-    diff = (-a * _math.log(b) - (a + b - 0.5) * _math.log1p(a / b) + a
-            + _stirling_tail(b) - _stirling_tail(a + b))
+        return (
+            0.5 * _math.log(2.0 * _math.pi)
+            + (a - 0.5) * _math.log(a)
+            + (b - 0.5) * _math.log(b)
+            - (a + b - 0.5) * _math.log(a + b)
+            + _stirling_tail(a)
+            + _stirling_tail(b)
+            - _stirling_tail(a + b)
+        )
+    diff = -a * _math.log(b) - (a + b - 0.5) * _math.log1p(a / b) + a + _stirling_tail(b) - _stirling_tail(a + b)
     return _math.lgamma(a) + diff
 
 
@@ -198,8 +205,7 @@ def _betainc(a, b, x):
         return 0.0
     if x == 1.0:
         return 1.0
-    ln_pre = (-_lbeta(a, b)
-              + a * _math.log(x) + b * _math.log1p(-x))
+    ln_pre = -_lbeta(a, b) + a * _math.log(x) + b * _math.log1p(-x)
     if x < (a + 1.0) / (a + b + 2.0):
         return _math.exp(ln_pre) * _betacf(a, b, x) / a
     return 1.0 - _math.exp(ln_pre) * _betacf(b, a, 1.0 - x) / b
@@ -214,7 +220,7 @@ def _betaincc(a, b, x):
         return 1.0
     if x == 1.0:
         return 0.0
-    ln_pre = (-_lbeta(a, b) + a * _math.log(x) + b * _math.log1p(-x))
+    ln_pre = -_lbeta(a, b) + a * _math.log(x) + b * _math.log1p(-x)
     if x < (a + 1.0) / (a + b + 2.0):
         return 1.0 - _math.exp(ln_pre) * _betacf(a, b, x) / a
     return _math.exp(ln_pre) * _betacf(b, a, 1.0 - x) / b
@@ -327,8 +333,11 @@ def _bi_abs(v):
 
 
 def _is_arraylike(v):
-    return v is not None and not isinstance(v, (int, float, bool)) and (
-        hasattr(v, "tolist") or isinstance(v, (list, tuple)))
+    return (
+        v is not None
+        and not isinstance(v, (int, float, bool))
+        and (hasattr(v, "tolist") or isinstance(v, (list, tuple)))
+    )
 
 
 def _bcast(one, *args):
@@ -336,8 +345,8 @@ def _bcast(one, *args):
     returning a marr of the broadcast shape (scipy's convention for
     array-valued distribution parameters)."""
     from . import _array_core as _ac2
-    arrs = _ac2.broadcast_arrays(*[_ac2.asarray(a) if _is_arraylike(a)
-                                   else _ac2.asarray([float(a)]) for a in args])
+
+    arrs = _ac2.broadcast_arrays(*[_ac2.asarray(a) if _is_arraylike(a) else _ac2.asarray([float(a)]) for a in args])
     shape = arrs[0].shape
     flat = [a.ravel().tolist() for a in arrs]
     vals = [one(*[float(f[i]) for f in flat]) for i in range(len(flat[0]))]
@@ -351,12 +360,13 @@ def _maybe_map(fn, x):
         return fn(float(x))
     if hasattr(x, "tolist"):
         x = x.tolist()
-    if isinstance(x, (list, tuple)) and x \
-            and isinstance(x[0], (list, tuple)):
+    if isinstance(x, (list, tuple)) and x and isinstance(x[0], (list, tuple)):
         from . import _array_core as _ac2
+
         return _ac2.marr([[fn(float(v)) for v in row] for row in x])
     if isinstance(x, (list, tuple)):
         from . import _array_core as _ac2
+
         return _ac2.marr([fn(float(v)) for v in x])
     return fn(float(x))
 
@@ -364,6 +374,7 @@ def _maybe_map(fn, x):
 def _rng_from(random_state):
     """A generator from a seed, an existing generator, or None."""
     from . import _array_core as _ac
+
     if hasattr(random_state, "random") and callable(random_state.random):
         return random_state
     return _ac.random.default_rng(random_state)
@@ -391,7 +402,8 @@ def _edge_wrap(name, fn):
     raised, and geom.cdf(-1) was -0.43.
     """
     import inspect as _inspect
-    _params = list(_inspect.signature(fn).parameters)[2:]   # after self, x
+
+    _params = list(_inspect.signature(fn).parameters)[2:]  # after self, x
     _takes_loc = "loc" in _params
     _takes_scale = "scale" in _params
     _n_pos = len(_params)
@@ -400,16 +412,14 @@ def _edge_wrap(name, fn):
         # scipy broadcasts x against array-valued shape, loc and scale
         # parameters (one rate per observation, say); the scalar path
         # below read only the first element of such a parameter
-        if any(_is_arraylike(a) for a in args) or \
-                any(_is_arraylike(v) for v in kw.values()):
+        if any(_is_arraylike(a) for a in args) or any(_is_arraylike(v) for v in kw.values()):
             keys = list(kw)
-            if all(_is_arraylike(v) or isinstance(v, (int, float)) for v in
-                   list(args) + [kw[k] for k in keys]):
+            if all(_is_arraylike(v) or isinstance(v, (int, float)) for v in list(args) + [kw[k] for k in keys]):
                 na = len(args)
 
                 def call(xv, *vals):
-                    return wrapped(self, xv, *vals[:na],
-                                   **dict(zip(keys, vals[na:])))
+                    return wrapped(self, xv, *vals[:na], **dict(zip(keys, vals[na:])))
+
                 return _bcast(call, x, *args, *[kw[k] for k in keys])
         # scipy's loc / scale on a body that has none: shift and scale
         # the argument (cdf/sf/pdf family) or the result (ppf/isf). Given
@@ -493,7 +503,9 @@ def _edge_wrap(name, fn):
                 if name == "logsf":
                     return 0.0 if v < lo else -_math.inf
                 return _math.nan
+
         return _maybe_map(one, x)
+
     wrapped.__name__ = fn.__name__
     wrapped.__doc__ = fn.__doc__
     wrapped._edge_wrapped = True
@@ -504,8 +516,7 @@ class _Frozen:
     """A distribution with its parameters bound (scipy's frozen form) for
     the classes whose methods take the parameters positionally."""
 
-    _PARAMETRIC = ("mean", "var", "std", "median", "entropy", "support",
-                   "moment", "stats", "interval", "expect")
+    _PARAMETRIC = ("mean", "var", "std", "median", "entropy", "support", "moment", "stats", "interval", "expect")
 
     def __init__(self, dist, args, kw):
         self._dist, self._args, self._kw = dist, tuple(args), dict(kw)
@@ -521,16 +532,21 @@ class _Frozen:
             return fn
         args, kw = self._args, self._kw
         if name == "rvs":
+
             def rvs(size=None, random_state=None):
                 return fn(*args, size=size, random_state=random_state, **kw)
+
             return rvs
         if name in self._PARAMETRIC:
-            def parametric(*a, **k):        # moment(n), interval(alpha)
+
+            def parametric(*a, **k):  # moment(n), interval(alpha)
                 return fn(*a, *args, **kw, **k)
+
             return parametric
 
-        def at(x, *a, **k):                  # pdf(x), cdf(x), ppf(q), ...
+        def at(x, *a, **k):  # pdf(x), cdf(x), ppf(q), ...
             return fn(x, *args, *a, **kw, **k)
+
         return at
 
 
@@ -548,8 +564,8 @@ def _adaptive_simpson(fx, a, b, tol, depth):
         right = (b - c) / 6.0 * (fc + 4.0 * fe + fb)
         if depth <= 0 or _bi.abs(left + right - whole) <= 15.0 * tol:
             return left + right + (left + right - whole) / 15.0
-        return (rec(a, c, fa, fc, fd, left, tol / 2.0, depth - 1)
-                + rec(c, b, fc, fb, fe, right, tol / 2.0, depth - 1))
+        return rec(a, c, fa, fc, fd, left, tol / 2.0, depth - 1) + rec(c, b, fc, fb, fe, right, tol / 2.0, depth - 1)
+
     return rec(a, b, fa, fb, fc, whole, tol, depth)
 
 
@@ -561,7 +577,8 @@ class _Dist:
         expon, uniform, laplace, poisson, geom; the others raise."""
         raise NotImplementedError(
             f"{type(self).__name__[1:].lower()}.fit() is not available in the "
-            "native core; use norm/expon/uniform/laplace, or fit by hand")
+            "native core; use norm/expon/uniform/laplace, or fit by hand"
+        )
 
     _support = (-_math.inf, _math.inf)
     _discrete = False
@@ -579,7 +596,7 @@ class _Dist:
 
     def __call__(self, *args, **kw):
         if type(self).__init__ is not object.__init__:
-            return self.__class__(*args, **kw)     # stores loc/scale itself
+            return self.__class__(*args, **kw)  # stores loc/scale itself
         # the classes whose methods take the parameters positionally get
         # scipy's frozen form through a binder, so st.laplace(0, 2).rvs(3)
         # works like st.norm(0, 2).rvs(3)
@@ -596,6 +613,7 @@ class _Dist:
         generator, as in numpy.
         """
         from . import _array_core as _ac
+
         rng = _rng_from(random_state)
         if size is None:
             return float(self.ppf(rng.random(), *args, **kw))
@@ -609,7 +627,7 @@ class _Dist:
         out = [float(self.ppf(rng.random(), *args, **kw)) for _ in range(n)]
         if len(dims) == 2:
             r, c = dims
-            return _ac.marr([out[i * c:(i + 1) * c] for i in range(r)])
+            return _ac.marr([out[i * c : (i + 1) * c] for i in range(r)])
         return _ac.marr(out)
 
     def sf(self, x, *args, **kw):
@@ -637,8 +655,10 @@ class _Dist:
             med = float(self.ppf(0.5, *args, **kw))
             lo = med
             hi = hi_b if hi_b != _math.inf else (_bi_abs(med) * 2.0 + 1.0)
-            return _invert(lambda x: float(self.cdf(x, *args, **kw)), lo, hi, q=v,
-                           sf=lambda x: float(self.sf(x, *args, **kw)))
+            return _invert(
+                lambda x: float(self.cdf(x, *args, **kw)), lo, hi, q=v, sf=lambda x: float(self.sf(x, *args, **kw))
+            )
+
         return _maybe_map(one, q)
 
     def logpdf(self, x, *args, **kw):
@@ -647,7 +667,9 @@ class _Dist:
             if p != p:
                 return _math.nan
             return _math.log(p) if p > 0 else -_math.inf
+
         return _maybe_map(one, x)
+
     def logcdf(self, x, *a, **k):
         # above the median log(cdf) is log(1 - sf): log1p(-sf) keeps the
         # digits that log(0.99999...) throws away
@@ -660,6 +682,7 @@ class _Dist:
             if c > 0.5 and has_sf:
                 return _math.log1p(-_scalar(self.sf(v, *a, **k)))
             return _math.log(c) if c > 0 else -_math.inf
+
         return _maybe_map(one, x)
 
     # -- the moment interface scipy gives every distribution: mean, var,
@@ -691,7 +714,7 @@ class _Dist:
         if self._discrete:
             lo, hi = self._bounds_for(*args, **kw)
             k = int(lo) if lo > -_math.inf else int(_scalar(self.ppf(1e-14, *args, **kw)))
-            kmax = int(hi) if hi < _math.inf else k + 10 ** 6
+            kmax = int(hi) if hi < _math.inf else k + 10**6
             total, mass = 0.0, 0.0
             while k <= kmax:
                 p = _scalar(self.pmf(k, *args, **kw))
@@ -706,11 +729,11 @@ class _Dist:
         def fx(v):
             p = _scalar(self.pdf(v, *args, **kw))
             return 0.0 if p != p else p * g(v)
+
         # knots at quantiles so a peaked or heavy-tailed density gets its
         # resolution where the mass is; adaptive Simpson on each piece
         knots = [lo]
-        for q in (1e-12, 1e-9, 1e-6, 1e-4, 1e-2, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 0.9999, 1.0 - 1e-6,
-                  1.0 - 1e-9):
+        for q in (1e-12, 1e-9, 1e-6, 1e-4, 1e-2, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 0.9999, 1.0 - 1e-6, 1.0 - 1e-9):
             v = _scalar(self.ppf(q, *args, **kw))
             if v == v and knots[-1] < v < hi:
                 knots.append(v)
@@ -735,24 +758,29 @@ class _Dist:
 
     def moment(self, order, *args, **kw):
         """Raw moment E[X**order]."""
-        return self.expect(lambda v: v ** order, *args, **kw)
+        return self.expect(lambda v: v**order, *args, **kw)
 
     def entropy(self, *args, **kw):
         if self._discrete:
-            return self.expect(lambda k: -_math.log(_scalar(self.pmf(k, *args, **kw)))
-                               if _scalar(self.pmf(k, *args, **kw)) > 0 else 0.0,
-                               *args, **kw)
-        return self.expect(lambda v: -_math.log(_scalar(self.pdf(v, *args, **kw)))
-                           if _scalar(self.pdf(v, *args, **kw)) > 0 else 0.0,
-                           *args, **kw)
+            return self.expect(
+                lambda k: (
+                    -_math.log(_scalar(self.pmf(k, *args, **kw))) if _scalar(self.pmf(k, *args, **kw)) > 0 else 0.0
+                ),
+                *args,
+                **kw,
+            )
+        return self.expect(
+            lambda v: -_math.log(_scalar(self.pdf(v, *args, **kw))) if _scalar(self.pdf(v, *args, **kw)) > 0 else 0.0,
+            *args,
+            **kw,
+        )
 
     def interval(self, confidence, *args, **kw):
         """Equal-tailed interval containing ``confidence`` of the mass."""
         c = float(confidence)
         if not 0.0 <= c <= 1.0:
             raise ValueError("confidence must be between 0 and 1")
-        return (_scalar(self.ppf((1.0 - c) / 2.0, *args, **kw)),
-                _scalar(self.ppf((1.0 + c) / 2.0, *args, **kw)))
+        return (_scalar(self.ppf((1.0 - c) / 2.0, *args, **kw)), _scalar(self.ppf((1.0 + c) / 2.0, *args, **kw)))
 
     def support(self, *args, **kw):
         return self._bounds_for(*args, **kw)
@@ -766,12 +794,10 @@ class _Dist:
                 out.append(self.var(*args, **kw))
             elif ch == "s":
                 mu, sd = self.mean(*args, **kw), self.std(*args, **kw)
-                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 3,
-                                       *args, **kw))
+                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 3, *args, **kw))
             elif ch == "k":
                 mu, sd = self.mean(*args, **kw), self.std(*args, **kw)
-                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 4,
-                                       *args, **kw) - 3.0)
+                out.append(self.expect(lambda v, mu=mu, sd=sd: ((v - mu) / sd) ** 4, *args, **kw) - 3.0)
             else:
                 raise ValueError("moments must be a combination of m, v, s, k")
         return tuple(out)
@@ -785,6 +811,7 @@ class _Dist:
             if sv > 0.5:
                 return _math.log1p(-_scalar(self.cdf(v, *a, **k)))
             return _math.log(sv) if sv > 0 else -_math.inf
+
         return _maybe_map(one, x)
 
 
@@ -793,8 +820,7 @@ class _Norm(_Dist):
         self.loc, self.scale = float(loc), float(scale)
 
     def _ls(self, loc, scale):
-        return (self.loc if loc is None else float(loc),
-                self.scale if scale is None else float(scale))
+        return (self.loc if loc is None else float(loc), self.scale if scale is None else float(scale))
 
     def mean(self, loc=None, scale=None):
         return self._ls(loc, scale)[0]
@@ -821,51 +847,42 @@ class _Norm(_Dist):
         # either argument alone overrides the frozen value (scipy's
         # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
         # silently dropped a scale passed without a loc
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_pdf(d._z(v)) / d.scale, x)
 
     def cdf(self, x, loc=None, scale=None):
         # either argument alone overrides the frozen value (scipy's
         # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
         # silently dropped a scale passed without a loc
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_cdf(d._z(v)), x)
 
     def sf(self, x, loc=None, scale=None):
         # 0.5 erfc(z / sqrt 2) directly: 1 - cdf cancels in the upper tail
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: _norm_cdf(-d._z(v)), x)
 
     def logpdf(self, x, loc=None, scale=None):
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
-        return _maybe_map(lambda v: -0.5 * d._z(v) ** 2 - 0.5 * _math.log(2.0 * _math.pi)
-                          - _math.log(d.scale), x)
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
+        return _maybe_map(lambda v: -0.5 * d._z(v) ** 2 - 0.5 * _math.log(2.0 * _math.pi) - _math.log(d.scale), x)
 
     def logcdf(self, x, loc=None, scale=None):
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: _log_ndtr(d._z(v)), x)
 
     def logsf(self, x, loc=None, scale=None):
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: _log_ndtr(-d._z(v)), x)
 
     def isf(self, q, loc=None, scale=None):
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: d.loc - d.scale * _norm_ppf(v), q)
 
     def ppf(self, q, loc=None, scale=None):
         # either argument alone overrides the frozen value (scipy's
         # norm.cdf(x, scale=s) keeps loc = 0); the old test on loc only
         # silently dropped a scale passed without a loc
-        d = self if loc is None and scale is None else _Norm(
-            *self._ls(loc, scale))
+        d = self if loc is None and scale is None else _Norm(*self._ls(loc, scale))
         return _maybe_map(lambda v: d.loc + d.scale * _norm_ppf(v), q)
 
     @staticmethod
@@ -880,12 +897,13 @@ class _Norm(_Dist):
         # arithmetic and die on `generator & mask`). loc/scale, as in
         # scipy norm.rvs(loc=, scale=, size=), override the frozen ones.
         return _rng_from(random_state).normal(
-            self.loc if loc is None else loc,
-            self.scale if scale is None else scale, size)
+            self.loc if loc is None else loc, self.scale if scale is None else scale, size
+        )
 
 
 class _Chi2(_Dist):
     _support = (0.0, _math.inf)
+
     def __init__(self, df=1.0):
         self.df = float(df)
 
@@ -897,20 +915,18 @@ class _Chi2(_Dist):
                 return 0.0
             if v == 0:
                 return _math.inf if k < 2 else (0.5 if k == 2 else 0.0)
-            ln = ((k / 2 - 1) * _math.log(v) - v / 2
-                  - (k / 2) * _math.log(2) - _math.lgamma(k / 2))
+            ln = (k / 2 - 1) * _math.log(v) - v / 2 - (k / 2) * _math.log(2) - _math.lgamma(k / 2)
             return _math.exp(ln)
+
         return _maybe_map(one, x)
 
     def cdf(self, x, df=None):
         k = self.df if df is None else float(df)
-        return _maybe_map(
-            lambda v: 0.0 if v <= 0 else _gammainc_p(k / 2.0, v / 2.0), x)
+        return _maybe_map(lambda v: 0.0 if v <= 0 else _gammainc_p(k / 2.0, v / 2.0), x)
 
     def sf(self, x, df=None):
         k = self.df if df is None else float(df)
-        return _maybe_map(
-            lambda v: 1.0 if v <= 0 else _gammainc_q(k / 2.0, v / 2.0), x)
+        return _maybe_map(lambda v: 1.0 if v <= 0 else _gammainc_q(k / 2.0, v / 2.0), x)
 
     def logpdf(self, x, df=None):
         k = self.df if df is None else float(df)
@@ -920,8 +936,8 @@ class _Chi2(_Dist):
                 return -_math.inf
             if v == 0:
                 return _math.inf if k < 2 else (_math.log(0.5) if k == 2 else -_math.inf)
-            return ((k / 2 - 1) * _math.log(v) - v / 2
-                    - (k / 2) * _math.log(2) - _math.lgamma(k / 2))
+            return (k / 2 - 1) * _math.log(v) - v / 2 - (k / 2) * _math.log(2) - _math.lgamma(k / 2)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, df=None):
@@ -929,8 +945,13 @@ class _Chi2(_Dist):
         return _maybe_map(
             lambda v: _ppf_from_cdf(
                 lambda t: 0.0 if t <= 0 else _gammainc_p(k / 2, t / 2),
-                v, 0.0, k + 10.0,
-                sf=lambda t: 1.0 if t <= 0 else _gammainc_q(k / 2, t / 2)), q)
+                v,
+                0.0,
+                k + 10.0,
+                sf=lambda t: 1.0 if t <= 0 else _gammainc_q(k / 2, t / 2),
+            ),
+            q,
+        )
 
     def mean(self, df=None):
         return self.df if df is None else float(df)
@@ -951,8 +972,7 @@ def _t_cornish_fisher(x, nu):
     g1 = (x2 + 1.0) * x / 4.0
     g2 = ((5.0 * x2 + 16.0) * x2 + 3.0) * x / 96.0
     g3 = (((3.0 * x2 + 19.0) * x2 + 17.0) * x2 - 15.0) * x / 384.0
-    g4 = ((((79.0 * x2 + 776.0) * x2 + 1482.0) * x2 - 1920.0) * x2
-          - 945.0) * x / 92160.0
+    g4 = ((((79.0 * x2 + 776.0) * x2 + 1482.0) * x2 - 1920.0) * x2 - 945.0) * x / 92160.0
     return x + (g1 + (g2 + (g3 + g4 / nu) / nu) / nu) / nu
 
 
@@ -969,9 +989,9 @@ class _T(_Dist):
             if k == _math.inf:
                 return _math.exp(-0.5 * v * v) / _math.sqrt(2.0 * _math.pi)
             # Gamma((k+1)/2) / (sqrt(k pi) Gamma(k/2)) = 1 / (sqrt(k) B(1/2, k/2))
-            ln = (-0.5 * _math.log(k) - _lbeta(0.5, k / 2.0)
-                  - (k + 1) / 2 * _math.log1p(v * v / k))
+            ln = -0.5 * _math.log(k) - _lbeta(0.5, k / 2.0) - (k + 1) / 2 * _math.log1p(v * v / k)
             return _math.exp(ln)
+
         return _maybe_map(one, x)
 
     def cdf(self, x, df=None):
@@ -998,8 +1018,7 @@ class _T(_Dist):
                 w = v if lower else -v
                 p_ = 0.5 * _math.erfc(-w / _math.sqrt(2.0))
                 for _ in range(8):
-                    step = (w - _t_cornish_fisher(float(norm.ppf(p_)), k)) \
-                        * self.pdf(w, df=k)
+                    step = (w - _t_cornish_fisher(float(norm.ppf(p_)), k)) * self.pdf(w, df=k)
                     p_ += step
                     if _bi.abs(step) <= 1e-17 * p_:
                         break
@@ -1013,6 +1032,7 @@ class _T(_Dist):
             else:
                 ib = _betainc(k / 2.0, 0.5, r * r / (1.0 + r * r) if r < 1e150 else 1.0)
             return 1.0 - 0.5 * ib if v > 0 else 0.5 * ib
+
         return _maybe_map(one, x)
 
     def ppf(self, q, df=None):
@@ -1021,7 +1041,7 @@ class _T(_Dist):
         def one(v):
             if v == 0.5:
                 return 0.0
-            if v > 0.5:                 # symmetry: invert the upper half
+            if v > 0.5:  # symmetry: invert the upper half
                 return -one(1.0 - v)
             if k == _math.inf:
                 return float(norm.ppf(v))
@@ -1029,8 +1049,8 @@ class _T(_Dist):
                 x = float(norm.ppf(v))
                 if _bi.abs(x) <= 10.0:
                     return _t_cornish_fisher(x, k)
-            return _ppf_from_cdf(lambda u: self.cdf(u, df=k), v,
-                                 -50.0 - _bi.min(k, 1e6), 0.0)
+            return _ppf_from_cdf(lambda u: self.cdf(u, df=k), v, -50.0 - _bi.min(k, 1e6), 0.0)
+
         return _maybe_map(one, q)
 
     def sf(self, x, df=None):
@@ -1044,8 +1064,8 @@ class _T(_Dist):
         def one(v):
             if k == _math.inf:
                 return -0.5 * v * v - 0.5 * _math.log(2.0 * _math.pi)
-            return (-0.5 * _math.log(k) - _lbeta(0.5, k / 2.0)
-                    - (k + 1) / 2 * _math.log1p(v * v / k))
+            return -0.5 * _math.log(k) - _lbeta(0.5, k / 2.0) - (k + 1) / 2 * _math.log1p(v * v / k)
+
         return _maybe_map(one, x)
 
     def isf(self, q, df=None):
@@ -1067,15 +1087,14 @@ class _T(_Dist):
 
 class _F(_Dist):
     _support = (0.0, _math.inf)
+
     def __init__(self, dfn=1.0, dfd=1.0):
         self.dfn, self.dfd = float(dfn), float(dfd)
 
     def cdf(self, x, dfn=None, dfd=None):
         d1 = self.dfn if dfn is None else float(dfn)
         d2 = self.dfd if dfd is None else float(dfd)
-        return _maybe_map(
-            lambda v: 0.0 if v <= 0 else _betainc(
-                d1 / 2.0, d2 / 2.0, d1 * v / (d1 * v + d2)), x)
+        return _maybe_map(lambda v: 0.0 if v <= 0 else _betainc(d1 / 2.0, d2 / 2.0, d1 * v / (d1 * v + d2)), x)
 
     def pdf(self, x, dfn=None, dfd=None):
         d1 = self.dfn if dfn is None else float(dfn)
@@ -1086,11 +1105,13 @@ class _F(_Dist):
                 return 0.0
             # d2 log d2 - d2 log(d1 v + d2) = -d2 log1p(d1 v / d2): no
             # cancellation at large d2; the beta function via _lbeta
-            ln = (0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2)
-                         - d2 * _math.log1p(d1 * v / d2))
-                  - _math.log(v)
-                  - _lbeta(d1 / 2.0, d2 / 2.0))
+            ln = (
+                0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2) - d2 * _math.log1p(d1 * v / d2))
+                - _math.log(v)
+                - _lbeta(d1 / 2.0, d2 / 2.0)
+            )
             return _math.exp(ln)
+
         return _maybe_map(one, x)
 
     def sf(self, x, dfn=None, dfd=None):
@@ -1098,9 +1119,7 @@ class _F(_Dist):
         d2 = self.dfd if dfd is None else float(dfd)
         # I_{d2 / (d2 + d1 x)}(d2/2, d1/2): the small argument formed
         # directly, not as 1 - d1 x / (d1 x + d2), which rounds at large x
-        return _maybe_map(
-            lambda v: 1.0 if v <= 0 else _betainc(
-                d2 / 2.0, d1 / 2.0, d2 / (d2 + d1 * v)), x)
+        return _maybe_map(lambda v: 1.0 if v <= 0 else _betainc(d2 / 2.0, d1 / 2.0, d2 / (d2 + d1 * v)), x)
 
     def logpdf(self, x, dfn=None, dfd=None):
         d1 = self.dfn if dfn is None else float(dfn)
@@ -1109,18 +1128,23 @@ class _F(_Dist):
         def one(v):
             if v <= 0:
                 return -_math.inf
-            return (0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2)
-                           - d2 * _math.log1p(d1 * v / d2))
-                    - _math.log(v) - _lbeta(d1 / 2.0, d2 / 2.0))
+            return (
+                0.5 * (d1 * _math.log(d1 * v) - d1 * _math.log(d1 * v + d2) - d2 * _math.log1p(d1 * v / d2))
+                - _math.log(v)
+                - _lbeta(d1 / 2.0, d2 / 2.0)
+            )
+
         return _maybe_map(one, x)
 
     def ppf(self, q, dfn=None, dfd=None):
         d1 = self.dfn if dfn is None else float(dfn)
         d2 = self.dfd if dfd is None else float(dfd)
         return _maybe_map(
-            lambda v: _ppf_from_cdf(lambda t: float(self.cdf(t, d1, d2)), v,
-                                    0.0, 10.0,
-                                    sf=lambda t: float(self.sf(t, d1, d2))), q)
+            lambda v: _ppf_from_cdf(
+                lambda t: float(self.cdf(t, d1, d2)), v, 0.0, 10.0, sf=lambda t: float(self.sf(t, d1, d2))
+            ),
+            q,
+        )
 
     def mean(self, dfn=None, dfd=None):
         d2 = self.dfd if dfd is None else float(dfd)
@@ -1141,8 +1165,7 @@ def _digamma(x):
         r -= 1.0 / x
         x += 1.0
     f = 1.0 / (x * x)
-    return r + _math.log(x) - 0.5 / x - f * (1.0 / 12 - f * (1.0 / 120 - f * (
-        1.0 / 252 - f * (1.0 / 240 - f / 132))))
+    return r + _math.log(x) - 0.5 / x - f * (1.0 / 12 - f * (1.0 / 120 - f * (1.0 / 252 - f * (1.0 / 240 - f / 132))))
 
 
 def _trigamma(x):
@@ -1152,12 +1175,12 @@ def _trigamma(x):
         r += 1.0 / (x * x)
         x += 1.0
     f = 1.0 / (x * x)
-    return r + 1.0 / x + f / 2.0 + (1.0 / x) * f * (1.0 / 6 - f * (
-        1.0 / 30 - f * (1.0 / 42 - f / 30)))
+    return r + 1.0 / x + f / 2.0 + (1.0 / x) * f * (1.0 / 6 - f * (1.0 / 30 - f * (1.0 / 42 - f / 30)))
 
 
 class _Gamma(_Dist):
     _support = (0.0, _math.inf)
+
     def __init__(self, a=1.0, loc=0.0, scale=1.0):
         self.a, self.loc, self.scale = float(a), float(loc), float(scale)
 
@@ -1175,8 +1198,8 @@ class _Gamma(_Dist):
         del args, kw
         if floc is None:
             raise NotImplementedError(
-                "gamma.fit needs floc= (a fixed location); the free-location "
-                "fit is not implemented in the native core")
+                "gamma.fit needs floc= (a fixed location); the free-location fit is not implemented in the native core"
+            )
         x = [float(v) - float(floc) for v in _flatten(data)]
         if not x or any(not v > 0 for v in x):
             raise ValueError("gamma.fit: every observation must exceed floc")
@@ -1195,8 +1218,7 @@ class _Gamma(_Dist):
             return (a, float(floc), float(fscale))
         s = _math.log(mean) - _bi.sum(_math.log(v) for v in x) / n
         if s <= 0:
-            raise ValueError("gamma.fit: all observations are equal, so the "
-                             "shape is unbounded")
+            raise ValueError("gamma.fit: all observations are equal, so the shape is unbounded")
         a = (3.0 - s + _math.sqrt((s - 3.0) ** 2 + 24.0 * s)) / (12.0 * s)
         for _ in range(100):
             f = _math.log(a) - _digamma(a) - s
@@ -1212,8 +1234,7 @@ class _Gamma(_Dist):
         aa = self.a if a is None else float(a)
         lo = self.loc if a is None else float(loc)
         sc = self.scale if a is None else float(scale)
-        return _maybe_map(
-            lambda v: 0.0 if v <= lo else _gammainc_p(aa, (v - lo) / sc), x)
+        return _maybe_map(lambda v: 0.0 if v <= lo else _gammainc_p(aa, (v - lo) / sc), x)
 
     def pdf(self, x, a=None, loc=0.0, scale=1.0):
         aa = self.a if a is None else float(a)
@@ -1235,14 +1256,14 @@ class _Gamma(_Dist):
                 return 0.0
             ln = (aa - 1) * _math.log(z) - z - _math.lgamma(aa)
             return _math.exp(ln) / sc
+
         return _maybe_map(one, x)
 
     def sf(self, x, a=None, loc=0.0, scale=1.0):
         aa = self.a if a is None else float(a)
         lo = self.loc if a is None else float(loc)
         sc = self.scale if a is None else float(scale)
-        return _maybe_map(
-            lambda v: 1.0 if v <= lo else _gammainc_q(aa, (v - lo) / sc), x)
+        return _maybe_map(lambda v: 1.0 if v <= lo else _gammainc_q(aa, (v - lo) / sc), x)
 
     def logpdf(self, x, a=None, loc=0.0, scale=1.0):
         aa = self.a if a is None else float(a)
@@ -1256,6 +1277,7 @@ class _Gamma(_Dist):
             if z == 0:
                 return _math.inf if aa < 1 else (-_math.log(sc) if aa == 1 else -_math.inf)
             return (aa - 1) * _math.log(z) - z - _math.lgamma(aa) - _math.log(sc)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, a=None, loc=0.0, scale=1.0):
@@ -1263,10 +1285,19 @@ class _Gamma(_Dist):
         lo = self.loc if a is None else float(loc)
         sc = self.scale if a is None else float(scale)
         return _maybe_map(
-            lambda v: lo + sc * _ppf_from_cdf(
-                lambda t: 0.0 if t <= 0 else _gammainc_p(aa, t),
-                v, 0.0, aa + 10.0,
-                sf=lambda t: 1.0 if t <= 0 else _gammainc_q(aa, t)), q)
+            lambda v: (
+                lo
+                + sc
+                * _ppf_from_cdf(
+                    lambda t: 0.0 if t <= 0 else _gammainc_p(aa, t),
+                    v,
+                    0.0,
+                    aa + 10.0,
+                    sf=lambda t: 1.0 if t <= 0 else _gammainc_q(aa, t),
+                )
+            ),
+            q,
+        )
 
     def mean(self, a=None, loc=0.0, scale=1.0):
         a = getattr(self, "a", 1.0) if a is None else float(a)
@@ -1285,8 +1316,10 @@ class _Beta(_Dist):
     _support = (0.0, 1.0)
 
     def _ab(self, a, b):
-        return (getattr(self, "a", None) if a is None else float(a),
-                getattr(self, "b", None) if b is None else float(b))
+        return (
+            getattr(self, "a", None) if a is None else float(a),
+            getattr(self, "b", None) if b is None else float(b),
+        )
 
     def mean(self, a=None, b=None):
         a, b = self._ab(a, b)
@@ -1307,8 +1340,7 @@ class _Beta(_Dist):
     def cdf(self, x, a=None, b=None):
         aa = self.a if a is None else float(a)
         bb = self.b if b is None else float(b)
-        return _maybe_map(
-            lambda v: _betainc(aa, bb, min(max(v, 0.0), 1.0)), x)
+        return _maybe_map(lambda v: _betainc(aa, bb, min(max(v, 0.0), 1.0)), x)
 
     def pdf(self, x, a=None, b=None):
         aa = self.a if a is None else float(a)
@@ -1317,17 +1349,21 @@ class _Beta(_Dist):
         def one(v):
             if not 0.0 < v < 1.0:
                 return 0.0
-            ln = (_math.lgamma(aa + bb) - _math.lgamma(aa)
-                  - _math.lgamma(bb) + (aa - 1) * _math.log(v)
-                  + (bb - 1) * _math.log1p(-v))
+            ln = (
+                _math.lgamma(aa + bb)
+                - _math.lgamma(aa)
+                - _math.lgamma(bb)
+                + (aa - 1) * _math.log(v)
+                + (bb - 1) * _math.log1p(-v)
+            )
             return _math.exp(ln)
+
         return _maybe_map(one, x)
 
     def sf(self, x, a=None, b=None):
         aa = self.a if a is None else float(a)
         bb = self.b if b is None else float(b)
-        return _maybe_map(
-            lambda v: _betaincc(aa, bb, min(max(v, 0.0), 1.0)), x)
+        return _maybe_map(lambda v: _betaincc(aa, bb, min(max(v, 0.0), 1.0)), x)
 
     def logpdf(self, x, a=None, b=None):
         aa = self.a if a is None else float(a)
@@ -1336,21 +1372,28 @@ class _Beta(_Dist):
         def one(v):
             if not 0.0 < v < 1.0:
                 return -_math.inf
-            return (-_lbeta(aa, bb) + (aa - 1) * _math.log(v)
-                    + (bb - 1) * _math.log1p(-v))
+            return -_lbeta(aa, bb) + (aa - 1) * _math.log(v) + (bb - 1) * _math.log1p(-v)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, a=None, b=None):
         aa = self.a if a is None else float(a)
         bb = self.b if b is None else float(b)
         return _maybe_map(
-            lambda v: _ppf_from_cdf(lambda t: _betainc(aa, bb, min(max(t, 0.0), 1.0)), v,
-                                    0.0, 1.0,
-                                    sf=lambda t: _betaincc(aa, bb, min(max(t, 0.0), 1.0))), q)
+            lambda v: _ppf_from_cdf(
+                lambda t: _betainc(aa, bb, min(max(t, 0.0), 1.0)),
+                v,
+                0.0,
+                1.0,
+                sf=lambda t: _betaincc(aa, bb, min(max(t, 0.0), 1.0)),
+            ),
+            q,
+        )
 
 
 class _Binom(_Dist):
     _discrete = True
+
     def _bounds(self, n=None, p=None):
         nn = n if n is not None else getattr(self, "_n", None)
         return (0.0, float(nn) if nn is not None else _math.inf)
@@ -1381,12 +1424,13 @@ class _Binom(_Dist):
 
     def pmf(self, k, n=None, p=None):
         n, p = self._resolve(n, p)
+
         def one(kk):
             kk = int(round(kk))
             if kk < 0 or kk > n:
                 return 0.0
-            return (_math.comb(int(n), kk) * p ** kk
-                    * (1.0 - p) ** (int(n) - kk))
+            return _math.comb(int(n), kk) * p**kk * (1.0 - p) ** (int(n) - kk)
+
         return _maybe_map(one, k)
 
     def cdf(self, k, n=None, p=None):
@@ -1400,8 +1444,8 @@ class _Binom(_Dist):
                 return 1.0
             # I_{1-p}(n-k, k+1)
             return _betainc(n - kk, kk + 1, 1.0 - p)
-        return _maybe_map(one, k)
 
+        return _maybe_map(one, k)
 
     def logpmf(self, k, n=None, p=None):
         n, p = self._resolve(n, p)
@@ -1414,9 +1458,14 @@ class _Binom(_Dist):
                 return 0.0 if kk == 0 else float("-inf")
             if p == 1.0:
                 return 0.0 if kk == n else float("-inf")
-            return (_math.lgamma(n + 1) - _math.lgamma(kk + 1)
-                    - _math.lgamma(n - kk + 1)
-                    + kk * _math.log(p) + (n - kk) * _math.log1p(-p))
+            return (
+                _math.lgamma(n + 1)
+                - _math.lgamma(kk + 1)
+                - _math.lgamma(n - kk + 1)
+                + kk * _math.log(p)
+                + (n - kk) * _math.log1p(-p)
+            )
+
         return _maybe_map(one, k)
 
     def ppf(self, q, n=None, p=None):
@@ -1431,13 +1480,12 @@ class _Binom(_Dist):
                 return float(n)
             c = 0.0
             for kk in range(n + 1):
-                c += (_math.comb(n, kk) * p ** kk
-                      * (1.0 - p) ** (n - kk))
+                c += _math.comb(n, kk) * p**kk * (1.0 - p) ** (n - kk)
                 if c >= qq - 1e-12:
                     return float(kk)
             return float(n)
-        return _maybe_map(one, q)
 
+        return _maybe_map(one, q)
 
     def sf(self, k, n=None, p=None):
         # P(X > k) = I_p(k + 1, n - k), formed directly (1 - cdf loses it)
@@ -1450,12 +1498,14 @@ class _Binom(_Dist):
             if kk >= n:
                 return 0.0
             return _betainc(kk + 1.0, float(n - kk), p)
+
         return _maybe_map(one, k)
 
 
 class _Poisson(_Dist):
     _support = (0.0, _math.inf)
     _discrete = True
+
     # supports both scipy call styles: poisson.pmf(k, mu) and the
     # frozen form poisson(mu).pmf(k)
     def __init__(self, mu=None):
@@ -1478,13 +1528,13 @@ class _Poisson(_Dist):
 
     def pmf(self, k, mu=None):
         mu = self._resolve(mu)
+
         def one(kk):
             kk = int(round(kk))
             if kk < 0:
                 return 0.0
-            return _math.exp(kk * _math.log(mu) - mu
-                             - _math.lgamma(kk + 1)) if mu > 0 \
-                else (1.0 if kk == 0 else 0.0)
+            return _math.exp(kk * _math.log(mu) - mu - _math.lgamma(kk + 1)) if mu > 0 else (1.0 if kk == 0 else 0.0)
+
         return _maybe_map(one, k)
 
     def cdf(self, k, mu=None):
@@ -1496,8 +1546,8 @@ class _Poisson(_Dist):
                 return 0.0
             # Q(k+1, mu) regularized upper
             return 1.0 - _gammainc_p(kk + 1.0, mu)
-        return _maybe_map(one, k)
 
+        return _maybe_map(one, k)
 
     def logpmf(self, k, mu=None):
         if _is_arraylike(mu):
@@ -1512,6 +1562,7 @@ class _Poisson(_Dist):
             if mu <= 0:
                 return 0.0 if kk == 0 else float("-inf")
             return kk * _math.log(mu) - mu - _math.lgamma(kk + 1)
+
         return _maybe_map(one, k)
 
     def ppf(self, q, mu=None):
@@ -1533,6 +1584,7 @@ class _Poisson(_Dist):
                 if kk > 10_000_000:
                     return float("nan")
             return float(kk)
+
         return _maybe_map(one, q)
 
     def sf(self, k, mu=None):
@@ -1559,14 +1611,12 @@ class _Uniform(_Dist):
     def pdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
-        return _maybe_map(
-            lambda v: 1.0 / sc if lo <= v <= lo + sc else 0.0, x)
+        return _maybe_map(lambda v: 1.0 / sc if lo <= v <= lo + sc else 0.0, x)
 
     def cdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
-        return _maybe_map(
-            lambda v: min(max((v - lo) / sc, 0.0), 1.0), x)
+        return _maybe_map(lambda v: min(max((v - lo) / sc, 0.0), 1.0), x)
 
     def ppf(self, q, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
@@ -1588,6 +1638,7 @@ class _Uniform(_Dist):
             if v >= lo + sc:
                 return -_math.inf
             return _math.log1p(-(v - lo) / sc)
+
         return _maybe_map(one, x)
 
     def mean(self, loc=None, scale=None):
@@ -1616,14 +1667,12 @@ class _Expon(_Dist):
     def pdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
-        return _maybe_map(
-            lambda v: _math.exp(-(v - lo) / sc) / sc if v >= lo else 0.0, x)
+        return _maybe_map(lambda v: _math.exp(-(v - lo) / sc) / sc if v >= lo else 0.0, x)
 
     def cdf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
         sc = self.scale if scale is None else float(scale)
-        return _maybe_map(
-            lambda v: 0.0 if v < lo else -_math.expm1(-(v - lo) / sc), x)
+        return _maybe_map(lambda v: 0.0 if v < lo else -_math.expm1(-(v - lo) / sc), x)
 
     def sf(self, x, loc=None, scale=None):
         lo = self.loc if loc is None else float(loc)
@@ -1660,6 +1709,7 @@ class _Expon(_Dist):
             z = (v - lo) / sc
             # log(1 - e^-z): log(-expm1(-z)) near 0, log1p(-e^-z) far out
             return _math.log(-_math.expm1(-z)) if z < _math.log(2.0) else _math.log1p(-_math.exp(-z))
+
         return _maybe_map(one, x)
 
     def mean(self, loc=None, scale=None):
@@ -1684,17 +1734,20 @@ expon = _Expon()
 
 def sem(x, ddof=1):
     from . import _array_core as _ac
+
     a = _ac.asarray(x)
     return a.std(ddof=ddof) / _math.sqrt(a.size)
 
 
 def zscore(x, ddof=0):
     from . import _array_core as _ac
+
     a = _ac.asarray(x)
     return (a - a.mean()) / a.std(ddof=ddof)
 
 
 # ===================================================== helpers (tail)
+
 
 def _flatten(x):
     if hasattr(x, "_flat"):
@@ -1735,6 +1788,7 @@ class _TestResult(tuple):
 
 # ---------------------------------------------------- rank / correlation
 
+
 def rankdata(a, method="average"):
     v = _flatten(a)
     order = sorted(range(len(v)), key=lambda i: v[i])
@@ -1761,6 +1815,7 @@ def rankdata(a, method="average"):
             raise ValueError(f"unsupported method {method!r}")
         i = j + 1
     from . import _array_core as _ac
+
     return _ac.marr(ranks)
 
 
@@ -1837,12 +1892,14 @@ def kendalltau(x, y, alternative="two-sided", variant="b", **kw):
             else:
                 disc += 1
     n0 = n * (n - 1) / 2.0
+
     # tie counts per group for tau-b denominator
     def tie_term(v):
         counts = {}
         for u in v:
             counts[u] = counts.get(u, 0) + 1
         return _math.fsum(c * (c - 1) / 2.0 for c in counts.values())
+
     n1, n2 = tie_term(x), tie_term(y)
     denom = _math.sqrt((n0 - n1) * (n0 - n2))
     tau = (conc - disc) / denom if denom > 0 else float("nan")
@@ -1866,23 +1923,27 @@ def kendalltau(x, y, alternative="two-sided", variant="b", **kw):
             counts = new
         total = _math.factorial(n)
         d = _bi.min(conc, disc)
-        p_low = _math.fsum(counts[:d + 1]) / total
+        p_low = _math.fsum(counts[: d + 1]) / total
         return _TestResult(tau, _one_sided(_bi.min(1.0, 2.0 * p_low), tau, alternative))
+
     # asymptotic with the tie-corrected variance (Kendall 1970; scipy)
     def tie_sizes(v):
         c = {}
         for u in v:
             c[u] = c.get(u, 0) + 1
         return [k for k in c.values() if k > 1]
+
     tx_, ty_ = tie_sizes(x), tie_sizes(y)
     v0 = n * (n - 1) * (2 * n + 5)
     vt = _math.fsum(k * (k - 1) * (2 * k + 5) for k in tx_)
     vu = _math.fsum(k * (k - 1) * (2 * k + 5) for k in ty_)
-    v1 = (_math.fsum(k * (k - 1) for k in tx_) * _math.fsum(k * (k - 1) for k in ty_)) \
-        / (2.0 * n * (n - 1))
-    v2 = (_math.fsum(k * (k - 1) * (k - 2) for k in tx_)
-          * _math.fsum(k * (k - 1) * (k - 2) for k in ty_)) \
-        / (9.0 * n * (n - 1) * (n - 2)) if n > 2 else 0.0
+    v1 = (_math.fsum(k * (k - 1) for k in tx_) * _math.fsum(k * (k - 1) for k in ty_)) / (2.0 * n * (n - 1))
+    v2 = (
+        (_math.fsum(k * (k - 1) * (k - 2) for k in tx_) * _math.fsum(k * (k - 1) * (k - 2) for k in ty_))
+        / (9.0 * n * (n - 1) * (n - 2))
+        if n > 2
+        else 0.0
+    )
     var = (v0 - vt - vu) / 18.0 + v1 + v2
     z = (conc - disc) / _math.sqrt(var) if var > 0 else 0.0
     p = 2.0 * norm.sf(abs(z))
@@ -1902,13 +1963,11 @@ def linregress(x, y=None):
     if n > 2 and abs(r) < 1.0:
         tstat = r * _math.sqrt((n - 2) / (1.0 - r * r))
         p = 2.0 * t.sf(abs(tstat), n - 2)
-        resid = _math.fsum((y[i] - intercept - slope * x[i]) ** 2
-                           for i in range(n))
+        resid = _math.fsum((y[i] - intercept - slope * x[i]) ** 2 for i in range(n))
         stderr = _math.sqrt(resid / (n - 2) / sxx)
     else:
         p, stderr = 0.0, 0.0
-    intercept_stderr = stderr * _math.sqrt(_math.fsum(a * a for a in x) / n) \
-        if n > 2 else 0.0
+    intercept_stderr = stderr * _math.sqrt(_math.fsum(a * a for a in x) / n) if n > 2 else 0.0
     return _LinregressResult(slope, intercept, r, p, stderr, intercept_stderr)
 
 
@@ -1926,6 +1985,7 @@ class _LinregressResult(tuple):
 
 # ---------------------------------------------------- descriptive
 
+
 def _by_axis(fn, a, axis):
     """Apply a 1-D statistic down `axis` of a 2-D input.
 
@@ -1934,11 +1994,11 @@ def _by_axis(fn, a, axis):
     axis=0 and axis=1 make sense for the 2-D inputs used here; None
     keeps the previous flatten-everything behaviour.
     """
-    rows = [list(r) for r in a.tolist()] if hasattr(a, "tolist") else \
-        [list(r) for r in a]
+    rows = [list(r) for r in a.tolist()] if hasattr(a, "tolist") else [list(r) for r in a]
     if not rows or not isinstance(rows[0], list):
         return fn(rows)
     from . import _array_core as _ac2
+
     if axis == 0:
         cols = list(zip(*rows))
         return _ac2.marr([fn(list(c)) for c in cols])
@@ -1957,7 +2017,7 @@ def skew(a, bias=True, axis=None):
     m3 = _math.fsum((u - m) ** 3 for u in v) / n
     if m2 == 0:
         return 0.0
-    g1 = m3 / m2 ** 1.5
+    g1 = m3 / m2**1.5
     if bias or n < 3:
         return g1
     return g1 * _math.sqrt(n * (n - 1)) / (n - 2)
@@ -1965,8 +2025,7 @@ def skew(a, bias=True, axis=None):
 
 def kurtosis(a, fisher=True, bias=True, axis=None):
     if axis is not None:
-        return _by_axis(lambda v: kurtosis(v, fisher=fisher, bias=bias),
-                        a, axis)
+        return _by_axis(lambda v: kurtosis(v, fisher=fisher, bias=bias), a, axis)
     v = _flatten(a)
     n = len(v)
     m = _mean(v)
@@ -1993,12 +2052,11 @@ def hmean(a):
 def trim_mean(a, proportiontocut):
     v = sorted(_flatten(a))
     k = int(len(v) * proportiontocut)
-    core = v[k:len(v) - k] if k > 0 else v
+    core = v[k : len(v) - k] if k > 0 else v
     return _mean(core)
 
 
-def iqr(x, axis=None, rng=(25, 75), scale=1.0, nan_policy="propagate",
-        interpolation="linear", keepdims=False):
+def iqr(x, axis=None, rng=(25, 75), scale=1.0, nan_policy="propagate", interpolation="linear", keepdims=False):
     """scipy.stats.iqr over the whole sample (axis=None).
 
     ``interpolation`` follows numpy's percentile methods: linear, lower,
@@ -2009,8 +2067,7 @@ def iqr(x, axis=None, rng=(25, 75), scale=1.0, nan_policy="propagate",
     """
     del keepdims
     if axis is not None:
-        raise NotImplementedError("iqr: axis is not supported; the native "
-                                  "core computes over the whole sample")
+        raise NotImplementedError("iqr: axis is not supported; the native core computes over the whole sample")
     v = [float(t) for t in _flatten(x)]
     if any(_math.isnan(t) for t in v):
         if nan_policy == "raise":
@@ -2042,8 +2099,8 @@ def iqr(x, axis=None, rng=(25, 75), scale=1.0, nan_policy="propagate",
         if interpolation == "nearest":
             # numpy rounds half to even on the fractional index
             return v[int(round(h))]
-        raise ValueError("interpolation must be linear, lower, higher, "
-                         "midpoint or nearest")
+        raise ValueError("interpolation must be linear, lower, higher, midpoint or nearest")
+
     out = q(hi_p) - q(lo_p)
     if isinstance(scale, str):
         if scale != "normal":
@@ -2069,17 +2126,16 @@ class _DescribeResult(tuple):
         return obj
 
     def __repr__(self):
-        return "DescribeResult({})".format(", ".join(
-            f"{k}={getattr(self, k)!r}" for k in self._fields))
+        return "DescribeResult({})".format(", ".join(f"{k}={getattr(self, k)!r}" for k in self._fields))
 
 
 def describe(a, ddof=1):
     v = _flatten(a)
-    return _DescribeResult(len(v), (min(v), max(v)), _mean(v),
-                           _var(v, ddof=ddof), skew(v), kurtosis(v))
+    return _DescribeResult(len(v), (min(v), max(v)), _mean(v), _var(v, ddof=ddof), skew(v), kurtosis(v))
 
 
 # ---------------------------------------------------- t / rank tests
+
 
 def _t_pvalue(stat, df, alternative):
     if alternative == "greater":
@@ -2100,8 +2156,7 @@ def ttest_1samp(a, popmean, alternative="two-sided"):
     stat = no_spread if se == 0.0 else d / se
     if stat != stat:
         return _TestResult(stat, float("nan"), df=n - 1)
-    return _TestResult(stat, _t_pvalue(stat, n - 1, alternative),
-                       df=n - 1)
+    return _TestResult(stat, _t_pvalue(stat, n - 1, alternative), df=n - 1)
 
 
 def ttest_ind(a, b, equal_var=True, alternative="two-sided"):
@@ -2114,8 +2169,7 @@ def ttest_ind(a, b, equal_var=True, alternative="two-sided"):
         df = n1 + n2 - 2
     else:
         se = _math.sqrt(v1 / n1 + v2 / n2)
-        df = (v1 / n1 + v2 / n2) ** 2 / (
-            (v1 / n1) ** 2 / (n1 - 1) + (v2 / n2) ** 2 / (n2 - 1))
+        df = (v1 / n1 + v2 / n2) ** 2 / ((v1 / n1) ** 2 / (n1 - 1) + (v2 / n2) ** 2 / (n2 - 1))
     stat = (_mean(x) - _mean(y)) / se
     return _TestResult(stat, _t_pvalue(stat, df, alternative), df=df)
 
@@ -2125,30 +2179,28 @@ def ttest_rel(a, b, alternative="two-sided", **kw):
     x, y = _flatten(a), _flatten(b)
     if len(x) != len(y):
         raise ValueError("unequal length arrays")
-    return ttest_1samp([u - w for u, w in zip(x, y)], 0.0,
-                       alternative=alternative)
+    return ttest_1samp([u - w for u, w in zip(x, y)], 0.0, alternative=alternative)
 
 
 def _mwu_exact_counts(n1, n2):
     """Number of orderings giving each U in 0..n1*n2 (no ties):
     f(n1, n2, u) = f(n1 - 1, n2, u - n2) + f(n1, n2 - 1, u)."""
-    prev = [[1] for _ in range(n2 + 1)]          # n1 = 0: U = 0 only
+    prev = [[1] for _ in range(n2 + 1)]  # n1 = 0: U = 0 only
     for i in range(1, n1 + 1):
-        cur = [[1]]                               # n2 = 0: U = 0 only
+        cur = [[1]]  # n2 = 0: U = 0 only
         for j in range(1, n2 + 1):
             size = i * j + 1
             row = [0] * size
-            for u, c in enumerate(prev[j]):       # f(i-1, j, u - j)
+            for u, c in enumerate(prev[j]):  # f(i-1, j, u - j)
                 row[u + j] += c
-            for u, c in enumerate(cur[j - 1]):    # f(i, j-1, u)
+            for u, c in enumerate(cur[j - 1]):  # f(i, j-1, u)
                 row[u] += c
             cur.append(row)
         prev = cur
     return prev[n2]
 
 
-def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True,
-                 method="auto", **kw):
+def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True, method="auto", **kw):
     """scipy.stats.mannwhitneyu: the statistic is U1; 'auto' uses the
     exact null distribution when both samples have at most 8 values and
     there are no ties, else the tie-corrected normal approximation with
@@ -2176,11 +2228,11 @@ def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True,
         cnt = _mwu_exact_counts(n1, n2)
         tot = _math.fsum(cnt)
         k = int(round(U))
-        p = _math.fsum(cnt[k:]) / tot             # P(U_null >= U)
+        p = _math.fsum(cnt[k:]) / tot  # P(U_null >= U)
     else:
         mu = n1 * n2 / 2.0
         n = n1 + n2
-        tie = _math.fsum(c ** 3 - c for c in counts.values())
+        tie = _math.fsum(c**3 - c for c in counts.values())
         sig = _math.sqrt(n1 * n2 / 12.0 * ((n + 1) - tie / (n * (n - 1))))
         z = (U - mu - (0.5 if use_continuity else 0.0)) / sig
         p = norm.sf(z)
@@ -2189,8 +2241,7 @@ def mannwhitneyu(x, y, alternative="two-sided", use_continuity=True,
     return _TestResult(u1, _bi.min(1.0, _bi.max(0.0, p)))
 
 
-def wilcoxon(x, y=None, zero_method="wilcox", correction=False,
-             alternative="two-sided", method="auto", **kw):
+def wilcoxon(x, y=None, zero_method="wilcox", correction=False, alternative="two-sided", method="auto", **kw):
     """Wilcoxon signed-rank test with scipy.stats.wilcoxon's rules.
 
     ``method="auto"`` is exact when there are no ties and no zeros and
@@ -2258,8 +2309,8 @@ def wilcoxon(x, y=None, zero_method="wilcox", correction=False,
         else:
             lo_k = int(_math.floor(w2 + 1e-9))
             hi_k = int(_math.ceil(w2 - 1e-9))
-        p_le = _math.fsum(dist[:_bi.max(0, _bi.min(lo_k, total)) + 1]) / scale if lo_k >= 0 else 0.0
-        p_ge = _math.fsum(dist[_bi.max(0, hi_k):]) / scale if hi_k <= total else 0.0
+        p_le = _math.fsum(dist[: _bi.max(0, _bi.min(lo_k, total)) + 1]) / scale if lo_k >= 0 else 0.0
+        p_ge = _math.fsum(dist[_bi.max(0, hi_k) :]) / scale if hi_k <= total else 0.0
         if alternative == "less":
             p = p_le
         elif alternative == "greater":
@@ -2272,14 +2323,19 @@ def wilcoxon(x, y=None, zero_method="wilcox", correction=False,
     if zero_method == "pratt":
         mn -= n_zero * (n_zero + 1) / 4.0
         var -= n_zero * (n_zero + 1) * (2 * n_zero + 1)
-    tie = _math.fsum(c ** 3 - c for c in groups.values())
+    tie = _math.fsum(c**3 - c for c in groups.values())
     se = _math.sqrt((var - tie / 2.0) / 24.0) if var - tie / 2.0 > 0 else 0.0
     if se == 0.0:
         return _TestResult(stat, _math.nan)
     z = (wplus - mn) / se
     if correction:
-        sgn = 1.0 if alternative == "greater" else -1.0 if alternative == "less" \
+        sgn = (
+            1.0
+            if alternative == "greater"
+            else -1.0
+            if alternative == "less"
             else (1.0 if z > 0 else -1.0 if z < 0 else 0.0)
+        )
         z -= sgn * 0.5 / se
     if alternative == "greater":
         p = norm.sf(z)
@@ -2299,15 +2355,15 @@ def kruskal(*groups):
     i = 0
     for g in gs:
         ni = len(g)
-        ri = _math.fsum(ranks[i:i + ni])
+        ri = _math.fsum(ranks[i : i + ni])
         h += ri * ri / ni
         i += ni
     h = 12.0 / (n * (n + 1)) * h - 3.0 * (n + 1)
     counts = {}
     for v in all_v:
         counts[v] = counts.get(v, 0) + 1
-    tie = _math.fsum(c ** 3 - c for c in counts.values())
-    h /= (1.0 - tie / (n ** 3 - n))
+    tie = _math.fsum(c**3 - c for c in counts.values())
+    h /= 1.0 - tie / (n**3 - n)
     df = len(gs) - 1
     return _TestResult(h, chi2.sf(h, df))
 
@@ -2318,8 +2374,7 @@ def f_oneway(*groups):
     n = sum(len(g) for g in gs)
     grand = _math.fsum(_math.fsum(g) for g in gs) / n
     ssb = _math.fsum(len(g) * (_mean(g) - grand) ** 2 for g in gs)
-    ssw = _math.fsum(_math.fsum((v - _mean(g)) ** 2 for v in g)
-                     for g in gs)
+    ssw = _math.fsum(_math.fsum((v - _mean(g)) ** 2 for v in g) for g in gs)
     dfb, dfw = k - 1, n - k
     if dfw <= 0 or (ssw == 0.0 and ssb == 0.0):
         # scipy: constant input (or no within-group df) yields nan
@@ -2335,9 +2390,10 @@ def f_oneway(*groups):
 def levene(*groups, center="median"):
     gs = [_flatten(g) for g in groups]
     if center == "median":
-        cs = [sorted(g)[len(g) // 2] if len(g) % 2 else
-              0.5 * (sorted(g)[len(g) // 2 - 1] + sorted(g)[len(g) // 2])
-              for g in gs]
+        cs = [
+            sorted(g)[len(g) // 2] if len(g) % 2 else 0.5 * (sorted(g)[len(g) // 2 - 1] + sorted(g)[len(g) // 2])
+            for g in gs
+        ]
     else:
         cs = [_mean(g) for g in gs]
     zs = [[abs(v - c) for v in g] for g, c in zip(gs, cs)]
@@ -2346,10 +2402,10 @@ def levene(*groups, center="median"):
 
 # ---------------------------------------------------- chi-square family
 
+
 def chisquare(f_obs, f_exp=None):
     o = _flatten(f_obs)
-    e = _flatten(f_exp) if f_exp is not None \
-        else [_math.fsum(o) / len(o)] * len(o)
+    e = _flatten(f_exp) if f_exp is not None else [_math.fsum(o) / len(o)] * len(o)
     stat = _math.fsum((a - b) ** 2 / b for a, b in zip(o, e))
     return _TestResult(stat, chi2.sf(stat, len(o) - 1))
 
@@ -2367,25 +2423,26 @@ class _Chi2ContingencyResult(tuple):
         return self
 
 
-_CRESSIE_READ = {"pearson": 1.0, "log-likelihood": 0.0,
-                 "freeman-tukey": -0.5, "mod-log-likelihood": -1.0,
-                 "neyman": -2.0, "cressie-read": 2.0 / 3.0}
+_CRESSIE_READ = {
+    "pearson": 1.0,
+    "log-likelihood": 0.0,
+    "freeman-tukey": -0.5,
+    "mod-log-likelihood": -1.0,
+    "neyman": -2.0,
+    "cressie-read": 2.0 / 3.0,
+}
 
 
 def _power_divergence_stat(obs, exp, lambda_):
     """Cressie-Read statistic for one pair of flat sequences."""
-    lam = _CRESSIE_READ[lambda_] if isinstance(lambda_, str) else (
-        1.0 if lambda_ is None else float(lambda_))
+    lam = _CRESSIE_READ[lambda_] if isinstance(lambda_, str) else (1.0 if lambda_ is None else float(lambda_))
     if lam == 1.0:
         return _math.fsum((o - e) ** 2 / e for o, e in zip(obs, exp))
     if lam == 0.0:
-        return 2.0 * _math.fsum(o * _math.log(o / e)
-                                for o, e in zip(obs, exp) if o > 0)
+        return 2.0 * _math.fsum(o * _math.log(o / e) for o, e in zip(obs, exp) if o > 0)
     if lam == -1.0:
-        return 2.0 * _math.fsum(e * _math.log(e / o)
-                                for o, e in zip(obs, exp) if o > 0)
-    return (2.0 / (lam * (lam + 1.0))) * _math.fsum(
-        o * ((o / e) ** lam - 1.0) for o, e in zip(obs, exp))
+        return 2.0 * _math.fsum(e * _math.log(e / o) for o, e in zip(obs, exp) if o > 0)
+    return (2.0 / (lam * (lam + 1.0))) * _math.fsum(o * ((o / e) ** lam - 1.0) for o, e in zip(obs, exp))
 
 
 def chi2_contingency(observed, correction=True, lambda_=None):
@@ -2394,9 +2451,8 @@ def chi2_contingency(observed, correction=True, lambda_=None):
     observed counts are shifted half a unit toward the expected ones,
     as scipy does, before the statistic is formed."""
     if hasattr(observed, "columns") and hasattr(observed, "values"):
-        observed = observed.values          # scipy: np.asarray(frame)
-    rows = observed.tolist() if hasattr(observed, "tolist") \
-        else [list(r) for r in observed]
+        observed = observed.values  # scipy: np.asarray(frame)
+    rows = observed.tolist() if hasattr(observed, "tolist") else [list(r) for r in observed]
     rows = [[float(v) for v in r] for r in rows]
     r, c = len(rows), len(rows[0])
     rt = [_math.fsum(row) for row in rows]
@@ -2415,30 +2471,28 @@ def chi2_contingency(observed, correction=True, lambda_=None):
         obs = adj
     stat = _power_divergence_stat(obs, e, lambda_)
     from . import _array_core as _ac2
+
     return _Chi2ContingencyResult(stat, chi2.sf(stat, dof), dof, _ac2.array(exp))
 
 
 def _log_comb(n, k):
-    return (_math.lgamma(n + 1) - _math.lgamma(k + 1)
-            - _math.lgamma(n - k + 1))
+    return _math.lgamma(n + 1) - _math.lgamma(k + 1) - _math.lgamma(n - k + 1)
 
 
 def fisher_exact(table, alternative="two-sided"):
-    (a, b), (c, d) = [list(map(float, r)) for r in (
-        table.tolist() if hasattr(table, "tolist") else table)]
+    (a, b), (c, d) = [list(map(float, r)) for r in (table.tolist() if hasattr(table, "tolist") else table)]
     a, b, c, d = int(a), int(b), int(c), int(d)
     n = a + b + c + d
     r1, c1 = a + b, a + c
 
     def pmf(x):
-        return _math.exp(_log_comb(r1, x) + _log_comb(n - r1, c1 - x)
-                         - _log_comb(n, c1))
+        return _math.exp(_log_comb(r1, x) + _log_comb(n - r1, c1 - x) - _log_comb(n, c1))
+
     lo = _bi.max(0, c1 - (n - r1))
     hi = _bi.min(r1, c1)
     p_obs = pmf(a)
     if alternative == "two-sided":
-        p = _math.fsum(pmf(x) for x in range(lo, hi + 1)
-                       if pmf(x) <= p_obs * (1 + 1e-7))
+        p = _math.fsum(pmf(x) for x in range(lo, hi + 1) if pmf(x) <= p_obs * (1 + 1e-7))
     elif alternative == "greater":
         p = _math.fsum(pmf(x) for x in range(a, hi + 1))
     else:
@@ -2451,21 +2505,24 @@ def binomtest(k, n, p=0.5, alternative="two-sided"):
     k, n = int(k), int(n)
 
     def pmf(x):
-        return _math.exp(_log_comb(n, x) + x * _math.log(p)
-                         + (n - x) * _math.log1p(-p))
+        return _math.exp(_log_comb(n, x) + x * _math.log(p) + (n - x) * _math.log1p(-p))
+
     p_obs = pmf(k)
     if alternative == "two-sided":
-        pv = _math.fsum(pmf(x) for x in range(n + 1)
-                        if pmf(x) <= p_obs * (1 + 1e-7))
+        pv = _math.fsum(pmf(x) for x in range(n + 1) if pmf(x) <= p_obs * (1 + 1e-7))
     elif alternative == "greater":
         pv = _math.fsum(pmf(x) for x in range(k, n + 1))
     else:
         pv = _math.fsum(pmf(x) for x in range(k + 1))
     # scipy's statistic is the observed proportion k / n, not the count
-    return _TestResult(k / n, _bi.min(1.0, pv),
-                       k=k, n=n, proportion_estimate=k / n,
-                       proportion_ci=lambda confidence_level=0.95, method="exact":
-                       _proportion_ci(k, n, confidence_level, method))
+    return _TestResult(
+        k / n,
+        _bi.min(1.0, pv),
+        k=k,
+        n=n,
+        proportion_estimate=k / n,
+        proportion_ci=lambda confidence_level=0.95, method="exact": _proportion_ci(k, n, confidence_level, method),
+    )
 
 
 class _ConfidenceInterval(tuple):
@@ -2501,6 +2558,7 @@ def _proportion_ci(k, n, confidence_level=0.95, method="exact"):
 
 
 # ---------------------------------------------------- KS family
+
 
 def _ks_sf(d, n):
     """Two-sided asymptotic Kolmogorov Q(d*sqrt(n)) w/ Stephens correction.
@@ -2567,8 +2625,7 @@ def _ks_pkolmogorov(d, n):
                     H[i][j] /= g
 
     def mul(A, B):
-        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m))
-                 for j in range(m)] for i in range(m)]
+        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m)) for j in range(m)] for i in range(m)]
 
     # binary exponentiation, rescaling by 2^-128 whenever entries grow
     eQ = 0
@@ -2596,7 +2653,7 @@ def _ks_pkolmogorov(d, n):
         if val < 1e-140:
             val *= 1e140
             eQ -= 140
-    return val * 10.0 ** eQ
+    return val * 10.0**eQ
 
 
 def _ks_psmirnov(d, n1, n2, two_sided=True):
@@ -2644,10 +2701,13 @@ def ks_1samp(x, cdf, args=(), alternative="two-sided"):
       "greater"    F >  G, statistic D+ = max(ECDF - CDF)
       "less"       F <  G, statistic D- = max(CDF - ECDF)
 
-    The one-sided p-values are EXACT (Birnbaum-Tingey).  The two-sided
-    one is the asymptotic Kolmogorov series with Stephens' small-sample
-    correction, which is why ``exact`` is reported: at small n a
-    two-sided p-value near the decision boundary should not be leaned on.
+    The one-sided p-values are EXACT (Birnbaum-Tingey). The two-sided one is
+    the exact distribution (Marsaglia, Tsang & Wang 2003) up to n = 10,000,
+    as scipy's "auto" and R's ks.test(exact = TRUE): in the compiled core
+    when it is built, here in Python below n = 100; above n = 10,000 it is the
+    Kolmogorov limit 1 - K(sqrt(n) d), as R's ks.test(exact = FALSE). Without
+    the core, 100 <= n <= 10,000 falls back to the limit with Stephens'
+    small-sample correction, and ``exact`` says so.
     """
     _ks_check_alt(alternative)
     v = sorted(_flatten(x))
@@ -2665,13 +2725,28 @@ def ks_1samp(x, cdf, args=(), alternative="two-sided"):
         d, pv, exact = dminus, _KSOne.sf(dminus, n), True
     else:
         d = _bi.max(dplus, dminus)
+        core = _ks_exact_core()
         if n < 100:
             pv = _bi.max(0.0, _bi.min(1.0, 1.0 - _ks_pkolmogorov(d, n)))
             exact = True
+        elif n <= 10000 and core is not None:
+            pv = _bi.max(0.0, _bi.min(1.0, 1.0 - core(n, d)))
+            exact = True
+        elif n > 10000:
+            pv, exact = _KSTwoBign.sf(_math.sqrt(n) * d), False
         else:
             pv, exact = _ks_sf(d, n), False
-    return _TestResult(d, pv, n=n, d_plus=dplus, d_minus=dminus,
-                       alternative=alternative, exact=exact)
+    return _TestResult(d, pv, n=n, d_plus=dplus, d_minus=dminus, alternative=alternative, exact=exact)
+
+
+def _ks_exact_core():
+    """The compiled exact KS distribution (morie._core.ks_pkolmogorov_exact), or None."""
+    try:
+        from morie import _core
+
+        return getattr(_core, "ks_pkolmogorov_exact", None)
+    except ImportError:
+        return None
 
 
 def kstest(rvs, cdf, args=(), alternative="two-sided"):
@@ -2680,10 +2755,8 @@ def kstest(rvs, cdf, args=(), alternative="two-sided"):
         try:
             dist = {"norm": norm, "uniform": uniform, "expon": expon}[cdf]
         except KeyError:
-            raise ValueError(
-                f"unknown distribution {cdf!r}; known: norm, uniform, expon") from None
-        return ks_1samp(rvs, lambda u, *a: dist.cdf(u, *a), args,
-                        alternative=alternative)
+            raise ValueError(f"unknown distribution {cdf!r}; known: norm, uniform, expon") from None
+        return ks_1samp(rvs, lambda u, *a: dist.cdf(u, *a), args, alternative=alternative)
     if callable(cdf):
         return ks_1samp(rvs, cdf, args, alternative=alternative)
     return ks_2samp(rvs, cdf, alternative=alternative)
@@ -2709,6 +2782,7 @@ def ks_2samp(a, b, alternative="two-sided"):
 
     def ecdf(sorted_v, u):
         import bisect
+
         return bisect.bisect_right(sorted_v, u) / len(sorted_v)
 
     diffs = [ecdf(x, u) - ecdf(y, u) for u in allv]
@@ -2729,9 +2803,17 @@ def ks_2samp(a, b, alternative="two-sided"):
             is_exact = True
         else:
             pv = _ks_sf(d, en)
-    return _TestResult(d, _bi.max(0.0, _bi.min(1.0, pv)),
-                       n1=n1, n2=n2, d_plus=dplus, d_minus=dminus,
-                       alternative=alternative, exact=is_exact, n_ties=ties)
+    return _TestResult(
+        d,
+        _bi.max(0.0, _bi.min(1.0, pv)),
+        n1=n1,
+        n2=n2,
+        d_plus=dplus,
+        d_minus=dminus,
+        alternative=alternative,
+        exact=is_exact,
+        n_ties=ties,
+    )
 
 
 class _KSOne:
@@ -2752,7 +2834,7 @@ class _KSOne:
             b = 1.0 - d - j / n
             if b <= 0.0:
                 if n - j == 0:
-                    b_term = 0.0        # b**0 = 1
+                    b_term = 0.0  # b**0 = 1
                 else:
                     continue
             else:
@@ -2788,6 +2870,7 @@ ksone = _KSOne()
 
 # ---------------------------------------------------- normality tests
 
+
 def shapiro(x):
     """Shapiro-Wilk (Royston 1995 AS R94 approximation)."""
     v = sorted(_flatten(x))
@@ -2799,17 +2882,12 @@ def shapiro(x):
     c = [u / _math.sqrt(mss) for u in m]
     u1 = 1.0 / _math.sqrt(n)
     a = [0.0] * n
-    a[n - 1] = (-2.706056 * u1 ** 5 + 4.434685 * u1 ** 4
-                - 2.071190 * u1 ** 3 - 0.147981 * u1 ** 2
-                + 0.221157 * u1 + c[n - 1])
+    a[n - 1] = -2.706056 * u1**5 + 4.434685 * u1**4 - 2.071190 * u1**3 - 0.147981 * u1**2 + 0.221157 * u1 + c[n - 1]
     a[0] = -a[n - 1]
     if n > 5:
-        a[n - 2] = (-3.582633 * u1 ** 5 + 5.682633 * u1 ** 4
-                    - 1.752461 * u1 ** 3 - 0.293762 * u1 ** 2
-                    + 0.042981 * u1 + c[n - 2])
+        a[n - 2] = -3.582633 * u1**5 + 5.682633 * u1**4 - 1.752461 * u1**3 - 0.293762 * u1**2 + 0.042981 * u1 + c[n - 2]
         a[1] = -a[n - 2]
-        phi = ((mss - 2.0 * m[n - 1] ** 2 - 2.0 * m[n - 2] ** 2)
-               / (1.0 - 2.0 * a[n - 1] ** 2 - 2.0 * a[n - 2] ** 2))
+        phi = (mss - 2.0 * m[n - 1] ** 2 - 2.0 * m[n - 2] ** 2) / (1.0 - 2.0 * a[n - 1] ** 2 - 2.0 * a[n - 2] ** 2)
         lo = 2
     else:
         phi = (mss - 2.0 * m[n - 1] ** 2) / (1.0 - 2.0 * a[n - 1] ** 2)
@@ -2822,23 +2900,18 @@ def shapiro(x):
     w = w_num / ssq
     # p-value (Royston 1995)
     if n == 3:
-        pw = 6.0 / _math.pi * (_math.asin(_math.sqrt(w))
-                               - _math.asin(_math.sqrt(0.75)))
+        pw = 6.0 / _math.pi * (_math.asin(_math.sqrt(w)) - _math.asin(_math.sqrt(0.75)))
         return _TestResult(w, _bi.max(0.0, _bi.min(1.0, pw)))
     y = _math.log(1.0 - w)
     ln_n = _math.log(n)
     if n <= 11:
         g = -2.273 + 0.459 * n
-        mu = 0.5440 - 0.39978 * n + 0.025054 * n * n \
-            - 0.0006714 * n ** 3
-        sig = _math.exp(1.3822 - 0.77857 * n + 0.062767 * n * n
-                        - 0.0020322 * n ** 3)
+        mu = 0.5440 - 0.39978 * n + 0.025054 * n * n - 0.0006714 * n**3
+        sig = _math.exp(1.3822 - 0.77857 * n + 0.062767 * n * n - 0.0020322 * n**3)
         z = (-_math.log(g - y) - mu) / sig
     else:
-        mu = -1.5861 - 0.31082 * ln_n - 0.083751 * ln_n ** 2 \
-            + 0.0038915 * ln_n ** 3
-        sig = _math.exp(-0.4803 - 0.082676 * ln_n
-                        + 0.0030302 * ln_n ** 2)
+        mu = -1.5861 - 0.31082 * ln_n - 0.083751 * ln_n**2 + 0.0038915 * ln_n**3
+        sig = _math.exp(-0.4803 - 0.082676 * ln_n + 0.0030302 * ln_n**2)
         z = (y - mu) / sig
     return _TestResult(w, norm.sf(z))
 
@@ -2848,8 +2921,7 @@ def skewtest(a):
     n = len(v)
     b1 = skew(v)
     y = b1 * _math.sqrt((n + 1) * (n + 3) / (6.0 * (n - 2)))
-    beta2 = 3.0 * (n * n + 27 * n - 70) * (n + 1) * (n + 3) / (
-        (n - 2) * (n + 5) * (n + 7) * (n + 9))
+    beta2 = 3.0 * (n * n + 27 * n - 70) * (n + 1) * (n + 3) / ((n - 2) * (n + 5) * (n + 7) * (n + 9))
     w2 = -1.0 + _math.sqrt(2.0 * (beta2 - 1.0))
     delta = 1.0 / _math.sqrt(0.5 * _math.log(w2))
     alpha = _math.sqrt(2.0 / (w2 - 1.0))
@@ -2863,16 +2935,15 @@ def kurtosistest(a):
     n = len(v)
     b2 = kurtosis(v, fisher=False)
     e = 3.0 * (n - 1) / (n + 1)
-    var_b2 = 24.0 * n * (n - 2) * (n - 3) / (
-        (n + 1) ** 2 * (n + 3) * (n + 5))
+    var_b2 = 24.0 * n * (n - 2) * (n - 3) / ((n + 1) ** 2 * (n + 3) * (n + 5))
     x = (b2 - e) / _math.sqrt(var_b2)
-    beta1 = 6.0 * (n * n - 5 * n + 2) / ((n + 7) * (n + 9)) \
-        * _math.sqrt(6.0 * (n + 3) * (n + 5) / (n * (n - 2) * (n - 3)))
-    a6 = 6.0 + 8.0 / beta1 * (2.0 / beta1
-                              + _math.sqrt(1.0 + 4.0 / beta1 ** 2))
-    z = ((1.0 - 2.0 / (9.0 * a6))
-         - ((1.0 - 2.0 / a6) / (1.0 + x * _math.sqrt(2.0 / (a6 - 4.0))))
-         ** (1.0 / 3.0)) / _math.sqrt(2.0 / (9.0 * a6))
+    beta1 = (
+        6.0 * (n * n - 5 * n + 2) / ((n + 7) * (n + 9)) * _math.sqrt(6.0 * (n + 3) * (n + 5) / (n * (n - 2) * (n - 3)))
+    )
+    a6 = 6.0 + 8.0 / beta1 * (2.0 / beta1 + _math.sqrt(1.0 + 4.0 / beta1**2))
+    z = (
+        (1.0 - 2.0 / (9.0 * a6)) - ((1.0 - 2.0 / a6) / (1.0 + x * _math.sqrt(2.0 / (a6 - 4.0)))) ** (1.0 / 3.0)
+    ) / _math.sqrt(2.0 / (9.0 * a6))
     return _TestResult(z, 2.0 * norm.sf(abs(z)))
 
 
@@ -2896,6 +2967,7 @@ def _gumbel_r_fit(v):
         w = [_math.exp(t - m) for t in e]
         sw = _math.fsum(w)
         return mu - _math.fsum(u * wi for u, wi in zip(v, w)) / sw - b
+
     sd = _math.sqrt(_var(v, ddof=1)) or 1e-8
     lo, hi = sd * 1e-3, sd * 10.0
     flo, fhi = h(lo), h(hi)
@@ -2928,6 +3000,7 @@ def _logistic_fit(v):
         z = [(u - loc) / s for u in v]
         t = [_math.tanh(zi / 2.0) for zi in z]
         return (_math.fsum(t), _math.fsum(zi * ti for zi, ti in zip(z, t)) - n)
+
     for _ in range(100):
         f1, f2 = score(loc, s)
         if abs(f1) < 1e-10 * n and abs(f2) < 1e-10 * n:
@@ -2989,22 +3062,26 @@ def anderson(x, dist="norm"):
         sig = [25.0, 10.0, 5.0, 2.5, 1.0]
         fit = (loc, b)
     else:
-        raise ValueError("Invalid distribution; dist must be 'norm', "
-                         "'expon', 'gumbel', 'gumbel_l', 'gumbel_r', "
-                         "'extreme1' or 'logistic'.")
+        raise ValueError(
+            "Invalid distribution; dist must be 'norm', "
+            "'expon', 'gumbel', 'gumbel_l', 'gumbel_r', "
+            "'extreme1' or 'logistic'."
+        )
     eps = 1e-300
-    a2 = -n - _math.fsum(
-        (2 * (i + 1) - 1) * (_math.log(max(z[i], eps))
-                             + _math.log(max(1.0 - z[n - 1 - i], eps)))
-        for i in range(n)) / n
+    a2 = (
+        -n
+        - _math.fsum(
+            (2 * (i + 1) - 1) * (_math.log(max(z[i], eps)) + _math.log(max(1.0 - z[n - 1 - i], eps))) for i in range(n)
+        )
+        / n
+    )
     from . import _array_core as _ac
-    return _TestResult(a2, None,
-                       critical_values=_ac.marr(crit),
-                       significance_level=_ac.marr(sig),
-                       fit_result=fit)
+
+    return _TestResult(a2, None, critical_values=_ac.marr(crit), significance_level=_ac.marr(sig), fit_result=fit)
 
 
 # ---------------------------------------------------- KDE + extra dists
+
 
 class gaussian_kde:
     def __init__(self, dataset, bw_method=None):
@@ -3016,26 +3093,26 @@ class gaussian_kde:
             self.dataset = [[float(v) for v in dataset]]
         self.d = len(self.dataset)
         self.n = len(self.dataset[0])
-        factor = self.n ** (-1.0 / (self.d + 4)) \
-            if bw_method in (None, "scott") else float(bw_method)
+        factor = self.n ** (-1.0 / (self.d + 4)) if bw_method in (None, "scott") else float(bw_method)
         self.factor = factor
         # data covariance (ddof=1)
         means = [_mean(r) for r in self.dataset]
-        cov = [[_math.fsum((self.dataset[i][k] - means[i])
-                           * (self.dataset[j][k] - means[j])
-                           for k in range(self.n)) / (self.n - 1)
-                for j in range(self.d)] for i in range(self.d)]
-        self._cov = [[cov[i][j] * factor * factor
-                      for j in range(self.d)] for i in range(self.d)]
+        cov = [
+            [
+                _math.fsum((self.dataset[i][k] - means[i]) * (self.dataset[j][k] - means[j]) for k in range(self.n))
+                / (self.n - 1)
+                for j in range(self.d)
+            ]
+            for i in range(self.d)
+        ]
+        self._cov = [[cov[i][j] * factor * factor for j in range(self.d)] for i in range(self.d)]
         self._inv, self._det = self._inv_det(self._cov)
-        self._norm_const = _math.sqrt(
-            (2.0 * _math.pi) ** self.d * self._det)
+        self._norm_const = _math.sqrt((2.0 * _math.pi) ** self.d * self._det)
 
     @staticmethod
     def _inv_det(mat):
         d = len(mat)
-        a = [row[:] + [1.0 if i == j else 0.0 for j in range(d)]
-             for i, row in enumerate(mat)]
+        a = [row[:] + [1.0 if i == j else 0.0 for j in range(d)] for i, row in enumerate(mat)]
         det = 1.0
         for col in range(d):
             piv = max(range(col, d), key=lambda r: abs(a[r][col]))
@@ -3048,8 +3125,7 @@ class gaussian_kde:
             for r in range(d):
                 if r != col and a[r][col] != 0.0:
                     fac = a[r][col]
-                    a[r] = [vr - fac * vc
-                            for vr, vc in zip(a[r], a[col])]
+                    a[r] = [vr - fac * vc for vr, vc in zip(a[r], a[col])]
         inv = [row[d:] for row in a]
         return inv, det
 
@@ -3067,13 +3143,10 @@ class gaussian_kde:
         for k in range(m):
             s = 0.0
             for i in range(self.n):
-                diff = [pts[dd][k] - self.dataset[dd][i]
-                        for dd in range(self.d)]
+                diff = [pts[dd][k] - self.dataset[dd][i] for dd in range(self.d)]
                 q = 0.0
                 for r in range(self.d):
-                    q += diff[r] * _math.fsum(
-                        self._inv[r][c] * diff[c]
-                        for c in range(self.d))
+                    q += diff[r] * _math.fsum(self._inv[r][c] * diff[c] for c in range(self.d))
                 s += _math.exp(-0.5 * q)
             out.append(s / (self.n * self._norm_const))
         return out
@@ -3087,13 +3160,14 @@ class _Logistic(_Dist):
             z = (v - loc) / scale
             e = _math.exp(-abs(z))
             return e / (scale * (1.0 + e) ** 2)
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def cdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
             return 1.0 / (1.0 + _math.exp(-z)) if z >= 0 else _math.exp(z) / (1.0 + _math.exp(z))
+
         return _maybe_map(one, x)
 
     def sf(self, x, loc=0.0, scale=1.0):
@@ -3103,6 +3177,7 @@ class _Logistic(_Dist):
         def one(v):
             z = (v - loc) / scale
             return -_math.log1p(_math.exp(-z)) if z >= 0 else z - _math.log1p(_math.exp(z))
+
         return _maybe_map(one, x)
 
     def logsf(self, x, loc=0.0, scale=1.0):
@@ -3117,6 +3192,7 @@ class _Logistic(_Dist):
             if p == 1.0:
                 return _math.inf
             return loc + scale * (_math.log(p) - _math.log1p(-p))
+
         return _maybe_map(one, q)
 
     def isf(self, q, loc=0.0, scale=1.0):
@@ -3140,13 +3216,13 @@ class _Laplace(_Dist):
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             return _math.exp(-abs(v - loc) / scale) / (2.0 * scale)
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def ppf(self, q, loc=0.0, scale=1.0):
         def one(p):
-            return loc + scale * (_math.log(2.0 * p) if p < 0.5
-                                  else -_math.log(2.0 * (1.0 - p)))
+            return loc + scale * (_math.log(2.0 * p) if p < 0.5 else -_math.log(2.0 * (1.0 - p)))
+
         return _maybe_map(one, q)
 
     def sf(self, x, loc=0.0, scale=1.0):
@@ -3156,12 +3232,14 @@ class _Laplace(_Dist):
         def one(v):
             z = (v - loc) / scale
             return 0.5 * _math.exp(z) if z < 0 else 1.0 - 0.5 * _math.exp(-z)
+
         return _maybe_map(one, x)
 
     def logcdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
             return _math.log(0.5) + z if z < 0 else _math.log1p(-0.5 * _math.exp(-z))
+
         return _maybe_map(one, x)
 
     def logsf(self, x, loc=0.0, scale=1.0):
@@ -3198,8 +3276,8 @@ class _Cauchy(_Dist):
         def one(v):
             z = (v - loc) / scale
             return 1.0 / (_math.pi * scale * (1.0 + z * z))
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def cdf(self, x, loc=0.0, scale=1.0):
         def one(v):
@@ -3208,6 +3286,7 @@ class _Cauchy(_Dist):
                 return _math.nan
             # 1/2 + atan(z)/pi cancels for z << 0: atan(-1/z)/pi there
             return _math.atan(-1.0 / z) / _math.pi if z < -1.0 else 0.5 + _math.atan(z) / _math.pi
+
         return _maybe_map(one, x)
 
     def sf(self, x, loc=0.0, scale=1.0):
@@ -3224,8 +3303,8 @@ class _Cauchy(_Dist):
             if p == 0.5:
                 return float(loc)
             # tan(pi (p - 1/2)) = -1/tan(pi p): exact in p for small p
-            return loc - scale / _math.tan(_math.pi * p) if p < 0.5 \
-                else loc + scale / _math.tan(_math.pi * (1.0 - p))
+            return loc - scale / _math.tan(_math.pi * p) if p < 0.5 else loc + scale / _math.tan(_math.pi * (1.0 - p))
+
         return _maybe_map(one, q)
 
     def isf(self, q, loc=0.0, scale=1.0):
@@ -3248,7 +3327,8 @@ class _LogNorm(_Dist):
         if floc is None:
             raise NotImplementedError(
                 "lognorm.fit needs floc= (a fixed location); the free-location "
-                "fit is not implemented in the native core")
+                "fit is not implemented in the native core"
+            )
         x = [float(v) - float(floc) for v in _flatten(data)]
         if not x or any(not v > 0 for v in x):
             raise ValueError("lognorm.fit: every observation must exceed floc")
@@ -3263,8 +3343,8 @@ class _LogNorm(_Dist):
             z = (v - loc) / scale
             if z <= 0:
                 return 0.0
-            return _math.exp(-_math.log(z) ** 2 / (2.0 * s * s)) / (
-                z * s * _math.sqrt(2.0 * _math.pi) * scale)
+            return _math.exp(-(_math.log(z) ** 2) / (2.0 * s * s)) / (z * s * _math.sqrt(2.0 * _math.pi) * scale)
+
         return _maybe_map(one, x)
 
     def cdf(self, x, s, loc=0.0, scale=1.0):
@@ -3273,19 +3353,17 @@ class _LogNorm(_Dist):
             if z <= 0:
                 return 0.0
             return _norm_cdf(_math.log(z) / s)
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def sf(self, x, s, loc=0.0, scale=1.0):
         return _maybe_map(lambda v: 1.0 if v <= loc else float(norm.sf(_math.log((v - loc) / scale) / s)), x)
 
     def logcdf(self, x, s, loc=0.0, scale=1.0):
-        return _maybe_map(lambda v: -_math.inf if v <= loc
-                          else float(norm.logcdf(_math.log((v - loc) / scale) / s)), x)
+        return _maybe_map(lambda v: -_math.inf if v <= loc else float(norm.logcdf(_math.log((v - loc) / scale) / s)), x)
 
     def logsf(self, x, s, loc=0.0, scale=1.0):
-        return _maybe_map(lambda v: 0.0 if v <= loc
-                          else float(norm.logsf(_math.log((v - loc) / scale) / s)), x)
+        return _maybe_map(lambda v: 0.0 if v <= loc else float(norm.logsf(_math.log((v - loc) / scale) / s)), x)
 
     def logpdf(self, x, s, loc=0.0, scale=1.0):
         def one(v):
@@ -3293,6 +3371,7 @@ class _LogNorm(_Dist):
                 return -_math.inf
             lz = _math.log((v - loc) / scale)
             return -lz - _math.log(s * scale * _math.sqrt(2.0 * _math.pi)) - lz * lz / (2.0 * s * s)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, s, loc=0.0, scale=1.0):
@@ -3304,6 +3383,7 @@ class _LogNorm(_Dist):
             if p == 1.0:
                 return _math.inf
             return loc + scale * _math.exp(s * float(norm.ppf(p)))
+
         return _maybe_map(one, q)
 
     def isf(self, q, s, loc=0.0, scale=1.0):
@@ -3315,6 +3395,7 @@ class _LogNorm(_Dist):
             if p == 1.0:
                 return float(loc)
             return loc + scale * _math.exp(s * float(norm.isf(p)))
+
         return _maybe_map(one, q)
 
     def mean(self, s, loc=0.0, scale=1.0):
@@ -3369,10 +3450,13 @@ class _WeibullMin(_Dist):
                         c = c_new
                         break
                     c = c_new
-            scale = float(fscale) if fscale is not None else (_math.fsum(v ** c for v in y) / n) ** (1.0 / c)
-            ll = (n * _math.log(c) - n * c * _math.log(scale)
-                  + (c - 1.0) * _math.fsum(ly)
-                  - _math.fsum((v / scale) ** c for v in y))
+            scale = float(fscale) if fscale is not None else (_math.fsum(v**c for v in y) / n) ** (1.0 / c)
+            ll = (
+                n * _math.log(c)
+                - n * c * _math.log(scale)
+                + (c - 1.0) * _math.fsum(ly)
+                - _math.fsum((v / scale) ** c for v in y)
+            )
             return c, scale, ll
 
         if floc is not None:
@@ -3387,6 +3471,7 @@ class _WeibullMin(_Dist):
         def obj(loc):
             r = profile(loc)
             return -_math.inf if r is None else r[2]
+
         a_, b_ = lo, hi
         c1 = b_ - gr * (b_ - a_)
         c2 = a_ + gr * (b_ - a_)
@@ -3411,20 +3496,22 @@ class _WeibullMin(_Dist):
             z = (v - loc) / scale
             if z < 0:
                 return 0.0
-            return c / scale * z ** (c - 1.0) * _math.exp(-z ** c)
-        return _maybe_map(one, x)
+            return c / scale * z ** (c - 1.0) * _math.exp(-(z**c))
 
+        return _maybe_map(one, x)
 
     def cdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
-            return 0.0 if z <= 0 else -_math.expm1(-(z ** c))
+            return 0.0 if z <= 0 else -_math.expm1(-(z**c))
+
         return _maybe_map(one, x)
 
     def sf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
-            return 1.0 if z <= 0 else _math.exp(-(z ** c))
+            return 1.0 if z <= 0 else _math.exp(-(z**c))
+
         return _maybe_map(one, x)
 
     def logpdf(self, x, c, loc=0.0, scale=1.0):
@@ -3434,7 +3521,8 @@ class _WeibullMin(_Dist):
                 return -_math.inf
             if z == 0:
                 return (0.0 if c == 1 else (_math.inf if c < 1 else -_math.inf)) - _math.log(scale)
-            return _math.log(c) + (c - 1.0) * _math.log(z) - z ** c - _math.log(scale)
+            return _math.log(c) + (c - 1.0) * _math.log(z) - z**c - _math.log(scale)
+
         return _maybe_map(one, x)
 
     def logcdf(self, x, c, loc=0.0, scale=1.0):
@@ -3442,8 +3530,9 @@ class _WeibullMin(_Dist):
             z = (v - loc) / scale
             if z <= 0:
                 return -_math.inf
-            w = z ** c
+            w = z**c
             return _math.log(-_math.expm1(-w)) if w < _math.log(2.0) else _math.log1p(-_math.exp(-w))
+
         return _maybe_map(one, x)
 
     def logsf(self, x, c, loc=0.0, scale=1.0):
@@ -3454,6 +3543,7 @@ class _WeibullMin(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * (-_math.log1p(-p)) ** (1.0 / c) if p < 1.0 else _math.inf
+
         return _maybe_map(one, q)
 
     def isf(self, q, c, loc=0.0, scale=1.0):
@@ -3461,6 +3551,7 @@ class _WeibullMin(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * (-_math.log(p)) ** (1.0 / c) if p > 0.0 else _math.inf
+
         return _maybe_map(one, q)
 
     def mean(self, c, loc=0.0, scale=1.0):
@@ -3474,19 +3565,19 @@ class _WeibullMin(_Dist):
 class _NBinom(_Dist):
     _support = (0.0, _math.inf)
     _discrete = True
+
     def ppf(self, q, n, p):
         # walk the cdf; the mean n(1-p)/p bounds how far a quantile can sit
         kmax = int(20 * (n * (1.0 - p) / p + 1.0) + 50)
-        return _maybe_map(lambda v: _ppf_discrete(
-            lambda kk: self.cdf(kk, n, p), v, 0, kmax), q)
+        return _maybe_map(lambda v: _ppf_discrete(lambda kk: self.cdf(kk, n, p), v, 0, kmax), q)
 
     def pmf(self, k, n, p):
         def one(kk):
             kk = int(kk)
-            return _math.exp(_math.lgamma(kk + n) - _math.lgamma(n)
-                             - _math.lgamma(kk + 1)
-                             + n * _math.log(p)
-                             + kk * _math.log1p(-p))
+            return _math.exp(
+                _math.lgamma(kk + n) - _math.lgamma(n) - _math.lgamma(kk + 1) + n * _math.log(p) + kk * _math.log1p(-p)
+            )
+
         return _maybe_map(one, k)
 
     pdf = pmf
@@ -3502,20 +3593,27 @@ class _NBinom(_Dist):
                 return -_math.inf
             if pp == 1.0:
                 return 0.0 if kk == 0 else -_math.inf
-            return (_math.lgamma(kk + nn) - _math.lgamma(nn)
-                    - _math.lgamma(kk + 1.0) + nn * _math.log(pp)
-                    + kk * _math.log1p(-pp))
+            return (
+                _math.lgamma(kk + nn)
+                - _math.lgamma(nn)
+                - _math.lgamma(kk + 1.0)
+                + nn * _math.log(pp)
+                + kk * _math.log1p(-pp)
+            )
+
         from . import _array_core as _ac2
+
         if all(_ac2.ndim(v) == 0 for v in (k, n, p)):
             return one(float(k), float(n), float(p))
         kb, nb, pb = _ac2.broadcast_arrays(k, n, p)
-        return _ac2.marr([one(a, b, c) for a, b, c in
-                          zip(kb.ravel().tolist(), nb.ravel().tolist(),
-                              pb.ravel().tolist())]).reshape(kb.shape)
+        return _ac2.marr(
+            [one(a, b, c) for a, b, c in zip(kb.ravel().tolist(), nb.ravel().tolist(), pb.ravel().tolist())]
+        ).reshape(kb.shape)
 
     def cdf(self, k, n, p):
         def one(kk):
             return _betainc(n, int(kk) + 1, p)
+
         return _maybe_map(one, k)
 
     def sf(self, k, n, p):
@@ -3537,6 +3635,7 @@ def _ppf_discrete(cdf_at, q, kmin, kmax):
 class _Geom(_Dist):
     _support = (1.0, _math.inf)
     _discrete = True
+
     def ppf(self, q, p):
         # support k >= 1, as scipy: ceil(log(1 - q) / log(1 - p))
         def one(v):
@@ -3547,11 +3646,13 @@ class _Geom(_Dist):
             if v == 1.0:
                 return _math.inf
             return _bi.max(1.0, float(_math.ceil(_math.log1p(-v) / _math.log1p(-p))))
+
         return _maybe_map(one, q)
 
     def pmf(self, k, p):
         def one(kk):
             return p * (1.0 - p) ** (int(kk) - 1)
+
         return _maybe_map(one, k)
 
     pdf = pmf
@@ -3559,11 +3660,13 @@ class _Geom(_Dist):
     def cdf(self, k, p):
         def one(kk):
             return 1.0 - (1.0 - p) ** int(kk)
+
         return _maybe_map(one, k)
 
 
 class _HyperGeom(_Dist):
     _discrete = True
+
     def _bounds(self, M=None, n=None, N=None):
         if None in (M, n, N):
             return (0.0, _math.inf)
@@ -3572,24 +3675,22 @@ class _HyperGeom(_Dist):
     def ppf(self, q, M, n, N):
         kmin = _bi.max(0, N - (M - n))
         kmax = _bi.min(n, N)
-        return _maybe_map(lambda v: _ppf_discrete(
-            lambda kk: self.cdf(kk, M, n, N), v, kmin, kmax), q)
+        return _maybe_map(lambda v: _ppf_discrete(lambda kk: self.cdf(kk, M, n, N), v, kmin, kmax), q)
 
     def pmf(self, k, M, n, N):
         def one(kk):
             kk = int(kk)
-            return _math.exp(_log_comb(n, kk) + _log_comb(M - n, N - kk)
-                             - _log_comb(M, N))
+            return _math.exp(_log_comb(n, kk) + _log_comb(M - n, N - kk) - _log_comb(M, N))
+
         return _maybe_map(one, k)
 
     pdf = pmf
 
     def cdf(self, k, M, n, N):
         def one(kk):
-            return _math.fsum(self.pmf(x, M, n, N)
-                              for x in range(int(kk) + 1))
-        return _maybe_map(one, k)
+            return _math.fsum(self.pmf(x, M, n, N) for x in range(int(kk) + 1))
 
+        return _maybe_map(one, k)
 
     def sf(self, k, M, n, N):
         def one(kk):
@@ -3598,6 +3699,7 @@ class _HyperGeom(_Dist):
             if kk >= top:
                 return 0.0
             return _math.fsum(_scalar(self.pmf(x, M, n, N)) for x in range(_bi.max(kk + 1, 0), top + 1))
+
         return _maybe_map(one, k)
 
 
@@ -3620,7 +3722,8 @@ class _GenExtreme(_Dist):
             t_ = 1.0 - c * z
             if t_ <= 0:
                 return 1.0 if c * z >= 1 else 0.0
-            return _math.exp(-t_ ** (1.0 / c))
+            return _math.exp(-(t_ ** (1.0 / c)))
+
         return _maybe_map(one, x)
 
     def pdf(self, x, c, loc=0.0, scale=1.0):
@@ -3631,8 +3734,8 @@ class _GenExtreme(_Dist):
             t_ = 1.0 - c * z
             if t_ <= 0:
                 return 0.0
-            return t_ ** (1.0 / c - 1.0) * _math.exp(
-                -t_ ** (1.0 / c)) / scale
+            return t_ ** (1.0 / c - 1.0) * _math.exp(-(t_ ** (1.0 / c))) / scale
+
         return _maybe_map(one, x)
 
     def ppf(self, q, c, loc=0.0, scale=1.0):
@@ -3640,6 +3743,7 @@ class _GenExtreme(_Dist):
             if c == 0:
                 return loc - scale * _math.log(-_math.log(p))
             return loc + scale * (1.0 - (-_math.log(p)) ** c) / c
+
         return _maybe_map(one, q)
 
     @staticmethod
@@ -3676,11 +3780,9 @@ class _GenExtreme(_Dist):
             raise ValueError("genextreme.fit needs at least 3 observations")
         b0 = _math.fsum(x) / n
         b1 = _math.fsum((i / (n - 1.0)) * x[i] for i in range(n)) / n
-        b2 = _math.fsum((i * (i - 1.0)) / ((n - 1.0) * (n - 2.0)) * x[i]
-                        for i in range(n)) / n
+        b2 = _math.fsum((i * (i - 1.0)) / ((n - 1.0) * (n - 2.0)) * x[i] for i in range(n)) / n
         den = 3.0 * b2 - b0
-        cc = ((2.0 * b1 - b0) / den if den != 0 else 0.0) \
-            - _math.log(2.0) / _math.log(3.0)
+        cc = ((2.0 * b1 - b0) / den if den != 0 else 0.0) - _math.log(2.0) / _math.log(3.0)
         k = 7.8590 * cc + 2.9554 * cc * cc
         if _bi.abs(k) < 1e-6:
             alpha = (2.0 * b1 - b0) / _math.log(2.0)
@@ -3696,12 +3798,16 @@ class _GenExtreme(_Dist):
         def obj(th):
             th = list(th)
             return self._nll(x, th[0], th[1], _math.exp(th[2]))
+
         best = None
         start = [k, xi, _math.log(alpha)]
-        for _ in range(3):              # restart until the simplex settles
-            r = _sc.minimize(obj, start, method="Nelder-Mead",
-                             options={"xatol": 1e-12, "fatol": 1e-14,
-                                      "maxiter": 20000, "maxfev": 40000})
+        for _ in range(3):  # restart until the simplex settles
+            r = _sc.minimize(
+                obj,
+                start,
+                method="Nelder-Mead",
+                options={"xatol": 1e-12, "fatol": 1e-14, "maxiter": 20000, "maxfev": 40000},
+            )
             cand = list(r.x)
             if best is None or obj(cand) < obj(best) - 1e-15:
                 best = cand
@@ -3731,6 +3837,7 @@ class _GenExtreme(_Dist):
             if lc == -_math.inf:
                 return 0.0
             return _math.log(-_math.expm1(lc)) if lc > -_math.log(2.0) else _math.log1p(-_math.exp(lc))
+
         return _maybe_map(one, x)
 
     def _z_from_mlogp(self, m, c):
@@ -3746,6 +3853,7 @@ class _GenExtreme(_Dist):
             if p == 1.0:
                 return loc + scale * (-_math.inf if c >= 0 else 1.0 / c)
             return loc + scale * self._z_from_mlogp(-_math.log1p(-p), c)
+
         return _maybe_map(one, q)
 
     def mean(self, c, loc=0.0, scale=1.0):
@@ -3759,7 +3867,7 @@ class _GenExtreme(_Dist):
         if c <= -0.5:
             return _math.inf
         if c == 0.0:
-            return scale * scale * _math.pi ** 2 / 6.0
+            return scale * scale * _math.pi**2 / 6.0
         g1 = _math.gamma(1.0 + c)
         return scale * scale * (_math.gamma(1.0 + 2.0 * c) - g1 * g1) / (c * c)
 
@@ -3773,6 +3881,7 @@ class _GenExtreme(_Dist):
                 return -_math.inf
             lt = _math.log(t)
             return (1.0 / c - 1.0) * lt - _math.exp(lt / c) - _math.log(scale)
+
         return _maybe_map(one, x)
 
 
@@ -3801,39 +3910,35 @@ class _MultivariateNormal:
     def cdf(self, x, mean=None, cov=None):
         r"""The normal CDF, exact for one and two dimensions.
 
-        Only `pdf`/`logpdf` existed, so the Gaussian copula could not be
-        evaluated at all. Two dimensions is what a copula needs and is
-        the case with a clean closed form -- the tetrachoric series of
-        Sheppard, via
+            Only `pdf`/`logpdf` existed, so the Gaussian copula could not be
+            evaluated at all. Two dimensions is what a copula needs and is
+            the case with a clean closed form -- the tetrachoric series of
+            Sheppard, via
 
-        .. math::
+            .. math::
 
-           \Phi_2(h, k; \rho) = \Phi(h)\Phi(k) + \frac{1}{2\pi}
-             \int_0^{\rho} \frac{1}{\sqrt{1-t^2}}
-             \exp\!\left(-\frac{h^2 - 2thk + k^2}{2(1-t^2)}\right) dt,
+               \Phi_2(h, k; \rho) = \Phi(h)\Phi(k) + \frac{1}{2\pi}
+                 \int_0^{\rho} \frac{1}{\sqrt{1-t^2}}
+                 \exp\!\left(-\frac{h^2 - 2thk + k^2}{2(1-t^2)}\right) dt,
 
-        which is smooth on the whole path and integrates to machine
-        precision with Gauss-Legendre. Three or more dimensions needs
-        Genz's method -- Genz, A. (1992) "Numerical computation of
-    multivariate normal probabilities", *Journal of Computational and
-    Graphical Statistics* 1(2), 141-149,
-    doi:10.1080/10618600.1992.10477010 -- and is refused rather than
-    approximated silently.
+            which is smooth on the whole path and integrates to machine
+            precision with Gauss-Legendre. Three or more dimensions needs
+            Genz's method -- Genz, A. (1992) "Numerical computation of
+        multivariate normal probabilities", *Journal of Computational and
+        Graphical Statistics* 1(2), 141-149,
+        doi:10.1080/10618600.1992.10477010 -- and is refused rather than
+        approximated silently.
         """
         xv = [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
         d = len(xv)
-        mu = ([0.0] * d if mean is None else
-              [float(v) for v in (mean.tolist()
-                                  if hasattr(mean, "tolist") else mean)])
+        mu = [0.0] * d if mean is None else [float(v) for v in (mean.tolist() if hasattr(mean, "tolist") else mean)]
         if cov is None:
-            cm = [[1.0 if i == j else 0.0 for j in range(d)]
-                  for i in range(d)]
+            cm = [[1.0 if i == j else 0.0 for j in range(d)] for i in range(d)]
         else:
             cm = cov.tolist() if hasattr(cov, "tolist") else cov
             cm = [[float(v) for v in r] for r in cm]
         if len(mu) != d or len(cm) != d:
-            raise ValueError("multivariate_normal.cdf: x, mean and cov "
-                             "disagree on dimension")
+            raise ValueError("multivariate_normal.cdf: x, mean and cov disagree on dimension")
         z = [(xv[i] - mu[i]) / _math.sqrt(cm[i][i]) for i in range(d)]
         if d == 1:
             return norm.cdf(z[0])
@@ -3841,11 +3946,11 @@ class _MultivariateNormal:
             raise NotImplementedError(
                 "multivariate_normal.cdf: only 1 and 2 dimensions are "
                 f"implemented exactly; {d} needs Genz's method and is not "
-                "approximated here")
+                "approximated here"
+            )
         rho = cm[0][1] / _math.sqrt(cm[0][0] * cm[1][1])
         if rho <= -1.0 or rho >= 1.0:
-            raise ValueError(f"multivariate_normal.cdf: correlation {rho:g} is "
-                             "outside (-1, 1)")
+            raise ValueError(f"multivariate_normal.cdf: correlation {rho:g} is outside (-1, 1)")
         h, k = z[0], z[1]
         base = norm.cdf(h) * norm.cdf(k)
         if rho == 0.0:
@@ -3858,30 +3963,23 @@ class _MultivariateNormal:
         for a in range(n):
             tt = half * (nodes[a] + 1.0)
             om = 1.0 - tt * tt
-            total += weights[a] * _math.exp(
-                -(h * h - 2.0 * tt * h * k + k * k) / (2.0 * om)
-            ) / _math.sqrt(om)
+            total += weights[a] * _math.exp(-(h * h - 2.0 * tt * h * k + k * k) / (2.0 * om)) / _math.sqrt(om)
         return base + half * total / (2.0 * _math.pi)
 
     def pdf(self, x, mean, cov):
         return _math.exp(self.logpdf(x, mean, cov))
 
     def logpdf(self, x, mean, cov):
-        mu = [float(v) for v in (mean.tolist()
-                                 if hasattr(mean, "tolist") else mean)]
+        mu = [float(v) for v in (mean.tolist() if hasattr(mean, "tolist") else mean)]
         if hasattr(cov, "tolist"):
             cov = cov.tolist()
         cov = [[float(v) for v in r] for r in cov]
         d = len(mu)
         inv, det = gaussian_kde._inv_det(cov)
-        xv = [float(v) for v in (x.tolist()
-                                 if hasattr(x, "tolist") else x)]
+        xv = [float(v) for v in (x.tolist() if hasattr(x, "tolist") else x)]
         diff = [xv[i] - mu[i] for i in range(d)]
-        q = _math.fsum(diff[i] * _math.fsum(inv[i][j] * diff[j]
-                                            for j in range(d))
-                       for i in range(d))
-        return -0.5 * (d * _math.log(2.0 * _math.pi)
-                       + _math.log(det) + q)
+        q = _math.fsum(diff[i] * _math.fsum(inv[i][j] * diff[j] for j in range(d)) for i in range(d))
+        return -0.5 * (d * _math.log(2.0 * _math.pi) + _math.log(det) + q)
 
 
 logistic = _Logistic()
@@ -3898,18 +3996,19 @@ multivariate_normal = _MultivariateNormal()
 
 # ---------------------------------------------------- residual tail
 
+
 def probplot(x, dist="norm", fit=True):
     v = sorted(_flatten(x))
     n = len(v)
     # Filliben order-statistic medians
-    osm_u = [1.0 - 0.5 ** (1.0 / n) if i == 0 else
-             (0.5 ** (1.0 / n) if i == n - 1 else
-              (i + 1 - 0.3175) / (n + 0.365)) for i in range(n)]
+    osm_u = [
+        1.0 - 0.5 ** (1.0 / n) if i == 0 else (0.5 ** (1.0 / n) if i == n - 1 else (i + 1 - 0.3175) / (n + 0.365))
+        for i in range(n)
+    ]
     osm = [_norm_ppf(u) for u in osm_u]
     if not fit:
         return (osm, v)
-    slope_num = _math.fsum((a - _mean(osm)) * (b - _mean(v))
-                           for a, b in zip(osm, v))
+    slope_num = _math.fsum((a - _mean(osm)) * (b - _mean(v)) for a, b in zip(osm, v))
     slope_den = _math.fsum((a - _mean(osm)) ** 2 for a in osm)
     slope = slope_num / slope_den
     intercept = _mean(v) - slope * _mean(osm)
@@ -3940,10 +4039,8 @@ def friedmanchisquare(*samples):
         counts = {}
         for u in row:
             counts[u] = counts.get(u, 0) + 1
-        ties_corr += _math.fsum(c ** 3 - c for c in counts.values())
-    stat = (12.0 / (n * k * (k + 1))
-            * _math.fsum(rs * rs for rs in rank_sums)
-            - 3.0 * n * (k + 1))
+        ties_corr += _math.fsum(c**3 - c for c in counts.values())
+    stat = 12.0 / (n * k * (k + 1)) * _math.fsum(rs * rs for rs in rank_sums) - 3.0 * n * (k + 1)
     corr = 1.0 - ties_corr / (n * k * (k * k - 1))
     if corr > 0:
         stat /= corr
@@ -3955,6 +4052,7 @@ def wasserstein_distance(u_values, v_values):
     v = sorted(_flatten(v_values))
     allv = sorted(u + v)
     import bisect
+
     d = 0.0
     for i in range(len(allv) - 1):
         cu = bisect.bisect_right(u, allv[i]) / len(u)
@@ -4005,8 +4103,7 @@ def somersd(x, y=None, alternative="two-sided"):
     for almost every ordinal sample, and returned no table.
     """
     if y is None:
-        A = [[int(v) for v in row] for row in
-             (x.tolist() if hasattr(x, "tolist") else x)]
+        A = [[int(v) for v in row] for row in (x.tolist() if hasattr(x, "tolist") else x)]
     else:
         A = _somers_table(x, y)
     m = len(A)
@@ -4048,8 +4145,7 @@ def somersd(x, y=None, alternative="two-sided"):
     elif alternative == "less":
         p = norm.cdf(z)
     else:
-        raise ValueError("alternative must be 'two-sided', 'less' or "
-                         "'greater'")
+        raise ValueError("alternative must be 'two-sided', 'less' or 'greater'")
     return _SomersDResult(float(d), float(p), A)
 
 
@@ -4064,7 +4160,7 @@ class _TheilslopesResult(tuple):
 
 
 def theilslopes(y, x=None, alpha=0.95, method="separate"):
-    del method                      # intercept: median(y) - slope * median(x)
+    del method  # intercept: median(y) - slope * median(x)
     yv = _flatten(y)
     xv = _flatten(x) if x is not None else list(range(len(yv)))
     slopes = []
@@ -4075,8 +4171,7 @@ def theilslopes(y, x=None, alpha=0.95, method="separate"):
                 slopes.append((yv[j] - yv[i]) / (xv[j] - xv[i]))
     slopes.sort()
     m = len(slopes)
-    med = slopes[m // 2] if m % 2 else \
-        0.5 * (slopes[m // 2 - 1] + slopes[m // 2])
+    med = slopes[m // 2] if m % 2 else 0.5 * (slopes[m // 2 - 1] + slopes[m // 2])
     xs = sorted(xv)
     xmed = xs[n // 2] if n % 2 else 0.5 * (xs[n // 2 - 1] + xs[n // 2])
     ys = sorted(yv)
@@ -4095,9 +4190,12 @@ def theilslopes(y, x=None, alpha=0.95, method="separate"):
         for u in v:
             c[u] = c.get(u, 0) + 1
         return [k for k in c.values() if k > 1]
-    sigsq = (ny * (ny - 1) * (2 * ny + 5)
-             - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(xv))
-             - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(yv))) / 18.0
+
+    sigsq = (
+        ny * (ny - 1) * (2 * ny + 5)
+        - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(xv))
+        - _math.fsum(k * (k - 1) * (2 * k + 5) for k in _reps(yv))
+    ) / 18.0
     try:
         sigma = _math.sqrt(sigsq)
         ru = _bi.min(int(round((nt - z * sigma) / 2.0)), len(slopes) - 1)
@@ -4145,8 +4243,7 @@ class _MedianTestResult(tuple):
         return obj
 
 
-def median_test(*samples, ties="below", correction=True, lambda_=1,
-                nan_policy="propagate"):
+def median_test(*samples, ties="below", correction=True, lambda_=1, nan_policy="propagate"):
     """Mood's median test.
 
     ``ties`` says where observations exactly equal to the grand median
@@ -4174,12 +4271,11 @@ def median_test(*samples, ties="below", correction=True, lambda_=1,
         else:
             below = sum(1 for u in v if u < grand)
         table.append([above, below])
-    tt = [[table[i][j] for i in range(len(samples))]
-          for j in range(2)]
+    tt = [[table[i][j] for i in range(len(samples))] for j in range(2)]
     res = chi2_contingency(tt, correction=correction, lambda_=lambda_)
     from . import _array_core as _ac
-    return _MedianTestResult(res.statistic, res.pvalue, grand,
-                             _typed_table(_ac, tt))
+
+    return _MedianTestResult(res.statistic, res.pvalue, grand, _typed_table(_ac, tt))
 
 
 class _KSTwoBign:
@@ -4240,13 +4336,13 @@ def _kolmogn_mtw(n, d):
                     H[i][j] /= g
 
     def matmul(A, B):
-        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m))
-                 for j in range(m)] for i in range(m)]
+        return [[_math.fsum(A[i][t] * B[t][j] for t in range(m)) for j in range(m)] for i in range(m)]
 
     def rescale(A, e):
         if A[k - 1][k - 1] > 1e140:
             return [[v * 1e-140 for v in row] for row in A], e + 140
         return A, e
+
     # Q = H ** n by repeated squaring, exponent tracked in eQ
     Q, eQ = None, 0
     P, eP = H, 0
@@ -4263,7 +4359,7 @@ def _kolmogn_mtw(n, d):
         if s < 1e-140:
             s *= 1e140
             eQ -= 140
-    return _bi.max(0.0, _bi.min(1.0, s * 10.0 ** eQ))
+    return _bi.max(0.0, _bi.min(1.0, s * 10.0**eQ))
 
 
 def _kstwo_cdf(d, n):
@@ -4325,23 +4421,27 @@ class _HalfCauchy(_Dist):
 
     def moment(self, order, loc=0.0, scale=1.0):
         return _math.inf
+
     def pdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
             if z < 0:
                 return 0.0
             return 2.0 / (_math.pi * scale * (1.0 + z * z))
+
         return _maybe_map(one, x)
 
     def cdf(self, x, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
             return 0.0 if z < 0 else 2.0 / _math.pi * _math.atan(z)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, loc=0.0, scale=1.0):
         def one(p):
             return loc + scale * _math.tan(_math.pi * p / 2.0)
+
         return _maybe_map(one, q)
 
 
@@ -4356,19 +4456,21 @@ class _Pareto(_Dist):
         return _math.sqrt(self.var(b, loc, scale))
 
     _support = (1.0, _math.inf)
+
     def pdf(self, x, b, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
             return 0.0 if z < 1.0 else b / (z ** (b + 1.0)) / scale
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def sf(self, x, b, loc=0.0, scale=1.0):
         return _maybe_map(lambda v: 1.0 if (v - loc) / scale <= 1.0 else ((v - loc) / scale) ** (-b), x)
 
     def cdf(self, x, b, loc=0.0, scale=1.0):
-        return _maybe_map(lambda v: 0.0 if (v - loc) / scale <= 1.0
-                          else -_math.expm1(-b * _math.log((v - loc) / scale)), x)
+        return _maybe_map(
+            lambda v: 0.0 if (v - loc) / scale <= 1.0 else -_math.expm1(-b * _math.log((v - loc) / scale)), x
+        )
 
     def logsf(self, x, b, loc=0.0, scale=1.0):
         return _maybe_map(lambda v: 0.0 if (v - loc) / scale <= 1.0 else -b * _math.log((v - loc) / scale), x)
@@ -4378,6 +4480,7 @@ class _Pareto(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * _math.exp(-_math.log1p(-p) / b) if p < 1.0 else _math.inf
+
         return _maybe_map(one, q)
 
     def isf(self, q, b, loc=0.0, scale=1.0):
@@ -4385,11 +4488,13 @@ class _Pareto(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * p ** (-1.0 / b) if p > 0.0 else _math.inf
+
         return _maybe_map(one, q)
 
 
 class _GenPareto(_Dist):
     _support = (0.0, _math.inf)
+
     def pdf(self, x, c, loc=0.0, scale=1.0):
         def one(v):
             z = (v - loc) / scale
@@ -4401,8 +4506,8 @@ class _GenPareto(_Dist):
             if t_ <= 0:
                 return 0.0
             return t_ ** (-1.0 / c - 1.0) / scale
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def _z_logsf(self, z, c):
         """log P(Z > z) for the standard generalised Pareto."""
@@ -4429,6 +4534,7 @@ class _GenPareto(_Dist):
             if ls == 0.0:
                 return -_math.inf
             return _math.log(-_math.expm1(ls)) if ls > -_math.log(2.0) else _math.log1p(-_math.exp(ls))
+
         return _maybe_map(one, x)
 
     def _z_isf(self, p, c):
@@ -4444,6 +4550,7 @@ class _GenPareto(_Dist):
                 return loc + scale * (_math.inf if c >= 0 else -1.0 / c)
             lq = _math.log1p(-p)
             return loc + scale * (-lq if c == 0.0 else _math.expm1(-c * lq) / c)
+
         return _maybe_map(one, q)
 
     def isf(self, q, c, loc=0.0, scale=1.0):
@@ -4453,6 +4560,7 @@ class _GenPareto(_Dist):
             if p == 0.0:
                 return loc + scale * (_math.inf if c >= 0 else -1.0 / c)
             return loc + scale * self._z_isf(p, c)
+
         return _maybe_map(one, q)
 
     def mean(self, c, loc=0.0, scale=1.0):
@@ -4469,6 +4577,7 @@ class _GenPareto(_Dist):
             if c == 0.0:
                 return -z - _math.log(scale)
             return -(1.0 / c + 1.0) * _math.log1p(c * z) - _math.log(scale)
+
         return _maybe_map(one, x)
 
 
@@ -4532,7 +4641,6 @@ def _nct_cdf(t, df, delta, itrmax=1000, errmax=1e-12):
 class _NCT(_Dist):
     """Noncentral t (Lenth 1989, AS 243)."""
 
-
     # T = (Z + nc) / sqrt(V / df), V ~ chi2(df). Conditioning on V gives
     # integrals with positive integrands -- no cancellation in either tail:
     #   P(T <= x) = int chi2(v; df) Phi(x sqrt(v/df) - nc) dv
@@ -4556,7 +4664,7 @@ class _NCT(_Dist):
         # lets exp(logg - logg(start)) overflow
         a = _math.log(grid[_bi.max(k - 1, 0)])
         b = _math.log(grid[_bi.min(k + 1, len(grid) - 1)])
-        gr = (5 ** 0.5 - 1) / 2
+        gr = (5**0.5 - 1) / 2
         c, d = b - gr * (b - a), a + gr * (b - a)
         fc, fd = logg(_math.exp(c)), logg(_math.exp(d))
         for _ in range(200):
@@ -4579,12 +4687,18 @@ class _NCT(_Dist):
         return m + _math.log(_math.exp(up - m) + _math.exp(down - m))
 
     def _log_lower(self, x, df, nc):
-        return self._log_int(lambda v: -_math.inf if v <= 0 else
-                             _scalar(chi2.logpdf(v, df)) + _log_ndtr(x * _math.sqrt(v / df) - nc), df, x)
+        return self._log_int(
+            lambda v: -_math.inf if v <= 0 else _scalar(chi2.logpdf(v, df)) + _log_ndtr(x * _math.sqrt(v / df) - nc),
+            df,
+            x,
+        )
 
     def _log_upper(self, x, df, nc):
-        return self._log_int(lambda v: -_math.inf if v <= 0 else
-                             _scalar(chi2.logpdf(v, df)) + _log_ndtr(nc - x * _math.sqrt(v / df)), df, x)
+        return self._log_int(
+            lambda v: -_math.inf if v <= 0 else _scalar(chi2.logpdf(v, df)) + _log_ndtr(nc - x * _math.sqrt(v / df)),
+            df,
+            x,
+        )
 
     def logcdf(self, x, df, nc):
         # near 0 from below, log F = log1p(-S) keeps the digits of a tiny S
@@ -4593,6 +4707,7 @@ class _NCT(_Dist):
         def one(v):
             lo = self._log_lower(v, df, nc)
             return lo if lo < -_math.log(2.0) else _math.log1p(-_math.exp(self._log_upper(v, df, nc)))
+
         return _maybe_map(one, x)
 
     def logsf(self, x, df, nc):
@@ -4601,6 +4716,7 @@ class _NCT(_Dist):
         def one(v):
             up = self._log_upper(v, df, nc)
             return up if up < -_math.log(2.0) else _math.log1p(-_math.exp(self._log_lower(v, df, nc)))
+
         return _maybe_map(one, x)
 
     def cdf(self, x, df, nc):
@@ -4609,6 +4725,7 @@ class _NCT(_Dist):
         def one(v):
             lo = self._log_lower(v, df, nc)
             return _math.exp(lo) if lo < -_math.log(2.0) else -_math.expm1(self._log_upper(v, df, nc))
+
         return _maybe_map(one, x)
 
     def sf(self, x, df, nc):
@@ -4617,15 +4734,27 @@ class _NCT(_Dist):
         def one(v):
             up = self._log_upper(v, df, nc)
             return _math.exp(up) if up < -_math.log(2.0) else -_math.expm1(self._log_lower(v, df, nc))
+
         return _maybe_map(one, x)
 
     def logpdf(self, x, df, nc):
         df, nc = float(df), float(nc)
         c = -0.5 * _math.log(2.0 * _math.pi)
-        return _maybe_map(lambda xv: self._log_int(
-            lambda v: -_math.inf if v <= 0 else
-            _scalar(chi2.logpdf(v, df)) + c - 0.5 * (xv * _math.sqrt(v / df) - nc) ** 2
-            + 0.5 * _math.log(v / df), df, xv), x)
+        return _maybe_map(
+            lambda xv: self._log_int(
+                lambda v: (
+                    -_math.inf
+                    if v <= 0
+                    else _scalar(chi2.logpdf(v, df))
+                    + c
+                    - 0.5 * (xv * _math.sqrt(v / df) - nc) ** 2
+                    + 0.5 * _math.log(v / df)
+                ),
+                df,
+                xv,
+            ),
+            x,
+        )
 
     def pdf(self, x, df, nc):
         return _maybe_map(lambda v: _math.exp(_scalar(self.logpdf(v, df, nc))), x)
@@ -4638,8 +4767,14 @@ class _NCT(_Dist):
                 return _math.nan
             if p in (0.0, 1.0):
                 return -_math.inf if p == 0.0 else _math.inf
-            return _invert(lambda v: _scalar(self.cdf(v, df, nc)), nc - 10.0, nc + 10.0, p=p,
-                           sf=lambda v: _scalar(self.sf(v, df, nc)))
+            return _invert(
+                lambda v: _scalar(self.cdf(v, df, nc)),
+                nc - 10.0,
+                nc + 10.0,
+                p=p,
+                sf=lambda v: _scalar(self.sf(v, df, nc)),
+            )
+
         return _maybe_map(one, q)
 
     def isf(self, q, df, nc):
@@ -4650,8 +4785,14 @@ class _NCT(_Dist):
                 return _math.nan
             if p in (0.0, 1.0):
                 return _math.inf if p == 0.0 else -_math.inf
-            return _invert(lambda v: _scalar(self.cdf(v, df, nc)), nc - 10.0, nc + 10.0, q=p,
-                           sf=lambda v: _scalar(self.sf(v, df, nc)))
+            return _invert(
+                lambda v: _scalar(self.cdf(v, df, nc)),
+                nc - 10.0,
+                nc + 10.0,
+                q=p,
+                sf=lambda v: _scalar(self.sf(v, df, nc)),
+            )
+
         return _maybe_map(one, q)
 
     def mean(self, df, nc):
@@ -4699,8 +4840,8 @@ class _NCF(_Dist):
                 return _math.nan
             if v <= 0.0:
                 return 0.0
-            return self._mix(nc, lambda j: f.cdf(dfn * v / (dfn + 2 * j),
-                                                 dfn + 2 * j, dfd))
+            return self._mix(nc, lambda j: f.cdf(dfn * v / (dfn + 2 * j), dfn + 2 * j, dfd))
+
         return _maybe_map(one, x)
 
     def pdf(self, x, dfn, dfd, nc):
@@ -4711,8 +4852,8 @@ class _NCF(_Dist):
                 return _math.nan
             if v < 0.0:
                 return 0.0
-            return self._mix(nc, lambda j: dfn / (dfn + 2 * j)
-                             * f.pdf(dfn * v / (dfn + 2 * j), dfn + 2 * j, dfd))
+            return self._mix(nc, lambda j: dfn / (dfn + 2 * j) * f.pdf(dfn * v / (dfn + 2 * j), dfn + 2 * j, dfd))
+
         return _maybe_map(one, x)
 
     def sf(self, x, dfn, dfd, nc):
@@ -4722,6 +4863,7 @@ class _NCF(_Dist):
     def ppf(self, q, dfn, dfd, nc):
         def one(p):
             return _ppf_from_cdf(lambda v: self.cdf(v, dfn, dfd, nc), p, 0.0, 1e6)
+
         return _maybe_map(one, q)
 
     def mean(self, dfn, dfd, nc):
@@ -4734,9 +4876,12 @@ class _NCF(_Dist):
         dfn, dfd, nc = float(dfn), float(dfd), float(nc)
         if dfd <= 4.0:
             return _math.inf
-        return (2.0 * (dfd / dfn) ** 2
-                * ((dfn + nc) ** 2 + (dfn + 2.0 * nc) * (dfd - 2.0))
-                / ((dfd - 2.0) ** 2 * (dfd - 4.0)))
+        return (
+            2.0
+            * (dfd / dfn) ** 2
+            * ((dfn + nc) ** 2 + (dfn + 2.0 * nc) * (dfd - 2.0))
+            / ((dfd - 2.0) ** 2 * (dfd - 4.0))
+        )
 
     def std(self, dfn, dfd, nc):
         return _math.sqrt(self.var(dfn, dfd, nc))
@@ -4750,6 +4895,7 @@ ncf = _NCF()
 
 
 # ---------------------------------------------------- further distributions
+
 
 def _bessel_i(v, x):
     """Modified Bessel function I_v(x) by its power series (v >= 0 or an
@@ -4782,6 +4928,7 @@ def _owens_t(h, a):
 
     def fx(x):
         return _math.exp(-0.5 * h * h * (1.0 + x * x)) / (1.0 + x * x)
+
     s = fx(0.0) + fx(a)
     for i in range(1, npan):
         s += (4.0 if i % 2 else 2.0) * fx(i * hstep)
@@ -4795,7 +4942,7 @@ def _discrete_ppf(q, pmf, lo, hi=None):
         return float(lo)
     k = int(lo)
     acc = 0.0
-    limit = k + 10 ** 6 if hi is None else int(hi)
+    limit = k + 10**6 if hi is None else int(hi)
     while k <= limit:
         acc += pmf(k)
         if acc >= q * (1.0 - 1e-12):
@@ -4811,8 +4958,8 @@ class _Rayleigh(_Dist):
         def one(v):
             z = (v - loc) / scale
             return z * _math.exp(-0.5 * z * z) / scale if z >= 0 else 0.0
-        return _maybe_map(one, x)
 
+        return _maybe_map(one, x)
 
     def cdf(self, x, loc=0.0, scale=1.0):
         return _maybe_map(lambda v: 0.0 if v <= loc else -_math.expm1(-0.5 * ((v - loc) / scale) ** 2), x)
@@ -4824,6 +4971,7 @@ class _Rayleigh(_Dist):
         def one(v):
             z = (v - loc) / scale
             return -_math.inf if z <= 0 else _math.log(z) - 0.5 * z * z - _math.log(scale)
+
         return _maybe_map(one, x)
 
     def logcdf(self, x, loc=0.0, scale=1.0):
@@ -4832,6 +4980,7 @@ class _Rayleigh(_Dist):
                 return -_math.inf
             w = 0.5 * ((v - loc) / scale) ** 2
             return _math.log(-_math.expm1(-w)) if w < _math.log(2.0) else _math.log1p(-_math.exp(-w))
+
         return _maybe_map(one, x)
 
     def logsf(self, x, loc=0.0, scale=1.0):
@@ -4842,6 +4991,7 @@ class _Rayleigh(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * _math.sqrt(-2.0 * _math.log1p(-p)) if p < 1.0 else _math.inf
+
         return _maybe_map(one, q)
 
     def isf(self, q, loc=0.0, scale=1.0):
@@ -4849,6 +4999,7 @@ class _Rayleigh(_Dist):
             if p != p or p < 0.0 or p > 1.0:
                 return _math.nan
             return loc + scale * _math.sqrt(-2.0 * _math.log(p)) if p > 0.0 else _math.inf
+
         return _maybe_map(one, q)
 
     def mean(self, loc=0.0, scale=1.0):
@@ -4870,7 +5021,6 @@ class _InvGamma(_Dist):
     def std(self, a, loc=0.0, scale=1.0):
         return _math.sqrt(self.var(a, loc, scale))
 
-
     # X = scale / G with G ~ Gamma(a): P(X <= x) = Q(a, scale / x)
     def cdf(self, x, a, loc=0.0, scale=1.0):
         return _maybe_map(lambda v: 0.0 if v <= loc else _gammainc_q(a, scale / (v - loc)), x)
@@ -4884,6 +5034,7 @@ class _InvGamma(_Dist):
                 return -_math.inf
             y = (v - loc) / scale
             return -_math.lgamma(a) - (a + 1.0) * _math.log(y) - 1.0 / y - _math.log(scale)
+
         return _maybe_map(one, x)
 
     def pdf(self, x, a, loc=0.0, scale=1.0):
@@ -4895,6 +5046,7 @@ class _InvGamma(_Dist):
                 return _math.nan
             g = _scalar(gamma.isf(p, a))
             return loc + (scale / g if g > 0 else _math.inf)
+
         return _maybe_map(one, q)
 
     def isf(self, q, a, loc=0.0, scale=1.0):
@@ -4903,6 +5055,7 @@ class _InvGamma(_Dist):
                 return _math.nan
             g = _scalar(gamma.ppf(p, a))
             return loc + (scale / g if g > 0 else _math.inf)
+
         return _maybe_map(one, q)
 
 
@@ -4922,6 +5075,7 @@ class _Triang(_Dist):
             if z > c:
                 return 2.0 * (1.0 - z) / (1.0 - c) / scale
             return 2.0 / scale
+
         return _maybe_map(one, x)
 
     def cdf(self, x, c, loc=0.0, scale=1.0):
@@ -4932,17 +5086,20 @@ class _Triang(_Dist):
             if z >= 1:
                 return 1.0
             return z * z / c if z <= c else 1.0 - (1.0 - z) ** 2 / (1.0 - c)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, c, loc=0.0, scale=1.0):
         def one(p):
             z = _math.sqrt(p * c) if p <= c else 1.0 - _math.sqrt((1.0 - p) * (1.0 - c))
             return loc + scale * z
+
         return _maybe_map(one, q)
 
 
 class _Wald(_Dist):
     """Inverse Gaussian with mean 1 and shape 1 (scipy's wald)."""
+
     _support = (0.0, _math.inf)
 
     def pdf(self, x, loc=0.0, scale=1.0):
@@ -4950,7 +5107,8 @@ class _Wald(_Dist):
             z = (v - loc) / scale
             if z <= 0:
                 return 0.0
-            return _math.exp(-(z - 1.0) ** 2 / (2.0 * z)) / _math.sqrt(2.0 * _math.pi * z ** 3) / scale
+            return _math.exp(-((z - 1.0) ** 2) / (2.0 * z)) / _math.sqrt(2.0 * _math.pi * z**3) / scale
+
         return _maybe_map(one, x)
 
     def cdf(self, x, loc=0.0, scale=1.0):
@@ -4960,11 +5118,11 @@ class _Wald(_Dist):
                 return 0.0
             r = _math.sqrt(z)
             return _norm_cdf((z - 1.0) / r) + _math.exp(2.0) * _norm_cdf(-(z + 1.0) / r)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, loc=0.0, scale=1.0):
-        return _maybe_map(lambda p: loc + scale * _ppf_from_cdf(
-            lambda v: _scalar(self.cdf(v)), p, 0.0, 1e6), q)
+        return _maybe_map(lambda p: loc + scale * _ppf_from_cdf(lambda v: _scalar(self.cdf(v)), p, 0.0, 1e6), q)
 
 
 _GL30 = None
@@ -5008,7 +5166,7 @@ def _log_tail_integral(logpdf, x, sgn, bound=None):
     total, a, width = 0.0, x, h
     for panel in range(600):
         if bound is not None and width >= 0.5 * _bi_abs(a - bound):
-            b = bound + 0.5 * (a - bound)          # geometric grading
+            b = bound + 0.5 * (a - bound)  # geometric grading
             if _bi_abs(b - bound) <= 1e-300:
                 b = bound
         else:
@@ -5028,8 +5186,6 @@ def _log_tail_integral(logpdf, x, sgn, bound=None):
 
 
 class _SkewNorm(_Dist):
-
-
     @staticmethod
     def _std_logpdf(z, a):
         return _math.log(2.0) - 0.5 * z * z - 0.5 * _math.log(2.0 * _math.pi) + _log_ndtr(a * z)
@@ -5077,8 +5233,14 @@ class _SkewNorm(_Dist):
                 return _math.nan
             if p in (0.0, 1.0):
                 return -_math.inf if p == 0.0 else _math.inf
-            return loc + scale * _invert(lambda v: _math.exp(self._log_lower(v, a)), -60.0, 60.0,
-                                         p=p, sf=lambda v: _math.exp(self._log_upper(v, a)))
+            return loc + scale * _invert(
+                lambda v: _math.exp(self._log_lower(v, a)),
+                -60.0,
+                60.0,
+                p=p,
+                sf=lambda v: _math.exp(self._log_upper(v, a)),
+            )
+
         return _maybe_map(one, q)
 
     def isf(self, q, a, loc=0.0, scale=1.0):
@@ -5087,8 +5249,14 @@ class _SkewNorm(_Dist):
                 return _math.nan
             if p in (0.0, 1.0):
                 return _math.inf if p == 0.0 else -_math.inf
-            return loc + scale * _invert(lambda v: _math.exp(self._log_lower(v, a)), -60.0, 60.0,
-                                         q=p, sf=lambda v: _math.exp(self._log_upper(v, a)))
+            return loc + scale * _invert(
+                lambda v: _math.exp(self._log_lower(v, a)),
+                -60.0,
+                60.0,
+                q=p,
+                sf=lambda v: _math.exp(self._log_upper(v, a)),
+            )
+
         return _maybe_map(one, q)
 
     def mean(self, a, loc=0.0, scale=1.0):
@@ -5114,6 +5282,7 @@ class _TruncNorm(_Dist):
             if z < a or z > b:
                 return 0.0
             return _math.exp(-0.5 * z * z) / _math.sqrt(2.0 * _math.pi) / den / scale
+
         return _maybe_map(one, x)
 
     def cdf(self, x, a, b, loc=0.0, scale=1.0):
@@ -5126,6 +5295,7 @@ class _TruncNorm(_Dist):
             if z >= b:
                 return 1.0
             return (_norm_cdf(z) - fa) / (fb - fa)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, a, b, loc=0.0, scale=1.0):
@@ -5142,6 +5312,7 @@ class _VonMises(_Dist):
         def one(v):
             z = (v - loc) / scale
             return _math.exp(kappa * _math.cos(z)) / norm_c / scale
+
         return _maybe_map(one, x)
 
     def cdf(self, x, kappa, loc=0.0, scale=1.0):
@@ -5159,15 +5330,21 @@ class _VonMises(_Dist):
             for i in range(1, npan):
                 s += (4.0 if i % 2 else 2.0) * _math.exp(kappa * _math.cos(-_math.pi + i * h))
             return s * h / 3.0 / norm_c
+
         return _maybe_map(one, x)
 
-
     def mean(self, kappa, loc=0.0, scale=1.0):
-        return float(loc)                    # symmetric about loc
+        return float(loc)  # symmetric about loc
 
     def ppf(self, q, kappa, loc=0.0, scale=1.0):
-        return _maybe_map(lambda p: float(loc) if p == 0.5 else loc + scale * _ppf_from_cdf(
-            lambda v: _scalar(self.cdf(v, kappa)), p, -_math.pi, _math.pi), q)
+        return _maybe_map(
+            lambda p: (
+                float(loc)
+                if p == 0.5
+                else loc + scale * _ppf_from_cdf(lambda v: _scalar(self.cdf(v, kappa)), p, -_math.pi, _math.pi)
+            ),
+            q,
+        )
 
     def isf(self, q, kappa, loc=0.0, scale=1.0):
         # symmetric: the upper quantile mirrors the lower one about loc
@@ -5207,6 +5384,7 @@ class _Bernoulli(_Dist):
 
 class _RandInt(_Dist):
     """Uniform integers on [low, high), scipy's randint."""
+
     _discrete = True
 
     def _bounds(self, low=None, high=None):
@@ -5216,13 +5394,11 @@ class _RandInt(_Dist):
 
     def pmf(self, k, low, high):
         n = float(high - low)
-        return _maybe_map(lambda v: 1.0 / n if low <= v < high and float(v).is_integer()
-                          else 0.0, k)
+        return _maybe_map(lambda v: 1.0 / n if low <= v < high and float(v).is_integer() else 0.0, k)
 
     def cdf(self, k, low, high):
         n = float(high - low)
-        return _maybe_map(lambda v: 0.0 if v < low else
-                          (1.0 if v >= high - 1 else (_math.floor(v) - low + 1) / n), k)
+        return _maybe_map(lambda v: 0.0 if v < low else (1.0 if v >= high - 1 else (_math.floor(v) - low + 1) / n), k)
 
     def ppf(self, q, low, high):
         n = high - low
@@ -5242,24 +5418,39 @@ class _BetaBinom(_Dist):
             kk = int(round(v))
             if kk < 0 or kk > n:
                 return 0.0
-            return _math.exp(_log_comb(n, kk) + _math.lgamma(kk + a) + _math.lgamma(n - kk + b)
-                             - _math.lgamma(n + a + b) + _math.lgamma(a + b)
-                             - _math.lgamma(a) - _math.lgamma(b))
+            return _math.exp(
+                _log_comb(n, kk)
+                + _math.lgamma(kk + a)
+                + _math.lgamma(n - kk + b)
+                - _math.lgamma(n + a + b)
+                + _math.lgamma(a + b)
+                - _math.lgamma(a)
+                - _math.lgamma(b)
+            )
+
         return _maybe_map(one, k)
 
     def cdf(self, k, n, a, b):
-        return _maybe_map(lambda v: _math.fsum(_scalar(self.pmf(i, n, a, b))
-                                               for i in range(0, int(_math.floor(v)) + 1))
-                          if v >= 0 else 0.0, k)
+        return _maybe_map(
+            lambda v: (
+                _math.fsum(_scalar(self.pmf(i, n, a, b)) for i in range(0, int(_math.floor(v)) + 1)) if v >= 0 else 0.0
+            ),
+            k,
+        )
 
     def ppf(self, q, n, a, b):
-        return _maybe_map(lambda u: _discrete_ppf(u, lambda i: _scalar(self.pmf(i, n, a, b)),
-                                                  0, n), q)
+        return _maybe_map(lambda u: _discrete_ppf(u, lambda i: _scalar(self.pmf(i, n, a, b)), 0, n), q)
 
     def sf(self, k, n, a, b):
         n = int(n)
-        return _maybe_map(lambda v: 1.0 if v < 0 else _math.fsum(
-            _scalar(self.pmf(i, n, a, b)) for i in range(int(_math.floor(v)) + 1, n + 1)), k)
+        return _maybe_map(
+            lambda v: (
+                1.0
+                if v < 0
+                else _math.fsum(_scalar(self.pmf(i, n, a, b)) for i in range(int(_math.floor(v)) + 1, n + 1))
+            ),
+            k,
+        )
 
 
 class _Zipf(_Dist):
@@ -5279,8 +5470,9 @@ class _Zipf(_Dist):
 
     def cdf(self, k, a):
         z = self._zeta(a)
-        return _maybe_map(lambda v: _math.fsum(i ** (-a) for i in range(1, int(_math.floor(v)) + 1)) / z
-                          if v >= 1 else 0.0, k)
+        return _maybe_map(
+            lambda v: _math.fsum(i ** (-a) for i in range(1, int(_math.floor(v)) + 1)) / z if v >= 1 else 0.0, k
+        )
 
     def ppf(self, q, a):
         z = self._zeta(a)
@@ -5307,8 +5499,12 @@ class _Skellam(_Dist):
 
         def one(v):
             kk = int(round(v))
-            return (_math.exp(-(mu1 + mu2)) * (mu1 / mu2) ** (kk / 2.0)
-                    * _bessel_i(_bi.abs(kk), 2.0 * _math.sqrt(mu1 * mu2)))
+            return (
+                _math.exp(-(mu1 + mu2))
+                * (mu1 / mu2) ** (kk / 2.0)
+                * _bessel_i(_bi.abs(kk), 2.0 * _math.sqrt(mu1 * mu2))
+            )
+
         return _maybe_map(one, k)
 
     def _kmin(self, mu1, mu2):
@@ -5316,8 +5512,9 @@ class _Skellam(_Dist):
 
     def cdf(self, k, mu1, mu2):
         lo = self._kmin(float(mu1), float(mu2))
-        return _maybe_map(lambda v: _math.fsum(_scalar(self.pmf(i, mu1, mu2))
-                                               for i in range(lo, int(_math.floor(v)) + 1)), k)
+        return _maybe_map(
+            lambda v: _math.fsum(_scalar(self.pmf(i, mu1, mu2)) for i in range(lo, int(_math.floor(v)) + 1)), k
+        )
 
     def ppf(self, q, mu1, mu2):
         lo = self._kmin(float(mu1), float(mu2))
@@ -5330,13 +5527,12 @@ class _Skellam(_Dist):
 class _NCX2(_Dist):
     """Noncentral chi-square as the Poisson(nc/2) mixture of central
     chi-square(df + 2j)."""
+
     _support = (0.0, _math.inf)
 
     def cdf(self, x, df, nc):
         df, nc = float(df), float(nc)
-        return _maybe_map(lambda v: 0.0 if v <= 0 else _NCF._mix(
-            nc, lambda j: _scalar(chi2.cdf(v, df + 2 * j))), x)
-
+        return _maybe_map(lambda v: 0.0 if v <= 0 else _NCF._mix(nc, lambda j: _scalar(chi2.cdf(v, df + 2 * j))), x)
 
     def mean(self, df, nc):
         return float(df) + float(nc)
@@ -5354,19 +5550,19 @@ class _NCX2(_Dist):
         lam = nc / 2.0
 
         def lw(j):
-            return -lam + (j * _math.log(lam) if lam > 0 else (0.0 if j == 0 else -_math.inf)) \
-                - _math.lgamma(j + 1.0)
+            return -lam + (j * _math.log(lam) if lam > 0 else (0.0 if j == 0 else -_math.inf)) - _math.lgamma(j + 1.0)
+
         if lam == 0.0:
             return logterm(0)
         # locate the largest term by a coarse scan
         best_j, best = 0, lw(0) + logterm(0)
         j, step = 1, 1
-        while j < 10 ** 7:
+        while j < 10**7:
             v = lw(j) + logterm(j)
             if v > best:
                 best_j, best = j, v
             elif (j > lam and v < best - 50.0) or (best == -_math.inf and j > 64 * _bi.max(1.0, lam)):
-                break   # past the peak, or no finite term at all
+                break  # past the peak, or no finite term at all
             j += step
             if j > 64:
                 step = _bi.max(1, j // 64)
@@ -5386,8 +5582,9 @@ class _NCX2(_Dist):
 
     def logpdf(self, x, df, nc):
         df, nc = float(df), float(nc)
-        return _maybe_map(lambda v: -_math.inf if v <= 0 else self._log_mix(
-            nc, lambda j: _scalar(chi2.logpdf(v, df + 2 * j))), x)
+        return _maybe_map(
+            lambda v: -_math.inf if v <= 0 else self._log_mix(nc, lambda j: _scalar(chi2.logpdf(v, df + 2 * j))), x
+        )
 
     def pdf(self, x, df, nc):
         return _maybe_map(lambda v: _math.exp(_scalar(self.logpdf(v, df, nc))), x)
@@ -5405,15 +5602,19 @@ class _NCX2(_Dist):
             if c < 0.5:
                 return _math.log1p(-c)
             return self._log_mix(nc, lambda j: _scalar(chi2.logsf(v, df + 2 * j)))
+
         return _maybe_map(one, x)
 
     def sf(self, x, df, nc):
         return _maybe_map(lambda v: _math.exp(_scalar(self.logsf(v, df, nc))), x)
 
     def ppf(self, q, df, nc):
-        return _maybe_map(lambda p: _ppf_from_cdf(
-            lambda v: _scalar(self.cdf(v, df, nc)), p, 0.0, 1e6,
-            sf=lambda v: _scalar(self.sf(v, df, nc))), q)
+        return _maybe_map(
+            lambda p: _ppf_from_cdf(
+                lambda v: _scalar(self.cdf(v, df, nc)), p, 0.0, 1e6, sf=lambda v: _scalar(self.sf(v, df, nc))
+            ),
+            q,
+        )
 
 
 ncx2 = _NCX2()
@@ -5433,18 +5634,15 @@ skellam = _Skellam()
 
 # ---------------------------------------------------- residual tail 2
 
+
 def bartlett(*samples):
     gs = [_flatten(s) for s in samples]
     k = len(gs)
     ns = [len(g) for g in gs]
     n = sum(ns)
-    sp2 = _math.fsum((ns[i] - 1) * _var(gs[i], ddof=1)
-                     for i in range(k)) / (n - k)
-    num = (n - k) * _math.log(sp2) - _math.fsum(
-        (ns[i] - 1) * _math.log(_var(gs[i], ddof=1))
-        for i in range(k))
-    den = 1.0 + (_math.fsum(1.0 / (ns[i] - 1) for i in range(k))
-                 - 1.0 / (n - k)) / (3.0 * (k - 1))
+    sp2 = _math.fsum((ns[i] - 1) * _var(gs[i], ddof=1) for i in range(k)) / (n - k)
+    num = (n - k) * _math.log(sp2) - _math.fsum((ns[i] - 1) * _math.log(_var(gs[i], ddof=1)) for i in range(k))
+    den = 1.0 + (_math.fsum(1.0 / (ns[i] - 1) for i in range(k)) - 1.0 / (n - k)) / (3.0 * (k - 1))
     stat = num / den
     return _TestResult(stat, chi2.sf(stat, k - 1))
 
@@ -5470,7 +5668,7 @@ def fligner(*samples, center="median"):
     i = 0
     for z in zs:
         ni = len(z)
-        ai = _math.fsum(a[i:i + ni]) / ni
+        ai = _math.fsum(a[i : i + ni]) / ni
         stat += ni * (ai - abar) ** 2
         i += ni
     stat /= v2
@@ -5503,7 +5701,7 @@ def _ansari_freqs(n1, n2):
                 if c:
                     cur[s] += c
     astart = sum(sorted(scores)[:n1])
-    freqs = dp[n1][astart:smax + 1]
+    freqs = dp[n1][astart : smax + 1]
     _ANSARI_CACHE[key] = (astart, freqs)
     return astart, freqs
 
@@ -5529,8 +5727,8 @@ def ansari(x, y, alternative="two-sided", method="auto"):
         # approximation under ties, and this avoids a Type I overshoot
         ic = int(_math.ceil(ab - astart))
         i_f = int(_math.floor(ab - astart))
-        cdf = sum(freqs[:_bi.max(ic + 1, 0)]) / total
-        sf = sum(freqs[_bi.max(i_f, 0):]) / total
+        cdf = sum(freqs[: _bi.max(ic + 1, 0)]) / total
+        sf = sum(freqs[_bi.max(i_f, 0) :]) / total
         if alternative == "two-sided":
             pv = 2.0 * _bi.min(cdf, sf)
         elif alternative == "greater":
@@ -5567,9 +5765,7 @@ def cramervonmises(rvs, cdf, args=()):
         cdfv = [dist.cdf(u, *args) for u in v]
     else:
         cdfv = [float(cdf(u, *args)) for u in v]
-    w2 = 1.0 / (12.0 * n) + _math.fsum(
-        (cdfv[i] - (2.0 * i + 1.0) / (2.0 * n)) ** 2
-        for i in range(n))
+    w2 = 1.0 / (12.0 * n) + _math.fsum((cdfv[i] - (2.0 * i + 1.0) / (2.0 * n)) ** 2 for i in range(n))
     return _TestResult(w2, _cvm_asymp_sf(w2))
 
 
@@ -5583,6 +5779,7 @@ def _kv_quarter(x):
         if e < -700.0:
             return 0.0
         return _math.exp(e) * _math.cosh(0.25 * t)
+
     hi = 1.0
     while x * _math.cosh(hi) < 720.0 and hi < 60.0:
         hi += 1.0
@@ -5603,9 +5800,9 @@ def cramervonmises_2samp(x, y, method="auto"):
     # Anderson, T. W. (1962) "On the distribution of the two-sample
     # Cramer-von Mises criterion", Annals of Mathematical Statistics
     # 33(3), 1148-1159, doi:10.1214/aoms/1177704477 -- computational form
-    u = n * _math.fsum((rx[i] - (i + 1)) ** 2
-                       for i in range(n)) \
-        + m * _math.fsum((ry[j] - (j + 1)) ** 2 for j in range(m))
+    u = n * _math.fsum((rx[i] - (i + 1)) ** 2 for i in range(n)) + m * _math.fsum(
+        (ry[j] - (j + 1)) ** 2 for j in range(m)
+    )
     nm = n + m
     t = u / (n * m * nm) - (4.0 * n * m - 1.0) / (6.0 * nm)
     if method == "auto":
@@ -5625,8 +5822,7 @@ def _cvm_2samp_exact_p(u, m, n):
     a = lcm // m
     b = lcm // n
     mn = m * n
-    zeta = int(_math.floor(lcm ** 2 * (m + n) * (6.0 * u - mn * (4 * mn - 1))
-                           / (6 * mn ** 2)))
+    zeta = int(_math.floor(lcm**2 * (m + n) * (6.0 * u - mn * (4 * mn - 1)) / (6 * mn**2)))
     gs = [{0: 1}] + [{} for _ in range(m)]
     for uu in range(n + 1):
         next_gs = []
@@ -5648,15 +5844,16 @@ def _cvm_asymp_sf(t):
     s = 0.0
     for j in range(200):
         a = 4.0 * j + 1.0
-        term = (_math.gamma(j + 0.5) / (_math.gamma(0.5)
-                * _math.factorial(j))) * _math.sqrt(a) \
-            * _math.exp(-a * a / (16.0 * t)) * _kv_quarter(
-                a * a / (16.0 * t))
+        term = (
+            (_math.gamma(j + 0.5) / (_math.gamma(0.5) * _math.factorial(j)))
+            * _math.sqrt(a)
+            * _math.exp(-a * a / (16.0 * t))
+            * _kv_quarter(a * a / (16.0 * t))
+        )
         s += term
         if term < 1e-12 and j > 3:
             break
-    return _bi.max(0.0, _bi.min(1.0, 1.0 - s / (_math.pi
-                                                * _math.sqrt(t))))
+    return _bi.max(0.0, _bi.min(1.0, 1.0 - s / (_math.pi * _math.sqrt(t))))
 
 
 def _solve3(A, b):
@@ -5684,6 +5881,7 @@ def anderson_ksamp(samples, midrank=True):
     n = len(allv)
     zstar = sorted(set(allv))
     import bisect
+
     if midrank:
         # Scholz-Stephens A2akN (midrank / ties variant, scipy default)
         a2 = 0.0
@@ -5698,8 +5896,7 @@ def anderson_ksamp(samples, midrank=True):
                 mij = sr - fij / 2.0
                 denom = bj * (n - bj) - n * lj / 4.0
                 if denom > 0:
-                    inner += (lj / float(n)
-                              * (n * mij - bj * ns[gi]) ** 2 / denom)
+                    inner += lj / float(n) * (n * mij - bj * ns[gi]) ** 2 / denom
             a2 += inner / ns[gi]
         a2 *= (n - 1.0) / n
         A2kN = a2 - (k - 1)
@@ -5711,8 +5908,7 @@ def anderson_ksamp(samples, midrank=True):
                 mij = bisect.bisect_right(g, z)
                 bj = bisect.bisect_right(allv, z)
                 if 0 < bj < n:
-                    inner += (n * mij - ns[gi] * bj) ** 2 / float(
-                        bj * (n - bj))
+                    inner += (n * mij - ns[gi] * bj) ** 2 / float(bj * (n - bj))
             a2 += inner / ns[gi]
         a2 /= n
         A2kN = a2 - (k - 1)
@@ -5723,15 +5919,10 @@ def anderson_ksamp(samples, midrank=True):
         for j in range(i + 1, n):
             gsum += 1.0 / ((n - i) * j)
     a = (4.0 * gsum - 6.0) * (k - 1) + (10.0 - 6.0 * gsum) * H
-    b = (2.0 * gsum - 4.0) * k * k + 8.0 * hs * k \
-        + (2.0 * gsum - 14.0 * hs - 4.0) * H - 8.0 * hs \
-        + 4.0 * gsum - 6.0
-    c = (6.0 * hs + 2.0 * gsum - 2.0) * k * k \
-        + (4.0 * hs - 4.0 * gsum + 6.0) * k \
-        + (2.0 * hs - 6.0) * H + 4.0 * hs
+    b = (2.0 * gsum - 4.0) * k * k + 8.0 * hs * k + (2.0 * gsum - 14.0 * hs - 4.0) * H - 8.0 * hs + 4.0 * gsum - 6.0
+    c = (6.0 * hs + 2.0 * gsum - 2.0) * k * k + (4.0 * hs - 4.0 * gsum + 6.0) * k + (2.0 * hs - 6.0) * H + 4.0 * hs
     d = (2.0 * hs + 6.0) * k * k - 4.0 * hs * k
-    sigsq = (a * n ** 3 + b * n ** 2 + c * n + d) / (
-        (n - 1.0) * (n - 2.0) * (n - 3.0))
+    sigsq = (a * n**3 + b * n**2 + c * n + d) / ((n - 1.0) * (n - 2.0) * (n - 3.0))
     tn = A2kN / _math.sqrt(sigsq)
     b0 = [0.675, 1.281, 1.645, 1.960, 2.326, 2.573, 3.085]
     b1 = [-0.245, 0.250, 0.678, 1.149, 1.822, 2.364, 3.615]
@@ -5748,11 +5939,10 @@ def anderson_ksamp(samples, midrank=True):
         # scipy's rule: a least-squares quadratic in the critical values
         # through all seven log significance levels, evaluated at tn
         S = [[_math.fsum(t ** (i + j) for t in tm) for j in range(3)] for i in range(3)]
-        r = [_math.fsum(ls * t ** i for t, ls in zip(tm, logsig)) for i in range(3)]
+        r = [_math.fsum(ls * t**i for t, ls in zip(tm, logsig)) for i in range(3)]
         c = _solve3(S, r)
         p = _math.exp(c[0] + c[1] * tn + c[2] * tn * tn)
-    return _TestResult(tn, p, significance_level=p,
-                       critical_values=tm)
+    return _TestResult(tn, p, significance_level=p, critical_values=tm)
 
 
 def binom_test(x, n=None, p=0.5, alternative="two-sided"):
@@ -5768,10 +5958,12 @@ class _LogUniform:
 
     def rvs(self, size=None, random_state=None):
         from . import _array_core as _ac2
+
         rng = random_state if hasattr(random_state, "random") else _ac2.random.default_rng(random_state)
 
         def one(u):
             return self.a * (self.b / self.a) ** u
+
         if size is None:
             return one(rng.random())
         return _ac2.marr([one(rng.random()) for _ in range(int(size))])
@@ -5779,28 +5971,34 @@ class _LogUniform:
     def pdf(self, x, a=None, b=None):
         a = a if a is not None else self.a
         b = b if b is not None else self.b
+
         def one(v):
             if v < a or v > b:
                 return 0.0
             return 1.0 / (v * _math.log(b / a))
+
         return _maybe_map(one, x)
 
     def cdf(self, x, a=None, b=None):
         a = a if a is not None else self.a
         b = b if b is not None else self.b
+
         def one(v):
             if v <= a:
                 return 0.0
             if v >= b:
                 return 1.0
             return _math.log(v / a) / _math.log(b / a)
+
         return _maybe_map(one, x)
 
     def ppf(self, q, a=None, b=None):
         a = a if a is not None else self.a
         b = b if b is not None else self.b
+
         def one(pp):
             return a * (b / a) ** pp
+
         return _maybe_map(one, q)
 
 
@@ -5812,16 +6010,15 @@ class _MStats:
     def winsorize(a, limits=None):
         v = _flatten(a)
         n = len(v)
-        lo_l, hi_l = (limits if isinstance(limits, (tuple, list))
-                      else (limits, limits)) if limits is not None \
-            else (0.0, 0.0)
+        lo_l, hi_l = (
+            (limits if isinstance(limits, (tuple, list)) else (limits, limits)) if limits is not None else (0.0, 0.0)
+        )
         sv = sorted(v)
         klo = int(lo_l * n)
         khi = int(hi_l * n)
         lo_v = sv[klo] if klo < n else sv[-1]
         hi_v = sv[n - khi - 1] if khi < n else sv[0]
-        return [lo_v if u < lo_v else (hi_v if u > hi_v else u)
-                for u in v]
+        return [lo_v if u < lo_v else (hi_v if u > hi_v else u) for u in v]
 
 
 mstats = _MStats()
@@ -5834,15 +6031,14 @@ class _LatinHypercube:
 
     def random(self, n):
         from . import _array_core as _ac2
+
         rng = _ac2.random.default_rng(self._rng_seed)
         cols = []
         for _j in range(self.d):
             perm = list(range(n))
             rng.shuffle(perm)
-            cols.append([(perm[i] + rng.uniform()) / n
-                         for i in range(n)])
-        return _ac2.marr([[cols[j][i] for j in range(self.d)]
-                          for i in range(n)])
+            cols.append([(perm[i] + rng.uniform()) / n for i in range(n)])
+        return _ac2.marr([[cols[j][i] for j in range(self.d)] for i in range(n)])
 
 
 class _Sobol:
@@ -5855,9 +6051,9 @@ class _Sobol:
     (t, m, s)-net guarantees.
     """
 
-    def __init__(self, d, *, scramble=True, bits=None, rng=None, seed=None,
-                 optimization=None):
+    def __init__(self, d, *, scramble=True, bits=None, rng=None, seed=None, optimization=None):
         from ._sobol_dirnums import POLY, VINIT
+
         if optimization is not None:
             raise NotImplementedError("Sobol optimization is not supported")
         d = int(d)
@@ -5869,7 +6065,7 @@ class _Sobol:
         self.d = d
         self.bits = bits
         self.scramble = bool(scramble)
-        self._maxn = 2 ** bits
+        self._maxn = 2**bits
         v = [[0] * bits for _ in range(d)]
         for j in range(bits):
             v[0][j] = 1
@@ -5892,12 +6088,14 @@ class _Sobol:
         shift = [0] * d
         if self.scramble:
             from . import _array_core as _ac2
+
             g = _ac2.random.default_rng(seed if rng is None else rng)
             for dim in range(d):
                 # lower-triangular binary matrix with unit diagonal, rows
                 # indexed from the most significant bit
-                L = [[1 if c == r else (int(g.integers(0, 2)) if c < r else 0)
-                      for c in range(bits)] for r in range(bits)]
+                L = [
+                    [1 if c == r else (int(g.integers(0, 2)) if c < r else 0) for c in range(bits)] for r in range(bits)
+                ]
                 for j in range(bits):
                     col = v[dim][j]
                     out = 0
@@ -5934,6 +6132,7 @@ class _Sobol:
 
     def random(self, n=1):
         from . import _array_core as _ac2
+
         n = int(n)
         if self.num_generated + n > self._maxn:
             raise ValueError(f"at most 2**bits = {self._maxn} points can be generated")
@@ -5948,8 +6147,7 @@ class _Sobol:
         n = 2 ** int(m)
         total = self.num_generated + n
         if total & (total - 1):
-            raise ValueError("the balance properties of Sobol points need "
-                             "the total count to be a power of 2")
+            raise ValueError("the balance properties of Sobol points need the total count to be a power of 2")
         return self.random(n)
 
 
@@ -5969,12 +6167,11 @@ class _MVN:
     def mvnun(lower, upper, means, covar, maxpts=20000, **kw):
         del kw
         from . import _array_core as _ac2
+
         lo = [float(v) for v in lower]
         hi = [float(v) for v in upper]
         mu = [float(v) for v in means]
-        cov = [[float(v) for v in row]
-               for row in (covar.tolist() if hasattr(covar, "tolist")
-                           else covar)]
+        cov = [[float(v) for v in row] for row in (covar.tolist() if hasattr(covar, "tolist") else covar)]
         d = len(mu)
         L = _ac2.linalg.cholesky(_ac2.marr(cov)).tolist()
         rng = _ac2.random.default_rng(42)
@@ -5982,9 +6179,7 @@ class _MVN:
         npts = int(maxpts)
         for _ in range(npts):
             z = [rng.normal() for _ in range(d)]
-            x = [mu[i] + _math.fsum(L[i][j] * z[j]
-                                    for j in range(i + 1))
-                 for i in range(d)]
+            x = [mu[i] + _math.fsum(L[i][j] * z[j] for j in range(i + 1)) for i in range(d)]
             if all(lo[i] <= x[i] <= hi[i] for i in range(d)):
                 count += 1
         return count / npts, 0
@@ -5993,10 +6188,11 @@ class _MVN:
 mvn = _MVN()
 
 
-winsorize = _MStats.winsorize    # scipy.stats.mstats import site
+winsorize = _MStats.winsorize  # scipy.stats.mstats import site
 
 
 # ---------------------------------------------------- more scipy.stats surface
+
 
 class _ModeResult(tuple):
     def __new__(cls, mode, count):
@@ -6027,8 +6223,14 @@ def power_divergence(f_obs, f_exp=None, ddof=0, axis=0, lambda_=None):
     chi-square, 0 the log-likelihood ratio (G-test), -1/2 Freeman-Tukey,
     -1 modified log-likelihood, -2 Neyman."""
     del axis
-    names = {"pearson": 1.0, "log-likelihood": 0.0, "freeman-tukey": -0.5,
-             "mod-log-likelihood": -1.0, "neyman": -2.0, "cressie-read": 2.0 / 3.0}
+    names = {
+        "pearson": 1.0,
+        "log-likelihood": 0.0,
+        "freeman-tukey": -0.5,
+        "mod-log-likelihood": -1.0,
+        "neyman": -2.0,
+        "cressie-read": 2.0 / 3.0,
+    }
     lam = 1.0 if lambda_ is None else (names[lambda_] if isinstance(lambda_, str) else float(lambda_))
     obs = [float(v) for v in _flatten(f_obs)]
     k = len(obs)
@@ -6038,8 +6240,7 @@ def power_divergence(f_obs, f_exp=None, ddof=0, axis=0, lambda_=None):
     elif lam == -1.0:
         stat = 2.0 * _math.fsum(e * _math.log(e / o) for o, e in zip(obs, exp_) if o > 0)
     else:
-        stat = 2.0 / (lam * (lam + 1.0)) * _math.fsum(o * ((o / e) ** lam - 1.0)
-                                                      for o, e in zip(obs, exp_))
+        stat = 2.0 / (lam * (lam + 1.0)) * _math.fsum(o * ((o / e) ** lam - 1.0) for o, e in zip(obs, exp_))
     df = k - 1 - ddof
     return _TestResult(stat, chi2.sf(stat, df) if df > 0 else _math.nan)
 
@@ -6053,8 +6254,7 @@ def combine_pvalues(pvalues, method="fisher", weights=None):
         return _TestResult(stat, chi2.sf(stat, 2 * k))
     if method == "stouffer":
         w = [1.0] * k if weights is None else [float(v) for v in _flatten(weights)]
-        z = _math.fsum(wi * _norm_ppf(1.0 - v) for wi, v in zip(w, ps)) \
-            / _math.sqrt(_math.fsum(wi * wi for wi in w))
+        z = _math.fsum(wi * _norm_ppf(1.0 - v) for wi, v in zip(w, ps)) / _math.sqrt(_math.fsum(wi * wi for wi in w))
         return _TestResult(z, _norm_cdf(-(z)))
     raise ValueError("method must be 'fisher' or 'stouffer'")
 
@@ -6078,6 +6278,7 @@ def entropy(pk, qk=None, base=None, axis=0):
 
 # ---------------------------------------------------- scipy parity: closed-form families
 
+
 def _erfc(x):
     return 2.0 * _norm_cdf(-x * _math.sqrt(2.0))
 
@@ -6097,8 +6298,13 @@ def _bessel_k(v, x):
     h = t_max / npan
 
     def f(t):
-        e = -x * _math.cosh(t) + _math.log(_math.cosh(v * t)) if v * t < 700 else -x * _math.cosh(t) + v * t - _math.log(2.0)
+        e = (
+            -x * _math.cosh(t) + _math.log(_math.cosh(v * t))
+            if v * t < 700
+            else -x * _math.cosh(t) + v * t - _math.log(2.0)
+        )
         return _math.exp(e) if e > -745.0 else 0.0
+
     s = f(0.0) + f(t_max)
     for i in range(1, npan):
         s += (4.0 if i % 2 else 2.0) * f(i * h)
@@ -6120,7 +6326,7 @@ class _LS(_Dist):
             loc = args.pop(self._shapes) if len(args) > self._shapes else 0.0
         if scale is None:
             scale = args.pop(self._shapes) if len(args) > self._shapes else 1.0
-        return tuple(float(a) for a in args[:self._shapes]), float(loc), float(scale)
+        return tuple(float(a) for a in args[: self._shapes]), float(loc), float(scale)
 
     def _sup(self, *shape):
         return self._support
@@ -6144,7 +6350,9 @@ class _LS(_Dist):
                 return self._pdf(z, *sh) / scale
             except (ValueError, ZeroDivisionError, OverflowError):
                 return 0.0
+
         return _maybe_map(one, x)
+
     # these bodies handle loc/scale, nan and the support themselves; the
     # generic edge wrapper would read a third shape parameter as loc
     pdf._edge_wrapped = True
@@ -6162,7 +6370,9 @@ class _LS(_Dist):
             if z >= hi:
                 return 1.0
             return self._cdf_safe(z, sh, lo, hi)
+
         return _maybe_map(one, x)
+
     cdf._edge_wrapped = True
 
     def _cdf_safe(self, z, sh, lo, hi):
@@ -6200,7 +6410,9 @@ class _LS(_Dist):
                 while b < 1e300 and F(b) < p:
                     b = b * 2.0 if b > 0 else 1.0
             return loc + scale * _ppf_from_cdf(F, p, a, b)
+
         return _maybe_map(one, q)
+
     ppf._edge_wrapped = True
 
     def _eff_range(self, *sh):
@@ -6221,6 +6433,7 @@ class _LS(_Dist):
                 return v if v == v else 0.0
             except (ValueError, ZeroDivisionError, OverflowError):
                 return 0.0
+
         peak = _bi.max(pdf_at(start), 1e-300)
         # right
         r = start
@@ -6274,6 +6487,7 @@ class _LS(_Dist):
                 return v if v == v else 0.0
             except (ValueError, ZeroDivisionError, OverflowError):
                 return 0.0
+
         total = 0.0
         a = l_
         while a < z:
@@ -6299,7 +6513,9 @@ class _LS(_Dist):
             if z >= hi:
                 return 0.0
             return self._sf(z, *sh)
+
         return _maybe_map(one, x)
+
     sf._edge_wrapped = True
 
     def isf(self, q, *args, **kw):
@@ -6316,7 +6532,9 @@ class _LS(_Dist):
             if p == 1.0:
                 return loc + scale * lo
             return loc + scale * self._isf(p, *sh)
+
         return _maybe_map(one, q)
+
     isf._edge_wrapped = True
 
     def logcdf(self, x, *args, **kw):
@@ -6334,7 +6552,9 @@ class _LS(_Dist):
             if z >= hi:
                 return 0.0
             return self._logcdf(z, *sh)
+
         return _maybe_map(one, x)
+
     logcdf._edge_wrapped = True
 
     def logsf(self, x, *args, **kw):
@@ -6352,7 +6572,9 @@ class _LS(_Dist):
             if z >= hi:
                 return -_math.inf
             return self._logsf(z, *sh)
+
         return _maybe_map(one, x)
+
     logsf._edge_wrapped = True
 
     def mean(self, *args, **kw):
@@ -6380,7 +6602,9 @@ class _LS(_Dist):
             if z < lo or z > hi:
                 return -_math.inf
             return self._logpdf(z, *sh) - _math.log(scale)
+
         return _maybe_map(one, x)
+
     logpdf._edge_wrapped = True
 
 
@@ -6438,7 +6662,7 @@ class _Argus(_LS):
 
     def _pdf(self, x, c):
         y = 1.0 - x * x
-        return c ** 3 / (_math.sqrt(2.0 * _math.pi) * self._psi(c)) * x * _math.sqrt(y) * _math.exp(-0.5 * c * c * y)
+        return c**3 / (_math.sqrt(2.0 * _math.pi) * self._psi(c)) * x * _math.sqrt(y) * _math.exp(-0.5 * c * c * y)
 
     def _cdf(self, x, c):
         return 1.0 - self._psi(c * _math.sqrt(1.0 - x * x)) / self._psi(c)
@@ -6449,8 +6673,11 @@ class _BetaPrime(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, a, b):
-        return _math.exp((a - 1.0) * _math.log(x) - (a + b) * _math.log1p(x)
-                         - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)))
+        return _math.exp(
+            (a - 1.0) * _math.log(x)
+            - (a + b) * _math.log1p(x)
+            - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b))
+        )
 
     def _cdf(self, x, a, b):
         return _scalar(beta.cdf(x / (1.0 + x), a, b))
@@ -6478,7 +6705,7 @@ def _log1p_pow(x, e):
     """log(1 + x^e) without overflowing x^e (x = 1e-300, e = -3)."""
     le = e * _math.log(x)
     if abs(le) < 700.0:
-        return _math.log1p(x ** e)        # pow is correctly rounded; exp(le) is not
+        return _math.log1p(x**e)  # pow is correctly rounded; exp(le) is not
     return le + _math.log1p(_math.exp(-le)) if le > 0 else _math.log1p(_math.exp(le))
 
 
@@ -6491,7 +6718,6 @@ class _Burr(_LS):
 
     def _cdf(self, x, c, d):
         return (1.0 + x ** (-c)) ** (-d)
-
 
     # Burr III: F = (1 + x^-c)^-d
     def _logcdf(self, x, c, d):
@@ -6529,18 +6755,17 @@ class _Burr12(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, c, d):
-        return c * d * x ** (c - 1.0) * (1.0 + x ** c) ** (-d - 1.0)
-
+        return c * d * x ** (c - 1.0) * (1.0 + x**c) ** (-d - 1.0)
 
     # Burr XII: S = (1 + x^c)^-d
     def _logsf(self, x, c, d):
-        return -d * _math.log1p(x ** c)
+        return -d * _math.log1p(x**c)
 
     def _sf(self, x, c, d):
-        return _math.exp(-d * _math.log1p(x ** c))
+        return _math.exp(-d * _math.log1p(x**c))
 
     def _cdf(self, x, c, d):
-        return -_math.expm1(-d * _math.log1p(x ** c))
+        return -_math.expm1(-d * _math.log1p(x**c))
 
     def _logcdf(self, x, c, d):
         ls = -d * _log1p_pow(x, c)
@@ -6575,7 +6800,9 @@ class _Chi(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, df):
-        return _math.exp((df - 1.0) * _math.log(x) - 0.5 * x * x - (df / 2.0 - 1.0) * _math.log(2.0) - _math.lgamma(df / 2.0))
+        return _math.exp(
+            (df - 1.0) * _math.log(x) - 0.5 * x * x - (df / 2.0 - 1.0) * _math.log(2.0) - _math.lgamma(df / 2.0)
+        )
 
     def _cdf(self, x, df):
         return _scalar(gamma.cdf(0.5 * x * x, df / 2.0))
@@ -6601,7 +6828,10 @@ class _CrystalBall(_LS):
     def _consts(b, m):
         A = (m / b) ** m * _math.exp(-0.5 * b * b)
         B = m / b - b
-        N = 1.0 / (m / b / (m - 1.0) * _math.exp(-0.5 * b * b) + _math.sqrt(_math.pi / 2.0) * (1.0 + _math.erf(b / _math.sqrt(2.0))))
+        N = 1.0 / (
+            m / b / (m - 1.0) * _math.exp(-0.5 * b * b)
+            + _math.sqrt(_math.pi / 2.0) * (1.0 + _math.erf(b / _math.sqrt(2.0)))
+        )
         return A, B, N
 
     def _pdf(self, x, b, m):
@@ -6614,8 +6844,10 @@ class _CrystalBall(_LS):
         A, B, N = self._consts(b, m)
         if x <= -b:
             return N * A * (B - x) ** (1.0 - m) / (m - 1.0)
-        return N * (m / b * _math.exp(-0.5 * b * b) / (m - 1.0)
-                    + _math.sqrt(_math.pi / 2.0) * (_math.erf(x / _math.sqrt(2.0)) + _math.erf(b / _math.sqrt(2.0))))
+        return N * (
+            m / b * _math.exp(-0.5 * b * b) / (m - 1.0)
+            + _math.sqrt(_math.pi / 2.0) * (_math.erf(x / _math.sqrt(2.0)) + _math.erf(b / _math.sqrt(2.0)))
+        )
 
 
 class _DGamma(_LS):
@@ -6623,7 +6855,11 @@ class _DGamma(_LS):
 
     def _pdf(self, x, a):
         ax = _bi.abs(x)
-        return 0.5 * _math.exp((a - 1.0) * _math.log(ax) - ax - _math.lgamma(a)) if ax > 0 else (0.5 if a == 1.0 else (_math.inf if a < 1 else 0.0))
+        return (
+            0.5 * _math.exp((a - 1.0) * _math.log(ax) - ax - _math.lgamma(a))
+            if ax > 0
+            else (0.5 if a == 1.0 else (_math.inf if a < 1 else 0.0))
+        )
 
     def _cdf(self, x, a):
         g = _scalar(gamma.cdf(_bi.abs(x), a))
@@ -6640,16 +6876,20 @@ class _DWeibull(_LS):
 
     def _pdf(self, x, c):
         ax = _bi.abs(x)
-        return 0.5 * c * ax ** (c - 1.0) * _math.exp(-ax ** c) if ax > 0 else (0.5 * c if c == 1.0 else (_math.inf if c < 1 else 0.0))
+        return (
+            0.5 * c * ax ** (c - 1.0) * _math.exp(-(ax**c))
+            if ax > 0
+            else (0.5 * c if c == 1.0 else (_math.inf if c < 1 else 0.0))
+        )
 
     def _cdf(self, x, c):
-        t = 1.0 - _math.exp(-_bi.abs(x) ** c)
+        t = 1.0 - _math.exp(-(_bi.abs(x) ** c))
         return 0.5 + 0.5 * t if x >= 0 else 0.5 - 0.5 * t
 
     def _ppf(self, q, c):
         if q >= 0.5:
             return (-_math.log(2.0 * (1.0 - q))) ** (1.0 / c)
-        return -(-_math.log(2.0 * q)) ** (1.0 / c)
+        return -((-_math.log(2.0 * q)) ** (1.0 / c))
 
 
 class _Erlang(_LS):
@@ -6683,11 +6923,11 @@ class _ExponPow(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, b):
-        xb = x ** b
+        xb = x**b
         return b * x ** (b - 1.0) * _math.exp(1.0 + xb - _math.exp(xb))
 
     def _cdf(self, x, b):
-        return 1.0 - _math.exp(1.0 - _math.exp(x ** b))
+        return 1.0 - _math.exp(1.0 - _math.exp(x**b))
 
     def _ppf(self, q, b):
         return _math.log1p(-_math.log1p(-q)) ** (1.0 / b)
@@ -6698,14 +6938,14 @@ class _ExponWeib(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, a, c):
-        e = _math.exp(-x ** c)
+        e = _math.exp(-(x**c))
         return a * c * (1.0 - e) ** (a - 1.0) * e * x ** (c - 1.0)
 
     def _cdf(self, x, a, c):
-        return (1.0 - _math.exp(-x ** c)) ** a
+        return (1.0 - _math.exp(-(x**c))) ** a
 
     def _ppf(self, q, a, c):
-        return (-_math.log1p(-q ** (1.0 / a))) ** (1.0 / c)
+        return (-_math.log1p(-(q ** (1.0 / a)))) ** (1.0 / c)
 
 
 class _FatigueLife(_LS):
@@ -6713,7 +6953,9 @@ class _FatigueLife(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, c):
-        return (x + 1.0) / (2.0 * c * _math.sqrt(2.0 * _math.pi * x ** 3)) * _math.exp(-(x - 1.0) ** 2 / (2.0 * x * c * c))
+        return (
+            (x + 1.0) / (2.0 * c * _math.sqrt(2.0 * _math.pi * x**3)) * _math.exp(-((x - 1.0) ** 2) / (2.0 * x * c * c))
+        )
 
     def _cdf(self, x, c):
         return _norm_cdf((_math.sqrt(x) - 1.0 / _math.sqrt(x)) / c)
@@ -6729,11 +6971,10 @@ class _Fisk(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, c):
-        return c * x ** (c - 1.0) / (1.0 + x ** c) ** 2
+        return c * x ** (c - 1.0) / (1.0 + x**c) ** 2
 
     def _cdf(self, x, c):
         return 1.0 / (1.0 + x ** (-c))
-
 
     # log-logistic = Burr III with d = 1
     def _logcdf(self, x, c):
@@ -6799,10 +7040,10 @@ class _GenGamma(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, a, c):
-        return _math.exp(_math.log(_bi.abs(c)) + (c * a - 1.0) * _math.log(x) - x ** c - _math.lgamma(a))
+        return _math.exp(_math.log(_bi.abs(c)) + (c * a - 1.0) * _math.log(x) - x**c - _math.lgamma(a))
 
     def _cdf(self, x, a, c):
-        g = _scalar(gamma.cdf(x ** c, a))
+        g = _scalar(gamma.cdf(x**c, a))
         return g if c > 0 else 1.0 - g
 
     def _ppf(self, q, a, c):
@@ -6825,7 +7066,7 @@ class _GenHalfLogistic(_LS):
 
     def _ppf(self, q, c):
         t = (1.0 - q) / (1.0 + q)
-        return (1.0 - t ** c) / c
+        return (1.0 - t**c) / c
 
 
 class _GenLogistic(_LS):
@@ -6845,7 +7086,7 @@ class _GenNorm(_LS):
     _shapes = 1
 
     def _pdf(self, x, b):
-        return b / (2.0 * _math.gamma(1.0 / b)) * _math.exp(-_bi.abs(x) ** b)
+        return b / (2.0 * _math.gamma(1.0 / b)) * _math.exp(-(_bi.abs(x) ** b))
 
     def _cdf(self, x, b):
         g = _scalar(gamma.cdf(_bi.abs(x) ** b, 1.0 / b))
@@ -6854,7 +7095,7 @@ class _GenNorm(_LS):
     def _ppf(self, q, b):
         if q >= 0.5:
             return _scalar(gamma.ppf(2.0 * q - 1.0, 1.0 / b)) ** (1.0 / b)
-        return -_scalar(gamma.ppf(1.0 - 2.0 * q, 1.0 / b)) ** (1.0 / b)
+        return -(_scalar(gamma.ppf(1.0 - 2.0 * q, 1.0 / b)) ** (1.0 / b))
 
 
 class _Gibrat(_LS):
@@ -6900,15 +7141,14 @@ class _GumbelR(_LS):
     def _logcdf(self, x):
         return -_math.exp(-x) if x > -700 else -_math.inf
 
-
     def _isf(self, q):
         return -_math.log(-_math.log1p(-q))
 
     def _stdmean(self):
-        return 0.5772156649015329          # Euler-Mascheroni
+        return 0.5772156649015329  # Euler-Mascheroni
 
     def _stdvar(self):
-        return _math.pi ** 2 / 6.0
+        return _math.pi**2 / 6.0
 
     def _logpdf(self, x):
         return -(x + _math.exp(-x))
@@ -6935,10 +7175,10 @@ class _HalfGenNorm(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, b):
-        return b / _math.gamma(1.0 / b) * _math.exp(-x ** b)
+        return b / _math.gamma(1.0 / b) * _math.exp(-(x**b))
 
     def _cdf(self, x, b):
-        return _scalar(gamma.cdf(x ** b, 1.0 / b))
+        return _scalar(gamma.cdf(x**b, 1.0 / b))
 
     def _ppf(self, q, b):
         return _scalar(gamma.ppf(q, 1.0 / b)) ** (1.0 / b)
@@ -6964,7 +7204,6 @@ class _HalfNorm(_LS):
     def _pdf(self, x):
         return _math.sqrt(2.0 / _math.pi) * _math.exp(-0.5 * x * x)
 
-
     def _cdf(self, x):
         return _math.erf(x / _math.sqrt(2.0))
 
@@ -6980,7 +7219,6 @@ class _HalfNorm(_LS):
 
     def _isf(self, q):
         return float(norm.isf(0.5 * q))
-
 
     def _stdmean(self):
         return _math.sqrt(2.0 / _math.pi)
@@ -7008,7 +7246,6 @@ class _HypSecant(_LS):
     def _pdf(self, x):
         return 1.0 / (_math.pi * _math.cosh(x)) if _bi.abs(x) < 700 else 0.0
 
-
     def _cdf(self, x):
         return 2.0 / _math.pi * _math.atan(_math.exp(x)) if x < 700 else 1.0
 
@@ -7018,8 +7255,11 @@ class _HypSecant(_LS):
     def _logsf(self, x):
         if x < 0:
             return _math.log1p(-self._sf(-x))
-        return _math.log(2.0 / _math.pi) + _math.log(_math.atan(_math.exp(-x))) if x < 700 \
+        return (
+            _math.log(2.0 / _math.pi) + _math.log(_math.atan(_math.exp(-x)))
+            if x < 700
             else _math.log(2.0 / _math.pi) - x
+        )
 
     def _logcdf(self, x):
         return self._logsf(-x) if x < 0 else _math.log1p(-self._sf(x))
@@ -7038,7 +7278,7 @@ class _HypSecant(_LS):
         return 0.0
 
     def _stdvar(self):
-        return _math.pi ** 2 / 4.0
+        return _math.pi**2 / 4.0
 
 
 class _InvGauss(_LS):
@@ -7046,7 +7286,7 @@ class _InvGauss(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, mu):
-        return 1.0 / _math.sqrt(2.0 * _math.pi * x ** 3) * _math.exp(-(x - mu) ** 2 / (2.0 * x * mu * mu))
+        return 1.0 / _math.sqrt(2.0 * _math.pi * x**3) * _math.exp(-((x - mu) ** 2) / (2.0 * x * mu * mu))
 
     def _cdf(self, x, mu):
         r = _math.sqrt(x)
@@ -7060,11 +7300,10 @@ class _InvWeibull(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, c):
-        return c * x ** (-c - 1.0) * _math.exp(-x ** (-c))
+        return c * x ** (-c - 1.0) * _math.exp(-(x ** (-c)))
 
     def _cdf(self, x, c):
-        return _math.exp(-x ** (-c))
-
+        return _math.exp(-(x ** (-c)))
 
     # Frechet: F = exp(-x^-c)
     @staticmethod
@@ -7128,7 +7367,11 @@ class _JFSkewT(_LS):
 
     def _pdf(self, x, a, b):
         r = _math.sqrt(a + b + x * x)
-        c = _math.exp(-(a + b - 1.0) * _math.log(2.0) - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b)) - 0.5 * _math.log(a + b))
+        c = _math.exp(
+            -(a + b - 1.0) * _math.log(2.0)
+            - (_math.lgamma(a) + _math.lgamma(b) - _math.lgamma(a + b))
+            - 0.5 * _math.log(a + b)
+        )
         return c * (1.0 + x / r) ** (a + 0.5) * (1.0 - x / r) ** (b + 0.5)
 
     def _cdf(self, x, a, b):
@@ -7148,7 +7391,6 @@ class _JohnsonSB(_LS):
 
     def _cdf(self, x, a, b):
         return _norm_cdf(a + b * _math.log(x / (1.0 - x)))
-
 
     def _z(self, x, a, b):
         return a + b * (_math.log(x) - _math.log1p(-x))
@@ -7177,7 +7419,6 @@ class _JohnsonSU(_LS):
 
     def _cdf(self, x, a, b):
         return _norm_cdf(a + b * _math.asinh(x))
-
 
     def _z(self, x, a, b):
         return a + b * _math.asinh(x)
@@ -7210,13 +7451,13 @@ class _Kappa3(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, a):
-        return a * (a + x ** a) ** (-(a + 1.0) / a)
+        return a * (a + x**a) ** (-(a + 1.0) / a)
 
     def _cdf(self, x, a):
-        return x * (a + x ** a) ** (-1.0 / a)
+        return x * (a + x**a) ** (-1.0 / a)
 
     def _ppf(self, q, a):
-        return (a * q ** a / (1.0 - q ** a)) ** (1.0 / a)
+        return (a * q**a / (1.0 - q**a)) ** (1.0 / a)
 
 
 class _Kappa4(_LS):
@@ -7245,8 +7486,8 @@ class _Kappa4(_LS):
         return (1.0 - h * t) ** (1.0 / h - 1.0) * dt if h != 0 else _math.exp(-t) * dt
 
     def _ppf(self, q, h, k):
-        t = (1.0 - q ** h) / h if h != 0 else -_math.log(q)
-        return (1.0 - t ** k) / k if k != 0 else -_math.log(t)
+        t = (1.0 - q**h) / h if h != 0 else -_math.log(q)
+        return (1.0 - t**k) / k if k != 0 else -_math.log(t)
 
 
 class _LaplaceAsymmetric(_LS):
@@ -7262,18 +7503,19 @@ class _LaplaceAsymmetric(_LS):
             return k2 / (1.0 + k2) * _math.exp(x / kappa)
         return 1.0 - _math.exp(-x * kappa) / (1.0 + k2)
 
-
     # kappa^2/(1+kappa^2) of the mass lies below 0
     def _sf(self, x, k):
-        return _math.exp(-k * x) / (1.0 + k * k) if x >= 0 else \
-            1.0 - k * k / (1.0 + k * k) * _math.exp(x / k)
+        return _math.exp(-k * x) / (1.0 + k * k) if x >= 0 else 1.0 - k * k / (1.0 + k * k) * _math.exp(x / k)
 
     def _logsf(self, x, k):
         return -k * x - _math.log1p(k * k) if x >= 0 else _math.log1p(-k * k / (1.0 + k * k) * _math.exp(x / k))
 
     def _logcdf(self, x, k):
-        return 2.0 * _math.log(k) - _math.log1p(k * k) + x / k if x < 0 \
+        return (
+            2.0 * _math.log(k) - _math.log1p(k * k) + x / k
+            if x < 0
             else _math.log1p(-_math.exp(-k * x) / (1.0 + k * k))
+        )
 
     def _logpdf(self, x, k):
         return -_math.log(k + 1.0 / k) + (-k * x if x >= 0 else x / k)
@@ -7290,7 +7532,7 @@ class _LaplaceAsymmetric(_LS):
         return 1.0 / k - k
 
     def _stdvar(self, k):
-        return (1.0 + k ** 4) / (k * k)
+        return (1.0 + k**4) / (k * k)
 
 
 class _Levy(_LS):
@@ -7341,7 +7583,7 @@ class _LogLaplace(_LS):
         return 0.5 * c * (x ** (c - 1.0) if x < 1.0 else x ** (-c - 1.0))
 
     def _cdf(self, x, c):
-        return 0.5 * x ** c if x < 1.0 else 1.0 - 0.5 * x ** (-c)
+        return 0.5 * x**c if x < 1.0 else 1.0 - 0.5 * x ** (-c)
 
     def _ppf(self, q, c):
         return (2.0 * q) ** (1.0 / c) if q < 0.5 else (2.0 * (1.0 - q)) ** (-1.0 / c)
@@ -7379,10 +7621,10 @@ class _Mielke(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, k, s):
-        return k * x ** (k - 1.0) / (1.0 + x ** s) ** (1.0 + k / s)
+        return k * x ** (k - 1.0) / (1.0 + x**s) ** (1.0 + k / s)
 
     def _cdf(self, x, k, s):
-        return x ** k / (1.0 + x ** s) ** (k / s)
+        return x**k / (1.0 + x**s) ** (k / s)
 
     def _ppf(self, q, k, s):
         t = q ** (s / k)
@@ -7405,8 +7647,9 @@ class _Nakagami(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, nu):
-        return _math.exp(_math.log(2.0) + nu * _math.log(nu) - _math.lgamma(nu) + (2.0 * nu - 1.0) * _math.log(x) - nu * x * x)
-
+        return _math.exp(
+            _math.log(2.0) + nu * _math.log(nu) - _math.lgamma(nu) + (2.0 * nu - 1.0) * _math.log(x) - nu * x * x
+        )
 
     # nu X^2 ~ Gamma(nu)
     def _cdf(self, x, nu):
@@ -7416,8 +7659,11 @@ class _Nakagami(_LS):
         return _gammainc_q(nu, nu * x * x)
 
     def _logpdf(self, x, nu):
-        return (_math.log(2.0) + nu * _math.log(nu) - _math.lgamma(nu)
-                + (2.0 * nu - 1.0) * _math.log(x) - nu * x * x) if x > 0 else -_math.inf
+        return (
+            (_math.log(2.0) + nu * _math.log(nu) - _math.lgamma(nu) + (2.0 * nu - 1.0) * _math.log(x) - nu * x * x)
+            if x > 0
+            else -_math.inf
+        )
 
     def _ppf(self, q, nu):
         return _math.sqrt(_scalar(gamma.ppf(q, nu)) / nu)
@@ -7477,7 +7723,7 @@ class _PowerLaw(_LS):
         return a * x ** (a - 1.0)
 
     def _cdf(self, x, a):
-        return x ** a
+        return x**a
 
     def _ppf(self, q, a):
         return q ** (1.0 / a)
@@ -7528,7 +7774,10 @@ class _RDist(_LS):
     _support = (-1.0, 1.0)
 
     def _pdf(self, x, c):
-        return _math.exp((c / 2.0 - 1.0) * _math.log1p(-x * x) - (_math.lgamma(0.5) + _math.lgamma(c / 2.0) - _math.lgamma(0.5 + c / 2.0)))
+        return _math.exp(
+            (c / 2.0 - 1.0) * _math.log1p(-x * x)
+            - (_math.lgamma(0.5) + _math.lgamma(c / 2.0) - _math.lgamma(0.5 + c / 2.0))
+        )
 
     def _cdf(self, x, c):
         g = _scalar(beta.cdf(x * x, 0.5, c / 2.0))
@@ -7545,7 +7794,7 @@ class _RecipInvGauss(_LS):
     _support = (0.0, _math.inf)
 
     def _pdf(self, x, mu):
-        return 1.0 / _math.sqrt(2.0 * _math.pi * x) * _math.exp(-(1.0 - mu * x) ** 2 / (2.0 * x * mu * mu))
+        return 1.0 / _math.sqrt(2.0 * _math.pi * x) * _math.exp(-((1.0 - mu * x) ** 2) / (2.0 * x * mu * mu))
 
     def _cdf(self, x, mu):
         isqx = 1.0 / _math.sqrt(x)
@@ -7651,14 +7900,14 @@ class _TruncWeibullMin(_LS):
         return (a, b)
 
     def _pdf(self, x, c, a, b):
-        den = _math.exp(-a ** c) - _math.exp(-b ** c)
-        return c * x ** (c - 1.0) * _math.exp(-x ** c) / den
+        den = _math.exp(-(a**c)) - _math.exp(-(b**c))
+        return c * x ** (c - 1.0) * _math.exp(-(x**c)) / den
 
     def _cdf(self, x, c, a, b):
-        return (_math.exp(-a ** c) - _math.exp(-x ** c)) / (_math.exp(-a ** c) - _math.exp(-b ** c))
+        return (_math.exp(-(a**c)) - _math.exp(-(x**c))) / (_math.exp(-(a**c)) - _math.exp(-(b**c)))
 
     def _ppf(self, q, c, a, b):
-        return (-_math.log(_math.exp(-a ** c) - q * (_math.exp(-a ** c) - _math.exp(-b ** c)))) ** (1.0 / c)
+        return (-_math.log(_math.exp(-(a**c)) - q * (_math.exp(-(a**c)) - _math.exp(-(b**c))))) ** (1.0 / c)
 
 
 class _TukeyLambda(_LS):
@@ -7673,7 +7922,7 @@ class _TukeyLambda(_LS):
     def _Q(q, lam):
         if lam == 0:
             return _math.log(q / (1.0 - q))
-        return (q ** lam - (1.0 - q) ** lam) / lam
+        return (q**lam - (1.0 - q) ** lam) / lam
 
     @staticmethod
     def _dQ(q, lam):
@@ -7685,13 +7934,17 @@ class _TukeyLambda(_LS):
         return self._Q(q, lam)
 
     def _cdf(self, x, lam):
-        return _ppf_from_cdf(lambda u: self._Q(u, lam), x, 1e-300, 1.0 - 1e-16) if False else _bisect_unit(lambda u: self._Q(u, lam), x)
+        return (
+            _ppf_from_cdf(lambda u: self._Q(u, lam), x, 1e-300, 1.0 - 1e-16)
+            if False
+            else _bisect_unit(lambda u: self._Q(u, lam), x)
+        )
 
     def _pdf(self, x, lam):
         return 1.0 / self._dQ(self._cdf(x, lam), lam)
 
     def _isf(self, q, lam):
-        return -self._ppf(q, lam)          # symmetric about 0
+        return -self._ppf(q, lam)  # symmetric about 0
 
     def _stdmean(self, lam):
         return 0.0 if lam > -1.0 else _math.nan
@@ -7702,9 +7955,12 @@ class _TukeyLambda(_LS):
         if lam <= -0.5:
             return _math.inf
         if abs(lam) < 1e-8:
-            return _math.pi ** 2 / 3.0
-        return 2.0 / (lam * lam) * (1.0 / (1.0 + 2.0 * lam)
-                                     - _math.exp(2.0 * _math.lgamma(lam + 1.0) - _math.lgamma(2.0 * lam + 2.0)))
+            return _math.pi**2 / 3.0
+        return (
+            2.0
+            / (lam * lam)
+            * (1.0 / (1.0 + 2.0 * lam) - _math.exp(2.0 * _math.lgamma(lam + 1.0) - _math.lgamma(2.0 * lam + 2.0)))
+        )
 
 
 def _bisect_unit(fn, target):
@@ -7728,13 +7984,13 @@ class _WeibullMax(_LS):
     _support = (-_math.inf, 0.0)
 
     def _pdf(self, x, c):
-        return c * (-x) ** (c - 1.0) * _math.exp(-(-x) ** c)
+        return c * (-x) ** (c - 1.0) * _math.exp(-((-x) ** c))
 
     def _cdf(self, x, c):
-        return _math.exp(-(-x) ** c)
+        return _math.exp(-((-x) ** c))
 
     def _ppf(self, q, c):
-        return -(-_math.log(q)) ** (1.0 / c)
+        return -((-_math.log(q)) ** (1.0 / c))
 
 
 class _WrapCauchy(_LS):
@@ -7825,6 +8081,7 @@ wrapcauchy = _WrapCauchy()
 
 # ---------------------------------------------------- scipy parity: quadrature families
 
+
 def _simpson_fixed(f, a, b, npan=2000):
     h = (b - a) / npan
     s = f(a) + f(b)
@@ -7861,7 +8118,9 @@ class _GenHyperbolic(_LS):
     def _pdf(self, x, p, a, b):
         g = _math.sqrt((a - b) * (a + b))
         s = _math.sqrt(1.0 + x * x)
-        c = _math.exp(p * _math.log(g) - 0.5 * _math.log(2.0 * _math.pi) - (p - 0.5) * _math.log(a) - _math.log(_bessel_k(p, g)))
+        c = _math.exp(
+            p * _math.log(g) - 0.5 * _math.log(2.0 * _math.pi) - (p - 0.5) * _math.log(a) - _math.log(_bessel_k(p, g))
+        )
         return c * s ** (p - 0.5) * _bessel_k(p - 0.5, a * s) * _math.exp(b * x)
 
 
@@ -7889,7 +8148,6 @@ class _Rice(_LS):
     def _pdf(self, x, b):
         return x * _math.exp(-0.5 * (x - b) ** 2) * _math.exp(-x * b) * _bessel_i(0.0, x * b)
 
-
     # X^2 ~ noncentral chi2(2, b^2)
     def _cdf(self, x, b):
         return _scalar(ncx2.cdf(x * x, 2, b * b)) if b > 0 else -_math.expm1(-0.5 * x * x)
@@ -7906,8 +8164,9 @@ class _Rice(_LS):
     def _stdmean(self, b):
         # sqrt(pi/2) L_{1/2}(-b^2/2)
         z = b * b / 4.0
-        return _math.sqrt(_math.pi / 2.0) * _math.exp(-z) * (
-            (1.0 + 2.0 * z) * _bessel_i(0, z) + 2.0 * z * _bessel_i(1, z))
+        return (
+            _math.sqrt(_math.pi / 2.0) * _math.exp(-z) * ((1.0 + 2.0 * z) * _bessel_i(0, z) + 2.0 * z * _bessel_i(1, z))
+        )
 
     def _stdvar(self, b):
         m = self._stdmean(b)
@@ -7920,8 +8179,14 @@ class _RelBreitWigner(_LS):
 
     @staticmethod
     def _k(rho):
-        return 2.0 * _math.sqrt(2.0) * rho * rho * _math.sqrt(rho * rho + 1.0) / (
-            _math.pi * _math.sqrt(rho * rho + rho * _math.sqrt(rho * rho + 1.0)))
+        return (
+            2.0
+            * _math.sqrt(2.0)
+            * rho
+            * rho
+            * _math.sqrt(rho * rho + 1.0)
+            / (_math.pi * _math.sqrt(rho * rho + rho * _math.sqrt(rho * rho + 1.0)))
+        )
 
     def _pdf(self, x, rho):
         return self._k(rho) / ((x * x - rho * rho) ** 2 + rho * rho)
@@ -7938,9 +8203,11 @@ class _Landau(_LS):
     def _cdf(self, x):
         return _bi.max(0.0, _bi.min(1.0, levy_stable._cdf0(x, 1.0, 1.0)))
 
+
 class _LevyStable(_LS):
     """Stable law in scipy's default S1 parameterisation, by Nolan's (1997)
     integral representation in S0."""
+
     _shapes = 2
 
     @staticmethod
@@ -7952,8 +8219,12 @@ class _LevyStable(_LS):
     @classmethod
     def _V(cls, theta, alpha, beta, theta0):
         c1 = _math.cos(alpha * theta0) ** (1.0 / (alpha - 1.0))
-        return (c1 * (_math.cos(theta) / _math.sin(alpha * (theta0 + theta))) ** (alpha / (alpha - 1.0))
-                * _math.cos(alpha * theta0 + (alpha - 1.0) * theta) / _math.cos(theta))
+        return (
+            c1
+            * (_math.cos(theta) / _math.sin(alpha * (theta0 + theta))) ** (alpha / (alpha - 1.0))
+            * _math.cos(alpha * theta0 + (alpha - 1.0) * theta)
+            / _math.cos(theta)
+        )
 
     def _pdf0(self, x0, alpha, beta):
         # density in S0 at x0
@@ -7962,18 +8233,28 @@ class _LevyStable(_LS):
                 return 1.0 / (_math.pi * (1.0 + x0 * x0))
             if beta < 0:
                 return self._pdf0(-x0, alpha, -beta)
+
             def f(theta):
                 try:
-                    v = 2.0 / _math.pi * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta)) * _math.exp(
-                        (_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    v = (
+                        2.0
+                        / _math.pi
+                        * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta))
+                        * _math.exp((_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    )
                     g = _math.exp(-_math.pi * x0 / (2.0 * beta)) * v
                     return g * _math.exp(-g) if g < 700 else 0.0
                 except (OverflowError, ZeroDivisionError, ValueError):
                     return 0.0
-            return _adaptive_simpson(f, -_math.pi / 2.0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30) / (2.0 * _bi.abs(beta))
+
+            return _adaptive_simpson(f, -_math.pi / 2.0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30) / (
+                2.0 * _bi.abs(beta)
+            )
         theta0, zeta = self._theta0_zeta(alpha, beta)
         if _bi.abs(x0 - zeta) < 1e-10:
-            return _math.gamma(1.0 + 1.0 / alpha) * _math.cos(theta0) / (_math.pi * (1.0 + zeta * zeta) ** (0.5 / alpha))
+            return (
+                _math.gamma(1.0 + 1.0 / alpha) * _math.cos(theta0) / (_math.pi * (1.0 + zeta * zeta) ** (0.5 / alpha))
+            )
         if x0 < zeta:
             return self._pdf0(-x0, alpha, -beta)
         d = x0 - zeta
@@ -7982,10 +8263,11 @@ class _LevyStable(_LS):
         def f(theta):
             try:
                 v = self._V(theta, alpha, beta, theta0)
-                g = d ** ex * v
+                g = d**ex * v
                 return g * _math.exp(-g) if g < 700 else 0.0
             except (ValueError, ZeroDivisionError, OverflowError):
                 return 0.0
+
         integral = _adaptive_simpson(f, -theta0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30)
         return alpha / (_math.pi * _bi.abs(alpha - 1.0) * d) * integral
 
@@ -7995,14 +8277,20 @@ class _LevyStable(_LS):
                 return 0.5 + _math.atan(x0) / _math.pi
             if beta < 0:
                 return 1.0 - self._cdf0(-x0, alpha, -beta)
+
             def f(theta):
                 try:
-                    v = 2.0 / _math.pi * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta)) * _math.exp(
-                        (_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    v = (
+                        2.0
+                        / _math.pi
+                        * ((_math.pi / 2.0 + beta * theta) / _math.cos(theta))
+                        * _math.exp((_math.pi / 2.0 + beta * theta) * _math.tan(theta) / beta)
+                    )
                     g = _math.exp(-_math.pi * x0 / (2.0 * beta)) * v
                     return _math.exp(-g) if g < 700 else 0.0
                 except (OverflowError, ZeroDivisionError, ValueError):
                     return 0.0
+
             return _adaptive_simpson(f, -_math.pi / 2.0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30) / _math.pi
         theta0, zeta = self._theta0_zeta(alpha, beta)
         if _bi.abs(x0 - zeta) < 1e-10:
@@ -8014,10 +8302,11 @@ class _LevyStable(_LS):
 
         def f(theta):
             try:
-                g = d ** ex * self._V(theta, alpha, beta, theta0)
+                g = d**ex * self._V(theta, alpha, beta, theta0)
                 return _math.exp(-g) if g < 700 else 0.0
             except (ValueError, ZeroDivisionError, OverflowError):
                 return 0.0
+
         integral = _adaptive_simpson(f, -theta0 + 1e-9, _math.pi / 2.0 - 1e-9, 1e-10, 30)
         c1 = (0.5 - theta0 / _math.pi) if alpha < 1 else 1.0
         return c1 + (1.0 if alpha < 1 else -1.0) * integral / _math.pi
@@ -8071,6 +8360,7 @@ class _StudentizedRange(_LS):
     """Studentized range: the double integral of Lund & Lund / Harter,
     inner over the normal location, outer over the scale factor
     s = sqrt(chi2_df / df), both by Gauss-Legendre quadrature."""
+
     _shapes = 2
     _support = (0.0, _math.inf)
 
@@ -8079,8 +8369,13 @@ class _StudentizedRange(_LS):
 
     @staticmethod
     def _s_density(s, df):
-        return _math.exp(0.5 * df * _math.log(df) - _math.lgamma(0.5 * df) - (0.5 * df - 1.0) * _math.log(2.0)
-                         + (df - 1.0) * _math.log(s) - 0.5 * df * s * s)
+        return _math.exp(
+            0.5 * df * _math.log(df)
+            - _math.lgamma(0.5 * df)
+            - (0.5 * df - 1.0) * _math.log(2.0)
+            + (df - 1.0) * _math.log(s)
+            - 0.5 * df * s * s
+        )
 
     def _inner_cdf(self, q, s, k):
         qs = q * s
@@ -8119,8 +8414,10 @@ class _StudentizedRange(_LS):
     def _pdf(self, q, k, df):
         return self._outer(q, k, df, self._inner_pdf)
 
+
 class _DParetoLogNorm(_LS):
     """Reed's double Pareto-lognormal with scipy's (u, s, a, b) shapes."""
+
     _shapes = 4
     _support = (0.0, _math.inf)
 
@@ -8128,7 +8425,7 @@ class _DParetoLogNorm(_LS):
     def _R(t):
         # Mills ratio Phi_c(t) / phi(t), stable in both tails
         if t > 30.0:
-            return (1.0 / t) * (1.0 - 1.0 / (t * t) + 3.0 / t ** 4)
+            return (1.0 / t) * (1.0 - 1.0 / (t * t) + 3.0 / t**4)
         return _norm_cdf(-t) / _phi(t)
 
     def _pdf(self, y, u, s, a, b):
@@ -8154,9 +8451,11 @@ dpareto_lognorm = _DParetoLogNorm()
 
 # ---------------------------------------------------- scipy parity: discrete families
 
+
 class _Disc(_Dist):
     """A discrete family: subclasses give ``_pmf(k, *shape)`` and the
     support ``_sup(*shape)``; cdf sums the mass, ppf walks it."""
+
     _discrete = True
 
     def _sup(self, *sh):
@@ -8174,6 +8473,7 @@ class _Disc(_Dist):
             if v < lo or v > hi or float(v) != _math.floor(v):
                 return 0.0
             return self._pmf(int(v), *args)
+
         return _maybe_map(one, k)
 
     def cdf(self, k, *args):
@@ -8189,6 +8489,7 @@ class _Disc(_Dist):
             kk = int(_math.floor(v))
             start = int(lo) if lo > -_math.inf else self._lower_start(*args)
             return _bi.min(1.0, _math.fsum(self._pmf(i, *args) for i in range(start, kk + 1)))
+
         return _maybe_map(one, k)
 
     def ppf(self, q, *args):
@@ -8201,7 +8502,9 @@ class _Disc(_Dist):
             if p == 0.0:
                 return float(start - 1)
             return _discrete_ppf(p, lambda i: self._pmf(i, *args), start, None if hi == _math.inf else int(hi))
+
         return _maybe_map(one, q)
+
     pmf._edge_wrapped = True
     cdf._edge_wrapped = True
     ppf._edge_wrapped = True
@@ -8211,8 +8514,15 @@ class _BetaNBinom(_Disc):
     _support = (0.0, _math.inf)
 
     def _pmf(self, k, n, a, b):
-        return _math.exp(_log_comb(n + k - 1, k) + _math.lgamma(a + n) + _math.lgamma(b + k) - _math.lgamma(a + b + n + k)
-                         + _math.lgamma(a + b) - _math.lgamma(a) - _math.lgamma(b))
+        return _math.exp(
+            _log_comb(n + k - 1, k)
+            + _math.lgamma(a + n)
+            + _math.lgamma(b + k)
+            - _math.lgamma(a + b + n + k)
+            + _math.lgamma(a + b)
+            - _math.lgamma(a)
+            - _math.lgamma(b)
+        )
 
 
 class _Boltzmann(_Disc):
@@ -8237,7 +8547,7 @@ class _LogSer(_Disc):
     _support = (1.0, _math.inf)
 
     def _pmf(self, k, p):
-        return -p ** k / (k * _math.log1p(-p))
+        return -(p**k) / (k * _math.log1p(-p))
 
 
 class _NCHypergeomFisher(_Disc):
@@ -8268,6 +8578,7 @@ class _NCHypergeomWallenius(_Disc):
             if t <= 0.0 or t >= 1.0:
                 return 0.0
             return (1.0 - t ** (odds / D)) ** k * (1.0 - t ** (1.0 / D)) ** (N - k)
+
         integral = _adaptive_simpson(f, 0.0, 1.0, 1e-14, 45)
         return _math.exp(_log_comb(n, k) + _log_comb(M - n, N - k)) * integral
 
@@ -8334,8 +8645,20 @@ class _YuleSimon(_Disc):
         return alpha * _math.exp(_math.lgamma(k) + _math.lgamma(alpha + 1.0) - _math.lgamma(k + alpha + 1.0))
 
     def cdf(self, k, alpha):
-        return _maybe_map(lambda v: 0.0 if v < 1 else 1.0 - _math.floor(v) * _math.exp(
-            _math.lgamma(_math.floor(v)) + _math.lgamma(alpha + 1.0) - _math.lgamma(_math.floor(v) + alpha + 1.0)), k)
+        return _maybe_map(
+            lambda v: (
+                0.0
+                if v < 1
+                else 1.0
+                - _math.floor(v)
+                * _math.exp(
+                    _math.lgamma(_math.floor(v))
+                    + _math.lgamma(alpha + 1.0)
+                    - _math.lgamma(_math.floor(v) + alpha + 1.0)
+                )
+            ),
+            k,
+        )
 
 
 class _Zipfian(_Disc):

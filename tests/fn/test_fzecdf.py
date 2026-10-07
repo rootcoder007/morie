@@ -1,7 +1,6 @@
 """Tests for fzecdf.fauzi_ecdf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzecdf import fauzi_ecdf
 
 

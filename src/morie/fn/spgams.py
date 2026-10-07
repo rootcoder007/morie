@@ -66,11 +66,9 @@ def spatial_gams(y, x, coords, lam=0.0):
     n = len(yv)
     cc = mat(coords, "coords")
     if len(cc) != n:
-        raise ValueError("`coords` has %d rows but `y` has %d values"
-                         % (len(cc), n))
+        raise ValueError(f"`coords` has {int(len(cc))} rows but `y` has {int(n)} values")
     if len(cc[0]) < 2:
-        raise ValueError("`coords` must have two columns for a 2-D "
-                         "thin-plate spline")
+        raise ValueError("`coords` must have two columns for a 2-D thin-plate spline")
     lam = float(lam)
     if lam < 0:
         raise ValueError("`lam` must be non-negative")
@@ -79,12 +77,11 @@ def spatial_gams(y, x, coords, lam=0.0):
     else:
         xm = mat(x, "x")
         if len(xm) != n:
-            raise ValueError("`x` has %d rows but `y` has %d values"
-                             % (len(xm), n))
+            raise ValueError(f"`x` has {int(len(xm))} rows but `y` has {int(n)} values")
     t = [[1.0, cc[i][0], cc[i][1]] + list(xm[i]) for i in range(n)]
     m = len(t[0])
     if n <= m:
-        raise ValueError("need more sites than null-space columns (%d)" % m)
+        raise ValueError(f"need more sites than null-space columns ({int(m)})")
 
     k = [[0.0] * n for _ in range(n)]
     for i in range(n):
@@ -107,27 +104,29 @@ def spatial_gams(y, x, coords, lam=0.0):
     c = sol[:n]
     d = sol[n:]
 
-    fitted = [fsum([k[i][j] * c[j] for j in range(n)])
-              + fsum([t[i][j] * d[j] for j in range(m)]) for i in range(n)]
+    fitted = [fsum([k[i][j] * c[j] for j in range(n)]) + fsum([t[i][j] * d[j] for j in range(m)]) for i in range(n)]
     resid = [yv[i] - fitted[i] for i in range(n)]
     rss = fsum([r_ * r_ for r_ in resid])
-    penalty = fsum([c[i] * fsum([k[i][j] * c[j] for j in range(n)])
-                    for i in range(n)])
+    penalty = fsum([c[i] * fsum([k[i][j] * c[j] for j in range(n)]) for i in range(n)])
 
-    return RichResult(payload={
-        "fitted": fitted,
-        "residuals": resid,
-        "coef": d,
-        "spline_weights": c,
-        "rss": rss,
-        "penalty": penalty,
-        "lam": lam,
-        "null_space_is_unpenalised": True,
-        "n": n,
-        "method": ("Thin-plate spline surface plus linear covariates "
-                   "(Duchon 1977; Wood 2006, Ch. 4); NOT in Schabenberger "
-                   "& Gotway, whose parametric analogue is Sec. 5.3.1"),
-    })
+    return RichResult(
+        payload={
+            "fitted": fitted,
+            "residuals": resid,
+            "coef": d,
+            "spline_weights": c,
+            "rss": rss,
+            "penalty": penalty,
+            "lam": lam,
+            "null_space_is_unpenalised": True,
+            "n": n,
+            "method": (
+                "Thin-plate spline surface plus linear covariates "
+                "(Duchon 1977; Wood 2006, Ch. 4); NOT in Schabenberger "
+                "& Gotway, whose parametric analogue is Sec. 5.3.1"
+            ),
+        }
+    )
 
 
 def cheatsheet():

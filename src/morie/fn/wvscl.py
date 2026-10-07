@@ -30,10 +30,7 @@ def wavelet_scalogram(x, scales=None, fs: float = 1.0) -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=float).ravel()
     N = len(x)
-    if scales is None:
-        scales = np.arange(1, min(N // 2, 64) + 1, dtype=float)
-    else:
-        scales = np.asarray(scales, dtype=float)
+    scales = np.arange(1, min(N // 2, 64) + 1, dtype=float) if scales is None else np.asarray(scales, dtype=float)
 
     scalogram = np.zeros((len(scales), N))
     for i, s in enumerate(scales):

@@ -1,8 +1,6 @@
 """Tests for gprgr.gaussian_process_regression."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.gprgr import gaussian_process_regression
 
 

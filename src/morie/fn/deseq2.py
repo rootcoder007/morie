@@ -98,9 +98,18 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["deseq2", "deseq2_differential", "differential_expression", "size_factors",
-           "nb_glm_fit", "dispersion_gene_wise", "dispersion_trend",
-           "cox_reid_loglik", "benjamini_hochberg", "trigamma"]
+__all__ = [
+    "deseq2",
+    "deseq2_differential",
+    "differential_expression",
+    "size_factors",
+    "nb_glm_fit",
+    "dispersion_gene_wise",
+    "dispersion_trend",
+    "cox_reid_loglik",
+    "benjamini_hochberg",
+    "trigamma",
+]
 
 
 def trigamma(x):
@@ -119,9 +128,7 @@ def trigamma(x):
     inv = 1.0 / x
     inv2 = inv * inv
     # 1/x + 1/(2x^2) + 1/(6x^3) - 1/(30x^5) + 1/(42x^7) - 1/(30x^9)
-    return tot + inv * (1.0 + 0.5 * inv + inv2 * (
-        1.0 / 6.0 + inv2 * (-1.0 / 30.0 + inv2 * (
-            1.0 / 42.0 - inv2 / 30.0))))
+    return tot + inv * (1.0 + 0.5 * inv + inv2 * (1.0 / 6.0 + inv2 * (-1.0 / 30.0 + inv2 * (1.0 / 42.0 - inv2 / 30.0))))
 
 
 def _median(v):
@@ -147,8 +154,7 @@ def size_factors(counts):
     """
     K = [[float(v) for v in row] for row in counts]
     if not K or not K[0]:
-        raise ValueError("deseq2: counts must be a non-empty gene x sample "
-                         "matrix")
+        raise ValueError("deseq2: counts must be a non-empty gene x sample matrix")
     m = len(K[0])
     ratios = [[] for _ in range(m)]
     for row in K:
@@ -162,8 +168,7 @@ def size_factors(counts):
         for j in range(m):
             ratios[j].append(row[j] / gm)
     if not ratios[0]:
-        raise ValueError("deseq2: no gene has a positive count in every "
-                         "sample, so median-of-ratios has no reference")
+        raise ValueError("deseq2: no gene has a positive count in every sample, so median-of-ratios has no reference")
     return [_median(r) for r in ratios]
 
 
@@ -177,8 +182,13 @@ def _nb_loglik(K, mu, alpha):
     r = 1.0 / alpha
     tot = 0.0
     for k, m in zip(K, mu):
-        tot += (math.lgamma(k + r) - math.lgamma(r) - math.lgamma(k + 1.0) +
-                r * math.log(r / (r + m)) + k * math.log(m / (r + m)))
+        tot += (
+            math.lgamma(k + r)
+            - math.lgamma(r)
+            - math.lgamma(k + 1.0)
+            + r * math.log(r / (r + m))
+            + k * math.log(m / (r + m))
+        )
     return tot
 
 
@@ -203,8 +213,7 @@ def cox_reid_loglik(alpha, K, mu, X):
     return _nb_loglik(K, mu, alpha) - 0.5 * _xtwx_logdet(X, mu, alpha)
 
 
-def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8,
-               beta0=None):
+def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8, beta0=None):
     r"""Negative binomial GLM by (ridge-penalised) IRLS.
 
     The update is the paper's own,
@@ -230,7 +239,7 @@ def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8,
     converged = False
     it = 0
     Sig = None
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         mu = []
         for j in range(m):
             eta = sum(X[j][r] * beta[r] for r in range(p))
@@ -244,15 +253,13 @@ def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8,
                 v[a] += w * X[j][a] * z
                 for bb in range(p):
                     M[a][bb] += w * X[j][a] * X[j][bb]
-        Mr = [[M[a][bb] + (lam[a] if a == bb else 0.0) for bb in range(p)]
-              for a in range(p)]
+        Mr = [[M[a][bb] + (lam[a] if a == bb else 0.0) for bb in range(p)] for a in range(p)]
         try:
-            new = [float(t) for t in
-                   np.linalg.solve(np.asarray(Mr, dtype=float),
-                                   np.asarray(v, dtype=float))]
-        except Exception:
-            raise ValueError("deseq2: the GLM design is singular; check the "
-                             "design matrix for collinear columns")
+            new = [float(t) for t in np.linalg.solve(np.asarray(Mr, dtype=float), np.asarray(v, dtype=float))]
+        except Exception as exc:
+            raise ValueError(
+                "deseq2: the GLM design is singular; check the design matrix for collinear columns"
+            ) from exc
         step = max(abs(new[r] - beta[r]) for r in range(p))
         beta = new
         Sig = Mr
@@ -263,10 +270,8 @@ def nb_glm_fit(K, X, alpha, s=None, lam=None, max_iter=100, tol=1e-8,
     for j in range(m):
         eta = sum(X[j][r] * beta[r] for r in range(p))
         mu.append(max(s[j] * math.exp(min(eta, 50.0)), 1e-10))
-    inv = [[float(t) for t in row] for row in
-           np.linalg.inv(np.asarray(Sig, dtype=float))]
-    return {"beta": beta, "mu": mu, "sigma": inv, "converged": converged,
-            "n_iter": it}
+    inv = [[float(t) for t in row] for row in np.linalg.inv(np.asarray(Sig, dtype=float))]
+    return {"beta": beta, "mu": mu, "sigma": inv, "converged": converged, "n_iter": it}
 
 
 def _maximise_log_alpha(obj, lo=-15.0, hi=5.0, n_grid=60, refine=60):
@@ -303,8 +308,7 @@ def dispersion_gene_wise(K, X, s, alpha_init=0.1):
     """
     fit0 = nb_glm_fit(K, X, alpha_init, s)
     mu0 = fit0["mu"]
-    return _maximise_log_alpha(
-        lambda a: cox_reid_loglik(a, K, mu0, X)), mu0
+    return _maximise_log_alpha(lambda a: cox_reid_loglik(a, K, mu0, X)), mu0
 
 
 def dispersion_trend(mu_bar, disp, max_iter=10, tol=1e-6):
@@ -319,8 +323,7 @@ def dispersion_trend(mu_bar, disp, max_iter=10, tol=1e-6):
     """
     keep = [i for i in range(len(disp)) if disp[i] > 0 and mu_bar[i] > 0]
     if len(keep) < 3:
-        raise ValueError("deseq2: too few genes with positive dispersion to "
-                         "fit the trend")
+        raise ValueError("deseq2: too few genes with positive dispersion to fit the trend")
     a1, a0 = 1.0, max(1e-8, _median([disp[i] for i in keep]))
     for _ in range(int(max_iter)):
         rows = []
@@ -344,9 +347,7 @@ def dispersion_trend(mu_bar, disp, max_iter=10, tol=1e-6):
                 for b in range(2):
                     M[a][b] += w * xrow[a] * xrow[b]
         try:
-            new = [float(t) for t in
-                   np.linalg.solve(np.asarray(M, dtype=float),
-                                   np.asarray(v, dtype=float))]
+            new = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
         except Exception:
             break
         new = [max(new[0], 0.0), max(new[1], 1e-8)]
@@ -354,9 +355,7 @@ def dispersion_trend(mu_bar, disp, max_iter=10, tol=1e-6):
         a1, a0 = new
         if delta < tol:
             break
-    return {"a1": a1, "a0": a0,
-            "fitted": [a1 / mu_bar[i] + a0 if mu_bar[i] > 0 else a0
-                       for i in range(len(mu_bar))]}
+    return {"a1": a1, "a0": a0, "fitted": [a1 / mu_bar[i] + a0 if mu_bar[i] > 0 else a0 for i in range(len(mu_bar))]}
 
 
 def benjamini_hochberg(p):
@@ -398,8 +397,9 @@ def _quantile(v, pr):
     return s[lo] + (pos - lo) * (s[hi] - s[lo])
 
 
-def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
-           quantile_p=0.05, alpha_init=0.1, min_disp=1e-8, log2=True):
+def deseq2(
+    counts, design, contrast=None, size=None, beta_prior=True, quantile_p=0.05, alpha_init=0.1, min_disp=1e-8, log2=True
+):
     r"""Differential expression by the DESeq2 pipeline.
 
     Parameters
@@ -464,25 +464,19 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
             if lab not in levels:
                 levels.append(lab)
         if len(levels) < 2:
-            raise ValueError("deseq2: the design has only one group, so no "
-                             "coefficient can be tested")
-        X = [[1.0] + [1.0 if lab == lv else 0.0 for lv in levels[1:]]
-             for lab in design]
+            raise ValueError("deseq2: the design has only one group, so no coefficient can be tested")
+        X = [[1.0] + [1.0 if lab == lv else 0.0 for lv in levels[1:]] for lab in design]
     if len(X) != m:
-        raise ValueError("deseq2: the design has %d rows but the counts have "
-                         "%d samples" % (len(X), m))
+        raise ValueError(f"deseq2: the design has {int(len(X))} rows but the counts have {int(m)} samples")
     p = len(X[0])
     if m <= p:
-        raise ValueError("deseq2: %d samples and %d coefficients leaves no "
-                         "residual degrees of freedom" % (m, p))
+        raise ValueError(f"deseq2: {int(m)} samples and {int(p)} coefficients leaves no residual degrees of freedom")
 
     s = size_factors(K) if size is None else [float(v) for v in size]
     if len(s) != m or any(v <= 0 for v in s):
-        raise ValueError("deseq2: size factors must be positive, one per "
-                         "sample")
+        raise ValueError("deseq2: size factors must be positive, one per sample")
 
-    base_mean = [sum(K[i][j] / s[j] for j in range(m)) / m
-                 for i in range(n_genes)]
+    base_mean = [sum(K[i][j] / s[j] for j in range(m)) / m for i in range(n_genes)]
 
     # ---- step 1: gene-wise dispersions (equation 7) -------------------
     gw = [0.0] * n_genes
@@ -496,15 +490,13 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
 
     # ---- step 2: the trend (equation 6) --------------------------------
     usable = [i for i in range(n_genes) if base_mean[i] > 0 and gw[i] > 0]
-    trend = dispersion_trend([base_mean[i] for i in usable],
-                             [gw[i] for i in usable])
-    fitted = [trend["a1"] / base_mean[i] + trend["a0"] if base_mean[i] > 0
-              else trend["a0"] for i in range(n_genes)]
+    trend = dispersion_trend([base_mean[i] for i in usable], [gw[i] for i in usable])
+    fitted = [trend["a1"] / base_mean[i] + trend["a0"] if base_mean[i] > 0 else trend["a0"] for i in range(n_genes)]
 
     # ---- step 3: prior width and MAP (equations 5, 8, 9) ---------------
     resid = [math.log(gw[i]) - math.log(fitted[i]) for i in usable]
     s_lr = _mad(resid) if len(resid) > 1 else 0.0
-    sigma_d2 = max(s_lr ** 2 - trigamma((m - p) / 2.0), 0.25)
+    sigma_d2 = max(s_lr**2 - trigamma((m - p) / 2.0), 0.25)
     disp = [0.0] * n_genes
     outlier = [False] * n_genes
     for i in range(n_genes):
@@ -518,32 +510,28 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
         lf = math.log(fitted[i])
 
         def obj(a, _lf=lf, _i=i):
-            return (cox_reid_loglik(a, K[_i], mu0[_i], X) -
-                    (math.log(a) - _lf) ** 2 / (2.0 * sigma_d2))
+            return cox_reid_loglik(a, K[_i], mu0[_i], X) - (math.log(a) - _lf) ** 2 / (2.0 * sigma_d2)
+
         disp[i] = max(_maximise_log_alpha(obj), min_disp)
 
     # ---- MLE coefficients ---------------------------------------------
     mle = []
     for i in range(n_genes):
         mle.append(nb_glm_fit(K[i], X, disp[i], s))
-    c = ([0.0] * (p - 1) + [1.0]) if contrast is None else \
-        [float(v) for v in contrast]
+    c = ([0.0] * (p - 1) + [1.0]) if contrast is None else [float(v) for v in contrast]
     if len(c) != p:
-        raise ValueError("deseq2: the contrast must have one entry per "
-                         "coefficient (%d)" % p)
+        raise ValueError(f"deseq2: the contrast must have one entry per coefficient ({int(p)})")
 
     def contrast_of(fit):
         beta = fit["beta"]
         val = sum(c[r] * beta[r] for r in range(p))
-        var = sum(c[a] * fit["sigma"][a][b] * c[b]
-                  for a in range(p) for b in range(p))
+        var = sum(c[a] * fit["sigma"][a][b] * c[b] for a in range(p) for b in range(p))
         return val, math.sqrt(max(var, 0.0))
 
     # ---- LFC prior width by quantile matching (equation 10) ------------
     sigma_r = [float("inf")] * p
     for r in range(1, p):
-        vals = [abs(mle[i]["beta"][r]) for i in range(n_genes)
-                if base_mean[i] > 0]
+        vals = [abs(mle[i]["beta"][r]) for i in range(n_genes) if base_mean[i] > 0]
         if not vals:
             sigma_r[r] = 1.0
             continue
@@ -557,11 +545,7 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
         v, sd = contrast_of(mle[i])
         lfc_mle.append(v)
         se_mle.append(sd)
-        if beta_prior:
-            fit = nb_glm_fit(K[i], X, disp[i], s, lam,
-                             beta0=mle[i]["beta"])
-        else:
-            fit = mle[i]
+        fit = nb_glm_fit(K[i], X, disp[i], s, lam, beta0=mle[i]["beta"]) if beta_prior else mle[i]
         v2, sd2 = contrast_of(fit)
         lfc_map.append(v2)
         se_map.append(sd2)
@@ -574,52 +558,55 @@ def deseq2(counts, design, contrast=None, size=None, beta_prior=True,
     pval = [2.0 * (_norm_cdf(-(abs(z)))) for z in stat]
     padj = benjamini_hochberg(pval)
 
-    return RichResult(payload={
-        "estimate": est,
-        "log_fold_change": est,
-        "lfc_mle": est_mle,
-        "lfc_se": se,
-        "lfc_se_mle": [v * scale for v in se_mle],
-        "stat": stat,
-        "pvalue": pval,
-        "padj": padj,
-        "base_mean": base_mean,
-        "dispersion": disp,
-        "dispersion_gene_wise": gw,
-        "dispersion_fit": fitted,
-        "dispersion_outlier": outlier,
-        "size_factors": s,
-        "sigma_d2": sigma_d2,
-        "s_lr": s_lr,
-        "prior_sigma": sigma_r,
-        "trend": trend,
-        "beta_prior": bool(beta_prior),
-        "n_genes": n_genes,
-        "n_samples": m,
-        "df_residual": m - p,
-        "scale": "log2" if log2 else "natural log",
-        "note": "independent filtering and Cook's-distance outlier "
-                "replacement are NOT applied, so padj here is over all "
-                "genes",
-        "method": "DESeq2 negative binomial GLM with empirical Bayes "
-                  "shrinkage (Love, Huber & Anders 2014)",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "log_fold_change": est,
+            "lfc_mle": est_mle,
+            "lfc_se": se,
+            "lfc_se_mle": [v * scale for v in se_mle],
+            "stat": stat,
+            "pvalue": pval,
+            "padj": padj,
+            "base_mean": base_mean,
+            "dispersion": disp,
+            "dispersion_gene_wise": gw,
+            "dispersion_fit": fitted,
+            "dispersion_outlier": outlier,
+            "size_factors": s,
+            "sigma_d2": sigma_d2,
+            "s_lr": s_lr,
+            "prior_sigma": sigma_r,
+            "trend": trend,
+            "beta_prior": bool(beta_prior),
+            "n_genes": n_genes,
+            "n_samples": m,
+            "df_residual": m - p,
+            "scale": "log2" if log2 else "natural log",
+            "note": "independent filtering and Cook's-distance outlier "
+            "replacement are NOT applied, so padj here is over all "
+            "genes",
+            "method": "DESeq2 negative binomial GLM with empirical Bayes shrinkage (Love, Huber & Anders 2014)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("deseq2: RNA-seq differential expression (Love, Huber & Anders "
-            "2014). NB GLM with log link, Var = mu + alpha mu^2. Size "
-            "factors by median-of-ratios. Dispersion in three steps: "
-            "gene-wise by COX-REID adjusted likelihood (the adjustment is "
-            "Bessel's correction for GLMs), a trend alpha_tr = a1/mu + a0 "
-            "fitted by gamma GLM, then MAP under a log-normal prior whose "
-            "width is s_lr^2 - trigamma((m-p)/2), floored at 0.25. Genes "
-            "more than 2 s_lr above the trend are dispersion OUTLIERS and "
-            "are NOT shrunk. LFCs get a zero-centred normal prior whose "
-            "width is set by quantile matching, making the fit ridge IRLS; "
-            "SEs come from the posterior curvature. Wald test, BH. "
-            "Independent filtering and Cook's outlier replacement are not "
-            "implemented.")
+    return (
+        "deseq2: RNA-seq differential expression (Love, Huber & Anders "
+        "2014). NB GLM with log link, Var = mu + alpha mu^2. Size "
+        "factors by median-of-ratios. Dispersion in three steps: "
+        "gene-wise by COX-REID adjusted likelihood (the adjustment is "
+        "Bessel's correction for GLMs), a trend alpha_tr = a1/mu + a0 "
+        "fitted by gamma GLM, then MAP under a log-normal prior whose "
+        "width is s_lr^2 - trigamma((m-p)/2), floored at 0.25. Genes "
+        "more than 2 s_lr above the trend are dispersion OUTLIERS and "
+        "are NOT shrunk. LFCs get a zero-centred normal prior whose "
+        "width is set by quantile matching, making the fit ridge IRLS; "
+        "SEs come from the posterior curvature. Wald test, BH. "
+        "Independent filtering and Cook's outlier replacement are not "
+        "implemented."
+    )
 
 
 # compact aliases

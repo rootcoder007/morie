@@ -87,13 +87,15 @@ def schabenberger_idw(coords, z, target, power=2.0):
     single = target.shape[0] == 1
     return RichResult(
         title="Inverse distance weighted interpolation",
-        summary_lines=[("power", power), ("n targets", target.shape[0]),
-                       ("exact hits", int(exact.sum()))],
-        payload={"prediction": float(preds[0]) if single else preds,
-                 "variance": None,
-                 "weights": weights[0] if single else weights,
-                 "power": power, "exact_hits": bool(exact[0]) if single else exact,
-                 "method": "inverse distance weighting"},
+        summary_lines=[("power", power), ("n targets", target.shape[0]), ("exact hits", int(exact.sum()))],
+        payload={
+            "prediction": float(preds[0]) if single else preds,
+            "variance": None,
+            "weights": weights[0] if single else weights,
+            "power": power,
+            "exact_hits": bool(exact[0]) if single else exact,
+            "method": "inverse distance weighting",
+        },
     )
 
 

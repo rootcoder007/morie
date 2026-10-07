@@ -28,17 +28,16 @@ def ca_chapter_11_equation_30(d, n1, n2):
     """
     value = _ca_crim.r_from_d(d, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.30)"
     return RichResult(
-        title='Point-biserial r from d (unequal n)',
+        title="Point-biserial r from d (unequal n)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e30: r = d / sqrt(d^2 + (n1+n2)^2/(n1 n2)) [Weisburd et al. 2022, eq. 11.30]'
+    return "ca11e30: r = d / sqrt(d^2 + (n1+n2)^2/(n1 n2)) [Weisburd et al. 2022, eq. 11.30]"

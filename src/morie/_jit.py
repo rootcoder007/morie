@@ -20,8 +20,7 @@ Kernels:
   - cor_pearson_jit              -- Pearson correlation
   - euclid_dist_jit              -- pairwise L2 distance
   - trimmed_ipw_weights_jit      -- clipped IPW weights
-  - bootstrap_mean_jit           -- bootstrap replicate means (numpy;
-        the C++ port is deferred pending a deliberate RNG decision)
+  - bootstrap_mean_jit           -- bootstrap replicate means (seeded RNG in the C++ core)
 """
 
 from __future__ import annotations
@@ -100,7 +99,7 @@ def _buf(a):
 def normal_pdf(x, mean: float, sd: float) -> np.ndarray:
     """Normal PDF over an array -- the kernel inside dnorm."""
     if _CORE_AVAILABLE:
-        return _c.normal_pdf(_buf(x), float(mean), float(sd))
+        return np.frombuffer(_c.normal_pdf(_buf(x), float(mean), float(sd)), dtype="float64")
     x = _vec(x)
     inv_sigma = 1.0 / sd
     z = (x - mean) * inv_sigma
@@ -110,7 +109,7 @@ def normal_pdf(x, mean: float, sd: float) -> np.ndarray:
 def normal_logpdf(x, mean: float, sd: float) -> np.ndarray:
     """Normal log-density -- preferred for likelihoods (avoids underflow)."""
     if _CORE_AVAILABLE:
-        return _c.normal_logpdf(_buf(x), float(mean), float(sd))
+        return np.frombuffer(_c.normal_logpdf(_buf(x), float(mean), float(sd)), dtype="float64")
     x = _vec(x)
     inv_sigma = 1.0 / sd
     z = (x - mean) * inv_sigma
@@ -168,8 +167,9 @@ def euclid_dist_jit(a, b) -> float:
 def trimmed_ipw_weights_jit(treat, propensity, trim_lo: float = 0.01, trim_hi: float = 0.99) -> np.ndarray:
     """IPW weights with propensity-score clipping at [trim_lo, trim_hi]."""
     if _CORE_AVAILABLE:
-        return _c.trimmed_ipw_weights_jit(_buf(treat), _buf(propensity),
-                                          float(trim_lo), float(trim_hi))
+        return np.frombuffer(
+            _c.trimmed_ipw_weights_jit(_buf(treat), _buf(propensity), float(trim_lo), float(trim_hi)), dtype="float64"
+        )
     treat, propensity = _vec(treat), _vec(propensity)
     e = np.clip(propensity, trim_lo, trim_hi)
     return np.where(treat == 1.0, 1.0 / e, 1.0 / (1.0 - e))
@@ -190,7 +190,7 @@ def bootstrap_mean_jit(arr, B: int, seed: int) -> np.ndarray:
             "bootstrap_mean_jit requires the compiled morie C++ core "
             "(morie._core); build the extension or install a wheel."
         )
-    return _c.bootstrap_mean_jit(_buf(arr), int(B), int(seed))
+    return np.frombuffer(_c.bootstrap_mean_jit(_buf(arr), int(B), int(seed)), dtype="float64")
 
 
 def is_jit_available() -> bool:

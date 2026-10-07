@@ -43,7 +43,7 @@ def irttf(
 
     total_info = np.zeros_like(theta)
 
-    for name, params in item_params.items():
+    for _name, params in item_params.items():
         a = params.get("a", 1.0)
         b = params.get("b", 0.0)
         c = params.get("c", 0.0)

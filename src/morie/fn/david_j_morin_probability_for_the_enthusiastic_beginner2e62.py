@@ -11,7 +11,9 @@ from .bayesexp import bayesexp as _impl
 __all__ = ["david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_62"]
 
 
-def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_62(p_a=0.4, p_z_given_a=0.95, p_z_given_not_a=0.1):
+def david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_62(
+    p_a=0.4, p_z_given_a=0.95, p_z_given_not_a=0.1
+):
     """Deprecated; use :func:`morie.fn.bayesexp` instead."""
     warnings.warn(
         "david_j_morin_probability_for_the_enthusiastic_beginner_chapter_2_equation_62() is the book-coordinate name for bayesexp(); "

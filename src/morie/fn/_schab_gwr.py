@@ -185,10 +185,7 @@ def adaptive_bandwidth(distance_row, n_neighbours, eps=1.0000001):
 
 
 def _local_weights(d_row, bandwidth, kernel, adaptive):
-    if adaptive:
-        h = adaptive_bandwidth(d_row, bandwidth)
-    else:
-        h = float(bandwidth)
+    h = adaptive_bandwidth(d_row, bandwidth) if adaptive else float(bandwidth)
     return kernel_weights(d_row, h, kernel)
 
 
@@ -450,9 +447,7 @@ def select_bandwidth(
             "scores": scores.tolist(),
         }
     lo, hi = _default_bounds(coords) if bounds is None else bounds
-    bw, score = golden_section(
-        lambda h: gwr_criterion(y, X, D, h, kernel, False, criterion), lo, hi, tol=tol
-    )
+    bw, score = golden_section(lambda h: gwr_criterion(y, X, D, h, kernel, False, criterion), lo, hi, tol=tol)
     return {
         "bandwidth": float(bw),
         "score": float(score),
@@ -551,7 +546,7 @@ def mgwr_backfit(
         y = (y - y_centre) / y_scale
         for j in range(k):
             sd = float(X[:, j].std(ddof=0))
-            if sd > 0:                      # leave a constant column alone
+            if sd > 0:  # leave a constant column alone
                 x_centre[j] = float(X[:, j].mean())
                 x_scale[j] = sd
         X = (X - x_centre) / x_scale
@@ -560,14 +555,11 @@ def mgwr_backfit(
         return gwr_fit(resp.ravel(), design, D, bw, kernel, adaptive)
 
     def _select(resp, design):
-        return select_bandwidth(
-            resp.ravel(), design, coords, kernel=kernel, criterion=criterion, adaptive=adaptive
-        )["bandwidth"]
+        return select_bandwidth(resp.ravel(), design, coords, kernel=kernel, criterion=criterion, adaptive=adaptive)[
+            "bandwidth"
+        ]
 
-    if init_bandwidth is None:
-        bw_gwr = _select(y, X)
-    else:
-        bw_gwr = init_bandwidth
+    bw_gwr = _select(y, X) if init_bandwidth is None else init_bandwidth
     optim = _fit(y, X, bw_gwr)
     err = optim["resid"].reshape(-1, 1)
     XB = X * optim["params"]
@@ -623,8 +615,7 @@ def mgwr_backfit(
     fitted = fitted_std * y_scale + y_centre
     # Diagnostic for the false convergence described above: every covariate
     # left at the top of its search interval is a non-result, not a finding.
-    at_boundary = (False if adaptive
-                   else bool(np.all(bws > 0.95 * _default_bounds(coords)[1])))
+    at_boundary = False if adaptive else bool(np.all(bws > 0.95 * _default_bounds(coords)[1]))
     return {
         "bandwidths": bws.copy(),
         "at_search_boundary": at_boundary,

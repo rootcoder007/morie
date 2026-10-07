@@ -77,10 +77,17 @@ def mzpuct(Q, N, P, c1=1.25, c2=19652.0, qmin=None, qmax=None):
     ex = [P[a] * math.sqrt(sn) / (1.0 + N[a]) * u for a in range(k)]
     sc = [qb[a] + ex[a] for a in range(k)]
     best = max(range(k), key=lambda a: sc[a])
-    return RichResult(payload={
-        "score": sc, "qbar": qb, "exploration": ex, "best": best,
-        "sumn": sn, "k": k,
-        "method": "MuZero pUCT selection (Schrittwieser et al. 2020 eq. 2)"})
+    return RichResult(
+        payload={
+            "score": sc,
+            "qbar": qb,
+            "exploration": ex,
+            "best": best,
+            "sumn": sn,
+            "k": k,
+            "method": "MuZero pUCT selection (Schrittwieser et al. 2020 eq. 2)",
+        }
+    )
 
 
 muzero_efficient_exploration = mzpuct

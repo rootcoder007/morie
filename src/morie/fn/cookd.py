@@ -75,8 +75,7 @@ def cooks_distance(y, X):
     if n <= p:
         raise ValueError("need more observations than parameters")
 
-    xtx = [[sum(Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)]
-           for a in range(p)]
+    xtx = [[sum(Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     xty = [[sum(Xm[i][a] * yv[i] for i in range(n))] for a in range(p)]
     beta = [row[0] for row in _solve(xtx, xty)]
     # Columns of (X'X)^-1 via the same factorisation.
@@ -106,21 +105,27 @@ def cooks_distance(y, X):
             d.append(float("inf"))
             stdres.append(float("inf"))
             continue
-        d.append(resid[i] * resid[i] / (p * sigma2) * h / (om * om)
-                 if sigma2 > 0.0 else 0.0)
+        d.append(resid[i] * resid[i] / (p * sigma2) * h / (om * om) if sigma2 > 0.0 else 0.0)
         stdres.append(resid[i] / math.sqrt(sigma2 * om) if sigma2 > 0.0 else 0.0)
 
     mx = max(d)
-    return RichResult(payload={
-        "d": [float(v) for v in d],
-        "leverage": [float(v) for v in lev],
-        "residual": [float(v) for v in resid],
-        "std_residual": [float(v) for v in stdres],
-        "beta": [float(v) for v in beta],
-        "sigma2": float(sigma2), "rss": float(rss),
-        "max_d": float(mx), "argmax_d": d.index(mx),
-        "threshold": 4.0 / n, "p": p, "n": n,
-        "method": "Cook (1977) distance, D_i = e_i^2 h_ii / (p s^2 (1 - h_ii)^2)"})
+    return RichResult(
+        payload={
+            "d": [float(v) for v in d],
+            "leverage": [float(v) for v in lev],
+            "residual": [float(v) for v in resid],
+            "std_residual": [float(v) for v in stdres],
+            "beta": [float(v) for v in beta],
+            "sigma2": float(sigma2),
+            "rss": float(rss),
+            "max_d": float(mx),
+            "argmax_d": d.index(mx),
+            "threshold": 4.0 / n,
+            "p": p,
+            "n": n,
+            "method": "Cook (1977) distance, D_i = e_i^2 h_ii / (p s^2 (1 - h_ii)^2)",
+        }
+    )
 
 
 def cheatsheet():

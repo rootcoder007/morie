@@ -1,7 +1,6 @@
 """Tests for shrtG.shortest_path_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.shrtG import shortest_path_kernel
 
 

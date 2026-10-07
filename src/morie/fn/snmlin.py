@@ -31,8 +31,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["snm_linear"]
 
 
-def snm_linear(y, treatment_history, covariate_history=None, time=None,
-               propensity=None):
+def snm_linear(y, treatment_history, covariate_history=None, time=None, propensity=None):
     """Estimate the causal shift psi per unit of cumulative treatment.
 
     ``treatment_history`` is one row per subject; the cumulative
@@ -78,15 +77,24 @@ def snm_linear(y, treatment_history, covariate_history=None, time=None,
     ab = sum(a) / n
     yb = sum(ys) / n
     saa = sum((v - ab) ** 2 for v in a)
-    ols = (sum((a[i] - ab) * (ys[i] - yb) for i in range(n)) / saa
-           if saa > 0 else float("nan"))
+    ols = sum((a[i] - ab) * (ys[i] - yb) for i in range(n)) / saa if saa > 0 else float("nan")
     z = 1.959963984540054
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(psi), "psi": float(psi), "se": float(se),
-        "ci_lower": float(psi - z * se), "ci_upper": float(psi + z * se),
-        "ols_slope": float(ols), "residual_treatment": r, "n": n,
-        "method": "g-estimation of a linear SNMM (Robins 1994)",
-    }), "snmlin")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(psi),
+                "psi": float(psi),
+                "se": float(se),
+                "ci_lower": float(psi - z * se),
+                "ci_upper": float(psi + z * se),
+                "ols_slope": float(ols),
+                "residual_treatment": r,
+                "n": n,
+                "method": "g-estimation of a linear SNMM (Robins 1994)",
+            }
+        ),
+        "snmlin",
+    )
 
 
 def cheatsheet():

@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_goldman_eqn
 
-
 C = {"K_out": 4.0, "K_in": 140.0, "Na_out": 145.0, "Na_in": 12.0, "Cl_out": 116.0, "Cl_in": 4.0}
 
 

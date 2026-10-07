@@ -5,7 +5,6 @@ recomputed in the test body.
 """
 
 import math
-import statistics
 
 import pytest
 
@@ -30,12 +29,9 @@ def test_the_implicit_reward_is_the_beta_scaled_log_ratio():
     ref = [(0.4, 0.4)]
     beta = 0.1
     res = kamath_ch5_dpo_loss(theta, ref, beta)
-    assert res["implicit_reward_w"][0] == pytest.approx(
-        beta * math.log(0.6 / 0.4), rel=1e-12)
-    assert res["implicit_reward_l"][0] == pytest.approx(
-        beta * math.log(0.2 / 0.4), rel=1e-12)
-    assert res["margins"][0] == pytest.approx(
-        res["implicit_reward_w"][0] - res["implicit_reward_l"][0], rel=1e-12)
+    assert res["implicit_reward_w"][0] == pytest.approx(beta * math.log(0.6 / 0.4), rel=1e-12)
+    assert res["implicit_reward_l"][0] == pytest.approx(beta * math.log(0.2 / 0.4), rel=1e-12)
+    assert res["margins"][0] == pytest.approx(res["implicit_reward_w"][0] - res["implicit_reward_l"][0], rel=1e-12)
 
 
 def test_a_policy_equal_to_the_reference_costs_log_two():

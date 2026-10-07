@@ -76,10 +76,18 @@ def mivbound(lower, upper, prob):
         Uv[v] = run
     lb = sum(p[v] * Lv[v] for v in range(k))
     ub = sum(p[v] * Uv[v] for v in range(k))
-    return RichResult(payload={
-        "lower": lb, "upper": ub, "width": ub - lb, "lowerv": Lv,
-        "upperv": Uv, "prob": p, "k": k,
-        "method": "Monotone instrumental variable bounds (Manski-Pepper 2000)"})
+    return RichResult(
+        payload={
+            "lower": lb,
+            "upper": ub,
+            "width": ub - lb,
+            "lowerv": Lv,
+            "upperv": Uv,
+            "prob": p,
+            "k": k,
+            "method": "Monotone instrumental variable bounds (Manski-Pepper 2000)",
+        }
+    )
 
 
 bound_monot_inst = mivbound

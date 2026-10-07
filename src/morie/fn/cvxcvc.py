@@ -83,21 +83,20 @@ def boyd_convex_combination(x, theta=None, tol=1e-09):
     if th.size != n:
         raise ValueError(f"theta has {th.size} entries but x has {n} points")
     if np.any(th < -tol):
-        raise ValueError(
-            "theta must be non-negative; with negative weights this is an "
-            "affine, not convex, combination")
+        raise ValueError("theta must be non-negative; with negative weights this is an affine, not convex, combination")
     s = float(th.sum())
     if abs(s - 1.0) > tol:
         raise ValueError(f"theta must sum to 1, got {s:g}")
     val = th @ X
     return RichResult(
         title="Convex combination",
-        summary_lines=[("points", int(n)), ("uniform", uniform),
-                       ("support", int(np.sum(th > tol)))],
+        summary_lines=[("points", int(n)), ("uniform", uniform), ("support", int(np.sum(th > tol)))],
         payload={
             "value": val.ravel() if val.ndim else float(val),
-            "theta": th, "is_centroid": bool(uniform or np.allclose(th, 1.0 / n)),
-            "n_points": int(n), "support": np.flatnonzero(th > tol),
+            "theta": th,
+            "is_centroid": bool(uniform or np.allclose(th, 1.0 / n)),
+            "n_points": int(n),
+            "support": np.flatnonzero(th > tol),
             "method": "boyd_convex_combination",
         },
     )

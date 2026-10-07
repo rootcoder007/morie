@@ -5,9 +5,9 @@ Kalman, R. E. (1960), *J. Basic Eng.* 82(1):35-45 -- in the library.
     mu_t = mu_{t-1} + eta_t,  y_t = mu_t + eps_t
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ssmod import state_space_model as ss
 
 

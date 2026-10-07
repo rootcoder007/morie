@@ -49,7 +49,7 @@ _GR = 0.6180339887498949
 
 
 def _bc(v, a):
-    return math.log(v) if a == 0.0 else (v ** a - 1.0) / a
+    return math.log(v) if a == 0.0 else (v**a - 1.0) / a
 
 
 def horowitz_box_cox(x, y, a_lo=-2.0, a_hi=2.0, ngrid=81, refine=60, nu=201):

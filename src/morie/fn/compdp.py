@@ -92,8 +92,7 @@ def basic_composition(epsilons, delta_prime=None, deltas=None):
     if np.any(eps <= 0) or not np.all(np.isfinite(eps)):
         raise ValueError("every epsilon must be positive")
     k = int(eps.size)
-    dl = (np.zeros(k) if deltas is None
-          else np.atleast_1d(np.asarray(deltas, dtype=float)).ravel())
+    dl = np.zeros(k) if deltas is None else np.atleast_1d(np.asarray(deltas, dtype=float)).ravel()
     if dl.size != k:
         raise ValueError(f"deltas has {dl.size} entries but epsilons has {k}")
     basic = float(eps.sum())
@@ -102,19 +101,20 @@ def basic_composition(epsilons, delta_prime=None, deltas=None):
         if not 0.0 < delta_prime < 1.0:
             raise ValueError("delta_prime must be in (0, 1)")
         e = float(eps.max())
-        adv = float(np.sqrt(2 * k * np.log(1.0 / delta_prime)) * e
-                    + k * e * (np.exp(e) - 1.0))
+        adv = float(np.sqrt(2 * k * np.log(1.0 / delta_prime)) * e + k * e * (np.exp(e) - 1.0))
     total_delta = float(dl.sum() + (delta_prime or 0.0))
     rec = "basic" if (np.isnan(adv) or basic <= adv) else "advanced"
     return RichResult(
         title="Privacy composition",
-        summary_lines=[("k", k), ("basic epsilon", basic),
-                       ("advanced epsilon", adv), ("recommended", rec)],
+        summary_lines=[("k", k), ("basic epsilon", basic), ("advanced epsilon", adv), ("recommended", rec)],
         payload={
-            "basic_epsilon": basic, "advanced_epsilon": adv,
-            "total_delta": total_delta, "recommended": rec,
+            "basic_epsilon": basic,
+            "advanced_epsilon": adv,
+            "total_delta": total_delta,
+            "recommended": rec,
             "epsilon": basic if rec == "basic" else adv,
-            "k": k, "delta_prime": delta_prime,
+            "k": k,
+            "delta_prime": delta_prime,
             "method": "basic_composition",
         },
     )

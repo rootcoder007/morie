@@ -48,7 +48,7 @@ class LISAResult:
     """Output of mrm_tps_lisa."""
 
     n_polygons: int
-    global_moran_I: float
+    global_moran_I: float  # noqa: N815 -- Moran's I notation; a public result field
     permutations: int
     knn_k: int
     table: pd.DataFrame  # per-polygon: id, lat, lon, x, z, lag_z, I_local, quadrant, p_value

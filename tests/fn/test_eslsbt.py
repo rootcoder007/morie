@@ -1,7 +1,6 @@
 """Tests for eslsbt.esl_se_beta."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslsbt import esl_se_beta
 
 
@@ -35,15 +34,13 @@ def test_eslsbt_basic():
     v = np.linalg.inv(XtX)
     expected_se = np.sqrt(rss_val / (n - p) * v[0, 0])
     assert result["estimate"] == expected_se
-    assert result["se"] == [float(np.sqrt(rss_val / (n - p) * v[j, j]))
-                            for j in range(p)]
+    assert result["se"] == [float(np.sqrt(rss_val / (n - p) * v[j, j])) for j in range(p)]
 
 
 def test_eslsbt_edge():
     """Test edge cases."""
     # n - p > 0 case with a zero-residual fit (sigma2_hat = 0 => se = 0).
-    X = np.asarray([[1.0, 1.0], [1.0, -1.0], [1.0, 1.0], [1.0, -1.0]],
-                   dtype=float)
+    X = np.asarray([[1.0, 1.0], [1.0, -1.0], [1.0, 1.0], [1.0, -1.0]], dtype=float)
     y = np.asarray([3.0, -1.0, 3.0, -1.0], dtype=float)
     beta = np.asarray([1.0, 2.0], dtype=float)
     result = esl_se_beta(X, y, beta)

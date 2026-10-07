@@ -54,8 +54,9 @@ def fauzi_quantile_amse(p, n, f_at_quantile=None, Q_prime=None):
     if nn < 2:
         raise ValueError(f"n must be at least 2, got {nn}.")
     if f_at_quantile is None and Q_prime is None:
-        raise ValueError("supply either the density at the quantile or Q'(p); "
-                         "the AMSE is not determined by p and n alone.")
+        raise ValueError(
+            "supply either the density at the quantile or Q'(p); the AMSE is not determined by p and n alone."
+        )
     if Q_prime is not None:
         qp = np.atleast_1d(np.asarray(Q_prime, dtype=float)).ravel()
         if qp.size != pv.size:
@@ -69,14 +70,21 @@ def fauzi_quantile_amse(p, n, f_at_quantile=None, Q_prime=None):
             raise ValueError("the density at the quantile must be positive.")
         qp = 1.0 / dens
     binom = pv * (1 - pv) / nn
-    amse = qp ** 2 * binom
-    return RichResult(payload={
-        "p": pv, "amse": amse, "se": np.sqrt(np.maximum(amse, 0.0)),
-        "binomial_part": binom, "density_part": qp ** 2, "n": nn,
-        "tail_note": "as p goes to 0 or 1 the binomial part shrinks but the "
-                     "density part grows faster for thinning tails, so the "
-                     "AMSE increases -- that is why extreme quantiles are hard",
-        "method": "AMSE of the sample quantile (3.3); p(1-p)/(n f^2) = Q'(p)^2 p(1-p)/n"})
+    amse = qp**2 * binom
+    return RichResult(
+        payload={
+            "p": pv,
+            "amse": amse,
+            "se": np.sqrt(np.maximum(amse, 0.0)),
+            "binomial_part": binom,
+            "density_part": qp**2,
+            "n": nn,
+            "tail_note": "as p goes to 0 or 1 the binomial part shrinks but the "
+            "density part grows faster for thinning tails, so the "
+            "AMSE increases -- that is why extreme quantiles are hard",
+            "method": "AMSE of the sample quantile (3.3); p(1-p)/(n f^2) = Q'(p)^2 p(1-p)/n",
+        }
+    )
 
 
 def cheatsheet():

@@ -79,7 +79,9 @@ def geron_save_load_pytorch(model, path, verify=True):
         try:
             items = list(model)
         except TypeError:
-            raise ValueError("geron_save_load_pytorch: model must be a state-dict mapping or a sequence of tensors") from None
+            raise ValueError(
+                "geron_save_load_pytorch: model must be a state-dict mapping or a sequence of tensors"
+            ) from None
         state = {f"param_{i}": np.asarray(v) for i, v in enumerate(items)}
     if not state:
         raise ValueError("geron_save_load_pytorch: the state dict is empty; there is nothing to save")
@@ -93,7 +95,8 @@ def geron_save_load_pytorch(model, path, verify=True):
         raise TypeError(
             "geron_save_load_pytorch: path must be a filesystem path, not "
             f"{type(path).__name__}; coercing one would write a file named "
-            "after the value into the working directory")
+            "after the value into the working directory"
+        )
     p = os.fspath(path) if not isinstance(path, str) else path
     if isinstance(p, bytes):
         p = p.decode()
@@ -124,7 +127,9 @@ def geron_save_load_pytorch(model, path, verify=True):
         for k, v in state.items():
             w = loaded[k]
             if w.shape != v.shape:
-                raise ValueError(f"geron_save_load_pytorch: entry {k!r} reloaded with shape {w.shape}, expected {v.shape}")
+                raise ValueError(
+                    f"geron_save_load_pytorch: entry {k!r} reloaded with shape {w.shape}, expected {v.shape}"
+                )
             if w.dtype != v.dtype:
                 raise ValueError(f"geron_save_load_pytorch: entry {k!r} reloaded as {w.dtype}, expected {v.dtype}")
             exact = exact and bool(np.array_equal(w, v))

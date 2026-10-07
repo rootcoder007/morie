@@ -1,7 +1,6 @@
 """Tests for grgin.geron_gini_impurity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grgin import geron_gini_impurity
 
 

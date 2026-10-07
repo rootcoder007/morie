@@ -19,8 +19,7 @@ No external numeric dependency.
 
 import math
 
-__all__ = ["glm", "glm_predict", "deviance_residuals", "FAMILIES",
-           "add_constant", "OLS", "IV2SLS"]
+__all__ = ["glm", "glm_predict", "deviance_residuals", "FAMILIES", "add_constant", "OLS", "IV2SLS"]
 
 
 def _mat(X):
@@ -43,13 +42,11 @@ def _flat(v):
 
 def _solve(A, b):
     n = len(A)
-    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
-         for i in range(n)]
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])] for i in range(n)]
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
-            raise ValueError("singular information matrix: predictors "
-                             "are collinear or a category is empty")
+            raise ValueError("singular information matrix: predictors are collinear or a category is empty")
         M[c], M[piv] = M[piv], M[c]
         d = M[c][c]
         M[c] = [v / d for v in M[c]]
@@ -62,8 +59,7 @@ def _solve(A, b):
 
 def _inv(A):
     n = len(A)
-    cols = [_solve(A, [1.0 if i == j else 0.0 for i in range(n)])
-            for j in range(n)]
+    cols = [_solve(A, [1.0 if i == j else 0.0 for i in range(n)]) for j in range(n)]
     return [[cols[j][i] for j in range(n)] for i in range(n)]
 
 
@@ -80,15 +76,16 @@ def _clip01(p):
 FAMILIES = {
     "binomial": {
         "link": lambda mu: math.log(_clip01(mu) / (1 - _clip01(mu))),
-        "linkinv": lambda e: 1.0 / (1.0 + math.exp(-max(min(e, 700.0),
-                                                        -700.0))),
+        "linkinv": lambda e: 1.0 / (1.0 + math.exp(-max(min(e, 700.0), -700.0))),
         "variance": lambda mu: max(mu * (1 - mu), _EPS),
-        "mu_eta": lambda e: (lambda p: max(p * (1 - p), _EPS))(
-            1.0 / (1.0 + math.exp(-max(min(e, 700.0), -700.0)))),
-        "dev_resid": lambda y, mu: 2.0 * (
-            (y * math.log(y / _clip01(mu)) if y > 0 else 0.0)
-            + ((1 - y) * math.log((1 - y) / (1 - _clip01(mu)))
-               if y < 1 else 0.0)),
+        "mu_eta": lambda e: (lambda p: max(p * (1 - p), _EPS))(1.0 / (1.0 + math.exp(-max(min(e, 700.0), -700.0)))),
+        "dev_resid": lambda y, mu: (
+            2.0
+            * (
+                (y * math.log(y / _clip01(mu)) if y > 0 else 0.0)
+                + ((1 - y) * math.log((1 - y) / (1 - _clip01(mu))) if y < 1 else 0.0)
+            )
+        ),
         "start": lambda y: (y + 0.5) / 2.0,
         "dispersion_fixed": True,
     },
@@ -97,9 +94,7 @@ FAMILIES = {
         "linkinv": lambda e: math.exp(min(e, 700.0)),
         "variance": lambda mu: max(mu, _EPS),
         "mu_eta": lambda e: math.exp(min(e, 700.0)),
-        "dev_resid": lambda y, mu: 2.0 * (
-            (y * math.log(y / max(mu, _EPS)) if y > 0 else 0.0)
-            - (y - mu)),
+        "dev_resid": lambda y, mu: 2.0 * ((y * math.log(y / max(mu, _EPS)) if y > 0 else 0.0) - (y - mu)),
         "start": lambda y: y + 0.1,
         "dispersion_fixed": True,
     },
@@ -117,9 +112,7 @@ FAMILIES = {
         "linkinv": lambda e: math.exp(min(e, 700.0)),
         "variance": lambda mu: max(mu, _EPS) ** 2,
         "mu_eta": lambda e: math.exp(min(e, 700.0)),
-        "dev_resid": lambda y, mu: 2.0 * (
-            -math.log(max(y, _EPS) / max(mu, _EPS))
-            + (y - mu) / max(mu, _EPS)),
+        "dev_resid": lambda y, mu: 2.0 * (-math.log(max(y, _EPS) / max(mu, _EPS)) + (y - mu) / max(mu, _EPS)),
         "start": lambda y: max(y, _EPS),
         "dispersion_fixed": False,
     },
@@ -130,9 +123,10 @@ FAMILIES = {
         "linkinv": lambda e: math.exp(min(e, 700.0)),
         "variance": lambda mu: max(mu, _EPS) + max(mu, _EPS) ** 2,
         "mu_eta": lambda e: math.exp(min(e, 700.0)),
-        "dev_resid": lambda y, mu: 2.0 * (
-            (y * math.log(max(1.0, y) / max(mu, _EPS)))
-            - (y + 1.0) * math.log((y + 1.0) / (max(mu, _EPS) + 1.0))),
+        "dev_resid": lambda y, mu: (
+            2.0
+            * ((y * math.log(max(1.0, y) / max(mu, _EPS))) - (y + 1.0) * math.log((y + 1.0) / (max(mu, _EPS) + 1.0)))
+        ),
         "start": lambda y: y + (1.0 / 6.0 if y == 0 else 0.0),
         "dispersion_fixed": True,
     },
@@ -175,8 +169,7 @@ def _betainc(a, b, x):
     front = math.exp(a * math.log(x) + b * math.log1p(-x) - lb)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
-    return 1.0 - math.exp(b * math.log1p(-x) + a * math.log(x) - lb) \
-        * _betacf(b, a, 1 - x) / b
+    return 1.0 - math.exp(b * math.log1p(-x) + a * math.log(x) - lb) * _betacf(b, a, 1 - x) / b
 
 
 def _t_sf(t, df):
@@ -185,8 +178,7 @@ def _t_sf(t, df):
     return p if t >= 0 else 1.0 - p
 
 
-def glm(y, X, family="binomial", add_intercept=True, weights=None,
-        offset=None, max_iter=25, tol=1e-8):
+def glm(y, X, family="binomial", add_intercept=True, weights=None, offset=None, max_iter=25, tol=1e-8):
     """Fit a generalised linear model by iteratively reweighted least
     squares.
 
@@ -208,13 +200,12 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
     """
     fam = FAMILIES.get(str(family).lower())
     if fam is None:
-        raise ValueError("family must be one of %s"
-                         % ", ".join(sorted(FAMILIES)))
+        raise ValueError("family must be one of {}".format(", ".join(sorted(FAMILIES))))
     ys = _flat(y)
     Xm = _mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])
@@ -222,8 +213,7 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
         raise ValueError("need more observations than parameters")
     pw = [1.0] * n if weights is None else _flat(weights)
     off = [0.0] * n if offset is None else _flat(offset)
-    if str(family).lower() == "binomial" and any(
-            t < 0 or t > 1 for t in ys):
+    if str(family).lower() == "binomial" and any(t < 0 or t > 1 for t in ys):
         raise ValueError("binomial response must lie in [0, 1]")
     if str(family).lower() == "poisson" and any(t < 0 for t in ys):
         raise ValueError("Poisson response must be non-negative")
@@ -241,19 +231,14 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
             v = fam["variance"](mu[i])
             w.append(pw[i] * g * g / v)
             z.append(eta[i] - off[i] + (ys[i] - mu[i]) / g)
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
-        rhs = [sum(w[i] * Xm[i][a] * z[i] for i in range(n))
-               for a in range(p)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * z[i] for i in range(n)) for a in range(p)]
         beta = _solve(A, rhs)
-        w_fit = w          # the weights that produced this beta
-        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p))
-               for i in range(n)]
+        w_fit = w  # the weights that produced this beta
+        eta = [off[i] + sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
         mu = [fam["linkinv"](e) for e in eta]
-        dev = sum(pw[i] * fam["dev_resid"](ys[i], mu[i])
-                  for i in range(n))
-        if dev_old is not None and abs(dev - dev_old) / (
-                abs(dev) + 0.1) < tol:
+        dev = sum(pw[i] * fam["dev_resid"](ys[i], mu[i]) for i in range(n))
+        if dev_old is not None and abs(dev - dev_old) / (abs(dev) + 0.1) < tol:
             converged = True
             dev_old = dev
             break
@@ -263,12 +248,10 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
     # null model: intercept only (or offset only)
     if add_intercept:
         mu0 = sum(pw[i] * ys[i] for i in range(n)) / sum(pw)
-        null_dev = sum(pw[i] * fam["dev_resid"](ys[i], mu0)
-                       for i in range(n))
+        null_dev = sum(pw[i] * fam["dev_resid"](ys[i], mu0) for i in range(n))
         df_null = n - 1
     else:
-        null_dev = sum(pw[i] * fam["dev_resid"](
-            ys[i], fam["linkinv"](off[i])) for i in range(n))
+        null_dev = sum(pw[i] * fam["dev_resid"](ys[i], fam["linkinv"](off[i])) for i in range(n))
         df_null = n
 
     df_resid = n - p
@@ -279,16 +262,11 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
     # the eighth digit of every standard error; R's summary.glm inverts
     # the stored QR, i.e. the former, so this is what agreement means.
     w = w_fit
-    A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-          for b in range(p)] for a in range(p)]
+    A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     V = _inv(A)
 
-    pearson = sum(pw[i] * (ys[i] - mu[i]) ** 2 / fam["variance"](mu[i])
-                  for i in range(n))
-    if fam["dispersion_fixed"]:
-        disp = 1.0
-    else:
-        disp = pearson / df_resid if df_resid > 0 else float("nan")
+    pearson = sum(pw[i] * (ys[i] - mu[i]) ** 2 / fam["variance"](mu[i]) for i in range(n))
+    disp = 1.0 if fam["dispersion_fixed"] else pearson / df_resid if df_resid > 0 else float("nan")
     V = [[V[a][b] * disp for b in range(p)] for a in range(p)]
     se = [math.sqrt(V[j][j]) for j in range(p)]
     stat = [beta[j] / se[j] for j in range(p)]
@@ -302,14 +280,12 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
     # AIC as R defines it per family
     fl = str(family).lower()
     if fl == "binomial":
-        ll = sum(pw[i] * (ys[i] * math.log(_clip01(mu[i]))
-                          + (1 - ys[i]) * math.log(1 - _clip01(mu[i])))
-                 for i in range(n))
+        ll = sum(
+            pw[i] * (ys[i] * math.log(_clip01(mu[i])) + (1 - ys[i]) * math.log(1 - _clip01(mu[i]))) for i in range(n)
+        )
         aic = -2 * ll + 2 * p
     elif fl == "poisson":
-        ll = sum(pw[i] * (ys[i] * math.log(max(mu[i], _EPS)) - mu[i]
-                          - math.lgamma(ys[i] + 1.0))
-                 for i in range(n))
+        ll = sum(pw[i] * (ys[i] * math.log(max(mu[i], _EPS)) - mu[i] - math.lgamma(ys[i] + 1.0)) for i in range(n))
         aic = -2 * ll + 2 * p
     elif fl == "gaussian":
         s2 = deviance / n
@@ -319,21 +295,34 @@ def glm(y, X, family="binomial", add_intercept=True, weights=None,
         ll = float("nan")
         aic = float("nan")
 
-    return {"coef": beta, "se": se, "statistic": stat,
-            "statistic_name": stat_name, "p_value": pv,
-            "fitted": mu, "linear_predictor": eta,
-            "residuals": [ys[i] - mu[i] for i in range(n)],
-            "deviance": deviance, "null_deviance": null_dev,
-            "df_residual": df_resid, "df_null": df_null,
-            "dispersion": disp, "pearson_chi2": pearson,
-            "aic": aic, "loglik": ll, "converged": converged,
-            "family": fl, "n": n, "k": p, "vcov": V,
-            "working_weights": list(w_fit),
-            "method": "generalised linear model (IRLS)"}
+    return {
+        "coef": beta,
+        "se": se,
+        "statistic": stat,
+        "statistic_name": stat_name,
+        "p_value": pv,
+        "fitted": mu,
+        "linear_predictor": eta,
+        "residuals": [ys[i] - mu[i] for i in range(n)],
+        "deviance": deviance,
+        "null_deviance": null_dev,
+        "df_residual": df_resid,
+        "df_null": df_null,
+        "dispersion": disp,
+        "pearson_chi2": pearson,
+        "aic": aic,
+        "loglik": ll,
+        "converged": converged,
+        "family": fl,
+        "n": n,
+        "k": p,
+        "vcov": V,
+        "working_weights": list(w_fit),
+        "method": "generalised linear model (IRLS)",
+    }
 
 
-def glm_predict(fit, X, add_intercept=True, type="response",
-                offset=None):
+def glm_predict(fit, X, add_intercept=True, type="response", offset=None):
     """Predict from a fitted GLM.
 
     ``type="link"`` returns the linear predictor, ``"response"`` the
@@ -345,11 +334,9 @@ def glm_predict(fit, X, add_intercept=True, type="response",
         Xm = [[1.0] + list(r) for r in Xm]
     b = fit["coef"]
     if len(Xm[0]) != len(b):
-        raise ValueError("X has %d columns but the fit has %d "
-                         "coefficients" % (len(Xm[0]), len(b)))
+        raise ValueError(f"X has {int(len(Xm[0]))} columns but the fit has {int(len(b))} coefficients")
     off = [0.0] * len(Xm) if offset is None else _flat(offset)
-    eta = [off[i] + sum(Xm[i][j] * b[j] for j in range(len(b)))
-           for i in range(len(Xm))]
+    eta = [off[i] + sum(Xm[i][j] * b[j] for j in range(len(b))) for i in range(len(Xm))]
     if type == "link":
         return eta
     if type != "response":
@@ -448,8 +435,7 @@ def _bisect(fn, lo, hi, tol=1e-7):
     if fhi == 0.0:
         return hi
     if flo * fhi > 0.0:
-        raise ValueError(
-            "solve_power: no solution in bracket [%g, %g]" % (lo, hi))
+        raise ValueError(f"solve_power: no solution in bracket [{lo:g}, {hi:g}]")
     for _ in range(200):
         mid = 0.5 * (lo + hi)
         if hi - lo <= tol * max(1.0, abs(mid)):
@@ -476,8 +462,7 @@ class _PowerBase:
     def _nobs_lo(self, **kwargs):
         return 2.0 + 1e-6
 
-    def solve_power(self, effect_size=None, alpha=0.05, power=None,
-                    **kwargs):
+    def solve_power(self, effect_size=None, alpha=0.05, power=None, **kwargs):
         nobs = kwargs.pop(self._nobs_name, None)
         known = dict(kwargs)
 
@@ -487,28 +472,22 @@ class _PowerBase:
 
         if power is None:
             if effect_size is None or nobs is None:
-                raise ValueError(
-                    "solve_power: exactly one argument may be None")
+                raise ValueError("solve_power: exactly one argument may be None")
             return pw(effect_size, nobs, alpha)
 
-        missing = [k for k, v in (("effect_size", effect_size),
-                                  (self._nobs_name, nobs),
-                                  ("alpha", alpha)) if v is None]
+        missing = [k for k, v in (("effect_size", effect_size), (self._nobs_name, nobs), ("alpha", alpha)) if v is None]
         if len(missing) != 1:
             raise ValueError(
-                "solve_power: exactly one of effect_size, %s, alpha, power "
-                "must be None (got %d unknowns)"
-                % (self._nobs_name, len(missing)))
+                f"solve_power: exactly one of effect_size, {self._nobs_name}, alpha, power must be None (got {int(len(missing))} unknowns)"
+            )
         what = missing[0]
         if what == "effect_size":
             lo, hi = self._es_bracket
             return _bisect(lambda es: pw(es, nobs, alpha) - power, lo, hi)
         if what == "alpha":
-            return _bisect(lambda a: pw(effect_size, nobs, a) - power,
-                           1e-12, 1.0 - 1e-12)
+            return _bisect(lambda a: pw(effect_size, nobs, a) - power, 1e-12, 1.0 - 1e-12)
         lo = self._nobs_lo(**kwargs)
-        return _bisect(lambda n: pw(effect_size, n, alpha) - power,
-                       lo, self._nobs_hi)
+        return _bisect(lambda n: pw(effect_size, n, alpha) - power, lo, self._nobs_hi)
 
 
 def _two_tail_power(crit_hi, crit_lo, sf, cdf, alternative):
@@ -520,8 +499,7 @@ def _two_tail_power(crit_hi, crit_lo, sf, cdf, alternative):
         return sf(crit_hi)
     if alternative in ("smaller", "less"):
         return cdf(crit_lo)
-    raise ValueError("alternative must be 'two-sided', 'larger' or "
-                     "'smaller', got %r" % (alternative,))
+    raise ValueError(f"alternative must be 'two-sided', 'larger' or 'smaller', got {alternative!r}")
 
 
 class TTestPower(_PowerBase):
@@ -531,10 +509,10 @@ class TTestPower(_PowerBase):
     freedom, so the test statistic is noncentral t (Cohen 1988, ch. 2).
     """
 
-    def power(self, effect_size, nobs, alpha=0.05, df=None,
-              alternative="two-sided"):
+    def power(self, effect_size, nobs, alpha=0.05, df=None, alternative="two-sided"):
         from morie.fn._stats_core import nct
         from morie.fn._stats_core import t as _t
+
         nobs = float(nobs)
         if df is None:
             df = nobs - 1.0
@@ -548,10 +526,8 @@ class TTestPower(_PowerBase):
             hi = _t.ppf(1.0 - alpha, df)
             lo = -hi
         return _two_tail_power(
-            hi, lo,
-            lambda c: float(nct.sf(c, df, ncp)),
-            lambda c: float(nct.cdf(c, df, ncp)),
-            alternative)
+            hi, lo, lambda c: float(nct.sf(c, df, ncp)), lambda c: float(nct.cdf(c, df, ncp)), alternative
+        )
 
 
 class TTestIndPower(_PowerBase):
@@ -567,16 +543,16 @@ class TTestIndPower(_PowerBase):
     def _nobs_lo(self, ratio=1.0, **kwargs):
         return (2.0 + 1e-6) / (1.0 + float(ratio))
 
-    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0, df=None,
-              alternative="two-sided"):
+    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0, df=None, alternative="two-sided"):
         from morie.fn._stats_core import nct
         from morie.fn._stats_core import t as _t
+
         nobs1 = float(nobs1)
         ratio = float(ratio)
         if df is None:
             df = nobs1 * (1.0 + ratio) - 2.0
         if df <= 0:
-            raise ValueError("nobs1 too small: df = %g" % df)
+            raise ValueError(f"nobs1 too small: df = {df:g}")
         ncp = float(effect_size) * math.sqrt(nobs1 * ratio / (1.0 + ratio))
         if alternative in ("two-sided", "two_sided", "2s"):
             hi = _t.ppf(1.0 - alpha / 2.0, df)
@@ -585,10 +561,8 @@ class TTestIndPower(_PowerBase):
             hi = _t.ppf(1.0 - alpha, df)
             lo = -hi
         return _two_tail_power(
-            hi, lo,
-            lambda c: float(nct.sf(c, df, ncp)),
-            lambda c: float(nct.cdf(c, df, ncp)),
-            alternative)
+            hi, lo, lambda c: float(nct.sf(c, df, ncp)), lambda c: float(nct.cdf(c, df, ncp)), alternative
+        )
 
 
 class NormalIndPower(_PowerBase):
@@ -605,21 +579,18 @@ class NormalIndPower(_PowerBase):
     def _nobs_lo(self, **kwargs):
         return 1e-6
 
-    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0,
-              alternative="two-sided"):
+    def power(self, effect_size, nobs1, alpha=0.05, ratio=1.0, alternative="two-sided"):
         from morie.fn._stats_core import norm as _norm
+
         ratio = float(ratio)
-        delta = float(effect_size) * math.sqrt(
-            float(nobs1) * ratio / (1.0 + ratio))
+        delta = float(effect_size) * math.sqrt(float(nobs1) * ratio / (1.0 + ratio))
         if alternative in ("two-sided", "two_sided", "2s"):
             crit = _norm.ppf(1.0 - alpha / 2.0)
         else:
             crit = _norm.ppf(1.0 - alpha)
         return _two_tail_power(
-            crit, -crit,
-            lambda c: float(_norm.sf(c - delta)),
-            lambda c: float(_norm.cdf(c - delta)),
-            alternative)
+            crit, -crit, lambda c: float(_norm.sf(c - delta)), lambda c: float(_norm.cdf(c - delta)), alternative
+        )
 
 
 class FTestAnovaPower(_PowerBase):
@@ -638,13 +609,12 @@ class FTestAnovaPower(_PowerBase):
     def power(self, effect_size, nobs, alpha=0.05, k_groups=2):
         from morie.fn._stats_core import f as _f
         from morie.fn._stats_core import ncf
+
         nobs = float(nobs)
         dfn = float(k_groups) - 1.0
         dfd = nobs - float(k_groups)
         if dfn <= 0 or dfd <= 0:
-            raise ValueError(
-                "need k_groups >= 2 and nobs > k_groups (got %g, %g)"
-                % (dfn, dfd))
+            raise ValueError(f"need k_groups >= 2 and nobs > k_groups (got {dfn:g}, {dfd:g})")
         ncp = float(effect_size) ** 2 * nobs
         crit = _f.ppf(1.0 - alpha, dfn, dfd)
         return float(ncf.sf(crit, dfn, dfd, ncp))
@@ -673,7 +643,7 @@ class _Family:
         return self.name
 
     def __repr__(self):
-        return "%s()" % type(self).__name__
+        return f"{type(self).__name__}()"
 
 
 class Gaussian(_Family):
@@ -727,6 +697,7 @@ families = _FamiliesNamespace()
 # there is no external numeric dependency.
 # ---------------------------------------------------------------------
 
+
 def add_constant(X, prepend=True):
     """statsmodels.add_constant: a column of ones on the design.
 
@@ -775,19 +746,16 @@ class _LinearResult:
         self.df_model = k - (1 if has_const else 0)
         self.df_resid = n - k
         self.method = method
-        self.bse = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan")
-                    for j in range(k)]
+        self.bse = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan") for j in range(k)]
         self.tvalues = [
-            (params[j] / self.bse[j]) if self.bse[j] and
-            self.bse[j] == self.bse[j] else float("nan")
-            for j in range(k)]
-        self.pvalues = [2.0 * _t_sf(abs(t), self.df_resid)
-                        if self.df_resid > 0 and t == t else float("nan")
-                        for t in self.tvalues]
+            (params[j] / self.bse[j]) if self.bse[j] and self.bse[j] == self.bse[j] else float("nan") for j in range(k)
+        ]
+        self.pvalues = [
+            2.0 * _t_sf(abs(t), self.df_resid) if self.df_resid > 0 and t == t else float("nan") for t in self.tvalues
+        ]
         rss = sum(r * r for r in resid)
         ybar = sum(y) / n if n else 0.0
-        tss = (sum((v - ybar) ** 2 for v in y) if has_const
-               else sum(v * v for v in y))
+        tss = sum((v - ybar) ** 2 for v in y) if has_const else sum(v * v for v in y)
         self.ssr = rss
         self.centered_tss = tss
         self.rsquared = 1.0 - rss / tss if tss > 0 else float("nan")
@@ -796,8 +764,7 @@ class _LinearResult:
             self.fvalue = ((tss - rss) / self.df_model) / (rss / self.df_resid)
         else:
             self.fvalue = float("nan")
-        self.mse_resid = rss / self.df_resid if self.df_resid > 0 else \
-            float("nan")
+        self.mse_resid = rss / self.df_resid if self.df_resid > 0 else float("nan")
 
     def fit(self):
         return self
@@ -809,47 +776,82 @@ class _LinearResult:
         # Normal critical value, matching the z interval morie reports
         # elsewhere; alpha=0.05 gives the usual 1.959964.
         from_z = _norm_ppf(1.0 - alpha / 2.0)
-        return [[self.params[j] - from_z * self.bse[j],
-                 self.params[j] + from_z * self.bse[j]]
-                for j in range(len(self.params))]
+        return [
+            [self.params[j] - from_z * self.bse[j], self.params[j] + from_z * self.bse[j]]
+            for j in range(len(self.params))
+        ]
 
     def predict(self, X=None):
         if X is None:
             raise ValueError("predict() needs a design matrix")
         M = _mat(X)
-        return [sum(M[i][j] * self.params[j]
-                    for j in range(len(self.params)))
-                for i in range(len(M))]
+        return [sum(M[i][j] * self.params[j] for j in range(len(self.params))) for i in range(len(M))]
 
 
 def _norm_ppf(p):
     """Wichura's AS 241 (PPND16), the same routine the R arm uses."""
     if not 0.0 < p < 1.0:
         raise ValueError("`p` must lie strictly inside (0, 1)")
-    A = [3.3871328727963666080, 133.14166789178437745,
-         1971.5909503065514427, 13731.693765509461125,
-         45921.953931549871457, 67265.770927008700853,
-         33430.575583588128105, 2509.0809287301226727]
-    B = [1.0, 42.313330701600911252, 687.18700749205790830,
-         5394.1960214247511077, 21213.794301586595867,
-         39307.895800092710610, 28729.085735721942674,
-         5226.4952788528545610]
-    C = [1.42343711074968357734, 4.63033784615654529590,
-         5.76949722146069140550, 3.64784832476320460504,
-         1.27045825245236838258, 0.241780725177450611770,
-         0.0227238449892691845833, 7.74545014278341407640e-4]
-    D = [1.0, 2.05319162663775882187, 1.67638483018380384940,
-         0.689767334985100004550, 0.148103976427480074590,
-         0.0151986665636164571966, 5.47593808499534494600e-4,
-         1.05075007164441684324e-9]
-    E = [6.65790464350110377720, 5.46378491116411436990,
-         1.78482653991729133580, 0.296560571828504891230,
-         0.0265321895265761230930, 0.00124266094738807843860,
-         2.71155556874348757815e-5, 2.01033439929228813265e-7]
-    F = [1.0, 0.599832206555887937690, 0.136929880922735805310,
-         0.0148753612908506148525, 7.86869131145613259100e-4,
-         1.84631831751005468180e-5, 1.42151175831644588870e-7,
-         2.04426310338993978564e-15]
+    A = [
+        3.3871328727963666080,
+        133.14166789178437745,
+        1971.5909503065514427,
+        13731.693765509461125,
+        45921.953931549871457,
+        67265.770927008700853,
+        33430.575583588128105,
+        2509.0809287301226727,
+    ]
+    B = [
+        1.0,
+        42.313330701600911252,
+        687.18700749205790830,
+        5394.1960214247511077,
+        21213.794301586595867,
+        39307.895800092710610,
+        28729.085735721942674,
+        5226.4952788528545610,
+    ]
+    C = [
+        1.42343711074968357734,
+        4.63033784615654529590,
+        5.76949722146069140550,
+        3.64784832476320460504,
+        1.27045825245236838258,
+        0.241780725177450611770,
+        0.0227238449892691845833,
+        7.74545014278341407640e-4,
+    ]
+    D = [
+        1.0,
+        2.05319162663775882187,
+        1.67638483018380384940,
+        0.689767334985100004550,
+        0.148103976427480074590,
+        0.0151986665636164571966,
+        5.47593808499534494600e-4,
+        1.05075007164441684324e-9,
+    ]
+    E = [
+        6.65790464350110377720,
+        5.46378491116411436990,
+        1.78482653991729133580,
+        0.296560571828504891230,
+        0.0265321895265761230930,
+        0.00124266094738807843860,
+        2.71155556874348757815e-5,
+        2.01033439929228813265e-7,
+    ]
+    F = [
+        1.0,
+        0.599832206555887937690,
+        0.136929880922735805310,
+        0.0148753612908506148525,
+        7.86869131145613259100e-4,
+        1.84631831751005468180e-5,
+        1.42151175831644588870e-7,
+        2.04426310338993978564e-15,
+    ]
 
     def poly(c, x):
         out = c[-1]
@@ -863,10 +865,7 @@ def _norm_ppf(p):
         return q * poly(A, r) / poly(B, r)
     r = p if q < 0 else 1.0 - p
     r = math.sqrt(-math.log(r))
-    if r <= 5.0:
-        val = poly(C, r - 1.6) / poly(D, r - 1.6)
-    else:
-        val = poly(E, r - 5.0) / poly(F, r - 5.0)
+    val = poly(C, r - 1.6) / poly(D, r - 1.6) if r <= 5.0 else poly(E, r - 5.0) / poly(F, r - 5.0)
     return -val if q < 0 else val
 
 
@@ -876,23 +875,19 @@ def OLS(endog, exog, weights=None):  # noqa: N802  (statsmodels spelling)
     X = _mat(exog)
     n = len(X)
     if n != len(y):
-        raise ValueError("OLS: %d rows of design against %d responses"
-                         % (n, len(y)))
+        raise ValueError(f"OLS: {int(n)} rows of design against {int(len(y))} responses")
     k = len(X[0])
     W = None if weights is None else _flat(weights)
     XtX, Xty = _xtx_xty(X, y, W)
     beta = _solve(XtX, Xty)
-    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k))
-             for i in range(n)]
+    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
     dfr = n - k
     if dfr <= 0:
-        raise ValueError("OLS: %d observations cannot support %d "
-                         "parameters" % (n, k))
+        raise ValueError(f"OLS: {int(n)} observations cannot support {int(k)} parameters")
     s2 = sum(r * r for r in resid) / dfr
     inv = _inv(XtX)
     cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]
-    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0
-                    for j in range(k))
+    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0 for j in range(k))
     return _LinearResult(beta, cov, resid, y, n, k, has_const, "OLS")
 
 
@@ -909,35 +904,27 @@ def IV2SLS(endog, exog, instrument):  # noqa: N802
     Z = _mat(instrument)
     n = len(X)
     if len(Z) != n or len(y) != n:
-        raise ValueError("IV2SLS: design, instruments and response "
-                         "disagree on the number of rows")
+        raise ValueError("IV2SLS: design, instruments and response disagree on the number of rows")
     k = len(X[0])
     kz = len(Z[0])
     if kz < k:
-        raise ValueError("IV2SLS: %d instruments cannot identify %d "
-                         "parameters" % (kz, k))
+        raise ValueError(f"IV2SLS: {int(kz)} instruments cannot identify {int(k)} parameters")
     ZtZ, _ = _xtx_xty(Z, [0.0] * n)
     ZtZ_inv = _inv(ZtZ)
     # Xhat = Z (Z'Z)^-1 Z'X, computed column by column of X.
-    ZtX = [[sum(Z[i][a] * X[i][b] for i in range(n)) for b in range(k)]
-           for a in range(kz)]
-    Pi = [[sum(ZtZ_inv[a][c] * ZtX[c][b] for c in range(kz))
-           for b in range(k)] for a in range(kz)]
-    Xhat = [[sum(Z[i][a] * Pi[a][b] for a in range(kz)) for b in range(k)]
-            for i in range(n)]
+    ZtX = [[sum(Z[i][a] * X[i][b] for i in range(n)) for b in range(k)] for a in range(kz)]
+    Pi = [[sum(ZtZ_inv[a][c] * ZtX[c][b] for c in range(kz)) for b in range(k)] for a in range(kz)]
+    Xhat = [[sum(Z[i][a] * Pi[a][b] for a in range(kz)) for b in range(k)] for i in range(n)]
     XhX, Xhy = _xtx_xty(Xhat, y)
     beta = _solve(XhX, Xhy)
-    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k))
-             for i in range(n)]
+    resid = [y[i] - sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
     dfr = n - k
     if dfr <= 0:
-        raise ValueError("IV2SLS: %d observations cannot support %d "
-                         "parameters" % (n, k))
+        raise ValueError(f"IV2SLS: {int(n)} observations cannot support {int(k)} parameters")
     s2 = sum(r * r for r in resid) / dfr
     inv = _inv(XhX)
     cov = [[s2 * inv[a][b] for b in range(k)] for a in range(k)]
-    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0
-                    for j in range(k))
+    has_const = any(all(r[j] == X[0][j] for r in X) and X[0][j] != 0.0 for j in range(k))
     return _LinearResult(beta, cov, resid, y, n, k, has_const, "2SLS")
 
 
@@ -950,5 +937,6 @@ def __getattr__(name):
     """
     if name == "formula":
         from . import _glm_formula
+
         return _glm_formula
     raise AttributeError(name)

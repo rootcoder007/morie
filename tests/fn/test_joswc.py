@@ -1,7 +1,5 @@
 """Tests for joswc.joseph_sliding_window_cv."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.joswc import joseph_sliding_window_cv
 
 

@@ -98,7 +98,7 @@ def cnn_genomic(
 
     losses = []
     for _ in range(n_epochs):
-        z = _conv1d(Ms, Wc, bc)              # list of f (n, L)
+        z = _conv1d(Ms, Wc, bc)  # list of f (n, L)
         a = [np.maximum(zj, 0) for zj in z]  # ReLU
         p = np.column_stack([aj.mean(axis=1) for aj in a])  # (n, f)
         h_pre = p @ W1 + b1
@@ -124,7 +124,7 @@ def cnn_genomic(
         dWc = np.zeros_like(Wc)
         dbc = np.asarray([float(dzj.sum()) for dzj in dz])
         for s in range(L):
-            seg = Ms[:, s : s + kernel]           # (n, kernel)
+            seg = Ms[:, s : s + kernel]  # (n, kernel)
             for j in range(len(dz)):
                 # dWc[:, j] += seg.T @ dz_j[:, s]
                 contrib = seg.T @ dz[j][:, s]

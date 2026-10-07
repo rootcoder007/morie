@@ -1,7 +1,6 @@
 """Tests for cvxqsv.boyd_qcqp_relaxation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxqsv import boyd_qcqp_relaxation
 
 
@@ -23,8 +22,7 @@ def test_cvxqsv_basic():
     assert isinstance(result, dict)
 
     # Every documented return key must be present.
-    for key in ("X", "x", "lower_bound", "rank", "eigenvalues",
-                "tight", "residual", "gap_bound", "converged"):
+    for key in ("X", "x", "lower_bound", "rank", "eigenvalues", "tight", "residual", "gap_bound", "converged"):
         assert key in result
 
     # The convex case: relaxation is tight, rank is one, x is the
@@ -39,7 +37,7 @@ def test_cvxqsv_basic():
     # Residual ||X - x x^T|| must be tiny when the relaxation is tight.
     X = result["X"]
     x = result["x"]
-    expected_residual = float(np.linalg.norm(X - np.outer(x, x)))
+    float(np.linalg.norm(X - np.outer(x, x)))
     assert float(result["residual"]) < 1e-5
 
     # Lower bound, recomputed independently from the formula on
@@ -61,8 +59,7 @@ def test_cvxqsv_edge():
     result = boyd_qcqp_relaxation(J, q0, P=P, q=q, r=r)
 
     assert isinstance(result, dict)
-    for key in ("X", "x", "lower_bound", "rank", "eigenvalues",
-                "tight", "residual", "gap_bound", "converged"):
+    for key in ("X", "x", "lower_bound", "rank", "eigenvalues", "tight", "residual", "gap_bound", "converged"):
         assert key in result
 
     # Lower bound is -3/2, strictly below the true minimum -1.

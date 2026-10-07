@@ -1,8 +1,8 @@
 """Tests for pdcoin.pedroni_panel_cointegration."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pdcoin import pedroni_panel_cointegration
 
 
@@ -58,7 +58,7 @@ def test_two_regressor_panel_gets_a_real_z_and_p():
     for i in range(8):
         x1 = np.cumsum(rng.normal(0, 1, 120))
         x2 = np.cumsum(rng.normal(0, 1, 120))
-        y = x1 + 0.5 * x2 + rng.normal(0, 1, 120)   # cointegrated
+        y = x1 + 0.5 * x2 + rng.normal(0, 1, 120)  # cointegrated
         rows.append(np.column_stack([y, x1, x2]))
         grp.append(np.full(120, i))
     res = pedroni_panel_cointegration(np.vstack(rows), np.concatenate(grp))

@@ -12,8 +12,7 @@ __all__ = ["goenr", "go_enrichment"]
 def _lchoose(n, k):
     if k < 0 or k > n:
         return float("-inf")
-    return (math.lgamma(n + 1.0) - math.lgamma(k + 1.0)
-            - math.lgamma(n - k + 1.0))
+    return math.lgamma(n + 1.0) - math.lgamma(k + 1.0) - math.lgamma(n - k + 1.0)
 
 
 def _hyper_upper(k, n, M, N):
@@ -28,10 +27,8 @@ def _hyper_upper(k, n, M, N):
     if k > hi:
         return 0.0
     denom = _lchoose(N, n)
-    upper = sum(math.exp(_lchoose(M, i) + _lchoose(N - M, n - i) - denom)
-                for i in range(k, hi + 1))
-    lower = sum(math.exp(_lchoose(M, i) + _lchoose(N - M, n - i) - denom)
-                for i in range(lo, k))
+    upper = sum(math.exp(_lchoose(M, i) + _lchoose(N - M, n - i) - denom) for i in range(k, hi + 1))
+    lower = sum(math.exp(_lchoose(M, i) + _lchoose(N - M, n - i) - denom) for i in range(lo, k))
     if upper <= lower:
         return min(1.0, upper)
     return min(1.0, max(0.0, 1.0 - lower))
@@ -107,22 +104,23 @@ def goenr(hits, list_size, term_size, background_size, correction="none"):
         padj = pvalue
     else:
         raise ValueError("correction must be 'none' or 'bonferroni'")
-    expected = np.asarray([float(n) * float(M[j]) / float(N)
-                           for j in range(nt)])
-    fold = np.asarray([
-        (float(k[j]) / float(n)) / (float(M[j]) / float(N))
-        if M[j] > 0 else float("nan") for j in range(nt)])
-    return RichResult(payload={
-        "pvalue": pvalue,
-        "padj": padj,
-        "expected": expected,
-        "fold_enrichment": fold,
-        "hits": k,
-        "term_size": M,
-        "n": n,
-        "N": N,
-        "method": "GO enrichment, hypergeometric upper tail (Boyle et al. 2004)",
-    })
+    expected = np.asarray([float(n) * float(M[j]) / float(N) for j in range(nt)])
+    fold = np.asarray(
+        [(float(k[j]) / float(n)) / (float(M[j]) / float(N)) if M[j] > 0 else float("nan") for j in range(nt)]
+    )
+    return RichResult(
+        payload={
+            "pvalue": pvalue,
+            "padj": padj,
+            "expected": expected,
+            "fold_enrichment": fold,
+            "hits": k,
+            "term_size": M,
+            "n": n,
+            "N": N,
+            "method": "GO enrichment, hypergeometric upper tail (Boyle et al. 2004)",
+        }
+    )
 
 
 go_enrichment = goenr
@@ -130,5 +128,4 @@ goenrichment = goenr
 
 
 def cheatsheet():
-    return ("goenr(hits, list_size, term_size, background_size) -> "
-            "one-tailed Fisher exact GO enrichment p-values.")
+    return "goenr(hits, list_size, term_size, background_size) -> one-tailed Fisher exact GO enrichment p-values."

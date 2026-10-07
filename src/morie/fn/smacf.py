@@ -87,7 +87,7 @@ def smacof_algorithm(delta, n_dims=2, weights=None, max_iter=300, eps=1e-8):
 
     path = [stress(X)]
     converged = False
-    for it in range(int(max_iter)):
+    for _it in range(int(max_iter)):
         d = dists(X)
         with np.errstate(divide="ignore", invalid="ignore"):
             ratio = np.where(d > 1e-12, Delta / d, 0.0)

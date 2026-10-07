@@ -1,13 +1,11 @@
 """Tests for gradds.gradient_descent."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gradds import gradient_descent
 
 
 def _make_f_and_grad(a, b):
     """Return (f, grad_f) for f(x) = 0.5*(a*x[0] + b)^2 (scalar quadratic in x[0])."""
+
     def f(x):
         return 0.5 * (a * x[0] + b) ** 2
 

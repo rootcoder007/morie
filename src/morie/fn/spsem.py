@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """SAR error model by maximum likelihood, eqs (6.35)-(6.37)."""
 
-from math import fsum, log, pi, sqrt
+from math import log, pi, sqrt
 
 from ._richresult import RichResult
 from ._spx import dot, eye, logabsdet, lstsq, mat, matvec, sqmat, vec
@@ -92,8 +92,7 @@ def schabenberger_spatial_error_model(x, y, w, n_grid=201, refine=60):
     n = len(yy)
     xx = mat(x, "x")
     if len(xx) != n:
-        raise ValueError("`x` has %d rows but `y` has %d values"
-                         % (len(xx), n))
+        raise ValueError(f"`x` has {int(len(xx))} rows but `y` has {int(n)} values")
     k = len(xx[0])
     if n <= k + 1:
         raise ValueError("need n > k + 1 observations")
@@ -103,9 +102,9 @@ def schabenberger_spatial_error_model(x, y, w, n_grid=201, refine=60):
             raise ValueError("`w` must have a zero diagonal")
         for j in range(i + 1, n):
             if abs(ww[i][j] - ww[j][i]) > 1e-12:
-                raise ValueError("`w` must be symmetric for the eigenvalue "
-                                 "bound of Sec. 6.2.2.1 to reduce to the "
-                                 "spectral radius")
+                raise ValueError(
+                    "`w` must be symmetric for the eigenvalue bound of Sec. 6.2.2.1 to reduce to the spectral radius"
+                )
     n_grid = int(n_grid)
     if n_grid < 5:
         raise ValueError("`n_grid` must be at least 5")
@@ -154,25 +153,28 @@ def schabenberger_spatial_error_model(x, y, w, n_grid=201, refine=60):
     rho = 0.5 * (a + b)
     val, beta, s2 = _neg2ll(yy, xx, ww, rho)
     if beta is None:
-        raise ValueError("the likelihood is undefined at the optimum; "
-                         "check that `w` admits a non-singular I - rho W")
+        raise ValueError("the likelihood is undefined at the optimum; check that `w` admits a non-singular I - rho W")
     ols = lstsq(xx, yy)
 
-    return RichResult(payload={
-        "rho": rho,
-        "beta": beta,
-        "sigma2": s2,
-        "neg2loglik": val,
-        "rho_bounds": [lo, hi],
-        "ols_beta": ols,
-        "spectral_radius": srad,
-        "is_error_model_not_lag_model": True,
-        "k": k,
-        "n": n,
-        "method": ("SAR error model by ML, Schabenberger & Gotway (2005) "
-                   "eqs (6.35)-(6.37), Sec. 6.2.2.1; concentrated "
-                   "likelihood, grid scan + golden section"),
-    })
+    return RichResult(
+        payload={
+            "rho": rho,
+            "beta": beta,
+            "sigma2": s2,
+            "neg2loglik": val,
+            "rho_bounds": [lo, hi],
+            "ols_beta": ols,
+            "spectral_radius": srad,
+            "is_error_model_not_lag_model": True,
+            "k": k,
+            "n": n,
+            "method": (
+                "SAR error model by ML, Schabenberger & Gotway (2005) "
+                "eqs (6.35)-(6.37), Sec. 6.2.2.1; concentrated "
+                "likelihood, grid scan + golden section"
+            ),
+        }
+    )
 
 
 def cheatsheet():

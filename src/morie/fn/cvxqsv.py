@@ -10,8 +10,7 @@ from ._sdp import solve_sdp
 __all__ = ["boyd_qcqp_relaxation"]
 
 
-def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05,
-                         tol=1e-09):
+def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05, tol=1e-09):
     r"""Lagrangian / SDP relaxation of a quadratically constrained QP.
 
     Every quadratic form in the problem is :math:`\tfrac12\langle P,
@@ -137,8 +136,7 @@ def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05,
     rs = np.atleast_1d(np.asarray(r, dtype=float)).ravel() if Ps else np.zeros(0)
     m = len(Ps)
     if not (len(qs) == rs.size == m):
-        raise ValueError(
-            f"P, q, r must have the same length; got {m}, {len(qs)}, {rs.size}")
+        raise ValueError(f"P, q, r must have the same length; got {m}, {len(qs)}, {rs.size}")
     for i in range(m):
         if qs[i].size != n:
             raise ValueError(f"q[{i}] has {qs[i].size} entries, expected {n}")
@@ -188,8 +186,7 @@ def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05,
         for v, (i, j) in enumerate(tri):
             if i == j:
                 v0[v] = alpha
-        vals = [0.5 * alpha * float(np.trace(Ps[k])) + float(rs[k])
-                for k in range(m)]
+        vals = [0.5 * alpha * float(np.trace(Ps[k])) + float(rs[k]) for k in range(m)]
         if all(val < -1e-09 for val in vals):
             start = v0
             break
@@ -200,20 +197,26 @@ def boyd_qcqp_relaxation(P0, q0, P=(), q=(), r=(), rank_tol=1e-05,
     X = np.zeros((n, n))
     for v, (i, j) in enumerate(tri):
         X[i, j] = X[j, i] = sol[v]
-    x = sol[len(tri):].copy()
+    x = sol[len(tri) :].copy()
     ev = np.linalg.eigvalsh(X)
     top = float(ev[-1]) if ev.size else 0.0
     rank = int(np.sum(ev > rank_tol * max(top, 1e-12)))
     resid = float(np.linalg.norm(X - np.outer(x, x)))
     return RichResult(
         title="SDP relaxation of QCQP",
-        summary_lines=[("n", int(n)), ("constraints", int(m)),
-                       ("lower bound", info["objective"]),
-                       ("rank of X", rank),
-                       ("tight", bool(rank <= 1))],
+        summary_lines=[
+            ("n", int(n)),
+            ("constraints", int(m)),
+            ("lower bound", info["objective"]),
+            ("rank of X", rank),
+            ("tight", bool(rank <= 1)),
+        ],
         payload={
-            "X": X, "x": x, "lower_bound": info["objective"],
-            "rank": rank, "eigenvalues": ev,
+            "X": X,
+            "x": x,
+            "lower_bound": info["objective"],
+            "rank": rank,
+            "eigenvalues": ev,
             "tight": bool(rank <= 1),
             "residual": resid,
             "gap_bound": info["gap_bound"],

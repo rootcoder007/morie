@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['pctrankloc', 'gibbons_pct_mod_rank_loc']
+__all__ = ["pctrankloc", "gibbons_pct_mod_rank_loc"]
 
 
 def pctrankloc(x, y, s=0.5, r=None):
@@ -76,12 +76,8 @@ def pctrankloc(x, y, s=0.5, r=None):
         a[i - 1] -= R - i + 1.0 - half
     for i in range(nn - S + 1, nn + 1):
         a[i - 1] += i - (nn - S) - half
-    blower = sum(
-        (R - i + 1.0 - half) * z[i - 1] for i in range(1, R + 1)
-    )
-    tupper = sum(
-        (i - (nn - S) - half) * z[i - 1] for i in range(nn - S + 1, nn + 1)
-    )
+    blower = sum((R - i + 1.0 - half) * z[i - 1] for i in range(1, R + 1))
+    tupper = sum((i - (nn - S) - half) * z[i - 1] for i in range(nn - S + 1, nn + 1))
     abar = sum(a) / nn
     ss = sum((v - abar) ** 2 for v in a)
     mean = m * abar

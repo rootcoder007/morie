@@ -1,7 +1,6 @@
 """Tests for rpl_t — placement trend."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_t import rplace_trend
 
 

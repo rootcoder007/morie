@@ -1,7 +1,6 @@
 """Tests for xgbst.xgboost_objective."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.xgbst import xgboost_objective
 
 

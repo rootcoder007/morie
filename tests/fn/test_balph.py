@@ -1,7 +1,6 @@
 """Tests for morie.fn.balph — Bayesian Cronbach's alpha."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.balph import bayesian_alpha
 
 

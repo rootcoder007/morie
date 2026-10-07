@@ -93,9 +93,7 @@ def dr_bandit_did(y, D_t, X=None, pi_t=None):
     m0 = k.matvec(Z, b0)
     psi = []
     for i in range(n):
-        psi.append(m1[i] - m0[i]
-                   + dv[i] * (yv[i] - m1[i]) / e[i]
-                   - (1.0 - dv[i]) * (yv[i] - m0[i]) / (1.0 - e[i]))
+        psi.append(m1[i] - m0[i] + dv[i] * (yv[i] - m1[i]) / e[i] - (1.0 - dv[i]) * (yv[i] - m0[i]) / (1.0 - e[i]))
     h = []
     acc = 0.0
     for i in range(n):
@@ -120,7 +118,7 @@ def dr_bandit_did(y, D_t, X=None, pi_t=None):
         summary_lines=[("sum h^2/e", acc)],
         payload={
             "estimate": est,
-            "se": (v ** 0.5) / sh,
+            "se": (v**0.5) / sh,
             "aipw_unweighted": k.mean(psi),
             "h": h,
             "sum_h2_over_e": acc,

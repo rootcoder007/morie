@@ -1,8 +1,8 @@
 """rng022: rho_xy = C_xy/(sigma_x sigma_y) (Rangayyan 2024, Eq. 3.22, p. 98)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsastat import rangayyan_ch3_correlation_coefficient as rho
 
 

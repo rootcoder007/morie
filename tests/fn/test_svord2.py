@@ -1,7 +1,6 @@
 """Tests for morie.fn.svord2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svord2 import svord2
 
 
@@ -32,6 +31,7 @@ class TestSvord2:
 def test_svord2_conditional_logit_values():
     """P_j = exp(-beta d_j) / sum_k exp(-beta d_k), recomputed here."""
     import math
+
     voter = [0.2, -0.1]
     cands = [[1.0, 1.0], [0.0, 0.0], [-2.0, 0.5], [0.5, -0.4]]
     beta = 1.7

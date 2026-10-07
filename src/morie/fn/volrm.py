@@ -63,7 +63,7 @@ def vol_riskmetrics(r, lam=0.94):
             "forecast": float(lam * s2[-1] + (1 - lam) * r[-1] ** 2),
             "lam": lam,
             "n": int(n),
-            "method": "RiskMetrics EWMA variance (lambda = %.2f)" % lam,
+            "method": f"RiskMetrics EWMA variance (lambda = {lam:.2f})",
         }
     )
 

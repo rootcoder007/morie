@@ -1,8 +1,8 @@
 """Tests for agrsc."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.agrmt import agreement_score
 from morie.fn.agrsc import agreement_score_matrix
 

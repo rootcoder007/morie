@@ -23,11 +23,15 @@ def cfinvpmf(t, phi_re, phi_im, x):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Characteristic-function inversion for a pmf", payload=_c.cfinvpmf(t=t, phi_re=phi_re, phi_im=phi_im, x=x))
+    return RichResult(
+        title="Characteristic-function inversion for a pmf", payload=_c.cfinvpmf(t=t, phi_re=phi_re, phi_im=phi_im, x=x)
+    )
 
 
 shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a_chapter_4_equation_9 = cfinvpmf
 
 
 def cheatsheet():
-    return "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9: Characteristic-function inversion for a pmf"
+    return (
+        "shailaja_r_deshmukh_akanksha_s_kashikar_probability_theory_a4e9: Characteristic-function inversion for a pmf"
+    )

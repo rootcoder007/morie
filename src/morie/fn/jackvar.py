@@ -80,7 +80,7 @@ def jackknife_variance_survey(y, weights=None, replicates=None):
             "variance": var,
             "theta": theta,
             "theta_replicates": th,
-            "se": var ** 0.5,
+            "se": var**0.5,
             "n": n,
             "method": "v_J = ((R-1)/R) sum_r (theta_r - theta)^2, Wolter (2007) eq. (4.2.5)",
         },

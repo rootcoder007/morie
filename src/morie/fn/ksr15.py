@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """One-step estimator from a root-n consistent starting value."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -77,14 +75,21 @@ def onestep(x, theta0, kind="huber", k=1.345):
     dm = sum(dpsi) / n
     if dm == 0.0:
         raise ValueError(
-            "the mean derivative is zero; every point is outside the "
-            "Huber window and the one-step update is undefined")
+            "the mean derivative is zero; every point is outside the Huber window and the one-step update is undefined"
+        )
     step = pm / (-dm)
-    return RichResult(payload={
-        "estimate": theta0 + step, "theta0": theta0, "step": step,
-        "psi_mean": pm, "derivative": dm,
-        "n_used": float(sum(1 for v in dpsi if v != 0.0)), "n": float(n),
-        "method": "One-step estimator on the Z-estimating equation"})
+    return RichResult(
+        payload={
+            "estimate": theta0 + step,
+            "theta0": theta0,
+            "step": step,
+            "psi_mean": pm,
+            "derivative": dm,
+            "n_used": float(sum(1 for v in dpsi if v != 0.0)),
+            "n": float(n),
+            "method": "One-step estimator on the Z-estimating equation",
+        }
+    )
 
 
 kosorok_one_step_estimator = onestep

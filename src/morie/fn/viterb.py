@@ -51,8 +51,10 @@ def viterbi(obs, trans, emit, init=None):
     K = len(A)
     T = len(o)
     NEG = -1e300
+
     def lg(v):
         return math.log(v) if v > 0.0 else NEG
+
     pi = C.vec(init) if init is not None else [1.0 / K] * K
     delta = [lg(pi[j]) + lg(B[j][o[0]]) for j in range(K)]
     psi = []
@@ -74,9 +76,9 @@ def viterbi(obs, trans, emit, init=None):
         last = psi[t][last]
         path.append(last)
     path.reverse()
-    return RichResult(payload={
-        "path": path, "estimate": max(delta), "T": T, "K": K,
-        "method": "Viterbi most-likely state path"})
+    return RichResult(
+        payload={"path": path, "estimate": max(delta), "T": T, "K": K, "method": "Viterbi most-likely state path"}
+    )
 
 
 def cheatsheet():

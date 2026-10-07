@@ -1,7 +1,6 @@
 """Tests for otmsw.ot_max_sliced_w."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otmsw import ot_max_sliced_w
 
 

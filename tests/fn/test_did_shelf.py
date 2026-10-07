@@ -6,9 +6,9 @@ design with staggered adoption and dynamic effects has a KNOWN average
 effect, TWFE misses it, and each replacement recovers it.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.avtdid import avg_treatment_did
 from morie.fn.boryis import borusyak_jaravel_spiess
 from morie.fn.cssant import callaway_santanna
@@ -21,15 +21,13 @@ from morie.fn.synct import synthetic_control
 from morie.fn.wbcide import wooldridge_bjs_estimator
 
 
-def staggered(n_per=3, T=8, gs=(3.0, 5.0), dynamic=0.5, base=1.0, noise=0.0,
-              seed=0):
+def staggered(n_per=3, T=8, gs=(3.0, 5.0), dynamic=0.5, base=1.0, noise=0.0, seed=0):
     """Panel with staggered adoption and (optionally) growing effects.
 
     The true average effect over treated cells is returned, computed
     from the design rather than from any estimator.
     """
-    gv = np.concatenate([np.full(n_per, g) for g in gs]
-                        + [np.full(n_per, np.inf)])
+    gv = np.concatenate([np.full(n_per, g) for g in gs] + [np.full(n_per, np.inf)])
     n_u = gv.size
     unit = np.repeat(np.arange(n_u), T)
     time = np.tile(np.arange(T), n_u)
@@ -142,8 +140,7 @@ def test_callaway_santanna_needs_never_treated_for_that_option():
     # every unit treated: drop the never-treated block
     keep = np.repeat([True] * 6 + [False] * 3, 8)
     with pytest.raises(ValueError, match="control='never' needs"):
-        callaway_santanna(y2[keep], D2[keep], u2[keep], t2[keep],
-                          control="never")
+        callaway_santanna(y2[keep], D2[keep], u2[keep], t2[keep], control="never")
 
 
 def test_imputation_and_saturated_regression_are_the_same_number():
@@ -153,8 +150,7 @@ def test_imputation_and_saturated_regression_are_the_same_number():
     assert etwfe["estimate"] == pytest.approx(bjs["estimate"], abs=1e-10)
     assert etwfe["matches_imputation"] == pytest.approx(0.0, abs=1e-9)
     for rel in bjs["event"]:
-        assert etwfe["event"][rel] == pytest.approx(bjs["event"][rel],
-                                                    abs=1e-9)
+        assert etwfe["event"][rel] == pytest.approx(bjs["event"][rel], abs=1e-9)
 
 
 def test_imputation_is_exact_and_linear_in_the_outcome():
@@ -184,8 +180,7 @@ def test_imputation_recovers_covariate_coefficients():
 def test_imputation_refuses_an_unidentified_design():
     y, D, unit, time, _, _ = staggered()
     always = (time >= 0).astype(float)
-    with pytest.raises(ValueError, match="treated in every period|not "
-                                         "identified"):
+    with pytest.raises(ValueError, match="treated in every period|not identified"):
         borusyak_jaravel_spiess(y, always, unit, time)
 
 
@@ -194,8 +189,7 @@ def test_imputation_standard_error_tracks_the_sampling_spread():
     ests, ses = [], []
     for s in range(150):
         noise = np.random.default_rng(s).normal(0, 0.5, base[0].size)
-        out = borusyak_jaravel_spiess(base[0] + noise, base[1], base[2],
-                                      base[3])
+        out = borusyak_jaravel_spiess(base[0] + noise, base[1], base[2], base[3])
         ests.append(out["estimate"])
         ses.append(out["se"])
     assert np.mean(ests) == pytest.approx(base[5], abs=4 * np.std(ests) / 12)
@@ -208,10 +202,10 @@ def test_doubly_robust_beats_the_unadjusted_did():
     x = rng.normal(size=n)
     D = (rng.uniform(size=n) < 1 / (1 + np.exp(-x))).astype(float)
     pre = x + rng.normal(size=n)
-    post = pre + 0.8 * x + 2.0 * D + rng.normal(size=n)   # trend depends on x
+    post = pre + 0.8 * x + 2.0 * D + rng.normal(size=n)  # trend depends on x
     out = dr_did_santanna_zhao(pre, post, D, x)
     assert abs(out["estimate"] - 2.0) < 4 * out["se"]
-    assert out["att_unadjusted"] > 2.4          # biased by the x-trend
+    assert out["att_unadjusted"] > 2.4  # biased by the x-trend
     assert abs(out["covariate_adjustment"]) > 0.4
 
 
@@ -228,9 +222,7 @@ def test_double_robustness_survives_either_model_failing():
     assert abs(checks["misspecified_outcome"] - 2.0) < 0.15
     # with BOTH wrong there is no protection left, and it shows
     assert abs(checks["both_misspecified"] - 2.0) > 0.3
-    assert checks["both_misspecified"] == pytest.approx(
-        out["att_unadjusted"], abs=1e-9
-    )
+    assert checks["both_misspecified"] == pytest.approx(out["att_unadjusted"], abs=1e-9)
 
 
 def test_doubly_robust_normalised_weights_are_shift_invariant():
@@ -276,21 +268,18 @@ def test_doubly_robust_validates_its_inputs():
 def test_dr_group_time_handles_covariate_dependent_trends():
     rng = np.random.default_rng(2)
     nu, T = 60, 6
-    gv = np.where(np.arange(nu) < 20, 3.0,
-                  np.where(np.arange(nu) < 40, 4.0, np.inf))
+    gv = np.where(np.arange(nu) < 20, 3.0, np.where(np.arange(nu) < 40, 4.0, np.inf))
     xu = rng.normal(size=nu)
     unit = np.repeat(np.arange(nu), T)
     time = np.tile(np.arange(T), nu)
     g = np.repeat(gv, T)
     D = (time >= g).astype(float)
     X = np.repeat(xu, T)
-    y = X + time * (1 + 0.5 * X) + 2.0 * D        # trend varies with x
+    y = X + time * (1 + 0.5 * X) + 2.0 * D  # trend varies with x
     out = dr_callaway_santanna(y, D, unit, time, X=X)
     assert out["estimate"] == pytest.approx(2.0, abs=1e-8)
     assert abs(out["att_unadjusted"] - 2.0) > 0.15
-    assert out["covariate_adjustment"] == pytest.approx(
-        out["estimate"] - out["att_unadjusted"], abs=1e-12
-    )
+    assert out["covariate_adjustment"] == pytest.approx(out["estimate"] - out["att_unadjusted"], abs=1e-12)
     assert max(abs(v) for v in out["pretrend"].values()) < 1e-8
 
 
@@ -309,14 +298,12 @@ def test_average_effect_names_the_assumption_it_needs():
     D = (rng.uniform(size=n) < 1 / (1 + np.exp(-x))).astype(float)
     dY = 0.5 * x + D * (1.0 + 2.0 * x) + rng.normal(scale=0.3, size=n)
     out = avg_treatment_did(dY, D, x)
-    assert abs(out["estimate"] - 1.0) < 4 * out["se"]     # ATE = 1 + 2 E[x]
-    assert out["att"] > out["estimate"]                   # selection on gains
+    assert abs(out["estimate"] - 1.0) < 4 * out["se"]  # ATE = 1 + 2 E[x]
+    assert out["att"] > out["estimate"]  # selection on gains
     assert out["atu"] < out["estimate"]
     # the decomposition is an identity, and the misnamed quantity is not it
     assert out["identity_check"] == pytest.approx(0.0, abs=1e-10)
-    assert out["treated_contribution"] == pytest.approx(
-        out["att"] * out["p_treated"]
-    )
+    assert out["treated_contribution"] == pytest.approx(out["att"] * out["p_treated"])
     assert out["treated_contribution"] != pytest.approx(out["estimate"])
     assert "not the ATE" in out["contribution_note"]
 
@@ -358,9 +345,8 @@ def test_synthetic_control_placebo_p_has_an_honest_floor():
     Y[0, 12:] += 3.0
     out = synthetic_control(Y, None, None, 0, 12)
     assert out["placebo_p"] == pytest.approx(out["p_value_floor"])
-    assert out["p_value_floor"] == pytest.approx(0.2)     # 4 donors
-    assert out["rmspe_ratio"] > max(v["ratio"] for v in
-                                    out["placebo_ratios"].values())
+    assert out["p_value_floor"] == pytest.approx(0.2)  # 4 donors
+    assert out["rmspe_ratio"] > max(v["ratio"] for v in out["placebo_ratios"].values())
     # with no effect the treated unit is unremarkable among the placebos
     Y0 = np.outer(load, f) + rng.normal(scale=0.01, size=(5, 20))
     null = synthetic_control(Y0, None, None, 0, 12)

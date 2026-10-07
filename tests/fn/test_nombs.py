@@ -1,7 +1,6 @@
 """Tests for NOMINATE bootstrap."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nombs import nombs
 
 

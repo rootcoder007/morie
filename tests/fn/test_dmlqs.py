@@ -1,7 +1,5 @@
 """Tests for dmlqs.deepml_qsar."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dmlqs import deepml_qsar
 
 
@@ -67,8 +65,7 @@ def test_dmlqs_edge():
     }
     adj = {"a": ["b"], "b": ["a"]}
 
-    result_no_W = deepml_qsar(h0, adj, T=2, W=None, activation="relu",
-                              exclude_reverse=False)
+    result_no_W = deepml_qsar(h0, adj, T=2, W=None, activation="relu", exclude_reverse=False)
 
     # Independent recomputation, T iterations, no W, no exclusion.
     H = {k: [float(x) for x in v] for k, v in h0.items()}
@@ -76,7 +73,7 @@ def test_dmlqs_edge():
     H0 = {k: list(v) for k, v in H.items()}
     for _ in range(2):
         new = {}
-        for (v, w) in H:
+        for v, w in H:
             m = [0.0] * d
             for u in sorted(set(adj.get(v, ())) - {v}):
                 if (u, v) in H:

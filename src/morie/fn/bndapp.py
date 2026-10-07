@@ -68,11 +68,10 @@ def bndapp(y, z, t1=None, t0=None):
     pm = []
     for g in lev:
         idx = [i for i in range(n) if zv[i] == g]
-        pm.append((len(idx) / float(n),
-                   sum(yv[i] for i in idx) / float(len(idx))))
+        pm.append((len(idx) / float(n), sum(yv[i] for i in idx) / float(len(idx))))
     lower = []
     upper = []
-    for k, g in enumerate(lev):
+    for k, _g in enumerate(lev):
         lo = sum(pm[j][0] * pm[j][1] for j in range(k))
         lo += pm[k][1] * sum(pm[j][0] for j in range(k, len(lev)))
         hi = sum(pm[j][0] * pm[j][1] for j in range(k + 1, len(lev)))
@@ -87,12 +86,19 @@ def bndapp(y, z, t1=None, t0=None):
         raise ValueError("bndapp: need t1 > t0")
     i1 = lev.index(tt1)
     i0 = lev.index(tt0)
-    return RichResult(payload={
-        "levels": lev, "lower": lower, "upper": upper,
-        "ate_lower": 0.0, "ate_upper": upper[i1] - lower[i0],
-        "t1": tt1, "t0": tt0, "n": n,
-        "method": "Manski-Pepper (2000) MTR-MTS bounds "
-                  "(Manski 2007 eqs. 9.18-9.19)"})
+    return RichResult(
+        payload={
+            "levels": lev,
+            "lower": lower,
+            "upper": upper,
+            "ate_lower": 0.0,
+            "ate_upper": upper[i1] - lower[i0],
+            "t1": tt1,
+            "t0": tt0,
+            "n": n,
+            "method": "Manski-Pepper (2000) MTR-MTS bounds (Manski 2007 eqs. 9.18-9.19)",
+        }
+    )
 
 
 # stub-era long name, kept as an alias
@@ -100,5 +106,4 @@ bound_application = bndapp
 
 
 def cheatsheet():
-    return ("bndapp: Manski-Pepper MTR-MTS bounds on E[y(t)] "
-            "(Manski 2007 eq. 9.18; ATE bound eq. 9.19)")
+    return "bndapp: Manski-Pepper MTR-MTS bounds on E[y(t)] (Manski 2007 eq. 9.18; ATE bound eq. 9.19)"

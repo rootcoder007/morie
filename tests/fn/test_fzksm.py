@@ -1,7 +1,6 @@
 """Tests for fzksm.fauzi_ks_smoothed."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzksm import fauzi_ks_smoothed
 
 

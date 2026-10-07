@@ -1,4 +1,5 @@
 """Tests for Ghosal Ch 14 partition/feature-process modules."""
+
 import math
 
 from morie.fn.gh_c14_1 import ghosal_eppf_def
@@ -10,7 +11,6 @@ from morie.fn.gh_c14_6 import ghosal_ssp_post
 from morie.fn.gh_c14_7 import ghosal_ssp_mix
 from morie.fn.gh_c14_8 import ghosal_gibbs_proc
 from morie.fn.gh_c14_9 import ghosal_py_process
-from morie.fn.gh_py_univ_seq import ghosal_py_universal_sequence
 from morie.fn.gh_c14_10 import ghosal_py_eppf
 from morie.fn.gh_c14_11 import ghosal_py_powerlaw
 from morie.fn.gh_c14_12 import ghosal_pk_process
@@ -27,6 +27,7 @@ from morie.fn.gh_c14_22 import ghosal_nested_dp
 from morie.fn.gh_c14_23 import ghosal_ibp_def
 from morie.fn.gh_c14_24 import ghosal_ibp_stickbr
 from morie.fn.gh_c14_25 import ghosal_ibp_poisson
+from morie.fn.gh_py_univ_seq import ghosal_py_universal_sequence
 
 
 def test_eppf_symmetric_and_hand_value():
@@ -118,8 +119,7 @@ def test_ncrm_set_mass():
 
 def test_ncrm_laplace_exact():
     r = ghosal_ncrm_levy([1.0], [2.0], [1.0])
-    assert abs(r["estimate"]
-               - math.exp(-2.0 * (1.0 - math.exp(-1.0)))) < 1e-12
+    assert abs(r["estimate"] - math.exp(-2.0 * (1.0 - math.exp(-1.0)))) < 1e-12
 
 
 def test_hierarchy_py0_is_dp():
@@ -153,8 +153,7 @@ def test_nested_dp_clusters_groups():
 
 def test_ibp_dish_count_scale():
     r = ghosal_ibp_def()
-    assert 0.3 * r["expected_dishes"] < r["estimate"] \
-        < 3.0 * r["expected_dishes"]
+    assert 0.3 * r["expected_dishes"] < r["estimate"] < 3.0 * r["expected_dishes"]
 
 
 def test_ibp_sticks_decrease():

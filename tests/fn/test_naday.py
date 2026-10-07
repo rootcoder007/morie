@@ -1,7 +1,6 @@
 """Tests for naday.nadaraya_watson."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.naday import nadaraya_watson
 
 

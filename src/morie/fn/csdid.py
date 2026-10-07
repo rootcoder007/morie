@@ -104,10 +104,7 @@ def cs_did(
     att_values = np.array(list(att_gt.values()))
     att_agg = float(att_values.mean())
 
-    if n_cells > 1:
-        se_agg = float(att_values.std(ddof=1) / np.sqrt(n_cells))
-    else:
-        se_agg = float("nan")
+    se_agg = float(att_values.std(ddof=1) / np.sqrt(n_cells)) if n_cells > 1 else float("nan")
 
     z = stats.norm.ppf(1 - alpha / 2)
     ci_lo = att_agg - z * se_agg if np.isfinite(se_agg) else float("nan")

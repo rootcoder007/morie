@@ -92,7 +92,9 @@ def smiles_hbd(smiles: str) -> int:
 
     References
     ----------
-    Lipinski et al. (1997), *Advanced Drug Delivery Reviews*, 23, 3-25.
+    Lipinski, C. A. et al. (1997). Experimental and computational approaches
+    to estimate solubility and permeability in drug discovery and
+    development settings. *Advanced Drug Delivery Reviews*, 23, 3-25.
 
     Examples
     --------
@@ -316,6 +318,7 @@ def lipinski_descriptors(smiles: str) -> RichResult:
 
 def cheatsheet() -> str:
     return "smiles_molecular_weight / smiles_hba / smiles_hbd / smiles_rotatable_bonds / smiles_tpsa -> descriptors."
+
 
 # alias kept from the retired placeholder of the same name
 hbond_acceptor_count = smiles_hba

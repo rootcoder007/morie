@@ -63,8 +63,9 @@ from ._richresult import RichResult
 __all__ = ["vae_anomaly"]
 
 
-def vae_anomaly(X, vae=None, latent_dim=1, n_samples=32, alpha=0.1,
-                encoder_sd=0.0, decoder_scale=None, threshold=None, skip=0):
+def vae_anomaly(
+    X, vae=None, latent_dim=1, n_samples=32, alpha=0.1, encoder_sd=0.0, decoder_scale=None, threshold=None, skip=0
+):
     """Reconstruction-probability anomaly score and decision.
 
     Parameters
@@ -185,20 +186,20 @@ def vae_anomaly(X, vae=None, latent_dim=1, n_samples=32, alpha=0.1,
             mz[t] = v
         ll = [0.0] * L
         best = None
-        for l in range(L):
-            z = [mz[t] + esd * eps[l][t] for t in range(k)]
+        for ell in range(L):
+            z = [mz[t] + esd * eps[ell][t] for t in range(k)]
             q = 0.0
             for j in range(d):
                 r = cen[j]
                 for t in range(k):
                     r += W[j][t] * z[t]
                 q += c + (A[i][j] - r) * (A[i][j] - r) / (s * s)
-            ll[l] = -0.5 * q
-            if best is None or ll[l] > best:
-                best = ll[l]
+            ll[ell] = -0.5 * q
+            if best is None or ll[ell] > best:
+                best = ll[ell]
         acc = 0.0
-        for l in range(L):
-            acc += math.exp(ll[l] - best)
+        for ell in range(L):
+            acc += math.exp(ll[ell] - best)
         lrp[i] = best + math.log(acc / L)
         rp[i] = math.exp(lrp[i])
     cut = core.quantile7(lrp, alpha) if threshold is None else float(threshold)
@@ -231,6 +232,7 @@ def vae_anomaly(X, vae=None, latent_dim=1, n_samples=32, alpha=0.1,
 
 def cheatsheet():
     return "vae_an: VAE reconstruction-probability anomaly detection (An & Cho 2015)"
+
 
 # public names resolved by fn/_lazy_map.json
 vaeanomaly = vae_anomaly

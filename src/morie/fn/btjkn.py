@@ -67,19 +67,25 @@ def boot_jackknife(x, stat):
     bias = (n - 1) * (m - th)
     var = (n - 1) / n * float(np.sum((loo - m) ** 2))
     pseudo = n * th - (n - 1) * loo
-    return RichResult(payload={
-        "leave_one_out": loo, "estimate": th,
-        "bias": bias, "corrected": th - bias,
-        "variance": var, "se": float(np.sqrt(var)),
-        "pseudovalues": pseudo,
-        "inflation_note": "both (n-1) factors undo the leave-one-out "
-                          "values' huddling; dropping either understates "
-                          "by a factor of order n",
-        "smoothness_caveat": "inconsistent for non-smooth statistics -- the "
-                             "median is the canonical failure (Efron 1979 "
-                             "Sec. 3); use the bootstrap there",
-        "n": int(n),
-        "method": "Leave-one-out jackknife (Quenouille 1949; Tukey 1958)"})
+    return RichResult(
+        payload={
+            "leave_one_out": loo,
+            "estimate": th,
+            "bias": bias,
+            "corrected": th - bias,
+            "variance": var,
+            "se": float(np.sqrt(var)),
+            "pseudovalues": pseudo,
+            "inflation_note": "both (n-1) factors undo the leave-one-out "
+            "values' huddling; dropping either understates "
+            "by a factor of order n",
+            "smoothness_caveat": "inconsistent for non-smooth statistics -- the "
+            "median is the canonical failure (Efron 1979 "
+            "Sec. 3); use the bootstrap there",
+            "n": int(n),
+            "method": "Leave-one-out jackknife (Quenouille 1949; Tukey 1958)",
+        }
+    )
 
 
 def cheatsheet():

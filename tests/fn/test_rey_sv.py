@@ -1,9 +1,9 @@
 """Tests for morie.fn.rey_sv — survey-weighted regression."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.rey_sv import rey_sv
 
 

@@ -5,8 +5,7 @@ import statistics
 
 import pytest
 
-from morie.fn.tmldgp import (lasso_path, penalised_tmle, post_lasso,
-                             shrunk_targeting_unsafe)
+from morie.fn.tmldgp import lasso_path, penalised_tmle, post_lasso, shrunk_targeting_unsafe
 
 
 def _expit(x):
@@ -20,8 +19,9 @@ def _logit(p):
 def _data(n=60, p=4):
     X = [[math.sin(1.1 * k + j) for j in range(p)] for k in range(n)]
     A = [1.0 if ((41 * k + 9) % 89 + 0.5) / 89.0 < _expit(0.8 * x[0]) else 0.0 for k, x in enumerate(X)]
-    Y = [min(max(0.3 + 0.2 * a + 0.25 * x[1] + 0.02 * ((7 * k) % 5 - 2), 0.0), 1.0)
-         for k, (a, x) in enumerate(zip(A, X))]
+    Y = [
+        min(max(0.3 + 0.2 * a + 0.25 * x[1] + 0.02 * ((7 * k) % 5 - 2), 0.0), 1.0) for k, (a, x) in enumerate(zip(A, X))
+    ]
     return Y, A, X
 
 

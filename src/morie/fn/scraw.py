@@ -40,10 +40,7 @@ def raw_score(
 
     n, k = X.shape
 
-    if item_weights is not None:
-        w = np.asarray(item_weights, dtype=np.float64)
-    else:
-        w = np.ones(k)
+    w = np.asarray(item_weights, dtype=np.float64) if item_weights is not None else np.ones(k)
 
     total = X @ w
 
@@ -52,10 +49,7 @@ def raw_score(
     if subscales is not None:
         sub_scores = {}
         for sname, sitems in subscales.items():
-            if isinstance(sitems[0], str):
-                idx = [cols.index(s) for s in sitems if s in cols]
-            else:
-                idx = list(sitems)
+            idx = [cols.index(s) for s in sitems if s in cols] if isinstance(sitems[0], str) else list(sitems)
             sub_scores[sname] = (X[:, idx] @ w[idx]).tolist()
         result["subscales"] = sub_scores
 

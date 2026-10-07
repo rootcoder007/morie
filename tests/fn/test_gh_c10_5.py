@@ -1,7 +1,6 @@
 """Tests for gh_c10_5.ghosal_wn_adapt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_5 import ghosal_wn_adapt
 
 
@@ -29,10 +28,8 @@ def test_gh_c10_5_edge():
     v = 1.0 / 400.0
     pi_incl = 0.2
     tau2 = 1.0
-    l1 = -0.5 * math.log(2 * math.pi * (v + tau2)) \
-         - 0.5 * yk * yk / (v + tau2) + math.log(pi_incl)
-    l0 = -0.5 * math.log(2 * math.pi * v) \
-         - 0.5 * yk * yk / v + math.log(1.0 - pi_incl)
+    l1 = -0.5 * math.log(2 * math.pi * (v + tau2)) - 0.5 * yk * yk / (v + tau2) + math.log(pi_incl)
+    l0 = -0.5 * math.log(2 * math.pi * v) - 0.5 * yk * yk / v + math.log(1.0 - pi_incl)
     expected_prob = 1.0 / (1.0 + math.exp(l0 - l1))
 
     assert np.isclose(incl[0], expected_prob)

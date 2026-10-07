@@ -72,9 +72,18 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["tcmech", "truncated_cdp_mechanism", "eps_from_rho",
-           "rho_from_eps", "epsilon_floor", "gaussian_sigma",
-           "rho_from_sigma", "rho_from_pure_dp", "compose", "cheatsheet"]
+__all__ = [
+    "tcmech",
+    "truncated_cdp_mechanism",
+    "eps_from_rho",
+    "rho_from_eps",
+    "epsilon_floor",
+    "gaussian_sigma",
+    "rho_from_sigma",
+    "rho_from_pure_dp",
+    "compose",
+    "cheatsheet",
+]
 
 
 def eps_from_rho(rho, delta, omega=None):
@@ -92,10 +101,10 @@ def eps_from_rho(rho, delta, omega=None):
         raise ValueError("rho cannot be negative")
     if not 0.0 < delta < 1.0:
         raise ValueError("delta must lie strictly inside (0, 1)")
-    l = math.log(1.0 / delta)
+    ell = math.log(1.0 / delta)
     if rho == 0.0:
         return 0.0
-    free = rho + 2.0 * math.sqrt(rho * l)
+    free = rho + 2.0 * math.sqrt(rho * ell)
     if omega is None:
         return free
     w = float(omega)
@@ -104,10 +113,10 @@ def eps_from_rho(rho, delta, omega=None):
     # The order that minimises the fixed-order bound is 1 + sqrt(l/rho);
     # inside the truncation it reproduces the free conversion, outside
     # it the best available order is omega itself.
-    star = 1.0 + math.sqrt(l / rho)
+    star = 1.0 + math.sqrt(ell / rho)
     if star <= w:
         return free
-    return rho * w + l / (w - 1.0)
+    return rho * w + ell / (w - 1.0)
 
 
 def epsilon_floor(delta, omega=None):
@@ -147,11 +156,12 @@ def rho_from_eps(epsilon, delta, omega=None, iters=200):
     fl = epsilon_floor(delta, omega)
     if epsilon <= fl:
         raise ValueError(
-            "no rho can reach epsilon %r at delta %r with truncation "
-            "%r: the fixed-order bound has an irreducible term "
-            "log(1/delta)/(omega - 1) = %r that does not depend on rho. "
+            f"no rho can reach epsilon {epsilon!r} at delta {delta!r} with truncation "
+            f"{omega!r}: the fixed-order bound has an irreducible term "
+            f"log(1/delta)/(omega - 1) = {fl!r} that does not depend on rho. "
             "Loosen the truncation, loosen delta, or ask for a larger "
-            "epsilon." % (epsilon, delta, omega, fl))
+            "epsilon."
+        )
     lo = 0.0
     hi = 1.0
     for _ in range(60):
@@ -214,8 +224,7 @@ def compose(rhos, omegas=None):
     return total, (min(live) if live else None)
 
 
-def truncated_cdp_mechanism(y, f_value, C, epsilon, delta, omega=None,
-                            seed=0, n_release=1):
+def truncated_cdp_mechanism(y, f_value, C, epsilon, delta, omega=None, seed=0, n_release=1):
     """Release a clipped query under a target (epsilon, delta) budget.
 
     Parameters
@@ -273,38 +282,41 @@ def truncated_cdp_mechanism(y, f_value, C, epsilon, delta, omega=None,
     noise = float(rng.normal(0.0, sigma))
     private = float(f_value) + noise
     achieved = eps_from_rho(rho_total, delta, omega)
-    return RichResult(payload={
-        "private_value": private,
-        "estimate": private,
-        "se": sigma,
-        "noise": noise,
-        "sigma": sigma,
-        "rho_total": rho_total,
-        "rho_per_release": rho_each,
-        "epsilon_target": float(epsilon),
-        "epsilon_achieved": achieved,
-        "delta": float(delta),
-        "omega": omega,
-        "truncation_binds": (omega is not None
-                             and eps_from_rho(rho_total, delta, omega)
-                             > eps_from_rho(rho_total, delta, None)
-                             - 1e-15
-                             and eps_from_rho(rho_total, delta, omega)
-                             != eps_from_rho(rho_total, delta, None)),
-        "clipped": clipped,
-        "n_clipped": n_clipped,
-        "n": len(vals),
-        "sensitivity": c,
-        "n_release": k,
-        "f_value": float(f_value),
-        "method": "truncated CDP Gaussian mechanism",
-    })
+    return RichResult(
+        payload={
+            "private_value": private,
+            "estimate": private,
+            "se": sigma,
+            "noise": noise,
+            "sigma": sigma,
+            "rho_total": rho_total,
+            "rho_per_release": rho_each,
+            "epsilon_target": float(epsilon),
+            "epsilon_achieved": achieved,
+            "delta": float(delta),
+            "omega": omega,
+            "truncation_binds": (
+                omega is not None
+                and eps_from_rho(rho_total, delta, omega) > eps_from_rho(rho_total, delta, None) - 1e-15
+                and eps_from_rho(rho_total, delta, omega) != eps_from_rho(rho_total, delta, None)
+            ),
+            "clipped": clipped,
+            "n_clipped": n_clipped,
+            "n": len(vals),
+            "sensitivity": c,
+            "n_release": k,
+            "f_value": float(f_value),
+            "method": "truncated CDP Gaussian mechanism",
+        }
+    )
 
 
 tcmech = truncated_cdp_mechanism
 
 
 def cheatsheet():
-    return ("tcmech: truncated CDP Gaussian mechanism. clip to bound the "
-            "sensitivity, rho from the target (eps, delta), sigma from "
-            "Delta / sqrt(2 rho)")
+    return (
+        "tcmech: truncated CDP Gaussian mechanism. clip to bound the "
+        "sensitivity, rho from the target (eps, delta), sigma from "
+        "Delta / sqrt(2 rho)"
+    )

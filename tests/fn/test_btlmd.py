@@ -1,7 +1,6 @@
 """Tests for morie.fn.btlmd — Bradley-Terry-Luce model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btlmd import btlmd
 
 

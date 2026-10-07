@@ -56,13 +56,18 @@ def effective_resistance(G, u, v):
     if not (0 <= u < n) or not (0 <= v < n):
         raise ValueError("u and v must be valid node indices")
     if u == v:
-        return RichResult(payload={
-            "estimate": 0.0, "resistance": 0.0,
-            "degree_u": sum(A[u]) - A[u][u], "degree_v": sum(A[v]) - A[v][v],
-            "n": n, "method": "Effective resistance between nodes"})
+        return RichResult(
+            payload={
+                "estimate": 0.0,
+                "resistance": 0.0,
+                "degree_u": sum(A[u]) - A[u][u],
+                "degree_v": sum(A[v]) - A[v][v],
+                "n": n,
+                "method": "Effective resistance between nodes",
+            }
+        )
     deg = [sum(A[i]) - A[i][i] for i in range(n)]
-    L = [[(deg[i] if i == j else 0.0) - (A[i][j] if i != j else 0.0)
-          for j in range(n)] for i in range(n)]
+    L = [[(deg[i] if i == j else 0.0) - (A[i][j] if i != j else 0.0) for j in range(n)] for i in range(n)]
     keep = [i for i in range(n) if i != v]
     Lg = [[L[i][j] for j in keep] for i in keep]
     b = [1.0 if i == u else 0.0 for i in keep]
@@ -70,17 +75,19 @@ def effective_resistance(G, u, v):
     # component; a chol failure means u and v are in different components
     try:
         x = core.cholsolve(Lg, b)
-    except Exception:
-        raise ValueError("u and v are not connected")
+    except Exception as exc:
+        raise ValueError("u and v are not connected") from exc
     R = x[keep.index(u)]
-    return RichResult(payload={
-        "estimate": R,
-        "resistance": R,
-        "degree_u": deg[u],
-        "degree_v": deg[v],
-        "n": n,
-        "method": "Effective resistance between nodes",
-    })
+    return RichResult(
+        payload={
+            "estimate": R,
+            "resistance": R,
+            "degree_u": deg[u],
+            "degree_v": deg[v],
+            "n": n,
+            "method": "Effective resistance between nodes",
+        }
+    )
 
 
 def cheatsheet():

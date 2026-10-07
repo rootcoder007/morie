@@ -1,7 +1,6 @@
 """Tests for morie.fn.fuzzy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fuzzy import fuzzy
 
 

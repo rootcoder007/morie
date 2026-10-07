@@ -37,9 +37,7 @@ def binomctrf(x, n):
     if abs(x_i) > n_i:
         value = 0.0
     else:
-        value = (math.factorial(2 * n_i)
-                 / (math.factorial(n_i + x_i) * math.factorial(n_i - x_i))
-                 / 4.0 ** n_i)
+        value = math.factorial(2 * n_i) / (math.factorial(n_i + x_i) * math.factorial(n_i - x_i)) / 4.0**n_i
     check = _morin.binomial_centered_pmf(x_i, n_i)
     if abs(value - check) > 1e-12 * max(1.0, check):
         raise AssertionError("factorial form disagrees with C(2n, n+x)/2^2n")

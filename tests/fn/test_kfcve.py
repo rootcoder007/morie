@@ -1,7 +1,6 @@
 """Tests for kfcve.k_fold_cv_error."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kfcve import k_fold_cv_error
 
 

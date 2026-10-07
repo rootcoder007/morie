@@ -1,7 +1,6 @@
 """Tests for netcmp.network_comparison."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netcmp import network_comparison
 
 

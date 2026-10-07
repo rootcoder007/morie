@@ -43,7 +43,7 @@ def poststratification_weights(
     if strata_col not in df.columns:
         raise ValueError(f"Column '{strata_col}' not found in DataFrame.")
     strata_vals = df[strata_col].astype(str)
-    sample_counts = strata_vals.value_counts()
+    strata_vals.value_counts()
     missing_strata = set(strata_vals.unique()) - set(str(k) for k in population_counts)
     if missing_strata:
         raise ValueError(f"Strata {missing_strata} appear in the sample but are missing from population_counts.")

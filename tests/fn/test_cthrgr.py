@@ -1,7 +1,6 @@
 """Tests for cthrgr.causal_three_layer_grf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cthrgr import causal_three_layer_grf
 
 

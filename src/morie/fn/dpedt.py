@@ -53,20 +53,21 @@ def dp_exchangeable_distribution(partition, alpha=1.0):
     denom = n + alpha
     probs = [c / denom for c in counts]
     p_new = alpha / denom
-    log_eppf = K * math.log(alpha) + sum(math.lgamma(c) for c in counts) \
-        + math.lgamma(alpha) - math.lgamma(alpha + n)
+    log_eppf = K * math.log(alpha) + sum(math.lgamma(c) for c in counts) + math.lgamma(alpha) - math.lgamma(alpha + n)
     expected_K = sum(alpha / (alpha + i) for i in range(n))
-    return RichResult(payload={
-        "estimate": p_new,
-        "probs": probs,
-        "p_new": p_new,
-        "counts": counts,
-        "K": K,
-        "log_eppf": log_eppf,
-        "expected_K": expected_K,
-        "n": n,
-        "method": "Blackwell-MacQueen predictive rule of the DP",
-    })
+    return RichResult(
+        payload={
+            "estimate": p_new,
+            "probs": probs,
+            "p_new": p_new,
+            "counts": counts,
+            "K": K,
+            "log_eppf": log_eppf,
+            "expected_K": expected_K,
+            "n": n,
+            "method": "Blackwell-MacQueen predictive rule of the DP",
+        }
+    )
 
 
 def cheatsheet():

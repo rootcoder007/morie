@@ -11,8 +11,17 @@ from .hmrsp import _lcg_features
 __all__ = ["geron_random_patches"]
 
 
-def geron_random_patches(X, y, base_estimator=None, n_estimators=10, max_samples=None,
-                         max_features=None, seed=0, task="auto", bootstrap=False):
+def geron_random_patches(
+    X,
+    y,
+    base_estimator=None,
+    n_estimators=10,
+    max_samples=None,
+    max_features=None,
+    seed=0,
+    task="auto",
+    bootstrap=False,
+):
     """
     Random patches: subsample BOTH rows and features per base model.
 
@@ -97,7 +106,9 @@ def geron_random_patches(X, y, base_estimator=None, n_estimators=10, max_samples
     else:
         s = int(max_samples)
     if not (1 <= s <= n) and not bootstrap:
-        raise ValueError(f"geron_random_patches: max_samples must lie in [1, {n}] without replacement, got {max_samples!r}")
+        raise ValueError(
+            f"geron_random_patches: max_samples must lie in [1, {n}] without replacement, got {max_samples!r}"
+        )
     if s < 1:
         raise ValueError(f"geron_random_patches: max_samples must be >= 1, got {max_samples!r}")
     if max_features is None:

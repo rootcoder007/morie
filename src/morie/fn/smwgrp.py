@@ -39,7 +39,6 @@ def small_worldness(A):
     """
     a = np.atleast_2d(np.asarray(A, dtype=float))
     n = a.shape[0]
-    b = (a != 0.0)
     deg = [int(sum(1 for j in range(n) if j != i and a[i, j] != 0.0)) for i in range(n)]
     cl = []
     for i in range(n):

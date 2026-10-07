@@ -24,16 +24,10 @@ def svpro(voter, candidates=None, uncertainty=None):
     DescriptiveResult
     """
     voter = np.asarray(voter, dtype=float)
-    if candidates is None:
-        candidates = np.zeros((1, len(voter)))
-    else:
-        candidates = np.asarray(candidates, dtype=float)
+    candidates = np.zeros((1, len(voter))) if candidates is None else np.asarray(candidates, dtype=float)
     if candidates.ndim == 1:
         candidates = candidates.reshape(1, -1)
-    if uncertainty is None:
-        uncertainty = np.ones(len(candidates)) * 0.1
-    else:
-        uncertainty = np.asarray(uncertainty, dtype=float)
+    uncertainty = np.ones(len(candidates)) * 0.1 if uncertainty is None else np.asarray(uncertainty, dtype=float)
     dists = np.array([float(np.sum((voter - c) ** 2)) for c in candidates])
     eu = np.exp(-0.5 * (dists + uncertainty**2))
     stat = float(np.max(eu))

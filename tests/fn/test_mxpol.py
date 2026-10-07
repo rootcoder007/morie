@@ -1,19 +1,14 @@
 """Tests for mxpol.maxpool_forward."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mxpol import maxpool_forward
 
 
 def test_mxpol_takes_the_window_maximum():
     """Non-overlapping 2x2 windows over a 4x4 grid, worked out by hand."""
-    x = np.array(
-        [[1.0, 2.0, 3.0, 4.0],
-         [5.0, 6.0, 7.0, 8.0],
-         [9.0, 10.0, 11.0, 12.0],
-         [13.0, 14.0, 15.0, 16.0]]
-    )
+    x = np.array([[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0], [9.0, 10.0, 11.0, 12.0], [13.0, 14.0, 15.0, 16.0]])
     y = np.asarray(maxpool_forward(x, kernel_size=2)["y"], dtype=float)
     np.testing.assert_allclose(y, np.array([[6.0, 8.0], [14.0, 16.0]]), atol=1e-12)
 

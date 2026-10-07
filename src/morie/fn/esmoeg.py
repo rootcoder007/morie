@@ -72,53 +72,46 @@ def esem_target_rotation(loadings, target, iters=200, tol=1e-13):
         raise ValueError("target specifies no elements")
 
     def _procrustes(H):
-        M = [[sum(L[k][a] * H[k][b] for k in range(p)) for b in range(m)]
-             for a in range(m)]
-        MtM = [[sum(M[k][a] * M[k][b] for k in range(m)) for b in range(m)]
-               for a in range(m)]
+        M = [[sum(L[k][a] * H[k][b] for k in range(p)) for b in range(m)] for a in range(m)]
+        MtM = [[sum(M[k][a] * M[k][b] for k in range(m)) for b in range(m)] for a in range(m)]
         vals, vecs = core.jacobi(MtM)
         for v in vals:
             if v <= 1e-24:
-                raise ValueError("target rotation is degenerate "
-                                 "(Lambda' H is rank deficient)")
+                raise ValueError("target rotation is degenerate (Lambda' H is rank deficient)")
         # T = M V S^-1 V'
-        MV = [[sum(M[a][k] * vecs[k][b] for k in range(m)) for b in range(m)]
-              for a in range(m)]
+        MV = [[sum(M[a][k] * vecs[k][b] for k in range(m)) for b in range(m)] for a in range(m)]
         for a in range(m):
             for b in range(m):
                 MV[a][b] /= math.sqrt(vals[b])
-        return [[sum(MV[a][k] * vecs[b][k] for k in range(m)) for b in range(m)]
-                for a in range(m)]
+        return [[sum(MV[a][k] * vecs[b][k] for k in range(m)) for b in range(m)] for a in range(m)]
 
     T = [[1.0 if a == b else 0.0 for b in range(m)] for a in range(m)]
     used = 0
-    for used in range(1, int(iters) + 1):
-        Rot = [[sum(L[i][k] * T[k][j] for k in range(m)) for j in range(m)]
-               for i in range(p)]
-        H = [[H0[i][j] if spec[i][j] else Rot[i][j] for j in range(m)]
-             for i in range(p)]
+    for used in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
+        Rot = [[sum(L[i][k] * T[k][j] for k in range(m)) for j in range(m)] for i in range(p)]
+        H = [[H0[i][j] if spec[i][j] else Rot[i][j] for j in range(m)] for i in range(p)]
         Tn = _procrustes(H)
         d = max(abs(Tn[a][b] - T[a][b]) for a in range(m) for b in range(m))
         T = Tn
         if d < float(tol):
             break
-    Rot = [[sum(L[i][k] * T[k][j] for k in range(m)) for j in range(m)]
-           for i in range(p)]
-    ss = sum((Rot[i][j] - H0[i][j]) ** 2
-             for i in range(p) for j in range(m) if spec[i][j])
+    Rot = [[sum(L[i][k] * T[k][j] for k in range(m)) for j in range(m)] for i in range(p)]
+    ss = sum((Rot[i][j] - H0[i][j]) ** 2 for i in range(p) for j in range(m) if spec[i][j])
     rms = math.sqrt(ss / nspec)
-    return RichResult(payload={
-        "estimate": rms,
-        "rotated": [v for r in Rot for v in r],
-        "rotation": [v for r in T for v in r],
-        "rms": rms,
-        "n_specified": nspec,
-        "iters_used": used,
-        "n_items": p,
-        "n_factors": m,
-        "n": p,
-        "method": "Exploratory SEM with target rotation",
-    })
+    return RichResult(
+        payload={
+            "estimate": rms,
+            "rotated": [v for r in Rot for v in r],
+            "rotation": [v for r in T for v in r],
+            "rms": rms,
+            "n_specified": nspec,
+            "iters_used": used,
+            "n_items": p,
+            "n_factors": m,
+            "n": p,
+            "method": "Exploratory SEM with target rotation",
+        }
+    )
 
 
 def cheatsheet():

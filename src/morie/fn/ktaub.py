@@ -59,8 +59,8 @@ def ktaub(x, y, axis=0, cdf=None):
                     discordant += 1
 
     # Count ties
-    x_ranks = sp_stats.rankdata(x)
-    y_ranks = sp_stats.rankdata(y)
+    sp_stats.rankdata(x)
+    sp_stats.rankdata(y)
 
     unique_x = np.unique(x)
     unique_y = np.unique(y)
@@ -70,10 +70,7 @@ def ktaub(x, y, axis=0, cdf=None):
 
     # Tau-b
     denom = np.sqrt((n * (n - 1) / 2 - tx) * (n * (n - 1) / 2 - ty))
-    if denom > 0:
-        tau_b = (concordant - discordant) / denom
-    else:
-        tau_b = 0.0
+    tau_b = (concordant - discordant) / denom if denom > 0 else 0.0
 
     # p-value (normal approximation)
     var_tau = (2 * (2 * n + 5)) / (9 * n * (n - 1))

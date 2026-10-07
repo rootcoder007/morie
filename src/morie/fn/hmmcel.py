@@ -82,7 +82,7 @@ def geron_memory_cell(c_prev, x_t, f):
         raise ValueError("geron_memory_cell: c_prev contains non-finite values")
 
     X = np.asarray(x_t, dtype=float)
-    if X.ndim == 0:
+    if np.ndim(x_t) == 0:
         X = X.reshape(1, 1)
     elif X.ndim == 1:
         X = X.reshape(1, -1)

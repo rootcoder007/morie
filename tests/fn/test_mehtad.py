@@ -56,5 +56,3 @@ def test_mehtad_edge():
     assert r["objective"] == pytest.approx(-8.0, abs=1e-8)
     with pytest.raises(ValueError):
         mehrotras_predictor(A, B + [1.0], C)
-
-

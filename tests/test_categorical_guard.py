@@ -1,4 +1,5 @@
 """Tests for morie.categorical_guard (the Python arm of rmorie module 25)."""
+
 import pytest
 
 from morie.categorical_guard import (
@@ -36,8 +37,10 @@ def test_safe_factor_declares_levels_and_reference():
 
 
 def test_audit_flags_numeric_codes_and_case_variants():
-    rows = audit_categories({"race": ["1", "2", "2", "3"], "city": ["Toronto", "toronto", "Ottawa", "Ottawa"]},
-                            factor_levels={"race": ["1", "2", "3"]})
+    rows = audit_categories(
+        {"race": ["1", "2", "2", "3"], "city": ["Toronto", "toronto", "Ottawa", "Ottawa"]},
+        factor_levels={"race": ["1", "2", "3"]},
+    )
     assert "imported CODES" in rows[0]["hazards"]
     assert "case-variant" in rows[1]["hazards"]
 
@@ -81,7 +84,9 @@ def test_odds_ratio_check_names_the_ohrc_four_way_rotation():
     (OHRC, Correction to "A Disparate Impact", 26 January 2023; Jung 2022)."""
     tab = {"White": [9000, 120], "Black": [2000, 220], "Other": [1500, 60], "Unknown": [4000, 1]}
     ref = 120 / 9000
-    correct = odds_ratio_check(tab, "White", {"Black": 220 / 2000 / ref, "Other": 60 / 1500 / ref, "Unknown": 1 / 4000 / ref})
+    correct = odds_ratio_check(
+        tab, "White", {"Black": 220 / 2000 / ref, "Other": 60 / 1500 / ref, "Unknown": 1 / 4000 / ref}
+    )
     assert correct["consistent"]
     rot = {"White": tab["Unknown"], "Black": tab["White"], "Other": tab["Black"], "Unknown": tab["Other"]}
     rref = rot["White"][1] / rot["White"][0]
@@ -115,15 +120,21 @@ def test_safe_relabel_decode_labelled_and_forensics():
 
 def test_transfer_verify_spss_to_python():
     codes = [1, 1, 2, 4, 1]
-    ok = transfer_verify(codes, {"White": 3, "Black": 1, "Unknown": 1},
-                         value_labels={1: "White", 2: "Black", 3: "Other", 4: "Unknown"},
-                         code_book={1: "White", 2: "Black", 3: "Other", 4: "Unknown"})
+    ok = transfer_verify(
+        codes,
+        {"White": 3, "Black": 1, "Unknown": 1},
+        value_labels={1: "White", 2: "Black", 3: "Other", 4: "Unknown"},
+        code_book={1: "White", 2: "Black", 3: "Other", 4: "Unknown"},
+    )
     assert ok["ok"] and ok["code_book_ok"]
     assert ok["decoded"]["levels"] == ["White", "Black", "Other", "Unknown"]
     with pytest.raises(ValueError, match="disagree with the source code book"):
-        transfer_verify(codes, {"White": 3, "Black": 1, "Unknown": 1},
-                        value_labels={1: "Black", 2: "Other", 3: "Unknown", 4: "White"},
-                        code_book={1: "White", 2: "Black", 3: "Other", 4: "Unknown"})
+        transfer_verify(
+            codes,
+            {"White": 3, "Black": 1, "Unknown": 1},
+            value_labels={1: "Black", 2: "Other", 3: "Unknown", 4: "White"},
+            code_book={1: "White", 2: "Black", 3: "Other", 4: "Unknown"},
+        )
     with pytest.raises(ValueError):
         transfer_verify(["Black", "Black", "Other", "White", "Black"], {"White": 3, "Black": 1, "Unknown": 1})
 
@@ -136,11 +147,15 @@ def test_round_3_strict_false_forensics_identity_and_whitespace_hazards():
     assert t["ok"] is False and t["marginals"]["permutation"]["White"] == "Black" and t["reasons"]
     ident = relabel_forensics({1: "White", 2: "Black"}, {"White": "White", "Black": "Black"})
     assert ident["matches"] == [] and "no permutation" in ident["verdict"]
-    a = audit_categories({"trailing": ["White ", "White", "Black", "Black"],
-                          "leading": [" White", "White", "Black", "Black"],
-                          "na_string": ["White", "NA", "Black", "Black"],
-                          "empty_str": ["", "White", "Black", "Black"],
-                          "unicode_ws": ["White\u00a0", "White", "Black", "Black"]})
+    a = audit_categories(
+        {
+            "trailing": ["White ", "White", "Black", "Black"],
+            "leading": [" White", "White", "Black", "Black"],
+            "na_string": ["White", "NA", "Black", "Black"],
+            "empty_str": ["", "White", "Black", "Black"],
+            "unicode_ws": ["White\u00a0", "White", "Black", "Black"],
+        }
+    )
     h = {row["column"]: row["hazards"] for row in a}
     assert "trailing whitespace" in h["trailing"] and "REFERENCE level" in h["leading"]
     assert "sentinel" in h["na_string"] and "empty-string" in h["empty_str"]

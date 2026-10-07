@@ -71,10 +71,7 @@ def wald_estimator(y, d, z, alpha=0.05):
     zv = np.asarray(z, dtype=float).ravel()
     n = yv.size
     if not (dv.size == zv.size == n):
-        raise ValueError(
-            "y, d and z must agree in length, got %d, %d and %d."
-            % (n, dv.size, zv.size)
-        )
+        raise ValueError(f"y, d and z must agree in length, got {int(n)}, {int(dv.size)} and {int(zv.size)}.")
     if not np.all(np.isin(zv, (0.0, 1.0))):
         raise ValueError("z must be binary 0/1.")
     if not np.all(np.isin(dv, (0.0, 1.0))):
@@ -82,15 +79,13 @@ def wald_estimator(y, d, z, alpha=0.05):
     m1, m0 = zv == 1, zv == 0
     if m1.sum() < 2 or m0.sum() < 2:
         raise ValueError(
-            "need at least 2 observations at each instrument value, got "
-            "%d and %d." % (int(m1.sum()), int(m0.sum()))
+            f"need at least 2 observations at each instrument value, got {int(int(m1.sum()))} and {int(int(m0.sum()))}."
         )
     rf = float(yv[m1].mean() - yv[m0].mean())
     fs = float(dv[m1].mean() - dv[m0].mean())
     if abs(fs) < 1e-12:
         raise ValueError(
-            "the first stage is zero: the instrument does not move "
-            "treatment, so the Wald ratio is undefined."
+            "the first stage is zero: the instrument does not move treatment, so the Wald ratio is undefined."
         )
     beta = rf / fs
 
@@ -103,15 +98,16 @@ def wald_estimator(y, d, z, alpha=0.05):
     # most textbook presentations do -- biases the standard error. The
     # sign of the bias follows the sign of Cov(Y, D): with the usual
     # positive correlation the naive SE is too LARGE.
-    c_yd = (np.cov(yv[m1], dv[m1], ddof=1)[0, 1] / n1
-            + np.cov(yv[m0], dv[m0], ddof=1)[0, 1] / n0)
-    se = float(np.sqrt(max(
-        v_rf / fs ** 2
-        + rf ** 2 * v_fs / fs ** 4
-        - 2.0 * (rf / fs ** 3) * c_yd,
-        0.0,
-    )))
-    f = float(fs ** 2 / v_fs) if v_fs > 0 else np.inf
+    c_yd = np.cov(yv[m1], dv[m1], ddof=1)[0, 1] / n1 + np.cov(yv[m0], dv[m0], ddof=1)[0, 1] / n0
+    se = float(
+        np.sqrt(
+            max(
+                v_rf / fs**2 + rf**2 * v_fs / fs**4 - 2.0 * (rf / fs**3) * c_yd,
+                0.0,
+            )
+        )
+    )
+    f = float(fs**2 / v_fs) if v_fs > 0 else np.inf
     z95 = 1.959963984540054
     return RichResult(
         payload={
@@ -131,10 +127,11 @@ def wald_estimator(y, d, z, alpha=0.05):
             "first_stage_f": f,
             "weak_instrument": bool(f < 10.0),
             "weak_note": (
-                None if f >= 10.0 else
-                "first-stage F is %.1f, below the conventional 10; the Wald "
+                None
+                if f >= 10.0
+                else f"first-stage F is {f:.1f}, below the conventional 10; the Wald "
                 "ratio is then heavy-tailed, its interval undercovers, and "
-                "the bias runs TOWARD the OLS estimate" % f
+                "the bias runs TOWARD the OLS estimate"
             ),
             "complier_share": float(fs),
             "estimand_note": (
@@ -156,10 +153,7 @@ def wald_estimator(y, d, z, alpha=0.05):
 
 
 def cheatsheet():
-    return (
-        "waldr: reduced form over first stage, with the weak-instrument F "
-        "and the complier-only estimand stated"
-    )
+    return "waldr: reduced form over first stage, with the weak-instrument F and the complier-only estimand stated"
 
 
 # compact alias per ledger/NAMING.md

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfbk2 import alphafold_backbone
 
 
@@ -57,7 +56,7 @@ def test_alfbk2_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     n, cs = 3, 4
-    s = [rng.normal(0, 1, cs).tolist() for _ in range(n)]
+    [rng.normal(0, 1, cs).tolist() for _ in range(n)]
     w = [rng.normal(0, 1, cs).tolist() for _ in range(6)]
 
     # With zero input the leading quaternion component is fixed to 1, so the

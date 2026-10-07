@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["fpc", "finite_population_corr"]
@@ -46,7 +45,7 @@ def fpc(N, n):
     if n < 1:
         raise ValueError("n must be at least 1")
     N = float(N)
-    if N < n:
+    if n > N:
         raise ValueError("N must be at least n")
     if math.isinf(N):
         f = 0.0
@@ -54,9 +53,16 @@ def fpc(N, n):
     else:
         f = n / N
         k = (N - n) / N
-    return RichResult(payload={
-        "fpc": k, "se_factor": math.sqrt(k), "fraction": f, "N": N, "n": n,
-        "method": "Finite population correction (1 - n/N)"})
+    return RichResult(
+        payload={
+            "fpc": k,
+            "se_factor": math.sqrt(k),
+            "fraction": f,
+            "N": N,
+            "n": n,
+            "method": "Finite population correction (1 - n/N)",
+        }
+    )
 
 
 finite_population_corr = fpc

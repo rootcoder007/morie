@@ -1,8 +1,8 @@
 """Tests for morie.fn.naest -- Nelson-Aalen cumulative hazard."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.naest import naest
 
 

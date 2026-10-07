@@ -9,8 +9,7 @@ __all__ = ["preprocessing_pipeline", "geron_pipeline"]
 STEPS = ("impute_median", "impute_mean", "standardize", "minmax", "log1p")
 
 
-def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median",
-                                                        "standardize")):
+def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median", "standardize")):
     r"""Fit preprocessing on the training data only, then apply it.
 
     The whole reason a pipeline is an object rather than a sequence of
@@ -56,17 +55,12 @@ def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median",
     A = np.atleast_2d(np.asarray(X_train, dtype=float))
     if A.ndim == 1:
         A = A[:, None]
-    B = None if X_test is None else np.atleast_2d(
-        np.asarray(X_test, dtype=float)
-    )
+    B = None if X_test is None else np.atleast_2d(np.asarray(X_test, dtype=float))
     if B is not None and B.shape[1] != A.shape[1]:
-        raise ValueError(
-            "X_test has %d columns, X_train has %d."
-            % (B.shape[1], A.shape[1])
-        )
+        raise ValueError(f"X_test has {int(B.shape[1])} columns, X_train has {int(A.shape[1])}.")
     for s in steps:
         if s not in STEPS:
-            raise ValueError("unknown step %r; expected one of %s." % (s, STEPS))
+            raise ValueError(f"unknown step {s!r}; expected one of {STEPS}.")
 
     params = {}
     leak = {}
@@ -132,10 +126,7 @@ def preprocessing_pipeline(X_train, X_test=None, steps=("impute_median",
 
 
 def cheatsheet():
-    return (
-        "hmpip: fit-on-train preprocessing chain, reporting the leak it "
-        "avoided"
-    )
+    return "hmpip: fit-on-train preprocessing chain, reporting the leak it avoided"
 
 
 #: Catalogue alias for :func:`preprocessing_pipeline`.

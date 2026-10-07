@@ -2,9 +2,9 @@
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.smokpm import smokpm, wildfire_smoke_rr
 
 

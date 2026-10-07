@@ -1,7 +1,6 @@
 """Tests for morie.fn.ada -- AdaBoost."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ada import ada, adaboost
 

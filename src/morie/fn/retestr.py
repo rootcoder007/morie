@@ -32,8 +32,7 @@ def retestr(sigma_signal, sigma_noise):
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner.
     Createspace Independent Publishing. Eq (6.37).
     """
-    mu_y, sigma_y, r = _morin.linear_model_stats(
-        1.0, 0.0, sigma_signal, 0.0, sigma_noise)
+    mu_y, sigma_y, r = _morin.linear_model_stats(1.0, 0.0, sigma_signal, 0.0, sigma_noise)
     payload = {"r": r}
     lines = [("r", r)]
     return RichResult(

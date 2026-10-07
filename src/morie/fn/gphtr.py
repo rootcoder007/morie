@@ -49,8 +49,9 @@ def _post(K, noise, y, Ks, n):
     return M, al, mu
 
 
-def gp_heteroscedastic(X, y, X_test=None, lengthscale=1.0, variance=1.0,
-                       noise0=0.1, noise_lengthscale=1.0, iters=3, floor=1e-6):
+def gp_heteroscedastic(
+    X, y, X_test=None, lengthscale=1.0, variance=1.0, noise0=0.1, noise_lengthscale=1.0, iters=3, floor=1e-6
+):
     """Mean and input-dependent noise, by alternating two GPs."""
     A = core.mat(X)
     n = len(A)
@@ -89,13 +90,19 @@ def gp_heteroscedastic(X, y, X_test=None, lengthscale=1.0, variance=1.0,
         sd.append(max(var - sum(Ks[j][i] * v[i] for i in range(n)), 0.0))
     if int(iters) > 0:
         zb = sum(math.log(max(v, float(floor))) for v in noise) / n
-        an2 = core.cholsolve([[Kn[i][j] + (0.25 if i == j else 0.0) for j in range(n)] for i in range(n)],
-                             [math.log(noise[i]) - zb for i in range(n)])
+        an2 = core.cholsolve(
+            [[Kn[i][j] + (0.25 if i == j else 0.0) for j in range(n)] for i in range(n)],
+            [math.log(noise[i]) - zb for i in range(n)],
+        )
         noise_test = [math.exp(zb + sum(Kns[j][i] * an2[i] for i in range(n))) for j in range(len(Xs))]
     else:
         noise_test = [s0] * len(Xs)
     L = core.chol(M)
-    ll = -0.5 * sum(yv[i] * al[i] for i in range(n)) - sum(math.log(L[i][i]) for i in range(n)) - 0.5 * n * math.log(2.0 * math.pi)
+    ll = (
+        -0.5 * sum(yv[i] * al[i] for i in range(n))
+        - sum(math.log(L[i][i]) for i in range(n))
+        - 0.5 * n * math.log(2.0 * math.pi)
+    )
     return RichResult(
         title="Heteroscedastic GP",
         summary_lines=[("n", n), ("iterations", int(iters))],

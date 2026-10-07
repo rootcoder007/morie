@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmprg — compliance by region."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cmprg import compliance_by_region
 
 

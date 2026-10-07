@@ -56,16 +56,13 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
     pi_hat = np.mean(is_zero) * 0.5
     # Poisson MLE on non-zero as start
     nz = y_arr > 0
-    if np.sum(nz) > p:
-        gamma_hat = np.linalg.lstsq(X_arr[nz], np.log(y_arr[nz] + 0.1), rcond=None)[0]
-    else:
-        gamma_hat = np.zeros(p)
+    gamma_hat = np.linalg.lstsq(X_arr[nz], np.log(y_arr[nz] + 0.1), rcond=None)[0] if np.sum(nz) > p else np.zeros(p)
     # Logistic part: intercept only init
     delta_hat = np.zeros(p)
     delta_hat[0] = np.log(pi_hat / max(1 - pi_hat, 1e-10))
 
     prev_ll = -np.inf
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         # E-step
         lam = np.exp(X_arr @ gamma_hat)
         lam = np.clip(lam, 1e-10, 1e6)
@@ -83,7 +80,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
         w = np.clip(w, 1e-10, 1 - 1e-10)
 
         # M-step: logistic part (weighted logistic for zero-component membership)
-        def neg_ll_logistic(delta):
+        def neg_ll_logistic(delta, *, w=w):
             eta = X_arr @ delta
             pi_tmp = 1.0 / (1.0 + np.exp(-eta))
             pi_tmp = np.clip(pi_tmp, 1e-10, 1 - 1e-10)
@@ -93,7 +90,7 @@ def rey_zp(df, y: str = "y", x: list | str = "x", max_iter: int = 200, tol: floa
         delta_hat = res_d.x
 
         # M-step: Poisson part (weighted Poisson)
-        def neg_ll_poisson(gamma):
+        def neg_ll_poisson(gamma, *, w=w):
             eta = X_arr @ gamma
             lam_tmp = np.exp(eta)
             lam_tmp = np.clip(lam_tmp, 1e-10, 1e6)

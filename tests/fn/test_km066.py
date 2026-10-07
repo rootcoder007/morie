@@ -17,8 +17,7 @@ def test_the_total_reward_subtracts_the_scaled_log_policy_ratio():
     res = kamath_ch5_reward_kl_penalty("p", "resp", 0.5, 0.25, 2.0, r_theta=1.0)
     expected = 1.0 - 2.0 * math.log(0.5 / 0.25)
     assert res["estimate"] == pytest.approx(expected, rel=1e-12)
-    assert res["estimate"] == pytest.approx(1.0 - 2.0 * math.log(2.0),
-                                            rel=1e-12)
+    assert res["estimate"] == pytest.approx(1.0 - 2.0 * math.log(2.0), rel=1e-12)
 
 
 def test_a_zero_coefficient_leaves_the_bare_reward():

@@ -81,11 +81,9 @@ to here.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["sigmoid", "predict", "bpr_opt", "auc", "learn_bpr",
-           "recommend"]
+__all__ = ["sigmoid", "predict", "bpr_opt", "auc", "learn_bpr", "recommend"]
 
 _EPS = 1e-12
 _SIGNS = ("correct", "paper")
@@ -124,11 +122,13 @@ def bpr_opt(W, H, pos, n_items, lam=0.01):
     for u, i, j in _triples(pos, n_items):
         x = predict(W, H, u, i) - predict(W, H, u, j)
         tot += math.log(max(sigmoid(x), _EPS))
-    norm = sum(v * v for r in W for v in r) + \
-        sum(v * v for r in H for v in r)
-    return {"bpr_opt": tot - float(lam) * norm, "loglik": tot,
-            "penalty": float(lam) * norm, "n_triples":
-                len(_triples(pos, n_items))}
+    norm = sum(v * v for r in W for v in r) + sum(v * v for r in H for v in r)
+    return {
+        "bpr_opt": tot - float(lam) * norm,
+        "loglik": tot,
+        "penalty": float(lam) * norm,
+        "n_triples": len(_triples(pos, n_items)),
+    }
 
 
 def auc(W, H, pos, n_items):
@@ -145,8 +145,7 @@ def auc(W, H, pos, n_items):
         seen = set(pos[u])
         neg = [j for j in range(n_items) if j not in seen]
         if not seen or not neg:
-            raise ValueError("bprMF: user %r has no comparable pair"
-                             % (u,))
+            raise ValueError(f"bprMF: user {u!r} has no comparable pair")
         c = 0
         for i in seen:
             for j in neg:
@@ -154,13 +153,12 @@ def auc(W, H, pos, n_items):
                     c += 1
         per[u] = c / float(len(seen) * len(neg))
         tot += per[u]
-    return {"auc": tot / len(users), "per_user": per,
-            "note": "delta(x > 0) is strict: ties count as wrong"}
+    return {"auc": tot / len(users), "per_user": per, "note": "delta(x > 0) is strict: ties count as wrong"}
 
 
-def learn_bpr(pos, n_users, n_items, k_dim=8, alpha=0.05, lam=0.01,
-              iters=2000, seed=0, regularizer_sign="correct",
-              init_scale=0.1):
+def learn_bpr(
+    pos, n_users, n_items, k_dim=8, alpha=0.05, lam=0.01, iters=2000, seed=0, regularizer_sign="correct", init_scale=0.1
+):
     r"""LearnBPR: bootstrap-sampled stochastic gradient ascent.
 
     ``regularizer_sign="paper"`` reproduces the printed Figure 4
@@ -168,21 +166,18 @@ def learn_bpr(pos, n_users, n_items, k_dim=8, alpha=0.05, lam=0.01,
     sign that actually ascends BPR-Opt.
     """
     if regularizer_sign not in _SIGNS:
-        raise ValueError("bprMF: regularizer_sign must be one of %s, "
-                         "got %r" % (", ".join(_SIGNS),
-                                     regularizer_sign))
-    U, I, K = int(n_users), int(n_items), int(k_dim)
-    if U < 1 or I < 2 or K < 1:
-        raise ValueError("bprMF: need at least 1 user, 2 items and 1 "
-                         "factor")
+        raise ValueError(
+            "bprMF: regularizer_sign must be one of {}, got {!r}".format(", ".join(_SIGNS), regularizer_sign)
+        )
+    U, I_, K = int(n_users), int(n_items), int(k_dim)
+    if U < 1 or I_ < 2 or K < 1:
+        raise ValueError("bprMF: need at least 1 user, 2 items and 1 factor")
     users = sorted(pos)
     if not users:
         raise ValueError("bprMF: no positive feedback given")
     rng = np.random.default_rng(seed)
-    W = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale
-          for _ in range(K)] for _ in range(U)]
-    H = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale
-          for _ in range(K)] for _ in range(I)]
+    W = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale for _ in range(K)] for _ in range(U)]
+    H = [[(float(rng.uniform()) - 0.5) * 2.0 * init_scale for _ in range(K)] for _ in range(I_)]
     sgn = -1.0 if regularizer_sign == "correct" else 1.0
     a, lm = float(alpha), float(lam)
     hist = []
@@ -190,10 +185,10 @@ def learn_bpr(pos, n_users, n_items, k_dim=8, alpha=0.05, lam=0.01,
         u = users[int(float(rng.uniform()) * len(users)) % len(users)]
         seen = list(pos[u])
         i = seen[int(float(rng.uniform()) * len(seen)) % len(seen)]
-        j = int(float(rng.uniform()) * I) % I
+        j = int(float(rng.uniform()) * I_) % I_
         guard = 0
         while j in set(pos[u]) and guard < 100:
-            j = int(float(rng.uniform()) * I) % I
+            j = int(float(rng.uniform()) * I_) % I_
             guard += 1
         if j in set(pos[u]):
             continue
@@ -205,45 +200,50 @@ def learn_bpr(pos, n_users, n_items, k_dim=8, alpha=0.05, lam=0.01,
             H[i][f] = hif + a * (g * wuf + sgn * lm * hif)
             H[j][f] = hjf + a * (g * (-wuf) + sgn * lm * hjf)
         if (it + 1) % max(1, int(iters) // 20) == 0:
-            hist.append(bpr_opt(W, H, pos, I, lm)["bpr_opt"])
-    norm = math.sqrt(sum(v * v for r in W for v in r)
-                     + sum(v * v for r in H for v in r))
-    return RichResult(payload={
-        "estimate": (W, H), "W": W, "H": H, "k": K,
-        "bpr_opt_history": hist,
-        "final_bpr_opt": hist[-1] if hist else float("nan"),
-        "auc": auc(W, H, pos, I)["auc"], "param_norm": norm,
-        "regularizer_sign": regularizer_sign,
-        "method": "LearnBPR, bootstrap SGD; Rendle et al. (2009) "
-                  "Fig. 4",
-        "caveat": ("the printed update adds +lambda*Theta, which "
-                   "grows the parameters; this run used that sign"
-                   if regularizer_sign == "paper"
-                   else "regulariser sign corrected to -lambda*Theta, "
-                        "which is what ascending BPR-Opt requires"),
-    })
+            hist.append(bpr_opt(W, H, pos, I_, lm)["bpr_opt"])
+    norm = math.sqrt(sum(v * v for r in W for v in r) + sum(v * v for r in H for v in r))
+    return RichResult(
+        payload={
+            "estimate": (W, H),
+            "W": W,
+            "H": H,
+            "k": K,
+            "bpr_opt_history": hist,
+            "final_bpr_opt": hist[-1] if hist else float("nan"),
+            "auc": auc(W, H, pos, I_)["auc"],
+            "param_norm": norm,
+            "regularizer_sign": regularizer_sign,
+            "method": "LearnBPR, bootstrap SGD; Rendle et al. (2009) Fig. 4",
+            "caveat": (
+                "the printed update adds +lambda*Theta, which grows the parameters; this run used that sign"
+                if regularizer_sign == "paper"
+                else "regulariser sign corrected to -lambda*Theta, which is what ascending BPR-Opt requires"
+            ),
+        }
+    )
 
 
 def recommend(W, H, u, n_items, top_k=5, exclude=()):
     r"""Rank items for one user by :math:`\hat x_{ui}`."""
     ex = set(int(v) for v in exclude)
-    s = [(i, predict(W, H, u, i)) for i in range(int(n_items))
-         if i not in ex]
+    s = [(i, predict(W, H, u, i)) for i in range(int(n_items)) if i not in ex]
     s.sort(key=lambda t: -t[1])
-    return {"ranking": s[:int(top_k)], "n_scored": len(s)}
+    return {"ranking": s[: int(top_k)], "n_scored": len(s)}
 
 
 def cheatsheet():
-    return ("bprMF: implicit feedback is positive-only, and labelling "
-            "every unobserved pair NEGATIVE trains the model to "
-            "predict 0 on exactly the items it must rank later. Use "
-            "TRIPLES instead: D_S = {(u,i,j) : i seen, j unseen}. "
-            "BPR-Opt = sum ln sigma(x_ui - x_uj) - lambda||Theta||^2, "
-            "which is per-user AUC with the Heaviside replaced by "
-            "ln sigma -- and that substitution comes from the MLE, not "
-            "from convenience. LearnBPR SAMPLES triples rather than "
-            "sweeping them. The printed update's +lambda*Theta is a "
-            "sign error and diverges.")
+    return (
+        "bprMF: implicit feedback is positive-only, and labelling "
+        "every unobserved pair NEGATIVE trains the model to "
+        "predict 0 on exactly the items it must rank later. Use "
+        "TRIPLES instead: D_S = {(u,i,j) : i seen, j unseen}. "
+        "BPR-Opt = sum ln sigma(x_ui - x_uj) - lambda||Theta||^2, "
+        "which is per-user AUC with the Heaviside replaced by "
+        "ln sigma -- and that substitution comes from the MLE, not "
+        "from convenience. LearnBPR SAMPLES triples rather than "
+        "sweeping them. The printed update's +lambda*Theta is a "
+        "sign error and diverges."
+    )
 
 
 # compact alias per ledger/NAMING.md

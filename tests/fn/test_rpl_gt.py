@@ -1,7 +1,6 @@
 """Tests for rpl_gt — gender trend."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_gt import rplace_gender_trend
 
 

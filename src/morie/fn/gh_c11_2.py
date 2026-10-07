@@ -25,8 +25,10 @@ def ghosal_rkhs_norm(f0_coefs, lambdas, eps, n_sim=3000, seed=42):
     # decentering: greedily match largest coordinates until within eps
     order = sorted(range(len(f0)), key=lambda i: -abs(f0[i]))
     h = [0.0] * len(f0)
+
     def resid():
         return math.sqrt(sum((a - b) ** 2 for a, b in zip(f0, h)))
+
     hn2 = 0.0
     for i in order:
         if resid() <= eps:
@@ -36,16 +38,19 @@ def ghosal_rkhs_norm(f0_coefs, lambdas, eps, n_sim=3000, seed=42):
     rng = np.random.default_rng(seed)
     hits = 0
     for _ in range(n_sim):
-        s = sum(lam[i] * float(rng.normal(0, 1)) ** 2
-                for i in range(len(lam)))
+        s = sum(lam[i] * float(rng.normal(0, 1)) ** 2 for i in range(len(lam)))
         if math.sqrt(s) < eps:
             hits += 1
     small_ball = -math.log(max(hits, 1) / n_sim)
     phi = 0.5 * hn2 + small_ball
-    res = RichResult(payload={"estimate": phi,
-                              "decentering_norm2": hn2,
-                              "small_ball_exponent": small_ball,
-                              "method": "concentration function (GvdV 2017 eq. 11.11)"})
+    res = RichResult(
+        payload={
+            "estimate": phi,
+            "decentering_norm2": hn2,
+            "small_ball_exponent": small_ball,
+            "method": "concentration function (GvdV 2017 eq. 11.11)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_2")
 
 

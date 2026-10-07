@@ -1,8 +1,8 @@
 """Tests for bkmed.baron_kenny."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bkmed import baron_kenny
 
 
@@ -46,7 +46,7 @@ def test_no_mediation_when_the_mediator_is_noise():
     rng = np.random.default_rng(5)
     n = 600
     x = rng.normal(0, 1, n)
-    m = rng.normal(0, 1, n)          # unrelated to x
+    m = rng.normal(0, 1, n)  # unrelated to x
     y = 0.7 * x + rng.normal(0, 1, n)
     assert baron_kenny(y, x, m)["mediation"] == "none"
 
@@ -73,5 +73,6 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="at least 4 observations"):
         baron_kenny(y[:3], x[:3], m[:3])
     with pytest.raises(ValueError, match="must be finite"):
-        bad = y.copy(); bad[0] = np.inf
+        bad = y.copy()
+        bad[0] = np.inf
         baron_kenny(bad, x, m)

@@ -80,11 +80,16 @@ def wasserman_kullback_leibler(p, q, x_grid=None):
         n = int(np.atleast_1d(np.asarray(x_grid)).size)
     D = _kl(p, q)
     Drev = _kl(q, p)
-    return RichResult(payload={
-        "estimate": D,
-        "bits": float(D / np.log(2.0)) if np.isfinite(D) else float("inf"),
-        "reverse": Drev, "form": form, "n": n,
-        "method": "KL D(p||q); 0 log 0 = 0, p>0 & q=0 -> inf"})
+    return RichResult(
+        payload={
+            "estimate": D,
+            "bits": float(D / np.log(2.0)) if np.isfinite(D) else float("inf"),
+            "reverse": Drev,
+            "form": form,
+            "n": n,
+            "method": "KL D(p||q); 0 log 0 = 0, p>0 & q=0 -> inf",
+        }
+    )
 
 
 def cheatsheet():

@@ -35,10 +35,46 @@ for arg; do
 done
 
 run() { if [ "$DRY" = "1" ]; then echo "[dry-run] $*"; else "$@"; fi }
+step() {
+  # step "label" cmd...: a spinner with the elapsed time and the command's last output
+  # line on a terminal; the full output is kept and shown only when the command fails.
+  local label="$1"; shift
+  if [ "$DRY" = "1" ]; then echo "[dry-run] $label: $*"; return 0; fi
+  local log rc=0 start=$SECONDS
+  log="$(mktemp "${TMPDIR:-/tmp}/morie-install.XXXXXX")"
+  if [ -t 1 ]; then
+    "$@" >"$log" 2>&1 &
+    local pid=$! i=0 frames='|/-\\'
+    while kill -0 "$pid" 2>/dev/null; do
+      i=$(( (i + 1) % 4 ))
+      printf '\r  %s %s  %ds  %.60s' "${frames:$i:1}" "$label" "$((SECONDS - start))" "$(tail -n 1 "$log" 2>/dev/null | tr -d '\r')"
+      sleep 0.2
+    done
+    wait "$pid" || rc=$?
+    printf '\r\033[K'
+  else
+    echo "  -> $label ..."
+    "$@" >"$log" 2>&1 || rc=$?
+  fi
+  if [ "$rc" -eq 0 ]; then
+    echo "  ok  $label ($((SECONDS - start)) s)"
+  else
+    echo "  FAILED  $label (exit $rc); last lines:"
+    tail -n 30 "$log" | sed 's/^/      /'
+  fi
+  rm -f "$log"
+  return "$rc"
+}
 prompt() {
-  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.
+  # prompt user; returns 0 (yes) or 1 (no).  In --auto always yes.  With no terminal to
+  # ask on (curl | bash, cron, CI) an optional step is skipped rather than assumed.
   if [ "$AUTO" = "1" ]; then return 0; fi
-  read -r -p "$1 [Y/n] " ans
+  if [ -r /dev/tty ]; then
+    read -r -p "$1 [Y/n] " ans </dev/tty || return 1
+  else
+    echo "[install.sh] no terminal to answer '$1'; skipping (pass --auto to say yes to everything)"
+    return 1
+  fi
   case "$ans" in n|N|no|NO) return 1 ;; *) return 0 ;; esac
 }
 
@@ -187,8 +223,7 @@ install_python_morie() {
 
   # 1. ensure uv (single-binary, no system deps)
   if ! command -v uv >/dev/null 2>&1 && [ ! -x "$USERBIN/uv" ]; then
-    echo "[install.sh] installing uv (managed python + venv tool) ..."
-    if curl -LsSf https://astral.sh/uv/install.sh | sh; then
+    if step "installing uv (managed python + venv tool)" sh -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'; then
       export PATH="$USERBIN:$PATH"
     else
       echo "[install.sh] uv install failed; falling back to stdlib venv"
@@ -197,15 +232,15 @@ install_python_morie() {
   export PATH="$USERBIN:$PATH"
 
   if command -v uv >/dev/null 2>&1; then
-    echo "[install.sh] creating venv at $VENV (managed python 3.12) ..."
-    run uv python install 3.12
-    run uv venv "$VENV" --python 3.12 --allow-existing
-    run uv pip install --python "$VENV/bin/python" --upgrade morie
+    echo "[install.sh] venv at $VENV (managed python 3.12)"
+    step "python 3.12 (uv)" uv python install 3.12
+    step "virtual environment" uv venv "$VENV" --python 3.12 --allow-existing
+    step "morie from PyPI" uv pip install --python "$VENV/bin/python" --upgrade morie
   else
     echo "[install.sh] uv unavailable; using stdlib venv with system python"
-    run python3 -m venv "$VENV"
-    run "$VENV/bin/pip" install --upgrade pip
-    run "$VENV/bin/pip" install --upgrade morie
+    step "virtual environment" python3 -m venv "$VENV"
+    step "pip" "$VENV/bin/pip" install --upgrade pip
+    step "morie from PyPI" "$VENV/bin/pip" install --upgrade morie
   fi
 
   # 2. expose CLI on PATH via a stable shim
@@ -213,16 +248,25 @@ install_python_morie() {
   ln -sf "$VENV/bin/morie" "$USERBIN/morie"
 
   # 3. smoke-test the install — if `import morie` segfaults we want a
-  #    loud failure, not a silent broken state.  Import-only: the CLI
-  #    uses subcommands, so we don't gate the smoke on a flag.
-  echo "[install.sh] verifying import ..."
-  if "$VENV/bin/python" -c "import morie; print('morie', morie.__version__, 'OK')"; then
+  #    loud failure, not a silent broken state.  We deliberately do
+  #    NOT exercise `morie --version` because the CLI uses subcommands
+  #    (`morie list-modules`, `morie tui`, ...) and has no `--version`
+  #    flag; argparse would emit an error on a healthy install.
+  if step "verifying import" "$VENV/bin/python" -c "import morie; print('morie', morie.__version__, 'OK')"; then
     echo "[install.sh] ✓ morie installed at $USERBIN/morie (-> $VENV)"
     case ":$PATH:" in
       *":$USERBIN:"*) ;;
       *) echo "[install.sh] NOTE: $USERBIN is not on your PATH — add this to your shell rc:"
          echo "             export PATH=\"\$HOME/.local/bin:\$PATH\"" ;;
     esac
+    # 4. the interactive layer (morie repl / exec / agent / tui) is left out of every
+    #    published artifact: fetch it for this user from the release tag of the version
+    #    just installed, verified against the manifest inside the package.
+    if step "interactive layer (morie interactive install)" "$VENV/bin/morie" interactive install; then
+      echo "[install.sh] ✓ interactive layer installed: morie repl, exec, agent and tui are ready"
+    else
+      echo "[install.sh] NOTE: the interactive layer did not install (offline?). Python morie works; add it later with: morie interactive install"
+    fi
   else
     echo "[install.sh] !! morie smoke test failed.  Try:"
     echo "    $VENV/bin/python -c 'import morie'"
@@ -235,12 +279,24 @@ if [ "$PY" = "1" ] && [ "$HAVE_PY" = "1" ]; then
 fi
 
 # --- R morie ------------------------------------------------------
-if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ]; then
-  echo "[install.sh] installing R morie from GitHub source (remotes::install_github) ..."
-  if Rscript -e 'if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org"); remotes::install_github("rootcoder007/morie", subdir = "r-package/morie", upgrade = "never")'; then
-    echo "[install.sh] ✓ R morie installed"
+if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmorie from r-universe, rmoriebricklayer and rmoriedata from CRAN; binaries on macOS and Windows, a build of several minutes on Linux)?"; then
+  echo "[install.sh] R side: rmorie (r-universe) + rmoriebricklayer, rmoriedata (CRAN)"
+  MORIE_R_VERSION=$("$VENV/bin/python" -c "import morie; print(morie.__version__)" 2>/dev/null || true)
+  if step "rmoriebricklayer + rmoriedata (CRAN)" Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata"), repos = "https://cloud.r-project.org")' \
+     && step "rmorie $MORIE_R_VERSION (r-universe; binaries on macOS and Windows)" env MORIE_R_VERSION="$MORIE_R_VERSION" Rscript -e '
+         # the R arm must be the same release as morie: r-universe first, the release tag when it serves another version
+         v <- Sys.getenv("MORIE_R_VERSION")
+         install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+         have <- function() tryCatch(as.character(utils::packageVersion("rmorie")), error = function(e) "")
+         if (nzchar(v) && have() != v) {
+           if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org")
+           remotes::install_github(paste0("rootcoder007/rmorie@v", v), upgrade = "never")
+         }
+         if (nzchar(v) && have() != v) stop("rmorie ", v, " is not published yet; run `morie r-install` once it is")' \
+     && step "rmorie command line on PATH" Rscript -e 'rmorie::install_cli()'; then
+    echo "[install.sh] ✓ R side installed: rmorie, rmoriebricklayer, rmoriedata (try: rmorie cheatsheet)"
   else
-    echo "[install.sh] NOTE: R morie build failed (needs a C toolchain + libcurl/libsodium dev headers). Python morie is installed and fully usable; build r-package/morie manually if you need the R side."
+    echo "[install.sh] NOTE: the R install failed (on Linux it compiles and needs a C/C++ toolchain, libcurl dev headers). Python morie is installed and fully usable; retry with: morie r-install"
   fi
 fi
 

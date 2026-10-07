@@ -61,10 +61,18 @@ def propalloc(Nh, n):
     order = sorted(range(L), key=lambda i: (-(exact[i] - base[i]), i))
     for i in order[:rem]:
         base[i] += 1
-    return RichResult(payload={
-        "nh": base, "nh_exact": exact, "Wh": W, "fraction": n / N,
-        "N": N, "n": n, "L": L,
-        "method": "Proportional allocation (largest remainder)"})
+    return RichResult(
+        payload={
+            "nh": base,
+            "nh_exact": exact,
+            "Wh": W,
+            "fraction": n / N,
+            "N": N,
+            "n": n,
+            "L": L,
+            "method": "Proportional allocation (largest remainder)",
+        }
+    )
 
 
 proportional_allocation = propalloc

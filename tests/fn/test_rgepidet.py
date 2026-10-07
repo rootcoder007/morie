@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_epilepsy_detect
 
-
 FS = 100.0
 
 

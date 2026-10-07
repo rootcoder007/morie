@@ -1,7 +1,6 @@
 """Test even_odd_decompose (evnod)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.evnod import even_odd_decompose, evnod
 

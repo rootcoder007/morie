@@ -27,18 +27,17 @@ def cluster_means_model(groups):
     ch.7 eq.7.4
     """
     payload = dict(_ca_crim.cluster_means_model(groups))
-    value = payload['grand_mean']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["grand_mean"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.4)"
     return RichResult(
-        title='Per-cluster level-1 models y_ij = beta0j + e_ij',
+        title="Per-cluster level-1 models y_ij = beta0j + e_ij",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e4: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik [Weisburd et al. 2022, eq. 7.4]'
+    return "ca7e4: y_i1 = beta0,1 + e_i1; ...; y_ik = beta0,k + e_ik [Weisburd et al. 2022, eq. 7.4]"

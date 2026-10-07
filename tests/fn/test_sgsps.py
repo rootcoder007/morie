@@ -1,7 +1,6 @@
 """Tests for spectral GRF simulation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgsps import sgsps
 
 
@@ -30,10 +29,10 @@ def test_sgsps_covariance_is_the_model():
     of 4.5 for 21 distinct entries; the old corner embedding with 1/N
     scaling gave variances near sill/N."""
     import math
+
     coords = [(0.5 * i, 0.5 * j) for j in range(2) for i in range(3)]
     sill, rng_, nug = 2.0, 1.2, 0.3
-    r = sgsps(coords, "exponential", {"sill": sill, "range": rng_, "nugget": nug},
-              n_sims=3000, seed=11)
+    r = sgsps(coords, "exponential", {"sill": sill, "range": rng_, "nugget": nug}, n_sims=3000, seed=11)
     assert r.extra["embedding_exact"]
     sims = r.extra["simulations"].tolist()
     m, n = len(sims), len(coords)

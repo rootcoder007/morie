@@ -2,9 +2,15 @@
 
 import math
 
-from morie.fn.abcnnt import (MAF, abcnnt, flow_forward, flow_logprob,
-                             mcmc_sample, sequential_neural_likelihood,
-                             train_flow)
+from morie.fn.abcnnt import (
+    MAF,
+    abcnnt,
+    flow_forward,
+    flow_logprob,
+    mcmc_sample,
+    sequential_neural_likelihood,
+    train_flow,
+)
 
 SIG = 0.5
 X_O = [1.2]
@@ -18,8 +24,8 @@ def _rng(seed):
         return st[0] / float(1 << 31)
 
     def normal():
-        return math.sqrt(-2 * math.log(max(uni(), 1e-12))) * \
-            math.cos(2 * math.pi * uni())
+        return math.sqrt(-2 * math.log(max(uni(), 1e-12))) * math.cos(2 * math.pi * uni())
+
     return uni, normal
 
 
@@ -50,8 +56,7 @@ def test_the_jacobian_is_triangular():
         for j in range(3):
             if i != j and order[j] >= order[i]:
                 assert abs(J[i][j]) < 1e-9
-    assert max(abs(J[i][j]) for i in range(3) for j in range(3)
-               if order[j] < order[i]) > 1e-6
+    assert max(abs(J[i][j]) for i in range(3) for j in range(3) if order[j] < order[i]) > 1e-6
 
 
 def test_log_det_matches_the_scales():
@@ -64,8 +69,7 @@ def test_log_det_matches_the_scales():
         up, dn = list(base), list(base)
         up[i] += h
         dn[i] -= h
-        det *= (flow_forward(one, up, theta)[0][i] -
-                flow_forward(one, dn, theta)[0][i]) / (2 * h)
+        det *= (flow_forward(one, up, theta)[0][i] - flow_forward(one, dn, theta)[0][i]) / (2 * h)
     _u, total = flow_forward(one, base, theta)
     assert abs(math.log(abs(det)) + total) < 1e-6
 
@@ -76,8 +80,7 @@ def test_the_density_integrates_to_one():
         tot, lo, hi, n = 0.0, -14.0, 14.0, 4000
         step = (hi - lo) / n
         for i in range(n):
-            tot += math.exp(flow_logprob(f, [lo + (i + 0.5) * step],
-                                         cond)) * step
+            tot += math.exp(flow_logprob(f, [lo + (i + 0.5) * step], cond)) * step
         assert abs(tot - 1.0) < 3e-3
 
 
@@ -106,11 +109,22 @@ def test_training_improves_and_learns_the_shape():
 
 
 def test_algorithm_1_on_a_conjugate_problem():
-    res = abcnnt(_sim, X_O, _log_prior, [0.0], n_rounds=3,
-                 n_per_round=40, n_layers=2, hidden=10, epochs=40,
-                 lr=0.02, seed=11, n_posterior=400)
-    exact_mean = X_O[0] / (1.0 + SIG ** 2)
-    exact_sd = math.sqrt(SIG ** 2 / (1.0 + SIG ** 2))
+    res = abcnnt(
+        _sim,
+        X_O,
+        _log_prior,
+        [0.0],
+        n_rounds=3,
+        n_per_round=40,
+        n_layers=2,
+        hidden=10,
+        epochs=40,
+        lr=0.02,
+        seed=11,
+        n_posterior=400,
+    )
+    exact_mean = X_O[0] / (1.0 + SIG**2)
+    exact_sd = math.sqrt(SIG**2 / (1.0 + SIG**2))
     assert abs(res["posterior_mean"][0] - exact_mean) < 0.35
     assert 0.4 * exact_sd < res["posterior_sd"][0] < 2.5 * exact_sd
     assert res["posterior_sd"][0] < 1.0
@@ -120,16 +134,26 @@ def test_algorithm_1_on_a_conjugate_problem():
 
 
 def test_a_tight_prior_dominates():
-    res = abcnnt(_sim, X_O, lambda t: -0.5 * ((t[0] - 3.0) / 0.05) ** 2,
-                 [3.0], n_rounds=2, n_per_round=30, n_layers=2,
-                 hidden=10, epochs=30, lr=0.02, seed=4, n_posterior=200,
-                 mcmc_step=0.1)
+    res = abcnnt(
+        _sim,
+        X_O,
+        lambda t: -0.5 * ((t[0] - 3.0) / 0.05) ** 2,
+        [3.0],
+        n_rounds=2,
+        n_per_round=30,
+        n_layers=2,
+        hidden=10,
+        epochs=30,
+        lr=0.02,
+        seed=4,
+        n_posterior=200,
+        mcmc_step=0.1,
+    )
     assert abs(res["posterior_mean"][0] - 3.0) < 0.4
 
 
 def test_metropolis_recovers_a_known_target():
-    draws, rate = mcmc_sample(lambda t: -0.5 * (t[0] - 2.0) ** 2, [0.0],
-                              4000, burn=500, step=1.5, seed=2)
+    draws, rate = mcmc_sample(lambda t: -0.5 * (t[0] - 2.0) ** 2, [0.0], 4000, burn=500, step=1.5, seed=2)
     m = sum(p[0] for p in draws) / len(draws)
     sd = math.sqrt(sum((p[0] - m) ** 2 for p in draws) / (len(draws) - 1))
     assert abs(m - 2.0) < 0.15 and abs(sd - 1.0) < 0.15
@@ -138,20 +162,20 @@ def test_metropolis_recovers_a_known_target():
 def test_validation():
     f = MAF(1, 1, n_layers=1, hidden=6, seed=1)
     D = [([0.0], [0.1])]
-    for call in (lambda: MAF(0, 1),
-                 lambda: MAF(1, 1, n_layers=0),
-                 lambda: MAF(1, 1, hidden=0),
-                 lambda: train_flow(f, []),
-                 lambda: train_flow(f, D, epochs=0),
-                 lambda: train_flow(f, D, lr=0.0),
-                 lambda: mcmc_sample(_log_prior, [0.0], 0),
-                 lambda: mcmc_sample(_log_prior, [0.0], 10, step=0.0),
-                 lambda: abcnnt(_sim, [], _log_prior, [0.0]),
-                 lambda: abcnnt(_sim, X_O, _log_prior, []),
-                 lambda: abcnnt(_sim, X_O, _log_prior, [0.0],
-                                n_rounds=0),
-                 lambda: abcnnt(_sim, X_O, _log_prior, [0.0],
-                                n_per_round=0)):
+    for call in (
+        lambda: MAF(0, 1),
+        lambda: MAF(1, 1, n_layers=0),
+        lambda: MAF(1, 1, hidden=0),
+        lambda: train_flow(f, []),
+        lambda: train_flow(f, D, epochs=0),
+        lambda: train_flow(f, D, lr=0.0),
+        lambda: mcmc_sample(_log_prior, [0.0], 0),
+        lambda: mcmc_sample(_log_prior, [0.0], 10, step=0.0),
+        lambda: abcnnt(_sim, [], _log_prior, [0.0]),
+        lambda: abcnnt(_sim, X_O, _log_prior, []),
+        lambda: abcnnt(_sim, X_O, _log_prior, [0.0], n_rounds=0),
+        lambda: abcnnt(_sim, X_O, _log_prior, [0.0], n_per_round=0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

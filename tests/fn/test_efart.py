@@ -1,7 +1,6 @@
 """Tests for morie.fn.efart -- factor rotation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.efart import efa_rotate
 
 

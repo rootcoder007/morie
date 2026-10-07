@@ -57,13 +57,7 @@ def ising(
     K = beta * J
 
     sinh_val = np.sinh(2.0 * K)
-    if Tc > T:
-        if sinh_val > 0:
-            M = (1.0 - sinh_val ** (-4)) ** (1.0 / 8.0)
-        else:
-            M = 1.0
-    else:
-        M = 0.0
+    M = ((1.0 - sinh_val ** (-4)) ** (1.0 / 8.0) if sinh_val > 0 else 1.0) if Tc > T else 0.0
 
     kappa = 2.0 * np.sinh(2.0 * K) / np.cosh(2.0 * K) ** 2
     kappa = min(abs(kappa), 1.0 - 1e-15)

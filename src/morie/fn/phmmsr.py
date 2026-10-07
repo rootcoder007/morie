@@ -57,12 +57,10 @@ doi:10.1017/CBO9780511790492. Profile HMMs.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["msv_score", "gumbel_pvalue", "sparse_rescale",
-           "search_pipeline", "striped_layout"]
+__all__ = ["msv_score", "gumbel_pvalue", "sparse_rescale", "search_pipeline", "striped_layout"]
 
 _EPS = 1e-12
 
@@ -75,8 +73,7 @@ def striped_layout(length, vector_width=4):
     """
     L, w = int(length), int(vector_width)
     if L < 1 or w < 1:
-        raise ValueError("phmmsr: the length and width must be "
-                         "positive")
+        raise ValueError("phmmsr: the length and width must be positive")
     q = (L + w - 1) // w
     order = []
     for i in range(q):
@@ -84,9 +81,12 @@ def striped_layout(length, vector_width=4):
             p = j * q + i
             if p < L:
                 order.append(p)
-    return {"order": order, "segments": q, "width": w,
-            "note": "lanes are independent within a vector, which is "
-                    "what permits the parallel update"}
+    return {
+        "order": order,
+        "segments": q,
+        "width": w,
+        "note": "lanes are independent within a vector, which is what permits the parallel update",
+    }
 
 
 def msv_score(seq, profile, tau=0.02, lam=0.7):
@@ -106,16 +106,15 @@ def msv_score(seq, profile, tau=0.02, lam=0.7):
     for i in range(len(s)):
         prev = list(dp)
         for j in range(M):
-            emit = P[j][int(s[i])] if isinstance(s[i], int) \
-                else P[j][0]
-            src = xmx + math.log(max(float(tau), _EPS)) \
-                if j == 0 else prev[j - 1]
+            emit = P[j][int(s[i])] if isinstance(s[i], int) else P[j][0]
+            src = xmx + math.log(max(float(tau), _EPS)) if j == 0 else prev[j - 1]
             dp[j] = max(src + emit, 0.0)
         xmx = max(xmx, max(dp))
         best = max(best, xmx)
-    return {"score": best,
-            "note": "ungapped segments only, summed -- the gap "
-                    "recursion is what could not be vectorised"}
+    return {
+        "score": best,
+        "note": "ungapped segments only, summed -- the gap recursion is what could not be vectorised",
+    }
 
 
 def gumbel_pvalue(score, mu, lam):
@@ -124,10 +123,10 @@ def gumbel_pvalue(score, mu, lam):
     MSV scores share this distribution with gapped local alignment
     scores, which is what turns the filter threshold into a p-value.
     """
-    l = float(lam)
-    if l <= 0.0:
+    ell = float(lam)
+    if ell <= 0.0:
         raise ValueError("phmmsr: lambda must be positive")
-    z = -l * (float(score) - float(mu))
+    z = -ell * (float(score) - float(mu))
     return 1.0 - math.exp(-math.exp(z)) if z < 700 else 1.0
 
 
@@ -142,20 +141,20 @@ def sparse_rescale(values, floor=1e-30, target=1.0):
         raise ValueError("phmmsr: nothing to rescale")
     m = max(abs(q) for q in v)
     if m > float(floor):
-        return {"values": v, "rescaled": False, "factor": 1.0,
-                "log_offset": 0.0}
+        return {"values": v, "rescaled": False, "factor": 1.0, "log_offset": 0.0}
     if m <= 0.0:
-        raise ValueError("phmmsr: the whole vector underflowed; the "
-                         "rescale interval is too long")
+        raise ValueError("phmmsr: the whole vector underflowed; the rescale interval is too long")
     f = float(target) / m
-    return {"values": [q * f for q in v], "rescaled": True,
-            "factor": f, "log_offset": math.log(f),
-            "note": "the log offset must be accumulated or the final "
-                    "score is wrong by exactly this much"}
+    return {
+        "values": [q * f for q in v],
+        "rescaled": True,
+        "factor": f,
+        "log_offset": math.log(f),
+        "note": "the log offset must be accumulated or the final score is wrong by exactly this much",
+    }
 
 
-def search_pipeline(sequences, profile, msv_threshold=0.02,
-                    mu=10.0, lam=0.7, full_score=None):
+def search_pipeline(sequences, profile, msv_threshold=0.02, mu=10.0, lam=0.7, full_score=None):
     r"""MSV filter first, full Forward/Backward on survivors.
 
     A filter that discards true positives is not an acceleration; the
@@ -174,30 +173,34 @@ def search_pipeline(sequences, profile, msv_threshold=0.02,
     if full_score is not None:
         for i in passed:
             full[i] = float(full_score(sequences[i], profile))
-    return RichResult(payload={
-        "estimate": passed, "passed": passed,
-        "msv_scores": scores, "discarded": discarded,
-        "survivor_fraction": len(passed) / float(len(sequences))
-        if sequences else 0.0,
-        "full_scores": full,
-        "method": "HMMER3 acceleration pipeline; Eddy (2011)",
-        "note": "the threshold is a P-VALUE, because MSV scores share "
-                "the gapped-alignment distribution",
-    })
+    return RichResult(
+        payload={
+            "estimate": passed,
+            "passed": passed,
+            "msv_scores": scores,
+            "discarded": discarded,
+            "survivor_fraction": len(passed) / float(len(sequences)) if sequences else 0.0,
+            "full_scores": full,
+            "method": "HMMER3 acceleration pipeline; Eddy (2011)",
+            "note": "the threshold is a P-VALUE, because MSV scores share the gapped-alignment distribution",
+        }
+    )
 
 
 def cheatsheet():
-    return ("phmmsr: profile HMMs are more sensitive and were far "
-            "slower, so accelerate with a PIPELINE. The MSV filter "
-            "sums multiple UNGAPPED local segments in a striped "
-            "vector layout -- dropping gaps is what makes it "
-            "vectorisable -- and its scores follow the SAME Gumbel "
-            "distribution as gapped local alignment scores, so the "
-            "filter threshold is a P-VALUE rather than an arbitrary "
-            "cutoff. SPARSE RESCALING fires only near underflow "
-            "instead of at every cell, for 20x on Forward/Backward. "
-            "Survivors get the full model; a filter that loses true "
-            "positives is a worse method, not a faster one.")
+    return (
+        "phmmsr: profile HMMs are more sensitive and were far "
+        "slower, so accelerate with a PIPELINE. The MSV filter "
+        "sums multiple UNGAPPED local segments in a striped "
+        "vector layout -- dropping gaps is what makes it "
+        "vectorisable -- and its scores follow the SAME Gumbel "
+        "distribution as gapped local alignment scores, so the "
+        "filter threshold is a P-VALUE rather than an arbitrary "
+        "cutoff. SPARSE RESCALING fires only near underflow "
+        "instead of at every cell, for 20x on Forward/Backward. "
+        "Survivors get the full model; a filter that loses true "
+        "positives is a worse method, not a faster one."
+    )
 
 
 # compact alias per ledger/NAMING.md

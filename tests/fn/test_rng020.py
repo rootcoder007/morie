@@ -1,7 +1,6 @@
 """Tests for rng020.rangayyan_ch3_time_averaged_acf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsacorr import rangayyan_ch3_time_averaged_acf
 
 

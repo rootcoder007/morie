@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsrz', 'gibbons_wsrt_normal_approx']
+__all__ = ["wsrz", "gibbons_wsrt_normal_approx"]
 
 
 def wsrz(tplus, n, alternative="two-sided", correct=False):

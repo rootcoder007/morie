@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_8 import ghosal_gibbs_proc
 
 
@@ -12,8 +11,8 @@ def _pochhammer_log(x, m):
     if m <= 0:
         return 0.0
     s = 0.0
-    for l in range(m):
-        s += math.log(x + l)
+    for ell in range(m):
+        s += math.log(x + ell)
     return s
 
 

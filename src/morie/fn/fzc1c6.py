@@ -68,23 +68,26 @@ def fauzi_conditions_c1_c6(x=None, transform="log", check_moments=True):
         xv = np.asarray(x, dtype=float).ravel()
         if xv.size < 4:
             raise ValueError(f"need at least 4 observations, got {xv.size}.")
-        moments = {"E_X": float(np.mean(xv)),
-                   "E_X2": float(np.mean(xv ** 2)),
-                   "E_X3": float(np.mean(xv ** 3))}
+        moments = {"E_X": float(np.mean(xv)), "E_X2": float(np.mean(xv**2)), "E_X3": float(np.mean(xv**3))}
         # a crude tail check: compare the empirical third moment with
         # what a same-variance normal would give
         sd = float(np.std(xv, ddof=1))
         m = moments["E_X"]
-        ref = m ** 3 + 3 * m * sd ** 2
+        ref = m**3 + 3 * m * sd**2
         heavy = bool(ref > 0 and moments["E_X3"] > 20 * ref)
-    return RichResult(payload={
-        "conditions": conds, "C3_bijective": True,
-        "C6_moments": moments, "heavy_tail_warning": heavy,
-        "binding_in_practice": ["C5", "C6"],
-        "why": "C5 and C6 are what make the bias and variance formulas "
-               "derivable; C6 rules out heavy-tailed data entirely",
-        "transform": tr["name"],
-        "method": "Conditions C1-C6 of Ch. 4, with the C6 moment check made explicit"})
+    return RichResult(
+        payload={
+            "conditions": conds,
+            "C3_bijective": True,
+            "C6_moments": moments,
+            "heavy_tail_warning": heavy,
+            "binding_in_practice": ["C5", "C6"],
+            "why": "C5 and C6 are what make the bias and variance formulas "
+            "derivable; C6 rules out heavy-tailed data entirely",
+            "transform": tr["name"],
+            "method": "Conditions C1-C6 of Ch. 4, with the C6 moment check made explicit",
+        }
+    )
 
 
 def cheatsheet():

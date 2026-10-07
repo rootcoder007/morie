@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['moodmom', 'gibbons_mood_moments']
+__all__ = ["moodmom", "gibbons_mood_moments"]
 
 
 def moodmom(m, n):

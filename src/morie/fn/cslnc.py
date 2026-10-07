@@ -37,7 +37,7 @@ def cosine_lr_schedule(x, lr_max: float = 1e-3, lr_min: float = 0.0, total_steps
     t = np.asarray(x, dtype=float)
     if total_steps <= warmup_steps:
         raise ValueError("total_steps must exceed warmup_steps")
-    scalar = t.ndim == 0
+    scalar = np.ndim(x) == 0
     t = np.atleast_1d(t)
     lr = np.empty_like(t)
     warm = t < warmup_steps

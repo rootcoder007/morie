@@ -16,9 +16,8 @@ def cfmdc(positions, weights, *, threshold=0.5):
     positions = np.asarray(positions, dtype=float)
     weights = np.asarray(weights, dtype=float)
     threshold = float(threshold)
-    total_w = weights.sum()
-    n = len(positions)
-    best_size = n
+    weights.sum()
+    len(positions)
     best_pos = float(np.average(positions, weights=weights))
     stat = best_pos
     return SpatialResult(

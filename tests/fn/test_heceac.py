@@ -1,7 +1,6 @@
 """Tests for morie.fn.heceac -- CEAC."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.heceac import ceac
 
 

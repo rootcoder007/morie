@@ -91,8 +91,7 @@ def party_unity_score(vote_matrix, party_id, unity_votes_only=False):
             counts[i] = int(ok.sum())
 
     by_party = {
-        p: float(np.nanmean(unity[pid == p])) if np.any(~np.isnan(unity[pid == p])) else float("nan")
-        for p in parties
+        p: float(np.nanmean(unity[pid == p])) if np.any(~np.isnan(unity[pid == p])) else float("nan") for p in parties
     }
     return RichResult(
         payload={

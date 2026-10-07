@@ -66,8 +66,7 @@ from ._richresult import RichResult
 from .avalon import _adjacency, implicit_h, parse_smiles, ring_bonds
 from .scfhop import atom_types
 
-__all__ = ["cyp450_inhibition", "descriptors", "fit", "predict",
-           "ISOZYMES", "cheatsheet"]
+__all__ = ["cyp450_inhibition", "descriptors", "fit", "predict", "ISOZYMES", "cheatsheet"]
 
 # The five isozymes Veith et al. screened, in the order the paper lists
 # them.
@@ -76,15 +75,36 @@ ISOZYMES = ("1A2", "2C9", "2C19", "2D6", "3A4")
 # IUPAC standard atomic weights. Where the element has a published
 # interval rather than a single value, the conventional value is used
 # and that is a documented choice, not a rounding.
-_MASS = {"H": 1.008, "B": 10.81, "C": 12.011, "N": 14.007,
-         "O": 15.999, "F": 18.998403163, "P": 30.973761998,
-         "S": 32.06, "Cl": 35.45, "Br": 79.904, "I": 126.90447}
+_MASS = {
+    "H": 1.008,
+    "B": 10.81,
+    "C": 12.011,
+    "N": 14.007,
+    "O": 15.999,
+    "F": 18.998403163,
+    "P": 30.973761998,
+    "S": 32.06,
+    "Cl": 35.45,
+    "Br": 79.904,
+    "I": 126.90447,
+}
 
 # The descriptor block, in a fixed order, because a coefficient vector
 # is meaningless without knowing which slot is which.
-NAMES = ("mw", "heavy_atoms", "n_rings", "n_aromatic_rings",
-         "n_rotatable", "hbd", "hba", "n_basic_n", "n_halogen",
-         "n_polar", "fsp3", "formal_charge")
+NAMES = (
+    "mw",
+    "heavy_atoms",
+    "n_rings",
+    "n_aromatic_rings",
+    "n_rotatable",
+    "hbd",
+    "hba",
+    "n_basic_n",
+    "n_halogen",
+    "n_polar",
+    "fsp3",
+    "formal_charge",
+)
 
 
 def descriptors(smiles):
@@ -166,17 +186,26 @@ def descriptors(smiles):
         if arom[i]:
             continue
         allsingle = True
-        for v, o, k in adj[i]:
+        for v, o, k in adj[i]:  # noqa: B007 - read after the loop
             if o != 1:
                 allsingle = False
         if allsingle and len(adj[i]) + nh[i] == 4:
             nsp3 += 1
 
-    return [mw, float(n), float(len(rings)), float(naro), float(rot),
-            float(hbd), float(hba), float(basic), float(hal),
-            float(pol),
-            (nsp3 / float(ncarb)) if ncarb else 0.0,
-            float(sum(chg))]
+    return [
+        mw,
+        float(n),
+        float(len(rings)),
+        float(naro),
+        float(rot),
+        float(hbd),
+        float(hba),
+        float(basic),
+        float(hal),
+        float(pol),
+        (nsp3 / float(ncarb)) if ncarb else 0.0,
+        float(sum(chg)),
+    ]
 
 
 def _logistic(z):
@@ -217,17 +246,15 @@ def fit(X, y, ridge=1e-6, iters=50, tol=1e-12):
     b = [0.0] * p
     it = 0
     dev = 0.0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         eta = [_w.dot(D[i], b) for i in range(n)]
         mu = [_logistic(v) for v in eta]
         w = [max(mu[i] * (1.0 - mu[i]), 1e-10) for i in range(n)]
         z = [eta[i] + (yy[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[_w.csum(D[i][a] * w[i] * D[i][c] for i in range(n))
-              for c in range(p)] for a in range(p)]
+        A = [[_w.csum(D[i][a] * w[i] * D[i][c] for i in range(n)) for c in range(p)] for a in range(p)]
         for a in range(1, p):
             A[a][a] += ridge
-        rhs = [_w.csum(D[i][a] * w[i] * z[i] for i in range(n))
-               for a in range(p)]
+        rhs = [_w.csum(D[i][a] * w[i] * z[i] for i in range(n)) for a in range(p)]
         nb = _w.solve_chol(_w.chol(A), rhs)
         step = 0.0
         for a in range(p):
@@ -240,26 +267,25 @@ def fit(X, y, ridge=1e-6, iters=50, tol=1e-12):
     eta = [_w.dot(D[i], b) for i in range(n)]
     mu = [_logistic(v) for v in eta]
     dev = -2.0 * _w.csum(
-        (yy[i] * math.log(mu[i] if mu[i] > 1e-300 else 1e-300)
-         + (1.0 - yy[i]) * math.log(1.0 - mu[i] if mu[i] < 1.0 - 1e-300
-                                    else 1e-300)) for i in range(n))
+        (
+            yy[i] * math.log(mu[i] if mu[i] > 1e-300 else 1e-300)
+            + (1.0 - yy[i]) * math.log(1.0 - mu[i] if mu[i] < 1.0 - 1e-300 else 1e-300)
+        )
+        for i in range(n)
+    )
     # The score, which is zero at an unpenalised optimum. Reported
     # rather than asserted, because with a ridge it is zero only up to
     # the penalty -- and a caller who sees it large knows the fit did
     # not converge whatever the iteration count says.
-    score = [_w.csum(D[i][a] * (yy[i] - mu[i]) for i in range(n))
-             for a in range(p)]
-    return {"coefficients": b, "deviance": dev, "iterations": it,
-            "score": score, "ridge": float(ridge), "n": n, "p": p}
+    score = [_w.csum(D[i][a] * (yy[i] - mu[i]) for i in range(n)) for a in range(p)]
+    return {"coefficients": b, "deviance": dev, "iterations": it, "score": score, "ridge": float(ridge), "n": n, "p": p}
 
 
 def predict(x, coefficients):
     """The inhibition probability of one descriptor row."""
     if len(coefficients) != len(x) + 1:
-        raise ValueError("the model must have one coefficient per "
-                         "descriptor plus an intercept")
-    z = coefficients[0] + _w.dot(list(coefficients[1:]),
-                                 [float(v) for v in x])
+        raise ValueError("the model must have one coefficient per descriptor plus an intercept")
+    z = coefficients[0] + _w.dot(list(coefficients[1:]), [float(v) for v in x])
     return _logistic(z)
 
 
@@ -297,31 +323,36 @@ def cyp450_inhibition(smiles, isozyme, model=None):
         coef = model["coefficients"] if hasattr(model, "keys") else model
     if coef is None:
         pred = None
-        reason = ("no coefficients were supplied, and none are shipped: "
-                  "the screen of Veith et al. is published as a dataset "
-                  "and its fitted model is not published as a table, so "
-                  "any default here would be invented. Fit one on "
-                  "inhibition data with this module's fit function and "
-                  "pass it as model.")
+        reason = (
+            "no coefficients were supplied, and none are shipped: "
+            "the screen of Veith et al. is published as a dataset "
+            "and its fitted model is not published as a table, so "
+            "any default here would be invented. Fit one on "
+            "inhibition data with this module's fit function and "
+            "pass it as model."
+        )
     else:
         pred = predict(x, coef)
         reason = ""
-    return RichResult(payload={
-        "descriptors": x,
-        "names": list(NAMES),
-        "named": named,
-        "predicted": pred,
-        "inhibits": None if pred is None else bool(pred >= 0.5),
-        "reason": reason,
-        "isozyme": isozyme,
-        "n_descriptors": len(x),
-        "has_model": coef is not None,
-        "method": "P450 inhibition descriptors with a caller-fitted "
-                  "logistic model",
-    })
+    return RichResult(
+        payload={
+            "descriptors": x,
+            "names": list(NAMES),
+            "named": named,
+            "predicted": pred,
+            "inhibits": None if pred is None else bool(pred >= 0.5),
+            "reason": reason,
+            "isozyme": isozyme,
+            "n_descriptors": len(x),
+            "has_model": coef is not None,
+            "method": "P450 inhibition descriptors with a caller-fitted logistic model",
+        }
+    )
 
 
 def cheatsheet():
-    return ("cypin: P450 inhibition for 1A2/2C9/2C19/2D6/3A4. Exact "
-            "graph descriptors plus a logistic model the caller fits; "
-            "no coefficients are shipped because none are published")
+    return (
+        "cypin: P450 inhibition for 1A2/2C9/2C19/2D6/3A4. Exact "
+        "graph descriptors plus a logistic model the caller fits; "
+        "no coefficients are shipped because none are published"
+    )

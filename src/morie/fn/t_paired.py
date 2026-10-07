@@ -27,21 +27,20 @@ def t_paired(differences):
     ch.9 eq.9.10
     """
     payload = dict(_ca_crim.t_paired(differences))
-    value = payload['t']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["t"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.10)"
     return RichResult(
-        title='Dependent-samples (paired) t-test',
+        title="Dependent-samples (paired) t-test",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e10: t = dbar / sqrt(s_d^2 / n); df = n_pairs - 1 [Weisburd et al. 2022, eq. 9.10]'
+    return "ca9e10: t = dbar / sqrt(s_d^2 / n); df = n_pairs - 1 [Weisburd et al. 2022, eq. 9.10]"
 
 
 # compact alias per ledger/NAMING.md

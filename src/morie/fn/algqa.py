@@ -9,8 +9,7 @@ from .attsdp import scaled_dot_product_attention
 __all__ = ["alammar_grouped_query_attention"]
 
 
-def alammar_grouped_query_attention(Q_heads, K_groups, V_groups,
-                                    n_query_heads, n_kv_groups):
+def alammar_grouped_query_attention(Q_heads, K_groups, V_groups, n_query_heads, n_kv_groups):
     """head_i = Attn(Q_i, K_{g(i)}, V_{g(i)}) with g(i) = i mod G.
 
     G = 1 recovers multi-query attention; G = H recovers full
@@ -20,32 +19,34 @@ def alammar_grouped_query_attention(Q_heads, K_groups, V_groups,
     References: Alammar and Grootendorst, Ch 3 (GQA); Ainslie et al.
     (2023).
     """
-    H = int(n_query_heads); G = int(n_kv_groups)
+    H = int(n_query_heads)
+    G = int(n_kv_groups)
     if H < 1 or G < 1:
         raise ValueError("head and group counts must be positive.")
     if H % G != 0:
-        raise ValueError(
-            f"n_query_heads = {H} must be divisible by n_kv_groups = {G}.")
+        raise ValueError(f"n_query_heads = {H} must be divisible by n_kv_groups = {G}.")
     if len(Q_heads) != H:
         raise ValueError(f"expected {H} query heads; got {len(Q_heads)}.")
     if len(K_groups) != G or len(V_groups) != G:
-        raise ValueError(f"expected {G} K and V groups; got "
-                         f"{len(K_groups)} and {len(V_groups)}.")
+        raise ValueError(f"expected {G} K and V groups; got {len(K_groups)} and {len(V_groups)}.")
     outs = []
     assignment = []
     for i in range(H):
         g = i % G
         assignment.append(g)
-        h = scaled_dot_product_attention(Q_heads[i], K_groups[g],
-                                         V_groups[g])
+        h = scaled_dot_product_attention(Q_heads[i], K_groups[g], V_groups[g])
         outs.append(np.asarray(h["output"]))
     concat = np.concatenate(outs, axis=1)
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in concat],
-        "group_assignment": assignment,
-        "kv_cache_ratio": G / H,
-        "estimate": float(concat[0, 0]), "n": H,
-        "method": "Grouped-query attention (Ainslie et al. 2023)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in concat],
+            "group_assignment": assignment,
+            "kv_cache_ratio": G / H,
+            "estimate": float(concat[0, 0]),
+            "n": H,
+            "method": "Grouped-query attention (Ainslie et al. 2023)",
+        }
+    )
 
 
 def cheatsheet():

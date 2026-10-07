@@ -5,7 +5,7 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['ridgesol', 'ridge_solution', 'ridgesolution']
+__all__ = ["ridgesol", "ridge_solution", "ridgesolution"]
 
 
 def ridgesol(X, y, lam, add_intercept=True):
@@ -37,12 +37,20 @@ def ridgesol(X, y, lam, add_intercept=True):
         raise ValueError("lambda must be non-negative")
     out = G.ridge_fit(X, y, float(lam), add_intercept=bool(add_intercept))
     Xm = C.cbind1(C.mat(X)) if add_intercept else C.mat(X)
-    return RichResult(payload={
-        "beta": out["beta"], "fitted": out["fitted"], "resid":
-            [a - b for a, b in zip(C.vec(y), out["fitted"])],
-        "rss": out["rss"], "penalty": out["penalty"], "prss": out["prss"],
-        "lambda": float(lam), "n": len(Xm), "p": len(Xm[0]),
-        "method": "Ridge closed-form solution, MVSML Sect. 3.6.1"})
+    return RichResult(
+        payload={
+            "beta": out["beta"],
+            "fitted": out["fitted"],
+            "resid": [a - b for a, b in zip(C.vec(y), out["fitted"])],
+            "rss": out["rss"],
+            "penalty": out["penalty"],
+            "prss": out["prss"],
+            "lambda": float(lam),
+            "n": len(Xm),
+            "p": len(Xm[0]),
+            "method": "Ridge closed-form solution, MVSML Sect. 3.6.1",
+        }
+    )
 
 
 ridge_solution = ridgesol
@@ -50,4 +58,4 @@ ridgesolution = ridgesol
 
 
 def cheatsheet():
-    return 'ridgs: Closed-form ridge regression estimator.'
+    return "ridgs: Closed-form ridge regression estimator."

@@ -63,10 +63,10 @@ def dmxlr(
             per_locus_lr.append(0.0)
             continue
 
-        remaining = mix_set - sus_alleles_set
+        mix_set - sus_alleles_set
         all_alleles = list(freqs.keys())
 
-        def _geno_prob(a1, a2):
+        def _geno_prob(a1, a2, *, freqs=freqs):
             f1 = freqs.get(a1, 1e-6)
             f2 = freqs.get(a2, 1e-6)
             if theta > 0:

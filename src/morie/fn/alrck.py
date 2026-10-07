@@ -21,14 +21,20 @@ def alammar_recall_at_k(retrieved, relevant, k):
     rel = set(relevant)
     if not rel:
         raise ValueError(
-            "the relevant set is empty; recall is 0/0 and reporting 1 "
-            "or 0 there would be a choice, not a measurement.")
+            "the relevant set is empty; recall is 0/0 and reporting 1 or 0 there would be a choice, not a measurement."
+        )
     top = list(retrieved)[:k]
     hit = len(rel & set(top))
-    return RichResult(payload={
-        "estimate": hit / len(rel), "hits": hit,
-        "n_relevant": len(rel), "k": k, "n": len(top),
-        "method": "Recall@k (Alammar Ch 8)"})
+    return RichResult(
+        payload={
+            "estimate": hit / len(rel),
+            "hits": hit,
+            "n_relevant": len(rel),
+            "k": k,
+            "n": len(top),
+            "method": "Recall@k (Alammar Ch 8)",
+        }
+    )
 
 
 def cheatsheet():

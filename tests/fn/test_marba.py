@@ -1,7 +1,5 @@
 """Tests for marba.ma_smd_var_correlated_designs."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.marba import ma_smd_var_correlated_designs
 
 

@@ -1,8 +1,8 @@
 """Tests for jorelm.joseph_relative_mae."""
 
-from morie.fn import _array_core as np
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.jorelm import joseph_relative_mae
 
 

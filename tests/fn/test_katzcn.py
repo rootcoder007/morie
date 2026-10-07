@@ -1,7 +1,6 @@
 """Tests for katzcn.katz_centrality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.katzcn import katz_centrality
 
 

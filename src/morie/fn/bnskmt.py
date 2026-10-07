@@ -66,8 +66,7 @@ from . import _s03core as k
 from ._richresult import RichResult
 from .bndsmw import S_function, hypercube_instruments, weighted_moments
 
-__all__ = ["ks_statistic", "ks_critical_value", "ks_confidence_set",
-           "compare_forms"]
+__all__ = ["ks_statistic", "ks_critical_value", "ks_confidence_set", "compare_forms"]
 
 _EPS = 1e-12
 
@@ -79,36 +78,34 @@ def ks_statistic(m, instruments, form="sum", n_equality=0):
     answer is a statement about one region of :math:`X` and that is
     usually the interesting part.
     """
-    G = instruments["instruments"] if isinstance(instruments, dict) \
-        else instruments
+    G = instruments["instruments"] if isinstance(instruments, dict) else instruments
     if not G:
         raise ValueError("bnskmt: the instrument class is empty")
     best, arg, parts = 0.0, None, []
     for a, g in enumerate(G):
         wm = weighted_moments(m, g)
         n = wm["n"]
-        std = [math.sqrt(n) * wm["mean"][j] / max(wm["sd"][j], _EPS)
-               for j in range(len(wm["mean"]))]
+        std = [math.sqrt(n) * wm["mean"][j] / max(wm["sd"][j], _EPS) for j in range(len(wm["mean"]))]
         s = S_function(std, form=form, n_equality=n_equality)
         parts.append(s)
         if s > best:
             best, arg = s, a
-    return {"statistic": best, "argmax": arg,
-            "per_instrument": parts, "form": form,
-            "n_instruments": len(G),
-            "method": "Kolmogorov-Smirnov: supremum of S over G "
-                      "(Andrews & Shi, Sec. 1)"}
+    return {
+        "statistic": best,
+        "argmax": arg,
+        "per_instrument": parts,
+        "form": form,
+        "n_instruments": len(G),
+        "method": "Kolmogorov-Smirnov: supremum of S over G (Andrews & Shi, Sec. 1)",
+    }
 
 
-def ks_critical_value(m, instruments, form="sum", n_equality=0,
-                      level=0.95, reps=200, seed=0, kappa=None):
+def ks_critical_value(m, instruments, form="sum", n_equality=0, level=0.95, reps=200, seed=0, kappa=None):
     r"""GMS critical value for the supremum statistic."""
     M = [[float(v) for v in r] for r in k.mat(m)]
     n = len(M)
-    G = instruments["instruments"] if isinstance(instruments, dict) \
-        else instruments
-    kap = float(kappa) if kappa is not None \
-        else math.sqrt(math.log(max(n, 3)))
+    G = instruments["instruments"] if isinstance(instruments, dict) else instruments
+    kap = float(kappa) if kappa is not None else math.sqrt(math.log(max(n, 3)))
     rng = np.random.default_rng(seed)
     draws = []
     for _ in range(int(reps)):
@@ -123,41 +120,40 @@ def ks_critical_value(m, instruments, form="sum", n_equality=0,
             for j in range(len(wm["mean"])):
                 sd = max(wm0["sd"][j], _EPS)
                 xi = math.sqrt(n) * wm0["mean"][j] / sd
-                centred = math.sqrt(n) * (wm["mean"][j]
-                                          - wm0["mean"][j]) / sd
+                centred = math.sqrt(n) * (wm["mean"][j] - wm0["mean"][j]) / sd
                 std.append(centred + (0.0 if xi <= kap else 1e6))
             s = S_function(std, form=form, n_equality=n_equality)
             best = max(best, s)
         draws.append(best)
     draws.sort()
     q = draws[min(len(draws) - 1, int(float(level) * len(draws)))]
-    return {"critical_value": q, "kappa": kap, "reps": int(reps),
-            "level": float(level)}
+    return {"critical_value": q, "kappa": kap, "reps": int(reps), "level": float(level)}
 
 
-def ks_confidence_set(moment_fn, theta_grid, X, form="sum",
-                      n_equality=0, level=0.95, n_levels=2,
-                      reps=100, seed=0):
+def ks_confidence_set(moment_fn, theta_grid, X, form="sum", n_equality=0, level=0.95, n_levels=2, reps=100, seed=0):
     r"""Invert the KS test over a grid."""
     inst = hypercube_instruments(X, n_levels=n_levels)
     keep, stats = [], {}
     for th in theta_grid:
         m = moment_fn(th)
         t = ks_statistic(m, inst, form=form, n_equality=n_equality)
-        c = ks_critical_value(m, inst, form=form,
-                              n_equality=n_equality, level=level,
-                              reps=reps, seed=seed)
+        c = ks_critical_value(m, inst, form=form, n_equality=n_equality, level=level, reps=reps, seed=seed)
         stats[th] = (t["statistic"], c["critical_value"])
         if t["statistic"] <= c["critical_value"]:
             keep.append(th)
-    return RichResult(payload={
-        "estimate": keep, "set": keep, "n_in_set": len(keep),
-        "bounds": (min(keep), max(keep)) if keep else None,
-        "statistics": stats, "form": form, "level": float(level),
-        "n_instruments": inst["n_instruments"],
-        "method": "KS test with GMS critical values, inverted over "
-                  "the grid; Andrews & Shi",
-    })
+    return RichResult(
+        payload={
+            "estimate": keep,
+            "set": keep,
+            "n_in_set": len(keep),
+            "bounds": (min(keep), max(keep)) if keep else None,
+            "statistics": stats,
+            "form": form,
+            "level": float(level),
+            "n_instruments": inst["n_instruments"],
+            "method": "KS test with GMS critical values, inverted over the grid; Andrews & Shi",
+        }
+    )
 
 
 def compare_forms(m, instruments, form="sum", n_equality=0):
@@ -168,29 +164,32 @@ def compare_forms(m, instruments, form="sum", n_equality=0):
     concentrated or diffuse.
     """
     from .bndsmw import cvm_statistic
-    cv = cvm_statistic(m, instruments, form=form,
-                       n_equality=n_equality)
-    ks = ks_statistic(m, instruments, form=form,
-                      n_equality=n_equality)
-    return {"cvm": cv["statistic"], "ks": ks["statistic"],
-            "ratio_ks_over_cvm": ks["statistic"]
-            / max(cv["statistic"], _EPS),
-            "argmax_instrument": ks["argmax"],
-            "note": "KS is driven by the single worst instrument, CvM "
-                    "by the average; a concentrated violation favours "
-                    "KS and a diffuse one favours CvM"}
+
+    cv = cvm_statistic(m, instruments, form=form, n_equality=n_equality)
+    ks = ks_statistic(m, instruments, form=form, n_equality=n_equality)
+    return {
+        "cvm": cv["statistic"],
+        "ks": ks["statistic"],
+        "ratio_ks_over_cvm": ks["statistic"] / max(cv["statistic"], _EPS),
+        "argmax_instrument": ks["argmax"],
+        "note": "KS is driven by the single worst instrument, CvM "
+        "by the average; a concentrated violation favours "
+        "KS and a diffuse one favours CvM",
+    }
 
 
 def cheatsheet():
-    return ("bnskmt: conditional moment inequalities, KS form. Same "
-            "construction as bndsmw -- conditional inequality becomes "
-            "E[m g(X)] >= 0 for all non-negative g -- but the family "
-            "is collapsed by a SUPREMUM over g rather than an "
-            "integral against Q. KS therefore reacts to a violation "
-            "concentrated on ONE region of X, where CvM averages it "
-            "away; a diffuse violation reverses that. Adding "
-            "instruments can only RAISE the supremum, so truncation "
-            "is conservative.")
+    return (
+        "bnskmt: conditional moment inequalities, KS form. Same "
+        "construction as bndsmw -- conditional inequality becomes "
+        "E[m g(X)] >= 0 for all non-negative g -- but the family "
+        "is collapsed by a SUPREMUM over g rather than an "
+        "integral against Q. KS therefore reacts to a violation "
+        "concentrated on ONE region of X, where CvM averages it "
+        "away; a diffuse violation reverses that. Adding "
+        "instruments can only RAISE the supremum, so truncation "
+        "is conservative."
+    )
 
 
 # compact alias per ledger/NAMING.md

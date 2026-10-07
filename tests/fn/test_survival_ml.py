@@ -1,4 +1,5 @@
 """Random survival forests, AFT boosting, DeepSurv, Deep Survival Machines."""
+
 import importlib
 import math
 
@@ -51,20 +52,16 @@ def test_nelson_aalen_needs_matching_lengths():
 
 
 def test_c_index_is_one_for_a_perfect_ranking():
-    assert R.c_index([1.0, 2.0, 3.0], [1, 1, 1],
-                     [3.0, 2.0, 1.0])["c_index"] == 1.0
-    assert R.c_index([1.0, 2.0, 3.0], [1, 1, 1],
-                     [1.0, 2.0, 3.0])["c_index"] == 0.0
+    assert R.c_index([1.0, 2.0, 3.0], [1, 1, 1], [3.0, 2.0, 1.0])["c_index"] == 1.0
+    assert R.c_index([1.0, 2.0, 3.0], [1, 1, 1], [1.0, 2.0, 3.0])["c_index"] == 0.0
 
 
 def test_ties_score_a_half():
-    assert R.c_index([1.0, 2.0], [1, 1],
-                     [5.0, 5.0])["c_index"] == pytest.approx(0.5)
+    assert R.c_index([1.0, 2.0], [1, 1], [5.0, 5.0])["c_index"] == pytest.approx(0.5)
 
 
 def test_a_censored_shorter_time_makes_a_pair_impermissible():
-    assert R.c_index([1.0, 2.0, 3.0], [0, 1, 1],
-                     [1.0, 2.0, 3.0])["permissible"] == 1.0
+    assert R.c_index([1.0, 2.0, 3.0], [0, 1, 1], [1.0, 2.0, 3.0])["permissible"] == 1.0
 
 
 def test_no_permissible_pairs_is_an_error():
@@ -95,7 +92,7 @@ def test_the_forest_leaves_a_third_of_the_data_out_of_bag():
 
 def test_terminal_nodes_respect_the_death_minimum():
     tree = R.grow_tree(X, T, E, mtry=2, min_deaths=5, seed=1)
-    assert all(l["na"]["deaths"] >= 5 for l in R._leaves(tree["root"]))
+    assert all(ell["na"]["deaths"] >= 5 for ell in R._leaves(tree["root"]))
 
 
 def test_the_out_of_bag_ensemble_is_less_optimistic_than_in_bag():
@@ -107,16 +104,12 @@ def test_the_out_of_bag_ensemble_is_less_optimistic_than_in_bag():
 
 # -------------------------------------------------------------- surxgb
 @pytest.mark.parametrize("dist", G.DISTRIBUTIONS)
-@pytest.mark.parametrize("bounds", [(2.0, 2.0), (2.0, float("inf")),
-                                    (0.0, 3.0), (1.5, 4.0)])
+@pytest.mark.parametrize("bounds", [(2.0, 2.0), (2.0, float("inf")), (0.0, 3.0), (1.5, 4.0)])
 def test_analytic_derivatives_match_the_loss(dist, bounds):
-    a = G.aft_gradient_hessian(bounds[0], bounds[1], 0.3, 1.1, dist,
-                               "analytic")
-    b = G.aft_gradient_hessian(bounds[0], bounds[1], 0.3, 1.1, dist,
-                               "numeric")
+    a = G.aft_gradient_hessian(bounds[0], bounds[1], 0.3, 1.1, dist, "analytic")
+    b = G.aft_gradient_hessian(bounds[0], bounds[1], 0.3, 1.1, dist, "numeric")
     assert a["gradient"] == pytest.approx(b["gradient"], abs=1e-4)
-    assert a["hessian"] == pytest.approx(b["hessian"], rel=1e-2,
-                                         abs=1e-4)
+    assert a["hessian"] == pytest.approx(b["hessian"], rel=1e-2, abs=1e-4)
 
 
 def test_the_extreme_distribution_is_asymmetric():
@@ -132,11 +125,9 @@ def test_an_unknown_distribution_is_refused():
 
 def test_the_censoring_types_use_the_right_pieces():
     u = math.log(2.0)
-    assert G.aft_loss(2.0, float("inf"), u) == pytest.approx(
-        -math.log(0.5))
+    assert G.aft_loss(2.0, float("inf"), u) == pytest.approx(-math.log(0.5))
     assert G.aft_loss(0.0, 2.0, u) == pytest.approx(-math.log(0.5))
-    assert G.aft_loss(2.0, 2.0, u) == pytest.approx(
-        -math.log(G.pdf(0.0) / 2.0))
+    assert G.aft_loss(2.0, 2.0, u) == pytest.approx(-math.log(G.pdf(0.0) / 2.0))
 
 
 def test_an_inverted_interval_is_refused():
@@ -177,8 +168,7 @@ def test_the_linear_network_reproduces_coxph():
     cox = C.coxph(t, e, Xc)["coefficients"]
     lin = N.fit(Xc, t, e, hidden=(), lr=1.0, n_epochs=20000, tol=1e-14)
     for j in range(2):
-        assert lin["coefficients"][j] == pytest.approx(float(cox[j]),
-                                                       abs=5e-3)
+        assert lin["coefficients"][j] == pytest.approx(float(cox[j]), abs=5e-3)
 
 
 def test_the_partial_likelihood_ignores_an_additive_shift():
@@ -201,22 +191,18 @@ def test_an_unknown_activation_is_refused():
 def test_breslow_hazard_is_non_decreasing():
     fit = N.fit(X, T, E, hidden=(), lr=0.5, n_epochs=300)
     bh = N.baseline_hazard(fit)
-    assert all(bh["cumulative_hazard"][i]
-               <= bh["cumulative_hazard"][i + 1]
-               for i in range(len(bh["time"]) - 1))
+    assert all(bh["cumulative_hazard"][i] <= bh["cumulative_hazard"][i + 1] for i in range(len(bh["time"]) - 1))
     sf = N.survival_function(fit, X[0])
     assert all(0.0 <= v <= 1.0 for v in sf["survival"])
 
 
 # -------------------------------------------------------------- survvae
 def test_the_weibull_survival_is_exact():
-    assert V.log_survival(2.0, 1.5, 3.0) == pytest.approx(
-        -((2.0 / 3.0) ** 1.5))
+    assert V.log_survival(2.0, 1.5, 3.0) == pytest.approx(-((2.0 / 3.0) ** 1.5))
 
 
 def test_the_lognormal_is_at_its_median_at_the_scale():
-    assert math.exp(V.log_survival(3.0, 1.0, 3.0,
-                                   "lognormal")) == pytest.approx(0.5)
+    assert math.exp(V.log_survival(3.0, 1.0, 3.0, "lognormal")) == pytest.approx(0.5)
 
 
 @pytest.mark.parametrize("p", V.PRIMITIVES)
@@ -250,18 +236,15 @@ def test_the_elbo_sits_below_the_exact_likelihood():
 def test_alpha_zero_removes_the_censored_contribution():
     W = [[0.0, 0.0], [0.0, 0.0]]
     moved = [T[i] * (3.0 if not E[i] else 1.0) for i in range(len(T))]
-    a = V.elbo(X, T, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0],
-               alpha=0.0)["elbo"]
-    b = V.elbo(X, moved, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0],
-               alpha=0.0)["elbo"]
+    a = V.elbo(X, T, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0], alpha=0.0)["elbo"]
+    b = V.elbo(X, moved, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0], alpha=0.0)["elbo"]
     assert a == pytest.approx(b)
 
 
 def test_an_alpha_outside_the_unit_interval_is_refused():
     W = [[0.0, 0.0], [0.0, 0.0]]
     with pytest.raises(ValueError):
-        V.elbo(X, T, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0],
-               alpha=1.5)
+        V.elbo(X, T, E, W, [0.0, 0.0], [1.5, 3.0], [2.0, 6.0], alpha=1.5)
 
 
 def test_competing_risks_need_a_non_censored_cause():
@@ -273,5 +256,4 @@ def test_predicted_survival_is_a_decreasing_probability():
     fit = V.fit(X, T, E, K=2, seed=1, restarts=1)
     ps = V.predict_survival(fit, X[0], [0.5, 1.0, 2.0, 4.0])
     assert all(0.0 <= v <= 1.0 for v in ps["survival"])
-    assert all(ps["survival"][i] >= ps["survival"][i + 1]
-               for i in range(3))
+    assert all(ps["survival"][i] >= ps["survival"][i + 1] for i in range(3))

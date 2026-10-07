@@ -98,12 +98,10 @@ An Empirical Investigation", *Journal of Money, Credit and Banking*
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["ideal_weights", "cf_filter", "frequency_response",
-           "drift_adjust"]
+__all__ = ["ideal_weights", "cf_filter", "frequency_response", "drift_adjust"]
 
 _EPS = 1e-12
 _METHODS = ("asymmetric", "symmetric", "one_sided")
@@ -118,19 +116,22 @@ def ideal_weights(p_low, p_high, n):
     """
     pl, pu = float(p_low), float(p_high)
     if not 2.0 <= pl < pu:
-        raise ValueError("crfflt: need 2 <= p_low < p_high, got "
-                         "(%.4f, %.4f)" % (pl, pu))
+        raise ValueError(f"crfflt: need 2 <= p_low < p_high, got ({pl:.4f}, {pu:.4f})")
     if int(n) < 0:
         raise ValueError("crfflt: n must be non-negative")
     a, b = 2.0 * math.pi / pu, 2.0 * math.pi / pl
     B = [(b - a) / math.pi]
     for j in range(1, int(n) + 1):
         B.append((math.sin(j * b) - math.sin(j * a)) / (math.pi * j))
-    return {"B": B, "a": a, "b": b, "p_low": pl, "p_high": pu,
-            "B0": B[0],
-            "note": "the ideal filter is infinite; these weights die "
-                    "out only slowly (Fig. 1a: still non-zero at "
-                    "j = 120)"}
+    return {
+        "B": B,
+        "a": a,
+        "b": b,
+        "p_low": pl,
+        "p_high": pu,
+        "B0": B[0],
+        "note": "the ideal filter is infinite; these weights die out only slowly (Fig. 1a: still non-zero at j = 120)",
+    }
 
 
 def drift_adjust(x):
@@ -153,21 +154,18 @@ def _tail(B, m):
     return -0.5 * B[0] - sum(B[j] for j in range(1, m))
 
 
-def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None,
-              drift=True):
+def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None, drift=True):
     r"""Extract the band :math:`[p_l, p_u]` by one of the three routes.
 
     Defaults are the quarterly business cycle, 6 to 32 quarters (1.5
     to 8 years).
     """
     if method not in _METHODS:
-        raise ValueError("crfflt: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("crfflt: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     v = [float(q) for q in k.vec(x)]
     T = len(v)
     if T < 5:
-        raise ValueError("crfflt: need at least 5 observations, got %d"
-                         % T)
+        raise ValueError(f"crfflt: need at least 5 observations, got {int(T)}")
     mu = 0.0
     if drift and method != "symmetric":
         da = drift_adjust(v)
@@ -177,8 +175,7 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None,
     if method == "symmetric":
         pp = int(p) if p is not None else min(12, (T - 1) // 2)
         if pp < 1 or 2 * pp >= T:
-            raise ValueError("crfflt: p must satisfy 1 <= p < T/2, "
-                             "got %d for T = %d" % (pp, T))
+            raise ValueError(f"crfflt: p must satisfy 1 <= p < T/2, got {int(pp)} for T = {int(T)}")
         w = [B[j] for j in range(pp)]
         end = _tail(B, pp)
         out = [float("nan")] * T
@@ -188,16 +185,21 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None,
                 s += w[j] * (v[t + j] + v[t - j])
             s += end * (v[t + pp] + v[t - pp])
             out[t] = s
-        wts = [end] + [w[j] for j in range(pp - 1, 0, -1)] + \
-              [w[0]] + [w[j] for j in range(1, pp)] + [end]
-        return RichResult(payload={
-            "estimate": out, "cycle": out, "method": "symmetric",
-            "p": pp, "weights": wts, "weight_sum": sum(wts),
-            "n_missing": 2 * pp, "drift_removed": 0.0,
-            "note": "two unit roots, so the output is invariant to "
-                    "drift; costs the first and last p observations",
-            "reference": "Christiano & Fitzgerald (2003) footnote 5",
-        })
+        wts = [end] + [w[j] for j in range(pp - 1, 0, -1)] + [w[0]] + [w[j] for j in range(1, pp)] + [end]
+        return RichResult(
+            payload={
+                "estimate": out,
+                "cycle": out,
+                "method": "symmetric",
+                "p": pp,
+                "weights": wts,
+                "weight_sum": sum(wts),
+                "n_missing": 2 * pp,
+                "drift_removed": 0.0,
+                "note": "two unit roots, so the output is invariant to drift; costs the first and last p observations",
+                "reference": "Christiano & Fitzgerald (2003) footnote 5",
+            }
+        )
 
     if method == "one_sided":
         out = [float("nan")] * T
@@ -210,13 +212,16 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None,
                 s += B[j] * v[t - j]
             s += _tail(B, back) * v[0]
             out[t] = s
-        return RichResult(payload={
-            "estimate": out, "cycle": out, "method": "one_sided",
-            "drift_removed": mu,
-            "note": "eq. (1.4): current and past data only, for real "
-                    "time estimation",
-            "reference": "Christiano & Fitzgerald (2003) eq. (1.4)",
-        })
+        return RichResult(
+            payload={
+                "estimate": out,
+                "cycle": out,
+                "method": "one_sided",
+                "drift_removed": mu,
+                "note": "eq. (1.4): current and past data only, for real time estimation",
+                "reference": "Christiano & Fitzgerald (2003) eq. (1.4)",
+            }
+        )
 
     out, sums = [], []
     for t in range(T):
@@ -237,16 +242,21 @@ def cf_filter(x, p_low=6.0, p_high=32.0, method="asymmetric", p=None,
             w[0] += _tail(B, b)
         out.append(sum(w[i] * v[i] for i in range(T)))
         sums.append(sum(w))
-    return RichResult(payload={
-        "estimate": out, "cycle": out, "method": "asymmetric",
-        "trend": [v[i] - out[i] for i in range(T)],
-        "drift_removed": mu, "weight_sums": sums,
-        "max_abs_weight_sum": max(abs(s) for s in sums),
-        "note": "eq. (1.2): time-varying weights, uses every "
-                "observation; ONE unit root, so the data must be "
-                "drift-adjusted first",
-        "reference": "Christiano & Fitzgerald (2003) eqs. (1.2)-(1.3)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "cycle": out,
+            "method": "asymmetric",
+            "trend": [v[i] - out[i] for i in range(T)],
+            "drift_removed": mu,
+            "weight_sums": sums,
+            "max_abs_weight_sum": max(abs(s) for s in sums),
+            "note": "eq. (1.2): time-varying weights, uses every "
+            "observation; ONE unit root, so the data must be "
+            "drift-adjusted first",
+            "reference": "Christiano & Fitzgerald (2003) eqs. (1.2)-(1.3)",
+        }
+    )
 
 
 def frequency_response(weights, omega):
@@ -262,16 +272,18 @@ def frequency_response(weights, omega):
 
 
 def cheatsheet():
-    return ("crfflt: band pass by PROJECTION, not truncation. Ideal "
-            "weights B_j = (sin jb - sin ja)/(pi j), B_0 = (b-a)/pi, "
-            "a = 2pi/p_u, b = 2pi/p_l. They decay SLOWLY -- still "
-            "non-zero at j = 120 -- so truncation bites. The "
-            "recommended filter is optimal under a RANDOM WALK "
-            "assumption that is probably false and works anyway. "
-            "Endpoint weights absorb the tails and every weight vector "
-            "sums to ZERO, so a constant is annihilated exactly. "
-            "Asymmetric has one unit root and needs drift adjustment; "
-            "symmetric has two and does not.")
+    return (
+        "crfflt: band pass by PROJECTION, not truncation. Ideal "
+        "weights B_j = (sin jb - sin ja)/(pi j), B_0 = (b-a)/pi, "
+        "a = 2pi/p_u, b = 2pi/p_l. They decay SLOWLY -- still "
+        "non-zero at j = 120 -- so truncation bites. The "
+        "recommended filter is optimal under a RANDOM WALK "
+        "assumption that is probably false and works anyway. "
+        "Endpoint weights absorb the tails and every weight vector "
+        "sums to ZERO, so a constant is annihilated exactly. "
+        "Asymmetric has one unit root and needs drift adjustment; "
+        "symmetric has two and does not."
+    )
 
 
 # compact alias per ledger/NAMING.md

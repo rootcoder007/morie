@@ -95,7 +95,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
     best = (np.inf, None, None)
     for _ in range(int(n_trials)):
         idx = rng.choice(n, h, replace=False)
-        for _ in range(20):                      # C-steps
+        for _ in range(20):  # C-steps
             mu = X[idx].mean(axis=0)
             S = np.cov(X[idx], rowvar=False).reshape(p, p) + 1e-9 * np.eye(p)
             try:
@@ -109,8 +109,7 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
             idx = new
         det = float(np.linalg.det(np.cov(X[idx], rowvar=False).reshape(p, p)))
         if 0 <= det < best[0]:
-            best = (det, X[idx].mean(axis=0),
-                    np.cov(X[idx], rowvar=False).reshape(p, p) + 1e-9 * np.eye(p))
+            best = (det, X[idx].mean(axis=0), np.cov(X[idx], rowvar=False).reshape(p, p) + 1e-9 * np.eye(p))
     _, mu, S = best
     if mu is None:
         mu, S = X.mean(axis=0), np.cov(X, rowvar=False).reshape(p, p)
@@ -126,16 +125,19 @@ def mcd_outlier(X, support_fraction=None, n_trials=50, alpha=0.025, seed=0):
     out = d2 > cut
     return RichResult(
         title="MCD outlier detection",
-        summary_lines=[("n", n), ("h", h), ("outliers", int(out.sum())),
-                       ("cutoff", cut)],
-        warnings=["the chi-squared cutoff is exact only asymptotically and "
-                  "under normality"],
+        summary_lines=[("n", n), ("h", h), ("outliers", int(out.sum())), ("cutoff", cut)],
+        warnings=["the chi-squared cutoff is exact only asymptotically and under normality"],
         payload={
             "distance": np.sqrt(np.maximum(d2, 0)),
             "classical_distance": np.sqrt(np.maximum(cd2, 0)),
-            "outlier": out, "location": mu, "covariance": S,
-            "cutoff": float(np.sqrt(cut)), "n_outliers": int(out.sum()),
-            "h": int(h), "support_fraction": frac, "method": "mcd_outlier",
+            "outlier": out,
+            "location": mu,
+            "covariance": S,
+            "cutoff": float(np.sqrt(cut)),
+            "n_outliers": int(out.sum()),
+            "h": int(h),
+            "support_fraction": frac,
+            "method": "mcd_outlier",
         },
     )
 

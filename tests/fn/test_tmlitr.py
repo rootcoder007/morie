@@ -1,7 +1,6 @@
 """Tests for tmlitr.tmle_individual_regime."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlitr import tmle_individual_regime
 
 

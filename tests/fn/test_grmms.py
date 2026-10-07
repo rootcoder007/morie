@@ -1,7 +1,6 @@
 """Tests for grmms.geron_minmax_scaler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grmms import geron_minmax_scaler
 
 

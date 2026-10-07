@@ -28,27 +28,30 @@ def kamath_ch9_output_projector_mse(H_X, tau_X, t):
     >>> out["estimate"]              # (0^2 + 2^2) / 2
     2.0
     """
-    target = np.asarray(tau_X(t) if callable(tau_X) else tau_X,
-                        dtype=float)
+    target = np.asarray(tau_X(t) if callable(tau_X) else tau_X, dtype=float)
     H = np.asarray(H_X, dtype=float)
     if H.ndim not in (1, 2, 3):
-        raise ValueError("H_X must be 1-D, a 2-D feature matrix, or a "
-                         "3-D stack of candidates.")
+        raise ValueError("H_X must be 1-D, a 2-D feature matrix, or a 3-D stack of candidates.")
     cands = H if H.ndim == 3 else H[None, ...]
     cand_shape = tuple(H.shape)[1:] if H.ndim == 3 else tuple(H.shape)
     if cand_shape != tuple(target.shape):
         raise ValueError(
-            f"H_X entries are {cand_shape} but tau_X(t) is "
-            f"{tuple(target.shape)}; the MSE is not defined "
-            f"between them.")
+            f"H_X entries are {cand_shape} but tau_X(t) is {tuple(target.shape)}; the MSE is not defined between them."
+        )
     if target.size == 0:
         raise ValueError("the target features are empty.")
     losses = [float(np.mean((c - target) ** 2)) for c in cands]
     k = int(np.argmin(losses))
-    return RichResult(payload={
-        "estimate": losses[k], "argmin": k, "losses": losses,
-        "n_candidates": len(losses), "n": int(target.size),
-        "method": "output-projector MSE objective (Kamath Eq 9.18)"})
+    return RichResult(
+        payload={
+            "estimate": losses[k],
+            "argmin": k,
+            "losses": losses,
+            "n_candidates": len(losses),
+            "n": int(target.size),
+            "method": "output-projector MSE objective (Kamath Eq 9.18)",
+        }
+    )
 
 
 def cheatsheet():

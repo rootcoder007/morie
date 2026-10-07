@@ -65,9 +65,7 @@ def ksstat(x, cdf):
         pval = float(1.0 - stats.ksone.cdf(stat, n))
     else:
         lam = (np.sqrt(n) + 0.12 + 0.11 / np.sqrt(n)) * stat
-        pval = 2.0 * float(
-            np.sum([(-1) ** (k - 1) * np.exp(-2.0 * k * k * lam * lam) for k in range(1, 101)])
-        )
+        pval = 2.0 * float(np.sum([(-1) ** (k - 1) * np.exp(-2.0 * k * k * lam * lam) for k in range(1, 101)]))
         pval = max(0.0, min(1.0, pval))
     return RichResult(
         payload={

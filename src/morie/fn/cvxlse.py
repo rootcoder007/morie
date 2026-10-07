@@ -82,13 +82,15 @@ def boyd_lse(x, temperature=1.0):
         ent = float(-np.sum(np.where(p > 0, p * np.log(p), 0.0)))
     return RichResult(
         title="Softmax",
-        summary_lines=[("n", int(xv.size)), ("temperature", t),
-                       ("max prob", float(p.max())), ("entropy", ent)],
+        summary_lines=[("n", int(xv.size)), ("temperature", t), ("max prob", float(p.max())), ("entropy", ent)],
         payload={
-            "value": p, "entropy": ent, "argmax": int(np.argmax(xv)),
+            "value": p,
+            "entropy": ent,
+            "argmax": int(np.argmax(xv)),
             "max_prob": float(p.max()),
             "jacobian_diag": p * (1.0 - p) / t,
-            "temperature": t, "method": "boyd_lse",
+            "temperature": t,
+            "method": "boyd_lse",
         },
     )
 

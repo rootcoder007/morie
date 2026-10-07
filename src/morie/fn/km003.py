@@ -29,12 +29,17 @@ def kamath_ch2_context_simplest(h_T, all_states=None):
         agrees = bool(np.allclose(via_m, h))
         if not agrees:
             raise ValueError(
-                "h_T does not equal the last row of all_states; the "
-                "simplest mapping is c = h_T and these disagree.")
-    return RichResult(payload={
-        "context": [float(v) for v in h], "agrees_with_eq22": agrees,
-        "estimate": float(h[0]), "n": len(h),
-        "method": "Simplest context c = h_T (Kamath Eq 2.3)"})
+                "h_T does not equal the last row of all_states; the simplest mapping is c = h_T and these disagree."
+            )
+    return RichResult(
+        payload={
+            "context": [float(v) for v in h],
+            "agrees_with_eq22": agrees,
+            "estimate": float(h[0]),
+            "n": len(h),
+            "method": "Simplest context c = h_T (Kamath Eq 2.3)",
+        }
+    )
 
 
 def cheatsheet():

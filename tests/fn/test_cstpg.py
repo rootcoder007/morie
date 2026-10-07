@@ -1,7 +1,6 @@
 """Tests for morie.fn.cstpg — custody program participation rate."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cstpg import custody_program_rate
 
 

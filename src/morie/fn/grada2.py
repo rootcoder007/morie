@@ -77,10 +77,7 @@ def geron_adagrad_update(theta, grad, s, eta, eps=1e-10):
     s_new = s + grad * grad
     denom = np.sqrt(s_new) + eps
     if np.any(denom == 0):
-        raise ValueError(
-            "zero denominator: a coordinate has zero accumulated gradient and "
-            "eps=0; pass eps > 0."
-        )
+        raise ValueError("zero denominator: a coordinate has zero accumulated gradient and eps=0; pass eps > 0.")
     eff_lr = eta / denom
     step = eff_lr * grad
     theta_new = theta - step

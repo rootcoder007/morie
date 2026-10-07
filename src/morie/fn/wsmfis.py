@@ -62,7 +62,10 @@ def wasserman_fisher_info(f, theta, x_grid=None, h=1e-5):
     if f is None:
         if theta <= 0:
             raise ValueError(f"the exponential model needs theta > 0; got {theta}.")
-        f = lambda x, th: np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
+        def f(x, th):
+            return np.where(x >= 0, np.exp(-x / th) / th, 0.0)
+
         if x_grid is None:
             x_grid = np.linspace(0.0, 40.0 * theta, 200001)
     if x_grid is None:
@@ -80,10 +83,16 @@ def wasserman_fisher_info(f, theta, x_grid=None, h=1e-5):
     info = float(0.5 * np.sum(dx * (integ[1:] + integ[:-1])))
     if info <= 0:
         raise ValueError(f"numeric information came out non-positive ({info}); check the model/grid.")
-    return RichResult(payload={
-        "estimate": info, "se_one_obs": float(info ** -0.5),
-        "theta": theta, "h": float(h), "grid_points": int(x.size),
-        "method": "I = -int f(x;th) d2 log f/dth2 dx (central diff + trapezoid)"})
+    return RichResult(
+        payload={
+            "estimate": info,
+            "se_one_obs": float(info**-0.5),
+            "theta": theta,
+            "h": float(h),
+            "grid_points": int(x.size),
+            "method": "I = -int f(x;th) d2 log f/dth2 dx (central diff + trapezoid)",
+        }
+    )
 
 
 def cheatsheet():

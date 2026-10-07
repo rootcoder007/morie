@@ -1,6 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kozachenko-Leonenko k-NN entropy estimator."""
 
+import heapq
 import math
 
 from . import _array_core as np
@@ -16,9 +17,12 @@ def _digamma(x):
         r -= 1.0 / x
         x += 1.0
     f = 1.0 / (x * x)
-    return (r + math.log(x) - 0.5 / x
-            + f * (-1 / 12.0 + f * (1 / 120.0 + f * (-1 / 252.0
-                   + f * (1 / 240.0 + f * (-1 / 132.0))))))
+    return (
+        r
+        + math.log(x)
+        - 0.5 / x
+        + f * (-1 / 12.0 + f * (1 / 120.0 + f * (-1 / 252.0 + f * (1 / 240.0 + f * (-1 / 132.0)))))
+    )
 
 
 def knn_entropy(x, k=3, base="nats"):
@@ -82,33 +86,29 @@ def knn_entropy(x, k=3, base="nats"):
     n, d = X.shape
     k = int(k)
     if k < 1:
-        raise ValueError("k must be at least 1, got %d." % k)
+        raise ValueError(f"k must be at least 1, got {int(k)}.")
     if n <= k:
-        raise ValueError(
-            "need more than k = %d observations, got %d." % (k, n)
-        )
+        raise ValueError(f"need more than k = {int(k)} observations, got {int(n)}.")
     if base not in ("nats", "bits"):
-        raise ValueError("base must be 'nats' or 'bits', got %r." % base)
+        raise ValueError(f"base must be 'nats' or 'bits', got {base!r}.")
 
-    D = np.sqrt(((X[:, None, :] - X[None, :, :]) ** 2).sum(axis=2))
-    np.fill_diagonal(D, np.inf)
-    eps = np.sort(D, axis=1)[:, k - 1]
+    # the k-th neighbour distance row by row: O(n) memory (the full n x n matrix of Python
+    # floats took 2.6 GB at n = 3000 and an out-of-memory kill took the test run with it)
+    rows = [tuple(float(v) for v in r) for r in X.tolist()]
+    eps = np.asarray(
+        [heapq.nsmallest(k, (math.dist(a, b) for j, b in enumerate(rows) if j != i))[-1] for i, a in enumerate(rows)]
+    )
     if np.any(eps <= 0):
-        raise ValueError(
-            "duplicate points give a zero neighbour distance; jitter the "
-            "data or lower k."
-        )
+        raise ValueError("duplicate points give a zero neighbour distance; jitter the data or lower k.")
     log_cd = (d / 2.0) * math.log(math.pi) - math.lgamma(d / 2.0 + 1.0)
-    H = (-_digamma(k) + _digamma(n) + log_cd
-         + (d / n) * float(np.sum(np.log(eps))))
+    H = -_digamma(k) + _digamma(n) + log_cd + (d / n) * float(np.sum(np.log(eps)))
     if base == "bits":
         H = H / math.log(2.0)
 
     cov = np.cov(X, rowvar=False)
     cov = np.atleast_2d(cov)
     sign, ld = np.linalg.slogdet(cov + 1e-12 * np.eye(d))
-    gauss = 0.5 * (d * math.log(2 * math.pi * math.e) + ld) if sign > 0 \
-        else np.nan
+    gauss = 0.5 * (d * math.log(2 * math.pi * math.e) + ld) if sign > 0 else np.nan
     if base == "bits" and gauss == gauss:
         gauss = gauss / math.log(2.0)
     return RichResult(
@@ -122,9 +122,7 @@ def knn_entropy(x, k=3, base="nats"):
             # ddof=1 to match R's stats::sd; numpy defaults to the
             # population divisor and the two differ by sqrt(n/(n-1)),
             # which is enough to break a ten-digit parity anchor
-            "distance_concentration": float(
-                np.std(eps, ddof=1) / np.mean(eps)
-            ),
+            "distance_concentration": float(np.std(eps, ddof=1) / np.mean(eps)),
             "concentration_note": (
                 "spread of the k-th neighbour distance over its mean; as "
                 "this collapses toward zero the points are all equidistant "
@@ -154,10 +152,7 @@ def knn_entropy(x, k=3, base="nats"):
 
 
 def cheatsheet():
-    return (
-        "entest: k-NN differential entropy with the digamma correction and "
-        "a high-dimension concentration warning"
-    )
+    return "entest: k-NN differential entropy with the digamma correction and a high-dimension concentration warning"
 
 
 #: Catalogue alias for :func:`knn_entropy`.

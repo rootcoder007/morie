@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Betweenness centrality by Brandes' algorithm."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['btwcent', 'sgt_betweenness_centrality']
+__all__ = ["btwcent", "sgt_betweenness_centrality"]
 
 
 def btwcent(A, normalise=False):
@@ -49,9 +47,11 @@ def btwcent(A, normalise=False):
         dist = [-1] * n
         sigma[s] = 1.0
         dist[s] = 0
-        q = [s]; h = 0
+        q = [s]
+        h = 0
         while h < len(q):
-            v = q[h]; h += 1
+            v = q[h]
+            h += 1
             stack.append(v)
             for w in adj[v]:
                 if dist[w] < 0:
@@ -68,11 +68,14 @@ def btwcent(A, normalise=False):
                 cb[w] += delta[w]
     cb = [v / 2.0 for v in cb]
     denom = (n - 1) * (n - 2) / 2.0 if n > 2 else float("nan")
-    return RichResult(payload={
-        "betweenness": cb,
-        "normalised": [v / denom for v in cb] if denom == denom else
-                      [float("nan")] * n,
-        "n": n, "method": "Betweenness centrality (Brandes)"})
+    return RichResult(
+        payload={
+            "betweenness": cb,
+            "normalised": [v / denom for v in cb] if denom == denom else [float("nan")] * n,
+            "n": n,
+            "method": "Betweenness centrality (Brandes)",
+        }
+    )
 
 
 sgt_betweenness_centrality = btwcent

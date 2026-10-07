@@ -54,11 +54,17 @@ def wasserman_variance(x):
     mu = float(np.mean(x))
     var_pop = float(np.mean((x - mu) ** 2))
     var_samp = float(np.var(x, ddof=1)) if n > 1 else 0.0
-    return RichResult(payload={
-        "estimate": var_pop, "sample_variance": var_samp, "mean": mu,
-        "second_moment": float(np.mean(x ** 2)),
-        "sd": float(np.sqrt(var_pop)), "n": int(n),
-        "method": "Variance Var(X) = E[X^2] - E[X]^2"})
+    return RichResult(
+        payload={
+            "estimate": var_pop,
+            "sample_variance": var_samp,
+            "mean": mu,
+            "second_moment": float(np.mean(x**2)),
+            "sd": float(np.sqrt(var_pop)),
+            "n": int(n),
+            "method": "Variance Var(X) = E[X^2] - E[X]^2",
+        }
+    )
 
 
 def cheatsheet():

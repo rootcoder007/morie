@@ -1,7 +1,6 @@
 """Tests for ljbox.ljung_box_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ljbox import ljbox as ljung_box_test
 
 

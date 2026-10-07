@@ -11,8 +11,6 @@ The stabilized inverse-probability weights are computed by
 model fitted in the pseudo-population those weights create.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,14 +24,17 @@ def msm_linear(y, treatment_history, covariate_history=None, weights=None):
     time-varying confounders are handled by the weights, not by
     adjustment, which is the whole point of an MSM. Keys: estimate."""
     d = _gp.msm_design(treatment_history)
-    f = _gp.msm_weighted_glm(y, d["X"], weights=weights,
-                             family="gaussian")
-    res = RichResult(payload={"estimate": f["beta"][1],
-                              "beta": f["beta"],
-                              "beta_a": f["beta"][1],
-                              "a_bar": d["a_bar"],
-                              "fitted": f["fitted"],
-                              "method": "linear MSM (Robins et al. 2000)"})
+    f = _gp.msm_weighted_glm(y, d["X"], weights=weights, family="gaussian")
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][1],
+            "beta": f["beta"],
+            "beta_a": f["beta"][1],
+            "a_bar": d["a_bar"],
+            "fitted": f["fitted"],
+            "method": "linear MSM (Robins et al. 2000)",
+        }
+    )
     return with_describe_pointer(res, "msmlin")
 
 

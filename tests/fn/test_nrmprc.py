@@ -1,7 +1,6 @@
 """Tests for nrmprc.normalized_inverse_gauss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nrmprc import normalized_inverse_gauss
 
 

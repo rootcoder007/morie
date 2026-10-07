@@ -8,10 +8,8 @@ Semiparametric Inference*, Ch. 2 -- in the library, filed under its ISBN
 import math
 
 import pytest
-import pytest
 
 from morie.fn.ksr03 import kosorok_glivenko_cantelli as gc
-
 
 X = [math.sin(1.7 * i) * 2 for i in range(25)]
 
@@ -33,5 +31,3 @@ def test_ksr03_edge():
     n = 8
     r = gc(list(range(n)), [(i + 0.5) / n for i in range(n)])
     assert r["statistic"] == pytest.approx(1 / (2 * n), rel=1e-14)
-
-

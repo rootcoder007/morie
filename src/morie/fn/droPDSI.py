@@ -39,7 +39,6 @@ doi:10.1175/1520-0442(2004)017<2335:ASPDSI>2.0.CO;2.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -56,21 +55,19 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
     if n == 0:
         raise ValueError("droPDSI: an empty series has no water balance")
     if len(PE) != n:
-        raise ValueError("droPDSI: %d precipitation but %d PET values"
-                         % (n, len(PE)))
+        raise ValueError(f"droPDSI: {int(n)} precipitation but {int(len(PE))} PET values")
     awc = float(awc)
     if awc <= 0.0:
-        raise ValueError("droPDSI: the available water capacity must be "
-                         "positive")
-    su_cap = min(25.4, awc)            # surface layer, Palmer's 1 inch
-    sl_cap = awc - su_cap              # underlying layer
+        raise ValueError("droPDSI: the available water capacity must be positive")
+    su_cap = min(25.4, awc)  # surface layer, Palmer's 1 inch
+    sl_cap = awc - su_cap  # underlying layer
 
-    Ss, Su = su_cap, sl_cap            # start at field capacity
+    Ss, Su = su_cap, sl_cap  # start at field capacity
     ET, R, RO, L = [], [], [], []
     PR, PRO, PL = [], [], []
     for i in range(n):
-        pr = (su_cap - Ss) + (sl_cap - Su)      # potential recharge
-        pro = Ss + Su                            # potential runoff (Palmer)
+        pr = (su_cap - Ss) + (sl_cap - Su)  # potential recharge
+        pro = Ss + Su  # potential runoff (Palmer)
         # potential loss: surface first, then the underlying layer
         pls = min(PE[i], Ss)
         plu = min((PE[i] - pls) * Su / awc if awc > _EPS else 0.0, Su)
@@ -115,8 +112,7 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
     gamma = ratio(RO, PRO)
     delta = ratio(L, PL)
 
-    Phat = [alpha * PE[i] + beta * PR[i] + gamma * PRO[i] - delta * PL[i]
-            for i in range(n)]
+    Phat = [alpha * PE[i] + beta * PR[i] + gamma * PRO[i] - delta * PL[i] for i in range(n)]
     d = [P[i] - Phat[i] for i in range(n)]
 
     # Palmer's climatic characteristic is computed PER CALENDAR MONTH and
@@ -127,8 +123,7 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
     else:
         mon = [int(v) % 12 for v in k.vec(month)]
         if len(mon) != n:
-            raise ValueError("droPDSI: %d observations but %d month labels"
-                             % (n, len(mon)))
+            raise ValueError(f"droPDSI: {int(n)} observations but {int(len(mon))} month labels")
     Kp_month = [0.0] * 12
     D_month = [0.0] * 12
     for j in range(12):
@@ -159,24 +154,40 @@ def palmer_pdsi(precip, pet, awc=100.0, month=None):
         X.append(cur)
         prev = cur
 
-    return RichResult(payload={
-        "estimate": X, "pdsi": X, "z_index": Z, "departure": d,
-        "cafec_precip": Phat,
-        "alpha": alpha, "beta": beta, "gamma": gamma, "delta": delta,
-        "K": Kp, "K_month": Kp_month,
-        "mean_abs_departure": D_month, "evapotranspiration": ET, "recharge": R, "runoff": RO,
-        "loss": L, "soil_surface_capacity": su_cap,
-        "soil_under_capacity": sl_cap, "n": n,
-        "duration_factor": 0.897, "duration_divisor": 3.0,
-        "method": "Palmer Drought Severity Index from a two-layer water "
-                  "balance (Palmer 1965, Research Paper 45)",
-        "note": "the 0.897 and the /3 are Palmer's fitted duration factors, "
-                "chosen so the index is comparable BETWEEN climates -- a "
-                "locally re-tuned version is no longer PDSI",
-    })
+    return RichResult(
+        payload={
+            "estimate": X,
+            "pdsi": X,
+            "z_index": Z,
+            "departure": d,
+            "cafec_precip": Phat,
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gamma,
+            "delta": delta,
+            "K": Kp,
+            "K_month": Kp_month,
+            "mean_abs_departure": D_month,
+            "evapotranspiration": ET,
+            "recharge": R,
+            "runoff": RO,
+            "loss": L,
+            "soil_surface_capacity": su_cap,
+            "soil_under_capacity": sl_cap,
+            "n": n,
+            "duration_factor": 0.897,
+            "duration_divisor": 3.0,
+            "method": "Palmer Drought Severity Index from a two-layer water balance (Palmer 1965, Research Paper 45)",
+            "note": "the 0.897 and the /3 are Palmer's fitted duration factors, "
+            "chosen so the index is comparable BETWEEN climates -- a "
+            "locally re-tuned version is no longer PDSI",
+        }
+    )
 
 
 def cheatsheet():
-    return ("droPDSI: palmer_pdsi(precip, pet, awc) -> PDSI, Z index and the "
-            "CAFEC water balance (Palmer 1965, Meteorological Drought, "
-            "Research Paper No. 45, U.S. Weather Bureau)")
+    return (
+        "droPDSI: palmer_pdsi(precip, pet, awc) -> PDSI, Z index and the "
+        "CAFEC water balance (Palmer 1965, Meteorological Drought, "
+        "Research Paper No. 45, U.S. Weather Bureau)"
+    )

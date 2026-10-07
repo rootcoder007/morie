@@ -76,5 +76,6 @@ r0est = r0_next_generation
 def cheatsheet() -> str:
     return "r0_next_generation({}) -> R0 via next-generation matrix method."
 
+
 # alias kept from the retired placeholder of the same name
 next_generation_matrix = r0_next_generation

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.dinmlt import dino_multicrop
 
 
@@ -13,8 +12,7 @@ def test_dinmlt_basic():
     image = rng.normal(0, 1, (10, 4))  # V=10 (2 global + 8 local), d=4
     result = dino_multicrop(image, global_size=2, local_size=8)
     assert isinstance(result, dict)
-    for key in ("estimate", "loss", "n_pairs", "teacher",
-                "student_entropy", "V", "d"):
+    for key in ("estimate", "loss", "n_pairs", "teacher", "student_entropy", "V", "d"):
         assert key in result
     assert result["V"] == 10
     assert result["d"] == 4

@@ -6,8 +6,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["kamath_unigram_lm_tokenizer", "unigram_loglik",
-           "viterbi_segment"]
+__all__ = ["kamath_unigram_lm_tokenizer", "unigram_loglik", "viterbi_segment"]
 
 
 def _pieces_by_end(text, vocab_set, maxlen):
@@ -16,7 +15,7 @@ def _pieces_by_end(text, vocab_set, maxlen):
     ends = [[] for _ in range(L + 1)]
     for j in range(1, L + 1):
         for n in range(1, min(maxlen, j) + 1):
-            w = text[j - n:j]
+            w = text[j - n : j]
             if w in vocab_set:
                 ends[j].append(w)
     return ends
@@ -43,7 +42,7 @@ def _backward(text, probs, maxlen):
     for j in range(L - 1, -1, -1):
         tot = 0.0
         for n in range(1, min(maxlen, L - j) + 1):
-            w = text[j:j + n]
+            w = text[j : j + n]
             if w in probs:
                 tot += probs[w] * beta[j + n]
         beta[j] = tot
@@ -64,7 +63,8 @@ def unigram_loglik(corpus, probs):
         if alpha[-1] <= 0.0:
             raise ValueError(
                 f"{s!r} has no segmentation under this vocabulary; add "
-                "the missing characters as single-character pieces.")
+                "the missing characters as single-character pieces."
+            )
         total += math.log(alpha[-1])
     return total
 
@@ -79,7 +79,7 @@ def viterbi_segment(text, probs):
     best[0] = 0.0
     for j in range(1, L + 1):
         for n in range(1, min(maxlen, j) + 1):
-            w = text[j - n:j]
+            w = text[j - n : j]
             p = probs.get(w)
             if p is None or p <= 0 or best[j - n] == -math.inf:
                 continue
@@ -157,8 +157,7 @@ def kamath_unigram_lm_tokenizer(corpus, vocab, max_iter=100, tol=1e-12):
             ll += math.log(Z)
             for j in range(1, len(s) + 1):
                 for w in ends[j]:
-                    counts[w] += (alpha[j - len(w)] * probs[w]
-                                  * beta[j]) / Z
+                    counts[w] += (alpha[j - len(w)] * probs[w] * beta[j]) / Z
         history.append(ll)
         total = sum(counts.values())
         if total <= 0:
@@ -171,16 +170,19 @@ def kamath_unigram_lm_tokenizer(corpus, vocab, max_iter=100, tol=1e-12):
     final_ll = unigram_loglik(corpus, probs)
     history.append(final_ll)
     segs = [viterbi_segment(s, probs)[0] for s in corpus]
-    return RichResult(payload={
-        "probs": probs,
-        "log_likelihood": final_ll,
-        "log_likelihood_history": history,
-        "n_iterations": len(history) - 1,
-        "segmentations": segs,
-        "vocab_size": len(vocab),
-        "estimate": final_ll,
-        "n": len(corpus),
-        "method": "Unigram LM EM (forward-backward expected counts)"})
+    return RichResult(
+        payload={
+            "probs": probs,
+            "log_likelihood": final_ll,
+            "log_likelihood_history": history,
+            "n_iterations": len(history) - 1,
+            "segmentations": segs,
+            "vocab_size": len(vocab),
+            "estimate": final_ll,
+            "n": len(corpus),
+            "method": "Unigram LM EM (forward-backward expected counts)",
+        }
+    )
 
 
 def cheatsheet():

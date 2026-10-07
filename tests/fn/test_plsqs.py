@@ -1,7 +1,6 @@
 """Tests for plsqs.pls_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.plsqs import pls_regression
 
 

@@ -52,9 +52,7 @@ def kamath_medusa_heads(hidden_state, medusa_heads, k, verify=None):
     if k < 1:
         raise ValueError(f"k must be at least 1; got {k}.")
     if k > len(heads):
-        raise ValueError(
-            f"asked for {k} speculative tokens but only {len(heads)} "
-            "heads were supplied.")
+        raise ValueError(f"asked for {k} speculative tokens but only {len(heads)} heads were supplied.")
     tokens, probs, all_probs = [], [], []
     for i, head in enumerate(heads[:k]):
         if callable(head):
@@ -63,13 +61,11 @@ def kamath_medusa_heads(hidden_state, medusa_heads, k, verify=None):
             W = np.atleast_2d(np.asarray(head, dtype=float))
             if W.shape[0] != h.size:
                 raise ValueError(
-                    f"head {i} is ({W.shape[0]}, {W.shape[1]}) but the "
-                    f"hidden state has {h.size} dimensions.")
+                    f"head {i} is ({W.shape[0]}, {W.shape[1]}) but the hidden state has {h.size} dimensions."
+                )
             logits = h @ W
         if logits.size < 2:
-            raise ValueError(
-                f"head {i} produced {logits.size} logits; a vocabulary "
-                "of one token predicts nothing.")
+            raise ValueError(f"head {i} produced {logits.size} logits; a vocabulary of one token predicts nothing.")
         if not np.all(np.isfinite(logits)):
             raise ValueError(f"head {i} produced a non-finite logit.")
         p = _softmax(logits)
@@ -87,14 +83,19 @@ def kamath_medusa_heads(hidden_state, medusa_heads, k, verify=None):
             if not bool(verify(i, t)):
                 break
             accepted += 1
-    return RichResult(payload={
-        "tokens": tokens, "probabilities": probs,
-        "distributions": all_probs,
-        "n_heads_available": len(heads), "n_heads_used": k,
-        "accepted": accepted,
-        "estimate": accepted if accepted is not None else probs[0],
-        "n": k,
-        "method": "Medusa multi-head speculative prediction"})
+    return RichResult(
+        payload={
+            "tokens": tokens,
+            "probabilities": probs,
+            "distributions": all_probs,
+            "n_heads_available": len(heads),
+            "n_heads_used": k,
+            "accepted": accepted,
+            "estimate": accepted if accepted is not None else probs[0],
+            "n": k,
+            "method": "Medusa multi-head speculative prediction",
+        }
+    )
 
 
 def cheatsheet():

@@ -11,5 +11,6 @@ def test_almnrl_basic():
 
 def test_almnrl_edge():
     import pytest
+
     with pytest.raises(ValueError, match="at least 2"):
         alammar_multiple_negatives_ranking([[1.0]], [[1.0]])

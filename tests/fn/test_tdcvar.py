@@ -10,8 +10,7 @@ import pytest
 
 from morie.fn.tdcvar import time_dep_covariate
 
-from ._msm_fixture import N, TH1, dose, feedback  # noqa: F401
-
+from ._msm_fixture import TH1
 
 
 def test_the_fixture_is_additive(feedback):
@@ -40,11 +39,9 @@ def test_tdcvar_recovers_the_effect_both_naive_fixes_miss(feedback):
 
 def test_tdcvar_argument_checks(feedback):
     with pytest.raises(ValueError):
-        time_dep_covariate(feedback["Y"], feedback["A"],
-                           [feedback["L"][0]])
+        time_dep_covariate(feedback["Y"], feedback["A"], [feedback["L"][0]])
     with pytest.raises(ValueError):
-        time_dep_covariate(feedback["Y"], feedback["A"], feedback["L"],
-                           contrast="nope")
+        time_dep_covariate(feedback["Y"], feedback["A"], feedback["L"], contrast="nope")
 
 
 # ----------------------------------------------------------- lggvls

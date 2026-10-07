@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), App. J, completely random measures.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_crm_def import ghosal_completely_random_measure
 
 

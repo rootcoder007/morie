@@ -44,8 +44,10 @@ def gibbons_linrank_symmetry_cond(a, N=None):
     sym = bool(np.allclose(sums, sums[0]))
     return RichResult(
         payload={
-            "symmetric": sym, "constant": float(sums[0]) if sym else None,
-            "pair_sums": sums, "N": int(N),
+            "symmetric": sym,
+            "constant": float(sums[0]) if sym else None,
+            "pair_sums": sums,
+            "N": int(N),
             "method": "a_i + a_{N-i+1} constant => T_N symmetric (Theorem 7.3.4)",
         }
     )

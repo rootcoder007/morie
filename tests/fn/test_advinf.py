@@ -3,8 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.advinf import advi
 
 
@@ -34,9 +32,7 @@ def test_advinf_basic():
 
     # Independent computation of the ELBO per the docstring formula.
     expected_entropy = sum(omega) + 0.5 * K * (1.0 + math.log(2.0 * math.pi))
-    expected_mlj = sum(logjoint([mu[k] + math.exp(omega[k]) * eta[s][k]
-                                 for k in range(K)])
-                       for s in range(S)) / S
+    expected_mlj = sum(logjoint([mu[k] + math.exp(omega[k]) * eta[s][k] for k in range(K)]) for s in range(S)) / S
     expected_elbo = expected_mlj + expected_entropy
 
     assert abs(result["entropy"] - expected_entropy) < 1e-12
@@ -67,9 +63,7 @@ def test_advinf_edge():
     assert len(calls) == S  # logjoint evaluated once per draw.
 
     expected_entropy = sum(omega) + 0.5 * K * (1.0 + math.log(2.0 * math.pi))
-    expected_mlj = sum(logjoint([mu[k] + math.exp(omega[k]) * eta[s][k]
-                                 for k in range(K)])
-                       for s in range(S)) / S
+    expected_mlj = sum(logjoint([mu[k] + math.exp(omega[k]) * eta[s][k] for k in range(K)]) for s in range(S)) / S
     expected_elbo = expected_mlj + expected_entropy
 
     assert abs(result["entropy"] - expected_entropy) < 1e-12

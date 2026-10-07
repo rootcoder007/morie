@@ -1,7 +1,6 @@
 """Tests for morie.fn.sntag — sentence by age group."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.sntag import sentence_by_age
 
 

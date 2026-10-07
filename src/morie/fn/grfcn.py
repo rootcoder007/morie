@@ -90,8 +90,8 @@ def geron_fcn_upsample(X, W, stride=2):
     counts = np.zeros((oh, ow), dtype=int)
     for i in range(H):
         for j in range(Wi):
-            Y[i * s:i * s + kh, j * s:j * s + kw] += A[i, j] * K
-            counts[i * s:i * s + kh, j * s:j * s + kw] += 1
+            Y[i * s : i * s + kh, j * s : j * s + kw] += A[i, j] * K
+            counts[i * s : i * s + kh, j * s : j * s + kw] += 1
 
     return RichResult(
         title="Transposed convolution (upsample)",

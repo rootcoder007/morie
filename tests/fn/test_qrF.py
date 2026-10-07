@@ -38,14 +38,14 @@ def test_a_high_quantile_punishes_under_prediction():
     y, p_low, p_high = [10.0], [5.0], [15.0]
     under = qrF(y, p_low, theta=0.9)["estimate"]
     over = qrF(y, p_high, theta=0.9)["estimate"]
-    assert under > over          # missing high is expensive at theta=0.9
+    assert under > over  # missing high is expensive at theta=0.9
     under_l = qrF(y, p_low, theta=0.1)["estimate"]
     over_l = qrF(y, p_high, theta=0.1)["estimate"]
     assert over_l > under_l
 
 
 def test_the_loss_is_minimised_at_the_true_quantile():
-    y = [float(i) for i in range(101)]        # quantiles are known
+    y = [float(i) for i in range(101)]  # quantiles are known
     at_median = qrF(y, [50.0] * 101, theta=0.5)["estimate"]
     off_median = qrF(y, [70.0] * 101, theta=0.5)["estimate"]
     assert at_median < off_median
@@ -55,10 +55,12 @@ def test_the_loss_is_minimised_at_the_true_quantile():
 
 
 def test_validation():
-    for call in (lambda: qrF([], []),
-                 lambda: qrF([1.0], [1.0, 2.0]),
-                 lambda: qrF([1.0], [1.0], theta=0.0),
-                 lambda: qrF([1.0], [1.0], theta=1.0)):
+    for call in (
+        lambda: qrF([], []),
+        lambda: qrF([1.0], [1.0, 2.0]),
+        lambda: qrF([1.0], [1.0], theta=0.0),
+        lambda: qrF([1.0], [1.0], theta=1.0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

@@ -27,17 +27,16 @@ def interaction_logit(b, x1, x2, z1, z2):
     """
     value = _acd.interaction_logit(b, x1, x2, z1, z2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.22)"
     return RichResult(
-        title='Logit with a two-categorical-variable interaction',
+        title="Logit with a two-categorical-variable interaction",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e22: logit(pi) = b0 + b1 x1 + b2 x2 + b3 z1 + b4 z2 + b5 x1 z1 + ... + b8 x2 z2 [Bilder & Loughin 2025, eq. 2.22]'
+    return "2e22: logit(pi) = b0 + b1 x1 + b2 x2 + b3 z1 + b4 z2 + b5 x1 z1 + ... + b8 x2 z2 [Bilder & Loughin 2025, eq. 2.22]"

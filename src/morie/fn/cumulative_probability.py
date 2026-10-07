@@ -28,17 +28,16 @@ def cumulative_probability(probs, m):
     """
     value = _ca_crim.cumulative_probability(probs, m)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (5.6)"
     return RichResult(
-        title='Cumulative probability P(y <= m) = sum_{j<=m} P(y=j)',
+        title="Cumulative probability P(y <= m) = sum_{j<=m} P(y=j)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca5e6: P(y<=m) = sum_{j=1..m} P(y=j) [Weisburd et al. 2022, eq. 5.6]'
+    return "ca5e6: P(y<=m) = sum_{j=1..m} P(y=j) [Weisburd et al. 2022, eq. 5.6]"

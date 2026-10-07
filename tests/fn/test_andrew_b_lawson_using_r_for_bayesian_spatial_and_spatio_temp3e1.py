@@ -2,10 +2,7 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
-
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1,
 )
@@ -24,10 +21,7 @@ def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1_basic()
 
     # The function returns a dict-like result; extract the numeric joint likelihood.
     assert isinstance(result, dict)
-    numeric_values = [
-        v for v in result.values()
-        if isinstance(v, (int, float)) and not isinstance(v, bool)
-    ]
+    numeric_values = [v for v in result.values() if isinstance(v, (int, float)) and not isinstance(v, bool)]
     assert len(numeric_values) >= 1
     payload = float(numeric_values[0])
     assert math.isfinite(payload)
@@ -43,10 +37,7 @@ def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp3e1_edge():
     result = andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_3_equation_1(dens)
 
     assert isinstance(result, dict)
-    numeric_values = [
-        v for v in result.values()
-        if isinstance(v, (int, float)) and not isinstance(v, bool)
-    ]
+    numeric_values = [v for v in result.values() if isinstance(v, (int, float)) and not isinstance(v, bool)]
     assert len(numeric_values) >= 1
     payload = float(numeric_values[0])
     assert math.isfinite(payload)

@@ -45,10 +45,7 @@ def threat_score(
     if numeric.shape[1] == 0:
         raise ValueError("No numeric features to score")
 
-    if weights is None:
-        w = np.ones(numeric.shape[1])
-    else:
-        w = np.array([weights.get(c, 1.0) for c in numeric.columns])
+    w = np.ones(numeric.shape[1]) if weights is None else np.array([weights.get(c, 1.0) for c in numeric.columns])
 
     means = numeric.mean()
     stds = numeric.std()
@@ -56,18 +53,12 @@ def threat_score(
     # Standardise column by column: the frame core has no DataFrame-minus-
     # Series broadcast, and `numeric - means` raised TypeError rather than
     # producing the documented z-score composite.
-    z = pd.DataFrame(
-        {c: ((numeric[c] - float(means[c])) / float(stds[c])).tolist()
-         for c in list(numeric.columns)}
-    )
+    z = pd.DataFrame({c: ((numeric[c] - float(means[c])) / float(stds[c])).tolist() for c in list(numeric.columns)})
 
     scores = z.to_numpy() @ w
     if normalize:
         s_min, s_max = scores.min(), scores.max()
-        if s_max > s_min:
-            scores = (scores - s_min) / (s_max - s_min)
-        else:
-            scores = np.zeros_like(scores)
+        scores = (scores - s_min) / (s_max - s_min) if s_max > s_min else np.zeros_like(scores)
 
     contributions = {}
     for i, col in enumerate(numeric.columns):

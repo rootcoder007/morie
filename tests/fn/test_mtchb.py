@@ -1,7 +1,6 @@
 """Test matched_filter_bank (mtchb)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mtchb import matched_filter_bank, mtchb
 

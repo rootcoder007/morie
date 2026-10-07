@@ -86,18 +86,22 @@ def boot_oob_error(x, y, fit_fn, predict_fn, B=100, loss=None, seed=0):
     per_i = np.where(keep, loss_sum / np.maximum(oob_cnt, 1), np.nan)
     err_oob = float(np.nanmean(per_i[keep])) if keep.any() else np.nan
     full = fit_fn(A, yv)
-    err_app = float(np.mean(L(yv, np.asarray(
-        predict_fn(full, A), dtype=float).ravel())))
-    return RichResult(payload={
-        "err_oob": err_oob, "err_apparent": err_app,
-        "per_observation": per_i,
-        "n_dropped": int((~keep).sum()),
-        "oob_fraction": float(oob_cnt.mean() / Bn),
-        "honesty_note": "no observation is ever scored by a fit that saw "
-                        "it; each point is out of bag for about 36.8% of "
-                        "replicates",
-        "B": int(Bn), "n": int(n),
-        "method": "Out-of-bag error (Efron-Tibshirani 1997; Breiman 1996)"})
+    err_app = float(np.mean(L(yv, np.asarray(predict_fn(full, A), dtype=float).ravel())))
+    return RichResult(
+        payload={
+            "err_oob": err_oob,
+            "err_apparent": err_app,
+            "per_observation": per_i,
+            "n_dropped": int((~keep).sum()),
+            "oob_fraction": float(oob_cnt.mean() / Bn),
+            "honesty_note": "no observation is ever scored by a fit that saw "
+            "it; each point is out of bag for about 36.8% of "
+            "replicates",
+            "B": int(Bn),
+            "n": int(n),
+            "method": "Out-of-bag error (Efron-Tibshirani 1997; Breiman 1996)",
+        }
+    )
 
 
 def cheatsheet():

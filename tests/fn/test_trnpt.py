@@ -1,7 +1,6 @@
 """Test turning_points_test (trnpt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.trnpt import trnpt, turning_points_test
 
@@ -24,7 +23,7 @@ class TestTurningPointsTest:
     def test_stationary_random(self):
         x = np.random.default_rng(42).standard_normal(500)
         result = turning_points_test(x)
-        assert result.extra["stationary"] == True
+        assert result.extra["stationary"]
 
     def test_alias(self):
         assert trnpt is turning_points_test

@@ -54,11 +54,18 @@ def ot_unbalanced(a, b, C, epsilon, lam, max_iter=200):
     if len(Cm) != n or len(Cm[0]) != m:
         raise ValueError("cost matrix does not match the marginals")
     T = ot.sinkhorn_unbalanced(aa, bb, Cm, float(epsilon), float(lam), max_iter)
-    return RichResult(payload={
-        "T": T, "cost": ot.frob(T, Cm),
-        "mass": sum(T[i][j] for i in range(n) for j in range(m)),
-        "mass_a": sum(aa), "mass_b": sum(bb), "n": n, "m": m,
-        "method": "Unbalanced optimal transport"})
+    return RichResult(
+        payload={
+            "T": T,
+            "cost": ot.frob(T, Cm),
+            "mass": sum(T[i][j] for i in range(n) for j in range(m)),
+            "mass_a": sum(aa),
+            "mass_b": sum(bb),
+            "n": n,
+            "m": m,
+            "method": "Unbalanced optimal transport",
+        }
+    )
 
 
 def cheatsheet():

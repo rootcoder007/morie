@@ -6,8 +6,6 @@ Implements eq. (6.10) p.194 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,9 +19,14 @@ def multitrait_ridge_form(Z1, G):
     B_1 = L_G^-1 b_1 ~ MN(0, I_J, Sigma_T), so the RKHS predictor is
     replaced by a BRR one on X_1. Keys: estimate."""
     f = _gp.multitrait_ridge_form(Z1, G)
-    res = RichResult(payload={"estimate": f["X1"][0][0],
-                              "X1": f["X1"], "L_G": f["L_G"],
-                              "method": "multivariate ridge form (MVSML 2022 eq. 6.10)"})
+    res = RichResult(
+        payload={
+            "estimate": f["X1"][0][0],
+            "X1": f["X1"],
+            "L_G": f["L_G"],
+            "method": "multivariate ridge form (MVSML 2022 eq. 6.10)",
+        }
+    )
     return with_describe_pointer(res, "msm072")
 
 

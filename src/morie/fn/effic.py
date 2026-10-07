@@ -100,10 +100,7 @@ def effic(
 
     fisher_info = float(np.mean(scores**2))
 
-    if fisher_info < 1e-15:
-        eff_bound = np.inf
-    else:
-        eff_bound = 1.0 / fisher_info
+    eff_bound = np.inf if fisher_info < 1e-15 else 1.0 / fisher_info
 
     if influence_values is not None:
         influence_values = np.asarray(influence_values, dtype=float).ravel()
@@ -113,10 +110,7 @@ def effic(
     else:
         achieved_var = eff_bound
 
-    if achieved_var < 1e-15:
-        ratio = 1.0 if eff_bound < 1e-15 else 0.0
-    else:
-        ratio = eff_bound / achieved_var
+    ratio = (1.0 if eff_bound < 1e-15 else 0.0) if achieved_var < 1e-15 else eff_bound / achieved_var
 
     is_eff = abs(ratio - 1.0) <= tol
 

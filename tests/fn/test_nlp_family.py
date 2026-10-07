@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 """Tests for the NLP batch: lda, plsa, sacrb, sentpc, sbert.
 
 Each test pins a published value, a closed form, an exact identity, or
 a brute-force cross-check -- never a self-comparison.
 """
+
 import importlib
 import math
 
@@ -18,9 +18,7 @@ sbert = importlib.import_module("morie.fn.sbert")
 DOC = [0, 1, 1, 2, 0, 3, 3, 3]
 BETA1 = [[0.4, 0.3, 0.2, 0.1]]
 BETA2 = [[0.55, 0.25, 0.15, 0.05], [0.05, 0.15, 0.25, 0.55]]
-N_DW = [[3.0, 1.0, 0.0, 2.0],
-        [0.0, 4.0, 1.0, 1.0],
-        [2.0, 0.0, 3.0, 0.0]]
+N_DW = [[3.0, 1.0, 0.0, 2.0], [0.0, 4.0, 1.0, 1.0], [2.0, 0.0, 3.0, 0.0]]
 
 
 # ---------------------------------------------------------------- lda
@@ -36,8 +34,7 @@ def test_lda_elbo_is_monotone():
     """Blockwise maximisation of one bound -- it cannot fall."""
     vals = []
     for it in range(1, 12):
-        ri = lda.variational_inference(DOC, 0.3, BETA2, iters=it,
-                                       tol=0.0)
+        ri = lda.variational_inference(DOC, 0.3, BETA2, iters=it, tol=0.0)
         vals.append(lda.elbo(DOC, 0.3, BETA2, ri["phi"], ri["gamma"]))
     for i in range(1, len(vals)):
         assert vals[i] >= vals[i - 1] - 1e-12
@@ -86,22 +83,18 @@ def test_plsa_single_aspect_is_the_empirical_marginal():
     f = plsa.fit_plsa(N_DW, 1, iters=3)
     ew = [sum(N_DW[d][w] for d in range(3)) / tot for w in range(4)]
     ed = [sum(N_DW[d]) / tot for d in range(3)]
-    assert max(abs(f["P_w_given_z"][0][w] - ew[w])
-               for w in range(4)) < 1e-9
-    assert max(abs(f["P_d_given_z"][0][d] - ed[d])
-               for d in range(3)) < 1e-9
+    assert max(abs(f["P_w_given_z"][0][w] - ew[w]) for w in range(4)) < 1e-9
+    assert max(abs(f["P_d_given_z"][0][d] - ed[d]) for d in range(3)) < 1e-9
 
 
 def test_plsa_single_aspect_loglik_closed_form():
     tot = sum(sum(r) for r in N_DW)
     ew = [sum(N_DW[d][w] for d in range(3)) / tot for w in range(4)]
     ed = [sum(N_DW[d]) / tot for d in range(3)]
-    closed = sum(N_DW[d][w] * math.log(ed[d] * ew[w])
-                 for d in range(3) for w in range(4) if N_DW[d][w] > 0)
+    closed = sum(N_DW[d][w] * math.log(ed[d] * ew[w]) for d in range(3) for w in range(4) if N_DW[d][w] > 0)
     f = plsa.fit_plsa(N_DW, 1, iters=3)
     assert abs(f["final_loglik"] - closed) < 1e-9
-    px = plsa.perplexity(N_DW, f["P_z"], f["P_d_given_z"],
-                         f["P_w_given_z"])
+    px = plsa.perplexity(N_DW, f["P_z"], f["P_d_given_z"], f["P_w_given_z"])
     assert abs(px - math.exp(-closed / tot)) < 1e-9
 
 
@@ -120,8 +113,7 @@ def test_plsa_more_aspects_fit_at_least_as_well():
 
 def test_plsa_posterior_rows_are_distributions():
     f = plsa.fit_plsa(N_DW, 2, iters=20, seed=5)
-    post = plsa.e_step(N_DW, f["P_z"], f["P_d_given_z"],
-                       f["P_w_given_z"])
+    post = plsa.e_step(N_DW, f["P_z"], f["P_d_given_z"], f["P_w_given_z"])
     for d in range(3):
         for w in range(4):
             if N_DW[d][w] > 0:
@@ -130,8 +122,7 @@ def test_plsa_posterior_rows_are_distributions():
 
 def test_plsa_joint_is_a_distribution():
     f = plsa.fit_plsa(N_DW, 2, iters=20, seed=5)
-    P = plsa.joint_probability(f["P_z"], f["P_d_given_z"],
-                               f["P_w_given_z"])
+    P = plsa.joint_probability(f["P_z"], f["P_d_given_z"], f["P_w_given_z"])
     assert abs(sum(sum(r) for r in P) - 1.0) < 1e-9
 
 
@@ -149,9 +140,7 @@ def test_sacrb_papineni_example_1():
     """The printed 2/7 of Papineni et al. (2002) Example 1."""
     cand = "the the the the the the the"
     refs = ["The cat is on the mat", "There is a cat on the mat"]
-    mp = sacrb.modified_precision(
-        sacrb.tokenize_13a(cand, True),
-        [sacrb.tokenize_13a(x, True) for x in refs], 1)
+    mp = sacrb.modified_precision(sacrb.tokenize_13a(cand, True), [sacrb.tokenize_13a(x, True) for x in refs], 1)
     assert mp["numerator"] == 2
     assert mp["denominator"] == 7
     assert abs(mp["precision"] - 2.0 / 7.0) < 1e-12
@@ -160,30 +149,27 @@ def test_sacrb_papineni_example_1():
 def test_sacrb_clipping_is_what_caps_the_score():
     cand = sacrb.tokenize_13a("the the the the the the the", True)
     assert sum(sacrb.ngram_counts(cand, 1).values()) == 7
-    mp = sacrb.modified_precision(
-        cand, [sacrb.tokenize_13a("The cat is on the mat", True)], 1)
+    mp = sacrb.modified_precision(cand, [sacrb.tokenize_13a("The cat is on the mat", True)], 1)
     assert mp["numerator"] == 2
 
 
 def test_sacrb_identical_candidate_scores_one():
-    b = sacrb.bleu(["the cat sat on the mat today"],
-                   [["the cat sat on the mat today"]])
+    b = sacrb.bleu(["the cat sat on the mat today"], [["the cat sat on the mat today"]])
     assert abs(b["bleu"] - 1.0) < 1e-12
     assert b["bp"] == 1.0
 
 
 def test_sacrb_brevity_penalty_closed_form():
-    assert abs(sacrb.brevity_penalty(6, 7)
-               - math.exp(1.0 - 7.0 / 6.0)) < 1e-15
+    assert abs(sacrb.brevity_penalty(6, 7) - math.exp(1.0 - 7.0 / 6.0)) < 1e-15
     assert sacrb.brevity_penalty(8, 7) == 1.0
     assert sacrb.brevity_penalty(7, 7) == 1.0
 
 
 def test_sacrb_best_match_is_closest_not_shortest():
     """Candidate 16, references 12 and 17: r must be 17."""
-    c16 = " ".join("w%d" % i for i in range(16))
-    r12 = " ".join("x%d" % i for i in range(12))
-    r17 = " ".join("y%d" % i for i in range(17))
+    c16 = " ".join(f"w{int(i)}" for i in range(16))
+    r12 = " ".join(f"x{int(i)}" for i in range(12))
+    r17 = " ".join(f"y{int(i)}" for i in range(17))
     b = sacrb.bleu([c16], [[r12, r17]], max_n=1)
     assert b["reference_length"] == 17
     assert abs(b["bp"] - math.exp(1.0 - 17.0 / 16.0)) < 1e-12
@@ -209,8 +195,7 @@ def test_sacrb_tokenisation_changes_the_number():
 
 def test_sacrb_signature_records_every_choice():
     s = sacrb.signature("intl", True, 4, 1)
-    assert s == ("nrefs:1|case:lc|tok:intl|ngram:4|"
-                 "version:morie-sacrb-1")
+    assert s == ("nrefs:1|case:lc|tok:intl|ngram:4|version:morie-sacrb-1")
 
 
 def test_sacrb_rejects_bad_input():
@@ -225,8 +210,16 @@ def test_sacrb_rejects_bad_input():
 
 
 # ------------------------------------------------------------- sentpc
-CASES = ["hello world", " leading", "trailing ", "a  double  space",
-         "   ", "nospaces", u"日本語 テキスト", "mixed  中文 text"]
+CASES = [
+    "hello world",
+    " leading",
+    "trailing ",
+    "a  double  space",
+    "   ",
+    "nospaces",
+    "日本語 テキスト",
+    "mixed  中文 text",
+]
 
 
 @pytest.mark.parametrize("s", CASES)
@@ -236,8 +229,7 @@ def test_sentpc_escape_is_exactly_invertible(s):
 
 @pytest.mark.parametrize("s", CASES)
 def test_sentpc_bpe_round_trip_is_lossless(s):
-    m = sentpc.train_bpe(["hello world", "hello there world",
-                          "a  double  space", "world of words"], 40)
+    m = sentpc.train_bpe(["hello world", "hello there world", "a  double  space", "world of words"], 40)
     assert sentpc.decode(sentpc.encode_bpe(s, m)) == s
 
 
@@ -248,9 +240,7 @@ def test_sentpc_first_merge_is_the_modal_pair():
 
 
 def test_sentpc_viterbi_matches_brute_force():
-    lp = {"a": math.log(0.2), "b": math.log(0.15),
-          "ab": math.log(0.5), "ba": math.log(0.05),
-          "aba": math.log(0.3)}
+    lp = {"a": math.log(0.2), "b": math.log(0.15), "ab": math.log(0.5), "ba": math.log(0.05), "aba": math.log(0.3)}
 
     def brute(s):
         if not s:
@@ -274,22 +264,19 @@ def test_sentpc_viterbi_matches_brute_force():
 
 
 def test_sentpc_viterbi_beats_greedy_longest_match():
-    lp = {"a": math.log(0.2), "b": math.log(0.15),
-          "ab": math.log(0.5), "ba": math.log(0.05),
-          "aba": math.log(0.3)}
+    lp = {"a": math.log(0.2), "b": math.log(0.15), "ab": math.log(0.5), "ba": math.log(0.05), "aba": math.log(0.3)}
     txt = "abababa"
     greedy, i = [], 0
     while i < len(txt):
         for L in range(min(3, len(txt) - i), 0, -1):
-            if txt[i:i + L] in lp:
-                greedy.append(txt[i:i + L])
+            if txt[i : i + L] in lp:
+                greedy.append(txt[i : i + L])
                 i += L
                 break
         else:  # pragma: no cover - every character is a piece here
             i += 1
     gl = sum(lp[p] for p in greedy)
-    assert sentpc.viterbi_segment(txt, lp,
-                                  add_prefix=False)["logp"] > gl + 1e-9
+    assert sentpc.viterbi_segment(txt, lp, add_prefix=False)["logp"] > gl + 1e-9
 
 
 def test_sentpc_rejects_uncoverable_input():
@@ -310,11 +297,9 @@ def test_sbert_pair_cost_is_the_papers_50_million():
 
 
 def test_sbert_cosine_identities():
-    assert abs(sbert.cosine_similarity([3.0, -1.0, 2.0],
-                                       [3.0, -1.0, 2.0]) - 1.0) < 1e-12
+    assert abs(sbert.cosine_similarity([3.0, -1.0, 2.0], [3.0, -1.0, 2.0]) - 1.0) < 1e-12
     assert abs(sbert.cosine_similarity([1.0, 0.0], [0.0, 5.0])) < 1e-12
-    assert abs(sbert.cosine_similarity([1.0, 0.0], [-1.0, 0.0])
-               + 1.0) < 1e-12
+    assert abs(sbert.cosine_similarity([1.0, 0.0], [-1.0, 0.0]) + 1.0) < 1e-12
 
 
 def test_sbert_cosine_is_blind_where_features_are_not():

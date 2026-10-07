@@ -1,9 +1,9 @@
 """Tests for morie.fn.ridge -- Ridge regression (L2)."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import RegressionResult
 from morie.fn.ridge import ridge, ridge_regression
 

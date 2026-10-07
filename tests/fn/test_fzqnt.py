@@ -1,7 +1,6 @@
 """Tests for fzqnt.fauzi_kernel_quantile_asymptotic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzqnt import fauzi_kernel_quantile_asymptotic
 
 

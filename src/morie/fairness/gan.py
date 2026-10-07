@@ -31,9 +31,7 @@ def _init_mlp(rng, sizes):
     params = []
     for i in range(len(sizes) - 1):
         scale = math.sqrt(2.0 / sizes[i])
-        W = [[scale * float(v) for v in
-              rng.normal(0, 1, sizes[i + 1])._flat()]
-             for _ in range(sizes[i])]
+        W = [[scale * float(v) for v in rng.normal(0, 1, sizes[i + 1])._flat()] for _ in range(sizes[i])]
         b = [0.0] * sizes[i + 1]
         params.append((W, b))
     return params
@@ -51,14 +49,9 @@ def _forward(params, X):
     for li, (W, b) in enumerate(params):
         n_in = len(W)
         n_out = len(b)
-        pre = [[b[j] + sum(h[r][i] * W[i][j] for i in range(n_in))
-                for j in range(n_out)] for r in range(len(h))]
+        pre = [[b[j] + sum(h[r][i] * W[i][j] for i in range(n_in)) for j in range(n_out)] for r in range(len(h))]
         cache.append((h, pre))
-        if li < L - 1:
-            h = [[v if v > 0 else _LEAK * v for v in row]
-                 for row in pre]
-        else:
-            h = pre
+        h = [[v if v > 0 else _LEAK * v for v in row] for row in pre] if li < L - 1 else pre
     return h, cache
 
 
@@ -78,22 +71,20 @@ def _backward(params, cache, dout):
             # activation derivative of THIS layer's output was applied
             # by the layer above; here delta is already d/d(post-act),
             # convert to d/d(pre-act) via leaky slope
-            delta = [[d * (1.0 if p > 0 else _LEAK)
-                      for d, p in zip(drow, prow)]
-                     for drow, prow in zip(delta, pre)]
-        gW = [[sum(h_in[r][i] * delta[r][j] for r in range(B))
-               for j in range(n_out)] for i in range(n_in)]
-        gb = [sum(delta[r][j] for r in range(B))
-              for j in range(n_out)]
+            delta = [[d * (1.0 if p > 0 else _LEAK) for d, p in zip(drow, prow)] for drow, prow in zip(delta, pre)]
+        gW = [[sum(h_in[r][i] * delta[r][j] for r in range(B)) for j in range(n_out)] for i in range(n_in)]
+        gb = [sum(delta[r][j] for r in range(B)) for j in range(n_out)]
         grads[li] = (gW, gb)
         if li > 0:
-            delta = [[sum(delta[r][j] * W[i][j]
-                          for j in range(n_out))
-                      for i in range(n_in)] for r in range(B)]
-    din = [[sum(delta[r][j] * params[0][0][i][j]
-                for j in range(len(params[0][1])))
-            for i in range(len(params[0][0]))]
-           for r in range(len(delta))] if False else None
+            delta = [[sum(delta[r][j] * W[i][j] for j in range(n_out)) for i in range(n_in)] for r in range(B)]
+    _ = (
+        [
+            [sum(delta[r][j] * params[0][0][i][j] for j in range(len(params[0][1]))) for i in range(len(params[0][0]))]
+            for r in range(len(delta))
+        ]
+        if False
+        else None
+    )
     return grads, delta
 
 
@@ -105,11 +96,8 @@ def _input_grad(params, cache, dout):
         h_in, pre = cache[li]
         n_in, n_out, B = len(W), len(b), len(h_in)
         if li < len(params) - 1:
-            delta = [[d * (1.0 if p > 0 else _LEAK)
-                      for d, p in zip(drow, prow)]
-                     for drow, prow in zip(delta, pre)]
-        delta = [[sum(delta[r][j] * W[i][j] for j in range(n_out))
-                  for i in range(n_in)] for r in range(B)]
+            delta = [[d * (1.0 if p > 0 else _LEAK) for d, p in zip(drow, prow)] for drow, prow in zip(delta, pre)]
+        delta = [[sum(delta[r][j] * W[i][j] for j in range(n_out)) for i in range(n_in)] for r in range(B)]
     return delta
 
 
@@ -126,28 +114,23 @@ def _sigmoid(v):
 def _adam_init(params):
     st = []
     for W, b in params:
-        st.append(([[0.0] * len(W[0]) for _ in W], [0.0] * len(b),
-                   [[0.0] * len(W[0]) for _ in W], [0.0] * len(b)))
+        st.append(([[0.0] * len(W[0]) for _ in W], [0.0] * len(b), [[0.0] * len(W[0]) for _ in W], [0.0] * len(b)))
     return st
 
 
-def _adam_step(params, grads, state, step, lr, b1=0.9, b2=0.999,
-               eps=1e-8):
-    bc1 = 1.0 - b1 ** step
-    bc2 = 1.0 - b2 ** step
-    for (W, b), (gW, gb), (mW, mb, vW, vb) in zip(params, grads,
-                                                  state):
+def _adam_step(params, grads, state, step, lr, b1=0.9, b2=0.999, eps=1e-8):
+    bc1 = 1.0 - b1**step
+    bc2 = 1.0 - b2**step
+    for (W, b), (gW, gb), (mW, mb, vW, vb) in zip(params, grads, state):
         for i in range(len(W)):
             for j in range(len(W[0])):
                 mW[i][j] = b1 * mW[i][j] + (1 - b1) * gW[i][j]
                 vW[i][j] = b2 * vW[i][j] + (1 - b2) * gW[i][j] ** 2
-                W[i][j] -= lr * (mW[i][j] / bc1) / (
-                    math.sqrt(vW[i][j] / bc2) + eps)
+                W[i][j] -= lr * (mW[i][j] / bc1) / (math.sqrt(vW[i][j] / bc2) + eps)
         for j in range(len(b)):
             mb[j] = b1 * mb[j] + (1 - b1) * gb[j]
             vb[j] = b2 * vb[j] + (1 - b2) * gb[j] ** 2
-            b[j] -= lr * (mb[j] / bc1) / (math.sqrt(vb[j] / bc2)
-                                          + eps)
+            b[j] -= lr * (mb[j] / bc1) / (math.sqrt(vb[j] / bc2) + eps)
 
 
 # ── one GAN training step (shared by both classes) ───────────────────
@@ -170,7 +153,7 @@ def _gan_step(gp, dp, gs, ds, t, real, zg_in, zd_in, lr):
     def disc_in(feat, gin):
         if len(feat[0]) == d_in_w:
             return feat
-        tail = [row[-(d_in_w - len(feat[0])):] for row in gin]
+        tail = [row[-(d_in_w - len(feat[0])) :] for row in gin]
         return [f + tl for f, tl in zip(feat, tail)]
 
     # ---- discriminator update
@@ -193,10 +176,10 @@ def _gan_step(gp, dp, gs, ds, t, real, zg_in, zd_in, lr):
     dl /= B
     g_r, _ = _backward(dp, r_cache, dr)
     g_f, _ = _backward(dp, f_cache, df)
-    dgrads = [([[a + b for a, b in zip(ra, fa)]
-                for ra, fa in zip(rW, fW)],
-               [a + b for a, b in zip(rb, fb)])
-              for (rW, rb), (fW, fb) in zip(g_r, g_f)]
+    dgrads = [
+        ([[a + b for a, b in zip(ra, fa)] for ra, fa in zip(rW, fW)], [a + b for a, b in zip(rb, fb)])
+        for (rW, rb), (fW, fb) in zip(g_r, g_f)
+    ]
     _adam_step(dp, dgrads, ds, t, lr)
 
     # ---- generator update (non-saturating): -log sigmoid(D(G(z)))
@@ -221,7 +204,7 @@ def _gan_step(gp, dp, gs, ds, t, real, zg_in, zd_in, lr):
 
 def _randn(rng, n, m):
     flat = [float(v) for v in rng.normal(0, 1, n * m)._flat()]
-    return [flat[i * m:(i + 1) * m] for i in range(n)]
+    return [flat[i * m : (i + 1) * m] for i in range(n)]
 
 
 class _Samples(list):
@@ -250,14 +233,17 @@ class SpatialGAN:
     >>> from morie.fairness.gan import SpatialGAN
     >>> rng = np.random.default_rng(0)
     >>> pts = rng.normal([5.0, -3.0], 1.0, size=(800, 2))
-    >>> gan = SpatialGAN(seed=0).fit(pts, steps=400)
+
+    A small network and a few steps show the interface; a usable fit takes the
+    default 1500 steps at ``hidden=64`` (minutes in pure Python).
+
+    >>> gan = SpatialGAN(hidden=8, seed=0).fit(pts, steps=20, batch_size=32)
     >>> samples = gan.sample(500, seed=1)
     >>> samples.shape
     (500, 2)
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64,
-                 seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
@@ -266,8 +252,7 @@ class SpatialGAN:
         self._std = None
         self.history: list[float] = []
 
-    def fit(self, points, *, steps: int = 1500, batch_size: int = 128,
-            lr: float = 2e-3):
+    def fit(self, points, *, steps: int = 1500, batch_size: int = 128, lr: float = 2e-3):
         """Train the GAN on an ``(n, 2)`` array of coordinates."""
         pts = np.asarray(points, dtype=float)
         if len(pts.shape) != 2 or pts.shape[1] != 2:
@@ -278,15 +263,11 @@ class SpatialGAN:
             raise ValueError("need at least two points to fit")
 
         self._mean = [sum(r[j] for r in rows) / n for j in range(2)]
-        self._std = [math.sqrt(sum((r[j] - self._mean[j]) ** 2
-                                   for r in rows) / n) + 1e-8
-                     for j in range(2)]
-        std_pts = [[(r[j] - self._mean[j]) / self._std[j]
-                    for j in range(2)] for r in rows]
+        self._std = [math.sqrt(sum((r[j] - self._mean[j]) ** 2 for r in rows) / n) + 1e-8 for j in range(2)]
+        std_pts = [[(r[j] - self._mean[j]) / self._std[j] for j in range(2)] for r in rows]
 
         rng = np.random.default_rng(self.seed)
-        gp = _init_mlp(rng, [self.latent_dim, self.hidden,
-                             self.hidden, 2])
+        gp = _init_mlp(rng, [self.latent_dim, self.hidden, self.hidden, 2])
         dp = _init_mlp(rng, [2, self.hidden, self.hidden, 1])
         gs, ds = _adam_init(gp), _adam_init(dp)
 
@@ -306,15 +287,11 @@ class SpatialGAN:
     def sample(self, n: int, *, seed: int | None = None):
         """Draw ``n`` synthetic coordinates as an ``(n, 2)`` array."""
         if self._gp is None:
-            raise RuntimeError(
-                "SpatialGAN is not fitted; call fit() first")
-        rng = np.random.default_rng(
-            self.seed if seed is None else int(seed))
+            raise RuntimeError("SpatialGAN is not fitted; call fit() first")
+        rng = np.random.default_rng(self.seed if seed is None else int(seed))
         z = _randn(rng, int(n), self.latent_dim)
         out, _ = _forward(self._gp, z)
-        return _Samples([[v * s + m for v, s, m in
-                          zip(row, self._std, self._mean)]
-                         for row in out])
+        return _Samples([[v * s + m for v, s, m in zip(row, self._std, self._mean)] for row in out])
 
 
 class CTGANDebiaser:
@@ -338,8 +315,7 @@ class CTGANDebiaser:
     structural bias without accompanying policy change.
     """
 
-    def __init__(self, latent_dim: int = 16, hidden: int = 64,
-                 seed: int = 0):
+    def __init__(self, latent_dim: int = 16, hidden: int = 64, seed: int = 0):
         self.latent_dim = int(latent_dim)
         self.hidden = int(hidden)
         self.seed = int(seed)
@@ -359,9 +335,18 @@ class CTGANDebiaser:
             out.append(row)
         return out
 
-    def fit(self, df, *, outcome_col, feature_cols,
-            group_col="group", favorable=1, steps: int = 1500,
-            batch_size: int = 128, lr: float = 2e-3):
+    def fit(
+        self,
+        df,
+        *,
+        outcome_col,
+        feature_cols,
+        group_col="group",
+        favorable=1,
+        steps: int = 1500,
+        batch_size: int = 128,
+        lr: float = 2e-3,
+    ):
         """Train the conditional GAN on a biased DataFrame."""
         feature_cols = list(feature_cols)
         if not feature_cols:
@@ -375,37 +360,28 @@ class CTGANDebiaser:
 
         g_idx = {g: i for i, g in enumerate(self._groups)}
         gi = [g_idx[g] for g in gvals]
-        oi = [1 if v == favorable else 0
-              for v in df[outcome_col].tolist()]
-        feats = [[float(df[c].tolist()[r]) for c in feature_cols]
-                 for r in range(len(gvals))]
+        oi = [1 if v == favorable else 0 for v in df[outcome_col].tolist()]
+        feats = [[float(df[c].tolist()[r]) for c in feature_cols] for r in range(len(gvals))]
         n = len(feats)
         if n < 2:
             raise ValueError("need at least two rows to fit")
         nf = len(feature_cols)
 
-        self._fmean = [sum(f[j] for f in feats) / n
-                       for j in range(nf)]
-        self._fstd = [math.sqrt(sum((f[j] - self._fmean[j]) ** 2
-                                    for f in feats) / n) + 1e-8
-                      for j in range(nf)]
-        std_feats = [[(f[j] - self._fmean[j]) / self._fstd[j]
-                      for j in range(nf)] for f in feats]
+        self._fmean = [sum(f[j] for f in feats) / n for j in range(nf)]
+        self._fstd = [math.sqrt(sum((f[j] - self._fmean[j]) ** 2 for f in feats) / n) + 1e-8 for j in range(nf)]
+        std_feats = [[(f[j] - self._fmean[j]) / self._fstd[j] for j in range(nf)] for f in feats]
 
         ng = len(self._groups)
         self._group_props = [gi.count(i) / n for i in range(ng)]
         self._group_fav_rate = {
-            g: (sum(o for gg, o in zip(gi, oi) if gg == i)
-                / max(1, gi.count(i)))
-            for i, g in enumerate(self._groups)}
+            g: (sum(o for gg, o in zip(gi, oi) if gg == i) / max(1, gi.count(i))) for i, g in enumerate(self._groups)
+        }
         cond = self._cond(gi, oi)
         cond_dim = ng + 2
 
         rng = np.random.default_rng(self.seed)
-        gp = _init_mlp(rng, [self.latent_dim + cond_dim, self.hidden,
-                             self.hidden, nf])
-        dp = _init_mlp(rng, [nf + cond_dim, self.hidden, self.hidden,
-                             1])
+        gp = _init_mlp(rng, [self.latent_dim + cond_dim, self.hidden, self.hidden, nf])
+        dp = _init_mlp(rng, [nf + cond_dim, self.hidden, self.hidden, 1])
         gs, ds = _adam_init(gp), _adam_init(dp)
 
         bs = min(batch_size, n)
@@ -413,10 +389,8 @@ class CTGANDebiaser:
         for t in range(1, int(steps) + 1):
             idx = [int(v) for v in rng.integers(0, n, bs)._flat()]
             real = [std_feats[i] + cond[i] for i in idx]
-            zg = [zrow + cond[i] for zrow, i in
-                  zip(_randn(rng, bs, self.latent_dim), idx)]
-            zd = [zrow + cond[i] for zrow, i in
-                  zip(_randn(rng, bs, self.latent_dim), idx)]
+            zg = [zrow + cond[i] for zrow, i in zip(_randn(rng, bs, self.latent_dim), idx)]
+            zd = [zrow + cond[i] for zrow, i in zip(_randn(rng, bs, self.latent_dim), idx)]
             loss = _gan_step(gp, dp, gs, ds, t, real, zg, zd, lr)
             if t % 50 == 0:
                 self.history.append(float(loss))
@@ -433,15 +407,11 @@ class CTGANDebiaser:
         from morie.fn import _frame_core as pd
 
         if self._gp is None:
-            raise RuntimeError(
-                "CTGANDebiaser is not fitted; call fit()")
+            raise RuntimeError("CTGANDebiaser is not fitted; call fit()")
         if privileged not in self._groups:
-            raise ValueError(
-                f"privileged group {privileged!r} not seen in "
-                f"training; groups: {self._groups}")
+            raise ValueError(f"privileged group {privileged!r} not seen in training; groups: {self._groups}")
         target_rate = self._group_fav_rate[privileged]
-        rng = np.random.default_rng(
-            self.seed if seed is None else int(seed))
+        rng = np.random.default_rng(self.seed if seed is None else int(seed))
         ng = len(self._groups)
         cum = []
         acc = 0.0
@@ -454,18 +424,14 @@ class CTGANDebiaser:
                 if float(u) <= c or i == ng - 1:
                     gi.append(i)
                     break
-        oi = [1 if float(u) < target_rate else 0
-              for u in rng.uniform(0, 1, int(n))._flat()]
+        oi = [1 if float(u) < target_rate else 0 for u in rng.uniform(0, 1, int(n))._flat()]
         cond = self._cond(gi, oi)
-        z = [zrow + crow for zrow, crow in
-             zip(_randn(rng, int(n), self.latent_dim), cond)]
+        z = [zrow + crow for zrow, crow in zip(_randn(rng, int(n), self.latent_dim), cond)]
         std_feat, _ = _forward(self._gp, z)
         out = {
             self._group_col: [self._groups[i] for i in gi],
-            self._outcome_col: [self._favorable if o == 1 else 0
-                                for o in oi],
+            self._outcome_col: [self._favorable if o == 1 else 0 for o in oi],
         }
         for j, col in enumerate(self._feature_cols):
-            out[col] = [row[j] * self._fstd[j] + self._fmean[j]
-                        for row in std_feat]
+            out[col] = [row[j] * self._fstd[j] + self._fmean[j] for row in std_feat]
         return pd.DataFrame(out)

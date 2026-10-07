@@ -60,29 +60,37 @@ def phenotype_qc(y, k=1.5, lambdas=None):
     slog = sum(math.log(t) for t in v)
     best_l, best_ll = 0.0, float("-inf")
     for lam in lambdas:
-        if lam == 0.0:
-            z = [math.log(t) for t in v]
-        else:
-            z = [(t ** lam - 1.0) / lam for t in v]
+        z = [math.log(t) for t in v] if lam == 0.0 else [(t**lam - 1.0) / lam for t in v]
         m = sum(z) / n
         s2 = sum((t - m) ** 2 for t in z) / n
         ll = -0.5 * n * math.log(s2) + (lam - 1.0) * slog
         if ll > best_ll:
             best_ll, best_l = ll, lam
     lam = best_l
-    z = [math.log(t) for t in v] if lam == 0.0 else [(t ** lam - 1.0) / lam for t in v]
+    z = [math.log(t) for t in v] if lam == 0.0 else [(t**lam - 1.0) / lam for t in v]
     s = sorted(z)
     n4 = _floor((n + 3) / 2.0) / 2.0
+
     def at(d):
         return 0.5 * (s[int(_floor(d)) - 1] + s[int(_ceil(d)) - 1])
+
     hl, hu = at(n4), at(n + 1 - n4)
     spread = hu - hl
     lo, hi = hl - k * spread, hu + k * spread
     flags = [1.0 if (t < lo or t > hi) else 0.0 for t in z]
-    return RichResult(payload={
-        "estimate": lam, "loglik": best_ll, "n_out": int(sum(flags)),
-        "flags": flags, "lower": lo, "upper": hi, "transformed": z, "n": n,
-        "method": "Box-Cox transform then Tukey fences"})
+    return RichResult(
+        payload={
+            "estimate": lam,
+            "loglik": best_ll,
+            "n_out": int(sum(flags)),
+            "flags": flags,
+            "lower": lo,
+            "upper": hi,
+            "transformed": z,
+            "n": n,
+            "method": "Box-Cox transform then Tukey fences",
+        }
+    )
 
 
 def _floor(v):

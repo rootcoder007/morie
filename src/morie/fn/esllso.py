@@ -66,7 +66,7 @@ def esl_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
         raise ValueError(f"X has {n} rows but y has {y.size} entries.")
     if lam < 0:
         raise ValueError(f"the lasso penalty must be non-negative; got {lam}.")
-    colsq = np.sum(X ** 2, axis=0)
+    colsq = np.sum(X**2, axis=0)
     if np.any(colsq == 0):
         raise ValueError("an all-zero column cannot be penalised meaningfully.")
     const = np.array([bool(np.ptp(X[:, j]) == 0) for j in range(p)])
@@ -74,7 +74,7 @@ def esl_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
     r = y.copy()
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         delta = 0.0
         for j in range(p):
             old = beta[j]
@@ -89,13 +89,21 @@ def esl_lasso(X, y, lambda_, max_iter=10000, tol=1e-12):
             converged = True
             break
     active = [int(j) for j in np.flatnonzero(beta != 0)]
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "n_nonzero": len(active), "active_set": active,
-        "objective": float(0.5 * (r @ r) + lam * np.sum(np.abs(beta[~const]))),
-        "iterations": int(it), "converged": bool(converged), "lambda": lam,
-        "n": int(n), "p": int(p),
-        "method": "lasso coordinate descent; constant columns unpenalised; lambda is n x glmnet's"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "n_nonzero": len(active),
+            "active_set": active,
+            "objective": float(0.5 * (r @ r) + lam * np.sum(np.abs(beta[~const]))),
+            "iterations": int(it),
+            "converged": bool(converged),
+            "lambda": lam,
+            "n": int(n),
+            "p": int(p),
+            "method": "lasso coordinate descent; constant columns unpenalised; lambda is n x glmnet's",
+        }
+    )
 
 
 def cheatsheet():

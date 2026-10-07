@@ -67,8 +67,7 @@ def spatial_pca(x, w, naxes=2):
         raise ValueError("at least 3 sites are needed")
     naxes = int(naxes)
     if naxes < 1 or naxes > p:
-        raise ValueError("`naxes` must lie between 1 and the number of "
-                         "columns")
+        raise ValueError("`naxes` must lie between 1 and the number of columns")
     ww = sqmat(w, n, "w")
     for i in range(n):
         if ww[i][i] != 0.0:
@@ -81,8 +80,7 @@ def spatial_pca(x, w, naxes=2):
         d = [t - m for t in c]
         s = sqrt(fsum([t * t for t in d]) / n)
         if s <= 0:
-            raise ValueError("a column of `x` is constant and cannot be "
-                             "scaled to unit variance")
+            raise ValueError("a column of `x` is constant and cannot be scaled to unit variance")
         z.append([t / s for t in d])
     zz = transpose(z)
 
@@ -104,23 +102,23 @@ def spatial_pca(x, w, naxes=2):
     order = sorted(range(p), key=lambda a: -allv[a])[:naxes]
     vals = [allv[a] for a in order]
     vecs = [fixsign([allvec[j][a] for j in range(p)]) for a in order]
-    scores = [[fsum([zz[i][j] * vecs[a][j] for j in range(p)])
-               for i in range(n)] for a in range(naxes)]
+    scores = [[fsum([zz[i][j] * vecs[a][j] for j in range(p)]) for i in range(n)] for a in range(naxes)]
     lagged = [matvec(sym, s) for s in scores]
 
-    return RichResult(payload={
-        "eigenvalues": vals,
-        "loadings": vecs,
-        "scores": scores,
-        "lagged_scores": lagged,
-        "total_variance": float(p),
-        "eigenvalues_may_be_negative": True,
-        "weights_symmetrised": True,
-        "naxes": float(naxes),
-        "n": n,
-        "method": ("MULTISPATI spatial PCA (Dray, Said & Debias 2008); "
-                   "NOT in Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "eigenvalues": vals,
+            "loadings": vecs,
+            "scores": scores,
+            "lagged_scores": lagged,
+            "total_variance": float(p),
+            "eigenvalues_may_be_negative": True,
+            "weights_symmetrised": True,
+            "naxes": float(naxes),
+            "n": n,
+            "method": ("MULTISPATI spatial PCA (Dray, Said & Debias 2008); NOT in Schabenberger & Gotway"),
+        }
+    )
 
 
 def cheatsheet():

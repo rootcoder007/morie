@@ -51,24 +51,27 @@ def kamath_moe_top_k_gating(gates, k):
         raise ValueError(
             "gate scores must be non-negative; renormalising a negative "
             "weight can produce a mixture that is not a convex "
-            "combination. Use km040 if these are router logits.")
+            "combination. Use km040 if these are router logits."
+        )
     order = np.argsort(-g, kind="stable")[:k]
     kept = np.zeros(n)
     kept[order] = g[order]
     total = kept.sum()
     if total == 0:
-        raise ValueError(
-            "every selected gate is 0, so the renormalisation is 0/0 "
-            "and no expert is chosen.")
+        raise ValueError("every selected gate is 0, so the renormalisation is 0/0 and no expert is chosen.")
     w = kept / total
-    return RichResult(payload={
-        "weights": [float(v) for v in w],
-        "selected_experts": [int(i) for i in sorted(order)],
-        "kept_mass": float(total / g.sum()) if g.sum() > 0 else 0.0,
-        "n_active": int(np.sum(w > 0)),
-        "estimate": float(w.max()),
-        "k": k, "n": n,
-        "method": "Top-k gate renormalisation (not a masked softmax)"})
+    return RichResult(
+        payload={
+            "weights": [float(v) for v in w],
+            "selected_experts": [int(i) for i in sorted(order)],
+            "kept_mass": float(total / g.sum()) if g.sum() > 0 else 0.0,
+            "n_active": int(np.sum(w > 0)),
+            "estimate": float(w.max()),
+            "k": k,
+            "n": n,
+            "method": "Top-k gate renormalisation (not a masked softmax)",
+        }
+    )
 
 
 def cheatsheet():

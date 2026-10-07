@@ -1,7 +1,6 @@
 """Tests for sukht.sukhatme_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sukht import sukhatme_test
 
 

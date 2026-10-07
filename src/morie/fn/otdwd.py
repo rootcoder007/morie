@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sinkhorn-Knopp doubly stochastic scaling."""
 
-from . import _otcore as ot
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -58,10 +57,18 @@ def ot_doubly_stoch_proj(K, max_iter=200):
     M = [[d1[i] * Km[i][j] * d2[j] for j in range(n)] for i in range(n)]
     row_err = max(abs(sum(M[i]) - 1.0) for i in range(n))
     col_err = max(abs(sum(M[i][j] for i in range(n)) - 1.0) for j in range(n))
-    return RichResult(payload={
-        "M": M, "iters": it, "d1": d1, "d2": d2,
-        "row_err": row_err, "col_err": col_err, "n": n,
-        "method": "Sinkhorn-Knopp doubly stochastic scaling"})
+    return RichResult(
+        payload={
+            "M": M,
+            "iters": it,
+            "d1": d1,
+            "d2": d2,
+            "row_err": row_err,
+            "col_err": col_err,
+            "n": n,
+            "method": "Sinkhorn-Knopp doubly stochastic scaling",
+        }
+    )
 
 
 def cheatsheet():

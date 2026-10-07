@@ -83,12 +83,10 @@ modifies.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tmle_dynamic_regime", "sequential_blips", "optimal_rule",
-           "intervention_mechanism", "rule_value_seq"]
+__all__ = ["tmle_dynamic_regime", "sequential_blips", "optimal_rule", "intervention_mechanism", "rule_value_seq"]
 
 _METHODS = ("cv-tmle", "tmle", "ipw", "gcomp")
 _EPS = 1e-9
@@ -109,13 +107,12 @@ def _blocks(covariate_history, n):
         raise ValueError("tmldyn: covariate_history is required")
     ch = list(covariate_history)
     if len(ch) != 2:
-        raise ValueError("tmldyn: covariate_history must be two blocks "
-                         "[L0, L1], got %d" % len(ch))
+        raise ValueError(f"tmldyn: covariate_history must be two blocks [L0, L1], got {int(len(ch))}")
     L0, L1 = k.mat(ch[0]), k.mat(ch[1])
     if len(L0) != n or len(L1) != n:
-        raise ValueError("tmldyn: covariate blocks have %d and %d rows "
-                         "but there are %d outcomes"
-                         % (len(L0), len(L1), n))
+        raise ValueError(
+            f"tmldyn: covariate blocks have {int(len(L0))} and {int(len(L1))} rows but there are {int(n)} outcomes"
+        )
     return L0, L1
 
 
@@ -127,8 +124,7 @@ def _project(values, basis, n, ridge):
     return list(k.matvec(Z, k.lstsq(Z, k.vec(values), ridge)))
 
 
-def intervention_mechanism(L0, A0, L1, A1, trim=0.01, known=None,
-                           penalty=0.0):
+def intervention_mechanism(L0, A0, L1, A1, trim=0.01, known=None, penalty=0.0):
     r"""g_{A(0)}(O) and g_{A(1)}(O), the intervention mechanism.
 
     ``known`` supplies the true probabilities of receiving treatment --
@@ -144,27 +140,30 @@ def intervention_mechanism(L0, A0, L1, A1, trim=0.01, known=None,
         # logit_irls returns the coefficients, so the probabilities are
         # formed here rather than read off a second return value.
         X0 = k.design(L0, n)
-        p0 = [_expit(v) for v in
-              k.matvec(X0, k.logit_irls(X0, A0, penalty=penalty))]
-        X1 = k.design([[A0[i]] + list(L0[i]) + list(L1[i])
-                       for i in range(n)], n)
-        p1 = [_expit(v) for v in
-              k.matvec(X1, k.logit_irls(X1, A1, penalty=penalty))]
+        p0 = [_expit(v) for v in k.matvec(X0, k.logit_irls(X0, A0, penalty=penalty))]
+        X1 = k.design([[A0[i]] + list(L0[i]) + list(L1[i]) for i in range(n)], n)
+        p1 = [_expit(v) for v in k.matvec(X1, k.logit_irls(X1, A1, penalty=penalty))]
     t = float(trim)
     if not 0.0 <= t < 0.5:
-        raise ValueError("tmldyn: trim must be in [0, 0.5), got %r"
-                         % (trim,))
+        raise ValueError(f"tmldyn: trim must be in [0, 0.5), got {trim!r}")
     lo, hi = max(t, _EPS), 1.0 - max(t, _EPS)
     p0 = [min(max(v, lo), hi) for v in p0]
     p1 = [min(max(v, lo), hi) for v in p1]
     # the probability of the treatment actually received
     g0 = [p0[i] if A0[i] == 1.0 else 1.0 - p0[i] for i in range(n)]
     g1 = [p1[i] if A1[i] == 1.0 else 1.0 - p1[i] for i in range(n)]
-    return g0, g1, {"p0": p0, "p1": p1,
-                    "min_g0": min(g0), "min_g1": min(g1),
-                    "max_weight": max(1.0 / (g0[i] * g1[i])
-                                      for i in range(n)),
-                    "known": known is not None}
+    return (
+        g0,
+        g1,
+        {
+            "p0": p0,
+            "p1": p1,
+            "min_g0": min(g0),
+            "min_g1": min(g1),
+            "max_weight": max(1.0 / (g0[i] * g1[i]) for i in range(n)),
+            "known": known is not None,
+        },
+    )
 
 
 def _fit_q2(y, L0, A0, L1, A1, idx, ridge):
@@ -174,10 +173,16 @@ def _fit_q2(y, L0, A0, L1, A1, idx, ridge):
     treatments interact with each other: without those terms the blips
     are constants and the optimal rule is static by construction.
     """
+
     def row(a0, a1, i):
-        return ([1.0, a0, a1, a0 * a1] + list(L0[i]) + list(L1[i])
-                + [a1 * v for v in L1[i]] + [a1 * v for v in L0[i]]
-                + [a0 * v for v in L0[i]])
+        return (
+            [1.0, a0, a1, a0 * a1]
+            + list(L0[i])
+            + list(L1[i])
+            + [a1 * v for v in L1[i]]
+            + [a1 * v for v in L0[i]]
+            + [a0 * v for v in L0[i]]
+        )
 
     X = [row(A0[i], A1[i], i) for i in idx]
     b = k.lstsq(X, [y[i] for i in idx], ridge)
@@ -191,6 +196,7 @@ def _fit_q2(y, L0, A0, L1, A1, idx, ridge):
 
 def _fit_q1(pseudo, L0, A0, idx, ridge):
     """E[ Q2(A(0), d_{A(1)}, Lbar(1)) | A(0), L(0) ], on the rows in idx."""
+
     def row(a0, i):
         return [1.0, a0] + list(L0[i]) + [a0 * v for v in L0[i]]
 
@@ -204,8 +210,7 @@ def _fit_q1(pseudo, L0, A0, idx, ridge):
     return q1, b
 
 
-def sequential_blips(y, L0, A0, L1, A1, V0=None, V1=None, ridge=1e-8,
-                     idx=None, eval_idx=None):
+def sequential_blips(y, L0, A0, L1, A1, V0=None, V1=None, ridge=1e-8, idx=None, eval_idx=None):
     r"""Theorem 22.1: the two blip functions and the V-optimal rule.
 
     Fitted on ``idx`` (all rows by default) and evaluated on
@@ -227,12 +232,10 @@ def sequential_blips(y, L0, A0, L1, A1, V0=None, V1=None, ridge=1e-8,
     q2, b2 = _fit_q2(y, L0, A0, L1, A1, idx, ridge)
 
     # ---- stage 2: the blip under each possible first treatment
-    raw2 = [[q2(a0, 1.0, i) - q2(a0, 0.0, i) for i in range(n)]
-            for a0 in (0.0, 1.0)]
+    raw2 = [[q2(a0, 1.0, i) - q2(a0, 0.0, i) for i in range(n)] for a0 in (0.0, 1.0)]
     basis1 = V1 if V1 is not None else L1
     blip2 = [_project(raw2[a], basis1, n, ridge) for a in (0, 1)]
-    d1 = [[1.0 if blip2[a][i] > 0.0 else 0.0 for i in range(n)]
-          for a in (0, 1)]
+    d1 = [[1.0 if blip2[a][i] > 0.0 else 0.0 for i in range(n)] for a in (0, 1)]
 
     # ---- carry the stage-2 rule into the stage-1 contrast
     pseudo = [q2(A0[i], d1[int(A0[i])][i], i) for i in range(n)]
@@ -242,9 +245,18 @@ def sequential_blips(y, L0, A0, L1, A1, V0=None, V1=None, ridge=1e-8,
     blip1 = _project(raw1, basis0, n, ridge)
     d0 = [1.0 if v > 0.0 else 0.0 for v in blip1]
 
-    return {"blip1": blip1, "blip2": blip2, "d0": d0, "d1": d1,
-            "q2": q2, "q1": q1, "coef_q2": b2, "coef_q1": b1,
-            "pseudo": pseudo, "eval_idx": eval_idx}
+    return {
+        "blip1": blip1,
+        "blip2": blip2,
+        "d0": d0,
+        "d1": d1,
+        "q2": q2,
+        "q1": q1,
+        "coef_q2": b2,
+        "coef_q1": b1,
+        "pseudo": pseudo,
+        "eval_idx": eval_idx,
+    }
 
 
 def optimal_rule(y, L0, A0, L1, A1, V0=None, V1=None, ridge=1e-8):
@@ -311,41 +323,45 @@ def rule_value_seq(y, L0, A0, L1, A1, d0, d1, g0, g1, ridge=1e-8):
 
 def _coerce_regime(regime, n):
     """A supplied rule, as (d0, d1[a0][i])."""
-    if regime is None or (isinstance(regime, str)
-                          and regime.lower() in ("optimal", "v-optimal")):
+    if regime is None or (isinstance(regime, str) and regime.lower() in ("optimal", "v-optimal")):
         return None
     if isinstance(regime, str):
-        raise ValueError("tmldyn: regime must be 'optimal' or an array, "
-                         "got %r" % (regime,))
+        raise ValueError(f"tmldyn: regime must be 'optimal' or an array, got {regime!r}")
     r = list(regime)
     if len(r) == 2 and hasattr(r[0], "__len__") and len(r[0]) == n:
         d0 = [float(v) for v in r[0]]
         second = r[1]
         # (d0, d1) with d1 either n-long (no dependence on a(0)) or the
         # two branches under a(0) = 0 and a(0) = 1
-        if len(second) == 2 and hasattr(second[0], "__len__") \
-                and len(second[0]) == n:
+        if len(second) == 2 and hasattr(second[0], "__len__") and len(second[0]) == n:
             d1 = [[float(v) for v in second[a]] for a in (0, 1)]
         elif len(second) == n:
             col = [float(v) for v in second]
             d1 = [list(col), list(col)]
         else:
-            raise ValueError("tmldyn: regime's second component has "
-                             "length %d, expected %d or 2"
-                             % (len(second), n))
+            raise ValueError(f"tmldyn: regime's second component has length {int(len(second))}, expected {int(n)} or 2")
         return d0, d1
-    if len(r) == n:                       # n-by-2 table of assignments
+    if len(r) == n:  # n-by-2 table of assignments
         d0 = [float(row[0]) for row in r]
         col = [float(row[1]) for row in r]
         return d0, [list(col), list(col)]
-    raise ValueError("tmldyn: cannot read regime of length %d for n = %d"
-                     % (len(r), n))
+    raise ValueError(f"tmldyn: cannot read regime of length {int(len(r))} for n = {int(n)}")
 
 
-def tmle_dynamic_regime(y, treatment_history, covariate_history,
-                        regime="optimal", method="cv-tmle", n_folds=10,
-                        V0=None, V1=None, trim=0.01, known_g=None,
-                        ridge=1e-8, level=0.95):
+def tmle_dynamic_regime(
+    y,
+    treatment_history,
+    covariate_history,
+    regime="optimal",
+    method="cv-tmle",
+    n_folds=10,
+    V0=None,
+    V1=None,
+    trim=0.01,
+    known_g=None,
+    ridge=1e-8,
+    level=0.95,
+):
     r"""Mean outcome under the (V-)optimal dynamic treatment rule.
 
     Parameters
@@ -401,17 +417,14 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
         r = tmle_dynamic_regime(y, A, [L0, L1], regime=(d0, d1))
     """
     if method not in _METHODS:
-        raise ValueError("tmldyn: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("tmldyn: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     yv = k.vec(y)
     n = len(yv)
     if n < 4:
-        raise ValueError("tmldyn: need at least 4 observations, got %d"
-                         % n)
+        raise ValueError(f"tmldyn: need at least 4 observations, got {int(n)}")
     Am = k.mat(treatment_history)
     if len(Am) != n or len(Am[0]) != 2:
-        raise ValueError("tmldyn: treatment_history must be n-by-2, "
-                         "got %d-by-%d" % (len(Am), len(Am[0])))
+        raise ValueError(f"tmldyn: treatment_history must be n-by-2, got {int(len(Am))}-by-{int(len(Am[0]))}")
     A0 = [float(r[0]) for r in Am]
     A1 = [float(r[1]) for r in Am]
     if any(v not in (0.0, 1.0) for v in A0 + A1):
@@ -424,15 +437,13 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
         raise ValueError("tmldyn: the outcome is constant")
     ys = [(v - ymin) / rng for v in yv]
 
-    g0, g1, ginfo = intervention_mechanism(L0, A0, L1, A1, trim=trim,
-                                           known=known_g)
+    g0, g1, ginfo = intervention_mechanism(L0, A0, L1, A1, trim=trim, known=known_g)
     supplied = _coerce_regime(regime, n)
 
     # ---------------------------------------------------- the rule
     if supplied is not None:
         d0, d1 = supplied
-        full = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1,
-                                ridge=ridge)
+        full = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1, ridge=ridge)
         blip1, blip2 = full["blip1"], full["blip2"]
         splits = [(list(range(n)), list(range(n)))]
         rules = [(d0, d1)]
@@ -444,19 +455,17 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
         blip2 = [[0.0] * n, [0.0] * n]
         for val in _folds(n, n_folds):
             train = [i for i in range(n) if i not in set(val)]
-            fit = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1,
-                                   ridge=ridge, idx=train)
+            fit = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1, ridge=ridge, idx=train)
             splits.append((train, val))
             rules.append((fit["d0"], fit["d1"]))
-            for i in val:                       # the rule this row gets
+            for i in val:  # the rule this row gets
                 d0[i] = fit["d0"][i]
                 blip1[i] = fit["blip1"][i]
                 for a in (0, 1):
                     d1[a][i] = fit["d1"][a][i]
                     blip2[a][i] = fit["blip2"][a][i]
     else:
-        fit = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1,
-                               ridge=ridge)
+        fit = sequential_blips(ys, L0, A0, L1, A1, V0=V0, V1=V1, ridge=ridge)
         d0, d1 = fit["d0"], fit["d1"]
         blip1, blip2 = fit["blip1"], fit["blip2"]
         splits = [(list(range(n)), list(range(n)))]
@@ -465,8 +474,7 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
     # ------------------------------------------- clever covariates
     # H2 needs the WHOLE history to follow the rule, H1 only A(0).
     follow0 = [1.0 if A0[i] == d0[i] else 0.0 for i in range(n)]
-    follow1 = [1.0 if A1[i] == d1[int(A0[i])][i] else 0.0
-               for i in range(n)]
+    follow1 = [1.0 if A1[i] == d1[int(A0[i])][i] else 0.0 for i in range(n)]
     H1 = [follow0[i] / g0[i] for i in range(n)]
     H2 = [follow0[i] * follow1[i] / (g0[i] * g1[i]) for i in range(n)]
 
@@ -485,8 +493,7 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
             pseudo = [q2(A0[i], rd1[int(A0[i])][i], i) for i in range(n)]
             q1, _ = _fit_q1(pseudo, L0, A0, train, ridge)
             for i in val:
-                q2d[i] = min(max(q2(rd0[i], rd1[int(rd0[i])][i], i),
-                                 _EPS), 1.0 - _EPS)
+                q2d[i] = min(max(q2(rd0[i], rd1[int(rd0[i])][i], i), _EPS), 1.0 - _EPS)
                 q1d[i] = min(max(q1(rd0[i], i), _EPS), 1.0 - _EPS)
 
         if method == "gcomp":
@@ -502,9 +509,7 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
             eps1 = _fluctuate(q2d, off1, H1, list(range(n)))
             q1d = [_expit(off1[i] + eps1 * H1[i]) for i in range(n)]
             psi_s = sum(q1d) / n
-            eic = [(q1d[i] - psi_s)
-                   + H1[i] * (q2d[i] - q1d[i])
-                   + H2[i] * (ys[i] - q2d[i]) for i in range(n)]
+            eic = [(q1d[i] - psi_s) + H1[i] * (q2d[i] - q1d[i]) + H2[i] * (ys[i] - q2d[i]) for i in range(n)]
 
     psi = ymin + rng * psi_s
     se = k.sd(eic) * rng / math.sqrt(n) if n > 1 else float("nan")
@@ -516,44 +521,52 @@ def tmle_dynamic_regime(y, treatment_history, covariate_history,
     static = {}
     for a0 in (0.0, 1.0):
         for a1 in (0.0, 1.0):
-            v = rule_value_seq(ys, L0, A0, L1, A1, [a0] * n,
-                               [[a1] * n, [a1] * n], g0, g1, ridge)
-            static["static_%d%d" % (int(a0), int(a1))] = ymin + rng * v
+            v = rule_value_seq(ys, L0, A0, L1, A1, [a0] * n, [[a1] * n, [a1] * n], g0, g1, ridge)
+            static[f"static_{int(int(a0))}{int(int(a1))}"] = ymin + rng * v
 
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n": n,
-        "ci": (psi - z * se, psi + z * se),
-        "level": float(level),
-        "d0": d0, "d1": d1, "blip1": blip1, "blip2": blip2,
-        "treated_first": sum(d0) / n,
-        "treated_second": sum(d1[int(A0[i])][i] for i in range(n)) / n,
-        "eic_mean": sum(eic) / n,
-        "epsilon": (locals().get("eps1", 0.0),
-                    locals().get("eps2", 0.0)),
-        "max_weight": ginfo["max_weight"],
-        "min_g0": ginfo["min_g0"], "min_g1": ginfo["min_g1"],
-        "known_g": ginfo["known"],
-        "exceptional_share_1": exceptional_law_share(blip1),
-        "exceptional_share_2": max(exceptional_law_share(blip2[0]),
-                                   exceptional_law_share(blip2[1])),
-        "value_gcomp": ymin + rng * (sum(q1d) / n),
-        "best_static": max(static.values()),
-        "n_folds": len(splits), "method": method,
-        "rule_source": "supplied" if supplied is not None else "estimated",
-        "algorithm": "CV-TMLE for the mean outcome under the V-optimal "
-                     "dynamic rule, Luedtke & van der Laan (2018) "
-                     "Thm 22.1 and Sec. 22.6",
-        **static,
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n": n,
+            "ci": (psi - z * se, psi + z * se),
+            "level": float(level),
+            "d0": d0,
+            "d1": d1,
+            "blip1": blip1,
+            "blip2": blip2,
+            "treated_first": sum(d0) / n,
+            "treated_second": sum(d1[int(A0[i])][i] for i in range(n)) / n,
+            "eic_mean": sum(eic) / n,
+            "epsilon": (locals().get("eps1", 0.0), locals().get("eps2", 0.0)),
+            "max_weight": ginfo["max_weight"],
+            "min_g0": ginfo["min_g0"],
+            "min_g1": ginfo["min_g1"],
+            "known_g": ginfo["known"],
+            "exceptional_share_1": exceptional_law_share(blip1),
+            "exceptional_share_2": max(exceptional_law_share(blip2[0]), exceptional_law_share(blip2[1])),
+            "value_gcomp": ymin + rng * (sum(q1d) / n),
+            "best_static": max(static.values()),
+            "n_folds": len(splits),
+            "method": method,
+            "rule_source": "supplied" if supplied is not None else "estimated",
+            "algorithm": "CV-TMLE for the mean outcome under the V-optimal "
+            "dynamic rule, Luedtke & van der Laan (2018) "
+            "Thm 22.1 and Sec. 22.6",
+            **static,
+        }
+    )
 
 
 def cheatsheet():
-    return ("tmldyn: two time points. Backward induction (Thm 22.1): "
-            "Qb2(a0,v1)=E[Y_{a0,1}-Y_{a0,0}|V(1)], d1=I(Qb2>0); carry "
-            "d1 into Qb1(v0)=E[Y_{1,d1}-Y_{0,d1}|V(0)], d0=I(Qb1>0). "
-            "Then CV-TMLE (Sec 22.6): H2=I(Abar=d)/(g0 g1), "
-            "H1=I(A0=d0)/g0, one scalar epsilon each, rule from the "
-            "training split and the mean from the validation split.")
+    return (
+        "tmldyn: two time points. Backward induction (Thm 22.1): "
+        "Qb2(a0,v1)=E[Y_{a0,1}-Y_{a0,0}|V(1)], d1=I(Qb2>0); carry "
+        "d1 into Qb1(v0)=E[Y_{1,d1}-Y_{0,d1}|V(0)], d0=I(Qb1>0). "
+        "Then CV-TMLE (Sec 22.6): H2=I(Abar=d)/(g0 g1), "
+        "H1=I(A0=d0)/g0, one scalar epsilon each, rule from the "
+        "training split and the mean from the validation split."
+    )
 
 
 # compact alias per ledger/NAMING.md

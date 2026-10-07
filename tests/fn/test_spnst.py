@@ -1,8 +1,8 @@
 """spnst -- Hughes-Oliver point-source model, Schabenberger & Gotway Sec. 8.2.1."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spnst import schabenberger_nonstationary_cov as nst
 
 
@@ -59,8 +59,7 @@ def test_sill_scales_correlation_into_covariance():
 def test_psd_constraints_are_necessary_but_not_sufficient():
     """The book's warning made concrete: a conforming set that is not PSD."""
     s = np.random.RandomState(3).uniform(0, 10, (20, 2))
-    bad = nst(s, source=np.array([2.0, 8.0]), theta1=0.021, theta2=0.457,
-              theta3=0.037)
+    bad = nst(s, source=np.array([2.0, 8.0]), theta1=0.021, theta2=0.457, theta3=0.037)
     assert bad["min_eigenvalue"] < 0
     assert bad["valid"] is False
     assert "warning" in bad
@@ -86,9 +85,9 @@ def test_anisotropy_changes_the_answer():
     assert not np.allclose(iso["correlation"], ani["correlation"])
 
 
-@pytest.mark.parametrize("kw", [
-    {"theta1": 0.0}, {"theta1": -0.4}, {"theta1": 0.4, "theta2": -0.1},
-    {"theta1": 0.4, "theta3": -0.1}])
+@pytest.mark.parametrize(
+    "kw", [{"theta1": 0.0}, {"theta1": -0.4}, {"theta1": 0.4, "theta2": -0.1}, {"theta1": 0.4, "theta3": -0.1}]
+)
 def test_rejects_out_of_range_parameters(kw):
     with pytest.raises(ValueError):
         nst(_sites(), source=SRC, **kw)

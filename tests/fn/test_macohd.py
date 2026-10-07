@@ -4,8 +4,6 @@ import math
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.macohd import ma_cohens_d
 
 
@@ -20,8 +18,18 @@ def test_macohd_basic():
     result = ma_cohens_d(m1, m2, s1, s2, n1, n2)
     assert isinstance(result, dict)
     expected_keys = {
-        "d", "s_pooled", "var_d", "se_d", "j", "j_approx",
-        "hedges_g", "var_g", "se_g", "df", "n", "method",
+        "d",
+        "s_pooled",
+        "var_d",
+        "se_d",
+        "j",
+        "j_approx",
+        "hedges_g",
+        "var_g",
+        "se_g",
+        "df",
+        "n",
+        "method",
     }
     assert expected_keys.issubset(result.keys())
     assert result["df"] == n1 + n2 - 2

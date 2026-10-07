@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_g1 import ghosal_fin_dir_def
 
 
@@ -47,8 +46,7 @@ def test_gh_ap_g1_edge():
     # Independent computation: with one alpha, Gamma(A)/Gamma(alpha) * 1^(alpha-1) = 1.
     alpha = (42.0,)
     A = float(sum(alpha))
-    expected_logdens = (math.lgamma(A) - math.lgamma(alpha[0])
-                        + (alpha[0] - 1.0) * math.log(alpha[0] / A))
+    expected_logdens = math.lgamma(A) - math.lgamma(alpha[0]) + (alpha[0] - 1.0) * math.log(alpha[0] / A)
     expected = math.exp(expected_logdens)
     assert math.isclose(estimate, expected, rel_tol=1e-12, abs_tol=1e-15)
     assert math.isclose(estimate, 1.0, rel_tol=1e-12, abs_tol=1e-15)

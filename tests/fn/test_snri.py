@@ -1,7 +1,6 @@
 """Test snr_improvement_fn (snri)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.snri import snr_improvement_fn, snri
 

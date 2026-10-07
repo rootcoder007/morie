@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['quanttest', 'gibbons_quantile_test']
+__all__ = ["quanttest", "gibbons_quantile_test"]
 
 
 def quanttest(x, q0, p=0.5, alternative="two-sided"):

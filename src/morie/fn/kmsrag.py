@@ -14,8 +14,7 @@ REFLECTION_TOKENS = {
     "retrieve": ("[Retrieve]", "[No Retrieve]"),
     "relevance": ("[Relevant]", "[Irrelevant]"),
     "support": ("[Supported]", "[Partially Supported]", "[No Support]"),
-    "utility": ("[Utility:1]", "[Utility:2]", "[Utility:3]",
-                "[Utility:4]", "[Utility:5]"),
+    "utility": ("[Utility:1]", "[Utility:2]", "[Utility:3]", "[Utility:4]", "[Utility:5]"),
 }
 _ALL = {t: g for g, toks in REFLECTION_TOKENS.items() for t in toks}
 
@@ -49,9 +48,7 @@ def kamath_self_rag(context, reflection_model, question=None):
     (False, None)
     """
     if not callable(reflection_model):
-        raise ValueError(
-            "reflection_model must be callable (context, question) -> "
-            "reflection tokens.")
+        raise ValueError("reflection_model must be callable (context, question) -> reflection tokens.")
     toks = reflection_model(context, question)
     if isinstance(toks, str):
         # Split on the bracket, not on whitespace: "[No Retrieve]" is ONE
@@ -62,17 +59,15 @@ def kamath_self_rag(context, reflection_model, question=None):
     if not toks:
         raise ValueError(
             "the reflection model emitted no tokens; Self-RAG is "
-            "defined by those tokens, so there is no decision to make.")
+            "defined by those tokens, so there is no decision to make."
+        )
     groups = {}
     for t in toks:
         g = _ALL.get(t)
         if g is None:
-            raise ValueError(
-                f"{t!r} is not a Self-RAG reflection token; the "
-                f"vocabulary is {sorted(_ALL)}.")
+            raise ValueError(f"{t!r} is not a Self-RAG reflection token; the vocabulary is {sorted(_ALL)}.")
         if g in groups and groups[g] != t:
-            raise ValueError(
-                f"contradictory {g} tokens: {groups[g]!r} and {t!r}.")
+            raise ValueError(f"contradictory {g} tokens: {groups[g]!r} and {t!r}.")
         groups[g] = t
 
     def _flag(group, positive):
@@ -82,16 +77,20 @@ def kamath_self_rag(context, reflection_model, question=None):
     utility = None
     if "utility" in groups:
         utility = int(groups["utility"].split(":")[1].rstrip("]"))
-    return RichResult(payload={
-        "tokens": toks, "by_group": groups,
-        "retrieve": _flag("retrieve", "[Retrieve]"),
-        "relevant": _flag("relevance", "[Relevant]"),
-        "supported": (None if "support" not in groups
-                      else groups["support"] == "[Supported]"),
-        "support_level": groups.get("support"),
-        "utility": utility,
-        "estimate": len(groups), "n": len(toks),
-        "method": "Self-RAG reflection-token decisions"})
+    return RichResult(
+        payload={
+            "tokens": toks,
+            "by_group": groups,
+            "retrieve": _flag("retrieve", "[Retrieve]"),
+            "relevant": _flag("relevance", "[Relevant]"),
+            "supported": (None if "support" not in groups else groups["support"] == "[Supported]"),
+            "support_level": groups.get("support"),
+            "utility": utility,
+            "estimate": len(groups),
+            "n": len(toks),
+            "method": "Self-RAG reflection-token decisions",
+        }
+    )
 
 
 def cheatsheet():

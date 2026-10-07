@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['mwun', 'gibbons_mw_sampsize']
+__all__ = ["mwun", "gibbons_mw_sampsize"]
 
 
 def mwun(p, c=0.5, alpha=0.05, beta=0.10, twosided=False):

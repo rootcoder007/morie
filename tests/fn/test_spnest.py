@@ -6,9 +6,9 @@ contract: it returns a real semivariogram, not the placeholder payload
 it used to return.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spnest import schabenberger_nested_variogram
 
 
@@ -16,8 +16,7 @@ def test_spnest_returns_a_semivariogram():
     h = np.array([0.0, 0.5, 2.0])
     r = schabenberger_nested_variogram(
         h,
-        [{"model": "nugget", "sill": 0.2},
-         {"model": "spherical", "sill": 1.0, "range": 1.5}],
+        [{"model": "nugget", "sill": 0.2}, {"model": "spherical", "sill": 1.0, "range": 1.5}],
     )
     assert r["total_sill"] == pytest.approx(1.2)
     assert len(r["components"]) == 2

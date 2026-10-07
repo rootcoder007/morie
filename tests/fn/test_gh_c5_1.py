@@ -1,7 +1,6 @@
 """Tests for gh_c5_1.ghosal_dpm_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c5_1 import ghosal_dpm_model
 
 
@@ -30,8 +29,9 @@ def test_gh_c5_1_edge():
     # can recompute the density from first principles via the stick-
     # breaking construction (independent of the function under test).
     import math
+
     rng = np.random.default_rng(42)
-    M = float(1.0)  # alpha default
+    M = 1.0  # alpha default
     n_terms = 200
     kernel_sd = 0.25
     V = [float(rng.beta(1.0, M)) for _ in range(n_terms)]
@@ -40,12 +40,11 @@ def test_gh_c5_1_edge():
     prod = 1.0
     for v in V:
         W.append(v * prod)
-        prod *= (1.0 - v)
+        prod *= 1.0 - v
     th = [float(v) for v in rng.uniform(0, 1, n_terms)._flat()]
     xi = 42.0
     inv_sd = 1.0 / (kernel_sd * math.sqrt(2.0 * math.pi))
-    dens = sum(w * inv_sd * math.exp(-0.5 * ((xi - t) / kernel_sd) ** 2)
-               for w, t in zip(W, th))
+    dens = sum(w * inv_sd * math.exp(-0.5 * ((xi - t) / kernel_sd) ** 2) for w, t in zip(W, th))
     assert math.isclose(float(result["estimate"]), dens, rel_tol=1e-12, abs_tol=1e-12)
     assert math.isclose(sum(W), float(result["mixing_mass"]), rel_tol=1e-12, abs_tol=1e-12)
     assert result["method"] == "DP mixture density (GvdV 2017 eq. 5.1)"

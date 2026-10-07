@@ -1,7 +1,6 @@
 """Tests for morie.fn.semap -- Sammon mapping."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.semap import sammon_mapping, semap
 

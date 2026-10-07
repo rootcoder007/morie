@@ -1,8 +1,6 @@
 """Tests for bndmoq.bound_moment_qed."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bndmoq import bound_moment_qed
 
 
@@ -22,6 +20,7 @@ def _type1_quantile(sorted_vals, level):
     m = len(sorted_vals)
     # k = ceil(m * level), then take the (k-1)-th element (1-indexed -> 0-indexed).
     import math
+
     k = max(1, math.ceil(m * level))
     return sorted_vals[k - 1]
 
@@ -40,14 +39,8 @@ def _band_for(ys, ds, a):
     p1 = len(obs) / float(m)
     if not obs:
         return y0, y1, p1
-    if p1 > 1.0 - a:
-        lo = _type1_quantile(obs, 1.0 - (1.0 - a) / p1)
-    else:
-        lo = y0
-    if p1 >= a:
-        hi = _type1_quantile(obs, a / p1)
-    else:
-        hi = y1
+    lo = _type1_quantile(obs, 1.0 - (1.0 - a) / p1) if p1 > 1.0 - a else y0
+    hi = _type1_quantile(obs, a / p1) if p1 >= a else y1
     return lo, hi, p1
 
 
@@ -71,8 +64,7 @@ def test_bndmoq_basic():
 
     # The function returns a RichResult (dict-like); keys are documented.
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "max_width", "n_strata", "p_observed", "n"):
+    for key in ("lower", "upper", "width", "estimate", "max_width", "n_strata", "p_observed", "n"):
         assert key in result, "missing documented key: " + key
 
     # Numeric expectations computed independently from the documented formula.
@@ -91,7 +83,7 @@ def test_bndmoq_basic():
 def test_bndmoq_edge():
     """Test an edge case: all units observed, single stratum."""
     rng_y = np.random.default_rng(43)
-    rng_D = np.random.default_rng(42)
+    np.random.default_rng(42)
 
     n = 100
     y = rng_y.normal(0.0, 1.0, n)
@@ -104,8 +96,7 @@ def test_bndmoq_edge():
     result = bound_moment_qed(y, D, X, quantile)
 
     assert isinstance(result, dict)
-    for key in ("lower", "upper", "width", "estimate",
-                "max_width", "n_strata", "p_observed", "n"):
+    for key in ("lower", "upper", "width", "estimate", "max_width", "n_strata", "p_observed", "n"):
         assert key in result, "missing documented key: " + key
 
     # p1 is 1.0 because every unit is observed.

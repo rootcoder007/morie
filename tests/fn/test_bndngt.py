@@ -1,7 +1,6 @@
 """Tests for bndngt.bound_neg_treatment."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndngt import bound_neg_treatment
 
 

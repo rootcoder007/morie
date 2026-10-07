@@ -57,7 +57,13 @@ def patchts(x, patchlen, stride, eps=1e-05):
     res = _core.patchts(x=x, patchlen=patchlen, stride=stride, eps=eps)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("npatches", res["npatches"]), ("n", res["n"]), ("mean", res["mean"]), ("sd", res["sd"]), ("patchsumsq", res["patchsumsq"])],
+        summary_lines=[
+            ("npatches", res["npatches"]),
+            ("n", res["n"]),
+            ("mean", res["mean"]),
+            ("sd", res["sd"]),
+            ("patchsumsq", res["patchsumsq"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

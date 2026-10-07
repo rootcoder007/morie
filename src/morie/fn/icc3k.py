@@ -52,28 +52,37 @@ def icc_two_way_mixed_avg(y, subject, rater):
     n, k = a["n"], a["k"]
     msr, msc, mse = a["MSR"], a["MSC"], a["MSE"]
     if msr <= 0:
-        raise ValueError("between-target mean square is zero; every target "
-                         "has the same mean and no reliability is defined.")
+        raise ValueError(
+            "between-target mean square is zero; every target has the same mean and no reliability is defined."
+        )
     icc_k = (msr - mse) / msr
     icc_1 = (msr - mse) / (msr + (k - 1) * mse)
     den2 = msr + (msc - mse) / n
     icc2k = (msr - mse) / den2 if den2 > 0 else np.nan
     col_means = a["matrix"].mean(axis=0)
-    return RichResult(payload={
-        "value": icc_k, "icc_single": icc_1, "icc2k": icc2k,
-        "max_rater_offset": float(col_means.max() - col_means.min()),
-        "k": int(k), "n": int(n),
-        "MSR": msr, "MSC": msc, "MSE": mse, "case": "ICC(3,k)",
-        "design_assumption": "THESE raters are the only ones of interest -- "
-                             "a fixed effect, not a sample",
-        "consistency_not_agreement": "systematic rater offsets are not "
-                                     "charged: two raters differing by a "
-                                     "constant on every target score near 1 "
-                                     "here and well below it on ICC(2,k). "
-                                     "Report Case 3 only when the ratings "
-                                     "are used relatively, not "
-                                     "interchangeably",
-        "method": "Shrout-Fleiss (1979) ICC(3,k), two-way mixed, average measure"})
+    return RichResult(
+        payload={
+            "value": icc_k,
+            "icc_single": icc_1,
+            "icc2k": icc2k,
+            "max_rater_offset": float(col_means.max() - col_means.min()),
+            "k": int(k),
+            "n": int(n),
+            "MSR": msr,
+            "MSC": msc,
+            "MSE": mse,
+            "case": "ICC(3,k)",
+            "design_assumption": "THESE raters are the only ones of interest -- a fixed effect, not a sample",
+            "consistency_not_agreement": "systematic rater offsets are not "
+            "charged: two raters differing by a "
+            "constant on every target score near 1 "
+            "here and well below it on ICC(2,k). "
+            "Report Case 3 only when the ratings "
+            "are used relatively, not "
+            "interchangeably",
+            "method": "Shrout-Fleiss (1979) ICC(3,k), two-way mixed, average measure",
+        }
+    )
 
 
 def cheatsheet():

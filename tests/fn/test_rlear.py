@@ -1,7 +1,6 @@
 """Tests for rlear.r_learner."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rlear import r_learner
 
 

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmddqn import geron_double_dqn
 
 
@@ -20,13 +19,27 @@ def test_hmddqn_basic():
         (2, 0, 1.0, 0, False),
     ]
     result = geron_double_dqn(
-        None, Q, Q_target, buffer, epochs=5, lr=0.1, gamma=0.9,
+        None,
+        Q,
+        Q_target,
+        buffer,
+        epochs=5,
+        lr=0.1,
+        gamma=0.9,
     )
     assert isinstance(result, dict)
     for key in (
-        "Q", "Q_target", "loss_history", "targets", "vanilla_targets",
-        "overestimation_gap", "greedy_policy", "sync_epochs",
-        "estimate", "n", "method",
+        "Q",
+        "Q_target",
+        "loss_history",
+        "targets",
+        "vanilla_targets",
+        "overestimation_gap",
+        "greedy_policy",
+        "sync_epochs",
+        "estimate",
+        "n",
+        "method",
     ):
         assert key in result
     Qr = np.array(result["Q"])
@@ -47,7 +60,13 @@ def test_hmddqn_edge():
     Q_target = [[10.0, -10.0]]
     buffer = [(0, 0, 5.0, 0, True)]
     result = geron_double_dqn(
-        None, Q, Q_target, buffer, epochs=1, lr=1.0, gamma=1.0,
+        None,
+        Q,
+        Q_target,
+        buffer,
+        epochs=1,
+        lr=1.0,
+        gamma=1.0,
     )
     assert isinstance(result, dict)
     # terminal successor: both targets equal the reward, gap is zero
@@ -69,7 +88,7 @@ import morie.fn.hmddqn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

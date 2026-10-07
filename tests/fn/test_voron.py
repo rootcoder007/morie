@@ -6,7 +6,6 @@ returned vertices, never by trusting the value the function reports.
 """
 
 from morie.fn import _array_core as np
-
 from morie.fn.voron import voron, voronoi_areas
 
 
@@ -43,9 +42,7 @@ def test_voron_lattice_interior_cells_are_unit_squares():
     verts = [[float(c) for c in row] for row in res.extra["vertices"].tolist()]
     square = [(0.5, 0.5), (0.5, 1.5), (1.5, 0.5), (1.5, 1.5)]
     unit = [
-        r
-        for r in res.extra["regions"]
-        if sorted({(round(verts[k][0], 9), round(verts[k][1], 9)) for k in r}) == square
+        r for r in res.extra["regions"] if sorted({(round(verts[k][0], 9), round(verts[k][1], 9)) for k in r}) == square
     ]
     assert len(unit) == 1
     assert abs(_shoelace([verts[k] for k in unit[0]]) - 1.0) < 1e-12
@@ -114,7 +111,7 @@ def test_voron_rejects_bad_shapes():
         except ValueError:
             pass
         else:
-            raise AssertionError("expected ValueError for %r" % (bad,))
+            raise AssertionError(f"expected ValueError for {bad!r}")
 
 
 def test_cheatsheet():

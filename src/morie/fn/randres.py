@@ -3,7 +3,6 @@
 
 import math
 
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -54,10 +53,16 @@ def randomized_response(y, truth=None, p=0.7):
     pi = (lam - (1.0 - p)) / d if d != 0.0 else float("nan")
     var = lam * (1.0 - lam) / (n * d * d) if d != 0.0 else float("nan")
     tr = sum(C.vec(truth)) / n if truth is not None else float("nan")
-    return RichResult(payload={
-        "estimate": pi, "se": math.sqrt(var) if var == var and var >= 0 else float("nan"),
-        "lambda": lam, "truth_rate": tr, "n": n,
-        "method": "Warner randomized response estimator"})
+    return RichResult(
+        payload={
+            "estimate": pi,
+            "se": math.sqrt(var) if var == var and var >= 0 else float("nan"),
+            "lambda": lam,
+            "truth_rate": tr,
+            "n": n,
+            "method": "Warner randomized response estimator",
+        }
+    )
 
 
 def cheatsheet():

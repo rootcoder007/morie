@@ -80,19 +80,19 @@ def spatial_arma(
     if W.shape != (n, n):
         raise ValueError("W must be (n, n).")
 
-    I = np.eye(n)
+    I_ = np.eye(n)
     Wy = W @ y
 
     rho = 0.0
     lam = 0.0
     converged = False
 
-    for it in range(max_iter):
-        A = I - rho * W
+    for it in range(max_iter):  # noqa: B007 - read after the loop
+        A = I_ - rho * W
         u = A @ y
         if ma_order >= 1:
             Wu = W @ u
-            B = I - lam * W
+            B = I_ - lam * W
             eps = np.linalg.solve(B, u) if np.abs(lam) > 1e-12 else u
         else:
             eps = u
@@ -118,7 +118,7 @@ def spatial_arma(
         rho = new_rho
         lam = new_lam
 
-    resid = (I - rho * W) @ y
+    resid = (I_ - rho * W) @ y
     sigma2 = float(np.mean(resid**2))
 
     return SpatialResult(

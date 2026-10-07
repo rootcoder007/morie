@@ -34,8 +34,6 @@ Implemented here:
   effect among switchers under common trends whatever the heterogeneity.
 """
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -49,8 +47,7 @@ def _panel(Y, D, group, period):
     t = list(period)
     n = len(Y)
     if not (len(D) == len(g) == len(t) == n):
-        raise ValueError("causdiddc: Y, D, group and period must have "
-                         "equal length")
+        raise ValueError("causdiddc: Y, D, group and period must have equal length")
     if n < 4:
         raise ValueError("causdiddc: need at least four observations")
     for v in D:
@@ -70,8 +67,7 @@ def _cells(Y, D, g, t):
         if key not in acc:
             acc[key] = [0.0, 0, D[i]]
         if acc[key][2] != D[i]:
-            raise ValueError("causdiddc: treatment varies within the "
-                             "(group, period) cell %r" % (key,))
+            raise ValueError(f"causdiddc: treatment varies within the (group, period) cell {key!r}")
         acc[key][0] += Y[i]
         acc[key][1] += 1
     return dict((k, (v[0] / v[1], v[1], v[2])) for k, v in acc.items())
@@ -111,14 +107,13 @@ def twfe_weights(D, group, period, weights=None):
             tw[ti[t[i]]] += weights[i]
         for i in range(n):
             r[i] -= ta[ti[t[i]]] / tw[ti[t[i]]]
-        if max(abs(sum(r[i] * weights[i] for i in range(n)
-                       if g[i] == gg)) for gg in gs) < 1e-13:
+        if max(abs(sum(r[i] * weights[i] for i in range(n) if g[i] == gg)) for gg in gs) < 1e-13:
             break
     denom = sum(weights[i] * D[i] * r[i] for i in range(n))
     if abs(denom) < 1e-14:
-        raise ValueError("causdiddc: the treatment has no variation left "
-                         "after the fixed effects; beta_fe is not "
-                         "identified")
+        raise ValueError(
+            "causdiddc: the treatment has no variation left after the fixed effects; beta_fe is not identified"
+        )
     cells = {}
     for i in range(n):
         if D[i] == 1.0:
@@ -134,22 +129,25 @@ def twfe(Y, D, group, period):
     denom = sum(D[i] * resid[i] for i in range(n))
     beta = sum(Y[i] * resid[i] for i in range(n)) / denom
     neg = dict((k, v) for k, v in w.items() if v < 0)
-    return RichResult(payload={
-        "estimate": beta,
-        "beta_fe": beta,
-        "weights": w,
-        "n_negative": len(neg),
-        "negative_mass": sum(abs(v) for v in neg.values()),
-        "weight_sum": sum(w.values()),
-        "n_treated_cells": len(w),
-        "n": n,
-        "method": ("two-way fixed effects (de Chaisemartin & "
-                   "D'Haultfoeuille 2020, Theorem 1)"),
-        "note": ("beta_fe is a weighted sum of cell effects whose "
-                 "weights sum to 1 but may be negative; n_negative and "
-                 "negative_mass say how much of the estimate runs "
-                 "backwards. Compare against did_m"),
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "beta_fe": beta,
+            "weights": w,
+            "n_negative": len(neg),
+            "negative_mass": sum(abs(v) for v in neg.values()),
+            "weight_sum": sum(w.values()),
+            "n_treated_cells": len(w),
+            "n": n,
+            "method": ("two-way fixed effects (de Chaisemartin & D'Haultfoeuille 2020, Theorem 1)"),
+            "note": (
+                "beta_fe is a weighted sum of cell effects whose "
+                "weights sum to 1 but may be negative; n_negative and "
+                "negative_mass say how much of the estimate runs "
+                "backwards. Compare against did_m"
+            ),
+        }
+    )
 
 
 def did_m(Y, D, group, period):
@@ -175,8 +173,7 @@ def did_m(Y, D, group, period):
             if a is None or b is None:
                 continue
             if a[2] == b[2]:
-                (stayers_up if a[2] == 1.0 else
-                 stayers_dn).append((b[0] - a[0], b[1]))
+                (stayers_up if a[2] == 1.0 else stayers_dn).append((b[0] - a[0], b[1]))
         for gg in sorted(set(g), key=repr):
             a, b = cells.get((gg, t0)), cells.get((gg, t1))
             if a is None or b is None or a[2] == b[2]:
@@ -187,28 +184,36 @@ def did_m(Y, D, group, period):
             cw = sum(w for _, w in ctrl)
             trend = sum(d * w for d, w in ctrl) / cw
             eff = (b[0] - a[0]) - trend
-            if b[2] == 0.0:              # a switch out of treatment
+            if b[2] == 0.0:  # a switch out of treatment
                 eff = -eff
             num += eff * b[1]
             den += b[1]
-            parts.append({"group": gg, "from": t0, "to": t1,
-                          "effect": eff, "n": b[1],
-                          "direction": "in" if b[2] == 1.0 else "out"})
+            parts.append(
+                {
+                    "group": gg,
+                    "from": t0,
+                    "to": t1,
+                    "effect": eff,
+                    "n": b[1],
+                    "direction": "in" if b[2] == 1.0 else "out",
+                }
+            )
     if den == 0:
-        raise ValueError("causdiddc: no cell switches treatment between "
-                         "consecutive periods, so DID_M is not defined")
-    return RichResult(payload={
-        "estimate": num / den,
-        "did_m": num / den,
-        "switches": parts,
-        "n_switches": len(parts),
-        "n_switching_obs": den,
-        "n": n,
-        "method": ("DID_M (de Chaisemartin & D'Haultfoeuille 2020): "
-                   "switchers against stayers, period by period"),
-        "note": ("unbiased for the average effect among switchers under "
-                 "common trends, with no homogeneity assumption"),
-    })
+        raise ValueError("causdiddc: no cell switches treatment between consecutive periods, so DID_M is not defined")
+    return RichResult(
+        payload={
+            "estimate": num / den,
+            "did_m": num / den,
+            "switches": parts,
+            "n_switches": len(parts),
+            "n_switching_obs": den,
+            "n": n,
+            "method": ("DID_M (de Chaisemartin & D'Haultfoeuille 2020): switchers against stayers, period by period"),
+            "note": (
+                "unbiased for the average effect among switchers under common trends, with no homogeneity assumption"
+            ),
+        }
+    )
 
 
 def causdiddc(Y, D, group, period):
@@ -220,34 +225,40 @@ def causdiddc(Y, D, group, period):
         dm_n = dm["n_switches"]
     except ValueError:
         dm_est, dm_n = float("nan"), 0
-    return RichResult(payload={
-        "estimate": dm_est,
-        "beta_fe": fe["beta_fe"],
-        "did_m": dm_est,
-        "weights": fe["weights"],
-        "n_negative": fe["n_negative"],
-        "negative_mass": fe["negative_mass"],
-        "weight_sum": fe["weight_sum"],
-        "n_switches": dm_n,
-        "gap": fe["beta_fe"] - dm_est,
-        "n": fe["n"],
-        "method": ("TWFE against DID_M (de Chaisemartin & "
-                   "D'Haultfoeuille 2020)"),
-        "note": ("estimate is DID_M, the one that survives "
-                 "heterogeneity; beta_fe is what a two-way fixed "
-                 "effects regression would report, and gap is how far "
-                 "apart they are"),
-    })
+    return RichResult(
+        payload={
+            "estimate": dm_est,
+            "beta_fe": fe["beta_fe"],
+            "did_m": dm_est,
+            "weights": fe["weights"],
+            "n_negative": fe["n_negative"],
+            "negative_mass": fe["negative_mass"],
+            "weight_sum": fe["weight_sum"],
+            "n_switches": dm_n,
+            "gap": fe["beta_fe"] - dm_est,
+            "n": fe["n"],
+            "method": ("TWFE against DID_M (de Chaisemartin & D'Haultfoeuille 2020)"),
+            "note": (
+                "estimate is DID_M, the one that survives "
+                "heterogeneity; beta_fe is what a two-way fixed "
+                "effects regression would report, and gap is how far "
+                "apart they are"
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("causdiddc: de Chaisemartin & D'Haultfoeuille (2020). The "
-            "TWFE coefficient is sum w_gt Delta_gt over treated cells, "
-            "weights from the residual of D on the two-way fixed "
-            "effects; they sum to 1 and can be NEGATIVE, so beta_fe can "
-            "have the opposite sign to every cell effect. DID_M compares "
-            "switchers to stayers between consecutive periods and is "
-            "unbiased under common trends whatever the heterogeneity.")
+    return (
+        "causdiddc: de Chaisemartin & D'Haultfoeuille (2020). The "
+        "TWFE coefficient is sum w_gt Delta_gt over treated cells, "
+        "weights from the residual of D on the two-way fixed "
+        "effects; they sum to 1 and can be NEGATIVE, so beta_fe can "
+        "have the opposite sign to every cell effect. DID_M compares "
+        "switchers to stayers between consecutive periods and is "
+        "unbiased under common trends whatever the heterogeneity."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 causal_did_de_chaisemartin = twfe_weights

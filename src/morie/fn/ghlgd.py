@@ -57,10 +57,7 @@ def ghosal_log_density(x, K=5, grid=None):
     s = float(np.std(x, ddof=1))
     s = max(s, 1e-6)
     z = (x - m) / s
-    if grid is None:
-        gz = np.linspace(z.min() - 1.0, z.max() + 1.0, 401)
-    else:
-        gz = (np.asarray(grid, dtype=float) - m) / s
+    gz = np.linspace(z.min() - 1.0, z.max() + 1.0, 401) if grid is None else (np.asarray(grid, dtype=float) - m) / s
 
     # Use Hermite-style monomial basis (centred, scaled).
     def basis(u):

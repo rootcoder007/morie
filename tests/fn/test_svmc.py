@@ -1,7 +1,6 @@
 """Tests for morie.fn.svmc — SVM classifier."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svmc import svm_classify
 
 

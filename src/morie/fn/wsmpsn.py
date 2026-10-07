@@ -73,11 +73,20 @@ def pearsonr(x, y, level=0.95):
     z = 0.5 * math.log((1.0 + r) / (1.0 - r)) if abs(r) < 1.0 else math.copysign(math.inf, r)
     sez = 1.0 / math.sqrt(n - 3)
     zc = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": r, "statistic": t, "p_value": p, "df": float(df),
-        "z": z, "se_z": sez,
-        "ci_lower": math.tanh(z - zc * sez), "ci_upper": math.tanh(z + zc * sez),
-        "n": n, "method": "Sample correlation, Wasserman Example 7.13"})
+    return RichResult(
+        payload={
+            "estimate": r,
+            "statistic": t,
+            "p_value": p,
+            "df": float(df),
+            "z": z,
+            "se_z": sez,
+            "ci_lower": math.tanh(z - zc * sez),
+            "ci_upper": math.tanh(z + zc * sez),
+            "n": n,
+            "method": "Sample correlation, Wasserman Example 7.13",
+        }
+    )
 
 
 wasserman_pearson_corr = pearsonr

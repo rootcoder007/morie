@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.raoscot import rao_scott_chisq
 
-
 P_HAT = [0.18, 0.32, 0.27, 0.23]
 P0 = [0.25, 0.25, 0.25, 0.25]
 
@@ -32,5 +31,3 @@ def test_raoscot_edge():
         rao_scott_chisq([0.5, 0.6], [0.5, 0.5], 100)
     with pytest.raises(ValueError, match="positive"):
         rao_scott_chisq([0.5, 0.5], [1.0, 0.0], 100)
-
-

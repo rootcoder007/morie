@@ -100,10 +100,7 @@ def diflr(
     X = np.where(np.isnan(X), 0.0, X)
 
     if item_names is None:
-        if isinstance(data, pd.DataFrame):
-            item_names = list(data.columns)
-        else:
-            item_names = [f"item_{j}" for j in range(k)]
+        item_names = list(data.columns) if isinstance(data, pd.DataFrame) else [f"item_{j}" for j in range(k)]
 
     # Total score as matching variable (rest score excluding target item)
     total_score = X.sum(axis=1)

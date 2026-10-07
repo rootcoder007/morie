@@ -31,8 +31,7 @@ def n2v_probs(nb, prev, cur, p, q):
     return out
 
 
-def node2vec(G, p=1.0, q=1.0, dim=8, walk_len=10, n_walks=4, window=3,
-             epochs=1, lr=0.05, neg=2, seed=42):
+def node2vec(G, p=1.0, q=1.0, dim=8, walk_len=10, n_walks=4, window=3, epochs=1, lr=0.05, neg=2, seed=42):
     """
     node2vec embeddings
 
@@ -101,8 +100,7 @@ def node2vec(G, p=1.0, q=1.0, dim=8, walk_len=10, n_walks=4, window=3,
                 prev, cur = cur, nb[cur][pick]
                 w.append(cur)
             walks.append(w)
-    W, _C = skipgram(walks, n, dim, int(window), int(epochs), float(lr),
-                     int(neg), rng)
+    W, _C = skipgram(walks, n, dim, int(window), int(epochs), float(lr), int(neg), rng)
     tot = 0.0
     cnt = 0
     for i in range(n):
@@ -112,17 +110,19 @@ def node2vec(G, p=1.0, q=1.0, dim=8, walk_len=10, n_walks=4, window=3,
             if a > 0.0 and b > 0.0:
                 tot += sum(W[i][d] * W[j][d] for d in range(dim)) / (a * b)
                 cnt += 1
-    return RichResult(payload={
-        "estimate": tot / cnt if cnt else float("nan"),
-        "embedding": W,
-        "walks": walks,
-        "degree": [len(nb[i]) for i in range(n)],
-        "n": n,
-        "dim": dim,
-        "p": p,
-        "q": q,
-        "method": "node2vec biased-walk embeddings",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / cnt if cnt else float("nan"),
+            "embedding": W,
+            "walks": walks,
+            "degree": [len(nb[i]) for i in range(n)],
+            "n": n,
+            "dim": dim,
+            "p": p,
+            "q": q,
+            "method": "node2vec biased-walk embeddings",
+        }
+    )
 
 
 def cheatsheet():

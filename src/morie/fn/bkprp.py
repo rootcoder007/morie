@@ -47,14 +47,8 @@ def backpropagation(x, y, w=None, b=None, activation: str = "sigmoid"):
     y = np.atleast_2d(np.asarray(y, dtype=float))
     n_in = x.shape[1]
     n_out = y.shape[1]
-    if w is None:
-        w = np.eye(n_out, n_in)
-    else:
-        w = np.asarray(w, dtype=float)
-    if b is None:
-        b = np.zeros(n_out)
-    else:
-        b = np.asarray(b, dtype=float)
+    w = np.eye(n_out, n_in) if w is None else np.asarray(w, dtype=float)
+    b = np.zeros(n_out) if b is None else np.asarray(b, dtype=float)
 
     z = x @ w.T + b  # (batch, n_out)
     a = _sigma(z, activation)

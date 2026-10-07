@@ -64,18 +64,11 @@ def predictiveness(y, pred, measure="r_squared", cutoff=0.5):
     p = np.asarray(pred, dtype=float).ravel()
     n = y.size
     if p.size != n:
-        raise ValueError(
-            "predictions and outcome disagree in length, %d vs %d."
-            % (p.size, n)
-        )
+        raise ValueError(f"predictions and outcome disagree in length, {int(p.size)} vs {int(n)}.")
     if measure not in MEASURES:
-        raise ValueError(
-            "measure must be one of %s, got %r." % (MEASURES, measure)
-        )
+        raise ValueError(f"measure must be one of {MEASURES}, got {measure!r}.")
     if measure != "r_squared" and not np.all(np.isin(y, (0.0, 1.0))):
-        raise ValueError(
-            "measure %r needs a binary 0/1 outcome." % measure
-        )
+        raise ValueError(f"measure {measure!r} needs a binary 0/1 outcome.")
 
     if measure == "r_squared":
         # v = 1 - MSE/Var. Both pieces have the elementary gradient
@@ -86,13 +79,11 @@ def predictiveness(y, pred, measure="r_squared", cutoff=0.5):
         mu = float(np.mean(y))
         var = float(np.mean((y - mu) ** 2))
         if var <= 0:
-            raise ValueError(
-                "the outcome has zero variance, so R-squared is undefined."
-            )
+            raise ValueError("the outcome has zero variance, so R-squared is undefined.")
         v = 1.0 - mse / var
         g_mse = (y - p) ** 2 - mse
         g_var = (y - mu) ** 2 - var
-        grad = -(g_mse / var - mse * g_var / var ** 2)
+        grad = -(g_mse / var - mse * g_var / var**2)
         return v, grad
 
     if measure == "accuracy":
@@ -106,16 +97,14 @@ def predictiveness(y, pred, measure="r_squared", cutoff=0.5):
         # model explains.
         pi = float(np.mean(y))
         if not 0.0 < pi < 1.0:
-            raise ValueError(
-                "the outcome is constant, so the null deviance is zero."
-            )
+            raise ValueError("the outcome is constant, so the null deviance is zero.")
         pc = np.clip(p, 1e-10, 1 - 1e-10)
         ll = y * np.log(pc) + (1 - y) * np.log(1 - pc)
         ce = float(np.mean(ll))
         lln = y * np.log(pi) + (1 - y) * np.log(1 - pi)
         den = float(np.mean(lln))
         v = 1.0 - ce / den
-        grad = -((ll - ce) / den - ce * (lln - den) / den ** 2)
+        grad = -((ll - ce) / den - ce * (lln - den) / den**2)
         return v, grad
 
     # AUC. The gradient splits by class: a control contributes the
@@ -132,12 +121,8 @@ def predictiveness(y, pred, measure="r_squared", cutoff=0.5):
     gt = np.sum(p1[:, None] > p0[None, :])
     eq = np.sum(p1[:, None] == p0[None, :])
     v = float((gt + 0.5 * eq) / (n1 * n0))
-    sens = np.array([
-        (np.sum(p0 < pi_) + 0.5 * np.sum(p0 == pi_)) / n0 for pi_ in p
-    ])
-    spec = np.array([
-        (np.sum(p1 > pi_) + 0.5 * np.sum(p1 == pi_)) / n1 for pi_ in p
-    ])
+    sens = np.array([(np.sum(p0 < pi_) + 0.5 * np.sum(p0 == pi_)) / n0 for pi_ in p])
+    spec = np.array([(np.sum(p1 > pi_) + 0.5 * np.sum(p1 == pi_)) / n1 for pi_ in p])
     pi1, pi0 = n1 / n, n0 / n
     grad = (y == 0) * (spec - v) / pi0 + (y == 1) * (sens - v) / pi1
     return v, grad
@@ -170,15 +155,12 @@ def gateaux_check(y, pred, measure="r_squared", n_points=40):
     eps = 1.0 / (n + 1.0)
     worst = 0.0
     for i in range(min(n, int(n_points))):
-        vi, _ = predictiveness(
-            np.append(y, y[i]), np.append(p, p[i]), measure
-        )
+        vi, _ = predictiveness(np.append(y, y[i]), np.append(p, p[i]), measure)
         worst = max(worst, abs((vi - v0) / eps - grad[i]))
     return worst
 
 
-def fit_learner(X, y, binary, n_estimators=150, max_depth=3,
-                learning_rate=0.1):
+def fit_learner(X, y, binary, n_estimators=150, max_depth=3, learning_rate=0.1):
     """Native gradient-boosted learner, returned as a callable.
 
     The theory needs an estimator of the oracle prediction function
@@ -192,14 +174,17 @@ def fit_learner(X, y, binary, n_estimators=150, max_depth=3,
         return lambda Z: np.full(np.asarray(Z).shape[0], m)
     task = "classification" if binary else "regression"
     fit = gb_fit(
-        X, y, task=task, n_estimators=int(n_estimators),
-        max_depth=int(max_depth), learning_rate=float(learning_rate),
+        X,
+        y,
+        task=task,
+        n_estimators=int(n_estimators),
+        max_depth=int(max_depth),
+        learning_rate=float(learning_rate),
     )
     return lambda Z: gb_predict(fit, _as2d(Z))
 
 
-def vim(y, X, s, measure="r_squared", f=None, n_folds=5,
-        sample_split=True, alpha=0.05, seed=0, **learner):
+def vim(y, X, s, measure="r_squared", f=None, n_folds=5, sample_split=True, alpha=0.05, seed=0, **learner):
     r"""Variable importance for the group ``s``, with valid inference.
 
     Two distinct devices are in play and they are routinely confused.
@@ -223,26 +208,18 @@ def vim(y, X, s, measure="r_squared", f=None, n_folds=5,
     X = _as2d(X)
     n = y.size
     if X.shape[0] != n:
-        raise ValueError(
-            "X has %d rows for %d outcomes." % (X.shape[0], n)
-        )
+        raise ValueError(f"X has {int(X.shape[0])} rows for {int(n)} outcomes.")
     if n < 4 * int(n_folds):
-        raise ValueError(
-            "need at least 4 observations per fold, got n = %d for %d "
-            "folds." % (n, int(n_folds))
-        )
+        raise ValueError(f"need at least 4 observations per fold, got n = {int(n)} for {int(int(n_folds))} folds.")
     s = np.atleast_1d(np.asarray(s, dtype=int)).ravel()
     if s.size == 0:
         raise ValueError("s is empty; name at least one column.")
     if s.min() < 0 or s.max() >= X.shape[1]:
-        raise ValueError(
-            "s refers to column %d, outside the %d columns of X."
-            % (int(s.max()), X.shape[1])
-        )
+        raise ValueError(f"s refers to column {int(int(s.max()))}, outside the {int(X.shape[1])} columns of X.")
     keep = np.setdiff1d(np.arange(X.shape[1]), s)
     binary = bool(np.all(np.isin(y, (0.0, 1.0))))
     if measure != "r_squared" and not binary:
-        raise ValueError("measure %r needs a binary outcome." % measure)
+        raise ValueError(f"measure {measure!r} needs a binary outcome.")
 
     rng = np.random.default_rng(int(seed))
     K = int(n_folds)
@@ -274,7 +251,7 @@ def vim(y, X, s, measure="r_squared", f=None, n_folds=5,
             g = _learn(X[tr], y[tr], cols)
             v, grad = predictiveness(y[te], g(X[te][:, cols]), measure)
             vals.append(v)
-            etas.append(float(np.mean(grad ** 2)))
+            etas.append(float(np.mean(grad**2)))
         if not vals:
             raise ValueError("every fold was too small to evaluate.")
         return float(np.mean(vals)), float(np.mean(etas)), len(vals)
@@ -282,7 +259,7 @@ def vim(y, X, s, measure="r_squared", f=None, n_folds=5,
     full_cols = np.arange(X.shape[1])
     if sample_split:
         half = rng.permutation(n)
-        a, b = half[: n // 2], half[n // 2:]
+        a, b = half[: n // 2], half[n // 2 :]
         v_full, eta_full, _ = _crossfit(a, full_cols)
         v_red, eta_red, _ = _crossfit(b, keep)
         var = eta_full / a.size + eta_red / b.size

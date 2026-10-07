@@ -1,7 +1,5 @@
 """Tests for odds_ratio_unit_change.odds_ratio_unit_change."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.odds_ratio_unit_change import odds_ratio_unit_change
 
 

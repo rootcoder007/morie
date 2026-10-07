@@ -1,7 +1,6 @@
 """Tests for morie.fn.essn -- Effective sample size."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.essn import effective_sample_size
 
 

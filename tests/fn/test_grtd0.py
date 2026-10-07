@@ -1,7 +1,6 @@
 """Tests for grtd0.geron_td_zero_update."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grtd0 import geron_td_zero_update
 
 
@@ -22,6 +21,7 @@ def test_grtd0_basic():
     assert "V" in result
     assert len(result["V"]) == 5
     import math
+
     assert math.isfinite(result["td_error"])
     assert math.isfinite(result["new_value"])
 
@@ -42,6 +42,7 @@ def test_grtd0_edge():
     assert "V" in result
     assert len(result["V"]) == 10
     import math
+
     assert math.isfinite(result["td_error"])
     # With done=True the target equals the reward exactly
     assert result["target"] == reward
@@ -59,7 +60,7 @@ import morie.fn.grtd0 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

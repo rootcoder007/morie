@@ -126,8 +126,7 @@ def random_fourier_features(X, D=256, kernel="rbf", gamma=0.5):
     if d < 1:
         raise ValueError("random_fourier_features: D must be at least 1")
     if kernel != "rbf":
-        raise ValueError("random_fourier_features: only the rbf kernel of the paper's "
-                         "Gaussian entry is offered")
+        raise ValueError("random_fourier_features: only the rbf kernel of the paper's Gaussian entry is offered")
     g = float(gamma)
     if g <= 0.0:
         raise ValueError("random_fourier_features: gamma must be positive")
@@ -179,7 +178,7 @@ def random_fourier_features(X, D=256, kernel="rbf", gamma=0.5):
             "b": b,
             "n": n,
             "method": "z(x) = sqrt(2/D) cos(W'x + b), w ~ N(0, 2*gamma I), b ~ U(0, 2pi); "
-                      "Rahimi and Recht (2007) NIPS 20; not in the book",
+            "Rahimi and Recht (2007) NIPS 20; not in the book",
         },
     )
 

@@ -63,18 +63,14 @@ doi:10.1109/CVPR.2015.7298965. The fully convolutional predecessor.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["valid_output_size", "mirror_pad", "overlap_tiles",
-           "skip_concat", "separation_weight_map"]
+__all__ = ["valid_output_size", "mirror_pad", "overlap_tiles", "skip_concat", "separation_weight_map"]
 
 _EPS = 1e-12
 
 
-def valid_output_size(input_size, depth=4, convs_per_block=2,
-                      kernel=3):
+def valid_output_size(input_size, depth=4, convs_per_block=2, kernel=3):
     r"""Output size after a U-Net of the given depth, valid
     convolutions only.
 
@@ -85,19 +81,17 @@ def valid_output_size(input_size, depth=4, convs_per_block=2,
     s = int(input_size)
     kk = int(kernel) - 1
     if s < 1 or int(depth) < 0:
-        raise ValueError("unetbk: the input size must be positive and "
-                         "the depth non-negative")
+        raise ValueError("unetbk: the input size must be positive and the depth non-negative")
     sizes = []
     for _ in range(int(depth)):
         s -= kk * int(convs_per_block)
         if s < 1:
-            raise ValueError("unetbk: the input is too small for this "
-                             "depth")
+            raise ValueError("unetbk: the input is too small for this depth")
         sizes.append(s)
         if s % 2 != 0:
-            raise ValueError("unetbk: size %d is odd before pooling; "
-                             "U-Net requires even sizes at every "
-                             "pooling step" % s)
+            raise ValueError(
+                f"unetbk: size {int(s)} is odd before pooling; U-Net requires even sizes at every pooling step"
+            )
         s //= 2
     s -= kk * int(convs_per_block)
     for d in range(int(depth) - 1, -1, -1):
@@ -105,13 +99,14 @@ def valid_output_size(input_size, depth=4, convs_per_block=2,
         s = min(s, sizes[d])
         s -= kk * int(convs_per_block)
         if s < 1:
-            raise ValueError("unetbk: the expansive path ran out of "
-                             "size")
-    return {"output": s, "input": int(input_size),
-            "border_lost": int(input_size) - s,
-            "skip_sizes": sizes,
-            "note": "valid convolutions only, so the output covers "
-                    "only pixels with full context"}
+            raise ValueError("unetbk: the expansive path ran out of size")
+    return {
+        "output": s,
+        "input": int(input_size),
+        "border_lost": int(input_size) - s,
+        "skip_sizes": sizes,
+        "note": "valid convolutions only, so the output covers only pixels with full context",
+    }
 
 
 def mirror_pad(image, pad):
@@ -126,8 +121,7 @@ def mirror_pad(image, pad):
         raise ValueError("unetbk: the pad must be non-negative")
     h, w = len(img), len(img[0])
     if p >= h or p >= w:
-        raise ValueError("unetbk: the mirror pad (%d) must be smaller "
-                         "than the image (%dx%d)" % (p, h, w))
+        raise ValueError(f"unetbk: the mirror pad ({int(p)}) must be smaller than the image ({int(h)}x{int(w)})")
     out = []
     for i in range(-p, h + p):
         ii = -i if i < 0 else (2 * h - 2 - i if i >= h else i)
@@ -147,21 +141,20 @@ def overlap_tiles(height, width, tile, border):
     """
     t, b = int(tile), int(border)
     if t < 1 or b < 0:
-        raise ValueError("unetbk: the tile must be positive and the "
-                         "border non-negative")
+        raise ValueError("unetbk: the tile must be positive and the border non-negative")
     out = t - 2 * b
     if out < 1:
         raise ValueError("unetbk: the border consumes the whole tile")
     tiles = []
     for i in range(0, int(height), out):
         for j in range(0, int(width), out):
-            tiles.append({"output_origin": (i, j),
-                          "input_origin": (i - b, j - b),
-                          "input_size": t, "output_size": out})
-    return {"tiles": tiles, "n_tiles": len(tiles),
-            "output_size": out,
-            "note": "inputs overlap by the border; outputs abut, so "
-                    "there are no seams"}
+            tiles.append({"output_origin": (i, j), "input_origin": (i - b, j - b), "input_size": t, "output_size": out})
+    return {
+        "tiles": tiles,
+        "n_tiles": len(tiles),
+        "output_size": out,
+        "note": "inputs overlap by the border; outputs abut, so there are no seams",
+    }
 
 
 def skip_concat(upsampled, contracting):
@@ -176,16 +169,17 @@ def skip_concat(upsampled, contracting):
     hu, wu = len(up), len(up[0])
     hc, wc = len(co), len(co[0])
     if hc < hu or wc < wu:
-        raise ValueError("unetbk: the contracting map (%dx%d) is "
-                         "smaller than the upsampled one (%dx%d)"
-                         % (hc, wc, hu, wu))
+        raise ValueError(
+            f"unetbk: the contracting map ({int(hc)}x{int(wc)}) is smaller than the upsampled one ({int(hu)}x{int(wu)})"
+        )
     oi, oj = (hc - hu) // 2, (wc - wu) // 2
-    crop = [[co[oi + i][oj + j] for j in range(wu)]
-            for i in range(hu)]
-    return {"concatenated": [up[i] + crop[i] for i in range(hu)],
-            "crop_offset": (oi, oj), "channels": 2,
-            "note": "localisation needs the detail pooling destroyed; "
-                    "context alone cannot supply it"}
+    crop = [[co[oi + i][oj + j] for j in range(wu)] for i in range(hu)]
+    return {
+        "concatenated": [up[i] + crop[i] for i in range(hu)],
+        "crop_offset": (oi, oj),
+        "channels": 2,
+        "note": "localisation needs the detail pooling destroyed; context alone cannot supply it",
+    }
 
 
 def separation_weight_map(labels, w0=10.0, sigma=5.0):
@@ -219,29 +213,31 @@ def separation_weight_map(labels, w0=10.0, sigma=5.0):
                     ds.append(best)
             ds.sort()
             if len(ds) >= 2:
-                row.append(1.0 + float(w0) * math.exp(
-                    -((ds[0] + ds[1]) ** 2)
-                    / (2.0 * float(sigma) ** 2)))
+                row.append(1.0 + float(w0) * math.exp(-((ds[0] + ds[1]) ** 2) / (2.0 * float(sigma) ** 2)))
             else:
                 row.append(1.0)
         out.append(row)
-    return {"weights": out, "n_instances": len(ids),
-            "max_weight": max(v for r in out for v in r),
-            "note": "the separating background must be LEARNED, so it "
-                    "is weighted up"}
+    return {
+        "weights": out,
+        "n_instances": len(ids),
+        "max_weight": max(v for r in out for v in r),
+        "note": "the separating background must be LEARNED, so it is weighted up",
+    }
 
 
 def cheatsheet():
-    return ("unetbk: built for the case where annotated IMAGES are "
-            "scarce though pixels are plentiful. Contracting path for "
-            "context, symmetric expanding path for localisation, and "
-            "SKIP CONNECTIONS carrying high-resolution detail that "
-            "pooling destroyed -- context alone cannot localise. Only "
-            "VALID convolutions and no fully connected layers, so the "
-            "output is smaller than the input and covers only pixels "
-            "with full context; hence the OVERLAP-TILE strategy with "
-            "missing border data MIRRORED. A weight map raises the "
-            "loss on the thin background between touching objects.")
+    return (
+        "unetbk: built for the case where annotated IMAGES are "
+        "scarce though pixels are plentiful. Contracting path for "
+        "context, symmetric expanding path for localisation, and "
+        "SKIP CONNECTIONS carrying high-resolution detail that "
+        "pooling destroyed -- context alone cannot localise. Only "
+        "VALID convolutions and no fully connected layers, so the "
+        "output is smaller than the input and covers only pixels "
+        "with full context; hence the OVERLAP-TILE strategy with "
+        "missing border data MIRRORED. A weight map raises the "
+        "loss on the thin background between touching objects."
+    )
 
 
 # compact alias per ledger/NAMING.md

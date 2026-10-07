@@ -1,7 +1,6 @@
 """Tests for morie.fn.bdiag — MCMC diagnostics."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdiag import mcmc_diagnostics
 
 

@@ -29,25 +29,25 @@ def kamath_ch2_seq2seq_cross_entropy(y, c, U=None):
     idx = np.atleast_1d(np.asarray(y)).astype(int)
     P = np.atleast_2d(np.asarray(c, dtype=float))
     if P.shape[0] != len(idx):
-        raise ValueError(
-            f"need one distribution row per target token; got "
-            f"{P.shape[0]} rows for {len(idx)} tokens.")
+        raise ValueError(f"need one distribution row per target token; got {P.shape[0]} rows for {len(idx)} tokens.")
     if U is not None and int(U) != len(idx):
-        raise ValueError(f"U = {U} does not match the sequence length "
-                         f"{len(idx)}.")
+        raise ValueError(f"U = {U} does not match the sequence length {len(idx)}.")
     if np.any(np.abs(P.sum(axis=1) - 1.0) > 1e-8) or np.any(P < 0):
-        raise ValueError("every row of c must be a probability "
-                         "distribution.")
+        raise ValueError("every row of c must be a probability distribution.")
     if np.any((idx < 0) | (idx >= P.shape[1])):
         raise ValueError("a target index is outside the vocabulary.")
     picked = P[np.arange(len(idx)), idx]
     with np.errstate(divide="ignore"):
         losses = -np.log(picked)
-    return RichResult(payload={
-        "estimate": float(losses.sum()), "per_step": [float(v)
-                                                      for v in losses],
-        "mean_loss": float(losses.mean()), "n": len(idx),
-        "method": "Seq2seq cross-entropy (Kamath Eq 2.6)"})
+    return RichResult(
+        payload={
+            "estimate": float(losses.sum()),
+            "per_step": [float(v) for v in losses],
+            "mean_loss": float(losses.mean()),
+            "n": len(idx),
+            "method": "Seq2seq cross-entropy (Kamath Eq 2.6)",
+        }
+    )
 
 
 def cheatsheet():

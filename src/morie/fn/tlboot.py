@@ -56,8 +56,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["naive_bootstrap", "targeted_bootstrap",
-           "multiplier_bootstrap", "moment_check"]
+__all__ = ["naive_bootstrap", "targeted_bootstrap", "multiplier_bootstrap", "moment_check"]
 
 _EPS = 1e-12
 
@@ -76,15 +75,19 @@ def naive_bootstrap(data, estimator, B=200, seed=0):
     rng = np.random.default_rng(seed)
     out = []
     for _ in range(int(B)):
-        s = [rows[int(float(rng.uniform()) * n) % n]
-             for _ in range(n)]
+        s = [rows[int(float(rng.uniform()) * n) % n] for _ in range(n)]
         out.append(float(estimator(s)))
     m = sum(out) / len(out)
     sd = math.sqrt(sum((v - m) ** 2 for v in out) / (len(out) - 1))
-    return {"replicates": out, "mean": m, "se": sd, "B": int(B),
-            "caveat": "refitting a data-adaptive learner on each "
-                      "resample mixes the learner's instability into "
-                      "the sampling distribution"}
+    return {
+        "replicates": out,
+        "mean": m,
+        "se": sd,
+        "B": int(B),
+        "caveat": "refitting a data-adaptive learner on each "
+        "resample mixes the learner's instability into "
+        "the sampling distribution",
+    }
 
 
 def targeted_bootstrap(P_star_sampler, estimator, B=200, seed=0):
@@ -101,14 +104,17 @@ def targeted_bootstrap(P_star_sampler, estimator, B=200, seed=0):
         out.append(float(estimator(P_star_sampler(rng))))
     m = sum(out) / len(out)
     sd = math.sqrt(sum((v - m) ** 2 for v in out) / (len(out) - 1))
-    return RichResult(payload={
-        "estimate": m, "mean": m, "se": sd,
-        "replicates": out, "B": int(B),
-        "method": "targeted bootstrap from the fitted P_n^*; van der "
-                  "Laan & Rose (2018) Chap. 28",
-        "note": "designed to be consistent for the first two moments "
-                "of the sampling distribution",
-    })
+    return RichResult(
+        payload={
+            "estimate": m,
+            "mean": m,
+            "se": sd,
+            "replicates": out,
+            "B": int(B),
+            "method": "targeted bootstrap from the fitted P_n^*; van der Laan & Rose (2018) Chap. 28",
+            "note": "designed to be consistent for the first two moments of the sampling distribution",
+        }
+    )
 
 
 def multiplier_bootstrap(ic, B=1000, seed=0):
@@ -121,24 +127,25 @@ def multiplier_bootstrap(ic, B=1000, seed=0):
     d = [float(v) for v in k.vec(ic)]
     n = len(d)
     if n < 2:
-        raise ValueError("tlboot: at least 2 influence values are "
-                         "needed")
+        raise ValueError("tlboot: at least 2 influence values are needed")
     rng = np.random.default_rng(seed)
     out = []
     for _ in range(int(B)):
-        w = [-math.log(max(float(rng.uniform()), 1e-12))
-             for _ in range(n)]
+        w = [-math.log(max(float(rng.uniform()), 1e-12)) for _ in range(n)]
         s = sum(w)
         out.append(sum(w[i] * d[i] for i in range(n)) / s)
     m = sum(out) / len(out)
     sd = math.sqrt(sum((v - m) ** 2 for v in out) / (len(out) - 1))
     mm = sum(d) / n
     icse = math.sqrt(sum((v - mm) ** 2 for v in d) / (n - 1) / n)
-    return {"replicates": out, "mean": m, "se": sd,
-            "influence_curve_se": icse,
-            "ratio": sd / icse if icse > 0 else float("nan"),
-            "note": "matches the influence-curve standard error by "
-                    "construction, at no refitting cost"}
+    return {
+        "replicates": out,
+        "mean": m,
+        "se": sd,
+        "influence_curve_se": icse,
+        "ratio": sd / icse if icse > 0 else float("nan"),
+        "note": "matches the influence-curve standard error by construction, at no refitting cost",
+    }
 
 
 def moment_check(replicates, target_mean, target_se, tol=0.15):
@@ -153,27 +160,29 @@ def moment_check(replicates, target_mean, target_se, tol=0.15):
         raise ValueError("tlboot: at least 2 replicates are needed")
     m = sum(v) / n
     sd = math.sqrt(sum((q - m) ** 2 for q in v) / (n - 1))
-    return {"mean": m, "se": sd,
-            "mean_error": abs(m - float(target_mean)),
-            "se_ratio": sd / float(target_se)
-            if float(target_se) > 0 else float("nan"),
-            "first_two_moments_ok":
-                abs(sd / float(target_se) - 1.0) < float(tol),
-            "note": "consistency for the first two moments is the "
-                    "stated design goal"}
+    return {
+        "mean": m,
+        "se": sd,
+        "mean_error": abs(m - float(target_mean)),
+        "se_ratio": sd / float(target_se) if float(target_se) > 0 else float("nan"),
+        "first_two_moments_ok": abs(sd / float(target_se) - 1.0) < float(tol),
+        "note": "consistency for the first two moments is the stated design goal",
+    }
 
 
 def cheatsheet():
-    return ("tlboot: the ordinary bootstrap FAILS for TMLE. Refitting "
-            "a super learner on every resample makes the nuisance fits "
-            "move with the resample, and that is not the sampling "
-            "variability of the target -- it is instability of an "
-            "infinite-dimensional object converging slower than "
-            "root-n, so more resamples do not help. Instead resample "
-            "FROM THE TARGETED FIT P_n^*, holding the nuisances fixed; "
-            "the design goal is consistency for the first TWO MOMENTS. "
-            "The multiplier bootstrap on the influence curve is the "
-            "cheap equivalent.")
+    return (
+        "tlboot: the ordinary bootstrap FAILS for TMLE. Refitting "
+        "a super learner on every resample makes the nuisance fits "
+        "move with the resample, and that is not the sampling "
+        "variability of the target -- it is instability of an "
+        "infinite-dimensional object converging slower than "
+        "root-n, so more resamples do not help. Instead resample "
+        "FROM THE TARGETED FIT P_n^*, holding the nuisances fixed; "
+        "the design goal is consistency for the first TWO MOMENTS. "
+        "The multiplier bootstrap on the influence curve is the "
+        "cheap equivalent."
+    )
 
 
 # compact alias per ledger/NAMING.md

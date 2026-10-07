@@ -10,5 +10,6 @@ def test_alchrj_basic():
 
 def test_alchrj_edge():
     import pytest
+
     with pytest.raises(ValueError, match="no preference"):
         alammar_chosen_rejected_template(["p"], ["x"], ["x"])

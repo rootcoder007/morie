@@ -80,7 +80,9 @@ def geron_reward_function(s, a, s_next, R=None, gamma=1.0):
     else:
         T = np.asarray(R, dtype=float)
         if T.ndim not in (2, 3):
-            raise ValueError(f"geron_reward_function: a reward table must be 2-D [s, a] or 3-D [s, a, s'], got {T.ndim}-D")
+            raise ValueError(
+                f"geron_reward_function: a reward table must be 2-D [s, a] or 3-D [s, a, s'], got {T.ndim}-D"
+            )
         idx = [sa.astype(int), aa.astype(int)] + ([sn.astype(int)] if T.ndim == 3 else [])
         for k, (name, arr) in enumerate(zip(("s", "a", "s_next"), idx)):
             if arr.min() < 0 or arr.max() >= T.shape[k]:

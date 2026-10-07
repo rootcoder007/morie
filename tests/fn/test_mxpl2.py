@@ -1,7 +1,6 @@
 """Test 2D max pooling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mxpl2 import mxpl2
 
 

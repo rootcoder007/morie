@@ -5,11 +5,8 @@ from . import _array_core as np
 from ._richresult import RichResult
 from ._schab_glmm import (
     interaction_structure,
-    lcar_full_conditional,
     lcar_precision,
-    linear_trend_log_risk,
     neighbour_structure,
-    nonparametric_log_risk,
     null_space_constraints,
     random_walk_structure,
     smr,
@@ -21,10 +18,17 @@ _SPATIAL = ("exchangeable", "icar", "lcar")
 _TEMPORAL = ("none", "rw1", "rw2")
 
 
-def schabenberger_bayes_hierarchical(counts, expected, adjacency,
-                                     spatial_prior="lcar", rho=0.5,
-                                     n_time=None, temporal_prior="none",
-                                     interaction=None, sigma2=1.0):
+def schabenberger_bayes_hierarchical(
+    counts,
+    expected,
+    adjacency,
+    spatial_prior="lcar",
+    rho=0.5,
+    n_time=None,
+    temporal_prior="none",
+    interaction=None,
+    sigma2=1.0,
+):
     """Specify a Bayesian hierarchical model for disease mapping, Sec. 6.4.
 
     The first stage is Clayton and Kaldor's (1987) relative-risk model,
@@ -111,18 +115,25 @@ def schabenberger_bayes_hierarchical(counts, expected, adjacency,
         note = "eq (6.102): aspatial, adds excess variation only"
     elif spatial_prior == "icar":
         Q = R
-        note = ("eq (6.104): singular, so the prior is improper and the "
-                "covariance requires a Moore-Penrose inverse")
+        note = "eq (6.104): singular, so the prior is improper and the covariance requires a Moore-Penrose inverse"
     else:
         Q, _ = lcar_precision(R, rho, sigma2)
-        note = (f"Leroux: rho = {rho}; rho = 0 is exchangeable, rho = 1 is "
-                f"intrinsic, and unlike the BYM convolution it is "
-                f"identifiable")
+        note = (
+            f"Leroux: rho = {rho}; rho = 0 is exchangeable, rho = 1 is "
+            f"intrinsic, and unlike the BYM convolution it is "
+            f"identifiable"
+        )
 
-    payload = {"smr": smr(y, e), "precision": Q, "structure": R,
-               "spatial_prior": spatial_prior, "prior_note": note,
-               "n_areas": n, "sigma2": float(sigma2),
-               "rank_deficiency_spatial": int(n - np.linalg.matrix_rank(Q))}
+    payload = {
+        "smr": smr(y, e),
+        "precision": Q,
+        "structure": R,
+        "spatial_prior": spatial_prior,
+        "prior_note": note,
+        "n_areas": n,
+        "sigma2": float(sigma2),
+        "rank_deficiency_spatial": int(n - np.linalg.matrix_rank(Q)),
+    }
     lines = [("areas", n), ("spatial prior", spatial_prior)]
     if spatial_prior == "lcar":
         payload["rho"] = float(rho)
@@ -130,14 +141,12 @@ def schabenberger_bayes_hierarchical(counts, expected, adjacency,
 
     if temporal_prior != "none" or interaction is not None:
         if n_time is None:
-            raise ValueError("`n_time` is required for a temporal or "
-                             "interaction structure")
+            raise ValueError("`n_time` is required for a temporal or interaction structure")
         order = {"rw1": 1, "rw2": 2}.get(temporal_prior, 1)
         Rt = random_walk_structure(n_time, order)
         payload["temporal_structure"] = Rt
         payload["temporal_prior"] = temporal_prior
-        payload["rank_deficiency_temporal"] = int(
-            n_time - np.linalg.matrix_rank(Rt))
+        payload["rank_deficiency_temporal"] = int(n_time - np.linalg.matrix_rank(Rt))
         lines += [("periods", n_time), ("temporal prior", temporal_prior)]
 
         if interaction is not None:
@@ -149,29 +158,36 @@ def schabenberger_bayes_hierarchical(counts, expected, adjacency,
                 interaction_rank=inter["rank"],
                 rank_deficiency=inter["rank_deficiency"],
                 n_constraints=con["n_constraints"],
-                constraint_matrix=con["A"])
-            lines += [("interaction", "Type " + interaction),
-                      ("rank deficiency", inter["rank_deficiency"]),
-                      ("constraints required", con["n_constraints"])]
+                constraint_matrix=con["A"],
+            )
+            lines += [
+                ("interaction", "Type " + interaction),
+                ("rank deficiency", inter["rank_deficiency"]),
+                ("constraints required", con["n_constraints"]),
+            ]
             payload["constraint_note"] = (
                 "Type I needs none, being of full rank; every other type is "
                 "rank deficient and without A delta = 0 the interaction is "
                 "confounded with the main time effect"
-                if interaction == "I" else
-                f"{con['n_constraints']} constraints are required, one per "
+                if interaction == "I"
+                else f"{con['n_constraints']} constraints are required, one per "
                 f"unit of rank deficiency; without them the interaction is "
-                f"confounded with the main time effect")
+                f"confounded with the main time effect"
+            )
 
     payload["fitting_note"] = (
         "this specifies and diagnoses the model; fitting requires MCMC or "
-        "INLA, and convergence is sensitive to the hyperprior parameters")
-    return RichResult(title="Bayesian hierarchical spatial model",
-                      summary_lines=lines, payload=payload)
+        "INLA, and convergence is sensitive to the hyperprior parameters"
+    )
+    return RichResult(title="Bayesian hierarchical spatial model", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spbayr: Bayesian hierarchical disease-mapping models (Sec. 6.4) "
-            "-- exchangeable/ICAR/LCAR priors, RW temporal, Knorr-Held types")
+    return (
+        "spbayr: Bayesian hierarchical disease-mapping models (Sec. 6.4) "
+        "-- exchangeable/ICAR/LCAR priors, RW temporal, Knorr-Held types"
+    )
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

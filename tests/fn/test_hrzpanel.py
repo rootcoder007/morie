@@ -48,5 +48,3 @@ def test_hrzpanel_edge():
         horowitz_panel_deconv(Y[:5], X[:5], [0.0])
     with pytest.raises(ValueError, match="kernel"):
         horowitz_panel_deconv(Y, X, [0.0], kernel="gaussian")
-
-

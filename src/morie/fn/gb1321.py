@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE by the Pitman efficacy ratio."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_def"]
@@ -47,7 +46,8 @@ def gibbons_are_def(efficacy_T, efficacy_T_star, n=None):
         raise ValueError("efficacies must be positive.")
     are = (cT / cS) ** 2
     payload = {
-        "are": float(are), "sample_size_ratio": float(are),
+        "are": float(are),
+        "sample_size_ratio": float(are),
         "method": "ARE = [c(T)/c(T*)]^2 = lim n*/n (Gibbons Theorem 13.2.1)",
     }
     if n is not None:

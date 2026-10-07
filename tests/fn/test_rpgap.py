@@ -1,7 +1,6 @@
 """Tests for rpgap — gap between placements."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpgap import rplace_gap
 
 

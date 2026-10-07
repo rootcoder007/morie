@@ -53,7 +53,7 @@ def bayesian_factor_scores(
         factors = list(loadings.keys())
         nf = len(factors)
         Lambda = np.zeros((k, nf))
-        for fi, (f, items) in enumerate(loadings.items()):
+        for fi, (_f, items) in enumerate(loadings.items()):
             if isinstance(items, dict):
                 for item, val in items.items():
                     j = col_names.index(item)

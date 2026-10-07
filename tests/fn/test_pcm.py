@@ -12,7 +12,7 @@ def test_the_probabilities_are_a_distribution():
     res = pcm(0.5, [-1.0, 0.0, 1.0])
     p = res["probabilities"]
     assert res["n_categories"] == 4
-    assert len(p) == 4                      # k steps give k + 1 categories
+    assert len(p) == 4  # k steps give k + 1 categories
     assert abs(sum(p) - 1.0) < 1e-12
     assert all(v > 0 for v in p)
 
@@ -34,7 +34,7 @@ def test_the_expected_score_increases_with_ability():
     steps = [-1.0, 0.0, 1.0]
     scores = [pcm(t, steps)["expected_score"] for t in (-3.0, -1.0, 1.0, 3.0)]
     assert all(scores[i] < scores[i + 1] for i in range(len(scores) - 1))
-    assert 0.0 <= scores[0] and scores[-1] <= 3.0
+    assert scores[0] >= 0.0 and scores[-1] <= 3.0
 
 
 def test_the_expected_score_matches_the_probabilities():

@@ -90,10 +90,7 @@ def dr_spatial_did(y, D, X=None, W_neighbors=None):
         cols.append(row)
     m = k.mean(wd)
     sdv = k.sd(wd) if n > 1 else 0.0
-    if sdv <= 1e-12:
-        fit = base
-    else:
-        fit = k.drdid_panel(yv, dv, cols)
+    fit = base if sdv <= 1e-12 else k.drdid_panel(yv, dv, cols)
     return RichResult(
         title="Spatial DR-DiD",
         summary_lines=[("mean neighbour treatment", m)],

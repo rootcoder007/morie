@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['taupartial', 'gibbons_rank_corr_partial']
+__all__ = ["taupartial", "gibbons_rank_corr_partial"]
 
 
 def taupartial(x, y, z):
@@ -71,11 +71,7 @@ def taupartial(x, y, z):
     r1 = x11 + x12
     r2 = x21 + x22
     den = c1 * c2 * r1 * r2
-    stat = (
-        (x11 * x22 - x12 * x21) / math.sqrt(den)
-        if den > 0
-        else float("nan")
-    )
+    stat = (x11 * x22 - x12 * x21) / math.sqrt(den) if den > 0 else float("nan")
     return RichResult(
         payload={
             "statistic": float(stat),

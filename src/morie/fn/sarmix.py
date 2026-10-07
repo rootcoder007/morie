@@ -117,11 +117,11 @@ def spatial_ar_combined(y, X, W1, W2):
         raise ValueError("shape mismatch among y, X, W1, W2")
     if n <= p:
         raise ValueError("need more observations than columns of X")
-    I = np.eye(n)
+    I_ = np.eye(n)
 
     def parts(rho, lam):
-        A = I - rho * A1
-        B = I - lam * A2
+        A = I_ - rho * A1
+        B = I_ - lam * A2
         ystar = B @ (A @ yv)
         Xstar = B @ Xm
         G = Xstar.T @ Xstar
@@ -148,7 +148,7 @@ def spatial_ar_combined(y, X, W1, W2):
     rho, lam, fmin = _grid_refine(negll, lo1, hi1, lo2, hi2)
 
     A, B, G, beta, e = parts(rho, lam)
-    sigma2 = float(e @ e) / n              # the ML value, as documented
+    sigma2 = float(e @ e) / n  # the ML value, as documented
 
     # Standard errors from the FULL observed information in
     # (beta, rho, lambda, sigma2), as spatialreg::sacsarlm reports them;
@@ -161,15 +161,14 @@ def spatial_ar_combined(y, X, W1, W2):
         r_, l_, s2_ = th[p], th[p + 1], th[p + 2]
         if s2_ <= 0:
             return -_math.inf
-        A_ = I - r_ * A1
-        B_ = I - l_ * A2
+        A_ = I_ - r_ * A1
+        B_ = I_ - l_ * A2
         sa, la = np.linalg.slogdet(A_)
         sb, lb = np.linalg.slogdet(B_)
         if sa <= 0 or sb <= 0:
             return -_math.inf
         res = B_ @ (A_ @ yv - Xm @ np.array(b_))
-        return (-0.5 * n * _math.log(2.0 * _math.pi * s2_) + la + lb
-                - float(res @ res) / (2.0 * s2_))
+        return -0.5 * n * _math.log(2.0 * _math.pi * s2_) + la + lb - float(res @ res) / (2.0 * s2_)
 
     th0 = [float(v) for v in beta.tolist()] + [float(rho), float(lam), sigma2]
     k = len(th0)
@@ -195,6 +194,7 @@ def spatial_ar_combined(y, X, W1, W2):
                     v = (pts[0] - pts[1] - pts[2] + pts[3]) / (4.0 * hs[i] * hs[j])
                 H[i][j] = H[j][i] = v
         return H
+
     H1, H2 = hess(2e-4), hess(1e-4)
     Hr = [[(4.0 * H2[i][j] - H1[i][j]) / 3.0 for j in range(k)] for i in range(k)]
     cov = np.linalg.inv(-np.array(Hr))

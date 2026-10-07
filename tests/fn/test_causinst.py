@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.causinst import causal_iv_instrumental_dag
 
 
@@ -14,8 +13,18 @@ def test_causinst_basic():
     Z = np.random.default_rng(43).integers(0, 2, 40)
     result = causal_iv_instrumental_dag(y, D, Z)
     # Check that the result contains the documented keys
-    for key in ("beta", "se", "estimand", "relevance", "relevance_p",
-                "assumptions", "testable", "untestable", "n", "method"):
+    for key in (
+        "beta",
+        "se",
+        "estimand",
+        "relevance",
+        "relevance_p",
+        "assumptions",
+        "testable",
+        "untestable",
+        "n",
+        "method",
+    ):
         assert key in result
     # Numeric outputs should be finite
     assert math.isfinite(result["beta"])

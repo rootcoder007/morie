@@ -1,7 +1,5 @@
 """Tests for poltrx.polya_tree_extended."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.poltrx import polya_tree_extended
 
 

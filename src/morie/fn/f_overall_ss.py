@@ -27,21 +27,20 @@ def f_overall_ss(ss_model, ss_resid, n, k):
     ch.2 eq.2.16
     """
     payload = dict(_ca_crim.f_overall_ss(ss_model, ss_resid, n, k))
-    value = payload['f']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["f"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.16)"
     return RichResult(
-        title='Overall model F-test from sums of squares',
+        title="Overall model F-test from sums of squares",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e16: F = (SS_model/df_model) / (SS_resid/df_resid) [Weisburd et al. 2022, eq. 2.16]'
+    return "ca2e16: F = (SS_model/df_model) / (SS_resid/df_resid) [Weisburd et al. 2022, eq. 2.16]"
 
 
 # compact alias per ledger/NAMING.md

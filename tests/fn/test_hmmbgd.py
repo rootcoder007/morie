@@ -1,8 +1,8 @@
 """Tests for hmmbgd.geron_minibatch_gd."""
 
-from morie.fn import _array_core as np
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.hmmbgd import geron_minibatch_gd
 
 
@@ -16,8 +16,7 @@ def test_hmmbgd_basic():
     b = 10
     result = geron_minibatch_gd(X, y, theta, eta, b)
     assert isinstance(result, dict)
-    expected_keys = {"theta", "gradient", "full_gradient", "batch_indices",
-                     "mse", "estimate", "n", "method"}
+    expected_keys = {"theta", "gradient", "full_gradient", "batch_indices", "mse", "estimate", "n", "method"}
     for key in expected_keys:
         assert key in result
     # theta has one entry per feature column
@@ -41,8 +40,7 @@ def test_hmmbgd_edge():
     b = 1
     result = geron_minibatch_gd(X, y, theta, eta, b, seed=7, n_steps=3)
     assert isinstance(result, dict)
-    expected_keys = {"theta", "gradient", "full_gradient", "batch_indices",
-                     "mse", "estimate", "n", "method"}
+    expected_keys = {"theta", "gradient", "full_gradient", "batch_indices", "mse", "estimate", "n", "method"}
     for key in expected_keys:
         assert key in result
     # theta still has one entry per feature column after multiple steps
@@ -65,7 +63,7 @@ import morie.fn.hmmbgd as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

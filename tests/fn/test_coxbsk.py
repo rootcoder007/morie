@@ -1,7 +1,6 @@
 """Tests for coxbsk.cox_breslow_step."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxbsk import cox_breslow_step
 
 
@@ -13,6 +12,8 @@ def test_coxbsk_basic():
     result = cox_breslow_step(time, event, X)
     assert isinstance(result, dict)
     assert "times" in result
+
+
 def test_coxbsk_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

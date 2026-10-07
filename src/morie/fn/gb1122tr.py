@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['tautrend', 'gibbons_kendall_trend']
+__all__ = ["tautrend", "gibbons_kendall_trend"]
 
 
 def tautrend(y, alternative="two-sided"):

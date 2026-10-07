@@ -1,7 +1,6 @@
 """Tests for rgmp.rangayyan_matching_pursuit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_matching_pursuit
 
 

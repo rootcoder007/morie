@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['reluact', 'relu_activation', 'reluactivation']
+__all__ = ["reluact", "relu_activation", "reluactivation"]
 
 
 def reluact(z, slope=0.0):
@@ -32,9 +32,9 @@ def reluact(z, slope=0.0):
     slope = float(slope)
     act = [v if v > 0.0 else slope * v for v in z]
     grd = [1.0 if v > 0.0 else slope for v in z]
-    return RichResult(payload={
-        "activation": act, "gradient": grd, "n": len(z),
-        "method": "ReLU activation, MVSML Sect. 10.3.2"})
+    return RichResult(
+        payload={"activation": act, "gradient": grd, "n": len(z), "method": "ReLU activation, MVSML Sect. 10.3.2"}
+    )
 
 
 relu_activation = reluact
@@ -42,4 +42,4 @@ reluactivation = reluact
 
 
 def cheatsheet():
-    return 'relua: Rectifier linear unit activation and its gradient.'
+    return "relua: Rectifier linear unit activation and its gradient."

@@ -188,9 +188,7 @@ def geron_bert(X, n_layers=2, n_heads=2, d_model=8, vocab_size=None, d_ff=None, 
         losses.append(float(-np.mean(np.log(np.clip(probs[np.arange(len(pos)), ids[b][pos]], 1e-15, None)))))
         nsp[b] = Xh[0] @ W_nsp
 
-    n_params = int(
-        (Vsz + 1) * d + T * d + L * (4 * d * d + d * ff + ff + ff * d + d) + d * 2
-    )
+    n_params = int((Vsz + 1) * d + T * d + L * (4 * d * d + d * ff + ff + ff * d + d) + d * 2)
 
     return RichResult(
         title="BERT encoder (MLM + NSP)",

@@ -125,8 +125,8 @@ def geron_locally_linear_embedding(X, n_components, n_neighbors=5, reg=1e-3):
         W[i, nb] = w
         err[i] = float(np.sum((A[i] - w @ A[nb]) ** 2))
 
-    I = np.eye(m)
-    M = (I - W).T @ (I - W)
+    I_ = np.eye(m)
+    M = (I_ - W).T @ (I_ - W)
     M = 0.5 * (M + M.T)
     vals, vecs = np.linalg.eigh(M)
     # vals ascending; index 0 is the constant vector with eigenvalue ~0.

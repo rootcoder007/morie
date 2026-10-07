@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.1, the class probability as it
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km042 import kamath_ch3_prompt_label_mapping

@@ -1,7 +1,6 @@
 """Tests for prdgm.py - periodogram PSD estimate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prdgm import periodogram_estimate, prdgm
 
 

@@ -83,13 +83,11 @@ References
 
 from ._richresult import RichResult
 
-__all__ = ["avalon_fingerprint", "parse_smiles", "ring_bonds",
-           "tanimoto", "features_of", "cheatsheet"]
+__all__ = ["avalon_fingerprint", "parse_smiles", "ring_bonds", "tanimoto", "features_of", "cheatsheet"]
 
 # The organic subset: elements that may be written without brackets,
 # and the valence each is filled up to when counting implicit hydrogens.
-_ORGANIC = {"B": 3, "C": 4, "N": 3, "O": 2, "P": 3, "S": 2,
-            "F": 1, "Cl": 1, "Br": 1, "I": 1}
+_ORGANIC = {"B": 3, "C": 4, "N": 3, "O": 2, "P": 3, "S": 2, "F": 1, "Cl": 1, "Br": 1, "I": 1}
 _AROMATIC = {"b": "B", "c": "C", "n": "N", "o": "O", "p": "P", "s": "S"}
 _BONDS = {"-": 1, "=": 2, "#": 3, ":": 4, "/": 1, "\\": 1}
 _CLASSES = ("atom", "bond", "path", "ring", "pair")
@@ -163,10 +161,9 @@ def parse_smiles(smiles):
             continue
         if ch == "%" or ch.isdigit():
             if ch == "%":
-                if i + 2 >= n or not s[i + 1:i + 3].isdigit():
-                    raise ValueError("a percent ring label needs two "
-                                     "digits")
-                lab = s[i + 1:i + 3]
+                if i + 2 >= n or not s[i + 1 : i + 3].isdigit():
+                    raise ValueError("a percent ring label needs two digits")
+                lab = s[i + 1 : i + 3]
                 i += 3
             else:
                 lab = ch
@@ -187,7 +184,7 @@ def parse_smiles(smiles):
             j = s.find("]", i)
             if j < 0:
                 raise ValueError("a bracket atom was never closed")
-            body = s[i + 1:j]
+            body = s[i + 1 : j]
             i = j + 1
             k = 0
             # A leading isotope number is read and discarded: mass is not
@@ -199,8 +196,7 @@ def parse_smiles(smiles):
             if k < len(body) and body[k].isalpha():
                 sym = body[k]
                 k += 1
-                if k < len(body) and body[k].islower() \
-                        and (sym + body[k]) in _ORGANIC:
+                if k < len(body) and body[k].islower() and (sym + body[k]) in _ORGANIC:
                     sym = sym + body[k]
                     k += 1
             if not sym:
@@ -240,11 +236,10 @@ def parse_smiles(smiles):
                     while k < len(body) and body[k] == "@":
                         k += 1
                 else:
-                    raise ValueError("unsupported bracket atom field: "
-                                     + c)
+                    raise ValueError("unsupported bracket atom field: " + c)
         else:
-            if i + 1 < n and s[i:i + 2] in _ORGANIC:
-                sym = s[i:i + 2]
+            if i + 1 < n and s[i : i + 2] in _ORGANIC:
+                sym = s[i : i + 2]
                 i += 2
             elif ch in _ORGANIC or ch in _AROMATIC:
                 sym = ch
@@ -322,7 +317,7 @@ def _shortest(adj, src, dst, banned):
     while head < len(q):
         u = q[head]
         head += 1
-        for v, o, k in adj[u]:
+        for v, _o, k in adj[u]:
             if k == banned or dist[v] >= 0:
                 continue
             dist[v] = dist[u] + 1
@@ -360,7 +355,7 @@ def ring_bonds(n, bonds, closures):
 
 
 def _atype(el, arom, i):
-    return (el[i].lower() if arom[i] else el[i])
+    return el[i].lower() if arom[i] else el[i]
 
 
 def _paths(adj, n, maxpath, ty):
@@ -391,7 +386,7 @@ def _paths(adj, n, maxpath, ty):
         if (len(seq) - 1) // 2 >= maxpath:
             return
         u = seq[-1]
-        for v, o, k in adj[u]:
+        for v, o, _k in adj[u]:
             if v in used:
                 continue
             used.add(v)
@@ -417,7 +412,7 @@ def _bfs_dist(adj, n):
         while head < len(q):
             u = q[head]
             head += 1
-            for v, o, k in adj[u]:
+            for v, _o, _k in adj[u]:
                 if d[v] < 0:
                     d[v] = d[u] + 1
                     q.append(v)
@@ -446,15 +441,13 @@ def features_of(smiles, maxpath=5, classes=None):
     out = set()
     if "atom" in classes:
         for i in range(n):
-            out.add("A|%s|%d|%d|%d|%d|%d"
-                    % (ty[i], arom[i], chg[i], len(adj[i]), inring[i],
-                       nh[i]))
+            out.add(f"A|{ty[i]}|{int(arom[i])}|{int(chg[i])}|{int(len(adj[i]))}|{int(inring[i])}|{int(nh[i])}")
     if "bond" in classes:
         for a, b, o in bonds:
             x, y = ty[a], ty[b]
             if y < x:
                 x, y = y, x
-            out.add("B|%s|%d|%s" % (x, o, y))
+            out.add(f"B|{x}|{int(o)}|{y}")
     if "path" in classes:
         for p in _paths(adj, n, maxpath, ty):
             out.add(p)
@@ -465,7 +458,7 @@ def features_of(smiles, maxpath=5, classes=None):
                 if not arom[v]:
                     allarom = 0
             elems = sorted(el[v] for v in r)
-            out.add("R|%d|%d|%s" % (len(r), allarom, ",".join(elems)))
+            out.add("R|{}|{}|{}".format(int(len(r)), int(allarom), ",".join(elems)))
     if "pair" in classes:
         D = _bfs_dist(adj, n)
         for i in range(n):
@@ -475,7 +468,7 @@ def features_of(smiles, maxpath=5, classes=None):
                 x, y = ty[i], ty[j]
                 if y < x:
                     x, y = y, x
-                out.add("D|%s|%s|%d" % (x, y, D[i][j]))
+                out.add(f"D|{x}|{y}|{int(D[i][j])}")
     return sorted(out)
 
 
@@ -487,8 +480,7 @@ def tanimoto(a, b):
     zero rather than as a division that happened to not raise.
     """
     if len(a) != len(b):
-        raise ValueError("two fingerprints of different widths cannot "
-                         "be compared")
+        raise ValueError("two fingerprints of different widths cannot be compared")
     both = 0
     either = 0
     for i in range(len(a)):
@@ -542,30 +534,34 @@ def avalon_fingerprint(smiles, n_bits=512, maxpath=5, classes=None):
         bits[b] = 1
     el, arom, chg, hexp, bonds, closures = parse_smiles(smiles)
     rings, inring = ring_bonds(len(el), bonds, closures)
-    return RichResult(payload={
-        "bits": bits,
-        "on": [i for i in range(n_bits) if bits[i]],
-        "features": feats,
-        "n_features": len(feats),
-        "n_on": sum(bits),
-        "n_collisions": coll,
-        "density": sum(bits) / float(n_bits),
-        "n_atoms": len(el),
-        "n_bonds": len(bonds),
-        "n_rings": len(rings),
-        "n_hydrogens": sum(implicit_h(el, arom, chg, hexp, bonds)),
-        "n_bits": n_bits,
-        "maxpath": int(maxpath),
-        "classes": list(classes) if classes is not None
-                   else list(_CLASSES),
-        "method": "Avalon-style hashed feature fingerprint",
-    })
+    return RichResult(
+        payload={
+            "bits": bits,
+            "on": [i for i in range(n_bits) if bits[i]],
+            "features": feats,
+            "n_features": len(feats),
+            "n_on": sum(bits),
+            "n_collisions": coll,
+            "density": sum(bits) / float(n_bits),
+            "n_atoms": len(el),
+            "n_bonds": len(bonds),
+            "n_rings": len(rings),
+            "n_hydrogens": sum(implicit_h(el, arom, chg, hexp, bonds)),
+            "n_bits": n_bits,
+            "maxpath": int(maxpath),
+            "classes": list(classes) if classes is not None else list(_CLASSES),
+            "method": "Avalon-style hashed feature fingerprint",
+        }
+    )
 
 
 def cheatsheet():
-    return ("avalon: Avalon-style feature fingerprint. Atom, bond, "
-            "path, ring and atom-pair features hashed with FNV-1a into "
-            "a folded bit vector; SMILES parsed, not assumed")
+    return (
+        "avalon: Avalon-style feature fingerprint. Atom, bond, "
+        "path, ring and atom-pair features hashed with FNV-1a into "
+        "a folded bit vector; SMILES parsed, not assumed"
+    )
+
 
 # alias kept from the retired placeholder of the same name
 smiles_grammar_parse = parse_smiles

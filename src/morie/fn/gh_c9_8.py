@@ -5,10 +5,7 @@ Implements sec. 9.5.3 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_nlar_crt"]
@@ -35,13 +32,17 @@ def ghosal_nlar_crt(ns=(200, 800, 3200), seed=42):
         err = 0.0
         for b in range(k):
             centre = -3.0 + (b + 0.5) * 0.75
-            post = s_[b] / (c_[b] + 1.0)          # N(0,.) prior
+            post = s_[b] / (c_[b] + 1.0)  # N(0,.) prior
             err += abs(post - 0.5 * centre) / k
         errs.append(err)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "err_by_n": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "nonlinear AR contraction (GvdV 2017 sec. 9.5.3)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "err_by_n": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "nonlinear AR contraction (GvdV 2017 sec. 9.5.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_8")
 
 

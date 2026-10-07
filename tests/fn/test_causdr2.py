@@ -14,12 +14,12 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-        math.cos(2 * math.pi * r())
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
 
 
 def _panel(theta=2.0, n=400, seed=3, confound=True):
@@ -31,7 +31,7 @@ def _panel(theta=2.0, n=400, seed=3, confound=True):
         di = (0.9 * x1 + 0.4 * x2 if confound else 0.0) + _gauss(r)
         y.append(theta * di + g + 0.5 * _gauss(r))
         d.append(di)
-        X.append([x1, x2])   # no intercept: the module adds its own
+        X.append([x1, x2])  # no intercept: the module adds its own
     return y, d, X
 
 
@@ -49,8 +49,7 @@ def test_a_naive_regression_of_y_on_d_would_be_biased():
     n = len(y)
     dbar = sum(d) / n
     ybar = sum(y) / n
-    naive = (sum((d[i] - dbar) * (y[i] - ybar) for i in range(n)) /
-             sum((d[i] - dbar) ** 2 for i in range(n)))
+    naive = sum((d[i] - dbar) * (y[i] - ybar) for i in range(n)) / sum((d[i] - dbar) ** 2 for i in range(n))
     res = causdr2(y, d, X, K=2, seed=1)
     assert abs(naive - 2.0) > abs(res["estimate"] - 2.0)
 
@@ -80,12 +79,14 @@ def test_the_standard_error_shrinks_with_the_sample():
 
 def test_validation():
     y, d, X = _panel(n=60)
-    for call in (lambda: causdr2(y[:-1], d, X),
-                 lambda: causdr2(y, d, X, K=0),
-                 lambda: causdr2(y, [1.0] * len(y), X),
-                 # an intercept column is the easy mistake, and it used
-                 # to surface as a bare "singular matrix"
-                 lambda: causdr2(y, d, [[1.0] + row for row in X])):
+    for call in (
+        lambda: causdr2(y[:-1], d, X),
+        lambda: causdr2(y, d, X, K=0),
+        lambda: causdr2(y, [1.0] * len(y), X),
+        # an intercept column is the easy mistake, and it used
+        # to surface as a bare "singular matrix"
+        lambda: causdr2(y, d, [[1.0] + row for row in X]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

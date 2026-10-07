@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 3.4: the Dante cloze probe for parametric knowledge."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_dante_cloze"]
@@ -33,15 +32,20 @@ def kamath_ch3_dante_cloze(prompt="Dante was born in [MASK]", mask=MASK):
     if not isinstance(prompt, str) or not prompt.strip():
         raise ValueError("prompt must be a non-empty string.")
     if prompt.count(mask) != 1:
-        raise ValueError(
-            f"a cloze prompt needs exactly one {mask}; this one has "
-            f"{prompt.count(mask)}.")
+        raise ValueError(f"a cloze prompt needs exactly one {mask}; this one has {prompt.count(mask)}.")
     tokens = prompt.split()
     idx = [i for i, t in enumerate(tokens) if mask in t]
-    return RichResult(payload={
-        "prompt": prompt, "mask": mask, "mask_index": int(idx[0]),
-        "tokens": tokens, "estimate": float(idx[0]), "n": len(tokens),
-        "method": "cloze knowledge probe (Kamath Eq 3.4)"})
+    return RichResult(
+        payload={
+            "prompt": prompt,
+            "mask": mask,
+            "mask_index": int(idx[0]),
+            "tokens": tokens,
+            "estimate": float(idx[0]),
+            "n": len(tokens),
+            "method": "cloze knowledge probe (Kamath Eq 3.4)",
+        }
+    )
 
 
 def cheatsheet():

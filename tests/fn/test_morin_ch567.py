@@ -1,9 +1,10 @@
 """Morin (2016) chapters 5-7 (+ two misnamed modules), book-anchored."""
+
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn import _morin
 
 P = "david_j_morin_probability_for_the_enthusiastic_beginner"
@@ -11,6 +12,7 @@ P = "david_j_morin_probability_for_the_enthusiastic_beginner"
 
 def front(suffix):
     import importlib
+
     mod = importlib.import_module(f"morie.fn.{P}{suffix}")
     ch, e = suffix.split("e")
     return getattr(mod, f"{P}_chapter_{ch}_equation_{e}")
@@ -18,11 +20,11 @@ def front(suffix):
 
 # ------------------------------------------------------------- chapter 5
 
+
 def test_centered_binomial_eqs_5_3_5_5():
     # 2n = 100 flips: PB(0) is the n=50 exact value 0.07959
     assert front("5e3")(0, 50)["probability"] == pytest.approx(0.07959, abs=5e-6)
-    assert front("5e5")(3, 50)["probability"] == pytest.approx(
-        front("5e3")(3, 50)["probability"], rel=1e-12)
+    assert front("5e5")(3, 50)["probability"] == pytest.approx(front("5e3")(3, 50)["probability"], rel=1e-12)
 
 
 def test_gaussian_approx_eqs_5_4_5_13_5_14():
@@ -30,8 +32,7 @@ def test_gaussian_approx_eqs_5_4_5_13_5_14():
     assert front("5e13")(0, 50)["PG"] == pytest.approx(0.07979, abs=5e-6)
     assert front("5e4")(0, 50)["rel_error"] < 0.003
     # n-flip form at even deviation matches the 2n form with n -> n/2
-    assert front("5e14")(2.0, 100)["PG"] == pytest.approx(
-        front("5e13")(2.0, 50)["PG"], rel=1e-12)
+    assert front("5e14")(2.0, 100)["PG"] == pytest.approx(front("5e13")(2.0, 50)["PG"], rel=1e-12)
     # Gaussian tracks the exact binomial within 1% near the peak at n=200 flips
     for x in range(0, 6):
         exact = front("5e3")(x, 100)["probability"]
@@ -52,8 +53,7 @@ def test_poisson_stirling_and_gaussian_eqs_5_16_5_23():
     # Gaussian limit of Poisson at large a
     a = 400.0
     for k in (380, 400, 420):
-        assert front("5e23")(k, a)["PG"] == pytest.approx(
-            _morin.poisson_pmf(k, a), rel=0.02)
+        assert front("5e23")(k, a)["PG"] == pytest.approx(_morin.poisson_pmf(k, a), rel=0.02)
 
 
 def test_tail_eq_5_25():
@@ -66,8 +66,7 @@ def test_tail_eq_5_25():
 def test_expected_count_gaussian_eq_5_28():
     # book: 100,000 trials, mu=35, sigma=5.4; peak count = 100000/sqrt(2 pi 5.4^2)
     r = front("5e28")(35.0)
-    assert r["expected_count"] == pytest.approx(
-        100000 / math.sqrt(2 * math.pi * 5.4 ** 2), rel=1e-12)
+    assert r["expected_count"] == pytest.approx(100000 / math.sqrt(2 * math.pi * 5.4**2), rel=1e-12)
 
 
 def test_pmf_sd_eq_5_31():
@@ -143,11 +142,10 @@ def test_least_squares_worked_dataset_eqs_6_42_to_6_50():
     assert r["A"] == pytest.approx(1.0)
     assert r["B"] == pytest.approx(-1.0)
     assert front("6e46")(X5, Y5)["A"] == pytest.approx(1.0)
-    assert front("6e42")(X5, Y5)["S"] == pytest.approx(
-        float(np.sum((np.array(Y5) - (np.array(X5) - 1.0)) ** 2)))
+    assert front("6e42")(X5, Y5)["S"] == pytest.approx(float(np.sum((np.array(Y5) - (np.array(X5) - 1.0)) ** 2)))
     assert front("6e43")(X5, Y5)["S"] == pytest.approx(front("6e42")(X5, Y5)["S"])
     C = front("6e50")(X5, Y5)["C"]
-    assert C == pytest.approx(_morin.least_squares_fit(Y5, X5)[0])
+    assert pytest.approx(_morin.least_squares_fit(Y5, X5)[0]) == C
 
 
 def test_slope_product_and_r_eqs_6_53_6_55():
@@ -165,8 +163,8 @@ def test_independence_zero_cov_eq_6_63():
 
 def test_continuous_independence_and_sum_eqs_6_64_to_6_70():
     g = np.linspace(-16.0, 16.0, 3201)
-    dx = np.exp(-g ** 2 / 2) / math.sqrt(2 * math.pi)
-    dy = np.exp(-g ** 2 / (2 * 4)) / math.sqrt(2 * math.pi * 4)
+    dx = np.exp(-(g**2) / 2) / math.sqrt(2 * math.pi)
+    dy = np.exp(-(g**2) / (2 * 4)) / math.sqrt(2 * math.pi * 4)
     assert front("6e64")(g, dx, g, dy)["total_mass"] == pytest.approx(1.0, abs=1e-6)
     # convolution of N(0,1) and N(0,4) at z equals N(0,5) density -- eq (6.70)
     for z in (0.0, 1.0, 2.5):
@@ -181,11 +179,11 @@ def test_strip_and_worked_sigma_eqs_6_74_6_76():
     assert front("6e74")(0.5, 2.0, 4.0, 8.0)["x"] == pytest.approx(2.0)
     r = front("6e76")()
     assert round(r["sigma_y"], 0) == 13.0  # book: sqrt(7.5^2 + 10.6^2) = 13
-    assert r["sigma_y"] == pytest.approx(math.sqrt(7.5 ** 2 + 10.6 ** 2), rel=1e-12)
+    assert r["sigma_y"] == pytest.approx(math.sqrt(7.5**2 + 10.6**2), rel=1e-12)
 
 
 def test_excess_factor_eq_6_81():
-    assert front("6e81")(0.5)["factor"] == pytest.approx(math.sqrt(1/3))
+    assert front("6e81")(0.5)["factor"] == pytest.approx(math.sqrt(1 / 3))
     assert front("6e81")(0.0)["factor"] == pytest.approx(1.0)
 
 
@@ -199,7 +197,7 @@ def test_intercept_forms_and_means_eqs_6_82_6_83_6_92():
 def test_misnamed_modules_alias_correct_equations():
     # 10e6: the "10.6" is a number inside eq (6.76); module = sigma_y of the model
     r = front("10e6")()
-    assert r["sigma_y"] == pytest.approx(math.sqrt(7.5 ** 2 + 10.6 ** 2))
+    assert r["sigma_y"] == pytest.approx(math.sqrt(7.5**2 + 10.6**2))
     # 19e2: the "19.2" is <x^2> inside eq (6.89); module = intercept B = -1
     r2 = front("19e2")()
     assert r2["B"] == pytest.approx(-1.0)
@@ -207,6 +205,7 @@ def test_misnamed_modules_alias_correct_equations():
 
 
 # ------------------------------------------------------------- chapter 7
+
 
 def test_domain_check_eq_7_5():
     assert front("7e5")(1.0, 10000)["well_inside"]
@@ -223,8 +222,8 @@ def test_exp_series_eqs_7_7_to_7_11():
 
 def test_one_plus_a_ladder_eqs_7_14_to_7_24():
     # book worked case: (1 - 1/N)^n with N=365, n=23
-    r = front("7e14")(-1/365, 23)
-    assert r["exact"] == pytest.approx((1 - 1/365) ** 23, rel=1e-12)
+    r = front("7e14")(-1 / 365, 23)
+    assert r["exact"] == pytest.approx((1 - 1 / 365) ** 23, rel=1e-12)
     assert abs(r["approx"] - r["exact"]) / r["exact"] < 1e-3
     r21 = front("7e21")(0.05, 100)
     assert r21["rel_error"] < 1e-10

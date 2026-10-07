@@ -1,7 +1,6 @@
 """Tests for gh_c10_1.ghosal_adapt_thm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_1 import ghosal_adapt_thm
 
 

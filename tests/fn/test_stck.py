@@ -1,7 +1,6 @@
 """Tests for morie.fn.stck -- Model stacking."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.stck import stacking, stck
 
@@ -23,7 +22,7 @@ class TestStck:
         assert len(result.extra["predictions"]) == n
 
     def test_r_squared_reasonable(self):
-        rng = np.random.default_rng(42)
+        np.random.default_rng(42)
         x = np.linspace(0, 10, 30)
         y = 2 * x + 1
         result = stacking(x, y, [2 * x, x + 1])

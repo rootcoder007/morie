@@ -1,7 +1,5 @@
 """Tests for rgcardep.rangayyan_cardiac_elecphys."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsaphys import rangayyan_cardiac_elecphys
 
 

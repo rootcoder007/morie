@@ -17,7 +17,10 @@ def test_r_install_expr_names_both_routes():
     runiv = bricklayer._r_install_expr(github=False)
     assert "install.packages('rmorie'" in runiv and bricklayer.RUNIV in runiv
     gh = bricklayer._r_install_expr(github=True)
-    assert "remotes::install_github('rootcoder007/morie', subdir = 'r-package/morie')" in gh
+    from morie import __version__ as v
+
+    # pinned to the release tag, like the r-universe route
+    assert f"remotes::install_github('rootcoder007/morie@v{v}', subdir = 'r-package/morie'" in gh
     assert "remotes" in gh and "install.packages('remotes'" in gh
 
 
@@ -30,7 +33,7 @@ def test_r_install_without_r_prints_the_command(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert rc == 0
     assert "R is not installed" in out
-    assert "remotes::install_github('rootcoder007/morie'" in out
+    assert "remotes::install_github('rootcoder007/morie@v" in out
     rc = bricklayer.run(p.parse_args(["r-install"]))
     out = capsys.readouterr().out
     assert rc == 0 and "install.packages('rmorie'" in out

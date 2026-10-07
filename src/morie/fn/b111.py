@@ -30,20 +30,22 @@ def burkov_lm_ch1_bce_gradients(y_hat, y, x, N=None, j=None):
     if X.shape[0] != len(yh):
         X = X.T
     if X.shape[0] != len(yh) or len(y) != len(yh):
-        raise ValueError(
-            f"need one row of x per example; got x {X.shape}, "
-            f"y_hat {len(yh)}, y {len(y)}.")
+        raise ValueError(f"need one row of x per example; got x {X.shape}, y_hat {len(yh)}, y {len(y)}.")
     if N is not None and int(N) != len(y):
-        raise ValueError(
-            f"N = {N} does not match the dataset size {len(y)}.")
+        raise ValueError(f"N = {N} does not match the dataset size {len(y)}.")
     resid = yh - y
     gw = (X * resid[:, None]).mean(axis=0)
     gb = float(resid.mean())
     est = float(gw[int(j)]) if j is not None else float(gw[0])
-    return RichResult(payload={
-        "grad_w": [float(v) for v in gw], "grad_b": gb, "estimate": est,
-        "n": len(y),
-        "method": "BCE gradients for logistic regression (Burkov Eq 1.11)"})
+    return RichResult(
+        payload={
+            "grad_w": [float(v) for v in gw],
+            "grad_b": gb,
+            "estimate": est,
+            "n": len(y),
+            "method": "BCE gradients for logistic regression (Burkov Eq 1.11)",
+        }
+    )
 
 
 def cheatsheet():

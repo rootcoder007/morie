@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['mlloglik', 'ml_log_likelihood_regression']
+__all__ = ["mlloglik", "ml_log_likelihood_regression"]
 
 
 def mlloglik(X, y, beta=None, sigma2=None):
@@ -48,15 +48,22 @@ def mlloglik(X, y, beta=None, sigma2=None):
     s2 = (rss / n) if sigma2 is None else float(sigma2)
     if s2 <= 0.0:
         raise ValueError("sigma2 must be positive")
-    ll = (-0.5 * n * math.log(2.0 * math.pi) - 0.5 * n * math.log(s2)
-          - rss / (2.0 * s2))
-    return RichResult(payload={
-        "loglik": ll, "beta": b, "sigma2": s2, "rss": rss, "n": n, "p": p,
-        "method": "Gaussian ML log-likelihood, MVSML Sect. 3.3"})
+    ll = -0.5 * n * math.log(2.0 * math.pi) - 0.5 * n * math.log(s2) - rss / (2.0 * s2)
+    return RichResult(
+        payload={
+            "loglik": ll,
+            "beta": b,
+            "sigma2": s2,
+            "rss": rss,
+            "n": n,
+            "p": p,
+            "method": "Gaussian ML log-likelihood, MVSML Sect. 3.3",
+        }
+    )
 
 
 ml_log_likelihood_regression = mlloglik
 
 
 def cheatsheet():
-    return 'mllog: Maximum likelihood log-likelihood of the linear regression model.'
+    return "mllog: Maximum likelihood log-likelihood of the linear regression model."

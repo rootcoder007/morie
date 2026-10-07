@@ -24,10 +24,7 @@ def svret(voter, incumbent=None, candidates=None):
     DescriptiveResult
     """
     voter = np.asarray(voter, dtype=float)
-    if incumbent is None:
-        incumbent = np.zeros_like(voter)
-    else:
-        incumbent = np.asarray(incumbent, dtype=float)
+    incumbent = np.zeros_like(voter) if incumbent is None else np.asarray(incumbent, dtype=float)
     retro_dist = float(np.sum((voter - incumbent) ** 2))
     if candidates is not None:
         candidates = np.asarray(candidates, dtype=float)

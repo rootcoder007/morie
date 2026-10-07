@@ -1,8 +1,8 @@
 """Tests for morie.fn.odose — OTIS dose-response."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.odose import otis_dose_response
 

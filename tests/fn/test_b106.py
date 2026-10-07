@@ -10,5 +10,6 @@ def test_b106_basic():
 
 def test_b106_edge():
     import pytest
+
     with pytest.raises(ValueError, match="columns"):
         burkov_lm_ch1_layer1_output([[1.0, 2.0]], [1.0], [0.0])

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_two_step_oracle"]
 
 
-def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True,
-                             grid=None):
+def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True, grid=None):
     r"""Horowitz-Mammen (2004) two-step oracle-efficient estimator of
     a nonparametric additive model (Horowitz Sec. 3.1.3),
     equation (3.18):
@@ -94,15 +93,14 @@ def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True
     if n < 30:
         raise ValueError(f"need at least 30 observations, got {n}.")
     if d < 2:
-        raise ValueError(
-            f"an additive model needs at least 2 components, got {d}.")
+        raise ValueError(f"an additive model needs at least 2 components, got {d}.")
 
     # the basis is defined on [-1, 1], so map each component onto it
     lo, hi = X.min(axis=0), X.max(axis=0)
     span = np.where(hi > lo, hi - lo, 1.0)
     Z = 2.0 * (X - lo) / span - 1.0
 
-    kap = int(np.ceil(n ** 0.2)) if kappa is None else int(kappa)
+    kap = int(np.ceil(n**0.2)) if kappa is None else int(kappa)
     if kap < 2:
         raise ValueError(f"kappa must be at least 2, got {kap}.")
 
@@ -128,8 +126,7 @@ def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True
         cols = []
         for m in range(1, kap + 1):
             k = (m + 1) // 2
-            cols.append(np.sin(np.pi * k * v) if m % 2 else
-                        np.cos(np.pi * k * v))
+            cols.append(np.sin(np.pi * k * v) if m % 2 else np.cos(np.pi * k * v))
         return np.column_stack(cols)
 
     # (3.17): [1, psi_1(x^1)..psi_k(x^1), .., psi_1(x^d)..psi_k(x^d)]
@@ -138,7 +135,7 @@ def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True
     mu_tilde = float(theta[0])
 
     def series_component(jj, zv):
-        coef = theta[1 + jj * kap: 1 + (jj + 1) * kap]
+        coef = theta[1 + jj * kap : 1 + (jj + 1) * kap]
         return basis(np.asarray(zv, dtype=float)) @ coef
 
     # one bandwidth PER COMPONENT: they are separate scalar smooths
@@ -146,17 +143,15 @@ def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True
     # first component's spread is simply wrong when the components
     # differ in shape or spread
     if bandwidth is None:
-        hvec = np.array([float(np.std(Z[:, k]) * n ** -0.2) for k in range(d)])
+        hvec = np.array([float(np.std(Z[:, k]) * n**-0.2) for k in range(d)])
     else:
         hb = np.atleast_1d(np.asarray(bandwidth, dtype=float)).ravel()
         hvec = np.full(d, float(hb[0])) if hb.size == 1 else hb.astype(float)
         if hvec.size != d:
-            raise ValueError(
-                f"bandwidth must be a scalar or {d} values, got {hvec.size}.")
+            raise ValueError(f"bandwidth must be a scalar or {d} values, got {hvec.size}.")
     if np.any(hvec <= 0):
         raise ValueError(f"bandwidths must be positive, got {hvec.tolist()}.")
-    gz = np.linspace(-0.9, 0.9, 41) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    gz = np.linspace(-0.9, 0.9, 41) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
 
     m_hat = np.empty((d, gz.size))
     for jj in range(d):
@@ -179,21 +174,30 @@ def horowitz_two_step_oracle(x, y, bandwidth=None, kappa=None, local_linear=True
                 t0 = float(w @ resid)
                 t1 = float(w @ (resid * dx))
                 det = s0 * s2 - s1 * s1
-                m_hat[jj, t] = (s2 * t0 - s1 * t1) / det if det != 0 \
-                    else t0 / s0
+                m_hat[jj, t] = (s2 * t0 - s1 * t1) / det if det != 0 else t0 / s0
             else:
                 m_hat[jj, t] = float(w @ resid) / sw
         # impose the location normalisation on the fitted component
         m_hat[jj] -= np.nanmean(m_hat[jj])
 
-    return RichResult(payload={
-        "grid": gz, "m_hat": m_hat, "mu_hat": mu_tilde, "theta": theta,
-        "kappa": kap, "bandwidth": hvec if d > 1 else float(hvec[0]),
-        "oracle_efficient": True, "iterative": False,
-        "rate_exponent": -0.4, "max_smoothing_dimension": 1,
-        "curse_of_dimensionality": False,
-        "n": int(n), "d": int(d),
-        "method": "Horowitz-Mammen two-step (3.18); series first, scalar smooth second, no d-dimensional step"})
+    return RichResult(
+        payload={
+            "grid": gz,
+            "m_hat": m_hat,
+            "mu_hat": mu_tilde,
+            "theta": theta,
+            "kappa": kap,
+            "bandwidth": hvec if d > 1 else float(hvec[0]),
+            "oracle_efficient": True,
+            "iterative": False,
+            "rate_exponent": -0.4,
+            "max_smoothing_dimension": 1,
+            "curse_of_dimensionality": False,
+            "n": int(n),
+            "d": int(d),
+            "method": "Horowitz-Mammen two-step (3.18); series first, scalar smooth second, no d-dimensional step",
+        }
+    )
 
 
 def cheatsheet():

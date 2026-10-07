@@ -5,12 +5,12 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmpg import geron_policy_gradient
 
 
 def test_hmpg_basic():
     """Test basic functionality."""
+
     # Policy returns a gradient vector (one entry per parameter)
     def policy(state, action):
         return np.array([1.0, 0.0, 0.0])
@@ -42,8 +42,10 @@ def test_hmpg_basic():
 
 def test_hmpg_edge():
     """Test edge cases."""
+
     def policy(state, action):
         return np.array([1.0])
+
     # An empty trajectory list is explicitly rejected by the docstring
     with pytest.raises(ValueError):
         geron_policy_gradient([], policy, gamma=1.0)
@@ -61,7 +63,7 @@ import morie.fn.hmpg as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

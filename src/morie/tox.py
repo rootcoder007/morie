@@ -44,21 +44,41 @@ from .taphonomy import taphonomy_preservation_lr
 
 # Recognised specimen matrices, ordered by resistance to dilution/putrefaction.
 _TOX_MATRICES = (
-    "peripheral_blood", "central_blood", "liver", "vitreous_humour", "brain",
-    "gastric", "urine", "bile", "muscle", "kidney",
+    "peripheral_blood",
+    "central_blood",
+    "liver",
+    "vitreous_humour",
+    "brain",
+    "gastric",
+    "urine",
+    "bile",
+    "muscle",
+    "kidney",
 )
 
 # Column dtypes and roles for the sample schema.
 _SCHEMA: dict[str, str] = {
-    "case_id": "object", "analyte": "object", "matrix": "object",
-    "conc": "float64", "conc_units": "object", "lod": "float64",
-    "loq": "float64", "decomp_stage": "Int64", "submersion_days": "float64",
+    "case_id": "object",
+    "analyte": "object",
+    "matrix": "object",
+    "conc": "float64",
+    "conc_units": "object",
+    "lod": "float64",
+    "loq": "float64",
+    "decomp_stage": "Int64",
+    "submersion_days": "float64",
     "censored": "Int64",
 }
 _SCHEMA_ROLES = {
-    "case_id": "identifier", "analyte": "identifier", "matrix": "matrix",
-    "conc": "measurement", "conc_units": "measurement", "lod": "quality",
-    "loq": "quality", "decomp_stage": "matrix", "submersion_days": "matrix",
+    "case_id": "identifier",
+    "analyte": "identifier",
+    "matrix": "matrix",
+    "conc": "measurement",
+    "conc_units": "measurement",
+    "lod": "quality",
+    "loq": "quality",
+    "decomp_stage": "matrix",
+    "submersion_days": "matrix",
     "censored": "quality",
 }
 
@@ -169,11 +189,7 @@ def tox_calibration(
             raise ValueError("`response_unknown` must be a finite scalar")
         conc_hat = (ru - intercept) / slope
         out["conc_hat"] = float(conc_hat)
-        out["flag"] = (
-            "below_lod" if conc_hat < lod
-            else "below_loq" if conc_hat < loq
-            else "quantifiable"
-        )
+        out["flag"] = "below_lod" if conc_hat < lod else "below_loq" if conc_hat < loq else "quantifiable"
     return out
 
 
@@ -193,12 +209,11 @@ def tox_pmr_ratio(central: float, peripheral: float) -> dict[str, Any]:
     cp = central / peripheral
     flag = "minimal" if cp <= 1 else "modest" if cp <= 2 else "significant"
     note = {
-        "minimal": "Central and peripheral agree; central quantitation is a "
-                   "reasonable antemortem proxy.",
+        "minimal": "Central and peripheral agree; central quantitation is a reasonable antemortem proxy.",
         "modest": "Some redistribution; prefer the peripheral (femoral) value.",
         "significant": "Marked redistribution; the central value likely "
-                       "overstates the antemortem concentration -- interpret "
-                       "from peripheral blood or an alternative matrix.",
+        "overstates the antemortem concentration -- interpret "
+        "from peripheral blood or an alternative matrix.",
     }[flag]
     return {
         "cp_ratio": cp,
@@ -207,9 +222,7 @@ def tox_pmr_ratio(central: float, peripheral: float) -> dict[str, Any]:
     }
 
 
-def tox_antemortem_lr(
-    marker, antemortem: dict[str, Any], postmortem: dict[str, Any]
-) -> dict[str, Any]:
+def tox_antemortem_lr(marker, antemortem: dict[str, Any], postmortem: dict[str, Any]) -> dict[str, Any]:
     """Likelihood ratio for antemortem ingestion versus postmortem artefact.
 
     The caller supplies an observed marker (typically a secondary metabolite a
@@ -271,9 +284,7 @@ def tox_matrix_reliability(
         rows.append((m, round(r, 3)))
     rows.sort(key=lambda t: t[1], reverse=True)
     return pd.DataFrame(
-        {"matrix": [r[0] for r in rows],
-         "reliability": [r[1] for r in rows],
-         "rank": list(range(1, len(rows) + 1))}
+        {"matrix": [r[0] for r in rows], "reliability": [r[1] for r in rows], "rank": list(range(1, len(rows) + 1))}
     )
 
 
@@ -307,8 +318,7 @@ def tox_left_censor_impute(values, lod: float, method: str = "half") -> dict[str
     return {
         "imputed": imputed,
         "censored": censored,
-        "fraction_censored": (float(censored.sum() / n_measured)
-                              if n_measured else float("nan")),
+        "fraction_censored": (float(censored.sum() / n_measured) if n_measured else float("nan")),
         "n_missing": int(values.size - n_measured),
     }
 

@@ -25,23 +25,24 @@ def ghosal_misspec_crt(p0=(0.6, 0.3, 0.1), n=2000, seed=42):
     counts = [0, 0, 0]
     for _ in range(n):
         u = float(rng.uniform(0, 1))
-        counts[0 if u < p0[0] else (1 if u < p0[0] + p0[1]
-                                    else 2)] += 1
+        counts[0 if u < p0[0] else (1 if u < p0[0] + p0[1] else 2)] += 1
     # model: p = ((1-t)/2, (1-t)/2, t), t on a grid; flat prior
     grid = 60
     best_t, best_lp = None, -1e18
     for i in range(1, grid):
         t = i / grid
-        lp = (counts[0] + counts[1]) * math.log((1.0 - t) / 2.0) \
-            + counts[2] * math.log(t)
+        lp = (counts[0] + counts[1]) * math.log((1.0 - t) / 2.0) + counts[2] * math.log(t)
         if lp > best_lp:
             best_lp, best_t = lp, t
-    t_star = p0[2]                        # KL projection: t* = p0_3
-    res = RichResult(payload={"estimate": best_t,
-                              "kl_projection_t": t_star,
-                              "error_to_projection":
-                                  abs(best_t - t_star),
-                              "method": "misspecified contraction (GvdV 2017 sec. 8.5)"})
+    t_star = p0[2]  # KL projection: t* = p0_3
+    res = RichResult(
+        payload={
+            "estimate": best_t,
+            "kl_projection_t": t_star,
+            "error_to_projection": abs(best_t - t_star),
+            "method": "misspecified contraction (GvdV 2017 sec. 8.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_13")
 
 

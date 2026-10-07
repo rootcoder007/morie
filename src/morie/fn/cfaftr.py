@@ -63,18 +63,20 @@ def cfa_one_factor(X, factor_structure=None):
     sp = math.sqrt(abs(num / S[1][2])) if S[1][2] != 0.0 else float("nan")
     if load[0] < 0.0:
         sp = -sp
-    return RichResult(payload={
-        "estimate": sum(comm) / tr,
-        "loadings": load,
-        "uniquenesses": psi,
-        "fml": fml,
-        "max_resid": resid,
-        "communality": comm,
-        "spearman": sp,
-        "n_iter": it,
-        "p": p,
-        "method": "one-factor CFA, ML by EM",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(comm) / tr,
+            "loadings": load,
+            "uniquenesses": psi,
+            "fml": fml,
+            "max_resid": resid,
+            "communality": comm,
+            "spearman": sp,
+            "n_iter": it,
+            "p": p,
+            "method": "one-factor CFA, ML by EM",
+        }
+    )
 
 
 def cheatsheet():

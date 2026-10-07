@@ -39,11 +39,9 @@ def kamath_ch3_prompt_search_argmax(x, z, theta, f_fill=None):
         raise ValueError("x must be a non-empty prompt string.")
     cands = list(z)
     if not cands:
-        raise ValueError("the candidate answer set Z is empty; there is "
-                         "nothing to search over.")
+        raise ValueError("the candidate answer set Z is empty; there is nothing to search over.")
     if not callable(theta):
-        raise ValueError("theta must be a callable scorer "
-                         "filled_prompt -> score.")
+        raise ValueError("theta must be a callable scorer filled_prompt -> score.")
     fill = _fill if f_fill is None else f_fill
     filled, scores = [], []
     for c in cands:
@@ -52,19 +50,21 @@ def kamath_ch3_prompt_search_argmax(x, z, theta, f_fill=None):
         s = fill(x, c)
         v = float(theta(s))
         if not np.isfinite(v):
-            raise ValueError(
-                f"theta returned a non-finite score for {s!r}.")
+            raise ValueError(f"theta returned a non-finite score for {s!r}.")
         filled.append(s)
         scores.append(v)
     arr = np.asarray(scores, dtype=float)
     best = int(np.argmax(arr))
-    return RichResult(payload={
-        "estimate": float(arr[best]), "z_hat": cands[best],
-        "filled_prompt": filled[best],
-        "scores": {c: float(v) for c, v in zip(cands, arr)},
-        "n": len(cands),
-        "method": "argmax answer search over filled prompts "
-                  "(Kamath Eq 3.3)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr[best]),
+            "z_hat": cands[best],
+            "filled_prompt": filled[best],
+            "scores": {c: float(v) for c, v in zip(cands, arr)},
+            "n": len(cands),
+            "method": "argmax answer search over filled prompts (Kamath Eq 3.3)",
+        }
+    )
 
 
 def cheatsheet():

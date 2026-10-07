@@ -1,7 +1,6 @@
 """Tests for morie.fn.qrdcp -- QR decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.qrdcp import qr_decomposition, qrdcp
 

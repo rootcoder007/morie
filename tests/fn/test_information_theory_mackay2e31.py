@@ -14,8 +14,7 @@ from morie.fn.information_theory_mackay2e31 import urnpred
 def test_urnpred_is_the_posterior_mean_of_the_urn_fraction():
     nb, ntot, nurns = 3, 10, 10
     # (2.25): posterior over urns, uniform prior and binomial likelihood
-    joint = [math.comb(ntot, nb) * (u / nurns) ** nb * (1.0 - u / nurns) ** (ntot - nb)
-             for u in range(nurns + 1)]
+    joint = [math.comb(ntot, nb) * (u / nurns) ** nb * (1.0 - u / nurns) ** (ntot - nb) for u in range(nurns + 1)]
     total = sum(joint)
     post = [j / total for j in joint]
     expected = sum((u / nurns) * post[u] for u in range(nurns + 1))

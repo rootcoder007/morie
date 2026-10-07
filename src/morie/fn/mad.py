@@ -7,8 +7,18 @@ from typing import Union
 from . import _array_core as np
 
 
-def mad(x: Union[Sequence[float], np.ndarray], scale: str = "normal"):
-    """Median Absolute Deviation."""
+def mad(x: Union[Sequence[float], np.ndarray], scale: str = "raw"):
+    """Median Absolute Deviation.
+
+    The default is the raw MAD, median(|x - median(x)|), as rmorie's ``morie_mad`` and
+    ``scipy.stats.median_abs_deviation``; ``scale="normal"`` multiplies by 1.4826 (R's ``mad()``,
+    rmorie's ``morie_mad_rescaled``), a number multiplies by that constant.
+
+    Examples
+    --------
+    >>> mad([1, 2, 3, 4, 5])["value"], round(mad([1, 2, 3, 4, 5], scale="normal")["value"], 4)
+    (1.0, 1.4826)
+    """
     from ._richresult import RichResult
 
     a = np.asarray(x, dtype=float)

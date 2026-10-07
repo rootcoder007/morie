@@ -1,8 +1,8 @@
 """Tests for morie.fn.awq — activation-aware weight quantization."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.awq import activation_aware_quant
 
 

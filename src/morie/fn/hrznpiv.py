@@ -89,8 +89,7 @@ def horowitz_npiv_model(x, y, w, bandwidth=None, grid=25, tol=1e-5):
     w = np.asarray(w, dtype=float).ravel()
     n = int(x.size)
     if y.size != n or w.size != n:
-        raise ValueError(
-            f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
+        raise ValueError(f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
     if n < 3:
         raise ValueError(f"need at least 3 observations, got {n}.")
     h = float(bandwidth) if bandwidth is not None else H.bw01(n)
@@ -112,40 +111,40 @@ def horowitz_npiv_model(x, y, w, bandwidth=None, grid=25, tol=1e-5):
 
     # f_W(w) = int f_XW(x, w) dx.
     fW = [0.0] * m
-    for l in range(m):
+    for ell in range(m):
         s = 0.0
         for k in range(m):
-            s += float(wq[k]) * fxw[k][l]
-        fW[l] = s
+            s += float(wq[k]) * fxw[k][ell]
+        fW[ell] = s
 
     # E(Y|W = w) by Nadaraya-Watson on the [0,1] scale.
     mW = [0.0] * m
-    for l in range(m):
+    for ell in range(m):
         num = den = 0.0
         for i in range(n):
-            num += float(KW[l][i]) * float(y[i])
-            den += float(KW[l][i])
-        mW[l] = num / den if den > 1e-300 else 0.0
+            num += float(KW[ell][i]) * float(y[i])
+            den += float(KW[ell][i])
+        mW[ell] = num / den if den > 1e-300 else 0.0
 
     # r(z), eq. (5.42), and tau(x, z), eq. (5.43).
     r_hat = [0.0] * m
-    for l in range(m):
+    for ell in range(m):
         s = 0.0
         for q in range(m):
-            s += float(wq[q]) * mW[q] * fxw[l][q] * fW[q]
-        r_hat[l] = s
+            s += float(wq[q]) * mW[q] * fxw[ell][q] * fW[q]
+        r_hat[ell] = s
     tau = [[0.0] * m for _ in range(m)]
     for k in range(m):
-        for l in range(m):
+        for ell in range(m):
             s = 0.0
             for q in range(m):
-                s += float(wq[q]) * fxw[k][q] * fxw[l][q]
-            tau[k][l] = s
+                s += float(wq[q]) * fxw[k][q] * fxw[ell][q]
+            tau[k][ell] = s
 
     # Symmetrise in the quadrature inner product: S = D^(1/2) tau D^(1/2),
     # so S's eigenpairs give T's eigenpairs with phi = D^(-1/2) s.
     rt = [float(wq[k]) ** 0.5 for k in range(m)]
-    S = [[rt[k] * tau[k][l] * rt[l] for l in range(m)] for k in range(m)]
+    S = [[rt[k] * tau[k][ell] * rt[ell] for ell in range(m)] for k in range(m)]
     lam, vecs = np.linalg.eigh(np.asarray(S, dtype=float))
     order = sorted(range(m), key=lambda j: -float(lam[j]))
     lam_s = [float(lam[j]) for j in order]
@@ -170,21 +169,23 @@ def horowitz_npiv_model(x, y, w, bandwidth=None, grid=25, tol=1e-5):
         for k in range(m):
             g_hat[k] += c * (float(vecs[k][j]) / rt[k])
 
-    return RichResult(payload={
-        "g_hat": g_hat,
-        "grid_points": [float(t) for t in z],
-        "r_hat": r_hat,
-        "eigenvalues": lam_s,
-        "trace_T": trace_T,
-        "n_terms": n_terms,
-        "identified": bool(lam_s[m - 1] > cut),
-        "fW": fW,
-        "raw_mass": raw_mass,
-        "bandwidth": h,
-        "n": n,
-        "m": m,
-        "method": "Horowitz (2009) eqs. (5.41)-(5.44), spectral truncation of T",
-    })
+    return RichResult(
+        payload={
+            "g_hat": g_hat,
+            "grid_points": [float(t) for t in z],
+            "r_hat": r_hat,
+            "eigenvalues": lam_s,
+            "trace_T": trace_T,
+            "n_terms": n_terms,
+            "identified": bool(lam_s[m - 1] > cut),
+            "fW": fW,
+            "raw_mass": raw_mass,
+            "bandwidth": h,
+            "n": n,
+            "m": m,
+            "method": "Horowitz (2009) eqs. (5.41)-(5.44), spectral truncation of T",
+        }
+    )
 
 
 def cheatsheet():

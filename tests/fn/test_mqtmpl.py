@@ -5,10 +5,10 @@ untyped markers. Rewritten against qtl_genome_scan with a fully typed
 marker matrix -- the function rejects missing genotypes by design.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.mqtmpl import qtl_genome_scan, permutation_threshold
+from morie.fn import _array_core as np
+from morie.fn.mqtmpl import qtl_genome_scan
 
 
 def _cross(n=60, m=5):

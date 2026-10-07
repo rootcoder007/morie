@@ -1,8 +1,8 @@
 """Tests for morie.fn.crttm — time to trial."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.crttm import court_time_to_trial
 

@@ -5,9 +5,6 @@ Implements Appendix G (Corollary G.4 forms) of Ghosal & van der Vaart (2017), *F
 Nonparametric Bayesian Inference*, CUP (appendices).
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,9 +20,9 @@ def ghosal_dir_moments(alpha, j=0, jp=1):
     mean = a[j] / A
     var = a[j] * (A - a[j]) / (A * A * (A + 1.0))
     cov = -a[j] * a[jp] / (A * A * (A + 1.0))
-    res = RichResult(payload={"estimate": mean,
-                              "variance": var, "covariance": cov,
-                              "method": "Dirichlet moments (GvdV 2017 App G)"})
+    res = RichResult(
+        payload={"estimate": mean, "variance": var, "covariance": cov, "method": "Dirichlet moments (GvdV 2017 App G)"}
+    )
     return with_describe_pointer(res, "gh_ap_g2")
 
 

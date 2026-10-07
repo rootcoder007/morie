@@ -1,7 +1,6 @@
 """Tests for gh_c3_4.ghosal_stick_break_def."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_4 import ghosal_stick_break_def
 
 

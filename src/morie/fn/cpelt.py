@@ -35,10 +35,7 @@ def pelt_changepoint(y: np.ndarray, penalty: str = "bic", min_size: int = 2) -> 
     """
     y = np.asarray(y, dtype=float).ravel()
     n = len(y)
-    if isinstance(penalty, str) and penalty.lower() == "bic":
-        pen = np.log(n)
-    else:
-        pen = float(penalty)
+    pen = np.log(n) if isinstance(penalty, str) and penalty.lower() == "bic" else float(penalty)
 
     cumsum = np.zeros(n + 1)
     cumsum2 = np.zeros(n + 1)

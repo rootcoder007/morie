@@ -1,7 +1,10 @@
 """Tests for flexrd.flexible_receptor_dock."""
 
-from morie.fn import _array_core as np
+import math
 
+import pytest
+
+from morie.fn import _array_core as np
 from morie.fn.flexrd import flexible_receptor_dock
 
 
@@ -35,9 +38,16 @@ def test_flexrd_basic():
     flex_residues = []
 
     result = flexible_receptor_dock(
-        receptor, ligand, flex_residues,
-        angles=[0.0], soft=0.7, epsilon=1.0, cutoff=8.0,
-        search="coordinate", passes=3, n_keep=2,
+        receptor,
+        ligand,
+        flex_residues,
+        angles=[0.0],
+        soft=0.7,
+        epsilon=1.0,
+        cutoff=8.0,
+        search="coordinate",
+        passes=3,
+        n_keep=2,
     )
 
     # The function returns a RichResult; expose its payload as dict-like.
@@ -70,30 +80,34 @@ def test_flexrd_basic():
     assert payload["n_receptor"] == 6
     assert payload["n_ligand"] == 4
     assert payload["kept"] == sorted(payload["kept"])
-    assert sorted(payload["stage1"]) == [
-        payload["stage1"][i] for i in payload["stage1_order"]
-    ]
+    assert sorted(payload["stage1"]) == [payload["stage1"][i] for i in payload["stage1_order"]]
 
     # ``gain`` must equal rigid_hard - flexible_hard exactly.
-    assert payload["gain"] == pytest_approx(
-        payload["rigid_energy"] - payload["energy"]
-    )
+    assert payload["gain"] == pytest.approx(payload["rigid_energy"] - payload["energy"], rel=0, abs=1e-9)
 
     # With no chi flexibility, the refined receptor is the input receptor,
     # so the flexible hard energy equals the rigid hard energy.
     assert payload["receptor"] == rc
     assert payload["energy"] == payload["rigid_energy"]
 
-    # Independently recompute the kept soft energies using plain arithmetic
-    # on the same inputs and confirm they match the reported stage-1 values.
-    def _energy(coords_a, coords_b, ra, rb, soft_k, eps, cut):
-        """Independent re-implementation of the van der Waals + soft-cored
-        pairwise clash energy described in the function's docstring."""
-        # We can't import internal helpers, so reproduce the stage-1 ranking
-        # by evaluating the same sum the function does.  Here we simply
-        # confirm the stage-1 order: the first entry corresponds to pose 0
-        # in this configuration because the second pose sits farther out.
-        return soft_e
+    # Independently recompute the stage-1 (softened) energies and the rigid hard energy:
+    # Lennard-Jones 12-6 over ligand-receptor pairs within the cutoff, summed radii scaled by `soft`.
+    def _energy(rec, lig, rec_r, lig_r, scale, eps=1.0, cut=8.0):
+        tot = 0.0
+        for i, a in enumerate(lig):
+            for j, b in enumerate(rec):
+                r = math.dist(a, b)
+                if r > cut:
+                    continue
+                q6 = ((lig_r[i] + rec_r[j]) * scale / r) ** 6
+                tot += 4.0 * eps * (q6 * q6 - q6)
+        return tot
+
+    want = [_energy(rc, pose, rr, lr, 0.7) for pose in (lp0, lp1)]
+    assert payload["stage1"] == pytest.approx(want, rel=1e-12, abs=1e-15)
+    chosen = (lp0, lp1)[payload["pose_index"]]
+    assert payload["rigid_energy"] == pytest.approx(_energy(rc, chosen, rr, lr, 1.0), rel=1e-12, abs=1e-15)
+    assert payload["rigid_energy_soft"] == pytest.approx(_energy(rc, chosen, rr, lr, 0.7), rel=1e-12, abs=1e-15)
 
     # Stage-1: ``kept`` contains only the lowest-energy pose index, which
     # must equal ``pose_index`` (no chis to improve over rigid).
@@ -115,8 +129,11 @@ def test_flexrd_edge():
     ligand = {"poses": [lp0, lp1, lp2], "radii": lr}
 
     result = flexible_receptor_dock(
-        receptor, ligand, [],
-        angles=[0.0], n_keep=1,
+        receptor,
+        ligand,
+        [],
+        angles=[0.0],
+        n_keep=1,
     )
     payload = dict(result.payload) if hasattr(result, "payload") else dict(result)
 
@@ -124,13 +141,3 @@ def test_flexrd_edge():
     assert payload["n_chi"] == 0
     assert len(payload["kept"]) == 1
     assert payload["search"] == "coordinate"
-
-
-def pytest_approx(x):
-    """Tiny inline stand-in for pytest.approx to avoid the extra import."""
-    class _A:
-        def __eq__(self, other):
-            return abs(x - other) < 1e-9
-        def __repr__(self):
-            return f"approx({x})"
-    return _A()

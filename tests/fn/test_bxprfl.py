@@ -1,7 +1,6 @@
 """Tests for bxprfl.baxter_king."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bxprfl import baxter_king
 
 

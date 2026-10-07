@@ -33,7 +33,7 @@ def test_tinfo_basic():
 def test_tinfo_edge():
     """A 2PL item at theta = b gives D^2 a^2 / 4; guessing lowers it."""
     r = tinfo_fn(0.5, [2.0], [0.5], D=1.702)
-    assert r["information"] == pytest.approx(1.702 ** 2 * 4 / 4, rel=1e-14)
+    assert r["information"] == pytest.approx(1.702**2 * 4 / 4, rel=1e-14)
     assert tinfo_fn(0.5, [2.0], [0.5], c=[0.2], D=1.702)["information"] < r["information"]
     with pytest.raises(ValueError):
         tinfo_fn(0.0, [1.0], [0.0], c=[1.0])

@@ -68,10 +68,17 @@ def kstest1(x, y, terms=200):
     else:
         p = 1.0
     p = min(1.0, max(0.0, p))
-    return RichResult(payload={
-        "statistic": D, "scaled": t, "p_value": p, "n1": n1, "n2": n2,
-        "ties": float(n1 + n2 - len(pool)),
-        "method": "Two-sample KS test, Wasserman Theorem 15.12"})
+    return RichResult(
+        payload={
+            "statistic": D,
+            "scaled": t,
+            "p_value": p,
+            "n1": n1,
+            "n2": n2,
+            "ties": float(n1 + n2 - len(pool)),
+            "method": "Two-sample KS test, Wasserman Theorem 15.12",
+        }
+    )
 
 
 wasserman_ks_test = kstest1

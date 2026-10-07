@@ -12,7 +12,7 @@ def network_correlation(
     *,
     threshold: float = 0.0,
 ) -> np.ndarray:
-    """Patience is bitter, but its fruit is sweet. -- Aristotle"""
+    """Correlation network of the columns of ``data``: the pairwise correlation matrix, thresholded at ``threshold``."""
     X = np.asarray(data, dtype=np.float64)
     R = np.corrcoef(X, rowvar=False)
     p = R.shape[0]

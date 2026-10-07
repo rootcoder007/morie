@@ -1,7 +1,6 @@
 """Test snr_estimate_fn (snr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.snr import snr, snr_estimate_fn
 

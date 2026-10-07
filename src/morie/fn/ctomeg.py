@@ -42,8 +42,11 @@ def omega_total(X, factor_loadings):
     if p < 2:
         raise ValueError("omega needs at least two items")
     M = core.mat(X)
-    if len(M) == p and all(len(r) == p for r in M) and all(
-            abs(M[i][j] - M[j][i]) < 1e-12 for i in range(p) for j in range(p)):
+    if (
+        len(M) == p
+        and all(len(r) == p for r in M)
+        and all(abs(M[i][j] - M[j][i]) < 1e-12 for i in range(p) for j in range(p))
+    ):
         S = M
     else:
         n = len(M)
@@ -52,8 +55,9 @@ def omega_total(X, factor_loadings):
         if len(M[0]) != p:
             raise ValueError("X and factor_loadings imply different item counts")
         mu = [sum(M[i][j] for i in range(n)) / n for j in range(p)]
-        S = [[sum((M[i][a] - mu[a]) * (M[i][b] - mu[b]) for i in range(n)) / (n - 1)
-              for b in range(p)] for a in range(p)]
+        S = [
+            [sum((M[i][a] - mu[a]) * (M[i][b] - mu[b]) for i in range(n)) / (n - 1) for b in range(p)] for a in range(p)
+        ]
     var_total = sum(S[i][j] for i in range(p) for j in range(p))
     if var_total <= 0.0:
         raise ValueError("total score variance is not positive")
@@ -62,15 +66,17 @@ def omega_total(X, factor_loadings):
     omega = sl * sl / var_total
     tr = sum(S[i][i] for i in range(p))
     alpha = p / (p - 1.0) * (1.0 - tr / var_total)
-    return RichResult(payload={
-        "estimate": omega,
-        "omega": omega,
-        "alpha": alpha,
-        "var_total": var_total,
-        "uniquenesses": th,
-        "p": p,
-        "method": "McDonald omega total",
-    })
+    return RichResult(
+        payload={
+            "estimate": omega,
+            "omega": omega,
+            "alpha": alpha,
+            "var_total": var_total,
+            "uniquenesses": th,
+            "p": p,
+            "method": "McDonald omega total",
+        }
+    )
 
 
 def cheatsheet():

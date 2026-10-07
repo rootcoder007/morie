@@ -1,7 +1,5 @@
 """Tests for fzcov1.fauzi_cov_surv_est1."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fzcov1 import fauzi_cov_surv_est1
 
 

@@ -14,6 +14,7 @@ import sys
 
 
 def registry_json() -> str:
+    """The ``morie.fn`` registry as a JSON list (short name, full name, category, description, quote)."""
     from morie.fn._registry import REGISTRY
 
     entries = []
@@ -31,6 +32,7 @@ def registry_json() -> str:
 
 
 def help_text() -> str:
+    """The ``morie.fn`` registry listed by category, with a total count."""
     from morie.fn._registry import REGISTRY
 
     cats: dict[str, list] = {}
@@ -66,6 +68,15 @@ class _BridgeLog:
 
 
 def exec_command(cmd_str: str) -> str:
+    """Run one statistics command line (``name arg ...``) and return its output as text.
+
+    The name is looked up first among the stat commands, then in the
+    ``morie.fn`` registry; errors come back as ``Error: ...`` text.
+
+    Examples:
+        >>> exec_command("")
+        'Error: empty command'
+    """
     parts = cmd_str.strip().split()
     if not parts:
         return "Error: empty command"
@@ -100,6 +111,7 @@ def exec_command(cmd_str: str) -> str:
 
 
 def main():
+    """Command-line entry: ``python -m morie.stat_bridge registry-json|help|exec 'cmd'|load-dataset NAME``."""
     if len(sys.argv) < 2:
         print("Usage: python -m morie.stat_bridge <registry-json|help|exec 'cmd'>")
         sys.exit(1)

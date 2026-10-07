@@ -1,7 +1,6 @@
 """Tests for parsto.parallel_trends_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.parsto import parallel_trends_test
 
 

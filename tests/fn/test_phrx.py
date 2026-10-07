@@ -1,7 +1,6 @@
 """Tests for morie.fn.phrx — prescription pattern analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.phrx import prescription_patterns
 
 

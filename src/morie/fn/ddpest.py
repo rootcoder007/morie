@@ -67,16 +67,18 @@ Priors", *Statistica Sinica* 4(2), 639-650. The stick-breaking each
 marginal inherits; implemented in :mod:`slowdp`.
 """
 
-import math
-
 from . import _array_core as np
-from . import _s03core as k
 from . import slowdp as sb
 from ._richresult import RichResult
 
-__all__ = ["dependence_kind", "single_weights_ddp",
-           "single_atoms_ddp", "check_marginals", "correlation",
-           "predict_density"]
+__all__ = [
+    "dependence_kind",
+    "single_weights_ddp",
+    "single_atoms_ddp",
+    "check_marginals",
+    "correlation",
+    "predict_density",
+]
 
 _EPS = 1e-12
 _KINDS = ("single_weights", "single_atoms", "both", "independent")
@@ -85,18 +87,15 @@ _KINDS = ("single_weights", "single_atoms", "both", "independent")
 def dependence_kind(kind):
     r"""What varies with :math:`x`, and what that buys."""
     if kind not in _KINDS:
-        raise ValueError("ddpest: kind must be one of %s, got %r"
-                         % (", ".join(_KINDS), kind))
+        raise ValueError("ddpest: kind must be one of {}, got {!r}".format(", ".join(_KINDS), kind))
     table = {
-        "single_weights": ("atoms", "clusters keep their membership "
-                                    "across x but move location"),
-        "single_atoms": ("weights", "locations are fixed; the "
-                                    "covariate re-weights them, so a "
-                                    "cluster can appear or vanish "
-                                    "but never move"),
+        "single_weights": ("atoms", "clusters keep their membership across x but move location"),
+        "single_atoms": (
+            "weights",
+            "locations are fixed; the covariate re-weights them, so a cluster can appear or vanish but never move",
+        ),
         "both": ("weights and atoms", "the general case"),
-        "independent": ("everything, separately", "no strength is "
-                                                  "borrowed at all"),
+        "independent": ("everything, separately", "no strength is borrowed at all"),
     }
     varies, effect = table[kind]
     return {"kind": kind, "varies_with_x": varies, "effect": effect}
@@ -115,40 +114,40 @@ def single_weights_ddp(xs, alpha, K, atom_fn, rng=None, seed=0):
     w = [v / z for v in w]
     G = {}
     for x in xs:
-        G[x] = {"weights": list(w),
-                "atoms": [atom_fn(x, h) for h in range(int(K))]}
-    return {"G": G, "kind": "single_weights", "weights": w,
-            "K": int(K),
-            "note": "membership is shared across x; only the "
-                    "locations move"}
+        G[x] = {"weights": list(w), "atoms": [atom_fn(x, h) for h in range(int(K))]}
+    return {
+        "G": G,
+        "kind": "single_weights",
+        "weights": w,
+        "K": int(K),
+        "note": "membership is shared across x; only the locations move",
+    }
 
 
-def single_atoms_ddp(xs, alpha, K, weight_fn, atom_sampler=None,
-                     rng=None, seed=0):
+def single_atoms_ddp(xs, alpha, K, weight_fn, atom_sampler=None, rng=None, seed=0):
     r"""Common atoms, weights moving with :math:`x`.
 
     ``weight_fn(x, h)`` returns an unnormalised weight; each
     :math:`G_x` is renormalised so it remains a probability measure.
     """
     r = rng if rng is not None else np.random.default_rng(seed)
-    atoms = ([atom_sampler(r, h) for h in range(int(K))]
-             if atom_sampler is not None else list(range(int(K))))
+    atoms = [atom_sampler(r, h) for h in range(int(K))] if atom_sampler is not None else list(range(int(K)))
     G = {}
     for x in xs:
         raw = [float(weight_fn(x, h)) for h in range(int(K))]
         if any(v < 0.0 for v in raw):
-            raise ValueError("ddpest: a weight is negative at x = %r"
-                             % (x,))
+            raise ValueError(f"ddpest: a weight is negative at x = {x!r}")
         z = sum(raw)
         if z <= _EPS:
-            raise ValueError("ddpest: the weights vanish at x = %r"
-                             % (x,))
-        G[x] = {"weights": [v / z for v in raw],
-                "atoms": list(atoms)}
-    return {"G": G, "kind": "single_atoms", "atoms": atoms,
-            "K": int(K),
-            "note": "the support is the same at every x; only the "
-                    "masses move"}
+            raise ValueError(f"ddpest: the weights vanish at x = {x!r}")
+        G[x] = {"weights": [v / z for v in raw], "atoms": list(atoms)}
+    return {
+        "G": G,
+        "kind": "single_atoms",
+        "atoms": atoms,
+        "K": int(K),
+        "note": "the support is the same at every x; only the masses move",
+    }
 
 
 def check_marginals(G, tol=1e-9):
@@ -158,9 +157,12 @@ def check_marginals(G, tol=1e-9):
         s = sum(g["weights"])
         if abs(s - 1.0) > float(tol):
             bad.append((x, s))
-    return {"ok": not bad, "offenders": bad, "n_x": len(G),
-            "note": "each marginal remains a DP draw, which is what "
-                    "carries the univariate machinery over"}
+    return {
+        "ok": not bad,
+        "offenders": bad,
+        "n_x": len(G),
+        "note": "each marginal remains a DP draw, which is what carries the univariate machinery over",
+    }
 
 
 def correlation(G, x1, x2, region):
@@ -171,58 +173,61 @@ def correlation(G, x1, x2, region):
     measures and 0 when they share nothing.
     """
     if x1 not in G or x2 not in G:
-        raise ValueError("ddpest: a covariate value is not in the "
-                         "collection")
+        raise ValueError("ddpest: a covariate value is not in the collection")
     a, b = G[x1], G[x2]
-    ga = sum(a["weights"][h] for h in range(len(a["weights"]))
-             if region(a["atoms"][h]))
-    gb = sum(b["weights"][h] for h in range(len(b["weights"]))
-             if region(b["atoms"][h]))
+    ga = sum(a["weights"][h] for h in range(len(a["weights"])) if region(a["atoms"][h]))
+    gb = sum(b["weights"][h] for h in range(len(b["weights"])) if region(b["atoms"][h]))
     shared = 0.0
     for h in range(min(len(a["weights"]), len(b["weights"]))):
         if a["atoms"][h] == b["atoms"][h]:
             shared += min(a["weights"][h], b["weights"][h])
-    return {"G_x1": ga, "G_x2": gb, "shared_mass": shared,
-            "abs_difference": abs(ga - gb),
-            "identical": abs(ga - gb) < 1e-12 and shared > 1.0 - 1e-9,
-            "note": "borrowing strength is a measurable quantity, "
-                    "not a property to be assumed"}
+    return {
+        "G_x1": ga,
+        "G_x2": gb,
+        "shared_mass": shared,
+        "abs_difference": abs(ga - gb),
+        "identical": abs(ga - gb) < 1e-12 and shared > 1.0 - 1e-9,
+        "note": "borrowing strength is a measurable quantity, not a property to be assumed",
+    }
 
 
 def predict_density(G, x, grid, kernel):
     r"""The density at :math:`x`: :math:`\sum_h w_h(x)
     k(y\mid\theta_h(x))`."""
     if x not in G:
-        raise ValueError("ddpest: no measure at x = %r" % (x,))
+        raise ValueError(f"ddpest: no measure at x = {x!r}")
     g = G[x]
     out = []
     for y in grid:
-        out.append(sum(g["weights"][h] * float(kernel(y,
-                                                      g["atoms"][h]))
-                       for h in range(len(g["weights"]))))
-    return RichResult(payload={
-        "estimate": out, "density": out, "grid": list(grid), "x": x,
-        "n_components": len(g["weights"]),
-        "method": "dependent Dirichlet process; Quintana, Muller, "
-                  "Jara & MacEachern (2022)",
-        "note": "a mixture whose weights and/or atoms are indexed by "
-                "the covariate",
-    })
+        out.append(sum(g["weights"][h] * float(kernel(y, g["atoms"][h])) for h in range(len(g["weights"]))))
+    return RichResult(
+        payload={
+            "estimate": out,
+            "density": out,
+            "grid": list(grid),
+            "x": x,
+            "n_components": len(g["weights"]),
+            "method": "dependent Dirichlet process; Quintana, Muller, Jara & MacEachern (2022)",
+            "note": "a mixture whose weights and/or atoms are indexed by the covariate",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ddpest: one G for all x ignores the covariate; an "
-            "independent DP per x borrows no strength. The DDP writes "
-            "G_x = sum_h w_h(x) delta_{theta_h(x)} and lets dependence "
-            "enter through the WEIGHTS, the ATOMS, or both, while "
-            "every marginal stays a DP -- which is what carries the "
-            "univariate machinery over. SINGLE-WEIGHTS (common "
-            "weights, moving atoms) shares cluster membership across x "
-            "and moves locations; SINGLE-ATOMS (common atoms, moving "
-            "weights) fixes locations and lets clusters appear or "
-            "vanish. They are not interchangeable. Measure the "
-            "borrowing with corr(G_x(A), G_x'(A)) instead of assuming "
-            "it.")
+    return (
+        "ddpest: one G for all x ignores the covariate; an "
+        "independent DP per x borrows no strength. The DDP writes "
+        "G_x = sum_h w_h(x) delta_{theta_h(x)} and lets dependence "
+        "enter through the WEIGHTS, the ATOMS, or both, while "
+        "every marginal stays a DP -- which is what carries the "
+        "univariate machinery over. SINGLE-WEIGHTS (common "
+        "weights, moving atoms) shares cluster membership across x "
+        "and moves locations; SINGLE-ATOMS (common atoms, moving "
+        "weights) fixes locations and lets clusters appear or "
+        "vanish. They are not interchangeable. Measure the "
+        "borrowing with corr(G_x(A), G_x'(A)) instead of assuming "
+        "it."
+    )
 
 
 # compact alias per ledger/NAMING.md

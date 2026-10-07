@@ -1,7 +1,5 @@
 """Tests for ghs032.ghosal_ch3_polya_tree_density_bounds."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ghs032 import ghosal_ch3_polya_tree_density_bounds
 
 
@@ -11,8 +9,10 @@ def _a_of_level_factory(values):
     The list is indexed by level j; values[j] is used for level j.
     """
     values = list(values)
+
     def a_of_level(j):
         return float(values[j])
+
     return a_of_level
 
 

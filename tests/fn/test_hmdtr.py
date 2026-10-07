@@ -6,18 +6,19 @@ import pytest
 
 from morie.fn.hmdtr import geron_tree_regularization
 
-
 X = [[math.sin(i), math.cos(1.7 * i)] for i in range(60)]
-Y = [1 if (a + 0.6 * b + 0.4 * math.sin(3.1 * i)) > 0 else 0
-     for i, (a, b) in enumerate(X)]
+Y = [1 if (a + 0.6 * b + 0.4 * math.sin(3.1 * i)) > 0 else 0 for i, (a, b) in enumerate(X)]
 
 
 def test_hmdtr_basic():
     """Leaves, depth and training accuracy equal sklearn 1.9
     DecisionTreeClassifier(random_state=0) on the same data."""
-    sk = {(): (11, 6, 60), (("max_depth", 2),): (4, 2, 55),
-          (("min_samples_leaf", 5),): (6, 4, 54),
-          (("min_samples_split", 10),): (7, 4, 56)}
+    sk = {
+        (): (11, 6, 60),
+        (("max_depth", 2),): (4, 2, 55),
+        (("min_samples_leaf", 5),): (6, 4, 54),
+        (("min_samples_split", 10),): (7, 4, 56),
+    }
     for kw, (leaves, depth, correct) in sk.items():
         r = geron_tree_regularization(X, Y, **dict(kw))
         assert (r["n_leaves"], r["depth"]) == (leaves, depth)
@@ -32,5 +33,3 @@ def test_hmdtr_edge():
     r = geron_tree_regularization(X, Y, max_depth=3, min_samples_leaf=3)
     assert r["n_leaves"] <= r["baseline_leaves"]
     assert r["leaves_saved"] == r["baseline_leaves"] - r["n_leaves"]
-
-

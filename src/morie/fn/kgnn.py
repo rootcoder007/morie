@@ -37,13 +37,13 @@ def r_gcn(A_r, X, W_r, W0=None):
     for r in range(len(A_r)):
         M = core.mat(A_r[r])
         if len(M) != n:
-            raise ValueError("r_gcn: relation %d has the wrong node count" % r)
+            raise ValueError(f"r_gcn: relation {int(r)} has the wrong node count")
         for row in M:
             if len(row) != n:
-                raise ValueError("r_gcn: relation %d is not square" % r)
+                raise ValueError(f"r_gcn: relation {int(r)} is not square")
         Wm = core.mat(W_r[r])
         if len(Wm) != p:
-            raise ValueError("r_gcn: W_r[%d] must have one row per input feature" % r)
+            raise ValueError(f"r_gcn: W_r[{int(r)}] must have one row per input feature")
         Ms.append(M)
         Ws.append(Wm)
     q = len(Ws[0][0])

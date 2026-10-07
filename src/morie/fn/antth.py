@@ -37,7 +37,10 @@ def antithetic_variates(x=None, f=None, N: int = 1000, seed: int = 42):
     n, method.
     """
     if f is None:
-        f = lambda u: u
+
+        def f(u):
+            return u
+
     rng = np.random.default_rng(seed)
     if x is None:
         u = rng.uniform(0.0, 1.0, size=int(N))

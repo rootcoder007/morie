@@ -80,8 +80,7 @@ def horowitz_T_F_asymp_props(x, y, bandwidth, n=None):
     if nn < 2:
         raise ValueError(f"n must be at least 2, got {nn}.")
     hb = np.atleast_1d(np.asarray(bandwidth, dtype=float)).ravel()
-    h_ny, h_nz = (float(hb[0]), float(hb[0])) if hb.size == 1 else \
-        (float(hb[0]), float(hb[1]))
+    h_ny, h_nz = (float(hb[0]), float(hb[0])) if hb.size == 1 else (float(hb[0]), float(hb[1]))
     if h_ny <= 0 or h_nz <= 0:
         raise ValueError(f"bandwidths must be positive, got {(h_ny, h_nz)}.")
 
@@ -89,19 +88,25 @@ def horowitz_T_F_asymp_props(x, y, bandwidth, n=None):
     ref_z = float(nn ** (-1.0 / 10.0))
     # HT9 fixes the RATES, not the constants, so the check is on
     # order of magnitude rather than on equality
-    ok = bool(0.1 <= h_ny / ref_y <= 10.0 and 0.1 <= h_nz / ref_z <= 10.0
-              and h_nz > h_ny)
-    return RichResult(payload={
-        "asymptotic_distribution": "tight mean-zero Gaussian process",
-        "limit_is_process": True,
-        "rate": float(nn ** -0.5), "rate_exponent": -0.5,
-        "h_ny_reference": ref_y, "h_nz_reference": ref_z,
-        "h_ny": h_ny, "h_nz": h_nz,
-        "bandwidths_consistent_with_HT9": ok,
-        "Kz_order_required": 6,
-        "uniform_over": "a compact interval strictly inside the support of Y",
-        "n": nn, "d": int(X.shape[1]),
-        "method": "Theorems 6.4-6.5: uniform consistency and n^{1/2} weak convergence to a Gaussian PROCESS"})
+    ok = bool(0.1 <= h_ny / ref_y <= 10.0 and 0.1 <= h_nz / ref_z <= 10.0 and h_nz > h_ny)
+    return RichResult(
+        payload={
+            "asymptotic_distribution": "tight mean-zero Gaussian process",
+            "limit_is_process": True,
+            "rate": float(nn**-0.5),
+            "rate_exponent": -0.5,
+            "h_ny_reference": ref_y,
+            "h_nz_reference": ref_z,
+            "h_ny": h_ny,
+            "h_nz": h_nz,
+            "bandwidths_consistent_with_HT9": ok,
+            "Kz_order_required": 6,
+            "uniform_over": "a compact interval strictly inside the support of Y",
+            "n": nn,
+            "d": int(X.shape[1]),
+            "method": "Theorems 6.4-6.5: uniform consistency and n^{1/2} weak convergence to a Gaussian PROCESS",
+        }
+    )
 
 
 def cheatsheet():

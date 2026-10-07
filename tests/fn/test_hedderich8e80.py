@@ -16,8 +16,7 @@ def test_poisson_deviance_and_pearson_statistic():
     y = [3.0, 7.0, 0.0, 5.0]
     lam = [4.0, 6.0, 1.0, 5.0]
     res = hedderich_chapter_8_equation_80(y, lam)
-    d = 2.0 * sum((yi * math.log(yi / li) if yi > 0 else 0.0) - (yi - li)
-                  for yi, li in zip(y, lam))
+    d = 2.0 * sum((yi * math.log(yi / li) if yi > 0 else 0.0) - (yi - li) for yi, li in zip(y, lam))
     assert res["deviance"] == pytest.approx(d, rel=1e-10)
     chi = sum((yi - li) ** 2 / li for yi, li in zip(y, lam))
     assert res["pearson_chisq"] == pytest.approx(chi, rel=1e-10)

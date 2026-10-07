@@ -1,8 +1,8 @@
 """Tests for trfbl.transformer_block."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.trfbl import transformer_block
 
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.lisa — Local Moran's I (LISA)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lisa import local_morans_i
 
 

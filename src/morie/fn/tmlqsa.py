@@ -68,24 +68,31 @@ def tmleqs(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025):
     g1 = [T.bound(v, gbound, 1.0 - gbound) for v in g1W]
     g0 = [1.0 - v for v in g1]
     psi0 = sum(Q1W) / n - sum(Q0W) / n
-    d0 = [(A[i] / g1[i] - (1.0 - A[i]) / g0[i]) * (Y[i] - QAW[i])
-          + Q1W[i] - Q0W[i] - psi0 for i in range(n)]
+    d0 = [(A[i] / g1[i] - (1.0 - A[i]) / g0[i]) * (Y[i] - QAW[i]) + Q1W[i] - Q0W[i] - psi0 for i in range(n)]
     s0 = sum(d0) / n
     fit = T.target(Y, A, QAW, Q1W, Q0W, g1W, gbound)
     mu1, mu0, ic1, ic0 = T.curves(Y, A, fit)
     psi1 = mu1 - mu0
-    d1 = [(A[i] / g1[i] - (1.0 - A[i]) / g0[i])
-          * (Y[i] - fit["QAstar"][i])
-          + fit["Q1star"][i] - fit["Q0star"][i] - psi1 for i in range(n)]
+    d1 = [
+        (A[i] / g1[i] - (1.0 - A[i]) / g0[i]) * (Y[i] - fit["QAstar"][i]) + fit["Q1star"][i] - fit["Q0star"][i] - psi1
+        for i in range(n)
+    ]
     s1 = sum(d1) / n
     sd0 = C.sd(d0, 1)
-    return RichResult(payload={
-        "score_init": s0, "score_final": s1,
-        "score_init_scaled": s0 * math.sqrt(n) / sd0 if sd0 > 0 else float("nan"),
-        "reduction": abs(s1) / abs(s0) if s0 != 0.0 else float("nan"),
-        "psi_init": psi0, "psi_final": psi1, "shift": psi1 - psi0,
-        "epsilon": fit["epsilon"], "n": float(n),
-        "method": "Efficient-score residual before and after targeting"})
+    return RichResult(
+        payload={
+            "score_init": s0,
+            "score_final": s1,
+            "score_init_scaled": s0 * math.sqrt(n) / sd0 if sd0 > 0 else float("nan"),
+            "reduction": abs(s1) / abs(s0) if s0 != 0.0 else float("nan"),
+            "psi_init": psi0,
+            "psi_final": psi1,
+            "shift": psi1 - psi0,
+            "epsilon": fit["epsilon"],
+            "n": float(n),
+            "method": "Efficient-score residual before and after targeting",
+        }
+    )
 
 
 tmle_quasi_score = tmleqs

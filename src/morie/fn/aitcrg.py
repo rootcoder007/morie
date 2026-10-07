@@ -113,7 +113,7 @@ def compositional_regression(X, Y_comp, V=None):
         for v in r:
             if not (v > 0.0):
                 raise ValueError("compositional_regression: every part of Y_comp must be positive")
-    if N < p:
+    if p > N:
         raise ValueError("compositional_regression: fewer observations than columns of X")
     Vm = _basis(D) if V is None else [[float(a) for a in r] for r in V]
     Yi = [_ilr_row(r, Vm) for r in Ym]

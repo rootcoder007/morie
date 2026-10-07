@@ -1,7 +1,6 @@
 """Tests for gibbsm.gibbs_sampler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gibbsm import gibbs_sampler
 
 
@@ -36,10 +35,7 @@ def test_gibbsm_basic():
 
     kept = payload["draws"][0:]
     expected_mean = [sum(row[j] for row in kept) / len(kept) for j in range(len(x0))]
-    assert all(
-        abs(payload["mean"][j] - expected_mean[j]) < 1e-12
-        for j in range(len(x0))
-    )
+    assert all(abs(payload["mean"][j] - expected_mean[j]) < 1e-12 for j in range(len(x0)))
 
 
 def test_gibbsm_edge():
@@ -65,7 +61,4 @@ def test_gibbsm_edge():
 
     kept = payload["draws"][burn:]
     expected_mean = [sum(row[j] for row in kept) / len(kept) for j in range(len(x0))]
-    assert all(
-        abs(payload["mean"][j] - expected_mean[j]) < 1e-12
-        for j in range(len(x0))
-    )
+    assert all(abs(payload["mean"][j] - expected_mean[j]) < 1e-12 for j in range(len(x0)))

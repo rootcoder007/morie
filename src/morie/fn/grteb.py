@@ -58,8 +58,7 @@ def multi_head_attention(Q_in, KV_in, weights, mask=None):
     heads_q, heads_k, heads_v = (list(weights[k]) for k in ("WQ", "WK", "WV"))
     if not (len(heads_q) == len(heads_k) == len(heads_v)):
         raise ValueError(
-            f"WQ/WK/WV must list the same number of heads, got "
-            f"{len(heads_q)}, {len(heads_k)}, {len(heads_v)}."
+            f"WQ/WK/WV must list the same number of heads, got {len(heads_q)}, {len(heads_k)}, {len(heads_v)}."
         )
     if not heads_q:
         raise ValueError("no attention heads supplied.")
@@ -78,9 +77,7 @@ def multi_head_attention(Q_in, KV_in, weights, mask=None):
     concat = np.hstack(outs)
     WO = np.atleast_2d(np.asarray(weights["WO"], dtype=float))
     if WO.shape[0] != concat.shape[1]:
-        raise ValueError(
-            f"WO must have {concat.shape[1]} rows (concatenated head width), got {WO.shape[0]}."
-        )
+        raise ValueError(f"WO must have {concat.shape[1]} rows (concatenated head width), got {WO.shape[0]}.")
     return concat @ WO, ws
 
 
@@ -99,9 +96,7 @@ def feed_forward(X, weights):
     if W2.shape[0] != W1.shape[1]:
         raise ValueError(f"W2 must have {W1.shape[1]} rows to match the hidden width.")
     if W2.shape[1] != A.shape[1]:
-        raise ValueError(
-            f"W2 must map back to d_model={A.shape[1]} for the residual to add, got {W2.shape[1]}."
-        )
+        raise ValueError(f"W2 must map back to d_model={A.shape[1]} for the residual to add, got {W2.shape[1]}.")
     b1 = np.asarray(weights.get("b1", np.zeros(W1.shape[1])), dtype=float).ravel()
     b2 = np.asarray(weights.get("b2", np.zeros(W2.shape[1])), dtype=float).ravel()
     if b1.size != W1.shape[1] or b2.size != W2.shape[1]:
@@ -169,10 +164,7 @@ def geron_transformer_encoder_block(x, mha_weights, ffn_weights, mask=None, eps=
 
     attn, ws = multi_head_attention(X, X, mha_weights, mask)
     if attn.shape != X.shape:
-        raise ValueError(
-            f"attention output has shape {attn.shape} but the residual needs {X.shape}; "
-            "check WO."
-        )
+        raise ValueError(f"attention output has shape {attn.shape} but the residual needs {X.shape}; check WO.")
     h = layer_norm(X + attn, mha_weights.get("gamma"), mha_weights.get("beta"), eps)
     f = feed_forward(h, ffn_weights)
     y = layer_norm(h + f, ffn_weights.get("gamma"), ffn_weights.get("beta"), eps)

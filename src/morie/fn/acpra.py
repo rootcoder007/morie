@@ -94,15 +94,19 @@ def acceptance_rate_diagnostic(chains, target=None, kind="metropolis"):
         rec = "acceptance is in a reasonable range for this sampler"
     return RichResult(
         title=f"Acceptance rate ({kind})",
-        summary_lines=[("rate", rate), ("target", tgt),
-                       ("chains", int(C.shape[0]))],
-        warnings=["acceptance rate alone says nothing about mixing; a sampler "
-                  "with tiny steps accepts almost everything and explores "
-                  "almost nothing -- read it with ESS"],
+        summary_lines=[("rate", rate), ("target", tgt), ("chains", int(C.shape[0]))],
+        warnings=[
+            "acceptance rate alone says nothing about mixing; a sampler "
+            "with tiny steps accepts almost everything and explores "
+            "almost nothing -- read it with ESS"
+        ],
         payload={
-            "acceptance_rate": rate, "target": tgt,
-            "deviation": float(rate - tgt), "recommendation": rec,
-            "per_chain": per, "kind": kind,
+            "acceptance_rate": rate,
+            "target": tgt,
+            "deviation": float(rate - tgt),
+            "recommendation": rec,
+            "per_chain": per,
+            "kind": kind,
             "method": "acceptance_rate_diagnostic",
         },
     )
@@ -110,6 +114,7 @@ def acceptance_rate_diagnostic(chains, target=None, kind="metropolis"):
 
 def cheatsheet():
     return "acpra: 0.234 RWM / 0.574 MALA / 0.8 HMC -- not interchangeable; always read with ESS"
+
 
 # alias kept from the retired placeholder of the same name
 alpha_nom_accept = acceptance_rate_diagnostic

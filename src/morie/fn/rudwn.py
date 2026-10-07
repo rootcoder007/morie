@@ -66,10 +66,7 @@ def rudwn(x, axis=0, cdf=None):
     diffs = diffs.astype(int)
 
     # Count runs
-    if len(diffs) > 0:
-        runs = 1 + np.sum(np.diff(diffs) != 0)
-    else:
-        runs = 0
+    runs = 1 + np.sum(np.diff(diffs) != 0) if len(diffs) > 0 else 0
 
     # Expected value and variance
     # E[R] = (2n - 1) / 3

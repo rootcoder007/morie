@@ -68,11 +68,14 @@ def kosorok_ch2_weak_convergence_tightness(X_n, rho=None, eps=0.1, delta_grid=No
         probs.append(float(np.mean(osc > eps)))
     probs = np.array(probs)
     return RichResult(
-        payload={"delta_grid": np.array([float(d) for d in delta_grid]),
-                 "probabilities": probs,
-                 "decreasing": bool(probs[-1] <= probs[0] + 1e-12),
-                 "eps": eps, "n_rep": int(n_rep),
-                 "method": "P*(modulus of continuity > eps) at shrinking delta"}
+        payload={
+            "delta_grid": np.array([float(d) for d in delta_grid]),
+            "probabilities": probs,
+            "decreasing": bool(probs[-1] <= probs[0] + 1e-12),
+            "eps": eps,
+            "n_rep": int(n_rep),
+            "method": "P*(modulus of continuity > eps) at shrinking delta",
+        }
     )
 
 

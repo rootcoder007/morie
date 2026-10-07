@@ -1,7 +1,6 @@
 """Tests for morie.fn.vtbal — Viterbi alignment."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vtbal import viterbi_align, vtbal
 
 

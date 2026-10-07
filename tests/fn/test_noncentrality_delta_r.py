@@ -1,7 +1,5 @@
 """Tests for noncentrality_delta_r.noncentrality_delta_r."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.noncentrality_delta_r import noncentrality_delta_r
 
 

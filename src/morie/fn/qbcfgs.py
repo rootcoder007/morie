@@ -58,8 +58,7 @@ from . import _w3num as _w
 from ._richresult import RichResult
 from .sdcfst import forest_predict, honest_forest
 
-__all__ = ["qbcfgs", "qb_cf_score", "strata_of", "smd", "WEIGHTS",
-           "cheatsheet"]
+__all__ = ["qbcfgs", "qb_cf_score", "strata_of", "smd", "WEIGHTS", "cheatsheet"]
 
 WEIGHTS = ("ate", "att")
 
@@ -99,18 +98,15 @@ def smd(x, d, w=None):
         return float("nan")
     m1 = _w.csum(w[i] * x[i] for i in range(n) if d[i]) / s1
     m0 = _w.csum(w[i] * x[i] for i in range(n) if not d[i]) / s0
-    v1 = _w.csum(w[i] * (x[i] - m1) * (x[i] - m1)
-                 for i in range(n) if d[i]) / s1
-    v0 = _w.csum(w[i] * (x[i] - m0) * (x[i] - m0)
-                 for i in range(n) if not d[i]) / s0
+    v1 = _w.csum(w[i] * (x[i] - m1) * (x[i] - m1) for i in range(n) if d[i]) / s1
+    v0 = _w.csum(w[i] * (x[i] - m0) * (x[i] - m0) for i in range(n) if not d[i]) / s0
     pool = 0.5 * (v1 + v0)
     if pool <= 0.0:
         return 0.0 if m1 == m0 else float("inf")
     return (m1 - m0) / math.sqrt(pool)
 
 
-def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
-                n_trees=8, min_leaf=3, max_depth=3, seed=0, clip=0.01):
+def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate", n_trees=8, min_leaf=3, max_depth=3, seed=0, clip=0.01):
     """A stratum-balanced treatment effect and its balance table.
 
     Parameters
@@ -142,7 +138,7 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
     Stat Med 28(25), 3083-3107.
     """
     if weight not in WEIGHTS:
-        raise ValueError("weight must be one of %r" % (WEIGHTS,))
+        raise ValueError(f"weight must be one of {WEIGHTS!r}")
     ys = [float(v) for v in y]
     d = [1 if v else 0 for v in D]
     xs = [[float(v) for v in row] for row in X]
@@ -162,8 +158,7 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
     rows = list(range(n))
 
     rng = _core._SplitMix64(seed)
-    fe = honest_forest(xs, [float(v) for v in d], rows, n_trees, None,
-                       min_leaf, max_depth, seed, rng)
+    fe = honest_forest(xs, [float(v) for v in d], rows, n_trees, None, min_leaf, max_depth, seed, rng)
     raw = [forest_predict(fe, xs[i]) for i in range(n)]
     n_clipped = 0
     e = []
@@ -218,8 +213,7 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
 
     live = [k for k in range(q) if eff[k] == eff[k]]
     if not live:
-        raise ValueError("no stratum contains both arms; reduce the "
-                         "number of strata")
+        raise ValueError("no stratum contains both arms; reduce the number of strata")
     tot = _w.csum(float(size[k]) for k in live)
     overall = _w.csum(eff[k] * size[k] for k in live) / tot
 
@@ -231,47 +225,51 @@ def qb_cf_score(y, D, X, quantile=0.5, n_strata=4, weight="ate",
     focal = int(float(quantile) * q)
     if focal >= q:
         focal = q - 1
-    return RichResult(payload={
-        "stratum_effect": eff,
-        "stratum_size": size,
-        "stratum": s,
-        "propensity": e,
-        "weight_value": w,
-        "smd_before": before,
-        "smd_after": after,
-        "mean_abs_smd_before": fb,
-        "mean_abs_smd_after": fa,
-        "balance_improved": fa < fb,
-        "estimate": overall,
-        "se": float("nan"),
-        "focal_stratum": focal,
-        "focal_effect": eff[focal],
-        # A stratum can hold only one arm, in which case it has no
-        # effect to report and its entry is not-a-number. Returning that
-        # bare would make "the focal stratum is empty of controls" look
-        # exactly like a numerical accident, so the deadness is a flag
-        # the caller can branch on rather than a value they have to test
-        # for nan-ness to discover.
-        "focal_live": eff[focal] == eff[focal],
-        "n_clipped": n_clipped,
-        "n_live_strata": len(live),
-        "n": n,
-        "n_treated": sum(d),
-        "n_strata": q,
-        "quantile": float(quantile),
-        "clip": float(clip),
-        "weighting": weight,
-        "method": "quantile-balanced score for forests",
-    })
+    return RichResult(
+        payload={
+            "stratum_effect": eff,
+            "stratum_size": size,
+            "stratum": s,
+            "propensity": e,
+            "weight_value": w,
+            "smd_before": before,
+            "smd_after": after,
+            "mean_abs_smd_before": fb,
+            "mean_abs_smd_after": fa,
+            "balance_improved": fa < fb,
+            "estimate": overall,
+            "se": float("nan"),
+            "focal_stratum": focal,
+            "focal_effect": eff[focal],
+            # A stratum can hold only one arm, in which case it has no
+            # effect to report and its entry is not-a-number. Returning that
+            # bare would make "the focal stratum is empty of controls" look
+            # exactly like a numerical accident, so the deadness is a flag
+            # the caller can branch on rather than a value they have to test
+            # for nan-ness to discover.
+            "focal_live": eff[focal] == eff[focal],
+            "n_clipped": n_clipped,
+            "n_live_strata": len(live),
+            "n": n,
+            "n_treated": sum(d),
+            "n_strata": q,
+            "quantile": float(quantile),
+            "clip": float(clip),
+            "weighting": weight,
+            "method": "quantile-balanced score for forests",
+        }
+    )
 
 
 qbcfgs = qb_cf_score
 
 
 def cheatsheet():
-    return ("qbcfgs: quantile-balanced score for forests. weightings "
-            + ", ".join(WEIGHTS)
-            + "; balancing weights normalised within propensity strata")
+    return (
+        "qbcfgs: quantile-balanced score for forests. weightings "
+        + ", ".join(WEIGHTS)
+        + "; balancing weights normalised within propensity strata"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

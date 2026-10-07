@@ -61,12 +61,10 @@ graph-domain descendant; implemented in :mod:`grace`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["softplus", "jsd_estimate", "dv_estimate",
-           "local_objective", "prior_matching_loss"]
+__all__ = ["softplus", "jsd_estimate", "dv_estimate", "local_objective", "prior_matching_loss"]
 
 _EPS = 1e-12
 _ESTIMATORS = ("jsd", "dv")
@@ -75,8 +73,7 @@ _ESTIMATORS = ("jsd", "dv")
 def softplus(z):
     r""":math:`\mathrm{sp}(z) = \log(1+e^z)`, overflow-safe."""
     v = float(z)
-    return v + math.log1p(math.exp(-v)) if v > 0 \
-        else math.log1p(math.exp(v))
+    return v + math.log1p(math.exp(-v)) if v > 0 else math.log1p(math.exp(v))
 
 
 def jsd_estimate(paired, unpaired):
@@ -85,10 +82,8 @@ def jsd_estimate(paired, unpaired):
     p = [float(v) for v in k.vec(paired)]
     q = [float(v) for v in k.vec(unpaired)]
     if not p or not q:
-        raise ValueError("mienco: both paired and unpaired scores are "
-                         "needed")
-    return (sum(-softplus(-v) for v in p) / len(p)
-            - sum(softplus(v) for v in q) / len(q))
+        raise ValueError("mienco: both paired and unpaired scores are needed")
+    return sum(-softplus(-v) for v in p) / len(p) - sum(softplus(v) for v in q) / len(q)
 
 
 def dv_estimate(paired, unpaired):
@@ -104,8 +99,7 @@ def dv_estimate(paired, unpaired):
     return sum(p) / len(p) - lse
 
 
-def local_objective(summary, patches, other_patches, critic,
-                    estimator="jsd"):
+def local_objective(summary, patches, other_patches, critic, estimator="jsd"):
     r"""Average MI between the global summary and every LOCAL patch.
 
     ``patches`` come from the same image as ``summary``;
@@ -114,27 +108,26 @@ def local_objective(summary, patches, other_patches, critic,
     patch cannot encode only global statistics.
     """
     if estimator not in _ESTIMATORS:
-        raise ValueError("mienco: estimator must be one of %s, got %r"
-                         % (", ".join(_ESTIMATORS), estimator))
+        raise ValueError("mienco: estimator must be one of {}, got {!r}".format(", ".join(_ESTIMATORS), estimator))
     pos = [critic(summary, p) for p in patches]
     neg = [critic(summary, p) for p in other_patches]
-    est = (jsd_estimate(pos, neg) if estimator == "jsd"
-           else dv_estimate(pos, neg))
-    return RichResult(payload={
-        "estimate": est, "mi_lower_bound": est,
-        "estimator": estimator, "n_patches": len(patches),
-        "n_negative_patches": len(other_patches),
-        "method": "local Deep InfoMax; Hjelm et al. (2019)",
-        "note": "averaging over LOCAL patches beats the global "
-                "objective for downstream tasks",
-    })
+    est = jsd_estimate(pos, neg) if estimator == "jsd" else dv_estimate(pos, neg)
+    return RichResult(
+        payload={
+            "estimate": est,
+            "mi_lower_bound": est,
+            "estimator": estimator,
+            "n_patches": len(patches),
+            "n_negative_patches": len(other_patches),
+            "method": "local Deep InfoMax; Hjelm et al. (2019)",
+            "note": "averaging over LOCAL patches beats the global objective for downstream tasks",
+        }
+    )
 
 
-def global_objective(summary, whole, other_whole, critic,
-                     estimator="jsd"):
+def global_objective(summary, whole, other_whole, critic, estimator="jsd"):
     r"""The global-only variant, for comparison."""
-    return local_objective(summary, [whole], [other_whole], critic,
-                           estimator)
+    return local_objective(summary, [whole], [other_whole], critic, estimator)
 
 
 def prior_matching_loss(samples, prior_samples, discriminator):
@@ -147,23 +140,23 @@ def prior_matching_loss(samples, prior_samples, discriminator):
     a = [float(discriminator(s)) for s in samples]
     b = [float(discriminator(s)) for s in prior_samples]
     if not a or not b:
-        raise ValueError("mienco: both encoded and prior samples are "
-                         "needed")
-    return (sum(softplus(-v) for v in b) / len(b)
-            + sum(softplus(v) for v in a) / len(a))
+        raise ValueError("mienco: both encoded and prior samples are needed")
+    return sum(softplus(-v) for v in b) / len(b) + sum(softplus(v) for v in a) / len(a)
 
 
 def cheatsheet():
-    return ("mienco: unsupervised representations by maximising mutual "
-            "information -- but GLOBAL MI is weak, since MI is "
-            "invariant to any bijection and a summary can capture "
-            "global statistics while encoding no structure. The "
-            "central result: maximise the AVERAGE MI between the "
-            "summary and LOCAL PATCHES. MI is estimated by a "
-            "discriminator separating paired from unpaired samples; "
-            "the JSD form is BOUNDED where Donsker-Varadhan is not. A "
-            "prior-matching term separately controls how the "
-            "information is stored.")
+    return (
+        "mienco: unsupervised representations by maximising mutual "
+        "information -- but GLOBAL MI is weak, since MI is "
+        "invariant to any bijection and a summary can capture "
+        "global statistics while encoding no structure. The "
+        "central result: maximise the AVERAGE MI between the "
+        "summary and LOCAL PATCHES. MI is estimated by a "
+        "discriminator separating paired from unpaired samples; "
+        "the JSD form is BOUNDED where Donsker-Varadhan is not. A "
+        "prior-matching term separately controls how the "
+        "information is stored."
+    )
 
 
 # compact alias per ledger/NAMING.md

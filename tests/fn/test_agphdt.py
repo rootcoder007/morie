@@ -1,7 +1,6 @@
 """Tests for agphdt.alphazero_policy_head."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agphdt import alphazero_policy_head
 
 

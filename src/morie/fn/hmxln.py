@@ -116,7 +116,7 @@ def geron_xlnet(X, n_layers=1, vocab_size=None, d_model=8, seed=0):
     if np.any(x < 0):
         raise ValueError("geron_xlnet: token ids must be non-negative")
     V = int(x.max()) + 1 if vocab_size is None else int(vocab_size)
-    if V <= int(x.max()):
+    if int(x.max()) >= V:
         raise ValueError(f"geron_xlnet: vocab_size {V} does not cover token id {int(x.max())}")
     d = int(d_model)
     if d < 1:

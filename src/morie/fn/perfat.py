@@ -65,8 +65,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["favor_features", "favor_attention", "softmax_attention",
-           "draw_projections", "kernel_estimate"]
+__all__ = ["favor_features", "favor_attention", "softmax_attention", "draw_projections", "kernel_estimate"]
 
 _EPS = 1e-9
 
@@ -88,15 +87,14 @@ def draw_projections(m, d, seed=0, orthogonal=True):
     lowering its variance.
     """
     if m < 1 or d < 1:
-        raise ValueError("perfat: need m >= 1 and d >= 1, got %d and %d"
-                         % (m, d))
+        raise ValueError(f"perfat: need m >= 1 and d >= 1, got {int(m)} and {int(d)}")
     rng = np.random.default_rng(seed)
     rows = [[rng.standard_normal() for _ in range(d)] for _ in range(m)]
     if not orthogonal:
         return rows
     out = []
     for start in range(0, m, d):
-        block = rows[start:start + d]
+        block = rows[start : start + d]
         basis = []
         for v in block:
             u = list(v)
@@ -105,11 +103,10 @@ def draw_projections(m, d, seed=0, orthogonal=True):
                 u = [u[t] - p * b[t] for t in range(d)]
             nrm = math.sqrt(_norm2(u))
             if nrm < 1e-10:
-                basis.append([1.0 if t == len(basis) else 0.0
-                              for t in range(d)])
+                basis.append([1.0 if t == len(basis) else 0.0 for t in range(d)])
                 continue
             basis.append([v2 / nrm for v2 in u])
-        for t, b in enumerate(basis[:len(block)]):
+        for t, b in enumerate(basis[: len(block)]):
             # restore the chi length of the original row, so each row is
             # still marginally N(0, I) and the estimator stays unbiased
             length = math.sqrt(_norm2(block[t]))
@@ -126,8 +123,7 @@ def favor_features(X, omegas, kind="positive", eps=1e-6):
     near zero is the reason Lemma 1 exists.
     """
     if kind not in ("positive", "trig"):
-        raise ValueError("perfat: kind must be positive or trig, got %r"
-                         % (kind,))
+        raise ValueError(f"perfat: kind must be positive or trig, got {kind!r}")
     m = len(omegas)
     out = []
     for x in X:
@@ -141,8 +137,7 @@ def favor_features(X, omegas, kind="positive", eps=1e-6):
             out.append([scale * math.exp(p - mx) + eps for p in proj])
         else:
             scale = math.exp(0.5 * nx) / math.sqrt(m)
-            out.append([scale * math.sin(p) for p in proj]
-                       + [scale * math.cos(p) for p in proj])
+            out.append([scale * math.sin(p) for p in proj] + [scale * math.cos(p) for p in proj])
     return out
 
 
@@ -162,13 +157,11 @@ def softmax_attention(Q, K, V, causal=False):
         mx = max(scores)
         w = [math.exp(s - mx) for s in scores]
         tot = sum(w)
-        out.append([sum(w[j] * V[j][c] for j in range(lim)) / tot
-                    for c in range(len(V[0]))])
+        out.append([sum(w[j] * V[j][c] for j in range(lim)) / tot for c in range(len(V[0]))])
     return out
 
 
-def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive",
-                    orthogonal=True, causal=False):
+def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive", orthogonal=True, causal=False):
     r"""Linear attention: :math:`\phi(Q)\,(\phi(K)^\top V)`.
 
     The reassociation is the whole point -- the L-by-L matrix is never
@@ -178,14 +171,12 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive",
     Qm, Km, Vm = k.mat(Q), k.mat(K), k.mat(V)
     L, d = len(Qm), len(Qm[0]) if Qm else 0
     if len(Km) != len(Vm):
-        raise ValueError("perfat: %d keys but %d values"
-                         % (len(Km), len(Vm)))
+        raise ValueError(f"perfat: {int(len(Km))} keys but {int(len(Vm))} values")
     if len(Km) != L and not causal:
-        raise ValueError("perfat: %d queries but %d keys" % (L, len(Km)))
+        raise ValueError(f"perfat: {int(L)} queries but {int(len(Km))} keys")
     if d == 0 or len(Km[0]) != d:
         raise ValueError("perfat: query and key dimensions differ")
-    om = draw_projections(int(n_features), d, seed=seed,
-                          orthogonal=orthogonal)
+    om = draw_projections(int(n_features), d, seed=seed, orthogonal=orthogonal)
     Qf = favor_features(Qm, om, kind=kind)
     Kf = favor_features(Km, om, kind=kind)
     dv = len(Vm[0])
@@ -193,18 +184,15 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive",
     out = []
     if not causal:
         # KV is m-by-dv and Ksum is m: both built once, then reused
-        KV = [[sum(Kf[j][a] * Vm[j][c] for j in range(len(Kf)))
-               for c in range(dv)] for a in range(mf)]
-        Ksum = [sum(Kf[j][a] for j in range(len(Kf)))
-                for a in range(mf)]
+        KV = [[sum(Kf[j][a] * Vm[j][c] for j in range(len(Kf))) for c in range(dv)] for a in range(mf)]
+        Ksum = [sum(Kf[j][a] for j in range(len(Kf))) for a in range(mf)]
         for i in range(L):
-            num = [sum(Qf[i][a] * KV[a][c] for a in range(mf))
-                   for c in range(dv)]
+            num = [sum(Qf[i][a] * KV[a][c] for a in range(mf)) for c in range(dv)]
             den = sum(Qf[i][a] * Ksum[a] for a in range(mf))
             if abs(den) < _EPS:
-                raise ValueError("perfat: a renormaliser vanished at "
-                                 "query %d; this is what the trig map "
-                                 "does and Lemma 1 prevents" % i)
+                raise ValueError(
+                    f"perfat: a renormaliser vanished at query {int(i)}; this is what the trig map does and Lemma 1 prevents"
+                )
             out.append([v / den for v in num])
     else:
         KV = [[0.0] * dv for _ in range(mf)]
@@ -214,29 +202,36 @@ def favor_attention(Q, K, V, n_features=128, seed=0, kind="positive",
                 Ksum[a] += Kf[i][a]
                 for c in range(dv):
                     KV[a][c] += Kf[i][a] * Vm[i][c]
-            num = [sum(Qf[i][a] * KV[a][c] for a in range(mf))
-                   for c in range(dv)]
+            num = [sum(Qf[i][a] * KV[a][c] for a in range(mf)) for c in range(dv)]
             den = sum(Qf[i][a] * Ksum[a] for a in range(mf))
             if abs(den) < _EPS:
-                raise ValueError("perfat: a renormaliser vanished at "
-                                 "query %d" % i)
+                raise ValueError(f"perfat: a renormaliser vanished at query {int(i)}")
             out.append([v / den for v in num])
-    return RichResult(payload={
-        "estimate": out, "output": out, "n_features": int(n_features),
-        "kind": kind, "orthogonal": bool(orthogonal), "causal": causal,
-        "L": L, "d": d, "d_v": dv,
-        "method": "FAVOR+ linear attention, Choromanski et al. (2021) "
-                  "Lemma 1",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "output": out,
+            "n_features": int(n_features),
+            "kind": kind,
+            "orthogonal": bool(orthogonal),
+            "causal": causal,
+            "L": L,
+            "d": d,
+            "d_v": dv,
+            "method": "FAVOR+ linear attention, Choromanski et al. (2021) Lemma 1",
+        }
+    )
 
 
 def cheatsheet():
-    return ("perfat: phi(x) = exp(-|x|^2/2) exp(omega'x)/sqrt(m) makes "
-            "E[phi(x)'phi(y)] = exp(x'y) EXACTLY (Lemma 1), so "
-            "phi(Q)(phi(K)'V) replaces the L-by-L matrix. The features "
-            "must be POSITIVE: the sin/cos map is also unbiased but its "
-            "variance explodes where the kernel is near zero, which is "
-            "most of it, and the renormaliser goes negative.")
+    return (
+        "perfat: phi(x) = exp(-|x|^2/2) exp(omega'x)/sqrt(m) makes "
+        "E[phi(x)'phi(y)] = exp(x'y) EXACTLY (Lemma 1), so "
+        "phi(Q)(phi(K)'V) replaces the L-by-L matrix. The features "
+        "must be POSITIVE: the sin/cos map is also unbiased but its "
+        "variance explodes where the kernel is near zero, which is "
+        "most of it, and the renormaliser goes negative."
+    )
 
 
 # compact alias per ledger/NAMING.md

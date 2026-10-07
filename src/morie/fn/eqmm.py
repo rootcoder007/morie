@@ -63,15 +63,17 @@ def equating_mean_mean(y, a_R, b_R, a_F, b_F):
     B = core.mean(bR) - A * core.mean(bF)
     yy = [float(v) for v in ([y] if isinstance(y, (int, float)) else y)]
     eq = [A * v + B for v in yy]
-    return RichResult(payload={
-        "estimate": A,
-        "A": A,
-        "B": B,
-        "equated": eq,
-        "n_items": k,
-        "n": len(yy),
-        "method": "Mean-mean equating coefficients",
-    })
+    return RichResult(
+        payload={
+            "estimate": A,
+            "A": A,
+            "B": B,
+            "equated": eq,
+            "n_items": k,
+            "n": len(yy),
+            "method": "Mean-mean equating coefficients",
+        }
+    )
 
 
 def cheatsheet():

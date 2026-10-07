@@ -28,17 +28,16 @@ def beta_standardized(b, s_x, s_y):
     """
     value = _ca_crim.beta_standardized(b, s_x, s_y)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.20)"
     return RichResult(
-        title='Standardized regression coefficient Beta = b s_x / s_y',
+        title="Standardized regression coefficient Beta = b s_x / s_y",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e20: Beta = b (s_x / s_y) [Weisburd et al. 2022, eq. 2.20]'
+    return "ca2e20: Beta = b (s_x / s_y) [Weisburd et al. 2022, eq. 2.20]"

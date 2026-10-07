@@ -23,7 +23,10 @@ def lrda(X, dl, draw, n_iter=20):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Log-ratio data augmentation below a detection limit", payload=_c.lrda(X=X, dl=dl, draw=draw, n_iter=n_iter))
+    return RichResult(
+        title="Log-ratio data augmentation below a detection limit",
+        payload=_c.lrda(X=X, dl=dl, draw=draw, n_iter=n_iter),
+    )
 
 
 compositional_zero_lrda = lrda

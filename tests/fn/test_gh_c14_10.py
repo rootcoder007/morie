@@ -1,7 +1,6 @@
 """Tests for gh_c14_10.ghosal_py_eppf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_10 import ghosal_py_eppf
 
 
@@ -16,6 +15,7 @@ def test_gh_c14_10_basic():
     # p(n_1..n_k) = [prod_{j<k}(theta + j d)] / (theta + 1)^{[n-1]}
     #              * prod_j (1 - d)^{[n_j - 1]}
     import math
+
     ns = [1, 2, 3, 4, 5]
     d, theta = 0.5, 1.0
     n = sum(ns)
@@ -26,8 +26,8 @@ def test_gh_c14_10_basic():
     for i in range(1, n):
         lp_expected -= math.log(theta + i)
     for nj in ns:
-        for l in range(nj - 1):
-            lp_expected += math.log(1.0 - d + l)
+        for ell in range(nj - 1):
+            lp_expected += math.log(1.0 - d + ell)
     expected_estimate = math.exp(lp_expected)
     assert abs(float(result["estimate"]) - expected_estimate) < 1e-12
 
@@ -43,13 +43,14 @@ def test_gh_c14_10_edge():
     # With k=1, the leading numerator product is empty (=1), and prod_j (1-d)^{[n_j-1]}
     # contributes (1-d)^{n_1-1} * (1-d+1) * ... * (1-d+n_1-2) for n_1=42.
     import math
+
     n_1 = 42
     d, theta = 0.5, 1.0
     lp_expected = 0.0
     for i in range(1, n_1):
         lp_expected -= math.log(theta + i)
-    for l in range(n_1 - 1):
-        lp_expected += math.log(1.0 - d + l)
+    for ell in range(n_1 - 1):
+        lp_expected += math.log(1.0 - d + ell)
     expected_estimate = math.exp(lp_expected)
     assert abs(float(result["estimate"]) - expected_estimate) < 1e-12
     assert abs(float(result["log_eppf"]) - lp_expected) < 1e-12

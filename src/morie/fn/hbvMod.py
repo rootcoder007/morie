@@ -12,11 +12,13 @@ def _maxbas_weights(maxbas):
     # (2/M - |u - M/2| * 4/M^2) du over the triangle of base M.
     m = float(maxbas)
     nw = int(math.ceil(m))
+
     def _antider(u):
         # antiderivative of 2/m - |u - m/2| * 4/m^2, with F(0)=0, F(m)=1
         if u <= m / 2.0:
             return 2.0 * u * u / (m * m)
         return 4.0 * u / m - 2.0 * u * u / (m * m) - 1.0
+
     w = []
     for i in range(1, nw + 1):
         lo, hi = i - 1.0, min(float(i), m)
@@ -80,18 +82,21 @@ def hbvMod(precip, temp, epot, params, init=None):
     n = len(p)
     if not (len(t) == len(ep) == n):
         raise ValueError("precip, temp, epot must have equal length")
-    req = ("tt", "cfmax", "fc", "lp", "beta", "k0", "k1", "k2",
-           "uzl", "perc", "maxbas")
+    req = ("tt", "cfmax", "fc", "lp", "beta", "k0", "k1", "k2", "uzl", "perc", "maxbas")
     miss = [k for k in req if k not in params]
     if miss:
-        raise ValueError("params missing: %s" % ", ".join(miss))
-    tt = float(params["tt"]); cfmax = float(params["cfmax"])
+        raise ValueError("params missing: {}".format(", ".join(miss)))
+    tt = float(params["tt"])
+    cfmax = float(params["cfmax"])
     cfr = float(params.get("cfr", 0.05))
-    fc = float(params["fc"]); lp = float(params["lp"])
+    fc = float(params["fc"])
+    lp = float(params["lp"])
     beta = float(params["beta"])
-    k0 = float(params["k0"]); k1 = float(params["k1"])
+    k0 = float(params["k0"])
+    k1 = float(params["k1"])
     k2 = float(params["k2"])
-    uzl = float(params["uzl"]); perc = float(params["perc"])
+    uzl = float(params["uzl"])
+    perc = float(params["perc"])
     maxbas = float(params["maxbas"])
     if fc <= 0 or maxbas < 1:
         raise ValueError("fc must be positive and maxbas >= 1")
@@ -105,8 +110,7 @@ def hbvMod(precip, temp, epot, params, init=None):
 
     w = _maxbas_weights(maxbas)
     queue = [0.0] * len(w)
-    out = {k: [] for k in ("q", "q_gw", "snow", "soil", "suz", "slz",
-                           "e_act")}
+    out = {k: [] for k in ("q", "q_gw", "snow", "soil", "suz", "slz", "e_act")}
     for i in range(n):
         # snow routine (Eqs. 1-2); precipitation phase by TT
         if t[i] <= tt:
@@ -117,8 +121,7 @@ def hbvMod(precip, temp, epot, params, init=None):
         melt = min(cfmax * (t[i] - tt), snow) if t[i] > tt else 0.0
         snow -= melt
         swater += melt
-        refreeze = min(cfr * cfmax * (tt - t[i]), swater) \
-            if t[i] < tt else 0.0
+        refreeze = min(cfr * cfmax * (tt - t[i]), swater) if t[i] < tt else 0.0
         swater -= refreeze
         snow += refreeze
         # liquid water above 10% of snowpack becomes soil input
@@ -128,7 +131,7 @@ def hbvMod(precip, temp, epot, params, init=None):
         # soil routine (Eqs. 3-4)
         recharge = insoil * (soil / fc) ** beta
         soil += insoil - recharge
-        if soil > fc:                       # overflow to recharge
+        if soil > fc:  # overflow to recharge
             recharge += soil - fc
             soil = fc
         eact = ep[i] * min(soil / (fc * lp), 1.0)
@@ -158,13 +161,15 @@ def hbvMod(precip, temp, epot, params, init=None):
         out["slz"].append(slz)
         out["e_act"].append(eact)
     s1 = snow + swater + soil + suz + slz
-    mbe = sum(p) - sum(out["e_act"]) - sum(out["q"]) - (s1 - s0) \
-        - sum(queue)
-    out.update(mass_balance_error=mbe, n_days=n,
-               params_used=dict(tt=tt, cfmax=cfmax, cfr=cfr, fc=fc,
-                                lp=lp, beta=beta, k0=k0, k1=k1, k2=k2,
-                                uzl=uzl, perc=perc, maxbas=maxbas),
-               method="HBV (Seibert & Vis 2012, Eqs. 1-6)")
+    mbe = sum(p) - sum(out["e_act"]) - sum(out["q"]) - (s1 - s0) - sum(queue)
+    out.update(
+        mass_balance_error=mbe,
+        n_days=n,
+        params_used=dict(
+            tt=tt, cfmax=cfmax, cfr=cfr, fc=fc, lp=lp, beta=beta, k0=k0, k1=k1, k2=k2, uzl=uzl, perc=perc, maxbas=maxbas
+        ),
+        method="HBV (Seibert & Vis 2012, Eqs. 1-6)",
+    )
     return RichResult(payload=out)
 
 
@@ -174,6 +179,7 @@ hbv_hydrology = hbvMod
 
 def cheatsheet():
     return "hbvMod: HBV rainfall-runoff (snow/soil/2 GW boxes/MAXBAS routing)"
+
 
 # public names resolved by fn/_lazy_map.json
 hbvhydrology = hbvMod

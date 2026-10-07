@@ -1,7 +1,6 @@
 """Tests for erstst.ers_unit_root."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.erstst import ers_unit_root
 
 

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """COVRATIO: effect of deleting observation i on the covariance of beta-hat."""
 
-import math
-
 from ._richresult import RichResult
 from .dffit import _ols_influence, _s_deleted
 
@@ -51,16 +49,18 @@ def covratio(y, X, intercept=True):
     thr = 3.0 * p / float(n)
     flagged = [1 if (v == v and abs(v - 1.0) > thr) else 0 for v in out]
     dev = [abs(v - 1.0) for v in out if v == v]
-    return RichResult(payload={
-        "estimate": max(dev) if dev else float("nan"),
-        "covratio": out,
-        "threshold": thr,
-        "flagged": flagged,
-        "n_influential": sum(flagged),
-        "n": n,
-        "p": p,
-        "method": "COVRATIO deletion effect on the covariance of beta-hat",
-    })
+    return RichResult(
+        payload={
+            "estimate": max(dev) if dev else float("nan"),
+            "covratio": out,
+            "threshold": thr,
+            "flagged": flagged,
+            "n_influential": sum(flagged),
+            "n": n,
+            "p": p,
+            "method": "COVRATIO deletion effect on the covariance of beta-hat",
+        }
+    )
 
 
 def cheatsheet():

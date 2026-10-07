@@ -66,20 +66,20 @@ def controlnet_attach(base, condition, zero_conv_weight=0.0, seed=42):
                     jj = min(max(j + b, 0), W - 1)
                     s += Cm[ii][jj] * w[a + 1][b + 1]
             ctrl[i][j] = core.gelu(s)
-    out = [[B[i][j] + zero_conv_weight * ctrl[i][j] for j in range(W)]
-           for i in range(H)]
-    dn = math.sqrt(sum((out[i][j] - B[i][j]) ** 2
-                       for i in range(H) for j in range(W)))
-    return RichResult(payload={
-        "estimate": sum(out[i][j] for i in range(H) for j in range(W)) / (H * W),
-        "out": out,
-        "control": ctrl,
-        "delta_norm": dn,
-        "is_identity": 1 if dn == 0.0 else 0,
-        "H": H,
-        "W": W,
-        "method": "ControlNet attachment with a zero convolution",
-    })
+    out = [[B[i][j] + zero_conv_weight * ctrl[i][j] for j in range(W)] for i in range(H)]
+    dn = math.sqrt(sum((out[i][j] - B[i][j]) ** 2 for i in range(H) for j in range(W)))
+    return RichResult(
+        payload={
+            "estimate": sum(out[i][j] for i in range(H) for j in range(W)) / (H * W),
+            "out": out,
+            "control": ctrl,
+            "delta_norm": dn,
+            "is_identity": 1 if dn == 0.0 else 0,
+            "H": H,
+            "W": W,
+            "method": "ControlNet attachment with a zero convolution",
+        }
+    )
 
 
 def cheatsheet():

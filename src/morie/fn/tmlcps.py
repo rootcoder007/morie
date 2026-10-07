@@ -57,12 +57,10 @@ score that :math:`\pi(a \mid l)` is.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tmle_continuous_treatment", "pseudo_outcome",
-           "effect_curve"]
+__all__ = ["tmle_continuous_treatment", "pseudo_outcome", "effect_curve"]
 
 _FITS = ("kernel", "locallinear", "polynomial")
 
@@ -78,12 +76,10 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
     yv, av = k.vec(y), k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("pseudo_outcome: %d outcomes but %d treatments"
-                         % (n, len(av)))
+        raise ValueError(f"pseudo_outcome: {int(n)} outcomes but {int(len(av))} treatments")
     Xm = k.mat(X) if X is not None else [[] for _ in range(n)]
     if len(Xm) != n:
-        raise ValueError("pseudo_outcome: %d outcomes but %d covariate "
-                         "rows" % (n, len(Xm)))
+        raise ValueError(f"pseudo_outcome: {int(n)} outcomes but {int(len(Xm))} covariate rows")
     p = len(Xm[0]) if Xm and Xm[0] else 0
 
     # pi(a | l): Gaussian, mean linear in l
@@ -93,8 +89,7 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
     res = [av[i] - mu_a[i] for i in range(n)]
     s2 = sum(r * r for r in res) / max(1, n - len(bt))
     if s2 <= 0.0:
-        raise ValueError("pseudo_outcome: the treatment model fits the "
-                         "dose exactly, so pi(A|L) is degenerate")
+        raise ValueError("pseudo_outcome: the treatment model fits the dose exactly, so pi(A|L) is degenerate")
     c = 1.0 / math.sqrt(2.0 * math.pi * s2)
 
     def pi_at(a, j):
@@ -103,8 +98,7 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
         return c * math.exp(-0.5 * r * r / s2)
 
     # mu(l, a): linear with a treatment-covariate interaction
-    Zy = [[av[i]] + list(Xm[i]) + [av[i] * Xm[i][q] for q in range(p)]
-          for i in range(n)]
+    Zy = [[av[i]] + list(Xm[i]) + [av[i] * Xm[i][q] for q in range(p)] for i in range(n)]
     by = k.lstsq(k.design(Zy, n), yv, ridge)
 
     def mu_at(a, j):
@@ -123,19 +117,22 @@ def pseudo_outcome(y, A, X, ridge=1e-8):
         den = pi_at(a_i, i)
         if den <= 0.0:
             raise ValueError(
-                "pseudo_outcome: pi(A|L) is zero at observation %d, so "
-                "positivity fails and xi is undefined" % i)
+                f"pseudo_outcome: pi(A|L) is zero at observation {int(i)}, so positivity fails and xi is undefined"
+            )
         xi.append((yv[i] - mu_at(a_i, i)) * m / den + s)
         marg.append(m)
         stand.append(s)
-    return xi, {"marginal_density": marg, "standardized_mu": stand,
-                "treatment_coef": bt, "treatment_sigma2": s2,
-                "outcome_coef": by, "pi_obs": [pi_at(av[i], i)
-                                               for i in range(n)]}
+    return xi, {
+        "marginal_density": marg,
+        "standardized_mu": stand,
+        "treatment_coef": bt,
+        "treatment_sigma2": s2,
+        "outcome_coef": by,
+        "pi_obs": [pi_at(av[i], i) for i in range(n)],
+    }
 
 
-def effect_curve(xi, A, grid, fit="kernel", bandwidth=None,
-                 n_folds=5):
+def effect_curve(xi, A, grid, fit="kernel", bandwidth=None, n_folds=5):
     """Stage 2: regress the pseudo-outcome on the treatment.
 
     "kernel" is the Nadaraya-Watson estimator the paper analyses,
@@ -145,8 +142,7 @@ def effect_curve(xi, A, grid, fit="kernel", bandwidth=None,
     cross-validation when not given, as in Sec. 3.3.
     """
     if fit not in _FITS:
-        raise ValueError("effect_curve: fit must be one of %r, got %r"
-                         % (_FITS, fit))
+        raise ValueError(f"effect_curve: fit must be one of {_FITS!r}, got {fit!r}")
     xv, av = list(xi), k.vec(A)
     n = len(xv)
     gr = [float(v) for v in k.vec(grid)]
@@ -154,14 +150,12 @@ def effect_curve(xi, A, grid, fit="kernel", bandwidth=None,
         X = [[av[i], av[i] ** 2, av[i] ** 3] for i in range(n)]
         f = k.wls(X, xv, [1.0] * n)
         b = f["coef"]
-        return [b[0] + b[1] * g + b[2] * g * g + b[3] * g ** 3
-                for g in gr], {"coef": b, "bandwidth": None}
+        return [b[0] + b[1] * g + b[2] * g * g + b[3] * g**3 for g in gr], {"coef": b, "bandwidth": None}
     if bandwidth is None:
         bandwidth = _cv_bandwidth(xv, av, fit, n_folds)
     h = float(bandwidth)
     if h <= 0.0:
-        raise ValueError("effect_curve: bandwidth must be positive, got "
-                         "%r" % (bandwidth,))
+        raise ValueError(f"effect_curve: bandwidth must be positive, got {bandwidth!r}")
     out = [_smooth_at(xv, av, g, h, fit) for g in gr]
     return out, {"bandwidth": h, "coef": None}
 
@@ -195,10 +189,8 @@ def _cv_bandwidth(xv, av, fit, n_folds):
     spread = max(av) - min(av)
     if spread <= 0.0:
         raise ValueError("_cv_bandwidth: the treatment is constant")
-    grid = [spread * f for f in
-            (0.02, 0.05, 0.08, 0.12, 0.2, 0.3, 0.5, 0.8)]
-    folds = [[i for i in range(n) if i % n_folds == f]
-             for f in range(int(n_folds))]
+    grid = [spread * f for f in (0.02, 0.05, 0.08, 0.12, 0.2, 0.3, 0.5, 0.8)]
+    folds = [[i for i in range(n) if i % n_folds == f] for f in range(int(n_folds))]
     best, best_h = None, grid[0]
     for h in grid:
         err = 0.0
@@ -217,8 +209,7 @@ def _cv_bandwidth(xv, av, fit, n_folds):
     return best_h
 
 
-def tmle_continuous_treatment(y, A, X, a_grid=None, fit="kernel",
-                              bandwidth=None, n_folds=5):
+def tmle_continuous_treatment(y, A, X, a_grid=None, fit="kernel", bandwidth=None, n_folds=5):
     r"""The effect curve theta(a) = E(Y^a) for a continuous treatment.
 
     Parameters
@@ -247,45 +238,48 @@ def tmle_continuous_treatment(y, A, X, a_grid=None, fit="kernel",
     av = k.vec(A)
     if len(set(av)) < 3:
         raise ValueError(
-            "tmle_continuous_treatment: the treatment takes %d distinct "
-            "values; this estimates a continuous effect curve and a "
-            "binary exposure belongs elsewhere" % len(set(av)))
+            f"tmle_continuous_treatment: the treatment takes {int(len(set(av)))} distinct values; this estimates a continuous effect curve and a binary exposure belongs elsewhere"
+        )
     xi, info = pseudo_outcome(y, A, X)
     if a_grid is None:
         lo, hi = min(av), max(av)
         a_grid = [lo + (hi - lo) * t / 20.0 for t in range(21)]
-    curve, cinfo = effect_curve(xi, av, a_grid, fit=fit,
-                                bandwidth=bandwidth, n_folds=n_folds)
+    curve, cinfo = effect_curve(xi, av, a_grid, fit=fit, bandwidth=bandwidth, n_folds=n_folds)
     gr = [float(v) for v in k.vec(a_grid)]
-    slopes = [(curve[t + 1] - curve[t]) / (gr[t + 1] - gr[t])
-              for t in range(len(gr) - 1) if gr[t + 1] != gr[t]]
+    slopes = [(curve[t + 1] - curve[t]) / (gr[t + 1] - gr[t]) for t in range(len(gr) - 1) if gr[t + 1] != gr[t]]
     est = sum(slopes) / len(slopes) if slopes else float("nan")
     n = len(av)
     xbar = sum(xi) / n
-    se = math.sqrt(sum((v - xbar) ** 2 for v in xi) / (n * (n - 1))) \
-        if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": est,
-        "se": se,
-        "curve": curve, "grid": gr, "slopes": slopes,
-        "pseudo_outcome": xi,
-        "bandwidth": cinfo["bandwidth"],
-        "marginal_density": info["marginal_density"],
-        "standardized_mu": info["standardized_mu"],
-        "pi_obs": info["pi_obs"],
-        "fit": fit, "n": n,
-        "method": "doubly robust effect curve for a continuous "
-                  "treatment, Kennedy, Ma, McHugh & Small (2017) "
-                  "Theorem 1 and Sec. 3.2",
-    })
+    se = math.sqrt(sum((v - xbar) ** 2 for v in xi) / (n * (n - 1))) if n > 1 else float("nan")
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "curve": curve,
+            "grid": gr,
+            "slopes": slopes,
+            "pseudo_outcome": xi,
+            "bandwidth": cinfo["bandwidth"],
+            "marginal_density": info["marginal_density"],
+            "standardized_mu": info["standardized_mu"],
+            "pi_obs": info["pi_obs"],
+            "fit": fit,
+            "n": n,
+            "method": "doubly robust effect curve for a continuous "
+            "treatment, Kennedy, Ma, McHugh & Small (2017) "
+            "Theorem 1 and Sec. 3.2",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tmlcps: continuous-treatment effect curve theta(a)=E(Y^a) "
-            "(Kennedy-Ma-McHugh-Small 2017). Stage 1 pseudo-outcome "
-            "xi = (Y-mu(L,A))/pi(A|L) * int pi(A|l)dP(l) + int "
-            "mu(l,A)dP(l); stage 2 kernel / local-linear / polynomial "
-            "regression of xi on A. Doubly robust in (pi, mu).")
+    return (
+        "tmlcps: continuous-treatment effect curve theta(a)=E(Y^a) "
+        "(Kennedy-Ma-McHugh-Small 2017). Stage 1 pseudo-outcome "
+        "xi = (Y-mu(L,A))/pi(A|L) * int pi(A|l)dP(l) + int "
+        "mu(l,A)dP(l); stage 2 kernel / local-linear / polynomial "
+        "regression of xi on A. Doubly robust in (pi, mu)."
+    )
 
 
 # compact alias per ledger/NAMING.md

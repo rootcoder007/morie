@@ -32,7 +32,7 @@ def thomas_process(kappa, mu, sigma, window, seed=None):
     from morie.fn import _array_core as np
 
     xmin, xmax, ymin, ymax = window
-    area = (xmax - xmin) * (ymax - ymin)
+    (xmax - xmin) * (ymax - ymin)
     rng = np.random.default_rng(seed)
 
     ext = 3 * sigma

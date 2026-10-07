@@ -117,8 +117,7 @@ def horowitz_plr_quantile(x, y, z, bandwidth=None, tau=0.5, niter=12):
         return out
 
     def ghat(r):
-        return [H.wquant(r, [float(Wz[i][j]) for j in range(n)], tau)
-                for i in range(n)]
+        return [H.wquant(r, [float(Wz[i][j]) for j in range(n)], tau) for i in range(n)]
 
     def crit(b):
         r = resid(b)
@@ -137,21 +136,21 @@ def horowitz_plr_quantile(x, y, z, bandwidth=None, tau=0.5, niter=12):
     XtX = [[float(t) for t in row] for row in (Xm.T @ Xm)]
     Xty = [float(t) for t in (Xm.T @ np.asarray(y, dtype=float))]
     b0 = core.ridgesolve(XtX, Xty)
-    b_hat, value = HZ.coord_min(crit, [float(t) for t in b0],
-                                niter=int(niter), delta=1.0, shrink=0.5,
-                                steps=3)
+    b_hat, value = HZ.coord_min(crit, [float(t) for t in b0], niter=int(niter), delta=1.0, shrink=0.5, steps=3)
     g_hat = ghat(resid(b_hat))
 
-    return RichResult(payload={
-        "beta_tau": [float(t) for t in b_hat],
-        "g_tau_hat": g_hat,
-        "criterion": float(value),
-        "tau": tau,
-        "bandwidth": hz,
-        "n": n,
-        "p": p,
-        "method": "Horowitz (2009) eq. (3.38), Chen-Linton-Van Keilegom",
-    })
+    return RichResult(
+        payload={
+            "beta_tau": [float(t) for t in b_hat],
+            "g_tau_hat": g_hat,
+            "criterion": float(value),
+            "tau": tau,
+            "bandwidth": hz,
+            "n": n,
+            "p": p,
+            "method": "Horowitz (2009) eq. (3.38), Chen-Linton-Van Keilegom",
+        }
+    )
 
 
 def cheatsheet():

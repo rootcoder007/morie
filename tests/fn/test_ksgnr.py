@@ -1,8 +1,8 @@
 """Tests for morie.fn.ksgnr — kernel-smoothed sign test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksgnr import ksgnr
 
 

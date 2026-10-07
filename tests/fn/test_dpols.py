@@ -1,7 +1,6 @@
 """Tests for dpols.dp_linear_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpols import dp_linear_regression
 
 

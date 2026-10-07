@@ -1,7 +1,6 @@
 """Tests for compdp.basic_composition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.compdp import basic_composition
 
 
@@ -11,6 +10,8 @@ def test_compdp_basic():
     result = basic_composition(epsilons)
     assert isinstance(result, dict)
     assert "basic_epsilon" in result
+
+
 def test_compdp_edge():
     """Test edge cases."""
     epsilons = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5

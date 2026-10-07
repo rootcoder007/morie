@@ -83,13 +83,24 @@ def survey_xtab(x, y, weights=None):
     neff = sw * sw / sw2
     df = (r - 1) * (c - 1)
     X2 = neff * stat
-    return RichResult(payload={
-        "estimate": float(X2), "statistic_naive": float(n * stat),
-        "df": int(df), "p_value": float(1.0 - C.pchisq(X2, df)),
-        "counts": cnt, "prop": p, "rows": rl, "cols": cl,
-        "nrow": r, "ncol": c, "neff": float(neff),
-        "deff": float(n / neff), "n": n,
-        "method": "Rao-Scott first-order corrected Pearson chi-square [Rao & Scott 1984]"})
+    return RichResult(
+        payload={
+            "estimate": float(X2),
+            "statistic_naive": float(n * stat),
+            "df": int(df),
+            "p_value": float(1.0 - C.pchisq(X2, df)),
+            "counts": cnt,
+            "prop": p,
+            "rows": rl,
+            "cols": cl,
+            "nrow": r,
+            "ncol": c,
+            "neff": float(neff),
+            "deff": float(n / neff),
+            "n": n,
+            "method": "Rao-Scott first-order corrected Pearson chi-square [Rao & Scott 1984]",
+        }
+    )
 
 
 def _lab(v):
@@ -111,6 +122,7 @@ def _lab(v):
 
 def cheatsheet():
     return "svytbl(x, y, weights): weighted table plus Rao-Scott corrected chi-square."
+
 
 # public names resolved by fn/_lazy_map.json
 surveyxtab = survey_xtab

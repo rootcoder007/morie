@@ -16,15 +16,12 @@ def _log_probs(items, scorer, name):
     """
     seq = list(items)
     if not seq:
-        raise ValueError(f"{name} is empty; a sum over no tokens is "
-                         "undefined, not 0.")
+        raise ValueError(f"{name} is empty; a sum over no tokens is undefined, not 0.")
     logs = []
     for i, tok in enumerate(seq):
         p = float(scorer(i)) if scorer is not None else float(tok)
         if not (0.0 < p <= 1.0):
-            raise ValueError(
-                f"the conditional probability at position {i} is "
-                f"{p:.6g}; it must lie in (0, 1].")
+            raise ValueError(f"the conditional probability at position {i} is {p:.6g}; it must lie in (0, 1].")
         logs.append(np.log(p))
     return np.asarray(logs, dtype=float), seq
 
@@ -53,13 +50,16 @@ def kamath_ch6_pll(S, theta=None):
     0.0
     """
     if theta is not None and not callable(theta):
-        raise ValueError("theta must be a callable index -> probability, "
-                         "or None when S already holds probabilities.")
+        raise ValueError("theta must be a callable index -> probability, or None when S already holds probabilities.")
     logs, seq = _log_probs(S, theta, "S")
-    return RichResult(payload={
-        "estimate": float(logs.sum()),
-        "per_token": [float(v) for v in logs], "n": len(seq),
-        "method": "pseudo-log-likelihood (Kamath Eq 6.10)"})
+    return RichResult(
+        payload={
+            "estimate": float(logs.sum()),
+            "per_token": [float(v) for v in logs],
+            "n": len(seq),
+            "method": "pseudo-log-likelihood (Kamath Eq 6.10)",
+        }
+    )
 
 
 def cheatsheet():

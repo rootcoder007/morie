@@ -28,17 +28,16 @@ def cumulative_logit(probs, m):
     """
     value = _ca_crim.cumulative_logit(probs, m)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (5.7)"
     return RichResult(
-        title='Cumulative logit ln(P(y<=m)/P(y>m))',
+        title="Cumulative logit ln(P(y<=m)/P(y>m))",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca5e7: logit[P(y<=m)] = ln(P(y<=m)/P(y>m)) [Weisburd et al. 2022, eq. 5.7]'
+    return "ca5e7: logit[P(y<=m)] = ln(P(y<=m)/P(y>m)) [Weisburd et al. 2022, eq. 5.7]"

@@ -28,8 +28,7 @@ def se_g(g, n1, n2):
     """
     value = _ca_crim.se_g(g, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.7)"
@@ -41,7 +40,7 @@ def se_g(g, n1, n2):
 
 
 def cheatsheet():
-    return 'ca11e7: se_g = sqrt((n1+n2)/(n1 n2) + g^2/(2(n1+n2))) [Weisburd et al. 2022, eq. 11.7]'
+    return "ca11e7: se_g = sqrt((n1+n2)/(n1 n2) + g^2/(2(n1+n2))) [Weisburd et al. 2022, eq. 11.7]"
 
 
 # compact alias per ledger/NAMING.md

@@ -1,7 +1,6 @@
 """Tests for morie.fn.rskfr — risk fairness."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rskfr import risk_fairness
 
 

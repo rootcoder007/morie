@@ -13,6 +13,8 @@ def test_km014_doctest():
 
 def test_km014_edge():
     import pytest
+
     from morie.fn.km014 import kamath_ch2_positional_encoding_cos
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_positional_encoding_cos(*([None] * 3))

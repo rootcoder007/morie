@@ -19,7 +19,6 @@ __all__ = ["pensse", "mvsml_convolutional_nn_eq_14_10"]
 
 
 def pensse(y, X, beta, lam, P, mu=0.0):
-
     """SSE_lambda(beta) = sum_i ( y_i - mu - sum_l x_il beta_l )^2
     + lambda J_beta (eq. 14.10), where J_beta is the roughness
     penalty of (14.11) and lambda sets the compromise between fit to

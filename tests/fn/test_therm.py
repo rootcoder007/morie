@@ -1,7 +1,6 @@
 """Tests for morie.fn.therm -- feeling thermometer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.therm import feeling_thermometer_scale, therm
 
 

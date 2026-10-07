@@ -95,10 +95,12 @@ on macOS for hardware-tuned SIMD:
 .. code-block:: python
 
    from morie.engine_bridge import is_available, matvec, rmsnorm
-   print(is_available())  # True if .dylib/.so compiled
+   from morie.fn import _array_core as np
+   print(is_available())  # True if .dylib/.so compiled; the numpy path answers otherwise
 
-   # Accelerate.framework BLAS for matmul
-   out = matvec(weight_matrix, input_vec)  # cblas_sgemv under the hood
+   weight_matrix = np.array([[1.0, 2.0], [3.0, 4.0]], dtype="float32")
+   input_vec = np.array([1.0, 1.0], dtype="float32")
+   out = matvec(weight_matrix, input_vec)  # cblas_sgemv under the hood -> [3, 7]
 
 **Security design:**
 
@@ -121,18 +123,20 @@ Successfully parses real Ollama model files, now with Q4_K dequantization:
 
 .. code-block:: python
 
-   from morie.gguf_loader import GGUFModel
+   from morie.gguf_loader import GGUFModel, find_local_gguf
 
-   model = GGUFModel("~/.ollama/models/blobs/sha256-...")
-   print(model.config)
-   # {'architecture': 'llama', 'n_layers': 32, 'n_heads': 32,
-   #  'head_dim': 128, 'hidden_dim': 4096, 'vocab_size': 128256,
-   #  'context_length': 131072, 'name': 'Meta Llama 3.1 8B Instruct'}
-
-   print(len(model.tensor_names()))  # 292 tensors
-
-   # Dequantize Q4_K weights (the common GGUF format)
-   w = model.get_tensor("blk.0.attn_q.weight")  # Q4_K → float32
+   path = find_local_gguf()   # the largest GGUF model in Ollama's store, or None
+   if path is None:
+       print("no GGUF model on this machine: `ollama pull llama3.1` adds one")
+   else:
+       model = GGUFModel(path)
+       print(model.config)
+       # Llama 3.1 8B: {'architecture': 'llama', 'n_layers': 32, 'n_heads': 32,
+       #  'head_dim': 128, 'hidden_dim': 4096, 'vocab_size': 128256,
+       #  'context_length': 131072, 'name': 'Meta Llama 3.1 8B Instruct'}
+       print(len(model.tensor_names()))  # 292 tensors for Llama 3.1 8B
+       # dequantize Q4_K weights (the common GGUF format) to float32
+       w = model.get_tensor(model.tensor_names()[0])
 
 Supported dequantization types:
 
@@ -150,13 +154,16 @@ without requiring SentencePiece at runtime:
 .. code-block:: python
 
    from morie.tokenizer import Tokenizer
-   from morie.gguf_loader import GGUFModel
+   from morie.gguf_loader import GGUFModel, find_local_gguf
 
-   model = GGUFModel("path/to/model.gguf")
-   tok = Tokenizer(gguf_model=model)
-   ids = tok.encode("Hello world")
-   print(tok.decode(ids))  # "Hello world"
-   print(tok.vocab_size)   # e.g. 128256
+   path = find_local_gguf()
+   if path is None:
+       print("no GGUF model on this machine: `ollama pull llama3.1` adds one")
+   else:
+       tok = Tokenizer(gguf_model=GGUFModel(path))
+       ids = tok.encode("Hello world")
+       print(tok.decode(ids))  # "Hello world"
+       print(tok.vocab_size)   # e.g. 128256
 
 Falls back to SentencePiece if a ``.model`` file is provided.
 
@@ -166,13 +173,18 @@ Engine — Forward Pass
 .. code-block:: python
 
    from morie.engine import MORIEEngine
+   from morie.gguf_loader import find_local_gguf
 
-   engine = MORIEEngine("path/to/model.gguf", kv_bits=3)
-   result = engine.generate("The capital of France is", max_tokens=20)
-   print(result.text)
-   print(f"{result.tokens_per_second:.1f} tok/s")
-   print(f"KV compression: {result.kv_compression_ratio:.1f}x")
-   print(f"Backend: {result.backend}")  # 'mlx' or 'numpy'
+   path = find_local_gguf()
+   if path is None:
+       print("no GGUF model on this machine: `ollama pull llama3.1` adds one")
+   else:
+       engine = MORIEEngine(str(path), kv_bits=3)
+       result = engine.generate("The capital of France is", max_tokens=20)
+       print(result.text)
+       print(f"{result.tokens_per_second:.1f} tok/s")
+       print(f"KV compression: {result.kv_compression_ratio:.1f}x")
+       print(f"Backend: {result.backend}")  # 'mlx' or 'numpy'
 
 The engine implements the full Llama-family transformer:
 

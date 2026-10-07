@@ -61,29 +61,40 @@ def ev_gev_lmoments(block_maxima):
     l1, l2, l3, t3 = l_moments(xv)
     mu, sigma, k = gev_from_lmoments(l1, l2, t3)
     xi = -k
-    tail = ("Frechet (heavy, xi > 0)" if xi > 0.01 else
-            "Weibull (bounded, xi < 0)" if xi < -0.01 else
-            "Gumbel (light, xi ~ 0)")
+    tail = (
+        "Frechet (heavy, xi > 0)"
+        if xi > 0.01
+        else "Weibull (bounded, xi < 0)"
+        if xi < -0.01
+        else "Gumbel (light, xi ~ 0)"
+    )
 
     def return_level(T):
         T = np.asarray(T, dtype=float)
         y = -np.log(1.0 - 1.0 / T)
         if abs(k) < 1e-9:
             return mu - sigma * np.log(y)
-        return mu + sigma / k * (1.0 - y ** k)
+        return mu + sigma / k * (1.0 - y**k)
 
-    return RichResult(payload={
-        "mu": mu, "sigma": sigma, "k_hosking": k, "xi": xi,
-        "l1": l1, "l2": l2, "t3": t3,
-        "tail_type": tail,
-        "sign_convention": "Hosking's k = -xi: heavy tail means k < 0, "
-                           "xi > 0",
-        "return_level_fn": return_level,
-        "why_not_ml": "GEV maximum likelihood is non-regular for xi < -0.5 "
-                      "and loses to L-moments in the small samples block "
-                      "maxima produce",
-        "n_blocks": int(n),
-        "method": "GEV by L-moments (Hosking 1990), unbiased PWMs"})
+    return RichResult(
+        payload={
+            "mu": mu,
+            "sigma": sigma,
+            "k_hosking": k,
+            "xi": xi,
+            "l1": l1,
+            "l2": l2,
+            "t3": t3,
+            "tail_type": tail,
+            "sign_convention": "Hosking's k = -xi: heavy tail means k < 0, xi > 0",
+            "return_level_fn": return_level,
+            "why_not_ml": "GEV maximum likelihood is non-regular for xi < -0.5 "
+            "and loses to L-moments in the small samples block "
+            "maxima produce",
+            "n_blocks": int(n),
+            "method": "GEV by L-moments (Hosking 1990), unbiased PWMs",
+        }
+    )
 
 
 def cheatsheet():

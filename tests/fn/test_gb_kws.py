@@ -1,7 +1,5 @@
 """Tests for gb_kws.gibbons_kw_chi2_approx."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_kws import gibbons_kw_chi2_approx
 
 

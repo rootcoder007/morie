@@ -1,7 +1,6 @@
 """Tests for grbvd.geron_bias_variance_decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grbvd import geron_bias_variance_decomposition
 
 
@@ -18,8 +17,16 @@ def test_grbvd_basic():
     # The decomposition should expose at least one bias-variance-noise component
     assert any(
         k in result
-        for k in ("bias", "variance", "noise", "expected_loss",
-                  "irreducible_error", "total_error", "avg_bias", "avg_variance")
+        for k in (
+            "bias",
+            "variance",
+            "noise",
+            "expected_loss",
+            "irreducible_error",
+            "total_error",
+            "avg_bias",
+            "avg_variance",
+        )
     )
 
 

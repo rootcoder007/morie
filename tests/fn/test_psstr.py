@@ -1,7 +1,6 @@
 """Tests for propensity_stratify."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.psstr import propensity_stratify
 
 

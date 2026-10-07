@@ -1,8 +1,8 @@
 """Tests for spblk.spatial_block_kriging."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.okrig import ordinary_kriging
 from morie.fn.spblk import spatial_block_kriging
 

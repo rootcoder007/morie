@@ -1,12 +1,11 @@
 """Tests for morie.fn.lcsub."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lcsub import longest_common_subseq
 
 
 def test_lcsub_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = longest_common_subseq(seq1="ACGTACGT", seq2="ACGTACGT")
     assert result is not None
     assert hasattr(result, "name")

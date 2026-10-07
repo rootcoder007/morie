@@ -53,7 +53,7 @@ def breusch_pagan_lm(
     sum_ebar_sq = 0.0
     for ent in unique_ent:
         idx = entity == ent
-        Ti = np.sum(idx)
+        np.sum(idx)
         sum_ebar_sq += (np.sum(e[idx])) ** 2
 
     LM = (n / (2.0 * (N - 1))) * (sum_ebar_sq / sum_e_sq - 1.0) ** 2

@@ -50,10 +50,15 @@ def ot_sobolev_w1(mu, nu, Laplace_inv):
     q = sum(r[i] * L[i][j] * r[j] for i in range(n) for j in range(n))
     if q < 0.0:
         q = 0.0
-    return RichResult(payload={
-        "W1_sob": q ** 0.5, "quad_form": q,
-        "mass_gap": sum(a) - sum(b), "n": n,
-        "method": "Sobolev H^-1 approximation to W_1"})
+    return RichResult(
+        payload={
+            "W1_sob": q**0.5,
+            "quad_form": q,
+            "mass_gap": sum(a) - sum(b),
+            "n": n,
+            "method": "Sobolev H^-1 approximation to W_1",
+        }
+    )
 
 
 def cheatsheet():

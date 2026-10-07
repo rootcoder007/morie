@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """LeNet-5 CNN architecture."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .grcos import geron_conv_output_size
 
@@ -122,8 +121,7 @@ def geron_lenet5(n_classes=10, input_size=32, in_channels=1):
     sz, ch = _pool("S4", sz, ch)
     if sz < 5:
         raise ValueError(
-            f"geron_lenet5: an input of {s} leaves {sz}x{sz} maps before C5 is reached; "
-            f"LeNet-5 needs a 32x32 input"
+            f"geron_lenet5: an input of {s} leaves {sz}x{sz} maps before C5 is reached; LeNet-5 needs a 32x32 input"
         )
     sz, ch = _conv("C5", sz, ch, 120, 5)
     if sz != 1:

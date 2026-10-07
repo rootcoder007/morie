@@ -51,8 +51,8 @@ def ols_regression(
     XtX = X.T @ X
     try:
         XtX_inv = np.linalg.inv(XtX)
-    except np.linalg.LinAlgError:
-        raise ValueError("X'X is singular; check for perfect multicollinearity.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("X'X is singular; check for perfect multicollinearity.") from exc
 
     beta = XtX_inv @ (X.T @ y)
     fitted = X @ beta

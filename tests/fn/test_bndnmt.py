@@ -1,7 +1,6 @@
 """Tests for bndnmt.bound_no_monotonicity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndnmt import bound_no_monotonicity
 
 
@@ -26,8 +25,16 @@ def test_bndnmt_basic():
     # Returned object should behave like a mapping exposing all documented keys.
     assert isinstance(result, dict)
     for key in (
-        "lower", "upper", "width", "estimate", "wald",
-        "pi_net", "pi_c_max", "pi_d_max", "itt_y", "n",
+        "lower",
+        "upper",
+        "width",
+        "estimate",
+        "wald",
+        "pi_net",
+        "pi_c_max",
+        "pi_d_max",
+        "itt_y",
+        "n",
     ):
         assert key in result
 
@@ -38,7 +45,7 @@ def test_bndnmt_basic():
     assert yv.shape == (n,) and dv.shape == (n,) and zv.shape == (n,)
 
     n1 = int((zv == 1.0).sum())
-    n0 = n - n1
+    n - n1
     sy1 = float(yv[zv == 1.0].mean())
     sy0 = float(yv[zv == 0.0].mean())
     pd1 = float(dv[zv == 1.0].mean())

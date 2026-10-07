@@ -1,7 +1,6 @@
 """Tests for sampen — Sample entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sampen import sample_entropy
 

@@ -1,7 +1,5 @@
 """Tests for n_for_cv.n_for_cv."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.n_for_cv import (
     n_for_cv,
 )

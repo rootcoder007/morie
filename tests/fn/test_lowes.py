@@ -1,7 +1,6 @@
 """Tests for morie.fn.lowes -- LOWESS smoother."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lowes import lowes, lowess
 

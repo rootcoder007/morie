@@ -88,10 +88,7 @@ def yld_from_prevalence(
     yld = prevalence * disability_weight * duration
 
     r = discount_rate
-    if r > 0 and duration > 0:
-        yld_disc = prevalence * disability_weight * (1 - np.exp(-r * duration)) / r
-    else:
-        yld_disc = yld
+    yld_disc = prevalence * disability_weight * (1 - np.exp(-r * duration)) / r if r > 0 and duration > 0 else yld
 
     return {
         "yld": float(yld),

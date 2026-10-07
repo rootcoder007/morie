@@ -27,17 +27,19 @@ def kamath_ch2_gpt_supervised_softmax(x, h, W_y):
     h = np.atleast_1d(np.asarray(h, dtype=float))
     W = np.atleast_2d(np.asarray(W_y, dtype=float))
     if W.shape[1] != len(h):
-        raise ValueError(
-            f"W_y has {W.shape[1]} columns but h has {len(h)} "
-            "dimensions (row convention h W_y^T).")
+        raise ValueError(f"W_y has {W.shape[1]} columns but h has {len(h)} dimensions (row convention h W_y^T).")
     logits = W @ h
     z = logits - logits.max()
     p = np.exp(z) / np.exp(z).sum()
-    return RichResult(payload={
-        "probabilities": [float(v) for v in p],
-        "predicted_class": int(np.argmax(p)),
-        "estimate": float(p.max()), "n": len(p),
-        "method": "GPT supervised softmax head (Kamath Eq 2.35)"})
+    return RichResult(
+        payload={
+            "probabilities": [float(v) for v in p],
+            "predicted_class": int(np.argmax(p)),
+            "estimate": float(p.max()),
+            "n": len(p),
+            "method": "GPT supervised softmax head (Kamath Eq 2.35)",
+        }
+    )
 
 
 def cheatsheet():

@@ -89,10 +89,19 @@ def ot_clustering_w(X_list, k, max_iter=10):
                         for q in range(d):
                             Z[r][q] += w[t] * n * T[r][s] * clouds[i][s][q]
             centers[c] = Z
-    return RichResult(payload={
-        "labels": labels, "centers": centers, "inertia": inertia,
-        "K": K, "n_clouds": N, "n": n, "d": d, "iters": it,
-        "method": "Wasserstein k-means over point clouds"})
+    return RichResult(
+        payload={
+            "labels": labels,
+            "centers": centers,
+            "inertia": inertia,
+            "K": K,
+            "n_clouds": N,
+            "n": n,
+            "d": d,
+            "iters": it,
+            "method": "Wasserstein k-means over point clouds",
+        }
+    )
 
 
 def cheatsheet():

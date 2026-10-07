@@ -22,7 +22,7 @@ __all__ = ["ols", "wls", "glm", "formula_terms"]
 def formula_terms(formula):
     """Split ``"y ~ x1 + x2"`` into ``("y", ["x1", "x2"], intercept)``."""
     if "~" not in formula:
-        raise ValueError("formula must contain '~': %r" % formula)
+        raise ValueError(f"formula must contain '~': {formula!r}")
     lhs, rhs = formula.split("~", 1)
     outcome = lhs.strip()
     intercept = True
@@ -39,10 +39,10 @@ def formula_terms(formula):
             if stripped in ("1", "0"):
                 intercept = False
                 continue
-            raise ValueError("unsupported formula term: %r" % t)
+            raise ValueError(f"unsupported formula term: {t!r}")
         terms.append(t)
     if not outcome:
-        raise ValueError("formula has no outcome: %r" % formula)
+        raise ValueError(f"formula has no outcome: {formula!r}")
     return outcome, terms, intercept
 
 
@@ -102,16 +102,15 @@ def _spec_columns(spec, data):
             else:
                 use = levels if full else levels[1:]
                 fmt = "%s[%s]" if full else "%s[T.%s]"
-                blocks.append([(fmt % (q, lv),
-                                [1.0 if v == lv else 0.0 for v in vals])
-                               for lv in use])
+                blocks.append([(fmt % (q, lv), [1.0 if v == lv else 0.0 for v in vals]) for lv in use])
         combos = [("", None)]
         # patsy order: the first factor's levels vary fastest
         for blk in reversed(blocks):
-            combos = [(lab + (":" + nm if nm else ""),
-                       col if acc is None else
-                       [x * y for x, y in zip(col, acc)])
-                      for nm, acc in combos for lab, col in blk]
+            combos = [
+                (lab + (":" + nm if nm else ""), col if acc is None else [x * y for x, y in zip(col, acc)])
+                for nm, acc in combos
+                for lab, col in blk
+            ]
         for lab, col in combos:
             names.append(lab)
             cols.append(col)
@@ -142,7 +141,7 @@ def _combos(seq, k):
         return []
     out = []
     for i in range(len(seq) - k + 1):
-        for rest in _combos(seq[i + 1:], k - 1):
+        for rest in _combos(seq[i + 1 :], k - 1):
             out.append([seq[i]] + rest)
     return out
 
@@ -156,8 +155,7 @@ def _design(formula, data):
     n = len(y)
     for t, c in zip(labels, cols):
         if len(c) != n:
-            raise ValueError("term %r has %d rows, outcome has %d"
-                             % (t, len(c), n))
+            raise ValueError(f"term {t!r} has {int(len(c))} rows, outcome has {int(n)}")
     X = [[c[i] for c in cols] for i in range(n)]
     names = (["Intercept"] if intercept else []) + labels
     return y, X, names, intercept, spec
@@ -171,8 +169,8 @@ class _ConfIntLoc:
         if isinstance(key, str):
             try:
                 return self._ci._rows[self._ci.names.index(key)]
-            except ValueError:
-                raise KeyError(key)
+            except ValueError as exc:
+                raise KeyError(key) from exc
         return self._ci._rows[key]
 
     def __getitem__(self, key):
@@ -200,7 +198,7 @@ class _ConfInt:
         return len(self._rows)
 
     def __iter__(self):
-        return iter((0, 1))          # a frame iterates its columns
+        return iter((0, 1))  # a frame iterates its columns
 
     @property
     def index(self):
@@ -218,8 +216,7 @@ class _ConfInt:
         return [list(r) for r in self._rows]
 
     def __repr__(self):
-        return "\n".join("%-24s [%.6g, %.6g]" % (n, r[0], r[1])
-                          for n, r in zip(self.names, self._rows))
+        return "\n".join(f"{str(n):<24} [{r[0]:.6g}, {r[1]:.6g}]" for n, r in zip(self.names, self._rows))
 
 
 class _NamedVec(list):
@@ -247,14 +244,15 @@ class _NamedVec(list):
         # np.where(fit.pvalues.values < 0.05, ...) and a list has no
         # elementwise comparison.
         from . import _array_core
+
         return _array_core.marr([float(v) for v in self])
 
     def __getitem__(self, key):
         if isinstance(key, str):
             try:
                 return list.__getitem__(self, self._names.index(key))
-            except ValueError:
-                raise KeyError(key)
+            except ValueError as exc:
+                raise KeyError(key) from exc
         return list.__getitem__(self, key)
 
     def get(self, key, default=None):
@@ -273,6 +271,7 @@ def _as_series(values):
         return None
     try:
         from . import _frame_core
+
         return _frame_core.Series(list(values))
     except Exception:
         return list(values)
@@ -288,8 +287,7 @@ class _WaldResult:
         self.df_denom = None
 
     def __repr__(self):
-        return "<Wald chi2=%.6g df=%d p=%.6g>" % (
-            self.statistic, self.df_constraint, self.pvalue)
+        return f"<Wald chi2={self.statistic:.6g} df={int(self.df_constraint)} p={self.pvalue:.6g}>"
 
 
 class _WaldTerms:
@@ -300,13 +298,25 @@ class _WaldTerms:
 class _Result:
     """The subset of the statsmodels result API that morie reads."""
 
-    def __init__(self, params, bse, names, nobs, df_resid,
-                 tvalues=None, pvalues=None, fittedvalues=None,
-                 resid=None, cov=None, extra=None, model=None):
+    def __init__(
+        self,
+        params,
+        bse,
+        names,
+        nobs,
+        df_resid,
+        tvalues=None,
+        pvalues=None,
+        fittedvalues=None,
+        resid=None,
+        cov=None,
+        extra=None,
+        model=None,
+    ):
         self.params = _NamedVec(params, names)
         self.bse = _NamedVec(bse, names)
         self.param_names = list(names)
-        self.params_names = list(names)      # statsmodels spells it both ways
+        self.params_names = list(names)  # statsmodels spells it both ways
         self.nobs = nobs
         self.df_resid = df_resid
         self.df_model = len(self.params) - 1
@@ -317,19 +327,16 @@ class _Result:
         self._model = model
         # statsmodels exposes the fit statistics as attributes; the
         # native fit carries them in its payload.
-        for _k in ("deviance", "null_deviance", "aic", "loglik",
-                   "df_null", "dispersion", "pearson_chi2", "converged"):
+        for _k in ("deviance", "null_deviance", "aic", "loglik", "df_null", "dispersion", "pearson_chi2", "converged"):
             if _k in self._extra:
                 setattr(self, _k, self._extra[_k])
         if "loglik" in self._extra and not hasattr(self, "llf"):
             self.llf = self._extra["loglik"]
         if tvalues is None:
-            tvalues = [(b / s) if s else float("nan")
-                       for b, s in zip(self.params, self.bse)]
+            tvalues = [(b / s) if s else float("nan") for b, s in zip(self.params, self.bse)]
         self.tvalues = _NamedVec(tvalues, names)
         if pvalues is None:
-            pvalues = [2.0 * _glm_core._norm_sf(abs(t)) if t == t
-                       else float("nan") for t in self.tvalues]
+            pvalues = [2.0 * _glm_core._norm_sf(abs(t)) if t == t else float("nan") for t in self.tvalues]
         self.pvalues = _NamedVec(pvalues, names)
 
     def fit(self, *a, **k):
@@ -340,9 +347,7 @@ class _Result:
 
     def conf_int(self, alpha=0.05):
         z = _glm_core._norm_ppf(1.0 - alpha / 2.0)
-        return _ConfInt([[b - z * s, b + z * s]
-                         for b, s in zip(self.params, self.bse)],
-                        self.param_names)
+        return _ConfInt([[b - z * s, b + z * s] for b, s in zip(self.params, self.bse)], self.param_names)
 
     def predict(self, data=None, **kw):
         """Fitted values, or predictions on new data.
@@ -375,19 +380,14 @@ class _Result:
         k = len(b)
         for row in R:
             if len(row) != k:
-                raise ValueError("contrast has %d columns, the fit has "
-                                 "%d parameters" % (len(row), k))
+                raise ValueError(f"contrast has {int(len(row))} columns, the fit has {int(k)} parameters")
         Rb = [sum(R[i][j] * b[j] for j in range(k)) for i in range(q)]
-        RV = [[sum(R[i][a] * V[a][j] for a in range(k)) for j in range(k)]
-              for i in range(q)]
-        M = [[sum(RV[i][a] * R[j][a] for a in range(k)) for j in range(q)]
-             for i in range(q)]
+        RV = [[sum(R[i][a] * V[a][j] for a in range(k)) for j in range(k)] for i in range(q)]
+        M = [[sum(RV[i][a] * R[j][a] for a in range(k)) for j in range(q)] for i in range(q)]
         Minv = _glm_core._inv(M)
-        stat = sum(Rb[i] * sum(Minv[i][j] * Rb[j] for j in range(q))
-                   for i in range(q))
+        stat = sum(Rb[i] * sum(Minv[i][j] * Rb[j] for j in range(q)) for i in range(q))
         pval = _glm_core._chi2_sf(stat, q)
-        return _WaldResult(float(stat) if scalar else [stat],
-                           float(pval) if scalar else [pval], q)
+        return _WaldResult(float(stat) if scalar else [stat], float(pval) if scalar else [pval], q)
 
     def wald_test_terms(self, skip_single=False, scalar=True, **kw):
         """Per-term Wald tests, as statsmodels' wald_test_terms.
@@ -397,6 +397,7 @@ class _Result:
         """
         del kw
         from . import _frame_core
+
         names = list(self.param_names)
         rows, index = [], []
         for j, nm in enumerate(names):
@@ -407,20 +408,18 @@ class _Result:
             contrast = [[1.0 if i == j else 0.0 for i in range(len(names))]]
             w = self.wald_test(contrast, scalar=scalar)
             index.append(nm)
-            rows.append({"statistic": w.statistic,
-                         "pvalue": w.pvalue,
-                         "df_constraint": w.df_constraint})
+            rows.append({"statistic": w.statistic, "pvalue": w.pvalue, "df_constraint": w.df_constraint})
         table = _frame_core.DataFrame(
-            {c: [r[c] for r in rows]
-             for c in ("statistic", "pvalue", "df_constraint")},
-            index=index)
+            {c: [r[c] for r in rows] for c in ("statistic", "pvalue", "df_constraint")}, index=index
+        )
         return _WaldTerms(table)
 
     def summary(self):
-        head = "%-24s %12s %12s %10s" % ("term", "estimate", "std.error", "p")
-        rows = ["%-24s %12.6g %12.6g %10.4g" % (n, b, s, p)
-                for n, b, s, p in zip(self.param_names, self.params,
-                                      self.bse, self.pvalues)]
+        head = "{:<24} {!s:>12} {!s:>12} {!s:>10}".format("term", "estimate", "std.error", "p")
+        rows = [
+            f"{str(n):<24} {b:12.6g} {s:12.6g} {p:10.4g}"
+            for n, b, s, p in zip(self.param_names, self.params, self.bse, self.pvalues)
+        ]
         return "\n".join([head] + rows)
 
     def __getitem__(self, k):
@@ -457,7 +456,7 @@ def _hc_cov(X, resid, XtX_inv, cov_type):
         elif cov_type == "HC2":
             d = 1.0 - h[i]
             w.append(e2 / d if d > 1e-12 else e2)
-        else:                                    # HC3
+        else:  # HC3
             d = 1.0 - h[i]
             w.append(e2 / (d * d) if d > 1e-12 else e2)
     # meat = X' diag(w) X
@@ -470,22 +469,18 @@ def _hc_cov(X, resid, XtX_inv, cov_type):
             for b in range(k):
                 meat[a][b] += xa * xi[b]
     # bread * meat * bread
-    tmp = [[sum(XtX_inv[a][c] * meat[c][b] for c in range(k))
-            for b in range(k)] for a in range(k)]
-    return [[sum(tmp[a][c] * XtX_inv[c][b] for c in range(k))
-             for b in range(k)] for a in range(k)]
+    tmp = [[sum(XtX_inv[a][c] * meat[c][b] for c in range(k)) for b in range(k)] for a in range(k)]
+    return [[sum(tmp[a][c] * XtX_inv[c][b] for c in range(k)) for b in range(k)] for a in range(k)]
 
 
 class _LinearModel:
     def __init__(self, formula, data, weights=None):
         self.formula = formula
-        (self.y, self.X, self.names, self.intercept,
-         self._spec) = _design(formula, data)
+        (self.y, self.X, self.names, self.intercept, self._spec) = _design(formula, data)
         self.terms = _expand(formula_terms(formula)[1])
         if self.intercept:
             self.X = [[1.0] + r for r in self.X]
-        self.weights = None if weights is None else \
-            [float(v) for v in weights]
+        self.weights = None if weights is None else [float(v) for v in weights]
 
     def fit(self, cov_type="nonrobust", **kw):
         y, X = self.y, self.X
@@ -494,13 +489,11 @@ class _LinearModel:
         W = self.weights
         XtX, Xty = _glm_core._xtx_xty(X, y, W)
         beta = _glm_core._solve(XtX, Xty)
-        fitted = [sum(X[i][j] * beta[j] for j in range(k))
-                  for i in range(n)]
+        fitted = [sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
         resid = [y[i] - fitted[i] for i in range(n)]
         dfr = n - k
         if dfr <= 0:
-            raise ValueError("%d observations cannot support %d parameters"
-                             % (n, k))
+            raise ValueError(f"{int(n)} observations cannot support {int(k)} parameters")
         XtX_inv = _glm_core._inv(XtX)
         ct = (cov_type or "nonrobust").upper()
         if ct.startswith("HC"):
@@ -519,20 +512,25 @@ class _LinearModel:
             if W is None:
                 s2 = sum(r * r for r in resid) / dfr
             else:
-                s2 = sum(W[i] * resid[i] * resid[i]
-                         for i in range(n)) / dfr
+                s2 = sum(W[i] * resid[i] * resid[i] for i in range(n)) / dfr
             cov = [[s2 * XtX_inv[a][b] for b in range(k)] for a in range(k)]
-        bse = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan")
-               for j in range(k)]
-        tvals = [(beta[j] / bse[j]) if bse[j] == bse[j] and bse[j]
-                 else float("nan") for j in range(k)]
-        pvals = [2.0 * _glm_core._t_sf(abs(t), dfr) if t == t
-                 else float("nan") for t in tvals]
+        bse = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan") for j in range(k)]
+        tvals = [(beta[j] / bse[j]) if bse[j] == bse[j] and bse[j] else float("nan") for j in range(k)]
+        pvals = [2.0 * _glm_core._t_sf(abs(t), dfr) if t == t else float("nan") for t in tvals]
         self._beta = beta
-        return _Result(beta, bse, self.names, n, dfr,
-                       tvalues=tvals, pvalues=pvals,
-                       fittedvalues=fitted, resid=resid, cov=cov,
-                       model=self)
+        return _Result(
+            beta,
+            bse,
+            self.names,
+            n,
+            dfr,
+            tvalues=tvals,
+            pvalues=pvals,
+            fittedvalues=fitted,
+            resid=resid,
+            cov=cov,
+            model=self,
+        )
 
     def predict_from(self, data):
         cols = _spec_columns(self._spec, data)[1]
@@ -540,9 +538,7 @@ class _LinearModel:
         X = [[c[i] for c in cols] for i in range(rows)]
         if self.intercept:
             X = [[1.0] + r for r in X]
-        return [sum(X[i][j] * self._beta[j]
-                    for j in range(len(self._beta)))
-                for i in range(rows)]
+        return [sum(X[i][j] * self._beta[j] for j in range(len(self._beta))) for i in range(rows)]
 
 
 def _glm_robust_cov(model, fit, family, ct, cov_kwds):
@@ -553,11 +549,10 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
     divide each score by (1 - h) and (1 - h)^2 with h the leverage of
     the weighted design."""
     fam = _glm_core.FAMILIES[str(family).lower()]
-    X = [[1.0] + list(r) for r in model.X] if model.intercept else \
-        [list(r) for r in model.X]
+    X = [[1.0] + list(r) for r in model.X] if model.intercept else [list(r) for r in model.X]
     y = [float(v) for v in model.y]
     n, k = len(X), len(X[0])
-    pw = model.weights or [1.0] * n
+    model.weights or [1.0] * n
     mu, eta = fit["fitted"], fit["linear_predictor"]
     scale = fit["dispersion"]
     # R's sandwich (estfun.glm, bread.glm, hatvalues.glm) uses the
@@ -565,16 +560,13 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
     # beta -- and the working residuals at the converged fit; recomputing
     # the weights at the converged eta differs by one scoring step
     W = [float(v) for v in fit["working_weights"]]
-    u = [W[i] * (y[i] - mu[i]) / fam["mu_eta"](eta[i]) / scale
-         for i in range(n)]
-    H = [[sum(W[i] * X[i][a] * X[i][b] for i in range(n)) / scale
-          for b in range(k)] for a in range(k)]
+    u = [W[i] * (y[i] - mu[i]) / fam["mu_eta"](eta[i]) / scale for i in range(n)]
+    H = [[sum(W[i] * X[i][a] * X[i][b] for i in range(n)) / scale for b in range(k)] for a in range(k)]
     Hi = _glm_core._inv(H)
     scores = [[u[i] * X[i][a] for a in range(k)] for i in range(n)]
     if ct in ("HC2", "HC3"):
         for i in range(n):
-            h = W[i] / scale * sum(X[i][a] * Hi[a][b] * X[i][b]
-                                   for a in range(k) for b in range(k))
+            h = W[i] / scale * sum(X[i][a] * Hi[a][b] * X[i][b] for a in range(k) for b in range(k))
             f = (1.0 - h) ** (0.5 if ct == "HC2" else 1.0)
             scores[i] = [v / f for v in scores[i]]
     if ct == "CLUSTER":
@@ -583,8 +575,7 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
             raise ValueError("cov_type='cluster' needs cov_kwds={'groups': ...}")
         gl = list(groups.values if hasattr(groups, "values") else groups)
         if len(gl) != n:
-            raise ValueError("groups has %d entries for %d observations"
-                             % (len(gl), n))
+            raise ValueError(f"groups has {int(len(gl))} entries for {int(n)} observations")
         sums = {}
         for i, g in enumerate(gl):
             acc = sums.setdefault(g, [0.0] * k)
@@ -592,26 +583,21 @@ def _glm_robust_cov(model, fit, family, ct, cov_kwds):
                 acc[a] += scores[i][a]
         rows = list(sums.values())
         G = len(rows)
-        corr = (G / (G - 1.0)) * ((n - 1.0) / (n - k)) \
-            if cov_kwds.get("use_correction", True) else 1.0
+        corr = (G / (G - 1.0)) * ((n - 1.0) / (n - k)) if cov_kwds.get("use_correction", True) else 1.0
     elif ct in ("HC0", "HC1", "HC2", "HC3"):
         rows = scores
         corr = n / (n - k) if ct == "HC1" else 1.0
     else:
-        raise ValueError("cov_type must be nonrobust, HC0-HC3 or cluster; "
-                         "got %r" % (ct,))
+        raise ValueError(f"cov_type must be nonrobust, HC0-HC3 or cluster; got {ct!r}")
     S = [[sum(r[a] * r[b] for r in rows) for b in range(k)] for a in range(k)]
-    M = [[sum(Hi[a][c] * S[c][d] * Hi[d][b] for c in range(k) for d in range(k))
-          for b in range(k)] for a in range(k)]
+    M = [[sum(Hi[a][c] * S[c][d] * Hi[d][b] for c in range(k) for d in range(k)) for b in range(k)] for a in range(k)]
     return [[corr * M[a][b] for b in range(k)] for a in range(k)]
 
 
 class _GLMModel:
-    def __init__(self, formula, data, family="gaussian", weights=None,
-                 var_weights=None, freq_weights=None):
+    def __init__(self, formula, data, family="gaussian", weights=None, var_weights=None, freq_weights=None):
         self.formula = formula
-        (self.y, self.X, self.names, self.intercept,
-         self._spec) = _design(formula, data)
+        (self.y, self.X, self.names, self.intercept, self._spec) = _design(formula, data)
         self.terms = _expand(formula_terms(formula)[1])
         self.family = family
         if freq_weights is not None:
@@ -619,60 +605,58 @@ class _GLMModel:
             # the residual degrees of freedom; treating them as variance
             # weights would give wrong standard errors, so refuse
             raise NotImplementedError(
-                "glm: freq_weights are not supported natively; use "
-                "var_weights for analytic (survey) weights")
+                "glm: freq_weights are not supported natively; use var_weights for analytic (survey) weights"
+            )
         if weights is not None and var_weights is not None:
             raise ValueError("glm: give weights or var_weights, not both")
         w = var_weights if var_weights is not None else weights
         # statsmodels' var_weights are the prior weights of the IRLS; they
         # used to fall into **kw and be dropped, so every weighted GLM
         # fitted through the formula interface was silently unweighted
-        self.weights = None if w is None else \
-            [float(v) for v in (w.values if hasattr(w, "values") else w)]
+        self.weights = None if w is None else [float(v) for v in (w.values if hasattr(w, "values") else w)]
 
     def fit(self, cov_type="nonrobust", cov_kwds=None, **kw):
         fam = self.family
         if not isinstance(fam, str):
-            fam = getattr(fam, "name", None) or \
-                type(fam).__name__.lower()
+            fam = getattr(fam, "name", None) or type(fam).__name__.lower()
         # statsmodels' fit(maxiter=, tol=) reach the IRLS loop
         extra = {}
         if "maxiter" in kw:
             extra["max_iter"] = int(kw["maxiter"])
         if "tol" in kw:
             extra["tol"] = float(kw["tol"])
-        fit = _glm_core.glm(self.y, self.X, family=fam,
-                            add_intercept=self.intercept,
-                            weights=self.weights, **extra)
+        fit = _glm_core.glm(self.y, self.X, family=fam, add_intercept=self.intercept, weights=self.weights, **extra)
         self._fit = fit
         ct = (cov_type or "nonrobust").upper()
         cov, se = fit.get("vcov"), fit["se"]
         if ct != "NONROBUST":
             cov = _glm_robust_cov(self, fit, fam, ct, cov_kwds or {})
-            se = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan")
-                  for j in range(len(cov))]
-            stat = [b / e if e == e and e else float("nan")
-                    for b, e in zip(fit["coef"], se)]
+            se = [math.sqrt(cov[j][j]) if cov[j][j] > 0 else float("nan") for j in range(len(cov))]
+            stat = [b / e if e == e and e else float("nan") for b, e in zip(fit["coef"], se)]
             fit = dict(fit)
             fit["se"], fit["vcov"], fit["statistic"] = se, cov, stat
             fit["p_value"] = [2.0 * _glm_core._norm_sf(abs(t)) for t in stat]
             fit["cov_type"] = cov_type
         self._fit = fit
-        return _Result(fit["coef"], se, self.names, len(self.y),
-                       fit["df_residual"],
-                       tvalues=fit.get("statistic"),
-                       pvalues=fit.get("p_value", fit.get("pvalues")),
-                       fittedvalues=fit.get("fitted"),
-                       cov=cov, extra=fit,
-                       model=self)
+        return _Result(
+            fit["coef"],
+            se,
+            self.names,
+            len(self.y),
+            fit["df_residual"],
+            tvalues=fit.get("statistic"),
+            pvalues=fit.get("p_value", fit.get("pvalues")),
+            fittedvalues=fit.get("fitted"),
+            cov=cov,
+            extra=fit,
+            model=self,
+        )
 
     def predict_from(self, data):
         cols = _spec_columns(self._spec, data)[1]
         rows = len(cols[0]) if cols else 0
         X = [[c[i] for c in cols] for i in range(rows)]
-        return _glm_core.glm_predict(self._fit, X,
-                                     add_intercept=self.intercept,
-                                     type="response")
+        return _glm_core.glm_predict(self._fit, X, add_intercept=self.intercept, type="response")
 
 
 def ols(formula, data, **kw):
@@ -685,14 +669,13 @@ def wls(formula, data, weights=None, **kw):
     return _LinearModel(formula, data, weights=weights)
 
 
-def glm(formula, data, family="gaussian", weights=None, var_weights=None,
-        freq_weights=None, **kw):
+def glm(formula, data, family="gaussian", weights=None, var_weights=None, freq_weights=None, **kw):
     """Generalised linear model from a formula."""
-    return _GLMModel(formula, data, family=family, weights=weights,
-                     var_weights=var_weights, freq_weights=freq_weights)
+    return _GLMModel(formula, data, family=family, weights=weights, var_weights=var_weights, freq_weights=freq_weights)
 
 
 def gee(*a, **k):
     raise NotImplementedError(
         "generalised estimating equations are not implemented natively "
-        "yet; morie.fn._glm_formula covers ols, wls and glm")
+        "yet; morie.fn._glm_formula covers ols, wls and glm"
+    )

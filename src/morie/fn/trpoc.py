@@ -34,8 +34,7 @@ from ._richresult import RichResult
 __all__ = ["trpo"]
 
 
-def trpo(env, policy=None, kl_max=0.01, ratio=None, adv=None, kl=None,
-         g=None, F=None):
+def trpo(env, policy=None, kl_max=0.01, ratio=None, adv=None, kl=None, g=None, F=None):
     """Surrogate value, KL, and the trust-region step length.
 
     Parameters

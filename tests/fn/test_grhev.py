@@ -1,7 +1,6 @@
 """Tests for grhev.geron_heaviside_step."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grhev import geron_heaviside_step
 
 

@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simulated power of the sign test from caller-supplied samples."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['signsimpow', 'gibbons_sign_simpower']
+__all__ = ["signsimpow", "gibbons_sign_simpower"]
 
 
 def signsimpow(samples, m0, kcrit):

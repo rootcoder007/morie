@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """TMLE for the natural total effect."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -51,10 +49,16 @@ def tmle_natural_total(y, D, M, X):
     r = S.tmle(y, D, W)
     Wm = [list(W[i]) + [C.vec(M)[i]] for i in range(len(W))]
     r2 = S.tmle(y, D, Wm)
-    return RichResult(payload={
-        "estimate": r["psi"], "se": r["se"], "eps": r["eps"],
-        "nde_naive": r2["psi"], "n": r["n"],
-        "method": "TMLE for the natural total effect"})
+    return RichResult(
+        payload={
+            "estimate": r["psi"],
+            "se": r["se"],
+            "eps": r["eps"],
+            "nde_naive": r2["psi"],
+            "n": r["n"],
+            "method": "TMLE for the natural total effect",
+        }
+    )
 
 
 def cheatsheet():

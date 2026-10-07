@@ -1,13 +1,14 @@
 """Tests for hmosf.geron_one_shot."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmosf import geron_one_shot
 
 
 def test_hmosf_basic():
     """Test basic functionality."""
-    copy = lambda prompt: prompt[0][1]
+
+    def copy(prompt):
+        return prompt[0][1]
+
     example = ("hello", "greeting")
     query = "goodbye"
     result = geron_one_shot(copy, example, query)
@@ -20,7 +21,10 @@ def test_hmosf_basic():
 
 def test_hmosf_edge():
     """Test edge cases."""
-    rule = lambda p: "greeting" if "hello" in p[-1][0] else "farewell"
+
+    def rule(p):
+        return "greeting" if "hello" in p[-1][0] else "farewell"
+
     example = ("hello there", "greeting")
     query = "goodbye now"
     result = geron_one_shot(rule, example, query)
@@ -40,7 +44,7 @@ import morie.fn.hmosf as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

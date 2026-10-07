@@ -79,17 +79,24 @@ def boyd_huber_loss(u, M=1.0):
         raise ValueError("M must be positive")
     a = np.abs(uv)
     inner = a <= m
-    loss = np.where(inner, uv ** 2, m * (2.0 * a - m))
+    loss = np.where(inner, uv**2, m * (2.0 * a - m))
     grad = np.where(inner, 2.0 * uv, 2.0 * m * np.sign(uv))
     return RichResult(
         title="Huber loss",
-        summary_lines=[("n", int(uv.size)), ("M", m),
-                       ("total", float(loss.sum())),
-                       ("in affine tail", int(np.sum(~inner)))],
+        summary_lines=[
+            ("n", int(uv.size)),
+            ("M", m),
+            ("total", float(loss.sum())),
+            ("in affine tail", int(np.sum(~inner))),
+        ],
         payload={
-            "loss": loss, "total": float(loss.sum()), "gradient": grad,
-            "quadratic": inner, "n_outliers": int(np.sum(~inner)),
-            "max_influence": 2.0 * m, "M": m,
+            "loss": loss,
+            "total": float(loss.sum()),
+            "gradient": grad,
+            "quadratic": inner,
+            "n_outliers": int(np.sum(~inner)),
+            "max_influence": 2.0 * m,
+            "M": m,
             "method": "boyd_huber_loss",
         },
     )

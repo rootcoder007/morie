@@ -75,9 +75,7 @@ def _in_band(value: float, lo: float | None, hi: float | None) -> bool:
         return False
     if lo is not None and value < lo:
         return False
-    if hi is not None and value > hi:
-        return False
-    return True
+    return not (hi is not None and value > hi)
 
 
 def run_gate(g: DatasetGate) -> GateResult:
@@ -92,7 +90,7 @@ def run_gate(g: DatasetGate) -> GateResult:
     failures: list[str] = []
     for key, (lo, hi) in g.expected.items():
         v = actual.get(key)
-        if not isinstance(v, (int, float)) or not _in_band(float(v), lo, hi):
+        if not isinstance(v, int | float) or not _in_band(float(v), lo, hi):
             failures.append(f"{key}={v!r} expected in [{lo}, {hi}]")
     status = "pass" if not failures else "fail"
     return GateResult(gate=g, actual=actual, status=status, failures=failures)
@@ -215,10 +213,23 @@ def gates() -> list[DatasetGate]:
 
 
 def run_all() -> list[GateResult]:
+    """Run every registered evaluation gate and return their results in registry order."""
     return [run_gate(g) for g in _REGISTRY]
 
 
 def summary(results: list[GateResult]) -> dict[str, int]:
+    """Count gate results by status.
+
+    Args:
+        results: the ``GateResult`` list from ``run_all``.
+
+    Returns:
+        A dict with ``pass``, ``fail``, ``skip``, ``error`` and ``total``.
+
+    Examples:
+        >>> summary([])
+        {'pass': 0, 'fail': 0, 'skip': 0, 'error': 0, 'total': 0}
+    """
     s = {"pass": 0, "fail": 0, "skip": 0, "error": 0, "total": len(results)}
     for r in results:
         s[r.status] = s.get(r.status, 0) + 1

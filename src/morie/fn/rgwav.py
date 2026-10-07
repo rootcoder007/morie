@@ -56,9 +56,7 @@ def _filters(wavelet):
     try:
         lo = _DEC_LO[wavelet]
     except KeyError:
-        raise ValueError(
-            "unsupported wavelet %r; native families: %s"
-            % (wavelet, sorted(_DEC_LO))) from None
+        raise ValueError(f"unsupported wavelet {wavelet!r}; native families: {sorted(_DEC_LO)}") from None
     n = len(lo)
     # quadrature-mirror relation (Mallat 2009, A Wavelet Tour of
     # Signal Processing, 3rd ed., sec. 7.3): dec_hi[k] = (-1)^k
@@ -117,8 +115,7 @@ def _max_level(n, flen):
 def _threshold(d, T, mode):
     if mode == "hard":
         return [v if abs(v) > T else 0.0 for v in d]
-    return [math.copysign(abs(v) - T, v) if abs(v) > T else 0.0
-            for v in d]
+    return [math.copysign(abs(v) - T, v) if abs(v) > T else 0.0 for v in d]
 
 
 def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
@@ -170,8 +167,7 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
     if level is None:
         level = max_level
     if max_level == 0:
-        warnings_list.append(
-            "signal shorter than the filter; returned unchanged.")
+        warnings_list.append("signal shorter than the filter; returned unchanged.")
         level = 0
     level = min(int(level), max_level) if max_level else 0
 
@@ -184,7 +180,7 @@ def rangayyan_wavelet_denoise(x, wavelet="db4", level=None, mode="soft"):
         details.append(cd)
 
     if details:
-        d1 = details[0]                      # finest scale
+        d1 = details[0]  # finest scale
         srt = sorted(abs(v) for v in d1)
         med = srt[len(srt) // 2]
         sigma = med / 0.6745

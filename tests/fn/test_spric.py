@@ -1,7 +1,6 @@
 """Tests for morie.fn.spric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spric import spric
 
 

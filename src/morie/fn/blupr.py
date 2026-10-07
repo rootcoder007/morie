@@ -75,8 +75,7 @@ def blupint(y, group, s2u, s2e, X=None, beta=None):
         b = C.vec(beta)
         if len(b) != len(Xm[0]):
             raise ValueError("beta must have one entry per column of X")
-        r = [y[i] - sum(Xm[i][j] * b[j] for j in range(len(b)))
-             for i in range(n)]
+        r = [y[i] - sum(Xm[i][j] * b[j] for j in range(len(b))) for i in range(n)]
     labs = []
     for v in g:
         if v not in labs:
@@ -94,10 +93,19 @@ def blupint(y, group, s2u, s2e, X=None, beta=None):
         gm.append(mean)
         sh.append(k)
         u.append(k * mean)
-    return RichResult(payload={
-        "u": u, "shrink": sh, "nj": nj, "groupmean": gm,
-        "levels": labs, "vpc": s2u / (s2u + s2e), "J": len(labs), "n": n,
-        "method": "BLUP of a random intercept (Henderson 1975; Robinson 1991)"})
+    return RichResult(
+        payload={
+            "u": u,
+            "shrink": sh,
+            "nj": nj,
+            "groupmean": gm,
+            "levels": labs,
+            "vpc": s2u / (s2u + s2e),
+            "J": len(labs),
+            "n": n,
+            "method": "BLUP of a random intercept (Henderson 1975; Robinson 1991)",
+        }
+    )
 
 
 blup_random_intercept = blupint

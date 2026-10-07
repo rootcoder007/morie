@@ -2,7 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
 from morie.fn.likemc import likelihood_mcmc_epi
 
 
@@ -26,10 +25,23 @@ def test_likemc_basic():
     result = likelihood_mcmc_epi(model, data, priors, n_iter)
     assert isinstance(result, dict)
     # Verify the keys named in the return statement are present
-    for key in ("estimate", "beta_mean", "gamma_mean", "chain",
-                "n_draws", "n_iter", "acceptance_rate", "R0_mean",
-                "R0_q025", "R0_median", "R0_q975", "logpost_final",
-                "seed", "step", "method"):
+    for key in (
+        "estimate",
+        "beta_mean",
+        "gamma_mean",
+        "chain",
+        "n_draws",
+        "n_iter",
+        "acceptance_rate",
+        "R0_mean",
+        "R0_q025",
+        "R0_median",
+        "R0_q975",
+        "logpost_final",
+        "seed",
+        "step",
+        "method",
+    ):
         assert key in result
     # Acceptance rate is a probability in [0, 1]
     assert 0.0 <= result["acceptance_rate"] <= 1.0

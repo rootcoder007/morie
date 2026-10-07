@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficacy of the Wilcoxon signed-rank test -- eq. (13.3.4)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['effwsr', 'gibbons_wsrt_efficacy']
+__all__ = ["effwsr", "gibbons_wsrt_efficacy"]
 
 
 def effwsr(n, f0, integral):
@@ -45,13 +43,7 @@ def effwsr(n, f0, integral):
     ii = float(integral)
     if n < 2:
         raise ValueError("n must be at least 2.")
-    e = (
-        24.0
-        * (f0 / (n - 1.0) + ii) ** 2
-        * n
-        * (n - 1.0) ** 2
-        / ((n + 1.0) * (2.0 * n + 1.0))
-    )
+    e = 24.0 * (f0 / (n - 1.0) + ii) ** 2 * n * (n - 1.0) ** 2 / ((n + 1.0) * (2.0 * n + 1.0))
     return RichResult(
         payload={
             "efficacy": float(e),

@@ -1,7 +1,6 @@
 """Tests for bnsiii.bound_iii."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnsiii import bound_iii
 
 
@@ -29,8 +28,8 @@ def test_bnsiii_basic():
     """
     n = 100
     rng_y = np.random.default_rng(43)
-    rng_X = np.random.default_rng(42)
-    rng_m = np.random.default_rng(7)
+    np.random.default_rng(42)
+    np.random.default_rng(7)
 
     y, X = _make_intervals(rng_y, n)
     # X must be 1-D of length n, like y.
@@ -46,8 +45,7 @@ def test_bnsiii_basic():
     assert isinstance(result, dict)
 
     # The function returns these documented keys.
-    for key in ("lower", "upper", "width", "n_in_set",
-                "q_min", "q_max_stat", "n"):
+    for key in ("lower", "upper", "width", "n_in_set", "q_min", "q_max_stat", "n"):
         assert key in result, f"missing documented key: {key}"
 
     # Sanity checks on scalar outputs.

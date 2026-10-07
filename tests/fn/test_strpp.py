@@ -1,7 +1,6 @@
 """Tests for morie.fn.strpp -- stress per point."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.strpp import stress_per_point, strpp
 
 

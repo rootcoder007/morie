@@ -63,8 +63,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["computation_graph", "mask_objective", "explain_node",
-           "conditional_entropy"]
+__all__ = ["computation_graph", "mask_objective", "explain_node", "conditional_entropy"]
 
 _EPS = 1e-12
 
@@ -84,10 +83,8 @@ def computation_graph(adj, v, L):
             nxt |= set(adj.get(u, ()))
         frontier = nxt - seen
         seen |= nxt
-    edges = [(a, b) for a in sorted(seen)
-             for b in sorted(adj.get(a, ())) if b in seen and a < b]
-    return {"nodes": sorted(seen), "edges": edges,
-            "hops": int(L), "size": len(edges)}
+    edges = [(a, b) for a in sorted(seen) for b in sorted(adj.get(a, ())) if b in seen and a < b]
+    return {"nodes": sorted(seen), "edges": edges, "hops": int(L), "size": len(edges)}
 
 
 def conditional_entropy(probs):
@@ -100,8 +97,7 @@ def conditional_entropy(probs):
     return -sum(v * math.log(max(v, _EPS)) for v in p)
 
 
-def mask_objective(predict, edges, edge_logits, feature_logits, y,
-                   size_coef=0.005, entropy_coef=1.0):
+def mask_objective(predict, edges, edge_logits, feature_logits, y, size_coef=0.005, entropy_coef=1.0):
     r"""Minimise :math:`-\log p_\theta(y)` plus size and entropy
     penalties.
 
@@ -114,17 +110,22 @@ def mask_objective(predict, edges, edge_logits, feature_logits, y,
     loss = -math.log(max(float(p[int(y)]), _EPS))
     size = size_coef * (sum(em) + sum(fm))
     ent = entropy_coef * (
-        sum(-(v * math.log(max(v, _EPS))
-              + (1 - v) * math.log(max(1 - v, _EPS))) for v in em)
-        / max(len(em), 1))
-    return {"loss": loss + size + ent, "fit": loss, "size": size,
-            "entropy": ent, "edge_mask": em, "feature_mask": fm,
-            "prediction": p}
+        sum(-(v * math.log(max(v, _EPS)) + (1 - v) * math.log(max(1 - v, _EPS))) for v in em) / max(len(em), 1)
+    )
+    return {
+        "loss": loss + size + ent,
+        "fit": loss,
+        "size": size,
+        "entropy": ent,
+        "edge_mask": em,
+        "feature_mask": fm,
+        "prediction": p,
+    }
 
 
-def explain_node(predict, adj, v, y, n_features, L=2, iters=300,
-                 lr=0.1, size_coef=0.005, entropy_coef=1.0, seed=0,
-                 penalize=True):
+def explain_node(
+    predict, adj, v, y, n_features, L=2, iters=300, lr=0.1, size_coef=0.005, entropy_coef=1.0, seed=0, penalize=True
+):
     r"""Learn the edge and feature masks by gradient descent.
 
     ``penalize=False`` drops the size and entropy terms, which leaves
@@ -133,12 +134,10 @@ def explain_node(predict, adj, v, y, n_features, L=2, iters=300,
     cg = computation_graph(adj, v, L)
     edges = cg["edges"]
     if not edges:
-        raise ValueError("gnnEx: node %r has an empty computation "
-                         "graph" % (v,))
+        raise ValueError(f"gnnEx: node {v!r} has an empty computation graph")
     rng = np.random.default_rng(seed)
     el = [(float(rng.uniform()) - 0.5) * 0.1 for _ in edges]
-    fl = [(float(rng.uniform()) - 0.5) * 0.1
-          for _ in range(int(n_features))]
+    fl = [(float(rng.uniform()) - 0.5) * 0.1 for _ in range(int(n_features))]
     sc = size_coef if penalize else 0.0
     ec = entropy_coef if penalize else 0.0
     h = 1e-4
@@ -154,47 +153,49 @@ def explain_node(predict, adj, v, y, n_features, L=2, iters=300,
         for i in range(len(el)):
             up = list(el)
             up[i] += h
-            ge.append((mask_objective(predict, edges, up, fl, y, sc,
-                                      ec)["loss"] - base["loss"]) / h)
+            ge.append((mask_objective(predict, edges, up, fl, y, sc, ec)["loss"] - base["loss"]) / h)
         gf = []
         for i in range(len(fl)):
             up = list(fl)
             up[i] += h
-            gf.append((mask_objective(predict, edges, el, up, y, sc,
-                                      ec)["loss"] - base["loss"]) / h)
+            gf.append((mask_objective(predict, edges, el, up, y, sc, ec)["loss"] - base["loss"]) / h)
         for i in range(len(el)):
             el[i] -= lr * ge[i]
         for i in range(len(fl)):
             fl[i] -= lr * gf[i]
     final = mask_objective(predict, edges, el, fl, y, sc, ec)
-    order = sorted(range(len(edges)),
-                   key=lambda i: -final["edge_mask"][i])
-    return RichResult(payload={
-        "estimate": [edges[i] for i in order],
-        "edges_ranked": [(edges[i], final["edge_mask"][i])
-                         for i in order],
-        "edge_mask": final["edge_mask"],
-        "feature_mask": final["feature_mask"],
-        "loss_history": hist, "final": final,
-        "computation_graph": cg, "penalized": bool(penalize),
-        "method": "GNNExplainer; Ying et al. (2019) Sec. 4",
-        "note": "maximising MI(Y, (G_S, X_S)) is minimising the "
-                "conditional entropy, since H(Y) is fixed once the "
-                "model is trained",
-    })
+    order = sorted(range(len(edges)), key=lambda i: -final["edge_mask"][i])
+    return RichResult(
+        payload={
+            "estimate": [edges[i] for i in order],
+            "edges_ranked": [(edges[i], final["edge_mask"][i]) for i in order],
+            "edge_mask": final["edge_mask"],
+            "feature_mask": final["feature_mask"],
+            "loss_history": hist,
+            "final": final,
+            "computation_graph": cg,
+            "penalized": bool(penalize),
+            "method": "GNNExplainer; Ying et al. (2019) Sec. 4",
+            "note": "maximising MI(Y, (G_S, X_S)) is minimising the "
+            "conditional entropy, since H(Y) is fixed once the "
+            "model is trained",
+        }
+    )
 
 
 def cheatsheet():
-    return ("gnnEx: explanation = a SMALL SUBGRAPH plus a SMALL "
-            "FEATURE SUBSET, chosen by maximising MI(Y, (G_S, X_S)). "
-            "Since H(Y) is fixed for a trained model, that is "
-            "MINIMISING CONDITIONAL ENTROPY -- find the subgraph under "
-            "which the model is least uncertain. Combinatorial search "
-            "is replaced by a mean-field relaxation: continuous edge "
-            "and feature masks learned by gradient descent, with size "
-            "and entropy penalties WITHOUT WHICH the mask stays "
-            "diffuse. Both masks matter: edges alone cannot name a "
-            "feature, features alone cannot name a neighbour.")
+    return (
+        "gnnEx: explanation = a SMALL SUBGRAPH plus a SMALL "
+        "FEATURE SUBSET, chosen by maximising MI(Y, (G_S, X_S)). "
+        "Since H(Y) is fixed for a trained model, that is "
+        "MINIMISING CONDITIONAL ENTROPY -- find the subgraph under "
+        "which the model is least uncertain. Combinatorial search "
+        "is replaced by a mean-field relaxation: continuous edge "
+        "and feature masks learned by gradient descent, with size "
+        "and entropy penalties WITHOUT WHICH the mask stays "
+        "diffuse. Both masks matter: edges alone cannot name a "
+        "feature, features alone cannot name a neighbour."
+    )
 
 
 # compact alias per ledger/NAMING.md

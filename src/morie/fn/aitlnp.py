@@ -65,13 +65,19 @@ def lgtnpdf(x, mu, Sigma):
     z = C.solvev(S, dv)
     q = sum(dv[i] * z[i] for i in range(D - 1))
     lj = -sum(math.log(v) for v in x)
-    ld = (-0.5 * (D - 1) * math.log(2.0 * math.pi) - 0.5 * logdet
-          + lj - 0.5 * q)
-    return RichResult(payload={
-        "density": math.exp(ld), "log_density": ld, "alr": y,
-        "quadratic_form": q, "log_jacobian": lj, "log_det": logdet,
-        "D": float(D),
-        "method": "Additive logistic-normal density, Aitchison Chapter 6"})
+    ld = -0.5 * (D - 1) * math.log(2.0 * math.pi) - 0.5 * logdet + lj - 0.5 * q
+    return RichResult(
+        payload={
+            "density": math.exp(ld),
+            "log_density": ld,
+            "alr": y,
+            "quadratic_form": q,
+            "log_jacobian": lj,
+            "log_det": logdet,
+            "D": float(D),
+            "method": "Additive logistic-normal density, Aitchison Chapter 6",
+        }
+    )
 
 
 logistic_normal_pdf = lgtnpdf

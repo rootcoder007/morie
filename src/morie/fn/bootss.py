@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["bootss", "rao_wu_bootstrap"]
 
 
-def bootss(y, weights, strata, clusters, statistic=None, B=200,
-           m=None, seed=0):
+def bootss(y, weights, strata, clusters, statistic=None, B=200, m=None, seed=0):
     """
     Rescaled bootstrap for stratified multistage survey data.
 
@@ -74,7 +73,10 @@ def bootss(y, weights, strata, clusters, statistic=None, B=200,
     if any(v <= 0 for v in wv):
         raise ValueError("weights must be positive")
     if statistic is None:
-        statistic = lambda yy, ww: sum(a * b for a, b in zip(ww, yy))
+
+        def statistic(yy, ww):
+            return sum(a * b for a, b in zip(ww, yy))
+
     # index clusters within strata (insertion order = data order)
     strat_order = []
     clus = {}
@@ -98,8 +100,7 @@ def bootss(y, weights, strata, clusters, statistic=None, B=200,
         else:
             mh[h] = int(m)
         if not (1 <= mh[h] <= nh - 1):
-            raise ValueError("need 1 <= m_h <= n_h - 1 for "
-                             "non-negative weights")
+            raise ValueError("need 1 <= m_h <= n_h - 1 for non-negative weights")
     theta = float(statistic(yv, wv))
     rng = np.random.default_rng(seed)
     reps = []
@@ -119,16 +120,18 @@ def bootss(y, weights, strata, clusters, statistic=None, B=200,
                     wb[idx] = wv[idx] * factor
         reps.append(float(statistic(yv, wb)))
     var = sum((t - theta) ** 2 for t in reps) / len(reps)
-    return RichResult(payload={
-        "estimate": theta,
-        "variance": var,
-        "se": math.sqrt(var),
-        "replicates": reps,
-        "B": int(B),
-        "n_strata": len(strat_order),
-        "seed": int(seed),
-        "method": "Rao-Wu-Yue rescaled bootstrap (Eqs. 3.4-3.5)",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "variance": var,
+            "se": math.sqrt(var),
+            "replicates": reps,
+            "B": int(B),
+            "n_strata": len(strat_order),
+            "seed": int(seed),
+            "method": "Rao-Wu-Yue rescaled bootstrap (Eqs. 3.4-3.5)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -137,6 +140,7 @@ rao_wu_bootstrap = bootss
 
 def cheatsheet():
     return "bootss: w* = [(1-r) + r (n/m) m*] w, r = sqrt(m/(n-1)); var Eq. 3.5"
+
 
 # public names resolved by fn/_lazy_map.json
 bootstrap_survey = bootss

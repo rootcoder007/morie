@@ -25,5 +25,3 @@ def test_gb_mci_edge():
         mcnemarci([[1, 2, 3], [4, 5, 6]])
     with pytest.raises(ValueError, match="alpha"):
         mcnemarci([[1, 2], [3, 4]], alpha=1.5)
-
-

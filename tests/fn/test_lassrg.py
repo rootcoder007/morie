@@ -1,7 +1,6 @@
 """Tests for lassrg.lasso_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lassrg import lasso_regression
 
 

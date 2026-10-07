@@ -1,7 +1,6 @@
 """Tests for morie.fn.dnneg — density negative weights."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dnneg import dnneg
 
 

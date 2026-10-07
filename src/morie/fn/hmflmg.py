@@ -119,10 +119,10 @@ def geron_flamingo(images, text, latents=None, W_Q=None, W_K=None, W_V=None, gat
     if L.shape[0] < 1:
         raise ValueError("geron_flamingo: at least one perceiver latent is required")
 
-    I = np.eye(d)
-    Wq = I if W_Q is None else np.atleast_2d(np.asarray(W_Q, dtype=float))
-    Wk = I if W_K is None else np.atleast_2d(np.asarray(W_K, dtype=float))
-    Wv = I if W_V is None else np.atleast_2d(np.asarray(W_V, dtype=float))
+    I_ = np.eye(d)
+    Wq = I_ if W_Q is None else np.atleast_2d(np.asarray(W_Q, dtype=float))
+    Wk = I_ if W_K is None else np.atleast_2d(np.asarray(W_K, dtype=float))
+    Wv = I_ if W_V is None else np.atleast_2d(np.asarray(W_V, dtype=float))
     g = float(gate)
     if not np.isfinite(g):
         raise ValueError(f"geron_flamingo: gate must be finite, got {gate!r}")

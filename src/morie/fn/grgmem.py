@@ -85,7 +85,7 @@ def geron_gmm_em_step(X, pi, means, covars, reg=1e-6):
     True
     """
     A = np.atleast_2d(np.asarray(X, dtype=float))
-    before = geron_gmm_log_likelihood(A, pi, means, covars)   # validates everything
+    before = geron_gmm_log_likelihood(A, pi, means, covars)  # validates everything
     logp = np.asarray(before["component_log_densities"], dtype=float)
     m, d = A.shape
     K = logp.shape[1]
@@ -123,9 +123,11 @@ def geron_gmm_em_step(X, pi, means, covars, reg=1e-6):
 
     return RichResult(
         title="GMM EM step",
-        summary_lines=[("log L before", before["log_likelihood"]),
-                       ("log L after", after["log_likelihood"]),
-                       ("Improvement", improvement)],
+        summary_lines=[
+            ("log L before", before["log_likelihood"]),
+            ("log L after", after["log_likelihood"]),
+            ("Improvement", improvement),
+        ],
         payload={
             "responsibilities": R.tolist(),
             "pi_new": pi_new.tolist(),

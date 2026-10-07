@@ -33,10 +33,7 @@ def _make_inputs(n=10, d=2, seed=42):
             P_prev = covs[t - 1]
             x_pred = [sum(F[i][k] * x_prev[k] for k in range(d)) for i in range(d)]
             P_pred = [
-                [
-                    sum(F[i][k] * sum(P_prev[k][l] * F[j][l] for l in range(d)) for k in range(d))
-                    for j in range(d)
-                ]
+                [sum(F[i][k] * sum(P_prev[k][ell] * F[j][ell] for ell in range(d)) for k in range(d)) for j in range(d)]
                 for i in range(d)
             ]
         predicted.append(x_pred)

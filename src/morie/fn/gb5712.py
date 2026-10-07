@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsrpow', 'gibbons_wsrt_power']
+__all__ = ["wsrpow", "gibbons_wsrt_power"]
 
 
 def wsrpow(n, p1, p2, alpha=0.05):

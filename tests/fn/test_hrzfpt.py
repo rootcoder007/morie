@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzfpt import horowitz_first_passage_time
 
 
@@ -29,9 +28,7 @@ def test_hrzfpt_basic():
     grid_z = np.linspace(-3.0, 3.0, n_grid)
     f_eps = _std_normal_density(grid_z)
 
-    result = horowitz_first_passage_time(
-        theta, y1, y_star, x, beta, f_U, grid_u, f_eps, grid_z
-    )
+    result = horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u, f_eps, grid_z)
 
     assert isinstance(result, dict)
     p = result["probability"]
@@ -62,9 +59,7 @@ def test_hrzfpt_edge():
     grid_z = np.linspace(-3.0, 3.0, n_grid)
     f_eps = _std_normal_density(grid_z)
 
-    result = horowitz_first_passage_time(
-        theta, y1, y_star, x, beta, f_U, grid_u, f_eps, grid_z
-    )
+    result = horowitz_first_passage_time(theta, y1, y_star, x, beta, f_U, grid_u, f_eps, grid_z)
 
     assert isinstance(result, dict)
     p = result["probability"]

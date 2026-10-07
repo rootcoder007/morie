@@ -67,30 +67,55 @@ def resolve_acquisition(name):
     """Map a spelling to one of the three rules of Equations 1-3."""
     key = str(name).lower()
     if key not in ACQUISITIONS:
-        raise ValueError("bayoptr: acquisition must be one of %s"
-                         % (sorted(ACQUISITIONS),))
+        raise ValueError(f"bayoptr: acquisition must be one of {sorted(ACQUISITIONS)}")
     return ACQUISITIONS[key]
 
 
-def bayoptr(f, bounds, acquisition="ei", n_iter=20, n_init=5,
-            kernel="matern52", amplitude=1.0, length_scale=1.0,
-            noise=1e-8, kappa=2.0, xi=0.0, n_candidates=200, seed=0,
-            X0=None, y0=None):
+def bayoptr(
+    f,
+    bounds,
+    acquisition="ei",
+    n_iter=20,
+    n_init=5,
+    kernel="matern52",
+    amplitude=1.0,
+    length_scale=1.0,
+    noise=1e-8,
+    kappa=2.0,
+    xi=0.0,
+    n_candidates=200,
+    seed=0,
+    X0=None,
+    y0=None,
+):
     """Minimise ``f``, choosing the acquisition function by name."""
     acq = resolve_acquisition(acquisition)
-    res = _bayopt(f, bounds, n_iter=n_iter, n_init=n_init, acq=acq,
-                  kernel=kernel, amplitude=amplitude,
-                  length_scale=length_scale, noise=noise, kappa=kappa,
-                  xi=xi, n_candidates=n_candidates, seed=seed, X0=X0,
-                  y0=y0)
+    res = _bayopt(
+        f,
+        bounds,
+        n_iter=n_iter,
+        n_init=n_init,
+        acq=acq,
+        kernel=kernel,
+        amplitude=amplitude,
+        length_scale=length_scale,
+        noise=noise,
+        kappa=kappa,
+        xi=xi,
+        n_candidates=n_candidates,
+        seed=seed,
+        X0=X0,
+        y0=y0,
+    )
     payload = dict(res.payload)
     payload["acquisition"] = str(acquisition).lower()
     payload["acq"] = acq
-    payload["note"] = (payload["note"] +
-                       "; 'ucb' and 'lcb' name the same rule -- the "
-                       "paper writes the lower bound because it "
-                       "minimises, and says 'upper, when considering "
-                       "maximization'")
+    payload["note"] = (
+        payload["note"] + "; 'ucb' and 'lcb' name the same rule -- the "
+        "paper writes the lower bound because it "
+        "minimises, and says 'upper, when considering "
+        "maximization'"
+    )
     return RichResult(payload=payload)
 
 
@@ -98,10 +123,12 @@ bayesian_optimization_ei_ucb = bayoptr
 
 
 def cheatsheet():
-    return ("bayoptr: Bayesian optimisation chosen by acquisition "
-            "(Mockus 1975; Snoek et al. 2012). A front end over "
-            "morie.fn.bayopt that takes 'ei'/'expected_improvement', "
-            "'pi'/'probability_of_improvement' or 'ucb'/'lcb' -- the "
-            "last two being one rule under two names, since the paper "
-            "writes the lower bound for minimisation. The GP and the "
-            "closed forms are imported from bayopt, not duplicated.")
+    return (
+        "bayoptr: Bayesian optimisation chosen by acquisition "
+        "(Mockus 1975; Snoek et al. 2012). A front end over "
+        "morie.fn.bayopt that takes 'ei'/'expected_improvement', "
+        "'pi'/'probability_of_improvement' or 'ucb'/'lcb' -- the "
+        "last two being one rule under two names, since the paper "
+        "writes the lower bound for minimisation. The GP and the "
+        "closed forms are imported from bayopt, not duplicated."
+    )

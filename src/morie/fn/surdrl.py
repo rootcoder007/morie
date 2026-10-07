@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["survey_dr_estimator"]
 
 
-def survey_dr_estimator(y, D, X, sampling_weights=None, ps=None, mu1=None,
-                        mu0=None):
+def survey_dr_estimator(y, D, X, sampling_weights=None, ps=None, mu1=None, mu0=None):
     r"""Doubly-robust estimator under a sampling design:
 
     .. math:: \hat\tau = \frac{1}{\sum w}\sum_i w_i\left[
@@ -71,8 +70,7 @@ def survey_dr_estimator(y, D, X, sampling_weights=None, ps=None, mu1=None,
         raise ValueError("D must be binary 0/1.")
     if d.sum() < 2 or (n - d.sum()) < 2:
         raise ValueError("need at least 2 units in each treatment arm.")
-    w = np.ones(n) if sampling_weights is None else \
-        check_weights(sampling_weights, n, "sampling_weights")
+    w = np.ones(n) if sampling_weights is None else check_weights(sampling_weights, n, "sampling_weights")
     Z = np.column_stack([np.ones(n), Xm])
     if ps is None:
         b = np.zeros(Z.shape[1])
@@ -96,19 +94,24 @@ def survey_dr_estimator(y, D, X, sampling_weights=None, ps=None, mu1=None,
         m0 = Z @ c0
     else:
         m0 = np.asarray(mu0, dtype=float).ravel()
-    infl = (m1 - m0 + d * (yv - m1) / e - (1 - d) * (yv - m0) / (1 - e))
+    infl = m1 - m0 + d * (yv - m1) / e - (1 - d) * (yv - m0) / (1 - e)
     tau = float(np.sum(w * infl) / np.sum(w))
-    var = float(np.sum(w ** 2 * (infl - tau) ** 2) / np.sum(w) ** 2)
-    return RichResult(payload={
-        "ate": tau, "influence": infl, "se": float(np.sqrt(max(var, 0.0))),
-        "min_ps": float(e.min()), "max_ps": float(e.max()),
-        "consistent_if": "EITHER the propensity model or the outcome model is "
-                         "correct -- not both, and not neither",
-        "does_not_protect_against": "unmeasured confounding, at all",
-        "design_note": "sampling weights multiply the influence function: the "
-                       "design and the treatment mechanism are separate randomness",
-        "n": int(n),
-        "method": "Doubly-robust (AIPW) estimator under a sampling design"})
+    var = float(np.sum(w**2 * (infl - tau) ** 2) / np.sum(w) ** 2)
+    return RichResult(
+        payload={
+            "ate": tau,
+            "influence": infl,
+            "se": float(np.sqrt(max(var, 0.0))),
+            "min_ps": float(e.min()),
+            "max_ps": float(e.max()),
+            "consistent_if": "EITHER the propensity model or the outcome model is correct -- not both, and not neither",
+            "does_not_protect_against": "unmeasured confounding, at all",
+            "design_note": "sampling weights multiply the influence function: the "
+            "design and the treatment mechanism are separate randomness",
+            "n": int(n),
+            "method": "Doubly-robust (AIPW) estimator under a sampling design",
+        }
+    )
 
 
 def cheatsheet():

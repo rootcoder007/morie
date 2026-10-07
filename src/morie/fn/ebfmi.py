@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Energy Bayesian fraction of missing information."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['ebfmi', 'energy_bayesian_fmi']
+__all__ = ["ebfmi", "energy_bayesian_fmi"]
 
 
 def ebfmi(energy):
@@ -47,9 +45,15 @@ def ebfmi(energy):
         mu = sum(e) / N
         den = sum((v - mu) ** 2 for v in e)
         out.append(num / den if den > 0 else float("nan"))
-    return RichResult(payload={
-        "ebfmi": out, "min_ebfmi": min(out), "n_chains": len(E),
-        "n": len(E[0]), "method": "Energy Bayesian fraction of missing information"})
+    return RichResult(
+        payload={
+            "ebfmi": out,
+            "min_ebfmi": min(out),
+            "n_chains": len(E),
+            "n": len(E[0]),
+            "method": "Energy Bayesian fraction of missing information",
+        }
+    )
 
 
 energy_bayesian_fmi = ebfmi

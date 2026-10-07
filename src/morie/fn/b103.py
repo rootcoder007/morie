@@ -24,19 +24,23 @@ def burkov_lm_ch1_mse_cost(w, b, x, y, N=None):
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     if x.shape != y.shape:
-        raise ValueError(
-            f"x and y must have the same shape; got {x.shape} and "
-            f"{y.shape}.")
+        raise ValueError(f"x and y must have the same shape; got {x.shape} and {y.shape}.")
     if N is not None and int(N) != len(x):
         raise ValueError(
             f"N = {N} does not match the dataset size {len(x)}; the N in "
-            "Eq 1.3 is the dataset size, not a free parameter.")
+            "Eq 1.3 is the dataset size, not a free parameter."
+        )
     resid = float(w) * x + float(b) - y
-    cost = float(np.mean(resid ** 2))
-    return RichResult(payload={
-        "cost": cost, "estimate": cost,
-        "residuals": [float(v) for v in resid], "n": len(x),
-        "method": "MSE cost J(w, b) (Burkov Eq 1.3)"})
+    cost = float(np.mean(resid**2))
+    return RichResult(
+        payload={
+            "cost": cost,
+            "estimate": cost,
+            "residuals": [float(v) for v in resid],
+            "n": len(x),
+            "method": "MSE cost J(w, b) (Burkov Eq 1.3)",
+        }
+    )
 
 
 def cheatsheet():

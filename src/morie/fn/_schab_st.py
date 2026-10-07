@@ -116,6 +116,7 @@ _TRAPZ = getattr(np, "trapezoid", None) or np.trapz
 # lag handling
 # --------------------------------------------------------------------------
 
+
 def _as_lags(h, k):
     """Broadcast a spatial lag and a temporal lag to a common shape.
 
@@ -147,6 +148,7 @@ def st_lag_matrices(coords, times):
 # --------------------------------------------------------------------------
 # Sec. 9.2 -- separable covariance functions
 # --------------------------------------------------------------------------
+
 
 def separable_covariance(h, k, cov_spatial, cov_temporal, form="product"):
     """The separable forms of Sec. 9.2.
@@ -182,7 +184,7 @@ def is_separable(form):
     if form in ("product", "sum"):
         return True
     if form == "product_sum":
-        return False                      # De Cesare et al.; see Sec. 9.2
+        return False  # De Cesare et al.; see Sec. 9.2
     raise ValueError(f"unknown form {form!r}")
 
 
@@ -234,8 +236,8 @@ def posa_covariance(h, k_times, cov_spatial, sill_fn):
 # Sec. 9.3.1 -- Gneiting's monotone function approach
 # --------------------------------------------------------------------------
 
-def gneiting_covariance(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0, beta=1.0,
-                        gamma=1.0, d=2):
+
+def gneiting_covariance(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0, beta=1.0, gamma=1.0, d=2):
     """eq (9.8), Gneiting (2002).
 
                      sigma^2                 c ||h||^{2 gamma}
@@ -284,12 +286,10 @@ def gneiting_covariance(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0, beta=1.0,
     if sigma2 < 0:
         raise ValueError("`sigma2` must be non-negative")
     psi = a * k ** (2.0 * alpha) + 1.0
-    return (sigma2 / psi ** (beta * d / 2.0)) * np.exp(
-        -c * h ** (2.0 * gamma) / psi ** (beta * gamma))
+    return (sigma2 / psi ** (beta * d / 2.0)) * np.exp(-c * h ** (2.0 * gamma) / psi ** (beta * gamma))
 
 
-def gneiting_with_temporal(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0,
-                           beta=1.0, beta_t=1.0, gamma=1.0, d=2):
+def gneiting_with_temporal(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0, beta=1.0, beta_t=1.0, gamma=1.0, d=2):
     """eq (9.9): Ct(k) x C(h,k), still a valid spatio-temporal covariance.
 
     At ||h|| = 0 eq (9.8) reduces to the purely temporal covariance
@@ -312,8 +312,7 @@ def gneiting_with_temporal(h, k, sigma2=1.0, a=1.0, c=1.0, alpha=1.0,
     if not (0 < gamma <= 1) or not (0 < alpha <= 1) or not (0 <= beta <= 1):
         raise ValueError("Gneiting parameter bounds violated")
     psi = a * k ** (2.0 * alpha) + 1.0
-    return (sigma2 / psi ** (beta_t + beta * d / 2.0)) * np.exp(
-        -c * h ** (2.0 * gamma) / psi ** (beta * gamma))
+    return (sigma2 / psi ** (beta_t + beta * d / 2.0)) * np.exp(-c * h ** (2.0 * gamma) / psi ** (beta * gamma))
 
 
 def separability_test(neg2_loglik_unrestricted, neg2_loglik_separable):
@@ -338,15 +337,18 @@ def separability_test(neg2_loglik_unrestricted, neg2_loglik_separable):
     if stat < 0:
         stat = 0.0
     p_naive = _chi2_sf_1df(stat)
-    return {"statistic": stat,
-            "p_value": 0.5 * p_naive,
-            "p_value_naive_chi2_1": p_naive,
-            "reference": "0.5 chi^2_0 + 0.5 chi^2_1 (Self and Liang, 1987)"}
+    return {
+        "statistic": stat,
+        "p_value": 0.5 * p_naive,
+        "p_value_naive_chi2_1": p_naive,
+        "reference": "0.5 chi^2_0 + 0.5 chi^2_1 (Self and Liang, 1987)",
+    }
 
 
 def _chi2_sf_1df(x):
     """P(chi^2_1 > x) = erfc(sqrt(x/2)); native, no scipy."""
     from math import erfc, sqrt
+
     x = float(x)
     if x <= 0:
         return 1.0
@@ -356,6 +358,7 @@ def _chi2_sf_1df(x):
 # --------------------------------------------------------------------------
 # Sec. 9.3.3 -- mixture approaches
 # --------------------------------------------------------------------------
+
 
 def power_mixture_correlation(rs, rt, distribution="poisson", **params):
     """eqs (9.14) and Example 9.1, Ma (2002).
@@ -417,8 +420,8 @@ def bivariate_power_mixture_correlation(rs, rt, pmf):
         raise ValueError(f"`pmf` must sum to 1 (got {total:.12g})")
     i = np.arange(pmf.shape[0])
     j = np.arange(pmf.shape[1])
-    powers_s = rs[..., None] ** i                      # ... x I
-    powers_t = rt[..., None] ** j                      # ... x J
+    powers_s = rs[..., None] ** i  # ... x I
+    powers_t = rt[..., None] ** j  # ... x J
     return np.einsum("...i,...j,ij->...", powers_s, powers_t, pmf)
 
 
@@ -451,13 +454,11 @@ def scale_mixture_covariance(h, k, cov_spatial, cov_temporal, nodes, weights):
         raise ValueError("scale `nodes` must be non-negative")
     out = np.zeros(np.broadcast(h, k).shape, dtype=float)
     for ui, wi in zip(u, w):
-        out += wi * (np.asarray(cov_spatial(h * ui), dtype=float)
-                     * np.asarray(cov_temporal(k * ui), dtype=float))
+        out += wi * (np.asarray(cov_spatial(h * ui), dtype=float) * np.asarray(cov_temporal(k * ui), dtype=float))
     return out
 
 
-def bivariate_scale_mixture_covariance(h, k, cov_spatial, cov_temporal,
-                                       nodes_u, nodes_v, weights):
+def bivariate_scale_mixture_covariance(h, k, cov_spatial, cov_temporal, nodes_u, nodes_v, weights):
     """eq (9.15): C(h,k) = integral Cs(h u) Ct(k v) dF(u,v)."""
     h, k = _as_lags(h, k)
     u = np.asarray(nodes_u, dtype=float).ravel()
@@ -480,6 +481,7 @@ def bivariate_scale_mixture_covariance(h, k, cov_spatial, cov_temporal,
 # --------------------------------------------------------------------------
 # Sec. 9.3.4 -- the differential equation approach
 # --------------------------------------------------------------------------
+
 
 def gauss_legendre(n):
     """Nodes and weights on [-1, 1] by Golub-Welsch.
@@ -559,8 +561,7 @@ def _bessel_k1(z, upper=40.0, n_quad=400):
     return np.einsum("j,...j->...", wu, np.exp(-z[..., None] * ch) * ch)
 
 
-def jones_zhang_covariance(h, k, sigma2=1.0, theta=1.0, c=1.0, p=1.5, d=2,
-                           n_quad=400, upper=None):
+def jones_zhang_covariance(h, k, sigma2=1.0, theta=1.0, c=1.0, p=1.5, d=2, n_quad=400, upper=None):
     """eq (9.17), Jones and Zhang (1997), for d = 2.
 
                    sigma^2   inf   tau exp{-(k/c)(tau^2+theta^2)^p}
@@ -585,17 +586,15 @@ def jones_zhang_covariance(h, k, sigma2=1.0, theta=1.0, c=1.0, p=1.5, d=2,
         raise ValueError("`theta` and `c` must be positive, `sigma2` >= 0")
     if p <= max(1.0, d / 2.0):
         raise ValueError(
-            f"`p` must exceed max(1, d/2) = {max(1.0, d / 2.0)} for the "
-            f"integral in eq (9.17) to converge (got p = {p})")
+            f"`p` must exceed max(1, d/2) = {max(1.0, d / 2.0)} for the integral in eq (9.17) to converge (got p = {p})"
+        )
 
     hflat = np.atleast_1d(np.asarray(h, dtype=float)).ravel()
     kflat = np.atleast_1d(np.asarray(k, dtype=float)).ravel()
     out = np.empty(hflat.size, dtype=float)
     reached, rels, bounds = [], [], []
     for idx in range(hflat.size):
-        val, t_end, rel, bnd = _hankel_j0_panels(
-            hflat[idx], kflat[idx], theta, c, p, n_quad=n_quad,
-            max_upper=upper)
+        val, t_end, rel, bnd = _hankel_j0_panels(hflat[idx], kflat[idx], theta, c, p, n_quad=n_quad, max_upper=upper)
         out[idx] = val
         reached.append(t_end)
         rels.append(rel)
@@ -606,7 +605,8 @@ def jones_zhang_covariance(h, k, sigma2=1.0, theta=1.0, c=1.0, p=1.5, d=2,
         "upper_reached": float(np.max(reached)),
         "n_quad": int(n_quad),
         "last_panel_rel": float(np.max(rels)),
-        "tail_bound": float(np.max(bounds) * scale)}
+        "tail_bound": float(np.max(bounds) * scale),
+    }
 
 
 def _tail_bound_j0(t, h, p):
@@ -627,15 +627,13 @@ def _tail_bound_j0(t, h, p):
     if t <= 0:
         return np.inf
     if h > 0 and p > 1.25:
-        return float(np.sqrt(2.0 / (np.pi * h)) * t ** (2.5 - 2.0 * p)
-                     / (2.0 * p - 2.5))
+        return float(np.sqrt(2.0 / (np.pi * h)) * t ** (2.5 - 2.0 * p) / (2.0 * p - 2.5))
     if p > 1.0:
         return float(t ** (2.0 - 2.0 * p) / (2.0 * p - 2.0))
     return np.inf
 
 
-def _hankel_j0_panels(hval, kval, theta, c, p, n_quad=40, rtol=1e-10,
-                      max_upper=None, max_panels=20000, quiet_runs=4):
+def _hankel_j0_panels(hval, kval, theta, c, p, n_quad=40, rtol=1e-10, max_upper=None, max_panels=20000, quiet_runs=4):
     """Integrate eq (9.17) panel by panel outward from zero.
 
     Two things force this rather than one Gauss-Legendre rule on [0, T].
@@ -650,10 +648,7 @@ def _hankel_j0_panels(hval, kval, theta, c, p, n_quad=40, rtol=1e-10,
     is merely argued away rather than integrated.
     """
     x, w = gauss_legendre(int(n_quad))
-    if hval > 0:
-        panel = min(np.pi / hval, max(1.0, 2.0 * theta))
-    else:
-        panel = max(1.0, 2.0 * theta)
+    panel = min(np.pi / hval, max(1.0, 2.0 * theta)) if hval > 0 else max(1.0, 2.0 * theta)
     panel = max(panel, 1e-3)
     if max_upper is None:
         max_upper = np.inf
@@ -691,14 +686,13 @@ def jones_zhang_separable(h, k, sigma2=1.0, theta_s=1.0, theta_t=1.0):
     product separable model with a Whittle spatial component.
     """
     h, k = _as_lags(h, k)
-    return (np.exp(-theta_t * k)
-            * whittle_spatial_covariance(h.ravel(), sigma2, theta_s
-                                         ).reshape(h.shape))
+    return np.exp(-theta_t * k) * whittle_spatial_covariance(h.ravel(), sigma2, theta_s).reshape(h.shape)
 
 
 # --------------------------------------------------------------------------
 # eq (9.5) -- validity
 # --------------------------------------------------------------------------
+
 
 def st_covariance_matrix(coords, times, cov_fn):
     """The (n x n) covariance matrix implied by cov_fn on the design."""
@@ -723,21 +717,25 @@ def is_valid_covariance(coords, times, cov_fn, tol=None):
     """
     sigma = st_covariance_matrix(coords, times, cov_fn)
     if not np.allclose(sigma, sigma.T, atol=1e-10, rtol=0.0):
-        return {"valid": False, "min_eigenvalue": np.nan,
-                "reason": "covariance matrix is not symmetric"}
+        return {"valid": False, "min_eigenvalue": np.nan, "reason": "covariance matrix is not symmetric"}
     vals = np.linalg.eigvalsh(sigma)
     lo = float(vals.min())
     scale = float(np.abs(vals).max())
     if tol is None:
         tol = -1e-10 * max(scale, 1.0)
-    return {"valid": bool(lo >= tol), "min_eigenvalue": lo,
-            "max_eigenvalue": float(vals.max()), "tolerance": float(tol),
-            "reason": "" if lo >= tol else "minimum eigenvalue is negative"}
+    return {
+        "valid": bool(lo >= tol),
+        "min_eigenvalue": lo,
+        "max_eigenvalue": float(vals.max()),
+        "tolerance": float(tol),
+        "reason": "" if lo >= tol else "minimum eigenvalue is negative",
+    }
 
 
 # --------------------------------------------------------------------------
 # Sec. 9.4 -- the spatio-temporal semivariogram
 # --------------------------------------------------------------------------
+
 
 def semivariogram_from_covariance(h, k, cov_fn):
     """gamma(h,k) = C(0,0) - C(h,k), Sec. 9.4.
@@ -750,8 +748,7 @@ def semivariogram_from_covariance(h, k, cov_fn):
     return c0 - np.asarray(cov_fn(h, k), dtype=float)
 
 
-def empirical_st_semivariogram(coords, times, z, n_space_bins=10,
-                               n_time_bins=5, max_dist=None, max_time=None):
+def empirical_st_semivariogram(coords, times, z, n_space_bins=10, n_time_bins=5, max_dist=None, max_time=None):
     """eq (9.18), the spatio-temporal Matheron estimator.
 
         gamma_hat(h,k) = 1 / (2 |N(h,k)|) sum_{N(h,k)} (Z(s_i,t_i) - Z(s_j,t_j))^2
@@ -805,14 +802,17 @@ def empirical_st_semivariogram(coords, times, z, n_space_bins=10,
     gamma = np.full(counts.shape, np.nan)
     nz = counts > 0
     gamma[nz] = total[nz] / (2.0 * counts[nz])
-    return {"gamma": gamma, "counts": counts,
-            "space_lags": 0.5 * (d_edges[:-1] + d_edges[1:]),
-            "time_lags": 0.5 * (u_edges[:-1] + u_edges[1:]),
-            "space_edges": d_edges, "time_edges": u_edges}
+    return {
+        "gamma": gamma,
+        "counts": counts,
+        "space_lags": 0.5 * (d_edges[:-1] + d_edges[1:]),
+        "time_lags": 0.5 * (u_edges[:-1] + u_edges[1:]),
+        "space_edges": d_edges,
+        "time_edges": u_edges,
+    }
 
 
-def conditional_spatial_semivariogram(coords, times, z, at_time,
-                                      n_bins=10, max_dist=None, tol=0.0):
+def conditional_spatial_semivariogram(coords, times, z, at_time, n_bins=10, max_dist=None, tol=0.0):
     """eq (9.19), the conditional spatial semivariogram at a single time.
 
         gamma_hat_t(h) = 1 / (2 |N_t(h)|) sum_{N_t(h)} (Z(s_i,t) - Z(s_j,t))^2
@@ -846,8 +846,13 @@ def conditional_spatial_semivariogram(coords, times, z, at_time,
     gamma = np.full(int(n_bins), np.nan)
     nz = counts > 0
     gamma[nz] = total[nz] / (2.0 * counts[nz])
-    return {"gamma": gamma, "counts": counts, "n_at_time": int(sel.sum()),
-            "lags": 0.5 * (edges[:-1] + edges[1:]), "edges": edges}
+    return {
+        "gamma": gamma,
+        "counts": counts,
+        "n_at_time": int(sel.sum()),
+        "lags": 0.5 * (edges[:-1] + edges[1:]),
+        "edges": edges,
+    }
 
 
 def st_wls_objective(emp, model_fn):
@@ -879,6 +884,7 @@ def st_wls_objective(emp, model_fn):
 # Sec. 9.5 -- spatio-temporal point processes
 # --------------------------------------------------------------------------
 
+
 def st_intensity(points, times, region, time_interval):
     """eq (9.20) for a homogeneous process: lambda = N / (|A| |T|).
 
@@ -899,12 +905,16 @@ def st_intensity(points, times, region, time_interval):
         raise ValueError("`time_interval` must have positive length")
     if area <= 0:
         raise ValueError("`region` must have positive area")
-    return {"intensity": t.size / (area * span), "n": int(t.size),
-            "area": area, "duration": span, "volume": area * span}
+    return {
+        "intensity": t.size / (area * span),
+        "n": int(t.size),
+        "area": area,
+        "duration": span,
+        "volume": area * span,
+    }
 
 
-def st_marginal_intensities(points, times, region, time_interval,
-                            n_space_bins=4, n_time_bins=4):
+def st_marginal_intensities(points, times, region, time_interval, n_space_bins=4, n_time_bins=4):
     """eqs (9.21) and (9.22), the marginal spatial and temporal intensities.
 
         lambda(s, .) = integral_T lambda(s, v) dv
@@ -939,10 +949,15 @@ def st_marginal_intensities(points, times, region, time_interval,
     temporal = np.zeros(int(n_time_bins), dtype=float)
     np.add.at(temporal, ti, 1.0)
 
-    return {"marginal_spatial": spatial / cell_area,
-            "marginal_temporal": temporal / bin_width,
-            "cell_area": cell_area, "bin_width": bin_width,
-            "x_edges": xe, "y_edges": ye, "t_edges": te}
+    return {
+        "marginal_spatial": spatial / cell_area,
+        "marginal_temporal": temporal / bin_width,
+        "cell_area": cell_area,
+        "bin_width": bin_width,
+        "x_edges": xe,
+        "y_edges": ye,
+        "t_edges": te,
+    }
 
 
 def cstr_reference(area, duration, lam):
@@ -962,13 +977,16 @@ def cstr_reference(area, duration, lam):
     if area <= 0 or duration <= 0 or lam < 0:
         raise ValueError("`area`, `duration` must be positive and `lam` >= 0")
     mean = lam * area * duration
-    return {"expected_count": mean, "variance": mean,
-            "intensity": lam, "second_order_intensity": lam**2,
-            "volume": area * duration}
+    return {
+        "expected_count": mean,
+        "variance": mean,
+        "intensity": lam,
+        "second_order_intensity": lam**2,
+        "volume": area * duration,
+    }
 
 
-def cstr_test(points, times, region, time_interval, n_space_bins=3,
-              n_time_bins=3):
+def cstr_test(points, times, region, time_interval, n_space_bins=3, n_time_bins=3):
     """Test an observed pattern against CSTR by cell counts.
 
     IMPORTANT ON PROVENANCE. Sec. 9.5.3 defines the CSTR process and says its
@@ -1007,20 +1025,23 @@ def cstr_test(points, times, region, time_interval, n_space_bins=3,
     xi = np.clip(np.digitize(pts[:, 0], xe) - 1, 0, int(n_space_bins) - 1)
     yi = np.clip(np.digitize(pts[:, 1], ye) - 1, 0, int(n_space_bins) - 1)
     ti = np.clip(np.digitize(t, te) - 1, 0, int(n_time_bins) - 1)
-    counts = np.zeros((int(n_space_bins), int(n_space_bins), int(n_time_bins)),
-                      dtype=float)
+    counts = np.zeros((int(n_space_bins), int(n_space_bins), int(n_time_bins)), dtype=float)
     np.add.at(counts, (xi, yi, ti), 1.0)
     flat = counts.ravel()
     m = flat.size
     mean = float(flat.mean())
     if mean <= 0:
-        return {"index_of_dispersion": np.nan, "df": m - 1, "p_value": np.nan,
-                "counts": counts, "mean_count": mean}
+        return {"index_of_dispersion": np.nan, "df": m - 1, "p_value": np.nan, "counts": counts, "mean_count": mean}
     var = float(flat.var(ddof=1))
     idx = (m - 1) * var / mean
-    return {"index_of_dispersion": float(idx), "df": int(m - 1),
-            "p_value": float(_chi2_sf(idx, m - 1)),
-            "counts": counts, "mean_count": mean, "var_count": var}
+    return {
+        "index_of_dispersion": float(idx),
+        "df": int(m - 1),
+        "p_value": float(_chi2_sf(idx, m - 1)),
+        "counts": counts,
+        "mean_count": mean,
+        "var_count": var,
+    }
 
 
 def _chi2_sf(x, df):
@@ -1033,11 +1054,12 @@ def _chi2_sf(x, df):
     a significant departure from complete randomness.
     """
     from math import exp, lgamma, log
+
     x = 0.5 * float(x)
     a = 0.5 * float(df)
     if x <= 0:
         return 1.0
-    if x < a + 1.0:                                  # series for P(a, x)
+    if x < a + 1.0:  # series for P(a, x)
         term = 1.0 / a
         total = term
         n = 0
@@ -1074,6 +1096,7 @@ def _chi2_sf(x, df):
 # --------------------------------------------------------------------------
 # small region helpers (kept local so this module stands alone)
 # --------------------------------------------------------------------------
+
 
 def _region_box(region):
     r = np.asarray(region, dtype=float).ravel()

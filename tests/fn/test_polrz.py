@@ -1,7 +1,6 @@
 """Tests for polrz.polarization_index."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.polrz import polarization_index
 
 

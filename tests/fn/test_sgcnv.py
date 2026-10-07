@@ -1,7 +1,6 @@
 """Tests for convolution representation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgcnv import sgcnv
 
 
@@ -9,7 +8,10 @@ def test_sgcnv_smoke():
     rng = np.random.default_rng(42)
     coords = rng.uniform(0, 10, (20, 2))
     wn = rng.normal(0, 1, 30)
-    kernel = lambda d: np.exp(-(d**2))
+
+    def kernel(d):
+        return np.exp(-(d**2))
+
     r = sgcnv(kernel, wn, coords)
     assert r.name == "convolution_representation"
     assert "field" in r.extra

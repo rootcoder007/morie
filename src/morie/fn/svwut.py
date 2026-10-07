@@ -24,14 +24,8 @@ def svwut(position, ideal=None, weights=None):
     DescriptiveResult
     """
     position = np.asarray(position, dtype=float)
-    if ideal is None:
-        ideal = np.zeros_like(position)
-    else:
-        ideal = np.asarray(ideal, dtype=float)
-    if weights is None:
-        weights = np.ones(len(position)) / len(position)
-    else:
-        weights = np.asarray(weights, dtype=float)
+    ideal = np.zeros_like(position) if ideal is None else np.asarray(ideal, dtype=float)
+    weights = np.ones(len(position)) / len(position) if weights is None else np.asarray(weights, dtype=float)
     dist_sq = float(np.sum(weights * (position - ideal) ** 2))
     stat = float(np.exp(-0.5 * dist_sq))
     return DescriptiveResult(

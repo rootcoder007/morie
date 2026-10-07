@@ -1,7 +1,6 @@
 """Tests for magsd.ma_glass_delta."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.magsd import ma_glass_delta
 
 

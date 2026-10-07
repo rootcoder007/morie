@@ -75,35 +75,40 @@ def alsmf(R, f=2, lam=0.1, alpha=40.0, steps=10, X0=None, Y0=None):
     else:
         X = [[float(v) for v in r] for r in C.mat(X0)]
     if Y0 is None:
-        Y = [[((i + 2 * k) % 7 + 1) / 10.0 for k in range(f)]
-             for i in range(n)]
+        Y = [[((i + 2 * k) % 7 + 1) / 10.0 for k in range(f)] for i in range(n)]
     else:
         Y = [[float(v) for v in r] for r in C.mat(Y0)]
     for _ in range(int(steps)):
         for u in range(m):
-            A = [[sum(Cf[u][i] * Y[i][a] * Y[i][b] for i in range(n))
-                  + (lam if a == b else 0.0) for b in range(f)]
-                 for a in range(f)]
-            rhs = [sum(Cf[u][i] * P[u][i] * Y[i][a] for i in range(n))
-                   for a in range(f)]
+            A = [
+                [sum(Cf[u][i] * Y[i][a] * Y[i][b] for i in range(n)) + (lam if a == b else 0.0) for b in range(f)]
+                for a in range(f)
+            ]
+            rhs = [sum(Cf[u][i] * P[u][i] * Y[i][a] for i in range(n)) for a in range(f)]
             X[u] = C.solvev(A, rhs)
         for i in range(n):
-            A = [[sum(Cf[u][i] * X[u][a] * X[u][b] for u in range(m))
-                  + (lam if a == b else 0.0) for b in range(f)]
-                 for a in range(f)]
-            rhs = [sum(Cf[u][i] * P[u][i] * X[u][a] for u in range(m))
-                   for a in range(f)]
+            A = [
+                [sum(Cf[u][i] * X[u][a] * X[u][b] for u in range(m)) + (lam if a == b else 0.0) for b in range(f)]
+                for a in range(f)
+            ]
+            rhs = [sum(Cf[u][i] * P[u][i] * X[u][a] for u in range(m)) for a in range(f)]
             Y[i] = C.solvev(A, rhs)
-    fit = [[sum(X[u][a] * Y[i][a] for a in range(f)) for i in range(n)]
-           for u in range(m)]
-    loss = sum(Cf[u][i] * (P[u][i] - fit[u][i]) ** 2
-               for u in range(m) for i in range(n))
-    loss += lam * (sum(v * v for r in X for v in r)
-                   + sum(v * v for r in Y for v in r))
-    return RichResult(payload={
-        "X": X, "Y": Y, "loss": loss, "fitted": fit, "m": m, "n": n,
-        "f": f, "steps": int(steps),
-        "method": "Implicit-feedback ALS (Hu-Koren-Volinsky 2008 eqs. 3-5)"})
+    fit = [[sum(X[u][a] * Y[i][a] for a in range(f)) for i in range(n)] for u in range(m)]
+    loss = sum(Cf[u][i] * (P[u][i] - fit[u][i]) ** 2 for u in range(m) for i in range(n))
+    loss += lam * (sum(v * v for r in X for v in r) + sum(v * v for r in Y for v in r))
+    return RichResult(
+        payload={
+            "X": X,
+            "Y": Y,
+            "loss": loss,
+            "fitted": fit,
+            "m": m,
+            "n": n,
+            "f": f,
+            "steps": int(steps),
+            "method": "Implicit-feedback ALS (Hu-Koren-Volinsky 2008 eqs. 3-5)",
+        }
+    )
 
 
 als = alsmf

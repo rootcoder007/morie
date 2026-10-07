@@ -48,17 +48,20 @@ def turboquant_outlier_channel_split(channels, outlier_threshold=0.99):
     """
     Cm = C.mat(channels)
     n, p = C.shape(Cm)
-    if p == 1:
-        mag = [abs(row[0]) for row in Cm]
-    else:
-        mag = [max(abs(Cm[i][j]) for i in range(n)) for j in range(p)]
+    mag = [abs(row[0]) for row in Cm] if p == 1 else [max(abs(Cm[i][j]) for i in range(n)) for j in range(p)]
     cut = S.quantile7(mag, float(outlier_threshold))
     out_idx = [j for j in range(len(mag)) if mag[j] > cut]
     in_idx = [j for j in range(len(mag)) if mag[j] <= cut]
-    return RichResult(payload={
-        "outlier_idx": out_idx, "inlier_idx": in_idx, "cut": cut,
-        "estimate": len(out_idx) / len(mag), "d": len(mag),
-        "method": "Outlier channel split for KV quantization"})
+    return RichResult(
+        payload={
+            "outlier_idx": out_idx,
+            "inlier_idx": in_idx,
+            "cut": cut,
+            "estimate": len(out_idx) / len(mag),
+            "d": len(mag),
+            "method": "Outlier channel split for KV quantization",
+        }
+    )
 
 
 def cheatsheet():

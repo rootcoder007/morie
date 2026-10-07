@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.contse import contrastive_sent
 
 
@@ -17,8 +16,7 @@ def test_contse_basic():
     tau = 0.1
     result = contrastive_sent(sentences, tau)
     assert isinstance(result, dict)
-    for key in ("estimate", "loss", "per_item", "alignment",
-                "uniformity", "n", "d"):
+    for key in ("estimate", "loss", "per_item", "alignment", "uniformity", "n", "d"):
         assert key in result
     assert result["n"] == n
     assert result["d"] == d

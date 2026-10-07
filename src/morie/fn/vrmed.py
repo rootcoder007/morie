@@ -38,10 +38,15 @@ def variance_based_mediation(r2_full, r2_partial):
     """
     rf = float(r2_full)
     rp = float(r2_partial)
-    return RichResult(payload={
-        "estimate": (rf - rp) / rf if rf != 0.0 else float("nan"),
-        "delta_r2": rf - rp, "r2_full": rf, "r2_partial": rp,
-        "method": "Variance-based mediation share"})
+    return RichResult(
+        payload={
+            "estimate": (rf - rp) / rf if rf != 0.0 else float("nan"),
+            "delta_r2": rf - rp,
+            "r2_full": rf,
+            "r2_partial": rp,
+            "method": "Variance-based mediation share",
+        }
+    )
 
 
 def cheatsheet():

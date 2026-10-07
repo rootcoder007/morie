@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c1_3 import ghosal_prior_posterior_update
 
 
@@ -26,10 +25,7 @@ def test_gh_c1_3_basic():
     # data = [0.8, 1.2, 1.0]; log w_t = sum_d log_lik_one(t, d) + log_prior(t).
     data = [0.8, 1.2, 1.0]
     x_list = [1.0, 2.0, 3.0, 4.0, 5.0]
-    lw = [
-        sum(-0.5 * (d - t) ** 2 for d in data) + (-0.5 * t * t)
-        for t in x_list
-    ]
+    lw = [sum(-0.5 * (d - t) ** 2 for d in data) + (-0.5 * t * t) for t in x_list]
     mx = max(lw)
     w = [math.exp(v - mx) for v in lw]
     tot = sum(w)

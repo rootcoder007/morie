@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymptotic null variance of a linear rank statistic."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._sci_core import integrate
 
@@ -52,8 +51,10 @@ def gibbons_cs_null_var(J, lam):
         varJ = 0.0
     return RichResult(
         payload={
-            "limit": float((1 - lam) * varJ), "var_J": float(varJ),
-            "mean_J": float(mJ), "lam": lam,
+            "limit": float((1 - lam) * varJ),
+            "var_J": float(varJ),
+            "mean_J": float(mJ),
+            "lam": lam,
             "method": "N lam sigma^2 -> (1-lam) Var J(U) (Corollary 7.3.1)",
         }
     )

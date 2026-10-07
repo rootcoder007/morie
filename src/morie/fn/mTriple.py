@@ -80,8 +80,7 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
         raise ValueError("X must be binary 0/1.")
     if min(int(xv.sum()), int((1 - xv).sum())) < 5:
         raise ValueError("need at least 5 units in each treatment arm.")
-    Ca = (np.zeros((n, 0)) if C is None
-          else np.atleast_2d(np.asarray(C, dtype=float)))
+    Ca = np.zeros((n, 0)) if C is None else np.atleast_2d(np.asarray(C, dtype=float))
     if Ca.shape[0] != n:
         Ca = Ca.T
     Bc = add_intercept(Ca) if Ca.shape[1] else np.ones((n, 1))
@@ -97,24 +96,26 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
     B0 = np.column_stack([Bc, np.zeros(n)])
     m1, m0 = B1 @ gm, B0 @ gm
     # density ratio f(M | X=0, C) / f(M | X=1, C)
-    r10 = np.exp(np.clip(
-        (-0.5 * ((mv - m0) / sm) ** 2) - (-0.5 * ((mv - m1) / sm) ** 2),
-        -30, 30,
-    ))
+    r10 = np.exp(
+        np.clip(
+            (-0.5 * ((mv - m0) / sm) ** 2) - (-0.5 * ((mv - m1) / sm) ** 2),
+            -30,
+            30,
+        )
+    )
     # 3. outcome regression
     By = np.column_stack([Bc, xv, mv])
     by = ols_fit(By, yv)
-    mu = lambda xx, mm: np.column_stack([Bc, xx, mm]) @ by
+
+    def mu(xx, mm):
+        return np.column_stack([Bc, xx, mm]) @ by
+
     mu1 = mu(np.ones(n), mv)
-    mu0 = mu(np.zeros(n), mv)
+    mu(np.zeros(n), mv)
 
     # E[Y(1, M(1))] and E[Y(0, M(0))] by the usual AIPW pieces
-    ey11 = np.mean(xv * yv / e + (1 - xv / e) * (
-        mu(np.ones(n), m1 + (mv - mhat))
-    ))
-    ey00 = np.mean((1 - xv) * yv / (1 - e) + (1 - (1 - xv) / (1 - e)) * (
-        mu(np.zeros(n), m0 + (mv - mhat))
-    ))
+    ey11 = np.mean(xv * yv / e + (1 - xv / e) * (mu(np.ones(n), m1 + (mv - mhat))))
+    ey00 = np.mean((1 - xv) * yv / (1 - e) + (1 - (1 - xv) / (1 - e)) * (mu(np.zeros(n), m0 + (mv - mhat))))
     # the cross-world term, reweighted onto the X=0 mediator distribution
     w_cross = xv / e * r10
     ey10_ipw = np.mean(w_cross * yv)
@@ -125,7 +126,7 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
     nie = float(ey11 - ey10)
     nde = float(ey10 - ey00)
     total = float(ey11 - ey00)
-    psi = (xv * yv / e - (1 - xv) * yv / (1 - e))
+    psi = xv * yv / e - (1 - xv) * yv / (1 - e)
     se = float(np.std(psi, ddof=1) / np.sqrt(n))
     z = 1.959963984540054
     return RichResult(
@@ -141,8 +142,7 @@ def triply_robust_mediation(Y, X, M, C=None, trunc=0.01):
                 "the natural direct and indirect effects sum to the total by "
                 "construction; this residual is the arithmetic check"
             ),
-            "proportion_mediated": (float(nie / total)
-                                    if abs(total) > 1e-12 else np.nan),
+            "proportion_mediated": (float(nie / total) if abs(total) > 1e-12 else np.nan),
             "ey11": float(ey11),
             "ey10": float(ey10),
             "ey00": float(ey00),

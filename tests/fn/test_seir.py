@@ -1,8 +1,8 @@
 """Tests for morie.fn.seir -- SEIR compartmental model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.seir import seir_model
 
 

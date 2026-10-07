@@ -102,10 +102,7 @@ def sieve(
     resid = y - y_fitted
     sigma2 = float(np.sum(resid**2) / max(n - B.shape[1], 1))
 
-    if x_new is None:
-        x_new = np.sort(x)
-    else:
-        x_new = np.asarray(x_new, dtype=float)
+    x_new = np.sort(x) if x_new is None else np.asarray(x_new, dtype=float)
 
     B_new = _build_basis(x_new, k)
     y_hat = B_new @ beta

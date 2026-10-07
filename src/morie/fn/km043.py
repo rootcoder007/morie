@@ -42,23 +42,25 @@ def kamath_ch3_prompt_softmax_label(w, h_z, M):
     for lab in labels:
         word = M[lab]
         if word not in w:
-            raise ValueError(
-                f"answer word {word!r} (label {lab!r}) has no vector in w.")
+            raise ValueError(f"answer word {word!r} (label {lab!r}) has no vector in w.")
         v = np.atleast_1d(np.asarray(w[word], dtype=float))
         if v.shape != h.shape:
-            raise ValueError(
-                f"w[{word!r}] has shape {v.shape}, h_z has {h.shape}.")
+            raise ValueError(f"w[{word!r}] has shape {v.shape}, h_z has {h.shape}.")
         logits.append(float(v @ h))
     z = np.asarray(logits, dtype=float)
     e = np.exp(z - z.max())
     p = e / e.sum()
     best = int(np.argmax(p))
-    return RichResult(payload={
-        "estimate": float(p[best]), "label": labels[best],
-        "label_probs": {lab: float(pi) for lab, pi in zip(labels, p)},
-        "logits": {lab: float(zi) for lab, zi in zip(labels, z)},
-        "n": len(labels),
-        "method": "label-word softmax (Kamath Eq 3.2)"})
+    return RichResult(
+        payload={
+            "estimate": float(p[best]),
+            "label": labels[best],
+            "label_probs": {lab: float(pi) for lab, pi in zip(labels, p)},
+            "logits": {lab: float(zi) for lab, zi in zip(labels, z)},
+            "n": len(labels),
+            "method": "label-word softmax (Kamath Eq 3.2)",
+        }
+    )
 
 
 def cheatsheet():

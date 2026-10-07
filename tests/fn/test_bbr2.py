@@ -1,7 +1,6 @@
 """Tests for morie.fn.bbr2 — Blackbox R-squared per issue."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bbr2 import bbr2
 
 

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Louvain greedy modularity communities."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -102,7 +100,7 @@ def louvain_communities(G, resolution=1.0, max_pass=20):
         remap = dict((c, j) for j, c in enumerate(labs))
         z = [remap[v] for v in z]
         K = len(labs)
-        if K == n:
+        if n == K:
             member = [z[member[v]] for v in range(n0)]
             break
         member = [z[member[v]] for v in range(n0)]
@@ -117,15 +115,17 @@ def louvain_communities(G, resolution=1.0, max_pass=20):
     K = len(labs)
     counts = [sum(1 for v in member if v == c) for c in range(K)]
     Q = modularity(A0, member, resolution)
-    return RichResult(payload={
-        "estimate": Q,
-        "z": member,
-        "counts": counts,
-        "n_communities": K,
-        "Q": Q,
-        "n": n0,
-        "method": "Louvain greedy modularity communities",
-    })
+    return RichResult(
+        payload={
+            "estimate": Q,
+            "z": member,
+            "counts": counts,
+            "n_communities": K,
+            "Q": Q,
+            "n": n0,
+            "method": "Louvain greedy modularity communities",
+        }
+    )
 
 
 def cheatsheet():

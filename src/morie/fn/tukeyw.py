@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tukey biweight location estimate."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -64,9 +62,9 @@ def tukey_biweight(y, c=4.685, n_iter=20):
         sw = sum(w)
         if sw > 0.0:
             mu = sum(w[i] * v[i] for i in range(n)) / sw
-    return RichResult(payload={
-        "estimate": mu, "scale": s, "weights": w, "n": n,
-        "method": "Tukey biweight location, MAD scale"})
+    return RichResult(
+        payload={"estimate": mu, "scale": s, "weights": w, "n": n, "method": "Tukey biweight location, MAD scale"}
+    )
 
 
 def cheatsheet():

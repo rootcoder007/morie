@@ -60,9 +60,7 @@ def geron_one_hot_encoding(categories, levels=None, drop_first=False):
         try:
             lv = sorted(set(cats))
         except TypeError as exc:
-            raise ValueError(
-                "categories are not mutually orderable; pass levels= explicitly."
-            ) from exc
+            raise ValueError("categories are not mutually orderable; pass levels= explicitly.") from exc
     else:
         lv = list(levels)
         if len(set(lv)) != len(lv):

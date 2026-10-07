@@ -11,112 +11,110 @@ from __future__ import annotations
 from math import cos, fsum, log, log10, pi, sin, sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._containers import SignalResult
 from ._rgcore import aslist
 from ._richresult import RichResult, with_describe_pointer
 from ._sci_core import toeplitz
 
 __all__ = [
-    'acfseg',
-    'rangayyan_acf_distance',
-    'rangayyan_adaptive_filter',
-    'anc',
-    'rangayyan_anc',
-    'eegadapt',
-    'rangayyan_eeg_adaptive_seg',
-    'fetalecg',
-    'rangayyan_fetal_ecg',
-    'glr',
-    'rangayyan_gen_likelihood_ratio',
-    'kalman',
-    'rangayyan_kalman_filter',
-    'lmsfilt',
-    'rangayyan_lms_filter',
-    'pcgseg',
-    'rangayyan_pcg_adaptive_seg',
-    'riccati',
-    'rangayyan_riccati_eq',
-    'rlsfilt',
-    'rangayyan_rls_filter',
-    'rlsmonitor',
-    'rangayyan_rls_monitor',
-    'rlslattice',
-    'rangayyan_rls_lattice',
-    'sem',
-    'rangayyan_spec_error_meas',
-    'whopf',
-    'rangayyan_wiener_hopf',
-    'wienerfilt',
-    'rangayyan_wiener_filter',
-    'rangayyan_ch3_estimation_error',
-    'wienerout',
-    'rangayyan_ch3_wiener_filter_output_convolution',
-    'wienerdot',
-    'rangayyan_ch3_wiener_output_dot_product',
-    'rangayyan_ch3_estimation_error_vector_form',
-    'rangayyan_ch3_mse_cost_function',
-    'rangayyan_ch3_cross_correlation_vector',
-    'rangayyan_ch3_autocorrelation_matrix',
-    'msegrad',
-    'rangayyan_ch3_mse_gradient',
-    'wienerhopf',
-    'rangayyan_ch3_wiener_hopf_normal_equation',
-    'wieneropt',
-    'rangayyan_ch3_optimal_wiener_filter',
-    'wienermin',
-    'rangayyan_ch3_minimum_mse',
-    'wienerconv',
-    'rangayyan_ch3_wiener_convolution_relationship',
-    'wienerfreqrel',
-    'rangayyan_ch3_wiener_frequency_relation',
-    'wienerfreq',
-    'rangayyan_ch3_wiener_frequency_response',
-    'rangayyan_ch3_wiener_optimal_for_noise_removal',
-    'wienersnr',
-    'rangayyan_ch3_wiener_frequency_response_snr_form',
-    'ancinput',
-    'rangayyan_ch3_anc_primary_input_model',
-    'ancout',
-    'rangayyan_ch3_anc_output',
-    'lmsout',
-    'rangayyan_ch3_lms_filter_output',
-    'rangayyan_ch3_lms_estimation_error',
-    'lmssqerr',
-    'rangayyan_ch3_lms_squared_error',
-    'lmsdescent',
-    'rangayyan_ch3_lms_steepest_descent',
-    'rangayyan_ch3_lms_gradient_estimate',
-    'widrowhoff',
-    'rangayyan_ch3_widrow_hoff_lms',
-    'lmsvarstep',
-    'rangayyan_ch3_lms_variable_step',
-    'lmszhang',
-    'rangayyan_ch3_lms_step_size_zhang',
-    'rlsobj',
-    'rangayyan_ch3_rls_objective',
-    'rlsnormal',
-    'rangayyan_ch3_rls_normal_equation',
-    'rangayyan_ch3_rls_phi_matrix',
-    'rangayyan_ch3_rls_theta_vector',
-    'rangayyan_ch3_rls_phi_recursion',
-    'rangayyan_ch3_rls_theta_recursion',
-    'abcdlemma',
-    'rangayyan_ch3_abcd_matrix_inversion_lemma',
-    'rangayyan_ch3_rls_inverse_recursion',
-    'rangayyan_ch3_rls_kalman_gain',
-    'rangayyan_ch3_rls_p_recursion',
-    'rangayyan_ch3_rls_gain_identity',
-    'rlsupdate',
-    'rangayyan_ch3_rls_weight_update_compact',
-    'rlsapriori',
-    'rangayyan_ch3_rls_a_priori_error',
-    'psdacf',
-    'rangayyan_ch4_psd_from_acf',
-    'wiener_filter',
-    'rangayyananc',
+    "acfseg",
+    "rangayyan_acf_distance",
+    "rangayyan_adaptive_filter",
+    "anc",
+    "rangayyan_anc",
+    "eegadapt",
+    "rangayyan_eeg_adaptive_seg",
+    "fetalecg",
+    "rangayyan_fetal_ecg",
+    "glr",
+    "rangayyan_gen_likelihood_ratio",
+    "kalman",
+    "rangayyan_kalman_filter",
+    "lmsfilt",
+    "rangayyan_lms_filter",
+    "pcgseg",
+    "rangayyan_pcg_adaptive_seg",
+    "riccati",
+    "rangayyan_riccati_eq",
+    "rlsfilt",
+    "rangayyan_rls_filter",
+    "rlsmonitor",
+    "rangayyan_rls_monitor",
+    "rlslattice",
+    "rangayyan_rls_lattice",
+    "sem",
+    "rangayyan_spec_error_meas",
+    "whopf",
+    "rangayyan_wiener_hopf",
+    "wienerfilt",
+    "rangayyan_wiener_filter",
+    "rangayyan_ch3_estimation_error",
+    "wienerout",
+    "rangayyan_ch3_wiener_filter_output_convolution",
+    "wienerdot",
+    "rangayyan_ch3_wiener_output_dot_product",
+    "rangayyan_ch3_estimation_error_vector_form",
+    "rangayyan_ch3_mse_cost_function",
+    "rangayyan_ch3_cross_correlation_vector",
+    "rangayyan_ch3_autocorrelation_matrix",
+    "msegrad",
+    "rangayyan_ch3_mse_gradient",
+    "wienerhopf",
+    "rangayyan_ch3_wiener_hopf_normal_equation",
+    "wieneropt",
+    "rangayyan_ch3_optimal_wiener_filter",
+    "wienermin",
+    "rangayyan_ch3_minimum_mse",
+    "wienerconv",
+    "rangayyan_ch3_wiener_convolution_relationship",
+    "wienerfreqrel",
+    "rangayyan_ch3_wiener_frequency_relation",
+    "wienerfreq",
+    "rangayyan_ch3_wiener_frequency_response",
+    "rangayyan_ch3_wiener_optimal_for_noise_removal",
+    "wienersnr",
+    "rangayyan_ch3_wiener_frequency_response_snr_form",
+    "ancinput",
+    "rangayyan_ch3_anc_primary_input_model",
+    "ancout",
+    "rangayyan_ch3_anc_output",
+    "lmsout",
+    "rangayyan_ch3_lms_filter_output",
+    "rangayyan_ch3_lms_estimation_error",
+    "lmssqerr",
+    "rangayyan_ch3_lms_squared_error",
+    "lmsdescent",
+    "rangayyan_ch3_lms_steepest_descent",
+    "rangayyan_ch3_lms_gradient_estimate",
+    "widrowhoff",
+    "rangayyan_ch3_widrow_hoff_lms",
+    "lmsvarstep",
+    "rangayyan_ch3_lms_variable_step",
+    "lmszhang",
+    "rangayyan_ch3_lms_step_size_zhang",
+    "rlsobj",
+    "rangayyan_ch3_rls_objective",
+    "rlsnormal",
+    "rangayyan_ch3_rls_normal_equation",
+    "rangayyan_ch3_rls_phi_matrix",
+    "rangayyan_ch3_rls_theta_vector",
+    "rangayyan_ch3_rls_phi_recursion",
+    "rangayyan_ch3_rls_theta_recursion",
+    "abcdlemma",
+    "rangayyan_ch3_abcd_matrix_inversion_lemma",
+    "rangayyan_ch3_rls_inverse_recursion",
+    "rangayyan_ch3_rls_kalman_gain",
+    "rangayyan_ch3_rls_p_recursion",
+    "rangayyan_ch3_rls_gain_identity",
+    "rlsupdate",
+    "rangayyan_ch3_rls_weight_update_compact",
+    "rlsapriori",
+    "rangayyan_ch3_rls_a_priori_error",
+    "psdacf",
+    "rangayyan_ch4_psd_from_acf",
+    "wiener_filter",
+    "rangayyananc",
 ]
-
 
 
 # -- rgacfd: ACF distance measure for nonstationary segmentation.
@@ -127,9 +125,9 @@ def _solve(A, b):
     for c in range(n):
         p = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[p][c]) < 1e-300:
-            raise ValueError("the correlation matrix is singular; the "
-                             "Wiener-Hopf system of eq. (3.168) has no "
-                             "unique solution")
+            raise ValueError(
+                "the correlation matrix is singular; the Wiener-Hopf system of eq. (3.168) has no unique solution"
+            )
         M[c], M[p] = M[p], M[c]
         piv = M[c][c]
         for r in range(n):
@@ -145,15 +143,13 @@ def _solve(A, b):
 def _acf(x, lags):
     """Biased ACF estimate, divisor N (keeps the Toeplitz system PSD)."""
     n = len(x)
-    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n
-            for m in range(lags)]
+    return [fsum(x[i] * x[i + m] for i in range(n - m)) / n for m in range(lags)]
 
 
 def _ccf(x, d, lags):
     """theta(k) = E[x(n-k) d(n)], the RHS of eq. (3.168)."""
     n = min(len(x), len(d))
-    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n
-            for k in range(lags)]
+    return [fsum(x[i - k] * d[i] for i in range(k, n)) / n for k in range(lags)]
 
 
 def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
@@ -199,7 +195,7 @@ def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
         raise ValueError("each window needs at least two samples")
     for name, v in (("Th_P", thp), ("Th_F", thf)):
         if float(v) <= 0:
-            raise ValueError("%s must be positive" % name)
+            raise ValueError(f"{name} must be positive")
     nmax = min(len(a), len(b))
     rt = _acf(a, nmax)
     rr = _acf(b, nmax)
@@ -220,11 +216,11 @@ def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
         if q < 1:
             raise ValueError("need at least one lag")
         if q > auto:
-            raise ValueError("eq. (8.28) needs the ACFs nonnegative out to "
-                             "lag q; they turn negative at lag %d" % (auto + 1))
+            raise ValueError(
+                f"eq. (8.28) needs the ACFs nonnegative out to lag q; they turn negative at lag {int(auto + 1)}"
+            )
     if q < 1:
-        raise ValueError("both ACFs turn negative at lag 1; no lags to "
-                         "compare")
+        raise ValueError("both ACFs turn negative at lag 1; no lags to compare")
 
     st, sr = sqrt(rt[0]), sqrt(rr[0])
     dp = abs(st - sr) / min(st, sr)
@@ -232,15 +228,24 @@ def acfseg(test, reference, lags=None, thp=1.0, thf=1.0):
     den = 0.5 + fsum(min(sqrt(rt[m]), sqrt(rr[m])) for m in range(1, q + 1))
     df = num / den
     d = dp / float(thp) + df / float(thf)
-    return RichResult(payload={
-        "distance": d, "power_distance": dp, "spectral_distance": df,
-        "lags": q, "lags_auto": lags is None, "acf_test": rt[:q + 1],
-        "acf_reference": rr[:q + 1], "power_test": rt[0],
-        "power_reference": rr[0], "boundary": d > 1.0,
-        "th_power": float(thp), "th_spectral": float(thf),
-        "amplitude_invariant": False,
-        "method": "Rangayyan (2024) eqs. (8.27)-(8.29), after Michael and "
-                  "Houchin"})
+    return RichResult(
+        payload={
+            "distance": d,
+            "power_distance": dp,
+            "spectral_distance": df,
+            "lags": q,
+            "lags_auto": lags is None,
+            "acf_test": rt[: q + 1],
+            "acf_reference": rr[: q + 1],
+            "power_test": rt[0],
+            "power_reference": rr[0],
+            "boundary": d > 1.0,
+            "th_power": float(thp),
+            "th_spectral": float(thf),
+            "amplitude_invariant": False,
+            "method": "Rangayyan (2024) eqs. (8.27)-(8.29), after Michael and Houchin",
+        }
+    )
 
 
 rangayyan_acf_distance = acfseg  # pre-policy spelling
@@ -329,8 +334,7 @@ def rangayyan_adaptive_filter(x, reference, mu=0.01, order=16):
 
 
 # -- rganc: Adaptive noise canceler (ANC) structure.
-def anc(primary, reference, order=8, mu=0.01, method="lms", lam=0.98,
-        delta=1.0):
+def anc(primary, reference, order=8, mu=0.01, method="lms", lam=0.98, delta=1.0):
     """Adaptive noise canceller, LMS or RLS.
 
     Rangayyan (2024) Section 3.10.  The structure is fixed by eqs.
@@ -366,11 +370,14 @@ def anc(primary, reference, order=8, mu=0.01, method="lms", lam=0.98,
     cov = fsum((a - me) * (b - mr) for a, b in zip(e, rs)) / n
     leak = cov / sqrt(ve * vr) if ve > 0 and vr > 0 else 0.0
     out = dict(r)
-    out.update({"reference_leakage": leak,
-                "well_separated": abs(leak) < 0.2,
-                "adaptation": method,
-                "method": "Rangayyan (2024) Section 3.10, "
-                          "eqs. (3.195)-(3.196)"})
+    out.update(
+        {
+            "reference_leakage": leak,
+            "well_separated": abs(leak) < 0.2,
+            "adaptation": method,
+            "method": "Rangayyan (2024) Section 3.10, eqs. (3.195)-(3.196)",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -402,8 +409,7 @@ def eegadapt(x, fs, window=None, step=None, order=4, threshold=None):
         raise ValueError("fs must be positive")
     N = len(xs)
     p = int(order)
-    w = int(window) if window is not None else max(4 * (p + 1),
-                                                   int(0.5 * fsv))
+    w = int(window) if window is not None else max(4 * (p + 1), int(0.5 * fsv))
     hop = int(step) if step is not None else max(1, w // 4)
     if w > N:
         raise ValueError("the window is longer than the record")
@@ -416,48 +422,52 @@ def eegadapt(x, fs, window=None, step=None, order=4, threshold=None):
     dists, times, bounds = [], [], []
     pos = start + w
     while pos + w <= N:
-        seg = xs[start:pos + w]
+        seg = xs[start : pos + w]
         mrel = pos - start + 1
-        if mrel - 1 > p and w > p:
-            d = glr(seg, mrel, len(seg), order=p)["d"]
-        else:
-            d = 0.0
+        d = glr(seg, mrel, len(seg), order=p)["d"] if mrel - 1 > p and w > p else 0.0
         dists.append(d)
         times.append(pos / fsv)
         pos += hop
     if not dists:
-        raise ValueError("the record is too short for even one test "
-                         "window")
+        raise ValueError("the record is too short for even one test window")
     srt = sorted(dists)
     med = srt[len(srt) // 2]
     mad = sorted(abs(v - med) for v in dists)[len(dists) // 2]
-    thr = float(threshold) if threshold is not None \
-        else med + 3.0 * 1.4826 * mad
+    thr = float(threshold) if threshold is not None else med + 3.0 * 1.4826 * mad
 
     start = 0
     pos = w
     adaptive = []
     while pos + w <= N:
-        seg = xs[start:pos + w]
+        seg = xs[start : pos + w]
         mrel = pos - start + 1
-        d = glr(seg, mrel, len(seg), order=p)["d"] \
-            if (mrel - 1 > p and w > p) else 0.0
+        d = glr(seg, mrel, len(seg), order=p)["d"] if (mrel - 1 > p and w > p) else 0.0
         adaptive.append(d)
         if d > thr:
             bounds.append(pos)
-            start = pos          # the reference window restarts here
+            start = pos  # the reference window restarts here
             pos = start + w
         else:
             pos += hop
-    return RichResult(payload={
-        "d": adaptive, "d_fixed_reference": dists, "times": times,
-        "boundaries": bounds, "n_boundaries": len(bounds),
-        "threshold": thr, "median": med, "mad": mad,
-        "window": w, "step": hop, "order": p, "fs": fsv,
-        "reference_restarts_at_boundaries": True,
-        "robust_threshold": threshold is None,
-        "method": "Rangayyan (2024) Section 8.5.3 (GLR adaptive "
-                  "segmentation)"})
+    return RichResult(
+        payload={
+            "d": adaptive,
+            "d_fixed_reference": dists,
+            "times": times,
+            "boundaries": bounds,
+            "n_boundaries": len(bounds),
+            "threshold": thr,
+            "median": med,
+            "mad": mad,
+            "window": w,
+            "step": hop,
+            "order": p,
+            "fs": fsv,
+            "reference_restarts_at_boundaries": True,
+            "robust_threshold": threshold is None,
+            "method": "Rangayyan (2024) Section 8.5.3 (GLR adaptive segmentation)",
+        }
+    )
 
 
 rangayyan_eeg_adaptive_seg = eegadapt  # pre-policy spelling
@@ -488,19 +498,23 @@ def fetalecg(abdominal, chest, order=32, mu=0.005, method="lms"):
     """
     abd, ref = aslist(abdominal), aslist(chest)
     if len(abd) != len(ref):
-        raise ValueError("the abdominal and chest leads must have the "
-                         "same length")
+        raise ValueError("the abdominal and chest leads must have the same length")
     r = anc(abd, ref, order=order, mu=mu, method=method)
     px, pe = r["input_power"], r["output_power"]
-    return RichResult(payload={
-        "fetal": r["e"], "maternal_estimate": r["y"], "order": order,
-        "input_power": px, "output_power": pe,
-        "suppression_db": 10.0 * log10(px / pe) if pe > 0 and px > 0
-        else None,
-        "reference_leakage": r["reference_leakage"],
-        "single_reference": True,
-        "widrow_used_multiple_references": True,
-        "method": "Rangayyan (2024) Section 3.14, after Widrow et al."})
+    return RichResult(
+        payload={
+            "fetal": r["e"],
+            "maternal_estimate": r["y"],
+            "order": order,
+            "input_power": px,
+            "output_power": pe,
+            "suppression_db": 10.0 * log10(px / pe) if pe > 0 and px > 0 else None,
+            "reference_leakage": r["reference_leakage"],
+            "single_reference": True,
+            "widrow_used_multiple_references": True,
+            "method": "Rangayyan (2024) Section 3.14, after Widrow et al.",
+        }
+    )
 
 
 rangayyan_fetal_ecg = fetalecg  # pre-policy spelling
@@ -537,17 +551,14 @@ def glr(x, m, n=None, order=4):
     if p < 1:
         raise ValueError("order must be at least 1")
     if not 2 <= mv <= nv <= N:
-        raise ValueError("need 2 <= m <= n <= len(x); got m=%d n=%d N=%d"
-                         % (mv, nv, N))
+        raise ValueError(f"need 2 <= m <= n <= len(x); got m={int(mv)} n={int(nv)} N={int(N)}")
     if mv - 1 <= p or nv - mv + 1 <= p:
-        raise ValueError("each window must hold more samples than the AR "
-                         "order")
+        raise ValueError("each window must hold more samples than the AR order")
 
     def tse(seg):
         """AR prediction-error energy, eq. (7.19), by Levinson-Durbin."""
         k = len(seg)
-        r = [fsum(seg[i] * seg[i + t] for i in range(k - t)) / k
-             for t in range(p + 1)]
+        r = [fsum(seg[i] * seg[i + t] for i in range(k - t)) / k for t in range(p + 1)]
         if r[0] <= 0:
             return 0.0
         a = [0.0] * (p + 1)
@@ -561,7 +572,7 @@ def glr(x, m, n=None, order=4):
                 new[j] = a[j] + kk * a[i - j]
             new[i] = kk
             a = new
-            e *= (1.0 - kk * kk)
+            e *= 1.0 - kk * kk
             if e <= 0:
                 return 0.0
         return e * k
@@ -573,29 +584,33 @@ def glr(x, m, n=None, order=4):
             return 0.0
         return L * log(t / L)
 
-    ref = xs[:mv - 1]
-    test = xs[mv - 1:nv]
+    ref = xs[: mv - 1]
+    test = xs[mv - 1 : nv]
     pooled = xs[:nv]
     h_ref, h_test, h_pool = H(ref), H(test), H(pooled)
     d = h_pool - (h_ref + h_test)
-    return RichResult(payload={
-        "d": d, "h_pooled": h_pool, "h_reference": h_ref,
-        "h_test": h_test, "m": mv, "n": nv, "order": p,
-        "n_reference": len(ref), "n_test": len(test),
-        "reference_window_grows": True,
-        "near_zero_when_one_model_explains_both": abs(d) < 1e-6,
-        "method": "Rangayyan (2024) eqs. (8.30)-(8.31), after Appel and "
-                  "v. Brandt"})
+    return RichResult(
+        payload={
+            "d": d,
+            "h_pooled": h_pool,
+            "h_reference": h_ref,
+            "h_test": h_test,
+            "m": mv,
+            "n": nv,
+            "order": p,
+            "n_reference": len(ref),
+            "n_test": len(test),
+            "reference_window_grows": True,
+            "near_zero_when_one_model_explains_both": abs(d) < 1e-6,
+            "method": "Rangayyan (2024) eqs. (8.30)-(8.31), after Appel and v. Brandt",
+        }
+    )
 
 
 rangayyan_gen_likelihood_ratio = glr  # pre-policy spelling
 
 
 # -- rgkalmn: Kalman filter: state prediction/update with Riccati equation.
-
-
-
-
 
 
 def kalman(z, F, H, Q, R, x0=None, P0=None):
@@ -638,16 +653,13 @@ def kalman(z, F, H, Q, R, x0=None, P0=None):
     if len(Rm) != p or any(len(r) != p for r in Rm):
         raise ValueError("R must be p x p")
     x = [0.0] * ns if x0 is None else aslist(x0)
-    P = [[1.0 if i == j else 0.0 for j in range(ns)] for i in range(ns)] \
-        if P0 is None else [aslist(r) for r in P0]
+    P = [[1.0 if i == j else 0.0 for j in range(ns)] for i in range(ns)] if P0 is None else [aslist(r) for r in P0]
 
     def mv(M, v):
-        return [fsum(M[i][j] * v[j] for j in range(len(v)))
-                for i in range(len(M))]
+        return [fsum(M[i][j] * v[j] for j in range(len(v))) for i in range(len(M))]
 
     def mm(A, B):
-        return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
-                 for j in range(len(B[0]))] for i in range(len(A))]
+        return [[fsum(A[i][t] * B[t][j] for t in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
     def tr(M):
         return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
@@ -657,7 +669,7 @@ def kalman(z, F, H, Q, R, x0=None, P0=None):
     for zk in z:
         zv = aslist(zk)
         if len(zv) != p:
-            raise ValueError("every measurement must have length %d" % p)
+            raise ValueError(f"every measurement must have length {int(p)}")
         xp = mv(Fm, x)
         Pp = mm(mm(Fm, P), tr(Fm))
         Pp = [[Pp[i][j] + Qm[i][j] for j in range(ns)] for i in range(ns)]
@@ -667,36 +679,38 @@ def kalman(z, F, H, Q, R, x0=None, P0=None):
         K = []
         for i in range(ns):
             K.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
-        y = [zv[i] - fsum(Hm[i][j] * xp[j] for j in range(ns))
-             for i in range(p)]
-        x = [xp[i] + fsum(K[i][j] * y[j] for j in range(p))
-             for i in range(ns)]
+        y = [zv[i] - fsum(Hm[i][j] * xp[j] for j in range(ns)) for i in range(p)]
+        x = [xp[i] + fsum(K[i][j] * y[j] for j in range(p)) for i in range(ns)]
         KH = mm(K, Hm)
-        Pn = [[Pp[i][j] - fsum(KH[i][t] * Pp[t][j] for t in range(ns))
-               for j in range(ns)] for i in range(ns)]
-        asym = max(asym, max(abs(Pn[i][j] - Pn[j][i])
-                             for i in range(ns) for j in range(ns)))
-        P = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(ns)]
-             for i in range(ns)]
+        Pn = [[Pp[i][j] - fsum(KH[i][t] * Pp[t][j] for t in range(ns)) for j in range(ns)] for i in range(ns)]
+        asym = max(asym, max(abs(Pn[i][j] - Pn[j][i]) for i in range(ns) for j in range(ns)))
+        P = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(ns)] for i in range(ns)]
         states.append(list(x))
         covs.append([row[:] for row in P])
         gains.append([row[:] for row in K])
         innov.append(y)
-    return RichResult(payload={
-        "states": states, "covariances": covs, "gains": gains,
-        "innovations": innov, "n": len(states), "state_dim": ns,
-        "obs_dim": p, "p_symmetry_error": asym, "p_symmetrized": True,
-        "joseph_form": False,
-        "method": "Kalman (1960); the recursive counterpart of the Wiener "
-                  "filter of Rangayyan (2024) Section 3.9"})
+    return RichResult(
+        payload={
+            "states": states,
+            "covariances": covs,
+            "gains": gains,
+            "innovations": innov,
+            "n": len(states),
+            "state_dim": ns,
+            "obs_dim": p,
+            "p_symmetry_error": asym,
+            "p_symmetrized": True,
+            "joseph_form": False,
+            "method": "Kalman (1960); the recursive counterpart of the Wiener filter of Rangayyan (2024) Section 3.9",
+        }
+    )
 
 
 rangayyan_kalman_filter = kalman  # pre-policy spelling
 
 
 # -- rglms: Least-mean-squares (LMS) adaptive filter.
-def lmsfilt(primary, reference, order=8, mu=0.01, variable=False,
-            alpha=0.02):
+def lmsfilt(primary, reference, order=8, mu=0.01, variable=False, alpha=0.02):
     """Run the LMS adaptive noise canceller.
 
     Rangayyan (2024) Section 3.10.2, eqs. (3.195)-(3.196), (3.199),
@@ -744,8 +758,7 @@ def lmsfilt(primary, reference, order=8, mu=0.01, variable=False,
         yi = fsum(a * b for a, b in zip(w, rv))
         ei = xs[i] - yi
         if variable:
-            step = lmszhang(min(mv, 0.999), m, rs[i], alpha=alpha,
-                            power_prev=power_prev)
+            step = lmszhang(min(mv, 0.999), m, rs[i], alpha=alpha, power_prev=power_prev)
             power_prev = step["power"]
             mu_i = step["mu"]
         else:
@@ -756,25 +769,31 @@ def lmsfilt(primary, reference, order=8, mu=0.01, variable=False,
         hist.append(mu_i)
     px = fsum(v * v for v in xs)
     pe = fsum(v * v for v in e)
-    return RichResult(payload={
-        "e": e, "output": e, "y": y, "final_weights": w, "order": m,
-        "mu": mv, "variable_step": bool(variable),
-        "step_history": hist if variable else None,
-        "stable_bound": bound, "within_bound": mv < bound,
-        "input_power": px, "output_power": pe,
-        "power_reduction": (pe / px) if px > 0 else None,
-        "converges_in_the_mean_only": True,
-        "method": "Rangayyan (2024) Section 3.10.2, eq. (3.203)"})
+    return RichResult(
+        payload={
+            "e": e,
+            "output": e,
+            "y": y,
+            "final_weights": w,
+            "order": m,
+            "mu": mv,
+            "variable_step": bool(variable),
+            "step_history": hist if variable else None,
+            "stable_bound": bound,
+            "within_bound": mv < bound,
+            "input_power": px,
+            "output_power": pe,
+            "power_reduction": (pe / px) if px > 0 else None,
+            "converges_in_the_mean_only": True,
+            "method": "Rangayyan (2024) Section 3.10.2, eq. (3.203)",
+        }
+    )
 
 
 rangayyan_lms_filter = lmsfilt  # pre-policy spelling
 
 
 # -- rgpcgadp: Adaptive segmentation of PCG signals via SEM.
-
-
-
-
 
 
 def pcgseg(x, fs, window=None, step=None, order=6, threshold=None):
@@ -831,47 +850,52 @@ def pcgseg(x, fs, window=None, step=None, order=6, threshold=None):
         return out
 
     starts = list(range(0, n - w + 1, hop))
-    ref = spectrum(xs[starts[0]:starts[0] + w])
+    ref = spectrum(xs[starts[0] : starts[0] + w])
     if ref is None:
         raise ValueError("the first window has no usable AR spectrum")
     values, times = [], []
     for s in starts:
-        sp = spectrum(xs[s:s + w])
+        sp = spectrum(xs[s : s + w])
         values.append(sem(sp, ref)["sem"] if sp else 0.0)
         times.append(s / fsv)
     srt = sorted(values)
     med = srt[len(srt) // 2]
     mad = sorted(abs(v - med) for v in values)[len(values) // 2]
-    thr = float(threshold) if threshold is not None \
-        else med + 3.0 * 1.4826 * mad
-    bounds, ref = [], spectrum(xs[starts[0]:starts[0] + w])
+    thr = float(threshold) if threshold is not None else med + 3.0 * 1.4826 * mad
+    bounds, ref = [], spectrum(xs[starts[0] : starts[0] + w])
     adaptive = []
-    for idx, s in enumerate(starts):
-        sp = spectrum(xs[s:s + w])
+    for _idx, s in enumerate(starts):
+        sp = spectrum(xs[s : s + w])
         v = sem(sp, ref)["sem"] if (sp and ref) else 0.0
         adaptive.append(v)
         if v > thr:
             bounds.append(s)
             ref = sp
-    return RichResult(payload={
-        "sem": adaptive, "sem_fixed_reference": values, "times": times,
-        "boundaries": bounds, "n_boundaries": len(bounds),
-        "threshold": thr, "median": med, "mad": mad,
-        "window": w, "step": hop, "order": p, "fs": fsv,
-        "reference_restarted_at_boundaries": True,
-        "robust_threshold": threshold is None,
-        "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation "
-                  "of the PCG)"})
+    return RichResult(
+        payload={
+            "sem": adaptive,
+            "sem_fixed_reference": values,
+            "times": times,
+            "boundaries": bounds,
+            "n_boundaries": len(bounds),
+            "threshold": thr,
+            "median": med,
+            "mad": mad,
+            "window": w,
+            "step": hop,
+            "order": p,
+            "fs": fsv,
+            "reference_restarted_at_boundaries": True,
+            "robust_threshold": threshold is None,
+            "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation of the PCG)",
+        }
+    )
 
 
 rangayyan_pcg_adaptive_seg = pcgseg  # pre-policy spelling
 
 
 # -- rgricca: Steady-state Riccati equation solution for Kalman gain.
-
-
-
-
 
 
 def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
@@ -900,8 +924,7 @@ def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
     p = len(Hm)
 
     def mm(A, B):
-        return [[fsum(A[i][t] * B[t][j] for t in range(len(B)))
-                 for j in range(len(B[0]))] for i in range(len(A))]
+        return [[fsum(A[i][t] * B[t][j] for t in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
     def tr(M):
         return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
@@ -909,7 +932,7 @@ def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
     P = [row[:] for row in Qm]
     change = float("inf")
     it = 0
-    for it in range(1, int(maxiter) + 1):
+    for it in range(1, int(maxiter) + 1):  # noqa: B007 - read after the loop
         FPFt = mm(mm(Fm, P), tr(Fm))
         S = mm(mm(Hm, P), tr(Hm))
         S = [[S[i][j] + Rm[i][j] for j in range(p)] for i in range(p)]
@@ -918,12 +941,9 @@ def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
         for i in range(n):
             G.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
         corr = mm(mm(Fm, mm(G, mm(Hm, P))), tr(Fm))
-        Pn = [[FPFt[i][j] + Qm[i][j] - corr[i][j] for j in range(n)]
-              for i in range(n)]
-        Pn = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(n)]
-              for i in range(n)]
-        change = max(abs(Pn[i][j] - P[i][j])
-                     for i in range(n) for j in range(n))
+        Pn = [[FPFt[i][j] + Qm[i][j] - corr[i][j] for j in range(n)] for i in range(n)]
+        Pn = [[0.5 * (Pn[i][j] + Pn[j][i]) for j in range(n)] for i in range(n)]
+        change = max(abs(Pn[i][j] - P[i][j]) for i in range(n) for j in range(n))
         P = Pn
         if change < tol:
             break
@@ -933,12 +953,18 @@ def riccati(F, H, Q, R, maxiter=1000, tol=1e-12):
     K = []
     for i in range(n):
         K.append(_solve(tr(S), [PHt[i][j] for j in range(p)]))
-    return RichResult(payload={
-        "P": P, "K": K, "iterations": it, "change": change,
-        "converged": change < tol, "n": n,
-        "steady_state_is_the_wiener_solution": True,
-        "method": "discrete algebraic Riccati equation; the fixed point "
-                  "of the Kalman covariance recursion"})
+    return RichResult(
+        payload={
+            "P": P,
+            "K": K,
+            "iterations": it,
+            "change": change,
+            "converged": change < tol,
+            "n": n,
+            "steady_state_is_the_wiener_solution": True,
+            "method": "discrete algebraic Riccati equation; the fixed point of the Kalman covariance recursion",
+        }
+    )
 
 
 rangayyan_riccati_eq = riccati  # pre-policy spelling
@@ -994,37 +1020,42 @@ def rlsfilt(primary, reference, order=8, lam=0.98, delta=1.0):
         Pr = [fsum(P[a][b] * rv[b] for b in range(m)) for a in range(m)]
         den = lv + fsum(rv[a] * Pr[a] for a in range(m))
         if den <= 0:
-            raise ValueError("the RLS denominator vanished at sample %d; "
-                             "P has lost positive definiteness" % i)
+            raise ValueError(f"the RLS denominator vanished at sample {int(i)}; P has lost positive definiteness")
         kg = [v / den for v in Pr]
-        newP = [[(P[a][b] - kg[a] * Pr[b]) / lv for b in range(m)]
-                for a in range(m)]
-        asym = max(asym, max(abs(newP[a][b] - newP[b][a])
-                             for a in range(m) for b in range(m)))
-        P = [[0.5 * (newP[a][b] + newP[b][a]) for b in range(m)]
-             for a in range(m)]
+        newP = [[(P[a][b] - kg[a] * Pr[b]) / lv for b in range(m)] for a in range(m)]
+        asym = max(asym, max(abs(newP[a][b] - newP[b][a]) for a in range(m) for b in range(m)))
+        P = [[0.5 * (newP[a][b] + newP[b][a]) for b in range(m)] for a in range(m)]
         w = [a + b * alpha for a, b in zip(w, kg)]
         y.append(pred)
         e.append(alpha)
     px = fsum(v * v for v in xs)
     pe = fsum(v * v for v in e)
-    return RichResult(payload={
-        "e": e, "output": e, "y": y, "final_weights": w, "P": P,
-        "order": m, "lam": lv, "delta": dv,
-        "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
-        "p_symmetry_error": asym, "p_symmetrized": True,
-        "input_power": px, "output_power": pe,
-        "power_reduction": (pe / px) if px > 0 else None,
-        "method": "Rangayyan (2024) Section 3.10.3, eqs. (3.215), "
-                  "(3.221), (3.224)-(3.225)"})
+    return RichResult(
+        payload={
+            "e": e,
+            "output": e,
+            "y": y,
+            "final_weights": w,
+            "P": P,
+            "order": m,
+            "lam": lv,
+            "delta": dv,
+            "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
+            "p_symmetry_error": asym,
+            "p_symmetrized": True,
+            "input_power": px,
+            "output_power": pe,
+            "power_reduction": (pe / px) if px > 0 else None,
+            "method": "Rangayyan (2024) Section 3.10.3, eqs. (3.215), (3.221), (3.224)-(3.225)",
+        }
+    )
 
 
 rangayyan_rls_filter = rlsfilt  # pre-policy spelling
 
 
 # -- rgrls_mon: Monitoring RLS filter output for nonstationary detection.
-def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None,
-               threshold=3.0, window=None):
+def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None, threshold=3.0, window=None):
     """Watch an RLS filter's error for a nonstationarity.
 
     Rangayyan (2024) Section 8.5 uses adaptive segmentation: while the
@@ -1046,8 +1077,7 @@ def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None,
     n = len(xs)
     if n <= 2 * m:
         raise ValueError("need well more samples than taps")
-    ref = aslist(reference) if reference is not None else \
-        [0.0] + xs[:-1]                  # one-step prediction by default
+    ref = aslist(reference) if reference is not None else [0.0] + xs[:-1]  # one-step prediction by default
     r = rlsfilt(xs, ref, order=m, lam=lam)
     e = r["e"]
     s = int(settle) if settle is not None else min(n // 4, 10 * m)
@@ -1059,7 +1089,7 @@ def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None,
     power = []
     for i in range(n):
         lo = max(0, i - w + 1)
-        seg = e[lo:i + 1]
+        seg = e[lo : i + 1]
         power.append(fsum(v * v for v in seg) / len(seg))
     base = power[s:]
     mu = fsum(base) / len(base)
@@ -1075,12 +1105,22 @@ def rlsmonitor(x, reference=None, order=8, lam=0.98, settle=None,
             i = j + 1
         else:
             i += 1
-    return RichResult(payload={
-        "error": e, "error_power": power, "boundaries": hits,
-        "n_boundaries": len(hits), "threshold": thr, "baseline": mu,
-        "baseline_sd": sd, "settle": s, "window": w, "order": m,
-        "transient_excluded": True,
-        "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation)"})
+    return RichResult(
+        payload={
+            "error": e,
+            "error_power": power,
+            "boundaries": hits,
+            "n_boundaries": len(hits),
+            "threshold": thr,
+            "baseline": mu,
+            "baseline_sd": sd,
+            "settle": s,
+            "window": w,
+            "order": m,
+            "transient_excluded": True,
+            "method": "Rangayyan (2024) Section 8.5 (adaptive segmentation)",
+        }
+    )
 
 
 rangayyan_rls_monitor = rlsmonitor  # pre-policy spelling
@@ -1145,14 +1185,19 @@ def rlslattice(x, order=4, lam=0.98, delta=1e-2):
         ferr[i] = f
         berr[i] = b
         bprev = b
-    return RichResult(payload={
-        "reflection": gam[1:], "forward_error": [row[m] for row in ferr],
-        "backward_error": [row[m] for row in berr],
-        "all_orders_forward": ferr, "order": m, "lam": lv,
-        "stable": all(abs(g) < 1.0 for g in gam[1:]),
-        "every_stage_is_a_predictor": True,
-        "method": "RLS lattice; the |gamma| < 1 stability condition is "
-                  "the same as Rangayyan (2024) eq. (7.39)"})
+    return RichResult(
+        payload={
+            "reflection": gam[1:],
+            "forward_error": [row[m] for row in ferr],
+            "backward_error": [row[m] for row in berr],
+            "all_orders_forward": ferr,
+            "order": m,
+            "lam": lv,
+            "stable": all(abs(g) < 1.0 for g in gam[1:]),
+            "every_stage_is_a_predictor": True,
+            "method": "RLS lattice; the |gamma| < 1 stability condition is the same as Rangayyan (2024) eq. (7.39)",
+        }
+    )
 
 
 rangayyan_rls_lattice = rlslattice  # pre-policy spelling
@@ -1191,22 +1236,25 @@ def sem(psd, reference):
     value = fsum(v * v for v in d) / len(d)
     offset = fsum(d) / len(d)
     shape = fsum((v - offset) ** 2 for v in d) / len(d)
-    return RichResult(payload={
-        "sem": value, "log_difference": d, "n_bins": len(d),
-        "mean_offset": offset, "shape_only": shape,
-        "gain_change_only": abs(value - offset * offset) < 1e-9,
-        "zero_bins": zeros, "scale_free": True,
-        "method": "Rangayyan (2024) Section 8.5 (spectral error measure)"})
+    return RichResult(
+        payload={
+            "sem": value,
+            "log_difference": d,
+            "n_bins": len(d),
+            "mean_offset": offset,
+            "shape_only": shape,
+            "gain_change_only": abs(value - offset * offset) < 1e-9,
+            "zero_bins": zeros,
+            "scale_free": True,
+            "method": "Rangayyan (2024) Section 8.5 (spectral error measure)",
+        }
+    )
 
 
 rangayyan_spec_error_meas = sem  # pre-policy spelling
 
 
 # -- rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.
-
-
-
-
 
 
 def whopf(x, d, order):
@@ -1238,22 +1286,27 @@ def whopf(x, d, order):
     n = len(ds)
     var_d = fsum(v * v for v in ds) / n - (fsum(ds) / n) ** 2
     jm = wienermin(Phi, theta, var_d)
-    return RichResult(payload={
-        "w": r["w"], "phi": phi, "theta": theta, "Phi": Phi,
-        "order": m, "j_min": jm["j_min"], "var_d": var_d,
-        "toeplitz": True, "acf_biased": True,
-        "condition": r["condition"],
-        "method": "Rangayyan (2024) eqs. (3.168), (3.171)"})
+    return RichResult(
+        payload={
+            "w": r["w"],
+            "phi": phi,
+            "theta": theta,
+            "Phi": Phi,
+            "order": m,
+            "j_min": jm["j_min"],
+            "var_d": var_d,
+            "toeplitz": True,
+            "acf_biased": True,
+            "condition": r["condition"],
+            "method": "Rangayyan (2024) eqs. (3.168), (3.171)",
+        }
+    )
 
 
 rangayyan_wiener_hopf = whopf  # pre-policy spelling
 
 
 # -- rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).
-
-
-
-
 
 
 def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
@@ -1281,23 +1334,33 @@ def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
     have_time = desired is not None
     have_freq = sd is not None or seta is not None
     if have_time == have_freq:
-        raise ValueError("give either a desired signal (time-domain route, "
-                         "eqs. 3.168-3.169) or both PSDs (frequency route, "
-                         "eq. 3.186), not both and not neither")
+        raise ValueError(
+            "give either a desired signal (time-domain route, "
+            "eqs. 3.168-3.169) or both PSDs (frequency route, "
+            "eq. 3.186), not both and not neither"
+        )
     if have_time:
         r = whopf(xs, desired, order)
         y = wienerout(r["w"], xs)["d_hat"]
-        return RichResult(payload={
-            "y": y, "w": r["w"], "order": r["order"], "j_min": r["j_min"],
-            "route": "time", "method": "Rangayyan (2024) eqs. (3.168)-(3.169)"})
+        return RichResult(
+            payload={
+                "y": y,
+                "w": r["w"],
+                "order": r["order"],
+                "j_min": r["j_min"],
+                "route": "time",
+                "method": "Rangayyan (2024) eqs. (3.168)-(3.169)",
+            }
+        )
     if sd is None or seta is None:
         raise ValueError("the frequency route needs BOTH S_d and S_eta")
     n = len(xs)
     W = wienersnr(sd, seta)["W"]
     half = n // 2 + 1
     if len(W) != half:
-        raise ValueError("the PSDs need one value per one-sided DFT bin "
-                         "(%d for %d samples), got %d" % (half, n, len(W)))
+        raise ValueError(
+            f"the PSDs need one value per one-sided DFT bin ({int(half)} for {int(n)} samples), got {int(len(W))}"
+        )
     re, im = [], []
     step = 2.0 * pi / n
     for k in range(n):
@@ -1314,9 +1377,16 @@ def wienerfilt(x, desired=None, order=8, sd=None, seta=None, fs=1.0):
             ang = step * i * k
             acc += re[k] * cos(ang) - im[k] * sin(ang)
         y.append(acc / n)
-    return RichResult(payload={
-        "y": y, "W": W, "route": "frequency", "fs": float(fs), "n": n,
-        "method": "Rangayyan (2024) eq. (3.186)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "W": W,
+            "route": "frequency",
+            "fs": float(fs),
+            "n": n,
+            "method": "Rangayyan (2024) eq. (3.186)",
+        }
+    )
 
 
 rangayyan_wiener_filter = wienerfilt  # pre-policy spelling
@@ -1363,16 +1433,18 @@ def rangayyan_ch3_estimation_error(d, d_tilde, n=None):
         if not 0 <= idx < e.size:
             raise ValueError(f"n must lie in 0..{e.size - 1}, got {idx}.")
         at_n = float(e[idx])
-    return RichResult(payload={"error": e, "error_at_n": at_n,
-                               "mse": float(np.mean(e**2)), "N": int(e.size),
-                               "method": "e(n) = d(n) - d_tilde(n)"})
+    return RichResult(
+        payload={
+            "error": e,
+            "error_at_n": at_n,
+            "mse": float(np.mean(e**2)),
+            "N": int(e.size),
+            "method": "e(n) = d(n) - d_tilde(n)",
+        }
+    )
 
 
 # -- rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..
-
-
-
-
 
 
 def wienerout(w, x):
@@ -1396,9 +1468,9 @@ def wienerout(w, x):
     out = []
     for i in range(n):
         out.append(fsum(ws[k] * xs[i - k] for k in range(m) if i - k >= 0))
-    return RichResult(payload={
-        "d_hat": out, "n": n, "order": m, "settled_from": m - 1,
-        "method": "Rangayyan (2024) eq. (3.154)"})
+    return RichResult(
+        payload={"d_hat": out, "n": n, "order": m, "settled_from": m - 1, "method": "Rangayyan (2024) eq. (3.154)"}
+    )
 
 
 rangayyan_ch3_wiener_filter_output_convolution = wienerout  # pre-policy spelling
@@ -1421,14 +1493,19 @@ def wienerdot(w, xvec):
     """
     ws, xv = aslist(w), aslist(xvec)
     if len(ws) != len(xv):
-        raise ValueError("w and x(n) must have the same length; x(n) runs "
-                         "backwards in time, x[0] being the current sample")
+        raise ValueError(
+            "w and x(n) must have the same length; x(n) runs backwards in time, x[0] being the current sample"
+        )
     if not ws:
         raise ValueError("need at least one tap")
-    return RichResult(payload={
-        "d_hat": fsum(a * b for a, b in zip(ws, xv)), "order": len(ws),
-        "vector_is_time_reversed": True,
-        "method": "Rangayyan (2024) eq. (3.155)"})
+    return RichResult(
+        payload={
+            "d_hat": fsum(a * b for a, b in zip(ws, xv)),
+            "order": len(ws),
+            "vector_is_time_reversed": True,
+            "method": "Rangayyan (2024) eq. (3.155)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_output_dot_product = wienerdot  # pre-policy spelling
@@ -1483,10 +1560,17 @@ def rangayyan_ch3_estimation_error_vector_form(d, w, x, n=None):
         if not 0 <= idx < e.size:
             raise ValueError(f"n must lie in 0..{e.size - 1}, got {idx}.")
         at_n = float(e[idx])
-    return RichResult(payload={"error": e, "error_at_n": at_n,
-                               "mse": float(np.mean(e**2)), "estimate": est,
-                               "N": int(d.size), "p": int(w.size),
-                               "method": "e(n) = d(n) - w^T x(n)"})
+    return RichResult(
+        payload={
+            "error": e,
+            "error_at_n": at_n,
+            "mse": float(np.mean(e**2)),
+            "estimate": est,
+            "N": int(d.size),
+            "p": int(w.size),
+            "method": "e(n) = d(n) - w^T x(n)",
+        }
+    )
 
 
 # -- rng141: MSE cost function of the Wiener filter (Rangayyan Eq 3.166).
@@ -1630,7 +1714,7 @@ def rangayyan_ch3_cross_correlation_vector(x, d, M):
     M = int(M)
     if M < 1:
         raise ValueError(f"M (filter length) must be >= 1; got {M}")
-    if M > xs.size:
+    if xs.size < M:
         raise ValueError(f"M={M} exceeds the signal length {xs.size}")
     N = xs.size
     theta = np.empty(M, dtype=float)
@@ -1703,7 +1787,7 @@ def rangayyan_ch3_autocorrelation_matrix(x, M):
     M = int(M)
     if M < 1:
         raise ValueError(f"M (filter length) must be >= 1; got {M}")
-    if M > xs.size:
+    if xs.size < M:
         raise ValueError(f"M={M} exceeds the signal length {xs.size}")
     N = xs.size
     phi = np.empty(M, dtype=float)
@@ -1744,23 +1828,23 @@ def msegrad(phi, theta, w):
     m = len(ws)
     if len(t) != m or any(len(r) != m for r in P) or len(P) != m:
         raise ValueError("Phi must be M x M and Theta, w of length M")
-    g = [2.0 * (fsum(P[i][j] * ws[j] for j in range(m)) - t[i])
-         for i in range(m)]
-    return RichResult(payload={
-        "gradient": g, "norm": sqrt(fsum(v * v for v in g)),
-        "at_optimum": all(abs(v) < 1e-9 for v in g), "order": m,
-        "surface": "quadratic, single minimum",
-        "method": "Rangayyan (2024) eq. (3.167)"})
+    g = [2.0 * (fsum(P[i][j] * ws[j] for j in range(m)) - t[i]) for i in range(m)]
+    return RichResult(
+        payload={
+            "gradient": g,
+            "norm": sqrt(fsum(v * v for v in g)),
+            "at_optimum": all(abs(v) < 1e-9 for v in g),
+            "order": m,
+            "surface": "quadratic, single minimum",
+            "method": "Rangayyan (2024) eq. (3.167)",
+        }
+    )
 
 
 rangayyan_ch3_mse_gradient = msegrad  # pre-policy spelling
 
 
 # -- rng145: Wiener-Hopf normal equation for the optimal tap weights..
-
-
-
-
 
 
 def wienerhopf(phi, theta):
@@ -1784,13 +1868,18 @@ def wienerhopf(phi, theta):
     w = _solve(P, t)
     resid = [fsum(P[i][j] * w[j] for j in range(m)) - t[i] for i in range(m)]
     diag = [abs(P[i][i]) for i in range(m)]
-    return RichResult(payload={
-        "w": w, "residual": resid, "max_residual": max(abs(v) for v in resid),
-        "order": m,
-        "condition": (max(diag) / min(diag)) if min(diag) > 0 else float("inf"),
-        "orthogonality": "at w_o the input vector and the error are "
-                         "orthogonal, and so are the output and the error",
-        "method": "Rangayyan (2024) eq. (3.168)"})
+    return RichResult(
+        payload={
+            "w": w,
+            "residual": resid,
+            "max_residual": max(abs(v) for v in resid),
+            "order": m,
+            "condition": (max(diag) / min(diag)) if min(diag) > 0 else float("inf"),
+            "orthogonality": "at w_o the input vector and the error are "
+            "orthogonal, and so are the output and the error",
+            "method": "Rangayyan (2024) eq. (3.168)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_hopf_normal_equation = wienerhopf  # pre-policy spelling
@@ -1838,23 +1927,23 @@ def wienermin(phi, theta, var_d):
     r = wienerhopf(phi, theta)
     t = aslist(theta)
     jmin = float(var_d) - fsum(a * b for a, b in zip(t, r["w"]))
-    return RichResult(payload={
-        "j_min": jmin, "w_o": r["w"], "var_d": float(var_d),
-        "explained": fsum(a * b for a, b in zip(t, r["w"])),
-        "consistent": jmin >= -1e-9 * max(abs(float(var_d)), 1.0),
-        "fraction_explained": (1.0 - jmin / float(var_d))
-        if var_d else None,
-        "method": "Rangayyan (2024) eq. (3.172)"})
+    return RichResult(
+        payload={
+            "j_min": jmin,
+            "w_o": r["w"],
+            "var_d": float(var_d),
+            "explained": fsum(a * b for a, b in zip(t, r["w"])),
+            "consistent": jmin >= -1e-9 * max(abs(float(var_d)), 1.0),
+            "fraction_explained": (1.0 - jmin / float(var_d)) if var_d else None,
+            "method": "Rangayyan (2024) eq. (3.172)",
+        }
+    )
 
 
 rangayyan_ch3_minimum_mse = wienermin  # pre-policy spelling
 
 
 # -- rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..
-
-
-
-
 
 
 def wienerconv(w, phi, theta):
@@ -1881,11 +1970,17 @@ def wienerconv(w, phi, theta):
     lhs = [fsum(ws[i] * p[abs(k - i)] for i in range(m)) for k in range(m)]
     gap = max(abs(a - b) for a, b in zip(lhs, t[:m]))
     scale = max(abs(v) for v in t[:m]) or 1.0
-    return RichResult(payload={
-        "lhs": lhs, "theta": t[:m], "max_difference": gap,
-        "holds": gap <= 1e-8 * scale, "order": m,
-        "requires_stationarity": True,
-        "method": "Rangayyan (2024) eqs. (3.173)-(3.174)"})
+    return RichResult(
+        payload={
+            "lhs": lhs,
+            "theta": t[:m],
+            "max_difference": gap,
+            "holds": gap <= 1e-8 * scale,
+            "order": m,
+            "requires_stationarity": True,
+            "method": "Rangayyan (2024) eqs. (3.173)-(3.174)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_convolution_relationship = wienerconv  # pre-policy spelling
@@ -1914,11 +2009,17 @@ def wienerfreqrel(W, sxx, sxd):
     gap = max(abs(u - v) for u, v in zip(lhs, b))
     scale = max(abs(v) for v in b) or 1.0
     und = [i for i, v in enumerate(a) if abs(v) <= 1e-300]
-    return RichResult(payload={
-        "lhs": lhs, "sxd": b, "max_difference": gap,
-        "holds": gap <= 1e-8 * scale,
-        "undetermined_bins": und, "n_undetermined": len(und),
-        "method": "Rangayyan (2024) eq. (3.175)"})
+    return RichResult(
+        payload={
+            "lhs": lhs,
+            "sxd": b,
+            "max_difference": gap,
+            "holds": gap <= 1e-8 * scale,
+            "undetermined_bins": und,
+            "n_undetermined": len(und),
+            "method": "Rangayyan (2024) eq. (3.175)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_frequency_relation = wienerfreqrel  # pre-policy spelling
@@ -1952,11 +2053,17 @@ def wienerfreq(sxx, sxd):
             und.append(i)
         else:
             W.append(c / p)
-    return RichResult(payload={
-        "W": W, "magnitude": [abs(v) for v in W],
-        "undetermined_bins": und, "n_undetermined": len(und),
-        "zero_where_undetermined": True, "n": len(W),
-        "method": "Rangayyan (2024) eq. (3.176)"})
+    return RichResult(
+        payload={
+            "W": W,
+            "magnitude": [abs(v) for v in W],
+            "undetermined_bins": und,
+            "n_undetermined": len(und),
+            "zero_where_undetermined": True,
+            "n": len(W),
+            "method": "Rangayyan (2024) eq. (3.176)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_frequency_response = wienerfreq  # pre-policy spelling
@@ -2070,17 +2177,23 @@ def wienersnr(sd, seta):
         else:
             W.append(a / tot)
     snr = [(a / b if b > 0 else float("inf")) for a, b in zip(d, e)]
-    return RichResult(payload={
-        "W": W, "snr": snr, "undetermined_bins": und,
-        "zero_where_signal_absent": all(W[i] == 0.0 for i in range(len(d))
-                                        if d[i] == 0.0),
-        "unity_where_noise_absent": all(W[i] == 1.0 for i in range(len(d))
-                                        if e[i] == 0.0 and d[i] > 0),
-        "monotone_in_snr": all(
-            W[i] <= W[j] + 1e-12
-            for i in range(len(d)) for j in range(len(d))
-            if snr[i] <= snr[j] and snr[i] != float("inf")),
-        "n": len(W), "method": "Rangayyan (2024) eq. (3.186)"})
+    return RichResult(
+        payload={
+            "W": W,
+            "snr": snr,
+            "undetermined_bins": und,
+            "zero_where_signal_absent": all(W[i] == 0.0 for i in range(len(d)) if d[i] == 0.0),
+            "unity_where_noise_absent": all(W[i] == 1.0 for i in range(len(d)) if e[i] == 0.0 and d[i] > 0),
+            "monotone_in_snr": all(
+                W[i] <= W[j] + 1e-12
+                for i in range(len(d))
+                for j in range(len(d))
+                if snr[i] <= snr[j] and snr[i] != float("inf")
+            ),
+            "n": len(W),
+            "method": "Rangayyan (2024) eq. (3.186)",
+        }
+    )
 
 
 rangayyan_ch3_wiener_frequency_response_snr_form = wienersnr  # pre-policy spelling
@@ -2113,13 +2226,20 @@ def ancinput(v, m):
     sv = sqrt(fsum((a - mv) ** 2 for a in vs) / n)
     sm = sqrt(fsum((b - mm) ** 2 for b in ms) / n)
     rho = cov / (sv * sm) if sv > 0 and sm > 0 else 0.0
-    return RichResult(payload={
-        "x": x, "v": vs, "m": ms, "n": n, "correlation": rho,
-        "independent": abs(rho) < 0.1,
-        "assumption": "the method needs v and m statistically "
-                      "independent, and the reference correlated with m "
-                      "but not with v",
-        "method": "Rangayyan (2024) Section 3.10.1"})
+    return RichResult(
+        payload={
+            "x": x,
+            "v": vs,
+            "m": ms,
+            "n": n,
+            "correlation": rho,
+            "independent": abs(rho) < 0.1,
+            "assumption": "the method needs v and m statistically "
+            "independent, and the reference correlated with m "
+            "but not with v",
+            "method": "Rangayyan (2024) Section 3.10.1",
+        }
+    )
 
 
 rangayyan_ch3_anc_primary_input_model = ancinput  # pre-policy spelling
@@ -2143,19 +2263,24 @@ def ancout(x, y):
     """
     xs, ys = aslist(x), aslist(y)
     if len(xs) != len(ys):
-        raise ValueError("primary input and filter output must have the "
-                         "same length")
+        raise ValueError("primary input and filter output must have the same length")
     if not xs:
         raise ValueError("need at least one sample")
     e = [a - b for a, b in zip(xs, ys)]
     px = fsum(v * v for v in xs)
     pe = fsum(v * v for v in e)
-    return RichResult(payload={
-        "e": e, "v_hat": e, "n": len(e),
-        "input_power": px, "output_power": pe,
-        "power_reduction": (pe / px) if px > 0 else None,
-        "error_is_the_output": True,
-        "method": "Rangayyan (2024) eq. (3.196)"})
+    return RichResult(
+        payload={
+            "e": e,
+            "v_hat": e,
+            "n": len(e),
+            "input_power": px,
+            "output_power": pe,
+            "power_reduction": (pe / px) if px > 0 else None,
+            "error_is_the_output": True,
+            "method": "Rangayyan (2024) eq. (3.196)",
+        }
+    )
 
 
 rangayyan_ch3_anc_output = ancout  # pre-policy spelling
@@ -2175,15 +2300,19 @@ def lmsout(w, r):
     """
     ws, rs = aslist(w), aslist(r)
     if not ws or not rs:
-        raise ValueError("both the tap weights and the reference need "
-                         "samples")
+        raise ValueError("both the tap weights and the reference need samples")
     m = len(ws)
-    y = [fsum(ws[k] * rs[i - k] for k in range(m) if i - k >= 0)
-         for i in range(len(rs))]
-    return RichResult(payload={
-        "y": y, "n": len(y), "order": m, "settled_from": m - 1,
-        "filters_the_reference": True,
-        "method": "Rangayyan (2024) eq. (3.195)"})
+    y = [fsum(ws[k] * rs[i - k] for k in range(m) if i - k >= 0) for i in range(len(rs))]
+    return RichResult(
+        payload={
+            "y": y,
+            "n": len(y),
+            "order": m,
+            "settled_from": m - 1,
+            "filters_the_reference": True,
+            "method": "Rangayyan (2024) eq. (3.195)",
+        }
+    )
 
 
 rangayyan_ch3_lms_filter_output = lmsout  # pre-policy spelling
@@ -2244,10 +2373,16 @@ def rangayyan_ch3_lms_estimation_error(x, w, r, n=None):
         if not 0 <= idx < e.size:
             raise ValueError(f"n must lie in 0..{e.size - 1}, got {idx}.")
         at_n = float(e[idx])
-    return RichResult(payload={"error": e, "error_at_n": at_n,
-                               "mse": float(np.mean(e**2)), "time_varying": bool(tv),
-                               "N": int(x.size),
-                               "method": "e(n) = x(n) - w^T(n) r(n); weights are time-indexed"})
+    return RichResult(
+        payload={
+            "error": e,
+            "error_at_n": at_n,
+            "mse": float(np.mean(e**2)),
+            "time_varying": bool(tv),
+            "N": int(x.size),
+            "method": "e(n) = x(n) - w^T(n) r(n); weights are time-indexed",
+        }
+    )
 
 
 # -- rng157: Quadratic squared-error form used in LMS gradient derivations..
@@ -2278,13 +2413,18 @@ def lmssqerr(x, rvec, w):
     rw = fsum(a * b for a, b in zip(rv, ws))
     expanded = xv * xv - 2.0 * xv * rw + rw * rw
     e = xv - rw
-    return RichResult(payload={
-        "e": e, "e_squared": e * e, "expanded": expanded,
-        "max_difference": abs(expanded - e * e),
-        "agrees": abs(expanded - e * e) <= 1e-9 * (1 + abs(e * e)),
-        "nonnegative": expanded >= -1e-12,
-        "instantaneous_not_expected": True,
-        "method": "Rangayyan (2024) eq. (3.200)"})
+    return RichResult(
+        payload={
+            "e": e,
+            "e_squared": e * e,
+            "expanded": expanded,
+            "max_difference": abs(expanded - e * e),
+            "agrees": abs(expanded - e * e) <= 1e-9 * (1 + abs(e * e)),
+            "nonnegative": expanded >= -1e-12,
+            "instantaneous_not_expected": True,
+            "method": "Rangayyan (2024) eq. (3.200)",
+        }
+    )
 
 
 rangayyan_ch3_lms_squared_error = lmssqerr  # pre-policy spelling
@@ -2315,11 +2455,17 @@ def lmsdescent(w, e, rvec, mu):
     ev = float(e)
     grad = [-2.0 * ev * v for v in rv]
     step = [a - float(mu) * g for a, g in zip(ws, grad)]
-    return RichResult(payload={
-        "gradient": grad, "w_next": step, "mu": float(mu), "e": ev,
-        "order": len(ws),
-        "equals_widrow_hoff": True,
-        "method": "Rangayyan (2024) eqs. (3.201)-(3.202)"})
+    return RichResult(
+        payload={
+            "gradient": grad,
+            "w_next": step,
+            "mu": float(mu),
+            "e": ev,
+            "order": len(ws),
+            "equals_widrow_hoff": True,
+            "method": "Rangayyan (2024) eqs. (3.201)-(3.202)",
+        }
+    )
 
 
 rangayyan_ch3_lms_steepest_descent = lmsdescent  # pre-policy spelling
@@ -2373,9 +2519,15 @@ def rangayyan_ch3_lms_gradient_estimate(r, e, x=None, w=None, n=None):
         if not 0 <= idx < grad.shape[0]:
             raise ValueError(f"n must lie in 0..{grad.shape[0] - 1}, got {idx}.")
         at_n = grad[idx]
-    return RichResult(payload={"gradient": grad, "gradient_at_n": at_n,
-                               "N": int(R.shape[0]), "p": int(R.shape[1]),
-                               "method": "grad e^2(n) = -2 e(n) r(n); stochastic, not exact"})
+    return RichResult(
+        payload={
+            "gradient": grad,
+            "gradient_at_n": at_n,
+            "N": int(R.shape[0]),
+            "p": int(R.shape[1]),
+            "method": "grad e^2(n) = -2 e(n) r(n); stochastic, not exact",
+        }
+    )
 
 
 # -- rng160: Widrow-Hoff LMS tap-weight update rule..
@@ -2405,11 +2557,18 @@ def widrowhoff(w, e, rvec, mu):
     nxt = [a + 2.0 * mv * ev * b for a, b in zip(ws, rv)]
     power = fsum(v * v for v in rv)
     bound = 1.0 / power if power > 0 else float("inf")
-    return RichResult(payload={
-        "w_next": nxt, "mu": mv, "e": ev, "order": len(ws),
-        "factor_of_two_is_in_the_equation": True,
-        "stable_bound": bound, "within_bound": mv < bound,
-        "method": "Rangayyan (2024) eq. (3.203)"})
+    return RichResult(
+        payload={
+            "w_next": nxt,
+            "mu": mv,
+            "e": ev,
+            "order": len(ws),
+            "factor_of_two_is_in_the_equation": True,
+            "stable_bound": bound,
+            "within_bound": mv < bound,
+            "method": "Rangayyan (2024) eq. (3.203)",
+        }
+    )
 
 
 rangayyan_ch3_widrow_hoff_lms = widrowhoff  # pre-policy spelling
@@ -2434,10 +2593,16 @@ def lmsvarstep(w, e, rvec, mu_n):
         raise ValueError("need at least one tap")
     mv, ev = float(mu_n), float(e)
     nxt = [a + 2.0 * mv * ev * b for a, b in zip(ws, rv)]
-    return RichResult(payload={
-        "w_next": nxt, "mu": mv, "e": ev, "order": len(ws),
-        "time_varying": True,
-        "method": "Rangayyan (2024) eq. (3.204)"})
+    return RichResult(
+        payload={
+            "w_next": nxt,
+            "mu": mv,
+            "e": ev,
+            "order": len(ws),
+            "time_varying": True,
+            "method": "Rangayyan (2024) eq. (3.204)",
+        }
+    )
 
 
 rangayyan_ch3_lms_variable_step = lmsvarstep  # pre-policy spelling
@@ -2471,20 +2636,28 @@ def lmszhang(mu, order, r, alpha=0.02, power_prev=None):
         raise ValueError("eq. (3.205) needs 0 < mu < 1")
     av = float(alpha)
     if not 0 <= av <= 0.5:
-        raise ValueError("the book writes 0 <= alpha << 1; alpha above 0.5 "
-                         "tracks the instantaneous sample instead of "
-                         "averaging, got %g" % av)
+        raise ValueError(
+            "the book writes 0 <= alpha << 1; alpha above 0.5 "
+            "tracks the instantaneous sample instead of "
+            f"averaging, got {av:g}"
+        )
     rv = float(r)
     prev = rv * rv if power_prev is None else float(power_prev)
     power = av * rv * rv + (1.0 - av) * prev
     if power <= 0:
-        raise ValueError("the running power estimate vanished; mu(n) is "
-                         "unbounded")
+        raise ValueError("the running power estimate vanished; mu(n) is unbounded")
     step = mv / ((m + 1) * power)
-    return RichResult(payload={
-        "mu": step, "power": power, "power_prev": prev, "alpha": av,
-        "order": m, "base_mu": mv,
-        "method": "Rangayyan (2024) eq. (3.205), after Zhang et al."})
+    return RichResult(
+        payload={
+            "mu": step,
+            "power": power,
+            "power_prev": prev,
+            "alpha": av,
+            "order": m,
+            "base_mu": mv,
+            "method": "Rangayyan (2024) eq. (3.205), after Zhang et al.",
+        }
+    )
 
 
 rangayyan_ch3_lms_step_size_zhang = lmszhang  # pre-policy spelling
@@ -2517,21 +2690,23 @@ def rlsobj(errors, lam):
     n = len(e)
     weights = [lv ** (n - 1 - i) for i in range(n)]
     xi = fsum(wgt * v * v for wgt, v in zip(weights, e))
-    return RichResult(payload={
-        "xi": xi, "weights": weights, "lam": lv, "n": n,
-        "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
-        "growing_window": lv == 1.0,
-        "method": "Rangayyan (2024) eq. (3.206)"})
+    return RichResult(
+        payload={
+            "xi": xi,
+            "weights": weights,
+            "lam": lv,
+            "n": n,
+            "memory": (1.0 / (1.0 - lv)) if lv < 1 else float("inf"),
+            "growing_window": lv == 1.0,
+            "method": "Rangayyan (2024) eq. (3.206)",
+        }
+    )
 
 
 rangayyan_ch3_rls_objective = rlsobj  # pre-policy spelling
 
 
 # -- rng164: Normal equation for the RLS algorithm..
-
-
-
-
 
 
 def rlsnormal(phi, theta):
@@ -2609,9 +2784,16 @@ def rangayyan_ch3_rls_phi_matrix(r, lam=0.99, n=None):
         cond = float(np.linalg.cond(Phi))
     except np.linalg.LinAlgError:
         cond = np.inf
-    return RichResult(payload={"Phi": Phi, "effective_memory": float(mem),
-                               "lam": lam, "n": idx, "condition_number": cond,
-                               "method": "Phi(n) = sum lambda^(n-i) r(i) r^T(i)"})
+    return RichResult(
+        payload={
+            "Phi": Phi,
+            "effective_memory": float(mem),
+            "lam": lam,
+            "n": idx,
+            "condition_number": cond,
+            "method": "Phi(n) = sum lambda^(n-i) r(i) r^T(i)",
+        }
+    )
 
 
 # -- rng166: RLS cross-correlation vector.
@@ -2669,9 +2851,15 @@ def rangayyan_ch3_rls_theta_vector(r, x, lam=0.99, n=None):
         weights = np.linalg.solve(Phi, Theta)
     except np.linalg.LinAlgError:
         weights = np.linalg.lstsq(Phi, Theta, rcond=None)[0]
-    return RichResult(payload={"Theta": Theta, "weights": weights, "lam": lam,
-                               "n": idx,
-                               "method": "Theta(n) = sum lambda^(n-i) r(i) x(i); Phi w = Theta"})
+    return RichResult(
+        payload={
+            "Theta": Theta,
+            "weights": weights,
+            "lam": lam,
+            "n": idx,
+            "method": "Theta(n) = sum lambda^(n-i) r(i) x(i); Phi w = Theta",
+        }
+    )
 
 
 # -- rng167: RLS recursion for the autocorrelation matrix (Rangayyan Eq 3.211).
@@ -2724,10 +2912,7 @@ def rangayyan_ch3_rls_phi_recursion(Phi, r, lam):
     if rv.size != P.shape[0]:
         raise ValueError(f"r must have length {P.shape[0]}; got {rv.size}")
     if not (0.0 < lam <= 1.0):
-        raise ValueError(
-            f"lam (forgetting factor) must satisfy 0 < lam <= 1; got {lam!r} "
-            "(Rangayyan p. 186)"
-        )
+        raise ValueError(f"lam (forgetting factor) must satisfy 0 < lam <= 1; got {lam!r} (Rangayyan p. 186)")
     Phi_n = lam * P + np.outer(rv, rv)
     return RichResult(
         payload={
@@ -2789,10 +2974,7 @@ def rangayyan_ch3_rls_theta_recursion(Theta, r, x, lam):
     if rv.size != th.size:
         raise ValueError(f"r must have the same length as Theta ({th.size}); got {rv.size}")
     if xs.ndim != 0:
-        raise ValueError(
-            f"x must be a scalar sample x(n); got shape {xs.shape}. Eq. (3.212) "
-            "updates one time step."
-        )
+        raise ValueError(f"x must be a scalar sample x(n); got shape {xs.shape}. Eq. (3.212) updates one time step.")
     if not (0.0 < lam <= 1.0):
         raise ValueError(f"lam must satisfy 0 < lam <= 1; got {lam!r} (Rangayyan p. 186)")
     Theta_n = lam * th + rv * float(xs)
@@ -2807,10 +2989,6 @@ def rangayyan_ch3_rls_theta_recursion(Theta, r, x, lam):
 
 
 # -- rng169: Matrix inversion (ABCD) lemma used in RLS..
-
-
-
-
 
 
 def abcdlemma(A, B, C, D):
@@ -2849,31 +3027,34 @@ def abcdlemma(A, B, C, D):
         m = len(M)
         cols = []
         for j in range(m):
-            cols.append(_solve(M, [1.0 if i == j else 0.0
-                                   for i in range(m)]))
+            cols.append(_solve(M, [1.0 if i == j else 0.0 for i in range(m)]))
         return [[cols[j][i] for j in range(m)] for i in range(m)]
 
     def mul(P, Q):
-        return [[fsum(P[i][t] * Q[t][j] for t in range(len(Q)))
-                 for j in range(len(Q[0]))] for i in range(len(P))]
+        return [[fsum(P[i][t] * Q[t][j] for t in range(len(Q))) for j in range(len(Q[0]))] for i in range(len(P))]
 
     BCD = mul(mul(Bm, Cm), Dm)
-    direct = inv([[Am[i][j] + BCD[i][j] for j in range(n)]
-                  for i in range(n)])
+    direct = inv([[Am[i][j] + BCD[i][j] for j in range(n)] for i in range(n)])
     Ai = inv(Am)
     Ci = inv(Cm)
     inner = mul(mul(Dm, Ai), Bm)
     inner = [[inner[i][j] + Ci[i][j] for j in range(k)] for i in range(k)]
     lemma = mul(mul(mul(Ai, Bm), inv(inner)), mul(Dm, Ai))
     lemma = [[Ai[i][j] - lemma[i][j] for j in range(n)] for i in range(n)]
-    gap = max(abs(direct[i][j] - lemma[i][j])
-              for i in range(n) for j in range(n))
+    gap = max(abs(direct[i][j] - lemma[i][j]) for i in range(n) for j in range(n))
     scale = max(abs(direct[i][j]) for i in range(n) for j in range(n)) or 1.0
-    return RichResult(payload={
-        "direct": direct, "lemma": lemma, "max_difference": gap,
-        "holds": gap <= 1e-6 * scale, "n": n, "k": k,
-        "scalar_when_k_is_one": k == 1,
-        "method": "Rangayyan (2024) eq. (3.213)"})
+    return RichResult(
+        payload={
+            "direct": direct,
+            "lemma": lemma,
+            "max_difference": gap,
+            "holds": gap <= 1e-6 * scale,
+            "n": n,
+            "k": k,
+            "scalar_when_k_is_one": k == 1,
+            "method": "Rangayyan (2024) eq. (3.213)",
+        }
+    )
 
 
 rangayyan_ch3_abcd_matrix_inversion_lemma = abcdlemma  # pre-policy spelling
@@ -3177,14 +3358,19 @@ def rlsupdate(w_prev, k, alpha):
     if not ws:
         raise ValueError("need at least one tap")
     a = float(alpha)
-    return RichResult(payload={
-        "w_next": [p + q * a for p, q in zip(ws, kv)],
-        "correction": [q * a for q in kv], "alpha": a, "order": len(ws),
-        "sign": "+",
-        "erratum": "eq. (3.224) line 1 prints a minus sign that "
-                   "contradicts its own line 2 and eq. (3.225); the plus "
-                   "form is correct",
-        "method": "Rangayyan (2024) eq. (3.224)"})
+    return RichResult(
+        payload={
+            "w_next": [p + q * a for p, q in zip(ws, kv)],
+            "correction": [q * a for q in kv],
+            "alpha": a,
+            "order": len(ws),
+            "sign": "+",
+            "erratum": "eq. (3.224) line 1 prints a minus sign that "
+            "contradicts its own line 2 and eq. (3.225); the plus "
+            "form is correct",
+            "method": "Rangayyan (2024) eq. (3.224)",
+        }
+    )
 
 
 rangayyan_ch3_rls_weight_update_compact = rlsupdate  # pre-policy spelling
@@ -3212,21 +3398,22 @@ def rlsapriori(x, rvec, w_prev):
     if not rv:
         raise ValueError("need at least one tap")
     pred = fsum(a * b for a, b in zip(rv, ws))
-    return RichResult(payload={
-        "alpha": float(x) - pred, "prediction": pred, "order": len(rv),
-        "uses_previous_weights": True,
-        "not_the_a_posteriori_error": True,
-        "method": "Rangayyan (2024) eq. (3.225)"})
+    return RichResult(
+        payload={
+            "alpha": float(x) - pred,
+            "prediction": pred,
+            "order": len(rv),
+            "uses_previous_weights": True,
+            "not_the_a_posteriori_error": True,
+            "method": "Rangayyan (2024) eq. (3.225)",
+        }
+    )
 
 
 rangayyan_ch3_rls_a_priori_error = rlsapriori  # pre-policy spelling
 
 
 # -- rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..
-
-
-
-
 
 
 def psdacf(x):
@@ -3255,8 +3442,7 @@ def psdacf(x):
         re.append(fsum(v * cos(-step * i * k) for i, v in enumerate(xs)))
         im.append(fsum(v * sin(-step * i * k) for i, v in enumerate(xs)))
     direct = [a * a + b * b for a, b in zip(re, im)]
-    circ = [fsum(xs[i] * xs[(i + m) % n] for i in range(n))
-            for m in range(n)]
+    circ = [fsum(xs[i] * xs[(i + m) % n] for i in range(n)) for m in range(n)]
     cr = []
     for k in range(n):
         cr.append(fsum(circ[m] * cos(-step * m * k) for m in range(n)))
@@ -3267,13 +3453,20 @@ def psdacf(x):
         lr.append(fsum(lin[m] * cos(-step * m * k) for m in range(n)))
     lgap = max(abs(a - b * n) for a, b in zip(direct, lr))
     scale = max(direct) or 1.0
-    return RichResult(payload={
-        "psd": direct, "via_circular_acf": cr, "acf_circular": circ,
-        "acf_linear": lin, "max_difference": gap,
-        "holds": gap <= 1e-6 * scale,
-        "linear_difference": lgap,
-        "linear_acf_is_smoothed": True, "n": n,
-        "method": "Rangayyan (2024) eq. (4.30)"})
+    return RichResult(
+        payload={
+            "psd": direct,
+            "via_circular_acf": cr,
+            "acf_circular": circ,
+            "acf_linear": lin,
+            "max_difference": gap,
+            "holds": gap <= 1e-6 * scale,
+            "linear_difference": lgap,
+            "linear_acf_is_smoothed": True,
+            "n": n,
+            "method": "Rangayyan (2024) eq. (4.30)",
+        }
+    )
 
 
 rangayyan_ch4_psd_from_acf = psdacf  # pre-policy spelling
@@ -3361,68 +3554,69 @@ wnflt = wiener_filter
 
 
 _CHEATSHEET = [
-    'rgacfd: ACF distance measure for nonstationary segmentation.',
-    'rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.',
-    'rganc: Adaptive noise canceler (ANC) structure.',
-    'EEG adaptive segmentation by the GLR test, Section 8.5.3',
-    'rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation.',
-    'generalized likelihood ratio, eqs. (8.30)-(8.31)',
-    'rgkalmn: Kalman filter: state prediction/update with Riccati equation.',
-    'rglms: Least-mean-squares (LMS) adaptive filter.',
-    'rgpcgadp: Adaptive segmentation of PCG signals via SEM.',
-    'rgricca: Steady-state Riccati equation solution for Kalman gain.',
-    'rgrls: Recursive least-squares (RLS) adaptive filter.',
-    'rgrls_mon: Monitoring RLS filter output for nonstationary detection.',
-    'rgrlsl: RLS lattice (ladder) adaptive filter.',
-    'rgsemm: Spectral error measure (SEM) for adaptive segmentation.',
-    'rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.',
-    'rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).',
-    'rng137: Estimation error.',
-    'rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..',
-    'rng139: Wiener filter output expressed as inner product of tap-weight and input vectors..',
-    'rng140: Estimation error in vector form.',
-    'rng141: MSE cost function of the Wiener filter (Rangayyan Eq 3.166).',
-    'rng142: Wiener cross-correlation vector Theta (Rangayyan Eq 3.160/3.161).',
-    'rng143: Wiener autocorrelation matrix Phi (Rangayyan Eq 3.163/3.164/3.165).',
-    'rng144: Gradient of MSE cost function with respect to tap-weight vector..',
-    'rng145: Wiener-Hopf normal equation for the optimal tap weights..',
-    'rng146: Closed-form optimal Wiener filter tap weights..',
-    'rng147: Minimum mean-squared error achievable by the Wiener filter..',
-    'rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..',
-    'rng149: Frequency-domain Wiener relation between PSD and CSD..',
-    'rng150: Wiener filter frequency response as ratio of CSD to PSD of input..',
-    'rng151: Optimal Wiener filter for noise removal (Rangayyan Eq 3.183).',
-    'rng152: Wiener filter frequency response in terms of signal and noise PSDs..',
-    'rng153: Primary input of an adaptive noise canceller (ANC): signal plus primary noise..',
-    'rng154: Output of the ANC as the difference between primary input and adaptive filter output..',
-    'rng155: Adaptive FIR filter output in LMS framework using reference input r(n)..',
-    'rng156: LMS estimation error.',
-    'rng157: Quadratic squared-error form used in LMS gradient derivations..',
-    'rng158: Steepest-descent update rule for the tap-weight vector..',
-    'rng159: LMS gradient estimate.',
-    'rng160: Widrow-Hoff LMS tap-weight update rule..',
-    'rng161: Variable step-size LMS update rule..',
-    'rng162: Time-varying step size mu(n) per Zhang et al. for VAG signals..',
-    'rng163: Weighted least-squares objective for the RLS algorithm with forgetting factor lambda..',
-    'rng164: Normal equation for the RLS algorithm..',
-    'rng165: RLS correlation matrix.',
-    'rng166: RLS cross-correlation vector.',
-    'rng167: RLS recursion for the autocorrelation matrix (Rangayyan Eq 3.211).',
-    'rng168: RLS recursion for the cross-correlation vector (Rangayyan Eq 3.212).',
-    'rng169: Matrix inversion (ABCD) lemma used in RLS..',
-    'rng170: Riccati recursion for the inverse autocorrelation matrix (Rangayyan Eq 3.215).',
-    'rng171: Kalman-like gain vector in RLS (Rangayyan Eq 3.217).',
-    'rng172: RLS recursion for P(n) via the gain vector (Rangayyan Eq 3.218).',
-    'rng173: RLS gain identity k(n) = P(n) r(n) (Rangayyan Eq 3.221).',
-    'rng174: Compact RLS tap-weight update using a priori error alpha(n)..',
-    'rng175: A priori error in the RLS update step..',
-    'rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..',
-    'wnflt: Wiener filter for optimal noise reduction.',
+    "rgacfd: ACF distance measure for nonstationary segmentation.",
+    "rgadp: LMS adaptive noise canceller -- Rangayyan & Krishnan Sec 3.10.2.",
+    "rganc: Adaptive noise canceler (ANC) structure.",
+    "EEG adaptive segmentation by the GLR test, Section 8.5.3",
+    "rgfecg: Maternal-fetal ECG separation via adaptive noise cancellation.",
+    "generalized likelihood ratio, eqs. (8.30)-(8.31)",
+    "rgkalmn: Kalman filter: state prediction/update with Riccati equation.",
+    "rglms: Least-mean-squares (LMS) adaptive filter.",
+    "rgpcgadp: Adaptive segmentation of PCG signals via SEM.",
+    "rgricca: Steady-state Riccati equation solution for Kalman gain.",
+    "rgrls: Recursive least-squares (RLS) adaptive filter.",
+    "rgrls_mon: Monitoring RLS filter output for nonstationary detection.",
+    "rgrlsl: RLS lattice (ladder) adaptive filter.",
+    "rgsemm: Spectral error measure (SEM) for adaptive segmentation.",
+    "rgwhop: Wiener-Hopf matrix equations for FIR Wiener filter.",
+    "rgwnr: Wiener filter (Wiener-Hopf equations, optimal MMSE linear filter).",
+    "rng137: Estimation error.",
+    "rng138: Output of the Wiener (transversal) filter as convolution of input with tap weights..",
+    "rng139: Wiener filter output expressed as inner product of tap-weight and input vectors..",
+    "rng140: Estimation error in vector form.",
+    "rng141: MSE cost function of the Wiener filter (Rangayyan Eq 3.166).",
+    "rng142: Wiener cross-correlation vector Theta (Rangayyan Eq 3.160/3.161).",
+    "rng143: Wiener autocorrelation matrix Phi (Rangayyan Eq 3.163/3.164/3.165).",
+    "rng144: Gradient of MSE cost function with respect to tap-weight vector..",
+    "rng145: Wiener-Hopf normal equation for the optimal tap weights..",
+    "rng146: Closed-form optimal Wiener filter tap weights..",
+    "rng147: Minimum mean-squared error achievable by the Wiener filter..",
+    "rng148: Wiener-Hopf equation expressed as a convolution relationship under stationarity..",
+    "rng149: Frequency-domain Wiener relation between PSD and CSD..",
+    "rng150: Wiener filter frequency response as ratio of CSD to PSD of input..",
+    "rng151: Optimal Wiener filter for noise removal (Rangayyan Eq 3.183).",
+    "rng152: Wiener filter frequency response in terms of signal and noise PSDs..",
+    "rng153: Primary input of an adaptive noise canceller (ANC): signal plus primary noise..",
+    "rng154: Output of the ANC as the difference between primary input and adaptive filter output..",
+    "rng155: Adaptive FIR filter output in LMS framework using reference input r(n)..",
+    "rng156: LMS estimation error.",
+    "rng157: Quadratic squared-error form used in LMS gradient derivations..",
+    "rng158: Steepest-descent update rule for the tap-weight vector..",
+    "rng159: LMS gradient estimate.",
+    "rng160: Widrow-Hoff LMS tap-weight update rule..",
+    "rng161: Variable step-size LMS update rule..",
+    "rng162: Time-varying step size mu(n) per Zhang et al. for VAG signals..",
+    "rng163: Weighted least-squares objective for the RLS algorithm with forgetting factor lambda..",
+    "rng164: Normal equation for the RLS algorithm..",
+    "rng165: RLS correlation matrix.",
+    "rng166: RLS cross-correlation vector.",
+    "rng167: RLS recursion for the autocorrelation matrix (Rangayyan Eq 3.211).",
+    "rng168: RLS recursion for the cross-correlation vector (Rangayyan Eq 3.212).",
+    "rng169: Matrix inversion (ABCD) lemma used in RLS..",
+    "rng170: Riccati recursion for the inverse autocorrelation matrix (Rangayyan Eq 3.215).",
+    "rng171: Kalman-like gain vector in RLS (Rangayyan Eq 3.217).",
+    "rng172: RLS recursion for P(n) via the gain vector (Rangayyan Eq 3.218).",
+    "rng173: RLS gain identity k(n) = P(n) r(n) (Rangayyan Eq 3.221).",
+    "rng174: Compact RLS tap-weight update using a priori error alpha(n)..",
+    "rng175: A priori error in the RLS update step..",
+    "rng204: PSD as the Fourier transform of the ACF (Wiener-Khinchin)..",
+    "wnflt: Wiener filter for optimal noise reduction.",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

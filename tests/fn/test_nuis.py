@@ -1,9 +1,9 @@
 """Tests for morie.fn.nuis -- Nuisance parameter estimation."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.nuis import nuis, nuisance_estimate
 
 

@@ -1,7 +1,6 @@
 """Tests for causbckd.causal_backdoor_estimate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causbckd import causal_backdoor_estimate
 
 
@@ -17,8 +16,7 @@ def _make_data():
     y = rng.normal(0.0, 1.0, n)
     Z = ["s1", "s2", "s3"] * (n // 3) + ["s1"] * (n - 3 * (n // 3))
     X_raw = rng.uniform(0.0, 1.0, n)
-    X = [1 if X_raw[i] < 0.5 + 0.2 * (Z[i] == "s2") - 0.1 * (Z[i] == "s3") else 0
-         for i in range(n)]
+    X = [1 if X_raw[i] < 0.5 + 0.2 * (Z[i] == "s2") - 0.1 * (Z[i] == "s3") else 0 for i in range(n)]
     return [float(v) for v in y], X, Z
 
 
@@ -55,7 +53,7 @@ def test_causbckd_basic():
         v1 = sum((v - m1) ** 2 for v in y1) / (len(y1) - 1) if len(y1) > 1 else 0.0
         v0 = sum((v - m0) ** 2 for v in y0) / (len(y0) - 1) if len(y0) > 1 else 0.0
         se_sq_expected += w * w * (v1 / len(y1) + v0 / len(y0))
-    se_expected = se_sq_expected ** 0.5
+    se_expected = se_sq_expected**0.5
 
     assert abs(result["estimate"] - ate_expected) < 1e-12
     assert abs(result["se"] - se_expected) < 1e-12

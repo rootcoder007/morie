@@ -60,12 +60,18 @@ likelihood this replaces.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["GENOTYPES", "CHANNEL_SETS", "pileup_column",
-           "find_candidates", "encode_pileup", "genotype_posterior",
-           "call_variants", "evaluate"]
+__all__ = [
+    "GENOTYPES",
+    "CHANNEL_SETS",
+    "pileup_column",
+    "find_candidates",
+    "encode_pileup",
+    "genotype_posterior",
+    "call_variants",
+    "evaluate",
+]
 
 GENOTYPES = ("hom_ref", "het", "hom_alt")
 CHANNEL_SETS = ("base_quality_strand",)
@@ -79,18 +85,19 @@ def pileup_column(reads, position, reference):
         seq = r["seq"]
         if start <= position < start + len(seq):
             i = position - start
-            obs.append({
-                "base": seq[i],
-                "bq": (r["bq"][i] if "bq" in r else 30),
-                "mq": int(r.get("mq", 60)),
-                "reverse": bool(r.get("reverse", False)),
-            })
+            obs.append(
+                {
+                    "base": seq[i],
+                    "bq": (r["bq"][i] if "bq" in r else 30),
+                    "mq": int(r.get("mq", 60)),
+                    "reverse": bool(r.get("reverse", False)),
+                }
+            )
     ref = reference[position] if position < len(reference) else "N"
     return {"observations": obs, "reference": ref, "depth": len(obs)}
 
 
-def find_candidates(reads, reference, min_alt_count=2,
-                    min_alt_fraction=0.05, min_bq=10):
+def find_candidates(reads, reference, min_alt_count=2, min_alt_fraction=0.05, min_bq=10):
     r"""The deliberately permissive candidate stage.
 
     Low thresholds are the point: a variant missed here can never be
@@ -116,14 +123,20 @@ def find_candidates(reads, reference, min_alt_count=2,
                 continue
             frac = n / float(len(kept))
             if n >= min_alt_count and frac >= min_alt_fraction:
-                out.append({"position": pos, "reference": ref,
-                            "alternate": base, "alt_count": n,
-                            "depth": len(kept), "alt_fraction": frac})
+                out.append(
+                    {
+                        "position": pos,
+                        "reference": ref,
+                        "alternate": base,
+                        "alt_count": n,
+                        "depth": len(kept),
+                        "alt_fraction": frac,
+                    }
+                )
     return out
 
 
-def encode_pileup(reads, reference, candidate, width=21, height=100,
-                  channels="base_quality_strand"):
+def encode_pileup(reads, reference, candidate, width=21, height=100, channels="base_quality_strand"):
     r"""The pileup image around a candidate.
 
     Rows are reads, columns are reference positions, and each cell
@@ -132,11 +145,9 @@ def encode_pileup(reads, reference, candidate, width=21, height=100,
     than presented as the paper's.
     """
     if channels not in CHANNEL_SETS:
-        raise ValueError("varcal: channels must be one of %s, got %r"
-                         % (", ".join(CHANNEL_SETS), channels))
+        raise ValueError("varcal: channels must be one of {}, got {!r}".format(", ".join(CHANNEL_SETS), channels))
     if width % 2 == 0:
-        raise ValueError("varcal: width must be odd so the candidate "
-                         "sits in the middle column")
+        raise ValueError("varcal: width must be odd so the candidate sits in the middle column")
     half = width // 2
     centre = int(candidate["position"])
     lo, hi = centre - half, centre + half
@@ -151,33 +162,37 @@ def encode_pileup(reads, reference, candidate, width=21, height=100,
             if start <= p < stop and 0 <= p < len(reference):
                 i = p - start
                 b = r["seq"][i]
-                row.append((_base_code(b),
-                            min(float(r["bq"][i] if "bq" in r else 30)
-                                / 60.0, 1.0),
-                            0.0 if r.get("reverse") else 1.0,
-                            1.0 if b == reference[p] else 0.0))
+                row.append(
+                    (
+                        _base_code(b),
+                        min(float(r["bq"][i] if "bq" in r else 30) / 60.0, 1.0),
+                        0.0 if r.get("reverse") else 1.0,
+                        1.0 if b == reference[p] else 0.0,
+                    )
+                )
             else:
                 row.append((0.0, 0.0, 0.0, 0.0))
         rows.append(row)
         if len(rows) >= height:
             break
-    ref_row = [(_base_code(reference[p]) if 0 <= p < len(reference)
-                else 0.0, 1.0, 1.0, 1.0) for p in range(lo, hi + 1)]
-    return {"reference_row": ref_row, "read_rows": rows,
-            "n_reads": len(rows), "width": width,
-            "centre": centre,
-            "channels": ("base", "base_quality", "strand",
-                         "matches_reference"),
-            "channel_set": channels,
-            "note": "the preprint specifies an RGB pileup image of "
-                    "bases, qualities and read features but not the "
-                    "per-channel mapping; this set is named here "
-                    "rather than attributed to the paper"}
+    ref_row = [(_base_code(reference[p]) if 0 <= p < len(reference) else 0.0, 1.0, 1.0, 1.0) for p in range(lo, hi + 1)]
+    return {
+        "reference_row": ref_row,
+        "read_rows": rows,
+        "n_reads": len(rows),
+        "width": width,
+        "centre": centre,
+        "channels": ("base", "base_quality", "strand", "matches_reference"),
+        "channel_set": channels,
+        "note": "the preprint specifies an RGB pileup image of "
+        "bases, qualities and read features but not the "
+        "per-channel mapping; this set is named here "
+        "rather than attributed to the paper",
+    }
 
 
 def _base_code(b):
-    return {"A": 0.25, "C": 0.5, "G": 0.75, "T": 1.0}.get(
-        str(b).upper(), 0.0)
+    return {"A": 0.25, "C": 0.5, "G": 0.75, "T": 1.0}.get(str(b).upper(), 0.0)
 
 
 def genotype_posterior(image, scorer=None, prior=None):
@@ -190,8 +205,7 @@ def genotype_posterior(image, scorer=None, prior=None):
     if prior is None:
         prior = (0.9985, 0.001, 0.0005)
     if len(prior) != 3 or abs(sum(prior) - 1.0) > 1e-9:
-        raise ValueError("varcal: the prior must be three "
-                         "probabilities summing to 1")
+        raise ValueError("varcal: the prior must be three probabilities summing to 1")
     if scorer is None:
         alt = 0.0
         tot = 0.0
@@ -202,15 +216,12 @@ def genotype_posterior(image, scorer=None, prior=None):
                 tot += 1.0
                 alt += 0.0 if cell[3] > 0.5 else 1.0
         f = alt / tot if tot > 0.0 else 0.0
-        scores = (max(1.0 - 2.0 * f, 0.0),
-                  1.0 - abs(2.0 * f - 1.0),
-                  max(2.0 * f - 1.0, 0.0))
+        scores = (max(1.0 - 2.0 * f, 0.0), 1.0 - abs(2.0 * f - 1.0), max(2.0 * f - 1.0, 0.0))
         source = "pileup-fraction fallback, NOT a trained network"
     else:
         scores = tuple(float(v) for v in scorer(image))
         if len(scores) != 3 or any(v < 0.0 for v in scores):
-            raise ValueError("varcal: the scorer must return three "
-                             "non-negative scores")
+            raise ValueError("varcal: the scorer must return three non-negative scores")
         source = "supplied scorer"
     post = [scores[i] * prior[i] for i in range(3)]
     tot = sum(post)
@@ -219,9 +230,13 @@ def genotype_posterior(image, scorer=None, prior=None):
         tot = 1.0
     post = [v / tot for v in post]
     k = max(range(3), key=lambda i: post[i])
-    return {"posterior": dict(zip(GENOTYPES, post)),
-            "call": GENOTYPES[k], "quality": _phred(1.0 - post[k]),
-            "scores": scores, "source": source}
+    return {
+        "posterior": dict(zip(GENOTYPES, post)),
+        "call": GENOTYPES[k],
+        "quality": _phred(1.0 - post[k]),
+        "scores": scores,
+        "source": source,
+    }
 
 
 def _phred(p):
@@ -229,25 +244,24 @@ def _phred(p):
     return -10.0 * math.log10(p)
 
 
-def call_variants(reads, reference, scorer=None, min_quality=10.0,
-                  **kw):
+def call_variants(reads, reference, scorer=None, min_quality=10.0, **kw):
     r"""Candidates, images, posteriors, calls."""
     cands = find_candidates(reads, reference, **kw)
     calls = []
     for c in cands:
         img = encode_pileup(reads, reference, c)
         g = genotype_posterior(img, scorer)
-        calls.append({**c, **g,
-                      "passes": g["call"] != "hom_ref"
-                      and g["quality"] >= min_quality})
-    return RichResult(payload={
-        "estimate": sum(1 for c in calls if c["passes"]),
-        "candidates": cands, "n_candidates": len(cands),
-        "calls": calls,
-        "n_called": sum(1 for c in calls if c["passes"]),
-        "method": "candidate generation, pileup encoding and "
-                  "genotype classification; Poplin et al. (2016)",
-    })
+        calls.append({**c, **g, "passes": g["call"] != "hom_ref" and g["quality"] >= min_quality})
+    return RichResult(
+        payload={
+            "estimate": sum(1 for c in calls if c["passes"]),
+            "candidates": cands,
+            "n_candidates": len(cands),
+            "calls": calls,
+            "n_called": sum(1 for c in calls if c["passes"]),
+            "method": "candidate generation, pileup encoding and genotype classification; Poplin et al. (2016)",
+        }
+    )
 
 
 def evaluate(called, truth, candidates=None):
@@ -262,30 +276,29 @@ def evaluate(called, truth, candidates=None):
     tp = len(cset & tset)
     ppv = tp / float(len(cset)) if cset else 0.0
     sens = tp / float(len(tset)) if tset else 0.0
-    out = {"true_positives": tp, "called": len(cset),
-           "truth": len(tset), "ppv": ppv, "sensitivity": sens}
+    out = {"true_positives": tp, "called": len(cset), "truth": len(tset), "ppv": ppv, "sensitivity": sens}
     if candidates is not None:
         aset = {(c["position"], c["alternate"]) for c in candidates}
         atp = len(aset & tset)
-        out["candidate_ppv"] = (atp / float(len(aset)) if aset
-                                else 0.0)
-        out["candidate_sensitivity"] = (atp / float(len(tset))
-                                        if tset else 0.0)
+        out["candidate_ppv"] = atp / float(len(aset)) if aset else 0.0
+        out["candidate_sensitivity"] = atp / float(len(tset)) if tset else 0.0
         out["ppv_gain"] = ppv - out["candidate_ppv"]
         out["sensitivity_loss"] = out["candidate_sensitivity"] - sens
     return out
 
 
 def cheatsheet():
-    return ("varcal: candidates are generated with HIGH sensitivity "
-            "and low specificity on purpose -- 8.1% PPV on Ion "
-            "Torrent, which the classifier lifts to 99.7% while "
-            "giving up a mean 2.3% of candidate sensitivity. The "
-            "pileup image puts every read at the locus in one picture "
-            "so the network can use the dependence between reads. The "
-            "Inception-v2 network itself is not reimplemented here; "
-            "genotype_posterior takes any scorer, and the default is "
-            "a labelled fallback, not a trained model.")
+    return (
+        "varcal: candidates are generated with HIGH sensitivity "
+        "and low specificity on purpose -- 8.1% PPV on Ion "
+        "Torrent, which the classifier lifts to 99.7% while "
+        "giving up a mean 2.3% of candidate sensitivity. The "
+        "pileup image puts every read at the locus in one picture "
+        "so the network can use the dependence between reads. The "
+        "Inception-v2 network itself is not reimplemented here; "
+        "genotype_posterior takes any scorer, and the default is "
+        "a labelled fallback, not a trained model."
+    )
 
 
 # compact alias per ledger/NAMING.md

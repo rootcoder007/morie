@@ -1,7 +1,6 @@
 """Tests for morie.fn.artpoi -- graph articulation points."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.artpoi import articulation_points, artpoi
 

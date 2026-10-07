@@ -49,7 +49,7 @@ def test_wsmbcr_on_a_grid_posterior_from_wsmbay():
 
     alpha = 0.05
     out = wasserman_credible_interval((post["theta_grid"], post["posterior"]), alpha)
-    half = 1.959963984540054 / n ** 0.5
+    half = 1.959963984540054 / n**0.5
     assert out["lower"] == pytest.approx(xbar - half, abs=1e-4)
     assert out["upper"] == pytest.approx(xbar + half, abs=1e-4)
     assert out["mass_drift"] == pytest.approx(0.0, abs=1e-9)
@@ -93,7 +93,7 @@ import morie.fn.wsmbcr as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

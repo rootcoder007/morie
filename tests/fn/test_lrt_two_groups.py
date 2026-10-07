@@ -1,7 +1,5 @@
 """Tests for lrt_two_groups.lrt_two_groups."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.lrt_two_groups import (
     lrt_two_groups,
 )

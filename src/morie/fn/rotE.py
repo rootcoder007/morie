@@ -28,8 +28,7 @@ from ._richresult import RichResult
 __all__ = ["rotate"]
 
 
-def rotate(triples, dim=None, h_re=None, h_im=None, theta=None, t_re=None,
-           t_im=None, gamma=None):
+def rotate(triples, dim=None, h_re=None, h_im=None, theta=None, t_re=None, t_im=None, gamma=None):
     """RotatE distance for one triple, and the margin score if gamma is given.
 
     Parameters
@@ -61,10 +60,10 @@ def rotate(triples, dim=None, h_re=None, h_im=None, theta=None, t_re=None,
         flat = k.vec(triples)
         d = int(dim) if dim is not None else len(flat) // 5
         h_re = flat[0:d]
-        h_im = flat[d:2 * d]
-        theta = flat[2 * d:3 * d]
-        t_re = flat[3 * d:4 * d]
-        t_im = flat[4 * d:5 * d]
+        h_im = flat[d : 2 * d]
+        theta = flat[2 * d : 3 * d]
+        t_re = flat[3 * d : 4 * d]
+        t_im = flat[4 * d : 5 * d]
     hr = k.vec(h_re)
     hi = k.vec(h_im)
     th = k.vec(theta)

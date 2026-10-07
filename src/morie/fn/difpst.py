@@ -85,25 +85,26 @@ def dif_p_diff(X, group, focal=1):
         dl = -2.35 * math.log(al) if al == al and al > 0.0 else float("nan")
         delta.append(dl)
         ad = abs(dl) if dl == dl else float("nan")
-        cls = 0 if (ad == ad and ad < 1.0) else (1 if (ad == ad and ad <= 1.5)
-                                                 else 2)
+        cls = 0 if (ad == ad and ad < 1.0) else (1 if (ad == ad and ad <= 1.5) else 2)
         ets.append(cls)
         flag.append(1 if cls == 2 else 0)
     worst = max(abs(v) for v in pd)
-    return RichResult(payload={
-        "estimate": worst,
-        "p_diff": pd,
-        "p_focal": pf,
-        "p_reference": pr,
-        "mh_alpha": alpha,
-        "mh_delta": delta,
-        "ets": ets,
-        "flagged": flag,
-        "n_focal": len(fi),
-        "n_reference": len(ri),
-        "k": k,
-        "method": "DIF p-difference and Mantel-Haenszel delta",
-    })
+    return RichResult(
+        payload={
+            "estimate": worst,
+            "p_diff": pd,
+            "p_focal": pf,
+            "p_reference": pr,
+            "mh_alpha": alpha,
+            "mh_delta": delta,
+            "ets": ets,
+            "flagged": flag,
+            "n_focal": len(fi),
+            "n_reference": len(ri),
+            "k": k,
+            "method": "DIF p-difference and Mantel-Haenszel delta",
+        }
+    )
 
 
 def cheatsheet():

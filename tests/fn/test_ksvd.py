@@ -1,7 +1,6 @@
 """Test ksvd_dictionary (ksvd)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ksvd import ksvd, ksvd_dictionary
 

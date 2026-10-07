@@ -78,16 +78,18 @@ def causgsw(s_sample, s_target):
     if sd == 0.0:
         raise ValueError("target-population logits are constant")
     smd = (float(np.mean(ls)) - float(np.mean(lt))) / sd
-    return RichResult(payload={
-        "estimate": smd,
-        "smd_abs": abs(smd),
-        "diff_means": float(np.mean(ss)) - float(np.mean(st)),
-        "mean_sample": float(np.mean(ss)),
-        "mean_target": float(np.mean(st)),
-        "n_sample": len(ss),
-        "n_target": len(st),
-        "method": "Tipton-Hartman Eq. 3.7 SMD of sampling-score logits",
-    })
+    return RichResult(
+        payload={
+            "estimate": smd,
+            "smd_abs": abs(smd),
+            "diff_means": float(np.mean(ss)) - float(np.mean(st)),
+            "mean_sample": float(np.mean(ss)),
+            "mean_target": float(np.mean(st)),
+            "n_sample": len(ss),
+            "n_target": len(st),
+            "method": "Tipton-Hartman Eq. 3.7 SMD of sampling-score logits",
+        }
+    )
 
 
 causal_generalisability_smd = causgsw

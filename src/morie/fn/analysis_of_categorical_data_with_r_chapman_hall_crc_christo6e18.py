@@ -27,17 +27,16 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equat
     """
     value = _acd.glmm_linear_predictor(b0, b1, x, random_intercept)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.18)"
     return RichResult(
-        title='GLMM with fixed slope g(mu) = b0 + b1 x + b0i',
+        title="GLMM with fixed slope g(mu) = b0 + b1 x + b0i",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e18: g(mu_ik) = b0 + b1 x_ik + b_0i [Bilder & Loughin 2025, eq. 6.18]'
+    return "6e18: g(mu_ik) = b0 + b1 x_ik + b_0i [Bilder & Loughin 2025, eq. 6.18]"

@@ -103,7 +103,7 @@ def geron_vq_vae(X, codebook_size=4, latent_dim=2, epochs=200, lr=0.05, beta=0.2
     K = int(codebook_size)
     if K < 2:
         raise ValueError(f"geron_vq_vae: codebook_size must be >= 2, got {K}")
-    if K > n:
+    if n < K:
         raise ValueError(f"geron_vq_vae: codebook_size {K} exceeds the {n} training points")
     k = int(latent_dim)
     if k < 1:

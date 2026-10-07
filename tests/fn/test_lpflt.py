@@ -1,12 +1,11 @@
 """Tests for morie.fn.lpflt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lpflt import lpflt
 
 
 def test_lpflt_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     fs = 1000.0
     t = np.arange(0, 1.0, 1 / fs)
     signal = np.sin(2 * np.pi * 10 * t) + 0.5 * np.sin(2 * np.pi * 200 * t)

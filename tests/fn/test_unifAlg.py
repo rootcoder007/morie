@@ -1,4 +1,5 @@
 """Robinson unification."""
+
 import importlib
 
 import pytest
@@ -29,15 +30,13 @@ def test_every_other_unifier_factors_through_the_mgu():
     d = U.factor_through(m, theta, OVER)
     assert d is not None
     for n in OVER:
-        assert (U.apply_subst(U.apply_subst(v(n), m), d)
-                == U.apply_subst(v(n), theta))
+        assert U.apply_subst(U.apply_subst(v(n), m), d) == U.apply_subst(v(n), theta)
 
 
 def test_the_mgu_is_idempotent():
     m = U.unify(T1, T2)["mgu"]
     for n in OVER:
-        assert U.apply_subst(U.apply_subst(v(n), m), m) \
-            == U.apply_subst(v(n), m)
+        assert U.apply_subst(U.apply_subst(v(n), m), m) == U.apply_subst(v(n), m)
 
 
 @pytest.mark.parametrize("t", [a("f", v("x")), a("f", a("g", v("x")))])
@@ -53,12 +52,15 @@ def test_suppressing_the_occurs_check_reports_the_cycle():
     assert r["mgu"]["x"] == a("f", v("x"))
 
 
-@pytest.mark.parametrize("p,q", [
-    (a("f", v("x")), a("g", v("x"))),
-    (a("f", v("x")), a("f", v("x"), v("y"))),
-    (c("a"), c("b")),
-    (a("f", v("x"), v("x")), a("f", c("a"), c("b"))),
-])
+@pytest.mark.parametrize(
+    "p,q",
+    [
+        (a("f", v("x")), a("g", v("x"))),
+        (a("f", v("x")), a("f", v("x"), v("y"))),
+        (c("a"), c("b")),
+        (a("f", v("x"), v("x")), a("f", c("a"), c("b"))),
+    ],
+)
 def test_terms_that_cannot_unify(p, q):
     assert not U.unify(p, q)["unified"]
 
@@ -90,10 +92,8 @@ def test_matching_is_one_way():
 
 
 def test_matching_respects_a_repeated_pattern_variable():
-    assert U.match(a("f", v("x"), v("x")), a("f", c("a"), c("b"))) \
-        is None
-    assert U.match(a("f", v("x"), v("x")), a("f", c("a"), c("a"))) \
-        == {"x": c("a")}
+    assert U.match(a("f", v("x"), v("x")), a("f", c("a"), c("b"))) is None
+    assert U.match(a("f", v("x"), v("x")), a("f", c("a"), c("a"))) == {"x": c("a")}
 
 
 def test_composition_applies_the_inner_substitution_first():
@@ -102,8 +102,7 @@ def test_composition_applies_the_inner_substitution_first():
 
 
 def test_variables_are_reported_in_first_seen_order():
-    assert U.variables(a("f", v("b"), a("g", v("a"), v("b")))) \
-        == ["b", "a"]
+    assert U.variables(a("f", v("b"), a("g", v("a"), v("b")))) == ["b", "a"]
 
 
 def test_disagreement_finds_the_leftmost_difference():

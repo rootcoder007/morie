@@ -22,10 +22,7 @@ def polar_compress(
     x = np.asarray(x, dtype=np.float64).ravel()
     d = len(x)
     magnitude = float(np.linalg.norm(x))
-    if magnitude > 0:
-        direction = x / magnitude
-    else:
-        direction = np.zeros_like(x)
+    direction = x / magnitude if magnitude > 0 else np.zeros_like(x)
     levels_dir = 2**bits_dir
     dir_min, dir_max = float(direction.min()), float(direction.max())
     if dir_max > dir_min:

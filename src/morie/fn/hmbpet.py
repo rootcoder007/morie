@@ -97,12 +97,9 @@ def geron_bpe_tokenizer(corpus, vocab_size=100):
         for s in syms:
             vocab.setdefault(s, 0)
             vocab[s] += counts[w]
-    if target < len(vocab):
-        # Base symbols cannot be dropped; report the floor rather than lie
-        # about hitting the requested size.
-        merges = []
-    else:
-        merges = None
+    # Base symbols cannot be dropped; report the floor rather than lie
+    # about hitting the requested size.
+    merges = [] if target < len(vocab) else None
 
     if merges is None:
         merges = []

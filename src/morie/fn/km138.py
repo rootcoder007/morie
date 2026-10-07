@@ -36,9 +36,7 @@ def kamath_ch9_simvlm_mlm(theta, x, v, x_m):
     True
     """
     if v is None:
-        raise ValueError("v (the image regions) is required: Eq 9.10 "
-                         "conditions on them; use km022 for text-only "
-                         "MLM.")
+        raise ValueError("v (the image regions) is required: Eq 9.10 conditions on them; use km022 for text-only MLM.")
     V = np.asarray(v, dtype=float)
     if V.size == 0:
         raise ValueError("the image-region features are empty.")
@@ -47,17 +45,20 @@ def kamath_ch9_simvlm_mlm(theta, x, v, x_m):
     elif callable(theta):
         probs = theta(x, v)
     else:
-        raise ValueError("theta must be a callable model theta(x, v) "
-                         "or None when x already holds the true-token "
-                         "probabilities.")
+        raise ValueError(
+            "theta must be a callable model theta(x, v) or None when x already holds the true-token probabilities."
+        )
     base = kamath_ch2_mlm_loss(probs, x_m)
-    return RichResult(payload={
-        "estimate": base["estimate"],
-        "per_position": base["per_position"],
-        "positions_scored": base["positions_scored"],
-        "n_image_regions": int(V.shape[0]), "n": base["n"],
-        "method": "SimVLM MLM loss with visual conditioning "
-                  "(Kamath Eq 9.10; the MLM core in km022)"})
+    return RichResult(
+        payload={
+            "estimate": base["estimate"],
+            "per_position": base["per_position"],
+            "positions_scored": base["positions_scored"],
+            "n_image_regions": int(V.shape[0]),
+            "n": base["n"],
+            "method": "SimVLM MLM loss with visual conditioning (Kamath Eq 9.10; the MLM core in km022)",
+        }
+    )
 
 
 def cheatsheet():

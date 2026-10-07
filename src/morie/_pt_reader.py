@@ -54,7 +54,7 @@ class _Storage:
 def _decode(storage, offset, count):
     fmt, width = _DTYPES[storage.dtype_name]
     start = offset * width
-    buf = storage.raw[start:start + count * width]
+    buf = storage.raw[start : start + count * width]
     if fmt == "bf16":
         # bfloat16 is the top half of an IEEE-754 float32
         out = []
@@ -63,7 +63,7 @@ def _decode(storage, offset, count):
             (v,) = struct.unpack("<f", struct.pack("<I", hi << 16))
             out.append(v)
         return out
-    vals = struct.unpack_from("<%d%s" % (count, fmt), buf, 0)
+    vals = struct.unpack_from(f"<{int(count)}{fmt}", buf, 0)
     return [float(v) for v in vals]
 
 
@@ -91,7 +91,7 @@ class PtArray(list):
         return PtArray(list(self), self.shape)
 
     def tobytes(self, fmt="f"):
-        return struct.pack("<%d%s" % (len(self), fmt), *self)
+        return struct.pack(f"<{int(len(self))}{fmt}", *self)
 
 
 class PtTensor:
@@ -120,8 +120,7 @@ class PtTensor:
             contig.insert(0, acc)
             acc *= s
         if tuple(contig) == self.stride or n <= 1:
-            return PtArray(_decode(self.storage, self.offset, n),
-                           self.size)
+            return PtArray(_decode(self.storage, self.offset, n), self.size)
         # strided gather
         flat_max = self.offset
         for dim, st in zip(self.size, self.stride):
@@ -141,9 +140,7 @@ class PtTensor:
         return PtArray(out, self.size)
 
 
-def _rebuild_tensor_v2(storage, storage_offset, size, stride,
-                       requires_grad=False, backward_hooks=None,
-                       metadata=None):
+def _rebuild_tensor_v2(storage, storage_offset, size, stride, requires_grad=False, backward_hooks=None, metadata=None):
     del requires_grad, backward_hooks, metadata
     return PtTensor(storage, storage_offset, size, stride)
 
@@ -167,22 +164,22 @@ class _Unpickler(pickle.Unpickler):
         if module == "torch" and name in _DTYPES:
             return _StorageType(name)
         raise pickle.UnpicklingError(
-            "refusing to unpickle %s.%s: only tensors and containers "
-            "load (the weights_only contract)" % (module, name))
+            f"refusing to unpickle {module}.{name}: only tensors and containers load (the weights_only contract)"
+        )
 
     def persistent_load(self, pid):
         kind = pid[0]
         if kind != "storage":
-            raise pickle.UnpicklingError(
-                "unknown persistent id %r" % (kind,))
+            raise pickle.UnpicklingError(f"unknown persistent id {kind!r}")
         storage_type, key = pid[1], pid[2]
-        name = storage_type.name if isinstance(storage_type,
-                                               _StorageType) \
+        name = (
+            storage_type.name
+            if isinstance(storage_type, _StorageType)
             else getattr(storage_type, "__name__", str(storage_type))
+        )
         if name not in _DTYPES:
-            raise pickle.UnpicklingError(
-                "unsupported storage type %r" % name)
-        raw = self._zf.read("%s/data/%s" % (self._prefix, key))
+            raise pickle.UnpicklingError(f"unsupported storage type {name!r}")
+        raw = self._zf.read(f"{self._prefix}/data/{key}")
         return _Storage(raw, name)
 
 
@@ -197,8 +194,7 @@ def load_checkpoint(path):
     with zipfile.ZipFile(path) as zf:
         pkl = [n for n in zf.namelist() if n.endswith("/data.pkl")]
         if not pkl:
-            raise ValueError("%s is not a torch zip checkpoint "
-                             "(no data.pkl)" % path)
-        prefix = pkl[0][:-len("/data.pkl")]
+            raise ValueError(f"{path} is not a torch zip checkpoint (no data.pkl)")
+        prefix = pkl[0][: -len("/data.pkl")]
         with zf.open(pkl[0]) as fh:
             return _Unpickler(fh, zf, prefix).load()

@@ -6,8 +6,6 @@ Implements eq. (7.3) p.219 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,12 +17,15 @@ def mvsml_bayesian_regression_pt2_eq_7_3(n, X_E=None, X=None, X_EM=None):
     ordinal latent variable with a flat prior on the environment
     effects and a BRR/BayesA/BayesB/BayesC/BL prior on the marker and
     marker-by-environment effects (p.219). Keys: estimate."""
-    f = _gp.ordinal_latent_predictor(int(n), X_E=X_E, X=X,
-                                     X_EM=X_EM)
-    res = RichResult(payload={"estimate": float(f["n_columns"]),
-                              "design": f["design"],
-                              "widths": f["widths"],
-                              "method": "ordinal latent predictor (MVSML 2022 eq. 7.3)"})
+    f = _gp.ordinal_latent_predictor(int(n), X_E=X_E, X=X, X_EM=X_EM)
+    res = RichResult(
+        payload={
+            "estimate": float(f["n_columns"]),
+            "design": f["design"],
+            "widths": f["widths"],
+            "method": "ordinal latent predictor (MVSML 2022 eq. 7.3)",
+        }
+    )
     return with_describe_pointer(res, "msm092")
 
 

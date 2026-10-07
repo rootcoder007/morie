@@ -1,7 +1,6 @@
 """Tests for rng190.rangayyan_ch4_pan_tompkins_peak_classification."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_ch4_pan_tompkins_peak_classification
 
 

@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.9, the round-trip back-transla
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km050 import kamath_ch3_back_translation_prob

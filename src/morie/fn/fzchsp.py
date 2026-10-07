@@ -59,19 +59,14 @@ def chungsmir(x, cdf, h=None, grid=None):
     xv = np.asarray(x, dtype=float).ravel()
     n = xv.size
     if n <= 15:
-        raise ValueError(
-            "the Chung-Smirnov normaliser needs log log n > 1, i.e. n > 15; "
-            f"got n = {n}."
-        )
+        raise ValueError(f"the Chung-Smirnov normaliser needs log log n > 1, i.e. n > 15; got n = {n}.")
     if h is None:
         h = kdfe_bandwidth(xv)
     h = float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
     g = np.sort(xv) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
-    khat = np.asarray(
-        [float(np.mean(stats.norm.cdf((float(t) - xv) / h))) for t in g], dtype=float
-    )
+    khat = np.asarray([float(np.mean(stats.norm.cdf((float(t) - xv) / h))) for t in g], dtype=float)
     fv = np.asarray([float(cdf(float(t))) for t in g], dtype=float)
     sup = float(np.max(np.abs(khat - fv)))
     scale = float(np.sqrt(2.0 * n / np.log(np.log(n))))

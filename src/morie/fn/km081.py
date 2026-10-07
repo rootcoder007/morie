@@ -11,12 +11,10 @@ __all__ = ["kamath_ch6_weat_similarity"]
 def _rows(X, name):
     A = np.atleast_2d(np.asarray(X, dtype=float))
     if A.size == 0 or A.shape[0] == 0:
-        raise ValueError(f"{name} is empty; a mean over no words is "
-                         "undefined.")
+        raise ValueError(f"{name} is empty; a mean over no words is undefined.")
     norms = np.linalg.norm(A, axis=1)
     if np.any(norms == 0):
-        raise ValueError(f"{name} contains a zero vector; its cosine is "
-                         "undefined.")
+        raise ValueError(f"{name} contains a zero vector; its cosine is undefined.")
     return A, norms
 
 
@@ -26,8 +24,7 @@ def _cos_mean(a, W, name):
     if na == 0:
         raise ValueError("a is a zero vector; its cosine is undefined.")
     if A.shape[1] != a.shape[0]:
-        raise ValueError(
-            f"{name} has width {A.shape[1]} but a has {a.shape[0]}.")
+        raise ValueError(f"{name} has width {A.shape[1]} but a has {a.shape[0]}.")
     return float(np.mean((A @ a) / (n_w * na)))
 
 
@@ -61,10 +58,15 @@ def kamath_ch6_weat_similarity(a, W_1, W_2):
     av = np.atleast_1d(np.asarray(a, dtype=float))
     m1 = _cos_mean(av, W_1, "W_1")
     m2 = _cos_mean(av, W_2, "W_2")
-    return RichResult(payload={
-        "estimate": m1 - m2, "mean_cos_W1": m1, "mean_cos_W2": m2,
-        "n": int(av.shape[0]),
-        "method": "WEAT differential association s (Kamath Eq 6.5)"})
+    return RichResult(
+        payload={
+            "estimate": m1 - m2,
+            "mean_cos_W1": m1,
+            "mean_cos_W2": m2,
+            "n": int(av.shape[0]),
+            "method": "WEAT differential association s (Kamath Eq 6.5)",
+        }
+    )
 
 
 def cheatsheet():

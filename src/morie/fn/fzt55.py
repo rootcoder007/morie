@@ -75,9 +75,7 @@ def bfkdebv(n, h, density, c2, dg, mu2=1.0, rk=None):
     var = float(density) * rk / (n * h * dg)
     lead = float(c2) * float(mu2) / (2.0 * dg)
     if lead != 0.0 and float(density) > 0:
-        hopt = float(
-            (float(density) * rk / (dg * 4.0 * lead ** 2 * n)) ** 0.2
-        )
+        hopt = float((float(density) * rk / (dg * 4.0 * lead**2 * n)) ** 0.2)
     else:
         hopt = float("nan")
     return RichResult(

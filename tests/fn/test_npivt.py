@@ -1,8 +1,8 @@
 """Tests for morie.fn.npivt — Nonparametric IV via Tikhonov."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.npivt import npivt
 
 

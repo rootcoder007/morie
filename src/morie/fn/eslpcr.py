@@ -82,14 +82,20 @@ def esl_pcr(X, y, M):
         if zz == 0:
             continue
         beta += (float(z @ (y - ybar)) / zz) * V[:, m]
-    total = float(np.sum(S ** 2))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "intercept": ybar - float(xbar @ beta),
-        "variance_explained": float(np.sum(S[:M] ** 2) / total) if total > 0 else float("nan"),
-        "singular_values": [float(v) for v in S],
-        "M": M, "n": int(n), "p": int(p),
-        "method": "PCR on centred X; directions chosen by X-variance only"})
+    total = float(np.sum(S**2))
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "intercept": ybar - float(xbar @ beta),
+            "variance_explained": float(np.sum(S[:M] ** 2) / total) if total > 0 else float("nan"),
+            "singular_values": [float(v) for v in S],
+            "M": M,
+            "n": int(n),
+            "p": int(p),
+            "method": "PCR on centred X; directions chosen by X-variance only",
+        }
+    )
 
 
 def cheatsheet():

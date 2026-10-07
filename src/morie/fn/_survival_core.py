@@ -50,8 +50,12 @@ No external numeric dependency.
 import math
 
 __all__ = [
-    "kaplan_meier", "nelson_aalen", "logrank_test", "cox_ph",
-    "cox_partial_loglik", "concordance_index",
+    "kaplan_meier",
+    "nelson_aalen",
+    "logrank_test",
+    "cox_ph",
+    "cox_partial_loglik",
+    "concordance_index",
 ]
 
 
@@ -98,10 +102,9 @@ def kaplan_meier(time, event, alpha=0.05):
     surv, var_sum = 1.0, 0.0
     times, S, se, lo, hi, nrisk, nevent = [], [], [], [], [], [], []
     se_ch = []
-    z = 1.959963984540054 if abs(alpha - 0.05) < 1e-12 else \
-        _norm_q(1 - alpha / 2)
-    for (u, n_i, d_i) in tab:
-        surv *= (1.0 - d_i / n_i)
+    z = 1.959963984540054 if abs(alpha - 0.05) < 1e-12 else _norm_q(1 - alpha / 2)
+    for u, n_i, d_i in tab:
+        surv *= 1.0 - d_i / n_i
         if n_i > d_i:
             var_sum += d_i / (n_i * (n_i - d_i))
         # two standard errors are in circulation and they differ by a
@@ -123,40 +126,66 @@ def kaplan_meier(time, event, alpha=0.05):
         else:
             lo.append(surv)
             hi.append(surv)
-    return {"time": times, "surv": S, "se": se,
-            "se_cumhaz": se_ch, "lower": lo,
-            "upper": hi, "n_risk": nrisk, "n_event": nevent,
-            "n": len(t), "n_events": sum(d),
-            "method": "Kaplan-Meier product-limit estimator"}
+    return {
+        "time": times,
+        "surv": S,
+        "se": se,
+        "se_cumhaz": se_ch,
+        "lower": lo,
+        "upper": hi,
+        "n_risk": nrisk,
+        "n_event": nevent,
+        "n": len(t),
+        "n_events": sum(d),
+        "method": "Kaplan-Meier product-limit estimator",
+    }
 
 
 def _norm_q(p):
     """Standard normal quantile (Acklam, refined by one Halley step)."""
-    a = [-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00]
-    b = [-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01]
-    c = [-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-         4.374664141464968e+00, 2.938163982698783e+00]
-    dd = [7.784695709041462e-03, 3.224671290700398e-01,
-          2.445134137142996e+00, 3.754408661907416e+00]
+    a = [
+        -3.969683028665376e01,
+        2.209460984245205e02,
+        -2.759285104469687e02,
+        1.383577518672690e02,
+        -3.066479806614716e01,
+        2.506628277459239e00,
+    ]
+    b = [
+        -5.447609879822406e01,
+        1.615858368580409e02,
+        -1.556989798598866e02,
+        6.680131188771972e01,
+        -1.328068155288572e01,
+    ]
+    c = [
+        -7.784894002430293e-03,
+        -3.223964580411365e-01,
+        -2.400758277161838e00,
+        -2.549732539343734e00,
+        4.374664141464968e00,
+        2.938163982698783e00,
+    ]
+    dd = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e00, 3.754408661907416e00]
     pl = 0.02425
     if p < pl:
         q = math.sqrt(-2 * math.log(p))
-        z = (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / \
-            ((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)
+        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((dd[0] * q + dd[1]) * q + dd[2]) * q + dd[3]) * q + 1
+        )
     elif p <= 1 - pl:
         q = p - 0.5
         r = q * q
-        z = (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / \
-            (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)
+        z = (
+            (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5])
+            * q
+            / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+        )
     else:
         q = math.sqrt(-2 * math.log(1 - p))
-        z = -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / \
-            ((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1)
+        z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((dd[0] * q + dd[1]) * q + dd[2]) * q + dd[3]) * q + 1
+        )
     e = 0.5 * math.erfc(-z / math.sqrt(2)) - p
     u = e * math.sqrt(2 * math.pi) * math.exp(z * z / 2)
     return z - u / (1 + z * u / 2)
@@ -206,15 +235,14 @@ def nelson_aalen(time, event):
     tab = _risk_table(time, event)
     H, V = 0.0, 0.0
     times, ch, se, surv = [], [], [], []
-    for (u, n_i, d_i) in tab:
+    for u, n_i, d_i in tab:
         H += d_i / n_i
         V += d_i / (n_i * n_i)
         times.append(u)
         ch.append(H)
         se.append(math.sqrt(V))
         surv.append(math.exp(-H))
-    return {"time": times, "cumhaz": ch, "se": se, "surv": surv,
-            "method": "Nelson-Aalen cumulative hazard"}
+    return {"time": times, "cumhaz": ch, "se": se, "surv": surv, "method": "Nelson-Aalen cumulative hazard"}
 
 
 def logrank_test(time, event, group):
@@ -241,10 +269,8 @@ def logrank_test(time, event, group):
     for u in sorted(set(t[i] for i in range(len(t)) if d[i] == 1)):
         n_i = sum(1 for i in range(len(t)) if t[i] >= u)
         d_i = sum(1 for i in range(len(t)) if t[i] == u and d[i] == 1)
-        nj = [sum(1 for i in range(len(t))
-                  if t[i] >= u and g[i] == levels[j]) for j in range(k)]
-        dj = [sum(1 for i in range(len(t)) if t[i] == u and d[i] == 1
-                  and g[i] == levels[j]) for j in range(k)]
+        nj = [sum(1 for i in range(len(t)) if t[i] >= u and g[i] == levels[j]) for j in range(k)]
+        dj = [sum(1 for i in range(len(t)) if t[i] == u and d[i] == 1 and g[i] == levels[j]) for j in range(k)]
         for j in range(k):
             obs[j] += dj[j]
             exp[j] += d_i * nj[j] / n_i
@@ -253,23 +279,27 @@ def logrank_test(time, event, group):
             for a in range(k):
                 for b in range(k):
                     ind = 1.0 if a == b else 0.0
-                    V[a][b] += f * (ind * nj[a] / n_i
-                                    - nj[a] * nj[b] / (n_i * n_i))
+                    V[a][b] += f * (ind * nj[a] / n_i - nj[a] * nj[b] / (n_i * n_i))
     # drop one group for identifiability, then quadratic form
     m = k - 1
     diff = [obs[j] - exp[j] for j in range(m)]
     A = [[V[a][b] for b in range(m)] for a in range(m)]
     sol = _solve_lin(A, diff)
     stat = sum(diff[j] * sol[j] for j in range(m))
-    return {"statistic": stat, "df": m, "p_value": _chi2_sf(stat, m),
-            "observed": obs, "expected": exp, "groups": levels,
-            "method": "log-rank test"}
+    return {
+        "statistic": stat,
+        "df": m,
+        "p_value": _chi2_sf(stat, m),
+        "observed": obs,
+        "expected": exp,
+        "groups": levels,
+        "method": "log-rank test",
+    }
 
 
 def _solve_lin(A, b):
     n = len(A)
-    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
-         for i in range(n)]
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])] for i in range(n)]
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
@@ -352,8 +382,7 @@ def cox_ph(time, event, X, ties="efron", max_iter=50, tol=1e-9):
     ev_times = sorted(set(t[i] for i in range(n) if d[i] == 1))
 
     for _ in range(int(max_iter)):
-        eta = [sum(Xm[i][j] * beta[j] for j in range(p))
-               for i in range(n)]
+        eta = [sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
         w = [math.exp(e) for e in eta]
         grad = [0.0] * p
         H = [[0.0] * p for _ in range(p)]
@@ -363,12 +392,10 @@ def cox_ph(time, event, X, ties="efron", max_iter=50, tol=1e-9):
             m = len(died)
             s0r = sum(w[i] for i in risk)
             s1r = [sum(w[i] * Xm[i][a] for i in risk) for a in range(p)]
-            s2r = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in risk)
-                    for b in range(p)] for a in range(p)]
+            s2r = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in risk) for b in range(p)] for a in range(p)]
             s0d = sum(w[i] for i in died)
             s1d = [sum(w[i] * Xm[i][a] for i in died) for a in range(p)]
-            s2d = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in died)
-                    for b in range(p)] for a in range(p)]
+            s2d = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in died) for b in range(p)] for a in range(p)]
             for i in died:
                 for a in range(p):
                     grad[a] += Xm[i][a]
@@ -378,14 +405,12 @@ def cox_ph(time, event, X, ties="efron", max_iter=50, tol=1e-9):
                 cnt = m if ties == "breslow" else 1
                 s0 = s0r - frac * s0d
                 s1 = [s1r[a] - frac * s1d[a] for a in range(p)]
-                s2 = [[s2r[a][b] - frac * s2d[a][b] for b in range(p)]
-                      for a in range(p)]
+                s2 = [[s2r[a][b] - frac * s2d[a][b] for b in range(p)] for a in range(p)]
                 for a in range(p):
                     grad[a] -= cnt * s1[a] / s0
                 for a in range(p):
                     for b in range(p):
-                        H[a][b] += cnt * (s2[a][b] / s0
-                                          - s1[a] * s1[b] / (s0 * s0))
+                        H[a][b] += cnt * (s2[a][b] / s0 - s1[a] * s1[b] / (s0 * s0))
         try:
             step = _solve_lin(H, grad)
         except ValueError:
@@ -404,24 +429,20 @@ def cox_ph(time, event, X, ties="efron", max_iter=50, tol=1e-9):
         m = len(died)
         s0r = sum(w[i] for i in risk)
         s1r = [sum(w[i] * Xm[i][a] for i in risk) for a in range(p)]
-        s2r = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in risk)
-                for b in range(p)] for a in range(p)]
+        s2r = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in risk) for b in range(p)] for a in range(p)]
         s0d = sum(w[i] for i in died)
         s1d = [sum(w[i] * Xm[i][a] for i in died) for a in range(p)]
-        s2d = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in died)
-                for b in range(p)] for a in range(p)]
+        s2d = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in died) for b in range(p)] for a in range(p)]
         steps = 1 if ties == "breslow" else m
         for r in range(steps):
             frac = 0.0 if ties == "breslow" else r / m
             cnt = m if ties == "breslow" else 1
             s0 = s0r - frac * s0d
             s1 = [s1r[a] - frac * s1d[a] for a in range(p)]
-            s2 = [[s2r[a][b] - frac * s2d[a][b] for b in range(p)]
-                  for a in range(p)]
+            s2 = [[s2r[a][b] - frac * s2d[a][b] for b in range(p)] for a in range(p)]
             for a in range(p):
                 for b in range(p):
-                    H[a][b] += cnt * (s2[a][b] / s0
-                                      - s1[a] * s1[b] / (s0 * s0))
+                    H[a][b] += cnt * (s2[a][b] / s0 - s1[a] * s1[b] / (s0 * s0))
     cols = []
     for j in range(p):
         e = [1.0 if i == j else 0.0 for i in range(p)]
@@ -429,17 +450,25 @@ def cox_ph(time, event, X, ties="efron", max_iter=50, tol=1e-9):
     V = [[cols[b][a] for b in range(p)] for a in range(p)]
     se = [math.sqrt(V[j][j]) for j in range(p)]
     z = [beta[j] / se[j] for j in range(p)]
-    pv = [2.0 * (1.0 - 0.5 * math.erfc(-abs(v) / math.sqrt(2)))
-          for v in z]
+    pv = [2.0 * (1.0 - 0.5 * math.erfc(-abs(v) / math.sqrt(2))) for v in z]
     ll = cox_partial_loglik(t, d, Xm, beta, ties)
     ll0 = cox_partial_loglik(t, d, Xm, [0.0] * p, ties)
-    return {"coef": beta, "se": se, "z": z, "p_value": pv,
-            "hazard_ratio": [math.exp(v) for v in beta],
-            "vcov": V, "loglik": ll, "loglik_null": ll0,
-            "lr_statistic": 2.0 * (ll - ll0),
-            "lr_p_value": _chi2_sf(2.0 * (ll - ll0), p),
-            "n": n, "n_events": sum(d), "ties": ties,
-            "method": "Cox proportional-hazards model"}
+    return {
+        "coef": beta,
+        "se": se,
+        "z": z,
+        "p_value": pv,
+        "hazard_ratio": [math.exp(v) for v in beta],
+        "vcov": V,
+        "loglik": ll,
+        "loglik_null": ll0,
+        "lr_statistic": 2.0 * (ll - ll0),
+        "lr_p_value": _chi2_sf(2.0 * (ll - ll0), p),
+        "n": n,
+        "n_events": sum(d),
+        "ties": ties,
+        "method": "Cox proportional-hazards model",
+    }
 
 
 def concordance_index(time, event, predicted_risk):
@@ -479,7 +508,11 @@ def concordance_index(time, event, predicted_risk):
     total = conc + disc + tied
     if total == 0:
         raise ValueError("no comparable pairs")
-    return {"c_index": (conc + 0.5 * tied) / total,
-            "concordant": conc, "discordant": disc, "tied": tied,
-            "n_pairs": total,
-            "method": "Harrell's concordance index"}
+    return {
+        "c_index": (conc + 0.5 * tied) / total,
+        "concordant": conc,
+        "discordant": disc,
+        "tied": tied,
+        "n_pairs": total,
+        "method": "Harrell's concordance index",
+    }

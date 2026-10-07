@@ -1,7 +1,6 @@
 """Tests for crmrlb.cramer_rao_bound."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crmrlb import cramer_rao_bound
 
 
@@ -11,6 +10,8 @@ def test_crmrlb_basic():
     result = cramer_rao_bound(fisher_info)
     assert isinstance(result, dict)
     assert "bound" in result
+
+
 def test_crmrlb_edge():
     """Test edge cases."""
     fisher_info = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5

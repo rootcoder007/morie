@@ -1,7 +1,6 @@
 """Test dicrotic_notch_detect (dcrtc)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dcrtc import dcrtc, dicrotic_notch_detect
 

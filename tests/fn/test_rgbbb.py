@@ -1,7 +1,5 @@
 """Tests for rgbbb.rangayyan_bundle_branch_block."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_bundle_branch_block
 
 

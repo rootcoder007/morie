@@ -1,7 +1,6 @@
 """Tests for jorec.joseph_recursive_multistep."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jorec import joseph_recursive_multistep
 
 

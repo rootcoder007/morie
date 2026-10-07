@@ -60,12 +60,9 @@ def causal_frontdoor_adjustment(P_Z_X, P_Y_XZ, P_X):
     # AttributeError for every input it was ever given.
     ny = len(Pyxz[0][0])
     #   inner[z][y] = sum_x' P(y | x', z) P(x')
-    inner = [[sum(float(Px[xp]) * float(Pyxz[xp][z][y])
-                  for xp in range(nx))
-              for y in range(ny)] for z in range(nz)]
+    inner = [[sum(float(Px[xp]) * float(Pyxz[xp][z][y]) for xp in range(nx)) for y in range(ny)] for z in range(nz)]
     #   P(y | do(x)) = sum_z P(z | x) inner[z][y]
-    p_do = [[sum(float(Pzx[x][z]) * inner[z][y] for z in range(nz))
-             for y in range(ny)] for x in range(nx)]
+    p_do = [[sum(float(Pzx[x][z]) * inner[z][y] for z in range(nz)) for y in range(ny)] for x in range(nx)]
     exp = [sum(y * p_do[x][y] for y in range(ny)) for x in range(nx)]
     return RichResult(
         payload={

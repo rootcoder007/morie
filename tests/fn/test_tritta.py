@@ -47,12 +47,18 @@ def _ref(z, wq, wk, wv, wb, wg, wo, mode):
                 q = mv(wq[h], zn[i][j])
                 g = [1 / (1 + math.exp(-x)) for x in mv(wg[h], zn[i][j])]
                 if mode == "starting":
-                    lg = [sum(a * b for a, b in zip(q, mv(wk[h], zn[i][k]))) / math.sqrt(c)
-                          + sum(a * b for a, b in zip(wb[h], zn[j][k])) for k in range(n)]
+                    lg = [
+                        sum(a * b for a, b in zip(q, mv(wk[h], zn[i][k]))) / math.sqrt(c)
+                        + sum(a * b for a, b in zip(wb[h], zn[j][k]))
+                        for k in range(n)
+                    ]
                     vs = [mv(wv[h], zn[i][k]) for k in range(n)]
                 else:
-                    lg = [sum(a * b for a, b in zip(q, mv(wk[h], zn[k][j]))) / math.sqrt(c)
-                          + sum(a * b for a, b in zip(wb[h], zn[k][i])) for k in range(n)]
+                    lg = [
+                        sum(a * b for a, b in zip(q, mv(wk[h], zn[k][j]))) / math.sqrt(c)
+                        + sum(a * b for a, b in zip(wb[h], zn[k][i]))
+                        for k in range(n)
+                    ]
                     vs = [mv(wv[h], zn[k][j]) for k in range(n)]
                 mx = max(lg)
                 e = [math.exp(x - mx) for x in lg]

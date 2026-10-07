@@ -66,10 +66,7 @@ def cvss_base(
     pr_map = _PR_C if scope_changed else _PR_U
 
     iss = 1 - (1 - _CIA[c]) * (1 - _CIA[i]) * (1 - _CIA[a])
-    if scope_changed:
-        impact = 7.52 * (iss - 0.029) - 3.25 * (iss - 0.02) ** 15
-    else:
-        impact = 6.42 * iss
+    impact = 7.52 * (iss - 0.029) - 3.25 * (iss - 0.02) ** 15 if scope_changed else 6.42 * iss
 
     exploit = 8.22 * _AV[av] * _AC[ac] * pr_map[pr] * _UI[ui]
 

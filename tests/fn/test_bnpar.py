@@ -1,7 +1,6 @@
 """Tests for morie.fn.bnpar -- Dirichlet process density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnpar import dp_density
 
 

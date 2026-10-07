@@ -46,7 +46,9 @@ def gibbons_pit(X, F=None):
     ks = stats.kstest(Y, "uniform")
     return RichResult(
         payload={
-            "Y": Y, "ks_stat": float(ks.statistic), "ks_p": float(ks.pvalue),
+            "Y": Y,
+            "ks_stat": float(ks.statistic),
+            "ks_p": float(ks.pvalue),
             "n": int(X.size),
             "method": "Y = F(X) ~ U(0,1) for continuous F (Gibbons Theorem 2.5.1)",
         }

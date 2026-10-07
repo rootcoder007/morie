@@ -51,7 +51,7 @@ def ht_variance(y, pi, pi_ij):
             if pij <= 0:
                 raise ValueError("ht_variance: joint inclusion probability is not positive")
             var += (pij - p[i] * p[j]) * (v[i] / p[i]) * (v[j] / p[j]) / pij
-    se = var ** 0.5 if var >= 0 else float("nan")
+    se = var**0.5 if var >= 0 else float("nan")
     return RichResult(
         title="Horvitz-Thompson variance",
         summary_lines=[("n", n), ("total", tot)],

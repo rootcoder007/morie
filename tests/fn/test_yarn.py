@@ -24,7 +24,7 @@ def test_yarn_hand_anchor():
     # r(d) = L theta / (2 pi) = (325.949.., 32.59.., 3.259.., 0.3259..);
     # gamma = (1, 1, (3.2595-1)/31, 0); Eq 20 blend; Eq 22 temperature.
     r = yarn(10000.0, 2.0, 8, 2048.0)
-    th = [1.0, 10.0 ** -1, 10.0 ** -2, 10.0 ** -3]
+    th = [1.0, 10.0**-1, 10.0**-2, 10.0**-3]
     assert all(abs(a - b) < 1e-15 for a, b in zip(r["theta"], th))
     rot2 = 2048.0 * 0.01 / (2.0 * math.pi)
     g2 = (rot2 - 1.0) / 31.0

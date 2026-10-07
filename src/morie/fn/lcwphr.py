@@ -74,12 +74,10 @@ def _logit_irls(X, y, max_iter=100, tol=1e-11, ridge_rel=1e-8):
     beta = [0.0] * p
     for _ in range(max_iter):
         eta = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
-        mu = [1.0 / (1.0 + math.exp(-max(-500.0, min(500.0, e))))
-              for e in eta]
+        mu = [1.0 / (1.0 + math.exp(-max(-500.0, min(500.0, e)))) for e in eta]
         w = [max(mu[i] * (1.0 - mu[i]), 1e-10) for i in range(n)]
         z = [eta[i] + (y[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[sum(w[i] * X[i][a] * X[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
+        A = [[sum(w[i] * X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
         scale = sum(A[a][a] for a in range(p)) / p
         for a in range(p):
             A[a][a] += ridge_rel * max(scale, _EPS)
@@ -90,12 +88,10 @@ def _logit_irls(X, y, max_iter=100, tol=1e-11, ridge_rel=1e-8):
         if shift < tol:
             break
     eta = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
-    return beta, [1.0 / (1.0 + math.exp(-max(-500.0, min(500.0, e))))
-                  for e in eta]
+    return beta, [1.0 / (1.0 + math.exp(-max(-500.0, min(500.0, e)))) for e in eta]
 
 
-def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
-                          max_iter=500, tol=1e-11):
+def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True, max_iter=500, tol=1e-11):
     r"""Latent class analysis with inverse-probability-weighted effects.
 
     Parameters
@@ -128,21 +124,20 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
     if n == 0:
         raise ValueError("lcwphr: no observations")
     if len(av) != n or len(Hm) != n:
-        raise ValueError("lcwphr: y, A and H must agree in length "
-                         "(%d, %d, %d)" % (n, len(av), len(Hm)))
+        raise ValueError(f"lcwphr: y, A and H must agree in length ({int(n)}, {int(len(av))}, {int(len(Hm))})")
     Q = len(Hm[0])
     if any(len(r) != Q for r in Hm):
-        raise ValueError("lcwphr: every row of H must have %d indicators" % Q)
+        raise ValueError(f"lcwphr: every row of H must have {int(Q)} indicators")
     for i in range(n):
         for q in range(Q):
             if Hm[i][q] not in (0.0, 1.0):
-                raise ValueError("lcwphr: the manifest indicators must be "
-                                 "binary; H[%d][%d] = %r" % (i, q, Hm[i][q]))
+                raise ValueError(
+                    f"lcwphr: the manifest indicators must be binary; H[{int(i)}][{int(q)}] = {Hm[i][q]!r}"
+                )
     if any(v not in (0.0, 1.0) for v in av):
         raise ValueError("lcwphr: the treatment must be binary")
     if not any(v > 0.5 for v in av) or not any(v < 0.5 for v in av):
-        raise ValueError("lcwphr: both treatment arms must be occupied -- "
-                         "no contrast is identified from one arm")
+        raise ValueError("lcwphr: both treatment arms must be occupied -- no contrast is identified from one arm")
     K = int(K)
     if K < 1:
         raise ValueError("lcwphr: K must be at least 1")
@@ -181,8 +176,7 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
                 s = math.log(max(pi[j], 1e-300))
                 for q in range(Q):
                     r = min(max(rho[j][q], 1e-12), 1.0 - 1e-12)
-                    s += (math.log(r) if Hm[i][q] > 0.5
-                          else math.log(1.0 - r))
+                    s += math.log(r) if Hm[i][q] > 0.5 else math.log(1.0 - r)
                 lp.append(s)
             mx = max(lp)
             tot_i = sum(math.exp(v - mx) for v in lp)
@@ -200,8 +194,7 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
             pi[j] = nk / n
             nk = max(nk, 1e-300)
             for q in range(Q):
-                rho[j][q] = sum(post[i][j] * Hm[i][q]
-                                for i in range(n)) / nk
+                rho[j][q] = sum(post[i][j] * Hm[i][q] for i in range(n)) / nk
 
     # canonical order: prevalence descending, ties by the first indicator
     ordk = sorted(range(K), key=lambda j: (-pi[j], -rho[j][0], j))
@@ -213,10 +206,7 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
     # ---- propensity for treatment given the same indicators
     Xp = [[1.0] + Hm[i] for i in range(n)]
     pbeta, ps = _logit_irls(Xp, av)
-    if tr > 0.0:
-        ps = [min(max(v, tr), 1.0 - tr) for v in ps]
-    else:
-        ps = [min(max(v, 1e-8), 1.0 - 1e-8) for v in ps]
+    ps = [min(max(v, tr), 1.0 - tr) for v in ps] if tr > 0.0 else [min(max(v, 1e-08), 1.0 - 1e-08) for v in ps]
     marg = sum(av) / n
     w = []
     for i in range(n):
@@ -255,38 +245,59 @@ def latent_class_weighted(y, A, H, K, trim=0.0, stabilize=True,
     nfree = K - 1 + K * Q
     bic = -2.0 * ll + nfree * math.log(n)
     ess = sum(w) ** 2 / max(sum(v * v for v in w), 1e-300)
-    ent = -sum(post[i][j] * math.log(max(post[i][j], 1e-300))
-               for i in range(n) for j in range(K))
+    ent = -sum(post[i][j] * math.log(max(post[i][j], 1e-300)) for i in range(n) for j in range(K))
 
-    return RichResult(payload={
-        "estimate": class_ate, "class_ate": class_ate,
-        "class_mean_treated": class_m1, "class_mean_control": class_m0,
-        "naive_class_ate": naive_ate,
-        "naive_class_mean_treated": naive_m1,
-        "naive_class_mean_control": naive_m0,
-        "ate": ate, "naive_ate": naive,
-        "marginal_ate": marginal_ate, "unweighted_ate": unweighted_ate,
-        "class_prevalence": pi, "item_probabilities": rho,
-        "posterior": post, "labels": labels,
-        "propensity": ps, "propensity_coefficients": pbeta,
-        "weights": w, "effective_sample_size": ess,
-        "weight_max": max(w), "weight_mean": sum(w) / n,
-        "loglik": ll, "loglik_path": path, "bic": bic, "entropy": ent,
-        "n_parameters": nfree, "iterations": it, "converged": converged,
-        "K": K, "n": n, "Q": Q, "stabilized": bool(stabilize), "trim": tr,
-        "method": "latent class analysis by EM with inverse-probability-"
-                  "weighted class-specific treatment effects, subjects "
-                  "counted in proportion to posterior membership "
-                  "(Lanza, Coffman & Xu 2013; Robins et al. 2000)",
-        "note": "class_ate and naive_class_ate coincide when treatment was "
-                "unrelated to the indicators and separate when it was not "
-                "-- the gap is what the weighting is for; classes are "
-                "returned in prevalence order because the model is "
-                "identified only up to relabelling",
-    })
+    return RichResult(
+        payload={
+            "estimate": class_ate,
+            "class_ate": class_ate,
+            "class_mean_treated": class_m1,
+            "class_mean_control": class_m0,
+            "naive_class_ate": naive_ate,
+            "naive_class_mean_treated": naive_m1,
+            "naive_class_mean_control": naive_m0,
+            "ate": ate,
+            "naive_ate": naive,
+            "marginal_ate": marginal_ate,
+            "unweighted_ate": unweighted_ate,
+            "class_prevalence": pi,
+            "item_probabilities": rho,
+            "posterior": post,
+            "labels": labels,
+            "propensity": ps,
+            "propensity_coefficients": pbeta,
+            "weights": w,
+            "effective_sample_size": ess,
+            "weight_max": max(w),
+            "weight_mean": sum(w) / n,
+            "loglik": ll,
+            "loglik_path": path,
+            "bic": bic,
+            "entropy": ent,
+            "n_parameters": nfree,
+            "iterations": it,
+            "converged": converged,
+            "K": K,
+            "n": n,
+            "Q": Q,
+            "stabilized": bool(stabilize),
+            "trim": tr,
+            "method": "latent class analysis by EM with inverse-probability-"
+            "weighted class-specific treatment effects, subjects "
+            "counted in proportion to posterior membership "
+            "(Lanza, Coffman & Xu 2013; Robins et al. 2000)",
+            "note": "class_ate and naive_class_ate coincide when treatment was "
+            "unrelated to the indicators and separate when it was not "
+            "-- the gap is what the weighting is for; classes are "
+            "returned in prevalence order because the model is "
+            "identified only up to relabelling",
+        }
+    )
 
 
 def cheatsheet():
-    return ("lcwphr: latent_class_weighted(y, A, H, K) -> latent classes "
-            "plus IPW class-specific treatment effects (Lanza, Coffman & "
-            "Xu 2013, Structural Equation Modeling 20:361-383)")
+    return (
+        "lcwphr: latent_class_weighted(y, A, H, K) -> latent classes "
+        "plus IPW class-specific treatment effects (Lanza, Coffman & "
+        "Xu 2013, Structural Equation Modeling 20:361-383)"
+    )

@@ -64,21 +64,25 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
         sel = st == lab
         m = int(sel.sum())
         if m < 2:
-            raise ValueError(f"stratum {lab!r} has {m} units; need at least 2 "
-                             "to estimate a within-stratum variance.")
+            raise ValueError(f"stratum {lab!r} has {m} units; need at least 2 to estimate a within-stratum variance.")
         nh.append(m)
         ph.append(float(yv[sel].mean()))
-    ph = np.array(ph); nh = np.array(nh, dtype=float)
+    ph = np.array(ph)
+    nh = np.array(nh, dtype=float)
     if weights is not None:
         W = np.atleast_1d(np.asarray(weights, dtype=float)).ravel()
         if W.size != labs.size:
             raise ValueError(f"weights has {W.size} entries for {labs.size} strata.")
         pop = True
     elif N_h is not None:
-        Nv = np.atleast_1d(np.asarray(
-            [N_h[l] for l in labs] if hasattr(N_h, "__getitem__")
-            and not isinstance(N_h, (list, tuple, np.ndarray)) else N_h,
-            dtype=float)).ravel()
+        Nv = np.atleast_1d(
+            np.asarray(
+                [N_h[ell] for ell in labs]
+                if hasattr(N_h, "__getitem__") and not isinstance(N_h, (list, tuple, np.ndarray))
+                else N_h,
+                dtype=float,
+            )
+        ).ravel()
         if Nv.size != labs.size:
             raise ValueError(f"N_h has {Nv.size} entries for {labs.size} strata.")
         if np.any(Nv < nh):
@@ -95,16 +99,23 @@ def stratified_proportion(y, stratum, weights=None, N_h=None):
     # known (Cochran 1977, eq. 5.47); with shares alone the strata are
     # treated as infinite
     fpc = (1.0 - nh / Nv) if N_h is not None and weights is None else np.ones(nh.size)
-    var = float(np.sum(W ** 2 * fpc * ph * (1 - ph) / (nh - 1)))
-    return RichResult(payload={
-        "proportion": p, "variance": var, "se": float(np.sqrt(max(var, 0.0))),
-        "strata": labs, "p_h": ph, "n_h": nh.astype(int), "W_h": W,
-        "weights_are_population_shares": pop,
-        "fpc": fpc,
-        "variance_note": "within-stratum only: between-stratum variation is "
-                         "removed by DESIGN, not estimated",
-        "n": int(yv.size),
-        "method": "Stratified proportion; W_h must be POPULATION shares or the design is discarded"})
+    var = float(np.sum(W**2 * fpc * ph * (1 - ph) / (nh - 1)))
+    return RichResult(
+        payload={
+            "proportion": p,
+            "variance": var,
+            "se": float(np.sqrt(max(var, 0.0))),
+            "strata": labs,
+            "p_h": ph,
+            "n_h": nh.astype(int),
+            "W_h": W,
+            "weights_are_population_shares": pop,
+            "fpc": fpc,
+            "variance_note": "within-stratum only: between-stratum variation is removed by DESIGN, not estimated",
+            "n": int(yv.size),
+            "method": "Stratified proportion; W_h must be POPULATION shares or the design is discarded",
+        }
+    )
 
 
 def cheatsheet():

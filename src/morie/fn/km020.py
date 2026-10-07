@@ -24,18 +24,20 @@ def kamath_ch2_ssl_loss(L_PTi, lambda_i=None):
     L = np.atleast_1d(np.asarray(L_PTi, dtype=float))
     if len(L) == 0:
         raise ValueError("no pretext losses supplied.")
-    lam = (np.ones(len(L)) if lambda_i is None
-           else np.atleast_1d(np.asarray(lambda_i, dtype=float)))
+    lam = np.ones(len(L)) if lambda_i is None else np.atleast_1d(np.asarray(lambda_i, dtype=float))
     if len(lam) != len(L):
         raise ValueError("need one lambda per pretext loss.")
     if np.any(lam < 0):
-        raise ValueError("negative task weights invert a loss into a "
-                         "reward; refused.")
-    return RichResult(payload={
-        "estimate": float(np.dot(lam, L)),
-        "components": [float(v) for v in lam * L],
-        "lambdas": [float(v) for v in lam], "n": len(L),
-        "method": "Composite SSL loss (Kamath Eq 2.20)"})
+        raise ValueError("negative task weights invert a loss into a reward; refused.")
+    return RichResult(
+        payload={
+            "estimate": float(np.dot(lam, L)),
+            "components": [float(v) for v in lam * L],
+            "lambdas": [float(v) for v in lam],
+            "n": len(L),
+            "method": "Composite SSL loss (Kamath Eq 2.20)",
+        }
+    )
 
 
 def cheatsheet():

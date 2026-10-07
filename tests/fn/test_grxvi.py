@@ -3,8 +3,8 @@
 import doctest as _doctest
 import math
 
-from morie.fn.grxvi import geron_glorot_xavier_init
 import morie.fn.grxvi as _doctest_module
+from morie.fn.grxvi import geron_glorot_xavier_init
 
 
 def test_grxvi_basic():
@@ -69,7 +69,7 @@ def test_grxvi_edge():
 # --- appended: the module's own worked example as a gate -----------
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

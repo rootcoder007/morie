@@ -43,9 +43,16 @@ def hrz_local_linear(x, y, grid=None, h=None, kernel_name="gaussian"):
     Econometrics*. Springer. Ch. 2 (local polynomial regression).
     """
     g, m, b, hh = local_linear(x, y, grid=grid, h=h, name=kernel_name)
-    return RichResult(payload={"grid": g, "fitted": m, "slope": b,
-                               "bandwidth": hh, "n": int(np.asarray(x).size),
-                               "method": "Local linear; O(h^2) bias including at the boundary"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "fitted": m,
+            "slope": b,
+            "bandwidth": hh,
+            "n": int(np.asarray(x).size),
+            "method": "Local linear; O(h^2) bias including at the boundary",
+        }
+    )
 
 
 def cheatsheet():

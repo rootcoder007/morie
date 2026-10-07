@@ -62,12 +62,10 @@ implemented in :mod:`gru4r`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["attention_weights", "local_encoder", "session_repr",
-           "bilinear_scores", "decoder_parameters", "softmax"]
+__all__ = ["attention_weights", "local_encoder", "session_repr", "bilinear_scores", "decoder_parameters", "softmax"]
 
 _EPS = 1e-12
 
@@ -90,10 +88,16 @@ def attention_weights(h_t, H, A1, A2, v):
     rows = [[float(q) for q in r] for r in k.mat(H)]
     sc = []
     for hj in rows:
-        z = [1.0 / (1.0 + math.exp(-(
-            sum(A1[o][i] * ht[i] for i in range(len(ht)))
-            + sum(A2[o][i] * hj[i] for i in range(len(hj))))))
-            for o in range(len(A1))]
+        z = [
+            1.0
+            / (
+                1.0
+                + math.exp(
+                    -(sum(A1[o][i] * ht[i] for i in range(len(ht))) + sum(A2[o][i] * hj[i] for i in range(len(hj))))
+                )
+            )
+            for o in range(len(A1))
+        ]
         sc.append(sum(v[o] * z[o] for o in range(len(v))))
     return softmax(sc)
 
@@ -103,17 +107,14 @@ def local_encoder(H, alpha):
     rows = [[float(q) for q in r] for r in k.mat(H)]
     a = [float(q) for q in k.vec(alpha)]
     if len(a) != len(rows):
-        raise ValueError("narm: %d weights for %d hidden states"
-                         % (len(a), len(rows)))
+        raise ValueError(f"narm: {int(len(a))} weights for {int(len(rows))} hidden states")
     d = len(rows[0])
-    return [sum(a[j] * rows[j][f] for j in range(len(rows)))
-            for f in range(d)]
+    return [sum(a[j] * rows[j][f] for j in range(len(rows))) for f in range(d)]
 
 
 def session_repr(h_t_global, c_local):
     r"""Eq. (9): :math:`c_t = [c_t^g; c_t^l]`."""
-    return [float(q) for q in k.vec(h_t_global)] + \
-        [float(q) for q in k.vec(c_local)]
+    return [float(q) for q in k.vec(h_t_global)] + [float(q) for q in k.vec(c_local)]
 
 
 def bilinear_scores(embeddings, B, c_t):
@@ -121,21 +122,20 @@ def bilinear_scores(embeddings, B, c_t):
     E = [[float(q) for q in r] for r in k.mat(embeddings)]
     c = [float(q) for q in k.vec(c_t)]
     if len(B[0]) != len(c):
-        raise ValueError("narm: B has %d columns for a session vector "
-                         "of %d" % (len(B[0]), len(c)))
-    Bc = [sum(B[d][h] * c[h] for h in range(len(c)))
-          for d in range(len(B))]
+        raise ValueError(f"narm: B has {int(len(B[0]))} columns for a session vector of {int(len(c))}")
+    Bc = [sum(B[d][h] * c[h] for h in range(len(c))) for d in range(len(B))]
     if len(E[0]) != len(Bc):
-        raise ValueError("narm: embeddings are %d-dimensional but B "
-                         "has %d rows" % (len(E[0]), len(Bc)))
-    s = [sum(E[i][d] * Bc[d] for d in range(len(Bc)))
-         for i in range(len(E))]
-    return RichResult(payload={
-        "estimate": s, "scores": s, "probabilities": softmax(s),
-        "method": "bilinear decoder; Li et al. (2017) eq. (10)",
-        "note": "|D||H| parameters instead of |N||H|, and the paper "
-                "reports better accuracy too",
-    })
+        raise ValueError(f"narm: embeddings are {int(len(E[0]))}-dimensional but B has {int(len(Bc))} rows")
+    s = [sum(E[i][d] * Bc[d] for d in range(len(Bc))) for i in range(len(E))]
+    return RichResult(
+        payload={
+            "estimate": s,
+            "scores": s,
+            "probabilities": softmax(s),
+            "method": "bilinear decoder; Li et al. (2017) eq. (10)",
+            "note": "|D||H| parameters instead of |N||H|, and the paper reports better accuracy too",
+        }
+    )
 
 
 def decoder_parameters(n_items, hidden, emb_dim):
@@ -143,21 +143,26 @@ def decoder_parameters(n_items, hidden, emb_dim):
     N, H, D = int(n_items), int(hidden), int(emb_dim)
     if min(N, H, D) < 1:
         raise ValueError("narm: all three sizes must be at least 1")
-    return {"fully_connected": N * H, "bilinear": D * H,
-            "ratio": (N * H) / float(D * H),
-            "note": "|D| is usually far smaller than |N|"}
+    return {
+        "fully_connected": N * H,
+        "bilinear": D * H,
+        "ratio": (N * H) / float(D * H),
+        "note": "|D| is usually far smaller than |N|",
+    }
 
 
 def cheatsheet():
-    return ("narm: a purely sequential session model recommends "
-            "trousers because the shopper clicked a pair by accident. "
-            "Two encoders over the SAME GRU states: the global one "
-            "takes h_t as the whole-behaviour summary, the local one "
-            "attends over previous states to capture the session's "
-            "MAIN PURPOSE. h_t^g and h_t^l have identical values and "
-            "different roles. Concatenate, then score with a BILINEAR "
-            "decoder emb_i' B c_t -- |D||H| parameters instead of "
-            "|N||H|, and more accurate.")
+    return (
+        "narm: a purely sequential session model recommends "
+        "trousers because the shopper clicked a pair by accident. "
+        "Two encoders over the SAME GRU states: the global one "
+        "takes h_t as the whole-behaviour summary, the local one "
+        "attends over previous states to capture the session's "
+        "MAIN PURPOSE. h_t^g and h_t^l have identical values and "
+        "different roles. Concatenate, then score with a BILINEAR "
+        "decoder emb_i' B c_t -- |D||H| parameters instead of "
+        "|N||H|, and more accurate."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -1,13 +1,14 @@
 """Tests for gb1041t (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb1041t import gibbons_kw_ties
 
 
 def test_gb1041t_basic():
     from morie.fn import _stats_core as stats
+
     rng = np.random.default_rng(8)
     g = [np.round(rng.standard_normal(15) + d, 0) for d in (0, 0.5, 1.0)]
     assert gibbons_kw_ties(g)["H"] == pytest.approx(stats.kruskal(*g).statistic, abs=1e-10)

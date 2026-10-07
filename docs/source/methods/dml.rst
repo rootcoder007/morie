@@ -70,15 +70,20 @@ Nuisance learners: ridge regressions for both :math:`g_0` and
 
 .. code-block:: python
 
+   import random
    from morie.causal import estimate_double_ml
 
-   result = estimate_double_ml(
-       df,
-       outcome="heavy_drinking_30d",
-       treatment="cannabis_any_use",
-       covariates=["age_group", "gender", "province_region", "mental_health"],
-   )
-   print(result)  # {"ate": ..., "se": ..., "ci_lower": ..., "ci_upper": ..., "pval": ..., "n_obs": ...}
+   # a frame, a CSV path or a dict of columns; here a synthetic confounded sample
+   r = random.Random(1)
+   x = [r.gauss(0, 1) for _ in range(200)]
+   t = [1 if xi + r.gauss(0, 1) > 0 else 0 for xi in x]
+   y = [0.5 * ti + xi + r.gauss(0, 1) for ti, xi in zip(t, x)]
+   result = estimate_double_ml({"y": y, "t": t, "x": x}, outcome="y", treatment="t", covariates=["x"])
+   print({k: round(v, 3) for k, v in result.items() if isinstance(v, float)})
+   # {'ate': 0.434, 'se': 0.171, 'ci_lower': 0.099, 'ci_upper': 0.769, 'pval': 0.011}
+
+   # on the CPADS PUMF (morie pull ocp21): outcome="heavy_drinking_30d", treatment="cannabis_any_use",
+   # covariates=["age_group", "gender", "province_region", "mental_health"]
 
 (:func:`morie.estimate_ate` is the IPW-weighted estimator, not DML; see
 :doc:`causal`.)

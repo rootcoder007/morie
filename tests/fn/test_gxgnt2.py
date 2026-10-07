@@ -1,7 +1,6 @@
 """Tests for gxgnt2.gxg_interaction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gxgnt2 import gxg_interaction
 
 

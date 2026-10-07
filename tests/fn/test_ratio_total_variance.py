@@ -1,7 +1,6 @@
 """Tests for ratio_total_variance.ratio_total_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ratio_total_variance import (
     ratio_total_variance,
 )

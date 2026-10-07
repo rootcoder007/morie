@@ -19,7 +19,6 @@ __all__ = ["hyperpl", "mvsml_ridge_lasso_elastic_eq_9_1"]
 
 
 def hyperpl(X, beta0, beta):
-
     """beta_0 + beta_1 x_1 + beta_2 x_2 + beta_3 x_3 = 0 defines a
     hyperplane (eq. 9.1, the p = 3 case), and its p-dimensional
     extension beta_0 + beta_1 x_1 + ... + beta_p x_p = 0 (eq. 9.2)

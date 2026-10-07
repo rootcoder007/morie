@@ -13,6 +13,7 @@ import morie
 
 # ---------------------------------------------------------------- measures
 
+
 def test_adp_is_days_per_day():
     # p.15: 13,500 person-days over a year is 36.99 average daily
     assert morie.adp([13500]) == pytest.approx(13500 / 365, abs=1e-9)
@@ -27,8 +28,8 @@ def test_alos_is_days_per_person():
 def test_the_identity_closes():
     # eq 2.4, p.18: adp = N_a * alos / t, so N_a = adp * t / alos
     days, n = [13500.0], 2700.0
-    a, l = morie.adp(days), morie.alos(days, n)
-    assert morie.admissions(a, l) == pytest.approx(n, abs=1e-9)
+    a, alos_v = morie.adp(days), morie.alos(days, n)
+    assert morie.admissions(a, alos_v) == pytest.approx(n, abs=1e-9)
     # p.20's worked figure: an adp of 25 and a stay of 5.214 days is 1,750
     assert morie.admissions(25, 25 * 365 / 1750) == pytest.approx(1750, abs=1e-6)
 
@@ -71,16 +72,20 @@ def test_a_single_observation_has_no_interval():
 
 # -------------------------------------------------------------- stock/flow
 
+
 def test_flow_and_stock_can_carry_opposite_signs():
     # THE SUBSTANCE. days = people x stay, so fewer people serving longer
     # stays can mean MORE detention days. Quoting the flow rate alone
     # reverses the finding, which is why both are returned.
-    sf = morie.stock_flow(days=[100000.0, 109000.0], people=[1000.0, 760.0],
-                          period=["FY2023", "FY2025"],
-                          exposure=[14000000.0, 14000000.0])
-    assert sf.people_change[-1] < 0      # fewer people
-    assert sf.alos_change[-1] > 0        # longer stays
-    assert sf.days_change[-1] > 0        # more days
+    sf = morie.stock_flow(
+        days=[100000.0, 109000.0],
+        people=[1000.0, 760.0],
+        period=["FY2023", "FY2025"],
+        exposure=[14000000.0, 14000000.0],
+    )
+    assert sf.people_change[-1] < 0  # fewer people
+    assert sf.alos_change[-1] > 0  # longer stays
+    assert sf.days_change[-1] > 0  # more days
     assert sf.flow_rate_change[-1] < 0
     assert sf.stock_rate_change[-1] > 0
     assert sf.opposite_signs() is True
@@ -89,9 +94,8 @@ def test_flow_and_stock_can_carry_opposite_signs():
 def test_the_decomposition_is_exact():
     sf = morie.stock_flow(days=[100000.0, 109000.0], people=[1000.0, 760.0])
     p = sf.people_change[-1] / 100
-    l = sf.alos_change[-1] / 100
-    assert (1 + p) * (1 + l) - 1 == pytest.approx(sf.days_change[-1] / 100,
-                                                  abs=1e-12)
+    alos_v = sf.alos_change[-1] / 100
+    assert (1 + p) * (1 + alos_v) - 1 == pytest.approx(sf.days_change[-1] / 100, abs=1e-12)
 
 
 def test_baseline_previous_differs_from_first():
@@ -114,24 +118,27 @@ def test_stock_flow_rejects_mismatched_lengths():
 
 # --------------------------------------------------------------------- MRM
 
+
 def _otis(years=("FY2024", "FY2025"), n=(4, 3)):
     pd_rows, pl_rows = [], []
     for y, k in zip(years, n):
         for i in range(1, k + 1):
             days = 30.0 * i
-            pd_rows.append({"EndFiscalYear": y,
-                            "UniqueIndividual_ID": "%s-%d" % (y, i),
-                            "TotalAggregatedDays_Segregation": days})
+            pd_rows.append(
+                {"EndFiscalYear": y, "UniqueIndividual_ID": f"{y}-{int(i)}", "TotalAggregatedDays_Segregation": days}
+            )
             # one person, three spells: spell lengths sum to the person's
             # days here, which is the FAVOURABLE case
             for _ in range(3):
-                pl_rows.append({
-                    "EndFiscalYear": y,
-                    "UniqueIndividual_ID": "%s-%d" % (y, i),
-                    "NumberConsecutiveDays_Segregation": days / 3,
-                    "Number_Of_Placements": 1})
-    totals = [{"EndFiscalYear": y, "NumberIndividuals_Segregation": k}
-              for y, k in zip(years, n)]
+                pl_rows.append(
+                    {
+                        "EndFiscalYear": y,
+                        "UniqueIndividual_ID": f"{y}-{int(i)}",
+                        "NumberConsecutiveDays_Segregation": days / 3,
+                        "Number_Of_Placements": 1,
+                    }
+                )
+    totals = [{"EndFiscalYear": y, "NumberIndividuals_Segregation": k} for y, k in zip(years, n)]
     return pd_rows, pl_rows, totals
 
 
@@ -153,10 +160,9 @@ def test_spell_days_are_reported_not_used_as_the_numerator():
     # third, so the ratio is surfaced rather than silently applied.
     pdr, plr, _ = _otis()
     for row in plr:
-        row["NumberConsecutiveDays_Segregation"] /= 2   # lossy spells
+        row["NumberConsecutiveDays_Segregation"] /= 2  # lossy spells
     r = morie.mrm_otis_stock_flow(pdr, placements=plr)
-    assert r.reconciliation[0]["consecutive_over_person_days"] == \
-        pytest.approx(0.5, abs=1e-12)
+    assert r.reconciliation[0]["consecutive_over_person_days"] == pytest.approx(0.5, abs=1e-12)
     # the measures still come off the PERSON stratum
     assert r.stock_flow.days[0] == pytest.approx(300.0)
 

@@ -7,9 +7,9 @@ from ._richresult import RichResult
 __all__ = ["generalized_advantage_estimation", "gae"]
 
 
-def generalized_advantage_estimation(rewards, values, gamma=0.99, lam=0.95,
-                                     dones=None, last_value=0.0,
-                                     normalize=False):
+def generalized_advantage_estimation(
+    rewards, values, gamma=0.99, lam=0.95, dones=None, last_value=0.0, normalize=False
+):
     r"""GAE(:math:`\gamma`, :math:`\lambda`) advantages.
 
     .. math::
@@ -75,19 +75,14 @@ def generalized_advantage_estimation(rewards, values, gamma=0.99, lam=0.95,
     elif v.size == T:
         vt, boot = v, float(last_value)
     else:
-        raise ValueError(
-            "values must have T or T+1 entries, got %d for T = %d."
-            % (v.size, T)
-        )
+        raise ValueError(f"values must have T or T+1 entries, got {int(v.size)} for T = {int(T)}.")
     if not 0.0 <= gamma <= 1.0:
-        raise ValueError("gamma must lie in [0, 1], got %r." % gamma)
+        raise ValueError(f"gamma must lie in [0, 1], got {gamma!r}.")
     if not 0.0 <= lam <= 1.0:
-        raise ValueError("lam must lie in [0, 1], got %r." % lam)
-    d = np.zeros(T) if dones is None else np.asarray(
-        dones, dtype=float
-    ).ravel()
+        raise ValueError(f"lam must lie in [0, 1], got {lam!r}.")
+    d = np.zeros(T) if dones is None else np.asarray(dones, dtype=float).ravel()
     if d.size != T:
-        raise ValueError("dones has %d entries for %d steps." % (d.size, T))
+        raise ValueError(f"dones has {int(d.size)} entries for {int(T)} steps.")
     if not np.all(np.isin(d, (0.0, 1.0))):
         raise ValueError("dones must be binary 0/1.")
 
@@ -136,10 +131,7 @@ def generalized_advantage_estimation(rewards, values, gamma=0.99, lam=0.95,
 
 
 def cheatsheet():
-    return (
-        "gae: GAE(gamma, lambda) advantages with the effective horizon and "
-        "a rollout-truncation warning"
-    )
+    return "gae: GAE(gamma, lambda) advantages with the effective horizon and a rollout-truncation warning"
 
 
 #: Catalogue alias for :func:`generalized_advantage_estimation`.

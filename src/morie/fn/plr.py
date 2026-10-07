@@ -79,8 +79,7 @@ def estimate_plr(
         raise ValueError(f"n_folds must be >= 2, got {n_folds}.")
 
     df = data[[treatment, outcome] + covariates].dropna()
-    X = [[float(df[c].tolist()[i]) for c in covariates]
-         for i in range(len(df))]
+    X = [[float(df[c].tolist()[i]) for c in covariates] for i in range(len(df))]
     y = [float(v) for v in df[outcome].tolist()]
     d = [float(v) for v in df[treatment].tolist()]
     n_obs = len(y)
@@ -106,8 +105,7 @@ def estimate_plr(
     v = [d[i] - mhat[i] for i in range(n_obs)]
     vv = sum(x * x for x in v)
     if vv == 0.0:
-        raise ValueError("treatment residual variance is zero; the "
-                         "treatment is fully explained by covariates")
+        raise ValueError("treatment residual variance is zero; the treatment is fully explained by covariates")
     ate = sum(a * b for a, b in zip(v, u)) / vv
     psi = [(u[i] - ate * v[i]) * v[i] for i in range(n_obs)]
     j0 = vv / n_obs
@@ -130,8 +128,7 @@ plr_fn = estimate_plr
 
 
 def cheatsheet() -> str:
-    return ("estimate_plr({}) -> Native double-ML PLR: cross-fitted "
-            "ridge nuisances, partialling-out score.")
+    return "estimate_plr({}) -> Native double-ML PLR: cross-fitted ridge nuisances, partialling-out score."
 
 
 # compact alias per ledger/NAMING.md

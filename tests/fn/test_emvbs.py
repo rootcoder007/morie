@@ -1,7 +1,6 @@
 """Tests for morie.fn.emvbs -- Evidence maximization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.emvbs import evidence_maximization
 
 

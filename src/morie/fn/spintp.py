@@ -18,14 +18,14 @@ def _kernel(t, kind):
     """
     t = np.asarray(t, dtype=float)
     if kind == "gaussian":
-        return np.exp(-0.5 * t ** 2) / np.sqrt(2.0 * np.pi)
+        return np.exp(-0.5 * t**2) / np.sqrt(2.0 * np.pi)
     if kind == "quadratic":
-        return np.where(np.abs(t) <= 1, 0.75 * (1 - t ** 2), 0.0)
+        return np.where(np.abs(t) <= 1, 0.75 * (1 - t**2), 0.0)
     if kind == "minimum_variance":
-        return np.where(np.abs(t) <= 1, (3.0 / 8.0) * (3 - 5 * t ** 2), 0.0)
+        return np.where(np.abs(t) <= 1, (3.0 / 8.0) * (3 - 5 * t**2), 0.0)
     if kind == "uniform":
         return np.where(np.abs(t) <= 1, 0.5, 0.0)
-    raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kind))
+    raise ValueError(f"kernel must be one of {KERNELS}, got {kind!r}.")
 
 
 def _kernel_cdf(t, kind):
@@ -36,9 +36,9 @@ def _kernel_cdf(t, kind):
         return 0.5 * math.erfc(-t / math.sqrt(2.0))
     u = min(max(t, -1.0), 1.0)
     if kind == "quadratic":
-        return 0.5 + 0.75 * (u - u ** 3 / 3.0)
+        return 0.5 + 0.75 * (u - u**3 / 3.0)
     if kind == "minimum_variance":
-        return 0.5 + 0.375 * (3.0 * u - 5.0 * u ** 3 / 3.0)
+        return 0.5 + 0.375 * (3.0 * u - 5.0 * u**3 / 3.0)
     return 0.5 + 0.5 * u
 
 
@@ -50,9 +50,9 @@ def _trap(m):
     return w
 
 
-def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
-                                       grid=40, kernel="gaussian",
-                                       edge_correct=True):
+def schabenberger_intensity_estimation(
+    points, bandwidth=None, region=None, grid=40, kernel="gaussian", edge_correct=True
+):
     r"""Kernel estimate of a first-order intensity, Schabenberger eq (3.14).
 
     The product-kernel estimator is
@@ -132,9 +132,9 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
         raise ValueError("points must have two coordinate columns.")
     n = P.shape[0]
     if n < 2:
-        raise ValueError("need at least 2 events, got %d." % n)
+        raise ValueError(f"need at least 2 events, got {int(n)}.")
     if kernel not in KERNELS:
-        raise ValueError("kernel must be one of %s, got %r." % (KERNELS, kernel))
+        raise ValueError(f"kernel must be one of {KERNELS}, got {kernel!r}.")
 
     if region is None:
         xmin, xmax = float(P[:, 0].min()), float(P[:, 0].max())
@@ -155,8 +155,7 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
         auto = True
     else:
         b = np.atleast_1d(np.asarray(bandwidth, dtype=float))
-        hx, hy = (float(b[0]), float(b[0])) if b.size == 1 else (
-            float(b[0]), float(b[1]))
+        hx, hy = (float(b[0]), float(b[0])) if b.size == 1 else (float(b[0]), float(b[1]))
         auto = False
     if hx <= 0 or hy <= 0:
         raise ValueError("bandwidth must be positive.")
@@ -167,9 +166,8 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
     GX, GY = np.meshgrid(xs, ys, indexing="ij")
     lam = np.zeros((g, g))
     for i in range(n):
-        lam += (_kernel((GX - P[i, 0]) / hx, kernel)
-                * _kernel((GY - P[i, 1]) / hy, kernel))
-    lam /= (hx * hy)
+        lam += _kernel((GX - P[i, 0]) / hx, kernel) * _kernel((GY - P[i, 1]) / hy, kernel)
+    lam /= hx * hy
 
     # Diggle's p_h(s): the kernel mass remaining inside A.  The product
     # kernel makes it separable, and each factor is a difference of the
@@ -178,10 +176,8 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
     # correction precisely at the edge it exists for.
     edge = np.ones((g, g))
     if edge_correct:
-        px = [_kernel_cdf((float(x) - xmin) / hx, kernel)
-              - _kernel_cdf((float(x) - xmax) / hx, kernel) for x in xs]
-        py = [_kernel_cdf((float(y) - ymin) / hy, kernel)
-              - _kernel_cdf((float(y) - ymax) / hy, kernel) for y in ys]
+        px = [_kernel_cdf((float(x) - xmin) / hx, kernel) - _kernel_cdf((float(x) - xmax) / hx, kernel) for x in xs]
+        py = [_kernel_cdf((float(y) - ymin) / hy, kernel) - _kernel_cdf((float(y) - ymax) / hy, kernel) for y in ys]
         edge = np.asarray([[a * b_ for b_ in py] for a in px])
         edge = np.maximum(edge, 1e-6)
         lam = lam / edge
@@ -190,8 +186,7 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
     dy = (ymax - ymin) / max(g - 1, 1)
     wx, wy = _trap(g), _trap(g)
     lamv = lam.tolist()
-    integrated = float(sum(wx[a] * wy[b_] * lamv[a][b_]
-                           for a in range(g) for b_ in range(g)) * dx * dy)
+    integrated = float(sum(wx[a] * wy[b_] * lamv[a][b_] for a in range(g) for b_ in range(g)) * dx * dy)
     return RichResult(
         payload={
             "estimate": lam,
@@ -218,16 +213,16 @@ def schabenberger_intensity_estimation(points, bandwidth=None, region=None,
             "area": area,
             "region_supplied": region_given,
             "region_note": (
-                None if region_given else
-                "no region was given, so A is the bounding box of the events "
+                None
+                if region_given
+                else "no region was given, so A is the bounding box of the events "
                 "-- which is smaller than the true study region and "
                 "therefore overstates the intensity"
             ),
             "mean_intensity": float(n / area),
             "integrated_intensity": integrated,
             "n": n,
-            "method": "Kernel intensity estimation for an inhomogeneous "
-                      "Poisson process",
+            "method": "Kernel intensity estimation for an inhomogeneous Poisson process",
         }
     )
 

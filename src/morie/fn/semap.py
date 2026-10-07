@@ -53,7 +53,7 @@ def sammon_mapping(
 
     c = np.sum(D[np.triu_indices(n, k=1)])
 
-    for it in range(max_iter):
+    for _it in range(max_iter):
         Dy = squareform(pdist(Y))
         Dy[Dy == 0] = 1e-12
 

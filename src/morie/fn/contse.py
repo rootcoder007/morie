@@ -45,6 +45,7 @@ def contrastive_sent(sentences, tau=0.05, dropout=0.1, seed=42):
     Sentence Embeddings, EMNLP 2021:6894-6910.
     """
     from . import _array_core as np
+
     H = core.mat(sentences)
     n = len(H)
     if n == 0:
@@ -73,26 +74,26 @@ def contrastive_sent(sentences, tau=0.05, dropout=0.1, seed=42):
         lse = mx + math.log(sum(math.exp(v - mx) for v in s))
         per.append(lse - s[i])
     loss = sum(per) / n
-    align = sum(sum((A[i][k] - B[i][k]) ** 2 for k in range(d))
-                for i in range(n)) / n
+    align = sum(sum((A[i][k] - B[i][k]) ** 2 for k in range(d)) for i in range(n)) / n
     unif = 0.0
     cnt = 0
     for i in range(n):
         for j in range(i + 1, n):
-            unif += math.exp(-2.0 * sum((A[i][k] - A[j][k]) ** 2
-                                        for k in range(d)))
+            unif += math.exp(-2.0 * sum((A[i][k] - A[j][k]) ** 2 for k in range(d)))
             cnt += 1
     unif = math.log(unif / cnt) if cnt else float("nan")
-    return RichResult(payload={
-        "estimate": loss,
-        "loss": loss,
-        "per_item": per,
-        "alignment": align,
-        "uniformity": unif,
-        "n": n,
-        "d": d,
-        "method": "SimCSE contrastive sentence objective",
-    })
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "per_item": per,
+            "alignment": align,
+            "uniformity": unif,
+            "n": n,
+            "d": d,
+            "method": "SimCSE contrastive sentence objective",
+        }
+    )
 
 
 def cheatsheet():

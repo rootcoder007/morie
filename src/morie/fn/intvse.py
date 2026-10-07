@@ -61,10 +61,18 @@ def interventional_effect(Y, X, M, Cc=None, a=1.0, astar=0.0):
     ide = (theta[1] + theta[3] * bc) * d
     iie = (theta[2] + theta[3] * a) * beta[1] * d
     cde, intref, intmed, pie, te = S.fourway(theta, beta, cbar, a, astar, 0.0)
-    return RichResult(payload={
-        "estimate": te, "ide": ide, "iie": iie, "check": te - (ide + iie),
-        "theta": theta, "beta": beta, "n": len(C.vec(Y)),
-        "method": "Interventional direct and indirect effects"})
+    return RichResult(
+        payload={
+            "estimate": te,
+            "ide": ide,
+            "iie": iie,
+            "check": te - (ide + iie),
+            "theta": theta,
+            "beta": beta,
+            "n": len(C.vec(Y)),
+            "method": "Interventional direct and indirect effects",
+        }
+    )
 
 
 def cheatsheet():

@@ -5,10 +5,7 @@ Implements sec. 9.5.7 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_icens_dp_crt"]
@@ -35,13 +32,12 @@ def ghosal_icens_dp_crt(ns=(200, 1600, 12800), seed=42):
         vals = [(1.0 + s) / (2.0 + t) for s, t in zip(succ, tot)]
         wts = [2.0 + t for t in tot]
         i = 0
-        while i < len(vals) - 1:               # PAVA
+        while i < len(vals) - 1:  # PAVA
             if vals[i] > vals[i + 1] + 1e-12:
                 wm = wts[i] + wts[i + 1]
-                vm = (vals[i] * wts[i]
-                      + vals[i + 1] * wts[i + 1]) / wm
-                vals[i:i + 2] = [vm]
-                wts[i:i + 2] = [wm]
+                vm = (vals[i] * wts[i] + vals[i + 1] * wts[i + 1]) / wm
+                vals[i : i + 2] = [vm]
+                wts[i : i + 2] = [wm]
                 i = max(i - 1, 0)
             else:
                 i += 1
@@ -51,12 +47,15 @@ def ghosal_icens_dp_crt(ns=(200, 1600, 12800), seed=42):
             reps = max(int(round(w / (n / k + 2.0))), 1)
             F += [v] * reps
         F = F[:k] + [vals[-1]] * max(0, k - len(F))
-        errs.append(sum(abs(F[b] - (b + 0.5) / k)
-                        for b in range(k)) / k)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "err_by_n": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "interval-censored DP rate (GvdV 2017 sec. 9.5.7)"})
+        errs.append(sum(abs(F[b] - (b + 0.5) / k) for b in range(k)) / k)
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "err_by_n": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "interval-censored DP rate (GvdV 2017 sec. 9.5.7)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_11")
 
 

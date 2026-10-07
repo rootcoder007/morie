@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_1 import ghosal_eppf_def
 
 
@@ -39,10 +38,7 @@ def test_gh_c14_1_symmetry_and_alpha():
     n = sum(ns)
     k = len(ns)
     alpha = 2.0
-    expected_log = (k * math.log(alpha)
-                    + math.lgamma(alpha)
-                    + sum(math.lgamma(v) for v in ns)
-                    - math.lgamma(alpha + n))
+    expected_log = k * math.log(alpha) + math.lgamma(alpha) + sum(math.lgamma(v) for v in ns) - math.lgamma(alpha + n)
     expected_est = math.exp(expected_log)
     r = ghosal_eppf_def(np.array([float(v) for v in ns]), alpha=alpha)
     assert math.isclose(r["log_eppf"], expected_log, rel_tol=1e-12, abs_tol=1e-12)

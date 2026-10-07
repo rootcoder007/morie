@@ -1,14 +1,56 @@
 """Tests for qbcfgs.qb_cf_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.qbcfgs import qb_cf_score
 
 
 def test_qbcfgs_basic():
     """Test basic functionality."""
     y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    D = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    D = np.array(
+        [
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+        ]
+    )
     X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = qb_cf_score(y, D, X)
     assert isinstance(result, dict)
@@ -18,7 +60,50 @@ def test_qbcfgs_basic():
 def test_qbcfgs_edge():
     """Test edge cases."""
     y = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    D = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1])
+    D = np.array(
+        [
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+        ]
+    )
     X = np.random.default_rng(43).normal(0.0, 1.0, (40, 3))
     result = qb_cf_score(y, D, X)
     assert isinstance(result, dict)

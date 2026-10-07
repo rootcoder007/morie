@@ -17,15 +17,18 @@ def _iou(a, b):
     ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
     iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
     inter = ix * iy
-    area = lambda r: (r[2] - r[0]) * (r[3] - r[1])
+
+    def area(r):
+        return (r[2] - r[0]) * (r[3] - r[1])
+
     return inter / (area(a) + area(b) - inter)
 
 
 CELLS = [  # (i, j, tx, ty, w, h, conf, class)
     (0, 0, 0.5, 0.5, 0.4, 0.4, 0.9, 0),
-    (0, 1, 0.1, 0.5, 0.4, 0.4, 0.7, 0),   # overlaps the first, same class
+    (0, 1, 0.1, 0.5, 0.4, 0.4, 0.7, 0),  # overlaps the first, same class
     (2, 2, 0.3, 0.6, 0.2, 0.3, 0.8, 1),
-    (1, 0, 0.5, 0.5, 0.2, 0.2, 0.3, 1),   # below the confidence threshold
+    (1, 0, 0.5, 0.5, 0.2, 0.2, 0.3, 1),  # below the confidence threshold
 ]
 
 
@@ -48,9 +51,14 @@ def test_hmyolo_basic():
     assert isinstance(result, dict)
     assert int(result["n_detections"]) == 2
     assert int(result["n_candidates"]) == 3
-    kept = sorted(zip([float(s) for s in result["scores"]],
-                      [int(c) for c in result["classes"]],
-                      [tuple(float(v) for v in b) for b in result["boxes"]]), reverse=True)
+    kept = sorted(
+        zip(
+            [float(s) for s in result["scores"]],
+            [int(c) for c in result["classes"]],
+            [tuple(float(v) for v in b) for b in result["boxes"]],
+        ),
+        reverse=True,
+    )
     assert kept[0][:2] == (0.9, 0) and kept[0][2] == pytest.approx(b0, abs=1e-12)
     assert kept[1][:2] == (0.8, 1)
     assert kept[1][2] == pytest.approx(_decode(*CELLS[2][:6]), abs=1e-12)
@@ -74,7 +82,7 @@ import morie.fn.hmyolo as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

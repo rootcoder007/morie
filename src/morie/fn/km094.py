@@ -13,33 +13,31 @@ def _embed(E, name):
     if callable(E):
         return E
     if isinstance(E, dict):
+
         def lookup(a):
             if a not in E:
                 raise ValueError(f"{a!r} has no embedding in {name}.")
             return E[a]
+
         return lookup
-    raise ValueError(f"{name} must be a callable word -> vector or a "
-                     "mapping.")
+    raise ValueError(f"{name} must be a callable word -> vector or a mapping.")
 
 
 def _pair_vectors(A, E, name):
     emb = _embed(E, name)
     pairs = list(A)
     if not pairs:
-        raise ValueError("A is empty; a sum over no counterfactual pairs "
-                         "is undefined, not 0.")
+        raise ValueError("A is empty; a sum over no counterfactual pairs is undefined, not 0.")
     out = []
     for pair in pairs:
         if len(pair) != 2:
             raise ValueError(
-                "every element of A must be a counterfactual PAIR "
-                f"(a_i, a_j); got one of length {len(pair)}.")
+                f"every element of A must be a counterfactual PAIR (a_i, a_j); got one of length {len(pair)}."
+            )
         vi = np.atleast_1d(np.asarray(emb(pair[0]), dtype=float))
         vj = np.atleast_1d(np.asarray(emb(pair[1]), dtype=float))
         if vi.shape != vj.shape:
-            raise ValueError(
-                f"the pair {pair!r} has embeddings of shapes {vi.shape} "
-                f"and {vj.shape}.")
+            raise ValueError(f"the pair {pair!r} has embeddings of shapes {vi.shape} and {vj.shape}.")
         out.append((vi, vj))
     dim = out[0][0].shape
     if any(v.shape != dim for p in out for v in p):
@@ -71,11 +69,16 @@ def kamath_ch6_debias_regularizer(A, E, lam):
         raise ValueError("lam must be finite and non-negative.")
     pairs = _pair_vectors(A, E, "E")
     per = [float(np.sum((vi - vj) ** 2)) for vi, vj in pairs]
-    return RichResult(payload={
-        "estimate": float(lam * sum(per)), "per_pair": per,
-        "unweighted": float(sum(per)), "lam": lam, "n": len(per),
-        "method": "counterfactual-pair debiasing regulariser "
-                  "(Kamath Eq 6.18)"})
+    return RichResult(
+        payload={
+            "estimate": float(lam * sum(per)),
+            "per_pair": per,
+            "unweighted": float(sum(per)),
+            "lam": lam,
+            "n": len(per),
+            "method": "counterfactual-pair debiasing regulariser (Kamath Eq 6.18)",
+        }
+    )
 
 
 def cheatsheet():

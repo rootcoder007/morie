@@ -34,12 +34,17 @@ def kamath_ch6_gender_direction(A, E):
     diffs = np.asarray([vj - vi for vi, vj in pairs], dtype=float)
     g = diffs.mean(axis=0)
     norm = float(np.linalg.norm(g))
-    return RichResult(payload={
-        "g": [float(v) for v in g], "norm": norm,
-        "per_pair": [[float(v) for v in d] for d in diffs],
-        "degenerate": norm == 0.0,
-        "estimate": norm, "n": len(pairs),
-        "method": "gender direction (Kamath Eq 6.19)"})
+    return RichResult(
+        payload={
+            "g": [float(v) for v in g],
+            "norm": norm,
+            "per_pair": [[float(v) for v in d] for d in diffs],
+            "degenerate": norm == 0.0,
+            "estimate": norm,
+            "n": len(pairs),
+            "method": "gender direction (Kamath Eq 6.19)",
+        }
+    )
 
 
 def cheatsheet():

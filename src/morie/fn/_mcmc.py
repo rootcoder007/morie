@@ -92,7 +92,7 @@ def split_rhat(chains, rank_normalized=True):
     if n < 4:
         return float("nan")
     half = n // 2
-    S = np.vstack([C[:, :half], C[:, n - half:]])
+    S = np.vstack([C[:, :half], C[:, n - half :]])
     if rank_normalized:
         S = rank_normalize(S)
     m2, n2 = S.shape

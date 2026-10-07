@@ -120,20 +120,24 @@ def dp_synthetic_data(X, epsilon=1.0, n_synth=None, bins=10, bounds=None, seed=N
     cs = float(np.corrcoef(synth[:, 0], synth[:, 1])[0, 1]) if p >= 2 else float("nan")
     return RichResult(
         title="DP synthetic data",
-        summary_lines=[("epsilon", epsilon), ("records", n_synth),
-                       ("features", p)],
-        warnings=warn + ["this preserves MARGINALS ONLY; every inter-feature "
-                         "correlation is destroyed, so regressions and "
-                         "interactions on it will be wrong while looking "
-                         "plausible"],
+        summary_lines=[("epsilon", epsilon), ("records", n_synth), ("features", p)],
+        warnings=warn
+        + [
+            "this preserves MARGINALS ONLY; every inter-feature "
+            "correlation is destroyed, so regressions and "
+            "interactions on it will be wrong while looking "
+            "plausible"
+        ],
         payload={
             "synthetic": synth,
             "preserved": ["per-feature marginal distributions"],
-            "destroyed": ["all inter-feature correlation",
-                          "joint structure", "interactions"],
+            "destroyed": ["all inter-feature correlation", "joint structure", "interactions"],
             "marginal_error": marg_err,
-            "correlation_real": cr, "correlation_synthetic": cs,
-            "epsilon": epsilon, "n_synth": n_synth, "bins": int(bins),
+            "correlation_real": cr,
+            "correlation_synthetic": cs,
+            "epsilon": epsilon,
+            "n_synth": n_synth,
+            "bins": int(bins),
             "method": "dp_synthetic_data",
         },
     )

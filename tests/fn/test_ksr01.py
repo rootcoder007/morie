@@ -1,8 +1,8 @@
 """Tests for ksr01.kosorok_empirical_process."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr01 import kosorok_empirical_process
 
 

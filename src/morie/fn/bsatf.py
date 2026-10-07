@@ -12,7 +12,6 @@ import cmath
 from math import atan2, cos, exp, fsum, log, pi, sin, sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._containers import DescriptiveResult
 from ._rgcore import aslist
 from ._richresult import RichResult, with_describe_pointer
@@ -20,109 +19,109 @@ from ._sci_core import CubicSpline
 from ._signal_core import hilbert
 
 __all__ = [
-    'hilbert_huang_spectrum',
-    'cdemod',
-    'rangayyan_amplitude_demod',
-    'biordwt',
-    'rangayyan_biorthogonal_wvlt',
-    'expkertfd',
-    'rangayyan_choi_williams',
-    'cprwt',
-    'rangayyan_cpr_analysis',
-    'cwt',
-    'rangayyan_cwt',
-    'gtfd',
-    'rangayyan_cohen_class',
-    'orthfilt',
-    'rangayyan_daubechies',
-    'atomtfd',
-    'rangayyan_decomp_tfd',
-    'dwt',
-    'rangayyan_dwt',
-    'emdens',
-    'rangayyan_eemd',
-    'sift',
-    'rangayyan_emd',
-    'imf',
-    'rangayyan_emd_imf',
-    'twaemd',
-    'rangayyan_emd_twa',
-    'vfemd',
-    'rangayyan_emd_vf_detect',
-    'rangayyan_emg_rms',
-    'wtentropy',
-    'rangayyan_wavelet_entropy',
-    'rangayyan_envelope',
-    'rangayyan_envelogram',
-    'dwt2tap',
-    'rangayyan_haar_wavelet',
-    'emdspec',
-    'rangayyan_hht_spectrum',
-    'hrvtv',
-    'rangayyan_hrv_time_varying',
-    'istft',
-    'rangayyan_istft',
-    'mra',
-    'rangayyan_mra',
-    'pcgenvavg',
-    'rangayyan_pcg_envelope_avg',
-    'ppgwtden',
-    'rangayyan_ppg_wavelet',
-    'scalogram',
-    'rangayyan_scalogram',
-    'seizwt',
-    'rangayyan_seizure_wavelet',
-    'stftparam',
-    'rangayyan_stft_params',
-    'spectrogram',
-    'rangayyan_stft_spectrogram',
-    'swt',
-    'rangayyan_swt',
-    'swtden',
-    'rangayyan_swt_denoise',
-    'vmodes',
-    'rangayyan_vmd',
-    'cwtridge',
-    'rangayyan_wavelet_struct',
-    'wtxcor',
-    'rangayyan_wavelet_corr',
-    'wvdist',
-    'rangayyan_wigner_ville',
-    'wtenergy',
-    'rangayyan_wavelet_energy',
-    'wtmoment',
-    'rangayyan_wavelet_moments',
-    'wpt',
-    'rangayyan_wavelet_packet',
-    'wtthresh',
-    'rangayyan_wavelet_threshold',
-    'wtvar',
-    'rangayyan_wavelet_variance',
-    'echoimp',
-    'rangayyan_ch4_signal_with_echo_input',
-    'echosig',
-    'rangayyan_ch4_signal_with_echo_output',
-    'echoz',
-    'rangayyan_ch4_z_transform_signal_echo',
-    'echospec',
-    'rangayyan_ch4_fourier_signal_echo',
-    'echologsp',
-    'rangayyan_ch4_log_signal_echo',
-    'echocep',
-    'rangayyan_ch4_complex_cepstrum_signal_with_echo',
-    'echopsd',
-    'rangayyan_ch4_power_spectrum_signal_echo',
-    'echologpsd',
-    'rangayyan_ch4_log_power_spectrum_signal_echo',
-    'wigner_ville',
-    'rangayyancwt',
-    'rangayyandwt',
-    'rangayyaneemd',
-    'rangayyanemd',
-    'rangayyanistft',
-    'rangayyanmra',
-    'rangayyanswt',
-    'rangayyanvmd',
+    "hilbert_huang_spectrum",
+    "cdemod",
+    "rangayyan_amplitude_demod",
+    "biordwt",
+    "rangayyan_biorthogonal_wvlt",
+    "expkertfd",
+    "rangayyan_choi_williams",
+    "cprwt",
+    "rangayyan_cpr_analysis",
+    "cwt",
+    "rangayyan_cwt",
+    "gtfd",
+    "rangayyan_cohen_class",
+    "orthfilt",
+    "rangayyan_daubechies",
+    "atomtfd",
+    "rangayyan_decomp_tfd",
+    "dwt",
+    "rangayyan_dwt",
+    "emdens",
+    "rangayyan_eemd",
+    "sift",
+    "rangayyan_emd",
+    "imf",
+    "rangayyan_emd_imf",
+    "twaemd",
+    "rangayyan_emd_twa",
+    "vfemd",
+    "rangayyan_emd_vf_detect",
+    "rangayyan_emg_rms",
+    "wtentropy",
+    "rangayyan_wavelet_entropy",
+    "rangayyan_envelope",
+    "rangayyan_envelogram",
+    "dwt2tap",
+    "rangayyan_haar_wavelet",
+    "emdspec",
+    "rangayyan_hht_spectrum",
+    "hrvtv",
+    "rangayyan_hrv_time_varying",
+    "istft",
+    "rangayyan_istft",
+    "mra",
+    "rangayyan_mra",
+    "pcgenvavg",
+    "rangayyan_pcg_envelope_avg",
+    "ppgwtden",
+    "rangayyan_ppg_wavelet",
+    "scalogram",
+    "rangayyan_scalogram",
+    "seizwt",
+    "rangayyan_seizure_wavelet",
+    "stftparam",
+    "rangayyan_stft_params",
+    "spectrogram",
+    "rangayyan_stft_spectrogram",
+    "swt",
+    "rangayyan_swt",
+    "swtden",
+    "rangayyan_swt_denoise",
+    "vmodes",
+    "rangayyan_vmd",
+    "cwtridge",
+    "rangayyan_wavelet_struct",
+    "wtxcor",
+    "rangayyan_wavelet_corr",
+    "wvdist",
+    "rangayyan_wigner_ville",
+    "wtenergy",
+    "rangayyan_wavelet_energy",
+    "wtmoment",
+    "rangayyan_wavelet_moments",
+    "wpt",
+    "rangayyan_wavelet_packet",
+    "wtthresh",
+    "rangayyan_wavelet_threshold",
+    "wtvar",
+    "rangayyan_wavelet_variance",
+    "echoimp",
+    "rangayyan_ch4_signal_with_echo_input",
+    "echosig",
+    "rangayyan_ch4_signal_with_echo_output",
+    "echoz",
+    "rangayyan_ch4_z_transform_signal_echo",
+    "echospec",
+    "rangayyan_ch4_fourier_signal_echo",
+    "echologsp",
+    "rangayyan_ch4_log_signal_echo",
+    "echocep",
+    "rangayyan_ch4_complex_cepstrum_signal_with_echo",
+    "echopsd",
+    "rangayyan_ch4_power_spectrum_signal_echo",
+    "echologpsd",
+    "rangayyan_ch4_log_power_spectrum_signal_echo",
+    "wigner_ville",
+    "rangayyancwt",
+    "rangayyandwt",
+    "rangayyaneemd",
+    "rangayyanemd",
+    "rangayyanistft",
+    "rangayyanmra",
+    "rangayyanswt",
+    "rangayyanvmd",
 ]
 
 # ---------------------------------------------------------------------------
@@ -154,12 +153,16 @@ def _tfdft(x):
     for k in range(n):
         w = -2.0 * pi * k / n
         # (a + jb)(cos + j sin) = (a cos - b sin) + j(a sin + b cos)
-        re = fsum((v.real if isinstance(v, complex) else v) * cos(w * i) -
-                  (v.imag if isinstance(v, complex) else 0.0) * sin(w * i)
-                  for i, v in enumerate(x))
-        im = fsum((v.real if isinstance(v, complex) else v) * sin(w * i) +
-                  (v.imag if isinstance(v, complex) else 0.0) * cos(w * i)
-                  for i, v in enumerate(x))
+        re = fsum(
+            (v.real if isinstance(v, complex) else v) * cos(w * i)
+            - (v.imag if isinstance(v, complex) else 0.0) * sin(w * i)
+            for i, v in enumerate(x)
+        )
+        im = fsum(
+            (v.real if isinstance(v, complex) else v) * sin(w * i)
+            + (v.imag if isinstance(v, complex) else 0.0) * cos(w * i)
+            for i, v in enumerate(x)
+        )
         out.append(complex(re, im))
     return out
 
@@ -225,46 +228,127 @@ _DBTAPS = {
     # with db2's closed form (1 +- sqrt 3, 3 +- sqrt 3) / (4 sqrt 2) to the
     # last bit. The previous table was right to about 12 digits only.
     1: [0.7071067811865476, 0.7071067811865476],
-    2: [0.48296291314453416, 0.8365163037378079, 0.2241438680420134,
-        -0.12940952255126037],
-    3: [0.33267055295008263, 0.8068915093110925, 0.45987750211849154,
-        -0.13501102001025458, -0.08544127388202666, 0.03522629188570953],
-    4: [0.2303778133088965, 0.7148465705529157, 0.6308807679298589,
-        -0.027983769416859854, -0.18703481171909309, 0.030841381835560764,
-        0.0328830116668852, -0.010597401785069032],
-    5: [0.16010239797419293, 0.6038292697971896, 0.7243085284377729,
-        0.13842814590132074, -0.24229488706638203, -0.032244869584638375,
-        0.07757149384004572, -0.006241490212798274, -0.012580751999081999,
-        0.0033357252854737712],
-    6: [0.11154074335010947, 0.49462389039845306, 0.7511339080210954,
-        0.31525035170919763, -0.22626469396543983, -0.12976686756726194,
-        0.09750160558732304, 0.027522865530305727, -0.03158203931748603,
-        0.0005538422011614961, 0.004777257510945511, -0.0010773010853084796],
-    7: [0.07785205408500918, 0.3965393194819173, 0.7291320908462351,
-        0.4697822874051931, -0.14390600392856498, -0.22403618499387498,
-        0.07130921926683026, 0.08061260915108308, -0.03802993693501441,
-        -0.01657454163066688, 0.01255099855609984, 0.0004295779729213665,
-        -0.0018016407040474908, 0.00035371379997452024],
-    8: [0.05441584224310401, 0.31287159091429995, 0.6756307362972898,
-        0.5853546836542067, -0.015829105256349306, -0.2840155429615469,
-        0.0004724845739132828, 0.12874742662047847, -0.017369301001807547,
-        -0.044088253930794755, 0.013981027917398282, 0.008746094047405777,
-        -0.004870352993451574, -0.00039174037337694705,
-        0.0006754494064505693, -0.00011747678412476953],
-    9: [0.038077947363878345, 0.24383467461259034, 0.6048231236901112,
-        0.6572880780513005, 0.13319738582500756, -0.2932737832791749,
-        -0.09684078322297646, 0.14854074933810638, 0.03072568147933338,
-        -0.06763282906132997, 0.00025094711483145197, 0.022361662123679096,
-        -0.004723204757751397, -0.00428150368246343, 0.0018476468830562265,
-        0.00023038576352319597, -0.0002519631889427101, 3.93473203162716e-05],
-    10: [0.026670057900555554, 0.1881768000776915, 0.5272011889317256,
-        0.6884590394536035, 0.2811723436605775, -0.24984642432731538,
-        -0.19594627437737705, 0.12736934033579325, 0.09305736460357235,
-        -0.07139414716639708, -0.029457536821875813, 0.033212674059341,
-        0.0036065535669561697, -0.010733175483330575, 0.001395351747052901,
-        0.001992405295185056, -0.0006858566949597116,
-        -0.00011646685512928545, 9.358867032006959e-05,
-        -1.3264202894521244e-05],
+    2: [0.48296291314453416, 0.8365163037378079, 0.2241438680420134, -0.12940952255126037],
+    3: [
+        0.33267055295008263,
+        0.8068915093110925,
+        0.45987750211849154,
+        -0.13501102001025458,
+        -0.08544127388202666,
+        0.03522629188570953,
+    ],
+    4: [
+        0.2303778133088965,
+        0.7148465705529157,
+        0.6308807679298589,
+        -0.027983769416859854,
+        -0.18703481171909309,
+        0.030841381835560764,
+        0.0328830116668852,
+        -0.010597401785069032,
+    ],
+    5: [
+        0.16010239797419293,
+        0.6038292697971896,
+        0.7243085284377729,
+        0.13842814590132074,
+        -0.24229488706638203,
+        -0.032244869584638375,
+        0.07757149384004572,
+        -0.006241490212798274,
+        -0.012580751999081999,
+        0.0033357252854737712,
+    ],
+    6: [
+        0.11154074335010947,
+        0.49462389039845306,
+        0.7511339080210954,
+        0.31525035170919763,
+        -0.22626469396543983,
+        -0.12976686756726194,
+        0.09750160558732304,
+        0.027522865530305727,
+        -0.03158203931748603,
+        0.0005538422011614961,
+        0.004777257510945511,
+        -0.0010773010853084796,
+    ],
+    7: [
+        0.07785205408500918,
+        0.3965393194819173,
+        0.7291320908462351,
+        0.4697822874051931,
+        -0.14390600392856498,
+        -0.22403618499387498,
+        0.07130921926683026,
+        0.08061260915108308,
+        -0.03802993693501441,
+        -0.01657454163066688,
+        0.01255099855609984,
+        0.0004295779729213665,
+        -0.0018016407040474908,
+        0.00035371379997452024,
+    ],
+    8: [
+        0.05441584224310401,
+        0.31287159091429995,
+        0.6756307362972898,
+        0.5853546836542067,
+        -0.015829105256349306,
+        -0.2840155429615469,
+        0.0004724845739132828,
+        0.12874742662047847,
+        -0.017369301001807547,
+        -0.044088253930794755,
+        0.013981027917398282,
+        0.008746094047405777,
+        -0.004870352993451574,
+        -0.00039174037337694705,
+        0.0006754494064505693,
+        -0.00011747678412476953,
+    ],
+    9: [
+        0.038077947363878345,
+        0.24383467461259034,
+        0.6048231236901112,
+        0.6572880780513005,
+        0.13319738582500756,
+        -0.2932737832791749,
+        -0.09684078322297646,
+        0.14854074933810638,
+        0.03072568147933338,
+        -0.06763282906132997,
+        0.00025094711483145197,
+        0.022361662123679096,
+        -0.004723204757751397,
+        -0.00428150368246343,
+        0.0018476468830562265,
+        0.00023038576352319597,
+        -0.0002519631889427101,
+        3.93473203162716e-05,
+    ],
+    10: [
+        0.026670057900555554,
+        0.1881768000776915,
+        0.5272011889317256,
+        0.6884590394536035,
+        0.2811723436605775,
+        -0.24984642432731538,
+        -0.19594627437737705,
+        0.12736934033579325,
+        0.09305736460357235,
+        -0.07139414716639708,
+        -0.029457536821875813,
+        0.033212674059341,
+        0.0036065535669561697,
+        -0.010733175483330575,
+        0.001395351747052901,
+        0.001992405295185056,
+        -0.0006858566949597116,
+        -0.00011646685512928545,
+        9.358867032006959e-05,
+        -1.3264202894521244e-05,
+    ],
 }
 
 
@@ -281,9 +365,7 @@ def _tfdbname(wavelet):
         k = int(w[1:]) // 2
         if k in _DBTAPS:
             return k
-    raise ValueError(
-        f"unknown wavelet {wavelet!r}; use 'haar' or 'db1'..'db10'"
-    )
+    raise ValueError(f"unknown wavelet {wavelet!r}; use 'haar' or 'db1'..'db10'")
 
 
 def _tffilters(wavelet):
@@ -349,8 +431,7 @@ def _tfdwt(x, wavelet, levels):
         m = (m + 1) // 2
     if levels > maxlev:
         raise ValueError(
-            f"levels={levels} exceeds the maximum {maxlev} for a signal of "
-            f"length {len(x)} with filter length {len(h)}"
+            f"levels={levels} exceeds the maximum {maxlev} for a signal of length {len(x)} with filter length {len(h)}"
         )
     details, lengths = [], []
     for _ in range(levels):
@@ -387,7 +468,7 @@ def _tfswt(x, wavelet, levels):
     details = []
     approxes = []
     for lev in range(levels):
-        step = 2 ** lev
+        step = 2**lev
         lo = [fsum(h[j] * a[(i + j * step) % n] for j in range(len(h))) for i in range(n)]
         hi = [fsum(g[j] * a[(i + j * step) % n] for j in range(len(g))) for i in range(n)]
         details.append(hi)
@@ -414,14 +495,14 @@ def _tfspline(xs, ys, xq):
     alpha = [0.0] * n
     for i in range(1, n - 1):
         alpha[i] = 3.0 * ((ys[i + 1] - ys[i]) / hh[i] - (ys[i] - ys[i - 1]) / hh[i - 1])
-    l = [1.0] + [0.0] * (n - 1)
+    ell = [1.0] + [0.0] * (n - 1)
     mu = [0.0] * n
     z = [0.0] * n
     for i in range(1, n - 1):
-        l[i] = 2.0 * (xs[i + 1] - xs[i - 1]) - hh[i - 1] * mu[i - 1]
-        mu[i] = hh[i] / l[i]
-        z[i] = (alpha[i] - hh[i - 1] * z[i - 1]) / l[i]
-    l[n - 1] = 1.0
+        ell[i] = 2.0 * (xs[i + 1] - xs[i - 1]) - hh[i - 1] * mu[i - 1]
+        mu[i] = hh[i] / ell[i]
+        z[i] = (alpha[i] - hh[i - 1] * z[i - 1]) / ell[i]
+    ell[n - 1] = 1.0
     c = [0.0] * n
     b = [0.0] * (n - 1)
     d = [0.0] * (n - 1)
@@ -546,7 +627,7 @@ def _tfmother(name, t, w0=5.0):
         # Rangayyan eq (8.116):
         #   psi(t) = pi^-1/4 [exp(j w0 t) - exp(-0.5 w0^2)] exp(-0.5 t^2)
         # The subtracted constant is the admissibility correction (eq 8.109).
-        env = exp(-0.5 * t * t) / (pi ** 0.25)
+        env = exp(-0.5 * t * t) / (pi**0.25)
         return (cmath.exp(1j * w0 * t) - exp(-0.5 * w0 * w0)) * env
     if name in ("haar", "db1"):
         if 0.0 <= t < 0.5:
@@ -559,8 +640,9 @@ def _tfmother(name, t, w0=5.0):
 
 def _tfsupport(name):
     """Half-support of the mother wavelet in units of t (truncation radius)."""
-    return {"morlet": 4.0, "mexh": 5.0, "mexicanhat": 5.0, "sombrero": 5.0,
-            "ricker": 5.0, "haar": 1.0, "db1": 1.0}[str(name).strip().lower()]
+    return {"morlet": 4.0, "mexh": 5.0, "mexicanhat": 5.0, "sombrero": 5.0, "ricker": 5.0, "haar": 1.0, "db1": 1.0}[
+        str(name).strip().lower()
+    ]
 
 
 def _tfcwt(x, scales, wavelet="morlet", w0=5.0):
@@ -641,20 +723,17 @@ def _tfsmooth2d(tfd, tlen, flen):
     ht = (len(g) - 1) // 2
     for i in range(nt):
         for k in range(nf):
-            tmp[i][k] = fsum(g[j] * tfd[min(nt - 1, max(0, i + j - ht))][k]
-                             for j in range(len(g)))
+            tmp[i][k] = fsum(g[j] * tfd[min(nt - 1, max(0, i + j - ht))][k] for j in range(len(g)))
     out = [[0.0] * nf for _ in range(nt)]
     hf = (len(H) - 1) // 2
     for i in range(nt):
         for k in range(nf):
-            out[i][k] = fsum(H[j] * tmp[i][min(nf - 1, max(0, k + j - hf))]
-                             for j in range(len(H)))
+            out[i][k] = fsum(H[j] * tmp[i][min(nf - 1, max(0, k + j - hf))] for j in range(len(H)))
     return out
 
 
 def _tfenergy(v):
     return fsum((abs(t) ** 2) for t in v)
-
 
 
 # -- hhtrf: Hilbert-Huang Transform (EMD + instantaneous frequency/amplitude).
@@ -904,8 +983,7 @@ def cdemod(x, fs=1.0, f0=None, bandwidth=None):
             "f0": f0,
             "bandwidth": bw,
             "mean_amplitude": fsum(amp) / n,
-            "method": "Complex demodulation, Rangayyan & Krishnan (2024) "
-                      "Sec 5.5.1 eqs (5.16)-(5.19)",
+            "method": "Complex demodulation, Rangayyan & Krishnan (2024) Sec 5.5.1 eqs (5.16)-(5.19)",
         }
     )
 
@@ -967,10 +1045,7 @@ def biordwt(x, wavelet="bior2.2", levels=3):
     v = _tfneed(x, "x", 4)
     w = str(wavelet).strip().lower().replace("-", "").replace("_", "")
     if w not in ("bior2.2", "bior22", "5/3", "53", "cdf53", "legall"):
-        raise ValueError(
-            f"unsupported biorthogonal wavelet {wavelet!r}; only the 5/3 "
-            f"(bior2.2) pair is implemented"
-        )
+        raise ValueError(f"unsupported biorthogonal wavelet {wavelet!r}; only the 5/3 (bior2.2) pair is implemented")
     lv = int(levels)
     if lv < 1:
         raise ValueError("levels must be >= 1")
@@ -1026,8 +1101,8 @@ def biordwt(x, wavelet="bior2.2", levels=3):
             "symmetric": True,
             "wavelet": "bior2.2 (CDF 5/3)",
             "method": "Biorthogonal 5/3 (CDF) wavelet transform via lifting; "
-                      "Cohen, Daubechies & Feauveau (1992) and Daubechies & "
-                      "Sweldens (1998) -- not defined in Rangayyan & Krishnan",
+            "Cohen, Daubechies & Feauveau (1992) and Daubechies & "
+            "Sweldens (1998) -- not defined in Rangayyan & Krishnan",
         }
     )
 
@@ -1151,8 +1226,8 @@ def expkertfd(x, fs=1.0, sigma=1.0, nfreq=None, maxlag=None):
             "peak_freq": freqs[max(range(nf), key=lambda k: col[k])],
             "crossterm_ratio": (neg / tot) if tot > 0.0 else 0.0,
             "method": "Exponential-kernel (Choi-Williams) TFD, Choi & Williams "
-                      "(1989) IEEE TASSP 37(6):862-871; a member of Cohen's "
-                      "class, Rangayyan & Krishnan (2024) eq (8.124)",
+            "(1989) IEEE TASSP 37(6):862-871; a member of Cohen's "
+            "class, Rangayyan & Krishnan (2024) eq (8.124)",
         }
     )
 
@@ -1243,7 +1318,7 @@ def cprwt(ecg, fs=250.0, scales=None, w0=5.0, band=(3.0, 21.0)):
         top = w0 * fs / (2.0 * pi * lo)
         while s <= top and len(sc) < 32:
             sc.append(s)
-            s *= 2.0 ** 0.25
+            s *= 2.0**0.25
         scales = sc or [1.0]
     sc = [float(s) for s in scales]
     co = _tfcwt(filt, sc, "morlet", float(w0))
@@ -1281,9 +1356,9 @@ def cprwt(ecg, fs=250.0, scales=None, w0=5.0, band=(3.0, 21.0)):
             "organised": bool(sdw < len(sc) / 2.0),
             "band": (lo, hi),
             "method": "Wavelet scale distribution width (SDW) of a "
-                      "fibrillation waveform, Rangayyan & Krishnan (2024) "
-                      "Sec 8.15, Morlet CWT of eqs (8.107)/(8.116), 3-21 Hz "
-                      "band, FWHM of the normalised scale-energy distribution",
+            "fibrillation waveform, Rangayyan & Krishnan (2024) "
+            "Sec 8.15, Morlet CWT of eqs (8.107)/(8.116), 3-21 Hz "
+            "band, FWHM of the normalised scale-energy distribution",
         }
     )
 
@@ -1367,9 +1442,15 @@ def cwt(x, fs=1.0, wavelet="morlet", scales=None, w0=5.0):
     # Pseudo-frequency: the centre frequency of the mother wavelet divided by
     # the scale.  Sec 8.8 notes "there exists an inverse relationship between
     # scale and frequency" (below eq 8.115) and illustrates it in Figure 8.30.
-    fc = {"morlet": float(w0) / (2.0 * pi), "mexh": 0.25, "mexicanhat": 0.25,
-          "sombrero": 0.25, "ricker": 0.25, "haar": 0.5,
-          "db1": 0.5}[str(wavelet).strip().lower()]
+    fc = {
+        "morlet": float(w0) / (2.0 * pi),
+        "mexh": 0.25,
+        "mexicanhat": 0.25,
+        "sombrero": 0.25,
+        "ricker": 0.25,
+        "haar": 0.5,
+        "db1": 0.5,
+    }[str(wavelet).strip().lower()]
     epr = [fsum(abs(c) ** 2 for c in row) for row in co]
     return RichResult(
         payload={
@@ -1381,7 +1462,7 @@ def cwt(x, fs=1.0, wavelet="morlet", scales=None, w0=5.0):
             "peak_scale": sc[max(range(len(sc)), key=lambda i: epr[i])],
             "wavelet": str(wavelet),
             "method": "Continuous wavelet transform, Rangayyan & Krishnan "
-                      "(2024) eq (8.107); mother wavelets eqs (8.115)/(8.116)",
+            "(2024) eq (8.107); mother wavelets eqs (8.115)/(8.116)",
         }
     )
 
@@ -1451,9 +1532,7 @@ def gtfd(x, fs=1.0, kernel="spwvd", nfreq=None, tsmooth=None, fsmooth=None):
         raise ValueError("fs must be positive")
     k = str(kernel).strip().lower()
     if k not in ("wvd", "pwvd", "swvd", "spwvd"):
-        raise ValueError(
-            f"unknown kernel {kernel!r}; use 'wvd', 'pwvd', 'swvd' or 'spwvd'"
-        )
+        raise ValueError(f"unknown kernel {kernel!r}; use 'wvd', 'pwvd', 'swvd' or 'spwvd'")
     nf = int(nfreq or len(v))
     tfd, freqs = _tfwvd(v, fs, nf)
     tl = max(3, len(v) // 8) if tsmooth is None else int(tsmooth)
@@ -1482,8 +1561,8 @@ def gtfd(x, fs=1.0, kernel="spwvd", nfreq=None, tsmooth=None, fsmooth=None):
             "peak_freq": freqs[max(range(nf), key=lambda j: col[j])],
             "crossterm_ratio": (neg / tot) if tot > 0.0 else 0.0,
             "method": "Cohen's class generalised TFD, Rangayyan & Krishnan "
-                      "(2024) eq (8.124), evaluated as the smoothed WVD of "
-                      "eqs (8.125)-(8.127) with separable Gaussian kernels",
+            "(2024) eq (8.124), evaluated as the smoothed WVD of "
+            "eqs (8.125)-(8.127) with separable Gaussian kernels",
         }
     )
 
@@ -1557,9 +1636,9 @@ def orthfilt(order=4):
             "norm_lo": fsum(t * t for t in h),
             "max_shift_inner_product": worst,
             "method": "Daubechies orthogonal scaling/wavelet filters, "
-                      "Daubechies (1992) Ten Lectures on Wavelets Table 6.1; "
-                      "family cited by Rangayyan & Krishnan (2024) Sec 8.8 "
-                      "but not tabulated there",
+            "Daubechies (1992) Ten Lectures on Wavelets Table 6.1; "
+            "family cited by Rangayyan & Krishnan (2024) Sec 8.8 "
+            "but not tabulated there",
         }
     )
 
@@ -1650,7 +1729,7 @@ def atomtfd(x, fs=1.0, dictionary="gabor", max_atoms=8, nfreq=None, min_decay=1e
         for i in range(n):
             if dic == "gabor":
                 u = (i - tau) / s
-                env = (2.0 ** 0.25) * exp(-pi * u * u) / sqrt(s)
+                env = (2.0**0.25) * exp(-pi * u * u) / sqrt(s)
             else:
                 env = 1.0 / sqrt(n)
             out.append(env * cmath.exp(2j * pi * f * i / fs))
@@ -1679,8 +1758,7 @@ def atomtfd(x, fs=1.0, dictionary="gabor", max_atoms=8, nfreq=None, min_decay=1e
         cur = _tfenergy(res)
         lam = sqrt(max(0.0, 1.0 - cur / prev)) if prev > 0.0 else 0.0
         decay.append(lam)
-        atoms.append({"scale": s, "translation": tau,
-                      "freq": k * fs / (2.0 * nf), "coeff": abs(ip)})
+        atoms.append({"scale": s, "translation": tau, "freq": k * fs / (2.0 * nf), "coeff": abs(ip)})
         prev = cur
         if lam < float(min_decay):
             break
@@ -1713,8 +1791,8 @@ def atomtfd(x, fs=1.0, dictionary="gabor", max_atoms=8, nfreq=None, min_decay=1e
             "explained": (1.0 - prev / e0) if e0 > 0.0 else 0.0,
             "peak_freq": freqs[max(range(nf), key=lambda k: col[k])] if nf else 0.0,
             "method": "Matching-pursuit TFD (MPTFD), Rangayyan & Krishnan (2024) "
-                      "eq (9.15), over the Gabor dictionary of eqs (9.2)-(9.3) "
-                      "with the eq (9.6) decay stopping rule",
+            "eq (9.15), over the Gabor dictionary of eqs (9.2)-(9.3) "
+            "with the eq (9.6) decay stopping rule",
         }
     )
 
@@ -1788,8 +1866,8 @@ def dwt(x, wavelet="db4", levels=3):
             "wavelet": str(wavelet),
             "energy": fsum(fsum(t * t for t in c) for c in coeffs),
             "method": "Dyadic DWT via the decimated filter bank, Rangayyan & "
-                      "Krishnan (2024) eqs (8.111)-(8.113); Mallat (1989) "
-                      "algorithm, periodic extension",
+            "Krishnan (2024) eqs (8.111)-(8.113); Mallat (1989) "
+            "algorithm, periodic extension",
         }
     )
 
@@ -1873,7 +1951,7 @@ def emdens(x, n_ensembles=20, noise_std=0.2, max_imfs=8, seed=0):
     def unif():
         nonlocal state
         state = (state * 6364136223846793005 + 1442695040888963407) & ((1 << 64) - 1)
-        return ((state >> 11) + 1.0) / (2.0 ** 53 + 1.0)
+        return ((state >> 11) + 1.0) / (2.0**53 + 1.0)
 
     mi = int(max_imfs)
     acc = [[0.0] * n for _ in range(mi)]
@@ -1913,8 +1991,8 @@ def emdens(x, n_ensembles=20, noise_std=0.2, max_imfs=8, seed=0):
             "reconstruction_error": err,
             "energy_per_imf": [fsum(c[i] ** 2 for i in range(n)) for c in out],
             "method": "Ensemble EMD, Rangayyan & Krishnan (2024) Sec 9.4.1 "
-                      "eq (9.13) and steps 1-4; method of Wu & Huang (2009), "
-                      "the book's reference [17]",
+            "eq (9.13) and steps 1-4; method of Wu & Huang (2009), "
+            "the book's reference [17]",
         }
     )
 
@@ -2000,8 +2078,8 @@ def sift(x, max_imfs=10, tol=0.05):
             "energy_per_imf": [fsum(c[i] ** 2 for i in range(n)) for c in imfs],
             "tol": t,
             "method": "Empirical mode decomposition by sifting, Rangayyan & "
-                      "Krishnan (2024) Sec 9.4 algorithm steps 1-6; SD stopping "
-                      "rule from Huang et al. (1998) Proc. R. Soc. A 454",
+            "Krishnan (2024) Sec 9.4 algorithm steps 1-6; SD stopping "
+            "rule from Huang et al. (1998) Proc. R. Soc. A 454",
         }
     )
 
@@ -2106,8 +2184,8 @@ def imf(x, max_iter=50, tol=0.05):
             "amplitude": [abs(t2) for t2 in za],
             "phase": [atan2(t2.imag, t2.real) for t2 in za],
             "method": "IMF extraction and admissibility test, Rangayyan & "
-                      "Krishnan (2024) Sec 9.4 (IMF properties) with the "
-                      "analytic-signal quantities of eqs (9.8)-(9.11)",
+            "Krishnan (2024) Sec 9.4 (IMF properties) with the "
+            "analytic-signal quantities of eqs (9.8)-(9.11)",
         }
     )
 
@@ -2211,10 +2289,7 @@ def twaemd(ecg, fs=250.0, r_peaks=None, twa_window=(0.15, 0.40), max_imfs=6):
                 i += 1
     rp = [p for p in rp if 0 <= p < n]
     if len(rp) < 4:
-        raise ValueError(
-            f"only {len(rp)} R peaks available; at least 4 are needed for an "
-            f"odd/even T-wave comparison"
-        )
+        raise ValueError(f"only {len(rp)} R peaks available; at least 4 are needed for an odd/even T-wave comparison")
     a, b = int(t0 * fs), int(t1 * fs)
     if b <= a:
         raise ValueError("the T-wave window is empty at this sampling rate")
@@ -2222,12 +2297,11 @@ def twaemd(ecg, fs=250.0, r_peaks=None, twa_window=(0.15, 0.40), max_imfs=6):
     for bi, p in enumerate(rp):
         if p + b > n:
             continue
-        seg = det[p + a:p + b]
+        seg = det[p + a : p + b]
         (even if bi % 2 == 0 else odd).append(seg)
     if len(odd) < 2 or len(even) < 2:
         raise ValueError(
-            f"only {len(even)} even and {len(odd)} odd complete T windows; "
-            f"at least two of each are needed"
+            f"only {len(even)} even and {len(odd)} odd complete T windows; at least two of each are needed"
         )
     m = b - a
     om = [fsum(s[i] for s in odd) / len(odd) for i in range(m)]
@@ -2246,9 +2320,9 @@ def twaemd(ecg, fs=250.0, r_peaks=None, twa_window=(0.15, 0.40), max_imfs=6):
             "r_peaks": rp,
             "rpeaks_supplied": supplied,
             "method": "Odd/even T-wave alternans amplitude after EMD "
-                      "detrending; Rangayyan & Krishnan (2024) Sec 9.2.3 (TWA "
-                      "definition) and Sec 9.4 (EMD).  The book gives no "
-                      "alternans threshold, so none is applied",
+            "detrending; Rangayyan & Krishnan (2024) Sec 9.2.3 (TWA "
+            "definition) and Sec 9.4 (EMD).  The book gives no "
+            "alternans threshold, so none is applied",
         }
     )
 
@@ -2335,9 +2409,9 @@ def vfemd(ecg, fs=250.0, n_imfs=6, tol=0.05):
         mf = fsum(fi) / len(fi) if fi else 0.0
         sd = sqrt(fsum((t - mf) ** 2 for t in fi) / len(fi)) if fi else 0.0
         e = fsum(t * t for t in c)
-        feats.append({"energy": e, "relative_energy": e / tot,
-                      "mean_freq": mf, "freq_std": sd,
-                      "mean_amplitude": fsum(a) / n})
+        feats.append(
+            {"energy": e, "relative_energy": e / tot, "mean_freq": mf, "freq_std": sd, "mean_amplitude": fsum(a) / n}
+        )
     dom = max(range(len(feats)), key=lambda i: feats[i]["energy"]) if feats else None
     return RichResult(
         payload={
@@ -2348,8 +2422,8 @@ def vfemd(ecg, fs=250.0, n_imfs=6, tol=0.05):
             "dominant_imf": dom,
             "dominant_freq": feats[dom]["mean_freq"] if dom is not None else None,
             "method": "IMF-based characterisation of ventricular fibrillation, "
-                      "Rangayyan & Krishnan (2024) Sec 8.16 with the EMD of "
-                      "Sec 9.4 and eqs (9.8)-(9.11)",
+            "Rangayyan & Krishnan (2024) Sec 8.16 with the EMD of "
+            "Sec 9.4 and eqs (9.8)-(9.11)",
         }
     )
 
@@ -2500,8 +2574,8 @@ def wtentropy(x, wavelet="db4", levels=3, base="e"):
             "base": b,
             "wavelet": str(wavelet),
             "method": "Wavelet (relative-energy Shannon) entropy, Rosso et al. "
-                      "(2001) J. Neurosci. Methods 105(1):65-75, over the "
-                      "Rangayyan & Krishnan (2024) eq (8.111)-(8.113) DWT",
+            "(2001) J. Neurosci. Methods 105(1):65-75, over the "
+            "Rangayyan & Krishnan (2024) eq (8.111)-(8.113) DWT",
         }
     )
 
@@ -2605,8 +2679,7 @@ def rangayyan_envelogram(pcg, ecg=None, fs=1000.0, r_peaks=None, n_beats=None):
     if r_peaks is None:
         if ecg is None:
             raise ValueError(
-                "supply r_peaks, or an ecg to detect them from -- averaging "
-                "unaligned beats smears the envelope."
+                "supply r_peaks, or an ecg to detect them from -- averaging unaligned beats smears the envelope."
             )
         e = np.asarray(ecg, dtype=float).ravel()
         thr = float(np.mean(e) + 2.0 * np.std(e))
@@ -2624,9 +2697,16 @@ def rangayyan_envelogram(pcg, ecg=None, fs=1000.0, r_peaks=None, n_beats=None):
     beats = np.array([env[p : p + L] for p in r[:-1] if p + L <= env.size])
     if beats.size == 0:
         raise ValueError("no complete beats within the signal.")
-    return RichResult(payload={"envelope": beats.mean(axis=0), "beats": beats,
-                               "M": int(beats.shape[0]), "beat_length": L, "fs": fs,
-                               "method": "Hilbert envelope averaged over R-aligned beats"})
+    return RichResult(
+        payload={
+            "envelope": beats.mean(axis=0),
+            "beats": beats,
+            "M": int(beats.shape[0]),
+            "beat_length": L,
+            "fs": fs,
+            "method": "Hilbert envelope averaged over R-aligned beats",
+        }
+    )
 
 
 # -- rghaar: Haar wavelet transform (simplest orthogonal wavelet).
@@ -2681,8 +2761,8 @@ def dwt2tap(x, levels=3):
             "energy": fsum(fsum(t * t for t in c) for c in coeffs),
             "input_energy": fsum(t * t for t in v),
             "method": "Two-tap (Haar / db1) orthogonal DWT; the L=2 case of "
-                      "Daubechies (1992) Table 6.1, dyadic grid per "
-                      "Rangayyan & Krishnan (2024) eq (8.113)",
+            "Daubechies (1992) Table 6.1, dyadic grid per "
+            "Rangayyan & Krishnan (2024) eq (8.113)",
         }
     )
 
@@ -2757,8 +2837,8 @@ def emdspec(x, fs=1.0, max_imfs=8, nfreq=32, tol=0.05):
     amps, ifs = [], []
     for c in imfs:
         za = _tfanalytic(c)
-        a = [abs(t) for t in za]                       # eq (9.10)
-        ph = [atan2(t.imag, t.real) for t in za]       # eq (9.11)
+        a = [abs(t) for t in za]  # eq (9.10)
+        ph = [atan2(t.imag, t.real) for t in za]  # eq (9.11)
         # omega(n) = d theta / dt, by centred differences on the unwrapped
         # phase.  Wrapping is undone modulo 2 pi before differencing.
         unw = [ph[0]]
@@ -2797,7 +2877,7 @@ def emdspec(x, fs=1.0, max_imfs=8, nfreq=32, tol=0.05):
             "n_imfs": len(imfs),
             "peak_freq": freqs[max(range(nf), key=lambda k: marg[k])] if nf else 0.0,
             "method": "EMD-based instantaneous-frequency spectrum, Rangayyan & "
-                      "Krishnan (2024) Sec 9.4 eqs (9.8)-(9.12)",
+            "Krishnan (2024) Sec 9.4 eqs (9.8)-(9.12)",
         }
     )
 
@@ -2903,8 +2983,7 @@ def hrvtv(rr_intervals, fs_resamp=4.0, window_len=64, noverlap=None, standard="t
         raise ValueError("window_len must be >= 4")
     if wl > m:
         raise ValueError(
-            f"window_len={wl} exceeds the resampled length {m}; use a shorter "
-            f"window or a higher fs_resamp"
+            f"window_len={wl} exceeds the resampled length {m}; use a shorter window or a higher fs_resamp"
         )
     sp = spectrogram(resamp, fs=fsr, nperseg=wl, noverlap=noverlap, window="hann")
     fr = sp["freqs"]
@@ -2923,12 +3002,11 @@ def hrvtv(rr_intervals, fs_resamp=4.0, window_len=64, noverlap=None, standard="t
             "lf": out["lf"],
             "hf": out["hf"],
             "total_power": tot,
-            "lf_hf_ratio": [out["lf"][i] / out["hf"][i] if out["hf"][i] > 0.0 else float("inf")
-                            for i in range(len(tot))],
-            "lf_percent": [100.0 * out["lf"][i] / tot[i] if tot[i] > 0.0 else 0.0
-                           for i in range(len(tot))],
-            "hf_percent": [100.0 * out["hf"][i] / tot[i] if tot[i] > 0.0 else 0.0
-                           for i in range(len(tot))],
+            "lf_hf_ratio": [
+                out["lf"][i] / out["hf"][i] if out["hf"][i] > 0.0 else float("inf") for i in range(len(tot))
+            ],
+            "lf_percent": [100.0 * out["lf"][i] / tot[i] if tot[i] > 0.0 else 0.0 for i in range(len(tot))],
+            "hf_percent": [100.0 * out["hf"][i] / tot[i] if tot[i] > 0.0 else 0.0 for i in range(len(tot))],
             "bands": bands,
             "standard": st,
             "mean_rr": fsum(rr) / len(rr),
@@ -2936,9 +3014,9 @@ def hrvtv(rr_intervals, fs_resamp=4.0, window_len=64, noverlap=None, standard="t
             "resampled": resamp,
             "fs_resamp": fsr,
             "method": "Time-varying HRV band powers from the short-time "
-                      "spectrum of the RR tachogram, Rangayyan & Krishnan "
-                      "(2024) Sec 8.12; bands as given there (Task Force "
-                      "standard or Bianchi et al.); STFT per eq (8.8)",
+            "spectrum of the RR tachogram, Rangayyan & Krishnan "
+            "(2024) Sec 8.12; bands as given there (Task Force "
+            "standard or Bianchi et al.); STFT per eq (8.8)",
         }
     )
 
@@ -3025,8 +3103,7 @@ def istft(stft, window="hann", hop=None):
     for i in range(m - 1, n - m + 1):
         if den[i] <= tol:
             raise ValueError(
-                f"sample {i} lies in a gap between analysis windows "
-                f"(hop={h} is too large for a window of length {m})"
+                f"sample {i} lies in a gap between analysis windows (hop={h} is too large for a window of length {m})"
             )
     out = [(num[i] / den[i]) if den[i] > tol else 0.0 for i in range(n)]
     lo = next((i for i in range(n) if den[i] > tol), 0)
@@ -3040,7 +3117,7 @@ def istft(stft, window="hann", hop=None):
             "valid_end": hi,
             "n_frames": len(frames),
             "method": "Weighted overlap-add inverse STFT, Griffin & Lim (1984) "
-                      "eq (6); forward transform is Rangayyan eq (8.8)",
+            "eq (6); forward transform is Rangayyan eq (8.8)",
         }
     )
 
@@ -3121,7 +3198,7 @@ def mra(x, wavelet="db4", levels=3):
             "levels": lv,
             "wavelet": str(wavelet),
             "method": "Multiresolution analysis, Rangayyan & Krishnan (2024) "
-                      "eqs (8.111)-(8.114); Mallat (1989) IEEE PAMI 11(7)",
+            "eqs (8.111)-(8.114); Mallat (1989) IEEE PAMI 11(7)",
         }
     )
 
@@ -3217,18 +3294,16 @@ def pcgenvavg(pcg, ecg, fs=1000.0, cycle_len=None, envelope_smoothing=None):
             i += 1
     if len(trig) < 2:
         raise ValueError(
-            f"only {len(trig)} QRS triggers found in the ECG; synchronised "
-            f"averaging needs at least two cycles"
+            f"only {len(trig)} QRS triggers found in the ECG; synchronised averaging needs at least two cycles"
         )
     gaps = sorted(trig[i + 1] - trig[i] for i in range(len(trig) - 1))
     cl = gaps[len(gaps) // 2] if cycle_len is None else int(cycle_len)
     if cl < 2:
         raise ValueError("cycle_len must be >= 2 samples")
-    cycles = [sm[t:t + cl] for t in trig if t + cl <= n]
+    cycles = [sm[t : t + cl] for t in trig if t + cl <= n]
     if len(cycles) < 2:
         raise ValueError(
-            f"only {len(cycles)} complete cycle(s) of {cl} samples fit in the "
-            f"record; at least two are needed"
+            f"only {len(cycles)} complete cycle(s) of {cl} samples fit in the record; at least two are needed"
         )
     avg = [fsum(c[i] for c in cycles) / len(cycles) for i in range(cl)]
     # S1 is the first envelope peak after the trigger, S2 the largest peak in
@@ -3251,9 +3326,9 @@ def pcgenvavg(pcg, ecg, fs=1000.0, cycle_len=None, envelope_smoothing=None):
             "s2_s1_ratio": avg[s2] / avg[s1] if avg[s1] > 0.0 else float("inf"),
             "snr_gain_db": 10.0 * log(len(cycles)) / log(10.0),
             "method": "ECG-triggered synchronised averaging of PCG envelopes, "
-                      "Rangayyan & Krishnan (2024) Sec 3.5 (synchronised "
-                      "averaging) with the analytic-signal envelope of "
-                      "Sec 5.5.3",
+            "Rangayyan & Krishnan (2024) Sec 3.5 (synchronised "
+            "averaging) with the analytic-signal envelope of "
+            "Sec 5.5.3",
         }
     )
 
@@ -3321,8 +3396,7 @@ def ppgwtden(ppg, fs=100.0, wavelet="db4", levels=4, threshold_type="soft"):
     fs = float(fs)
     if fs <= 0.0:
         raise ValueError("fs must be positive")
-    r = wtthresh(v, wavelet=wavelet, levels=int(levels),
-                 threshold_type=threshold_type)
+    r = wtthresh(v, wavelet=wavelet, levels=int(levels), threshold_type=threshold_type)
     den = r["denoised"]
     art = [v[i] - den[i] for i in range(len(v))]
     ein = fsum(t * t for t in v)
@@ -3341,8 +3415,8 @@ def ppgwtden(ppg, fs=100.0, wavelet="db4", levels=4, threshold_type="soft"):
             "wavelet": str(wavelet),
             "fs": fs,
             "method": "Wavelet-shrinkage denoising of PPG, Rangayyan & Krishnan "
-                      "(2024) Sec 8.14 (Daubechies wavelets best, per its "
-                      "reference [91]) with eqs (8.103)-(8.105)",
+            "(2024) Sec 8.14 (Daubechies wavelets best, per its "
+            "reference [91]) with eqs (8.103)-(8.105)",
         }
     )
 
@@ -3406,8 +3480,7 @@ def scalogram(x, fs=1.0, scales=None, wavelet="morlet", w0=5.0):
             "energy_per_scale": [fsum(row) for row in sg],
             "total_energy": fsum(fsum(row) for row in sg),
             "ridge": ridge,
-            "method": "Scalogram (|CWT|^2), Rangayyan & Krishnan (2024) "
-                      "eq (8.107) and Figure 8.29",
+            "method": "Scalogram (|CWT|^2), Rangayyan & Krishnan (2024) eq (8.107) and Figure 8.29",
         }
     )
 
@@ -3490,7 +3563,7 @@ def seizwt(eeg, fs=1.0, wavelet="db4", levels=5, scales=(3, 4, 5), threshold=Non
             raise ValueError(f"scale {s} has only {n} coefficient(s); FI needs >= 2")
         fi.append(fsum(abs(c[i + 1] - c[i]) for i in range(n - 1)) / n)
         ener.append(fsum(t * t for t in c))
-        bands.append((fs / 2.0 ** (s + 1), fs / 2.0 ** s))
+        bands.append((fs / 2.0 ** (s + 1), fs / 2.0**s))
     tot = fsum(fi)
     det = None if threshold is None else bool(tot > float(threshold))
     return RichResult(
@@ -3505,8 +3578,8 @@ def seizwt(eeg, fs=1.0, wavelet="db4", levels=5, scales=(3, 4, 5), threshold=Non
             "wavelet": str(wavelet),
             "levels": lv,
             "method": "Fluctuation intensity of DWT coefficients, Rangayyan & "
-                      "Krishnan (2024) Sec 8.17 eq (8.132), db4 with five "
-                      "scales and scales 3-5 selected as specified there",
+            "Krishnan (2024) Sec 8.17 eq (8.132), db4 with five "
+            "scales and scales 3-5 selected as specified there",
         }
     )
 
@@ -3589,8 +3662,7 @@ def stftparam(fs, desired_t_res, desired_f_res):
             "tf_product": dt * df,
             "heisenberg_bound": 1.0 / (4.0 * pi),
             "feasible": feasible,
-            "method": "STFT window selection under the time-bandwidth limit, "
-                      "Rangayyan & Krishnan (2024) eq (8.10)",
+            "method": "STFT window selection under the time-bandwidth limit, Rangayyan & Krishnan (2024) eq (8.10)",
         }
     )
 
@@ -3689,7 +3761,7 @@ def spectrogram(x, fs=1.0, nperseg=64, noverlap=None, window="hann"):
             "total_energy": total,
             "peak_freq": freqs[peak],
             "method": "STFT spectrogram, Rangayyan & Krishnan (2024) eq (8.8); "
-                      "|STFT|^2 per the definition following eq (8.9)",
+            "|STFT|^2 per the definition following eq (8.9)",
         }
     )
 
@@ -3745,11 +3817,8 @@ def swt(x, wavelet="db4", levels=3):
     lv = int(levels)
     if lv < 1:
         raise ValueError("levels must be >= 1")
-    if 2 ** lv > len(v):
-        raise ValueError(
-            f"levels={lv} needs a signal of at least {2 ** lv} samples, "
-            f"got {len(v)}"
-        )
+    if 2**lv > len(v):
+        raise ValueError(f"levels={lv} needs a signal of at least {2**lv} samples, got {len(v)}")
     a, det, _ap = _tfswt(v, wavelet, lv)
     return RichResult(
         payload={
@@ -3760,9 +3829,9 @@ def swt(x, wavelet="db4", levels=3):
             "redundancy": lv + 1,
             "energy_per_level": [fsum(t * t for t in c) for c in det],
             "method": "Stationary (undecimated, a-trous) wavelet transform, "
-                      "Nason & Silverman (1995); shift variance of the "
-                      "decimated DWT noted by Rangayyan & Krishnan (2024) "
-                      "after eq (8.113)",
+            "Nason & Silverman (1995); shift variance of the "
+            "decimated DWT noted by Rangayyan & Krishnan (2024) "
+            "after eq (8.113)",
         }
     )
 
@@ -3829,10 +3898,10 @@ def swtden(x, wavelet="db4", levels=3, threshold=None, threshold_type="soft"):
     lv = int(levels)
     if lv < 1:
         raise ValueError("levels must be >= 1")
-    if 2 ** lv > len(v):
-        raise ValueError(f"levels={lv} needs at least {2 ** lv} samples")
+    if 2**lv > len(v):
+        raise ValueError(f"levels={lv} needs at least {2**lv} samples")
     n = len(v)
-    nshift = 2 ** lv
+    nshift = 2**lv
     # True cycle spinning (Coifman & Donoho 1995): threshold and reconstruct
     # under every circular shift that the decimator can distinguish, then
     # average.  This reuses the exactly-invertible decimated bank rather than
@@ -3883,9 +3952,9 @@ def swtden(x, wavelet="db4", levels=3, threshold=None, threshold_type="soft"):
             "wavelet": str(wavelet),
             "threshold_type": tt,
             "method": "SWT (cycle-spinning) denoising: thresholds of "
-                      "Rangayyan & Krishnan (2024) eqs (8.103)-(8.104) applied "
-                      "to the Nason & Silverman (1995) undecimated transform; "
-                      "translation invariance per Coifman & Donoho (1995)",
+            "Rangayyan & Krishnan (2024) eqs (8.103)-(8.104) applied "
+            "to the Nason & Silverman (1995) undecimated transform; "
+            "translation invariance per Coifman & Donoho (1995)",
         }
     )
 
@@ -3974,16 +4043,13 @@ def vmodes(x, K=3, alpha=2000.0, tau=0.0, init="uniform", tol=1e-7, max_iter=300
     F = _tfdft(v)
     half = n // 2 + 1
     fh = [F[i] for i in range(half)]
-    om = [i / float(n) for i in range(half)]        # cycles per sample
-    if ini == "uniform":
-        wk = [0.5 * (j + 0.5) / k for j in range(k)]
-    else:
-        wk = [0.0] * k
+    om = [i / float(n) for i in range(half)]  # cycles per sample
+    wk = [0.5 * (j + 0.5) / k for j in range(k)] if ini == "uniform" else [0.0] * k
     uk = [[0j] * half for _ in range(k)]
     lam = [0j] * half
     it = 0
     conv = False
-    for it in range(1, mi + 1):
+    for it in range(1, mi + 1):  # noqa: B007 - read after the loop
         change = 0.0
         for j in range(k):
             others = [sum(uk[q][i] for q in range(k) if q != j) for i in range(half)]
@@ -3996,8 +4062,7 @@ def vmodes(x, K=3, alpha=2000.0, tau=0.0, init="uniform", tol=1e-7, max_iter=300
             if den > 0.0:
                 wk[j] = num / den
             prev = fsum(abs(uk[j][i]) ** 2 for i in range(half))
-            change += (fsum(abs(new[i] - uk[j][i]) ** 2 for i in range(half))
-                       / (prev if prev > 0.0 else 1.0))
+            change += fsum(abs(new[i] - uk[j][i]) ** 2 for i in range(half)) / (prev if prev > 0.0 else 1.0)
             uk[j] = new
         if ta > 0.0:
             tot = [sum(uk[q][i] for q in range(k)) for i in range(half)]
@@ -4032,8 +4097,8 @@ def vmodes(x, K=3, alpha=2000.0, tau=0.0, init="uniform", tol=1e-7, max_iter=300
             "reconstruction_error": err,
             "residual_energy": fsum((tot[i] - v[i]) ** 2 for i in range(n)),
             "method": "Variational mode decomposition, Dragomiretskiy & Zosso "
-                      "(2014) IEEE TSP 62(3):531-544 eqs (13), (15), (16) -- "
-                      "not covered by Rangayyan & Krishnan (2024)",
+            "(2014) IEEE TSP 62(3):531-544 eqs (13), (15), (16) -- "
+            "not covered by Rangayyan & Krishnan (2024)",
         }
     )
 
@@ -4110,9 +4175,15 @@ def cwtridge(x, fs=1.0, scales=None, wavelet="mexh", w0=5.0, min_prominence=0.1)
                     continue
                 if si < ns - 1 and sg[si + 1][i] > row[i]:
                     continue
-                found.append({"sample": i, "time": r["times"][i],
-                              "scale": r["scales"][si], "freq": r["freqs"][si],
-                              "energy": row[i]})
+                found.append(
+                    {
+                        "sample": i,
+                        "time": r["times"][i],
+                        "scale": r["scales"][si],
+                        "freq": r["freqs"][si],
+                        "energy": row[i],
+                    }
+                )
     found.sort(key=lambda d: -d["energy"])
     return RichResult(
         payload={
@@ -4123,9 +4194,9 @@ def cwtridge(x, fs=1.0, scales=None, wavelet="mexh", w0=5.0, min_prominence=0.1)
             "times": r["times"],
             "min_prominence": p,
             "method": "CWT ridge detection of transient structures, "
-                      "Rangayyan & Krishnan (2024) Sec 8.8 (eqs 8.107, 8.115, "
-                      "8.116); ridge rule is local-maximum-with-prominence, "
-                      "not specified by the book",
+            "Rangayyan & Krishnan (2024) Sec 8.8 (eqs 8.107, 8.115, "
+            "8.116); ridge rule is local-maximum-with-prominence, "
+            "not specified by the book",
         }
     )
 
@@ -4194,8 +4265,8 @@ def wtxcor(x, y, wavelet="db4", levels=3, max_lag=0):
     n = len(a)
     if ml < 0 or ml >= n:
         raise ValueError(f"max_lag must satisfy 0 <= max_lag < {n}, got {ml}")
-    if 2 ** lv > n:
-        raise ValueError(f"levels={lv} needs at least {2 ** lv} samples")
+    if 2**lv > n:
+        raise ValueError(f"levels={lv} needs at least {2**lv} samples")
     _aa, da, _ = _tfswt(a, wavelet, lv)
     _ab, db, _ = _tfswt(b, wavelet, lv)
 
@@ -4225,22 +4296,21 @@ def wtxcor(x, y, wavelet="db4", levels=3, max_lag=0):
     mw = fsum(b) / n
     sa = sqrt(fsum((t - mu) ** 2 for t in a) / n)
     sb = sqrt(fsum((t - mw) ** 2 for t in b) / n)
-    ov = (fsum((a[i] - mu) * (b[i] - mw) for i in range(n)) / n / (sa * sb)
-          if sa > 0.0 and sb > 0.0 else 0.0)
+    ov = fsum((a[i] - mu) * (b[i] - mw) for i in range(n)) / n / (sa * sb) if sa > 0.0 and sb > 0.0 else 0.0
     return RichResult(
         payload={
             "correlations": cors,
             "best_lags": lags,
             "covariances": covs,
-            "scales": [2 ** j for j in range(lv)],
+            "scales": [2**j for j in range(lv)],
             "overall_correlation": ov,
             "levels": lv,
             "max_lag": ml,
             "wavelet": str(wavelet),
             "method": "Scale-by-scale wavelet cross-correlation, Whitcher, "
-                      "Guttorp & Percival (2000) JGR 105(D11), on the "
-                      "undecimated transform of Nason & Silverman (1995); "
-                      "wavelet basis per Rangayyan & Krishnan (2024) eq (8.113)",
+            "Guttorp & Percival (2000) JGR 105(D11), on the "
+            "undecimated transform of Nason & Silverman (1995); "
+            "wavelet basis per Rangayyan & Krishnan (2024) eq (8.113)",
         }
     )
 
@@ -4318,7 +4388,7 @@ def wvdist(x, fs=1.0, nfreq=None):
             "peak_freq": freqs[peak],
             "total_energy": fsum(fsum(r) for r in tfd),
             "method": "Wigner-Ville distribution, Rangayyan & Krishnan (2024) "
-                      "eq (8.123), analytic-signal (Claasen-Mecklenbrauker) form",
+            "eq (8.123), analytic-signal (Claasen-Mecklenbrauker) form",
         }
     )
 
@@ -4385,8 +4455,8 @@ def wtenergy(x, wavelet="db4", levels=3):
             "levels": lv,
             "wavelet": str(wavelet),
             "method": "Wavelet subband energy, Rangayyan & Krishnan (2024) "
-                      "Sec 8.15 (Ex = Es1 + Es2 + ... + EsN) over the "
-                      "eq (8.111)-(8.113) orthonormal DWT",
+            "Sec 8.15 (Ex = Es1 + Es2 + ... + EsN) over the "
+            "eq (8.111)-(8.113) orthonormal DWT",
         }
     )
 
@@ -4449,9 +4519,17 @@ def wtmoment(x, wavelet="db4", levels=3):
         if n >= 3 and sd > 0.0:
             sk = fsum(((t - mu) / sd) ** 3 for t in c) / n
             ku = fsum(((t - mu) / sd) ** 4 for t in c) / n
-        out.append({"label": lab, "n": n, "mean": mu, "variance": var,
-                    "energy": fsum(t * t for t in c), "skewness": sk,
-                    "kurtosis": ku})
+        out.append(
+            {
+                "label": lab,
+                "n": n,
+                "mean": mu,
+                "variance": var,
+                "energy": fsum(t * t for t in c),
+                "skewness": sk,
+                "kurtosis": ku,
+            }
+        )
     return RichResult(
         payload={
             "moments": out,
@@ -4459,8 +4537,8 @@ def wtmoment(x, wavelet="db4", levels=3):
             "levels": lv,
             "wavelet": str(wavelet),
             "method": "Per-subband sample moments of the Rangayyan & Krishnan "
-                      "(2024) eq (8.111)-(8.113) DWT coefficients; band energy "
-                      "per Sec 8.15",
+            "(2024) eq (8.111)-(8.113) DWT coefficients; band energy "
+            "per Sec 8.15",
         }
     )
 
@@ -4524,10 +4602,7 @@ def wpt(x, wavelet="db4", levels=3):
         raise ValueError("levels must be >= 1")
     h, g, _, _ = _tffilters(wavelet)
     if len(v) < len(h) * (2 ** (lv - 1)):
-        raise ValueError(
-            f"signal of length {len(v)} is too short for {lv} packet levels "
-            f"with a length-{len(h)} filter"
-        )
+        raise ValueError(f"signal of length {len(v)} is too short for {lv} packet levels with a length-{len(h)} filter")
     nodes = {0: [list(v)]}
     for lev in range(1, lv + 1):
         cur = []
@@ -4556,8 +4631,8 @@ def wpt(x, wavelet="db4", levels=3):
             "levels": lv,
             "wavelet": str(wavelet),
             "method": "Wavelet packet decomposition (full binary tree, natural "
-                      "order), Rangayyan & Krishnan (2024) Sec 8.8.1 and its "
-                      "reference [81], Wickerhauser (1994)",
+            "order), Rangayyan & Krishnan (2024) Sec 8.8.1 and its "
+            "reference [81], Wickerhauser (1994)",
         }
     )
 
@@ -4646,7 +4721,7 @@ def wtthresh(x, wavelet="db4", levels=3, threshold_type="soft", threshold=None):
             else:
                 row.append((1.0 if w > 0 else -1.0) * (abs(w) - T))
         newd.append(row)
-    den = _tfidwt(a, newd, ln, wavelet)[:len(v)]
+    den = _tfidwt(a, newd, ln, wavelet)[: len(v)]
     ncoef = sum(len(c) for c in d)
     return RichResult(
         payload={
@@ -4660,8 +4735,8 @@ def wtthresh(x, wavelet="db4", levels=3, threshold_type="soft", threshold=None):
             "threshold_type": tt,
             "wavelet": str(wavelet),
             "method": "Wavelet shrinkage, Rangayyan & Krishnan (2024) eqs "
-                      "(8.103)-(8.105); universal threshold from Donoho & "
-                      "Johnstone (1994) when T is not supplied",
+            "(8.103)-(8.105); universal threshold from Donoho & "
+            "Johnstone (1994) when T is not supplied",
         }
     )
 
@@ -4721,8 +4796,8 @@ def wtvar(x, wavelet="db1", levels=3):
     lv = int(levels)
     if lv < 1:
         raise ValueError("levels must be >= 1")
-    if 2 ** lv > len(v):
-        raise ValueError(f"levels={lv} needs at least {2 ** lv} samples")
+    if 2**lv > len(v):
+        raise ValueError(f"levels={lv} needs at least {2**lv} samples")
     h, _g, _, _ = _tffilters(wavelet)
     L = len(h)
     n = len(v)
@@ -4731,7 +4806,7 @@ def wtvar(x, wavelet="db1", levels=3):
     for j, c in enumerate(det):
         # Boundary coefficients of the level-j filter span (L-1)*2^j + 1
         # samples; drop them so the estimate uses only interior data.
-        span = (L - 1) * (2 ** j)
+        span = (L - 1) * (2**j)
         keep = [c[i] for i in range(span, n)]
         if not keep:
             raise ValueError(
@@ -4744,7 +4819,7 @@ def wtvar(x, wavelet="db1", levels=3):
     return RichResult(
         payload={
             "variances": variances,
-            "scales": [2 ** j for j in range(lv)],
+            "scales": [2**j for j in range(lv)],
             "n_used": used,
             "total_variance": fsum(variances),
             "sample_variance": fsum((t - mu) ** 2 for t in v) / n,
@@ -4752,9 +4827,9 @@ def wtvar(x, wavelet="db1", levels=3):
             "is_allan": _tfdbname(wavelet) == 1,
             "wavelet": str(wavelet),
             "method": "Unbiased wavelet variance by scale, Percival (1995) "
-                      "Biometrika 82(3):619-631, on the Nason & Silverman "
-                      "(1995) undecimated transform; db1 gives the Allan "
-                      "variance of Allan (1966)",
+            "Biometrika 82(3):619-631, on the Nason & Silverman "
+            "(1995) undecimated transform; db1 gives the Allan "
+            "variance of Allan (1966)",
         }
     )
 
@@ -4825,8 +4900,7 @@ def echoimp(a, n_0, n):
             "n": idx,
             "a": a,
             "n_0": n0,
-            "method": "Two-impulse echo excitation, Rangayyan & Krishnan "
-                      "(2024) eq (4.74)",
+            "method": "Two-impulse echo excitation, Rangayyan & Krishnan (2024) eq (4.74)",
         }
     )
 
@@ -4906,8 +4980,7 @@ def echosig(h, a, n_0, n=None):
             "a": a,
             "n_0": n0,
             "echo_visible": bool(n0 >= len(hh)),
-            "method": "Wavelet plus echo in the time domain, Rangayyan & "
-                      "Krishnan (2024) eq (4.75)",
+            "method": "Wavelet plus echo in the time domain, Rangayyan & Krishnan (2024) eq (4.75)",
         }
     )
 
@@ -4981,8 +5054,7 @@ def echoz(a, n_0, z, H=None):
             "H": hs,
             "a": a,
             "n_0": n0,
-            "method": "z-transform of a wavelet with an echo, Rangayyan & "
-                      "Krishnan (2024) eq (4.76)",
+            "method": "z-transform of a wavelet with an echo, Rangayyan & Krishnan (2024) eq (4.76)",
         }
     )
 
@@ -5056,8 +5128,7 @@ def echospec(a, n_0, omega, H=None):
             "ripple_period": 2.0 * pi / n0,
             "a": a,
             "n_0": n0,
-            "method": "Fourier spectrum of a wavelet with an echo, Rangayyan "
-                      "& Krishnan (2024) eq (4.77)",
+            "method": "Fourier spectrum of a wavelet with an echo, Rangayyan & Krishnan (2024) eq (4.77)",
         }
     )
 
@@ -5144,8 +5215,7 @@ def echologsp(a, n_0, omega, H_hat=None, n_terms=None):
         t = 1.0 + a * cmath.exp(-1j * w * n0)
         if abs(t) < 1e-12:
             raise ValueError(
-                f"1 + a exp(-j w n_0) vanishes at omega={w}; the complex "
-                f"logarithm of eq (4.78) is undefined there"
+                f"1 + a exp(-j w n_0) vanishes at omega={w}; the complex logarithm of eq (4.78) is undefined there"
             )
         elog.append(cmath.log(t))
     Yh = [hs[i] + elog[i] for i in range(len(ws))]
@@ -5158,7 +5228,7 @@ def echologsp(a, n_0, omega, H_hat=None, n_terms=None):
             acc = 0j
             for k in range(1, nt + 1):
                 # log(1+u) = u - u^2/2 + u^3/3 - ... with u = a exp(-j w n0)
-                acc += ((-1.0) ** (k + 1)) * (a ** k) / k * cmath.exp(-1j * k * w * n0)
+                acc += ((-1.0) ** (k + 1)) * (a**k) / k * cmath.exp(-1j * k * w * n0)
             ser.append(hs[i] + acc)
         err = max(abs(Yh[i] - ser[i]) for i in range(len(ws)))
     return RichResult(
@@ -5173,8 +5243,8 @@ def echologsp(a, n_0, omega, H_hat=None, n_terms=None):
             "n_0": n0,
             "n_terms": nt,
             "method": "Complex log spectrum of a wavelet with an echo, "
-                      "Rangayyan & Krishnan (2024) eq (4.78), with the "
-                      "eq (4.79) power-series expansion",
+            "Rangayyan & Krishnan (2024) eq (4.78), with the "
+            "eq (4.79) power-series expansion",
         }
     )
 
@@ -5241,10 +5311,7 @@ def echocep(h_hat, a, n_0, n=None, n_terms=None):
     hh = aslist(h_hat)
     a = float(a)
     if abs(a) >= 1.0:
-        raise ValueError(
-            f"|a| = {abs(a)} >= 1; the power series of eq (4.79) that gives "
-            f"eq (4.80) requires a < 1"
-        )
+        raise ValueError(f"|a| = {abs(a)} >= 1; the power series of eq (4.79) that gives eq (4.80) requires a < 1")
     n0 = int(n_0)
     if n0 <= 0:
         raise ValueError(f"n_0 must be a positive delay in samples, got {n_0!r}")
@@ -5266,7 +5333,7 @@ def echocep(h_hat, a, n_0, n=None, n_terms=None):
     imp = {}
     pairs = []
     for k in range(1, nt + 1):
-        amp = ((-1.0) ** (k + 1)) * (a ** k) / k
+        amp = ((-1.0) ** (k + 1)) * (a**k) / k
         imp[k * n0] = amp
         pairs.append((k * n0, amp))
     y = []
@@ -5281,8 +5348,7 @@ def echocep(h_hat, a, n_0, n=None, n_terms=None):
             "n_impulses": len(pairs),
             "echo_delay": n0,
             "a": a,
-            "method": "Complex cepstrum of a wavelet with an echo, Rangayyan "
-                      "& Krishnan (2024) eq (4.80)",
+            "method": "Complex cepstrum of a wavelet with an echo, Rangayyan & Krishnan (2024) eq (4.80)",
         }
     )
 
@@ -5357,8 +5423,7 @@ def echopsd(H, a, n_0, z):
             "z": zs,
             "a": a,
             "n_0": n0,
-            "method": "Power spectrum of a wavelet with an echo, Rangayyan & "
-                      "Krishnan (2024) eq (4.84)",
+            "method": "Power spectrum of a wavelet with an echo, Rangayyan & Krishnan (2024) eq (4.84)",
         }
     )
 
@@ -5464,8 +5529,7 @@ def echologpsd(H, a, n_0, omega):
             "omega": ws,
             "a": a,
             "n_0": n0,
-            "method": "Log power spectrum of a wavelet with an echo, "
-                      "Rangayyan & Krishnan (2024) eq (4.85)",
+            "method": "Log power spectrum of a wavelet with an echo, Rangayyan & Krishnan (2024) eq (4.85)",
         }
     )
 
@@ -5557,61 +5621,62 @@ wignerville = wigner_ville
 
 
 _CHEATSHEET = [
-    'hhtrf: Hilbert-Huang Transform (EMD + instantaneous frequency/amplitude).',
-    'Complex demodulation: time-varying amplitude and phase at f0 -- Rangayyan eqs (5.16)-(5.19).',
-    'Symmetric linear-phase biorthogonal 5/3 DWT via lifting; exact reconstruction.',
+    "hhtrf: Hilbert-Huang Transform (EMD + instantaneous frequency/amplitude).",
+    "Complex demodulation: time-varying amplitude and phase at f0 -- Rangayyan eqs (5.16)-(5.19).",
+    "Symmetric linear-phase biorthogonal 5/3 DWT via lifting; exact reconstruction.",
     "Exponential-kernel Cohen's-class TFD (Choi & Williams 1989); cuts cross terms.",
-    'Wavelet scale-distribution width of a fibrillation waveform -- Rangayyan Sec 8.15.',
-    'Continuous wavelet transform over scales -- Rangayyan eq (8.107).',
+    "Wavelet scale-distribution width of a fibrillation waveform -- Rangayyan Sec 8.15.",
+    "Continuous wavelet transform over scales -- Rangayyan eq (8.107).",
     "Cohen's-class TFD as a separably smoothed WVD -- Rangayyan eqs (8.124)-(8.127).",
-    'Daubechies db1-db10 filter-bank taps with their orthonormality checks.',
-    'Adaptive TFD: matching pursuit onto Gabor atoms, then per-atom WVD -- Rangayyan eq (9.15).',
-    'Decimated dyadic DWT filter bank -- Rangayyan eqs (8.111)-(8.113).',
-    'Noise-assisted ensemble EMD against mode mixing -- Rangayyan eq (9.13).',
-    'EMD sifting into intrinsic mode functions -- Rangayyan Sec 9.4 steps 1-6.',
-    'Sift one IMF and check both Sec 9.4 admissibility conditions.',
-    'T-wave alternans amplitude from odd/even beat averages after EMD detrending -- Rangayyan Sec 9.2.3.',
-    'Per-IMF energy and instantaneous-frequency descriptors of a fibrillation electrogram -- Rangayyan Sec 8.16.',
-    'rgemg: EMG RMS envelope -- Rangayyan & Krishnan Sec 5.6.1, eq (5.24).',
-    'Shannon entropy of the relative wavelet energies (Rosso et al. 2001).',
-    'rgenv: Hilbert-transform envelope -- Rangayyan & Krishnan Sec 5.5.3.',
-    'rgenvgm: Envelogram.',
-    'Two-tap (Haar) orthogonal DWT -- normalised sums and differences, Parseval-exact.',
+    "Daubechies db1-db10 filter-bank taps with their orthonormality checks.",
+    "Adaptive TFD: matching pursuit onto Gabor atoms, then per-atom WVD -- Rangayyan eq (9.15).",
+    "Decimated dyadic DWT filter bank -- Rangayyan eqs (8.111)-(8.113).",
+    "Noise-assisted ensemble EMD against mode mixing -- Rangayyan eq (9.13).",
+    "EMD sifting into intrinsic mode functions -- Rangayyan Sec 9.4 steps 1-6.",
+    "Sift one IMF and check both Sec 9.4 admissibility conditions.",
+    "T-wave alternans amplitude from odd/even beat averages after EMD detrending -- Rangayyan Sec 9.2.3.",
+    "Per-IMF energy and instantaneous-frequency descriptors of a fibrillation electrogram -- Rangayyan Sec 8.16.",
+    "rgemg: EMG RMS envelope -- Rangayyan & Krishnan Sec 5.6.1, eq (5.24).",
+    "Shannon entropy of the relative wavelet energies (Rosso et al. 2001).",
+    "rgenv: Hilbert-transform envelope -- Rangayyan & Krishnan Sec 5.5.3.",
+    "rgenvgm: Envelogram.",
+    "Two-tap (Haar) orthogonal DWT -- normalised sums and differences, Parseval-exact.",
     "Time-frequency spectrum from EMD modes' instantaneous frequency -- Rangayyan eqs (9.8)-(9.12).",
-    'Time-varying HRV LF/HF band powers via STFT of the RR tachogram -- Rangayyan Sec 8.12.',
-    'Inverse STFT by weighted overlap-add; round-trips the forward STFT exactly.',
-    'MRA: additive full-length detail bands that sum back to the signal -- Rangayyan eq (8.114).',
-    'ECG-triggered synchronised averaging of PCG envelopes for S1/S2 intensity -- Rangayyan Sec 3.5.',
-    'PPG motion-artifact removal by Daubechies wavelet shrinkage -- Rangayyan Sec 8.14.',
-    'Scalogram |CWT|^2 energy density in time-scale -- Rangayyan Figure 8.29.',
-    'EEG seizure marker: fluctuation intensity of db4 wavelet coefficients -- Rangayyan eq (8.132).',
-    'STFT window length from wanted time/frequency resolution; flags the eq (8.10) conflict.',
-    'Spectrogram |STFT|^2 over a sliding window -- Rangayyan eq (8.8).',
-    'Shift-invariant undecimated wavelet transform (Nason & Silverman 1995).',
-    'Shift-invariant (cycle-spinning) wavelet denoising -- no pseudo-Gibbs ringing.',
-    'Variational mode decomposition into K band-limited modes (Dragomiretskiy & Zosso 2014).',
-    'Detect transient structures as prominent CWT scalogram ridges -- Rangayyan Sec 8.8.',
-    'Scale-by-scale wavelet cross-correlation of two signals (Whitcher et al. 2000).',
-    'Wigner-Ville distribution of the analytic signal -- Rangayyan eq (8.123).',
-    'Per-subband wavelet energy; sums exactly to the signal energy (Parseval).',
-    'Mean/variance/energy/skewness/kurtosis of each DWT subband.',
-    'Full wavelet packet tree with uniform subbands and a best-basis entropy cost.',
-    'Wavelet denoising by soft/hard coefficient thresholding -- Rangayyan eqs (8.103)-(8.105).',
-    'Unbiased scale-by-scale wavelet variance (Percival 1995); db1 = Allan variance.',
-    'Two-impulse excitation delta(n) + a delta(n-n0) -- Rangayyan eq (4.74).',
-    'Composite signal h(n) + a h(n-n0) -- Rangayyan eq (4.75).',
-    'Y(z) = (1 + a z^-n0) H(z) -- Rangayyan eq (4.76).',
-    'Y(w) = [1 + a exp(-j w n0)] H(w) -- Rangayyan eq (4.77).',
-    'Y^(w) = H^(w) + log[1 + a exp(-j w n0)] -- Rangayyan eq (4.78), plus the eq (4.79) series.',
-    'Complex cepstrum h^(n) plus a^k/k impulses at k*n0 -- Rangayyan eq (4.80).',
-    '|Y(z)|^2 = |H(z)|^2 |1 + a z^-n0|^2 -- Rangayyan eq (4.84).',
+    "Time-varying HRV LF/HF band powers via STFT of the RR tachogram -- Rangayyan Sec 8.12.",
+    "Inverse STFT by weighted overlap-add; round-trips the forward STFT exactly.",
+    "MRA: additive full-length detail bands that sum back to the signal -- Rangayyan eq (8.114).",
+    "ECG-triggered synchronised averaging of PCG envelopes for S1/S2 intensity -- Rangayyan Sec 3.5.",
+    "PPG motion-artifact removal by Daubechies wavelet shrinkage -- Rangayyan Sec 8.14.",
+    "Scalogram |CWT|^2 energy density in time-scale -- Rangayyan Figure 8.29.",
+    "EEG seizure marker: fluctuation intensity of db4 wavelet coefficients -- Rangayyan eq (8.132).",
+    "STFT window length from wanted time/frequency resolution; flags the eq (8.10) conflict.",
+    "Spectrogram |STFT|^2 over a sliding window -- Rangayyan eq (8.8).",
+    "Shift-invariant undecimated wavelet transform (Nason & Silverman 1995).",
+    "Shift-invariant (cycle-spinning) wavelet denoising -- no pseudo-Gibbs ringing.",
+    "Variational mode decomposition into K band-limited modes (Dragomiretskiy & Zosso 2014).",
+    "Detect transient structures as prominent CWT scalogram ridges -- Rangayyan Sec 8.8.",
+    "Scale-by-scale wavelet cross-correlation of two signals (Whitcher et al. 2000).",
+    "Wigner-Ville distribution of the analytic signal -- Rangayyan eq (8.123).",
+    "Per-subband wavelet energy; sums exactly to the signal energy (Parseval).",
+    "Mean/variance/energy/skewness/kurtosis of each DWT subband.",
+    "Full wavelet packet tree with uniform subbands and a best-basis entropy cost.",
+    "Wavelet denoising by soft/hard coefficient thresholding -- Rangayyan eqs (8.103)-(8.105).",
+    "Unbiased scale-by-scale wavelet variance (Percival 1995); db1 = Allan variance.",
+    "Two-impulse excitation delta(n) + a delta(n-n0) -- Rangayyan eq (4.74).",
+    "Composite signal h(n) + a h(n-n0) -- Rangayyan eq (4.75).",
+    "Y(z) = (1 + a z^-n0) H(z) -- Rangayyan eq (4.76).",
+    "Y(w) = [1 + a exp(-j w n0)] H(w) -- Rangayyan eq (4.77).",
+    "Y^(w) = H^(w) + log[1 + a exp(-j w n0)] -- Rangayyan eq (4.78), plus the eq (4.79) series.",
+    "Complex cepstrum h^(n) plus a^k/k impulses at k*n0 -- Rangayyan eq (4.80).",
+    "|Y(z)|^2 = |H(z)|^2 |1 + a z^-n0|^2 -- Rangayyan eq (4.84).",
     "log|Y(w)|^2 with the echo's cosine ripple -- Rangayyan eq (4.85).",
-    'wvdst: Wigner-Ville distribution for time-frequency analysis.',
+    "wvdst: Wigner-Ville distribution for time-frequency analysis.",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

@@ -36,22 +36,23 @@ def kamath_ch4_krona_efficient(A, B, x):
     a1, a2 = Am.shape
     b1, b2 = Bm.shape
     if xv.shape[0] != a2 * b2:
-        raise ValueError(
-            f"x has {xv.shape[0]} entries but A (x) B has {a2 * b2} "
-            "columns.")
+        raise ValueError(f"x has {xv.shape[0]} entries but A (x) B has {a2 * b2} columns.")
     # _array_core.reshape ignores order=, so the column-major folds eta and
     # gamma are written out by index here.
     xl = [float(v) for v in xv.tolist()]
-    X = np.asarray([[xl[j * b2 + i] for j in range(a2)] for i in range(b2)],
-                   dtype=float)
+    X = np.asarray([[xl[j * b2 + i] for j in range(a2)] for i in range(b2)], dtype=float)
     Y = np.atleast_2d(Bm @ X @ Am.T).tolist()
     y = [float(Y[i][j]) for j in range(a1) for i in range(b1)]
-    return RichResult(payload={
-        "y": y,
-        "folded_shape": (int(b2), int(a2)),
-        "estimate": float(y[0]), "n": len(y),
-        "products_avoided": int(a1 * a2 * b1 * b2),
-        "method": "KronA matrix-free product (Kamath Eq 4.7)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "folded_shape": (int(b2), int(a2)),
+            "estimate": float(y[0]),
+            "n": len(y),
+            "products_avoided": int(a1 * a2 * b1 * b2),
+            "method": "KronA matrix-free product (Kamath Eq 4.7)",
+        }
+    )
 
 
 def cheatsheet():

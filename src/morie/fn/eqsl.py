@@ -109,9 +109,11 @@ def equating_stocking_lord(a_ref, b_ref, a_focal, b_focal, n_quad=41, theta_rang
     w /= w.sum()
 
     def P(a, b, t):
-        return 1.0 / (1.0 + np.exp(-1.7 * np.outer(a, t - 0) + 1.7 * np.outer(a, b)[:, :1] * 0
-                                   - 0.0)) if False else \
-            1.0 / (1.0 + np.exp(-1.7 * a[:, None] * (t[None, :] - b[:, None])))
+        return (
+            1.0 / (1.0 + np.exp(-1.7 * np.outer(a, t - 0) + 1.7 * np.outer(a, b)[:, :1] * 0 - 0.0))
+            if False
+            else 1.0 / (1.0 + np.exp(-1.7 * a[:, None] * (t[None, :] - b[:, None])))
+        )
 
     def crit(par):
         A, B = par
@@ -124,19 +126,25 @@ def equating_stocking_lord(a_ref, b_ref, a_focal, b_focal, n_quad=41, theta_rang
         d = (Pr.sum(axis=0) - Pf.sum(axis=0)) ** 2
         return float(np.sum(w * d))
 
-    res = minimize(crit, np.array([1.0, 0.0]), method="Nelder-Mead",
-                   options={"xatol": 1e-8, "fatol": 1e-10, "maxiter": 2000})
+    res = minimize(
+        crit, np.array([1.0, 0.0]), method="Nelder-Mead", options={"xatol": 1e-8, "fatol": 1e-10, "maxiter": 2000}
+    )
     A, B = float(res.x[0]), float(res.x[1])
     return RichResult(
         title="Stocking-Lord linking",
-        summary_lines=[("items", int(a_r.size)), ("A", A), ("B", B),
-                       ("criterion", float(res.fun))],
-        warnings=["remove anchor items showing DIF BEFORE linking; one badly "
-                  "functioning anchor distorts the transform for every item"],
+        summary_lines=[("items", int(a_r.size)), ("A", A), ("B", B), ("criterion", float(res.fun))],
+        warnings=[
+            "remove anchor items showing DIF BEFORE linking; one badly "
+            "functioning anchor distorts the transform for every item"
+        ],
         payload={
-            "A": A, "B": B, "criterion": float(res.fun),
-            "a_transformed": a_f / A, "b_transformed": A * b_f + B,
-            "n_items": int(a_r.size), "converged": bool(res.success),
+            "A": A,
+            "B": B,
+            "criterion": float(res.fun),
+            "a_transformed": a_f / A,
+            "b_transformed": A * b_f + B,
+            "n_items": int(a_r.size),
+            "converged": bool(res.success),
             "method": "equating_stocking_lord",
         },
     )

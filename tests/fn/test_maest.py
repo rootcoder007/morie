@@ -1,7 +1,6 @@
 """Tests for maest.py - MA estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.maest import ma_estimate_fn, maest
 
 

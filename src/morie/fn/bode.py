@@ -42,10 +42,7 @@ def bode_plot(
     if np.all(den == 0):
         raise ValueError("Denominator coefficients cannot all be zero.")
 
-    if freq is None:
-        freq = np.logspace(-2, 3, n_points)
-    else:
-        freq = np.asarray(freq, dtype=np.float64)
+    freq = np.logspace(-2, 3, n_points) if freq is None else np.asarray(freq, dtype=np.float64)
 
     jw = 1j * freq
     h = np.polyval(num, jw) / np.polyval(den, jw)

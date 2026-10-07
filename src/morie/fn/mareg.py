@@ -66,16 +66,13 @@ def ma_meta_regression(yi, vi, X):
     b0, _, _ = ma.wls(Xm, y, w0)
     resid = [y[i] - sum(Xm[i][r] * b0[r] for r in range(p)) for i in range(n)]
     QE = sum(w0[i] * resid[i] * resid[i] for i in range(n))
-    XtWX = [[sum(w0[i] * Xm[i][r] * Xm[i][s] for i in range(n))
-             for s in range(p)] for r in range(p)]
-    XtW2X = [[sum(w0[i] * w0[i] * Xm[i][r] * Xm[i][s] for i in range(n))
-              for s in range(p)] for r in range(p)]
+    XtWX = [[sum(w0[i] * Xm[i][r] * Xm[i][s] for i in range(n)) for s in range(p)] for r in range(p)]
+    XtW2X = [[sum(w0[i] * w0[i] * Xm[i][r] * Xm[i][s] for i in range(n)) for s in range(p)] for r in range(p)]
     inv = []
     for j in range(p):
         e = [1.0 if r == j else 0.0 for r in range(p)]
         inv.append(core.ridgesolve(XtWX, e, 1e-12))
-    trterm = sum(sum(inv[j][r] * XtW2X[r][j] for r in range(p))
-                 for j in range(p))
+    trterm = sum(sum(inv[j][r] * XtW2X[r][j] for r in range(p)) for j in range(p))
     denom = sum(w0) - trterm
     tau2 = 0.0
     if denom > 0.0:
@@ -84,11 +81,9 @@ def ma_meta_regression(yi, vi, X):
             tau2 = 0.0
     w = [1.0 / (v[i] + tau2) for i in range(n)]
     beta, cov, _ = ma.wls(Xm, y, w)
-    se = [math.sqrt(cov[j][j]) if cov[j][j] > 0.0 else float("nan")
-          for j in range(p)]
+    se = [math.sqrt(cov[j][j]) if cov[j][j] > 0.0 else float("nan") for j in range(p)]
     fit = [sum(Xm[i][r] * beta[r] for r in range(p)) for i in range(n)]
-    ll = -0.5 * sum(math.log(2.0 * math.pi * (v[i] + tau2))
-                    + (y[i] - fit[i]) ** 2 / (v[i] + tau2) for i in range(n))
+    ll = -0.5 * sum(math.log(2.0 * math.pi * (v[i] + tau2)) + (y[i] - fit[i]) ** 2 / (v[i] + tau2) for i in range(n))
     # null model: intercept only, same moment estimator
     one = [[1.0] for _ in range(n)]
     b1, _, _ = ma.wls(one, y, w0)
@@ -106,10 +101,21 @@ def ma_meta_regression(yi, vi, X):
         if R2 < 0.0:
             R2 = 0.0
     QM = Q1 - QE
-    return RichResult(payload={
-        "beta": beta, "se": se, "tau2": tau2, "R2": R2, "ll": ll,
-        "QE": QE, "QM": QM, "tau2_null": tau2_null, "n": n, "p": p,
-        "method": "Random-effects meta-regression"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "tau2": tau2,
+            "R2": R2,
+            "ll": ll,
+            "QE": QE,
+            "QM": QM,
+            "tau2_null": tau2_null,
+            "n": n,
+            "p": p,
+            "method": "Random-effects meta-regression",
+        }
+    )
 
 
 def cheatsheet():

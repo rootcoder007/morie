@@ -1,7 +1,6 @@
 """Tests for grgcl.geron_gradient_clipping."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grgcl import geron_gradient_clipping
 
 

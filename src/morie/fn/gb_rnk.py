@@ -43,7 +43,9 @@ def gibbons_rank_def(x):
     ranks = np.sum(x[None, :] <= x[:, None], axis=1)
     return RichResult(
         payload={
-            "ranks": ranks.astype(int), "edf_values": ranks / n, "n": int(n),
+            "ranks": ranks.astype(int),
+            "edf_values": ranks / n,
+            "n": int(n),
             "method": "rank(X_i) = n S_n(X_i) (Gibbons Ch. 2.11.3)",
         }
     )

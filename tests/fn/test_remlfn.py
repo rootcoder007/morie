@@ -52,15 +52,17 @@ def test_it_converges_and_says_so():
     y, g = _balanced()
     res = remlfn(y, g, solver="optim")
     assert res["converged"] is True
-    assert res["loglik"] == res["loglik"]      # not NaN
+    assert res["loglik"] == res["loglik"]  # not NaN
 
 
 def test_validation():
     y, g = _balanced()
-    for call in (lambda: remlfn([1.0, 2.0], [0]),
-                 lambda: remlfn([1.0, 2.0], [0, 0]),
-                 lambda: remlfn([1.0, 2.0], [0, 1]),
-                 lambda: remlfn(y, g, solver="em")):
+    for call in (
+        lambda: remlfn([1.0, 2.0], [0]),
+        lambda: remlfn([1.0, 2.0], [0, 0]),
+        lambda: remlfn([1.0, 2.0], [0, 1]),
+        lambda: remlfn(y, g, solver="em"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

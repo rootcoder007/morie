@@ -1,7 +1,6 @@
 """Tests for almap.alammar_mean_average_precision."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.almap import alammar_mean_average_precision
 
 
@@ -69,9 +68,9 @@ def test_almap_basic():
 def test_almap_edge():
     """Test edge cases: a query with no relevant documents is excluded, not zero."""
     relevance = [
-        [0, 0, 1, 1],   # 2 relevant
-        [0, 0, 0, 0],   # no relevant -> AP undefined, excluded from MAP
-        [1, 0, 0, 0],   # 1 relevant, rank 1
+        [0, 0, 1, 1],  # 2 relevant
+        [0, 0, 0, 0],  # no relevant -> AP undefined, excluded from MAP
+        [1, 0, 0, 0],  # 1 relevant, rank 1
     ]
     result = alammar_mean_average_precision(relevance)
 

@@ -81,22 +81,23 @@ def club_upper_bound(x, y, q=None):
     my = sum(ys) / n
     sx = math.sqrt(sum((v - mx) ** 2 for v in xs) / n)
     sy = math.sqrt(sum((v - my) ** 2 for v in ys) / n)
-    rho = (sum((xs[i] - mx) * (ys[i] - my) for i in range(n)) / n / (sx * sy)
-           if sx > 0.0 and sy > 0.0 else 0.0)
+    rho = sum((xs[i] - mx) * (ys[i] - my) for i in range(n)) / n / (sx * sy) if sx > 0.0 and sy > 0.0 else 0.0
     mi = -0.5 * math.log(1.0 - rho * rho) if abs(rho) < 1.0 else float("inf")
-    return RichResult(payload={
-        "estimate": pos - neg,
-        "club": pos - neg,
-        "positive": pos,
-        "negative": neg,
-        "a": a,
-        "b": b,
-        "sigma2": s2,
-        "rho": rho,
-        "mi_gauss": mi,
-        "n": n,
-        "method": "CLUB contrastive log-ratio upper bound on MI",
-    })
+    return RichResult(
+        payload={
+            "estimate": pos - neg,
+            "club": pos - neg,
+            "positive": pos,
+            "negative": neg,
+            "a": a,
+            "b": b,
+            "sigma2": s2,
+            "rho": rho,
+            "mi_gauss": mi,
+            "n": n,
+            "method": "CLUB contrastive log-ratio upper bound on MI",
+        }
+    )
 
 
 def cheatsheet():

@@ -12,24 +12,18 @@ Sources, all verified on page one of the local PDF:
   Card, Lee, Pei & Weber, NBER WP 18564; Econometrica 83(6),
     2453-2483 (2015)
 """
+
 import math
 
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.bndbye import (compare_sets, frequentist_confidence_set,
-                             identified_set_interval, posterior_hpd)
-from morie.fn.bndpcb import (bet_proof_interval, bet_violation,
-                             coverage_by_region,
-                             truncated_normal_interval)
-from morie.fn.bndsmw import (S_function, cvm_statistic,
-                             hypercube_instruments, weighted_moments)
-from morie.fn.bnshrt import (identified_set, in_identified_set,
-                             sequence_frequencies,
-                             sequence_probabilities)
-from morie.fn.bnskmt import compare_forms, ks_statistic
-from morie.fn.bnskt2 import (covariate_kink_test, density_kink_test,
-                             local_polynomial_slope, rkd_estimate)
+from morie.fn.bndbye import compare_sets, frequentist_confidence_set, identified_set_interval, posterior_hpd
+from morie.fn.bndpcb import bet_proof_interval, bet_violation, coverage_by_region, truncated_normal_interval
+from morie.fn.bndsmw import S_function, cvm_statistic, hypercube_instruments, weighted_moments
+from morie.fn.bnshrt import identified_set, in_identified_set, sequence_frequencies, sequence_probabilities
+from morie.fn.bnskmt import compare_forms
+from morie.fn.bnskt2 import covariate_kink_test, density_kink_test, local_polynomial_slope, rkd_estimate
 
 X3 = [[1.0], [0.0], [1.0]]
 
@@ -103,8 +97,7 @@ def test_the_mixing_weights_form_a_distribution():
 def test_point_identification_fails():
     rows = panel()
     AG = [-2.0 + 0.5 * i for i in range(9)]
-    s = identified_set(rows, X3, [0.3, 0.5, 0.7], [0.4, 0.8, 1.2],
-                       AG, tol=0.03)
+    s = identified_set(rows, X3, [0.3, 0.5, 0.7], [0.4, 0.8, 1.2], AG, tol=0.03)
     assert s["n_feasible"] > 1
     assert not s["point_identified"]
 
@@ -169,8 +162,7 @@ def test_it_can_be_arbitrarily_short():
 
 
 def test_an_ordinary_realisation_has_the_full_width():
-    assert truncated_normal_interval(2.0)["width"] == pytest.approx(
-        2 * 1.959963985, abs=1e-5)
+    assert truncated_normal_interval(2.0)["width"] == pytest.approx(2 * 1.959963985, abs=1e-5)
 
 
 def test_the_interval_is_marginally_valid():
@@ -239,14 +231,12 @@ def test_instrument_weights_are_non_negative():
 
 def test_a_satisfied_inequality_gives_a_zero_statistic():
     X, m = moments(mean=0.5)
-    assert cvm_statistic(m, hypercube_instruments(X, 2))["statistic"] \
-        == 0.0
+    assert cvm_statistic(m, hypercube_instruments(X, 2))["statistic"] == 0.0
 
 
 def test_a_violated_inequality_gives_a_large_statistic():
     X, m = moments(mean=-0.5)
-    assert cvm_statistic(m, hypercube_instruments(X, 2))["statistic"] \
-        > 10.0
+    assert cvm_statistic(m, hypercube_instruments(X, 2))["statistic"] > 10.0
 
 
 def test_the_supremum_is_never_below_the_average():
@@ -266,8 +256,7 @@ def test_a_measure_not_summing_to_one_is_refused():
     X, m = moments()
     inst = hypercube_instruments(X, 2)
     with pytest.raises(ValueError):
-        cvm_statistic(m, inst,
-                      weights=[1.0] * inst["n_instruments"])
+        cvm_statistic(m, inst, weights=[1.0] * inst["n_instruments"])
 
 
 # ---------------------------------------------------------- bnskt2
@@ -279,15 +268,13 @@ def kink_data(n=3000, seed=8, tau=2.0, dslope=-1.0):
         b = 1.0 * v if v < 0.0 else (1.0 + dslope) * v
         V.append(v)
         B.append(b)
-        Y.append(3.0 + 0.5 * v + tau * b
-                 + float(rng.normal(0.0, 0.1)))
+        Y.append(3.0 + 0.5 * v + tau * b + float(rng.normal(0.0, 0.1)))
     return V, Y, B
 
 
 def test_sharp_rkd_recovers_the_planted_effect():
     V, Y, _ = kink_data()
-    r = rkd_estimate(V, Y, 0.0, 0.5, order=2,
-                     policy_slope_change=-1.0)
+    r = rkd_estimate(V, Y, 0.0, 0.5, order=2, policy_slope_change=-1.0)
     assert r["tau"] == pytest.approx(2.0, abs=0.2)
 
 
@@ -323,9 +310,7 @@ def test_a_clean_density_is_smooth():
 def test_a_manipulated_density_is_not_smooth():
     V, _, _ = kink_data()
     rng = np.random.default_rng(4)
-    Vm = [(-0.02 * float(rng.uniform())
-           if (0.0 < v < 0.25 and float(rng.uniform()) < 0.8) else v)
-          for v in V]
+    Vm = [(-0.02 * float(rng.uniform()) if (0.0 < v < 0.25 and float(rng.uniform()) < 0.8) else v) for v in V]
     assert not density_kink_test(Vm, 0.0, 0.5, n_bins=20)["smooth"]
 
 

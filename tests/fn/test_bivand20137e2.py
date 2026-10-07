@@ -1,9 +1,8 @@
 """Tests for bivand20137e2.bivand2013_chapter_7_equation_2."""
 
-from morie.fn import _array_core as np
-
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bivand20137e2 import bivand2013_chapter_7_equation_2
 
 

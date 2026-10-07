@@ -76,10 +76,7 @@ def bayesian_lasso_full(
     beta = np.zeros(p)
     sigma2 = float(np.var(yc, ddof=1)) if n > 1 else 1.0
     tau2 = np.ones(p)
-    if lam is None:
-        lam_val = 1.0
-    else:
-        lam_val = float(lam)
+    lam_val = 1.0 if lam is None else float(lam)
     XtX = Xc.T @ Xc
     Xty = Xc.T @ yc
 

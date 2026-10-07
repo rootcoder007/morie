@@ -1,11 +1,11 @@
 """bnfwd: batch normalisation forward pass (Ioffe & Szegedy 2015).
 
-    x_hat = (x - mu) / sqrt(var + eps);   y = gamma * x_hat + beta
+x_hat = (x - mu) / sqrt(var + eps);   y = gamma * x_hat + beta
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bnfwd import batch_norm_forward as bn
 
 
@@ -43,17 +43,13 @@ def test_bnfwd_is_invariant_to_shifting_the_input():
     """Subtracting the batch mean removes any constant offset exactly."""
     rng = np.random.default_rng(1613)
     x = rng.standard_normal((40, 3))
-    assert np.asarray(bn(x + 100.0)["x_hat"]) == pytest.approx(
-        np.asarray(bn(x)["x_hat"]), abs=1e-7
-    )
+    assert np.asarray(bn(x + 100.0)["x_hat"]) == pytest.approx(np.asarray(bn(x)["x_hat"]), abs=1e-7)
 
 
 def test_bnfwd_scaling_the_input_leaves_x_hat_unchanged_up_to_eps():
     rng = np.random.default_rng(1619)
     x = rng.standard_normal((40, 3))
-    assert np.asarray(bn(x * 7.0)["x_hat"]) == pytest.approx(
-        np.asarray(bn(x)["x_hat"]), abs=1e-4
-    )
+    assert np.asarray(bn(x * 7.0)["x_hat"]) == pytest.approx(np.asarray(bn(x)["x_hat"]), abs=1e-4)
 
 
 def test_bnfwd_constant_feature_does_not_divide_by_zero():

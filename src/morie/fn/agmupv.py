@@ -66,10 +66,17 @@ def mzvalue(logits, support=300, epsilon=0.001):
     y = sum(p[i] * (i - s) for i in range(2 * s + 1))
     sg = 1.0 if y >= 0.0 else -1.0
     a = (math.sqrt(1.0 + 4.0 * eps * (abs(y) + 1.0 + eps)) - 1.0) / (2.0 * eps)
-    return RichResult(payload={
-        "value": sg * (a * a - 1.0), "expected": y, "prob": p,
-        "support": s, "epsilon": eps, "k": 2 * s + 1,
-        "method": "MuZero categorical value head (Schrittwieser et al. 2020 App. F)"})
+    return RichResult(
+        payload={
+            "value": sg * (a * a - 1.0),
+            "expected": y,
+            "prob": p,
+            "support": s,
+            "epsilon": eps,
+            "k": 2 * s + 1,
+            "method": "MuZero categorical value head (Schrittwieser et al. 2020 App. F)",
+        }
+    )
 
 
 muzero_predict_value = mzvalue

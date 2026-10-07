@@ -36,12 +36,15 @@ def kamath_ch2_ffn_relu(z, W_1, W_2, b_1, b_2):
         raise ValueError("b_2 must match W_2's columns.")
     hidden = np.maximum(Z @ W1 + b1, 0.0)
     out = hidden @ W2 + b2
-    return RichResult(payload={
-        "output": [[float(v) for v in r] for r in out],
-        "hidden": [[float(v) for v in r] for r in hidden],
-        "estimate": float(out[0, 0]), "n": Z.shape[0],
-        "method": "Position-wise FFN ReLU(zW1+b1)W2+b2 "
-                  "(Kamath Eq 2.17)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in r] for r in out],
+            "hidden": [[float(v) for v in r] for r in hidden],
+            "estimate": float(out[0, 0]),
+            "n": Z.shape[0],
+            "method": "Position-wise FFN ReLU(zW1+b1)W2+b2 (Kamath Eq 2.17)",
+        }
+    )
 
 
 def cheatsheet():

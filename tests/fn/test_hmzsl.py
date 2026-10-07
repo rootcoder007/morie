@@ -2,21 +2,29 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmzsl import geron_zero_shot
 
 
 def test_hmzsl_basic():
     """Test basic functionality with a dict-returning model."""
     scores = {"negative": 0.0, "positive": 1.0}
-    model = lambda p: scores
+
+    def model(p):
+        return scores
+
     prompt = "Review: it was great. Sentiment:"
     result = geron_zero_shot(model, prompt)
     assert isinstance(result, dict)
     expected_keys = {
-        "probabilities", "predicted", "predicted_label", "margin",
-        "entropy", "calibrated", "estimate", "n", "method",
+        "probabilities",
+        "predicted",
+        "predicted_label",
+        "margin",
+        "entropy",
+        "calibrated",
+        "estimate",
+        "n",
+        "method",
     }
     assert expected_keys.issubset(result.keys())
     assert result["predicted_label"] == "positive"
@@ -31,7 +39,10 @@ def test_hmzsl_basic():
 
 def test_hmzsl_edge():
     """Test calibration with null_prompt yields uniform probabilities."""
-    f = lambda p: ([5.0, 0.0] if p == "" else [6.0, 1.0])
+
+    def f(p):
+        return [5.0, 0.0] if p == "" else [6.0, 1.0]
+
     result = geron_zero_shot(f, "x", labels=["a", "b"], null_prompt="")
     assert isinstance(result, dict)
     assert result["calibrated"]
@@ -54,7 +65,7 @@ import morie.fn.hmzsl as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -1,7 +1,6 @@
 """Tests for causgsw.causal_generalisability_smd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causgsw import causal_generalisability_smd
 
 

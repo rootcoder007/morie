@@ -10,7 +10,7 @@ def test_ghs026_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     m = 3
-    n_cells = 2 ** m
+    n_cells = 2**m
     raw = rng.uniform(0, 1, n_cells)
     total = np.sum(raw)
     masses = [raw[i] / total for i in range(n_cells)]
@@ -26,7 +26,7 @@ def test_ghs026_basic():
 
 def test_ghs026_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m = 0
     masses = [1.0]
     x = 0.0

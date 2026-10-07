@@ -1,7 +1,5 @@
 """Tests for lr_test_chi2.lr_test_chi2."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.lr_test_chi2 import lr_test_chi2
 
 

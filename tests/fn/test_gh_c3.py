@@ -1,4 +1,5 @@
 """Tests for the Ghosal Ch 3 construction modules."""
+
 from morie.fn.gh_c3_1 import ghosal_random_measure_def
 from morie.fn.gh_c3_2 import ghosal_stochastic_proc_prior
 from morie.fn.gh_c3_3 import ghosal_dir_simplex

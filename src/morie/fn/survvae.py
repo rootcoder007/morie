@@ -62,14 +62,23 @@ risks by shared representation with per-risk experts.
 
 import math
 
-from . import _array_core as np
 from . import survrsf as _rsf
 from ._richresult import RichResult
 from ._sci_core import minimize
 
-__all__ = ["PRIMITIVES", "log_pdf", "log_survival", "gates", "elbo",
-           "exact_loglik", "fit", "predict_survival", "risk_score",
-           "fit_competing", "concordance"]
+__all__ = [
+    "PRIMITIVES",
+    "log_pdf",
+    "log_survival",
+    "gates",
+    "elbo",
+    "exact_loglik",
+    "fit",
+    "predict_survival",
+    "risk_score",
+    "fit_competing",
+    "concordance",
+]
 
 PRIMITIVES = ("weibull", "lognormal")
 _FLOOR = 1e-300
@@ -77,8 +86,7 @@ _FLOOR = 1e-300
 
 def _check(primitive):
     if primitive not in PRIMITIVES:
-        raise ValueError("survvae: primitive must be one of %s, got %r"
-                         % (", ".join(PRIMITIVES), primitive))
+        raise ValueError("survvae: primitive must be one of {}, got {!r}".format(", ".join(PRIMITIVES), primitive))
 
 
 def log_pdf(t, shape, scale, primitive="weibull"):
@@ -91,11 +99,9 @@ def log_pdf(t, shape, scale, primitive="weibull"):
         raise ValueError("survvae: shape and scale must be positive")
     if primitive == "weibull":
         z = t / scale
-        return (math.log(shape) - math.log(scale)
-                + (shape - 1.0) * math.log(z) - z ** shape)
+        return math.log(shape) - math.log(scale) + (shape - 1.0) * math.log(z) - z**shape
     z = (math.log(t) - math.log(scale)) / shape
-    return (-math.log(t) - math.log(shape)
-            - 0.5 * math.log(2.0 * math.pi) - 0.5 * z * z)
+    return -math.log(t) - math.log(shape) - 0.5 * math.log(2.0 * math.pi) - 0.5 * z * z
 
 
 def log_survival(t, shape, scale, primitive="weibull"):
@@ -115,78 +121,66 @@ def log_survival(t, shape, scale, primitive="weibull"):
 
 def gates(x, W, bias):
     r"""Softmax over the experts."""
-    z = [sum(W[k][j] * x[j] for j in range(len(x))) + bias[k]
-         for k in range(len(W))]
+    z = [sum(W[k][j] * x[j] for j in range(len(x))) + bias[k] for k in range(len(W))]
     m = max(z)
     e = [math.exp(v - m) for v in z]
     s = sum(e)
     return [v / s for v in e]
 
 
-def elbo(X, y_lower, events, W, bias, shapes, scales,
-         primitive="weibull", alpha=1.0, prior=0.0):
+def elbo(X, y_lower, events, W, bias, shapes, scales, primitive="weibull", alpha=1.0, prior=0.0):
     r"""The paper's lower bound: gates outside the logarithm."""
     _check(primitive)
     if not 0.0 <= alpha <= 1.0:
-        raise ValueError("survvae: alpha must lie in [0, 1], got %r"
-                         % alpha)
+        raise ValueError(f"survvae: alpha must lie in [0, 1], got {alpha!r}")
     tot_u = tot_c = 0.0
     for i in range(len(X)):
         g = gates(X[i], W, bias)
         if events[i]:
-            tot_u += sum(g[k] * log_pdf(y_lower[i], shapes[k],
-                                        scales[k], primitive)
-                         for k in range(len(g)))
+            tot_u += sum(g[k] * log_pdf(y_lower[i], shapes[k], scales[k], primitive) for k in range(len(g)))
         else:
-            tot_c += sum(g[k] * log_survival(y_lower[i], shapes[k],
-                                             scales[k], primitive)
-                         for k in range(len(g)))
-    pen = prior * (sum(math.log(v) ** 2 for v in shapes)
-                   + sum(math.log(v) ** 2 for v in scales))
-    return {"elbo": tot_u + alpha * tot_c - pen,
-            "uncensored": tot_u, "censored": tot_c,
-            "prior_penalty": pen, "alpha": float(alpha)}
+            tot_c += sum(g[k] * log_survival(y_lower[i], shapes[k], scales[k], primitive) for k in range(len(g)))
+    pen = prior * (sum(math.log(v) ** 2 for v in shapes) + sum(math.log(v) ** 2 for v in scales))
+    return {
+        "elbo": tot_u + alpha * tot_c - pen,
+        "uncensored": tot_u,
+        "censored": tot_c,
+        "prior_penalty": pen,
+        "alpha": float(alpha),
+    }
 
 
-def exact_loglik(X, y_lower, events, W, bias, shapes, scales,
-                 primitive="weibull", alpha=1.0):
+def exact_loglik(X, y_lower, events, W, bias, shapes, scales, primitive="weibull", alpha=1.0):
     r"""The true mixture log-likelihood the bound sits underneath."""
     _check(primitive)
     tot_u = tot_c = 0.0
     for i in range(len(X)):
         g = gates(X[i], W, bias)
         if events[i]:
-            m = sum(g[k] * math.exp(log_pdf(y_lower[i], shapes[k],
-                                            scales[k], primitive))
-                    for k in range(len(g)))
+            m = sum(g[k] * math.exp(log_pdf(y_lower[i], shapes[k], scales[k], primitive)) for k in range(len(g)))
             tot_u += math.log(max(m, _FLOOR))
         else:
-            m = sum(g[k] * math.exp(log_survival(y_lower[i], shapes[k],
-                                                 scales[k], primitive))
-                    for k in range(len(g)))
+            m = sum(g[k] * math.exp(log_survival(y_lower[i], shapes[k], scales[k], primitive)) for k in range(len(g)))
             tot_c += math.log(max(m, _FLOOR))
-    return {"loglik": tot_u + alpha * tot_c,
-            "uncensored": tot_u, "censored": tot_c}
+    return {"loglik": tot_u + alpha * tot_c, "uncensored": tot_u, "censored": tot_c}
 
 
 def _unpack(v, K, d):
-    W = [list(v[k * d:(k + 1) * d]) for k in range(K)]
+    W = [list(v[k * d : (k + 1) * d]) for k in range(K)]
     off = K * d
-    bias = list(v[off:off + K])
+    bias = list(v[off : off + K])
     off += K
     shapes = [math.exp(v[off + k]) for k in range(K)]
     scales = [math.exp(v[off + K + k]) for k in range(K)]
     return W, bias, shapes, scales
 
 
-def fit(X, times, events, K=3, primitive="weibull", alpha=1.0,
-        prior=0.0, seed=0, restarts=4):
+def fit(X, times, events, K=3, primitive="weibull", alpha=1.0, prior=0.0, seed=0, restarts=4):
     r"""Maximise the combined loss over gates and expert parameters."""
     _check(primitive)
     n = len(times)
     if not (n == len(X) == len(events)):
-        raise ValueError("survvae: X, times and events must have the "
-                         "same length")
+        raise ValueError("survvae: X, times and events must have the same length")
     if n == 0:
         raise ValueError("survvae: no observations")
     K = int(K)
@@ -201,18 +195,17 @@ def fit(X, times, events, K=3, primitive="weibull", alpha=1.0,
             W, bias, shapes, scales = _unpack(v, K, d)
             if any(s <= 0.0 or s > 1e6 for s in shapes + scales):
                 return 1e12
-            return -elbo(X, times, events, W, bias, shapes, scales,
-                         primitive, alpha, prior)["elbo"]
+            return -elbo(X, times, events, W, bias, shapes, scales, primitive, alpha, prior)["elbo"]
         except (ValueError, OverflowError):
             return 1e12
 
     rng = _rsf._Rng(seed)
     best = None
-    for r in range(max(1, int(restarts))):
+    for _r in range(max(1, int(restarts))):
         v0 = [0.0] * (K * d + K)
-        for k in range(K):
+        for _k in range(K):
             v0.append(math.log(1.0 + 0.5 * (rng.next() - 0.5)))
-        for k in range(K):
+        for _k in range(K):
             v0.append(math.log(t0 * (0.5 + rng.next())))
         val = objective(v0)
         cur = list(v0)
@@ -228,21 +221,29 @@ def fit(X, times, events, K=3, primitive="weibull", alpha=1.0,
         if best is None or val < best[0]:
             best = (val, cur)
     W, bias, shapes, scales = _unpack(best[1], K, d)
-    e = elbo(X, times, events, W, bias, shapes, scales, primitive,
-             alpha, prior)
-    ex = exact_loglik(X, times, events, W, bias, shapes, scales,
-                      primitive, alpha)
-    return RichResult(payload={
-        "estimate": e["elbo"], "elbo": e["elbo"],
-        "loglik": ex["loglik"], "jensen_gap": ex["loglik"] - e["elbo"],
-        "W": W, "bias": bias, "shapes": shapes, "scales": scales,
-        "K": K, "primitive": primitive, "alpha": float(alpha),
-        "prior": float(prior), "times": list(times),
-        "events": list(events),
-        "method": "Deep Survival Machines: mixture of %s experts with "
-                  "softmax gates, ELBO_U + alpha ELBO_C + prior; "
-                  "Nagpal et al. (2021) Sec. III" % primitive,
-    })
+    e = elbo(X, times, events, W, bias, shapes, scales, primitive, alpha, prior)
+    ex = exact_loglik(X, times, events, W, bias, shapes, scales, primitive, alpha)
+    return RichResult(
+        payload={
+            "estimate": e["elbo"],
+            "elbo": e["elbo"],
+            "loglik": ex["loglik"],
+            "jensen_gap": ex["loglik"] - e["elbo"],
+            "W": W,
+            "bias": bias,
+            "shapes": shapes,
+            "scales": scales,
+            "K": K,
+            "primitive": primitive,
+            "alpha": float(alpha),
+            "prior": float(prior),
+            "times": list(times),
+            "events": list(events),
+            "method": f"Deep Survival Machines: mixture of {primitive} experts with "
+            "softmax gates, ELBO_U + alpha ELBO_C + prior; "
+            "Nagpal et al. (2021) Sec. III",
+        }
+    )
 
 
 def predict_survival(fit_result, x, times):
@@ -250,58 +251,60 @@ def predict_survival(fit_result, x, times):
     g = gates(x, fit_result["W"], fit_result["bias"])
     out = []
     for t in times:
-        out.append(sum(g[k] * math.exp(
-            log_survival(t, fit_result["shapes"][k],
-                         fit_result["scales"][k],
-                         fit_result["primitive"]))
-            for k in range(fit_result["K"])))
-    return {"time": [float(t) for t in times], "survival": out,
-            "gates": g}
+        out.append(
+            sum(
+                g[k]
+                * math.exp(log_survival(t, fit_result["shapes"][k], fit_result["scales"][k], fit_result["primitive"]))
+                for k in range(fit_result["K"])
+            )
+        )
+    return {"time": [float(t) for t in times], "survival": out, "gates": g}
 
 
 def risk_score(fit_result, X, horizon=None):
     r"""Risk at a horizon: :math:`1 - S(t\mid x)`."""
     if horizon is None:
-        horizon = sorted(fit_result["times"])[len(fit_result["times"])
-                                              // 2]
-    return [1.0 - predict_survival(fit_result, x, [horizon])
-            ["survival"][0] for x in X]
+        horizon = sorted(fit_result["times"])[len(fit_result["times"]) // 2]
+    return [1.0 - predict_survival(fit_result, x, [horizon])["survival"][0] for x in X]
 
 
 def concordance(fit_result, X, times, events, horizon=None):
     r"""Harrell's C at a horizon."""
-    return _rsf.c_index(times, events,
-                        risk_score(fit_result, X, horizon))
+    return _rsf.c_index(times, events, risk_score(fit_result, X, horizon))
 
 
-def fit_competing(X, times, causes, K=3, primitive="weibull",
-                  alpha=1.0, prior=0.0, seed=0):
+def fit_competing(X, times, causes, K=3, primitive="weibull", alpha=1.0, prior=0.0, seed=0):
     r"""One fit per risk, other causes treated as censoring."""
     labels = sorted({int(c) for c in causes if int(c) != 0})
     if not labels:
-        raise ValueError("survvae: no competing events found; cause 0 "
-                         "means censored")
+        raise ValueError("survvae: no competing events found; cause 0 means censored")
     out = {}
     for lab in labels:
         ev = [1 if int(c) == lab else 0 for c in causes]
         out[lab] = fit(X, times, ev, K, primitive, alpha, prior, seed)
-    return RichResult(payload={
-        "estimate": len(labels), "risks": labels, "fits": out,
-        "method": "competing risks by treating other causes as "
-                  "independent censoring; Nagpal et al. (2021) "
-                  "Sec. III-D",
-    })
+    return RichResult(
+        payload={
+            "estimate": len(labels),
+            "risks": labels,
+            "fits": out,
+            "method": "competing risks by treating other causes as "
+            "independent censoring; Nagpal et al. (2021) "
+            "Sec. III-D",
+        }
+    )
 
 
 def cheatsheet():
-    return ("survvae: S(t|x) = sum_k g_k(x) S_k(t), gates a softmax "
-            "and the experts Weibull or log-normal -- both chosen "
-            "because a censored case needs S(t) in closed form. "
-            "Trained on ELBO_U + alpha ELBO_C + prior, with the gates "
-            "OUTSIDE the log (Jensen). alpha discounts the censored "
-            "term against the long right tail; alpha = 0 drops it "
-            "entirely. The ELBO is checked against the exact mixture "
-            "likelihood rather than assumed to sit below it.")
+    return (
+        "survvae: S(t|x) = sum_k g_k(x) S_k(t), gates a softmax "
+        "and the experts Weibull or log-normal -- both chosen "
+        "because a censored case needs S(t) in closed form. "
+        "Trained on ELBO_U + alpha ELBO_C + prior, with the gates "
+        "OUTSIDE the log (Jensen). alpha discounts the censored "
+        "term against the long right tail; alpha = 0 drops it "
+        "entirely. The ELBO is checked against the exact mixture "
+        "likelihood rather than assumed to sit below it."
+    )
 
 
 # compact alias per ledger/NAMING.md

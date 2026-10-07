@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm245 import mvsml_reproducing_kernel_eq_10_4
 
-
 X = [[1.0, 2.0]]
 Y = [[1.0]]
 W = [[[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]]]
@@ -47,12 +46,10 @@ def test_the_output_is_the_weighted_sum_of_the_hidden_units():
 
 def test_the_first_layer_of_the_record_is_the_input_itself():
     res = mvsml_reproducing_kernel_eq_10_4(X, W)
-    assert list(res["layers"][0][0]) == pytest.approx([1.0, 2.0],
-                                                       rel=1e-12)
+    assert list(res["layers"][0][0]) == pytest.approx([1.0, 2.0], rel=1e-12)
 
 
 def test_zero_weights_put_every_hidden_unit_at_one_half():
     res = mvsml_reproducing_kernel_eq_10_4(X, [[[0.0, 0.0], [0.0, 0.0]], [[1.0, 1.0]]])
-    assert list(res["layers"][1][0]) == pytest.approx([0.5, 0.5],
-                                                       rel=1e-12)
+    assert list(res["layers"][1][0]) == pytest.approx([0.5, 0.5], rel=1e-12)
     assert res["estimate"] == pytest.approx(1.0, rel=1e-12)

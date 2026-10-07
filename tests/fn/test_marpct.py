@@ -1,7 +1,6 @@
 """Tests for marpct.ma_percent_heterogeneity_R2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.marpct import ma_percent_heterogeneity_R2
 
 

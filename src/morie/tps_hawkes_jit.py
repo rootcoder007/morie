@@ -32,6 +32,12 @@ prange = range
 
 
 def njit(*args, **kwargs):
+    """Identity stand-in for ``numba.njit``: returns the function unchanged, with or without arguments.
+
+    Examples:
+        >>> njit(len) is len, njit(cache=True)(len) is len
+        (True, True)
+    """
     if len(args) == 1 and callable(args[0]) and not kwargs:
         return args[0]
 
@@ -39,7 +45,6 @@ def njit(*args, **kwargs):
         return fn
 
     return _passthrough
-
 
 
 # Phase 2 (v0.9.1): the compiled C++ core (morie._core) provides the
@@ -435,6 +440,12 @@ def _gamma_trunc_cutoff(alpha, beta):
 
 
 def has_jit_path(kernel: str, baseline: str) -> bool:
+    """True if a compiled likelihood exists for this kernel and baseline.
+
+    Examples:
+        >>> has_jit_path("no-such-kernel", "constant")
+        False
+    """
     if HAS_CORE and baseline == "constant" and kernel in ("exponential", "weibull", "lomax", "gamma"):
         return True
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
@@ -497,9 +508,7 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
             # crossover, where it is already cheap.
             if len(t_c) >= _SOE_MIN_N:
                 w, beta_soe, _ = soe_fit_lomax(alpha, c, float(T), tol=1e-8)
-                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)),
-                                               eta, _f64(w),
-                                               _f64(beta_soe))
+                return _core_ext.hawkes_ll_soe(t_c, float(T), float(np.exp(a0)), eta, _f64(w), _f64(beta_soe))
             return _core_ext.hawkes_ll_lomax_const(t_c, float(T), a0, eta, alpha, c)
         if kernel == "gamma":
             a0, eta = float(theta[0]), float(theta[1])
@@ -515,11 +524,14 @@ def neg_loglik_jit(theta: np.ndarray, t: np.ndarray, T: float, kernel: str, base
                 u_split = 2.0 * (alpha - 1.0) / beta
                 w, beta_soe, _ = soe_fit_gamma_tail(alpha, beta, u_split)
                 import array as _pyarray
+
                 w_re = _pyarray.array("d", [c.real for c in w])
                 w_im = _pyarray.array("d", [c.imag for c in w])
                 b_re = _pyarray.array("d", [c.real for c in beta_soe])
                 b_im = _pyarray.array("d", [c.imag for c in beta_soe])
-                return _core_ext.hawkes_ll_gamma_hybrid_ri(t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im)
+                return _core_ext.hawkes_ll_gamma_hybrid_ri(
+                    t_c, float(T), a0, eta, alpha, beta, u_split, w_re, w_im, b_re, b_im
+                )
             # the sliding-window form is bit-identical and sub-quadratic
             return _core_ext.hawkes_ll_gamma_const_trunc(t_c, float(T), a0, eta, alpha, beta)
     if HAS_CORE and baseline == "sinusoidal" and kernel in ("exponential", "weibull", "lomax"):
@@ -667,19 +679,16 @@ def hawkes_loglik_custom(t, T, nu, eta, kernel, kernel_integral):
     >>> hawkes_loglik_custom(t, T, nu=0.4, eta=0.3,
     ...                      kernel=g, kernel_integral=G)  # doctest: +SKIP
     """
-    if HAS_CORE and hasattr(kernel, "address") \
-            and hasattr(kernel_integral, "address"):
+    if HAS_CORE and hasattr(kernel, "address") and hasattr(kernel_integral, "address"):
         # A pre-built native callback (anything exposing .address, the
         # C-function-pointer convention) still runs GIL-free in the
         # C++ O(n^2) engine.
         return _core_ext.hawkes_ll_custom(
-            _f64(t), float(T),
-            float(nu), float(eta), int(kernel.address),
-            int(kernel_integral.address))
+            _f64(t), float(T), float(nu), float(eta), int(kernel.address), int(kernel_integral.address)
+        )
     # Plain Python callables evaluate in the pure-Python engine -- the
     # same likelihood, no compiler dependency.
-    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta),
-                                kernel, kernel_integral)
+    return _hawkes_ll_custom_py(t, float(T), float(nu), float(eta), kernel, kernel_integral)
 
 
 # --- sum-of-exponentials (SoE) fit, task #73 -------------------------------
@@ -837,10 +846,13 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     import array as _pa
 
     from morie import _core as _ck
+
     flat = _pa.array("d", [float(x2) for row in Ad for x2 in row])
     wr_b, wi_b = _ck.eig_general(flat, m)
-    _wr = _pa.array("d"); _wr.frombytes(wr_b)
-    _wi = _pa.array("d"); _wi.frombytes(wi_b)
+    _wr = _pa.array("d")
+    _wr.frombytes(wr_b)
+    _wi = _pa.array("d")
+    _wi.frombytes(wi_b)
     z = [complex(a2, b2) for a2, b2 in zip(_wr, _wi)]
 
     # Keep only physical poles: y is a decaying signal, so |z| must be
@@ -866,13 +878,12 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
     # strongly correlated, and the normal equations would square the
     # condition number and destroy the small-residual solution that
     # the tail of a decaying signal needs.
-    Q = [list(c3) for c3 in cols]          # column-major, m columns
+    Q = [list(c3) for c3 in cols]  # column-major, m columns
     R = [[complex(0.0)] * m for _ in range(m)]
     for j3 in range(m):
-        for _pass in range(2):             # one reorthogonalization
+        for _pass in range(2):  # one reorthogonalization
             for i3 in range(j3):
-                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3]
-                         for r3 in range(n))
+                d3 = sum(Q[i3][r3].conjugate() * Q[j3][r3] for r3 in range(n))
                 R[i3][j3] += d3
                 for r3 in range(n):
                     Q[j3][r3] -= d3 * Q[i3][r3]
@@ -883,8 +894,7 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         inv = 1.0 / nrm
         for r3 in range(n):
             Q[j3][r3] *= inv
-    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n))
-          for j3 in range(m)]
+    qb = [sum(Q[j3][r3].conjugate() * yl[r3] for r3 in range(n)) for j3 in range(m)]
     residue = [complex(0.0)] * m
     for r3 in range(m - 1, -1, -1):
         acc = qb[r3]
@@ -893,8 +903,8 @@ def _soe_fit_matrix_pencil(y, dt, *, order=None, rank_tol=1.0e-9):
         residue[r3] = acc / R[r3][r3]
 
     import cmath
-    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf"))
-            for zz in z]
+
+    beta = [(-cmath.log(zz) / dt) if zz != 0 else complex(float("inf")) for zz in z]
     return beta, residue
 
 
@@ -945,16 +955,14 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     ul = [float(vv) for vv in u.tolist()]
 
     def _fit(order):
-        pole_beta, pole_res = _soe_fit_matrix_pencil(
-            g / scale, float(dt), order=order, rank_tol=1.0e-13)
+        pole_beta, pole_res = _soe_fit_matrix_pencil(g / scale, float(dt), order=order, rank_tol=1.0e-13)
         w2 = [pr * scale for pr in pole_res]
         if any(pb.real <= 0.0 for pb in pole_beta):
             return None, None, float("inf")
         e2 = 0.0
         for i2 in range(len(ul)):
             s2 = ul[i2] - u_split
-            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2)
-                      for m2 in range(len(w2))).real
+            val = sum(w2[m2] * cmath.exp(-pole_beta[m2] * s2) for m2 in range(len(w2))).real
             rel = abs(val - gl[i2]) / gl[i2]
             if rel > e2:
                 e2 = rel
@@ -976,3 +984,193 @@ def soe_fit_gamma_tail(alpha, beta, u_split, *, span=20.0, n_samples=240):
     if w is None:
         raise ValueError("matrix-pencil fit produced a non-decaying mode")
     return (list(w), list(pole_beta), float(err))
+
+
+# ── EM and INAR routes for the general Hawkes fit (tps_hawkes_advanced) ──────
+
+_KIND = {"exponential": 0, "weibull": 1, "gamma": 2, "lomax": 3}
+_BKIND = {"constant": 0, "sinusoidal": 1}
+
+
+def _baseline_feats(tt, T, bkind):
+    if bkind == 0:
+        return [1.0]
+    return [1.0, tt / max(T, 1.0), math.sin(2 * math.pi * tt / 365.25), math.cos(2 * math.pi * tt / 365.25)]
+
+
+def hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds, max_iter=100, tol=1e-4, inner_iter=8):
+    """EM for the Hawkes MLE (Veen & Schoenberg 2008): the branching structure as missing data.
+
+    E-step: the intensity at each event (compiled core). M-step, with p_i0 = nu_i/lambda_i and
+    p_ij = eta g(t_i - t_j)/lambda_i: the baseline maximises sum p_i0 log nu_i - int nu (closed form
+    for a constant one); the kernel maximises sum p_ij log g(.; psi) - P log sum_j G(T - t_j; psi),
+    with eta = P / sum_j G (P = sum p_ij), its weights recomputed in the pair loop. Each step does
+    not lower the likelihood; the same maximum as the direct fit. Returns (theta, nll, iterations).
+
+    Generalised EM: each M-step takes at most ``inner_iter`` quasi-Newton steps (every one of
+    them an O(n^2) pair pass, which is where a full inner optimisation spent 20-140 s on 1,083
+    events), since the E-step is recomputed next round anyway, and it stops once the likelihood
+    moves by less than ``tol`` (relative): fit_hawkes_general() then seeds the direct optimiser
+    from EM's iterate, so the answer is the direct method's optimum at its precision.
+    """
+    from morie.fn._sci_core import minimize
+
+    if not HAS_CORE or not hasattr(_core_ext, "hawkes_em_pass"):
+        raise RuntimeError("method='em' needs morie's compiled core (morie._core)")
+    tb = _f64(t)
+    tl = list(tb)
+    kind, bk = _KIND[kernel_kind], _BKIND[baseline_kind]
+    nb = 1 if bk == 0 else 4
+    lo = [b[0] for b in bounds]
+    hi = [b[1] for b in bounds]
+    theta = [min(max(float(v), a), b) for v, a, b in zip(x0, lo, hi)]
+    feats = [_baseline_feats(x, T, bk) for x in tl]
+    m = max(64, int(T) + 1)
+    grid = [T * q / (m - 1) for q in range(m)]
+    gfeats = [_baseline_feats(x, T, bk) for x in grid]
+    wq = [(0.5 if q in (0, m - 1) else 1.0) * T / (m - 1) for q in range(m)]
+
+    def nll_of(th):
+        return _core_ext.hawkes_nll_grad(
+            tb, float(T), bk, th[:nb], th[nb], kind, th[nb + 1 :], 0, 1e-12, 0.0, 0.0, False
+        )[0]
+
+    cur = nll_of(theta)
+    it = 0
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
+        a, eta, psi = theta[:nb], theta[nb], theta[nb + 1 :]
+        lam = _core_ext.hawkes_intensity(tb, float(T), bk, a, eta, kind, psi)
+        p0 = [math.exp(sum(ai * fi for ai, fi in zip(a, f))) / li for f, li in zip(feats, lam)]
+        # baseline M-step
+        if bk == 0:
+            a_new = [min(max(math.log(max(sum(p0), 1e-300) / T), lo[0]), hi[0])]
+        else:
+            sp = [sum(p * f[r] for p, f in zip(p0, feats)) for r in range(nb)]
+
+            def fb(av, sp=sp):
+                av = list(av)
+                vals = [math.exp(sum(x * y for x, y in zip(av, f))) * w for f, w in zip(gfeats, wq)]
+                integ = sum(vals)
+                dint = [sum(v * f[r] for v, f in zip(vals, gfeats)) for r in range(nb)]
+                lin = sum(sp[r] * av[r] for r in range(nb))
+                return -(lin - integ), [-(sp[r] - dint[r]) for r in range(nb)]
+
+            a_new = list(
+                minimize(fb, a, jac=True, method="L-BFGS-B", bounds=bounds[:nb], options={"maxiter": inner_iter}).x
+            )
+        # kernel M-step
+        lam_buf = _f64(lam)
+
+        def fk(ps, psi=psi, eta=eta, lam_buf=lam_buf):
+            ps = list(ps)
+            Q, P, dQ = _core_ext.hawkes_em_pass(tb, lam_buf, eta, kind, list(psi), ps)
+            SG, dSG = _core_ext.hawkes_cdf_sum(tb, float(T), kind, ps)
+            if not math.isfinite(Q) or SG <= 0:
+                return 1e12, [0.0] * len(ps)
+            return -(Q - P * math.log(SG)), [-(dq - P * ds / SG) for dq, ds in zip(dQ, dSG)]
+
+        psi_new = list(
+            minimize(fk, psi, jac=True, method="L-BFGS-B", bounds=bounds[nb + 1 :], options={"maxiter": inner_iter}).x
+        )
+        _, P, _ = _core_ext.hawkes_em_pass(tb, lam_buf, eta, kind, list(psi), psi_new)
+        SG, _ = _core_ext.hawkes_cdf_sum(tb, float(T), kind, psi_new)
+        eta_new = min(max(P / SG, lo[nb]), hi[nb])
+        new_theta = a_new + [eta_new] + psi_new
+        new = nll_of(new_theta)
+        theta = new_theta
+        if abs(cur - new) <= tol * max(1.0, abs(cur)):
+            cur = new
+            break
+        cur = new
+    return theta, cur, it
+
+
+def hawkes_inar(t, T, kernel_kind, baseline_kind, bounds, delta=None, support=None):
+    """Kirchner's (2017, Quant. Finance 17:571) INAR(p) estimator: binned counts X_k (width delta)
+    regressed on their p lags by conditional least squares (here the equivalent Yule-Walker
+    equations from the sample autocovariances), so alpha_0 = nu delta and alpha_l ~ eta delta g(l delta);
+    the parametric kernel is then fitted to the alpha_l by least squares. A different estimator from
+    the MLE (consistent as delta -> 0 and p delta -> infinity), fast, and a starting point for it.
+    Constant baseline only (it assumes stationarity).
+    """
+    from morie.fn._sci_core import minimize
+
+    if baseline_kind != "constant":
+        raise ValueError("method='inar' assumes a stationary process: use baseline_kind='constant'")
+    tl = [float(v) for v in t]
+    n = len(tl)
+    rate = n / T
+    if delta is None:
+        # bins narrow against the clustering (a quarter of the median gap; offspring that share
+        # their parent's bin are invisible to the lag regression), at most 20,000 of them
+        gaps = sorted(b - a for a, b in zip(tl[:-1], tl[1:]))
+        med = gaps[len(gaps) // 2] if gaps else T / max(n, 1)
+        delta = max(T / 20000.0, min(0.25 / rate, med / 4.0))
+    if support is None:
+        support = min(T / 10.0, 200.0 * delta)
+    p = max(2, int(math.ceil(support / delta)))
+    B = int(math.ceil(T / delta))
+    X = [0] * B
+    for x in tl:
+        X[min(int(x / delta), B - 1)] += 1
+    mu = sum(X) / B
+    xc = [v - mu for v in X]
+    gam = [sum(xc[k] * xc[k - h] for k in range(h, B)) / B for h in range(p + 1)]
+    # Toeplitz system  sum_l gam[|h-l|] alpha_l = gam[h], h = 1..p  (Levinson-Durbin)
+    a_ = [0.0] * (p + 1)
+    e = gam[0]
+    for k in range(1, p + 1):
+        acc = gam[k] - sum(a_[j] * gam[k - j] for j in range(1, k))
+        kap = acc / e
+        a_new = a_[:]
+        a_new[k] = kap
+        for j in range(1, k):
+            a_new[j] = a_[j] - kap * a_[k - j]
+        a_ = a_new
+        e *= 1.0 - kap * kap
+    alpha = a_[1:]
+    alpha0 = mu * (1.0 - sum(alpha))
+    nu = max(alpha0 / delta, 1e-12)
+    # least squares of the lag coefficients on eta * (G(l delta) - G((l-1) delta))
+    kind = _KIND[kernel_kind]
+    lo_k = bounds[2:]
+    edges = [delta * lag for lag in range(p + 1)]
+
+    def fk(par):
+        par = list(par)
+        # Nelder-Mead is unbounded: a point outside the parameter box scores as invalid before any
+        # CDF is evaluated (a negative shape gave NaN), as rmoriebricklayer's INAR
+        if any(not (b[0] <= v <= b[1]) for v, b in zip(par, bounds[1:])):
+            return 1e12
+        eta, psi = par[0], par[1:]
+        try:
+            cdf = list(_kernel_cdf_py(edges, kernel_kind, psi))
+        except (ValueError, OverflowError):
+            return 1e12
+        if not all(math.isfinite(c) for c in cdf):
+            return 1e12
+        return sum((alpha[lag] - eta * (cdf[lag + 1] - cdf[lag])) ** 2 for lag in range(p))
+
+    x0 = [min(max(sum(alpha), bounds[1][0]), bounds[1][1])] + [
+        min(max(v, b[0]), b[1]) for v, b in zip(_psi0(kernel_kind, T / n), lo_k)
+    ]
+    r = minimize(fk, x0, method="Nelder-Mead")
+    par = [min(max(v, b[0]), b[1]) for v, b in zip(list(r.x), bounds[1:])]
+    del kind
+    return [min(max(math.log(nu), bounds[0][0]), bounds[0][1])] + par
+
+
+def _psi0(kernel_kind, mean_dt):
+    if kernel_kind == "exponential":
+        return [1.0 / max(mean_dt, 1e-3)]
+    if kernel_kind == "gamma":
+        return [1.5, 1.0 / max(mean_dt, 1e-3)]
+    if kernel_kind == "weibull":
+        return [1.5, max(mean_dt, 1e-3) * 1.2]
+    return [2.5, max(mean_dt, 1e-3) * 5.0]
+
+
+def _kernel_cdf_py(u, kernel_kind, psi):
+    from .tps_hawkes_advanced import _kernel_cdf
+
+    return [float(v) for v in _kernel_cdf(np.asarray(u, dtype=float), kernel_kind, tuple(psi))]

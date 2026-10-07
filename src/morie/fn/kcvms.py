@@ -79,7 +79,7 @@ def kcvms(
     else:
         raise ValueError(f"Unknown cdf_func '{cdf_func}'.")
 
-    sorted_data = np.sort(data)
+    np.sort(data)
 
     def _cvm_stat(sample):
         pts = np.sort(sample)
@@ -97,10 +97,7 @@ def kcvms(
     rng = np.random.default_rng(seed)
     boot_stats = np.empty(n_boot)
     for i in range(n_boot):
-        if cdf_func == "normal":
-            bs = rng.normal(mu, sig, n)
-        else:
-            bs = rng.uniform(a, b, n)
+        bs = rng.normal(mu, sig, n) if cdf_func == "normal" else rng.uniform(a, b, n)
         boot_stats[i] = _cvm_stat(bs)
 
     p_value = float(np.mean(boot_stats >= stat))

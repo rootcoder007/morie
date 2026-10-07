@@ -71,14 +71,22 @@ def tmlevar(ic, level=0.95):
     ls = ses / s2
     lo = s2 * math.exp(-z * ls)
     hi = s2 * math.exp(z * ls)
-    m4 = sum(v ** 4 for v in d) / n
-    return RichResult(payload={
-        "sigma2": s2, "se_sigma2": ses, "ci_lower": lo, "ci_upper": hi,
-        "se_psi": math.sqrt(s2 / n),
-        "se_psi_lower": math.sqrt(lo / n),
-        "se_psi_upper": math.sqrt(hi / n),
-        "kurtosis": m4 / (s2 * s2), "ic_mean": m, "n": float(n),
-        "method": "Variance targeting: sigma^2 = E[D*^2] with its own IC"})
+    m4 = sum(v**4 for v in d) / n
+    return RichResult(
+        payload={
+            "sigma2": s2,
+            "se_sigma2": ses,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "se_psi": math.sqrt(s2 / n),
+            "se_psi_lower": math.sqrt(lo / n),
+            "se_psi_upper": math.sqrt(hi / n),
+            "kurtosis": m4 / (s2 * s2),
+            "ic_mean": m,
+            "n": float(n),
+            "method": "Variance targeting: sigma^2 = E[D*^2] with its own IC",
+        }
+    )
 
 
 tmle_var_targeting = tmlevar

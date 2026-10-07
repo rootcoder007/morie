@@ -43,16 +43,16 @@ def test_glmbay_basic():
     result = bayesian_glm(X, Y, family="gaussian", prior_sd=PS)
     assert isinstance(result, dict)
     Z = [[1.0] + r for r in X]
-    tau = 1.0 / PS ** 2
-    A = [[sum(z[a] * z[b] for z in Z) + (tau if a == b else 0.0) for b in range(2)]
-         for a in range(2)]
+    tau = 1.0 / PS**2
+    A = [[sum(z[a] * z[b] for z in Z) + (tau if a == b else 0.0) for b in range(2)] for a in range(2)]
     beta = _solve(A, [sum(z[a] * y for z, y in zip(Z, Y)) for a in range(2)])
     assert result["coefficients"] == pytest.approx(beta, rel=1e-10, abs=1e-12)
     cov00 = _solve(A, [1.0, 0.0])[0]
     assert result["posterior_sd"][0] == pytest.approx(math.sqrt(cov00), rel=1e-10)
     n = len(Y)
-    S = [[(1.0 if i == j else 0.0) + PS ** 2 * sum(a * b for a, b in zip(Z[i], Z[j]))
-          for j in range(n)] for i in range(n)]
+    S = [
+        [(1.0 if i == j else 0.0) + PS**2 * sum(a * b for a, b in zip(Z[i], Z[j])) for j in range(n)] for i in range(n)
+    ]
     Sy = _solve(S, Y)
     lm = -0.5 * (n * math.log(2 * math.pi) + _logdet(S) + sum(a * b for a, b in zip(Y, Sy)))
     assert result["log_marginal"] == pytest.approx(lm, rel=1e-10)
@@ -69,7 +69,7 @@ def test_glmbay_edge():
     Z = [[1.0] + x for x in X]
     mu = [1.0 / (1.0 + math.exp(-(b[0] * z[0] + b[1] * z[1]))) for z in Z]
     for a in range(2):
-        g = sum(z[a] * (y - m) for z, y, m in zip(Z, yb, mu)) - b[a] / PS ** 2
+        g = sum(z[a] * (y - m) for z, y, m in zip(Z, yb, mu)) - b[a] / PS**2
         assert abs(g) < 1e-8
     with pytest.raises(ValueError):
         bayesian_glm(X, Y[:3])
@@ -87,7 +87,7 @@ import morie.fn.glmbay as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

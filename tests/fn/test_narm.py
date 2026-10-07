@@ -1,7 +1,7 @@
 """Tests for narm.narm."""
 
 import math
-import pytest
+
 from morie.fn import _array_core as np
 from morie.fn.narm import narm
 

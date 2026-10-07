@@ -13,8 +13,8 @@ def _lcg_uniforms(count, seed=13):
     s = int(seed)
     out = np.empty(count)
     for i in range(count):
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        out[i] = (s + 0.5) / 2 ** 32
+        s = (1664525 * s + 1013904223) % 2**32
+        out[i] = (s + 0.5) / 2**32
     return out
 
 
@@ -72,17 +72,27 @@ def wasserman_nonparametric_boot(data, T, B, seed=13):
     if B < 2:
         raise ValueError(f"the bootstrap needs B >= 2; got {B}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     u = _lcg_uniforms(B * n, seed)
     idx = np.minimum((u * n).astype(int), n - 1).reshape(B, n)
     reps = np.array([float(T(data[row])) for row in idx])
     rbar = float(np.mean(reps))
     se_b = float(np.sqrt(np.mean((reps - rbar) ** 2)))
     se_u = float(np.sqrt(np.sum((reps - rbar) ** 2) / (B - 1)))
-    return RichResult(payload={
-        "estimate": float(T(data)), "se": se_b, "se_unbiased": se_u,
-        "replicates_mean": rbar, "B": B, "n": int(n),
-        "method": "nonparametric bootstrap, LCG resampling, 1/B divisor"})
+    return RichResult(
+        payload={
+            "estimate": float(T(data)),
+            "se": se_b,
+            "se_unbiased": se_u,
+            "replicates_mean": rbar,
+            "B": B,
+            "n": int(n),
+            "method": "nonparametric bootstrap, LCG resampling, 1/B divisor",
+        }
+    )
 
 
 def cheatsheet():

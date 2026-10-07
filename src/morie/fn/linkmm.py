@@ -79,14 +79,16 @@ def linkmm(a_from, b_from, a_to, b_to, method="mean/mean"):
     else:
         raise ValueError("method must be 'mean/mean' or 'mean/sigma'")
     B = sum(bt) / s - A * (sum(bf) / s)
-    return RichResult(payload={
-        "A": A,
-        "B": B,
-        "a_transformed": [x / A for x in af],
-        "b_transformed": [A * x + B for x in bf],
-        "n_common": s,
-        "method": "IRT moment linking (%s; plink Eqs. 12-13)" % meth,
-    })
+    return RichResult(
+        payload={
+            "A": A,
+            "B": B,
+            "a_transformed": [x / A for x in af],
+            "b_transformed": [A * x + B for x in bf],
+            "n_common": s,
+            "method": f"IRT moment linking ({meth}; plink Eqs. 12-13)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -95,6 +97,7 @@ irt_linking_mean_mean = linkmm
 
 def cheatsheet():
     return "linkmm: A=mu(aF)/mu(aT) (or sd ratio), B=mu(bT)-A mu(bF)"
+
 
 # public names resolved by fn/_lazy_map.json
 linking_meanmean = linkmm

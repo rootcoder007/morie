@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Equivalence of the boundary-free and empirical KS statistics (Theorem 5.6)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bfkseq", "fauzi_thm5_6_bdfree_ks_equiv"]
@@ -59,10 +58,7 @@ def bfkseq(empirical, smoothed, tol=0.05, h=None, n=None):
     if tol <= 0:
         raise ValueError(f"tol must be positive, got {tol}.")
     d = abs(float(empirical) - float(smoothed))
-    if h is None or n is None:
-        bwok = None
-    else:
-        bwok = bool(float(h) < float(int(n)) ** -0.25)
+    bwok = None if h is None or n is None else bool(float(h) < float(int(n)) ** (-0.25))
     return RichResult(
         payload={
             "difference": float(d),

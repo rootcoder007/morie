@@ -4,10 +4,11 @@ The theorems here are implications, so the tests check the SEPARATION
 each theorem draws -- classes satisfying the hypothesis vs classes
 violating it -- rather than only confirming the easy side."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr029 import kosorok_ch2_glivenko_cantelli_class
 from morie.fn.ksr031 import kosorok_ch2_weak_convergence_tightness
 from morie.fn.ksr032 import kosorok_ch2_weak_convergence_iff
@@ -32,8 +33,11 @@ def test_class_glivenko_cantelli_converges_for_indicators():
     out = kosorok_ch2_glivenko_cantelli_class(F, X, P=None)
     assert out["shrinking"] is True
     assert out["n_functions"] == 12
+
     # with the true P known, the deviation must fall with n
-    Ptrue = lambda f: float(np.mean(f(np.linspace(0, 1, 20001))))
+    def Ptrue(f):
+        return float(np.mean(f(np.linspace(0, 1, 20001))))
+
     out2 = kosorok_ch2_glivenko_cantelli_class(F, X, P=Ptrue)
     assert out2["sup_deviation"][-1] < out2["sup_deviation"][0]
     with pytest.raises(ValueError):
@@ -57,19 +61,19 @@ def test_entropy_integral_separates_polynomial_from_exponential_growth():
     poly = kosorok_ch2_donsker_bracketing_integral(lambda e: (1 / e) ** 3)
     assert poly["finite"] is True
     assert math.isfinite(poly["J"])
+
     # exp(c/eps^2) growth makes sqrt(log N) = sqrt(c)/eps, whose
     # integral diverges logarithmically. Cap the exponent so the
     # numerical integration stays finite while still producing a
     # much larger J than the polynomial case -- a raw exp(1/eps^2)
     # overflows to nan in the integrand near eps=0.
     def N_expo(eps):
-        x = 200.0 / eps ** 2
+        x = 200.0 / eps**2
         return math.exp(min(x, 700.0))
+
     expo = kosorok_ch2_donsker_bracketing_integral(N_expo)
     assert expo["J"] > poly["J"] * 10
-    assert kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 3)[
-        "sufficient_condition_met"
-    ] is True
+    assert kosorok_ch2_donsker_bracketing_theorem(lambda e: (1 / e) ** 3)["sufficient_condition_met"] is True
     with pytest.raises(ValueError):
         kosorok_ch2_donsker_bracketing_integral(lambda e: 2.0, delta=0.0)
 
@@ -101,10 +105,8 @@ def test_uniform_covering_number_is_scale_free_and_decreasing():
     # scaling every function by 10 leaves the count unchanged: the
     # radius is measured relative to the envelope norm
     F10 = [(lambda x, f=f: 10.0 * f(x)) for f in F]
-    scaled = kosorok_ch2_uniform_covering_number(F10, X, eps=0.05,
-                                                 rng=np.random.default_rng(2))
-    ref = kosorok_ch2_uniform_covering_number(F, X, eps=0.05,
-                                              rng=np.random.default_rng(2))
+    scaled = kosorok_ch2_uniform_covering_number(F10, X, eps=0.05, rng=np.random.default_rng(2))
+    ref = kosorok_ch2_uniform_covering_number(F, X, eps=0.05, rng=np.random.default_rng(2))
     assert scaled["covering_number"] == ref["covering_number"]
     with pytest.raises(ValueError):
         kosorok_ch2_uniform_covering_number(F, X, eps=1.5)

@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_strong_consist"]
@@ -31,17 +30,25 @@ def ghosal_strong_consist(theta0=0.6, eps=0.15, n=2000, seed=42):
             for k in range(grid):
                 t = (k + 0.5) / grid
                 if abs(t - theta0) > eps:
-                    mass += math.exp(
-                        math.lgamma(a + b) - math.lgamma(a)
-                        - math.lgamma(b)
-                        + (a - 1.0) * math.log(t)
-                        + (b - 1.0) * math.log(1.0 - t)) / grid
+                    mass += (
+                        math.exp(
+                            math.lgamma(a + b)
+                            - math.lgamma(a)
+                            - math.lgamma(b)
+                            + (a - 1.0) * math.log(t)
+                            + (b - 1.0) * math.log(1.0 - t)
+                        )
+                        / grid
+                    )
             checkpoints[i] = mass
     ks = sorted(checkpoints)
-    res = RichResult(payload={"estimate": checkpoints[ks[-1]],
-                              "path_masses": [checkpoints[k]
-                                              for k in ks],
-                              "method": "strong consistency along a path (GvdV 2017 Def 6.1)"})
+    res = RichResult(
+        payload={
+            "estimate": checkpoints[ks[-1]],
+            "path_masses": [checkpoints[k] for k in ks],
+            "method": "strong consistency along a path (GvdV 2017 Def 6.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c6_2")
 
 

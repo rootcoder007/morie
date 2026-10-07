@@ -1,7 +1,6 @@
 """Tests for avtdid.avg_treatment_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.avtdid import avg_treatment_did
 
 

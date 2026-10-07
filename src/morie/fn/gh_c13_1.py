@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,14 +27,13 @@ def ghosal_surv_dp_post(times, events, t_query, alpha=2.0):
     for i in order:
         if ts[i] > t_query:
             break
-        S0 = math.exp(-ts[i])              # unit-exponential center
+        S0 = math.exp(-ts[i])  # unit-exponential center
         if ev[i] > 0:
-            surv *= (alpha * S0 + at_risk - 1.0) \
-                / (alpha * S0 + at_risk)
+            surv *= (alpha * S0 + at_risk - 1.0) / (alpha * S0 + at_risk)
         at_risk -= 1
-    res = RichResult(payload={"estimate": surv,
-                              "survival_at_t": surv,
-                              "method": "censored DP posterior (GvdV 2017 sec. 13.2)"})
+    res = RichResult(
+        payload={"estimate": surv, "survival_at_t": surv, "method": "censored DP posterior (GvdV 2017 sec. 13.2)"}
+    )
     return with_describe_pointer(res, "gh_c13_1")
 
 

@@ -1,7 +1,6 @@
 """Tests for bridgs.bridge_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bridgs import bridge_sampling
 
 
@@ -12,7 +11,7 @@ def test_bridgs_basic():
     draws2 = rng.normal(0, 1, 100)
 
     def log_q1(x):
-        return -0.5 * (x ** 2)
+        return -0.5 * (x**2)
 
     def log_q2(x):
         return -0.5 * ((x - 0.3) ** 2)
@@ -36,7 +35,7 @@ def test_bridgs_edge():
     draws2 = rng.normal(0, 1, 100)
 
     def log_q(x):
-        return -0.5 * (x ** 2)
+        return -0.5 * (x**2)
 
     result = bridge_sampling(draws1, draws2, log_q, log_q)
     assert isinstance(result, dict)

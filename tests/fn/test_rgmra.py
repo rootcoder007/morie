@@ -1,7 +1,6 @@
 """Tests for rgmra.rangayyan_mra."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_mra
 
 

@@ -41,7 +41,7 @@ def recidivism_km(
     events_arr = events_arr[order]
 
     unique_times = np.unique(times_arr[events_arr == 1])
-    n = len(times_arr)
+    len(times_arr)
 
     km_times = []
     km_surv = []

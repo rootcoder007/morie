@@ -1,7 +1,6 @@
 """Tests for hamilq.hamilton_q_changepoint."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hamilq import hamilton_q_changepoint
 
 

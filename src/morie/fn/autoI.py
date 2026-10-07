@@ -74,8 +74,7 @@ def autoint(X, y=None, K=1, Wq=None, Wk=None, Wv=None, Wres=None, v=None):
     def proj(W, hh):
         if W is None:
             return None
-        if isinstance(W, list) and W and isinstance(W[0], list) and \
-                isinstance(W[0][0], (list, tuple)):
+        if isinstance(W, list) and W and isinstance(W[0], list) and isinstance(W[0][0], (list, tuple)):
             return k.mat(W[hh % len(W)])
         return k.mat(W)
 
@@ -90,18 +89,18 @@ def autoint(X, y=None, K=1, Wq=None, Wk=None, Wv=None, Wres=None, v=None):
         vv = [k.matvec(Vp, E[m]) if Vp is not None else list(E[m]) for m in range(M)]
         for m in range(M):
             logits = []
-            for l in range(M):
+            for ell in range(M):
                 s = 0.0
                 for j in range(len(q[m])):
-                    s += q[m][j] * kk[l][j]
+                    s += q[m][j] * kk[ell][j]
                 logits.append(s)
             a = k.softmax(logits)
             if h == 0:
                 att0.append(a)
             for j in range(len(vv[0])):
                 t = 0.0
-                for l in range(M):
-                    t += a[l] * vv[l][j]
+                for ell in range(M):
+                    t += a[ell] * vv[ell][j]
                 acc[m][j] += t
     res = []
     for m in range(M):

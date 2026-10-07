@@ -1,12 +1,13 @@
 """Tests for nbeats. Full anchor: ledger/wave3/anchor_ts_family.py."""
-import math
-import pytest
-from morie.fn import _s03core as k
-from morie.fn.nbeats import (nbeats_forecast, nbeats_stack,
-                             seasonality_basis, trend_basis)
 
-SIG = [3.0 + 0.4 * t + 2.0 * math.sin(2 * math.pi * t / 12.0)
-       for t in range(48)]
+import math
+
+import pytest
+
+from morie.fn import _s03core as k
+from morie.fn.nbeats import nbeats_forecast, nbeats_stack, seasonality_basis, trend_basis
+
+SIG = [3.0 + 0.4 * t + 2.0 * math.sin(2 * math.pi * t / 12.0) for t in range(48)]
 
 
 def test_the_bases_are_what_they_claim():

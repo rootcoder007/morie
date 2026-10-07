@@ -1,7 +1,6 @@
 """Tests for condie.conditional_indirect_effect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.condie import conditional_indirect_effect
 
 
@@ -52,9 +51,9 @@ def test_condie_basic():
     simple_slope = a1 + a3 * wv
     estimate = b * simple_slope
 
-    vslope = sa1 ** 2 + 2.0 * sa1a3 * wv + sa3 ** 2 * wv ** 2
+    vslope = sa1**2 + 2.0 * sa1a3 * wv + sa3**2 * wv**2
     se_slope = np.sqrt(vslope)
-    se = np.sqrt(simple_slope ** 2 * sb ** 2 + b ** 2 * vslope)
+    se = np.sqrt(simple_slope**2 * sb**2 + b**2 * vslope)
 
     # Mean of effects is what the function reports as `estimate`.
     assert np.allclose(np.asarray(result["estimate"]), float(np.mean(estimate)))
@@ -100,9 +99,9 @@ def test_condie_edge():
     # Independent computation of expected scalars.
     simple_slope = a1 + a3 * float(w)
     estimate = b * simple_slope
-    vslope = sa1 ** 2 + 2.0 * sa1a3 * float(w) + sa3 ** 2 * float(w) ** 2
+    vslope = sa1**2 + 2.0 * sa1a3 * float(w) + sa3**2 * float(w) ** 2
     se_slope = float(np.sqrt(vslope))
-    se = float(np.sqrt(simple_slope ** 2 * sb ** 2 + b ** 2 * vslope))
+    se = float(np.sqrt(simple_slope**2 * sb**2 + b**2 * vslope))
 
     assert result["simple_slope"] == simple_slope
     assert result["estimate"] == estimate

@@ -1,7 +1,6 @@
 """Tests for gb831.gibbons_terry_hoeffding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb831 import gibbons_terry_hoeffding
 
 

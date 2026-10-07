@@ -8,8 +8,7 @@ __all__ = ["ld_prune"]
 
 def _r2_geno(x, y):
     """Squared Pearson correlation of genotype counts over complete pairs."""
-    pairs = [(a, b) for a, b in zip(x, y)
-             if a in (0.0, 1.0, 2.0) and b in (0.0, 1.0, 2.0)]
+    pairs = [(a, b) for a, b in zip(x, y) if a in (0.0, 1.0, 2.0) and b in (0.0, 1.0, 2.0)]
     n = len(pairs)
     if n < 2:
         return float("nan")
@@ -122,12 +121,16 @@ def ld_prune(G, window=50, step=5, r2_threshold=0.5):
         start += step
     keep = [j for j in range(m) if not removed[j]]
     dropped = [j for j in range(m) if removed[j]]
-    return RichResult(payload={
-        "estimate": float(len(keep)),
-        "keep": keep, "drop": dropped, "maf": mafs,
-        "n_variants": int(m),
-        "method": "LD pruning, PLINK --indep-pairwise (lower-MAF member dropped)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(len(keep)),
+            "keep": keep,
+            "drop": dropped,
+            "maf": mafs,
+            "n_variants": int(m),
+            "method": "LD pruning, PLINK --indep-pairwise (lower-MAF member dropped)",
+        }
+    )
 
 
 def cheatsheet():

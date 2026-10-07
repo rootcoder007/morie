@@ -1,7 +1,5 @@
 """Tests for tknbp.bpe_tokenizer."""
 
-import pytest
-
 from morie.fn.tknbp import bpe_tokenizer
 
 

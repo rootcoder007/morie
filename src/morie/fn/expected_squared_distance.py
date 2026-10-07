@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def expected_squared_distance(zhat_i, zhat_j, r2, s2_i, s2_j, s2_ij):
     """
     value = _brus.expected_squared_distance(zhat_i, zhat_j, r2, s2_i, s2_j, s2_ij)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (13.15)"
     return RichResult(
-        title='Ospats expected squared discrepancy of two units',
+        title="Ospats expected squared discrepancy of two units",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r13e15: E_xi[d2_ij] = (zhat_i - zhat_j)^2/R^2 + S2_i + S2_j - 2 S2_ij [Brus 2022, eq. 13.15]'
+    return "r13e15: E_xi[d2_ij] = (zhat_i - zhat_j)^2/R^2 + S2_i + S2_j - 2 S2_ij [Brus 2022, eq. 13.15]"

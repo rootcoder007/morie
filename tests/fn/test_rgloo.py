@@ -1,7 +1,6 @@
 """Tests for rgloo.rangayyan_loo_cv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_loo_cv
 
 

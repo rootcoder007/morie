@@ -56,7 +56,7 @@ def _precond(precond, S, Y, n):
         return None
     if isinstance(precond, str):
         if precond != "auto":
-            raise ValueError("`precond` must be None, \"auto\", or a numeric vector")
+            raise ValueError('`precond` must be None, "auto", or a numeric vector')
         if not S:
             return None
         s, y = S[-1], Y[-1]
@@ -76,9 +76,9 @@ def _precond(precond, S, Y, n):
     return d
 
 
-def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
-                   tol_type="absolute", precond=None,
-                   c1=1e-4, c2=0.9, max_ls=60):
+def lbfgs_minimize(
+    fun, x0, grad, m=10, max_iter=200, tol=1e-8, tol_type="absolute", precond=None, c1=1e-4, c2=0.9, max_ls=60
+):
     r"""Minimise ``fun`` from ``x0`` using L-BFGS with memory ``m``.
 
     ``tol_type`` chooses what ``tol`` bounds: the gradient norm
@@ -120,9 +120,11 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
             crit = gnorm / gnorm0 if gnorm0 > 0 else 0.0
         if crit <= tol:
             converged = True
-            status = {"absolute": "gradient norm within tolerance",
-                      "relative": "gradient norm within tolerance, relative to f",
-                      "initial": "gradient norm within tolerance, relative to its start"}[tol_type]
+            status = {
+                "absolute": "gradient norm within tolerance",
+                "relative": "gradient norm within tolerance, relative to f",
+                "initial": "gradient norm within tolerance, relative to its start",
+            }[tol_type]
             break
 
         # --- two-loop recursion, Liu & Nocedal Sec. 2
@@ -222,30 +224,33 @@ def lbfgs_minimize(fun, x0, grad, m=10, max_iter=200, tol=1e-8,
         x, f, g = xt, ft, gt
         history.append(f)
 
-    return RichResult(payload={
-        "estimate": x,
-        "x": x,
-        "fun": float(f),
-        "grad": g,
-        "grad_norm": float(math.sqrt(_dot(g, g))),
-        "grad_norm_relative": float(math.sqrt(_dot(g, g)) / (1.0 + abs(f))),
-        "grad_norm_ratio": (float(math.sqrt(_dot(g, g)) / gnorm0) if gnorm0 > 0 else None),
-        "tol": float(tol),
-        "tol_type": tol_type,
-        "iterations": int(it),
-        "n_fun": int(n_f),
-        "memory": int(m),
-        "converged": bool(converged),
-        "status": status,
-        "history": history,
-        "method": "L-BFGS two-loop recursion with a Wolfe line search "
-                  "(Liu & Nocedal 1989, Sec. 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": x,
+            "x": x,
+            "fun": float(f),
+            "grad": g,
+            "grad_norm": float(math.sqrt(_dot(g, g))),
+            "grad_norm_relative": float(math.sqrt(_dot(g, g)) / (1.0 + abs(f))),
+            "grad_norm_ratio": (float(math.sqrt(_dot(g, g)) / gnorm0) if gnorm0 > 0 else None),
+            "tol": float(tol),
+            "tol_type": tol_type,
+            "iterations": int(it),
+            "n_fun": int(n_f),
+            "memory": int(m),
+            "converged": bool(converged),
+            "status": status,
+            "history": history,
+            "method": "L-BFGS two-loop recursion with a Wolfe line search (Liu & Nocedal 1989, Sec. 2)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("lbfgsm: L-BFGS two-loop recursion, H0 = (s'y/y'y) I, curvature "
-            "pairs with y's <= 0 skipped, Armijo backtracking.")
+    return (
+        "lbfgsm: L-BFGS two-loop recursion, H0 = (s'y/y'y) I, curvature "
+        "pairs with y's <= 0 skipped, Armijo backtracking."
+    )
 
 
 lbfgsm = lbfgs_minimize

@@ -124,10 +124,7 @@ def dpll(cnf):
                 return got
         return None
 
-    if any(len(cl) == 0 for cl in clauses):
-        found = None
-    else:
-        found = search(clauses, {})
+    found = None if any(len(cl) == 0 for cl in clauses) else search(clauses, {})
     sat = found is not None
     model = {}
     if sat:
@@ -143,8 +140,7 @@ def dpll(cnf):
             "decisions": stats["decisions"],
             "propagations": stats["propagations"],
             "pure_literals": stats["pure"],
-            "method": "DPLL: unit propagation, pure literal, split on the "
-                      "lowest-indexed variable, True first",
+            "method": "DPLL: unit propagation, pure literal, split on the lowest-indexed variable, True first",
         }
     )
 

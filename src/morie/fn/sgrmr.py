@@ -39,7 +39,7 @@ def moran_residual_test(residuals: np.ndarray, W: np.ndarray, cdf=None) -> Spati
         return SpatialResult(name="moran_residual_test", statistic=0.0, p_value=1.0)
 
     S0 = W.sum()
-    I = float(n * (em @ W @ em) / (S0 * ss)) if S0 > 0 else 0.0
+    I_ = float(n * (em @ W @ em) / (S0 * ss)) if S0 > 0 else 0.0
     EI = -1.0 / (n - 1)
 
     S1 = 0.5 * np.sum((W + W.T) ** 2)
@@ -49,12 +49,12 @@ def moran_residual_test(residuals: np.ndarray, W: np.ndarray, cdf=None) -> Spati
         (n - 1) * (n - 2) * (n - 3) * S0**2
     ) - EI**2
     VI = max(VI, 1e-10)
-    z = (I - EI) / np.sqrt(VI)
+    z = (I_ - EI) / np.sqrt(VI)
     p = float(2 * (norm.sf(abs(z))))
 
     return SpatialResult(
         name="moran_residual_test",
-        statistic=I,
+        statistic=I_,
         p_value=p,
         extra={"expected": EI, "z_score": float(z)},
     )

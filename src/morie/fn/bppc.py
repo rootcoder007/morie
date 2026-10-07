@@ -55,19 +55,14 @@ def bayesian_ppc(
         for factor_loads in model_fit["loadings"].values():
             if isinstance(factor_loads, dict):
                 all_loadings.append(list(factor_loads.values()))
-        if all_loadings:
-            Lambda = np.array(all_loadings).T  # k x nf
-        else:
-            Lambda = np.eye(k)
+        # k x nf
+        Lambda = np.array(all_loadings).T if all_loadings else np.eye(k)
     else:
         Lambda = np.eye(k)
 
     if "residual_var" in model_fit:
         rv = model_fit["residual_var"]
-        if isinstance(rv, dict):
-            psi = np.diag(list(rv.values()))
-        else:
-            psi = np.diag(np.asarray(rv))
+        psi = np.diag(list(rv.values())) if isinstance(rv, dict) else np.diag(np.asarray(rv))
     else:
         psi = np.eye(k) * 0.5
 

@@ -55,12 +55,10 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["toptor", "topological_torsion", "topological_torsions",
-           "torsion_similarity", "trend_vector"]
+__all__ = ["toptor", "topological_torsion", "topological_torsions", "torsion_similarity", "trend_vector"]
 
 #: Thirteen common atom types; everything else becomes "Y" (see module docs).
-COMMON_TYPES = ("C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "Si", "B",
-                "Se", "As")
+COMMON_TYPES = ("C", "N", "O", "S", "P", "F", "Cl", "Br", "I", "Si", "B", "Se", "As")
 
 
 def _neighbours(n_atoms, bonds):
@@ -70,8 +68,7 @@ def _neighbours(n_atoms, bonds):
         if i == j:
             raise ValueError("toptor: a bond from an atom to itself")
         if not (0 <= i < n_atoms and 0 <= j < n_atoms):
-            raise ValueError("toptor: bond refers to an atom outside the "
-                             "molecule")
+            raise ValueError("toptor: bond refers to an atom outside the molecule")
         adj[i].append(j)
         adj[j].append(i)
     return adj
@@ -132,13 +129,10 @@ def topological_torsions(elements, bonds, common_types=None):
                 if c == a:
                     continue
                 for d in adj[c]:
-                    if d == b or d == a:
+                    if d in (b, a):
                         continue
                     path = (a, b, c, d)
-                    code = tuple(
-                        (npi[p], types[p], degree[p] - (1 if k in (0, 3)
-                                                        else 2))
-                        for k, p in enumerate(path))
+                    code = tuple((npi[p], types[p], degree[p] - (1 if k in (0, 3) else 2)) for k, p in enumerate(path))
                     rev = tuple(reversed(code))
                     canon = min(code, rev)
                     # each undirected path is walked twice, once per end
@@ -157,8 +151,7 @@ def torsion_similarity(t1, t2):
     s1 = set(t1)
     s2 = set(t2)
     if not s1 and not s2:
-        raise ValueError("toptor: both molecules have no torsions, so the "
-                         "similarity is undefined")
+        raise ValueError("toptor: both molecules have no torsions, so the similarity is undefined")
     return 2.0 * len(s1 & s2) / float(len(s1) + len(s2))
 
 
@@ -181,8 +174,7 @@ def trend_vector(torsion_sets, activities, permutations=40, seed=0):
     if n != len(a):
         raise ValueError("toptor: one activity per structure is required")
     if n < 2:
-        raise ValueError("toptor: the trend vector needs at least two "
-                         "structures")
+        raise ValueError("toptor: the trend vector needs at least two structures")
     permutations = int(permutations)
     if permutations < 1:
         raise ValueError("toptor: permutations must be >= 1")
@@ -223,12 +215,10 @@ def trend_vector(torsion_sets, activities, permutations=40, seed=0):
         z = 0.0
     else:
         z = float("inf")
-    return {"vector": real, "descriptors": keys, "length": length,
-            "null_mean": m, "null_sd": sd, "z": z}
+    return {"vector": real, "descriptors": keys, "length": length, "null_mean": m, "null_sd": sd, "z": z}
 
 
-def toptor(elements, bonds, reference=None, common_types=None,
-           activities=None, permutations=40, seed=0):
+def toptor(elements, bonds, reference=None, common_types=None, activities=None, permutations=40, seed=0):
     r"""Topological torsions for a molecule, or for a set of molecules.
 
     Parameters
@@ -274,18 +264,14 @@ def toptor(elements, bonds, reference=None, common_types=None,
     Comput. Sci.* 27(2), 82-85.
     """
     many = bool(elements) and isinstance(elements[0], (list, tuple))
-    if many:
-        mols = [(list(e), list(b)) for e, b in zip(elements, bonds)]
-    else:
-        mols = [(list(elements), list(bonds))]
+    mols = [(list(e), list(b)) for e, b in zip(elements, bonds)] if many else [(list(elements), list(bonds))]
     tors = [topological_torsions(e, b, common_types) for e, b in mols]
 
     payload = {
         "estimate": tors if many else tors[0],
         "torsions": tors if many else tors[0],
         "n_distinct": [len(t) for t in tors] if many else len(tors[0]),
-        "n_total": ([sum(t.values()) for t in tors] if many
-                    else sum(tors[0].values())),
+        "n_total": ([sum(t.values()) for t in tors] if many else sum(tors[0].values())),
         "method": "topological torsion descriptors (Nilakantan et al. 1987)",
     }
     if reference is not None:
@@ -293,24 +279,25 @@ def toptor(elements, bonds, reference=None, common_types=None,
         sims = [torsion_similarity(ref, t) for t in tors]
         payload["reference_torsions"] = ref
         payload["similarity"] = sims if many else sims[0]
-        payload["ranking"] = sorted(range(len(sims)),
-                                    key=lambda i: -sims[i])
+        payload["ranking"] = sorted(range(len(sims)), key=lambda i: -sims[i])
     if activities is not None:
         payload["trend"] = trend_vector(tors, activities, permutations, seed)
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return ("toptor: topological torsion (Nilakantan 1987). Four "
-            "consecutively bonded HEAVY atoms, each coded (NPI, TYPE, "
-            "NBR); NBR excludes the torsion itself -- total branches minus "
-            "1 at the ends, minus 2 in the middle. Pi electrons stand in "
-            "for bond types on purpose: it makes every torsion in benzene "
-            "the same descriptor, where explicit bond types would give "
-            "two. Each undirected path counted once, canonical direction. "
-            "Similarity S = 2D/(d_i + d_j); trend vector "
-            "T = (1/N) sum (a_i - A) S_i with a 40-fold randomisation "
-            "test.")
+    return (
+        "toptor: topological torsion (Nilakantan 1987). Four "
+        "consecutively bonded HEAVY atoms, each coded (NPI, TYPE, "
+        "NBR); NBR excludes the torsion itself -- total branches minus "
+        "1 at the ends, minus 2 in the middle. Pi electrons stand in "
+        "for bond types on purpose: it makes every torsion in benzene "
+        "the same descriptor, where explicit bond types would give "
+        "two. Each undirected path counted once, canonical direction. "
+        "Similarity S = 2D/(d_i + d_j); trend vector "
+        "T = (1/N) sum (a_i - A) S_i with a 40-fold randomisation "
+        "test."
+    )
 
 
 # compact alias per ledger/NAMING.md

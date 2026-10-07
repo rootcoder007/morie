@@ -101,8 +101,8 @@ def geron_credit_assignment(trajectory, gamma=0.95, lam=None, normalize=False):
     g = float(gamma)
     if not (0.0 <= g <= 1.0):
         raise ValueError(f"geron_credit_assignment: gamma must lie in [0, 1], got {gamma!r}")
-    l = g if lam is None else float(lam)
-    if not (0.0 <= l <= 1.0):
+    ell = g if lam is None else float(lam)
+    if not (0.0 <= ell <= 1.0):
         raise ValueError(f"geron_credit_assignment: lam must lie in [0, 1], got {lam!r}")
 
     T = rewards.size
@@ -115,7 +115,7 @@ def geron_credit_assignment(trajectory, gamma=0.95, lam=None, normalize=False):
     elig = np.empty(T)
     e = 0.0
     for t in range(T):
-        e = g * l * e + 1.0
+        e = g * ell * e + 1.0
         elig[t] = e
 
     total = float(ret[0])
@@ -131,7 +131,11 @@ def geron_credit_assignment(trajectory, gamma=0.95, lam=None, normalize=False):
 
     return RichResult(
         title="Credit assignment",
-        summary_lines=[("Total return", total), ("gamma", g), ("Effective horizon", float(1.0 / (1.0 - g)) if g < 1 else float("inf"))],
+        summary_lines=[
+            ("Total return", total),
+            ("gamma", g),
+            ("Effective horizon", float(1.0 / (1.0 - g)) if g < 1 else float("inf")),
+        ],
         interpretation="Discounted returns credit an action by what followed it; eligibility traces credit it by how recently it fired.",
         payload={
             "returns": out.tolist(),
@@ -143,7 +147,7 @@ def geron_credit_assignment(trajectory, gamma=0.95, lam=None, normalize=False):
             "total_return": total,
             "horizon": float(1.0 / (1.0 - g)) if g < 1 else float("inf"),
             "gamma": g,
-            "lam": l,
+            "lam": ell,
             "actions": actions,
             "estimate": total,
             "n": int(T),

@@ -1,7 +1,6 @@
 """Tests for rgemgf.rangayyan_emg_force."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rgemgf import rangayyan_emg_force
 
 

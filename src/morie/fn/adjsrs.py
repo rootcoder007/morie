@@ -50,10 +50,17 @@ def neffsrs(w):
     s1 = sum(w)
     s2 = sum(v * v for v in w)
     deff = n * s2 / (s1 * s1)
-    return RichResult(payload={
-        "neff": s1 * s1 / s2, "deff": deff, "cv2": deff - 1.0,
-        "n": n, "sumw": s1, "sumw2": s2,
-        "method": "Kish effective sample size, deff = 1 + cv^2(w)"})
+    return RichResult(
+        payload={
+            "neff": s1 * s1 / s2,
+            "deff": deff,
+            "cv2": deff - 1.0,
+            "n": n,
+            "sumw": s1,
+            "sumw2": s2,
+            "method": "Kish effective sample size, deff = 1 + cv^2(w)",
+        }
+    )
 
 
 effective_srs = neffsrs

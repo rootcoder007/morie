@@ -4,26 +4,29 @@ Real store files are used where they are present on the machine; the
 round-trip tests are self-contained so the suite still means something
 on a bare checkout.
 """
+
 import datetime
 import glob
 import os
+from pathlib import Path
 
 import pytest
 
 from morie.fn import _parquet_core as P
 from morie.fn._frame_core import DataFrame, read_parquet
 
-STORE = sorted(glob.glob(os.path.expanduser(
-    "~/.cache/R/rmoriedata/*.parquet")))
+STORE = sorted(glob.glob(os.path.expanduser("~/.cache/R/rmoriedata/*.parquet")))
 
 
 def _frame():
-    return DataFrame({
-        "case": ["23-OCI-001", "23-OCI-002", None, "23-OFP-9"],
-        "year": [2023, 2023, 2024, 2024],
-        "rate": [0.5, -1.25, None, 3.75],
-        "closed": [True, False, True, None],
-    })
+    return DataFrame(
+        {
+            "case": ["23-OCI-001", "23-OCI-002", None, "23-OFP-9"],
+            "year": [2023, 2023, 2024, 2024],
+            "rate": [0.5, -1.25, None, 3.75],
+            "closed": [True, False, True, None],
+        }
+    )
 
 
 @pytest.mark.parametrize("compression", ["snappy", None])
@@ -40,7 +43,7 @@ def test_round_trip_preserves_every_cell(tmp_path, compression):
 def test_file_is_framed_as_parquet(tmp_path):
     p = str(tmp_path / "t.parquet")
     P.to_parquet(_frame(), p)
-    raw = open(p, "rb").read()
+    raw = Path(p).read_bytes()
     assert raw[:4] == b"PAR1" and raw[-4:] == b"PAR1"
 
 
@@ -70,13 +73,15 @@ def test_logical_types_survive_the_writer(tmp_path):
     # A timestamp column that came back as a bare number after a
     # round-trip was a real defect: it stayed readable but stopped
     # being a timestamp to any other engine.
-    df = DataFrame({
-        "d": [datetime.date(2023, 5, 1), datetime.date(2024, 1, 31)],
-        "t": [datetime.datetime(2021, 5, 21, 5, 1,
-                                tzinfo=datetime.timezone.utc),
-              datetime.datetime(2022, 6, 2, 12, 0,
-                                tzinfo=datetime.timezone.utc)],
-    })
+    df = DataFrame(
+        {
+            "d": [datetime.date(2023, 5, 1), datetime.date(2024, 1, 31)],
+            "t": [
+                datetime.datetime(2021, 5, 21, 5, 1, tzinfo=datetime.timezone.utc),
+                datetime.datetime(2022, 6, 2, 12, 0, tzinfo=datetime.timezone.utc),
+            ],
+        }
+    )
     p = str(tmp_path / "t.parquet")
     P.to_parquet(df, p)
     back = P.read_parquet(p)
@@ -87,8 +92,7 @@ def test_logical_types_survive_the_writer(tmp_path):
 def test_snappy_round_trips_including_overlapping_copies():
     # Long runs are exactly what snappy encodes with an overlapping
     # copy, which is the one branch a naive decompressor gets wrong.
-    for payload in (b"", b"a", b"a" * 100000,
-                    (b"abcdefgh" * 5000) + b"tail"):
+    for payload in (b"", b"a", b"a" * 100000, (b"abcdefgh" * 5000) + b"tail"):
         assert P._snappy_decompress(P._snappy_compress(payload)) == payload
 
 

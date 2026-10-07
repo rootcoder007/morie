@@ -1,7 +1,6 @@
 """Tests for drwgs.dr_weighting_strategy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drwgs import dr_weighting_strategy
 
 

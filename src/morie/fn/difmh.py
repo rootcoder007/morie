@@ -69,10 +69,7 @@ def difmh(
     X = np.where(np.isnan(X), 0.0, X)
 
     if item_names is None:
-        if isinstance(data, pd.DataFrame):
-            item_names = list(data.columns)
-        else:
-            item_names = [f"item_{j}" for j in range(k)]
+        item_names = list(data.columns) if isinstance(data, pd.DataFrame) else [f"item_{j}" for j in range(k)]
 
     # Identify two groups
     unique_groups = sorted(set(g))
@@ -137,22 +134,13 @@ def difmh(
             chi2_var += (a_cell + c_cell) * (b_cell + d_cell) * n_ref * n_foc / (T**2 * max(T - 1, 1))
 
         # MH odds ratio
-        if beta_mh > 1e-10:
-            mh_or = alpha_mh / beta_mh
-        else:
-            mh_or = np.nan
+        mh_or = alpha_mh / beta_mh if beta_mh > 1e-10 else np.nan
 
         # MH delta (2.35 * ln(MH_OR))
-        if mh_or > 0 and np.isfinite(mh_or):
-            mh_delta = -2.35 * np.log(mh_or)
-        else:
-            mh_delta = np.nan
+        mh_delta = -2.35 * np.log(mh_or) if mh_or > 0 and np.isfinite(mh_or) else np.nan
 
         # MH chi-square with continuity correction
-        if chi2_var > 1e-10:
-            chi2_stat = (abs(chi2_num) - 0.5) ** 2 / chi2_var
-        else:
-            chi2_stat = 0.0
+        chi2_stat = (abs(chi2_num) - 0.5) ** 2 / chi2_var if chi2_var > 1e-10 else 0.0
 
         p_value = sp.chi2.sf(chi2_stat, df=1)
 

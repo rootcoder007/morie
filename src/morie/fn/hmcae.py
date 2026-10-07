@@ -106,8 +106,7 @@ def geron_convolutional_autoencoder(X, filters=2, epochs=100, lr=0.05, seed=0, p
     m, H, Wd = A.shape
     if H % P or Wd % P:
         raise ValueError(
-            f"geron_convolutional_autoencoder: image {H}x{Wd} is not divisible by patch {P}; "
-            "crop or pad it first"
+            f"geron_convolutional_autoencoder: image {H}x{Wd} is not divisible by patch {P}; crop or pad it first"
         )
     F = int(filters)
     if F < 1:

@@ -1,7 +1,6 @@
 """Tests for agdsts.alphazero_distill_student."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agdsts import alphazero_distill_student
 
 
@@ -12,6 +11,8 @@ def test_agdsts_basic():
     result = alphazero_distill_student(teacher, student)
     assert isinstance(result, dict)
     assert "softce" in result
+
+
 def test_agdsts_edge():
     """Test edge cases."""
     teacher = np.random.default_rng(42).normal(0, 1, 100)

@@ -1,7 +1,6 @@
 """Tests for wvvar.py - Wavelet variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvvar import wavelet_variance, wvvar
 
 

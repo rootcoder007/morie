@@ -45,10 +45,15 @@ def ipa_brier(time, event, predicted_S, eval_time):
     <https://doi.org/10.1186/s41512-018-0029-2>
     """
     r = brier(time, event, predicted_S, eval_time)
-    return RichResult(payload={
-        "estimate": r["scaled_brier"], "brier_score": r["brier_score"],
-        "scaled_brier": r["scaled_brier"], "eval_time": r["eval_time"],
-        "method": "IPA = 1 - BS_model/BS_null [Kattan & Gerds 2018]"})
+    return RichResult(
+        payload={
+            "estimate": r["scaled_brier"],
+            "brier_score": r["brier_score"],
+            "scaled_brier": r["scaled_brier"],
+            "eval_time": r["eval_time"],
+            "method": "IPA = 1 - BS_model/BS_null [Kattan & Gerds 2018]",
+        }
+    )
 
 
 # CANONICAL TEST
@@ -61,6 +66,7 @@ def ipa_brier(time, event, predicted_S, eval_time):
 
 def cheatsheet():
     return "survipa(time, event, predicted_S, eval_time): IPA (alias of brier)."
+
 
 # public names resolved by fn/_lazy_map.json
 ipabrier = ipa_brier

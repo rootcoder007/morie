@@ -1,7 +1,6 @@
 """Tests for morie.fn.cnstr -- IQR anomaly removal."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cnstr import cnstr, iqr_exorcise
 

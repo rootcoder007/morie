@@ -11,18 +11,14 @@ from morie.fn.vitfwd import vit_forward, vitforward
 from morie.fn.vitmlp import vit_mlp_block
 from morie.fn.vitptm import vit_patch_embed
 
-IMG = [[1.0, 2.0, 3.0, 4.0],
-       [5.0, 6.0, 7.0, 8.0],
-       [9.0, 10.0, 11.0, 12.0],
-       [13.0, 14.0, 15.0, 16.0]]
+IMG = [[1.0, 2.0, 3.0, 4.0], [5.0, 6.0, 7.0, 8.0], [9.0, 10.0, 11.0, 12.0], [13.0, 14.0, 15.0, 16.0]]
 P, D, K, DH = 2, 4, 2, 2
-N, PDIM, NS = 4, 4, 5          # N = HW/P^2, P^2 C, and N + 1 with the class token
-LN_EPS = 1e-6                  # _vitcore's stated epsilon for LN
+N, PDIM, NS = 4, 4, 5  # N = HW/P^2, P^2 C, and N + 1 with the class token
+LN_EPS = 1e-6  # _vitcore's stated epsilon for LN
 
 
 def _matmul(A, B):
-    return [[sum(A[i][t] * B[t][j] for t in range(len(B)))
-             for j in range(len(B[0]))] for i in range(len(A))]
+    return [[sum(A[i][t] * B[t][j] for t in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
 
 def _flat(A):
@@ -131,7 +127,8 @@ def test_vitfwd_stream_accounting_is_exact_in_the_number_of_layers():
     for L in (0, 1, 2, 5):
         assert vit_forward(IMG, P, D, K, L)["skip_used"] == base + L * per
     assert vit_forward(IMG, P, D, K, 1, mlp_ratio=2)["skip_used"] == (
-        base + 3 * K * D * DH + K * DH * D + 2 * D * (2 * D))
+        base + 3 * K * D * DH + K * DH * D + 2 * D * (2 * D)
+    )
 
 
 def test_vitfwd_reports_its_shapes_and_the_alias_is_the_same_function():

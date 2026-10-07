@@ -1,7 +1,6 @@
 """Tests for eslgbm.esl_gbm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslgbm import esl_gbm
 
 

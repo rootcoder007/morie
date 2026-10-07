@@ -17,13 +17,17 @@ def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
     set it to zero and the mu weights vanish, leaving ordinary kriging
     on Z1.  Constraints are sum lambda = 1 and sum mu = 0, which is
     what keeps the predictor unbiased. Keys: estimate."""
-    r = _rc.cokriging(coords, z1, z2, s0, cross_vario=cross_vario,
-                      model=model)
-    res = RichResult(payload={"estimate": r["prediction"],
-                              "prediction": r["prediction"],
-                              "variance": r["variance"],
-                              "lambda": r["lambda"], "mu": r["mu"],
-                              "method": r["method"]})
+    r = _rc.cokriging(coords, z1, z2, s0, cross_vario=cross_vario, model=model)
+    res = RichResult(
+        payload={
+            "estimate": r["prediction"],
+            "prediction": r["prediction"],
+            "variance": r["variance"],
+            "lambda": r["lambda"],
+            "mu": r["mu"],
+            "method": r["method"],
+        }
+    )
     return with_describe_pointer(res, "cokrig")
 
 

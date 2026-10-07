@@ -28,20 +28,19 @@ def trend_weights(times):
     arr = np.asarray(_brus.trend_weights(times), dtype=float)
     value = float(arr.ravel()[0])
     payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (15.4)"
     return RichResult(
-        title='OLS trend weights over survey times',
+        title="OLS trend weights over survey times",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r15e4: w_j = (t_j - tbar)/sum(t - tbar)^2 [Brus 2022, eq. 15.4]'
+    return "r15e4: w_j = (t_j - tbar)/sum(t - tbar)^2 [Brus 2022, eq. 15.4]"
 
 
 # compact alias per ledger/NAMING.md

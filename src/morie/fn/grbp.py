@@ -23,8 +23,7 @@ def _act_deriv(name, a):
     return np.ones_like(a)
 
 
-def geron_backpropagation_gradient(activations, weights, y_true,
-                                   activation="sigmoid", output_activation=None):
+def geron_backpropagation_gradient(activations, weights, y_true, activation="sigmoid", output_activation=None):
     r"""Backpropagate a squared-error loss through a stack of dense layers.
 
     .. math::
@@ -90,8 +89,7 @@ def geron_backpropagation_gradient(activations, weights, y_true,
     y = np.atleast_2d(np.asarray(y_true, dtype=float))
     if len(acts) != len(Ws) + 1:
         raise ValueError(
-            f"activations must be one longer than weights (got {len(acts)} "
-            f"activations and {len(Ws)} weight matrices)."
+            f"activations must be one longer than weights (got {len(acts)} activations and {len(Ws)} weight matrices)."
         )
     if not Ws:
         raise ValueError("weights is empty; nothing to differentiate.")
@@ -106,29 +104,25 @@ def geron_backpropagation_gradient(activations, weights, y_true,
             raise ValueError(f"activations[{i}] has {a.shape[0]} rows, expected {m}.")
         if not np.all(np.isfinite(a)):
             raise ValueError(f"activations[{i}] contains non-finite values.")
-    for l, W in enumerate(Ws):
-        if W.shape != (acts[l].shape[1], acts[l + 1].shape[1]):
+    for ell, W in enumerate(Ws):
+        if W.shape != (acts[ell].shape[1], acts[ell + 1].shape[1]):
             raise ValueError(
-                f"weights[{l}] has shape {W.shape}, expected "
-                f"{(acts[l].shape[1], acts[l + 1].shape[1])}."
+                f"weights[{ell}] has shape {W.shape}, expected {(acts[ell].shape[1], acts[ell + 1].shape[1])}."
             )
         if not np.all(np.isfinite(W)):
-            raise ValueError(f"weights[{l}] contains non-finite values.")
+            raise ValueError(f"weights[{ell}] contains non-finite values.")
     if y.shape != acts[-1].shape:
-        raise ValueError(
-            f"y_true shape {y.shape} must match the output activation shape "
-            f"{acts[-1].shape}."
-        )
+        raise ValueError(f"y_true shape {y.shape} must match the output activation shape {acts[-1].shape}.")
 
     L = len(Ws)
     deltas = [None] * L
     err = acts[-1] - y
     deltas[L - 1] = err * _act_deriv(out_act, acts[-1])
-    for l in range(L - 2, -1, -1):
-        deltas[l] = (deltas[l + 1] @ Ws[l + 1].T) * _act_deriv(activation, acts[l + 1])
+    for ell in range(L - 2, -1, -1):
+        deltas[ell] = (deltas[ell + 1] @ Ws[ell + 1].T) * _act_deriv(activation, acts[ell + 1])
 
-    grads = [acts[l].T @ deltas[l] for l in range(L)]
-    gbias = [deltas[l].sum(axis=0) for l in range(L)]
+    grads = [acts[ell].T @ deltas[ell] for ell in range(L)]
+    gbias = [deltas[ell].sum(axis=0) for ell in range(L)]
     loss = float(0.5 * np.sum(err**2))
     gnorm = float(np.sqrt(sum(float(np.sum(g**2)) for g in grads)))
 

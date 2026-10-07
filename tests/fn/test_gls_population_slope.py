@@ -1,7 +1,6 @@
 """Tests for gls_population_slope.gls_population_slope."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gls_population_slope import (
     gls_population_slope,
 )

@@ -5,9 +5,6 @@ Implements Theorem 4.16 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -30,9 +27,14 @@ def ghosal_dp_weak_conv(G0_A, alpha_seq):
         regime = "degenerate at center measure (var -> 0)"
     else:
         regime = "DP limit (var positive)"
-    res = RichResult(payload={"estimate": vars_[-1],
-                              "var_sequence": vars_, "regime": regime,
-                              "method": "DP weak convergence regimes (GvdV 2017 Thm 4.16)"})
+    res = RichResult(
+        payload={
+            "estimate": vars_[-1],
+            "var_sequence": vars_,
+            "regime": regime,
+            "method": "DP weak convergence regimes (GvdV 2017 Thm 4.16)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_13")
 
 

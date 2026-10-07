@@ -86,7 +86,7 @@ def esl_gbm(X, y, M=100, nu=0.1, max_depth=2, min_leaf=1):
     F = np.full(n, f0)
     trees, path = [], []
     for _ in range(M):
-        resid = y - F                                   # = negative gradient
+        resid = y - F  # = negative gradient
         if float(np.ptp(resid)) == 0.0:
             break
         t = esl_decision_tree(X, resid, max_depth=max_depth, min_leaf=min_leaf)["tree"]
@@ -95,11 +95,20 @@ def esl_gbm(X, y, M=100, nu=0.1, max_depth=2, min_leaf=1):
         r = y - F
         path.append(float(r @ r))
     resid = y - F
-    return RichResult(payload={
-        "estimate": float(resid @ resid), "f0": f0, "trees": trees,
-        "nu": nu, "M": len(trees), "train_rss_path": path,
-        "fitted": [float(v) for v in F], "n": int(n), "p": int(p),
-        "method": "gradient boosting, squared-error (residual = negative gradient), shrunk by nu"})
+    return RichResult(
+        payload={
+            "estimate": float(resid @ resid),
+            "f0": f0,
+            "trees": trees,
+            "nu": nu,
+            "M": len(trees),
+            "train_rss_path": path,
+            "fitted": [float(v) for v in F],
+            "n": int(n),
+            "p": int(p),
+            "method": "gradient boosting, squared-error (residual = negative gradient), shrunk by nu",
+        }
+    )
 
 
 def esl_gbm_predict(model, X):

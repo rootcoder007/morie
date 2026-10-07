@@ -163,7 +163,9 @@ def geron_torchscript(model, example_inputs):
             "n_nodes": len(graph),
             "shapes": [(g["in_shape"], g["out_shape"]) for g in graph],
             "estimate": diff,
-            "n": int(np.asarray(example_inputs, dtype=float).reshape(1, -1).shape[0]) if np.asarray(example_inputs).ndim == 1 else int(np.asarray(example_inputs).shape[0]),
+            "n": int(np.asarray(example_inputs, dtype=float).reshape(1, -1).shape[0])
+            if np.asarray(example_inputs).ndim == 1
+            else int(np.asarray(example_inputs).shape[0]),
             "method": "Shape-specialised tracing of an op sequence into a static graph, verified by replay",
         },
     )

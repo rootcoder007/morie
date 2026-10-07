@@ -1,7 +1,6 @@
 """Tests for gh_ap_a3.ghosal_tv_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_a3 import ghosal_tv_distance
 
 
@@ -15,7 +14,7 @@ def test_gh_ap_a3_basic():
     assert abs(float(result["estimate"])) < 1e-12
     assert "sup_form" in result
     assert "forms_agree" in result
-    assert result["forms_agree"] is True or result["forms_agree"] == True
+    assert result["forms_agree"] is True or result["forms_agree"]
 
 
 def test_gh_ap_a3_known_value():
@@ -41,7 +40,7 @@ def test_gh_ap_a3_known_value():
     # The sup_A form equals the half-L1 form for these inputs as well.
     assert "sup_form" in result
     assert abs(float(result["sup_form"]) - expected) < 1e-12
-    assert result["forms_agree"] is True or result["forms_agree"] == True
+    assert result["forms_agree"] is True or result["forms_agree"]
 
 
 def test_gh_ap_a3_edge():

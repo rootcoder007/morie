@@ -1,7 +1,6 @@
 """Tests for morie.fn.prs — polygenic risk score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prs import polygenic_risk_score
 
 

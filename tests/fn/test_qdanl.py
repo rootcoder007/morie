@@ -1,7 +1,6 @@
 """Tests for morie.fn.qdanl -- Quadratic discriminant analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.qdanl import qda, qdanl
 

@@ -111,6 +111,7 @@ def co2_curve_fit(t, co2, n_poly=3, n_harm=4):
 def cheatsheet() -> str:
     return "nao_station_index / co2_curve_fit -> climate indices."
 
+
 # alias kept from the retired placeholder of the same name
 co2_trend = co2_curve_fit
 

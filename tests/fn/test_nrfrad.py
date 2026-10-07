@@ -24,8 +24,7 @@ def test_nrfrad_basic():
         w.append(math.exp(-acc) * (1 - math.exp(-SIG[i] * d[i])))
         acc += SIG[i] * d[i]
     assert r["weights"] == pytest.approx(w, rel=1e-14, abs=1e-16)
-    assert r["colour"] == pytest.approx(
-        [sum(w[i] * COL[i][c] for i in range(5)) for c in range(3)], rel=1e-14)
+    assert r["colour"] == pytest.approx([sum(w[i] * COL[i][c] for i in range(5)) for c in range(3)], rel=1e-14)
     # the infinite last interval makes the ray fully opaque
     assert r["accumulated_alpha"] == pytest.approx(1.0, rel=1e-14)
 

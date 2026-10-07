@@ -75,13 +75,22 @@ def wasserman_local_polynomial(x, x_data, y_data, h, p=1):
         sw = np.sqrt(w)
         b, _, rank, _ = np.linalg.lstsq(D * sw[:, None], yd * sw, rcond=None)
         if rank < p + 1:
-            vals.append(float("nan")); ders.append(float("nan")); continue
+            vals.append(float("nan"))
+            ders.append(float("nan"))
+            continue
         vals.append(float(b[0]))
         ders.append(float(b[1]) if p >= 1 else float("nan"))
-    return RichResult(payload={
-        "estimate": vals[0], "values": vals, "derivatives": ders,
-        "h": h, "p": p, "n": int(xd.size),
-        "method": "local polynomial WLS, Gaussian kernel; b0 = fit, b1 = slope"})
+    return RichResult(
+        payload={
+            "estimate": vals[0],
+            "values": vals,
+            "derivatives": ders,
+            "h": h,
+            "p": p,
+            "n": int(xd.size),
+            "method": "local polynomial WLS, Gaussian kernel; b0 = fit, b1 = slope",
+        }
+    )
 
 
 def cheatsheet():

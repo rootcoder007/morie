@@ -1,12 +1,10 @@
 """Tests for morie.fn.irm — Interactive Regression Model via DoubleML."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
-
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.irm import estimate_irm
-
 
 
 @pytest.fixture()

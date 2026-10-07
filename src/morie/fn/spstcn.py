@@ -19,8 +19,7 @@ __all__ = ["schabenberger_st_cov_nonsep"]
 _METHODS = ("monotone", "power_mixture", "scale_mixture", "differential")
 
 
-def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None,
-                                method="monotone", coords=None, times=None):
+def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None, method="monotone", coords=None, times=None):
     """Non-separable spatio-temporal covariance, Sec. 9.3.
 
     Separable models cannot represent space-time INTERACTION: under product
@@ -99,27 +98,35 @@ def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None,
 
     if method == "monotone":
         beta = float(p.get("beta", 1.0))
-        kw = dict(sigma2=p.get("sigma2", 1.0), a=p.get("a", 1.0),
-                  c=p.get("c", 1.0), alpha=p.get("alpha", 1.0), beta=beta,
-                  gamma=p.get("gamma", 1.0), d=p.get("d", 2))
+        kw = dict(
+            sigma2=p.get("sigma2", 1.0),
+            a=p.get("a", 1.0),
+            c=p.get("c", 1.0),
+            alpha=p.get("alpha", 1.0),
+            beta=beta,
+            gamma=p.get("gamma", 1.0),
+            d=p.get("d", 2),
+        )
         if "beta_t" in p:
-            cov = gneiting_with_temporal(spatial_h, temporal_u,
-                                         beta_t=float(p["beta_t"]), **kw)
-            model = lambda d, u: gneiting_with_temporal(
-                d, u, beta_t=float(p["beta_t"]), **kw)
+            cov = gneiting_with_temporal(spatial_h, temporal_u, beta_t=float(p["beta_t"]), **kw)
+
+            def model(d, u):
+                return gneiting_with_temporal(d, u, beta_t=float(p["beta_t"]), **kw)
+
             payload["equation"] = "9.9"
         else:
             cov = gneiting_covariance(spatial_h, temporal_u, **kw)
-            model = lambda d, u: gneiting_covariance(d, u, **kw)
+
+            def model(d, u):
+                return gneiting_covariance(d, u, **kw)
+
             payload["equation"] = "9.8"
         payload["separable"] = bool(beta == 0.0)
         lines.append(("beta", beta))
         lines.append(("separable (beta = 0)", payload["separable"]))
         if "neg2_loglik" in p and "neg2_loglik_separable" in p:
-            payload["separability_test"] = separability_test(
-                float(p["neg2_loglik"]), float(p["neg2_loglik_separable"]))
-            lines.append(("separability p (Self-Liang)",
-                          payload["separability_test"]["p_value"]))
+            payload["separability_test"] = separability_test(float(p["neg2_loglik"]), float(p["neg2_loglik_separable"]))
+            lines.append(("separability p (Self-Liang)", payload["separability_test"]["p_value"]))
 
     elif method == "power_mixture":
         rs = np.asarray(p["rs"], dtype=float)
@@ -137,44 +144,56 @@ def schabenberger_st_cov_nonsep(spatial_h, temporal_u, params=None,
         model = None
 
     elif method == "scale_mixture":
-        cov = scale_mixture_covariance(spatial_h, temporal_u,
-                                       p["cov_spatial"], p["cov_temporal"],
-                                       p["nodes"], p["weights"])
-        model = lambda d, u: scale_mixture_covariance(
-            d, u, p["cov_spatial"], p["cov_temporal"], p["nodes"],
-            p["weights"])
+        cov = scale_mixture_covariance(
+            spatial_h, temporal_u, p["cov_spatial"], p["cov_temporal"], p["nodes"], p["weights"]
+        )
+
+        def model(d, u):
+            return scale_mixture_covariance(d, u, p["cov_spatial"], p["cov_temporal"], p["nodes"], p["weights"])
+
         payload["equation"] = "9.16"
 
-    else:                                              # differential
-        kw = dict(sigma2=p.get("sigma2", 1.0), theta=p.get("theta", 1.0),
-                  c=p.get("c", 1.0), p=p.get("p", 1.5), d=p.get("d", 2),
-                  n_quad=p.get("n_quad", 40))
+    else:  # differential
+        kw = dict(
+            sigma2=p.get("sigma2", 1.0),
+            theta=p.get("theta", 1.0),
+            c=p.get("c", 1.0),
+            p=p.get("p", 1.5),
+            d=p.get("d", 2),
+            n_quad=p.get("n_quad", 40),
+        )
         cov, meta = jones_zhang_covariance(spatial_h, temporal_u, **kw)
-        model = lambda d, u: jones_zhang_covariance(d, u, **kw)[0]
+
+        def model(d, u):
+            return jones_zhang_covariance(d, u, **kw)[0]
+
         payload["equation"] = "9.17"
         payload["quadrature"] = meta
-        lines += [("smoothness p", kw["p"]),
-                  ("quadrature reached tau", meta["upper_reached"]),
-                  ("last panel / total", meta["last_panel_rel"]),
-                  ("analytic tail bound", meta["tail_bound"])]
+        lines += [
+            ("smoothness p", kw["p"]),
+            ("quadrature reached tau", meta["upper_reached"]),
+            ("last panel / total", meta["last_panel_rel"]),
+            ("analytic tail bound", meta["tail_bound"]),
+        ]
 
     payload["st_covariance"] = cov
 
     if coords is not None and times is not None and model is not None:
         v = is_valid_covariance(coords, times, model)
         payload.update(valid=v["valid"], min_eigenvalue=v["min_eigenvalue"])
-        lines += [("positive definite", v["valid"]),
-                  ("min eigenvalue", v["min_eigenvalue"])]
+        lines += [("positive definite", v["valid"]), ("min eigenvalue", v["min_eigenvalue"])]
         if not v["valid"]:
             payload["warning"] = (
                 "eq (9.5) fails on this design -- the construction is not a "
                 "valid covariance function here; cf. Gneiting (2002) on "
-                "Cressie and Huang (1999)")
+                "Cressie and Huang (1999)"
+            )
 
-    return RichResult(title="Non-separable spatio-temporal covariance",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Non-separable spatio-temporal covariance", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spstcn: non-separable spatio-temporal covariance (Sec. 9.3) -- "
-            "Gneiting monotone, Ma power/scale mixtures, Jones-Zhang SPDE")
+    return (
+        "spstcn: non-separable spatio-temporal covariance (Sec. 9.3) -- "
+        "Gneiting monotone, Ma power/scale mixtures, Jones-Zhang SPDE"
+    )

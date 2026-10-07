@@ -1,7 +1,6 @@
 """Tests for hmppo.geron_ppo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmppo import geron_ppo
 
 
@@ -25,14 +24,28 @@ def test_hmppo_basic():
     policy = rng.normal(0, 1, (2, 2))
 
     result = geron_ppo(
-        env, policy,
-        epochs=5, lr=0.1, clip_eps=0.2,
-        n_episodes=4, max_steps=10, n_updates=2, seed=0,
+        env,
+        policy,
+        epochs=5,
+        lr=0.1,
+        clip_eps=0.2,
+        n_episodes=4,
+        max_steps=10,
+        n_updates=2,
+        seed=0,
     )
 
     assert isinstance(result, dict)
-    for key in ["theta", "probabilities", "return_history", "surrogate_history",
-                "clip_fraction", "estimate", "n", "method"]:
+    for key in [
+        "theta",
+        "probabilities",
+        "return_history",
+        "surrogate_history",
+        "clip_fraction",
+        "estimate",
+        "n",
+        "method",
+    ]:
         assert key in result
 
     # clip_fraction is a fraction in [0, 1]
@@ -55,6 +68,7 @@ def test_hmppo_basic():
 
 def test_hmppo_edge():
     """Test edge cases."""
+
     # Minimal one-state, two-action bandit (matches the docstring example shape)
     def reset():
         return 0
@@ -68,14 +82,28 @@ def test_hmppo_edge():
     policy = [[0.0, 0.0]]
 
     result = geron_ppo(
-        env, policy,
-        epochs=3, lr=0.1, clip_eps=0.2,
-        n_episodes=4, max_steps=5, n_updates=2, seed=1,
+        env,
+        policy,
+        epochs=3,
+        lr=0.1,
+        clip_eps=0.2,
+        n_episodes=4,
+        max_steps=5,
+        n_updates=2,
+        seed=1,
     )
 
     assert isinstance(result, dict)
-    for key in ["theta", "probabilities", "return_history", "surrogate_history",
-                "clip_fraction", "estimate", "n", "method"]:
+    for key in [
+        "theta",
+        "probabilities",
+        "return_history",
+        "surrogate_history",
+        "clip_fraction",
+        "estimate",
+        "n",
+        "method",
+    ]:
         assert key in result
 
     # clip_fraction is a fraction in [0, 1]
@@ -113,7 +141,7 @@ import morie.fn.hmppo as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

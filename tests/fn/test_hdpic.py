@@ -1,7 +1,6 @@
 """Tests for hdpic.highest_density_credible_interval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hdpic import highest_density_credible_interval
 
 

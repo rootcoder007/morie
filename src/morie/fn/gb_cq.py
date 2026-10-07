@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cramer's V (front-end)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .gb1421t import gibbons_phi_cramers_v
 
@@ -36,8 +35,11 @@ def gibbons_cramers_contingency(table):
     out = gibbons_phi_cramers_v(table)
     return RichResult(
         payload={
-            "cramers_v": out["cramers_v"], "chi2": out["chi2"], "n": out["n"],
-            "r": out["r"], "c": out["c"],
+            "cramers_v": out["cramers_v"],
+            "chi2": out["chi2"],
+            "n": out["n"],
+            "r": out["r"],
+            "c": out["c"],
             "method": "Cramer's V = sqrt(chi2/(n min(r-1, c-1))) (Ch. 14.2)",
         }
     )

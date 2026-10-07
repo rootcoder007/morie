@@ -1,7 +1,6 @@
 """Tests for morie.fn.zeklp -- Prospective space-time scan"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zeklp import scan_prospective
 
 

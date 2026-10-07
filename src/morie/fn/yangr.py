@@ -52,10 +52,7 @@ def yang_realized_relationship(marker_matrix, freq=None, yang_diagonal=False):
     M = [[float(v) for v in row] for row in marker_matrix]
     J = len(M)
     p = len(M[0])
-    if freq is not None:
-        pi = [float(v) for v in freq]
-    else:
-        pi = [sum(row[j] for row in M) / (2.0 * J) for j in range(p)]
+    pi = [float(v) for v in freq] if freq is not None else [sum(row[j] for row in M) / (2.0 * J) for j in range(p)]
     var = [2.0 * q * (1.0 - q) for q in pi]
     A = []
     for i in range(J):
@@ -67,24 +64,30 @@ def yang_realized_relationship(marker_matrix, freq=None, yang_diagonal=False):
                     if var[k] <= 0:
                         continue
                     x = M[i][k]
-                    s += (x * x - (1.0 + 2.0 * pi[k]) * x
-                          + 2.0 * pi[k] * pi[k]) / var[k]
+                    s += (x * x - (1.0 + 2.0 * pi[k]) * x + 2.0 * pi[k] * pi[k]) / var[k]
                 row.append(1.0 + s / p)
             else:
                 s = 0.0
                 for k in range(p):
                     if var[k] <= 0:
                         continue
-                    s += ((M[i][k] - 2.0 * pi[k])
-                          * (M[j][k] - 2.0 * pi[k]) / var[k])
+                    s += (M[i][k] - 2.0 * pi[k]) * (M[j][k] - 2.0 * pi[k]) / var[k]
                 row.append(s / p)
         A.append(row)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(A[i][i] for i in range(J)) / J),
-        "A": A, "freq": pi, "n_lines": J, "n_markers": p,
-        "yang_diagonal": bool(yang_diagonal),
-        "method": "Yang et al. (2010) realized relationship matrix",
-    }), "yangr")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(A[i][i] for i in range(J)) / J),
+                "A": A,
+                "freq": pi,
+                "n_lines": J,
+                "n_markers": p,
+                "yang_diagonal": bool(yang_diagonal),
+                "method": "Yang et al. (2010) realized relationship matrix",
+            }
+        ),
+        "yangr",
+    )
 
 
 def cheatsheet():

@@ -28,14 +28,16 @@ def alammar_chosen_rejected_template(prompts, chosen, rejected):
         raise ValueError("no records supplied.")
     for i, (c, r) in enumerate(zip(C, R)):
         if c == r:
-            raise ValueError(
-                f"record {i} has identical chosen and rejected; it "
-                "encodes no preference.")
-    recs = [{"prompt": p, "chosen": c, "rejected": r}
-            for p, c, r in zip(P, C, R)]
-    return RichResult(payload={
-        "records": recs, "estimate": float(len(recs)), "n": len(recs),
-        "method": "Preference pair records (Alammar Ch 12)"})
+            raise ValueError(f"record {i} has identical chosen and rejected; it encodes no preference.")
+    recs = [{"prompt": p, "chosen": c, "rejected": r} for p, c, r in zip(P, C, R)]
+    return RichResult(
+        payload={
+            "records": recs,
+            "estimate": float(len(recs)),
+            "n": len(recs),
+            "method": "Preference pair records (Alammar Ch 12)",
+        }
+    )
 
 
 def cheatsheet():

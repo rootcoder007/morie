@@ -57,26 +57,28 @@ def spectral_smoothed(y, span=3):
     raw = base["periodogram"]
     m = len(raw)
     if span > m:
-        raise ValueError("`span` (%d) exceeds the number of Fourier "
-                         "ordinates (%d)" % (span, m))
+        raise ValueError(f"`span` ({int(span)}) exceeds the number of Fourier ordinates ({int(m)})")
     half = span // 2
     sm = []
     for k in range(m):
-        sm.append(fsum([raw[(k + t) % m] for t in range(-half, half + 1)])
-                  / span)
+        sm.append(fsum([raw[(k + t) % m] for t in range(-half, half + 1)]) / span)
 
-    return RichResult(payload={
-        "omega": omega,
-        "smoothed": sm,
-        "raw": raw,
-        "span": span,
-        "equivalent_df": 2.0 * span,
-        "circular_window": True,
-        "n": base["n"],
-        "method": ("Daniell-smoothed periodogram; periodogram from "
-                   "Schabenberger & Gotway (2005) eq (4.57), the smoother "
-                   "is NOT in that book (see Bloomfield 2000, Ch. 8)"),
-    })
+    return RichResult(
+        payload={
+            "omega": omega,
+            "smoothed": sm,
+            "raw": raw,
+            "span": span,
+            "equivalent_df": 2.0 * span,
+            "circular_window": True,
+            "n": base["n"],
+            "method": (
+                "Daniell-smoothed periodogram; periodogram from "
+                "Schabenberger & Gotway (2005) eq (4.57), the smoother "
+                "is NOT in that book (see Bloomfield 2000, Ch. 8)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

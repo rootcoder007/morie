@@ -14,17 +14,12 @@ from morie.fn.km095 import kamath_ch6_gender_direction
 def test_the_gender_direction_is_the_mean_pair_displacement():
     # Eq 6.19: g = (1/|A|) sum (E(a_j) - E(a_i))
     pairs = [("he", "she"), ("man", "woman")]
-    emb = {"he": [1.0, 0.0], "she": [0.0, 1.0],
-           "man": [2.0, 0.0], "woman": [0.0, 2.0]}
+    emb = {"he": [1.0, 0.0], "she": [0.0, 1.0], "man": [2.0, 0.0], "woman": [0.0, 2.0]}
     res = kamath_ch6_gender_direction(pairs, emb)
-    expected = [
-        sum(emb[b][k] - emb[a][k] for a, b in pairs) / len(pairs)
-        for k in range(2)
-    ]
+    expected = [sum(emb[b][k] - emb[a][k] for a, b in pairs) / len(pairs) for k in range(2)]
     for got, want in zip(res["g"], expected):
         assert got == pytest.approx(want, rel=1e-12)
-    assert res["norm"] == pytest.approx(
-        math.sqrt(sum(v * v for v in expected)), rel=1e-12)
+    assert res["norm"] == pytest.approx(math.sqrt(sum(v * v for v in expected)), rel=1e-12)
 
 
 def test_identical_pairs_give_a_degenerate_zero_direction():
@@ -36,8 +31,7 @@ def test_identical_pairs_give_a_degenerate_zero_direction():
 
 def test_swapping_every_pair_reverses_the_direction():
     pairs = [("he", "she"), ("man", "woman")]
-    emb = {"he": [1.0, 0.0], "she": [0.0, 1.0],
-           "man": [2.0, 0.0], "woman": [0.0, 2.0]}
+    emb = {"he": [1.0, 0.0], "she": [0.0, 1.0], "man": [2.0, 0.0], "woman": [0.0, 2.0]}
     forward = kamath_ch6_gender_direction(pairs, emb)["g"]
     backward = kamath_ch6_gender_direction([(b, a) for a, b in pairs], emb)["g"]
     for f, b in zip(forward, backward):

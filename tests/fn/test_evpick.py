@@ -1,7 +1,6 @@
 """Tests for evpick.evt_pickands_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evpick import evt_pickands_estimator
 
 
@@ -12,6 +11,8 @@ def test_evpick_basic():
     result = evt_pickands_estimator(x, k)
     assert isinstance(result, dict)
     assert "xi" in result
+
+
 def test_evpick_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

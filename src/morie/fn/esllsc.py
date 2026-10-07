@@ -77,28 +77,40 @@ def esl_lda_disc(X, y, query=None):
         priors.append(Xi.shape[0] / n)
         C = Xi - mu
         S += C.T @ C
-    S /= (n - K)
+    S /= n - K
     try:
         Sinv = np.linalg.inv(S)
-    except np.linalg.LinAlgError:
-        raise ValueError("the pooled covariance is singular; reduce dimensions or use more data.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("the pooled covariance is singular; reduce dimensions or use more data.") from exc
     Q = X if query is None else np.atleast_2d(np.asarray(query, dtype=float))
     D = np.empty((Q.shape[0], K))
     for j, (mu, pi_) in enumerate(zip(means, priors)):
         D[:, j] = Q @ Sinv @ mu - 0.5 * float(mu @ Sinv @ mu) + np.log(pi_)
     pred = [classes[i] for i in np.argmax(D, axis=1)]
-    spread = float(np.max([np.linalg.norm(np.cov((X[y_arr == c] - np.mean(X[y_arr == c], axis=0)).T,
-                                                 bias=True))
-                           for c in classes])) if p == 1 else float("nan")
-    return RichResult(payload={
-        "estimate": pred[0], "prediction": pred,
-        "discriminants": [float(v) for v in D.ravel()],
-        "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
-        "priors": [float(v) for v in priors],
-        "means": [float(v) for m in means for v in np.atleast_1d(m)],
-        "pooled_covariance": [float(v) for v in S.ravel()],
-        "n": int(n), "p": int(p), "K": int(K),
-        "method": "LDA, common pooled covariance (n-K divisor), linear discriminant"})
+    (
+        float(
+            np.max(
+                [np.linalg.norm(np.cov((X[y_arr == c] - np.mean(X[y_arr == c], axis=0)).T, bias=True)) for c in classes]
+            )
+        )
+        if p == 1
+        else float("nan")
+    )
+    return RichResult(
+        payload={
+            "estimate": pred[0],
+            "prediction": pred,
+            "discriminants": [float(v) for v in D.ravel()],
+            "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
+            "priors": [float(v) for v in priors],
+            "means": [float(v) for m in means for v in np.atleast_1d(m)],
+            "pooled_covariance": [float(v) for v in S.ravel()],
+            "n": int(n),
+            "p": int(p),
+            "K": int(K),
+            "method": "LDA, common pooled covariance (n-K divisor), linear discriminant",
+        }
+    )
 
 
 def cheatsheet():

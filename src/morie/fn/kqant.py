@@ -54,10 +54,7 @@ def kqant(
     if n < 2:
         raise ValueError("Need at least 2 observations.")
 
-    if probs is None:
-        probs = np.array([0.25, 0.50, 0.75])
-    else:
-        probs = np.asarray(probs, dtype=float).ravel()
+    probs = np.array([0.25, 0.5, 0.75]) if probs is None else np.asarray(probs, dtype=float).ravel()
     if np.any(probs <= 0) or np.any(probs >= 1):
         raise ValueError("All probabilities must be in (0, 1).")
 

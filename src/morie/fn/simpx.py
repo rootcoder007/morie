@@ -39,8 +39,7 @@ def _optimise(T, basis, ncols, max_iter):
             if T[i, col] > 1e-12:
                 r = T[i, -1] / T[i, col]
                 # tie-break on the lowest basic-variable index (Bland)
-                if best is None or r < best - 1e-12 or \
-                        (abs(r - best) <= 1e-12 and basis[i] < basis[row]):
+                if best is None or r < best - 1e-12 or (abs(r - best) <= 1e-12 and basis[i] < basis[row]):
                     best, row = r, i
         if row < 0:
             return "unbounded"
@@ -117,10 +116,10 @@ def simplex_lp(
         sgn = -1.0 if b[i] < 0 else 1.0
         for j in range(n):
             T[i, j] = sgn * A[i, j]
-        T[i, n + i] = sgn              # +1 slack, or -1 surplus
-        T[i, -1] = sgn * b[i]          # now >= 0
+        T[i, n + i] = sgn  # +1 slack, or -1 surplus
+        T[i, -1] = sgn * b[i]  # now >= 0
         if b[i] < 0:
-            T[i, n + m + a_at] = 1.0   # artificial
+            T[i, n + m + a_at] = 1.0  # artificial
             basis[i] = n + m + a_at
             a_at += 1
         else:
@@ -143,8 +142,8 @@ def simplex_lp(
         # came back optimal at x = 3.
         if st != "optimal" or -T[-1, -1] > 1e-7:
             return DescriptiveResult(
-                name="Simplex LP", value=float("nan"),
-                extra={"x": np.zeros(n), "status": "infeasible"})
+                name="Simplex LP", value=float("nan"), extra={"x": np.zeros(n), "status": "infeasible"}
+            )
         # drive any artificial still in the basis out at zero level
         for i in range(m):
             if basis[i] >= n + m:

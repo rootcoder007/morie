@@ -1,7 +1,6 @@
 """Tests for bnscrf.bound_credible_interval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnscrf import bound_credible_interval
 
 
@@ -13,6 +12,8 @@ def test_bnscrf_basic():
     result = bound_credible_interval(lower, upper, alpha)
     assert isinstance(result, dict)
     assert "lower" in result
+
+
 def test_bnscrf_edge():
     """Test edge cases."""
     lower = np.random.default_rng(42).normal(0, 1, 100)

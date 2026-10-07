@@ -1,7 +1,6 @@
 """Tests for impala.impala_vtrace."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.impala import impala_vtrace
 
 

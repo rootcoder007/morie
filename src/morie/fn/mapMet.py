@@ -13,7 +13,6 @@ second is returned alongside as ``ap_over_nrel`` so neither is
 silently substituted for the other.
 """
 
-
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["map_at_k"]
@@ -55,8 +54,7 @@ def map_at_k(pred_rank, relevant, k):
     if kk <= 0:
         raise ValueError("k must be positive")
     ranks = list(pred_rank)
-    nested = bool(ranks) and all(
-        isinstance(r, (list, tuple)) for r in ranks)
+    nested = bool(ranks) and all(isinstance(r, (list, tuple)) for r in ranks)
     if nested:
         rels = [set(r) for r in relevant]
         if len(rels) != len(ranks):
@@ -73,11 +71,19 @@ def map_at_k(pred_rank, relevant, k):
         aps.append(s / min(len(rl), kk))
         apn.append(s / len(rl))
     n = len(aps)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": sum(aps) / n, "ap": aps, "ap_over_nrel": apn,
-        "n_queries": n, "k": kk,
-        "method": "mean average precision at k",
-    }), "mapMet")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": sum(aps) / n,
+                "ap": aps,
+                "ap_over_nrel": apn,
+                "n_queries": n,
+                "k": kk,
+                "method": "mean average precision at k",
+            }
+        ),
+        "mapMet",
+    )
 
 
 def cheatsheet():

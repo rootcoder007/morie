@@ -45,8 +45,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_weibull_heterogeneity"]
 
 
-def horowitz_weibull_heterogeneity(t, x, event=None, mixing_dist="nonparametric",
-                                   delta1=0.6, delta2=0.3):
+def horowitz_weibull_heterogeneity(t, x, event=None, mixing_dist="nonparametric", delta1=0.6, delta2=0.3):
     """Honore (1990) estimator of the Weibull shape, then beta = alpha gamma.
 
     Parameters
@@ -114,7 +113,7 @@ def horowitz_weibull_heterogeneity(t, x, event=None, mixing_dist="nonparametric"
     if den == 0.0:
         raise ValueError("horowitz_weibull_heterogeneity: the two order statistics are tied")
     a_n = -rho * (d1 - d2) * ln / den
-    s2 = (1.0 / ((d1 - d2) * ln)) ** 2 * (n ** d1 - n ** d2) / n
+    s2 = (1.0 / ((d1 - d2) * ln)) ** 2 * (n**d1 - n**d2) / n
     ly = [math.log(v) for v in yv]
     gam = core.lstsq(Xk, ly, 1e-12)
     beta = [a_n * g for g in gam]

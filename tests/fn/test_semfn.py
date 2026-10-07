@@ -1,8 +1,8 @@
 """Tests for semfn.py - spectral error measure."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.semfn import semfn, spectral_error_fn
 
 

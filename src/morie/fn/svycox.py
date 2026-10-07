@@ -82,8 +82,7 @@ def _prep(time, event, X, weights, strata, cluster):
     E = [int(e) for e in event]
     n = len(T)
     if len(E) != n:
-        raise ValueError("svycox: %d times but %d event indicators"
-                         % (n, len(E)))
+        raise ValueError(f"svycox: {int(n)} times but {int(len(E))} event indicators")
     if n < 2:
         raise ValueError("svycox: need at least two subjects")
     if any(e not in (0, 1) for e in E):
@@ -92,26 +91,21 @@ def _prep(time, event, X, weights, strata, cluster):
         raise ValueError("svycox: a survival time cannot be negative")
     M = [[float(v) for v in row] for row in X]
     if len(M) != n:
-        raise ValueError("svycox: %d covariate rows but %d subjects"
-                         % (len(M), n))
+        raise ValueError(f"svycox: {int(len(M))} covariate rows but {int(n)} subjects")
     p = len(M[0])
     if p == 0 or any(len(r) != p for r in M):
-        raise ValueError("svycox: the covariate matrix is ragged or "
-                         "empty")
+        raise ValueError("svycox: the covariate matrix is ragged or empty")
     w = [1.0] * n if weights is None else [float(x) for x in weights]
     if len(w) != n:
-        raise ValueError("svycox: %d weights but %d subjects"
-                         % (len(w), n))
+        raise ValueError(f"svycox: {int(len(w))} weights but {int(n)} subjects")
     if any(x <= 0 for x in w):
         raise ValueError("svycox: sampling weights must be positive")
     if not any(E):
         raise ValueError("svycox: no events, so nothing is estimable")
     h = ["1"] * n if strata is None else [str(x) for x in strata]
-    c = ([str(i) for i in range(n)] if cluster is None
-         else [str(x) for x in cluster])
+    c = [str(i) for i in range(n)] if cluster is None else [str(x) for x in cluster]
     if len(h) != n or len(c) != n:
-        raise ValueError("svycox: strata and cluster need one entry "
-                         "per subject")
+        raise ValueError("svycox: strata and cluster need one entry per subject")
     return T, E, M, w, h, c, n, p
 
 
@@ -120,7 +114,7 @@ def _score_and_info(T, E, M, w, beta, n, p):
     eta = [sum(M[i][k] * beta[k] for k in range(p)) for i in range(n)]
     r = [w[i] * math.exp(eta[i]) for i in range(n)]
     U = [0.0] * p
-    I = [[0.0] * p for _ in range(p)]
+    I_ = [[0.0] * p for _ in range(p)]
     resid = [[0.0] * p for _ in range(n)]
     order = sorted(range(n), key=lambda i: T[i])
     for i in range(n):
@@ -136,16 +130,15 @@ def _score_and_info(T, E, M, w, beta, n, p):
             U[k] += w[i] * (M[i][k] - xbar[k])
             resid[i][k] += M[i][k] - xbar[k]
         for k in range(p):
-            for l in range(p):
-                s2 = sum(r[j] * M[j][k] * M[j][l] for j in risk)
-                I[k][l] += w[i] * (s2 / s0 - xbar[k] * xbar[l])
+            for ell in range(p):
+                s2 = sum(r[j] * M[j][k] * M[j][ell] for j in risk)
+                I_[k][ell] += w[i] * (s2 / s0 - xbar[k] * xbar[ell])
         # every member of the risk set is pulled towards the mean
         for j in risk:
             f = w[i] * r[j] / s0
             for k in range(p):
-                resid[j][k] -= f * (M[j][k] - xbar[k]) / max(w[j],
-                                                             1e-300)
-    return U, I, resid
+                resid[j][k] -= f * (M[j][k] - xbar[k]) / max(w[j], 1e-300)
+    return U, I_, resid
 
 
 def _solve(A, b):
@@ -160,7 +153,8 @@ def _solve(A, b):
                 "failures, or the groups are completely separated -- "
                 "one always failing before the other -- in which case "
                 "the partial likelihood is monotone and no finite "
-                "estimate exists")
+                "estimate exists"
+            )
         Ab[c], Ab[piv] = Ab[piv], Ab[c]
         for r in range(p):
             if r == c:
@@ -188,10 +182,8 @@ def score_residuals(time, event, X, beta, weights=None):
     Their weighted total is the score, which is the property the
     sandwich needs and the anchor checks.
     """
-    T, E, M, w, _h, _c, n, p = _prep(time, event, X, weights, None,
-                                     None)
-    return _score_and_info(T, E, M, w, [float(b) for b in beta],
-                           n, p)[2]
+    T, E, M, w, _h, _c, n, p = _prep(time, event, X, weights, None, None)
+    return _score_and_info(T, E, M, w, [float(b) for b in beta], n, p)[2]
 
 
 def _design_variance(contrib, w, h, c, p):
@@ -210,65 +202,65 @@ def _design_variance(contrib, w, h, c, p):
     for hh, vs in by_h.items():
         nh = len(vs)
         if nh < 2:
-            raise ValueError("svycox: stratum %r has a single "
-                             "cluster, so its variance contribution "
-                             "is not estimable" % hh)
+            raise ValueError(
+                f"svycox: stratum {hh!r} has a single cluster, so its variance contribution is not estimable"
+            )
         mean = [sum(v[k] for v in vs) / nh for k in range(p)]
         f = nh / float(nh - 1)
         for v in vs:
             for k in range(p):
-                for l in range(p):
-                    V[k][l] += f * (v[k] - mean[k]) * (v[l] - mean[l])
+                for ell in range(p):
+                    V[k][ell] += f * (v[k] - mean[k]) * (v[ell] - mean[ell])
     return V
 
 
-def svycoxph(time, event, X, weights=None, strata=None, cluster=None,
-             max_iter=100, tol=1e-9):
+def svycoxph(time, event, X, weights=None, strata=None, cluster=None, max_iter=100, tol=1e-9):
     r"""Fit a Cox model to survey data with Binder's variance."""
-    T, E, M, w, h, c, n, p = _prep(time, event, X, weights, strata,
-                                   cluster)
+    T, E, M, w, h, c, n, p = _prep(time, event, X, weights, strata, cluster)
     beta = [0.0] * p
     hist = []
     for _ in range(int(max_iter)):
-        U, I, _ = _score_and_info(T, E, M, w, beta, n, p)
-        step = _solve(I, U)
+        U, I_, _ = _score_and_info(T, E, M, w, beta, n, p)
+        step = _solve(I_, U)
         beta = [beta[k] + step[k] for k in range(p)]
         hist.append(max(abs(s) for s in step))
         if hist[-1] < float(tol):
             break
     else:
-        raise ValueError("svycox: Newton-Raphson did not converge in "
-                         "%d iterations (last step %.3g)"
-                         % (int(max_iter), hist[-1]))
-    U, I, resid = _score_and_info(T, E, M, w, beta, n, p)
-    Iinv = _inverse(I)
+        raise ValueError(
+            f"svycox: Newton-Raphson did not converge in {int(int(max_iter))} iterations (last step {hist[-1]:.3g})"
+        )
+    U, I_, resid = _score_and_info(T, E, M, w, beta, n, p)
+    Iinv = _inverse(I_)
     Vd = _design_variance(resid, w, h, c, p)
-    V = [[sum(Iinv[a][k] * Vd[k][l] * Iinv[l][b]
-              for k in range(p) for l in range(p))
-          for b in range(p)] for a in range(p)]
-    se = [math.sqrt(V[k][k]) if V[k][k] > 0 else float("nan")
-          for k in range(p)]
-    se_model = [math.sqrt(Iinv[k][k]) if Iinv[k][k] > 0
-                else float("nan") for k in range(p)]
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta,
-        "hazard_ratios": [math.exp(b) for b in beta],
-        "std_errors": se, "model_std_errors": se_model,
-        "vcov": V, "information": I, "score": U,
-        "design_effect": [((se[k] / se_model[k]) ** 2
-                           if se_model[k] > 0 else float("nan"))
-                          for k in range(p)],
-        "z": [beta[k] / se[k] if se[k] > 0 else float("nan")
-              for k in range(p)],
-        "n": n, "n_events": sum(E), "n_iterations": len(hist),
-        "ties": "breslow",
-        "method": "Binder (1992) weighted partial likelihood with a "
-                  "design-based sandwich variance",
-    })
+    V = [
+        [sum(Iinv[a][k] * Vd[k][ell] * Iinv[ell][b] for k in range(p) for ell in range(p)) for b in range(p)]
+        for a in range(p)
+    ]
+    se = [math.sqrt(V[k][k]) if V[k][k] > 0 else float("nan") for k in range(p)]
+    se_model = [math.sqrt(Iinv[k][k]) if Iinv[k][k] > 0 else float("nan") for k in range(p)]
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "hazard_ratios": [math.exp(b) for b in beta],
+            "std_errors": se,
+            "model_std_errors": se_model,
+            "vcov": V,
+            "information": I_,
+            "score": U,
+            "design_effect": [((se[k] / se_model[k]) ** 2 if se_model[k] > 0 else float("nan")) for k in range(p)],
+            "z": [beta[k] / se[k] if se[k] > 0 else float("nan") for k in range(p)],
+            "n": n,
+            "n_events": sum(E),
+            "n_iterations": len(hist),
+            "ties": "breslow",
+            "method": "Binder (1992) weighted partial likelihood with a design-based sandwich variance",
+        }
+    )
 
 
-def survey_cox(time, event, X, weights=None, strata=None,
-               cluster=None, **kw):
+def survey_cox(time, event, X, weights=None, strata=None, cluster=None, **kw):
     r"""Entry point: see :func:`svycoxph`."""
     return svycoxph(time, event, X, weights, strata, cluster, **kw)
 

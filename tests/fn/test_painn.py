@@ -7,15 +7,17 @@ import pytest
 from morie.fn.painn import painn
 
 S = [0.3, -1.2]
-V = [[0.5, -0.2], [1.0, 0.4], [-0.3, 0.8]]          # 3 spatial dims x F = 2
+V = [[0.5, -0.2], [1.0, 0.4], [-0.3, 0.8]]  # 3 spatial dims x F = 2
 U = [[0.7, -0.1], [0.2, 1.3]]
 W = [[1.1, 0.5], [-0.4, 0.9]]
 
 
 def _phi(s, dot, nrm):
     # any scalar network works; it only ever sees invariants
-    return {"ds": [s[f] + dot[f] + 0.5 * nrm[f] for f in range(2)],
-            "gate": [math.tanh(s[f] - dot[f]) for f in range(2)]}
+    return {
+        "ds": [s[f] + dot[f] + 0.5 * nrm[f] for f in range(2)],
+        "gate": [math.tanh(s[f] - dot[f]) for f in range(2)],
+    }
 
 
 def _rot(v, th):

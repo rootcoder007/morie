@@ -1,7 +1,6 @@
 """Tests for morie.fn.gwas1 — single-SNP GWAS."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gwas1 import gwas_single_snp
 
 

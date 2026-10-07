@@ -1,7 +1,6 @@
 """Tests for morie.fn.optsa -- simulated annealing MDS."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.optsa import optsa, simulated_anneal_mds
 
 

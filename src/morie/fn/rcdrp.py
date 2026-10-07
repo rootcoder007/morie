@@ -24,7 +24,7 @@ def drop_influential_votes(votes, threshold=0.9):
     from morie.fn import _array_core as np
 
     V = np.asarray(votes, dtype=float)
-    n = V.shape[0]
+    V.shape[0]
     keep = []
     dropped = []
     for j in range(V.shape[1]):

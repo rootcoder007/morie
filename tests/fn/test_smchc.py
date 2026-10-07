@@ -1,7 +1,6 @@
 """Tests for morie.fn.smchc -- simulate choice probabilities."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.smchc import simulate_choice_prob, smchc
 
 

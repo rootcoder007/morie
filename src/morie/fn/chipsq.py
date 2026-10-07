@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """ChIP-seq peak significance with the MACS dynamic Poisson lambda."""
 
-import math
-
 from . import _array_core as np
 from . import _sci_core as sci
 from ._richresult import RichResult
@@ -20,8 +18,7 @@ def _pois_upper(k, lam):
     return float(sci.gammainc(float(k), float(lam)))
 
 
-def chipsq(count, width, lambda_bg, count_1k=None, count_5k=None,
-           count_10k=None, use_1k=True):
+def chipsq(count, width, lambda_bg, count_1k=None, count_5k=None, count_10k=None, use_1k=True):
     """
     Candidate ChIP-seq peak significance, MACS dynamic lambda.
 
@@ -104,15 +101,17 @@ def chipsq(count, width, lambda_bg, count_1k=None, count_5k=None,
         lam_loc.append(lam)
         pv.append(_pois_upper(int(k[i]), lam))
         fe.append(float(k[i]) / lam if lam > 0.0 else float("inf"))
-    return RichResult(payload={
-        "pvalue": np.asarray(pv),
-        "lambda_local": np.asarray(lam_loc),
-        "fold_enrichment": np.asarray(fe),
-        "count": k,
-        "width": wv,
-        "n_peaks": npk,
-        "method": "MACS dynamic-lambda Poisson peak test (Zhang et al. 2008)",
-    })
+    return RichResult(
+        payload={
+            "pvalue": np.asarray(pv),
+            "lambda_local": np.asarray(lam_loc),
+            "fold_enrichment": np.asarray(fe),
+            "count": k,
+            "width": wv,
+            "n_peaks": npk,
+            "method": "MACS dynamic-lambda Poisson peak test (Zhang et al. 2008)",
+        }
+    )
 
 
 chip_seq_peak = chipsq
@@ -120,5 +119,4 @@ chipseqpeak = chipsq
 
 
 def cheatsheet():
-    return ("chipsq(count, width, lambda_bg, count_1k, count_5k, "
-            "count_10k) -> MACS lambda_local Poisson peak p-values.")
+    return "chipsq(count, width, lambda_bg, count_1k, count_5k, count_10k) -> MACS lambda_local Poisson peak p-values."

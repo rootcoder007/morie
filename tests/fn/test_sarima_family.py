@@ -1,4 +1,5 @@
 """Seasonal ARIMA and regression with seasonal ARIMA errors."""
+
 import importlib
 import math
 
@@ -70,8 +71,7 @@ def test_airline_autocovariances_vanish_off_the_four_lags():
 
 def test_gamma_zero_factorises():
     ac = S.airline_autocovariances(0.4, 0.6, sigma2=2.0)
-    assert ac["gamma"][0] == pytest.approx(
-        (1 + 0.16) * (1 + 0.36) * 2.0)
+    assert ac["gamma"][0] == pytest.approx((1 + 0.16) * (1 + 0.36) * 2.0)
 
 
 def test_rho_one_is_free_of_the_seasonal_parameter():
@@ -147,10 +147,8 @@ def test_the_initial_covariance_solves_the_lyapunov_equation(ml):
     ar, ma = S.expand_polynomials((), (), ml["theta"], ml["Theta"], 12)
     T, R, r = S._state_space(ar, ma)
     P = S._initial_covariance(T, R, r)
-    TP = [[sum(T[i][k] * P[k][j] for k in range(r)) for j in range(r)]
-          for i in range(r)]
-    rhs = [[sum(TP[i][k] * T[j][k] for k in range(r)) + R[i] * R[j]
-            for j in range(r)] for i in range(r)]
+    TP = [[sum(T[i][k] * P[k][j] for k in range(r)) for j in range(r)] for i in range(r)]
+    rhs = [[sum(TP[i][k] * T[j][k] for k in range(r)) + R[i] * R[j] for j in range(r)] for i in range(r)]
     for i in range(r):
         for j in range(r):
             assert P[i][j] == pytest.approx(rhs[i][j], abs=1e-10)
@@ -179,8 +177,7 @@ def test_css_residuals_reproduce_the_recursion():
 def test_forecasts_repeat_the_seasonal_shape(ml):
     f = S.forecast(ml, 36)
     assert len(f["forecast"]) == 36
-    assert all(f["forecast"][k + 12] > f["forecast"][k]
-               for k in range(24))
+    assert all(f["forecast"][k + 12] > f["forecast"][k] for k in range(24))
 
 
 def test_forecast_intervals_widen(ml):
@@ -230,14 +227,12 @@ def test_a_planted_coefficient_is_recovered_within_two_standard_errors():
 
 def test_a_regressor_annihilated_by_differencing_is_refused():
     with pytest.raises(ValueError):
-        SX.fit(Z, [[float(i)] for i in range(len(Z))], (0, 1, 1),
-               (0, 1, 1), 12)
+        SX.fit(Z, [[float(i)] for i in range(len(Z))], (0, 1, 1), (0, 1, 1), 12)
 
 
 def test_a_constant_is_refused_when_d_plus_D_is_two():
     with pytest.raises(ValueError):
-        SX.fit(Z, None, (0, 1, 1), (0, 1, 1), 12,
-               include_constant=True)
+        SX.fit(Z, None, (0, 1, 1), (0, 1, 1), 12, include_constant=True)
 
 
 def test_a_wrong_length_regressor_is_refused():
@@ -247,13 +242,15 @@ def test_a_wrong_length_regressor_is_refused():
 
 def test_starting_models_are_the_papers_four():
     assert SX.starting_models(1, 1, 12) == [
-        ((2, 1, 2), (1, 1, 1)), ((0, 1, 0), (0, 1, 0)),
-        ((1, 1, 0), (1, 1, 0)), ((0, 1, 1), (0, 1, 1))]
+        ((2, 1, 2), (1, 1, 1)),
+        ((0, 1, 0), (0, 1, 0)),
+        ((1, 1, 0), (1, 1, 0)),
+        ((0, 1, 1), (0, 1, 1)),
+    ]
 
 
 def test_non_seasonal_starting_models_carry_no_seasonal_terms():
-    assert all(so[0] == 0 and so[2] == 0
-               for _, so in SX.starting_models(1, 0, 1))
+    assert all(so[0] == 0 and so[2] == 0 for _, so in SX.starting_models(1, 0, 1))
 
 
 def test_there_are_thirteen_neighbours():
@@ -267,8 +264,7 @@ def test_the_constant_switch_is_one_of_them():
 
 def test_the_upper_bounds_are_enforced():
     nb = SX.neighbours((5, 1, 5), (2, 1, 2), False, 12)
-    assert all(o[0] <= 5 and o[2] <= 5 and so[0] <= 2 and so[2] <= 2
-               for o, so, _ in nb)
+    assert all(o[0] <= 5 and o[2] <= 5 and so[0] <= 2 and so[2] <= 2 for o, so, _ in nb)
 
 
 def test_a_near_unit_root_is_rejected():

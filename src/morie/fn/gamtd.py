@@ -72,7 +72,7 @@ def n_step_td(traj, V, n=1, gamma=0.99, alpha=0.1, states=None):
             j += 1
         if h < T and h < len(idx):
             si = idx[h]
-            acc += (g ** nn) * (v[si] if si < len(v) else 0.0)
+            acc += (g**nn) * (v[si] if si < len(v) else 0.0)
             booted.append(1.0)
         else:
             booted.append(0.0)

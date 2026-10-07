@@ -1,7 +1,6 @@
 """Tests for gh_ap_a2.ghosal_prohorov_metric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_a2 import ghosal_prohorov_metric
 
 

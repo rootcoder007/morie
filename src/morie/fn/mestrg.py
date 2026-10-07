@@ -53,12 +53,10 @@ def m_regression(X, y, psi="huber", c=None, max_iter=100):
     A, yv = prepare_design(X, y)
     n, p = A.shape
     if n <= p:
-        raise ValueError(f"need more observations than parameters, "
-                         f"got n = {n}, p = {p}.")
+        raise ValueError(f"need more observations than parameters, got n = {n}, p = {p}.")
     if psi not in ("huber", "bisquare"):
         raise ValueError("psi must be 'huber' or 'bisquare'.")
-    cc = float(c) if c is not None else (
-        HUBER_C_95 if psi == "huber" else TUKEY_C_95)
+    cc = float(c) if c is not None else (HUBER_C_95 if psi == "huber" else TUKEY_C_95)
     if cc <= 0:
         raise ValueError(f"c must be positive, got {cc}.")
 
@@ -88,19 +86,29 @@ def m_regression(X, y, psi="huber", c=None, max_iter=100):
             break
         beta = beta_new
     r = yv - A @ beta
-    return RichResult(payload={
-        "beta": beta, "scale": float(scale), "residuals": r,
-        "weights": wfun(r / scale) if scale > 0 else np.ones(n),
-        "psi": psi, "c": cc,
-        "monotone": psi == "huber",
-        "unique_solution": psi == "huber",
-        "converged": bool(conv),
-        "start_dependent_warning": None if psi == "huber" else (
-            "the biweight objective is non-convex: IRLS from least squares "
-            "finds a LOCAL solution, and for high-breakdown behaviour use "
-            "the S/MM chain (morie.fn.mmreg) instead"),
-        "n": int(n), "p": int(p),
-        "method": f"M-regression by IRLS, {psi} psi at c = {cc}"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "scale": float(scale),
+            "residuals": r,
+            "weights": wfun(r / scale) if scale > 0 else np.ones(n),
+            "psi": psi,
+            "c": cc,
+            "monotone": psi == "huber",
+            "unique_solution": psi == "huber",
+            "converged": bool(conv),
+            "start_dependent_warning": None
+            if psi == "huber"
+            else (
+                "the biweight objective is non-convex: IRLS from least squares "
+                "finds a LOCAL solution, and for high-breakdown behaviour use "
+                "the S/MM chain (morie.fn.mmreg) instead"
+            ),
+            "n": int(n),
+            "p": int(p),
+            "method": f"M-regression by IRLS, {psi} psi at c = {cc}",
+        }
+    )
 
 
 def cheatsheet():

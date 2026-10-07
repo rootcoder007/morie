@@ -11,8 +11,7 @@ from .krreg import krreg
 __all__ = ["kernel_ridge_regression"]
 
 
-def kernel_ridge_regression(X, y, kernel="gaussian", lam=1.0, x_eval=None,
-                            bandwidth=None):
+def kernel_ridge_regression(X, y, kernel="gaussian", lam=1.0, x_eval=None, bandwidth=None):
     """Ridge regression carried out on inner products instead of features.
 
     The dual form is what makes a kernel method possible: the fit depends
@@ -52,8 +51,7 @@ def kernel_ridge_regression(X, y, kernel="gaussian", lam=1.0, x_eval=None,
     learning algorithm in dual variables.  Proceedings of the 15th
     International Conference on Machine Learning, 515-521.
     """
-    return krreg(X, y, x_eval, bandwidth=bandwidth, penalty=lam,
-                 kernel=kernel)
+    return krreg(X, y, x_eval, bandwidth=bandwidth, penalty=lam, kernel=kernel)
 
 
 def cheatsheet():

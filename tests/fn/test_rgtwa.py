@@ -31,5 +31,3 @@ def test_rgtwa_edge():
     assert rangayyan_twave_alternans(flat)["present"] is False
     with pytest.raises(ValueError, match="eight beats"):
         rangayyan_twave_alternans(alt[:6])
-
-

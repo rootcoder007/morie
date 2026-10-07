@@ -59,15 +59,17 @@ def kosorok_ch2_kaplan_meier_inverse(S_0, L, F_0, a, t):
             raise ValueError("L(u-) S_0(u-) vanishes on [0, t]; inverse undefined.")
         au = np.array([float(a(u)) for u in grid])
         integrand = 1.0 / denom
-        ints.append(float(np.sum(0.5 * (integrand[1:] + integrand[:-1])
-                                 * np.diff(au))))
+        ints.append(float(np.sum(0.5 * (integrand[1:] + integrand[:-1]) * np.diff(au))))
         out.append(-float(S_0(ti)) * (a0 + ints[-1]))
     scalar = np.ndim(t) == 0
     return RichResult(
-        payload={"inverse": out[0] if scalar else np.array(out),
-                 "integral_term": ints[0] if scalar else np.array(ints),
-                 "a_at_zero": a0, "t": t,
-                 "method": "Psi-dot^-1(a)(t) with LEFT limits in the integrand"}
+        payload={
+            "inverse": out[0] if scalar else np.array(out),
+            "integral_term": ints[0] if scalar else np.array(ints),
+            "a_at_zero": a0,
+            "t": t,
+            "method": "Psi-dot^-1(a)(t) with LEFT limits in the integrand",
+        }
     )
 
 

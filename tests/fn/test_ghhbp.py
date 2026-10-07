@@ -1,7 +1,6 @@
 """Tests for ghhbp.ghosal_hierarchical_bayes."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghhbp import ghosal_hierarchical_bayes
 
 

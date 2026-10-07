@@ -1,7 +1,5 @@
 """Tests for incrtio.incidence_rate_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.incrtio import incidence_rate_ratio
 
 

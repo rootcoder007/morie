@@ -4,6 +4,7 @@ Each test pins a property the source paper states -- an exact identity,
 a closed form, a printed figure, or a constructed case with a known
 answer -- not the implementation's own output.
 """
+
 import importlib
 import math
 
@@ -33,8 +34,7 @@ def test_samseg_encoder_cost_amortises():
 
 def test_samseg_dense_prompt_is_summed():
     ss = M("samseg")
-    r = ss.encode_mask_prompt([[1.0, 0.0], [0.0, 1.0]],
-                              [[5.0, 5.0], [5.0, 5.0]])
+    r = ss.encode_mask_prompt([[1.0, 0.0], [0.0, 1.0]], [[5.0, 5.0], [5.0, 5.0]])
     assert r["embedding"] == [[6.0, 5.0], [5.0, 6.0]]
     assert r["sparse"] is False
 
@@ -51,11 +51,10 @@ def test_samseg_rejects_bad_prompts():
 def test_samdec_two_way_updates_both():
     sd = M("samdec")
     P = [[1.0, 0.0], [0.0, 1.0]]
-    I = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
-    r = sd.two_way_block(P, I)
-    assert r["prompt_tokens"] != P and r["image_tokens"] != I
-    assert all(sum(row) == pytest.approx(1.0)
-               for row in r["prompt_to_image"])
+    I_ = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
+    r = sd.two_way_block(P, I_)
+    assert r["prompt_tokens"] != P and r["image_tokens"] != I_
+    assert all(sum(row) == pytest.approx(1.0) for row in r["prompt_to_image"])
 
 
 def test_samdec_focal_modulation_is_closed_form():
@@ -67,16 +66,12 @@ def test_samdec_focal_modulation_is_closed_form():
 def test_samdec_dice_exact():
     sd = M("samdec")
     assert sd.dice_loss([1.0, 1.0, 0.0], [1.0, 1.0, 0.0])["loss"] == 0.0
-    assert sd.dice_loss([1.0, 0.0, 0.0, 0.0],
-                        [1.0, 1.0, 0.0, 0.0])["dice"] == pytest.approx(
-                            2 / 3)
+    assert sd.dice_loss([1.0, 0.0, 0.0, 0.0], [1.0, 1.0, 0.0, 0.0])["dice"] == pytest.approx(2 / 3)
 
 
 def test_samdec_dynamic_head_uses_the_output_token():
     sd = M("samdec")
-    r = sd.dynamic_mask_head([1.0, 0.0],
-                             [[[1.0, 0.0], [0.0, 1.0]],
-                              [[2.0, 0.0], [0.0, 2.0]]])
+    r = sd.dynamic_mask_head([1.0, 0.0], [[[1.0, 0.0], [0.0, 1.0]], [[2.0, 0.0], [0.0, 2.0]]])
     assert r["logits"] == [[1.0, 0.0], [2.0, 0.0]]
 
 
@@ -91,15 +86,13 @@ def _masks():
 def test_sammkr_single_output_must_average():
     mk = M("sammkr")
     whole, part, _ = _masks()
-    assert mk.average_of_valid_masks([whole,
-                                      part])["ambiguous_fraction"] > 0
+    assert mk.average_of_valid_masks([whole, part])["ambiguous_fraction"] > 0
 
 
 def test_sammkr_min_loss_beats_the_mean():
     mk = M("sammkr")
     whole, part, sub = _masks()
-    r = mk.min_loss_over_masks([whole, part, sub], part,
-                               lambda p, t: 1.0 - mk.iou(p, t))
+    r = mk.min_loss_over_masks([whole, part, sub], part, lambda p, t: 1.0 - mk.iou(p, t))
     assert r["index"] == 1 and r["loss"] == pytest.approx(0.0)
     assert r["mean_loss"] > r["loss"]
 
@@ -107,10 +100,8 @@ def test_sammkr_min_loss_beats_the_mean():
 def test_sammkr_ranking_reports_its_own_regret():
     mk = M("sammkr")
     whole, part, sub = _masks()
-    good = mk.rank_masks([whole, part, sub], [0.2, 0.95, 0.1],
-                         target=part)
-    bad = mk.rank_masks([whole, part, sub], [0.99, 0.1, 0.1],
-                        target=part)
+    good = mk.rank_masks([whole, part, sub], [0.2, 0.95, 0.1], target=part)
+    bad = mk.rank_masks([whole, part, sub], [0.99, 0.1, 0.1], target=part)
     assert good["correct"] and good["regret"] == 0.0
     assert not bad["correct"] and bad["regret"] > 0.0
 
@@ -143,16 +134,13 @@ def test_sam2vd_empty_memory_is_the_image_model():
 def test_sam2vd_temporal_embedding_skips_prompted_frames():
     s2 = M("sam2vd")
     e = {"frame": 0, "features": [1.0, 1.0]}
-    assert not s2.temporal_embedding(dict(e, prompted=True),
-                                     9)["embedded"]
-    assert s2.temporal_embedding(dict(e, prompted=False),
-                                 9)["embedded"]
+    assert not s2.temporal_embedding(dict(e, prompted=True), 9)["embedded"]
+    assert s2.temporal_embedding(dict(e, prompted=False), 9)["embedded"]
 
 
 def test_sam2vd_propagation_conditions_after_the_first_frame():
     s2 = M("sam2vd")
-    r = s2.propagate([1.0, 2.0, 3.0], lambda f: [float(f)],
-                     lambda x, p: x[0], prompts={0: "mask"})
+    r = s2.propagate([1.0, 2.0, 3.0], lambda f: [float(f)], lambda x, p: x[0], prompts={0: "mask"})
     assert r["conditioned"] == [False, True, True]
 
 
@@ -181,12 +169,10 @@ def test_sdxlcd_buckets_hold_the_pixel_count():
 
 def test_sdxlcd_condition_vector_matches_the_timestep_width():
     sx = M("sdxlcd")
-    r = sx.condition_vector(512, 512, 0, 0,
-                            timestep_embedding=[1.0] * 32)
+    r = sx.condition_vector(512, 512, 0, 0, timestep_embedding=[1.0] * 32)
     assert r["width"] == 32
     with pytest.raises(ValueError):
-        sx.condition_vector(512, 512, 0, 0,
-                            timestep_embedding=[1.0] * 8)
+        sx.condition_vector(512, 512, 0, 0, timestep_embedding=[1.0] * 8)
 
 
 # ---------------------------------------------------------------- vqgenc
@@ -219,15 +205,14 @@ def test_vqgenc_attention_saving_is_the_square():
     ve = M("vqgenc")
     r = ve.sequence_length(256, 256, 16)
     assert r["tokens"] == 256
-    assert r["speedup"] == pytest.approx(256.0 ** 2)
+    assert r["speedup"] == pytest.approx(256.0**2)
 
 
 # ---------------------------------------------------------------- vqgdec
 def test_vqgdec_decode_inverts_quantise():
     ve, vd = M("vqgenc"), M("vqgdec")
     idx = ve.quantize([[0.9, 0.1], [0.1, 0.9]], BOOK)["indices"]
-    assert vd.decode_indices(idx, BOOK)["codes"] == [BOOK[i]
-                                                     for i in idx]
+    assert vd.decode_indices(idx, BOOK)["codes"] == [BOOK[i] for i in idx]
     with pytest.raises(ValueError):
         vd.decode_indices([99], BOOK)
 
@@ -259,10 +244,8 @@ VIDEO = [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]]
 
 def test_vidgen_identity_temporal_attention_is_the_image_case():
     vg = M("vidgen")
-    assert vg.temporal_attention(VIDEO, identity=True)["video"] \
-        == VIDEO
-    assert vg.temporal_attention(VIDEO, identity=False)["video"] \
-        != VIDEO
+    assert vg.temporal_attention(VIDEO, identity=True)["video"] == VIDEO
+    assert vg.temporal_attention(VIDEO, identity=False)["video"] != VIDEO
 
 
 def test_vidgen_spatial_attention_treats_frames_as_batch():
@@ -276,13 +259,12 @@ def test_vidgen_factorised_cost():
     vg = M("vidgen")
     r = vg.attention_cost(16, 1024)
     assert r["joint"] == (16 * 1024) ** 2
-    assert r["factorised"] == 16 * 1024 ** 2 + 1024 * 16 ** 2
+    assert r["factorised"] == 16 * 1024**2 + 1024 * 16**2
 
 
 def test_vidgen_guidance_touches_only_observed_frames():
     vg = M("vidgen")
-    r = vg.reconstruction_guidance([[0.0, 0.0], [9.0, 9.0]],
-                                   [[1.0, 1.0]], [0], weight=2.0)
+    r = vg.reconstruction_guidance([[0.0, 0.0], [9.0, 9.0]], [[1.0, 1.0]], [0], weight=2.0)
     assert r["gradient"][0] == [4.0, 4.0]
     assert r["gradient"][1] == [0.0, 0.0]
 
@@ -303,16 +285,15 @@ def test_yolovx_location_outside_the_box_is_not_positive():
 
 def test_yolovx_center_sampling_beats_one_positive():
     yx = M("yolovx")
-    r = yx.center_sampling([10.0, 20.0, 50.0, 60.0], 10, 10,
-                           stride=8.0)
+    r = yx.center_sampling([10.0, 20.0, 50.0, 60.0], 10, 10, stride=8.0)
     assert r["n_candidates"] > 1
 
 
 def test_yolovx_simota_k_is_dynamic_and_disjoint():
     yx = M("yolovx")
-    r = yx.simota_assign([[0.1, 0.2, 0.3, 5.0], [5.0, 5.0, 0.4, 0.5]],
-                         [[0.9, 0.8, 0.7, 0.0], [0.0, 0.0, 0.6, 0.5]],
-                         top_q=4)
+    r = yx.simota_assign(
+        [[0.1, 0.2, 0.3, 5.0], [5.0, 5.0, 0.4, 0.5]], [[0.9, 0.8, 0.7, 0.0], [0.0, 0.0, 0.6, 0.5]], top_q=4
+    )
     assert r["dynamic_k"] == [2, 1]
     assert not set(r["assignment"][0]) & set(r["assignment"][1])
 
@@ -326,10 +307,8 @@ def test_dnvtwo_deduplication_keeps_the_original():
 
 def test_dnvtwo_koleo_punishes_clustering():
     dn = M("dnvtwo")
-    spread = dn.koleo([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0],
-                       [0.0, -1.0]])
-    clumped = dn.koleo([[1.0, 0.0], [0.999, 0.045], [-1.0, 0.0],
-                        [0.0, -1.0]])
+    spread = dn.koleo([[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]])
+    clumped = dn.koleo([[1.0, 0.0], [0.999, 0.045], [-1.0, 0.0], [0.0, -1.0]])
     assert clumped["loss"] > spread["loss"]
     with pytest.raises(ValueError):
         dn.koleo([[1.0, 0.0]])
@@ -337,10 +316,8 @@ def test_dnvtwo_koleo_punishes_clustering():
 
 def test_dnvtwo_sinkhorn_normalises_rows():
     dn = M("dnvtwo")
-    r = dn.sinkhorn_knopp([[1.0, 0.0], [0.9, 0.1], [0.0, 1.0]],
-                          iterations=3)
-    assert all(v == pytest.approx(1.0, abs=1e-6)
-               for v in r["row_sums"])
+    r = dn.sinkhorn_knopp([[1.0, 0.0], [0.9, 0.1], [0.0, 1.0]], iterations=3)
+    assert all(v == pytest.approx(1.0, abs=1e-6) for v in r["row_sums"])
 
 
 def test_dnvtwo_teacher_is_sharper_than_student():
@@ -372,21 +349,17 @@ def test_opnclp_extrapolation_distance_is_reported():
 def test_opnclp_distributions_give_different_exponents():
     oc = M("opnclp")
     C = [1e3, 1e4, 1e5, 1e6]
-    r = oc.compare_scaling(C, [0.5 * c ** (-0.3) for c in C],
-                           C, [0.5 * c ** (-0.15) for c in C])
+    r = oc.compare_scaling(C, [0.5 * c ** (-0.3) for c in C], C, [0.5 * c ** (-0.15) for c in C])
     assert not r["same_law"]
     assert r["alpha_gap"] == pytest.approx(0.15, abs=1e-9)
 
 
 def test_opnclp_infonce_is_symmetric_and_minimised_when_aligned():
     oc = M("opnclp")
-    aligned = oc.infonce([[1.0, 0.0], [0.0, 1.0]],
-                         [[1.0, 0.0], [0.0, 1.0]])
-    swapped = oc.infonce([[1.0, 0.0], [0.0, 1.0]],
-                         [[0.0, 1.0], [1.0, 0.0]])
+    aligned = oc.infonce([[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]])
+    swapped = oc.infonce([[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]])
     assert aligned["loss"] < swapped["loss"]
-    assert aligned["image_to_text"] == pytest.approx(
-        aligned["text_to_image"])
+    assert aligned["image_to_text"] == pytest.approx(aligned["text_to_image"])
 
 
 # ---------------------------------------------------------------- infmax
@@ -394,8 +367,7 @@ def test_infmax_jsd_floor_is_minus_two_log_two():
     im = M("infmax")
     same = im.jsd_estimator([0.0] * 8, [0.0] * 8)
     sep = im.jsd_estimator([5.0] * 8, [-5.0] * 8)
-    assert same["estimate"] == pytest.approx(-2 * math.log(2.0),
-                                             abs=1e-12)
+    assert same["estimate"] == pytest.approx(-2 * math.log(2.0), abs=1e-12)
     assert sep["estimate"] > same["estimate"] + 1.3
     assert sep["estimate"] <= 0.0
 
@@ -417,10 +389,8 @@ def test_infmax_local_sees_structure_the_global_cannot():
     glob = [[1.0], [-1.0]]
     spread = [[[1.0], [1.0], [1.0]], [[-1.0], [-1.0], [-1.0]]]
     conc = [[[3.0], [0.0], [0.0]], [[-3.0], [0.0], [0.0]]]
-    ga = im.global_objective(glob, [[1.0, 1.0, 1.0],
-                                    [-1.0, -1.0, -1.0]], critic)
-    gb = im.global_objective(glob, [[3.0, 0.0, 0.0],
-                                    [-3.0, 0.0, 0.0]], critic)
+    ga = im.global_objective(glob, [[1.0, 1.0, 1.0], [-1.0, -1.0, -1.0]], critic)
+    gb = im.global_objective(glob, [[3.0, 0.0, 0.0], [-3.0, 0.0, 0.0]], critic)
     la = im.local_objective(glob, spread, critic)
     lb = im.local_objective(glob, conc, critic)
     assert ga["objective"] == pytest.approx(gb["objective"], abs=1e-12)
@@ -442,29 +412,22 @@ def test_sdne_unweighted_loss_rewards_predicting_nothing():
     sn = M("sdne")
     A = _chain()
     zero = [[0.0] * 4 for _ in range(4)]
-    half = [[0.5 if A[i][j] else 0.0 for j in range(4)]
-            for i in range(4)]
-    assert sn.second_order_loss(A, zero, beta=1.0)["loss"] > \
-        sn.second_order_loss(A, half, beta=1.0)["loss"]
-    assert sn.second_order_loss(A, zero, beta=5.0)["loss"] > \
-        sn.second_order_loss(A, half, beta=5.0)["loss"]
+    half = [[0.5 if A[i][j] else 0.0 for j in range(4)] for i in range(4)]
+    assert sn.second_order_loss(A, zero, beta=1.0)["loss"] > sn.second_order_loss(A, half, beta=1.0)["loss"]
+    assert sn.second_order_loss(A, zero, beta=5.0)["loss"] > sn.second_order_loss(A, half, beta=5.0)["loss"]
 
 
 def test_sdne_perfect_reconstruction_is_zero():
     sn = M("sdne")
     A = _chain()
-    assert sn.second_order_loss(A, A, beta=5.0)["loss"] == \
-        pytest.approx(0.0)
+    assert sn.second_order_loss(A, A, beta=5.0)["loss"] == pytest.approx(0.0)
 
 
 def test_sdne_first_order_is_zero_iff_linked_pairs_coincide():
     sn = M("sdne")
     A = _chain()
-    assert sn.first_order_loss(A, [[0.0], [0.0], [0.0],
-                                   [9.0]])["loss"] == \
-        pytest.approx(0.0)
-    assert sn.first_order_loss(A, [[0.0], [1.0], [0.0],
-                                   [0.0]])["loss"] > 0.0
+    assert sn.first_order_loss(A, [[0.0], [0.0], [0.0], [9.0]])["loss"] == pytest.approx(0.0)
+    assert sn.first_order_loss(A, [[0.0], [1.0], [0.0], [0.0]])["loss"] > 0.0
 
 
 def test_sdne_second_order_pairs_dominate_in_a_star():
@@ -484,11 +447,9 @@ def test_sdne_rejects_beta_below_one():
 
 
 # ------------------------------------------------------------------ se3T
-POS = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 2.0, 0.5],
-       [-1.0, 0.3, 1.0]]
+POS = [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 2.0, 0.5], [-1.0, 0.3, 1.0]]
 T0 = [0.5, -0.2, 1.1, 0.3]
-T1 = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0],
-      [1.0, 1.0, 1.0]]
+T1 = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]]
 
 
 def test_se3T_output_rotates_with_the_input():
@@ -504,12 +465,13 @@ def test_se3T_check_catches_a_non_equivariant_layer():
 
     def broken(p, s, v):
         r = s3.se3_attention(p, s, v)
-        return {"type1": [[x + p[i][0] for x in r["type1"][i]]
-                          for i in range(len(p))],
-                "type0": r["type0"], "weights": r["weights"]}
+        return {
+            "type1": [[x + p[i][0] for x in r["type1"][i]] for i in range(len(p))],
+            "type0": r["type0"],
+            "weights": r["weights"],
+        }
 
-    assert not s3.check_equivariance(POS, T0, T1,
-                                     layer=broken)["equivariant"]
+    assert not s3.check_equivariance(POS, T0, T1, layer=broken)["equivariant"]
 
 
 def test_se3T_rotation_is_orthogonal():
@@ -529,8 +491,7 @@ def test_se3T_radial_kernel_sees_only_distance():
 
 
 # ---------------------------------------------------------------- ssmpar
-PAIRS = [(0.5, 1.0), (0.9, -2.0), (1.1, 0.3), (0.7, 4.0),
-         (0.95, -1.5), (1.05, 0.25), (0.6, 2.0)]
+PAIRS = [(0.5, 1.0), (0.9, -2.0), (1.1, 0.3), (0.7, 4.0), (0.95, -1.5), (1.05, 0.25), (0.6, 2.0)]
 
 
 def test_ssmpar_parallel_equals_sequential():
@@ -568,8 +529,7 @@ def test_dssm_letter_trigrams_are_exact():
 
 def test_dssm_word_hashing_reduces_the_input_layer():
     ds = M("dssm")
-    r = ds.collision_rate(["good", "goods", "dog", "god", "cat",
-                           "cats", "act"])
+    r = ds.collision_rate(["good", "goods", "dog", "god", "cat", "cats", "act"])
     assert r["ngram_dimension"] > 0
     assert r["collision_rate"] < 0.5
 
@@ -581,10 +541,8 @@ def test_dssm_unseen_word_still_has_a_representation():
 
 def test_dssm_posterior_normalises_and_gamma_flattens_it():
     ds = M("dssm")
-    sharp = ds.click_posterior([1.0, 0.0], [1.0, 0.0],
-                               [[0.0, 1.0], [-1.0, 0.0]], gamma=10.0)
-    flat = ds.click_posterior([1.0, 0.0], [1.0, 0.0],
-                              [[0.0, 1.0], [-1.0, 0.0]], gamma=0.001)
+    sharp = ds.click_posterior([1.0, 0.0], [1.0, 0.0], [[0.0, 1.0], [-1.0, 0.0]], gamma=10.0)
+    flat = ds.click_posterior([1.0, 0.0], [1.0, 0.0], [[0.0, 1.0], [-1.0, 0.0]], gamma=0.001)
     assert sum(sharp["posterior"]) == pytest.approx(1.0)
     assert sharp["posterior_clicked"] > 0.99
     assert flat["posterior_clicked"] == pytest.approx(1 / 3, abs=1e-3)
@@ -599,9 +557,7 @@ def test_dssm_zero_vector_has_no_direction():
 # ------------------------------------------------------------------ twoT
 def test_twoT_correction_reverses_a_popularity_ranking():
     tt = M("twoT")
-    r = tt.retrieve([1.0], [[0.80], [0.75]],
-                    probabilities=[0.5, 0.01], temperature=1.0,
-                    top_k=2)
+    r = tt.retrieve([1.0], [[0.80], [0.75]], probabilities=[0.5, 0.01], temperature=1.0, top_k=2)
     assert r["uncorrected_top_k"][0] == 0
     assert r["top_k"][0] == 1
     assert r["changed"]
@@ -658,8 +614,7 @@ def test_sse4r_p_zero_is_the_identity():
 
 def test_sse4r_observed_rate_is_p_times_one_minus_one_over_n():
     s4 = M("sse4r")
-    r = s4.sse_replace([i % 20 for i in range(200)], 20, p=0.5,
-                       seed=3)
+    r = s4.sse_replace([i % 20 for i in range(200)], 20, p=0.5, seed=3)
     expect = s4.expected_replacement(0.5, 20)["expected_rate"]
     assert abs(r["rate"] - expect) < 0.08
     assert expect < 0.5

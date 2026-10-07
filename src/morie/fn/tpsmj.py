@@ -29,10 +29,7 @@ def tps_major_crime(
     """
     if mci_col not in df.columns:
         raise ValueError(f"Column '{mci_col}' not found")
-    if count_col in df.columns:
-        grouped = df.groupby(mci_col)[count_col].sum()
-    else:
-        grouped = df[mci_col].value_counts()
+    grouped = df.groupby(mci_col)[count_col].sum() if count_col in df.columns else df[mci_col].value_counts()
     total = grouped.sum()
     return DescriptiveResult(
         name="major_crime_indicators",

@@ -1,7 +1,6 @@
 """Tests for latent_class."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lca import latent_class
 
 

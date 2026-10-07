@@ -60,8 +60,7 @@ def ctt_item_total_corr(X, item_index):
     n, k = arr.shape
     if k < 2:
         raise ValueError(
-            f"need at least 2 items to form a rest-total; got {k}. With one item "
-            "the 'total minus the item' is empty."
+            f"need at least 2 items to form a rest-total; got {k}. With one item the 'total minus the item' is empty."
         )
     if n < 2:
         raise ValueError(f"need at least 2 respondents; got {n}")
@@ -76,14 +75,10 @@ def ctt_item_total_corr(X, item_index):
             "answer, so no correlation is defined."
         )
     if np.std(rest) == 0.0:
-        raise ValueError(
-            "the rest-total has zero variance, so no correlation is defined."
-        )
+        raise ValueError("the rest-total has zero variance, so no correlation is defined.")
     corrected = float(np.corrcoef(item, rest)[0, 1])
     total = arr.sum(axis=1)
-    uncorrected = (
-        float(np.corrcoef(item, total)[0, 1]) if np.std(total) > 0 else float("nan")
-    )
+    uncorrected = float(np.corrcoef(item, total)[0, 1]) if np.std(total) > 0 else float("nan")
     return RichResult(
         payload={
             "estimate": corrected,

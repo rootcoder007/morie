@@ -1,9 +1,9 @@
 """Tests for morie.fn.gmm2s -- Two-step GMM."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import RegressionResult
 from morie.fn.gmm2s import gmm2s, gmm_twostep
 

@@ -27,7 +27,6 @@ Probability and Statistics*, Academic Press, 117-142.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -44,7 +43,7 @@ def pls_regression(X, Y, n_components=2):
     if n == 0:
         raise ValueError("plsqs: no observations")
     if len(y) != n:
-        raise ValueError("plsqs: %d rows but %d responses" % (n, len(y)))
+        raise ValueError(f"plsqs: {int(n)} rows but {int(len(y))} responses")
     p = len(Xm[0])
     a = int(n_components)
     if a < 1:
@@ -90,38 +89,49 @@ def pls_regression(X, Y, n_components=2):
         raise ValueError("plsqs: the response has no covariance with X")
 
     # B = W (P'W)^-1 q  -- the coefficients on the ORIGINAL scale
-    PW = [[sum(P[r][j] * W[c][j] for j in range(p)) for c in range(a)]
-          for r in range(a)]
+    PW = [[sum(P[r][j] * W[c][j] for j in range(p)) for c in range(a)] for r in range(a)]
     for r in range(a):
         PW[r][r] += _EPS
     rhs = list(q)
-    z = k.cholsolve([[sum(PW[u][r] * PW[u][c] for u in range(a))
-                      for c in range(a)] for r in range(a)],
-                    [sum(PW[u][r] * rhs[u] for u in range(a))
-                     for r in range(a)])
+    z = k.cholsolve(
+        [[sum(PW[u][r] * PW[u][c] for u in range(a)) for c in range(a)] for r in range(a)],
+        [sum(PW[u][r] * rhs[u] for u in range(a)) for r in range(a)],
+    )
     beta = [sum(W[c][j] * z[c] for c in range(a)) for j in range(p)]
     intercept = ybar - sum(beta[j] * xbar[j] for j in range(p))
-    fitted = [intercept + sum(Xm[i][j] * beta[j] for j in range(p))
-              for i in range(n)]
+    fitted = [intercept + sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
     resid = [y[i] - fitted[i] for i in range(n)]
     sse = sum(v * v for v in resid)
     r2 = 1.0 - sse / ss_y0 if ss_y0 > _EPS else 0.0
 
-    return RichResult(payload={
-        "estimate": beta, "coefficients": beta, "intercept": intercept,
-        "fitted": fitted, "residuals": resid,
-        "scores": [[T[c][i] for c in range(a)] for i in range(n)],
-        "weights": W, "loadings": P, "y_loadings": q,
-        "explained_x": ex_x, "explained_y": ex_y,
-        "n_components": a, "r_squared": r2, "n": n, "p": p,
-        "method": "PLS1 regression by NIPALS (Wold, Sjostrom & Eriksson 2001)",
-        "note": "components maximise covariance with y, not variance of X -- "
-                "that is what separates PLS from principal component "
-                "regression",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "coefficients": beta,
+            "intercept": intercept,
+            "fitted": fitted,
+            "residuals": resid,
+            "scores": [[T[c][i] for c in range(a)] for i in range(n)],
+            "weights": W,
+            "loadings": P,
+            "y_loadings": q,
+            "explained_x": ex_x,
+            "explained_y": ex_y,
+            "n_components": a,
+            "r_squared": r2,
+            "n": n,
+            "p": p,
+            "method": "PLS1 regression by NIPALS (Wold, Sjostrom & Eriksson 2001)",
+            "note": "components maximise covariance with y, not variance of X -- "
+            "that is what separates PLS from principal component "
+            "regression",
+        }
+    )
 
 
 def cheatsheet():
-    return ("plsqs: pls_regression(X, Y, n_components) -> NIPALS PLS1 "
-            "(Wold, Sjostrom & Eriksson 2001, Chemom. Intell. Lab. Syst. "
-            "58(2), 109-130)")
+    return (
+        "plsqs: pls_regression(X, Y, n_components) -> NIPALS PLS1 "
+        "(Wold, Sjostrom & Eriksson 2001, Chemom. Intell. Lab. Syst. "
+        "58(2), 109-130)"
+    )

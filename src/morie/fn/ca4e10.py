@@ -28,17 +28,16 @@ def ca_chapter_4_equation_10(b, s):
     """
     value = _ca_crim.beta_logistic(b, s)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.10)"
     return RichResult(
-        title='Standardized logistic coefficient Beta = b s',
+        title="Standardized logistic coefficient Beta = b s",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e10: Beta = b_i s_i [Weisburd et al. 2022, eq. 4.10]'
+    return "ca4e10: Beta = b_i s_i [Weisburd et al. 2022, eq. 4.10]"

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grelas import geron_elastic_net_cost
 
 
@@ -17,8 +16,7 @@ def test_grelas_basic():
     r = 0.5
     result = geron_elastic_net_cost(X, y, theta, alpha, r)
     assert isinstance(result, dict)
-    for key in ("cost", "mse", "l1_penalty", "l2_penalty",
-                "l1_norm", "l2_norm_sq", "estimate", "n", "method"):
+    for key in ("cost", "mse", "l1_penalty", "l2_penalty", "l1_norm", "l2_norm_sq", "estimate", "n", "method"):
         assert key in result
     assert math.isfinite(result["cost"])
     assert math.isfinite(result["mse"])
@@ -53,7 +51,7 @@ import morie.fn.grelas as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

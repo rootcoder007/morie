@@ -77,19 +77,26 @@ def schabenberger_reml_variogram(coords, z, X=None, variogram_model="exponential
     beta = fit["beta"]
     return RichResult(
         title="REML covariance-parameter estimates",
-        summary_lines=[("nugget", fit["nugget"]),
-                       ("partial sill", fit["partial_sill"]),
-                       ("range", fit["range"]),
-                       ("-2 restricted logL", fit["neg2_restricted_loglik"])],
-        payload={"nugget": fit["nugget"], "partial_sill": fit["partial_sill"],
-                 "sill": fit["nugget"] + fit["partial_sill"],
-                 "range": fit["range"], "nugget_ratio": fit["nugget_ratio"],
-                 "mean": beta if beta.size > 1 else float(beta[0]),
-                 "neg2_restricted_loglik": fit["neg2_restricted_loglik"],
-                 "converged": fit["converged"], "n": int(n),
-                 "n_contrasts": int(n - X.shape[1]),
-                 "model": variogram_model,
-                 "method": "restricted maximum likelihood"},
+        summary_lines=[
+            ("nugget", fit["nugget"]),
+            ("partial sill", fit["partial_sill"]),
+            ("range", fit["range"]),
+            ("-2 restricted logL", fit["neg2_restricted_loglik"]),
+        ],
+        payload={
+            "nugget": fit["nugget"],
+            "partial_sill": fit["partial_sill"],
+            "sill": fit["nugget"] + fit["partial_sill"],
+            "range": fit["range"],
+            "nugget_ratio": fit["nugget_ratio"],
+            "mean": beta if beta.size > 1 else float(beta[0]),
+            "neg2_restricted_loglik": fit["neg2_restricted_loglik"],
+            "converged": fit["converged"],
+            "n": int(n),
+            "n_contrasts": int(n - X.shape[1]),
+            "model": variogram_model,
+            "method": "restricted maximum likelihood",
+        },
     )
 
 

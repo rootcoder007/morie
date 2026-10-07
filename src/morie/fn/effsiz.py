@@ -94,14 +94,23 @@ def effective_sample_size(n, deff=None, icc=None, cluster_size=None):
     return RichResult(
         title="Effective sample size (design)",
         summary_lines=[("n", n), ("deff", deff), ("n_eff", float(n_eff))],
-        warnings=([f"the design effect is {deff:.2f}, so treating n as {n} "
-                   f"would understate standard errors by "
-                   f"{100 * (np.sqrt(deff) - 1):.0f}%"] if deff > 1.5 else []),
+        warnings=(
+            [
+                f"the design effect is {deff:.2f}, so treating n as {n} "
+                f"would understate standard errors by "
+                f"{100 * (np.sqrt(deff) - 1):.0f}%"
+            ]
+            if deff > 1.5
+            else []
+        ),
         payload={
-            "n_effective": float(n_eff), "deff": deff,
+            "n_effective": float(n_eff),
+            "deff": deff,
             "se_inflation": float(np.sqrt(deff)),
             "information_lost": float(1.0 - 1.0 / deff),
-            "n": n, "icc": icc, "cluster_size": cluster_size,
+            "n": n,
+            "icc": icc,
+            "cluster_size": cluster_size,
             "method": "effective_sample_size",
         },
     )

@@ -303,7 +303,7 @@ def _polygon_centroid(coords: list) -> tuple[float, float] | None:
     try:
         if not coords:
             return None
-        ring = coords[0] if isinstance(coords[0][0], (list, tuple)) else coords
+        ring = coords[0] if isinstance(coords[0][0], list | tuple) else coords
         xs = [p[0] for p in ring]
         ys = [p[1] for p in ring]
         return (float(sum(xs) / len(xs)), float(sum(ys) / len(ys)))
@@ -371,14 +371,14 @@ def polygon_morans_i(
     S0 = W.sum()
     if S0 == 0 or z.dot(z) == 0:
         return RichResult(title=f"Polygon Moran's I -- {ds_name}", warnings=["S0 or var = 0"])
-    I = (n / S0) * (z.dot(W.dot(z))) / z.dot(z)
+    moran_i = (n / S0) * (z.dot(W.dot(z))) / z.dot(z)
     expected_I = -1.0 / (n - 1)
     # Variance under randomization
     W_sym = (W + W.T) / 2
     S1 = 2 * (W_sym**2).sum()
     S2 = ((W.sum(axis=0) + W.sum(axis=1)) ** 2).sum()
     var_I = (n * (n - 2) * S1 - 2 * n * S2 + 6 * S0**2) / ((n - 1) * (n + 1) * (n - 2) * S0**2 + 1e-300)
-    z_I = (I - expected_I) / math.sqrt(var_I) if var_I > 0 else float("nan")
+    z_I = (moran_i - expected_I) / math.sqrt(var_I) if var_I > 0 else float("nan")
     p = 2 * (1 - sps.norm.cdf(abs(z_I))) if math.isfinite(z_I) else float("nan")
 
     return RichResult(
@@ -388,20 +388,20 @@ def polygon_morans_i(
             ("Year", year),
             ("Hoods", n),
             ("k-NN", k),
-            ("Moran's I", round(float(I), 4)),
+            ("Moran's I", round(float(moran_i), 4)),
             ("Expected I", round(expected_I, 4)),
             ("Var(I)", round(float(var_I), 6)),
             ("z-score", round(float(z_I), 3) if math.isfinite(z_I) else "n/a"),
             ("p-value (two-sided)", round(float(p), 6) if math.isfinite(p) else "n/a"),
         ],
         interpretation=(
-            f"I = {I:+.3f}, z = {z_I:+.2f}, p = {p:.4g}. "
+            f"I = {moran_i:+.3f}, z = {z_I:+.2f}, p = {p:.4g}. "
             "Polygon-derived centroids + actual GeoJSON polygons (not "
             "centroid-only k-NN of incidents). Positive I = neighbouring "
             "polygons share similar crime rates (spatial autocorrelation)."
         ),
         payload={
-            "I": float(I),
+            "I": float(moran_i),
             "z_score": float(z_I) if math.isfinite(z_I) else None,
             "p_value": float(p) if math.isfinite(p) else None,
             "n": int(n),

@@ -81,8 +81,7 @@ def dr_callaway_event_study(y, D, unit, time, cohort, X=None):
             units.append(x)
     per = sorted(set(t))
     T = per[-1]
-    cohorts = sorted(set(gof[z] for z in units
-                         if gof[z] > 0.0 and gof[z] != float("inf")))
+    cohorts = sorted(set(gof[z] for z in units if gof[z] > 0.0 and gof[z] != float("inf")))
     if not cohorts:
         raise ValueError("no treated cohort in the panel")
     never = [z for z in units if not (gof[z] > 0.0 and gof[z] != float("inf"))]
@@ -101,8 +100,7 @@ def dr_callaway_event_study(y, D, unit, time, cohort, X=None):
     es = sorted(es)
     ev, theta, wsum = [], [], []
     for e in es:
-        elig = [c for c in cohorts
-                if (c + e) <= T and (c + e) in per and (c - 1.0) in per]
+        elig = [c for c in cohorts if (c + e) <= T and (c + e) in per and (c - 1.0) in per]
         if not elig:
             continue
         tot = sum(size[c] for c in elig)

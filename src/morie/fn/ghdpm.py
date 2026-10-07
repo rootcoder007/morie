@@ -113,7 +113,7 @@ def ghosal_dpmixture_density(
     for it in range(n_iter):
         for i in range(n):
             # remove i
-            old = labels[i]
+            labels[i]
             labels[i] = -1
             uniq, counts = np.unique(labels[labels >= 0], return_counts=True)
             log_probs = []

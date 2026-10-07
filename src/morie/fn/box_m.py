@@ -48,7 +48,7 @@ def box_m_test(X: np.ndarray, groups: np.ndarray, cdf=None) -> TestResult:
 
     log_det_Sp = np.log(max(np.linalg.det(Sp), 1e-300))
     M = 0.0
-    for i, (ni, Si) in enumerate(zip(ns, Ss)):
+    for _i, (ni, Si) in enumerate(zip(ns, Ss)):
         log_det_Si = np.log(max(np.linalg.det(Si), 1e-300))
         M += (ni - 1) * (log_det_Sp - log_det_Si)
 

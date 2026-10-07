@@ -1,12 +1,11 @@
 """Tests for morie.fn.pgrnk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pgrnk import pgrnk
 
 
 def test_pgrnk_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = pgrnk(adj_matrix=np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], dtype=float))
     assert result is not None
     assert hasattr(result, "name")

@@ -85,15 +85,13 @@ def schabenberger_moran_i_residuals(residuals, w, x=None):
     else:
         xx = mat(x, "x")
         if len(xx) != n:
-            raise ValueError("`x` has %d rows but `residuals` has %d values"
-                             % (len(xx), n))
+            raise ValueError(f"`x` has {int(len(xx))} rows but `residuals` has {int(n)} values")
         k = len(xx[0])
         if n - k < 3:
             raise ValueError("need n - k >= 3 residual degrees of freedom")
         xt = transpose(xx)
         g = matmul(xt, xx)
-        inv = [solve(g, [1.0 if r == c else 0.0 for r in range(k)])
-               for c in range(k)]
+        inv = [solve(g, [1.0 if r == c else 0.0 for r in range(k)]) for c in range(k)]
         inv = transpose(inv)
         proj = eye(n)
         h = matmul(matmul(xx, inv), xt)
@@ -126,21 +124,25 @@ def schabenberger_moran_i_residuals(residuals, w, x=None):
         raise ValueError("the null variance of Ires is not positive")
     zz = (ires - ex) / sqrt(var)
 
-    return RichResult(payload={
-        "i": ires,
-        "expectation": ex,
-        "variance": var,
-        "z": zz,
-        "p_value": twosidep(zz),
-        "s0": s0,
-        "tr_mw": trb,
-        "k": k,
-        "n": n,
-        "not_minus_one_over_n_minus_one": True,
-        "method": ("Moran's I on OLS residuals, Schabenberger & Gotway "
-                   "(2005) eq (1.16) with Eg[Ires] as printed in "
-                   "Sec. 1.3.2; the variance is derived"),
-    })
+    return RichResult(
+        payload={
+            "i": ires,
+            "expectation": ex,
+            "variance": var,
+            "z": zz,
+            "p_value": twosidep(zz),
+            "s0": s0,
+            "tr_mw": trb,
+            "k": k,
+            "n": n,
+            "not_minus_one_over_n_minus_one": True,
+            "method": (
+                "Moran's I on OLS residuals, Schabenberger & Gotway "
+                "(2005) eq (1.16) with Eg[Ires] as printed in "
+                "Sec. 1.3.2; the variance is derived"
+            ),
+        }
+    )
 
 
 def cheatsheet():

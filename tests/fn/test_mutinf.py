@@ -1,7 +1,6 @@
 """Tests for mutinf.mutual_information."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mutinf import mutual_information
 
 

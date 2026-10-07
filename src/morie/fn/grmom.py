@@ -100,8 +100,11 @@ def geron_momentum_update(theta, grad, v, eta, beta=0.9):
 
     return RichResult(
         title="Momentum update",
-        summary_lines=[("Step L2", float(np.linalg.norm(step))),
-                       ("beta", beta), ("Terminal speedup", 1.0 / (1.0 - beta))],
+        summary_lines=[
+            ("Step L2", float(np.linalg.norm(step))),
+            ("beta", beta),
+            ("Terminal speedup", 1.0 / (1.0 - beta)),
+        ],
         payload={
             "theta_new": theta_new.tolist(),
             "v_new": v_new.tolist(),

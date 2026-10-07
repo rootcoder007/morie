@@ -1,8 +1,8 @@
 """Tests for bdrj.backdoor_adjustment_formula (Pearl 2009, Thm 3.3.2)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bdrj import backdoor_adjustment_formula
 
 
@@ -21,11 +21,15 @@ def _simpson():
         Z.extend([z] * k)
 
     # Stratum 0: mostly untreated, high baseline recovery.
-    add(0, 1, 1, 81); add(0, 1, 0, 6)      # treated   93%
-    add(0, 0, 1, 234); add(0, 0, 0, 36)    # untreated 87%
+    add(0, 1, 1, 81)
+    add(0, 1, 0, 6)  # treated   93%
+    add(0, 0, 1, 234)
+    add(0, 0, 0, 36)  # untreated 87%
     # Stratum 1: mostly treated, low baseline recovery.
-    add(1, 1, 1, 192); add(1, 1, 0, 71)    # treated   73%
-    add(1, 0, 1, 55); add(1, 0, 0, 25)     # untreated 69%
+    add(1, 1, 1, 192)
+    add(1, 1, 0, 71)  # treated   73%
+    add(1, 0, 1, 55)
+    add(1, 0, 0, 25)  # untreated 69%
     return np.array(X), np.array(Y), np.array(Z)
 
 
@@ -69,7 +73,7 @@ def test_adjustment_equals_the_raw_conditional_when_z_is_independent():
     rng = np.random.default_rng(3)
     n = 4000
     X = rng.integers(0, 2, n)
-    Z = rng.integers(0, 2, n)               # independent of X
+    Z = rng.integers(0, 2, n)  # independent of X
     Y = (rng.random(n) < 0.3 + 0.4 * X).astype(int)
     d = backdoor_adjustment_formula(X, Y, Z)["distribution"]
     assert d[1][1] == pytest.approx(np.mean(Y[X == 1] == 1), abs=0.03)
@@ -93,7 +97,7 @@ def test_a_single_target_can_be_requested():
 def test_empty_stratum_cells_are_reported_not_silently_zero():
     X = np.array([0, 0, 1, 1, 1])
     Y = np.array([0, 1, 1, 0, 1])
-    Z = np.array([0, 0, 0, 1, 1])   # no X=0 unit in stratum 1
+    Z = np.array([0, 0, 0, 1, 1])  # no X=0 unit in stratum 1
     res = backdoor_adjustment_formula(X, Y, Z)
     assert (0, "1") in res["incomplete_strata"]
 

@@ -63,15 +63,11 @@ def kamath_ragas_faithfulness(answer, context, entails=None):
     if not claims:
         raise ValueError(
             "the answer contains no claims; faithfulness is 0/0 and "
-            "calling that 1.0 would be a decision, not a measurement.")
-    if isinstance(context, str):
-        ctx_text = context
-    else:
-        ctx_text = " ".join(str(c) for c in context)
+            "calling that 1.0 would be a decision, not a measurement."
+        )
+    ctx_text = context if isinstance(context, str) else " ".join(str(c) for c in context)
     if not _tokens(ctx_text):
-        raise ValueError(
-            "the context is empty; every claim would be unsupported by "
-            "construction.")
+        raise ValueError("the context is empty; every claim would be unsupported by construction.")
     if entails is not None and not callable(entails):
         raise ValueError("entails must be callable (claim, context) -> bool.")
 
@@ -83,20 +79,21 @@ def kamath_ragas_faithfulness(answer, context, entails=None):
         else:
             ok = entails(c, ctx_text)
             if not isinstance(ok, (bool,)) and ok not in (0, 1):
-                raise ValueError(
-                    "entails must return a bool; got "
-                    f"{type(ok).__name__}.")
+                raise ValueError(f"entails must return a bool; got {type(ok).__name__}.")
         flags.append(bool(ok))
     supported = int(sum(flags))
-    return RichResult(payload={
-        "estimate": supported / len(claims),
-        "supported": supported,
-        "n_claims": len(claims),
-        "claim_supported": flags,
-        "claims": claims,
-        "judge": "caller-supplied" if entails else "lexical containment",
-        "n": len(claims),
-        "method": "RAGAS faithfulness (supported claims / total claims)"})
+    return RichResult(
+        payload={
+            "estimate": supported / len(claims),
+            "supported": supported,
+            "n_claims": len(claims),
+            "claim_supported": flags,
+            "claims": claims,
+            "judge": "caller-supplied" if entails else "lexical containment",
+            "n": len(claims),
+            "method": "RAGAS faithfulness (supported claims / total claims)",
+        }
+    )
 
 
 def cheatsheet():

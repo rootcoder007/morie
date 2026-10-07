@@ -1,7 +1,6 @@
 """Tests for hmprio.geron_perceiver_io."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmprio import geron_perceiver_io
 
 

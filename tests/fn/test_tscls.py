@@ -1,7 +1,6 @@
 """Tests for morie.fn.tscls — 1-NN DTW classifier."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tscls import ts_classify
 
 

@@ -32,10 +32,7 @@ def pbinom(
     if not 0.0 <= prob <= 1.0:
         raise ValueError(f"prob must be in [0, 1], got {prob}.")
     dist = stats.binom(n=size, p=prob)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

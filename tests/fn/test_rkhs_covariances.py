@@ -1,7 +1,6 @@
 """Tests for rkhs_covariances.rkhs_covariances."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rkhs_covariances import rkhs_covariances
 
 

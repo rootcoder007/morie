@@ -1,7 +1,6 @@
 """Tests for nrm.nominal_response_bock."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nrm import nominal_response_bock
 
 

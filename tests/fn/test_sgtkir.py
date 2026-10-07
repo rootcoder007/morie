@@ -42,10 +42,7 @@ def test_sgtkir_path_and_cycle():
 
 def test_sgtkir_edge():
     """Disconnected graph: the rank drops by one per extra component."""
-    A = [[0.0, 1.0, 0.0, 0.0],
-         [1.0, 0.0, 0.0, 0.0],
-         [0.0, 0.0, 0.0, 1.0],
-         [0.0, 0.0, 1.0, 0.0]]
+    A = [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]]
     r = sgt_kirchhoff_index(A)
     assert r["n"] == 4
     assert r["rank"] == 2

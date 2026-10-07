@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_bpoly_crt"]
@@ -23,8 +22,7 @@ def ghosal_bpoly_crt(ns=(100, 800, 6400), seed=42):
     errs = []
     for n in ns:
         K = max(2, int(round(n ** (1.0 / 3.0))))
-        data = [math.sqrt(float(rng.uniform(0, 1)))
-                for _ in range(n)]                # p0(x) = 2x
+        data = [math.sqrt(float(rng.uniform(0, 1))) for _ in range(n)]  # p0(x) = 2x
         counts = [1.0] * K
         for v in data:
             counts[min(int(v * K), K - 1)] += 1.0
@@ -34,18 +32,27 @@ def ghosal_bpoly_crt(ns=(100, 800, 6400), seed=42):
         for i in range(m):
             x = (i + 0.5) / m
             dens = sum(
-                wk * math.exp(math.lgamma(K + 1.0)
-                              - math.lgamma(k + 1.0)
-                              - math.lgamma(K - k)
-                              + k * math.log(x)
-                              + (K - k - 1.0) * math.log(1.0 - x))
-                for k, wk in enumerate(w) if 0 < x < 1)
+                wk
+                * math.exp(
+                    math.lgamma(K + 1.0)
+                    - math.lgamma(k + 1.0)
+                    - math.lgamma(K - k)
+                    + k * math.log(x)
+                    + (K - k - 1.0) * math.log(1.0 - x)
+                )
+                for k, wk in enumerate(w)
+                if 0 < x < 1
+            )
             err += abs(dens - 2.0 * x) / m
         errs.append(err)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "l1_by_n": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "Bernstein polynomial rate (GvdV 2017 sec. 9.3)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "l1_by_n": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "Bernstein polynomial rate (GvdV 2017 sec. 9.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_3")
 
 

@@ -1,7 +1,5 @@
 """Tests for f_nested_ss.f_nested_ss."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.f_nested_ss import f_nested_ss
 
 

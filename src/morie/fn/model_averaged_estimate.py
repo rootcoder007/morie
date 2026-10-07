@@ -27,17 +27,16 @@ def model_averaged_estimate(taus, thetas):
     """
     value = _acd.model_averaged_estimate(taus, thetas)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (5.3)"
     return RichResult(
-        title='Model-averaged estimate theta_MA = sum tau_m theta_m',
+        title="Model-averaged estimate theta_MA = sum tau_m theta_m",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '5e3: theta_MA = sum_m tau_m theta_m [Bilder & Loughin 2025, eq. 5.3]'
+    return "5e3: theta_MA = sum_m tau_m theta_m [Bilder & Loughin 2025, eq. 5.3]"

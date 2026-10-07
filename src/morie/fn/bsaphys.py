@@ -11,7 +11,6 @@ from __future__ import annotations
 from math import atan2, cos, exp, fsum, hypot, log, pi, sin, sqrt
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._containers import DescriptiveResult
 from ._rgcore import aslist, aslistc, gridint
 from ._richresult import RichResult
@@ -19,84 +18,84 @@ from ._sci_core import CubicSpline
 from .bsacorr import rangayyan_welch_psd
 
 __all__ = [
-    'emd',
-    'apwave',
-    'rangayyan_action_potential',
-    'bidomain',
-    'rangayyan_cardiac_elecphys',
-    'cadacou',
-    'rangayyan_coronary_ad',
-    'corsound',
-    'rangayyan_coronary_sound',
-    'infantcry',
-    'rangayyan_infant_cry',
-    'eggfeat',
-    'rangayyan_egg',
-    'rangayyan_heart_elasticity',
-    'engcap',
-    'rangayyan_eng',
-    'seizdet',
-    'rangayyan_epilepsy_detect',
-    'erpfeat',
-    'rangayyan_erp_features',
-    'erders',
-    'rangayyan_feature_extract_bci',
-    'cadspec',
-    'rangayyan_freq_domain_feat',
-    'ghk',
-    'rangayyan_goldman_eqn',
-    'hhgate',
-    'rangayyan_hh_gating',
-    'hhmodel',
-    'rangayyan_hodgkin_huxley',
-    'fhn',
-    'rangayyan_fitzhugh_nagumo',
-    'rcmemb',
-    'rangayyan_membrane_potential',
-    'vagclean',
-    'rangayyan_muscle_artifact',
-    'muapmodel',
-    'rangayyan_muap',
-    'murmspec',
-    'rangayyan_murmur_analysis',
-    'nernst',
-    'rangayyan_nernst_potential',
-    'oaefeat',
-    'rangayyan_oae',
-    'pdmonitor',
-    'rangayyan_parkinson_multimodal',
-    'pcgeeg',
-    'rangayyan_pcg_eeg_coupling',
-    'murmdet',
-    'rangayyan_pcg_murmur_detect',
-    'psgstage',
-    'rangayyan_polysomnography',
-    'ieistats',
-    'rangayyan_point_process',
-    'valvepcg',
-    'rangayyan_prosthetic_valve',
-    'respfeat',
-    'rangayyan_respiration_features',
-    'respsound',
-    'rangayyan_respiratory_sound',
-    'apneadet',
-    'rangayyan_sleep_apnea_detect',
-    'speechfeat',
-    'rangayyan_speech_features',
-    'vagfeat',
-    'rangayyan_vag_analysis',
-    'vagknee',
-    'rangayyan_vag_knee_cartilage',
-    'deltadecomp',
-    'rangayyan_ch3_signal_as_delta_decomposition',
-    'clogprod',
-    'rangayyan_ch4_complex_log_of_product',
-    'clogpz',
-    'rangayyan_ch4_complex_log_x_z',
-    'rangayyanegg',
-    'rangayyaneng',
-    'rangayyanmuap',
-    'rangayyanoae',
+    "emd",
+    "apwave",
+    "rangayyan_action_potential",
+    "bidomain",
+    "rangayyan_cardiac_elecphys",
+    "cadacou",
+    "rangayyan_coronary_ad",
+    "corsound",
+    "rangayyan_coronary_sound",
+    "infantcry",
+    "rangayyan_infant_cry",
+    "eggfeat",
+    "rangayyan_egg",
+    "rangayyan_heart_elasticity",
+    "engcap",
+    "rangayyan_eng",
+    "seizdet",
+    "rangayyan_epilepsy_detect",
+    "erpfeat",
+    "rangayyan_erp_features",
+    "erders",
+    "rangayyan_feature_extract_bci",
+    "cadspec",
+    "rangayyan_freq_domain_feat",
+    "ghk",
+    "rangayyan_goldman_eqn",
+    "hhgate",
+    "rangayyan_hh_gating",
+    "hhmodel",
+    "rangayyan_hodgkin_huxley",
+    "fhn",
+    "rangayyan_fitzhugh_nagumo",
+    "rcmemb",
+    "rangayyan_membrane_potential",
+    "vagclean",
+    "rangayyan_muscle_artifact",
+    "muapmodel",
+    "rangayyan_muap",
+    "murmspec",
+    "rangayyan_murmur_analysis",
+    "nernst",
+    "rangayyan_nernst_potential",
+    "oaefeat",
+    "rangayyan_oae",
+    "pdmonitor",
+    "rangayyan_parkinson_multimodal",
+    "pcgeeg",
+    "rangayyan_pcg_eeg_coupling",
+    "murmdet",
+    "rangayyan_pcg_murmur_detect",
+    "psgstage",
+    "rangayyan_polysomnography",
+    "ieistats",
+    "rangayyan_point_process",
+    "valvepcg",
+    "rangayyan_prosthetic_valve",
+    "respfeat",
+    "rangayyan_respiration_features",
+    "respsound",
+    "rangayyan_respiratory_sound",
+    "apneadet",
+    "rangayyan_sleep_apnea_detect",
+    "speechfeat",
+    "rangayyan_speech_features",
+    "vagfeat",
+    "rangayyan_vag_analysis",
+    "vagknee",
+    "rangayyan_vag_knee_cartilage",
+    "deltadecomp",
+    "rangayyan_ch3_signal_as_delta_decomposition",
+    "clogprod",
+    "rangayyan_ch4_complex_log_of_product",
+    "clogpz",
+    "rangayyan_ch4_complex_log_x_z",
+    "rangayyanegg",
+    "rangayyaneng",
+    "rangayyanmuap",
+    "rangayyanoae",
 ]
 
 # -- shared helpers for the biophysical signal-generation blocks --------------
@@ -104,8 +103,8 @@ __all__ = [
 # several of the application blocks below (spectra, band powers, peak
 # picking, autocorrelation, linear prediction).
 
-_BSA_R_GAS = 8.314462618        # J/(mol K), CODATA 2018
-_BSA_FARADAY = 96485.33212      # C/mol,     CODATA 2018
+_BSA_R_GAS = 8.314462618  # J/(mol K), CODATA 2018
+_BSA_FARADAY = 96485.33212  # C/mol,     CODATA 2018
 
 
 def _bsafft(re, im):
@@ -199,8 +198,7 @@ def _bsaacf(x, maxlag):
     mu = fsum(xs) / n
     xs = [v - mu for v in xs]
     maxlag = min(maxlag, n - 1)
-    return [fsum(xs[i] * xs[i + k] for i in range(n - k)) / n
-            for k in range(maxlag + 1)]
+    return [fsum(xs[i] * xs[i + k] for i in range(n - k)) / n for k in range(maxlag + 1)]
 
 
 def _bsalpc(x, order):
@@ -223,7 +221,7 @@ def _bsalpc(x, order):
         for j in range(1, i):
             newa[j] = a[j] + k * a[i - j]
         a = newa
-        e *= (1.0 - k * k)
+        e *= 1.0 - k * k
         if e <= 0.0:
             e = 1e-30
             break
@@ -267,11 +265,17 @@ def _bsapsdmom(freqs, power):
     fm2 = fsum((f - fmean) ** 2 * p for f, p in zip(freqs, power)) / Ep
     fm3 = fsum((f - fmean) ** 3 * p for f, p in zip(freqs, power)) / Ep
     fm4 = fsum((f - fmean) ** 4 * p for f, p in zip(freqs, power)) / Ep
-    sk = fm3 / fm2 ** 1.5 if fm2 > 0.0 else 0.0
-    ku = fm4 / fm2 ** 2 if fm2 > 0.0 else 0.0
-    return {"total_power": Ep, "mean_freq_hz": fmean, "median_freq_hz": fmed,
-            "fm2_hz2": fm2, "spread_hz": sqrt(fm2), "spectral_skewness": sk,
-            "spectral_kurtosis": ku}
+    sk = fm3 / fm2**1.5 if fm2 > 0.0 else 0.0
+    ku = fm4 / fm2**2 if fm2 > 0.0 else 0.0
+    return {
+        "total_power": Ep,
+        "mean_freq_hz": fmean,
+        "median_freq_hz": fmed,
+        "fm2_hz2": fm2,
+        "spread_hz": sqrt(fm2),
+        "spectral_skewness": sk,
+        "spectral_kurtosis": ku,
+    }
 
 
 def _bsaqfactor(freqs, power, fpeak):
@@ -316,8 +320,7 @@ def _bsahjorth(x):
     if a0 <= 0.0 or a1 <= 0.0:
         raise ValueError("signal is constant; Hjorth parameters undefined")
     mob = sqrt(a1 / a0)
-    return {"activity": a0, "mobility": mob,
-            "form_factor": sqrt(a2 / a1) / mob}
+    return {"activity": a0, "mobility": mob, "form_factor": sqrt(a2 / a1) / mob}
 
 
 def _bsarms(x):
@@ -341,16 +344,16 @@ def _bsamoments(x):
     if m2 <= 0.0:
         return mu, 0.0, 0.0, 0.0
     s = sqrt(m2)
-    m3 = fsum(v ** 3 for v in d) / n
-    m4 = fsum(v ** 4 for v in d) / n
-    return mu, m2, m3 / s ** 3, m4 / m2 ** 2
+    m3 = fsum(v**3 for v in d) / n
+    m4 = fsum(v**4 for v in d) / n
+    return mu, m2, m3 / s**3, m4 / m2**2
 
 
 def _bsaenvelope(x, fs, win_s):
     """Short-time RMS envelope, non-overlapping windows of *win_s* seconds."""
     xs = [float(v) for v in x]
     w = max(1, int(round(win_s * fs)))
-    return [_bsarms(xs[i:i + w]) for i in range(0, len(xs) - w + 1, w)], w / fs
+    return [_bsarms(xs[i : i + w]) for i in range(0, len(xs) - w + 1, w)], w / fs
 
 
 def _bsahhrates(v):
@@ -374,7 +377,6 @@ def _bsahhrates(v):
     ah = 0.07 * exp(-(v + 65.0) / 20.0)
     bh = 1.0 / (1.0 + exp(-(v + 35.0) / 10.0))
     return am, bm, ah, bh, an, bn
-
 
 
 # -- emdsg: Empirical Mode Decomposition (standalone).
@@ -506,8 +508,7 @@ emdsg = emd
 
 
 # -- rgap: Idealized action potential waveform model (depolarization/repolarization).
-def apwave(t, v_rest=-70.0, v_peak=30.0, t_rise=0.5, t_fall=1.0, t_onset=0.0,
-           v_undershoot=None, t_recover=None):
+def apwave(t, v_rest=-70.0, v_peak=30.0, t_rise=0.5, t_fall=1.0, t_onset=0.0, v_undershoot=None, t_recover=None):
     """Idealised action-potential waveform: linear rise, exponential fall.
 
     Rangayyan (2024) Section 1.2.2 ("The action potential of a neuron")
@@ -600,25 +601,45 @@ def apwave(t, v_rest=-70.0, v_peak=30.0, t_rise=0.5, t_fall=1.0, t_onset=0.0,
     half = v_rest + 0.5 * amp
     above = [ts[i] for i in range(len(ts)) if Vs[i] >= half]
     width = (above[-1] - above[0]) if len(above) > 1 else None
-    return RichResult(payload={
-        "t_ms": ts, "V_mV": Vs,
-        "amplitude_mV": amp, "peak_time_ms": t_peak,
-        "v_rest_mV": v_rest, "v_peak_mV": v_peak,
-        "t_rise_ms": t_rise, "t_fall_ms": t_fall,
-        "width_half_ms": width,
-        "units": {"V": "mV", "t": "ms"},
-        "method": "Idealised ramp-and-decay action potential; Rangayyan (2024) Section 1.2.2 is descriptive and gives no waveform equation",
-    })
+    return RichResult(
+        payload={
+            "t_ms": ts,
+            "V_mV": Vs,
+            "amplitude_mV": amp,
+            "peak_time_ms": t_peak,
+            "v_rest_mV": v_rest,
+            "v_peak_mV": v_peak,
+            "t_rise_ms": t_rise,
+            "t_fall_ms": t_fall,
+            "width_half_ms": width,
+            "units": {"V": "mV", "t": "ms"},
+            "method": "Idealised ramp-and-decay action potential; Rangayyan (2024) Section 1.2.2 is descriptive and gives no waveform equation",
+        }
+    )
 
 
 rangayyan_action_potential = apwave  # pre-policy spelling
 
 
 # -- rgcardep: Cardiac electrophysiology tissue/organ-level model.
-def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
-             sigma_i=1.0, sigma_e=2.0, C_m=1.0, Sv=1000.0,
-             I_ion=None, stim_nodes=5, I_stim=50.0, stim_ms=1.0,
-             v_rest=-85.0, v_peak=20.0, I_ion_peak=10.0, threshold_frac=0.25):
+def bidomain(
+    n_nodes=100,
+    dx_cm=0.02,
+    duration_ms=60.0,
+    dt_ms=0.005,
+    sigma_i=1.0,
+    sigma_e=2.0,
+    C_m=1.0,
+    Sv=1000.0,
+    I_ion=None,
+    stim_nodes=5,
+    I_stim=50.0,
+    stim_ms=1.0,
+    v_rest=-85.0,
+    v_peak=20.0,
+    I_ion_peak=10.0,
+    threshold_frac=0.25,
+):
     """One-dimensional monodomain propagation with the bidomain extracellular field.
 
     Rangayyan (2024) Section 7.8.2 ("Electrophysiological modeling at the
@@ -744,25 +765,31 @@ def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
         raise ValueError("stim_nodes must be between 1 and n_nodes")
     # mS/cm divided by (1/cm * uF/cm^2) gives cm^2/ms
     sigma_bulk = si * se / (si + se)
-    D = sigma_bulk / (Sv * C_m)                      # eq. (7.144), cm^2/ms
+    D = sigma_bulk / (Sv * C_m)  # eq. (7.144), cm^2/ms
     lim = dx * dx / (2.0 * D)
     if dt > lim:
-        raise ValueError("dt_ms=%g exceeds the explicit stability limit %g ms "
-                         "for D=%g cm^2/ms and dx=%g cm" % (dt, lim, D, dx))
+        raise ValueError(
+            f"dt_ms={dt:g} exceeds the explicit stability limit {lim:g} ms for D={D:g} cm^2/ms and dx={dx:g} cm"
+        )
     tf = float(threshold_frac)
     if not 0.0 < tf < 0.5:
-        raise ValueError("threshold_frac must be strictly between 0 and 0.5; "
-                         "0.5 gives a stationary front that never propagates")
+        raise ValueError(
+            "threshold_frac must be strictly between 0 and 0.5; 0.5 gives a stationary front that never propagates"
+        )
     amp = v_peak - v_rest
     thresh = v_rest + tf * amp
     if I_ion is None:
         ipk = float(I_ion_peak)
         if ipk <= 0.0:
             raise ValueError("I_ion_peak must be positive (uA/cm^2)")
-        raw = max(abs((v_rest + amp * k / 500.0 - v_rest)
-                      * (v_rest + amp * k / 500.0 - thresh)
-                      * (v_rest + amp * k / 500.0 - v_peak))
-                  for k in range(501))
+        raw = max(
+            abs(
+                (v_rest + amp * k / 500.0 - v_rest)
+                * (v_rest + amp * k / 500.0 - thresh)
+                * (v_rest + amp * k / 500.0 - v_peak)
+            )
+            for k in range(501)
+        )
         gain = ipk / raw
 
         def I_ion(v):
@@ -779,7 +806,7 @@ def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
     for step in range(nsteps):
         lap = []
         for i in range(n):
-            lo = V[1] if i == 0 else V[i - 1]        # eq. (7.145), no flux
+            lo = V[1] if i == 0 else V[i - 1]  # eq. (7.145), no flux
             hi = V[n - 2] if i == n - 1 else V[i + 1]
             lap.append((lo - 2.0 * V[i] + hi) / (dx * dx))
         newV, dVdt = [], []
@@ -809,7 +836,7 @@ def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
     d = list(rhs)
     for i in range(n):
         if i == 0:
-            b[i], c[i], d[i] = 1.0, 0.0, 0.0        # gauge pin
+            b[i], c[i], d[i] = 1.0, 0.0, 0.0  # gauge pin
         elif i == n - 1:
             a[i], b[i] = k, -k
         else:
@@ -828,7 +855,7 @@ def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
         phie[i] = (d[i] - c[i] * phie[i + 1]) / b[i]
     mu = fsum(phie) / n
     phie = [v - mu for v in phie]
-    phii = [V[i] + phie[i] for i in range(n)]        # eq. (7.146)
+    phii = [V[i] + phie[i] for i in range(n)]  # eq. (7.146)
     # eq. (7.149): I_m = C_m dV_m/dt + I_ion, using the last computed rate
     Im = [C_m * dVdt[i] + I_ion(V[i]) for i in range(n)]
     xs = [i * dx for i in range(n)]
@@ -842,27 +869,42 @@ def bidomain(n_nodes=100, dx_cm=0.02, duration_ms=60.0, dt_ms=0.005,
         den = fsum((v - mt) ** 2 for v in tt)
         if den > 0.0:
             cv = fsum((tt[i] - mt) * (xx[i] - mx) for i in range(len(tt))) / den
-    return RichResult(payload={
-        "x_cm": xs, "Vm_mV": V, "phi_e_mV": phie, "phi_i_mV": phii,
-        "Im_uA_cm2": Im,
-        "activation_ms": act,
-        "n_activated": len(hit),
-        "cv_cm_per_ms": cv,
-        "D_cm2_per_ms": D, "sigma_bulk_mS_cm": sigma_bulk,
-        "dt_ms": dt, "dx_cm": dx, "stability_limit_ms": lim,
-        "units": {"V": "mV", "x": "cm", "t": "ms", "sigma": "mS/cm",
-                  "C_m": "uF/cm^2", "Sv": "1/cm", "I": "uA/cm^2",
-                  "D": "cm^2/ms", "cv": "cm/ms"},
-        "method": "Rangayyan (2024) eqs. (7.143)-(7.149), Section 7.8.2, monodomain propagation with the bidomain extracellular field, 1-D",
-    })
+    return RichResult(
+        payload={
+            "x_cm": xs,
+            "Vm_mV": V,
+            "phi_e_mV": phie,
+            "phi_i_mV": phii,
+            "Im_uA_cm2": Im,
+            "activation_ms": act,
+            "n_activated": len(hit),
+            "cv_cm_per_ms": cv,
+            "D_cm2_per_ms": D,
+            "sigma_bulk_mS_cm": sigma_bulk,
+            "dt_ms": dt,
+            "dx_cm": dx,
+            "stability_limit_ms": lim,
+            "units": {
+                "V": "mV",
+                "x": "cm",
+                "t": "ms",
+                "sigma": "mS/cm",
+                "C_m": "uF/cm^2",
+                "Sv": "1/cm",
+                "I": "uA/cm^2",
+                "D": "cm^2/ms",
+                "cv": "cm/ms",
+            },
+            "method": "Rangayyan (2024) eqs. (7.143)-(7.149), Section 7.8.2, monodomain propagation with the bidomain extracellular field, 1-D",
+        }
+    )
 
 
 rangayyan_cardiac_elecphys = bidomain  # pre-policy spelling
 
 
 # -- rgcorad: Coronary artery disease detection from acoustic signals.
-def cadacou(coronary_sound, fs, order=8, hf_band=(300.0, 900.0),
-            ref_band=(50.0, 300.0)):
+def cadacou(coronary_sound, fs, order=8, hf_band=(300.0, 900.0), ref_band=(50.0, 300.0)):
     """Coronary artery disease detection from a diastolic acoustic segment.
 
     Rangayyan (2024) Section 7.10 ("Application: Coronary Artery Disease")
@@ -939,17 +981,23 @@ def cadacou(coronary_sound, fs, order=8, hf_band=(300.0, 900.0),
         raise ValueError("reference band carries no power; choose another band")
     mom = _bsapsdmom(freqs, psd)
     out = dict(mom)
-    out.update({
-        "power_ratio": hf / rf,
-        "hf_fraction": hf / mom["total_power"],
-        "hf_band_hz": (float(hf_band[0]), float(hf_band[1])),
-        "ref_band_hz": (float(ref_band[0]), float(ref_band[1])),
-        "ar_coeffs": a, "prediction_error": err, "order": order,
-        "ar_peaks_hz": _bsapeaks(freqs, psd, count=4, minsep=fs / 200.0),
-        "freq_hz": freqs, "ar_psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "ratios": "dimensionless"},
-        "method": "Rangayyan (2024) Section 7.10 with AR modelling of Section 7.5 and the spectral power ratio of eq. (6.44), Section 6.4.2",
-    })
+    out.update(
+        {
+            "power_ratio": hf / rf,
+            "hf_fraction": hf / mom["total_power"],
+            "hf_band_hz": (float(hf_band[0]), float(hf_band[1])),
+            "ref_band_hz": (float(ref_band[0]), float(ref_band[1])),
+            "ar_coeffs": a,
+            "prediction_error": err,
+            "order": order,
+            "ar_peaks_hz": _bsapeaks(freqs, psd, count=4, minsep=fs / 200.0),
+            "freq_hz": freqs,
+            "ar_psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "ratios": "dimensionless"},
+            "method": "Rangayyan (2024) Section 7.10 with AR modelling of Section 7.5 and the spectral power ratio of eq. (6.44), Section 6.4.2",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -957,8 +1005,7 @@ rangayyan_coronary_ad = cadacou  # pre-policy spelling
 
 
 # -- rgcorart: Coronary artery sound generation model (turbulent flow).
-def corsound(diameter, flow_velocity, stenosis_pct=0.0, p2max=1.0,
-             freqs=None, nu=3.5e-6):
+def corsound(diameter, flow_velocity, stenosis_pct=0.0, p2max=1.0, freqs=None, nu=3.5e-6):
     """Turbulent-flow sound spectrum of a stenosed coronary artery segment.
 
     Rangayyan (2024) Section 7.7.2 ("Modeling sound generation in coronary
@@ -1052,31 +1099,33 @@ def corsound(diameter, flow_velocity, stenosis_pct=0.0, p2max=1.0,
         fs_hz = [float(v) for v in aslist(freqs)]
         if any(v < 0.0 for v in fs_hz):
             raise ValueError("frequencies must be non-negative (Hz)")
-    tau = d / U                       # seconds
-    psd = [0.7 * tau * p2max / (1.0 + 0.5 * f * tau) ** (10.0 / 3.0)
-           for f in fs_hz]
+    tau = d / U  # seconds
+    psd = [0.7 * tau * p2max / (1.0 + 0.5 * f * tau) ** (10.0 / 3.0) for f in fs_hz]
     x = 1e-3 * (u * d / nu) * (D / d) ** 0.75
-    return RichResult(payload={
-        "freq_hz": fs_hz, "psd_Pa2_per_Hz": psd,
-        "D_normal_m": D, "d_stenotic_m": d,
-        "U_normal_m_s": U, "u_stenotic_m_s": u,
-        "stenosis_pct": s,
-        "corner_freq_hz": 2.0 / tau,
-        "reynolds_param_x": x,
-        "reynolds_number": u * d / nu,
-        "total_power_Pa2": fsum(psd) * (fs_hz[1] - fs_hz[0] if len(fs_hz) > 1 else 1.0),
-        "units": {"freq": "Hz", "psd": "Pa^2/Hz", "diameter": "m",
-                  "velocity": "m/s", "nu": "m^2/s"},
-        "method": "Rangayyan (2024) eqs. (7.135) and (7.136), Section 7.7.2, after Wang et al. (1990) and Fredberg",
-    })
+    return RichResult(
+        payload={
+            "freq_hz": fs_hz,
+            "psd_Pa2_per_Hz": psd,
+            "D_normal_m": D,
+            "d_stenotic_m": d,
+            "U_normal_m_s": U,
+            "u_stenotic_m_s": u,
+            "stenosis_pct": s,
+            "corner_freq_hz": 2.0 / tau,
+            "reynolds_param_x": x,
+            "reynolds_number": u * d / nu,
+            "total_power_Pa2": fsum(psd) * (fs_hz[1] - fs_hz[0] if len(fs_hz) > 1 else 1.0),
+            "units": {"freq": "Hz", "psd": "Pa^2/Hz", "diameter": "m", "velocity": "m/s", "nu": "m^2/s"},
+            "method": "Rangayyan (2024) eqs. (7.135) and (7.136), Section 7.7.2, after Wang et al. (1990) and Fredberg",
+        }
+    )
 
 
 rangayyan_coronary_sound = corsound  # pre-policy spelling
 
 
 # -- rgcry: Infant cry signal analysis: formants and fundamental frequency.
-def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None,
-              flat_tolerance=0.06):
+def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None, flat_tolerance=0.06):
     """Infant cry analysis: fundamental frequency track and cry melody.
 
     Rangayyan (2024) Section 8.13 ("Application: Analysis of Crying
@@ -1158,8 +1207,7 @@ def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None,
         raise ValueError("window_ms must be positive (ms)")
     w = int(round(window_ms * fs / 1000.0))
     if w < int(2.0 * fs / flo):
-        raise ValueError("a %g ms window holds fewer than two periods at %g Hz"
-                         % (window_ms, flo))
+        raise ValueError(f"a {window_ms:g} ms window holds fewer than two periods at {flo:g} Hz")
     nwin = len(xs) // w
     if nwin < 2:
         raise ValueError("need at least 2 whole analysis windows")
@@ -1172,7 +1220,7 @@ def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None,
         raise ValueError("window is too short for the requested f0_range")
     track, tt, best_seg, best_rms = [], [], None, -1.0
     for i in range(nwin):
-        seg = xs[i * w:(i + 1) * w]
+        seg = xs[i * w : (i + 1) * w]
         tt.append(i * w / fs)
         try:
             acf = _bsaacf(seg, lag_hi)
@@ -1200,8 +1248,7 @@ def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None,
             continue
         if prev is not None:
             ratio = v / prev
-            melody.append(0 if abs(ratio - 1.0) < tol
-                          else (1 if ratio > 1.0 else -1))
+            melody.append(0 if abs(ratio - 1.0) < tol else (1 if ratio > 1.0 else -1))
         prev = v
     n = len(voiced)
     mf = fsum(voiced) / n
@@ -1216,23 +1263,29 @@ def infantcry(cry, fs, window_ms=40.0, f0_range=(200.0, 1000.0), order=None,
                 fmt = sorted(f for f, _ in _bsapeaks(fr, ps, count=4, minsep=150.0))
             except ValueError:
                 fmt = []
-    return RichResult(payload={
-        "f0_track_hz": track, "t_track_s": tt, "melody": melody,
-        "melody_units": {"-1": "falling", "0": "flat", "1": "rising"},
-        "mean_f0_hz": mf, "sd_f0_hz": sf,
-        "min_f0_hz": min(voiced), "max_f0_hz": max(voiced),
-        "f0_range_semitones": 12.0 * log(max(voiced) / min(voiced), 2.0),
-        "voiced_fraction": n / nwin,
-        "in_common_band_fraction": sum(1 for v in voiced
-                                       if 300.0 <= v <= 600.0) / n,
-        "high_pitched": mf > 1000.0,
-        "formants_hz": fmt,
-        "window_ms": window_ms, "n_windows": nwin, "fs_hz": fs,
-        "flat_tolerance": tol,
-        "units": {"frequency": "Hz", "time": "s",
-                  "f0_range_semitones": "semitones"},
-        "method": "Rangayyan (2024) Section 8.13 after Varallyay: 40 ms windows, F0 track as the cry melody coded falling/flat/rising",
-    })
+    return RichResult(
+        payload={
+            "f0_track_hz": track,
+            "t_track_s": tt,
+            "melody": melody,
+            "melody_units": {"-1": "falling", "0": "flat", "1": "rising"},
+            "mean_f0_hz": mf,
+            "sd_f0_hz": sf,
+            "min_f0_hz": min(voiced),
+            "max_f0_hz": max(voiced),
+            "f0_range_semitones": 12.0 * log(max(voiced) / min(voiced), 2.0),
+            "voiced_fraction": n / nwin,
+            "in_common_band_fraction": sum(1 for v in voiced if 300.0 <= v <= 600.0) / n,
+            "high_pitched": mf > 1000.0,
+            "formants_hz": fmt,
+            "window_ms": window_ms,
+            "n_windows": nwin,
+            "fs_hz": fs,
+            "flat_tolerance": tol,
+            "units": {"frequency": "Hz", "time": "s", "f0_range_semitones": "semitones"},
+            "method": "Rangayyan (2024) Section 8.13 after Varallyay: 40 ms windows, F0 track as the cry melody coded falling/flat/rising",
+        }
+    )
 
 
 rangayyan_infant_cry = infantcry  # pre-policy spelling
@@ -1299,8 +1352,7 @@ def eggfeat(egg, fs, normal_band=(0.0333, 0.0667)):
     xs = [float(v) for v in aslist(egg)]
     dur = len(xs) / fs
     if dur < 2.0 / lo:
-        raise ValueError("recording of %.1f s is too short to resolve %g Hz; "
-                         "need at least %.0f s" % (dur, lo, 2.0 / lo))
+        raise ValueError(f"recording of {dur:.1f} s is too short to resolve {lo:g} Hz; need at least {2.0 / lo:.0f} s")
     freqs, psd = _bsapsd(xs, fs)
     mom = _bsapsdmom(freqs, psd)
     tot = mom["total_power"]
@@ -1311,20 +1363,31 @@ def eggfeat(egg, fs, normal_band=(0.0333, 0.0667)):
     if not band:
         raise ValueError("no spectral bins in the gastric frequency range")
     fdom = max(band, key=lambda t: t[1])[0]
-    rhythm = ("normogastria" if lo <= fdom < hi
-              else ("bradygastria" if fdom < lo else "tachygastria"))
+    rhythm = "normogastria" if lo <= fdom < hi else ("bradygastria" if fdom < lo else "tachygastria")
     out = dict(mom)
-    out.update({
-        "dominant_freq_hz": fdom, "dominant_freq_cpm": fdom * 60.0,
-        "normal_fraction": fr_norm, "brady_fraction": fr_brady,
-        "tachy_fraction": fr_tachy, "rhythm": rhythm,
-        "normal_band_hz": (lo, hi), "normal_band_cpm": (lo * 60.0, hi * 60.0),
-        "duration_s": dur, "fs_hz": fs,
-        "freq_hz": freqs, "psd": psd,
-        "units": {"frequency": "Hz", "dominant_freq_cpm": "cycles/minute",
-                  "fractions": "dimensionless", "duration": "s"},
-        "method": "Rangayyan (2024) Section 1.2.8 with the PSD measures of Section 6.4.1 and the band fraction of eq. (6.44)",
-    })
+    out.update(
+        {
+            "dominant_freq_hz": fdom,
+            "dominant_freq_cpm": fdom * 60.0,
+            "normal_fraction": fr_norm,
+            "brady_fraction": fr_brady,
+            "tachy_fraction": fr_tachy,
+            "rhythm": rhythm,
+            "normal_band_hz": (lo, hi),
+            "normal_band_cpm": (lo * 60.0, hi * 60.0),
+            "duration_s": dur,
+            "fs_hz": fs,
+            "freq_hz": freqs,
+            "psd": psd,
+            "units": {
+                "frequency": "Hz",
+                "dominant_freq_cpm": "cycles/minute",
+                "fractions": "dimensionless",
+                "duration": "s",
+            },
+            "method": "Rangayyan (2024) Section 1.2.8 with the PSD measures of Section 6.4.1 and the band fraction of eq. (6.44)",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -1381,15 +1444,21 @@ def rangayyan_heart_elasticity(pcg, fs, s1_window=None):
     ipk = int(np.argmax(p))
     above = np.flatnonzero(p >= p[ipk] / 2.0)
     bw = float(f[above[-1]] - f[above[0]]) if above.size else 0.0
-    return RichResult(payload={"dominant_frequency": float(f[ipk]),
-                               "spectral_centroid": centroid, "bandwidth_3db": bw,
-                               "freqs": f, "psd": p, "calibrated": False,
-                               "method": "S1 spectral descriptors; monotone in stiffness, NOT calibrated"})
+    return RichResult(
+        payload={
+            "dominant_frequency": float(f[ipk]),
+            "spectral_centroid": centroid,
+            "bandwidth_3db": bw,
+            "freqs": f,
+            "psd": p,
+            "calibrated": False,
+            "method": "S1 spectral descriptors; monotone in stiffness, NOT calibrated",
+        }
+    )
 
 
 # -- rgengn: Electroneurogram (ENG) compound action potential model.
-def engcap(t, distance_m=0.1, n_fibers=40, cv_range=(45.0, 70.0),
-           amp_range=(0.5, 2.0), width_ms=0.3):
+def engcap(t, distance_m=0.1, n_fibers=40, cv_range=(45.0, 70.0), amp_range=(0.5, 2.0), width_ms=0.3):
     """Electroneurogram compound action potential from a fibre population.
 
     Rangayyan (2024) Section 1.2.3 ("The electroneurogram (ENG)") defines
@@ -1467,10 +1536,8 @@ def engcap(t, distance_m=0.1, n_fibers=40, cv_range=(45.0, 70.0),
     width_ms = float(width_ms)
     if width_ms <= 0.0:
         raise ValueError("width_ms must be positive (ms)")
-    cvs = [lo] if n_fibers == 1 else [lo + (hi - lo) * i / (n_fibers - 1)
-                                      for i in range(n_fibers)]
-    amps = [alo] if n_fibers == 1 else [alo + (ahi - alo) * i / (n_fibers - 1)
-                                        for i in range(n_fibers)]
+    cvs = [lo] if n_fibers == 1 else [lo + (hi - lo) * i / (n_fibers - 1) for i in range(n_fibers)]
+    amps = [alo] if n_fibers == 1 else [alo + (ahi - alo) * i / (n_fibers - 1) for i in range(n_fibers)]
     # distance in m over velocity in m/s gives seconds; times 1000 -> ms
     lats = [1000.0 * distance_m / v for v in cvs]
     wave = []
@@ -1484,26 +1551,29 @@ def engcap(t, distance_m=0.1, n_fibers=40, cv_range=(45.0, 70.0),
         wave.append(acc)
     pk = max(abs(v) for v in wave)
     if pk <= 0.0:
-        raise ValueError("CAP is identically zero; t must cover latencies "
-                         + repr((min(lats), max(lats))) + " ms")
+        raise ValueError("CAP is identically zero; t must cover latencies " + repr((min(lats), max(lats))) + " ms")
     ipk = max(range(len(wave)), key=lambda i: abs(wave[i]))
     onset = None
     for i in range(len(wave)):
         if abs(wave[i]) >= 0.05 * pk:
             onset = ts[i]
             break
-    return RichResult(payload={
-        "t_ms": ts, "cap_uV": wave,
-        "peak_uV": wave[ipk], "peak_latency_ms": ts[ipk],
-        "onset_latency_ms": onset,
-        "cv_from_peak_m_s": 1000.0 * distance_m / ts[ipk] if ts[ipk] > 0 else None,
-        "cv_from_onset_m_s": (1000.0 * distance_m / onset)
-                             if onset and onset > 0 else None,
-        "latencies_ms": lats, "velocities_m_s": cvs,
-        "distance_m": distance_m,
-        "units": {"t": "ms", "cap": "uV", "velocity": "m/s", "distance": "m"},
-        "method": "ENG compound action potential from a fibre-velocity population; ENG and two-point conduction-velocity measurement per Rangayyan (2024) Section 1.2.3 (no CAP equation in the book)",
-    })
+    return RichResult(
+        payload={
+            "t_ms": ts,
+            "cap_uV": wave,
+            "peak_uV": wave[ipk],
+            "peak_latency_ms": ts[ipk],
+            "onset_latency_ms": onset,
+            "cv_from_peak_m_s": 1000.0 * distance_m / ts[ipk] if ts[ipk] > 0 else None,
+            "cv_from_onset_m_s": (1000.0 * distance_m / onset) if onset and onset > 0 else None,
+            "latencies_ms": lats,
+            "velocities_m_s": cvs,
+            "distance_m": distance_m,
+            "units": {"t": "ms", "cap": "uV", "velocity": "m/s", "distance": "m"},
+            "method": "ENG compound action potential from a fibre-velocity population; ENG and two-point conduction-velocity measurement per Rangayyan (2024) Section 1.2.3 (no CAP equation in the book)",
+        }
+    )
 
 
 rangayyan_eng = engcap  # pre-policy spelling
@@ -1576,35 +1646,35 @@ def seizdet(eeg, fs, epoch_s=1.0, ratio_threshold=2.0, baseline_epochs=None):
         raise ValueError("ratio_threshold must exceed 1 (it is a ratio to baseline)")
     w = int(round(epoch_s * fs))
     if w < 8:
-        raise ValueError("epoch of %g s is only %d samples; use a longer epoch"
-                         % (epoch_s, w))
+        raise ValueError(f"epoch of {epoch_s:g} s is only {int(w)} samples; use a longer epoch")
     n_ep = len(xs) // w
     if n_ep < 2:
         raise ValueError("need at least 2 whole epochs")
-    binnie = [(1.0, 2.0), (2.0, 4.0), (4.0, 6.0), (6.0, 8.0),
-              (8.0, 11.0), (11.0, 14.0), (14.0, fs / 2.0)]
-    trad = {"delta": (0.5, 4.0), "theta": (4.0, 8.0),
-            "alpha": (8.0, 13.0001), "beta": (13.0001, fs / 2.0),
-            "gamma": (30.0, min(80.0, fs / 2.0))}
+    binnie = [(1.0, 2.0), (2.0, 4.0), (4.0, 6.0), (6.0, 8.0), (8.0, 11.0), (11.0, 14.0), (14.0, fs / 2.0)]
+    trad = {
+        "delta": (0.5, 4.0),
+        "theta": (4.0, 8.0),
+        "alpha": (8.0, 13.0001),
+        "beta": (13.0001, fs / 2.0),
+        "gamma": (30.0, min(80.0, fs / 2.0)),
+    }
     rows = []
     for e in range(n_ep):
-        seg = xs[e * w:(e + 1) * w]
+        seg = xs[e * w : (e + 1) * w]
         freqs, psd = _bsapsd(seg, fs)
         tot = fsum(psd)
         if tot <= 0.0:
-            raise ValueError("epoch %d is constant; no spectrum to analyse" % e)
+            raise ValueError(f"epoch {int(e)} is constant; no spectrum to analyse")
         row = {"t_start_s": e * epoch_s}
         for lo, hi in binnie:
-            row["b_%g_%g_hz" % (lo, hi)] = _bsabandpow(freqs, psd, lo, hi) / tot
+            row[f"b_{lo:g}_{hi:g}_hz"] = _bsabandpow(freqs, psd, lo, hi) / tot
         for nm, (lo, hi) in trad.items():
             if hi > lo:
                 row[nm + "_fraction"] = _bsabandpow(freqs, psd, lo, hi) / tot
-        row["slow_fraction"] = row.get("delta_fraction", 0.0) \
-            + row.get("theta_fraction", 0.0)
+        row["slow_fraction"] = row.get("delta_fraction", 0.0) + row.get("theta_fraction", 0.0)
         row["form_factor"] = _bsahjorth(seg)["form_factor"]
         rows.append(row)
-    nb = int(baseline_epochs) if baseline_epochs is not None \
-        else max(1, n_ep // 4)
+    nb = int(baseline_epochs) if baseline_epochs is not None else max(1, n_ep // 4)
     if not 1 <= nb < n_ep:
         raise ValueError("baseline_epochs must be between 1 and n_epochs-1")
     base = fsum(rows[i]["slow_fraction"] for i in range(nb)) / nb
@@ -1623,17 +1693,23 @@ def seizdet(eeg, fs, epoch_s=1.0, ratio_threshold=2.0, baseline_epochs=None):
     if start is not None:
         runs.append((start * epoch_s, n_ep * epoch_s))
     nflag = sum(1 for row in rows if row["flagged"])
-    return RichResult(payload={
-        "epochs": rows,
-        "seizure_detected": nflag > 0, "n_flagged": nflag,
-        "seizure_intervals_s": runs,
-        "baseline_slow_fraction": base, "threshold_slow_fraction": thr,
-        "baseline_epochs": nb, "n_epochs": n_ep,
-        "epoch_s": epoch_s, "fs_hz": fs,
-        "binnie_bands_hz": binnie,
-        "units": {"eeg": "uV", "time": "s", "fractions": "dimensionless"},
-        "method": "Rangayyan (2024) Section 8.17 with the spectral banding of Binnie et al., Section 6.4.2, the EEG bands of Section 1.2.6 and the form factor of eq. (5.26)",
-    })
+    return RichResult(
+        payload={
+            "epochs": rows,
+            "seizure_detected": nflag > 0,
+            "n_flagged": nflag,
+            "seizure_intervals_s": runs,
+            "baseline_slow_fraction": base,
+            "threshold_slow_fraction": thr,
+            "baseline_epochs": nb,
+            "n_epochs": n_ep,
+            "epoch_s": epoch_s,
+            "fs_hz": fs,
+            "binnie_bands_hz": binnie,
+            "units": {"eeg": "uV", "time": "s", "fractions": "dimensionless"},
+            "method": "Rangayyan (2024) Section 8.17 with the spectral banding of Binnie et al., Section 6.4.2, the EEG bands of Section 1.2.6 and the form factor of eq. (5.26)",
+        }
+    )
 
 
 rangayyan_epilepsy_detect = seizdet  # pre-policy spelling
@@ -1704,38 +1780,44 @@ def erpfeat(erp, fs, t0=0.0, components=None, baseline_ms=(None, 0.0)):
     ts = [1000.0 * i / fs - t0 for i in range(len(xs))]
     bstart, bend = baseline_ms
     bend = float(bend)
-    idx = [i for i in range(len(ts))
-           if ts[i] < bend and (bstart is None or ts[i] >= float(bstart))]
+    idx = [i for i in range(len(ts)) if ts[i] < bend and (bstart is None or ts[i] >= float(bstart))]
     base = fsum(xs[i] for i in idx) / len(idx) if idx else 0.0
     ys = [v - base for v in xs]
     if components is None:
-        components = {"N100": (50.0, 150.0, -1), "P200": (150.0, 250.0, 1),
-                      "N200": (180.0, 300.0, -1), "P300": (250.0, 500.0, 1)}
+        components = {
+            "N100": (50.0, 150.0, -1),
+            "P200": (150.0, 250.0, 1),
+            "N200": (180.0, 300.0, -1),
+            "P300": (250.0, 500.0, 1),
+        }
     if not isinstance(components, dict):
         raise ValueError("components must be a dict of name -> (t1, t2, polarity)")
     rows = {}
     for name, spec in components.items():
         t1, t2, pol = float(spec[0]), float(spec[1]), int(spec[2])
         if t2 <= t1:
-            raise ValueError("component %s has an empty window" % name)
+            raise ValueError(f"component {name} has an empty window")
         if pol not in (1, -1):
-            raise ValueError("component %s polarity must be +1 or -1" % name)
+            raise ValueError(f"component {name} polarity must be +1 or -1")
         win = [i for i in range(len(ts)) if t1 <= ts[i] <= t2]
         if not win:
-            rows[name] = {"latency_ms": None, "amplitude_uV": None,
-                          "found": False, "window_ms": (t1, t2)}
+            rows[name] = {"latency_ms": None, "amplitude_uV": None, "found": False, "window_ms": (t1, t2)}
             continue
         i = max(win, key=lambda k: pol * ys[k])
-        rows[name] = {"latency_ms": ts[i], "amplitude_uV": ys[i],
-                      "found": True, "window_ms": (t1, t2), "polarity": pol}
-    return RichResult(payload={
-        "components": rows,
-        "peak_to_peak_uV": max(ys) - min(ys),
-        "baseline_uV": base,
-        "t_ms": ts, "erp_uV": ys, "fs_hz": fs, "t0_ms": t0,
-        "units": {"amplitude": "uV", "latency": "ms"},
-        "method": "Rangayyan (2024) Section 1.2.7 (latency, duration and amplitude of the response); averaging per Section 3.12",
-    })
+        rows[name] = {"latency_ms": ts[i], "amplitude_uV": ys[i], "found": True, "window_ms": (t1, t2), "polarity": pol}
+    return RichResult(
+        payload={
+            "components": rows,
+            "peak_to_peak_uV": max(ys) - min(ys),
+            "baseline_uV": base,
+            "t_ms": ts,
+            "erp_uV": ys,
+            "fs_hz": fs,
+            "t0_ms": t0,
+            "units": {"amplitude": "uV", "latency": "ms"},
+            "method": "Rangayyan (2024) Section 1.2.7 (latency, duration and amplitude of the response); averaging per Section 3.12",
+        }
+    )
 
 
 rangayyan_erp_features = erpfeat  # pre-policy spelling
@@ -1818,13 +1900,12 @@ def erders(eeg, fs, ref_window, active_window, band=(8.0, 13.0)):
     def cut(win, name):
         a, b = float(win[0]), float(win[1])
         if b <= a:
-            raise ValueError("%s must have end > start (s)" % name)
+            raise ValueError(f"{name} must have end > start (s)")
         if a < 0.0 or b > dur:
-            raise ValueError("%s (%g, %g) s falls outside the %.3f s record"
-                             % (name, a, b, dur))
-        seg = xs[int(round(a * fs)):int(round(b * fs))]
+            raise ValueError(f"{name} ({a:g}, {b:g}) s falls outside the {dur:.3f} s record")
+        seg = xs[int(round(a * fs)) : int(round(b * fs))]
         if len(seg) < 4:
-            raise ValueError("%s is only %d samples; widen it" % (name, len(seg)))
+            raise ValueError(f"{name} is only {int(len(seg))} samples; widen it")
         return seg
 
     rseg = cut(ref_window, "ref_window")
@@ -1835,21 +1916,27 @@ def erders(eeg, fs, ref_window, active_window, band=(8.0, 13.0)):
     R = _bsabandpow(rf, rp, lo, hi) / len(rseg)
     A = _bsabandpow(af, ap, lo, hi) / len(aseg)
     if R <= 0.0:
-        raise ValueError("reference window has no power in %g-%g Hz" % (lo, hi))
+        raise ValueError(f"reference window has no power in {lo:g}-{hi:g} Hz")
     pct = 100.0 * (A - R) / R
     event = "none" if abs(pct) < 1.0 else ("ERS" if pct > 0.0 else "ERD")
-    return RichResult(payload={
-        "erd_percent": pct, "ref_power": R, "active_power": A,
-        "power_ratio": A / R, "event": event,
-        "band_hz": (lo, hi),
-        "ref_window_s": (float(ref_window[0]), float(ref_window[1])),
-        "active_window_s": (float(active_window[0]), float(active_window[1])),
-        "ref_samples": len(rseg), "active_samples": len(aseg), "fs_hz": fs,
-        "sign_convention": "negative erd_percent = desynchronisation (power drop)",
-        "units": {"power": "uV^2 per sample", "erd_percent": "percent",
-                  "frequency": "Hz"},
-        "method": "Pfurtscheller & Aranibar (1979) / Pfurtscheller & Lopes da Silva (1999) ERD-ERS; not defined in Rangayyan (2024), whose Section 9.12.2 covers NMF channel selection",
-    })
+    return RichResult(
+        payload={
+            "erd_percent": pct,
+            "ref_power": R,
+            "active_power": A,
+            "power_ratio": A / R,
+            "event": event,
+            "band_hz": (lo, hi),
+            "ref_window_s": (float(ref_window[0]), float(ref_window[1])),
+            "active_window_s": (float(active_window[0]), float(active_window[1])),
+            "ref_samples": len(rseg),
+            "active_samples": len(aseg),
+            "fs_hz": fs,
+            "sign_convention": "negative erd_percent = desynchronisation (power drop)",
+            "units": {"power": "uV^2 per sample", "erd_percent": "percent", "frequency": "Hz"},
+            "method": "Pfurtscheller & Aranibar (1979) / Pfurtscheller & Lopes da Silva (1999) ERD-ERS; not defined in Rangayyan (2024), whose Section 9.12.2 covers NMF channel selection",
+        }
+    )
 
 
 rangayyan_feature_extract_bci = erders  # pre-policy spelling
@@ -1927,15 +2014,19 @@ def cadspec(x, fs, bands=None):
     fdom = pk[0][0] if pk else freqs[power.index(max(power))]
     bw, q = _bsaqfactor(freqs, power, fdom)
     out = dict(mom)
-    out.update({
-        "band_power_fraction": frac,
-        "dominant_freq_hz": fdom,
-        "bandwidth_3db_hz": bw, "q_factor": q,
-        "freq_hz": freqs, "psd": power, "fs_hz": fs,
-        "units": {"frequency": "Hz", "power": "signal units^2",
-                  "fractions": "dimensionless"},
-        "method": "Rangayyan (2024) eqs. (6.32), (6.34), (6.35), (6.37), (6.38), (6.41), (6.44); Sections 6.4.1, 6.4.2 and 7.10",
-    })
+    out.update(
+        {
+            "band_power_fraction": frac,
+            "dominant_freq_hz": fdom,
+            "bandwidth_3db_hz": bw,
+            "q_factor": q,
+            "freq_hz": freqs,
+            "psd": power,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "power": "signal units^2", "fractions": "dimensionless"},
+            "method": "Rangayyan (2024) eqs. (6.32), (6.34), (6.35), (6.37), (6.38), (6.41), (6.44); Sections 6.4.1, 6.4.2 and 7.10",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -2011,17 +2102,19 @@ def ghk(ion_concs, P_K=1.0, P_Na=0.04, P_Cl=0.45, T=310.15):
         raise ValueError("weighted concentration sums must be positive")
     slope = _BSA_R_GAS * T / _BSA_FARADAY
     volts = slope * log(num / den)
-    return RichResult(payload={
-        "potential_mV": volts * 1000.0,
-        "potential_V": volts,
-        "numerator_mM": num,
-        "denominator_mM": den,
-        "slope_mV": slope * 1000.0,
-        "permeabilities": {"K": P_K, "Na": P_Na, "Cl": P_Cl},
-        "T_K": T,
-        "units": {"potential": "mV", "concentration": "mM", "T": "K"},
-        "method": "Goldman (1943) / Hodgkin & Katz (1949) GHK voltage equation; not given in Rangayyan (2024)",
-    })
+    return RichResult(
+        payload={
+            "potential_mV": volts * 1000.0,
+            "potential_V": volts,
+            "numerator_mM": num,
+            "denominator_mM": den,
+            "slope_mV": slope * 1000.0,
+            "permeabilities": {"K": P_K, "Na": P_Na, "Cl": P_Cl},
+            "T_K": T,
+            "units": {"potential": "mV", "concentration": "mM", "T": "K"},
+            "method": "Goldman (1943) / Hodgkin & Katz (1949) GHK voltage equation; not given in Rangayyan (2024)",
+        }
+    )
 
 
 rangayyan_goldman_eqn = ghk  # pre-policy spelling
@@ -2107,28 +2200,47 @@ def hhgate(V, dt=0.01, m=None, h=None, n=None, steps=1):
         out[name] = x
         out[name + "_inf"] = xinf
         out["tau_" + name + "_ms"] = tau
-    return RichResult(payload={
-        "V_mV": V,
-        "dt_ms": dt,
-        "steps": steps,
-        "m": out["m"], "h": out["h"], "n": out["n"],
-        "m_inf": out["m_inf"], "h_inf": out["h_inf"], "n_inf": out["n_inf"],
-        "tau_m_ms": out["tau_m_ms"], "tau_h_ms": out["tau_h_ms"],
-        "tau_n_ms": out["tau_n_ms"],
-        "alpha_per_ms": {"m": am, "h": ah, "n": an},
-        "beta_per_ms": {"m": bm, "h": bh, "n": bn},
-        "units": {"V": "mV", "time": "ms", "rates": "1/ms", "gates": "dimensionless"},
-        "method": "Hodgkin & Huxley (1952) J Physiol 117(4):500-544 gating kinetics; rates not printed in Rangayyan (2024)",
-    })
+    return RichResult(
+        payload={
+            "V_mV": V,
+            "dt_ms": dt,
+            "steps": steps,
+            "m": out["m"],
+            "h": out["h"],
+            "n": out["n"],
+            "m_inf": out["m_inf"],
+            "h_inf": out["h_inf"],
+            "n_inf": out["n_inf"],
+            "tau_m_ms": out["tau_m_ms"],
+            "tau_h_ms": out["tau_h_ms"],
+            "tau_n_ms": out["tau_n_ms"],
+            "alpha_per_ms": {"m": am, "h": ah, "n": an},
+            "beta_per_ms": {"m": bm, "h": bh, "n": bn},
+            "units": {"V": "mV", "time": "ms", "rates": "1/ms", "gates": "dimensionless"},
+            "method": "Hodgkin & Huxley (1952) J Physiol 117(4):500-544 gating kinetics; rates not printed in Rangayyan (2024)",
+        }
+    )
 
 
 rangayyan_hh_gating = hhgate  # pre-policy spelling
 
 
 # -- rghhmm: Hodgkin-Huxley membrane model for action potential.
-def hhmodel(duration=30.0, dt=0.01, I_ext=10.0, stim_start=5.0, stim_stop=6.0,
-            C_m=1.0, g_Na=120.0, g_K=36.0, g_L=0.3,
-            E_Na=50.0, E_K=-77.0, E_L=-54.387, V0=-65.0):
+def hhmodel(
+    duration=30.0,
+    dt=0.01,
+    I_ext=10.0,
+    stim_start=5.0,
+    stim_stop=6.0,
+    C_m=1.0,
+    g_Na=120.0,
+    g_K=36.0,
+    g_L=0.3,
+    E_Na=50.0,
+    E_K=-77.0,
+    E_L=-54.387,
+    V0=-65.0,
+):
     """Four-variable Hodgkin-Huxley membrane model, integrated with RK4.
 
     Rangayyan (2024) Section 7.8.1 presents the model qualitatively with
@@ -2219,12 +2331,11 @@ def hhmodel(duration=30.0, dt=0.01, I_ext=10.0, stim_start=5.0, stim_stop=6.0,
 
     def deriv(t, V, m, h, n):
         am, bm, ah, bh, an, bn = _bsahhrates(V)
-        iNa = g_Na * m ** 3 * h * (V - E_Na)
-        iK = g_K * n ** 4 * (V - E_K)
+        iNa = g_Na * m**3 * h * (V - E_Na)
+        iK = g_K * n**4 * (V - E_K)
         iL = g_L * (V - E_L)
         dV = (stim(t) - iNa - iK - iL) / C_m
-        return dV, am * (1.0 - m) - bm * m, ah * (1.0 - h) - bh * h, \
-            an * (1.0 - n) - bn * n
+        return dV, am * (1.0 - m) - bm * m, ah * (1.0 - h) - bh * h, an * (1.0 - n) - bn * n
 
     V = float(V0)
     am, bm, ah, bh, an, bn = _bsahhrates(V)
@@ -2238,8 +2349,7 @@ def hhmodel(duration=30.0, dt=0.01, I_ext=10.0, stim_start=5.0, stim_stop=6.0,
         k2 = deriv(t + dt / 2, *[y[j] + dt / 2 * k1[j] for j in range(4)])
         k3 = deriv(t + dt / 2, *[y[j] + dt / 2 * k2[j] for j in range(4)])
         k4 = deriv(t + dt, *[y[j] + dt * k3[j] for j in range(4)])
-        V, m, h, n = [y[j] + dt / 6 * (k1[j] + 2 * k2[j] + 2 * k3[j] + k4[j])
-                      for j in range(4)]
+        V, m, h, n = [y[j] + dt / 6 * (k1[j] + 2 * k2[j] + 2 * k3[j] + k4[j]) for j in range(4)]
         m = min(1.0, max(0.0, m))
         h = min(1.0, max(0.0, h))
         n = min(1.0, max(0.0, n))
@@ -2254,27 +2364,36 @@ def hhmodel(duration=30.0, dt=0.01, I_ext=10.0, stim_start=5.0, stim_stop=6.0,
     peak = max(Vs)
     pk = Vs.index(peak)
     rest_idx = max(0, int(stim_start / dt) - 1)
-    crossings = sum(1 for k in range(1, len(Vs))
-                    if Vs[k - 1] <= 0.0 < Vs[k])
-    return RichResult(payload={
-        "t_ms": ts, "V_mV": Vs, "m": ms, "h": hs, "n": ns,
-        "I_Na_uA_cm2": iNa, "I_K_uA_cm2": iK, "I_L_uA_cm2": iL,
-        "peak_mV": peak, "peak_time_ms": ts[pk],
-        "rest_mV": Vs[rest_idx], "min_mV": min(Vs),
-        "spiked": peak > 0.0, "n_spikes": crossings,
-        "dt_ms": dt, "I_ext_uA_cm2": I_ext,
-        "units": {"V": "mV", "t": "ms", "I": "uA/cm^2",
-                  "g": "mS/cm^2", "C_m": "uF/cm^2"},
-        "method": "Hodgkin & Huxley (1952) J Physiol 117(4):500-544, four-variable model, RK4; Rangayyan (2024) eq. (7.138), Section 7.8.1",
-    })
+    crossings = sum(1 for k in range(1, len(Vs)) if Vs[k - 1] <= 0.0 < Vs[k])
+    return RichResult(
+        payload={
+            "t_ms": ts,
+            "V_mV": Vs,
+            "m": ms,
+            "h": hs,
+            "n": ns,
+            "I_Na_uA_cm2": iNa,
+            "I_K_uA_cm2": iK,
+            "I_L_uA_cm2": iL,
+            "peak_mV": peak,
+            "peak_time_ms": ts[pk],
+            "rest_mV": Vs[rest_idx],
+            "min_mV": min(Vs),
+            "spiked": peak > 0.0,
+            "n_spikes": crossings,
+            "dt_ms": dt,
+            "I_ext_uA_cm2": I_ext,
+            "units": {"V": "mV", "t": "ms", "I": "uA/cm^2", "g": "mS/cm^2", "C_m": "uF/cm^2"},
+            "method": "Hodgkin & Huxley (1952) J Physiol 117(4):500-544, four-variable model, RK4; Rangayyan (2024) eq. (7.138), Section 7.8.1",
+        }
+    )
 
 
 rangayyan_hodgkin_huxley = hhmodel  # pre-policy spelling
 
 
 # -- rghmm: FitzHugh-Nagumo simplified neuron model.
-def fhn(duration=200.0, dt=0.01, I_ext=0.5, a=0.7, b=0.8, eps=0.08,
-        v0=-1.2, w0=-0.6, stim_start=0.0, stim_stop=None):
+def fhn(duration=200.0, dt=0.01, I_ext=0.5, a=0.7, b=0.8, eps=0.08, v0=-1.2, w0=-0.6, stim_start=0.0, stim_stop=None):
     """FitzHugh-Nagumo two-variable excitable-medium neuron model.
 
     Rangayyan (2024) mentions the FitzHugh-Nagumo equations only in
@@ -2349,7 +2468,7 @@ def fhn(duration=200.0, dt=0.01, I_ext=0.5, a=0.7, b=0.8, eps=0.08,
 
     def deriv(t, v, w):
         cur = I_ext if stim_start <= t < stop else 0.0
-        return v - v ** 3 / 3.0 - w + cur, eps * (v + a - b * w)
+        return v - v**3 / 3.0 - w + cur, eps * (v + a - b * w)
 
     v, w = float(v0), float(w0)
     ts, vs, ws = [0.0], [v], [w]
@@ -2368,15 +2487,24 @@ def fhn(duration=200.0, dt=0.01, I_ext=0.5, a=0.7, b=0.8, eps=0.08,
     period = None
     if len(spikes) > 1:
         period = (spikes[-1] - spikes[0]) / (len(spikes) - 1)
-    return RichResult(payload={
-        "t": ts, "v": vs, "w": ws,
-        "peak": max(vs), "min": min(vs),
-        "n_spikes": len(spikes), "spike_times": spikes, "period": period,
-        "a": a, "b": b, "eps": eps, "I_ext": I_ext,
-        "units": {"v": "dimensionless", "w": "dimensionless",
-                  "t": "dimensionless model time units"},
-        "method": "FitzHugh (1961) Biophys J 1(6):445-466 / Nagumo et al. (1962) Proc IRE 50(10):2061-2070; equations not printed in Rangayyan (2024), named in Section 7.8.3",
-    })
+    return RichResult(
+        payload={
+            "t": ts,
+            "v": vs,
+            "w": ws,
+            "peak": max(vs),
+            "min": min(vs),
+            "n_spikes": len(spikes),
+            "spike_times": spikes,
+            "period": period,
+            "a": a,
+            "b": b,
+            "eps": eps,
+            "I_ext": I_ext,
+            "units": {"v": "dimensionless", "w": "dimensionless", "t": "dimensionless model time units"},
+            "method": "FitzHugh (1961) Biophys J 1(6):445-466 / Nagumo et al. (1962) Proc IRE 50(10):2061-2070; equations not printed in Rangayyan (2024), named in Section 7.8.3",
+        }
+    )
 
 
 rangayyan_fitzhugh_nagumo = fhn  # pre-policy spelling
@@ -2440,29 +2568,33 @@ def rcmemb(t, I_inj=0.0, C_m=0.2, R_m=100.0, V_rest=-65.0):
         raise ValueError("R_m must be positive (MOhm)")
     try:
         cur = [float(I_inj)] * len(ts)
-    except TypeError:
+    except TypeError as exc:
         cur = [float(v) for v in aslist(I_inj)]
         if len(cur) != len(ts):
-            raise ValueError("I_inj must be scalar or the same length as t")
+            raise ValueError("I_inj must be scalar or the same length as t") from exc
     tau = R_m * C_m
     V = V_rest
     Vs = []
-    for i, ti in enumerate(ts):
+    for i, _ti in enumerate(ts):
         if i > 0:
             step = ts[i] - ts[i - 1]
             vinf = V_rest + cur[i - 1] * R_m
             V = vinf + (V - vinf) * exp(-step / tau)
         Vs.append(V)
-    return RichResult(payload={
-        "t_ms": ts, "V_mV": Vs,
-        "tau_ms": tau,
-        "V_steady_mV": V_rest + cur[-1] * R_m,
-        "input_resistance_MOhm": R_m,
-        "peak_mV": max(Vs), "final_mV": Vs[-1], "V_rest_mV": V_rest,
-        "units": {"V": "mV", "t": "ms", "I": "nA", "R": "MOhm",
-                  "C": "nF", "tau": "ms"},
-        "method": "Passive RC membrane, leak-only reduction of Rangayyan (2024) eq. (7.138), Section 7.8.1",
-    })
+    return RichResult(
+        payload={
+            "t_ms": ts,
+            "V_mV": Vs,
+            "tau_ms": tau,
+            "V_steady_mV": V_rest + cur[-1] * R_m,
+            "input_resistance_MOhm": R_m,
+            "peak_mV": max(Vs),
+            "final_mV": Vs[-1],
+            "V_rest_mV": V_rest,
+            "units": {"V": "mV", "t": "ms", "I": "nA", "R": "MOhm", "C": "nF", "tau": "ms"},
+            "method": "Passive RC membrane, leak-only reduction of Rangayyan (2024) eq. (7.138), Section 7.8.1",
+        }
+    )
 
 
 rangayyan_membrane_potential = rcmemb  # pre-policy spelling
@@ -2572,9 +2704,10 @@ def vagclean(vag, emg_ref, fs, n_taps=8, mu=0.05, alpha=0.02, adaptive_mu=True):
             raise ValueError("mu must be positive")
         lim = 1.0 / (M1 * rpow)
         if mu >= lim:
-            raise ValueError("mu=%g exceeds the stability limit %g for a "
-                             "reference of power %g; the LMS filter would diverge"
-                             % (mu, lim, rpow))
+            raise ValueError(
+                f"mu={mu:g} exceeds the stability limit {lim:g} for a "
+                f"reference of power {rpow:g}; the LMS filter would diverge"
+            )
     w = [0.0] * M1
     xbar2 = rpow
     out, art, mus = [], [], []
@@ -2593,25 +2726,30 @@ def vagclean(vag, emg_ref, fs, n_taps=8, mu=0.05, alpha=0.02, adaptive_mu=True):
         art.append(y)
         mus.append(step)
     rb, ra = _bsarms(xs), _bsarms(out)
-    return RichResult(payload={
-        "cleaned": out, "artifact_estimate": art, "weights": w,
-        "rms_before": rb, "rms_after": ra,
-        "artifact_reduction_db": (20.0 * log(rb / ra, 10.0)
-                                  if ra > 0.0 and rb > 0.0 else None),
-        "mu_trace": mus, "n_taps": M1, "alpha": alpha,
-        "adaptive_mu": bool(adaptive_mu), "fs_hz": fs,
-        "units": {"signals": "input amplitude units (mV)",
-                  "reduction": "dB", "mu": "dimensionless"},
-        "method": "Rangayyan (2024) eqs. (3.203), (3.204), (3.205), Sections 3.10.1, 3.10.2, 3.3.6 and 3.15, after Zhang et al.",
-    })
+    return RichResult(
+        payload={
+            "cleaned": out,
+            "artifact_estimate": art,
+            "weights": w,
+            "rms_before": rb,
+            "rms_after": ra,
+            "artifact_reduction_db": (20.0 * log(rb / ra, 10.0) if ra > 0.0 and rb > 0.0 else None),
+            "mu_trace": mus,
+            "n_taps": M1,
+            "alpha": alpha,
+            "adaptive_mu": bool(adaptive_mu),
+            "fs_hz": fs,
+            "units": {"signals": "input amplitude units (mV)", "reduction": "dB", "mu": "dimensionless"},
+            "method": "Rangayyan (2024) eqs. (3.203), (3.204), (3.205), Sections 3.10.1, 3.10.2, 3.3.6 and 3.15, after Zhang et al.",
+        }
+    )
 
 
 rangayyan_muscle_artifact = vagclean  # pre-policy spelling
 
 
 # -- rgmuap: Motor unit action potential (MUAP) model.
-def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0,
-              amp_uV=8.0, width_ms=1.0, phases=3):
+def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0, amp_uV=8.0, width_ms=1.0, phases=3):
     """Motor unit action potential as the superposition of fibre potentials.
 
     Rangayyan (2024) Section 1.2.5 ("The electromyogram (EMG)") defines
@@ -2697,11 +2835,7 @@ def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0,
         raise ValueError("phases must be 2 (biphasic) or 3 (triphasic)")
     amp_uV = float(amp_uV)
     span_ms = spread_mm / conduction_vel
-    if n_fibers == 1:
-        delays = [0.0]
-    else:
-        delays = [-span_ms / 2.0 + span_ms * i / (n_fibers - 1)
-                  for i in range(n_fibers)]
+    delays = [0.0] if n_fibers == 1 else [-span_ms / 2.0 + span_ms * i / (n_fibers - 1) for i in range(n_fibers)]
     tmid = 0.5 * (ts[0] + ts[-1])
     wave = []
     for ti in ts:
@@ -2719,21 +2853,23 @@ def muapmodel(t, n_fibers=25, conduction_vel=4.0, spread_mm=3.0,
     thr = 0.05 * pk
     on = [ts[i] for i in range(len(ts)) if abs(wave[i]) >= thr]
     dur = (on[-1] - on[0]) if len(on) > 1 else 0.0
-    cross = sum(1 for i in range(1, len(wave))
-                if (wave[i - 1] < 0.0) != (wave[i] < 0.0))
-    return RichResult(payload={
-        "t_ms": ts, "muap_uV": wave,
-        "peak_to_peak_uV": max(wave) - min(wave),
-        "peak_uV": pk,
-        "duration_ms": dur,
-        "n_phases_observed": cross + 1,
-        "delays_ms": delays,
-        "n_fibers": n_fibers,
-        "conduction_vel_m_s": conduction_vel,
-        "in_normal_duration_band": 3.0 <= dur <= 15.0,
-        "units": {"t": "ms", "muap": "uV", "conduction velocity": "m/s"},
-        "method": "MUAP as summed single-fibre potentials; morphology and normal ranges from Rangayyan (2024) Section 1.2.5 (no waveform equation given in the book)",
-    })
+    cross = sum(1 for i in range(1, len(wave)) if (wave[i - 1] < 0.0) != (wave[i] < 0.0))
+    return RichResult(
+        payload={
+            "t_ms": ts,
+            "muap_uV": wave,
+            "peak_to_peak_uV": max(wave) - min(wave),
+            "peak_uV": pk,
+            "duration_ms": dur,
+            "n_phases_observed": cross + 1,
+            "delays_ms": delays,
+            "n_fibers": n_fibers,
+            "conduction_vel_m_s": conduction_vel,
+            "in_normal_duration_band": 3.0 <= dur <= 15.0,
+            "units": {"t": "ms", "muap": "uV", "conduction velocity": "m/s"},
+            "method": "MUAP as summed single-fibre potentials; morphology and normal ranges from Rangayyan (2024) Section 1.2.5 (no waveform equation given in the book)",
+        }
+    )
 
 
 rangayyan_muap = muapmodel  # pre-policy spelling
@@ -2802,20 +2938,26 @@ def murmspec(pcg, fs, f1=25.0, f2=75.0, f3=150.0):
     ca = fsum(m for f, m in zip(freqs, mag) if f1 <= f < f2)
     pa = fsum(m for f, m in zip(freqs, mag) if f2 <= f < f3)
     if ca <= 0.0:
-        raise ValueError("constant-area band %g-%g Hz carries no energy" % (f1, f2))
+        raise ValueError(f"constant-area band {f1:g}-{f2:g} Hz carries no energy")
     mom = _bsapsdmom(freqs, psd)
     pk = _bsapeaks(freqs, psd, count=3)
     out = dict(mom)
-    out.update({
-        "pa_over_ca": pa / ca,
-        "predictive_area": pa, "constant_area": ca,
-        "bands_hz": {"CA": (f1, f2), "PA": (f2, f3)},
-        "dominant_freq_hz": pk[0][0] if pk else None,
-        "peaks_hz": pk,
-        "freq_hz": freqs, "magnitude": mag, "psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "pa_over_ca": "dimensionless"},
-        "method": "Rangayyan (2024) eq. (6.45), Sections 6.2.2 and 6.4.2, after Johnson et al.",
-    })
+    out.update(
+        {
+            "pa_over_ca": pa / ca,
+            "predictive_area": pa,
+            "constant_area": ca,
+            "bands_hz": {"CA": (f1, f2), "PA": (f2, f3)},
+            "dominant_freq_hz": pk[0][0] if pk else None,
+            "peaks_hz": pk,
+            "freq_hz": freqs,
+            "magnitude": mag,
+            "psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "pa_over_ca": "dimensionless"},
+            "method": "Rangayyan (2024) eq. (6.45), Sections 6.2.2 and 6.4.2, after Johnson et al.",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -2883,19 +3025,21 @@ def nernst(T=310.15, z=1, conc_out=5.0, conc_in=140.0, ion="K+"):
         raise ValueError("ion concentrations must be positive (mM)")
     slope = _BSA_R_GAS * T / (z * _BSA_FARADAY)
     volts = slope * log(conc_out / conc_in)
-    return RichResult(payload={
-        "ion": str(ion),
-        "potential_mV": volts * 1000.0,
-        "potential_V": volts,
-        "slope_mV": slope * 1000.0,
-        "ratio": conc_out / conc_in,
-        "T_K": T,
-        "z": z,
-        "conc_out_mM": conc_out,
-        "conc_in_mM": conc_in,
-        "units": {"potential": "mV", "T": "K", "concentration": "mM"},
-        "method": "Nernst equilibrium potential, Rangayyan (2024) eq. (7.139), Section 7.8.1",
-    })
+    return RichResult(
+        payload={
+            "ion": str(ion),
+            "potential_mV": volts * 1000.0,
+            "potential_V": volts,
+            "slope_mV": slope * 1000.0,
+            "ratio": conc_out / conc_in,
+            "T_K": T,
+            "z": z,
+            "conc_out_mM": conc_out,
+            "conc_in_mM": conc_in,
+            "units": {"potential": "mV", "T": "K", "concentration": "mM"},
+            "method": "Nernst equilibrium potential, Rangayyan (2024) eq. (7.139), Section 7.8.1",
+        }
+    )
 
 
 rangayyan_nernst_potential = nernst  # pre-policy spelling
@@ -2968,11 +3112,9 @@ def oaefeat(oae, fs, noise_floor=None, bands=None):
         _, npsd = _bsapsd(ns, fs)
     if bands is None:
         centres = [1000.0, 1414.0, 2000.0, 2828.0, 4000.0]
-        bands = [(c / 2.0 ** 0.25, c * 2.0 ** 0.25) for c in centres
-                 if c * 2.0 ** 0.25 < fs / 2.0]
+        bands = [(c / 2.0**0.25, c * 2.0**0.25) for c in centres if c * 2.0**0.25 < fs / 2.0]
         if not bands:
-            raise ValueError("fs is too low for any default OAE band; "
-                             "supply bands explicitly")
+            raise ValueError("fs is too low for any default OAE band; supply bands explicitly")
     rows, detected = [], False
     for lo, hi in bands:
         lo, hi = float(lo), float(hi)
@@ -2981,26 +3123,29 @@ def oaefeat(oae, fs, noise_floor=None, bands=None):
         if hi > fs / 2.0:
             raise ValueError("band upper edge exceeds the Nyquist frequency")
         p = _bsabandpow(freqs, psd, lo, hi)
-        row = {"lo_hz": lo, "hi_hz": hi, "power": p,
-               "fraction": p / mom["total_power"]}
+        row = {"lo_hz": lo, "hi_hz": hi, "power": p, "fraction": p / mom["total_power"]}
         if npsd is not None:
             npow = _bsabandpow(freqs, npsd, lo, hi)
             if npow <= 0.0:
-                raise ValueError("noise floor has no power in band %g-%g Hz"
-                                 % (lo, hi))
+                raise ValueError(f"noise floor has no power in band {lo:g}-{hi:g} Hz")
             row["snr_db"] = 10.0 * log(p / npow, 10.0)
             detected = detected or row["snr_db"] >= 6.0
         rows.append(row)
     pk = _bsapeaks(freqs, psd, count=3, minsep=fs / 200.0)
     out = dict(mom)
-    out.update({
-        "band_analysis": rows,
-        "dominant_freq_hz": pk[0][0] if pk else None,
-        "peaks_hz": pk, "rms": _bsarms(xs),
-        "freq_hz": freqs, "psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "snr": "dB", "fraction": "dimensionless"},
-        "method": "Rangayyan (2024) Section 1.2.16 with the PSD measures of Section 6.4.1 and the band fraction of eq. (6.44) (no OAE equation given in the book)",
-    })
+    out.update(
+        {
+            "band_analysis": rows,
+            "dominant_freq_hz": pk[0][0] if pk else None,
+            "peaks_hz": pk,
+            "rms": _bsarms(xs),
+            "freq_hz": freqs,
+            "psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "snr": "dB", "fraction": "dimensionless"},
+            "method": "Rangayyan (2024) Section 1.2.16 with the PSD measures of Section 6.4.1 and the band fraction of eq. (6.44) (no OAE equation given in the book)",
+        }
+    )
     if npsd is not None:
         out["emission_detected"] = detected
         out["snr_criterion_db"] = 6.0
@@ -3091,15 +3236,12 @@ def pdmonitor(eeg, emg, gait, fs, tremor_band=(3.0, 7.0)):
         return xs, fr, ps, tot, _bsabandpow(fr, ps, tlo, thi) / tot, fpk
 
     ea, efr, eps, etot, _etr, _ef = tremor(eeg, "eeg")
-    bands = {"delta": (0.5, 4.0), "theta": (4.0, 8.0),
-             "alpha": (8.0, 13.0001), "beta": (13.0001, min(30.0, fs / 2.0))}
-    eeg_bands = {k: _bsabandpow(efr, eps, lo, hi) / etot
-                 for k, (lo, hi) in bands.items() if hi > lo}
+    bands = {"delta": (0.5, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 13.0001), "beta": (13.0001, min(30.0, fs / 2.0))}
+    eeg_bands = {k: _bsabandpow(efr, eps, lo, hi) / etot for k, (lo, hi) in bands.items() if hi > lo}
     ma, _mfr, _mps, _mt, mtr, mf = tremor(emg, "emg")
     ga, gfr, gps, _gt, gtr, gf = tremor(gait, "gait")
     hj = _bsahjorth(ma)
-    turns = sum(1 for i in range(1, len(ma) - 1)
-                if (ma[i] - ma[i - 1]) * (ma[i + 1] - ma[i]) < 0.0)
+    turns = sum(1 for i in range(1, len(ma) - 1) if (ma[i] - ma[i - 1]) * (ma[i + 1] - ma[i]) < 0.0)
     gpk = _bsapeaks(gfr, gps, count=1)
     grate = gpk[0][0] if gpk else None
     greg = None
@@ -3109,20 +3251,25 @@ def pdmonitor(eeg, emg, gait, fs, tremor_band=(3.0, 7.0)):
             acf = _bsaacf(ga, lag)
             if acf[0] > 0.0:
                 greg = max(0.0, min(1.0, acf[lag] / acf[0]))
-    return RichResult(payload={
-        "eeg_bands": eeg_bands,
-        "eeg_beta_fraction": eeg_bands.get("beta"),
-        "emg_tremor_fraction": mtr, "emg_tremor_freq_hz": mf,
-        "gait_tremor_fraction": gtr, "gait_tremor_freq_hz": gf,
-        "emg_form_factor": hj["form_factor"],
-        "emg_turns_per_second": turns * fs / len(ma),
-        "gait_rate_hz": grate, "gait_regularity": greg,
-        "tremor_present": mtr > 0.2 and mf is not None,
-        "tremor_band_hz": (tlo, thi), "fs_hz": fs,
-        "units": {"eeg": "uV", "emg": "uV", "frequency": "Hz",
-                  "fractions": "dimensionless", "turns": "1/s"},
-        "method": "Rangayyan (2024) Section 10.14 with the EEG bands of Section 1.2.6, band fractions of eq. (6.44) and the form factor of eq. (5.26); the 3-7 Hz tremor band is the standard clinical range, not a value given in the book",
-    })
+    return RichResult(
+        payload={
+            "eeg_bands": eeg_bands,
+            "eeg_beta_fraction": eeg_bands.get("beta"),
+            "emg_tremor_fraction": mtr,
+            "emg_tremor_freq_hz": mf,
+            "gait_tremor_fraction": gtr,
+            "gait_tremor_freq_hz": gf,
+            "emg_form_factor": hj["form_factor"],
+            "emg_turns_per_second": turns * fs / len(ma),
+            "gait_rate_hz": grate,
+            "gait_regularity": greg,
+            "tremor_present": mtr > 0.2 and mf is not None,
+            "tremor_band_hz": (tlo, thi),
+            "fs_hz": fs,
+            "units": {"eeg": "uV", "emg": "uV", "frequency": "Hz", "fractions": "dimensionless", "turns": "1/s"},
+            "method": "Rangayyan (2024) Section 10.14 with the EEG bands of Section 1.2.6, band fractions of eq. (6.44) and the form factor of eq. (5.26); the 3-7 Hz tremor band is the standard clinical range, not a value given in the book",
+        }
+    )
 
 
 rangayyan_parkinson_multimodal = pdmonitor  # pre-policy spelling
@@ -3195,8 +3342,9 @@ def pcgeeg(pcg, eeg, fs, n_segments=8, band=(1.0, 100.0)):
         raise ValueError("fs must be positive (Hz)")
     L = int(n_segments)
     if L < 2:
-        raise ValueError("n_segments must be at least 2: with one segment the "
-                         "coherence is identically unity (Rangayyan eq. 4.32)")
+        raise ValueError(
+            "n_segments must be at least 2: with one segment the coherence is identically unity (Rangayyan eq. 4.32)"
+        )
     if len(xs) < 8 * L:
         raise ValueError("need at least 8*n_segments samples")
     lo, hi = float(band[0]), float(band[1])
@@ -3213,8 +3361,8 @@ def pcgeeg(pcg, eeg, fs, n_segments=8, band=(1.0, 100.0)):
     Sxyi = [0.0] * m
     han = [0.5 - 0.5 * cos(2.0 * pi * i / (w - 1)) for i in range(w)]
     for s in range(L):
-        a = xs[s * w:(s + 1) * w]
-        b = ys[s * w:(s + 1) * w]
+        a = xs[s * w : (s + 1) * w]
+        b = ys[s * w : (s + 1) * w]
         ma, mb = fsum(a) / w, fsum(b) / w
         ar = [(a[i] - ma) * han[i] for i in range(w)] + [0.0] * (nfft - w)
         ai = [0.0] * nfft
@@ -3239,24 +3387,30 @@ def pcgeeg(pcg, eeg, fs, n_segments=8, band=(1.0, 100.0)):
         ph.append(atan2(Sxyi[k], Sxyr[k]))
     inb = [k for k in range(m) if lo <= freqs[k] <= hi]
     if not inb:
-        raise ValueError("no spectral bins in %g-%g Hz" % (lo, hi))
+        raise ValueError(f"no spectral bins in {lo:g}-{hi:g} Hz")
     kpk = max(inb, key=lambda k: coh[k])
     delay = None
     if freqs[kpk] > 0.0:
         delay = 1000.0 * ph[kpk] / (2.0 * pi * freqs[kpk])
-    return RichResult(payload={
-        "freq_hz": freqs, "coherence": coh, "coherence_sq": coh2,
-        "phase_rad": ph,
-        "peak_coherence": coh[kpk], "peak_freq_hz": freqs[kpk],
-        "mean_coherence": fsum(coh[k] for k in inb) / len(inb),
-        "delay_ms_at_peak": delay,
-        "significance_level": 1.0 - 0.05 ** (1.0 / (L - 1)),
-        "n_segments": L, "segment_samples": w, "band_hz": (lo, hi),
-        "fs_hz": fs,
-        "units": {"frequency": "Hz", "coherence": "dimensionless [0,1]",
-                  "phase": "radians", "delay": "ms"},
-        "method": "Rangayyan (2024) eq. (4.32), Section 4.5, magnitude coherence with segment averaging as the book requires",
-    })
+    return RichResult(
+        payload={
+            "freq_hz": freqs,
+            "coherence": coh,
+            "coherence_sq": coh2,
+            "phase_rad": ph,
+            "peak_coherence": coh[kpk],
+            "peak_freq_hz": freqs[kpk],
+            "mean_coherence": fsum(coh[k] for k in inb) / len(inb),
+            "delay_ms_at_peak": delay,
+            "significance_level": 1.0 - 0.05 ** (1.0 / (L - 1)),
+            "n_segments": L,
+            "segment_samples": w,
+            "band_hz": (lo, hi),
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "coherence": "dimensionless [0,1]", "phase": "radians", "delay": "ms"},
+            "method": "Rangayyan (2024) eq. (4.32), Section 4.5, magnitude coherence with segment averaging as the book requires",
+        }
+    )
 
 
 rangayyan_pcg_eeg_coupling = pcgeeg  # pre-policy spelling
@@ -3325,16 +3479,21 @@ def murmdet(pcg, fs, threshold=0.15, hf_band=(150.0, 600.0)):
     frac = _bsabandpow(freqs, psd, lo, hi) / mom["total_power"]
     pk = _bsapeaks(freqs, psd, count=3)
     out = dict(mom)
-    out.update({
-        "murmur_present": frac >= threshold,
-        "hf_power_fraction": frac,
-        "threshold": threshold, "margin": frac - threshold,
-        "hf_band_hz": (lo, hi),
-        "dominant_freq_hz": pk[0][0] if pk else None,
-        "freq_hz": freqs, "psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "fraction": "dimensionless"},
-        "method": "Rangayyan (2024) Section 10.2.4 with the band power fraction of eq. (6.44), Section 6.4.2",
-    })
+    out.update(
+        {
+            "murmur_present": frac >= threshold,
+            "hf_power_fraction": frac,
+            "threshold": threshold,
+            "margin": frac - threshold,
+            "hf_band_hz": (lo, hi),
+            "dominant_freq_hz": pk[0][0] if pk else None,
+            "freq_hz": freqs,
+            "psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "fraction": "dimensionless"},
+            "method": "Rangayyan (2024) Section 10.2.4 with the band power fraction of eq. (6.44), Section 6.4.2",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -3409,7 +3568,7 @@ def psgstage(eeg, eog, emg, fs, epoch_len=30.0):
         fr, ps = _bsapsd(a[sl], fs)
         tot = fsum(ps)
         if tot <= 0.0:
-            raise ValueError("EEG epoch %d is constant" % e)
+            raise ValueError(f"EEG epoch {int(e)} is constant")
         d = _bsabandpow(fr, ps, 0.5, 4.0) / tot
         th = _bsabandpow(fr, ps, 4.0, 8.0) / tot
         al = _bsabandpow(fr, ps, 8.0, 13.0001) / tot
@@ -3418,10 +3577,19 @@ def psgstage(eeg, eog, emg, fs, epoch_len=30.0):
         eog_act = sqrt(_bsabandpow(fro, pso, 0.3, 8.0) / len(b[sl]))
         frm, psm = _bsapsd(c[sl], fs)
         emg_tone = sqrt(_bsabandpow(frm, psm, 10.0, fs / 2.0) / len(c[sl]))
-        rows.append({"t_start_s": e * epoch_len, "delta_fraction": d,
-                     "theta_fraction": th, "alpha_fraction": al,
-                     "beta_fraction": be, "eeg_slow_fraction": d + th,
-                     "eog_activity": eog_act, "emg_tone": emg_tone})
+        rows.append(
+            {
+                "t_start_s": e * epoch_len,
+                "delta_fraction": d,
+                "theta_fraction": th,
+                "alpha_fraction": al,
+                "beta_fraction": be,
+                "eeg_slow_fraction": d + th,
+                "eog_activity": eog_act,
+                "emg_tone": emg_tone,
+            }
+        )
+
     # Heuristic staging: reference levels are the medians of this recording,
     # so the rule is self-calibrating rather than absolute.
     def med(key):
@@ -3434,8 +3602,11 @@ def psgstage(eeg, eog, emg, fs, epoch_len=30.0):
     for r in rows:
         if r["delta_fraction"] > 0.5:
             r["stage"] = "N3"
-        elif r["emg_tone"] < 0.5 * emg_ref and r["eog_activity"] > eog_ref \
-                and r["beta_fraction"] + r["theta_fraction"] > 0.4:
+        elif (
+            r["emg_tone"] < 0.5 * emg_ref
+            and r["eog_activity"] > eog_ref
+            and r["beta_fraction"] + r["theta_fraction"] > 0.4
+        ):
             r["stage"] = "REM"
         elif r["alpha_fraction"] > 0.3 and r["emg_tone"] >= emg_ref:
             r["stage"] = "Wake"
@@ -3449,16 +3620,22 @@ def psgstage(eeg, eog, emg, fs, epoch_len=30.0):
         mins[s] = mins.get(s, 0.0) + epoch_len / 60.0
     tst = sum(v for k, v in mins.items() if k != "Wake")
     total = n_ep * epoch_len / 60.0
-    return RichResult(payload={
-        "epochs": rows, "stage_sequence": seq, "stage_minutes": mins,
-        "total_sleep_time_min": tst, "recording_time_min": total,
-        "sleep_efficiency": tst / total if total > 0.0 else 0.0,
-        "n_epochs": n_ep, "epoch_len_s": epoch_len, "fs_hz": fs,
-        "heuristic": True,
-        "units": {"signals": "uV", "time": "s", "stage_minutes": "minutes",
-                  "fractions": "dimensionless"},
-        "method": "Rangayyan (2024) Section 2.4.1 (polysomnography) with the EEG bands of Section 1.2.6 and band fractions of eq. (6.44); staging rule is a self-calibrating heuristic, not a clinical scoring algorithm and not given in the book",
-    })
+    return RichResult(
+        payload={
+            "epochs": rows,
+            "stage_sequence": seq,
+            "stage_minutes": mins,
+            "total_sleep_time_min": tst,
+            "recording_time_min": total,
+            "sleep_efficiency": tst / total if total > 0.0 else 0.0,
+            "n_epochs": n_ep,
+            "epoch_len_s": epoch_len,
+            "fs_hz": fs,
+            "heuristic": True,
+            "units": {"signals": "uV", "time": "s", "stage_minutes": "minutes", "fractions": "dimensionless"},
+            "method": "Rangayyan (2024) Section 2.4.1 (polysomnography) with the EEG bands of Section 1.2.6 and band fractions of eq. (6.44); staging rule is a self-calibrating heuristic, not a clinical scoring algorithm and not given in the book",
+        }
+    )
 
 
 rangayyan_polysomnography = psgstage  # pre-policy spelling
@@ -3548,7 +3725,7 @@ def ieistats(event_times, T=None, n_bins=20):
     if span <= 0.0:
         raise ValueError("observation duration must be positive (s)")
     srt = sorted(ipi)
-    med = (srt[n // 2] if n % 2 else 0.5 * (srt[n // 2 - 1] + srt[n // 2]))
+    med = srt[n // 2] if n % 2 else 0.5 * (srt[n // 2 - 1] + srt[n // 2])
     lo, hi = min(ipi), max(ipi)
     hist = []
     if hi > lo:
@@ -3569,20 +3746,29 @@ def ieistats(event_times, T=None, n_bins=20):
     mc = fsum(counts) / nw
     fano = (fsum((c - mc) ** 2 for c in counts) / nw / mc) if mc > 0.0 else None
     cvr = sr / mr if mr > 0.0 else 0.0
-    reg = ("near-periodic" if cvr < 0.1
-           else ("regular" if cvr < 0.25 else "irregular"))
-    return RichResult(payload={
-        "mean_ipi_s": mi, "sd_ipi_s": si, "cv_ipi": si / mi if mi > 0 else 0.0,
-        "mean_rate_pps": mr, "sd_rate_pps": sr, "cv_rate": cvr,
-        "event_rate_pps": len(ts) / span,
-        "min_ipi_s": lo, "max_ipi_s": hi, "median_ipi_s": med,
-        "fano_factor": fano,
-        "ipi_histogram": hist, "n_events": len(ts), "n_intervals": n,
-        "duration_s": span, "regularity": reg,
-        "units": {"interval": "s", "rate": "pps (pulses per second)",
-                  "cv": "dimensionless"},
-        "method": "Rangayyan (2024) Section 7.3, IPI statistics mu_r and CV_r = sigma_r / mu_r, after Zhang et al.",
-    })
+    reg = "near-periodic" if cvr < 0.1 else ("regular" if cvr < 0.25 else "irregular")
+    return RichResult(
+        payload={
+            "mean_ipi_s": mi,
+            "sd_ipi_s": si,
+            "cv_ipi": si / mi if mi > 0 else 0.0,
+            "mean_rate_pps": mr,
+            "sd_rate_pps": sr,
+            "cv_rate": cvr,
+            "event_rate_pps": len(ts) / span,
+            "min_ipi_s": lo,
+            "max_ipi_s": hi,
+            "median_ipi_s": med,
+            "fano_factor": fano,
+            "ipi_histogram": hist,
+            "n_events": len(ts),
+            "n_intervals": n,
+            "duration_s": span,
+            "regularity": reg,
+            "units": {"interval": "s", "rate": "pps (pulses per second)", "cv": "dimensionless"},
+            "method": "Rangayyan (2024) Section 7.3, IPI statistics mu_r and CV_r = sigma_r / mu_r, after Zhang et al.",
+        }
+    )
 
 
 rangayyan_point_process = ieistats  # pre-policy spelling
@@ -3657,20 +3843,24 @@ def valvepcg(pcg, fs, n_peaks=3, order=None):
     peaks = []
     for f, pw in found:
         bw, q = _bsaqfactor(freqs, psd, f)
-        peaks.append({"freq_hz": f, "power": pw,
-                      "bandwidth_3db_hz": bw, "q_factor": q})
+        peaks.append({"freq_hz": f, "power": pw, "bandwidth_3db_hz": bw, "q_factor": q})
     mom = _bsapsdmom(freqs, psd)
     out = dict(mom)
-    out.update({
-        "peaks": peaks,
-        "dominant_freq_hz": peaks[0]["freq_hz"] if peaks else None,
-        "dominant_q": peaks[0]["q_factor"] if peaks else None,
-        "order": p, "prediction_error": err, "ar_coeffs": a,
-        "freq_hz": freqs, "ar_psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "bandwidth": "Hz",
-                  "q_factor": "dimensionless"},
-        "method": "Rangayyan (2024) Section 6.5 after Durand et al., with the -3 dB bandwidth and quality-factor measures of Section 6.4.2",
-    })
+    out.update(
+        {
+            "peaks": peaks,
+            "dominant_freq_hz": peaks[0]["freq_hz"] if peaks else None,
+            "dominant_q": peaks[0]["q_factor"] if peaks else None,
+            "order": p,
+            "prediction_error": err,
+            "ar_coeffs": a,
+            "freq_hz": freqs,
+            "ar_psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "bandwidth": "Hz", "q_factor": "dimensionless"},
+            "method": "Rangayyan (2024) Section 6.5 after Durand et al., with the -3 dB bandwidth and quality-factor measures of Section 6.4.2",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -3749,20 +3939,15 @@ def respfeat(resp, fs, signal_type="flow", min_breath_s=1.0):
         raise ValueError("min_breath_s must be positive (s)")
     mu = fsum(xs) / len(xs)
     ys = [v - mu for v in xs]
-    if signal_type == "volume":
-        drive = [ys[i + 1] - ys[i] for i in range(len(ys) - 1)] + [0.0]
-    else:
-        drive = ys
+    drive = [ys[i + 1] - ys[i] for i in range(len(ys) - 1)] + [0.0] if signal_type == "volume" else ys
     # inspiration onsets = upward zero crossings of the drive signal
-    ons = [i for i in range(1, len(drive))
-           if drive[i - 1] <= 0.0 < drive[i]]
+    ons = [i for i in range(1, len(drive)) if drive[i - 1] <= 0.0 < drive[i]]
     kept = []
     for i in ons:
         if not kept or (i - kept[-1]) / fs >= min_breath_s:
             kept.append(i)
     if len(kept) < 2:
-        raise ValueError("fewer than 2 breaths detected; check signal_type, "
-                         "fs and min_breath_s")
+        raise ValueError("fewer than 2 breaths detected; check signal_type, fs and min_breath_s")
     breaths = []
     for b in range(len(kept) - 1):
         i0, i1 = kept[b], kept[b + 1]
@@ -3779,36 +3964,45 @@ def respfeat(resp, fs, signal_type="flow", min_breath_s=1.0):
         else:
             seg = ys[i0:i1]
             depth = (max(seg) - min(seg)) if seg else 0.0
-        breaths.append({"t_start_s": i0 / fs, "period_s": (i1 - i0) / fs,
-                        "ti_s": ti, "te_s": te, "depth": depth})
+        breaths.append({"t_start_s": i0 / fs, "period_s": (i1 - i0) / fs, "ti_s": ti, "te_s": te, "depth": depth})
     per = [b["period_s"] for b in breaths]
     n = len(per)
     mp = fsum(per) / n
     sp = sqrt(fsum((v - mp) ** 2 for v in per) / (n - 1)) if n > 1 else 0.0
     mti = fsum(b["ti_s"] for b in breaths) / n
     mte = fsum(b["te_s"] for b in breaths) / n
-    return RichResult(payload={
-        "rate_breaths_per_min": 60.0 / mp,
-        "mean_period_s": mp, "sd_period_s": sp,
-        "regularity_cv": sp / mp if mp > 0.0 else 0.0,
-        "depth": fsum(b["depth"] for b in breaths) / n,
-        "mean_ti_s": mti, "mean_te_s": mte,
-        "ie_ratio": mti / mte if mte > 0.0 else None,
-        "breaths": breaths, "n_breaths": n,
-        "signal_type": signal_type, "fs_hz": fs,
-        "units": {"rate": "breaths/min", "time": "s",
-                  "depth": "litres if flow is L/s or volume is L",
-                  "ie_ratio": "dimensionless"},
-        "method": "Standard per-breath respiratory measures; Rangayyan (2024) Sections 2.4.1 and 5.10 give the context but no equations for rate, depth or I:E",
-    })
+    return RichResult(
+        payload={
+            "rate_breaths_per_min": 60.0 / mp,
+            "mean_period_s": mp,
+            "sd_period_s": sp,
+            "regularity_cv": sp / mp if mp > 0.0 else 0.0,
+            "depth": fsum(b["depth"] for b in breaths) / n,
+            "mean_ti_s": mti,
+            "mean_te_s": mte,
+            "ie_ratio": mti / mte if mte > 0.0 else None,
+            "breaths": breaths,
+            "n_breaths": n,
+            "signal_type": signal_type,
+            "fs_hz": fs,
+            "units": {
+                "rate": "breaths/min",
+                "time": "s",
+                "depth": "litres if flow is L/s or volume is L",
+                "ie_ratio": "dimensionless",
+            },
+            "method": "Standard per-breath respiratory measures; Rangayyan (2024) Sections 2.4.1 and 5.10 give the context but no equations for rate, depth or I:E",
+        }
+    )
 
 
 rangayyan_respiration_features = respfeat  # pre-policy spelling
 
 
 # -- rgrespsnd: Respiratory sound generation model (bronchial turbulence).
-def respsound(length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0,
-              mu=1.8e-5, P0=101325.0, eta=1.4, lam=0.026, cp=1005.0):
+def respsound(
+    length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0, mu=1.8e-5, P0=101325.0, eta=1.4, lam=0.026, cp=1005.0
+):
     """Acoustic tube-segment model of respiratory sound transmission.
 
     Rangayyan (2024) Section 7.7.1 ("Modeling of respiratory sounds")
@@ -3884,9 +4078,9 @@ def respsound(length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0,
         ``resonance_hz`` = 1 / (2 pi sqrt(L_a C_a));
         ``area_m2``, ``circumference_m``, ``volume_m3``.
     """
-    l = float(length_m)
+    ell = float(length_m)
     r = float(radius_m)
-    if l <= 0.0:
+    if ell <= 0.0:
         raise ValueError("length_m must be positive (m)")
     if r <= 0.0:
         raise ValueError("radius_m must be positive (m)")
@@ -3898,9 +4092,9 @@ def respsound(length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0,
         raise ValueError("eta (adiabatic constant) must exceed 1")
     A = pi * r * r
     S = 2.0 * pi * r
-    Va = A * l
-    La = rho * l / A                       # eq. (7.122), kg/m^4
-    Ca = Va / (P0 * eta)                   # eq. (7.127), m^3/Pa
+    Va = A * ell
+    La = rho * ell / A  # eq. (7.122), kg/m^4
+    Ca = Va / (P0 * eta)  # eq. (7.127), m^3/Pa
     if freqs is None:
         fs_hz = [10.0 * k for k in range(1, 201)]
     else:
@@ -3910,9 +4104,8 @@ def respsound(length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0,
     Ra, Ga, mag = [], [], []
     for f in fs_hz:
         w = 2.0 * pi * f
-        ra = (l * S / (A * A)) * sqrt(w * rho * mu / 2.0)        # eq. (7.128)
-        ga = (S * l / (rho * c * c)) * (eta - 1.0) \
-            * sqrt(lam * w / (2.0 * cp * rho))                   # eq. (7.129)
+        ra = (ell * S / (A * A)) * sqrt(w * rho * mu / 2.0)  # eq. (7.128)
+        ga = (S * ell / (rho * c * c)) * (eta - 1.0) * sqrt(lam * w / (2.0 * cp * rho))  # eq. (7.129)
         Ra.append(ra)
         Ga.append(ga)
         # series impedance Ra + j w La, shunt admittance Ga + j w Ca
@@ -3923,18 +4116,30 @@ def respsound(length_m=0.1, radius_m=0.009, freqs=None, rho=1.2, c=343.0,
         di = zr * yi + zi * yr
         mag.append(1.0 / hypot(dr, di))
     f0 = 1.0 / (2.0 * pi * sqrt(La * Ca))
-    return RichResult(payload={
-        "freq_hz": fs_hz,
-        "transfer_mag": mag,
-        "transfer_db": [20.0 * log(v, 10.0) if v > 0 else -300.0 for v in mag],
-        "La_kg_per_m4": La, "Ca_m3_per_Pa": Ca,
-        "Ra_Pa_s_per_m3": Ra, "Ga_m3_per_Pa_s": Ga,
-        "resonance_hz": f0,
-        "area_m2": A, "circumference_m": S, "volume_m3": Va,
-        "units": {"freq": "Hz", "La": "kg/m^4", "Ca": "m^3/Pa",
-                  "Ra": "Pa s/m^3", "Ga": "m^3/(Pa s)", "length": "m"},
-        "method": "Rangayyan (2024) eqs. (7.122), (7.127), (7.128), (7.129), Section 7.7.1, after Flanagan and Moussavi",
-    })
+    return RichResult(
+        payload={
+            "freq_hz": fs_hz,
+            "transfer_mag": mag,
+            "transfer_db": [20.0 * log(v, 10.0) if v > 0 else -300.0 for v in mag],
+            "La_kg_per_m4": La,
+            "Ca_m3_per_Pa": Ca,
+            "Ra_Pa_s_per_m3": Ra,
+            "Ga_m3_per_Pa_s": Ga,
+            "resonance_hz": f0,
+            "area_m2": A,
+            "circumference_m": S,
+            "volume_m3": Va,
+            "units": {
+                "freq": "Hz",
+                "La": "kg/m^4",
+                "Ca": "m^3/Pa",
+                "Ra": "Pa s/m^3",
+                "Ga": "m^3/(Pa s)",
+                "length": "m",
+            },
+            "method": "Rangayyan (2024) eqs. (7.122), (7.127), (7.128), (7.129), Section 7.7.1, after Flanagan and Moussavi",
+        }
+    )
 
 
 rangayyan_respiratory_sound = respsound  # pre-policy spelling
@@ -4050,7 +4255,7 @@ def apneadet(ecg, spo2, snore, fs, epoch_s=60.0, desat_pct=4.0):
         lf = None
         if len(rr) >= 8:
             hrs = [60.0 / v for v in rr]
-            frr = len(rr) / epoch_s          # mean sampling rate of the HR series
+            frr = len(rr) / epoch_s  # mean sampling rate of the HR series
             fr, ps = _bsapsd(hrs, frr)
             tot = fsum(ps)
             if tot > 0.0:
@@ -4059,10 +4264,17 @@ def apneadet(ecg, spo2, snore, fs, epoch_s=60.0, desat_pct=4.0):
         lo = min(s[sl])
         srms = _bsarms(q[sl])
         snores.append(srms)
-        rows.append({"t_start_s": k * epoch_s, "min_spo2": lo,
-                     "baseline_spo2": base, "desat_depth_pct": base - lo,
-                     "snore_rms": srms, "mean_hr_bpm": hr,
-                     "hr_lf_fraction": lf})
+        rows.append(
+            {
+                "t_start_s": k * epoch_s,
+                "min_spo2": lo,
+                "baseline_spo2": base,
+                "desat_depth_pct": base - lo,
+                "snore_rms": srms,
+                "mean_hr_bpm": hr,
+                "hr_lf_fraction": lf,
+            }
+        )
     smed = sorted(snores)[len(snores) // 2]
     for row in rows:
         score = 0
@@ -4077,17 +4289,23 @@ def apneadet(ecg, spo2, snore, fs, epoch_s=60.0, desat_pct=4.0):
     nflag = sum(1 for r in rows if r["epoch_flagged"])
     hours = n_ep * epoch_s / 3600.0
     idx = nflag / hours if hours > 0.0 else 0.0
-    sev = ("none" if idx < 5.0 else "mild" if idx < 15.0
-           else "moderate" if idx < 30.0 else "severe")
-    return RichResult(payload={
-        "epochs": rows, "n_flagged": nflag, "apnea_suspected": idx >= 5.0,
-        "events_per_hour": idx, "severity": sev,
-        "n_epochs": n_ep, "epoch_s": epoch_s, "fs_hz": fs,
-        "desat_criterion_pct": desat_pct, "heuristic": True,
-        "units": {"spo2": "percent", "ecg": "mV", "hr": "bpm",
-                  "events_per_hour": "1/h", "time": "s"},
-        "method": "Rangayyan (2024) Sections 10.2.5, 10.13 and 2.4 (multimodal apnea detection); the combination rule is a documented heuristic, not a trained classifier, and is not given in the book",
-    })
+    sev = "none" if idx < 5.0 else "mild" if idx < 15.0 else "moderate" if idx < 30.0 else "severe"
+    return RichResult(
+        payload={
+            "epochs": rows,
+            "n_flagged": nflag,
+            "apnea_suspected": idx >= 5.0,
+            "events_per_hour": idx,
+            "severity": sev,
+            "n_epochs": n_ep,
+            "epoch_s": epoch_s,
+            "fs_hz": fs,
+            "desat_criterion_pct": desat_pct,
+            "heuristic": True,
+            "units": {"spo2": "percent", "ecg": "mV", "hr": "bpm", "events_per_hour": "1/h", "time": "s"},
+            "method": "Rangayyan (2024) Sections 10.2.5, 10.13 and 2.4 (multimodal apnea detection); the combination rule is a documented heuristic, not a trained classifier, and is not given in the book",
+        }
+    )
 
 
 rangayyan_sleep_apnea_detect = apneadet  # pre-policy spelling
@@ -4193,20 +4411,27 @@ def speechfeat(speech, fs, order=None, n_formants=4, f0_range=(60.0, 400.0)):
     strength = max(0.0, acf[best] / acf[0])
     voiced = strength >= 0.3
     zc = sum(1 for i in range(1, len(xs)) if (xs[i - 1] < 0.0) != (xs[i] < 0.0))
-    return RichResult(payload={
-        "formants_hz": fmt, "formant_bandwidths_hz": bws,
-        "formant_powers": pws,
-        "f0_hz": (fs / best) if voiced else None,
-        "pitch_period_ms": (1000.0 * best / fs) if voiced else None,
-        "voiced": voiced, "voicing_strength": strength,
-        "voicing_threshold": 0.3,
-        "zero_crossing_rate": zc * fs / len(xs),
-        "order": p, "ar_coeffs": a, "prediction_error": err,
-        "freq_hz": freqs, "lpc_psd": psd, "fs_hz": fs,
-        "units": {"frequency": "Hz", "period": "ms",
-                  "zero_crossing_rate": "1/s"},
-        "method": "Rangayyan (2024) Section 7.2.3 with all-pole vocal-tract modelling of Section 7.5; pitch from the autocorrelation peak (mean inter-pulse interval of the point-process excitation)",
-    })
+    return RichResult(
+        payload={
+            "formants_hz": fmt,
+            "formant_bandwidths_hz": bws,
+            "formant_powers": pws,
+            "f0_hz": (fs / best) if voiced else None,
+            "pitch_period_ms": (1000.0 * best / fs) if voiced else None,
+            "voiced": voiced,
+            "voicing_strength": strength,
+            "voicing_threshold": 0.3,
+            "zero_crossing_rate": zc * fs / len(xs),
+            "order": p,
+            "ar_coeffs": a,
+            "prediction_error": err,
+            "freq_hz": freqs,
+            "lpc_psd": psd,
+            "fs_hz": fs,
+            "units": {"frequency": "Hz", "period": "ms", "zero_crossing_rate": "1/s"},
+            "method": "Rangayyan (2024) Section 7.2.3 with all-pole vocal-tract modelling of Section 7.5; pitch from the autocorrelation peak (mean inter-pulse interval of the point-process excitation)",
+        }
+    )
 
 
 rangayyan_speech_features = speechfeat  # pre-policy spelling
@@ -4278,8 +4503,8 @@ def vagfeat(vag, fs, n_segments=8):
     mu, var, sk, ku = _bsamoments(xs)
     hj = _bsahjorth(xs)
     seg = len(xs) // ns
-    means = [fsum(xs[i * seg:(i + 1) * seg]) / seg for i in range(ns)]
-    mss = [fsum(v * v for v in xs[i * seg:(i + 1) * seg]) / seg for i in range(ns)]
+    means = [fsum(xs[i * seg : (i + 1) * seg]) / seg for i in range(ns)]
+    mss = [fsum(v * v for v in xs[i * seg : (i + 1) * seg]) / seg for i in range(ns)]
 
     def varof(v):
         m = fsum(v) / len(v)
@@ -4301,22 +4526,36 @@ def vagfeat(vag, fs, n_segments=8):
         ent = -fsum((c / n) * log(c / n, 2.0) for c in counts if c > 0)
     else:
         ent = 0.0
-    return RichResult(payload={
-        "mean": mu, "variance": var, "skewness": sk,
-        "kurtosis": ku, "kurtosis_excess": ku - 3.0,
-        "form_factor": hj["form_factor"], "mobility": hj["mobility"],
-        "activity": hj["activity"],
-        "turns_count": turns, "turns_per_second": turns * fs / len(xs),
-        "var_of_segment_means": varof(means),
-        "var_of_segment_ms": varof(mss),
-        "segment_means": means, "segment_ms": mss,
-        "entropy_bits": ent, "rms": _bsarms(xs),
-        "duration_s": len(xs) / fs, "fs_hz": fs, "n_segments": ns,
-        "units": {"amplitude": "signal units (mV at the accelerometer)",
-                  "entropy": "bits", "turns_per_second": "1/s",
-                  "form_factor": "dimensionless"},
-        "method": "Rangayyan (2024) Section 5.12.3 with eqs. (5.25), (5.26) and (5.31), Sections 5.6.4 and 3.2.1",
-    })
+    return RichResult(
+        payload={
+            "mean": mu,
+            "variance": var,
+            "skewness": sk,
+            "kurtosis": ku,
+            "kurtosis_excess": ku - 3.0,
+            "form_factor": hj["form_factor"],
+            "mobility": hj["mobility"],
+            "activity": hj["activity"],
+            "turns_count": turns,
+            "turns_per_second": turns * fs / len(xs),
+            "var_of_segment_means": varof(means),
+            "var_of_segment_ms": varof(mss),
+            "segment_means": means,
+            "segment_ms": mss,
+            "entropy_bits": ent,
+            "rms": _bsarms(xs),
+            "duration_s": len(xs) / fs,
+            "fs_hz": fs,
+            "n_segments": ns,
+            "units": {
+                "amplitude": "signal units (mV at the accelerometer)",
+                "entropy": "bits",
+                "turns_per_second": "1/s",
+                "form_factor": "dimensionless",
+            },
+            "method": "Rangayyan (2024) Section 5.12.3 with eqs. (5.25), (5.26) and (5.31), Sections 5.6.4 and 3.2.1",
+        }
+    )
 
 
 rangayyan_vag_analysis = vagfeat  # pre-policy spelling
@@ -4382,9 +4621,13 @@ def vagknee(vag, fs, weights=None, bias=None, n_segments=8):
     """
     base = vagfeat(vag, fs, n_segments=n_segments)
     varms = base["var_of_segment_ms"]
-    feats = [base["form_factor"], base["kurtosis_excess"],
-             log(varms) if varms > 0.0 else -30.0,
-             base["turns_per_second"], base["entropy_bits"]]
+    feats = [
+        base["form_factor"],
+        base["kurtosis_excess"],
+        log(varms) if varms > 0.0 else -30.0,
+        base["turns_per_second"],
+        base["entropy_bits"],
+    ]
     if weights is None:
         if bias is not None:
             raise ValueError("bias may only be given together with weights")
@@ -4392,8 +4635,7 @@ def vagknee(vag, fs, weights=None, bias=None, n_segments=8):
         # nominal normal-VAG level, with signs set by the direction the
         # book reports for pathology.  NOT a trained classifier.
         w = [1.0, 0.5, 0.2, 0.01, 0.5]
-        b = -(1.0 * 1.2 + 0.5 * 0.0 + 0.2 * log(1e-4) + 0.01 * 200.0
-              + 0.5 * 5.0)
+        b = -(1.0 * 1.2 + 0.5 * 0.0 + 0.2 * log(1e-4) + 0.01 * 200.0 + 0.5 * 5.0)
         trained = False
     else:
         w = [float(v) for v in aslist(weights)]
@@ -4405,16 +4647,23 @@ def vagknee(vag, fs, weights=None, bias=None, n_segments=8):
         trained = True
     d = b + fsum(wi * fi for wi, fi in zip(w, feats))
     out = dict(base)
-    out.update({
-        "pathology_suspected": d > 0.0,
-        "discriminant": d,
-        "features": {"form_factor": feats[0], "kurtosis_excess": feats[1],
-                     "log_var_segment_ms": feats[2],
-                     "turns_per_second": feats[3],
-                     "entropy_bits": feats[4]},
-        "weights_used": w, "bias_used": b, "trained": trained,
-        "method": "Rangayyan (2024) Section 10.12 with the VAG feature set of Section 5.12.3 and the linear discriminant of Section 10.4.1; coefficients are the caller's unless the documented untrained heuristic is used",
-    })
+    out.update(
+        {
+            "pathology_suspected": d > 0.0,
+            "discriminant": d,
+            "features": {
+                "form_factor": feats[0],
+                "kurtosis_excess": feats[1],
+                "log_var_segment_ms": feats[2],
+                "turns_per_second": feats[3],
+                "entropy_bits": feats[4],
+            },
+            "weights_used": w,
+            "bias_used": b,
+            "trained": trained,
+            "method": "Rangayyan (2024) Section 10.12 with the VAG feature set of Section 5.12.3 and the linear discriminant of Section 10.4.1; coefficients are the caller's unless the documented untrained heuristic is used",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -4456,12 +4705,17 @@ def deltadecomp(x, t=None):
     weights = [v * d for v, d in zip(xs, dt)]
     recon = [w / d for w, d in zip(weights, dt)]
     err = max(abs(a - b) for a, b in zip(recon, xs))
-    return RichResult(payload={
-        "locations": ts, "weights": weights, "amplitudes": xs,
-        "total_weight": sum(weights),
-        "integral": gridint(xs, ts) if n > 1 else 0.0,
-        "reconstruction_error": err,
-        "method": "Rangayyan (2024) eq. (3.29)"})
+    return RichResult(
+        payload={
+            "locations": ts,
+            "weights": weights,
+            "amplitudes": xs,
+            "total_weight": sum(weights),
+            "integral": gridint(xs, ts) if n > 1 else 0.0,
+            "reconstruction_error": err,
+            "method": "Rangayyan (2024) eq. (3.29)",
+        }
+    )
 
 
 rangayyan_ch3_signal_as_delta_decomposition = deltadecomp  # pre-policy spelling
@@ -4568,24 +4822,29 @@ def clogprod(X, H, omega=None):
         ei = (lyi[k] - (lxi[k] + lhi[k])) / (2.0 * pi)
         ei = abs(ei - round(ei)) * 2.0 * pi
         err = max(err, er, ei)
-    return RichResult(payload={
-        "omega": om,
-        "Y_real": [v.real for v in ys], "Y_imag": [v.imag for v in ys],
-        "log_Y_real": lyr, "log_Y_imag": lyi,
-        "log_X_real": lxr, "log_X_imag": lxi,
-        "log_H_real": lhr, "log_H_imag": lhi,
-        "max_abs_error": err,
-        "units": {"log magnitude": "nepers", "phase": "radians (unwrapped)"},
-        "method": "Rangayyan (2024) eq. (4.63), complex log of a product, Section 4.8 homomorphic filtering",
-    })
+    return RichResult(
+        payload={
+            "omega": om,
+            "Y_real": [v.real for v in ys],
+            "Y_imag": [v.imag for v in ys],
+            "log_Y_real": lyr,
+            "log_Y_imag": lyi,
+            "log_X_real": lxr,
+            "log_X_imag": lxi,
+            "log_H_real": lhr,
+            "log_H_imag": lhi,
+            "max_abs_error": err,
+            "units": {"log magnitude": "nepers", "phase": "radians (unwrapped)"},
+            "method": "Rangayyan (2024) eq. (4.63), complex log of a product, Section 4.8 homomorphic filtering",
+        }
+    )
 
 
 rangayyan_ch4_complex_log_of_product = clogprod  # pre-policy spelling
 
 
 # -- rng240: Complex log of X(z) expanded as a sum of log terms over poles and zeros..
-def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(),
-           M_I=None, M_O=None, N_I=None, N_O=None):
+def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(), M_I=None, M_O=None, N_I=None, N_O=None):
     """Complex cepstrum of a rational X(z) as a sum over its poles and zeros.
 
     Rangayyan (2024) eq. (4.68), Section 4.8.  Starting from the
@@ -4651,10 +4910,12 @@ def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(),
     if A == 0:
         raise ValueError("A must be non-zero (eq. 4.67 gain)")
     r = int(r)
-    sets = {"a_k": [complex(v) for v in aslistc(a_k)],
-            "b_k": [complex(v) for v in aslistc(b_k)],
-            "c_k": [complex(v) for v in aslistc(c_k)],
-            "d_k": [complex(v) for v in aslistc(d_k)]}
+    sets = {
+        "a_k": [complex(v) for v in aslistc(a_k)],
+        "b_k": [complex(v) for v in aslistc(b_k)],
+        "c_k": [complex(v) for v in aslistc(c_k)],
+        "d_k": [complex(v) for v in aslistc(d_k)],
+    }
     for nm, vals in sets.items():
         for v in vals:
             if abs(v) >= 1.0:
@@ -4663,9 +4924,8 @@ def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(),
         if cnt is not None and int(cnt) != len(sets[nm]):
             raise ValueError("declared count does not match the length of " + nm)
     ak, bk, ck, dk = sets["a_k"], sets["b_k"], sets["c_k"], sets["d_k"]
-    if r != 0 or ak or ck:
-        if any(v == 0 for v in zs):
-            raise ValueError("z = 0 is a singularity of this expansion")
+    if (r != 0 or ak or ck) and any(v == 0 for v in zs):
+        raise ValueError("z = 0 is a singularity of this expansion")
 
     def clog(w):
         if w == 0:
@@ -4681,93 +4941,101 @@ def clogpz(z, A=1.0, r=0, a_k=(), b_k=(), c_k=(), d_k=(),
         s_do = sum((clog(1.0 - v * zi) for v in dk), 0j)
         tot = gain + s_ai + s_bo - s_ci - s_do
         xhat.append(tot)
-        num = A * (zi ** r if r else 1.0)
+        num = A * (zi**r if r else 1.0)
         for v in ak:
-            num *= (1.0 - v / zi)
+            num *= 1.0 - v / zi
         for v in bk:
-            num *= (1.0 - v * zi)
+            num *= 1.0 - v * zi
         den = 1.0 + 0j
         for v in ck:
-            den *= (1.0 - v / zi)
+            den *= 1.0 - v / zi
         for v in dk:
-            den *= (1.0 - v * zi)
+            den *= 1.0 - v * zi
         if den == 0:
             raise ValueError("X(z) has a pole at one of the evaluation points")
         xval.append(num / den)
         if first is None:
-            first = {"gain_and_delay": [gain.real, gain.imag],
-                     "zeros_inside": [s_ai.real, s_ai.imag],
-                     "zeros_outside": [s_bo.real, s_bo.imag],
-                     "poles_inside": [s_ci.real, s_ci.imag],
-                     "poles_outside": [s_do.real, s_do.imag]}
+            first = {
+                "gain_and_delay": [gain.real, gain.imag],
+                "zeros_inside": [s_ai.real, s_ai.imag],
+                "zeros_outside": [s_bo.real, s_bo.imag],
+                "poles_inside": [s_ci.real, s_ci.imag],
+                "poles_outside": [s_do.real, s_do.imag],
+            }
     err = 0.0
     for k in range(len(zs)):
         try:
-            err = max(err, abs(complex(exp(xhat[k].real) * cos(xhat[k].imag),
-                                       exp(xhat[k].real) * sin(xhat[k].imag))
-                               - xval[k]))
+            err = max(
+                err,
+                abs(complex(exp(xhat[k].real) * cos(xhat[k].imag), exp(xhat[k].real) * sin(xhat[k].imag)) - xval[k]),
+            )
         except OverflowError:
             err = float("inf")
-    return RichResult(payload={
-        "z_real": [v.real for v in zs], "z_imag": [v.imag for v in zs],
-        "xhat_real": [v.real for v in xhat], "xhat_imag": [v.imag for v in xhat],
-        "X_real": [v.real for v in xval], "X_imag": [v.imag for v in xval],
-        "max_abs_error": err,
-        "terms": first,
-        "counts": {"M_I": len(ak), "M_O": len(bk), "N_I": len(ck), "N_O": len(dk)},
-        "units": {"xhat_real": "nepers (log magnitude)",
-                  "xhat_imag": "radians (phase)", "z": "dimensionless"},
-        "method": "Rangayyan (2024) eq. (4.68) with eq. (4.67), complex log of a rational X(z) over poles and zeros",
-    })
+    return RichResult(
+        payload={
+            "z_real": [v.real for v in zs],
+            "z_imag": [v.imag for v in zs],
+            "xhat_real": [v.real for v in xhat],
+            "xhat_imag": [v.imag for v in xhat],
+            "X_real": [v.real for v in xval],
+            "X_imag": [v.imag for v in xval],
+            "max_abs_error": err,
+            "terms": first,
+            "counts": {"M_I": len(ak), "M_O": len(bk), "N_I": len(ck), "N_O": len(dk)},
+            "units": {"xhat_real": "nepers (log magnitude)", "xhat_imag": "radians (phase)", "z": "dimensionless"},
+            "method": "Rangayyan (2024) eq. (4.68) with eq. (4.67), complex log of a rational X(z) over poles and zeros",
+        }
+    )
 
 
 rangayyan_ch4_complex_log_x_z = clogpz  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'emdsg: Empirical Mode Decomposition (standalone).',
-    'Idealised action-potential template: linear upstroke, exponential repolarisation (mV vs ms)',
-    '1-D cardiac monodomain propagation plus bidomain extracellular potential (Rangayyan eqs. 7.143-7.149)',
-    'AR-spectrum high-frequency power ratio of a diastolic segment for CAD detection',
-    'Turbulent coronary-flow sound spectrum from stenosis geometry (Rangayyan eq. 7.136)',
-    'Infant cry F0 track (cry melody) coded falling/flat/rising, plus formants',
-    'EGG dominant gastric frequency (cpm) and brady/normo/tachygastria power fractions',
-    'rgelast: Heart-sound spectral stiffness index.',
-    'ENG compound action potential and conduction velocity from a fibre-velocity population',
+    "emdsg: Empirical Mode Decomposition (standalone).",
+    "Idealised action-potential template: linear upstroke, exponential repolarisation (mV vs ms)",
+    "1-D cardiac monodomain propagation plus bidomain extracellular potential (Rangayyan eqs. 7.143-7.149)",
+    "AR-spectrum high-frequency power ratio of a diastolic segment for CAD detection",
+    "Turbulent coronary-flow sound spectrum from stenosis geometry (Rangayyan eq. 7.136)",
+    "Infant cry F0 track (cry melody) coded falling/flat/rising, plus formants",
+    "EGG dominant gastric frequency (cpm) and brady/normo/tachygastria power fractions",
+    "rgelast: Heart-sound spectral stiffness index.",
+    "ENG compound action potential and conduction velocity from a fibre-velocity population",
     "Seizure detection by per-epoch EEG band fractions against the subject's own baseline",
-    'ERP component latencies (ms) and baseline-to-peak amplitudes (uV)',
-    'Event-related desynchronisation/synchronisation percent of an EEG band for BCI',
-    'PSD moments and band-power fractions of a signal segment (Rangayyan eqs. 6.32-6.44)',
-    'Goldman-Hodgkin-Katz resting membrane potential from permeability-weighted ion concentrations (mV)',
-    'Hodgkin-Huxley m, h, n gate kinetics: steady states, time constants (ms) and rate constants',
-    'Four-variable Hodgkin-Huxley action-potential simulation by RK4 (mV vs ms)',
-    'FitzHugh-Nagumo two-variable excitable neuron model integrated by RK4',
-    'Passive RC membrane relaxation with time constant tau = R_m C_m (mV vs ms)',
-    'LMS adaptive cancellation of muscle-contraction artifact from a VAG signal (Rangayyan eqs. 3.203-3.205)',
-    'Motor unit action potential built from dispersed single-fibre potentials (uV vs ms)',
-    'PA/CA magnitude-spectrum ratio of a systolic murmur (Rangayyan eq. 6.45)',
-    'Nernst equilibrium potential of an ion from its concentration ratio (mV)',
-    'OAE half-octave band powers, per-band SNR and emission-present decision',
-    'Multimodal Parkinson monitoring: EEG bands, EMG tremor fraction and gait regularity',
-    'PCG-EEG magnitude-squared coherence spectrum with segment averaging (Rangayyan eq. 4.32)',
-    'Murmur presence decision from the PCG power fraction above the S1/S2 band',
-    'Sleep staging from fused EEG band fractions, EOG activity and chin EMG tone',
-    'Inter-event interval statistics of a point process: mean rate (pps) and CV_r',
-    'Resonance frequencies, -3 dB bandwidths and Q factors of prosthetic valve sounds',
-    'Per-breath respiratory rate, tidal depth and I:E ratio from a flow or volume signal',
-    'Acoustic RLC tube-segment model of an airway: inertance, compliance, losses and resonance',
-    'Multimodal sleep apnea screening from SpO2 desaturation, snore energy and HR modulation',
-    'Speech formant frequencies from an all-pole vocal-tract model plus autocorrelation pitch',
-    'Statistical VAG characterisation: form factor, kurtosis, turns, segment variability',
-    'Linear-discriminant screening of a VAG signal for knee cartilage pathology',
-    'rng029: Decomposition of a signal into weighted deltas (Rangayyan eq. 3.29).',
-    'Complex log turning Y=X*H into log X + log H (Rangayyan eq. 4.63), with the identity checked',
-    'Complex log of a rational X(z) as a sum of pole/zero log terms (Rangayyan eq. 4.68)',
+    "ERP component latencies (ms) and baseline-to-peak amplitudes (uV)",
+    "Event-related desynchronisation/synchronisation percent of an EEG band for BCI",
+    "PSD moments and band-power fractions of a signal segment (Rangayyan eqs. 6.32-6.44)",
+    "Goldman-Hodgkin-Katz resting membrane potential from permeability-weighted ion concentrations (mV)",
+    "Hodgkin-Huxley m, h, n gate kinetics: steady states, time constants (ms) and rate constants",
+    "Four-variable Hodgkin-Huxley action-potential simulation by RK4 (mV vs ms)",
+    "FitzHugh-Nagumo two-variable excitable neuron model integrated by RK4",
+    "Passive RC membrane relaxation with time constant tau = R_m C_m (mV vs ms)",
+    "LMS adaptive cancellation of muscle-contraction artifact from a VAG signal (Rangayyan eqs. 3.203-3.205)",
+    "Motor unit action potential built from dispersed single-fibre potentials (uV vs ms)",
+    "PA/CA magnitude-spectrum ratio of a systolic murmur (Rangayyan eq. 6.45)",
+    "Nernst equilibrium potential of an ion from its concentration ratio (mV)",
+    "OAE half-octave band powers, per-band SNR and emission-present decision",
+    "Multimodal Parkinson monitoring: EEG bands, EMG tremor fraction and gait regularity",
+    "PCG-EEG magnitude-squared coherence spectrum with segment averaging (Rangayyan eq. 4.32)",
+    "Murmur presence decision from the PCG power fraction above the S1/S2 band",
+    "Sleep staging from fused EEG band fractions, EOG activity and chin EMG tone",
+    "Inter-event interval statistics of a point process: mean rate (pps) and CV_r",
+    "Resonance frequencies, -3 dB bandwidths and Q factors of prosthetic valve sounds",
+    "Per-breath respiratory rate, tidal depth and I:E ratio from a flow or volume signal",
+    "Acoustic RLC tube-segment model of an airway: inertance, compliance, losses and resonance",
+    "Multimodal sleep apnea screening from SpO2 desaturation, snore energy and HR modulation",
+    "Speech formant frequencies from an all-pole vocal-tract model plus autocorrelation pitch",
+    "Statistical VAG characterisation: form factor, kurtosis, turns, segment variability",
+    "Linear-discriminant screening of a VAG signal for knee cartilage pathology",
+    "rng029: Decomposition of a signal into weighted deltas (Rangayyan eq. 3.29).",
+    "Complex log turning Y=X*H into log X + log H (Rangayyan eq. 4.63), with the identity checked",
+    "Complex log of a rational X(z) as a sum of pole/zero log terms (Rangayyan eq. 4.68)",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

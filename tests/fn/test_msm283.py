@@ -6,12 +6,9 @@ Springer, ch 14, eq. 14.12 p.471, the rotated ridge regression. Expected values 
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm283 import penfreg
-
 
 Y = [1.0, 2.0]
 X = [[1.0, 0.0], [0.0, 1.0]]
@@ -47,8 +44,7 @@ def test_the_rotated_design_is_the_design_times_the_eigenvectors():
 
 def test_the_penalty_matrix_eigenvalues_become_the_diagonal_penalty():
     res = penfreg(Y, X, [[3.0, 0.0], [0.0, 5.0]], 1.0)
-    assert sorted(res["eigenvalues"]) == pytest.approx([3.0, 5.0],
-                                                        rel=1e-9)
+    assert sorted(res["eigenvalues"]) == pytest.approx([3.0, 5.0], rel=1e-9)
 
 
 def test_shrinkage_pulls_the_coefficients_towards_zero():

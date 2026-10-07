@@ -1,8 +1,8 @@
 """Tests for morie.fn.dpoi — Poisson PMF."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dpoi import dpois
 
 

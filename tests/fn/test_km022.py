@@ -13,6 +13,8 @@ def test_km022_doctest():
 
 def test_km022_edge():
     import pytest
+
     from morie.fn.km022 import kamath_ch2_mlm_loss
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_mlm_loss(*([None] * 2))

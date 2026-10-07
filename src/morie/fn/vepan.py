@@ -141,15 +141,33 @@ CONSEQUENCE_SO = dict((t, a) for _, t, _, a in _TABLE)
 #: Table 7's ``--pick`` order, applied in sequence. Canonical first --
 #: a canonical transcript wins even against a worse consequence
 #: elsewhere.
-PICK_ORDER = ("canonical", "protein_coding", "consequence_rank",
-              "transcript_id")
+PICK_ORDER = ("canonical", "protein_coding", "consequence_rank", "transcript_id")
 
 _COMPLEMENT = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N"}
-_AA3 = {"A": "Ala", "R": "Arg", "N": "Asn", "D": "Asp", "C": "Cys",
-        "Q": "Gln", "E": "Glu", "G": "Gly", "H": "His", "I": "Ile",
-        "L": "Leu", "K": "Lys", "M": "Met", "F": "Phe", "P": "Pro",
-        "S": "Ser", "T": "Thr", "W": "Trp", "Y": "Tyr", "V": "Val",
-        "*": "Ter", "X": "Xaa"}
+_AA3 = {
+    "A": "Ala",
+    "R": "Arg",
+    "N": "Asn",
+    "D": "Asp",
+    "C": "Cys",
+    "Q": "Gln",
+    "E": "Glu",
+    "G": "Gly",
+    "H": "His",
+    "I": "Ile",
+    "L": "Leu",
+    "K": "Lys",
+    "M": "Met",
+    "F": "Phe",
+    "P": "Pro",
+    "S": "Ser",
+    "T": "Thr",
+    "W": "Trp",
+    "Y": "Tyr",
+    "V": "Val",
+    "*": "Ter",
+    "X": "Xaa",
+}
 
 
 def consequence_rank(term):
@@ -176,18 +194,18 @@ def _revcomp(s):
 
 # ------------------------------------------------------ transcript model
 
+
 def _transcript(tr):
     try:
         exons = [(int(a), int(b)) for a, b in tr["exons"]]
-    except (KeyError, TypeError, ValueError):
-        raise ValueError("vepan: a transcript needs exons as (start, end)")
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("vepan: a transcript needs exons as (start, end)") from exc
     if not exons:
         raise ValueError("vepan: a transcript needs at least one exon")
     exons.sort()
     for a, b in exons:
         if a > b or a < 1:
-            raise ValueError("vepan: exon coordinates must be 1-based and "
-                             "ascending")
+            raise ValueError("vepan: exon coordinates must be 1-based and ascending")
     for k in range(len(exons) - 1):
         if exons[k][1] >= exons[k + 1][0]:
             raise ValueError("vepan: exons must not overlap")
@@ -197,16 +215,22 @@ def _transcript(tr):
     cs, ce = tr.get("cds_start"), tr.get("cds_end")
     biotype = tr.get("biotype", "protein_coding" if cs else "lncRNA")
     if biotype == "protein_coding" and (cs is None or ce is None):
-        raise ValueError("vepan: a protein_coding transcript needs "
-                         "cds_start and cds_end")
+        raise ValueError("vepan: a protein_coding transcript needs cds_start and cds_end")
     if cs is not None and ce is not None and int(cs) > int(ce):
         raise ValueError("vepan: cds_start must not exceed cds_end")
-    return {"id": tr.get("id", "TR"), "gene": tr.get("gene", "GENE"),
-            "chrom": tr.get("chrom", "chr1"), "strand": strand,
-            "exons": exons, "cds_start": None if cs is None else int(cs),
-            "cds_end": None if ce is None else int(ce), "biotype": biotype,
-            "canonical": bool(tr.get("canonical", False)),
-            "start": exons[0][0], "end": exons[-1][1]}
+    return {
+        "id": tr.get("id", "TR"),
+        "gene": tr.get("gene", "GENE"),
+        "chrom": tr.get("chrom", "chr1"),
+        "strand": strand,
+        "exons": exons,
+        "cds_start": None if cs is None else int(cs),
+        "cds_end": None if ce is None else int(ce),
+        "biotype": biotype,
+        "canonical": bool(tr.get("canonical", False)),
+        "start": exons[0][0],
+        "end": exons[-1][1],
+    }
 
 
 def transcript_sequence(tr, genome):
@@ -215,7 +239,7 @@ def transcript_sequence(tr, genome):
     t = _transcript(tr)
     seq, gpos = [], []
     for a, b in t["exons"]:
-        seq.append(str(genome)[a - 1:b])
+        seq.append(str(genome)[a - 1 : b])
         gpos.extend(range(a, b + 1))
     s = "".join(seq).upper()
     if t["strand"] == "-":
@@ -229,8 +253,7 @@ def _cds_frame(t, genome):
     if t["cds_start"] is None:
         return None, None, None
     seq, gpos = transcript_sequence(t, genome)
-    coding = [k for k, g in enumerate(gpos)
-              if t["cds_start"] <= g <= t["cds_end"]]
+    coding = [k for k, g in enumerate(gpos) if t["cds_start"] <= g <= t["cds_end"]]
     if not coding:
         raise ValueError("vepan: the CDS does not overlap any exon")
     cds = "".join(seq[k] for k in coding)
@@ -238,9 +261,11 @@ def _cds_frame(t, genome):
 
 
 def _introns(t):
-    return [(t["exons"][k][1] + 1, t["exons"][k + 1][0] - 1)
-            for k in range(len(t["exons"]) - 1)
-            if t["exons"][k + 1][0] - t["exons"][k][1] > 1]
+    return [
+        (t["exons"][k][1] + 1, t["exons"][k + 1][0] - 1)
+        for k in range(len(t["exons"]) - 1)
+        if t["exons"][k + 1][0] - t["exons"][k][1] > 1
+    ]
 
 
 def _variant(v):
@@ -248,8 +273,8 @@ def _variant(v):
         pos = int(v["pos"])
         ref = str(v["ref"]).upper()
         alt = str(v["alt"]).upper()
-    except (KeyError, TypeError, ValueError):
-        raise ValueError("vepan: a variant needs pos, ref and alt")
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("vepan: a variant needs pos, ref and alt") from exc
     if pos < 1:
         raise ValueError("vepan: pos is 1-based and must be positive")
     if not ref or not alt:
@@ -259,8 +284,7 @@ def _variant(v):
             raise ValueError("vepan: ref and alt must be ACGTN")
     if len(ref) > 1 and len(alt) > 1:
         raise ValueError("vepan: only SNVs and anchored indels are handled")
-    return {"chrom": v.get("chrom", "chr1"), "pos": pos, "ref": ref,
-            "alt": alt, "id": v.get("id")}
+    return {"chrom": v.get("chrom", "chr1"), "pos": pos, "ref": ref, "alt": alt, "id": v.get("id")}
 
 
 def _kind(v):
@@ -281,6 +305,7 @@ def _affected(v):
 
 # ------------------------------------------------------- the predicates
 
+
 def _splice_terms(t, v, lo, hi):
     """Splice consequences from the distance to each exon boundary.
 
@@ -293,15 +318,15 @@ def _splice_terms(t, v, lo, hi):
     """
     terms = set()
     fwd = t["strand"] == "+"
-    for k, (ia, ib) in enumerate(_introns(t)):
+    for _k, (ia, ib) in enumerate(_introns(t)):
         # donor side of this intron in transcript orientation
         d_start, a_end = (ia, ib) if fwd else (ib, ia)
         step = 1 if fwd else -1
         for p in range(lo, hi + 1):
             if not (min(ia, ib) <= p <= max(ia, ib)):
                 continue
-            d = (p - d_start) * step + 1        # 1-based into the intron
-            a = (a_end - p) * step + 1          # 1-based back from the end
+            d = (p - d_start) * step + 1  # 1-based into the intron
+            a = (a_end - p) * step + 1  # 1-based back from the end
             if d <= 2:
                 terms.add("splice_donor_variant")
             elif d == 5:
@@ -319,8 +344,7 @@ def _splice_terms(t, v, lo, hi):
             if a <= p <= b:
                 near = min(p - a + 1, b - p + 1)
                 # only next to a real intron, not at the transcript ends
-                touches = ((a != t["start"] and p - a + 1 <= 3) or
-                           (b != t["end"] and b - p + 1 <= 3))
+                touches = (a != t["start"] and p - a + 1 <= 3) or (b != t["end"] and b - p + 1 <= 3)
                 if near <= 3 and touches:
                     terms.add("splice_region_variant")
     return terms
@@ -338,7 +362,7 @@ def _apply(cds, idx, v, coding, gpos, strand):
         ins = v["alt"][1:]
         if strand == "-":
             ins = _revcomp(ins)
-            cut = anchor            # inserted before the anchor in CDS order
+            cut = anchor  # inserted before the anchor in CDS order
         else:
             cut = anchor + 1
         return cds[:cut] + ins + cds[cut:], cut
@@ -350,7 +374,7 @@ def _apply(cds, idx, v, coding, gpos, strand):
         return "".join(keep), offs[0]
     base = v["alt"] if strand == "+" else _COMPLEMENT[v["alt"]]
     o = offs[0]
-    return cds[:o] + base + cds[o + 1:], o
+    return cds[:o] + base + cds[o + 1 :], o
 
 
 def _coding_terms(t, v, cds, coding, gpos):
@@ -364,14 +388,18 @@ def _coding_terms(t, v, cds, coding, gpos):
     kind = _kind(v)
     delta = len(alt_cds) - len(cds)
     codon = off // 3
-    info = {"cds_position": off + 1, "protein_position": codon + 1,
-            "ref_codon": cds[codon * 3:codon * 3 + 3],
-            "ref_aa": ref_prot[codon] if codon < len(ref_prot) else "",
-            "alt_aa": alt_prot[codon] if codon < len(alt_prot) else "",
-            "cds_length": len(cds), "alt_cds_length": len(alt_cds)}
+    info = {
+        "cds_position": off + 1,
+        "protein_position": codon + 1,
+        "ref_codon": cds[codon * 3 : codon * 3 + 3],
+        "ref_aa": ref_prot[codon] if codon < len(ref_prot) else "",
+        "alt_aa": alt_prot[codon] if codon < len(alt_prot) else "",
+        "cds_length": len(cds),
+        "alt_cds_length": len(alt_cds),
+    }
     if kind != "SNV" and delta % 3 != 0:
         terms.add("frameshift_variant")
-        if "*" in alt_prot[:codon + 1]:
+        if "*" in alt_prot[: codon + 1]:
             terms.add("stop_gained")
         return terms, info
     if kind == "insertion":
@@ -394,8 +422,7 @@ def _coding_terms(t, v, cds, coding, gpos):
     # An in-frame indel moves the existing stop by delta/3 codons without
     # gaining one; only a stop EARLIER than that counts as stop_gained.
     expected_stop = ref_stop + delta // 3 if ref_stop >= 0 else -1
-    if (alt_stop >= 0 and (expected_stop < 0 or alt_stop < expected_stop) and
-            "stop_lost" not in terms):
+    if alt_stop >= 0 and (expected_stop < 0 or alt_stop < expected_stop) and "stop_lost" not in terms:
         terms.add("stop_gained")
     if kind == "SNV" and not terms:
         if info["ref_aa"] == info["alt_aa"]:
@@ -425,27 +452,27 @@ def _hgvs_c(t, v, seq, gpos, cds_first):
         k = idx[v["pos"]]
         ref = seq[k]
         alt = v["alt"] if t["strand"] == "+" else _COMPLEMENT[v["alt"]]
-        return "c.%d%s>%s" % (c_of(k), ref, alt)
+        return f"c.{int(c_of(k))}{ref}>{alt}"
     if kind == "insertion":
         ins = v["alt"][1:]
         if t["strand"] == "-":
             ins = _revcomp(ins)
         k = anchor if t["strand"] == "-" else anchor + 1
         # 3' shift: slide the insertion right while it repeats
-        while k + len(ins) <= len(seq) and seq[k:k + len(ins)] == ins:
+        while k + len(ins) <= len(seq) and seq[k : k + len(ins)] == ins:
             k += len(ins)
-        return "c.%d_%dins%s" % (c_of(k - 1), c_of(k), ins)
+        return f"c.{int(c_of(k - 1))}_{int(c_of(k))}ins{ins}"
     ks = sorted(idx[p] for p in range(lo, hi + 1) if p in idx)
     if not ks:
         return None
     a, b = ks[0], ks[-1]
     n = b - a + 1
-    while b + n < len(seq) and seq[a:b + 1] == seq[a + n:b + 1 + n]:
+    while b + n < len(seq) and seq[a : b + 1] == seq[a + n : b + 1 + n]:
         a, b = a + n, b + n
-    dele = seq[a:b + 1]
+    dele = seq[a : b + 1]
     if a == b:
-        return "c.%ddel%s" % (c_of(a), dele)
-    return "c.%d_%ddel%s" % (c_of(a), c_of(b), dele)
+        return f"c.{int(c_of(a))}del{dele}"
+    return f"c.{int(c_of(a))}_{int(c_of(b))}del{dele}"
 
 
 def _hgvs_p(info, terms):
@@ -454,18 +481,18 @@ def _hgvs_p(info, terms):
     ref, alt = info.get("ref_aa"), info.get("alt_aa")
     pos = info["protein_position"]
     if "frameshift_variant" in terms:
-        return "p.%s%dfs" % (_AA3.get(ref, "Xaa"), pos)
+        return "p.{}{}fs".format(_AA3.get(ref, "Xaa"), int(pos))
     if not ref:
         return None
-    if "synonymous_variant" in terms or "stop_retained_variant" in terms \
-            or "start_retained_variant" in terms:
-        return "p.%s%d=" % (_AA3.get(ref, "Xaa"), pos)
+    if "synonymous_variant" in terms or "stop_retained_variant" in terms or "start_retained_variant" in terms:
+        return "p.{}{}=".format(_AA3.get(ref, "Xaa"), int(pos))
     if not alt:
         return None
-    return "p.%s%d%s" % (_AA3.get(ref, "Xaa"), pos, _AA3.get(alt, "Xaa"))
+    return "p.{}{}{}".format(_AA3.get(ref, "Xaa"), int(pos), _AA3.get(alt, "Xaa"))
 
 
 # ------------------------------------------------------------- annotate
+
 
 def annotate(variant, transcripts, genome, upstream=5000, downstream=5000):
     """One record per (variant, transcript) overlap, as the VEP emits.
@@ -484,28 +511,22 @@ def annotate(variant, transcripts, genome, upstream=5000, downstream=5000):
     for t in trs:
         if t["chrom"] != v["chrom"]:
             continue
-        five, three = ((upstream, downstream) if t["strand"] == "+"
-                       else (downstream, upstream))
+        five, three = (upstream, downstream) if t["strand"] == "+" else (downstream, upstream)
         if span_hi < t["start"] - five or span_lo > t["end"] + three:
             continue
         terms = set()
         if span_hi < t["start"]:
-            terms.add("upstream_gene_variant" if t["strand"] == "+"
-                      else "downstream_gene_variant")
+            terms.add("upstream_gene_variant" if t["strand"] == "+" else "downstream_gene_variant")
         elif span_lo > t["end"]:
-            terms.add("downstream_gene_variant" if t["strand"] == "+"
-                      else "upstream_gene_variant")
+            terms.add("downstream_gene_variant" if t["strand"] == "+" else "upstream_gene_variant")
         info, hgvs_c, hgvs_p = {}, None, None
         if not terms:
             seq, gpos = transcript_sequence(t, g)
-            in_exon = any(a <= p <= b for a, b in t["exons"]
-                          for p in range(lo, hi + 1)) or \
-                (_kind(v) == "insertion" and
-                 any(a <= v["pos"] <= b for a, b in t["exons"]))
-            in_intron = any(a <= p <= b for a, b in _introns(t)
-                            for p in range(lo, hi + 1))
-            terms |= _splice_terms(t, v, min(lo, v["pos"]),
-                                   max(hi, v["pos"]))
+            in_exon = any(a <= p <= b for a, b in t["exons"] for p in range(lo, hi + 1)) or (
+                _kind(v) == "insertion" and any(a <= v["pos"] <= b for a, b in t["exons"])
+            )
+            in_intron = any(a <= p <= b for a, b in _introns(t) for p in range(lo, hi + 1))
+            terms |= _splice_terms(t, v, min(lo, v["pos"]), max(hi, v["pos"]))
             if in_intron:
                 terms.add("intron_variant")
             if t["biotype"] != "protein_coding":
@@ -515,53 +536,61 @@ def annotate(variant, transcripts, genome, upstream=5000, downstream=5000):
             elif in_exon:
                 cds, coding, _ = _cds_frame(t, g)
                 cds_first = coding[0]
-                if all(t["cds_start"] <= p <= t["cds_end"]
-                       for p in range(lo, hi + 1)) or \
-                        (_kind(v) == "insertion" and
-                         t["cds_start"] <= v["pos"] <= t["cds_end"]):
+                if all(t["cds_start"] <= p <= t["cds_end"] for p in range(lo, hi + 1)) or (
+                    _kind(v) == "insertion" and t["cds_start"] <= v["pos"] <= t["cds_end"]
+                ):
                     ct, info = _coding_terms(t, v, cds, coding, gpos)
                     terms |= ct
                 else:
                     utr5 = (v["pos"] < t["cds_start"]) == (t["strand"] == "+")
-                    terms.add("5_prime_UTR_variant" if utr5
-                              else "3_prime_UTR_variant")
+                    terms.add("5_prime_UTR_variant" if utr5 else "3_prime_UTR_variant")
                 hgvs_c = _hgvs_c(t, v, seq, gpos, cds_first)
                 hgvs_p = _hgvs_p(info, terms)
             if not terms:
                 terms.add("intron_variant")
         record = {
-            "variant": v.get("id") or "%s:%d%s>%s" % (v["chrom"], v["pos"],
-                                                      v["ref"], v["alt"]),
-            "transcript": t["id"], "gene": t["gene"],
-            "biotype": t["biotype"], "canonical": t["canonical"],
+            "variant": v.get("id") or "{}:{}{}>{}".format(v["chrom"], int(v["pos"]), v["ref"], v["alt"]),
+            "transcript": t["id"],
+            "gene": t["gene"],
+            "biotype": t["biotype"],
+            "canonical": t["canonical"],
             "strand": t["strand"],
             "consequences": sorted(terms, key=consequence_rank),
             "most_severe": most_severe_consequence(terms),
             "impact": consequence_impact(most_severe_consequence(terms)),
-            "hgvs_c": hgvs_c, "hgvs_p": hgvs_p,
+            "hgvs_c": hgvs_c,
+            "hgvs_p": hgvs_p,
         }
         record.update(info)
         out.append(record)
     if not out:
-        out.append({
-            "variant": v.get("id") or "%s:%d%s>%s" % (v["chrom"], v["pos"],
-                                                      v["ref"], v["alt"]),
-            "transcript": None, "gene": None, "biotype": None,
-            "canonical": False, "strand": None,
-            "consequences": ["intergenic_variant"],
-            "most_severe": "intergenic_variant", "impact": "MODIFIER",
-            "hgvs_c": None, "hgvs_p": None})
-    out.sort(key=lambda r: (consequence_rank(r["most_severe"]),
-                            r["transcript"] or ""))
+        out.append(
+            {
+                "variant": v.get("id") or "{}:{}{}>{}".format(v["chrom"], int(v["pos"]), v["ref"], v["alt"]),
+                "transcript": None,
+                "gene": None,
+                "biotype": None,
+                "canonical": False,
+                "strand": None,
+                "consequences": ["intergenic_variant"],
+                "most_severe": "intergenic_variant",
+                "impact": "MODIFIER",
+                "hgvs_c": None,
+                "hgvs_p": None,
+            }
+        )
+    out.sort(key=lambda r: (consequence_rank(r["most_severe"]), r["transcript"] or ""))
     return out
 
 
 def _pick_key(r):
     """Table 7's order: canonical, then protein coding, then severity."""
-    return (0 if r["canonical"] else 1,
-            0 if r["biotype"] == "protein_coding" else 1,
-            consequence_rank(r["most_severe"]),
-            r["transcript"] or "")
+    return (
+        0 if r["canonical"] else 1,
+        0 if r["biotype"] == "protein_coding" else 1,
+        consequence_rank(r["most_severe"]),
+        r["transcript"] or "",
+    )
 
 
 def pick(records, per_gene=False):
@@ -579,8 +608,7 @@ def pick(records, per_gene=False):
     return [best[k] for k in sorted(best, key=lambda k: (k is None, k))]
 
 
-def vep_annotation(variants, transcripts, genome, upstream=5000,
-                   downstream=5000, mode="all", no_intergenic=False):
+def vep_annotation(variants, transcripts, genome, upstream=5000, downstream=5000, mode="all", no_intergenic=False):
     """Annotate every variant against every transcript.
 
     ``mode`` is ``"all"`` (every overlap, the default), ``"pick"``
@@ -608,35 +636,43 @@ def vep_annotation(variants, transcripts, genome, upstream=5000,
     for r in rows:
         for t in r["consequences"]:
             by_term[t] = by_term.get(t, 0) + 1
-    return RichResult(payload={
-        "estimate": rows,
-        "annotations": rows,
-        "n_variants": len(vs),
-        "n_annotations": len(rows),
-        "consequence_counts": by_term,
-        "mode": mode,
-        "method": ("Ensembl Variant Effect Predictor (McLaren et al. "
-                   "2016): per-transcript consequence predicates with "
-                   "Sequence Ontology terms, severity from Ensembl's "
-                   "published consequence table"),
-        "note": ("regulatory, TFBS, NMD, miRNA and structural-variant "
-                 "terms are in the rank table for severity comparison "
-                 "but are not predicted here, since they need a "
-                 "regulatory build or transcript flags a gene model does "
-                 "not carry"),
-    })
+    return RichResult(
+        payload={
+            "estimate": rows,
+            "annotations": rows,
+            "n_variants": len(vs),
+            "n_annotations": len(rows),
+            "consequence_counts": by_term,
+            "mode": mode,
+            "method": (
+                "Ensembl Variant Effect Predictor (McLaren et al. "
+                "2016): per-transcript consequence predicates with "
+                "Sequence Ontology terms, severity from Ensembl's "
+                "published consequence table"
+            ),
+            "note": (
+                "regulatory, TFBS, NMD, miRNA and structural-variant "
+                "terms are in the rank table for severity comparison "
+                "but are not predicted here, since they need a "
+                "regulatory build or transcript flags a gene model does "
+                "not carry"
+            ),
+        }
+    )
 
 
 vepannotation = vep_annotation
 
 
 def cheatsheet():
-    return ("vepan: Ensembl VEP (McLaren et al. 2016). One record per "
-            "(variant, transcript): predicate functions assign Sequence "
-            "Ontology consequence terms, ranked 1-41 by Ensembl's "
-            "published severity table, so most_severe_consequence and "
-            "impact mean something. mode='pick' applies Table 7's order "
-            "-- canonical transcript first, then protein coding, then "
-            "severity -- and mode='per_gene' does the same per gene. "
-            "HGVS c. and p. are emitted, with indels shifted to their "
-            "most 3' position.")
+    return (
+        "vepan: Ensembl VEP (McLaren et al. 2016). One record per "
+        "(variant, transcript): predicate functions assign Sequence "
+        "Ontology consequence terms, ranked 1-41 by Ensembl's "
+        "published severity table, so most_severe_consequence and "
+        "impact mean something. mode='pick' applies Table 7's order "
+        "-- canonical transcript first, then protein coding, then "
+        "severity -- and mode='per_gene' does the same per gene. "
+        "HGVS c. and p. are emitted, with indels shifted to their "
+        "most 3' position."
+    )

@@ -8,14 +8,12 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_inf_dim_credible"]
 
 
-def ghosal_inf_dim_credible(n=300, dim=40, level=0.9, n_sim=300,
-                            seed=42):
+def ghosal_inf_dim_credible(n=300, dim=40, level=0.9, n_sim=300, seed=42):
     """Pi_n(||theta - theta0|| <= r_n | X) = 1 - alpha: in the
     conjugate sequence model the credible radius is a chi-square
     quantile of the posterior spread; coverage matches when centered
@@ -32,15 +30,18 @@ def ghosal_inf_dim_credible(n=300, dim=40, level=0.9, n_sim=300,
         for _ in range(dim):
             y = float(rng.normal(0, 1)) / math.sqrt(n)
             post_mean = n / (n + 1.0) * y
-            d2 += post_mean ** 2       # theta0 = 0
+            d2 += post_mean**2  # theta0 = 0
         if d2 <= r2:
             hits += 1
     cov = hits / n_sim
-    res = RichResult(payload={"estimate": cov,
-                              "nominal": level,
-                              "conservative_or_close":
-                                  cov >= level - 0.07,
-                              "method": "infinite-dim credible ball (GvdV 2017 sec. 12.5)"})
+    res = RichResult(
+        payload={
+            "estimate": cov,
+            "nominal": level,
+            "conservative_or_close": cov >= level - 0.07,
+            "method": "infinite-dim credible ball (GvdV 2017 sec. 12.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_inf_dim_cr")
 
 

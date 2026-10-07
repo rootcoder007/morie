@@ -46,10 +46,7 @@ def weibull_fit(
         raise ValueError("All failure times must be positive.")
 
     n = len(t)
-    if censored is None:
-        c = np.zeros(n, dtype=bool)
-    else:
-        c = np.asarray(censored, dtype=bool).ravel()
+    c = np.zeros(n, dtype=bool) if censored is None else np.asarray(censored, dtype=bool).ravel()
 
     d = (~c).astype(float)
     n_failures = d.sum()

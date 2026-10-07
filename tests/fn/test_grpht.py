@@ -1,12 +1,11 @@
 """Tests for morie.fn.grpht."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grpht import graph_from_edges
 
 
 def test_grpht_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = graph_from_edges(edges=[(0, 1), (1, 2), (0, 2)])
     assert result is not None
     assert hasattr(result, "name")

@@ -58,11 +58,20 @@ def vansteelandt_vanderweele(X, M, Y, Cc=None, a=1.0, astar=0.0, m=0.0):
     cde, intref, intmed, pie, te = S.fourway(theta, beta, cbar, a, astar, m)
     pde = cde + intref
     tie = pie + intmed
-    return RichResult(payload={
-        "estimate": te, "pde": pde, "tie": tie, "cde": cde, "intref": intref,
-        "intmed": intmed, "pie": pie, "check": te - (pde + tie),
-        "n": len(list(Y)),
-        "method": "Two-way and four-way decompositions together"})
+    return RichResult(
+        payload={
+            "estimate": te,
+            "pde": pde,
+            "tie": tie,
+            "cde": cde,
+            "intref": intref,
+            "intmed": intmed,
+            "pie": pie,
+            "check": te - (pde + tie),
+            "n": len(list(Y)),
+            "method": "Two-way and four-way decompositions together",
+        }
+    )
 
 
 def cheatsheet():

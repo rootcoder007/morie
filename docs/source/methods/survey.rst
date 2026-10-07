@@ -60,7 +60,11 @@ Survey-weighted summaries are computed directly using the ``weight`` column:
 
 .. code-block:: python
 
+   from morie.fn import _frame_core as pd   # or pandas
+
+   df = pd.DataFrame({"heavy_drinking_30d": [0, 1, 0, 1, 1, 0], "weight": [1.2, 0.8, 1.0, 1.5, 0.9, 1.1]})
    weighted_prev = (df["heavy_drinking_30d"] * df["weight"]).sum() / df["weight"].sum()
+   print(round(float(weighted_prev), 4))
 
 References
 ----------

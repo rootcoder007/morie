@@ -50,10 +50,15 @@ def wasserman_mgf(x, t):
     if x.size == 0:
         raise ValueError("the MGF of an empty sample is undefined.")
     vals = [float(np.mean(np.exp(ti * x))) for ti in t]
-    return RichResult(payload={
-        "estimate": vals[0], "values": vals,
-        "t": [float(v) for v in t], "n": int(x.size),
-        "method": "empirical MGF (1/n) sum e^{tX_i}"})
+    return RichResult(
+        payload={
+            "estimate": vals[0],
+            "values": vals,
+            "t": [float(v) for v in t],
+            "n": int(x.size),
+            "method": "empirical MGF (1/n) sum e^{tX_i}",
+        }
+    )
 
 
 def cheatsheet():

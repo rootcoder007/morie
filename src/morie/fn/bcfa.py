@@ -49,10 +49,7 @@ def bayesian_cfa(
     n, p = X.shape
     rng = np.random.default_rng(seed)
 
-    if isinstance(data, pd.DataFrame):
-        col_names = list(data.columns)
-    else:
-        col_names = [f"i{j}" for j in range(p)]
+    col_names = list(data.columns) if isinstance(data, pd.DataFrame) else [f"i{j}" for j in range(p)]
 
     # Convert structure to index-based
     factors = list(structure.keys())
@@ -66,7 +63,7 @@ def bayesian_cfa(
 
     # Initialize
     Lambda = np.zeros((p, nf))  # loading matrix
-    for fi, (f, idxs) in enumerate(factor_items.items()):
+    for fi, (f, idxs) in enumerate(factor_items.items()):  # noqa: B007 - read after the loop
         for j in idxs:
             Lambda[j, fi] = 0.7
 
@@ -89,7 +86,7 @@ def bayesian_cfa(
         eta = mean_eta + rng.standard_normal((n, nf)) @ L_eta.T
 
         # Sample loadings (column by column)
-        for fi, (f, idxs) in enumerate(factor_items.items()):
+        for fi, (f, idxs) in enumerate(factor_items.items()):  # noqa: B007 - read after the loop
             for j in idxs:
                 # Posterior for lambda_j,fi
                 psi_j = Psi[j, j] + 1e-10

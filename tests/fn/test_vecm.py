@@ -1,8 +1,8 @@
 """Tests for morie.fn.vecm — Vector Error Correction Model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.vecm import vecm
 
 

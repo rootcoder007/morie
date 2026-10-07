@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.regest import regression_estimator
 
 
@@ -18,9 +17,16 @@ def test_regest_basic():
     X_mean = 0.0  # known population mean of x
     result = regression_estimator(y, x, weights=weights, X_mean=X_mean)
     assert isinstance(result, dict)
-    for key in ("mean", "slope", "intercept", "correlation",
-                "variance_ratio_to_simple_mean", "passes_through_origin",
-                "n", "method"):
+    for key in (
+        "mean",
+        "slope",
+        "intercept",
+        "correlation",
+        "variance_ratio_to_simple_mean",
+        "passes_through_origin",
+        "n",
+        "method",
+    ):
         assert key in result
     assert math.isfinite(result["mean"])
     assert math.isfinite(result["slope"])
@@ -42,9 +48,16 @@ def test_regest_edge():
     # No weights supplied; default of None must be accepted.
     result = regression_estimator(y, x, X_mean=X_mean)
     assert isinstance(result, dict)
-    for key in ("mean", "slope", "intercept", "correlation",
-                "variance_ratio_to_simple_mean", "passes_through_origin",
-                "n", "method"):
+    for key in (
+        "mean",
+        "slope",
+        "intercept",
+        "correlation",
+        "variance_ratio_to_simple_mean",
+        "passes_through_origin",
+        "n",
+        "method",
+    ):
         assert key in result
     assert math.isfinite(result["mean"])
     assert result["n"] == 40

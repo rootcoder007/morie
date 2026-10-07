@@ -80,7 +80,7 @@ def geron_topk_sampling(logits, k, T=1.0):
         raise ValueError(f"T must be strictly positive, got {T}.")
 
     p = softmax_vector(z / T)
-    order = np.lexsort((np.arange(z.size), -p))     # ties -> lower index first
+    order = np.lexsort((np.arange(z.size), -p))  # ties -> lower index first
     keep = np.sort(order[:k])
     mass = float(p[keep].sum())
     if mass <= 0:

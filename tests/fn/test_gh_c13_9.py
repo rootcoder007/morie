@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_9 import ghosal_ntr_levy
 
 
@@ -19,9 +18,7 @@ def test_gh_c13_9_basic():
 
     # Independent computation of the literature formula:
     # E exp(-int f dM) = exp(- sum_j m_j (1 - exp(-f_j)))
-    expected_exponent = sum(
-        m * (1.0 - math.exp(-f)) for f, m in zip(f_vals.tolist(), nu_masses.tolist())
-    )
+    expected_exponent = sum(m * (1.0 - math.exp(-f)) for f, m in zip(f_vals.tolist(), nu_masses.tolist()))
     expected_val = math.exp(-expected_exponent)
     assert math.isclose(result["estimate"], expected_val, rel_tol=1e-12, abs_tol=1e-12)
     assert math.isclose(result["exponent"], expected_exponent, rel_tol=1e-12, abs_tol=1e-12)

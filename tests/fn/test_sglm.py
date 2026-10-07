@@ -31,10 +31,17 @@ def test_gaussian_is_likfit_with_gls_standard_errors():
     f = likfit(Y, P, {"model": "Exp", "range": dmax / 3}, X=X)
     r = spatial_glm(X, Y, P)
     assert r["estimate"] == list(f["beta"])
-    V = [[f["psill"] * math.exp(-math.dist(a, b) / f["range"]) + (f["nugget"] if i == j else 0.0)
-          for j, b in enumerate(P)] for i, a in enumerate(P)]
+    V = [
+        [
+            f["psill"] * math.exp(-math.dist(a, b) / f["range"]) + (f["nugget"] if i == j else 0.0)
+            for j, b in enumerate(P)
+        ]
+        for i, a in enumerate(P)
+    ]
     Vi = _inv(V)
-    XtViX = [[sum(X[i][a] * Vi[i][j] * X[j][b] for i in range(12) for j in range(12)) for b in range(2)] for a in range(2)]
+    XtViX = [
+        [sum(X[i][a] * Vi[i][j] * X[j][b] for i in range(12) for j in range(12)) for b in range(2)] for a in range(2)
+    ]
     C = _inv(XtViX)
     assert abs(r["se"][1] - math.sqrt(C[1][1])) < 1e-10
 

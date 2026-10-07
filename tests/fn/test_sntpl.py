@@ -1,7 +1,6 @@
 """Tests for morie.fn.sntpl — sentence by plea."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sntpl import sentence_plea
 

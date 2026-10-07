@@ -80,13 +80,13 @@ def gkrawbv(x, h, n, fp, fpp, f, boundary=False, c=None):
         if c is None:
             raise ValueError("the boundary branch of (1.11) needs c.")
         scale = float(c) * rh + 1.0
-        power = h ** 0.75
+        power = h**0.75
         region = "boundary"
     else:
         scale = x + rh
-        power = h ** 0.25
+        power = h**0.25
         region = "interior"
-    var = (rnum ** 2 * float(f)) / (2.0 * scale * np.sqrt(np.pi) * (1.0 - rh) * rden * n * power)
+    var = (rnum**2 * float(f)) / (2.0 * scale * np.sqrt(np.pi) * (1.0 - rh) * rden * n * power)
     return RichResult(
         payload={
             "bias": float(bias),

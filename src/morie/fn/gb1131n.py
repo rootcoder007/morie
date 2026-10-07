@@ -52,8 +52,10 @@ def gibbons_spearman_asymp(r_s, n):
             "z": float(z),
             "p_two_sided": float(2 * stats.norm.sf(abs(z))),
             "p_one_sided": float(stats.norm.sf(z)),
-            "var_null": 1.0 / (n - 1), "large_sample_ok": bool(n > 10),
-            "n": n, "method": "Z = r_s sqrt(n-1) ~ N(0,1) (Gibbons Ch. 11.3)",
+            "var_null": 1.0 / (n - 1),
+            "large_sample_ok": bool(n > 10),
+            "n": n,
+            "method": "Z = r_s sqrt(n-1) ~ N(0,1) (Gibbons Ch. 11.3)",
         }
     )
 

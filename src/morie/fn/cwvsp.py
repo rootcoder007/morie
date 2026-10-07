@@ -31,10 +31,7 @@ def cwt_spectrum(x, scales=None, wavelet: str = "morlet") -> DescriptiveResult:
     """
     x = np.asarray(x, dtype=float).ravel()
     N = len(x)
-    if scales is None:
-        scales = np.arange(1, min(N // 2, 128) + 1, dtype=float)
-    else:
-        scales = np.asarray(scales, dtype=float)
+    scales = np.arange(1, min(N // 2, 128) + 1, dtype=float) if scales is None else np.asarray(scales, dtype=float)
 
     cwt_matrix = np.zeros((len(scales), N), dtype=complex)
     for i, s in enumerate(scales):

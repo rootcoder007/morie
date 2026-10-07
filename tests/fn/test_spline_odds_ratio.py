@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.spline_odds_ratio import spline_odds_ratio
 
-
 BASIS = [lambda x: x, lambda x: max(x - 1.0, 0.0) ** 3, lambda x: max(x - 2.5, 0.0) ** 3]
 BETAS = [0.4, -0.3, 0.25]
 

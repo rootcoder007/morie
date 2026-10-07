@@ -104,7 +104,7 @@ def matrix_completion_scm(y, D, lam, max_iter=500, tol=1e-10):
     L = np.zeros((N, T))
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         # Fill the treated (missing) cells with the current estimate and
         # keep the observed ones exactly: this is P_O(Y) + P_O^perp(L).
         Z = np.where(obs, Y, L)
@@ -128,14 +128,23 @@ def matrix_completion_scm(y, D, lam, max_iter=500, tol=1e-10):
                 tot += d
     att = tot / n_treated
     eps = 1e-10 * (float(sv[0]) if len(sv) else 1.0)
-    return RichResult(payload={
-        "estimate": att, "att": att, "L": [[float(L[i, t]) for t in range(T)]
-                                           for i in range(N)],
-        "tau": tau, "n_treated": n_treated, "n_observed": n_obs,
-        "rank": int(np.sum(sv > eps)), "nuclear": float(np.sum(sv)),
-        "iterations": it, "converged": 1.0 if converged else 0.0,
-        "N": N, "T": T,
-        "method": "Matrix completion for causal panel data (MC-NNM)"})
+    return RichResult(
+        payload={
+            "estimate": att,
+            "att": att,
+            "L": [[float(L[i, t]) for t in range(T)] for i in range(N)],
+            "tau": tau,
+            "n_treated": n_treated,
+            "n_observed": n_obs,
+            "rank": int(np.sum(sv > eps)),
+            "nuclear": float(np.sum(sv)),
+            "iterations": it,
+            "converged": 1.0 if converged else 0.0,
+            "N": N,
+            "T": T,
+            "method": "Matrix completion for causal panel data (MC-NNM)",
+        }
+    )
 
 
 matrixcompletionscm = matrix_completion_scm

@@ -8,9 +8,7 @@ EQS = {"X": (("u1",), lambda u1: u1), "Y": (("X", "u2"), lambda X, u2: 2 * X + u
 
 
 def test_abdpd_basic():
-    out = abduction_modification_prediction(
-        {"X": 1.0, "Y": 3.0}, EQS, ["u1", "u2"], {"X": 4.0}, "Y"
-    )
+    out = abduction_modification_prediction({"X": 1.0, "Y": 3.0}, EQS, ["u1", "u2"], {"X": 4.0}, "Y")
     assert out["abducted"]["u2"] == pytest.approx(1.0, abs=1e-6)
     assert out["factual"] == pytest.approx(3.0, abs=1e-6)
     assert out["counterfactual"] == pytest.approx(9.0, abs=1e-6)

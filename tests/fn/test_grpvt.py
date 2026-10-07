@@ -1,7 +1,6 @@
 """Tests for grpvt.geron_pyramid_vit_stage."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grpvt import geron_pyramid_vit_stage
 
 
@@ -29,8 +28,8 @@ def test_grpvt_basic():
 def test_grpvt_edge():
     """Test edge case R=1 (plain self-attention, no reduction)."""
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    result = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=1)
+    I_ = [[1.0]]
+    result = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=1)
     assert isinstance(result, dict)
     assert result["reduced_tokens"] == 4
 
@@ -47,7 +46,7 @@ import morie.fn.grpvt as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

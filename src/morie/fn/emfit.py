@@ -18,8 +18,7 @@ def _pdf_rows(X, mean, cov):
     ``pdf(x, mean, cov)`` evaluates a single point, so the rows are walked
     here rather than handed the whole matrix.
     """
-    return np.array([multivariate_normal.pdf(X[i], mean, cov)
-                     for i in range(len(X))])
+    return np.array([multivariate_normal.pdf(X[i], mean, cov) for i in range(len(X))])
 
 
 def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=False):
@@ -85,8 +84,7 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
     for it in range(max_iter):
         # E-step: compute responsibilities
         for k in range(n_components):
-            resp[:, k] = weights[k] * _pdf_rows(X, means[k],
-                                                covars[k] + 1e-6 * np.eye(d))
+            resp[:, k] = weights[k] * _pdf_rows(X, means[k], covars[k] + 1e-6 * np.eye(d))
         resp = resp / (resp.sum(axis=1, keepdims=True) + 1e-10)
 
         # M-step: update parameters
@@ -122,4 +120,6 @@ def emfit(X, n_components=2, max_iter=100, tol=1e-6, seed=None, full_output=Fals
 
 
 def cheatsheet() -> str:
-    return "emfit: emfit(X, n_components, max_iter, tol, seed, full_output) -> EM algorithm for Gaussian mixture models."
+    return (
+        "emfit: emfit(X, n_components, max_iter, tol, seed, full_output) -> EM algorithm for Gaussian mixture models."
+    )

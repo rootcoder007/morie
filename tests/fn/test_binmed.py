@@ -1,8 +1,8 @@
 """Tests for binmed.binary_outcome_mediation (Tchetgen Tchetgen 2013)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.binmed import binary_outcome_mediation
 
 
@@ -84,5 +84,6 @@ def test_validates_inputs():
     with pytest.raises(ValueError, match="at least 2 units per exposure arm"):
         binary_outcome_mediation(np.zeros_like(x), m, y)
     with pytest.raises(ValueError, match="must be finite"):
-        bad = m.copy(); bad[0] = np.nan
+        bad = m.copy()
+        bad[0] = np.nan
         binary_outcome_mediation(x, bad, y)

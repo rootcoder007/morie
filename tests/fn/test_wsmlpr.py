@@ -1,7 +1,6 @@
 """Tests for wsmlpr.wasserman_local_polynomial."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmlpr import wasserman_local_polynomial
 
 

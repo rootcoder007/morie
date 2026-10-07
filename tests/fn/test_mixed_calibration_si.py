@@ -1,7 +1,5 @@
 """Tests for mixed_calibration_si.mixed_calibration_si."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mixed_calibration_si import (
     mixed_calibration_si,
 )

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ostatjall', 'gibbons_joint_all_order']
+__all__ = ["ostatjall", "gibbons_joint_all_order"]
 
 
 def ostatjall(x, pdf):

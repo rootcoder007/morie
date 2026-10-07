@@ -1,7 +1,6 @@
 """Tests for morie.fn.tmplb — template library matching."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmplb import template_library, tmplb
 
 
@@ -15,7 +14,7 @@ def test_exact_match():
 
 
 def test_euclidean_method():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     template = np.ones(10)
     signal = np.concatenate([np.zeros(10), np.ones(10), np.zeros(10)])
     result = template_library([template], signal, method="euclidean")
@@ -23,7 +22,7 @@ def test_euclidean_method():
 
 
 def test_multiple_templates():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     t1 = np.ones(10)
     t2 = np.sin(np.linspace(0, 2 * np.pi, 10))
     signal = np.concatenate([np.zeros(5), np.ones(10), np.zeros(5)])

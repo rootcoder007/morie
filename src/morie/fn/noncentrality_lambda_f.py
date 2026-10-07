@@ -28,17 +28,16 @@ def noncentrality_lambda_f(f, n_total):
     """
     value = _ca_crim.noncentrality_lambda_f(f, n_total)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.5)"
     return RichResult(
-        title='Noncentrality lambda = n f^2 for the F distribution',
+        title="Noncentrality lambda = n f^2 for the F distribution",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca8e5: lambda = n f^2 [Weisburd et al. 2022, eq. 8.5]'
+    return "ca8e5: lambda = n f^2 [Weisburd et al. 2022, eq. 8.5]"

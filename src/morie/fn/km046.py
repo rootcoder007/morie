@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 3.5: the sentiment PREFIX prompt template."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_prefix_prompt_template"]
@@ -24,8 +23,7 @@ def _fill_template(template, x, z):
     if z is None:
         return out, False
     if not isinstance(z, str):
-        raise ValueError("z must be a string, or None to leave the "
-                         "answer slot open.")
+        raise ValueError("z must be a string, or None to leave the answer slot open.")
     if "[z]" not in template:
         raise ValueError("the template has no [z] answer slot to fill.")
     return out.replace("[z]", z), True
@@ -33,10 +31,17 @@ def _fill_template(template, x, z):
 
 def _result(prompt, filled, eq, template):
     tokens = prompt.split()
-    return RichResult(payload={
-        "prompt": prompt, "slot_filled": filled, "template": template,
-        "tokens": tokens, "estimate": float(len(tokens)), "n": len(tokens),
-        "method": f"prompt template (Kamath Eq {eq})"})
+    return RichResult(
+        payload={
+            "prompt": prompt,
+            "slot_filled": filled,
+            "template": template,
+            "tokens": tokens,
+            "estimate": float(len(tokens)),
+            "n": len(tokens),
+            "method": f"prompt template (Kamath Eq {eq})",
+        }
+    )
 
 
 def kamath_ch3_prefix_prompt_template(x, z=None, template=TEMPLATE):

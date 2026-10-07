@@ -100,14 +100,14 @@ def pm_gemm_rr(
     Urban Toronto ~9 µg/m³ annual mean vs TMREL 2.4:
 
     >>> r = pm_gemm_rr(9.0)
-    >>> round(r.value, 3)   # ncd_lri at low exposure
-    1.035
+    >>> round(r.value, 3)   # ncd_lri: exp(0.143 * ln(1 + 6.6/1.6) / (1 + exp(-(6.6 - 15.5)/36.8)))
+    1.108
 
     A high-pollution city at 100 µg/m³ (e.g., Delhi):
 
     >>> r = pm_gemm_rr(100.0, outcome="ncd_lri")
     >>> round(r.value, 2)   # GEMM saturates well below the linear extrapolation
-    1.38
+    1.7
 
     References
     ----------

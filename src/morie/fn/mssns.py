@@ -47,7 +47,7 @@ def missing_sensitivity_analysis(D, pcts=None, n_trials=5, seed=42):
                 D_miss[i, j] = np.nan
                 D_miss[j, i] = np.nan
 
-            W = (~np.isnan(D_miss)).astype(float)
+            (~np.isnan(D_miss)).astype(float)
             D_imp = D_miss.copy()
             D_imp[np.isnan(D_imp)] = np.nanmean(D_miss)
 

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['wwexact', 'gibbons_ww_two_samp_runs']
+__all__ = ["wwexact", "gibbons_ww_two_samp_runs"]
 
 
 def wwexact(x, y, tail="left"):
@@ -59,10 +59,7 @@ def wwexact(x, y, tail="left"):
             p = 2.0 * math.comb(m - 1, k - 1) * math.comb(n - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                math.comb(m - 1, k - 1) * math.comb(n - 1, k)
-                + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
-            )
+            p = math.comb(m - 1, k - 1) * math.comb(n - 1, k) + math.comb(m - 1, k) * math.comb(n - 1, k - 1)
         pmf.append(p / den)
     left = sum(pmf[i] for i, s in enumerate(support) if s <= r)
     right = sum(pmf[i] for i, s in enumerate(support) if s >= r)

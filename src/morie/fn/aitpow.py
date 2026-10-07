@@ -43,12 +43,18 @@ def powering(a, x, total=1.0):
     if any(v <= 0 for v in x):
         raise ValueError("compositions must be strictly positive")
     a = float(a)
-    p = [v ** a for v in x]
+    p = [v**a for v in x]
     s = sum(p)
     k = float(total)
-    return RichResult(payload={
-        "composition": [k * v / s for v in p], "a": a, "total": k,
-        "D": len(x), "method": "Powering on the simplex"})
+    return RichResult(
+        payload={
+            "composition": [k * v / s for v in p],
+            "a": a,
+            "total": k,
+            "D": len(x),
+            "method": "Powering on the simplex",
+        }
+    )
 
 
 aitchison_powering = powering

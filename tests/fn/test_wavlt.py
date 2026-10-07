@@ -1,7 +1,6 @@
 """Tests for morie.fn.wavlt — wavelet decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wavlt import wavelet_decompose
 
 

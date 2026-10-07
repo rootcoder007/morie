@@ -30,23 +30,26 @@ def kamath_factscore(atomic_claims, knowledge_base):
     """
     claims = list(atomic_claims)
     if len(claims) == 0:
-        raise ValueError("the generation was decomposed into no atomic "
-                         "claims; FactScore is 0/0 there.")
+        raise ValueError("the generation was decomposed into no atomic claims; FactScore is 0/0 there.")
     if callable(knowledge_base):
         flags = [1 if bool(knowledge_base(c)) else 0 for c in claims]
     else:
         try:
             flags = [1 if c in knowledge_base else 0 for c in claims]
         except TypeError:
-            raise ValueError("knowledge_base must support `in` or be a "
-                             "callable predicate.") from None
+            raise ValueError("knowledge_base must support `in` or be a callable predicate.") from None
     base = kamath_ch7_faithfulness_metric(flags)
-    return RichResult(payload={
-        "estimate": base["estimate"], "score": base["estimate"],
-        "supported": [c for c, f in zip(claims, flags) if f],
-        "unsupported": [c for c, f in zip(claims, flags) if not f],
-        "n_supported": base["n_supported"], "n": len(claims),
-        "method": "FactScore (Kamath Ch 6; the ratio core in km111)"})
+    return RichResult(
+        payload={
+            "estimate": base["estimate"],
+            "score": base["estimate"],
+            "supported": [c for c, f in zip(claims, flags) if f],
+            "unsupported": [c for c, f in zip(claims, flags) if not f],
+            "n_supported": base["n_supported"],
+            "n": len(claims),
+            "method": "FactScore (Kamath Ch 6; the ratio core in km111)",
+        }
+    )
 
 
 def cheatsheet():

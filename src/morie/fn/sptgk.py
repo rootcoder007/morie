@@ -6,8 +6,7 @@ from ._richresult import RichResult
 from ._rng import normal_quantile
 from ._schab_krig import ordinary_kriging
 
-__all__ = ["schabenberger_trans_gaussian_kriging", "normal_scores",
-           "anamorphosis"]
+__all__ = ["schabenberger_trans_gaussian_kriging", "normal_scores", "anamorphosis"]
 
 
 def normal_scores(z):
@@ -42,8 +41,7 @@ def anamorphosis(z, y_new):
     return np.interp(y_new, scores, z)
 
 
-def schabenberger_trans_gaussian_kriging(coords, z, target, phi, dphi, d2phi,
-                                         semivariogram_fn):
+def schabenberger_trans_gaussian_kriging(coords, z, target, phi, dphi, d2phi, semivariogram_fn):
     """Trans-Gaussian kriging, Sec. 5.6.2.
 
     With Z(s) = phi(Y(s)) and Y Gaussian, the natural predictor
@@ -94,15 +92,22 @@ def schabenberger_trans_gaussian_kriging(coords, z, target, phi, dphi, d2phi,
     mspe = float(dphi(mu_y)) ** 2 * var_ok
     return RichResult(
         title="Trans-Gaussian kriging",
-        summary_lines=[("prediction", naive + correction),
-                       ("uncorrected phi(p_ok)", naive),
-                       ("bias correction", correction),
-                       ("MSPE", mspe)],
-        payload={"prediction": float(naive + correction),
-                 "naive_prediction": naive, "correction": float(correction),
-                 "mspe": mspe, "kriging_variance": float(var_ok),
-                 "lagrange": float(m), "mu_y": mu_y,
-                 "method": "trans-Gaussian (ordinary) kriging"},
+        summary_lines=[
+            ("prediction", naive + correction),
+            ("uncorrected phi(p_ok)", naive),
+            ("bias correction", correction),
+            ("MSPE", mspe),
+        ],
+        payload={
+            "prediction": float(naive + correction),
+            "naive_prediction": naive,
+            "correction": float(correction),
+            "mspe": mspe,
+            "kriging_variance": float(var_ok),
+            "lagrange": float(m),
+            "mu_y": mu_y,
+            "method": "trans-Gaussian (ordinary) kriging",
+        },
     )
 
 

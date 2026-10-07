@@ -45,7 +45,7 @@ def event_align(signal, events, window: int = 100, **kwargs) -> DescriptiveResul
     template = np.mean(padded, axis=0)
     shifts = []
     aligned = []
-    for i, ev in enumerate(events):
+    for _i, ev in enumerate(events):
         lo = max(0, ev - window)
         hi = min(len(signal), ev + window)
         seg = signal[lo:hi]

@@ -69,8 +69,7 @@ def ot_domain_adaptation(Xs, Xt, epsilon, n_iter=1000):
     if epsilon <= 0.0:
         raise ValueError("epsilon must be positive")
 
-    C = [[sum((Xs[i][k] - Xt[j][k]) ** 2 for k in range(d))
-          for j in range(nt)] for i in range(ns)]
+    C = [[sum((Xs[i][k] - Xt[j][k]) ** 2 for k in range(d)) for j in range(nt)] for i in range(ns)]
     K = [[math.exp(-C[i][j] / epsilon) for j in range(nt)] for i in range(ns)]
     a = 1.0 / ns
     b = 1.0 / nt
@@ -96,15 +95,13 @@ def ot_domain_adaptation(Xs, Xt, epsilon, n_iter=1000):
     for i in range(ns):
         if rows[i] <= 0.0:
             raise ValueError("a source point received no transported mass")
-        adapted.append([sum(gamma[i][j] * Xt[j][k] for j in range(nt))
-                        / rows[i] for k in range(d)])
+        adapted.append([sum(gamma[i][j] * Xt[j][k] for j in range(nt)) / rows[i] for k in range(d)])
     return RichResult(
         payload={
             "Xs_adapted": adapted,
             "gamma": gamma,
             "cost": C,
-            "transport_cost": sum(gamma[i][j] * C[i][j]
-                                  for i in range(ns) for j in range(nt)),
+            "transport_cost": sum(gamma[i][j] * C[i][j] for i in range(ns) for j in range(nt)),
             "row_error": max(abs(rows[i] - a) for i in range(ns)),
             "col_error": max(abs(cols[j] - b) for j in range(nt)),
             "ns": ns,
@@ -112,8 +109,7 @@ def ot_domain_adaptation(Xs, Xt, epsilon, n_iter=1000):
             "d": d,
             "epsilon": epsilon,
             "n_iter": int(n_iter),
-            "method": "entropic OT domain adaptation, Courty et al (2017) "
-                      "eq. (9) and (14)",
+            "method": "entropic OT domain adaptation, Courty et al (2017) eq. (9) and (14)",
         }
     )
 

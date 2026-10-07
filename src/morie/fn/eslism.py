@@ -60,19 +60,19 @@ def esl_isomap(X, k=2, neighbors=5):
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> t = rng.uniform(1.5 * np.pi, 4.5 * np.pi, 400)
-    >>> h = rng.uniform(0, 10, 400)
+    >>> t = rng.uniform(1.5 * np.pi, 3 * np.pi, 200)
+    >>> h = rng.uniform(0, 10, 200)
     >>> X = np.column_stack([t * np.cos(t), h, t * np.sin(t)])
-    >>> emb = esl_isomap(X, k=2, neighbors=8)["embedding"]
-    >>> bool(abs(np.corrcoef(emb[:, 0], t)[0, 1]) > 0.9)
+    >>> r = esl_isomap(X, k=2, neighbors=8)
+    >>> s = 0.5 * (t * np.sqrt(1 + t ** 2) + np.arcsinh(t))   # arc length of the spiral r = t
+    >>> bool(abs(np.corrcoef(r["embedding"][:, 0], s)[0, 1]) > 0.99)
     True
 
     Geodesic distance exceeds straight-line distance, because a path along
     the surface can never be shorter than the chord.
 
-    >>> r = esl_isomap(X, k=2, neighbors=8)
-    >>> D = np.sqrt(((X[:, None] - X[None]) ** 2).sum(-1))
-    >>> bool(np.all(r["geodesic"] >= D - 1e-9))
+    >>> all(bool(np.all(r["geodesic"][i] >= np.sqrt(((X - X[i]) ** 2).sum(axis=1)) - 1e-9))
+    ...     for i in range(len(X)))
     True
 
     Too few neighbours disconnects the graph, and that is raised rather
@@ -95,19 +95,18 @@ def esl_isomap(X, k=2, neighbors=5):
     D = np.sqrt(np.maximum(((X[:, None] - X[None, :]) ** 2).sum(-1), 0.0))
     G = np.full((n, n), np.inf)
     np.fill_diagonal(G, 0.0)
-    idx = np.argsort(D, axis=1)[:, 1: neighbors + 1]
+    idx = np.argsort(D, axis=1)[:, 1 : neighbors + 1]
     for i in range(n):
         G[i, idx[i]] = D[i, idx[i]]
-    G = np.minimum(G, G.T)                       # symmetrise the graph
+    G = np.minimum(G, G.T)  # symmetrise the graph
 
-    for m in range(n):                           # Floyd-Warshall
+    for m in range(n):  # Floyd-Warshall
         G = np.minimum(G, G[:, m][:, None] + G[m][None, :])
 
     if not np.all(np.isfinite(G)):
         n_comp = _count_components(np.isfinite(G))
         raise ValueError(
-            f"the {neighbors}-nearest-neighbour graph has {n_comp} disconnected "
-            "components; raise `neighbors`"
+            f"the {neighbors}-nearest-neighbour graph has {n_comp} disconnected components; raise `neighbors`"
         )
 
     Hc = np.eye(n) - 1.0 / n
@@ -123,11 +122,13 @@ def esl_isomap(X, k=2, neighbors=5):
     rv = float(1 - np.corrcoef(G[iu], Dg[iu])[0, 1] ** 2)
     return RichResult(
         title="Isomap",
-        summary_lines=[("n", n), ("k", k), ("neighbors", neighbors),
-                       ("residual variance", rv)],
+        summary_lines=[("n", n), ("k", k), ("neighbors", neighbors), ("residual variance", rv)],
         payload={
-            "embedding": emb, "eigenvalues": w, "geodesic": G,
-            "residual_variance": rv, "n_components": 1,
+            "embedding": emb,
+            "eigenvalues": w,
+            "geodesic": G,
+            "residual_variance": rv,
+            "n_components": 1,
             "neighbors": neighbors,
             "method": "esl_isomap",
         },

@@ -1,16 +1,18 @@
 """Tests for gb_c2 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb_c2 import gibbons_chi2_yates
 
 
 def test_gb_c2_basic():
     from morie.fn import _stats_core as stats
+
     tbl = [[18, 7], [6, 19]]
     assert gibbons_chi2_yates(tbl)["chi2_corrected"] == pytest.approx(
-        stats.chi2_contingency(tbl, correction=True).statistic, abs=1e-10)
+        stats.chi2_contingency(tbl, correction=True).statistic, abs=1e-10
+    )
 
 
 def test_gb_c2_edge():

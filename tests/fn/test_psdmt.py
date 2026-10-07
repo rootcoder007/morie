@@ -1,8 +1,8 @@
 """Tests for psdmt -- Multitaper PSD."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.psdmt import psdmt
 
@@ -40,9 +40,10 @@ def test_psdmt_is_a_one_sided_density():
     of tapered periodograms, sum lambda_k |X_k|^2 / (fs sum lambda_k),
     recomputed here from the returned tapers' concentrations."""
     from morie.fn._signal_core import dpss
+
     x = np.random.default_rng(1).standard_normal(257)
     r = psdmt(x, fs=100.0, nw=3.0)
-    assert r.value == pytest.approx(float(np.var(x)), rel=0.05)   # 5 tapers: chi2_10 noise
+    assert r.value == pytest.approx(float(np.var(x)), rel=0.05)  # 5 tapers: chi2_10 noise
     T, lam = dpss(257, 3.0, Kmax=5, return_ratios=True)
     lam = [float(v) for v in lam.tolist()]
     raw = [0.0] * 129

@@ -52,9 +52,16 @@ def ma_smd_var_correlated_designs(g, n, rho):
     J = 1.0 - 3.0 / (4.0 * df - 1.0)
     gg = float(g)
     v = J * J * (2.0 * (1.0 - r) / nn + gg * gg / (2.0 * df))
-    return RichResult(payload={
-        "var_g": v, "se": math.sqrt(v), "J": J, "n": nn, "rho": r,
-        "method": "Variance of Hedges' g for a correlated design"})
+    return RichResult(
+        payload={
+            "var_g": v,
+            "se": math.sqrt(v),
+            "J": J,
+            "n": nn,
+            "rho": r,
+            "method": "Variance of Hedges' g for a correlated design",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for grsil.geron_silhouette_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grsil import geron_silhouette_score
 
 

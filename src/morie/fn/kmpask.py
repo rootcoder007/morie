@@ -2,8 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Pass@k for code generation (HumanEval)."""
 
-from math import comb
-
 from ._richresult import RichResult
 
 __all__ = ["kamath_pass_at_k"]
@@ -28,6 +26,7 @@ def kamath_pass_at_k(n, c, k):
     0.0
     >>> kamath_pass_at_k(10, 10, 3)["estimate"]
     1.0
+    >>> from math import comb
     >>> out = kamath_pass_at_k(4, 1, 2)
     >>> abs(out["estimate"] - (1 - comb(3, 2) / comb(4, 2))) < 1e-12
     True
@@ -40,9 +39,7 @@ def kamath_pass_at_k(n, c, k):
     if not 0 <= c <= n:
         raise ValueError(f"c must lie in [0, {n}]; got {c}.")
     if not 1 <= k <= n:
-        raise ValueError(
-            f"k must lie in [1, {n}]; drawing {k} of {n} samples is not "
-            "defined.")
+        raise ValueError(f"k must lie in [1, {n}]; drawing {k} of {n} samples is not defined.")
     if n - c < k:
         value = 1.0
     else:
@@ -51,11 +48,18 @@ def kamath_pass_at_k(n, c, k):
         for i in range(k):
             fail *= (n - c - i) / (n - i)
         value = 1.0 - fail
-    return RichResult(payload={
-        "estimate": value, "pass_at_k": value,
-        "n_samples": n, "n_correct": c, "k": k,
-        "empirical_rate": c / n, "n": n,
-        "method": "pass@k = 1 - C(n-c,k)/C(n,k) (unbiased estimator)"})
+    return RichResult(
+        payload={
+            "estimate": value,
+            "pass_at_k": value,
+            "n_samples": n,
+            "n_correct": c,
+            "k": k,
+            "empirical_rate": c / n,
+            "n": n,
+            "method": "pass@k = 1 - C(n-c,k)/C(n,k) (unbiased estimator)",
+        }
+    )
 
 
 def cheatsheet():

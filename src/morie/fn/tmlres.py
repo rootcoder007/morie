@@ -78,8 +78,10 @@ def tmle_residual(y, D, X):
 
     phi = [[1.0] + list(Xm[i]) + [v * v for v in Xm[i]] for i in range(n)]
     k = len(phi[0])
-    Om = [[sum(phi[i][a] * phi[i][b] for i in range(n)) / n + (1e-8 if a == b else 0.0)
-           for b in range(k)] for a in range(k)]
+    Om = [
+        [sum(phi[i][a] * phi[i][b] for i in range(n)) / n + (1e-8 if a == b else 0.0) for b in range(k)]
+        for a in range(k)
+    ]
     Oi = C.inv(Om)
     a = [(Dv[i] - g[i]) / (g[i] * (1.0 - g[i])) for i in range(n)]
     b = [H[i] * resid[i] for i in range(n)]
@@ -95,14 +97,22 @@ def tmle_residual(y, D, X):
     ic = [base["ic"][i] for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": est, "se": se, "psi1": psi1, "if22": if22,
-        "k_basis": float(k), "n": n,
-        "method": "TMLE with an estimated second-order remainder"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "psi1": psi1,
+            "if22": if22,
+            "k_basis": float(k),
+            "n": n,
+            "method": "TMLE with an estimated second-order remainder",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlres: TMLE with a second-order (residual) bias correction."
+
 
 # public names resolved by fn/_lazy_map.json
 tmleresidual = tmle_residual

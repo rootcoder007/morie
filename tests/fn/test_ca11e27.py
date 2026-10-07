@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca11e27 import ca_chapter_11_equation_27
 
 
@@ -14,7 +13,7 @@ def test_ca11e27_basic():
     result = ca_chapter_11_equation_27(x)
     assert isinstance(result, dict)
     assert "value" in result
-    expected = math.sqrt(x ** 2 / 0.606 ** 2)
+    expected = math.sqrt(x**2 / 0.606**2)
     assert result["value"] == expected
     assert result["method"] == "Weisburd et al. (2022) eq. (11.27)"
 
@@ -25,5 +24,5 @@ def test_ca11e27_edge():
     result = ca_chapter_11_equation_27(x)
     assert isinstance(result, dict)
     assert "value" in result
-    expected = math.sqrt(x ** 2 / 0.606 ** 2)
+    expected = math.sqrt(x**2 / 0.606**2)
     assert result["value"] == expected

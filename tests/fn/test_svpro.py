@@ -1,7 +1,6 @@
 """Tests for morie.fn.svpro."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svpro import svpro
 
 

@@ -27,7 +27,9 @@ def test_svdpp_basic():
     assert st["q_i"] == pytest.approx([q[t] + g * (e * eff[t] - lam * q[t]) for t in range(2)], abs=1e-15)
     assert st["p_u"] == pytest.approx([p[t] + g * (e * q[t] - lam * p[t]) for t in range(2)], abs=1e-15)
     for j in N:
-        assert st["y"][j] == pytest.approx([y[j][t] + g * (e * q[t] / math.sqrt(2) - lam * y[j][t]) for t in range(2)], abs=1e-15)
+        assert st["y"][j] == pytest.approx(
+            [y[j][t] + g * (e * q[t] / math.sqrt(2) - lam * y[j][t]) for t in range(2)], abs=1e-15
+        )
     assert set(st["y"]) == set(N)
 
 

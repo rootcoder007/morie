@@ -1,8 +1,6 @@
 """Tests for blups.blup_random_slope."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.blups import blup_random_slope
 
 
@@ -58,7 +56,7 @@ def test_blups_basic():
     # Convert inputs to plain Python lists for the arithmetic
     y_list = y.tolist() if hasattr(y, "tolist") else list(y)
     Z_list = Z.tolist() if hasattr(Z, "tolist") else list(Z)
-    X_list = X.tolist() if hasattr(X, "tolist") else list(X)
+    X.tolist() if hasattr(X, "tolist") else list(X)
     D_list = D.tolist() if hasattr(D, "tolist") else list(D)
 
     # residual r = y - X beta (here beta = 0, so r = y)
@@ -66,7 +64,7 @@ def test_blups_basic():
 
     def _matmul(A, B):
         rows_A, cols_A = len(A), len(A[0])
-        rows_B, cols_B = len(B), len(B[0])
+        _rows_B, cols_B = len(B), len(B[0])
         out = [[0.0] * cols_B for _ in range(rows_A)]
         for i in range(rows_A):
             for k in range(cols_A):
@@ -78,8 +76,7 @@ def test_blups_basic():
     def _matinv(M):
         n = len(M)
         # build augmented matrix [M | I]
-        aug = [M[i][:] + [1.0 if i == j else 0.0 for j in range(n)]
-               for i in range(n)]
+        aug = [M[i][:] + [1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
         # Gauss-Jordan elimination
         for i in range(n):
             # find pivot
@@ -99,12 +96,10 @@ def test_blups_basic():
         Zj = [Z_list[i] for i in idx]
         rj = [r_list[i] for i in idx]
         # Zj D Zj' is (m x m), add s2e I
-        ZD = _matmul(Zj, D_list)            # (m x q)
-        ZDZt = _matmul(ZD, [[Zj[r][c] for r in range(len(Zj))]
-                            for c in range(len(Zj[0]))])  # (m x m)
+        ZD = _matmul(Zj, D_list)  # (m x q)
+        ZDZt = _matmul(ZD, [[Zj[r][c] for r in range(len(Zj))] for c in range(len(Zj[0]))])  # (m x m)
         m = len(idx)
-        M = [[ZDZt[a][b] + (sigma2_e if a == b else 0.0)
-              for b in range(m)] for a in range(m)]
+        M = [[ZDZt[a][b] + (sigma2_e if a == b else 0.0) for b in range(m)] for a in range(m)]
         Minv = _matinv(M)
         # w = M^{-1} r_j
         w = [sum(Minv[a][b] * rj[b] for b in range(m)) for a in range(m)]

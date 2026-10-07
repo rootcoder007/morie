@@ -1,7 +1,6 @@
 """Tests for gb46le.gibbons_lilliefors_exp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb46le import gibbons_lilliefors_exp
 
 

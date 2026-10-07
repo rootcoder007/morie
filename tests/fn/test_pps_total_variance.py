@@ -24,6 +24,6 @@ def test_pps_total_variance_is_zero_when_every_ratio_hits_the_estimate():
 
 def test_pps_total_variance_rejects_bad_input():
     with pytest.raises(ValueError):
-        pps_total_variance([2.0], [0.2], 10.0)              # n < 2
+        pps_total_variance([2.0], [0.2], 10.0)  # n < 2
     with pytest.raises(ValueError):
-        pps_total_variance([2.0, 4.0], [0.0, 0.4], 10.0)    # zero probability
+        pps_total_variance([2.0, 4.0], [0.0, 0.4], 10.0)  # zero probability

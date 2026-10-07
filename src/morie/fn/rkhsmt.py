@@ -88,8 +88,8 @@ def _kron(A, B):
     for i in range(ra):
         for j in range(ca):
             for k in range(rb):
-                for l in range(cb):
-                    out[i * rb + k][j * cb + l] = A[i][j] * B[k][l]
+                for ell in range(cb):
+                    out[i * rb + k][j * cb + ell] = A[i][j] * B[k][ell]
     return out
 
 
@@ -102,8 +102,7 @@ def _unvec(v, nr, nc):
     return [[v[j * nr + i] for j in range(nc)] for i in range(nr)]
 
 
-def rkhs_multitrait(Y, K, n_iter=200, X=None, Z1=None, v_T=None, S_T=None,
-                    v_R=None, S_R=None, tol=1e-12):
+def rkhs_multitrait(Y, K, n_iter=200, X=None, Z1=None, v_T=None, S_T=None, v_R=None, S_R=None, tol=1e-12):
     """Multi-trait kernel BLUP of eq. (6.9) with G replaced by the kernel K.
 
     Parameters
@@ -175,10 +174,8 @@ def rkhs_multitrait(Y, K, n_iter=200, X=None, Z1=None, v_T=None, S_T=None,
     vR = float(nT + 2) if v_R is None else float(v_R)
     if vT <= nT + 1 or vR <= nT + 1:
         raise ValueError("rkhs_multitrait: the degrees of freedom must exceed n_T + 1")
-    ST = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)] \
-        if S_T is None else core.mat(S_T)
-    SR = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)] \
-        if S_R is None else core.mat(S_R)
+    ST = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)] if S_T is None else core.mat(S_T)
+    SR = [[1.0 if i == j else 0.0 for j in range(nT)] for i in range(nT)] if S_R is None else core.mat(S_R)
     it = int(n_iter)
     if it < 1:
         raise ValueError("rkhs_multitrait: n_iter must be at least 1")
@@ -239,14 +236,12 @@ def rkhs_multitrait(Y, K, n_iter=200, X=None, Z1=None, v_T=None, S_T=None,
         b1 = _unvec(g, J, nT)
         # step 4: Sigma_T at E[IW] = S/(v - n_T - 1)
         Kb = [[sum(Kinv[i][k] * b1[k][t] for k in range(J)) for t in range(nT)] for i in range(J)]
-        SS = [[sum(b1[i][s] * Kb[i][t] for i in range(J)) + ST[s][t] for t in range(nT)]
-              for s in range(nT)]
+        SS = [[sum(b1[i][s] * Kb[i][t] for i in range(J)) + ST[s][t] for t in range(nT)] for s in range(nT)]
         den = vT + J - nT - 1.0
         SigT = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         # step 5: R at the same mean, with S_R and not the book's misprinted S_T
         E = _resid()
-        SS = [[sum(E[i][s] * E[i][t] for i in range(J)) + SR[s][t] for t in range(nT)]
-              for s in range(nT)]
+        SS = [[sum(E[i][s] * E[i][t] for i in range(J)) + SR[s][t] for t in range(nT)] for s in range(nT)]
         den = vR + J - nT - 1.0
         Rm = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         d = 0.0
@@ -273,7 +268,7 @@ def rkhs_multitrait(Y, K, n_iter=200, X=None, Z1=None, v_T=None, S_T=None,
             "beta": beta,
             "n": J,
             "method": "Chapter 6 eq. (6.9) with G replaced by the kernel K per Sect. 8.9, "
-                      "every Gibbs step taken at its conditional mean",
+            "every Gibbs step taken at its conditional mean",
         },
     )
 

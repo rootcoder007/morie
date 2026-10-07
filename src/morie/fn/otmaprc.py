@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Brenier optimal transport map in one dimension."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['brenier1d', 'ot_map_recovery_brenier']
+__all__ = ["brenier1d", "ot_map_recovery_brenier"]
 
 
 def brenier1d(x, y, p=2.0):
@@ -38,7 +36,8 @@ def brenier1d(x, y, p=2.0):
     Mathematics 44:375-417.  Not held locally; the one-dimensional
     monotone-rearrangement solution is the standard published result.
     """
-    x = C.vec(x); y = C.vec(y)
+    x = C.vec(x)
+    y = C.vec(y)
     n = len(x)
     if len(y) != n:
         raise ValueError("x and y must have the same length")
@@ -48,9 +47,16 @@ def brenier1d(x, y, p=2.0):
     for k in range(n):
         mp[ox[k]] = y[oy[k]]
     cost = sum(abs(x[i] - mp[i]) ** float(p) for i in range(n)) / n
-    return RichResult(payload={
-        "map": mp, "cost": cost, "order_x": ox, "order_y": oy, "n": n,
-        "method": "Brenier map in one dimension (monotone rearrangement)"})
+    return RichResult(
+        payload={
+            "map": mp,
+            "cost": cost,
+            "order_x": ox,
+            "order_y": oy,
+            "n": n,
+            "method": "Brenier map in one dimension (monotone rearrangement)",
+        }
+    )
 
 
 ot_map_recovery_brenier = brenier1d

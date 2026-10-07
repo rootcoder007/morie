@@ -132,7 +132,7 @@ def panel_binary_choice(y, X, group, model="fe_logit", n_quad=30):
         for c in range(a, p):
             ha, hc = 1e-4 * max(1.0, abs(th[a])), 1e-4 * max(1.0, abs(th[c]))
 
-            def f(da, dc):
+            def f(da, dc, *, a=a, c=c):
                 t = list(th)
                 t[a] += da
                 t[c] += dc

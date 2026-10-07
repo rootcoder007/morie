@@ -1,4 +1,5 @@
 """Tests for Ghosal Ch 13 survival modules."""
+
 import math
 
 from morie.fn.gh_c13_1 import ghosal_surv_dp_post
@@ -61,8 +62,7 @@ def test_ntr_cdf_valid():
 def test_ntr_laplace_exact():
     # single atom: exp(-m (1 - e^{-f}))
     r = ghosal_ntr_levy([1.0], [2.0])
-    assert abs(r["estimate"]
-               - math.exp(-2.0 * (1.0 - math.exp(-1.0)))) < 1e-12
+    assert abs(r["estimate"] - math.exp(-2.0 * (1.0 - math.exp(-1.0)))) < 1e-12
 
 
 def test_ntr_consistency_improves():

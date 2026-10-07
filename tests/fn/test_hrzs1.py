@@ -1,7 +1,6 @@
 """Tests for hrzs1.horowitz_sample_selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzs1 import horowitz_sample_selection
 
 

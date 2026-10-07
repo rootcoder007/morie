@@ -1,7 +1,6 @@
 """Tests for flmgcr.flamingo_gated_cross."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.flmgcr import flamingo_gated_cross
 
 

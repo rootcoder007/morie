@@ -75,12 +75,18 @@ def wasserman_minimax(loss, estimator, family):
     maximin = float(np.max(best))
     if maximin > minimax + 1e-12:
         raise RuntimeError("weak duality violated — impossible; numerical fault.")
-    return RichResult(payload={
-        "estimate": minimax, "minimax_estimator": est[i_star],
-        "worst_case": [float(v) for v in worst], "maximin": maximin,
-        "has_pure_saddle": bool(abs(maximin - minimax) < 1e-12),
-        "m": int(m), "k": int(k),
-        "method": "exact min over rows of max over columns; maximin duality check"})
+    return RichResult(
+        payload={
+            "estimate": minimax,
+            "minimax_estimator": est[i_star],
+            "worst_case": [float(v) for v in worst],
+            "maximin": maximin,
+            "has_pure_saddle": bool(abs(maximin - minimax) < 1e-12),
+            "m": int(m),
+            "k": int(k),
+            "method": "exact min over rows of max over columns; maximin duality check",
+        }
+    )
 
 
 def cheatsheet():

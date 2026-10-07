@@ -1,8 +1,8 @@
 """mdrnk: midranks with tie correction (Gibbons & Chakraborti 5e, Ch 5.6.2)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mdrnk import midranks as mr
 
 

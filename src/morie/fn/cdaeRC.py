@@ -68,11 +68,9 @@ Table 1; implemented in :mod:`bprMF`.
 import math
 
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["corrupt", "encode", "decode", "loss", "fit_cdae",
-           "recommend"]
+__all__ = ["corrupt", "encode", "decode", "loss", "fit_cdae", "recommend"]
 
 _EPS = 1e-12
 _LOSSES = ("square", "log", "hinge", "cross_entropy")
@@ -86,8 +84,7 @@ def _act(name, x):
         return x
     if name == "tanh":
         return math.tanh(x)
-    raise ValueError("cdaeRC: activation must be one of %s, got %r"
-                     % (", ".join(_ACTS), name))
+    raise ValueError("cdaeRC: activation must be one of {}, got {!r}".format(", ".join(_ACTS), name))
 
 
 def _dact(name, y):
@@ -107,10 +104,9 @@ def corrupt(y, q, rng):
     """
     qq = float(q)
     if not 0.0 <= qq < 1.0:
-        raise ValueError("cdaeRC: q must lie in [0,1), got %r" % (q,))
+        raise ValueError(f"cdaeRC: q must lie in [0,1), got {q!r}")
     d = 1.0 / (1.0 - qq)
-    return [0.0 if float(rng.uniform()) < qq else d * float(v)
-            for v in y]
+    return [0.0 if float(rng.uniform()) < qq else d * float(v) for v in y]
 
 
 def encode(y_tilde, W, V_u, b, activation="sigmoid"):
@@ -129,10 +125,7 @@ def encode(y_tilde, W, V_u, b, activation="sigmoid"):
 def decode(z, Wp, bp, items=None, activation="sigmoid"):
     r"""Eq. (11): :math:`\hat y_{ui} = f(W_i'^\top z_u + b_i')`."""
     idx = range(len(bp)) if items is None else list(items)
-    return {i: _act(activation,
-                    bp[i] + sum(Wp[i][f] * z[f]
-                                for f in range(len(z))))
-            for i in idx}
+    return {i: _act(activation, bp[i] + sum(Wp[i][f] * z[f] for f in range(len(z)))) for i in idx}
 
 
 def loss(y, y_hat, kind="square"):
@@ -142,17 +135,14 @@ def loss(y, y_hat, kind="square"):
     passing :math:`0` is rejected rather than silently mis-scored.
     """
     if kind not in _LOSSES:
-        raise ValueError("cdaeRC: loss must be one of %s, got %r"
-                         % (", ".join(_LOSSES), kind))
+        raise ValueError("cdaeRC: loss must be one of {}, got {!r}".format(", ".join(_LOSSES), kind))
     yv, yh = float(y), float(y_hat)
     if kind in ("log", "hinge") and yv == 0.0:
-        raise ValueError("cdaeRC: the %s loss needs y = -1 for "
-                         "negatives, not 0" % kind)
+        raise ValueError(f"cdaeRC: the {kind} loss needs y = -1 for negatives, not 0")
     if kind == "square":
         return 0.5 * (yv - yh) ** 2
     if kind == "log":
-        return math.log(1.0 + math.exp(-yv * yh)) \
-            if -yv * yh < 700 else -yv * yh
+        return math.log(1.0 + math.exp(-yv * yh)) if -yv * yh < 700 else -yv * yh
     if kind == "hinge":
         return max(0.0, 1.0 - yv * yh)
     p = 1.0 / (1.0 + math.exp(-yh)) if yh >= -700 else 0.0
@@ -160,44 +150,54 @@ def loss(y, y_hat, kind="square"):
     return -yv * math.log(p) - (1.0 - yv) * math.log(1.0 - p)
 
 
-def fit_cdae(pos, n_users, n_items, k_dim=8, q=0.2, alpha=0.05,
-             lam=0.01, iters=30, n_neg=5, seed=0,
-             activation="sigmoid", init_scale=0.1):
+def fit_cdae(
+    pos,
+    n_users,
+    n_items,
+    k_dim=8,
+    q=0.2,
+    alpha=0.05,
+    lam=0.01,
+    iters=30,
+    n_neg=5,
+    seed=0,
+    activation="sigmoid",
+    init_scale=0.1,
+):
     r"""Algorithm 1: SGD with mask-out corruption and negative
     sampling.
 
     The squared :math:`L_2` penalty of eq. (13) is applied to every
     parameter block.
     """
-    U, I, K = int(n_users), int(n_items), int(k_dim)
-    if U < 1 or I < 2 or K < 1:
-        raise ValueError("cdaeRC: need at least 1 user, 2 items and 1 "
-                         "hidden node")
+    U, I_, K = int(n_users), int(n_items), int(k_dim)
+    if U < 1 or I_ < 2 or K < 1:
+        raise ValueError("cdaeRC: need at least 1 user, 2 items and 1 hidden node")
     rng = np.random.default_rng(seed)
 
     def rand():
         return (float(rng.uniform()) - 0.5) * 2.0 * init_scale
 
-    W = [[rand() for _ in range(K)] for _ in range(I)]
-    Wp = [[rand() for _ in range(K)] for _ in range(I)]
+    W = [[rand() for _ in range(K)] for _ in range(I_)]
+    Wp = [[rand() for _ in range(K)] for _ in range(I_)]
     V = [[rand() for _ in range(K)] for _ in range(U)]
     b = [0.0] * K
-    bp = [0.0] * I
+    bp = [0.0] * I_
     a, lm = float(alpha), float(lam)
     hist = []
-    for it in range(int(iters)):
+    for _it in range(int(iters)):
         tot = 0.0
         for u in range(U):
             seen = sorted(set(int(v) for v in pos.get(u, [])))
             if not seen:
                 continue
-            y = [1.0 if i in set(seen) else 0.0 for i in range(I)]
+            y = [1.0 if i in set(seen) else 0.0 for i in range(I_)]
             yt = corrupt(y, q, rng)
             z = encode(yt, W, V[u], b, activation)
             neg = []
             guard = 0
             while len(neg) < int(n_neg) and guard < 100 * int(n_neg):
-                j = int(float(rng.uniform()) * I) % I
+                j = int(float(rng.uniform()) * I_) % I_
                 if j not in set(seen):
                     neg.append(j)
                 guard += 1
@@ -213,53 +213,61 @@ def fit_cdae(pos, n_users, n_items, k_dim=8, q=0.2, alpha=0.05,
                     Wp[i][f] -= a * (e * z[f] + lm * Wp[i][f])
                 bp[i] -= a * e
             dpre = [dz[f] * _dact(activation, z[f]) for f in range(K)]
-            for i in range(I):
+            for i in range(I_):
                 if yt[i] != 0.0:
                     for f in range(K):
-                        W[i][f] -= a * (dpre[f] * yt[i]
-                                        + lm * W[i][f])
+                        W[i][f] -= a * (dpre[f] * yt[i] + lm * W[i][f])
             for f in range(K):
                 V[u][f] -= a * (dpre[f] + lm * V[u][f])
                 b[f] -= a * dpre[f]
         hist.append(tot)
-    return RichResult(payload={
-        "estimate": (W, Wp, V, b, bp), "W": W, "W_prime": Wp,
-        "V": V, "b": b, "b_prime": bp, "loss_history": hist,
-        "final_loss": hist[-1] if hist else float("nan"),
-        "k": K, "q": float(q), "n_neg": int(n_neg),
-        "activation": activation,
-        "method": "CDAE; Wu, DuBois, Zheng & Ester (2016) eqs. "
-                  "(9)-(13), Algorithm 1",
-        "note": "V_u is the user-specific input node -- without it "
-                "this is an ordinary denoising auto-encoder over item "
-                "vectors",
-    })
+    return RichResult(
+        payload={
+            "estimate": (W, Wp, V, b, bp),
+            "W": W,
+            "W_prime": Wp,
+            "V": V,
+            "b": b,
+            "b_prime": bp,
+            "loss_history": hist,
+            "final_loss": hist[-1] if hist else float("nan"),
+            "k": K,
+            "q": float(q),
+            "n_neg": int(n_neg),
+            "activation": activation,
+            "method": "CDAE; Wu, DuBois, Zheng & Ester (2016) eqs. (9)-(13), Algorithm 1",
+            "note": "V_u is the user-specific input node -- without it "
+            "this is an ordinary denoising auto-encoder over item "
+            "vectors",
+        }
+    )
 
 
 def recommend(model, pos, u, n_items, top_k=5, activation="sigmoid"):
     r"""Score every unseen item for one user, uncorrupted at test
     time."""
-    W, Wp, V, b, bp = model["W"], model["W_prime"], model["V"], \
-        model["b"], model["b_prime"]
+    W, Wp, V, b, bp = model["W"], model["W_prime"], model["V"], model["b"], model["b_prime"]
     seen = set(int(v) for v in pos.get(u, []))
     y = [1.0 if i in seen else 0.0 for i in range(int(n_items))]
     z = encode(y, W, V[int(u)], b, activation)
     out = decode(z, Wp, bp, None, activation)
     s = [(i, out[i]) for i in range(int(n_items)) if i not in seen]
     s.sort(key=lambda t: -t[1])
-    return {"ranking": s[:int(top_k)], "n_scored": len(s)}
+    return {"ranking": s[: int(top_k)], "n_scored": len(s)}
 
 
 def cheatsheet():
-    return ("cdaeRC: a denoising auto-encoder over a user's BINARY "
-            "preference vector, plus a USER-SPECIFIC input node V_u -- "
-            "that node is what separates it from a plain DAE and makes "
-            "W_i, V_u item and user embeddings. Corruption is "
-            "mask-out with probability q, survivors scaled by "
-            "1/(1-q) so the corruption is UNBIASED. Positives only "
-            "would train the all-ones model, so negatives are SAMPLED. "
-            "Four losses offered; log and hinge need the negative "
-            "label to be -1, not 0.")
+    return (
+        "cdaeRC: a denoising auto-encoder over a user's BINARY "
+        "preference vector, plus a USER-SPECIFIC input node V_u -- "
+        "that node is what separates it from a plain DAE and makes "
+        "W_i, V_u item and user embeddings. Corruption is "
+        "mask-out with probability q, survivors scaled by "
+        "1/(1-q) so the corruption is UNBIASED. Positives only "
+        "would train the all-ones model, so negatives are SAMPLED. "
+        "Four losses offered; log and hinge need the negative "
+        "label to be -1, not 0."
+    )
 
 
 # compact alias per ledger/NAMING.md

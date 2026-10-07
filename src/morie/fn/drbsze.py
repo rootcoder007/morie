@@ -45,12 +45,11 @@ __all__ = ["dr_did_size_correction"]
 def _tquant(p, df):
     """Two-sided Student-t quantile by Cornish-Fisher on the normal."""
     z = k.qnorm(p)
-    g1 = (z ** 3 + z) / 4.0
-    g2 = (5.0 * z ** 5 + 16.0 * z ** 3 + 3.0 * z) / 96.0
-    g3 = (3.0 * z ** 7 + 19.0 * z ** 5 + 17.0 * z ** 3 - 15.0 * z) / 384.0
-    g4 = (79.0 * z ** 9 + 776.0 * z ** 7 + 1482.0 * z ** 5
-          - 1920.0 * z ** 3 - 945.0 * z) / 92160.0
-    return z + g1 / df + g2 / df ** 2 + g3 / df ** 3 + g4 / df ** 4
+    g1 = (z**3 + z) / 4.0
+    g2 = (5.0 * z**5 + 16.0 * z**3 + 3.0 * z) / 96.0
+    g3 = (3.0 * z**7 + 19.0 * z**5 + 17.0 * z**3 - 15.0 * z) / 384.0
+    g4 = (79.0 * z**9 + 776.0 * z**7 + 1482.0 * z**5 - 1920.0 * z**3 - 945.0 * z) / 92160.0
+    return z + g1 / df + g2 / df**2 + g3 / df**3 + g4 / df**4
 
 
 def dr_did_size_correction(y, D, X=None, alpha=0.05):

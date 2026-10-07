@@ -86,12 +86,25 @@ def natural_direct_effect(X, M, Y):
     y00 = c0 + c2 * b0
     r = ndeff([y10], [y00])
     nie = b1 * (c2 + c3)
-    return RichResult(payload={
-        "estimate": r["estimate"], "se": r["se"], "nde": r["estimate"],
-        "nie": nie, "total": r["estimate"] + nie,
-        "mean_y10": r["mean_y10"], "mean_y00": r["mean_y00"],
-        "b0": b0, "b1": b1, "c0": c0, "c1": c1, "c2": c2, "c3": c3,
-        "n": n, "method": "Natural direct effect (linear SEM, Pearl 2001)"})
+    return RichResult(
+        payload={
+            "estimate": r["estimate"],
+            "se": r["se"],
+            "nde": r["estimate"],
+            "nie": nie,
+            "total": r["estimate"] + nie,
+            "mean_y10": r["mean_y10"],
+            "mean_y00": r["mean_y00"],
+            "b0": b0,
+            "b1": b1,
+            "c0": c0,
+            "c1": c1,
+            "c2": c2,
+            "c3": c3,
+            "n": n,
+            "method": "Natural direct effect (linear SEM, Pearl 2001)",
+        }
+    )
 
 
 naturaldirecteffect = natural_direct_effect

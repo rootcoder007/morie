@@ -28,20 +28,19 @@ def r_from_fisher_z(z):
     """
     value = _ca_crim.r_from_fisher_z(z)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.14)"
     return RichResult(
-        title='Back-transform Zr to r',
+        title="Back-transform Zr to r",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e14: r = (e^{2Zr} - 1) / (e^{2Zr} + 1) [Weisburd et al. 2022, eq. 11.14]'
+    return "ca11e14: r = (e^{2Zr} - 1) / (e^{2Zr} + 1) [Weisburd et al. 2022, eq. 11.14]"
 
 
 # compact alias per ledger/NAMING.md

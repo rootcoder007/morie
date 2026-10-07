@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 8.2, the i.i.d. posterior contraction theorem.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c8_6 import ghosal_iid_crt_thm

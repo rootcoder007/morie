@@ -1,13 +1,12 @@
 """Tests for cvxgrd.boyd_gradient_descent."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxgrd import boyd_gradient_descent
 
 
 def test_cvxgrd_basic():
     """Test basic functionality on a well-conditioned quadratic."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Well-conditioned diagonal Hessian with eigenvalues in [1, 2].
     Q = np.diag([1.0, 2.0])
 
@@ -28,8 +27,7 @@ def test_cvxgrd_basic():
     payload = result.payload
 
     # All these keys are part of the documented return value.
-    for key in ("x", "f", "n_iter", "converged", "grad_norm",
-                "trajectory", "diverged", "monotone"):
+    for key in ("x", "f", "n_iter", "converged", "grad_norm", "trajectory", "diverged", "monotone"):
         assert key in payload
 
     # The optimisation should converge to the origin for this quadratic.

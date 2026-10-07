@@ -1,5 +1,4 @@
 """Tests for Ghosal Ch 8 contraction-rate modules."""
-import math
 
 from morie.fn.gh_c8_1 import ghosal_crt_def
 from morie.fn.gh_c8_2 import ghosal_ggv_thm
@@ -39,7 +38,7 @@ def test_prior_mass_positive():
 
 def test_entropy_condition():
     ok = ghosal_entropy_cnd(5, 1.0, 10000, 0.1)
-    assert ok["condition_holds"] is True     # 5 log30 ~ 17 <= 100
+    assert ok["condition_holds"] is True  # 5 log30 ~ 17 <= 100
     bad = ghosal_entropy_cnd(500, 1.0, 10000, 0.1)
     assert bad["condition_holds"] is False
 
@@ -84,7 +83,7 @@ def test_misspec_targets_projection():
 def test_convex_kl_unique_min():
     r = ghosal_convex_misp([0.5, 0.5], [0.9, 0.1], [0.1, 0.9])
     assert r["convex_along_segment"] is True
-    assert abs(r["estimate"] - 0.5) < 0.02   # symmetric setup
+    assert abs(r["estimate"] - 0.5) < 0.02  # symmetric setup
 
 
 def test_alpha_posterior_same_rate():

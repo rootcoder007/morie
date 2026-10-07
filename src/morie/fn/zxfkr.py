@@ -11,8 +11,8 @@ def func_kriging(values, x, y=None, *, model="spherical"):
     -------
     DescriptiveResult
     """
-    n = len(values) if hasattr(values, "__len__") else 10
-    rng = np.random.default_rng(8499)
+    len(values) if hasattr(values, "__len__") else 10
+    np.random.default_rng(8499)
     coords = np.column_stack([x, y]) if y is not None else np.asarray(x, dtype=float)
     if coords.ndim == 1:
         dists = np.abs(coords[:, None] - coords[None, :])

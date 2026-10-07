@@ -1,7 +1,5 @@
 """Tests for oddsrt.odds_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.oddsrt import odds_ratio
 
 

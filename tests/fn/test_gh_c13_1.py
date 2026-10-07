@@ -1,7 +1,6 @@
 """Tests for gh_c13_1.ghosal_surv_dp_post."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_1 import ghosal_surv_dp_post
 
 
@@ -29,8 +28,7 @@ def test_gh_c13_1_basic():
             break
         if events[i] > 0:
             S0 = np.exp(-times[i])
-            expected_surv *= (alpha * S0 + at_risk - 1.0) \
-                / (alpha * S0 + at_risk)
+            expected_surv *= (alpha * S0 + at_risk - 1.0) / (alpha * S0 + at_risk)
         at_risk -= 1
     assert np.isclose(float(result["estimate"]), float(expected_surv))
     assert np.isclose(float(result["survival_at_t"]), float(expected_surv))

@@ -54,13 +54,10 @@ that is the *outer* algorithm, and the paper is explicit that
 the framework is the contribution.
 """
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["mtdrl", "meta_rl", "bandit_tasks", "history_features",
-           "TabularHistoryAgent"]
+__all__ = ["mtdrl", "meta_rl", "bandit_tasks", "history_features", "TabularHistoryAgent"]
 
 
 def bandit_tasks(n_arms=2, n_tasks=100, seed=0, structure="independent"):
@@ -73,8 +70,7 @@ def bandit_tasks(n_arms=2, n_tasks=100, seed=0, structure="independent"):
     inner algorithm can exploit and a task-agnostic one cannot.
     """
     if structure not in ("independent", "paired"):
-        raise ValueError("mtdrl: structure must be 'independent' or "
-                         "'paired', got %r" % (structure,))
+        raise ValueError(f"mtdrl: structure must be 'independent' or 'paired', got {structure!r}")
     n_arms = int(n_arms)
     if n_arms < 2:
         raise ValueError("mtdrl: need at least 2 arms")
@@ -145,8 +141,7 @@ class TabularHistoryAgent:
         self.means[action] += (reward - self.means[action]) / n
 
 
-def mtdrl(tasks, agent, episode_length=100, n_arms=None, seed=0,
-          reset_between_episodes=True):
+def mtdrl(tasks, agent, episode_length=100, n_arms=None, seed=0, reset_between_episodes=True):
     r"""Run the meta-RL evaluation loop of section 2.
 
     Parameters
@@ -191,13 +186,13 @@ def mtdrl(tasks, agent, episode_length=100, n_arms=None, seed=0,
     k = int(n_arms) if n_arms is not None else len(T[0])
     for t in T:
         if len(t) != k:
-            raise ValueError("mtdrl: every task must have %d arms" % k)
+            raise ValueError(f"mtdrl: every task must have {int(k)} arms")
     L = int(episode_length)
     if L < 1:
         raise ValueError("mtdrl: episode_length must be >= 1")
     for m in ("reset", "act", "observe"):
         if not hasattr(agent, m):
-            raise TypeError("mtdrl: agent must provide %s()" % m)
+            raise TypeError(f"mtdrl: agent must provide {m}()")
 
     rng = np.random.default_rng(seed)
     total = 0.0
@@ -217,8 +212,7 @@ def mtdrl(tasks, agent, episode_length=100, n_arms=None, seed=0,
             feats = history_features(hist, k)
             a = agent.act(feats, rng)
             if not 0 <= a < k:
-                raise ValueError("mtdrl: agent chose arm %r outside "
-                                 "0..%d" % (a, k - 1))
+                raise ValueError(f"mtdrl: agent chose arm {a!r} outside 0..{int(k - 1)}")
             r = 1.0 if rng.random() < probs[a] else 0.0
             agent.observe(a, r)
             hist.append((a, r))
@@ -230,31 +224,35 @@ def mtdrl(tasks, agent, episode_length=100, n_arms=None, seed=0,
         per_episode.append(ep_reward)
 
     n_ep = float(len(T))
-    return RichResult(payload={
-        "estimate": total / (n_ep * L),
-        "mean_reward": total / (n_ep * L),
-        "total_reward": total,
-        "regret": regret,
-        "reward_by_step": [v / n_ep for v in by_step],
-        "optimal_action_rate": [v / n_ep for v in opt_by_step],
-        "episode_reward": per_episode,
-        "n_episodes": len(T),
-        "episode_length": L,
-        "n_arms": k,
-        "method": "meta-RL evaluation loop (Wang et al. 2016 sec. 2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": total / (n_ep * L),
+            "mean_reward": total / (n_ep * L),
+            "total_reward": total,
+            "regret": regret,
+            "reward_by_step": [v / n_ep for v in by_step],
+            "optimal_action_rate": [v / n_ep for v in opt_by_step],
+            "episode_reward": per_episode,
+            "n_episodes": len(T),
+            "episode_length": L,
+            "n_arms": k,
+            "method": "meta-RL evaluation loop (Wang et al. 2016 sec. 2)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("mtdrl: deep meta-RL (Wang 2016). Train with one RL "
-            "algorithm so the RECURRENT DYNAMICS implement a second, "
-            "learned one. Policy conditions on the whole within-episode "
-            "history H_t including the previous ACTION and REWARD; the "
-            "recurrent state is RESET each episode, and after training "
-            "the weights are frozen so all within-episode adaptation "
-            "is in the activations. bandit_tasks(structure='paired') "
-            "is the dependent-arm family whose structure an adapted "
-            "inner algorithm can exploit.")
+    return (
+        "mtdrl: deep meta-RL (Wang 2016). Train with one RL "
+        "algorithm so the RECURRENT DYNAMICS implement a second, "
+        "learned one. Policy conditions on the whole within-episode "
+        "history H_t including the previous ACTION and REWARD; the "
+        "recurrent state is RESET each episode, and after training "
+        "the weights are frozen so all within-episode adaptation "
+        "is in the activations. bandit_tasks(structure='paired') "
+        "is the dependent-arm family whose structure an adapted "
+        "inner algorithm can exploit."
+    )
 
 
 # compact aliases per ledger/NAMING.md

@@ -88,8 +88,8 @@ def bound_causal_rd(y, x, cutoff, observed=None, bandwidth=None, y_min=None, y_m
         return intercept(right & sel_mask, yy) - intercept(left & sel_mask, yy)
 
     est = tau(y, obs)
-    y_lo = np.where(obs, y, lo_y)
-    y_hi = np.where(obs, y, hi_y)
+    np.where(obs, y, lo_y)
+    np.where(obs, y, hi_y)
     # widest discontinuity: fill the right arm high and left arm low, and vice versa
     fill_up = np.where(obs, y, np.where(x >= c, hi_y, lo_y))
     fill_dn = np.where(obs, y, np.where(x >= c, lo_y, hi_y))

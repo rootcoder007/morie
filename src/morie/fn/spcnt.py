@@ -32,10 +32,7 @@ def spectral_centroid(x, fs: float = 1.0, **kwargs) -> DescriptiveResult:
     freqs = np.fft.rfftfreq(N, d=1.0 / fs)
     mag2 = np.abs(X) ** 2
     total = float(np.sum(mag2))
-    if total == 0:
-        centroid = 0.0
-    else:
-        centroid = float(np.sum(freqs * mag2) / total)
+    centroid = 0.0 if total == 0 else float(np.sum(freqs * mag2) / total)
     return DescriptiveResult(
         name="spectral_centroid",
         value=centroid,

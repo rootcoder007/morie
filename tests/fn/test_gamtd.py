@@ -1,7 +1,6 @@
 """Tests for gamtd.n_step_td."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gamtd import n_step_td
 
 

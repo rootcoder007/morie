@@ -1,7 +1,6 @@
 """Tests for fmrset.familial_mr_set."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fmrset import familial_mr_set
 
 

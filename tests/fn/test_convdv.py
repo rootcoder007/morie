@@ -1,7 +1,6 @@
 """Tests for convdv.convex_divergence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.convdv import convex_divergence
 
 

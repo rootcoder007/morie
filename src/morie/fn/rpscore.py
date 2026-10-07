@@ -38,11 +38,11 @@ def ranked_probability_score(probs, outcomes):
     out = []
     for p, o in zip(probs, outcomes):
         K = len(p)
-        F, s, acc = 0.0, 0.0, 0.0
+        F, _s, acc = 0.0, 0.0, 0.0
         for k in range(K - 1):
             F += float(p[k])
-            O = 1.0 if int(o) <= k else 0.0
-            acc += (F - O) ** 2
+            O_ = 1.0 if int(o) <= k else 0.0
+            acc += (F - O_) ** 2
         out.append(round(acc / (K - 1), 15))
     m = 0.0
     for v in out:

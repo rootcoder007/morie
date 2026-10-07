@@ -83,16 +83,18 @@ def geron_classification_tree(X, y, criterion="gini", max_depth=None, min_sample
     if ya.size and np.issubdtype(ya.dtype, np.floating) and not np.all(ya == np.round(ya)):
         raise ValueError("geron_classification_tree: y looks continuous; a classification tree needs discrete labels")
 
-    base = geron_cart_algorithm(
-        X, y, criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf
-    )
+    base = geron_cart_algorithm(X, y, criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf)
     Xa = np.atleast_2d(np.asarray(X, dtype=float))
     classes = np.unique(ya).tolist()
     proba = [_proba_of(base["tree"], row, classes) for row in Xa]
 
     return RichResult(
         title="Classification tree",
-        summary_lines=[("Train accuracy", float(base["train_accuracy"])), ("Leaves", int(base["n_leaves"])), ("Criterion", criterion)],
+        summary_lines=[
+            ("Train accuracy", float(base["train_accuracy"])),
+            ("Leaves", int(base["n_leaves"])),
+            ("Criterion", criterion),
+        ],
         interpretation="Leaf class frequencies are the predicted probabilities; a pure leaf therefore predicts with probability 1.",
         payload={
             "tree": base["tree"],

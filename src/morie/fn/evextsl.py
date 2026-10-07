@@ -69,8 +69,7 @@ def ev_extremal_sliding(x, threshold=None, block_length=None):
         Y = -bb * np.log(maxF)
         m = float(Y.mean())
         if m <= 0:
-            raise ValueError("degenerate block maxima; is the series "
-                             "constant?")
+            raise ValueError("degenerate block maxima; is the series constant?")
         return min(1.0, 1.0 / m)
 
     # sliding: running max of Fhat over every window of length b
@@ -79,23 +78,27 @@ def ev_extremal_sliding(x, threshold=None, block_length=None):
     slide_max = sliding_window_view(Fhat, b).max(axis=1)
     th_slide = theta_from(slide_max, b)
     nd = n // b
-    disj_max = Fhat[:nd * b].reshape(nd, b).max(axis=1)
+    disj_max = Fhat[: nd * b].reshape(nd, b).max(axis=1)
     th_disj = theta_from(disj_max, b)
-    return RichResult(payload={
-        "theta": float(th_slide), "theta_disjoint": float(th_disj),
-        "block_length": b,
-        "n_sliding_blocks": int(slide_max.size),
-        "n_disjoint_blocks": int(nd),
-        "sliding_beats_disjoint_because": (
-            "every observation participates in b windows instead of one; "
-            "Northrop (2015) shows the sliding estimator's asymptotic "
-            "variance is strictly smaller"),
-        "threshold_note": "this estimator uses block maxima, not a "
-                          "threshold; the argument is accepted only for "
-                          "signature parity and is ignored",
-        "n": int(n),
-        "method": "Northrop (2015) sliding-blocks semiparametric maxima "
-                  "estimator of the extremal index"})
+    return RichResult(
+        payload={
+            "theta": float(th_slide),
+            "theta_disjoint": float(th_disj),
+            "block_length": b,
+            "n_sliding_blocks": int(slide_max.size),
+            "n_disjoint_blocks": int(nd),
+            "sliding_beats_disjoint_because": (
+                "every observation participates in b windows instead of one; "
+                "Northrop (2015) shows the sliding estimator's asymptotic "
+                "variance is strictly smaller"
+            ),
+            "threshold_note": "this estimator uses block maxima, not a "
+            "threshold; the argument is accepted only for "
+            "signature parity and is ignored",
+            "n": int(n),
+            "method": "Northrop (2015) sliding-blocks semiparametric maxima estimator of the extremal index",
+        }
+    )
 
 
 def cheatsheet():

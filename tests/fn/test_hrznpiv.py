@@ -1,7 +1,6 @@
 """Tests for hrznpiv.horowitz_npiv_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrznpiv import horowitz_npiv_model
 
 

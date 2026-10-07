@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Super learner: convex combination of candidate predictors."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -77,15 +75,13 @@ def superlrn(Z, Y, iters=500):
         raise ValueError("Y must have one entry per observation")
     if K < 1:
         raise ValueError("at least one candidate is required")
-    risk = [sum((Y[i] - Z[i][k]) ** 2 for i in range(n)) / n
-            for k in range(K)]
+    risk = [sum((Y[i] - Z[i][k]) ** 2 for i in range(n)) / n for k in range(K)]
     dbest = min(range(K), key=lambda k: (risk[k], k))
     a = [0.0] * K
     a[dbest] = 1.0
     for t in range(int(iters)):
         f = [sum(Z[i][k] * a[k] for k in range(K)) for i in range(n)]
-        gr = [-2.0 / n * sum((Y[i] - f[i]) * Z[i][k] for i in range(n))
-              for k in range(K)]
+        gr = [-2.0 / n * sum((Y[i] - f[i]) * Z[i][k] for i in range(n)) for k in range(K)]
         v = min(range(K), key=lambda k: (gr[k], k))
         g = 2.0 / (t + 2.0)
         a = [(1.0 - g) * a[k] + (g if k == v else 0.0) for k in range(K)]
@@ -93,13 +89,20 @@ def superlrn(Z, Y, iters=500):
     a = [v / s for v in a]
     fit = [sum(Z[i][k] * a[k] for k in range(K)) for i in range(n)]
     slr = sum((Y[i] - fit[i]) ** 2 for i in range(n)) / n
-    return RichResult(payload={
-        "weights": a, "risk": risk, "sl_risk": slr,
-        "discrete_risk": risk[dbest], "discrete_index": float(dbest + 1),
-        "fitted": fit,
-        "beats_discrete": 1.0 if slr <= risk[dbest] else 0.0,
-        "n": float(n), "K": float(K),
-        "method": "Super learner: simplex-constrained ensemble of candidates"})
+    return RichResult(
+        payload={
+            "weights": a,
+            "risk": risk,
+            "sl_risk": slr,
+            "discrete_risk": risk[dbest],
+            "discrete_index": float(dbest + 1),
+            "fitted": fit,
+            "beats_discrete": 1.0 if slr <= risk[dbest] else 0.0,
+            "n": float(n),
+            "K": float(K),
+            "method": "Super learner: simplex-constrained ensemble of candidates",
+        }
+    )
 
 
 tmle_super_learner = superlrn

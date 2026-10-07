@@ -1,7 +1,6 @@
 """Tests for penalized_poisson_fit.penalized_poisson_fit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.penalized_poisson_fit import penalized_poisson_fit
 
 

@@ -1,7 +1,6 @@
 """Tests for fzkmis.fauzi_kdfe_mise."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzkmis import fauzi_kdfe_mise
 
 
@@ -26,7 +25,7 @@ def test_fzkmis_basic():
     }
 
     mu2 = 1.0
-    expected_bias = (bandwidth ** 4) / 4.0 * mu2 ** 2 * rfp
+    expected_bias = (bandwidth**4) / 4.0 * mu2**2 * rfp
     expected_var = varint / n
     expected_gain = 2.0 * bandwidth / n * result["r1"]
     expected_mise = expected_bias + expected_var - expected_gain

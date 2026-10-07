@@ -2,9 +2,9 @@
 plcbo, causftbl, clstcr, shrtgr, causshap, abdpd, counRS, bnscrd,
 causrho, msmiv2, msmphr, fciag, deciA."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.abdpd import abduction_modification_prediction
 from morie.fn.bnscrd import bound_causal_rd
 from morie.fn.causdmliv import causal_dml_iv
@@ -164,6 +164,7 @@ def test_causshap_efficiency_and_symmetry():
     out = causal_shap_decomposition(v, ["a", "b", "c"])
     assert out["shapley"] == pytest.approx(w)
     assert out["efficiency_gap"] == pytest.approx(0.0, abs=1e-12)
+
     # symmetric players (interaction only) split the surplus equally
     def v2(S):
         return 1.0 if set(S) == {"a", "b"} else 0.0
@@ -179,9 +180,7 @@ def test_causshap_efficiency_and_symmetry():
 def test_abdpd_three_steps():
     # Y = 2X + u2, X = u1. Observe X = 1, Y = 3 -> u2 = 1.
     eqs = {"X": (("u1",), lambda u1: u1), "Y": (("X", "u2"), lambda X, u2: 2 * X + u2)}
-    out = abduction_modification_prediction(
-        {"X": 1.0, "Y": 3.0}, eqs, ["u1", "u2"], {"X": 4.0}, "Y"
-    )
+    out = abduction_modification_prediction({"X": 1.0, "Y": 3.0}, eqs, ["u1", "u2"], {"X": 4.0}, "Y")
     assert out["abducted"]["u1"] == pytest.approx(1.0, abs=1e-6)
     assert out["abducted"]["u2"] == pytest.approx(1.0, abs=1e-6)
     assert out["factual"] == pytest.approx(3.0, abs=1e-6)

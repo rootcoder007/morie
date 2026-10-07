@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.bookadvanced_elementsofstatisticallearning2e45 import (
     bookadvanced_elementsofstatisticallearning_chapter_2_equation_45,
 )
@@ -17,9 +16,7 @@ def test_bookadvanced_elementsofstatisticallearning2e45_basic():
     alpha = rng.normal(0, 1, (p, M))
     b = rng.normal(0, 1, M)
     beta = rng.normal(0, 1, M)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_45(
-        X, alpha, b, beta=beta
-    )
+    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_45(X, alpha, b, beta=beta)
     assert isinstance(result, dict)
     for key in ("estimate", "fitted", "hidden", "beta", "rss", "n", "p", "M", "method"):
         assert key in result
@@ -41,9 +38,7 @@ def test_bookadvanced_elementsofstatisticallearning2e45_edge():
     alpha = rng.normal(0, 1, (p, M))
     b = rng.normal(0, 1, M)
     y = rng.normal(0, 1, n)
-    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_45(
-        X, alpha, b, y=y
-    )
+    result = bookadvanced_elementsofstatisticallearning_chapter_2_equation_45(X, alpha, b, y=y)
     assert isinstance(result, dict)
     assert result["n"] == n
     assert result["p"] == p

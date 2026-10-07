@@ -1,13 +1,12 @@
 """Tests for adjusted_r2.adjusted_r2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.adjusted_r2 import adjusted_r2
 
 
 def test_ca2e15_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     r2 = 0.30
     n = 100
     k = 3

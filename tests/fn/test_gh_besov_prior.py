@@ -1,7 +1,6 @@
 """Tests for gh_besov_prior.ghosal_besov_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_besov_prior import ghosal_besov_prior
 
 
@@ -30,7 +29,7 @@ def test_gh_besov_prior_basic():
     for j in range(J):
         sd = 2.0 ** (-j * (2.0 * s + 1.0) / 2.0)
         lvl = 0.0
-        for k in range(2 ** j):
+        for k in range(2**j):
             if float(rng.uniform(0, 1)) < pi_j:
                 th = sd * float(rng.normal(0, 1))
                 lvl += th * th

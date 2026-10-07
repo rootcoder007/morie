@@ -36,7 +36,7 @@ def _sweep(v, n, kk, beta, mu0, s0, tol, maxit):
     mu1 = mu0
     s1 = s0
     it = 0
-    for it in range(1, int(maxit) + 1):
+    for it in range(1, int(maxit) + 1):  # noqa: B007 - read after the loop
         yy = np.minimum(np.maximum(mu0 - kk * s0, v), mu0 + kk * s0)
         mu1 = float(np.sum(yy)) / n
         ss = float(np.sum((yy - mu1) ** 2)) / (n - 1)

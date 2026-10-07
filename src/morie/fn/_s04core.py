@@ -103,8 +103,10 @@ def glmbin(X, y, iters=25, ridge=1e-8):
         mu = [expit(e) for e in eta]
         w = [clip(m * (1.0 - m), 1e-10, 0.25) for m in mu]
         z = [eta[i] + (y[i] - mu[i]) / w[i] for i in range(n)]
-        A = [[sum(X[i][a] * w[i] * X[i][b] for i in range(n)) + (ridge if a == b else 0.0)
-              for b in range(p)] for a in range(p)]
+        A = [
+            [sum(X[i][a] * w[i] * X[i][b] for i in range(n)) + (ridge if a == b else 0.0) for b in range(p)]
+            for a in range(p)
+        ]
         rhs = [sum(X[i][a] * w[i] * z[i] for i in range(n)) for a in range(p)]
         beta = C.solvev(A, rhs)
     return beta
@@ -273,8 +275,7 @@ def tmle(y, D, W, gbound=0.025):
     ic = [H[i] * (y[i] - Qs[i]) + Q1s[i] - Q0s[i] - psi for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return {"psi": psi, "se": se, "eps": eps, "g": g, "H": H,
-            "Q1": Q1s, "Q0": Q0s, "ic": ic, "n": n}
+    return {"psi": psi, "se": se, "eps": eps, "g": g, "H": H, "Q1": Q1s, "Q0": Q0s, "ic": ic, "n": n}
 
 
 def ols(X, y):
@@ -391,18 +392,25 @@ def icc_ms(y, subject, rater):
             rats.append(t)
     n, k = len(subs), len(rats)
     grand = sum(yv) / len(yv)
-    rm = [sum(yv[i] for i in range(len(yv)) if sv[i] == s) /
-          max(sum(1 for i in range(len(yv)) if sv[i] == s), 1) for s in subs]
-    cm = [sum(yv[i] for i in range(len(yv)) if rv[i] == r) /
-          max(sum(1 for i in range(len(yv)) if rv[i] == r), 1) for r in rats]
+    rm = [
+        sum(yv[i] for i in range(len(yv)) if sv[i] == s) / max(sum(1 for i in range(len(yv)) if sv[i] == s), 1)
+        for s in subs
+    ]
+    cm = [
+        sum(yv[i] for i in range(len(yv)) if rv[i] == r) / max(sum(1 for i in range(len(yv)) if rv[i] == r), 1)
+        for r in rats
+    ]
     ss_r = k * sum((t - grand) ** 2 for t in rm)
     ss_c = n * sum((t - grand) ** 2 for t in cm)
     ss_t = sum((t - grand) ** 2 for t in yv)
     ss_e = ss_t - ss_r - ss_c
-    return {"ms_r": ss_r / (n - 1) if n > 1 else float("nan"),
-            "ms_c": ss_c / (k - 1) if k > 1 else float("nan"),
-            "ms_e": ss_e / ((n - 1) * (k - 1)) if n > 1 and k > 1 else float("nan"),
-            "k": float(k), "n": float(n)}
+    return {
+        "ms_r": ss_r / (n - 1) if n > 1 else float("nan"),
+        "ms_c": ss_c / (k - 1) if k > 1 else float("nan"),
+        "ms_e": ss_e / ((n - 1) * (k - 1)) if n > 1 and k > 1 else float("nan"),
+        "k": float(k),
+        "n": float(n),
+    }
 
 
 def _gpdfit(x):
@@ -418,13 +426,11 @@ def _gpdfit(x):
         return float("nan"), float("nan")
     M = 30 + int(math.floor(math.sqrt(N)))
     xstar = x[int(math.floor(N / 4.0 + 0.5)) - 1]
-    theta = [1.0 / x[N - 1] + (1.0 - math.sqrt(M / (j - 0.5))) / (3.0 * xstar)
-             for j in range(1, M + 1)]
+    theta = [1.0 / x[N - 1] + (1.0 - math.sqrt(M / (j - 0.5))) / (3.0 * xstar) for j in range(1, M + 1)]
     lt = []
     for a in theta:
         kk = sum(math.log1p(-a * t) for t in x) / N
-        lt.append(N * (math.log(-a / kk) - kk - 1.0) if kk < 0.0 and a != 0.0
-                  else -1e300)
+        lt.append(N * (math.log(-a / kk) - kk - 1.0) if kk < 0.0 and a != 0.0 else -1e300)
     mx = max(lt)
     w = [math.exp(t - mx) for t in lt]
     sw = sum(w)
@@ -451,7 +457,7 @@ def psis(lw):
     if M < 5:
         return lw, float("nan")
     o = order(lw)
-    tail = o[Sn - M:]
+    tail = o[Sn - M :]
     cut = lw[o[Sn - M - 1]]
     ecut = math.exp(cut)
     x = sorted(math.exp(lw[i]) - ecut for i in tail)
@@ -461,8 +467,7 @@ def psis(lw):
     if k == k and sigma == sigma:
         for z in range(1, M + 1):
             p = (z - 0.5) / M
-            q = sigma / k * (math.expm1(-k * math.log1p(-p))) if k != 0.0 \
-                else -sigma * math.log1p(-p)
+            q = sigma / k * (math.expm1(-k * math.log1p(-p))) if k != 0.0 else -sigma * math.log1p(-p)
             lw[tail[z - 1]] = math.log(q + ecut)
     top = max(lw)
     lw = [min(t, top) for t in lw]

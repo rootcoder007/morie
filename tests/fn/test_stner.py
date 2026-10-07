@@ -1,8 +1,8 @@
 """Test stationarity_test (stner)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.stner import stationarity_test, stner
 

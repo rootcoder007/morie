@@ -1,9 +1,9 @@
 """Tests for morie.fn.tway -- Two-way fixed effects."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import RegressionResult
 from morie.fn.tway import tway, twfe
 

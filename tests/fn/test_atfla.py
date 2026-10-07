@@ -1,7 +1,5 @@
 """I cannot teach anybody anything. I can only make them think. — Socrates"""
 
-from morie.fn import _array_core as np
-
 from morie.fn.atfla import flash_attention_block
 
 
@@ -10,14 +8,9 @@ def test_atfla_basic():
     import math
 
     # n_q = 2, d = 2; n_k = 3, d_v = 2 (so K is 3x2, V is 3x2)
-    Q = [[1.0, 0.0],
-         [0.0, 1.0]]
-    K = [[1.0, 0.0],
-         [0.0, 1.0],
-         [1.0, 1.0]]
-    V = [[1.0, 2.0],
-         [3.0, 4.0],
-         [5.0, 6.0]]
+    Q = [[1.0, 0.0], [0.0, 1.0]]
+    K = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
+    V = [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]]
     block_size = 2
 
     result = flash_attention_block(Q=Q, K=K, V=V, block_size=block_size)
@@ -72,12 +65,9 @@ def test_atfla_edge():
     import math
 
     # Single block: block_size >= n_k, so one tile, no rescaling needed
-    Q = [[1.0, 0.0],
-         [1.0, 1.0]]
-    K = [[1.0, 0.0],
-         [0.0, 1.0]]
-    V = [[1.0, 2.0],
-         [3.0, 4.0]]
+    Q = [[1.0, 0.0], [1.0, 1.0]]
+    K = [[1.0, 0.0], [0.0, 1.0]]
+    V = [[1.0, 2.0], [3.0, 4.0]]
     block_size = 5
 
     result = flash_attention_block(Q=Q, K=K, V=V, block_size=block_size)

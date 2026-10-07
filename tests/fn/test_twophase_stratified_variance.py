@@ -1,7 +1,6 @@
 """Tests for twophase_stratified_variance.twophase_stratified_variance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.twophase_stratified_variance import (
     twophase_stratified_variance,
 )

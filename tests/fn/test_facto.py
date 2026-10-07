@@ -1,12 +1,11 @@
 """Tests for morie.fn.facto."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.facto import facto
 
 
 def test_facto_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = facto()
     assert result is not None
     assert hasattr(result, "name")

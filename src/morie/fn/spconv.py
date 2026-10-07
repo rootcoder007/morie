@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["schabenberger_convolution_representation"]
 
 
-def schabenberger_convolution_representation(kernel=None, h=None, sigma2_x=1.0,
-                                             half_width=5.0, n=40001):
+def schabenberger_convolution_representation(kernel=None, h=None, sigma2_x=1.0, half_width=5.0, n=40001):
     r"""
     A field built by convolving white noise with a kernel.
 
@@ -51,8 +50,10 @@ def schabenberger_convolution_representation(kernel=None, h=None, sigma2_x=1.0,
     case appears again at Sec. 4.3.3, p. 146.
     """
     if kernel is None:
+
         def kernel(u):
             return (np.abs(np.asarray(u, dtype=float)) <= 0.5).astype(float)
+
     if not callable(kernel):
         raise TypeError("`kernel` must be callable, K(u) -> array")
     if sigma2_x <= 0:
@@ -62,16 +63,12 @@ def schabenberger_convolution_representation(kernel=None, h=None, sigma2_x=1.0,
     h = np.atleast_1d(np.asarray(h, dtype=float))
     u = np.linspace(-half_width, half_width, int(n))
     ku = np.asarray(kernel(u), dtype=float)
-    cov = np.array([sigma2_x * np.trapezoid(ku * np.asarray(kernel(u + hh),
-                                                            dtype=float), u)
-                    for hh in h])
+    cov = np.array([sigma2_x * np.trapezoid(ku * np.asarray(kernel(u + hh), dtype=float), u) for hh in h])
     c0 = float(sigma2_x * np.trapezoid(ku * ku, u))
     return RichResult(
         title="Convolution representation",
         summary_lines=[("C(0)", c0), ("lags", int(h.size))],
-        payload={"h": h, "covariance": cov,
-                 "correlation": cov / c0 if c0 > 0 else cov * np.nan,
-                 "variance": c0},
+        payload={"h": h, "covariance": cov, "correlation": cov / c0 if c0 > 0 else cov * np.nan, "variance": c0},
     )
 
 

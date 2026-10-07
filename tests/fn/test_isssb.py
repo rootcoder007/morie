@@ -1,7 +1,6 @@
 """Tests for morie.fn.isssb — issue subset extract."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.isssb import isssb
 
 

@@ -60,9 +60,14 @@ def gibbons_kw_ties(groups):
     H_adj = H / corr
     return RichResult(
         payload={
-            "H": float(H_adj), "H_uncorrected": float(H), "correction": float(corr),
-            "df": int(k - 1), "p_value": float(stats.chi2.sf(H_adj, k - 1)),
-            "tie_sum": tie_sum, "k": k, "N": int(N),
+            "H": float(H_adj),
+            "H_uncorrected": float(H),
+            "correction": float(corr),
+            "df": int(k - 1),
+            "p_value": float(stats.chi2.sf(H_adj, k - 1)),
+            "tie_sum": tie_sum,
+            "k": k,
+            "N": int(N),
             "method": "Kruskal-Wallis H / (1 - sum t(t^2-1)/(N^3-N)) (Ch. 10.4)",
         }
     )

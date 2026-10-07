@@ -153,10 +153,7 @@ def brier(
         for i in range(n):
             if time[i] <= t_eval and event[i] == 1:
                 # Subject had event before/at eval_time
-                if method == "ipcw":
-                    w = 1.0 / max(_get_km_c(time[i]), 1e-10)
-                else:
-                    w = 1.0
+                w = 1.0 / max(_get_km_c(time[i]), 1e-10) if method == "ipcw" else 1.0
                 bs += w * s_hat[i] ** 2
                 bs_null += w * s_null**2
             elif time[i] > t_eval:

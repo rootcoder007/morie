@@ -43,7 +43,7 @@ def l1_minimize(A, b, lambda_: float = 0.1, max_iter: int = 500, tol: float = 1e
     step = 1.0 / L
 
     x = np.zeros(n)
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         grad = A.T @ (A @ x - b)
         z = x - step * grad
         x_new = np.sign(z) * np.maximum(np.abs(z) - lambda_ * step, 0.0)

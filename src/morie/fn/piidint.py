@@ -37,7 +37,7 @@ def piidint(p, k=2):
     k_i = int(k)
     if k_i < 0:
         raise ValueError("k must be >= 0")
-    value = p_f ** k_i
+    value = p_f**k_i
     payload = {"p": p_f, "k": k_i, "p_intersection": value}
     lines = [("P(all k events)", value)]
     return RichResult(

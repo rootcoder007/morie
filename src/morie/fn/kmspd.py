@@ -17,13 +17,11 @@ def _check_dist(p, name):
         raise ValueError(f"{name} has a negative probability.")
     s = p.sum()
     if not np.isfinite(s) or abs(s - 1.0) > 1e-6:
-        raise ValueError(
-            f"{name} sums to {s}, not 1; it is not a distribution.")
+        raise ValueError(f"{name} sums to {s}, not 1; it is not a distribution.")
     return p
 
 
-def kamath_speculative_decoding(draft_probs, target_probs, proposed=None,
-                                u=None):
+def kamath_speculative_decoding(draft_probs, target_probs, proposed=None, u=None):
     """accept(t) = min(1, p_target(t) / p_draft(t)); on rejection sample
     from the normalised residual max(0, p_target - p_draft).
 
@@ -64,30 +62,31 @@ def kamath_speculative_decoding(draft_probs, target_probs, proposed=None,
     pd = _check_dist(draft_probs, "draft_probs")
     pt = _check_dist(target_probs, "target_probs")
     if pd.size != pt.size:
-        raise ValueError(
-            f"the draft covers {pd.size} tokens and the target "
-            f"{pt.size}; they must share a vocabulary.")
+        raise ValueError(f"the draft covers {pd.size} tokens and the target {pt.size}; they must share a vocabulary.")
     t = int(np.argmax(pd)) if proposed is None else int(proposed)
     if not 0 <= t < pd.size:
         raise ValueError(f"the proposed token must lie in [0, {pd.size - 1}].")
     if pd[t] == 0:
         raise ValueError(
             f"the draft model assigns probability 0 to token {t}, so it "
-            "cannot have proposed it and the acceptance ratio is 0/0.")
+            "cannot have proposed it and the acceptance ratio is 0/0."
+        )
     ratio = float(pt[t] / pd[t])
     accept_p = min(1.0, ratio)
     resid = np.maximum(0.0, pt - pd)
     mass = float(resid.sum())
     resid_norm = (resid / mass) if mass > 0 else np.zeros_like(resid)
     payload = {
-        "estimate": accept_p, "accept_prob": accept_p, "ratio": ratio,
+        "estimate": accept_p,
+        "accept_prob": accept_p,
+        "ratio": ratio,
         "proposed": t,
         "residual": [float(v) for v in resid_norm],
         "residual_mass": mass,
         "rejection_rate": float(1.0 - np.minimum(pd, pt).sum()),
         "n": int(pd.size),
-        "method": "Speculative decoding accept/reject with residual "
-                  "resampling"}
+        "method": "Speculative decoding accept/reject with residual resampling",
+    }
     if u is not None:
         u = float(u)
         if not 0.0 <= u <= 1.0:
@@ -99,7 +98,8 @@ def kamath_speculative_decoding(draft_probs, target_probs, proposed=None,
             raise ValueError(
                 "the token was rejected but the residual has zero mass; "
                 "with p_target <= p_draft everywhere no rejection can "
-                "occur, so the inputs are inconsistent.")
+                "occur, so the inputs are inconsistent."
+            )
     return RichResult(payload=payload)
 
 

@@ -29,10 +29,7 @@ def kpss_test(y: np.ndarray, regression: str = "c", n_lags: int | None = None) -
         raise ValueError(f"Need at least 10 observations, got {n}.")
     if n_lags is None:
         n_lags = int(np.sqrt(n))
-    if regression == "ct":
-        X = np.column_stack([np.ones(n), np.arange(1, n + 1)])
-    else:
-        X = np.ones((n, 1))
+    X = np.column_stack([np.ones(n), np.arange(1, n + 1)]) if regression == "ct" else np.ones((n, 1))
     beta = np.linalg.lstsq(X, y, rcond=None)[0]
     resid = y - X @ beta
     cumsum = np.cumsum(resid)

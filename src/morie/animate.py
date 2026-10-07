@@ -75,9 +75,9 @@ def animated_bar(
     Fallback version prints periodic dots.
 
     Example:
-        >>> with animated_bar(199, "Kulldorff MC perms") as bar:
-        ...     for _ in range(199):
-        ...         do_one_permutation()
+        >>> with animated_bar(3, "Kulldorff MC perms") as bar:
+        ...     for _ in range(3):
+        ...         _ = sum(range(1000))   # one permutation's work
         ...         bar.advance()
     """
     if _HAS_RICH:
@@ -91,7 +91,8 @@ def animated_bar(
             TextColumn("•"),
             TimeRemainingColumn(),
         ]
-        with Progress(*cols, transient=transient) as p:
+        # stderr, like the plain fallback: stdout stays clean for piped output
+        with Progress(*cols, transient=transient, console=Console(stderr=True)) as p:
             task_id = p.add_task(description, total=total)
 
             class _Handle:
@@ -120,10 +121,16 @@ def streaming_table(columns: Iterable[str], *, title: str = ""):
     """Yield a callable that appends a row to a live-updating table.
 
     Example:
-        >>> with streaming_table(["iter", "log_LRT", "best"]) as add:
-        ...     for i in range(199):
-        ...         lrt = scan_permutation(i)
+        >>> import contextlib, io
+        >>> best, shown = 0.0, io.StringIO()
+        >>> with contextlib.redirect_stdout(shown), \\
+        ...         streaming_table(["iter", "log_LRT", "best"]) as add:
+        ...     for i in range(3):
+        ...         lrt = 1.5 * i              # one scan permutation's statistic
+        ...         best = max(best, lrt)
         ...         add(i, f"{lrt:.2f}", f"{best:.2f}")
+        >>> all(t in shown.getvalue() for t in ("log_LRT", "3.00"))   # rich table or plain rows
+        True
     """
     cols = list(columns)
     if _HAS_RICH:
@@ -145,6 +152,12 @@ def streaming_table(columns: Iterable[str], *, title: str = ""):
         yield _add
 
 
+def _version() -> str:
+    from morie import __version__
+
+    return __version__
+
+
 def morie_banner() -> None:
     """Print a one-shot MORIE banner at the start of a CLI session."""
     if _HAS_RICH:
@@ -152,10 +165,10 @@ def morie_banner() -> None:
             Panel.fit(
                 "[bold cyan]MORIE[/bold cyan] -- Multi-domain Open Research\n"
                 "and Inferential Estimation\n"
-                "[dim]v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie[/dim]",
+                f"[dim]v{_version()} · AGPL-3.0-or-later · https://github.com/rootcoder007/morie[/dim]",
                 border_style="cyan",
             )
         )
     else:
         print("MORIE -- Multi-domain Open Research and Inferential Estimation")
-        print("v0.2.0 · GPL-2.0-only · https://github.com/rootcoder007/morie")
+        print(f"v{_version()} · AGPL-3.0-or-later · https://github.com/rootcoder007/morie")

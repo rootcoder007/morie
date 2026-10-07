@@ -77,10 +77,7 @@ def horowitz_treatment_effect(x, y, treatment, bandwidth=None, _bootstrap=True):
             payload={"estimate": np.nan, "se": np.nan, "n": n, "method": "kernel-matching ATE (insufficient data)"}
         )
     # Add an intercept if not present
-    if not np.allclose(X[:, 0], 1.0):
-        Xp = np.column_stack([np.ones(n), X])
-    else:
-        Xp = X
+    Xp = np.column_stack([np.ones(n), X]) if not np.allclose(X[:, 0], 1.0) else X
     e = _logistic_newton(D, Xp)
     e = np.clip(e, 1e-6, 1 - 1e-6)
     h = float(bandwidth) if bandwidth is not None else max(_silverman(e), 1e-3)

@@ -84,11 +84,18 @@ def tmle_subset_selection(y, D, X):
     ye = [yv[i] for i in est]
     de = [Dv[i] for i in est]
     out = S.tmle(ye, de, W)
-    return RichResult(payload={
-        "estimate": out["psi"], "se": out["se"], "eps": out["eps"],
-        "selected": [float(j + 1) for j in keep],
-        "n_selected": float(len(keep)), "n_est": float(ne), "n": n,
-        "method": "Sample-split TMLE on a data-adaptively selected covariate subset"})
+    return RichResult(
+        payload={
+            "estimate": out["psi"],
+            "se": out["se"],
+            "eps": out["eps"],
+            "selected": [float(j + 1) for j in keep],
+            "n_selected": float(len(keep)),
+            "n_est": float(ne),
+            "n": n,
+            "method": "Sample-split TMLE on a data-adaptively selected covariate subset",
+        }
+    )
 
 
 def cheatsheet():

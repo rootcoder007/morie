@@ -1,7 +1,5 @@
 """Tests for wsmlrt.wasserman_lrt."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wsmlrt import wasserman_lrt
 
 

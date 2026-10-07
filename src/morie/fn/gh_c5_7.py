@@ -64,21 +64,29 @@ def ghosal_pred_rec(x, theta_grid=None, sigma=1.0, weights=None, f0=None):
     s = float(sigma)
     if s <= 0:
         raise ValueError(f"sigma must be positive, got {s}.")
-    th = np.linspace(xv.min() - 2 * s, xv.max() + 2 * s, 201) \
-        if theta_grid is None else \
-        np.atleast_1d(np.asarray(theta_grid, dtype=float))
+    th = (
+        np.linspace(xv.min() - 2 * s, xv.max() + 2 * s, 201)
+        if theta_grid is None
+        else np.atleast_1d(np.asarray(theta_grid, dtype=float))
+    )
 
     def kern(xi, t):
         return np.exp(-0.5 * ((xi - t) / s) ** 2) / (s * np.sqrt(2 * np.pi))
 
     f = predictive_recursion(xv, th, kern, f0=f0, weights=weights)
     mixed = np.array([float(np.trapezoid(kern(v, th) * f, th)) for v in th])
-    return RichResult(payload={
-        "theta_grid": th, "f_mixing": f, "mixed_density": mixed,
-        "order_dependent": True, "single_pass": True,
-        "weight_rule": "w_i = (i+2)^{-2/3}: sum w = inf, sum w^2 < inf, and w_1 < 1",
-        "n": int(xv.size),
-        "method": "Predictive recursion (Sec. 5.4); one sweep, no MCMC, order dependent"})
+    return RichResult(
+        payload={
+            "theta_grid": th,
+            "f_mixing": f,
+            "mixed_density": mixed,
+            "order_dependent": True,
+            "single_pass": True,
+            "weight_rule": "w_i = (i+2)^{-2/3}: sum w = inf, sum w^2 < inf, and w_1 < 1",
+            "n": int(xv.size),
+            "method": "Predictive recursion (Sec. 5.4); one sweep, no MCMC, order dependent",
+        }
+    )
 
 
 def cheatsheet():

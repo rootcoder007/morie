@@ -8,13 +8,19 @@ from ._richresult import RichResult
 __all__ = ["geron_pytorch_tensor"]
 
 _DTYPES = {
-    "float64": np.float64, "double": np.float64,
-    "float32": np.float32, "float": np.float32,
-    "float16": np.float16, "half": np.float16,
+    "float64": np.float64,
+    "double": np.float64,
+    "float32": np.float32,
+    "float": np.float32,
+    "float16": np.float16,
+    "half": np.float16,
     "bfloat16": np.float32,  # numpy has no bfloat16; stored as float32
-    "int64": np.int64, "long": np.int64,
-    "int32": np.int32, "int": np.int32,
-    "int16": np.int16, "short": np.int16,
+    "int64": np.int64,
+    "long": np.int64,
+    "int32": np.int32,
+    "int": np.int32,
+    "int16": np.int16,
+    "short": np.int16,
     "int8": np.int8,
     "uint8": np.uint8,
     "bool": np.bool_,
@@ -110,7 +116,9 @@ def geron_pytorch_tensor(x, device="cpu", dtype=None):
         title="Tensor",
         summary_lines=[("dtype", name), ("device", dev), ("shape", tuple(int(v) for v in t.shape))],
         warnings=(
-            ["bfloat16 has no numpy equivalent and is stored as float32; rounding will not match a real bfloat16 device"]
+            [
+                "bfloat16 has no numpy equivalent and is stored as float32; rounding will not match a real bfloat16 device"
+            ]
             if name == "bfloat16"
             else []
         )

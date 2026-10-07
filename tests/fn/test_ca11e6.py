@@ -1,7 +1,6 @@
 """Tests for ca11e6.ca_chapter_11_equation_6."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca11e6 import ca_chapter_11_equation_6
 
 
@@ -18,7 +17,7 @@ def test_ca11e6_basic():
 
     # Independent arithmetic implementing the documented formula.
     df = (n1 - 1) + (n2 - 1)
-    s_pooled = np.sqrt(((n1 - 1) * s1 ** 2 + (n2 - 1) * s2 ** 2) / df)
+    s_pooled = np.sqrt(((n1 - 1) * s1**2 + (n2 - 1) * s2**2) / df)
     se = s_pooled * np.sqrt((n1 + n2) / (n1 * n2))
     expected_t = (m1 - m2) / se
 

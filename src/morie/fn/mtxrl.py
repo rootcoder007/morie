@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Value of a two-person zero-sum matrix game."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -72,12 +70,22 @@ def matgame(A, iters=2000):
         j0 = min(range(n), key=lambda j: (colmax[j], j))
         x = [1.0 if i == i0 else 0.0 for i in range(m)]
         y = [1.0 if j == j0 else 0.0 for j in range(n)]
-        return RichResult(payload={
-            "value": maximin, "lower": maximin, "upper": minimax,
-            "row_strategy": x, "col_strategy": y, "maximin": maximin,
-            "minimax": minimax, "saddle": 1.0, "iterations": 0.0,
-            "m": float(m), "n": float(n),
-            "method": "Matrix game with a pure saddle point"})
+        return RichResult(
+            payload={
+                "value": maximin,
+                "lower": maximin,
+                "upper": minimax,
+                "row_strategy": x,
+                "col_strategy": y,
+                "maximin": maximin,
+                "minimax": minimax,
+                "saddle": 1.0,
+                "iterations": 0.0,
+                "m": float(m),
+                "n": float(n),
+                "method": "Matrix game with a pure saddle point",
+            }
+        )
     cr = [0] * m
     cc = [0] * n
     urow = [0.0] * n
@@ -104,12 +112,22 @@ def matgame(A, iters=2000):
     xA = [sum(x[t] * A[t][j] for t in range(m)) for j in range(n)]
     lo = min(xA)
     hi = max(Ay)
-    return RichResult(payload={
-        "value": 0.5 * (lo + hi), "lower": lo, "upper": hi,
-        "row_strategy": x, "col_strategy": y, "maximin": maximin,
-        "minimax": minimax, "saddle": 0.0, "iterations": float(T),
-        "m": float(m), "n": float(n),
-        "method": "Matrix game by fictitious play with a rigorous bracket"})
+    return RichResult(
+        payload={
+            "value": 0.5 * (lo + hi),
+            "lower": lo,
+            "upper": hi,
+            "row_strategy": x,
+            "col_strategy": y,
+            "maximin": maximin,
+            "minimax": minimax,
+            "saddle": 0.0,
+            "iterations": float(T),
+            "m": float(m),
+            "n": float(n),
+            "method": "Matrix game by fictitious play with a rigorous bracket",
+        }
+    )
 
 
 matrix_game = matgame

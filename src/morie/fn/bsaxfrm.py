@@ -17,76 +17,76 @@ from ._richresult import RichResult, with_describe_pointer
 from .bsafilt import rangayyan_ch3_z_transform_fir
 
 __all__ = [
-    'circconv',
-    'rangayyan_circular_conv_dft',
-    'dftx',
-    'rangayyan_dft',
-    'fourier',
-    'rangayyan_fourier_transform',
-    'rangayyan_stft',
-    'rangayyan_z_transform',
-    'rangayyan_ch3_laplace_transform_causal_finite',
-    'ztrans',
-    'rangayyan_ch3_z_transform_definition',
-    'ztconv',
-    'rangayyan_ch3_z_transform_convolution',
-    'dtftz',
-    'rangayyan_ch3_dtft_via_z',
-    'euler',
-    'rangayyan_ch3_complex_exponential',
-    'ctft',
-    'rangayyan_ch3_fourier_transform_omega',
-    'ctftf',
-    'rangayyan_ch3_fourier_transform_f',
-    'ictft',
-    'rangayyan_ch3_inverse_fourier_transform',
-    'dtft',
-    'rangayyan_ch3_dtft',
-    'dftk',
-    'rangayyan_ch3_dft_K_samples',
-    'dft',
-    'rangayyan_ch3_dft_definition',
-    'twiddle',
-    'rangayyan_ch3_twiddle_factor',
-    'dfttw',
-    'rangayyan_ch3_dft_via_twiddle',
-    'twidcs',
-    'rangayyan_ch3_twiddle_cos_sin',
-    'dftri',
-    'rangayyan_ch3_dft_real_imag_decomposition',
-    'idftri',
-    'rangayyan_ch3_idft_real_imag',
-    'dftconv',
-    'rangayyan_ch3_dft_convolution_property',
-    'twidconj',
-    'rangayyan_ch3_twiddle_conjugate_symmetry',
-    'twidper',
-    'rangayyan_ch3_twiddle_periodicity',
-    'evenpart',
-    'rangayyan_ch3_even_part',
-    'oddpart',
-    'rangayyan_ch3_odd_part',
-    'evenodd',
-    'rangayyan_ch3_even_odd_decomposition',
-    'logft',
-    'rangayyan_ch4_homomorphic_log_fourier',
-    'ftconv',
-    'rangayyan_ch4_fourier_convolution_property',
-    'clogsum',
-    'rangayyan_ch4_log_of_convolved_signals',
-    'logseries',
-    'rangayyan_ch4_log_power_series',
-    'logminph',
-    'rangayyan_ch4_log_minimum_phase_expansion',
-    'logmaxph',
-    'rangayyan_ch4_log_maximum_phase_expansion',
-    'rangayyandft',
+    "circconv",
+    "rangayyan_circular_conv_dft",
+    "dftx",
+    "rangayyan_dft",
+    "fourier",
+    "rangayyan_fourier_transform",
+    "rangayyan_stft",
+    "rangayyan_z_transform",
+    "rangayyan_ch3_laplace_transform_causal_finite",
+    "ztrans",
+    "rangayyan_ch3_z_transform_definition",
+    "ztconv",
+    "rangayyan_ch3_z_transform_convolution",
+    "dtftz",
+    "rangayyan_ch3_dtft_via_z",
+    "euler",
+    "rangayyan_ch3_complex_exponential",
+    "ctft",
+    "rangayyan_ch3_fourier_transform_omega",
+    "ctftf",
+    "rangayyan_ch3_fourier_transform_f",
+    "ictft",
+    "rangayyan_ch3_inverse_fourier_transform",
+    "dtft",
+    "rangayyan_ch3_dtft",
+    "dftk",
+    "rangayyan_ch3_dft_K_samples",
+    "dft",
+    "rangayyan_ch3_dft_definition",
+    "twiddle",
+    "rangayyan_ch3_twiddle_factor",
+    "dfttw",
+    "rangayyan_ch3_dft_via_twiddle",
+    "twidcs",
+    "rangayyan_ch3_twiddle_cos_sin",
+    "dftri",
+    "rangayyan_ch3_dft_real_imag_decomposition",
+    "idftri",
+    "rangayyan_ch3_idft_real_imag",
+    "dftconv",
+    "rangayyan_ch3_dft_convolution_property",
+    "twidconj",
+    "rangayyan_ch3_twiddle_conjugate_symmetry",
+    "twidper",
+    "rangayyan_ch3_twiddle_periodicity",
+    "evenpart",
+    "rangayyan_ch3_even_part",
+    "oddpart",
+    "rangayyan_ch3_odd_part",
+    "evenodd",
+    "rangayyan_ch3_even_odd_decomposition",
+    "logft",
+    "rangayyan_ch4_homomorphic_log_fourier",
+    "ftconv",
+    "rangayyan_ch4_fourier_convolution_property",
+    "clogsum",
+    "rangayyan_ch4_log_of_convolved_signals",
+    "logseries",
+    "rangayyan_ch4_log_power_series",
+    "logminph",
+    "rangayyan_ch4_log_minimum_phase_expansion",
+    "logmaxph",
+    "rangayyan_ch4_log_maximum_phase_expansion",
+    "rangayyandft",
 ]
+
 
 def _angle(z):
     """Principal argument in (-pi, pi], without importing cmath."""
     return _atan2(z.imag, z.real)
-
 
 
 # -- rgcdft: Circular (cyclic) convolution via DFT.
@@ -119,18 +119,22 @@ def circconv(x, h, npoints=None):
         raise ValueError("N must be at least the length of both signals")
     xp = xs + [0.0] * (n - len(xs))
     hp = hs + [0.0] * (n - len(hs))
-    direct = [fsum(xp[k] * hp[(i - k) % n] for k in range(n))
-              for i in range(n)]
-    via = idftri([a * b for a, b in
-                  zip(dft(xp)["X"], dft(hp)["X"])])["x"]
+    direct = [fsum(xp[k] * hp[(i - k) % n] for k in range(n)) for i in range(n)]
+    via = idftri([a * b for a, b in zip(dft(xp)["X"], dft(hp)["X"])])["x"]
     gap = max(abs(a - b) for a, b in zip(direct, via))
     lin_len = len(xs) + len(hs) - 1
-    return RichResult(payload={
-        "y": direct, "via_dft": via, "N": n, "max_difference": gap,
-        "agrees": gap <= 1e-8 * (1 + max(abs(v) for v in direct)),
-        "equals_linear": n >= lin_len,
-        "linear_length": lin_len,
-        "method": "Rangayyan (2024) eq. (3.90)"})
+    return RichResult(
+        payload={
+            "y": direct,
+            "via_dft": via,
+            "N": n,
+            "max_difference": gap,
+            "agrees": gap <= 1e-8 * (1 + max(abs(v) for v in direct)),
+            "equals_linear": n >= lin_len,
+            "linear_length": lin_len,
+            "method": "Rangayyan (2024) eq. (3.90)",
+        }
+    )
 
 
 rangayyan_circular_conv_dft = circconv  # pre-policy spelling
@@ -367,9 +371,13 @@ def ztrans(x, z=None, n0=0):
     if not xs:
         raise ValueError("need at least one sample")
     idx = [n0 + i for i in range(len(xs))]
-    out = {"coefficients": xs, "n": idx, "causal": n0 >= 0,
-           "degree": len(xs) - 1,
-           "method": "Rangayyan (2024) eqs. (3.54)-(3.55)"}
+    out = {
+        "coefficients": xs,
+        "n": idx,
+        "causal": n0 >= 0,
+        "degree": len(xs) - 1,
+        "method": "Rangayyan (2024) eqs. (3.54)-(3.55)",
+    }
     if z is None:
         out["X"] = None
         out["z"] = None
@@ -422,12 +430,17 @@ def ztconv(x, h, z):
         rhs.append(X * H)
     gap = max(abs(a - b) for a, b in zip(lhs, rhs))
     scale = max(abs(b) for b in rhs) or 1.0
-    return RichResult(payload={
-        "y": y, "Y": lhs[0] if scalar else lhs,
-        "XH": rhs[0] if scalar else rhs,
-        "z": zs[0] if scalar else zs,
-        "max_difference": gap, "holds": gap <= 1e-9 * scale,
-        "method": "Rangayyan (2024) eq. (3.56)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "Y": lhs[0] if scalar else lhs,
+            "XH": rhs[0] if scalar else rhs,
+            "z": zs[0] if scalar else zs,
+            "max_difference": gap,
+            "holds": gap <= 1e-9 * scale,
+            "method": "Rangayyan (2024) eq. (3.56)",
+        }
+    )
 
 
 rangayyan_ch3_z_transform_convolution = ztconv  # pre-policy spelling
@@ -457,16 +470,20 @@ def dtftz(x, omega, fs=None):
     zs, vals = [], []
     for w in ws:
         ang = w * t_s
-        zv = complex(cos(ang), sin(ang))          # exp(j omega T)
+        zv = complex(cos(ang), sin(ang))  # exp(j omega T)
         zs.append(zv)
         vals.append(sum(complex(c) * zv ** (-n) for n, c in enumerate(xs)))
-    return RichResult(payload={
-        "X": vals[0] if scalar else vals,
-        "z": zs[0] if scalar else zs,
-        "omega": ws[0] if scalar else ws,
-        "T": t_s, "n": len(xs),
-        "on_unit_circle": all(abs(abs(v) - 1.0) < 1e-12 for v in zs),
-        "method": "Rangayyan (2024) eq. (3.66)"})
+    return RichResult(
+        payload={
+            "X": vals[0] if scalar else vals,
+            "z": zs[0] if scalar else zs,
+            "omega": ws[0] if scalar else ws,
+            "T": t_s,
+            "n": len(xs),
+            "on_unit_circle": all(abs(abs(v) - 1.0) < 1e-12 for v in zs),
+            "method": "Rangayyan (2024) eq. (3.66)",
+        }
+    )
 
 
 rangayyan_ch3_dtft_via_z = dtftz  # pre-policy spelling
@@ -484,12 +501,10 @@ def euler(omega, t=0.0):
     real and imaginary parts are returned separately so the projection
     onto the cos and sin components can be read off directly.
     """
-    ws = [float(omega)] if isinstance(omega, (int, float)) else \
-        [float(v) for v in omega]
+    ws = [float(omega)] if isinstance(omega, (int, float)) else [float(v) for v in omega]
     ts = [float(t)] if isinstance(t, (int, float)) else [float(v) for v in t]
     if len(ws) > 1 and len(ts) > 1 and len(ws) != len(ts):
-        raise ValueError("omega and t must broadcast: equal lengths or one "
-                         "of them scalar")
+        raise ValueError("omega and t must broadcast: equal lengths or one of them scalar")
     n = max(len(ws), len(ts))
     ws = ws * n if len(ws) == 1 else ws
     ts = ts * n if len(ts) == 1 else ts
@@ -498,12 +513,16 @@ def euler(omega, t=0.0):
     im = [sin(a) for a in ang]
     vals = [complex(r, i) for r, i in zip(re, im)]
     one = len(vals) == 1
-    return RichResult(payload={
-        "value": vals[0] if one else vals,
-        "real": re[0] if one else re, "imag": im[0] if one else im,
-        "angle": ang[0] if one else ang,
-        "unit_modulus": all(abs(abs(v) - 1.0) < 1e-15 for v in vals),
-        "method": "Rangayyan (2024) eq. (3.74)"})
+    return RichResult(
+        payload={
+            "value": vals[0] if one else vals,
+            "real": re[0] if one else re,
+            "imag": im[0] if one else im,
+            "angle": ang[0] if one else ang,
+            "unit_modulus": all(abs(abs(v) - 1.0) < 1e-15 for v in vals),
+            "method": "Rangayyan (2024) eq. (3.74)",
+        }
+    )
 
 
 rangayyan_ch3_complex_exponential = euler  # pre-policy spelling
@@ -561,12 +580,16 @@ def ctft(x, t=None, omega=None, f=None, dt=None):
         re = [xv * cos(-w * tv) for xv, tv in zip(xs, ts)]
         im = [xv * sin(-w * tv) for xv, tv in zip(xs, ts)]
         vals.append(complex(gridint(re, ts), gridint(im, ts)))
-    return RichResult(payload={
-        "X": vals[0] if scalar else vals,
-        "omega": ws[0] if scalar else ws,
-        "f": fs_[0] if scalar else fs_,
-        "variable": variable, "duration": ts[-1] - ts[0],
-        "method": "Rangayyan (2024) eqs. (3.75)-(3.76)"})
+    return RichResult(
+        payload={
+            "X": vals[0] if scalar else vals,
+            "omega": ws[0] if scalar else ws,
+            "f": fs_[0] if scalar else fs_,
+            "variable": variable,
+            "duration": ts[-1] - ts[0],
+            "method": "Rangayyan (2024) eqs. (3.75)-(3.76)",
+        }
+    )
 
 
 rangayyan_ch3_fourier_transform_omega = ctft  # pre-policy spelling
@@ -619,12 +642,18 @@ def ictft(X, t, omega=None, f=None):
     if omega is not None:
         grid = [float(v) for v in omega]
         scale = 1.0 / (2.0 * pi)
-        ang = lambda w, tv: w * tv
+
+        def ang(w, tv):
+            return w * tv
+
         variable = "omega"
     else:
         grid = [float(v) for v in f]
         scale = 1.0
-        ang = lambda w, tv: 2.0 * pi * w * tv
+
+        def ang(w, tv):
+            return 2.0 * pi * w * tv
+
         variable = "f"
     if len(grid) != len(Xs):
         raise ValueError("X and the frequency grid must have equal length")
@@ -634,16 +663,18 @@ def ictft(X, t, omega=None, f=None):
     ts = [float(t)] if scalar else [float(v) for v in t]
     out = []
     for tv in ts:
-        re = [Xs[i].real * cos(ang(grid[i], tv))
-              - Xs[i].imag * sin(ang(grid[i], tv)) for i in range(len(Xs))]
-        im = [Xs[i].real * sin(ang(grid[i], tv))
-              + Xs[i].imag * cos(ang(grid[i], tv)) for i in range(len(Xs))]
-        out.append(complex(scale * gridint(re, grid),
-                           scale * gridint(im, grid)))
-    return RichResult(payload={
-        "x": out[0] if scalar else out, "t": ts[0] if scalar else ts,
-        "variable": variable, "scale": scale,
-        "method": "Rangayyan (2024) eq. (3.77)"})
+        re = [Xs[i].real * cos(ang(grid[i], tv)) - Xs[i].imag * sin(ang(grid[i], tv)) for i in range(len(Xs))]
+        im = [Xs[i].real * sin(ang(grid[i], tv)) + Xs[i].imag * cos(ang(grid[i], tv)) for i in range(len(Xs))]
+        out.append(complex(scale * gridint(re, grid), scale * gridint(im, grid)))
+    return RichResult(
+        payload={
+            "x": out[0] if scalar else out,
+            "t": ts[0] if scalar else ts,
+            "variable": variable,
+            "scale": scale,
+            "method": "Rangayyan (2024) eq. (3.77)",
+        }
+    )
 
 
 rangayyan_ch3_inverse_fourier_transform = ictft  # pre-policy spelling
@@ -671,10 +702,15 @@ def dtft(x, omega, n0=0):
         re = fsum(xv * cos(-w * (n0 + i)) for i, xv in enumerate(xs))
         im = fsum(xv * sin(-w * (n0 + i)) for i, xv in enumerate(xs))
         vals.append(complex(re, im))
-    return RichResult(payload={
-        "X": vals[0] if scalar else vals,
-        "omega": ws[0] if scalar else ws, "n0": int(n0), "n": len(xs),
-        "method": "Rangayyan (2024) eq. (3.78)"})
+    return RichResult(
+        payload={
+            "X": vals[0] if scalar else vals,
+            "omega": ws[0] if scalar else ws,
+            "n0": int(n0),
+            "n": len(xs),
+            "method": "Rangayyan (2024) eq. (3.78)",
+        }
+    )
 
 
 rangayyan_ch3_dtft = dtft  # pre-policy spelling
@@ -707,9 +743,7 @@ def dftk(x, k_points):
         re = fsum(xv * cos(-step * i * k) for i, xv in enumerate(xs))
         im = fsum(xv * sin(-step * i * k) for i, xv in enumerate(xs))
         out.append(complex(re, im))
-    return RichResult(payload={
-        "X": out, "K": kk, "n": n, "aliased": kk < n,
-        "method": "Rangayyan (2024) eq. (3.79)"})
+    return RichResult(payload={"X": out, "K": kk, "n": n, "aliased": kk < n, "method": "Rangayyan (2024) eq. (3.79)"})
 
 
 rangayyan_ch3_dft_K_samples = dftk  # pre-policy spelling
@@ -743,13 +777,18 @@ def dft(x):
         re.append(fsum(xv * cos(-step * i * k) for i, xv in enumerate(xs)))
         im.append(fsum(xv * sin(-step * i * k) for i, xv in enumerate(xs)))
     X = [complex(a, b) for a, b in zip(re, im)]
-    sym = all(abs(X[k] - X[(n - k) % n].conjugate()) < 1e-9 * (1 + abs(X[k]))
-              for k in range(n))
-    return RichResult(payload={
-        "X": X, "real": re, "imag": im, "n": n,
-        "magnitude": [abs(v) for v in X],
-        "conjugate_symmetric": sym,
-        "method": "Rangayyan (2024) eq. (3.80)"})
+    sym = all(abs(X[k] - X[(n - k) % n].conjugate()) < 1e-9 * (1 + abs(X[k])) for k in range(n))
+    return RichResult(
+        payload={
+            "X": X,
+            "real": re,
+            "imag": im,
+            "n": n,
+            "magnitude": [abs(v) for v in X],
+            "conjugate_symmetric": sym,
+            "method": "Rangayyan (2024) eq. (3.80)",
+        }
+    )
 
 
 rangayyan_ch3_dft_definition = dft  # pre-policy spelling
@@ -771,13 +810,16 @@ def twiddle(npoints, power=1):
         raise ValueError("N must be positive")
     scalar = isinstance(power, int)
     ps = [int(power)] if scalar else [int(v) for v in power]
-    vals = [complex(cos(-2.0 * pi * p / n), sin(-2.0 * pi * p / n))
-            for p in ps]
-    return RichResult(payload={
-        "W": vals[0] if scalar else vals, "N": n,
-        "power": ps[0] if scalar else ps,
-        "root_of_unity": abs(vals[0] ** n - 1.0) < 1e-9 if scalar else None,
-        "method": "Rangayyan (2024) eq. (3.82)"})
+    vals = [complex(cos(-2.0 * pi * p / n), sin(-2.0 * pi * p / n)) for p in ps]
+    return RichResult(
+        payload={
+            "W": vals[0] if scalar else vals,
+            "N": n,
+            "power": ps[0] if scalar else ps,
+            "root_of_unity": abs(vals[0] ** n - 1.0) < 1e-9 if scalar else None,
+            "method": "Rangayyan (2024) eq. (3.82)",
+        }
+    )
 
 
 rangayyan_ch3_twiddle_factor = twiddle  # pre-policy spelling
@@ -805,18 +847,23 @@ def dfttw(x):
     for k in range(n):
         acc = 0j
         wk = 1.0 + 0j
-        step = w ** k
+        step = w**k
         for xv in xs:
             acc += xv * wk
             wk *= step
         X.append(acc)
     direct = dft(xs)["X"]
     gap = max(abs(a - b) for a, b in zip(X, direct))
-    return RichResult(payload={
-        "X": X, "W": w, "n": n, "max_difference": gap,
-        "agrees_with_definition": gap <= 1e-8 * (1 + max(abs(v)
-                                                         for v in direct)),
-        "method": "Rangayyan (2024) eq. (3.83)"})
+    return RichResult(
+        payload={
+            "X": X,
+            "W": w,
+            "n": n,
+            "max_difference": gap,
+            "agrees_with_definition": gap <= 1e-8 * (1 + max(abs(v) for v in direct)),
+            "method": "Rangayyan (2024) eq. (3.83)",
+        }
+    )
 
 
 rangayyan_ch3_dft_via_twiddle = dfttw  # pre-policy spelling
@@ -841,10 +888,18 @@ def twidcs(npoints, n, k):
         raise ValueError("N must be positive")
     ang = 2.0 * pi * int(n) * int(k) / nn
     c, s = cos(ang), sin(ang)
-    return RichResult(payload={
-        "W": complex(c, -s), "cos": c, "sin": s, "angle": ang,
-        "N": nn, "n": int(n), "k": int(k),
-        "method": "Rangayyan (2024) eq. (3.84)"})
+    return RichResult(
+        payload={
+            "W": complex(c, -s),
+            "cos": c,
+            "sin": s,
+            "angle": ang,
+            "N": nn,
+            "n": int(n),
+            "k": int(k),
+            "method": "Rangayyan (2024) eq. (3.84)",
+        }
+    )
 
 
 rangayyan_ch3_twiddle_cos_sin = twidcs  # pre-policy spelling
@@ -874,10 +929,17 @@ def dftri(x):
         cp.append(fsum(xv * cos(step * i * k) for i, xv in enumerate(xs)))
         sp.append(fsum(xv * sin(step * i * k) for i, xv in enumerate(xs)))
     X = [complex(a, -b) for a, b in zip(cp, sp)]
-    return RichResult(payload={
-        "X": X, "cos_projection": cp, "sin_projection": sp,
-        "real": cp, "imag": [-b for b in sp], "n": n,
-        "method": "Rangayyan (2024) eq. (3.85)"})
+    return RichResult(
+        payload={
+            "X": X,
+            "cos_projection": cp,
+            "sin_projection": sp,
+            "real": cp,
+            "imag": [-b for b in sp],
+            "n": n,
+            "method": "Rangayyan (2024) eq. (3.85)",
+        }
+    )
 
 
 rangayyan_ch3_dft_real_imag_decomposition = dftri  # pre-policy spelling
@@ -910,10 +972,15 @@ def idftri(X):
             ang = step * i * k
             acc += Xk * complex(cos(ang), sin(ang))
         out.append(acc / n)
-    return RichResult(payload={
-        "x": [v.real for v in out], "complex": out, "n": n,
-        "max_imaginary": max(abs(v.imag) for v in out),
-        "method": "Rangayyan (2024) eq. (3.86)"})
+    return RichResult(
+        payload={
+            "x": [v.real for v in out],
+            "complex": out,
+            "n": n,
+            "max_imaginary": max(abs(v.imag) for v in out),
+            "method": "Rangayyan (2024) eq. (3.86)",
+        }
+    )
 
 
 rangayyan_ch3_idft_real_imag = idftri  # pre-policy spelling
@@ -954,13 +1021,20 @@ def dftconv(x, h):
     hc = hs + [0.0] * (n - nh)
     circ = [fsum(xc[i] * hc[(k - i) % n] for i in range(n)) for k in range(n)]
     gap = max(abs(a - b) for a, b in zip(rec, lin))
-    return RichResult(payload={
-        "linear": lin, "circular": circ, "from_dft": rec,
-        "padded_length": L, "n_linear": L, "n_circular": n,
-        "max_difference": gap,
-        "holds": gap <= 1e-8 * (1 + max(abs(v) for v in lin)),
-        "wraps_if_unpadded": n < L,
-        "method": "Rangayyan (2024) eq. (3.87)"})
+    return RichResult(
+        payload={
+            "linear": lin,
+            "circular": circ,
+            "from_dft": rec,
+            "padded_length": L,
+            "n_linear": L,
+            "n_circular": n,
+            "max_difference": gap,
+            "holds": gap <= 1e-8 * (1 + max(abs(v) for v in lin)),
+            "wraps_if_unpadded": n < L,
+            "method": "Rangayyan (2024) eq. (3.87)",
+        }
+    )
 
 
 rangayyan_ch3_dft_convolution_property = dftconv  # pre-policy spelling
@@ -983,11 +1057,18 @@ def twidconj(npoints, n, k):
     p = int(n) * int(k)
     lhs = complex(cos(2.0 * pi * p / nn), sin(2.0 * pi * p / nn))
     rhs = complex(cos(-2.0 * pi * p / nn), sin(-2.0 * pi * p / nn)).conjugate()
-    return RichResult(payload={
-        "negative_power": lhs, "conjugate": rhs,
-        "difference": abs(lhs - rhs), "holds": abs(lhs - rhs) < 1e-12,
-        "N": nn, "n": int(n), "k": int(k),
-        "method": "Rangayyan (2024) eq. (3.88)"})
+    return RichResult(
+        payload={
+            "negative_power": lhs,
+            "conjugate": rhs,
+            "difference": abs(lhs - rhs),
+            "holds": abs(lhs - rhs) < 1e-12,
+            "N": nn,
+            "n": int(n),
+            "k": int(k),
+            "method": "Rangayyan (2024) eq. (3.88)",
+        }
+    )
 
 
 rangayyan_ch3_twiddle_conjugate_symmetry = twidconj  # pre-policy spelling
@@ -1015,11 +1096,19 @@ def twidper(npoints, n, k):
 
     base, shift_k, shift_n = w(ni * ki), w(ni * (ki + nn)), w((ni + nn) * ki)
     gap = max(abs(base - shift_k), abs(base - shift_n))
-    return RichResult(payload={
-        "base": base, "shift_k": shift_k, "shift_n": shift_n,
-        "max_difference": gap, "holds": gap < 1e-9,
-        "N": nn, "n": ni, "k": ki,
-        "method": "Rangayyan (2024) eq. (3.89)"})
+    return RichResult(
+        payload={
+            "base": base,
+            "shift_k": shift_k,
+            "shift_n": shift_n,
+            "max_difference": gap,
+            "holds": gap < 1e-9,
+            "N": nn,
+            "n": ni,
+            "k": ki,
+            "method": "Rangayyan (2024) eq. (3.89)",
+        }
+    )
 
 
 rangayyan_ch3_twiddle_periodicity = twidper  # pre-policy spelling
@@ -1069,8 +1158,9 @@ def _evenodd_core(x, n=None):
         raise ValueError("need at least one sample")
     if n is None:
         if m % 2 == 0:
-            raise ValueError("with no index grid the sequence must have an "
-                             "odd length so that n = 0 is a sample; pass n=")
+            raise ValueError(
+                "with no index grid the sequence must have an odd length so that n = 0 is a sample; pass n="
+            )
         half = m // 2
         idx = [i - half for i in range(m)]
     else:
@@ -1080,21 +1170,16 @@ def _evenodd_core(x, n=None):
     table = dict(zip(idx, xs))
     missing = [i for i in idx if -i not in table]
     if missing:
-        raise ValueError("index grid is not symmetric: x(-n) is unavailable "
-                         "for n = %s" % missing[:5])
+        raise ValueError(f"index grid is not symmetric: x(-n) is unavailable for n = {missing[:5]}")
     ev = [0.5 * (table[i] + table[-i]) for i in idx]
     od = [0.5 * (table[i] - table[-i]) for i in idx]
     recon = [a + b for a, b in zip(ev, od)]
     err = max(abs(a - b) for a, b in zip(recon, xs))
-    common = {"n": idx, "even": ev, "odd": od, "x": xs,
-              "reconstruction_error": err}
+    common = {"n": idx, "even": ev, "odd": od, "x": xs, "reconstruction_error": err}
     return {
-        "even_result": RichResult(payload=dict(
-            common, method="Rangayyan (2024) eq. (3.92)")),
-        "odd_result": RichResult(payload=dict(
-            common, method="Rangayyan (2024) eq. (3.93)")),
-        "both": RichResult(payload=dict(
-            common, method="Rangayyan (2024) eqs. (3.92)-(3.94)")),
+        "even_result": RichResult(payload=dict(common, method="Rangayyan (2024) eq. (3.92)")),
+        "odd_result": RichResult(payload=dict(common, method="Rangayyan (2024) eq. (3.93)")),
+        "both": RichResult(payload=dict(common, method="Rangayyan (2024) eqs. (3.92)-(3.94)")),
     }
 
 
@@ -1139,8 +1224,7 @@ def logft(x, p, omega, t=None, dt=None):
     if any(v == 0 for v in xs) or any(v == 0 for v in ps):
         raise ValueError("eq. (4.59) needs x(t) != 0 and p(t) != 0 for all t")
     if any(v < 0 for v in xs) or any(v < 0 for v in ps):
-        raise ValueError("real logarithm needs positive signals; take the "
-                         "complex cepstrum route for signed data")
+        raise ValueError("real logarithm needs positive signals; take the complex cepstrum route for signed data")
     y = [a * b for a, b in zip(xs, ps)]
     ly = [log(v) for v in y]
     lx = [log(v) for v in xs]
@@ -1153,11 +1237,17 @@ def logft(x, p, omega, t=None, dt=None):
     b = [Xl] if scalar else list(Xl)
     c = [Pl] if scalar else list(Pl)
     gap = max(abs(u - (v + w)) for u, v, w in zip(a, b, c))
-    return RichResult(payload={
-        "y": y, "Yl": Yl, "Xl": Xl, "Pl": Pl,
-        "max_difference": gap,
-        "additive": gap <= 1e-8 * (1 + max(abs(u) for u in a)),
-        "method": "Rangayyan (2024) eqs. (4.58)-(4.60)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "Yl": Yl,
+            "Xl": Xl,
+            "Pl": Pl,
+            "max_difference": gap,
+            "additive": gap <= 1e-8 * (1 + max(abs(u) for u in a)),
+            "method": "Rangayyan (2024) eqs. (4.58)-(4.60)",
+        }
+    )
 
 
 rangayyan_ch4_homomorphic_log_fourier = logft  # pre-policy spelling
@@ -1201,12 +1291,18 @@ def ftconv(x, h, omega, dt=1.0):
     Y, X, H = tf(y), tf(xs), tf(hs)
     prod = [a * b for a, b in zip(X, H)]
     gap = max(abs(a - b) for a, b in zip(Y, prod))
-    return RichResult(payload={
-        "y": y, "Y": Y[0] if scalar else Y, "X": X[0] if scalar else X,
-        "H": H[0] if scalar else H, "XH": prod[0] if scalar else prod,
-        "max_difference": gap,
-        "holds": gap <= 1e-8 * (1 + max(abs(v) for v in prod)),
-        "method": "Rangayyan (2024) eqs. (4.61)-(4.62)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "Y": Y[0] if scalar else Y,
+            "X": X[0] if scalar else X,
+            "H": H[0] if scalar else H,
+            "XH": prod[0] if scalar else prod,
+            "max_difference": gap,
+            "holds": gap <= 1e-8 * (1 + max(abs(v) for v in prod)),
+            "method": "Rangayyan (2024) eqs. (4.61)-(4.62)",
+        }
+    )
 
 
 rangayyan_ch4_fourier_convolution_property = ftconv  # pre-policy spelling
@@ -1259,17 +1355,20 @@ def clogsum(x, h, z):
         Xh.append(lx)
         Hh.append(lh)
         off.append((ly.imag - lx.imag - lh.imag) / (2.0 * pi))
-    mag_gap = max(abs(a.real - b.real - c.real)
-                  for a, b, c in zip(Yh, Xh, Hh))
+    mag_gap = max(abs(a.real - b.real - c.real) for a, b, c in zip(Yh, Xh, Hh))
     wrap = max(abs(o - round(o)) for o in off)
-    return RichResult(payload={
-        "y": y, "Y_hat": Yh[0] if scalar else Yh,
-        "X_hat": Xh[0] if scalar else Xh,
-        "H_hat": Hh[0] if scalar else Hh,
-        "magnitude_difference": mag_gap,
-        "branch_offset": off[0] if scalar else off,
-        "holds_up_to_branch": mag_gap < 1e-9 and wrap < 1e-9,
-        "method": "Rangayyan (2024) eqs. (4.63), (4.65)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "Y_hat": Yh[0] if scalar else Yh,
+            "X_hat": Xh[0] if scalar else Xh,
+            "H_hat": Hh[0] if scalar else Hh,
+            "magnitude_difference": mag_gap,
+            "branch_offset": off[0] if scalar else off,
+            "holds_up_to_branch": mag_gap < 1e-9 and wrap < 1e-9,
+            "method": "Rangayyan (2024) eqs. (4.63), (4.65)",
+        }
+    )
 
 
 rangayyan_ch4_log_of_convolved_signals = clogsum  # pre-policy spelling
@@ -1288,15 +1387,13 @@ def logseries(x, terms=20):
     decreasing terms is bounded by the first omitted term, which is
     returned as ``error_bound``.
     """
-    xs = [complex(x)] if isinstance(x, (int, float, complex)) \
-        else [complex(v) for v in x]
+    xs = [complex(x)] if isinstance(x, (int, float, complex)) else [complex(v) for v in x]
     k = int(terms)
     if k < 1:
         raise ValueError("terms must be positive")
     bad = [v for v in xs if abs(v) >= 1.0]
     if bad:
-        raise ValueError("the series converges only for |x| < 1; got %r"
-                         % (bad[0],))
+        raise ValueError(f"the series converges only for |x| < 1; got {bad[0]!r}")
     out, bound = [], []
     for v in xs:
         s = 0j
@@ -1308,12 +1405,16 @@ def logseries(x, terms=20):
         bound.append(abs(p * v) / (k + 1))
     exact = [complex(log(abs(1.0 + v)), _angle(1.0 + v)) for v in xs]
     one = len(out) == 1
-    return RichResult(payload={
-        "value": out[0] if one else out,
-        "exact": exact[0] if one else exact,
-        "error": max(abs(a - b) for a, b in zip(out, exact)),
-        "error_bound": bound[0] if one else bound,
-        "terms": k, "method": "Rangayyan (2024) eq. (4.69)"})
+    return RichResult(
+        payload={
+            "value": out[0] if one else out,
+            "exact": exact[0] if one else exact,
+            "error": max(abs(a - b) for a, b in zip(out, exact)),
+            "error_bound": bound[0] if one else bound,
+            "terms": k,
+            "method": "Rangayyan (2024) eq. (4.69)",
+        }
+    )
 
 
 rangayyan_ch4_log_power_series = logseries  # pre-policy spelling
@@ -1347,10 +1448,14 @@ def logminph(alpha, terms=20, z=None):
     k = int(terms)
     if k < 1:
         raise ValueError("terms must be positive")
-    coeffs = [-(a ** n) / n for n in range(1, k + 1)]
-    out = {"coefficients": coeffs, "quefrency": list(range(1, k + 1)),
-           "causal": True, "alpha": a,
-           "method": "Rangayyan (2024) eq. (4.70)"}
+    coeffs = [-(a**n) / n for n in range(1, k + 1)]
+    out = {
+        "coefficients": coeffs,
+        "quefrency": list(range(1, k + 1)),
+        "causal": True,
+        "alpha": a,
+        "method": "Rangayyan (2024) eq. (4.70)",
+    }
     if z is not None:
         zv = complex(z)
         if abs(zv) <= abs(a):
@@ -1386,15 +1491,19 @@ def logmaxph(beta, terms=20, z=None):
     k = int(terms)
     if k < 1:
         raise ValueError("terms must be positive")
-    coeffs = [-(b ** n) / n for n in range(1, k + 1)]
-    out = {"coefficients": coeffs, "quefrency": [-n for n in range(1, k + 1)],
-           "causal": False, "beta": b,
-           "method": "Rangayyan (2024) eq. (4.71)"}
+    coeffs = [-(b**n) / n for n in range(1, k + 1)]
+    out = {
+        "coefficients": coeffs,
+        "quefrency": [-n for n in range(1, k + 1)],
+        "causal": False,
+        "beta": b,
+        "method": "Rangayyan (2024) eq. (4.71)",
+    }
     if z is not None:
         zv = complex(z)
         if b != 0 and abs(zv) >= 1.0 / abs(b):
             raise ValueError("the expansion needs |z| < 1/|beta|")
-        s = sum(c * zv ** n for n, c in enumerate(coeffs, start=1))
+        s = sum(c * zv**n for n, c in enumerate(coeffs, start=1))
         w = 1.0 - b * zv
         exact = complex(log(abs(w)), _angle(w))
         out["value"] = s
@@ -1408,44 +1517,45 @@ rangayyan_ch4_log_maximum_phase_expansion = logmaxph  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgcdft: circular convolution via the DFT, Rangayyan eq. (3.90)',
-    'rgdft: DFT with a frequency axis in Hz, Rangayyan eq. (3.80)',
-    'rgft: continuous-time Fourier transform, eqs. (3.75)-(3.76)',
-    'rgstf: Short-time Fourier transform -- Rangayyan & Krishnan Sec 8.4.1.',
-    'rgztf: Z-transform of a causal discrete-time sequence.',
-    'rng049: Laplace transform of a causal finite-duration h(t) over [0, T].',
-    'rng052: z-transform, Rangayyan eqs. (3.54)-(3.55)',
-    'rng054: z-domain convolution property, Rangayyan eq. (3.56)',
-    'rng055: DTFT as the z-transform on the unit circle, eq. (3.66)',
-    'rng063: Euler complex exponential basis, Rangayyan eq. (3.74)',
-    'rng064: continuous-time Fourier transform, eqs. (3.75)-(3.76)',
-    'rng065: continuous-time Fourier transform in Hz, eq. (3.76)',
-    'rng066: inverse continuous-time Fourier transform, eq. (3.77)',
-    'rng067: discrete-time Fourier transform, Rangayyan eq. (3.78)',
-    'rng068: DFT at K frequency samples, Rangayyan eq. (3.79)',
-    'rng069: discrete Fourier transform, Rangayyan eq. (3.80)',
-    'rng071: twiddle factor W_N, Rangayyan eq. (3.82)',
-    'rng072: DFT via twiddle factors, Rangayyan eq. (3.83)',
-    'rng073: twiddle factor in cos/sin form, Rangayyan eq. (3.84)',
-    'rng074: DFT as cos/sin projections, Rangayyan eq. (3.85)',
-    'rng075: inverse DFT as sinusoid synthesis, Rangayyan eq. (3.86)',
-    'rng076: DFT convolution property, Rangayyan eq. (3.87)',
-    'rng077: twiddle conjugate symmetry, Rangayyan eq. (3.88)',
-    'rng078: twiddle periodicity, Rangayyan eq. (3.89)',
-    'rng081: even-symmetric part, Rangayyan eq. (3.92)',
-    'rng082: odd-symmetric part, Rangayyan eq. (3.93)',
-    'rng083: even/odd decomposition, Rangayyan eqs. (3.92)-(3.94)',
-    'rng232: log-spectra add for a product, Rangayyan eqs. (4.58)-(4.60)',
-    'rng234: Fourier convolution property, Rangayyan eqs. (4.61)-(4.62)',
-    'rng237: complex logs of a convolution add, Rangayyan eq. (4.65)',
-    'rng241: log(1+x) power series, Rangayyan eq. (4.69)',
-    'rng242: log(1 - alpha z^-1) expansion, Rangayyan eq. (4.70)',
-    'rng243: log(1 - beta z) expansion, Rangayyan eq. (4.71)',
+    "rgcdft: circular convolution via the DFT, Rangayyan eq. (3.90)",
+    "rgdft: DFT with a frequency axis in Hz, Rangayyan eq. (3.80)",
+    "rgft: continuous-time Fourier transform, eqs. (3.75)-(3.76)",
+    "rgstf: Short-time Fourier transform -- Rangayyan & Krishnan Sec 8.4.1.",
+    "rgztf: Z-transform of a causal discrete-time sequence.",
+    "rng049: Laplace transform of a causal finite-duration h(t) over [0, T].",
+    "rng052: z-transform, Rangayyan eqs. (3.54)-(3.55)",
+    "rng054: z-domain convolution property, Rangayyan eq. (3.56)",
+    "rng055: DTFT as the z-transform on the unit circle, eq. (3.66)",
+    "rng063: Euler complex exponential basis, Rangayyan eq. (3.74)",
+    "rng064: continuous-time Fourier transform, eqs. (3.75)-(3.76)",
+    "rng065: continuous-time Fourier transform in Hz, eq. (3.76)",
+    "rng066: inverse continuous-time Fourier transform, eq. (3.77)",
+    "rng067: discrete-time Fourier transform, Rangayyan eq. (3.78)",
+    "rng068: DFT at K frequency samples, Rangayyan eq. (3.79)",
+    "rng069: discrete Fourier transform, Rangayyan eq. (3.80)",
+    "rng071: twiddle factor W_N, Rangayyan eq. (3.82)",
+    "rng072: DFT via twiddle factors, Rangayyan eq. (3.83)",
+    "rng073: twiddle factor in cos/sin form, Rangayyan eq. (3.84)",
+    "rng074: DFT as cos/sin projections, Rangayyan eq. (3.85)",
+    "rng075: inverse DFT as sinusoid synthesis, Rangayyan eq. (3.86)",
+    "rng076: DFT convolution property, Rangayyan eq. (3.87)",
+    "rng077: twiddle conjugate symmetry, Rangayyan eq. (3.88)",
+    "rng078: twiddle periodicity, Rangayyan eq. (3.89)",
+    "rng081: even-symmetric part, Rangayyan eq. (3.92)",
+    "rng082: odd-symmetric part, Rangayyan eq. (3.93)",
+    "rng083: even/odd decomposition, Rangayyan eqs. (3.92)-(3.94)",
+    "rng232: log-spectra add for a product, Rangayyan eqs. (4.58)-(4.60)",
+    "rng234: Fourier convolution property, Rangayyan eqs. (4.61)-(4.62)",
+    "rng237: complex logs of a convolution add, Rangayyan eq. (4.65)",
+    "rng241: log(1+x) power series, Rangayyan eq. (4.69)",
+    "rng242: log(1 - alpha z^-1) expansion, Rangayyan eq. (4.70)",
+    "rng243: log(1 - beta z) expansion, Rangayyan eq. (4.71)",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised

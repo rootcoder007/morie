@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['alr', 'aitchison_alr', 'aitchisonalr']
+__all__ = ["alr", "aitchison_alr", "aitchisonalr"]
 
 
 def alr(x, ref=None):
@@ -41,9 +41,15 @@ def alr(x, ref=None):
         raise ValueError("ref must be a 1-based part index")
     lr = math.log(x[k - 1])
     idx = [i for i in range(1, D + 1) if i != k]
-    return RichResult(payload={
-        "alr": [math.log(x[i - 1]) - lr for i in idx], "ref": k, "parts": idx,
-        "D": D, "method": "Additive log-ratio transform"})
+    return RichResult(
+        payload={
+            "alr": [math.log(x[i - 1]) - lr for i in idx],
+            "ref": k,
+            "parts": idx,
+            "D": D,
+            "method": "Additive log-ratio transform",
+        }
+    )
 
 
 aitchison_alr = alr
@@ -51,4 +57,4 @@ aitchisonalr = alr
 
 
 def cheatsheet():
-    return 'aitalr: Additive log-ratio transform of a composition against a reference part.'
+    return "aitalr: Additive log-ratio transform of a composition against a reference part."

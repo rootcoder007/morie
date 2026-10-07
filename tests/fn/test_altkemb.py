@@ -10,5 +10,6 @@ def test_altkemb_basic():
 
 def test_altkemb_edge():
     import pytest
+
     with pytest.raises(ValueError, match="vocabulary"):
         alammar_token_embedding_lookup([9], [[1.0]])

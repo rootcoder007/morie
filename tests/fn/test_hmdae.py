@@ -1,7 +1,6 @@
 """Tests for hmdae.geron_denoising_autoencoder."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdae import geron_denoising_autoencoder
 
 

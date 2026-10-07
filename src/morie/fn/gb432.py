@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ksexact', 'gibbons_ks_exact_dist']
+__all__ = ["ksexact", "gibbons_ks_exact_dist"]
 
 
 def ksexact(d, n):
@@ -47,13 +47,27 @@ def ksexact(d, n):
         raise ValueError("n must be at least 1.")
     if d <= 0.0:
         return RichResult(
-            payload={"cdf": 0.0, "sf": 1.0, "k": 0, "t": 0.0, "n": n,
-                     "d": d, "method": "P(D_n < d), Durbin matrix form"}
+            payload={
+                "cdf": 0.0,
+                "sf": 1.0,
+                "k": 0,
+                "t": 0.0,
+                "n": n,
+                "d": d,
+                "method": "P(D_n < d), Durbin matrix form",
+            }
         )
     if d >= 1.0:
         return RichResult(
-            payload={"cdf": 1.0, "sf": 0.0, "k": n, "t": 0.0, "n": n,
-                     "d": d, "method": "P(D_n < d), Durbin matrix form"}
+            payload={
+                "cdf": 1.0,
+                "sf": 0.0,
+                "k": n,
+                "t": 0.0,
+                "n": n,
+                "d": d,
+                "method": "P(D_n < d), Durbin matrix form",
+            }
         )
     k = int(math.ceil(n * d))
     t = k - n * d

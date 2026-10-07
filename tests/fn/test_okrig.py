@@ -1,6 +1,5 @@
 """Tests for okrig.ordinary_kriging."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.okrig import ordinary_kriging
@@ -38,10 +37,7 @@ def test_okrig_variance_grows_with_distance():
     target moves away from all data (eq. 5.16)."""
     x = [1.0, 2.0, 3.0]
     coords = [[0.0], [1.0], [2.0]]
-    ses = [
-        float(ordinary_kriging(x, coords, [[t]], sill=2.0, range_=1.0)["se"])
-        for t in (1.0, 3.0, 6.0, 12.0)
-    ]
+    ses = [float(ordinary_kriging(x, coords, [[t]], sill=2.0, range_=1.0)["se"]) for t in (1.0, 3.0, 6.0, 12.0)]
     assert ses[0] < ses[1] < ses[2] < ses[3]
     # Far from all data the kriging variance approaches C(0) + the
     # Lagrange term; it must at least reach the sill.

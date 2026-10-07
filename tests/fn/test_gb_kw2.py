@@ -1,7 +1,5 @@
 """Tests for gb_kw2.gibbons_kw_alt_form."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_kw2 import gibbons_kw_alt_form
 
 
@@ -26,17 +24,9 @@ def test_gb_kw2_basic():
     k = len(ns)
 
     # Independent computation of eq. (10.4.2).
-    expected_h1 = 12.0 / (N * (N + 1.0)) * sum(
-        (rank_sums[i] - ns[i] * (N + 1.0) / 2.0) ** 2 / ns[i]
-        for i in range(k)
-    )
+    expected_h1 = 12.0 / (N * (N + 1.0)) * sum((rank_sums[i] - ns[i] * (N + 1.0) / 2.0) ** 2 / ns[i] for i in range(k))
     # Independent computation of eq. (10.4.7).
-    expected_h2 = (
-        12.0 / (N * (N + 1.0)) * sum(
-            rank_sums[i] ** 2 / ns[i] for i in range(k)
-        )
-        - 3.0 * (N + 1.0)
-    )
+    expected_h2 = 12.0 / (N * (N + 1.0)) * sum(rank_sums[i] ** 2 / ns[i] for i in range(k)) - 3.0 * (N + 1.0)
 
     assert result["statistic"] == expected_h1
     assert result["h_computing"] == expected_h2
@@ -63,16 +53,8 @@ def test_gb_kw2_edge():
     N = sum(ns)
     k = len(ns)
 
-    expected_h1 = 12.0 / (N * (N + 1.0)) * sum(
-        (rank_sums[i] - ns[i] * (N + 1.0) / 2.0) ** 2 / ns[i]
-        for i in range(k)
-    )
-    expected_h2 = (
-        12.0 / (N * (N + 1.0)) * sum(
-            rank_sums[i] ** 2 / ns[i] for i in range(k)
-        )
-        - 3.0 * (N + 1.0)
-    )
+    expected_h1 = 12.0 / (N * (N + 1.0)) * sum((rank_sums[i] - ns[i] * (N + 1.0) / 2.0) ** 2 / ns[i] for i in range(k))
+    expected_h2 = 12.0 / (N * (N + 1.0)) * sum(rank_sums[i] ** 2 / ns[i] for i in range(k)) - 3.0 * (N + 1.0)
 
     assert result["statistic"] == expected_h1
     assert result["h_computing"] == expected_h2

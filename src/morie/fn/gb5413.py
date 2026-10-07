@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Zero differences in the sign test: the three standard conventions."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['signzero', 'gibbons_sign_zeros']
+__all__ = ["signzero", "gibbons_sign_zeros"]
 
 
 def signzero(x, m0=0.0, method="discard"):
@@ -59,7 +57,7 @@ def signzero(x, m0=0.0, method="discard"):
             "nzero": int(nz),
             "k_raw": int(kpos),
             "n_raw": int(n_raw),
-            "method": "sign test zero handling (%s), Sec. 5.4.8" % method,
+            "method": f"sign test zero handling ({method}), Sec. 5.4.8",
         }
     )
 

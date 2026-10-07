@@ -79,10 +79,7 @@ def robns(
     def _kernel_weights(z_i: np.ndarray) -> np.ndarray:
         diff = Z - z_i[None, :]
         u = np.linalg.norm(diff, axis=1) / bandwidth
-        if kernel == "epanechnikov":
-            w = np.where(u <= 1, 0.75 * (1 - u**2), 0.0)
-        else:
-            w = np.exp(-0.5 * u**2)
+        w = np.where(u <= 1, 0.75 * (1 - u**2), 0.0) if kernel == "epanechnikov" else np.exp(-0.5 * u**2)
         s = w.sum()
         return w / s if s > 0 else np.ones(n) / n
 

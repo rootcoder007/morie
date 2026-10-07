@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.pseudo import path_specific_effect
 
-
 # 0 -> 1 -> 2, 0 -> 2, 0 -> 3 -> 2
 B = [[0.0, 0.5, 0.3, 0.4], [0.0, 0.0, 0.8, 0.0], [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, -0.5, 0.0]]
 

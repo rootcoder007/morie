@@ -1,7 +1,6 @@
 """Tests for servR.serendipity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.servR import serendipity
 
 

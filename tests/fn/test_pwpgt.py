@@ -1,6 +1,7 @@
 """Tests for pwpgt.pwp_gap_time."""
 
 import math
+
 from morie.fn import _array_core as np
 from morie.fn.pwpgt import pwp_gap_time
 

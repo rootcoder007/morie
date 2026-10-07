@@ -9,6 +9,8 @@ def test_gb35mv_basic():
     result = gibbons_rvn_moments(n)
     assert isinstance(result, dict)
     assert "mean" in result
+
+
 def test_gb35mv_edge():
     """Test edge cases."""
     n = 100

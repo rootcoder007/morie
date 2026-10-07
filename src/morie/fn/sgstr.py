@@ -32,7 +32,7 @@ def strict_stationarity_test(Z, coords, n_sub=4):
 
     Z = np.asarray(Z, dtype=np.float64).ravel()
     coords = np.asarray(coords, dtype=np.float64)
-    n = len(Z)
+    len(Z)
 
     xmin, ymin = coords.min(axis=0)
     xmax, ymax = coords.max(axis=0)

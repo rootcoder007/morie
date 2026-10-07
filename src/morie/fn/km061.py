@@ -34,15 +34,19 @@ def kamath_ch4_krona_output(X, W, A_k, B_k, s):
     Xm = np.atleast_2d(np.asarray(X, dtype=float))
     Wt, Wm, K, s = _tuned(W, A_k, B_k, s)
     if Xm.shape[1] != Wm.shape[0]:
-        raise ValueError(
-            f"X has width {Xm.shape[1]} but W has {Wm.shape[0]} rows.")
+        raise ValueError(f"X has width {Xm.shape[1]} but W has {Wm.shape[0]} rows.")
     Y = Xm @ Wt
-    return RichResult(payload={
-        "Y": [[float(v) for v in row] for row in Y],
-        "base": [[float(v) for v in row] for row in Xm @ Wm],
-        "adapter_term": [[float(v) for v in row] for row in s * (Xm @ K)],
-        "s": s, "estimate": float(Y[0, 0]), "n": int(Xm.shape[0]),
-        "method": "KronA layer output (Kamath Eq 4.8)"})
+    return RichResult(
+        payload={
+            "Y": [[float(v) for v in row] for row in Y],
+            "base": [[float(v) for v in row] for row in Xm @ Wm],
+            "adapter_term": [[float(v) for v in row] for row in s * (Xm @ K)],
+            "s": s,
+            "estimate": float(Y[0, 0]),
+            "n": int(Xm.shape[0]),
+            "method": "KronA layer output (Kamath Eq 4.8)",
+        }
+    )
 
 
 def cheatsheet():

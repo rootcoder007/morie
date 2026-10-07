@@ -1,7 +1,6 @@
 """Tests for fzsrv.fauzi_survival_kernel."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzsrv import fauzi_survival_kernel
 
 

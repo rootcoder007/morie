@@ -1,14 +1,16 @@
 """Tests for fznks.fauzi_naive_kernel_ks."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fznks import fauzi_naive_kernel_ks
 
 
 def test_fznks_basic():
     """Test basic functionality."""
     x = np.random.default_rng(42).normal(0, 1, 100)
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
+
+    def cdf(v):
+        return 1.0 / (1.0 + np.exp(-v))
+
     result = fauzi_naive_kernel_ks(x, cdf)
     assert isinstance(result, dict)
     assert "statistic" in result or "p_value" in result or "estimate" in result
@@ -17,6 +19,9 @@ def test_fznks_basic():
 def test_fznks_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)
-    cdf = lambda v: 1.0 / (1.0 + np.exp(-v))
+
+    def cdf(v):
+        return 1.0 / (1.0 + np.exp(-v))
+
     result = fauzi_naive_kernel_ks(x, cdf)
     assert isinstance(result, dict)

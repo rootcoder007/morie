@@ -89,15 +89,15 @@ def theta_mle(x, a=1.0, b=0.0, c=0.0):
         raise ValueError("x is empty.")
     for v in xs:
         if v not in (0.0, 1.0):
-            raise ValueError("x must contain only 0 and 1; got %r" % (v,))
+            raise ValueError(f"x must contain only 0 and 1; got {v!r}")
     av = broadcast(a, n, "a")
     bv = broadcast(b, n, "b")
     cv = broadcast(c, n, "c")
     for i in range(n):
         if not (cv[i] >= 0.0) or cv[i] >= 1.0:
-            raise ValueError("c must lie in [0, 1); got %r" % (cv[i],))
+            raise ValueError(f"c must lie in [0, 1); got {cv[i]!r}")
         if av[i] != av[i] or av[i] in (INF, -INF):
-            raise ValueError("a must be finite; got %r" % (av[i],))
+            raise ValueError(f"a must be finite; got {av[i]!r}")
 
     r = sum(xs)
 
@@ -121,8 +121,7 @@ def theta_mle(x, a=1.0, b=0.0, c=0.0):
             payload={
                 "theta": t,
                 "se": INF,
-                "loglik": 0.0 if all(cv[i] == 0.0 for i in range(n)) else parts(
-                    _UPPER if r == n else _LOWER)[0],
+                "loglik": 0.0 if all(cv[i] == 0.0 for i in range(n)) else parts(_UPPER if r == n else _LOWER)[0],
                 "score": float("nan"),
                 "information": 0.0,
                 "raw_score": r,

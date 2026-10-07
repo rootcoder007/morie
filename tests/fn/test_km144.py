@@ -5,8 +5,6 @@ recomputed in the test body and the docstring's own worked value is
 asserted too.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km144 import kamath_ch9_mm_instr_predict
@@ -20,9 +18,11 @@ def test_the_instruction_prediction_applies_the_model_to_both_inputs():
 
 def test_both_the_instruction_and_the_modality_reach_the_model():
     seen = {}
+
     def f(i, m):
         seen["i"], seen["m"] = i, m
         return "ok"
+
     kamath_ch9_mm_instr_predict("instr", "modal", f)
     assert seen == {"i": "instr", "m": "modal"}
 

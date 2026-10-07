@@ -1,7 +1,6 @@
 """Tests for aitlnp.logistic_normal_pdf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitlnp import logistic_normal_pdf
 
 
@@ -52,10 +51,7 @@ def test_aitlnp_basic():
     prod_x = 1.0
     for v in x:
         prod_x *= v
-    log_norm = (-0.5 * (D - 1) * np.log(2.0 * np.pi)
-                - 0.5 * logdet
-                - np.log(prod_x)
-                - 0.5 * expected_q)
+    log_norm = -0.5 * (D - 1) * np.log(2.0 * np.pi) - 0.5 * logdet - np.log(prod_x) - 0.5 * expected_q
     expected_density = np.exp(log_norm)
     assert abs(result["density"] - expected_density) < 1e-10
     assert abs(result["log_density"] - log_norm) < 1e-10

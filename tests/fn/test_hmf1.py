@@ -1,7 +1,5 @@
 """Tests for hmf1.geron_f1_score."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmf1 import geron_f1_score
 
 
@@ -34,7 +32,7 @@ import morie.fn.hmf1 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

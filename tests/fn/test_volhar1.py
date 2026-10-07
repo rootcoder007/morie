@@ -1,8 +1,8 @@
 """Tests for volhar1."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volhar import vol_har_rv
 from morie.fn.volhar1 import vol_har_q
 

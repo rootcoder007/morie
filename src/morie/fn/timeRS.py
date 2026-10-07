@@ -65,12 +65,10 @@ implemented in :mod:`svdpp`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["deviation", "time_bin", "user_bias", "item_bias",
-           "predict_time", "fit_time_bias"]
+__all__ = ["deviation", "time_bin", "user_bias", "item_bias", "predict_time", "fit_time_bias"]
 
 _EPS = 1e-12
 BETA = 0.4
@@ -86,8 +84,7 @@ def deviation(t, t_user, beta=BETA):
     b = float(beta)
     if b <= 0.0:
         raise ValueError("timeRS: beta must be positive")
-    return (1.0 if d > 0 else (-1.0 if d < 0 else 0.0)) \
-        * abs(d) ** b
+    return (1.0 if d > 0 else (-1.0 if d < 0 else 0.0)) * abs(d) ** b
 
 
 def time_bin(t, bin_days=70, n_bins=30):
@@ -107,22 +104,21 @@ def user_bias(b_u, alpha_u, t, t_user, per_day=None, beta=BETA):
     r""":math:`b_u + \alpha_u\mathrm{dev}_u(t) + b_{u,t}`."""
     dev = deviation(t, t_user, beta)
     day = 0.0 if per_day is None else float(per_day.get(int(t), 0.0))
-    return {"bias": float(b_u) + float(alpha_u) * dev + day,
-            "deviation": dev, "per_day": day,
-            "note": "a single-day term absorbs session mood, so it "
-                    "does not contaminate the long-run parameters"}
+    return {
+        "bias": float(b_u) + float(alpha_u) * dev + day,
+        "deviation": dev,
+        "per_day": day,
+        "note": "a single-day term absorbs session mood, so it does not contaminate the long-run parameters",
+    }
 
 
 def item_bias(b_i, bins, t, bin_days=70, n_bins=30):
     r""":math:`b_i + b_{i,\mathrm{Bin}(t)}`."""
     idx = time_bin(t, bin_days, n_bins)
-    return {"bias": float(b_i) + float(bins[idx])
-            if idx < len(bins) else float(b_i), "bin": idx}
+    return {"bias": float(b_i) + float(bins[idx]) if idx < len(bins) else float(b_i), "bin": idx}
 
 
-def predict_time(mu, b_u, alpha_u, t_user, b_i, item_bins, t,
-                 p_u=None, q_i=None, per_day=None, bin_days=70,
-                 beta=BETA):
+def predict_time(mu, b_u, alpha_u, t_user, b_i, item_bins, t, p_u=None, q_i=None, per_day=None, bin_days=70, beta=BETA):
     r"""The time-aware prediction."""
     ub = user_bias(b_u, alpha_u, t, t_user, per_day, beta)
     ib = item_bias(b_i, item_bins, t, bin_days, len(item_bins))
@@ -133,21 +129,22 @@ def predict_time(mu, b_u, alpha_u, t_user, b_i, item_bins, t,
         if len(p) != len(q):
             raise ValueError("timeRS: the factors differ in width")
         inner = sum(p[a] * q[a] for a in range(len(p)))
-    return {"prediction": float(mu) + ub["bias"] + ib["bias"] + inner,
-            "user_bias": ub["bias"], "item_bias": ib["bias"],
-            "deviation": ub["deviation"], "bin": ib["bin"]}
+    return {
+        "prediction": float(mu) + ub["bias"] + ib["bias"] + inner,
+        "user_bias": ub["bias"],
+        "item_bias": ib["bias"],
+        "deviation": ub["deviation"],
+        "bin": ib["bin"],
+    }
 
 
-def fit_time_bias(ratings, n_users, n_items, bin_days=70,
-                  n_bins=30, epochs=40, lr=0.005, reg=0.02,
-                  beta=BETA):
+def fit_time_bias(ratings, n_users, n_items, bin_days=70, n_bins=30, epochs=40, lr=0.005, reg=0.02, beta=BETA):
     r"""Fit the time-dependent biases by SGD.
 
     ``ratings`` are ``(user, item, day, value)``. Every instance is
     kept -- the alternative the paper rejects is discarding old ones.
     """
-    R = [(int(u), int(i), float(t), float(r))
-         for u, i, t, r in ratings]
+    R = [(int(u), int(i), float(t), float(r)) for u, i, t, r in ratings]
     if not R:
         raise ValueError("timeRS: no ratings given")
     nu, ni = int(n_users), int(n_items)
@@ -163,7 +160,7 @@ def fit_time_bias(ratings, n_users, n_items, bin_days=70,
     hist = []
     for _ in range(int(epochs)):
         se = 0.0
-        for (u, i, t, r) in R:
+        for u, i, t, r in R:
             dev = deviation(t, t_user[u], beta)
             idx = time_bin(t, bin_days, n_bins)
             pred = mu + bu[u] + al[u] * dev + bi[i] + bins[i][idx]
@@ -174,30 +171,40 @@ def fit_time_bias(ratings, n_users, n_items, bin_days=70,
             bi[i] += lr * (e - reg * bi[i])
             bins[i][idx] += lr * (e - reg * bins[i][idx])
         hist.append(math.sqrt(se / len(R)))
-    return RichResult(payload={
-        "estimate": hist[-1], "rmse": hist[-1], "rmse_history": hist,
-        "mu": mu, "b_user": bu, "alpha_user": al, "b_item": bi,
-        "item_bins": bins, "t_user": t_user, "beta": float(beta),
-        "n_instances": len(R),
-        "method": "time-dependent biases; Koren (2010) eq. (8)",
-        "note": "every instance is kept; windows and decay would "
-                "discard the signals this models",
-    })
+    return RichResult(
+        payload={
+            "estimate": hist[-1],
+            "rmse": hist[-1],
+            "rmse_history": hist,
+            "mu": mu,
+            "b_user": bu,
+            "alpha_user": al,
+            "b_item": bi,
+            "item_bins": bins,
+            "t_user": t_user,
+            "beta": float(beta),
+            "n_instances": len(R),
+            "method": "time-dependent biases; Koren (2010) eq. (8)",
+            "note": "every instance is kept; windows and decay would discard the signals this models",
+        }
+    )
 
 
 def cheatsheet():
-    return ("timeRS: preferences DRIFT -- the Netflix mean rating "
-            "jumped 3.4 to 3.6 in early 2004 and ratings rise with "
-            "movie age. This is not ordinary concept drift (many "
-            "things shift at once), and windows or decay would discard "
-            "too much, so MODEL the drift and keep every instance. "
-            "Different effects, different rates: item bias in slow "
-            "TIME BINS (months), user bias smooth PLUS a per-day term "
-            "for session mood. The mechanism is dev_u(t) = "
-            "sign(t - t_u)|t - t_u|^0.4 -- SIGNED, so the two sides of "
-            "the user's centre pull oppositely, and CONCAVE, so 400 "
-            "days out is not 4x 100 days out. beta was cross-"
-            "validated, not derived.")
+    return (
+        "timeRS: preferences DRIFT -- the Netflix mean rating "
+        "jumped 3.4 to 3.6 in early 2004 and ratings rise with "
+        "movie age. This is not ordinary concept drift (many "
+        "things shift at once), and windows or decay would discard "
+        "too much, so MODEL the drift and keep every instance. "
+        "Different effects, different rates: item bias in slow "
+        "TIME BINS (months), user bias smooth PLUS a per-day term "
+        "for session mood. The mechanism is dev_u(t) = "
+        "sign(t - t_u)|t - t_u|^0.4 -- SIGNED, so the two sides of "
+        "the user's centre pull oppositely, and CONCAVE, so 400 "
+        "days out is not 4x 100 days out. beta was cross-"
+        "validated, not derived."
+    )
 
 
 # compact alias per ledger/NAMING.md

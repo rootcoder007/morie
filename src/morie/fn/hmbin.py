@@ -59,9 +59,7 @@ def geron_binary_classification(X, theta, threshold=0.5, y_true=None):
     if Xm.shape[0] == 0:
         raise ValueError("geron_binary_classification: X has no rows")
     if Xm.shape[1] != th.size:
-        raise ValueError(
-            f"geron_binary_classification: X has {Xm.shape[1]} columns but theta has {th.size} entries"
-        )
+        raise ValueError(f"geron_binary_classification: X has {Xm.shape[1]} columns but theta has {th.size} entries")
     t = float(threshold)
     if not (0.0 <= t <= 1.0):
         raise ValueError(f"geron_binary_classification: threshold must lie in [0, 1], got {t}")
@@ -76,9 +74,7 @@ def geron_binary_classification(X, theta, threshold=0.5, y_true=None):
     if y_true is not None:
         yt = np.asarray(y_true).ravel().astype(int)
         if yt.size != Xm.shape[0]:
-            raise ValueError(
-                f"geron_binary_classification: y_true has {yt.size} entries but X has {Xm.shape[0]} rows"
-            )
+            raise ValueError(f"geron_binary_classification: y_true has {yt.size} entries but X has {Xm.shape[0]} rows")
         if not np.all(np.isin(yt, (0, 1))):
             raise ValueError("geron_binary_classification: y_true must contain only 0 and 1")
         tp = int(np.sum((y_pred == 1) & (yt == 1)))

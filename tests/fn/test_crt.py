@@ -1,12 +1,11 @@
 """Tests for morie.fn.crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crt import crt
 
 
 def test_crt_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = crt(remainders=[2, 3, 2], moduli=[3, 5, 7])
     assert result is not None
     assert hasattr(result, "name")

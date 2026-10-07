@@ -1,11 +1,9 @@
 """spqkv: sparse attention mask (Child et al. 2019, Sparse Transformer).
 
-    sliding window + strided global tokens + optional random connections
+sliding window + strided global tokens + optional random connections
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.spqkv import sparse_attention as sa
 
 
@@ -24,7 +22,7 @@ def test_spqkv_is_sparser_than_dense():
     """The whole point: attention cost drops because most pairs are excluded."""
     r = sa(np.zeros((64, 64)), window=4, stride=8, n_random=0, seed=1)
     assert r["density"] < 1.0
-    assert 0.0 < r["density"]
+    assert r["density"] > 0.0
 
 
 def test_spqkv_every_position_attends_to_itself():
@@ -54,8 +52,7 @@ def test_spqkv_strided_global_tokens_are_reachable():
 
 
 def test_spqkv_density_falls_as_the_window_narrows():
-    d = [sa(np.zeros((64, 64)), window=w, stride=16, n_random=0, seed=7)["density"]
-         for w in (16, 8, 4, 2)]
+    d = [sa(np.zeros((64, 64)), window=w, stride=16, n_random=0, seed=7)["density"] for w in (16, 8, 4, 2)]
     assert d == sorted(d, reverse=True)
 
 

@@ -39,8 +39,7 @@ from .cssant import (  # noqa: F401
     group_time_att,
 )
 
-__all__ = ["causdidcs", "causal_did_callaway_sa", "callaway_santanna",
-           "group_time_att", "aggregate_att"]
+__all__ = ["causdidcs", "causal_did_callaway_sa", "callaway_santanna", "group_time_att", "aggregate_att"]
 
 # primary name = module name; stub-era long name kept as alias.
 causdidcs = callaway_santanna
@@ -48,5 +47,7 @@ causal_did_callaway_sa = callaway_santanna
 
 
 def cheatsheet():
-    return ("causdidcs: Callaway-Sant'Anna (2021) ATT(g,t) -- alias of "
-            "cssant.callaway_santanna (eq. 2.8/2.9, base period g-1)")
+    return (
+        "causdidcs: Callaway-Sant'Anna (2021) ATT(g,t) -- alias of "
+        "cssant.callaway_santanna (eq. 2.8/2.9, base period g-1)"
+    )

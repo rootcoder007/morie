@@ -18,9 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["wolfedual", "mvsml_ridge_lasso_elastic_eq_9_9"]
 
 
-def wolfedual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None, lam=None,
-              alpha=None):
-
+def wolfedual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None, lam=None, alpha=None):
     """The Wolfe dual of "minimize f(x) subject to h_i(x) = 0 and
     g_i(x) >= 0" (eq. 9.9 with its constraints 9.10 and 9.11) is
     "maximize L = f - sum_i lambda_i h_i - sum_i alpha_i g_i"
@@ -35,8 +33,7 @@ def wolfedual(f, grad_f, h=None, grad_h=None, g=None, grad_g=None, lam=None,
     n_equality, n_inequality.
     """
 
-    res = RichResult(payload=_gp.wolfe_dual(f, grad_f, h=h, grad_h=grad_h, g=g,
-                     grad_g=grad_g, lam=lam, alpha=alpha))
+    res = RichResult(payload=_gp.wolfe_dual(f, grad_f, h=h, grad_h=grad_h, g=g, grad_g=grad_g, lam=lam, alpha=alpha))
 
     return with_describe_pointer(res, "msm184")
 

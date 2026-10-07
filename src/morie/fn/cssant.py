@@ -35,12 +35,9 @@ def group_time_att(Y, g, control="notyet"):
         for t in range(T):
             if t == base:
                 continue
-            if control == "never":
-                ctrl = ~np.isfinite(g)
-            else:
-                # not-yet-treated at max(t, g): never-treated units plus
-                # cohorts that adopt strictly later than both periods
-                ctrl = g > max(t, gg)
+            # not-yet-treated at max(t, g): never-treated units plus
+            # cohorts that adopt strictly later than both periods
+            ctrl = ~np.isfinite(g) if control == "never" else g > max(t, gg)
             if treated.sum() == 0 or ctrl.sum() == 0:
                 continue
             dY = Y[:, t] - Y[:, base]
@@ -74,10 +71,7 @@ def aggregate_att(gt, g, n_units, weights_by="cohort_size"):
         return {}
     sizes = {gg: float((g == gg).sum()) for gg, _ in post}
     tot = sum(sizes[gg] for gg, _ in post)
-    if weights_by == "equal":
-        w = {k: 1.0 / len(post) for k in post}
-    else:
-        w = {k: sizes[k[0]] / tot for k in post}
+    w = {k: 1.0 / len(post) for k in post} if weights_by == "equal" else {k: sizes[k[0]] / tot for k in post}
 
     def combine(keys, wts):
         s = sum(wts.values())
@@ -189,22 +183,19 @@ def callaway_santanna(y, D, unit, time, cohort=None, control="notyet"):
     if cohort is None:
         g, _, _, _ = first_treatment(D, unit, time, units, periods)
     else:
-        cm, _, _ = as_panel(np.where(np.isfinite(cohort), cohort, -1.0),
-                            unit, time)
+        cm, _, _ = as_panel(np.where(np.isfinite(cohort), cohort, -1.0), unit, time)
         if np.any(cm.max(axis=1) != cm.min(axis=1)):
             raise ValueError("cohort must be constant within a unit.")
         g = cm[:, 0]
         g = np.where(g < 0, np.inf, g)
         # map period labels to indices
         lookup = {float(p): i for i, p in enumerate(periods)}
-        g = np.array([lookup.get(float(v), np.inf) if np.isfinite(v) else np.inf
-                      for v in g])
+        g = np.array([lookup.get(float(v), np.inf) if np.isfinite(v) else np.inf for v in g])
     if not np.isfinite(g).any():
         raise ValueError("no unit is ever treated.")
     if control == "never" and np.isfinite(g).all():
         raise ValueError(
-            "control='never' needs never-treated units and every unit is "
-            "eventually treated; use control='notyet'."
+            "control='never' needs never-treated units and every unit is eventually treated; use control='notyet'."
         )
 
     gt = group_time_att(Y, g, control=control)
@@ -228,11 +219,9 @@ def callaway_santanna(y, D, unit, time, cohort=None, control="notyet"):
             "cohort_att": agg.get("cohort", {}),
             "calendar": agg.get("calendar", {}),
             "pretrend": pre,
-            "pretrend_max_abs": float(max((abs(v) for v in pre.values()),
-                                          default=0.0)),
+            "pretrend_max_abs": float(max((abs(v) for v in pre.values()), default=0.0)),
             "pretrend_note": (
-                "cells with t < g are not effects; they are the "
-                "parallel-trends check and are reported separately"
+                "cells with t < g are not effects; they are the parallel-trends check and are reported separately"
             ),
             "control_group": control,
             "cohorts": np.unique(g[np.isfinite(g)]),

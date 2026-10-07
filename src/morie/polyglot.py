@@ -21,6 +21,7 @@ from __future__ import annotations
 import code as _code
 import contextlib
 import io
+import json
 import os
 import re
 import shutil
@@ -929,6 +930,13 @@ class PolyglotEngine:
         except ImportError:
             pass
 
+    def _restart_r(self) -> bool:
+        if self._r_proc:
+            self._r_proc.kill()
+            self._r_proc.wait()
+        self._r_proc = None
+        return self._start_r()
+
     def _start_r(self) -> bool:
         if self._r_proc and self._r_proc.poll() is None:
             return True
@@ -937,7 +945,9 @@ class PolyglotEngine:
                 ["R", "--no-echo", "--no-save", "--no-restore"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                # one stream: R's errors arrive in order with its output (an unread stderr pipe
+                # swallowed `stop("boom")` and could fill up and block R)
+                stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1,
             )
@@ -1183,14 +1193,30 @@ class PolyglotEngine:
 
         if self.polyglot:
             for name, val in self._py_ns.items():
-                if name.startswith("_") or not isinstance(val, (int, float, str, bool)):
+                if name.startswith("_") or not isinstance(val, int | float | str | bool):
                     continue
                 self._inject_r_var(name, val)
 
         sentinel = f"__MORIE_{id(code)}__"
+        # R reading a pipe is non-interactive and quits on its first error, so a stop() would end the
+        # session and the next write would hit a dead pipe (EINVAL on Windows). Each chunk runs inside
+        # R's own handler instead: visible values print as at the prompt, an error prints "Error: ..."
+        # and the session lives on.
+        wrapped = (
+            "tryCatch(local({ for (.morie_e in parse(text = " + json.dumps(code) + ")) {"
+            " .morie_r <- withVisible(eval(.morie_e, globalenv())); if (.morie_r$visible) print(.morie_r$value) }"
+            ' }), error = function(e) cat("Error: ", conditionMessage(e), "\\n", sep = ""))'
+        )
         try:
-            self._r_proc.stdin.write(f"{code}\ncat('{sentinel}\\n')\n")
-            self._r_proc.stdin.flush()
+            for attempt in (1, 2):
+                try:
+                    self._r_proc.stdin.write(f"{wrapped}\ncat('{sentinel}\\n')\n")
+                    self._r_proc.stdin.flush()
+                    break
+                except OSError:
+                    # the session ended between commands: start a new one once
+                    if attempt == 2 or not self._restart_r():
+                        raise
             lines = []
             while True:
                 raw = self._r_proc.stdout.readline()
@@ -1204,6 +1230,14 @@ class PolyglotEngine:
                     break
                 lines.append(raw.rstrip("\n"))
 
+            err_at = next((k for k, ln in enumerate(lines) if ln.startswith("Error")), None)
+            if err_at is not None:
+                return ExecResult(
+                    language="r",
+                    stdout="\n".join(lines[:err_at]),
+                    stderr="\n".join(lines[err_at:]),
+                    success=False,
+                )
             variables = {}
             for m in re.finditer(r"(\w+)\s*<-", code):
                 name = m.group(1)
@@ -1286,7 +1320,7 @@ class PolyglotEngine:
                 capture_output=True,
                 text=True,
                 timeout=_run_timeout(),
-                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, (str, int, float))}},
+                env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, str | int | float)}},
             )
             variables = {}
             for m in re.finditer(r'(\w+)=(["\']?)(.+?)\2(?:\s|$)', code):
@@ -1439,7 +1473,9 @@ class PolyglotEngine:
             result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
-            return ExecResult(language="go", stderr="Go not found (install: brew install go)", success=False)
+            return ExecResult(
+                language="go", stderr="Go not found (install go with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="go", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1541,7 +1577,9 @@ class PolyglotEngine:
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="ocaml", stderr="OCaml not found (install: brew install ocaml)", success=False)
+            return ExecResult(
+                language="ocaml", stderr="OCaml not found (install ocaml with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="ocaml", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1555,7 +1593,9 @@ class PolyglotEngine:
                 language="lua", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="lua", stderr="Lua not found (install: brew install lua)", success=False)
+            return ExecResult(
+                language="lua", stderr="Lua not found (install lua with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="lua", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
 
@@ -1600,7 +1640,7 @@ class PolyglotEngine:
             return ExecResult(language="latex", stdout=stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
-                language="latex", stderr="pdflatex not found (install: brew install --cask mactex)", success=False
+                language="latex", stderr="pdflatex not found (install mactex with your package manager)", success=False
             )
         except subprocess.TimeoutExpired:
             return ExecResult(language="latex", stderr="Timeout (60s)", success=False)
@@ -1615,7 +1655,7 @@ class PolyglotEngine:
             )
         except FileNotFoundError:
             return ExecResult(
-                language="psql", stderr="psql not found (install: brew install postgresql)", success=False
+                language="psql", stderr="psql not found (install postgresql with your package manager)", success=False
             )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="psql", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
@@ -1737,7 +1777,9 @@ class PolyglotEngine:
                 language="nim", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
         except FileNotFoundError:
-            return ExecResult(language="nim", stderr="Nim not found (install: brew install nim)", success=False)
+            return ExecResult(
+                language="nim", stderr="Nim not found (install nim with your package manager)", success=False
+            )
         except subprocess.TimeoutExpired as exc:
             return ExecResult(language="nim", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         finally:
@@ -1767,7 +1809,9 @@ class PolyglotEngine:
                 continue
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="scheme", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
-        return ExecResult(language="scheme", stderr="Scheme not found (install: brew install racket)", success=False)
+        return ExecResult(
+            language="scheme", stderr="Scheme not found (install racket with your package manager)", success=False
+        )
 
     def _exec_clojure(self, code: str) -> ExecResult:
         return self._exec_file_based(code, "clojure", ".clj", ["clojure"])
@@ -1787,7 +1831,9 @@ class PolyglotEngine:
             except subprocess.TimeoutExpired as exc:
                 return ExecResult(language="powershell", stderr=f"Timeout ({exc.timeout:g}s)", success=False)
         return ExecResult(
-            language="powershell", stderr="PowerShell not found (install: brew install powershell)", success=False
+            language="powershell",
+            stderr="PowerShell not found (install powershell with your package manager)",
+            success=False,
         )
 
     def _exec_awk(self, code: str) -> ExecResult:
@@ -1829,11 +1875,11 @@ class PolyglotEngine:
             return
         if isinstance(value, bool):
             r_val = "TRUE" if value else "FALSE"
-        elif isinstance(value, (int, float)):
+        elif isinstance(value, int | float):
             r_val = str(value)
         elif isinstance(value, str):
             r_val = f'"{value}"'
-        elif isinstance(value, (list, tuple)):
+        elif isinstance(value, list | tuple):
             try:
                 r_val = f"c({','.join(str(v) for v in value)})"
             except Exception:
@@ -1903,21 +1949,38 @@ class PolyglotEngine:
         return result
 
 
+# the line prefix that selects each language, in the order the banner prints them
+_PREFIX_LANGS = (
+    ("R>", "r"),
+    ("J>", "julia"),
+    ("Q>", "q"),
+    ("N>", "node"),
+    ("Go>", "go"),
+    ("Rs>", "rust"),
+    ("C>", "c"),
+    ("C+>", "cpp"),
+    ("ML>", "ocaml"),
+    ("Lu>", "lua"),
+    ("TS>", "typescript"),
+    ("TX>", "latex"),
+    ("PG>", "postgres"),
+)
+
+
 def run_headless_repl(
     polyglot: bool = True,
     auto_detect: bool = True,
     lang: str = "python",
 ) -> int:
     engine = PolyglotEngine(polyglot=polyglot, auto_detect=auto_detect)
-    if not auto_detect:
-        engine._default_lang = lang
+    engine._default_lang = lang  # also with auto-detect on: an ambiguous line runs in the chosen language
 
     avail = engine.available_languages()
     langs = [k for k, v in avail.items() if v]
     print(f"MORIE Polyglot REPL -- {len(langs)} languages: {', '.join(langs)}")
     if polyglot:
         print("Polyglot mode ON -- variables bridge automatically across languages")
-    print("Prefixes: R> J> Q> N> Go> Rs> C> C+> ML> Lu> TS> TX> PG> ! (shell)")
+    print("Prefixes: " + " ".join(p for p, lg in _PREFIX_LANGS if avail.get(lg)) + " ! (shell)")
     print(f"Auto-detect: {'ON' if auto_detect else 'OFF'} | Default: {lang}")
 
     try:

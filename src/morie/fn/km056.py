@@ -4,7 +4,6 @@
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch4_full_finetune_obj"]
@@ -21,26 +20,20 @@ def _sequence_objective(model, x, y):
     xs = list(x)
     ys = [list(seq) for seq in y]
     if not xs:
-        raise ValueError("Z is empty; a sum over no context-target pairs "
-                         "is undefined, not 0.")
+        raise ValueError("Z is empty; a sum over no context-target pairs is undefined, not 0.")
     if len(xs) != len(ys):
-        raise ValueError(
-            f"got {len(xs)} contexts for {len(ys)} targets.")
+        raise ValueError(f"got {len(xs)} contexts for {len(ys)} targets.")
     if not callable(model):
-        raise ValueError("the model must be a callable (x, y_prefix, y_t) "
-                         "-> probability.")
+        raise ValueError("the model must be a callable (x, y_prefix, y_t) -> probability.")
     per_pair, total = [], 0.0
     for xi, yi in zip(xs, ys):
         if not yi:
-            raise ValueError("a target sequence is empty; log p over no "
-                             "tokens is undefined.")
+            raise ValueError("a target sequence is empty; log p over no tokens is undefined.")
         s = 0.0
         for t, tok in enumerate(yi):
             p = float(model(xi, yi[:t], tok))
             if not (0.0 < p <= 1.0):
-                raise ValueError(
-                    f"the model returned {p:.6g}; probabilities must lie "
-                    "in (0, 1].")
+                raise ValueError(f"the model returned {p:.6g}; probabilities must lie in (0, 1].")
             s += math.log(p)
         per_pair.append(s)
         total += s
@@ -70,10 +63,15 @@ def kamath_ch4_full_finetune_obj(Phi, x, y):
     2
     """
     total, per_pair = _sequence_objective(Phi, x, y)
-    return RichResult(payload={
-        "estimate": float(total), "per_pair": per_pair,
-        "n_tokens": int(sum(len(list(s)) for s in y)), "n": len(per_pair),
-        "method": "full-parameter fine-tuning objective (Kamath Eq 4.3)"})
+    return RichResult(
+        payload={
+            "estimate": float(total),
+            "per_pair": per_pair,
+            "n_tokens": int(sum(len(list(s)) for s in y)),
+            "n": len(per_pair),
+            "method": "full-parameter fine-tuning objective (Kamath Eq 4.3)",
+        }
+    )
 
 
 def cheatsheet():

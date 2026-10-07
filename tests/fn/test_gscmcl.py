@@ -1,8 +1,8 @@
 """Tests for gscmcl.generalized_synthetic_control."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gscmcl import generalized_synthetic_control
 
 

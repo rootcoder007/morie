@@ -28,11 +28,11 @@ def wavelet_decompose(y: np.ndarray, n_levels: int | None = None) -> Descriptive
         n_levels = int(np.log2(len(y)))
     details = []
     approx = y.copy()
-    for level in range(n_levels):
+    for _level in range(n_levels):
         m = len(approx)
         if m < 2:
             break
-        half = m // 2
+        m // 2
         a = (approx[0::2] + approx[1::2]) / np.sqrt(2)
         d = (approx[0::2] - approx[1::2]) / np.sqrt(2)
         details.append(d)

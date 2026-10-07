@@ -1,12 +1,11 @@
 """Tests for morie.fn.qsim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.qsim import qsim
 
 
 def test_qsim_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = qsim(arrival_rate=0.5, service_rate=0.5)
     assert result is not None
     assert hasattr(result, "name")

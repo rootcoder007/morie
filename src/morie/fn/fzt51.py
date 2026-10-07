@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Equivalence of the naive kernel and empirical goodness-of-fit statistics (Theorem 5.1)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kerngofeq", "fauzi_thm5_1_naive_kernel_equiv"]

@@ -1,7 +1,6 @@
 """Tests for morie.fn.borda — Borda count."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.borda import borda
 
 

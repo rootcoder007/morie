@@ -16,10 +16,9 @@ def _p_conditional(D2, perplexity, tol=1e-5, max_iter=60):
     P = [[0.0] * n for _ in range(n)]
     for i in range(n):
         lo, hi = 1e-20, 1e20
-        beta = 1.0                      # 1/(2 sigma^2)
+        beta = 1.0  # 1/(2 sigma^2)
         for _ in range(max_iter):
-            num = [math.exp(-D2[i][j] * beta) if j != i else 0.0
-                   for j in range(n)]
+            num = [math.exp(-D2[i][j] * beta) if j != i else 0.0 for j in range(n)]
             s = sum(num)
             if s <= 0:
                 s = 1e-300
@@ -95,19 +94,16 @@ def sctsne(X, dim=2, perplexity=10.0, T=300, eta=100.0, seed=0):
         raise ValueError("need at least five points")
     if not (1.0 < perplexity < n):
         raise ValueError("perplexity must be in (1, n)")
-    D2 = [[sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j]))
-           for j in range(n)] for i in range(n)]
+    D2 = [[sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j])) for j in range(n)] for i in range(n)]
     Pc = _p_conditional(D2, perplexity)
     # perplexity fit check
     perr = 0.0
     for i in range(n):
         h = -sum(v * math.log(v) for v in Pc[i] if v > 1e-300)
         perr = max(perr, abs(h - math.log(perplexity)))
-    P = [[(Pc[i][j] + Pc[j][i]) / (2.0 * n) for j in range(n)]
-         for i in range(n)]
+    P = [[(Pc[i][j] + Pc[j][i]) / (2.0 * n) for j in range(n)] for i in range(n)]
     rng = np.random.default_rng(seed)
-    Y = [[1e-2 * float(rng.normal()) for _ in range(dim)]
-         for _ in range(n)]
+    Y = [[1e-2 * float(rng.normal()) for _ in range(dim)] for _ in range(n)]
     Ym1 = [row[:] for row in Y]
 
     def _q_and_kl():
@@ -115,8 +111,7 @@ def sctsne(X, dim=2, perplexity=10.0, T=300, eta=100.0, seed=0):
         s = 0.0
         for i in range(n):
             for j in range(i + 1, n):
-                w = 1.0 / (1.0 + sum((Y[i][k] - Y[j][k]) ** 2
-                                     for k in range(dim)))
+                w = 1.0 / (1.0 + sum((Y[i][k] - Y[j][k]) ** 2 for k in range(dim)))
                 W[i][j] = W[j][i] = w
                 s += 2.0 * w
         kl = 0.0
@@ -143,20 +138,21 @@ def sctsne(X, dim=2, perplexity=10.0, T=300, eta=100.0, seed=0):
         mom = 0.5 if t < 250 else 0.8
         for i in range(n):
             for k in range(dim):
-                new = (Y[i][k] - eta * grads[i][k]
-                       + mom * (Y[i][k] - Ym1[i][k]))
+                new = Y[i][k] - eta * grads[i][k] + mom * (Y[i][k] - Ym1[i][k])
                 Ym1[i][k] = Y[i][k]
                 Y[i][k] = new
     _, _, kl_fin = _q_and_kl()
-    return RichResult(payload={
-        "embedding": Y,
-        "kl": kl_fin,
-        "kl_initial": kl0,
-        "perplexity_error": perr,
-        "T": int(T),
-        "seed": int(seed),
-        "method": "t-SNE (van der Maaten & Hinton 2008, Alg. 1)",
-    })
+    return RichResult(
+        payload={
+            "embedding": Y,
+            "kl": kl_fin,
+            "kl_initial": kl0,
+            "perplexity_error": perr,
+            "T": int(T),
+            "seed": int(seed),
+            "method": "t-SNE (van der Maaten & Hinton 2008, Alg. 1)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -165,6 +161,7 @@ tsne_embedding = sctsne
 
 def cheatsheet():
     return "sctsne: P by perplexity search; q ~ Student-t; grad Eq.5 + momentum"
+
 
 # public names resolved by fn/_lazy_map.json
 tsneembedding = sctsne

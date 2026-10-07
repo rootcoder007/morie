@@ -106,11 +106,11 @@ def causal_did_three_way(y, treated, post, group):
                 m = (gr == g) & (tr == t) & (po == p)
                 if not m.any():
                     raise ValueError(f"cell group={g} treated={t} post={p} is empty")
-                cells[(g, t, p)] = (float(y[m].mean()),
-                                    float(y[m].var(ddof=1) / m.sum()))
+                cells[(g, t, p)] = (float(y[m].mean()), float(y[m].var(ddof=1) / m.sum()))
+
     def did(g):
-        return ((cells[(g, 1, 1)][0] - cells[(g, 1, 0)][0])
-                - (cells[(g, 0, 1)][0] - cells[(g, 0, 0)][0]))
+        return (cells[(g, 1, 1)][0] - cells[(g, 1, 0)][0]) - (cells[(g, 0, 1)][0] - cells[(g, 0, 0)][0])
+
     d1, d0 = did(1), did(0)
     ddd = d1 - d0
     var = sum(v for (_, v) in cells.values())
@@ -120,18 +120,22 @@ def causal_did_three_way(y, treated, post, group):
     z = ddd / se if se > 0 else np.nan
     return RichResult(
         title="Triple difference (DDD)",
-        summary_lines=[("DDD", float(ddd)), ("DiD eligible", float(d1)),
-                       ("DiD placebo", float(d0)), ("se", se)],
-        warnings=["DDD assumes the differential trend is the SAME across "
-                  "groups; inspect did_placebo, since a large value means the "
-                  "third difference is doing heavy lifting"],
+        summary_lines=[("DDD", float(ddd)), ("DiD eligible", float(d1)), ("DiD placebo", float(d0)), ("se", se)],
+        warnings=[
+            "DDD assumes the differential trend is the SAME across "
+            "groups; inspect did_placebo, since a large value means the "
+            "third difference is doing heavy lifting"
+        ],
         payload={
-            "ddd": float(ddd), "did_eligible": float(d1),
+            "ddd": float(ddd),
+            "did_eligible": float(d1),
             "did_placebo": float(d0),
             "cell_means": {k: v[0] for k, v in cells.items()},
-            "se": se, "z": float(z),
+            "se": se,
+            "z": float(z),
             "p_value": float(2 * norm.sf(abs(z))) if se > 0 else float("nan"),
-            "n": int(y.size), "method": "causal_did_three_way",
+            "n": int(y.size),
+            "method": "causal_did_three_way",
         },
     )
 

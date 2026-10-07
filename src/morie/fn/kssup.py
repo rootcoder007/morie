@@ -57,8 +57,8 @@ def ks_supremum(
         raise ValueError("Need at least 5 observations for KS test")
     try:
         dist_obj = getattr(stats, dist)
-    except AttributeError:
-        raise ValueError(f"Unknown distribution: {dist}")
+    except AttributeError as exc:
+        raise ValueError(f"Unknown distribution: {dist}") from exc
     params = dist_obj.fit(x)
     # Freeze the distribution rather than passing the name + args: recent
     # scipy maps some named CDFs to bare special functions (norm -> ndtr)

@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_jnt import gibbons_joint_order
 
 
@@ -32,21 +30,10 @@ def test_gb_jnt_basic():
     Fy = _normal_cdf(y_val)
     fx = _normal_pdf(x_val)
     fy = _normal_pdf(y_val)
-    coef = math.factorial(n) / (
-        math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s)
-    )
-    expected_pdf = (
-        coef
-        * Fx ** (r - 1)
-        * (Fy - Fx) ** (s - r - 1)
-        * (1.0 - Fy) ** (n - s)
-        * fx
-        * fy
-    )
+    coef = math.factorial(n) / (math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s))
+    expected_pdf = coef * Fx ** (r - 1) * (Fy - Fx) ** (s - r - 1) * (1.0 - Fy) ** (n - s) * fx * fy
 
-    result = gibbons_joint_order(
-        x_val, y_val, r, s, n, _normal_cdf, _normal_pdf
-    )
+    result = gibbons_joint_order(x_val, y_val, r, s, n, _normal_cdf, _normal_pdf)
 
     # The function returns a RichResult supporting dict-style access.
     assert "pdf" in result
@@ -71,14 +58,10 @@ def test_gb_jnt_edge():
     s = 4
     n = 6
 
-    result = gibbons_joint_order(
-        x_val, y_val, r, s, n, _normal_cdf, _normal_pdf
-    )
+    result = gibbons_joint_order(x_val, y_val, r, s, n, _normal_cdf, _normal_pdf)
 
     assert "pdf" in result
     assert result["pdf"] == 0.0
     # coef is still returned and is valid for the indices.
-    expected_coef = math.factorial(n) / (
-        math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s)
-    )
+    expected_coef = math.factorial(n) / (math.factorial(r - 1) * math.factorial(s - r - 1) * math.factorial(n - s))
     assert result["coef"] == expected_coef

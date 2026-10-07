@@ -1,7 +1,6 @@
 """Tests for morie.fn.ocbin — Optimal classification binarized."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ocbin import ocbin
 
 

@@ -1,7 +1,5 @@
 """Tests for bipMch.bipartite_matching."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bipMch import bipartite_matching
 
 

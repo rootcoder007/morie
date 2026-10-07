@@ -44,7 +44,7 @@ def neal_algorithm_8(
     trace_n_clusters = []
     trace_llik = []
 
-    for iteration in range(n_iter):
+    for _iteration in range(n_iter):
         # Gibbs sampling of cluster assignments
         for i in range(n):
             # Count occupancy of each cluster

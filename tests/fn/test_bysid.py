@@ -4,9 +4,9 @@ Armstrong et al., Ch 5 / Ch 6 (Unfolding Analysis of Binary Choice Data,
 printed p.129; Bayesian Scaling Models, p.181).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bysid import bayesian_ideal_points as bip
 
 
@@ -37,10 +37,8 @@ def test_bysid_recovery_improves_with_chain_length():
     worse. If someone 'optimises' the sampler into a fixed point this fails.
     """
     truth, votes = _votes(seed=3)
-    short = abs(float(np.corrcoef(
-        np.asarray(bip(votes, n_iter=400, burn=100, seed=3)["x_mean"]), truth)[0, 1]))
-    long_ = abs(float(np.corrcoef(
-        np.asarray(bip(votes, n_iter=1000, burn=300, seed=3)["x_mean"]), truth)[0, 1]))
+    short = abs(float(np.corrcoef(np.asarray(bip(votes, n_iter=400, burn=100, seed=3)["x_mean"]), truth)[0, 1]))
+    long_ = abs(float(np.corrcoef(np.asarray(bip(votes, n_iter=1000, burn=300, seed=3)["x_mean"]), truth)[0, 1]))
     assert long_ >= short - 0.05
 
 
@@ -69,8 +67,7 @@ def test_bysid_more_votes_shrink_the_posterior_sd():
     sds = []
     for m in (10, 60):
         _, votes = _votes(n=100, m=m, seed=11)
-        sds.append(float(np.mean(np.asarray(
-            bip(votes, n_iter=300, burn=80, seed=11)["x_sd"]))))
+        sds.append(float(np.mean(np.asarray(bip(votes, n_iter=300, burn=80, seed=11)["x_sd"]))))
     assert sds[1] < sds[0]
 
 

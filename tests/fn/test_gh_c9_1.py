@@ -1,7 +1,6 @@
 """Tests for gh_c9_1.ghosal_logspline_crt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c9_1 import ghosal_logspline_crt
 
 

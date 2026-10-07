@@ -88,15 +88,26 @@ def variance_reduction_split(y, split_idx):
     vl = _pvar(left)
     vr = _pvar(right)
     dv = vp - wl * vl - wr * vr
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(dv), "delta_var": float(dv),
-        "sse_weighted": float(_sse(left) * wl + _sse(right) * wr),
-        "sse_left": float(_sse(left)), "sse_right": float(_sse(right)),
-        "var_parent": float(vp), "var_left": float(vl),
-        "var_right": float(vr), "n_left": nl, "n_right": nr,
-        "omega_left": float(wl), "omega_right": float(wr),
-        "method": "variance reduction split (MVSML 2022 sec. 15.4.1)",
-    }), "varrd")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(dv),
+                "delta_var": float(dv),
+                "sse_weighted": float(_sse(left) * wl + _sse(right) * wr),
+                "sse_left": float(_sse(left)),
+                "sse_right": float(_sse(right)),
+                "var_parent": float(vp),
+                "var_left": float(vl),
+                "var_right": float(vr),
+                "n_left": nl,
+                "n_right": nr,
+                "omega_left": float(wl),
+                "omega_right": float(wr),
+                "method": "variance reduction split (MVSML 2022 sec. 15.4.1)",
+            }
+        ),
+        "varrd",
+    )
 
 
 def cheatsheet():

@@ -46,15 +46,13 @@ Chapman & Hall/CRC, Sec. 12.5 (effect modification and marginal
 structural models) and Sec. 21.2 (the time-varying weights).
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["mfo_vsm"]
 
 
-def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative",
-            trim=None):
+def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative", trim=None):
     r"""MSM with effect modification by a baseline feature V.
 
     Parameters
@@ -89,14 +87,12 @@ def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative",
     A_hist = _hist(A)
     L_hist = _hist(H, allow_none=True)
     if len(L_hist) != len(A_hist):
-        raise ValueError("mfo_vsm: %d treatment times but %d covariate "
-                         "blocks" % (len(A_hist), len(L_hist)))
+        raise ValueError(f"mfo_vsm: {int(len(A_hist))} treatment times but {int(len(L_hist))} covariate blocks")
     yv = k.vec(y)
     vv = k.vec(feature)
     n = len(yv)
     if len(vv) != n:
-        raise ValueError("mfo_vsm: outcome has %d rows but the feature "
-                         "has %d" % (n, len(vv)))
+        raise ValueError(f"mfo_vsm: outcome has {int(n)} rows but the feature has {int(len(vv))}")
 
     # Sec. 21.2's product, with V added to the numerator model when
     # asked -- Sec. 12.5's refinement for a V-conditional MSM.
@@ -109,11 +105,9 @@ def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative",
             block = k.mat(L_hist[kk])
             for c in range(len(block[0])):
                 lbar.append([row[c] for row in block])
-        den = [[c[i] for c in lbar + past] for i in range(n)] \
-            if (lbar or past) else None
+        den = [[c[i] for c in lbar + past] for i in range(n)] if (lbar or past) else None
         num_cols = ([list(vv)] if v_in_numerator else []) + past
-        num = [[c[i] for c in num_cols] for i in range(n)] \
-            if num_cols else None
+        num = [[c[i] for c in num_cols] for i in range(n)] if num_cols else None
         wk, _ = k.ip_weights(ak, den, num, kind="binary", stabilize=True)
         for i in range(n):
             w[i] *= wk[i]
@@ -133,44 +127,55 @@ def mfo_vsm(y, feature, A, H, v_in_numerator=True, contrast="cumulative",
     elif contrast == "everexposed":
         e = [1.0 if v > 0.0 else 0.0 for v in cum]
     else:
-        raise ValueError("mfo_vsm: contrast must be 'cumulative', "
-                         "'final' or 'everexposed', got %r" % (contrast,))
+        raise ValueError(f"mfo_vsm: contrast must be 'cumulative', 'final' or 'everexposed', got {contrast!r}")
 
     X = [[e[i], vv[i], e[i] * vv[i]] for i in range(n)]
     fit = k.wls(X, yv, w)
     s1, s2 = sum(w), sum(v * v for v in w)
-    return RichResult(payload={
-        "estimate": fit["coef"][3],          # beta_3, the modification
-        "se": fit["se"][3],
-        "main_effect": fit["coef"][1],       # beta_1
-        "main_effect_se": fit["se"][1],
-        "feature_effect": fit["coef"][2],    # beta_2
-        "intercept": fit["coef"][0],
-        "coef": fit["coef"], "vcov": fit["vcov"],
-        "weights": w, "mean_weight": s1 / n, "max_weight": max(w),
-        "effective_sample_size": (s1 * s1 / s2) if s2 else 0.0,
-        "exposure": e, "v_in_numerator": bool(v_in_numerator),
-        "n": n, "n_times": len(A_hist), "contrast": contrast,
-        "method": "V-conditional marginal structural model, Robins & "
-                  "Hernan (2009); Hernan & Robins (2020) Sec. 12.5",
-    })
+    return RichResult(
+        payload={
+            "estimate": fit["coef"][3],  # beta_3, the modification
+            "se": fit["se"][3],
+            "main_effect": fit["coef"][1],  # beta_1
+            "main_effect_se": fit["se"][1],
+            "feature_effect": fit["coef"][2],  # beta_2
+            "intercept": fit["coef"][0],
+            "coef": fit["coef"],
+            "vcov": fit["vcov"],
+            "weights": w,
+            "mean_weight": s1 / n,
+            "max_weight": max(w),
+            "effective_sample_size": (s1 * s1 / s2) if s2 else 0.0,
+            "exposure": e,
+            "v_in_numerator": bool(v_in_numerator),
+            "n": n,
+            "n_times": len(A_hist),
+            "contrast": contrast,
+            "method": "V-conditional marginal structural model, Robins & "
+            "Hernan (2009); Hernan & Robins (2020) Sec. 12.5",
+        }
+    )
 
 
 def _hist(obj, allow_none=False):
     if obj is None:
         return [None] if allow_none else []
-    if isinstance(obj, (list, tuple)) and obj and (
-            isinstance(obj[0], (list, tuple)) or obj[0] is None
-            or hasattr(obj[0], "shape")):
+    if (
+        isinstance(obj, (list, tuple))
+        and obj
+        and (isinstance(obj[0], (list, tuple)) or obj[0] is None or hasattr(obj[0], "shape"))
+    ):
         return list(obj)
     return [obj]
 
 
 def cheatsheet():
-    return ("mfovsm: V-conditional MSM E[Y^abar|V] = b0 + b1 abar + "
-            "b2 V + b3 abar V (Robins-Hernan 2009; H&R Sec.12.5). "
-            "estimate = b3, the effect modification. V goes in the "
-            "weight NUMERATOR: f(A|V)/f(A|L).")
+    return (
+        "mfovsm: V-conditional MSM E[Y^abar|V] = b0 + b1 abar + "
+        "b2 V + b3 abar V (Robins-Hernan 2009; H&R Sec.12.5). "
+        "estimate = b3, the effect modification. V goes in the "
+        "weight NUMERATOR: f(A|V)/f(A|L)."
+    )
 
 
 # compact alias per ledger/NAMING.md

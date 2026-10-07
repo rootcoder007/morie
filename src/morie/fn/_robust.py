@@ -27,10 +27,22 @@ re-verified against them.
 
 from . import _array_core as np
 
-__all__ = ["mad_scale", "huber_psi", "tukey_rho", "tukey_weight",
-           "irls", "s_scale", "s_regression", "mm_regression",
-           "prepare_design", "HUBER_C_95", "TUKEY_C_BREAKDOWN",
-           "TUKEY_C_95", "QN_D", "SN_C"]
+__all__ = [
+    "mad_scale",
+    "huber_psi",
+    "tukey_rho",
+    "tukey_weight",
+    "irls",
+    "s_scale",
+    "s_regression",
+    "mm_regression",
+    "prepare_design",
+    "HUBER_C_95",
+    "TUKEY_C_BREAKDOWN",
+    "TUKEY_C_95",
+    "QN_D",
+    "SN_C",
+]
 
 # Huber (1964, 1973): psi_c(u) = clip(u, -c, c). c = 1.345 gives 95%
 # efficiency at the normal model -- it solves
@@ -49,7 +61,7 @@ TUKEY_C_95 = 4.685
 # d = 1/(sqrt(2) Phi^-1(5/8)) makes Qn consistent for sigma at the
 # normal; the paper prints 2.2219 from a slightly different rounding,
 # and the exact constant is what the code uses.
-QN_D = 2.21914446598508    # = 1 / (sqrt(2) * qnorm(5/8))
+QN_D = 2.21914446598508  # = 1 / (sqrt(2) * qnorm(5/8))
 
 # Sn = c * lowmed_i highmed_j |x_i - x_j|, c = 1.1926 for normal
 # consistency (Rousseeuw and Croux 1993, Sec. 2).
@@ -71,7 +83,7 @@ def huber_psi(u, c=HUBER_C_95):
 def tukey_rho(u, c):
     r"""Biweight rho scaled so rho(inf) = 1."""
     v = np.clip(np.asarray(u, dtype=float) / c, -1.0, 1.0)
-    return 1.0 - (1.0 - v ** 2) ** 3
+    return 1.0 - (1.0 - v**2) ** 3
 
 
 def tukey_weight(u, c):
@@ -82,7 +94,7 @@ def tukey_weight(u, c):
     one."""
     u = np.asarray(u, dtype=float)
     v = u / c
-    w = (1.0 - v ** 2) ** 2
+    w = (1.0 - v**2) ** 2
     return np.where(np.abs(v) < 1.0, w, 0.0)
 
 
@@ -130,9 +142,11 @@ def s_scale(r, c=TUKEY_C_BREAKDOWN, b=0.5, max_iter=200, tol=1e-12):
 
 
 def cheatsheet():
-    return ("_robust: every magic constant is a calibration equation -- "
-            "1.345 (Huber 95%), 1.5476 (biweight 50% breakdown), "
-            "4.685 (biweight 95%), 2.2191 (Qn), 1.1926 (Sn)")
+    return (
+        "_robust: every magic constant is a calibration equation -- "
+        "1.345 (Huber 95%), 1.5476 (biweight 50% breakdown), "
+        "4.685 (biweight 95%), 2.2191 (Qn), 1.1926 (Sn)"
+    )
 
 
 def prepare_design(X, y, intercept=True):
@@ -142,8 +156,7 @@ def prepare_design(X, y, intercept=True):
     if A.shape[0] != yv.size:
         A = A.T
     if A.shape[0] != yv.size:
-        raise ValueError(
-            f"X has {A.shape[0]} rows for {yv.size} responses.")
+        raise ValueError(f"X has {A.shape[0]} rows for {yv.size} responses.")
     if intercept and not np.any(np.all(np.isclose(A, 1.0), axis=0)):
         A = np.column_stack([np.ones(yv.size), A])
     return A, yv
@@ -167,8 +180,7 @@ def s_regression(X, y, n_subsets=200, seed=0, c=TUKEY_C_BREAKDOWN, b=0.5):
     """
     n, p = X.shape
     if n <= p:
-        raise ValueError(f"need more observations than parameters, "
-                         f"got n = {n}, p = {p}.")
+        raise ValueError(f"need more observations than parameters, got n = {n}, p = {p}.")
     rng = np.random.default_rng(seed)
     best_s = np.inf
     best_beta = None
@@ -186,14 +198,12 @@ def s_regression(X, y, n_subsets=200, seed=0, c=TUKEY_C_BREAKDOWN, b=0.5):
             best_s = sc
             best_beta = beta
     if best_beta is None:
-        raise ValueError("no non-singular p-subset was found; the design "
-                         "is rank-deficient.")
+        raise ValueError("no non-singular p-subset was found; the design is rank-deficient.")
     # local improvement: IRLS at the current scale, re-solving the
     # scale as beta moves
     beta = best_beta
     for _ in range(50):
-        beta_new, _ = irls(X, y, lambda u: tukey_weight(u, c), best_s, beta,
-                           max_iter=1)
+        beta_new, _ = irls(X, y, lambda u: tukey_weight(u, c), best_s, beta, max_iter=1)
         sc = s_scale(y - X @ beta_new, c=c, b=b)
         if sc >= best_s - 1e-12:
             break

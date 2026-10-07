@@ -1,13 +1,12 @@
 """Tests for hmtrlf.geron_trl_finetune."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmtrlf import geron_trl_finetune
 
 
 def test_hmtrlf_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # DPO: dataset items are (x_chosen, x_rejected) feature vectors
     pairs = [
         ([1.0, 0.0], [0.0, 1.0]),
@@ -45,7 +44,7 @@ import morie.fn.hmtrlf as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

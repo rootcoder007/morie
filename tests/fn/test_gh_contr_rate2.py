@@ -1,7 +1,6 @@
 """Tests for gh_contr_rate2.ghosal_contraction_rate_iid."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_contr_rate2 import ghosal_contraction_rate_iid
 
 
@@ -27,7 +26,7 @@ def test_gh_contr_rate2_basic():
     assert all(ns[i] < ns[i + 1] for i in range(len(ns) - 1))
     # Independent computation of contraction rate via plain arithmetic
     p0_sum = sum(p0)
-    p0n = [pk / p0_sum for pk in p0]
+    [pk / p0_sum for pk in p0]
     # With seed=42 we cannot reproduce dists without re-running RNG;
     # instead verify the rate definition holds using returned l1 values.
     rate_check = np.log(l1[0] / l1[-1]) / np.log(float(ns[-1]) / ns[0])

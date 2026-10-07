@@ -1,4 +1,3 @@
-
 import pytest as _pytest
 
 _pytest.importorskip("morie._exec_guard")  # interactive/agent layer ships in the source tree only
@@ -211,6 +210,7 @@ class TestSandboxEscape:
 
         fake = types.ModuleType("morie.fake")
         import os as _os
+
         fake.os = _os
         fake.value = 3
         gm = _GuardedModule(fake)

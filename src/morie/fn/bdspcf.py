@@ -80,11 +80,19 @@ def misspecbd(estimate, sensitivity, c, se, conf=0.95):
     hw = bias + z * se
     est = float(estimate)
     wg = [0.0] * len(s) if ns == 0.0 else [c * v / ns for v in s]
-    return RichResult(payload={
-        "bias": bias, "lower": est - hw, "upper": est + hw,
-        "halfwidth": hw, "worstgamma": wg, "normsens": ns, "z": z,
-        "c": c,
-        "method": "Conservative bias-aware interval under local misspecification"})
+    return RichResult(
+        payload={
+            "bias": bias,
+            "lower": est - hw,
+            "upper": est + hw,
+            "halfwidth": hw,
+            "worstgamma": wg,
+            "normsens": ns,
+            "z": z,
+            "c": c,
+            "method": "Conservative bias-aware interval under local misspecification",
+        }
+    )
 
 
 bound_specification = misspecbd

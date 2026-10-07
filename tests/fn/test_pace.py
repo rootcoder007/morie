@@ -5,6 +5,7 @@ Karhunen-Loeve expansion, so the eigenvalues, the eigenfunctions, the
 scores and the fraction of variance explained all have right answers
 that the code does not get told.
 """
+
 import math
 
 import pytest
@@ -39,8 +40,7 @@ def _simulate(n=200, m=20, seed=7):
         XI.append((x1, x2))
         ti = sorted(rng.random() for _ in range(m))
         T.append(ti)
-        Y.append([t + x1 * _phi1(t) + x2 * _phi2(t)
-                  + math.sqrt(SIGMA2) * norm() for t in ti])
+        Y.append([t + x1 * _phi1(t) + x2 * _phi2(t) + math.sqrt(SIGMA2) * norm() for t in ti])
     return Y, T, XI
 
 
@@ -54,15 +54,14 @@ def _abscorr(a, b):
     n = len(a)
     ma, mb = sum(a) / n, sum(b) / n
     cov = sum((a[i] - ma) * (b[i] - mb) for i in range(n))
-    den = math.sqrt(sum((x - ma) ** 2 for x in a)
-                    * sum((x - mb) ** 2 for x in b))
+    den = math.sqrt(sum((x - ma) ** 2 for x in a) * sum((x - mb) ** 2 for x in b))
     return abs(cov / den)
 
 
 def test_eigenvalues_recover_the_generating_variances(fit):
     r, _ = fit
-    assert abs(r["eigenvalues"][0] - L1) < 0.4          # true 4
-    assert abs(r["eigenvalues"][1] - L2) < 0.4          # true 1
+    assert abs(r["eigenvalues"][0] - L1) < 0.4  # true 4
+    assert abs(r["eigenvalues"][1] - L2) < 0.4  # true 1
     assert r["eigenvalues"][0] > r["eigenvalues"][1]
 
 
@@ -100,8 +99,7 @@ def test_fraction_of_variance_explained_matches_the_design(fit):
 def test_the_diagonal_is_excluded_so_sigma2_is_not_absorbed():
     """With no measurement error the diagonal gap must collapse."""
     Y, T, _ = _simulate(n=120, m=20, seed=3)
-    clean = pace([[y for y in row] for row in Y], T, K=2, n_grid=15,
-                 bw_mu=0.1, bw_cov=0.1)
+    clean = pace([[y for y in row] for row in Y], T, K=2, n_grid=15, bw_mu=0.1, bw_cov=0.1)
     assert clean["sigma2"] >= 0.0
 
 
@@ -114,8 +112,7 @@ def test_conditional_expectation_shrinks_relative_to_integration():
     """
     Y, T, _ = _simulate(n=150, m=4, seed=5)
     ce = pace(Y, T, K=2, n_grid=15, bw_mu=0.15, bw_cov=0.15)
-    it = pace(Y, T, K=2, n_grid=15, bw_mu=0.15, bw_cov=0.15,
-              shrink=False)
+    it = pace(Y, T, K=2, n_grid=15, bw_mu=0.15, bw_cov=0.15, shrink=False)
     v_ce = sum(s[0] ** 2 for s in ce["estimate"]) / len(ce["estimate"])
     v_it = sum(s[0] ** 2 for s in it["estimate"]) / len(it["estimate"])
     assert v_ce != v_it
@@ -143,8 +140,7 @@ def test_mismatched_lengths_are_refused():
 def test_both_kernels_run_and_a_bad_one_is_refused():
     Y, T, _ = _simulate(n=60, m=8, seed=4)
     for kern in ("epan", "gauss"):
-        r = pace(Y, T, K=1, n_grid=11, bw_mu=0.15, bw_cov=0.15,
-                 kernel=kern)
+        r = pace(Y, T, K=1, n_grid=11, bw_mu=0.15, bw_cov=0.15, kernel=kern)
         assert r["kernel"] == kern
     with pytest.raises(ValueError, match="epan or gauss"):
         pace(Y, T, K=1, kernel="triweight")

@@ -24,7 +24,7 @@ def directed_layout(
     adjacency : array (n, n)
         Adjacency or weight matrix (non-zero = edge).
     method : str
-        ``'Our greatest glory is not in never falling, but in rising every time we fall. -- Confucius'`` (Fruchterman-Reingold) or ``'circular'``.
+        ``'force'`` (Fruchterman-Reingold) or ``'circular'``.
     n_iter : int
         Iterations for force-directed layout.
     seed : int or None

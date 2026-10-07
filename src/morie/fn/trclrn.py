@@ -73,12 +73,10 @@ treatment selection as a weighted classification problem that the
 tree search rests on.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["rule_value", "best_treatment", "fit_tree", "predict_rule",
-           "tree_rules"]
+__all__ = ["rule_value", "best_treatment", "fit_tree", "predict_rule", "tree_rules"]
 
 _EPS = 1e-12
 _METHODS = ("ipw", "augmented")
@@ -90,15 +88,12 @@ def _check(Y, A, X, propensity, min_propensity):
     Xm = [[float(v) for v in r] for r in k.mat(X)]
     n = len(y)
     if not (len(a) == len(Xm) == n):
-        raise ValueError("trclrn: Y, A and X must agree in length "
-                         "(%d, %d, %d)" % (n, len(a), len(Xm)))
+        raise ValueError(f"trclrn: Y, A and X must agree in length ({int(n)}, {int(len(a))}, {int(len(Xm))})")
     if n < 4:
-        raise ValueError("trclrn: need at least 4 observations, got %d"
-                         % n)
+        raise ValueError(f"trclrn: need at least 4 observations, got {int(n)}")
     arms = sorted(set(a))
     if len(arms) < 2:
-        raise ValueError("trclrn: at least 2 treatment arms are "
-                         "needed, got %d" % len(arms))
+        raise ValueError(f"trclrn: at least 2 treatment arms are needed, got {int(len(arms))}")
     if propensity is None:
         p = [1.0 / len(arms)] * n
     elif isinstance(propensity, (int, float)):
@@ -106,20 +101,16 @@ def _check(Y, A, X, propensity, min_propensity):
     else:
         p = [float(v) for v in k.vec(propensity)]
     if len(p) != n:
-        raise ValueError("trclrn: %d propensities for %d observations"
-                         % (len(p), n))
+        raise ValueError(f"trclrn: {int(len(p))} propensities for {int(n)} observations")
     bad = [v for v in p if v < float(min_propensity)]
     if bad:
-        raise ValueError("trclrn: %d observation(s) have a propensity "
-                         "below %g (smallest %.4g) -- Assumption 1 "
-                         "(positivity) fails and the value of a rule "
-                         "assigning that arm there is not estimable"
-                         % (len(bad), min_propensity, min(bad)))
+        raise ValueError(
+            f"trclrn: {int(len(bad))} observation(s) have a propensity below {min_propensity:g} (smallest {min(bad):.4g}) -- Assumption 1 (positivity) fails and the value of a rule assigning that arm there is not estimable"
+        )
     return y, a, Xm, p, n, arms
 
 
-def rule_value(Y, A, X, rule, propensity=None, method="ipw",
-               outcome_model=None, min_propensity=0.01):
+def rule_value(Y, A, X, rule, propensity=None, method="ipw", outcome_model=None, min_propensity=0.01):
     r"""The estimated value :math:`\widehat V(\pi)` of a rule.
 
     ``rule`` maps a covariate row to a treatment label.
@@ -128,8 +119,7 @@ def rule_value(Y, A, X, rule, propensity=None, method="ipw",
     either that or the propensity is correct.
     """
     if method not in _METHODS:
-        raise ValueError("trclrn: method must be ipw or augmented, "
-                         "got %r" % (method,))
+        raise ValueError(f"trclrn: method must be ipw or augmented, got {method!r}")
     y, a, Xm, p, n, arms = _check(Y, A, X, propensity, min_propensity)
     tot = 0.0
     for i in range(n):
@@ -139,8 +129,7 @@ def rule_value(Y, A, X, rule, propensity=None, method="ipw",
             tot += agree * y[i] / p[i]
         else:
             if outcome_model is None:
-                raise ValueError("trclrn: method='augmented' needs an "
-                                 "outcome_model(x, a) -> E[Y | x, a]")
+                raise ValueError("trclrn: method='augmented' needs an outcome_model(x, a) -> E[Y | x, a]")
             m = float(outcome_model(Xm[i], pi))
             tot += m + agree * (y[i] - m) / p[i]
     return tot / n
@@ -163,9 +152,18 @@ def best_treatment(y, a, p, rows, arms, method, Xm, outcome_model):
     return best, bv
 
 
-def fit_tree(Y, A, X, propensity=None, method="ipw",
-             outcome_model=None, max_depth=3, min_leaf=10,
-             n_thresholds=20, min_propensity=0.01):
+def fit_tree(
+    Y,
+    A,
+    X,
+    propensity=None,
+    method="ipw",
+    outcome_model=None,
+    max_depth=3,
+    min_leaf=10,
+    n_thresholds=20,
+    min_propensity=0.01,
+):
     r"""Grow a decision tree that maximises the estimated value.
 
     At each node the split score is the gain from letting the two
@@ -175,21 +173,17 @@ def fit_tree(Y, A, X, propensity=None, method="ipw",
     so the tree stops where the data stop supporting heterogeneity.
     """
     if method not in _METHODS:
-        raise ValueError("trclrn: method must be ipw or augmented, "
-                         "got %r" % (method,))
+        raise ValueError(f"trclrn: method must be ipw or augmented, got {method!r}")
     if method == "augmented" and outcome_model is None:
-        raise ValueError("trclrn: method='augmented' needs an "
-                         "outcome_model(x, a) -> E[Y | x, a]")
+        raise ValueError("trclrn: method='augmented' needs an outcome_model(x, a) -> E[Y | x, a]")
     y, a, Xm, p, n, arms = _check(Y, A, X, propensity, min_propensity)
     if int(min_leaf) < 1:
         raise ValueError("trclrn: min_leaf must be at least 1")
     d = len(Xm[0])
 
     def grow(rows, depth):
-        arm, val = best_treatment(y, a, p, rows, arms, method, Xm,
-                                  outcome_model)
-        node = {"leaf": True, "treatment": arm, "n": len(rows),
-                "value": val / max(len(rows), 1)}
+        arm, val = best_treatment(y, a, p, rows, arms, method, Xm, outcome_model)
+        node = {"leaf": True, "treatment": arm, "n": len(rows), "value": val / max(len(rows), 1)}
         if depth >= int(max_depth) or len(rows) < 2 * int(min_leaf):
             return node
         best = None
@@ -204,55 +198,67 @@ def fit_tree(Y, A, X, propensity=None, method="ipw",
                 R = [i for i in rows if Xm[i][j] >= thr]
                 if len(L) < int(min_leaf) or len(R) < int(min_leaf):
                     continue
-                _, vl = best_treatment(y, a, p, L, arms, method, Xm,
-                                       outcome_model)
-                _, vr = best_treatment(y, a, p, R, arms, method, Xm,
-                                       outcome_model)
+                _, vl = best_treatment(y, a, p, L, arms, method, Xm, outcome_model)
+                _, vr = best_treatment(y, a, p, R, arms, method, Xm, outcome_model)
                 gain = (vl + vr) - val
                 if best is None or gain > best["gain"]:
-                    best = {"gain": gain, "j": j, "thr": thr,
-                            "L": L, "R": R}
+                    best = {"gain": gain, "j": j, "thr": thr, "L": L, "R": R}
         if best is None or best["gain"] <= _EPS:
             return node
-        return {"leaf": False, "feature": best["j"],
-                "threshold": best["thr"], "gain": best["gain"],
-                "n": len(rows),
-                "left": grow(best["L"], depth + 1),
-                "right": grow(best["R"], depth + 1)}
+        return {
+            "leaf": False,
+            "feature": best["j"],
+            "threshold": best["thr"],
+            "gain": best["gain"],
+            "n": len(rows),
+            "left": grow(best["L"], depth + 1),
+            "right": grow(best["R"], depth + 1),
+        }
 
     tree = grow(list(range(n)), 0)
 
     def rule(x):
         nd = tree
         while not nd["leaf"]:
-            nd = (nd["left"] if float(x[nd["feature"]])
-                  < nd["threshold"] else nd["right"])
+            nd = nd["left"] if float(x[nd["feature"]]) < nd["threshold"] else nd["right"]
         return nd["treatment"]
 
-    v = rule_value(y, a, Xm, rule, propensity=p, method=method,
-                   outcome_model=outcome_model,
-                   min_propensity=min_propensity)
+    v = rule_value(
+        y, a, Xm, rule, propensity=p, method=method, outcome_model=outcome_model, min_propensity=min_propensity
+    )
     fixed = {}
     for arm in arms:
-        fixed[arm] = rule_value(y, a, Xm, lambda _x, _a=arm: _a,
-                                propensity=p, method=method,
-                                outcome_model=outcome_model,
-                                min_propensity=min_propensity)
-    return RichResult(payload={
-        "estimate": v, "value": v, "tree": tree, "rule": rule,
-        "fixed_arm_values": fixed,
-        "best_fixed_arm": max(fixed, key=lambda kk: fixed[kk]),
-        "n": n, "arms": arms, "method": method,
-        "max_depth": int(max_depth), "min_leaf": int(min_leaf),
-        "n_leaves": _count_leaves(tree),
-        "method_name": "tree-based individualized treatment rule; "
-                       "Laber & Zhao (2015) Sec. 2.2",
-    })
+        fixed[arm] = rule_value(
+            y,
+            a,
+            Xm,
+            lambda _x, _a=arm: _a,
+            propensity=p,
+            method=method,
+            outcome_model=outcome_model,
+            min_propensity=min_propensity,
+        )
+    return RichResult(
+        payload={
+            "estimate": v,
+            "value": v,
+            "tree": tree,
+            "rule": rule,
+            "fixed_arm_values": fixed,
+            "best_fixed_arm": max(fixed, key=lambda kk: fixed[kk]),
+            "n": n,
+            "arms": arms,
+            "method": method,
+            "max_depth": int(max_depth),
+            "min_leaf": int(min_leaf),
+            "n_leaves": _count_leaves(tree),
+            "method_name": "tree-based individualized treatment rule; Laber & Zhao (2015) Sec. 2.2",
+        }
+    )
 
 
 def _count_leaves(nd):
-    return 1 if nd["leaf"] else (_count_leaves(nd["left"])
-                                 + _count_leaves(nd["right"]))
+    return 1 if nd["leaf"] else (_count_leaves(nd["left"]) + _count_leaves(nd["right"]))
 
 
 def predict_rule(tree, X):
@@ -261,8 +267,7 @@ def predict_rule(tree, X):
     for x in k.mat(X):
         nd = tree
         while not nd["leaf"]:
-            nd = (nd["left"] if float(x[nd["feature"]])
-                  < nd["threshold"] else nd["right"])
+            nd = nd["left"] if float(x[nd["feature"]]) < nd["threshold"] else nd["right"]
         out.append(nd["treatment"])
     return out
 
@@ -271,27 +276,27 @@ def tree_rules(tree, names=None, indent=0):
     """The tree as readable if-then lines -- the point of using one."""
     pad = " " * indent
     if tree["leaf"]:
-        return ["%streat with %s  (n = %d)"
-                % (pad, tree["treatment"], tree["n"])]
-    nm = ("x%d" % tree["feature"] if names is None
-          else names[tree["feature"]])
-    out = ["%sif %s < %.6g:" % (pad, nm, tree["threshold"])]
+        return ["{}treat with {}  (n = {})".format(pad, tree["treatment"], int(tree["n"]))]
+    nm = "x{}".format(int(tree["feature"])) if names is None else names[tree["feature"]]
+    out = ["{}if {} < {:.6g}:".format(pad, nm, tree["threshold"])]
     out += tree_rules(tree["left"], names, indent + 2)
-    out.append("%selse:" % pad)
+    out.append(f"{pad}else:")
     out += tree_rules(tree["right"], names, indent + 2)
     return out
 
 
 def cheatsheet():
-    return ("trclrn: tree-based ITR. Value V(pi) = mean of Y * "
-            "1{A = pi(X)} / p(A|X) -- only CONCORDANT subjects "
-            "contribute, reweighted. Search over rules representable "
-            "as a tree, so the winner is both value-maximal and "
-            "readable. Split score = gain from letting two children "
-            "choose different treatments (minimum-impurity decision "
-            "assignment). Positivity is Assumption 1 and is enforced, "
-            "not assumed. method='augmented' adds an outcome model "
-            "(Tao & Wang 2017) and survives either model being wrong.")
+    return (
+        "trclrn: tree-based ITR. Value V(pi) = mean of Y * "
+        "1{A = pi(X)} / p(A|X) -- only CONCORDANT subjects "
+        "contribute, reweighted. Search over rules representable "
+        "as a tree, so the winner is both value-maximal and "
+        "readable. Split score = gain from letting two children "
+        "choose different treatments (minimum-impurity decision "
+        "assignment). Positivity is Assumption 1 and is enforced, "
+        "not assumed. method='augmented' adds an outcome model "
+        "(Tao & Wang 2017) and survives either model being wrong."
+    )
 
 
 # compact alias per ledger/NAMING.md

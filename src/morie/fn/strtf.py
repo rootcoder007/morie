@@ -62,7 +62,7 @@ def strtf(
             X_s = X[mask]
             ns = len(t_s)
             order = np.argsort(-t_s)
-            t_o = t_s[order]
+            t_s[order]
             e_o = e_s[order]
             X_o = X_s[order]
 

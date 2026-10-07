@@ -107,5 +107,4 @@ def rating_scale_andrich(theta, b=0.0, tau=(0.0,)):
 
 
 def cheatsheet():
-    return ("rsmand: Andrich RSM  P(X=h) proportional to "
-            "exp(h(theta-b) - sum_{j<=h} tau_j)")
+    return "rsmand: Andrich RSM  P(X=h) proportional to exp(h(theta-b) - sum_{j<=h} tau_j)"

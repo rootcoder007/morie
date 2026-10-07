@@ -83,7 +83,7 @@ def tmle_mediation(y, treatment, mediator, covariates=None, trunc=0.01):
     ratio = np.clip(ratio, 0.05, 20.0)  # ponytail: bound the density ratio, extremes are noise
 
     # E[Y(x, M_0)] by weighting the outcome regression in (A, M, W)
-    XA = np.column_stack([A, M, W])
+    np.column_stack([A, M, W])
     g = np.clip(_logit_fit(W, A), trunc, 1 - trunc)
     q1 = _ols_predict(np.column_stack([M, W]), y, A == 1)
     q0 = _ols_predict(np.column_stack([M, W]), y, A == 0)

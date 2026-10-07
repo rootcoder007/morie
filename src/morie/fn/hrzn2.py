@@ -39,10 +39,7 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None, noise="lap
     n = y.size
     if n < 30:
         return RichResult(payload={"estimate": np.nan, "n": n, "method": "deconvolution (insufficient data)"})
-    if bandwidth is None:
-        h = max(1.5 * np.std(y, ddof=1) * n ** (-1.0 / 7.0), 1e-3)
-    else:
-        h = float(bandwidth)
+    h = max(1.5 * np.std(y, ddof=1) * n ** (-1.0 / 7.0), 0.001) if bandwidth is None else float(bandwidth)
     if grid is None:
         grid = np.linspace(y.min(), y.max(), 51)
     grid = np.asarray(grid, dtype=float).ravel()
@@ -53,10 +50,8 @@ def horowitz_deconvolution(y, sigma_u=0.5, bandwidth=None, grid=None, noise="lap
     # Empirical characteristic function of Y at frequencies T
     phi_Y = (np.exp(1j * np.outer(T, y))).mean(axis=1)
     # CF of noise
-    if noise == "normal":
-        phi_U = np.exp(-0.5 * (sigma_u * T) ** 2)
-    else:  # Laplace
-        phi_U = 1.0 / (1.0 + (sigma_u * T) ** 2)
+    # Laplace
+    phi_U = np.exp(-0.5 * (sigma_u * T) ** 2) if noise == "normal" else 1.0 / (1.0 + (sigma_u * T) ** 2)
     # Sinc-Fourier kernel  phi_K(t h) = (1 - (t h)^2)^3 for |t h| <= 1, else 0
     th = T * h
     phi_K = np.where(np.abs(th) <= 1, (1 - th**2) ** 3, 0.0)

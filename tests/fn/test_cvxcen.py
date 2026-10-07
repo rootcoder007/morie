@@ -1,13 +1,15 @@
 """Tests for cvxcen.boyd_central_path."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxcen import boyd_central_path
 
 
 def test_cvxcen_basic():
     """Test basic functionality."""
-    obj = lambda x: 0.5 * x[0] ** 2
+
+    def obj(x):
+        return 0.5 * x[0] ** 2
+
     con = [lambda x: 1.0 - x[0]]
     t = [1.0, 10.0, 100.0]
     r = boyd_central_path(obj, con, t, x0=[2.0])
@@ -25,9 +27,12 @@ def test_cvxcen_basic():
 
 def test_cvxcen_edge():
     """Test edge cases."""
-    obj = lambda x: 0.5 * x[0] ** 2
+
+    def obj(x):
+        return 0.5 * x[0] ** 2
+
     con = [lambda x: 1.0 - x[0]]
-    t = [1e-06, 1e+04]
+    t = [1e-06, 1e04]
     two = boyd_central_path(obj, [con[0], lambda x: x[0] - 3.0], t, x0=[2.0])
     assert round(float(two["path"][0, 0]), 4) == 2.0
     assert round(float(two["path"][1, 0]), 4) == 1.0001

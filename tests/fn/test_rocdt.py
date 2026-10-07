@@ -1,7 +1,6 @@
 """Test roc_det_curve (rocdt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rocdt import roc_det_curve, rocdt
 

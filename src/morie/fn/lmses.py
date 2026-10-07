@@ -57,7 +57,7 @@ def least_median_squares(
             best_obj = obj
             best_beta = beta
 
-    resid = y - X @ best_beta
+    y - X @ best_beta
     s = 1.4826 * np.sqrt(best_obj)
     return ESRes(
         measure="lms",

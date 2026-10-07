@@ -79,22 +79,16 @@ def geron_bert_mlm_loss(logits, targets, mask):
         raise ValueError(f"logits must be 2-D (T, V), got shape {Z.shape}.")
     T = Z.shape[0]
     if t.size != T or m.size != T:
-        raise ValueError(
-            f"logits has {T} positions but targets has {t.size} and mask has {m.size}."
-        )
+        raise ValueError(f"logits has {T} positions but targets has {t.size} and mask has {m.size}.")
     n_masked = int(m.sum())
     if n_masked == 0:
-        raise ValueError(
-            "no position is masked, so the MLM loss has nothing to score; "
-            "BERT masks about 15% of tokens."
-        )
+        raise ValueError("no position is masked, so the MLM loss has nothing to score; BERT masks about 15% of tokens.")
 
     inner = geron_gpt_autoregressive_loss(Z[m], t[m])
 
     return RichResult(
         title="BERT MLM loss",
-        summary_lines=[("Loss", inner["loss"]), ("Masked", n_masked),
-                       ("Mask rate", n_masked / T)],
+        summary_lines=[("Loss", inner["loss"]), ("Masked", n_masked), ("Mask rate", n_masked / T)],
         payload={
             "loss": inner["loss"],
             "mean_loss": inner["mean_loss"],

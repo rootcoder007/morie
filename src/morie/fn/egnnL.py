@@ -62,14 +62,10 @@ arXiv:1802.08219. The higher-order-representation approach this
 avoids.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["edge_message", "coord_update", "egcl", "run_egnn",
-           "equivariance_error"]
+__all__ = ["edge_message", "coord_update", "egcl", "run_egnn", "equivariance_error"]
 
 _EPS = 1e-12
 _MODES = ("position", "momentum")
@@ -98,18 +94,15 @@ def coord_update(X, M, phi_x, C=None):
             if j == i:
                 continue
             w = float(phi_x(M[i][j]))
-            acc = [acc[d] + c * (X[i][d] - X[j][d]) * w
-                   for d in range(len(acc))]
+            acc = [acc[d] + c * (X[i][d] - X[j][d]) * w for d in range(len(acc))]
         out.append(acc)
     return out
 
 
-def egcl(H, X, phi_e, phi_x, phi_h, A=None, C=None, V=None,
-         mode="position", phi_v=None, dt=1.0):
+def egcl(H, X, phi_e, phi_x, phi_h, A=None, C=None, V=None, mode="position", phi_v=None, dt=1.0):
     r"""One equivariant graph convolutional layer, eqs. (3)-(6)."""
     if mode not in _MODES:
-        raise ValueError("egnnL: mode must be one of %s, got %r"
-                         % (", ".join(_MODES), mode))
+        raise ValueError("egnnL: mode must be one of {}, got {!r}".format(", ".join(_MODES), mode))
     n = len(H)
     M = [[None] * n for _ in range(n)]
     for i in range(n):
@@ -122,30 +115,25 @@ def egcl(H, X, phi_e, phi_x, phi_h, A=None, C=None, V=None,
         Vn = V
     else:
         if V is None or phi_v is None:
-            raise ValueError("egnnL: the momentum variant needs V and "
-                             "phi_v")
+            raise ValueError("egnnL: the momentum variant needs V and phi_v")
         c = 1.0 / (n - 1) if C is None else float(C)
         Vn = []
         for i in range(n):
-            acc = [float(phi_v(H[i])) * V[i][d]
-                   for d in range(len(V[i]))]
+            acc = [float(phi_v(H[i])) * V[i][d] for d in range(len(V[i]))]
             for j in range(n):
                 if j == i:
                     continue
                 w = float(phi_x(M[i][j]))
-                acc = [acc[d] + c * (X[i][d] - X[j][d]) * w
-                       for d in range(len(acc))]
+                acc = [acc[d] + c * (X[i][d] - X[j][d]) * w for d in range(len(acc))]
             Vn.append(acc)
-        Xn = [[X[i][d] + dt * Vn[i][d] for d in range(len(X[i]))]
-              for i in range(n)]
+        Xn = [[X[i][d] + dt * Vn[i][d] for d in range(len(X[i]))] for i in range(n)]
     Hn = []
     for i in range(n):
         mi = None
         for j in range(n):
             if j == i:
                 continue
-            mi = list(M[i][j]) if mi is None else \
-                [mi[f] + M[i][j][f] for f in range(len(mi))]
+            mi = list(M[i][j]) if mi is None else [mi[f] + M[i][j][f] for f in range(len(mi))]
         Hn.append(phi_h(list(H[i]), mi))
     return {"H": Hn, "X": Xn, "V": Vn, "messages": M}
 
@@ -157,16 +145,19 @@ def run_egnn(H, X, layers, phi_e, phi_x, phi_h, A=None, C=None):
     for _ in range(int(layers)):
         r = egcl(h, x, phi_e, phi_x, phi_h, A, C)
         h, x = r["H"], r["X"]
-    return RichResult(payload={
-        "estimate": (h, x), "H": h, "X": x, "layers": int(layers),
-        "method": "EGNN; Satorras, Hoogeboom & Welling (2021) eqs. "
-                  "(3)-(6)",
-        "note": "h is E(n) INVARIANT, x is E(n) EQUIVARIANT",
-    })
+    return RichResult(
+        payload={
+            "estimate": (h, x),
+            "H": h,
+            "X": x,
+            "layers": int(layers),
+            "method": "EGNN; Satorras, Hoogeboom & Welling (2021) eqs. (3)-(6)",
+            "note": "h is E(n) INVARIANT, x is E(n) EQUIVARIANT",
+        }
+    )
 
 
-def equivariance_error(H, X, phi_e, phi_x, phi_h, Q, g, layers=2,
-                       C=None):
+def equivariance_error(H, X, phi_e, phi_x, phi_h, Q, g, layers=2, C=None):
     r"""Transform the input, run, and compare against transforming the
     output.
 
@@ -174,31 +165,32 @@ def equivariance_error(H, X, phi_e, phi_x, phi_h, Q, g, layers=2,
     """
     n, d = len(X), len(X[0])
     base = run_egnn(H, X, layers, phi_e, phi_x, phi_h, C=C)
-    Xt = [[sum(Q[a][b] * X[i][b] for b in range(d)) + g[a]
-           for a in range(d)] for i in range(n)]
+    Xt = [[sum(Q[a][b] * X[i][b] for b in range(d)) + g[a] for a in range(d)] for i in range(n)]
     other = run_egnn(H, Xt, layers, phi_e, phi_x, phi_h, C=C)
-    want = [[sum(Q[a][b] * base["X"][i][b] for b in range(d)) + g[a]
-             for a in range(d)] for i in range(n)]
-    ex = max(abs(other["X"][i][a] - want[i][a])
-             for i in range(n) for a in range(d))
-    eh = max(abs(other["H"][i][f] - base["H"][i][f])
-             for i in range(n) for f in range(len(base["H"][0])))
-    return {"coordinate_error": ex, "feature_error": eh,
-            "equivariant": ex < 1e-9, "invariant": eh < 1e-9,
-            "note": "x must transform WITH Q and g; h must not move at "
-                    "all"}
+    want = [[sum(Q[a][b] * base["X"][i][b] for b in range(d)) + g[a] for a in range(d)] for i in range(n)]
+    ex = max(abs(other["X"][i][a] - want[i][a]) for i in range(n) for a in range(d))
+    eh = max(abs(other["H"][i][f] - base["H"][i][f]) for i in range(n) for f in range(len(base["H"][0])))
+    return {
+        "coordinate_error": ex,
+        "feature_error": eh,
+        "equivariant": ex < 1e-9,
+        "invariant": eh < 1e-9,
+        "note": "x must transform WITH Q and g; h must not move at all",
+    }
 
 
 def cheatsheet():
-    return ("egnnL: equivariance to translation, rotation and "
-            "reflection WITHOUT spherical harmonics. m_ij depends on "
-            "position only through ||x_i - x_j||^2, so it is "
-            "invariant; x_i <- x_i + C sum_j (x_i - x_j) phi_x(m_ij) "
-            "adds a weighted sum of RELATIVE DIFFERENCES, which "
-            "transforms as a vector. That one equation is the entire "
-            "difference from a standard GNN. C = 1/(M-1). Composition "
-            "preserves both properties by induction. A momentum "
-            "variant replaces eq. (4) when velocity matters.")
+    return (
+        "egnnL: equivariance to translation, rotation and "
+        "reflection WITHOUT spherical harmonics. m_ij depends on "
+        "position only through ||x_i - x_j||^2, so it is "
+        "invariant; x_i <- x_i + C sum_j (x_i - x_j) phi_x(m_ij) "
+        "adds a weighted sum of RELATIVE DIFFERENCES, which "
+        "transforms as a vector. That one equation is the entire "
+        "difference from a standard GNN. C = 1/(M-1). Composition "
+        "preserves both properties by induction. A momentum "
+        "variant replaces eq. (4) when velocity matters."
+    )
 
 
 # compact alias per ledger/NAMING.md

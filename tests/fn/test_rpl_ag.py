@@ -1,7 +1,6 @@
 """Tests for rpl_ag — age x gender cross-tab."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_ag import rplace_age_gender
 
 

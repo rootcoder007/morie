@@ -8,8 +8,7 @@ carry a second implementation -- which would agree with the first at
 `chzlt` with the argument names of its own stub signature.
 """
 
-from ._richresult import RichResult
-from .chzlt import cinelli_hazlett, ols_with_se, robustness_value
+from .chzlt import cinelli_hazlett
 
 __all__ = ["cinelli_hazlett_robust"]
 

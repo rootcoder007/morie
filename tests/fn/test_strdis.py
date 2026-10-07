@@ -1,7 +1,6 @@
 """Tests for strdis.structural_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.strdis import structural_distance
 
 

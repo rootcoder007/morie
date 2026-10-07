@@ -49,10 +49,7 @@ def chflt(
 
     x = np.asarray(x, dtype=float).ravel()
     nyq = fs / 2.0
-    if isinstance(cutoff, (list, tuple)):
-        wn = [c / nyq for c in cutoff]
-    else:
-        wn = cutoff / nyq
+    wn = [c / nyq for c in cutoff] if isinstance(cutoff, (list, tuple)) else cutoff / nyq
     wn = np.clip(wn, 1e-6, 1.0 - 1e-6)
 
     sos = cheby1(order, rp, wn, btype=btype, output="sos")

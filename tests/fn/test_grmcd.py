@@ -1,7 +1,6 @@
 """Tests for grmcd.geron_mc_dropout."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grmcd import geron_mc_dropout
 
 

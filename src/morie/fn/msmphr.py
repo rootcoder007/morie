@@ -24,8 +24,7 @@ def _weighted_cox(X, time, event, w, max_iter=100, tol=1e-9):
         # p*p outer products (row-major flattened), so the risk-set
         # Hessian is O(n p^2) rather than the O(n^2 p^2) of recomputing
         # the tail product at every event
-        xx = np.array([[X[k, a] * X[k, b] for a in range(p) for b in range(p)]
-                       for k in range(n)])
+        xx = np.array([[X[k, a] * X[k, b] for a in range(p) for b in range(p)] for k in range(n)])
         S2 = np.cumsum((ew[:, None] * xx)[::-1], axis=0)[::-1]
         grad = np.zeros(p)
         H = np.zeros((p, p))

@@ -1,7 +1,5 @@
 """Tests for gh_c10_9.ghosal_frs_binreg."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_9 import ghosal_frs_binreg
 
 

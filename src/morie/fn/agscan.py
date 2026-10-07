@@ -68,9 +68,15 @@ def alphazero_self_consistency(policy_net, seeds=None):
         rows = k.mat(policy_net)
     m = len(rows)
     if m == 0:
-        return RichResult(payload={"estimate": float("nan"), "jsd": float("nan"),
-                                   "entropies": [], "n": 0,
-                                   "method": "Policy self-consistency"})
+        return RichResult(
+            payload={
+                "estimate": float("nan"),
+                "jsd": float("nan"),
+                "entropies": [],
+                "n": 0,
+                "method": "Policy self-consistency",
+            }
+        )
     norm = []
     for p in rows:
         t = 0.0
@@ -96,9 +102,11 @@ def alphazero_self_consistency(policy_net, seeds=None):
             "range_entropy": max(ent) - min(ent),
             "mean_policy": pbar,
             "n": m,
-            "method": ("Self-consistency by Shannon entropy (1948 eq. 11) and "
-                       "Jensen-Shannon divergence (Lin 1991 eq. 3.1); the "
-                       "AlphaZero papers state no such statistic"),
+            "method": (
+                "Self-consistency by Shannon entropy (1948 eq. 11) and "
+                "Jensen-Shannon divergence (Lin 1991 eq. 3.1); the "
+                "AlphaZero papers state no such statistic"
+            ),
         },
     )
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.arisc -- Adjusted Rand index."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.arisc import adjusted_rand_index, arisc
 

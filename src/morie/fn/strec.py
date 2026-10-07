@@ -72,12 +72,10 @@ implemented in :mod:`narm`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["trilinear", "session_average", "mlp_cell",
-           "attention_weights", "stamp_scores"]
+__all__ = ["trilinear", "session_average", "mlp_cell", "attention_weights", "stamp_scores"]
 
 _EPS = 1e-12
 
@@ -92,8 +90,7 @@ def trilinear(a, b, c):
     B = [float(v) for v in k.vec(b)]
     C = [float(v) for v in k.vec(c)]
     if not (len(A) == len(B) == len(C)):
-        raise ValueError("strec: the three vectors differ in length "
-                         "(%d, %d, %d)" % (len(A), len(B), len(C)))
+        raise ValueError(f"strec: the three vectors differ in length ({int(len(A))}, {int(len(B))}, {int(len(C))})")
     return sum(A[i] * B[i] * C[i] for i in range(len(A)))
 
 
@@ -108,11 +105,12 @@ def session_average(embeddings):
     if t < 1:
         raise ValueError("strec: the session prefix is empty")
     d = len(X[0])
-    return {"m_s": [sum(X[i][a] for i in range(t)) / t
-                    for a in range(d)],
-            "m_t": list(X[-1]), "length": t,
-            "note": "m_t is the LAST CLICK, and it is also part of "
-                    "the external memory"}
+    return {
+        "m_s": [sum(X[i][a] for i in range(t)) / t for a in range(d)],
+        "m_t": list(X[-1]),
+        "length": t,
+        "note": "m_t is the LAST CLICK, and it is also part of the external memory",
+    }
 
 
 def mlp_cell(m, W, b=None, activation="tanh"):
@@ -123,17 +121,14 @@ def mlp_cell(m, W, b=None, activation="tanh"):
     """
     v = [float(x) for x in k.vec(m)]
     if len(W[0]) != len(v):
-        raise ValueError("strec: the cell expects %d inputs but got "
-                         "%d" % (len(W[0]), len(v)))
+        raise ValueError(f"strec: the cell expects {int(len(W[0]))} inputs but got {int(len(v))}")
     bb = [0.0] * len(W) if b is None else [float(x) for x in k.vec(b)]
-    z = [bb[o] + sum(W[o][j] * v[j] for j in range(len(v)))
-         for o in range(len(W))]
+    z = [bb[o] + sum(W[o][j] * v[j] for j in range(len(v))) for o in range(len(W))]
     if activation == "tanh":
         return [math.tanh(x) for x in z]
     if activation == "identity":
         return z
-    raise ValueError("strec: activation must be tanh or identity, "
-                     "got %r" % (activation,))
+    raise ValueError(f"strec: activation must be tanh or identity, got {activation!r}")
 
 
 def attention_weights(embeddings, W1, W2, W3, W0, b_a=None):
@@ -166,16 +161,17 @@ def attention_weights(embeddings, W1, W2, W3, W0, b_a=None):
             s += sum(W3[o][j] * ms[j] for j in range(d))
             inner.append(sig(s))
         alphas.append(sum(W0[o] * inner[o] for o in range(h)))
-    m_a = [sum(alphas[i] * X[i][a] for i in range(t))
-           for a in range(d)]
-    return {"alpha": alphas, "m_a": m_a, "sum_alpha": sum(alphas),
-            "m_s": ms,
-            "note": "no softmax: the composition is a weighted sum, "
-                    "so the weights need not sum to 1"}
+    m_a = [sum(alphas[i] * X[i][a] for i in range(t)) for a in range(d)]
+    return {
+        "alpha": alphas,
+        "m_a": m_a,
+        "sum_alpha": sum(alphas),
+        "m_s": ms,
+        "note": "no softmax: the composition is a weighted sum, so the weights need not sum to 1",
+    }
 
 
-def stamp_scores(embeddings, item_table, Ws, Wt, bs=None, bt=None,
-                 attention=None):
+def stamp_scores(embeddings, item_table, Ws, Wt, bs=None, bt=None, attention=None):
     r"""Score every candidate by the trilinear composition.
 
     ``attention`` is the dict from :func:`attention_weights`; without
@@ -199,16 +195,21 @@ def stamp_scores(embeddings, item_table, Ws, Wt, bs=None, bt=None,
     tot = sum(e)
     y = [v / tot for v in e]
     order = sorted(range(len(y)), key=lambda i: -y[i])
-    return RichResult(payload={
-        "estimate": order[0], "ranking": order, "probability": y,
-        "score": z, "h_s": h_s, "h_t": h_t,
-        "attention_used": attention is not None,
-        "model": "STAMP" if attention is not None else "STMP",
-        "method": "short-term attention/memory priority; Liu, Zeng, "
-                  "Mokhosi & Zhang (2018)",
-        "note": "trilinear, so a candidate must match the general AND "
-                "the current interest -- a sum would let one carry it",
-    })
+    return RichResult(
+        payload={
+            "estimate": order[0],
+            "ranking": order,
+            "probability": y,
+            "score": z,
+            "h_s": h_s,
+            "h_t": h_t,
+            "attention_used": attention is not None,
+            "model": "STAMP" if attention is not None else "STMP",
+            "method": "short-term attention/memory priority; Liu, Zeng, Mokhosi & Zhang (2018)",
+            "note": "trilinear, so a candidate must match the general AND "
+            "the current interest -- a sum would let one carry it",
+        }
+    )
 
 
 def cross_entropy(probability, target_index):
@@ -217,29 +218,29 @@ def cross_entropy(probability, target_index):
     p = [float(v) for v in k.vec(probability)]
     j = int(target_index)
     if j < 0 or j >= len(p):
-        raise ValueError("strec: the target is outside the item "
-                         "dictionary")
+        raise ValueError("strec: the target is outside the item dictionary")
     tot = 0.0
     for i in range(len(p)):
         yi = 1.0 if i == j else 0.0
-        tot += (yi * math.log(max(p[i], _EPS))
-                + (1.0 - yi) * math.log(max(1.0 - p[i], _EPS)))
+        tot += yi * math.log(max(p[i], _EPS)) + (1.0 - yi) * math.log(max(1.0 - p[i], _EPS))
     return -tot
 
 
 def cheatsheet():
-    return ("strec: a session recommender has no profile, only the "
-            "clicks -- and interests DRIFT, often from unintended "
-            "clicks. Keep TWO memories: m_s, the average of the "
-            "session prefix (general interest), and m_t = x_t, the "
-            "LAST CLICK (current interest), each through its own MLP "
-            "cell. Score TRILINEARLY, sigma(<h_s, h_t, x_i>), so a "
-            "candidate must match both at once -- a sum would let a "
-            "stale long-term signal override the last click. The "
-            "average weights every click equally, which is what breaks "
-            "in a long session, so STAMP replaces it with attention "
-            "alpha_i = W0 sigma(W1 x_i + W2 x_t + W3 m_s + b_a). No "
-            "softmax on alpha.")
+    return (
+        "strec: a session recommender has no profile, only the "
+        "clicks -- and interests DRIFT, often from unintended "
+        "clicks. Keep TWO memories: m_s, the average of the "
+        "session prefix (general interest), and m_t = x_t, the "
+        "LAST CLICK (current interest), each through its own MLP "
+        "cell. Score TRILINEARLY, sigma(<h_s, h_t, x_i>), so a "
+        "candidate must match both at once -- a sum would let a "
+        "stale long-term signal override the last click. The "
+        "average weights every click equally, which is what breaks "
+        "in a long session, so STAMP replaces it with attention "
+        "alpha_i = W0 sigma(W1 x_i + W2 x_t + W3 m_s + b_a). No "
+        "softmax on alpha."
+    )
 
 
 # compact alias per ledger/NAMING.md

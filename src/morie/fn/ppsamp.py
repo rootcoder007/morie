@@ -70,8 +70,9 @@ def pps_sampling(y, size, n):
     pi = [n * v for v in p]
     for v in pi:
         if v > 1.0:
-            raise ValueError("pps_sampling: an inclusion probability exceeds 1; "
-                             "that unit must be selected with certainty")
+            raise ValueError(
+                "pps_sampling: an inclusion probability exceeds 1; that unit must be selected with certainty"
+            )
     Y = 0.0
     for v in y:
         Y += v
@@ -85,17 +86,27 @@ def pps_sampling(y, size, n):
         t = N * y[i] - Y
         svar += t * t / N
     svar /= n
-    return RichResult(payload={
-        "pi": pi, "p": p, "estimate": Y, "total": Y,
-        "hh_variance": var, "hh_se": var ** 0.5,
-        "srs_variance": svar,
-        "deff": var / svar if svar > 0.0 else float("nan"),
-        "X": X, "N": N, "n": n,
-        "method": "PPS selection probabilities and Hansen-Hurwitz design variance"})
+    return RichResult(
+        payload={
+            "pi": pi,
+            "p": p,
+            "estimate": Y,
+            "total": Y,
+            "hh_variance": var,
+            "hh_se": var**0.5,
+            "srs_variance": svar,
+            "deff": var / svar if svar > 0.0 else float("nan"),
+            "X": X,
+            "N": N,
+            "n": n,
+            "method": "PPS selection probabilities and Hansen-Hurwitz design variance",
+        }
+    )
 
 
 def cheatsheet():
     return "ppsamp: Probability proportional to size sampling"
+
 
 # public names resolved by fn/_lazy_map.json
 ppssampling = pps_sampling

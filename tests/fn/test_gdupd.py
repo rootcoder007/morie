@@ -1,7 +1,6 @@
 """Tests for gdupd.gradient_descent_update."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gdupd import gradient_descent_update
 
 
@@ -42,5 +41,6 @@ def test_gdupd_edge():
 def test_gdupd_nonpositive_alpha():
     """Negative alpha must raise ValueError per docstring."""
     import pytest
+
     with pytest.raises(ValueError):
         gradient_descent_update([1.0], [0.5], -0.1)

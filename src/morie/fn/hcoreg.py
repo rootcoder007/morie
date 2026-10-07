@@ -80,8 +80,8 @@ def _pairs(coords):
     """
     try:
         n = len(coords)
-    except TypeError:
-        raise ValueError("hardcore_process: coords must be a sequence")
+    except TypeError as exc:
+        raise ValueError("hardcore_process: coords must be a sequence") from exc
     if n == 0:
         raise ValueError("hardcore_process: no coordinates supplied")
     first = coords[0]
@@ -184,8 +184,8 @@ def hardcore_process(coords, r, lam, model=2):
 
     gam = math.pi * rr * rr
     x = lm * gam
-    alpha_I = math.exp(-x)                                  # (3.6.6)
-    alpha_II = -math.expm1(-x) / x                          # (3.6.8), stably
+    alpha_I = math.exp(-x)  # (3.6.6)
+    alpha_II = -math.expm1(-x) / x  # (3.6.8), stably
     k_I = [_k_model1(rr, v, lm) for v in d]
     k_II = [_k_model2(rr, v, lm) for v in d]
 
@@ -203,7 +203,7 @@ def hardcore_process(coords, r, lam, model=2):
             "intensity_II": alpha_II * lm,
             "feasible": bool(feasible),
             "min_dist": min_dist,
-            "density": (lm ** n) if feasible else 0.0,
+            "density": (lm**n) if feasible else 0.0,
             "log_density": (n * math.log(lm)) if feasible else float("-inf"),
             "retained": retained,
             "n_retained": n_retained,

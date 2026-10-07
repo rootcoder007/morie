@@ -59,12 +59,21 @@ def trim_weights(weights, quantile=0.99):
     s0 = sum(w)
     s1 = sum(tw)
     resc = [v * (s0 / s1) for v in tw] if s1 > 0.0 else list(tw)
-    return RichResult(payload={
-        "estimate": float(cut), "weights": tw, "rescaled": resc,
-        "n_trimmed": int(ntr), "mass_removed": float(s0 - s1),
-        "sumw": float(s0), "sumw_trimmed": float(s1),
-        "cv_before": _cv(w), "cv_after": _cv(tw), "n": n,
-        "method": "weight truncation at the type-7 q-th percentile [Potter 1990]"})
+    return RichResult(
+        payload={
+            "estimate": float(cut),
+            "weights": tw,
+            "rescaled": resc,
+            "n_trimmed": int(ntr),
+            "mass_removed": float(s0 - s1),
+            "sumw": float(s0),
+            "sumw_trimmed": float(s1),
+            "cv_before": _cv(w),
+            "cv_after": _cv(tw),
+            "n": n,
+            "method": "weight truncation at the type-7 q-th percentile [Potter 1990]",
+        }
+    )
 
 
 def _cv(w):
@@ -73,7 +82,7 @@ def _cv(w):
     if m == 0.0:
         return float("nan")
     v = sum((x - m) ** 2 for x in w) / (n - 1) if n > 1 else 0.0
-    return (v ** 0.5) / m
+    return (v**0.5) / m
 
 
 # CANONICAL TEST
@@ -88,6 +97,7 @@ def _cv(w):
 
 def cheatsheet():
     return "trmwgt(weights, quantile): truncate weights at their q-th percentile."
+
 
 # public names resolved by fn/_lazy_map.json
 trimweights = trim_weights

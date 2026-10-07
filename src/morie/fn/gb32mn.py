@@ -35,8 +35,12 @@ def gibbons_runs_mean(n1, n2):
     if n1 < 1 or n2 < 1:
         raise ValueError("n1 and n2 must be at least 1.")
     return RichResult(
-        payload={"mean": 1.0 + 2.0 * n1 * n2 / (n1 + n2), "n1": n1, "n2": n2,
-                 "method": "E(R) = 1 + 2 n1 n2/(n1+n2) (Gibbons eq. 3.2.6)"}
+        payload={
+            "mean": 1.0 + 2.0 * n1 * n2 / (n1 + n2),
+            "n1": n1,
+            "n2": n2,
+            "method": "E(R) = 1 + 2 n1 n2/(n1+n2) (Gibbons eq. 3.2.6)",
+        }
     )
 
 

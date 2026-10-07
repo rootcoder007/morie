@@ -1,7 +1,6 @@
 """Tests for morie.fn.tsne — t-SNE."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import TsneRes
 from morie.fn.tsne import tsne
 

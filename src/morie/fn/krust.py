@@ -48,8 +48,19 @@ def kruskal_stress(D_observed, D_config):
     if den <= 0:
         raise ValueError("configuration distances are all zero; stress undefined.")
     s = float(np.sqrt(num / den))
-    verbal = ("perfect" if s == 0 else "excellent" if s <= 0.025 else "good" if s <= 0.05
-              else "fair" if s <= 0.10 else "poor" if s <= 0.20 else "unacceptable")
+    verbal = (
+        "perfect"
+        if s == 0
+        else "excellent"
+        if s <= 0.025
+        else "good"
+        if s <= 0.05
+        else "fair"
+        if s <= 0.10
+        else "poor"
+        if s <= 0.20
+        else "unacceptable"
+    )
 
     return RichResult(
         payload={

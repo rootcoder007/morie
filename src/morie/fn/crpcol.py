@@ -40,8 +40,7 @@ def collapsed_sweep(y, alpha, n_iter, mu0, tau2, sigma2, seed):
                     continue
                 prec = 1.0 / tau2 + counts[c] / sigma2
                 m = (mu0 / tau2 + sums[c] / sigma2) / prec
-                w.append(counts[c] * math.exp(
-                    norm_logpdf(y[i], m, sigma2 + 1.0 / prec)))
+                w.append(counts[c] * math.exp(norm_logpdf(y[i], m, sigma2 + 1.0 / prec)))
             w.append(alpha * math.exp(norm_logpdf(y[i], mu0, sigma2 + tau2)))
             tot = sum(w)
             u = float(rng.uniform(0.0, 1.0)) * tot
@@ -67,8 +66,7 @@ def collapsed_sweep(y, alpha, n_iter, mu0, tau2, sigma2, seed):
     return z, counts, sums
 
 
-def crp_collapsed(y, alpha=1.0, n_iter=50, mu0=0.0, tau2=10.0, sigma2=1.0,
-                  seed=42):
+def crp_collapsed(y, alpha=1.0, n_iter=50, mu0=0.0, tau2=10.0, sigma2=1.0, seed=42):
     """
     Collapsed Gibbs sampler for a CRP mixture
 
@@ -125,16 +123,18 @@ def crp_collapsed(y, alpha=1.0, n_iter=50, mu0=0.0, tau2=10.0, sigma2=1.0,
         means.append(m)
     for i in range(n):
         ll += norm_logpdf(y[i], means[z[i]], sigma2)
-    return RichResult(payload={
-        "estimate": len(counts),
-        "z": z,
-        "counts": counts,
-        "cluster_mean": means,
-        "n_clusters": len(counts),
-        "loglik": ll,
-        "n": n,
-        "method": "collapsed Gibbs sampler for a CRP mixture",
-    })
+    return RichResult(
+        payload={
+            "estimate": len(counts),
+            "z": z,
+            "counts": counts,
+            "cluster_mean": means,
+            "n_clusters": len(counts),
+            "loglik": ll,
+            "n": n,
+            "method": "collapsed Gibbs sampler for a CRP mixture",
+        }
+    )
 
 
 def cheatsheet():

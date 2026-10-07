@@ -1,10 +1,10 @@
 """tsbF initialisation routes. Sources: Teunter, Syntetos & Babai
 (2011) EJOR 214(3), 606-615; Prak, Teunter, Babai, Boylan & Syntetos
 (2021) Omega 104, 102481; Kourentzes (2014) IJPE 156, 180-190."""
+
 import pytest
 
-from morie.fn.tsbF import (croston_forecast, intermittent_forecast,
-                           sba_forecast, tsb_forecast)
+from morie.fn.tsbF import croston_forecast, intermittent_forecast, sba_forecast, tsb_forecast
 
 SERIES = [0.0, 5.0, 0.0, 0.0, 7.0, 0.0, 6.0, 0.0, 0.0, 0.0, 4.0, 0.0]
 

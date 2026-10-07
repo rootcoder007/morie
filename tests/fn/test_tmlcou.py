@@ -5,8 +5,7 @@ import statistics
 
 import pytest
 
-from morie.fn.tmlcou import (linear_fluctuation_unsafe, rescale,
-                             tmle_count_outcome, unscale)
+from morie.fn.tmlcou import linear_fluctuation_unsafe, rescale, tmle_count_outcome, unscale
 
 
 def _expit(x):
@@ -41,6 +40,7 @@ def _tmle(Y, A, g, Q1, Q0):
 
     def score(e):
         return sum(h * (y - _expit(_logit(q) + e * h)) for h, y, q in zip(H, ys, qa))
+
     a_, b_ = -50.0, 50.0
     for _ in range(200):
         m = 0.5 * (a_ + b_)
@@ -49,8 +49,7 @@ def _tmle(Y, A, g, Q1, Q0):
     q1s = [_expit(_logit(q) + e / p) for q, p in zip(q1, g)]
     q0s = [_expit(_logit(q) - e / (1 - p)) for q, p in zip(q0, g)]
     ps = statistics.fmean(x - z for x, z in zip(q1s, q0s))
-    d = [(h * (y - (x if a else z)) + x - z - ps) * rg
-         for h, y, a, x, z in zip(H, ys, A, q1s, q0s)]
+    d = [(h * (y - (x if a else z)) + x - z - ps) * rg for h, y, a, x, z in zip(H, ys, A, q1s, q0s)]
     return ps * rg, e, statistics.pstdev(d) / math.sqrt(len(d))
 
 

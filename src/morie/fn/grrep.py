@@ -114,8 +114,7 @@ def geron_reparameterization_trick(mu, logvar, eps=None, seed=42):
 
     return RichResult(
         title="Reparameterization trick",
-        summary_lines=[("Latent dims", int(M.size)),
-                       ("Sample eps variance", float(np.var(E)))],
+        summary_lines=[("Latent dims", int(M.size)), ("Sample eps variance", float(np.var(E)))],
         payload={
             "z": z.tolist(),
             "sigma": sigma.tolist(),

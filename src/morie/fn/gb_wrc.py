@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['runscrit', 'gibbons_runs_critical']
+__all__ = ["runscrit", "gibbons_runs_critical"]
 
 
 def runscrit(n1, n2, alpha=0.05, tail="two-sided"):
@@ -54,10 +54,7 @@ def runscrit(n1, n2, alpha=0.05, tail="two-sided"):
             p = 2.0 * math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k - 1)
         else:
             k = (rr - 1) // 2
-            p = (
-                math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k)
-                + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
-            )
+            p = math.comb(n1 - 1, k - 1) * math.comb(n2 - 1, k) + math.comb(n1 - 1, k) * math.comb(n2 - 1, k - 1)
         pmf.append(p / den)
     a = alpha / 2.0 if tail == "two-sided" else alpha
     lower = float("nan")

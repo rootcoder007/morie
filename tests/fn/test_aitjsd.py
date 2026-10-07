@@ -1,7 +1,6 @@
 """Tests for aitjsd.compositional_jsd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitjsd import compositional_jsd
 
 

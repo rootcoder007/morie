@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Shifted (stochastic) intervention parameter for a continuous exposure."""
 
-from math import exp, fsum, pi, sqrt
+from math import exp, fsum
 
 from ._richresult import RichResult
 from ._spx import dot, lstsq, mat, vec
@@ -80,8 +80,7 @@ def spsm_shifted_intervention(y, a, h, delta=1.0, trim=None):
     else:
         hm = mat(h, "h")
         if len(hm) != n:
-            raise ValueError("`h` has %d rows but `y` has %d values"
-                             % (len(hm), n))
+            raise ValueError(f"`h` has {int(len(hm))} rows but `y` has {int(n)} values")
     d = float(delta)
     des = [[1.0] + list(hm[i]) for i in range(n)]
     k = len(des[0])
@@ -91,8 +90,7 @@ def spsm_shifted_intervention(y, a, h, delta=1.0, trim=None):
     res = [av[i] - dot(des[i], gam) for i in range(n)]
     tau2 = fsum([t * t for t in res]) / (n - k)
     if tau2 <= 0:
-        raise ValueError("the exposure is perfectly predicted by `h`; "
-                         "no shift is identified")
+        raise ValueError("the exposure is perfectly predicted by `h`; no shift is identified")
 
     w = [exp((d / tau2) * (res[i] - 0.5 * d)) for i in range(n)]
     if trim is not None:
@@ -102,22 +100,26 @@ def spsm_shifted_intervention(y, a, h, delta=1.0, trim=None):
         w = [min(t, cap) for t in w]
     psi = fsum([w[i] * yv[i] for i in range(n)]) / n
 
-    return RichResult(payload={
-        "psi": psi,
-        "naive_mean": fsum(yv) / n,
-        "weights": w,
-        "max_weight": max(w),
-        "mean_weight": fsum(w) / n,
-        "tau2": tau2,
-        "gamma": gam,
-        "delta": d,
-        "weight_uses_back_shifted_density": True,
-        "gaussian_working_model": True,
-        "n": n,
-        "method": ("Shifted-intervention IPW psi = E[g(A-delta|H)/g(A|H) Y] "
-                   "with a Gaussian exposure model (Diaz & van der Laan "
-                   "2012, 2018); NOT in Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "psi": psi,
+            "naive_mean": fsum(yv) / n,
+            "weights": w,
+            "max_weight": max(w),
+            "mean_weight": fsum(w) / n,
+            "tau2": tau2,
+            "gamma": gam,
+            "delta": d,
+            "weight_uses_back_shifted_density": True,
+            "gaussian_working_model": True,
+            "n": n,
+            "method": (
+                "Shifted-intervention IPW psi = E[g(A-delta|H)/g(A|H) Y] "
+                "with a Gaussian exposure model (Diaz & van der Laan "
+                "2012, 2018); NOT in Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

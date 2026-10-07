@@ -12,9 +12,9 @@ stub cannot satisfy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hma2c import geron_a2c
 from morie.fn.hma3c import geron_a3c
 from morie.fn.hmadab import geron_adaboost
@@ -55,7 +55,6 @@ from morie.fn.hmbrnn import geron_bidirectional_rnn
 from morie.fn.hmbrob import geron_roberta
 from morie.fn.hmbsz import geron_batch_size_heuristic
 from morie.fn.hmbv import geron_bias_variance_tradeoff
-
 
 # ── shared helpers ────────────────────────────────────────────────────
 
@@ -567,7 +566,10 @@ def test_complete_linkage_heights_are_never_below_single_linkage():
 
 def test_anomaly_errors_equal_brute_force_squared_norms():
     X = np.array([[1.0, 2.0], [0.0, 0.0], [3.0, -4.0]])
-    model = lambda A: np.asarray(A, dtype=float) * 0.5
+
+    def model(A):
+        return np.asarray(A, dtype=float) * 0.5
+
     r = geron_anomaly_autoencoder(model, X, threshold=2.0)
     expected = [float(np.sum((row - 0.5 * row) ** 2)) for row in X]
     assert [float(e) for e in r["errors"]] == pytest.approx(expected)
@@ -695,6 +697,7 @@ def test_bagging_rejects_a_non_callable_estimator_factory():
 
 def test_beam_search_with_full_width_matches_exhaustive_enumeration():
     lp = np.log(np.array([0.5, 0.3, 0.2]))
+
     # Prefix-dependent scorer: rotate the distribution by the last token.
     def model(src, prefix):
         shift = (sum(prefix) % 3) if prefix else 0
@@ -816,7 +819,13 @@ def test_arima_rejects_orders_the_series_cannot_support():
 
 def test_alexnet_parameter_count_matches_layerwise_hand_arithmetic():
     r = geron_alexnet(1000)
-    conv = [96 * 11 * 11 * 3 + 96, 256 * 5 * 5 * 96 + 256, 384 * 3 * 3 * 256 + 384, 384 * 3 * 3 * 384 + 384, 256 * 3 * 3 * 384 + 256]
+    conv = [
+        96 * 11 * 11 * 3 + 96,
+        256 * 5 * 5 * 96 + 256,
+        384 * 3 * 3 * 256 + 384,
+        384 * 3 * 3 * 384 + 384,
+        256 * 3 * 3 * 384 + 256,
+    ]
     fc = [9216 * 4096 + 4096, 4096 * 4096 + 4096, 4096 * 1000 + 1000]
     assert r["conv_params"] == sum(conv)
     assert r["fc_params"] == sum(fc)
@@ -825,7 +834,7 @@ def test_alexnet_parameter_count_matches_layerwise_hand_arithmetic():
 
 def test_alexnet_spatial_dims_follow_the_conv_arithmetic():
     r = geron_alexnet(10, input_size=227)
-    outs = [l["out"] for l in r["layers"] if l["kind"] in ("conv", "pool")]
+    outs = [ell["out"] for ell in r["layers"] if ell["kind"] in ("conv", "pool")]
     assert outs == [55, 27, 27, 13, 13, 13, 13, 6]
     assert r["flatten_dim"] == 6 * 6 * 256
 
@@ -986,7 +995,7 @@ def test_albert_rejects_an_embedding_wider_than_the_model():
 
 
 def test_bart_infilling_collapses_each_span_to_a_single_mask():
-    src = ["t%d" % i for i in range(20)]
+    src = [f"t{int(i)}" for i in range(20)]
     r = geron_bart(src, src, mask_ratio=0.3, mean_span=3.0, seed=5)
     n_spans, n_masked = r["n_spans"], r["n_masked"]
     assert r["corrupted"].count("<mask>") == n_spans
@@ -1040,10 +1049,10 @@ def test_finetune_rejects_an_encoder_with_the_wrong_row_count():
 
 
 def test_blip_itc_matches_hand_log_sum_exp():
-    I = np.array([[1.0, 0.0], [0.0, 1.0]])
+    I_ = np.array([[1.0, 0.0], [0.0, 1.0]])
     T = np.array([[1.0, 0.0], [0.0, 1.0]])
     tau = 0.5
-    r = geron_blip(I, T, temperature=tau)
+    r = geron_blip(I_, T, temperature=tau)
     # Each row's logits are (1/tau, 0): loss = log(1 + exp(-1/tau)).
     expected = math.log(1.0 + math.exp(-1.0 / tau))
     assert float(r["itc_loss"]) == pytest.approx(expected)
@@ -1051,11 +1060,11 @@ def test_blip_itc_matches_hand_log_sum_exp():
 
 
 def test_blip_itc_is_scale_invariant_but_not_pairing_invariant():
-    I = np.array([[3.0, 1.0], [1.0, -2.0], [0.5, 0.5]])
+    I_ = np.array([[3.0, 1.0], [1.0, -2.0], [0.5, 0.5]])
     T = np.array([[2.0, 0.5], [0.5, -3.0], [1.0, 1.0]])
-    base = float(geron_blip(I, T)["itc_loss"])
-    assert float(geron_blip(I * 7.0, T * 0.1)["itc_loss"]) == pytest.approx(base)
-    shuffled = float(geron_blip(I, T[[1, 2, 0]])["itc_loss"])
+    base = float(geron_blip(I_, T)["itc_loss"])
+    assert float(geron_blip(I_ * 7.0, T * 0.1)["itc_loss"]) == pytest.approx(base)
+    shuffled = float(geron_blip(I_, T[[1, 2, 0]])["itc_loss"])
     assert shuffled > base
 
 

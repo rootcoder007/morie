@@ -1,10 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Intraclass correlation, absolute agreement."""
 
-import math
-
 from . import _s04core as S
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["icc_absolute_agreement"]
@@ -48,11 +45,17 @@ def icc_absolute_agreement(y, subject, rater):
     ms = S.icc_ms(y, subject, rater)
     k, n = ms["k"], ms["n"]
     den = ms["ms_r"] + (k - 1.0) * ms["ms_e"] + k * (ms["ms_c"] - ms["ms_e"]) / n
-    return RichResult(payload={
-        "estimate": (ms["ms_r"] - ms["ms_e"]) / den if den != 0.0 else float("nan"),
-        "ms_r": ms["ms_r"], "ms_c": ms["ms_c"], "ms_e": ms["ms_e"],
-        "k": k, "n_subjects": n,
-        "method": "Intraclass correlation ICC(A,1)"})
+    return RichResult(
+        payload={
+            "estimate": (ms["ms_r"] - ms["ms_e"]) / den if den != 0.0 else float("nan"),
+            "ms_r": ms["ms_r"],
+            "ms_c": ms["ms_c"],
+            "ms_e": ms["ms_e"],
+            "k": k,
+            "n_subjects": n,
+            "method": "Intraclass correlation ICC(A,1)",
+        }
+    )
 
 
 def cheatsheet():

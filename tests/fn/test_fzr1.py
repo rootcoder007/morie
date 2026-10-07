@@ -1,8 +1,6 @@
 """Tests for fzr1.fauzi_r1_integral."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.fzr1 import fauzi_r1_integral
 
 
@@ -21,6 +19,7 @@ def test_fzr1_basic():
 
 def test_fzr1_edge():
     """Test edge cases with a custom callable kernel and default grid."""
+
     # Use a simple symmetric kernel: uniform on [-1, 1]
     def K(y):
         return np.where(np.abs(y) <= 1.0, 0.5, 0.0)

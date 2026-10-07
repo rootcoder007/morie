@@ -43,7 +43,7 @@ def sem_error_model(
     X = np.asarray(X, dtype=np.float64)
     W = np.asarray(W, dtype=np.float64)
     n = len(Z)
-    I = np.eye(n)
+    I_ = np.eye(n)
 
     lam_grid = np.linspace(-0.9, 0.9, 50)
     best_ll = -np.inf
@@ -52,7 +52,7 @@ def sem_error_model(
     best_resid = None
 
     for lam in lam_grid:
-        B = I - lam * W
+        B = I_ - lam * W
         Zs = B @ Z
         Xs = B @ X
         beta = np.linalg.lstsq(Xs, Zs, rcond=None)[0]

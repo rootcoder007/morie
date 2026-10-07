@@ -1,8 +1,8 @@
 """Tests for rptpn.repetition_penalty."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rptpn import repetition_penalty
 
 
@@ -12,9 +12,9 @@ def test_rptpn_penalises_both_signs_toward_less_likely():
     z = np.array([2.0, -2.0, 1.0])
     r = repetition_penalty(z, generated=[0, 1], alpha=2.0)
     out = np.asarray(r["tensor"], dtype=float)
-    assert out[0] == pytest.approx(1.0, abs=1e-12)    # 2 / 2
-    assert out[1] == pytest.approx(-4.0, abs=1e-12)   # -2 * 2
-    assert out[2] == pytest.approx(1.0, abs=1e-12)    # untouched
+    assert out[0] == pytest.approx(1.0, abs=1e-12)  # 2 / 2
+    assert out[1] == pytest.approx(-4.0, abs=1e-12)  # -2 * 2
+    assert out[2] == pytest.approx(1.0, abs=1e-12)  # untouched
     # Softmax probability of both penalised tokens strictly drops.
     p_before = np.exp(z) / np.exp(z).sum()
     p_after = np.exp(out) / np.exp(out).sum()

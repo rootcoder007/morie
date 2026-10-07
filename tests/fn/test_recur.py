@@ -1,8 +1,8 @@
 """Tests for morie.fn.recur -- Recurrent event (Andersen-Gill)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.recur import recur
 
 

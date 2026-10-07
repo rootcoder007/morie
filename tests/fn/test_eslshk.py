@@ -1,7 +1,6 @@
 """Tests for eslshk.esl_shrinkage."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslshk import esl_shrinkage
 
 

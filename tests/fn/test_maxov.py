@@ -1,7 +1,6 @@
 """Tests for maxov.py - Maximal Overlap DWT."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.maxov import maximal_overlap_dwt, maxov
 
 

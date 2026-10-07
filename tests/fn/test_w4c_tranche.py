@@ -11,8 +11,9 @@ mean-of-inputs stub cannot satisfy.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 
 # --------------------------------------------------------------------------
@@ -148,9 +149,7 @@ def test_hmroc_auc_equals_pairwise_win_rate():
     y = np.array([0, 1, 0, 1, 1])
     s = np.array([0.2, 0.9, 0.4, 0.35, 0.8])
     wins = sum(
-        1.0 if s[i] > s[j] else 0.5 if s[i] == s[j] else 0.0
-        for i in np.where(y == 1)[0]
-        for j in np.where(y == 0)[0]
+        1.0 if s[i] > s[j] else 0.5 if s[i] == s[j] else 0.0 for i in np.where(y == 1)[0] for j in np.where(y == 0)[0]
     )
     want = wins / (int(y.sum()) * int((1 - y).sum()))
     r = geron_roc_curve(y, s)
@@ -399,7 +398,9 @@ def test_hmrnn_rejects_shape_mismatch():
 def test_hmphp_gates_by_hand_and_peephole_effect():
     from morie.fn.hmphp import geron_peephole_lstm
 
-    sig = lambda z: 1.0 / (1.0 + math.exp(-z))
+    def sig(z):
+        return 1.0 / (1.0 + math.exp(-z))
+
     W = {"W_x": [[0.5], [-0.5], [1.0], [0.25]], "W_h": [[0.0]] * 4, "b": [0.1, 0.2, 0.0, -0.1]}
     r = geron_peephole_lstm([2.0], [0.0], [0.5], W)
     i = sig(0.5 * 2 + 0.1)
@@ -696,7 +697,10 @@ def test_hmnov_ratio_matches_a_hand_gaussian():
     train = np.array([[-1.0], [0.0], [1.0], [0.5], [-0.5]])
     mu = float(train.mean())
     var = float(((train - mu) ** 2).sum() / (train.size - 1)) + 1e-9
-    ld = lambda x: -0.5 * ((x - mu) ** 2 / var + math.log(var) + math.log(2 * math.pi))
+
+    def ld(x):
+        return -0.5 * ((x - mu) ** 2 / var + math.log(var) + math.log(2 * math.pi))
+
     ref = float(np.mean([ld(float(t[0])) for t in train]))
     r = geron_novelty_detection(train, [[0.0], [6.0]])
     assert abs(float(r["log_density"][0]) - ld(0.0)) < 1e-9
@@ -713,7 +717,10 @@ def test_hmoob_score_by_brute_force():
 
     X = np.array([[0.0], [1.0], [2.0], [3.0]])
     y = np.array([0.0, 1.0, 2.0, 3.0])
-    f = lambda A: np.asarray(A, dtype=float)[:, 0] + 1.0
+
+    def f(A):
+        return np.asarray(A, dtype=float)[:, 0] + 1.0
+
     bags = [[True, True, False, False], [False, False, True, True]]
     r = geron_oob_score(X, y, [(f, b) for b in bags], task="regression")
     want = np.mean([(f(X[i : i + 1])[0] - y[i]) ** 2 for i in range(4)])
@@ -724,7 +731,9 @@ def test_hmoob_score_by_brute_force():
 def test_hmoob_refuses_full_coverage():
     from morie.fn.hmoob import geron_oob_score
 
-    f = lambda A: np.zeros(len(np.atleast_2d(A)))
+    def f(A):
+        return np.zeros(len(np.atleast_2d(A)))
+
     with pytest.raises(ValueError, match="no OOB"):
         geron_oob_score([[0.0], [1.0]], [0, 1], [(f, [True, True])])
 
@@ -738,7 +747,10 @@ def test_hmpas_samples_are_without_replacement():
     for s in r["samples"]:
         assert len(s) == 3 and len(set(s.tolist())) == 3
         assert s.min() >= 0 and s.max() < 8
-    const = lambda Xb, yb: (lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 4.0))
+
+    def const(Xb, yb):
+        return lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 4.0)
+
     c = geron_pasting(X, y, const, 3, sample_size=2, seed=1)
     assert abs(float(c["train_mse"]) - float(np.mean((4.0 - y) ** 2))) < 1e-12
 
@@ -758,7 +770,10 @@ def test_hmrsp_feature_sets_and_usage():
     r = geron_random_subspaces(X, y, n_estimators=12, max_features=2, seed=6)
     assert all(len(s) == 2 and len(set(s.tolist())) == 2 for s in r["feature_sets"])
     assert int(np.sum(r["feature_usage"])) == 12 * 2
-    const = lambda Xb, yb: (lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 1.0))
+
+    def const(Xb, yb):
+        return lambda A: np.full(np.atleast_2d(np.asarray(A)).shape[0], 1.0)
+
     c = geron_random_subspaces(X, y, const, 4, max_features=3, seed=2)
     assert np.allclose(c["predict"](X), 1.0)
 
@@ -914,7 +929,10 @@ def test_hmpg_baseline_centres_the_returns():
     from morie.fn.hmpg import geron_policy_gradient
 
     ep = [(0, 0, 1.0), (1, 1, 1.0)]
-    g = lambda s, a: np.array([1.0, 1.0])
+
+    def g(s, a):
+        return np.array([1.0, 1.0])
+
     r = geron_policy_gradient([ep], g, gamma=0.5, baseline=True)
     ret = np.asarray(r["returns"])
     assert abs(float(r["baseline_value"]) - float(ret.mean())) < 1e-12
@@ -926,7 +944,10 @@ def test_hmrnfc_step_is_eta_times_the_gradient():
     from morie.fn.hmrnfc import geron_reinforce
 
     ep = [[(0, 0, 1.0), (1, 1, 2.0)]]
-    g = lambda s, a: (np.array([1.0, 0.0]) if a == 0 else np.array([0.0, 1.0]))
+
+    def g(s, a):
+        return np.array([1.0, 0.0]) if a == 0 else np.array([0.0, 1.0])
+
     base = geron_policy_gradient(ep, g, gamma=0.9, baseline=True)
     r = geron_reinforce(ep, g, gamma=0.9, eta=0.25, theta=[1.0, -1.0])
     assert np.allclose(r["step"], 0.25 * np.asarray(base["gradient"]))
@@ -966,8 +987,7 @@ def test_hmrl_reports_truncation():
 def test_hmppo_learns_the_paying_action_and_respects_the_clip():
     from morie.fn.hmppo import geron_ppo
 
-    r = geron_ppo({"reset": lambda: 0, "step": lambda a: (0, float(a), True)}, [[0.0, 0.0]],
-                  epochs=25, lr=0.5, seed=7)
+    r = geron_ppo({"reset": lambda: 0, "step": lambda a: (0, float(a), True)}, [[0.0, 0.0]], epochs=25, lr=0.5, seed=7)
     p = np.asarray(r["probabilities"])[0]
     assert abs(float(p.sum()) - 1.0) < 1e-12
     assert float(p[1]) > 0.8
@@ -1239,7 +1259,9 @@ def test_hmnsp_input_assembly_and_baseline_logit():
 def test_hmnsp_custom_encoder_needs_its_own_head():
     from morie.fn.hmnsp import geron_next_sentence_prediction
 
-    enc = lambda toks, segs: np.array([1.0, 2.0])
+    def enc(toks, segs):
+        return np.array([1.0, 2.0])
+
     with pytest.raises(ValueError, match="head weights"):
         geron_next_sentence_prediction(["a"], ["b"], encoder=enc)
     r = geron_next_sentence_prediction(["a"], ["b"], encoder=enc, w=[0.5, 0.25], b=1.0)
@@ -1473,7 +1495,9 @@ def test_no_module_returns_the_mean_of_its_inputs():
 
     y = [1.0, 5.0, 9.0]
     mean = float(np.mean(y))
-    assert abs(float(geron_rmse([0.0, 0.0, 0.0], [6.0, 8.0, 0.0])["estimate"]) - float(np.mean([0, 0, 0, 6, 8, 0]))) > 1.0
+    assert (
+        abs(float(geron_rmse([0.0, 0.0, 0.0], [6.0, 8.0, 0.0])["estimate"]) - float(np.mean([0, 0, 0, 6, 8, 0]))) > 1.0
+    )
     assert abs(float(geron_precision([1, 0, 0, 0], [1, 1, 0, 0])["estimate"]) - float(np.mean([1, 0, 0, 0]))) > 0.2
     assert np.max(np.abs(np.asarray(geron_relu(y)["estimate"]) - mean)) > 1.0
     X = np.column_stack([np.ones(3), [0.0, 1.0, 2.0]])

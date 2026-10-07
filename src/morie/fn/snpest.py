@@ -74,8 +74,15 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["sn_pseudo_estimate", "snpest", "student_t_logpdf",
-           "cluster_predictive", "PROPOSALS", "RESAMPLERS", "cheatsheet"]
+__all__ = [
+    "sn_pseudo_estimate",
+    "snpest",
+    "student_t_logpdf",
+    "cluster_predictive",
+    "PROPOSALS",
+    "RESAMPLERS",
+    "cheatsheet",
+]
 
 PROPOSALS = ("optimal", "prior")
 RESAMPLERS = ("systematic", "stratified", "multinomial")
@@ -89,9 +96,12 @@ def student_t_logpdf(x, df, loc, scale2):
     do not agree in the last digits.
     """
     z = (x - loc) * (x - loc) / (df * scale2)
-    return (_w.lgamma(0.5 * (df + 1.0)) - _w.lgamma(0.5 * df)
-            - 0.5 * math.log(df * math.pi * scale2)
-            - 0.5 * (df + 1.0) * math.log(1.0 + z))
+    return (
+        _w.lgamma(0.5 * (df + 1.0))
+        - _w.lgamma(0.5 * df)
+        - 0.5 * math.log(df * math.pi * scale2)
+        - 0.5 * (df + 1.0) * math.log(1.0 + z)
+    )
 
 
 def cluster_predictive(x, n, s, ss, m0, kappa0, a0, b0):
@@ -107,8 +117,7 @@ def cluster_predictive(x, n, s, ss, m0, kappa0, a0, b0):
         kn = kappa0 + n
         mn = (kappa0 * m0 + s) / kn
         an = a0 + 0.5 * n
-        bn = (b0 + 0.5 * sse
-              + 0.5 * kappa0 * n * (ybar - m0) * (ybar - m0) / kn)
+        bn = b0 + 0.5 * sse + 0.5 * kappa0 * n * (ybar - m0) * (ybar - m0) / kn
     else:
         kn, mn, an, bn = kappa0, m0, a0, b0
     df = 2.0 * an
@@ -127,7 +136,7 @@ def _resample(rng, weights, scheme):
         u0 = float(rng.uniform())
         us = [(k + u0) / n for k in range(n)]
     else:
-        raise ValueError("resampler must be one of %r" % (RESAMPLERS,))
+        raise ValueError(f"resampler must be one of {RESAMPLERS!r}")
     out = []
     acc = 0.0
     j = 0
@@ -146,10 +155,21 @@ def _ess(weights):
     return 1.0 / _w.csum(v * v for v in weights)
 
 
-def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
-                       proposal="optimal", resampler="systematic",
-                       ess_threshold=0.5, m0=None, kappa0=0.01, a0=2.0,
-                       b0=None, seed=1, grid=None, seed_stats=True):
+def sn_pseudo_estimate(
+    y_stream,
+    alpha=1.0,
+    n_particles=100,
+    proposal="optimal",
+    resampler="systematic",
+    ess_threshold=0.5,
+    m0=None,
+    kappa0=0.01,
+    a0=2.0,
+    b0=None,
+    seed=1,
+    grid=None,
+    seed_stats=True,
+):
     """On-line DP-mixture filter over a stream of observations.
 
     Parameters
@@ -198,9 +218,9 @@ def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
     Caron, Doucet and Gottardo (2012) Statist. Comput. 22(2), 579-595.
     """
     if proposal not in PROPOSALS:
-        raise ValueError("proposal must be one of %r" % (PROPOSALS,))
+        raise ValueError(f"proposal must be one of {PROPOSALS!r}")
     if resampler not in RESAMPLERS:
-        raise ValueError("resampler must be one of %r" % (RESAMPLERS,))
+        raise ValueError(f"resampler must be one of {RESAMPLERS!r}")
     if alpha <= 0.0:
         raise ValueError("alpha must be positive")
     ys = [float(v) for v in y_stream]
@@ -238,13 +258,8 @@ def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
             K = len(cl)
             lp = []
             for j in range(K):
-                lp.append(math.log(cl[j][0])
-                          + cluster_predictive(x, cl[j][0], cl[j][1],
-                                               cl[j][2], m0, kappa0, a0,
-                                               b0))
-            lp.append(math.log(alpha)
-                      + cluster_predictive(x, 0, 0.0, 0.0, m0, kappa0,
-                                           a0, b0))
+                lp.append(math.log(cl[j][0]) + cluster_predictive(x, cl[j][0], cl[j][1], cl[j][2], m0, kappa0, a0, b0))
+            lp.append(math.log(alpha) + cluster_predictive(x, 0, 0.0, 0.0, m0, kappa0, a0, b0))
             norm = _w.logsumexp(lp)
             if proposal == "optimal":
                 # Draw from the exact conditional; the weight increment
@@ -271,8 +286,7 @@ def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
                     if u <= acc:
                         pick = j
                         break
-                incr[p] = (lp[pick] - math.log(cl[pick][0] if pick < K
-                                               else alpha))
+                incr[p] = lp[pick] - math.log(cl[pick][0] if pick < K else alpha)
             if pick == K:
                 cl.append([1.0, x, x * x])
             else:
@@ -292,8 +306,7 @@ def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
         loglik_trace.append(lnorm)
         e = _ess(wts)
         ess_trace.append(e)
-        clusters_trace.append(_w.csum(wts[p] * len(parts[p])
-                                      for p in range(P)))
+        clusters_trace.append(_w.csum(wts[p] * len(parts[p]) for p in range(P)))
 
         if e < ess_threshold * P:
             idx = _resample(rng, wts, resampler)
@@ -315,44 +328,44 @@ def sn_pseudo_estimate(y_stream, alpha=1.0, n_particles=100,
         acc = []
         for p in range(P):
             cl = parts[p]
-            lp = [math.log(c[0]) + cluster_predictive(g, c[0], c[1], c[2],
-                                                      m0, kappa0, a0, b0)
-                  for c in cl]
-            lp.append(math.log(alpha)
-                      + cluster_predictive(g, 0, 0.0, 0.0, m0, kappa0,
-                                           a0, b0))
-            acc.append(wts[p] * math.exp(_w.logsumexp(lp)
-                                         - math.log(alpha + T)))
+            lp = [math.log(c[0]) + cluster_predictive(g, c[0], c[1], c[2], m0, kappa0, a0, b0) for c in cl]
+            lp.append(math.log(alpha) + cluster_predictive(g, 0, 0.0, 0.0, m0, kappa0, a0, b0))
+            acc.append(wts[p] * math.exp(_w.logsumexp(lp) - math.log(alpha + T)))
         dens.append(_w.csum(acc))
 
-    return RichResult(payload={
-        "grid": grid,
-        "density": dens,
-        "log_marginal": loglik_trace[-1],
-        "log_marginal_trace": loglik_trace,
-        "ess": ess_trace,
-        "final_ess": ess_trace[-1],
-        "mean_ess": _w.csum(ess_trace) / T,
-        "clusters": clusters_trace,
-        "final_clusters": clusters_trace[-1],
-        "resampled_at": resampled_at,
-        "n_resamples": len(resampled_at),
-        "T": T,
-        "n_particles": P,
-        "proposal": proposal,
-        "resampler": resampler,
-        "alpha": float(alpha),
-        "prior": {"m0": m0, "kappa0": kappa0, "a0": a0, "b0": b0},
-        "seed": int(seed),
-        "estimate": clusters_trace[-1],
-        "method": "sequential DP-mixture particle filter",
-    })
+    return RichResult(
+        payload={
+            "grid": grid,
+            "density": dens,
+            "log_marginal": loglik_trace[-1],
+            "log_marginal_trace": loglik_trace,
+            "ess": ess_trace,
+            "final_ess": ess_trace[-1],
+            "mean_ess": _w.csum(ess_trace) / T,
+            "clusters": clusters_trace,
+            "final_clusters": clusters_trace[-1],
+            "resampled_at": resampled_at,
+            "n_resamples": len(resampled_at),
+            "T": T,
+            "n_particles": P,
+            "proposal": proposal,
+            "resampler": resampler,
+            "alpha": float(alpha),
+            "prior": {"m0": m0, "kappa0": kappa0, "a0": a0, "b0": b0},
+            "seed": int(seed),
+            "estimate": clusters_trace[-1],
+            "method": "sequential DP-mixture particle filter",
+        }
+    )
 
 
 snpest = sn_pseudo_estimate
 
 
 def cheatsheet():
-    return ("snpest: on-line DP-mixture particle filter. proposals "
-            + ", ".join(PROPOSALS) + "; resamplers "
-            + ", ".join(RESAMPLERS))
+    return (
+        "snpest: on-line DP-mixture particle filter. proposals "
+        + ", ".join(PROPOSALS)
+        + "; resamplers "
+        + ", ".join(RESAMPLERS)
+    )

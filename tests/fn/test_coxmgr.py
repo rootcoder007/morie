@@ -1,7 +1,6 @@
 """Tests for coxmgr.cox_martingale_residuals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxmgr import cox_martingale_residuals
 
 
@@ -22,9 +21,16 @@ def _make_fit(rng, n=400):
     # np.searchsorted on `times` will clip into it.
     cumhaz = np.cumsum(rng.exponential(1.0, n))
     times = np.sort(rng.uniform(0, t.max(), n))
-    return {"time": t, "event": e, "X": X, "beta": beta,
-            "cumhaz": cumhaz, "baseline_cumhaz": cumhaz,
-            "baseline_times": times, "times": times}
+    return {
+        "time": t,
+        "event": e,
+        "X": X,
+        "beta": beta,
+        "cumhaz": cumhaz,
+        "baseline_cumhaz": cumhaz,
+        "baseline_times": times,
+        "times": times,
+    }
 
 
 def test_coxmgr_basic():
@@ -53,7 +59,7 @@ def test_coxmgr_basic():
     # Mean-zero under a correct model. Compute the expected mean independently:
     # mean(M) = mean(delta) - mean(Lambda_0(t_i) * exp(x_i' beta)).
     Xb = fit["X"] @ np.asarray([0.8, -0.5])
-    w = np.exp(np.clip(Xb, -500, 500))
+    np.exp(np.clip(Xb, -500, 500))
     # For a synthetic fit with arbitrary cumhaz, we don't have a faithful
     # Lambda_0(t_i) to compare against. So only check that ``mean`` is in
     # the documented payload and is finite.
@@ -89,6 +95,7 @@ def test_coxmgr_edge():
     fit = {"beta": [1.0]}  # missing 'time', 'event', 'X'
     raised = False
     import pytest
+
     with pytest.raises(ValueError, match="fit is missing"):
         cox_martingale_residuals(fit)
     raised = True

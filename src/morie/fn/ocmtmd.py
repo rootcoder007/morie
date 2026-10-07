@@ -98,13 +98,11 @@ def outcome_model_diagnostic(y, A, H, Q=None):
     tstat = beta[1] / seb if seb == seb and seb > 0 else float("nan")
     nt = sum(1 for v in Av if v == 1.0)
     mrt = sum(r[i] for i in range(n) if Av[i] == 1.0) / nt if nt else float("nan")
-    mrc = (sum(r[i] for i in range(n) if Av[i] == 0.0) / (n - nt)
-           if n - nt else float("nan"))
+    mrc = sum(r[i] for i in range(n) if Av[i] == 0.0) / (n - nt) if n - nt else float("nan")
 
     Hd = C.cbind1(Hm)
     gam = core.logit_irls(Hd, Av)
-    ps = [core.sigmoid(sum(Hd[i][k] * gam[k] for k in range(len(gam))))
-          for i in range(n)]
+    ps = [core.sigmoid(sum(Hd[i][k] * gam[k] for k in range(len(gam)))) for i in range(n)]
     cand = sorted({min(p, 1.0 - p) for p in ps})
     alpha = 0.0
     for a in cand:
@@ -118,13 +116,23 @@ def outcome_model_diagnostic(y, A, H, Q=None):
             alpha = a
             break
     nkeep = sum(1 for p in ps if alpha <= p <= 1.0 - alpha)
-    return RichResult(payload={
-        "estimate": beta[1], "b0": beta[0], "b1": beta[1], "t_stat": tstat,
-        "resid_sd": sd, "mean_resid_treated": mrt,
-        "mean_resid_control": mrc, "alpha_crump": alpha,
-        "n_kept": float(nkeep), "min_ps": min(ps), "max_ps": max(ps),
-        "n": n,
-        "method": "MSM outcome-model residual diagnostic with Crump overlap"})
+    return RichResult(
+        payload={
+            "estimate": beta[1],
+            "b0": beta[0],
+            "b1": beta[1],
+            "t_stat": tstat,
+            "resid_sd": sd,
+            "mean_resid_treated": mrt,
+            "mean_resid_control": mrc,
+            "alpha_crump": alpha,
+            "n_kept": float(nkeep),
+            "min_ps": min(ps),
+            "max_ps": max(ps),
+            "n": n,
+            "method": "MSM outcome-model residual diagnostic with Crump overlap",
+        }
+    )
 
 
 def cheatsheet():

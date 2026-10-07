@@ -1,7 +1,6 @@
 """Tests for quadrat count test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgqdr import sgqdr
 
 

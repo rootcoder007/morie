@@ -1,7 +1,6 @@
 """Tests for vitatt.vit_self_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vitatt import vit_self_attention
 
 

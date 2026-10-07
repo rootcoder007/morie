@@ -56,9 +56,15 @@ def adagr(f, grad_f, x0, learning_rate=0.01, epsilon=1e-8, max_iter=1000, full_o
     >>> f = lambda x: (x[0] - 1)**2 + (x[1] - 2)**2
     >>> gf = lambda x: np.array([2*(x[0]-1), 2*(x[1]-2)])
     >>> x0 = np.array([0.0, 0.0])
-    >>> x_min = adagr(f, gf, x0)
-    >>> np.allclose(x_min, [1, 2], atol=1e-3)
+    >>> x_min = adagr(f, gf, x0, learning_rate=1.0)
+    >>> bool(np.allclose(x_min, [1, 2], atol=1e-3))
     True
+
+    The step shrinks like ``learning_rate / sqrt(t)``, so the default rate of
+    0.01 travels only about 0.6 in 1000 steps -- too short to reach (1, 2).
+
+    >>> bool(np.allclose(adagr(f, gf, x0), [1, 2], atol=1e-3))
+    False
     """
     # `seed` is accepted for API symmetry with the stochastic siblings;
     # this routine draws no random numbers, and seeding the global

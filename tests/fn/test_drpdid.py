@@ -1,7 +1,6 @@
 """Tests for drpdid.placebo_dr_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drpdid import placebo_dr_did
 
 

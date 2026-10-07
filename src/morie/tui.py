@@ -28,6 +28,7 @@ Keybindings::
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import io
 import os
 import subprocess
@@ -54,7 +55,6 @@ try:
         TextArea,
         Tree,
     )
-    from textual.worker import Worker, WorkerState
 
     _TEXTUAL_AVAILABLE = True
 except ImportError:
@@ -143,7 +143,7 @@ if _TEXTUAL_AVAILABLE:
                 r"error:|failed|FAILED)",
                 _re.IGNORECASE,
             )
-            lines = [l for l in self._text_buffer if error_re.search(l)]
+            lines = [ln for ln in self._text_buffer if error_re.search(ln)]
             return "\n".join(lines) if lines else ""
 
         def get_last_n_exchanges(self, n: int = 5) -> str:
@@ -2060,10 +2060,7 @@ if _TEXTUAL_AVAILABLE:
                     print("Usage: filter_rows('condition')")
                     print("  Example: filter_rows('age_groups > 2')")
                     return
-                if isinstance(condition, str):
-                    result = data.query(condition)
-                else:
-                    result = data[condition]
+                result = data.query(condition) if isinstance(condition, str) else data[condition]
                 ns["filtered"] = result
                 print(f"  Filtered: {len(result)}/{len(data)} rows -> 'filtered'")
                 return result
@@ -2103,10 +2100,7 @@ if _TEXTUAL_AVAILABLE:
                     print("No data.")
                     return
                 before = len(data)
-                if col:
-                    data = data.dropna(subset=[col])
-                else:
-                    data = data.dropna()
+                data = data.dropna(subset=[col]) if col else data.dropna()
                 ns["df"] = data
                 print(f"  Dropped {before - len(data)} rows with NaN ({len(data)} remaining)")
                 return data
@@ -2406,8 +2400,12 @@ if _TEXTUAL_AVAILABLE:
                     return
                 from morie.ebac import calculate_ebac, is_over_legal_limit
 
-                gc = 0.68 if gender.lower() == "male" else 0.55
-                bac = calculate_ebac(drinks, weight_lbs, hours, gc)
+                gc = 0.73 if gender.lower() == "male" else 0.66  # the Widmark constants morie.ebac documents
+                try:
+                    bac = calculate_ebac(drinks, weight_lbs, hours, gc)
+                except ValueError as exc:
+                    print(f"  {exc}")
+                    return None
                 over = is_over_legal_limit(bac)
                 print(f"  eBAC: {drinks} drinks, {weight_lbs}lbs, {hours}h, {gender}")
                 print(f"  BAC = {bac:.4f} {'(OVER LIMIT)' if over else '(under limit)'}")
@@ -3310,10 +3308,7 @@ if _TEXTUAL_AVAILABLE:
             self._history.append(user_code)
 
             # Auto-detect or use locked mode
-            if self._auto_detect:
-                detected = self._detect_language(user_code)
-            else:
-                detected = self._lang
+            detected = self._detect_language(user_code) if self._auto_detect else self._lang
 
             # Handle ! prefix for explicit shell
             actual_code = user_code
@@ -3608,13 +3603,13 @@ if _TEXTUAL_AVAILABLE:
                     r_cmd = None
                     if isinstance(val, bool):
                         r_cmd = f"{var_name} <- {'TRUE' if val else 'FALSE'}"
-                    elif isinstance(val, (int, float)):
+                    elif isinstance(val, int | float):
                         r_cmd = f"{var_name} <- {val}"
                     elif isinstance(val, str):
                         escaped = val.replace("\\", "\\\\").replace('"', '\\"')
                         r_cmd = f'{var_name} <- "{escaped}"'
-                    elif isinstance(val, (list, tuple)):
-                        if all(isinstance(v, (int, float)) for v in val):
+                    elif isinstance(val, list | tuple):
+                        if all(isinstance(v, int | float) for v in val):
                             r_cmd = f"{var_name} <- c({','.join(str(v) for v in val)})"
                         elif all(isinstance(v, str) for v in val):
                             items = ",".join(f'"{v}"' for v in val)
@@ -3680,7 +3675,7 @@ if _TEXTUAL_AVAILABLE:
                     # Also bridge to R if available
                     if self._r_proc and self._r_proc.poll() is None:
                         py_val = self._py_console_ns[var_name]
-                        if isinstance(py_val, (int, float)):
+                        if isinstance(py_val, int | float):
                             r_cmd = f"{var_name} <- {py_val}"
                         else:
                             escaped = str(py_val).replace('"', '\\"')
@@ -3715,7 +3710,7 @@ if _TEXTUAL_AVAILABLE:
                 env = dict(os.environ)
                 if self._polyglot:
                     for k, v in self._py_console_ns.items():
-                        if isinstance(v, (int, float, str, bool)) and not k.startswith("_"):
+                        if isinstance(v, int | float | str | bool) and not k.startswith("_"):
                             env[k] = str(v)
                 result = subprocess.run(
                     [self._user_shell, "-c", cmd],
@@ -3904,7 +3899,7 @@ if _TEXTUAL_AVAILABLE:
                 return
             event.input.value = ""
             event.input.focus()
-            log = self.query_one("#analysis-log", RichLog)
+            self.query_one("#analysis-log", RichLog)
 
             self.run_worker(
                 self._run_analysis(cmd),
@@ -4253,11 +4248,11 @@ if _TEXTUAL_AVAILABLE:
                 elif action in ("kaplan_meier", "km") and len(parts) >= 4:
                     from morie.fn import _frame_core as pd
 
-                    from .survival import kaplan_meier_curve
+                    from .survival import kaplan_meier
 
                     df = pd.read_csv(parts[1])
                     time_col, event_col = parts[2], parts[3]
-                    result = kaplan_meier_curve(df[time_col].values, df[event_col].values)
+                    result = kaplan_meier(df[time_col].tolist(), df[event_col].tolist())
                     log.write(f"\n[bold]Kaplan-Meier: time={time_col}, event={event_col}[/bold]")
                     log.write(f"  Events: {int(df[event_col].sum())} / {len(df)}")
                     log.write(f"  Median survival: {result.median_survival}")
@@ -4282,10 +4277,10 @@ if _TEXTUAL_AVAILABLE:
                 elif action == "logrank" and len(parts) >= 5:
                     from morie.fn import _frame_core as pd
 
-                    from .survival import log_rank_test
+                    from .survival import logrank_test
 
                     df = pd.read_csv(parts[1])
-                    result = log_rank_test(df[parts[2]].values, df[parts[3]].values, df[parts[4]].values)
+                    result = logrank_test(df[parts[2]].tolist(), df[parts[3]].tolist(), df[parts[4]].tolist())
                     log.write(f"\n[bold]Log-rank test: {parts[2]} by {parts[4]}[/bold]")
                     log.write(f"  chi2 = {result.test_statistic:.4f}")
                     log.write(f"  p = {result.p_value:.6f}")
@@ -4340,16 +4335,16 @@ if _TEXTUAL_AVAILABLE:
                 elif action == "match" and len(parts) >= 4:
                     from morie.fn import _frame_core as pd
 
-                    from .matching import propensity_score_matching
+                    from .matching import match_nearest_neighbor
 
                     df = pd.read_csv(parts[1])
                     covs = parts[3].split(",")
-                    result = propensity_score_matching(df, treatment=parts[2], covariates=covs)
+                    result = match_nearest_neighbor(df, treatment=parts[2], covariates=covs)
                     log.write(f"\n[bold]PS Matching: treatment={parts[2]}[/bold]")
-                    log.write(f"  Matched pairs: {result.n_matched}")
-                    log.write(f"  ATT = {result.att:.4f}")
-                    if hasattr(result, "att_se"):
-                        log.write(f"  SE = {result.att_se:.4f}")
+                    log.write(f"  Treated: {result.n_treated}; matched controls: {result.n_matched_control}")
+                    for k in ("att", "att_se"):
+                        if isinstance(result.details, dict) and k in result.details:
+                            log.write(f"  {k.upper()} = {float(result.details[k]):.4f}")
 
                 # ── Missing Data ────────────────────────────────
                 elif action == "mcar" and len(parts) >= 2:
@@ -4732,6 +4727,11 @@ if _TEXTUAL_AVAILABLE:
     class MORIEApp(App):
         """MORIE Terminal IDE -- Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation."""
 
+        def __init__(self, agent: str | None = None, **kwargs) -> None:
+            # textual's App.__init__ takes no `agent`; keep the name for the chat screen (textual 0.60 .. 8.x)
+            super().__init__(**kwargs)
+            self._agent = agent
+
         TITLE = "MORIE"
         SUB_TITLE = (
             "Methods for Observational Inference and Robust Analysis of Interventions in Scientific Experimentation"
@@ -4872,13 +4872,11 @@ if _TEXTUAL_AVAILABLE:
                 "morie.psymet",
             ]
             for mod in modules:
-                try:
+                # Don't fail the whole warmup if one module is busted --
+                # the user can still navigate; the broken screen will
+                # surface its own error when opened.
+                with contextlib.suppress(Exception):
                     await asyncio.to_thread(importlib.import_module, mod)
-                except Exception:
-                    # Don't fail the whole warmup if one module is busted --
-                    # the user can still navigate; the broken screen will
-                    # surface its own error when opened.
-                    pass
 
         # -- Clipboard helpers -----------------------------------------
 
@@ -5056,7 +5054,7 @@ if _TEXTUAL_AVAILABLE:
                 datasets = list_datasets()
                 n_cached = sum(1 for d in datasets if d["cached"])
             except Exception:
-                n_cached = 0
+                datasets, n_cached = [], 0
 
             content = self.query_one("#home-status-content", Static)
             content.update(
@@ -5064,10 +5062,9 @@ if _TEXTUAL_AVAILABLE:
                 f"  LLM: [bold green]{info['inner']}[/bold green] "
                 f"[dim]\\[{info['outer']}][/dim]  |  "
                 f"Modules: [bold]{len(modules)}[/bold]  |  "
-                f"Datasets: [bold]{n_cached}[/bold] built-in  |  "
+                f"Datasets: [bold]{len(datasets) if datasets else 0}[/bold] keys ({n_cached} cached)  |  "
                 f"Python: [bold]{sys.version.split()[0]}[/bold]\n\n"
-                f"MORIE ships 32 Canadian public health datasets and "
-                f"48 statistical analysis commands.\n"
+                f"{len(modules)} analysis modules and the datasets of `morie list-datasets`.\n"
                 f"Press [bold yellow]i[/bold yellow] to browse datasets, "
                 f"[bold yellow]s[/bold yellow] for stats, "
                 f"[bold yellow]c[/bold yellow] to chat with an LLM, or "

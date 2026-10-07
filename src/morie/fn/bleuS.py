@@ -55,7 +55,7 @@ def ngram_counts(toks, n):
     """Multiset of n-grams as a dict keyed by the joined tokens."""
     d = {}
     for i in range(len(toks) - n + 1):
-        g = " ".join(toks[i:i + n])
+        g = " ".join(toks[i : i + n])
         d[g] = d.get(g, 0) + 1
     return d
 

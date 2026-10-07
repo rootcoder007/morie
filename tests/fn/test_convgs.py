@@ -1,7 +1,6 @@
 """Tests for convgs.convergent_validity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.convgs import convergent_validity
 
 

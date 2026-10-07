@@ -24,15 +24,17 @@ See Also
 
 from .timesfm import causal_mask, horizon_plan, input_patches, rollout, rollout_steps
 
-__all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout",
-           "horizon_plan"]
+__all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout", "horizon_plan"]
 
 
 def cheatsheet():
     from .timesfm import cheatsheet as _c
-    return ("timesf: the same ledger method as `timesfm` -- one "
-            "paper, one implementation, re-exported so the two "
-            "entries cannot drift. " + _c())
+
+    return (
+        "timesf: the same ledger method as `timesfm` -- one "
+        "paper, one implementation, re-exported so the two "
+        "entries cannot drift. " + _c()
+    )
 
 
 # compact alias per ledger/NAMING.md

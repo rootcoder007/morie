@@ -1,7 +1,6 @@
 """Tests for otc2p.ot_cost_lp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otc2p import ot_cost_lp
 
 

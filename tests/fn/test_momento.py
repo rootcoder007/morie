@@ -10,8 +10,8 @@ from morie.fn.momento import mask_patches, masked_loss, moment_foundation, task_
 def test_momento_basic():
     """Each channel is truncated to whole patches and standardised on its
     own (ddof = 1); the batch shares the smallest patch count."""
-    a = [[float(t), 10.0 * t] for t in range(10)]      # 2 channels, 10 points
-    b = [[2.0 * t * t] for t in range(7)]               # 1 channel, 7 points
+    a = [[float(t), 10.0 * t] for t in range(10)]  # 2 channels, 10 points
+    b = [[2.0 * t * t] for t in range(7)]  # 1 channel, 7 points
     r = moment_foundation([a, b], patch_len=3)
     assert r["n_series"] == 3 and r["patch_len"] == 3
     assert r["n_patches"] == 2
@@ -41,5 +41,3 @@ def test_momento_edge():
         mask_patches(P, [0, 1, 2])
     with pytest.raises(ValueError, match="fewer"):
         moment_foundation([[[1.0], [2.0]]], patch_len=3)
-
-

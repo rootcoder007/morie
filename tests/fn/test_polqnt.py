@@ -43,10 +43,12 @@ def test_a_zero_vector_is_handled():
 
 
 def test_validation():
-    for call in (lambda: polarquant([1.0, 2.0, 3.0]),      # not a power of 2
-                 lambda: polarquant([1.0]),
-                 lambda: polarquant([1.0, 2.0], bits_first=0),
-                 lambda: polarquant([1.0, 2.0], bits_rest=0)):
+    for call in (
+        lambda: polarquant([1.0, 2.0, 3.0]),  # not a power of 2
+        lambda: polarquant([1.0]),
+        lambda: polarquant([1.0, 2.0], bits_first=0),
+        lambda: polarquant([1.0, 2.0], bits_rest=0),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

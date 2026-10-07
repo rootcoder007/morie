@@ -28,10 +28,7 @@ def majorize_step(X, D, W=None):
     X = np.asarray(X, dtype=float)
     D = np.asarray(D, dtype=float)
     n = X.shape[0]
-    if W is None:
-        W = np.ones_like(D)
-    else:
-        W = np.asarray(W, dtype=float)
+    W = np.ones_like(D) if W is None else np.asarray(W, dtype=float)
 
     D_hat = np.zeros((n, n))
     for i in range(n):
@@ -47,7 +44,7 @@ def majorize_step(X, D, W=None):
                 B[i, j] = -W[i, j] * D[i, j] / D_hat[i, j]
         B[i, i] = -np.sum(B[i, :])
 
-    V = np.diag(np.sum(W, axis=1)) - W * (1 - np.eye(n))
+    np.diag(np.sum(W, axis=1)) - W * (1 - np.eye(n))
     V_diag = np.sum(W * (1 - np.eye(n)), axis=1)
     X_new = B @ X / np.maximum(V_diag[:, None], 1e-12)
     return DescriptiveResult(name="majorize_step", value=X_new, extra={"n": n})

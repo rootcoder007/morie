@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["gibbons_pitman_efficiency"]
 
 
-def gibbons_pitman_efficiency(test1, test2, sampler, theta0=0.0, delta=0.5,
-                              n=200, n_sim=400, alpha=0.05, seed=0):
+def gibbons_pitman_efficiency(test1, test2, sampler, theta0=0.0, delta=0.5, n=200, n_sim=400, alpha=0.05, seed=0):
     r"""Finite-sample estimate of the Pitman efficiency idea
     (Gibbons Ch. 1.2.11): the ratio of sample sizes two tests need
     for the same power at the same alternative. Estimated here by
@@ -72,10 +71,13 @@ def gibbons_pitman_efficiency(test1, test2, sampler, theta0=0.0, delta=0.5,
     ratio = ((za + zb1) / (za + zb2)) ** 2
     return RichResult(
         payload={
-            "efficiency_ratio": float(ratio), "power1": float(p1),
-            "power2": float(p2), "n": n, "n_sim": n_sim,
+            "efficiency_ratio": float(ratio),
+            "power1": float(p1),
+            "power2": float(p2),
+            "n": n,
+            "n_sim": n_sim,
             "method": "Simulated Pitman-type efficiency via the power curve "
-                      "(approximation; exact route is the efficacy ratio)",
+            "(approximation; exact route is the efficacy ratio)",
         }
     )
 

@@ -1,12 +1,11 @@
 """Tests for morie.fn.sprbk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sprbk import spring_mass
 
 
 def test_sprbk_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = spring_mass(m=1.0, k=1.0, x0=1.0)
     assert result is not None
     assert hasattr(result, "name")

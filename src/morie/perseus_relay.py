@@ -14,7 +14,9 @@ Then from any machine:
 Or set PERSEUS_CLOUD_URL in .env and it auto-connects.
 
 Security: The relay only exposes Perseus agent capabilities (search, run
-functions, read files within sandbox). No shell access, no filesystem
+functions, read files within sandbox); with the interactive layer the agent's tools
+can also run shell commands, execute code and write files on the serving machine, which is
+why a bind beyond loopback requires --token. No filesystem
 writes outside the project. Optional token auth for production use.
 """
 
@@ -31,11 +33,23 @@ from typing import Any
 logger = logging.getLogger(__name__)
 
 
+def _registry_size() -> int | None:
+    """Number of functions in the morie.fn registry (the count `morie repl` prints)."""
+    try:
+        from morie.fn._registry import REGISTRY
+
+        return len(REGISTRY)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _create_agent():
     try:
         from .agent import create_agent
     except ImportError as exc:
-        raise RuntimeError("the morie agent is not bundled in this install; run `morie interactive install` to add it") from exc
+        raise RuntimeError(
+            "the morie agent is not bundled in this install; run `morie interactive install` to add it"
+        ) from exc
     return create_agent()
 
 
@@ -47,7 +61,7 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
         if self.path == "/v1/percy":
             self._handle_percy()
         elif self.path == "/v1/health":
-            self._respond(200, {"status": "ok", "model": getattr(self.agent, "_model", "unknown")})
+            self._respond(200, {"status": "ok", "model": getattr(self.agent, "_model", "provider-chain")})
         else:
             self._respond(404, {"error": "Not found. Use POST /v1/percy"})
 
@@ -60,8 +74,8 @@ class PerseusRelayHandler(BaseHTTPRequestHandler):
                     "status": "ok",
                     "service": "perseus-relay",
                     "model": model,
-                    "tools": 12,
-                    "functions": "5710+",
+                    "tools": 12 if self.agent is not None else 0,
+                    "functions": _registry_size(),
                 },
             )
         else:
@@ -165,7 +179,7 @@ def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
     text = str(payload.get("output_text") or "")
     if payload.get("mode") == "local_fallback":
         return 503, {
-            "error": "no LLM backend reachable: run `morie login` for the hosted tier or start Ollama",
+            "error": "no LLM backend reachable: run `morie login` (GitHub, or --email you@example.com) for the hosted tier or start Ollama",
             "text": text,
             "tool_calls": [],
             "iterations": 0,
@@ -182,6 +196,16 @@ def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
 
 
 def serve(port: int = 8421, token: str | None = None, bind: str = "127.0.0.1"):
+    """Serve the Perseus relay over HTTP until interrupted.
+
+    Answers ``POST /v1/percy`` with the local tool-calling agent when an
+    Ollama server answers, else through the provider chain.
+
+    Args:
+        port: TCP port.
+        token: when set, clients must send it as a Bearer token.
+        bind: address to bind (default loopback only).
+    """
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 
     try:
@@ -189,6 +213,13 @@ def serve(port: int = 8421, token: str | None = None, bind: str = "127.0.0.1"):
     except Exception as exc:  # no agent layer in this install, or no Ollama: provider chain
         agent = None
         logger.info("local tool-calling agent unavailable (%s); answering through the provider chain", exc)
+    if agent is not None:
+        from .llm import detect_available_provider
+
+        if detect_available_provider() != "ollama":
+            # an agent with no Ollama behind it fails every request first: use the provider chain from the start
+            agent = None
+            logger.info("no Ollama server answers; answering through the provider chain")
     model_name = getattr(agent, "_model", "provider-chain")
     logger.info("Perseus relay starting on %s:%d with model %s", bind, port, model_name)
 
@@ -198,7 +229,7 @@ def serve(port: int = 8421, token: str | None = None, bind: str = "127.0.0.1"):
     server = HTTPServer((bind, port), PerseusRelayHandler)
     logger.info('Perseus is online. POST /v1/percy with {"question": "..."}')
     if token:
-        logger.info("Auth required: Bearer %s...", token[:4])
+        logger.info("Auth required: clients send the --token value as a Bearer token")
 
     try:
         server.serve_forever()
@@ -208,6 +239,7 @@ def serve(port: int = 8421, token: str | None = None, bind: str = "127.0.0.1"):
 
 
 def main():
+    """Command-line entry of the Perseus relay: parse ``--port``, ``--token`` and ``--bind`` and serve."""
     parser = argparse.ArgumentParser(description="Perseus Relay Server")
     parser.add_argument("--port", type=int, default=int(os.environ.get("PERSEUS_PORT", "8421")))
     parser.add_argument("--token", default=os.environ.get("PERSEUS_TOKEN"))

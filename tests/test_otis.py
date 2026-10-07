@@ -109,7 +109,7 @@ class TestVolat:
 class TestRctrnd:
     def test_returns_df(self, otis_df):
         t = rctrnd(otis_df)
-        assert (hasattr(t, "columns") or hasattr(t, "_cols"))
+        assert hasattr(t, "columns") or hasattr(t, "_cols")
         assert "year" in t.columns
         assert "region" in t.columns
         assert "n_individuals" in t.columns

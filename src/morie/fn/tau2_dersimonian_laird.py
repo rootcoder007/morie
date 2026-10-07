@@ -28,17 +28,16 @@ def tau2_dersimonian_laird(ys, ws_fixed):
     """
     value = _ca_crim.tau2_dersimonian_laird(ys, ws_fixed)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.44)"
     return RichResult(
-        title='DerSimonian-Laird tau^2 estimator',
+        title="DerSimonian-Laird tau^2 estimator",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e44: tau^2 = (Q - df) / (sum w - sum w^2 / sum w) [Weisburd et al. 2022, eq. 11.44]'
+    return "ca11e44: tau^2 = (Q - df) / (sum w - sum w^2 / sum w) [Weisburd et al. 2022, eq. 11.44]"

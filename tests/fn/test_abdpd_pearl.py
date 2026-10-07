@@ -22,8 +22,7 @@ BINARY_EQS = {
 
 
 def test_pearl_1_4_worked_example():
-    r = aap(evidence={"x": 1.0, "y": 1.0}, equations=BINARY_EQS,
-            exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
+    r = aap(evidence={"x": 1.0, "y": 1.0}, equations=BINARY_EQS, exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
     assert r["abducted"] == {"u1": 1.0, "u2": 1.0}
     assert r["factual"] == 1.0
     assert r["counterfactual"] == 0.0
@@ -35,8 +34,7 @@ def test_pearl_1_4_worked_example():
 def test_pearl_other_cell_of_the_same_model():
     # a treated survivor (x=1, y=0) must have u2=0: dies iff NOT treated,
     # so under do(x=0) this subject would have died (y=1)
-    r = aap(evidence={"x": 1.0, "y": 0.0}, equations=BINARY_EQS,
-            exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
+    r = aap(evidence={"x": 1.0, "y": 0.0}, equations=BINARY_EQS, exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
     assert r["abducted"] == {"u1": 1.0, "u2": 0.0}
     assert r["counterfactual"] == 1.0
 
@@ -45,8 +43,7 @@ def test_ambiguous_evidence_is_reported_not_hidden():
     # observing only x=1 leaves u2 free: both u2 values reproduce the
     # evidence and they give DIFFERENT counterfactuals for y, so the
     # result must say so rather than pick one silently
-    r = aap(evidence={"x": 1.0}, equations=BINARY_EQS,
-            exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
+    r = aap(evidence={"x": 1.0}, equations=BINARY_EQS, exogenous_names=["u1", "u2"], do={"x": 0.0}, query="y")
     assert r["n_compatible_u"] == 2
     assert r["counterfactual_unique"] is False
 
@@ -58,8 +55,7 @@ def test_continuous_model_still_uses_the_gradient_path():
         "x": (("u1",), lambda u1: u1),
         "y": (("x", "u2"), lambda x, u2: 2.0 * x + u2),
     }
-    r = aap(evidence={"x": 1.0, "y": 3.5}, equations=eqs,
-            exogenous_names=["u1", "u2"], do={"x": 2.0}, query="y")
+    r = aap(evidence={"x": 1.0, "y": 3.5}, equations=eqs, exogenous_names=["u1", "u2"], do={"x": 2.0}, query="y")
     assert abs(r["abducted"]["u1"] - 1.0) < 1e-8
     assert abs(r["abducted"]["u2"] - 1.5) < 1e-8
     assert abs(r["counterfactual"] - 5.5) < 1e-8
@@ -73,10 +69,15 @@ def test_support_too_large_is_refused():
         # discrete path is genuinely reached
         return lambda **kw: 1.0 if kw[name] > 0.5 else 0.0
 
-    eqs = {"y%d" % i: (("u%d" % i,), _mk("u%d" % i)) for i in range(30)}
+    eqs = {f"y{int(i)}": ((f"u{int(i)}",), _mk(f"u{int(i)}")) for i in range(30)}
     with pytest.raises(ValueError):
         # declaring the support routes straight to the discrete path,
         # whose size guard refuses 2^30 candidates immediately
-        aap(evidence={"y%d" % i: 7.7 for i in range(30)}, equations=eqs,
-            exogenous_names=["u%d" % i for i in range(30)],
-            do={"y0": 0.0}, query="y1", u_support=(0.0, 1.0))
+        aap(
+            evidence={f"y{int(i)}": 7.7 for i in range(30)},
+            equations=eqs,
+            exogenous_names=[f"u{int(i)}" for i in range(30)],
+            do={"y0": 0.0},
+            query="y1",
+            u_support=(0.0, 1.0),
+        )

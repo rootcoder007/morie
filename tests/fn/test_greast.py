@@ -1,7 +1,6 @@
 """Tests for greast.geron_early_stopping."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.greast import geron_early_stopping
 
 
@@ -17,9 +16,15 @@ def test_greast_basic():
     eta = 0.02
     result = geron_early_stopping(X_train, y_train, X_val, y_val, n_iter, eta)
     assert isinstance(result, dict)
-    for key in ("theta", "best_iteration", "best_val_rmse",
-                "val_rmse_history", "train_rmse_history",
-                "final_val_rmse", "overfitting_detected"):
+    for key in (
+        "theta",
+        "best_iteration",
+        "best_val_rmse",
+        "val_rmse_history",
+        "train_rmse_history",
+        "final_val_rmse",
+        "overfitting_detected",
+    ):
         assert key in result
     assert 0 <= result["best_iteration"] <= n_iter
     assert len(result["val_rmse_history"]) == n_iter + 1
@@ -54,7 +59,7 @@ import morie.fn.greast as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

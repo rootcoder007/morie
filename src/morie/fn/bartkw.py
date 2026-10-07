@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bartlett kernel lag weights."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -40,15 +38,12 @@ def bartlett_kernel_weights(lags, M=None):
     covariance matrix.  Econometrica 55:703-708, whose weights are
     those of Bartlett, M. S. (1950), Biometrika 37:1-16.
     """
-    if isinstance(lags, (int, float)):
-        ks = [float(k) for k in range(int(lags) + 1)]
-    else:
-        ks = C.vec(lags)
+    ks = [float(k) for k in range(int(lags) + 1)] if isinstance(lags, (int, float)) else C.vec(lags)
     Mv = float(M) if M is not None else max(ks)
     w = [max(1.0 - k / (Mv + 1.0), 0.0) for k in ks]
-    return RichResult(payload={
-        "w": w, "estimate": sum(w), "M": Mv, "n": len(w),
-        "method": "Bartlett kernel lag weights"})
+    return RichResult(
+        payload={"w": w, "estimate": sum(w), "M": Mv, "n": len(w), "method": "Bartlett kernel lag weights"}
+    )
 
 
 def cheatsheet():

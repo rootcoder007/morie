@@ -83,10 +83,12 @@ def wooldridge_bjs_estimator(y, D, unit, time, X=None):
         raise ValueError("no observation is treated.")
     n_u, T = Y.shape
 
-    cells = [(float(gg), int(t))
-             for gg in np.unique(g[np.isfinite(g)])
-             for t in range(int(gg), T)
-             if ((g == gg) & treated[:, t]).any()]
+    cells = [
+        (float(gg), int(t))
+        for gg in np.unique(g[np.isfinite(g)])
+        for t in range(int(gg), T)
+        if ((g == gg) & treated[:, t]).any()
+    ]
     if not cells:
         raise ValueError("no cohort-period cell is treated.")
 
@@ -105,8 +107,7 @@ def wooldridge_bjs_estimator(y, D, unit, time, X=None):
         Xa = np.asarray(X, dtype=float)
         if Xa.ndim == 1:
             Xa = Xa[:, None]
-        Xp = np.column_stack([as_panel(Xa[:, j], unit, time)[0].ravel()
-                              for j in range(Xa.shape[1])])
+        Xp = np.column_stack([as_panel(Xa[:, j], unit, time)[0].ravel() for j in range(Xa.shape[1])])
         Z = np.column_stack([Z, Xp])
     yv = Y.ravel()
     coef, *_ = np.linalg.lstsq(Z, yv, rcond=None)
@@ -137,11 +138,10 @@ def wooldridge_bjs_estimator(y, D, unit, time, X=None):
         r = float(t - gg)
         event.setdefault(r, []).append((n_cell[(gg, t)], a))
         cohort_att.setdefault(gg, []).append((n_cell[(gg, t)], a))
-    event = {r: float(sum(n * v for n, v in lst) / sum(n for n, _ in lst))
-             for r, lst in sorted(event.items())}
-    cohort_att = {gg: float(sum(n * v for n, v in lst)
-                            / sum(n for n, _ in lst))
-                  for gg, lst in sorted(cohort_att.items())}
+    event = {r: float(sum(n * v for n, v in lst) / sum(n for n, _ in lst)) for r, lst in sorted(event.items())}
+    cohort_att = {
+        gg: float(sum(n * v for n, v in lst) / sum(n for n, _ in lst)) for gg, lst in sorted(cohort_att.items())
+    }
 
     # equivalence with the imputation estimator (no covariates)
     match = None
@@ -150,8 +150,7 @@ def wooldridge_bjs_estimator(y, D, unit, time, X=None):
 
         Y0, _, _, _ = impute_untreated(Y, treated)
         tau = Y - Y0
-        match = float(max(abs(att[(gg, t)] - tau[(g == gg), t].mean())
-                          for gg, t in cells))
+        match = float(max(abs(att[(gg, t)] - tau[(g == gg), t].mean()) for gg, t in cells))
 
     z = 1.959963984540054
     return RichResult(
@@ -167,7 +166,7 @@ def wooldridge_bjs_estimator(y, D, unit, time, X=None):
             "n_interactions": len(cells),
             "n_parameters": int(Z.shape[1]),
             "n_observations": int(n_obs),
-            "covariate_coef": (coef[k + len(cells):] if X is not None else None),
+            "covariate_coef": (coef[k + len(cells) :] if X is not None else None),
             "matches_imputation": match,
             "equivalence_note": (
                 "with no covariates this estimator and the "

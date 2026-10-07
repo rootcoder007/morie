@@ -4,6 +4,7 @@ References are ``urca::ur.df`` and ``MASS::rlm`` run on the same
 fixtures: a persistent AR(1) for the unit-root test, and a regression
 with two deliberately gross outliers for the robust fit.
 """
+
 import pytest
 
 from morie.fn import _robust_core as rb
@@ -26,8 +27,7 @@ RX = [[RX1[i], RX2[i]] for i in range(M)]
 
 
 def test_adf_matches_urca_ur_df():
-    want = {"none": -3.59709722078672, "drift": -5.81354784454201,
-            "trend": -5.76130487932429}
+    want = {"none": -3.59709722078672, "drift": -5.81354784454201, "trend": -5.76130487932429}
     for kind, target in want.items():
         got = rb.adf_test(Y, lags=1, kind=kind)["statistic"]
         assert abs(got - target) < 1e-12, kind
@@ -62,8 +62,7 @@ def test_adf_validates_its_arguments():
 
 def test_rlm_matches_mass_rlm():
     r = rb.rlm(YR, RX)
-    for got, want in zip(r["coef"], (1.67875433365285, 1.42945187591586,
-                                     -0.678206572264915)):
+    for got, want in zip(r["coef"], (1.67875433365285, 1.42945187591586, -0.678206572264915)):
         assert abs(got - want) < 1e-4
     assert abs(r["scale"] - 0.348036179139661) < 1e-3
 
@@ -71,7 +70,7 @@ def test_rlm_matches_mass_rlm():
 def test_rlm_downweights_exactly_the_planted_outliers():
     r = rb.rlm(YR, RX)
     w = r["weights"]
-    assert w[6] < 0.05 and w[21] < 0.05        # the two gross ones
+    assert w[6] < 0.05 and w[21] < 0.05  # the two gross ones
     clean = [w[i] for i in range(M) if i not in (6, 21)]
     assert min(clean) > 0.5
     # R gives 0.0187 and 0.0154 for these two
@@ -87,6 +86,7 @@ def test_rlm_recovers_the_clean_fit_better_than_least_squares():
     # also partly cancel, so the OLS *slope* here is barely disturbed --
     # it is the whole coefficient vector that moves.)
     from morie.fn import _regression_core as rg
+
     clean = [2 + 1.4 * RX1[i] - 0.7 * RX2[i] + RE[i] for i in range(M)]
     target = rg.ols(clean, RX)["coef"]
     ols = rg.ols(YR, RX)["coef"]
@@ -102,6 +102,7 @@ def test_rlm_recovers_the_clean_fit_better_than_least_squares():
 def test_rlm_reduces_to_least_squares_without_outliers():
     clean = [2 + 1.4 * RX1[i] - 0.7 * RX2[i] + RE[i] for i in range(M)]
     from morie.fn import _regression_core as rg
+
     a = rb.rlm(clean, RX)["coef"]
     b = rg.ols(clean, RX)["coef"]
     for x, y in zip(a, b):
@@ -114,8 +115,7 @@ def test_rlm_uses_mad_about_zero_like_mass():
     r = rb.rlm(YR, RX)
     resid = sorted(abs(t) for t in r["residuals"])
     n = len(resid)
-    mad0 = (resid[n // 2] if n % 2
-            else 0.5 * (resid[n // 2 - 1] + resid[n // 2]))
+    mad0 = resid[n // 2] if n % 2 else 0.5 * (resid[n // 2 - 1] + resid[n // 2])
     # Two scales are reported, and they are not interchangeable:
     # "scale" follows MASS, which computes the scale from the residuals
     # of the PREVIOUS iteration, while "scale_final" is the one

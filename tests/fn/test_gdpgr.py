@@ -1,7 +1,6 @@
 """Tests for morie.fn.gdpgr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gdpgr import gdp_growth
 
 

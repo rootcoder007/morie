@@ -25,20 +25,15 @@ def _as_slabs(X):
 def _check_identified(obs, n, T):
     if obs.sum() < n + T - 1:
         raise ValueError(
-            "only %d untreated cells for %d unit and period effects; the "
-            "model is not identified. Every unit needs an untreated period "
-            "and every period an untreated unit."
-            % (int(obs.sum()), n + T - 1)
+            f"only {int(int(obs.sum()))} untreated cells for {int(n + T - 1)} unit and period effects; the model is not identified. Every unit needs an untreated period and every period an untreated unit."
         )
     if not obs.any(axis=1).all():
         raise ValueError(
-            "%d unit(s) are treated in every period, so their untreated "
-            "level cannot be imputed." % int((~obs.any(axis=1)).sum())
+            f"{int(int((~obs.any(axis=1)).sum()))} unit(s) are treated in every period, so their untreated level cannot be imputed."
         )
     if not obs.any(axis=0).all():
         raise ValueError(
-            "%d period(s) have no untreated unit, so that period's effect "
-            "cannot be identified." % int((~obs.any(axis=0)).sum())
+            f"{int(int((~obs.any(axis=0)).sum()))} period(s) have no untreated unit, so that period's effect cannot be identified."
         )
 
 
@@ -63,8 +58,7 @@ def _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter=2000, tol=1e-13):
         XtX = np.zeros((k, k))
         for p_ in range(k):
             for q_ in range(k):
-                XtX[p_, q_] = float(np.sum(np.where(obs, Xc[p_], 0.0)
-                                           * np.where(obs, Xc[q_], 0.0)))
+                XtX[p_, q_] = float(np.sum(np.where(obs, Xc[p_], 0.0) * np.where(obs, Xc[q_], 0.0)))
         XtX = XtX + 1e-12 * np.eye(k)
 
     def _xb(bb):
@@ -85,9 +79,7 @@ def _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter=2000, tol=1e-13):
         lam = (u_l - other.sum(axis=0)) / m_t
         if b is not None:
             rest = np.where(obs, a[:, None] + lam[None, :], 0.0)
-            rhs = np.asarray(
-                [float(np.sum(np.where(obs, Xc[j], 0.0) * rest))
-                 for j in range(k)], dtype=float)
+            rhs = np.asarray([float(np.sum(np.where(obs, Xc[j], 0.0) * rest)) for j in range(k)], dtype=float)
             b = np.linalg.solve(XtX, u_b - rhs)
         if max(np.max(np.abs(a - a0)), np.max(np.abs(lam - l0))) < tol:
             break
@@ -109,11 +101,12 @@ def impute_untreated(Y, treated, X=None, max_iter=2000, tol=1e-13):
     _check_identified(obs, n, T)
     Xc = _as_slabs(X)
     Yo = np.where(obs, Y, 0.0)
-    u_b = None if Xc is None else np.asarray(
-        [float(np.sum(np.where(obs, Xc[j], 0.0) * Yo)) for j in range(len(Xc))],
-        dtype=float)
-    a, lam, b = _two_way_solve(obs, Yo.sum(axis=1), Yo.sum(axis=0), u_b, Xc,
-                               max_iter, tol)
+    u_b = (
+        None
+        if Xc is None
+        else np.asarray([float(np.sum(np.where(obs, Xc[j], 0.0) * Yo)) for j in range(len(Xc))], dtype=float)
+    )
+    a, lam, b = _two_way_solve(obs, Yo.sum(axis=1), Yo.sum(axis=0), u_b, Xc, max_iter, tol)
     Y0 = a[:, None] + lam[None, :]
     if b is not None:
         for j in range(len(Xc)):
@@ -125,8 +118,7 @@ def _estimator_weights(W, treated, Xc, max_iter=2000, tol=1e-13):
     obs = ~treated
     u_a = W.sum(axis=1)
     u_l = W.sum(axis=0)
-    u_b = None if Xc is None else np.asarray(
-        [float(np.sum(Xc[j] * W)) for j in range(len(Xc))], dtype=float)
+    u_b = None if Xc is None else np.asarray([float(np.sum(Xc[j] * W)) for j in range(len(Xc))], dtype=float)
     ca, cl, cb = _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter, tol)
     proj = ca[:, None] + cl[None, :]
     if cb is not None:
@@ -210,8 +202,7 @@ def borusyak_jaravel_spiess(y, D, unit, time, X=None, weights=None):
         Xa = np.asarray(X, dtype=float)
         if Xa.ndim == 1:
             Xa = Xa[:, None]
-        Xp = [as_panel(Xa[:, j], unit, time)[0]
-              for j in range(Xa.shape[1])]
+        Xp = [as_panel(Xa[:, j], unit, time)[0] for j in range(Xa.shape[1])]
 
     Y0, alpha, lam, beta = impute_untreated(Y, treated, Xp)
     tau = Y - Y0
@@ -250,15 +241,13 @@ def borusyak_jaravel_spiess(y, D, unit, time, X=None, weights=None):
     rel[fin] = np.arange(T)[None, :] - g[fin][:, None]
     event, pre = {}, {}
     for r in np.unique(rel[~np.isnan(rel)]):
-        m = (rel == r)
+        m = rel == r
         if r >= 0:
             event[float(r)] = float(tau[m].mean())
         else:
             pre[float(r)] = float(tau[m].mean())
     cohort_att = {
-        float(gg): float(tau[(g == gg)[:, None] & treated].mean())
-        for gg in np.unique(g[fin])
-        if treated[g == gg].any()
+        float(gg): float(tau[(g == gg)[:, None] & treated].mean()) for gg in np.unique(g[fin]) if treated[g == gg].any()
     }
 
     z = 1.959963984540054
@@ -279,8 +268,7 @@ def borusyak_jaravel_spiess(y, D, unit, time, X=None, weights=None):
             "event": event,
             "cohort_att": cohort_att,
             "pretrend_by_rel": pre,
-            "pretrend_max_abs": float(max((abs(v) for v in pre.values()),
-                                          default=0.0)),
+            "pretrend_max_abs": float(max((abs(v) for v in pre.values()), default=0.0)),
             "pretrend_note": (
                 "the imputation uses EVERY untreated period, so parallel "
                 "trends is assumed throughout the pre-period, not only just "
@@ -295,8 +283,7 @@ def borusyak_jaravel_spiess(y, D, unit, time, X=None, weights=None):
             "n_units": int(n_u),
             "n_periods": int(T),
             "no_forbidden_comparisons": (
-                "no treated observation enters the fit, so an already-treated "
-                "unit cannot act as a control"
+                "no treated observation enters the fit, so an already-treated unit cannot act as a control"
             ),
             "method": "Borusyak-Jaravel-Spiess (2024) imputation estimator",
         }

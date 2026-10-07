@@ -4,10 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 3.6, the translation prefix prom
 recomputed in the test body.
 """
 
-import math
-
-import pytest
-
 from morie.fn.km047 import kamath_ch3_translate_prefix_prompt
 
 

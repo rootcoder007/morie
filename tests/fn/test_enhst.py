@@ -1,7 +1,6 @@
 """Test entropy_hist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.enhst import alias, entropy_hist
 

@@ -19,7 +19,6 @@ __all__ = ["svmsdual", "mvsml_ridge_lasso_elastic_eq_9_44"]
 
 
 def svmsdual(X, y, T, K=None):
-
     """maximize L(alpha) = sum_i alpha_i
     - (1/2) sum_i sum_j alpha_i alpha_j y_i y_j (x_i . x_j)
     (eq. 9.44) subject to 0 <= alpha_i <= T and sum_i alpha_i y_i = 0

@@ -1,7 +1,5 @@
 """Tests for wsmexp.wasserman_expectation."""
 
-import math
-
 import pytest
 
 from morie.fn import _array_core as np
@@ -72,9 +70,7 @@ def test_wsmexp_edge():
     two = wasserman_expectation([0.0, 4.0], [1.0, 1.0])
     assert two["n"] == 2
     assert two["density_mass"] == pytest.approx(4.0, abs=1e-12)
-    assert two["estimate"] == pytest.approx(
-        0.5 * (4.0 - 0.0) * (0.0 * 1.0 + 4.0 * 1.0), rel=1e-12
-    )
+    assert two["estimate"] == pytest.approx(0.5 * (4.0 - 0.0) * (0.0 * 1.0 + 4.0 * 1.0), rel=1e-12)
 
     # A zero density gives zero mass and zero expectation, without error.
     zero = wasserman_expectation([0.0, 1.0], [0.0, 0.0])
@@ -94,7 +90,7 @@ import morie.fn.wsmexp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

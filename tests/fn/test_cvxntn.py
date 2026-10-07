@@ -1,7 +1,6 @@
 """Tests for cvxntn.boyd_newton."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxntn import boyd_newton
 
 

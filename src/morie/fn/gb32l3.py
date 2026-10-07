@@ -40,9 +40,15 @@ def gibbons_vandermonde_id2(m, n):
     lhs = sum(terms)
     rhs = comb(m + n, m + 1)
     return RichResult(
-        payload={"lhs": lhs, "rhs": rhs, "holds": lhs == rhs,
-                 "terms": terms, "m": m, "n": n,
-                 "method": "sum C(m,r)C(n,r+1) = C(m+n,m+1) (Gibbons Lemma 3.2.3)"}
+        payload={
+            "lhs": lhs,
+            "rhs": rhs,
+            "holds": lhs == rhs,
+            "terms": terms,
+            "m": m,
+            "n": n,
+            "method": "sum C(m,r)C(n,r+1) = C(m+n,m+1) (Gibbons Lemma 3.2.3)",
+        }
     )
 
 

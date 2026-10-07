@@ -77,8 +77,7 @@ def ipcw_estimator(time, event, tau=None, y=None):
     tt = float(np.max(tv)) if tau is None else float(tau)
     use = (ev == 1.0) & (tv <= tt) & (Gt > 0)
     if not np.any(use):
-        raise ValueError("no uncensored observations with positive censoring "
-                         "survival; nothing to weight.")
+        raise ValueError("no uncensored observations with positive censoring survival; nothing to weight.")
     yv = np.ones(n) if y is None else np.asarray(y, dtype=float).ravel()
     if yv.size != n:
         raise ValueError(f"y has {yv.size} entries for {n} observations.")
@@ -86,14 +85,21 @@ def ipcw_estimator(time, event, tau=None, y=None):
     w[use] = 1.0 / Gt[use]
     est = float(np.sum(w * yv) / n)
     ww = w[use]
-    return RichResult(payload={
-        "estimate": est, "weights": w, "G": Gt,
-        "max_weight": float(ww.max()),
-        "effective_n": float(ww.sum() ** 2 / np.sum(ww ** 2)),
-        "tau": tt, "n_used": int(use.sum()), "n": int(n),
-        "failure_mode": "weights explode where G is small, i.e. late in "
-                        "follow-up; truncating at tau is the standard remedy",
-        "method": "IPCW; reweights the uncensored to stand for those censored before them"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "weights": w,
+            "G": Gt,
+            "max_weight": float(ww.max()),
+            "effective_n": float(ww.sum() ** 2 / np.sum(ww**2)),
+            "tau": tt,
+            "n_used": int(use.sum()),
+            "n": int(n),
+            "failure_mode": "weights explode where G is small, i.e. late in "
+            "follow-up; truncating at tau is the standard remedy",
+            "method": "IPCW; reweights the uncensored to stand for those censored before them",
+        }
+    )
 
 
 def cheatsheet():

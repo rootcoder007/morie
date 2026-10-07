@@ -28,7 +28,9 @@ def _lcg_normal(shape, seed):
         s = (1664525 * s + 1013904223) % 2**32
         u[i] = (s + 0.5) / 2**32
     a, b = u[0::2], u[1::2]
-    z = np.concatenate([np.sqrt(-2 * np.log(a)) * np.cos(2 * np.pi * b), np.sqrt(-2 * np.log(a)) * np.sin(2 * np.pi * b)])
+    z = np.concatenate(
+        [np.sqrt(-2 * np.log(a)) * np.cos(2 * np.pi * b), np.sqrt(-2 * np.log(a)) * np.sin(2 * np.pi * b)]
+    )
     return z[:n].reshape(shape)
 
 

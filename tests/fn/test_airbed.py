@@ -1,7 +1,6 @@
 """Tests for airbed.emissions_inventory."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.airbed import emissions_inventory
 
 
@@ -12,6 +11,8 @@ def test_airbed_basic():
     result = emissions_inventory(activity, ef)
     assert isinstance(result, dict)
     assert "total" in result
+
+
 def test_airbed_edge():
     """Test edge cases."""
     activity = np.random.default_rng(42).normal(0, 1, 100)

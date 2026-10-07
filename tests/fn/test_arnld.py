@@ -1,7 +1,6 @@
 """Tests for morie.fn.arnld -- Arnoldi iteration."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.arnld import arnld, arnoldi
 

@@ -134,14 +134,20 @@ def polarquant(x, bits_first=4, bits_rest=2, quantize=True):
     err2 = sum((rec[i] - v[i]) ** 2 for i in range(d))
     nrm2 = sum(t * t for t in v)
     nlev = len(levels)
-    nbits = (d // 2) * b1 + sum((d >> (ell + 1)) * br
-                                for ell in range(1, nlev))
-    return RichResult(payload={
-        "reconstruction": rec, "estimate": rec, "radius": radius,
-        "codes": codes, "mse": err2 / d,
-        "relative_l2": math.sqrt(err2 / nrm2) if nrm2 > 0 else 0.0,
-        "bits_per_coord": nbits / d, "n": float(d),
-        "method": "PolarQuant polar-transformation quantization"})
+    nbits = (d // 2) * b1 + sum((d >> (ell + 1)) * br for ell in range(1, nlev))
+    return RichResult(
+        payload={
+            "reconstruction": rec,
+            "estimate": rec,
+            "radius": radius,
+            "codes": codes,
+            "mse": err2 / d,
+            "relative_l2": math.sqrt(err2 / nrm2) if nrm2 > 0 else 0.0,
+            "bits_per_coord": nbits / d,
+            "n": float(d),
+            "method": "PolarQuant polar-transformation quantization",
+        }
+    )
 
 
 #: Primary name for the module.
@@ -150,6 +156,7 @@ polqnt = polarquant
 
 def cheatsheet():
     return "polqnt: PolarQuant polar-transformation quantization (Han et al. 2025)."
+
 
 # public names resolved by fn/_lazy_map.json
 polar_quantization = polarquant

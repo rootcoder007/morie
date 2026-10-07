@@ -23,18 +23,21 @@ def _make_grids(n=60):
 
 def _expected_keys():
     return (
-        "probability", "quantile", "gamma", "u_gamma",
-        "index", "mean_root_n_estimable",
-        "quantile_root_n_estimable", "n_points", "method",
+        "probability",
+        "quantile",
+        "gamma",
+        "u_gamma",
+        "index",
+        "mean_root_n_estimable",
+        "quantile_root_n_estimable",
+        "n_points",
+        "method",
     )
 
 
 def _to_finite_list(val):
     """Convert a scalar or array to a list of floats, checking finiteness."""
-    if hasattr(val, "__len__"):
-        items = [float(v) for v in val]
-    else:
-        items = [float(val)]
+    items = [float(v) for v in val] if hasattr(val, "__len__") else [float(val)]
     for v in items:
         assert math.isfinite(v)
     return items
@@ -50,9 +53,14 @@ def test_hrzycp_basic():
     y_grid, T_hat, u_grid, F_hat = _make_grids()
 
     result = horowitz_conditional_prediction(
-        x, 0.5, T_hat, F_hat, beta_hat,
+        x,
+        0.5,
+        T_hat,
+        F_hat,
+        beta_hat,
         gamma=0.5,
-        y_grid=y_grid, u_grid=u_grid,
+        y_grid=y_grid,
+        u_grid=u_grid,
     )
 
     assert isinstance(result, dict)
@@ -83,9 +91,14 @@ def test_hrzycp_edge():
     y_grid, T_hat, u_grid, F_hat = _make_grids()
 
     result = horowitz_conditional_prediction(
-        x, -1.0, T_hat, F_hat, beta_hat,
+        x,
+        -1.0,
+        T_hat,
+        F_hat,
+        beta_hat,
         gamma=0.1,
-        y_grid=y_grid, u_grid=u_grid,
+        y_grid=y_grid,
+        u_grid=u_grid,
     )
 
     assert isinstance(result, dict)

@@ -1,8 +1,8 @@
 """Test mafit."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mafit import mafit
 
 
@@ -87,8 +87,7 @@ def test_mafit_acf_is_the_brockwell_davis_ma_acf():
     r = mafit(y, q=3)
     th = [float(v) for v in r.ma_coeff]
     den = 1 + sum(v * v for v in th)
-    exp = [1.0] + [(th[k - 1] + sum(th[j - 1] * th[j + k - 1] for j in range(1, 4 - k))) / den
-                   for k in range(1, 4)]
+    exp = [1.0] + [(th[k - 1] + sum(th[j - 1] * th[j + k - 1] for j in range(1, 4 - k))) / den for k in range(1, 4)]
     assert [float(v) for v in r.acf] == pytest.approx(exp, rel=1e-14, abs=1e-15)
 
 
@@ -102,7 +101,7 @@ _doctest_module = _importlib.import_module("morie.fn.mafit")
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

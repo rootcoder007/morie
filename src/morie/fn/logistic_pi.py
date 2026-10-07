@@ -27,20 +27,19 @@ def logistic_pi(b0, bs, xs):
     """
     value = _acd.logistic_pi(b0, bs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (2.2)"
     return RichResult(
-        title='Logistic regression model pi = exp(Xb)/(1 + exp(Xb))',
+        title="Logistic regression model pi = exp(Xb)/(1 + exp(Xb))",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '2e2: pi = exp(b0 + b1 x1 + ... + bp xp)/(1 + exp(...)) [Bilder & Loughin 2025, eq. 2.2]'
+    return "2e2: pi = exp(b0 + b1 x1 + ... + bp xp)/(1 + exp(...)) [Bilder & Loughin 2025, eq. 2.2]"
 
 
 # compact alias per ledger/NAMING.md

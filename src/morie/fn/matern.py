@@ -90,12 +90,7 @@ def _H(t, r):
     if S >= 1.0:
         return 1.0
     w = math.sqrt(1.0 - S * S)
-    br = (
-        0.5 * S * S * math.acos(S)
-        + 0.125 * math.asin(S)
-        - 0.125 * S * w
-        - 0.25 * S * S * S * w
-    )
+    br = 0.5 * S * S * math.acos(S) + 0.125 * math.asin(S) - 0.125 * S * w - 0.25 * S * S * S * w
     return 16.0 / math.pi * br
 
 
@@ -130,7 +125,7 @@ def matern_cluster(lambda_p, mu, r, t=None):
     rr = float(r)
     for nm, val in (("lambda_p", lam), ("mu", m), ("r", rr)):
         if val != val or not (val > 0.0):
-            raise ValueError("matern_cluster: %s must be positive" % nm)
+            raise ValueError(f"matern_cluster: {nm} must be positive")
     if t is None:
         tv = [0.25 * rr, 0.5 * rr, 1.0 * rr, 1.5 * rr, 2.0 * rr, 3.0 * rr]
     else:

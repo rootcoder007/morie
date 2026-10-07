@@ -79,7 +79,7 @@ def binseg(x, K, cost="mean", penalty=0.0, min_seglen=1):
     gains = []
     while len(order) < K:
         cand = None
-        for (a, b) in segments:
+        for a, b in segments:
             if b - a < 2 * min_seglen:
                 continue
             tau, g = best_split(a, b)
@@ -94,18 +94,19 @@ def binseg(x, K, cost="mean", penalty=0.0, min_seglen=1):
         segments.extend([(a, tau), (tau, b)])
     taus = sorted(order)
     bounds = [0] + taus + [n]
-    seg_means = [float(np.mean(np.asarray(xs[a:b])))
-                 for a, b in zip(bounds[:-1], bounds[1:])]
-    return RichResult(payload={
-        "changepoints": taus,
-        "order": list(order),
-        "improvements": gains,
-        "n_changepoints": len(taus),
-        "segment_means": seg_means,
-        "estimate": taus,
-        "n": n,
-        "method": "Binary segmentation (Scott-Knott 1974; Killick et al. 2012 Sec. 2.1)",
-    })
+    seg_means = [float(np.mean(np.asarray(xs[a:b]))) for a, b in zip(bounds[:-1], bounds[1:])]
+    return RichResult(
+        payload={
+            "changepoints": taus,
+            "order": list(order),
+            "improvements": gains,
+            "n_changepoints": len(taus),
+            "segment_means": seg_means,
+            "estimate": taus,
+            "n": n,
+            "method": "Binary segmentation (Scott-Knott 1974; Killick et al. 2012 Sec. 2.1)",
+        }
+    )
 
 
 def binary_segmentation(x, K, cost="mean", penalty=0.0, min_seglen=1):

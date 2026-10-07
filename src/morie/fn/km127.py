@@ -33,19 +33,22 @@ def kamath_ch8_geval_score(s_i, p):
     if s.size == 0:
         raise ValueError("no candidate scores were given.")
     if s.shape != q.shape:
-        raise ValueError(
-            f"{q.size} probabilities for {s.size} scores.")
+        raise ValueError(f"{q.size} probabilities for {s.size} scores.")
     if np.any(q < 0):
         raise ValueError("score probabilities cannot be negative.")
     if abs(float(q.sum()) - 1.0) > 1e-6:
         raise ValueError(
-            f"the score probabilities sum to {q.sum()}, not 1; G-Eval "
-            "needs a distribution over the allowed scores.")
-    return RichResult(payload={
-        "estimate": float(np.dot(q, s)),
-        "scores": [float(v) for v in s],
-        "probabilities": [float(v) for v in q], "n": int(s.size),
-        "method": "G-Eval probability-weighted score (Kamath Eq 8.15)"})
+            f"the score probabilities sum to {q.sum()}, not 1; G-Eval needs a distribution over the allowed scores."
+        )
+    return RichResult(
+        payload={
+            "estimate": float(np.dot(q, s)),
+            "scores": [float(v) for v in s],
+            "probabilities": [float(v) for v in q],
+            "n": int(s.size),
+            "method": "G-Eval probability-weighted score (Kamath Eq 8.15)",
+        }
+    )
 
 
 def cheatsheet():

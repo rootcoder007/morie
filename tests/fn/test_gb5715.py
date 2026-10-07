@@ -1,7 +1,6 @@
 """Tests for gb5715.gibbons_wsrt_ci."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb5715 import gibbons_wsrt_ci
 
 

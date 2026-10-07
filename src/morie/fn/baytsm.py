@@ -31,7 +31,6 @@ Space Methods*, 2nd ed., Oxford University Press, Ch. 4.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -57,13 +56,13 @@ def dlm_local_level(y, V=1.0, W=0.1, m0=0.0, C0=1e6):
     ms, Cs, Rs, fs, Qs, As, es = [], [], [], [], [], [], []
     loglik = 0.0
     for t in range(n):
-        R = C + W                      # prior variance for the state
-        f = m                          # one-step forecast
-        Q = R + V                      # forecast variance
+        R = C + W  # prior variance for the state
+        f = m  # one-step forecast
+        Q = R + V  # forecast variance
         e = obs[t] - f
-        A = R / Q                      # adaptive coefficient
+        A = R / Q  # adaptive coefficient
         m = f + A * e
-        C = R - A * A * Q              # == A * V
+        C = R - A * A * Q  # == A * V
         ms.append(m)
         Cs.append(C)
         Rs.append(R)
@@ -83,24 +82,36 @@ def dlm_local_level(y, V=1.0, W=0.1, m0=0.0, C0=1e6):
         sm[t] = ms[t] + B * (sm[t + 1] - ms[t])
         sC[t] = Cs[t] + B * B * (sC[t + 1] - Rs[t + 1])
 
-    return RichResult(payload={
-        "estimate": sm, "smoothed": sm, "smoothed_var": sC,
-        "filtered": ms, "filtered_var": Cs,
-        "forecast": fs, "forecast_var": Qs,
-        "adaptive_coefficient": As, "forecast_error": es,
-        "loglik": loglik, "signal_to_noise": W / V, "n": n,
-        "V": V, "W": W,
-        "method": "first-order polynomial DLM, forward filter and "
-                  "retrospective smoother (West & Harrison 1997 Ch. 2, "
-                  "Sec. 4.8)",
-        "note": "the adaptive coefficient A = R/(R+V) is the fraction of "
-                "each forecast error taken into the state; it converges, so "
-                "the filter forgets the past geometrically at a rate W/V "
-                "fixes",
-    })
+    return RichResult(
+        payload={
+            "estimate": sm,
+            "smoothed": sm,
+            "smoothed_var": sC,
+            "filtered": ms,
+            "filtered_var": Cs,
+            "forecast": fs,
+            "forecast_var": Qs,
+            "adaptive_coefficient": As,
+            "forecast_error": es,
+            "loglik": loglik,
+            "signal_to_noise": W / V,
+            "n": n,
+            "V": V,
+            "W": W,
+            "method": "first-order polynomial DLM, forward filter and "
+            "retrospective smoother (West & Harrison 1997 Ch. 2, "
+            "Sec. 4.8)",
+            "note": "the adaptive coefficient A = R/(R+V) is the fraction of "
+            "each forecast error taken into the state; it converges, so "
+            "the filter forgets the past geometrically at a rate W/V "
+            "fixes",
+        }
+    )
 
 
 def cheatsheet():
-    return ("baytsm: dlm_local_level(y, V, W, m0, C0) -> filtered and "
-            "smoothed states of the first-order DLM (West & Harrison 1997, "
-            "Bayesian Forecasting and Dynamic Models, Ch. 2)")
+    return (
+        "baytsm: dlm_local_level(y, V, W, m0, C0) -> filtered and "
+        "smoothed states of the first-order DLM (West & Harrison 1997, "
+        "Bayesian Forecasting and Dynamic Models, Ch. 2)"
+    )

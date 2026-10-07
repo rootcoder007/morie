@@ -8,9 +8,7 @@ from ._richresult import RichResult
 __all__ = ["alammar_tokenization_pipeline"]
 
 
-def alammar_tokenization_pipeline(text, vocab, unk_token="[UNK]",
-                                  lowercase=True, specials=("[CLS]",
-                                                            "[SEP]")):
+def alammar_tokenization_pipeline(text, vocab, unk_token="[UNK]", lowercase=True, specials=("[CLS]", "[SEP]")):
     """Post(Subword(Pre(Normalise(text)))): lowercase + whitespace
     split + greedy longest-match WordPiece ("##" continuations) +
     special-token wrapping.
@@ -55,12 +53,16 @@ def alammar_tokenization_pipeline(text, vocab, unk_token="[UNK]",
     out = [specials[0], *toks, specials[1]] if specials else toks
     missing = [t for t in (specials or ()) if t not in vs]
     if missing:
-        raise ValueError(f"special tokens {missing} are not in the "
-                         "vocabulary.")
-    return RichResult(payload={
-        "tokens": out, "n_unk": out.count(unk_token),
-        "estimate": float(len(out)), "n": len(words),
-        "method": "WordPiece tokenisation pipeline (Alammar Ch 2)"})
+        raise ValueError(f"special tokens {missing} are not in the vocabulary.")
+    return RichResult(
+        payload={
+            "tokens": out,
+            "n_unk": out.count(unk_token),
+            "estimate": float(len(out)),
+            "n": len(words),
+            "method": "WordPiece tokenisation pipeline (Alammar Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

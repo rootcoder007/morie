@@ -111,9 +111,16 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
     cw_section = _section_text(
         text, "Civilian Witnesses", end_markers=("Witness Officers", "Subject Officers", "Incident Narrative")
     ) or _section_text(
-        text, "Civilian Witness",
-        end_markers=("Witness Official", "Subject Official", "Witness Officers",
-                     "Subject Officers", "Incident Narrative", "Evidence"),
+        text,
+        "Civilian Witness",
+        end_markers=(
+            "Witness Official",
+            "Subject Official",
+            "Witness Officers",
+            "Subject Officers",
+            "Incident Narrative",
+            "Evidence",
+        ),
     )
     row["number_of_civilian_witnesses"] = _count_lines_starting_with(cw_section, "CW")
 
@@ -227,7 +234,8 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
     # the pre-2020 "Original signed by / James L. Cornish / Director").
     m = re.search(
         r"(?:approved by|signed by)\s+([A-Z][A-Za-z.'\-]+(?:\s+[A-Z][A-Za-z.'\-]+){1,2}?)\s+(?:Acting\s+|Interim\s+)?Director\b",
-        re.sub(r"\s+", " ", text))
+        re.sub(r"\s+", " ", text),
+    )
     if m:
         row["directors_name"] = m.group(1).strip()
 
@@ -250,10 +258,10 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
         if n:
             row["number_of_subject_officials"] = n
     if row["number_of_witness_officials"] is None and re.search(
-            r"(?:^|\n)\s*WO\s+(?:Interviewed|Not interviewed|Declined)", text):
+        r"(?:^|\n)\s*WO\s+(?:Interviewed|Not interviewed|Declined)", text
+    ):
         row["number_of_witness_officials"] = 1
-    if row["number_of_civilian_witnesses"] is None and re.search(
-            r"(?:^|\n)\s*CW\s+Interviewed", text):
+    if row["number_of_civilian_witnesses"] is None and re.search(r"(?:^|\n)\s*CW\s+Interviewed", text):
         row["number_of_civilian_witnesses"] = 1
     if row["number_of_civilian_witnesses"] is None:
         n = len(set(re.findall(r"Civilian Witness\s*#(\d+)", text)))
@@ -263,14 +271,22 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
         m2 = re.search(r"\b(\d{1,3})[\s\-]year[\s\-]old\b", text)
         if m2:
             row["age_affected"] = m2.group(1)
-    if row["number_of_subject_officials"] is None and re.search(
-            r"was designated as a subject officer", text):
+    if row["number_of_subject_officials"] is None and re.search(r"was designated as a subject officer", text):
         row["number_of_subject_officials"] = 1
-    if row["subject_official_interviewed_or_notes"] is None and re.search(
-            r"Subject Officer\s+was interviewed", text):
+    if row["subject_official_interviewed_or_notes"] is None and re.search(r"Subject Officer\s+was interviewed", text):
         row["subject_official_interviewed_or_notes"] = "Yes"
-    _WORDNUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-                "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
+    _WORDNUM = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+    }
     if row["siu_investigators"] is None:
         m2 = re.search(r"\b(one|two|three|four|five|six|seven|eight|nine|ten|\d+)\s+SIU\s+investigators", text, re.I)
         if m2:
@@ -282,7 +298,9 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
             w = m2.group(1).lower()
             row["siu_forensics_investigators"] = str(_WORDNUM.get(w, w))
     if row["notifying_party"] is None:
-        m2 = re.search(r"(?:Notifying Officer|officer)\s+of the\s+([A-Z][A-Za-z\s]+?(?:Police(?:\s+Service)?|Service))\b", text)
+        m2 = re.search(
+            r"(?:Notifying Officer|officer)\s+of the\s+([A-Z][A-Za-z\s]+?(?:Police(?:\s+Service)?|Service))\b", text
+        )
         if m2:
             row["notifying_party"] = m2.group(1).strip()
     if row["directors_decision_reasonable"] is None:
@@ -291,15 +309,16 @@ def parse_html(html: str, *, drid: int | None = None, source_url: str | None = N
         if i < 0:
             i = low.find("director's decision under")
         if i >= 0:
-            flat = re.sub(r"\s+", " ", text[i:i + 2500])
+            flat = re.sub(r"\s+", " ", text[i : i + 2500])
             m2 = re.search(r"([^.]*reasonable grounds[^.]*\.)", flat, re.I)
             if m2:
                 row["directors_decision_reasonable"] = m2.group(1).strip()[:400]
             if row["charges_recommended"] is None and re.search(
-                    r"no reasonable grounds|no basis for charges", flat, re.I):
+                r"no reasonable grounds|no basis for charges", flat, re.I
+            ):
                 row["charges_recommended"] = False
             if row["relevant_legislation"] is None:
-                m2 = re.search(r"of the ([A-Z][A-Za-z ]+Act)", text[i:i + 200])
+                m2 = re.search(r"of the ([A-Z][A-Za-z ]+Act)", text[i : i + 200])
                 if m2:
                     row["relevant_legislation"] = m2.group(1)
 
@@ -372,9 +391,25 @@ def _stripped_text(soup: BeautifulSoup) -> str:
     """
     for s in soup(["script", "style", "noscript"]):
         s.decompose()
-    block = {"p", "div", "li", "tr", "br", "h1", "h2", "h3", "h4",
-             "h5", "h6", "ul", "ol", "table", "section", "article",
-             "blockquote"}
+    block = {
+        "p",
+        "div",
+        "li",
+        "tr",
+        "br",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "ul",
+        "ol",
+        "table",
+        "section",
+        "article",
+        "blockquote",
+    }
     for tag in soup.find_all(block):
         tag.append("\n")
         tag.insert(0, "\n")
@@ -558,9 +593,8 @@ def _extract_outbound_links(soup: BeautifulSoup, source_url: str | None) -> str:
         if source_url and not href.startswith("http"):
             href = urljoin(source_url, href)
         host = urlparse(href).netloc
-        if host and host != base_host and "siu.on.ca" not in host:
-            if href not in out:
-                out.append(href)
+        if host and host != base_host and "siu.on.ca" not in host and href not in out:
+            out.append(href)
     return "; ".join(out)
 
 
@@ -850,10 +884,12 @@ def _detect_location_from_intro(text: str) -> str | None:
 
     # Street-level cues: a road/place noun + optional cross-street +
     # trailing city. Kept tight to avoid swallowing whole sentences.
-    street = (r"(?:Street|St\.?|Road|Rd\.?|Avenue|Ave\.?|Boulevard|Blvd\.?"
-              r"|Drive|Dr\.?|Crescent|Cres\.?|Highway|Hwy\.?|Lane|Way"
-              r"|Court|Ct\.?|Place|Trail|Parkway|Line|Concession|Sideroad"
-              r"|Terrace|Circle|Square|Gardens|intersection|parking lot)")
+    street = (
+        r"(?:Street|St\.?|Road|Rd\.?|Avenue|Ave\.?|Boulevard|Blvd\.?"
+        r"|Drive|Dr\.?|Crescent|Cres\.?|Highway|Hwy\.?|Lane|Way"
+        r"|Court|Ct\.?|Place|Trail|Parkway|Line|Concession|Sideroad"
+        r"|Terrace|Circle|Square|Gardens|intersection|parking lot)"
+    )
     patterns = [
         # "... on <Street> between <A> and <B>, in Toronto"
         rf"\bon\s+([A-Z][A-Za-z0-9'\-]*(?:\s+[A-Z][A-Za-z0-9'\-]*)*\s+{street}[^.\n]{{0,90}}?(?:,?\s+in\s+[A-Z][A-Za-z\s\-]+?))(?=[.\n])",
@@ -879,26 +915,25 @@ def _detect_location_from_intro(text: str) -> str | None:
         r"(?:call|residence|home|address|location|scene|apartment|"
         r"building|hospital|complex|property|premises)\s+"
         r"(?:in|at|near|on)\s+(?:the\s+)?([A-Z][^.\n]{3,90}?)(?=[.,\n])",
-        haystack)
+        haystack,
+    )
     if m:
         return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
     m = re.search(
         r"(?:called|dispatched|responded|attended)\s+to\s+(?:an address\s+)?(?:in|at|near)\s+(?:the\s+area\s+of\s+)?([A-Z][^.\n]{5,120}?)[.\n]",
-        haystack)
+        haystack,
+    )
     if m:
         return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
 
     # 2026 "The Scene ... transpired <where>".
-    m = re.search(
-        r"events in question transpired\s+(?:on and around\s+|at\s+|on\s+|in\s+)?([^.\n]{5,160})[.\n]",
-        text)
+    m = re.search(r"events in question transpired\s+(?:on and around\s+|at\s+|on\s+|in\s+)?([^.\n]{5,160})[.\n]", text)
     if m:
         return _trim(re.sub(r"\s+", " ", m.group(1)).strip())
 
     # Coarse city fallback.
     m = re.search(
-        r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z'\-]+(?:\s+[A-Z][A-Za-z'\-]+)*)",
-        haystack
+        r"in the (Township|City|Town|Municipality|Region) of ([A-Z][A-Za-z'\-]+(?:\s+[A-Z][A-Za-z'\-]+)*)", haystack
     )
     if m:
         return f"{m.group(1)} of {m.group(2).strip()}"
@@ -959,7 +994,10 @@ def _detect_siu_notified(text: str) -> str | None:
     if m:
         return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     # Form B: "...notified|contacted the SIU on <Date>"
-    m = re.search(r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})", haystack)
+    m = re.search(
+        r"(?:notified|contacted)\s+the\s+SIU[^\n]{0,200}?[Oo]n\s+([A-Z][a-z]+\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})",
+        haystack,
+    )
     if m:
         return re.sub(r"(\d{1,2})(st|nd|rd|th)", r"\1", m.group(1)).replace(",", "")
     # Form C: any "On <Date>" inside the "Notification of the SIU"
@@ -1039,15 +1077,18 @@ def _detect_specific_injuries(text: str) -> str | None:
     """
     i = text.find("The Investigation")
     hay = text[i:] if i >= 0 else text
-    boiler = ("fracture to the skull, or to a limb, rib or vertebra",
-              "fracture to a limb, rib or vertebrae or to the skull")
+    boiler = (
+        "fracture to the skull, or to a limb, rib or vertebra",
+        "fracture to a limb, rib or vertebrae or to the skull",
+    )
     inj = re.compile(
         r"\b((?:fractured?|broken|lacerat\w+|gunshot|stab\w+|burns?|"
         r"concussion|dislocat\w+|avuls\w+|contusion)[^\n.]{1,200}?"
         r"(?:rib|leg|arm|skull|wrist|ankle|jaw|nose|tooth|teeth|finger|"
         r"spine|vertebra|foot|feet|hip|orbital|pelvis|shoulder|hand|"
         r"lip|eye|face|facial|head|nasal|collarbone|clavicle)[^\n.]{0,80})",
-        re.IGNORECASE)
+        re.IGNORECASE,
+    )
     for m in inj.finditer(hay):
         cand = m.group(1).strip()
         low = cand.lower()
@@ -1080,7 +1121,7 @@ def _detect_charges_from_decision(text: str) -> bool | None:
     if not sec:
         m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}(?:st|nd|rd|th)?, \d{4}", text)
         if m0:
-            sec = text[max(0, m0.start() - 3000):m0.start()]
+            sec = text[max(0, m0.start() - 3000) : m0.start()]
     if not sec:
         return None
     low = sec.lower()
@@ -1234,7 +1275,7 @@ def _detect_reasonable_grounds(text: str) -> str | None:
         # above the "Date: ... signed by" footer.
         m0 = re.search(r"Date:\s*[A-Z][a-z]+ \d{1,2}(?:st|nd|rd|th)?, \d{4}", text)
         if m0:
-            sec = text[max(0, m0.start() - 3000):m0.start()]
+            sec = text[max(0, m0.start() - 3000) : m0.start()]
     if not sec:
         return None
     # First sentence containing "reasonable grounds". The stripped page
@@ -1245,8 +1286,7 @@ def _detect_reasonable_grounds(text: str) -> str | None:
         return m.group(1).strip()[:400]
     # 2016-2019 phrasing: the conclusion says "... charges should/will
     # issue" without the words "reasonable grounds".
-    m = re.search(r"([^.]*charges?\s+(?:should|will|shall)\s+(?:not\s+)?issue[^.]*\.)",
-                  flat, re.IGNORECASE)
+    m = re.search(r"([^.]*charges?\s+(?:should|will|shall)\s+(?:not\s+)?issue[^.]*\.)", flat, re.IGNORECASE)
     if m:
         return m.group(1).strip()[:400]
     return None

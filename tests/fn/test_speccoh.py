@@ -1,7 +1,6 @@
 """Tests for speccoh.coherence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.speccoh import coherence
 
 

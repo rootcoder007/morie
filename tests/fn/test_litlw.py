@@ -1,12 +1,11 @@
 """Tests for morie.fn.litlw."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.litlw import litlw
 
 
 def test_litlw_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = litlw(arrival_rate=0.5, avg_wait=2.0)
     assert result is not None
     assert hasattr(result, "name")

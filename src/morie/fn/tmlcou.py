@@ -58,12 +58,10 @@ count outcomes. That citation was wrong and has been replaced.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["rescale", "unscale", "tmle_count_outcome",
-           "linear_fluctuation_unsafe"]
+__all__ = ["rescale", "unscale", "tmle_count_outcome", "linear_fluctuation_unsafe"]
 
 _EPS = 1e-12
 
@@ -85,13 +83,10 @@ def rescale(y, lower=None, upper=None):
     a = float(lower) if lower is not None else min(v)
     b = float(upper) if upper is not None else max(v)
     if b <= a:
-        raise ValueError("tmlcou: the upper bound must exceed the "
-                         "lower one, got (%r, %r)" % (a, b))
+        raise ValueError(f"tmlcou: the upper bound must exceed the lower one, got ({a!r}, {b!r})")
     if any(q < a - _EPS or q > b + _EPS for q in v):
-        raise ValueError("tmlcou: an outcome lies outside the stated "
-                         "bounds")
-    return {"scaled": [(q - a) / (b - a) for q in v],
-            "lower": a, "upper": b, "range": b - a}
+        raise ValueError("tmlcou: an outcome lies outside the stated bounds")
+    return {"scaled": [(q - a) / (b - a) for q in v], "lower": a, "upper": b, "range": b - a}
 
 
 def unscale(value, lower, upper):
@@ -114,14 +109,15 @@ def linear_fluctuation_unsafe(Q, H, Y):
     den = sum(h[i] * h[i] for i in range(n))
     e = num / den if den > _EPS else 0.0
     upd = [q[i] + e * h[i] for i in range(n)]
-    return {"epsilon": e, "Q_star": upd,
-            "out_of_range": sum(1 for v in upd
-                                if v < 0.0 or v > 1.0),
-            "caveat": "an additive fluctuation is not bounded"}
+    return {
+        "epsilon": e,
+        "Q_star": upd,
+        "out_of_range": sum(1 for v in upd if v < 0.0 or v > 1.0),
+        "caveat": "an additive fluctuation is not bounded",
+    }
 
 
-def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
-                       Q0=None, lower=None, upper=None, iters=100):
+def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None, Q0=None, lower=None, upper=None, iters=100):
     r"""TMLE of the mean-outcome contrast for a count or bounded
     outcome.
 
@@ -143,17 +139,14 @@ def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
     if offset is not None:
         t = [float(v) for v in k.vec(offset)]
         if len(t) != n or any(v <= 0.0 for v in t):
-            raise ValueError("tmlcou: the offset must be positive and "
-                             "of the same length")
+            raise ValueError("tmlcou: the offset must be positive and of the same length")
         yv = [yv[i] / t[i] for i in range(n)]
     sc = rescale(yv, lower, upper)
     ys = sc["scaled"]
     if g is None:
         des = k.design(W, n)
         b = k.logit_irls(des, a)
-        gg = [min(max(_expit(sum(des[i][j] * b[j]
-                                 for j in range(len(b)))),
-                      0.01), 0.99) for i in range(n)]
+        gg = [min(max(_expit(sum(des[i][j] * b[j] for j in range(len(b)))), 0.01), 0.99) for i in range(n)]
     else:
         gg = [min(max(float(v), 1e-6), 1 - 1e-6) for v in k.vec(g)]
     if Q1 is None or Q0 is None:
@@ -164,20 +157,15 @@ def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
             row = [1.0, av] + list(W[i])
             return sum(row[j] * co[j] for j in range(len(co)))
 
-        q1 = [min(max(pred(1.0, i), 1e-6), 1 - 1e-6)
-              for i in range(n)]
-        q0 = [min(max(pred(0.0, i), 1e-6), 1 - 1e-6)
-              for i in range(n)]
+        q1 = [min(max(pred(1.0, i), 1e-6), 1 - 1e-6) for i in range(n)]
+        q0 = [min(max(pred(0.0, i), 1e-6), 1 - 1e-6) for i in range(n)]
     else:
         # supplied fits are on the outcome's own scale (the rate scale
         # when an offset is given) and go through the same affine map
         lo_, rg_ = sc["lower"], sc["range"]
-        q1 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6)
-              for v in k.vec(Q1)]
-        q0 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6)
-              for v in k.vec(Q0)]
-    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i])
-         for i in range(n)]
+        q1 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6) for v in k.vec(Q1)]
+        q0 = [min(max((float(v) - lo_) / rg_, 1e-6), 1 - 1e-6) for v in k.vec(Q0)]
+    H = [a[i] / gg[i] - (1.0 - a[i]) / (1.0 - gg[i]) for i in range(n)]
     qa = [q1[i] if a[i] == 1.0 else q0[i] for i in range(n)]
     off = [_logit(v) for v in qa]
     e = 0.0
@@ -198,41 +186,45 @@ def tmle_count_outcome(y, D, X, offset=None, g=None, Q1=None,
     d = []
     for i in range(n):
         qas = q1s[i] if a[i] == 1.0 else q0s[i]
-        d.append((H[i] * (ys[i] - qas) + q1s[i] - q0s[i] - psi_s)
-                 * sc["range"])
+        d.append((H[i] * (ys[i] - qas) + q1s[i] - q0s[i] - psi_s) * sc["range"])
     m = sum(d) / n
-    se = math.sqrt(sum((v - m) ** 2 for v in d) / n ** 2)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi, "epsilon": e, "se": se,
-        "ci": (psi - 1.96 * se, psi + 1.96 * se),
-        "mean_eic": m, "solves_eic": abs(m) < 1e-6,
-        "scale": (sc["lower"], sc["upper"]),
-        "mean_treated": unscale(sum(q1s) / n, sc["lower"],
-                                sc["upper"]),
-        "mean_control": unscale(sum(q0s) / n, sc["lower"],
-                                sc["upper"]),
-        "in_range": all(0.0 <= v <= 1.0 for v in q1s + q0s),
-        "rate_scale": offset is not None,
-        "method": "TMLE on a bounded outcome by rescaling to [0,1] "
-                  "with a logistic fluctuation; Gruber & van der Laan "
-                  "(2010)",
-        "note": "a LINEAR fluctuation would leave the parameter space; "
-                "the logistic one cannot",
-    })
+    se = math.sqrt(sum((v - m) ** 2 for v in d) / n**2)
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "epsilon": e,
+            "se": se,
+            "ci": (psi - 1.96 * se, psi + 1.96 * se),
+            "mean_eic": m,
+            "solves_eic": abs(m) < 1e-6,
+            "scale": (sc["lower"], sc["upper"]),
+            "mean_treated": unscale(sum(q1s) / n, sc["lower"], sc["upper"]),
+            "mean_control": unscale(sum(q0s) / n, sc["lower"], sc["upper"]),
+            "in_range": all(0.0 <= v <= 1.0 for v in q1s + q0s),
+            "rate_scale": offset is not None,
+            "method": "TMLE on a bounded outcome by rescaling to [0,1] "
+            "with a logistic fluctuation; Gruber & van der Laan "
+            "(2010)",
+            "note": "a LINEAR fluctuation would leave the parameter space; the logistic one cannot",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tmlcou: for a COUNT or bounded continuous outcome do not "
-            "fluctuate linearly -- an additive update is unbounded and "
-            "the targeted fit, and the estimate, can leave the range "
-            "the outcome can take. Rescale Y to [0,1] by "
-            "(Y - a)/(b - a), run the BINARY machinery "
-            "(quasi-log-likelihood loss, logistic submodel, clever "
-            "covariate), and map back. The quasi-loss is valid for a "
-            "continuous outcome in [0,1] even though it is not "
-            "Bernoulli. With an exposure offset the estimand is a "
-            "RATE. Double robustness survives because the rescaling is "
-            "affine.")
+    return (
+        "tmlcou: for a COUNT or bounded continuous outcome do not "
+        "fluctuate linearly -- an additive update is unbounded and "
+        "the targeted fit, and the estimate, can leave the range "
+        "the outcome can take. Rescale Y to [0,1] by "
+        "(Y - a)/(b - a), run the BINARY machinery "
+        "(quasi-log-likelihood loss, logistic submodel, clever "
+        "covariate), and map back. The quasi-loss is valid for a "
+        "continuous outcome in [0,1] even though it is not "
+        "Bernoulli. With an exposure offset the estimand is a "
+        "RATE. Double robustness survives because the rescaling is "
+        "affine."
+    )
 
 
 # compact alias per ledger/NAMING.md

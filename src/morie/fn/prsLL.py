@@ -53,10 +53,21 @@ which the LL(1) restriction is measured; see
 
 from ._richresult import RichResult
 
-__all__ = ["grammar", "nonterminals", "terminals", "first_sets",
-           "first_of", "follow_sets", "ll1_table", "is_ll1",
-           "left_recursive", "remove_left_recursion", "parse",
-           "linearise", "ll_parser"]
+__all__ = [
+    "grammar",
+    "nonterminals",
+    "terminals",
+    "first_sets",
+    "first_of",
+    "follow_sets",
+    "ll1_table",
+    "is_ll1",
+    "left_recursive",
+    "remove_left_recursion",
+    "parse",
+    "linearise",
+    "ll_parser",
+]
 
 EPSILON = ""
 END = "$"
@@ -73,28 +84,24 @@ def grammar(rules, start=None):
     for item in rules:
         lhs, rhs = item
         if not isinstance(lhs, str) or not lhs:
-            raise ValueError("prsLL: a left-hand side must be a "
-                             "non-empty symbol, got %r" % (lhs,))
+            raise ValueError(f"prsLL: a left-hand side must be a non-empty symbol, got {lhs!r}")
         seq = tuple(str(s) for s in rhs)
         if any(s == "" for s in seq):
-            raise ValueError("prsLL: write the empty production as an "
-                             "empty right-hand side, not as %r" % ("",))
+            raise ValueError("prsLL: write the empty production as an empty right-hand side, not as {!r}".format(""))
         if END in seq or lhs == END:
-            raise ValueError("prsLL: %r is reserved for end of input"
-                             % END)
+            raise ValueError(f"prsLL: {END!r} is reserved for end of input")
         R.append((lhs, seq))
     if not R:
         raise ValueError("prsLL: the grammar has no productions")
     S = R[0][0] if start is None else str(start)
-    if S not in {l for l, _ in R}:
-        raise ValueError("prsLL: the start symbol %r has no "
-                         "production" % S)
+    if S not in {ell for ell, _ in R}:
+        raise ValueError(f"prsLL: the start symbol {S!r} has no production")
     g = {"rules": R, "start": S}
     unreachable = set(nonterminals(g)) - _reachable(g)
     if unreachable:
-        raise ValueError("prsLL: nonterminal(s) %s cannot be reached "
-                         "from the start symbol"
-                         % ", ".join(sorted(unreachable)))
+        raise ValueError(
+            "prsLL: nonterminal(s) {} cannot be reached from the start symbol".format(", ".join(sorted(unreachable)))
+        )
     return g
 
 
@@ -180,7 +187,7 @@ def follow_sets(g, first=None):
             for i, s in enumerate(rhs):
                 if s not in nts:
                     continue
-                rest = _first_seq(rhs[i + 1:], f, nts)
+                rest = _first_seq(rhs[i + 1 :], f, nts)
                 add = rest - {EPSILON}
                 if EPSILON in rest or i + 1 == len(rhs):
                     add |= follow[A]
@@ -203,25 +210,27 @@ def ll1_table(g):
             cells |= follow[A]
         for a in cells:
             if (A, a) in table and table[(A, a)] != i:
-                conflicts.append({"nonterminal": A, "lookahead": a,
-                                  "rules": (table[(A, a)], i)})
+                conflicts.append({"nonterminal": A, "lookahead": a, "rules": (table[(A, a)], i)})
             else:
                 table[(A, a)] = i
-    return {"table": table, "conflicts": conflicts, "first": first,
-            "follow": follow}
+    return {"table": table, "conflicts": conflicts, "first": first, "follow": follow}
 
 
 def is_ll1(g):
     r"""Whether one token of lookahead suffices everywhere."""
     t = ll1_table(g)
-    return RichResult(payload={
-        "estimate": not t["conflicts"], "ll1": not t["conflicts"],
-        "conflicts": t["conflicts"], "table": t["table"],
-        "first": t["first"], "follow": t["follow"],
-        "left_recursive": left_recursive(g),
-        "method": "Knuth (1971): FIRST/FOLLOW table, one production "
-                  "per (nonterminal, lookahead) cell",
-    })
+    return RichResult(
+        payload={
+            "estimate": not t["conflicts"],
+            "ll1": not t["conflicts"],
+            "conflicts": t["conflicts"],
+            "table": t["table"],
+            "first": t["first"],
+            "follow": t["follow"],
+            "left_recursive": left_recursive(g),
+            "method": "Knuth (1971): FIRST/FOLLOW table, one production per (nonterminal, lookahead) cell",
+        }
+    )
 
 
 def left_recursive(g):
@@ -276,9 +285,7 @@ def remove_left_recursion(g):
             rules.extend((A, p) for p in prods)
             continue
         if not base:
-            raise ValueError("prsLL: %r is left-recursive with no "
-                             "base production, so it derives nothing"
-                             % A)
+            raise ValueError(f"prsLL: {A!r} is left-recursive with no base production, so it derives nothing")
         tail = A + "'"
         while tail in nts:
             tail += "'"
@@ -303,30 +310,27 @@ def parse(g, tokens, route="table"):
     recursive descent; both must agree.
     """
     if route not in ROUTES:
-        raise ValueError("prsLL: route must be one of %s, got %r"
-                         % (", ".join(ROUTES), route))
+        raise ValueError("prsLL: route must be one of {}, got {!r}".format(", ".join(ROUTES), route))
     t = ll1_table(g)
     if t["conflicts"]:
-        raise ValueError("prsLL: the grammar is not LL(1) -- %d "
-                         "conflict(s), first at (%s, %r)"
-                         % (len(t["conflicts"]),
-                            t["conflicts"][0]["nonterminal"],
-                            t["conflicts"][0]["lookahead"]))
+        raise ValueError(
+            "prsLL: the grammar is not LL(1) -- {} conflict(s), first at ({}, {!r})".format(
+                int(len(t["conflicts"])), t["conflicts"][0]["nonterminal"], t["conflicts"][0]["lookahead"]
+            )
+        )
     toks = [str(x) for x in tokens] + [END]
     if route == "table":
         tree, pos = _parse_table(g, t["table"], toks)
     else:
         tree, pos = _parse_rd(g, t["table"], toks, g["start"], 0)
     if pos != len(toks) - 1:
-        raise ValueError("prsLL: input not consumed -- stopped at "
-                         "token %d (%r)" % (pos, toks[pos]))
+        raise ValueError(f"prsLL: input not consumed -- stopped at token {int(pos)} ({toks[pos]!r})")
     return tree
 
 
 def _pick(table, A, a):
     if (A, a) not in table:
-        raise ValueError("prsLL: no production for %r on lookahead "
-                         "%r" % (A, a))
+        raise ValueError(f"prsLL: no production for {A!r} on lookahead {a!r}")
     return table[(A, a)]
 
 
@@ -340,8 +344,7 @@ def _parse_rd(g, table, toks, A, pos):
             kids.append(sub)
         else:
             if toks[pos] != s:
-                raise ValueError("prsLL: expected %r but found %r at "
-                                 "token %d" % (s, toks[pos], pos))
+                raise ValueError(f"prsLL: expected {s!r} but found {toks[pos]!r} at token {int(pos)}")
             kids.append(_leaf(s))
             pos += 1
     return _node(A, kids), pos
@@ -356,15 +359,13 @@ def _parse_table(g, table, toks):
         sym, node = stack.pop()
         if sym in nts:
             _, rhs = g["rules"][_pick(table, sym, toks[pos])]
-            kids = [(_node(s, []) if s in nts else _leaf(s))
-                    for s in rhs]
+            kids = [(_node(s, []) if s in nts else _leaf(s)) for s in rhs]
             node["children"] = kids
             for s, k in reversed(list(zip(rhs, kids))):
                 stack.append((s, k))
         else:
             if toks[pos] != sym:
-                raise ValueError("prsLL: expected %r but found %r at "
-                                 "token %d" % (sym, toks[pos], pos))
+                raise ValueError(f"prsLL: expected {sym!r} but found {toks[pos]!r} at token {int(pos)}")
             pos += 1
     return root, pos
 
@@ -383,13 +384,16 @@ def ll_parser(grammar_, tokens, route="table"):
     r"""Entry point: parse ``tokens`` under an LL(1) grammar."""
     g = grammar_ if isinstance(grammar_, dict) else grammar(grammar_)
     tree = parse(g, tokens, route)
-    return RichResult(payload={
-        "estimate": tree, "tree": tree, "route": route,
-        "tokens": [str(x) for x in tokens],
-        "yield": linearise(tree),
-        "method": "Knuth (1971) top-down analysis with one token of "
-                  "lookahead",
-    })
+    return RichResult(
+        payload={
+            "estimate": tree,
+            "tree": tree,
+            "route": route,
+            "tokens": [str(x) for x in tokens],
+            "yield": linearise(tree),
+            "method": "Knuth (1971) top-down analysis with one token of lookahead",
+        }
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

@@ -47,8 +47,7 @@ def _single_linkage(edges, n):
     # single linkage on mutual-reachability distances (Prop. 1):
     # merge in ascending weight into a binary tree; each internal
     # node id >= n carries (left, right, split_distance).
-    order = sorted(range(len(edges)),
-                   key=lambda i: (edges[i][0], edges[i][1], edges[i][2]))
+    order = sorted(range(len(edges)), key=lambda i: (edges[i][0], edges[i][1], edges[i][2]))
     par = list(range(n))
     node_of = list(range(n))
 
@@ -81,8 +80,8 @@ def _points_under(node, children, n):
         if v < n:
             out.append(v)
         else:
-            l, r, _ = children[v]
-            stack.append(l)
+            ell, r, _ = children[v]
+            stack.append(ell)
             stack.append(r)
     return out
 
@@ -170,9 +169,8 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         if verbose:
             print("[hdbsc] " + msg, flush=True)
 
-    _say("distances (n=%d)" % n)
-    D = [[math.sqrt(sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j])))
-          for j in range(n)] for i in range(n)]
+    _say(f"distances (n={int(n)})")
+    D = [[math.sqrt(sum((a - b) ** 2 for a, b in zip(Xv[i], Xv[j]))) for j in range(n)] for i in range(n)]
     _say("core distances")
     core = _core_distances(D, n, mp)
     _say("mutual-reachability MST")
@@ -184,12 +182,12 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
     # --- condense (Algorithm 2): emit rows (parent_cluster, child,
     # lambda, child_size); child is a point (size 1) that fell out or
     # a newly born sub-cluster.  Root cluster id = n (first free id). ---
-    next_cluster = [n + 1]           # root cluster id = n; new ids > n
-    node_to_cluster = {root: n}       # tree node acting as a cluster
-    birth = {n: 0.0}                  # lambda_min per cluster
-    birth_node = {n: root}            # tree node where cluster is born
-    rows = []                         # (parent, child, lambda, size)
-    cluster_tree = {n: []}            # cluster -> child clusters
+    next_cluster = [n + 1]  # root cluster id = n; new ids > n
+    node_to_cluster = {root: n}  # tree node acting as a cluster
+    birth = {n: 0.0}  # lambda_min per cluster
+    birth_node = {n: root}  # tree node where cluster is born
+    rows = []  # (parent, child, lambda, size)
+    cluster_tree = {n: []}  # cluster -> child clusters
     parent_of = {n: None}
     stack = [root]
     while stack:
@@ -197,14 +195,14 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         cid = node_to_cluster[node]
         if node < n:
             continue
-        l, r, dist = children[node]
+        ell, r, dist = children[node]
         lam = math.inf if dist <= 0 else 1.0 / dist
-        sl = node_size[l]
+        sl = node_size[ell]
         sr = node_size[r]
         ok_l = sl >= mcs
         ok_r = sr >= mcs
         if ok_l and ok_r:
-            for side, sz in ((l, sl), (r, sr)):
+            for side, sz in ((ell, sl), (r, sr)):
                 c = next_cluster[0]
                 next_cluster[0] += 1
                 node_to_cluster[side] = c
@@ -219,7 +217,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
             for p in _points_under(node, children, n):
                 rows.append((cid, p, lam, 1))
         else:
-            big, small = (l, r) if ok_l else (r, l)
+            big, small = (ell, r) if ok_l else (r, ell)
             for p in _points_under(small, children, n):
                 rows.append((cid, p, lam, 1))
             node_to_cluster[big] = cid
@@ -228,12 +226,12 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
     # --- stability (Eq. 3): for cluster C,
     # S(C) = sum over rows leaving C of size * (lambda - birth(C)). ---
     stability = {c: 0.0 for c in birth}
-    for parent, child, lam, sz in rows:
+    for parent, _child, lam, sz in rows:
         if math.isinf(lam):
-            continue                  # coincident points, zero density span
+            continue  # coincident points, zero density span
         stability[parent] += sz * (lam - birth[parent])
 
-    _say("extract (%s)" % selection)
+    _say(f"extract ({selection})")
 
     def subtree(c):
         out = [c]
@@ -247,7 +245,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         selected = {c: (c != n and not cluster_tree[c]) for c in birth}
     else:
         # Algorithm 3: bottom-up max excess-of-mass selection (Eqs. 4-5).
-        order_c = sorted(birth, key=lambda c: -birth[c])   # deepest first
+        order_c = sorted(birth, key=lambda c: -birth[c])  # deepest first
         s_hat = {}
         selected = {c: True for c in birth if c != n}
         for c in order_c:
@@ -273,8 +271,7 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
     # deepest cluster of each point = the max-birth cluster whose
     # birth-node subtree contains it; its label is the nearest
     # selected ancestor (itself included) in the condensed tree.
-    contains = {c: set(_points_under(birth_node[c], children, n))
-                for c in birth}
+    contains = {c: set(_points_under(birth_node[c], children, n)) for c in birth}
     for p in range(n):
         cand = [c for c in birth if p in contains[c]]
         deep = max(cand, key=lambda c: birth[c])
@@ -284,19 +281,20 @@ def hdbsc(X, min_pts=5, min_cluster_size=5, selection="eom", verbose=False):
         if cur is not None and cur in label_of:
             labels[p] = label_of[cur]
     condensed = [(p, ch, la, sz) for (p, ch, la, sz) in rows]
-    return RichResult(payload={
-        "labels": labels,
-        "core_distances": core,
-        "n_clusters": len(chosen),
-        "stabilities": stability,
-        "condensed_tree": condensed,
-        "cluster_tree": {k: v for k, v in cluster_tree.items()},
-        "min_pts": mp,
-        "min_cluster_size": mcs,
-        "selection": selection,
-        "method": "HDBSCAN* %s extraction (Campello 2013)" % (
-            "excess-of-mass" if selection == "eom" else "leaf"),
-    })
+    return RichResult(
+        payload={
+            "labels": labels,
+            "core_distances": core,
+            "n_clusters": len(chosen),
+            "stabilities": stability,
+            "condensed_tree": condensed,
+            "cluster_tree": {k: v for k, v in cluster_tree.items()},
+            "min_pts": mp,
+            "min_cluster_size": mcs,
+            "selection": selection,
+            "method": "HDBSCAN* %s extraction (Campello 2013)" % ("excess-of-mass" if selection == "eom" else "leaf"),
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -304,8 +302,11 @@ hdbscan_labels = hdbsc
 
 
 def cheatsheet():
-    return ("hdbsc: mreach MST + single linkage; condense (mclSize); "
-            "S(C)=sum(lam_max-lam_min); bottom-up max-stability select")
+    return (
+        "hdbsc: mreach MST + single linkage; condense (mclSize); "
+        "S(C)=sum(lam_max-lam_min); bottom-up max-stability select"
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 hdbscan = hdbsc

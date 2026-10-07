@@ -95,6 +95,7 @@ def tps_only(category: str = "Assault", *, sample_rows: int | None = 50_000) -> 
 
 
 def overlay() -> dict[str, Any]:
+    """Pipeline step: run the OTIS x TPS overlay (``otis_tps_overlay.analyze_all``)."""
     _step("OTIS × TPS overlay")
     from . import otis_tps_overlay
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.thetf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.thetf import thetf
 
 

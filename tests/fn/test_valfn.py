@@ -1,7 +1,6 @@
 """Tests for morie.fn.valfn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.valfn import valfn
 
 

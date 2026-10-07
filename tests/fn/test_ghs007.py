@@ -1,7 +1,6 @@
 """Tests for ghs007.ghosal_ch2_binary_regression_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs007 import ghosal_ch2_binary_regression_density
 
 

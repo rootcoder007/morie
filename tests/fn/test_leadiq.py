@@ -1,8 +1,8 @@
 """Tests for Lanphear 2005 Lead → IQ loss model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.leadiq import lead_iq_loss, leadiq
 
 
@@ -21,8 +21,8 @@ def test_leadiq_reproduces_lanphear_1_to_10_contrast():
 def test_leadiq_is_sublinear_per_unit_at_higher_bll():
     # Effect per unit BLL is LARGER at lower concentrations (key finding).
     # d(IQ)/d(BLL) = a / BLL; compare derivative at BLL=2 vs BLL=20.
-    r_low = leadiq(2.0)
-    r_mid = leadiq(20.0)
+    leadiq(2.0)
+    leadiq(20.0)
     # Loss at 2 vs 1: a*ln(2) ≈ -1.87
     # Loss at 20 vs 1: a*ln(20) ≈ -8.09
     # So 1→2 costs 1.87, 10→20 costs 1.87 (same ratio). Log-linearity

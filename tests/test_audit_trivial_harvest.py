@@ -38,8 +38,7 @@ def _load_conftest():
     passed locally and failed in CI with "No module named 'tests'".
     Loading by path works either way, and mirrors _load_harvest above.
     """
-    spec = importlib.util.spec_from_file_location(
-        "morie_tests_conftest", REPO / "tests" / "conftest.py")
+    spec = importlib.util.spec_from_file_location("morie_tests_conftest", REPO / "tests" / "conftest.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

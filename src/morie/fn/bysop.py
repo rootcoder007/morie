@@ -75,7 +75,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
     X = X_init
     y = y_init
 
-    for it in range(n_iter):
+    for _it in range(n_iter):
         # Simple GP: use kernel trick with RBF
         from ._sci_core import cdist
 
@@ -89,7 +89,7 @@ def bysop(f, bounds, n_init=10, n_iter=20, acq="ucb", kappa=2.576, full_output=F
             alpha = np.linalg.lstsq(K, y, rcond=None)[0]
 
         # Acquisition function
-        def acq_func(x_):
+        def acq_func(x_, *, K=K, X=X, alpha=alpha, y=y):
             x_ = np.atleast_1d(x_)
             k = np.exp(-cdist(x_.reshape(1, -1), X, "sqeuclidean") / (2 * 1.0)).ravel()
             mu = np.dot(k, alpha)

@@ -67,13 +67,13 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
         t2 = max(0.0, float(dersimonian_laird(y, v)))
         conv = False
         it = 0
-        for it in range(1, int(max_iter) + 1):
+        for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
             w = 1.0 / (v + t2)
             mu = float(np.sum(w * y) / np.sum(w))
-            num = float(np.sum(w ** 2 * ((y - mu) ** 2 - v)))
+            num = float(np.sum(w**2 * ((y - mu) ** 2 - v)))
             if reml:
                 num += 1.0 / float(np.sum(w))
-            new = max(0.0, num / float(np.sum(w ** 2)))
+            new = max(0.0, num / float(np.sum(w**2)))
             if abs(new - t2) < tol * max(1.0, t2):
                 t2 = new
                 conv = True
@@ -87,24 +87,31 @@ def ma_random_reml(yi, vi, max_iter=200, tol=1e-12):
     mu = float(np.sum(w * y) / np.sum(w))
     se = float(np.sqrt(1.0 / np.sum(w)))
     z = stats.norm.ppf(0.975)
-    return RichResult(payload={
-        "tau2": float(t2), "tau": float(np.sqrt(t2)),
-        "mu": mu, "se": se, "ci": (mu - z * se, mu + z * se),
-        "tau2_ml": float(t2_ml),
-        "tau2_dl": float(dersimonian_laird(y, v)),
-        "reml_correction": float(t2 - t2_ml),
-        "why_reml": "ordinary ML does not account for the degree of freedom "
-                    "spent estimating mu and is biased DOWNWARD; the "
-                    "1/sum(w) term is exactly that correction, the same "
-                    "reason a sample variance divides by n - 1",
-        "converged": bool(conv), "n_iter": int(nit),
-        "convergence_note": "a fixed-point iteration on a possibly flat "
-                            "likelihood; a failure is reported, not "
-                            "disguised",
-        "Q": Q0,
-        "I2": float(max(0.0, (Q0 - (k - 1)) / Q0)) if Q0 > 0 else 0.0,
-        "k": int(k),
-        "method": "REML tau^2 by fixed-point iteration (Viechtbauer 2005)"})
+    return RichResult(
+        payload={
+            "tau2": float(t2),
+            "tau": float(np.sqrt(t2)),
+            "mu": mu,
+            "se": se,
+            "ci": (mu - z * se, mu + z * se),
+            "tau2_ml": float(t2_ml),
+            "tau2_dl": float(dersimonian_laird(y, v)),
+            "reml_correction": float(t2 - t2_ml),
+            "why_reml": "ordinary ML does not account for the degree of freedom "
+            "spent estimating mu and is biased DOWNWARD; the "
+            "1/sum(w) term is exactly that correction, the same "
+            "reason a sample variance divides by n - 1",
+            "converged": bool(conv),
+            "n_iter": int(nit),
+            "convergence_note": "a fixed-point iteration on a possibly flat "
+            "likelihood; a failure is reported, not "
+            "disguised",
+            "Q": Q0,
+            "I2": float(max(0.0, (Q0 - (k - 1)) / Q0)) if Q0 > 0 else 0.0,
+            "k": int(k),
+            "method": "REML tau^2 by fixed-point iteration (Viechtbauer 2005)",
+        }
+    )
 
 
 def cheatsheet():

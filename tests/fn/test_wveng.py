@@ -1,7 +1,6 @@
 """Tests for wveng.py - Wavelet energy distribution."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wveng import wavelet_energy, wveng
 
 

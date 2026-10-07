@@ -121,7 +121,11 @@ def geron_instance_based(X_train, y_train, x_query, k=1, task="auto", weights="u
     if task == "auto":
         numeric = np.issubdtype(yy.dtype, np.number)
         integral = numeric and np.all(np.asarray(yy, dtype=float) == np.floor(np.asarray(yy, dtype=float)))
-        resolved = "classification" if (not numeric or (integral and np.unique(yy).size <= max(2, yy.size // 2))) else "regression"
+        resolved = (
+            "classification"
+            if (not numeric or (integral and np.unique(yy).size <= max(2, yy.size // 2)))
+            else "regression"
+        )
     else:
         resolved = task
 
@@ -133,13 +137,7 @@ def geron_instance_based(X_train, y_train, x_query, k=1, task="auto", weights="u
     for q in range(Q.shape[0]):
         idx = nn[q]
         d = dist[q]
-        if weights == "distance":
-            if np.any(d == 0):
-                w = (d == 0).astype(float)
-            else:
-                w = 1.0 / d
-        else:
-            w = np.ones(kk)
+        w = ((d == 0).astype(float) if np.any(d == 0) else 1.0 / d) if weights == "distance" else np.ones(kk)
         if resolved == "regression":
             vals = np.asarray(yy[idx], dtype=float)
             preds.append(float(np.sum(w * vals) / np.sum(w)))
@@ -168,9 +166,7 @@ def geron_instance_based(X_train, y_train, x_query, k=1, task="auto", weights="u
             if spread > 10
             else []
         ),
-        interpretation=(
-            "Nothing is fitted -- the training set is the model, so all the cost is at prediction time."
-        ),
+        interpretation=("Nothing is fitted -- the training set is the model, so all the cost is at prediction time."),
         payload={
             "prediction": pred,
             "neighbors": nn,

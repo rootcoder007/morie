@@ -9,11 +9,12 @@ __all__ = ["alammar_infonce_loss"]
 
 
 def _cos(a, b):
-    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
-    na = np.linalg.norm(a); nb = np.linalg.norm(b)
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    na = np.linalg.norm(a)
+    nb = np.linalg.norm(b)
     if na == 0 or nb == 0:
-        raise ValueError("a zero vector has no direction; cosine "
-                         "similarity with it is undefined.")
+        raise ValueError("a zero vector has no direction; cosine similarity with it is undefined.")
     return float(np.dot(a, b) / (na * nb))
 
 
@@ -35,11 +36,15 @@ def alammar_infonce_loss(anchor, positive, negatives, tau=0.07):
     m = zs.max()
     logZ = m + np.log(np.exp(zs - m).sum())
     loss = float(logZ - sp)
-    return RichResult(payload={
-        "estimate": loss, "positive_similarity": sp * t,
-        "negative_similarities": [float(v * t) for v in sn],
-        "n": N.shape[0] + 1,
-        "method": "InfoNCE (van den Oord et al. 2018)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "positive_similarity": sp * t,
+            "negative_similarities": [float(v * t) for v in sn],
+            "n": N.shape[0] + 1,
+            "method": "InfoNCE (van den Oord et al. 2018)",
+        }
+    )
 
 
 def cheatsheet():

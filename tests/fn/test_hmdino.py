@@ -1,7 +1,6 @@
 """Tests for hmdino.geron_dino."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdino import geron_dino
 
 

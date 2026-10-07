@@ -1,7 +1,6 @@
 """Tests for pcasnps.pca_snps."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pcasnps import pca_snps
 
 

@@ -109,13 +109,19 @@ def esl_adaboost(X, y, M=50):
         w = w * np.exp(alpha * (pred != y))
         w = w / w.sum()
     committee = np.where(F >= 0, 1, -1)
-    return RichResult(payload={
-        "estimate": float(np.mean(committee != y)),
-        "stumps": stumps, "alphas": alphas, "rounds_used": len(stumps),
-        "prediction": [int(v) for v in committee],
-        "margin": [float(v) for v in y * F],
-        "n": int(n), "p": int(p),
-        "method": "AdaBoost.M1 (Alg. 10.1), alpha = log((1-err)/err), stumps"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(committee != y)),
+            "stumps": stumps,
+            "alphas": alphas,
+            "rounds_used": len(stumps),
+            "prediction": [int(v) for v in committee],
+            "margin": [float(v) for v in y * F],
+            "n": int(n),
+            "p": int(p),
+            "method": "AdaBoost.M1 (Alg. 10.1), alpha = log((1-err)/err), stumps",
+        }
+    )
 
 
 def esl_adaboost_predict(model, X):

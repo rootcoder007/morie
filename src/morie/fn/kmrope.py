@@ -50,20 +50,18 @@ def kamath_rotary_positional_embedding(q, positions=None, base=10000.0):
     if T == 0 or d == 0:
         raise ValueError("q is empty.")
     if d % 2 != 0:
-        raise ValueError(
-            f"RoPE rotates feature PAIRS, so d must be even; got {d}.")
+        raise ValueError(f"RoPE rotates feature PAIRS, so d must be even; got {d}.")
     base = float(base)
     if base <= 1.0:
         raise ValueError(
-            f"base must exceed 1; got {base}. At base 1 every "
-            "frequency is identical and RoPE stops encoding position.")
+            f"base must exceed 1; got {base}. At base 1 every frequency is identical and RoPE stops encoding position."
+        )
     if positions is None:
         m = np.arange(T, dtype=float)
     else:
         m = np.atleast_1d(np.asarray(positions, dtype=float)).ravel()
         if m.size != T:
-            raise ValueError(
-                f"got {m.size} positions for {T} rows.")
+            raise ValueError(f"got {m.size} positions for {T} rows.")
         if np.any(m < 0):
             raise ValueError("positions must be non-negative.")
     half = d // 2
@@ -75,14 +73,19 @@ def kamath_rotary_positional_embedding(q, positions=None, base=10000.0):
     y = np.empty_like(x)
     y[:, 0::2] = even * cos - odd * sin
     y[:, 1::2] = even * sin + odd * cos
-    return RichResult(payload={
-        "y": [[float(v) for v in row] for row in y],
-        "angles": [[float(v) for v in row] for row in angles],
-        "theta": [float(v) for v in theta],
-        "positions": [float(v) for v in m],
-        "estimate": float(y[0, 0]),
-        "base": base, "d": d, "n": T,
-        "method": "Rotary positional embedding at explicit positions"})
+    return RichResult(
+        payload={
+            "y": [[float(v) for v in row] for row in y],
+            "angles": [[float(v) for v in row] for row in angles],
+            "theta": [float(v) for v in theta],
+            "positions": [float(v) for v in m],
+            "estimate": float(y[0, 0]),
+            "base": base,
+            "d": d,
+            "n": T,
+            "method": "Rotary positional embedding at explicit positions",
+        }
+    )
 
 
 def cheatsheet():

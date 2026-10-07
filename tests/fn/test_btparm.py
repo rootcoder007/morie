@@ -1,7 +1,6 @@
 """Tests for btparm.boot_parametric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btparm import boot_parametric
 
 
@@ -9,8 +8,13 @@ def test_btparm_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     theta_hat = np.array([0.0, 1.0])
-    rvs_fn = lambda th, n, g: rng.normal(th[0], th[1], n)
-    stat = lambda x: np.mean(x)
+
+    def rvs_fn(th, n, g):
+        return rng.normal(th[0], th[1], n)
+
+    def stat(x):
+        return np.mean(x)
+
     B = 200
     n = 100
     result = boot_parametric(theta_hat, rvs_fn, stat, B, n)
@@ -31,8 +35,13 @@ def test_btparm_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     theta_hat = np.array([0.0, 1.0])
-    rvs_fn = lambda th, n, g: rng.normal(th[0], th[1], n)
-    stat = lambda x: np.mean(x)
+
+    def rvs_fn(th, n, g):
+        return rng.normal(th[0], th[1], n)
+
+    def stat(x):
+        return np.mean(x)
+
     B = 200
     n = 100
     result = boot_parametric(theta_hat, rvs_fn, stat, B, n)

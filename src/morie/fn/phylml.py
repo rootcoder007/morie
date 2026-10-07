@@ -66,8 +66,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["phylml", "substitution_matrix", "site_likelihood",
-           "optimise_branch", "maximum_likelihood_phylogeny"]
+__all__ = ["phylml", "substitution_matrix", "site_likelihood", "optimise_branch", "maximum_likelihood_phylogeny"]
 
 BASES = "ACGT"
 
@@ -82,7 +81,7 @@ def _pi(pi):
         raise ValueError("phylml: pi must be non-negative")
     s = sum(p)
     if abs(s - 1.0) > 1e-9:
-        raise ValueError("phylml: pi must sum to 1, got %g" % s)
+        raise ValueError(f"phylml: pi must sum to 1, got {s:g}")
     return p
 
 
@@ -99,17 +98,15 @@ def substitution_matrix(t, pi=None, u=1.0):
     if t < 0.0:
         raise ValueError("phylml: branch length must be >= 0")
     e = math.exp(-float(u) * t)
-    return [[e * (1.0 if i == j else 0.0) + (1.0 - e) * p[j]
-             for j in range(4)] for i in range(4)]
+    return [[e * (1.0 if i == j else 0.0) + (1.0 - e) * p[j] for j in range(4)] for i in range(4)]
 
 
 def _tip_vector(base):
     b = str(base).upper()
     if b in ("-", "N", "?"):
-        return [1.0] * 4          # missing data contributes nothing
+        return [1.0] * 4  # missing data contributes nothing
     if b not in BASES:
-        raise ValueError("phylml: unknown base %r; expected one of ACGT "
-                         "or a gap" % (base,))
+        raise ValueError(f"phylml: unknown base {base!r}; expected one of ACGT or a gap")
     return [1.0 if BASES[i] == b else 0.0 for i in range(4)]
 
 
@@ -124,8 +121,7 @@ def _prune(node, site, pi, u, seqs):
     if not isinstance(node, (tuple, list)):
         return _tip_vector(seqs[node][site])
     if len(node) % 2:
-        raise ValueError("phylml: a node must be (child, length, ...) "
-                         "pairs, got %d entries" % len(node))
+        raise ValueError(f"phylml: a node must be (child, length, ...) pairs, got {int(len(node))} entries")
     out = [1.0] * 4
     for c in range(0, len(node), 2):
         child, v = node[c], node[c + 1]
@@ -180,12 +176,10 @@ def phylml(tree, seqs, pi=None, u=1.0):
     """
     p = _pi(pi)
     if not isinstance(seqs, dict) or not seqs:
-        raise ValueError("phylml: seqs must be a non-empty dict of "
-                         "name -> sequence")
+        raise ValueError("phylml: seqs must be a non-empty dict of name -> sequence")
     lens = set(len(v) for v in seqs.values())
     if len(lens) != 1:
-        raise ValueError("phylml: sequences must be aligned to a common "
-                         "length, got %r" % sorted(lens))
+        raise ValueError(f"phylml: sequences must be aligned to a common length, got {sorted(lens)!r}")
     n_sites = lens.pop()
     if n_sites == 0:
         raise ValueError("phylml: sequences are empty")
@@ -194,25 +188,25 @@ def phylml(tree, seqs, pi=None, u=1.0):
     for i in range(n_sites):
         Li = site_likelihood(tree, seqs, i, p, u)
         if Li <= 0.0:
-            raise ValueError("phylml: site %d has zero likelihood; check "
-                             "the tree and the alignment" % i)
+            raise ValueError(f"phylml: site {int(i)} has zero likelihood; check the tree and the alignment")
         site_L.append(Li)
     logs = [math.log(v) for v in site_L]
-    return RichResult(payload={
-        "estimate": float(sum(logs)),
-        "log_likelihood": float(sum(logs)),
-        "site_likelihoods": site_L,
-        "site_log_likelihoods": logs,
-        "n_sites": n_sites,
-        "n_taxa": len(seqs),
-        "pi": p,
-        "u": float(u),
-        "method": "ML phylogeny by pruning (Felsenstein 1981)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(sum(logs)),
+            "log_likelihood": float(sum(logs)),
+            "site_likelihoods": site_L,
+            "site_log_likelihoods": logs,
+            "n_sites": n_sites,
+            "n_taxa": len(seqs),
+            "pi": p,
+            "u": float(u),
+            "method": "ML phylogeny by pruning (Felsenstein 1981)",
+        }
+    )
 
 
-def optimise_branch(make_tree, seqs, pi=None, u=1.0, lo=1e-6, hi=10.0,
-                    tol=1e-10, max_iter=200):
+def optimise_branch(make_tree, seqs, pi=None, u=1.0, lo=1e-6, hi=10.0, tol=1e-10, max_iter=200):
     r"""Maximise the log-likelihood over one branch length.
 
     ``make_tree(v)`` returns the tree with that branch set to ``v``.
@@ -249,26 +243,29 @@ def optimise_branch(make_tree, seqs, pi=None, u=1.0, lo=1e-6, hi=10.0,
     # real property of the model, not a convergence failure, but the
     # returned number is then a bound and not an estimate -- so say so.
     edge = 1e-6 * (float(hi) - float(lo))
-    at_bound = (v <= float(lo) + edge or v >= float(hi) - edge)
-    return RichResult(payload={
-        "estimate": float(v),
-        "length": float(v),
-        "log_likelihood": float(
-            phylml(make_tree(v), seqs, pi, u)["log_likelihood"]),
-        "at_bound": bool(at_bound),
-        "bounds": (float(lo), float(hi)),
-        "method": "branch optimisation (Felsenstein 1981)",
-    })
+    at_bound = v <= float(lo) + edge or v >= float(hi) - edge
+    return RichResult(
+        payload={
+            "estimate": float(v),
+            "length": float(v),
+            "log_likelihood": float(phylml(make_tree(v), seqs, pi, u)["log_likelihood"]),
+            "at_bound": bool(at_bound),
+            "bounds": (float(lo), float(hi)),
+            "method": "branch optimisation (Felsenstein 1981)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("phylml: Felsenstein (1981) pruning. L_s(k) = prod over "
-            "children of sum_x P_sx(v) L_x(child); tips are 0/1 "
-            "indicators; L = sum_s pi_s L_s(root) (eq. 5). Turns a "
-            "2^(2n-2)-term sum into a linear traversal. F81 model "
-            "P_ij(t) = e^-ut delta_ij + (1-e^-ut) pi_j (eq. 7), "
-            "reversible, and the PULLEY PRINCIPLE means the two root "
-            "branches matter only through their sum.")
+    return (
+        "phylml: Felsenstein (1981) pruning. L_s(k) = prod over "
+        "children of sum_x P_sx(v) L_x(child); tips are 0/1 "
+        "indicators; L = sum_s pi_s L_s(root) (eq. 5). Turns a "
+        "2^(2n-2)-term sum into a linear traversal. F81 model "
+        "P_ij(t) = e^-ut delta_ij + (1-e^-ut) pi_j (eq. 7), "
+        "reversible, and the PULLEY PRINCIPLE means the two root "
+        "branches matter only through their sum."
+    )
 
 
 # compact alias per ledger/NAMING.md

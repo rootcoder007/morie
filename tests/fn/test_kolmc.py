@@ -1,7 +1,6 @@
 """Tests for morie.fn.kolmc — Kolmogorov complexity approximation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kolmc import kolmc
 
 
@@ -20,7 +19,9 @@ class TestKolmc:
     def test_empty(self):
         result = kolmc(np.array([]))
         assert result["compressed_size"] == 0
-        assert np.all(np.isfinite(np.asarray(result["compression_ratio"], dtype=float)))  # N6: was a generator-guessed value
+        assert np.all(
+            np.isfinite(np.asarray(result["compression_ratio"], dtype=float))
+        )  # N6: was a generator-guessed value
 
     def test_normalized_between_0_and_2(self):
         data = np.array([1, 2, 3, 4, 5], dtype=np.int32)

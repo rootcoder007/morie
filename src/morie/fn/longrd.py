@@ -76,8 +76,7 @@ References
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["long_read_polish", "align", "pileup", "rle", "unrle",
-           "poa_consensus", "cheatsheet"]
+__all__ = ["long_read_polish", "align", "pileup", "rle", "unrle", "poa_consensus", "cheatsheet"]
 
 _BASES = ("A", "C", "G", "T")
 _METHODS = ("pileup", "poa")
@@ -101,23 +100,21 @@ def align(a, b, match=1.0, mismatch=-1.0, gap=-2.0):
         s[0][j] = s[0][j - 1] + gap
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            d = s[i - 1][j - 1] + (match if a[i - 1] == b[j - 1]
-                                   else mismatch)
+            d = s[i - 1][j - 1] + (match if a[i - 1] == b[j - 1] else mismatch)
             u = s[i - 1][j] + gap
-            l = s[i][j - 1] + gap
+            ell = s[i][j - 1] + gap
             best = d
             if u > best:
                 best = u
-            if l > best:
-                best = l
+            if ell > best:
+                best = ell
             s[i][j] = best
     ga = []
     gb = []
     i = n
     j = m
     while i > 0 or j > 0:
-        if i > 0 and j > 0 and s[i][j] == s[i - 1][j - 1] + (
-                match if a[i - 1] == b[j - 1] else mismatch):
+        if i > 0 and j > 0 and s[i][j] == s[i - 1][j - 1] + (match if a[i - 1] == b[j - 1] else mismatch):
             ga.append(a[i - 1])
             gb.append(b[j - 1])
             i -= 1
@@ -215,8 +212,7 @@ def _call(col, draft_base, min_depth, min_frac):
     return ("" if best == "-" else best), depth, frac, False
 
 
-def poa_consensus(reads, match=1.0, mismatch=-1.0, gap=-2.0,
-                  sort_reads=True):
+def poa_consensus(reads, match=1.0, mismatch=-1.0, gap=-2.0, sort_reads=True):
     """Progressive partial-order consensus: the heaviest path.
 
     The first read is the seed. Each later read is aligned to the
@@ -255,9 +251,18 @@ def poa_consensus(reads, match=1.0, mismatch=-1.0, gap=-2.0,
     return cons
 
 
-def long_read_polish(assembly, reads, method="pileup", min_depth=3,
-                     min_frac=0.5, ins_frac=0.5, match=1.0,
-                     mismatch=-1.0, gap=-2.0, sort_reads=True):
+def long_read_polish(
+    assembly,
+    reads,
+    method="pileup",
+    min_depth=3,
+    min_frac=0.5,
+    ins_frac=0.5,
+    match=1.0,
+    mismatch=-1.0,
+    gap=-2.0,
+    sort_reads=True,
+):
     """Polish a draft assembly with the reads it was built from.
 
     Parameters
@@ -318,8 +323,7 @@ def long_read_polish(assembly, reads, method="pileup", min_depth=3,
                 for k in sorted(slot):
                     if bestk is None or slot[k] > slot[bestk]:
                         bestk = k
-                d = depth[p] if p < len(depth) else (
-                    depth[-1] if depth else 0)
+                d = depth[p] if p < len(depth) else (depth[-1] if depth else 0)
                 if d and slot[bestk] / float(d) >= ins_frac:
                     out.append(bestk)
             if p < len(draft):
@@ -333,35 +337,38 @@ def long_read_polish(assembly, reads, method="pileup", min_depth=3,
         if draft[p] != polished[p]:
             changed += 1
     changed += abs(len(draft) - len(polished))
-    return RichResult(payload={
-        "polished": polished,
-        "draft": draft,
-        "called": called,
-        "depth": depth,
-        "support": support,
-        "n_protected": protected,
-        "n_changed": changed,
-        "identical": polished == draft,
-        "draft_rle": rle(draft),
-        "polished_rle": rle(polished),
-        "n_draft_runs": len(rle(draft)),
-        "n_polished_runs": len(rle(polished)),
-        "mean_depth": (_w.csum(float(v) for v in depth) / len(depth))
-                      if depth else 0.0,
-        "n_reads": len(rs),
-        "length": len(polished),
-        "draft_length": len(draft),
-        "method": method,
-        "min_depth": int(min_depth),
-        "min_frac": float(min_frac),
-        "ins_frac": float(ins_frac),
-    })
+    return RichResult(
+        payload={
+            "polished": polished,
+            "draft": draft,
+            "called": called,
+            "depth": depth,
+            "support": support,
+            "n_protected": protected,
+            "n_changed": changed,
+            "identical": polished == draft,
+            "draft_rle": rle(draft),
+            "polished_rle": rle(polished),
+            "n_draft_runs": len(rle(draft)),
+            "n_polished_runs": len(rle(polished)),
+            "mean_depth": (_w.csum(float(v) for v in depth) / len(depth)) if depth else 0.0,
+            "n_reads": len(rs),
+            "length": len(polished),
+            "draft_length": len(draft),
+            "method": method,
+            "min_depth": int(min_depth),
+            "min_frac": float(min_frac),
+            "ins_frac": float(ins_frac),
+        }
+    )
 
 
 def cheatsheet():
-    return ("longrd: long-read consensus polishing. Needleman-Wunsch "
-            "pileup with a column majority, or a progressive "
-            "partial-order consensus; homopolymers reported run-length")
+    return (
+        "longrd: long-read consensus polishing. Needleman-Wunsch "
+        "pileup with a column majority, or a progressive "
+        "partial-order consensus; homopolymers reported run-length"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

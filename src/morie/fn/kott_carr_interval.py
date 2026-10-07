@@ -26,18 +26,17 @@ def kott_carr_interval(pi_hat, var_pi, t_crit):
     eq. (6.11).
     """
     payload = dict(_acd.kott_carr_interval(pi_hat, var_pi, t_crit))
-    value = float(payload['lower'])
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = float(payload["lower"])
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.11)"
     return RichResult(
-        title='Kott-Carr effective-sample-size interval for a proportion',
+        title="Kott-Carr effective-sample-size interval for a proportion",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e11: Wilson-type interval with n* = pi(1-pi)/Var(pi) and t critical [Bilder & Loughin 2025, eq. 6.11]'
+    return "6e11: Wilson-type interval with n* = pi(1-pi)/Var(pi) and t critical [Bilder & Loughin 2025, eq. 6.11]"

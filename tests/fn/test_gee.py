@@ -1,7 +1,6 @@
 """Tests for morie.fn.gee — Generalized estimating equations."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gee import gee_regression
 
 

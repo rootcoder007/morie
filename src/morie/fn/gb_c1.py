@@ -40,8 +40,11 @@ def gibbons_chebyshev(k, x=None, mu=None, sigma=None):
     k = float(k)
     if k <= 0:
         raise ValueError(f"k must be positive, got {k}.")
-    payload = {"bound": float(min(1.0, 1.0 / k**2)), "k": k,
-               "method": "P(|X - mu| >= k sigma) <= 1/k^2 (Gibbons Ch. 1.2.5)"}
+    payload = {
+        "bound": float(min(1.0, 1.0 / k**2)),
+        "k": k,
+        "method": "P(|X - mu| >= k sigma) <= 1/k^2 (Gibbons Ch. 1.2.5)",
+    }
     if x is not None:
         x = np.asarray(x, dtype=float).ravel()
         if x.size < 2:

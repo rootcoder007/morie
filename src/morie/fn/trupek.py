@@ -144,10 +144,7 @@ def _cauchy(g, H, delta):
     if gn == 0.0:
         return [0.0] * len(g)
     curv = _dot(g, _matvec(H, g))
-    if curv <= 0.0:
-        t = delta / gn
-    else:
-        t = min(gn * gn / curv, delta / gn)
+    t = delta / gn if curv <= 0.0 else min(gn * gn / curv, delta / gn)
     return [-t * gi for gi in g]
 
 
@@ -175,15 +172,14 @@ def _chol_solve(L, b):
         y[i] = (b[i] - _dot(L[i][:i], y[:i])) / L[i][i]
     x = [0.0] * n
     for i in range(n - 1, -1, -1):
-        x[i] = (y[i] - _dot([L[k][i] for k in range(i + 1, n)],
-                            x[i + 1:])) / L[i][i]
+        x[i] = (y[i] - _dot([L[k][i] for k in range(i + 1, n)], x[i + 1 :])) / L[i][i]
     return x
 
 
 def _dogleg(g, H, delta):
     L = _chol(H)
     if L is None:
-        return _cauchy(g, H, delta)     # no Newton point to aim at
+        return _cauchy(g, H, delta)  # no Newton point to aim at
     pb = [-v for v in _chol_solve(L, g)]
     if _norm(pb) <= delta:
         return pb
@@ -207,7 +203,7 @@ def _steihaug(g, H, delta, tol, maxit):
     gn = _norm(g)
     if gn == 0.0:
         return z, "zero gradient"
-    stop = min(0.5, math.sqrt(gn)) * gn      # Algorithm 7.5.1's residual test
+    stop = min(0.5, math.sqrt(gn)) * gn  # Algorithm 7.5.1's residual test
     stop = max(stop, tol)
     for _ in range(maxit if maxit else 2 * n + 1):
         Hd = _matvec(H, d)
@@ -254,8 +250,7 @@ def _exact(g, H, delta, tol, maxit):
             hi = row
     hi = max(hi, _norm(g) / delta + 1.0)
     while True:
-        Ls = _chol([[H[i][j] + (hi if i == j else 0.0) for j in range(n)]
-                    for i in range(n)])
+        Ls = _chol([[H[i][j] + (hi if i == j else 0.0) for j in range(n)] for i in range(n)])
         if Ls is not None and _norm(_chol_solve(Ls, g)) <= delta:
             break
         hi *= 2.0
@@ -265,8 +260,7 @@ def _exact(g, H, delta, tol, maxit):
     lam = hi
     for _ in range(maxit if maxit else 200):
         lam = 0.5 * (lo + hi)
-        Ls = _chol([[H[i][j] + (lam if i == j else 0.0) for j in range(n)]
-                    for i in range(n)])
+        Ls = _chol([[H[i][j] + (lam if i == j else 0.0) for j in range(n)] for i in range(n)])
         if Ls is None:
             lo = lam
             continue
@@ -292,10 +286,24 @@ def _solve_sub(g, H, delta, sub, tol, maxit):
     return _steihaug(g, H, delta, tol, maxit)
 
 
-def trust_region(f, grad_f, hess_f, x0, delta=1.0, delta_max=None,
-                 subproblem="steihaug", eta1=0.01, eta2=0.9, gamma1=0.5,
-                 gamma3=2.0, max_iter=200, gtol=1e-10, dtol=1e-14,
-                 sub_tol=1e-12, sub_maxit=0):
+def trust_region(
+    f,
+    grad_f,
+    hess_f,
+    x0,
+    delta=1.0,
+    delta_max=None,
+    subproblem="steihaug",
+    eta1=0.01,
+    eta2=0.9,
+    gamma1=0.5,
+    gamma3=2.0,
+    max_iter=200,
+    gtol=1e-10,
+    dtol=1e-14,
+    sub_tol=1e-12,
+    sub_maxit=0,
+):
     """Minimise f from x0 by the basic trust-region algorithm.
 
     Parameters
@@ -330,8 +338,7 @@ def trust_region(f, grad_f, hess_f, x0, delta=1.0, delta_max=None,
         history of (f, gnorm, delta, rho), subproblem, method.
     """
     if subproblem not in _SUBS:
-        raise ValueError("trupek: subproblem = %r; expected one of %s"
-                         % (subproblem, ", ".join(_SUBS)))
+        raise ValueError("trupek: subproblem = {!r}; expected one of {}".format(subproblem, ", ".join(_SUBS)))
     x = [float(v) for v in x0]
     if delta_max is None:
         delta_max = 1e3 * delta
@@ -343,7 +350,7 @@ def trust_region(f, grad_f, hess_f, x0, delta=1.0, delta_max=None,
     last_why = "not started"
     why = "iteration limit"
     k = 0
-    for k in range(1, int(max_iter) + 1):
+    for k in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = [float(v) for v in grad_f(x)]
         gn = _norm(g)
         if gn <= gtol:
@@ -380,31 +387,34 @@ def trust_region(f, grad_f, hess_f, x0, delta=1.0, delta_max=None,
         elif rho >= eta2 and sn >= (1.0 - 1e-12) * delta:
             delta = min(gamma3 * delta, delta_max)
     g = [float(v) for v in grad_f(x)]
-    return RichResult(payload={
-        "exit_reason": why,
-        "x": x,
-        "fval": fx,
-        "gnorm": _norm(g),
-        "delta": delta,
-        "iterations": k,
-        "accepted": acc,
-        "rejected": rej,
-        "converged": conv,
-        "history": hist,
-        "subproblem": subproblem,
-        "subproblem_exit": last_why,
-        "method": "basic trust region (Conn, Gould & Toint 2000, Algorithm "
-                  "6.1.1) with the %s subproblem" % subproblem,
-    })
+    return RichResult(
+        payload={
+            "exit_reason": why,
+            "x": x,
+            "fval": fx,
+            "gnorm": _norm(g),
+            "delta": delta,
+            "iterations": k,
+            "accepted": acc,
+            "rejected": rej,
+            "converged": conv,
+            "history": hist,
+            "subproblem": subproblem,
+            "subproblem_exit": last_why,
+            "method": f"basic trust region (Conn, Gould & Toint 2000, Algorithm 6.1.1) with the {subproblem} subproblem",
+        }
+    )
 
 
 trupek = trust_region
 
 
 def cheatsheet():
-    return ("trupek: trust-region minimisation. subproblem = steihaug "
-            "(truncated CG, the default) | cauchy | dogleg | exact "
-            "(More-Sorensen by bisection).")
+    return (
+        "trupek: trust-region minimisation. subproblem = steihaug "
+        "(truncated CG, the default) | cauchy | dogleg | exact "
+        "(More-Sorensen by bisection)."
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

@@ -2,7 +2,6 @@
 """Maximum score estimator."""
 
 from . import _array_core as np
-from ._horowitz import silverman_bw
 from ._richresult import RichResult
 
 __all__ = ["hrz_maximum_score", "horowitz_manski_max_score"]
@@ -70,21 +69,25 @@ def hrz_maximum_score(X, y, beta0=None, n_restarts=8, seed=0):
     # |b_1| = 1 means BOTH half-spheres: a DGP whose first coefficient is
     # negative is unreachable if only b_1 = +1 is searched.
     best, best_val, best_s1 = None, np.inf, 1.0
-    starts = [np.zeros(d - 1) if beta0 is None else
-              np.atleast_1d(np.asarray(beta0, dtype=float))[1:]]
+    starts = [np.zeros(d - 1) if beta0 is None else np.atleast_1d(np.asarray(beta0, dtype=float))[1:]]
     starts += [rng.standard_normal(d - 1) for _ in range(int(n_restarts))]
     for s1 in (1.0, -1.0):
         for st in starts:
-            r = optimize.minimize(neg, st, args=(s1,), method="Nelder-Mead",
-                                  options={"maxiter": 3000, "fatol": 1e-9})
+            r = optimize.minimize(neg, st, args=(s1,), method="Nelder-Mead", options={"maxiter": 3000, "fatol": 1e-9})
             if r.fun < best_val:
                 best_val, best, best_s1 = r.fun, r.x, s1
-    return RichResult(payload={"beta": np.r_[best_s1, best], "score": -best_val,
-                               "rate_exponent": -1.0 / 3.0,
-                               "limit_distribution": "Chernoff, non-normal",
-                               "standard_errors_valid": False,
-                               "n": int(n), "d": int(d),
-                               "method": "Manski max score; median restriction only, n^{-1/3}"})
+    return RichResult(
+        payload={
+            "beta": np.r_[best_s1, best],
+            "score": -best_val,
+            "rate_exponent": -1.0 / 3.0,
+            "limit_distribution": "Chernoff, non-normal",
+            "standard_errors_valid": False,
+            "n": int(n),
+            "d": int(d),
+            "method": "Manski max score; median restriction only, n^{-1/3}",
+        }
+    )
 
 
 def cheatsheet():

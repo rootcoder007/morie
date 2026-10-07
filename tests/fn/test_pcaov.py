@@ -1,7 +1,6 @@
 """Test pca_overlap (pcaov)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.pcaov import pca_overlap, pcaov
 

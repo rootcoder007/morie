@@ -59,9 +59,9 @@ def compip(x, y):
     nx = math.sqrt(sum(v * v for v in zx))
     ny = math.sqrt(sum(v * v for v in zy))
     cos = ip / (nx * ny) if nx > 0 and ny > 0 else float("nan")
-    return RichResult(payload={
-        "inner": ip, "inner_pairwise": pw / D, "cos_angle": cos, "D": D,
-        "method": "Aitchison inner product"})
+    return RichResult(
+        payload={"inner": ip, "inner_pairwise": pw / D, "cos_angle": cos, "D": D, "method": "Aitchison inner product"}
+    )
 
 
 aitchison_inner_product = compip

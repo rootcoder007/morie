@@ -61,22 +61,28 @@ def fauzi_mise(n, h=None, R_K=None, mu2_K=1.0, R_f2=1.0, sigma=1.0):
     rf = float(R_f2)
     if rk <= 0 or m2 <= 0 or rf <= 0:
         raise ValueError("R_K, mu2_K and R_f2 must all be positive.")
-    h_opt = float((rk / (nn * m2 ** 2 * rf)) ** 0.2)
+    h_opt = float((rk / (nn * m2**2 * rf)) ** 0.2)
     hh = h_opt if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
     var = rk / (nn * hh)
-    bias = hh ** 4 / 4.0 * m2 ** 2 * rf
-    return RichResult(payload={
-        "mise": float(var + bias), "variance_part": float(var),
-        "bias_part": float(bias), "h": hh, "h_optimal": h_opt,
-        "mise_optimal": float(rk / (nn * h_opt) + h_opt ** 4 / 4 * m2 ** 2 * rf),
-        "rate_exponent": -0.8, "parametric_rate_exponent": -1.0,
-        "bandwidth_rate": "h_opt proportional to n^{-1/5}",
-        "ceiling_note": "n^{-4/5} is the best a second-order kernel can do "
-                        "for a twice-differentiable density",
-        "n": nn,
-        "method": "MISE = R(K)/(nh) + h^4 mu2^2 R(f'')/4; the two terms pull opposite ways"})
+    bias = hh**4 / 4.0 * m2**2 * rf
+    return RichResult(
+        payload={
+            "mise": float(var + bias),
+            "variance_part": float(var),
+            "bias_part": float(bias),
+            "h": hh,
+            "h_optimal": h_opt,
+            "mise_optimal": float(rk / (nn * h_opt) + h_opt**4 / 4 * m2**2 * rf),
+            "rate_exponent": -0.8,
+            "parametric_rate_exponent": -1.0,
+            "bandwidth_rate": "h_opt proportional to n^{-1/5}",
+            "ceiling_note": "n^{-4/5} is the best a second-order kernel can do for a twice-differentiable density",
+            "n": nn,
+            "method": "MISE = R(K)/(nh) + h^4 mu2^2 R(f'')/4; the two terms pull opposite ways",
+        }
+    )
 
 
 def cheatsheet():

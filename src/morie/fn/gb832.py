@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['vdw', 'gibbons_vdw_test']
+__all__ = ["vdw", "gibbons_vdw_test"]
 
 
 def vdw(x, y):

@@ -1,11 +1,8 @@
 """Tests for bsaclass.rangayyan_pca_signals (sec. 9.7.1)."""
 
-import math
-
 import pytest
 
 from morie.fn.bsaclass import rangayyan_pca_signals
-
 
 X = [[1, 2, 3, 4, 5, 6], [2, 4, 5, 8, 9, 13], [1, 0, 1, 0, 1, 0]]
 

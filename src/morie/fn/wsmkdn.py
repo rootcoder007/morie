@@ -74,22 +74,29 @@ def wasserman_kde(x, data, h=None, rule="3.31"):
         raise ValueError(f"the window width must be positive, got {hh}.")
     g = np.atleast_1d(np.asarray(x, dtype=float)).ravel()
     u = (g[:, None] - d[None, :]) / hh
-    dens = np.exp(-0.5 * u ** 2).sum(axis=1) / (n * hh * np.sqrt(2 * np.pi))
+    dens = np.exp(-0.5 * u**2).sum(axis=1) / (n * hh * np.sqrt(2 * np.pi))
     mass = None
     if g.size > 2 and np.all(np.diff(g) > 0):
         mass = float(np.trapezoid(dens, g))
-    return RichResult(payload={
-        "x": g, "density": dens, "h": hh, "rule": rule,
-        "adaptive_spread": adaptive_spread(d),
-        "h_normal_reference": silverman_bandwidth(d, "3.28"),
-        "h_iqr": silverman_bandwidth(d, "3.29"),
-        "mass": mass, "is_density": True,
-        "why_not_1_06": "1.06 sigma n^(-1/5) is (3.28), the pure normal "
-                        "reference; (3.31) replaces sigma with the adaptive "
-                        "spread A and the constant with 0.9, and that is what "
-                        "the book actually recommends",
-        "n": int(n),
-        "method": "Silverman (2.2a) kernel density estimate, window width by (3.31)"})
+    return RichResult(
+        payload={
+            "x": g,
+            "density": dens,
+            "h": hh,
+            "rule": rule,
+            "adaptive_spread": adaptive_spread(d),
+            "h_normal_reference": silverman_bandwidth(d, "3.28"),
+            "h_iqr": silverman_bandwidth(d, "3.29"),
+            "mass": mass,
+            "is_density": True,
+            "why_not_1_06": "1.06 sigma n^(-1/5) is (3.28), the pure normal "
+            "reference; (3.31) replaces sigma with the adaptive "
+            "spread A and the constant with 0.9, and that is what "
+            "the book actually recommends",
+            "n": int(n),
+            "method": "Silverman (2.2a) kernel density estimate, window width by (3.31)",
+        }
+    )
 
 
 def cheatsheet():

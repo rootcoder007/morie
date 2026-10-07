@@ -132,15 +132,17 @@ def influence_function(estimator, F, x, eps=1e-3):
 
     q1 = quot(e)
     q2 = quot(e / 2.0)
-    return RichResult(payload={
-        "estimate": 2.0 * q2 - q1,
-        "raw": q1,
-        "half": q2,
-        "tf": base,
-        "eps": e,
-        "n": n,
-        "method": "Influence function",
-    })
+    return RichResult(
+        payload={
+            "estimate": 2.0 * q2 - q1,
+            "raw": q1,
+            "half": q2,
+            "tf": base,
+            "eps": e,
+            "n": n,
+            "method": "Influence function",
+        }
+    )
 
 
 def cheatsheet():

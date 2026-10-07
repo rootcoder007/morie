@@ -76,17 +76,19 @@ def hampel_redescend(r, a=2.0, b=4.0, c=8.0):
         ps.append(p)
         dp.append(d)
         tot += p
-    return RichResult(payload={
-        "estimate": tot / len(x),
-        "psi": ps,
-        "psi_deriv": dp,
-        "n_reject": nrej,
-        "n": len(x),
-        "a": a,
-        "b": b,
-        "c": c,
-        "method": "Hampel three-part redescender",
-    })
+    return RichResult(
+        payload={
+            "estimate": tot / len(x),
+            "psi": ps,
+            "psi_deriv": dp,
+            "n_reject": nrej,
+            "n": len(x),
+            "a": a,
+            "b": b,
+            "c": c,
+            "method": "Hampel three-part redescender",
+        }
+    )
 
 
 def cheatsheet():

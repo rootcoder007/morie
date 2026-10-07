@@ -1,7 +1,6 @@
 """Tests for wsmmin.wasserman_minimax."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmmin import wasserman_minimax
 
 

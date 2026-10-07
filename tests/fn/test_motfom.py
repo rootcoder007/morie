@@ -10,9 +10,7 @@ import math
 
 from morie.fn.motfom import motfom, motif_fimo
 
-PWM = [[0.5, 0.2, 0.2, 0.1],
-       [0.1, 0.6, 0.2, 0.1],
-       [0.25, 0.25, 0.25, 0.25]]
+PWM = [[0.5, 0.2, 0.2, 0.1], [0.1, 0.6, 0.2, 0.1], [0.25, 0.25, 0.25, 0.25]]
 BG = [0.3, 0.2, 0.2, 0.3]
 
 
@@ -39,8 +37,7 @@ def _brute_pvalue(word_score_int, pwm, bg, scale):
 def test_motfom_scores_by_hand():
     res = motfom("ACA", PWM, background=BG)
     # score of window ACA = log2(.5/.3) + log2(.6/.2) + log2(.25/.3)
-    hand = (math.log2(0.5 / 0.3) + math.log2(0.6 / 0.2)
-            + math.log2(0.25 / 0.3))
+    hand = math.log2(0.5 / 0.3) + math.log2(0.6 / 0.2) + math.log2(0.25 / 0.3)
     assert abs(res["scores"][0] - hand) < 1e-12
     assert res["n_windows"] == 1
 
@@ -52,8 +49,7 @@ def test_motfom_pvalues_match_bruteforce():
     illr = []
     for j in range(w):
         tot = sum(PWM[j])
-        illr.append([int(round(math.log2((PWM[j][a] / tot) / BG[a]) * 1000))
-                     for a in range(4)])
+        illr.append([int(round(math.log2((PWM[j][a] / tot) / BG[a]) * 1000)) for a in range(4)])
     idx = {"A": 0, "C": 1, "G": 2, "T": 3}
     for i in range(len(seq) - w + 1):
         s_int = sum(illr[j][idx[seq[i + j]]] for j in range(w))

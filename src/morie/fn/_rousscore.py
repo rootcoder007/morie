@@ -28,8 +28,6 @@ re-verified against them.
 
 from __future__ import annotations
 
-import math
-
 __all__: list[str] = []
 
 

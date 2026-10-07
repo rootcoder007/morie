@@ -1,9 +1,9 @@
 """Tests for copjoe."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.copjoe import joe_copula
+
 
 def test_copjoe_basic():
     out = joe_copula(0.5, 0.5, 2.5)

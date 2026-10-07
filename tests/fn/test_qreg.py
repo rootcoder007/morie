@@ -1,9 +1,9 @@
 """Tests for morie.fn.qreg -- Quantile regression."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import RegressionResult
 from morie.fn.qreg import qreg, quantile_regression
 

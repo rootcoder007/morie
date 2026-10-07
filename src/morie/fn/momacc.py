@@ -3,10 +3,9 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dpacct', 'moments_accountant']
+__all__ = ["dpacct", "moments_accountant"]
 
 
 def dpacct(sigma, sample_rate, steps, delta=1e-05, max_order=64):
@@ -42,8 +41,10 @@ def dpacct(sigma, sample_rate, steps, delta=1e-05, max_order=64):
     Lemma 3 for the sampled-Gaussian log moment, Theorem 2 for
     composability and the tail bound.  Verified against the paper.
     """
-    sigma = float(sigma); q = float(sample_rate)
-    steps = int(steps); delta = float(delta)
+    sigma = float(sigma)
+    q = float(sample_rate)
+    steps = int(steps)
+    delta = float(delta)
     if sigma <= 0 or not 0.0 < q < 1.0 or steps < 1:
         raise ValueError("need sigma > 0, 0 < sample_rate < 1, steps >= 1")
     best_eps, best_order, best_a = float("inf"), 0, float("nan")
@@ -52,10 +53,18 @@ def dpacct(sigma, sample_rate, steps, delta=1e-05, max_order=64):
         eps = (a + math.log(1.0 / delta)) / lam
         if eps < best_eps:
             best_eps, best_order, best_a = eps, lam, a
-    return RichResult(payload={
-        "epsilon": best_eps, "order": best_order, "logmgf": best_a,
-        "delta": delta, "sigma": sigma, "sample_rate": q, "steps": steps,
-        "method": "Moments accountant (sampled Gaussian, DP-SGD)"})
+    return RichResult(
+        payload={
+            "epsilon": best_eps,
+            "order": best_order,
+            "logmgf": best_a,
+            "delta": delta,
+            "sigma": sigma,
+            "sample_rate": q,
+            "steps": steps,
+            "method": "Moments accountant (sampled Gaussian, DP-SGD)",
+        }
+    )
 
 
 moments_accountant = dpacct

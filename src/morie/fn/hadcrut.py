@@ -80,9 +80,19 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["hadcrut", "blend_weights", "blend_grid", "area_mean",
-           "coverage_error", "WEIGHT_RULES", "MEAN_ROUTES", "INTERVALS",
-           "LAND_FLOOR", "ICE_THRESHOLD", "cheatsheet"]
+__all__ = [
+    "hadcrut",
+    "blend_weights",
+    "blend_grid",
+    "area_mean",
+    "coverage_error",
+    "WEIGHT_RULES",
+    "MEAN_ROUTES",
+    "INTERVALS",
+    "LAND_FLOOR",
+    "ICE_THRESHOLD",
+    "cheatsheet",
+]
 
 WEIGHT_RULES = ("hadcrut5", "area", "land_only", "sst_only")
 MEAN_ROUTES = ("hemispheric", "area", "land_ratio")
@@ -96,8 +106,7 @@ LAND_FLOOR = 0.25
 ICE_THRESHOLD = 0.15
 
 
-def blend_weights(land_fraction, sea_ice=0.0, has_land=True, has_sst=True,
-                  rule="hadcrut5"):
+def blend_weights(land_fraction, sea_ice=0.0, has_land=True, has_sst=True, rule="hadcrut5"):
     """Land and ocean weights for one cell.
 
     Returns (w_land, w_sst), which sum to one whenever the cell has any
@@ -108,7 +117,7 @@ def blend_weights(land_fraction, sea_ice=0.0, has_land=True, has_sst=True,
     does not exist, which is the one thing the rule is not for.
     """
     if rule not in WEIGHT_RULES:
-        raise ValueError("rule must be one of %r" % (WEIGHT_RULES,))
+        raise ValueError(f"rule must be one of {WEIGHT_RULES!r}")
     lf = float(land_fraction)
     if lf < 0.0 or lf > 1.0:
         raise ValueError("land_fraction must lie in [0, 1]")
@@ -141,8 +150,7 @@ def _cell_lat(i, n_lat):
     return -90.0 + (i + 0.5) * band
 
 
-def blend_grid(T, sst, land_fraction, sea_ice=None, rule="hadcrut5",
-               T_var=None, sst_var=None):
+def blend_grid(T, sst, land_fraction, sea_ice=None, rule="hadcrut5", T_var=None, sst_var=None):
     """Blend a land grid and an SST grid cell by cell.
 
     Missing values are None in either grid. Returns the blended anomaly
@@ -246,7 +254,7 @@ def area_mean(grid, route="hemispheric", var=None):
                    areas.
     """
     if route not in MEAN_ROUTES:
-        raise ValueError("route must be one of %r" % (MEAN_ROUTES,))
+        raise ValueError(f"route must be one of {MEAN_ROUTES!r}")
     n_lat = len(grid)
     south = [i for i in range(n_lat) if _cell_lat(i, n_lat) < 0.0]
     north = [i for i in range(n_lat) if _cell_lat(i, n_lat) >= 0.0]
@@ -264,10 +272,12 @@ def area_mean(grid, route="hemispheric", var=None):
         elif sm is None:
             out = {"mean": nm, "var": nv, "weight": nw, "n_cells": nn}
         else:
-            out = {"mean": a * nm + b * sm,
-                   "var": (None if (nv is None or sv is None)
-                           else a * a * nv + b * b * sv),
-                   "weight": nw + sw, "n_cells": nn + sn}
+            out = {
+                "mean": a * nm + b * sm,
+                "var": (None if (nv is None or sv is None) else a * a * nv + b * b * sv),
+                "weight": nw + sw,
+                "n_cells": nn + sn,
+            }
     out["north"] = nm
     out["south"] = sm
     out["n_north"] = nn
@@ -290,18 +300,29 @@ def coverage_error(reference, seen, route="hemispheric"):
     is missing where it matters.
     """
     full = area_mean(reference, route)["mean"]
-    masked = [[reference[i][j] if seen[i][j] else None
-               for j in range(len(reference[i]))]
-              for i in range(len(reference))]
+    masked = [
+        [reference[i][j] if seen[i][j] else None for j in range(len(reference[i]))] for i in range(len(reference))
+    ]
     part = area_mean(masked, route)["mean"]
     if full is None or part is None:
         return None
     return part - full
 
 
-def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
-            route="hemispheric", interval="normal", level=0.95,
-            T_var=None, sst_var=None, ensemble=None, reference=None):
+def hadcrut(
+    T,
+    sst,
+    land_fraction=None,
+    sea_ice=None,
+    rule="hadcrut5",
+    route="hemispheric",
+    interval="normal",
+    level=0.95,
+    T_var=None,
+    sst_var=None,
+    ensemble=None,
+    reference=None,
+):
     """Blend land and ocean anomaly grids and average them up.
 
     Parameters
@@ -346,11 +367,11 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
     Morice et al. (2021) JGR Atmospheres 126(3), e2019JD032361.
     """
     if rule not in WEIGHT_RULES:
-        raise ValueError("rule must be one of %r" % (WEIGHT_RULES,))
+        raise ValueError(f"rule must be one of {WEIGHT_RULES!r}")
     if route not in MEAN_ROUTES:
-        raise ValueError("route must be one of %r" % (MEAN_ROUTES,))
+        raise ValueError(f"route must be one of {MEAN_ROUTES!r}")
     if interval not in INTERVALS:
-        raise ValueError("interval must be one of %r" % (INTERVALS,))
+        raise ValueError(f"interval must be one of {INTERVALS!r}")
     if not 0.0 < float(level) < 1.0:
         raise ValueError("level must lie strictly inside (0, 1)")
     n_lat = len(T)
@@ -359,22 +380,19 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
     n_lon = len(T[0])
     for g, nm in ((T, "T"), (sst, "sst")):
         if len(g) != n_lat or any(len(r) != n_lon for r in g):
-            raise ValueError("%s must be a rectangular grid matching T" % nm)
+            raise ValueError(f"{nm} must be a rectangular grid matching T")
     if land_fraction is None:
         land_fraction = [[0.0] * n_lon for _ in range(n_lat)]
 
-    anom, var, wl, seen = blend_grid(T, sst, land_fraction, sea_ice, rule,
-                                     T_var, sst_var)
+    anom, var, wl, seen = blend_grid(T, sst, land_fraction, sea_ice, rule, T_var, sst_var)
     agg = area_mean(anom, route, var)
     est = agg["mean"]
 
     n_obs = sum(1 for i in range(n_lat) for j in range(n_lon) if seen[i][j])
     # Coverage as a fraction of AREA, not of cells: a missing polar cell
     # is much less of a gap than a missing tropical one.
-    tot = _w.csum(_band_weight(i, n_lat) for i in range(n_lat)
-                  for _ in range(n_lon))
-    got = _w.csum(_band_weight(i, n_lat) for i in range(n_lat)
-                  for j in range(n_lon) if seen[i][j])
+    tot = _w.csum(_band_weight(i, n_lat) for i in range(n_lat) for _ in range(n_lon))
+    got = _w.csum(_band_weight(i, n_lat) for i in range(n_lat) for j in range(n_lon) if seen[i][j])
     se_unc = math.sqrt(agg["var"]) if agg.get("var") is not None else None
 
     se_cor = None
@@ -386,8 +404,7 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
         members = [m for m in members if m is not None]
         if len(members) > 1:
             mm = _w.csum(members) / len(members)
-            se_cor = math.sqrt(_w.csum((m - mm) * (m - mm) for m in members)
-                               / (len(members) - 1))
+            se_cor = math.sqrt(_w.csum((m - mm) * (m - mm) for m in members) / (len(members) - 1))
 
     se_cov = None
     cov_draws = None
@@ -395,8 +412,7 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
         cov_draws = [coverage_error(r, seen, route) for r in reference]
         cov_draws = [c for c in cov_draws if c is not None]
         if cov_draws:
-            se_cov = math.sqrt(_w.csum(c * c for c in cov_draws)
-                               / len(cov_draws))
+            se_cov = math.sqrt(_w.csum(c * c for c in cov_draws) / len(cov_draws))
 
     parts = [s for s in (se_unc, se_cor, se_cov) if s is not None]
     se = math.sqrt(_w.csum(p * p for p in parts)) if parts else None
@@ -408,8 +424,7 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
             # The empirical quantile at the nearest rank, which is the
             # convention that needs no interpolation and therefore
             # cannot disagree between two languages' quantile types.
-            for tail, dest in ((0.5 * (1.0 - level), "lo"),
-                               (1.0 - 0.5 * (1.0 - level), "hi")):
+            for tail, dest in ((0.5 * (1.0 - level), "lo"), (1.0 - 0.5 * (1.0 - level), "hi")):
                 k = int(math.ceil(tail * len(srt))) - 1
                 if k < 0:
                     k = 0
@@ -424,36 +439,43 @@ def hadcrut(T, sst, land_fraction=None, sea_ice=None, rule="hadcrut5",
             lo = est - z * se
             hi = est + z * se
 
-    return RichResult(payload={
-        "anomaly": anom,
-        "variance": var,
-        "land_weight": wl,
-        "observed": seen,
-        "estimate": est,
-        "se": se,
-        "se_uncorrelated": se_unc,
-        "se_correlated": se_cor,
-        "se_coverage": se_cov,
-        "ci_lower": lo,
-        "ci_upper": hi,
-        "level": float(level),
-        "north": agg["north"],
-        "south": agg["south"],
-        "n_north": agg["n_north"],
-        "n_south": agg["n_south"],
-        "n_observed": n_obs,
-        "n_cells": n_lat * n_lon,
-        "coverage": got / tot if tot > 0.0 else float("nan"),
-        "coverage_draws": cov_draws,
-        "ensemble_means": members,
-        "rule": rule,
-        "route": route,
-        "interval": interval,
-        "method": "HadCRUT5 blended anomaly",
-    })
+    return RichResult(
+        payload={
+            "anomaly": anom,
+            "variance": var,
+            "land_weight": wl,
+            "observed": seen,
+            "estimate": est,
+            "se": se,
+            "se_uncorrelated": se_unc,
+            "se_correlated": se_cor,
+            "se_coverage": se_cov,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "level": float(level),
+            "north": agg["north"],
+            "south": agg["south"],
+            "n_north": agg["n_north"],
+            "n_south": agg["n_south"],
+            "n_observed": n_obs,
+            "n_cells": n_lat * n_lon,
+            "coverage": got / tot if tot > 0.0 else float("nan"),
+            "coverage_draws": cov_draws,
+            "ensemble_means": members,
+            "rule": rule,
+            "route": route,
+            "interval": interval,
+            "method": "HadCRUT5 blended anomaly",
+        }
+    )
 
 
 def cheatsheet():
-    return ("hadcrut: HadCRUT5 blended land/SST anomaly. rules "
-            + ", ".join(WEIGHT_RULES) + "; routes " + ", ".join(MEAN_ROUTES)
-            + "; intervals " + ", ".join(INTERVALS))
+    return (
+        "hadcrut: HadCRUT5 blended land/SST anomaly. rules "
+        + ", ".join(WEIGHT_RULES)
+        + "; routes "
+        + ", ".join(MEAN_ROUTES)
+        + "; intervals "
+        + ", ".join(INTERVALS)
+    )

@@ -67,19 +67,23 @@ def ev_hill(x, k=None):
         raise ValueError(
             "the threshold order statistic is not positive; the Hill "
             "estimator is only defined for positive heavy-tailed data "
-            "(xi > 0), and log of a non-positive value is not a tail index.")
+            "(xi > 0), and log of a non-positive value is not a tail index."
+        )
     logs = np.log(top)
     xi = float(np.mean(logs[:-1]) - logs[-1])
     payload = {
-        "xi": xi, "tail_alpha": (1.0 / xi if xi > 0 else np.inf),
+        "xi": xi,
+        "tail_alpha": (1.0 / xi if xi > 0 else np.inf),
         "se": xi / np.sqrt(kk),
         "se_caveat": "xi/sqrt(k) is the bias-free asymptotic SE; in the "
-                     "biased regime (k too large) it understates the error",
-        "k": kk, "threshold": float(top[-1]),
+        "biased regime (k too large) it understates the error",
+        "k": kk,
+        "threshold": float(top[-1]),
         "valid_for": "xi > 0 only -- Frechet-type, regularly varying tails; "
-                     "for xi of any sign use ev_pickands or ev_dedh",
+        "for xi of any sign use ev_pickands or ev_dedh",
         "n": int(n),
-        "method": "Hill (1975): mean log-excess of the top k order statistics"}
+        "method": "Hill (1975): mean log-excess of the top k order statistics",
+    }
     if auto:
         ks = np.arange(2, min(n // 2, 500))
         xs_sorted = np.sort(xv)[::-1]
@@ -88,9 +92,9 @@ def ev_hill(x, k=None):
         plot = cums[ks - 1] / ks - lx[ks]
         payload["hill_plot_k"] = ks
         payload["hill_plot_xi"] = plot
-        payload["k_choice_note"] = ("variance falls and bias grows with k; "
-                                    "the plot is returned because a single "
-                                    "number hides the instability")
+        payload["k_choice_note"] = (
+            "variance falls and bias grows with k; the plot is returned because a single number hides the instability"
+        )
     return RichResult(payload=payload)
 
 

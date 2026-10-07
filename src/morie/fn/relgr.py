@@ -50,10 +50,7 @@ def reliability_growth(
     N = np.asarray(failures, dtype=np.float64).ravel()
     n = len(N)
 
-    if intervals is None:
-        T = np.arange(1, n + 1, dtype=np.float64)
-    else:
-        T = np.asarray(intervals, dtype=np.float64).ravel()
+    T = np.arange(1, n + 1, dtype=np.float64) if intervals is None else np.asarray(intervals, dtype=np.float64).ravel()
 
     if len(T) != n:
         raise ValueError("failures and intervals must have same length.")

@@ -1,7 +1,5 @@
 """Tests for gb_fxe.gibbons_fisher_one_sided."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb_fxe import gibbons_fisher_one_sided
 
 
@@ -12,8 +10,7 @@ def test_gb_fxe_basic():
     # RichResult behaves like a dict for the test's purposes.
     assert isinstance(result, dict)
     # Documented keys.
-    for key in ("p_value", "p_greater", "p_less", "prob",
-                "statistic", "mean", "method"):
+    for key in ("p_value", "p_greater", "p_less", "prob", "statistic", "mean", "method"):
         assert key in result
 
     a, b = 3, 1
@@ -24,6 +21,7 @@ def test_gb_fxe_basic():
     nn = r1 + r2
     # Reproduce the formula by plain arithmetic, independent of the function.
     from math import comb, isclose
+
     den = comb(nn, c1)
     lo = max(0, c1 - r2)
     hi = min(r1, c1)
@@ -56,6 +54,7 @@ def test_gb_fxe_edge():
     c1 = a + c
     nn = r1 + r2
     from math import comb, isclose
+
     den = comb(nn, c1)
     lo = max(0, c1 - r2)
     hi = min(r1, c1)

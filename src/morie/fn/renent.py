@@ -76,12 +76,20 @@ def renyi_entropy(y, alpha=2.0, base=2.0):
     elif a == 0.0:
         h = _log(sup)
     else:
-        h = _log(sum(v ** a for v in p if v > 0)) / (1.0 - a)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(h), "alpha": a, "base": lb,
-        "probabilities": p, "support": sup,
-        "method": "Renyi entropy of order alpha (Renyi 1961)",
-    }), "renent")
+        h = _log(sum(v**a for v in p if v > 0)) / (1.0 - a)
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(h),
+                "alpha": a,
+                "base": lb,
+                "probabilities": p,
+                "support": sup,
+                "method": "Renyi entropy of order alpha (Renyi 1961)",
+            }
+        ),
+        "renent",
+    )
 
 
 def cheatsheet():

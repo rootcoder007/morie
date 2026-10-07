@@ -10,5 +10,6 @@ def test_alocv_basic():
 
 def test_alocv_edge():
     import pytest
+
     with pytest.raises(ValueError, match="empty gate"):
         alammar_output_verification("x", [], lambda r, c: "PASS")

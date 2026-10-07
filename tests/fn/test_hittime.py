@@ -1,7 +1,6 @@
 """Tests for hittime.hitting_time."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hittime import hitting_time
 
 

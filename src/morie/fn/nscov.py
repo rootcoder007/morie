@@ -45,15 +45,9 @@ def nscov(
     x = coords[:, 0]
     x_scaled = (x - x.min()) / (x.max() - x.min() + 1e-12)
 
-    if sigma_func == "linear":
-        local_sill = 0.5 + x_scaled
-    else:
-        local_sill = np.ones(n)
+    local_sill = 0.5 + x_scaled if sigma_func == "linear" else np.ones(n)
 
-    if range_func == "linear":
-        local_range = 0.5 + x_scaled
-    else:
-        local_range = np.ones(n)
+    local_range = 0.5 + x_scaled if range_func == "linear" else np.ones(n)
 
     cov = np.zeros((n, n))
     dists = cdist(coords, coords)
@@ -63,7 +57,7 @@ def nscov(
             sj = local_sill[j]
             ri = local_range[i]
             rj = local_range[j]
-            avg_r = np.sqrt(ri * rj)
+            np.sqrt(ri * rj)
             det_factor = 2 * ri * rj / (ri**2 + rj**2 + 1e-12)
             c = np.sqrt(si * sj) * det_factor * np.exp(-(dists[i, j] ** 2) / (ri**2 + rj**2 + 1e-12))
             cov[i, j] = c

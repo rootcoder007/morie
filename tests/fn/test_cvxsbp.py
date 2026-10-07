@@ -1,7 +1,6 @@
 """Tests for cvxsbp.boyd_subgradient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsbp import boyd_subgradient
 
 

@@ -1,7 +1,6 @@
 """Tests for arfmt.py - AR formant extraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.arfmt import ar_formant_extraction_fn, arfmt
 
 

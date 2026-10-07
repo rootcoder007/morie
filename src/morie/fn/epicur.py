@@ -111,15 +111,17 @@ def epicurve(dates, cases, bandwidth, iterations=2):
     for i in range(1, n):
         if fit[i] > fit[pk]:
             pk = i
-    return RichResult(payload={
-        "estimate": fit[pk],
-        "fitted": fit,
-        "peak_date": x[pk],
-        "peak_value": fit[pk],
-        "total": sum(y),
-        "n": n,
-        "method": "Epidemic curve smoothing",
-    })
+    return RichResult(
+        payload={
+            "estimate": fit[pk],
+            "fitted": fit,
+            "peak_date": x[pk],
+            "peak_value": fit[pk],
+            "total": sum(y),
+            "n": n,
+            "method": "Epidemic curve smoothing",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """Tests for morie.fn.torus — torus surface area and volume."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.torus import torus_surface
 
 

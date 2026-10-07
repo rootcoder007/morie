@@ -95,11 +95,11 @@ def bartk(
         W = np.asarray(W, dtype=float)
         if W.ndim == 1:
             W = W[:, None]
-        X_ctrl = np.column_stack([np.ones(L), W])
+        np.column_stack([np.ones(L), W])
         Z_full = np.column_stack([np.ones(L), W, Z])
         T_full = np.column_stack([np.ones(L), W, T])
     else:
-        X_ctrl = np.ones((L, 1))
+        np.ones((L, 1))
         Z_full = np.column_stack([np.ones(L), Z])
         T_full = np.column_stack([np.ones(L), T])
 
@@ -112,10 +112,7 @@ def bartk(
     f_stat = ((ss_tot - ss_resid) / Z_full.shape[1]) / (ss_resid / (L - Z_full.shape[1]))
 
     # Second stage: regress Y on T_hat (and controls)
-    if W is not None:
-        T_hat_full = np.column_stack([np.ones(L), W, T_hat])
-    else:
-        T_hat_full = np.column_stack([np.ones(L), T_hat])
+    T_hat_full = np.column_stack([np.ones(L), W, T_hat]) if W is not None else np.column_stack([np.ones(L), T_hat])
 
     beta_ss = np.linalg.lstsq(T_hat_full, Y, rcond=None)[0]
     beta_2sls = float(beta_ss[-1])

@@ -1,12 +1,11 @@
 """Tests for morie.fn.prsiv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prsiv import prsiv
 
 
 def test_prsiv_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = prsiv(n=5)
     assert result is not None
     assert hasattr(result, "name")

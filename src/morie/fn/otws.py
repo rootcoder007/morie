@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """One-dimensional Wasserstein-1 distance."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -41,8 +39,7 @@ def ot_wasserstein_1d(x, y):
     ys = sorted(C.vec(y))
     n = len(xs)
     w = sum(abs(xs[i] - ys[i]) for i in range(n)) / n
-    return RichResult(payload={"W1": w, "estimate": w, "n": n,
-                               "method": "One-dimensional Wasserstein-1 distance"})
+    return RichResult(payload={"W1": w, "estimate": w, "n": n, "method": "One-dimensional Wasserstein-1 distance"})
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for stmcb.py - Steiglitz-McBride ARMA estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stmcb import steiglitz_mcbride_fn, stmcb
 
 

@@ -27,17 +27,16 @@ def true_confidence_level(n, p, interval_fn):
     """
     value = _acd.true_confidence_level(n, p, interval_fn)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (1.6)"
     return RichResult(
-        title='True confidence level C(pi) of a binomial interval',
+        title="True confidence level C(pi) of a binomial interval",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '1e6: C(pi) = sum_w I(w) C(n,w) pi^w (1-pi)^(n-w) [Bilder & Loughin 2025, eq. 1.6]'
+    return "1e6: C(pi) = sum_w I(w) C(n,w) pi^w (1-pi)^(n-w) [Bilder & Loughin 2025, eq. 1.6]"

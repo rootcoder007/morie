@@ -42,6 +42,7 @@ def _section(title: str) -> None:
 
 
 def step1_otis_callables() -> None:
+    """Demo step 1: placement concentration, segregation duration and alert co-occurrence on the bundled OTIS samples."""
     _section("OTIS suite -- bundled b01/b09/c11 samples")
     b01 = load_sample("otis_b01")
     b09 = load_sample("otis_b09")
@@ -67,6 +68,7 @@ def step1_otis_callables() -> None:
 
 
 def step2_longsim() -> None:
+    """Demo step 2: simulate a 50-subject, 20-timepoint VAR(1) panel with AR(1) covariance and print its shape and means."""
     _section("Longitudinal simulator -- VAR(1) panel with AR1 covariance")
     spec = LongitudinalSimSpec(
         n_individuals=50,
@@ -85,6 +87,7 @@ def step2_longsim() -> None:
 
 
 def step3_levy() -> None:
+    """Demo step 3: the Levy-flight Hill exponent of step lengths on the bundled TPS assault sample."""
     _section("TPS Lévy-flight Hill exponent on bundled Assault sample")
     tps = load_sample("tps_assault")
     res = mrm_tps_levy_scaling(tps, min_step_km=0.5)
@@ -92,6 +95,7 @@ def step3_levy() -> None:
 
 
 def step4_kulldorff() -> None:
+    """Demo step 4: a Kulldorff space-time scan with 49 Monte Carlo permutations on the bundled TPS sample."""
     _section("Kulldorff space-time scan with streaming MC permutations")
     tps = load_sample("tps_assault")
     n_perm = 49
@@ -109,6 +113,7 @@ def step4_kulldorff() -> None:
 
 
 def step5_license_check() -> None:
+    """Demo step 5: print morie's license metadata (see ``morie_license_metadata``)."""
     _section("License posture")
     meta = morie_license_metadata()
     for k, v in meta.items():
@@ -116,6 +121,19 @@ def step5_license_check() -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the animated morie demo (``python -m morie.demo``).
+
+    Steps: the OTIS callables on the bundled samples, the longitudinal
+    simulator, the TPS Levy-flight exponent, the Kulldorff scan (skipped
+    with ``--skip-slow``) and the license posture. ``--no-rich`` forces the
+    plain-text fallback.
+
+    Args:
+        argv: command-line arguments (``None`` reads ``sys.argv``).
+
+    Returns:
+        0 on completion.
+    """
     ap = argparse.ArgumentParser(description="MORIE animated demo")
     ap.add_argument(
         "--no-rich", action="store_true", help="Disable rich-based animation and fall back to plain print()."

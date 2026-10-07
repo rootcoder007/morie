@@ -13,8 +13,7 @@ __all__ = ["kamath_bleu_score"]
 
 
 def _counts(tokens, n):
-    return Counter(tuple(tokens[i:i + n])
-                   for i in range(len(tokens) - n + 1))
+    return Counter(tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1))
 
 
 def kamath_bleu_score(hypothesis, references, max_n=4):
@@ -41,21 +40,19 @@ def kamath_bleu_score(hypothesis, references, max_n=4):
     """
     hyp = list(hypothesis)
     refs = [list(r) for r in references]
-    if isinstance(hypothesis, str) or any(isinstance(r, str)
-                                          for r in references):
+    if isinstance(hypothesis, str) or any(isinstance(r, str) for r in references):
         raise ValueError("pass tokenized sequences, not raw strings.")
     if len(refs) == 0:
         raise ValueError("BLEU needs at least one reference.")
     if len(hyp) == 0:
-        raise ValueError("the hypothesis is empty; BLEU's precisions "
-                         "are 0/0 there.")
+        raise ValueError("the hypothesis is empty; BLEU's precisions are 0/0 there.")
     N = int(max_n)
     if N < 1:
         raise ValueError(f"max_n must be at least 1; got {N}.")
     if len(hyp) < N:
         raise ValueError(
-            f"the hypothesis has {len(hyp)} tokens, fewer than max_n = "
-            f"{N}; the higher-order precisions are undefined.")
+            f"the hypothesis has {len(hyp)} tokens, fewer than max_n = {N}; the higher-order precisions are undefined."
+        )
     pairs = []
     for n in range(1, N + 1):
         hc = _counts(hyp, n)
@@ -72,12 +69,20 @@ def kamath_bleu_score(hypothesis, references, max_n=4):
     r_eff = min((abs(len(r) - c), len(r)) for r in refs)[1]
     bp = kamath_ch8_brevity_penalty(c, r_eff)
     final = kamath_ch8_bleu_final(bp["estimate"], prec["p_n"])
-    return RichResult(payload={
-        "estimate": final["estimate"], "bleu": final["estimate"],
-        "p_n": prec["p_n"], "clipped_counts": pairs,
-        "brevity_penalty": bp["estimate"], "candidate_length": c,
-        "reference_length": r_eff, "max_n": N, "n": len(hyp),
-        "method": "BLEU (Kamath Ch 8; km114/km116/km117 cores)"})
+    return RichResult(
+        payload={
+            "estimate": final["estimate"],
+            "bleu": final["estimate"],
+            "p_n": prec["p_n"],
+            "clipped_counts": pairs,
+            "brevity_penalty": bp["estimate"],
+            "candidate_length": c,
+            "reference_length": r_eff,
+            "max_n": N,
+            "n": len(hyp),
+            "method": "BLEU (Kamath Ch 8; km114/km116/km117 cores)",
+        }
+    )
 
 
 def cheatsheet():

@@ -11,13 +11,11 @@ import pytest
 NR, NC = 5, 4
 N = NR * NC
 # rook adjacency on a 5 x 4 grid, sites numbered row by row
-W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0
-      for j in range(N)] for i in range(N)]
+W = [[1.0 if abs(i // NC - j // NC) + abs(i % NC - j % NC) == 1 else 0.0 for j in range(N)] for i in range(N)]
 Z = [((i * 37) % 17) / 3 + 0.5 * (i // NC) for i in range(N)]
 X1 = [float((i * 5) % 9) for i in range(N)]
 X2 = [math.cos(i) for i in range(N)]
-Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC)
-     for i, (a, b) in enumerate(zip(X1, X2))]
+Y = [1 + 0.8 * a - 0.5 * b + ((i * 13) % 7 - 3) / 2 + 0.3 * (i // NC) for i, (a, b) in enumerate(zip(X1, X2))]
 X = [[1.0, a, b] for a, b in zip(X1, X2)]
 
 from morie.fn.spsem import _neg2ll, schabenberger_spatial_error_model
@@ -44,6 +42,7 @@ def test_spsem_edge():
     ys = [sum(a[i][j] * Y[j] for j in range(N)) for i in range(N)]
     xs = [[sum(a[i][j] * X[j][c] for j in range(N)) for c in range(3)] for i in range(N)]
     from morie.fn._spx import solve
+
     g = [[sum(xs[i][p] * xs[i][q] for i in range(N)) for q in range(3)] for p in range(3)]
     b = solve(g, [sum(xs[i][p] * ys[i] for i in range(N)) for p in range(3)])
     for got, ref in zip(r["beta"], b):

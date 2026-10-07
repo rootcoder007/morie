@@ -1,6 +1,5 @@
 """Tests for eudst."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.eudst import euclidean_utility

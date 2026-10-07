@@ -1,9 +1,9 @@
 """Tests for taukcp."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.taukcp import kendalls_tau_copula
+
 
 def test_taukcp_basic():
     out = kendalls_tau_copula("clayton", 3.0)

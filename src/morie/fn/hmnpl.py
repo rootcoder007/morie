@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Neurons-per-layer heuristic for a fully connected network."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_neurons_per_layer"]

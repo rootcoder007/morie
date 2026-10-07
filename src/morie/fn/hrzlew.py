@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_lewbel_estimator"]
 
 
-def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
-                              density="nonparametric"):
+def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None, density="nonparametric"):
     r"""Lewbel's special-regressor estimator for a heteroskedastic
     binary-response model (Horowitz Sec. 4.5):
 
@@ -100,8 +99,7 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     if X.shape[0] != yv.size:
         raise ValueError("x must have one row per entry of y.")
     if V.size != yv.size:
-        raise ValueError(
-            f"z must have one entry per row of x, got {V.size} for {yv.size}.")
+        raise ValueError(f"z must have one entry per row of x, got {V.size} for {yv.size}.")
     if not np.all(np.isin(yv, (0.0, 1.0))):
         raise ValueError("y must be binary 0/1.")
     if density not in ("nonparametric", "normal"):
@@ -115,19 +113,15 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     Xd = X if has_const else np.column_stack([np.ones(n), X])
     d = Xd.shape[1]
 
-    Zi = None if instruments is None else np.atleast_2d(
-        np.asarray(instruments, dtype=float))
+    Zi = None if instruments is None else np.atleast_2d(np.asarray(instruments, dtype=float))
     if Zi is not None:
         if Zi.shape[0] != n:
             Zi = Zi.T
         if Zi.shape[0] != n:
             raise ValueError("instruments must have one row per observation.")
-        Zi = np.column_stack([np.ones(n), Zi]) if not np.any(
-            np.all(np.isclose(Zi, Zi[0, :]), axis=0)) else Zi
+        Zi = np.column_stack([np.ones(n), Zi]) if not np.any(np.all(np.isclose(Zi, Zi[0, :]), axis=0)) else Zi
         if Zi.shape[1] < d:
-            raise ValueError(
-                f"need at least {d} instruments for {d} regressors, "
-                f"got {Zi.shape[1]}.")
+            raise ValueError(f"need at least {d} instruments for {d} regressors, got {Zi.shape[1]}.")
 
     # Step 1: demean V, then take residuals of V on S = all regressors
     # and instruments (everything except V itself)
@@ -140,8 +134,9 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     if density == "normal":
         sd = float(np.sqrt(np.mean(U**2)))
         if sd <= 0:
-            raise ValueError("the special regressor is fully explained by S; "
-                             "U has zero variance and f(U) is undefined.")
+            raise ValueError(
+                "the special regressor is fully explained by S; U has zero variance and f(U) is undefined."
+            )
         fhat = stats.norm.pdf(U / sd) / sd
         hh = None
     else:
@@ -150,8 +145,7 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
             raise ValueError(f"bandwidth must be positive, got {hh}.")
         fhat = kernel((U[:, None] - U[None, :]) / hh).sum(axis=1) / (n * hh)
     if np.any(fhat <= 0):
-        raise ValueError("the fitted density of U vanishes at some "
-                         "observation; T would be undefined there.")
+        raise ValueError("the fitted density of U vanishes at some observation; T would be undefined there.")
 
     # Step 3: T = [Y - I(V >= 0)] / f(U)
     T = (yv - (V >= 0.0).astype(float)) / fhat
@@ -169,16 +163,23 @@ def horowitz_lewbel_estimator(x, y, z, bandwidth=None, instruments=None,
     xtx_inv = np.linalg.pinv(A.T @ A)
     se = np.sqrt(np.diag(xtx_inv) * float(resid @ resid) / dof)
 
-    return RichResult(payload={
-        "beta": beta, "se": se, "coefficient_on_V": 1.0,
-        "min_density": float(fhat.min()),
-        "max_weight": float((1.0 / fhat).max()),
-        "root_n_consistent": True,
-        "heteroskedasticity_allowed": True,
-        "identifies_choice_probabilities": True,
-        "bandwidth": hh, "endogenous": Zi is not None,
-        "n": int(n), "d": int(d),
-        "method": "Lewbel special regressor: T = [Y - I(V >= 0)] / f(U), then a linear regression"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "se": se,
+            "coefficient_on_V": 1.0,
+            "min_density": float(fhat.min()),
+            "max_weight": float((1.0 / fhat).max()),
+            "root_n_consistent": True,
+            "heteroskedasticity_allowed": True,
+            "identifies_choice_probabilities": True,
+            "bandwidth": hh,
+            "endogenous": Zi is not None,
+            "n": int(n),
+            "d": int(d),
+            "method": "Lewbel special regressor: T = [Y - I(V >= 0)] / f(U), then a linear regression",
+        }
+    )
 
 
 def cheatsheet():

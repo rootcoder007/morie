@@ -69,13 +69,10 @@ def geron_transformer_feedforward(x, W1, b1, W2, b2):
     W1 = np.atleast_2d(np.asarray(W1, dtype=float))
     W2 = np.atleast_2d(np.asarray(W2, dtype=float))
     if W1.shape[1] != W2.shape[0]:
-        raise ValueError(
-            f"W1 maps to {W1.shape[1]} hidden units but W2 expects {W2.shape[0]}."
-        )
+        raise ValueError(f"W1 maps to {W1.shape[1]} hidden units but W2 expects {W2.shape[0]}.")
     if W2.shape[1] != W1.shape[0]:
         raise ValueError(
-            f"the sublayer must be shape-preserving: W1 takes d={W1.shape[0]} but "
-            f"W2 returns d={W2.shape[1]}."
+            f"the sublayer must be shape-preserving: W1 takes d={W1.shape[0]} but W2 returns d={W2.shape[1]}."
         )
 
     first = geron_linear_layer_forward(x_arr, W1.T, b1)
@@ -88,8 +85,7 @@ def geron_transformer_feedforward(x, W1, b1, W2, b2):
 
     return RichResult(
         title="Transformer feed-forward sublayer",
-        summary_lines=[("d_model", d_model), ("d_ff", d_ff),
-                       ("Expansion", d_ff / d_model)],
+        summary_lines=[("d_model", d_model), ("d_ff", d_ff), ("Expansion", d_ff / d_model)],
         payload={
             "output": Y.tolist(),
             "hidden": H.tolist(),

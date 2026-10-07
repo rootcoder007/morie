@@ -66,12 +66,10 @@ attention to neighbours; implemented in :mod:`gtrf`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["centrality_encoding", "shortest_path_matrix",
-           "spatial_bias", "edge_encoding", "graphormer_attention"]
+__all__ = ["centrality_encoding", "shortest_path_matrix", "spatial_bias", "edge_encoding", "graphormer_attention"]
 
 _EPS = 1e-12
 UNREACHABLE = -1
@@ -103,8 +101,7 @@ def centrality_encoding(adj, n, z_in, z_out=None, directed=False):
             o = min(deg_out[v], len(z_out) - 1)
             vec = [vec[i] + z_out[o][i] for i in range(len(vec))]
         out.append(vec)
-    return {"encoding": out, "degrees": deg_in,
-            "note": "indexed by degree, added at the INPUT layer"}
+    return {"encoding": out, "degrees": deg_in, "note": "indexed by degree, added at the INPUT layer"}
 
 
 def shortest_path_matrix(adj, n):
@@ -130,9 +127,11 @@ def shortest_path_matrix(adj, n):
                         D[s][w] = d
                         nxt.append(w)
             frontier = nxt
-    return {"distance": D, "unreachable": UNREACHABLE,
-            "n_unreachable": sum(1 for r in D for v in r
-                                 if v == UNREACHABLE)}
+    return {
+        "distance": D,
+        "unreachable": UNREACHABLE,
+        "n_unreachable": sum(1 for r in D for v in r if v == UNREACHABLE),
+    }
 
 
 def spatial_bias(distance, b_table, unreachable_bias=None):
@@ -143,8 +142,7 @@ def spatial_bias(distance, b_table, unreachable_bias=None):
     keeps the global receptive field a Transformer is for.
     """
     D = [[int(v) for v in r] for r in k.mat(distance)]
-    ub = float(unreachable_bias) if unreachable_bias is not None \
-        else -10.0
+    ub = float(unreachable_bias) if unreachable_bias is not None else -10.0
     out = []
     for i in range(len(D)):
         row = []
@@ -152,12 +150,13 @@ def spatial_bias(distance, b_table, unreachable_bias=None):
             if D[i][j] == UNREACHABLE:
                 row.append(ub)
             else:
-                row.append(float(b_table[min(D[i][j],
-                                             len(b_table) - 1)]))
+                row.append(float(b_table[min(D[i][j], len(b_table) - 1)]))
         out.append(row)
-    return {"bias": out, "unreachable_bias": ub,
-            "note": "a bias inside the softmax keeps distant nodes "
-                    "reachable but discouraged"}
+    return {
+        "bias": out,
+        "unreachable_bias": ub,
+        "note": "a bias inside the softmax keeps distant nodes reachable but discouraged",
+    }
 
 
 def edge_encoding(paths, edge_features, w_table):
@@ -175,16 +174,13 @@ def edge_encoding(paths, edge_features, w_table):
         for step, e in enumerate(path):
             f = edge_features.get(e, edge_features.get((e[1], e[0])))
             if f is None:
-                raise ValueError("grphmr: no features for edge %r"
-                                 % (e,))
+                raise ValueError(f"grphmr: no features for edge {e!r}")
             w = w_table[min(step, len(w_table) - 1)]
             fv = [float(q) for q in k.vec(f)]
             wv = [float(q) for q in k.vec(w)]
             acc += sum(fv[a] * wv[a] for a in range(len(fv)))
         out[(i, j)] = acc / len(path)
-    return {"edge_bias": out,
-            "note": "edge information cannot reach the model through "
-                    "node features"}
+    return {"edge_bias": out, "note": "edge information cannot reach the model through node features"}
 
 
 def graphormer_attention(H, WQ, WK, WV, bias, edge_bias=None):
@@ -194,8 +190,7 @@ def graphormer_attention(H, WQ, WK, WV, bias, edge_bias=None):
     n, dk = len(X), len(WQ)
 
     def proj(W, x):
-        return [sum(W[o][j] * x[j] for j in range(len(x)))
-                for o in range(len(W))]
+        return [sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
 
     out, weights = [], []
     for i in range(n):
@@ -214,29 +209,32 @@ def graphormer_attention(H, WQ, WK, WV, bias, edge_bias=None):
         w = [v / z for v in e]
         weights.append(w)
         vs = [proj(WV, X[j]) for j in range(n)]
-        out.append([sum(w[j] * vs[j][a] for j in range(n))
-                    for a in range(len(vs[0]))])
-    return RichResult(payload={
-        "estimate": out, "output": out, "weights": weights,
-        "method": "Graphormer attention with centrality, spatial and "
-                  "edge encodings; Ying et al. (2021)",
-        "note": "the architecture is a STANDARD Transformer; the "
-                "structural encodings are what was missing",
-    })
+        out.append([sum(w[j] * vs[j][a] for j in range(n)) for a in range(len(vs[0]))])
+    return RichResult(
+        payload={
+            "estimate": out,
+            "output": out,
+            "weights": weights,
+            "method": "Graphormer attention with centrality, spatial and edge encodings; Ying et al. (2021)",
+            "note": "the architecture is a STANDARD Transformer; the structural encodings are what was missing",
+        }
+    )
 
 
 def cheatsheet():
-    return ("grphmr: a standard Transformer was NOT competitive on "
-            "graph leaderboards, and the missing piece is STRUCTURAL "
-            "ENCODING, not architecture. Three of them: CENTRALITY "
-            "(a learnable vector per degree added to node features, "
-            "because attention sees only semantics and cannot tell a "
-            "hub from a leaf); SPATIAL (a learnable bias per "
-            "shortest-path distance inside the softmax, since a graph "
-            "has no canonical grid -- a BIAS, so distant nodes stay "
-            "reachable); and EDGE (features along the path, since bond "
-            "type belongs to neither endpoint). Disconnected pairs get "
-            "their own token, not infinity.")
+    return (
+        "grphmr: a standard Transformer was NOT competitive on "
+        "graph leaderboards, and the missing piece is STRUCTURAL "
+        "ENCODING, not architecture. Three of them: CENTRALITY "
+        "(a learnable vector per degree added to node features, "
+        "because attention sees only semantics and cannot tell a "
+        "hub from a leaf); SPATIAL (a learnable bias per "
+        "shortest-path distance inside the softmax, since a graph "
+        "has no canonical grid -- a BIAS, so distant nodes stay "
+        "reachable); and EDGE (features along the path, since bond "
+        "type belongs to neither endpoint). Disconnected pairs get "
+        "their own token, not infinity."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_2 import ghosal_ewens_esf
 
 
@@ -19,8 +18,7 @@ def _expected_esf(ms, alpha=1.0):
     lp = math.lgamma(n + 1.0) - log_asc
     for i, m in enumerate(ms):
         size = i + 1
-        lp += m * math.log(alpha) - m * math.log(size) \
-            - math.lgamma(m + 1.0)
+        lp += m * math.log(alpha) - m * math.log(size) - math.lgamma(m + 1.0)
     return math.exp(lp), lp, n
 
 

@@ -43,7 +43,7 @@ def _km_censoring(x, delta):
         if d_cens > 0:
             G *= 1.0 - d_cens / at_risk
         Gvals[t] = G
-        at_risk -= (j - i)
+        at_risk -= j - i
         i = j
 
     def geval(t, before=False):
@@ -54,17 +54,20 @@ def _km_censoring(x, delta):
             else:
                 break
         return g
+
     return geval
 
 
 def _xi_ph(s):
     import math
+
     s = max(min(float(s), 30.0), -30.0)
     return 1.0 / (1.0 + math.exp(s))
 
 
 def _dxi_ph(s):
     import math
+
     s = max(min(float(s), 30.0), -30.0)
     e = math.exp(s)
     return -e / (1.0 + e) ** 2
@@ -76,6 +79,7 @@ def _xi_po_scalar(s):
     # xi(s) = (e^s - 1 - s e^s) / (1 - e^s)^2 * ... derive numerically
     # instead: Simpson rule on t in [-40, 40], 4001 nodes, identical in R.
     import math
+
     a, b, m = -40.0, 40.0, 4000
     h = (b - a) / m
     tot = 0.0
@@ -92,6 +96,7 @@ def _xi_po_scalar(s):
 
 def _dxi_po_scalar(s):
     import math
+
     a, b, m = -40.0, 40.0, 4000
     h = (b - a) / m
     tot = 0.0
@@ -106,8 +111,7 @@ def _dxi_po_scalar(s):
     return tot * h / 3.0
 
 
-def two_stage_hazard(time, event, X, Z=None, error="ph",
-                     max_iter=50, tol=1e-10):
+def two_stage_hazard(time, event, X, Z=None, error="ph", max_iter=50, tol=1e-10):
     """
     Cheng-Wei-Ying two-stage estimator for the linear transformation
     model g{S(t | Z)} = h(t) + Z'beta with censored data.
@@ -153,8 +157,12 @@ def two_stage_hazard(time, event, X, Z=None, error="ph",
     if error == "ph":
         xi, dxi = _xi_ph, _dxi_ph
     elif error == "po":
-        xi = lambda s: _xi_po_scalar(float(s))
-        dxi = lambda s: _dxi_po_scalar(float(s))
+
+        def xi(s):
+            return _xi_po_scalar(float(s))
+
+        def dxi(s):
+            return _dxi_po_scalar(float(s))
     else:
         raise ValueError("error must be 'ph' or 'po'")
 
@@ -164,7 +172,7 @@ def two_stage_hazard(time, event, X, Z=None, error="ph",
     G2 = [geval(float(t[j]), before=True) ** 2 for j in range(n)]
 
     beta = np.zeros(p)
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         U = np.zeros(p)
         J = np.zeros((p, p))
         for i in range(n):
@@ -212,37 +220,39 @@ def two_stage_hazard(time, event, X, Z=None, error="ph",
             zij = Xa[i] - Xa[j]
             aij = ehat[i][j] - ehat[j][i]
             for k in range(n):
-                if k == j or k == i:
+                if k in (j, i):
                     continue
                 zik = Xa[i] - Xa[k]
                 aik = ehat[i][k] - ehat[k][i]
                 gam = gam + aij * aik * np.outer(zij, zik)
-    gam = gam / (n ** 3)
+    gam = gam / (n**3)
     corr = np.zeros((p, p))
-    for l in range(n):
-        if d[l] == 1.0:
+    for ell in range(n):
+        if d[ell] == 1.0:
             continue
-        atrisk = sum(1 for k in range(n) if t[k] >= t[l])
+        atrisk = sum(1 for k in range(n) if t[k] >= t[ell])
         v = np.zeros(p)
         for i in range(n):
             for j in range(n):
                 if i == j or d[j] != 1.0:
                     continue
-                if t[i] >= t[j] and t[j] >= t[l]:
+                if t[i] >= t[j] and t[j] >= t[ell]:
                     v = v + (Xa[i] - Xa[j]) * (1.0 / G2[j])
-        corr = corr + np.outer(v, v) / (atrisk ** 2)
-    gam = gam - 4.0 * corr / (n ** 3)
+        corr = corr + np.outer(v, v) / (atrisk**2)
+    gam = gam - 4.0 * corr / (n**3)
     sig = lam @ gam @ lam
     cov = sig / n
     dg = [float(cov[j, j]) for j in range(p)]
-    return RichResult(payload={
-        "estimate": beta,
-        "se": np.sqrt(np.asarray([abs(v) for v in dg])),
-        "cov": cov,
-        "n_iter": it + 1,
-        "error": error,
-        "method": "Cheng-Wei-Ying (1995) two-stage transformation-model estimator, eq. (2.3)",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "se": np.sqrt(np.asarray([abs(v) for v in dg])),
+            "cov": cov,
+            "n_iter": it + 1,
+            "error": error,
+            "method": "Cheng-Wei-Ying (1995) two-stage transformation-model estimator, eq. (2.3)",
+        }
+    )
 
 
 twostg = two_stage_hazard
@@ -250,6 +260,7 @@ twostg = two_stage_hazard
 
 def cheatsheet():
     return "twostg(time, event, X, Z=None, error='ph'|'po') -> Cheng-Wei-Ying transformation-model estimator."
+
 
 # public names resolved by fn/_lazy_map.json
 twostagehazard = two_stage_hazard

@@ -61,13 +61,14 @@ where :math:`\lambda_{g,i}` are first-factor loadings.
 .. code-block:: python
 
    from morie.psymet import crba, mcdo
-   import pandas as pd
+   from morie.fn import _array_core as np
 
-   data = pd.read_excel("TKARONTOMAPQ.xlsx", sheet_name="MAPQII")  # your local copy
+   # respondents x items (your own MAPQ workbook: load it with pandas.read_excel)
+   data = np.array([[4, 5, 3, 4], [3, 4, 3, 3], [5, 5, 4, 5], [2, 3, 2, 2], [4, 4, 4, 5], [3, 3, 2, 3]], dtype=float)
    result = crba(data)
    print(f"Alpha: {result.raw:.4f} [{result.ci_lo:.4f}, {result.ci_hi:.4f}]")
 
-   omega = mcdo(data, nf=4)
+   omega = mcdo(data, nf=1)
    print(f"Omega total: {omega.total:.4f}")
 
 Factor Analysis Prerequisites

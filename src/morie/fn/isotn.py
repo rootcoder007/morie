@@ -27,7 +27,6 @@ def _pava(y, w):
     means = y.copy()
     weights = w.copy()
     # active blocks via two pointers
-    i = 0
     blocks = [[i, i, means[i], weights[i]] for i in range(n)]
     out_blocks = []
     for b in blocks:

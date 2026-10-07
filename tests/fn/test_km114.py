@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
 Deep Dive, eq. 8.2, the clipped n-gram precision of BLEU. Expected values are recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km114 import kamath_ch8_bleu_precision

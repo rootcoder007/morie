@@ -37,8 +37,7 @@ def _best_local(a, b, score):
     return best, bi, bj, ln
 
 
-def blastp(query, subject, match=1.0, mismatch=-1.0, K=0.1, lam=1.0,
-           score_matrix=None):
+def blastp(query, subject, match=1.0, mismatch=-1.0, K=0.1, lam=1.0, score_matrix=None):
     """
     Maximal segment pair score with Karlin-Altschul E-value.
 
@@ -86,25 +85,29 @@ def blastp(query, subject, match=1.0, mismatch=-1.0, K=0.1, lam=1.0,
     if not q or not s:
         raise ValueError("sequences must be non-empty")
     if score_matrix is not None:
+
         def score(x, y):
-            return float(score_matrix.get((x, y),
-                         score_matrix.get((y, x), mismatch)))
+            return float(score_matrix.get((x, y), score_matrix.get((y, x), mismatch)))
     else:
+
         def score(x, y):
             return match if x == y else mismatch
+
     msp, qi, sj, ln = _best_local(q, s, score)
     m, n = len(q), len(s)
     E = float(K) * m * n * math.exp(-float(lam) * msp)
     p = 1.0 - math.exp(-E)
-    return RichResult(payload={
-        "score": msp,
-        "e_value": E,
-        "p_value": p,
-        "q_start": qi,
-        "s_start": sj,
-        "length": ln,
-        "method": "BLAST MSP + Karlin-Altschul E-value (Altschul 1990)",
-    })
+    return RichResult(
+        payload={
+            "score": msp,
+            "e_value": E,
+            "p_value": p,
+            "q_start": qi,
+            "s_start": sj,
+            "length": ln,
+            "method": "BLAST MSP + Karlin-Altschul E-value (Altschul 1990)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -113,6 +116,7 @@ blast_msp = blastp
 
 def cheatsheet():
     return "blastp: MSP = best ungapped local score; E = K m n exp(-lam S)"
+
 
 # public names resolved by fn/_lazy_map.json
 blast_protein = blastp

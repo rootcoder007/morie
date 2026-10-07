@@ -1,7 +1,6 @@
 """Tests for morie.fn.stpnt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stpnt import stpnt
 
 

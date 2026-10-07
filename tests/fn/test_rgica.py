@@ -2,8 +2,6 @@
 
 import math
 
-import pytest
-
 from morie.fn.bsaclass import rangayyan_fastica
 
 
@@ -19,8 +17,7 @@ def test_rgica_basic():
     n = 1000
     s1 = [1.0 if math.sin(0.05 * t) >= 0 else -1.0 for t in range(n)]
     s2 = [((t * 0.037) % 1.0) - 0.5 for t in range(n)]
-    X = [[0.8 * a + 0.6 * b for a, b in zip(s1, s2)],
-         [0.3 * a - 0.9 * b for a, b in zip(s1, s2)]]
+    X = [[0.8 * a + 0.6 * b for a, b in zip(s1, s2)], [0.3 * a - 0.9 * b for a, b in zip(s1, s2)]]
     r = rangayyan_fastica(X, 2)
     src = [list(row) for row in r["sources"]]
     c = [[abs(_corr(src[i], s)) for s in (s1, s2)] for i in range(2)]
@@ -30,12 +27,12 @@ def test_rgica_basic():
 def test_rgica_edge():
     """Seeded runs repeat exactly; the unmixed sources are uncorrelated."""
     n = 600
-    X = [[math.sin(0.11 * t) + 0.5 * (((t * 0.029) % 1.0) - 0.5) for t in range(n)],
-         [0.4 * math.sin(0.11 * t) - (((t * 0.029) % 1.0) - 0.5) for t in range(n)]]
+    X = [
+        [math.sin(0.11 * t) + 0.5 * (((t * 0.029) % 1.0) - 0.5) for t in range(n)],
+        [0.4 * math.sin(0.11 * t) - (((t * 0.029) % 1.0) - 0.5) for t in range(n)],
+    ]
     a = rangayyan_fastica(X, 2, seed=3)
     b = rangayyan_fastica(X, 2, seed=3)
     assert [list(r) for r in a["sources"]] == [list(r) for r in b["sources"]]
     s = [list(r) for r in a["sources"]]
     assert abs(_corr(s[0], s[1])) < 1e-8
-
-

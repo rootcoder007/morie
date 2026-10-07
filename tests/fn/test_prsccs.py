@@ -11,6 +11,7 @@ PSI = [0.5, 0.02, 2.0]
 
 def _solve3(A, b):
     import copy
+
     M = [row[:] + [v] for row, v in zip(copy.deepcopy(A), b)]
     for c in range(3):
         for r in range(3):
@@ -50,7 +51,7 @@ _doctest_module = _importlib.import_module("morie.fn.prsccs")
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

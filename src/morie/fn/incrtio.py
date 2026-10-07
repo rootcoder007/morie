@@ -20,8 +20,7 @@ from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["incidence_rate_ratio"]
 
-_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054,
-      0.99: 2.5758293035489004}
+_Z = {0.90: 1.6448536269514722, 0.95: 1.959963984540054, 0.99: 2.5758293035489004}
 
 
 def _zcrit(confidence):
@@ -35,8 +34,7 @@ def _zcrit(confidence):
     raise ValueError("confidence must be one of 0.90, 0.95, 0.99")
 
 
-def incidence_rate_ratio(IR_e, IR_u, cases_exposed=None,
-                         cases_unexposed=None, confidence=0.95):
+def incidence_rate_ratio(IR_e, IR_u, cases_exposed=None, cases_unexposed=None, confidence=0.95):
     """Ratio of the incidence rate in the exposed to the unexposed.
 
     Parameters
@@ -73,13 +71,20 @@ def incidence_rate_ratio(IR_e, IR_u, cases_exposed=None,
         z = _zcrit(confidence)
         lo = irr * math.exp(-z * se)
         hi = irr * math.exp(z * se)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(irr),
-        "ln_estimate": float(math.log(irr)) if irr > 0 else float("-inf"),
-        "se_ln": se, "ci_lower": lo, "ci_upper": hi,
-        "confidence": float(confidence),
-        "method": "incidence rate ratio (Rothman & Greenland)",
-    }), "incrtio")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(irr),
+                "ln_estimate": float(math.log(irr)) if irr > 0 else float("-inf"),
+                "se_ln": se,
+                "ci_lower": lo,
+                "ci_upper": hi,
+                "confidence": float(confidence),
+                "method": "incidence rate ratio (Rothman & Greenland)",
+            }
+        ),
+        "incrtio",
+    )
 
 
 def cheatsheet():

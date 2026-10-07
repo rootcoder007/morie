@@ -41,38 +41,41 @@ def kamath_image_text_contrastive(I_emb, T_emb, tau):
     >>> out["n"]
     2
     """
-    I = np.atleast_2d(np.asarray(I_emb, dtype=float))
+    I_ = np.atleast_2d(np.asarray(I_emb, dtype=float))
     T = np.atleast_2d(np.asarray(T_emb, dtype=float))
     tau = float(tau)
-    if I.shape != T.shape:
-        raise ValueError(
-            f"the two towers must produce matching batches; got "
-            f"{I.shape} and {T.shape}.")
-    B = I.shape[0]
+    if I_.shape != T.shape:
+        raise ValueError(f"the two towers must produce matching batches; got {I_.shape} and {T.shape}.")
+    B = I_.shape[0]
     if B < 2:
         raise ValueError(
             "InfoNCE needs at least two pairs in the batch; with one "
             "pair there are no negatives and the loss is 0 by "
-            "construction.")
+            "construction."
+        )
     if tau <= 0:
         raise ValueError(f"tau must be positive; got {tau}.")
-    ni = np.linalg.norm(I, axis=1)
+    ni = np.linalg.norm(I_, axis=1)
     nt = np.linalg.norm(T, axis=1)
     if np.any(ni == 0) or np.any(nt == 0):
-        raise ValueError(
-            "a zero embedding has no direction; cosine similarity is "
-            "undefined.")
-    S = (I / ni[:, None]) @ (T / nt[:, None]).T
+        raise ValueError("a zero embedding has no direction; cosine similarity is undefined.")
+    S = (I_ / ni[:, None]) @ (T / nt[:, None]).T
     logits = S / tau
     i2t = _row_ce(logits)
     t2i = _row_ce(logits.T)
     loss = 0.5 * float(i2t.mean() + t2i.mean())
-    return RichResult(payload={
-        "estimate": loss, "loss": loss,
-        "loss_i2t": float(i2t.mean()), "loss_t2i": float(t2i.mean()),
-        "similarity": [[float(v) for v in row] for row in S],
-        "tau": tau, "n": B,
-        "method": "Image-text contrastive (symmetric InfoNCE)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "loss_i2t": float(i2t.mean()),
+            "loss_t2i": float(t2i.mean()),
+            "similarity": [[float(v) for v in row] for row in S],
+            "tau": tau,
+            "n": B,
+            "method": "Image-text contrastive (symmetric InfoNCE)",
+        }
+    )
 
 
 def cheatsheet():

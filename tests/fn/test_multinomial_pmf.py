@@ -1,7 +1,5 @@
 """Tests for multinomial_pmf.multinomial_pmf."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.multinomial_pmf import (
     multinomial_pmf,
 )

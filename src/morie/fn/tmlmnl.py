@@ -95,8 +95,7 @@ def tmle_machine_learning(y, D, X, ml_q=None, ml_g=None):
         gp = fg([W[i] for i in tr], [Dv[i] for i in tr], [W[i] for i in te])
         for j, i in enumerate(te):
             g[i] = S.clip(float(gp[j]), 0.025, 0.975)
-        stack = [des[i] for i in te] + [[1.0] + list(W[i]) for i in te] + \
-                [[0.0] + list(W[i]) for i in te]
+        stack = [des[i] for i in te] + [[1.0] + list(W[i]) for i in te] + [[0.0] + list(W[i]) for i in te]
         qp = fq([des[i] for i in tr], [yv[i] for i in tr], stack)
         m = len(te)
         for j, i in enumerate(te):
@@ -112,9 +111,16 @@ def tmle_machine_learning(y, D, X, ml_q=None, ml_g=None):
     ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Q1s[i] - Q0s[i] - psi for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "n_folds": float(K), "n": n,
-        "method": "Cross-fitted TMLE with pluggable machine learners"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_folds": float(K),
+            "n": n,
+            "method": "Cross-fitted TMLE with pluggable machine learners",
+        }
+    )
 
 
 def cheatsheet():

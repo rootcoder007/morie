@@ -64,13 +64,12 @@ def arimaxhr(y, X, p=1, q=1, d=0, m=None):
     Xd = [row[:] for row in Xm]
     for _ in range(d):
         w = [w[i + 1] - w[i] for i in range(len(w) - 1)]
-        Xd = [[Xd[i + 1][j] - Xd[i][j] for j in range(r)]
-              for i in range(len(Xd) - 1)]
+        Xd = [[Xd[i + 1][j] - Xd[i][j] for j in range(r)] for i in range(len(Xd) - 1)]
     Xr = [[1.0] + row for row in Xd]
     f1b, f1f, nz, f1x = C.lstsq(Xr, w)
     nw = len(nz)
     if m is None:
-        m = max(p + q + 1, int(nw ** 0.5) + 1)
+        m = max(p + q + 1, int(nw**0.5) + 1)
     m = int(m)
     if nw <= m + max(p, q) + 1:
         raise ValueError("series too short for the requested orders")
@@ -91,13 +90,23 @@ def arimaxhr(y, X, p=1, q=1, d=0, m=None):
     b, fb_f, res, fb_x = C.lstsq(Xb, yb)
     nobs = len(yb)
     k = p + q + 1 + r
-    return RichResult(payload={
-        "beta": f1b[1:], "phi": b[1:1 + p],
-        "theta": b[1 + p:1 + p + q], "intercept": f1b[0],
-        "sigma2": sum(v * v for v in res) / max(nobs - k, 1),
-        "noise": nz, "resid": res, "p": p, "q": q, "d": d, "r": r,
-        "nobs": nobs,
-        "method": "ARIMAX by OLS plus Hannan-Rissanen errors (Box-Jenkins 1976)"})
+    return RichResult(
+        payload={
+            "beta": f1b[1:],
+            "phi": b[1 : 1 + p],
+            "theta": b[1 + p : 1 + p + q],
+            "intercept": f1b[0],
+            "sigma2": sum(v * v for v in res) / max(nobs - k, 1),
+            "noise": nz,
+            "resid": res,
+            "p": p,
+            "q": q,
+            "d": d,
+            "r": r,
+            "nobs": nobs,
+            "method": "ARIMAX by OLS plus Hannan-Rissanen errors (Box-Jenkins 1976)",
+        }
+    )
 
 
 arimax = arimaxhr

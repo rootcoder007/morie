@@ -54,45 +54,49 @@ def vol_garman_klass(open_, high, low, close, periods_per_year=None):
     security price volatilities from historical data", *Journal of
     Business* 53:67-78, Eq. (20).
     """
-    O = np.asarray(open_, dtype=float).ravel()
+    O_ = np.asarray(open_, dtype=float).ravel()
     H = np.asarray(high, dtype=float).ravel()
     L = np.asarray(low, dtype=float).ravel()
     C = np.asarray(close, dtype=float).ravel()
-    n = O.size
+    n = O_.size
     if not (H.size == L.size == C.size == n):
         raise ValueError("open, high, low and close must share a length.")
     if n < 2:
         raise ValueError(f"need at least 2 bars, got {n}.")
     if np.any(L <= 0):
         raise ValueError("prices must be positive.")
-    if np.any((H < L) | (O > H) | (O < L) | (C > H) | (C < L)):
+    if np.any((H < L) | (O_ > H) | (O_ < L) | (C > H) | (C < L)):
         raise ValueError("each bar needs low <= open, close <= high.")
     hl = np.log(H / L) ** 2
-    co = np.log(C / O) ** 2
+    co = np.log(C / O_) ** 2
     per_bar = 0.5 * hl - (2.0 * np.log(2.0) - 1.0) * co
     var = float(per_bar.mean())
     if var <= 0:
         raise ValueError(
             "the average Garman-Klass variance is not positive: the "
             "driftless-diffusion model this estimator assumes does not "
-            "describe these bars (strong trend, jumps or gaps).")
+            "describe these bars (strong trend, jumps or gaps)."
+        )
     sig = float(np.sqrt(var))
-    return RichResult(payload={
-        "variance": var, "sigma": sig,
-        "sigma_annualised": (sig * np.sqrt(float(periods_per_year))
-                             if periods_per_year else None),
-        "range_term": float(np.mean(0.5 * hl)),
-        "openclose_term": float(np.mean((2 * np.log(2) - 1) * co)),
-        "negative_sign_note": "the open-close term enters NEGATIVELY: given "
-                              "the range, a large open-to-close move signals "
-                              "trend, not volatility, and the optimal "
-                              "combination partials it out",
-        "efficiency_vs_close": 7.4,
-        "negative_bar_fraction": float(np.mean(per_bar < 0)),
-        "gap_caveat": "O_t is the bar's origin, so overnight gaps leak into "
-                      "nothing here -- and are therefore missed entirely",
-        "n": int(n),
-        "method": "Garman-Klass (1980) Eq. (20): 0.5 (log H/L)^2 - (2 log2 - 1)(log C/O)^2"})
+    return RichResult(
+        payload={
+            "variance": var,
+            "sigma": sig,
+            "sigma_annualised": (sig * np.sqrt(float(periods_per_year)) if periods_per_year else None),
+            "range_term": float(np.mean(0.5 * hl)),
+            "openclose_term": float(np.mean((2 * np.log(2) - 1) * co)),
+            "negative_sign_note": "the open-close term enters NEGATIVELY: given "
+            "the range, a large open-to-close move signals "
+            "trend, not volatility, and the optimal "
+            "combination partials it out",
+            "efficiency_vs_close": 7.4,
+            "negative_bar_fraction": float(np.mean(per_bar < 0)),
+            "gap_caveat": "O_t is the bar's origin, so overnight gaps leak into "
+            "nothing here -- and are therefore missed entirely",
+            "n": int(n),
+            "method": "Garman-Klass (1980) Eq. (20): 0.5 (log H/L)^2 - (2 log2 - 1)(log C/O)^2",
+        }
+    )
 
 
 def cheatsheet():

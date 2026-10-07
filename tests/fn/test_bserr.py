@@ -1,7 +1,6 @@
 """Test bias_error (bserr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bserr import bias_error, bserr
 

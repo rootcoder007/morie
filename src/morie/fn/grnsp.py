@@ -88,8 +88,7 @@ def geron_bert_nsp_loss(logits, labels):
 
     return RichResult(
         title="BERT NSP loss",
-        summary_lines=[("Loss", float(per.mean())),
-                       ("Accuracy", float(np.mean(np.argmax(p, axis=1) == y)))],
+        summary_lines=[("Loss", float(per.mean())), ("Accuracy", float(np.mean(np.argmax(p, axis=1) == y)))],
         payload={
             "loss": float(per.mean()),
             "per_pair": per.tolist(),

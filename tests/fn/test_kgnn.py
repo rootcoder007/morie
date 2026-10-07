@@ -1,7 +1,6 @@
 """Tests for kgnn.r_gcn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kgnn import r_gcn
 
 

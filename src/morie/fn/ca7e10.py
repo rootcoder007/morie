@@ -28,17 +28,16 @@ def ca_chapter_7_equation_10(b, se):
     """
     value = _ca_crim.coef_t(b, se)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.10)"
     return RichResult(
-        title='z-test for a multilevel fixed effect z = b/se_b',
+        title="z-test for a multilevel fixed effect z = b/se_b",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e10: z = b / se_b [Weisburd et al. 2022, eq. 7.10]'
+    return "ca7e10: z = b / se_b [Weisburd et al. 2022, eq. 7.10]"

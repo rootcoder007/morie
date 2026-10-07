@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["joseph_bottom_up_reconciliation"]
 
 
-def joseph_bottom_up_reconciliation(y_hat_bottom, S, base=None, method="bottom_up",
-                                    residuals=None):
+def joseph_bottom_up_reconciliation(y_hat_bottom, S, base=None, method="bottom_up", residuals=None):
     r"""Reconcile hierarchical forecasts so they add up.
 
     Bottom-up sets :math:`\tilde y = S \hat y_{bottom}`: every
@@ -70,8 +69,12 @@ def joseph_bottom_up_reconciliation(y_hat_bottom, S, base=None, method="bottom_u
         rec = S @ yb
         return RichResult(
             payload={
-                "reconciled": rec, "bottom": yb, "coherent": True, "P": None,
-                "n": int(n), "m": int(m),
+                "reconciled": rec,
+                "bottom": yb,
+                "coherent": True,
+                "P": None,
+                "n": int(n),
+                "m": int(m),
                 "method": "Bottom-up reconciliation (coherent by construction)",
             }
         )
@@ -97,8 +100,12 @@ def joseph_bottom_up_reconciliation(y_hat_bottom, S, base=None, method="bottom_u
     rec = S @ (P @ yh)
     return RichResult(
         payload={
-            "reconciled": rec, "bottom": P @ yh, "coherent": True, "P": P,
-            "n": int(n), "m": int(m),
+            "reconciled": rec,
+            "bottom": P @ yh,
+            "coherent": True,
+            "P": P,
+            "n": int(n),
+            "m": int(m),
             "method": f"{method.upper()} optimal-combination reconciliation",
         }
     )

@@ -1,7 +1,5 @@
 """Tests for se_d_probit.se_d_probit."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.se_d_probit import se_d_probit
 
 

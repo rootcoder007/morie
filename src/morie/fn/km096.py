@@ -40,22 +40,23 @@ def kamath_ch6_gender_projection_reg(W_stereo, g):
     gv = np.atleast_1d(np.asarray(g, dtype=float))
     W = np.atleast_2d(np.asarray(W_stereo, dtype=float))
     if W.shape[0] == 0:
-        raise ValueError("W_stereo is empty; a sum over no stereotypical "
-                         "words is undefined, not 0.")
+        raise ValueError("W_stereo is empty; a sum over no stereotypical words is undefined, not 0.")
     norm = float(np.linalg.norm(gv))
     if norm == 0:
-        raise ValueError("g is the zero vector; there is no direction to "
-                         "project onto.")
+        raise ValueError("g is the zero vector; there is no direction to project onto.")
     if W.shape[1] != gv.shape[0]:
-        raise ValueError(
-            f"W_stereo has width {W.shape[1]} but g has {gv.shape[0]}.")
+        raise ValueError(f"W_stereo has width {W.shape[1]} but g has {gv.shape[0]}.")
     proj = W @ (gv / norm)
-    return RichResult(payload={
-        "estimate": float(proj.sum()),
-        "projections": [float(v) for v in proj],
-        "sum_abs": float(np.abs(proj).sum()),
-        "g_norm": norm, "n": int(W.shape[0]),
-        "method": "gender-projection regulariser (Kamath Eq 6.20)"})
+    return RichResult(
+        payload={
+            "estimate": float(proj.sum()),
+            "projections": [float(v) for v in proj],
+            "sum_abs": float(np.abs(proj).sum()),
+            "g_norm": norm,
+            "n": int(W.shape[0]),
+            "method": "gender-projection regulariser (Kamath Eq 6.20)",
+        }
+    )
 
 
 def cheatsheet():

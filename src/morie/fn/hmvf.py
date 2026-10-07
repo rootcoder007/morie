@@ -78,9 +78,7 @@ def geron_value_function(s, pi, gamma, P=None, R=None):
     elif Rt.shape == (n_s, n_a, n_s):
         Rsa = np.sum(Pt * Rt, axis=2)
     else:
-        raise ValueError(
-            f"geron_value_function: R must have shape {(n_s, n_a)} or {(n_s, n_a, n_s)}, got {Rt.shape}"
-        )
+        raise ValueError(f"geron_value_function: R must have shape {(n_s, n_a)} or {(n_s, n_a, n_s)}, got {Rt.shape}")
     g = float(gamma)
     if not (0.0 <= g < 1.0):
         raise ValueError(f"geron_value_function: gamma must lie in [0, 1) for a well-posed linear solve, got {g}")

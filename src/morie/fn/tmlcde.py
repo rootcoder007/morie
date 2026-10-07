@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["tmlecde", "tmle_controlled_direct"]
 
 
-def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
-            level=0.95, hm1W=None, hm0W=None):
+def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025, level=0.95, hm1W=None, hm0W=None):
     """Controlled direct effect: the treatment effect with the mediator held fixed.
 
     The CDE is not the total effect minus an indirect effect; it is
@@ -122,24 +121,30 @@ def tmlecde(Y, A, M, QAM, Q1m, Q0m, g1W, hmW, m=1, gbound=0.025,
         if max(abs(st[0]), abs(st[1])) < 1e-12:
             break
     QAs = [T.expit(off[i] + e[0] * H0[i] + e[1] * H1[i]) for i in range(n)]
-    Q1s = [T.expit(T.logit(Q1m[i]) + e[1] / (g1[i] * h1[i]))
-           for i in range(n)]
-    Q0s = [T.expit(T.logit(Q0m[i]) + e[0] / (g0[i] * h0[i]))
-           for i in range(n)]
+    Q1s = [T.expit(T.logit(Q1m[i]) + e[1] / (g1[i] * h1[i])) for i in range(n)]
+    Q0s = [T.expit(T.logit(Q0m[i]) + e[0] / (g0[i] * h0[i])) for i in range(n)]
     mu1 = sum(Q1s) / n
     mu0 = sum(Q0s) / n
-    ic = [H1[i] * (Y[i] - QAs[i]) + Q1s[i] - mu1
-          - (H0[i] * (Y[i] - QAs[i]) + Q0s[i] - mu0) for i in range(n)]
+    ic = [H1[i] * (Y[i] - QAs[i]) + Q1s[i] - mu1 - (H0[i] * (Y[i] - QAs[i]) + Q0s[i] - mu0) for i in range(n)]
     psi = mu1 - mu0
     se = math.sqrt(C.var(ic, 1) / n)
     z = C.qnorm((1.0 + float(level)) / 2.0)
     den = [min(g1[i] * h1[i], g0[i] * h0[i]) for i in range(n)]
-    return RichResult(payload={
-        "estimate": psi, "se": se, "ci_lower": psi - z * se,
-        "ci_upper": psi + z * se, "mu1": mu1, "mu0": mu0,
-        "epsilon": e, "min_denominator": min(den),
-        "max_weight": max(max(H1), max(H0)), "n": float(n),
-        "method": "TMLE controlled direct effect at a fixed mediator level"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "ci_lower": psi - z * se,
+            "ci_upper": psi + z * se,
+            "mu1": mu1,
+            "mu0": mu0,
+            "epsilon": e,
+            "min_denominator": min(den),
+            "max_weight": max(max(H1), max(H0)),
+            "n": float(n),
+            "method": "TMLE controlled direct effect at a fixed mediator level",
+        }
+    )
 
 
 tmle_controlled_direct = tmlecde

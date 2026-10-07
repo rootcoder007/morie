@@ -1,7 +1,6 @@
 """Tests for morie.fn.newyw — Newey-West HAC SE."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.newyw import newey_west
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.inpnt -- Interior point method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.inpnt import inpnt, interior_point_lp
 

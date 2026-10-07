@@ -60,12 +60,20 @@ def bound_validity_check(lower, upper, theta_0, H0=1.0):
             U = v
     t0 = float(theta_0)
     refuted = 1.0 if L > U else 0.0
-    covers = 1.0 if (L <= t0 and t0 <= U) else 0.0
+    covers = 1.0 if (t0 >= L and t0 <= U) else 0.0
     reject = 1.0 if (float(H0) != 0.0 and covers == 0.0) else 0.0
-    return RichResult(payload={
-        "lower": L, "upper": U, "width": U - L,
-        "refuted": refuted, "covers": covers, "reject": reject,
-        "n": len(lo), "method": "Validity check for bound assumptions"})
+    return RichResult(
+        payload={
+            "lower": L,
+            "upper": U,
+            "width": U - L,
+            "refuted": refuted,
+            "covers": covers,
+            "reject": reject,
+            "n": len(lo),
+            "method": "Validity check for bound assumptions",
+        }
+    )
 
 
 def cheatsheet():

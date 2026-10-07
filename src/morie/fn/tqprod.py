@@ -71,23 +71,17 @@ def turboquant_qjl_product_estimator(q, signs_k, norm_k, S):
     Sm = np.atleast_2d(np.asarray(S, dtype=float))
     m, d = Sm.shape
     if qv.size != d:
-        raise ValueError(
-            "q has dimension %d, S expects %d." % (qv.size, d)
-        )
+        raise ValueError(f"q has dimension {int(qv.size)}, S expects {int(d)}.")
     G = np.atleast_2d(np.asarray(signs_k, dtype=float))
     if G.shape[1] != m:
-        raise ValueError(
-            "signs_k has %d columns, S has %d rows." % (G.shape[1], m)
-        )
+        raise ValueError(f"signs_k has {int(G.shape[1])} columns, S has {int(m)} rows.")
     if not np.all(np.isin(G, (-1.0, 1.0))):
         raise ValueError("signs_k must contain only -1 and +1.")
     nk = np.atleast_1d(np.asarray(norm_k, dtype=float)).ravel()
     if nk.size == 1:
         nk = np.full(G.shape[0], float(nk[0]))
     if nk.size != G.shape[0]:
-        raise ValueError(
-            "norm_k has %d entries for %d keys." % (nk.size, G.shape[0])
-        )
+        raise ValueError(f"norm_k has {int(nk.size)} entries for {int(G.shape[0])} keys.")
     if np.any(nk < 0):
         raise ValueError("key norms must be non-negative.")
 
@@ -102,10 +96,7 @@ def turboquant_qjl_product_estimator(q, signs_k, norm_k, S):
             "inner_product": est,
             "projected_query": Sq,
             "constant": float(np.sqrt(np.pi / 2.0)),
-            "constant_note": (
-                "sqrt(pi/2) is forced by E[<s,q> sign(<s,k>)] = "
-                "sqrt(2/pi) <q,k>/||k||, not chosen"
-            ),
+            "constant_note": ("sqrt(pi/2) is forced by E[<s,q> sign(<s,k>)] = sqrt(2/pi) <q,k>/||k||, not chosen"),
             "asymmetry_note": (
                 "keys are stored as m sign bits plus a norm, queries stay in "
                 "full precision; attention reads every cached key against "
@@ -123,7 +114,4 @@ def turboquant_qjl_product_estimator(q, signs_k, norm_k, S):
 
 
 def cheatsheet():
-    return (
-        "tqprod: inner products from one-bit sketched keys with a "
-        "full-precision query, constant sqrt(pi/2)"
-    )
+    return "tqprod: inner products from one-bit sketched keys with a full-precision query, constant sqrt(pi/2)"

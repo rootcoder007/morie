@@ -96,18 +96,19 @@ def clustered_crp(y, distances, alpha=1.0, decay=1.0, seed=42):
         z[i] = roots.index(r)
     K = len(roots)
     counts = [sum(1 for v in z if v == c) for c in range(K)]
-    means = [sum(y[i] for i in range(n) if z[i] == c) / counts[c]
-             for c in range(K)]
-    return RichResult(payload={
-        "estimate": K,
-        "z": z,
-        "links": links,
-        "counts": counts,
-        "cluster_mean": means,
-        "n_clusters": K,
-        "n": n,
-        "method": "distance-dependent Chinese restaurant process",
-    })
+    means = [sum(y[i] for i in range(n) if z[i] == c) / counts[c] for c in range(K)]
+    return RichResult(
+        payload={
+            "estimate": K,
+            "z": z,
+            "links": links,
+            "counts": counts,
+            "cluster_mean": means,
+            "n_clusters": K,
+            "n": n,
+            "method": "distance-dependent Chinese restaurant process",
+        }
+    )
 
 
 def cheatsheet():

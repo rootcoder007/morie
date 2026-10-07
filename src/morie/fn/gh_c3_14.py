@@ -63,28 +63,29 @@ def ghosal_mpt_prior(x, grid=None, levels=6, a_scale=1.0, shifts=None):
     span = hi - lo
     if span <= 0:
         raise ValueError("the sample has zero spread.")
-    g = np.linspace(lo, hi, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
-    sh = np.linspace(0.0, 0.5, 8) if shifts is None else \
-        np.atleast_1d(np.asarray(shifts, dtype=float))
+    g = np.linspace(lo, hi, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    sh = np.linspace(0.0, 0.5, 8) if shifts is None else np.atleast_1d(np.asarray(shifts, dtype=float))
     cell = span / (2 ** int(levels))
     comps = []
     for s in sh:
         off = float(s) * cell
-        comps.append(polya_tree_density(xv, g, levels=levels,
-                                        a_fn=lambda m: sc * m ** 2,
-                                        lo=lo - off, hi=hi + (cell - off)))
+        comps.append(
+            polya_tree_density(xv, g, levels=levels, a_fn=lambda m: sc * m**2, lo=lo - off, hi=hi + (cell - off))
+        )
     comps = np.array(comps)
     dens = comps.mean(axis=0)
-    return RichResult(payload={
-        "grid": g, "density": dens, "n_components": int(sh.size),
-        "max_jump": float(np.max(np.abs(np.diff(dens)))),
-        "max_jump_single": float(np.max(np.abs(np.diff(comps[0])))),
-        "smoother_than_single": bool(
-            np.max(np.abs(np.diff(dens))) <=
-            np.max(np.abs(np.diff(comps[0])))),
-        "n": int(xv.size),
-        "method": "Mixture of Polya trees (Sec. 3.7.2); averages away the partition artefacts"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "n_components": int(sh.size),
+            "max_jump": float(np.max(np.abs(np.diff(dens)))),
+            "max_jump_single": float(np.max(np.abs(np.diff(comps[0])))),
+            "smoother_than_single": bool(np.max(np.abs(np.diff(dens))) <= np.max(np.abs(np.diff(comps[0])))),
+            "n": int(xv.size),
+            "method": "Mixture of Polya trees (Sec. 3.7.2); averages away the partition artefacts",
+        }
+    )
 
 
 def cheatsheet():

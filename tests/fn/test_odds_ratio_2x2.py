@@ -1,7 +1,5 @@
 """Tests for odds_ratio_2x2.odds_ratio_2x2."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.odds_ratio_2x2 import odds_ratio_2x2
 
 

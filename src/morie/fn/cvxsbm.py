@@ -100,14 +100,22 @@ def boyd_subgrad_method(f, subgrad, x0, t=None, max_iter=500, rule="sqrt"):
             best_f, best_x = fx, x.copy()
     return RichResult(
         title="Subgradient method",
-        summary_lines=[("iterations", int(max_iter)), ("f best", best_f),
-                       ("f last", fx), ("steps that increased f", inc)],
-        warnings=["the subgradient method is not a descent method; use "
-                  "x_best, not x_last"],
+        summary_lines=[
+            ("iterations", int(max_iter)),
+            ("f best", best_f),
+            ("f last", fx),
+            ("steps that increased f", inc),
+        ],
+        warnings=["the subgradient method is not a descent method; use x_best, not x_last"],
         payload={
-            "x_best": best_x, "f_best": best_f, "x_last": x,
-            "f_last": fx, "increased": inc, "f_path": np.asarray(path),
-            "rule": rule, "method": "boyd_subgrad_method",
+            "x_best": best_x,
+            "f_best": best_f,
+            "x_last": x,
+            "f_last": fx,
+            "increased": inc,
+            "f_path": np.asarray(path),
+            "rule": rule,
+            "method": "boyd_subgrad_method",
         },
     )
 

@@ -1,7 +1,6 @@
 """Tests for rfmlt.rf_multivariate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rfmlt import rf_multivariate
 
 

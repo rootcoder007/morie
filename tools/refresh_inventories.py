@@ -33,7 +33,7 @@ CURRENT_VERSION = None  # auto-detected below
 
 def _detect_current_version() -> str:
     """Read pyproject.toml's [project].version field as the truth source."""
-    proj = tomllib.load(open("pyproject.toml", "rb"))
+    proj = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
     return proj["project"]["version"]
 
 
@@ -219,7 +219,7 @@ def _parse_desc_field(desc: str, field: str) -> list[str]:
 def build_dependencies(out_path: str = "DEPENDENCIES.csv") -> int:
     rows: list[dict] = []
 
-    pyproject = tomllib.load(open("pyproject.toml", "rb"))
+    pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
     proj = pyproject.get("project", {})
 
     for r in proj.get("dependencies", []):

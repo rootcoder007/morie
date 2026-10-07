@@ -25,9 +25,14 @@ def ghosal_stochastic_proc_prior(x, seed=42):
     # aggregation consistency: merging two cells = summing weights
     merged = [p[0] + p[1]] + p[2:]
     gap = abs(sum(merged) - 1.0)
-    res = RichResult(payload={"estimate": p[0], "weights": p,
-                              "aggregation_gap": gap,
-                              "method": "consistent finite-dimensional prior (GvdV 2017 sec. 3.2)"})
+    res = RichResult(
+        payload={
+            "estimate": p[0],
+            "weights": p,
+            "aggregation_gap": gap,
+            "method": "consistent finite-dimensional prior (GvdV 2017 sec. 3.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_2")
 
 

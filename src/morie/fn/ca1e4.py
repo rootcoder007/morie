@@ -28,17 +28,16 @@ def ca_chapter_1_equation_4(b0, b1, x1):
     """
     value = _ca_crim.linear_predictor(b0, [b1], [x1])
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (1.4)"
     return RichResult(
-        title='Two-group logit model E(logit(pi)|x) = b0 + b1 x1',
+        title="Two-group logit model E(logit(pi)|x) = b0 + b1 x1",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca1e4: E(logit(pi)|x) = b0 + b1 x1 [Weisburd et al. 2022, eq. 1.4]'
+    return "ca1e4: E(logit(pi)|x) = b0 + b1 x1 [Weisburd et al. 2022, eq. 1.4]"

@@ -69,14 +69,10 @@ problem, which RKD inherits in a sharper form because a derivative is
 being estimated.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["local_polynomial_slope", "rkd_estimate",
-           "density_kink_test", "covariate_kink_test"]
+__all__ = ["local_polynomial_slope", "rkd_estimate", "density_kink_test", "covariate_kink_test"]
 
 _EPS = 1e-12
 
@@ -97,39 +93,32 @@ def _side_fit(v, y, k_pt, bandwidth, order, side, kernel):
         kw = (1.0 - u) if kernel == "triangular" else 1.0
         if kw <= 0.0:
             continue
-        rows.append([d ** p for p in range(1, int(order) + 1)])
+        rows.append([d**p for p in range(1, int(order) + 1)])
         ys.append(float(y[i]))
         w.append(kw)
     if len(rows) < int(order) + 1:
-        raise ValueError("bnskt2: too few observations on the %s of "
-                         "the kink within the bandwidth (%d for order "
-                         "%d)" % (side, len(rows), order))
+        raise ValueError(
+            f"bnskt2: too few observations on the {side} of the kink within the bandwidth ({int(len(rows))} for order {int(order)})"
+        )
     fit = k.wls(rows, ys, w)
     # coefficient on d is the derivative at the kink
-    return {"slope": fit["coef"][1], "coef": fit["coef"],
-            "n": len(rows)}
+    return {"slope": fit["coef"][1], "coef": fit["coef"], "n": len(rows)}
 
 
-def local_polynomial_slope(v, y, kink, bandwidth, order=2,
-                           side="right", kernel="triangular"):
+def local_polynomial_slope(v, y, kink, bandwidth, order=2, side="right", kernel="triangular"):
     r"""The one-sided derivative of :math:`E[Y \mid V]` at the kink."""
     if side not in ("left", "right"):
-        raise ValueError("bnskt2: side must be left or right, got %r"
-                         % (side,))
+        raise ValueError(f"bnskt2: side must be left or right, got {side!r}")
     if kernel not in ("triangular", "uniform"):
-        raise ValueError("bnskt2: kernel must be triangular or "
-                         "uniform, got %r" % (kernel,))
+        raise ValueError(f"bnskt2: kernel must be triangular or uniform, got {kernel!r}")
     if int(order) < 1:
-        raise ValueError("bnskt2: the polynomial order must be at "
-                         "least 1")
+        raise ValueError("bnskt2: the polynomial order must be at least 1")
     if float(bandwidth) <= 0.0:
         raise ValueError("bnskt2: the bandwidth must be positive")
-    return _side_fit(k.vec(v), k.vec(y), kink, bandwidth, order, side,
-                     kernel)
+    return _side_fit(k.vec(v), k.vec(y), kink, bandwidth, order, side, kernel)
 
 
-def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular",
-                 policy_slope_change=None, B=None, fuzzy=False):
+def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular", policy_slope_change=None, B=None, fuzzy=False):
     r"""The RKD estimand: a ratio of kinks.
 
     Supply ``policy_slope_change`` when the policy rule is known --
@@ -140,47 +129,50 @@ def rkd_estimate(V, Y, kink, bandwidth, order=2, kernel="triangular",
     v = [float(x) for x in k.vec(V)]
     y = [float(x) for x in k.vec(Y)]
     if len(v) != len(y):
-        raise ValueError("bnskt2: V and Y must agree in length "
-                         "(%d, %d)" % (len(v), len(y)))
+        raise ValueError(f"bnskt2: V and Y must agree in length ({int(len(v))}, {int(len(y))})")
     r = _side_fit(v, y, kink, bandwidth, order, "right", kernel)
-    l = _side_fit(v, y, kink, bandwidth, order, "left", kernel)
-    num = r["slope"] - l["slope"]
+    ell = _side_fit(v, y, kink, bandwidth, order, "left", kernel)
+    num = r["slope"] - ell["slope"]
     if fuzzy:
         if B is None:
-            raise ValueError("bnskt2: fuzzy RKD needs the observed "
-                             "treatment B")
+            raise ValueError("bnskt2: fuzzy RKD needs the observed treatment B")
         b = [float(x) for x in k.vec(B)]
         if len(b) != len(v):
-            raise ValueError("bnskt2: B has %d entries for %d "
-                             "observations" % (len(b), len(v)))
+            raise ValueError(f"bnskt2: B has {int(len(b))} entries for {int(len(v))} observations")
         rb = _side_fit(v, b, kink, bandwidth, order, "right", kernel)
         lb = _side_fit(v, b, kink, bandwidth, order, "left", kernel)
         den = rb["slope"] - lb["slope"]
         den_src = "estimated from observed treatment"
     else:
         if policy_slope_change is None:
-            raise ValueError("bnskt2: sharp RKD needs "
-                             "policy_slope_change, the known change "
-                             "in the slope of the policy rule")
+            raise ValueError(
+                "bnskt2: sharp RKD needs policy_slope_change, the known change in the slope of the policy rule"
+            )
         den = float(policy_slope_change)
         den_src = "known policy rule"
     if abs(den) <= _EPS:
-        raise ValueError("bnskt2: the change in the policy slope is "
-                         "zero (%.3g) -- there is no kink to "
-                         "identify from" % den)
-    return RichResult(payload={
-        "estimate": num / den, "tau": num / den,
-        "outcome_kink": num, "policy_kink": den,
-        "slope_right": r["slope"], "slope_left": l["slope"],
-        "n_right": r["n"], "n_left": l["n"],
-        "bandwidth": float(bandwidth), "order": int(order),
-        "kernel": kernel, "fuzzy": bool(fuzzy),
-        "denominator_source": den_src,
-        "method": "regression kink design; Card, Lee, Pei & Weber "
-                  "(NBER WP 18564 / Econometrica 2015)",
-        "requires": "the density of V must be smooth at the kink -- "
-                    "test it",
-    })
+        raise ValueError(
+            f"bnskt2: the change in the policy slope is zero ({den:.3g}) -- there is no kink to identify from"
+        )
+    return RichResult(
+        payload={
+            "estimate": num / den,
+            "tau": num / den,
+            "outcome_kink": num,
+            "policy_kink": den,
+            "slope_right": r["slope"],
+            "slope_left": ell["slope"],
+            "n_right": r["n"],
+            "n_left": ell["n"],
+            "bandwidth": float(bandwidth),
+            "order": int(order),
+            "kernel": kernel,
+            "fuzzy": bool(fuzzy),
+            "denominator_source": den_src,
+            "method": "regression kink design; Card, Lee, Pei & Weber (NBER WP 18564 / Econometrica 2015)",
+            "requires": "the density of V must be smooth at the kink -- test it",
+        }
+    )
 
 
 def density_kink_test(V, kink, bandwidth, n_bins=20, order=1):
@@ -194,10 +186,8 @@ def density_kink_test(V, kink, bandwidth, n_bins=20, order=1):
     kp, bw = float(kink), float(bandwidth)
     inside = [x for x in v if abs(x - kp) <= bw]
     if len(inside) < 4 * int(n_bins):
-        raise ValueError("bnskt2: too few observations within the "
-                         "bandwidth for %d bins" % n_bins)
-    edges = [kp - bw + 2.0 * bw * i / n_bins
-             for i in range(int(n_bins) + 1)]
+        raise ValueError(f"bnskt2: too few observations within the bandwidth for {int(n_bins)} bins")
+    edges = [kp - bw + 2.0 * bw * i / n_bins for i in range(int(n_bins) + 1)]
     ctr, dens = [], []
     for b in range(int(n_bins)):
         c = 0.5 * (edges[b] + edges[b + 1])
@@ -208,42 +198,47 @@ def density_kink_test(V, kink, bandwidth, n_bins=20, order=1):
     left = _side_fit(ctr, dens, kp, bw, order, "left", "uniform")
     change = right["slope"] - left["slope"]
     scale = max(sum(dens) / len(dens), _EPS)
-    return {"slope_change": change, "relative": change / scale,
-            "slope_right": right["slope"],
-            "slope_left": left["slope"],
-            "n_inside": len(inside), "n_bins": int(n_bins),
-            "smooth": abs(change / scale) < 1.0,
-            "interpretation": "a kink in the DENSITY suggests precise "
-                              "manipulation of the assignment "
-                              "variable, which invalidates the design"}
+    return {
+        "slope_change": change,
+        "relative": change / scale,
+        "slope_right": right["slope"],
+        "slope_left": left["slope"],
+        "n_inside": len(inside),
+        "n_bins": int(n_bins),
+        "smooth": abs(change / scale) < 1.0,
+        "interpretation": "a kink in the DENSITY suggests precise "
+        "manipulation of the assignment "
+        "variable, which invalidates the design",
+    }
 
 
-def covariate_kink_test(V, Z, kink, bandwidth, order=2,
-                        kernel="triangular"):
+def covariate_kink_test(V, Z, kink, bandwidth, order=2, kernel="triangular"):
     r"""A covariate that the policy cannot affect must not kink."""
-    r = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "right",
-                  kernel)
-    l = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "left",
-                  kernel)
-    return {"slope_change": r["slope"] - l["slope"],
-            "slope_right": r["slope"], "slope_left": l["slope"],
-            "n_right": r["n"], "n_left": l["n"],
-            "interpretation": "a kink here is evidence the design is "
-                              "picking up composition rather than the "
-                              "policy"}
+    r = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "right", kernel)
+    ell = _side_fit(k.vec(V), k.vec(Z), kink, bandwidth, order, "left", kernel)
+    return {
+        "slope_change": r["slope"] - ell["slope"],
+        "slope_right": r["slope"],
+        "slope_left": ell["slope"],
+        "n_right": r["n"],
+        "n_left": ell["n"],
+        "interpretation": "a kink here is evidence the design is picking up composition rather than the policy",
+    }
 
 
 def cheatsheet():
-    return ("bnskt2: regression KINK design. RD uses a JUMP in "
-            "treatment; RKD uses a change in SLOPE -- benefits rising "
-            "with earnings up to a cap, then flat. tau = (change in "
-            "the slope of E[Y|V]) / (change in the slope of the "
-            "policy). The denominator is usually KNOWN from "
-            "legislation, so the first stage is not estimated. Needs "
-            "the density of V SMOOTH at the kink -- precise "
-            "manipulation bends it, and then composition is mistaken "
-            "for policy. More bandwidth-sensitive than RD because a "
-            "DERIVATIVE is being estimated.")
+    return (
+        "bnskt2: regression KINK design. RD uses a JUMP in "
+        "treatment; RKD uses a change in SLOPE -- benefits rising "
+        "with earnings up to a cap, then flat. tau = (change in "
+        "the slope of E[Y|V]) / (change in the slope of the "
+        "policy). The denominator is usually KNOWN from "
+        "legislation, so the first stage is not estimated. Needs "
+        "the density of V SMOOTH at the kink -- precise "
+        "manipulation bends it, and then composition is mistaken "
+        "for policy. More bandwidth-sensitive than RD because a "
+        "DERIVATIVE is being estimated."
+    )
 
 
 # compact alias per ledger/NAMING.md

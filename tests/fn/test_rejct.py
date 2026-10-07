@@ -1,7 +1,5 @@
 """Tests for rejct.rejection_point."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.rejct import rejection_point
 
 

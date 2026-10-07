@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['runsz', 'gibbons_runs_asymp_normal']
+__all__ = ["runsz", "gibbons_runs_asymp_normal"]
 
 
 def runsz(r, n1, n2, correct=False):

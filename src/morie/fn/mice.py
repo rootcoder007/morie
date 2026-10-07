@@ -67,7 +67,7 @@ def mice_impute(
 
     results: list[pd.DataFrame] = []
 
-    for imp in range(m):
+    for _imp in range(m):
         filled = df.copy()
         # Initial fill: mean for numeric, mode for categorical
         for col in target_cols:

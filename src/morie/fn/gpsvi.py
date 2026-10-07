@@ -42,7 +42,9 @@ def _k(A, B, ell, var):
     return out
 
 
-def gp_stochastic_vi(X, y, X_test=None, inducing=None, batch_size=None, lengthscale=1.0, variance=1.0, noise=0.1, jitter=1e-9):
+def gp_stochastic_vi(
+    X, y, X_test=None, inducing=None, batch_size=None, lengthscale=1.0, variance=1.0, noise=0.1, jitter=1e-9
+):
     """Titsias/Hensman sparse GP: collapsed bound and predictive moments."""
     A = core.mat(X)
     yv = core.vec(y)

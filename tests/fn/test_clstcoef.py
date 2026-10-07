@@ -1,7 +1,6 @@
 """Tests for clstcoef.clustering_coefficient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clstcoef import clustering_coefficient
 
 

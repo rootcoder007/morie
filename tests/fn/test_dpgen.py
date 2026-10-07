@@ -1,8 +1,8 @@
 """Tests for dpgen: Dirichlet process stick-breaking."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dpgen import dirichlet_process_gen
 
 

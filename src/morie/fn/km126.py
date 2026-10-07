@@ -26,11 +26,14 @@ def kamath_ch8_smd(x, y, E=None):
     5.0
     """
     d = kamath_ch8_moverscore_distance(x, y, E=E)
-    return RichResult(payload={
-        "estimate": d["estimate"], "difference": d["difference"],
-        "n": d["n"],
-        "method": "Sentence Mover's Distance (Kamath Eq 8.14; the "
-                  "Eq 8.11 core in km123)"})
+    return RichResult(
+        payload={
+            "estimate": d["estimate"],
+            "difference": d["difference"],
+            "n": d["n"],
+            "method": "Sentence Mover's Distance (Kamath Eq 8.14; the Eq 8.11 core in km123)",
+        }
+    )
 
 
 def cheatsheet():

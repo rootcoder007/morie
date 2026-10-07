@@ -93,10 +93,7 @@ def reldi(
 
     for i in range(n_bins):
         lo, hi = bin_edges[i], bin_edges[i + 1]
-        if i == n_bins - 1:
-            mask = (y_prob >= lo) & (y_prob <= hi)
-        else:
-            mask = (y_prob >= lo) & (y_prob < hi)
+        mask = (y_prob >= lo) & (y_prob <= hi) if i == n_bins - 1 else (y_prob >= lo) & (y_prob < hi)
         counts[i] = int(mask.sum())
         bin_centers[i] = (lo + hi) / 2.0
         if counts[i] > 0:

@@ -9,13 +9,13 @@ patterns.
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 3.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn.spffun import schabenberger_f_function as f_function
+from morie.fn.spgfun import schabenberger_g_function as g_function
 from morie.fn.spkfun import schabenberger_k_function as k_function
 from morie.fn.splfun import schabenberger_l_function as l_function
-from morie.fn.spgfun import schabenberger_g_function as g_function
-from morie.fn.spffun import schabenberger_f_function as f_function
 
 REGION = (0.0, 0.0, 10.0, 10.0)
 R = np.linspace(0.1, 1.5, 8)
@@ -28,8 +28,7 @@ def _csr(seed=0, n=800):
 def _clustered(seed=1):
     rng = np.random.default_rng(seed)
     parents = rng.random((40, 2)) * 10.0
-    return np.clip(np.repeat(parents, 20, axis=0)
-                   + rng.normal(0, 0.15, (800, 2)), 0, 10)
+    return np.clip(np.repeat(parents, 20, axis=0) + rng.normal(0, 0.15, (800, 2)), 0, 10)
 
 
 def _regular(seed=1):
@@ -51,14 +50,14 @@ def test_k_csr_reference_curve_is_exactly_pi_r_squared():
 
 
 def test_clustering_raises_k_above_the_csr_curve():
-    """"In a clustered pattern ... the number of extra events within
+    """ "In a clustered pattern ... the number of extra events within
     small distances will be large" (p. 101)."""
     r = k_function(_clustered(), r=R, region=REGION)
     assert np.all(r["k"] > r["k_csr"])
 
 
 def test_regularity_lowers_k_below_the_csr_curve_at_short_lags():
-    """"In regular patterns the number of extra events for short
+    """ "In regular patterns the number of extra events for short
     distances will be small" (p. 101).
 
     "Short" means shorter than the inter-point spacing; past that a
@@ -85,7 +84,7 @@ def test_l_minus_r_is_the_csr_reference_line_at_zero():
 
 
 def test_clustering_pushes_l_minus_r_positive_at_short_distances():
-    """"Clustering of events manifests itself as positive values at
+    """ "Clustering of events manifests itself as positive values at
     short distances" (p. 103)."""
     r = l_function(_clustered(), r=R, region=REGION)
     assert np.all(r["l_minus_r"] > 0)
@@ -98,7 +97,7 @@ def test_g_function_is_the_empirical_nn_cdf():
     nn = r["nn_distances"]
     expected = np.array([(nn <= y).sum() / nn.size for y in r["r"]])
     np.testing.assert_allclose(r["g"], expected, rtol=1e-12)
-    assert np.all(np.diff(r["g"]) >= 0)          # a CDF is non-decreasing
+    assert np.all(np.diff(r["g"]) >= 0)  # a CDF is non-decreasing
 
 
 def test_g_matches_the_csr_form_on_a_csr_pattern():
@@ -141,7 +140,7 @@ def test_border_correction_differs_from_the_naive_estimator():
     a = k_function(pts, r=R, region=REGION, correction="border")["k"]
     b = k_function(pts, r=R, region=REGION, correction="none")["k"]
     assert not np.allclose(a, b)
-    assert np.all(b[-3:] <= a[-3:] + 1e-12)      # naive is the lower one
+    assert np.all(b[-3:] <= a[-3:] + 1e-12)  # naive is the lower one
 
 
 def test_point_pattern_input_validation():

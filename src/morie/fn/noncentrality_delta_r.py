@@ -28,17 +28,16 @@ def noncentrality_delta_r(r, n):
     """
     value = _ca_crim.noncentrality_delta_r(r, n)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.6)"
     return RichResult(
-        title='Noncentrality delta for a correlation coefficient',
+        title="Noncentrality delta for a correlation coefficient",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca8e6: delta = r sqrt(n-2) / sqrt(1 - r^2) [Weisburd et al. 2022, eq. 8.6]'
+    return "ca8e6: delta = r sqrt(n-2) / sqrt(1 - r^2) [Weisburd et al. 2022, eq. 8.6]"

@@ -1,8 +1,8 @@
 """Tests for ksr058 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr058 import kosorok_ch2_law_iterated_logarithm
 
 
@@ -13,7 +13,6 @@ def test_ksr058_basic():
 
 
 def test_ksr058_edge():
-    assert kosorok_ch2_law_iterated_logarithm(n=500)["chung_liminf_constant"] == \
-        pytest.approx(np.pi / 2)
+    assert kosorok_ch2_law_iterated_logarithm(n=500)["chung_liminf_constant"] == pytest.approx(np.pi / 2)
     with pytest.raises(ValueError):
         kosorok_ch2_law_iterated_logarithm(np.random.default_rng(16).random(4))

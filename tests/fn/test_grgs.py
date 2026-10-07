@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.grgs import geron_grid_search_cv
 
 
@@ -21,9 +20,19 @@ def test_grgs_basic():
 
     result = geron_grid_search_cv(X, y, param_grid, K, fit_score)
     assert isinstance(result, dict)
-    for key in ("best_params", "best_score", "best_index",
-                "mean_scores", "std_scores", "all_scores",
-                "candidates", "n_fits", "estimate", "n", "method"):
+    for key in (
+        "best_params",
+        "best_score",
+        "best_index",
+        "mean_scores",
+        "std_scores",
+        "all_scores",
+        "candidates",
+        "n_fits",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     assert result["best_params"] == {"a": 2, "b": 0}
     assert math.isfinite(result["best_score"])
@@ -62,7 +71,7 @@ import morie.fn.grgs as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

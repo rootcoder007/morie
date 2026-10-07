@@ -12,9 +12,9 @@ Greenwood and Gleason (1955).
 import itertools
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ramthy import (
     goodman_minimum,
     monochromatic_triangles,
@@ -48,30 +48,30 @@ def cycle_colouring(n):
 # Known values, from the primary source
 # --------------------------------------------------------------------
 
+
 def test_the_nine_known_values_match_ds1_table_ia():
-    known = {(3, 3): 6, (3, 4): 9, (3, 5): 14, (3, 6): 18, (3, 7): 23,
-             (3, 8): 28, (3, 9): 36, (4, 4): 18, (4, 5): 25}
-    for (k, l), v in known.items():
-        assert ramsey_number(k, l)["value"] == v
-        assert ramsey_number(k, l)["exact"] is True
+    known = {(3, 3): 6, (3, 4): 9, (3, 5): 14, (3, 6): 18, (3, 7): 23, (3, 8): 28, (3, 9): 36, (4, 4): 18, (4, 5): 25}
+    for (k, ell), v in known.items():
+        assert ramsey_number(k, ell)["value"] == v
+        assert ramsey_number(k, ell)["exact"] is True
 
 
 def test_ramsey_numbers_are_symmetric():
-    for k, l in [(3, 4), (3, 7), (4, 5), (5, 5)]:
-        a, b = ramsey_number(k, l), ramsey_number(l, k)
+    for k, ell in [(3, 4), (3, 7), (4, 5), (5, 5)]:
+        a, b = ramsey_number(k, ell), ramsey_number(ell, k)
         assert a["value"] == b["value"]
         assert (a["lower"], a["upper"]) == (b["lower"], b["upper"])
 
 
 def test_the_trivial_cases_are_exact():
     assert ramsey_number(1, 9)["value"] == 1
-    for l in range(2, 8):
-        assert ramsey_number(2, l)["value"] == l
+    for ell in range(2, 8):
+        assert ramsey_number(2, ell)["value"] == ell
 
 
 def test_unknown_values_return_an_interval_and_never_a_number():
-    for k, l in [(5, 5), (6, 6), (4, 6), (3, 10)]:
-        out = ramsey_number(k, l)
+    for k, ell in [(5, 5), (6, 6), (4, 6), (3, 10)]:
+        out = ramsey_number(k, ell)
         assert out["value"] is None
         assert out["exact"] is False
         assert out["lower"] < out["upper"]
@@ -89,8 +89,8 @@ def test_the_circulating_wrong_value_for_r55_is_flagged():
 
 
 def test_known_values_lie_inside_their_own_bounds():
-    for k, l in [(3, 3), (3, 5), (4, 4), (4, 5)]:
-        out = ramsey_number(k, l)
+    for k, ell in [(3, 3), (3, 5), (4, 4), (4, 5)]:
+        out = ramsey_number(k, ell)
         assert out["lower"] == out["value"] == out["upper"]
         assert out["value"] <= out["erdos_szekeres_bound"]
 
@@ -98,6 +98,7 @@ def test_known_values_lie_inside_their_own_bounds():
 # --------------------------------------------------------------------
 # Goodman's identity -- exact, not approximate
 # --------------------------------------------------------------------
+
 
 def test_goodman_identity_matches_brute_force_on_random_colourings():
     rng = np.random.default_rng(0)
@@ -132,15 +133,13 @@ def test_the_five_cycle_has_no_monochromatic_triangle():
 
 def test_goodman_minimum_is_attained_exhaustively_for_small_n():
     for n in (3, 4, 5, 6):
-        observed = min(monochromatic_triangles(C)["estimate"]
-                       for C in all_colourings(n))
+        observed = min(monochromatic_triangles(C)["estimate"] for C in all_colourings(n))
         assert observed == goodman_minimum(n)["minimum"]
 
 
 def test_every_colouring_of_k6_has_at_least_two_mono_triangles():
     # the exhaustive half of R(3,3) <= 6: all 2^15 colourings
-    worst = min(monochromatic_triangles(C)["estimate"]
-                for C in all_colourings(6))
+    worst = min(monochromatic_triangles(C)["estimate"] for C in all_colourings(6))
     assert worst == 2
     assert goodman_minimum(6)["minimum"] == 2
 
@@ -166,6 +165,7 @@ def test_goodman_minimum_is_zero_below_six_and_positive_from_six():
 # --------------------------------------------------------------------
 # The party problem, proved rather than quoted
 # --------------------------------------------------------------------
+
 
 def test_six_people_force_a_monochromatic_triple():
     out = party_problem(6)
@@ -199,20 +199,19 @@ def test_a_bad_witness_is_rejected_with_the_offending_clique():
 
 def test_no_colouring_of_k6_can_witness_r33():
     # the other half of R(3,3) = 6, by exhaustion over every colouring
-    assert not any(verify_ramsey_witness(C, 3, 3)["valid"]
-                   for C in all_colourings(6))
+    assert not any(verify_ramsey_witness(C, 3, 3)["valid"] for C in all_colourings(6))
 
 
 # --------------------------------------------------------------------
 # Bounds
 # --------------------------------------------------------------------
 
+
 def test_the_pure_recursion_derives_the_classical_values_tightly():
     # Greenwood and Gleason: R(k-1,l) + R(k,l-1), strict when both even.
     # With use_known=False nothing is looked up, so these are derived.
-    for (k, l), v in [((3, 3), 6), ((3, 4), 9), ((3, 5), 14),
-                      ((4, 4), 18)]:
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for (k, ell), v in [((3, 3), 6), ((3, 4), 9), ((3, 5), 14), ((4, 4), 18)]:
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert b["used_known_values"] is False
         assert b["recursive"] == v
 
@@ -232,16 +231,16 @@ def test_looking_up_known_values_tightens_the_recursion():
 
 
 def test_the_binomial_bound_is_weaker_than_the_recursion():
-    for k, l in [(3, 4), (4, 4), (4, 5), (5, 5), (6, 6)]:
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for k, ell in [(3, 4), (4, 4), (4, 5), (5, 5), (6, 6)]:
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert b["binomial"] >= b["recursive"]
         assert b["best"] == min(b["binomial"], b["recursive"])
 
 
 def test_every_upper_bound_actually_bounds_the_known_value():
-    for k, l in [(3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5)]:
-        v = ramsey_number(k, l)["value"]
-        b = ramsey_upper_bound(k, l, use_known=False)
+    for k, ell in [(3, 3), (3, 4), (3, 5), (3, 6), (4, 4), (4, 5)]:
+        v = ramsey_number(k, ell)["value"]
+        b = ramsey_upper_bound(k, ell, use_known=False)
         assert v <= b["recursive"]
         assert v <= b["binomial"]
 
@@ -267,14 +266,14 @@ def test_the_expected_count_really_is_below_one_at_the_bound():
 
 
 def test_the_probabilistic_bound_grows_with_k():
-    bounds = [ramsey_lower_bound_probabilistic(k)["bound"]
-              for k in range(3, 15)]
+    bounds = [ramsey_lower_bound_probabilistic(k)["bound"] for k in range(3, 15)]
     assert all(b <= c for b, c in zip(bounds, bounds[1:]))
 
 
 # --------------------------------------------------------------------
 # Validation
 # --------------------------------------------------------------------
+
 
 def test_ramsey_input_validation():
     with pytest.raises(ValueError, match="at least 1"):
@@ -297,6 +296,7 @@ def test_ramsey_input_validation():
 # The two Ramseys are different people
 # --------------------------------------------------------------------
 
+
 def test_reset_consolidation_all_four_implementations_agree():
     # J. B. Ramsey's RESET, unrelated to F. P. Ramsey above. Four
     # modules carried four copies of this arithmetic; they now share
@@ -310,7 +310,7 @@ def test_reset_consolidation_all_four_implementations_agree():
     n = 300
     x = rng.normal(size=n)
     X = np.column_stack([np.ones(n), x])
-    y = X @ np.array([1.0, 2.0]) + 1.5 * x ** 2 + rng.normal(size=n)
+    y = X @ np.array([1.0, 2.0]) + 1.5 * x**2 + rng.normal(size=n)
     fitted = X @ np.linalg.lstsq(X, y, rcond=None)[0]
 
     a = reset_f(y, X, fitted).statistic
@@ -331,9 +331,7 @@ def test_reset_is_invariant_to_the_scale_of_the_response():
     n = 300
     x = rng.normal(size=n)
     X = np.column_stack([np.ones(n), x])
-    y = X @ np.array([1.0, 2.0]) + 1.5 * x ** 2 + rng.normal(size=n)
+    y = X @ np.array([1.0, 2.0]) + 1.5 * x**2 + rng.normal(size=n)
     base = ramsey_reset(y, X)["statistic"]
     for s in (1e2, 1e4, 1e6):
-        assert ramsey_reset(y * s, X)["statistic"] == pytest.approx(
-            base, rel=1e-6
-        )
+        assert ramsey_reset(y * s, X)["statistic"] == pytest.approx(base, rel=1e-6)

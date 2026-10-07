@@ -69,16 +69,13 @@ _FAMILIES = ("bernoulli", "normal", "poisson")
 def _score_bernoulli(p0, p1):
     """Log f1/f0 for Bernoulli, plus its KL number under f1."""
     if not (0.0 < p0 < 1.0) or not (0.0 < p1 < 1.0):
-        raise ValueError(
-            "glr_test: bernoulli p0 and p1 must lie strictly in (0, 1), "
-            "got %r and %r" % (p0, p1))
+        raise ValueError(f"glr_test: bernoulli p0 and p1 must lie strictly in (0, 1), got {p0!r} and {p1!r}")
     a = math.log(p1 / p0)
     b = math.log((1.0 - p1) / (1.0 - p0))
 
     def z(v):
         if v not in (0.0, 1.0):
-            raise ValueError(
-                "glr_test: bernoulli data must be 0 or 1, got %r" % (v,))
+            raise ValueError(f"glr_test: bernoulli data must be 0 or 1, got {v!r}")
         return a if v == 1.0 else b
 
     return z, p1 * a + (1.0 - p1) * b
@@ -87,7 +84,7 @@ def _score_bernoulli(p0, p1):
 def _score_normal(p0, p1, sd):
     """Log f1/f0 for a Gaussian mean shift with known sd."""
     if sd <= 0.0:
-        raise ValueError("glr_test: sd must be positive, got %r" % (sd,))
+        raise ValueError(f"glr_test: sd must be positive, got {sd!r}")
     d = p1 - p0
     mid = 0.5 * (p0 + p1)
     s2 = sd * sd
@@ -102,16 +99,12 @@ def _score_normal(p0, p1, sd):
 def _score_poisson(p0, p1):
     """Log f1/f0 for Poisson rates."""
     if p0 <= 0.0 or p1 <= 0.0:
-        raise ValueError(
-            "glr_test: poisson rates must be positive, got %r and %r"
-            % (p0, p1))
+        raise ValueError(f"glr_test: poisson rates must be positive, got {p0!r} and {p1!r}")
     lr = math.log(p1 / p0)
 
     def z(v):
         if v < 0.0 or v != math.floor(v):
-            raise ValueError(
-                "glr_test: poisson data must be non-negative integers, "
-                "got %r" % (v,))
+            raise ValueError(f"glr_test: poisson data must be non-negative integers, got {v!r}")
         return v * lr - (p1 - p0)
 
     return z, p1 * lr - (p1 - p0)
@@ -166,15 +159,11 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
         raise ValueError("glr_test: x must hold at least one observation")
     fam = str(family).lower()
     if fam not in _FAMILIES:
-        raise ValueError(
-            "glr_test: family must be one of %s, got %r"
-            % (", ".join(_FAMILIES), family))
+        raise ValueError("glr_test: family must be one of {}, got {!r}".format(", ".join(_FAMILIES), family))
     p0 = float(p0)
     p1 = float(p1)
     if p0 == p1:
-        raise ValueError(
-            "glr_test: p0 and p1 must differ -- with one density there is "
-            "no change to detect")
+        raise ValueError("glr_test: p0 and p1 must differ -- with one density there is no change to detect")
 
     if fam == "bernoulli":
         z, kl = _score_bernoulli(p0, p1)
@@ -191,7 +180,7 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
     cusum = [0.0] * n
     S = 0.0
     smin = 0.0
-    smin_at = 0          # index (0-based) just BEFORE the putative change
+    smin_at = 0  # index (0-based) just BEFORE the putative change
     best = -math.inf
     best_k = 0
     stop_index = None
@@ -204,7 +193,7 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
         # what reflects the chart at zero: with the update after the
         # read, an all-in-control stretch would drift negative instead
         # of resting at 0.
-        if S < smin:
+        if smin > S:
             smin = S
             smin_at = i + 1
         val = S - smin
@@ -212,8 +201,7 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
         if val > best:
             best = val
             best_k = smin_at
-        if threshold is not None and stop_index is None and \
-                val >= float(threshold):
+        if threshold is not None and stop_index is None and val >= float(threshold):
             stop_index = i
 
     payload = {
@@ -232,18 +220,19 @@ def glr_test(x, p0, p1, threshold=None, family="bernoulli", sd=1.0):
     if threshold is not None:
         payload["threshold"] = float(threshold)
         payload["detected"] = stop_index is not None
-        payload["stop_index"] = (-1 if stop_index is None else int(stop_index))
+        payload["stop_index"] = -1 if stop_index is None else int(stop_index)
         # Lorden (1971): E_1(N) ~ log(gamma) / I(f1, f0), and the
         # threshold is c = log(gamma), so the ARL to detection is c / kl.
-        payload["expected_delay"] = (
-            float(threshold) / kl if kl > 0 else float("inf"))
+        payload["expected_delay"] = float(threshold) / kl if kl > 0 else float("inf")
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return ("glm: Page likelihood-ratio CUSUM, max_k sum_{i=k}^{n} "
-            "log(f1/f0) (Lai 1995 eq. 2.3); families bernoulli/normal/"
-            "poisson; KL number gives Lorden's delay log(gamma)/KL.")
+    return (
+        "glm: Page likelihood-ratio CUSUM, max_k sum_{i=k}^{n} "
+        "log(f1/f0) (Lai 1995 eq. 2.3); families bernoulli/normal/"
+        "poisson; KL number gives Lorden's delay log(gamma)/KL."
+    )
 
 
 page_cusum = glr_test

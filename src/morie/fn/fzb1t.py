@@ -64,15 +64,20 @@ def fauzi_b1_coefficient(t, f_X, f_X_prime=None, S_X=None, transform="log"):
     fp = np.atleast_1d(np.asarray(f_X_prime, dtype=float)).ravel()
     if fp.size != tv.size:
         raise ValueError(f"f_X_prime has {fp.size} entries for {tv.size}.")
-    b1 = gpp * fx + gp ** 2 * fp
+    b1 = gpp * fx + gp**2 * fp
 
-    return RichResult(payload={
-        "t": tv, "b_1": b1, "g_prime": gp, "g_double_prime": gpp,
-        "bias_order": "O(h^2) everywhere, including the boundary region",
-        "contrast": "the naive kernel estimator degrades to O(h) or O(1) "
-                    "at the boundary (Remark 4.5)",
-        "transform": tr["name"],
-        "method": "b_1 from Eq. (4.14); the transformation makes the bias constant computable"})
+    return RichResult(
+        payload={
+            "t": tv,
+            "b_1": b1,
+            "g_prime": gp,
+            "g_double_prime": gpp,
+            "bias_order": "O(h^2) everywhere, including the boundary region",
+            "contrast": "the naive kernel estimator degrades to O(h) or O(1) at the boundary (Remark 4.5)",
+            "transform": tr["name"],
+            "method": "b_1 from Eq. (4.14); the transformation makes the bias constant computable",
+        }
+    )
 
 
 def cheatsheet():

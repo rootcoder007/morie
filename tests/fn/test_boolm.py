@@ -1,7 +1,6 @@
 """Tests for boolm (boolean minimization)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.boolm import boolean_minimize
 
 

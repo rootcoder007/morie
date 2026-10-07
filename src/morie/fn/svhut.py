@@ -24,10 +24,7 @@ def svhut(positions, weights=None, issue_weights=None):
     DescriptiveResult
     """
     positions = np.asarray(positions, dtype=float)
-    if weights is None:
-        weights = np.ones_like(positions) / len(positions)
-    else:
-        weights = np.asarray(weights, dtype=float)
+    weights = np.ones_like(positions) / len(positions) if weights is None else np.asarray(weights, dtype=float)
     if issue_weights is None:
         issue_weights = np.ones_like(positions) / len(positions)
     else:

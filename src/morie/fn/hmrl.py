@@ -114,7 +114,9 @@ def geron_reinforcement_learning(env, pi, gamma=0.99, n_episodes=1, max_steps=10
                 action = out
             else:
                 if np.any(arr < 0) or not np.isclose(float(arr.sum()), 1.0, atol=1e-8):
-                    raise ValueError("geron_reinforcement_learning: pi returned neither an action nor a probability vector")
+                    raise ValueError(
+                        "geron_reinforcement_learning: pi returned neither an action nor a probability vector"
+                    )
                 s_rng = (1664525 * s_rng + 1013904223) % 2**32
                 u = (s_rng + 0.5) / 2**32
                 action = int(min(np.searchsorted(np.cumsum(arr), u), arr.size - 1))

@@ -1,7 +1,6 @@
 """Tests for agmunw.muzero_n_step_value."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agmunw import muzero_n_step_value
 
 
@@ -14,6 +13,8 @@ def test_agmunw_basic():
     result = muzero_n_step_value(rewards, values, n, gamma)
     assert isinstance(result, dict)
     assert "target" in result
+
+
 def test_agmunw_edge():
     """Test edge cases."""
     rewards = np.random.default_rng(42).normal(0, 1, 100)

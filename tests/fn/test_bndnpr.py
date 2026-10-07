@@ -1,7 +1,6 @@
 """Tests for bndnpr.bound_nonparam_regr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndnpr import bound_nonparam_regr
 
 
@@ -43,8 +42,8 @@ def test_bndnpr_basic():
     for i in range(n):
         xi = X[i]
         # Nadaraya-Watson conditional means E(y | X=xi, D=t)
-        w1_mask = (D == 1.0)
-        w0_mask = (D == 0.0)
+        w1_mask = D == 1.0
+        w0_mask = D == 0.0
         u_all = (xi - X) / bw
         k_all = np.exp(-0.5 * u_all * u_all)
         w1 = float(np.sum(k_all * w1_mask))

@@ -73,7 +73,7 @@ def _envkey(bondset):
     index vectors (shorter prefix first).  Both arms sort with this key, so
     the round in which a duplicate environment is retired is identical.
     """
-    return "".join("%04d" % b for b in sorted(bondset))
+    return "".join(f"{int(b):04d}" for b in sorted(bondset))
 
 
 def _morgan(a, bonds, invariants, radius, nbits, use_bond_order=True):
@@ -86,7 +86,7 @@ def _morgan(a, bonds, invariants, radius, nbits, use_bond_order=True):
     emitted again, and the atom that produced it takes no further part
     (the "dead atom" rule).
     """
-    nb = len(bonds)
+    len(bonds)
     inc = [[] for _ in range(a)]
     for bi, (i, j, o) in enumerate(bonds):
         inc[i].append((bi, j, o if use_bond_order else 1))
@@ -156,8 +156,7 @@ def _defaults(a, numhs, charge, inring, isotope_delta):
     return (col(numhs, 0), col(charge, 0), col(inring, 0), col(isotope_delta, 0))
 
 
-def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None,
-          isotope_delta=None, nbits=2048, radius=2):
+def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None, isotope_delta=None, nbits=2048, radius=2):
     """Extended-connectivity fingerprint of radius 2 (ECFP4).
 
     ECFP diameter 4 is Morgan radius 2.  The molecule is supplied as a
@@ -239,11 +238,19 @@ def ecfp4(adjacency, atomnum, numhs=None, charge=None, inring=None,
     inv = _connectivity_invariants(a, bonds, at, nh, ch, ir, isd)
     bits, cnt, ident = _morgan(a, bonds, inv, int(radius), int(nbits))
     uniq = sorted(set(ident))
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits),
-        "identifiers": uniq, "nenv": len(ident), "a": a,
-        "nbits": int(nbits), "radius": int(radius),
-        "method": "ECFP4 (Morgan radius 2), Rogers-Hahn / RDKit"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "identifiers": uniq,
+            "nenv": len(ident),
+            "a": a,
+            "nbits": int(nbits),
+            "radius": int(radius),
+            "method": "ECFP4 (Morgan radius 2), Rogers-Hahn / RDKit",
+        }
+    )
 
 
 ecfp_4_fingerprint = ecfp4

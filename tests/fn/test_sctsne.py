@@ -1,7 +1,6 @@
 """Tests for sctsne.tsne_embedding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sctsne import tsne_embedding
 
 

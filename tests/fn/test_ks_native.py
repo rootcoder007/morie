@@ -55,16 +55,17 @@ def test_two_sample_matches_r():
     two = sc.ks_2samp(a, b)
     assert two.statistic == pytest.approx(1.0 / 3.0, abs=1e-9)
     assert two.pvalue == pytest.approx(0.930736, abs=1e-6)
-    assert sc.ks_2samp(a, b, alternative="greater").pvalue == pytest.approx(
-        0.535714, abs=1e-6)
-    assert sc.ks_2samp(a, b, alternative="less").pvalue == pytest.approx(
-        1.0, abs=1e-9)
+    assert sc.ks_2samp(a, b, alternative="greater").pvalue == pytest.approx(0.535714, abs=1e-6)
+    assert sc.ks_2samp(a, b, alternative="less").pvalue == pytest.approx(1.0, abs=1e-9)
     assert two.exact is True and two.n_ties == 0
 
 
-def test_the_exact_law_is_used_below_n_100_and_the_series_above():
+def test_the_exact_law_is_used_up_to_n_10000_and_the_limit_above():
+    # exact below n = 100 in Python; up to 10,000 through the compiled core (Marsaglia, Tsang &
+    # Wang), as ks_1samp documents; the Kolmogorov limit above
     assert sc.kstest(lcg(90, 3), "uniform").exact is True
-    assert sc.kstest(lcg(120, 3), "uniform").exact is False
+    assert sc.kstest(lcg(120, 3), "uniform").exact is (sc._ks_exact_core() is not None)
+    assert sc.kstest(lcg(10001, 3), "uniform").exact is False
 
 
 def test_ties_are_counted_and_the_exact_law_is_still_used():
@@ -83,8 +84,7 @@ def test_ties_are_counted_and_the_exact_law_is_still_used():
         for j in range(6):
             if abs(i - j) >= 2:
                 continue
-            inside[i][j] = 1 if i == j == 0 else (
-                (inside[i - 1][j] if i else 0) + (inside[i][j - 1] if j else 0))
+            inside[i][j] = 1 if i == j == 0 else ((inside[i - 1][j] if i else 0) + (inside[i][j - 1] if j else 0))
     p = 1.0 - inside[5][5] / math.comb(10, 5)
     assert r.pvalue == pytest.approx(p, rel=1e-12)
     assert p == pytest.approx(55 / 63, rel=1e-15)
@@ -147,8 +147,7 @@ def test_the_public_wrapper_carries_the_alternative_through():
     for alt in ("two-sided", "greater", "less"):
         r = kstest(X10, distribution="uniform", alternative=alt)
         assert 0.0 <= r.p_value <= 1.0
-        assert r.statistic == pytest.approx(
-            sc.kstest(X10, "uniform", alternative=alt).statistic, abs=1e-12)
+        assert r.statistic == pytest.approx(sc.kstest(X10, "uniform", alternative=alt).statistic, abs=1e-12)
     two = kstest(X10, [0.2, 0.4, 0.6, 0.8])
     assert two.method == "two-sample"
 
@@ -156,6 +155,5 @@ def test_the_public_wrapper_carries_the_alternative_through():
 def test_the_normal_route_agrees_with_the_standard_normal_cdf():
     x = [-1.5, -0.4, 0.0, 0.3, 1.1, 2.2]
     r = sc.kstest(x, "norm")
-    manual = sc.ks_1samp(
-        x, lambda u: 0.5 * (1.0 + math.erf(u / math.sqrt(2.0))))
+    manual = sc.ks_1samp(x, lambda u: 0.5 * (1.0 + math.erf(u / math.sqrt(2.0))))
     assert r.statistic == pytest.approx(manual.statistic, abs=1e-12)

@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["alphafold_triangle_mult"]
 
 
-def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing",
-                            layernorm=True):
+def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing", layernorm=True):
     """Triangular multiplicative update -- Algorithms 11 and 12, p. 18.
 
     Each edge ``ij`` of the pair graph is updated from the other two edges
@@ -64,19 +63,19 @@ def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing",
         raise ValueError("mode must be 'outgoing' or 'incoming'")
     n = len(z)
     cz = len(z[0][0])
-    zn = [[A.lnorm(z[i][j]) if layernorm else list(z[i][j])
-           for j in range(n)] for i in range(n)]
+    zn = [[A.lnorm(z[i][j]) if layernorm else list(z[i][j]) for j in range(n)] for i in range(n)]
 
     # line 2: gated left and right edge projections
-    a = [[[A.sigm(x) * y for x, y in zip(A.lin(zn[i][j], wag),
-                                         A.lin(zn[i][j], wav))]
-          for j in range(n)] for i in range(n)]
-    b = [[[A.sigm(x) * y for x, y in zip(A.lin(zn[i][j], wbg),
-                                         A.lin(zn[i][j], wbv))]
-          for j in range(n)] for i in range(n)]
+    a = [
+        [[A.sigm(x) * y for x, y in zip(A.lin(zn[i][j], wag), A.lin(zn[i][j], wav))] for j in range(n)]
+        for i in range(n)
+    ]
+    b = [
+        [[A.sigm(x) * y for x, y in zip(A.lin(zn[i][j], wbg), A.lin(zn[i][j], wbv))] for j in range(n)]
+        for i in range(n)
+    ]
     # line 3: output gate
-    g = [[[A.sigm(x) for x in A.lin(zn[i][j], wg)] for j in range(n)]
-         for i in range(n)]
+    g = [[[A.sigm(x) for x in A.lin(zn[i][j], wg)] for j in range(n)] for i in range(n)]
 
     c = len(a[0][0])
     out = []
@@ -85,11 +84,9 @@ def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing",
         for j in range(n):
             # line 4: the triangle contraction, the only differing line
             if mode == "outgoing":
-                s = [sum(a[i][k][q] * b[j][k][q] for k in range(n))
-                     for q in range(c)]
+                s = [sum(a[i][k][q] * b[j][k][q] for k in range(n)) for q in range(c)]
             else:
-                s = [sum(a[k][i][q] * b[k][j][q] for k in range(n))
-                     for q in range(c)]
+                s = [sum(a[k][i][q] * b[k][j][q] for k in range(n)) for q in range(c)]
             if layernorm:
                 s = A.lnorm(s)
             p = A.lin(s, wo)
@@ -103,7 +100,7 @@ def alphafold_triangle_mult(z, wag, wav, wbg, wbv, wg, wo, mode="outgoing",
             "estimate": sum(flat) / len(flat),
             "n": n,
             "mode": mode,
-            "method": "AlphaFold triangular multiplicative update (%s)" % mode,
+            "method": f"AlphaFold triangular multiplicative update ({mode})",
         }
     )
 

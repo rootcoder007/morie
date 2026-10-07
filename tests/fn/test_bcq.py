@@ -1,8 +1,6 @@
 """Tests for bcq.bcq."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bcq import bcq
 
 
@@ -23,9 +21,9 @@ def test_bcq_basic():
         done = bool(rng.integers(0, 2))
         dataset.append((s, a, r, s_next, done))
 
-    result = bcq(dataset, states=states, actions=actions,
-                 tau=0.3, gamma=0.99, lr=0.5, iters=200,
-                 loss="huber", huber_c=1.0)
+    result = bcq(
+        dataset, states=states, actions=actions, tau=0.3, gamma=0.99, lr=0.5, iters=200, loss="huber", huber_c=1.0
+    )
 
     # Documented return: a mapping with both 'estimate' and 'q' keys for Q.
     assert isinstance(result, dict)
@@ -100,9 +98,7 @@ def test_bcq_edge():
     # tau = 1 with a non-degenerate behavior falls back to imitation of G
     # (the paper's stated behavior), so the policy must still be defined
     # and allowed must be non-empty.
-    result = bcq(dataset, states=states, actions=actions,
-                 tau=1.0, gamma=0.9, lr=0.5, iters=100,
-                 loss="squared")
+    result = bcq(dataset, states=states, actions=actions, tau=1.0, gamma=0.9, lr=0.5, iters=100, loss="squared")
 
     assert isinstance(result, dict)
     for s in states:

@@ -75,10 +75,7 @@ def smthconv(d, c=1.0, n=None, zstd=None, zsmooth=None):
         if nn < 1:
             raise ValueError(f"sample size must be at least 1, got {nn}.")
         h = c * float(nn) ** (-d)
-    if zstd is None or zsmooth is None:
-        sqdiff = np.nan
-    else:
-        sqdiff = (float(zstd) - float(zsmooth)) ** 2
+    sqdiff = np.nan if zstd is None or zsmooth is None else (float(zstd) - float(zsmooth)) ** 2
     return RichResult(
         payload={
             "ok": bool(lower and upper),

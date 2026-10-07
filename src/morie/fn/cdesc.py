@@ -64,15 +64,12 @@ def cdesc(f, grad_f, x0, tol=1e-6, max_iter=1000, cyclic=True, full_output=False
         x_old = x.copy()
         g = grad_f(x)
 
-        if cyclic:
-            coords = range(n)
-        else:
-            # Steepest descent coordinate
-            coords = [np.argmax(np.abs(g))]
+        # Steepest descent coordinate
+        coords = range(n) if cyclic else [np.argmax(np.abs(g))]
 
         for j in coords:
             # Line search in direction j
-            def f_j(alpha):
+            def f_j(alpha, *, j=j):
                 x_test = x.copy()
                 x_test[j] = alpha
                 return f(x_test)

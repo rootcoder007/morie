@@ -98,7 +98,11 @@ def geron_online_learning(X_stream, y_stream, eta=0.1, theta=None, decay=0.0):
 
     return RichResult(
         title="Online (streaming) learning",
-        summary_lines=[("Instances", int(T)), ("Prequential loss", float(losses.sum())), ("Final rate", base / (1.0 + d * max(T - 1, 0)))],
+        summary_lines=[
+            ("Instances", int(T)),
+            ("Prequential loss", float(losses.sum())),
+            ("Final rate", base / (1.0 + d * max(T - 1, 0))),
+        ],
         interpretation="Losses are pre-update, so their sum is an honest predict-then-update error.",
         payload={
             "theta": th,

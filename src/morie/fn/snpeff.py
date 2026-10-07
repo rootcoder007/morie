@@ -34,10 +34,7 @@ from ._richresult import RichResult
 __all__ = ["snpeff", "translate", "codon_table", "annotate_variant"]
 
 _BASES = "TCAG"
-_AA = ("FFLLSSSSYY**CC*W"
-       "LLLLPPPPHHQQRRRR"
-       "IIIMTTTTNNKKSSRR"
-       "VVVVAAAADDEEGGGG")
+_AA = "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"
 
 _CODONS = {}
 for _i, _b1 in enumerate(_BASES):
@@ -46,8 +43,7 @@ for _i, _b1 in enumerate(_BASES):
             _CODONS[_b1 + _b2 + _b3] = _AA[_i * 16 + _j * 4 + _k]
 
 _HIGH = ("stop_gained", "stop_lost", "start_lost", "frameshift_variant")
-_MODERATE = ("missense_variant", "inframe_insertion",
-             "inframe_deletion")
+_MODERATE = ("missense_variant", "inframe_insertion", "inframe_deletion")
 _LOW = ("synonymous_variant", "stop_retained_variant")
 
 
@@ -61,10 +57,10 @@ def translate(seq, to_stop=False):
     s = str(seq).upper().replace("U", "T")
     for ch in s:
         if ch not in "ACGTN":
-            raise ValueError("snpeff: %r is not a nucleotide" % ch)
+            raise ValueError(f"snpeff: {ch!r} is not a nucleotide")
     out = []
     for i in range(0, len(s) - 2, 3):
-        aa = _CODONS.get(s[i:i + 3], "X")
+        aa = _CODONS.get(s[i : i + 3], "X")
         if to_stop and aa == "*":
             break
         out.append(aa)
@@ -81,8 +77,7 @@ def _impact(effect):
     return "MODIFIER"
 
 
-def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000,
-                     downstream=5000, transcript_len=None):
+def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000, downstream=5000, transcript_len=None):
     """Classify one variant against a coding sequence.
 
     ``pos`` is 0-based in the sequence the caller passes; ``cds_start``
@@ -98,47 +93,36 @@ def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000,
     if not ref or not alt:
         raise ValueError("snpeff: ref and alt must be non-empty")
     if pos < 0 or pos >= len(seq):
-        raise ValueError("snpeff: position %d is outside the sequence"
-                         % pos)
-    if seq[pos:pos + len(ref)] != ref:
-        raise ValueError("snpeff: the reference allele %r does not match "
-                         "the sequence at position %d (%r)"
-                         % (ref, pos, seq[pos:pos + len(ref)]))
-    end = len(seq) if transcript_len is None else cds_start + \
-        transcript_len
+        raise ValueError(f"snpeff: position {int(pos)} is outside the sequence")
+    if seq[pos : pos + len(ref)] != ref:
+        raise ValueError(
+            f"snpeff: the reference allele {ref!r} does not match the sequence at position {int(pos)} ({seq[pos : pos + len(ref)]!r})"
+        )
+    end = len(seq) if transcript_len is None else cds_start + transcript_len
 
     if pos < cds_start:
         d = cds_start - pos
-        eff = ("upstream_gene_variant" if d <= upstream
-               else "intergenic_variant")
+        eff = "upstream_gene_variant" if d <= upstream else "intergenic_variant"
         return _pack(eff, None, None, None, None, ref, alt, pos)
     if pos >= end:
         d = pos - end + 1
-        eff = ("downstream_gene_variant" if d <= downstream
-               else "intergenic_variant")
+        eff = "downstream_gene_variant" if d <= downstream else "intergenic_variant"
         return _pack(eff, None, None, None, None, ref, alt, pos)
 
     coding = seq[cds_start:end]
     off = pos - cds_start
-    mutated = coding[:off] + alt + coding[off + len(ref):]
+    mutated = coding[:off] + alt + coding[off + len(ref) :]
 
     if len(ref) != len(alt):
         shift = (len(alt) - len(ref)) % 3
-        if shift:
-            eff = "frameshift_variant"
-        else:
-            eff = ("inframe_insertion" if len(alt) > len(ref)
-                   else "inframe_deletion")
-        return _pack(eff, None, None, translate(coding),
-                     translate(mutated), ref, alt, pos,
-                     codon_index=off // 3)
+        eff = "frameshift_variant" if shift else "inframe_insertion" if len(alt) > len(ref) else "inframe_deletion"
+        return _pack(eff, None, None, translate(coding), translate(mutated), ref, alt, pos, codon_index=off // 3)
 
     ci = off // 3
-    ref_codon = coding[ci * 3:ci * 3 + 3]
-    alt_codon = mutated[ci * 3:ci * 3 + 3]
+    ref_codon = coding[ci * 3 : ci * 3 + 3]
+    alt_codon = mutated[ci * 3 : ci * 3 + 3]
     if len(ref_codon) < 3 or len(alt_codon) < 3:
-        raise ValueError("snpeff: the coding sequence is not a whole "
-                         "number of codons at position %d" % pos)
+        raise ValueError(f"snpeff: the coding sequence is not a whole number of codons at position {int(pos)}")
     ra, aa = _CODONS.get(ref_codon, "X"), _CODONS.get(alt_codon, "X")
     if ci == 0 and ra == "M" and aa != "M":
         eff = "start_lost"
@@ -147,18 +131,24 @@ def annotate_variant(cds, pos, ref, alt, cds_start=0, upstream=5000,
     elif ra != "*" and aa == "*":
         eff = "stop_gained"
     elif ra == aa:
-        eff = ("stop_retained_variant" if ra == "*"
-               else "synonymous_variant")
+        eff = "stop_retained_variant" if ra == "*" else "synonymous_variant"
     else:
         eff = "missense_variant"
-    return _pack(eff, ref_codon, alt_codon, ra, aa, ref, alt, pos,
-                 codon_index=ci,
-                 hgvs_p="p.%s%d%s" % (ra, ci + 1, aa) if ra != aa
-                 else "p.%s%d=" % (ra, ci + 1))
+    return _pack(
+        eff,
+        ref_codon,
+        alt_codon,
+        ra,
+        aa,
+        ref,
+        alt,
+        pos,
+        codon_index=ci,
+        hgvs_p=f"p.{ra}{int(ci + 1)}{aa}" if ra != aa else f"p.{ra}{int(ci + 1)}=",
+    )
 
 
-def _pack(effect, ref_codon, alt_codon, ref_aa, alt_aa, ref, alt, pos,
-          codon_index=None, hgvs_p=None):
+def _pack(effect, ref_codon, alt_codon, ref_aa, alt_aa, ref, alt, pos, codon_index=None, hgvs_p=None):
     return {
         "effect": effect,
         "impact": _impact(effect),
@@ -168,56 +158,59 @@ def _pack(effect, ref_codon, alt_codon, ref_aa, alt_aa, ref, alt, pos,
         "alt_aa": alt_aa,
         "codon_index": codon_index,
         "hgvs_p": hgvs_p,
-        "hgvs_c": "c.%d%s>%s" % (pos + 1, ref, alt),
+        "hgvs_c": f"c.{int(pos + 1)}{ref}>{alt}",
         "pos": pos,
         "ref": ref,
         "alt": alt,
     }
 
 
-def snpeff(cds, variants, cds_start=0, upstream=5000, downstream=5000,
-           transcript_len=None):
+def snpeff(cds, variants, cds_start=0, upstream=5000, downstream=5000, transcript_len=None):
     """Annotate a list of ``(pos, ref, alt)`` variants."""
     out = []
     for v in variants:
         if len(v) != 3:
-            raise ValueError("snpeff: each variant must be "
-                             "(pos, ref, alt)")
-        out.append(annotate_variant(cds, v[0], v[1], v[2], cds_start,
-                                    upstream, downstream,
-                                    transcript_len))
+            raise ValueError("snpeff: each variant must be (pos, ref, alt)")
+        out.append(annotate_variant(cds, v[0], v[1], v[2], cds_start, upstream, downstream, transcript_len))
     counts = {}
     for a in out:
         counts[a["effect"]] = counts.get(a["effect"], 0) + 1
     impacts = {}
     for a in out:
         impacts[a["impact"]] = impacts.get(a["impact"], 0) + 1
-    return RichResult(payload={
-        "estimate": out,
-        "annotations": out,
-        "effect_counts": counts,
-        "impact_counts": impacts,
-        "n_variants": len(out),
-        "protein": translate(str(cds).upper()[cds_start:]
-                             if transcript_len is None else
-                             str(cds).upper()[cds_start:cds_start +
-                                              transcript_len]),
-        "method": ("variant effect annotation (Cingolani et al. 2012, "
-                   "SnpEff), standard genetic code"),
-        "note": ("impact grades are the paper's HIGH / MODERATE / LOW / "
-                 "MODIFIER; positions are 0-based and hgvs_c is "
-                 "1-based, as the notation requires"),
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "annotations": out,
+            "effect_counts": counts,
+            "impact_counts": impacts,
+            "n_variants": len(out),
+            "protein": translate(
+                str(cds).upper()[cds_start:]
+                if transcript_len is None
+                else str(cds).upper()[cds_start : cds_start + transcript_len]
+            ),
+            "method": ("variant effect annotation (Cingolani et al. 2012, SnpEff), standard genetic code"),
+            "note": (
+                "impact grades are the paper's HIGH / MODERATE / LOW / "
+                "MODIFIER; positions are 0-based and hgvs_c is "
+                "1-based, as the notation requires"
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("snpeff: variant annotation (Cingolani et al. 2012). "
-            "Classify by codon change: synonymous, missense, "
-            "stop_gained, stop_lost, start_lost; by indel length mod 3: "
-            "frameshift against inframe; by position: upstream, "
-            "downstream, intergenic. Impact HIGH for the four that "
-            "break the protein, MODERATE for missense and inframe "
-            "indels, LOW for synonymous, MODIFIER for the rest.")
+    return (
+        "snpeff: variant annotation (Cingolani et al. 2012). "
+        "Classify by codon change: synonymous, missense, "
+        "stop_gained, stop_lost, start_lost; by indel length mod 3: "
+        "frameshift against inframe; by position: upstream, "
+        "downstream, intergenic. Impact HIGH for the four that "
+        "break the protein, MODERATE for missense and inframe "
+        "indels, LOW for synonymous, MODIFIER for the rest."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 variant_effect = codon_table

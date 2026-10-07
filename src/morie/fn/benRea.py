@@ -57,14 +57,17 @@ doi:10.18653/v1/N19-1423. The encoder that usually supplies the
 emissions.
 """
 
-import math
-
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["bio_labels", "valid_transitions", "viterbi_decode",
-           "greedy_decode", "extract_spans", "span_f1", "is_valid_bio"]
+__all__ = [
+    "bio_labels",
+    "valid_transitions",
+    "viterbi_decode",
+    "greedy_decode",
+    "extract_spans",
+    "span_f1",
+    "is_valid_bio",
+]
 
 _NEG = float("-inf")
 
@@ -78,8 +81,8 @@ def bio_labels(types):
         raise ValueError("benRea: duplicate entity types")
     out = ["O"]
     for t in ts:
-        out.append("B-%s" % t)
-        out.append("I-%s" % t)
+        out.append(f"B-{t}")
+        out.append(f"I-{t}")
     return out
 
 
@@ -127,13 +130,10 @@ def is_valid_bio(path, labels=None):
 def greedy_decode(emissions, labels):
     """Per-token argmax -- which is free to produce invalid sequences,
     and does."""
-    return [labels[max(range(len(labels)),
-                       key=lambda j: emissions[t][j])]
-            for t in range(len(emissions))]
+    return [labels[max(range(len(labels)), key=lambda j: emissions[t][j])] for t in range(len(emissions))]
 
 
-def viterbi_decode(emissions, labels, transitions=None,
-                   transition_scores=None):
+def viterbi_decode(emissions, labels, transitions=None, transition_scores=None):
     r"""The best VALID path, exactly.
 
     Forbidden transitions are :math:`-\infty`, so no valid-looking
@@ -144,11 +144,9 @@ def viterbi_decode(emissions, labels, transitions=None,
     if L == 0:
         raise ValueError("benRea: empty emission sequence")
     if any(len(row) != n for row in emissions):
-        raise ValueError("benRea: emissions must have one score per "
-                         "label")
+        raise ValueError("benRea: emissions must have one score per label")
     T = valid_transitions(labels) if transitions is None else transitions
-    S = ([[0.0] * n for _ in range(n)] if transition_scores is None
-         else transition_scores)
+    S = [[0.0] * n for _ in range(n)] if transition_scores is None else transition_scores
     ok0 = start_allowed(labels)
     dp = [[_NEG] * n for _ in range(L)]
     bk = [[-1] * n for _ in range(L)]
@@ -212,44 +210,46 @@ def span_f1(pred, gold):
     prec = tp / len(p) if p else 0.0
     rec = tp / len(g) if g else 0.0
     f1 = (2 * prec * rec / (prec + rec)) if (prec + rec) > 0 else 0.0
-    return {"precision": prec, "recall": rec, "f1": f1,
-            "true_positives": tp, "n_pred": len(p), "n_gold": len(g)}
+    return {"precision": prec, "recall": rec, "f1": f1, "true_positives": tp, "n_pred": len(p), "n_gold": len(g)}
 
 
-def ner_decode(emissions, types, decoder="viterbi",
-               transition_scores=None, gold=None):
+def ner_decode(emissions, types, decoder="viterbi", transition_scores=None, gold=None):
     """Decode a sentence and, if gold labels are given, score it."""
     if decoder not in ("viterbi", "greedy"):
-        raise ValueError("benRea: decoder must be viterbi or greedy, "
-                         "got %r" % (decoder,))
+        raise ValueError(f"benRea: decoder must be viterbi or greedy, got {decoder!r}")
     labels = bio_labels(types)
     if decoder == "viterbi":
-        path, score = viterbi_decode(emissions, labels,
-                                     transition_scores=transition_scores)
+        path, score = viterbi_decode(emissions, labels, transition_scores=transition_scores)
     else:
         path = greedy_decode(emissions, labels)
-        score = sum(emissions[t][labels.index(path[t])]
-                    for t in range(len(path)))
+        score = sum(emissions[t][labels.index(path[t])] for t in range(len(path)))
     spans = extract_spans(path)
-    payload = {"estimate": path, "path": path, "score": score,
-               "spans": spans, "valid": is_valid_bio(path),
-               "labels": labels, "decoder": decoder,
-               "n_tokens": len(emissions), "n_spans": len(spans),
-               "method": "BIO named-entity decoding, Ramshaw & Marcus "
-                         "(1995) scheme, Viterbi (1967) constrained "
-                         "decoding"}
+    payload = {
+        "estimate": path,
+        "path": path,
+        "score": score,
+        "spans": spans,
+        "valid": is_valid_bio(path),
+        "labels": labels,
+        "decoder": decoder,
+        "n_tokens": len(emissions),
+        "n_spans": len(spans),
+        "method": "BIO named-entity decoding, Ramshaw & Marcus (1995) scheme, Viterbi (1967) constrained decoding",
+    }
     if gold is not None:
         payload.update(span_f1(path, list(gold)))
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return ("benRea: BIO -- B- opens, I- continues, O outside. I-X may "
-            "follow ONLY B-X or I-X, so a per-token argmax routinely "
-            "emits invalid sequences. Viterbi with -inf on forbidden "
-            "transitions finds the best VALID path exactly, and scores "
-            "no higher on emissions than greedy -- that gap is the "
-            "constraint. Score spans, not tokens.")
+    return (
+        "benRea: BIO -- B- opens, I- continues, O outside. I-X may "
+        "follow ONLY B-X or I-X, so a per-token argmax routinely "
+        "emits invalid sequences. Viterbi with -inf on forbidden "
+        "transitions finds the best VALID path exactly, and scores "
+        "no higher on emissions than greedy -- that gap is the "
+        "constraint. Score spans, not tokens."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -49,10 +49,14 @@ def gibbons_concordance_w(rankings):
     chi2 = k * (n - 1) * W
     return RichResult(
         payload={
-            "W": float(W), "S": S, "chi2": float(chi2), "df": int(n - 1),
+            "W": float(W),
+            "S": S,
+            "chi2": float(chi2),
+            "df": int(n - 1),
             "p_value": float(stats.chi2.sf(chi2, n - 1)),
             "mean_spearman": float((k * W - 1) / (k - 1)),
-            "k": int(k), "n": int(n),
+            "k": int(k),
+            "n": int(n),
             "method": "Kendall W = 12S/(k^2(n^3-n)) (Gibbons eq. 12.4.4)",
         }
     )

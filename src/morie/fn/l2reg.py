@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['l2pen', 'l2_weight_regularization']
+__all__ = ["l2pen", "l2_weight_regularization"]
 
 
 def l2pen(loss, w, lam):
@@ -36,14 +36,20 @@ def l2pen(loss, w, lam):
         raise ValueError("lambda must be non-negative")
     ep = sum(v * v for v in w)
     pen = 0.5 * lam * ep
-    return RichResult(payload={
-        "penalized_loss": float(loss) + pen, "penalty": pen, "ep": ep,
-        "lambda": lam, "p": len(w),
-        "method": "L2 (ridge) regularized loss, MVSML Sect. 10.7.3"})
+    return RichResult(
+        payload={
+            "penalized_loss": float(loss) + pen,
+            "penalty": pen,
+            "ep": ep,
+            "lambda": lam,
+            "p": len(w),
+            "method": "L2 (ridge) regularized loss, MVSML Sect. 10.7.3",
+        }
+    )
 
 
 l2_weight_regularization = l2pen
 
 
 def cheatsheet():
-    return 'l2reg: Ridge (weight-decay) regularized loss.'
+    return "l2reg: Ridge (weight-decay) regularized loss."

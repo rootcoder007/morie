@@ -105,14 +105,14 @@ _JACOBIAN_ROUTES = ("analytic", "numeric")
 # plumbing
 # --------------------------------------------------------------------------
 
+
 def _unif_stream(seed, block=8192):
     """Uniforms from the package Philox generator, drawn in blocks."""
     st = {"buf": [], "i": 0, "stream": 0}
 
     def uni():
         if st["i"] >= len(st["buf"]):
-            st["buf"] = [float(v) for v in
-                         random_uniform(block, seed=seed, stream=st["stream"])]
+            st["buf"] = [float(v) for v in random_uniform(block, seed=seed, stream=st["stream"])]
             st["stream"] += 1
             st["i"] = 0
         v = st["buf"][st["i"]]
@@ -161,8 +161,8 @@ def numeric_log_jacobian(mapfun, z, h=1e-6):
     out0 = mapfun(z)
     if len(out0) != n:
         raise ValueError(
-            "bayrjmcmc: the bijection maps %d values to %d; dimension "
-            "matching requires n1 + m1 == n2 + m2" % (n, len(out0)))
+            f"bayrjmcmc: the bijection maps {int(n)} values to {int(len(out0))}; dimension matching requires n1 + m1 == n2 + m2"
+        )
     if n == 0:
         return 0.0
     jac = [[0.0] * n for _ in range(n)]
@@ -198,56 +198,55 @@ def check_dimension_matching(models, moves):
         raise ValueError("bayrjmcmc: no models given")
     for name, spec in models.items():
         if "dim" not in spec or "logpost" not in spec:
-            raise ValueError(
-                "bayrjmcmc: model %r needs 'dim' and 'logpost'" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} needs 'dim' and 'logpost'")
         if int(spec["dim"]) < 0:
-            raise ValueError("bayrjmcmc: model %r has negative dim" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} has negative dim")
     by_pair = {}
     for mv in moves:
         for key in _MOVE_KEYS:
             if key not in mv:
-                raise ValueError("bayrjmcmc: a move is missing %r" % (key,))
+                raise ValueError(f"bayrjmcmc: a move is missing {key!r}")
         if mv["frm"] not in models or mv["to"] not in models:
-            raise ValueError("bayrjmcmc: move %r -> %r names an unknown model"
-                             % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: move {!r} -> {!r} names an unknown model".format(mv["frm"], mv["to"]))
         if mv["frm"] == mv["to"]:
             raise ValueError(
-                "bayrjmcmc: %r -> %r is a within-model move; give it as "
-                "'within', not as a jump" % (mv["frm"], mv["to"]))
+                "bayrjmcmc: {!r} -> {!r} is a within-model move; give it as 'within', not as a jump".format(
+                    mv["frm"], mv["to"]
+                )
+            )
         if (mv["frm"], mv["to"]) in by_pair:
-            raise ValueError("bayrjmcmc: two moves given for %r -> %r"
-                             % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: two moves given for {!r} -> {!r}".format(mv["frm"], mv["to"]))
         by_pair[(mv["frm"], mv["to"])] = mv
     for mv in moves:
         rev = by_pair.get((mv["to"], mv["frm"]))
         if rev is None:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r has no reverse move; detailed "
+                "bayrjmcmc: move {!r} -> {!r} has no reverse move; detailed "
                 "balance is imposed within each move type, so the reverse "
-                "must be supplied" % (mv["frm"], mv["to"]))
+                "must be supplied".format(mv["frm"], mv["to"])
+            )
         n1 = int(models[mv["frm"]]["dim"])
         n2 = int(models[mv["to"]]["dim"])
         m1 = int(mv["n_u"])
         m2 = int(mv["n_u_rev"])
         if m1 < 0 or m2 < 0:
-            raise ValueError("bayrjmcmc: move %r -> %r has negative n_u"
-                             % (mv["frm"], mv["to"]))
+            raise ValueError("bayrjmcmc: move {!r} -> {!r} has negative n_u".format(mv["frm"], mv["to"]))
         if n1 + m1 != n2 + m2:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r violates dimension matching: "
-                "n1 + m1 = %d + %d != %d + %d = n2 + m2"
-                % (mv["frm"], mv["to"], n1, m1, n2, m2))
+                "bayrjmcmc: move {!r} -> {!r} violates dimension matching: n1 + m1 = {} + {} != {} + {} = n2 + m2".format(
+                    mv["frm"], mv["to"], int(n1), int(m1), int(n2), int(m2)
+                )
+            )
         if int(rev["n_u"]) != m2 or int(rev["n_u_rev"]) != m1:
             raise ValueError(
-                "bayrjmcmc: move %r -> %r declares u of length %d and a "
-                "reverse u of length %d, but the reverse move declares "
-                "%d and %d" % (mv["frm"], mv["to"], m1, m2,
-                               int(rev["n_u"]), int(rev["n_u_rev"])))
+                "bayrjmcmc: move {!r} -> {!r} declares u of length {} and a reverse u of length {}, but the reverse move declares {} and {}".format(
+                    mv["frm"], mv["to"], int(m1), int(m2), int(int(rev["n_u"])), int(int(rev["n_u_rev"]))
+                )
+            )
     return by_pair
 
 
-def rj_log_acceptance(logpost_from, logpost_to, log_j_from, log_j_to,
-                      logq_u, logq_u_rev, log_jacobian):
+def rj_log_acceptance(logpost_from, logpost_to, log_j_from, log_j_to, logq_u, logq_u_rev, log_jacobian):
     r"""Log of the Equation 7 ratio (before the ``min`` with 1).
 
     .. math::
@@ -260,10 +259,7 @@ def rj_log_acceptance(logpost_from, logpost_to, log_j_from, log_j_to,
     With :math:`m_1 = 0` there is no :math:`u^{(1)}` to generate, so
     ``logq_u`` is zero and this is Equation 8.
     """
-    return ((logpost_to - logpost_from)
-            + (log_j_to - log_j_from)
-            + (logq_u_rev - logq_u)
-            + log_jacobian)
+    return (logpost_to - logpost_from) + (log_j_to - log_j_from) + (logq_u_rev - logq_u) + log_jacobian
 
 
 def _rw_within(theta, uni, scale):
@@ -277,11 +273,22 @@ def _rw_within(theta, uni, scale):
     return out
 
 
-def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
-                         n_iter=10000, burn_in=0, thin=1, seed=0,
-                         within=None, within_scale=0.5, within_weight=1.0,
-                         move_weight=1.0, jacobian="analytic",
-                         keep_chain=True):
+def reversible_jump_mcmc(
+    models,
+    moves,
+    init_model,
+    init_theta=(),
+    n_iter=10000,
+    burn_in=0,
+    thin=1,
+    seed=0,
+    within=None,
+    within_scale=0.5,
+    within_weight=1.0,
+    move_weight=1.0,
+    jacobian="analytic",
+    keep_chain=True,
+):
     r"""Green's §3 reversible-jump sampler over a set of models.
 
     Parameters
@@ -318,12 +325,10 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
         ``(model, theta)`` after burn-in and thinning.
     """
     if jacobian not in _JACOBIAN_ROUTES:
-        raise ValueError("bayrjmcmc: jacobian must be one of %s"
-                         % (_JACOBIAN_ROUTES,))
+        raise ValueError(f"bayrjmcmc: jacobian must be one of {_JACOBIAN_ROUTES}")
     by_pair = check_dimension_matching(models, moves)
     if init_model not in models:
-        raise ValueError("bayrjmcmc: init_model %r is not a model"
-                         % (init_model,))
+        raise ValueError(f"bayrjmcmc: init_model {init_model!r} is not a model")
     n_iter = int(n_iter)
     burn_in = int(burn_in)
     thin = int(thin)
@@ -336,9 +341,11 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
 
     theta = [float(v) for v in init_theta]
     if len(theta) != int(models[init_model]["dim"]):
-        raise ValueError("bayrjmcmc: init_theta has %d values but model %r "
-                         "has dim %d" % (len(theta), init_model,
-                                         int(models[init_model]["dim"])))
+        raise ValueError(
+            "bayrjmcmc: init_theta has {} values but model {!r} has dim {}".format(
+                int(len(theta)), init_model, int(int(models[init_model]["dim"]))
+            )
+        )
 
     # j(x) depends only on the model, so tabulate it once: a within-model
     # move plus every jump leaving that model.
@@ -350,8 +357,7 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
                 opts.append(("jump", mv, float(mv.get("weight", move_weight))))
         tot = sum(w for _, _, w in opts)
         if tot <= 0.0:
-            raise ValueError("bayrjmcmc: model %r has no move with positive "
-                             "weight" % (name,))
+            raise ValueError(f"bayrjmcmc: model {name!r} has no move with positive weight")
         avail[name] = (opts, tot)
 
     uni = _unif_stream(seed)
@@ -374,7 +380,7 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
                 break
 
         if kind == "within":
-            label = "within:%s" % (cur,)
+            label = f"within:{cur}"
             tried[label] = tried.get(label, 0) + 1
             if theta:
                 if within is not None and cur in within:
@@ -388,27 +394,29 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
                     theta, logp = prop, lp_new
                     accepted[label] = accepted.get(label, 0) + 1
         else:
-            label = mv.get("name") or ("%s->%s" % (mv["frm"], mv["to"]))
+            label = mv.get("name") or ("{}->{}".format(mv["frm"], mv["to"]))
             tried[label] = tried.get(label, 0) + 1
             u = [float(v) for v in mv["propose"](theta, uni)]
             if len(u) != int(mv["n_u"]):
                 raise ValueError(
-                    "bayrjmcmc: move %s proposed %d values of u but "
-                    "declares n_u = %d" % (label, len(u), int(mv["n_u"])))
+                    "bayrjmcmc: move {} proposed {} values of u but declares n_u = {}".format(
+                        label, int(len(u)), int(int(mv["n_u"]))
+                    )
+                )
             theta2, u2 = mv["transform"](theta, u)
             theta2 = [float(v) for v in theta2]
             u2 = [float(v) for v in u2]
             dim2 = int(models[mv["to"]]["dim"])
             if len(theta2) != dim2 or len(u2) != int(mv["n_u_rev"]):
                 raise ValueError(
-                    "bayrjmcmc: move %s produced theta of length %d and u2 "
-                    "of length %d; the model has dim %d and the move "
-                    "declares n_u_rev = %d" % (label, len(theta2), len(u2),
-                                               dim2, int(mv["n_u_rev"])))
+                    "bayrjmcmc: move {} produced theta of length {} and u2 of length {}; the model has dim {} and the move declares n_u_rev = {}".format(
+                        label, int(len(theta2)), int(len(u2)), int(dim2), int(int(mv["n_u_rev"]))
+                    )
+                )
 
             if jacobian == "numeric" or "logjac" not in mv:
                 if jacobian == "analytic" and "logjac" not in mv:
-                    logjac = 0.0          # volume preserving by declaration
+                    logjac = 0.0  # volume preserving by declaration
                 else:
                     n_from = len(theta)
                     tf = mv["transform"]
@@ -427,13 +435,11 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
             log_j_from = math.log(w) - math.log(tot)
             log_j_to = math.log(w_rev) - math.log(tot2)
 
-            logq_u = (float(mv["logq"](theta, u)) if "logq" in mv else 0.0)
-            logq_rev = (float(mv["logq_rev"](theta2, u2))
-                        if "logq_rev" in mv else 0.0)
+            logq_u = float(mv["logq"](theta, u)) if "logq" in mv else 0.0
+            logq_rev = float(mv["logq_rev"](theta2, u2)) if "logq_rev" in mv else 0.0
 
             lp_new = float(models[mv["to"]]["logpost"](theta2))
-            log_alpha = rj_log_acceptance(logp, lp_new, log_j_from, log_j_to,
-                                          logq_u, logq_rev, logjac)
+            log_alpha = rj_log_acceptance(logp, lp_new, log_j_from, log_j_to, logq_u, logq_rev, logjac)
             if math.log(uni()) < log_alpha:
                 cur, theta, logp = mv["to"], theta2, lp_new
                 accepted[label] = accepted.get(label, 0) + 1
@@ -445,28 +451,33 @@ def reversible_jump_mcmc(models, moves, init_model, init_theta=(),
 
     kept = sum(visits.values())
     freq = dict((name, visits[name] / float(kept)) for name in models)
-    rates = dict((k, accepted.get(k, 0) / float(v))
-                 for k, v in tried.items() if v)
-    return RichResult(payload={
-        "model_freq": freq,
-        "visits": visits,
-        "n_kept": kept,
-        "accept": rates,
-        "tried": tried,
-        "chain": chain,
-        "jacobian": jacobian,
-        "method": ("reversible-jump MCMC, Green (1995) eq. 7; hybrid "
-                   "sampler with detailed balance within each move type"),
-        "note": ("dimension matching n1 + m1 == n2 + m2 is enforced for "
-                 "every move; j(x) is computed from the move weights "
-                 "available in each model, in both directions, because "
-                 "eq. 7 needs it at x' as well as x"),
-    })
+    rates = dict((k, accepted.get(k, 0) / float(v)) for k, v in tried.items() if v)
+    return RichResult(
+        payload={
+            "model_freq": freq,
+            "visits": visits,
+            "n_kept": kept,
+            "accept": rates,
+            "tried": tried,
+            "chain": chain,
+            "jacobian": jacobian,
+            "method": (
+                "reversible-jump MCMC, Green (1995) eq. 7; hybrid sampler with detailed balance within each move type"
+            ),
+            "note": (
+                "dimension matching n1 + m1 == n2 + m2 is enforced for "
+                "every move; j(x) is computed from the move weights "
+                "available in each model, in both directions, because "
+                "eq. 7 needs it at x' as well as x"
+            ),
+        }
+    )
 
 
 # --------------------------------------------------------------------------
 # §4: step-function rate for a point process
 # --------------------------------------------------------------------------
+
 
 def step_function_loglik(y, s, h, L):
     r"""Equation 9: :math:`\sum_i \log x(y_i) - \int_0^L x(t)\,dt`.
@@ -477,14 +488,12 @@ def step_function_loglik(y, s, h, L):
     """
     edges = [0.0] + [float(v) for v in s] + [float(L)]
     if len(h) != len(edges) - 1:
-        raise ValueError("bayrjmcmc: %d heights for %d intervals"
-                         % (len(h), len(edges) - 1))
+        raise ValueError(f"bayrjmcmc: {int(len(h))} heights for {int(len(edges) - 1)} intervals")
     counts = [0] * len(h)
     for v in y:
         v = float(v)
         if v < 0.0 or v > float(L):
-            raise ValueError("bayrjmcmc: point %g lies outside [0, %g]"
-                             % (v, float(L)))
+            raise ValueError(f"bayrjmcmc: point {v:g} lies outside [0, {float(L):g}]")
         j = 0
         while j + 1 < len(edges) - 1 and v >= edges[j + 1]:
             j += 1
@@ -570,16 +579,15 @@ def birth_log_jacobian(h_j, h_new_left, h_new_right):
     This is :math:`|\partial(h'_j, h'_{j+1}) / \partial(h_j, u)|` for
     the map in :func:`birth_split_heights`.
     """
-    return 2.0 * math.log(float(h_new_left) + float(h_new_right)) \
-        - math.log(float(h_j))
+    return 2.0 * math.log(float(h_new_left) + float(h_new_right)) - math.log(float(h_j))
 
 
 def _merge_height(s_left, s_mid, s_right, h_left, h_right):
     """The death move's weighted geometric mean, reversing the birth."""
     span = float(s_right) - float(s_left)
-    return math.exp(((float(s_mid) - float(s_left)) * math.log(h_left)
-                     + (float(s_right) - float(s_mid)) * math.log(h_right))
-                    / span)
+    return math.exp(
+        ((float(s_mid) - float(s_left)) * math.log(h_left) + (float(s_right) - float(s_mid)) * math.log(h_right)) / span
+    )
 
 
 def _log_k_prior_ratio(lam, k):
@@ -587,10 +595,22 @@ def _log_k_prior_ratio(lam, k):
     return math.log(lam) - math.log(k + 1.0)
 
 
-def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
-                       k_max=30, alpha=1.0, beta=200.0, seed=0, cap=0.9,
-                       use_likelihood=True, k_init=0, thin=1,
-                       keep_chain=False):
+def changepoint_rjmcmc(
+    y=(),
+    L=1.0,
+    n_iter=40000,
+    burn_in=4000,
+    lam=3.0,
+    k_max=30,
+    alpha=1.0,
+    beta=200.0,
+    seed=0,
+    cap=0.9,
+    use_likelihood=True,
+    k_init=0,
+    thin=1,
+    keep_chain=False,
+):
     r"""The §4 multiple change-point sampler for a step-function rate.
 
     Point-process data ``y`` on :math:`[0, L]` with rate :math:`x(t)` a
@@ -635,8 +655,7 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
     y = [float(v) for v in y]
     for v in y:
         if v < 0.0 or v > L:
-            raise ValueError("bayrjmcmc: point %g lies outside [0, %g]"
-                             % (v, L))
+            raise ValueError(f"bayrjmcmc: point {v:g} lies outside [0, {L:g}]")
     eta, pi_, b, d, c = changepoint_move_probabilities(lam, k_max, cap=cap)
     k_init = int(k_init)
     if k_init < 0 or k_init > k_max:
@@ -674,22 +693,22 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
             while j + 1 < len(edges) - 1 and s_star >= edges[j + 1]:
                 j += 1
             u = uni()
-            hl, hr = birth_split_heights(h[j], u, edges[j], s_star,
-                                         edges[j + 1])
+            hl, hr = birth_split_heights(h[j], u, edges[j], s_star, edges[j + 1])
             s_new = s[:j] + [s_star] + s[j:]
-            h_new = h[:j] + [hl, hr] + h[j + 1:]
+            h_new = h[:j] + [hl, hr] + h[j + 1 :]
             new_ll = loglik(s_new, h_new)
 
             log_prior = (
                 _log_k_prior_ratio(lam, k)
-                + math.log(2.0 * (k + 1.0) * (2.0 * k + 3.0)) - 2.0 * math.log(L)
-                + math.log((s_star - edges[j]) * (edges[j + 1] - s_star)
-                           / (edges[j + 1] - edges[j]))
-                + alpha * math.log(beta) - math.lgamma(alpha)
+                + math.log(2.0 * (k + 1.0) * (2.0 * k + 3.0))
+                - 2.0 * math.log(L)
+                + math.log((s_star - edges[j]) * (edges[j + 1] - s_star) / (edges[j + 1] - edges[j]))
+                + alpha * math.log(beta)
+                - math.lgamma(alpha)
                 + (alpha - 1.0) * math.log(hl * hr / h[j])
-                - beta * (hl + hr - h[j]))
-            log_prop = math.log(d[k + 1]) + math.log(L) \
-                - math.log(b[k]) - math.log(k + 1.0)
+                - beta * (hl + hr - h[j])
+            )
+            log_prop = math.log(d[k + 1]) + math.log(L) - math.log(b[k]) - math.log(k + 1.0)
             log_jac = birth_log_jacobian(h[j], hl, hr)
             log_alpha = (new_ll - cur_ll) + log_prior + log_prop + log_jac
             if k + 1 <= k_max and math.log(uni()) < log_alpha:
@@ -702,13 +721,12 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
             i = int(uni() * k)
             if i >= k:
                 i = k - 1
-            j = i                      # the birth's j, in the merged state
-            s_new = s[:i] + s[i + 1:]
-            h_merged = _merge_height(edges[i], edges[i + 1], edges[i + 2],
-                                     h[i], h[i + 1])
-            h_new = h[:i] + [h_merged] + h[i + 2:]
+            j = i  # the birth's j, in the merged state
+            s_new = s[:i] + s[i + 1 :]
+            h_merged = _merge_height(edges[i], edges[i + 1], edges[i + 2], h[i], h[i + 1])
+            h_new = h[:i] + [h_merged] + h[i + 2 :]
             new_ll = loglik(s_new, h_new)
-            kk = k - 1                 # the count the birth would start from
+            kk = k - 1  # the count the birth would start from
             s_star = edges[i + 1]
             left = edges[i]
             right = edges[i + 2]
@@ -716,13 +734,13 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
                 _log_k_prior_ratio(lam, kk)
                 + math.log(2.0 * (kk + 1.0) * (2.0 * kk + 3.0))
                 - 2.0 * math.log(L)
-                + math.log((s_star - left) * (right - s_star)
-                           / (right - left))
-                + alpha * math.log(beta) - math.lgamma(alpha)
+                + math.log((s_star - left) * (right - s_star) / (right - left))
+                + alpha * math.log(beta)
+                - math.lgamma(alpha)
                 + (alpha - 1.0) * math.log(h[i] * h[i + 1] / h_merged)
-                - beta * (h[i] + h[i + 1] - h_merged))
-            log_prop = math.log(d[kk + 1]) + math.log(L) \
-                - math.log(b[kk]) - math.log(kk + 1.0)
+                - beta * (h[i] + h[i + 1] - h_merged)
+            )
+            log_prop = math.log(d[kk + 1]) + math.log(L) - math.log(b[kk]) - math.log(kk + 1.0)
             log_jac = birth_log_jacobian(h_merged, h[i], h[i + 1])
             log_alpha = -((cur_ll - new_ll) + log_prior + log_prop + log_jac)
             if math.log(uni()) < log_alpha:
@@ -739,9 +757,7 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
             h_new = list(h)
             h_new[j] = hj
             new_ll = loglik(s, h_new)
-            log_alpha = ((new_ll - cur_ll)
-                         + alpha * math.log(hj / h[j])
-                         - beta * (hj - h[j]))
+            log_alpha = (new_ll - cur_ll) + alpha * math.log(hj / h[j]) - beta * (hj - h[j])
             if math.log(uni()) < log_alpha:
                 h, cur_ll = h_new, new_ll
                 acc["height"] += 1
@@ -758,9 +774,7 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
             s_new = list(s)
             s_new[j] = s_star
             new_ll = loglik(s_new, h)
-            log_alpha = (new_ll - cur_ll
-                         + math.log((hi - s_star) * (s_star - lo)
-                                    / ((hi - s[j]) * (s[j] - lo))))
+            log_alpha = new_ll - cur_ll + math.log((hi - s_star) * (s_star - lo) / ((hi - s[j]) * (s[j] - lo)))
             if math.log(uni()) < log_alpha:
                 s, cur_ll = s_new, new_ll
                 acc["position"] += 1
@@ -779,50 +793,56 @@ def changepoint_rjmcmc(y=(), L=1.0, n_iter=40000, burn_in=4000, lam=3.0,
 
     kept = sum(counts)
     k_post = [v / float(kept) for v in counts]
-    rates = dict((key, acc[key] / float(tried[key]))
-                 for key in tried if tried[key])
-    return RichResult(payload={
-        "k_posterior": k_post,
-        "k_counts": counts,
-        "k_mean": sum(i * k_post[i] for i in range(len(k_post))),
-        "s": list(s),
-        "h": list(h),
-        "accept": rates,
-        "tried": tried,
-        "c": c,
-        "b": b,
-        "d": d,
-        "eta": eta,
-        "pi": pi_,
-        "mean_s1_given_k1": (s1_sum / s1_n) if s1_n else float("nan"),
-        "var_s1_given_k1": ((s1_sq / s1_n - (s1_sum / s1_n) ** 2)
-                            if s1_n > 1 else float("nan")),
-        "mean_height": (h_sum / h_n) if h_n else float("nan"),
-        "chain": chain,
-        "n_kept": kept,
-        "use_likelihood": bool(use_likelihood),
-        "method": ("Green (1995) §4 change-point sampler: height, "
-                   "position, birth and death moves on a step-function "
-                   "rate, with the §4-3 acceptance ratios"),
-        "note": ("with use_likelihood=False the target is the prior, so "
-                 "k must come back Poisson(lam) truncated at k_max and "
-                 "the heights Gamma(alpha, beta)"),
-    })
+    rates = dict((key, acc[key] / float(tried[key])) for key in tried if tried[key])
+    return RichResult(
+        payload={
+            "k_posterior": k_post,
+            "k_counts": counts,
+            "k_mean": sum(i * k_post[i] for i in range(len(k_post))),
+            "s": list(s),
+            "h": list(h),
+            "accept": rates,
+            "tried": tried,
+            "c": c,
+            "b": b,
+            "d": d,
+            "eta": eta,
+            "pi": pi_,
+            "mean_s1_given_k1": (s1_sum / s1_n) if s1_n else float("nan"),
+            "var_s1_given_k1": ((s1_sq / s1_n - (s1_sum / s1_n) ** 2) if s1_n > 1 else float("nan")),
+            "mean_height": (h_sum / h_n) if h_n else float("nan"),
+            "chain": chain,
+            "n_kept": kept,
+            "use_likelihood": bool(use_likelihood),
+            "method": (
+                "Green (1995) §4 change-point sampler: height, "
+                "position, birth and death moves on a step-function "
+                "rate, with the §4-3 acceptance ratios"
+            ),
+            "note": (
+                "with use_likelihood=False the target is the prior, so "
+                "k must come back Poisson(lam) truncated at k_max and "
+                "the heights Gamma(alpha, beta)"
+            ),
+        }
+    )
 
 
 bayrjmcmc = reversible_jump_mcmc
 
 
 def cheatsheet():
-    return ("bayrjmcmc: reversible-jump MCMC (Green 1995). A hybrid "
-            "sampler over models of differing dimension: pad both sides "
-            "with random numbers until (theta1, u1) and (theta2, u2) are "
-            "in bijection -- dimension matching, n1 + m1 = n2 + m2 -- "
-            "then accept by eq. 7, the posterior ratio times the "
-            "move-probability ratio times the proposal-density ratio "
-            "times the Jacobian of the bijection. "
-            "reversible_jump_mcmc() is the general engine (jacobian= "
-            "'analytic' or 'numeric'); changepoint_rjmcmc() is the "
-            "paper's step-function application with its birth/death "
-            "pair, and use_likelihood=False makes it sample the prior, "
-            "which is exactly known.")
+    return (
+        "bayrjmcmc: reversible-jump MCMC (Green 1995). A hybrid "
+        "sampler over models of differing dimension: pad both sides "
+        "with random numbers until (theta1, u1) and (theta2, u2) are "
+        "in bijection -- dimension matching, n1 + m1 = n2 + m2 -- "
+        "then accept by eq. 7, the posterior ratio times the "
+        "move-probability ratio times the proposal-density ratio "
+        "times the Jacobian of the bijection. "
+        "reversible_jump_mcmc() is the general engine (jacobian= "
+        "'analytic' or 'numeric'); changepoint_rjmcmc() is the "
+        "paper's step-function application with its birth/death "
+        "pair, and use_likelihood=False makes it sample the prior, "
+        "which is exactly known."
+    )

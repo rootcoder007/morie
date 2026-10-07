@@ -1,7 +1,6 @@
 """Tests for gb951.gibbons_klotz_scale."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb951 import gibbons_klotz_scale
 
 

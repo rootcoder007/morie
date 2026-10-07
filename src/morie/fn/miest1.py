@@ -67,6 +67,7 @@ def miest1(X, Y, k=3, algorithm=1):
     RichResult
         Keys: mi (nats), mi_bits, k, algorithm, n.
     """
+
     def _rows(A):
         out = []
         for v in A:
@@ -94,7 +95,7 @@ def miest1(X, Y, k=3, algorithm=1):
         dz = [max(dx[j], dy[j]) for j in range(n)]
         # k-th neighbour in the joint space, excluding self
         others = sorted(dz[j] for j in range(n) if j != i)
-        eps = others[k - 1]                  # this is eps(i)/2
+        eps = others[k - 1]  # this is eps(i)/2
         if algorithm == 1:
             nx = sum(1 for j in range(n) if j != i and dx[j] < eps)
             ny = sum(1 for j in range(n) if j != i and dy[j] < eps)
@@ -105,8 +106,7 @@ def miest1(X, Y, k=3, algorithm=1):
             # (their Figs. 1b, 1c), i.e. the LARGEST projected
             # distance over the k nearest neighbours -- not the k-th
             # neighbour's own projection.
-            order = sorted((j for j in range(n) if j != i),
-                           key=lambda j: (dz[j], j))[:k]
+            order = sorted((j for j in range(n) if j != i), key=lambda j: (dz[j], j))[:k]
             ex = max(dx[j] for j in order)
             ey = max(dy[j] for j in order)
             nx = sum(1 for j in range(n) if j != i and dx[j] <= ex)
@@ -117,15 +117,16 @@ def miest1(X, Y, k=3, algorithm=1):
         mi = sc.digamma(k) - mean_term + sc.digamma(n)
     else:
         mi = sc.digamma(k) - 1.0 / k - mean_term + sc.digamma(n)
-    return RichResult(payload={
-        "mi": mi,
-        "mi_bits": mi / math.log(2.0),
-        "k": k,
-        "algorithm": algorithm,
-        "n": n,
-        "method": "KSG mutual information, Eq. %d (Kraskov 2004)"
-                  % (8 if algorithm == 1 else 9),
-    })
+    return RichResult(
+        payload={
+            "mi": mi,
+            "mi_bits": mi / math.log(2.0),
+            "k": k,
+            "algorithm": algorithm,
+            "n": n,
+            "method": f"KSG mutual information, Eq. {int(8 if algorithm == 1 else 9)} (Kraskov 2004)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -133,8 +134,8 @@ mutual_information_knn = miest1
 
 
 def cheatsheet():
-    return ("miest1: I1=psi(k)-<psi(nx+1)+psi(ny+1)>+psi(N); "
-            "I2=psi(k)-1/k-<psi(nx)+psi(ny)>+psi(N)")
+    return "miest1: I1=psi(k)-<psi(nx+1)+psi(ny+1)>+psi(N); I2=psi(k)-1/k-<psi(nx)+psi(ny)>+psi(N)"
+
 
 # public names resolved by fn/_lazy_map.json
 mi_ksg = miest1

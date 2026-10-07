@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['bucherind', 'ma_network_indirect']
+__all__ = ["bucherind", "ma_network_indirect"]
 
 
 def bucherind(d_AB, v_AB, d_CB, v_CB, alpha=0.05):
@@ -51,11 +51,18 @@ def bucherind(d_AB, v_AB, d_CB, v_CB, alpha=0.05):
     se = math.sqrt(var)
     z = d / se
     zc = C.qnorm(1.0 - float(alpha) / 2.0)
-    return RichResult(payload={
-        "estimate": d, "variance": var, "se": se, "z": z,
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(z))),
-        "ci_lower": d - zc * se, "ci_upper": d + zc * se,
-        "method": "Bucher adjusted indirect comparison"})
+    return RichResult(
+        payload={
+            "estimate": d,
+            "variance": var,
+            "se": se,
+            "z": z,
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(z))),
+            "ci_lower": d - zc * se,
+            "ci_upper": d + zc * se,
+            "method": "Bucher adjusted indirect comparison",
+        }
+    )
 
 
 ma_network_indirect = bucherind

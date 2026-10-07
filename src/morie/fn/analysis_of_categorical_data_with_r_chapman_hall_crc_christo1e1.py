@@ -27,17 +27,16 @@ def analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_1_equat
     """
     value = _acd.binomial_pmf(w, n, p)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (1.1)"
     return RichResult(
-        title='Binomial PMF P(W = w) = C(n, w) pi^w (1-pi)^(n-w)',
+        title="Binomial PMF P(W = w) = C(n, w) pi^w (1-pi)^(n-w)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '1e1: P(W = w) = C(n, w) pi^w (1-pi)^(n-w) [Bilder & Loughin 2025, eq. 1.1]'
+    return "1e1: P(W = w) = C(n, w) pi^w (1-pi)^(n-w) [Bilder & Loughin 2025, eq. 1.1]"

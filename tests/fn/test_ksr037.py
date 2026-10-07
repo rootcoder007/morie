@@ -1,8 +1,6 @@
 """Tests for ksr037 (Kosorok shelf)."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.ksr037 import kosorok_ch2_glivenko_cantelli_uniform
 
 

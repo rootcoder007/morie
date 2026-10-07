@@ -64,7 +64,7 @@ def em_variational_bayes(
     if n < K:
         raise ValueError("Need at least as many data points as components.")
 
-    rng = np.random.default_rng(seed)
+    np.random.default_rng(seed)
 
     alpha_0 = 1.0
     m_0 = float(np.mean(x))

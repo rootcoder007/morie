@@ -1,7 +1,6 @@
 """Tests for svmdu.svm_dual_wolfe."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svmdu import svm_dual_wolfe
 
 

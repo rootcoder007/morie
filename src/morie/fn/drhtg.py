@@ -80,8 +80,7 @@ def dr_did_heterogeneity(y, D, X=None, strata=None):
             se.append(float("nan"))
             ns.append(float(len(idx)))
             continue
-        fit = k.drdid_panel([yv[i] for i in idx], ds,
-                            [Xr[i] for i in idx] if Xr is not None else None)
+        fit = k.drdid_panel([yv[i] for i in idx], ds, [Xr[i] for i in idx] if Xr is not None else None)
         catt.append(fit["tau"])
         se.append(fit["se"])
         ns.append(float(len(idx)))
@@ -97,8 +96,7 @@ def dr_did_heterogeneity(y, D, X=None, strata=None):
             if catt[j] == catt[j]:
                 hv += ns[j] * (catt[j] - est) ** 2
         hv = hv / den
-    pooled = k.drdid_panel(yv, dv, Xr)["tau"] \
-        if (0.0 < sum(dv) < float(n)) else float("nan")
+    pooled = k.drdid_panel(yv, dv, Xr)["tau"] if (0.0 < sum(dv) < float(n)) else float("nan")
     return RichResult(
         title="DR-DiD heterogeneous CATT",
         summary_lines=[("strata", len(labels))],

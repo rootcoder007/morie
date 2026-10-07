@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["wasserman_importance_sampling"]
 
 
-def wasserman_importance_sampling(f, p, q, n=None, samples=None,
-                                  normalised=False, seed=0):
+def wasserman_importance_sampling(f, p, q, n=None, samples=None, normalised=False, seed=0):
     r"""Importance sampling, MacKay Eqs. (29.21)-(29.22).
 
     Draw :math:`x^{(r)}` from a sampler density :math:`Q`, weight
@@ -88,7 +87,8 @@ def wasserman_importance_sampling(f, p, q, n=None, samples=None,
         if not hasattr(q, "rvs"):
             raise ValueError(
                 "supply samples drawn from q, or a q with an rvs method; "
-                "importance sampling cannot invent its own draws.")
+                "importance sampling cannot invent its own draws."
+            )
         if n is None:
             raise ValueError("supply n when drawing samples from q.rvs.")
         samples = q.rvs(size=int(n), random_state=int(seed))
@@ -103,31 +103,35 @@ def wasserman_importance_sampling(f, p, q, n=None, samples=None,
     if np.any(qv <= 0):
         raise ValueError(
             "the sampler density is zero or negative at a drawn point; "
-            "Q must be positive wherever P is (MacKay's Exercise 29.1).")
-    w = pv / qv                                          # (29.21)
+            "Q must be positive wherever P is (MacKay's Exercise 29.1)."
+        )
+    w = pv / qv  # (29.21)
     phi = np.asarray(f(xs), dtype=float).ravel()
     tot = float(w.sum())
     if tot <= 0:
-        raise ValueError("every importance weight is zero; the sampler and "
-                         "the target have no overlap in the drawn region.")
+        raise ValueError(
+            "every importance weight is zero; the sampler and the target have no overlap in the drawn region."
+        )
     est = float(np.mean(w * phi)) if normalised else float((w * phi).sum() / tot)
-    ess = float(tot ** 2 / np.sum(w ** 2))
-    return RichResult(payload={
-        "estimate": est, "weights": w,
-        "self_normalised": not normalised,
-        "effective_sample_size": ess, "ess_fraction": ess / R,
-        "max_weight_share": float(w.max() / tot),
-        "n": int(R),
-        "diagnostics_are_not_guarantees":
-            "the effective sample size can only see regions that were "
+    ess = float(tot**2 / np.sum(w**2))
+    return RichResult(
+        payload={
+            "estimate": est,
+            "weights": w,
+            "self_normalised": not normalised,
+            "effective_sample_size": ess,
+            "ess_fraction": ess / R,
+            "max_weight_share": float(w.max() / tot),
+            "n": int(R),
+            "diagnostics_are_not_guarantees": "the effective sample size can only see regions that were "
             "actually sampled; if Q is small where |phi P*| is large the "
             "estimate is wrong with no empirical sign of it",
-        "heavy_tail_advice":
-            "an importance sampler should have HEAVY TAILS: MacKay's "
+            "heavy_tail_advice": "an importance sampler should have HEAVY TAILS: MacKay's "
             "Fig. 29.6 has a Gaussian sampler still wrong after 10^6 draws "
             "where a Cauchy sampler converges after about 5000",
-        "method": "Importance sampling, MacKay (29.21) weights and (29.22) "
-                  "self-normalised estimator"})
+            "method": "Importance sampling, MacKay (29.21) weights and (29.22) self-normalised estimator",
+        }
+    )
 
 
 def cheatsheet():

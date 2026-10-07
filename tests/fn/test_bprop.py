@@ -3,18 +3,17 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.bprop import backpropagation_chain_rule
 
 
 def test_bprop_basic():
     """Test basic functionality with a small 3-layer feedforward network."""
     rng = np.random.default_rng(42)
-    n = 5        # number of patterns
-    d_in = 3     # input dimension
-    h1 = 4       # hidden layer 1 units
-    h2 = 3       # hidden layer 2 units
-    d_out = 2    # output dimension
+    n = 5  # number of patterns
+    d_in = 3  # input dimension
+    h1 = 4  # hidden layer 1 units
+    h2 = 3  # hidden layer 2 units
+    d_out = 2  # output dimension
 
     # W_l has one row per unit of layer l and one column per unit of
     # layer l-1 plus a leading bias column.

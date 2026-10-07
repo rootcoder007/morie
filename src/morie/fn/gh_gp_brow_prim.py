@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_gp_brownian_primitive"]
@@ -25,9 +24,10 @@ def ghosal_gp_brownian_primitive(k=1, n_grid=256, seed=42):
     for _ in range(n_grid):
         w += float(rng.normal(0, 1)) / math.sqrt(n_grid)
         path.append(w)
+
     def rough(p):
-        return sum(abs(p[i + 1] - p[i]) for i in range(len(p) - 1)) \
-            / (len(p) - 1)
+        return sum(abs(p[i + 1] - p[i]) for i in range(len(p) - 1)) / (len(p) - 1)
+
     r0 = rough(path)
     cur = path
     for _ in range(int(k)):
@@ -38,10 +38,14 @@ def ghosal_gp_brownian_primitive(k=1, n_grid=256, seed=42):
             out.append(acc)
         cur = out
     rk = rough(cur)
-    res = RichResult(payload={"estimate": rk,
-                              "roughness_bm": r0,
-                              "smoother": rk < r0 / 10.0,
-                              "method": "integrated BM primitive (GvdV 2017 Ex 11.6)"})
+    res = RichResult(
+        payload={
+            "estimate": rk,
+            "roughness_bm": r0,
+            "smoother": rk < r0 / 10.0,
+            "method": "integrated BM primitive (GvdV 2017 Ex 11.6)",
+        }
+    )
     return with_describe_pointer(res, "gh_gp_brow_prim")
 
 

@@ -72,12 +72,10 @@ arXiv:1706.08566. The distance-only predecessor; implemented in
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["angle_between", "triplet_count", "bessel_basis",
-           "spherical_harmonic_basis", "directional_message_pass"]
+__all__ = ["angle_between", "triplet_count", "bessel_basis", "spherical_harmonic_basis", "directional_message_pass"]
 
 _EPS = 1e-12
 
@@ -102,8 +100,7 @@ def angle_between(r_k, r_j, r_i):
     nu = math.sqrt(sum(x * x for x in u))
     nv = math.sqrt(sum(x * x for x in v))
     if nu <= _EPS or nv <= _EPS:
-        raise ValueError("dimNet: an angle needs three distinct "
-                         "positions")
+        raise ValueError("dimNet: an angle needs three distinct positions")
     cs = sum(u[i] * v[i] for i in range(len(u))) / (nu * nv)
     return math.acos(min(max(cs, -1.0), 1.0))
 
@@ -115,10 +112,11 @@ def triplet_count(adj):
     for j in adj:
         d = len(set(adj[j]) - {j})
         n += d * (d - 1)
-    return {"triplets": n,
-            "pairs": sum(len(set(adj[j]) - {j}) for j in adj),
-            "note": "directional message passing interacts over "
-                    "TRIPLETS; the cost follows the angle count"}
+    return {
+        "triplets": n,
+        "pairs": sum(len(set(adj[j]) - {j}) for j in adj),
+        "note": "directional message passing interacts over TRIPLETS; the cost follows the angle count",
+    }
 
 
 def bessel_basis(d, cutoff=5.0, n_basis=8):
@@ -134,8 +132,7 @@ def bessel_basis(d, cutoff=5.0, n_basis=8):
     dv = float(d)
     if dv <= 0.0:
         raise ValueError("dimNet: the distance must be positive")
-    return [math.sqrt(2.0 / c) * math.sin(n * math.pi * dv / c) / dv
-            for n in range(1, int(n_basis) + 1)]
+    return [math.sqrt(2.0 / c) * math.sin(n * math.pi * dv / c) / dv for n in range(1, int(n_basis) + 1)]
 
 
 def spherical_harmonic_basis(angle, n_basis=4):
@@ -147,19 +144,16 @@ def spherical_harmonic_basis(angle, n_basis=4):
     x = math.cos(float(angle))
     n = int(n_basis)
     if n < 1:
-        raise ValueError("dimNet: at least one basis function is "
-                         "needed")
+        raise ValueError("dimNet: at least one basis function is needed")
     out = [1.0]
     if n > 1:
         out.append(x)
-    for l in range(2, n):
-        out.append(((2 * l - 1) * x * out[l - 1]
-                    - (l - 1) * out[l - 2]) / l)
+    for ell in range(2, n):
+        out.append(((2 * ell - 1) * x * out[ell - 1] - (ell - 1) * out[ell - 2]) / ell)
     return out[:n]
 
 
-def directional_message_pass(messages, adj, R, interact, update,
-                             cutoff=5.0, n_rbf=8, n_sbf=4):
+def directional_message_pass(messages, adj, R, interact, update, cutoff=5.0, n_rbf=8, n_sbf=4):
     r"""One round of directional message passing.
 
     ``messages[(j,i)]`` is the embedding of the directed edge
@@ -169,44 +163,44 @@ def directional_message_pass(messages, adj, R, interact, update,
     """
     pos = [[float(v) for v in r] for r in k.mat(R)]
     out = {}
-    for (j, i) in messages:
+    for j, i in messages:
         acc = None
         for kk in sorted(set(adj.get(j, ())) - {i, j}):
-            d = math.sqrt(sum((pos[kk][a] - pos[j][a]) ** 2
-                              for a in range(len(pos[j]))))
+            d = math.sqrt(sum((pos[kk][a] - pos[j][a]) ** 2 for a in range(len(pos[j]))))
             ang = angle_between(pos[kk], pos[j], pos[i])
-            contrib = interact(messages[(kk, j)],
-                               bessel_basis(d, cutoff, n_rbf),
-                               spherical_harmonic_basis(ang, n_sbf))
+            contrib = interact(messages[(kk, j)], bessel_basis(d, cutoff, n_rbf), spherical_harmonic_basis(ang, n_sbf))
             contrib = [float(v) for v in contrib]
-            acc = list(contrib) if acc is None else \
-                [acc[a] + contrib[a] for a in range(len(acc))]
+            acc = list(contrib) if acc is None else [acc[a] + contrib[a] for a in range(len(acc))]
         if acc is None:
             acc = [0.0] * len(messages[(j, i)])
         out[(j, i)] = [float(v) for v in update(messages[(j, i)], acc)]
-    return RichResult(payload={
-        "estimate": out, "messages": out,
-        "n_messages": len(out),
-        "triplets": triplet_count(adj)["triplets"],
-        "method": "directional message passing; Klicpera, Gross & "
-                  "Gunnemann (2020)",
-        "note": "messages carry DIRECTION, so they are rotationally "
-                "equivariant, and interact through the ANGLE between "
-                "them",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "messages": out,
+            "n_messages": len(out),
+            "triplets": triplet_count(adj)["triplets"],
+            "method": "directional message passing; Klicpera, Gross & Gunnemann (2020)",
+            "note": "messages carry DIRECTION, so they are rotationally "
+            "equivariant, and interact through the ANGLE between "
+            "them",
+        }
+    )
 
 
 def cheatsheet():
-    return ("dimNet: a distance-only graph network cannot express the "
-            "ANGULAR term of an empirical potential -- three atoms in "
-            "a line and three at a right angle can share the same bond "
-            "lengths. So embed the MESSAGES, not the atoms: each "
-            "carries a direction, hence is rotationally EQUIVARIANT, "
-            "and messages interact through the angle between them, "
-            "belief-propagation style. The basis is spherical BESSEL "
-            "radially and spherical HARMONICS angularly -- orthogonal, "
-            "so it beats a Gaussian basis with under a quarter of the "
-            "parameters. Cost scales with TRIPLETS, not pairs.")
+    return (
+        "dimNet: a distance-only graph network cannot express the "
+        "ANGULAR term of an empirical potential -- three atoms in "
+        "a line and three at a right angle can share the same bond "
+        "lengths. So embed the MESSAGES, not the atoms: each "
+        "carries a direction, hence is rotationally EQUIVARIANT, "
+        "and messages interact through the angle between them, "
+        "belief-propagation style. The basis is spherical BESSEL "
+        "radially and spherical HARMONICS angularly -- orthogonal, "
+        "so it beats a Gaussian basis with under a quarter of the "
+        "parameters. Cost scales with TRIPLETS, not pairs."
+    )
 
 
 # compact alias per ledger/NAMING.md

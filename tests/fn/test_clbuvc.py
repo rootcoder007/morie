@@ -1,7 +1,6 @@
 """Tests for clbuvc.club_upper_bound."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clbuvc import club_upper_bound
 
 

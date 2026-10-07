@@ -71,7 +71,7 @@ def geron_johnson_lindenstrauss(n, eps):
     if n_points < 2:
         raise ValueError(f"geron_johnson_lindenstrauss: n must be at least 2 points, got {n!r}")
     e = np.asarray(eps, dtype=float)
-    scalar = e.ndim == 0
+    scalar = np.ndim(eps) == 0
     e = np.atleast_1d(e)
     if e.size == 0:
         raise ValueError("geron_johnson_lindenstrauss: eps is empty")

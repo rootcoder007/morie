@@ -54,9 +54,14 @@ def gibbons_wrs_ties(x, y):
     z = (W - mean) / np.sqrt(var)
     return RichResult(
         payload={
-            "W": W, "mean": mean, "var_corrected": float(var), "z": float(z),
+            "W": W,
+            "mean": mean,
+            "var_corrected": float(var),
+            "z": float(z),
             "p_two_sided": float(2 * stats.norm.sf(abs(z))),
-            "tie_sum": tie_sum, "m": m, "n": n,
+            "tie_sum": tie_sum,
+            "m": m,
+            "n": n,
             "method": "Wilcoxon rank-sum, tie-corrected variance (Gibbons Ch. 8.2)",
         }
     )

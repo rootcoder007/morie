@@ -65,15 +65,14 @@ def btcalib(x, alpha=0.05, B=1000, seed=0):
     tstars = []
     betas = []
     for _b in range(int(B)):
-        xb = [xv[min(int(float(rng.uniform()) * n), n - 1)]
-              for _ in range(n)]
+        xb = [xv[min(int(float(rng.uniform()) * n), n - 1)] for _ in range(n)]
         mb = sum(xb) / n
         sb = math.sqrt(sum((v - mb) ** 2 for v in xb) / (n - 1))
         if sb <= 0:
             sb = 1e-300
         t = sqn * (mb - that) / sb
         tstars.append(abs(t))
-        betas.append(1.0 - float(norm.cdf(abs(t))))       # Loh Eq. 2
+        betas.append(1.0 - float(norm.cdf(abs(t))))  # Loh Eq. 2
     # alpha' = 2a-quantile of the beta_hat_i (Sec. 2.1)
     sb_ = sorted(betas)
     idx = max(min(int(math.ceil(2.0 * a * B)) - 1, B - 1), 0)
@@ -87,18 +86,20 @@ def btcalib(x, alpha=0.05, B=1000, seed=0):
     z_boot = st[B - 1 - idx]
     half_bt = z_boot * sig / sqn
     gap = abs(half_cal - half_bt)
-    return RichResult(payload={
-        "estimate": that,
-        "lower": that - half_cal,
-        "upper": that + half_cal,
-        "alpha_prime": alpha_prime,
-        "z_calibrated": z_cal,
-        "identity_gap": gap,
-        "alpha": alpha,
-        "B": int(B),
-        "seed": int(seed),
-        "method": "Loh (1991) exact bootstrap calibration (Eqs. 1-2)",
-    })
+    return RichResult(
+        payload={
+            "estimate": that,
+            "lower": that - half_cal,
+            "upper": that + half_cal,
+            "alpha_prime": alpha_prime,
+            "z_calibrated": z_cal,
+            "identity_gap": gap,
+            "alpha": alpha,
+            "B": int(B),
+            "seed": int(seed),
+            "method": "Loh (1991) exact bootstrap calibration (Eqs. 1-2)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -107,6 +108,7 @@ bootstrap_calibration_ci = btcalib
 
 def cheatsheet():
     return "btcalib: beta_i = 1 - Phi(|t*_i|); alpha' = q_{2a}(beta); == bootstrap-t"
+
 
 # public names resolved by fn/_lazy_map.json
 boot_calibrated_ci = btcalib

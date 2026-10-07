@@ -65,12 +65,18 @@ def _grow_extra(X, y, criterion, max_depth, max_features, min_samples_leaf, dept
         "threshold": t,
         "n": int(y.size),
         "depth": depth,
-        "left": _grow_extra(X[mask], y[mask], criterion, max_depth, max_features, min_samples_leaf, depth + 1, state, stats),
-        "right": _grow_extra(X[~mask], y[~mask], criterion, max_depth, max_features, min_samples_leaf, depth + 1, state, stats),
+        "left": _grow_extra(
+            X[mask], y[mask], criterion, max_depth, max_features, min_samples_leaf, depth + 1, state, stats
+        ),
+        "right": _grow_extra(
+            X[~mask], y[~mask], criterion, max_depth, max_features, min_samples_leaf, depth + 1, state, stats
+        ),
     }
 
 
-def geron_extra_trees(X, y, n_estimators=10, max_features=None, seed=0, criterion="gini", max_depth=None, min_samples_leaf=1):
+def geron_extra_trees(
+    X, y, n_estimators=10, max_features=None, seed=0, criterion="gini", max_depth=None, min_samples_leaf=1
+):
     """
     Extra-trees: randomize thresholds per feature split for extra variance
     reduction.
@@ -209,7 +215,7 @@ def geron_extra_trees(X, y, n_estimators=10, max_features=None, seed=0, criterio
         head = ("Train MSE", mse)
     else:
         classes = np.unique(ya)
-        counts = np.stack([(P == c).sum(axis=0) for c in classes], axis=1)
+        counts = np.stack([(c == P).sum(axis=0) for c in classes], axis=1)
         pred = classes[counts.argmax(axis=1)]
         acc = float(np.mean(pred == ya))
         payload.update(

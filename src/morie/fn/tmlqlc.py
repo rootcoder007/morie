@@ -82,7 +82,7 @@ def tmle_qlearning(state, action, reward, time):
         bb = S.glmbin([[1.0, sv[i]] for i in idx], [av[i] for i in idx])
         b1 = [S.clip(S.expit(C.dot([1.0, sv[i]], bb)), 0.025, 0.975) for i in idx]
 
-        def q(k, a):
+        def q(k, a, *, idx=idx, qb=qb):
             i = idx[k]
             return C.dot([1.0, sv[i], a, sv[i] * a], qb)
 
@@ -100,13 +100,21 @@ def tmle_qlearning(state, action, reward, time):
     ic = [ic[k] + V[k] - psi for k in range(m)]
     mu = sum(ic) / m
     se = math.sqrt(sum((v - mu) ** 2 for v in ic) / (m - 1) / m) if m > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n_stages": float(T), "n_subj": float(m), "n": n,
-        "method": "Backward-targeted Q-learning for a multi-stage regime"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n_stages": float(T),
+            "n_subj": float(m),
+            "n": n,
+            "method": "Backward-targeted Q-learning for a multi-stage regime",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlqlc: stagewise-targeted Q-learning for a dynamic regime."
+
 
 # public names resolved by fn/_lazy_map.json
 tmleqlearning = tmle_qlearning

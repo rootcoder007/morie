@@ -81,10 +81,16 @@ def esl_gaussian_mixture(X, k=2, newdata=None, **kwargs):
         title="Gaussian mixture density",
         summary_lines=[("k", int(k)), ("eval points", int(Z.shape[0]))],
         payload={
-            "density": np.exp(logd), "log_density": logd,
-            "pi": fit["pi"], "mu": fit["mu"], "sigma": fit["sigma"],
-            "loglik": fit["loglik"], "aic": fit["aic"], "bic": fit["bic"],
-            "resp": fit["resp"], "labels": fit["labels"],
+            "density": np.exp(logd),
+            "log_density": logd,
+            "pi": fit["pi"],
+            "mu": fit["mu"],
+            "sigma": fit["sigma"],
+            "loglik": fit["loglik"],
+            "aic": fit["aic"],
+            "bic": fit["bic"],
+            "resp": fit["resp"],
+            "labels": fit["labels"],
             "method": "esl_gaussian_mixture",
         },
     )
@@ -92,6 +98,7 @@ def esl_gaussian_mixture(X, k=2, newdata=None, **kwargs):
 
 def cheatsheet():
     return "eslmix: mixture as a DENSITY estimate (ESL 6.8); integrates to 1, unlike a bare cluster fit"
+
 
 # alias kept from the retired placeholder of the same name
 gmm_spatial = esl_gaussian_mixture

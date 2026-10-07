@@ -40,10 +40,7 @@ def ma_cumulative(yi, vi, order=None, level=0.95):
     y = np.asarray(yi, dtype=float).ravel()
     v = np.asarray(vi, dtype=float).ravel()
     k = len(y)
-    if order is None:
-        idx = list(range(k))
-    else:
-        idx = np.argsort(np.asarray(order, dtype=float)).tolist()
+    idx = list(range(k)) if order is None else np.argsort(np.asarray(order, dtype=float)).tolist()
     crit = k02z(0.5 + 0.5 * float(level))
     est = []
     ses = []

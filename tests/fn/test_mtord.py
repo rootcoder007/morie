@@ -1,8 +1,8 @@
 """Tests for morie.fn.mtord — road segment."""
 
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _frame_core as pd
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mtord import mto_road_segment
 

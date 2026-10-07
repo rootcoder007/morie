@@ -1,12 +1,11 @@
 """Tests for morie.fn.selbf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.selbf import selbf
 
 
 def test_selbf_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = selbf(p_selected=0.5, outcome_diff=0.3)
     assert result is not None
     assert hasattr(result, "name")

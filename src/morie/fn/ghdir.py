@@ -64,10 +64,7 @@ def ghosal_dirichlet_posterior(x, alpha=1.0, base_mean=0.0, base_sd=1.0, grid=No
     grid = np.asarray(grid, dtype=float)
     alpha_post = float(alpha + n)
     G0_t = norm.cdf(grid, loc=base_mean, scale=base_sd)
-    if n > 0:
-        emp_t = np.array([(x <= t).sum() for t in grid], dtype=float)
-    else:
-        emp_t = np.zeros_like(grid)
+    emp_t = np.array([(x <= t).sum() for t in grid], dtype=float) if n > 0 else np.zeros_like(grid)
     F_post = (alpha * G0_t + emp_t) / alpha_post
     var_post = F_post * (1.0 - F_post) / (alpha_post + 1.0)
     # Headline scalar: posterior CDF at the sample mean (a stable single

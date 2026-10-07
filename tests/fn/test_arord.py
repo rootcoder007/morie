@@ -1,7 +1,6 @@
 """Tests for arord.py - AR order selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.arord import ar_order_select, arord
 
 

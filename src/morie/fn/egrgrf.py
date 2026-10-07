@@ -10,8 +10,9 @@ from ._richresult import RichResult
 __all__ = ["egregious_loss_forest"]
 
 
-def egregious_loss_forest(y, D, X, n_trees=200, min_leaf=10, max_depth=6,
-                          imbalance_penalty=100.0, subsample=0.5, seed=0):
+def egregious_loss_forest(
+    y, D, X, n_trees=200, min_leaf=10, max_depth=6, imbalance_penalty=100.0, subsample=0.5, seed=0
+):
     r"""Honest causal forest with GRF's split-imbalance regularizer.
 
     The heterogeneity criterion of Athey & Imbens rewards a split by
@@ -119,8 +120,12 @@ def egregious_loss_forest(y, D, X, n_trees=200, min_leaf=10, max_depth=6,
         raise ValueError(f"X has {X.shape[0]} rows but y has {y.size}")
 
     forest = CausalForest(
-        n_trees=n_trees, min_leaf=min_leaf, max_depth=max_depth,
-        subsample=subsample, imbalance_penalty=imbalance_penalty, seed=seed,
+        n_trees=n_trees,
+        min_leaf=min_leaf,
+        max_depth=max_depth,
+        subsample=subsample,
+        imbalance_penalty=imbalance_penalty,
+        seed=seed,
     ).fit(X, y, D)
     cate = forest.predict(oob=True)
 
@@ -145,14 +150,23 @@ def egregious_loss_forest(y, D, X, n_trees=200, min_leaf=10, max_depth=6,
         warn.append(f"{y.size - k} rows had no out-of-bag tree; their CATE is NaN")
     return RichResult(
         title="Loss-balanced causal forest",
-        summary_lines=[("n", int(y.size)), ("trees", int(n_trees)),
-                       ("ATE", ate), ("penalty", float(imbalance_penalty))],
+        summary_lines=[
+            ("n", int(y.size)),
+            ("trees", int(n_trees)),
+            ("ATE", ate),
+            ("penalty", float(imbalance_penalty)),
+        ],
         warnings=warn,
         payload={
-            "cate": cate, "ate": ate, "se": se, "ci": ci,
-            "leaf_sizes": sizes, "n_leaves": len(sizes),
+            "cate": cate,
+            "ate": ate,
+            "se": se,
+            "ci": ci,
+            "leaf_sizes": sizes,
+            "n_leaves": len(sizes),
             "imbalance_penalty": float(imbalance_penalty),
-            "estimate": ate, "n": int(y.size),
+            "estimate": ate,
+            "n": int(y.size),
             "method": "egregious_loss_forest",
         },
     )

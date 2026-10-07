@@ -1,7 +1,6 @@
 """Tests for efrnt.efron_tie_correction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.efrnt import efron_tie_correction
 
 
@@ -13,6 +12,8 @@ def test_efrnt_basic():
     result = efron_tie_correction(time, event, X)
     assert isinstance(result, dict)
     assert "beta" in result
+
+
 def test_efrnt_edge():
     """Test edge cases."""
     time = np.linspace(0, 10, 100)

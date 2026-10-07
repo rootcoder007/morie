@@ -39,9 +39,13 @@ def binomcoef(N, n):
     ordered = _morin.partial_permutations(N, n)
     if _morin.factorial(n) * count != ordered:
         raise AssertionError("n! C(N,n) does not equal N_P_n")
-    payload = {"n_objects": float(N), "n_picks": float(n),
-               "count": float(count), "ordered_count": float(ordered),
-               "forms_agree": 1.0}
+    payload = {
+        "n_objects": float(N),
+        "n_picks": float(n),
+        "count": float(count),
+        "ordered_count": float(ordered),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Unordered subgroups: binomial coefficient C(N, n).",
         summary_lines=[("N", N), ("n", n), ("count", count)],

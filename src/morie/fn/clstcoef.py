@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Local and average clustering coefficient."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -40,8 +38,7 @@ def clustering_coefficient(G):
     """
     A = C.mat(G)
     n = len(A)
-    adj = [[1 if (A[i][j] != 0.0 or A[j][i] != 0.0) and i != j else 0
-            for j in range(n)] for i in range(n)]
+    adj = [[1 if (A[i][j] != 0.0 or A[j][i] != 0.0) and i != j else 0 for j in range(n)] for i in range(n)]
     deg = [sum(adj[i]) for i in range(n)]
     local, defined = [], []
     for v in range(n):
@@ -55,10 +52,16 @@ def clustering_coefficient(G):
         local.append(cv)
         defined.append(cv)
     avg = sum(defined) / len(defined) if defined else float("nan")
-    return RichResult(payload={
-        "estimate": avg, "local": local, "degree": deg,
-        "n_defined": len(defined), "n": n,
-        "method": "Watts-Strogatz clustering coefficient"})
+    return RichResult(
+        payload={
+            "estimate": avg,
+            "local": local,
+            "degree": deg,
+            "n_defined": len(defined),
+            "n": n,
+            "method": "Watts-Strogatz clustering coefficient",
+        }
+    )
 
 
 def cheatsheet():

@@ -5,8 +5,6 @@ recomputed in the test body, and the value the docstring quotes is
 asserted as well.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km092 import kamath_ch6_stereotypical_assoc
@@ -21,8 +19,7 @@ def test_stereotypical_association_counts_attribute_mentions():
 
 
 def test_repeated_attribute_mentions_are_counted():
-    res = kamath_ch6_stereotypical_assoc("nurse", ["she"],
-               ["she and she are nurse", "she is a doctor"])
+    res = kamath_ch6_stereotypical_assoc("nurse", ["she"], ["she and she are nurse", "she is a doctor"])
     assert res["estimate"] == pytest.approx(2.0, rel=1e-12)
 
 

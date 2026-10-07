@@ -50,8 +50,8 @@ def wls_regression(
     XtWX = X.T @ W @ X
     try:
         XtWX_inv = np.linalg.inv(XtWX)
-    except np.linalg.LinAlgError:
-        raise ValueError("X'WX is singular.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("X'WX is singular.") from exc
 
     beta = XtWX_inv @ (X.T @ W @ y)
     fitted = X @ beta

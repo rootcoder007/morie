@@ -51,10 +51,7 @@ def recrd(
     if len(a_post) != L:
         raise ValueError("Pre and post must have same number of loci.")
 
-    if allele_freqs is not None:
-        pf = np.asarray(allele_freqs, dtype=float).ravel()
-    else:
-        pf = np.full(L, 0.1)
+    pf = np.asarray(allele_freqs, dtype=float).ravel() if allele_freqs is not None else np.full(L, 0.1)
 
     pf = np.clip(pf, 1e-6, 1.0 - 1e-6)
 

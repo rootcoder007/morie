@@ -66,10 +66,17 @@ def mtrbound(y, z, d, ymin, ymax):
     U = [y[i] if z[i] >= d else hi for i in range(n)]
     lb = sum(L) / n
     ub = sum(U) / n
-    return RichResult(payload={
-        "lower": lb, "upper": ub, "width": ub - lb,
-        "nfixed": sum(1 for i in range(n) if z[i] == d), "n": n, "d": d,
-        "method": "Monotone treatment response bounds (Manski 1997)"})
+    return RichResult(
+        payload={
+            "lower": lb,
+            "upper": ub,
+            "width": ub - lb,
+            "nfixed": sum(1 for i in range(n) if z[i] == d),
+            "n": n,
+            "d": d,
+            "method": "Monotone treatment response bounds (Manski 1997)",
+        }
+    )
 
 
 bound_monot_outcome = mtrbound

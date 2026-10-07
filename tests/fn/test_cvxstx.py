@@ -19,7 +19,7 @@ def test_cvxstx_basic():
 
 def test_cvxstx_edge():
     """-x^2 violates convexity on every chord; a non-callable raises."""
-    r = boyd_strict_convex(lambda x: -x[0] ** 2)
+    r = boyd_strict_convex(lambda x: -(x[0] ** 2))
     assert not r["convex"] and not r["strictly_convex"]
     assert r["worst_violation"] > 0
     with pytest.raises(TypeError):

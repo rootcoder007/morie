@@ -1,7 +1,6 @@
 """Tests for gh_dp_post_ex.ghosal_dp_posterior_exact."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_dp_post_ex import ghosal_dp_posterior_exact
 
 

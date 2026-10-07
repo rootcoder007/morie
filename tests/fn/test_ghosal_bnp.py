@@ -1,8 +1,8 @@
 """Bayesian nonparametrics (Ghosal & van der Vaart)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gh_c3_14 import ghosal_mpt_prior
 from morie.fn.gh_c5_7 import ghosal_pred_rec
 from morie.fn.gh_c5_8 import ghosal_gauss_ker
@@ -73,7 +73,7 @@ def test_beta_kernel_keeps_all_its_mass_inside_the_unit_interval():
     # a Gaussian kernel would leak past the boundary; this cannot
     assert np.all((out["grid"] > 0) & (out["grid"] < 1))
     with pytest.raises(ValueError):
-        ghosal_beta_ker(rng.standard_normal(50))     # outside [0, 1]
+        ghosal_beta_ker(rng.standard_normal(50))  # outside [0, 1]
 
 
 def test_polya_tree_posterior_is_a_density_and_needs_growing_a_m():
@@ -134,8 +134,7 @@ def test_contraction_theorem_balances_entropy_against_prior_mass():
     assert partial["entropy_ok"] is True
     assert partial["prior_mass_ok"] is None
     assert partial["all_conditions_checked"] is False
-    full = ghosal_iid_crt_thm(np.zeros(9), eps=0.1, n=1000, entropy=5.0,
-                             prior_mass=np.exp(-5.0))
+    full = ghosal_iid_crt_thm(np.zeros(9), eps=0.1, n=1000, entropy=5.0, prior_mass=np.exp(-5.0))
     assert full["all_conditions_checked"] is True
     assert full["prior_mass_ok"] is True
 
@@ -144,11 +143,11 @@ def test_squared_exponential_gp_contracts_only_logarithmically():
     n = 10_000
     se = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n)
     ma = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="matern")
-    rs = ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="rescaled_se")
+    ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=n, kernel="rescaled_se")
     # the point of the section: an analytic-path prior is too smooth
     assert se["rate_kind"] == "LOGARITHMIC"
     assert se["attains_minimax"] is False
-    assert se["rate"] > ma["rate"]            # far worse
+    assert se["rate"] > ma["rate"]  # far worse
     assert ma["attains_minimax"] is True
     assert ma["rate"] == pytest.approx(ma["minimax_rate"])
     # A logarithmic rate is bad ASYMPTOTICALLY, not at every n. At
@@ -156,14 +155,16 @@ def test_squared_exponential_gp_contracts_only_logarithmically():
     # SMALLER than the rescaled polynomial one (0.204); they cross
     # later. What actually diverges is the ratio to minimax:
     # measured 2.3 at 1e4, 7.2 at 1e6, 94 at 1e10.
-    ratios = [ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=m)["ratio_to_minimax"]
-              for m in (10_000, 1_000_000, 10_000_000_000)]
+    ratios = [
+        ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=m)["ratio_to_minimax"] for m in (10_000, 1_000_000, 10_000_000_000)
+    ]
     assert ratios[0] < ratios[1] < ratios[2]
     assert ratios[2] > 50
     # and the rescaled prior is polynomial, so ITS ratio stays bounded
-    rs_ratios = [ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=m,
-                                    kernel="rescaled_se")["ratio_to_minimax"]
-                 for m in (10_000, 10_000_000_000)]
+    rs_ratios = [
+        ghosal_gp_dens_crt(np.zeros(5), s=1.0, n=m, kernel="rescaled_se")["ratio_to_minimax"]
+        for m in (10_000, 10_000_000_000)
+    ]
     assert rs_ratios[1] < ratios[2]
     with pytest.raises(ValueError):
         ghosal_gp_dens_crt(np.zeros(5), kernel="laplace")
@@ -189,15 +190,15 @@ def test_whittle_likelihood_runs_on_a_dependent_series():
     y = np.empty(n)
     y[0] = e[0]
     for t in range(1, n):
-        y[t] = 0.7 * y[t - 1] + e[t]        # AR(1), genuinely dependent
+        y[t] = 0.7 * y[t - 1] + e[t]  # AR(1), genuinely dependent
     out = ghosal_spec_dens_con(y)
     assert out["exact"] is False
     assert np.all(out["spectral_density"] > 0)
     assert np.isfinite(out["whittle_loglik"])
     # an AR(1) with positive coefficient has more power at low
     # frequency: the estimate must reflect that
-    lo = out["spectral_density"][:len(out["freqs"]) // 4].mean()
-    hi = out["spectral_density"][-len(out["freqs"]) // 4:].mean()
+    lo = out["spectral_density"][: len(out["freqs"]) // 4].mean()
+    hi = out["spectral_density"][-len(out["freqs"]) // 4 :].mean()
     assert lo > hi
     with pytest.raises(ValueError):
         ghosal_spec_dens_con(y[:4])
@@ -213,7 +214,7 @@ def test_dp_survival_converges_to_kaplan_meier_as_alpha_vanishes():
     assert near < far
     assert near < 1e-2
     out = ghosal_surv_dp_km(t, ev, alpha=1.0)
-    assert np.all(np.diff(out["survival_km"]) <= 1e-12)   # non-increasing
+    assert np.all(np.diff(out["survival_km"]) <= 1e-12)  # non-increasing
     assert out["n_events"] == int(ev.sum())
     with pytest.raises(ValueError):
         ghosal_surv_dp_km(-t, ev)
@@ -231,10 +232,9 @@ def test_cox_bvm_recovers_beta_and_reports_efficiency():
     assert out["credible_equals_confidence"] is True
     assert out["se"][0] > 0
     # the posterior approximation integrates to one
-    assert np.trapezoid(out["posterior_normal"], out["beta_grid"]) == \
-        pytest.approx(1.0, abs=1e-3)
+    assert np.trapezoid(out["posterior_normal"], out["beta_grid"]) == pytest.approx(1.0, abs=1e-3)
     with pytest.raises(ValueError):
-        ghosal_cox_bvm(z)                      # time is required
+        ghosal_cox_bvm(z)  # time is required
 
 
 def test_empirical_bayes_alpha_tracks_the_cluster_count():

@@ -10,5 +10,6 @@ def test_alchat_basic():
 
 def test_alchat_edge():
     import pytest
+
     with pytest.raises(ValueError, match="no template tokens"):
         alammar_chat_template([("robot", "x")], {"user": ("", "")})

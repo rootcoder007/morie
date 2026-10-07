@@ -5,8 +5,6 @@ Implements eq. (3.4), p.31 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,10 +22,14 @@ def ghosal_ch3_countable_dirichlet_marginal(alpha, k):
     params = head + [tail]
     tot = sum(a)
     means = [ai / tot for ai in params]
-    res = RichResult(payload={"estimate": means[0],
-                              "distribution": params,
-                              "mean": means,
-                              "method": "countable Dirichlet marginal (GvdV 2017 eq. 3.4)"})
+    res = RichResult(
+        payload={
+            "estimate": means[0],
+            "distribution": params,
+            "mean": means,
+            "method": "countable Dirichlet marginal (GvdV 2017 eq. 3.4)",
+        }
+    )
     return with_describe_pointer(res, "ghs011")
 
 

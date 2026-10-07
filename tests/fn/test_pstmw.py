@@ -1,7 +1,6 @@
 """Tests for morie.fn.pstmw."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pstmw import pstmw
 
 

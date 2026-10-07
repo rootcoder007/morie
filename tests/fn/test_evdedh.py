@@ -1,7 +1,6 @@
 """Tests for evdedh.evt_dekkers_einmahl_dehaan."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evdedh import evt_dekkers_einmahl_dehaan
 
 
@@ -12,6 +11,8 @@ def test_evdedh_basic():
     result = evt_dekkers_einmahl_dehaan(x, k)
     assert isinstance(result, dict)
     assert "xi" in result
+
+
 def test_evdedh_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

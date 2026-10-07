@@ -1,7 +1,6 @@
 """Tests for morie.fn.rskcl — risk classification."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rskcl import risk_classify
 
 

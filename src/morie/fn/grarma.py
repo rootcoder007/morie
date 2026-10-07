@@ -88,8 +88,7 @@ def geron_arima_forecast(y, phi, theta, d=0):
     need = d + max(p, 1)
     if y.size < need:
         raise ValueError(
-            f"y has {y.size} observations but ARIMA(p={p}, d={d}, q={q}) needs at "
-            f"least {need} to form one forecast."
+            f"y has {y.size} observations but ARIMA(p={p}, d={d}, q={q}) needs at least {need} to form one forecast."
         )
 
     # Difference d times, remembering the last level at each stage so we

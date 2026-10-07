@@ -25,7 +25,7 @@ def _pairwise_alpha(z, alpha):
                 d = math.sqrt(s)
             else:
                 d = abs(zi - zj)
-            v = d ** alpha
+            v = d**alpha
             D[i][j] = v
             D[j][i] = v
     return D
@@ -56,9 +56,7 @@ def _qhat(P, a, tau, kappa):
     between = _block(P, a, tau, tau, kappa)
     withinX = _block(P, a, tau, a, tau) / 2.0
     withinY = _block(P, tau, kappa, tau, kappa) / 2.0
-    e = (2.0 / (n1 * m1)) * between \
-        - withinX / (n1 * (n1 - 1) / 2.0) \
-        - withinY / (m1 * (m1 - 1) / 2.0)
+    e = (2.0 / (n1 * m1)) * between - withinX / (n1 * (n1 - 1) / 2.0) - withinY / (m1 * (m1 - 1) / 2.0)
     return (n1 * m1 / float(n1 + m1)) * e
 
 
@@ -78,7 +76,7 @@ def _best_split(P, a, b, min_size):
 def _shuffle_within(order, clusters, us, pos):
     # Fisher-Yates within each cluster, consuming uniforms us[pos...]
     # identically in the R arm.
-    for (a, b) in clusters:
+    for a, b in clusters:
         L = b - a
         for i in range(L - 1, 0, -1):
             j = int(us[pos] * (i + 1))
@@ -89,8 +87,7 @@ def _shuffle_within(order, clusters, us, pos):
     return pos
 
 
-def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None,
-          seed=20260809):
+def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None, seed=20260809):
     """
     E-divisive hierarchical multiple changepoint estimation.
 
@@ -147,21 +144,20 @@ def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None,
     matteson-james-2014-edivisive-nonparametric-changepoint.pdf
     """
     xv = np.asarray(x, dtype=float)
-    if xv.ndim == 1:
-        z = [float(v) for v in xv]
-    else:
-        z = [[float(v) for v in row] for row in xv]
+    z = [float(v) for v in xv] if xv.ndim == 1 else [[float(v) for v in row] for row in xv]
     n = len(z)
     if n < 2 * min_size:
         raise ValueError("series too short")
     if not (0.0 < alpha < 2.0):
         raise ValueError("alpha must be in (0, 2)")
-    order = list(range(n))
+    list(range(n))
     cps = []
     pvals = []
     qstats = []
-    clusters_of = lambda taus: [(a, b) for a, b in
-                                zip([0] + sorted(taus), sorted(taus) + [n])]
+
+    def clusters_of(taus):
+        return [(a, b) for a, b in zip([0] + sorted(taus), sorted(taus) + [n])]
+
     D = _pairwise_alpha(z, alpha)
     P = _prefix2d(D)
     while True:
@@ -170,7 +166,7 @@ def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None,
         clusters = clusters_of(cps)
         # observed statistic: best split over all clusters (Sec. 2.3)
         best = (-math.inf, -1, -1)
-        for (a, b) in clusters:
+        for a, b in clusters:
             if b - a >= 2 * min_size:
                 q, tau, kappa = _best_split(P, a, b, min_size)
                 if q > best[0]:
@@ -190,7 +186,7 @@ def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None,
             Dp = _pairwise_alpha(zp, alpha)
             Pp = _prefix2d(Dp)
             bq = -math.inf
-            for (a, b) in clusters:
+            for a, b in clusters:
                 if b - a >= 2 * min_size:
                     q, _, _ = _best_split(Pp, a, b, min_size)
                     if q > bq:
@@ -203,16 +199,18 @@ def e_div(x, sig=0.05, R=199, alpha=1.0, min_size=2, max_cp=None,
         if p > sig:
             break
         cps.append(tau_hat)
-    return RichResult(payload={
-        "changepoints": list(cps),
-        "changepoints_sorted": sorted(cps),
-        "p_values": pvals,
-        "q_stats": qstats,
-        "n_changepoints": len(cps),
-        "estimate": sorted(cps),
-        "n": n,
-        "method": "E-divisive (Matteson-James 2014)",
-    })
+    return RichResult(
+        payload={
+            "changepoints": list(cps),
+            "changepoints_sorted": sorted(cps),
+            "p_values": pvals,
+            "q_stats": qstats,
+            "n_changepoints": len(cps),
+            "estimate": sorted(cps),
+            "n": n,
+            "method": "E-divisive (Matteson-James 2014)",
+        }
+    )
 
 
 def e_divisive(x, sig=0.05, **kw):

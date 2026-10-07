@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmutif import conditional_mi
 
 
@@ -16,8 +15,7 @@ def test_cmutif_basic():
     pxyz = pxyz / pxyz.sum()
 
     # Re-flatten into the nested-list shape the function expects.
-    p_nested = [[[float(pxyz[i, j, k]) for k in range(nz)]
-                 for j in range(ny)] for i in range(nx)]
+    p_nested = [[[float(pxyz[i, j, k]) for k in range(nz)] for j in range(ny)] for i in range(nx)]
     tot = sum(sum(sum(row) for row in plane) for plane in p_nested)
     p_norm = [[[v / tot for v in row] for row in plane] for plane in p_nested]
 
@@ -38,7 +36,6 @@ def test_cmutif_basic():
 
     def marg3(p, axes):
         # axes are indices into the (i, j, k) tuple; remaining axes are summed out.
-        idx = {0: 0, 1: 1, 2: 2}
         keep = [a for a in (0, 1, 2) if a in axes]
         out_shape = [len(p)] if 0 in keep else [1]
         if 1 in keep:
@@ -51,6 +48,7 @@ def test_cmutif_basic():
             out_shape.append(1)
         # Build the marginal by iterating and bucketing.
         from collections import defaultdict
+
         bucket = defaultdict(float)
         for i in range(len(p)):
             for j in range(len(p[i])):
@@ -62,6 +60,7 @@ def test_cmutif_basic():
         kept_sizes = [sizes[a] for a in keep]
         ordered = []
         from itertools import product
+
         for tup in product(*[range(s) for s in kept_sizes]):
             ordered.append(bucket[tup])
         return ordered

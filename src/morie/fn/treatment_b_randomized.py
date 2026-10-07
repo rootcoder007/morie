@@ -28,17 +28,16 @@ def treatment_b_randomized(r_yt, s_y, s_t):
     """
     value = _ca_crim.treatment_b_randomized(r_yt, s_y, s_t)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.2)"
     return RichResult(
-        title='Treatment coefficient under randomization b_t = r_yt s_y/s_t',
+        title="Treatment coefficient under randomization b_t = r_yt s_y/s_t",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e2: b_t = r_yt (s_y / s_t) [Weisburd et al. 2022, eq. 9.2]'
+    return "ca9e2: b_t = r_yt (s_y / s_t) [Weisburd et al. 2022, eq. 9.2]"

@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Spike-train information rate by the direct method."""
 
-from math import fsum, log
+from math import log
 
 from ._richresult import RichResult
 from ._spx import vec
@@ -70,8 +70,7 @@ def spike_information(spike, stim, nbins=2):
     if nbins < 2:
         raise ValueError("`nbins` must be at least 2")
     if nbins > n:
-        raise ValueError("`nbins` (%d) exceeds the number of trials (%d)"
-                         % (nbins, n))
+        raise ValueError(f"`nbins` ({int(nbins)}) exceeds the number of trials ({int(n)})")
     si = [int(round(t)) for t in s]
     for t, u in zip(s, si):
         if abs(t - u) > 1e-9:
@@ -81,8 +80,7 @@ def spike_information(spike, stim, nbins=2):
         raise ValueError("at least 2 stimulus classes are needed")
 
     srt = sorted(r)
-    edges = [srt[int(round(n * (b + 1.0) / nbins)) - 1]
-             for b in range(nbins - 1)]
+    edges = [srt[int(round(n * (b + 1.0) / nbins)) - 1] for b in range(nbins - 1)]
 
     def binof(v):
         for b in range(nbins - 1):
@@ -108,21 +106,25 @@ def spike_information(spike, stim, nbins=2):
         sub = [code[i] for i in range(n) if si[i] == c]
         hnoise = hnoise + (len(sub) / float(n)) * ent(sub)
 
-    return RichResult(payload={
-        "information": htot - hnoise,
-        "h_total": htot,
-        "h_noise": hnoise,
-        "n_stimuli": float(len(keys)),
-        "nbins": float(nbins),
-        "n_per_cell": n / float(nbins * len(keys)),
-        "bits": True,
-        "biased_upward_at_small_n": True,
-        "equal_count_bins": True,
-        "n": n,
-        "method": ("Direct-method spike-train information "
-                   "(Strong et al. 1998), no bias correction; NOT in "
-                   "Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "information": htot - hnoise,
+            "h_total": htot,
+            "h_noise": hnoise,
+            "n_stimuli": float(len(keys)),
+            "nbins": float(nbins),
+            "n_per_cell": n / float(nbins * len(keys)),
+            "bits": True,
+            "biased_upward_at_small_n": True,
+            "equal_count_bins": True,
+            "n": n,
+            "method": (
+                "Direct-method spike-train information "
+                "(Strong et al. 1998), no bias correction; NOT in "
+                "Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

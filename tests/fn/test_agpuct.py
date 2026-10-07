@@ -17,9 +17,7 @@ def test_agpuct_basic():
     Q = rng.normal(0, 1, k)
     result = alphazero_puct(P, N, Q, c_puct=1.5)
     assert isinstance(result, dict)
-    for key in ("score", "estimate", "U", "action",
-                "n_parent", "sqrt_n_parent", "c_puct",
-                "k", "method"):
+    for key in ("score", "estimate", "U", "action", "n_parent", "sqrt_n_parent", "c_puct", "k", "method"):
         assert key in result
     assert result["k"] == k
     assert len(result["score"]) == k

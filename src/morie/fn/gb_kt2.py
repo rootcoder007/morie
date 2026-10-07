@@ -42,8 +42,7 @@ def gibbons_kendall_exact(n, t=None):
     n = int(n)
     if not 2 <= n <= 8:
         raise ValueError(
-            f"exact enumeration is limited to 2 <= n <= 8, got {n}; "
-            "use the asymptotic normal for larger n."
+            f"exact enumeration is limited to 2 <= n <= 8, got {n}; use the asymptotic normal for larger n."
         )
     npairs = n * (n - 1) // 2
     counts = {}
@@ -63,8 +62,12 @@ def gibbons_kendall_exact(n, t=None):
     mean = float(np.sum(support * pmf))
     var = float(np.sum(support**2 * pmf) - mean**2)
     payload = {
-        "support": support, "pmf": pmf, "mean": mean, "var": var,
-        "n": n, "method": "Exact Kendall tau null distribution by enumeration",
+        "support": support,
+        "pmf": pmf,
+        "mean": mean,
+        "var": var,
+        "n": n,
+        "method": "Exact Kendall tau null distribution by enumeration",
     }
     if t is not None:
         t = float(t)

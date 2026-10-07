@@ -6,8 +6,7 @@ from ._richresult import RichResult
 __all__ = ["schabenberger_random_field_stationarity"]
 
 
-def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10,
-                                            max_dist=None, tol=0.25):
+def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10, max_dist=None, tol=0.25):
     r"""
     Which stationarity assumption the data can support.
 
@@ -160,20 +159,28 @@ def schabenberger_random_field_stationarity(coords, z, n_blocks=4, n_bins=10,
     second_order = bool(mean_ok and var_ok)
     return RichResult(
         title="Stationarity assessment",
-        summary_lines=[("mean drift / sd", mean_drift),
-                       ("variance drift", var_drift),
-                       ("increment bias", inc_bias),
-                       ("second-order plausible", second_order)],
-        payload={"mean_stationary": bool(mean_ok),
-                 "variance_stationary": bool(var_ok),
-                 "second_order_plausible": second_order,
-                 # increments can be stationary even when levels are not
-                 "intrinsic_plausible": bool(inc_bias <= tol),
-                 "increment_bias": inc_bias, "increment_means": inc_means,
-                 "strict_if_gaussian": second_order,
-                 "mean_drift": mean_drift, "variance_drift": var_drift,
-                 "block_means": means, "block_vars": vars_,
-                 "n_blocks_used": int(means.size), "tol": float(tol)},
+        summary_lines=[
+            ("mean drift / sd", mean_drift),
+            ("variance drift", var_drift),
+            ("increment bias", inc_bias),
+            ("second-order plausible", second_order),
+        ],
+        payload={
+            "mean_stationary": bool(mean_ok),
+            "variance_stationary": bool(var_ok),
+            "second_order_plausible": second_order,
+            # increments can be stationary even when levels are not
+            "intrinsic_plausible": bool(inc_bias <= tol),
+            "increment_bias": inc_bias,
+            "increment_means": inc_means,
+            "strict_if_gaussian": second_order,
+            "mean_drift": mean_drift,
+            "variance_drift": var_drift,
+            "block_means": means,
+            "block_vars": vars_,
+            "n_blocks_used": int(means.size),
+            "tol": float(tol),
+        },
     )
 
 

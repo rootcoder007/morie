@@ -1,7 +1,6 @@
 """Tests for hmdrv.geron_diffusion_reverse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdrv import geron_diffusion_reverse
 
 
@@ -9,7 +8,10 @@ def test_hmdrv_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x_T = rng.normal(0, 1, 5)
-    model = lambda x, t: np.zeros_like(x)
+
+    def model(x, t):
+        return np.zeros_like(x)
+
     T = 5
     result = geron_diffusion_reverse(x_T, model, T, beta_schedule="linear", seed=0)
     assert isinstance(result, dict)
@@ -27,7 +29,10 @@ def test_hmdrv_basic():
 def test_hmdrv_edge():
     """Test edge cases."""
     x_T = [1.0]
-    model = lambda x, t: np.zeros_like(x)
+
+    def model(x, t):
+        return np.zeros_like(x)
+
     T = 1
     result = geron_diffusion_reverse(x_T, model, T, beta_schedule=[0.75])
     assert isinstance(result, dict)
@@ -49,7 +54,7 @@ import morie.fn.hmdrv as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

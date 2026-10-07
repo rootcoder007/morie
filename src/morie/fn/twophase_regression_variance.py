@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def twophase_regression_variance(s2_z, n1, s2_e, n2, n_population):
     """
     value = _brus.twophase_regression_variance(s2_z, n1, s2_e, n2, n_population)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (11.7)"
     return RichResult(
-        title='Two-phase sampling for regression: variance',
+        title="Two-phase sampling for regression: variance",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r11e7: V_hat = (1-n1/N) S2(z)/n1 + (1-n2/n1) S2(e)/n2 [Brus 2022, eq. 11.7]'
+    return "r11e7: V_hat = (1-n1/N) S2(z)/n1 + (1-n2/n1) S2(e)/n2 [Brus 2022, eq. 11.7]"

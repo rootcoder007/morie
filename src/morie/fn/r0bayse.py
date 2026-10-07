@@ -14,8 +14,7 @@ from .r0 import basic_reproduction_number as _r0
 __all__ = ["basic_reproduction"]
 
 
-def basic_reproduction(beta=None, gamma=None, attack_rate=None,
-                       tol=1e-8, max_iter=100):
+def basic_reproduction(beta=None, gamma=None, attack_rate=None, tol=1e-8, max_iter=100):
     """R0 either as ``beta / gamma`` or inverted from the attack rate.
 
     The second route matters more than it looks: an outbreak reports a
@@ -49,13 +48,16 @@ def basic_reproduction(beta=None, gamma=None, attack_rate=None,
     models for infectious diseases in heterogeneous populations.  Journal
     of Mathematical Biology 28(4):365-382.  doi:10.1007/BF00178324.
     """
-    r = _r0(beta=beta, gamma=gamma, attack_rate=attack_rate,
-            tol=tol, max_iter=max_iter)
+    r = _r0(beta=beta, gamma=gamma, attack_rate=attack_rate, tol=tol, max_iter=max_iter)
     direct = 1.0 if r.extra.get("method") == "direct" else 2.0
-    return RichResult(payload={
-        "estimate": float(r.estimate), "R0": float(r.estimate),
-        "route": direct,
-        "method": "R0 by " + str(r.extra.get("method"))})
+    return RichResult(
+        payload={
+            "estimate": float(r.estimate),
+            "R0": float(r.estimate),
+            "route": direct,
+            "method": "R0 by " + str(r.extra.get("method")),
+        }
+    )
 
 
 def cheatsheet():

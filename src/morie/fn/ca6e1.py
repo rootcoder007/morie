@@ -28,17 +28,16 @@ def ca_chapter_6_equation_1(b0, b1, x1):
     """
     value = _ca_crim.linear_predictor(b0, [b1], [x1])
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (6.1)"
     return RichResult(
-        title='Poisson regression, sample form ln(y) = b0 + b1 x1',
+        title="Poisson regression, sample form ln(y) = b0 + b1 x1",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca6e1: ln(y) = b0 + b1 x1 [Weisburd et al. 2022, eq. 6.1]'
+    return "ca6e1: ln(y) = b0 + b1 x1 [Weisburd et al. 2022, eq. 6.1]"

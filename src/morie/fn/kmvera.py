@@ -41,35 +41,32 @@ def kamath_vera_adapter(W0, A_frozen, B_frozen, lam_b, lam_d, x):
     d, k = W0.shape
     r = A.shape[0]
     if A.shape[1] != k:
-        raise ValueError(
-            f"A must be (r, k) with k = {k}; got {A.shape}.")
+        raise ValueError(f"A must be (r, k) with k = {k}; got {A.shape}.")
     if B.shape != (d, r):
-        raise ValueError(
-            f"B must be (d, r) = ({d}, {r}); got {B.shape}.")
+        raise ValueError(f"B must be (d, r) = ({d}, {r}); got {B.shape}.")
     if ld.size != r:
-        raise ValueError(
-            f"Lambda_d is the r-dimensional diagonal: expected {r} "
-            f"entries, got {ld.size}.")
+        raise ValueError(f"Lambda_d is the r-dimensional diagonal: expected {r} entries, got {ld.size}.")
     if lb.size != d:
-        raise ValueError(
-            f"Lambda_b is the d-dimensional diagonal: expected {d} "
-            f"entries, got {lb.size}.")
+        raise ValueError(f"Lambda_b is the d-dimensional diagonal: expected {d} entries, got {lb.size}.")
     if x.size != k:
         raise ValueError(f"x must have {k} entries; got {x.size}.")
     base = W0 @ x
     delta = lb * (B @ (ld * (A @ x)))
     h = base + delta
-    return RichResult(payload={
-        "h": [float(v) for v in h],
-        "base": [float(v) for v in base],
-        "delta": [float(v) for v in delta],
-        "estimate": float(h[0]),
-        "rank": int(r),
-        "n_trainable": int(lb.size + ld.size),
-        "n_trainable_lora_equivalent": int(A.size + B.size),
-        "n_frozen": int(W0.size + A.size + B.size),
-        "n": int(h.size),
-        "method": "VeRA h = W0 x + Lambda_b B Lambda_d A x"})
+    return RichResult(
+        payload={
+            "h": [float(v) for v in h],
+            "base": [float(v) for v in base],
+            "delta": [float(v) for v in delta],
+            "estimate": float(h[0]),
+            "rank": int(r),
+            "n_trainable": int(lb.size + ld.size),
+            "n_trainable_lora_equivalent": int(A.size + B.size),
+            "n_frozen": int(W0.size + A.size + B.size),
+            "n": int(h.size),
+            "method": "VeRA h = W0 x + Lambda_b B Lambda_d A x",
+        }
+    )
 
 
 def cheatsheet():

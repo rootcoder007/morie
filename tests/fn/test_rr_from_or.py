@@ -1,7 +1,5 @@
 """Tests for rr_from_or.rr_from_or."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.rr_from_or import rr_from_or
 
 

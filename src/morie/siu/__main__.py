@@ -55,8 +55,13 @@ def main(argv: list[str] | None = None) -> int:
     from .corpus import resolve_subject_officials
     from .native import html_to_text, parse_report_html, parse_report_text
 
-    be = dict(api=_opt(args, "--api"), base=_opt(args, "--base"), key=_opt(args, "--key"),
-              timeout=float(_opt(args, "--timeout", "300")), temperature=float(_opt(args, "--temperature", "0")))
+    be = dict(
+        api=_opt(args, "--api"),
+        base=_opt(args, "--base"),
+        key=_opt(args, "--key"),
+        timeout=float(_opt(args, "--timeout", "300")),
+        temperature=float(_opt(args, "--temperature", "0")),
+    )
     try:
         if cmd == "version":
             print(VERSION)
@@ -94,15 +99,20 @@ def main(argv: list[str] | None = None) -> int:
             return 0 if n is not None else 1
         if cmd == "audit" and len(args) >= 3:
             res = siu_audit_panel(
-                _slurp(args[2]), _slurp(args[1]), mode=int(_opt(args, "--mode", "4")),
+                _slurp(args[2]),
+                _slurp(args[1]),
+                mode=int(_opt(args, "--mode", "4")),
                 readers=_csv(_opt(args, "--readers")),
                 auditors=_csv(_opt(args, "--auditors", _opt(args, "--auditor"))),
-                num_readers=int(_opt(args, "--num-readers", "0")), num_auditors=int(_opt(args, "--num-auditors", "0")),
+                num_readers=int(_opt(args, "--num-readers", "0")),
+                num_auditors=int(_opt(args, "--num-auditors", "0")),
                 reader_concurrency=int(_opt(args, "--reader-concurrency", "0")),
                 auditor_sequential=_opt(args, "--auditor-sequential", "1") != "0",
                 reader_granularity=_opt(args, "--reader-granularity", "all"),
                 auditor_granularity=_opt(args, "--auditor-granularity", "all"),
-                health_check="--no-health-check" not in args, **be)
+                health_check="--no-health-check" not in args,
+                **be,
+            )
             print(res["json"])
             return 0
     except Exception as e:  # noqa: BLE001 -- CLI boundary: report and exit non-zero

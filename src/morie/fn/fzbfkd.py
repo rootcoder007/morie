@@ -60,15 +60,16 @@ def fauzi_boundary_free_kde(x, grid=None, h=None, transform="log"):
     tr = boundary_free_transform(transform)
     lo, hi = tr["support"]
     if np.any(xv <= lo) or np.any(xv >= hi):
-        raise ValueError(f"the sample must lie strictly inside {tr['support']} "
-                         f"for the {tr['name']} transformation.")
+        raise ValueError(f"the sample must lie strictly inside {tr['support']} for the {tr['name']} transformation.")
     z = tr["g_inv"](xv)
-    hh = float(np.std(z, ddof=1) * n ** -0.2) if h is None else float(h)
+    hh = float(np.std(z, ddof=1) * n**-0.2) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(float(np.quantile(xv, 0.02)),
-                    float(np.quantile(xv, 0.98)), 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = (
+        np.linspace(float(np.quantile(xv, 0.02)), float(np.quantile(xv, 0.98)), 200)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     if np.any(g <= lo) or np.any(g >= hi):
         raise ValueError("the grid must lie strictly inside the support.")
     gz = tr["g_inv"](g)
@@ -78,16 +79,23 @@ def fauzi_boundary_free_kde(x, grid=None, h=None, transform="log"):
     g_prime = tr["dg"](gz)
     jac = 1.0 / g_prime
     dens = kernel_K((gz[:, None] - z[None, :]) / hh).sum(axis=1) * jac / (n * hh)
-    return RichResult(payload={
-        "grid": g, "density": dens, "bandwidth": hh,
-        "transform": tr["name"], "jacobian": jac, "g_prime": g_prime,
-        "mass": float(np.trapezoid(dens, g)),
-        "boundary_bias_order": "O(h^2) everywhere, including the boundary",
-        "jacobian_note": "1/g'(g^{-1}(t)) is the change-of-variables factor; "
-                         "without it the result is a density on the "
-                         "transformed scale, not the original one",
-        "n": int(n),
-        "method": "Boundary-free KDE by bijection (Ch. 4); no boundary exists on the transformed scale"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "bandwidth": hh,
+            "transform": tr["name"],
+            "jacobian": jac,
+            "g_prime": g_prime,
+            "mass": float(np.trapezoid(dens, g)),
+            "boundary_bias_order": "O(h^2) everywhere, including the boundary",
+            "jacobian_note": "1/g'(g^{-1}(t)) is the change-of-variables factor; "
+            "without it the result is a density on the "
+            "transformed scale, not the original one",
+            "n": int(n),
+            "method": "Boundary-free KDE by bijection (Ch. 4); no boundary exists on the transformed scale",
+        }
+    )
 
 
 def cheatsheet():

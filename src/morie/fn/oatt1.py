@@ -60,6 +60,7 @@ def otis_att_region(
 
         # Propensity score via OLS (linear probability model, clipped)
         from morie.fn._array_core import linalg as _acl
+
         lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(X, d, rcond=None)

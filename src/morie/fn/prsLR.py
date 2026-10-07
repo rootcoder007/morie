@@ -67,9 +67,17 @@ core-merging idea behind LALR.
 from ._richresult import RichResult
 from .prsLL import END, EPSILON, first_sets, follow_sets, grammar, linearise, nonterminals, terminals
 
-__all__ = ["augment", "closure", "goto", "canonical_collection",
-           "build_tables", "conflicts", "parse", "lr_parser",
-           "METHODS"]
+__all__ = [
+    "augment",
+    "closure",
+    "goto",
+    "canonical_collection",
+    "build_tables",
+    "conflicts",
+    "parse",
+    "lr_parser",
+    "METHODS",
+]
 
 METHODS = ("lr1", "slr1", "lalr1")
 AUG = "S'"
@@ -80,8 +88,7 @@ def augment(g):
     tag = AUG
     while tag in nonterminals(g):
         tag += "'"
-    return {"rules": [(tag, (g["start"],))] + list(g["rules"]),
-            "start": tag, "original_start": g["start"]}
+    return {"rules": [(tag, (g["start"],))] + list(g["rules"]), "start": tag, "original_start": g["start"]}
 
 
 def _first_seq(seq, first, nts):
@@ -112,10 +119,9 @@ def closure(items, ag, first, nts, k=1):
             if k == 0:
                 looks = (None,)
             else:
-                tail = rhs[dot + 1:]
+                tail = rhs[dot + 1 :]
                 fs = _first_seq(tail, first, nts)
-                looks = (fs - {EPSILON}) | ({it[2]} if EPSILON in fs
-                                            or not tail else set())
+                looks = (fs - {EPSILON}) | ({it[2]} if EPSILON in fs or not tail else set())
             for j, (lhs, _) in enumerate(ag["rules"]):
                 if lhs != B:
                     continue
@@ -150,18 +156,17 @@ def canonical_collection(ag, k=1):
     trans = {}
     q = [I0]
     while q:
-        I = q.pop(0)
+        I_ = q.pop(0)
         for X in syms:
-            J = goto(I, X, ag, first, nts, k)
+            J = goto(I_, X, ag, first, nts, k)
             if not J:
                 continue
             if J not in index:
                 index[J] = len(states)
                 states.append(J)
                 q.append(J)
-            trans[(index[I], X)] = index[J]
-    return {"states": states, "index": index, "transitions": trans,
-            "first": first, "nonterminals": nts}
+            trans[(index[I_], X)] = index[J]
+    return {"states": states, "index": index, "transitions": trans, "first": first, "nonterminals": nts}
 
 
 def _core(state):
@@ -171,22 +176,20 @@ def _core(state):
 def build_tables(g, method="lr1"):
     r"""ACTION and GOTO, with every conflict recorded."""
     if method not in METHODS:
-        raise ValueError("prsLR: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
+        raise ValueError("prsLR: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     ag = augment(g)
     k = 0 if method == "slr1" else 1
     col = canonical_collection(ag, k)
     states, trans = col["states"], col["transitions"]
     nts = col["nonterminals"]
-    follow = follow_sets({"rules": ag["rules"], "start": ag["start"]},
-                         col["first"]) if method == "slr1" else None
+    follow = follow_sets({"rules": ag["rules"], "start": ag["start"]}, col["first"]) if method == "slr1" else None
 
     if method == "lalr1":
         groups = {}
         for n, st in enumerate(states):
             groups.setdefault(_core(st), []).append(n)
         remap, merged = {}, []
-        for core, members in groups.items():
+        for members in groups.values():
             new = len(merged)
             union = set()
             for n in members:
@@ -194,19 +197,21 @@ def build_tables(g, method="lr1"):
                 union |= set(states[n])
             merged.append(frozenset(union))
         states = merged
-        trans = {(remap[s], X): remap[t]
-                 for (s, X), t in trans.items()}
+        trans = {(remap[s], X): remap[t] for (s, X), t in trans.items()}
 
     action, gotos, confl = {}, {}, []
 
     def put(s, a, act):
         if (s, a) in action and action[(s, a)] != act:
-            confl.append({"state": s, "lookahead": a,
-                          "existing": action[(s, a)], "proposed": act,
-                          "kind": ("shift/reduce"
-                                   if "shift" in (action[(s, a)][0],
-                                                  act[0])
-                                   else "reduce/reduce")})
+            confl.append(
+                {
+                    "state": s,
+                    "lookahead": a,
+                    "existing": action[(s, a)],
+                    "proposed": act,
+                    "kind": ("shift/reduce" if "shift" in (action[(s, a)][0], act[0]) else "reduce/reduce"),
+                }
+            )
         else:
             action[(s, a)] = act
 
@@ -224,26 +229,34 @@ def build_tables(g, method="lr1"):
             if i == 0:
                 put(s, END, ("accept", None))
                 continue
-            if method == "slr1":
-                looks = follow[lhs]
-            else:
-                looks = {it[2]}
+            looks = follow[lhs] if method == "slr1" else {it[2]}
             for a in looks:
                 put(s, a, ("reduce", i))
-    return {"action": action, "goto": gotos, "states": states,
-            "n_states": len(states), "conflicts": confl,
-            "rules": ag["rules"], "augmented": ag, "method": method}
+    return {
+        "action": action,
+        "goto": gotos,
+        "states": states,
+        "n_states": len(states),
+        "conflicts": confl,
+        "rules": ag["rules"],
+        "augmented": ag,
+        "method": method,
+    }
 
 
 def conflicts(g, method="lr1"):
     r"""The conflicts a given construction produces on a grammar."""
     t = build_tables(g, method)
-    return RichResult(payload={
-        "estimate": t["conflicts"], "conflicts": t["conflicts"],
-        "n_conflicts": len(t["conflicts"]), "method": method,
-        "n_states": t["n_states"],
-        "ok": not t["conflicts"],
-    })
+    return RichResult(
+        payload={
+            "estimate": t["conflicts"],
+            "conflicts": t["conflicts"],
+            "n_conflicts": len(t["conflicts"]),
+            "method": method,
+            "n_states": t["n_states"],
+            "ok": not t["conflicts"],
+        }
+    )
 
 
 def _leaf(sym):
@@ -255,18 +268,18 @@ def parse(g, tokens, method="lr1", tables=None):
     t = tables if tables is not None else build_tables(g, method)
     if t["conflicts"]:
         c = t["conflicts"][0]
-        raise ValueError("prsLR: the grammar is not %s -- %d "
-                         "conflict(s), first a %s in state %d on %r"
-                         % (t["method"], len(t["conflicts"]),
-                            c["kind"], c["state"], c["lookahead"]))
+        raise ValueError(
+            "prsLR: the grammar is not {} -- {} conflict(s), first a {} in state {} on {!r}".format(
+                t["method"], int(len(t["conflicts"])), c["kind"], int(c["state"]), c["lookahead"]
+            )
+        )
     toks = [str(x) for x in tokens] + [END]
     stack, trees, pos = [0], [], 0
     for _ in range(100000):
         a = toks[pos]
         act = t["action"].get((stack[-1], a))
         if act is None:
-            raise ValueError("prsLR: syntax error at token %d (%r) "
-                             "in state %d" % (pos, a, stack[-1]))
+            raise ValueError(f"prsLR: syntax error at token {int(pos)} ({a!r}) in state {int(stack[-1])}")
         if act[0] == "shift":
             stack.append(act[1])
             trees.append(_leaf(a))
@@ -281,15 +294,14 @@ def parse(g, tokens, method="lr1", tables=None):
             node = {"symbol": lhs, "children": kids}
             nxt = t["goto"].get((stack[-1], lhs))
             if nxt is None:
-                raise ValueError("prsLR: no goto for %r in state %d"
-                                 % (lhs, stack[-1]))
+                raise ValueError(f"prsLR: no goto for {lhs!r} in state {int(stack[-1])}")
             stack.append(nxt)
             trees.append(node)
         else:
             if len(trees) != 1 or pos != len(toks) - 1:
-                raise ValueError("prsLR: accepted with %d trees and "
-                                 "%d tokens left"
-                                 % (len(trees), len(toks) - 1 - pos))
+                raise ValueError(
+                    f"prsLR: accepted with {int(len(trees))} trees and {int(len(toks) - 1 - pos)} tokens left"
+                )
             return trees[0]
     raise ValueError("prsLR: the parser did not terminate")
 
@@ -299,12 +311,17 @@ def lr_parser(grammar_, tokens, method="lr1"):
     g = grammar_ if isinstance(grammar_, dict) else grammar(grammar_)
     t = build_tables(g, method)
     tree = parse(g, tokens, method, t)
-    return RichResult(payload={
-        "estimate": tree, "tree": tree, "method": method,
-        "n_states": t["n_states"], "conflicts": t["conflicts"],
-        "tokens": [str(x) for x in tokens],
-        "yield": linearise(tree),
-    })
+    return RichResult(
+        payload={
+            "estimate": tree,
+            "tree": tree,
+            "method": method,
+            "n_states": t["n_states"],
+            "conflicts": t["conflicts"],
+            "tokens": [str(x) for x in tokens],
+            "yield": linearise(tree),
+        }
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

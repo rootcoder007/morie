@@ -8,7 +8,7 @@ and agreement with value iteration.
 from morie.fn.mdppol import mdppol
 from morie.fn.mdpval import mdpval
 
-from .test_mdpval import P, R, GAMMA, _brute_optimal
+from .test_mdpval import GAMMA, P, R, _brute_optimal
 
 
 def test_mdppol_closed_form_two_state():

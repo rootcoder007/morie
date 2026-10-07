@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MISE of the standard kernel distribution function estimator."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kdfmise", "fauzi_kdfe_mise"]
@@ -67,13 +66,10 @@ def kdfmise(n, h, rfp, varint, mu2=1.0, r1=None):
     if r1 is None:
         r1 = float(kdfr1()["estimate"])
     mu2 = float(mu2)
-    biasterm = h ** 4 / 4.0 * mu2 ** 2 * float(rfp)
+    biasterm = h**4 / 4.0 * mu2**2 * float(rfp)
     varterm = float(varint) / n
     gain = 2.0 * h / n * float(r1)
-    if float(rfp) > 0:
-        hopt = float((2.0 * float(r1) / (n * mu2 ** 2 * float(rfp))) ** (1.0 / 3.0))
-    else:
-        hopt = float("nan")
+    hopt = float((2.0 * float(r1) / (n * mu2**2 * float(rfp))) ** (1.0 / 3.0)) if float(rfp) > 0 else float("nan")
     return RichResult(
         payload={
             "mise": float(biasterm + varterm - gain),

@@ -22,9 +22,7 @@ def dequantize_nf4(codes, absmax, n_bins=16):
         codes = codes.astype(int)
     grid = np.asarray(kamath_nf4_datatype(n_bins)["normalized"], dtype=float)
     if np.any((codes < 0) | (codes >= grid.size)):
-        raise ValueError(
-            f"every code must lie in [0, {grid.size - 1}]; the NF4 grid "
-            f"has {grid.size} levels.")
+        raise ValueError(f"every code must lie in [0, {grid.size - 1}]; the NF4 grid has {grid.size} levels.")
     # _array_core.asarray(scalar).ndim is 1, not 0, so a scalar absmax is
     # recognised before the conversion.
     if np.isscalar(absmax):
@@ -34,9 +32,7 @@ def dequantize_nf4(codes, absmax, n_bins=16):
         return grid[codes] * scale
     s = np.asarray(absmax, dtype=float).ravel()
     if s.size != codes.shape[0]:
-        raise ValueError(
-            f"blockwise absmax needs one value per row: {s.size} for "
-            f"{codes.shape[0]} rows.")
+        raise ValueError(f"blockwise absmax needs one value per row: {s.size} for {codes.shape[0]} rows.")
     if np.any(s <= 0):
         raise ValueError("every absmax block scale must be positive.")
     return grid[codes] * s[:, None]
@@ -70,27 +66,31 @@ def kamath_qlora_4bit(W0_nf4, A, B, alpha, r, x, n_bins=16):
     if isinstance(W0_nf4, dict):
         if "codes" not in W0_nf4 or "absmax" not in W0_nf4:
             raise ValueError(
-                "W0_nf4 must carry 'codes' and 'absmax'; a 4-bit tensor "
-                "without its scale cannot be dequantised.")
+                "W0_nf4 must carry 'codes' and 'absmax'; a 4-bit tensor without its scale cannot be dequantised."
+            )
         codes, absmax = W0_nf4["codes"], W0_nf4["absmax"]
     else:
         try:
             codes, absmax = W0_nf4
         except (TypeError, ValueError):
-            raise ValueError(
-                "W0_nf4 must be a dict with 'codes'/'absmax' or a "
-                "(codes, absmax) pair.") from None
+            raise ValueError("W0_nf4 must be a dict with 'codes'/'absmax' or a (codes, absmax) pair.") from None
     W0 = dequantize_nf4(codes, absmax, n_bins=n_bins)
     base = kamath_lora_weight_update(W0, A, B, alpha, r, x)
-    return RichResult(payload={
-        "h": base["h"], "base": base["base"], "delta": base["delta"],
-        "W0_dequantized": [[float(v) for v in row] for row in W0],
-        "scaling": base["scaling"], "rank": base["rank"],
-        "n_trainable": base["n_trainable"],
-        "n_frozen_4bit": int(np.asarray(codes).size),
-        "estimate": base["estimate"], "n": base["n"],
-        "method": "QLoRA: NF4 dequantised base + LoRA adapter "
-                  "(delegates to kmnf4 and kmlora)"})
+    return RichResult(
+        payload={
+            "h": base["h"],
+            "base": base["base"],
+            "delta": base["delta"],
+            "W0_dequantized": [[float(v) for v in row] for row in W0],
+            "scaling": base["scaling"],
+            "rank": base["rank"],
+            "n_trainable": base["n_trainable"],
+            "n_frozen_4bit": int(np.asarray(codes).size),
+            "estimate": base["estimate"],
+            "n": base["n"],
+            "method": "QLoRA: NF4 dequantised base + LoRA adapter (delegates to kmnf4 and kmlora)",
+        }
+    )
 
 
 def cheatsheet():

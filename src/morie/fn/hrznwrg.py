@@ -57,16 +57,22 @@ def hrz_index_nw(X, y, beta, h=None, grid=None, kernel_name="gaussian"):
     h = silverman_bw(v) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(v.min(), v.max(), 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(v.min(), v.max(), 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     W = kernel((g[:, None] - v[None, :]) / h, kernel_name)
     den = W.sum(axis=1)
     with np.errstate(invalid="ignore"):
         G = np.where(den > 0, (W @ y) / np.maximum(den, 1e-300), np.nan)
-    return RichResult(payload={"index_grid": g, "G": G, "index": v,
-                               "bandwidth": h, "rate_exponent": -0.4,
-                               "d": int(X.shape[1]),
-                               "method": "NW on X'beta; n^{-2/5} rate regardless of d"})
+    return RichResult(
+        payload={
+            "index_grid": g,
+            "G": G,
+            "index": v,
+            "bandwidth": h,
+            "rate_exponent": -0.4,
+            "d": int(X.shape[1]),
+            "method": "NW on X'beta; n^{-2/5} rate regardless of d",
+        }
+    )
 
 
 def cheatsheet():

@@ -24244,22 +24244,22 @@ _r(
 _r(
     "abcgp",
     "abc_gp_emulator",
-    'bayesian-mcmc',
-    'ABC with GP emulator surrogate.',
+    "bayesian-mcmc",
+    "ABC with GP emulator surrogate.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
-    'abcnnt',
-    'abc_neural',
-    'bayesian-mcmc',
-    'ABC with neural likelihood-free inference.',
-    'Knowledge is power. -- Francis Bacon',
+    "abcnnt",
+    "abc_neural",
+    "bayesian-mcmc",
+    "ABC with neural likelihood-free inference.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "abcrej",
     "abc_rejection",
-    'bayesian-mcmc',
-    'ABC rejection sampler.',
+    "bayesian-mcmc",
+    "ABC rejection sampler.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -24455,8 +24455,8 @@ _r(
 _r(
     "adida",
     "adida",
-    'timeseries',
-    'ADIDA aggregate-disaggregate.',
+    "timeseries",
+    "ADIDA aggregate-disaggregate.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -24884,8 +24884,8 @@ _r(
 _r(
     "airl",
     "airl",
-    'reinforcement-learning',
-    'Adversarial inverse RL.',
+    "reinforcement-learning",
+    "Adversarial inverse RL.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -26414,8 +26414,8 @@ _r(
 _r(
     "andmnh",
     "andrews_monahan_hac",
-    'timeseries',
-    'Andrews-Monahan prewhitened HAC.',
+    "timeseries",
+    "Andrews-Monahan prewhitened HAC.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -26710,8 +26710,8 @@ _r(
 _r(
     "asmnvr",
     "genome_assembly",
-    'bioinformatics',
-    'De novo assembly (de Bruijn graph).',
+    "bioinformatics",
+    "De novo assembly (de Bruijn graph).",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -26837,8 +26837,8 @@ _r(
 _r(
     "attrInf",
     "attribute_inference",
-    'privacy-dp',
-    'Attribute inference attack.',
+    "privacy-dp",
+    "Attribute inference attack.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -26932,8 +26932,8 @@ _r(
 _r(
     "awltrn",
     "augmented_owl",
-    'causal-ml',
-    'Augmented outcome-weighted learning: residual weights, sign-flipping labels, all subjects at every stage.',
+    "causal-ml",
+    "Augmented outcome-weighted learning: residual weights, sign-flipping labels, all subjects at every stage.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -27149,15 +27149,15 @@ _r(
 _r(
     "barerp",
     "barrier_method",
-    'optimization',
-    'Logarithmic barrier method.',
+    "optimization",
+    "Logarithmic barrier method.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
     "barte",
     "bart",
-    'deep-learning',
-    'BART denoising encoder-decoder.',
+    "deep-learning",
+    "BART denoising encoder-decoder.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -27177,8 +27177,8 @@ _r(
 _r(
     "basEvap",
     "penman_monteith",
-    'climate-environment',
-    'Penman-Monteith reference ET.',
+    "climate-environment",
+    "Penman-Monteith reference ET.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -27196,11 +27196,11 @@ _r(
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
-    'bats',
-    'bats',
-    'timeseries',
-    'BATS -- Box-Cox ARMA Trend Seasonal.',
-    'There is no royal road to geometry. -- Euclid',
+    "bats",
+    "bats",
+    "timeseries",
+    "BATS -- Box-Cox ARMA Trend Seasonal.",
+    "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "bayam",
@@ -27261,8 +27261,8 @@ _r(
 _r(
     "bayhmc",
     "hmc_dual_avg",
-    'bayesian-mcmc',
-    'HMC with dual-averaging step-size adaptation.',
+    "bayesian-mcmc",
+    "HMC with dual-averaging step-size adaptation.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -27275,8 +27275,8 @@ _r(
 _r(
     "bayisr",
     "importance_resample",
-    'bayesian-mcmc',
-    'Sampling-importance-resampling (SIR).',
+    "bayesian-mcmc",
+    "Sampling-importance-resampling (SIR).",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -27296,30 +27296,30 @@ _r(
 _r(
     "baynav",
     "variational_nf",
-    'bayesian-mcmc',
-    'Normalizing flows (rank-one planar Jacobian, invertibility '
+    "bayesian-mcmc",
+    "Normalizing flows (rank-one planar Jacobian, invertibility "
     "constraint u'w >= -1) and ADVI's transform-to-real recipe.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    'baynet',
-    'bayes_network',
-    'graph-network',
-    'Bayesian network inference (variable elimination).',
-    'Knowledge is power. -- Francis Bacon',
+    "baynet",
+    "bayes_network",
+    "graph-network",
+    "Bayesian network inference (variable elimination).",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "bayopt",
     "bayesian_optimization",
-    'optimization',
-    'Bayesian optimization (GP-based).',
+    "optimization",
+    "Bayesian optimization (GP-based).",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "bayoptr",
     "bayesian_optimization",
-    'optimization',
-    'Bayesian optimization w/ EI/UCB.',
+    "optimization",
+    "Bayesian optimization w/ EI/UCB.",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -27332,8 +27332,8 @@ _r(
 _r(
     "bayrjmcmc",
     "reversible_jump_mcmc",
-    'bayesian-mcmc',
-    'Reversible-jump MCMC across model dimensions.',
+    "bayesian-mcmc",
+    "Reversible-jump MCMC across model dimensions.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -27535,8 +27535,8 @@ _r(
 _r(
     "bcq",
     "bcq",
-    'reinforcement-learning',
-    'Batch-constrained Q-learning.',
+    "reinforcement-learning",
+    "Batch-constrained Q-learning.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -27619,8 +27619,8 @@ _r(
 _r(
     "bdtrns",
     "bound_transport",
-    'causal-partial-id',
-    'Bound under transport assumption.',
+    "causal-partial-id",
+    "Bound under transport assumption.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -27647,8 +27647,8 @@ _r(
 _r(
     "benRea",
     "named_entity",
-    'deep-learning',
-    'Named-entity recognition (BIO).',
+    "deep-learning",
+    "Named-entity recognition (BIO).",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -27682,8 +27682,8 @@ _r(
 _r(
     "berte",
     "bert_encoder",
-    'deep-learning',
-    'BERT encoder forward pass.',
+    "deep-learning",
+    "BERT encoder forward pass.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -27808,9 +27808,9 @@ _r(
 _r(
     "bhltmsm",
     "behavioral_health_msm",
-    'causal-msm-ipw',
-    'MSM by IPTW for cumulative behavioural-health treatment episodes; '
-    'replaces the former NO SOURCE row whose citation column said '
+    "causal-msm-ipw",
+    "MSM by IPTW for cumulative behavioural-health treatment episodes; "
+    "replaces the former NO SOURCE row whose citation column said "
     "'applied benchmark'.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
@@ -27859,8 +27859,8 @@ _r(
 _r(
     "bigtm",
     "bigram_topic",
-    'text-nlp',
-    'Bigram topic model: P(w_t|w_{t-1}, z_t), both priors, Gibbs sampling.',
+    "text-nlp",
+    "Bigram topic model: P(w_t|w_{t-1}, z_t), both priors, Gibbs sampling.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -27880,8 +27880,8 @@ _r(
 _r(
     "binseg",
     "binary_segmentation",
-    'timeseries',
-    'Binary segmentation.',
+    "timeseries",
+    "Binary segmentation.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -27894,8 +27894,8 @@ _r(
 _r(
     "birl",
     "bayesian_irl",
-    'bayesian-mcmc',
-    'Bayesian IRL.',
+    "bayesian-mcmc",
+    "Bayesian IRL.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -28114,8 +28114,8 @@ _r(
 _r(
     "blastp",
     "blast_protein",
-    'bioinformatics',
-    'BLAST protein heuristic.',
+    "bioinformatics",
+    "BLAST protein heuristic.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -28142,15 +28142,15 @@ _r(
 _r(
     "blip2v",
     "blip2_qformer",
-    'bioinformatics',
-    'BLIP-2: a fixed set of learnable queries bridges a frozen image encoder and a frozen LLM in two stages.',
+    "bioinformatics",
+    "BLIP-2: a fixed set of learnable queries bridges a frozen image encoder and a frozen LLM in two stages.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "blipqf",
     "blip_qformer",
-    'deep-learning',
-    'Q-Former shim re-exporting blip2v so the duplicate ledger rows cannot drift apart.',
+    "deep-learning",
+    "Q-Former shim re-exporting blip2v so the duplicate ledger rows cannot drift apart.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -28184,8 +28184,8 @@ _r(
 _r(
     "blstn",
     "blast_nucleotide",
-    'bioinformatics',
-    'BLASTN nucleotide alignment.',
+    "bioinformatics",
+    "BLASTN nucleotide alignment.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -28269,15 +28269,15 @@ _r(
 _r(
     "bndapp",
     "bound_application",
-    'causal-partial-id',
-    'Bound application example: returns to schooling.',
+    "causal-partial-id",
+    "Bound application example: returns to schooling.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "bndbye",
     "bound_bayes_credible",
-    'causal-partial-id',
-    'Bayesian HPD vs frequentist confidence sets under partial identification.',
+    "causal-partial-id",
+    "Bayesian HPD vs frequentist confidence sets under partial identification.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -28395,8 +28395,8 @@ _r(
 _r(
     "bndpcb",
     "bound_pseudo_credible",
-    'causal-partial-id',
-    'Bet-proofness: valid sets that are empty or absurdly short; bet-proof alternatives.',
+    "causal-partial-id",
+    "Bet-proofness: valid sets that are empty or absurdly short; bet-proof alternatives.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -28444,8 +28444,8 @@ _r(
 _r(
     "bndsmw",
     "bound_simul_weights",
-    'causal-partial-id',
-    'Conditional moment inequalities, Cramer-von Mises form (integral over Q).',
+    "causal-partial-id",
+    "Conditional moment inequalities, Cramer-von Mises form (integral over Q).",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -28577,8 +28577,8 @@ _r(
 _r(
     "bnshrt",
     "bound_short_panel",
-    'causal-partial-id',
-    'Short-panel dynamic discrete choice: identified set by mixture feasibility over (alpha, y0).',
+    "causal-partial-id",
+    "Short-panel dynamic discrete choice: identified set by mixture feasibility over (alpha, y0).",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -28598,15 +28598,15 @@ _r(
 _r(
     "bnskmt",
     "bound_kernel_moment",
-    'causal-partial-id',
-    'Conditional moment inequalities, Kolmogorov-Smirnov form (supremum over G).',
+    "causal-partial-id",
+    "Conditional moment inequalities, Kolmogorov-Smirnov form (supremum over G).",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "bnskt2",
     "bound_kink_te",
-    'causal-partial-id',
-    'Regression kink design: effect from a change in the slope of the policy rule.',
+    "causal-partial-id",
+    "Regression kink design: effect from a change in the slope of the policy rule.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -28682,8 +28682,8 @@ _r(
 _r(
     "bootss",
     "bootstrap_survey",
-    'sampling-design',
-    'Rao-Wu bootstrap.',
+    "sampling-design",
+    "Rao-Wu bootstrap.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -28782,8 +28782,8 @@ _r(
 _r(
     "bprMF",
     "bpr_mf",
-    'recommender-ir',
-    'BPR-Opt over triples D_S, LearnBPR bootstrap SGD, AUC analogy.',
+    "recommender-ir",
+    "BPR-Opt over triples D_S, LearnBPR bootstrap SGD, AUC analogy.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -28830,11 +28830,11 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    'bridgs',
-    'bridge_sampling',
-    'bayesian-mcmc',
-    'Bridge sampling for marginal likelihoods.',
-    'Knowledge is power. -- Francis Bacon',
+    "bridgs",
+    "bridge_sampling",
+    "bayesian-mcmc",
+    "Bridge sampling for marginal likelihoods.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "brier",
@@ -28958,8 +28958,8 @@ _r(
 _r(
     "bsmed",
     "bootstrap_mediation_ci",
-    'causal-mediation-sens',
-    'Bootstrap percentile CI for indirect effect.',
+    "causal-mediation-sens",
+    "Bootstrap percentile CI for indirect effect.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -28993,8 +28993,8 @@ _r(
 _r(
     "btarsv",
     "boot_ar_sieve",
-    'multilevel-mixed',
-    'AR-sieve bootstrap for stationary time series.',
+    "multilevel-mixed",
+    "AR-sieve bootstrap for stationary time series.",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -29049,8 +29049,8 @@ _r(
 _r(
     "btcalib",
     "boot_calibrated_ci",
-    'bootstrap',
-    'Bootstrap-calibrated nominal level.',
+    "bootstrap",
+    "Bootstrap-calibrated nominal level.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -29096,11 +29096,11 @@ _r(
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
-    'btdbl',
-    'boot_double',
-    'bootstrap',
-    'Double bootstrap for calibrated CI coverage.',
-    'I think, therefore I am. -- Rene Descartes',
+    "btdbl",
+    "boot_double",
+    "bootstrap",
+    "Double bootstrap for calibrated CI coverage.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "btdir",
@@ -29133,8 +29133,8 @@ _r(
 _r(
     "btiseq",
     "boot_iter_calibrated",
-    'bootstrap',
-    'Iterated bootstrap CI calibration via prepivoting.',
+    "bootstrap",
+    "Iterated bootstrap CI calibration via prepivoting.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -30540,8 +30540,8 @@ _r(
 _r(
     "caCMIP",
     "cmip_ensemble",
-    'climate-environment',
-    'CMIP multi-model ensemble mean.',
+    "climate-environment",
+    "CMIP multi-model ensemble mean.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r("calbt", "calbt", "Auto", "Auto-wired callable from fn/calbt.py", "Knowledge is power. -- Francis Bacon")
@@ -30562,8 +30562,8 @@ _r(
 _r(
     "caltbR",
     "calibrated_rec",
-    'recommender-ir',
-    'Calibrated recommendations: C_KL with alpha-smoothed q, greedy submodular MMR re-ranking.',
+    "recommender-ir",
+    "Calibrated recommendations: C_KL with alpha-smoothed q, greedy submodular MMR re-ranking.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -30611,8 +30611,8 @@ _r(
 _r(
     "catstop",
     "cat_stopping_rule",
-    'irt',
-    'CAT stopping rule (SE / SE_target).',
+    "irt",
+    "CAT stopping rule (SE / SE_target).",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -30639,8 +30639,8 @@ _r(
 _r(
     "causbckd",
     "causal_backdoor_estimate",
-    'causal-mediation-sens',
-    'Backdoor-adjusted ATE via stratification.',
+    "causal-mediation-sens",
+    "Backdoor-adjusted ATE via stratification.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -30660,22 +30660,22 @@ _r(
 _r(
     "causdidcs",
     "causal_did_callaway_sa",
-    'causal-did',
+    "causal-did",
     "Callaway-Sant'Anna ATT(g,t) under staggered adoption.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "causdiddc",
     "causal_did_de_chaisemartin",
-    'causal-did',
+    "causal-did",
     "De Chaisemartin-D'Haultfoeuille robust DiD.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "causdidev",
     "causal_did_eventstudy",
-    'causal-did',
-    'Event-study coefficients with relative-time dummies.',
+    "causal-did",
+    "Event-study coefficients with relative-time dummies.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -30688,8 +30688,8 @@ _r(
 _r(
     "causdidwd",
     "causal_did_wooldridge_eta",
-    'causal-did',
-    'ETWFE: TWFE == two-way Mundlak; saturated cohort x period gives ATT(g,t).',
+    "causal-did",
+    "ETWFE: TWFE == two-way Mundlak; saturated cohort x period gives ATT(g,t).",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -30709,8 +30709,8 @@ _r(
 _r(
     "causdr2",
     "causal_dr_orthogonal",
-    'causal-ml',
-    'Orthogonal/double-robust score (Neyman-orthogonal).',
+    "causal-ml",
+    "Orthogonal/double-robust score (Neyman-orthogonal).",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -30737,8 +30737,8 @@ _r(
 _r(
     "causgsw",
     "causal_generalisability_smd",
-    'causal-mediation-sens',
-    'Standardised mean difference vs target population.',
+    "causal-mediation-sens",
+    "Standardised mean difference vs target population.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -30765,8 +30765,8 @@ _r(
 _r(
     "causipw",
     "causal_ipw_truncated",
-    'causal-ml',
-    'Truncated IPW (Crump trim) for stable weights.',
+    "causal-ml",
+    "Truncated IPW (Crump trim) for stable weights.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -30877,29 +30877,29 @@ _r(
 _r(
     "causrdd",
     "causal_rdd_local_lin",
-    'causal-rdd',
-    'Sharp RDD via local linear regression at threshold.',
+    "causal-rdd",
+    "Sharp RDD via local linear regression at threshold.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "causrddc",
     "causal_rdd_ccft_bw",
-    'causal-rdd',
-    'Calonico-Cattaneo-Titiunik MSE-optimal bandwidth.',
+    "causal-rdd",
+    "Calonico-Cattaneo-Titiunik MSE-optimal bandwidth.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "causrddf",
     "causal_rdd_fuzzy",
-    'causal-rdd',
-    'Fuzzy RDD via Wald ratio of jumps.',
+    "causal-rdd",
+    "Fuzzy RDD via Wald ratio of jumps.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "causrddh",
     "causal_rdd_imbens_kalyanaraman",
-    'causal-rdd',
-    'IK optimal bandwidth for sharp RDD.',
+    "causal-rdd",
+    "IK optimal bandwidth for sharp RDD.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -30933,8 +30933,8 @@ _r(
 _r(
     "causscd",
     "causal_synthetic_did",
-    'causal-did',
-    'Synthetic DiD: combine SC weights + DiD.',
+    "causal-did",
+    "Synthetic DiD: combine SC weights + DiD.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -30968,8 +30968,8 @@ _r(
 _r(
     "caustrnsp",
     "causal_transportability_weights",
-    'causal-mediation-sens',
-    'Transportability weights from source to target population.',
+    "causal-mediation-sens",
+    "Transportability weights from source to target population.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -31046,8 +31046,8 @@ _r(
 _r(
     "cdaeRC",
     "cdae",
-    'deep-learning',
-    'CDAE: denoising auto-encoder with a user-specific input node, mask-out corruption, sampled negatives.',
+    "deep-learning",
+    "CDAE: denoising auto-encoder with a user-specific input node, mask-out corruption, sampled negatives.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -31214,15 +31214,15 @@ _r(
 _r(
     "cgmth",
     "cgmth",
-    'optimization',
-    'Conjugate gradient minimisation, PRP beta with Armijo backtracking.',
+    "optimization",
+    "Conjugate gradient minimisation, PRP beta with Armijo backtracking.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "cgnonl",
     "nonlinear_cg",
-    'bayesian-mcmc',
-    'Nonlinear conjugate gradient.',
+    "bayesian-mcmc",
+    "Nonlinear conjugate gradient.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -31265,8 +31265,8 @@ _r(
 _r(
     "chgseg",
     "changepoint_segmentation",
-    'timeseries',
-    'PELT pruned exact linear changepoint.',
+    "timeseries",
+    "PELT pruned exact linear changepoint.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -31286,8 +31286,8 @@ _r(
 _r(
     "chipsq",
     "chip_seq_peak",
-    'bioinformatics',
-    'ChIP-seq peak calling (MACS2).',
+    "bioinformatics",
+    "ChIP-seq peak calling (MACS2).",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -31314,8 +31314,8 @@ _r(
 _r(
     "chrF",
     "chrf",
-    'text-nlp',
-    'chrF character n-gram F-score.',
+    "text-nlp",
+    "chrF character n-gram F-score.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -31335,8 +31335,8 @@ _r(
 _r(
     "chronos",
     "chronos_foundation_ts",
-    'deep-learning',
-    'Chronos: mean scaling + uniform quantisation into a fixed vocabulary, then a language model.',
+    "deep-learning",
+    "Chronos: mean scaling + uniform quantisation into a fixed vocabulary, then a language model.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r("chrsf", "chrsf", "Auto", "Auto-wired callable from fn/chrsf.py", "Number rules the universe. -- Pythagoras")
@@ -31476,8 +31476,8 @@ _r(
 _r(
     "clrgrf",
     "clustered_grf",
-    'causal-ml',
-    'Cluster-aware GRF.',
+    "causal-ml",
+    "Cluster-aware GRF.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -31490,8 +31490,8 @@ _r(
 _r(
     "clrnt",
     "clearance_intrinsic",
-    'cheminformatics',
-    'Hepatic intrinsic clearance prediction.',
+    "cheminformatics",
+    "Hepatic intrinsic clearance prediction.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -31644,8 +31644,8 @@ _r(
 _r(
     "cmuti",
     "copula_mutual_information",
-    'information-theory',
-    'Mutual information from copula density.',
+    "information-theory",
+    "Mutual information from copula density.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -31798,8 +31798,8 @@ _r(
 _r(
     "co2RF",
     "radiative_forcing_co2",
-    'climate-environment',
-    'CO₂ radiative forcing.',
+    "climate-environment",
+    "CO₂ radiative forcing.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -31918,9 +31918,9 @@ _r("comemb", "node2vec", "Auto", "Auto-wired callable from fn/comemb.py", "Numbe
 _r(
     "comet",
     "comet",
-    'text-nlp',
-    'COMET: learned MT metric using the SOURCE as well as the reference; '
-    'estimator and triplet-ranking heads; segment-level Kendall tau.',
+    "text-nlp",
+    "COMET: learned MT metric using the SOURCE as well as the reference; "
+    "estimator and triplet-ranking heads; segment-level Kendall tau.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -32131,8 +32131,8 @@ _r(
 _r(
     "copynm",
     "copy_number_variant",
-    'bioinformatics',
-    'Copy number variant detection.',
+    "bioinformatics",
+    "Copy number variant detection.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -32342,8 +32342,8 @@ _r(
 _r(
     "crfflt",
     "christiano_fitzgerald",
-    'timeseries',
-    'Band pass by projection: ideal weights plus endpoint tails; asymmetric, symmetric and one-sided routes.',
+    "timeseries",
+    "Band pass by projection: ideal weights plus endpoint tails; asymmetric, symmetric and one-sided routes.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -32356,8 +32356,8 @@ _r(
 _r(
     "crfsel",
     "causal_forest_selection",
-    'causal-ml',
-    'Variable importance for CATE.',
+    "causal-ml",
+    "Variable importance for CATE.",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -32483,8 +32483,8 @@ _r(
 _r(
     "crsfmr",
     "crossformer",
-    'deep-learning',
-    'Crossformer: DSW embedding + Two-Stage Attention with an O(cD) router.',
+    "deep-learning",
+    "Crossformer: DSW embedding + Two-Stage Attention with an O(cD) router.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r("crsfst", "crs_forest", "Auto", "Auto-wired callable from fn/crsfst.py", "Number rules the universe. -- Pythagoras")
@@ -32512,8 +32512,8 @@ _r(
 _r(
     "crtT",
     "chinese_remainder",
-    'symbolic-numeric',
-    'Chinese remainder theorem.',
+    "symbolic-numeric",
+    "Chinese remainder theorem.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -34657,11 +34657,11 @@ _r(
 _r(
     "ddpest",
     "dependent_dp",
-    'bayes-nonparam',
-    'Both DDP constructions of Sec. 2.2 and its parallel: single-weights '
-    '(one shared stick-breaking draw, covariate-dependent atoms) and '
-    'single-atoms (shared support, covariate-dependent weights), with the '
-    'dependence measured rather than asserted.',
+    "bayes-nonparam",
+    "Both DDP constructions of Sec. 2.2 and its parallel: single-weights "
+    "(one shared stick-breaking draw, covariate-dependent atoms) and "
+    "single-atoms (shared support, covariate-dependent weights), with the "
+    "dependence measured rather than asserted.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -34674,8 +34674,8 @@ _r(
 _r(
     "ddqn",
     "double_dqn",
-    'reinforcement-learning',
-    'Double DQN -- decouples action selection from value.',
+    "reinforcement-learning",
+    "Double DQN -- decouples action selection from value.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -34709,15 +34709,15 @@ _r(
 _r(
     "deepSVDD",
     "deep_svdd",
-    'nonparam-smoothing',
-    'Deep SVDD.',
+    "nonparam-smoothing",
+    "Deep SVDD.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "deepar",
     "deepar",
-    'timeseries',
-    'DeepAR autoregressive RNN.',
+    "timeseries",
+    "DeepAR autoregressive RNN.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -34850,8 +34850,8 @@ _r(
 _r(
     "deseq2",
     "deseq2_differential",
-    'bioinformatics',
-    'DESeq2 differential expression.',
+    "bioinformatics",
+    "DESeq2 differential expression.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -34948,7 +34948,7 @@ _r(
 _r(
     "didfst",
     "did_forest",
-    'causal-did',
+    "causal-did",
     "DiD forest: conditional ATT + Callaway-Sant'Anna group-time ATT(g,t).",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
@@ -34983,10 +34983,10 @@ _r(
 _r(
     "diffRC",
     "diffusion_rec",
-    'deep-learning',
-    'DiffRec: diffusion over interaction histories with a REDUCED noise '
-    'scale so the personalised signal survives; importance sampling over '
-    'timesteps.',
+    "deep-learning",
+    "DiffRec: diffusion over interaction histories with a REDUCED noise "
+    "scale so the personalised signal survives; importance sampling over "
+    "timesteps.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -35069,8 +35069,8 @@ _r(
 _r(
     "dimNet",
     "dimenet",
-    'nonparam-smoothing',
-    'DimeNet: directional message passing over angles; Bessel and spherical harmonic bases.',
+    "nonparam-smoothing",
+    "DimeNet: directional message passing over angles; Bessel and spherical harmonic bases.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -35181,15 +35181,15 @@ _r(
 _r(
     "distq",
     "distributional_rl",
-    'deep-learning',
-    'C51 categorical distributional RL.',
+    "deep-learning",
+    "C51 categorical distributional RL.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "dits16",
     "dit_diffusion_transformer",
-    'deep-learning',
-    'DiT: transformer diffusion backbone, Gflops scaling, adaLN-zero conditioning.',
+    "deep-learning",
+    "DiT: transformer diffusion backbone, Gflops scaling, adaLN-zero conditioning.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -35259,9 +35259,9 @@ _r("dmlpl", "dml_plr", "Auto", "Auto-wired callable from fn/dmlpl.py", "There is
 _r(
     "dmlqs",
     "deepml_qsar",
-    'cheminformatics',
-    'D-MPNN: messages on DIRECTED bonds excluding the reverse edge, which '
-    'is the anti-tottering mechanism; plus computed descriptors.',
+    "cheminformatics",
+    "D-MPNN: messages on DIRECTED bonds excluding the reverse edge, which "
+    "is the anti-tottering mechanism; plus computed descriptors.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -35302,10 +35302,10 @@ _r(
 _r(
     "dnvtwo",
     "dinov2_repr",
-    'deep-learning',
-    'DINOv2: automatic curation (embed, dedup, retrieve), KoLeo spread '
-    'regulariser, Sinkhorn centering, image- and patch-level self- '
-    'distillation.',
+    "deep-learning",
+    "DINOv2: automatic curation (embed, dedup, retrieve), KoLeo spread "
+    "regulariser, Sinkhorn centering, image- and patch-level self- "
+    "distillation.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -35453,11 +35453,11 @@ _r(
 _r(
     "dpgrf",
     "dp_grouped_random_field",
-    'spatial',
-    'Areal difference boundaries as a POSTERIOR PROBABILITY P(phi_i != '
-    'phi_j) over adjacent regions, from a DP prior that puts positive '
-    'mass on ties, with the CAR precision tau(D - rho W); a continuous '
-    'prior gives tie probability zero, which is the point of the paper.',
+    "spatial",
+    "Areal difference boundaries as a POSTERIOR PROBABILITY P(phi_i != "
+    "phi_j) over adjacent regions, from a DP prior that puts positive "
+    "mass on ties, with the CAR precision tau(D - rho W); a continuous "
+    "prior gives tie probability zero, which is the point of the paper.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r("dphis", "dp_histogram", "Auto", "Auto-wired callable from fn/dphis.py", "Knowledge is power. -- Francis Bacon")
@@ -35540,11 +35540,11 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    'dpoF',
-    'dpo_loss',
-    'reinforcement-learning',
-    'DPO direct preference optimization.',
-    'I think, therefore I am. -- Rene Descartes',
+    "dpoF",
+    "dpo_loss",
+    "reinforcement-learning",
+    "DPO direct preference optimization.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "dpols",
@@ -35650,8 +35650,8 @@ _r("dqerr", "dequant_error", "Auto", "Auto-wired callable from fn/dqerr.py", "Kn
 _r(
     "dqnv",
     "deep_q_network",
-    'graph-network',
-    'Experience replay and a periodically frozen target network.',
+    "graph-network",
+    "Experience replay and a periodically frozen target network.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -35722,8 +35722,8 @@ _r(
 _r(
     "dreamr",
     "dreamer",
-    'reinforcement-learning',
-    'Dreamer -- world-model RL via latent imagination.',
+    "reinforcement-learning",
+    "Dreamer -- world-model RL via latent imagination.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -35786,8 +35786,8 @@ _r(
 _r(
     "droSPI",
     "spi",
-    'climate-environment',
-    'Standardized Precipitation Index.',
+    "climate-environment",
+    "Standardized Precipitation Index.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -35926,10 +35926,10 @@ _r(
 _r(
     "dssm",
     "dssm",
-    'deep-learning',
-    'DSSM: letter-trigram word hashing, cosine similarity in a shared '
-    'semantic space, and a clickthrough-trained softmax with smoothing '
-    'factor gamma.',
+    "deep-learning",
+    "DSSM: letter-trigram word hashing, cosine similarity in a shared "
+    "semantic space, and a clickthrough-trained softmax with smoothing "
+    "factor gamma.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -35985,8 +35985,8 @@ _r(
 _r(
     "dueldqn",
     "dueling_dqn",
-    'timeseries',
-    'Dueling architecture: separate V and A streams.',
+    "timeseries",
+    "Dueling architecture: separate V and A streams.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -36070,8 +36070,8 @@ _r(
 _r(
     "e_div",
     "e_divisive",
-    'timeseries',
-    'E-divisive (energy distance).',
+    "timeseries",
+    "E-divisive (energy distance).",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -36154,15 +36154,15 @@ _r(
 _r(
     "ecfp4",
     "ecfp_4_fingerprint",
-    'cheminformatics',
-    'Extended-Connectivity Fingerprint radius 4 (ECFP4 / Morgan radius 2).',
+    "cheminformatics",
+    "Extended-Connectivity Fingerprint radius 4 (ECFP4 / Morgan radius 2).",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
     "ecfp6",
     "ecfp_6_fingerprint",
-    'cheminformatics',
-    'ECFP6 / Morgan radius 3.',
+    "cheminformatics",
+    "ECFP6 / Morgan radius 3.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -36189,10 +36189,10 @@ _r(
 _r(
     "edgrn",
     "edger_diff",
-    'genomics-quant',
-    'edgeR: NB counts with empirical-Bayes moderated dispersions, TMM '
-    'normalisation as an OFFSET, and both the exact test and the quasi- '
-    'likelihood F-test.',
+    "genomics-quant",
+    "edgeR: NB counts with empirical-Bayes moderated dispersions, TMM "
+    "normalisation as an OFFSET, and both the exact test and the quasi- "
+    "likelihood F-test.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -36268,8 +36268,8 @@ _r(
 _r(
     "egcn",
     "e_gcn",
-    'graph-network',
-    'Re-exports egnnL so the duplicate ledger rows cannot drift.',
+    "graph-network",
+    "Re-exports egnnL so the duplicate ledger rows cannot drift.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -36282,8 +36282,8 @@ _r(
 _r(
     "egnnL",
     "egnn_layer",
-    'graph-network',
-    'E(n)-equivariant layer; squared distances and relative differences.',
+    "graph-network",
+    "E(n)-equivariant layer; squared distances and relative differences.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -36303,8 +36303,8 @@ _r(
 _r(
     "ehhdec",
     "ehh_decay",
-    'genomics-quant',
-    'Extended haplotype homozygosity decay.',
+    "genomics-quant",
+    "Extended haplotype homozygosity decay.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -36380,8 +36380,8 @@ _r(
 _r(
     "elmo",
     "elmo",
-    'deep-learning',
-    'ELMo contextual embeddings.',
+    "deep-learning",
+    "ELMo contextual embeddings.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -37796,22 +37796,22 @@ _r(
 _r(
     "exp3",
     "exp3",
-    'reinforcement-learning',
-    'EXP3 adversarial bandit.',
+    "reinforcement-learning",
+    "EXP3 adversarial bandit.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
     "explor",
     "intrinsic_motivation",
-    'reinforcement-learning',
-    'Intrinsic motivation / curiosity reward.',
+    "reinforcement-learning",
+    "Intrinsic motivation / curiosity reward.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "expmc",
     "exponential_mechanism",
-    'privacy-dp',
-    'Exponential mechanism.',
+    "privacy-dp",
+    "Exponential mechanism.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -37887,8 +37887,8 @@ _r(
 _r(
     "fairRC",
     "fairness_rec",
-    'recommender-ir',
-    'rND, rKL and rRD with logarithmic discounting.',
+    "recommender-ir",
+    "rND, rKL and rRD with logarithmic discounting.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -37927,12 +37927,12 @@ _r(
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
-    'farmlmm',
-    'farm_cpu',
-    'genomics-quant',
-    'FarmCPU: alternate a fixed-effect scan with a random-effect step '
-    'that rebuilds kinship from the SELECTED markers only.',
-    'Knowledge is power. -- Francis Bacon',
+    "farmlmm",
+    "farm_cpu",
+    "genomics-quant",
+    "FarmCPU: alternate a fixed-effect scan with a random-effect step "
+    "that rebuilds kinship from the SELECTED markers only.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "farsig",
@@ -37965,8 +37965,8 @@ _r(
 _r(
     "fastxt",
     "fasttext",
-    'deep-learning',
-    'FastText subword embeddings.',
+    "deep-learning",
+    "FastText subword embeddings.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -37993,8 +37993,8 @@ _r(
 _r(
     "fcfp4",
     "fcfp_4_fingerprint",
-    'cheminformatics',
-    'Functional-Class Fingerprint radius 4 (FCFP4).',
+    "cheminformatics",
+    "Functional-Class Fingerprint radius 4 (FCFP4).",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -38098,8 +38098,8 @@ _r(
 _r(
     "ffmFM",
     "field_aware_fm",
-    'recommender-ir',
-    'Field-aware FM with crossed field indices and AdaGrad.',
+    "recommender-ir",
+    "Field-aware FM with crossed field indices and AdaGrad.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r("fftpk", "fft_peaks", "Auto", "Auto-wired callable from fn/fftpk.py", "We must know. We will know. -- David Hilbert")
@@ -38220,8 +38220,8 @@ _r(
 _r(
     "flow_an",
     "normalizing_flow_anomaly",
-    'timeseries',
-    'Normalizing-flow density anomaly.',
+    "timeseries",
+    "Normalizing-flow density anomaly.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -38241,8 +38241,8 @@ _r(
 _r(
     "flsh2",
     "flash_attention",
-    'deep-learning',
-    'FlashAttention IO-aware exact attention.',
+    "deep-learning",
+    "FlashAttention IO-aware exact attention.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -38255,15 +38255,15 @@ _r(
 _r(
     "flxipt",
     "flexible_iptw",
-    'causal-tmle',
-    'Flexible IPTW with super learner.',
+    "causal-tmle",
+    "Flexible IPTW with super learner.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "fmFM",
     "factorization_machines",
-    'recommender-ir',
-    'Factorization machines: factorised interactions, linear-time model equation.',
+    "recommender-ir",
+    "Factorization machines: factorised interactions, linear-time model equation.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -38312,8 +38312,8 @@ _r(
 _r(
     "forsnp",
     "forensic_lr",
-    'misc',
-    'Forensic likelihood ratio.',
+    "misc",
+    "Forensic likelihood ratio.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -38426,8 +38426,8 @@ _r(
 _r(
     "frfgrf",
     "forest_fit_consistency",
-    'causal-ml',
-    'Forest-fit consistency check.',
+    "causal-ml",
+    "Forest-fit consistency check.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -38461,8 +38461,8 @@ _r(
 _r(
     "frtaxd",
     "forest_taxon_diversity",
-    'spatial',
-    'Forest taxon diversity (Shannon-Wiener spatial).',
+    "spatial",
+    "Forest taxon diversity (Shannon-Wiener spatial).",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -38511,8 +38511,8 @@ _r(
 _r(
     "funBoot",
     "functional_bootstrap",
-    'bootstrap',
-    'Functional bootstrap (curve-level).',
+    "bootstrap",
+    "Functional bootstrap (curve-level).",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -38525,17 +38525,17 @@ _r(
 _r(
     "funcal",
     "functional_annotation",
-    'bioinformatics',
-    'Functional annotation (eggNOG-mapper).',
+    "bioinformatics",
+    "Functional annotation (eggNOG-mapper).",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
     "funkM",
     "funk_svd",
-    'recommender-ir',
-    'Regularised MF over the OBSERVED entries only, with baselines and '
+    "recommender-ir",
+    "Regularised MF over the OBSERVED entries only, with baselines and "
     "Funk's incremental one-factor-at-a-time schedule; imputing the holes "
-    'is shown to be worse.',
+    "is shown to be worse.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -38590,8 +38590,8 @@ _r(
 _r(
     "fwxF",
     "fire_weather_index",
-    'climate-environment',
-    'Canadian Fire Weather Index.',
+    "climate-environment",
+    "Canadian Fire Weather Index.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -39221,8 +39221,8 @@ _r("gae", "gae", "Auto", "Auto-wired callable from fn/gae.py", "Knowledge is pow
 _r(
     "gail",
     "gail",
-    'reinforcement-learning',
-    'Generative adversarial imitation learning.',
+    "reinforcement-learning",
+    "Generative adversarial imitation learning.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -39257,9 +39257,9 @@ _r("gamtd", "n_step_td", "Auto", "Auto-wired callable from fn/gamtd.py", "Number
 _r(
     "gan_an",
     "gan_anomaly",
-    'timeseries',
-    'AnoGAN: invert a FIXED generator to the latent space; residual plus '
-    'intermediate-feature discrimination loss; residual map localises.',
+    "timeseries",
+    "AnoGAN: invert a FIXED generator to the latent space; residual plus "
+    "intermediate-feature discrimination loss; residual map localises.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -40925,8 +40925,8 @@ _r(
 _r(
     "gbtcom",
     "goodman_bacon_3way",
-    'causal-did',
-    'GoodmanBacon 3-way TWFE composition.',
+    "causal-did",
+    "GoodmanBacon 3-way TWFE composition.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -41058,10 +41058,10 @@ _r(
 _r(
     "genemt",
     "gene_meta_analysis",
-    'meta-analysis',
-    'MAGMA: gene test as regression on LD principal components (analytic '
-    'p-value), gene-set test as a separate regression layer with size '
-    'covariates.',
+    "meta-analysis",
+    "MAGMA: gene test as regression on LD principal components (analytic "
+    "p-value), gene-set test as a separate regression layer with size "
+    "covariates.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r("genmh", "genmh", "Auto", "Auto-wired callable from fn/genmh.py", "There is no royal road to geometry. -- Euclid")
@@ -41089,8 +41089,8 @@ _r(
 _r(
     "gentmt",
     "generalized_treatment_msm",
-    'causal-msm-ipw',
-    'MSM for continuous-dose treatment.',
+    "causal-msm-ipw",
+    "MSM for continuous-dose treatment.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -43413,8 +43413,8 @@ _r(
 _r(
     "glm",
     "glr_test",
-    'misc',
-    'Generalized likelihood ratio.',
+    "misc",
+    "Generalized likelihood ratio.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -43439,11 +43439,11 @@ _r(
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
-    'glove',
-    'glove',
-    'deep-learning',
-    'GloVe -- global word-vector co-occurrence.',
-    'I think, therefore I am. -- Rene Descartes',
+    "glove",
+    "glove",
+    "deep-learning",
+    "GloVe -- global word-vector co-occurrence.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "glpopt",
@@ -43526,8 +43526,8 @@ _r("gnblk", "gnblk", "Auto", "Auto-wired callable from fn/gnblk.py", "I think, t
 _r(
     "gnnEx",
     "gnn_explainer",
-    'graph-network',
-    'Mutual-information explanation by learned edge and feature masks.',
+    "graph-network",
+    "Mutual-information explanation by learned edge and feature masks.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -43540,8 +43540,8 @@ _r(
 _r(
     "gnsetenr",
     "geneset_enrichment",
-    'bioinformatics',
-    'Gene-set enrichment (GSEA).',
+    "bioinformatics",
+    "Gene-set enrichment (GSEA).",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -43554,8 +43554,8 @@ _r(
 _r(
     "goenr",
     "go_enrichment",
-    'bioinformatics',
-    'GO enrichment (Fisher exact).',
+    "bioinformatics",
+    "GO enrichment (Fisher exact).",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -43722,8 +43722,8 @@ _r(
 _r(
     "gpt2",
     "gpt_decoder",
-    'deep-learning',
-    'GPT-style decoder forward pass.',
+    "deep-learning",
+    "GPT-style decoder forward pass.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -43779,8 +43779,8 @@ _r(
 _r(
     "grace",
     "grace",
-    'deep-learning',
-    'Node-level contrastive learning with inter- and intra-view negatives.',
+    "deep-learning",
+    "Node-level contrastive learning with inter- and intra-view negatives.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -44024,8 +44024,8 @@ _r(
 _r(
     "grclus",
     "graph_clustering",
-    'multilevel-mixed',
-    'K-way graph clustering (METIS).',
+    "multilevel-mixed",
+    "K-way graph clustering (METIS).",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -44898,12 +44898,12 @@ _r(
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
-    'grphmr',
-    'graphormer',
-    'spatial',
-    'Graphormer: centrality, spatial and edge structural encodings in a '
-    'standard Transformer; disconnected pairs get their own token.',
-    'Number rules the universe. -- Pythagoras',
+    "grphmr",
+    "graphormer",
+    "spatial",
+    "Graphormer: centrality, spatial and edge structural encodings in a "
+    "standard Transformer; disconnected pairs get their own token.",
+    "Number rules the universe. -- Pythagoras",
 )
 _r(
     "grpio",
@@ -45300,8 +45300,8 @@ _r(
 _r(
     "gru4r",
     "gru4rec",
-    'bioinformatics',
-    'Session-parallel mini-batches, BPR and TOP1 ranking losses.',
+    "bioinformatics",
+    "Session-parallel mini-batches, BPR and TOP1 ranking losses.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -45419,8 +45419,8 @@ _r(
 _r(
     "gsageemd",
     "graphsage",
-    'graph-network',
-    'Inductive embedding by learned aggregators; three aggregators, fixed-size sampling.',
+    "graph-network",
+    "Inductive embedding by learned aggregators; three aggregators, fixed-size sampling.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -45440,7 +45440,7 @@ _r(
 _r(
     "gsplat",
     "gaussian_splatting",
-    'deep-learning',
+    "deep-learning",
     "3D Gaussian splatting: covariance factored as R S S' R' to stay PSD, EWA projection, adaptive density control.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
@@ -45475,8 +45475,8 @@ _r(
 _r(
     "gtrf",
     "graph_transformer",
-    'deep-learning',
-    'Neighbourhood attention, Laplacian positional encoding, batch norm, edge features.',
+    "deep-learning",
+    "Neighbourhood attention, Laplacian positional encoding, batch norm, edge features.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -45490,8 +45490,8 @@ _r("guskr", "guskr", "Auto", "Auto-wired callable from fn/guskr.py", "We must kn
 _r(
     "gwPot",
     "global_warming_potential",
-    'climate-environment',
-    'GWP100.',
+    "climate-environment",
+    "GWP100.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -45501,7 +45501,7 @@ _r(
     "Auto-wired callable from fn/gwas1.py",
     "I think, therefore I am. -- Rene Descartes",
 )
-_r("gwasem", "emmax_gwas", 'genomics-quant', 'EMMAX GWAS.', "Knowledge is power. -- Francis Bacon")
+_r("gwasem", "emmax_gwas", "genomics-quant", "EMMAX GWAS.", "Knowledge is power. -- Francis Bacon")
 _r(
     "gwasl1",
     "gwas_linear",
@@ -45519,8 +45519,8 @@ _r(
 _r(
     "gwrcal",
     "gwr_bandwidth_select",
-    'spatial',
-    'GWR optimal bandwidth (CV/AICc).',
+    "spatial",
+    "GWR optimal bandwidth (CV/AICc).",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -45646,8 +45646,8 @@ _r(
 _r(
     "hapblk",
     "haplotype_block",
-    'genomics-quant',
-    'Haplotype block (Gabriel).',
+    "genomics-quant",
+    "Haplotype block (Gabriel).",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -45682,8 +45682,8 @@ _r("hbos", "hbos", "Auto", "Auto-wired callable from fn/hbos.py", "Number rules 
 _r(
     "hbvMod",
     "hbv_hydrology",
-    'climate-environment',
-    'HBV conceptual hydrology model.',
+    "climate-environment",
+    "HBV conceptual hydrology model.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -45710,8 +45710,8 @@ _r(
 _r(
     "hdbsc",
     "hdbscan",
-    'timeseries',
-    'HDBSCAN -- hierarchical density clustering.',
+    "timeseries",
+    "HDBSCAN -- hierarchical density clustering.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -45886,8 +45886,8 @@ _r(
 _r(
     "hetgnn",
     "heterogeneous_gnn",
-    'deep-learning',
-    'HAN: node-level attention within a meta-path, semantic-level attention across meta-paths, averaged over nodes.',
+    "deep-learning",
+    "HAN: node-level attention within a meta-path, semantic-level attention across meta-paths, averaged over nodes.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -45907,8 +45907,8 @@ _r(
 _r(
     "hexgrd",
     "hexagonal_grid",
-    'spatial',
-    'Hexagonal grid binning.',
+    "spatial",
+    "Hexagonal grid binning.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -45942,8 +45942,8 @@ _r(
 _r(
     "hiatus",
     "hiatus_model",
-    'epidemiology',
-    'Status-based many-strain dynamics: 2n variables, not 2^n.',
+    "epidemiology",
+    "Status-based many-strain dynamics: 2n variables, not 2^n.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -45963,8 +45963,8 @@ _r(
 _r(
     "hierF",
     "hierarchical_forecast",
-    'timeseries',
-    'Hierarchical reconciliation (MinT).',
+    "timeseries",
+    "Hierarchical reconciliation (MinT).",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -46005,8 +46005,8 @@ _r(
 _r(
     "hindsr",
     "her",
-    'reinforcement-learning',
-    'Hindsight experience replay.',
+    "reinforcement-learning",
+    "Hindsight experience replay.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r("hinge", "hinge", "Auto", "Auto-wired callable from fn/hinge.py", "There is no royal road to geometry. -- Euclid")
@@ -46083,8 +46083,8 @@ _r(
 _r(
     "hlmgr",
     "hlm_gamma_matrix",
-    'multilevel-mixed',
-    'HLM gamma covariance matrix for random effects (T matrix).',
+    "multilevel-mixed",
+    "HLM gamma covariance matrix for random effects (T matrix).",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r("hma2c", "geron_a2c", "Auto", "Auto-wired callable from fn/hma2c.py", "I think, therefore I am. -- Rene Descartes")
@@ -48502,8 +48502,8 @@ _r(
 _r(
     "hntfst",
     "honest_random_forest",
-    'causal-ml',
-    'Honest random forest with sample-splitting (Wager-Athey 2018).',
+    "causal-ml",
+    "Honest random forest with sample-splitting (Wager-Athey 2018).",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -48530,11 +48530,11 @@ _r(
 _r(
     "hot",
     "hot_sax",
-    'timeseries',
-    'HOT SAX discord.',
+    "timeseries",
+    "HOT SAX discord.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
-_r("hotcld", "hot_cold_spots", 'spatial', 'Getis-Ord hot/cold spot map.', "Knowledge is power. -- Francis Bacon")
+_r("hotcld", "hot_cold_spots", "spatial", "Getis-Ord hot/cold spot map.", "Knowledge is power. -- Francis Bacon")
 _r(
     "hotlg",
     "hotelling_model",
@@ -49484,10 +49484,10 @@ _r(
 _r(
     "hybRC",
     "hybrid_rec",
-    'recommender-ir',
-    'All seven hybridisation methods with the order-sensitivity '
-    'distinction: weighted, switching, mixed, feature combination, '
-    'cascade, feature augmentation, meta-level.',
+    "recommender-ir",
+    "All seven hybridisation methods with the order-sensitivity "
+    "distinction: weighted, switching, mixed, feature combination, "
+    "cascade, feature augmentation, meta-level.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -49529,17 +49529,17 @@ _r("ibd", "ibd", "Auto", "Auto-wired callable from fn/ibd.py", "We must know. We
 _r(
     "ibdmtx",
     "ibd_matrix",
-    'genomics-quant',
-    'Identity-by-descent matrix.',
+    "genomics-quant",
+    "Identity-by-descent matrix.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "ibpfa",
     "indian_buffet_factor",
-    'bayes-nonparam',
-    'Indian buffet process: unbounded binary feature matrices; total '
-    'features alpha*H_n, per object constant alpha; exchangeable left- '
-    'ordered form.',
+    "bayes-nonparam",
+    "Indian buffet process: unbounded binary feature matrices; total "
+    "features alpha*H_n, per object constant alpha; exchangeable left- "
+    "ordered form.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -49750,8 +49750,8 @@ _r(
 _r(
     "ihstst",
     "ihs_test",
-    'genomics-quant',
-    'Integrated Haplotype Score (iHS).',
+    "genomics-quant",
+    "Integrated Haplotype Score (iHS).",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -49834,8 +49834,8 @@ _r(
 _r(
     "impFB",
     "implicit_feedback_loss",
-    'recommender-ir',
-    'Implicit feedback: binary preference plus confidence 1+alpha*r, weighted ALS over all pairs.',
+    "recommender-ir",
+    "Implicit feedback: binary preference plus confidence 1+alpha*r, weighted ALS over all pairs.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -49848,10 +49848,10 @@ _r(
 _r(
     "impfun",
     "genotype_imputation",
-    'genomics-quant',
-    'IMPUTE2: merge reference panels by ROLE not intersection; Li- '
-    'Stephens copying model; dosages carry uncertainty; accuracy on '
-    'MASKED truth.',
+    "genomics-quant",
+    "IMPUTE2: merge reference panels by ROLE not intersection; Li- "
+    "Stephens copying model; dosages carry uncertainty; accuracy on "
+    "MASKED truth.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -49935,25 +49935,24 @@ _r(
 _r(
     "infmax",
     "infomax_objective",
-    'deep-learning',
-    'Deep InfoMax: MI maximised between the global summary and LOCAL '
-    'patches, with the bounded Jensen-Shannon estimator instead of '
-    'Donsker-Varadhan.',
+    "deep-learning",
+    "Deep InfoMax: MI maximised between the global summary and LOCAL "
+    "patches, with the bounded Jensen-Shannon estimator instead of "
+    "Donsker-Varadhan.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
-    'infmer',
-    'informer',
-    'deep-learning',
-    'Re-exports informer; kept so the duplicate ledger entries cannot '
-    'drift apart.',
-    'I think, therefore I am. -- Rene Descartes',
+    "infmer",
+    "informer",
+    "deep-learning",
+    "Re-exports informer; kept so the duplicate ledger entries cannot drift apart.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "informer",
     "informer_long_horizon",
-    'deep-learning',
-    'ProbSparse self-attention: top-u queries by distance from uniform, O(L ln L).',
+    "deep-learning",
+    "ProbSparse self-attention: top-u queries by distance from uniform, O(L ln L).",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -49966,10 +49965,10 @@ _r(
 _r(
     "inlasm",
     "inla_spatial",
-    'spatial',
-    'INLA: nested Laplace approximation for latent Gaussian models -- '
-    'inner Gaussian/Laplace step, outer finite weighted sum over a small '
-    'theta design.',
+    "spatial",
+    "INLA: nested Laplace approximation for latent Gaussian models -- "
+    "inner Gaussian/Laplace step, outer finite weighted sum over a small "
+    "theta design.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -50108,8 +50107,8 @@ _r(
 _r(
     "ipwgrf",
     "ipw_grf",
-    'causal-ml',
-    'IPW-augmented forest.',
+    "causal-ml",
+    "IPW-augmented forest.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -50431,8 +50430,8 @@ _r(
 _r(
     "itrgrf",
     "itr_forest",
-    'causal-ml',
-    'Individualized treatment rule forest.',
+    "causal-ml",
+    "Individualized treatment rule forest.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -51119,8 +51118,8 @@ _r(
 _r(
     "kcusum",
     "kernel_cusum",
-    'timeseries',
-    'Kernel CUSUM.',
+    "timeseries",
+    "Kernel CUSUM.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -53821,8 +53820,8 @@ _r(
 _r(
     "lapEig",
     "laplacian_eigenmaps",
-    'graph-network',
-    'Laplacian eigenmap embedding.',
+    "graph-network",
+    "Laplacian eigenmap embedding.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -53835,8 +53834,8 @@ _r(
 _r(
     "laplc",
     "laplace_mechanism",
-    'privacy-dp',
-    'Laplace mechanism.',
+    "privacy-dp",
+    "Laplace mechanism.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -53905,8 +53904,8 @@ _r(
 _r(
     "layrnm",
     "layer_norm",
-    'deep-learning',
-    'LayerNorm -- per-token normalization.',
+    "deep-learning",
+    "LayerNorm -- per-token normalization.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -53919,8 +53918,8 @@ _r(
 _r(
     "lbfgsm",
     "lbfgs",
-    'optimization',
-    'L-BFGS.',
+    "optimization",
+    "L-BFGS.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -53975,8 +53974,8 @@ _r(
 _r(
     "lda",
     "lda_topic",
-    'text-nlp',
-    'LDA by variational EM: eqs (6)-(8), digamma expectation, blockwise bound.',
+    "text-nlp",
+    "LDA by variational EM: eqs (6)-(8), digamma expectation, blockwise bound.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -53996,8 +53995,8 @@ _r(
 _r(
     "ldcmpr",
     "ld_r2",
-    'genomics-quant',
-    'Linkage disequilibrium r^2.',
+    "genomics-quant",
+    "Linkage disequilibrium r^2.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -54010,8 +54009,8 @@ _r(
 _r(
     "ldiff",
     "l_diversity_check",
-    'privacy-dp',
-    'l-diversity (Machanavajjhala et al).',
+    "privacy-dp",
+    "l-diversity (Machanavajjhala et al).",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -54038,8 +54037,8 @@ _r(
 _r(
     "ldprun",
     "ld_pruning",
-    'genomics-quant',
-    'LD-based SNP pruning.',
+    "genomics-quant",
+    "LD-based SNP pruning.",
     "We must know. We will know. -- David Hilbert",
 )
 _r("ldscr", "ldscr", "Auto", "Auto-wired callable from fn/ldscr.py", "Number rules the universe. -- Pythagoras")
@@ -54081,8 +54080,8 @@ _r(
 _r(
     "lemR",
     "leiden_grph",
-    'graph-network',
-    'Leiden refined community detection.',
+    "graph-network",
+    "Leiden refined community detection.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -54109,8 +54108,8 @@ _r(
 _r(
     "lggvls",
     "laggedval_iptw",
-    'causal-msm-ipw',
-    'Lagged-value IPTW.',
+    "causal-msm-ipw",
+    "Lagged-value IPTW.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -54181,8 +54180,8 @@ _r(
 _r(
     "limmav",
     "limma_voom",
-    'bioinformatics',
-    'limma-voom for RNA-seq.',
+    "bioinformatics",
+    "limma-voom for RNA-seq.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -54195,8 +54194,8 @@ _r(
 _r(
     "linatt",
     "linformer_linear_attention",
-    'deep-learning',
-    'Linformer linear-complexity attention via low-rank projection.',
+    "deep-learning",
+    "Linformer linear-complexity attention via low-rank projection.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -54216,29 +54215,29 @@ _r(
 _r(
     "linkhae",
     "linking_haebara",
-    'irt',
-    'IRT linking -- Haebara.',
+    "irt",
+    "IRT linking -- Haebara.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "linkmm",
     "linking_meanmean",
-    'irt',
-    'IRT linking -- mean/mean.',
+    "irt",
+    "IRT linking -- mean/mean.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "linkpr",
     "link_prediction",
-    'graph-network',
-    'Link prediction (CN, AA, RA).',
+    "graph-network",
+    "Link prediction (CN, AA, RA).",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "linkqp",
     "linking_stocking_lord",
-    'irt',
-    'IRT linking -- Stocking-Lord.',
+    "irt",
+    "IRT linking -- Stocking-Lord.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -54272,8 +54271,8 @@ _r(
 _r(
     "linwlr",
     "linear_weighted_learner",
-    'causal-msm-ipw',
-    'Linear weighted regression learner.',
+    "causal-msm-ipw",
+    "Linear weighted regression learner.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -54314,9 +54313,9 @@ _r(
 _r(
     "llavx",
     "llava_visual_chat",
-    'deep-learning',
-    'LLaVA: instruction data generated by a LANGUAGE-ONLY model from a '
-    'symbolic image; one projection matrix, patches used as tokens.',
+    "deep-learning",
+    "LLaVA: instruction data generated by a LANGUAGE-ONLY model from a "
+    "symbolic image; one projection matrix, patches used as tokens.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -54386,15 +54385,15 @@ _r(
 _r(
     "locdp",
     "local_dp",
-    'privacy-dp',
-    'Local DP (each user randomizes).',
+    "privacy-dp",
+    "Local DP (each user randomizes).",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "locp",
     "local_polynomial",
-    'nonparam-smoothing',
-    'Local polynomial smoother.',
+    "nonparam-smoothing",
+    "Local polynomial smoother.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -54627,8 +54626,8 @@ _r("ls2ar", "lsf_to_ar", "Auto", "Auto-wired callable from fn/ls2ar.py", "We mus
 _r(
     "lsa",
     "lsa",
-    'text-nlp',
-    'Truncated SVD of the term-document matrix; fold-in queries.',
+    "text-nlp",
+    "Truncated SVD of the term-document matrix; fold-in queries.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -54690,8 +54689,8 @@ _r(
 _r(
     "luvR",
     "louvain",
-    'graph-network',
-    'Louvain modularity.',
+    "graph-network",
+    "Louvain modularity.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -54725,8 +54724,8 @@ _r(
 _r(
     "lyapun",
     "lyapunov_exponent",
-    'timeseries',
-    'Largest Lyapunov exponent (Rosenstein).',
+    "timeseries",
+    "Largest Lyapunov exponent (Rosenstein).",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -54851,8 +54850,8 @@ _r(
 _r(
     "mafft",
     "mafft_alignment",
-    'bioinformatics',
-    'MAFFT FFT-NS-2 / L-INS-i alignment.',
+    "bioinformatics",
+    "MAFFT FFT-NS-2 / L-INS-i alignment.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -55006,8 +55005,8 @@ _r(
 _r(
     "mambss",
     "mamba_ssm_step",
-    'deep-learning',
-    'Mamba selective SSM step (S6).',
+    "deep-learning",
+    "Mamba selective SSM step (S6).",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -55076,15 +55075,15 @@ _r(
 _r(
     "manski",
     "manski_no_assumption_bounds",
-    'causal-partial-id',
-    'Manski no-assumption bounds on the ATE.',
+    "causal-partial-id",
+    "Manski no-assumption bounds on the ATE.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
     "manskif",
     "manski_bounds",
-    'causal-partial-id',
-    'Manski no-assumption bounds.',
+    "causal-partial-id",
+    "Manski no-assumption bounds.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -55181,8 +55180,8 @@ _r(
 _r(
     "masrcn",
     "mask_rcnn_segmentation",
-    'deep-learning',
-    'Mask R-CNN: RoIAlign against RoIPool quantisation; mask decoupled from class.',
+    "deep-learning",
+    "Mask R-CNN: RoIAlign against RoIPool quantisation; mask decoupled from class.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -55238,8 +55237,8 @@ _r("matrl", "ma_three_level", "Auto", "Auto-wired callable from fn/matrl.py", "K
 _r(
     "matrxP",
     "matrix_profile",
-    'timeseries',
-    'Matrix profile (discord detection).',
+    "timeseries",
+    "Matrix profile (discord detection).",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -55387,8 +55386,8 @@ _r(
 _r(
     "mctsr",
     "mcts_rollout",
-    'sampling-design',
-    'Vanilla MCTS with random rollouts.',
+    "sampling-design",
+    "Vanilla MCTS with random rollouts.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -55415,15 +55414,15 @@ _r(
 _r(
     "mdppol",
     "mdp_policy_iteration",
-    'reinforcement-learning',
-    'Policy iteration for MDP.',
+    "reinforcement-learning",
+    "Policy iteration for MDP.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "mdpval",
     "mdp_value_iteration",
-    'reinforcement-learning',
-    'Value iteration for MDP.',
+    "reinforcement-learning",
+    "Value iteration for MDP.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -55599,8 +55598,8 @@ _r(
 _r(
     "meglt",
     "matrix_completion_low_rank",
-    'multivariate',
-    'Nuclear-norm matrix completion, coherence, singular value thresholding.',
+    "multivariate",
+    "Nuclear-norm matrix completion, coherence, singular value thresholding.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -55613,17 +55612,17 @@ _r(
 _r(
     "mehtad",
     "mehrotras_predictor",
-    'optimization',
+    "optimization",
     "Predictor-corrector: the corrector reuses the predictor's "
-    'factorisation, sigma = (mu_aff/mu)^nu is estimated from the affine '
-    'step, and fraction-to-boundary keeps the iterate interior.',
+    "factorisation, sigma = (mu_aff/mu)^nu is estimated from the affine "
+    "step, and fraction-to-boundary keeps the iterate interior.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
     "memb",
     "membership_inference",
-    'privacy-dp',
-    'Membership inference attack.',
+    "privacy-dp",
+    "Membership inference attack.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r("meplt", "mean_excess", "Auto", "Auto-wired callable from fn/meplt.py", "Knowledge is power. -- Francis Bacon")
@@ -55644,23 +55643,23 @@ _r(
 _r(
     "meta1l",
     "meta_learner_ensemble",
-    'causal-ml',
-    'Meta-learner ensemble (S,T,X,R).',
+    "causal-ml",
+    "Meta-learner ensemble (S,T,X,R).",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "metabd",
     "metagenome_binning",
-    'genomics-quant',
-    'MetaBAT 2: adaptive composite binning on canonical tetranucleotide '
-    'frequency and cross-sample abundance, weighted by contig length.',
+    "genomics-quant",
+    "MetaBAT 2: adaptive composite binning on canonical tetranucleotide "
+    "frequency and cross-sample abundance, weighted by contig length.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "meteor",
     "meteor",
-    'bioinformatics',
-    'METEOR alignment-based.',
+    "bioinformatics",
+    "METEOR alignment-based.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
@@ -55680,8 +55679,8 @@ _r(
 _r(
     "mfird",
     "mirt_factor_loading",
-    'irt',
-    'MIRT factor-loading reparameterization (a -> lambda).',
+    "irt",
+    "MIRT factor-loading reparameterization (a -> lambda).",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -55694,8 +55693,8 @@ _r(
 _r(
     "mfovsm",
     "mfo_vsm",
-    'causal-msm-ipw',
-    'Marginal feature-outcome MSM.',
+    "causal-msm-ipw",
+    "Marginal feature-outcome MSM.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -55808,8 +55807,8 @@ _r(
 _r(
     "midegf",
     "mi_degrees_of_freedom",
-    'missing-data',
-    'MI degrees-of-freedom.',
+    "missing-data",
+    "MI degrees-of-freedom.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -55829,22 +55828,22 @@ _r(
 _r(
     "miefcl",
     "multiple_imputation_combine",
-    'missing-data',
+    "missing-data",
     "MI Rubin's rules combination.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "mienco",
     "mi_neural_encoder",
-    'deep-learning',
-    'Deep InfoMax: local MI maximisation with JSD and DV estimators.',
+    "deep-learning",
+    "Deep InfoMax: local MI maximisation with JSD and DV estimators.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "miest1",
     "mi_ksg",
-    'information-theory',
-    'Mutual information via KSG (k-NN).',
+    "information-theory",
+    "Mutual information via KSG (k-NN).",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -55864,8 +55863,8 @@ _r(
 _r(
     "miord2",
     "mi_chained_eq",
-    'missing-data',
-    'MICE (chained equations).',
+    "missing-data",
+    "MICE (chained equations).",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -55878,9 +55877,9 @@ _r(
 _r(
     "miprgr",
     "mip_branch_bound",
-    'optimization',
+    "optimization",
     "Branch and bound following Dakin's Fig. 2 step for step, with the "
-    'MARKED LIST holding the current path rather than the open frontier.',
+    "MARKED LIST holding the current path rather than the open frontier.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -55922,8 +55921,8 @@ _r(
 _r(
     "mistr",
     "mistral",
-    'deep-learning',
-    'Mistral with sliding-window + SwiGLU.',
+    "deep-learning",
+    "Mistral with sliding-window + SwiGLU.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -56226,8 +56225,8 @@ _r(
 _r(
     "moetop",
     "moe_topk_routing",
-    'deep-learning',
-    'MoE top-k routing with auxiliary load-balance loss.',
+    "deep-learning",
+    "MoE top-k routing with auxiliary load-balance loss.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -56240,8 +56239,8 @@ _r(
 _r(
     "momento",
     "moment_foundation",
-    'deep-learning',
-    'MOMENT: masked time-series pretraining across datasets of differing resolution, channels, length and amplitude.',
+    "deep-learning",
+    "MOMENT: masked time-series pretraining across datasets of differing resolution, channels, length and amplitude.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -56268,14 +56267,14 @@ _r(
 _r(
     "morbiv",
     "bivariate_morans_i",
-    'spatial',
+    "spatial",
     "Bivariate Moran's I between two variables.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "morebs",
     "empirical_bayes_moran",
-    'spatial',
+    "spatial",
     "Empirical Bayes-adjusted Moran's I for rates.",
     "Knowledge is power. -- Francis Bacon",
 )
@@ -56290,8 +56289,8 @@ _r(
 _r(
     "morrisM",
     "morris_screening",
-    'misc',
-    'Morris elementary effects screening.',
+    "misc",
+    "Morris elementary effects screening.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -56311,22 +56310,22 @@ _r(
 _r(
     "motfom",
     "motif_fimo",
-    'bioinformatics',
-    'FIMO motif scan with PWM.',
+    "bioinformatics",
+    "FIMO motif scan with PWM.",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
     "motfsr",
     "motif_meme",
-    'bioinformatics',
-    'MEME motif discovery.',
+    "bioinformatics",
+    "MEME motif discovery.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "motiff",
     "motif_count",
-    'bioinformatics',
-    'Network motif counting.',
+    "bioinformatics",
+    "Network motif counting.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -56353,8 +56352,8 @@ _r(
 _r(
     "mpfn",
     "message_passing",
-    'graph-network',
-    'Message passing framework: M_t, U_t, R and the permutation-invariance requirement.',
+    "graph-network",
+    "Message passing framework: M_t, U_t, R and the permutation-invariance requirement.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -58356,8 +58355,8 @@ _r(
 _r(
     "mtdrl",
     "meta_rl",
-    'reinforcement-learning',
-    'Meta-RL (e.g. RL² with recurrent net).',
+    "reinforcement-learning",
+    "Meta-RL (e.g. RL² with recurrent net).",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -58531,8 +58530,8 @@ _r(
 _r(
     "muzero",
     "muzero",
-    'reinforcement-learning',
-    'MuZero -- learns model + value + policy from latent state.',
+    "reinforcement-learning",
+    "MuZero -- learns model + value + policy from latent state.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -58580,8 +58579,8 @@ _r(
 _r(
     "mxetA",
     "max_exceedance_curve",
-    'extreme-value',
-    'Max-stable process simulation.',
+    "extreme-value",
+    "Max-stable process simulation.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -58657,16 +58656,16 @@ _r(
 _r(
     "narm",
     "narm",
-    'deep-learning',
-    'Global plus attention-based local encoder, bilinear decoder.',
+    "deep-learning",
+    "Global plus attention-based local encoder, bilinear decoder.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r("nash", "nash_equilibrium", "Auto", "Auto-wired callable from fn/nash.py", "Knowledge is power. -- Francis Bacon")
 _r(
     "nashq",
     "nash_q_learning",
-    'reinforcement-learning',
-    'Nash-Q for Markov games.',
+    "reinforcement-learning",
+    "Nash-Q for Markov games.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -58686,8 +58685,8 @@ _r(
 _r(
     "nbeats",
     "n_beats",
-    'timeseries',
-    'N-BEATS pure-DL forecasting.',
+    "timeseries",
+    "N-BEATS pure-DL forecasting.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r("nbglm", "negbin_glm", "Auto", "Auto-wired callable from fn/nbglm.py", "Number rules the universe. -- Pythagoras")
@@ -58701,8 +58700,8 @@ _r(
 _r(
     "ncfRS",
     "ncf",
-    'recommender-ir',
-    'GMF/MLP/NeuMF; GMF recovers MF exactly.',
+    "recommender-ir",
+    "GMF/MLP/NeuMF; GMF recovers MF exactly.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -58828,8 +58827,8 @@ _r(
 _r(
     "netcms",
     "network_psychometrics",
-    'psychometrics-sem',
-    'Network psychometrics (graphical LASSO).',
+    "psychometrics-sem",
+    "Network psychometrics (graphical LASSO).",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -58856,8 +58855,8 @@ _r(
 _r(
     "netsts",
     "neural_ts_lstm",
-    'timeseries',
-    'LSTM time-series forecaster.',
+    "timeseries",
+    "LSTM time-series forecaster.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -58905,15 +58904,15 @@ _r(
 _r(
     "ngcf",
     "ngcf",
-    'graph-network',
-    'Embedding propagation with the affinity term; per-layer concatenation.',
+    "graph-network",
+    "Embedding propagation with the affinity term; per-layer concatenation.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
     "ngnest",
     "n_beats",
-    'timeseries',
-    'N-BEATS neural forecasting.',
+    "timeseries",
+    "N-BEATS neural forecasting.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -58930,7 +58929,7 @@ _r(
     "Auto-wired callable from fn/ngram.py",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
-_r("nhits", "n_hits", 'timeseries', 'N-HiTS hierarchical interpolation.', "Knowledge is power. -- Francis Bacon")
+_r("nhits", "n_hits", "timeseries", "N-HiTS hierarchical interpolation.", "Knowledge is power. -- Francis Bacon")
 _r(
     "niccgg",
     "nakagawa_marginal_r2",
@@ -58948,8 +58947,8 @@ _r(
 _r(
     "nignst",
     "normal_inv_gamma",
-    'bayesian',
-    'Normal-Inverse-Gamma conjugate.',
+    "bayesian",
+    "Normal-Inverse-Gamma conjugate.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -59020,8 +59019,8 @@ _r(
 _r(
     "node2v",
     "node2vec",
-    'graph-network',
-    'Second-order biased walk interpolating BFS and DFS.',
+    "graph-network",
+    "Second-order biased walk interpolating BFS and DFS.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -59173,13 +59172,13 @@ _r(
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
-    'nrfrad',
-    'nerf_radiance',
-    'deep-learning',
-    'NeRF: density from position alone, colour view-dependent; '
-    'differentiable volume rendering, positional encoding, hierarchical '
-    'sampling.',
-    'Knowledge is power. -- Francis Bacon',
+    "nrfrad",
+    "nerf_radiance",
+    "deep-learning",
+    "NeRF: density from position alone, colour view-dependent; "
+    "differentiable volume rendering, positional encoding, hierarchical "
+    "sampling.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "nrgmwd",
@@ -59400,13 +59399,13 @@ _r(
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
-    'ocrwit',
-    'ocr_wit_layout',
-    'text-nlp',
-    'LayoutLMv3: text and image masked by the SAME discrete-token '
-    'objective, linear patch embeddings, word-patch alignment on unmasked '
-    'words only.',
-    'Knowledge is power. -- Francis Bacon',
+    "ocrwit",
+    "ocr_wit_layout",
+    "text-nlp",
+    "LayoutLMv3: text and image masked by the SAME discrete-token "
+    "objective, linear patch embeddings, word-patch alignment on unmasked "
+    "words only.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "ocsvm",
@@ -59454,8 +59453,8 @@ _r(
 _r(
     "offlrl",
     "offline_rl_cql",
-    'reinforcement-learning',
-    'Conservative Q-learning (offline RL).',
+    "reinforcement-learning",
+    "Conservative Q-learning (offline RL).",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -59552,10 +59551,10 @@ _r(
 _r(
     "opnclp",
     "open_clip",
-    'deep-learning',
-    'OpenCLIP scaling laws: log-log power-law fit, extrapolation distance '
-    'reported, and the finding that the exponent depends on the training '
-    'distribution.',
+    "deep-learning",
+    "OpenCLIP scaling laws: log-log power-law fit, extrapolation distance "
+    "reported, and the finding that the exponent depends on the training "
+    "distribution.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -59632,8 +59631,8 @@ _r(
 _r(
     "orfgrf",
     "orthogonal_random_forest",
-    'causal-ml',
-    'Orthogonal Random Forest with LOCAL residualization.',
+    "causal-ml",
+    "Orthogonal Random Forest with LOCAL residualization.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -60095,15 +60094,15 @@ _r("pagrk", "pagerank", "Auto", "Auto-wired callable from fn/pagrk.py", "There i
 _r(
     "painn",
     "painn",
-    'graph-network',
-    'PaiNN: paired scalar and vector features; tensorial properties read off directly.',
+    "graph-network",
+    "PaiNN: paired scalar and vector features; tensorial properties read off directly.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "paligi",
     "parametric_alibi",
-    'deep-learning',
-    'Parametric ALiBi with learnable per-head slopes.',
+    "deep-learning",
+    "Parametric ALiBi with learnable per-head slopes.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -60135,18 +60134,17 @@ _r(
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
-    'patchT',
-    'patch_tst',
-    'deep-learning',
-    'PatchTST: subseries patches as tokens + channel independence with '
-    'shared weights.',
-    'I think, therefore I am. -- Rene Descartes',
+    "patchT",
+    "patch_tst",
+    "deep-learning",
+    "PatchTST: subseries patches as tokens + channel independence with shared weights.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "pate",
     "pate",
-    'privacy-dp',
-    'PATE -- private aggregation of teacher ensembles.',
+    "privacy-dp",
+    "PATE -- private aggregation of teacher ensembles.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -60237,8 +60235,8 @@ _r(
 _r(
     "pcm",
     "partial_credit_masters",
-    'irt',
-    'Masters Partial Credit Model (a=1).',
+    "irt",
+    "Masters Partial Credit Model (a=1).",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -60300,8 +60298,8 @@ _r(
 _r(
     "pelt",
     "pelt",
-    'timeseries',
-    'PELT (pruned exact linear time).',
+    "timeseries",
+    "PELT (pruned exact linear time).",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -60322,8 +60320,8 @@ _r("penrs", "penrs", "Auto", "Auto-wired callable from fn/penrs.py", "I think, t
 _r(
     "perK",
     "periodic_kernel",
-    'gaussian-process',
-    'Periodic kernel.',
+    "gaussian-process",
+    "Periodic kernel.",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -60336,8 +60334,8 @@ _r(
 _r(
     "perfat",
     "performer_favor_attention",
-    'deep-learning',
-    'Performer FAVOR+ kernel attention (random features).',
+    "deep-learning",
+    "Performer FAVOR+ kernel attention (random features).",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -60392,8 +60390,8 @@ _r(
 _r(
     "pftrep",
     "particle_filter_epi",
-    'timeseries',
-    'Particle filter for partially observed Markov.',
+    "timeseries",
+    "Particle filter for partially observed Markov.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -60455,9 +60453,9 @@ _r(
 _r(
     "phmmsr",
     "profile_hmm_search",
-    'bioinformatics',
-    'HMMER3 pipeline: striped ungapped MSV filter whose scores follow the '
-    'same Gumbel law, so the threshold is a p-value; sparse rescaling.',
+    "bioinformatics",
+    "HMMER3 pipeline: striped ungapped MSV filter whose scores follow the "
+    "same Gumbel law, so the threshold is a p-value; sparse rescaling.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -60485,15 +60483,15 @@ _r("phsdl", "phase_delay", "Auto", "Auto-wired callable from fn/phsdl.py", "I th
 _r(
     "phylby",
     "bayesian_phylogeny",
-    'bioinformatics',
-    'Bayesian phylogeny via MrBayes.',
+    "bioinformatics",
+    "Bayesian phylogeny via MrBayes.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
     "phylml",
     "phylogenetic_ml",
-    'bioinformatics',
-    'Maximum likelihood phylogeny.',
+    "bioinformatics",
+    "Maximum likelihood phylogeny.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -60506,15 +60504,15 @@ _r(
 _r(
     "phylog",
     "phylogenetic_dating",
-    'bioinformatics',
-    'Phylogenetic time-to-MRCA.',
+    "bioinformatics",
+    "Phylogenetic time-to-MRCA.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "phylotr",
     "phylogenetic_tree",
-    'bioinformatics',
-    'Phylogenetic tree construction.',
+    "bioinformatics",
+    "Phylogenetic tree construction.",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -60583,8 +60581,8 @@ _r(
 _r(
     "plcbsc",
     "placebo_scm_inference",
-    'causal-did',
-    'Placebo permutation inference for SCM.',
+    "causal-did",
+    "Placebo permutation inference for SCM.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -60639,8 +60637,8 @@ _r(
 _r(
     "plncF",
     "planck_function",
-    'climate-environment',
-    'Planck blackbody spectrum.',
+    "climate-environment",
+    "Planck blackbody spectrum.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -60667,15 +60665,15 @@ _r(
 _r(
     "plrgrf",
     "partial_linear_grf",
-    'causal-ml',
-    'Partial-linear GRF for high-dim controls.',
+    "causal-ml",
+    "Partial-linear GRF for high-dim controls.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "plsa",
     "plsa",
-    'text-nlp',
-    'Aspect model by EM: eqs (2)-(6); P(z|d) is a per-document parameter.',
+    "text-nlp",
+    "Aspect model by EM: eqs (2)-(6); P(z|d) is a per-document parameter.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -60770,14 +60768,14 @@ _r(
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
-    'pmpfit',
-    'pmp_fit',
-    'bayes-nonparam',
-    'The two-parameter (alpha, theta) process of Definition 1: stick- '
-    'breaking with Beta(1-alpha, theta+k alpha), the predictive rule that '
-    'discounts every occupied cluster by alpha and hands the total to the '
-    'new one, and E[K_n] by exact recursion. alpha=0 is exactly the DP.',
-    'We must know. We will know. -- David Hilbert',
+    "pmpfit",
+    "pmp_fit",
+    "bayes-nonparam",
+    "The two-parameter (alpha, theta) process of Definition 1: stick- "
+    "breaking with Beta(1-alpha, theta+k alpha), the predictive rule that "
+    "discounts every occupied cluster by alpha and hands the total to the "
+    "new one, and E[K_n] by exact recursion. alpha=0 is exactly the DP.",
+    "We must know. We will know. -- David Hilbert",
 )
 _r(
     "pmrr",
@@ -60853,15 +60851,15 @@ _r(
 _r(
     "polkrn",
     "polynomial_kernel_msm",
-    'causal-msm-ipw',
-    'Polynomial-kernel MSM for nonlinear effects.',
+    "causal-msm-ipw",
+    "Polynomial-kernel MSM for nonlinear effects.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "polqnt",
     "polar_quantization",
-    'quantization',
-    'PolarQuant: 4-bit polar codebook compression.',
+    "quantization",
+    "PolarQuant: 4-bit polar codebook compression.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -60888,11 +60886,11 @@ _r(
 _r(
     "poltrx",
     "polya_tree_extended",
-    'bayes-nonparam',
-    'Finite (truncated) Polya tree on nested binary partitions of the '
-    'unit interval, with alpha_m = c m^2 giving absolutely continuous '
-    'draws and constant alpha recovering the DP; set probabilities are '
-    'the product of Beta draws down the branch.',
+    "bayes-nonparam",
+    "Finite (truncated) Polya tree on nested binary partitions of the "
+    "unit interval, with alpha_m = c m^2 giving absolutely continuous "
+    "draws and constant alpha recovering the DP; set probabilities are "
+    "the product of Beta draws down the branch.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r("polyCh", "chebyshev_basis", "Auto", "Auto-wired callable from fn/polyCh.py", "Knowledge is power. -- Francis Bacon")
@@ -60906,8 +60904,8 @@ _r(
 _r(
     "polyak",
     "polyak_target",
-    'timeseries',
-    'Iterate averaging and soft target updates.',
+    "timeseries",
+    "Iterate averaging and soft target updates.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -60955,11 +60953,11 @@ _r(
 _r(
     "posspr",
     "posterior_predictive",
-    'bayes-nonparam',
-    'The Polya urn predictive: new cluster with weight exactly '
-    'alpha/(alpha+n), occupied cluster j with n_j/(alpha+n); two draws '
-    'tie with probability exactly 1/(1+alpha), and E[K_n] = sum '
-    'alpha/(alpha+i).',
+    "bayes-nonparam",
+    "The Polya urn predictive: new cluster with weight exactly "
+    "alpha/(alpha+n), occupied cluster j with n_j/(alpha+n); two draws "
+    "tie with probability exactly 1/(1+alpha), and E[K_n] = sum "
+    "alpha/(alpha+i).",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -60993,8 +60991,8 @@ _r(
 _r(
     "potM",
     "peaks_over_threshold",
-    'extreme-value',
-    'Peaks-over-threshold.',
+    "extreme-value",
+    "Peaks-over-threshold.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -61113,8 +61111,8 @@ _r(
 _r(
     "pratt",
     "pretrained_attention",
-    'deep-learning',
-    'Hierarchical attention with learned word- and sentence-level context vectors.',
+    "deep-learning",
+    "Hierarchical attention with learned word- and sentence-level context vectors.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -61191,8 +61189,8 @@ _r(
 _r(
     "prehay",
     "preacher_hayes_indirect",
-    'causal-mediation-sens',
-    'Preacher-Hayes bootstrap multiple-mediator.',
+    "causal-mediation-sens",
+    "Preacher-Hayes bootstrap multiple-mediator.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -61217,11 +61215,11 @@ _r(
     "We must know. We will know. -- David Hilbert",
 )
 _r(
-    'prgrl',
-    'prog_rl',
-    'bioinformatics',
-    'Programmatic / curriculum RL.',
-    'We must know. We will know. -- David Hilbert',
+    "prgrl",
+    "prog_rl",
+    "bioinformatics",
+    "Programmatic / curriculum RL.",
+    "We must know. We will know. -- David Hilbert",
 )
 _r(
     "prgwt",
@@ -61238,11 +61236,11 @@ _r(
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    'primal',
-    'primal_dual',
-    'optimization',
-    'Primal-dual hybrid gradient (Chambolle-Pock).',
-    'Number rules the universe. -- Pythagoras',
+    "primal",
+    "primal_dual",
+    "optimization",
+    "Primal-dual hybrid gradient (Chambolle-Pock).",
+    "Number rules the universe. -- Pythagoras",
 )
 _r(
     "prmsc",
@@ -61261,8 +61259,8 @@ _r(
 _r(
     "prnFil",
     "prophet_changepoint",
-    'timeseries',
-    'Prophet automatic change-points.',
+    "timeseries",
+    "Prophet automatic change-points.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -61331,22 +61329,22 @@ _r(
 _r(
     "prophe",
     "facebook_prophet",
-    'timeseries',
-    'Prophet additive model.',
+    "timeseries",
+    "Prophet additive model.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "propinf",
     "property_inference",
-    'privacy-dp',
-    'Property inference (population stat from model).',
+    "privacy-dp",
+    "Property inference (population stat from model).",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "propme",
     "proportion_mediated",
-    'causal-mediation-sens',
-    'Proportion of total effect mediated.',
+    "causal-mediation-sens",
+    "Proportion of total effect mediated.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
@@ -61366,8 +61364,8 @@ _r(
 _r(
     "prphet",
     "prophet",
-    'timeseries',
-    'Prophet -- piecewise trend + Fourier seasonal + holidays.',
+    "timeseries",
+    "Prophet -- piecewise trend + Fourier seasonal + holidays.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -61415,8 +61413,8 @@ _r(
 _r(
     "prsPEG",
     "peg_parser",
-    'text-nlp',
-    'Prioritised choice, greedy repetition, syntactic predicates, packrat memoisation.',
+    "text-nlp",
+    "Prioritised choice, greedy repetition, syntactic predicates, packrat memoisation.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -61458,15 +61456,15 @@ _r(
 _r(
     "prtcl",
     "particle_filter",
-    'timeseries',
-    'Sequential Monte Carlo / particle filter.',
+    "timeseries",
+    "Sequential Monte Carlo / particle filter.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "prtdid",
     "partition_did",
-    'causal-did',
-    'Partition-based DiD.',
+    "causal-did",
+    "Partition-based DiD.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -61479,8 +61477,8 @@ _r(
 _r(
     "prxgms",
     "proximal_gradient_method",
-    'optimization',
-    'Proximal gradient for sparse models.',
+    "optimization",
+    "Proximal gradient for sparse models.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -61542,8 +61540,8 @@ _r(
 _r(
     "pseudo",
     "path_specific_effect",
-    'causal-mediation-sens',
-    'Path-specific effects (PSE).',
+    "causal-mediation-sens",
+    "Path-specific effects (PSE).",
     "We must know. We will know. -- David Hilbert",
 )
 _r(
@@ -61599,8 +61597,8 @@ _r(
 _r(
     "ptmcmc",
     "parallel_tempering",
-    'bayesian-mcmc',
-    'Parallel tempering MCMC.',
+    "bayesian-mcmc",
+    "Parallel tempering MCMC.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -61690,22 +61688,22 @@ _r(
 _r(
     "qlearn",
     "q_learning",
-    'reinforcement-learning',
-    'Tabular Q-learning.',
+    "reinforcement-learning",
+    "Tabular Q-learning.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "qlrtst",
     "quandt_likelihood_ratio",
-    'robust',
-    'Quandt likelihood ratio (sup-LR) for unknown break.',
+    "robust",
+    "Quandt likelihood ratio (sup-LR) for unknown break.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "qmDS",
     "quantile_mapping",
-    'climate-environment',
-    'Quantile-mapping bias correction.',
+    "climate-environment",
+    "Quantile-mapping bias correction.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -61725,8 +61723,8 @@ _r(
 _r(
     "qpdual",
     "quadratic_program",
-    'optimization',
-    'Quadratic programming.',
+    "optimization",
+    "Quadratic programming.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -61737,17 +61735,17 @@ _r(
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
-    'qrF',
-    'quantile_forecast',
-    'quantile-regression',
-    'Quantile loss / pinball.',
-    'Knowledge is power. -- Francis Bacon',
+    "qrF",
+    "quantile_forecast",
+    "quantile-regression",
+    "Quantile loss / pinball.",
+    "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "qrntcq",
     "quarantine_efficacy",
-    'epidemiology',
-    'Quarantine efficacy from the generation-time distribution + test-and-release + utility.',
+    "epidemiology",
+    "Quarantine efficacy from the generation-time distribution + test-and-release + utility.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -61796,8 +61794,8 @@ _r(
 _r(
     "quanrg",
     "quantile_regression",
-    'quantile-regression',
-    'Quantile (LAD when tau=0.5) regression.',
+    "quantile-regression",
+    "Quantile (LAD when tau=0.5) regression.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -61845,9 +61843,9 @@ _r(
 _r(
     "ragRet",
     "rag_retrieval",
-    'recommender-ir',
-    'Top-k retrieval for RAG: metric choice, IVF approximation with '
-    'measured recall, and RAG-Sequence vs RAG-Token marginalisation.',
+    "recommender-ir",
+    "Top-k retrieval for RAG: metric choice, IVF approximation with "
+    "measured recall, and RAG-Sequence vs RAG-Token marginalisation.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -61874,8 +61872,8 @@ _r(
 _r(
     "randIE",
     "randomized_intervention",
-    'causal-did',
-    'Randomized interventional direct/indirect effects.',
+    "causal-did",
+    "Randomized interventional direct/indirect effects.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -61909,29 +61907,29 @@ _r(
 _r(
     "ranova",
     "random_effects_anova_decomp",
-    'multilevel-mixed',
-    'Mixed-model ANOVA-style variance decomposition.',
+    "multilevel-mixed",
+    "Mixed-model ANOVA-style variance decomposition.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
     "raoscot",
     "rao_scott_chisq",
-    'sampling-design',
-    'Rao-Scott corrected chi-square.',
+    "sampling-design",
+    "Rao-Scott corrected chi-square.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "rapaf",
     "adjusted_paf",
-    'epidemiology',
-    'Adjusted population attributable risk from CASES only, eq. (6).',
+    "epidemiology",
+    "Adjusted population attributable risk from CASES only, eq. (6).",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
     "rappor",
     "rappor",
-    'privacy-dp',
-    'RAPPOR -- Bloom + permanent + instantaneous RR.',
+    "privacy-dp",
+    "RAPPOR -- Bloom + permanent + instantaneous RR.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -62147,8 +62145,8 @@ _r(
 _r(
     "rdkfp",
     "rdkit_path_fp",
-    'cheminformatics',
-    'RDKit path-based fingerprint.',
+    "cheminformatics",
+    "RDKit path-based fingerprint.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -62180,17 +62178,17 @@ _r(
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
-    'rdpc',
-    'renyi_dp',
-    'privacy-dp',
-    'Rényi differential privacy (RDP).',
-    'We must know. We will know. -- David Hilbert',
+    "rdpc",
+    "renyi_dp",
+    "privacy-dp",
+    "Rényi differential privacy (RDP).",
+    "We must know. We will know. -- David Hilbert",
 )
 _r(
     "rdpcomp",
     "rdp_subsampled_composition",
-    'privacy-dp',
-    'Rényi DP for subsampled mechanisms.',
+    "privacy-dp",
+    "Rényi DP for subsampled mechanisms.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -62203,8 +62201,8 @@ _r(
 _r(
     "rdrobu",
     "calonico_cattaneo_titiunik",
-    'causal-rdd',
-    'Calonico-Cattaneo-Titiunik robust RDD CIs.',
+    "causal-rdd",
+    "Calonico-Cattaneo-Titiunik robust RDD CIs.",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -62316,8 +62314,8 @@ _r(
 _r(
     "reinfc",
     "reinforce",
-    'reinforcement-learning',
-    'REINFORCE policy gradient.',
+    "reinforcement-learning",
+    "REINFORCE policy gradient.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -62393,8 +62391,8 @@ _r(
 _r(
     "remlfn",
     "reml_loglik",
-    'multilevel-mixed',
-    'REML log-likelihood evaluation for LMM.',
+    "multilevel-mixed",
+    "REML log-likelihood evaluation for LMM.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -62435,8 +62433,8 @@ _r(
 _r(
     "reportm",
     "report_noisy_max",
-    'privacy-dp',
-    'Report-noisy-max selection.',
+    "privacy-dp",
+    "Report-noisy-max selection.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -62456,15 +62454,15 @@ _r(
 _r(
     "resnxt",
     "resnext_block",
-    'deep-learning',
-    'Cardinality as a design dimension; three equivalent block forms.',
+    "deep-learning",
+    "Cardinality as a design dimension; three equivalent block forms.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "respwt",
     "response_weight",
-    'sampling-design',
-    'Response-rate weight adjustment per cell.',
+    "sampling-design",
+    "Response-rate weight adjustment per cell.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -64752,8 +64750,8 @@ _r(
 _r(
     "rkmeans",
     "trimmed_kmeans",
-    'robust',
-    'Trimmed k-means.',
+    "robust",
+    "Trimmed k-means.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r("rlad", "lad_regression", "Auto", "Auto-wired callable from fn/rlad.py", "Number rules the universe. -- Pythagoras")
@@ -64809,16 +64807,16 @@ _r(
 _r(
     "rmrl",
     "reward_machine",
-    'reinforcement-learning',
-    'Reward machine -- finite-state task spec.',
+    "reinforcement-learning",
+    "Reward machine -- finite-state task spec.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
-    'rmsdtr',
-    'rmsd',
-    'multivariate',
-    'RMSD between aligned structures.',
-    'There is no royal road to geometry. -- Euclid',
+    "rmsdtr",
+    "rmsd",
+    "multivariate",
+    "RMSD between aligned structures.",
+    "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "rmsef",
@@ -64894,8 +64892,8 @@ _r(
 _r(
     "rndnet",
     "random_network_distillation",
-    'reinforcement-learning',
-    'RND exploration bonus.',
+    "reinforcement-learning",
+    "RND exploration bonus.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -65398,8 +65396,8 @@ _r(
 _r(
     "robpca",
     "robust_pca",
-    'robust',
-    'ROBPCA (Hubert et al).',
+    "robust",
+    "ROBPCA (Hubert et al).",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -65433,8 +65431,8 @@ _r(
 _r(
     "rosenb",
     "rosenbaum_bounds",
-    'causal-partial-id',
-    'Rosenbaum bounds for matched studies.',
+    "causal-partial-id",
+    "Rosenbaum bounds for matched studies.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -65458,7 +65456,7 @@ _r(
     "Auto-wired callable from fn/rotrp.py",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
-_r("rouge", "rouge", 'text-nlp', 'ROUGE-N / ROUGE-L.', "There is no royal road to geometry. -- Euclid")
+_r("rouge", "rouge", "text-nlp", "ROUGE-N / ROUGE-L.", "There is no royal road to geometry. -- Euclid")
 _r(
     "rpca",
     "robust_pca",
@@ -65483,8 +65481,8 @@ _r(
 _r(
     "rpgad",
     "rdp_to_eps_delta",
-    'privacy-dp',
-    'Convert Rényi DP (alpha, epsilon_R) to (epsilon, delta).',
+    "privacy-dp",
+    "Convert Rényi DP (alpha, epsilon_R) to (epsilon, delta).",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -65609,8 +65607,8 @@ _r(
 _r(
     "rtwall",
     "rt_wallinga_teunis",
-    'epidemiology',
-    'Rt via Wallinga-Teunis.',
+    "epidemiology",
+    "Rt via Wallinga-Teunis.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -65651,15 +65649,15 @@ _r(
 _r(
     "sa_opt",
     "simulated_annealing",
-    'optimization',
-    'Simulated annealing.',
+    "optimization",
+    "Simulated annealing.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "sacc",
     "sac",
-    'reinforcement-learning',
-    'Soft actor-critic (max-entropy RL).',
+    "reinforcement-learning",
+    "Soft actor-critic (max-entropy RL).",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -65679,16 +65677,16 @@ _r(
 _r(
     "sacrb",
     "sacrebleu",
-    'deep-learning',
-    'Corpus BLEU with clipped precision and corpus-level brevity penalty, plus a sacreBLEU signature.',
+    "deep-learning",
+    "Corpus BLEU with clipped precision and corpus-level brevity penalty, plus a sacreBLEU signature.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r("sactv", "activity", "Auto", "Auto-wired callable from fn/sactv.py", "Knowledge is power. -- Francis Bacon")
 _r(
     "safrl",
     "safe_rl",
-    'reinforcement-learning',
-    'Constrained / safe RL (CMDP).',
+    "reinforcement-learning",
+    "Constrained / safe RL (CMDP).",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -65701,43 +65699,43 @@ _r(
 _r(
     "saigeg",
     "saige_gwas",
-    'epidemiology',
-    'SAIGE: logistic mixed-model score test calibrated by the saddlepoint approximation.',
+    "epidemiology",
+    "SAIGE: logistic mixed-model score test calibrated by the saddlepoint approximation.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "sam2vd",
     "sam2_video_propagation",
-    'deep-learning',
-    'SAM 2 streaming memory: two FIFO queues (recent + prompted), '
-    'temporal position on recent only, object pointers; empty memory '
-    'reduces exactly to SAM.',
+    "deep-learning",
+    "SAM 2 streaming memory: two FIFO queues (recent + prompted), "
+    "temporal position on recent only, object pointers; empty memory "
+    "reduces exactly to SAM.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "samdec",
     "sam_mask_decoder",
-    'deep-learning',
-    'SAM mask decoder: two-way attention updating prompt AND image, '
-    'upsample, dynamic linear classifier from the output token; focal + '
-    'dice loss.',
+    "deep-learning",
+    "SAM mask decoder: two-way attention updating prompt AND image, "
+    "upsample, dynamic linear classifier from the output token; focal + "
+    "dice loss.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
     "sammkr",
     "sam_multi_mask_rank",
-    'deep-learning',
-    'Three masks (whole/part/subpart), minimum-loss backprop so they '
-    'specialise, and IoU-predicted ranking with its calibration error.',
+    "deep-learning",
+    "Three masks (whole/part/subpart), minimum-loss backprop so they "
+    "specialise, and IoU-predicted ranking with its calibration error.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
     "samseg",
     "sam_segment",
-    'deep-learning',
-    'SAM promptable segmentation: heavy image encoder once per image, '
-    'light prompt encoder + mask decoder per prompt; per-type sparse '
-    'embeddings, dense mask prompts summed.',
+    "deep-learning",
+    "SAM promptable segmentation: heavy image encoder once per image, "
+    "light prompt encoder + mask decoder per prompt; per-type sparse "
+    "embeddings, dense mask prompts summed.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -65806,15 +65804,15 @@ _r(
 _r(
     "sarsa",
     "sarsa",
-    'reinforcement-learning',
-    'On-policy SARSA.',
+    "reinforcement-learning",
+    "On-policy SARSA.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "sasRec",
     "sasrec",
-    'bioinformatics',
-    'SASRec: self-attention adapts between Markov and RNN behaviour per sequence.',
+    "bioinformatics",
+    "SASRec: self-attention adapts between Markov and RNN behaviour per sequence.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -65829,8 +65827,8 @@ _r("sav_e", "subscale_ee_ave", "Auto", "Auto-wired callable from fn/sav_e.py", "
 _r(
     "saxR",
     "sax_representation",
-    'timeseries',
-    'SAX symbolic aggregate approximation.',
+    "timeseries",
+    "SAX symbolic aggregate approximation.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -65843,8 +65841,8 @@ _r(
 _r(
     "sbert",
     "sbert",
-    'deep-learning',
-    'Siamese sentence embeddings: softmax over (u,v,|u-v|) and the cosine objective; O(n) vs C(n,2) passes.',
+    "deep-learning",
+    "Siamese sentence embeddings: softmax over (u,v,|u-v|) and the cosine objective; O(n) vs C(n,2) passes.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
@@ -65892,8 +65890,8 @@ _r(
 _r(
     "sccsno",
     "sccs_no_replacement",
-    'epidemiology',
-    'SCCS: conditional likelihood, cases only; no event-dependent censoring or exposure.',
+    "epidemiology",
+    "SCCS: conditional likelihood, cases only; no event-dependent censoring or exposure.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -65913,8 +65911,8 @@ _r(
 _r(
     "schN",
     "schnet",
-    'cheminformatics',
-    'SchNet: continuous-filter convolutions; invariant energy, equivariant forces from -dE/dr.',
+    "cheminformatics",
+    "SchNet: continuous-filter convolutions; invariant energy, equivariant forces from -dE/dr.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -65935,8 +65933,8 @@ _r(
 _r(
     "scintg",
     "singlecell_integration",
-    'bioinformatics',
-    'scRNA-seq batch integration (Harmony).',
+    "bioinformatics",
+    "scRNA-seq batch integration (Harmony).",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -66047,8 +66045,8 @@ _r(
 _r(
     "sctraj",
     "scrnaseq_trajectory",
-    'bioinformatics',
-    'Pseudotime trajectory (slingshot/monocle).',
+    "bioinformatics",
+    "Pseudotime trajectory (slingshot/monocle).",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -66061,15 +66059,15 @@ _r(
 _r(
     "sctsne",
     "tsne_embedding",
-    'multivariate',
-    't-SNE embedding.',
+    "multivariate",
+    "t-SNE embedding.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "scumap",
     "umap_singlecell",
-    'bioinformatics',
-    'UMAP for single-cell embedding.',
+    "bioinformatics",
+    "UMAP for single-cell embedding.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -66110,19 +66108,19 @@ _r(
 _r(
     "sdne",
     "sdne",
-    'deep-learning',
-    'SDNE: autoencoder on the adjacency row (second-order/global) plus a '
-    'Laplacian term on linked pairs (first-order/local), with the re- '
-    'weighted reconstruction penalty.',
+    "deep-learning",
+    "SDNE: autoencoder on the adjacency row (second-order/global) plus a "
+    "Laplacian term on linked pairs (first-order/local), with the re- "
+    "weighted reconstruction penalty.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "sdpwts",
     "semidefinite_program",
-    'optimization',
-    'SDP by the barrier method: -log det F(x) is finite only on the '
-    'interior and self-concordant, and the duality gap at a central point '
-    'is exactly m/t.',
+    "optimization",
+    "SDP by the barrier method: -log det F(x) is finite only on the "
+    "interior and self-concordant, and the duality gap at a central point "
+    "is exactly m/t.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -66142,63 +66140,63 @@ _r(
 _r(
     "sdxlcd",
     "sdxl_unet",
-    'deep-learning',
-    'SDXL micro-conditioning on original size and crop coordinates, '
-    'Fourier-embedded and added to the timestep embedding; multi-aspect '
-    'buckets.',
+    "deep-learning",
+    "SDXL micro-conditioning on original size and crop coordinates, "
+    "Fourier-embedded and added to the timestep embedding; multi-aspect "
+    "buckets.",
     "It does not matter how slowly you go as long as you do not stop. -- Confucius",
 )
 _r(
     "se3T",
     "se3_transformer",
-    'deep-learning',
-    'SE(3)-Transformer: invariant attention weights over equivariant '
-    'values, so type-1 outputs rotate with the input exactly.',
+    "deep-learning",
+    "SE(3)-Transformer: invariant attention weights over equivariant "
+    "values, so type-1 outputs rotate with the input exactly.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "secaead",
     "aead_chacha20poly1305",
-    'crypto-security',
-    'AEAD_CHACHA20_POLY1305: ChaCha20 keystream, clamped Poly1305 with a '
-    'per-message one-time key from block 0, and the padded length-tagged '
+    "crypto-security",
+    "AEAD_CHACHA20_POLY1305: ChaCha20 keystream, clamped Poly1305 with a "
+    "per-message one-time key from block 0, and the padded length-tagged "
     "MAC input; anchored on the RFC's own vectors.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "secarg",
     "argon2id_kdf",
-    'crypto-security',
-    'Argon2 v1.3 (d, i and id) on a native BLAKE2b: memory-hard fill, '
+    "crypto-security",
+    "Argon2 v1.3 (d, i and id) on a native BLAKE2b: memory-hard fill, "
     "variant-dependent reference indexing, and the RFC's parameter "
-    'recommendations; anchored on all three RFC test vectors.',
+    "recommendations; anchored on all three RFC test vectors.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "sechsh",
     "hash_chain_audit",
-    'crypto-security',
-    'Hash-chained audit log with the first-bad-index reported, keyed '
-    'chaining, and RFC 6962 Merkle inclusion proofs with leaf/interior '
-    'domain separation.',
+    "crypto-security",
+    "Hash-chained audit log with the first-bad-index reported, keyed "
+    "chaining, and RFC 6962 Merkle inclusion proofs with leaf/interior "
+    "domain separation.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "seckdf",
     "hkdf_extract_expand",
-    'crypto-security',
-    'HKDF extract-then-expand: PRK = HMAC(salt, IKM) with the SALT as the '
-    'HMAC key, then counter-mode expansion capped at 255*HashLen; '
+    "crypto-security",
+    "HKDF extract-then-expand: PRK = HMAC(salt, IKM) with the SALT as the "
+    "HMAC key, then counter-mode expansion capped at 255*HashLen; "
     "anchored on the RFC's own test vectors.",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
     "secrtt",
     "rotating_token_envelope",
-    'crypto-security',
-    'Envelope encryption: a DEK per record wrapped under a KEK, so KEK '
-    'rotation re-wraps keys without touching record ciphertext; audited '
-    'unwraps and scoped crypto-shredding.',
+    "crypto-security",
+    "Envelope encryption: a DEK per record wrapped under a KEK, so KEK "
+    "rotation re-wraps keys without touching record ciphertext; audited "
+    "unwraps and scoped crypto-shredding.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -66309,8 +66307,8 @@ _r(
 _r(
     "sentpc",
     "sentencepiece",
-    'deep-learning',
-    'SentencePiece: lossless whitespace escaping (U+2581), BPE and unigram-LM Viterbi segmentation.',
+    "deep-learning",
+    "SentencePiece: lossless whitespace escaping (U+2581), BPE and unigram-LM Viterbi segmentation.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -66372,8 +66370,8 @@ _r(
 _r(
     "setT",
     "set_transformer",
-    'deep-learning',
-    'Set transformer pooling.',
+    "deep-learning",
+    "Set transformer pooling.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -67459,8 +67457,8 @@ _r(
 _r(
     "shdsmw",
     "shrinkage_msm",
-    'causal-msm-ipw',
-    'Shrinkage MSM with regularized weights.',
+    "causal-msm-ipw",
+    "Shrinkage MSM with regularized weights.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
@@ -67692,8 +67690,8 @@ _r(
 _r(
     "singgw",
     "single_step_gblup",
-    'genomics-quant',
-    'Single-step GBLUP (ssGBLUP).',
+    "genomics-quant",
+    "Single-step GBLUP (ssGBLUP).",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -67867,9 +67865,9 @@ _r(
 _r(
     "slowdp",
     "slow_dp_truncate",
-    'bayes-nonparam',
-    'Stick-breaking truncation with the closed-form tail '
-    '(alpha/(1+alpha))^K; the sticks are NOT ordered, which is what '
+    "bayes-nonparam",
+    "Stick-breaking truncation with the closed-form tail "
+    "(alpha/(1+alpha))^K; the sticks are NOT ordered, which is what "
     "'slow-decreasing' names.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
@@ -67877,8 +67875,8 @@ _r("sludg", "herschel_bulkley", "Auto", "Auto-wired callable from fn/sludg.py", 
 _r(
     "slvgrf",
     "sliced_grf",
-    'causal-ml',
-    'TOC / RATE / AUTOC / Qini evaluation of a prioritization rule.',
+    "causal-ml",
+    "TOC / RATE / AUTOC / Qini evaluation of a prioritization rule.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -67898,8 +67896,8 @@ _r(
 _r(
     "smatch",
     "sccs_design",
-    'epidemiology',
-    'SCCS as an associated Poisson model + Sec. 7.6 sample size.',
+    "epidemiology",
+    "SCCS as an associated Poisson model + Sec. 7.6 sample size.",
     "You have power over your mind, not outside events. -- Marcus Aurelius",
 )
 _r(
@@ -67926,15 +67924,15 @@ _r(
 _r(
     "smcopt",
     "sequential_mc",
-    'timeseries',
-    'Sequential Monte Carlo for optimization.',
+    "timeseries",
+    "Sequential Monte Carlo for optimization.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
     "smcsam",
     "sequential_mc_sampler",
-    'bayesian-mcmc',
-    'Sequential Monte Carlo (SMC) sampler.',
+    "bayesian-mcmc",
+    "Sequential Monte Carlo (SMC) sampler.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -67991,10 +67989,10 @@ _r("smom1", "raw_moment", "Auto", "Auto-wired callable from fn/smom1.py", "I thi
 _r(
     "smoopt",
     "smo_solver",
-    'recommender-ir',
+    "recommender-ir",
     "Platt's own SMO heuristics: outer loop alternating full and non- "
-    'bound passes, inner choice maximising |E1-E2|, b recomputed each '
-    'step. Same dual as svmopt, different working-set rule.',
+    "bound passes, inner choice maximising |E1-E2|, b recomputed each "
+    "step. Same dual as svmopt, different working-set rule.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -68028,8 +68026,8 @@ _r(
 _r(
     "smplqc",
     "sample_qc",
-    'genomics-quant',
-    'Sample QC (call rate, het, kinship).',
+    "genomics-quant",
+    "Sample QC (call rate, het, kinship).",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -68154,22 +68152,22 @@ _r(
 _r(
     "snmtst",
     "sensitivity_did",
-    'causal-partial-id',
-    'Honest DiD: Delta^SD / Delta^RM identified sets and breakdown value.',
+    "causal-partial-id",
+    "Honest DiD: Delta^SD / Delta^RM identified sets and breakdown value.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
     "snpblr",
     "snp_blup",
-    'genomics-quant',
-    'SNP-BLUP additive prediction.',
+    "genomics-quant",
+    "SNP-BLUP additive prediction.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
     "snpeff",
     "variant_effect",
-    'bioinformatics',
-    'SnpEff variant annotation.',
+    "bioinformatics",
+    "SnpEff variant annotation.",
     "Statistics is the grammar of science. -- Karl Pearson",
 )
 _r(
@@ -68189,8 +68187,8 @@ _r(
 _r(
     "snpqc1",
     "snp_qc",
-    'timeseries',
-    'SNP quality control.',
+    "timeseries",
+    "SNP quality control.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
@@ -68317,8 +68315,8 @@ _r(
 _r(
     "sortP",
     "sortpool",
-    'graph-network',
-    'SortPooling: a consistent, graph-determined vertex order of fixed size.',
+    "graph-network",
+    "SortPooling: a consistent, graph-determined vertex order of fixed size.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -72388,10 +72386,10 @@ _r(
 _r(
     "sse4r",
     "ssepta_seq",
-    'deep-learning',
-    'SSE-PT: user embedding concatenated to every item in the sequence, '
-    'regularised by Stochastic Shared Embeddings (replacement, not '
-    'zeroing).',
+    "deep-learning",
+    "SSE-PT: user embedding concatenated to every item in the sequence, "
+    "regularised by Stochastic Shared Embeddings (replacement, not "
+    "zeroing).",
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
@@ -72467,9 +72465,9 @@ _r(
 _r(
     "ssmpar",
     "ssm_parallel_scan",
-    'deep-learning',
-    'Parallel associative scan over the affine composition (A2A1, '
-    'A2b1+b2): O(L) work, O(log L) depth, identical states.',
+    "deep-learning",
+    "Parallel associative scan over the affine composition (A2A1, "
+    "A2b1+b2): O(L) work, O(log L) depth, identical states.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -72659,8 +72657,8 @@ _r("stl", "stl_decompose", "Auto", "Auto-wired callable from fn/stl.py", "Number
 _r(
     "stlAn",
     "stl_anomaly",
-    'timeseries',
-    'STL decomposition + residual outliers.',
+    "timeseries",
+    "STL decomposition + residual outliers.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -72729,8 +72727,8 @@ _r(
 _r(
     "strdis",
     "structural_distance",
-    'graph-network',
-    'Structural distance / DeltaCon.',
+    "graph-network",
+    "Structural distance / DeltaCon.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -72743,10 +72741,10 @@ _r(
 _r(
     "strec",
     "stamp",
-    'deep-learning',
-    'STAMP: session average (general interest) and last click (current '
-    'interest) composed TRILINEARLY, with an attention net replacing the '
-    'average because interests drift.',
+    "deep-learning",
+    "STAMP: session average (general interest) and last click (current "
+    "interest) composed TRILINEARLY, with an attention net replacing the "
+    "average because interests drift.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r("stren", "string_tension", "Auto", "Auto-wired callable from fn/stren.py", "Knowledge is power. -- Francis Bacon")
@@ -72942,8 +72940,8 @@ _r(
 _r(
     "surepi",
     "surveillance_signal",
-    'epidemiology',
-    'EARS C1/C2/C3 + Salmonella CUSUM eq.(4) + 4253H eq.(5).',
+    "epidemiology",
+    "EARS C1/C2/C3 + Salmonella CUSUM eq.(4) + 4253H eq.(5).",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
@@ -73146,8 +73144,8 @@ _r(
 _r(
     "sv_dl",
     "structural_variant",
-    'bioinformatics',
-    'Structural variant calling (delly/manta).',
+    "bioinformatics",
+    "Structural variant calling (delly/manta).",
     "Errors using inadequate data are much less than those using none. -- Charles Babbage",
 )
 _r(
@@ -73174,15 +73172,15 @@ _r(
 _r(
     "svdd",
     "svdd",
-    'reinforcement-learning',
-    'Support vector data description.',
+    "reinforcement-learning",
+    "Support vector data description.",
     "No man ever steps in the same river twice. -- Heraclitus",
 )
 _r(
     "svdpp",
     "svdpp",
-    'recommender-ir',
-    'SVD++: which items a user rated enters the user factor as |N(u)|^-1/2 sum y_j INSIDE the inner product.',
+    "recommender-ir",
+    "SVD++: which items a user rated enters the user factor as |N(u)|^-1/2 sum y_j INSIDE the inner product.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
@@ -73253,10 +73251,10 @@ _r(
 _r(
     "svmopt",
     "svm_dual",
-    'optimization',
-    'SVM dual QP by two-variable decomposition on the maximal violating '
-    'pair, with the KKT gap as both working-set rule and stopping '
-    'criterion.',
+    "optimization",
+    "SVM dual QP by two-variable decomposition on the maximal violating "
+    "pair, with the KKT gap as both working-set rule and stopping "
+    "criterion.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
@@ -73348,8 +73346,8 @@ _r(
 _r(
     "swinmw",
     "swin_msa_window",
-    'deep-learning',
-    'Swin MSA within window.',
+    "deep-learning",
+    "Swin MSA within window.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r("swish", "swish", "Auto", "Auto-wired callable from fn/swish.py", "I think, therefore I am. -- Rene Descartes")
@@ -73452,20 +73450,19 @@ _r(
     "Give me a place to stand and I will move the earth. -- Archimedes",
 )
 _r(
-    't5enc',
-    't5',
-    'deep-learning',
-    'T5: text-to-text framing, span corruption, relative position '
-    'buckets.',
-    'I think, therefore I am. -- Rene Descartes',
+    "t5enc",
+    "t5",
+    "deep-learning",
+    "T5: text-to-text framing, span corruption, relative position buckets.",
+    "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "tagRC",
     "tag_aware_rec",
-    'recommender-ir',
-    'FolkRank: PageRank adapted to the undirected tripartite folksonomy, '
-    'ranked by the DIFFERENCE between runs with and without the '
-    'preference vector.',
+    "recommender-ir",
+    "FolkRank: PageRank adapted to the undirected tripartite folksonomy, "
+    "ranked by the DIFFERENCE between runs with and without the "
+    "preference vector.",
     "It is not what happens to you, but how you react, that matters. -- Epictetus",
 )
 _r(
@@ -73507,15 +73504,15 @@ _r(
 _r(
     "taulep",
     "tau_leap_sim",
-    'epidemiology',
-    'Tau-leap stochastic SIR.',
+    "epidemiology",
+    "Tau-leap stochastic SIR.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "taxass",
     "taxonomic_assignment",
-    'bioinformatics',
-    'Taxonomic classification (Kraken2).',
+    "bioinformatics",
+    "Taxonomic classification (Kraken2).",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -73549,8 +73546,8 @@ _r(
 _r(
     "tcls",
     "t_closeness",
-    'privacy-dp',
-    't-closeness baseline.',
+    "privacy-dp",
+    "t-closeness baseline.",
     "The only true wisdom is in knowing you know nothing. -- Socrates",
 )
 _r(
@@ -73584,8 +73581,8 @@ _r(
 _r(
     "tdcvar",
     "time_dep_covariate",
-    'causal-msm-ipw',
-    'Time-dependent covariate adjustment.',
+    "causal-msm-ipw",
+    "Time-dependent covariate adjustment.",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
@@ -74467,8 +74464,8 @@ _r(
 _r(
     "thomp",
     "thompson_sampling",
-    'reinforcement-learning',
-    'Thompson sampling (Beta-Bernoulli).',
+    "reinforcement-learning",
+    "Thompson sampling (Beta-Bernoulli).",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -74481,32 +74478,31 @@ _r(
 _r(
     "thrtmt",
     "threshold_treatment_msm",
-    'causal-tmle',
-    'MSM with threshold-treatment regime.',
+    "causal-tmle",
+    "MSM with threshold-treatment regime.",
     "If I have seen further it is by standing on the shoulders of giants. -- Isaac Newton",
 )
 _r(
     "timeRS",
     "timesvd",
-    'recommender-ir',
-    'timeSVD++ biases: item drift in slow time bins, user drift via '
-    'dev_u(t) = sign(t-t_u)|t-t_u|^0.4 plus a per-day term.',
+    "recommender-ir",
+    "timeSVD++ biases: item drift in slow time bins, user drift via "
+    "dev_u(t) = sign(t-t_u)|t-t_u|^0.4 plus a per-day term.",
     "Mathematics is the queen of the sciences. -- Carl Friedrich Gauss",
 )
 _r(
     "timesf",
     "timesfm_foundation",
-    'deep-learning',
-    'Re-exports timesfm; kept so the duplicate ledger entries cannot drift apart.',
+    "deep-learning",
+    "Re-exports timesfm; kept so the duplicate ledger entries cannot drift apart.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
-    'timesfm',
-    'timesfm',
-    'deep-learning',
-    'TimesFM: decoder-only with input patching; output patch may exceed '
-    'the input patch.',
-    'Number rules the universe. -- Pythagoras',
+    "timesfm",
+    "timesfm",
+    "deep-learning",
+    "TimesFM: decoder-only with input patching; output patch may exceed the input patch.",
+    "Number rules the universe. -- Pythagoras",
 )
 _r(
     "timesnet",
@@ -74637,36 +74633,36 @@ _r(
 _r(
     "tmlcds",
     "tmle_cdrs",
-    'causal-tmle',
-    'Collaborative double-robust TMLE.',
+    "causal-tmle",
+    "Collaborative double-robust TMLE.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "tmlcen",
     "tmle_censoring",
-    'causal-tmle',
-    'TMLE under right-censoring with inverse-probability-of-censoring weighting.',
+    "causal-tmle",
+    "TMLE under right-censoring with inverse-probability-of-censoring weighting.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
     "tmlcic",
     "tmle_cluster_ic",
-    'causal-tmle',
-    'Cluster-robust TMLE inference.',
+    "causal-tmle",
+    "Cluster-robust TMLE inference.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
     "tmlcll",
     "tmle_cross_lagged",
-    'causal-tmle',
-    'CLPM and random-intercept CLPM, plus a targeted lagged intervention contrast.',
+    "causal-tmle",
+    "CLPM and random-intercept CLPM, plus a targeted lagged intervention contrast.",
     "Knowledge is power. -- Francis Bacon",
 )
 _r(
     "tmlcmp",
     "tmle_competing_risks",
-    'causal-tmle',
-    'Targeted cumulative incidence under competing risks; hazard contrast is not an incidence contrast.',
+    "causal-tmle",
+    "Targeted cumulative incidence under competing risks; hazard contrast is not an incidence contrast.",
     "Number rules the universe. -- Pythagoras",
 )
 _r(
@@ -74679,15 +74675,15 @@ _r(
 _r(
     "tmlcou",
     "tmle_count_outcome",
-    'causal-tmle',
-    'Bounded/count outcome TMLE: rescale to [0,1], logistic fluctuation, map back.',
+    "causal-tmle",
+    "Bounded/count outcome TMLE: rescale to [0,1], logistic fluctuation, map back.",
     "To understand God's thoughts we must study statistics. -- Florence Nightingale",
 )
 _r(
     "tmlcps",
     "tmle_continuous_treatment",
-    'causal-tmle',
-    'TMLE for continuous-valued treatments.',
+    "causal-tmle",
+    "TMLE for continuous-valued treatments.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -74700,8 +74696,8 @@ _r(
 _r(
     "tmldgp",
     "tmle_doubly_robust_pen",
-    'causal-tmle',
-    'Penalised DR TMLE: post-lasso nuisances, unpenalised targeting.',
+    "causal-tmle",
+    "Penalised DR TMLE: post-lasso nuisances, unpenalised targeting.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -74714,22 +74710,22 @@ _r(
 _r(
     "tmldta",
     "tmle_data_adaptive",
-    'causal-tmle',
-    'Data-adaptive parameter TMLE.',
+    "causal-tmle",
+    "Data-adaptive parameter TMLE.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
     "tmldyk",
     "tmle_diff_kernel",
-    'causal-tmle',
-    'epsilon-DP TMLE by the Laplace mechanism; sensitivity carries 1/g.',
+    "causal-tmle",
+    "epsilon-DP TMLE by the Laplace mechanism; sensitivity carries 1/g.",
     "An investment in knowledge pays the best interest. -- Benjamin Franklin",
 )
 _r(
     "tmldyn",
     "tmle_dynamic_regime",
-    'causal-tmle',
-    'TMLE for dynamic treatment regime.',
+    "causal-tmle",
+    "TMLE for dynamic treatment regime.",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -74742,8 +74738,8 @@ _r(
 _r(
     "tmlefp",
     "tmle_effective_pi",
-    'causal-tmle',
-    'TMLE for the effective sample-size adjusted ATT.',
+    "causal-tmle",
+    "TMLE for the effective sample-size adjusted ATT.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -75233,8 +75229,8 @@ _r(
 _r(
     "toptor",
     "topological_torsion",
-    'cheminformatics',
-    'Topological torsion fingerprint.',
+    "cheminformatics",
+    "Topological torsion fingerprint.",
     "Mathematics is the art of giving the same name to different things. -- Henri Poincare",
 )
 _r(
@@ -75325,8 +75321,8 @@ _r(
 _r(
     "tqang",
     "turboquant_angle_quantization",
-    'quantization',
-    'Uniform angle quantization over [-pi, pi].',
+    "quantization",
+    "Uniform angle quantization over [-pi, pi].",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -75374,8 +75370,8 @@ _r(
 _r(
     "tqlld",
     "turboquant_lloyd_max_codebook",
-    'quantization',
-    'Lloyd-Max optimal scalar codebook for N(0, 1) source at b bits.',
+    "quantization",
+    "Lloyd-Max optimal scalar codebook for N(0, 1) source at b bits.",
     "There is no royal road to geometry. -- Euclid",
 )
 _r(
@@ -75409,8 +75405,8 @@ _r(
 _r(
     "tqpack",
     "turboquant_bit_pack_indices",
-    'quantization',
-    'Pack an array of b-bit codebook indices into a dense byte buffer.',
+    "quantization",
+    "Pack an array of b-bit codebook indices into a dense byte buffer.",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r(
@@ -75486,8 +75482,8 @@ _r(
 _r(
     "trclrn",
     "tree_based_regime",
-    'causal-ml',
-    'Tree-based optimal treatment regime by value maximisation; IPW + augmented.',
+    "causal-ml",
+    "Tree-based optimal treatment regime by value maximisation; IPW + augmented.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -75613,8 +75609,8 @@ _r(
 _r(
     "trnsfr",
     "transfer_learning_msm",
-    'causal-msm-ipw',
-    'Transport an effect across cohorts: IPW / outcome / DR / balancing.',
+    "causal-msm-ipw",
+    "Transport an effect across cohorts: IPW / outcome / DR / balancing.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -75676,8 +75672,8 @@ _r(
 _r(
     "tsbF",
     "tsb",
-    'timeseries',
-    'TSB modification for Croston.',
+    "timeseries",
+    "TSB modification for Croston.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -75718,15 +75714,15 @@ _r(
 _r(
     "ttrace",
     "contact_tracing_yield",
-    'epidemiology',
-    'Branching-process contact tracing; NegBinom offspring, isolation cuts transmission.',
+    "epidemiology",
+    "Branching-process contact tracing; NegBinom offspring, isolation cuts transmission.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
     "ttsAn",
     "twitter_anomaly",
-    'timeseries',
-    'Twitter AnomalyDetection (Seasonal Hybrid ESD).',
+    "timeseries",
+    "Twitter AnomalyDetection (Seasonal Hybrid ESD).",
     "I think, therefore I am. -- Rene Descartes",
 )
 _r(
@@ -75789,9 +75785,9 @@ _r(
 _r(
     "twoT",
     "two_tower",
-    'deep-learning',
-    'Two-tower retrieval with the logQ correction s - log p_j and '
-    'streaming frequency estimation from the gaps between hits.',
+    "deep-learning",
+    "Two-tower retrieval with the logQ correction s - log p_j and "
+    "streaming frequency estimation from the gaps between hits.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -75825,8 +75821,8 @@ _r(
 _r(
     "ucbb",
     "ucb_bandit",
-    'reinforcement-learning',
-    'UCB1 bandit.',
+    "reinforcement-learning",
+    "UCB1 bandit.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -75839,8 +75835,8 @@ _r(
 _r(
     "ucfR",
     "user_cf",
-    'recommender-ir',
-    'User-based CF: Pearson over co-rated items, prediction from '
+    "recommender-ir",
+    "User-based CF: Pearson over co-rated items, prediction from "
     "neighbours' DEVIATIONS normalised by the sum of absolute weights.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
@@ -75896,8 +75892,8 @@ _r(
 _r(
     "ukfF",
     "unscented_kalman",
-    'multilevel-mixed',
-    'Unscented Kalman filter.',
+    "multilevel-mixed",
+    "Unscented Kalman filter.",
     "Luck is what happens when preparation meets opportunity. -- Seneca",
 )
 _r(
@@ -75924,8 +75920,8 @@ _r(
 _r(
     "unetbk",
     "unet_backbone",
-    'deep-learning',
-    'U-Net: skip connections, valid convolutions, overlap-tile with mirroring, separation weight map.',
+    "deep-learning",
+    "U-Net: skip connections, valid convolutions, overlap-tile with mirroring, separation weight map.",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -76156,8 +76152,8 @@ _r(
 _r(
     "vcomp",
     "variance_components_henderson3",
-    'multilevel-mixed',
-    'Variance components via Henderson Method III (ANOVA-style).',
+    "multilevel-mixed",
+    "Variance components via Henderson Method III (ANOVA-style).",
     "The whole is greater than the sum of its parts. -- Aristotle",
 )
 _r("vctrs", "weight_init", "Auto", "Auto-wired callable from fn/vctrs.py", "I think, therefore I am. -- Rene Descartes")
@@ -76207,31 +76203,31 @@ _r(
 _r(
     "vepan",
     "vep_annotation",
-    'bioinformatics',
-    'VEP variant effect predictor.',
+    "bioinformatics",
+    "VEP variant effect predictor.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
     "vgrm",
     "variogram",
-    'spatial',
-    'Empirical variogram γ(h).',
+    "spatial",
+    "Empirical variogram γ(h).",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
     "vidgen",
     "video_diffusion",
-    'deep-learning',
-    'Video diffusion: 3D U-Net factorised over space and time; identity '
-    'temporal attention gives the image model exactly; reconstruction '
-    'guidance.',
+    "deep-learning",
+    "Video diffusion: 3D U-Net factorised over space and time; identity "
+    "temporal attention gives the image model exactly; reconstruction "
+    "guidance.",
     "The Analytical Engine weaves algebraic patterns. -- Ada Lovelace",
 )
 _r(
     "vilbrt",
     "vilbert_two_stream",
-    'deep-learning',
-    'ViLBERT two-stream cross-attention.',
+    "deep-learning",
+    "ViLBERT two-stream cross-attention.",
     "He who has a why to live can bear almost any how. -- Friedrich Nietzsche",
 )
 _r(
@@ -76328,8 +76324,8 @@ _r(
 _r(
     "vitscn",
     "vit_scaled_cosine",
-    'deep-learning',
-    'ViT scaled cosine attention.',
+    "deep-learning",
+    "ViT scaled cosine attention.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -76665,8 +76661,8 @@ _r(
 _r(
     "volsabr",
     "vol_sabr_implied",
-    'symbolic-numeric',
-    'SABR Hagan-Kumar-Lesniewski implied volatility.',
+    "symbolic-numeric",
+    "SABR Hagan-Kumar-Lesniewski implied volatility.",
     "A journey of a thousand miles begins with a single step. -- Lao Tzu",
 )
 _r(
@@ -76714,25 +76710,25 @@ _r(
 _r(
     "vpc",
     "variance_partition_coefficient",
-    'multilevel-mixed',
-    'Variance partition coefficient for logistic latent (sigma2_u + pi^2/3).',
+    "multilevel-mixed",
+    "Variance partition coefficient for logistic latent (sigma2_u + pi^2/3).",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
     "vqgdec",
     "vqgan_decode",
-    'deep-learning',
-    'VQ-GAN decoder: perceptual + patch-discriminator adversarial loss '
-    'with the adaptive weight computed at the last layer; sliding-window '
-    'generation.',
+    "deep-learning",
+    "VQ-GAN decoder: perceptual + patch-discriminator adversarial loss "
+    "with the adaptive weight computed at the last layer; sliding-window "
+    "generation.",
     "What is now proved was once only imagined. -- William Blake",
 )
 _r(
     "vqgenc",
     "vqgan_encode",
-    'quantization',
-    'VQ-GAN encoder: nearest-code quantisation, straight-through '
-    'gradient, codebook and commitment losses split by stop-gradient.',
+    "quantization",
+    "VQ-GAN encoder: nearest-code quantisation, straight-through "
+    "gradient, codebook and commitment losses split by stop-gradient.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(
@@ -76815,10 +76811,10 @@ _r(
 _r(
     "warpL",
     "warp",
-    'recommender-ir',
-    'WARP: estimate a violating rank from the NUMBER OF DRAWS rather than '
-    'sorting, then weight by L(r) = sum alpha_j with alpha non- '
-    'increasing.',
+    "recommender-ir",
+    "WARP: estimate a violating rank from the NUMBER OF DRAWS rather than "
+    "sorting, then weight by L(r) = sum alpha_j with alpha non- "
+    "increasing.",
     "The heart has its reasons of which reason knows nothing. -- Blaise Pascal",
 )
 _r(
@@ -76922,8 +76918,8 @@ _r(
 _r(
     "wenge",
     "weight_based_mediation",
-    'causal-msm-ipw',
-    'Inverse-odds-of-treatment weighting.',
+    "causal-msm-ipw",
+    "Inverse-odds-of-treatment weighting.",
     "Measure what is measurable, and make measurable what is not. -- Galileo Galilei",
 )
 _r(
@@ -77155,8 +77151,8 @@ _r("wolvn", "mice_impute", "Auto", "Auto-wired callable from fn/wolvn.py", "Know
 _r(
     "wpiece",
     "wordpiece",
-    'deep-learning',
-    'WordPiece tokenizer.',
+    "deep-learning",
+    "WordPiece tokenizer.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -77169,8 +77165,8 @@ _r(
 _r(
     "wrd2v",
     "word2vec",
-    'deep-learning',
-    'Word2Vec (skip-gram or CBOW).',
+    "deep-learning",
+    "Word2Vec (skip-gram or CBOW).",
     "In the midst of chaos, there is also opportunity. -- Sun Tzu",
 )
 _r(
@@ -77926,8 +77922,8 @@ _r(
 _r(
     "xdeep",
     "xdeepfm",
-    'recommender-ir',
-    'xDeepFM: CIN gives explicit vector-wise bounded-degree interactions beside a DNN.',
+    "recommender-ir",
+    "xDeepFM: CIN gives explicit vector-wise bounded-degree interactions beside a DNN.",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -77969,8 +77965,8 @@ _r(
 _r(
     "xpehh1",
     "xpehh",
-    'genomics-quant',
-    'Cross-population EHH (XP-EHH).',
+    "genomics-quant",
+    "Cross-population EHH (XP-EHH).",
     "The measure of a man is what he does with power. -- Plato",
 )
 _r(
@@ -78004,8 +78000,8 @@ _r(
 _r(
     "yarn",
     "yarn_context_scaling",
-    'deep-learning',
-    'YaRN scaling combining NTK + interpolation + ramp.',
+    "deep-learning",
+    "YaRN scaling combining NTK + interpolation + ramp.",
     "It is not the strongest that survives, but the most adaptable. -- Charles Darwin",
 )
 _r(
@@ -78018,9 +78014,9 @@ _r(
 _r(
     "yolovx",
     "yolo_decoupled_head",
-    'deep-learning',
-    'YOLOX: decoupled head, anchor-free (l,t,r,b) decode, center '
-    'sampling, and SimOTA dynamic top-k in place of optimal transport.',
+    "deep-learning",
+    "YOLOX: decoupled head, anchor-free (l,t,r,b) decode, center "
+    "sampling, and SimOTA dynamic top-k in place of optimal transport.",
     "Logic is the foundation of all certain knowledge. -- Leonhard Euler",
 )
 _r(

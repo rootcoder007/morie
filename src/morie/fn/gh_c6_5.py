@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["kldsupp", "ghosal_schwartz_thm"]
@@ -66,11 +65,16 @@ def kldsupp(prior_mass, kl_radius, test_rate, n):
     if n < 1:
         raise ValueError("n must be at least 1")
     margin = Cc - c
-    return RichResult(payload={
-        "holds": 1.0 if margin > 0.0 else 0.0, "margin": margin,
-        "bound": math.exp(-margin * n) / pm, "prior_mass": pm,
-        "n": float(n),
-        "method": "Extended Schwartz conditions, Ghosal Theorem 6.17"})
+    return RichResult(
+        payload={
+            "holds": 1.0 if margin > 0.0 else 0.0,
+            "margin": margin,
+            "bound": math.exp(-margin * n) / pm,
+            "prior_mass": pm,
+            "n": float(n),
+            "method": "Extended Schwartz conditions, Ghosal Theorem 6.17",
+        }
+    )
 
 
 ghosal_schwartz_thm = kldsupp

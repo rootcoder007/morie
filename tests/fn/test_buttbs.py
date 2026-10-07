@@ -1,7 +1,6 @@
 """Tests for buttbs — Butterworth bandstop filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.buttbs import butter_bandstop
 

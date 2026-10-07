@@ -98,11 +98,9 @@ def estimate_irm(
     for col in covariates:
         if not pd.api.types.is_numeric_dtype(frame[col]):
             le = LabelEncoder()
-            frame[col] = le.fit_transform(
-                [str(v) for v in frame[col].tolist()])
+            frame[col] = le.fit_transform([str(v) for v in frame[col].tolist()])
 
-    X = [[float(frame[c].tolist()[i]) for c in covariates]
-         for i in range(len(frame))]
+    X = [[float(frame[c].tolist()[i]) for c in covariates] for i in range(len(frame))]
     y = [float(v) for v in frame[outcome].tolist()]
     t = [float(v) for v in frame[treatment].tolist()]
     n = len(y)
@@ -118,17 +116,12 @@ def estimate_irm(
         tr0 = [i for i in train if t[i] == 0.0]
         tr1 = [i for i in train if t[i] == 1.0]
         if not tr0 or not tr1:
-            raise ValueError(
-                "a cross-fitting fold has no treated or no control "
-                "units; use fewer folds or more data")
-        rf0 = RandomForestRegressor(n_estimators=100, max_depth=5,
-                                    random_state=random_state)
+            raise ValueError("a cross-fitting fold has no treated or no control units; use fewer folds or more data")
+        rf0 = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=random_state)
         rf0.fit([X[i] for i in tr0], [y[i] for i in tr0])
-        rf1 = RandomForestRegressor(n_estimators=100, max_depth=5,
-                                    random_state=random_state)
+        rf1 = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=random_state)
         rf1.fit([X[i] for i in tr1], [y[i] for i in tr1])
-        rfm = RandomForestClassifier(n_estimators=100, max_depth=5,
-                                     random_state=random_state)
+        rfm = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=random_state)
         rfm.fit([X[i] for i in train], [int(t[i]) for i in train])
         Xf = [X[i] for i in fold]
         p0 = rf0.predict(Xf)
@@ -140,14 +133,13 @@ def estimate_irm(
         for j, i in enumerate(fold):
             g0hat[i] = float(p0[j])
             g1hat[i] = float(p1[j])
-            prob1 = pm[j][1] if isinstance(pm[j], (list, tuple)) \
-                else float(pm[j])
+            prob1 = pm[j][1] if isinstance(pm[j], (list, tuple)) else float(pm[j])
             mhat[i] = min(max(float(prob1), _TRIM), 1.0 - _TRIM)
 
-    psi_b = [g1hat[i] - g0hat[i]
-             + t[i] * (y[i] - g1hat[i]) / mhat[i]
-             - (1.0 - t[i]) * (y[i] - g0hat[i]) / (1.0 - mhat[i])
-             for i in range(n)]
+    psi_b = [
+        g1hat[i] - g0hat[i] + t[i] * (y[i] - g1hat[i]) / mhat[i] - (1.0 - t[i]) * (y[i] - g0hat[i]) / (1.0 - mhat[i])
+        for i in range(n)
+    ]
     ate = sum(psi_b) / n
     psi = [v - ate for v in psi_b]
     se = (sum(v * v for v in psi) / n / n) ** 0.5
@@ -167,8 +159,7 @@ irm = estimate_irm
 
 
 def cheatsheet() -> str:
-    return ("estimate_irm({}) -> Native double-ML IRM: cross-fitted "
-            "forest nuisances, Neyman-orthogonal ATE score.")
+    return "estimate_irm({}) -> Native double-ML IRM: cross-fitted forest nuisances, Neyman-orthogonal ATE score."
 
 
 # compact alias per ledger/NAMING.md

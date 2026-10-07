@@ -1,14 +1,18 @@
 """Tests for cvxsbm.boyd_subgrad_method."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsbm import boyd_subgrad_method
 
 
 def test_cvxsbm_basic():
     """Test basic functionality."""
-    f = lambda z: float(np.abs(z[0])) + float(np.abs(z[1]))
-    subgrad = lambda z: np.array([np.sign(z[0]), np.sign(z[1])])
+
+    def f(z):
+        return float(np.abs(z[0])) + float(np.abs(z[1]))
+
+    def subgrad(z):
+        return np.array([np.sign(z[0]), np.sign(z[1])])
+
     x0 = np.array([3.0, -2.0])
     t = 0.5
     result = boyd_subgrad_method(f, subgrad, x0, t=t, max_iter=200, rule="sqrt")
@@ -34,8 +38,13 @@ def test_cvxsbm_basic():
 
 def test_cvxsbm_edge():
     """Test edge cases."""
-    f = lambda z: float(z[0] ** 2) + float(z[1] ** 2)
-    subgrad = lambda z: 2.0 * z
+
+    def f(z):
+        return float(z[0] ** 2) + float(z[1] ** 2)
+
+    def subgrad(z):
+        return 2.0 * z
+
     x0 = np.array([5.0, -4.0])
     t = 0.1
     result = boyd_subgrad_method(f, subgrad, x0, t=t, max_iter=300, rule="inverse")

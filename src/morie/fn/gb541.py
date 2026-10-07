@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Sign test for the median: the count of positive differences."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['signk', 'gibbons_sign_test']
+__all__ = ["signk", "gibbons_sign_test"]
 
 
 def signk(x, m0=0.0):

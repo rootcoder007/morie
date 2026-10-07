@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e3 import (
     david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_3,
 )
@@ -13,7 +12,7 @@ from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e3 import 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e3_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m = 0.5
     sigma_x = 1.0
     sigma_z = 0.5
@@ -28,7 +27,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner6e3_basic():
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner6e3_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m = 0.0
     sigma_x = 0.5
     sigma_z = 0.5

@@ -1,7 +1,6 @@
 """Tests for sschin.chained_imputation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sschin import chained_imputation
 
 

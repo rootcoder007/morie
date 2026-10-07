@@ -78,9 +78,9 @@ def k_fold_cv_error(y, y_hat_folds, folds=None):
     mse = []
     for j in range(K):
         if len(idx[j]) != len(yh[j]):
-            raise ValueError("k_fold_cv_error: fold %d has a prediction count that does not match it" % j)
+            raise ValueError(f"k_fold_cv_error: fold {int(j)} has a prediction count that does not match it")
         if not idx[j]:
-            raise ValueError("k_fold_cv_error: fold %d is empty" % j)
+            raise ValueError(f"k_fold_cv_error: fold {int(j)} is empty")
         s = 0.0
         for a in range(len(idx[j])):
             i = idx[j][a]

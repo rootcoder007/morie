@@ -10,11 +10,12 @@ __all__ = ["alammar_multiple_negatives_ranking"]
 
 
 def _cos(a, b):
-    a = np.asarray(a, dtype=float); b = np.asarray(b, dtype=float)
-    na = np.linalg.norm(a); nb = np.linalg.norm(b)
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    na = np.linalg.norm(a)
+    nb = np.linalg.norm(b)
     if na == 0 or nb == 0:
-        raise ValueError("a zero vector has no direction; cosine "
-                         "similarity with it is undefined.")
+        raise ValueError("a zero vector has no direction; cosine similarity with it is undefined.")
     return float(np.dot(a, b) / (na * nb))
 
 
@@ -37,18 +38,21 @@ def alammar_multiple_negatives_ranking(anchors, positives, tau=0.05):
     if B < 2:
         raise ValueError(
             "in-batch negatives need a batch of at least 2; with one "
-            "pair there are no negatives and the loss is trivially 0.")
-    S = np.array([[_cos(A[i], P[j]) / t for j in range(B)]
-                  for i in range(B)])
+            "pair there are no negatives and the loss is trivially 0."
+        )
+    S = np.array([[_cos(A[i], P[j]) / t for j in range(B)] for i in range(B)])
     Z = S - S.max(axis=1, keepdims=True)
     logp = Z - np.log(np.exp(Z).sum(axis=1, keepdims=True))
     losses = -np.diag(logp)
-    return RichResult(payload={
-        "estimate": float(losses.mean()),
-        "losses": [float(v) for v in losses],
-        "similarity_matrix": [[float(v * t) for v in r] for r in S],
-        "n": B,
-        "method": "Multiple negatives ranking (Henderson et al. 2017)"})
+    return RichResult(
+        payload={
+            "estimate": float(losses.mean()),
+            "losses": [float(v) for v in losses],
+            "similarity_matrix": [[float(v * t) for v in r] for r in S],
+            "n": B,
+            "method": "Multiple negatives ranking (Henderson et al. 2017)",
+        }
+    )
 
 
 def cheatsheet():

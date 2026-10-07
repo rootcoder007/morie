@@ -5,9 +5,6 @@ Implements Proposition 4.2, eq. (4.3) of Ghosal & van der Vaart (2017), *Fundame
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,8 +17,7 @@ def ghosal_dp_var(G0_A, alpha):
     g = float(_bnp._flat(G0_A)[0])
     M = float(alpha)
     v = g * (1.0 - g) / (1.0 + M)
-    res = RichResult(payload={"estimate": v,
-                              "method": "DP variance (GvdV 2017 eq. 4.3)"})
+    res = RichResult(payload={"estimate": v, "method": "DP variance (GvdV 2017 eq. 4.3)"})
     return with_describe_pointer(res, "gh_c4_3")
 
 

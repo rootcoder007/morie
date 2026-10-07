@@ -76,9 +76,7 @@ def geron_biological_neuron(x, w, b, activation="step"):
     elif xs.ndim != 2:
         raise ValueError(f"geron_biological_neuron: x must be 1-D or 2-D, got ndim={xs.ndim}")
     if xs.shape[1] != ws.size:
-        raise ValueError(
-            f"geron_biological_neuron: x has {xs.shape[1]} features but w has {ws.size} weights"
-        )
+        raise ValueError(f"geron_biological_neuron: x has {xs.shape[1]} features but w has {ws.size} weights")
     bb = float(np.asarray(b, dtype=float).ravel()[0]) if np.size(b) else 0.0
     if not np.all(np.isfinite(xs)) or not np.all(np.isfinite(ws)):
         raise ValueError("geron_biological_neuron: x and w must be finite")

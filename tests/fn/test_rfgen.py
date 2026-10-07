@@ -1,7 +1,6 @@
 """Tests for rfgen.random_forest_genomic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rfgen import random_forest_genomic
 
 

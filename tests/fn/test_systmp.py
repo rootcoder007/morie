@@ -1,7 +1,6 @@
 """Tests for systmp.systematic_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.systmp import systematic_sampling
 
 

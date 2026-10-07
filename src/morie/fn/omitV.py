@@ -3,10 +3,9 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['ovbias', 'omitted_variable_bias']
+__all__ = ["ovbias", "omitted_variable_bias"]
 
 
 def ovbias(delta=None, gamma=None, estimate=None, se=None, df=None, r2_yz=None, r2_dz=None):
@@ -69,10 +68,17 @@ def ovbias(delta=None, gamma=None, estimate=None, se=None, df=None, r2_yz=None, 
         adj = e - math.copysign(bias, e) if bias >= 0 else e - bias
         if adj_se == adj_se and adj_se > 0:
             adj_t = adj / adj_se
-    return RichResult(payload={
-        "bias": bias, "adjusted_estimate": adj, "adjusted_se": adj_se,
-        "adjusted_t": adj_t, "relative_bias": rel, "bias_factor": bf,
-        "method": "Omitted variable bias (Cinelli-Hazlett)"})
+    return RichResult(
+        payload={
+            "bias": bias,
+            "adjusted_estimate": adj,
+            "adjusted_se": adj_se,
+            "adjusted_t": adj_t,
+            "relative_bias": rel,
+            "bias_factor": bf,
+            "method": "Omitted variable bias (Cinelli-Hazlett)",
+        }
+    )
 
 
 omitted_variable_bias = ovbias

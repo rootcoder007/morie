@@ -8,8 +8,7 @@ from ._schaben import MODELS, _nelder_mead, gaussian_neg2loglik, reml_neg2loglik
 __all__ = ["schabenberger_ml_variogram"]
 
 
-def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
-                               method="ml", X=None):
+def schabenberger_ml_variogram(coords, z, variogram_model="exponential", method="ml", X=None):
     r"""Covariance parameters by ML or REML, Schabenberger eqs (4.35)/(4.39).
 
     Maximum likelihood minimises
@@ -74,11 +73,9 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     if method not in ("ml", "reml", "both"):
-        raise ValueError(
-            "method must be 'ml', 'reml' or 'both', got %r." % method
-        )
+        raise ValueError(f"method must be 'ml', 'reml' or 'both', got {method!r}.")
     zz = np.asarray(z, dtype=float).ravel()
     v0 = float(np.var(zz))
     if v0 <= 0:
@@ -98,6 +95,7 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
         # part converges to the starting value and calls it a fit
         best, bestval = None, np.inf
         from ._schaben import pair_differences
+
         h, _ = pair_differences(coords, zz)
         for frac in (0.1, 0.25, 0.5, 1.0):
             s = start.copy()
@@ -108,9 +106,12 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
         t = np.exp(best)
         val, beta = obj_fn(coords, zz, model, t[0], t[1], t[2], X)
         return {
-            "nugget": float(t[0]), "psill": float(t[1]),
-            "range": float(t[2]), "sill": float(t[0] + t[1]),
-            "beta": np.atleast_1d(beta), "neg2loglik": float(val),
+            "nugget": float(t[0]),
+            "psill": float(t[1]),
+            "range": float(t[2]),
+            "sill": float(t[0] + t[1]),
+            "beta": np.atleast_1d(beta),
+            "neg2loglik": float(val),
             "converged": bool(np.isfinite(val)),
         }
 
@@ -122,27 +123,26 @@ def schabenberger_ml_variogram(coords, z, variogram_model="exponential",
         payload = dict(_fit(method))
         payload["method_used"] = method
 
-    payload.update({
-        "estimate": np.array([payload["nugget"], payload["psill"],
-                              payload["range"]]),
-        "parameters": {"nugget": payload["nugget"], "psill": payload["psill"],
-                       "range": payload["range"]},
-        "model": model,
-        "comparable_across_mean_models": payload["method_used"] == "ml",
-        "comparison_note": (
-            "ML likelihoods may be compared across different mean "
-            "structures; REML ones may not, being likelihoods of different "
-            "data (the error contrasts)"
-        ),
-        "bias_note": (
-            "ML covariance estimates are biased downward because the "
-            "degrees of freedom spent on the mean are unaccounted for; for "
-            "independent data with unknown mean the bias is exactly -theta/n"
-        ),
-        "n": int(zz.size),
-        "method": "%s estimation of covariance parameters"
-                  % payload["method_used"].upper(),
-    })
+    payload.update(
+        {
+            "estimate": np.array([payload["nugget"], payload["psill"], payload["range"]]),
+            "parameters": {"nugget": payload["nugget"], "psill": payload["psill"], "range": payload["range"]},
+            "model": model,
+            "comparable_across_mean_models": payload["method_used"] == "ml",
+            "comparison_note": (
+                "ML likelihoods may be compared across different mean "
+                "structures; REML ones may not, being likelihoods of different "
+                "data (the error contrasts)"
+            ),
+            "bias_note": (
+                "ML covariance estimates are biased downward because the "
+                "degrees of freedom spent on the mean are unaccounted for; for "
+                "independent data with unknown mean the bias is exactly -theta/n"
+            ),
+            "n": int(zz.size),
+            "method": "{} estimation of covariance parameters".format(payload["method_used"].upper()),
+        }
+    )
     return RichResult(payload=payload)
 
 

@@ -32,8 +32,8 @@ def quadrat_aggregation(counts_or_points, scales, window=None):
     for s in scales:
         if pts.ndim == 2 and pts.shape[1] == 2 and window is not None:
             xmin, xmax, ymin, ymax = window
-            xedges = np.linspace(xmin, xmax, s + 1)
-            yedges = np.linspace(ymin, ymax, s + 1)
+            np.linspace(xmin, xmax, s + 1)
+            np.linspace(ymin, ymax, s + 1)
             counts = np.zeros(s * s)
             for k in range(len(pts)):
                 ix = min(int((pts[k, 0] - xmin) / (xmax - xmin) * s), s - 1)

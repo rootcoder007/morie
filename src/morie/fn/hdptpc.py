@@ -31,8 +31,7 @@ from .dpsbw import stick_breaking_weights
 __all__ = ["hdp_topic_model"]
 
 
-def hdp_topic_model(docs, gamma=1.0, alpha=1.0, truncation=3, V=None,
-                    eta=0.1, max_iter=200, tol=1e-13):
+def hdp_topic_model(docs, gamma=1.0, alpha=1.0, truncation=3, V=None, eta=0.1, max_iter=200, tol=1e-13):
     """Nonparametric topic model over bag-of-words documents.
 
     Parameters
@@ -56,8 +55,7 @@ def hdp_topic_model(docs, gamma=1.0, alpha=1.0, truncation=3, V=None,
     beta     : the global topic weights
     """
     D = [[int(w) for w in k.vec(d)] for d in docs]
-    Vn = int(V) if V is not None else (
-        max([max(d) for d in D if d]) + 1 if D else 0)
+    Vn = int(V) if V is not None else (max([max(d) for d in D if d]) + 1 if D else 0)
     K = int(truncation)
     beta = stick_breaking_weights(gamma, K)["pi"]
     tot = 0.0
@@ -79,9 +77,11 @@ def hdp_topic_model(docs, gamma=1.0, alpha=1.0, truncation=3, V=None,
         for j in range(len(D)):
             acc = [0.0] * K
             for w in D[j]:
-                lp = [math.log(theta[j][t] if theta[j][t] > 1e-300 else 1e-300)
-                      + math.log(phi[t][w] if phi[t][w] > 1e-300 else 1e-300)
-                      for t in range(K)]
+                lp = [
+                    math.log(theta[j][t] if theta[j][t] > 1e-300 else 1e-300)
+                    + math.log(phi[t][w] if phi[t][w] > 1e-300 else 1e-300)
+                    for t in range(K)
+                ]
                 m = k.logsumexp(lp)
                 newll += m
                 for t in range(K):
@@ -91,8 +91,7 @@ def hdp_topic_model(docs, gamma=1.0, alpha=1.0, truncation=3, V=None,
             post.append(acc)
         for j in range(len(D)):
             nj = float(len(D[j]))
-            theta[j] = [(float(alpha) * beta[t] + post[j][t])
-                        / (float(alpha) + nj) for t in range(K)]
+            theta[j] = [(float(alpha) * beta[t] + post[j][t]) / (float(alpha) + nj) for t in range(K)]
         for t in range(K):
             s = 0.0
             for w in range(Vn):

@@ -1,7 +1,6 @@
 """Tests for wvenr.py - Wavelet energy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvenr import wavelet_energy, wvenr
 
 

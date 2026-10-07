@@ -87,40 +87,44 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["sampler_dispatch", "baysmplr", "metropolis", "gibbs_normal",
-           "hmc", "nuts", "effective_sample_size", "choose_sampler",
-           "SAMPLERS", "cheatsheet"]
+__all__ = [
+    "sampler_dispatch",
+    "baysmplr",
+    "metropolis",
+    "gibbs_normal",
+    "hmc",
+    "nuts",
+    "effective_sample_size",
+    "choose_sampler",
+    "SAMPLERS",
+    "cheatsheet",
+]
 
 SAMPLERS = ("mh", "gibbs", "hmc", "nuts")
 
 
-def choose_sampler(dim, has_grad, has_conditionals=False,
-                   nuts_threshold=20):
+def choose_sampler(dim, has_grad, has_conditionals=False, nuts_threshold=20):
     """The dispatch decision and the sentence that explains it."""
     if has_grad and dim >= nuts_threshold:
-        return "nuts", ("gradient available and dimension %d at or above "
-                        "the threshold %d, where choosing a trajectory "
-                        "length by hand stops being reasonable"
-                        % (dim, nuts_threshold))
+        return "nuts", (
+            f"gradient available and dimension {int(dim)} at or above the threshold {int(nuts_threshold)}, where choosing a trajectory length by hand stops being reasonable"
+        )
     if has_grad:
-        return "hmc", ("gradient available and dimension %d below the "
-                       "threshold %d, where a fixed trajectory is easy "
-                       "to set and cheaper per draw than NUTS doubling"
-                       % (dim, nuts_threshold))
+        return "hmc", (
+            f"gradient available and dimension {int(dim)} below the threshold {int(nuts_threshold)}, where a fixed trajectory is easy to set and cheaper per draw than NUTS doubling"
+        )
     if has_conditionals:
-        return "gibbs", ("no gradient, but exact conditionals are "
-                         "available, so every move is accepted and "
-                         "nothing needs tuning")
+        return "gibbs", (
+            "no gradient, but exact conditionals are available, so every move is accepted and nothing needs tuning"
+        )
     if dim <= 5:
-        return "mh", ("no gradient and dimension %d is small, so a "
-                      "random walk is adequate" % dim)
-    return "mh", ("no gradient and dimension %d is large; a random walk "
-                  "will mix badly, and supplying a gradient would be "
-                  "worth more than any amount of tuning" % dim)
+        return "mh", (f"no gradient and dimension {int(dim)} is small, so a random walk is adequate")
+    return "mh", (
+        f"no gradient and dimension {int(dim)} is large; a random walk will mix badly, and supplying a gradient would be worth more than any amount of tuning"
+    )
 
 
-def metropolis(log_p, x0, n_iter, rng, scale=None, adapt=False,
-               target_accept=0.234):
+def metropolis(log_p, x0, n_iter, rng, scale=None, adapt=False, target_accept=0.234):
     """Random-walk Metropolis with an isotropic normal proposal.
 
     The default scale is 2.38 / sqrt(d), the optimal-scaling value for a
@@ -147,8 +151,7 @@ def metropolis(log_p, x0, n_iter, rng, scale=None, adapt=False,
         else:
             ar = 0.0
         if adapt and it < half:
-            scale = math.exp(math.log(scale)
-                             + (ar - target_accept) / math.sqrt(it + 1.0))
+            scale = math.exp(math.log(scale) + (ar - target_accept) / math.sqrt(it + 1.0))
         draws.append(list(x))
     return draws, acc / float(n_iter), {"scale": scale}
 
@@ -168,8 +171,7 @@ def gibbs_normal(mean, cov_inv, x0, n_iter, rng):
     draws = []
     for _ in range(int(n_iter)):
         for j in range(d):
-            s = _w.csum(cov_inv[j][k] * (x[k] - mean[k])
-                        for k in range(d) if k != j)
+            s = _w.csum(cov_inv[j][k] * (x[k] - mean[k]) for k in range(d) if k != j)
             mj = mean[j] - s / cov_inv[j][j]
             sj = math.sqrt(1.0 / cov_inv[j][j])
             x[j] = mj + sj * float(rng.normal())
@@ -227,17 +229,13 @@ def _build_tree(log_p, grad, q, p, u, v, j, eps, rng, h0, dmax=1000.0):
         h = log_p(qp) - 0.5 * _w.csum(t * t for t in pp)
         n = 1 if u <= math.exp(h) else 0
         s = 1 if h > math.log(u) - dmax else 0
-        return (qp, pp, qp, pp, qp, n, s,
-                min(1.0, math.exp(h - h0)), 1)
-    (qm, pm, qpl, ppl, qpr, n1, s1, a1, na1) = _build_tree(
-        log_p, grad, q, p, u, v, j - 1, eps, rng, h0)
+        return (qp, pp, qp, pp, qp, n, s, min(1.0, math.exp(h - h0)), 1)
+    (qm, pm, qpl, ppl, qpr, n1, s1, a1, na1) = _build_tree(log_p, grad, q, p, u, v, j - 1, eps, rng, h0)
     if s1 == 1:
         if v == -1:
-            (qm, pm, _x, _y, q2, n2, s2, a2, na2) = _build_tree(
-                log_p, grad, qm, pm, u, v, j - 1, eps, rng, h0)
+            (qm, pm, _x, _y, q2, n2, s2, a2, na2) = _build_tree(log_p, grad, qm, pm, u, v, j - 1, eps, rng, h0)
         else:
-            (_x, _y, qpl, ppl, q2, n2, s2, a2, na2) = _build_tree(
-                log_p, grad, qpl, ppl, u, v, j - 1, eps, rng, h0)
+            (_x, _y, qpl, ppl, q2, n2, s2, a2, na2) = _build_tree(log_p, grad, qpl, ppl, u, v, j - 1, eps, rng, h0)
         if n1 + n2 > 0 and float(rng.uniform()) < n2 / float(n1 + n2):
             qpr = q2
         a1 += a2
@@ -245,14 +243,12 @@ def _build_tree(log_p, grad, q, p, u, v, j, eps, rng, h0, dmax=1000.0):
         # The no-U-turn condition: stop when the trajectory's two ends
         # are moving towards each other rather than apart.
         dq = [qpl[k] - qm[k] for k in range(len(qm))]
-        s1 = s2 * (1 if _w.dot(dq, pm) >= 0.0 else 0) \
-            * (1 if _w.dot(dq, ppl) >= 0.0 else 0)
+        s1 = s2 * (1 if _w.dot(dq, pm) >= 0.0 else 0) * (1 if _w.dot(dq, ppl) >= 0.0 else 0)
         n1 += n2
     return (qm, pm, qpl, ppl, qpr, n1, s1, a1, na1)
 
 
-def nuts(log_p, grad, x0, n_iter, rng, eps=0.25, max_depth=8,
-         dual_average=False, target_accept=0.8, warmup=None):
+def nuts(log_p, grad, x0, n_iter, rng, eps=0.25, max_depth=8, dual_average=False, target_accept=0.8, warmup=None):
     """The No-U-Turn Sampler, with optional dual-averaging warm-up.
 
     The trajectory doubles until the two ends start approaching each
@@ -291,27 +287,23 @@ def nuts(log_p, grad, x0, n_iter, rng, eps=0.25, max_depth=8,
         while s == 1 and j < int(max_depth):
             v = -1 if float(rng.uniform()) < 0.5 else 1
             if v == -1:
-                (qm, pm, _a, _b, q2, n2, s2, a2, na2) = _build_tree(
-                    log_p, grad, qm, pm, u, v, j, eps, rng, h0)
+                (qm, pm, _a, _b, q2, n2, s2, a2, na2) = _build_tree(log_p, grad, qm, pm, u, v, j, eps, rng, h0)
             else:
-                (_a, _b, qp, pp, q2, n2, s2, a2, na2) = _build_tree(
-                    log_p, grad, qp, pp, u, v, j, eps, rng, h0)
+                (_a, _b, qp, pp, q2, n2, s2, a2, na2) = _build_tree(log_p, grad, qp, pp, u, v, j, eps, rng, h0)
             if s2 == 1 and n > 0 and float(rng.uniform()) < n2 / float(n):
                 xnew = q2
             a_sum += a2
             na += na2
             n += n2
             dq = [qp[k] - qm[k] for k in range(d)]
-            s = s2 * (1 if _w.dot(dq, pm) >= 0.0 else 0) \
-                * (1 if _w.dot(dq, pp) >= 0.0 else 0)
+            s = s2 * (1 if _w.dot(dq, pm) >= 0.0 else 0) * (1 if _w.dot(dq, pp) >= 0.0 else 0)
             j += 1
         x = xnew
         depths.append(j)
         accs.append(a_sum / na if na else 0.0)
         if dual_average and it < warmup:
             m = it + 1.0
-            hbar = ((1.0 - 1.0 / (m + t0)) * hbar
-                    + (target_accept - a_sum / na) / (m + t0))
+            hbar = (1.0 - 1.0 / (m + t0)) * hbar + (target_accept - a_sum / na) / (m + t0)
             log_eps = mu - math.sqrt(m) / gamma * hbar
             w = math.pow(m, -kappa)
             log_eps_bar = w * log_eps + (1.0 - w) * log_eps_bar
@@ -319,11 +311,7 @@ def nuts(log_p, grad, x0, n_iter, rng, eps=0.25, max_depth=8,
         elif dual_average and it == warmup:
             eps = math.exp(log_eps_bar)
         draws.append(list(x))
-    return draws, _w.csum(accs) / len(accs), {"eps": eps,
-                                              "mean_depth":
-                                              _w.csum(float(v) for v in
-                                                      depths)
-                                              / len(depths)}
+    return draws, _w.csum(accs) / len(accs), {"eps": eps, "mean_depth": _w.csum(float(v) for v in depths) / len(depths)}
 
 
 def effective_sample_size(chain, max_lag=200):
@@ -354,8 +342,7 @@ def effective_sample_size(chain, max_lag=200):
         rho = []
         top = n - 1 if n - 1 < int(max_lag) else int(max_lag)
         for lag in range(1, top + 1):
-            rho.append(_w.csum(dev[i] * dev[i + lag]
-                               for i in range(n - lag)) / (n * var))
+            rho.append(_w.csum(dev[i] * dev[i + lag] for i in range(n - lag)) / (n * var))
         total = 0.0
         k = 0
         while k + 1 < len(rho):
@@ -364,16 +351,28 @@ def effective_sample_size(chain, max_lag=200):
                 break
             total += pair
             k += 2
-        out.append(n / (1.0 + 2.0 * total) if 1.0 + 2.0 * total > 0.0
-                   else float(n))
+        out.append(n / (1.0 + 2.0 * total) if 1.0 + 2.0 * total > 0.0 else float(n))
     return out
 
 
-def sampler_dispatch(log_p, grad_p=None, x0=None, n_iter=500, burn=None,
-                     seed=1, sampler=None, cov_inv=None, mean=None,
-                     eps=0.1, steps=10, scale=None, adapt=False,
-                     nuts_threshold=20, dual_average=False,
-                     max_depth=8):
+def sampler_dispatch(
+    log_p,
+    grad_p=None,
+    x0=None,
+    n_iter=500,
+    burn=None,
+    seed=1,
+    sampler=None,
+    cov_inv=None,
+    mean=None,
+    eps=0.1,
+    steps=10,
+    scale=None,
+    adapt=False,
+    nuts_threshold=20,
+    dual_average=False,
+    max_depth=8,
+):
     """Pick a sampler for this problem and run it.
 
     Parameters
@@ -433,67 +432,62 @@ def sampler_dispatch(log_p, grad_p=None, x0=None, n_iter=500, burn=None,
         raise ValueError("burn-in consumes every iteration")
     has_cond = cov_inv is not None and mean is not None
     if sampler is None:
-        sampler, reason = choose_sampler(d, grad_p is not None, has_cond,
-                                         nuts_threshold)
+        sampler, reason = choose_sampler(d, grad_p is not None, has_cond, nuts_threshold)
     else:
         if sampler not in SAMPLERS:
-            raise ValueError("sampler must be one of %r" % (SAMPLERS,))
+            raise ValueError(f"sampler must be one of {SAMPLERS!r}")
         reason = "forced by the caller, dispatch not consulted"
     if sampler in ("hmc", "nuts") and grad_p is None:
-        raise ValueError("%s needs a gradient" % sampler)
+        raise ValueError(f"{sampler} needs a gradient")
     if sampler == "gibbs" and not has_cond:
         raise ValueError("gibbs needs mean and cov_inv")
 
     rng = _core._SplitMix64(seed)
     if sampler == "mh":
-        draws, acc, info = metropolis(log_p, x0, n_iter, rng, scale,
-                                      adapt)
+        draws, acc, info = metropolis(log_p, x0, n_iter, rng, scale, adapt)
     elif sampler == "gibbs":
         draws, acc, info = gibbs_normal(mean, cov_inv, x0, n_iter, rng)
     elif sampler == "hmc":
-        draws, acc, info = hmc(log_p, grad_p, x0, n_iter, rng, eps,
-                               steps)
+        draws, acc, info = hmc(log_p, grad_p, x0, n_iter, rng, eps, steps)
     else:
-        draws, acc, info = nuts(log_p, grad_p, x0, n_iter, rng, eps,
-                                max_depth, dual_average)
+        draws, acc, info = nuts(log_p, grad_p, x0, n_iter, rng, eps, max_depth, dual_average)
 
-    kept = draws[int(burn):]
+    kept = draws[int(burn) :]
     m = len(kept)
     means = [_w.csum(row[c] for row in kept) / m for c in range(d)]
     sds = []
     for c in range(d):
         if m > 1:
-            sds.append(math.sqrt(_w.csum((row[c] - means[c])
-                                         * (row[c] - means[c])
-                                         for row in kept) / (m - 1)))
+            sds.append(math.sqrt(_w.csum((row[c] - means[c]) * (row[c] - means[c]) for row in kept) / (m - 1)))
         else:
             sds.append(0.0)
     ess = effective_sample_size(kept)
 
-    return RichResult(payload={
-        "sampler": sampler,
-        "reason": reason,
-        "mean": means,
-        "sd": sds,
-        "ess": ess,
-        "min_ess": min(ess),
-        "ess_per_draw": min(ess) / m,
-        "accept_rate": acc,
-        "draws": kept,
-        "kept": m,
-        "dim": d,
-        "n_iter": int(n_iter),
-        "burn": int(burn),
-        "info": info,
-        "seed": int(seed),
-        "estimate": means[0],
-        "method": "MCMC sampler dispatch",
-    })
+    return RichResult(
+        payload={
+            "sampler": sampler,
+            "reason": reason,
+            "mean": means,
+            "sd": sds,
+            "ess": ess,
+            "min_ess": min(ess),
+            "ess_per_draw": min(ess) / m,
+            "accept_rate": acc,
+            "draws": kept,
+            "kept": m,
+            "dim": d,
+            "n_iter": int(n_iter),
+            "burn": int(burn),
+            "info": info,
+            "seed": int(seed),
+            "estimate": means[0],
+            "method": "MCMC sampler dispatch",
+        }
+    )
 
 
 baysmplr = sampler_dispatch
 
 
 def cheatsheet():
-    return ("baysmplr: MCMC sampler dispatch and the samplers themselves. "
-            + ", ".join(SAMPLERS))
+    return "baysmplr: MCMC sampler dispatch and the samplers themselves. " + ", ".join(SAMPLERS)

@@ -86,8 +86,7 @@ def chain_temperature(j, lam=0.2):
 
 def swap_acceptance(beta_j, beta_k, logp_j, logp_k):
     r"""Acceptance probability of swapping two chains' states."""
-    return min(1.0, math.exp(min((beta_j - beta_k) * (logp_k - logp_j),
-                                 700.0)))
+    return min(1.0, math.exp(min((beta_j - beta_k) * (logp_k - logp_j), 700.0)))
 
 
 def _tips(node, out=None):
@@ -148,8 +147,7 @@ def _branch_paths(node, path=()):
     if not isinstance(node, (tuple, list)):
         return out
     if len(node) % 2:
-        raise ValueError("phylby: a node must be (child, length) pairs, "
-                         "got %d entries" % len(node))
+        raise ValueError(f"phylby: a node must be (child, length) pairs, got {int(len(node))} entries")
     for c in range(0, len(node), 2):
         out.append(path + (c + 1,))
         out.extend(_branch_paths(node[c], path + (c,)))
@@ -192,8 +190,8 @@ def nni_neighbours(tree):
         for pb, b in subs:
             if pa == pb:
                 continue
-            if pa[:len(pb)] == pb or pb[:len(pa)] == pa:
-                continue          # one contains the other
+            if pa[: len(pb)] == pb or pb[: len(pa)] == pa:
+                continue  # one contains the other
             cand = _set_at(_set_at(tree, pa, b), pb, a)
             if topology_key(cand) != topology_key(tree):
                 out.append(cand)
@@ -206,8 +204,7 @@ def nni_neighbours(tree):
     return uniq
 
 
-def log_posterior(tree, seqs, pi=None, rate=1.0, branch_prior_mean=0.1,
-                  partitions=None, rates=None, temperature=1.0):
+def log_posterior(tree, seqs, pi=None, rate=1.0, branch_prior_mean=0.1, partitions=None, rates=None, temperature=1.0):
     r"""Log posterior up to a constant: likelihood plus the priors.
 
     The topology prior is uniform, so it contributes a constant and is
@@ -234,12 +231,10 @@ def log_posterior(tree, seqs, pi=None, rate=1.0, branch_prior_mean=0.1,
         ll = 0.0
         for k in names:
             keep = [i for i, p in enumerate(partitions) if p == k]
-            sub = dict((t, "".join(s[i] for i in keep))
-                       for t, s in seqs.items())
+            sub = dict((t, "".join(s[i] for i in keep)) for t, s in seqs.items())
             ll += phylml(tree, sub, pi, rate * rates[k])["log_likelihood"]
-        log_prior += sum(-rates[k] for k in names)   # exponential(1)
-    return {"loglik": ll, "logprior": log_prior,
-            "logpost": temperature * (ll + log_prior)}
+        log_prior += sum(-rates[k] for k in names)  # exponential(1)
+    return {"loglik": ll, "logprior": log_prior, "logpost": temperature * (ll + log_prior)}
 
 
 def _rng(seed):
@@ -248,6 +243,7 @@ def _rng(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -269,36 +265,47 @@ def _step(state, seqs, pi, prior_mean, partitions, rnd, beta, tune):
     tree, rate, rates = state["tree"], state["rate"], state["rates"]
     u = rnd()
     hastings = 0.0
-    if u < 0.4:                                   # topology: NNI
+    if u < 0.4:  # topology: NNI
         cand = nni_neighbours(tree)
         if not cand:
             return state, False
         new = (cand[int(rnd() * len(cand))], rate, rates)
-    elif u < 0.8:                                 # branch: multiplier
+    elif u < 0.8:  # branch: multiplier
         paths = _branch_paths(tree)
         p = paths[int(rnd() * len(paths))]
         m = math.exp(tune * (rnd() - 0.5))
         new_tree = _replace_branch(tree, p, _get_at(tree, p) * m)
-        hastings = math.log(m)                    # Jacobian of log-scale
+        hastings = math.log(m)  # Jacobian of log-scale
         new = (new_tree, rate, rates)
-    else:                                         # rate: multiplier
+    else:  # rate: multiplier
         m = math.exp(tune * (rnd() - 0.5))
         hastings = math.log(m)
         new = (tree, rate * m, rates)
-    cur = log_posterior(tree, seqs, pi, rate, prior_mean, partitions,
-                        rates)["logpost"]
-    prop = log_posterior(new[0], seqs, pi, new[1], prior_mean, partitions,
-                         new[2])["logpost"]
+    cur = log_posterior(tree, seqs, pi, rate, prior_mean, partitions, rates)["logpost"]
+    prop = log_posterior(new[0], seqs, pi, new[1], prior_mean, partitions, new[2])["logpost"]
     logalpha = beta * (prop - cur) + hastings
     if math.log(max(rnd(), 1e-300)) < logalpha:
         return {"tree": new[0], "rate": new[1], "rates": new[2]}, True
     return state, False
 
 
-def phylby(alignment, n_iter=2000, burnin=None, n_chains=4, lam=0.2,
-           swap_every=10, sample_every=10, pi=None, rate=1.0,
-           branch_prior_mean=0.1, partitions=None, tree=None,
-           n_runs=2, tune=1.0, seed=0):
+def phylby(
+    alignment,
+    n_iter=2000,
+    burnin=None,
+    n_chains=4,
+    lam=0.2,
+    swap_every=10,
+    sample_every=10,
+    pi=None,
+    rate=1.0,
+    branch_prior_mean=0.1,
+    partitions=None,
+    tree=None,
+    n_runs=2,
+    tune=1.0,
+    seed=0,
+):
     """Sample the posterior over trees (Ronquist & Huelsenbeck 2003).
 
     ``alignment`` maps taxon name to sequence. Returns the sampled cold
@@ -307,19 +314,15 @@ def phylby(alignment, n_iter=2000, burnin=None, n_chains=4, lam=0.2,
     """
     seqs = dict((str(k), str(v).upper()) for k, v in alignment.items())
     if len(seqs) < 4:
-        raise ValueError("phylby: at least four taxa are needed for an "
-                         "unrooted topology to vary")
+        raise ValueError("phylby: at least four taxa are needed for an unrooted topology to vary")
     L = set(len(v) for v in seqs.values())
-    if len(L) != 1 or L == {0}:
+    if len(L) != 1 or {0} == L:
         raise ValueError("phylby: sequences must be aligned and non-empty")
     if n_iter < 1 or n_chains < 1 or n_runs < 1:
-        raise ValueError("phylby: n_iter, n_chains and n_runs must be "
-                         "positive")
+        raise ValueError("phylby: n_iter, n_chains and n_runs must be positive")
     if swap_every < 1 or sample_every < 1:
-        raise ValueError("phylby: swap_every and sample_every must be "
-                         "positive")
-    if partitions is not None and len(partitions) != len(next(
-            iter(seqs.values()))):
+        raise ValueError("phylby: swap_every and sample_every must be positive")
+    if partitions is not None and len(partitions) != len(next(iter(seqs.values()))):
         raise ValueError("phylby: one partition label per site is required")
     burn = n_iter // 2 if burnin is None else int(burnin)
     if not 0 <= burn < n_iter:
@@ -333,16 +336,12 @@ def phylby(alignment, n_iter=2000, burnin=None, n_chains=4, lam=0.2,
     runs, accepted, swaps, proposed_swaps = [], 0, 0, 0
     for r in range(int(n_runs)):
         rnd = _rng(seed + 1000 * r + 1)
-        chains = [{"tree": tree, "rate": rate,
-                   "rates": dict((k, 1.0) for k in parts)}
-                  for _ in range(int(n_chains))]
+        chains = [{"tree": tree, "rate": rate, "rates": dict((k, 1.0) for k in parts)} for _ in range(int(n_chains))]
         betas = [chain_temperature(j, lam) for j in range(int(n_chains))]
         samples = []
         for it in range(int(n_iter)):
             for j in range(int(n_chains)):
-                chains[j], ok = _step(chains[j], seqs, pi,
-                                      branch_prior_mean, partitions, rnd,
-                                      betas[j], tune)
+                chains[j], ok = _step(chains[j], seqs, pi, branch_prior_mean, partitions, rnd, betas[j], tune)
                 if j == 0 and ok:
                     accepted += 1
             if int(n_chains) > 1 and (it + 1) % int(swap_every) == 0:
@@ -350,14 +349,24 @@ def phylby(alignment, n_iter=2000, burnin=None, n_chains=4, lam=0.2,
                 b = int(rnd() * n_chains)
                 if a != b:
                     proposed_swaps += 1
-                    la = log_posterior(chains[a]["tree"], seqs, pi,
-                                       chains[a]["rate"],
-                                       branch_prior_mean, partitions,
-                                       chains[a]["rates"])["logpost"]
-                    lb = log_posterior(chains[b]["tree"], seqs, pi,
-                                       chains[b]["rate"],
-                                       branch_prior_mean, partitions,
-                                       chains[b]["rates"])["logpost"]
+                    la = log_posterior(
+                        chains[a]["tree"],
+                        seqs,
+                        pi,
+                        chains[a]["rate"],
+                        branch_prior_mean,
+                        partitions,
+                        chains[a]["rates"],
+                    )["logpost"]
+                    lb = log_posterior(
+                        chains[b]["tree"],
+                        seqs,
+                        pi,
+                        chains[b]["rate"],
+                        branch_prior_mean,
+                        partitions,
+                        chains[b]["rates"],
+                    )["logpost"]
                     if rnd() < swap_acceptance(betas[a], betas[b], la, lb):
                         chains[a], chains[b] = chains[b], chains[a]
                         swaps += 1
@@ -385,45 +394,51 @@ def phylby(alignment, n_iter=2000, burnin=None, n_chains=4, lam=0.2,
         k = topology_key(t)
         topo[k] = topo.get(k, 0) + 1
     best = max(topo, key=lambda k: topo[k])
-    return RichResult(payload={
-        "estimate": clade_credibility(pooled),
-        "clade_credibility": clade_credibility(pooled),
-        "samples": pooled,
-        "runs": runs,
-        "map_topology": best,
-        "map_probability": topo[best] / float(len(pooled)),
-        "topology_counts": topo,
-        "asdsf": asdsf,
-        "acceptance": accepted / float(n_iter * n_runs),
-        "swap_rate": (swaps / float(proposed_swaps)) if proposed_swaps
-                     else 0.0,
-        "temperatures": [chain_temperature(j, lam)
-                         for j in range(int(n_chains))],
-        "n_chains": int(n_chains),
-        "n_runs": int(n_runs),
-        "n_samples": len(pooled),
-        "method": ("MrBayes 3 (Ronquist & Huelsenbeck 2003): "
-                   "Metropolis-coupled MCMC over topology, branch "
-                   "lengths and model, with a uniform topology prior and "
-                   "exponential branch lengths"),
-        "note": ("the likelihood is Felsenstein pruning from "
-                 "morie.fn.phylml; asdsf is the average standard "
-                 "deviation of split frequencies between independent "
-                 "runs, the diagnostic MrBayes prints, and should "
-                 "approach zero"),
-    })
+    return RichResult(
+        payload={
+            "estimate": clade_credibility(pooled),
+            "clade_credibility": clade_credibility(pooled),
+            "samples": pooled,
+            "runs": runs,
+            "map_topology": best,
+            "map_probability": topo[best] / float(len(pooled)),
+            "topology_counts": topo,
+            "asdsf": asdsf,
+            "acceptance": accepted / float(n_iter * n_runs),
+            "swap_rate": (swaps / float(proposed_swaps)) if proposed_swaps else 0.0,
+            "temperatures": [chain_temperature(j, lam) for j in range(int(n_chains))],
+            "n_chains": int(n_chains),
+            "n_runs": int(n_runs),
+            "n_samples": len(pooled),
+            "method": (
+                "MrBayes 3 (Ronquist & Huelsenbeck 2003): "
+                "Metropolis-coupled MCMC over topology, branch "
+                "lengths and model, with a uniform topology prior and "
+                "exponential branch lengths"
+            ),
+            "note": (
+                "the likelihood is Felsenstein pruning from "
+                "morie.fn.phylml; asdsf is the average standard "
+                "deviation of split frequencies between independent "
+                "runs, the diagnostic MrBayes prints, and should "
+                "approach zero"
+            ),
+        }
+    )
 
 
 bayesian_phylogeny = phylby
 
 
 def cheatsheet():
-    return ("phylby: MrBayes 3 (Ronquist & Huelsenbeck 2003). MCMC over "
-            "(topology, branch lengths, rate) with a uniform topology "
-            "prior and exponential branch lengths, the likelihood coming "
-            "from Felsenstein pruning. Metropolis coupling runs n chains "
-            "at beta_j = 1/(1 + lambda j) and swaps them with "
-            "min(1, exp[(beta_j - beta_k)(l_k - l_j)]); only the cold "
-            "chain is sampled. Partitions give each subset of sites its "
-            "own rate. Convergence is judged by the average standard "
-            "deviation of split frequencies between independent runs.")
+    return (
+        "phylby: MrBayes 3 (Ronquist & Huelsenbeck 2003). MCMC over "
+        "(topology, branch lengths, rate) with a uniform topology "
+        "prior and exponential branch lengths, the likelihood coming "
+        "from Felsenstein pruning. Metropolis coupling runs n chains "
+        "at beta_j = 1/(1 + lambda j) and swaps them with "
+        "min(1, exp[(beta_j - beta_k)(l_k - l_j)]); only the cold "
+        "chain is sampled. Partitions give each subset of sites its "
+        "own rate. Convergence is judged by the average standard "
+        "deviation of split frequencies between independent runs."
+    )

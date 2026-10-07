@@ -1,7 +1,6 @@
 """Tests for spcrs.spatial_cross_validation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spcrs import spatial_cross_validation
 
 

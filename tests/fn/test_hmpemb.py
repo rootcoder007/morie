@@ -15,8 +15,18 @@ def test_hmpemb_basic():
     }
     result = geron_pretrained_embeddings(vocab, pretrained, freeze=True, seed=42)
     assert isinstance(result, dict)
-    for key in ("embeddings", "coverage", "oov", "oov_indices", "dim",
-                "trainable", "n_parameters", "estimate", "n", "method"):
+    for key in (
+        "embeddings",
+        "coverage",
+        "oov",
+        "oov_indices",
+        "dim",
+        "trainable",
+        "n_parameters",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     assert math.isclose(float(result["coverage"]), 0.6)
     assert int(result["n"]) == len(vocab)
@@ -57,7 +67,7 @@ import morie.fn.hmpemb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

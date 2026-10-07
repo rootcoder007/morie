@@ -30,16 +30,12 @@ def alammar_bio_tagging(tokens, entity_spans, scheme="BIO"):
         raise ValueError(f"scheme must be BIO or BIOES; got {scheme!r}.")
     tags = ["O"] * n
     claimed = [False] * n
-    for (s, e, typ) in entity_spans:
+    for s, e, typ in entity_spans:
         s, e = int(s), int(e)
         if not (0 <= s < e <= n):
-            raise ValueError(
-                f"span ({s}, {e}) is out of range for {n} tokens "
-                "(end exclusive).")
+            raise ValueError(f"span ({s}, {e}) is out of range for {n} tokens (end exclusive).")
         if any(claimed[s:e]):
-            raise ValueError(
-                f"span ({s}, {e}) overlaps an earlier span; BIO cannot "
-                "represent overlapping entities.")
+            raise ValueError(f"span ({s}, {e}) overlaps an earlier span; BIO cannot represent overlapping entities.")
         for i in range(s, e):
             claimed[i] = True
         if scheme == "BIO":
@@ -54,10 +50,15 @@ def alammar_bio_tagging(tokens, entity_spans, scheme="BIO"):
                 for i in range(s + 1, e - 1):
                     tags[i] = f"I-{typ}"
                 tags[e - 1] = f"E-{typ}"
-    return RichResult(payload={
-        "tags": tags, "n_entities": len(list(entity_spans)),
-        "estimate": float(sum(t != "O" for t in tags)), "n": n,
-        "method": f"{scheme} span tagging (Alammar Ch 4)"})
+    return RichResult(
+        payload={
+            "tags": tags,
+            "n_entities": len(list(entity_spans)),
+            "estimate": float(sum(t != "O" for t in tags)),
+            "n": n,
+            "method": f"{scheme} span tagging (Alammar Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

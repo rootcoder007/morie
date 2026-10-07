@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["alammar_negative_sampling_skipgram"]
 
 
-def alammar_negative_sampling_skipgram(center_vec, context_vec,
-                                       negative_vecs, V=None):
+def alammar_negative_sampling_skipgram(center_vec, context_vec, negative_vecs, V=None):
     """L = -log sigma(v_c . v_w) - sum_i log sigma(-v_c . v_ni).
 
     References: Alammar and Grootendorst, Ch 2; Mikolov et al. (2013).
@@ -28,10 +27,16 @@ def alammar_negative_sampling_skipgram(center_vec, context_vec,
     pos = float(logsig(np.dot(c, w)))
     negs = [float(logsig(-np.dot(c, N[i]))) for i in range(N.shape[0])]
     loss = -(pos + sum(negs))
-    return RichResult(payload={
-        "estimate": loss, "positive_logsig": pos,
-        "negative_logsigs": negs, "k": N.shape[0], "n": len(c),
-        "method": "Skip-gram negative sampling (Mikolov et al. 2013)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "positive_logsig": pos,
+            "negative_logsigs": negs,
+            "k": N.shape[0],
+            "n": len(c),
+            "method": "Skip-gram negative sampling (Mikolov et al. 2013)",
+        }
+    )
 
 
 def cheatsheet():

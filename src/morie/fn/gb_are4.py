@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Hodges-Lehmann efficiency bounds."""
 
-from . import _array_core as np
 from ._gb_are import (
     ARE_TABLE,
     HL_SIGN_LOWER_BOUND,
@@ -57,14 +56,12 @@ def gibbons_are_kw(distribution="normal", cdf=None, f=None):
         are = efficacy_are(f)["wilcoxon_vs_t"]
     else:
         if distribution not in ARE_TABLE:
-            raise ValueError(
-                f"distribution must be one of {sorted(ARE_TABLE)}, got "
-                f"{distribution!r}."
-            )
+            raise ValueError(f"distribution must be one of {sorted(ARE_TABLE)}, got {distribution!r}.")
         are = ARE_TABLE[distribution]["wilcoxon_vs_t"]
     return RichResult(
         payload={
-            "are_wilcoxon_t": float(are), "hl_bound": HL_WILCOXON_LOWER_BOUND,
+            "are_wilcoxon_t": float(are),
+            "hl_bound": HL_WILCOXON_LOWER_BOUND,
             "above_bound": bool(are >= HL_WILCOXON_LOWER_BOUND - 1e-9),
             "sign_bound": HL_SIGN_LOWER_BOUND,
             "distribution": None if f is not None else distribution,

@@ -15,6 +15,8 @@ import shutil
 import subprocess
 import sys
 
+_TERMINAL_EDITORS = frozenset({"vi", "vim", "nvim", "nano", "pico", "emacs", "ed", "micro", "joe", "ne", "helix", "hx"})
+
 
 def edit_file(path: str, lang_hint: str | None = None) -> int:
     """Open ``path`` in the user's editor; returns the exit code."""
@@ -23,12 +25,35 @@ def edit_file(path: str, lang_hint: str | None = None) -> int:
     if editor is None:
         print("no editor found: set $EDITOR", file=sys.stderr)
         return 1
-    if os.name == "nt":  # $EDITOR may carry arguments; let the shell split them
-        return subprocess.call(editor + " " + subprocess.list2cmdline([path]), shell=True)
-    return subprocess.call([*shlex.split(editor), path])
+    # $EDITOR may carry arguments ("code --wait"): split it ourselves, never through a shell
+    parts = [p.strip('"') for p in shlex.split(editor, posix=False)] if os.name == "nt" else shlex.split(editor)
+    if not parts:
+        print("no editor found: set $EDITOR", file=sys.stderr)
+        return 1
+    binary = os.path.basename(parts[0])
+    if binary in _TERMINAL_EDITORS and not (sys.stdin.isatty() and sys.stdout.isatty()):
+        print(
+            f"{binary} is a terminal editor and this is not a terminal; run `morie edit {path}` from a shell, "
+            "or set $EDITOR to a graphical editor",
+            file=sys.stderr,
+        )
+        return 1
+    if shutil.which(parts[0]) is None and not os.path.isfile(parts[0]):
+        print(f"editor {parts[0]!r} not found on PATH (set $EDITOR to one that is)", file=sys.stderr)
+        return 1
+    try:
+        return subprocess.call([*parts, path])
+    except OSError as exc:
+        print(f"could not start {parts[0]!r}: {exc}", file=sys.stderr)
+        return 1
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point of ``morie-edit <file>``: open the file in the built-in editor.
+
+    Returns:
+        2 with a usage line when no file is given, else the editor's exit code.
+    """
     args = list(sys.argv[1:] if argv is None else argv)
     if not args:
         print("usage: morie-edit <file>", file=sys.stderr)

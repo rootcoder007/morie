@@ -144,13 +144,21 @@ def tmle_markov(state, action, reward, policy):
         w = d[k] / emp[k] if emp[k] > 0 else 0.0
         ic.append(w * H[i] * (rv[i] + h[si[sv[i + 1]]] - h[k] - V))
     se = math.sqrt(sum(v * v for v in ic)) / m1
-    return RichResult(payload={
-        "estimate": V, "se": se, "eps": eps, "n_states": float(ns), "n": n,
-        "method": "TMLE for the long-run average reward of a policy in an MDP"})
+    return RichResult(
+        payload={
+            "estimate": V,
+            "se": se,
+            "eps": eps,
+            "n_states": float(ns),
+            "n": n,
+            "method": "TMLE for the long-run average reward of a policy in an MDP",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlmrk: TMLE for the long-run policy value in a Markov decision process."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlemarkov = tmle_markov

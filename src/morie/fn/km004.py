@@ -27,16 +27,18 @@ def kamath_ch2_decoder_hidden_state(s_t_1, y_t_1, c, g=None):
     c = np.atleast_1d(np.asarray(c, dtype=float))
     if g is None:
         if not (s.shape == y.shape == c.shape):
-            raise ValueError(
-                "the default cell needs matching shapes; pass a callable "
-                "g for projected inputs.")
+            raise ValueError("the default cell needs matching shapes; pass a callable g for projected inputs.")
         out = np.tanh(s + y + c)
     else:
         out = np.atleast_1d(np.asarray(g(s, y, c), dtype=float))
-    return RichResult(payload={
-        "s": [float(v) for v in out], "estimate": float(out[0]),
-        "n": len(out),
-        "method": "Decoder recurrence s = g(s, y, c) (Kamath Eq 2.4)"})
+    return RichResult(
+        payload={
+            "s": [float(v) for v in out],
+            "estimate": float(out[0]),
+            "n": len(out),
+            "method": "Decoder recurrence s = g(s, y, c) (Kamath Eq 2.4)",
+        }
+    )
 
 
 def cheatsheet():

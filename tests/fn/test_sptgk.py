@@ -1,9 +1,7 @@
 """Tests for sptgk.schabenberger_trans_gaussian_kriging."""
 
 from morie.fn import _array_core as np
-
-from morie.fn.sptgk import (anamorphosis, normal_scores,
-                            schabenberger_trans_gaussian_kriging)
+from morie.fn.sptgk import anamorphosis, normal_scores, schabenberger_trans_gaussian_kriging
 
 COORDS = [[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
 Z = [1.0, 2.0, 3.0, 4.0]
@@ -18,9 +16,8 @@ def _gamma(h):
 def test_sptgk_basic():
     """The identity transform must reduce (5.58) to plain ordinary kriging."""
     result = schabenberger_trans_gaussian_kriging(
-        COORDS, Z, TARGET,
-        phi=lambda y: y, dphi=lambda y: 1.0, d2phi=lambda y: 0.0,
-        semivariogram_fn=_gamma)
+        COORDS, Z, TARGET, phi=lambda y: y, dphi=lambda y: 1.0, d2phi=lambda y: 0.0, semivariogram_fn=_gamma
+    )
 
     # The second derivative is zero, which kills the (5.58) bias correction.
     assert abs(result["correction"]) < 1e-12
@@ -37,16 +34,14 @@ def test_sptgk_basic():
 def test_sptgk_quadratic_transform_correction():
     """With phi(y) = y**2 the correction is exactly (sigma2_ok - 2 m)."""
     result = schabenberger_trans_gaussian_kriging(
-        COORDS, Z, TARGET,
-        phi=lambda y: y * y, dphi=lambda y: 2.0 * y, d2phi=lambda y: 2.0,
-        semivariogram_fn=_gamma)
+        COORDS, Z, TARGET, phi=lambda y: y * y, dphi=lambda y: 2.0 * y, d2phi=lambda y: 2.0, semivariogram_fn=_gamma
+    )
 
     var_ok = result["kriging_variance"]
     m = result["lagrange"]
     assert abs(result["correction"] - (var_ok - 2.0 * m)) < 1e-12
-    assert abs(result["naive_prediction"] - 2.5 ** 2) < 1e-9
-    assert abs(result["prediction"]
-               - (result["naive_prediction"] + result["correction"])) < 1e-12
+    assert abs(result["naive_prediction"] - 2.5**2) < 1e-9
+    assert abs(result["prediction"] - (result["naive_prediction"] + result["correction"])) < 1e-12
     # (5.59) with dphi(mu_y) = 2 * 2.5 = 5.
     assert abs(result["mspe"] - 25.0 * var_ok) < 1e-9
 

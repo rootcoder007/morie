@@ -341,3 +341,21 @@ class TestAgentAvailable:
 
         with patch("morie.llm._probe_ollama", return_value=False):
             assert agent_available() is True
+
+
+def test_the_morie_llm_names_every_package_reads(monkeypatch, tmp_path):
+    """MORIE_LLM_BASE_URL / _API_KEY / _MODEL (rmoriebricklayer, rmoriedata, rmorie) are read
+    after the LLM_API_* names, before the attached endpoint."""
+    from morie import llm as _llm
+
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+    for v in ("LLM_API_BASE_URL", "LLM_API_KEY", "MORIE_API_MODEL"):
+        monkeypatch.delenv(v, raising=False)
+    monkeypatch.setenv("MORIE_LLM_BASE_URL", "http://192.168.1.50:1234/v1/")
+    monkeypatch.setenv("MORIE_LLM_API_KEY", "sk-own")
+    monkeypatch.setenv("MORIE_LLM_MODEL", "my-model")
+    assert _llm._api_base_url() == "http://192.168.1.50:1234/v1"
+    assert _llm._api_key() == "sk-own"
+    assert _llm._api_model() == "my-model"
+    monkeypatch.setenv("LLM_API_BASE_URL", "https://api.example.org/v1")
+    assert _llm._api_base_url() == "https://api.example.org/v1"

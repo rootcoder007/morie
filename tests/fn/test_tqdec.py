@@ -1,7 +1,6 @@
 """Tests for morie.fn.tqdec — TurboQuant dequantization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tqdec import turboquant_decode
 from morie.fn.tqmse import turboquant_mse
 

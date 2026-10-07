@@ -31,9 +31,7 @@ def broadcast(v, n, name):
     if len(vals) == 1:
         return vals * n
     if len(vals) != n:
-        raise ValueError(
-            "%s has length %d; expected 1 or %d" % (name, len(vals), n)
-        )
+        raise ValueError(f"{name} has length {int(len(vals))}; expected 1 or {int(n)}")
     return vals
 
 
@@ -59,11 +57,11 @@ def as_matrix(x, name):
         x = x.tolist()
     rows = [seq_(r) for r in x]
     if not rows:
-        raise ValueError("%s is empty." % name)
+        raise ValueError(f"{name} is empty.")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("%s has ragged rows." % name)
+            raise ValueError(f"{name} has ragged rows.")
     return [[float(v) for v in r] for r in rows]
 
 

@@ -99,11 +99,17 @@ def catnext(items, theta, administered=None, exposure=None, D=1.0):
     if not avail:
         raise ValueError("every item has been administered")
     best = max(avail, key=lambda j: (wt[j], -j))
-    return RichResult(payload={
-        "next_item": float(best + 1), "information": info,
-        "weighted": wt, "max_information": wt[best],
-        "n_available": float(len(avail)), "J": float(J),
-        "method": "Maximum-information item selection with exposure control"})
+    return RichResult(
+        payload={
+            "next_item": float(best + 1),
+            "information": info,
+            "weighted": wt,
+            "max_information": wt[best],
+            "n_available": float(len(avail)),
+            "J": float(J),
+            "method": "Maximum-information item selection with exposure control",
+        }
+    )
 
 
 cat_next_item = catnext

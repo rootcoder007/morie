@@ -136,18 +136,50 @@ _NT = "ACGT"
 
 #: Grantham's polarity, as MAFFT itself carries it (``core/miyata.h``).
 GRANTHAM_POLARITY = {
-    "A": 8.1, "R": 10.5, "N": 11.6, "D": 13.0, "C": 5.5,
-    "Q": 10.5, "E": 12.3, "G": 9.0, "H": 10.4, "I": 5.2,
-    "L": 4.9, "K": 11.3, "M": 5.7, "F": 5.2, "P": 8.0,
-    "S": 9.2, "T": 8.6, "W": 5.4, "Y": 6.2, "V": 5.9,
+    "A": 8.1,
+    "R": 10.5,
+    "N": 11.6,
+    "D": 13.0,
+    "C": 5.5,
+    "Q": 10.5,
+    "E": 12.3,
+    "G": 9.0,
+    "H": 10.4,
+    "I": 5.2,
+    "L": 4.9,
+    "K": 11.3,
+    "M": 5.7,
+    "F": 5.2,
+    "P": 8.0,
+    "S": 9.2,
+    "T": 8.6,
+    "W": 5.4,
+    "Y": 6.2,
+    "V": 5.9,
 }
 
 #: Grantham's volume, likewise.
 GRANTHAM_VOLUME = {
-    "A": 31.0, "R": 124.0, "N": 56.0, "D": 54.0, "C": 55.0,
-    "Q": 85.0, "E": 83.0, "G": 3.0, "H": 96.0, "I": 111.0,
-    "L": 111.0, "K": 119.0, "M": 105.0, "F": 132.0, "P": 32.5,
-    "S": 32.0, "T": 61.0, "W": 170.0, "Y": 136.0, "V": 84.0,
+    "A": 31.0,
+    "R": 124.0,
+    "N": 56.0,
+    "D": 54.0,
+    "C": 55.0,
+    "Q": 85.0,
+    "E": 83.0,
+    "G": 3.0,
+    "H": 96.0,
+    "I": 111.0,
+    "L": 111.0,
+    "K": 119.0,
+    "M": 105.0,
+    "F": 132.0,
+    "P": 32.5,
+    "S": 32.0,
+    "T": 61.0,
+    "W": 170.0,
+    "Y": 136.0,
+    "V": 84.0,
 }
 
 _METHODS = ("FFT-NS-1", "FFT-NS-2", "FFT-NS-i", "NW-NS-1", "NW-NS-2")
@@ -162,8 +194,7 @@ def _norm(vals):
     mu = sum(vals) / n
     sd = math.sqrt(sum((v - mu) ** 2 for v in vals) / n)
     if sd <= 0:
-        raise ValueError("mafft: a property with no variation cannot be "
-                         "normalised")
+        raise ValueError("mafft: a property with no variation cannot be normalised")
     return mu, sd
 
 
@@ -176,6 +207,7 @@ _PHAT = dict((a, (GRANTHAM_POLARITY[a] - _PMU) / _PSD) for a in _AA)
 
 
 # ------------------------------------------------------------ sequences
+
 
 def _clean(seqs, seq_type=None):
     out = []
@@ -207,8 +239,7 @@ def residue_vectors(group, weights=None, seq_type="aa"):
     L = len(rows[0])
     for r in rows:
         if len(r) != L:
-            raise ValueError("mafft: sequences in a group must be aligned "
-                             "to the same length")
+            raise ValueError("mafft: sequences in a group must be aligned to the same length")
     if weights is None:
         weights = [1.0 / len(rows)] * len(rows)
     weights = [float(w) for w in weights]
@@ -217,17 +248,15 @@ def residue_vectors(group, weights=None, seq_type="aa"):
     if seq_type == "nt":
         comps = []
         for base in _NT:
-            comps.append([sum(w for w, r in zip(weights, rows)
-                              if r[n] == base) for n in range(L)])
+            comps.append([sum(w for w, r in zip(weights, rows) if r[n] == base) for n in range(L)])
         return comps
-    vol = [sum(w * _VHAT.get(r[n], 0.0) for w, r in zip(weights, rows))
-           for n in range(L)]
-    pol = [sum(w * _PHAT.get(r[n], 0.0) for w, r in zip(weights, rows))
-           for n in range(L)]
+    vol = [sum(w * _VHAT.get(r[n], 0.0) for w, r in zip(weights, rows)) for n in range(L)]
+    pol = [sum(w * _PHAT.get(r[n], 0.0) for w, r in zip(weights, rows)) for n in range(L)]
     return [vol, pol]
 
 
 # ---------------------------------------------------------- correlation
+
 
 def _xcorr_fft(a, b):
     """``sum_n a(n) b(n+k)`` for every lag, via one transform pair."""
@@ -262,8 +291,7 @@ def _xcorr_direct(a, b, size):
     return out
 
 
-def correlation(group1, group2, weights1=None, weights2=None,
-                seq_type="aa", method="fft"):
+def correlation(group1, group2, weights1=None, weights2=None, seq_type="aa", method="fft"):
     r"""The correlation :math:`c(k)` of Equation 1, for every lag.
 
     ``method="fft"`` uses the transform pair of Equation 5;
@@ -286,8 +314,7 @@ def correlation(group1, group2, weights1=None, weights2=None,
                 while size < len(a) + len(b):
                     size *= 2
             part = _xcorr_direct(a, b, size)
-        total = part if total is None else [x + y for x, y in
-                                            zip(total, part)]
+        total = part if total is None else [x + y for x, y in zip(total, part)]
     half = size // 2
     lags = list(range(half)) + list(range(-half, 0))
     return lags, total
@@ -295,7 +322,7 @@ def correlation(group1, group2, weights1=None, weights2=None,
 
 def _peaks(lags, c, n_peaks):
     order = sorted(range(len(c)), key=lambda i: -c[i])
-    return [lags[i] for i in order[:int(n_peaks)]]
+    return [lags[i] for i in order[: int(n_peaks)]]
 
 
 # --------------------------------------------------------------- JTT
@@ -307,29 +334,219 @@ def _peaks(lags, c, n_peaks):
 # lower triangle of counts, and ``freq0``.
 
 _JTT_FREQ = (
-    0.077, 0.051, 0.043, 0.052, 0.020, 0.041, 0.062, 0.074, 0.023, 0.052, 0.091, 0.059, 0.024, 0.040, 0.051, 0.069, 0.059, 0.014, 0.032, 0.066,
+    0.077,
+    0.051,
+    0.043,
+    0.052,
+    0.020,
+    0.041,
+    0.062,
+    0.074,
+    0.023,
+    0.052,
+    0.091,
+    0.059,
+    0.024,
+    0.040,
+    0.051,
+    0.069,
+    0.059,
+    0.014,
+    0.032,
+    0.066,
 )
 
 _JTT_COUNTS = (
     247,
-    216, 116,
-    386, 48, 1433,
-    106, 125, 32, 13,
-    208, 750, 159, 130, 9,
-    600, 119, 180, 2914, 8, 1027,
-    1183, 614, 291, 577, 98, 84, 610,
-    46, 446, 466, 144, 40, 635, 41, 41,
-    173, 76, 130, 37, 19, 20, 43, 25, 26,
-    257, 205, 63, 34, 36, 314, 65, 56, 134, 1324,
-    200, 2348, 758, 102, 7, 858, 754, 142, 85, 75, 94,
-    100, 61, 39, 27, 23, 52, 30, 27, 21, 704, 974, 103,
-    51, 16, 15, 8, 66, 9, 13, 18, 50, 196, 1093, 7, 49,
-    901, 217, 31, 39, 15, 395, 71, 93, 157, 31, 578, 77, 23, 36,
-    2413, 413, 1738, 244, 353, 182, 156, 1131, 138, 172, 436, 228, 54, 309, 1138,
-    2440, 230, 693, 151, 66, 149, 142, 164, 76, 930, 172, 398, 343, 39, 412, 2258,
-    11, 109, 2, 5, 38, 12, 12, 69, 5, 12, 82, 9, 8, 37, 6, 36, 8,
-    41, 46, 114, 89, 164, 40, 15, 15, 514, 61, 84, 20, 17, 850, 22, 164, 45, 41,
-    1766, 69, 55, 127, 99, 58, 226, 276, 22, 3938, 1261, 58, 559, 189, 84, 219, 526, 27, 42,
+    216,
+    116,
+    386,
+    48,
+    1433,
+    106,
+    125,
+    32,
+    13,
+    208,
+    750,
+    159,
+    130,
+    9,
+    600,
+    119,
+    180,
+    2914,
+    8,
+    1027,
+    1183,
+    614,
+    291,
+    577,
+    98,
+    84,
+    610,
+    46,
+    446,
+    466,
+    144,
+    40,
+    635,
+    41,
+    41,
+    173,
+    76,
+    130,
+    37,
+    19,
+    20,
+    43,
+    25,
+    26,
+    257,
+    205,
+    63,
+    34,
+    36,
+    314,
+    65,
+    56,
+    134,
+    1324,
+    200,
+    2348,
+    758,
+    102,
+    7,
+    858,
+    754,
+    142,
+    85,
+    75,
+    94,
+    100,
+    61,
+    39,
+    27,
+    23,
+    52,
+    30,
+    27,
+    21,
+    704,
+    974,
+    103,
+    51,
+    16,
+    15,
+    8,
+    66,
+    9,
+    13,
+    18,
+    50,
+    196,
+    1093,
+    7,
+    49,
+    901,
+    217,
+    31,
+    39,
+    15,
+    395,
+    71,
+    93,
+    157,
+    31,
+    578,
+    77,
+    23,
+    36,
+    2413,
+    413,
+    1738,
+    244,
+    353,
+    182,
+    156,
+    1131,
+    138,
+    172,
+    436,
+    228,
+    54,
+    309,
+    1138,
+    2440,
+    230,
+    693,
+    151,
+    66,
+    149,
+    142,
+    164,
+    76,
+    930,
+    172,
+    398,
+    343,
+    39,
+    412,
+    2258,
+    11,
+    109,
+    2,
+    5,
+    38,
+    12,
+    12,
+    69,
+    5,
+    12,
+    82,
+    9,
+    8,
+    37,
+    6,
+    36,
+    8,
+    41,
+    46,
+    114,
+    89,
+    164,
+    40,
+    15,
+    15,
+    514,
+    61,
+    84,
+    20,
+    17,
+    850,
+    22,
+    164,
+    45,
+    41,
+    1766,
+    69,
+    55,
+    127,
+    99,
+    58,
+    226,
+    276,
+    22,
+    3938,
+    1261,
+    58,
+    559,
+    189,
+    84,
+    219,
+    526,
+    27,
+    42,
 )
 
 
@@ -380,7 +597,7 @@ def jtt_matrix(pam=200, scale=10.0):
     mu = -sum(f[i] * Q[i][i] for i in range(20))
     for i in range(20):
         for j in range(20):
-            Q[i][j] /= (mu * 100.0)
+            Q[i][j] /= mu * 100.0
     # symmetrise, exponentiate, transform back
     rt = [math.sqrt(v) for v in f]
     A = [[Q[i][j] * rt[i] / rt[j] for j in range(20)] for i in range(20)]
@@ -398,12 +615,18 @@ def jtt_matrix(pam=200, scale=10.0):
         for j, b in enumerate(_AA):
             p = max(P[i][j], 1e-300)
             M[(a, b)] = scale * math.log10(p / f[j])
-    return {"matrix": M, "freqs": dict(zip(_AA, f)), "P": P, "Q": Q,
-            "pam": pam,
-            "rate": -sum(f[i] * Q[i][i] for i in range(20))}
+    return {
+        "matrix": M,
+        "freqs": dict(zip(_AA, f)),
+        "P": P,
+        "Q": Q,
+        "pam": pam,
+        "rate": -sum(f[i] * Q[i][i] for i in range(20)),
+    }
 
 
 # ------------------------------------------------------------- scoring
+
 
 def _default_raw_matrix(seq_type, which="jtt200"):
     """The paper's default raw matrix: 200-PAM JTT log-odds.
@@ -415,22 +638,20 @@ def _default_raw_matrix(seq_type, which="jtt200"):
     used, so BLOSUM or anything else can be passed as ``raw_matrix``.
     """
     if seq_type == "nt":
-        return dict(((a, b), 1.0 if a == b else -1.0)
-                    for a in _NT for b in _NT), None
+        return dict(((a, b), 1.0 if a == b else -1.0) for a in _NT for b in _NT), None
     if which == "grantham":
         M = {}
         for a in _AA:
             for b in _AA:
-                M[(a, b)] = -((_VHAT[a] - _VHAT[b]) ** 2 +
-                              (_PHAT[a] - _PHAT[b]) ** 2)
+                M[(a, b)] = -((_VHAT[a] - _VHAT[b]) ** 2 + (_PHAT[a] - _PHAT[b]) ** 2)
         return M, None
     j = jtt_matrix(200)
     return j["matrix"], j["freqs"]
 
 
-def normalized_similarity_matrix(raw_matrix=None, freqs=None, s_a=0.06,
-                                 seq_type="aa", mode="normalized",
-                                 default="jtt200"):
+def normalized_similarity_matrix(
+    raw_matrix=None, freqs=None, s_a=0.06, seq_type="aa", mode="normalized", default="jtt200"
+):
     r"""Equation 7.
 
     ``mode="all_positive"`` is the paper's NW-AP-2 control: the raw
@@ -439,7 +660,7 @@ def normalized_similarity_matrix(raw_matrix=None, freqs=None, s_a=0.06,
     above zero.
     """
     if mode not in _MATRICES:
-        raise ValueError("mafft: mode must be one of %s" % (_MATRICES,))
+        raise ValueError(f"mafft: mode must be one of {_MATRICES}")
     if default not in ("jtt200", "grantham"):
         raise ValueError("mafft: default must be 'jtt200' or 'grantham'")
     alpha = _NT if seq_type == "nt" else _AA
@@ -461,22 +682,24 @@ def normalized_similarity_matrix(raw_matrix=None, freqs=None, s_a=0.06,
     for a in alpha:
         for b in alpha:
             if (a, b) not in M:
-                raise ValueError("mafft: raw_matrix is missing (%s, %s)"
-                                 % (a, b))
+                raise ValueError(f"mafft: raw_matrix is missing ({a}, {b})")
     avg1 = sum(freqs[a] * M[(a, a)] for a in alpha)
-    avg2 = sum(freqs[a] * freqs[b] * M[(a, b)]
-               for a in alpha for b in alpha)
+    avg2 = sum(freqs[a] * freqs[b] * M[(a, b)] for a in alpha for b in alpha)
     if abs(avg1 - avg2) < 1e-15:
-        raise ValueError("mafft: raw_matrix has no signal (average1 equals "
-                         "average2)")
-    base = dict(((a, b), (M[(a, b)] - avg2) / (avg1 - avg2))
-                for a in alpha for b in alpha)
+        raise ValueError("mafft: raw_matrix has no signal (average1 equals average2)")
+    base = dict(((a, b), (M[(a, b)] - avg2) / (avg1 - avg2)) for a in alpha for b in alpha)
     if mode == "all_positive":
         s_a = -min(base.values())
     out = dict((k, v + s_a) for k, v in base.items())
-    return {"matrix": out, "s_a": float(s_a), "alphabet": alpha,
-            "average1": avg1, "average2": avg2, "freqs": freqs,
-            "mode": mode}
+    return {
+        "matrix": out,
+        "s_a": float(s_a),
+        "alphabet": alpha,
+        "average1": avg1,
+        "average2": avg2,
+        "freqs": freqs,
+        "mode": mode,
+    }
 
 
 def _site_score(M, ga, gb, wa, wb, i, j):
@@ -503,16 +726,16 @@ def _gap_profiles(group, weights):
         a = [1.0 - v for v in z]
         for x in range(L):
             nxt = z[x + 1] if x + 1 < L else 0.0
-            gs[x] += w * a[x] * nxt          # a gap starts just after x
+            gs[x] += w * a[x] * nxt  # a gap starts just after x
             prv = z[x - 1] if x - 1 >= 0 else 0.0
-            ge[x] += w * prv * a[x]          # a gap ended just before x
+            ge[x] += w * prv * a[x]  # a gap ended just before x
     return gs, ge
 
 
 # ------------------------------------------------------- group alignment
 
-def group_align(group1, group2, scoring, weights1=None, weights2=None,
-                s_op=2.4, anchors=None):
+
+def group_align(group1, group2, scoring, weights1=None, weights2=None, s_op=2.4, anchors=None):
     """Align two groups by the paper's NW recursion and gap penalty.
 
     ``anchors`` is a list of ``(i, j)`` residue pairs that the alignment
@@ -541,8 +764,7 @@ def group_align(group1, group2, scoring, weights1=None, weights2=None,
         # caller error, not something to quietly sort away.
         for u, v in zip(given, given[1:]):
             if v[1] < u[1]:
-                raise ValueError("mafft: anchors cross and cannot lie on "
-                                 "one alignment path")
+                raise ValueError("mafft: anchors cross and cannot lie on one alignment path")
         for a, b in given:
             if not (0 <= a <= n and 0 <= b <= m):
                 raise ValueError("mafft: an anchor is outside the groups")
@@ -550,8 +772,8 @@ def group_align(group1, group2, scoring, weights1=None, weights2=None,
         out1, out2 = [""] * len(g1), [""] * len(g2)
         prev = pts[0]
         for pt in pts[1:]:
-            a1 = [s[prev[0]:pt[0]] for s in g1]
-            a2 = [s[prev[1]:pt[1]] for s in g2]
+            a1 = [s[prev[0] : pt[0]] for s in g1]
+            a2 = [s[prev[1] : pt[1]] for s in g2]
             if not a1[0] and not a2[0]:
                 prev = pt
                 continue
@@ -623,19 +845,27 @@ def _nw(g1, g2, M, w1, w2, s_op):
     for t in range(j - 1, -1, -1):
         cols.append((None, t))
     cols.reverse()
-    out1 = ["".join(s[c1] if c1 is not None else "-" for c1, _ in cols)
-            for s in g1]
-    out2 = ["".join(s[c2] if c2 is not None else "-" for _, c2 in cols)
-            for s in g2]
+    out1 = ["".join(s[c1] if c1 is not None else "-" for c1, _ in cols) for s in g1]
+    out2 = ["".join(s[c2] if c2 is not None else "-" for _, c2 in cols) for s in g2]
     return out1, out2
 
 
 # --------------------------------------------------------- FFT anchoring
 
-def find_homologous_segments(group1, group2, scoring, weights1=None,
-                             weights2=None, seq_type="aa", window=30,
-                             n_peaks=20, threshold=0.7, max_len=150,
-                             corr_method="fft"):
+
+def find_homologous_segments(
+    group1,
+    group2,
+    scoring,
+    weights1=None,
+    weights2=None,
+    seq_type="aa",
+    window=30,
+    n_peaks=20,
+    threshold=0.7,
+    max_len=150,
+    corr_method="fft",
+):
     """The sliding-window step: peaks of ``c(k)`` become segments.
 
     Each of the ``n_peaks`` highest peaks is walked with a window of
@@ -644,8 +874,7 @@ def find_homologous_segments(group1, group2, scoring, weights1=None,
     than ``max_len`` are cut into ``max_len`` pieces.
     """
     if window < 1 or n_peaks < 1 or max_len < 1:
-        raise ValueError("mafft: window, n_peaks and max_len must be "
-                         "positive")
+        raise ValueError("mafft: window, n_peaks and max_len must be positive")
     M = scoring["matrix"] if isinstance(scoring, dict) else scoring
     g1 = [str(s).upper() for s in group1]
     g2 = [str(s).upper() for s in group2]
@@ -661,19 +890,14 @@ def find_homologous_segments(group1, group2, scoring, weights1=None,
             continue
         run = None
         for start in range(lo, hi - window + 1):
-            score = sum(_site_score(M, g1, g2, w1, w2, start + t,
-                                    start + t + k)
-                        for t in range(window)) / float(window)
+            score = sum(_site_score(M, g1, g2, w1, w2, start + t, start + t + k) for t in range(window)) / float(window)
             if score > threshold:
-                run = (run[0], start + window, run[2] + [score]) if run \
-                    else (start, start + window, [score])
+                run = (run[0], start + window, run[2] + [score]) if run else (start, start + window, [score])
             elif run:
-                segs.append((run[0], run[0] + k, run[1] - run[0],
-                             sum(run[2]) / len(run[2]), k))
+                segs.append((run[0], run[0] + k, run[1] - run[0], sum(run[2]) / len(run[2]), k))
                 run = None
         if run:
-            segs.append((run[0], run[0] + k, run[1] - run[0],
-                         sum(run[2]) / len(run[2]), k))
+            segs.append((run[0], run[0] + k, run[1] - run[0], sum(run[2]) / len(run[2]), k))
     # cut anything longer than max_len
     cut = []
     for s1, s2, ln, sc, k in segs:
@@ -720,11 +944,11 @@ def arrange_segments(segments):
 
 def _anchors_from(chain):
     """Segment centres, which is where the homology matrix is divided."""
-    return [(s[0] + s[2] // 2, s[1] + s[2] // 2) for s in chain
-            if s[0] >= 0 and s[1] >= 0]
+    return [(s[0] + s[2] // 2, s[1] + s[2] // 2) for s in chain if s[0] >= 0 and s[1] >= 0]
 
 
 # ---------------------------------------------------- trees and progress
+
 
 def sixtuple_distance(seqs):
     r""":math:`D_{ij} = 1 - T_{ij}/\min(T_{ii}, T_{jj})`.
@@ -749,7 +973,7 @@ def sixtuple_distance(seqs):
     def tuples(t):
         d = {}
         for i in range(len(t) - 5):
-            key = t[i:i + 6]
+            key = t[i : i + 6]
             d[key] = d.get(key, 0) + 1
         return d
 
@@ -776,14 +1000,15 @@ def guide_tree(D):
     if n < 2:
         raise ValueError("mafft: a guide tree needs at least two sequences")
     clusters = dict((i, [i]) for i in range(n))
-    dist = dict(((i, j), D[i][j]) for i in range(n) for j in range(n)
-                if i != j)
+    dist = dict(((i, j), D[i][j]) for i in range(n) for j in range(n) if i != j)
     merges = []
     nxt = n
     active = list(range(n))
     while len(active) > 1:
-        best = min(((dist[(i, j)], i, j) for k, i in enumerate(active)
-                    for j in active[k + 1:]), key=lambda t: (t[0], t[1], t[2]))
+        best = min(
+            ((dist[(i, j)], i, j) for k, i in enumerate(active) for j in active[k + 1 :]),
+            key=lambda t: (t[0], t[1], t[2]),
+        )
         _, i, j = best
         members = clusters[i] + clusters[j]
         merges.append((i, j, nxt, list(members)))
@@ -804,8 +1029,7 @@ def _weights(k):
     return [1.0 / k] * k
 
 
-def progressive_align(seqs, scoring, tree=None, seq_type="aa", s_op=2.4,
-                      use_fft=True, **kw):
+def progressive_align(seqs, scoring, tree=None, seq_type="aa", s_op=2.4, use_fft=True, **kw):
     """One progressive pass along the guide tree."""
     seqs = [str(s).upper() for s in seqs]
     if len(seqs) < 2:
@@ -818,13 +1042,9 @@ def progressive_align(seqs, scoring, tree=None, seq_type="aa", s_op=2.4,
         g1, g2 = profiles[i], profiles[j]
         anchors = None
         if use_fft:
-            segs = find_homologous_segments(g1, g2, scoring,
-                                            _weights(len(g1)),
-                                            _weights(len(g2)), seq_type,
-                                            **kw)
+            segs = find_homologous_segments(g1, g2, scoring, _weights(len(g1)), _weights(len(g2)), seq_type, **kw)
             anchors = _anchors_from(arrange_segments(segs)) or None
-        a1, a2 = group_align(g1, g2, scoring, _weights(len(g1)),
-                             _weights(len(g2)), s_op, anchors)
+        a1, a2 = group_align(g1, g2, scoring, _weights(len(g1)), _weights(len(g2)), s_op, anchors)
         profiles[new] = a1 + a2
         members[new] = members[i] + members[j]
         del profiles[i], profiles[j]
@@ -860,16 +1080,14 @@ def wsp_score(alignment, scoring, s_op=2.4, weights=None):
     return total
 
 
-def iterative_refine(alignment, scoring, tree=None, s_op=2.4,
-                     max_iterate=16, seq_type="aa", use_fft=True, **kw):
+def iterative_refine(alignment, scoring, tree=None, s_op=2.4, max_iterate=16, seq_type="aa", use_fft=True, **kw):
     """FFT-NS-i: split along a tree edge, realign, keep if WSP improves."""
     aln = [str(s).upper() for s in alignment]
     if max_iterate < 1:
         raise ValueError("mafft: max_iterate must be at least 1")
     best = wsp_score(aln, scoring, s_op)
     if tree is None:
-        tree = guide_tree(sixtuple_distance([s.replace("-", "")
-                                             for s in aln]))
+        tree = guide_tree(sixtuple_distance([s.replace("-", "") for s in aln]))
     groups = []
     for _, _, _, members in tree[:-1]:
         rest = [i for i in range(len(aln)) if i not in members]
@@ -883,13 +1101,9 @@ def iterative_refine(alignment, scoring, tree=None, s_op=2.4,
             g2 = _degap([aln[i] for i in rest])
             anchors = None
             if use_fft:
-                segs = find_homologous_segments(g1, g2, scoring,
-                                                _weights(len(g1)),
-                                                _weights(len(g2)),
-                                                seq_type, **kw)
+                segs = find_homologous_segments(g1, g2, scoring, _weights(len(g1)), _weights(len(g2)), seq_type, **kw)
                 anchors = _anchors_from(arrange_segments(segs)) or None
-            a1, a2 = group_align(g1, g2, scoring, _weights(len(g1)),
-                                 _weights(len(g2)), s_op, anchors)
+            a1, a2 = group_align(g1, g2, scoring, _weights(len(g1)), _weights(len(g2)), s_op, anchors)
             cand = [None] * len(aln)
             for pos, idx in enumerate(members):
                 cand[idx] = a1[pos]
@@ -915,20 +1129,31 @@ def _degap(group):
 
 # -------------------------------------------------------------- driver
 
-def mafft_alignment(sequences, method="FFT-NS-2", seq_type=None,
-                    raw_matrix=None, freqs=None, s_a=0.06, s_op=2.4,
-                    matrix="normalized", window=30, n_peaks=20,
-                    threshold=0.7, max_len=150, max_iterate=16):
+
+def mafft_alignment(
+    sequences,
+    method="FFT-NS-2",
+    seq_type=None,
+    raw_matrix=None,
+    freqs=None,
+    s_a=0.06,
+    s_op=2.4,
+    matrix="normalized",
+    window=30,
+    n_peaks=20,
+    threshold=0.7,
+    max_len=150,
+    max_iterate=16,
+):
     """Align ``sequences`` by one of the paper's named methods."""
     if method not in _METHODS:
-        raise ValueError("mafft: method must be one of %s" % (_METHODS,))
+        raise ValueError(f"mafft: method must be one of {_METHODS}")
     seqs, kind = _clean(sequences, seq_type)
     if len(seqs) < 2:
         raise ValueError("mafft: at least two sequences are needed")
     sc = normalized_similarity_matrix(raw_matrix, freqs, s_a, kind, matrix)
     use_fft = method.startswith("FFT")
-    kw = {"window": window, "n_peaks": n_peaks, "threshold": threshold,
-          "max_len": max_len}
+    kw = {"window": window, "n_peaks": n_peaks, "threshold": threshold, "max_len": max_len}
 
     tree1 = guide_tree(sixtuple_distance(seqs))
     aln = progressive_align(seqs, sc, tree1, kind, s_op, use_fft, **kw)
@@ -940,44 +1165,48 @@ def mafft_alignment(sequences, method="FFT-NS-2", seq_type=None,
         tree_used = tree2
     score = wsp_score(aln, sc, s_op)
     if method == "FFT-NS-i":
-        aln, score, rounds = iterative_refine(aln, sc, tree_used, s_op,
-                                              max_iterate, kind, use_fft,
-                                              **kw)
-    return RichResult(payload={
-        "estimate": aln,
-        "alignment": aln,
-        "score": float(score),
-        "method": method,
-        "seq_type": kind,
-        "length": len(aln[0]),
-        "n": len(seqs),
-        "s_a": sc["s_a"],
-        "s_op": float(s_op),
-        "matrix_mode": matrix,
-        "tree": tree_used,
-        "refine_rounds": rounds,
-        "note": ("Katoh et al. 2002: the FFT finds homologous segments "
-                 "and the residue DP is restricted to the sub-matrices "
-                 "between their centres; NW-NS-* skip the FFT and "
-                 "matrix='all_positive' is the paper's NW-AP-2 control, "
-                 "whose S_a comes out at 0.8211 against the 0.82 the "
-                 "paper prints. The default raw matrix is the paper's "
-                 "own 200-PAM JTT log-odds; default='grantham' builds "
-                 "one from the volume/polarity vectors instead."),
-    })
+        aln, score, rounds = iterative_refine(aln, sc, tree_used, s_op, max_iterate, kind, use_fft, **kw)
+    return RichResult(
+        payload={
+            "estimate": aln,
+            "alignment": aln,
+            "score": float(score),
+            "method": method,
+            "seq_type": kind,
+            "length": len(aln[0]),
+            "n": len(seqs),
+            "s_a": sc["s_a"],
+            "s_op": float(s_op),
+            "matrix_mode": matrix,
+            "tree": tree_used,
+            "refine_rounds": rounds,
+            "note": (
+                "Katoh et al. 2002: the FFT finds homologous segments "
+                "and the residue DP is restricted to the sub-matrices "
+                "between their centres; NW-NS-* skip the FFT and "
+                "matrix='all_positive' is the paper's NW-AP-2 control, "
+                "whose S_a comes out at 0.8211 against the 0.82 the "
+                "paper prints. The default raw matrix is the paper's "
+                "own 200-PAM JTT log-odds; default='grantham' builds "
+                "one from the volume/polarity vectors instead."
+            ),
+        }
+    )
 
 
 mafftalignment = mafft_alignment
 
 
 def cheatsheet():
-    return ("mafft: MAFFT (Katoh et al. 2002). Residues become Grantham "
-            "volume/polarity vectors, c(k) = c_v(k) + c_p(k) is got by "
-            "FFT as V1*(m).V2(m), a 30-site window over the top 20 peaks "
-            "at 0.7/site gives homologous segments (merged, then cut at "
-            "150), a segment DP arranges them, and the residue DP runs "
-            "only between their centres. Equation 7 rescales any matrix "
-            "so random sequence scores S_a and identity scores 1 + S_a; "
-            "the gap penalty S_op{1 - [g_start + g_end]/2} is zero where "
-            "the group already has that gap. method= FFT-NS-1, FFT-NS-2, "
-            "FFT-NS-i, NW-NS-1, NW-NS-2.")
+    return (
+        "mafft: MAFFT (Katoh et al. 2002). Residues become Grantham "
+        "volume/polarity vectors, c(k) = c_v(k) + c_p(k) is got by "
+        "FFT as V1*(m).V2(m), a 30-site window over the top 20 peaks "
+        "at 0.7/site gives homologous segments (merged, then cut at "
+        "150), a segment DP arranges them, and the residue DP runs "
+        "only between their centres. Equation 7 rescales any matrix "
+        "so random sequence scores S_a and identity scores 1 + S_a; "
+        "the gap penalty S_op{1 - [g_start + g_end]/2} is zero where "
+        "the group already has that gap. method= FFT-NS-1, FFT-NS-2, "
+        "FFT-NS-i, NW-NS-1, NW-NS-2."
+    )

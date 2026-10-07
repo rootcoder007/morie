@@ -1,7 +1,6 @@
 """Tests for gb732.gibbons_linrank_mean_var."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb732 import gibbons_linrank_mean_var
 
 
@@ -12,6 +11,8 @@ def test_gb732_basic():
     result = gibbons_linrank_mean_var(a, m)
     assert isinstance(result, dict)
     assert "mean" in result
+
+
 def test_gb732_edge():
     """Test edge cases."""
     a = np.random.default_rng(42).normal(0, 1, 100)

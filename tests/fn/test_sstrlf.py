@@ -1,7 +1,6 @@
 """Tests for sstrlf.surv_truncation_left."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sstrlf import surv_truncation_left
 
 

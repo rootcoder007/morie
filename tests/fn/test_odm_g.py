@@ -1,7 +1,6 @@
 """Tests for morie.fn.odm_g — Demographic profile per gender."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.odm_g import otis_demo_gender
 
 

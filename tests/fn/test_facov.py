@@ -1,7 +1,5 @@
 """Tests for facov.factor_analytic_covariance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.facov import factor_analytic_covariance
 
 
@@ -22,9 +20,9 @@ def test_facov_basic():
     #   vdc(4, 2) = 0.75 -> L[2][0] = 1.25
     #   vdc(5, 4) = 1/5  -> L[2][1] = 7/5
     L = [
-        [0.5,                    1.0],
-        [0.75,                   1.0 + 1.0 / 3.0],
-        [1.25,                   1.0 + 1.0 / 5.0],
+        [0.5, 1.0],
+        [0.75, 1.0 + 1.0 / 3.0],
+        [1.25, 1.0 + 1.0 / 5.0],
     ]
     psi = [0.1, 0.2, 0.3]
 

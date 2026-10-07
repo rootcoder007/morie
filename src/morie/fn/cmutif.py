@@ -1,11 +1,9 @@
 """Conditional mutual information I(X;Y|Z)."""
 
-from . import _array_core as np
 from . import _big2 as _big2
 from ._richresult import RichResult
 
 __all__ = ["conditional_mi"]
-
 
 
 def conditional_mi(pxyz, base=2.0):

@@ -1,7 +1,6 @@
 """Tests for morie.fn.trusvd -- truncated SVD decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.trusvd import svd_rank_reduce, trusvd
 

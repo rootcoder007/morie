@@ -1,8 +1,8 @@
 """Tests for morie.fn.kappa — Cohen's kappa."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kappa import cohens_kappa, kappa
 
 

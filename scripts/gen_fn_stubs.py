@@ -23,7 +23,6 @@ Run from the repo root:  python scripts/gen_fn_stubs.py
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -98,7 +97,7 @@ def write_catalog(lazy: dict[str, str]) -> int:
         "---------",
         "",
         ".. csv-table::",
-        "   :header: \"Callable\", \"Module\"",
+        '   :header: "Callable", "Module"',
         "   :widths: 60, 40",
         "",
     ]

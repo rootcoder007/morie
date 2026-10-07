@@ -19,7 +19,6 @@ __all__ = ["fregint", "mvsml_convolutional_nn_eq_14_14"]
 
 
 def fregint(y, X, X_E, X_EF=None, env=None, lam=0.0, P=None):
-
     """y = 1_n mu + X_E beta_E + X beta + X_EF beta_EF + e (eq. 14.14),
     which adds to (14.13) the environment-by-reflectance interaction.
     X_EF is the block-diagonal design printed on p.610: record i in

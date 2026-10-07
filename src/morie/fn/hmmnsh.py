@@ -104,10 +104,7 @@ def geron_mean_shift(X, bandwidth, kernel="gaussian", max_iter=300, tol=1e-6, me
         x = A[i].copy()
         for step in range(1, int(max_iter) + 1):
             d2 = np.sum((A - x) ** 2, axis=1)
-            if kernel == "gaussian":
-                w = np.exp(-d2 / (2.0 * h * h))
-            else:
-                w = (d2 <= h * h).astype(float)
+            w = np.exp(-d2 / (2.0 * h * h)) if kernel == "gaussian" else (d2 <= h * h).astype(float)
             tot = float(np.sum(w))
             if tot == 0:
                 raise ValueError(

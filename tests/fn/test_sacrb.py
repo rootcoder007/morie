@@ -1,7 +1,6 @@
 """Tests for sacrb.sacrebleu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sacrb import sacrebleu
 
 

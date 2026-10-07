@@ -28,8 +28,7 @@ def se_fisher_z(n):
     """
     value = _ca_crim.se_fisher_z(n)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.13)"
@@ -41,7 +40,7 @@ def se_fisher_z(n):
 
 
 def cheatsheet():
-    return 'ca11e13: se_Zr = 1 / sqrt(n - 3) [Weisburd et al. 2022, eq. 11.13]'
+    return "ca11e13: se_Zr = 1 / sqrt(n - 3) [Weisburd et al. 2022, eq. 11.13]"
 
 
 # compact alias per ledger/NAMING.md

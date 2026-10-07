@@ -1,10 +1,9 @@
 """Tests for pscli."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._stats_core import norm
-
 from morie.fn.pscli import pscl_ideal
 from morie.fn.pscrc import pscl_rollcall
 

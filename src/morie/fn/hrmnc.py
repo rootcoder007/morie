@@ -35,10 +35,7 @@ def harmonic_ratio(x, fs: float = 1.0, **kwargs) -> DescriptiveResult:
         return DescriptiveResult(name="harmonic_ratio", value=0.0, extra={"hnr_db": 0.0})
     acf_norm = acf / acf[0]
     min_lag = max(2, int(fs / (fs / 2.0))) if fs > 0 else 2
-    if min_lag >= len(acf_norm):
-        r_max = 0.0
-    else:
-        r_max = float(np.max(acf_norm[min_lag:]))
+    r_max = 0.0 if min_lag >= len(acf_norm) else float(np.max(acf_norm[min_lag:]))
     r_max = np.clip(r_max, 1e-10, 1.0 - 1e-10)
     hnr_db = float(10.0 * np.log10(r_max / (1.0 - r_max)))
     return DescriptiveResult(

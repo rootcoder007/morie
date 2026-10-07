@@ -1,7 +1,6 @@
 """Tests for evhill.evt_hill_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evhill import evt_hill_estimator
 
 
@@ -12,6 +11,8 @@ def test_evhill_basic():
     result = evt_hill_estimator(x, k)
     assert isinstance(result, dict)
     assert "xi" in result
+
+
 def test_evhill_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

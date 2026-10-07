@@ -37,21 +37,23 @@ def kamath_cross_encoder_rerank(q, docs, model, top_k=None):
         raise ValueError("there are no documents to re-rank.")
     s = np.array([float(model(q, d)) for d in D])
     if not np.all(np.isfinite(s)):
-        raise ValueError("the cross-encoder returned a non-finite "
-                         "score.")
+        raise ValueError("the cross-encoder returned a non-finite score.")
     order = list(np.argsort(-s, kind="stable"))
     if top_k is not None:
         k = int(top_k)
         if not (1 <= k <= len(D)):
-            raise ValueError(
-                f"top_k = {k} must lie in [1, {len(D)}].")
+            raise ValueError(f"top_k = {k} must lie in [1, {len(D)}].")
         order = order[:k]
-    return RichResult(payload={
-        "estimate": float(s[order[0]]),
-        "scores": [float(v) for v in s],
-        "ranking": [int(i) for i in order],
-        "reranked": [D[i] for i in order], "n": len(D),
-        "method": "cross-encoder re-ranking (Kamath Ch 7)"})
+    return RichResult(
+        payload={
+            "estimate": float(s[order[0]]),
+            "scores": [float(v) for v in s],
+            "ranking": [int(i) for i in order],
+            "reranked": [D[i] for i in order],
+            "n": len(D),
+            "method": "cross-encoder re-ranking (Kamath Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

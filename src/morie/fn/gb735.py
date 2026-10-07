@@ -57,8 +57,12 @@ def gibbons_linrank_sym_equal(a, m, n):
     skew = float(np.mean(ctr**3) / sd**3) if sd > 0 else 0.0
     return RichResult(
         payload={
-            "symmetric": bool(abs(skew) < 1e-10), "mean": mean,
-            "skewness": skew, "enumerated": True, "m": m, "n": n,
+            "symmetric": bool(abs(skew) < 1e-10),
+            "mean": mean,
+            "skewness": skew,
+            "enumerated": True,
+            "m": m,
+            "n": n,
             "method": "m = n forces T_N symmetric for any scores (Theorem 7.3.5)",
         }
     )

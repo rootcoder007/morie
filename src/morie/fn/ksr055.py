@@ -53,11 +53,9 @@ def kosorok_ch2_m_estimator_taylor_expansion(m, theta, theta_0, X, m_dot=None):
     base = float(np.mean(m(t0, X)))
     if m_dot is None:
         h = 1e-6
-        grad = np.array([
-            (float(np.mean(m(t0 + h * e, X))) - float(np.mean(m(t0 - h * e, X))))
-            / (2 * h)
-            for e in np.eye(t0.size)
-        ])
+        grad = np.array(
+            [(float(np.mean(m(t0 + h * e, X))) - float(np.mean(m(t0 - h * e, X)))) / (2 * h) for e in np.eye(t0.size)]
+        )
     else:
         grad = np.atleast_1d(np.mean(np.atleast_2d(m_dot(t0, X)), axis=0))
     seq = [np.atleast_1d(np.asarray(t, dtype=float)) for t in theta]
@@ -76,9 +74,13 @@ def kosorok_ch2_m_estimator_taylor_expansion(m, theta, theta_0, X, m_dot=None):
     ratios = rem / d**2
     order = np.argsort(-d)
     return RichResult(
-        payload={"distances": d, "remainders": rem, "ratios": ratios,
-                 "ratio_shrinking": bool(ratios[order][-1] <= ratios[order][0] * 1.5),
-                 "method": "P[m_theta - m_0 - delta' m_dot] / ||delta||^2 (Kosorok Ch. 2)"}
+        payload={
+            "distances": d,
+            "remainders": rem,
+            "ratios": ratios,
+            "ratio_shrinking": bool(ratios[order][-1] <= ratios[order][0] * 1.5),
+            "method": "P[m_theta - m_0 - delta' m_dot] / ||delta||^2 (Kosorok Ch. 2)",
+        }
     )
 
 

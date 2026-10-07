@@ -31,11 +31,11 @@ _RULES = (
     "3. NEVER answer None/not_stated/unknown out of laziness. None is correct "
     "ONLY after reading the whole report and finding the field genuinely "
     "absent. A lazy None is a serious error.\n"
-    "4. COUNT fields (number_of_subject_officers, number_of_witness_officials, "
+    "4. COUNT fields (number_of_subject_officials, number_of_witness_officials, "
     "number_of_civilian_witnesses, investigators): give the COUNT of distinct "
     "entities -- counting is NOT inference. Officers are designated explicitly; "
-    "a witness-officer-only case has number_of_subject_officers = 0, a REAL "
-    "value, never not_stated. Use the canonical key number_of_subject_officers "
+    "a witness-officer-only case has number_of_subject_officials = 0, a REAL "
+    "value, never not_stated. Use the canonical key number_of_subject_officials "
     "(never officials/officils).\n"
     "5. Dates in ISO (YYYY-MM-DD) when stated.\n"
 )
@@ -53,59 +53,68 @@ def _parse_reply(reply: str) -> Any:
     a, z = s.find("{"), s.rfind("}")
     if a < 0 or z < 0 or z <= a:
         raise ValueError("no JSON object in reply")
-    return json.loads(s[a:z + 1])
+    return json.loads(s[a : z + 1])
 
 
 def _reader_prompt(parsed: str, text: str) -> str:
-    return ("You are a meticulous reviewer extracting structured data from "
-            "an Ontario SIU (Special Investigations Unit) director's report. "
-            "60+ fields; a single wrong answer is unacceptable.\n\n" + _RULES +
-            "\nOutput ONLY a JSON object: field -> {\"value\": <value>, "
-            "\"quote\": \"<exact supporting words, empty only if genuinely "
-            "absent>\", \"confidence\": \"high|medium|low\"}.\n\n"
-            "PARSED (the parser's guesses -- verify EACH against the report):\n" + parsed + "\n\nREPORT:\n" + text)
+    return (
+        "You are a meticulous reviewer extracting structured data from "
+        "an Ontario SIU (Special Investigations Unit) director's report. "
+        "60+ fields; a single wrong answer is unacceptable.\n\n"
+        + _RULES
+        + '\nOutput ONLY a JSON object: field -> {"value": <value>, '
+        '"quote": "<exact supporting words, empty only if genuinely '
+        'absent>", "confidence": "high|medium|low"}.\n\n'
+        "PARSED (the parser's guesses -- verify EACH against the report):\n" + parsed + "\n\nREPORT:\n" + text
+    )
 
 
 def _auditor_prompt(parsed: str, text: str, reviewers: str) -> str:
-    return ("You are the AUDITOR -- the final authority over the reviewers. "
-            "You are given the FULL report and, per field, each reviewer's "
-            "value + supporting quote + confidence. 60+ fields; a single "
-            "wrong answer is unacceptable.\n\n"
-            "YOUR JOB:\n"
-            "1. READ THE REPORT YOURSELF, in full. Do NOT just take the "
-            "reviewers' word -- reviewers skim and lazily answer None.\n"
-            "2. For each field, check every reviewer's value AND quote "
-            "against the report; accept a value only if the report's exact "
-            "words support it.\n"
-            "3. Where reviewers disagree, or a quote does not support the "
-            "value, or a reviewer said None but the report states it -- "
-            "decide by what the REPORT literally says and correct it.\n" + _RULES +
-            "\nOutput ONLY a JSON object: field -> final CLEAN value (the actual "
-            "value, never a verdict word like 'agree', never an annotation). Use "
-            "the canonical field names exactly as given.\n\n"
-            "PARSED:\n" + parsed + "\n\nREVIEWERS (value/quote/confidence per "
-            "field):\n" + reviewers + "\n\nREPORT:\n" + text)
+    return (
+        "You are the AUDITOR -- the final authority over the reviewers. "
+        "You are given the FULL report and, per field, each reviewer's "
+        "value + supporting quote + confidence. 60+ fields; a single "
+        "wrong answer is unacceptable.\n\n"
+        "YOUR JOB:\n"
+        "1. READ THE REPORT YOURSELF, in full. Do NOT just take the "
+        "reviewers' word -- reviewers skim and lazily answer None.\n"
+        "2. For each field, check every reviewer's value AND quote "
+        "against the report; accept a value only if the report's exact "
+        "words support it.\n"
+        "3. Where reviewers disagree, or a quote does not support the "
+        "value, or a reviewer said None but the report states it -- "
+        "decide by what the REPORT literally says and correct it.\n"
+        + _RULES
+        + "\nOutput ONLY a JSON object: field -> final CLEAN value (the actual "
+        "value, never a verdict word like 'agree', never an annotation). Use "
+        "the canonical field names exactly as given.\n\n"
+        "PARSED:\n" + parsed + "\n\nREVIEWERS (value/quote/confidence per "
+        "field):\n" + reviewers + "\n\nREPORT:\n" + text
+    )
 
 
 def _per_field_reader_prompt(f, parsed_val: str, text: str) -> str:
-    return ("Read the ENTIRE Ontario SIU director's report below, "
-            "then extract ONLY this one field and nothing else.\n\n"
-            "FIELD: " + f[0] + " -- " + f[2] + "\n\n" + _RULES +
-            "\nOutput ONLY a JSON object {\"value\": <value>, \"quote\": "
-            "\"<exact supporting words, empty only if genuinely absent>\", "
-            "\"confidence\": \"high|medium|low\"}.\n\n"
-            "PARSER'S GUESS for this field: " + parsed_val + "\n\nREPORT:\n" + text)
+    return (
+        "Read the ENTIRE Ontario SIU director's report below, "
+        "then extract ONLY this one field and nothing else.\n\n"
+        "FIELD: " + f[0] + " -- " + f[2] + "\n\n" + _RULES + '\nOutput ONLY a JSON object {"value": <value>, "quote": '
+        '"<exact supporting words, empty only if genuinely absent>", '
+        '"confidence": "high|medium|low"}.\n\n'
+        "PARSER'S GUESS for this field: " + parsed_val + "\n\nREPORT:\n" + text
+    )
 
 
 def _per_field_auditor_prompt(f, parsed_val: str, text: str, reviewers: str) -> str:
-    return ("You are the AUDITOR. Read the ENTIRE report yourself, "
-            "then decide the FINAL value for ONLY this one field.\n\n"
-            "FIELD: " + f[0] + " -- " + f[2] + "\n\n"
-            "Check the reviewers' answers against the report; accept only what "
-            "the exact words support; reject lazy None; count fields must be "
-            "counted (witness-officer-only = 0). " + "\nOutput ONLY a JSON "
-            "object {\"" + f[0] + "\": <final clean value>}.\n\n"
-            "PARSER'S GUESS: " + parsed_val + "\n\nREVIEWERS for this field:\n" + reviewers + "\n\nREPORT:\n" + text)
+    return (
+        "You are the AUDITOR. Read the ENTIRE report yourself, "
+        "then decide the FINAL value for ONLY this one field.\n\n"
+        "FIELD: " + f[0] + " -- " + f[2] + "\n\n"
+        "Check the reviewers' answers against the report; accept only what "
+        "the exact words support; reject lazy None; count fields must be "
+        "counted (witness-officer-only = 0). " + "\nOutput ONLY a JSON "
+        'object {"' + f[0] + '": <final clean value>}.\n\n'
+        "PARSER'S GUESS: " + parsed_val + "\n\nREVIEWERS for this field:\n" + reviewers + "\n\nREPORT:\n" + text
+    )
 
 
 def _get_str(j: dict, key: str) -> str:
@@ -169,11 +178,26 @@ def healthy_models(be: llm.Backend, candidates: list[str]) -> list[str]:
     return ok
 
 
-def siu_audit_panel(report_text: str, parsed: dict | str | None = None, mode: int = 4, readers=None, auditors=None,
-                    num_readers: int = 0, num_auditors: int = 0, reader_concurrency: int = 0,
-                    auditor_sequential: bool = True, reader_granularity: str = "all",
-                    auditor_granularity: str = "all", health_check: bool = True, api: str = "", base: str = "",
-                    key: str = "", timeout: float = 300.0, temperature: float = 0.0, chat=None) -> dict:
+def siu_audit_panel(
+    report_text: str,
+    parsed: dict | str | None = None,
+    mode: int = 4,
+    readers=None,
+    auditors=None,
+    num_readers: int = 0,
+    num_auditors: int = 0,
+    reader_concurrency: int = 0,
+    auditor_sequential: bool = True,
+    reader_granularity: str = "all",
+    auditor_granularity: str = "all",
+    health_check: bool = True,
+    api: str = "",
+    base: str = "",
+    key: str = "",
+    timeout: float = 300.0,
+    temperature: float = 0.0,
+    chat=None,
+) -> dict:
     """Run the Mixture-of-Agents audit panel on one SIU report with any model.
 
     ``mode`` 1 = one reader, no auditor; 2 = 1 reader + auditor; 3 = 2 readers +

@@ -1,7 +1,6 @@
 """Tests for ghs030.ghosal_ch3_polya_tree_posterior_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs030 import ghosal_ch3_polya_tree_posterior_density
 
 

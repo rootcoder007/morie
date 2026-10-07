@@ -1,7 +1,6 @@
 """Tests for survci2.uno_concordance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.survci2 import uno_concordance
 
 

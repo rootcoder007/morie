@@ -235,10 +235,7 @@ def get_mapq_structure(items: list[str] | None = None) -> tuple[dict[str, list[s
     """
     from morie.fn._mapq_const import ALL_ITEMS, SUBSCALES
 
-    if items is not None:
-        item_names = list(items)
-    else:
-        item_names = list(ALL_ITEMS)
+    item_names = list(items) if items is not None else list(ALL_ITEMS)
     structure = {k: [i for i in v if i in item_names] for k, v in SUBSCALES.items()}
     return structure, item_names
 

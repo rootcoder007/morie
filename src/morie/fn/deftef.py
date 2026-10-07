@@ -51,13 +51,15 @@ def design_effect(design_var, srs_var):
             raise ValueError("srs_var must be strictly positive")
     deff = [d[i] / s[i] for i in range(m)]
     deft = [math.sqrt(v) if v >= 0.0 else float("nan") for v in deff]
-    return RichResult(payload={
-        "estimate": deff[0] if m == 1 else sum(deff) / m,
-        "deff": deff,
-        "deft": deft,
-        "n": m,
-        "method": "Kish design effect DEFF = Var_design / Var_SRS",
-    })
+    return RichResult(
+        payload={
+            "estimate": deff[0] if m == 1 else sum(deff) / m,
+            "deff": deff,
+            "deft": deft,
+            "n": m,
+            "method": "Kish design effect DEFF = Var_design / Var_SRS",
+        }
+    )
 
 
 def cheatsheet():

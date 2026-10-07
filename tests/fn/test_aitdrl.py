@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitdrl import dirichlet_loglik
 
 
@@ -32,19 +31,13 @@ def test_aitdrl_basic():
     #   l = N * [ln Gamma(sum a) - sum_i ln Gamma(a_i)]
     #       + sum_i (a_i - 1) * sum_n ln x_{n,i}
     a0 = float(sum(alpha))
-    ll_expected = N * (
-        math.lgamma(a0) - sum(math.lgamma(float(a)) for a in alpha)
-    )
-    sum_log_x_expected = [
-        sum(math.log(float(X[n][i])) for n in range(N)) for i in range(D)
-    ]
+    ll_expected = N * (math.lgamma(a0) - sum(math.lgamma(float(a)) for a in alpha))
+    sum_log_x_expected = [sum(math.log(float(X[n][i])) for n in range(N)) for i in range(D)]
     for i in range(D):
         ll_expected += (float(alpha[i]) - 1.0) * sum_log_x_expected[i]
 
     assert math.isclose(float(result["ll"]), ll_expected, rel_tol=1e-9, abs_tol=1e-9)
-    assert math.isclose(
-        float(result["estimate"]), ll_expected, rel_tol=1e-9, abs_tol=1e-9
-    )
+    assert math.isclose(float(result["estimate"]), ll_expected, rel_tol=1e-9, abs_tol=1e-9)
 
     # The sufficient statistic must match what we computed.
     slx = result["sum_log_x"]
@@ -71,17 +64,12 @@ def test_aitdrl_edge():
 
     # Independent computation for a single composition (N = 1).
     a0 = float(sum(alpha))
-    ll_expected = (
-        math.lgamma(a0)
-        - sum(math.lgamma(float(a)) for a in alpha)
-    )
+    ll_expected = math.lgamma(a0) - sum(math.lgamma(float(a)) for a in alpha)
     sum_log_x_expected = [math.log(float(x[i])) for i in range(D)]
     for i in range(D):
         ll_expected += (float(alpha[i]) - 1.0) * sum_log_x_expected[i]
 
-    assert math.isclose(
-        float(result["ll"]), ll_expected, rel_tol=1e-9, abs_tol=1e-9
-    )
+    assert math.isclose(float(result["ll"]), ll_expected, rel_tol=1e-9, abs_tol=1e-9)
     assert len(result["score"]) == D
     assert result["N"] == 1
     assert result["D"] == D

@@ -9,8 +9,8 @@ __all__ = ["sample_partial_autocorr"]
 
 def _durbin_levinson(r, max_lag):
     """PACF phi_kk for k = 1..max_lag from autocorrelations r[0..max_lag]."""
-    phi = [0.0] * (max_lag + 1)      # phi[k] holds phi_kk
-    prev = []                        # coefficients of the order-(k-1) fit
+    phi = [0.0] * (max_lag + 1)  # phi[k] holds phi_kk
+    prev = []  # coefficients of the order-(k-1) fit
     for k in range(1, max_lag + 1):
         num = r[k] - sum(prev[j] * r[k - 1 - j] for j in range(k - 1))
         den = 1.0 - sum(prev[j] * r[j + 1] for j in range(k - 1))
@@ -84,7 +84,7 @@ def sample_partial_autocorr(y, max_lag=20):
             "acf": r,
             "n": n,
             "max_lag": max_lag,
-            "ci_bound": 1.96 / (n ** 0.5),
+            "ci_bound": 1.96 / (n**0.5),
             "method": "Sample PACF via the Durbin-Levinson recursion",
         }
     )

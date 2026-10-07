@@ -85,11 +85,19 @@ def bootemp(x, B=200, seed=1, deterministic_seed=None):
     q = sorted(stats)
     lo = q[max(0, int(math.floor(0.025 * (B - 1))))]
     hi = q[min(B - 1, int(math.ceil(0.975 * (B - 1))))]
-    return RichResult(payload={
-        "estimate": Pn, "boot_mean": bm, "boot_sd": bsd,
-        "process_sd": math.sqrt(n) * bsd, "ci_lower": lo, "ci_upper": hi,
-        "B": float(B), "n": float(n),
-        "method": "Nonparametric bootstrap, Kosorok Section 2.2.3"})
+    return RichResult(
+        payload={
+            "estimate": Pn,
+            "boot_mean": bm,
+            "boot_sd": bsd,
+            "process_sd": math.sqrt(n) * bsd,
+            "ci_lower": lo,
+            "ci_upper": hi,
+            "B": float(B),
+            "n": float(n),
+            "method": "Nonparametric bootstrap, Kosorok Section 2.2.3",
+        }
+    )
 
 
 kosorok_bootstrap_empirical = bootemp

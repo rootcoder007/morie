@@ -114,8 +114,7 @@ def _dist(a, b):
     return math.sqrt(sum((a[k] - b[k]) ** 2 for k in range(len(a))))
 
 
-def smooth_knn_dist(distances, n_neighbors, rho=None, tol=1e-5,
-                    max_iter=64, min_scale=1e-3):
+def smooth_knn_dist(distances, n_neighbors, rho=None, tol=1e-5, max_iter=64, min_scale=1e-3):
     r"""Algorithm 3: the :math:`\sigma` that fixes the fuzzy cardinality.
 
     Binary search for :math:`\sigma` with
@@ -163,13 +162,11 @@ def fuzzy_simplicial_set(X, n_neighbors=15, symmetrize=True):
     if k < 2:
         raise ValueError("scumap: n_neighbors must be at least 2")
     if k >= n:
-        raise ValueError("scumap: n_neighbors (%d) must be smaller than "
-                         "the number of points (%d)" % (k, n))
+        raise ValueError(f"scumap: n_neighbors ({int(k)}) must be smaller than the number of points ({int(n)})")
     A = [[0.0] * n for _ in range(n)]
     rhos, sigmas, neighbours = [], [], []
     for i in range(n):
-        order = sorted((j for j in range(n) if j != i),
-                       key=lambda j: _dist(rows[i], rows[j]))[:k]
+        order = sorted((j for j in range(n) if j != i), key=lambda j: _dist(rows[i], rows[j]))[:k]
         dists = [_dist(rows[i], rows[j]) for j in order]
         sigma, rho = smooth_knn_dist(dists, k)
         rhos.append(rho)
@@ -178,12 +175,9 @@ def fuzzy_simplicial_set(X, n_neighbors=15, symmetrize=True):
         for j, dij in zip(order, dists):
             A[i][j] = math.exp(-max(0.0, dij - rho) / sigma)
     if not symmetrize:
-        return {"A": A, "B": A, "rho": rhos, "sigma": sigmas,
-                "neighbours": neighbours, "n": n}
-    B = [[A[i][j] + A[j][i] - A[i][j] * A[j][i] for j in range(n)]
-         for i in range(n)]
-    return {"A": A, "B": B, "rho": rhos, "sigma": sigmas,
-            "neighbours": neighbours, "n": n}
+        return {"A": A, "B": A, "rho": rhos, "sigma": sigmas, "neighbours": neighbours, "n": n}
+    B = [[A[i][j] + A[j][i] - A[i][j] * A[j][i] for j in range(n)] for i in range(n)]
+    return {"A": A, "B": B, "rho": rhos, "sigma": sigmas, "neighbours": neighbours, "n": n}
 
 
 def _eigh_small(M):
@@ -203,8 +197,7 @@ def spectral_layout(B, n_components=2, laplacian="normalised"):
     which is a misprint (see the module docstring).
     """
     if laplacian not in ("normalised", "as_printed"):
-        raise ValueError("scumap: laplacian must be 'normalised' or "
-                         "'as_printed'")
+        raise ValueError("scumap: laplacian must be 'normalised' or 'as_printed'")
     n = len(B)
     d = [sum(B[i]) for i in range(n)]
     L = [[0.0] * n for _ in range(n)]
@@ -218,11 +211,10 @@ def spectral_layout(B, n_components=2, laplacian="normalised"):
                 L[i][j] = math.sqrt(d[i]) * lij * math.sqrt(d[j])
     _, vecs = _eigh_small(L)
     # skip the trivial first eigenvector
-    picked = vecs[1:1 + int(n_components)]
+    picked = vecs[1 : 1 + int(n_components)]
     while len(picked) < int(n_components):
         picked.append([0.0] * n)
-    Y = [[picked[c][i] for c in range(int(n_components))]
-         for i in range(n)]
+    Y = [[picked[c][i] for c in range(int(n_components))] for i in range(n)]
     # scale to a sensible starting spread, as the reference does
     span = 0.0
     for c in range(int(n_components)):
@@ -241,8 +233,7 @@ def fit_ab(min_dist=0.1, spread=1.0, n_grid=300, iters=200):
     if spread <= 0:
         raise ValueError("scumap: spread must be positive")
     xs = [3.0 * spread * t / float(n_grid - 1) for t in range(n_grid)]
-    ys = [1.0 if x < min_dist else math.exp(-(x - min_dist) / spread)
-          for x in xs]
+    ys = [1.0 if x < min_dist else math.exp(-(x - min_dist) / spread) for x in xs]
 
     def loss(a, b):
         tot = 0.0
@@ -256,8 +247,7 @@ def fit_ab(min_dist=0.1, spread=1.0, n_grid=300, iters=200):
     step = 0.5
     for _ in range(int(iters)):
         best = (loss(a, b), a, b)
-        for da, db in ((step, 0.0), (-step, 0.0), (0.0, step),
-                       (0.0, -step), (step, step), (-step, -step)):
+        for da, db in ((step, 0.0), (-step, 0.0), (0.0, step), (0.0, -step), (step, step), (-step, -step)):
             na, nb = a + da, b + db
             if na <= 0 or nb <= 0:
                 continue
@@ -279,13 +269,25 @@ def _rng(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
-def umap_singlecell(X, n_neighbors=15, min_dist=0.1, n_components=2,
-                    n_epochs=200, learning_rate=1.0, spread=1.0,
-                    negative_sample_rate=5, init="spectral", seed=0,
-                    laplacian="normalised", a=None, b=None):
+def umap_singlecell(
+    X,
+    n_neighbors=15,
+    min_dist=0.1,
+    n_components=2,
+    n_epochs=200,
+    learning_rate=1.0,
+    spread=1.0,
+    negative_sample_rate=5,
+    init="spectral",
+    seed=0,
+    laplacian="normalised",
+    a=None,
+    b=None,
+):
     """UMAP embedding of ``X`` (McInnes, Healy & Melville 2018).
 
     ``init`` is ``"spectral"`` (Algorithm 4, the paper's recommendation)
@@ -313,8 +315,7 @@ def umap_singlecell(X, n_neighbors=15, min_dist=0.1, n_components=2,
     else:
         Y = [[20.0 * (rnd() - 0.5) for _ in range(d)] for _ in range(n)]
 
-    edges = [(i, j, B[i][j]) for i in range(n) for j in range(i + 1, n)
-             if B[i][j] > 0.0]
+    edges = [(i, j, B[i][j]) for i in range(n) for j in range(i + 1, n) if B[i][j] > 0.0]
     if not edges:
         raise ValueError("scumap: the fuzzy graph has no edges")
     w_max = max(w for _, _, w in edges)
@@ -322,15 +323,11 @@ def umap_singlecell(X, n_neighbors=15, min_dist=0.1, n_components=2,
     for epoch in range(int(n_epochs)):
         alpha = learning_rate * (1.0 - epoch / float(n_epochs))
         for i, j, w in edges:
-            if rnd() > w / w_max:      # sample edges by membership
+            if rnd() > w / w_max:  # sample edges by membership
                 continue
             diff = [Y[i][c] - Y[j][c] for c in range(d)]
             dist2 = sum(v * v for v in diff)
-            if dist2 > 0.0:
-                coeff = (-2.0 * a * b * dist2 ** (b - 1.0)) / \
-                    (1.0 + a * dist2 ** b)
-            else:
-                coeff = 0.0
+            coeff = -2.0 * a * b * dist2 ** (b - 1.0) / (1.0 + a * dist2**b) if dist2 > 0.0 else 0.0
             for c in range(d):
                 g = _clip(coeff * diff[c])
                 Y[i][c] += alpha * g
@@ -342,8 +339,7 @@ def umap_singlecell(X, n_neighbors=15, min_dist=0.1, n_components=2,
                 diff = [Y[i][c] - Y[k][c] for c in range(d)]
                 dist2 = sum(v * v for v in diff)
                 if dist2 > 0.0:
-                    coeff = (2.0 * b) / \
-                        ((_EPS + dist2) * (1.0 + a * dist2 ** b))
+                    coeff = (2.0 * b) / ((_EPS + dist2) * (1.0 + a * dist2**b))
                 elif i != k:
                     coeff = 0.0
                 else:
@@ -352,32 +348,38 @@ def umap_singlecell(X, n_neighbors=15, min_dist=0.1, n_components=2,
                     g = _clip(coeff * diff[c]) if dist2 > 0.0 else 4.0
                     Y[i][c] += alpha * g
 
-    return RichResult(payload={
-        "estimate": Y,
-        "embedding": Y,
-        "graph": B,
-        "directed_graph": graph["A"],
-        "rho": graph["rho"],
-        "sigma": graph["sigma"],
-        "neighbours": graph["neighbours"],
-        "a": a,
-        "b": b,
-        "n_neighbors": int(n_neighbors),
-        "min_dist": float(min_dist),
-        "n_components": d,
-        "n_epochs": int(n_epochs),
-        "init": init,
-        "laplacian": laplacian,
-        "n": n,
-        "method": ("UMAP (McInnes, Healy & Melville 2018): fuzzy "
-                   "simplicial sets, t-conorm symmetrisation, %s "
-                   "initialisation, cross-entropy SGD" % init),
-        "note": ("distances are Euclidean and neighbours are found "
-                 "exactly, not approximately, so this is O(n^2) and "
-                 "meant for the sample sizes an anchor can check; the "
-                 "paper's Algorithm 4 misprints the normalised "
-                 "Laplacian, see laplacian="),
-    })
+    return RichResult(
+        payload={
+            "estimate": Y,
+            "embedding": Y,
+            "graph": B,
+            "directed_graph": graph["A"],
+            "rho": graph["rho"],
+            "sigma": graph["sigma"],
+            "neighbours": graph["neighbours"],
+            "a": a,
+            "b": b,
+            "n_neighbors": int(n_neighbors),
+            "min_dist": float(min_dist),
+            "n_components": d,
+            "n_epochs": int(n_epochs),
+            "init": init,
+            "laplacian": laplacian,
+            "n": n,
+            "method": (
+                "UMAP (McInnes, Healy & Melville 2018): fuzzy "
+                f"simplicial sets, t-conorm symmetrisation, {init} "
+                "initialisation, cross-entropy SGD"
+            ),
+            "note": (
+                "distances are Euclidean and neighbours are found "
+                "exactly, not approximately, so this is O(n^2) and "
+                "meant for the sample sizes an anchor can check; the "
+                "paper's Algorithm 4 misprints the normalised "
+                "Laplacian, see laplacian="
+            ),
+        }
+    )
 
 
 def _clip(v, lim=4.0):
@@ -393,14 +395,17 @@ scumap = umap_singlecell
 
 
 def cheatsheet():
-    return ("scumap: UMAP (McInnes, Healy & Melville 2018). Membership "
-            "exp(-max(0, d - rho)/sigma) to each of the n_neighbors "
-            "nearest points, rho the nearest-neighbour distance and "
-            "sigma solved so the memberships sum to log2(n_neighbors); "
-            "symmetrise by the t-conorm B = A + A' - A.A'; initialise "
-            "from the normalised-Laplacian eigenvectors; then SGD on the "
-            "fuzzy cross entropy with the paper's attractive and "
-            "repulsive forces, a and b fitted to min_dist.")
+    return (
+        "scumap: UMAP (McInnes, Healy & Melville 2018). Membership "
+        "exp(-max(0, d - rho)/sigma) to each of the n_neighbors "
+        "nearest points, rho the nearest-neighbour distance and "
+        "sigma solved so the memberships sum to log2(n_neighbors); "
+        "symmetrise by the t-conorm B = A + A' - A.A'; initialise "
+        "from the normalised-Laplacian eigenvectors; then SGD on the "
+        "fuzzy cross entropy with the paper's attractive and "
+        "repulsive forces, a and b fitted to min_dist."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 umapsinglecell = umap_singlecell

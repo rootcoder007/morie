@@ -65,15 +65,15 @@ def wasserman_logistic_regression(X, y, max_iter=100, tol=1e-10):
     beta = np.zeros(p)
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         eta = X @ beta
         mu = 1.0 / (1.0 + np.exp(-eta))
         W = mu * (1.0 - mu)
         H = X.T @ (X * W[:, None])
         try:
             step = np.linalg.solve(H, X.T @ (y - mu))
-        except np.linalg.LinAlgError:
-            raise ValueError("perfect separation: the MLE is infinite; regularise or change the model.")
+        except np.linalg.LinAlgError as exc:
+            raise ValueError("perfect separation: the MLE is infinite; regularise or change the model.") from exc
         beta = beta + step
         if np.max(np.abs(beta)) > 30.0:
             raise ValueError("perfect separation: the MLE is infinite; regularise or change the model.")
@@ -86,12 +86,19 @@ def wasserman_logistic_regression(X, y, max_iter=100, tol=1e-10):
     W = mu * (1.0 - mu)
     cov = np.linalg.inv(X.T @ (X * W[:, None]))
     se = np.sqrt(np.diag(cov))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "se": [float(v) for v in se], "log_likelihood": ll,
-        "iterations": int(it), "converged": bool(converged),
-        "n": int(n), "p": int(p),
-        "method": "logistic MLE by Newton-Raphson; separation refused"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "se": [float(v) for v in se],
+            "log_likelihood": ll,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "p": int(p),
+            "method": "logistic MLE by Newton-Raphson; separation refused",
+        }
+    )
 
 
 def cheatsheet():

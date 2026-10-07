@@ -29,7 +29,10 @@ def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Gromov-Wasserstein discrepancy", payload=_c.gwdist(Cx=Cx, Cy=Cy, a=a, b=b, n_iter=n_iter, epsilon=epsilon, n_sinkhorn=n_sinkhorn))
+    return RichResult(
+        title="Gromov-Wasserstein discrepancy",
+        payload=_c.gwdist(Cx=Cx, Cy=Cy, a=a, b=b, n_iter=n_iter, epsilon=epsilon, n_sinkhorn=n_sinkhorn),
+    )
 
 
 ot_gromov_wasserstein = gwdist

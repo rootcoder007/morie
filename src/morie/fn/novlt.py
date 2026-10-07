@@ -43,11 +43,16 @@ def novelty(item, popularity):
     tot = sum(pop)
     p = [t / tot for t in pop]
     idx = [int(round(v)) for v in C.vec(item)]
-    nov = [(-math.log(p[i]) / math.log(2.0)) if p[i] > 0.0 else float("inf")
-           for i in idx]
-    return RichResult(payload={
-        "estimate": sum(nov) / len(nov), "nov": nov, "p": p,
-        "n_items": len(p), "method": "Novelty, self-information in bits"})
+    nov = [(-math.log(p[i]) / math.log(2.0)) if p[i] > 0.0 else float("inf") for i in idx]
+    return RichResult(
+        payload={
+            "estimate": sum(nov) / len(nov),
+            "nov": nov,
+            "p": p,
+            "n_items": len(p),
+            "method": "Novelty, self-information in bits",
+        }
+    )
 
 
 def cheatsheet():

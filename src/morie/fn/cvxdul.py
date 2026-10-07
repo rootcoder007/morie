@@ -82,10 +82,8 @@ def boyd_lagrangian(f0, f=None, h=None, lambda_=None, nu=None):
     f0 = float(f0)
     fv = np.atleast_1d(np.asarray(f, dtype=float)).ravel() if f is not None else np.zeros(0)
     hv = np.atleast_1d(np.asarray(h, dtype=float)).ravel() if h is not None else np.zeros(0)
-    lam = (np.zeros(fv.size) if lambda_ is None
-           else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel())
-    nuv = (np.zeros(hv.size) if nu is None
-           else np.atleast_1d(np.asarray(nu, dtype=float)).ravel())
+    lam = np.zeros(fv.size) if lambda_ is None else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel()
+    nuv = np.zeros(hv.size) if nu is None else np.atleast_1d(np.asarray(nu, dtype=float)).ravel()
     if lam.size != fv.size:
         raise ValueError(f"lambda_ has {lam.size} entries but f has {fv.size}")
     if nuv.size != hv.size:
@@ -98,13 +96,16 @@ def boyd_lagrangian(f0, f=None, h=None, lambda_=None, nu=None):
     feasible = bool(np.all(fv <= 1e-12) and np.all(np.abs(hv) <= 1e-12))
     return RichResult(
         title="Lagrangian",
-        summary_lines=[("objective", f0), ("inequality term", ineq),
-                       ("equality term", eq), ("feasible", feasible)],
+        summary_lines=[("objective", f0), ("inequality term", ineq), ("equality term", eq), ("feasible", feasible)],
         payload={
-            "value": f0 + ineq + eq, "objective": f0, "ineq_term": ineq,
-            "eq_term": eq, "feasible": feasible,
+            "value": f0 + ineq + eq,
+            "objective": f0,
+            "ineq_term": ineq,
+            "eq_term": eq,
+            "feasible": feasible,
             "complementary_slackness": slack,
-            "lambda": lam, "nu": nuv,
+            "lambda": lam,
+            "nu": nuv,
             "method": "boyd_lagrangian",
         },
     )

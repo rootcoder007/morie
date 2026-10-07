@@ -29,19 +29,25 @@ def alammar_ndcg_at_k(relevances, k):
 
     def dcg(v):
         v = v[:k]
-        return float(sum((2.0 ** x - 1) / np.log2(i + 2)
-                         for i, x in enumerate(v)))
+        return float(sum((2.0**x - 1) / np.log2(i + 2) for i, x in enumerate(v)))
 
     got = dcg(r)
     ideal = dcg(np.sort(r)[::-1])
     if ideal == 0:
         raise ValueError(
             "every relevance is 0, so IDCG is 0 and NDCG is undefined; "
-            "declaring the ranking perfect there would be a lie.")
-    return RichResult(payload={
-        "estimate": got / ideal, "dcg": got, "idcg": ideal, "k": k,
-        "n": len(r),
-        "method": "NDCG@k (Jarvelin and Kekalainen 2002)"})
+            "declaring the ranking perfect there would be a lie."
+        )
+    return RichResult(
+        payload={
+            "estimate": got / ideal,
+            "dcg": got,
+            "idcg": ideal,
+            "k": k,
+            "n": len(r),
+            "method": "NDCG@k (Jarvelin and Kekalainen 2002)",
+        }
+    )
 
 
 def cheatsheet():

@@ -80,26 +80,26 @@ def geron_blip(images, texts, temperature=1.0, caption_logprobs=None):
     ----------
     Géron Ch 16
     """
-    I = np.asarray(images, dtype=float)
+    I_ = np.asarray(images, dtype=float)
     T = np.asarray(texts, dtype=float)
-    if I.ndim == 1:
-        I = I.reshape(1, -1)
+    if I_.ndim == 1:
+        I_ = I_.reshape(1, -1)
     if T.ndim == 1:
         T = T.reshape(1, -1)
-    if I.ndim != 2 or T.ndim != 2:
+    if I_.ndim != 2 or T.ndim != 2:
         raise ValueError("geron_blip: images and texts must both be 2-D (n, d) embedding matrices")
-    if I.shape != T.shape:
-        raise ValueError(f"geron_blip: images has shape {I.shape} but texts has shape {T.shape}")
-    n = I.shape[0]
+    if I_.shape != T.shape:
+        raise ValueError(f"geron_blip: images has shape {I_.shape} but texts has shape {T.shape}")
+    n = I_.shape[0]
     if n < 2:
         raise ValueError("geron_blip: contrastive learning needs at least 2 pairs in the batch")
-    if not (np.all(np.isfinite(I)) and np.all(np.isfinite(T))):
+    if not (np.all(np.isfinite(I_)) and np.all(np.isfinite(T))):
         raise ValueError("geron_blip: embeddings must be finite")
     tau = float(temperature)
     if not np.isfinite(tau) or tau <= 0:
         raise ValueError(f"geron_blip: temperature must be positive, got {tau}")
 
-    In = _l2_normalize(I)
+    In = _l2_normalize(I_)
     Tn = _l2_normalize(T)
     sim = In @ Tn.T
     logits = sim / tau
@@ -112,11 +112,17 @@ def geron_blip(images, texts, temperature=1.0, caption_logprobs=None):
 
     pos = sim[idx, idx]
     neg = sim[idx, (idx + 1) % n]
-    sig = lambda z: 1.0 / (1.0 + np.exp(-z))
-    itm = float(
-        -np.mean(np.log(np.clip(sig(pos / tau), 1e-15, None)))
-        - np.mean(np.log(np.clip(1.0 - sig(neg / tau), 1e-15, None)))
-    ) / 2.0
+
+    def sig(z):
+        return 1.0 / (1.0 + np.exp(-z))
+
+    itm = (
+        float(
+            -np.mean(np.log(np.clip(sig(pos / tau), 1e-15, None)))
+            - np.mean(np.log(np.clip(1.0 - sig(neg / tau), 1e-15, None)))
+        )
+        / 2.0
+    )
 
     lm = None
     if caption_logprobs is not None:

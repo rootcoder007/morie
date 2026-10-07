@@ -884,10 +884,10 @@ def normalize_weights(
 
     Examples
     --------
-    >>> import numpy as np
+    >>> from morie.fn import _array_core as np
     >>> w = np.array([2.0, 4.0, 6.0])
     >>> w_norm = normalize_weights(w, target="sample_size")
-    >>> np.isclose(w_norm.sum(), 3.0)
+    >>> bool(np.isclose(w_norm.sum(), 3.0))
     True
     """
     w = np.asarray(weights, dtype=float).copy()

@@ -7,9 +7,9 @@ Hirano and Porter (2009) *Econometrica* 77:1683-1701.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bnsadm import (
     bound_admissible_estimators,
     minimax_regret_constant,
@@ -20,10 +20,10 @@ from morie.fn.kmperm import (
     permutation_attention_masks,
 )
 
-
 # --------------------------------------------------------------------
 # XLNet permutation language model
 # --------------------------------------------------------------------
+
 
 def toy_logits(seed=0, T=8, V=12):
     rng = np.random.default_rng(seed)
@@ -45,9 +45,7 @@ def test_the_full_sequence_loss_does_not_depend_on_the_permutation():
     base = kamath_permutation_lm_loss(lg, y, np.arange(8))["loss"]
     for _ in range(10):
         z = rng.permutation(8)
-        assert kamath_permutation_lm_loss(lg, y, z)["loss"] == pytest.approx(
-            base, abs=1e-12
-        )
+        assert kamath_permutation_lm_loss(lg, y, z)["loss"] == pytest.approx(base, abs=1e-12)
 
 
 def test_order_invariance_is_reported_and_partial_prediction_breaks_it():
@@ -62,8 +60,7 @@ def test_order_invariance_is_reported_and_partial_prediction_breaks_it():
 def test_partial_prediction_actually_differs_across_orders():
     lg, y = toy_logits(seed=2)
     a = kamath_permutation_lm_loss(lg, y, np.arange(8), num_predict=2)["loss"]
-    b = kamath_permutation_lm_loss(lg, y, np.arange(8)[::-1],
-                                   num_predict=2)["loss"]
+    b = kamath_permutation_lm_loss(lg, y, np.arange(8)[::-1], num_predict=2)["loss"]
     assert a != pytest.approx(b)
 
 
@@ -80,8 +77,7 @@ def test_partial_prediction_scores_the_longest_contexts():
     lg, y = toy_logits(seed=4)
     z = np.arange(8)
     full = kamath_permutation_lm_loss(lg, y, z)["mean_context_length"]
-    tail = kamath_permutation_lm_loss(lg, y, z,
-                                      num_predict=2)["mean_context_length"]
+    tail = kamath_permutation_lm_loss(lg, y, z, num_predict=2)["mean_context_length"]
     assert tail > full
 
 
@@ -174,29 +170,24 @@ def test_input_validation():
 # Differentially private mean
 # --------------------------------------------------------------------
 
+
 def test_sensitivity_is_the_width_over_n():
-    out = gauss_subgaussian_estimator(np.arange(50.0), C=10.0, lower=0.0,
-                                      epsilon=1.0, seed=0)
+    out = gauss_subgaussian_estimator(np.arange(50.0), C=10.0, lower=0.0, epsilon=1.0, seed=0)
     assert out["sensitivity"] == pytest.approx(10.0 / 50)
 
 
 def test_the_mechanism_is_unbiased_about_the_clipped_mean():
     x = np.linspace(0.0, 1.0, 200)
-    draws = [gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0,
-                                         seed=s)["estimate"]
-             for s in range(4000)]
-    mu = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0,
-                                     seed=0)["clipped_mean"]
+    draws = [gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0, seed=s)["estimate"] for s in range(4000)]
+    mu = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0, seed=0)["clipped_mean"]
     assert abs(float(np.mean(draws)) - mu) < 0.002
 
 
 def test_the_noise_standard_deviation_matches_the_laplace_scale():
     x = np.linspace(0.0, 1.0, 100)
-    draws = np.array([
-        gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.5,
-                                    seed=s)["noise_drawn"]
-        for s in range(8000)
-    ])
+    draws = np.array(
+        [gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.5, seed=s)["noise_drawn"] for s in range(8000)]
+    )
     expected = math.sqrt(2.0) * (1.0 / 100) / 0.5
     assert float(np.std(draws)) == pytest.approx(expected, rel=0.05)
 
@@ -209,17 +200,14 @@ def test_tighter_privacy_costs_more_noise():
 
 
 def test_more_data_costs_less_noise_at_a_fixed_epsilon():
-    a = gauss_subgaussian_estimator(np.linspace(0, 1, 100), C=1.0, lower=0.0,
-                                    epsilon=1.0, seed=0)
-    b = gauss_subgaussian_estimator(np.linspace(0, 1, 10000), C=1.0,
-                                    lower=0.0, epsilon=1.0, seed=0)
+    a = gauss_subgaussian_estimator(np.linspace(0, 1, 100), C=1.0, lower=0.0, epsilon=1.0, seed=0)
+    b = gauss_subgaussian_estimator(np.linspace(0, 1, 10000), C=1.0, lower=0.0, epsilon=1.0, seed=0)
     assert a["noise_sd"] == pytest.approx(100 * b["noise_sd"], rel=1e-9)
 
 
 def test_clipping_bias_is_reported_and_signed_correctly():
     x = np.array([0.0, 0.0, 0.0, 100.0])
-    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0,
-                                      seed=0)
+    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0, seed=0)
     assert out["n_clipped"] == 1
     assert out["clipped_mean"] < out["non_private_mean"]
     assert out["clipping_bias"] < 0
@@ -228,22 +216,19 @@ def test_clipping_bias_is_reported_and_signed_correctly():
 
 def test_clipping_bias_is_zero_when_nothing_is_clipped():
     x = np.linspace(0.2, 0.8, 50)
-    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0,
-                                      seed=0)
+    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=1.0, seed=0)
     assert out["n_clipped"] == 0
     assert out["clipping_bias"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_choosing_the_width_from_the_data_is_flagged_as_a_leak():
-    out = gauss_subgaussian_estimator(np.linspace(0, 1, 40), epsilon=1.0,
-                                      seed=0)
+    out = gauss_subgaussian_estimator(np.linspace(0, 1, 40), epsilon=1.0, seed=0)
     assert any("range of y" in w for w in out.warnings)
 
 
 def test_the_naive_interval_is_narrower_than_the_honest_one():
     x = np.linspace(0.0, 1.0, 60)
-    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.2,
-                                      seed=0)
+    out = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.2, seed=0)
     naive_w = out["ci_naive_upper"] - out["ci_naive_lower"]
     honest_w = out["ci_upper"] - out["ci_lower"]
     assert honest_w > naive_w
@@ -257,8 +242,7 @@ def test_the_honest_interval_covers_and_the_naive_one_undercovers():
     hit_h = hit_n = 0
     reps = 1500
     for s in range(reps):
-        o = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.05,
-                                        seed=s)
+        o = gauss_subgaussian_estimator(x, C=1.0, lower=0.0, epsilon=0.05, seed=s)
         hit_h += o["ci_lower"] <= truth <= o["ci_upper"]
         hit_n += o["ci_naive_lower"] <= truth <= o["ci_naive_upper"]
     assert hit_h / reps > 0.95
@@ -266,18 +250,17 @@ def test_the_honest_interval_covers_and_the_naive_one_undercovers():
 
 
 def test_the_gaussian_mechanism_uses_the_dwork_roth_sigma():
-    out = gauss_subgaussian_estimator(np.linspace(0, 1, 100), C=1.0,
-                                      lower=0.0, epsilon=0.5,
-                                      mechanism="gaussian", delta=1e-6,
-                                      seed=0)
+    out = gauss_subgaussian_estimator(
+        np.linspace(0, 1, 100), C=1.0, lower=0.0, epsilon=0.5, mechanism="gaussian", delta=1e-6, seed=0
+    )
     expected = (1.0 / 100) * math.sqrt(2 * math.log(1.25 / 1e-6)) / 0.5
     assert out["noise_scale"] == pytest.approx(expected)
 
 
 def test_the_gaussian_bound_warns_outside_its_proved_range():
-    out = gauss_subgaussian_estimator(np.linspace(0, 1, 50), C=1.0,
-                                      lower=0.0, epsilon=2.0,
-                                      mechanism="gaussian", seed=0)
+    out = gauss_subgaussian_estimator(
+        np.linspace(0, 1, 50), C=1.0, lower=0.0, epsilon=2.0, mechanism="gaussian", seed=0
+    )
     assert any("epsilon < 1" in w for w in out.warnings)
 
 
@@ -332,13 +315,13 @@ def test_dp_input_validation():
     with pytest.raises(ValueError, match="at least one finite"):
         gauss_subgaussian_estimator([np.nan], C=1.0)
     with pytest.raises(ValueError, match="delta"):
-        gauss_subgaussian_estimator([1.0, 2.0], C=1.0, mechanism="gaussian",
-                                    delta=2.0)
+        gauss_subgaussian_estimator([1.0, 2.0], C=1.0, mechanism="gaussian", delta=2.0)
 
 
 # --------------------------------------------------------------------
 # Efficiency and minimax bounds
 # --------------------------------------------------------------------
+
 
 def ate_design(seed=0, n=4000, tau=1.0, conf=0.6, het=0.0, sd=1.0):
     rng = np.random.default_rng(seed)
@@ -416,9 +399,7 @@ def test_heterogeneity_adds_to_the_bound_and_is_isolated():
 
 def test_the_two_components_sum_to_the_bound():
     out = bound_admissible_estimators(*ate_design(het=0.8)[:3])
-    assert out["overlap_term"] + out["heterogeneity_term"] == pytest.approx(
-        out["efficiency_bound"]
-    )
+    assert out["overlap_term"] + out["heterogeneity_term"] == pytest.approx(out["efficiency_bound"])
 
 
 def test_a_noisier_outcome_raises_only_the_overlap_term():
@@ -436,9 +417,7 @@ def test_the_bound_on_the_standard_error_scales_as_one_over_root_n():
 
 def test_the_regret_bound_is_the_constant_times_the_se_bound():
     out = bound_admissible_estimators(*ate_design()[:3])
-    assert out["minimax_regret_bound"] == pytest.approx(
-        out["minimax_constant"] * out["se_bound"]
-    )
+    assert out["minimax_regret_bound"] == pytest.approx(out["minimax_constant"] * out["se_bound"])
 
 
 def test_the_plug_in_rule_does_not_beat_the_minimax_regret_bound():

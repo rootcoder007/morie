@@ -1,7 +1,6 @@
 """Tests for gpmlt.gp_multitask."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpmlt import gp_multitask
 
 
@@ -13,9 +12,9 @@ def _to_matrix(arr):
 def test_gpmlt_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
-    X = _to_matrix(rng.normal(0, 1, (5, 2)))         # 5 inputs in 2-D
-    y_tasks = _to_matrix(rng.normal(0, 1, (2, 5)))   # 2 tasks, 5 observations each
-    X_test = _to_matrix(rng.normal(0, 1, (3, 2)))     # 3 test inputs in 2-D
+    X = _to_matrix(rng.normal(0, 1, (5, 2)))  # 5 inputs in 2-D
+    y_tasks = _to_matrix(rng.normal(0, 1, (2, 5)))  # 2 tasks, 5 observations each
+    X_test = _to_matrix(rng.normal(0, 1, (3, 2)))  # 3 test inputs in 2-D
 
     result = gp_multitask(X, y_tasks, X_test)
     assert isinstance(result, dict)
@@ -25,9 +24,9 @@ def test_gpmlt_basic():
     assert "tasks" in result and result["tasks"] == 2
     assert "n" in result and result["n"] == 5
     assert isinstance(result["mean"], list)
-    assert len(result["mean"]) == 2          # one row per task
+    assert len(result["mean"]) == 2  # one row per task
     for row in result["mean"]:
-        assert len(row) == 3                 # one prediction per test input
+        assert len(row) == 3  # one prediction per test input
 
 
 def test_gpmlt_edge():

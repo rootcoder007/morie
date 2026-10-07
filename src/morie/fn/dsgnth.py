@@ -18,7 +18,7 @@ not the same claim as "the design exists".
 """
 
 import math
-from itertools import combinations, permutations
+from itertools import combinations
 
 from ._richresult import RichResult
 
@@ -89,7 +89,7 @@ def bibd_parameters(v, k, lam):
         b_ok = (v * r) % k == 0
         b = (v * r) // k if b_ok else None
     div_ok = r_ok and b_ok
-    fisher_ok = (b is not None and b >= v)
+    fisher_ok = b is not None and b >= v
     feasible = div_ok and fisher_ok
 
     # a few cases the arithmetic alone cannot settle
@@ -100,8 +100,7 @@ def bibd_parameters(v, k, lam):
         note = "ruled out by the counting or Fisher conditions"
     elif (v, k, lam) == (22, 7, 2):
         exists = False
-        note = ("ruled out by Bruck-Ryser-Chowla despite passing every "
-                "counting condition")
+        note = "ruled out by Bruck-Ryser-Chowla despite passing every counting condition"
     elif k == v:
         exists = True
         note = "trivial: the single block containing every point"
@@ -117,7 +116,11 @@ def bibd_parameters(v, k, lam):
             ("Exists", exists),
         ],
         payload={
-            "v": v, "k": k, "lambda": lam, "r": r, "b": b,
+            "v": v,
+            "k": k,
+            "lambda": lam,
+            "r": r,
+            "b": b,
             "estimate": float(b) if b is not None else float("nan"),
             "divisibility_ok": div_ok,
             "r_integral": r_ok,
@@ -131,9 +134,8 @@ def bibd_parameters(v, k, lam):
         },
         interpretation=(
             f"A ({v}, {k}, {lam})-BIBD would need r = {r} and b = {b}."
-            if feasible else
-            f"No ({v}, {k}, {lam})-BIBD can exist: the counting conditions "
-            "fail."
+            if feasible
+            else f"No ({v}, {k}, {lam})-BIBD can exist: the counting conditions fail."
         ),
     )
     if feasible and exists is None:
@@ -144,10 +146,7 @@ def bibd_parameters(v, k, lam):
             "Bruck-Ryser-Chowla. `exists` is left undetermined here."
         )
     if exists is False and feasible:
-        out.warnings.append(
-            f"This parameter set is arithmetically feasible but the design "
-            f"does not exist: {note}."
-        )
+        out.warnings.append(f"This parameter set is arithmetically feasible but the design does not exist: {note}.")
     return out
 
 
@@ -200,16 +199,12 @@ def steiner_triple_system(v, construct=True):
             for a in range(n):
                 for b in range(a + 1, n):
                     m = ((a + b) * half) % n
-                    triples.append([idx[(a, j)], idx[(b, j)],
-                                    idx[(m, (j + 1) % 3)]])
+                    triples.append([idx[(a, j)], idx[(b, j)], idx[(m, (j + 1) % 3)]])
         seen = {}
-        ok = True
         for t in triples:
             for p in combinations(sorted(t), 2):
                 seen[p] = seen.get(p, 0) + 1
-        verified = (len(triples) == n_triples
-                    and len(seen) == math.comb(v, 2)
-                    and all(x == 1 for x in seen.values()))
+        verified = len(triples) == n_triples and len(seen) == math.comb(v, 2) and all(x == 1 for x in seen.values())
 
     out = RichResult(
         title=f"Steiner triple system STS({v})",
@@ -222,8 +217,7 @@ def steiner_triple_system(v, construct=True):
         payload={
             "v": v,
             "exists": exists,
-            "estimate": float(n_triples) if n_triples is not None
-            else float("nan"),
+            "estimate": float(n_triples) if n_triples is not None else float("nan"),
             "n_triples": n_triples,
             "triples": triples,
             "verified": verified,
@@ -234,9 +228,8 @@ def steiner_triple_system(v, construct=True):
         },
         interpretation=(
             f"STS({v}) exists and has {n_triples} triples."
-            if exists else
-            f"No STS({v}) exists: {v} is {v % 6} mod 6, and only 1 and 3 "
-            "admit one."
+            if exists
+            else f"No STS({v}) exists: {v} is {v % 6} mod 6, and only 1 and 3 admit one."
         ),
     )
     if verified is False:
@@ -288,9 +281,14 @@ def is_latin_square(square):
     ok_rows = all(len(set(r)) == n for r in L)
     ok_cols = all(len({L[i][j] for i in range(n)}) == n for j in range(n))
     ok_syms = len(syms) == n
-    return {"valid": ok_rows and ok_cols and ok_syms,
-            "rows_ok": ok_rows, "columns_ok": ok_cols,
-            "symbol_count_ok": ok_syms, "order": n, "symbols": sorted(syms)}
+    return {
+        "valid": ok_rows and ok_cols and ok_syms,
+        "rows_ok": ok_rows,
+        "columns_ok": ok_cols,
+        "symbol_count_ok": ok_syms,
+        "order": n,
+        "symbols": sorted(syms),
+    }
 
 
 def are_orthogonal(square_a, square_b):
@@ -330,13 +328,17 @@ def are_orthogonal(square_a, square_b):
             p = (A[i][j], B[i][j])
             pairs[p] = pairs.get(p, 0) + 1
     cond = len(pairs) == n * n and all(c == 1 for c in pairs.values())
-    return {"orthogonal": bool(cond and va and vb),
-            "pair_condition_holds": cond,
-            "both_are_latin": va and vb,
-            "first_is_latin": va, "second_is_latin": vb,
-            "pairs_seen": len(pairs), "pairs_needed": n * n,
-            "repeated": sorted(p for p, c in pairs.items() if c > 1),
-            "order": n}
+    return {
+        "orthogonal": bool(cond and va and vb),
+        "pair_condition_holds": cond,
+        "both_are_latin": va and vb,
+        "first_is_latin": va,
+        "second_is_latin": vb,
+        "pairs_seen": len(pairs),
+        "pairs_needed": n * n,
+        "repeated": sorted(p for p, c in pairs.items() if c > 1),
+        "order": n,
+    }
 
 
 def hamming_bound(n, d, q=2):
@@ -369,7 +371,7 @@ def hamming_bound(n, d, q=2):
         raise ValueError(f"d must not exceed n; got d = {d}, n = {n}.")
     t = (d - 1) // 2
     vol = sum(math.comb(n, i) * (q - 1) ** i for i in range(t + 1))
-    total = q ** n
+    total = q**n
     bound = total // vol
     exact = total % vol == 0
     return RichResult(
@@ -388,15 +390,13 @@ def hamming_bound(n, d, q=2):
             "ball_volume": vol,
             "total_words": total,
             "is_perfect_possible": exact,
-            "rate_bound": (math.log(bound, q) / n if bound > 0 else
-                           float("-inf")),
-            "n": n, "d": d, "q": q,
+            "rate_bound": (math.log(bound, q) / n if bound > 0 else float("-inf")),
+            "n": n,
+            "d": d,
+            "q": q,
             "method": "Hamming sphere-packing bound (Hamming 1950)",
         },
-        interpretation=(
-            f"No q-ary code of length {n} with minimum distance {d} has more "
-            f"than {bound} codewords."
-        ),
+        interpretation=(f"No q-ary code of length {n} with minimum distance {d} has more than {bound} codewords."),
     )
 
 
@@ -433,7 +433,9 @@ def singleton_bound(n, d, q=2):
             "hamming_bound": ham,
             "tighter": min(bound, ham),
             "hamming_is_tighter": ham < bound,
-            "n": n, "d": d, "q": q,
+            "n": n,
+            "d": d,
+            "q": q,
             "method": "Singleton bound (Singleton 1964)",
         },
     )
@@ -471,8 +473,7 @@ def incidence_matrix_check(blocks, v):
     uncovered = [p for p in all_pairs if p not in pair]
     counts = set(pair.values()) | ({0} if uncovered else set())
     reps = set(point)
-    is_bibd = (len(sizes) == 1 and len(reps) == 1 and len(counts) == 1
-               and not uncovered)
+    is_bibd = len(sizes) == 1 and len(reps) == 1 and len(counts) == 1 and not uncovered
     # read these ONCE. An earlier version called sizes.pop() while
     # building the summary, which mutates the set, so the payload then
     # read an empty one and reported k = None on a valid Fano plane.
@@ -505,15 +506,9 @@ def incidence_matrix_check(blocks, v):
         },
     )
     if uncovered:
-        out.warnings.append(
-            f"{len(uncovered)} pairs appear in no block, so this is not a "
-            "design covering every pair."
-        )
+        out.warnings.append(f"{len(uncovered)} pairs appear in no block, so this is not a design covering every pair.")
     if len(sizes) > 1:
-        out.warnings.append(
-            f"Blocks have differing sizes {sorted(sizes)}; a BIBD needs them "
-            "uniform."
-        )
+        out.warnings.append(f"Blocks have differing sizes {sorted(sizes)}; a BIBD needs them uniform.")
     return out
 
 

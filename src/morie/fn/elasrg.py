@@ -68,24 +68,35 @@ def elastic_net_regression(y, X, lambda1, lambda2, max_iter=10000, tol=1e-12):
     """
     y_arr = np.asarray(y, dtype=float)
     if y_arr.ndim > 1 and y_arr.shape[1] > 1:
-        raise ValueError(f"y has {y_arr.shape[0]} rows of width {y_arr.shape[1]}; "
-                         "pass the RESPONSE first and the design second.")
+        raise ValueError(
+            f"y has {y_arr.shape[0]} rows of width {y_arr.shape[1]}; pass the RESPONSE first and the design second."
+        )
     lam1 = float(lambda1)
     lam2 = float(lambda2)
     if lam1 < 0 or lam2 < 0:
         raise ValueError(f"penalties must be non-negative; got ({lam1}, {lam2}).")
-    Xm, yv, beta, r, const, n, p, it, conv = _enet(X, y_arr.ravel(), lam1, lam2,
-                                                   max_iter, tol)
+    Xm, yv, beta, r, const, n, p, it, conv = _enet(X, y_arr.ravel(), lam1, lam2, max_iter, tol)
     total = lam1 + lam2
-    obj = (0.5 * float(r @ r) + lam1 * float(np.sum(np.abs(beta[~const])))
-           + 0.5 * lam2 * float(np.sum(beta[~const] ** 2)))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "n_nonzero": int(np.sum(beta != 0)), "objective": obj,
-        "lambda1": lam1, "lambda2": lam2, "equivalent_lambda": total,
-        "equivalent_alpha": float(lam1 / total) if total > 0 else float("nan"),
-        "iterations": int(it), "converged": bool(conv), "n": int(n), "p": int(p),
-        "method": "elastic net, separate (lambda1, lambda2); solver shared with eslnln"})
+    obj = (
+        0.5 * float(r @ r) + lam1 * float(np.sum(np.abs(beta[~const]))) + 0.5 * lam2 * float(np.sum(beta[~const] ** 2))
+    )
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "n_nonzero": int(np.sum(beta != 0)),
+            "objective": obj,
+            "lambda1": lam1,
+            "lambda2": lam2,
+            "equivalent_lambda": total,
+            "equivalent_alpha": float(lam1 / total) if total > 0 else float("nan"),
+            "iterations": int(it),
+            "converged": bool(conv),
+            "n": int(n),
+            "p": int(p),
+            "method": "elastic net, separate (lambda1, lambda2); solver shared with eslnln",
+        }
+    )
 
 
 def cheatsheet():

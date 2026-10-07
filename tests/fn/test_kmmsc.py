@@ -1,7 +1,6 @@
 """Tests for kmmsc.kamath_moverscore."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmmsc import kamath_moverscore
 
 

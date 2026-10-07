@@ -46,10 +46,7 @@ def riman(
     n = christoffel.shape[0]
     G = christoffel
 
-    if christoffel_derivs is not None:
-        dG = np.asarray(christoffel_derivs, dtype=float)
-    else:
-        dG = np.zeros((n, n, n, n))
+    dG = np.asarray(christoffel_derivs, dtype=float) if christoffel_derivs is not None else np.zeros((n, n, n, n))
 
     R = np.zeros((n, n, n, n))
     for rho in range(n):

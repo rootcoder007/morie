@@ -75,9 +75,7 @@ def geron_senet_squeeze_excite(X, W1, W2):
     if A1.shape[1] != C:
         raise ValueError(f"W1 must have {C} columns to consume the squeeze vector, got {A1.shape[1]}.")
     if A2.shape[1] != A1.shape[0]:
-        raise ValueError(
-            f"W2 must have {A1.shape[0]} columns to match the bottleneck, got {A2.shape[1]}."
-        )
+        raise ValueError(f"W2 must have {A1.shape[0]} columns to match the bottleneck, got {A2.shape[1]}.")
     if A2.shape[0] != C:
         raise ValueError(f"W2 must produce {C} channel gates, got {A2.shape[0]}.")
     if not np.all(np.isfinite(A1)) or not np.all(np.isfinite(A2)):
@@ -106,6 +104,7 @@ def geron_senet_squeeze_excite(X, W1, W2):
 
 def cheatsheet():
     return "grsen: z=GAP(X); s=sigmoid(W2 relu(W1 z)); Y = s*X per channel; sigmoid not softmax"
+
 
 # alias kept from the retired placeholder of the same name
 squeeze_excite = geron_senet_squeeze_excite

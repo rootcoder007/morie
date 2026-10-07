@@ -1,7 +1,6 @@
 """Tests for gh_ap_e1.ghosal_bernstein_poly."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_e1 import ghosal_bernstein_poly
 
 
@@ -33,13 +32,14 @@ def test_gh_ap_e1_basic():
     # value at x = 0.5 for the largest K, and compare against f(0.5) = 0.
     # Since |x - 1/2| is symmetric about 0.5, B_K[f](0.5) should be tiny.
     K = K_list[-1]
-    f = lambda x: abs(x - 0.5)
+
+    def f(x):
+        return abs(x - 0.5)
+
     x = 0.5
     import math as _math
-    bk = sum(
-        f(k / K) * _math.comb(K, k) * x ** k * (1.0 - x) ** (K - k)
-        for k in range(K + 1)
-    )
+
+    bk = sum(f(k / K) * _math.comb(K, k) * x**k * (1.0 - x) ** (K - k) for k in range(K + 1))
     expected_bk_minus_f = abs(bk - f(x))
     # The function's err_by_K[-1] is the max over x in {0/20, ..., 20/20},
     # which must be >= the error at x = 0.5.

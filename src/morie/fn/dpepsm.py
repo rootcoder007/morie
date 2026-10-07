@@ -84,10 +84,10 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
     True
     """
     rng = np.random.default_rng(seed)
-    a = np.asarray([np.ravel(mech(np.asarray(D, dtype=float), rng))[0]
-                    for _ in range(int(n_samples))], dtype=float)
-    b = np.asarray([np.ravel(mech(np.asarray(D_prime, dtype=float), rng))[0]
-                    for _ in range(int(n_samples))], dtype=float)
+    a = np.asarray([np.ravel(mech(np.asarray(D, dtype=float), rng))[0] for _ in range(int(n_samples))], dtype=float)
+    b = np.asarray(
+        [np.ravel(mech(np.asarray(D_prime, dtype=float), rng))[0] for _ in range(int(n_samples))], dtype=float
+    )
     lo = min(a.min(), b.min())
     hi = max(a.max(), b.max())
     if lo == hi:
@@ -95,9 +95,13 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
             title="Empirical epsilon",
             summary_lines=[("epsilon (empirical)", float("inf"))],
             warnings=["the mechanism is deterministic; it provides no privacy"],
-            payload={"epsilon_empirical": float("inf"), "max_log_ratio": float("inf"),
-                     "n_usable_bins": 0, "n_excluded_bins": 0,
-                     "method": "epsilon_dp"},
+            payload={
+                "epsilon_empirical": float("inf"),
+                "max_log_ratio": float("inf"),
+                "n_usable_bins": 0,
+                "n_excluded_bins": 0,
+                "method": "epsilon_dp",
+            },
         )
     edges = np.linspace(lo, hi, int(bins) + 1)
     ca, _ = np.histogram(a, bins=edges)
@@ -113,15 +117,17 @@ def epsilon_dp(mech, D, D_prime, n_samples=20000, bins=50, seed=None):
         ratio = float(np.max(np.abs(np.log(pa / pb))))
     return RichResult(
         title="Empirical epsilon",
-        summary_lines=[("epsilon (empirical)", ratio),
-                       ("usable bins", int(usable.sum()))],
-        warnings=["this is a LOWER bound from one dataset pair: it can "
-                  "disprove a claimed guarantee but never establish one"],
+        summary_lines=[("epsilon (empirical)", ratio), ("usable bins", int(usable.sum()))],
+        warnings=[
+            "this is a LOWER bound from one dataset pair: it can disprove a claimed guarantee but never establish one"
+        ],
         payload={
-            "epsilon_empirical": ratio, "max_log_ratio": ratio,
+            "epsilon_empirical": ratio,
+            "max_log_ratio": ratio,
             "n_usable_bins": int(usable.sum()),
             "n_excluded_bins": int((~usable).sum()),
-            "n_samples": int(n_samples), "method": "epsilon_dp",
+            "n_samples": int(n_samples),
+            "method": "epsilon_dp",
         },
     )
 

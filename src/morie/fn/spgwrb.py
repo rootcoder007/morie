@@ -8,9 +8,7 @@ from ._schab_gwr import aic_from_parts, aicc_from_parts, cv_score, gwr_fit, pair
 __all__ = ["schabenberger_gwr_bandwidth"]
 
 
-def schabenberger_gwr_bandwidth(x, y, coords, kernel="gaussian",
-                                criterion="cv", adaptive=False, bounds=None,
-                                tol=1e-4):
+def schabenberger_gwr_bandwidth(x, y, coords, kernel="gaussian", criterion="cv", adaptive=False, bounds=None, tol=1e-4):
     """Choose the GWR bandwidth.
 
     The bandwidth, not the kernel, is what decides a GWR fit -- "the choice
@@ -114,8 +112,7 @@ def schabenberger_gwr_bandwidth(x, y, coords, kernel="gaussian",
     if x.ndim == 1:
         x = x.reshape(-1, 1)
     y = np.asarray(y, dtype=float).ravel()
-    sel = select_bandwidth(y, x, coords, kernel=kernel, criterion=criterion,
-                           adaptive=adaptive, bounds=bounds, tol=tol)
+    sel = select_bandwidth(y, x, coords, kernel=kernel, criterion=criterion, adaptive=adaptive, bounds=bounds, tol=tol)
     bw = sel["bandwidth"]
     D = pairwise_distances(coords)
     fit = gwr_fit(y, x, D, bw, kernel, adaptive)
@@ -162,5 +159,7 @@ def schabenberger_gwr_bandwidth(x, y, coords, kernel="gaussian",
 
 
 def cheatsheet():
-    return ("spgwrb: GWR bandwidth by leave-one-out CV or AICc; fixed or "
-            "adaptive, golden-section search over the bounding-box diagonal")
+    return (
+        "spgwrb: GWR bandwidth by leave-one-out CV or AICc; fixed or "
+        "adaptive, golden-section search over the bounding-box diagonal"
+    )

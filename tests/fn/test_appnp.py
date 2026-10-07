@@ -1,7 +1,6 @@
 """Tests for appnp.appnp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.appnp import appnp
 
 

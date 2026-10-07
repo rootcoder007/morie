@@ -1,7 +1,6 @@
 """Test normalize_signal (nrmlz)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.nrmlz import normalize_signal, nrmlz
 

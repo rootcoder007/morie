@@ -1,7 +1,5 @@
 """Tests for btdir.boot_dirichlet_weights."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.btdir import boot_dirichlet_weights
 
 

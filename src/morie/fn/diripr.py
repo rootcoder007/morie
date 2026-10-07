@@ -59,18 +59,19 @@ def dirichlet_multinomial(counts, alpha=1.0):
     var = [post[j] * (P - post[j]) / (P * P * (P + 1.0)) for j in range(K)]
     lm = math.lgamma(n + 1.0) + math.lgamma(A) - math.lgamma(n + A)
     for j in range(K):
-        lm += math.lgamma(y[j] + a[j]) - math.lgamma(y[j] + 1.0) \
-            - math.lgamma(a[j])
-    return RichResult(payload={
-        "estimate": mean[0],
-        "post_mean": mean,
-        "post_var": var,
-        "post_alpha": post,
-        "log_marginal": lm,
-        "n": n,
-        "K": K,
-        "method": "Dirichlet-multinomial conjugate model",
-    })
+        lm += math.lgamma(y[j] + a[j]) - math.lgamma(y[j] + 1.0) - math.lgamma(a[j])
+    return RichResult(
+        payload={
+            "estimate": mean[0],
+            "post_mean": mean,
+            "post_var": var,
+            "post_alpha": post,
+            "log_marginal": lm,
+            "n": n,
+            "K": K,
+            "method": "Dirichlet-multinomial conjugate model",
+        }
+    )
 
 
 def cheatsheet():

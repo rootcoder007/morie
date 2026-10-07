@@ -8,8 +8,7 @@ from .bdmnto import mtrbound
 __all__ = ["monotone_treatment_response", "monotonetreatmentresponse"]
 
 
-def monotone_treatment_response(y, D, direction="increasing", d=None,
-                                y_min=None, y_max=None):
+def monotone_treatment_response(y, D, direction="increasing", d=None, y_min=None, y_max=None):
     """Manski-Pepper MTR bounds on ``E[Y(d)]``, either direction.
 
     This module is an ALIAS.  The increasing-response bound is
@@ -68,14 +67,18 @@ def monotone_treatment_response(y, D, direction="increasing", d=None,
     lo = float(min(yv)) if y_min is None else float(y_min)
     hi = float(max(yv)) if y_max is None else float(y_max)
     lev = float(max(z)) if d is None else float(d)
-    if direction == "increasing":
-        r = mtrbound(yv, z, lev, lo, hi)
-    else:
-        r = mtrbound(yv, [-v for v in z], -lev, lo, hi)
-    return RichResult(payload={
-        "lower": r["lower"], "upper": r["upper"], "width": r["width"],
-        "nfixed": r["nfixed"], "n": r["n"], "d": lev,
-        "method": "Monotone treatment response bounds (Manski 1997)"})
+    r = mtrbound(yv, z, lev, lo, hi) if direction == "increasing" else mtrbound(yv, [-v for v in z], -lev, lo, hi)
+    return RichResult(
+        payload={
+            "lower": r["lower"],
+            "upper": r["upper"],
+            "width": r["width"],
+            "nfixed": r["nfixed"],
+            "n": r["n"],
+            "d": lev,
+            "method": "Monotone treatment response bounds (Manski 1997)",
+        }
+    )
 
 
 monotonetreatmentresponse = monotone_treatment_response

@@ -8,8 +8,12 @@ from morie.fn.wsmund import wasserman_undirected_graph
 
 
 def _pots():
-    agree = lambda t: 2.0 if t[0] == t[1] else 1.0
-    tri = lambda t: 3.0 if sum(t) == 3 else 1.0
+    def agree(t):
+        return 2.0 if t[0] == t[1] else 1.0
+
+    def tri(t):
+        return 3.0 if sum(t) == 3 else 1.0
+
     return (3, [(0, 1), (0, 1, 2)]), [agree, tri]
 
 
@@ -49,7 +53,7 @@ import morie.fn.wsmund as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

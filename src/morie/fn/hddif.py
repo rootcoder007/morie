@@ -64,10 +64,7 @@ def hadamard_differentiability(
     else:
         h = np.asarray(h, dtype=float).ravel()
 
-    if t_values is None:
-        t_values = np.array([0.1, 0.01, 0.001, 0.0001, 1e-5])
-    else:
-        t_values = np.asarray(t_values, dtype=float)
+    t_values = np.array([0.1, 0.01, 0.001, 0.0001, 1e-05]) if t_values is None else np.asarray(t_values, dtype=float)
 
     phi_theta = phi(theta)
 

@@ -4,17 +4,17 @@ import math
 
 import pytest
 
-
 ITEMS = [[1.2, -0.8, 0.0], [0.9, -0.2, 0.1], [1.5, 0.3, 0.2], [0.7, 1.0, 0.0], [1.1, 1.6, 0.15]]
 X = [[1, 1, 0, 1, 0], [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [1, 0, 1, 0, 0]]
 
 
 def _logpost(t, y, mu=0.0, sd=1.0):
-    lp = -(t - mu) ** 2 / (2 * sd * sd)
+    lp = -((t - mu) ** 2) / (2 * sd * sd)
     for (a, b, c), r in zip(ITEMS, y):
         p = c + (1 - c) / (1 + math.exp(-a * (t - b)))
         lp += math.log(p) if r else math.log(1 - p)
     return lp
+
 
 from morie.fn.theteap import theta_eap
 

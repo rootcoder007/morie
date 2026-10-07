@@ -1,7 +1,6 @@
 """Tests for gh_c14_12.ghosal_pk_process."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_12 import ghosal_pk_process
 
 
@@ -16,8 +15,7 @@ def test_gh_c14_12_basic():
     # J_k ~ Gamma(shape=(3/n_jumps), scale=1), W_k = J_k / sum(J_k),
     # estimate = max(W_k).
     rng = np.random.default_rng(seed)
-    J = [float(rng.gamma(1.0 / n_jumps * 3.0, 1.0))
-         for _ in range(n_jumps)]
+    J = [float(rng.gamma(1.0 / n_jumps * 3.0, 1.0)) for _ in range(n_jumps)]
     T = sum(J)
     W = [j / T for j in J]
     expected_estimate = max(W)

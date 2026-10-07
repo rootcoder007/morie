@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -27,14 +25,17 @@ def mvsml_categorical_count_eq_8_4(X, Z=None, normalize_median=False):
     with a ramp activation.  Unlike the Gaussian kernel its diagonal
     is heterogeneous, so it expresses per-individual genetic variance.
     Keys: estimate."""
-    K = _gp.arccos_kernel(X, Z=Z, depth=1,
-                          normalize_median=normalize_median)
-    ok, lam = _gp.is_positive_semidefinite(K) if Z is None \
-        else (None, None)
-    res = RichResult(payload={"estimate": K[0][0], "kernel": K,
-                              "positive_semidefinite": ok,
-                              "eigenvalues": lam,
-                              "method": "arc-cosine kernel, one hidden layer (MVSML 2022 eq. 8.4)"})
+    K = _gp.arccos_kernel(X, Z=Z, depth=1, normalize_median=normalize_median)
+    ok, lam = _gp.is_positive_semidefinite(K) if Z is None else (None, None)
+    res = RichResult(
+        payload={
+            "estimate": K[0][0],
+            "kernel": K,
+            "positive_semidefinite": ok,
+            "eigenvalues": lam,
+            "method": "arc-cosine kernel, one hidden layer (MVSML 2022 eq. 8.4)",
+        }
+    )
     return with_describe_pointer(res, "msm131")
 
 

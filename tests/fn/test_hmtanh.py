@@ -1,7 +1,6 @@
 """Tests for hmtanh.geron_tanh."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmtanh import geron_tanh
 
 

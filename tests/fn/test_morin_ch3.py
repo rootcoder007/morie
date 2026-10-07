@@ -1,9 +1,10 @@
 """Morin (2016) chapter 3: expectation and variance, book-anchored."""
+
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn import _morin
 
 P = "david_j_morin_probability_for_the_enthusiastic_beginner"
@@ -11,6 +12,7 @@ P = "david_j_morin_probability_for_the_enthusiastic_beginner"
 
 def front(suffix):
     import importlib
+
     mod = importlib.import_module(f"morie.fn.{P}{suffix}")
     ch, e = suffix.split("e")
     return getattr(mod, f"{P}_chapter_{ch}_equation_{e}")
@@ -25,11 +27,10 @@ def test_independence_eq_3_9():
 
 def test_convolution_book_example_eqs_3_11_3_12():
     # X fair on {1,2}, Y uniform on {1,2,3}: P(2..5) = 1/6, 2/6, 2/6, 1/6, E = 3.5
-    r = front("3e11")([1, 2], [0.5, 0.5], [1, 2, 3], [1/3, 1/3, 1/3])
+    r = front("3e11")([1, 2], [0.5, 0.5], [1, 2, 3], [1 / 3, 1 / 3, 1 / 3])
     assert r["values"] == [2.0, 3.0, 4.0, 5.0]
-    assert r["probs"] == pytest.approx([1/6, 2/6, 2/6, 1/6])
-    assert front("3e12")([1, 2], [0.5, 0.5], [1, 2, 3],
-                         [1/3, 1/3, 1/3])["e_sum"] == pytest.approx(3.5)
+    assert r["probs"] == pytest.approx([1 / 6, 2 / 6, 2 / 6, 1 / 6])
+    assert front("3e12")([1, 2], [0.5, 0.5], [1, 2, 3], [1 / 3, 1 / 3, 1 / 3])["e_sum"] == pytest.approx(3.5)
 
 
 def test_linearity_eqs_3_13_3_15():
@@ -40,12 +41,12 @@ def test_linearity_eqs_3_13_3_15():
 def test_variance_anchors_eqs_3_19_to_3_22():
     # die: 35/12 = 2.9166..., book rounds to 2.92
     r = front("3e20")()
-    assert r["variance"] == pytest.approx(35/12, rel=1e-12)
+    assert r["variance"] == pytest.approx(35 / 12, rel=1e-12)
     assert round(r["variance"], 2) == 2.92
     assert front("3e21")()["variance"] == pytest.approx(0.25)
     assert front("3e22")(0.5)["variance"] == pytest.approx(0.25)
-    v, mu = _morin.pmf_variance([1, 2, 3, 4, 5, 6], [1/6] * 6)
-    assert front("3e19")([1, 2, 3, 4, 5, 6], [1/6] * 6)["variance"] == pytest.approx(v)
+    v, mu = _morin.pmf_variance([1, 2, 3, 4, 5, 6], [1 / 6] * 6)
+    assert front("3e19")([1, 2, 3, 4, 5, 6], [1 / 6] * 6)["variance"] == pytest.approx(v)
 
 
 def test_variance_algebra_eqs_3_24_to_3_31():
@@ -68,9 +69,9 @@ def test_binomial_variance_eq_3_33():
 
 
 def test_computational_form_eqs_3_34_3_35():
-    vals, probs = [1, 2, 3, 4, 5, 6], [1/6] * 6
-    assert front("3e34")(vals, probs)["variance"] == pytest.approx(35/12)
-    assert front("3e35")(vals, probs)["variance"] == pytest.approx(35/12)
+    vals, probs = [1, 2, 3, 4, 5, 6], [1 / 6] * 6
+    assert front("3e34")(vals, probs)["variance"] == pytest.approx(35 / 12)
+    assert front("3e35")(vals, probs)["variance"] == pytest.approx(35 / 12)
 
 
 def test_dataset_variance_eqs_3_37_3_60_3_66_3_73():
@@ -80,7 +81,7 @@ def test_dataset_variance_eqs_3_37_3_60_3_66_3_73():
     r = front("3e66")(x)
     assert r["identity_error"] < 1e-12
     # sample variance uses n-1: 32/7
-    assert front("3e73")(x)["sample_variance"] == pytest.approx(32/7)
+    assert front("3e73")(x)["sample_variance"] == pytest.approx(32 / 7)
 
 
 def test_sd_forms_eqs_3_39_to_3_48():
@@ -98,23 +99,22 @@ def test_sd_forms_eqs_3_39_to_3_48():
 
 def test_mean_sds_eqs_3_51_to_3_55():
     assert front("3e51")(64)["sd_tot"] == pytest.approx(4.0)
-    assert front("3e52")(64)["sd_avg"] == pytest.approx(1/16)
+    assert front("3e52")(64)["sd_avg"] == pytest.approx(1 / 16)
     assert front("3e53")(2.0, 4)["sd_mean"] == pytest.approx(1.0)
     assert front("3e54")([1.0, 2.0, 3.0])["mean"] == pytest.approx(2.0)
     # equal sigmas reduce eq (3.55) to eq (3.53)
-    assert front("3e55")([2.0, 2.0, 2.0, 2.0])["sd_avg"] == pytest.approx(
-        front("3e53")(2.0, 4)["sd_mean"])
+    assert front("3e55")([2.0, 2.0, 2.0, 2.0])["sd_avg"] == pytest.approx(front("3e53")(2.0, 4)["sd_mean"])
     assert front("3e55")([3.0, 4.0])["sd_avg"] == pytest.approx(2.5)
 
 
 def test_dice_worked_block_eqs_3_56_to_3_58():
     # book: sqrt(10000 (1/6)(5/6)) = 37 (rounded); avg = 0.0037
     r56 = front("3e56")()
-    assert r56["sd_tot"] == pytest.approx(math.sqrt(10000 * (1/6) * (5/6)), rel=1e-12)
+    assert r56["sd_tot"] == pytest.approx(math.sqrt(10000 * (1 / 6) * (5 / 6)), rel=1e-12)
     assert round(r56["sd_tot"]) == 37
     r57 = front("3e57")()
     assert round(r57["sd_avg"], 4) == 0.0037
-    r58 = front("3e58")(10000, 1/6)
+    r58 = front("3e58")(10000, 1 / 6)
     assert round(r58["sd_single"], 2) == 0.37
     assert round(r58["sd_tot"]) == 37
     assert round(r58["sd_avg"], 4) == 0.0037

@@ -18,14 +18,14 @@ def _enet(X, y, lam1, lam2, max_iter, tol):
     n, p = X.shape
     if y.size != n:
         raise ValueError(f"X has {n} rows but y has {y.size} entries.")
-    colsq = np.sum(X ** 2, axis=0)
+    colsq = np.sum(X**2, axis=0)
     if np.any(colsq == 0):
         raise ValueError("an all-zero column cannot be penalised meaningfully.")
     const = np.array([bool(np.ptp(X[:, j]) == 0) for j in range(p)])
     beta = np.zeros(p)
     r = y.copy()
     converged, it = False, 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         delta = 0.0
         for j in range(p):
             old = beta[j]
@@ -107,14 +107,27 @@ def esl_elastic_net(X, y, lambda_, alpha, max_iter=10000, tol=1e-12):
     lam1, lam2 = lam * alpha, lam * (1.0 - alpha)
     X, y, beta, r, const, n, p, it, conv = _enet(X, y, lam1, lam2, max_iter, tol)
     active = [int(j) for j in np.flatnonzero(beta != 0)]
-    obj = (0.5 * float(r @ r) + lam1 * float(np.sum(np.abs(beta[~const])))
-           + 0.5 * lam2 * float(np.sum(beta[~const] ** 2)))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "n_nonzero": len(active), "active_set": active, "objective": obj,
-        "lambda": lam, "alpha": alpha, "lambda1": lam1, "lambda2": lam2,
-        "iterations": int(it), "converged": bool(conv), "n": int(n), "p": int(p),
-        "method": "elastic net, glmnet (lambda, alpha) parameterisation"})
+    obj = (
+        0.5 * float(r @ r) + lam1 * float(np.sum(np.abs(beta[~const]))) + 0.5 * lam2 * float(np.sum(beta[~const] ** 2))
+    )
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "n_nonzero": len(active),
+            "active_set": active,
+            "objective": obj,
+            "lambda": lam,
+            "alpha": alpha,
+            "lambda1": lam1,
+            "lambda2": lam2,
+            "iterations": int(it),
+            "converged": bool(conv),
+            "n": int(n),
+            "p": int(p),
+            "method": "elastic net, glmnet (lambda, alpha) parameterisation",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for gh_c7_1.ghosal_pt_kl_prop."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c7_1 import ghosal_pt_kl_prop
 
 
@@ -18,10 +17,8 @@ def test_gh_c7_1_basic():
     assert np.isfinite(est)
     assert np.isfinite(var)
     # Independent recomputation from the documented formula.
-    expected_s_inv = sum(1.0 / float(m) ** a_exponent
-                         for m in range(1, m_max + 1))
-    expected_s_var = sum(1.0 / (4.0 * (2.0 * float(m) ** a_exponent + 1.0))
-                         for m in range(1, m_max + 1))
+    expected_s_inv = sum(1.0 / float(m) ** a_exponent for m in range(1, m_max + 1))
+    expected_s_var = sum(1.0 / (4.0 * (2.0 * float(m) ** a_exponent + 1.0)) for m in range(1, m_max + 1))
     assert est == expected_s_inv
     assert var == expected_s_var
     # KL property holds iff the a_m series is summable, i.e. a_exponent > 1.
@@ -34,8 +31,8 @@ def test_gh_c7_1_edge():
     r1 = ghosal_pt_kl_prop(a_exponent=2.0, m_max=1)
     est1 = float(np.asarray(r1["estimate"], dtype=float))
     var1 = float(np.asarray(r1["variance_series"], dtype=float))
-    assert est1 == 1.0 / (1.0 ** 2.0)
-    assert var1 == 1.0 / (4.0 * (2.0 * (1.0 ** 2.0) + 1.0))
+    assert est1 == 1.0 / (1.0**2.0)
+    assert var1 == 1.0 / (4.0 * (2.0 * (1.0**2.0) + 1.0))
     assert bool(r1["kl_property"]) is True
 
     # a_exponent = 1 is the divergence boundary: sum 1/m diverges.

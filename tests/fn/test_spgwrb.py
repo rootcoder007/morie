@@ -5,11 +5,10 @@ Cressie's sigma^2); Bivand et al. (2013) Sec. 9.4.3 p. 318 (LOO CV);
 Charlton, GWR White Paper p. 8 and spgwr R/gwr.cv.R (AICc, AIC, CV score).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._schab_gwr import (aic_from_parts, aicc_from_parts, cv_score,
-                                 gwr_fit, kernel_weights, pairwise_distances)
+from morie.fn import _array_core as np
+from morie.fn._schab_gwr import aic_from_parts, aicc_from_parts, cv_score, gwr_fit, kernel_weights, pairwise_distances
 from morie.fn.spgwrb import schabenberger_gwr_bandwidth as select
 
 
@@ -41,10 +40,9 @@ NY8_N, NY8_RSS, NY8_AICC, NY8_AIC = 281, 119.6, 568.0, 561.6
 def test_aic_and_aicc_reproduce_spgwrs_published_ny8_output():
     """One unknown, two published numbers -- this pins both formulas at once."""
     sigma2 = NY8_RSS / NY8_N
-    base = (2 * NY8_N * np.log(np.sqrt(sigma2)) + NY8_N * np.log(2 * np.pi)
-            + NY8_N)
-    tr_S = NY8_AIC - base                       # AIC = base + tr(S)
-    assert 3.5 < tr_S < 5.0                     # printed as 4.4 effective parameters
+    base = 2 * NY8_N * np.log(np.sqrt(sigma2)) + NY8_N * np.log(2 * np.pi) + NY8_N
+    tr_S = NY8_AIC - base  # AIC = base + tr(S)
+    assert 3.5 < tr_S < 5.0  # printed as 4.4 effective parameters
     assert aic_from_parts(NY8_N, sigma2, tr_S) == pytest.approx(NY8_AIC)
     assert aicc_from_parts(NY8_N, sigma2, tr_S) == pytest.approx(NY8_AICC, abs=0.5)
 
@@ -103,8 +101,7 @@ def test_book_and_ml_variance_estimates_differ_as_the_sources_say():
 def test_effective_parameters_is_two_tr_s_minus_tr_sts():
     X, y, coords = _varying()
     fit = gwr_fit(y, X, pairwise_distances(coords), 2.0)
-    assert fit["effective_parameters"] == pytest.approx(
-        2 * fit["tr_S"] - fit["tr_STS"])
+    assert fit["effective_parameters"] == pytest.approx(2 * fit["tr_S"] - fit["tr_STS"])
 
 
 def test_wide_bandwidth_collapses_gwr_onto_global_ols():
@@ -140,7 +137,7 @@ def test_search_interval_is_the_bounding_box_diagonal_over_a_thousand():
     X, y, coords = _varying()
     lo, hi = select(X, y, coords)["bounds"]
     span = coords.max(axis=0) - coords.min(axis=0)
-    assert hi == pytest.approx(float(np.sqrt(np.sum(span ** 2))))
+    assert hi == pytest.approx(float(np.sqrt(np.sum(span**2))))
     assert lo == pytest.approx(hi / 1000.0)
 
 
@@ -158,8 +155,7 @@ def test_reported_score_is_the_objective_at_the_reported_bandwidth():
     X, y, coords = _varying()
     r = select(X, y, coords, criterion="cv")
     D = pairwise_distances(coords)
-    assert r["score"] == pytest.approx(
-        cv_score(y, X, D, r["optimal_bandwidth"]), rel=1e-9)
+    assert r["score"] == pytest.approx(cv_score(y, X, D, r["optimal_bandwidth"]), rel=1e-9)
 
 
 def test_cv_and_aicc_disagree_but_land_in_the_same_neighbourhood():
@@ -196,10 +192,8 @@ def test_explicit_bounds_are_honoured():
 def test_payload_reports_every_criterion_at_the_chosen_bandwidth():
     X, y, coords = _varying()
     r = select(X, y, coords, criterion="aicc")
-    assert r["aicc"] == pytest.approx(
-        aicc_from_parts(r["n"], r["sigma2"], r["tr_S"]))
-    assert r["aic"] == pytest.approx(
-        aic_from_parts(r["n"], r["sigma2"], r["tr_S"]))
+    assert r["aicc"] == pytest.approx(aicc_from_parts(r["n"], r["sigma2"], r["tr_S"]))
+    assert r["aic"] == pytest.approx(aic_from_parts(r["n"], r["sigma2"], r["tr_S"]))
     assert r["score"] == pytest.approx(r["aicc"], rel=1e-9)
 
 

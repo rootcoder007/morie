@@ -1,7 +1,6 @@
 """Test ruler_fd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.rulfd import ruler_fd, rulfd
 

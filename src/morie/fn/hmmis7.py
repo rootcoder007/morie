@@ -119,9 +119,14 @@ def geron_mistral7b(
     win, db = int(window), int(dtype_bytes)
     n_new = int(n_tokens)
     for name, v in (
-        ("n_layers", n_layers), ("d_model", d_model), ("n_heads", n_heads),
-        ("n_kv_heads", n_kv_heads), ("d_ff", d_ff), ("vocab_size", vocab_size),
-        ("window", win), ("dtype_bytes", db),
+        ("n_layers", n_layers),
+        ("d_model", d_model),
+        ("n_heads", n_heads),
+        ("n_kv_heads", n_kv_heads),
+        ("d_ff", d_ff),
+        ("vocab_size", vocab_size),
+        ("window", win),
+        ("dtype_bytes", db),
     ):
         if v < 1:
             raise ValueError(f"geron_mistral7b: {name} must be a positive integer, got {v}")
@@ -136,8 +141,7 @@ def geron_mistral7b(
         )
     if int(ids.min()) < 0 or int(ids.max()) >= vocab_size:
         raise ValueError(
-            f"geron_mistral7b: token ids must lie in 0..{vocab_size - 1}, "
-            f"got range {int(ids.min())}..{int(ids.max())}"
+            f"geron_mistral7b: token ids must lie in 0..{vocab_size - 1}, got range {int(ids.min())}..{int(ids.max())}"
         )
 
     d_head = d_model // n_heads

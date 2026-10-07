@@ -32,15 +32,18 @@ def kamath_ragas_context_relevance(context_sentences, relevance_labels):
     if len(sents) == 0:
         raise ValueError("the retrieved context has no sentences.")
     if len(sents) != len(labs):
-        raise ValueError(
-            f"{len(labs)} labels for {len(sents)} context sentences.")
+        raise ValueError(f"{len(labs)} labels for {len(sents)} context sentences.")
     base = kamath_ch7_faithfulness_metric(labs)
-    return RichResult(payload={
-        "estimate": base["estimate"], "score": base["estimate"],
-        "n_relevant": base["n_supported"],
-        "n_sentences": len(sents), "n": len(sents),
-        "method": "RAGAS context relevance (Kamath Ch 7; the ratio "
-                  "core in km111)"})
+    return RichResult(
+        payload={
+            "estimate": base["estimate"],
+            "score": base["estimate"],
+            "n_relevant": base["n_supported"],
+            "n_sentences": len(sents),
+            "n": len(sents),
+            "method": "RAGAS context relevance (Kamath Ch 7; the ratio core in km111)",
+        }
+    )
 
 
 def cheatsheet():

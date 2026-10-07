@@ -32,8 +32,10 @@ def _ols(Xd, y):
     Small designs only -- this is a four-column model."""
     n = len(y)
     p = len(Xd[0])
-    A = [[sum(Xd[i][r] * Xd[i][c] for i in range(n)) for c in range(p)]
-         + [sum(Xd[i][r] * y[i] for i in range(n))] for r in range(p)]
+    A = [
+        [sum(Xd[i][r] * Xd[i][c] for i in range(n)) for c in range(p)] + [sum(Xd[i][r] * y[i] for i in range(n))]
+        for r in range(p)
+    ]
     for k in range(p):
         piv = max(range(k, p), key=lambda r: abs(A[r][k]))
         if abs(A[piv][k]) < 1e-12:
@@ -84,25 +86,32 @@ def controlled_direct_effect(Y, X, M, m):
     resid = [ys[i] - sum(D[i][j] * b[j] for j in range(4)) for i in range(n)]
     s2 = sum(r * r for r in resid) / (n - 4)
     # var(bX + m bXM) needs the two diagonal entries and their covariance
-    XtX = [[sum(D[i][r] * D[i][c] for i in range(n)) for c in range(4)]
-           for r in range(4)]
+    XtX = [[sum(D[i][r] * D[i][c] for i in range(n)) for c in range(4)] for r in range(4)]
     inv = _inv4(XtX)
     var = s2 * (inv[1][1] + mv * mv * inv[3][3] + 2.0 * mv * inv[1][3])
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(cde_val), "cde": float(cde_val),
-        "intercept": float(b[0]), "beta_x": float(b[1]),
-        "beta_m": float(b[2]), "interaction": float(b[3]),
-        "se": float(math.sqrt(var)) if var > 0 else 0.0,
-        "m": mv, "n": n,
-        "method": "controlled direct effect (Robins & Greenland 1992)",
-    }), "cde")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(cde_val),
+                "cde": float(cde_val),
+                "intercept": float(b[0]),
+                "beta_x": float(b[1]),
+                "beta_m": float(b[2]),
+                "interaction": float(b[3]),
+                "se": float(math.sqrt(var)) if var > 0 else 0.0,
+                "m": mv,
+                "n": n,
+                "method": "controlled direct effect (Robins & Greenland 1992)",
+            }
+        ),
+        "cde",
+    )
 
 
 def _inv4(A):
     """Gauss-Jordan inverse of a small symmetric matrix."""
     p = len(A)
-    M = [list(A[r]) + [1.0 if c == r else 0.0 for c in range(p)]
-         for r in range(p)]
+    M = [list(A[r]) + [1.0 if c == r else 0.0 for c in range(p)] for r in range(p)]
     for k in range(p):
         piv = max(range(k, p), key=lambda r: abs(M[r][k]))
         if abs(M[piv][k]) < 1e-12:

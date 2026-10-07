@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['exceed', 'gibbons_exceedance_stat']
+__all__ = ["exceed", "gibbons_exceedance_stat"]
 
 
 def exceed(i, m, n, j=None):
@@ -49,10 +49,7 @@ def exceed(i, m, n, j=None):
     if m < 1:
         raise ValueError("m must be at least 1.")
     den = math.comb(m + n, n)
-    pmf = [
-        math.comb(m + n - i - k, m - k) * math.comb(i + k - 1, k) / den
-        for k in range(m + 1)
-    ]
+    pmf = [math.comb(m + n - i - k, m - k) * math.comb(i + k - 1, k) / den for k in range(m + 1)]
     mean = sum(k * pk for k, pk in enumerate(pmf))
     ex2 = sum(k * k * pk for k, pk in enumerate(pmf))
     out = {

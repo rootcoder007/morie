@@ -61,9 +61,7 @@ def gibbons_hodges_lehmann_2(x, y, alpha=0.05):
     b = np.asarray(y, dtype=float).ravel()
     m, n = a.size, b.size
     if m < 1 or n < 1:
-        raise ValueError(
-            "both samples must be non-empty, got %d and %d." % (m, n)
-        )
+        raise ValueError(f"both samples must be non-empty, got {int(m)} and {int(n)}.")
     if np.any(~np.isfinite(a)) or np.any(~np.isfinite(b)):
         raise ValueError("samples contain non-finite values.")
     diffs = np.sort((b[:, None] - a[None, :]).ravel())
@@ -77,8 +75,7 @@ def gibbons_hodges_lehmann_2(x, y, alpha=0.05):
             lo, hi = float(diffs[u - 1]), float(diffs[diffs.size - u])
             cov = 1.0 - 2.0 * _mw_cdf(m, n, u - 1)
 
-    sa, sb = float(np.std(a, ddof=1)) if m > 1 else 0.0, \
-        float(np.std(b, ddof=1)) if n > 1 else 0.0
+    sa, sb = float(np.std(a, ddof=1)) if m > 1 else 0.0, float(np.std(b, ddof=1)) if n > 1 else 0.0
     ratio = (max(sa, sb) / min(sa, sb)) if min(sa, sb) > 0 else np.inf
     return RichResult(
         payload={
@@ -90,10 +87,7 @@ def gibbons_hodges_lehmann_2(x, y, alpha=0.05):
             "ci_lower": lo,
             "ci_upper": hi,
             "coverage": float(cov),
-            "coverage_note": (
-                "attained coverage; the differences are discrete so it "
-                "exceeds the nominal level"
-            ),
+            "coverage_note": ("attained coverage; the differences are discrete so it exceeds the nominal level"),
             "alpha": float(alpha),
             "n_differences": int(diffs.size),
             "sd_ratio": float(ratio),
@@ -149,12 +143,14 @@ def _mw_cdf(m, n, u):
     if u < 0:
         return 0.0
     from math import comb
+
     cnt = _mw_counts(m, n)
     return float(cnt[: int(u) + 1].sum() / comb(m + n, m))
 
 
 def _mw_cut(m, n, alpha):
     from math import comb
+
     if m * n > 400:
         mu = m * n / 2.0
         sd = np.sqrt(m * n * (m + n + 1) / 12.0)

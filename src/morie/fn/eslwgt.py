@@ -83,10 +83,12 @@ def esl_weight_decay(weights, lambda_=0.01, loss=0.0, norm="l2"):
         title=f"Weight decay ({norm})",
         summary_lines=[("lambda", float(lambda_)), ("penalty", pen)],
         payload={
-            "penalty": pen, "gradient": grad,
+            "penalty": pen,
+            "gradient": grad,
             "objective": float(loss) + pen,
             "effective_lambda": float(2 * lambda_) if norm == "l2" else float(lambda_),
-            "norm": norm, "n_weights": int(w.size),
+            "norm": norm,
+            "n_weights": int(w.size),
             "method": "esl_weight_decay",
         },
     )

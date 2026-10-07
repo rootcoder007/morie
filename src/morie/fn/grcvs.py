@@ -30,8 +30,7 @@ def _r2(y_true, y_pred):
     return 1.0 - ss_res / ss_tot
 
 
-def geron_cross_validation_score(X, y, K, fit=None, predict=None, score=None,
-                                 shuffle=False, random_state=None):
+def geron_cross_validation_score(X, y, K, fit=None, predict=None, score=None, shuffle=False, random_state=None):
     r"""Average a model's score over ``K`` held-out folds.
 
     .. math::
@@ -113,7 +112,7 @@ def geron_cross_validation_score(X, y, K, fit=None, predict=None, score=None,
     K = int(K)
     if K < 2:
         raise ValueError(f"K must be at least 2 folds, got {K}.")
-    if K > m:
+    if m < K:
         raise ValueError(f"K={K} exceeds the {m} available observations.")
 
     if fit is None and predict is not None:
@@ -142,10 +141,7 @@ def geron_cross_validation_score(X, y, K, fit=None, predict=None, score=None,
         model = fit_fn(X[train_idx], y[train_idx])
         yp = np.asarray(pred_fn(model, X[test_idx]), dtype=float).ravel()
         if yp.size != test_idx.size:
-            raise ValueError(
-                f"predict returned {yp.size} predictions for fold {k}, expected "
-                f"{test_idx.size}."
-            )
+            raise ValueError(f"predict returned {yp.size} predictions for fold {k}, expected {test_idx.size}.")
         s = float(score_fn(y[test_idx], yp))
         if not np.isfinite(s):
             raise ValueError(f"score for fold {k} is not finite ({s}).")

@@ -1,14 +1,13 @@
 """Tests for blip2v.blip2_qformer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.blip2v import blip2_qformer
 
 
 def _flat_to_2d(flat, rows):
     n = len(flat)
     cols = n // rows
-    return [list(flat[i * cols:(i + 1) * cols]) for i in range(rows)]
+    return [list(flat[i * cols : (i + 1) * cols]) for i in range(rows)]
 
 
 def test_blip2v_basic():

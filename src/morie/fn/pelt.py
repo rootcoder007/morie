@@ -74,8 +74,7 @@ def _pelt_core(x, cost, penalty, min_seglen=1):
         F[t] = best
         cp[t] = barg
         # pruning: keep tau with F(tau) + C(tau, t) + K <= F(t)
-        Rset = [tau for tau in Rset
-                if t - tau < min_seglen or F[tau] + C(tau, t) + K <= F[t]]
+        Rset = [tau for tau in Rset if t - tau < min_seglen or F[tau] + C(tau, t) + K <= F[t]]
         Rset.append(t)
     # backtrack
     taus = []
@@ -145,18 +144,19 @@ def pelt(x, cost="mean", penalty=None, min_seglen=1):
     xs = [float(v) for v in xv]
     taus, Fn = _pelt_core(xs, cost, float(penalty), min_seglen)
     bounds = [0] + taus + [n]
-    seg_means = [float(np.mean(np.asarray(xs[a:b])))
-                 for a, b in zip(bounds[:-1], bounds[1:])]
-    return RichResult(payload={
-        "changepoints": list(taus),
-        "n_changepoints": len(taus),
-        "objective": float(Fn),
-        "penalty": float(penalty),
-        "segment_means": seg_means,
-        "estimate": list(taus),
-        "n": n,
-        "method": "PELT (Killick-Fearnhead-Eckley 2012)",
-    })
+    seg_means = [float(np.mean(np.asarray(xs[a:b]))) for a, b in zip(bounds[:-1], bounds[1:])]
+    return RichResult(
+        payload={
+            "changepoints": list(taus),
+            "n_changepoints": len(taus),
+            "objective": float(Fn),
+            "penalty": float(penalty),
+            "segment_means": seg_means,
+            "estimate": list(taus),
+            "n": n,
+            "method": "PELT (Killick-Fearnhead-Eckley 2012)",
+        }
+    )
 
 
 def cheatsheet():

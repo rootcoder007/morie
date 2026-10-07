@@ -13,6 +13,8 @@ def test_km038_doctest():
 
 def test_km038_edge():
     import pytest
+
     from morie.fn.km038 import kamath_ch2_gpt2_task_conditioning
+
     with pytest.raises(ValueError):
         kamath_ch2_gpt2_task_conditioning("x", "t", lambda i, t: {"a": 0.5, "b": 0.9})

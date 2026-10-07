@@ -6,9 +6,9 @@ source: Burg (1975). Burg's method always yields a stable (minimum-phase)
 model and reflection coefficients of magnitude < 1 -- both pinned here.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsaar import rangayyan_ar_burg
 
 

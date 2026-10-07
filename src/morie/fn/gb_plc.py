@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Placements of the Y sample among the X order statistics."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['placement', 'gibbons_placement_def']
+__all__ = ["placement", "gibbons_placement_def"]
 
 
 def placement(x, y):

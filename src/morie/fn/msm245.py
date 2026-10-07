@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,11 +23,15 @@ def mvsml_reproducing_kernel_eq_10_4(X, W, activations=None):
     outputs.  A bias is represented by an extra unit fixed at 1.
     Keys: estimate."""
     f = _gp.ann_forward(X, W, activations)
-    res = RichResult(payload={"estimate": f["output"][0][0],
-                              "output": f["output"],
-                              "layers": f["layers"],
-                              "nets": f["nets"],
-                              "method": "feedforward pass (MVSML 2022 eq. 10.1-10.3)"})
+    res = RichResult(
+        payload={
+            "estimate": f["output"][0][0],
+            "output": f["output"],
+            "layers": f["layers"],
+            "nets": f["nets"],
+            "method": "feedforward pass (MVSML 2022 eq. 10.1-10.3)",
+        }
+    )
     return with_describe_pointer(res, "msm245")
 
 

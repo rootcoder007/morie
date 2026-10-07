@@ -1,7 +1,6 @@
 """Tests for morie.fn.svdcp -- SVD computation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svdcp import svd_compute, svdcp
 
 

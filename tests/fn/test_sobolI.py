@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.sobolI import ishigami, ishigami_exact, sobol_indices
 
-
 UNIFORM_PI = [lambda u: -math.pi + 2 * math.pi * u] * 3
 
 
@@ -27,5 +26,3 @@ def test_sobolI_edge():
     r = sobol_indices(ishigami, UNIFORM_PI, N=4096, d=3)
     assert abs(r["S"][2]) < 0.005 and r["ST"][2] > 0.2
     assert r["interaction"][2] == pytest.approx(r["ST"][2] - r["S"][2], rel=1e-15)
-
-

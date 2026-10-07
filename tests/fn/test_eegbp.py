@@ -1,9 +1,6 @@
 """Tests for morie.fn.eegbp -- EEG band power."""
 
 from morie.fn import _array_core as np
-import pytest
-
-
 from morie.fn.eegbp import eegbp
 
 

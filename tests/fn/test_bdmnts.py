@@ -1,7 +1,6 @@
 """Tests for bdmnts.bound_monot_inst."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdmnts import bound_monot_inst
 
 

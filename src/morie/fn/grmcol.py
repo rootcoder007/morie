@@ -80,9 +80,7 @@ def geron_gan_mode_collapse_metric(samples, true_modes, tol=None):
     if S.shape[0] == 1 and M.shape[1] != S.shape[1] and S.shape[1] == M.shape[0]:
         S = S.T
     if S.shape[1] != M.shape[1]:
-        raise ValueError(
-            f"samples have {S.shape[1]} dimensions but modes have {M.shape[1]}."
-        )
+        raise ValueError(f"samples have {S.shape[1]} dimensions but modes have {M.shape[1]}.")
     if S.size == 0 or M.size == 0:
         raise ValueError("samples and true_modes must both be non-empty.")
     if not np.all(np.isfinite(S)) or not np.all(np.isfinite(M)):
@@ -92,8 +90,7 @@ def geron_gan_mode_collapse_metric(samples, true_modes, tol=None):
     if tol is None:
         if K < 2:
             raise ValueError(
-                "with a single true mode there is no inter-mode distance to derive "
-                "tol from; pass tol explicitly."
+                "with a single true mode there is no inter-mode distance to derive tol from; pass tol explicitly."
             )
         i, j = np.triu_indices(K, k=1)
         sep = np.linalg.norm(M[i] - M[j], axis=1)
@@ -113,8 +110,7 @@ def geron_gan_mode_collapse_metric(samples, true_modes, tol=None):
 
     return RichResult(
         title="Mode coverage / collapse",
-        summary_lines=[("Coverage", coverage), ("Collapse rate", 1.0 - coverage),
-                       ("Modes", int(K))],
+        summary_lines=[("Coverage", coverage), ("Collapse rate", 1.0 - coverage), ("Modes", int(K))],
         payload={
             "coverage": coverage,
             "mode_collapse_rate": 1.0 - coverage,

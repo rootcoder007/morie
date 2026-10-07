@@ -1,7 +1,6 @@
 """Tests for morie.fn.lacgetl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lacgetl import lacgetl
 
 

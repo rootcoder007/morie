@@ -64,16 +64,20 @@ def fauzi_mrl_naive(x, t_grid, h=None):
             mrl[j] = np.nan
             continue
         zz = np.linspace(t, upper, 400)
-        num = float(np.trapezoid(
-            kernel_V((zz[:, None] - xv[None, :]) / hh).sum(axis=1), zz))
+        num = float(np.trapezoid(kernel_V((zz[:, None] - xv[None, :]) / hh).sum(axis=1), zz))
         mrl[j] = num / den
-    return RichResult(payload={
-        "t_grid": tg, "mrl": mrl, "bandwidth": hh,
-        "interior_bias_order": "O(h^2)",
-        "boundary_bias_order": "O(h), and can degrade to O(1)",
-        "boundary_safe": False,
-        "n": int(n),
-        "method": "Naive kernel MRL (4.2); the baseline whose boundary failure Ch. 4 fixes"})
+    return RichResult(
+        payload={
+            "t_grid": tg,
+            "mrl": mrl,
+            "bandwidth": hh,
+            "interior_bias_order": "O(h^2)",
+            "boundary_bias_order": "O(h), and can degrade to O(1)",
+            "boundary_safe": False,
+            "n": int(n),
+            "method": "Naive kernel MRL (4.2); the baseline whose boundary failure Ch. 4 fixes",
+        }
+    )
 
 
 def cheatsheet():

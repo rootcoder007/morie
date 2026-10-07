@@ -59,15 +59,21 @@ def sgntest(x, md=0.0):
     # large m does not overflow the binomial coefficient.
     tail = 0.0
     for j in range(k, m + 1):
-        lg = (math.lgamma(m + 1) - math.lgamma(j + 1) - math.lgamma(m - j + 1)
-              - m * math.log(2.0))
+        lg = math.lgamma(m + 1) - math.lgamma(j + 1) - math.lgamma(m - j + 1) - m * math.log(2.0)
         tail += math.exp(lg)
     s = sorted(x)
-    med = (s[n // 2] if n % 2 == 1 else 0.5 * (s[n // 2 - 1] + s[n // 2]))
-    return RichResult(payload={
-        "statistic": float(pos), "p_value": min(1.0, 2.0 * tail),
-        "n_effective": float(m), "n_ties": float(n - m), "estimate": med,
-        "n": float(n), "method": "Exact sign test, Binomial(m, 1/2)"})
+    med = s[n // 2] if n % 2 == 1 else 0.5 * (s[n // 2 - 1] + s[n // 2])
+    return RichResult(
+        payload={
+            "statistic": float(pos),
+            "p_value": min(1.0, 2.0 * tail),
+            "n_effective": float(m),
+            "n_ties": float(n - m),
+            "estimate": med,
+            "n": float(n),
+            "method": "Exact sign test, Binomial(m, 1/2)",
+        }
+    )
 
 
 wasserman_sign_test = sgntest

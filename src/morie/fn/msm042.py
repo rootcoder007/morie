@@ -6,8 +6,6 @@ Implements eq. (6.1)-(6.2) pp.172 of Montesinos López, Montesinos López & Cros
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,17 +24,18 @@ def mvsml_bayesian_regression_eq_6_1(X, y, add_intercept=True):
     n = len(_gp._flat(y))
     p1 = len(f["beta"])
     df = n - p1
-    res = RichResult(payload={"estimate": f["beta"][0],
-                              "posterior_mean_beta": f["beta"],
-                              "posterior_sd_beta": f["se_beta"],
-                              "sigma2_hat": f["sigma2"],
-                              "ig_shape": df / 2.0,
-                              "ig_scale": df * f["sigma2"] / 2.0,
-                              "posterior_mean_sigma2":
-                                  (df * f["sigma2"] / 2.0)
-                                  / (df / 2.0 - 1.0)
-                                  if df > 2 else float("nan"),
-                              "method": "reference-prior Bayesian linear regression (MVSML 2022 eq. 6.1-6.2)"})
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][0],
+            "posterior_mean_beta": f["beta"],
+            "posterior_sd_beta": f["se_beta"],
+            "sigma2_hat": f["sigma2"],
+            "ig_shape": df / 2.0,
+            "ig_scale": df * f["sigma2"] / 2.0,
+            "posterior_mean_sigma2": (df * f["sigma2"] / 2.0) / (df / 2.0 - 1.0) if df > 2 else float("nan"),
+            "method": "reference-prior Bayesian linear regression (MVSML 2022 eq. 6.1-6.2)",
+        }
+    )
     return with_describe_pointer(res, "msm042")
 
 

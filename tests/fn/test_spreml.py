@@ -7,12 +7,12 @@ eq (5.49), leaving the nugget ratio and the range. The optimiser is the
 quasi-Newton branch Sec 5.5.2 sanctions, driven by an exact gradient.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._schab_fit import covariance_matrix, error_contrasts
+from morie.fn import _array_core as np
 from morie.fn._rng import random_multivariate_normal
-from morie.fn._schab_reml import correlation_matrix, fit_reml, profiled_reml
+from morie.fn._schab_fit import covariance_matrix, error_contrasts
+from morie.fn._schab_reml import correlation_matrix, profiled_reml
 from morie.fn.spreml import schabenberger_reml_variogram as spreml
 
 TRUTH = (0.3, 2.0, 3.0)
@@ -53,9 +53,11 @@ def test_the_k_free_form_differs_from_the_k_form_by_a_constant():
         cov = sigma2 * correlation_matrix(coords, xi, a, "exponential")[0]
         m = K @ cov @ K.T
         kz = K @ z
-        kform = float(2.0 * np.sum(np.log(np.diag(np.linalg.cholesky(m))))
-                      + K.shape[0] * np.log(2.0 * np.pi)
-                      + kz @ np.linalg.solve(m, kz))
+        kform = float(
+            2.0 * np.sum(np.log(np.diag(np.linalg.cholesky(m))))
+            + K.shape[0] * np.log(2.0 * np.pi)
+            + kz @ np.linalg.solve(m, kz)
+        )
         diffs.append(kform - value)
     assert max(diffs) - min(diffs) < 1e-8
 

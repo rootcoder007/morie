@@ -78,8 +78,7 @@ def simident(x, beta, y=None, mindistinct=10):
     nconstcol = int(sum(1 for j in range(d) if float(np.std(X[:, j])) <= 0.0))
 
     # (b) continuously distributed components
-    ncontin = int(sum(1 for j in range(d)
-                      if np.unique(X[:, j]).size >= mindistinct))
+    ncontin = int(sum(1 for j in range(d) if np.unique(X[:, j]).size >= mindistinct))
     condb = bool(ncontin == d)
 
     # (a) G nonconstant -- observable proxy: variation of the mean of Y
@@ -101,8 +100,7 @@ def simident(x, beta, y=None, mindistinct=10):
         gspread = float(max(means) - min(means)) if means else 0.0
         conda = bool(gspread > 0.0)
 
-    identified = bool(condb and condc and condd and nconstcol == 0
-                      and (conda is not False))
+    identified = bool(condb and condc and condd and nconstcol == 0 and (conda is not False))
     return RichResult(
         title="Single-index identification (Theorem 2.1)",
         payload={
@@ -133,8 +131,7 @@ def cheatsheet():
 
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
-    X = np.column_stack([np.linspace(-2, 2, 200),
-                         np.linspace(3, -1, 200) ** 2])
+    X = np.column_stack([np.linspace(-2, 2, 200), np.linspace(3, -1, 200) ** 2])
     r = simident(X, [1.0, 0.5])
     assert r["condc"] and r["condd"] and r["condb"], r
     # a rank-deficient design fails condition (c)

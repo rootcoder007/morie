@@ -55,26 +55,29 @@ def perK(x1, x2=None, period=1.0, lengthscale=1.0, variance=1.0):
     a = [float(v) for v in x1]
     b = a if x2 is None else [float(v) for v in x2]
     p = float(period)
-    l = float(lengthscale)
+    ell = float(lengthscale)
     s2 = float(variance)
-    if p <= 0 or l <= 0 or s2 <= 0:
+    if p <= 0 or ell <= 0 or s2 <= 0:
         raise ValueError("period, lengthscale, variance must be positive")
     K = []
     for xa in a:
         row = []
         for xb in b:
             s = math.sin(math.pi * (xa - xb) / p)
-            row.append(s2 * math.exp(-2.0 * s * s / (l * l)))
+            row.append(s2 * math.exp(-2.0 * s * s / (ell * ell)))
         K.append(row)
-    diag_ok = x2 is None and all(
-        abs(K[i][i] - s2) < 1e-15 for i in range(len(a)))
-    return RichResult(payload={
-        "K": K,
-        "shape": (len(a), len(b)),
-        "period": p, "lengthscale": l, "variance": s2,
-        "diag_is_variance": diag_ok,
-        "method": "periodic kernel (MacKay 1998; R&W 2006 Sec. 4.2.3)",
-    })
+    diag_ok = x2 is None and all(abs(K[i][i] - s2) < 1e-15 for i in range(len(a)))
+    return RichResult(
+        payload={
+            "K": K,
+            "shape": (len(a), len(b)),
+            "period": p,
+            "lengthscale": ell,
+            "variance": s2,
+            "diag_is_variance": diag_ok,
+            "method": "periodic kernel (MacKay 1998; R&W 2006 Sec. 4.2.3)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

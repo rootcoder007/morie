@@ -1,7 +1,6 @@
 """Tests for rsmand.rating_scale_andrich."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rsmand import rating_scale_andrich
 
 

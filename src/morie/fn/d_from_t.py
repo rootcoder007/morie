@@ -28,8 +28,7 @@ def d_from_t(t, n1, n2):
     """
     value = _ca_crim.d_from_t(t, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.5)"
@@ -41,7 +40,7 @@ def d_from_t(t, n1, n2):
 
 
 def cheatsheet():
-    return 'ca11e5: d = t sqrt((n1+n2)/(n1 n2)) [Weisburd et al. 2022, eq. 11.5]'
+    return "ca11e5: d = t sqrt((n1+n2)/(n1 n2)) [Weisburd et al. 2022, eq. 11.5]"
 
 
 # compact alias per ledger/NAMING.md

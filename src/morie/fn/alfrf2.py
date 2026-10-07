@@ -83,8 +83,7 @@ from . import _w3num as _w
 from ._richresult import RichResult
 from .manfd import jacobi_eigen
 
-__all__ = ["rfdiffusion_protein", "ddpm_schedule", "forward_noise",
-           "kabsch", "rmsd", "ideal_chain", "cheatsheet"]
+__all__ = ["rfdiffusion_protein", "ddpm_schedule", "forward_noise", "kabsch", "rmsd", "ideal_chain", "cheatsheet"]
 
 # The alpha carbon separation a trans peptide bond forces on successive
 # residues. A fact of covalent geometry, not a fitted constant.
@@ -105,8 +104,7 @@ def ddpm_schedule(T, beta_start=1e-4, beta_end=0.02):
     if T < 1:
         raise ValueError("a diffusion needs at least one step")
     if not 0.0 < beta_start <= beta_end < 1.0:
-        raise ValueError("the variance schedule must rise through the "
-                         "open unit interval")
+        raise ValueError("the variance schedule must rise through the open unit interval")
     betas = [0.0] * (T + 1)
     alphas = [1.0] * (T + 1)
     abar = [1.0] * (T + 1)
@@ -127,8 +125,7 @@ def forward_noise(x0, abar_t, eps):
     """
     a = math.sqrt(abar_t)
     b = math.sqrt(1.0 - abar_t)
-    return [[a * x0[i][d] + b * eps[i][d] for d in range(len(x0[i]))]
-            for i in range(len(x0))]
+    return [[a * x0[i][d] + b * eps[i][d] for d in range(len(x0[i]))] for i in range(len(x0))]
 
 
 def _centre(P):
@@ -138,9 +135,11 @@ def _centre(P):
 
 
 def _det3(M):
-    return (M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1])
-            - M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0])
-            + M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0]))
+    return (
+        M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1])
+        - M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0])
+        + M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0])
+    )
 
 
 def kabsch(P, Q):
@@ -155,38 +154,26 @@ def kabsch(P, Q):
     """
     n = len(P)
     if n != len(Q):
-        raise ValueError("superposition needs the same number of points "
-                         "on both sides")
+        raise ValueError("superposition needs the same number of points on both sides")
     if n < 3:
         raise ValueError("three points are the fewest that fix a rotation")
     p, cp = _centre(P)
     q, cq = _centre(Q)
-    C = [[_w.csum(q[i][a] * p[i][b] for i in range(n)) for b in range(3)]
-         for a in range(3)]
-    S = [[_w.csum(C[k][a] * C[k][b] for k in range(3)) for b in range(3)]
-         for a in range(3)]
+    C = [[_w.csum(q[i][a] * p[i][b] for i in range(n)) for b in range(3)] for a in range(3)]
+    S = [[_w.csum(C[k][a] * C[k][b] for k in range(3)) for b in range(3)] for a in range(3)]
     lam, V = jacobi_eigen(S)
     if lam[2] <= 1e-12 * (lam[0] if lam[0] > 0.0 else 1.0):
-        raise ValueError("the points do not span three dimensions, so "
-                         "the polar factor does not determine a "
-                         "rotation")
+        raise ValueError("the points do not span three dimensions, so the polar factor does not determine a rotation")
     inv = [1.0 / math.sqrt(v) for v in lam]
-    M = [[_w.csum(V[a][k] * inv[k] * V[b][k] for k in range(3))
-          for b in range(3)] for a in range(3)]
-    R = [[_w.csum(C[a][k] * M[k][b] for k in range(3)) for b in range(3)]
-         for a in range(3)]
+    M = [[_w.csum(V[a][k] * inv[k] * V[b][k] for k in range(3)) for b in range(3)] for a in range(3)]
+    R = [[_w.csum(C[a][k] * M[k][b] for k in range(3)) for b in range(3)] for a in range(3)]
     if _det3(R) < 0.0:
         inv[2] = -inv[2]
-        M = [[_w.csum(V[a][k] * inv[k] * V[b][k] for k in range(3))
-              for b in range(3)] for a in range(3)]
-        R = [[_w.csum(C[a][k] * M[k][b] for k in range(3))
-              for b in range(3)] for a in range(3)]
-    moved = [[_w.csum(R[a][b] * p[i][b] for b in range(3)) + cq[a]
-              for a in range(3)] for i in range(n)]
-    sq = _w.csum((moved[i][a] - Q[i][a]) * (moved[i][a] - Q[i][a])
-                 for i in range(n) for a in range(3))
-    return R, [cq[a] - _w.csum(R[a][b] * cp[b] for b in range(3))
-               for a in range(3)], math.sqrt(sq / n), moved
+        M = [[_w.csum(V[a][k] * inv[k] * V[b][k] for k in range(3)) for b in range(3)] for a in range(3)]
+        R = [[_w.csum(C[a][k] * M[k][b] for k in range(3)) for b in range(3)] for a in range(3)]
+    moved = [[_w.csum(R[a][b] * p[i][b] for b in range(3)) + cq[a] for a in range(3)] for i in range(n)]
+    sq = _w.csum((moved[i][a] - Q[i][a]) * (moved[i][a] - Q[i][a]) for i in range(n) for a in range(3))
+    return R, [cq[a] - _w.csum(R[a][b] * cp[b] for b in range(3)) for a in range(3)], math.sqrt(sq / n), moved
 
 
 def rmsd(P, Q):
@@ -240,10 +227,19 @@ def _denoise(route, denoiser, x, t, fixed, spacing, passes):
     raise ValueError("the denoiser route is prior or ideal")
 
 
-def rfdiffusion_protein(target_motif, scaffold, T=20, denoise="ideal",
-                        denoiser=None, beta_start=1e-4, beta_end=0.02,
-                        spacing=CA_SPACING, passes=8, noise_scale=1.0,
-                        seed=0):
+def rfdiffusion_protein(
+    target_motif,
+    scaffold,
+    T=20,
+    denoise="ideal",
+    denoiser=None,
+    beta_start=1e-4,
+    beta_end=0.02,
+    spacing=CA_SPACING,
+    passes=8,
+    noise_scale=1.0,
+    seed=0,
+):
     """Grow a backbone around a fixed motif by reverse diffusion.
 
     Parameters
@@ -287,8 +283,7 @@ def rfdiffusion_protein(target_motif, scaffold, T=20, denoise="ideal",
         start = [[float(v) for v in row] for row in scaffold]
         n = len(start)
     if n < 3:
-        raise ValueError("a backbone of fewer than three residues has no "
-                         "geometry to design")
+        raise ValueError("a backbone of fewer than three residues has no geometry to design")
     for i, _ in motif:
         if i < 0 or i >= n:
             raise ValueError("a motif residue falls outside the design")
@@ -321,13 +316,13 @@ def rfdiffusion_protein(target_motif, scaffold, T=20, denoise="ideal",
         for i, xyz in motif:
             x0[i] = list(xyz)
         c1 = math.sqrt(abar[t - 1]) * betas[t] / (1.0 - abar[t])
-        c2 = (math.sqrt(alphas[t]) * (1.0 - abar[t - 1])
-              / (1.0 - abar[t]))
+        c2 = math.sqrt(alphas[t]) * (1.0 - abar[t - 1]) / (1.0 - abar[t])
         sd = math.sqrt(betas[t] * (1.0 - abar[t - 1]) / (1.0 - abar[t]))
         z = [[rng.normal() for _ in range(3)] for _ in range(n)]
-        nxt = [[c1 * x0[i][d] + c2 * x[i][d]
-                + (noise_scale * sd * z[i][d] if t > 1 else 0.0)
-                for d in range(3)] for i in range(n)]
+        nxt = [
+            [c1 * x0[i][d] + c2 * x[i][d] + (noise_scale * sd * z[i][d] if t > 1 else 0.0) for d in range(3)]
+            for i in range(n)
+        ]
         # The known region is replaced by the motif noised to the level
         # we have arrived at. At t equal to one that level is zero, so
         # the motif lands exactly.
@@ -336,17 +331,14 @@ def rfdiffusion_protein(target_motif, scaffold, T=20, denoise="ideal",
         for i in fixed:
             nxt[i] = list(mt[i])
         x = nxt
-        traj.append(_w.csum(x[i][d] * x[i][d]
-                            for i in range(n) for d in range(3)))
+        traj.append(_w.csum(x[i][d] * x[i][d] for i in range(n) for d in range(3)))
 
     got = [x[i] for i, _ in motif]
     want = [xyz for _, xyz in motif]
-    mdev = max(abs(got[k][d] - want[k][d])
-               for k in range(len(motif)) for d in range(3)) \
-        if motif else 0.0
-    spac = [math.sqrt(_w.csum((x[i + 1][d] - x[i][d])
-                              * (x[i + 1][d] - x[i][d])
-                              for d in range(3))) for i in range(n - 1)]
+    mdev = max(abs(got[k][d] - want[k][d]) for k in range(len(motif)) for d in range(3)) if motif else 0.0
+    spac = [
+        math.sqrt(_w.csum((x[i + 1][d] - x[i][d]) * (x[i + 1][d] - x[i][d]) for d in range(3))) for i in range(n - 1)
+    ]
     # Three or fewer motif residues, or coplanar ones, do not pin a
     # rotation, and the superposition says so rather than returning a
     # number it cannot justify.
@@ -355,30 +347,33 @@ def rfdiffusion_protein(target_motif, scaffold, T=20, denoise="ideal",
     except ValueError:
         mr = float("nan")
     cen = [_w.csum(x[i][d] for i in range(n)) / n for d in range(3)]
-    rg = math.sqrt(_w.csum((x[i][d] - cen[d]) * (x[i][d] - cen[d])
-                           for i in range(n) for d in range(3)) / n)
-    return RichResult(payload={
-        "backbone": x,
-        "motif_index": [i for i, _ in motif],
-        "motif_target": want,
-        "motif_placed": got,
-        "motif_max_deviation": mdev,
-        "motif_rmsd": mr,
-        "spacing": spac,
-        "mean_spacing": (_w.csum(spac) / len(spac)) if spac else 0.0,
-        "radius_of_gyration": rg,
-        "trace": traj,
-        "n": n,
-        "n_motif": len(motif),
-        "T": int(T),
-        "denoise": denoise if denoiser is None else "callable",
-        "noise_scale": float(noise_scale),
-        "seed": seed,
-        "method": "RFdiffusion motif-scaffolding reverse diffusion",
-    })
+    rg = math.sqrt(_w.csum((x[i][d] - cen[d]) * (x[i][d] - cen[d]) for i in range(n) for d in range(3)) / n)
+    return RichResult(
+        payload={
+            "backbone": x,
+            "motif_index": [i for i, _ in motif],
+            "motif_target": want,
+            "motif_placed": got,
+            "motif_max_deviation": mdev,
+            "motif_rmsd": mr,
+            "spacing": spac,
+            "mean_spacing": (_w.csum(spac) / len(spac)) if spac else 0.0,
+            "radius_of_gyration": rg,
+            "trace": traj,
+            "n": n,
+            "n_motif": len(motif),
+            "T": int(T),
+            "denoise": denoise if denoiser is None else "callable",
+            "noise_scale": float(noise_scale),
+            "seed": seed,
+            "method": "RFdiffusion motif-scaffolding reverse diffusion",
+        }
+    )
 
 
 def cheatsheet():
-    return ("alfrf2: RFdiffusion motif scaffolding. Reverse DDPM over "
-            "backbone coordinates with the motif replaced at every step, "
-            "so it lands exactly; denoiser routes are prior or ideal")
+    return (
+        "alfrf2: RFdiffusion motif scaffolding. Reverse DDPM over "
+        "backbone coordinates with the motif replaced at every step, "
+        "so it lands exactly; denoiser routes are prior or ideal"
+    )

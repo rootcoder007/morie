@@ -71,19 +71,23 @@ def calibration_estimator(y, X, weights, totals, max_iter=100, tol=1e-10):
     achieved = (w[:, None] * Xm).sum(axis=0)
     with np.errstate(divide="ignore", invalid="ignore"):
         ratio = np.where(d > 0, w / d, np.nan)
-    return RichResult(payload={
-        "total": float(np.sum(w * yv)), "calibrated_weights": w,
-        "margins_reproduced": bool(np.allclose(achieved, T, rtol=1e-8,
-                                               atol=1e-8)),
-        "max_margin_error": float(np.max(np.abs(achieved - T))),
-        "n_negative": int(np.sum(w < 0)),
-        "weight_ratio_range": (float(np.nanmin(ratio)), float(np.nanmax(ratio))),
-        "distance": "chi-square, which reproduces GREG exactly",
-        "equals_greg": True,
-        "negative_weight_note": "chi-square calibration can produce negative "
-                                "weights; bounded distances (raking, logit) exist for that",
-        "n": int(n), "p": int(p),
-        "method": "Calibration to known margins; adjusts the WEIGHTS where GREG adjusts the estimate"})
+    return RichResult(
+        payload={
+            "total": float(np.sum(w * yv)),
+            "calibrated_weights": w,
+            "margins_reproduced": bool(np.allclose(achieved, T, rtol=1e-8, atol=1e-8)),
+            "max_margin_error": float(np.max(np.abs(achieved - T))),
+            "n_negative": int(np.sum(w < 0)),
+            "weight_ratio_range": (float(np.nanmin(ratio)), float(np.nanmax(ratio))),
+            "distance": "chi-square, which reproduces GREG exactly",
+            "equals_greg": True,
+            "negative_weight_note": "chi-square calibration can produce negative "
+            "weights; bounded distances (raking, logit) exist for that",
+            "n": int(n),
+            "p": int(p),
+            "method": "Calibration to known margins; adjusts the WEIGHTS where GREG adjusts the estimate",
+        }
+    )
 
 
 def cheatsheet():

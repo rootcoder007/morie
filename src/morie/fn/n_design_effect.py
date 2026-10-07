@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def n_design_effect(design_effect, n_si):
     """
     value = _brus.n_design_effect(design_effect, n_si)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (12.14)"
     return RichResult(
-        title='Design-effect-adjusted sample size',
+        title="Design-effect-adjusted sample size",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r12e14: n(p, zbar) = sqrt(de) n(SI, pi) [Brus 2022, eq. 12.14]'
+    return "r12e14: n(p, zbar) = sqrt(de) n(SI, pi) [Brus 2022, eq. 12.14]"
 
 
 # compact alias per ledger/NAMING.md

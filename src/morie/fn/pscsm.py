@@ -89,7 +89,7 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1, cali
     else:
         e = np.asarray(propensity, dtype=float).ravel()
         if e.size != n:
-            raise ValueError("propensity has %d entries for %d rows." % (e.size, n))
+            raise ValueError(f"propensity has {int(e.size)} entries for {int(n)} rows.")
     ti = np.nonzero(dv == 1)[0]
     ci = np.nonzero(dv == 0)[0]
     if ti.size == 0 or ci.size == 0:
@@ -171,8 +171,7 @@ def propensity_score_matching(y, d, X=None, propensity=None, n_neighbors=1, cali
             "unmatched_note": (
                 None
                 if unmatched == 0
-                else "%d treated unit(s) found no match, so the estimand is the "
-                "ATT among the MATCHABLE rather than the ATT" % unmatched
+                else f"{int(unmatched)} treated unit(s) found no match, so the estimand is the ATT among the MATCHABLE rather than the ATT"
             ),
             "balance_before": bb,
             "balance_after": ba,

@@ -1,7 +1,6 @@
 """Tests for morie.fn.gpopt -- GP Bayesian optimization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpopt import gp_optimize
 
 

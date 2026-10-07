@@ -65,7 +65,7 @@ def compkm(X, k=2, max_iter=50):
     # would not register as a move and the loop would stop a sweep early.
     lab = [-1] * n
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         moved = False
         for i in range(n):
             best = 0
@@ -92,11 +92,20 @@ def compkm(X, k=2, max_iter=50):
         e = [math.exp(v) for v in cen[c]]
         s = sum(e)
         centers.append([v / s for v in e])
-    return RichResult(payload={
-        "cluster": [v + 1 for v in lab], "centers": centers,
-        "clr_centers": cen, "withinss": wss, "tot_withinss": sum(wss),
-        "iterations": it, "n": n, "D": D, "k": k,
-        "method": "Lloyd k-means in clr coordinates"})
+    return RichResult(
+        payload={
+            "cluster": [v + 1 for v in lab],
+            "centers": centers,
+            "clr_centers": cen,
+            "withinss": wss,
+            "tot_withinss": sum(wss),
+            "iterations": it,
+            "n": n,
+            "D": D,
+            "k": k,
+            "method": "Lloyd k-means in clr coordinates",
+        }
+    )
 
 
 compositional_kmeans = compkm

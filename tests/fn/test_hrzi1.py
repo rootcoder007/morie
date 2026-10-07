@@ -1,7 +1,6 @@
 """Tests for hrzi1.horowitz_index_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzi1 import horowitz_index_model
 
 

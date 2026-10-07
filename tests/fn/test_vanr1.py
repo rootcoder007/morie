@@ -1,7 +1,6 @@
 """Tests for vanr1.vanraden_method1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vanr1 import vanraden_method1
 
 

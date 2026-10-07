@@ -44,7 +44,7 @@ def interior_point_lp(
     x = np.ones(n)
     lam = np.zeros(m)
     s = np.ones(n)
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         mu = (x @ s) / n
         if mu < tol:
             break

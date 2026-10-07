@@ -53,10 +53,9 @@ it costs.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
-from .hntfst import forest_weights, grow_forest, leaf_of
+from .hntfst import grow_forest, leaf_of
 
 __all__ = ["cluster_forest", "cluster_jackknife", "cluster_index"]
 
@@ -84,24 +83,19 @@ def cluster_jackknife(preds, bags, groups, correction=True):
     B = len(preds)
     m = len(groups)
     if B < 2:
-        raise ValueError("clrgrf: need at least 2 trees, got %d" % B)
+        raise ValueError(f"clrgrf: need at least 2 trees, got {int(B)}")
     if m < 3:
-        raise ValueError("clrgrf: need at least 3 clusters, got %d" % m)
+        raise ValueError(f"clrgrf: need at least 3 clusters, got {int(m)}")
     # a cluster is in-bag for tree b if any of its rows is
-    inbag_c = [[any(bags[b][i] for i in g) for g in groups]
-               for b in range(B)]
+    inbag_c = [[any(bags[b][i] for i in g) for g in groups] for b in range(B)]
     # the AVERAGE number of clusters in a tree, not tree 0's count
-    sc = sum(sum(1 for c in range(m) if inbag_c[b][c])
-             for b in range(B)) / float(B)
+    sc = sum(sum(1 for c in range(m) if inbag_c[b][c]) for b in range(B)) / float(B)
     subsampled = sc < m - 0.5
     pbar = sum(preds) / B
     total = 0.0
     for c in range(m):
-        nbar = sum(1.0 if inbag_c[b][c] else 0.0
-                   for b in range(B)) / B
-        cov = sum((preds[b] - pbar)
-                  * ((1.0 if inbag_c[b][c] else 0.0) - nbar)
-                  for b in range(B)) / B
+        nbar = sum(1.0 if inbag_c[b][c] else 0.0 for b in range(B)) / B
+        cov = sum((preds[b] - pbar) * ((1.0 if inbag_c[b][c] else 0.0) - nbar) for b in range(B)) / B
         total += cov * cov
     # With ROW-level sampling nearly every cluster has some row in every
     # tree, so no cluster is ever left out and the cluster-level
@@ -110,13 +104,22 @@ def cluster_jackknife(preds, bags, groups, correction=True):
     # the interval it produces cannot reflect cluster-level uncertainty.
     if correction and subsampled:
         total *= (m - 1.0) / m * (float(m) / (m - sc)) ** 2
-    return total, {"clusters_per_tree": sc, "subsampled": subsampled,
-                   "m": m}
+    return total, {"clusters_per_tree": sc, "subsampled": subsampled, "m": m}
 
 
-def cluster_forest(y, X, clusters, at=None, n_trees=200, min_leaf=5,
-                   subsample_frac=0.5, seed=0, unit="cluster",
-                   level=0.95, cluster_sampling=True):
+def cluster_forest(
+    y,
+    X,
+    clusters,
+    at=None,
+    n_trees=200,
+    min_leaf=5,
+    subsample_frac=0.5,
+    seed=0,
+    unit="cluster",
+    level=0.95,
+    cluster_sampling=True,
+):
     r"""A forest whose independent unit is the cluster.
 
     ``cluster_sampling=False`` reverts to row-level subsampling while
@@ -125,26 +128,28 @@ def cluster_forest(y, X, clusters, at=None, n_trees=200, min_leaf=5,
     the interval still looks respectable.
     """
     if unit not in ("cluster", "row"):
-        raise ValueError("clrgrf: unit must be cluster or row, got %r"
-                         % (unit,))
+        raise ValueError(f"clrgrf: unit must be cluster or row, got {unit!r}")
     yv = k.vec(y)
     n = len(yv)
     Xm = k.mat(X)
     if len(Xm) != n:
-        raise ValueError("clrgrf: %d covariate rows for %d outcomes"
-                         % (len(Xm), n))
+        raise ValueError(f"clrgrf: {int(len(Xm))} covariate rows for {int(n)} outcomes")
     if len(clusters) != n:
-        raise ValueError("clrgrf: %d cluster labels for %d rows"
-                         % (len(clusters), n))
+        raise ValueError(f"clrgrf: {int(len(clusters))} cluster labels for {int(n)} rows")
     groups, labels = cluster_index(clusters)
     m = len(groups)
     if m < 6:
-        raise ValueError("clrgrf: need at least 6 clusters, got %d" % m)
+        raise ValueError(f"clrgrf: need at least 6 clusters, got {int(m)}")
 
     trees, bags, s = grow_forest(
-        Xm, yv, n_trees=n_trees, min_leaf=min_leaf,
-        subsample_frac=subsample_frac, seed=seed,
-        clusters=(clusters if cluster_sampling else None))
+        Xm,
+        yv,
+        n_trees=n_trees,
+        min_leaf=min_leaf,
+        subsample_frac=subsample_frac,
+        seed=seed,
+        clusters=(clusters if cluster_sampling else None),
+    )
 
     Q = k.mat(at) if at is not None else Xm
     fitted, var = [], []
@@ -163,36 +168,44 @@ def cluster_forest(y, X, clusters, at=None, n_trees=200, min_leaf=5,
                 byc = {}
                 for i in rows:
                     byc.setdefault(str(clusters[i]), []).append(yv[i])
-                per_tree.append(sum(sum(v) / len(v)
-                                    for v in byc.values()) / len(byc))
+                per_tree.append(sum(sum(v) / len(v) for v in byc.values()) / len(byc))
         fitted.append(sum(per_tree) / len(per_tree))
         v, vinfo = cluster_jackknife(per_tree, bags, groups)
         var.append(v)
     se = [math.sqrt(max(v, 0.0)) for v in var]
     z = k.qnorm(0.5 + 0.5 * float(level))
-    return RichResult(payload={
-        "estimate": fitted, "fitted": fitted, "se": se,
-        "ci": [(fitted[q] - z * se[q], fitted[q] + z * se[q])
-               for q in range(len(Q))],
-        "variance": var, "n": n, "n_clusters": m,
-        "clusters_per_tree": vinfo["clusters_per_tree"],
-        "clusters_subsampled": vinfo["subsampled"],
-        "cluster_sizes": [len(g) for g in groups],
-        "cluster_labels": labels, "unit": unit,
-        "cluster_sampling": bool(cluster_sampling),
-        "n_trees": int(n_trees), "level": float(level),
-        "method": "cluster-aware generalized random forest, Athey, "
-                  "Tibshirani & Wager (2019) with eq. (8) aggregated "
-                  "to the cluster",
-    })
+    return RichResult(
+        payload={
+            "estimate": fitted,
+            "fitted": fitted,
+            "se": se,
+            "ci": [(fitted[q] - z * se[q], fitted[q] + z * se[q]) for q in range(len(Q))],
+            "variance": var,
+            "n": n,
+            "n_clusters": m,
+            "clusters_per_tree": vinfo["clusters_per_tree"],
+            "clusters_subsampled": vinfo["subsampled"],
+            "cluster_sizes": [len(g) for g in groups],
+            "cluster_labels": labels,
+            "unit": unit,
+            "cluster_sampling": bool(cluster_sampling),
+            "n_trees": int(n_trees),
+            "level": float(level),
+            "method": "cluster-aware generalized random forest, Athey, "
+            "Tibshirani & Wager (2019) with eq. (8) aggregated "
+            "to the cluster",
+        }
+    )
 
 
 def cheatsheet():
-    return ("clrgrf: draw whole CLUSTERS into the subsample -- row-wise "
-            "draws split clusters across the split and estimate halves, "
-            "violating honesty through the cluster -- and take the IJ "
-            "covariance against the cluster indicator with the "
-            "m(m-1)/(m-sc)^2 factor counting clusters.")
+    return (
+        "clrgrf: draw whole CLUSTERS into the subsample -- row-wise "
+        "draws split clusters across the split and estimate halves, "
+        "violating honesty through the cluster -- and take the IJ "
+        "covariance against the cluster indicator with the "
+        "m(m-1)/(m-sc)^2 factor counting clusters."
+    )
 
 
 # compact alias per ledger/NAMING.md

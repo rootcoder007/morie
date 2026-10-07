@@ -3,7 +3,6 @@
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmmamb import kamath_mamba_ssm
 
 

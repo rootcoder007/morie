@@ -1,12 +1,11 @@
 """Tests for morie.fn.cprem."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cprem import cprem
 
 
 def test_cprem_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = cprem(x_i=100.0, x_bar=80.0, n=5, k=1.0)
     assert result is not None
     assert hasattr(result, "name")

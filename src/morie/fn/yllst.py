@@ -55,10 +55,7 @@ def years_of_life_lost_std(
     """
     d = np.asarray(deaths, dtype=float)
     a = np.asarray(ages_at_death, dtype=float)
-    if np.isscalar(life_expectancy):
-        le = np.full_like(a, life_expectancy)
-    else:
-        le = np.asarray(life_expectancy, dtype=float)
+    le = np.full_like(a, life_expectancy) if np.isscalar(life_expectancy) else np.asarray(life_expectancy, dtype=float)
 
     if len(d) != len(a) or len(d) != len(le):
         raise ValueError("All arrays must have the same length")
@@ -68,10 +65,7 @@ def years_of_life_lost_std(
 
     total_yll = 0.0
     for i in range(len(d)):
-        if r > 0:
-            yll_i = (1 - np.exp(-r * L[i])) / r
-        else:
-            yll_i = L[i]
+        yll_i = (1 - np.exp(-r * L[i])) / r if r > 0 else L[i]
 
         if age_weight:
             yll_i *= C * a[i] * np.exp(-beta * a[i])

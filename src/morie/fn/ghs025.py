@@ -5,8 +5,6 @@ Implements Theorem 3.16, eq. (3.18), p.44 of Ghosal & van der Vaart (2017), *Fun
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,9 +19,9 @@ def ghosal_ch3_tailfree_density_product(V_path):
     p = 1.0
     for v in vs:
         p *= 2.0 * v
-    res = RichResult(payload={"estimate": p, "distribution": p,
-                              "depth": len(vs),
-                              "method": "density product (GvdV 2017 eq. 3.18)"})
+    res = RichResult(
+        payload={"estimate": p, "distribution": p, "depth": len(vs), "method": "density product (GvdV 2017 eq. 3.18)"}
+    )
     return with_describe_pointer(res, "ghs025")
 
 

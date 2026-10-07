@@ -19,8 +19,7 @@ def evt_gev_sample(n, mu, sigma, xi, seed=42):
     (Coles 2001 eq. 3.4 applied to uniform draws)."""
     rng = np.random.default_rng(seed)
     x = _ev.gev_sample(int(n), float(mu), float(sigma), float(xi), rng)
-    res = RichResult(payload={"x": x, "n": int(n),
-                              "method": "GEV inverse-CDF sampler (Coles 2001 eq. 3.4)"})
+    res = RichResult(payload={"x": x, "n": int(n), "method": "GEV inverse-CDF sampler (Coles 2001 eq. 3.4)"})
     return with_describe_pointer(res, "evgevs")
 
 

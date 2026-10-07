@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['brierscore', 'brier_score']
+__all__ = ["brierscore", "brier_score"]
 
 
 def brierscore(P, y):
@@ -44,13 +44,13 @@ def brierscore(P, y):
             d = 1.0 if y[i] == c + 1 else 0.0
             tot += (P[i][c] - d) ** 2
     bs = tot / T
-    return RichResult(payload={
-        "brier": bs, "brier_scaled": bs / 2.0, "n": T, "C": K,
-        "method": "Brier score, MVSML Eq. (4.14)"})
+    return RichResult(
+        payload={"brier": bs, "brier_scaled": bs / 2.0, "n": T, "C": K, "method": "Brier score, MVSML Eq. (4.14)"}
+    )
 
 
 brier_score = brierscore
 
 
 def cheatsheet():
-    return 'brcls: Brier score for a categorical predictive distribution.'
+    return "brcls: Brier score for a categorical predictive distribution."

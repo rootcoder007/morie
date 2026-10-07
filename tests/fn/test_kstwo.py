@@ -1,8 +1,8 @@
 """Tests for kstwo (Kolmogorov-Smirnov two-sample test)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kstwo import kstwo
 
 

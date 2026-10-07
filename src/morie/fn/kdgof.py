@@ -98,10 +98,7 @@ def kdgof(
         a, b = data.min(), data.max()
 
     for i in range(n_boot):
-        if cdf_func == "normal":
-            bs = rng.normal(mu, sig, n)
-        else:
-            bs = rng.uniform(a, b, n)
+        bs = rng.normal(mu, sig, n) if cdf_func == "normal" else rng.uniform(a, b, n)
         boot_stats[i] = _stat(bs)
 
     p_value = float(np.mean(boot_stats >= stat))

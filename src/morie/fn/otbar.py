@@ -67,30 +67,33 @@ def ot_barycenter_fixed(A, C_list, weights, epsilon, max_iter=200):
     eps = float(epsilon)
     if eps <= 0.0:
         raise ValueError("epsilon must be positive")
-    Ks = [[[math.exp(-c[i][j] / eps) for j in range(n)] for i in range(n)]
-          for c in Cs]
+    Ks = [[[math.exp(-c[i][j] / eps) for j in range(n)] for i in range(n)] for c in Cs]
     v = [[1.0] * n for _ in range(K)]
     bary = [1.0 / n] * n
     it = int(max_iter)
     for _ in range(it):
-        Kv = [[sum(Ks[k][i][j] * v[k][j] for j in range(n)) for i in range(n)]
-              for k in range(K)]
+        Kv = [[sum(Ks[k][i][j] * v[k][j] for j in range(n)) for i in range(n)] for k in range(K)]
         bary = []
         for i in range(n):
             s = 0.0
             for k in range(K):
-                s += w[k] * (math.log(Kv[k][i]) if Kv[k][i] > 0.0
-                             else float("-inf"))
+                s += w[k] * (math.log(Kv[k][i]) if Kv[k][i] > 0.0 else float("-inf"))
             bary.append(math.exp(s) if s > float("-inf") else 0.0)
-        u = [[bary[i] / Kv[k][i] if Kv[k][i] > 0.0 else 0.0 for i in range(n)]
-             for k in range(K)]
+        u = [[bary[i] / Kv[k][i] if Kv[k][i] > 0.0 else 0.0 for i in range(n)] for k in range(K)]
         for k in range(K):
             for j in range(n):
                 s = sum(u[k][i] * Ks[k][i][j] for i in range(n))
                 v[k][j] = Am[j][k] / s if s > 0.0 else 0.0
-    return RichResult(payload={
-        "bary": bary, "mass": sum(bary), "n": n, "K": K, "iters": it,
-        "method": "Entropic Wasserstein barycenter, fixed support"})
+    return RichResult(
+        payload={
+            "bary": bary,
+            "mass": sum(bary),
+            "n": n,
+            "K": K,
+            "iters": it,
+            "method": "Entropic Wasserstein barycenter, fixed support",
+        }
+    )
 
 
 def cheatsheet():

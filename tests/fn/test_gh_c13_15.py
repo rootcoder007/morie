@@ -1,7 +1,6 @@
 """Tests for gh_c13_15.ghosal_cox_bvm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c13_15 import ghosal_cox_bvm
 
 
@@ -15,7 +14,7 @@ def test_gh_c13_15_basic():
     se = np.asarray(result["se"], dtype=float)
     bg = np.asarray(result["beta_grid"], dtype=float)
     post = np.asarray(result["posterior_normal"], dtype=float)
-    info = np.asarray(result["efficient_information"], dtype=float)
+    np.asarray(result["efficient_information"], dtype=float)
 
     # Documented return keys must all be present and finite where numeric.
     assert "beta" in result
@@ -49,6 +48,7 @@ def test_gh_c13_15_basic():
 def test_gh_c13_15_edge():
     """Test that too few observations raises and shape handling works."""
     import pytest
+
     # Below the documented minimum of 5 observations: must raise.
     with pytest.raises(ValueError):
         ghosal_cox_bvm(np.array([42.0]), time=np.array([1.0]))

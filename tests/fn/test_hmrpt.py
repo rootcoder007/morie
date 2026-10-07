@@ -1,7 +1,6 @@
 """Tests for hmrpt.geron_random_patches."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrpt import geron_random_patches
 
 

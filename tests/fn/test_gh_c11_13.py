@@ -1,7 +1,6 @@
 """Tests for gh_c11_13.ghosal_gp_adapt_thm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_13 import ghosal_gp_adapt_thm
 
 
@@ -14,9 +13,7 @@ def test_gh_c11_13_basic():
     length scale), 'log_evidence' (one log-evidence per grid point),
     and 'method' (description string).
     """
-    result = ghosal_gp_adapt_thm(n=60, l_true=0.2,
-                                 l_grid=(0.05, 0.2, 0.8),
-                                 noise=0.1, seed=42)
+    result = ghosal_gp_adapt_thm(n=60, l_true=0.2, l_grid=(0.05, 0.2, 0.8), noise=0.1, seed=42)
 
     # The documented return keys must all be present.
     assert "estimate" in result

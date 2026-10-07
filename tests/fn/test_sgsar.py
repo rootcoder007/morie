@@ -1,7 +1,6 @@
 """Tests for SAR lag model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgsar import sgsar
 
 

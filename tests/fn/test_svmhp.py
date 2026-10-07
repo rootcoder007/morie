@@ -1,7 +1,6 @@
 """Tests for svmhp.svm_hyperplane."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.svmhp import svm_hyperplane
 
 

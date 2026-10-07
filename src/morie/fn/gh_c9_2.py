@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_dp_disc_crt"]
@@ -34,12 +33,15 @@ def ghosal_dp_disc_crt(ns=(100, 400, 1600), alpha=2.0, seed=42):
                 err = max(err, abs(post - t))
             avg += err / reps
         errs.append(avg)
-    rate_hat = math.log(errs[0] / errs[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
-    res = RichResult(payload={"estimate": rate_hat,
-                              "sup_err_by_n": errs,
-                              "near_half": abs(rate_hat - 0.5) < 0.3,
-                              "method": "DP CDF contraction (GvdV 2017 sec. 9.2)"})
+    rate_hat = math.log(errs[0] / errs[-1]) / math.log(float(ns[-1]) / ns[0])
+    res = RichResult(
+        payload={
+            "estimate": rate_hat,
+            "sup_err_by_n": errs,
+            "near_half": abs(rate_hat - 0.5) < 0.3,
+            "method": "DP CDF contraction (GvdV 2017 sec. 9.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_2")
 
 

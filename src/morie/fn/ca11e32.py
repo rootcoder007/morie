@@ -28,17 +28,16 @@ def ca_chapter_11_equation_32(d, se_d, n1, n2):
     """
     value = _ca_crim.se_r_from_se_d(d, se_d, n1, n2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.32)"
     return RichResult(
-        title='se_r from se_d (unequal n)',
+        title="se_r from se_d (unequal n)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e32: se_r = sqrt(((n1+n2)^2/(n1 n2)) se_d^2 / (se_d^2 + h)^3-form) [Weisburd et al. 2022, eq. 11.32]'
+    return "ca11e32: se_r = sqrt(((n1+n2)^2/(n1 n2)) se_d^2 / (se_d^2 + h)^3-form) [Weisburd et al. 2022, eq. 11.32]"

@@ -64,10 +64,7 @@ def lmpzv(sequence: np.ndarray) -> dict:
     if k != 1 or i != 0:
         complexity += 1
 
-    if n > 1:
-        normalized = complexity * np.log2(n) / n
-    else:
-        normalized = float(complexity)
+    normalized = complexity * np.log2(n) / n if n > 1 else float(complexity)
 
     return RichResult(payload={"complexity": complexity, "normalized": normalized, "length": n})
 

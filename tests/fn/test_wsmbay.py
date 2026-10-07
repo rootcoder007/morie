@@ -11,9 +11,7 @@ from morie.fn.wsmbay import wasserman_posterior
 def _trapz(y, x):
     """Trapezoid integral of the returned lists, computed here so the
     expected values do not depend on the module's own quadrature."""
-    return sum(
-        0.5 * (x[i + 1] - x[i]) * (y[i + 1] + y[i]) for i in range(len(x) - 1)
-    )
+    return sum(0.5 * (x[i + 1] - x[i]) * (y[i + 1] + y[i]) for i in range(len(x) - 1))
 
 
 def test_wsmbay_basic():
@@ -40,9 +38,7 @@ def test_wsmbay_basic():
     assert var == pytest.approx(1.0 / n, abs=1e-6)
 
     # Its mode and mean coincide, and both sit at the sample mean.
-    assert out["map_theta"] == pytest.approx(
-        g[max(range(len(p)), key=lambda i: p[i])], rel=1e-12
-    )
+    assert out["map_theta"] == pytest.approx(g[max(range(len(p)), key=lambda i: p[i])], rel=1e-12)
 
 
 def test_wsmbay_conjugate_normal_prior_shrinks_the_mean():
@@ -51,7 +47,7 @@ def test_wsmbay_conjugate_normal_prior_shrinks_the_mean():
     n = len(data)
     xbar = sum(data) / n
     grid = np.linspace(-6.0, 6.0, 6001)
-    prior = np.exp(-0.5 * grid ** 2)
+    prior = np.exp(-0.5 * grid**2)
     out = wasserman_posterior(data, None, (grid, prior))
 
     assert out["estimate"] == pytest.approx(n * xbar / (n + 1.0), abs=1e-6)
@@ -123,7 +119,7 @@ import morie.fn.wsmbay as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -1,9 +1,10 @@
 """Tests for icc3k.icc_two_way_mixed_avg."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.icc3k import icc_two_way_mixed_avg
 
 
@@ -32,9 +33,18 @@ def test_icc3k_basic():
 
     # Check required keys from the docstring
     required_keys = [
-        "value", "icc_single", "icc2k", "max_rater_offset",
-        "k", "n", "MSR", "MSC", "MSE", "case",
-        "consistency_not_agreement", "method"
+        "value",
+        "icc_single",
+        "icc2k",
+        "max_rater_offset",
+        "k",
+        "n",
+        "MSR",
+        "MSC",
+        "MSE",
+        "case",
+        "consistency_not_agreement",
+        "method",
     ]
     for key in required_keys:
         assert key in result, f"Missing key: {key}"
@@ -55,7 +65,7 @@ def test_icc3k_basic():
 
 def test_icc3k_edge():
     """Test edge case: constant ratings lead to zero between-target MSR."""
-    rng = np.random.default_rng(123)
+    np.random.default_rng(123)
     n_subjects = 10
     k_raters = 2
     total = n_subjects * k_raters

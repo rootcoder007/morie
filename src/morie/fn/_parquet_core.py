@@ -91,7 +91,7 @@ class _TReader:
 
     def binary(self):
         n = self.varint()
-        out = self.buf[self.pos:self.pos + n]
+        out = self.buf[self.pos : self.pos + n]
         self.pos += n
         return out
 
@@ -116,14 +116,13 @@ class _TReader:
             return self.double()
         if ttype == _T_BINARY:
             return self.binary()
-        if ttype == _T_LIST or ttype == _T_SET:
+        if ttype in (_T_LIST, _T_SET):
             return self.list()
         if ttype == _T_MAP:
             return self.map()
         if ttype == _T_STRUCT:
             return self.struct()
-        raise ValueError("unknown thrift compact type %d at byte %d"
-                         % (ttype, self.pos))
+        raise ValueError(f"unknown thrift compact type {int(ttype)} at byte {int(self.pos)}")
 
     def list(self):
         h = self._byte()
@@ -141,8 +140,7 @@ class _TReader:
             return {}
         kv = self._byte()
         ktype, vtype = kv >> 4, kv & 0x0F
-        return {self._scalar(ktype): self._scalar(vtype)
-                for _ in range(size)}
+        return {self._scalar(ktype): self._scalar(vtype) for _ in range(size)}
 
     def struct(self):
         out = {}
@@ -247,6 +245,7 @@ class _TWriter:
 
 # ---------------------------------------------------------------- snappy
 
+
 def _snappy_decompress(data):
     """Snappy raw block format (no framing).
 
@@ -270,43 +269,41 @@ def _snappy_decompress(data):
         tag = data[pos]
         pos += 1
         kind = tag & 0x03
-        if kind == 0:                                   # literal
+        if kind == 0:  # literal
             ln = tag >> 2
             if ln >= 60:
                 extra = ln - 59
-                ln = int.from_bytes(data[pos:pos + extra], "little")
+                ln = int.from_bytes(data[pos : pos + extra], "little")
                 pos += extra
             ln += 1
-            out += data[pos:pos + ln]
+            out += data[pos : pos + ln]
             pos += ln
             continue
-        if kind == 1:                                   # 1-byte offset
+        if kind == 1:  # 1-byte offset
             ln = 4 + ((tag >> 2) & 0x07)
             off = ((tag >> 5) << 8) | data[pos]
             pos += 1
-        elif kind == 2:                                 # 2-byte offset
+        elif kind == 2:  # 2-byte offset
             ln = (tag >> 2) + 1
-            off = int.from_bytes(data[pos:pos + 2], "little")
+            off = int.from_bytes(data[pos : pos + 2], "little")
             pos += 2
-        else:                                           # 4-byte offset
+        else:  # 4-byte offset
             ln = (tag >> 2) + 1
-            off = int.from_bytes(data[pos:pos + 4], "little")
+            off = int.from_bytes(data[pos : pos + 4], "little")
             pos += 4
         if off == 0 or off > len(out):
-            raise ValueError("snappy: bad copy offset %d at %d"
-                             % (off, pos))
+            raise ValueError(f"snappy: bad copy offset {int(off)} at {int(pos)}")
         # Copies may overlap (that is how snappy encodes runs), so this
         # has to advance a byte at a time when off < ln.
         start = len(out) - off
         if off >= ln:
-            out += out[start:start + ln]
+            out += out[start : start + ln]
         else:
             for i in range(ln):
                 out.append(out[start + i])
 
     if len(out) != n:
-        raise ValueError("snappy: expected %d bytes, decoded %d"
-                         % (n, len(out)))
+        raise ValueError(f"snappy: expected {int(n)} bytes, decoded {int(len(out))}")
     return bytes(out)
 
 
@@ -322,7 +319,7 @@ def _snappy_compress(data):
     """
     out = bytearray()
     n = len(data)
-    while True:                                          # varint length
+    while True:  # varint length
         if n < 0x80:
             out.append(n)
             break
@@ -345,7 +342,7 @@ def _snappy_compress(data):
         else:
             out.append((62 << 2) | 0)
             out += ln.to_bytes(3, "little")
-        out += data[pos:pos + chunk]
+        out += data[pos : pos + chunk]
         pos += chunk
     return bytes(out)
 
@@ -379,6 +376,7 @@ _PLAIN_SIZE = {_INT32: 4, _INT64: 8, _FLOAT: 4, _DOUBLE: 8}
 
 # --------------------------------------------------------------- decoding
 
+
 def _bit_width(n):
     w = 0
     while n:
@@ -408,19 +406,19 @@ def _read_rle_hybrid(buf, pos, width, count, end):
             if not b & 0x80:
                 break
             shift += 7
-        if header & 1:                                   # bit-packed run
+        if header & 1:  # bit-packed run
             groups = header >> 1
             nvals = groups * 8
             need = groups * width
-            chunk = buf[pos:pos + need]
+            chunk = buf[pos : pos + need]
             pos += need
             acc = int.from_bytes(chunk, "little")
             mask = (1 << width) - 1
             for i in range(nvals):
                 out.append((acc >> (i * width)) & mask)
-        else:                                            # RLE run
+        else:  # RLE run
             run = header >> 1
-            val = int.from_bytes(buf[pos:pos + nbytes], "little")
+            val = int.from_bytes(buf[pos : pos + nbytes], "little")
             pos += nbytes
             out.extend([val] * run)
     return out[:count], pos
@@ -437,8 +435,7 @@ def _decode_plain(buf, pos, ptype, count, type_length=None):
 
     if ptype in _PLAIN_FMT:
         fmt, size = _PLAIN_FMT[ptype], _PLAIN_SIZE[ptype]
-        vals = [struct.unpack_from(fmt, buf, pos + i * size)[0]
-                for i in range(count)]
+        vals = [struct.unpack_from(fmt, buf, pos + i * size)[0] for i in range(count)]
         return vals, pos + count * size
 
     if ptype == _BYTE_ARRAY:
@@ -446,15 +443,14 @@ def _decode_plain(buf, pos, ptype, count, type_length=None):
         for _ in range(count):
             n = struct.unpack_from("<I", buf, pos)[0]
             pos += 4
-            vals.append(bytes(buf[pos:pos + n]))
+            vals.append(bytes(buf[pos : pos + n]))
             pos += n
         return vals, pos
 
     if ptype == _FLBA:
         if not type_length:
             raise ValueError("FIXED_LEN_BYTE_ARRAY without type_length")
-        vals = [bytes(buf[pos + i * type_length:pos + (i + 1) * type_length])
-                for i in range(count)]
+        vals = [bytes(buf[pos + i * type_length : pos + (i + 1) * type_length]) for i in range(count)]
         return vals, pos + count * type_length
 
     if ptype == _INT96:
@@ -465,10 +461,10 @@ def _decode_plain(buf, pos, ptype, count, type_length=None):
             nanos = struct.unpack_from("<Q", buf, pos)[0]
             jday = struct.unpack_from("<I", buf, pos + 8)[0]
             pos += 12
-            vals.append((jday - 2440588) * 86400 * 10 ** 9 + nanos)
+            vals.append((jday - 2440588) * 86400 * 10**9 + nanos)
         return vals, pos
 
-    raise ValueError("unsupported physical type %d" % ptype)
+    raise ValueError(f"unsupported physical type {int(ptype)}")
 
 
 def _apply_logical(vals, ptype, converted):
@@ -479,19 +475,16 @@ def _apply_logical(vals, ptype, converted):
     trap for anyone swapping engines.
     """
     import datetime as _dt
+
     if converted is None:
         return vals
     epoch = _dt.datetime(1970, 1, 1, tzinfo=_dt.timezone.utc)
     if converted == _CT_DATE and ptype == _INT32:
-        return [None if v is None else
-                _dt.date(1970, 1, 1) + _dt.timedelta(days=v)
-                for v in vals]
+        return [None if v is None else _dt.date(1970, 1, 1) + _dt.timedelta(days=v) for v in vals]
     if converted == _CT_TIMESTAMP_MILLIS:
-        return [None if v is None else
-                epoch + _dt.timedelta(milliseconds=v) for v in vals]
+        return [None if v is None else epoch + _dt.timedelta(milliseconds=v) for v in vals]
     if converted == _CT_TIMESTAMP_MICROS:
-        return [None if v is None else
-                epoch + _dt.timedelta(microseconds=v) for v in vals]
+        return [None if v is None else epoch + _dt.timedelta(microseconds=v) for v in vals]
     return vals
 
 
@@ -515,6 +508,7 @@ def _convert(vals, ptype, converted):
 
 
 # ------------------------------------------------------------------ read
+
 
 def _read_footer(fh):
     fh.seek(0)
@@ -592,20 +586,18 @@ def _column_values(fh, chunk_meta, num_rows):
     pos = 0
     dictionary = None
     values = []
-    slots = []          # (rep, def, value) triples for a LIST column
-    got = 0             # level slots consumed, which is what total_values counts
+    slots = []  # (rep, def, value) triples for a LIST column
+    got = 0  # level slots consumed, which is what total_values counts
     while got < total_values and pos < len(blob):
         r = _TReader(blob, pos)
         head = r.struct()
         pos = r.pos
         ptype_size = head[3]
-        raw = blob[pos:pos + ptype_size]
+        raw = blob[pos : pos + ptype_size]
         pos += ptype_size
         page = _snappy_decompress(raw) if codec == _C_SNAPPY else raw
         if codec not in (_C_SNAPPY, _C_UNCOMPRESSED):
-            raise ValueError(
-                "compression codec %d not implemented; the store uses "
-                "SNAPPY only" % codec)
+            raise ValueError(f"compression codec {int(codec)} not implemented; the store uses SNAPPY only")
 
         if head[1] == _P_DICT:
             dh = head[7]
@@ -635,25 +627,20 @@ def _column_values(fh, chunk_meta, num_rows):
         present = sum(1 for d in defs if d == maxdef)
         if encoding in (_E_PLAIN_DICTIONARY, _E_RLE_DICTIONARY):
             if dictionary is None:
-                raise ValueError("dictionary-encoded page with no "
-                                 "dictionary page")
+                raise ValueError("dictionary-encoded page with no dictionary page")
             width = page[p]
             p += 1
             idx, _ = _read_rle_hybrid(page, p, width, present, len(page))
             vals = [dictionary[i] for i in idx]
         elif encoding == _E_PLAIN:
-            vals, p = _decode_plain(page, p, ptype, present,
-                                    chunk_meta.get("_typelen"))
+            vals, p = _decode_plain(page, p, ptype, present, chunk_meta.get("_typelen"))
         else:
-            raise ValueError(
-                "encoding %d not implemented; the store uses PLAIN and "
-                "RLE_DICTIONARY" % encoding)
+            raise ValueError(f"encoding {int(encoding)} not implemented; the store uses PLAIN and RLE_DICTIONARY")
 
         it = iter(vals)
         got += n
         if maxrep:
-            slots.extend((r, d, next(it) if d == maxdef else None)
-                         for r, d in zip(reps, defs))
+            slots.extend((r, d, next(it) if d == maxdef else None) for r, d in zip(reps, defs))
         else:
             values.extend(next(it) if d == maxdef else None for d in defs)
 
@@ -695,26 +682,25 @@ def _schema_leaves(schema):
             if rep == _REPEATED and list_name is not None and nchild == 1:
                 stack.append([1, maxdef, maxrep, repdef, list_name])
                 continue
-            if is_list and rep != _REPEATED and list_name is None \
-                    and nchild == 1:
+            if is_list and rep != _REPEATED and list_name is None and nchild == 1:
                 stack.append([1, maxdef, maxrep, repdef, name])
                 continue
-            raise ValueError(
-                "nested schema not implemented: group field %r has "
-                "%d children" % (name, nchild))
+            raise ValueError(f"nested schema not implemented: group field {name!r} has {int(nchild)} children")
         if maxrep > 1 or (maxrep == 1 and list_name is None):
             raise ValueError(
-                "repeated column %r not implemented; decoding it as "
-                "flat would silently change the row count" % name)
-        leaves.append({
-            "name": list_name if list_name is not None else name,
-            "type": el.get(1),
-            "typelen": el.get(2),
-            "converted": el.get(6),
-            "maxdef": maxdef,
-            "maxrep": maxrep,
-            "repdef": repdef,
-        })
+                f"repeated column {name!r} not implemented; decoding it as flat would silently change the row count"
+            )
+        leaves.append(
+            {
+                "name": list_name if list_name is not None else name,
+                "type": el.get(1),
+                "typelen": el.get(2),
+                "converted": el.get(6),
+                "maxdef": maxdef,
+                "maxrep": maxrep,
+                "repdef": repdef,
+            }
+        )
     return leaves
 
 
@@ -750,8 +736,7 @@ def read_parquet(path, columns=None):
             byname = {c["name"]: i for i, c in enumerate(leaves)}
             missing = [c for c in columns if c not in byname]
             if missing:
-                raise KeyError("no such column(s) in %s: %s"
-                               % (path, ", ".join(missing)))
+                raise KeyError("no such column(s) in {}: {}".format(path, ", ".join(missing)))
             wanted = [byname[c] for c in columns]
 
         data = {}
@@ -767,22 +752,23 @@ def read_parquet(path, columns=None):
                 cm["_typelen"] = leaf["typelen"]
                 col.extend(_column_values(fh, cm, rg[3]))
             if leaf["maxrep"]:
+
                 def _elems(row, _t=leaf["type"], _c=leaf["converted"]):
                     return _apply_logical(_convert(row, _t, _c), _t, _c)
+
                 data[leaf["name"]] = _map_list(col, _elems)
                 continue
             col = _convert(col, leaf["type"], leaf["converted"])
-            data[leaf["name"]] = _apply_logical(col, leaf["type"],
-                                                leaf["converted"])
+            data[leaf["name"]] = _apply_logical(col, leaf["type"], leaf["converted"])
 
     df = DataFrame(data)
     if len(df) != num_rows:
-        raise ValueError("footer says %d rows, decoded %d"
-                         % (num_rows, len(df)))
+        raise ValueError(f"footer says {int(num_rows)} rows, decoded {int(len(df))}")
     return df
 
 
 # ----------------------------------------------------------------- write
+
 
 def _infer(values):
     """Pick a physical + converted type for a column of Python values.
@@ -792,6 +778,7 @@ def _infer(values):
     number and stopped being a timestamp to any other engine.
     """
     import datetime as _dt
+
     live = [v for v in values if v is not None]
     if live and all(isinstance(v, _dt.datetime) for v in live):
         return _INT64, _CT_TIMESTAMP_MILLIS
@@ -816,7 +803,7 @@ def _infer(values):
     if seen == {"int"}:
         lo = min((v for v in values if v is not None), default=0)
         hi = max((v for v in values if v is not None), default=0)
-        if lo >= -(2 ** 31) and hi < 2 ** 31:
+        if lo >= -(2**31) and hi < 2**31:
             return _INT32, None
         return _INT64, None
     if seen <= {"int", "float"}:
@@ -827,6 +814,7 @@ def _infer(values):
 def _prep_write(values, converted):
     """Turn date/datetime back into the integers PLAIN encodes."""
     import datetime as _dt
+
     if converted == _CT_DATE:
         base = _dt.date(1970, 1, 1)
         return [(v - base).days for v in values]
@@ -865,7 +853,7 @@ def _encode_plain(values, ptype):
             b = v.encode("utf-8") if isinstance(v, str) else bytes(v)
             out += struct.pack("<I", len(b)) + b
         return bytes(out)
-    raise ValueError("cannot PLAIN-encode physical type %d" % ptype)
+    raise ValueError(f"cannot PLAIN-encode physical type {int(ptype)}")
 
 
 def _encode_rle_levels(levels, width):
@@ -899,8 +887,7 @@ def to_parquet(df, path, compression="snappy"):
     is the shape every reader accepts without negotiation.
     """
     if compression not in ("snappy", None, "none", "uncompressed"):
-        raise ValueError("compression must be 'snappy' or None; got %r"
-                         % (compression,))
+        raise ValueError(f"compression must be 'snappy' or None; got {compression!r}")
     codec = _C_SNAPPY if compression == "snappy" else _C_UNCOMPRESSED
     compress = _snappy_compress if codec == _C_SNAPPY else (lambda b: b)
 
@@ -908,19 +895,16 @@ def to_parquet(df, path, compression="snappy"):
     cols = {n: list(df[n]) for n in names}
     nrows = len(df)
 
-    fh = open(path, "wb")
-    try:
+    with open(path, "wb") as fh:
         fh.write(b"PAR1")
         chunks = []
         for name in names:
             values = cols[name]
             ptype, converted = _infer(values)
             defs = [0 if v is None else 1 for v in values]
-            present = _prep_write([v for v in values if v is not None],
-                                  converted)
+            present = _prep_write([v for v in values if v is not None], converted)
 
-            body = _encode_rle_levels(defs, 1) + _encode_plain(present,
-                                                               ptype)
+            body = _encode_rle_levels(defs, 1) + _encode_plain(present, ptype)
             payload = compress(body)
 
             # PageHeader{1:type, 2:uncompressed, 3:compressed,
@@ -996,8 +980,6 @@ def to_parquet(df, path, compression="snappy"):
         fh.write(footer)
         fh.write(struct.pack("<I", len(footer)))
         fh.write(b"PAR1")
-    finally:
-        fh.close()
     return path
 
 
@@ -1008,12 +990,14 @@ def _demo():
 
     from ._frame_core import DataFrame
 
-    df = DataFrame({
-        "case": ["23-OCI-001", "23-OCI-002", None, "23-OFP-9"],
-        "year": [2023, 2023, 2024, 2024],
-        "rate": [0.5, -1.25, None, 3.75],
-        "closed": [True, False, True, None],
-    })
+    df = DataFrame(
+        {
+            "case": ["23-OCI-001", "23-OCI-002", None, "23-OFP-9"],
+            "year": [2023, 2023, 2024, 2024],
+            "rate": [0.5, -1.25, None, 3.75],
+            "closed": [True, False, True, None],
+        }
+    )
     path = os.path.join(tempfile.mkdtemp(), "t.parquet")
     to_parquet(df, path)
     back = read_parquet(path)
@@ -1022,8 +1006,7 @@ def _demo():
         a, b = list(df[c]), list(back[c])
         assert a == b, (c, a, b)
     sub = read_parquet(path, columns=["year"])
-    assert list(sub.columns) == ["year"] and list(sub["year"]) == \
-        [2023, 2023, 2024, 2024]
+    assert list(sub.columns) == ["year"] and list(sub["year"]) == [2023, 2023, 2024, 2024]
     with open(path, "rb") as fh:
         assert fh.read(4) == b"PAR1"
     print("round-trip ok:", len(df), "rows,", len(df.columns), "columns")

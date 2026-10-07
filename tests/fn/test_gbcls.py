@@ -1,7 +1,6 @@
 """Test gbm_classify_bio (gbcls)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.gbcls import gbcls, gbm_classify_bio
 

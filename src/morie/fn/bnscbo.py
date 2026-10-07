@@ -61,10 +61,17 @@ def bound_compound_outcome(y_components, D, X):
     cv, dv = B.yd(comp, D, "bound_compound_outcome")
     y0, y1 = B.support(cv)
     lo, hi = B.wc_ate(cv, dv, y0, y1)
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "k": k, "n": n,
-        "method": "Compound-outcome bound"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "k": k,
+            "n": n,
+            "method": "Compound-outcome bound",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Test parseval_identity (prsid)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.prsid import parseval_identity, prsid
 

@@ -34,8 +34,8 @@ def ev_gev_pwm(block_maxima):
     payload["b2"] = pwm_b(block_maxima, 2)
     payload["alias_of"] = "morie.fn.evgevlm.ev_gev_lmoments"
     payload["same_estimator_because"] = (
-        "L-moments are linear combinations of the PWMs, so the two fits "
-        "coincide exactly")
+        "L-moments are linear combinations of the PWMs, so the two fits coincide exactly"
+    )
     return RichResult(payload=payload)
 
 

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpdkl import deep_kernel_gp
 
 
@@ -29,8 +28,7 @@ def test_gpdkl_basic():
     y = _to_list(rng_y.normal(0.0, 1.0, n))
     X_test = _to_list(rng_t.normal(0.0, 1.0, (5, d)))
 
-    result = deep_kernel_gp(X, y, X_test, None,
-                            lengthscale=1.0, variance=1.0, noise=0.01)
+    result = deep_kernel_gp(X, y, X_test, None, lengthscale=1.0, variance=1.0, noise=0.01)
 
     # The implementation returns a RichResult; allow either dict-like access
     # or attribute access for the keys we check.
@@ -57,15 +55,13 @@ def test_gpdkl_basic():
     def sqdist(a, b):
         return sum((a[i] - b[i]) ** 2 for i in range(len(a)))
 
-    K = [[var * np.exp(-0.5 * sqdist(X[i], X[j]) / (ell * ell))
-          for j in range(n)] for i in range(n)]
+    K = [[var * np.exp(-0.5 * sqdist(X[i], X[j]) / (ell * ell)) for j in range(n)] for i in range(n)]
     for i in range(n):
         K[i][i] += s2
 
     # Cholesky solve via a small explicit routine using only numpy primitives.
     def matvec(M, v):
-        return [sum(M[i][j] * v[j] for j in range(len(v)))
-                for i in range(len(M))]
+        return [sum(M[i][j] * v[j] for j in range(len(v))) for i in range(len(M))]
 
     def transpose(M):
         return [[M[j][i] for j in range(len(M))] for i in range(len(M[0]))]
@@ -98,8 +94,7 @@ def test_gpdkl_basic():
     alpha = solve_chol(L, y)
 
     x_star = X_test[0]
-    kstar = [var * np.exp(-0.5 * sqdist(x_star, X[i]) / (ell * ell))
-             for i in range(n)]
+    kstar = [var * np.exp(-0.5 * sqdist(x_star, X[i]) / (ell * ell)) for i in range(n)]
     expected_mean = sum(kstar[i] * alpha[i] for i in range(n))
 
     assert np.allclose(get("mean")[0], expected_mean, atol=1e-8)
@@ -116,8 +111,7 @@ def test_gpdkl_edge():
     y = _to_list(rng_y.normal(0.0, 1.0, n))
     X_test = _to_list(rng_t.normal(0.0, 1.0, (4, d)))
 
-    result = deep_kernel_gp(X, y, X_test, None,
-                            lengthscale=2.0, variance=0.5, noise=0.1)
+    result = deep_kernel_gp(X, y, X_test, None, lengthscale=2.0, variance=0.5, noise=0.1)
 
     mean = result["mean"]
     variance = result["variance"]

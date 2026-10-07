@@ -86,7 +86,7 @@ def _loglik(lamR, lamT, theta, alpha, N, A, dl, T):
         for q in range(_NQ):
             w = xs[q]
             lp = N[i] * math.log(lamR * w) - lamR * w * A[i]
-            wa = w ** alpha
+            wa = w**alpha
             lp += dl[i] * math.log(lamT * wa) - lamT * wa * T[i]
             acc += ws[q] * math.exp(lp)
         if acc <= 0.0:
@@ -174,10 +174,22 @@ def joint_frailty(time, event, terminal, cluster, sweeps=4):
     theta = 0.5
     alpha = 1.0
     for _ in range(int(sweeps)):
-        lamR = _golden(lambda v: _loglik(v, lamT, theta, alpha, N, A, dl, T), 1e-4, 10.0 * sum(N) / sum(A))
-        lamT = _golden(lambda v: _loglik(lamR, v, theta, alpha, N, A, dl, T), 1e-4, 10.0 * sum(dl) / sum(T))
-        theta = _golden(lambda v: _loglik(lamR, lamT, v, alpha, N, A, dl, T), 1e-3, 5.0)
-        alpha = _golden(lambda v: _loglik(lamR, lamT, theta, v, N, A, dl, T), -3.0, 3.0)
+        lamR = _golden(
+            lambda v, *, alpha=alpha, lamT=lamT, theta=theta: _loglik(v, lamT, theta, alpha, N, A, dl, T),
+            1e-4,
+            10.0 * sum(N) / sum(A),
+        )
+        lamT = _golden(
+            lambda v, *, alpha=alpha, lamR=lamR, theta=theta: _loglik(lamR, v, theta, alpha, N, A, dl, T),
+            1e-4,
+            10.0 * sum(dl) / sum(T),
+        )
+        theta = _golden(
+            lambda v, *, alpha=alpha, lamR=lamR, lamT=lamT: _loglik(lamR, lamT, v, alpha, N, A, dl, T), 1e-3, 5.0
+        )
+        alpha = _golden(
+            lambda v, *, lamR=lamR, lamT=lamT, theta=theta: _loglik(lamR, lamT, theta, v, N, A, dl, T), -3.0, 3.0
+        )
     ll = _loglik(lamR, lamT, theta, alpha, N, A, dl, T)
     return RichResult(
         title="Joint frailty for recurrent and terminal events",

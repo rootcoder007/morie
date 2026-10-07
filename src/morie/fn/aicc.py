@@ -23,10 +23,7 @@ def corrected_aic(
     :return: DescriptiveResult with AICc value.
     """
     aic = -2.0 * loglik + 2.0 * k
-    if n - k - 1 > 0:
-        correction = 2.0 * k * (k + 1) / (n - k - 1)
-    else:
-        correction = float("inf")
+    correction = 2.0 * k * (k + 1) / (n - k - 1) if n - k - 1 > 0 else float("inf")
     aicc_val = aic + correction
     return DescriptiveResult(
         name="aicc",

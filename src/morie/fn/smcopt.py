@@ -25,9 +25,6 @@ temperature rather than stopping at 1, tracking of the best point seen, and
 the objective stated as something to *maximise* rather than as a log density.
 """
 
-import math
-
-from . import _array_core as np
 from ._richresult import RichResult
 from .smcsam import random_walk_kernel, smcsam
 
@@ -48,16 +45,26 @@ def annealing_ladder(n_steps, phi_max=50.0, phi_min=0.1, kind="geometric"):
         raise ValueError("smcopt: need 0 < phi_min < phi_max")
     if kind == "geometric":
         r = (phi_max / phi_min) ** (1.0 / (n_steps - 1))
-        return [phi_min * r ** t for t in range(n_steps)]
+        return [phi_min * r**t for t in range(n_steps)]
     if kind == "linear":
-        return [phi_min + (phi_max - phi_min) * t / (n_steps - 1)
-                for t in range(n_steps)]
+        return [phi_min + (phi_max - phi_min) * t / (n_steps - 1) for t in range(n_steps)]
     raise ValueError("smcopt: kind must be 'geometric' or 'linear'")
 
 
-def smcopt(objective, initial, n_particles=200, n_steps=30, phi_max=50.0,
-           phi_min=0.1, kind="geometric", kernel=None, ess_threshold=0.5,
-           scheme="systematic", seed=0, maximise=True):
+def smcopt(
+    objective,
+    initial,
+    n_particles=200,
+    n_steps=30,
+    phi_max=50.0,
+    phi_min=0.1,
+    kind="geometric",
+    kernel=None,
+    ess_threshold=0.5,
+    scheme="systematic",
+    seed=0,
+    maximise=True,
+):
     r"""Global optimisation by an annealed SMC sampler.
 
     Parameters
@@ -117,39 +124,49 @@ def smcopt(objective, initial, n_particles=200, n_steps=30, phi_max=50.0,
         def kernel(x, log_target, rng, _b=base):
             return _b(x, log_target, rng)
 
-    fit = smcsam(log_gamma, initial, n_particles=n_particles,
-                 ladder=ladder, kernel=kernel,
-                 ess_threshold=ess_threshold, scheme=scheme, seed=seed)
+    fit = smcsam(
+        log_gamma,
+        initial,
+        n_particles=n_particles,
+        ladder=ladder,
+        kernel=kernel,
+        ess_threshold=ess_threshold,
+        scheme=scheme,
+        seed=seed,
+    )
     if best["x"] is None:
         raise ValueError("smcopt: the objective was never evaluated")
-    return RichResult(payload={
-        "estimate": best["x"],
-        "best_x": best["x"],
-        "best_value": sign * best["v"],
-        "particles": fit["particles"],
-        "weights": fit["weights"],
-        "particle_mean": fit["mean"],
-        "ladder": ladder,
-        "ess_trace": fit["ess_trace"],
-        "resampled": fit["resampled"],
-        "accept_trace": fit["accept_trace"],
-        "n_particles": int(n_particles),
-        "maximise": bool(maximise),
-        "note": "annealing concentrates on the modes but cannot find one "
-                "no particle visits; widen `initial` before raising "
-                "phi_max",
-        "method": "annealed SMC optimisation (Del Moral, Doucet & Jasra "
-                  "2006, section 2.3.1c)",
-    })
+    return RichResult(
+        payload={
+            "estimate": best["x"],
+            "best_x": best["x"],
+            "best_value": sign * best["v"],
+            "particles": fit["particles"],
+            "weights": fit["weights"],
+            "particle_mean": fit["mean"],
+            "ladder": ladder,
+            "ess_trace": fit["ess_trace"],
+            "resampled": fit["resampled"],
+            "accept_trace": fit["accept_trace"],
+            "n_particles": int(n_particles),
+            "maximise": bool(maximise),
+            "note": "annealing concentrates on the modes but cannot find one "
+            "no particle visits; widen `initial` before raising "
+            "phi_max",
+            "method": "annealed SMC optimisation (Del Moral, Doucet & Jasra 2006, section 2.3.1c)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra "
-            "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so "
-            "the target concentrates on the modes. Unlike single-chain "
-            "simulated annealing the particles INTERACT: resampling kills "
-            "the ones in poor modes and copies the ones in good modes. "
-            "Shares the sampler, weights and resampling with smcsam.")
+    return (
+        "smcopt: SMC as a global optimiser (Del Moral, Doucet & Jasra "
+        "2006, sec 2.3.1c). Anneal pi_n = pi^phi_n with phi rising, so "
+        "the target concentrates on the modes. Unlike single-chain "
+        "simulated annealing the particles INTERACT: resampling kills "
+        "the ones in poor modes and copies the ones in good modes. "
+        "Shares the sampler, weights and resampling with smcsam."
+    )
 
 
 # names carried over / compact aliases

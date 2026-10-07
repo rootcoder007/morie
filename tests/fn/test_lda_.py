@@ -1,7 +1,6 @@
 """Tests for morie.fn.lda_ — Linear Discriminant Analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import LdaRes
 from morie.fn.lda_ import lda_
 

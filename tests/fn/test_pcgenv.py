@@ -1,7 +1,6 @@
 """Tests for pcgenv — PCG Shannon-energy envelope."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.pcgenv import pcg_envelope
 

@@ -71,8 +71,7 @@ without adopting anything from this package beyond the machine itself.
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["rmrl", "reward_machine", "qrm", "reward_machine_run",
-           "qlearn_flat"]
+__all__ = ["rmrl", "reward_machine", "qrm", "reward_machine_run", "qlearn_flat"]
 
 
 class RewardMachine:
@@ -95,11 +94,9 @@ class RewardMachine:
         self.states = set([u0]) | self.terminal
         for e in edges:
             if len(e) != 4:
-                raise ValueError("reward_machine: each edge must be "
-                                 "(u, formula, u_next, reward), got %r" % (e,))
+                raise ValueError(f"reward_machine: each edge must be (u, formula, u_next, reward), got {e!r}")
             u, phi, u2, c = e
-            self.edges.setdefault(u, []).append((_compile(phi), u2,
-                                                 float(c)))
+            self.edges.setdefault(u, []).append((_compile(phi), u2, float(c)))
             self.states.add(u)
             self.states.add(u2)
 
@@ -113,8 +110,7 @@ class RewardMachine:
         return u, 0.0
 
     def __repr__(self):
-        return ("RewardMachine(|U|=%d, u0=%r, terminal=%r)"
-                % (len(self.states), self.u0, sorted(self.terminal)))
+        return f"RewardMachine(|U|={int(len(self.states))}, u0={self.u0!r}, terminal={sorted(self.terminal)!r})"
 
 
 def _compile(phi):
@@ -125,10 +121,10 @@ def _compile(phi):
     else:
         try:
             p, n = phi
-        except (TypeError, ValueError):
-            raise ValueError("reward_machine: formula must be 'true', a "
-                             "proposition name, or (positive, negative), "
-                             "got %r" % (phi,))
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f"reward_machine: formula must be 'true', a proposition name, or (positive, negative), got {phi!r}"
+            ) from exc
         pos, neg = set(p), set(n)
     return lambda sigma: pos <= set(sigma) and not (neg & set(sigma))
 
@@ -153,20 +149,35 @@ def reward_machine_run(machine, labels):
         u, c = machine.step(u, sigma)
         us.append(u)
         rs.append(c)
-    return RichResult(payload={
-        "estimate": list(us),
-        "states": us,
-        "rewards": rs,
-        "total_reward": float(sum(rs)),
-        "final_state": u,
-        "accepted": u in machine.terminal,
-        "method": "reward machine run (Icarte et al. 2018 Def. 3.1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": list(us),
+            "states": us,
+            "rewards": rs,
+            "total_reward": float(sum(rs)),
+            "final_state": u,
+            "accepted": u in machine.terminal,
+            "method": "reward machine run (Icarte et al. 2018 Def. 3.1)",
+        }
+    )
 
 
-def rmrl(machines, states, actions, step, label, gamma=0.9, alpha=0.5,
-         epsilon=0.1, episodes=500, horizon=100, start=None,
-         dead_end=None, seed=0, task_order=None):
+def rmrl(
+    machines,
+    states,
+    actions,
+    step,
+    label,
+    gamma=0.9,
+    alpha=0.5,
+    epsilon=0.1,
+    episodes=500,
+    horizon=100,
+    start=None,
+    dead_end=None,
+    seed=0,
+    task_order=None,
+):
     r"""Q-Learning for Reward Machines (Algorithm 1), tabular.
 
     Parameters
@@ -230,10 +241,9 @@ def rmrl(machines, states, actions, step, label, gamma=0.9, alpha=0.5,
     if episodes < 1 or horizon < 1:
         raise ValueError("rmrl: episodes and horizon must be >= 1")
     de = dead_end if callable(dead_end) else (lambda s: False)
-    s0 = start if callable(start) else (lambda: S[0] if start is None
-                                        else start)
+    s0 = start if callable(start) else (lambda: S[0] if start is None else start)
     if task_order is None:
-        task_order = [l % len(machines) for l in range(episodes)]
+        task_order = [ell % len(machines) for ell in range(episodes)]
     else:
         task_order = list(task_order)
         if len(task_order) < episodes:
@@ -247,8 +257,8 @@ def rmrl(machines, states, actions, step, label, gamma=0.9, alpha=0.5,
             q[(i, u)] = dict((s, dict((a, 0.0) for a in A)) for s in S)
 
     returns = []
-    for l in range(episodes):
-        i = task_order[l]
+    for ell in range(episodes):
+        i = task_order[ell]
         mm = machines[i]
         u = mm.u0
         s = s0()
@@ -269,10 +279,7 @@ def rmrl(machines, states, actions, step, label, gamma=0.9, alpha=0.5,
             for o, mo in enumerate(machines):
                 for uj in mo.states:
                     uk, r = mo.step(uj, sigma)
-                    if dead or uk in mo.terminal:
-                        target = r
-                    else:
-                        target = r + gamma * max(q[(o, uk)][s1].values())
+                    target = r if dead or uk in mo.terminal else r + gamma * max(q[o, uk][s1].values())
                     cur = q[(o, uj)][s][a]
                     q[(o, uj)][s][a] = cur + alpha * (target - cur)
             u, r_real = mm.step(u, sigma)
@@ -287,22 +294,36 @@ def rmrl(machines, states, actions, step, label, gamma=0.9, alpha=0.5,
         for s in S:
             policy[(key[0], key[1], s)] = max(A, key=lambda a: table[s][a])
     tenth = max(1, episodes // 10)
-    return RichResult(payload={
-        "estimate": q,
-        "q": q,
-        "policy": policy,
-        "returns": returns,
-        "mean_return_last": float(sum(returns[-tenth:]) / tenth),
-        "mean_return_first": float(sum(returns[:tenth]) / tenth),
-        "n_qfunctions": len(q),
-        "episodes": episodes,
-        "method": "QRM (Icarte et al. 2018, Algorithm 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": q,
+            "q": q,
+            "policy": policy,
+            "returns": returns,
+            "mean_return_last": float(sum(returns[-tenth:]) / tenth),
+            "mean_return_first": float(sum(returns[:tenth]) / tenth),
+            "n_qfunctions": len(q),
+            "episodes": episodes,
+            "method": "QRM (Icarte et al. 2018, Algorithm 1)",
+        }
+    )
 
 
-def qlearn_flat(machine, states, actions, step, label, gamma=0.9, alpha=0.5,
-                epsilon=0.1, episodes=500, horizon=100, start=None,
-                dead_end=None, seed=0):
+def qlearn_flat(
+    machine,
+    states,
+    actions,
+    step,
+    label,
+    gamma=0.9,
+    alpha=0.5,
+    epsilon=0.1,
+    episodes=500,
+    horizon=100,
+    start=None,
+    dead_end=None,
+    seed=0,
+):
     r"""Tabular q-learning on the product state :math:`(s, u)`.
 
     The same information as QRM -- the machine state is part of the
@@ -313,11 +334,9 @@ def qlearn_flat(machine, states, actions, step, label, gamma=0.9, alpha=0.5,
     S = list(states)
     A = list(actions)
     de = dead_end if callable(dead_end) else (lambda s: False)
-    s0 = start if callable(start) else (lambda: S[0] if start is None
-                                        else start)
+    s0 = start if callable(start) else (lambda: S[0] if start is None else start)
     rng = np.random.default_rng(seed)
-    q = dict(((u, s), dict((a, 0.0) for a in A))
-             for u in machine.states for s in S)
+    q = dict(((u, s), dict((a, 0.0) for a in A)) for u in machine.states for s in S)
     returns = []
     for _l in range(int(episodes)):
         u = machine.u0
@@ -334,10 +353,7 @@ def qlearn_flat(machine, states, actions, step, label, gamma=0.9, alpha=0.5,
             else:
                 s1 = out
             u1, r = machine.step(u, set(label(s1)))
-            if de(s1) or u1 in machine.terminal:
-                target = r
-            else:
-                target = r + gamma * max(q[(u1, s1)].values())
+            target = r if de(s1) or u1 in machine.terminal else r + gamma * max(q[u1, s1].values())
             cur = q[(u, s)][a]
             q[(u, s)][a] = cur + alpha * (target - cur)
             total += r
@@ -346,14 +362,16 @@ def qlearn_flat(machine, states, actions, step, label, gamma=0.9, alpha=0.5,
                 break
         returns.append(total)
     tenth = max(1, int(episodes) // 10)
-    return RichResult(payload={
-        "estimate": q,
-        "q": q,
-        "returns": returns,
-        "mean_return_last": float(sum(returns[-tenth:]) / tenth),
-        "mean_return_first": float(sum(returns[:tenth]) / tenth),
-        "method": "tabular q-learning on (s, u)",
-    })
+    return RichResult(
+        payload={
+            "estimate": q,
+            "q": q,
+            "returns": returns,
+            "mean_return_last": float(sum(returns[-tenth:]) / tenth),
+            "mean_return_first": float(sum(returns[:tenth]) / tenth),
+            "method": "tabular q-learning on (s, u)",
+        }
+    )
 
 
 def _eps_greedy(row, A, epsilon, rng):
@@ -382,11 +400,13 @@ def _eps_greedy(row, A, epsilon, rng):
 
 
 def cheatsheet():
-    return ("rmrl: reward machine <U, u0, delta_u, delta_r> (Icarte "
-            "2018 Def. 3.1) + QRM (Alg. 1): one q-function per machine "
-            "state, every step updates ALL of them counterfactually via "
-            "u_k = delta_u(u_j, L(s')). qlearn_flat is the (s,u) "
-            "baseline. Handles rewards non-Markovian in s.")
+    return (
+        "rmrl: reward machine <U, u0, delta_u, delta_r> (Icarte "
+        "2018 Def. 3.1) + QRM (Alg. 1): one q-function per machine "
+        "state, every step updates ALL of them counterfactually via "
+        "u_k = delta_u(u_j, L(s')). qlearn_flat is the (s,u) "
+        "baseline. Handles rewards non-Markovian in s."
+    )
 
 
 # compact aliases per ledger/NAMING.md

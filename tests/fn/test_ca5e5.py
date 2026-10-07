@@ -1,7 +1,5 @@
 """Tests for ca5e5.ca_chapter_5_equation_5."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ca5e5 import ca_chapter_5_equation_5
 
 

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_fn_eps_fn_U", "horowitz_panel_density_estimators"]
 
 
-def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
-                         grid_u=None, grid_z=None, kernel="fourfold"):
+def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None, grid_u=None, grid_z=None, kernel="fourfold"):
     r"""Both smoothed panel-deconvolution estimators together
     (Horowitz Sec. 5.2.1-5.2.2), equations (5.25) and (5.26):
 
@@ -76,6 +75,7 @@ def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
     assumptions P1-P4 and Theorem 5.4.
     """
     from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
+
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape
@@ -86,20 +86,34 @@ def horowitz_fn_eps_fn_U(y, x, beta, nu_U=None, nu_eps=None,
     dU, dE = default_bandwidths(eta, n, kernel, W)
     nU = dU if nu_U is None else float(nu_U)
     ne = dE if nu_eps is None else float(nu_eps)
-    gu = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
-        if grid_u is None else np.atleast_1d(np.asarray(grid_u, dtype=float))
-    gz = np.linspace(np.quantile(eta, 0.05), np.quantile(eta, 0.95), 61) \
-        if grid_z is None else np.atleast_1d(np.asarray(grid_z, dtype=float))
+    gu = (
+        np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61)
+        if grid_u is None
+        else np.atleast_1d(np.asarray(grid_u, dtype=float))
+    )
+    gz = (
+        np.linspace(np.quantile(eta, 0.05), np.quantile(eta, 0.95), 61)
+        if grid_z is None
+        else np.atleast_1d(np.asarray(grid_z, dtype=float))
+    )
     f_U, f_eps = deconvolve_pair(W, eta, gu, gz, nU, ne, kernel=kernel)
-    return RichResult(payload={
-        "kernel": kernel,
-        "grid_u": gu, "f_U": f_U, "grid_z": gz, "f_eps": f_eps,
-        "nu_U": nU, "nu_eps": ne,
-        "f_eps_requires_division": False,
-        "f_U_requires_division": True,
-        "bandwidths_independent": True,
-        "n": int(n), "T": int(T),
-        "method": "(5.25) needs no division; (5.26) does, so the two carry separate bandwidths"})
+    return RichResult(
+        payload={
+            "kernel": kernel,
+            "grid_u": gu,
+            "f_U": f_U,
+            "grid_z": gz,
+            "f_eps": f_eps,
+            "nu_U": nU,
+            "nu_eps": ne,
+            "f_eps_requires_division": False,
+            "f_U_requires_division": True,
+            "bandwidths_independent": True,
+            "n": int(n),
+            "T": int(T),
+            "method": "(5.25) needs no division; (5.26) does, so the two carry separate bandwidths",
+        }
+    )
 
 
 def cheatsheet():

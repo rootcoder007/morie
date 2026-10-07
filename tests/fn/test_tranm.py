@@ -1,8 +1,8 @@
 """Tests for morie.fn.tranm -- transmission tree reconstruction."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tranm import transmission_tree
 
 

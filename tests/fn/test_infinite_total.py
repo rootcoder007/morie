@@ -1,7 +1,5 @@
 """Tests for infinite_total.infinite_total."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.infinite_total import (
     infinite_total,
 )

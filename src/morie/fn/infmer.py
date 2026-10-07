@@ -32,15 +32,24 @@ from .informer import (
     sparsity_measure,
 )
 
-__all__ = ["sparsity_measure", "kl_from_uniform", "select_queries",
-           "probsparse_attention", "full_attention", "complexity"]
+__all__ = [
+    "sparsity_measure",
+    "kl_from_uniform",
+    "select_queries",
+    "probsparse_attention",
+    "full_attention",
+    "complexity",
+]
 
 
 def cheatsheet():
     from .informer import cheatsheet as _c
-    return ("infmer: the same ledger method as `informer` -- one "
-            "paper, one implementation, re-exported so the two "
-            "entries cannot drift. " + _c())
+
+    return (
+        "infmer: the same ledger method as `informer` -- one "
+        "paper, one implementation, re-exported so the two "
+        "entries cannot drift. " + _c()
+    )
 
 
 # compact alias per ledger/NAMING.md

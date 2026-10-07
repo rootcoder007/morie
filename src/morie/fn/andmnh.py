@@ -141,6 +141,7 @@ EIGENVALUE_CAP = 0.97
 # kernels
 # --------------------------------------------------------------------------
 
+
 def bartlett_kernel(x):
     r"""The triangular kernel; :math:`q = 1`.
 
@@ -163,7 +164,7 @@ def parzen_kernel(x):
     """
     ax = abs(float(x))
     if ax <= 0.5:
-        return 1.0 - 6.0 * ax * ax + 6.0 * ax ** 3
+        return 1.0 - 6.0 * ax * ax + 6.0 * ax**3
     if ax <= 1.0:
         return 2.0 * (1.0 - ax) ** 3
     return 0.0
@@ -185,8 +186,7 @@ def quadratic_spectral_kernel(x):
     if x == 0.0:
         return 1.0
     z = 6.0 * math.pi * x / 5.0
-    return (25.0 / (12.0 * math.pi ** 2 * x * x)) * (math.sin(z) / z
-                                                     - math.cos(z))
+    return (25.0 / (12.0 * math.pi**2 * x * x)) * (math.sin(z) / z - math.cos(z))
 
 
 def tukey_hanning_kernel(x):
@@ -215,20 +215,20 @@ KERNEL_CONSTANTS = {
     "bartlett": (1, 1.0, 2.0 / 3.0, True),
     "parzen": (2, 6.0, 0.539285, True),
     "qs": (2, 1.421223, 1.0, False),
-    "tukey-hanning": (2, math.pi ** 2 / 4.0, 0.75, True),
+    "tukey-hanning": (2, math.pi**2 / 4.0, 0.75, True),
 }
 
 
 def _check_kernel(kernel):
     if kernel not in KERNELS:
-        raise ValueError("andmnh: kernel must be one of %s, got %r"
-                         % (sorted(KERNELS), kernel))
+        raise ValueError(f"andmnh: kernel must be one of {sorted(KERNELS)}, got {kernel!r}")
     return KERNELS[kernel], KERNEL_CONSTANTS[kernel]
 
 
 # --------------------------------------------------------------------------
 # moment vectors and the prewhitening VAR
 # --------------------------------------------------------------------------
+
 
 def moment_vectors(e, X):
     r"""Section 3: :math:`V_t(\hat\theta) = X_t (Y_t - X_t'\hat\theta)`.
@@ -239,8 +239,7 @@ def moment_vectors(e, X):
     e = [float(v) for v in e]
     rows = [[float(v) for v in row] for row in X]
     if len(rows) != len(e):
-        raise ValueError("andmnh: %d residuals but %d regressor rows"
-                         % (len(e), len(rows)))
+        raise ValueError(f"andmnh: {int(len(e))} residuals but {int(len(rows))} regressor rows")
     if not rows:
         raise ValueError("andmnh: no observations")
     p = len(rows[0])
@@ -266,9 +265,8 @@ def singular_value_adjust(a, cap=EIGENVALUE_CAP):
         raise ValueError("andmnh: cap must lie strictly between 0 and 1")
     am = np.asarray(a, dtype=float)
     u, s, vt = np.linalg.svd(am, full_matrices=False)
-    s2 = [min(float(v), cap) for v in s]     # singular values are >= 0
-    return np.dot(np.dot(np.asarray(u), np.diag(np.asarray(s2))),
-                  np.asarray(vt))
+    s2 = [min(float(v), cap) for v in s]  # singular values are >= 0
+    return np.dot(np.dot(np.asarray(u), np.diag(np.asarray(s2))), np.asarray(vt))
 
 
 def prewhiten_var(v, order=1, cap=EIGENVALUE_CAP, adjust=True):
@@ -290,23 +288,19 @@ def prewhiten_var(v, order=1, cap=EIGENVALUE_CAP, adjust=True):
     if order == 0:
         return [], rows, np.eye(p)
     if n <= order * p + 1:
-        raise ValueError(
-            "andmnh: %d observations cannot fit a VAR(%d) in %d variables"
-            % (n, order, p))
+        raise ValueError(f"andmnh: {int(n)} observations cannot fit a VAR({int(order)}) in {int(p)} variables")
 
     # least squares of V_t on V_{t-1}, ..., V_{t-order}
     y = [rows[t] for t in range(order, n)]
-    z = [[rows[t - r - 1][j] for r in range(order) for j in range(p)]
-         for t in range(order, n)]
+    z = [[rows[t - r - 1][j] for r in range(order) for j in range(p)] for t in range(order, n)]
     zm = np.asarray(z, dtype=float)
     ym = np.asarray(y, dtype=float)
-    coef = np.linalg.lstsq(zm, ym, rcond=None)[0]    # (order*p) x p
+    coef = np.linalg.lstsq(zm, ym, rcond=None)[0]  # (order*p) x p
     coef = np.asarray(coef)
 
     a_list = []
     for r in range(order):
-        block = [[float(coef[r * p + j][i]) for j in range(p)]
-                 for i in range(p)]
+        block = [[float(coef[r * p + j][i]) for j in range(p)] for i in range(p)]
         a_list.append(np.asarray(block, dtype=float))
 
     if adjust:
@@ -331,8 +325,7 @@ def prewhiten_var(v, order=1, cap=EIGENVALUE_CAP, adjust=True):
         for r in range(order):
             ar = a_list[r]
             for i in range(p):
-                pred[i] += sum(float(ar[i][j]) * rows[t - r - 1][j]
-                               for j in range(p))
+                pred[i] += sum(float(ar[i][j]) * rows[t - r - 1][j] for j in range(p))
         resid.append([rows[t][i] - pred[i] for i in range(p)])
 
     tot = a_list[0]
@@ -345,6 +338,7 @@ def prewhiten_var(v, order=1, cap=EIGENVALUE_CAP, adjust=True):
 # --------------------------------------------------------------------------
 # the bandwidth
 # --------------------------------------------------------------------------
+
 
 def ar1_fit(x):
     r"""Least squares AR(1) without an intercept: :math:`(\rho, \sigma^2)`."""
@@ -377,11 +371,9 @@ def alpha_ar1(v, q=2, weights=None):
     else:
         w = [float(x) for x in weights]
         if len(w) != p:
-            raise ValueError("andmnh: %d weights for %d series"
-                             % (len(w), p))
+            raise ValueError(f"andmnh: {int(len(w))} weights for {int(p)} series")
     if any(x < 0.0 for x in w) or sum(w) <= 0.0:
-        raise ValueError("andmnh: weights must be non-negative and not "
-                         "all zero")
+        raise ValueError("andmnh: weights must be non-negative and not all zero")
     q = int(q)
     if q not in (1, 2):
         raise ValueError("andmnh: alpha(q) is given for q = 1 or 2")
@@ -398,8 +390,7 @@ def alpha_ar1(v, q=2, weights=None):
         if q == 2:
             num += w[a] * 4.0 * rho * rho * s4 / (1.0 - rho) ** 8
         else:
-            num += (w[a] * 4.0 * rho * rho * s4
-                    / ((1.0 - rho) ** 6 * (1.0 + rho) ** 2))
+            num += w[a] * 4.0 * rho * rho * s4 / ((1.0 - rho) ** 6 * (1.0 + rho) ** 2)
         den += w[a] * s4 / (1.0 - rho) ** 4
     if den <= 0.0:
         raise ValueError("andmnh: the alpha(q) denominator vanished")
@@ -429,6 +420,7 @@ def automatic_bandwidth(v, kernel="qs", weights=None, n=None):
 # the kernel estimator and the whole thing
 # --------------------------------------------------------------------------
 
+
 def kernel_hac(v, bandwidth, kernel="qs", n_params=0, n=None):
     r"""Equation 2.3 on already-prewhitened vectors.
 
@@ -445,8 +437,7 @@ def kernel_hac(v, bandwidth, kernel="qs", n_params=0, n=None):
     p = len(rows[0])
     t = int(n) if n is not None else m
     if t <= n_params:
-        raise ValueError("andmnh: T = %d is not larger than the %d "
-                         "estimated parameters" % (t, n_params))
+        raise ValueError(f"andmnh: T = {int(t)} is not larger than the {int(n_params)} estimated parameters")
     s = float(bandwidth)
     if s <= 0.0:
         raise ValueError("andmnh: bandwidth must be positive")
@@ -484,13 +475,21 @@ def kernel_hac(v, bandwidth, kernel="qs", n_params=0, n=None):
                     out[i][k] += kj * (gam[i][k] + gam[k][i])
 
     dof = t / float(t - n_params)
-    return np.asarray([[dof * out[i][k] for k in range(p)]
-                       for i in range(p)], dtype=float)
+    return np.asarray([[dof * out[i][k] for k in range(p)] for i in range(p)], dtype=float)
 
 
-def andrews_monahan_hac(e, X=None, prewhiten=True, var_order=1,
-                        kernel="qs", bandwidth=None, weights=None,
-                        n_params=None, cap=EIGENVALUE_CAP, adjust=True):
+def andrews_monahan_hac(
+    e,
+    X=None,
+    prewhiten=True,
+    var_order=1,
+    kernel="qs",
+    bandwidth=None,
+    weights=None,
+    n_params=None,
+    cap=EIGENVALUE_CAP,
+    adjust=True,
+):
     r"""The VAR prewhitened kernel HAC estimator of equation 2.4.
 
     Parameters
@@ -545,8 +544,7 @@ def andrews_monahan_hac(e, X=None, prewhiten=True, var_order=1,
     a_list, resid, d = prewhiten_var(v, order=order, cap=cap, adjust=adjust)
 
     if bandwidth is None:
-        s, alpha, fits = automatic_bandwidth(resid, kernel=kernel,
-                                             weights=weights, n=n)
+        s, alpha, fits = automatic_bandwidth(resid, kernel=kernel, weights=weights, n=n)
         auto = True
     else:
         s, alpha, fits = float(bandwidth), None, None
@@ -556,43 +554,50 @@ def andrews_monahan_hac(e, X=None, prewhiten=True, var_order=1,
     dm = np.asarray(d)
     j = np.dot(np.dot(dm, np.asarray(jstar)), np.asarray(dm).T)
 
-    return RichResult(payload={
-        "J": j,
-        "J_star": jstar,
-        "D": dm,
-        "A": a_list,
-        "bandwidth": float(s),
-        "bandwidth_automatic": auto,
-        "alpha": alpha,
-        "ar1_fits": fits,
-        "kernel": kernel,
-        "var_order": order,
-        "n": n,
-        "p": p,
-        "n_params": int(n_params),
-        "prewhitened": bool(order),
-        "method": ("Andrews & Monahan (1992) VAR prewhitened kernel HAC, "
-                   "eq. 2.2-2.4, with the Andrews (1991) eq. 6.1 "
-                   "automatic bandwidth"),
-        "note": ("the VAR is a filter, not a model; its coefficients are "
-                 "capped through their SVD at %.2f so that I - sum(A_r) "
-                 "stays %.2f away from singular (footnote 4)"
-                 % (cap, 1.0 - cap)),
-    })
+    return RichResult(
+        payload={
+            "J": j,
+            "J_star": jstar,
+            "D": dm,
+            "A": a_list,
+            "bandwidth": float(s),
+            "bandwidth_automatic": auto,
+            "alpha": alpha,
+            "ar1_fits": fits,
+            "kernel": kernel,
+            "var_order": order,
+            "n": n,
+            "p": p,
+            "n_params": int(n_params),
+            "prewhitened": bool(order),
+            "method": (
+                "Andrews & Monahan (1992) VAR prewhitened kernel HAC, "
+                "eq. 2.2-2.4, with the Andrews (1991) eq. 6.1 "
+                "automatic bandwidth"
+            ),
+            "note": (
+                "the VAR is a filter, not a model; its coefficients are "
+                f"capped through their SVD at {cap:.2f} so that I - sum(A_r) "
+                f"stays {1.0 - cap:.2f} away from singular (footnote 4)"
+            ),
+        }
+    )
 
 
 andmnh = andrews_monahan_hac
 
 
 def cheatsheet():
-    return ("andmnh: Andrews & Monahan (1992) prewhitened HAC. Fit a "
-            "VAR(b) to the moment vectors (eq. 2.2), run an ordinary "
-            "kernel estimator on its residuals (eq. 2.3), then recolour "
-            "with D = (I - sum A_r)^{-1} (eq. 2.4). Prewhitening cuts "
-            "bias sharply where dependence is strong, at the price of "
-            "variance. The VAR coefficients are capped through their "
-            "SVD at 0.97 so the recolouring cannot blow up. Bandwidth "
-            "is the Andrews (1991) AR(1) plug-in, which for the QS "
-            "kernel is 1.3221 (alpha(2) T)^(1/5). prewhiten=False gives "
-            "the unprewhitened kernel estimator; kernel= chooses among "
-            "qs, bartlett, parzen and tukey-hanning.")
+    return (
+        "andmnh: Andrews & Monahan (1992) prewhitened HAC. Fit a "
+        "VAR(b) to the moment vectors (eq. 2.2), run an ordinary "
+        "kernel estimator on its residuals (eq. 2.3), then recolour "
+        "with D = (I - sum A_r)^{-1} (eq. 2.4). Prewhitening cuts "
+        "bias sharply where dependence is strong, at the price of "
+        "variance. The VAR coefficients are capped through their "
+        "SVD at 0.97 so the recolouring cannot blow up. Bandwidth "
+        "is the Andrews (1991) AR(1) plug-in, which for the QS "
+        "kernel is 1.3221 (alpha(2) T)^(1/5). prewhiten=False gives "
+        "the unprewhitened kernel estimator; kernel= chooses among "
+        "qs, bartlett, parzen and tukey-hanning."
+    )

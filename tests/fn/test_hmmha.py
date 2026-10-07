@@ -1,7 +1,6 @@
 """Tests for hmmha.geron_multihead_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmha import geron_multihead_attention
 
 

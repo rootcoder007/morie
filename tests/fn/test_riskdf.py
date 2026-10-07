@@ -1,7 +1,5 @@
 """Tests for riskdf.risk_difference."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.riskdf import risk_difference
 
 

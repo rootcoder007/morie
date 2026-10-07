@@ -1,7 +1,6 @@
 """Tests for eslsmp.esl_subsampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslsmp import esl_subsampling
 
 
@@ -11,8 +10,7 @@ def test_eslsmp_basic():
     result = esl_subsampling(eta)
     assert isinstance(result, dict)
     # Documented keys per the docstring.
-    for key in ("estimate", "eta", "n", "n_sampled", "indices",
-                "cost_multiplier", "method"):
+    for key in ("estimate", "eta", "n", "n_sampled", "indices", "cost_multiplier", "method"):
         assert key in result
     # With n=None, estimate collapses to eta itself.
     assert result["estimate"] == eta

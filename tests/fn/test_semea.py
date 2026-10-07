@@ -1,12 +1,11 @@
 """Tests for morie.fn.semea."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.semea import semea
 
 
 def test_semea_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = semea(sd=1.5, reliability=0.85)
     assert result is not None
     assert hasattr(result, "name")

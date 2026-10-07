@@ -1,7 +1,6 @@
 """Tests for bndpw.py - band power."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndpw import band_power_fn, bndpw
 
 

@@ -19,7 +19,7 @@ def _risk_table(time, event, group):
         raise ValueError("time, event and group must have the same length.")
     labs = list(dict.fromkeys(g))
     if len(labs) != 2:
-        raise ValueError("need exactly 2 groups; got %d." % len(labs))
+        raise ValueError(f"need exactly 2 groups; got {int(len(labs))}.")
     a = labs[0]
     rows = []
     for tt in sorted({t[i] for i in range(len(t)) if e[i] == 1}):
@@ -91,26 +91,26 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
     ----------
     Tarone, R. E. & Ware, J. (1977). On distribution-free tests for
     equality of survival distributions. *Biometrika*, 64(1), 156-160.
-    Gehan, E. A. (1965). *Biometrika*, 52, 203-223.
+    Gehan, E. A. (1965). A generalized Wilcoxon test for comparing
+    arbitrarily singly-censored samples. *Biometrika*, 52(1-2), 203-224.
     Weight definitions cross-checked against the reference
     implementation in survMisc (``comp.ten``), where the Tarone-Ware
     column is ``sqrt(n)``.
     """
     if weight not in _WEIGHTS:
-        raise ValueError("weight must be one of %s" % (_WEIGHTS,))
+        raise ValueError(f"weight must be one of {_WEIGHTS}")
     rows, labs = _risk_table(time, event, group)
     # Peto weight is the left-continuous modified KM estimate, so it is
     # built by a running product over the same event times.
     s, peto = 1.0, []
-    for (_, n, _, d, _) in rows:
+    for _, n, _, d, _ in rows:
         peto.append(s)
         s *= 1.0 - d / (n + 1.0)
     num = den = obs = exp = 0.0
     for j, (_, n, n1, d, d1) in enumerate(rows):
         if n <= 1:
             continue
-        w = {"logrank": 1.0, "gehan": float(n),
-             "tarone-ware": sqrt(n), "peto": peto[j]}[weight]
+        w = {"logrank": 1.0, "gehan": float(n), "tarone-ware": sqrt(n), "peto": peto[j]}[weight]
         e1 = d * n1 / n
         v = d * (n - d) * n1 * (n - n1) / (n * n * (n - 1.0))
         num += w * (d1 - e1)
@@ -121,7 +121,7 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
         raise ValueError("zero variance; the groups cannot be compared.")
     stat = num * num / den
     return hypothesis_test_result(
-        test_name="Weighted log-rank test (%s)" % weight,
+        test_name=f"Weighted log-rank test ({weight})",
         statistic=float(stat),
         pvalue=float(stats.chi2.sf(stat, 1)),
         extra_summary=[("observed", obs), ("expected", exp)],
@@ -143,6 +143,7 @@ def taroni_ware(time, event, group, weight="tarone-ware"):
 # compact alias -- _lazy_map.json resolves 'taroniware' to this module, so the
 # name has to exist here or the lookup dies.
 taroniware = taroni_ware
+
 
 def cheatsheet():
     return "taroni: Tarone-Ware / log-rank / Gehan / Peto weighted log-rank test"

@@ -1,17 +1,16 @@
 """Tests for johw."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.johw import joseph_holt_winters
+
 
 def test_johw_basic():
     m = 12
-    season = np.array([3., 1., -2., -4., -1., 2., 5., 4., 1., -1., -3., -5.])
+    season = np.array([3.0, 1.0, -2.0, -4.0, -1.0, 2.0, 5.0, 4.0, 1.0, -1.0, -3.0, -5.0])
     rng = np.random.default_rng(0)
-    y = np.concatenate(
-        [10 + 0.5 * np.arange(i * m, (i + 1) * m) + season for i in range(8)]
-    ) + rng.normal(0, 0.5, 96)
+    y = np.concatenate([10 + 0.5 * np.arange(i * m, (i + 1) * m) + season for i in range(8)]) + rng.normal(0, 0.5, 96)
     fc = joseph_holt_winters(y, m=m, horizon=12)["forecast"]
     t = np.arange(12.0)
     fc = fc - np.polyval(np.polyfit(t, fc, 1), t)  # remove the trend it carries

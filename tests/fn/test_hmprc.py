@@ -1,7 +1,6 @@
 """Tests for hmprc.geron_precision_recall_curve."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmprc import geron_precision_recall_curve
 
 

@@ -175,9 +175,9 @@ def conditional_autoregressive(Z, W, X=None, parameterization="weighted"):
             return np.inf
         return -(0.5 * logdet - 0.5 * n * np.log(s2) - 0.5 * n)
 
-    opt = minimize_scalar(neg_profile_ll, bounds=(lo + eps, hi - eps),
-                          method="bounded",
-                          options={"xatol": 1e-10 * max(hi - lo, 1.0)})
+    opt = minimize_scalar(
+        neg_profile_ll, bounds=(lo + eps, hi - eps), method="bounded", options={"xatol": 1e-10 * max(hi - lo, 1.0)}
+    )
     rho = float(opt.x)
     if not np.isfinite(neg_profile_ll(rho)):
         warnings.warn(
@@ -193,16 +193,21 @@ def conditional_autoregressive(Z, W, X=None, parameterization="weighted"):
     r = Z - X @ beta
     s2 = float(r @ Q @ r) / n
     sign, logdet = np.linalg.slogdet(Q)
-    loglik = (0.5 * logdet - 0.5 * n * np.log(s2) - 0.5 * n
-              - 0.5 * n * np.log(2 * np.pi))
+    loglik = 0.5 * logdet - 0.5 * n * np.log(s2) - 0.5 * n - 0.5 * n * np.log(2 * np.pi)
 
     return SpatialResult(
         name="conditional_autoregressive",
         statistic=rho,
         p_value=None,
-        extra={"beta": beta, "sigma2": s2, "tau2": s2, "loglik": float(loglik),
-               "rho_ols": car_rho_ols(Z, W, X), "rho_bounds": (lo, hi),
-               "parameterization": parameterization},
+        extra={
+            "beta": beta,
+            "sigma2": s2,
+            "tau2": s2,
+            "loglik": float(loglik),
+            "rho_ols": car_rho_ols(Z, W, X),
+            "rho_bounds": (lo, hi),
+            "parameterization": parameterization,
+        },
     )
 
 

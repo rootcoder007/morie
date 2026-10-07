@@ -85,20 +85,25 @@ def dp_gan(disc_grads, C=1.0, sigma=1.0, lr=0.1, n_disc_steps=1, seed=None):
     g = np.asarray(step["private_gradient"], dtype=float)
     return RichResult(
         title="DP-GAN discriminator step",
-        summary_lines=[("batch", int(step["batch_size"])),
-                       ("disc steps to account", int(n_disc_steps)),
-                       ("clipped", step["clipped_fraction"])],
-        warnings=["only the discriminator needs privatising; noising the "
-                  "generator as well spends budget for nothing",
-                  "account over discriminator steps, which outnumber "
-                  "generator steps"],
+        summary_lines=[
+            ("batch", int(step["batch_size"])),
+            ("disc steps to account", int(n_disc_steps)),
+            ("clipped", step["clipped_fraction"]),
+        ],
+        warnings=[
+            "only the discriminator needs privatising; noising the generator as well spends budget for nothing",
+            "account over discriminator steps, which outnumber generator steps",
+        ],
         payload={
-            "disc_update": -lr * g, "private_gradient": g,
+            "disc_update": -lr * g,
+            "private_gradient": g,
             "generator_is_free": True,
             "steps_to_account": int(n_disc_steps),
             "clipped_fraction": step["clipped_fraction"],
-            "noise_sd": step["noise_sd"], "C": float(C),
-            "sigma": float(sigma), "method": "dp_gan",
+            "noise_sd": step["noise_sd"],
+            "C": float(C),
+            "sigma": float(sigma),
+            "method": "dp_gan",
         },
     )
 

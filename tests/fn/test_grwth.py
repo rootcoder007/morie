@@ -1,8 +1,8 @@
 """Tests for morie.fn.grwth -- exponential growth rate."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.grwth import exponential_growth_rate
 
 

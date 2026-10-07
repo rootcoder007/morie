@@ -75,16 +75,13 @@ def geron_anomaly_autoencoder(model, X, threshold=None, quantile=0.99):
         recon = model.decode(model.encode(A))
     else:
         raise ValueError(
-            "geron_anomaly_autoencoder: model must be callable or expose "
-            "reconstruct/predict, or encode+decode"
+            "geron_anomaly_autoencoder: model must be callable or expose reconstruct/predict, or encode+decode"
         )
     recon = np.asarray(recon, dtype=float)
     if recon.ndim == 1:
         recon = recon.reshape(-1, 1)
     if recon.shape != A.shape:
-        raise ValueError(
-            f"geron_anomaly_autoencoder: model returned shape {recon.shape} but X has shape {A.shape}"
-        )
+        raise ValueError(f"geron_anomaly_autoencoder: model returned shape {recon.shape} but X has shape {A.shape}")
     if not np.all(np.isfinite(recon)):
         raise ValueError("geron_anomaly_autoencoder: model returned non-finite reconstructions")
 

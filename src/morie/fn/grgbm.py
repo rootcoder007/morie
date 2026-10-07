@@ -29,8 +29,7 @@ def _best_stump(X, r):
                 best = (sse, j, float(t), float(lv), float(rv))
     if best is None:
         raise ValueError(
-            "no split is possible: every feature takes a single value, so a stump "
-            "cannot separate any instances."
+            "no split is possible: every feature takes a single value, so a stump cannot separate any instances."
         )
     return best
 
@@ -119,16 +118,13 @@ def geron_gradient_boosting_residual(X, y, F_prev, learner=None, learning_rate=1
     if learner is None:
         sse, j, t, lv, rv = _best_stump(A, resid)
         h = np.where(A[:, j] <= t, lv, rv)
-        stump = {"feature": int(j), "threshold": t, "left_value": lv,
-                 "right_value": rv, "sse": sse}
+        stump = {"feature": int(j), "threshold": t, "left_value": lv, "right_value": rv, "sse": sse}
     else:
         if not callable(learner):
             raise ValueError(f"learner must be callable, got {type(learner).__name__}.")
         h = np.asarray(learner(A, resid), dtype=float).ravel()
         if h.size != m:
-            raise ValueError(
-                f"learner returned {h.size} predictions but there are {m} instances."
-            )
+            raise ValueError(f"learner returned {h.size} predictions but there are {m} instances.")
         if not np.all(np.isfinite(h)):
             raise ValueError("learner returned non-finite predictions.")
 
@@ -136,9 +132,11 @@ def geron_gradient_boosting_residual(X, y, F_prev, learner=None, learning_rate=1
 
     return RichResult(
         title="Gradient boosting stage",
-        summary_lines=[("MSE before", float(np.mean(resid**2))),
-                       ("MSE after", float(np.mean((y - F_new) ** 2))),
-                       ("Shrinkage", nu)],
+        summary_lines=[
+            ("MSE before", float(np.mean(resid**2))),
+            ("MSE after", float(np.mean((y - F_new) ** 2))),
+            ("Shrinkage", nu),
+        ],
         payload={
             "residuals": resid.tolist(),
             "h_prediction": h.tolist(),

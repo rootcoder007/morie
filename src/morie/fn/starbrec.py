@@ -46,9 +46,14 @@ def starbrec(n, N):
     closed = _morin.stars_and_bars(n, N)
     if total != closed:
         raise AssertionError("recursion and closed form disagree")
-    payload = {"n_picks": float(n), "n_types": float(N),
-               "recursion_sum": float(total), "closed_form": float(closed),
-               "n_terms": float(n + 1), "forms_agree": 1.0}
+    payload = {
+        "n_picks": float(n),
+        "n_types": float(N),
+        "recursion_sum": float(total),
+        "closed_form": float(closed),
+        "n_terms": float(n + 1),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Stars-and-bars recursion N_U_n = sum_j (N-1)_U_j.",
         summary_lines=[("n", n), ("N", N), ("sum", total)],

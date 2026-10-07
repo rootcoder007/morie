@@ -1,7 +1,6 @@
 """Tests for gpreg.gaussian_process_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpreg import gaussian_process_regression
 
 
@@ -12,13 +11,13 @@ def _se_kernel(u):
 
 def test_gpreg_basic():
     """Test basic functionality against the R&W (2006) eq. (2.23)-(2.24) formulas."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Use small, hand-checkable shapes: n=4 training points, m=2 test points, d=2.
     X = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
     y = [0.5, -1.2, 0.3, 1.1]
     X_test = [[0.5, 0.5], [-0.5, -0.5]]
-    kernel = (1.0, 1.0)        # (sf, l) for the SE kernel
-    noise = 0.1               # scalar noise std -> sn2 = 0.01
+    kernel = (1.0, 1.0)  # (sf, l) for the SE kernel
+    noise = 0.1  # scalar noise std -> sn2 = 0.01
 
     result = gaussian_process_regression(X, y, X_test, kernel, noise)
 
@@ -46,16 +45,20 @@ def test_gpreg_basic():
     def inv4(M):
         # 4x4 matrix inverse via cofactors.
         def det3(m):
-            return (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
-                    - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
-                    + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
+            return (
+                m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+                - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+                + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+            )
+
         out = [[0.0] * 4 for _ in range(4)]
         for r in range(4):
             for c in range(4):
                 sub = [[M[i][j] for j in range(4) if j != c] for i in range(4) if i != r]
                 co = ((-1) ** (r + c)) * det3(sub)
                 out[c][r] = co  # transpose for inverse
-        d = det3([[M[i][j] for j in range(3)] for i in range(3)])
+        det3([[M[i][j] for j in range(3)] for i in range(3)])
+
         # full 4x4 det:
         def det4(m):
             s = 0.0
@@ -63,6 +66,7 @@ def test_gpreg_basic():
                 sub = [[m[i][k] for k in range(4) if k != j] for i in range(1, 4)]
                 s += ((-1) ** j) * m[0][j] * det3(sub)
             return s
+
         D = det4(M)
         return [[out[i][j] / D for j in range(4)] for i in range(4)]
 
@@ -90,11 +94,7 @@ def test_gpreg_basic():
     sign, logabsdet = np.linalg.slogdet(np.asarray(K))
     # Compute log determinant directly with the function's helper semantics:
     # we trust np.linalg above only for the numeric reference.
-    exp_loglik = (
-        -0.5 * sum(y[i] * alpha[i] for i in range(n))
-        - 0.5 * logabsdet
-        - 0.5 * n * float(np.log(2.0 * np.pi))
-    )
+    exp_loglik = -0.5 * sum(y[i] * alpha[i] for i in range(n)) - 0.5 * logabsdet - 0.5 * n * float(np.log(2.0 * np.pi))
     assert np.allclose(result["loglik"], exp_loglik, atol=1e-10)
 
 
@@ -102,9 +102,9 @@ def test_gpreg_edge():
     """Test edge cases: zero noise, custom callable kernel, 1-D inputs."""
     # Zero noise (default), custom callable kernel, 1-D inputs n=3, m=1, d=1.
     X = [[0.0], [1.0], [2.0]]
-    y = [1.0, 2.0, 3.0]                # roughly linear in x
+    y = [1.0, 2.0, 3.0]  # roughly linear in x
     X_test = [[1.5]]
-    kernel = _se_kernel(np)            # callable: k(x1, x2) = exp(-0.5 ||x1-x2||^2)
+    kernel = _se_kernel(np)  # callable: k(x1, x2) = exp(-0.5 ||x1-x2||^2)
     result = gaussian_process_regression(X, y, X_test, kernel, 0.0)
 
     assert isinstance(result, dict)
@@ -114,7 +114,7 @@ def test_gpreg_edge():
     assert len(result["variance"]) == 1
 
     # n=3 training points, m=1 test point -> a 3x3 linear system; invert by hand.
-    sf2, l2 = 1.0, 1.0     # the callable above hardcodes these
+    sf2, l2 = 1.0, 1.0  # the callable above hardcodes these
     sn2 = 0.0
     n = 3
 
@@ -125,9 +125,11 @@ def test_gpreg_edge():
     Ks = [[k(X_test[0], X[i]) for i in range(n)]]
 
     def inv3(m):
-        d = (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
-             - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
-             + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
+        d = (
+            m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+            - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+            + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+        )
         inv = [[0.0] * 3 for _ in range(3)]
         for r in range(3):
             for c in range(3):

@@ -14,8 +14,7 @@ from ._schab_glmm import (
 __all__ = ["schabenberger_glmm_conditional"]
 
 
-def schabenberger_glmm_conditional(X, beta, S, sigma2=1.0, family="poisson",
-                                   link_kind=None, correlation=None):
+def schabenberger_glmm_conditional(X, beta, S, sigma2=1.0, family="poisson", link_kind=None, correlation=None):
     """The conditional specification of a spatial GLMM, Sec. 6.3.4.
 
     Data are taken to be conditionally dependent on an underlying smooth
@@ -91,14 +90,15 @@ def schabenberger_glmm_conditional(X, beta, S, sigma2=1.0, family="poisson",
         "conditional_mean": mu,
         "conditional_variance": conditional_variance(mu, sigma2, family),
         "naive_marginal_mean": naive_marginal_mean(X, beta, link_kind),
-        "family": family, "link": link_kind, "sigma2": float(sigma2),
+        "family": family,
+        "link": link_kind,
+        "sigma2": float(sigma2),
     }
     lines = [("family", family), ("link", link_kind)]
 
     if link_kind == "log":
         sigma2_S = float(np.var(np.asarray(S, dtype=float).ravel(), ddof=0))
-        mom = marginal_moments_lognormal(X, beta, sigma2_S, sigma2=sigma2,
-                                         rho=correlation)
+        mom = marginal_moments_lognormal(X, beta, sigma2_S, sigma2=sigma2, rho=correlation)
         payload["marginal_mean"] = mom["mean"]
         payload["marginal_variance"] = mom["variance"]
         payload["sigma2_S"] = sigma2_S
@@ -108,21 +108,23 @@ def schabenberger_glmm_conditional(X, beta, S, sigma2=1.0, family="poisson",
         payload["marginal_note"] = (
             "E[Z(s)] is NOT g^-1(x(s)'beta): under the log link the marginal "
             f"mean exceeds the naive value by exp(sigma_S^2/2) = "
-            f"{payload['marginal_ratio']:.4f}")
-        lines += [("sigma_S^2", sigma2_S),
-                  ("marginal / naive mean", payload["marginal_ratio"])]
+            f"{payload['marginal_ratio']:.4f}"
+        )
+        lines += [("sigma_S^2", sigma2_S), ("marginal / naive mean", payload["marginal_ratio"])]
     else:
         payload["marginal_note"] = (
-            "the marginal mean is E_S[g^-1(x'beta + S)], which has no closed "
-            "form for this link; g^-1(x'beta) is NOT it")
+            "the marginal mean is E_S[g^-1(x'beta + S)], which has no closed form for this link; g^-1(x'beta) is NOT it"
+        )
 
-    return RichResult(title="Spatial GLMM, conditional specification",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Spatial GLMM, conditional specification", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spglmm: conditional specification of a spatial GLMM (Sec. 6.3.4) "
-            "-- eq (6.73) with the Example 6.6 marginal correction")
+    return (
+        "spglmm: conditional specification of a spatial GLMM (Sec. 6.3.4) "
+        "-- eq (6.73) with the Example 6.6 marginal correction"
+    )
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

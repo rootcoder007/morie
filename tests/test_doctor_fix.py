@@ -33,6 +33,8 @@ def test_heal_pip_installs_failed_imports(monkeypatch):
         returncode = 0
 
     monkeypatch.setattr(doctor.subprocess, "run", lambda cmd, *a, **k: (calls.append(cmd), _Result())[1])
+    # an environment with pip (a uv-made venv has none: that branch has its own test)
+    monkeypatch.setattr(doctor, "_installer", lambda: [doctor.sys.executable, "-m", "pip", "install"])
     results = {
         "checks": [
             {"label": "import sklearn", "passed": False, "detail": "x", "required": True},

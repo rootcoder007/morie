@@ -1,7 +1,6 @@
 """Tests for frdbnd.frechet_hoeffding_bounds."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.frdbnd import frechet_hoeffding_bounds
 
 

@@ -43,10 +43,16 @@ def ot_wasserstein_gauss(mu1, Sigma1, mu2, Sigma2):
     b = [float(t) for t in core.vec(mu2)]
     w2sq = ot.w2gauss(mu1, Sigma1, mu2, Sigma2)
     mp = sum((a[i] - b[i]) ** 2 for i in range(len(a)))
-    return RichResult(payload={
-        "W2": w2sq ** 0.5, "W2_sq": w2sq, "mean_part": mp,
-        "bures_sq": w2sq - mp, "d": len(a),
-        "method": "Gaussian 2-Wasserstein distance (Bures)"})
+    return RichResult(
+        payload={
+            "W2": w2sq**0.5,
+            "W2_sq": w2sq,
+            "mean_part": mp,
+            "bures_sq": w2sq - mp,
+            "d": len(a),
+            "method": "Gaussian 2-Wasserstein distance (Bures)",
+        }
+    )
 
 
 def cheatsheet():

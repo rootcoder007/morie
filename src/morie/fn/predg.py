@@ -39,10 +39,7 @@ def prediction_gain(x, ar_coeffs, **kwargs) -> DescriptiveResult:
     error = x[p:] - pred[p:]
     Px = float(np.var(x))
     Pe = float(np.var(error))
-    if Pe <= 0:
-        Gp = float("inf")
-    else:
-        Gp = Px / Pe
+    Gp = float("inf") if Pe <= 0 else Px / Pe
     Gp_db = 10.0 * np.log10(max(Gp, 1e-30))
     return DescriptiveResult(
         name="prediction_gain",

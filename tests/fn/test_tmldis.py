@@ -1,7 +1,6 @@
 """Tests for tmldis.tmle_disparity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmldis import tmle_disparity
 
 

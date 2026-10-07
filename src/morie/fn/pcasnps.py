@@ -118,11 +118,20 @@ def pca_snps(genotypes, n_components=2):
         tw = (l1 - mu_tw) / sg
     else:
         tw = float("nan")
-    return RichResult(payload={
-        "eigenvalues": ev, "pcs": pcs, "variance_explained": vexp,
-        "estimate": ev[0], "tw_statistic": tw, "n_eff": neff,
-        "n_dropped": float(dropped), "n": n, "m": m,
-        "method": "EIGENSTRAT genotype PCA (Patterson-Price-Reich 2006)"})
+    return RichResult(
+        payload={
+            "eigenvalues": ev,
+            "pcs": pcs,
+            "variance_explained": vexp,
+            "estimate": ev[0],
+            "tw_statistic": tw,
+            "n_eff": neff,
+            "n_dropped": float(dropped),
+            "n": n,
+            "m": m,
+            "method": "EIGENSTRAT genotype PCA (Patterson-Price-Reich 2006)",
+        }
+    )
 
 
 def cheatsheet():

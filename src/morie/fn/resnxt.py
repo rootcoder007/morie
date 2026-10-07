@@ -63,19 +63,15 @@ split-transform-merge whose hand-design ResNeXt avoids.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["aggregated_block", "grouped_block", "block_equivalence",
-           "block_parameters", "match_complexity"]
+__all__ = ["aggregated_block", "grouped_block", "block_equivalence", "block_parameters", "match_complexity"]
 
 _EPS = 1e-12
 
 
 def _lin(W, x):
-    return [sum(W[o][j] * x[j] for j in range(len(x)))
-            for o in range(len(W))]
+    return [sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
 
 
 def _relu(v):
@@ -116,24 +112,24 @@ def grouped_block(x, Wins, Wmids, Wout_concat):
 def block_equivalence(x, Wins, Wmids, Wouts, tol=1e-9):
     r"""Check that the two forms compute the same function."""
     a = aggregated_block(x, Wins, Wmids, Wouts)
-    cat = [sum((list(W[o]) for W in Wouts), [])
-           for o in range(len(Wouts[0]))]
+    cat = [sum((list(W[o]) for W in Wouts), []) for o in range(len(Wouts[0]))]
     c = grouped_block(x, Wins, Wmids, cat)
     dev = max(abs(a[j] - c[j]) for j in range(len(a)))
-    return {"equivalent": dev < float(tol), "max_deviation": dev,
-            "aggregated": a, "grouped": c,
-            "note": "same function; the grouped form is what runs "
-                    "fast"}
+    return {
+        "equivalent": dev < float(tol),
+        "max_deviation": dev,
+        "aggregated": a,
+        "grouped": c,
+        "note": "same function; the grouped form is what runs fast",
+    }
 
 
 def block_parameters(width, cardinality, bottleneck):
     r"""Parameters in one bottleneck block."""
     W, C, d = int(width), int(cardinality), int(bottleneck)
     if min(W, C, d) < 1:
-        raise ValueError("resnxt: width, cardinality and bottleneck "
-                         "must all be at least 1")
-    return {"parameters": C * (W * d + 9 * d * d + d * W),
-            "cardinality": C, "bottleneck": d, "width": W}
+        raise ValueError("resnxt: width, cardinality and bottleneck must all be at least 1")
+    return {"parameters": C * (W * d + 9 * d * d + d * W), "cardinality": C, "bottleneck": d, "width": W}
 
 
 def match_complexity(width, cardinality, target_parameters):
@@ -148,21 +144,26 @@ def match_complexity(width, cardinality, target_parameters):
     b = 2.0 * C * W
     disc = b * b + 4.0 * a * T
     d = (-b + math.sqrt(disc)) / (2.0 * a)
-    return {"bottleneck": d, "rounded": max(1, int(round(d))),
-            "parameters": block_parameters(
-                W, C, max(1, int(round(d))))["parameters"],
-            "target": T, "cardinality": C}
+    return {
+        "bottleneck": d,
+        "rounded": max(1, int(round(d))),
+        "parameters": block_parameters(W, C, max(1, int(round(d))))["parameters"],
+        "target": T,
+        "cardinality": C,
+    }
 
 
 def cheatsheet():
-    return ("resnxt: y = x + sum_{i=1..C} T_i(x), every T_i with the "
-            "SAME TOPOLOGY -- Inception's split-transform-merge "
-            "without its per-stage hand design. C is CARDINALITY, a "
-            "design dimension beside depth and width, and raising it "
-            "beats going deeper or wider AT FIXED COMPLEXITY. Three "
-            "equivalent block forms: C separate paths, concatenate-"
-            "then-project, or one GROUPED CONVOLUTION -- same "
-            "function, and the third is what runs fast.")
+    return (
+        "resnxt: y = x + sum_{i=1..C} T_i(x), every T_i with the "
+        "SAME TOPOLOGY -- Inception's split-transform-merge "
+        "without its per-stage hand design. C is CARDINALITY, a "
+        "design dimension beside depth and width, and raising it "
+        "beats going deeper or wider AT FIXED COMPLEXITY. Three "
+        "equivalent block forms: C separate paths, concatenate-"
+        "then-project, or one GROUPED CONVOLUTION -- same "
+        "function, and the third is what runs fast."
+    )
 
 
 # compact alias per ledger/NAMING.md

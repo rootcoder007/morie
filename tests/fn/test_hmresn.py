@@ -3,9 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
-import pytest
-
 from morie.fn.hmresn import geron_resnet
 
 
@@ -13,8 +10,11 @@ def test_hmresn_basic():
     """Test basic functionality with a callable F returning the same shape."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 10)
+
     # F must be a callable; it returns the input scaled (same shape).
-    F = lambda a: np.asarray(a, dtype=float) * 0.5
+    def F(a):
+        return np.asarray(a, dtype=float) * 0.5
+
     result = geron_resnet(x, F)
     assert isinstance(result, dict)
     # Keys named in the return / docstring
@@ -30,8 +30,11 @@ def test_hmresn_basic():
 def test_hmresn_edge():
     """Test edge case: dead residual branch (F returns zeros) leaves x unchanged."""
     x = [1.0, 2.0, 3.0]
+
     # Dead branch: F returns zeros of the same shape, so y == x.
-    F = lambda a: np.zeros(np.asarray(a).shape)
+    def F(a):
+        return np.zeros(np.asarray(a).shape)
+
     result = geron_resnet(x, F)
     assert isinstance(result, dict)
     assert "y" in result
@@ -54,7 +57,7 @@ import morie.fn.hmresn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

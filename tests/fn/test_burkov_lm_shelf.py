@@ -12,9 +12,9 @@ Source: Burkov (2025) *The Hundred-Page Language Models Book*.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.b101 import burkov_lm_ch1_linear_function
 from morie.fn.b102 import burkov_lm_ch1_squared_error
 from morie.fn.b103 import burkov_lm_ch1_mse_cost
@@ -50,14 +50,15 @@ def lcg_stream(seed, n):
     s = seed
     out = []
     for _ in range(n):
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        out.append((s + 0.5) / 2 ** 32)
+        s = (1664525 * s + 1013904223) % 2**32
+        out.append((s + 0.5) / 2**32)
     return out
 
 
 # --------------------------------------------------------------------
 # Ch 1 linear model and losses
 # --------------------------------------------------------------------
+
 
 def test_the_mse_cost_is_minimised_at_the_least_squares_solution():
     u = lcg_stream(1, 40)
@@ -67,8 +68,7 @@ def test_the_mse_cost_is_minimised_at_the_least_squares_solution():
     w_star, b_star = np.linalg.lstsq(A, y, rcond=None)[0]
     j_star = burkov_lm_ch1_mse_cost(w_star, b_star, x, y)["cost"]
     for dw, db in [(0.05, 0), (-0.05, 0), (0, 0.05), (0, -0.05)]:
-        assert burkov_lm_ch1_mse_cost(w_star + dw, b_star + db,
-                                      x, y)["cost"] > j_star
+        assert burkov_lm_ch1_mse_cost(w_star + dw, b_star + db, x, y)["cost"] > j_star
 
 
 def test_the_cost_decomposes_into_squared_errors_of_predictions():
@@ -81,8 +81,10 @@ def test_the_cost_decomposes_into_squared_errors_of_predictions():
 
 
 def test_the_vector_form_agrees_with_the_scalar_form_in_1d():
-    assert burkov_lm_ch1_linear_vector([2.0], [3.0], 1.0)["estimate"] == \
-        burkov_lm_ch1_linear_function([3.0], 2.0, 1.0)["predictions"][0]
+    assert (
+        burkov_lm_ch1_linear_vector([2.0], [3.0], 1.0)["estimate"]
+        == burkov_lm_ch1_linear_function([3.0], 2.0, 1.0)["predictions"][0]
+    )
 
 
 def test_mse_refuses_a_wrong_N():
@@ -93,13 +95,11 @@ def test_mse_refuses_a_wrong_N():
 def test_cosine_similarity_properties():
     out = burkov_lm_ch1_cosine_similarity([1, 2, 3], [1, 2, 3])
     assert out["estimate"] == pytest.approx(1.0)
-    assert burkov_lm_ch1_cosine_similarity(
-        [1, 0], [-1, 0])["estimate"] == pytest.approx(-1.0)
+    assert burkov_lm_ch1_cosine_similarity([1, 0], [-1, 0])["estimate"] == pytest.approx(-1.0)
     # scale invariance
     a, b = [1.0, 2.0, -1.0], [0.5, -1.0, 2.0]
     c1 = burkov_lm_ch1_cosine_similarity(a, b)["estimate"]
-    c2 = burkov_lm_ch1_cosine_similarity(
-        [7 * v for v in a], [0.1 * v for v in b])["estimate"]
+    c2 = burkov_lm_ch1_cosine_similarity([7 * v for v in a], [0.1 * v for v in b])["estimate"]
     assert c1 == pytest.approx(c2)
     with pytest.raises(ValueError, match="zero vector"):
         burkov_lm_ch1_cosine_similarity([0.0, 0.0], [1.0, 1.0])
@@ -109,15 +109,13 @@ def test_the_two_layer_network_composes():
     W1 = [[1.0, -1.0], [0.5, 0.5]]
     b1 = [0.1, -0.1]
     y1 = burkov_lm_ch1_layer1_output(W1, [2.0, 1.0], b1, phi="tanh")["output"]
-    y2 = burkov_lm_ch1_layer2_output([1.0, 2.0], y1, 0.3,
-                                     phi="sigmoid")["estimate"]
+    y2 = burkov_lm_ch1_layer2_output([1.0, 2.0], y1, 0.3, phi="sigmoid")["estimate"]
     z = 1.0 * y1[0] + 2.0 * y1[1] + 0.3
     assert y2 == pytest.approx(1 / (1 + math.exp(-z)))
 
 
 def test_relu_actually_clips():
-    out = burkov_lm_ch1_layer1_output([[1.0], [-1.0]], [2.0],
-                                      [0.0, 0.0], phi="relu")
+    out = burkov_lm_ch1_layer1_output([[1.0], [-1.0]], [2.0], [0.0, 0.0], phi="relu")
     assert out["output"] == [2.0, 0.0]
     assert out["preactivation"] == [2.0, -2.0]
 
@@ -133,8 +131,7 @@ def test_logistic_regression_is_sigma_of_the_logit():
 def test_bce_is_zero_only_for_a_perfect_confident_prediction():
     assert burkov_lm_ch1_binary_cross_entropy(1.0, 1.0)["estimate"] == 0.0
     assert burkov_lm_ch1_binary_cross_entropy(0.0, 0.0)["estimate"] == 0.0
-    assert burkov_lm_ch1_binary_cross_entropy(0.0, 1.0)["estimate"] == \
-        float("inf")
+    assert burkov_lm_ch1_binary_cross_entropy(0.0, 1.0)["estimate"] == float("inf")
     with pytest.raises(ValueError, match="targets"):
         burkov_lm_ch1_binary_cross_entropy(0.5, 0.7)
 
@@ -143,7 +140,8 @@ def test_the_closed_form_bce_gradient_matches_finite_differences():
     u = lcg_stream(2, 60)
     X = np.array(u[:40]).reshape(20, 2) * 4 - 2
     y = np.array([1.0 if v > 0.5 else 0.0 for v in u[40:]])
-    w = np.array([0.3, -0.7]); b = 0.2
+    w = np.array([0.3, -0.7])
+    b = 0.2
 
     def mean_bce(wv, bv):
         p = 1 / (1 + np.exp(-(X @ wv + bv)))
@@ -153,7 +151,8 @@ def test_the_closed_form_bce_gradient_matches_finite_differences():
     out = burkov_lm_ch1_bce_gradients(p, y, X)
     h = 1e-6
     for j in range(2):
-        e = np.zeros(2); e[j] = h
+        e = np.zeros(2)
+        e[j] = h
         num = (mean_bce(w + e, b) - mean_bce(w - e, b)) / (2 * h)
         assert out["grad_w"][j] == pytest.approx(num, abs=1e-6)
     numb = (mean_bce(w, b + h) - mean_bce(w, b - h)) / (2 * h)
@@ -163,6 +162,7 @@ def test_the_closed_form_bce_gradient_matches_finite_differences():
 # --------------------------------------------------------------------
 # Ch 2 language modelling
 # --------------------------------------------------------------------
+
 
 def test_categorical_ce_reduces_to_neg_log_prob_of_the_true_class():
     p = [0.1, 0.6, 0.3]
@@ -187,8 +187,7 @@ def test_the_next_token_distribution_sums_to_one_and_counts_right():
 
 
 def test_the_shorthand_notations_agree():
-    assert burkov_lm_ch2_lm_shorthand(
-        "b", ["a", "b", "a"])["notations_agree"] is True
+    assert burkov_lm_ch2_lm_shorthand("b", ["a", "b", "a"])["notations_agree"] is True
 
 
 def test_ngram_mle_and_its_refusals():
@@ -205,8 +204,7 @@ def test_smoothed_distributions_sum_to_one_over_the_vocabulary():
     V = 3
     lap = [burkov_laplace_add_one(c, 10, V)["estimate"] for c in counts]
     assert sum(lap) == pytest.approx(1.0)
-    addk = [burkov_add_k_smoothing(c, 10, V, k=0.25)["estimate"]
-            for c in counts]
+    addk = [burkov_add_k_smoothing(c, 10, V, k=0.25)["estimate"] for c in counts]
     assert sum(addk) == pytest.approx(1.0)
     # smoothing moves mass toward the unseen word, never past the MLE
     assert lap[2] > 0
@@ -214,14 +212,12 @@ def test_smoothed_distributions_sum_to_one_over_the_vocabulary():
 
 
 def test_add_1_is_add_k_at_k_equals_1():
-    assert burkov_add_k_smoothing(2, 9, 5, k=1.0)["estimate"] == \
-        burkov_laplace_add_one(2, 9, 5)["estimate"]
+    assert burkov_add_k_smoothing(2, 9, 5, k=1.0)["estimate"] == burkov_laplace_add_one(2, 9, 5)["estimate"]
 
 
 def test_interpolation_is_a_convex_combination():
     out = burkov_ngram_interpolation([0.9, 0.1, 0.5], [0.6, 0.3, 0.1])
-    assert out["estimate"] == pytest.approx(0.9 * 0.6 + 0.1 * 0.3
-                                            + 0.5 * 0.1)
+    assert out["estimate"] == pytest.approx(0.9 * 0.6 + 0.1 * 0.3 + 0.5 * 0.1)
     assert min(0.9, 0.1, 0.5) <= out["estimate"] <= max(0.9, 0.1, 0.5)
     with pytest.raises(ValueError, match="sum to 1"):
         burkov_ngram_interpolation([0.5, 0.5], [0.9, 0.3])
@@ -246,10 +242,7 @@ def test_kneser_ney_sums_to_one_over_a_full_vocabulary():
     total_types = 8
     n_after = len(follows)
     d = 0.75
-    total = sum(
-        burkov_kneser_ney(follows[w], prefix,
-                          (n_after, cont[w], total_types), d)["estimate"]
-        for w in follows)
+    total = sum(burkov_kneser_ney(follows[w], prefix, (n_after, cont[w], total_types), d)["estimate"] for w in follows)
     # P_continuation over the words that follow this prefix must be
     # normalised for the identity to close over THIS vocabulary
     cont_mass = sum(cont.values()) / total_types
@@ -259,11 +252,11 @@ def test_kneser_ney_sums_to_one_over_a_full_vocabulary():
     # and with the standard normalisation the whole thing is 1 when
     # continuation counts are themselves a distribution
     total_norm = sum(
-        burkov_kneser_ney(
-            follows[w], prefix,
-            (n_after, cont[w] / sum(cont.values()) * total_types,
-             total_types), d)["estimate"]
-        for w in follows)
+        burkov_kneser_ney(follows[w], prefix, (n_after, cont[w] / sum(cont.values()) * total_types, total_types), d)[
+            "estimate"
+        ]
+        for w in follows
+    )
     assert total_norm == pytest.approx(1.0)
 
 
@@ -278,8 +271,10 @@ def test_bits_per_character_worked_example():
 # Vector utilities
 # --------------------------------------------------------------------
 
+
 def test_dot_norm_unit_and_cosine_cohere():
-    a = [3.0, 4.0]; b = [4.0, 3.0]
+    a = [3.0, 4.0]
+    b = [4.0, 3.0]
     dot = burkov_dot_product(a, b)["estimate"]
     na = burkov_vector_norm(a)["estimate"]
     nb = burkov_vector_norm(b)["estimate"]
@@ -295,10 +290,10 @@ def test_dot_norm_unit_and_cosine_cohere():
 # TF-IDF
 # --------------------------------------------------------------------
 
+
 def test_tf_idf_zeroes_a_word_in_every_document():
     corpus = [["a", "b"], ["b", "c"], ["b", "d"]]
-    assert burkov_tf_idf("b", ["a", "b"], corpus)["estimate"] == \
-        pytest.approx(0.0)
+    assert burkov_tf_idf("b", ["a", "b"], corpus)["estimate"] == pytest.approx(0.0)
     out = burkov_tf_idf("a", ["a", "a", "b"], corpus)
     assert out["tf"] == 2
     assert out["estimate"] == pytest.approx(2 * math.log(3))
@@ -308,14 +303,13 @@ def test_tf_idf_zeroes_a_word_in_every_document():
 
 def test_term_frequency_counts_and_normalises():
     assert burkov_term_frequency("x", ["x", "y", "x", "x"])["estimate"] == 3.0
-    assert burkov_term_frequency("x", ["x", "y", "x", "x"],
-                                 normalise=True)["estimate"] == \
-        pytest.approx(0.75)
+    assert burkov_term_frequency("x", ["x", "y", "x", "x"], normalise=True)["estimate"] == pytest.approx(0.75)
 
 
 # --------------------------------------------------------------------
 # Decoding, tying, RNN, autodiff
 # --------------------------------------------------------------------
+
 
 def test_repetition_penalty_lowers_odds_against_unpenalised_tokens():
     # softmax renormalisation means a penalised token's ABSOLUTE
@@ -355,10 +349,9 @@ def test_weight_tying_matches_explicit_matrix_product():
 
 
 def test_the_elman_step_matches_a_hand_computation():
-    out = burkov_elman_rnn([1.0, 0.5], [0.2, -0.1],
-                           [[0.5, 0.0], [0.0, 0.5]],
-                           [[1.0, 0.0], [0.0, 1.0]],
-                           [[1.0, 1.0]], [0.0, 0.0], [0.1])
+    out = burkov_elman_rnn(
+        [1.0, 0.5], [0.2, -0.1], [[0.5, 0.0], [0.0, 0.5]], [[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]], [0.0, 0.0], [0.1]
+    )
     h_expected = np.tanh(np.array([0.5 * 0.2 + 1.0, 0.5 * -0.1 + 0.5]))
     assert out["h"] == pytest.approx(list(h_expected))
     assert out["y"][0] == pytest.approx(float(h_expected.sum() + 0.1))
@@ -380,16 +373,17 @@ def test_autodiff_gradients_match_central_differences():
 
     h = 1e-6
     for k in inputs:
-        up = dict(inputs); up[k] += h
-        dn = dict(inputs); dn[k] -= h
+        up = dict(inputs)
+        up[k] += h
+        dn = dict(inputs)
+        dn[k] -= h
         num = (f(**up) - f(**dn)) / (2 * h)
         assert out["gradients"][k] == pytest.approx(num, abs=1e-6)
 
 
 def test_autodiff_fan_out_accumulates():
     # x used twice: y = x*x + x -> dy/dx = 2x + 1
-    g = [{"name": "sq", "op": "mul", "args": ["x", "x"]},
-         {"name": "out", "op": "add", "args": ["sq", "x"]}]
+    g = [{"name": "sq", "op": "mul", "args": ["x", "x"]}, {"name": "out", "op": "add", "args": ["sq", "x"]}]
     out = burkov_computational_graph(g, {"x": 3.0})
     assert out["output"] == 12.0
     assert out["gradients"]["x"] == pytest.approx(7.0)
@@ -397,8 +391,6 @@ def test_autodiff_fan_out_accumulates():
 
 def test_autodiff_rejects_a_bad_graph():
     with pytest.raises(ValueError, match="topologically"):
-        burkov_computational_graph(
-            [{"name": "a", "op": "add", "args": ["a2", "x"]}], {"x": 1.0})
+        burkov_computational_graph([{"name": "a", "op": "add", "args": ["a2", "x"]}], {"x": 1.0})
     with pytest.raises(ValueError, match="unknown op"):
-        burkov_computational_graph(
-            [{"name": "a", "op": "pow", "args": ["x", "x"]}], {"x": 1.0})
+        burkov_computational_graph([{"name": "a", "op": "pow", "args": ["x", "x"]}], {"x": 1.0})

@@ -13,6 +13,8 @@ def test_km034_doctest():
 
 def test_km034_edge():
     import pytest
+
     from morie.fn.km034 import kamath_ch2_gpt_unsupervised_obj
+
     with pytest.raises(ValueError):
         kamath_ch2_gpt_unsupervised_obj([2.0])

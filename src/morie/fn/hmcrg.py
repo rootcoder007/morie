@@ -68,7 +68,7 @@ def hiermodel(y, sigma, tau):
     tau = float(tau)
     if tau < 0:
         raise ValueError("tau must be non-negative")
-    w = [1.0 / (s[j] ** 2 + tau ** 2) for j in range(J)]
+    w = [1.0 / (s[j] ** 2 + tau**2) for j in range(J)]
     Vmu = 1.0 / sum(w)
     mu = sum(w[j] * y[j] for j in range(J)) * Vmu
     if tau == 0.0:
@@ -76,18 +76,25 @@ def hiermodel(y, sigma, tau):
         Vt = [0.0] * J
         shr = [1.0] * J
     else:
-        prec = [1.0 / s[j] ** 2 + 1.0 / tau ** 2 for j in range(J)]
+        prec = [1.0 / s[j] ** 2 + 1.0 / tau**2 for j in range(J)]
         Vt = [1.0 / p for p in prec]
-        th = [(y[j] / s[j] ** 2 + mu / tau ** 2) / prec[j] for j in range(J)]
+        th = [(y[j] / s[j] ** 2 + mu / tau**2) / prec[j] for j in range(J)]
         shr = [(1.0 / s[j] ** 2) / prec[j] for j in range(J)]
         shr = [1.0 - v for v in shr]
-    lp = 0.5 * math.log(Vmu) - 0.5 * sum(
-        math.log(s[j] ** 2 + tau ** 2) + (y[j] - mu) ** 2 * w[j]
-        for j in range(J))
-    return RichResult(payload={
-        "mu_hat": mu, "V_mu": Vmu, "theta_hat": th, "V_theta": Vt,
-        "shrinkage": shr, "log_post_tau": lp, "tau": tau, "J": float(J),
-        "method": "Hierarchical normal model, BDA3 (5.17)/(5.20)/(5.21)"})
+    lp = 0.5 * math.log(Vmu) - 0.5 * sum(math.log(s[j] ** 2 + tau**2) + (y[j] - mu) ** 2 * w[j] for j in range(J))
+    return RichResult(
+        payload={
+            "mu_hat": mu,
+            "V_mu": Vmu,
+            "theta_hat": th,
+            "V_theta": Vt,
+            "shrinkage": shr,
+            "log_post_tau": lp,
+            "tau": tau,
+            "J": float(J),
+            "method": "Hierarchical normal model, BDA3 (5.17)/(5.20)/(5.21)",
+        }
+    )
 
 
 hierarchical_model = hiermodel

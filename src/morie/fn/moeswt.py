@@ -30,8 +30,7 @@ from ._richresult import RichResult
 __all__ = ["moe_switch_routing"]
 
 
-def moe_switch_routing(y, x=None, W_g=None, experts=None, capacity=1.25,
-                       alpha=1e-2):
+def moe_switch_routing(y, x=None, W_g=None, experts=None, capacity=1.25, alpha=1e-2):
     """Top-1 route a batch of tokens under a capacity constraint.
 
     Parameters

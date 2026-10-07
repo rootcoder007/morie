@@ -1,8 +1,8 @@
 """Tests for morie.fn.eproc — empirical process."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.eproc import eproc
 
 

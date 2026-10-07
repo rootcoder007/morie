@@ -1,7 +1,6 @@
 """Tests for hrzph.horowitz_proportional_hazards."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzph import horowitz_proportional_hazards
 
 

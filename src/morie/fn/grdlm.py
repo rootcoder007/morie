@@ -100,20 +100,17 @@ def geron_dataloader_minibatch(n, b, shuffle=True, seed=0, drop_last=False):
         raise ValueError(f"b must lie in [1, {n}], got {b}.")
 
     perm = _lcg_permutation(n, seed) if shuffle else np.arange(n)
-    batches = [perm[i:i + b].tolist() for i in range(0, n, b)]
+    batches = [perm[i : i + b].tolist() for i in range(0, n, b)]
     if drop_last and batches and len(batches[-1]) < b:
         batches = batches[:-1]
     if not batches:
-        raise ValueError(
-            f"drop_last discarded every batch: n = {n} is smaller than b = {b}."
-        )
+        raise ValueError(f"drop_last discarded every batch: n = {n} is smaller than b = {b}.")
     seen = sorted(i for batch in batches for i in batch)
     covers = seen == list(range(n))
 
     return RichResult(
         title="Mini-batch loader",
-        summary_lines=[("Batches", len(batches)), ("Batch size", b),
-                       ("Shuffled", bool(shuffle))],
+        summary_lines=[("Batches", len(batches)), ("Batch size", b), ("Shuffled", bool(shuffle))],
         payload={
             "batches": batches,
             "n_batches": len(batches),

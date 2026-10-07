@@ -80,11 +80,20 @@ def ratioest(y, x, X=None, N=float("inf"), level=0.95):
     else:
         tot = R * float(X)
         seT = abs(float(X)) * seR
-    return RichResult(payload={
-        "ratio": R, "se_ratio": seR, "ci_lower": R - z * seR,
-        "ci_upper": R + z * seR, "total": tot, "se_total": seT,
-        "residual_var": sd2, "fpc": k, "n": n,
-        "method": "Ratio estimator, Cochran Chapter 6"})
+    return RichResult(
+        payload={
+            "ratio": R,
+            "se_ratio": seR,
+            "ci_lower": R - z * seR,
+            "ci_upper": R + z * seR,
+            "total": tot,
+            "se_total": seT,
+            "residual_var": sd2,
+            "fpc": k,
+            "n": n,
+            "method": "Ratio estimator, Cochran Chapter 6",
+        }
+    )
 
 
 survey_ratio = ratioest

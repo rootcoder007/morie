@@ -60,14 +60,21 @@ def taylor_linearization(y, weights, grad, cov=None):
     else:
         C = np.atleast_2d(np.asarray(cov, dtype=float))
     var = linearise(g, C)
-    return RichResult(payload={
-        "variance": var, "se": float(np.sqrt(max(var, 0.0))),
-        "cov": C, "grad": g, "first_order_only": True,
-        "valid_for": "differentiable functionals only; quantiles need "
-                     "replication methods, and the first-order approximation "
-                     "misses curvature in small samples",
-        "n": int(n), "p": int(p),
-        "method": "Taylor linearisation; a linear stand-in whose design variance is available"})
+    return RichResult(
+        payload={
+            "variance": var,
+            "se": float(np.sqrt(max(var, 0.0))),
+            "cov": C,
+            "grad": g,
+            "first_order_only": True,
+            "valid_for": "differentiable functionals only; quantiles need "
+            "replication methods, and the first-order approximation "
+            "misses curvature in small samples",
+            "n": int(n),
+            "p": int(p),
+            "method": "Taylor linearisation; a linear stand-in whose design variance is available",
+        }
+    )
 
 
 def cheatsheet():

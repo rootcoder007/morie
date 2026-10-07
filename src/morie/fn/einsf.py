@@ -50,7 +50,7 @@ def einsf(
         Keys: einstein_tensor (n,n), residual (n,n or None),
         kappa (coupling constant 8*pi*G/c^4).
     """
-    n = metric.shape[0]
+    metric.shape[0]
     G_tensor = ricci_tensor - 0.5 * scalar_curvature * metric
 
     kappa = 8.0 * np.pi * G / (c**4)

@@ -14,8 +14,9 @@ def _softmax(z):
     return e / e.sum()
 
 
-def geron_ppo(env, policy, epochs=20, lr=0.1, clip_eps=0.2, gamma=0.99,
-              n_episodes=8, max_steps=50, n_updates=4, seed=0):
+def geron_ppo(
+    env, policy, epochs=20, lr=0.1, clip_eps=0.2, gamma=0.99, n_episodes=8, max_steps=50, n_updates=4, seed=0
+):
     """
     Proximal policy optimization (PPO) clipped-surrogate objective.
 
@@ -92,7 +93,9 @@ def geron_ppo(env, policy, epochs=20, lr=0.1, clip_eps=0.2, gamma=0.99,
     reset, step = _bind(env)
     Z = np.atleast_2d(np.asarray(policy, dtype=float)).astype(float).copy()
     if Z.ndim != 2 or Z.size == 0:
-        raise ValueError(f"geron_ppo: policy must be a non-empty (n_states, n_actions) logit matrix, got shape {Z.shape}")
+        raise ValueError(
+            f"geron_ppo: policy must be a non-empty (n_states, n_actions) logit matrix, got shape {Z.shape}"
+        )
     nS, nA = Z.shape
     if nA < 2:
         raise ValueError(f"geron_ppo: need at least 2 actions, got {nA}")
@@ -190,7 +193,11 @@ def geron_ppo(env, policy, epochs=20, lr=0.1, clip_eps=0.2, gamma=0.99,
     probs = np.vstack([_softmax(Z[s]) for s in range(nS)])
     return RichResult(
         title="PPO (clipped surrogate)",
-        summary_lines=[("Epochs", E), ("Final mean return", ret_hist[-1]), ("Clip fraction", clipped_total / max(seen_total, 1))],
+        summary_lines=[
+            ("Epochs", E),
+            ("Final mean return", ret_hist[-1]),
+            ("Clip fraction", clipped_total / max(seen_total, 1)),
+        ],
         interpretation="The min of clipped and unclipped makes the surrogate a pessimistic bound, not just a clamp.",
         payload={
             "theta": Z,

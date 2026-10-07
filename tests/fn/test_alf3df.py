@@ -1,7 +1,6 @@
 """Tests for alf3df.af3_diffusion_step."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alf3df import af3_diffusion_step
 
 
@@ -15,10 +14,13 @@ def test_alf3df_basic():
     step_scale = 1.0
 
     # Constant denoiser: returns the clean coordinates as-is.
-    score_fn = lambda v, s: [[0.0, 0.0, 0.0] for _ in range(len(v))]
+    def score_fn(v, s):
+        return [[0.0, 0.0, 0.0] for _ in range(len(v))]
 
     result = af3_diffusion_step(
-        x, t, score_fn,
+        x,
+        t,
+        score_fn,
         sigma_next=sigma_next,
         gamma=gamma,
         noise_scale=noise_scale,
@@ -42,8 +44,7 @@ def test_alf3df_basic():
     dt = (sigma_next - that) * step_scale
 
     cur = [[float(v) for v in row] for row in x]
-    expected = [[cur[i][c] + dt * (cur[i][c] / that) for c in range(3)]
-                for i in range(len(cur))]
+    expected = [[cur[i][c] + dt * (cur[i][c] / that) for c in range(3)] for i in range(len(cur))]
 
     assert len(out) == len(expected)
     for r_out, r_exp in zip(out, expected):
@@ -64,11 +65,15 @@ def test_alf3df_edge():
     """Test edge cases: final step with sigma_next omitted, and gamma=0 is reproducible."""
     x = np.random.default_rng(42).normal(0.0, 1.0, (4, 3))
     t = 5.0
-    score_fn = lambda v, s: [[0.0, 0.0, 0.0] for _ in range(len(v))]
+
+    def score_fn(v, s):
+        return [[0.0, 0.0, 0.0] for _ in range(len(v))]
 
     # Final step: sigma_next omitted defaults to 0.0, order 'euler' skips Heun correction.
     result = af3_diffusion_step(
-        x, t, score_fn,
+        x,
+        t,
+        score_fn,
         sigma_next=None,
         gamma=0.0,
         order="euler",
@@ -82,7 +87,7 @@ def test_alf3df_edge():
     assert "direction" in result
 
     # With denoiser identically zero, nxt = cur + dt * (cur / t), dt = 0 - t = -t, so nxt = 0.
-    cur = [[float(v) for v in row] for row in x]
+    [[float(v) for v in row] for row in x]
     for row in result["x"]:
         assert len(row) == 3
         for v in row:

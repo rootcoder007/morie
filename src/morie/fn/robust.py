@@ -15,23 +15,20 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from ._ml_core import RandomForestClassifier
 except ImportError:
-    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestClassifier = _MissingDep("RandomForestClassifier")
 try:
     from ._ml_core import classification_report
 except ImportError:
-    classification_report = _MissingDep('classification_report')
+    classification_report = _MissingDep("classification_report")
 
 
 def eval_robustness(

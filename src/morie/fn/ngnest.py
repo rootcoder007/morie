@@ -48,20 +48,17 @@ choosing among them.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 from .nbeats import nbeats_stack
 
-__all__ = ["ensemble_members", "aggregate_forecasts",
-           "nbeats_ensemble"]
+__all__ = ["ensemble_members", "aggregate_forecasts", "nbeats_ensemble"]
 
 _EPS = 1e-12
 _AGG = ("median", "mean")
 
 
-def ensemble_members(y, horizon, lookback_multiples=(2, 3, 4, 5, 6, 7),
-                     block_sets=None, ridge=1e-8):
+def ensemble_members(y, horizon, lookback_multiples=(2, 3, 4, 5, 6, 7), block_sets=None, ridge=1e-8):
     r"""One member per (lookback, block configuration).
 
     The lookback sweep is the paper's largest diversity source: a short
@@ -71,29 +68,37 @@ def ensemble_members(y, horizon, lookback_multiples=(2, 3, 4, 5, 6, 7),
     yv = k.vec(y)
     n = len(yv)
     H = int(horizon)
-    sets = ([[("trend", 2, 3), ("seasonality", 2, 3)],
-             [("trend", 1, 3), ("seasonality", 3, 3)],
-             [("generic", 0, 0), ("trend", 2, 3)]]
-            if block_sets is None else list(block_sets))
+    sets = (
+        [
+            [("trend", 2, 3), ("seasonality", 2, 3)],
+            [("trend", 1, 3), ("seasonality", 3, 3)],
+            [("generic", 0, 0), ("trend", 2, 3)],
+        ]
+        if block_sets is None
+        else list(block_sets)
+    )
     out = []
     for mult in lookback_multiples:
         lb = int(mult) * H
         if lb < 4 or lb > n:
             continue
-        window = yv[n - lb:]
+        window = yv[n - lb :]
         for si, blocks in enumerate(sets):
             try:
-                fc, resid, _ = nbeats_stack(window, H, blocks,
-                                            ridge=ridge)
+                fc, resid, _ = nbeats_stack(window, H, blocks, ridge=ridge)
             except (ValueError, ZeroDivisionError):
                 continue
-            out.append({"lookback": lb, "multiple": int(mult),
-                        "block_set": si, "forecast": fc,
-                        "residual_norm": math.sqrt(sum(v * v
-                                                       for v in resid))})
+            out.append(
+                {
+                    "lookback": lb,
+                    "multiple": int(mult),
+                    "block_set": si,
+                    "forecast": fc,
+                    "residual_norm": math.sqrt(sum(v * v for v in resid)),
+                }
+            )
     if not out:
-        raise ValueError("ngnest: no ensemble member could be built; "
-                         "the series is too short for these lookbacks")
+        raise ValueError("ngnest: no ensemble member could be built; the series is too short for these lookbacks")
     return out
 
 
@@ -104,8 +109,7 @@ def aggregate_forecasts(members, how="median"):
     diverging member drags a mean and is ignored by a median.
     """
     if how not in _AGG:
-        raise ValueError("ngnest: how must be median or mean, got %r"
-                         % (how,))
+        raise ValueError(f"ngnest: how must be median or mean, got {how!r}")
     if not members:
         raise ValueError("ngnest: no members to aggregate")
     H = len(members[0]["forecast"])
@@ -114,48 +118,49 @@ def aggregate_forecasts(members, how="median"):
     out = []
     for h in range(H):
         col = [m["forecast"][h] for m in members]
-        out.append(k.median(col) if how == "median"
-                   else sum(col) / len(col))
+        out.append(k.median(col) if how == "median" else sum(col) / len(col))
     return out
 
 
-def nbeats_ensemble(y, horizon, lookback_multiples=(2, 3, 4, 5, 6, 7),
-                    block_sets=None, how="median", ridge=1e-8):
+def nbeats_ensemble(y, horizon, lookback_multiples=(2, 3, 4, 5, 6, 7), block_sets=None, how="median", ridge=1e-8):
     r"""The ensemble forecast, with the spread its members produced."""
-    mem = ensemble_members(y, horizon, lookback_multiples, block_sets,
-                           ridge)
+    mem = ensemble_members(y, horizon, lookback_multiples, block_sets, ridge)
     agg = aggregate_forecasts(mem, how=how)
     H = len(agg)
-    spread = [max(m["forecast"][h] for m in mem)
-              - min(m["forecast"][h] for m in mem) for h in range(H)]
+    spread = [max(m["forecast"][h] for m in mem) - min(m["forecast"][h] for m in mem) for h in range(H)]
     by_lb = {}
     for m in mem:
         by_lb.setdefault(m["multiple"], []).append(m["forecast"][0])
     by_set = {}
     for m in mem:
         by_set.setdefault(m["block_set"], []).append(m["forecast"][0])
-    return RichResult(payload={
-        "estimate": agg, "forecast": agg, "members": mem,
-        "n_members": len(mem), "spread": spread,
-        "aggregator": how,
-        "mean_forecast": aggregate_forecasts(mem, how="mean"),
-        "lookback_spread": (max(k.mean(v) for v in by_lb.values())
-                            - min(k.mean(v) for v in by_lb.values())),
-        "blockset_spread": (max(k.mean(v) for v in by_set.values())
-                            - min(k.mean(v) for v in by_set.values())),
-        "lookbacks": sorted(by_lb), "n_block_sets": len(by_set),
-        "method": "N-BEATS ensemble over lookbacks and block "
-                  "configurations, Oreshkin et al. (2020) Sec. 3.3",
-    })
+    return RichResult(
+        payload={
+            "estimate": agg,
+            "forecast": agg,
+            "members": mem,
+            "n_members": len(mem),
+            "spread": spread,
+            "aggregator": how,
+            "mean_forecast": aggregate_forecasts(mem, how="mean"),
+            "lookback_spread": (max(k.mean(v) for v in by_lb.values()) - min(k.mean(v) for v in by_lb.values())),
+            "blockset_spread": (max(k.mean(v) for v in by_set.values()) - min(k.mean(v) for v in by_set.values())),
+            "lookbacks": sorted(by_lb),
+            "n_block_sets": len(by_set),
+            "method": "N-BEATS ensemble over lookbacks and block configurations, Oreshkin et al. (2020) Sec. 3.3",
+        }
+    )
 
 
 def cheatsheet():
-    return ("ngnest: same source as nbeats -- this is the ENSEMBLE, "
-            "which is what the paper's numbers actually are (180 models "
-            "over losses, lookbacks and seeds). Aggregate by MEDIAN, "
-            "not mean: one diverging member drags a mean and is ignored "
-            "by a median. Varying the lookback decorrelates members "
-            "more than reinitialising does.")
+    return (
+        "ngnest: same source as nbeats -- this is the ENSEMBLE, "
+        "which is what the paper's numbers actually are (180 models "
+        "over losses, lookbacks and seeds). Aggregate by MEDIAN, "
+        "not mean: one diverging member drags a mean and is ignored "
+        "by a median. Varying the lookback decorrelates members "
+        "more than reinitialising does."
+    )
 
 
 # compact alias per ledger/NAMING.md

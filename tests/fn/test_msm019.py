@@ -1,7 +1,6 @@
 """Tests for msm019.mvsml_linear_mixed_models_eq_5_1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm019 import mvsml_linear_mixed_models_eq_5_1
 
 

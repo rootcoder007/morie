@@ -1,7 +1,6 @@
 """Tests for rkhsc.rkhs_kernel_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rkhsc import rkhs_kernel_regression
 
 

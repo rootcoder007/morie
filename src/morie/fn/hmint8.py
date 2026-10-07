@@ -107,9 +107,7 @@ def geron_int8_quant(x, n_bits=8, symmetric=True):
     if symmetric:
         amax = float(np.max(np.abs(a)))
         if amax == 0:
-            raise ValueError(
-                "geron_int8_quant: the tensor is all zeros, so the quantization scale would be zero"
-            )
+            raise ValueError("geron_int8_quant: the tensor is all zeros, so the quantization scale would be zero")
         qmax = 2 ** (b - 1) - 1
         scale = amax / qmax
         zero = 0.0

@@ -79,9 +79,7 @@ def geron_contrastive_infonce(anchors, positives, negatives, tau=0.1, normalize=
     P = np.atleast_2d(np.asarray(positives, dtype=float))
     N = np.asarray(negatives, dtype=float)
     if A.shape != P.shape:
-        raise ValueError(
-            f"anchors and positives must have the same shape, got {A.shape} and {P.shape}."
-        )
+        raise ValueError(f"anchors and positives must have the same shape, got {A.shape} and {P.shape}.")
     if A.size == 0:
         raise ValueError("anchors is empty.")
     B, d = A.shape
@@ -91,9 +89,7 @@ def geron_contrastive_infonce(anchors, positives, negatives, tau=0.1, normalize=
         N = np.broadcast_to(N[None, :, :], (B, N.shape[0], d))
     elif N.ndim == 3:
         if N.shape[0] != B or N.shape[2] != d:
-            raise ValueError(
-                f"per-anchor negatives must have shape (B, N, d) = ({B}, N, {d}), got {N.shape}."
-            )
+            raise ValueError(f"per-anchor negatives must have shape (B, N, d) = ({B}, N, {d}), got {N.shape}.")
     else:
         raise ValueError(f"negatives must be 2-D or 3-D, got ndim={N.ndim}.")
     if N.shape[1] == 0:
@@ -110,8 +106,8 @@ def geron_contrastive_infonce(anchors, positives, negatives, tau=0.1, normalize=
         P = _l2norm(P)
         N = _l2norm(N)
 
-    pos = np.sum(A * P, axis=1)                       # (B,)
-    neg = np.einsum("bd,bnd->bn", A, N)               # (B, n)
+    pos = np.sum(A * P, axis=1)  # (B,)
+    neg = np.einsum("bd,bnd->bn", A, N)  # (B, n)
     logits = np.concatenate([pos[:, None], neg], axis=1) / tau
     m = logits.max(axis=1, keepdims=True)
     lse = m[:, 0] + np.log(np.exp(logits - m).sum(axis=1))
@@ -122,9 +118,7 @@ def geron_contrastive_infonce(anchors, positives, negatives, tau=0.1, normalize=
     return RichResult(
         title="InfoNCE contrastive loss",
         summary_lines=[("Loss", loss), ("Negatives per anchor", int(N.shape[1]))],
-        interpretation=(
-            f"Chance loss is log(1+N) = {float(np.log(1 + N.shape[1])):.4f}."
-        ),
+        interpretation=(f"Chance loss is log(1+N) = {float(np.log(1 + N.shape[1])):.4f}."),
         payload={
             "loss": loss,
             "per_anchor_loss": per_anchor.tolist(),

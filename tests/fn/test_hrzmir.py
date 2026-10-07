@@ -1,7 +1,6 @@
 """Tests for hrzmir.horowitz_marginal_integration."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzmir import horowitz_marginal_integration
 
 

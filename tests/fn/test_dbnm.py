@@ -1,8 +1,8 @@
 """Tests for morie.fn.dbnm — binomial PMF."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dbnm import dbinom
 
 

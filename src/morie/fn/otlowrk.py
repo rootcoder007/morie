@@ -20,8 +20,6 @@ consulted.
 
 from __future__ import annotations
 
-import math
-
 from . import _array_core as np  # noqa: F401
 from . import _s03core as k
 from ._richresult import RichResult
@@ -30,8 +28,7 @@ from .otsklog import ot_sinkhorn_log
 __all__ = ["ot_low_rank_sinkhorn"]
 
 
-def ot_low_rank_sinkhorn(a, b, C, rank=2, epsilon=0.1, max_iter=20,
-                         inner=50, gamma=1.0):
+def ot_low_rank_sinkhorn(a, b, C, rank=2, epsilon=0.1, max_iter=20, inner=50, gamma=1.0):
     """Rank-constrained entropic OT by mirror descent.
 
     Returns

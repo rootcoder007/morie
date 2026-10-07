@@ -28,8 +28,7 @@ def test_wald_interval_scales_with_the_span():
     res = hedderich_chapter_8_equation_63(0.4, 0.0, 2.0, se=0.1, level=0.95)
     assert res["se_logor"] == pytest.approx(2.0 * 0.1, rel=1e-12)
     # the interval is symmetric on the log scale
-    assert math.log(res["ci_high"]) - res["logor"] == pytest.approx(
-        res["logor"] - math.log(res["ci_low"]), rel=1e-10)
+    assert math.log(res["ci_high"]) - res["logor"] == pytest.approx(res["logor"] - math.log(res["ci_low"]), rel=1e-10)
 
 
 def test_rejects_a_non_positive_standard_error():

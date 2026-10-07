@@ -16,7 +16,7 @@ def _tk(x, n, xbar, sigma):
         s += (x[k - 1] - xbar) / sigma
         out_s.append(s)
         z1 = s / k
-        z2 = -s / (n - k)          # the two halves sum to zero by construction
+        z2 = -s / (n - k)  # the two halves sum to zero by construction
         tk.append(k * z1 * z1 + (n - k) * z2 * z2)
     return tk, out_s
 

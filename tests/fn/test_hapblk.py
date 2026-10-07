@@ -37,7 +37,7 @@ def test_two_independent_halves_are_not_one_block():
     assert len(res["blocks"]) >= 1
     for b in res["blocks"]:
         lo, hi = b[0], b[1]
-        assert not (lo <= 2 and hi >= 3)      # no block spans the break
+        assert not (lo <= 2 and hi >= 3)  # no block spans the break
 
 
 def test_pairs_are_classified():
@@ -59,8 +59,7 @@ def test_confidence_bounds_are_ordered():
 
 
 def test_validation():
-    for call in (lambda: hapblk([[0, 1], [1, 0]]),
-                 lambda: hapblk([[0, 1], [1], [0, 1], [1, 0]])):
+    for call in (lambda: hapblk([[0, 1], [1, 0]]), lambda: hapblk([[0, 1], [1], [0, 1], [1, 0]])):
         try:
             call()
             raise AssertionError("expected ValueError")

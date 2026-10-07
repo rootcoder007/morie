@@ -1,6 +1,5 @@
 """Tests for gb_spv (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_spv import gibbons_spearman_rho_var

@@ -1,7 +1,6 @@
 """Tests for causivla.causal_iv_late."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causivla import causal_iv_late
 
 
@@ -36,8 +35,7 @@ def test_causivla_basic():
 
     # The function returns a dict-like RichResult; assert on documented keys.
     assert isinstance(result, dict)
-    for key in ("late", "se", "first_stage", "reduced_form",
-                "complier_share", "n_z1", "n_z0", "n", "method"):
+    for key in ("late", "se", "first_stage", "reduced_form", "complier_share", "n_z1", "n_z0", "n", "method"):
         assert key in result, f"missing documented key: {key}"
 
     # Reconstruct the Wald ratio by hand from the same inputs and compare.

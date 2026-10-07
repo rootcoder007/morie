@@ -2,11 +2,19 @@
 
 import math
 
-from morie.fn.sv_dl import (classify_pair, deletion_type_reference,
-                            gotoh_score_vectors, insert_size_stats,
-                            kmer_diagonals, maximal_clique, optimal_split,
-                            refine_breakpoint, split_read_consensus,
-                            structural_variant, sv_delly)
+from morie.fn.sv_dl import (
+    classify_pair,
+    deletion_type_reference,
+    gotoh_score_vectors,
+    insert_size_stats,
+    kmer_diagonals,
+    maximal_clique,
+    optimal_split,
+    refine_breakpoint,
+    split_read_consensus,
+    structural_variant,
+    sv_delly,
+)
 
 RL, MED, SD = 60, 400, 25
 BP1, BP2 = 1200, 1500
@@ -19,12 +27,12 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-        math.cos(2 * math.pi * r())
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
 
 
 _rnd = _lcg(20120918)
@@ -46,10 +54,22 @@ def _simulate(n_frag=600, seed=7):
                 splits.append(DONOR[a:b])
         if d1a < BP1 < d1b or d2a < BP1 < d2b:
             continue
-        to_ref = (lambda d: d if d < BP1 else d + DELSIZE)
-        pairs.append({"chrom1": "chr1", "pos1": to_ref(d1a), "strand1": "+",
-                      "len1": RL, "chrom2": "chr1", "pos2": to_ref(d2a),
-                      "strand2": "-", "len2": RL})
+
+        def to_ref(d):
+            return d if d < BP1 else d + DELSIZE
+
+        pairs.append(
+            {
+                "chrom1": "chr1",
+                "pos1": to_ref(d1a),
+                "strand1": "+",
+                "len1": RL,
+                "chrom2": "chr1",
+                "pos2": to_ref(d2a),
+                "strand2": "-",
+                "len2": RL,
+            }
+        )
     return pairs, splits
 
 
@@ -57,8 +77,16 @@ PAIRS, SPLITS = _simulate()
 
 
 def _mk(p1, s1, p2, s2, c2="chr1"):
-    return {"chrom1": "chr1", "pos1": p1, "strand1": s1, "len1": RL,
-            "chrom2": c2, "pos2": p2, "strand2": s2, "len2": RL}
+    return {
+        "chrom1": "chr1",
+        "pos1": p1,
+        "strand1": s1,
+        "len1": RL,
+        "chrom2": c2,
+        "pos2": p2,
+        "strand2": s2,
+        "len2": RL,
+    }
 
 
 def test_the_library_parameters_are_recovered():
@@ -79,13 +107,11 @@ def test_every_signature_is_recognised():
     assert classify_pair(_mk(1000, "+", 1900, "-"), MED, SD) == ("DEL", "")
     assert classify_pair(_mk(1000, "-", 1340, "+"), MED, SD) == ("DUP", "")
     assert classify_pair(_mk(1000, "+", 1340, "+"), MED, SD) == ("INV", "left")
-    assert classify_pair(_mk(1000, "-", 1340, "-"), MED, SD) == \
-        ("INV", "right")
+    assert classify_pair(_mk(1000, "-", 1340, "-"), MED, SD) == ("INV", "right")
     tra = set()
     for s1 in ("+", "-"):
         for s2 in ("+", "-"):
-            tra.add(classify_pair(_mk(1000, s1, 1340, s2, c2="chr2"),
-                                  MED, SD)[1])
+            tra.add(classify_pair(_mk(1000, s1, 1340, s2, c2="chr2"), MED, SD)[1])
     assert tra == {"0", "1", "2", "3"}
 
 
@@ -119,9 +145,18 @@ def test_a_quiet_genome_stays_quiet():
         if L < 2 * RL + 10 or L > 700:
             continue
         s = int(r() * (len(REF) - L))
-        flat.append({"chrom1": "chr1", "pos1": s, "strand1": "+", "len1": RL,
-                     "chrom2": "chr1", "pos2": s + L - RL, "strand2": "-",
-                     "len2": RL})
+        flat.append(
+            {
+                "chrom1": "chr1",
+                "pos1": s,
+                "strand1": "+",
+                "len1": RL,
+                "chrom2": "chr1",
+                "pos2": s + L - RL,
+                "strand2": "-",
+                "len2": RL,
+            }
+        )
     assert structural_variant(flat)["n_calls"] == 0
 
 
@@ -134,15 +169,12 @@ def test_a_junction_read_gives_two_diagonals_a_deletion_apart():
 
 
 def test_the_consensus_is_a_majority_vote():
-    assert split_read_consensus(["ACGTAC", "ACGTAC", "ACGAAC"]) == \
-        ("ACGTAC", 0)
-    assert split_read_consensus(["ACGTT", "GTTGG"], starts=[10, 12]) == \
-        ("ACGTTGG", 10)
+    assert split_read_consensus(["ACGTAC", "ACGTAC", "ACGAAC"]) == ("ACGTAC", 0)
+    assert split_read_consensus(["ACGTT", "GTTGG"], starts=[10, 12]) == ("ACGTTGG", 10)
 
 
 def test_the_split_takes_argmax_f_plus_r():
-    assert optimal_split([1.0, 5.0, 2.0, 0.0], [0.0, 1.0, 4.0, 9.0])[:2] == \
-        (2, 4)
+    assert optimal_split([1.0, 5.0, 2.0, 0.0], [0.0, 1.0, 4.0, 9.0])[:2] == (2, 4)
     f, f_at, r, r_at = gotoh_score_vectors("ACGTACGT", REF[100:200])
     assert len(f) == len(r) == len(f_at) == len(r_at) == 8
 
@@ -151,7 +183,7 @@ def test_split_reads_rebuild_the_sequenced_haplotype():
     res = structural_variant(PAIRS, reference=REF, split_reads=SPLITS)
     d = [c for c in res["calls"] if c["type"] == "DEL"][0]
     assert d["precise"] is True
-    assert REF[:d["start"]] + REF[d["end"]:] == DONOR
+    assert REF[: d["start"]] + REF[d["end"] :] == DONOR
     assert d["end"] - d["start"] == DELSIZE
     assert d["microinsertion"] == ""
     assert d["microhomology"] == 3
@@ -159,10 +191,8 @@ def test_split_reads_rebuild_the_sequenced_haplotype():
 
 def test_refinement_declines_rather_than_invents():
     region = REF[800:1900]
-    assert refine_breakpoint({"type": "DEL", "size": float(DELSIZE)}, region,
-                             [REF[200:260], REF[400:460]]) is None
-    assert refine_breakpoint({"type": "DEL", "size": 900.0}, region,
-                             SPLITS) is None
+    assert refine_breakpoint({"type": "DEL", "size": float(DELSIZE)}, region, [REF[200:260], REF[400:460]]) is None
+    assert refine_breakpoint({"type": "DEL", "size": 900.0}, region, SPLITS) is None
 
 
 def test_the_reference_rewriting_of_figure_4():
@@ -174,20 +204,21 @@ def test_the_reference_rewriting_of_figure_4():
 
 
 def test_validation():
-    for call in (lambda: structural_variant([]),
-                 lambda: structural_variant(PAIRS, n_sd=-1.0),
-                 lambda: structural_variant(PAIRS, min_support=0),
-                 lambda: structural_variant(PAIRS, spread="iqr"),
-                 lambda: insert_size_stats([_mk(10, "+", 20, "-",
-                                                c2="chr2")]),
-                 lambda: classify_pair({"chrom1": "a"}, 1, 1),
-                 lambda: classify_pair(_mk(10, "x", 20, "-"), MED, SD),
-                 lambda: deletion_type_reference("ACGT", "INS"),
-                 lambda: kmer_diagonals("ACGT", "ACGT", k=0),
-                 lambda: split_read_consensus([]),
-                 lambda: split_read_consensus(["AC"], starts=[1, 2]),
-                 lambda: gotoh_score_vectors("", "ACGT"),
-                 lambda: optimal_split([1.0, 2.0], [1.0])):
+    for call in (
+        lambda: structural_variant([]),
+        lambda: structural_variant(PAIRS, n_sd=-1.0),
+        lambda: structural_variant(PAIRS, min_support=0),
+        lambda: structural_variant(PAIRS, spread="iqr"),
+        lambda: insert_size_stats([_mk(10, "+", 20, "-", c2="chr2")]),
+        lambda: classify_pair({"chrom1": "a"}, 1, 1),
+        lambda: classify_pair(_mk(10, "x", 20, "-"), MED, SD),
+        lambda: deletion_type_reference("ACGT", "INS"),
+        lambda: kmer_diagonals("ACGT", "ACGT", k=0),
+        lambda: split_read_consensus([]),
+        lambda: split_read_consensus(["AC"], starts=[1, 2]),
+        lambda: gotoh_score_vectors("", "ACGT"),
+        lambda: optimal_split([1.0, 2.0], [1.0]),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

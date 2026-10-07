@@ -7,10 +7,7 @@ from ._containers import DescriptiveResult
 
 
 def signal_arc_length(x: np.ndarray) -> DescriptiveResult:
-    """Compute the arc length of a discrete signal.
-
-    'Everything flows. -- Heraclitus'
-    """
+    """Compute the arc length of a discrete signal."""
     from morie._waveform import signal_arc_length as _backend
 
     length = _backend(x)

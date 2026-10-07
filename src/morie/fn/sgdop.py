@@ -88,10 +88,7 @@ def sgdop(
     if weights.shape != gradients.shape:
         raise ValueError("weights and gradients must have same shape")
 
-    if velocity is None:
-        velocity = np.zeros_like(weights)
-    else:
-        velocity = np.asarray(velocity, dtype=float)
+    velocity = np.zeros_like(weights) if velocity is None else np.asarray(velocity, dtype=float)
 
     if not (0.0 <= momentum < 1.0):
         raise ValueError("momentum must be in [0, 1)")
@@ -101,10 +98,7 @@ def sgdop(
 
     velocity = momentum * velocity - learning_rate * gradients
 
-    if nesterov:
-        weights_new = weights + momentum * velocity - learning_rate * gradients
-    else:
-        weights_new = weights + velocity
+    weights_new = weights + momentum * velocity - learning_rate * gradients if nesterov else weights + velocity
 
     return RichResult(payload={"weights": weights_new, "velocity": velocity})
 

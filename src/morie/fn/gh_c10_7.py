@@ -61,8 +61,7 @@ def ghosal_frs_density(x, grid=None, K=None, s=None, seed=0, n_draws=150):
     lo, hi = float(xv.min()), float(xv.max())
     if hi <= lo:
         raise ValueError("the sample has zero spread.")
-    g = np.linspace(lo, hi, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(lo, hi, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     z = (g - lo) / (hi - lo)
     zx = (xv - lo) / (hi - lo)
     rng = np.random.default_rng(int(seed))
@@ -89,14 +88,20 @@ def ghosal_frs_density(x, grid=None, K=None, s=None, seed=0, n_draws=150):
         dens += f
     dens /= float(n_draws)
     sv = 1.0 if s is None else float(s)
-    return RichResult(payload={
-        "grid": g, "density": dens,
-        "K_fixed": None if K is None else int(K),
-        "K_drawn_mean": float(np.mean(kdraw)),
-        "rate": minimax_rate(nn, sv), "adaptive": K is None,
-        "prior_on_K": "pi(K) proportional to exp(-c K log K)",
-        "mass": float(np.trapezoid(dens, g)), "n": int(nn),
-        "method": "Finite random series (Sec. 10.4.1); the prior on K is what makes it adaptive"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "K_fixed": None if K is None else int(K),
+            "K_drawn_mean": float(np.mean(kdraw)),
+            "rate": minimax_rate(nn, sv),
+            "adaptive": K is None,
+            "prior_on_K": "pi(K) proportional to exp(-c K log K)",
+            "mass": float(np.trapezoid(dens, g)),
+            "n": int(nn),
+            "method": "Finite random series (Sec. 10.4.1); the prior on K is what makes it adaptive",
+        }
+    )
 
 
 def cheatsheet():

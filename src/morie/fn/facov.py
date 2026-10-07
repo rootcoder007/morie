@@ -86,7 +86,7 @@ def factor_analytic_covariance(n_env, n_factors, loadings=None, psi=None):
         L = [[0.0] * kk for _ in range(m)]
         for i in range(m):
             for j in range(kk):
-                if j <= i:                       # Smith et al. identifiability
+                if j <= i:  # Smith et al. identifiability
                     L[i][j] = core.vdc(i * kk + j, 2 + j) + 0.5
     else:
         L = core.mat(loadings)

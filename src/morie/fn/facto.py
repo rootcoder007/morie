@@ -42,10 +42,7 @@ def factorial_design(
     if levels < 2:
         raise ValueError(f"levels must be >= 2, got {levels}.")
 
-    if levels == 2:
-        level_vals = [-1, 1]
-    else:
-        level_vals = list(range(levels))
+    level_vals = [-1, 1] if levels == 2 else list(range(levels))
 
     runs = list(_product(level_vals, repeat=n_factors))
     design = np.array(runs, dtype=np.float64)

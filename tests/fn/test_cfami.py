@@ -1,7 +1,6 @@
 """Tests for morie.fn.cfami -- CFA modification indices."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._mapq_const import SUBSCALES
 from morie.fn.cfami import cfa_modindex
 

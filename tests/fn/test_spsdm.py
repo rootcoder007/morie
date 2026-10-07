@@ -6,9 +6,8 @@ correctly, so the two must agree exactly.
 """
 
 from morie.fn import _array_core as np
-
-from morie.fn.spsdm import schabenberger_spatial_durbin_model
 from morie.fn.sgdbn import spatial_durbin_model
+from morie.fn.spsdm import schabenberger_spatial_durbin_model
 
 
 def _fixture():

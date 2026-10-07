@@ -10,6 +10,8 @@ def test_fzbwc_basic():
     result = fauzi_quantile_bw_condition(bandwidth, n)
     assert isinstance(result, dict)
     assert "ok" in result
+
+
 def test_fzbwc_edge():
     """Test edge cases."""
     bandwidth = 0.3

@@ -27,18 +27,17 @@ def ca_chapter_11_equation_36(ys, ws):
     ch.11 eq.11.36
     """
     payload = dict(_ca_crim.mean_effect_size(ys, ws))
-    value = payload['se']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["se"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.36)"
     return RichResult(
-        title='Standard error of the mean effect size 1/sqrt(sum w)',
+        title="Standard error of the mean effect size 1/sqrt(sum w)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e36: se_ybar = sqrt(1 / sum(w_i)) [Weisburd et al. 2022, eq. 11.36]'
+    return "ca11e36: se_ybar = sqrt(1 / sum(w_i)) [Weisburd et al. 2022, eq. 11.36]"

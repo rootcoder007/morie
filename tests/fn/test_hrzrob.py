@@ -7,7 +7,6 @@ import pytest
 
 from morie.fn.hrzrob import horowitz_rate_beta_estimation
 
-
 SIZES = [100, 200, 400, 800, 1600]
 
 

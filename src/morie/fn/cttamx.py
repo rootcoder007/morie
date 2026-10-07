@@ -92,13 +92,19 @@ def ctt_alpha_max(X):
     for j in range(1, k):
         if drop[j] > drop[best]:
             best = j
-    return RichResult(payload={
-        "alpha_full": float(full),
-        "alpha_dropped": [float(v) for v in drop],
-        "delta": [float(v - full) for v in drop],
-        "max_alpha": float(drop[best]), "argmax_alpha": best,
-        "estimate": float(drop[best]), "n_items": k, "n": n,
-        "method": "Cronbach (1951) alpha recomputed with each item deleted"})
+    return RichResult(
+        payload={
+            "alpha_full": float(full),
+            "alpha_dropped": [float(v) for v in drop],
+            "delta": [float(v - full) for v in drop],
+            "max_alpha": float(drop[best]),
+            "argmax_alpha": best,
+            "estimate": float(drop[best]),
+            "n_items": k,
+            "n": n,
+            "method": "Cronbach (1951) alpha recomputed with each item deleted",
+        }
+    )
 
 
 def cheatsheet():

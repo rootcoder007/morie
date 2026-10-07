@@ -1,7 +1,6 @@
 """Tests for gh_ap_d1.ghosal_exp_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_d1 import ghosal_exp_test
 
 
@@ -18,6 +17,7 @@ def test_gh_ap_d1_basic():
         assert key in result
     # Independent recomputation of the documented formula.
     import math
+
     c0_expected = -math.log(err_null) / n
     c1_expected = -math.log(err_alt) / n
     c_expected = min(c0_expected, c1_expected)

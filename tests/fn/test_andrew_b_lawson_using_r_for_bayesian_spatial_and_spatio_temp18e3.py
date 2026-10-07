@@ -6,6 +6,8 @@ import pytest
 
 from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3 import (
     andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3 as eq18_3,
+)
+from morie.fn.andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3 import (
     epiar,
 )
 
@@ -33,9 +35,8 @@ def test_andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp18e3_edge()
     base = epiar(B0, B1, I_LAG, B1I)
     dbl = epiar(B0, B1, [2.0 * v for v in I_LAG], B1I)
     for i in range(5):
-        assert abs(dbl["logf"][i] - base["logf"][i]
-                   - B1 * math.log(2.0)) < 1e-12
-        assert abs(dbl["f"][i] / base["f"][i] - 2.0 ** B1) < 1e-9
+        assert abs(dbl["logf"][i] - base["logf"][i] - B1 * math.log(2.0)) < 1e-12
+        assert abs(dbl["f"][i] / base["f"][i] - 2.0**B1) < 1e-9
     flat = epiar(0.0, 0.0, I_LAG, [0.0] * 5)
     assert flat["logf"] == [0.0] * 5
     assert flat["f"] == [1.0] * 5

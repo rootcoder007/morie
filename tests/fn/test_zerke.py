@@ -1,7 +1,6 @@
 """Tests for morie.fn.zerke -- Risk exceedance probability"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zerke import risk_exceedance
 
 

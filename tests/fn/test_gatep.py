@@ -1,7 +1,6 @@
 """Tests for gatep.gate_estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gatep import gate_estimation
 
 

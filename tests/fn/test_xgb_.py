@@ -1,7 +1,6 @@
 """Tests for morie.fn.xgb_ — simplified XGBoost."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.xgb_ import xgboost_simple
 
 

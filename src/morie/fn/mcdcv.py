@@ -87,7 +87,7 @@ def min_covariance_determinant(y, X, h=None, max_subsets=200000):
         raise ValueError("min_covariance_determinant: h cannot exceed the number of observations")
     total = R.nchoosek(n, hh)
     if total > max_subsets:
-        raise ValueError("min_covariance_determinant: %d subsets exceeds max_subsets" % total)
+        raise ValueError(f"min_covariance_determinant: {int(total)} subsets exceeds max_subsets")
     best_idx = None
     best_det = None
     for idx in R.combos(n, hh):

@@ -13,6 +13,8 @@ def test_km019_doctest():
 
 def test_km019_edge():
     import pytest
+
     from morie.fn.km019 import kamath_ch2_masked_attention
+
     with pytest.raises(ValueError):
         kamath_ch2_masked_attention([[1.0]], [[1.0, 2.0]], [[1.0]], [[0.0]])

@@ -1,8 +1,8 @@
 """Tests for ucmod.unobserved_components."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ucmod import unobserved_components
 
 

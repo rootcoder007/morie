@@ -144,8 +144,7 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True, method="lar"):
         if inactive.size == 0:
             gamma = C / AA
         else:
-            cand = np.r_[(C - c[inactive]) / (AA - a[inactive]),
-                         (C + c[inactive]) / (AA + a[inactive])]
+            cand = np.r_[(C - c[inactive]) / (AA - a[inactive]), (C + c[inactive]) / (AA + a[inactive])]
             cand = cand[(cand > 1e-12) & np.isfinite(cand)]
             gamma = float(cand.min()) if cand.size else C / AA
 
@@ -175,10 +174,10 @@ def esl_least_angle_reg(X, y, max_steps=None, standardize=True, method="lar"):
     ss_tot = float(np.sum((y - ybar) ** 2))
     return RichResult(
         title="Least angle regression",
-        summary_lines=[("n", n), ("p", p), ("steps", len(path) - 1),
-                       ("active", len(active))],
+        summary_lines=[("n", n), ("p", p), ("steps", len(path) - 1), ("active", len(active))],
         payload={
-            "coef_path": coef, "coef": coef[-1],
+            "coef_path": coef,
+            "coef": coef[-1],
             "intercept": float(ybar - xbar @ coef[-1]),
             "active": np.array(active, dtype=int),
             "correlations": np.array(cors),

@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['aicar', 'aic_ar_order', 'aicarorder']
+__all__ = ["aicar", "aic_ar_order", "aicarorder"]
 
 
 def aicar(x, max_p=10, demean=True):
@@ -59,14 +59,20 @@ def aicar(x, max_p=10, demean=True):
         newphi = [phi[j] - kk * phi[k - 2 - j] for j in range(k - 1)] + [kk]
         phi = newphi
         sig.append(sig[k - 1] * (1.0 - kk * kk))
-    aic = [math.log(sig[p]) + 2.0 * (p + 1) / T if sig[p] > 0 else float("inf")
-           for p in range(P + 1)]
-    unn = [T * math.log(sig[p]) + 2.0 * (p + 1) if sig[p] > 0 else float("inf")
-           for p in range(P + 1)]
+    aic = [math.log(sig[p]) + 2.0 * (p + 1) / T if sig[p] > 0 else float("inf") for p in range(P + 1)]
+    unn = [T * math.log(sig[p]) + 2.0 * (p + 1) if sig[p] > 0 else float("inf") for p in range(P + 1)]
     best = min(range(P + 1), key=lambda p: aic[p])
-    return RichResult(payload={
-        "p": best, "aic": aic, "aic_unnormalised": unn, "sigma2": sig,
-        "pacf": pacf, "n": T, "method": "AIC order selection for AR(p)"})
+    return RichResult(
+        payload={
+            "p": best,
+            "aic": aic,
+            "aic_unnormalised": unn,
+            "sigma2": sig,
+            "pacf": pacf,
+            "n": T,
+            "method": "AIC order selection for AR(p)",
+        }
+    )
 
 
 aic_ar_order = aicar

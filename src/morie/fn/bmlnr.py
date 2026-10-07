@@ -44,15 +44,9 @@ def bayesian_linear_regression(
         X_arr = X_arr.reshape(-1, 1)
     n, p = X_arr.shape
 
-    if prior_mu is None:
-        prior_mu = np.zeros(p)
-    else:
-        prior_mu = np.asarray(prior_mu, dtype=float)
+    prior_mu = np.zeros(p) if prior_mu is None else np.asarray(prior_mu, dtype=float)
 
-    if prior_Lambda is None:
-        prior_Lambda = 0.01 * np.eye(p)
-    else:
-        prior_Lambda = np.asarray(prior_Lambda, dtype=float)
+    prior_Lambda = 0.01 * np.eye(p) if prior_Lambda is None else np.asarray(prior_Lambda, dtype=float)
 
     XtX = X_arr.T @ X_arr
     Xty = X_arr.T @ y_arr

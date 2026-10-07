@@ -153,4 +153,6 @@ def geron_imputation_median(X, missing_values=None, add_indicator=True):
 
 
 def cheatsheet():
-    return "hmimp: median (numeric) / mode (categorical) imputation with reusable statistics and a missingness indicator"
+    return (
+        "hmimp: median (numeric) / mode (categorical) imputation with reusable statistics and a missingness indicator"
+    )

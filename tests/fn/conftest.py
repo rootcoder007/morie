@@ -3,17 +3,21 @@
 'He who would learn to fly one day must first learn to stand and walk. — Friedrich Nietzsche'
 """
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
+import contextlib
+
 import pytest
 
-try:
-    # pytest.approx() compares nested array-likes only when numpy is
-    # loaded (it converts objects with __array__); without this the
-    # result depended on which other test had imported numpy first.
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
+
+# module-scoped fixtures shared by the MSM tests (gentmt, lggvls, polkrn, tdcvar)
+from ._msm_fixture import dose, feedback  # noqa: F401
+
+# pytest.approx() compares nested array-likes only when numpy is
+# loaded (it converts objects with __array__); without this the
+# result depended on which other test had imported numpy first.
+with contextlib.suppress(ImportError):  # pragma: no cover - numpy is a dev dependency
     import numpy  # noqa: F401
-except ImportError:  # pragma: no cover - numpy is a dev dependency
-    pass
 
 
 @pytest.fixture()
@@ -194,7 +198,6 @@ def ecg_synthetic(rng):
     return ecg, fs, r_peaks
 
 
-
 # --- Schabenberger semivariogram-fitting family (spols / spwls / spreml) ---
 # A Gaussian field drawn from a KNOWN exponential covariance, so "does the fit
 # recover the truth" is a real question with a checkable answer rather than a
@@ -212,6 +215,7 @@ def schab_truth():
 def schab_sites():
     def make(n=160, seed=7):
         return np.random.default_rng(seed).random((n, 2)) * 20.0
+
     return make
 
 
@@ -220,11 +224,11 @@ def schab_simulate():
     from morie.fn._schab_fit import covariance_matrix
 
     def make(coords, seed):
-        cov = covariance_matrix(coords, SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE,
-                                "exponential")
+        cov = covariance_matrix(coords, SCHAB_NUGGET, SCHAB_SILL, SCHAB_RANGE, "exponential")
         chol = np.linalg.cholesky(cov + 1e-10 * np.eye(coords.shape[0]))
         gen = np.random.default_rng(seed)
         return 5.0 + chol @ gen.normal(size=coords.shape[0])
+
     return make
 
 
@@ -234,7 +238,9 @@ def schab_ev():
 
     def make(coords, z, n_bins=15):
         return empirical_semivariogram(coords, z, n_bins=n_bins)
+
     return make
+
 
 # --- Schabenberger semivariogram fitting: a model-derived table -----------
 # The fit target is KNOWN because the table is built from the model itself,
@@ -250,9 +256,8 @@ SCHAB_FIT_TRUTH = (0.3, 2.0, 6.0)
 @pytest.fixture()
 def schab_fit_table():
     from morie.fn._schab_vario import semivariogram
+
     lags = np.arange(1, 13) * 0.5
-    gamma = semivariogram(lags, *SCHAB_FIT_TRUTH, "exponential") * (
-        1.0 + 0.02 * np.cos(np.arange(1, 13) * 1.0))
-    counts = np.array([40, 80, 120, 160, 200, 240,
-                       240, 200, 160, 120, 80, 40], float)
+    gamma = semivariogram(lags, *SCHAB_FIT_TRUTH, "exponential") * (1.0 + 0.02 * np.cos(np.arange(1, 13) * 1.0))
+    counts = np.array([40, 80, 120, 160, 200, 240, 240, 200, 160, 120, 80, 40], float)
     return lags, gamma, counts

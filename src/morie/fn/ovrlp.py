@@ -127,14 +127,8 @@ def overlap_coefficient(set_a, set_b) -> float:
 
         \\text{overlap}(A, B) = |A \\cap B| / \\min(|A|, |B|)
     """
-    if isinstance(set_a, np.ndarray):
-        set_a = set(np.where(set_a.ravel().astype(bool))[0])
-    else:
-        set_a = set(set_a)
-    if isinstance(set_b, np.ndarray):
-        set_b = set(np.where(set_b.ravel().astype(bool))[0])
-    else:
-        set_b = set(set_b)
+    set_a = set(np.where(set_a.ravel().astype(bool))[0]) if isinstance(set_a, np.ndarray) else set(set_a)
+    set_b = set(np.where(set_b.ravel().astype(bool))[0]) if isinstance(set_b, np.ndarray) else set(set_b)
     m = min(len(set_a), len(set_b))
     return 0.0 if m == 0 else len(set_a & set_b) / m
 

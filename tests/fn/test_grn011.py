@@ -1,7 +1,6 @@
 """Tests for grn011.geron_ch4_lasso_regression_cost_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grn011 import geron_ch4_lasso_regression_cost_function
 
 

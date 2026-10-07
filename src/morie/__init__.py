@@ -40,6 +40,73 @@ except Exception:  # noqa: BLE001 - never let this block `import morie`
 # previous eager try-import block at v0.3.0.  Edit this dict to add
 # new top-level exports instead of adding more try-imports.
 _LAZY_EXPORTS = {
+    # research programme (Lean-backed), see morie.research
+    "age_crime_aggregate": "research.selection",
+    "bounds_confidence": "research.sentence_bounds",
+    "cheeger_bound": "research.cheeger",
+    "collider_arrest": "research.selection",
+    "concentration_decompose": "research.concentration",
+    "concentration_dispersion": "research.concentration",
+    "concentration_distinct_growth": "research.concentration",
+    "concentration_gini": "research.concentration",
+    "contagion_branching": "research.contagion",
+    "contagion_extinction": "research.contagion",
+    "court_backlog": "research.court_backlog",
+    "contaminated_bounds": "research.sentence_bounds",
+    "dark_figure_bounds": "research.dark_figure",
+    "dark_figure_breakdown": "research.dark_figure",
+    "dark_figure_hierarchy": "research.dark_figure",
+    "dark_figure_three_list": "research.dark_figure",
+    "dark_figure_two_source": "research.dark_figure",
+    "detection_rate_shift": "research.recording_map",
+    "deterrence_design_check": "research.selection",
+    "deterrence_response": "research.selection",
+    "disparity_benchmark": "research.selection",
+    "disparity_decomposition": "research.disparity_decomposition",
+    "disparity_exposure_bounds": "research.selection",
+    "ecological_bounds": "research.ecological",
+    "ecological_decompose": "research.ecological",
+    "fairness_base_rate_bounds": "research.fairness_bounds",
+    "fairness_compare_groups": "research.fairness_bounds",
+    "fairness_implied_fpr": "research.fairness_bounds",
+    "fairness_rates": "research.fairness_bounds",
+    "fairness_true_rate": "research.fairness_bounds",
+    "feedback_loop_bound": "research.feedback_loop",
+    "feedback_loop_limit": "research.feedback_loop",
+    "feedback_loop_meanfield": "research.feedback_loop",
+    "feedback_loop_sim": "research.feedback_loop",
+    "feedback_loop_urn_law": "research.feedback_loop",
+    "hazard_selection": "research.fairness_bounds",
+    "incapacitation": "research.incapacitation",
+    "interracial_rates": "research.selection",
+    "judge_iv": "research.judge_iv",
+    "judge_iv_population": "research.judge_iv",
+    "logit_rescale": "research.fairness_bounds",
+    "logit_separation": "research.logit_separation",
+    "meta_dl_bias": "research.meta_pooling",
+    "backlog_censoring": "research.court_backlog",
+    "dfl_reweight": "research.disparity_decomposition",
+    "hotspot_shrinkage": "research.regression_to_mean",
+    "shrinkage_loss": "research.regression_to_mean",
+    "incapacitation_career": "research.incapacitation",
+    "judge_slope_test": "research.judge_iv",
+    "meta_hksj": "research.meta_pooling",
+    "two_point_bound": "research.lecam",
+    "meta_random_effects": "research.meta_pooling",
+    "probability_of_necessity": "research.selection",
+    "ranking_resolution": "research.fairness_bounds",
+    "recording_map": "research.recording_map",
+    "regression_to_mean": "research.regression_to_mean",
+    "relative_risk_from_or": "research.selection",
+    "selective_labels": "research.selective_labels",
+    "sentence_effect_bounds": "research.sentence_bounds",
+    "sentence_effect_mtr": "research.sentence_bounds",
+    "sentence_effect_mts": "research.sentence_bounds",
+    "spillover_effects": "research.spillover",
+    "spillover_exposure": "research.spillover",
+    "spillover_exposure_probs": "research.spillover",
+    "spillover_ht": "research.spillover",
+    "spillover_ht_variance": "research.spillover",
     "AnovaOneWayResult": "mrm_design",
     "CPADS_REQUIRED_VARIABLES": "cpads",
     "CausalDesignResult": "mrm_design",
@@ -508,15 +575,6 @@ __all__ = [
 ]
 
 
-# Fail-silent, daily-cached check for a newer morie release on PyPI.
-# The import hot path only reads a small cache file; any network
-# request runs in a background daemon thread.  This is how an existing
-# user on an older version is told a new one exists.  Opt out with the
-# MORIE_NO_UPDATE_CHECK environment variable.
-try:
-    from ._update_check import maybe_notify as _maybe_notify
-
-    _maybe_notify(__version__)
-    del _maybe_notify
-except Exception:
-    pass
+# The daily check for a newer release on PyPI runs from the command line
+# (morie.runner.main), not on import: a library import never touches the
+# network. Opt out with the MORIE_NO_UPDATE_CHECK environment variable.

@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.ca6e2 import ca_chapter_6_equation_2
 
 

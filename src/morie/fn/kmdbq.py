@@ -42,20 +42,23 @@ def kamath_double_quantization(scales_fp32, bits=8):
     qmax = 2 ** (b - 1) - 1
     peak = float(np.max(np.abs(s)))
     if peak == 0:
-        raise ValueError("every scale is 0, so the shared constant is "
-                         "0 and the codes are undefined.")
+        raise ValueError("every scale is 0, so the shared constant is 0 and the codes are undefined.")
     c = peak / qmax
     codes = np.clip(np.round(s / c), -qmax - 1, qmax).astype(int)
     deq = codes * c
     err = np.abs(deq - s)
-    return RichResult(payload={
-        "estimate": float(err.max()),
-        "scales_int8": [int(v) for v in codes], "shared_const": c,
-        "dequantized": [float(v) for v in deq],
-        "max_abs_error": float(err.max()),
-        "bits_saved_per_block": 32 - b, "n": int(s.size),
-        "method": "double quantization of the scale constants "
-                  "(Kamath Ch 4)"})
+    return RichResult(
+        payload={
+            "estimate": float(err.max()),
+            "scales_int8": [int(v) for v in codes],
+            "shared_const": c,
+            "dequantized": [float(v) for v in deq],
+            "max_abs_error": float(err.max()),
+            "bits_saved_per_block": 32 - b,
+            "n": int(s.size),
+            "method": "double quantization of the scale constants (Kamath Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

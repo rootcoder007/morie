@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_11 import ghosal_rescal_gp
 
 
@@ -22,11 +21,11 @@ def test_gh_c11_11_basic():
     assert np.all(np.isfinite(est))
 
     # estimate equals correlation at the smallest length
-    expected_estimate = math.exp(-(h / lengths[-1]) ** 2)
+    expected_estimate = math.exp(-((h / lengths[-1]) ** 2))
     assert float(est) == expected_estimate
 
     # correlation_by_length matches the documented formula per-length
-    expected_cors = [math.exp(-(h / l) ** 2) for l in lengths]
+    expected_cors = [math.exp(-((h / ell) ** 2)) for ell in lengths]
     got_cors = [float(v) for v in result["correlation_by_length"]]
     assert len(got_cors) == len(expected_cors)
     for got, exp in zip(got_cors, expected_cors):
@@ -39,7 +38,7 @@ def test_gh_c11_11_basic():
 def test_gh_c11_11_default_args():
     """Calling with no arguments uses the documented defaults."""
     result = ghosal_rescal_gp()
-    expected = math.exp(-(0.3 / 0.25) ** 2)
+    expected = math.exp(-((0.3 / 0.25) ** 2))
     assert float(result["estimate"]) == expected
     assert len(result["correlation_by_length"]) == 3
 
@@ -50,7 +49,7 @@ def test_gh_c11_11_custom_lengths_and_h():
     h = 0.4
     result = ghosal_rescal_gp(lengths=lengths, h=h)
 
-    expected_cors = [math.exp(-(h / l) ** 2) for l in lengths]
+    expected_cors = [math.exp(-((h / ell) ** 2)) for ell in lengths]
     got_cors = [float(v) for v in result["correlation_by_length"]]
     for got, exp in zip(got_cors, expected_cors):
         assert got == exp

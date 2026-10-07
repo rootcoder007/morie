@@ -76,31 +76,35 @@ def causal_iv_instrumental_dag(y, D, Z, homogeneous=False):
     n1, n0 = int(z1.sum()), int(z0.sum())
     sd = np.sqrt(Dv[z1].var(ddof=1) / n1 + Dv[z0].var(ddof=1) / n0)
     tstat = o["first_stage"] / sd if sd > 0 else np.inf
-    return RichResult(payload={
-        "beta": o["late"], "se": o["se"],
-        "estimand": ("the average treatment effect, under the asserted "
-                     "constant effect" if homogeneous else
-                     "the compliers' average effect; NOT the population ATE "
-                     "unless effects are constant"),
-        "homogeneous_asserted": bool(homogeneous),
-        "relevance": o["first_stage"],
-        "relevance_t": float(tstat),
-        "relevance_p": float(2 * stats.norm.sf(abs(tstat))),
-        "assumptions": {
-            "relevance": "Z moves D",
-            "exclusion": "no arrow Z -> Y except through D",
-            "exchangeability": "no common cause of Z and Y",
-            "homogeneity_or_monotonicity":
-                "constant effects gives the ATE; otherwise monotonicity "
-                "gives the compliers' effect"},
-        "testable": ["relevance"],
-        "untestable": ["exclusion", "exchangeability",
-                       "homogeneity", "monotonicity"],
-        "same_number_as_late": "identical arithmetic to causal_iv_late; only "
-                               "the assumption set and hence the estimand "
-                               "differ",
-        "n": o["n"],
-        "method": "Wald / IV estimator under a Z -> D -> Y graph"})
+    return RichResult(
+        payload={
+            "beta": o["late"],
+            "se": o["se"],
+            "estimand": (
+                "the average treatment effect, under the asserted constant effect"
+                if homogeneous
+                else "the compliers' average effect; NOT the population ATE unless effects are constant"
+            ),
+            "homogeneous_asserted": bool(homogeneous),
+            "relevance": o["first_stage"],
+            "relevance_t": float(tstat),
+            "relevance_p": float(2 * stats.norm.sf(abs(tstat))),
+            "assumptions": {
+                "relevance": "Z moves D",
+                "exclusion": "no arrow Z -> Y except through D",
+                "exchangeability": "no common cause of Z and Y",
+                "homogeneity_or_monotonicity": "constant effects gives the ATE; otherwise monotonicity "
+                "gives the compliers' effect",
+            },
+            "testable": ["relevance"],
+            "untestable": ["exclusion", "exchangeability", "homogeneity", "monotonicity"],
+            "same_number_as_late": "identical arithmetic to causal_iv_late; only "
+            "the assumption set and hence the estimand "
+            "differ",
+            "n": o["n"],
+            "method": "Wald / IV estimator under a Z -> D -> Y graph",
+        }
+    )
 
 
 def cheatsheet():

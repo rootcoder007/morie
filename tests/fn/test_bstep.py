@@ -1,7 +1,6 @@
 """Tests for morie.fn.bstep -- Bayesian change-point."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bstep import bayesian_changepoint
 
 

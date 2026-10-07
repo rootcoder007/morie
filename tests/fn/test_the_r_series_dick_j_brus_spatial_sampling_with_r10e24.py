@@ -4,11 +4,11 @@ Brus (2022), Spatial Sampling with R, eq. (10.24), the heteroscedastic through-t
 recomputed from the formula in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e24 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_24
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e24 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_24,
+)
 
 
 def test_through_the_origin_model_prediction_and_variance():

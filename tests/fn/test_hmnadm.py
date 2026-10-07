@@ -1,7 +1,6 @@
 """Tests for hmnadm.geron_nadam."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmnadm import geron_nadam
 
 

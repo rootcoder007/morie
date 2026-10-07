@@ -61,15 +61,9 @@ def klgrd(
     x = np.linspace(x_range[0], x_range[1], n_x)
     dx = x[1] - x[0]
 
-    if initial_phi is None:
-        phi0 = np.exp(-(x**2) / 2.0)
-    else:
-        phi0 = np.array([initial_phi(xi) for xi in x])
+    phi0 = np.exp(-(x**2) / 2.0) if initial_phi is None else np.array([initial_phi(xi) for xi in x])
 
-    if initial_dphi_dt is None:
-        dphi0 = np.zeros(n_x)
-    else:
-        dphi0 = np.array([initial_dphi_dt(xi) for xi in x])
+    dphi0 = np.zeros(n_x) if initial_dphi_dt is None else np.array([initial_dphi_dt(xi) for xi in x])
 
     mass_term = (m * c / hbar) ** 2
 

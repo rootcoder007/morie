@@ -19,9 +19,16 @@ Two facts drive most of what follows.
 
 from . import _array_core as np
 
-__all__ = ["dp_predictive", "stick_breaking", "predictive_recursion",
-           "polya_tree_density", "hellinger", "minimax_rate",
-           "dyadic_bins", "whittle_loglik"]
+__all__ = [
+    "dp_predictive",
+    "stick_breaking",
+    "predictive_recursion",
+    "polya_tree_density",
+    "hellinger",
+    "minimax_rate",
+    "dyadic_bins",
+    "whittle_loglik",
+]
 
 
 def dp_predictive(x, alpha=1.0, g0=None, grid=None):
@@ -44,10 +51,8 @@ def dp_predictive(x, alpha=1.0, g0=None, grid=None):
     if a <= 0:
         raise ValueError(f"alpha must be positive, got {a}.")
     vals, counts = np.unique(xv, return_counts=True)
-    g = np.linspace(xv.min() - 3, xv.max() + 3, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
-    base = (np.exp(-0.5 * g**2) / np.sqrt(2 * np.pi)) if g0 is None else \
-        np.asarray([float(g0(v)) for v in g])
+    g = np.linspace(xv.min() - 3, xv.max() + 3, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    base = (np.exp(-0.5 * g**2) / np.sqrt(2 * np.pi)) if g0 is None else np.asarray([float(g0(v)) for v in g])
     return {
         "grid": g,
         "base_weight": a / (a + n),
@@ -68,7 +73,7 @@ def stick_breaking(alpha, K, rng):
     if K < 1:
         raise ValueError(f"K must be at least 1, got {K}.")
     v = rng.beta(1.0, float(alpha), size=K)
-    v[-1] = 1.0                              # truncation: close the stick
+    v[-1] = 1.0  # truncation: close the stick
     w = v * np.concatenate([[1.0], np.cumprod(1.0 - v[:-1])])
     return w
 
@@ -93,16 +98,18 @@ def predictive_recursion(x, theta_grid, kernel, f0=None, weights=None):
     xv = np.asarray(x, dtype=float).ravel()
     th = np.asarray(theta_grid, dtype=float).ravel()
     n = xv.size
-    f = np.ones(th.size) / (th.max() - th.min()) if f0 is None else \
-        np.asarray(f0, dtype=float).ravel()
+    f = np.ones(th.size) / (th.max() - th.min()) if f0 is None else np.asarray(f0, dtype=float).ravel()
     if f.size != th.size:
         raise ValueError("f0 must match theta_grid.")
     # (i + 2)^{-2/3}, not (i + 1)^{-2/3}: the latter starts at w = 1,
     # which replaces the initial estimate outright instead of forming
     # a convex combination with it, and is outside the (0, 1) the
     # convergence conditions require
-    w = np.array([(i + 2.0) ** (-2.0 / 3.0) for i in range(n)]) \
-        if weights is None else np.asarray(weights, dtype=float).ravel()
+    w = (
+        np.array([(i + 2.0) ** (-2.0 / 3.0) for i in range(n)])
+        if weights is None
+        else np.asarray(weights, dtype=float).ravel()
+    )
     if w.size != n:
         raise ValueError(f"weights has {w.size} entries for {n} observations.")
     if np.any((w <= 0) | (w >= 1)):
@@ -154,8 +161,7 @@ def polya_tree_density(x, grid, levels=6, a_fn=None, lo=None, hi=None):
         edges = dyadic_bins(lev, a0, a1)
         counts, _ = np.histogram(xv, bins=edges)
         am = a(lev)
-        idx = np.clip(np.searchsorted(edges, g, side="right") - 1,
-                      0, 2 ** lev - 1)
+        idx = np.clip(np.searchsorted(edges, g, side="right") - 1, 0, 2**lev - 1)
         # the split probability at each node, from Beta conjugacy
         left = counts[0::2]
         right = counts[1::2]
@@ -178,7 +184,7 @@ def hellinger(p, q, grid):
     pv = np.clip(np.asarray(p, dtype=float), 0, None)
     qv = np.clip(np.asarray(q, dtype=float), 0, None)
     g = np.asarray(grid, dtype=float)
-    return float(np.sqrt(0.5 * np.trapezoid((np.sqrt(pv) - np.sqrt(qv))**2, g)))
+    return float(np.sqrt(0.5 * np.trapezoid((np.sqrt(pv) - np.sqrt(qv)) ** 2, g)))
 
 
 def minimax_rate(n, s, d=1):

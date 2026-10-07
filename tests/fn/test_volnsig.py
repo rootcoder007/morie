@@ -1,8 +1,8 @@
 """Tests for volnsig."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volnsig import vol_nelson_skew_garch
 
 

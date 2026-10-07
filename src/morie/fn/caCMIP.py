@@ -9,8 +9,7 @@ __all__ = ["caCMIP", "cmip_ensemble", "cmipensemble"]
 
 def _rms(a, b):
     n = len(a)
-    return math.sqrt(sum((float(x) - float(y)) ** 2
-                         for x, y in zip(a, b)) / n)
+    return math.sqrt(sum((float(x) - float(y)) ** 2 for x, y in zip(a, b)) / n)
 
 
 def caCMIP(models, obs, sigma_d, sigma_s, projections=None):
@@ -89,24 +88,25 @@ def caCMIP(models, obs, sigma_d, sigma_s, projections=None):
             s[i][j] = s[j][i] = _rms(mods[i], mods[j])
     w = []
     for i in range(m_count):
-        num = math.exp(-d[i] ** 2 / sd ** 2)
-        den = 1.0 + sum(math.exp(-s[i][j] ** 2 / ss ** 2)
-                        for j in range(m_count) if j != i)
+        num = math.exp(-(d[i] ** 2) / sd**2)
+        den = 1.0 + sum(math.exp(-(s[i][j] ** 2) / ss**2) for j in range(m_count) if j != i)
         w.append(num / den)
     tot = sum(w)
     if tot <= 0:
         raise ValueError("all weights vanished; increase sigma_d")
     w = [x / tot for x in w]
     est = sum(wi * xi for wi, xi in zip(w, proj))
-    return RichResult(payload={
-        "estimate": est,
-        "weights": w,
-        "unweighted_mean": sum(proj) / m_count,
-        "d": d,
-        "n_models": m_count,
-        "effective_n": 1.0 / sum(x * x for x in w),
-        "method": "Knutti et al. (2017) Eq. 1 weighting",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "weights": w,
+            "unweighted_mean": sum(proj) / m_count,
+            "d": d,
+            "n_models": m_count,
+            "effective_n": 1.0 / sum(x * x for x in w),
+            "method": "Knutti et al. (2017) Eq. 1 weighting",
+        }
+    )
 
 
 def cmip_ensemble(models, weights):
@@ -119,10 +119,13 @@ def cmip_ensemble(models, weights):
     if tot <= 0:
         raise ValueError("weights must sum to a positive value")
     est = sum(w * x for w, x in zip(ws, mods)) / tot
-    return RichResult(payload={
-        "estimate": est, "n": len(mods),
-        "method": "weighted ensemble mean",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "n": len(mods),
+            "method": "weighted ensemble mean",
+        }
+    )
 
 
 # compact alias per ledger/NAMING.md

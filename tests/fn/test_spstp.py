@@ -1,8 +1,8 @@
 """spstp -- spatio-temporal point processes, Schabenberger & Gotway Sec. 9.5."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spstp import schabenberger_st_point_process
 
 REGION = (0.0, 10.0, 0.0, 10.0)
@@ -39,8 +39,7 @@ def test_dispersion_index_is_exactly_the_book_formula():
     arithmetic directly.
     """
     pts, tt = _poisson(600)
-    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       n_space_bins=3, n_time_bins=3)
+    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt, n_space_bins=3, n_time_bins=3)
     counts = np.asarray(r["cell_counts"], dtype=float).ravel()
     m = counts.size
     exact = (m - 1) * counts.var(ddof=1) / counts.mean()
@@ -58,8 +57,7 @@ def test_cstr_not_rejected_for_a_poisson_pattern():
 
 def test_cstr_rejected_for_a_clustered_pattern():
     rs = np.random.RandomState(3)
-    pts = np.vstack([rs.normal(2.0, 0.4, size=(300, 2)),
-                     rs.normal(8.0, 0.4, size=(300, 2))]).clip(0, 10)
+    pts = np.vstack([rs.normal(2.0, 0.4, size=(300, 2)), rs.normal(8.0, 0.4, size=(300, 2))]).clip(0, 10)
     tt = rs.uniform(0, 5, 600)
     r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt)
     assert r["p_value"] < 1e-6
@@ -68,33 +66,28 @@ def test_cstr_rejected_for_a_clustered_pattern():
 def test_marginals_integrate_back_to_n():
     """eqs (9.21) and (9.22)."""
     pts, tt = _poisson(600)
-    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       n_space_bins=4, n_time_bins=4)
+    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt, n_space_bins=4, n_time_bins=4)
     assert (r["marginal_spatial"].sum() * r["cell_area"]) == pytest.approx(600.0)
-    assert (r["marginal_temporal"].sum()
-            * r["time_bin_width"]) == pytest.approx(600.0)
+    assert (r["marginal_temporal"].sum() * r["time_bin_width"]) == pytest.approx(600.0)
 
 
 def test_earthquake_process_carries_the_conditional_intensity_caveat():
     """Sec. 9.5.2: for an earthquake process lambda(s|t), lambda(t|s) are not meaningful."""
     pts, tt = _poisson(200)
-    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       process_type="earthquake")
+    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt, process_type="earthquake")
     assert "conditional_note" in r
 
 
 def test_birth_death_carries_the_identifiability_caveat():
     """Sec. 9.5.1: indistinguishable from a pattern sampled in time."""
     pts, tt = _poisson(200)
-    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       process_type="birth_death")
+    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt, process_type="birth_death")
     assert "identifiability_note" in r
 
 
 def test_low_cell_count_is_flagged_for_power():
     pts, tt = _poisson(200)
-    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       n_space_bins=2, n_time_bins=2)
+    r = schabenberger_st_point_process(pts, REGION, SPAN, times=tt, n_space_bins=2, n_time_bins=2)
     assert "power_note" in r
 
 
@@ -107,5 +100,4 @@ def test_missing_times_rejected():
 def test_unknown_process_type_rejected():
     pts, tt = _poisson(50)
     with pytest.raises(ValueError, match="process_type"):
-        schabenberger_st_point_process(pts, REGION, SPAN, times=tt,
-                                       process_type="wildfire")
+        schabenberger_st_point_process(pts, REGION, SPAN, times=tt, process_type="wildfire")

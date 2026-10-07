@@ -60,7 +60,7 @@ def crisk(
 
     unique_times = np.unique(t_sorted)
     n_times = len(unique_times)
-    z = _stats.norm.ppf(1 - alpha / 2)
+    _stats.norm.ppf(1 - alpha / 2)
 
     # Overall KM survival (all event types as events)
     S = np.ones(n_times + 1)  # S[0] = 1 (before first time)

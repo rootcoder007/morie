@@ -1,7 +1,6 @@
 """Tests for esldct.esl_decision_tree."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esldct import esl_decision_tree
 
 

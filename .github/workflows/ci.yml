@@ -250,6 +250,9 @@ jobs:
         # find function". R CMD check runs a package's tests inside
         # its namespace; parent the test env on the namespace so
         # this job matches.
-        # test_dir() without package= cannot start parallel workers
-        # (Config/testthat/parallel), so this job runs serially.
-        run: Rscript -e "Sys.setenv(TESTTHAT_PARALLEL = 'FALSE'); library(morie); testthat::test_dir('r-package/morie/tests/testthat', env = new.env(parent = asNamespace('morie')), stop_on_failure = TRUE)"
+        # package = "morie" with load_package = "installed" runs the tests in the
+        # namespace and marks morie as the package under test, which
+        # local_mocked_bindings() needs to find the bindings it replaces
+        # (a bare env = new.env(parent = asNamespace('morie')) errored with
+        # "No packages loaded with pkgload"). Serial, as before.
+        run: Rscript -e "Sys.setenv(TESTTHAT_PARALLEL = 'FALSE'); testthat::test_dir('r-package/morie/tests/testthat', package = 'morie', load_package = 'installed', stop_on_failure = TRUE)"

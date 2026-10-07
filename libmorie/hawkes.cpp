@@ -15,6 +15,13 @@
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/tuple.h>
+#include <nanobind/stl/vector.h>
+
+#include <stdexcept>
+#include <tuple>
+#include <utility>
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -24,6 +31,79 @@ namespace {
 using Vec = nb::ndarray<const double, nb::ndim<1>, nb::c_contig>;
 using CVec =
     nb::ndarray<const std::complex<double>, nb::ndim<1>, nb::c_contig>;
+
+// negative log-likelihood and its analytic gradient for any (baseline, kernel,
+// method); see morie::core::hawkes_nll_grad. Returns (nll, [gradient]).
+std::pair<double, std::vector<double>> hawkes_nll_grad(Vec t, double T, int bkind, std::vector<double> a, double eta,
+                                                       int kind, std::vector<double> psi, int method, double eps,
+                                                       double soe_R, double soe_delta, bool want_grad) {
+    const int nb = morie::core::hawkes_baseline_n(bkind);
+    const int np = kind == 0 ? 1 : 2;
+    if (static_cast<int>(a.size()) != nb || static_cast<int>(psi.size()) != np)
+        throw std::invalid_argument("hawkes_nll_grad: wrong number of baseline or kernel parameters");
+    std::vector<double> g(want_grad ? nb + 1 + np : 0);
+    const double nll = morie::core::hawkes_nll_grad(t.data(), t.shape(0), T, bkind, a.data(), eta, kind, psi.data(),
+                                                    method, eps, soe_R, soe_delta, want_grad ? g.data() : nullptr);
+    return {nll, g};
+}
+
+// time-rescaling residuals of a fitted process (morie::core::hawkes_rescaled)
+std::vector<double> hawkes_rescaled(Vec t, double T, int bkind, std::vector<double> a, double eta, int kind,
+                                    std::vector<double> psi) {
+    if (static_cast<int>(a.size()) != morie::core::hawkes_baseline_n(bkind) ||
+        static_cast<int>(psi.size()) != (kind == 0 ? 1 : 2))
+        throw std::invalid_argument("hawkes_rescaled: wrong number of baseline or kernel parameters");
+    std::vector<double> U(t.shape(0));
+    morie::core::hawkes_rescaled(t.data(), t.shape(0), T, bkind, a.data(), eta, kind, psi.data(), U.data());
+    return U;
+}
+
+// the intensity at each event (the E-step of EM)
+std::vector<double> hawkes_intensity(Vec t, double T, int bkind, std::vector<double> a, double eta, int kind,
+                                     std::vector<double> psi) {
+    if (static_cast<int>(a.size()) != morie::core::hawkes_baseline_n(bkind) ||
+        static_cast<int>(psi.size()) != (kind == 0 ? 1 : 2))
+        throw std::invalid_argument("hawkes_intensity: wrong number of baseline or kernel parameters");
+    std::vector<double> lam(t.shape(0));
+    morie::core::hawkes_intensity(t.data(), t.shape(0), T, bkind, a.data(), eta, kind, psi.data(), lam.data());
+    return lam;
+}
+
+// the kernel part of the EM objective for psi_new with the old weights: (Q, P, dQ/dpsi)
+std::tuple<double, double, std::vector<double>> hawkes_em_pass(Vec t, Vec lam_old, double eta_old, int kind,
+                                                              std::vector<double> psi_old,
+                                                              std::vector<double> psi_new) {
+    const std::size_t np = kind == 0 ? 1 : 2;
+    if (psi_old.size() != np || psi_new.size() != np || lam_old.shape(0) != t.shape(0))
+        throw std::invalid_argument("hawkes_em_pass: wrong argument sizes");
+    double P = 0.0, dQ[2] = {0.0, 0.0};
+    const double Q = morie::core::hawkes_em_pass(t.data(), t.shape(0), lam_old.data(), eta_old, kind, psi_old.data(),
+                                                 psi_new.data(), &P, dQ);
+    return {Q, P, std::vector<double>(dQ, dQ + np)};
+}
+
+// sum_j G(T - t_j; psi) and its gradient (morie::core::hawkes_cdf_sum)
+std::pair<double, std::vector<double>> hawkes_cdf_sum(Vec t, double T, int kind, std::vector<double> psi) {
+    const std::size_t np = kind == 0 ? 1 : 2;
+    if (psi.size() != np) throw std::invalid_argument("hawkes_cdf_sum: wrong number of kernel parameters");
+    double g[2] = {0.0, 0.0};
+    const double S = morie::core::hawkes_cdf_sum(t.data(), t.shape(0), T, kind, psi.data(), g);
+    return {S, std::vector<double>(g, g + np)};
+}
+
+// the whole fit: projected BFGS from x0 within [lo, hi] (morie::core::hawkes_fit_pbfgs)
+std::tuple<std::vector<double>, double, int> hawkes_fit_pbfgs(Vec t, double T, int bkind, int kind, int method,
+                                                              double eps, double soe_R, double soe_delta,
+                                                              std::vector<double> lo, std::vector<double> hi,
+                                                              std::vector<double> x0, int maxiter, double gtol) {
+    const std::size_t d = static_cast<std::size_t>(morie::core::hawkes_baseline_n(bkind) + 1 + (kind == 0 ? 1 : 2));
+    if (lo.size() != d || hi.size() != d || x0.size() != d)
+        throw std::invalid_argument("hawkes_fit_pbfgs: wrong number of parameters");
+    int it = 0;
+    const double f = morie::core::hawkes_fit_pbfgs(t.data(), t.shape(0), T, bkind, kind, method, eps, soe_R,
+                                                   soe_delta, lo.data(), hi.data(), x0.data(), maxiter, gtol, &it);
+    return {x0, f, it};
+}
 
 double hawkes_ll_exp_const(Vec t, double T, double a0, double eta,
                            double beta) {
@@ -150,6 +230,22 @@ double hawkes_ll_gamma_hybrid_ri(Vec t, double T, double a0, double eta,
 }  // namespace
 
 void register_hawkes(nb::module_ &m) {
+    m.def("hawkes_intensity", &hawkes_intensity, "t"_a, "T"_a, "bkind"_a, "a"_a, "eta"_a, "kind"_a, "psi"_a,
+          "Hawkes intensity at each event (morie::core::hawkes_intensity).");
+    m.def("hawkes_em_pass", &hawkes_em_pass, "t"_a, "lam_old"_a, "eta_old"_a, "kind"_a, "psi_old"_a, "psi_new"_a,
+          "Kernel part of the Hawkes EM objective (morie::core::hawkes_em_pass): (Q, P, dQ/dpsi).");
+    m.def("hawkes_cdf_sum", &hawkes_cdf_sum, "t"_a, "T"_a, "kind"_a, "psi"_a,
+          "sum_j G(T - t_j; psi) and its gradient (morie::core::hawkes_cdf_sum).");
+    m.def("ks_pkolmogorov_exact", &morie::core::ks_pkolmogorov_exact, "n"_a, "d"_a,
+          "Exact P(D_n < d), one-sample Kolmogorov-Smirnov (Marsaglia, Tsang & Wang 2003).");
+    m.def("hawkes_fit_pbfgs", &hawkes_fit_pbfgs, "t"_a, "T"_a, "bkind"_a, "kind"_a, "method"_a, "eps"_a,
+          "soe_R"_a, "soe_delta"_a, "lo"_a, "hi"_a, "x0"_a, "maxiter"_a = 2000, "gtol"_a = 1e-6,
+          "Hawkes MLE by projected BFGS in C++ (morie::core::hawkes_fit_pbfgs): (theta, nll, iterations).");
+    m.def("hawkes_rescaled", &hawkes_rescaled, "t"_a, "T"_a, "bkind"_a, "a"_a, "eta"_a, "kind"_a, "psi"_a,
+          "Time-rescaling residuals of a fitted Hawkes process (morie::core::hawkes_rescaled).");
+    m.def("hawkes_nll_grad", &hawkes_nll_grad, "t"_a, "T"_a, "bkind"_a, "a"_a, "eta"_a, "kind"_a, "psi"_a,
+          "method"_a = 0, "eps"_a = 1e-9, "soe_R"_a = 0.0, "soe_delta"_a = 0.0, "want_grad"_a = true,
+          "Hawkes negative log-likelihood and its analytic gradient (morie::core::hawkes_nll_grad).");
     m.def("hawkes_ll_exp_const", &hawkes_ll_exp_const, "t"_a, "T"_a,
           "a0"_a, "eta"_a, "beta"_a,
           "Hawkes negative log-likelihood -- exponential triggering "

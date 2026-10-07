@@ -10,8 +10,6 @@ chapter 10 is Fundamentals of Artificial Neural Networks and Deep
 Learning, and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,14 +21,18 @@ def mvsml_reproducing_kernel_eq_10_17(X, y, W, activations=None, eta=0.1, n_iter
     iterated with (10.13) over the feedforward/backward steps of the
     algorithm on p.412 until the loss stops decreasing.
     Keys: estimate."""
-    f = _gp.ann_train(X, y, W, eta=eta, n_iter=n_iter,
-                      activations=activations)
-    res = RichResult(payload={"estimate": f["loss"],
-                              "W": f["W"], "loss": f["loss"],
-                              "history": f["history"],
-                              "iterations": f["iterations"],
-                              "output": f["output"],
-                              "method": "backpropagation training (MVSML 2022 eq. 10.17)"})
+    f = _gp.ann_train(X, y, W, eta=eta, n_iter=n_iter, activations=activations)
+    res = RichResult(
+        payload={
+            "estimate": f["loss"],
+            "W": f["W"],
+            "loss": f["loss"],
+            "history": f["history"],
+            "iterations": f["iterations"],
+            "output": f["output"],
+            "method": "backpropagation training (MVSML 2022 eq. 10.17)",
+        }
+    )
     return with_describe_pointer(res, "msm255")
 
 

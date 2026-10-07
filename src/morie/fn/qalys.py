@@ -53,10 +53,7 @@ def qaly_computation(
 
     for i in range(len(dur)):
         undiscounted += dur[i] * util[i]
-        if r > 0 and dur[i] > 0:
-            disc = (1 - np.exp(-r * dur[i])) / r * np.exp(-r * cum_time)
-        else:
-            disc = dur[i]
+        disc = (1 - np.exp(-r * dur[i])) / r * np.exp(-r * cum_time) if r > 0 and dur[i] > 0 else dur[i]
         total_qaly += util[i] * disc
         cum_time += dur[i]
 

@@ -22,22 +22,21 @@ def alammar_document_embedding_pool(token_embeddings, attention_mask=None):
     [3.0]
     """
     H = np.atleast_2d(np.asarray(token_embeddings, dtype=float))
-    if attention_mask is None:
-        m = np.ones(H.shape[0])
-    else:
-        m = np.atleast_1d(np.asarray(attention_mask, dtype=float))
+    m = np.ones(H.shape[0]) if attention_mask is None else np.atleast_1d(np.asarray(attention_mask, dtype=float))
     if len(m) != H.shape[0]:
-        raise ValueError(
-            f"mask length {len(m)} does not match {H.shape[0]} tokens.")
+        raise ValueError(f"mask length {len(m)} does not match {H.shape[0]} tokens.")
     if m.sum() == 0:
-        raise ValueError("the mask excludes every token; an all-padding "
-                         "document has no embedding.")
+        raise ValueError("the mask excludes every token; an all-padding document has no embedding.")
     d = (H * m[:, None]).sum(axis=0) / m.sum()
-    return RichResult(payload={
-        "embedding": [float(v) for v in d],
-        "tokens_pooled": int(m.sum()),
-        "estimate": float(d[0]), "n": H.shape[0],
-        "method": "Masked mean pooling (Alammar Ch 8)"})
+    return RichResult(
+        payload={
+            "embedding": [float(v) for v in d],
+            "tokens_pooled": int(m.sum()),
+            "estimate": float(d[0]),
+            "n": H.shape[0],
+            "method": "Masked mean pooling (Alammar Ch 8)",
+        }
+    )
 
 
 def cheatsheet():

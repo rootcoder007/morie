@@ -26,6 +26,7 @@ def t_quantile(p, v):
     information (the old bisection inverted 1 - p, so p = 1e-15 lost every
     digit and came back 5% off R's qt)."""
     from . import _stats_core as sc
+
     if not 0.0 < p < 1.0:
         raise ValueError("p in (0,1) required")
     return float(sc.t.ppf(p, v))
@@ -55,8 +56,7 @@ def _esd(res, k, alpha, hybrid=True):
             scale = 1.4826 * _median([abs(v - ctr) for v in vals])
         else:
             ctr = sum(vals) / len(vals)
-            scale = math.sqrt(sum((v - ctr) ** 2 for v in vals)
-                              / (len(vals) - 1))
+            scale = math.sqrt(sum((v - ctr) ** 2 for v in vals) / (len(vals) - 1))
         if scale <= 0.0:
             break
         best = 0
@@ -75,7 +75,7 @@ def _esd(res, k, alpha, hybrid=True):
         stats.append(C)
         lams.append(lam)
         removed.append(idx[best])
-        if C > lam:
+        if lam < C:
             n_anom = i
         del vals[best]
         del idx[best]
@@ -84,8 +84,7 @@ def _esd(res, k, alpha, hybrid=True):
     return removed[:n_anom], stats, lams
 
 
-def ttsAn(x, period, k=None, alpha=0.05, s_window=7, hybrid=True,
-          direction="both"):
+def ttsAn(x, period, k=None, alpha=0.05, s_window=7, hybrid=True, direction="both"):
     """
     Seasonal Hybrid ESD (S-H-ESD) anomaly detection.
 
@@ -167,18 +166,20 @@ def ttsAn(x, period, k=None, alpha=0.05, s_window=7, hybrid=True,
         Ruse = R
     anoms, stats, lams = _esd(Ruse, k, alpha, hybrid=hybrid)
     anoms1 = sorted(a + 1 for a in anoms)
-    return RichResult(payload={
-        "anomalies": anoms1,
-        "n_anomalies": len(anoms1),
-        "statistics": stats,
-        "critical_values": lams,
-        "residual": R,
-        "k": k,
-        "alpha": alpha,
-        "estimate": anoms1,
-        "n": n,
-        "method": "Seasonal Hybrid ESD (Hochenbaum-Vallis-Kejariwal 2017)",
-    })
+    return RichResult(
+        payload={
+            "anomalies": anoms1,
+            "n_anomalies": len(anoms1),
+            "statistics": stats,
+            "critical_values": lams,
+            "residual": R,
+            "k": k,
+            "alpha": alpha,
+            "estimate": anoms1,
+            "n": n,
+            "method": "Seasonal Hybrid ESD (Hochenbaum-Vallis-Kejariwal 2017)",
+        }
+    )
 
 
 def twitter_anomaly(x, period, **kw):
@@ -191,6 +192,7 @@ shesd = ttsAn
 
 def cheatsheet():
     return "ttsAn(x, period) -> S-H-ESD anomalies via STL seasonal removal + robust generalised ESD"
+
 
 # public names resolved by fn/_lazy_map.json
 twitteranomaly = ttsAn

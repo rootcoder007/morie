@@ -32,7 +32,7 @@ def tucker_decompose(X, ranks=(2, 2, 2), max_iter: int = 100, tol: float = 1e-6,
     X = np.asarray(X, dtype=float)
     if X.ndim != 3:
         raise ValueError("Input must be a 3-D tensor")
-    I, J, K = X.shape
+    I_, J, K = X.shape
     R1, R2, R3 = ranks
 
     def _unfold(T, mode):

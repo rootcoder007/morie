@@ -39,10 +39,7 @@ def syndromic_score(
     cats = list(symptom_counts.keys())
     vals = np.array([float(symptom_counts[c]) for c in cats])
 
-    if weights is None:
-        w = np.ones(len(cats))
-    else:
-        w = np.array([float(weights.get(c, 1.0)) for c in cats])
+    w = np.ones(len(cats)) if weights is None else np.array([float(weights.get(c, 1.0)) for c in cats])
 
     total = float(np.sum(vals))
     weighted_sum = float(np.dot(w, vals))

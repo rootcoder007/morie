@@ -89,9 +89,19 @@ from . import _array_core as np
 from ._richresult import RichResult
 from .deseq2 import benjamini_hochberg
 
-__all__ = ["limmav", "voom", "limma_voom", "log_cpm", "lowess",
-           "voom_weights", "weighted_lm", "ebayes", "digamma",
-           "trigamma", "trigamma_inverse"]
+__all__ = [
+    "limmav",
+    "voom",
+    "limma_voom",
+    "log_cpm",
+    "lowess",
+    "voom_weights",
+    "weighted_lm",
+    "ebayes",
+    "digamma",
+    "trigamma",
+    "trigamma_inverse",
+]
 
 
 def log_cpm(counts, lib_sizes=None, prior_count=0.5, lib_offset=1.0):
@@ -99,8 +109,7 @@ def log_cpm(counts, lib_sizes=None, prior_count=0.5, lib_offset=1.0):
     :math:`\log_2((r + 0.5)/(R + 1) \times 10^6)`."""
     K = [[float(v) for v in row] for row in counts]
     if not K or not K[0]:
-        raise ValueError("limmav: counts must be a non-empty gene x sample "
-                         "matrix")
+        raise ValueError("limmav: counts must be a non-empty gene x sample matrix")
     m = len(K[0])
     for row in K:
         if len(row) != m:
@@ -115,8 +124,7 @@ def log_cpm(counts, lib_sizes=None, prior_count=0.5, lib_offset=1.0):
             raise ValueError("limmav: one library size per sample")
     if any(v <= 0 for v in R):
         raise ValueError("limmav: library sizes must be positive")
-    y = [[math.log((row[j] + prior_count) / (R[j] + lib_offset) * 1e6, 2)
-          for j in range(m)] for row in K]
+    y = [[math.log((row[j] + prior_count) / (R[j] + lib_offset) * 1e6, 2) for j in range(m)] for row in K]
     return y, R
 
 
@@ -152,7 +160,7 @@ def lowess(x, y, span=0.5, iterations=3):
             sw = sx = sy = sxx = sxy = 0.0
             for k in range(lo, hi):
                 u = abs(xs[k] - xs[i]) / d
-                w = (1.0 - u ** 3) ** 3 if u < 1.0 else 0.0
+                w = (1.0 - u**3) ** 3 if u < 1.0 else 0.0
                 w *= rw[k]
                 if w <= 0:
                     continue
@@ -195,8 +203,7 @@ def digamma(x):
         tot -= 1.0 / x
         x += 1.0
     inv2 = 1.0 / (x * x)
-    return (tot + math.log(x) - 0.5 / x -
-            inv2 * (1.0 / 12.0 - inv2 * (1.0 / 120.0 - inv2 / 252.0)))
+    return tot + math.log(x) - 0.5 / x - inv2 * (1.0 / 12.0 - inv2 * (1.0 / 120.0 - inv2 / 252.0))
 
 
 def trigamma(x):
@@ -210,9 +217,7 @@ def trigamma(x):
         x += 1.0
     inv = 1.0 / x
     inv2 = inv * inv
-    return tot + inv * (1.0 + 0.5 * inv + inv2 * (
-        1.0 / 6.0 + inv2 * (-1.0 / 30.0 + inv2 * (
-            1.0 / 42.0 - inv2 / 30.0))))
+    return tot + inv * (1.0 + 0.5 * inv + inv2 * (1.0 / 6.0 + inv2 * (-1.0 / 30.0 + inv2 * (1.0 / 42.0 - inv2 / 30.0))))
 
 
 def _tetragamma(x):
@@ -224,8 +229,7 @@ def _tetragamma(x):
         x += 1.0
     inv = 1.0 / x
     inv2 = inv * inv
-    return tot - inv2 * (1.0 + inv * (1.0 + inv2 * (
-        1.0 / 6.0 - inv2 * (1.0 / 6.0 - 3.0 * inv2 / 10.0))))
+    return tot - inv2 * (1.0 + inv * (1.0 + inv2 * (1.0 / 6.0 - inv2 * (1.0 / 6.0 - 3.0 * inv2 / 10.0))))
 
 
 def trigamma_inverse(x, tol=1e-8, max_iter=60):
@@ -274,22 +278,16 @@ def ebayes(sigma2, df, robust_floor=1e-12):
     G = len(s2)
     if G == 0:
         raise ValueError("limmav: no variances to moderate")
-    dg = [float(df)] * G if not isinstance(df, (list, tuple)) else \
-        [float(v) for v in df]
+    dg = [float(df)] * G if not isinstance(df, (list, tuple)) else [float(v) for v in df]
     if len(dg) != G:
         raise ValueError("limmav: one degrees-of-freedom value per gene")
     use = [g for g in range(G) if s2[g] > robust_floor and dg[g] > 0]
     if not use:
-        raise ValueError("limmav: every gene has zero variance or zero "
-                         "degrees of freedom")
-    e = [math.log(s2[g]) - digamma(dg[g] / 2.0) + math.log(dg[g] / 2.0)
-         for g in use]
+        raise ValueError("limmav: every gene has zero variance or zero degrees of freedom")
+    e = [math.log(s2[g]) - digamma(dg[g] / 2.0) + math.log(dg[g] / 2.0) for g in use]
     ebar = sum(e) / len(e)
     n = len(e)
-    if n > 1:
-        target = sum((v - ebar) ** 2 for v in e) * n / (n - 1.0) / n
-    else:
-        target = 0.0
+    target = sum((v - ebar) ** 2 for v in e) * n / (n - 1.0) / n if n > 1 else 0.0
     target -= sum(trigamma(dg[g] / 2.0) for g in use) / len(use)
     if target <= 0.0:
         # "there is no evidence that the underlying variances vary between
@@ -297,16 +295,17 @@ def ebayes(sigma2, df, robust_floor=1e-12):
         d0 = float("inf")
         s0_sq = math.exp(ebar)
         post = [s0_sq] * G
-        return {"d0": d0, "s0_sq": s0_sq, "s2_post": post,
-                "df_total": [float("inf")] * G,
-                "no_gene_variation": True}
+        return {"d0": d0, "s0_sq": s0_sq, "s2_post": post, "df_total": [float("inf")] * G, "no_gene_variation": True}
     d0 = 2.0 * trigamma_inverse(target)
     s0_sq = math.exp(ebar + digamma(d0 / 2.0) - math.log(d0 / 2.0))
-    post = [(d0 * s0_sq + dg[g] * s2[g]) / (d0 + dg[g])
-            if dg[g] > 0 else s0_sq for g in range(G)]
-    return {"d0": d0, "s0_sq": s0_sq, "s2_post": post,
-            "df_total": [dg[g] + d0 for g in range(G)],
-            "no_gene_variation": False}
+    post = [(d0 * s0_sq + dg[g] * s2[g]) / (d0 + dg[g]) if dg[g] > 0 else s0_sq for g in range(G)]
+    return {
+        "d0": d0,
+        "s0_sq": s0_sq,
+        "s2_post": post,
+        "df_total": [dg[g] + d0 for g in range(G)],
+        "no_gene_variation": False,
+    }
 
 
 def _ols(X, y, w=None):
@@ -314,17 +313,13 @@ def _ols(X, y, w=None):
     n = len(y)
     p = len(X[0])
     ww = [1.0] * n if w is None else list(w)
-    M = [[sum(ww[i] * X[i][a] * X[i][b] for i in range(n))
-          for b in range(p)] for a in range(p)]
+    M = [[sum(ww[i] * X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     v = [sum(ww[i] * X[i][a] * y[i] for i in range(n)) for a in range(p)]
     try:
-        beta = [float(t) for t in
-                np.linalg.solve(np.asarray(M, dtype=float),
-                                np.asarray(v, dtype=float))]
-        inv = [[float(t) for t in row] for row in
-               np.linalg.inv(np.asarray(M, dtype=float))]
-    except Exception:
-        raise ValueError("limmav: the design matrix is singular")
+        beta = [float(t) for t in np.linalg.solve(np.asarray(M, dtype=float), np.asarray(v, dtype=float))]
+        inv = [[float(t) for t in row] for row in np.linalg.inv(np.asarray(M, dtype=float))]
+    except Exception as exc:
+        raise ValueError("limmav: the design matrix is singular") from exc
     fit = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
     df = n - p
     if df <= 0:
@@ -344,8 +339,7 @@ def voom_weights(counts, design, lib_sizes=None, span=0.5):
     G, m = len(y), len(y[0])
     X = [[float(t) for t in row] for row in design]
     if len(X) != m:
-        raise ValueError("limmav: the design has %d rows but there are %d "
-                         "samples" % (len(X), m))
+        raise ValueError(f"limmav: the design has {int(len(X))} rows but there are {int(m)} samples")
     # step 1: OLS per gene
     fitted, sds, means = [], [], []
     for g in range(G):
@@ -388,11 +382,18 @@ def voom_weights(counts, design, lib_sizes=None, span=0.5):
         for i in range(m):
             lam = fitted[g][i] + math.log(R[i] + 1.0, 2) - math.log(1e6, 2)
             s = lo(lam)
-            row.append(1.0 / (s ** 4) if s > 0 else 0.0)
+            row.append(1.0 / (s**4) if s > 0 else 0.0)
         W.append(row)
-    return {"log_cpm": y, "weights": W, "mean_log_count": r_tilde,
-            "sqrt_sd": sqrt_sd, "trend_x": kx, "trend_y": ky,
-            "lib_sizes": R, "lo": lo}
+    return {
+        "log_cpm": y,
+        "weights": W,
+        "mean_log_count": r_tilde,
+        "sqrt_sd": sqrt_sd,
+        "trend_x": kx,
+        "trend_y": ky,
+        "lib_sizes": R,
+        "lo": lo,
+    }
 
 
 def weighted_lm(y, X, w, contrast):
@@ -406,8 +407,7 @@ def weighted_lm(y, X, w, contrast):
     beta, fit, sd, inv, df = _ols(X, y, w)
     p = len(X[0])
     est = sum(contrast[a] * beta[a] for a in range(p))
-    v_un = sum(contrast[a] * inv[a][b] * contrast[b]
-               for a in range(p) for b in range(p))
+    v_un = sum(contrast[a] * inv[a][b] * contrast[b] for a in range(p) for b in range(p))
     var = v_un * sd * sd
     se = math.sqrt(max(var, 0.0))
     t = est / se if se > 0 else 0.0
@@ -451,8 +451,11 @@ def _t_sf(t, df):
         return h
 
     a, b = 0.5 * df, 0.5
-    lbeta = (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) +
-             a * math.log(x) + b * math.log(1.0 - x)) if 0 < x < 1 else None
+    lbeta = (
+        (math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + a * math.log(x) + b * math.log(1.0 - x))
+        if 0 < x < 1
+        else None
+    )
     if lbeta is None:
         return 1.0 if x >= 1 else 0.0
     if x < (a + 1.0) / (a + b + 2.0):
@@ -460,8 +463,7 @@ def _t_sf(t, df):
     return 1.0 - math.exp(lbeta) * betacf(b, a, 1.0 - x) / b
 
 
-def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
-           weights=True, moderate=True):
+def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5, weights=True, moderate=True):
     r"""voom-weighted differential expression.
 
     Parameters
@@ -517,23 +519,19 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
                 levels.append(lab)
         if len(levels) < 2:
             raise ValueError("limmav: the design has only one group")
-        X = [[1.0] + [1.0 if lab == lv else 0.0 for lv in levels[1:]]
-             for lab in design]
+        X = [[1.0] + [1.0 if lab == lv else 0.0 for lv in levels[1:]] for lab in design]
     v = voom_weights(counts, X, lib_sizes, span)
     y, W = v["log_cpm"], v["weights"]
     G, m = len(y), len(y[0])
     p = len(X[0])
-    c = ([0.0] * (p - 1) + [1.0]) if contrast is None else \
-        [float(t) for t in contrast]
+    c = ([0.0] * (p - 1) + [1.0]) if contrast is None else [float(t) for t in contrast]
     if len(c) != p:
-        raise ValueError("limmav: the contrast must have one entry per "
-                         "coefficient (%d)" % p)
+        raise ValueError(f"limmav: the contrast must have one entry per coefficient ({int(p)})")
     est, se, tt, pv = [], [], [], []
     sd2, vun = [], []
     df = m - p
     for g in range(G):
-        e, s, t, df, sdev, v_un = weighted_lm(y[g], X,
-                                              W[g] if weights else None, c)
+        e, s, t, df, sdev, v_un = weighted_lm(y[g], X, W[g] if weights else None, c)
         est.append(e)
         se.append(s)
         tt.append(t)
@@ -551,57 +549,62 @@ def limmav(counts, design, contrast=None, lib_sizes=None, span=0.5,
             dtot = eb["df_total"][g]
             se.append(se_g)
             tt.append(t_g)
-            pv.append(_t_sf(t_g, dtot) if dtot != float("inf")
-                      else math.erfc(abs(t_g) / math.sqrt(2.0)))
+            pv.append(_t_sf(t_g, dtot) if dtot != float("inf") else math.erfc(abs(t_g) / math.sqrt(2.0)))
     padj = benjamini_hochberg(pv)
-    return RichResult(payload={
-        "estimate": est,
-        "log_fold_change": est,
-        "se": se,
-        "t": tt,
-        "pvalue": pv,
-        "padj": padj,
-        "df": df,
-        "df_total": None if eb is None else eb["df_total"],
-        "d0": None if eb is None else eb["d0"],
-        "s0_sq": None if eb is None else eb["s0_sq"],
-        "s2_gene": sd2,
-        "s2_post": None if eb is None else eb["s2_post"],
-        "moderated": bool(moderate),
-        "voom_weights": W,
-        "log_cpm": y,
-        "mean_log_count": v["mean_log_count"],
-        "sqrt_sd": v["sqrt_sd"],
-        "trend_x": v["trend_x"],
-        "trend_y": v["trend_y"],
-        "lib_sizes": v["lib_sizes"],
-        "weighted": bool(weights),
-        "n_genes": G,
-        "n_samples": m,
-        "note": ("moderated t: gene-wise variances shrunk toward s0^2 on "
-                 "d0 prior degrees of freedom and tested on d_g + d0 "
-                 "(Smyth 2004)" if moderate else
-                 "moderate=False: ordinary weighted-least-squares "
-                 "t-statistics, no empirical Bayes"),
-        "method": "voom precision weights (Law, Chen, Shi & Smyth 2014)",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "log_fold_change": est,
+            "se": se,
+            "t": tt,
+            "pvalue": pv,
+            "padj": padj,
+            "df": df,
+            "df_total": None if eb is None else eb["df_total"],
+            "d0": None if eb is None else eb["d0"],
+            "s0_sq": None if eb is None else eb["s0_sq"],
+            "s2_gene": sd2,
+            "s2_post": None if eb is None else eb["s2_post"],
+            "moderated": bool(moderate),
+            "voom_weights": W,
+            "log_cpm": y,
+            "mean_log_count": v["mean_log_count"],
+            "sqrt_sd": v["sqrt_sd"],
+            "trend_x": v["trend_x"],
+            "trend_y": v["trend_y"],
+            "lib_sizes": v["lib_sizes"],
+            "weighted": bool(weights),
+            "n_genes": G,
+            "n_samples": m,
+            "note": (
+                "moderated t: gene-wise variances shrunk toward s0^2 on "
+                "d0 prior degrees of freedom and tested on d_g + d0 "
+                "(Smyth 2004)"
+                if moderate
+                else "moderate=False: ordinary weighted-least-squares t-statistics, no empirical Bayes"
+            ),
+            "method": "voom precision weights (Law, Chen, Shi & Smyth 2014)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("limmav: voom (Law, Chen, Shi & Smyth 2014). log-cpm = "
-            "log2((r + 0.5)/(R + 1) * 1e6) -- 0.5 keeps the log finite and "
-            "tames low counts, 1 keeps the ratio below 1. Fit by OLS, take "
-            "the residual SDs, LOWESS sqrt(s) against mean log-count "
-            "(square roots because they are symmetric), read the curve as "
-            "a piecewise linear lo(), map each FITTED log-cpm to a fitted "
-            "log-count, and the weight is lo()^-4 -- an inverse variance, "
-            "per OBSERVATION not per gene, because libraries differ in "
-            "depth. Then Smyth (2004) empirical Bayes: s~^2 = (d0 s0^2 + "
-            "d_g s_g^2)/(d0 + d_g), t~ = beta/(s~ sqrt(v)), tested on "
-            "d_g + d0 degrees of freedom, with d0 and s0^2 from matching "
-            "the first two moments of log s_g^2. d0 = 0 gives back the "
-            "ordinary t; d0 = infinity gives a statistic proportional to "
-            "beta.")
+    return (
+        "limmav: voom (Law, Chen, Shi & Smyth 2014). log-cpm = "
+        "log2((r + 0.5)/(R + 1) * 1e6) -- 0.5 keeps the log finite and "
+        "tames low counts, 1 keeps the ratio below 1. Fit by OLS, take "
+        "the residual SDs, LOWESS sqrt(s) against mean log-count "
+        "(square roots because they are symmetric), read the curve as "
+        "a piecewise linear lo(), map each FITTED log-cpm to a fitted "
+        "log-count, and the weight is lo()^-4 -- an inverse variance, "
+        "per OBSERVATION not per gene, because libraries differ in "
+        "depth. Then Smyth (2004) empirical Bayes: s~^2 = (d0 s0^2 + "
+        "d_g s_g^2)/(d0 + d_g), t~ = beta/(s~ sqrt(v)), tested on "
+        "d_g + d0 degrees of freedom, with d0 and s0^2 from matching "
+        "the first two moments of log s_g^2. d0 = 0 gives back the "
+        "ordinary t; d0 = infinity gives a statistic proportional to "
+        "beta."
+    )
 
 
 # compact aliases

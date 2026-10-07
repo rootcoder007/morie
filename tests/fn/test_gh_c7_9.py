@@ -1,7 +1,5 @@
 """Tests for gh_c7_9.ghosal_linreg_unk_err."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c7_9 import ghosal_linreg_unk_err
 
 

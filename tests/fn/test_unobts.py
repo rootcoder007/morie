@@ -1,7 +1,6 @@
 """Tests for unobts.unobserved_components."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.unobts import unobserved_components
 
 

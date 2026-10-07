@@ -24,5 +24,3 @@ def test_jocqr_edge():
     r = joseph_conformalized_quantile_regression([0.0, 1.0], [1.0, 2.0], [0.5, 1.5], [0.0], [1.0], alpha=0.1)
     assert r["k"] == 3 and r["qhat"] == math.inf
     assert r["lower"] == [-math.inf] and r["upper"] == [math.inf]
-
-

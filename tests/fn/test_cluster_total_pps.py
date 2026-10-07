@@ -24,6 +24,6 @@ def test_cluster_total_pps_is_the_scaled_sum_of_cluster_means():
 
 def test_cluster_total_pps_rejects_bad_input():
     with pytest.raises(ValueError):
-        cluster_total_pps([1.0, 2.0], [1.0, 0.0], 10.0, 2)   # zero size
+        cluster_total_pps([1.0, 2.0], [1.0, 0.0], 10.0, 2)  # zero size
     with pytest.raises(ValueError):
-        cluster_total_pps([1.0, 2.0], [1.0, 2.0], 10.0, 3)   # n /= sample
+        cluster_total_pps([1.0, 2.0], [1.0, 2.0], 10.0, 3)  # n /= sample

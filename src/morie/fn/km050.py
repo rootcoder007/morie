@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 3.9: the round-trip (back-translation) prompt score."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch3_back_translation_prob"]
@@ -15,8 +14,7 @@ def _prob(v, name):
     return v
 
 
-def kamath_ch3_back_translation_prob(t, thatt, p_forward=None,
-                                     p_backward=None):
+def kamath_ch3_back_translation_prob(t, thatt, p_forward=None, p_backward=None):
     """P(t) = P_forward(t_hat|t) . P_backward(t|t_hat): the round-trip
     probability used to rank paraphrased prompt candidates.
 
@@ -44,14 +42,21 @@ def kamath_ch3_back_translation_prob(t, thatt, p_forward=None,
     """
     if p_forward is None or p_backward is None:
         raise ValueError(
-            "both p_forward and p_backward are required; Eq 3.9 is a "
-            "product of two supplied leg probabilities.")
+            "both p_forward and p_backward are required; Eq 3.9 is a product of two supplied leg probabilities."
+        )
     pf = _prob(p_forward, "p_forward")
     pb = _prob(p_backward, "p_backward")
-    return RichResult(payload={
-        "estimate": pf * pb, "p_forward": pf, "p_backward": pb,
-        "candidate": t, "pivot": thatt, "n": 2,
-        "method": "round-trip back-translation score (Kamath Eq 3.9)"})
+    return RichResult(
+        payload={
+            "estimate": pf * pb,
+            "p_forward": pf,
+            "p_backward": pb,
+            "candidate": t,
+            "pivot": thatt,
+            "n": 2,
+            "method": "round-trip back-translation score (Kamath Eq 3.9)",
+        }
+    )
 
 
 def cheatsheet():

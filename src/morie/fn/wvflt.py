@@ -75,7 +75,7 @@ def wavelet_filter(
         up_d = np.zeros(2 * len(cd))
         up_d[::2] = cd
         rec = np.convolve(up_a, lo_r, mode="full") + np.convolve(up_d, hi_r, mode="full")
-        target = approxs.pop()
+        approxs.pop()
         rec = rec[: len(approxs[-1])] if approxs else rec[:N]
     filtered = rec[:N]
 

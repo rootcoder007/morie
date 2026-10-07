@@ -172,13 +172,21 @@ def per_region_rollup(*, tps_total_by_year: pd.Series | None = None) -> RichResu
         for y in otis_total.index:
             t_val = tps.get(y, None)
             ratio = float(otis_total[y]) / float(t_val) if t_val not in (None, 0) else float("nan")
-            rows.append([int(y), int(otis_total[y]), None if t_val is None else int(t_val),
-                         None if ratio != ratio else round(ratio, 4)])
-        out.tables.append({
-            "title": "OTIS placements vs TPS incidents by year:",
-            "headers": ["Year", "OTIS placements", "TPS incidents", "OTIS / TPS"],
-            "rows": rows,
-        })
+            rows.append(
+                [
+                    int(y),
+                    int(otis_total[y]),
+                    None if t_val is None else int(t_val),
+                    None if ratio != ratio else round(ratio, 4),
+                ]
+            )
+        out.tables.append(
+            {
+                "title": "OTIS placements vs TPS incidents by year:",
+                "headers": ["Year", "OTIS placements", "TPS incidents", "OTIS / TPS"],
+                "rows": rows,
+            }
+        )
         out.payload["otis_per_tps_incident"] = {int(y): r[3] for y, r in zip(otis_total.index, rows)}
     return out
 
@@ -192,6 +200,15 @@ def composite_overlay(*, sample_rows: int | None = 30_000) -> RichResult:
 
 
 def analyze_all(out_dir: Path | None = None, *, sample_rows: int | None = 30_000) -> dict[str, RichResult]:
+    """Run the OTIS x TPS overlay analyses (regional roll-up, year-over-year correlation) and write each as text and JSON.
+
+    Args:
+        out_dir: output directory (created if needed); ``None`` uses the default.
+        sample_rows: TPS rows sampled for the correlation; ``None`` uses all.
+
+    Returns:
+        Results keyed by analysis name; a failed analysis carries its error as a warning.
+    """
     out_dir = out_dir or DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, RichResult] = {}

@@ -57,8 +57,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["design_matrix", "free_wilson", "predict_activity",
-           "CONSTRAINTS"]
+__all__ = ["design_matrix", "free_wilson", "predict_activity", "CONSTRAINTS"]
 
 CONSTRAINTS = ("reference", "sum_zero")
 
@@ -69,14 +68,12 @@ def _prep(compounds, activity):
         C.append(tuple(str(g) for g in row))
     y = [float(v) for v in activity]
     if len(C) != len(y):
-        raise ValueError("frwil: %d compounds but %d activities"
-                         % (len(C), len(y)))
+        raise ValueError(f"frwil: {int(len(C))} compounds but {int(len(y))} activities")
     if not C:
         raise ValueError("frwil: no compounds given")
     k = len(C[0])
     if k == 0 or any(len(r) != k for r in C):
-        raise ValueError("frwil: every compound must list a group for "
-                         "the same number of positions")
+        raise ValueError("frwil: every compound must list a group for the same number of positions")
     return C, y, k
 
 
@@ -86,8 +83,7 @@ def design_matrix(compounds, constraint="reference"):
     Returns the matrix, the column names, and the group inventory.
     """
     if constraint not in CONSTRAINTS:
-        raise ValueError("frwil: constraint must be one of %s, got %r"
-                         % (", ".join(CONSTRAINTS), constraint))
+        raise ValueError("frwil: constraint must be one of {}, got {!r}".format(", ".join(CONSTRAINTS), constraint))
     C = [tuple(str(g) for g in row) for row in compounds]
     if not C:
         raise ValueError("frwil: no compounds given")
@@ -99,18 +95,16 @@ def design_matrix(compounds, constraint="reference"):
             if row[p] not in seen:
                 seen.append(row[p])
         if len(seen) < 2:
-            raise ValueError("frwil: position %d has only the group "
-                             "%r, so its contribution cannot be "
-                             "separated from the intercept"
-                             % (p + 1, seen[0]))
+            raise ValueError(
+                f"frwil: position {int(p + 1)} has only the group {seen[0]!r}, so its contribution cannot be separated from the intercept"
+            )
         groups.append(seen)
     names = ["intercept"]
     cols = []
     for p in range(k):
-        keep = groups[p][1:] if constraint == "reference" \
-            else groups[p]
+        keep = groups[p][1:] if constraint == "reference" else groups[p]
         for g in keep:
-            names.append("P%d:%s" % (p + 1, g))
+            names.append(f"P{int(p + 1)}:{g}")
             cols.append((p, g))
     M = []
     for row in C:
@@ -118,27 +112,32 @@ def design_matrix(compounds, constraint="reference"):
         for p, g in cols:
             r.append(1.0 if row[p] == g else 0.0)
         M.append(r)
-    return {"matrix": M, "names": names, "groups": groups,
-            "columns": cols, "constraint": constraint,
-            "n_positions": k,
-            "reference": [g[0] for g in groups]}
+    return {
+        "matrix": M,
+        "names": names,
+        "groups": groups,
+        "columns": cols,
+        "constraint": constraint,
+        "n_positions": k,
+        "reference": [g[0] for g in groups],
+    }
 
 
 def _lstsq(M, y, ridge=0.0):
     """Normal equations by Gauss-Jordan; ridge only breaks ties."""
     n, p = len(M), len(M[0])
-    A = [[sum(M[i][a] * M[i][b] for i in range(n))
-          + (ridge if a == b else 0.0) for b in range(p)]
-         for a in range(p)]
+    A = [[sum(M[i][a] * M[i][b] for i in range(n)) + (ridge if a == b else 0.0) for b in range(p)] for a in range(p)]
     b = [sum(M[i][a] * y[i] for i in range(n)) for a in range(p)]
     Ab = [A[i] + [b[i]] for i in range(p)]
     for c in range(p):
         piv = max(range(c, p), key=lambda r: abs(Ab[r][c]))
         if abs(Ab[piv][c]) < 1e-10:
-            raise ValueError("frwil: the design is rank deficient "
-                             "even after the constraint -- some "
-                             "group appears in no compound that "
-                             "distinguishes it")
+            raise ValueError(
+                "frwil: the design is rank deficient "
+                "even after the constraint -- some "
+                "group appears in no compound that "
+                "distinguishes it"
+            )
         Ab[c], Ab[piv] = Ab[piv], Ab[c]
         for r in range(p):
             if r == c:
@@ -165,54 +164,58 @@ def free_wilson(compounds, activity, constraint="reference"):
             M = M + [row]
             y = y + [0.0]
         beta = _lstsq(M, y)
-        fitted = [sum(D["matrix"][i][j] * beta[j]
-                      for j in range(len(beta)))
-                  for i in range(len(C))]
+        fitted = [sum(D["matrix"][i][j] * beta[j] for j in range(len(beta))) for i in range(len(C))]
     else:
         beta = _lstsq(M, y)
-        fitted = [sum(M[i][j] * beta[j] for j in range(len(beta)))
-                  for i in range(len(C))]
+        fitted = [sum(M[i][j] * beta[j] for j in range(len(beta))) for i in range(len(C))]
     resid = [y[i] - fitted[i] for i in range(len(C))]
-    mu = sum(y[:len(C)]) / len(C)
-    sst = sum((v - mu) ** 2 for v in y[:len(C)])
+    mu = sum(y[: len(C)]) / len(C)
+    sst = sum((v - mu) ** 2 for v in y[: len(C)])
     sse = sum(r * r for r in resid)
     p_eff = len(beta) - (k if constraint == "sum_zero" else 0)
     df = len(C) - p_eff
     counts = {}
     for j, (pp, g) in enumerate(D["columns"], start=1):
         counts[names[j]] = sum(1 for r in C if r[pp] == g)
-    return RichResult(payload={
-        "estimate": dict(zip(names, beta)),
-        "coefficients": dict(zip(names, beta)),
-        "names": names, "beta": beta,
-        "fitted": fitted, "residuals": resid,
-        "rss": sse, "tss": sst,
-        "r_squared": 1.0 - sse / sst if sst > 0 else float("nan"),
-        "sigma": math.sqrt(sse / df) if df > 0 else float("nan"),
-        "df_residual": df, "n_parameters": p_eff,
-        "occurrences": counts,
-        "groups": D["groups"], "reference": D["reference"],
-        "constraint": constraint, "n_positions": k,
-        "method": "Free & Wilson (1964) additive substituent model, "
-                  "%s constraint" % constraint,
-    })
+    return RichResult(
+        payload={
+            "estimate": dict(zip(names, beta)),
+            "coefficients": dict(zip(names, beta)),
+            "names": names,
+            "beta": beta,
+            "fitted": fitted,
+            "residuals": resid,
+            "rss": sse,
+            "tss": sst,
+            "r_squared": 1.0 - sse / sst if sst > 0 else float("nan"),
+            "sigma": math.sqrt(sse / df) if df > 0 else float("nan"),
+            "df_residual": df,
+            "n_parameters": p_eff,
+            "occurrences": counts,
+            "groups": D["groups"],
+            "reference": D["reference"],
+            "constraint": constraint,
+            "n_positions": k,
+            "method": f"Free & Wilson (1964) additive substituent model, {constraint} constraint",
+        }
+    )
 
 
 def predict_activity(fit, compound):
     r"""Predicted activity of a compound, made or unmade."""
     row = tuple(str(g) for g in compound)
     if len(row) != fit["n_positions"]:
-        raise ValueError("frwil: the compound lists %d positions but "
-                         "the model has %d"
-                         % (len(row), fit["n_positions"]))
+        raise ValueError(
+            "frwil: the compound lists {} positions but the model has {}".format(int(len(row)), int(fit["n_positions"]))
+        )
     coef = fit["coefficients"]
     total = coef["intercept"]
     for p, g in enumerate(row):
         if g not in fit["groups"][p]:
-            raise ValueError("frwil: group %r was never observed at "
-                             "position %d, so the model says nothing "
-                             "about it" % (g, p + 1))
-        key = "P%d:%s" % (p + 1, g)
+            raise ValueError(
+                f"frwil: group {g!r} was never observed at position {int(p + 1)}, so the model says nothing about it"
+            )
+        key = f"P{int(p + 1)}:{g}"
         total += coef.get(key, 0.0)
     return total
 

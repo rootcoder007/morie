@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.mvecv import min_volume_ellipsoid
 
 
@@ -17,10 +16,7 @@ def test_mvecv_basic():
     h = 50  # must exceed p = q + 1 = 4
     result = min_volume_ellipsoid(y, X, h)
     # RichResult may be dict-like or expose the payload via an attribute
-    if hasattr(result, "payload"):
-        data = result.payload
-    else:
-        data = result
+    data = result.payload if hasattr(result, "payload") else result
     assert "estimate" in data
     assert "coef" in data
     assert "intercept" in data
@@ -51,10 +47,7 @@ def test_mvecv_edge():
     X = rng.normal(0, 1, (n, q))
     # use the default h
     result = min_volume_ellipsoid(y, X)
-    if hasattr(result, "payload"):
-        data = result.payload
-    else:
-        data = result
+    data = result.payload if hasattr(result, "payload") else result
     assert "estimate" in data
     assert "coef" in data
     assert "intercept" in data

@@ -1,7 +1,6 @@
 """Tests for ragRet.rag_retrieval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ragRet import rag_retrieval
 
 

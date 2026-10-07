@@ -1,7 +1,6 @@
 """Tests for sgdmom.sgd_momentum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgdmom import sgd_momentum
 
 

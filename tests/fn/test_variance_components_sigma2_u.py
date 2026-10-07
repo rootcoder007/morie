@@ -1,7 +1,5 @@
 """Tests for variance_components_sigma2_u.variance_components_sigma2_u."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.variance_components_sigma2_u import variance_components_sigma2_u
 
 

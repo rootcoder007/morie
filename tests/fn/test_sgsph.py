@@ -1,7 +1,6 @@
 """Tests for spherical variogram."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgsph import sgsph
 
 

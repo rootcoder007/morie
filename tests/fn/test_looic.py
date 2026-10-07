@@ -1,7 +1,6 @@
 """Tests for morie.fn.looic -- LOO-IC."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.looic import compute_loo
 
 

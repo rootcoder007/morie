@@ -44,18 +44,24 @@ def zscore_anomaly(x, k, ddof=1):
     mu = sum(v) / n
     den = n - int(ddof)
     sd = math.sqrt(sum((t - mu) ** 2 for t in v) / den) if den > 0 else 0.0
-    if sd > 0:
-        z = [abs(t - mu) / sd for t in v]
-    else:
-        z = [0.0] * n
+    z = [abs(t - mu) / sd for t in v] if sd > 0 else [0.0] * n
     flags = [t > kk for t in z]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(1 for t in flags if t)), "z": z,
-        "flags": flags,
-        "indices": [i for i in range(n) if flags[i]],
-        "mean": float(mu), "sd": float(sd), "k": kk, "n": n,
-        "method": "z-score anomaly flagging",
-    }), "zscoreA")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(1 for t in flags if t)),
+                "z": z,
+                "flags": flags,
+                "indices": [i for i in range(n) if flags[i]],
+                "mean": float(mu),
+                "sd": float(sd),
+                "k": kk,
+                "n": n,
+                "method": "z-score anomaly flagging",
+            }
+        ),
+        "zscoreA",
+    )
 
 
 def cheatsheet():

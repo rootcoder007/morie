@@ -1,7 +1,6 @@
 """Tests for icc2.icc_two_way_random."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.icc2 import icc_two_way_random
 
 

@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Test lsf_to_ar (ls2ar)."""
 
 from morie.fn._containers import DescriptiveResult

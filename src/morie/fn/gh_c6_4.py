@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_df_inconsist"]
@@ -23,11 +22,10 @@ def ghosal_df_inconsist(n=400, seed=42):
     DP-marginal urn likelihood decays faster than phi's iid
     likelihood on thick-tailed data. Keys: estimate."""
     rng = np.random.default_rng(seed)
-    phi_raw = [1.0 / (i * math.log(i + 1.0) ** 2)
-               for i in range(2, 40)]
+    phi_raw = [1.0 / (i * math.log(i + 1.0) ** 2) for i in range(2, 40)]
     tot = sum(phi_raw)
     phi = [v / tot for v in phi_raw]
-    theta0 = phi[:]                       # truth = phi here: odds grow
+    theta0 = phi[:]  # truth = phi here: odds grow
     data = []
     for _ in range(n):
         u = float(rng.uniform(0, 1))
@@ -47,13 +45,16 @@ def ghosal_df_inconsist(n=400, seed=42):
     ll_dp = 0.0
     for j, x in enumerate(data):
         a_x = 2.0 ** (-(x + 1))
-        ll_dp += math.log((a_x + counts.get(x, 0))
-                          / (M_tot + j))
+        ll_dp += math.log((a_x + counts.get(x, 0)) / (M_tot + j))
         counts[x] = counts.get(x, 0) + 1
-    log_odds = ll_phi - ll_dp             # prior odds 1:1
-    res = RichResult(payload={"estimate": log_odds,
-                              "delta_component_wins": log_odds > 0,
-                              "method": "DF inconsistency mechanism (GvdV 2017 Ex 6.13)"})
+    log_odds = ll_phi - ll_dp  # prior odds 1:1
+    res = RichResult(
+        payload={
+            "estimate": log_odds,
+            "delta_component_wins": log_odds > 0,
+            "method": "DF inconsistency mechanism (GvdV 2017 Ex 6.13)",
+        }
+    )
     return with_describe_pointer(res, "gh_c6_4")
 
 

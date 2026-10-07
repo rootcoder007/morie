@@ -1,7 +1,6 @@
 """Tests for morie.fn.cstgv — custody grievance rate."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cstgv import custody_grievance_rate
 
 

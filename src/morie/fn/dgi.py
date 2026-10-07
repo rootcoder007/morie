@@ -59,8 +59,7 @@ def dgi(G, X, encoder=None, seed=42):
     rng = np.random.default_rng(seed)
     if encoder is None:
         d = min(f, 4)
-        Wm = [[float(rng.normal(0.0, 1.0)) / math.sqrt(f) for _ in range(d)]
-              for _ in range(f)]
+        Wm = [[float(rng.normal(0.0, 1.0)) / math.sqrt(f) for _ in range(d)] for _ in range(f)]
         M = [[0.0] * d for _ in range(d)]
     else:
         Wm = core.mat(encoder)
@@ -73,10 +72,8 @@ def dgi(G, X, encoder=None, seed=42):
         H = []
         for i in range(n):
             deg = sum(A[i]) or 1.0
-            agg = [sum(A[i][j] * F[j][t] for j in range(n)) / deg
-                   for t in range(f)]
-            H.append([core.sigmoid(sum(agg[t] * Wm[t][c] for t in range(f)))
-                      for c in range(d)])
+            agg = [sum(A[i][j] * F[j][t] for j in range(n)) / deg for t in range(f)]
+            H.append([core.sigmoid(sum(agg[t] * Wm[t][c] for t in range(f))) for c in range(d)])
         return H
 
     H = propagate(Xm)
@@ -92,25 +89,24 @@ def dgi(G, X, encoder=None, seed=42):
     s = [core.sigmoid(sum(H[i][c] for i in range(n)) / n) for c in range(d)]
     pos, neg = [], []
     for i in range(n):
-        a = sum(H[i][c] * sum(M[c][b] * s[b] for b in range(d))
-                for c in range(d))
-        b = sum(Hc[i][c] * sum(M[c][b2] * s[b2] for b2 in range(d))
-                for c in range(d))
+        a = sum(H[i][c] * sum(M[c][b] * s[b] for b in range(d)) for c in range(d))
+        b = sum(Hc[i][c] * sum(M[c][b2] * s[b2] for b2 in range(d)) for c in range(d))
         pos.append(core.sigmoid(a))
         neg.append(core.sigmoid(b))
-    loss = -(sum(math.log(v + 1e-300) for v in pos)
-             + sum(math.log(1.0 - v + 1e-300) for v in neg)) / (2.0 * n)
-    return RichResult(payload={
-        "estimate": loss,
-        "loss": loss,
-        "h": H,
-        "s": s,
-        "pos_score": pos,
-        "neg_score": neg,
-        "n": n,
-        "d": d,
-        "method": "Deep Graph Infomax objective",
-    })
+    loss = -(sum(math.log(v + 1e-300) for v in pos) + sum(math.log(1.0 - v + 1e-300) for v in neg)) / (2.0 * n)
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "h": H,
+            "s": s,
+            "pos_score": pos,
+            "neg_score": neg,
+            "n": n,
+            "d": d,
+            "method": "Deep Graph Infomax objective",
+        }
+    )
 
 
 def cheatsheet():

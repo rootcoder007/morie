@@ -48,22 +48,26 @@ def kamath_temperature_sampling(logits, T):
         raise ValueError("logits must be finite.")
     if T <= 0:
         raise ValueError(
-            f"the temperature must be positive; got {T}. T -> 0 is "
-            "greedy decoding (argmax), not a temperature.")
+            f"the temperature must be positive; got {T}. T -> 0 is greedy decoding (argmax), not a temperature."
+        )
     s = z / T
     s = s - s.max()
     e = np.exp(s)
     p = e / e.sum()
     nz = p[p > 0]
     entropy = float(-np.sum(nz * np.log(nz)))
-    return RichResult(payload={
-        "probabilities": [float(v) for v in p],
-        "estimate": float(p.max()),
-        "entropy": entropy,
-        "max_entropy": float(np.log(z.size)),
-        "argmax": int(np.argmax(p)),
-        "temperature": T, "n": int(z.size),
-        "method": "Temperature-scaled softmax"})
+    return RichResult(
+        payload={
+            "probabilities": [float(v) for v in p],
+            "estimate": float(p.max()),
+            "entropy": entropy,
+            "max_entropy": float(np.log(z.size)),
+            "argmax": int(np.argmax(p)),
+            "temperature": T,
+            "n": int(z.size),
+            "method": "Temperature-scaled softmax",
+        }
+    )
 
 
 def cheatsheet():

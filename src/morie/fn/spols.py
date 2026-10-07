@@ -44,17 +44,23 @@ def schabenberger_ols_variogram(empirical_variogram, variogram_model="exponentia
     Schabenberger Ch 4, Sec 4.5.1
     """
     lags, ghat, counts = as_empirical_variogram(empirical_variogram)
-    nugget, sill, rng, obj, ok = fit_semivariogram(
-        lags, ghat, counts, model=variogram_model, kind="ols")
+    nugget, sill, rng, obj, ok = fit_semivariogram(lags, ghat, counts, model=variogram_model, kind="ols")
     fitted = semivariogram(lags, nugget, sill, rng, variogram_model)
     return RichResult(
         title="OLS semivariogram fit",
-        summary_lines=[("nugget", nugget), ("partial sill", sill),
-                       ("range", rng), ("residual sum of squares", obj)],
-        payload={"nugget": nugget, "partial_sill": sill, "sill": nugget + sill,
-                 "range": rng, "objective": obj, "converged": ok,
-                 "n_lags": int(np.size(lags)), "fitted": fitted,
-                 "model": variogram_model, "method": "ordinary least squares"},
+        summary_lines=[("nugget", nugget), ("partial sill", sill), ("range", rng), ("residual sum of squares", obj)],
+        payload={
+            "nugget": nugget,
+            "partial_sill": sill,
+            "sill": nugget + sill,
+            "range": rng,
+            "objective": obj,
+            "converged": ok,
+            "n_lags": int(np.size(lags)),
+            "fitted": fitted,
+            "model": variogram_model,
+            "method": "ordinary least squares",
+        },
     )
 
 

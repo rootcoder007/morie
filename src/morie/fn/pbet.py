@@ -32,10 +32,7 @@ def pbeta(
     if beta <= 0:
         raise ValueError(f"beta must be > 0, got {beta}.")
     dist = stats.beta(a=alpha, b=beta)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

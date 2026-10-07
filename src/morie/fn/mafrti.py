@@ -70,9 +70,14 @@ def ma_freeman_tukey_inverse(ft, n_harmonic):
             p = 1.0
             clamped += 1
         out.append(p)
-    return RichResult(payload={
-        "p": out[0] if scalar else out, "n_harmonic": n, "clamped": clamped,
-        "method": "Freeman-Tukey double arcsine back-transformation"})
+    return RichResult(
+        payload={
+            "p": out[0] if scalar else out,
+            "n_harmonic": n,
+            "clamped": clamped,
+            "method": "Freeman-Tukey double arcsine back-transformation",
+        }
+    )
 
 
 def cheatsheet():

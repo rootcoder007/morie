@@ -8,8 +8,7 @@ from ._schaben import matheron
 __all__ = ["schabenberger_matheron_estimator"]
 
 
-def schabenberger_matheron_estimator(coords, z, lag_bins=None, cutoff=None,
-                                     exact=False):
+def schabenberger_matheron_estimator(coords, z, lag_bins=None, cutoff=None, exact=False):
     r"""The classical semivariogram estimator, Schabenberger eq (4.24).
 
     .. math::
@@ -82,10 +81,9 @@ def schabenberger_matheron_estimator(coords, z, lag_bins=None, cutoff=None,
             ),
             "sparse_lags": sparse,
             "sparse_note": (
-                None if not sparse else
-                "%d lag class(es) have fewer than 30 pairs; the book advises "
-                "at least 30 and preferably 50 before reading a lag"
-                % len(sparse)
+                None
+                if not sparse
+                else f"{int(len(sparse))} lag class(es) have fewer than 30 pairs; the book advises at least 30 and preferably 50 before reading a lag"
             ),
             "n": int(np.asarray(z).size),
             "method": "Matheron classical semivariogram estimator",
@@ -95,6 +93,5 @@ def schabenberger_matheron_estimator(coords, z, lag_bins=None, cutoff=None,
 
 def cheatsheet():
     return (
-        "spmath: Matheron's semivariogram (4.24) with the (4.25) variance "
-        "and a flag on lag classes too sparse to read"
+        "spmath: Matheron's semivariogram (4.24) with the (4.25) variance and a flag on lag classes too sparse to read"
     )

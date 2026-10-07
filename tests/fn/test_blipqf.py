@@ -11,13 +11,11 @@ PATCHES = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 # head width 2; WV widens the value to 4
 WQ = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
 WK = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]
-WV = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0],
-      [1.0, 1.0, 1.0]]
+WV = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0, 1.0]]
 
 
 def _proj(W, x):
-    return [sum(W[o][j] * x[j] for j in range(len(x)))
-            for o in range(len(W))]
+    return [sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
 
 
 def _attend(Q, F, wq, wk, wv):
@@ -26,16 +24,14 @@ def _attend(Q, F, wq, wk, wv):
     out, wts = [], []
     for q in Q:
         qq = _proj(wq, q)
-        sc = [sum(a * b for a, b in zip(qq, _proj(wk, f))) / math.sqrt(dk)
-              for f in F]
+        sc = [sum(a * b for a, b in zip(qq, _proj(wk, f))) / math.sqrt(dk) for f in F]
         mx = max(sc)
         e = [math.exp(v - mx) for v in sc]
         z = sum(e)
         w = [v / z for v in e]
         vs = [_proj(wv, f) for f in F]
         wts.append(w)
-        out.append([sum(w[j] * vs[j][a] for j in range(len(F)))
-                    for a in range(len(vs[0]))])
+        out.append([sum(w[j] * vs[j][a] for j in range(len(F))) for a in range(len(vs[0]))])
     return out, wts
 
 

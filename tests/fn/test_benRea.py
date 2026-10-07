@@ -1,15 +1,22 @@
 """Tests for benRea. Full anchor: ledger/wave3/anchor_nlp_family.py."""
+
 import pytest
-from morie.fn.benRea import (bio_labels, extract_spans, greedy_decode,
-                             is_valid_bio, ner_decode, span_f1,
-                             valid_transitions, viterbi_decode)
+
+from morie.fn.benRea import (
+    bio_labels,
+    extract_spans,
+    greedy_decode,
+    is_valid_bio,
+    ner_decode,
+    span_f1,
+    valid_transitions,
+    viterbi_decode,
+)
 
 LABS = ["O", "B-PER", "I-PER", "B-LOC", "I-LOC"]
 # token 0 most wants O and token 1 most wants I-PER, so the greedy
 # reading is invalid
-EM = [[5.0, 0.0, 0.0, 0.0, 0.0],
-      [0.0, 1.0, 4.0, 0.0, 0.0],
-      [3.0, 0.0, 0.0, 0.0, 0.0]]
+EM = [[5.0, 0.0, 0.0, 0.0, 0.0], [0.0, 1.0, 4.0, 0.0, 0.0], [3.0, 0.0, 0.0, 0.0, 0.0]]
 
 
 def test_the_label_set_and_transition_rules():
@@ -36,8 +43,7 @@ def test_viterbi_is_valid_where_greedy_is_not():
 
 
 def test_spans_need_the_type_and_both_boundaries():
-    assert extract_spans(["B-PER", "I-PER", "O", "B-LOC"]) == [
-        ("PER", 0, 1), ("LOC", 3, 3)]
+    assert extract_spans(["B-PER", "I-PER", "O", "B-LOC"]) == [("PER", 0, 1), ("LOC", 3, 3)]
     f = span_f1(["B-PER", "I-PER", "O"], ["B-PER", "O", "O"])
     assert f["f1"] == 0.0
     assert f["true_positives"] == 0

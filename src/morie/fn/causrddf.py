@@ -9,8 +9,7 @@ from .causrddh import ik_bandwidth
 __all__ = ["causrddf", "rdd_fuzzy", "causal_rdd_fuzzy"]
 
 
-def rdd_fuzzy(x, y, treat, cutoff=0.0, h=None, h_treat=None,
-              kernel="triangular"):
+def rdd_fuzzy(x, y, treat, cutoff=0.0, h=None, h_treat=None, kernel="triangular"):
     r"""Fuzzy regression-discontinuity estimate (ratio of jumps).
 
     In the fuzzy design the treatment probability, not the treatment
@@ -97,30 +96,30 @@ def rdd_fuzzy(x, y, treat, cutoff=0.0, h=None, h_treat=None,
     ty = float(fy["estimate"])
     tw = float(fw["estimate"])
     if abs(tw) < 1e-12:
-        raise ValueError("no first-stage discontinuity: the treatment "
-                         "jump at the cutoff is numerically zero")
+        raise ValueError("no first-stage discontinuity: the treatment jump at the cutoff is numerically zero")
     tau = ty / tw
-    se = float(np.sqrt((fy["se"] ** 2 + tau ** 2 * fw["se"] ** 2)
-                       / tw ** 2))
+    se = float(np.sqrt((fy["se"] ** 2 + tau**2 * fw["se"] ** 2) / tw**2))
     z = 1.959963984540054
-    return RichResult(payload={
-        "estimate": float(tau),
-        "se": se,
-        "ci": (tau - z * se, tau + z * se),
-        "jump_outcome": ty,
-        "jump_treatment": tw,
-        "se_outcome": float(fy["se"]),
-        "se_treatment": float(fw["se"]),
-        "h_outcome": float(h),
-        "h_treatment": float(h_treat),
-        "kernel": kernel,
-        "sharp_outcome": dict(fy),
-        "sharp_treatment": dict(fw),
-        "se_note": ("delta method with independent jumps; the "
-                    "Imbens-Lemieux covariance term is omitted and "
-                    "documented"),
-        "method": "fuzzy RDD, Wald ratio of local linear jumps",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(tau),
+            "se": se,
+            "ci": (tau - z * se, tau + z * se),
+            "jump_outcome": ty,
+            "jump_treatment": tw,
+            "se_outcome": float(fy["se"]),
+            "se_treatment": float(fw["se"]),
+            "h_outcome": float(h),
+            "h_treatment": float(h_treat),
+            "kernel": kernel,
+            "sharp_outcome": dict(fy),
+            "sharp_treatment": dict(fw),
+            "se_note": (
+                "delta method with independent jumps; the Imbens-Lemieux covariance term is omitted and documented"
+            ),
+            "method": "fuzzy RDD, Wald ratio of local linear jumps",
+        }
+    )
 
 
 # primary name = module name; stub-era long name kept as alias.
@@ -129,9 +128,12 @@ causal_rdd_fuzzy = rdd_fuzzy
 
 
 def cheatsheet():
-    return ("causrddf: fuzzy RDD tau = (outcome jump)/(treatment jump), "
-            "one-sided local linear fits, separate IK bandwidths; "
-            "reduces to the sharp estimate when the first stage is sharp")
+    return (
+        "causrddf: fuzzy RDD tau = (outcome jump)/(treatment jump), "
+        "one-sided local linear fits, separate IK bandwidths; "
+        "reduces to the sharp estimate when the first stage is sharp"
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 causalrddfuzzy = rdd_fuzzy

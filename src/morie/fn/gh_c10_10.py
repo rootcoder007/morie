@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_frs_poireg"]
@@ -20,8 +19,10 @@ def ghosal_frs_poireg(n=800, K=3, seed=42):
     f0(x) = 1 + 0.8 cos(pi x). Keys: estimate."""
     rng = np.random.default_rng(seed)
     xs = [float(rng.uniform(0, 1)) for _ in range(n)]
+
     def f0(x):
         return 1.0 + 0.8 * math.cos(math.pi * x)
+
     def rpois(lam):
         L = math.exp(-lam)
         k = 0
@@ -31,10 +32,12 @@ def ghosal_frs_poireg(n=800, K=3, seed=42):
             if p <= L:
                 return k
             k += 1
+
     ys = [float(rpois(math.exp(f0(x)))) for x in xs]
+
     def phi(x, k):
-        return 1.0 if k == 0 else math.sqrt(2.0) \
-            * math.cos(k * math.pi * x)
+        return 1.0 if k == 0 else math.sqrt(2.0) * math.cos(k * math.pi * x)
+
     beta = [0.0] * K
     for _ in range(200):
         grad = [0.0] * K
@@ -50,8 +53,9 @@ def ghosal_frs_poireg(n=800, K=3, seed=42):
         x = (j + 0.5) / 20
         fx = sum(b * phi(x, k) for k, b in enumerate(beta))
         err += abs(fx - f0(x)) / 20.0
-    res = RichResult(payload={"estimate": err, "beta": beta,
-                              "method": "series Poisson regression (GvdV 2017 sec. 10.4.4)"})
+    res = RichResult(
+        payload={"estimate": err, "beta": beta, "method": "series Poisson regression (GvdV 2017 sec. 10.4.4)"}
+    )
     return with_describe_pointer(res, "gh_c10_10")
 
 

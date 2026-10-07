@@ -1,7 +1,6 @@
 """Tests for aitbal.aitchison_balance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitbal import aitchison_balance
 
 

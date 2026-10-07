@@ -1,7 +1,6 @@
 """Tests for taubrg.tau_estimator_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.taubrg import tau_estimator_regression
 
 

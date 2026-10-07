@@ -42,8 +42,7 @@ from ._richresult import RichResult
 __all__ = ["dixon_test"]
 
 # (numerator offset, denominator offset) as distances from the suspect end
-_RATIOS = {10: (1, 0), 11: (1, 1), 12: (1, 2),
-           20: (2, 0), 21: (2, 1), 22: (2, 2)}
+_RATIOS = {10: (1, 0), 11: (1, 1), 12: (1, 2), 20: (2, 0), 21: (2, 1), 22: (2, 2)}
 _MIN_N = {10: 3, 11: 4, 12: 5, 20: 4, 21: 5, 22: 6}
 
 
@@ -71,8 +70,7 @@ def dixon_test(x, type=10, opposite=False):
     xs = sorted(float(v) for v in x)
     n = len(xs)
     if n < _MIN_N[type]:
-        raise ValueError("Dixon type %d needs at least %d observations"
-                         % (type, _MIN_N[type]))
+        raise ValueError(f"Dixon type {int(type)} needs at least {int(_MIN_N[type])} observations")
     num_off, den_off = _RATIOS[type]
     m = sum(xs) / n
     take_high = (xs[n - 1] - m) >= (m - xs[0])
@@ -90,13 +88,18 @@ def dixon_test(x, type=10, opposite=False):
         side = "min"
     if den == 0.0:
         raise ValueError("Dixon's denominator is zero; the ratio is undefined")
-    return RichResult(payload={
-        "statistic": float(num / den), "type": int(type),
-        "outlier": float(xs[idx]), "side": side,
-        "numerator": float(num), "denominator": float(den), "n": n,
-        "method": "Dixon (1953) ratio type %d, outliers::dixon.test; "
-                  "no p-value, the null distribution is tabulated only"
-                  % (type,)})
+    return RichResult(
+        payload={
+            "statistic": float(num / den),
+            "type": int(type),
+            "outlier": float(xs[idx]),
+            "side": side,
+            "numerator": float(num),
+            "denominator": float(den),
+            "n": n,
+            "method": f"Dixon (1953) ratio type {int(type)}, outliers::dixon.test; no p-value, the null distribution is tabulated only",
+        }
+    )
 
 
 def cheatsheet():

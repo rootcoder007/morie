@@ -1,8 +1,8 @@
 """Tests for volges."""
 
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _stats_core as stats
 from morie.fn.volges import vol_garch_es_impl
 
 

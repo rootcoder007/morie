@@ -58,7 +58,7 @@ def srmdc(
     total = concordant + discordant + tied
     c_index = (concordant + 0.5 * tied) / total if total > 0 else 0.5
 
-    risk_sorted = np.sort(risk)
+    np.sort(risk)
     lo = np.percentile(risk, 25)
     hi = np.percentile(risk, 75)
     d_stat = float(hi - lo) if not np.isnan(hi - lo) else 0.0

@@ -72,9 +72,7 @@ def geron_ppo_clipped_objective(ratios, advantages, eps=0.2):
     if not np.all(np.isfinite(r)) or not np.all(np.isfinite(A)):
         raise ValueError("ratios and advantages must be finite.")
     if np.any(r <= 0):
-        raise ValueError(
-            f"probability ratios must be positive, got minimum {float(r.min())}."
-        )
+        raise ValueError(f"probability ratios must be positive, got minimum {float(r.min())}.")
     eps = float(eps)
     if not (0.0 < eps < 1.0):
         raise ValueError(f"eps must lie in (0, 1), got {eps}.")

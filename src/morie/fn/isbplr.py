@@ -56,17 +56,13 @@ def isgp_bayes(y, sigma=0.5, alpha=1.0, c=1.0):
     new_dishes : expected new dishes at each customer
     one_param  : the sigma = 0 count, alpha * sum 1/(i - 1 + c) * c
     """
-    if isinstance(y, (int, float)):
-        n = int(y)
-    else:
-        n = len(k.vec(y))
+    n = int(y) if isinstance(y, (int, float)) else len(k.vec(y))
     s = float(sigma)
     a = float(alpha)
     cc = float(c)
     newd = []
     for i in range(1, n + 1):
-        t = math.exp(math.lgamma(1.0 + cc) + math.lgamma(i - 1.0 + cc + s)
-                     - math.lgamma(i + cc) - math.lgamma(cc + s))
+        t = math.exp(math.lgamma(1.0 + cc) + math.lgamma(i - 1.0 + cc + s) - math.lgamma(i + cc) - math.lgamma(cc + s))
         newd.append(a * t)
     path = []
     acc = 0.0

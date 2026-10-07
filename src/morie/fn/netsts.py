@@ -66,8 +66,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["lstm_cell", "lstm_run", "gradient_retention",
-           "lstm_forecast", "standardize"]
+__all__ = ["lstm_cell", "lstm_run", "gradient_retention", "lstm_forecast", "standardize"]
 
 _EPS = 1e-12
 
@@ -94,13 +93,10 @@ def lstm_cell(x, h, c, W, b, forget_bias=0.0):
         raise ValueError("netsts: hidden and cell sizes differ")
     inp = list(x) + list(h)
     if len(W) != len(inp):
-        raise ValueError("netsts: W has %d rows for an input of %d"
-                         % (len(W), len(inp)))
+        raise ValueError(f"netsts: W has {int(len(W))} rows for an input of {int(len(inp))}")
     if len(b) != 4 * d:
-        raise ValueError("netsts: the bias needs 4*hidden = %d entries,"
-                         " got %d" % (4 * d, len(b)))
-    z = [sum(inp[i] * W[i][j] for i in range(len(inp))) + b[j]
-         for j in range(4 * d)]
+        raise ValueError(f"netsts: the bias needs 4*hidden = {int(4 * d)} entries, got {int(len(b))}")
+    z = [sum(inp[i] * W[i][j] for i in range(len(inp))) + b[j] for j in range(4 * d)]
     i_g = [k.sigmoid(z[j]) for j in range(d)]
     f_g = [k.sigmoid(z[d + j] + forget_bias) for j in range(d)]
     g_g = [math.tanh(z[2 * d + j]) for j in range(d)]
@@ -117,8 +113,7 @@ def lstm_run(X, W, b, hidden, forget_bias=0.0):
     c = [0.0] * d
     hs, cs, gates = [], [], []
     for row in X:
-        h, c, g = lstm_cell(list(row), h, c, W, b,
-                            forget_bias=forget_bias)
+        h, c, g = lstm_cell(list(row), h, c, W, b, forget_bias=forget_bias)
         hs.append(list(h))
         cs.append(list(c))
         gates.append(g)
@@ -134,13 +129,11 @@ def gradient_retention(forget_value, steps):
     """
     f = float(forget_value)
     if not 0.0 <= f <= 1.0:
-        raise ValueError("netsts: the forget value must be in [0, 1], "
-                         "got %r" % (forget_value,))
+        raise ValueError(f"netsts: the forget value must be in [0, 1], got {forget_value!r}")
     return f ** int(steps)
 
 
-def lstm_forecast(y, horizon, hidden=8, n_lags=4, strategy="recursive",
-                  forget_bias=1.0, seed=0, ridge=1e-6):
+def lstm_forecast(y, horizon, hidden=8, n_lags=4, strategy="recursive", forget_bias=1.0, seed=0, ridge=1e-6):
     r"""Forecast with an LSTM read-out fitted by least squares.
 
     The recurrence supplies the features and a linear read-out is fitted
@@ -149,31 +142,27 @@ def lstm_forecast(y, horizon, hidden=8, n_lags=4, strategy="recursive",
     instead of feeding predictions back.
     """
     if strategy not in ("recursive", "direct"):
-        raise ValueError("netsts: strategy must be recursive or "
-                         "direct, got %r" % (strategy,))
+        raise ValueError(f"netsts: strategy must be recursive or direct, got {strategy!r}")
     yv = k.vec(y)
     n = len(yv)
     H = int(horizon)
     p = int(n_lags)
     if n < p + H + 4:
-        raise ValueError("netsts: %d observations is too few for %d "
-                         "lags and a horizon of %d" % (n, p, H))
+        raise ValueError(f"netsts: {int(n)} observations is too few for {int(p)} lags and a horizon of {int(H)}")
     zs, mu, sd = standardize(yv)
     d = int(hidden)
     rng = np.random.default_rng(seed)
-    W = [[rng.standard_normal() * 0.3 for _ in range(4 * d)]
-         for _ in range(1 + d)]
+    W = [[rng.standard_normal() * 0.3 for _ in range(4 * d)] for _ in range(1 + d)]
     b = [0.0] * (4 * d)
 
     def features(seq):
-        hs, _, _ = lstm_run([[v] for v in seq], W, b, d,
-                            forget_bias=forget_bias)
+        hs, _, _ = lstm_run([[v] for v in seq], W, b, d, forget_bias=forget_bias)
         return hs[-1]
 
     if strategy == "recursive":
         Xf, yf = [], []
         for t in range(p, n):
-            Xf.append([1.0] + features(zs[t - p:t]))
+            Xf.append([1.0] + features(zs[t - p : t]))
             yf.append(zs[t])
         beta = k.lstsq(Xf, yf, ridge)
         st = list(zs)
@@ -189,33 +178,42 @@ def lstm_forecast(y, horizon, hidden=8, n_lags=4, strategy="recursive",
         for hstep in range(1, H + 1):
             Xf, yf = [], []
             for t in range(p, n - hstep + 1):
-                Xf.append([1.0] + features(zs[t - p:t]))
+                Xf.append([1.0] + features(zs[t - p : t]))
                 yf.append(zs[t + hstep - 1])
             bh = k.lstsq(Xf, yf, ridge)
             betas.append(bh)
             f = [1.0] + features(zs[-p:])
             out.append(sum(f[a] * bh[a] for a in range(len(bh))))
     fc = [v * sd + mu for v in out]
-    return RichResult(payload={
-        "estimate": fc, "forecast": fc, "strategy": strategy,
-        "hidden": d, "n_lags": p, "forget_bias": float(forget_bias),
-        "mean": mu, "sd": sd, "n_models": len(betas),
-        "retention_10": gradient_retention(
-            k.sigmoid(forget_bias), 10),
-        "method": "LSTM forecaster, Hochreiter & Schmidhuber (1997) "
-                  "cell with Gers, Schmidhuber & Cummins (2000) forget "
-                  "gate",
-    })
+    return RichResult(
+        payload={
+            "estimate": fc,
+            "forecast": fc,
+            "strategy": strategy,
+            "hidden": d,
+            "n_lags": p,
+            "forget_bias": float(forget_bias),
+            "mean": mu,
+            "sd": sd,
+            "n_models": len(betas),
+            "retention_10": gradient_retention(k.sigmoid(forget_bias), 10),
+            "method": "LSTM forecaster, Hochreiter & Schmidhuber (1997) "
+            "cell with Gers, Schmidhuber & Cummins (2000) forget "
+            "gate",
+        }
+    )
 
 
 def cheatsheet():
-    return ("netsts: c_t = f*c_{t-1} + i*g is ADDITIVE, so the cell "
-            "path is multiplication by f alone and retention is f^T "
-            "exactly -- the constant error carousel. Initialise the "
-            "forget bias POSITIVE: at 0 the gate sits near 0.5 and "
-            "memory halves every step. Standardise, or tanh saturates "
-            "and nothing learns. Recursive forecasting compounds error "
-            "with horizon; direct costs one model per step.")
+    return (
+        "netsts: c_t = f*c_{t-1} + i*g is ADDITIVE, so the cell "
+        "path is multiplication by f alone and retention is f^T "
+        "exactly -- the constant error carousel. Initialise the "
+        "forget bias POSITIVE: at 0 the gate sits near 0.5 and "
+        "memory halves every step. Standardise, or tanh saturates "
+        "and nothing learns. Recursive forecasting compounds error "
+        "with horizon; direct costs one model per step."
+    )
 
 
 # compact alias per ledger/NAMING.md

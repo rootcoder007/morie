@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['kmedtest', 'gibbons_k_median_test']
+__all__ = ["kmedtest", "gibbons_k_median_test"]
 
 
 def kmedtest(samples):
@@ -53,19 +53,13 @@ def kmedtest(samples):
         raise ValueError("every sample must be non-empty.")
     pooled = sorted(v for s in ss for v in s)
     nn = len(pooled)
-    d = (
-        pooled[nn // 2]
-        if nn % 2
-        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
-    )
+    d = pooled[nn // 2] if nn % 2 else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
     u = [sum(1 for v in s if v < d) for s in ss]
     t = sum(u)
     ns = [len(s) for s in ss]
     if t == 0 or t == nn:
         raise ValueError("no split at the combined median.")
-    q = (float(nn) ** 2 / (t * (nn - t))) * sum(
-        (u[i] - ns[i] * t / float(nn)) ** 2 / ns[i] for i in range(k)
-    )
+    q = (float(nn) ** 2 / (t * (nn - t))) * sum((u[i] - ns[i] * t / float(nn)) ** 2 / ns[i] for i in range(k))
     prob = 1.0
     for i in range(k):
         prob *= math.comb(ns[i], u[i])

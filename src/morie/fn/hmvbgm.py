@@ -131,7 +131,7 @@ def geron_variational_bayes_gmm(X, n_components=3, max_iter=100, alpha0=1e-2, to
     resp = np.full((n, K), 1.0 / K)
 
     n_iter = 0
-    for n_iter in range(1, it_max + 1):
+    for n_iter in range(1, it_max + 1):  # noqa: B007 - read after the loop
         # -- variational E step: expected log weight, not log weight ------
         elog_pi = digamma(alpha) - digamma(np.sum(alpha))
         log_norm = -0.5 * np.sum(np.log(2 * np.pi * variances), axis=1)

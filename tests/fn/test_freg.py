@@ -1,7 +1,6 @@
 """Tests for freg.function_register."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.freg import function_register
 
 

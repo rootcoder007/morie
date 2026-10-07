@@ -7,8 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_gp_ornstein_uhlenbeck"]
@@ -21,19 +19,24 @@ def ghosal_gp_ornstein_uhlenbeck(theta=1.0, ts=(0.2, 0.5, 0.9)):
     the Markov screening property K(s,u) = K(s,t) K(t,u)/K(t,t) for
     s < t < u. Keys: estimate."""
     th = float(theta)
+
     def K(s, t):
         return math.exp(-th * abs(s - t)) / (2.0 * th)
+
     # representation covariance: for s <= t,
     # Cov = (2th)^{-1} e^{-th(s+t)} min(e^{2th s}, e^{2th t})
     #     = (2th)^{-1} e^{-th(t-s)}
     s, t, u = ts
     rep = math.exp(-th * (t - s)) / (2.0 * th)
     markov_gap = abs(K(s, u) - K(s, t) * K(t, u) / K(t, t))
-    res = RichResult(payload={"estimate": K(s, t),
-                              "representation_gap":
-                                  abs(K(s, t) - rep),
-                              "markov_gap": markov_gap,
-                              "method": "Ornstein-Uhlenbeck kernel (GvdV 2017 Ex 11.7)"})
+    res = RichResult(
+        payload={
+            "estimate": K(s, t),
+            "representation_gap": abs(K(s, t) - rep),
+            "markov_gap": markov_gap,
+            "method": "Ornstein-Uhlenbeck kernel (GvdV 2017 Ex 11.7)",
+        }
+    )
     return with_describe_pointer(res, "gh_gp_orn_uhl")
 
 

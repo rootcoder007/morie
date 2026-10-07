@@ -16,10 +16,15 @@ import pytest
 
 from morie.fn import _array_core as np
 from morie.fn import _s03core as k
-from morie.fn.tmlcic import (_cv_folds, adaptive_prespecification,
-                             candidate_tmle, default_library,
-                             influence_curve, tmle_cluster_ic,
-                             variance_estimate)
+from morie.fn.tmlcic import (
+    _cv_folds,
+    adaptive_prespecification,
+    candidate_tmle,
+    default_library,
+    influence_curve,
+    tmle_cluster_ic,
+    variance_estimate,
+)
 
 NPAIR = 40
 N = 2 * NPAIR
@@ -53,15 +58,18 @@ def trial():
             region.append(r)
             W1.append(0.50 * float(rng.uniform()))
             W3.append(rng.standard_normal())
-            pair.append("pair%02d" % j)
+            pair.append(f"pair{int(j):02d}")
     e = [0.15 * rng.standard_normal() for _ in range(N)]
-    Y0 = [expit(-2.2 + 6.0 * W1[i] + 0.8 * region[i] + e[i])
-          for i in range(N)]
+    Y0 = [expit(-2.2 + 6.0 * W1[i] + 0.8 * region[i] + e[i]) for i in range(N)]
     Y1 = [expit(logit(Y0[i]) + 0.6) for i in range(N)]
     return {
         "W": [[W1[i], region[i], W3[i]] for i in range(N)],
-        "W1": W1, "region": region, "W3": W3, "pair": pair,
-        "Y0": Y0, "Y1": Y1,
+        "W1": W1,
+        "region": region,
+        "W3": W3,
+        "pair": pair,
+        "Y0": Y0,
+        "Y1": Y1,
         "groups": [[2 * j, 2 * j + 1] for j in range(NPAIR)],
         "sate": sum(Y1[i] - Y0[i] for i in range(N)) / N,
     }
@@ -77,8 +85,7 @@ def randomize(seed):
 
 
 def observed(t, A):
-    return [A[i] * t["Y1"][i] + (1.0 - A[i]) * t["Y0"][i]
-            for i in range(N)]
+    return [A[i] * t["Y1"][i] + (1.0 - A[i]) * t["Y0"][i] for i in range(N)]
 
 
 CANDS = {
@@ -90,22 +97,18 @@ CANDS = {
 
 
 def fixed_estimate(t, A, y, cand, design="matched", target="SATE"):
-    q1, q0, qa, info = candidate_tmle(y, A, t["W"], cand,
-                                      lambda _i: 0.5)
+    q1, q0, qa, info = candidate_tmle(y, A, t["W"], cand, lambda _i: 0.5)
     rows = list(range(N))
     psi = sum(q1[i] - q0[i] for i in rows) / N
     D = influence_curve(y, A, q1, q0, qa, info["gA"], rows, psi, target)
-    var, vinfo = variance_estimate(D, y, qa, t["groups"], N, design,
-                                   target)
+    var, vinfo = variance_estimate(D, y, qa, t["groups"], N, design, target)
     return psi, math.sqrt(var), vinfo
 
 
 def test_the_covariates_play_the_roles_the_test_assumes(trial):
     t = trial
-    assert all(t["region"][2 * j] == t["region"][2 * j + 1]
-               for j in range(NPAIR))
-    assert max(abs(t["W1"][2 * j] - t["W1"][2 * j + 1])
-               for j in range(NPAIR)) > 0.05
+    assert all(t["region"][2 * j] == t["region"][2 * j + 1] for j in range(NPAIR))
+    assert max(abs(t["W1"][2 * j] - t["W1"][2 * j + 1]) for j in range(NPAIR)) > 0.05
     assert abs(k.corr(t["W1"], t["Y0"])) > 0.4
     assert abs(k.corr(t["W3"], t["Y0"])) < 0.15
 
@@ -113,8 +116,7 @@ def test_the_covariates_play_the_roles_the_test_assumes(trial):
 def test_it_estimates_the_sample_effect(trial):
     t = trial
     A = randomize(100)
-    r = tmle_cluster_ic(observed(t, A), A, t["W"], cluster=t["pair"],
-                        target="SATE")
+    r = tmle_cluster_ic(observed(t, A), A, t["W"], cluster=t["pair"], target="SATE")
     assert abs(r["estimate"] - t["sate"]) < 2.5 * r["se"]
     assert r["ci"][0] <= t["sate"] <= r["ci"][1]
     assert r["independent_units"] == NPAIR
@@ -126,8 +128,7 @@ def test_the_unadjusted_arm_is_the_unadjusted_tmle(trial):
     A = randomize(100)
     y = observed(t, A)
     r = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"])
-    r_off = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"],
-                            adapt=False)
+    r_off = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"], adapt=False)
     assert r_off["estimate"] == pytest.approx(r["unadjusted"], abs=1e-12)
 
 
@@ -146,10 +147,8 @@ def test_the_matched_loss_does_not_credit_a_matched_on_covariate(trial):
     t = trial
     A = randomize(100)
     y = observed(t, A)
-    sel_m = adaptive_prespecification(y, A, t["W"], t["groups"],
-                                      "matched", "SATE")
-    sel_u = adaptive_prespecification(y, A, t["W"], t["groups"],
-                                      "unmatched", "SATE")
+    sel_m = adaptive_prespecification(y, A, t["W"], t["groups"], "matched", "SATE")
+    sel_u = adaptive_prespecification(y, A, t["W"], t["groups"], "unmatched", "SATE")
     rm = dict(zip(sel_m["q_names"], sel_m["q_risks"]))
     ru = dict(zip(sel_u["q_names"], sel_u["q_risks"]))
     gain_m = rm["W2"] / rm["unadjusted"]
@@ -185,8 +184,7 @@ def test_adaptive_prespecification_finds_the_gain(trial):
     est, chosen = [], {}
     for rep in range(reps):
         A = randomize(2000 + rep)
-        r = tmle_cluster_ic(observed(t, A), A, t["W"],
-                            cluster=t["pair"], n_folds=5)
+        r = tmle_cluster_ic(observed(t, A), A, t["W"], cluster=t["pair"], n_folds=5)
         est.append(r["estimate"])
         chosen[r["q_selected"]] = chosen.get(r["q_selected"], 0) + 1
     assert abs(k.mean(est) - t["sate"]) < 0.01
@@ -199,10 +197,8 @@ def test_the_matched_variance_uses_the_within_pair_correlation(trial):
     t = trial
     A = randomize(100)
     y = observed(t, A)
-    _, se_un, _ = fixed_estimate(t, A, y, CANDS["prevalence"],
-                                 design="unmatched", target="PATE")
-    _, se_m, vin = fixed_estimate(t, A, y, CANDS["prevalence"],
-                                  design="matched", target="PATE")
+    _, se_un, _ = fixed_estimate(t, A, y, CANDS["prevalence"], design="unmatched", target="PATE")
+    _, se_m, vin = fixed_estimate(t, A, y, CANDS["prevalence"], design="matched", target="PATE")
     assert vin["rho"] > 0.0
     assert se_m < se_un
 
@@ -212,10 +208,8 @@ def test_the_sample_effect_is_no_less_precise(trial):
     t = trial
     A = randomize(100)
     y = observed(t, A)
-    _, se_p, _ = fixed_estimate(t, A, y, CANDS["prevalence"],
-                                target="PATE")
-    _, se_s, _ = fixed_estimate(t, A, y, CANDS["prevalence"],
-                                target="SATE")
+    _, se_p, _ = fixed_estimate(t, A, y, CANDS["prevalence"], target="PATE")
+    _, se_s, _ = fixed_estimate(t, A, y, CANDS["prevalence"], target="SATE")
     assert se_s <= se_p + 1e-12
 
 
@@ -223,10 +217,8 @@ def test_the_target_changes_the_variance_not_the_estimate(trial):
     t = trial
     A = randomize(100)
     y = observed(t, A)
-    rs = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"],
-                         target="SATE")
-    rp = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"],
-                         target="PATE")
+    rs = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"], target="SATE")
+    rp = tmle_cluster_ic(y, A, t["W"], cluster=t["pair"], target="PATE")
     assert rp["estimate"] == pytest.approx(rs["estimate"], abs=0.02)
     assert rp["se"] != rs["se"]
 
@@ -236,8 +228,7 @@ def test_intervals_cover(trial):
     reps, cov = 40, 0
     for rep in range(reps):
         A = randomize(5000 + rep)
-        r = tmle_cluster_ic(observed(t, A), A, t["W"],
-                            cluster=t["pair"], n_folds=5)
+        r = tmle_cluster_ic(observed(t, A), A, t["W"], cluster=t["pair"], n_folds=5)
         if r["ci"][0] <= t["sate"] <= r["ci"][1]:
             cov += 1
     assert cov / reps >= 0.88
@@ -272,16 +263,15 @@ def test_argument_checks(trial):
     with pytest.raises(ValueError):
         tmle_cluster_ic(y, A, t["W"], cluster=t["pair"][:-1])
     with pytest.raises(ValueError):
-        tmle_cluster_ic(y, A, t["W"], cluster=["a"] * N,
-                        design="matched")
+        tmle_cluster_ic(y, A, t["W"], cluster=["a"] * N, design="matched")
 
 
 def test_clusters_of_other_sizes_are_allowed(trial):
     t = trial
     A = randomize(100)
-    r = tmle_cluster_ic(observed(t, A), A, t["W"],
-                        cluster=["c%d" % (i // 4) for i in range(N)],
-                        design="clustered", n_folds=5)
+    r = tmle_cluster_ic(
+        observed(t, A), A, t["W"], cluster=[f"c{int(i // 4)}" for i in range(N)], design="clustered", n_folds=5
+    )
     assert r["independent_units"] == N // 4
     assert math.isfinite(r["se"])
 
@@ -301,8 +291,7 @@ def _make(J, seed, assign="E-only", interference=0.0):
     cl = []
     for _ in range(J):
         Nj = 8 + int(float(rng.uniform()) * 17)
-        cl.append({"E": float(rng.uniform()), "N": Nj,
-                   "W": [rng.standard_normal() for _ in range(Nj)]})
+        cl.append({"E": float(rng.uniform()), "N": Nj, "W": [rng.standard_normal() for _ in range(Nj)]})
     for c in cl:
         wbar = sum(c["W"]) / c["N"]
         z = -0.3 + 2.0 * (c["E"] - 0.5)
@@ -311,27 +300,22 @@ def _make(J, seed, assign="E-only", interference=0.0):
         c["A"] = 1.0 if float(rng.uniform()) < expit(z) else 0.0
 
     def mu(a, c, i):
-        others = ((sum(c["W"]) - c["W"][i]) / (c["N"] - 1)
-                  if c["N"] > 1 else 0.0)
-        return expit(-0.9 + 1.1 * c["W"][i] + 1.4 * (c["E"] - 0.5)
-                     - 0.8 * a + interference * others)
+        others = (sum(c["W"]) - c["W"][i]) / (c["N"] - 1) if c["N"] > 1 else 0.0
+        return expit(-0.9 + 1.1 * c["W"][i] + 1.4 * (c["E"] - 0.5) - 0.8 * a + interference * others)
 
     y, A, E, W, lab = [], [], [], [], []
     for j, c in enumerate(cl):
         for i in range(c["N"]):
-            y.append(1.0 if float(rng.uniform()) < mu(c["A"], c, i)
-                     else 0.0)
+            y.append(1.0 if float(rng.uniform()) < mu(c["A"], c, i) else 0.0)
             A.append(c["A"])
             E.append([c["E"]])
             W.append([c["W"][i]])
-            lab.append("c%03d" % j)
+            lab.append(f"c{int(j):03d}")
 
     def cf(a):
-        return sum(sum(mu(a, c, i) for i in range(c["N"])) / c["N"]
-                   for c in cl) / len(cl)
+        return sum(sum(mu(a, c, i) for i in range(c["N"])) / c["N"] for c in cl) / len(cl)
 
-    return {"y": y, "A": A, "E": E, "W": W, "cluster": lab,
-            "truth": cf(1.0) - cf(0.0), "J": len(cl), "n": len(y)}
+    return {"y": y, "A": A, "E": E, "W": W, "cluster": lab, "truth": cf(1.0) - cf(0.0), "J": len(cl), "n": len(y)}
 
 
 def test_alpha_weights_default_to_one_over_n_j():
@@ -354,8 +338,7 @@ def test_both_hierarchical_tmles_recover_the_truth(hier):
     d = hier
     r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
     for nm in ("cluster", "individual"):
-        assert (abs(r["estimate_" + nm] - d["truth"])
-                < 3.0 * r["se_" + nm])
+        assert abs(r["estimate_" + nm] - d["truth"]) < 3.0 * r["se_" + nm]
         assert abs(r["eic_mean_" + nm]) < 1e-9
 
 
@@ -364,10 +347,8 @@ def test_the_influence_curves_coincide_when_g_depends_only_on_e(hier):
     estimates -- two estimators can agree on a number by luck."""
     d = hier
     r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
-    assert k.corr(r["influence_curve_cluster"],
-                  r["influence_curve_individual"]) > 0.9
-    assert (abs(r["estimate_cluster"] - r["estimate_individual"])
-            < 1.5 * r["se_cluster"])
+    assert k.corr(r["influence_curve_cluster"], r["influence_curve_individual"]) > 0.9
+    assert abs(r["estimate_cluster"] - r["estimate_individual"]) < 1.5 * r["se_cluster"]
 
 
 def test_covariate_interference_biases_the_sub_model_estimator():
@@ -378,8 +359,7 @@ def test_covariate_interference_biases_the_sub_model_estimator():
     bias = {"cluster": [], "individual": []}
     for rep in range(reps):
         d = _make(120, 900 + rep, assign="EW", interference=2.5)
-        r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
-                              d["cluster"])
+        r = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
         for nm in ("cluster", "individual"):
             bias[nm].append(r["estimate_" + nm] - d["truth"])
     mi = k.mean(bias["individual"])
@@ -394,45 +374,33 @@ def test_unequal_cluster_sizes_each_count_once(hier):
     assert min(r["cluster_sizes"]) < max(r["cluster_sizes"])
     assert len(r["cluster_sizes"]) == d["J"]
     n0 = r["cluster_sizes"][0]
-    assert r["cluster_outcome"][0] == pytest.approx(
-        sum(d["y"][:n0]) / n0)
+    assert r["cluster_outcome"][0] == pytest.approx(sum(d["y"][:n0]) / n0)
 
 
 def test_a_single_arm_can_be_run(hier):
     d = hier
-    both = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
-                             d["cluster"])
-    only = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"],
-                             d["cluster"], arm="cluster")
+    both = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"])
+    only = tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"], arm="cluster")
     assert only["arm_reported"] == "cluster"
-    assert only["estimate"] == pytest.approx(both["estimate_cluster"],
-                                             abs=1e-12)
+    assert only["estimate"] == pytest.approx(both["estimate_cluster"], abs=1e-12)
     assert "estimate_individual" not in only
 
 
 def test_hierarchical_argument_checks(hier):
     d = hier
     with pytest.raises(ValueError):
-        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"],
-                          arm="nope")
-    with pytest.raises(ValueError):        # exposure varies in a cluster
-        tmle_hierarchical(d["y"], [1.0 - d["A"][0]] + d["A"][1:],
-                          d["E"], d["W"], d["cluster"])
-    with pytest.raises(ValueError):        # E varies in a cluster
-        tmle_hierarchical(d["y"], d["A"], [[9.0]] + d["E"][1:], d["W"],
-                          d["cluster"])
-    with pytest.raises(ValueError):        # outcome outside [0,1]
-        tmle_hierarchical([2.0] + d["y"][1:], d["A"], d["E"], d["W"],
-                          d["cluster"])
+        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"], arm="nope")
+    with pytest.raises(ValueError):  # exposure varies in a cluster
+        tmle_hierarchical(d["y"], [1.0 - d["A"][0]] + d["A"][1:], d["E"], d["W"], d["cluster"])
+    with pytest.raises(ValueError):  # E varies in a cluster
+        tmle_hierarchical(d["y"], d["A"], [[9.0]] + d["E"][1:], d["W"], d["cluster"])
+    with pytest.raises(ValueError):  # outcome outside [0,1]
+        tmle_hierarchical([2.0] + d["y"][1:], d["A"], d["E"], d["W"], d["cluster"])
     with pytest.raises(ValueError):
-        tmle_hierarchical(d["y"], [2.0] * d["n"], d["E"], d["W"],
-                          d["cluster"])
+        tmle_hierarchical(d["y"], [2.0] * d["n"], d["E"], d["W"], d["cluster"])
     with pytest.raises(ValueError):
-        tmle_hierarchical(d["y"], [1.0] * d["n"], d["E"], d["W"],
-                          d["cluster"])
+        tmle_hierarchical(d["y"], [1.0] * d["n"], d["E"], d["W"], d["cluster"])
     with pytest.raises(ValueError):
-        tmle_hierarchical(d["y"][:-1], d["A"], d["E"], d["W"],
-                          d["cluster"])
+        tmle_hierarchical(d["y"][:-1], d["A"], d["E"], d["W"], d["cluster"])
     with pytest.raises(ValueError):
-        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"],
-                          trim=0.9)
+        tmle_hierarchical(d["y"], d["A"], d["E"], d["W"], d["cluster"], trim=0.9)

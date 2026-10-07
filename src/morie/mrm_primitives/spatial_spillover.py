@@ -104,9 +104,9 @@ def spatial_spillover_decomposition(
         raise ValueError(f"W must be square, got shape {W.shape}")
 
     N = W.shape[0]
-    I = np.eye(N)
+    ident = np.eye(N)
     try:
-        S = np.linalg.inv(I - rho * W)
+        S = np.linalg.inv(ident - rho * W)
     except np.linalg.LinAlgError as exc:
         raise ValueError(
             f"Could not invert (I - rho*W) at rho={rho}; spatial multiplier is singular (rho near 1/lambda_max?)"
@@ -115,7 +115,7 @@ def spatial_spillover_decomposition(
     out: list[SpilloverDecomposition] = []
     for k in range(K):
         # Per-observation effects matrix M_k = S * (I * beta_k + W * theta_k)
-        M_k = S @ (beta_direct[k] * I + beta_spatial[k] * W)
+        M_k = S @ (beta_direct[k] * ident + beta_spatial[k] * W)
         direct = float(np.mean(np.diag(M_k)))
         # Indirect = average row sum minus diagonal element
         row_sums = M_k.sum(axis=1)

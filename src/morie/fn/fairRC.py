@@ -62,8 +62,6 @@ of IR techniques", *ACM Transactions on Information Systems* 20(4),
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["rND", "rKL", "rRD", "normalizer", "cutoffs"]
@@ -76,8 +74,7 @@ def cutoffs(N, step=10):
     r"""The discrete evaluation points :math:`10, 20, \dots, N`."""
     n, s = int(N), int(step)
     if n < s:
-        raise ValueError("fairRC: the ranking of %d is shorter than "
-                         "the first cut-off %d" % (n, s))
+        raise ValueError(f"fairRC: the ranking of {int(n)} is shorter than the first cut-off {int(s)}")
     return list(range(s, n + 1, s))
 
 
@@ -98,13 +95,11 @@ def _raw(protected, measure, step):
         elif measure == "rKL":
             a = min(max(p, _EPS), 1.0 - _EPS)
             b = min(max(P, _EPS), 1.0 - _EPS)
-            tot += w * (a * math.log(a / b)
-                        + (1.0 - a) * math.log((1.0 - a) / (1.0 - b)))
+            tot += w * (a * math.log(a / b) + (1.0 - a) * math.log((1.0 - a) / (1.0 - b)))
         else:
             npos = sum(protected[:i])
             nneg = i - npos
-            r1 = 0.0 if nneg == 0 or npos == 0 \
-                else npos / float(nneg)
+            r1 = 0.0 if nneg == 0 or npos == 0 else npos / float(nneg)
             NP, NN = sum(protected), N - sum(protected)
             r2 = 0.0 if NN == 0 or NP == 0 else NP / float(NN)
             tot += w * abs(r1 - r2)
@@ -127,23 +122,23 @@ def normalizer(protected, measure="rND", step=10):
 def _measure(protected, measure, step, normalize, caveat=None):
     p = [1 if int(v) else 0 for v in protected]
     if measure not in _MEASURES:
-        raise ValueError("fairRC: measure must be one of %s, got %r"
-                         % (", ".join(_MEASURES), measure))
+        raise ValueError("fairRC: measure must be one of {}, got {!r}".format(", ".join(_MEASURES), measure))
     if not p:
         raise ValueError("fairRC: the ranking is empty")
     if sum(p) in (0, len(p)):
-        raise ValueError("fairRC: fairness is undefined when every "
-                         "item is in one group")
+        raise ValueError("fairRC: fairness is undefined when every item is in one group")
     raw = _raw(p, measure, step)
     z = normalizer(p, measure, step) if normalize else 1.0
     pay = {
-        "estimate": raw / z, "value": raw / z, "raw": raw,
-        "normalizer": z, "measure": measure,
+        "estimate": raw / z,
+        "value": raw / z,
+        "raw": raw,
+        "normalizer": z,
+        "measure": measure,
         "protected_share": sum(p) / float(len(p)),
         "cutoffs": cutoffs(len(p), step),
         "method": "Yang & Stoyanovich (2017) Sec. 3",
-        "note": "0 is fairest; the best value is reached when the "
-                "top-i share matches the POPULATION share, not 50/50",
+        "note": "0 is fairest; the best value is reached when the top-i share matches the POPULATION share, not 50/50",
     }
     if caveat is not None:
         pay["caveat"] = caveat
@@ -169,23 +164,27 @@ def rRD(protected, step=10, normalize=True):
     p = [1 if int(v) else 0 for v in protected]
     cav = None
     if sum(p) > 0.5 * len(p):
-        cav = ("rRD is NOT APPLICABLE here: the protected group is "
-               "the MAJORITY, and rRD does not treat the two groups "
-               "symmetrically")
+        cav = (
+            "rRD is NOT APPLICABLE here: the protected group is "
+            "the MAJORITY, and rRD does not treat the two groups "
+            "symmetrically"
+        )
     return _measure(p, "rRD", step, normalize, cav)
 
 
 def cheatsheet():
-    return ("fairRC: statistical parity for RANKINGS -- did group "
-            "membership influence POSITION. Set-based fairness at "
-            "top-10, top-20, ... with a 1/log2(i) discount, so "
-            "unfairness at the top costs more (the nDCG idea). rND "
-            "uses |share_top_i - share_population|, rKL the KL "
-            "divergence, rRD the ratio of S+ to S-. All in [0,1], 0 is "
-            "fairest, and best when the top-i share matches the "
-            "POPULATION share -- 20% of the population is fairly "
-            "served by 20%, not 50%. rRD is asymmetric and applies "
-            "only when the protected group is the minority.")
+    return (
+        "fairRC: statistical parity for RANKINGS -- did group "
+        "membership influence POSITION. Set-based fairness at "
+        "top-10, top-20, ... with a 1/log2(i) discount, so "
+        "unfairness at the top costs more (the nDCG idea). rND "
+        "uses |share_top_i - share_population|, rKL the KL "
+        "divergence, rRD the ratio of S+ to S-. All in [0,1], 0 is "
+        "fairest, and best when the top-i share matches the "
+        "POPULATION share -- 20% of the population is fairly "
+        "served by 20%, not 50%. rRD is asymmetric and applies "
+        "only when the protected group is the minority."
+    )
 
 
 # compact alias per ledger/NAMING.md

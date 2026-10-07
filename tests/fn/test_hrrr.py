@@ -1,8 +1,8 @@
 """Test heart_rate_from_rr (hrrr)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hrrr import heart_rate_from_rr, hrrr
 

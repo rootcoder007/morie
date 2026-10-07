@@ -1,8 +1,8 @@
 """Tests for morie.fn.pca_g — genotype PCA."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pca_g import pca_genotype
 
 

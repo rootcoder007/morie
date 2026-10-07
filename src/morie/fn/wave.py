@@ -66,11 +66,16 @@ def _dbfilter(name):
     if key in ("db3", "d6", "3"):
         a = math.sqrt(10.0)
         b = math.sqrt(5.0 + 2.0 * a)
-        c = [(1.0 + a + b) / 16.0, (5.0 + a + 3.0 * b) / 16.0,
-             (10.0 - 2.0 * a + 2.0 * b) / 16.0, (10.0 - 2.0 * a - 2.0 * b) / 16.0,
-             (5.0 + a - 3.0 * b) / 16.0, (1.0 + a - b) / 16.0]
+        c = [
+            (1.0 + a + b) / 16.0,
+            (5.0 + a + 3.0 * b) / 16.0,
+            (10.0 - 2.0 * a + 2.0 * b) / 16.0,
+            (10.0 - 2.0 * a - 2.0 * b) / 16.0,
+            (5.0 + a - 3.0 * b) / 16.0,
+            (1.0 + a - b) / 16.0,
+        ]
         return [v / r2 for v in c]
-    raise ValueError("wavelet_basis: unknown wavelet %r (db1, db2, db3)" % (name,))
+    raise ValueError(f"wavelet_basis: unknown wavelet {name!r} (db1, db2, db3)")
 
 
 def _mirror(h):
@@ -164,7 +169,7 @@ def wavelet_basis(y, wavelet="db2", level=None):
     lev = J if level is None else int(level)
     if lev < 1 or lev > J:
         raise ValueError("wavelet_basis: level must lie in 1 .. log2(n)")
-    if L > (n >> (lev - 1)):
+    if (n >> (lev - 1)) < L:
         raise ValueError("wavelet_basis: filter is longer than the coarsest level")
     # defining conditions of Daubechies (1988), checked not assumed
     orth = abs(sum(v * v for v in h) - 1.0)
@@ -226,6 +231,7 @@ def wavelet_basis(y, wavelet="db2", level=None):
 
 def cheatsheet():
     return "wave: Daubechies orthonormal wavelet basis (db1/db2/db3), Daubechies (1988)"
+
 
 # public names resolved by fn/_lazy_map.json
 waveletbasis = wavelet_basis

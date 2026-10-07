@@ -1,8 +1,8 @@
 """Tests for morie.fn.frcst -- renewal equation forecast."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.frcst import renewal_forecast
 
 

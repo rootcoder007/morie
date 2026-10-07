@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["hrz_local_linear_quantile", "horowitz_local_linear_quantile"]
 
 
-def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None,
-                              kernel_name="gaussian"):
+def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"):
     r"""Local linear quantile regression (Horowitz Ch. 3):
 
     .. math:: (\hat\alpha, \hat\beta) = \arg\min \sum_i
@@ -44,11 +43,17 @@ def hrz_local_linear_quantile(x, y, tau=0.5, grid=None, h=None,
     Horowitz, J. L. *Semiparametric and Nonparametric Methods in
     Econometrics*. Springer. Ch. 3 (quantile regression).
     """
-    g, q, hh = local_linear_quantile(x, y, tau=tau, grid=grid, h=h,
-                                     name=kernel_name)
-    return RichResult(payload={"grid": g, "quantile": q, "tau": float(tau),
-                               "bandwidth": hh, "n": int(np.asarray(x).size),
-                               "method": "Local linear check-loss fit; robust to heavy tails"})
+    g, q, hh = local_linear_quantile(x, y, tau=tau, grid=grid, h=h, name=kernel_name)
+    return RichResult(
+        payload={
+            "grid": g,
+            "quantile": q,
+            "tau": float(tau),
+            "bandwidth": hh,
+            "n": int(np.asarray(x).size),
+            "method": "Local linear check-loss fit; robust to heavy tails",
+        }
+    )
 
 
 def cheatsheet():

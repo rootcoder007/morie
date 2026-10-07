@@ -1,7 +1,6 @@
 """Tests for morie.fn.raref."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.raref import raref
 
 

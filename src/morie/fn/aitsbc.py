@@ -52,9 +52,16 @@ def subcomp(x, parts, total=1.0):
     sub = [x[i - 1] for i in idx]
     s = sum(sub)
     k = float(total)
-    return RichResult(payload={
-        "composition": [k * v / s for v in sub], "parts": idx, "total": k,
-        "D_sub": len(idx), "D": D, "method": "Subcomposition"})
+    return RichResult(
+        payload={
+            "composition": [k * v / s for v in sub],
+            "parts": idx,
+            "total": k,
+            "D_sub": len(idx),
+            "D": D,
+            "method": "Subcomposition",
+        }
+    )
 
 
 aitchison_subcomposition = subcomp

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['kscrit', 'gibbons_ks_critical_values']
+__all__ = ["kscrit", "gibbons_ks_critical_values"]
 
 
 def kscrit(n, alpha=0.05, exact=True):

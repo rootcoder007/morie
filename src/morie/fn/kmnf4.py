@@ -16,9 +16,7 @@ def normal_quantile(u, tol=1e-14, max_iter=200):
     ``tol``. Refuses u outside (0, 1), where the quantile is infinite."""
     u = float(u)
     if not 0.0 < u < 1.0:
-        raise ValueError(
-            f"Phi^-1({u}) is infinite; the argument must lie strictly "
-            "inside (0, 1).")
+        raise ValueError(f"Phi^-1({u}) is infinite; the argument must lie strictly inside (0, 1).")
     lo, hi = -40.0, 40.0
     for _ in range(max_iter):
         mid = 0.5 * (lo + hi)
@@ -73,13 +71,17 @@ def kamath_nf4_datatype(n_bins=16):
         raise ValueError("the quantile grid collapsed to zero.")
     normalized = levels / m
     widths = np.diff(levels)
-    return RichResult(payload={
-        "levels": [float(v) for v in levels],
-        "normalized": [float(v) for v in normalized],
-        "bin_widths": [float(v) for v in widths],
-        "n_bits": math.log2(n) if (n & (n - 1)) == 0 else None,
-        "estimate": float(levels[-1]), "n": n,
-        "method": "NF4 equal-mass normal quantile grid"})
+    return RichResult(
+        payload={
+            "levels": [float(v) for v in levels],
+            "normalized": [float(v) for v in normalized],
+            "bin_widths": [float(v) for v in widths],
+            "n_bits": math.log2(n) if (n & (n - 1)) == 0 else None,
+            "estimate": float(levels[-1]),
+            "n": n,
+            "method": "NF4 equal-mass normal quantile grid",
+        }
+    )
 
 
 def cheatsheet():

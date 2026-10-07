@@ -81,8 +81,7 @@ def effect_modification(y, A, V, H=None):
         if v != 0.0 and v != 1.0:
             raise ValueError("V must be binary 0/1")
     cells = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)]
-    idx = [[i for i in range(n) if av[i] == a and vv[i] == v]
-           for (a, v) in cells]
+    idx = [[i for i in range(n) if av[i] == a and vv[i] == v] for (a, v) in cells]
     cnt = [float(len(z)) for z in idx]
     for j in range(4):
         if cnt[j] == 0.0:
@@ -115,13 +114,21 @@ def effect_modification(y, A, V, H=None):
         summary_lines=[("RERI", reri), ("multiplicative", mult)],
         payload={
             "estimate": reri,
-            "p00": p00, "p10": p10, "p01": p01, "p11": p11,
-            "rr10": rr10, "rr01": rr01, "rr11": rr11,
+            "p00": p00,
+            "p10": p10,
+            "p01": p01,
+            "p11": p11,
+            "rr10": rr10,
+            "rr01": rr01,
+            "rr11": rr11,
             "reri": reri,
             "mult": mult,
             "rd_int": p11 - p10 - p01 + p00,
             "ap": reri / rr11 if rr11 != 0.0 else float("nan"),
-            "n00": cnt[0], "n10": cnt[1], "n01": cnt[2], "n11": cnt[3],
+            "n00": cnt[0],
+            "n10": cnt[1],
+            "n01": cnt[2],
+            "n11": cnt[3],
             "n": n,
             "method": "Effect modification on the additive vs multiplicative scale",
         },

@@ -1,7 +1,6 @@
 """Test bandwidth_compute (bndw)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bndw import bandwidth_compute, bndw
 

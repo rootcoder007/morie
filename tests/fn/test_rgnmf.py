@@ -1,9 +1,6 @@
 """Tests for rgnmf.rangayyan_nmf."""
 
-import math
-
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_nmf
 
 

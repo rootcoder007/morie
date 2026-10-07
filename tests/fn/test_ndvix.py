@@ -1,8 +1,8 @@
 """Tests for NDVI green-space exposure RR."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ndvix import ndvi_exposure_rr, ndvix
 
 

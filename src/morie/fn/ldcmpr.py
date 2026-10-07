@@ -92,20 +92,25 @@ def ld_r2(geno1, geno2, phased=False):
             dp = d / dmin if dmin < 0 else float("nan")
         else:
             dp = 0.0
-        return RichResult(payload={
-            "estimate": float(r * r) if r == r else float("nan"),
-            "r": float(r), "D": float(d), "Dprime": float(dp),
-            "pA": float(pA), "pB": float(pB), "pAB": float(pAB),
-            "n": int(n),
-            "method": "LD r^2 (Hill-Robertson 1968), phased haplotypes",
-        })
+        return RichResult(
+            payload={
+                "estimate": float(r * r) if r == r else float("nan"),
+                "r": float(r),
+                "D": float(d),
+                "Dprime": float(dp),
+                "pA": float(pA),
+                "pB": float(pB),
+                "pAB": float(pAB),
+                "n": int(n),
+                "method": "LD r^2 (Hill-Robertson 1968), phased haplotypes",
+            }
+        )
     base = two_locus_dprime(geno1, geno2)
     # PLINK-style genotypic r^2 on the complete pairs, same pairwise
     # deletion rule as two_locus_dprime.
     g1 = [float(v) for v in geno1]
     g2 = [float(v) for v in geno2]
-    pairs = [(x, y) for x, y in zip(g1, g2)
-             if x in (0.0, 1.0, 2.0) and y in (0.0, 1.0, 2.0)]
+    pairs = [(x, y) for x, y in zip(g1, g2) if x in (0.0, 1.0, 2.0) and y in (0.0, 1.0, 2.0)]
     n = len(pairs)
     mx = sum(x for x, _ in pairs) / n
     my = sum(y for _, y in pairs) / n
@@ -113,16 +118,20 @@ def ld_r2(geno1, geno2, phased=False):
     sxx = sum((x - mx) ** 2 for x, _ in pairs)
     syy = sum((y - my) ** 2 for _, y in pairs)
     r2g = (sxy * sxy) / (sxx * syy) if sxx > 0 and syy > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": float(base["r2"]),
-        "r": float(base["r"]), "D": float(base["D"]),
-        "Dprime": float(base["estimate"]),
-        "pA": float(base["pA"]), "pB": float(base["pB"]),
-        "pAB": float(base["pAB"]),
-        "r2_genotypic": float(r2g),
-        "n": int(base["n"]),
-        "method": "LD r^2 (Hill-Robertson 1968), EM-phased genotypes",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(base["r2"]),
+            "r": float(base["r"]),
+            "D": float(base["D"]),
+            "Dprime": float(base["estimate"]),
+            "pA": float(base["pA"]),
+            "pB": float(base["pB"]),
+            "pAB": float(base["pAB"]),
+            "r2_genotypic": float(r2g),
+            "n": int(base["n"]),
+            "method": "LD r^2 (Hill-Robertson 1968), EM-phased genotypes",
+        }
+    )
 
 
 def cheatsheet():

@@ -26,7 +26,7 @@ NULL
 #'
 #' Mirrors the FSF list at
 #' \url{https://www.gnu.org/licenses/license-list.html}.  Apache-2.0
-#' is GPL-3 compatible but not GPL-2 compatible; morie itself is
+#' is GPL-3 compatible but not GPL-2 compatible; rmorie itself is
 #' AGPL-3.0-or-later (see DESCRIPTION), so the choice rests with
 #' downstream consumers.
 #'
@@ -95,7 +95,7 @@ morie_check_plugin_license <- function(plugin_spdx,
   ok <- plugin_spdx %in% morie_gpl_compatible_licenses()
   if (!ok) {
     msg <- sprintf(
-      "Plugin SPDX '%s' is not on the FSF GPL-compatible list; linking against morie may violate its AGPL-3.0-or-later licence.",
+      "Plugin SPDX '%s' is not on the FSF GPL-compatible list; linking against rmorie may violate its AGPL-3.0-or-later licence.",
       plugin_spdx
     )
     if (raise_on_incompatible) stop(msg) else warning(msg, call. = FALSE)

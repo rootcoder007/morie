@@ -1,7 +1,5 @@
 """Tests for matvar.matern_variogram_model."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.matvar import matern_variogram_model
 
 

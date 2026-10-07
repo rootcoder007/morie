@@ -39,29 +39,30 @@ def kamath_lora_weight_update(W0, A, B, alpha, r, x):
         raise ValueError(f"the rank r must be at least 1; got {r}.")
     d, k = W0.shape
     if A.shape != (r, k):
-        raise ValueError(
-            f"A must be (r, k) = ({r}, {k}); got {A.shape}.")
+        raise ValueError(f"A must be (r, k) = ({r}, {k}); got {A.shape}.")
     if B.shape != (d, r):
-        raise ValueError(
-            f"B must be (d, r) = ({d}, {r}); got {B.shape}.")
+        raise ValueError(f"B must be (d, r) = ({d}, {r}); got {B.shape}.")
     if x.size != k:
-        raise ValueError(
-            f"x must have {k} entries to multiply a {d}x{k} weight; "
-            f"got {x.size}.")
+        raise ValueError(f"x must have {k} entries to multiply a {d}x{k} weight; got {x.size}.")
     scale = alpha / r
     base = W0 @ x
     delta = scale * (B @ (A @ x))
     h = base + delta
-    return RichResult(payload={
-        "h": [float(v) for v in h],
-        "base": [float(v) for v in base],
-        "delta": [float(v) for v in delta],
-        "estimate": float(h[0]), "scaling": scale,
-        "rank": r, "alpha": alpha,
-        "n_trainable": int(A.size + B.size),
-        "n_frozen": int(W0.size),
-        "n": int(h.size),
-        "method": "LoRA forward h = W0 x + (alpha/r) B A x"})
+    return RichResult(
+        payload={
+            "h": [float(v) for v in h],
+            "base": [float(v) for v in base],
+            "delta": [float(v) for v in delta],
+            "estimate": float(h[0]),
+            "scaling": scale,
+            "rank": r,
+            "alpha": alpha,
+            "n_trainable": int(A.size + B.size),
+            "n_frozen": int(W0.size),
+            "n": int(h.size),
+            "method": "LoRA forward h = W0 x + (alpha/r) B A x",
+        }
+    )
 
 
 def cheatsheet():

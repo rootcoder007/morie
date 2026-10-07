@@ -70,10 +70,7 @@ def ar_fit(x, p_max=None):
             phi = core.lstsq(X, y)
             res = [y[t] - sum(X[t][k] * phi[k] for k in range(p)) for t in range(m)]
         s2 = sum(u * u for u in res) / m
-        if s2 <= 0.0:
-            aic = -float("inf")
-        else:
-            aic = m * math.log(s2) + 2.0 * p
+        aic = -float("inf") if s2 <= 0.0 else m * math.log(s2) + 2.0 * p
         if best is None or aic < best[4]:
             best = (phi, mu, res, p, aic)
     if best is None:
@@ -103,8 +100,7 @@ def _ar_rvs(model, resid, n, g):
     return out
 
 
-def boot_sieve_general(x, fit_fn=None, rvs_fn=None, stat=None, B=200, seed=1,
-                       p_max=None, alpha=0.05):
+def boot_sieve_general(x, fit_fn=None, rvs_fn=None, stat=None, B=200, seed=1, p_max=None, alpha=0.05):
     """Sieve bootstrap replicates.
 
     Parameters

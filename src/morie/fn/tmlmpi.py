@@ -28,8 +28,7 @@ def _cdf_bank(yv, Dv, W, g, grid):
         z = [1.0 if yv[i] <= grid[j] else 0.0 for i in range(n)]
         des = [[Dv[i]] + list(W[i]) for i in range(n)]
         qb, _, _, _ = S.ols(des, z)
-        Q = [[C.dot([0.0] + list(W[i]), qb) for i in range(n)],
-             [C.dot([1.0] + list(W[i]), qb) for i in range(n)]]
+        Q = [[C.dot([0.0] + list(W[i]), qb) for i in range(n)], [C.dot([1.0] + list(W[i]), qb) for i in range(n)]]
         for a in (0, 1):
             ga = [g[i] if a == 1 else 1.0 - g[i] for i in range(n)]
             H = [(1.0 if abs(Dv[i] - a) < 0.5 else 0.0) / ga[i] for i in range(n)]
@@ -117,9 +116,15 @@ def tmle_marginal_pim(y, D, X):
             ic[i] += bar * (IC[1][j][i] - prev1) + 0.5 * (IC[0][j][i] + prev0) * d1
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "n_grid": float(K), "n": n,
-        "method": "TMLE for the marginal probabilistic index"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "n_grid": float(K),
+            "n": n,
+            "method": "TMLE for the marginal probabilistic index",
+        }
+    )
 
 
 def cheatsheet():

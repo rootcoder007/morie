@@ -132,7 +132,7 @@ def rgknd(
     rng = np.random.default_rng(42)
     n_boot = 500
     boot_taus = np.empty(n_boot)
-    idx_w = np.where(mask)[0]
+    np.where(mask)[0]
     for b in range(n_boot):
         bi = rng.integers(0, n_used, size=n_used)
         Rb = R_w[bi]

@@ -1,7 +1,6 @@
 """Tests for morie.fn.spvut — Spatial voting utility."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spvut import spvut
 
 

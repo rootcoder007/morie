@@ -106,10 +106,7 @@ def esl_prototype_lvq(X, y, n_prototypes=2, eta=0.1, n_epochs=50, newdata=None, 
     for c in classes:
         idx = np.flatnonzero(yr == c)
         if idx.size < n_prototypes:
-            raise ValueError(
-                f"class {c!r} has {idx.size} observations, fewer than "
-                f"n_prototypes={n_prototypes}"
-            )
+            raise ValueError(f"class {c!r} has {idx.size} observations, fewer than n_prototypes={n_prototypes}")
         protos.append(X[rng.choice(idx, n_prototypes, replace=False)])
         pclass.append(np.full(n_prototypes, c))
     M = np.vstack(protos).astype(float)
@@ -129,12 +126,14 @@ def esl_prototype_lvq(X, y, n_prototypes=2, eta=0.1, n_epochs=50, newdata=None, 
     train = mc[np.argmin(((X[:, None] - M[None, :]) ** 2).sum(-1), axis=1)]
     return RichResult(
         title="Learning vector quantization",
-        summary_lines=[("n", n), ("prototypes/class", int(n_prototypes)),
-                       ("accuracy", float(np.mean(train == yr)))],
+        summary_lines=[("n", n), ("prototypes/class", int(n_prototypes)), ("accuracy", float(np.mean(train == yr)))],
         payload={
-            "prototypes": M, "prototype_class": mc,
-            "class_": pred, "accuracy": float(np.mean(train == yr)),
-            "classes": classes, "n_prototypes": int(n_prototypes),
+            "prototypes": M,
+            "prototype_class": mc,
+            "class_": pred,
+            "accuracy": float(np.mean(train == yr)),
+            "classes": classes,
+            "n_prototypes": int(n_prototypes),
             "method": "esl_prototype_lvq",
         },
     )

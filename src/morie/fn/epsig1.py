@@ -72,8 +72,7 @@ def em_algorithm(log_lik, Q, x0, steps):
             "min_increment": mn,
             "monotone": mn >= -1e-9,
             "steps": steps,
-            "method": "EM driver with a Dempster-Laird-Rubin Theorem 1 "
-                      "monotonicity audit",
+            "method": "EM driver with a Dempster-Laird-Rubin Theorem 1 monotonicity audit",
         }
     )
 

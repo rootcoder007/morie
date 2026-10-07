@@ -1,7 +1,6 @@
 """Tests for causmm.causal_mahalanobis_match."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causmm import causal_mahalanobis_match
 
 
@@ -15,8 +14,7 @@ def test_causmm_basic():
     assert isinstance(result, dict)
 
     # Documented payload keys.
-    for key in ("matches", "distances", "matched_treated",
-                "n_unmatched", "reuse_max", "mean_distance"):
+    for key in ("matches", "distances", "matched_treated", "n_unmatched", "reuse_max", "mean_distance"):
         assert key in result
 
     # All treated units must be accounted for: either matched (>=0) or counted
@@ -24,7 +22,7 @@ def test_causmm_basic():
     n_treated = int(np.sum(treat == 1))
     matches = result["matches"]
     assert matches.shape == (n_treated, k)
-    has_match = (matches[:, 0] >= 0)
+    has_match = matches[:, 0] >= 0
     assert int(result["n_unmatched"]) == int((~has_match).sum())
     assert int(result["n_unmatched"]) == n_treated - int(has_match.sum())
 
@@ -40,11 +38,10 @@ def test_causmm_basic():
     expected = np.empty((ti.size, ci.size))
     for a, i in enumerate(ti):
         diff = X[ci] - X[i]
-        expected[a] = np.sqrt(np.maximum(
-            np.einsum("ij,jk,ik->i", diff, Sinv, diff), 0.0))
+        expected[a] = np.sqrt(np.maximum(np.einsum("ij,jk,ik->i", diff, Sinv, diff), 0.0))
     # The function's distances matrix must equal the independently computed
     # Mahalanobis distance matrix entry-wise.
-    assert np.allclose(d[:, :ci.size][..., :1], expected[:, :1]) or True
+    assert np.allclose(d[:, : ci.size][..., :1], expected[:, :1]) or True
     # Stronger check: for the first control candidate of each treated unit,
     # the function's recorded distance equals the formula.
     for a in range(ti.size):
@@ -71,8 +68,7 @@ def test_causmm_edge():
     result = causal_mahalanobis_match(X, treat, k)
     assert isinstance(result, dict)
     # Documented payload keys present.
-    for key in ("matches", "distances", "matched_treated",
-                "n_unmatched", "reuse_max", "mean_distance"):
+    for key in ("matches", "distances", "matched_treated", "n_unmatched", "reuse_max", "mean_distance"):
         assert key in result
     # mean_distance is a real number when at least one treated unit is matched.
     assert np.isfinite(result["mean_distance"])

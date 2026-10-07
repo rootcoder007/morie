@@ -15,8 +15,7 @@ def _profile_theta(D, L, theta):
     a = 1.0 / theta
     tot = 0.0
     for k in range(len(D)):
-        tot += (a * math.log(a) - math.lgamma(a)
-                + math.lgamma(D[k] + a) - (D[k] + a) * math.log(a + L[k]))
+        tot += a * math.log(a) - math.lgamma(a) + math.lgamma(D[k] + a) - (D[k] + a) * math.log(a + L[k])
     return tot
 
 
@@ -101,6 +100,7 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
                 acc += v
                 cum.append(acc)
             import bisect as _bisect
+
             H = []
             for i in range(n):
                 m = _bisect.bisect_right(etimes, float(t[i]))
@@ -119,9 +119,12 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
             if e[i] == 1.0:
                 ll += float(eta[i]) + math.log(dL[tidx[float(t[i])]])
         for j in range(len(ks)):
-            ll += (math.lgamma(a + D[j]) - math.lgamma(a)
-                   + D[j] * math.log(theta)
-                   - (a + D[j]) * math.log(1.0 + theta * L[j]))
+            ll += (
+                math.lgamma(a + D[j])
+                - math.lgamma(a)
+                + D[j] * math.log(theta)
+                - (a + D[j]) * math.log(1.0 + theta * L[j])
+            )
         return ll, fit, w, etimes, dL, D, L
 
     # outer golden-section on log-theta maximizing the marginal loglik
@@ -135,15 +138,21 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
             acc += v
             cumL.append(acc)
         S_marg = [(1.0 + theta * v) ** (-1.0 / theta) for v in cumL]
-        return RichResult(payload={
-            "estimate": beta, "se": fit["se"], "theta": theta,
-            "kendall_tau": theta / (theta + 2.0), "frailty": w,
-            "baseline_times": np.asarray(etimes),
-            "baseline_cumhaz": np.asarray(cumL),
-            "marginal_survivor": np.asarray(S_marg),
-            "loglik": ll_max, "n_outer": 0,
-            "method": "Vaupel et al (1979) shared gamma frailty, fixed theta",
-        })
+        return RichResult(
+            payload={
+                "estimate": beta,
+                "se": fit["se"],
+                "theta": theta,
+                "kendall_tau": theta / (theta + 2.0),
+                "frailty": w,
+                "baseline_times": np.asarray(etimes),
+                "baseline_cumhaz": np.asarray(cumL),
+                "marginal_survivor": np.asarray(S_marg),
+                "loglik": ll_max,
+                "n_outer": 0,
+                "method": "Vaupel et al (1979) shared gamma frailty, fixed theta",
+            }
+        )
     # NOTE: the marginal likelihood is flat at machine precision over a
     # ~1e-7 window around the argmax, so cross-language agreement on the
     # ESTIMATED theta is bounded at ~1e-6 (both arms sit inside the
@@ -175,19 +184,21 @@ def shared_frailty_marginal(time, event, X, cluster, theta=None):
         acc += v
         cumL.append(acc)
     S_marg = [(1.0 + theta * v) ** (-1.0 / theta) for v in cumL]
-    return RichResult(payload={
-        "estimate": beta,
-        "se": fit["se"],
-        "theta": theta,
-        "kendall_tau": theta / (theta + 2.0),
-        "frailty": w,
-        "baseline_times": np.asarray(etimes),
-        "baseline_cumhaz": np.asarray(cumL),
-        "marginal_survivor": np.asarray(S_marg),
-        "loglik": ll_max,
-        "n_outer": outer,
-        "method": "Vaupel et al (1979) shared gamma frailty, Klein (1992) EM, marginal survivor",
-    })
+    return RichResult(
+        payload={
+            "estimate": beta,
+            "se": fit["se"],
+            "theta": theta,
+            "kendall_tau": theta / (theta + 2.0),
+            "frailty": w,
+            "baseline_times": np.asarray(etimes),
+            "baseline_cumhaz": np.asarray(cumL),
+            "marginal_survivor": np.asarray(S_marg),
+            "loglik": ll_max,
+            "n_outer": outer,
+            "method": "Vaupel et al (1979) shared gamma frailty, Klein (1992) EM, marginal survivor",
+        }
+    )
 
 
 shfrm = shared_frailty_marginal

@@ -72,9 +72,16 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["alf3df", "af3_diffusion_step", "karras_schedule",
-           "random_rotation", "centre_random_augmentation", "sample",
-           "ORDERS", "cheatsheet"]
+__all__ = [
+    "alf3df",
+    "af3_diffusion_step",
+    "karras_schedule",
+    "random_rotation",
+    "centre_random_augmentation",
+    "sample",
+    "ORDERS",
+    "cheatsheet",
+]
 
 ORDERS = ("heun", "euler")
 
@@ -122,12 +129,9 @@ def random_rotation(rng):
     z = s2 * math.sin(t2)
     w = s2 * math.cos(t2)
     return [
-        [1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - z * w),
-         2.0 * (x * z + y * w)],
-        [2.0 * (x * y + z * w), 1.0 - 2.0 * (x * x + z * z),
-         2.0 * (y * z - x * w)],
-        [2.0 * (x * z - y * w), 2.0 * (y * z + x * w),
-         1.0 - 2.0 * (x * x + y * y)],
+        [1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - z * w), 2.0 * (x * z + y * w)],
+        [2.0 * (x * y + z * w), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - x * w)],
+        [2.0 * (x * z - y * w), 2.0 * (y * z + x * w), 1.0 - 2.0 * (x * x + y * y)],
     ]
 
 
@@ -151,9 +155,9 @@ def centre_random_augmentation(x, rng):
     return out, cen
 
 
-def af3_diffusion_step(x, t, score_fn, sigma_next=None, gamma=0.0,
-                       noise_scale=1.0, step_scale=1.0, order="heun",
-                       rng=None, augment=False):
+def af3_diffusion_step(
+    x, t, score_fn, sigma_next=None, gamma=0.0, noise_scale=1.0, step_scale=1.0, order="heun", rng=None, augment=False
+):
     """One step of the sampler, from noise level t down to sigma_next.
 
     Parameters
@@ -191,7 +195,7 @@ def af3_diffusion_step(x, t, score_fn, sigma_next=None, gamma=0.0,
     Nature 630(8016), 493-500.
     """
     if order not in ORDERS:
-        raise ValueError("order must be one of %r" % (ORDERS,))
+        raise ValueError(f"order must be one of {ORDERS!r}")
     t = float(t)
     if t <= 0.0:
         raise ValueError("the current noise level must be positive")
@@ -209,41 +213,44 @@ def af3_diffusion_step(x, t, score_fn, sigma_next=None, gamma=0.0,
         if rng is None:
             raise ValueError("churn needs a random stream")
         amt = math.sqrt(that * that - t * t) * float(noise_scale)
-        cur = [[row[c] + amt * float(rng.normal()) for c in range(3)]
-               for row in cur]
+        cur = [[row[c] + amt * float(rng.normal()) for c in range(3)] for row in cur]
 
     den = score_fn(cur, that)
-    d = [[(cur[i][c] - den[i][c]) / that for c in range(3)]
-         for i in range(len(cur))]
+    d = [[(cur[i][c] - den[i][c]) / that for c in range(3)] for i in range(len(cur))]
     dt = (sn - that) * float(step_scale)
-    nxt = [[cur[i][c] + dt * d[i][c] for c in range(3)]
-           for i in range(len(cur))]
+    nxt = [[cur[i][c] + dt * d[i][c] for c in range(3)] for i in range(len(cur))]
     if order == "heun" and sn > 0.0:
         # The second-order correction: average the direction at the
         # start and the end of the step. It costs one more denoiser call
         # and is what makes the sampler second order rather than first.
         den2 = score_fn(nxt, sn)
-        d2 = [[(nxt[i][c] - den2[i][c]) / sn for c in range(3)]
-              for i in range(len(nxt))]
-        nxt = [[cur[i][c] + dt * 0.5 * (d[i][c] + d2[i][c])
-                for c in range(3)] for i in range(len(cur))]
+        d2 = [[(nxt[i][c] - den2[i][c]) / sn for c in range(3)] for i in range(len(nxt))]
+        nxt = [[cur[i][c] + dt * 0.5 * (d[i][c] + d2[i][c]) for c in range(3)] for i in range(len(cur))]
     return {"x": nxt, "sigma_hat": that, "direction": d}
 
 
-def sample(shape_n, score_fn, n_steps=8, sigma_min=0.002, sigma_max=80.0,
-           rho=7.0, gamma=0.0, noise_scale=1.0, step_scale=1.0,
-           order="heun", seed=0, augment=False):
+def sample(
+    shape_n,
+    score_fn,
+    n_steps=8,
+    sigma_min=0.002,
+    sigma_max=80.0,
+    rho=7.0,
+    gamma=0.0,
+    noise_scale=1.0,
+    step_scale=1.0,
+    order="heun",
+    seed=0,
+    augment=False,
+):
     """Run the whole schedule from noise to a structure."""
     sig = karras_schedule(n_steps, sigma_min, sigma_max, rho)
     rng = _core._SplitMix64(seed)
     n = int(shape_n)
-    x = [[sig[0] * float(rng.normal()) for _ in range(3)]
-         for _ in range(n)]
+    x = [[sig[0] * float(rng.normal()) for _ in range(3)] for _ in range(n)]
     traj = []
     for i in range(len(sig) - 1):
-        r = af3_diffusion_step(x, sig[i], score_fn, sig[i + 1], gamma,
-                               noise_scale, step_scale, order, rng,
-                               augment)
+        r = af3_diffusion_step(x, sig[i], score_fn, sig[i + 1], gamma, noise_scale, step_scale, order, rng, augment)
         x = r["x"]
         traj.append(r["sigma_hat"])
     return x, sig, traj
@@ -255,25 +262,31 @@ def alf3df(x, t, score_fn, **kw):
     nx = r["x"]
     n = len(nx)
     cen = [_w.csum(row[c] for row in nx) / n for c in range(3)]
-    rad = math.sqrt(_w.csum(
-        (nx[i][c] - cen[c]) * (nx[i][c] - cen[c])
-        for i in range(n) for c in range(3)) / n) if n else float("nan")
-    return RichResult(payload={
-        "x": nx,
-        "direction": r["direction"],
-        "sigma_hat": r["sigma_hat"],
-        "sigma": float(t),
-        "centroid": cen,
-        "radius_of_gyration": rad,
-        "estimate": rad,
-        "se": float("nan"),
-        "n_atoms": n,
-        "method": "AlphaFold-3 style diffusion sampling step",
-    })
+    rad = (
+        math.sqrt(_w.csum((nx[i][c] - cen[c]) * (nx[i][c] - cen[c]) for i in range(n) for c in range(3)) / n)
+        if n
+        else float("nan")
+    )
+    return RichResult(
+        payload={
+            "x": nx,
+            "direction": r["direction"],
+            "sigma_hat": r["sigma_hat"],
+            "sigma": float(t),
+            "centroid": cen,
+            "radius_of_gyration": rad,
+            "estimate": rad,
+            "se": float("nan"),
+            "n_atoms": n,
+            "method": "AlphaFold-3 style diffusion sampling step",
+        }
+    )
 
 
 def cheatsheet():
-    return ("alf3df: AlphaFold-3 style diffusion step. orders "
-            + ", ".join(ORDERS)
-            + "; Karras schedule and update, centre-random augmentation, "
-              "AF3 constants supplied by the caller")
+    return (
+        "alf3df: AlphaFold-3 style diffusion step. orders "
+        + ", ".join(ORDERS)
+        + "; Karras schedule and update, centre-random augmentation, "
+        "AF3 constants supplied by the caller"
+    )

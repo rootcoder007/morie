@@ -93,7 +93,7 @@ def kmsem(
         se_arr[j] = np.sqrt(max(var_s, 0))
 
         if s > 0 and s < 1 and se_arr[j] > 0:
-            log_log_s = np.log(-np.log(s))
+            np.log(-np.log(s))
             se_ll = se_arr[j] / (s * abs(np.log(s)))
             ci_lo[j] = s ** np.exp(z * se_ll)
             ci_hi[j] = s ** np.exp(-z * se_ll)

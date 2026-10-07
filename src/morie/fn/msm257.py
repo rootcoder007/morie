@@ -6,8 +6,6 @@ Implements eq. (1.2)-(1.5) pp.15-16 of Montesinos López, Montesinos López & Cr
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,13 +19,16 @@ def mvsml_general_eq_1_222(groups):
     data, which is what the book uses to argue that the environment
     effect matters. Keys: estimate."""
     s = _gp.one_way_summary(groups)
-    ratio = s["sd_single_mean"] / s["sd_residual"] \
-        if s["sd_residual"] > 0 else float("inf")
-    res = RichResult(payload={"estimate": ratio,
-                              "sd_single_mean": s["sd_single_mean"],
-                              "sd_residual": s["sd_residual"],
-                              "sigma2_b": s["sigma2_b"],
-                              "method": "chapter-1 model comparison (MVSML 2022 eq. 1.2-1.5)"})
+    ratio = s["sd_single_mean"] / s["sd_residual"] if s["sd_residual"] > 0 else float("inf")
+    res = RichResult(
+        payload={
+            "estimate": ratio,
+            "sd_single_mean": s["sd_single_mean"],
+            "sd_residual": s["sd_residual"],
+            "sigma2_b": s["sigma2_b"],
+            "method": "chapter-1 model comparison (MVSML 2022 eq. 1.2-1.5)",
+        }
+    )
     return with_describe_pointer(res, "msm257")
 
 

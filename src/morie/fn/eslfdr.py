@@ -76,17 +76,30 @@ def esl_bh_fdr(pvalues, alpha):
     ranks = np.arange(1, m + 1)
     under = np.flatnonzero(ps <= ranks * alpha / m)
     if under.size == 0:
-        return RichResult(payload={
-            "estimate": 0, "rejected": [], "threshold": float("nan"),
-            "cutoff_rank": 0, "m": int(m), "alpha": alpha,
-            "method": "Benjamini-Hochberg step-up; no rejections"})
-    j = int(under[-1])                      # largest j meeting the line
+        return RichResult(
+            payload={
+                "estimate": 0,
+                "rejected": [],
+                "threshold": float("nan"),
+                "cutoff_rank": 0,
+                "m": int(m),
+                "alpha": alpha,
+                "method": "Benjamini-Hochberg step-up; no rejections",
+            }
+        )
+    j = int(under[-1])  # largest j meeting the line
     rejected = sorted(int(v) for v in order[: j + 1])
-    return RichResult(payload={
-        "estimate": len(rejected), "rejected": rejected,
-        "threshold": float(ps[j]), "cutoff_rank": j + 1,
-        "m": int(m), "alpha": alpha,
-        "method": "Benjamini-Hochberg step-up: reject through the largest j with p_(j) <= j alpha/m"})
+    return RichResult(
+        payload={
+            "estimate": len(rejected),
+            "rejected": rejected,
+            "threshold": float(ps[j]),
+            "cutoff_rank": j + 1,
+            "m": int(m),
+            "alpha": alpha,
+            "method": "Benjamini-Hochberg step-up: reject through the largest j with p_(j) <= j alpha/m",
+        }
+    )
 
 
 def cheatsheet():

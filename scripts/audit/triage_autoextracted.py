@@ -40,8 +40,17 @@ FORMULA_RE = re.compile(r"^\s*Formula:\s*(.+)$", re.MULTILINE)
 OPERATORS = set("=+-*/^<>∑∫√±≤≥≠αβγδθλμσπΦφ")
 
 FIELDS = [
-    "module", "book", "chapter", "equation", "function", "n_params",
-    "params", "formula", "formula_hash", "verdict", "reason",
+    "module",
+    "book",
+    "chapter",
+    "equation",
+    "function",
+    "n_params",
+    "params",
+    "formula",
+    "formula_hash",
+    "verdict",
+    "reason",
 ]
 
 
@@ -97,12 +106,21 @@ def main():
             try:
                 text = p.read_text(encoding="utf-8", errors="replace")
             except OSError as exc:
-                w.writerow({
-                    "module": p.name, "book": m["book"], "chapter": m["ch"],
-                    "equation": m["eq"], "function": "", "n_params": "",
-                    "params": "", "formula": "", "formula_hash": "",
-                    "verdict": "unreadable", "reason": str(exc),
-                })
+                w.writerow(
+                    {
+                        "module": p.name,
+                        "book": m["book"],
+                        "chapter": m["ch"],
+                        "equation": m["eq"],
+                        "function": "",
+                        "n_params": "",
+                        "params": "",
+                        "formula": "",
+                        "formula_hash": "",
+                        "verdict": "unreadable",
+                        "reason": str(exc),
+                    }
+                )
                 fh.flush()
                 continue
             if not is_placeholder(text):
@@ -121,10 +139,7 @@ def main():
 
             fm = FORMULA_RE.search(text)
             formula = fm.group(1).strip() if fm else ""
-            fhash = (
-                hashlib.sha1(re.sub(r"\s+", " ", formula).encode()).hexdigest()[:12]
-                if formula else ""
-            )
+            fhash = hashlib.sha1(re.sub(r"\s+", " ", formula).encode()).hexdigest()[:12] if formula else ""
 
             verdict, reason = classify(formula, params)
             if verdict == "implementable" and fhash in seen_hashes:
@@ -133,13 +148,21 @@ def main():
             elif fhash and fhash not in seen_hashes:
                 seen_hashes[fhash] = p.name
 
-            w.writerow({
-                "module": p.name, "book": m["book"], "chapter": m["ch"],
-                "equation": m["eq"], "function": fn_name,
-                "n_params": len(params), "params": "|".join(params),
-                "formula": formula[:300], "formula_hash": fhash,
-                "verdict": verdict, "reason": reason,
-            })
+            w.writerow(
+                {
+                    "module": p.name,
+                    "book": m["book"],
+                    "chapter": m["ch"],
+                    "equation": m["eq"],
+                    "function": fn_name,
+                    "n_params": len(params),
+                    "params": "|".join(params),
+                    "formula": formula[:300],
+                    "formula_hash": fhash,
+                    "verdict": verdict,
+                    "reason": reason,
+                }
+            )
             fh.flush()
             os.fsync(fh.fileno())
             n += 1

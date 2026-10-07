@@ -49,11 +49,9 @@ _NAMED = {
     "tv": lambda t: 0.5 * abs(t - 1.0),
     "chi2": lambda t: (t - 1.0) ** 2,
     "hellinger": lambda t: (math.sqrt(t) - 1.0) ** 2,
-    "js": lambda t: (t * math.log(t) if t > 0.0 else 0.0)
-    - (t + 1.0) * math.log((t + 1.0) / 2.0),
+    "js": lambda t: (t * math.log(t) if t > 0.0 else 0.0) - (t + 1.0) * math.log((t + 1.0) / 2.0),
 }
-_NAMED_INF = {"kl": float("inf"), "rkl": 0.0, "tv": 0.5, "chi2": float("inf"),
-              "hellinger": 1.0, "js": math.log(2.0)}
+_NAMED_INF = {"kl": float("inf"), "rkl": 0.0, "tv": 0.5, "chi2": float("inf"), "hellinger": 1.0, "js": math.log(2.0)}
 
 
 def convex_divergence(p, q, f="kl", f_inf=None, normalise=True):
@@ -91,7 +89,7 @@ def convex_divergence(p, q, f="kl", f_inf=None, normalise=True):
     if isinstance(f, str):
         key = f.lower()
         if key not in _NAMED:
-            raise ValueError("unknown generator %r" % (f,))
+            raise ValueError(f"unknown generator {f!r}")
         fn = _NAMED[key]
         if f_inf is None:
             f_inf = _NAMED_INF[key]
@@ -124,11 +122,18 @@ def convex_divergence(p, q, f="kl", f_inf=None, normalise=True):
         total += t
         if t != 0.0:
             support += 1
-    return RichResult(payload={
-        "divergence": float(total), "estimate": float(total),
-        "terms": [float(v) for v in terms], "support": support,
-        "generator": name, "f_inf": float(f_inf), "n": n,
-        "method": "Csiszar (1967) f-divergence, sum q f(p/q)"})
+    return RichResult(
+        payload={
+            "divergence": float(total),
+            "estimate": float(total),
+            "terms": [float(v) for v in terms],
+            "support": support,
+            "generator": name,
+            "f_inf": float(f_inf),
+            "n": n,
+            "method": "Csiszar (1967) f-divergence, sum q f(p/q)",
+        }
+    )
 
 
 def cheatsheet():

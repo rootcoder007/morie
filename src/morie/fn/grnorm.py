@@ -76,17 +76,14 @@ def geron_normal_equation(X, y, add_intercept=False, rcond=1e-12):
     if not np.all(np.isfinite(A)) or not np.all(np.isfinite(yv)):
         raise ValueError("X and y must be finite.")
     if A.shape[0] < A.shape[1]:
-        raise ValueError(
-            f"{A.shape[0]} instances for {A.shape[1]} parameters: X^T X cannot have full rank."
-        )
+        raise ValueError(f"{A.shape[0]} instances for {A.shape[1]} parameters: X^T X cannot have full rank.")
 
     G = A.T @ A
     sv = np.linalg.svd(G, compute_uv=False)
     rc = float(sv.min() / sv.max()) if sv.max() > 0 else 0.0
     if rc < rcond:
         raise ValueError(
-            f"X^T X is singular (reciprocal condition number {rc:.1e} < {rcond:g}); "
-            "features are collinear."
+            f"X^T X is singular (reciprocal condition number {rc:.1e} < {rcond:g}); features are collinear."
         )
     theta = np.linalg.solve(G, A.T @ yv)
     fitted = A @ theta

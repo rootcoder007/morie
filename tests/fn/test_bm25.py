@@ -1,8 +1,5 @@
 """Tests for bm25.bm25."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.bm25 import bm25
 
 

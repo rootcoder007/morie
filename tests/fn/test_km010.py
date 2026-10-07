@@ -13,6 +13,8 @@ def test_km010_doctest():
 
 def test_km010_edge():
     import pytest
+
     from morie.fn.km010 import kamath_ch2_attention_output
+
     with pytest.raises(ValueError):
         kamath_ch2_attention_output([0.5], [[1.0], [2.0]])

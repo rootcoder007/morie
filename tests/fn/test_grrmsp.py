@@ -37,9 +37,7 @@ def test_grrmsp_edge():
         geron_rmsprop_update([1.0], [1.0], lr=0.0)  # lr must be positive
     # state carried between calls
     out1 = geron_rmsprop_update([1.0], [1.0], lr=0.1)
-    out2 = geron_rmsprop_update(
-        out1["params"], [1.0], state=out1["state"], lr=0.1
-    )
+    out2 = geron_rmsprop_update(out1["params"], [1.0], state=out1["state"], lr=0.1)
     assert isinstance(out2, dict)
     assert "params" in out2
     assert len(out2["params"]) == 1
@@ -55,7 +53,7 @@ import morie.fn.grrmsp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

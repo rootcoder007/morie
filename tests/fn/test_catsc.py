@@ -1,7 +1,6 @@
 """Tests for catsc.py - CAT score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.catsc import cat_score_fn, catsc
 
 

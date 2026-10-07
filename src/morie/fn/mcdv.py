@@ -98,7 +98,7 @@ def mcd(X, h=None, n_starts=None, max_subsets=200000):
         raise ValueError("mcd: h cannot exceed the number of observations")
     total = R.nchoosek(n, hh)
     if total > max_subsets:
-        raise ValueError("mcd: %d subsets exceeds max_subsets; use fastm for the approximate algorithm" % total)
+        raise ValueError(f"mcd: {int(total)} subsets exceeds max_subsets; use fastm for the approximate algorithm")
     best_idx = None
     best_det = None
     for idx in R.combos(n, hh):

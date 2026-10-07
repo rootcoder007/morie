@@ -1,7 +1,6 @@
 """Tests for morie.fn.qqplt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.qqplt import qq_data
 
 

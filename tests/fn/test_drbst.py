@@ -1,7 +1,6 @@
 """Tests for drbst.dr_did_bootstrap."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drbst import dr_did_bootstrap
 
 

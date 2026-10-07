@@ -72,16 +72,23 @@ def hrz_semiparametric_ls(X, y, h=None, kernel_name="gaussian", beta0=None):
         r = r[np.isfinite(r)]
         return float(np.sum(r**2)) if r.size else 1e18
 
-    start = np.zeros(d - 1) if beta0 is None else \
-        np.atleast_1d(np.asarray(beta0, dtype=float))[1:] / \
-        np.atleast_1d(np.asarray(beta0, dtype=float))[0]
-    res = optimize.minimize(sse, start, method="Nelder-Mead",
-                            options={"maxiter": 2000, "fatol": 1e-8})
+    start = (
+        np.zeros(d - 1)
+        if beta0 is None
+        else np.atleast_1d(np.asarray(beta0, dtype=float))[1:] / np.atleast_1d(np.asarray(beta0, dtype=float))[0]
+    )
+    res = optimize.minimize(sse, start, method="Nelder-Mead", options={"maxiter": 2000, "fatol": 1e-8})
     beta = np.r_[1.0, res.x]
-    return RichResult(payload={"beta": beta, "sse": float(res.fun),
-                               "converged": bool(res.success), "n": int(n),
-                               "d": int(d),
-                               "method": "Ichimura SLS; |b1|=1 and leave-one-out are both required"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "sse": float(res.fun),
+            "converged": bool(res.success),
+            "n": int(n),
+            "d": int(d),
+            "method": "Ichimura SLS; |b1|=1 and leave-one-out are both required",
+        }
+    )
 
 
 def cheatsheet():

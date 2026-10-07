@@ -1,8 +1,8 @@
 """Tests for morie.fn.bartk — Bartik/shift-share IV."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bartk import bartk
 
 

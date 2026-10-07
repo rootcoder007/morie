@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,8 +19,7 @@ def evt_gpd_quantile(p, sigma, xi):
     ps = _ev._flat(p)
     q = [_ev.gpd_quantile(v, float(sigma), float(xi)) for v in ps]
     out = q[0] if len(q) == 1 else q
-    res = RichResult(payload={"y_p": out,
-                              "method": "GPD quantile (Coles 2001 eq. 4.2 inverse)"})
+    res = RichResult(payload={"y_p": out, "method": "GPD quantile (Coles 2001 eq. 4.2 inverse)"})
     return with_describe_pointer(res, "evgpdq")
 
 

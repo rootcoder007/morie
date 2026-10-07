@@ -29,8 +29,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_backup"]
 
 
-def alphazero_backup(leaf, value, path, N=None, W=None, rewards=None,
-                     gamma=1.0, alternate=True):
+def alphazero_backup(leaf, value, path, N=None, W=None, rewards=None, gamma=1.0, alternate=True):
     """Propagate a leaf value back along the search path.
 
     Parameters

@@ -2,7 +2,7 @@ Get the real data
 =================
 
 Nothing in MORIE depends on a dataset being on your machine already. The
-packages ship the catalogue (70 keys), the provenance records and a few small
+packages ship the catalogue (71 keys), the provenance records and a few small
 synthetic frames; the real files are downloaded on first use from the
 portals that publish them and cached, so every later call is local.
 
@@ -19,10 +19,13 @@ See what exists
    rmorie::morie_list_datasets()
 
 Each row says where the data comes from: a portal it is pulled from
-(open.canada.ca, data.ontario.ca, Statistics Canada, CIHI, ECCC, the Toronto
-Police ArcGIS hub), ``rmoriedata`` on CRAN (sample frames and the provenance
-records), or "own file" for restricted data you drop under
-``$MORIE_DATA_DIR`` yourself.
+(open.canada.ca, data.ontario.ca, Statistics Canada, CIHI,
+health-infobase.canada.ca, ECCC, the Toronto Police ArcGIS hub),
+``rmoriedata`` on CRAN (sample frames and the provenance records),
+data.rmorie.com (the Health Infobase fallback copy, the OTIS research
+environments and, once a key from rmorie.com/access is stored with ``morie login --token``, the curated tables), or "own file"
+for the one key that is your own research file (the MAPQ workbook), dropped
+under ``$MORIE_DATA_DIR`` yourself.
 
 Pull one dataset, or all of them
 --------------------------------
@@ -74,16 +77,19 @@ To be explicit, pass ``--dataset KEY`` (any catalog key) or
 Curated tables at data.rmorie.com
 ---------------------------------
 
-Beyond the open portals, the project keeps 160 curated databases built from
+Beyond the open portals, the project keeps 160 curated databases built from BigQuery public datasets, plus the Health Infobase tables and the OTIS research files, all from
 Google BigQuery public datasets (Chicago crime, EPA air quality, US census,
 FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...) and serves
 their tables from the edge at https://data.rmorie.com. They open with the
-same key ``morie login`` stores for the hosted model tier, and they do not
+same key ``morie login --token`` stores for the hosted model tier (issued on
+request at https://rmorie.com/access, under https://rmorie.com/data-license),
+and they do not
 depend on any project machine being up.
 
 .. code-block:: bash
 
-   morie login                                   # once
+   morie login --token                           # once: the key issued at rmorie.com/access
+   morie login                                   # or the GitHub sign-in, for accounts that have one
    morie list-datasets                           # the curated tables appear with route "data.rmorie.com"
    morie pull chicago_crime/incidents --out incidents.csv
    rmorie pull epa_pm25_daily/epa_pm25_daily --out pm25.csv

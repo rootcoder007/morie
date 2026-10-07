@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_whittle_crt"]
@@ -27,21 +26,24 @@ def ghosal_whittle_crt(ns=(256, 1024, 4096), n_bins=6, seed=42):
         m = n // 2
         bs = [0.0] * n_bins
         bc = [0] * n_bins
-        for j in range(1, m, max(1, m // 200)):    # subsample freqs
+        for j in range(1, m, max(1, m // 200)):  # subsample freqs
             ang = 2.0 * math.pi * j / n
             wr = sum(v * math.cos(ang * t) for t, v in enumerate(x))
             wi = sum(v * math.sin(ang * t) for t, v in enumerate(x))
-            I = (wr * wr + wi * wi) / (2.0 * math.pi * n)
+            I_ = (wr * wr + wi * wi) / (2.0 * math.pi * n)
             b = min(int(n_bins * j / m), n_bins - 1)
-            bs[b] += I
+            bs[b] += I_
             bc[b] += 1
-        est = [(0.5 * truth + s) / (0.5 + c)
-               for s, c in zip(bs, bc)]
+        est = [(0.5 * truth + s) / (0.5 + c) for s, c in zip(bs, bc)]
         errs.append(sum(abs(e - truth) for e in est) / n_bins)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "err_by_n": errs,
-                              "improving": errs[-1] < errs[0],
-                              "method": "Whittle spectral rate (GvdV 2017 sec. 9.5.2)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "err_by_n": errs,
+            "improving": errs[-1] < errs[0],
+            "method": "Whittle spectral rate (GvdV 2017 sec. 9.5.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c9_7")
 
 

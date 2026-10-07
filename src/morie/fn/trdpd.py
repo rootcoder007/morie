@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tree-depth saturation diagnostic for NUTS."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -59,13 +57,20 @@ def treedepth(depths, max_depth=10):
     if md < 0:
         raise ValueError("max_depth must be non-negative")
     k = sum(1 for v in d if v >= md)
-    lf = [2.0 ** v for v in d]
-    return RichResult(payload={
-        "saturated": k / n, "n_saturated": float(k),
-        "mean_depth": sum(d) / n, "max_observed": max(d),
-        "mean_leapfrog": sum(lf) / n, "total_leapfrog": sum(lf),
-        "warn": 1.0 if k > 0 else 0.0, "n": float(n),
-        "method": "NUTS tree-depth saturation diagnostic"})
+    lf = [2.0**v for v in d]
+    return RichResult(
+        payload={
+            "saturated": k / n,
+            "n_saturated": float(k),
+            "mean_depth": sum(d) / n,
+            "max_observed": max(d),
+            "mean_leapfrog": sum(lf) / n,
+            "total_leapfrog": sum(lf),
+            "warn": 1.0 if k > 0 else 0.0,
+            "n": float(n),
+            "method": "NUTS tree-depth saturation diagnostic",
+        }
+    )
 
 
 tree_depth_saturation = treedepth

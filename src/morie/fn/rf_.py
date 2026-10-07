@@ -7,8 +7,7 @@ from .cart import _build_tree, _predict_one
 
 
 def random_forest_simple(
-    X: np.ndarray, y: np.ndarray, n_trees: int = 50, max_depth: int = 5,
-    seed: int = 42, max_features: int | None = None
+    X: np.ndarray, y: np.ndarray, n_trees: int = 50, max_depth: int = 5, seed: int = 42, max_features: int | None = None
 ) -> DescriptiveResult:
     """
     Random forest regression (pure numpy).
@@ -56,8 +55,7 @@ def random_forest_simple(
     trees = []
     for _ in range(n_trees):
         idx = rng.choice(n, n, replace=True)
-        tree = _build_tree(X[idx], y[idx], 0, max_depth, 2,
-                           max_features=mf, rng=rng)
+        tree = _build_tree(X[idx], y[idx], 0, max_depth, 2, max_features=mf, rng=rng)
         trees.append(tree)
     preds = np.zeros(n)
     for tree in trees:
@@ -69,11 +67,16 @@ def random_forest_simple(
     return DescriptiveResult(
         name="random_forest",
         value=r2,
-        extra={"predictions": preds, "r_squared": r2, "n_trees": n_trees,
-               "max_depth": max_depth, "n": n, "max_features": mf,
-               "subset_drawn_per": "node",
-               "mtry_rule": "floor(p/3), the regression default; "
-                            "floor(sqrt(p)) is the classification one"},
+        extra={
+            "predictions": preds,
+            "r_squared": r2,
+            "n_trees": n_trees,
+            "max_depth": max_depth,
+            "n": n,
+            "max_features": mf,
+            "subset_drawn_per": "node",
+            "mtry_rule": "floor(p/3), the regression default; floor(sqrt(p)) is the classification one",
+        },
     )
 
 

@@ -1,7 +1,6 @@
 """Tests for rgppg.rangayyan_ppg_features."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_ppg_features
 
 

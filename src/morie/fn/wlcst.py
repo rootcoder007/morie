@@ -116,10 +116,8 @@ def wlcst(time: np.ndarray, event: np.ndarray, group: np.ndarray, weight: str = 
         exp_1 += e_1j
         exp_2 += n_2j * d_j / n_j
 
-        if weight == "breslow":
-            w_j = n_j
-        else:  # peto
-            w_j = km_map.get(t_j, 1.0)
+        # peto
+        w_j = n_j if weight == "breslow" else km_map.get(t_j, 1.0)
 
         numerator += w_j * (d_1j - e_1j)
         variance += w_j**2 * n_1j * n_2j * d_j * (n_j - d_j) / (n_j**2 * (n_j - 1))

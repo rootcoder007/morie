@@ -6,7 +6,6 @@ import math
 from morie.fn._containers import RegressionResult
 
 from . import _array_core as np
-from ._sci_core import minimize
 from ._stats_core import norm
 
 
@@ -63,16 +62,14 @@ def rey_tw(
     # were BFGS's approximate inverse Hessian with no dispersion factor.
     Xl = X_arr.tolist()
     yl = [float(v) for v in y_arr.tolist()]
-    beta_l = [float(v) for v in np.linalg.lstsq(
-        X_arr, np.log(np.maximum(y_arr, 0.5)), rcond=None)[0].tolist()]
+    beta_l = [float(v) for v in np.linalg.lstsq(X_arr, np.log(np.maximum(y_arr, 0.5)), rcond=None)[0].tolist()]
 
     def _wls(beta):
         eta = [sum(b * xv for b, xv in zip(beta, r)) for r in Xl]
         mu = [math.exp(e) for e in eta]
         w = [m ** (2.0 - pw) for m in mu]
         z = [e + (yv - m) / m for e, yv, m in zip(eta, yl, mu)]
-        XtWX = [[sum(w[i] * Xl[i][a] * Xl[i][c] for i in range(n)) for c in range(p_dim)]
-                for a in range(p_dim)]
+        XtWX = [[sum(w[i] * Xl[i][a] * Xl[i][c] for i in range(n)) for c in range(p_dim)] for a in range(p_dim)]
         XtWz = [sum(w[i] * Xl[i][a] * z[i] for i in range(n)) for a in range(p_dim)]
         return XtWX, XtWz
 
@@ -107,6 +104,7 @@ def rey_tw(
 
     class _R:
         fun = float(neg_quasi_ll(beta_hat))
+
     result = _R()
 
     z_vals = beta_hat / np.where(se_beta > 0, se_beta, np.inf)

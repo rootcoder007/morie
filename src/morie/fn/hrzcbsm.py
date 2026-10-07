@@ -46,15 +46,18 @@ def choice_based_optimal_shares(pi1):
     denom = np.sqrt(p0) + np.sqrt(p1)
     q0 = float(np.sqrt(p0) / denom)
     q1 = float(np.sqrt(p1) / denom)
-    return RichResult(payload={
-        "q1": q1, "q0": q0,
-        "factor": float(p1 / q1 + p0 / q0),
-        "factor_at_random_sample": 2.0,
-        "method": "q_j proportional to sqrt(pi_j); minimises pi_1/q_1 + pi_0/q_0"})
+    return RichResult(
+        payload={
+            "q1": q1,
+            "q0": q0,
+            "factor": float(p1 / q1 + p0 / q0),
+            "factor_at_random_sample": 2.0,
+            "method": "q_j proportional to sqrt(pi_j); minimises pi_1/q_1 + pi_0/q_0",
+        }
+    )
 
 
-def horowitz_choice_based_sms(x, y, sampling_weights, smoothed=True, h=None,
-                              n_restarts=8, seed=0):
+def horowitz_choice_based_sms(x, y, sampling_weights, smoothed=True, h=None, n_restarts=8, seed=0):
     r"""Maximum-score estimator for a choice-based sample (Horowitz
     Sec. 4.4.1), equations (4.33) and (4.35):
 
@@ -146,19 +149,26 @@ def horowitz_choice_based_sms(x, y, sampling_weights, smoothed=True, h=None,
         # (4.35)'s K is the INTEGRAL of a kernel -- a smooth CDF
         # standing in for the indicator, not a density
         ind = stats.norm.cdf(v / hh) if smoothed else (v >= 0.0).astype(float)
-        return (pi1 / n1) * float(np.sum(yv * ind)) - \
-               (pi0 / n0) * float(np.sum((1.0 - yv) * ind))
+        return (pi1 / n1) * float(np.sum(yv * ind)) - (pi0 / n0) * float(np.sum((1.0 - yv) * ind))
 
-    beta, negval = optimize_scale_normalized(lambda b: -score(b), d,
-                                             n_restarts=n_restarts, seed=seed)
-    return RichResult(payload={
-        "beta": beta, "score": -negval, "pi1": pi1, "pi0": pi0,
-        "n1": n1, "n0": n0, "smoothed": bool(smoothed),
-        "bandwidth": hh if smoothed else None,
-        "rate_exponent": -0.4 if smoothed else -1.0 / 3.0,
-        "standard_errors_valid": bool(smoothed),
-        "n": int(n), "d": int(d),
-        "method": "Choice-based max score (4.33)/(4.35); population shares reweight the strata"})
+    beta, negval = optimize_scale_normalized(lambda b: -score(b), d, n_restarts=n_restarts, seed=seed)
+    return RichResult(
+        payload={
+            "beta": beta,
+            "score": -negval,
+            "pi1": pi1,
+            "pi0": pi0,
+            "n1": n1,
+            "n0": n0,
+            "smoothed": bool(smoothed),
+            "bandwidth": hh if smoothed else None,
+            "rate_exponent": -0.4 if smoothed else -1.0 / 3.0,
+            "standard_errors_valid": bool(smoothed),
+            "n": int(n),
+            "d": int(d),
+            "method": "Choice-based max score (4.33)/(4.35); population shares reweight the strata",
+        }
+    )
 
 
 def cheatsheet():

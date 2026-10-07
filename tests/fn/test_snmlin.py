@@ -1,7 +1,6 @@
 """Tests for snmlin.snm_linear."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.snmlin import snm_linear
 
 

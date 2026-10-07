@@ -17,7 +17,7 @@ def posterior_compare_params(chain, param_indices) -> DescriptiveResult:
     if chain.ndim == 1:
         chain = chain.reshape(-1, 1)
     comparisons = []
-    for i, idx in enumerate(param_indices):
+    for _i, idx in enumerate(param_indices):
         col = chain[:, idx]
         comparisons.append(
             {

@@ -1,7 +1,6 @@
 """Tests for mtgbl.multi_trait_gblup."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mtgbl import multi_trait_gblup
 
 

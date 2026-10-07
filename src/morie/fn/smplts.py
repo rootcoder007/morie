@@ -52,8 +52,7 @@ def sample_lifetable(intervals, entered, died, withdrawn=None):
     J = edges.size - 1
     nj = np.atleast_1d(np.asarray(entered, dtype=float)).ravel()
     dj = np.atleast_1d(np.asarray(died, dtype=float)).ravel()
-    wj = np.zeros(J) if withdrawn is None else \
-        np.atleast_1d(np.asarray(withdrawn, dtype=float)).ravel()
+    wj = np.zeros(J) if withdrawn is None else np.atleast_1d(np.asarray(withdrawn, dtype=float)).ravel()
     for nm, arr in (("entered", nj), ("died", dj), ("withdrawn", wj)):
         if arr.size != J:
             raise ValueError(f"{nm} has {arr.size} entries for {J} intervals.")
@@ -61,21 +60,25 @@ def sample_lifetable(intervals, entered, died, withdrawn=None):
             raise ValueError(f"{nm} must be non-negative.")
     eff = nj - wj / 2.0
     if np.any(eff <= 0):
-        raise ValueError("effective sample size is non-positive in some "
-                         "interval; check entered against withdrawn.")
+        raise ValueError("effective sample size is non-positive in some interval; check entered against withdrawn.")
     if np.any(dj > eff):
         raise ValueError("more deaths than effective exposure in some interval.")
     q = dj / eff
     S = np.cumprod(1.0 - q)
-    return RichResult(payload={
-        "intervals": edges, "q": q, "survival": S, "effective_n": eff,
-        "actuarial_correction": "n_j - w_j/2",
-        "assumes": "withdrawals uniform within each interval, so each "
-                   "contributes half an interval of exposure on average",
-        "prefer": "Kaplan-Meier whenever exact times exist; this is its "
-                  "grouped-data limit",
-        "J": int(J),
-        "method": "Actuarial life table for interval-grouped data"})
+    return RichResult(
+        payload={
+            "intervals": edges,
+            "q": q,
+            "survival": S,
+            "effective_n": eff,
+            "actuarial_correction": "n_j - w_j/2",
+            "assumes": "withdrawals uniform within each interval, so each "
+            "contributes half an interval of exposure on average",
+            "prefer": "Kaplan-Meier whenever exact times exist; this is its grouped-data limit",
+            "J": int(J),
+            "method": "Actuarial life table for interval-grouped data",
+        }
+    )
 
 
 def cheatsheet():

@@ -176,8 +176,7 @@ def _reml(theta, y, X, Km, male):
         return None
     Viy = _solve(L, y)
     ViX = [_solve(L, [X[i][a] for i in range(n)]) for a in range(p)]
-    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)]
-             for a in range(p)]
+    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
     XtViy = [sum(X[i][a] * Viy[i] for i in range(n)) for a in range(p)]
     Lx = _chol(XtViX)
     if Lx is None:
@@ -190,8 +189,7 @@ def _reml(theta, y, X, Km, male):
     return ll, beta, L
 
 
-def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
-                    male_label=1):
+def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9, male_label=1):
     r"""Bivariate REML for per-sex heritability and the cross-sex
     genetic correlation.
 
@@ -219,40 +217,34 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
         raise ValueError("sxrhrt: no observations")
     sv = list(k.vec(sex))
     if len(sv) != n:
-        raise ValueError("sxrhrt: %d phenotypes but %d sex labels"
-                         % (n, len(sv)))
+        raise ValueError(f"sxrhrt: {int(n)} phenotypes but {int(len(sv))} sex labels")
     male = [float(v) == float(male_label) for v in sv]
     nm = sum(1 for v in male if v)
     nf = n - nm
     if nm < 2 or nf < 2:
-        raise ValueError("sxrhrt: %d in one sex and %d in the other -- a "
-                         "variance cannot be estimated from fewer than two"
-                         % (nm, nf))
+        raise ValueError(
+            f"sxrhrt: {int(nm)} in one sex and {int(nf)} in the other -- a variance cannot be estimated from fewer than two"
+        )
     Km = [[float(v) for v in row] for row in k.mat(K)]
     if len(Km) != n or any(len(r) != n for r in Km):
-        raise ValueError("sxrhrt: K must be %d by %d" % (n, n))
+        raise ValueError(f"sxrhrt: K must be {int(n)} by {int(n)}")
     asym = max(abs(Km[i][j] - Km[j][i]) for i in range(n) for j in range(n))
     if asym > 1e-8:
-        raise ValueError("sxrhrt: K is not symmetric (largest asymmetry "
-                         "%.3g)" % asym)
+        raise ValueError(f"sxrhrt: K is not symmetric (largest asymmetry {asym:.3g})")
     # the cross-sex block is the only source of information about rg
-    cross = max(abs(Km[i][j]) for i in range(n) for j in range(n)
-                if male[i] != male[j])
+    cross = max(abs(Km[i][j]) for i in range(n) for j in range(n) if male[i] != male[j])
     # the sexes are two traits, so each carries its OWN fixed effects
     # (GCTA's bivariate REML, Lee et al. 2012): the design is X crossed
     # with sex, block diagonal -- a shared intercept would force equal
     # means and push any mean difference into the residual variances
-    X0 = ([[1.0] for _ in range(n)] if X is None
-          else [[float(v) for v in row] for row in k.mat(X)])
+    X0 = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     q0 = len(X0[0])
-    Xm = [(X0[i] + [0.0] * q0) if male[i] else ([0.0] * q0 + X0[i])
-          for i in range(n)]
+    Xm = [(X0[i] + [0.0] * q0) if male[i] else ([0.0] * q0 + X0[i]) for i in range(n)]
     p = len(Xm[0])
 
     mu = sum(yv) / n
     vy = sum((v - mu) ** 2 for v in yv) / max(n - 1, 1)
-    theta = [max(vy / 2.0, 1e-6), max(vy / 2.0, 1e-6), 0.0,
-             max(vy / 2.0, 1e-6), max(vy / 2.0, 1e-6)]
+    theta = [max(vy / 2.0, 1e-6), max(vy / 2.0, 1e-6), 0.0, max(vy / 2.0, 1e-6), max(vy / 2.0, 1e-6)]
     lo = math.log(max(vy, 1e-8)) - 8.0
     hi = math.log(max(vy, 1e-8)) + 4.0
 
@@ -264,19 +256,23 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
     cycles = 0
     converged = False
     prev_theta = None
-    for cycles in range(1, int(max_cycles) + 1):
-        prev = path[-1]
+    for cycles in range(1, int(max_cycles) + 1):  # noqa: B007 - read after the loop
+        path[-1]
         for idx in (0, 1, 3, 4):
+
             def f(logv, idx=idx):
                 th = list(theta)
                 th[idx] = math.exp(logv)
                 return at(th)
+
             best = _gridmax(f, lo, hi)
             theta[idx] = math.exp(best)
+
         def fr(r):
             th = list(theta)
             th[2] = r
             return at(th)
+
         theta[2] = _gridmax(fr, -0.999, 0.999)
         cur = at(theta)
         path.append(cur)
@@ -290,9 +286,11 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
 
     res = _reml(theta, yv, Xm, Km, male)
     if res is None:
-        raise ValueError("sxrhrt: the fitted covariance is not positive "
-                         "definite -- the relationship matrix is probably "
-                         "not a valid GRM")
+        raise ValueError(
+            "sxrhrt: the fitted covariance is not positive "
+            "definite -- the relationship matrix is probably "
+            "not a valid GRM"
+        )
     ll, beta, L = res
     s2gm, s2gf, rg, s2em, s2ef = theta
     h2m = s2gm / (s2gm + s2em)
@@ -312,19 +310,22 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
 
     def th_of(hv):
         h_, vm_, vf_ = hv[0], math.exp(hv[1]), math.exp(hv[2])
-        return [h_ * vm_, h_ * vf_, theta[2], (1.0 - h_) * vm_,
-                (1.0 - h_) * vf_]
+        return [h_ * vm_, h_ * vf_, theta[2], (1.0 - h_) * vm_, (1.0 - h_) * vf_]
 
     prev_hq = None
     for _ in range(int(max_cycles)):
+
         def fh(h_):
             return at(th_of([h_, hq[1], hq[2]]))
+
         hq[0] = _gridmax(fh, 0.001, 0.999)
         for idx in (1, 2):
+
             def fv(logv, idx=idx):
                 hv = list(hq)
                 hv[idx] = logv
                 return at(th_of(hv))
+
             hq[idx] = _gridmax(fv, lo, hi)
         if prev_hq is not None and hq == prev_hq:
             break
@@ -333,37 +334,50 @@ def sex_specific_h2(y, sex, K, X=None, max_cycles=60, tol=1e-9,
     ll_eq = at(th2)
     lrt_equal = max(2.0 * (ll - ll_eq), 0.0)
 
-    return RichResult(payload={
-        "estimate": [h2m, h2f], "h2_male": h2m, "h2_female": h2f,
-        "rg": rg,
-        "sigma2_g_male": s2gm, "sigma2_g_female": s2gf,
-        "sigma2_g_cross": rg * math.sqrt(s2gm * s2gf),
-        "sigma2_e_male": s2em, "sigma2_e_female": s2ef,
-        "coefficients": beta,
-        "reml_loglik": ll, "reml_path": path,
-        "lrt_rg_equals_one": lrt_rg1,
-        "p_rg_equals_one": 0.5 * (1.0 - k.pnorm(math.sqrt(lrt_rg1))) * 2.0,
-        "lrt_equal_h2": lrt_equal,
-        "p_equal_h2": 2.0 * (1.0 - k.pnorm(math.sqrt(lrt_equal))),
-        "n": n, "n_male": nm, "n_female": nf, "p": p,
-        "max_cross_sex_relatedness": cross,
-        "cycles": cycles, "converged": converged,
-        "method": "bivariate REML treating the sexes as two traits on "
-                  "disjoint individuals, with the genetic correlation "
-                  "parameterised directly and bounded to (-1, 1) so the "
-                  "fitted covariance is admissible by construction (Yang et "
-                  "al. 2011 GCTA; Lee et al. 2012)",
-        "note": "max_cross_sex_relatedness is the diagnostic to read "
-                "first: the cross-sex block of K is the only thing that "
-                "identifies rg, and if it is near zero the correlation is "
-                "not estimable however tight the likelihood looks",
-    })
+    return RichResult(
+        payload={
+            "estimate": [h2m, h2f],
+            "h2_male": h2m,
+            "h2_female": h2f,
+            "rg": rg,
+            "sigma2_g_male": s2gm,
+            "sigma2_g_female": s2gf,
+            "sigma2_g_cross": rg * math.sqrt(s2gm * s2gf),
+            "sigma2_e_male": s2em,
+            "sigma2_e_female": s2ef,
+            "coefficients": beta,
+            "reml_loglik": ll,
+            "reml_path": path,
+            "lrt_rg_equals_one": lrt_rg1,
+            "p_rg_equals_one": 0.5 * (1.0 - k.pnorm(math.sqrt(lrt_rg1))) * 2.0,
+            "lrt_equal_h2": lrt_equal,
+            "p_equal_h2": 2.0 * (1.0 - k.pnorm(math.sqrt(lrt_equal))),
+            "n": n,
+            "n_male": nm,
+            "n_female": nf,
+            "p": p,
+            "max_cross_sex_relatedness": cross,
+            "cycles": cycles,
+            "converged": converged,
+            "method": "bivariate REML treating the sexes as two traits on "
+            "disjoint individuals, with the genetic correlation "
+            "parameterised directly and bounded to (-1, 1) so the "
+            "fitted covariance is admissible by construction (Yang et "
+            "al. 2011 GCTA; Lee et al. 2012)",
+            "note": "max_cross_sex_relatedness is the diagnostic to read "
+            "first: the cross-sex block of K is the only thing that "
+            "identifies rg, and if it is near zero the correlation is "
+            "not estimable however tight the likelihood looks",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sxrhrt: sex_specific_h2(y, sex, K) -> per-sex heritability and "
-            "the cross-sex genetic correlation by bivariate REML (Yang et "
-            "al. 2011 GCTA; Lee et al. 2012)")
+    return (
+        "sxrhrt: sex_specific_h2(y, sex, K) -> per-sex heritability and "
+        "the cross-sex genetic correlation by bivariate REML (Yang et "
+        "al. 2011 GCTA; Lee et al. 2012)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

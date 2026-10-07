@@ -77,10 +77,15 @@ def sgt_closeness_centrality(A):
             raise ValueError(f"closeness needs a connected graph; vertex {v} cannot reach vertex {far}.")
         clos.append(float((n - 1) / np.sum(dist)))
     arg = int(np.argmax(clos))
-    return RichResult(payload={
-        "estimate": float(clos[arg]), "closeness": clos, "argmax": arg,
-        "n": int(n),
-        "method": "closeness (n-1)/sum BFS distances; connected required"})
+    return RichResult(
+        payload={
+            "estimate": float(clos[arg]),
+            "closeness": clos,
+            "argmax": arg,
+            "n": int(n),
+            "method": "closeness (n-1)/sum BFS distances; connected required",
+        }
+    )
 
 
 def cheatsheet():

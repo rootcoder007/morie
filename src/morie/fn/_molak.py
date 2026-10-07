@@ -88,6 +88,7 @@ def _colliders(edges):
 
 # --- ch. 13, p. 348: GES scoring --------------------------------------
 
+
 def bicdag(data, dag, names=None):
     """Gaussian BIC score of a DAG.
 
@@ -118,7 +119,7 @@ def bicdag(data, dag, names=None):
     pars = {nm: [] for nm in names}
     for u, v in edges:
         if u not in idx or v not in idx:
-            raise ValueError("DAG node %r has no data column" % (u if u not in idx else v,))
+            raise ValueError(f"DAG node {u if u not in idx else v!r} has no data column")
         pars[v].append(u)
     total = 0.0
     k = 0
@@ -143,6 +144,7 @@ def bicdag(data, dag, names=None):
 
 
 # --- bow arcs ---------------------------------------------------------
+
 
 def bowarc(dag, bidirected, x, y):
     """Whether the pair (x, y) forms a bow.
@@ -179,9 +181,7 @@ def bowarc(dag, bidirected, x, y):
     bid = sorted({tuple(sorted(e)) for e in bidirected})
     direct = (x, y) in edges
     confounded = tuple(sorted((x, y))) in bid
-    allbows = sorted(
-        (u, v) for (u, v) in edges if tuple(sorted((u, v))) in set(bid)
-    )
+    allbows = sorted((u, v) for (u, v) in edges if tuple(sorted((u, v))) in set(bid))
     return {
         "isbow": bool(direct and confounded),
         "direct": bool(direct),
@@ -195,6 +195,7 @@ def bowarc(dag, bidirected, x, y):
 
 
 # --- ch. 5, pp. 82-85: colliders and Markov equivalence ---------------
+
 
 def collider(dag, triple=None):
     """Collider structures (immoralities, v-structures), ch. 5 p. 82.
@@ -240,6 +241,7 @@ def mectest(dag1, dag2):
 
 
 # --- ch. 6, p. 119: the three rules of do-calculus ---------------------
+
 
 def docalc(dag, y, z, x=(), w=()):
     """Which of the three rules of do-calculus applies, p. 119.
@@ -310,6 +312,7 @@ def dointerv(dag, x):
 
 # --- ch. 6: d-separation ----------------------------------------------
 
+
 def dseptest(dag, x, y, z=()):
     """d-separation of x and y given z, ch. 6.
 
@@ -330,6 +333,7 @@ def dseptest(dag, x, y, z=()):
 
 
 # --- ch. 5, p. 77: the faithfulness assumption -------------------------
+
 
 def faithchk(dag, x, y, z=(), indep=True):
     """Faithfulness for one triple, ch. 5 p. 77.
@@ -352,6 +356,7 @@ def faithchk(dag, x, y, z=(), indep=True):
 
 
 # --- ch. 13, p. 354: HSIC ---------------------------------------------
+
 
 def hsicstat(a, b, sigma_a=None, sigma_b=None, threshold=0.01):
     """Hilbert-Schmidt independence criterion for an ANM residual test.
@@ -394,7 +399,7 @@ def causrung(rung):
     """
     rung = int(rung)
     if rung not in _RUNGS:
-        raise ValueError("rung must be 1, 2 or 3, got %r" % (rung,))
+        raise ValueError(f"rung must be 1, 2 or 3, got {rung!r}")
     name, action, question = _RUNGS[rung]
     return {
         "level": rung,
@@ -407,6 +412,7 @@ def causrung(rung):
 
 
 # --- ch. 7, p. 157: the positivity assumption --------------------------
+
 
 def poschk(treat, stratum, tol=0.0):
     """Positivity: every treatment value has positive probability in
@@ -438,6 +444,7 @@ def poschk(treat, stratum, tol=0.0):
 
 
 # --- the R-learner ----------------------------------------------------
+
 
 def rlearn(y, t, m, e, x=None):
     """Residualized (Robinson-style) CATE estimator.
@@ -513,6 +520,7 @@ def rlearn(y, t, m, e, x=None):
 
 # --- separating sets ---------------------------------------------------
 
+
 def sepset(dag, x, y, maxsize=3):
     """Smallest set that d-separates x from y, searched in a fixed order.
 
@@ -525,9 +533,7 @@ def sepset(dag, x, y, maxsize=3):
     """
     edges = _edgelist(dag)
     nodes = _nodes_of(edges)
-    adj = sorted(
-        {v for u, v in edges if u in (x, y)} | {u for u, v in edges if v in (x, y)}
-    )
+    adj = sorted({v for u, v in edges if u in (x, y)} | {u for u, v in edges if v in (x, y)})
     cand = [q for q in adj if q not in (x, y)]
     if _adjacent(edges, x, y):
         return {"found": False, "size": -1, "sepset": [], "ntested": 0, "nnodes": len(nodes)}
@@ -551,11 +557,12 @@ def _combinations(seq, k):
         yield ()
         return
     for i in range(len(seq) - k + 1):
-        for rest in _combinations(seq[i + 1:], k - 1):
+        for rest in _combinations(seq[i + 1 :], k - 1):
             yield (seq[i],) + rest
 
 
 # --- ch. 7, p. 164: SUTVA ----------------------------------------------
+
 
 def sutvachk(interference, versions=1, tol=0.0):
     """SUTVA: no interference between units, one version of treatment.

@@ -50,8 +50,7 @@ from ._richresult import RichResult
 __all__ = ["vae_elbo"]
 
 
-def vae_elbo(x, encoder=None, decoder=None, latent_dim=2, n_samples=64,
-             decoder_scale=1.0, skip=0):
+def vae_elbo(x, encoder=None, decoder=None, latent_dim=2, n_samples=64, decoder_scale=1.0, skip=0):
     """SGVB estimate of the VAE evidence lower bound.
 
     Parameters
@@ -150,8 +149,8 @@ def vae_elbo(x, encoder=None, decoder=None, latent_dim=2, n_samples=64,
     anap = [0.0] * n
     for i in range(n):
         acc = 0.0
-        for l in range(L):
-            z = [mu[i][j] + sig[i][j] * eps[l][j] for j in range(m)]
+        for ell in range(L):
+            z = [mu[i][j] + sig[i][j] * eps[ell][j] for j in range(m)]
             t = 0.0
             for k in range(d):
                 r = bd[k]
@@ -201,6 +200,7 @@ def vae_elbo(x, encoder=None, decoder=None, latent_dim=2, n_samples=64,
 
 def cheatsheet():
     return "vaeber: VAE evidence lower bound, SGVB estimator (Kingma & Welling 2014)"
+
 
 # public names resolved by fn/_lazy_map.json
 vaeelbo = vae_elbo

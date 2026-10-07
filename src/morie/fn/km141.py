@@ -34,24 +34,25 @@ def kamath_ch9_itm_loss(theta, v, t, y):
     if s.size == 0:
         raise ValueError("no image-text pairs were scored.")
     if s.shape != lab.shape:
-        raise ValueError(
-            f"{lab.size} labels for {s.size} similarity scores.")
+        raise ValueError(f"{lab.size} labels for {s.size} similarity scores.")
     if np.any((s < 0) | (s > 1)):
-        raise ValueError("s_theta(v, t) is a probability and must lie "
-                         "in [0, 1]; apply the sigmoid first.")
+        raise ValueError("s_theta(v, t) is a probability and must lie in [0, 1]; apply the sigmoid first.")
     if not np.all((lab == 0) | (lab == 1)):
-        raise ValueError("ITM labels must be 0 (mismatched) or 1 "
-                         "(matched).")
+        raise ValueError("ITM labels must be 0 (mismatched) or 1 (matched).")
     # score of the CORRECT label per pair -- written this way so a
     # confident-and-right score of exactly 1 gives 0, not 0 * -inf.
     correct = np.where(lab == 1, s, 1.0 - s)
     with np.errstate(divide="ignore"):
         per = -np.log(correct)
-    return RichResult(payload={
-        "estimate": float(per.mean()),
-        "per_pair": [float(u) for u in per],
-        "scores": [float(u) for u in s], "n": int(s.size),
-        "method": "image-text matching binary loss (Kamath Eq 9.13)"})
+    return RichResult(
+        payload={
+            "estimate": float(per.mean()),
+            "per_pair": [float(u) for u in per],
+            "scores": [float(u) for u in s],
+            "n": int(s.size),
+            "method": "image-text matching binary loss (Kamath Eq 9.13)",
+        }
+    )
 
 
 def cheatsheet():

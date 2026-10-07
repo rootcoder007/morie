@@ -58,7 +58,7 @@ def tps_major_crime(
     Returns
     -------
     pd.DataFrame with TPS's documented columns (REPORT_DATE, OCC_DATE,
-    OFFENCE, MCI_CATEGORY, etc.) — see
+    OFFENCE, CSI_CATEGORY, etc.) — see
     https://data.torontopolice.on.ca/ for the schema.
     """
     if offline:
@@ -308,13 +308,9 @@ def chicago_crime(*, year: int | None = None, max_features: int | None = None, o
             UserWarning,
             stacklevel=2,
         )
-        if path.exists():
-            df = pd.read_csv(path)
-        else:
-            # Empty frame with the right shape so downstream code that
-            # only inspects ``df.columns`` keeps working even before
-            # the synthetic CSV lands in data/.
-            df = pd.DataFrame({c: [] for c in _CHICAGO_CRIME_COLUMNS})
+        # Without the synthetic CSV, an empty frame of the right shape, so downstream code that
+        # only inspects ``df.columns`` keeps working before it lands in data/.
+        df = pd.read_csv(path) if path.exists() else pd.DataFrame({c: [] for c in _CHICAGO_CRIME_COLUMNS})
         if year is not None and "year" in df.columns and len(df) > 0:
             df = df[df["year"] == year].reset_index(drop=True)
         if max_features is not None:
@@ -393,10 +389,7 @@ def nyc_stop_and_frisk(
             UserWarning,
             stacklevel=2,
         )
-        if path.exists():
-            df = pd.read_csv(path)
-        else:
-            df = pd.DataFrame()
+        df = pd.read_csv(path) if path.exists() else pd.DataFrame()
         if max_features is not None and len(df) > 0:
             df = df.head(max_features)
         return df

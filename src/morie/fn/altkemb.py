@@ -26,14 +26,18 @@ def alammar_token_embedding_lookup(ids, E_tok):
     ids = np.atleast_1d(np.asarray(ids)).astype(int)
     if np.any((ids < 0) | (ids >= E.shape[0])):
         bad = ids[(ids < 0) | (ids >= E.shape[0])][0]
-        raise ValueError(
-            f"token id {bad} is outside the vocabulary of {E.shape[0]}.")
+        raise ValueError(f"token id {bad} is outside the vocabulary of {E.shape[0]}.")
     out = E[ids]
-    return RichResult(payload={
-        "embeddings": [[float(v) for v in r] for r in out],
-        "estimate": float(out[0, 0]), "vocab_size": E.shape[0],
-        "dim": E.shape[1], "n": len(ids),
-        "method": "Token embedding lookup (Alammar Ch 2)"})
+    return RichResult(
+        payload={
+            "embeddings": [[float(v) for v in r] for r in out],
+            "estimate": float(out[0, 0]),
+            "vocab_size": E.shape[0],
+            "dim": E.shape[1],
+            "n": len(ids),
+            "method": "Token embedding lookup (Alammar Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

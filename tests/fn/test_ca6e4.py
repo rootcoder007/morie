@@ -2,10 +2,7 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
-
 from morie.fn.ca6e4 import ca_chapter_6_equation_4
 
 

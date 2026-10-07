@@ -5,28 +5,40 @@ Hosted LLM tier
 endpoint run by the MORIE project for the ``morie`` (Python) and
 ``rmorie`` (R) packages. It exists so that ``morie ask`` and
 ``morie_llm_ask()`` work on a machine with no local model and no API key
-of your own. A local Ollama is always tried first; the hosted tier is the
-second provider in the chain, and an endpoint of your own the third (see
-`Your own model endpoint`_ below).
+of your own, and it is the last resort: a local Ollama is tried first, then
+every key of your own (an attached endpoint, Gemini, OpenAI; see
+`Your own model endpoint`_ below), and the hosted tier only when none of
+those answers. Keys are issued on request at https://rmorie.com/access.
+The endpoints, modes and model list come from a signed services document
+(``https://rmorie.com/.well-known/morie-services.json``, ML-DSA-44, public
+key pinned in the package) that the package verifies before use, so they
+can change without a release; ``MORIE_SERVICES_URL`` names a mirror, with
+the same signature check.
 
 Getting a key
 -------------
 
-One key per account, shared by both languages. Any of these mints it:
+One key per person, shared by both languages. Request it at
+https://rmorie.com/access and store it:
+
+.. code-block:: bash
+
+   morie login --token                           # paste the key you were issued
+
+The GitHub and emailed-code sign-ins remain for accounts that have them:
 
 .. code-block:: bash
 
    morie login                                   # GitHub device flow
    morie login --email you@example.com           # 6-digit code by email
    morie login --email you@example.com --to-email   # key sent to your inbox
-   morie login --token                           # paste a key you already have
 
 .. code-block:: r
 
+   rmorie::morie_llm_login(token = "<key>")               # the key you were issued
    rmorie::morie_llm_login()                              # GitHub
    rmorie::morie_llm_login(email = "you@example.com")     # emailed code
    rmorie::morie_llm_login(email = "you@example.com", to_email = TRUE)
-   rmorie::morie_llm_login(token = "<key>")               # paste a key
 
 The R package also ships the same verbs as a shell command:
 ``rmorie::install_cli()`` links ``rmorie`` onto your PATH, after which
@@ -50,8 +62,8 @@ The same verbs exist as ``rmorie models`` / ``rmorie ask --model NAME`` and
 ``rmoriebricklayer::bricklayer_llm_models()`` return the list with the
 default as an attribute. ``MORIE_HOSTED_MODEL`` changes the default.
 
-The browser works too: https://llm.rmorie.com offers both sign-ins and
-shows the key once (or emails it, if you tick the box).
+The site at https://llm.rmorie.com describes the tier and points to the
+request form at https://rmorie.com/access; it offers no sign-in of its own.
 
 Where the key lives
 -------------------
@@ -67,14 +79,15 @@ Environment overrides:
 ``MORIE_HOSTED_KEY``
    Use this key instead of the stored one (CI, containers).
 ``MORIE_HOSTED_BASE_URL``
-   Another gateway, or ``off`` to disable the tier entirely (``""`` also
+   Another gateway (the default comes from the services document), or
+   ``off`` to disable the tier entirely (``""`` also
    disables it on POSIX; Windows drops an empty variable, hence ``off``).
 ``MORIE_HOSTED_MODEL``
-   Model to request (default ``minimax-m3:cloud``). When the gateway no
+   Model to request (default: the services document's default model). When the gateway no
    longer lists the requested model, the packages use the first model it
    does list instead of failing, since cloud models get retired upstream.
 ``MORIE_HOSTED_AUTH_URL``
-   The sign-in service (default ``https://llm.rmorie.com/auth``).
+   The sign-in service (default from the services document).
 
 Which models
 ------------
@@ -92,7 +105,8 @@ The same key opens data.rmorie.com
 ----------------------------------
 
 The curated datasets at https://data.rmorie.com (:doc:`learn/datasets`) are
-gated by this key too: ``morie pull chicago_crime/incidents``,
+gated by this key too (issued on request at https://rmorie.com/access, under
+https://rmorie.com/data-license): ``morie pull chicago_crime/incidents``,
 ``rmorie::morie_load_hosted_dataset()``, or any HTTP client with
 ``Authorization: Bearer <key>``.
 
@@ -101,8 +115,8 @@ Your own model endpoint
 
 The hosted tier is one route; any OpenAI-compatible endpoint can be attached
 instead or as well, and the assistant verbs (``ask``, ``percy``, ``agent``,
-``chat``) use it when no local Ollama answers and the hosted tier is not
-signed in. OpenAI, Anthropic's compatibility endpoint
+``chat``) use it when no local Ollama answers, before the hosted tier is
+tried. OpenAI, Anthropic's compatibility endpoint
 (``https://api.anthropic.com/v1``), OpenRouter, Mistral, Groq, a local LM
 Studio / vLLM / llama.cpp server: anything that serves
 ``POST BASE_URL/chat/completions``.
@@ -126,9 +140,9 @@ The setting is stored in the same credentials file as the hosted key, so
 both languages see it. The environment variables ``LLM_API_BASE_URL``,
 ``LLM_API_KEY`` and ``MORIE_API_MODEL`` take precedence when set (CI,
 containers). The full order the packages try, as ``morie doctor`` /
-``rmorie doctor`` report it: local Ollama, the hosted tier, your endpoint,
-``GEMINI_API_KEY``, ``OPENAI_API_KEY``, then a local keyword fallback that
-says it is one.
+``rmorie doctor`` report it: local Ollama, your own keys (your endpoint,
+``GEMINI_API_KEY``, ``OPENAI_API_KEY``), the hosted tier as the last resort,
+then a local keyword fallback that says it is one.
 
 Emailed keys and pasted tokens
 ------------------------------

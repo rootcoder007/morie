@@ -1,7 +1,6 @@
 """Tests for morie.fn.kfunc — Ripley's K."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kfunc import ripley_k
 
 

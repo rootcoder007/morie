@@ -54,9 +54,16 @@ def _effects(beta, theta, cbar, a, astar):
     tnde = (t1 + t3 * (b0 + b1 * a + bc)) * d
     tnie = (t2 * b1 + t3 * b1 * a) * d
     pnie = (t2 * b1 + t3 * b1 * astar) * d
-    return {"pnde": pnde, "tnde": tnde, "tnie": tnie, "pnie": pnie,
-            "te": pnde + tnie, "mediated_interaction": t3 * b1 * d * d,
-            "beta": beta, "theta": theta}
+    return {
+        "pnde": pnde,
+        "tnde": tnde,
+        "tnie": tnie,
+        "pnie": pnie,
+        "te": pnde + tnie,
+        "mediated_interaction": t3 * b1 * d * d,
+        "beta": beta,
+        "theta": theta,
+    }
 
 
 def controlled_direct_effect(X, M, Y, m, C=None, a=1.0, astar=0.0):
@@ -118,14 +125,16 @@ def controlled_direct_effect(X, M, Y, m, C=None, a=1.0, astar=0.0):
     eff = _effects(beta, theta, cbar, float(a), float(astar))
     mm = float(m)
     out = dict(eff)
-    out.update({
-        "estimate": (theta[1] + theta[3] * mm) * (float(a) - float(astar)),
-        "m": mm,
-        "a": float(a),
-        "astar": float(astar),
-        "n": n,
-        "method": "Controlled direct effect (Robins-Greenland)",
-    })
+    out.update(
+        {
+            "estimate": (theta[1] + theta[3] * mm) * (float(a) - float(astar)),
+            "m": mm,
+            "a": float(a),
+            "astar": float(astar),
+            "n": n,
+            "method": "Controlled direct effect (Robins-Greenland)",
+        }
+    )
     return RichResult(payload=out)
 
 

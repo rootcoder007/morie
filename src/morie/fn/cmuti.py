@@ -85,14 +85,15 @@ def cmuti(x, y):
     rho = sxy / math.sqrt(sxx * syy)
     rho = max(min(rho, 1.0 - 1e-12), -1.0 + 1e-12)
     mi = -0.5 * math.log(1.0 - rho * rho)
-    return RichResult(payload={
-        "estimate": mi,
-        "rho": rho,
-        "linfoot_r": math.sqrt(1.0 - math.exp(-2.0 * mi)),
-        "n": n,
-        "method": "Gaussian-copula MI, I = -log(1-rho^2)/2 "
-                  "(Calsaverini & Vicente 2009; Linfoot 1957)",
-    })
+    return RichResult(
+        payload={
+            "estimate": mi,
+            "rho": rho,
+            "linfoot_r": math.sqrt(1.0 - math.exp(-2.0 * mi)),
+            "n": n,
+            "method": "Gaussian-copula MI, I = -log(1-rho^2)/2 (Calsaverini & Vicente 2009; Linfoot 1957)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

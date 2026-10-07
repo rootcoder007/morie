@@ -85,7 +85,9 @@ def geron_onnx_export(model, args, file=None):
     params = 0
     for i, spec in enumerate(layers):
         if not hasattr(spec, "get"):
-            raise ValueError(f"geron_onnx_export: layer {i} must be a mapping with an 'op' key, got {type(spec).__name__}")
+            raise ValueError(
+                f"geron_onnx_export: layer {i} must be a mapping with an 'op' key, got {type(spec).__name__}"
+            )
         op = str(spec.get("op", "")).strip()
         if not op:
             raise ValueError(f"geron_onnx_export: layer {i} has no 'op'")
@@ -118,8 +120,15 @@ def geron_onnx_export(model, args, file=None):
         "ir_format": "traced-graph-json",
         "input": {"name": "input", "shape": list(in_shape)},
         "output": {"name": "output", "shape": list(shape)},
-        "nodes": [{"index": n["index"], "op": n["op"], "input_shape": list(n["input_shape"]),
-                   "output_shape": list(n["output_shape"])} for n in nodes],
+        "nodes": [
+            {
+                "index": n["index"],
+                "op": n["op"],
+                "input_shape": list(n["input_shape"]),
+                "output_shape": list(n["output_shape"]),
+            }
+            for n in nodes
+        ],
         "n_parameters": int(params),
     }
     if file is not None:

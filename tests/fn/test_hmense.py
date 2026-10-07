@@ -1,7 +1,6 @@
 """Tests for hmense.geron_ensemble_eval."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmense import geron_ensemble_eval
 
 

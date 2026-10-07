@@ -10,5 +10,6 @@ def test_bkwtie_basic():
 
 def test_bkwtie_edge():
     import pytest
+
     with pytest.raises(ValueError, match="columns"):
         burkov_weight_tying([1.0, 2.0, 3.0], [[1.0, 2.0]])

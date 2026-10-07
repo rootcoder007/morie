@@ -24,7 +24,7 @@ def test_leverages_sum_to_p():
     X, y = _data()
     res = dffitsols(X, y)
     assert abs(sum(res["leverage"]) - res["p"]) < 1e-9
-    assert res["p"] == 2            # slope plus intercept
+    assert res["p"] == 2  # slope plus intercept
     assert res["n"] == 20
 
 
@@ -53,8 +53,7 @@ def test_an_outlier_shows_up_above_the_cutoff():
 def test_the_cutoff_is_two_root_p_over_n():
     X, y = _data()
     res = dffitsols(X, y)
-    assert abs(res["cutoff"] -
-               2.0 * math.sqrt(res["p"] / float(res["n"]))) < 1e-9
+    assert abs(res["cutoff"] - 2.0 * math.sqrt(res["p"] / float(res["n"]))) < 1e-9
 
 
 def test_high_leverage_points_are_at_the_ends():

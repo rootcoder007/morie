@@ -10,6 +10,8 @@ def test_barabsi_basic():
     result = barabasi_albert(n, m)
     assert isinstance(result, dict)
     assert "degree" in result
+
+
 def test_barabsi_edge():
     """Test edge cases."""
     n = 100

@@ -5,7 +5,6 @@ recomputed in the test body.
 """
 
 import math
-import statistics
 
 import pytest
 
@@ -25,8 +24,7 @@ def test_categorical_bias_score_is_the_mean_variance_of_the_log_ratios():
         mean = sum(logs) / len(logs)
         per_word.append(sum((v - mean) ** 2 for v in logs) / len(logs))
     assert res["per_word"] == pytest.approx(per_word, rel=1e-12)
-    assert res["estimate"] == pytest.approx(
-        sum(per_word) / len(per_word), rel=1e-12)
+    assert res["estimate"] == pytest.approx(sum(per_word) / len(per_word), rel=1e-12)
 
 
 def test_a_word_with_no_bias_contributes_zero_variance():

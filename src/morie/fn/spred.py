@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Level-2 shrinkage predictor for cluster means."""
 
-from math import fsum, sqrt
+from math import fsum
 
 from ._richresult import RichResult
 from ._spx import vec
@@ -84,8 +84,7 @@ def shrinkage_predictor_level2(y, cluster, sigma2_u, sigma2_e):
 
     keys = sorted(set(ci))
     if len(keys) < 2:
-        raise ValueError("at least 2 clusters are needed for shrinkage "
-                         "to mean anything")
+        raise ValueError("at least 2 clusters are needed for shrinkage to mean anything")
     sizes, raw, lam = [], [], []
     for c in keys:
         vals = [yy[i] for i in range(n) if ci[i] == c]
@@ -102,21 +101,23 @@ def shrinkage_predictor_level2(y, cluster, sigma2_u, sigma2_e):
     grand = fsum([w * m for w, m in zip(wts, raw)]) / fsum(wts)
     shrunk = [grand + (1.0 - lj) * (mj - grand) for lj, mj in zip(lam, raw)]
 
-    return RichResult(payload={
-        "clusters": [float(c) for c in keys],
-        "shrunk": shrunk,
-        "raw": raw,
-        "lambda": lam,
-        "sizes": sizes,
-        "grand_mean": grand,
-        "sigma2_u": su,
-        "sigma2_e": se,
-        "shrinkage_depends_on_cluster_size": True,
-        "n": n,
-        "method": ("Level-2 shrinkage / empirical-Bayes predictor "
-                   "(Stein 1956; Morris 1983); NOT in Schabenberger & "
-                   "Gotway"),
-    })
+    return RichResult(
+        payload={
+            "clusters": [float(c) for c in keys],
+            "shrunk": shrunk,
+            "raw": raw,
+            "lambda": lam,
+            "sizes": sizes,
+            "grand_mean": grand,
+            "sigma2_u": su,
+            "sigma2_e": se,
+            "shrinkage_depends_on_cluster_size": True,
+            "n": n,
+            "method": (
+                "Level-2 shrinkage / empirical-Bayes predictor (Stein 1956; Morris 1983); NOT in Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

@@ -92,8 +92,7 @@ def cooccurrence(corpus, window=10, harmonic=True, min_count=1):
     X = {}
     w = int(window)
     if w < 1:
-        raise ValueError("cooccurrence: window must be at least 1, got %r"
-                         % (window,))
+        raise ValueError(f"cooccurrence: window must be at least 1, got {window!r}")
     for doc in docs:
         ids = [index[t] for t in doc if t in index]
         for pos, i in enumerate(ids):
@@ -113,16 +112,25 @@ def glove_loss(X, W, Wt, b, bt, x_max=100.0, alpha=0.75):
     for (i, j), x in X.items():
         if x <= 0.0:
             continue
-        pred = sum(W[i][d] * Wt[j][d] for d in range(len(W[i]))) \
-            + b[i] + bt[j]
+        pred = sum(W[i][d] * Wt[j][d] for d in range(len(W[i]))) + b[i] + bt[j]
         diff = pred - math.log(x)
         total += glove_weight(x, x_max, alpha) * diff * diff
     return total
 
 
-def glove(corpus, dim=50, window=10, epochs=25, lr=0.05, x_max=100.0,
-          alpha=0.75, harmonic=True, min_count=1, seed=0,
-          combine="sum"):
+def glove(
+    corpus,
+    dim=50,
+    window=10,
+    epochs=25,
+    lr=0.05,
+    x_max=100.0,
+    alpha=0.75,
+    harmonic=True,
+    min_count=1,
+    seed=0,
+    combine="sum",
+):
     r"""Fit GloVe vectors.
 
     Parameters
@@ -154,30 +162,23 @@ def glove(corpus, dim=50, window=10, epochs=25, lr=0.05, x_max=100.0,
         r["vocab"], r["estimate"]
     """
     if combine not in ("sum", "w", "wtilde", "concat"):
-        raise ValueError("glove: combine must be 'sum', 'w', 'wtilde' or "
-                         "'concat', got %r" % (combine,))
+        raise ValueError(f"glove: combine must be 'sum', 'w', 'wtilde' or 'concat', got {combine!r}")
     d = int(dim)
     if d < 1:
-        raise ValueError("glove: dim must be at least 1, got %r" % (dim,))
-    X, vocab, index = cooccurrence(corpus, window=window,
-                                   harmonic=harmonic,
-                                   min_count=min_count)
+        raise ValueError(f"glove: dim must be at least 1, got {dim!r}")
+    X, vocab, index = cooccurrence(corpus, window=window, harmonic=harmonic, min_count=min_count)
     V = len(vocab)
     if V < 2:
         raise ValueError(
-            "glove: the corpus has %d word(s) above min_count=%r; GloVe "
-            "factorises a co-occurrence matrix and needs at least two"
-            % (V, min_count))
+            f"glove: the corpus has {int(V)} word(s) above min_count={min_count!r}; GloVe factorises a co-occurrence matrix and needs at least two"
+        )
     if not X:
-        raise ValueError("glove: no co-occurrences within the window, so "
-                         "eq. (8) has no terms")
+        raise ValueError("glove: no co-occurrences within the window, so eq. (8) has no terms")
 
     rng = np.random.default_rng(int(seed))
     scale = 0.5 / d
-    W = [[(float(rng.uniform()) - 0.5) * scale for _ in range(d)]
-         for _ in range(V)]
-    Wt = [[(float(rng.uniform()) - 0.5) * scale for _ in range(d)]
-          for _ in range(V)]
+    W = [[(float(rng.uniform()) - 0.5) * scale for _ in range(d)] for _ in range(V)]
+    Wt = [[(float(rng.uniform()) - 0.5) * scale for _ in range(d)] for _ in range(V)]
     b = [(float(rng.uniform()) - 0.5) * scale for _ in range(V)]
     bt = [(float(rng.uniform()) - 0.5) * scale for _ in range(V)]
     # AdaGrad accumulators, initialised to 1 as in the reference code
@@ -187,8 +188,8 @@ def glove(corpus, dim=50, window=10, epochs=25, lr=0.05, x_max=100.0,
     gbt = [1.0] * V
 
     entries = sorted(X.items())
-    history = []          # eq. (8) at the end of each epoch
-    running = []          # the SGD running total, for comparison
+    history = []  # eq. (8) at the end of each epoch
+    running = []  # the SGD running total, for comparison
     eta = float(lr)
     for _ in range(int(epochs)):
         total = 0.0
@@ -200,7 +201,7 @@ def glove(corpus, dim=50, window=10, epochs=25, lr=0.05, x_max=100.0,
             diff = pred - math.log(x)
             fw = glove_weight(x, x_max, alpha)
             total += fw * diff * diff
-            g = 2.0 * fw * diff          # d/d(pred) of the term
+            g = 2.0 * fw * diff  # d/d(pred) of the term
             for t in range(d):
                 gi = g * wj[t]
                 gj = g * wi[t]
@@ -226,23 +227,32 @@ def glove(corpus, dim=50, window=10, epochs=25, lr=0.05, x_max=100.0,
     else:
         vecs = [list(W[i]) + list(Wt[i]) for i in range(V)]
 
-    return RichResult(payload={
-        "estimate": vecs,
-        "vectors": vecs,
-        "vocab": vocab,
-        "index": index,
-        "W": W, "W_tilde": Wt, "b": b, "b_tilde": bt,
-        "cooccurrence": X,
-        "loss_history": history,
-        "running_loss": running,
-        "final_loss": history[-1] if history else float("nan"),
-        "n_vocab": V, "n_pairs": len(entries), "dim": d,
-        "window": int(window), "harmonic": bool(harmonic),
-        "x_max": float(x_max), "alpha": float(alpha),
-        "combine": combine,
-        "method": "GloVe weighted least squares on log co-occurrence, "
-                  "Pennington, Socher & Manning (2014) eqs. (8)-(9)",
-    })
+    return RichResult(
+        payload={
+            "estimate": vecs,
+            "vectors": vecs,
+            "vocab": vocab,
+            "index": index,
+            "W": W,
+            "W_tilde": Wt,
+            "b": b,
+            "b_tilde": bt,
+            "cooccurrence": X,
+            "loss_history": history,
+            "running_loss": running,
+            "final_loss": history[-1] if history else float("nan"),
+            "n_vocab": V,
+            "n_pairs": len(entries),
+            "dim": d,
+            "window": int(window),
+            "harmonic": bool(harmonic),
+            "x_max": float(x_max),
+            "alpha": float(alpha),
+            "combine": combine,
+            "method": "GloVe weighted least squares on log co-occurrence, "
+            "Pennington, Socher & Manning (2014) eqs. (8)-(9)",
+        }
+    )
 
 
 def _as_docs(corpus):
@@ -260,7 +270,9 @@ def _as_docs(corpus):
 
 
 def cheatsheet():
-    return ("glove: J = sum f(X_ij)(w_i.wt_j + b_i + bt_j - log X_ij)^2 "
-            "with f(x) = (x/xmax)^alpha capped at 1, xmax=100, "
-            "alpha=3/4 (Pennington-Socher-Manning 2014 eqs.8-9). "
-            "Harmonic 1/d context window; AdaGrad; final vector w + wt.")
+    return (
+        "glove: J = sum f(X_ij)(w_i.wt_j + b_i + bt_j - log X_ij)^2 "
+        "with f(x) = (x/xmax)^alpha capped at 1, xmax=100, "
+        "alpha=3/4 (Pennington-Socher-Manning 2014 eqs.8-9). "
+        "Harmonic 1/d context window; AdaGrad; final vector w + wt."
+    )

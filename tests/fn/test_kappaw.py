@@ -1,7 +1,6 @@
 """Tests for kappaw.weighted_kappa."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kappaw import weighted_kappa
 
 

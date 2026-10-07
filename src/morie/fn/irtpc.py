@@ -125,7 +125,7 @@ def irtpc(
 
     loglik_prev = -np.inf
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         # E-step
         log_like_quad = np.zeros((n, n_quad))
         for q in range(n_quad):
@@ -150,7 +150,7 @@ def irtpc(
             if m < 1:
                 continue
 
-            def _neg_ll(params, _j=j):
+            def _neg_ll(params, _j=j, *, posterior=posterior):
                 steps = list(params)
                 ll = 0.0
                 for q in range(n_quad):

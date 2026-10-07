@@ -61,10 +61,17 @@ def hrz_bandwidth_optimal(x, kernel_name="gaussian", f_second_deriv_l2=None):
         if f2 <= 0:
             raise ValueError("f_second_deriv_l2 must be positive.")
     h = (R_K / (mu2**2 * f2 * n)) ** 0.2
-    return RichResult(payload={"h_opt": float(h), "R_K": R_K, "mu2_K": mu2,
-                               "f2_l2": f2, "normal_reference_used": bool(ref),
-                               "n": int(n),
-                               "method": "h_opt = [R(K)/(mu2^2 int(f'')^2 n)]^{1/5}"})
+    return RichResult(
+        payload={
+            "h_opt": float(h),
+            "R_K": R_K,
+            "mu2_K": mu2,
+            "f2_l2": f2,
+            "normal_reference_used": bool(ref),
+            "n": int(n),
+            "method": "h_opt = [R(K)/(mu2^2 int(f'')^2 n)]^{1/5}",
+        }
+    )
 
 
 def cheatsheet():

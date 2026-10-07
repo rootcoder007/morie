@@ -6,9 +6,7 @@ which gives a checkable anchor: the sign of the recovered coefficient.
 """
 
 from morie.fn import _array_core as np
-import pytest
-
-from morie.fn.survnnr import deep_surv, concordance
+from morie.fn.survnnr import concordance, deep_surv
 
 
 def _risky_cohort(n=60):

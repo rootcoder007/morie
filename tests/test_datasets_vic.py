@@ -2,7 +2,6 @@
 """Victorian crime data loaders and analyses (no network)."""
 
 import io
-import math
 
 import pytest
 
@@ -24,8 +23,7 @@ def test_catalog_lists_every_workbook():
     assert len(set(keys)) == len(keys)
     assert all(e["url"].startswith("https://") for e in cat)
     assert all(e["file"].endswith(".xlsx") for e in cat)
-    for k in ("criminal_incidents", "lga_criminal_incidents",
-              "indigenous_victim_reports"):
+    for k in ("criminal_incidents", "lga_criminal_incidents", "indigenous_victim_reports"):
         assert k in keys
 
 
@@ -43,25 +41,28 @@ def test_loader_stays_offline(tmp_path):
 
 
 def test_offence_trend_reports_change_per_division():
-    d = pd.DataFrame({
-        "Year": [2024, 2025, 2024, 2025],
-        "Offence Division": ["A", "A", "B", "B"],
-        "Incidents Recorded": [100, 150, 80, 60],
-    })
+    d = pd.DataFrame(
+        {
+            "Year": [2024, 2025, 2024, 2025],
+            "Offence Division": ["A", "A", "B", "B"],
+            "Incidents Recorded": [100, 150, 80, 60],
+        }
+    )
     t = vic_offence_trend(d)
-    rows = dict(zip(list(t["division"]), zip(list(t["abs_change"]),
-                                             list(t["pct_change"]))))
-    assert rows["A"] == (50, 50)          # 100 -> 150
-    assert rows["B"] == (-20, -25)        # 80 -> 60
+    rows = dict(zip(list(t["division"]), zip(list(t["abs_change"]), list(t["pct_change"]))))
+    assert rows["A"] == (50, 50)  # 100 -> 150
+    assert rows["B"] == (-20, -25)  # 80 -> 60
 
 
 def test_lga_rates_rank_by_rate():
-    d = pd.DataFrame({
-        "Year": [2025, 2025, 2025],
-        "Local Government Area": ["Alpha", "Beta", "Gamma"],
-        "Incidents Recorded": [500, 300, 900],
-        "Rate per 100,000 population": [1200, 800, 2500],
-    })
+    d = pd.DataFrame(
+        {
+            "Year": [2025, 2025, 2025],
+            "Local Government Area": ["Alpha", "Beta", "Gamma"],
+            "Incidents Recorded": [500, 300, 900],
+            "Rate per 100,000 population": [1200, 800, 2500],
+        }
+    )
     r = vic_lga_rates(d, top=2)
     assert list(r["lga"]) == ["Gamma", "Alpha"]
     assert list(r["rank"]) == [1, 2]
@@ -70,32 +71,38 @@ def test_lga_rates_rank_by_rate():
 def test_indigenous_ratio_excludes_total_people():
     # The published table carries a third "Total People" status; folding
     # it into the non-Indigenous count roughly doubles the denominator.
-    d = pd.DataFrame({
-        "Year": [2026, 2026, 2026],
-        "Offence Division": ["A", "A", "A"],
-        "Indigenous Status": [
-            "Aboriginal and/or Torres Strait Islander",
-            "Non-Indigenous",
-            "Total People",
-        ],
-        "Victim Reports": [10, 90, 100],
-    })
+    d = pd.DataFrame(
+        {
+            "Year": [2026, 2026, 2026],
+            "Offence Division": ["A", "A", "A"],
+            "Indigenous Status": [
+                "Aboriginal and/or Torres Strait Islander",
+                "Non-Indigenous",
+                "Total People",
+            ],
+            "Victim Reports": [10, 90, 100],
+        }
+    )
     r = vic_indigenous_ratio(d)
     assert list(r["indigenous"]) == [10]
-    assert list(r["non_indigenous"]) == [90]      # NOT 190
+    assert list(r["non_indigenous"]) == [90]  # NOT 190
     assert abs(list(r["count_ratio"])[0] - 10 / 90) < 1e-12
 
 
 def test_indigenous_ratio_uses_one_year():
-    d = pd.DataFrame({
-        "Year": [2025, 2025, 2026, 2026],
-        "Offence Division": ["A", "A", "A", "A"],
-        "Indigenous Status": [
-            "Aboriginal and/or Torres Strait Islander", "Non-Indigenous",
-            "Aboriginal and/or Torres Strait Islander", "Non-Indigenous",
-        ],
-        "Victim Reports": [1, 9, 20, 80],
-    })
+    d = pd.DataFrame(
+        {
+            "Year": [2025, 2025, 2026, 2026],
+            "Offence Division": ["A", "A", "A", "A"],
+            "Indigenous Status": [
+                "Aboriginal and/or Torres Strait Islander",
+                "Non-Indigenous",
+                "Aboriginal and/or Torres Strait Islander",
+                "Non-Indigenous",
+            ],
+            "Victim Reports": [1, 9, 20, 80],
+        }
+    )
     assert list(vic_indigenous_ratio(d)["indigenous"]) == [20]
     assert list(vic_indigenous_ratio(d, year=2025)["indigenous"]) == [1]
 
@@ -107,11 +114,11 @@ def test_sheet_map_is_not_resolved_by_sorting_part_names():
     buf = io.BytesIO()
     with pd.ExcelWriter(buf) as w:
         for i in range(1, 12):
-            frame = pd.DataFrame({"v": ["sheet%d" % i]})
-            frame.to_excel(w, sheet_name="S%d" % i, index=False)
+            frame = pd.DataFrame({"v": [f"sheet{int(i)}"]})
+            frame.to_excel(w, sheet_name=f"S{int(i)}", index=False)
     buf.seek(0)
     xl = pd.ExcelFile(buf)
-    assert xl.sheet_names == ["S%d" % i for i in range(1, 12)]
+    assert xl.sheet_names == [f"S{int(i)}" for i in range(1, 12)]
     buf.seek(0)
     tenth = pd.read_excel(buf, sheet_name="S10")
     assert list(tenth["v"]) == ["sheet10"]

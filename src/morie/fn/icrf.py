@@ -63,9 +63,9 @@ def item_characteristic_curve(theta, a=1.0, b=0.0, c=0.0):
 
     for i in range(n):
         if not (cv[i] >= 0.0) or cv[i] >= 1.0:
-            raise ValueError("c must lie in [0, 1); got %r" % (cv[i],))
+            raise ValueError(f"c must lie in [0, 1); got {cv[i]!r}")
         if av[i] != av[i] or av[i] in (_INF, -_INF):
-            raise ValueError("a must be finite; got %r" % (av[i],))
+            raise ValueError(f"a must be finite; got {av[i]!r}")
 
     logit = [av[i] * (th[i] - bv[i]) for i in range(n)]
     p = [cv[i] + (1.0 - cv[i]) * _expit(logit[i]) for i in range(n)]
@@ -100,8 +100,7 @@ def _broadcast(v, n, name):
     if len(vals) == 1:
         return vals * n
     if len(vals) != n:
-        raise ValueError("%s has length %d; expected 1 or %d to match theta"
-                         % (name, len(vals), n))
+        raise ValueError(f"{name} has length {int(len(vals))}; expected 1 or {int(n)} to match theta")
     return vals
 
 
@@ -114,8 +113,7 @@ def _expit(z):
 
 
 def cheatsheet():
-    return ("icrf: item characteristic curve, 3PL "
-            "P(theta) = c + (1-c)/(1+exp(-a(theta-b)))")
+    return "icrf: item characteristic curve, 3PL P(theta) = c + (1-c)/(1+exp(-a(theta-b)))"
 
 
 icrf = item_characteristic_curve

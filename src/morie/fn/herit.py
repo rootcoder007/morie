@@ -68,7 +68,7 @@ def herit(
     var_g = var_p * 0.5
     var_e = var_p * 0.5
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         V = G * var_g + np.eye(n) * var_e
         try:
             V_inv = np.linalg.inv(V + np.eye(n) * 1e-8)

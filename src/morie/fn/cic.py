@@ -69,8 +69,8 @@ def changes_in_changes(
     quantiles = np.linspace(1.0 / (n_quantiles + 1), n_quantiles / (n_quantiles + 1), n_quantiles)
 
     # Quantile functions
-    q_c_pre = np.quantile(c_pre, quantiles)
-    q_c_post = np.quantile(c_post, quantiles)
+    np.quantile(c_pre, quantiles)
+    np.quantile(c_post, quantiles)
     q_t_pre = np.quantile(t_pre, quantiles)
 
     # CIC counterfactual for treated group:

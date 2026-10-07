@@ -5,7 +5,7 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['snpblup', 'rrblup_marker_effects']
+__all__ = ["snpblup", "rrblup_marker_effects"]
 
 
 def snpblup(X, y, M, sigma2_m, sigma2_e=1.0):
@@ -37,14 +37,20 @@ def snpblup(X, y, M, sigma2_m, sigma2_e=1.0):
     """
     beta, u, gebv = G.snp_blup_gebv(X, y, M, float(sigma2_m), float(sigma2_e))
     Mm = C.mat(M)
-    return RichResult(payload={
-        "beta": beta, "marker_effects": u, "gebv": gebv,
-        "n": len(Mm), "m": len(Mm[0]),
-        "method": "SNP-BLUP marker effects, MVSML Eq. (2.4)"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "marker_effects": u,
+            "gebv": gebv,
+            "n": len(Mm),
+            "m": len(Mm[0]),
+            "method": "SNP-BLUP marker effects, MVSML Eq. (2.4)",
+        }
+    )
 
 
 rrblup_marker_effects = snpblup
 
 
 def cheatsheet():
-    return 'rrblp: SNP-BLUP (ridge regression BLUP) marker effects and breeding values.'
+    return "rrblp: SNP-BLUP (ridge regression BLUP) marker effects and breeding values."

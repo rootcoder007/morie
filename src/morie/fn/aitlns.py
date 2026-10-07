@@ -70,8 +70,7 @@ def lgtnsim(mu, Sigma, n, seed=1, total=1.0):
     Xs = []
     for _ in range(n):
         z = [g.norm() for _ in range(p)]
-        y = [mu[i] + sum(L[i][j] * z[j] for j in range(i + 1))
-             for i in range(p)]
+        y = [mu[i] + sum(L[i][j] * z[j] for j in range(i + 1)) for i in range(p)]
         Y.append(y)
         e = [math.exp(v) for v in y] + [1.0]
         s = sum(e)
@@ -79,10 +78,17 @@ def lgtnsim(mu, Sigma, n, seed=1, total=1.0):
     ym = [sum(Y[t][i] for t in range(n)) / n for i in range(p)]
     e = [math.exp(v) for v in mu] + [1.0]
     s = sum(e)
-    return RichResult(payload={
-        "sample": Xs, "alr": Y, "center": [k * v / s for v in e],
-        "mean_alr": ym, "n": float(n), "D": float(D),
-        "method": "Logistic-normal sampling via alr^-1"})
+    return RichResult(
+        payload={
+            "sample": Xs,
+            "alr": Y,
+            "center": [k * v / s for v in e],
+            "mean_alr": ym,
+            "n": float(n),
+            "D": float(D),
+            "method": "Logistic-normal sampling via alr^-1",
+        }
+    )
 
 
 logistic_normal_sample = lgtnsim

@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["doubly_censored_gls"]
 
 
-def doubly_censored_gls(y, X, left=None, right=None, delta=None,
-                        max_iter=100, tol=1e-10, trunc=0.01):
+def doubly_censored_gls(y, X, left=None, right=None, delta=None, max_iter=100, tol=1e-10, trunc=0.01):
     r"""Regression under left and right censoring, IPCW-weighted.
 
     Complete cases are reweighted by the inverse probability of being
@@ -92,20 +91,13 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None,
     if Xa.shape[0] != n:
         Xa = Xa.T
     if Xa.shape[0] != n:
-        raise ValueError("X has %d rows for %d responses." % (Xa.shape[0], n))
+        raise ValueError(f"X has {int(Xa.shape[0])} rows for {int(n)} responses.")
     B = add_intercept(Xa)
 
-    lo = None if left is None else np.broadcast_to(
-        np.asarray(left, dtype=float), (n,)
-    )
-    hi = None if right is None else np.broadcast_to(
-        np.asarray(right, dtype=float), (n,)
-    )
+    lo = None if left is None else np.broadcast_to(np.asarray(left, dtype=float), (n,))
+    hi = None if right is None else np.broadcast_to(np.asarray(right, dtype=float), (n,))
     if lo is None and hi is None and delta is None:
-        raise ValueError(
-            "supply left, right or delta; with no censoring this is ordinary "
-            "least squares."
-        )
+        raise ValueError("supply left, right or delta; with no censoring this is ordinary least squares.")
     is_left = np.zeros(n, dtype=bool) if lo is None else yv <= lo + 1e-12
     is_right = np.zeros(n, dtype=bool) if hi is None else yv >= hi - 1e-12
     if delta is None:
@@ -113,15 +105,13 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None,
     else:
         dl = np.asarray(delta, dtype=float).ravel()
         if dl.size != n:
-            raise ValueError("delta has %d entries for %d rows." % (dl.size, n))
+            raise ValueError(f"delta has {int(dl.size)} entries for {int(n)} rows.")
     if dl.sum() < B.shape[1] + 1:
-        raise ValueError(
-            "only %d fully observed rows for %d parameters."
-            % (int(dl.sum()), B.shape[1])
-        )
+        raise ValueError(f"only {int(int(dl.sum()))} fully observed rows for {int(B.shape[1])} parameters.")
 
     # censoring model: probability of being observed, as a function of X
     from ._did import logit_fit, logit_predict
+
     gbeta, _ = logit_fit(B, dl)
     G = np.clip(logit_predict(B, gbeta), trunc, 1.0)
     w = dl / G
@@ -129,8 +119,7 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None,
     beta = ols_fit(B, yv)
     for _ in range(int(max_iter)):
         Wd = w[:, None] * B
-        new = np.linalg.solve(B.T @ Wd + 1e-12 * np.eye(B.shape[1]),
-                              Wd.T @ yv)
+        new = np.linalg.solve(B.T @ Wd + 1e-12 * np.eye(B.shape[1]), Wd.T @ yv)
         if np.max(np.abs(new - beta)) < tol:
             beta = new
             break
@@ -149,7 +138,7 @@ def doubly_censored_gls(y, X, left=None, right=None, delta=None,
         m = ~is_left
         if m.sum() > B.shape[1]:
             left_only = ols_fit(B[m], yv[m])
-    ess = float(w.sum() ** 2 / np.sum(w ** 2)) if np.sum(w ** 2) > 0 else np.nan
+    ess = float(w.sum() ** 2 / np.sum(w**2)) if np.sum(w**2) > 0 else np.nan
     return RichResult(
         payload={
             "estimate": beta,

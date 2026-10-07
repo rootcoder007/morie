@@ -1,7 +1,6 @@
 """Tests for eslsis.esl_sis_screening."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslsis import esl_sis_screening
 
 
@@ -13,6 +12,8 @@ def test_eslsis_basic():
     result = esl_sis_screening(X, y, d)
     assert isinstance(result, dict)
     assert "selected" in result
+
+
 def test_eslsis_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

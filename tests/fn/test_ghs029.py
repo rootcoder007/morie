@@ -1,13 +1,12 @@
 """Tests for ghs029.ghosal_ch3_polya_tree_density_moments."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs029 import ghosal_ch3_polya_tree_density_moments
 
 
 def test_ghs029_basic():
     """Test basic functionality against the documented formula (eq. 3.22)."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     alpha_path = [(0.05, 0.05), (0.10, 0.20), (0.30, 0.40)]
     result = ghosal_ch3_polya_tree_density_moments(alpha_path)
 
@@ -31,7 +30,7 @@ def test_ghs029_basic():
 
 def test_ghs029_depth_truncation():
     """depth argument should truncate the path and recompute accordingly."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     alpha_path = [(0.05, 0.05), (0.10, 0.20), (0.30, 0.40)]
 
     full = ghosal_ch3_polya_tree_density_moments(alpha_path)

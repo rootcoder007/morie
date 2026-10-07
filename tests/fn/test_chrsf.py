@@ -1,8 +1,8 @@
 """Tests for morie.fn.chrsf -- Christoffel symbols."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.chrsf import chrsf
 
 
@@ -29,7 +29,7 @@ def test_metric_inverse():
 
 def test_numerical_derivative():
     def sphere_metric(coords):
-        r, theta = coords[0], coords[1]
+        r, _theta = coords[0], coords[1]
         g = np.diag([1.0, r**2])
         return g
 

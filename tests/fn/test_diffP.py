@@ -1,7 +1,5 @@
 """Tests for diffP.diffpool."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.diffP import diffpool
 
 
@@ -26,6 +24,7 @@ def _toy_features():
 def _row_softmax(row):
     """Compute softmax of a list of floats, matching the implementation."""
     import math
+
     m = max(row)
     exps = [math.exp(v - m) for v in row]
     z = sum(exps)
@@ -41,8 +40,7 @@ def test_diffP_basic():
     assert isinstance(result, dict)
 
     # Documented return keys
-    for key in ("estimate", "S", "A_pool", "H_pool",
-                "link_loss", "entropy_loss", "n", "K"):
+    for key in ("estimate", "S", "A_pool", "H_pool", "link_loss", "entropy_loss", "n", "K"):
         assert key in result
 
     # Shapes
@@ -60,6 +58,7 @@ def test_diffP_basic():
 
     # Softmax rows sum to one
     import math
+
     for row in result["S"]:
         s = sum(row)
         assert math.isclose(s, 1.0, abs_tol=1e-9)
@@ -88,24 +87,19 @@ def test_diffP_basic():
             Ap[r][s] = acc
     for r in range(K):
         for s in range(K):
-            assert math.isclose(result["A_pool"][r][s], Ap[r][s],
-                                rel_tol=1e-9, abs_tol=1e-12)
+            assert math.isclose(result["A_pool"][r][s], Ap[r][s], rel_tol=1e-9, abs_tol=1e-12)
 
     # Independent computation of H_pool
-    Hp = [[sum(Sm[i][r] * X[i][t] for i in range(n)) for t in range(f)]
-          for r in range(K)]
+    Hp = [[sum(Sm[i][r] * X[i][t] for i in range(n)) for t in range(f)] for r in range(K)]
     for r in range(K):
         for t in range(f):
-            assert math.isclose(result["H_pool"][r][t], Hp[r][t],
-                                rel_tol=1e-9, abs_tol=1e-12)
+            assert math.isclose(result["H_pool"][r][t], Hp[r][t], rel_tol=1e-9, abs_tol=1e-12)
 
     # Deterministic given the seed
     result2 = diffpool(A, X, K_clusters)
     for r in range(K):
         for s in range(K):
-            assert math.isclose(result["A_pool"][r][s],
-                                result2["A_pool"][r][s],
-                                rel_tol=1e-12, abs_tol=1e-12)
+            assert math.isclose(result["A_pool"][r][s], result2["A_pool"][r][s], rel_tol=1e-12, abs_tol=1e-12)
 
 
 def test_diffP_edge():
@@ -119,12 +113,11 @@ def test_diffP_edge():
     # With K=1, S has a single column of ones -> A_pool is sum of A entries,
     # H_pool is sum of X rows
     import math
+
     n = len(A)
     f = len(X[0])
     total = sum(sum(row) for row in A)
-    assert math.isclose(result["A_pool"][0][0], total,
-                        rel_tol=1e-9, abs_tol=1e-12)
+    assert math.isclose(result["A_pool"][0][0], total, rel_tol=1e-9, abs_tol=1e-12)
     h_sum = [sum(X[i][t] for i in range(n)) for t in range(f)]
     for t in range(f):
-        assert math.isclose(result["H_pool"][0][t], h_sum[t],
-                            rel_tol=1e-9, abs_tol=1e-12)
+        assert math.isclose(result["H_pool"][0][t], h_sum[t], rel_tol=1e-9, abs_tol=1e-12)

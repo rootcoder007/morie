@@ -1,7 +1,6 @@
 """Tests for fnDist.functional_distance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fnDist import functional_distance
 
 

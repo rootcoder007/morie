@@ -63,14 +63,23 @@ def power_survey(effect_size, alpha=0.05, DEFF=1.0, n=100):
     z = core.qnorm(1.0 - alpha / 2.0)
     ncp = d * math.sqrt(neff)
     power = core.pnorm(ncp - z) + core.pnorm(-ncp - z)
-    return RichResult(payload={
-        "estimate": power, "power": power, "n_eff": neff, "ncp": ncp,
-        "z_crit": z, "DEFF": deff, "n": n,
-        "method": "Two-sided z power with the design effect discount"})
+    return RichResult(
+        payload={
+            "estimate": power,
+            "power": power,
+            "n_eff": neff,
+            "ncp": ncp,
+            "z_crit": z,
+            "DEFF": deff,
+            "n": n,
+            "method": "Two-sided z power with the design effect discount",
+        }
+    )
 
 
 def cheatsheet():
     return "powsrv: Survey-design-aware power"
+
 
 # public names resolved by fn/_lazy_map.json
 powersurvey = power_survey

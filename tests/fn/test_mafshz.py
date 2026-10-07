@@ -1,8 +1,8 @@
 """mafshz: Fisher's z transform (Fisher 1921)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mafshi import ma_fishers_z_inverse as z_to_r
 from morie.fn.mafshz import ma_fishers_z as r_to_z
 

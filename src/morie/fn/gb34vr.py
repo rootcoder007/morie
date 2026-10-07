@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['runsudvar', 'gibbons_runs_ud_var']
+__all__ = ["runsudvar", "gibbons_runs_ud_var"]
 
 
 def runsudvar(n, r=None, alpha=0.05):

@@ -128,7 +128,7 @@ def geron_albert(X, n_layers=4, n_heads=2, d_model=8, d_embed=4, vocab_size=None
     if d % H:
         raise ValueError(f"geron_albert: d_model={d} is not divisible by n_heads={H}")
     E = int(d_embed)
-    if E < 1 or E > d:
+    if E < 1 or d < E:
         raise ValueError(f"geron_albert: d_embed must lie in [1, d_model={d}], got {E}")
     Vsz = int(np.max(ids)) + 1 if vocab_size is None else int(vocab_size)
     if Vsz <= int(np.max(ids)):

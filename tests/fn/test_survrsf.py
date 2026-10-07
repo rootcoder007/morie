@@ -1,7 +1,6 @@
 """Tests for survrsf.random_survival_forest."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.survrsf import random_survival_forest
 
 

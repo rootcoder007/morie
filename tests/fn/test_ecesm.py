@@ -1,8 +1,8 @@
 """Tests for morie.fn.ecesm — Expected calibration error."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ecesm import ecesm
 
 
@@ -48,7 +48,7 @@ def test_overconfident_high_ece():
 
 
 def test_norm2_rmsce(data):
-    r1 = ecesm(*data, norm=1)
+    ecesm(*data, norm=1)
     r2 = ecesm(*data, norm=2)
     assert np.isfinite(r2["ece"])
 

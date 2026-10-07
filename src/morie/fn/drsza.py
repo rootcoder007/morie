@@ -18,9 +18,9 @@ def _default_outcome(X, dY, control):
     return X @ coef
 
 
-def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
-                         ml_propensity=None, ml_outcome=None,
-                         trim=0.995, n_boot=0, seed=None):
+def dr_did_santanna_zhao(
+    y_pre, y_post, treatment, X=None, ml_propensity=None, ml_outcome=None, trim=0.995, n_boot=0, seed=None
+):
     r"""Doubly-robust ATT for the two-period design.
 
     With covariates, unconditional parallel trends is usually not
@@ -108,15 +108,13 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
     n = y0.size
     if not (y1.size == n == D.size):
         raise ValueError(
-            "y_pre, y_post and treatment must have the same length, got "
-            "%d, %d and %d." % (y0.size, y1.size, D.size)
+            f"y_pre, y_post and treatment must have the same length, got {int(y0.size)}, {int(y1.size)} and {int(D.size)}."
         )
     if not np.all(np.isin(D, (0.0, 1.0))):
         raise ValueError("treatment must be binary 0/1.")
     if D.sum() < 2 or (1 - D).sum() < 2:
         raise ValueError(
-            "need at least 2 treated and 2 control units, got %d and %d."
-            % (int(D.sum()), int(n - D.sum()))
+            f"need at least 2 treated and 2 control units, got {int(int(D.sum()))} and {int(int(n - D.sum()))}."
         )
     dY = y1 - y0
     unadjusted = float(dY[D == 1].mean() - dY[D == 0].mean())
@@ -126,28 +124,21 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
     else:
         Xd = add_intercept(np.asarray(X, dtype=float))
         if Xd.shape[0] != n:
-            raise ValueError(
-                "X has %d rows for %d observations." % (Xd.shape[0], n)
-            )
+            raise ValueError(f"X has {int(Xd.shape[0])} rows for {int(n)} observations.")
 
     if ml_propensity is None:
         p, separated = _default_propensity(Xd, D)
     else:
         p = np.asarray(ml_propensity(Xd, D), dtype=float).ravel()
         if p.size != n:
-            raise ValueError(
-                "ml_propensity returned %d values for %d rows." % (p.size, n)
-            )
+            raise ValueError(f"ml_propensity returned {int(p.size)} values for {int(n)} rows.")
         separated = bool(np.min(p) < 1e-6 or np.max(p) > 1 - 1e-6)
 
     keep = p < float(trim)
     n_trim = int((~keep).sum())
     if keep.sum() < 4:
         raise ValueError(
-            "trimming at %g leaves %d observations; the propensity model "
-            "gives almost every unit a near-certain treatment probability, "
-            "which is a failure of overlap, not a tuning problem."
-            % (trim, int(keep.sum()))
+            f"trimming at {trim:g} leaves {int(int(keep.sum()))} observations; the propensity model gives almost every unit a near-certain treatment probability, which is a failure of overlap, not a tuning problem."
         )
 
     ctrl = (D == 0) & keep
@@ -156,16 +147,13 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
     else:
         m0 = np.asarray(ml_outcome(Xd, dY, ctrl), dtype=float).ravel()
         if m0.size != n:
-            raise ValueError(
-                "ml_outcome returned %d values for %d rows." % (m0.size, n)
-            )
+            raise ValueError(f"ml_outcome returned {int(m0.size)} values for {int(n)} rows.")
 
     def att_from(pv, m0v):
         w1 = np.where(keep, D, 0.0)
         w0 = np.where(keep, (1 - D) * pv / np.maximum(1 - pv, 1e-12), 0.0)
         r = dY - m0v
-        return (float(np.sum(w1 * r) / np.sum(w1))
-                - float(np.sum(w0 * r) / np.sum(w0)), w1, w0, r)
+        return (float(np.sum(w1 * r) / np.sum(w1)) - float(np.sum(w0 * r) / np.sum(w0)), w1, w0, r)
 
     att, w1, w0, resid = att_from(p, m0)
 
@@ -190,9 +178,9 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
     checks = {}
     if X is not None:
         const = np.ones((n, 1))
-        bad_p, _ = _default_propensity(const, D)      # constant propensity
+        bad_p, _ = _default_propensity(const, D)  # constant propensity
         checks["misspecified_propensity"] = att_from(bad_p, m0)[0]
-        bad_m0 = np.full(n, float(dY[ctrl].mean()))   # constant outcome model
+        bad_m0 = np.full(n, float(dY[ctrl].mean()))  # constant outcome model
         checks["misspecified_outcome"] = att_from(p, bad_m0)[0]
         checks["both_misspecified"] = att_from(bad_p, bad_m0)[0]
 
@@ -214,7 +202,8 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
             "overlap_warning": (
                 "the propensity model separates the groups almost perfectly, "
                 "so the weights are dominated by a few observations"
-                if separated else None
+                if separated
+                else None
             ),
             "dr_check": checks,
             "dr_note": (
@@ -227,9 +216,7 @@ def dr_did_santanna_zhao(y_pre, y_post, treatment, X=None,
             "n": int(n),
             "n_treated": int(D.sum()),
             "n_control": int(n - D.sum()),
-            "se_method": (
-                "Mammen multiplier bootstrap" if n_boot else "influence function"
-            ),
+            "se_method": ("Mammen multiplier bootstrap" if n_boot else "influence function"),
             "method": "Doubly-robust DiD (Sant'Anna and Zhao 2020)",
         }
     )

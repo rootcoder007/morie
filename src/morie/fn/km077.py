@@ -36,8 +36,7 @@ def kamath_ch6_factscore(M, X, A_y, C):
     """
     prompts = list(X)
     if not prompts:
-        raise ValueError("X is empty; an expectation over no prompts is "
-                         "undefined.")
+        raise ValueError("X is empty; an expectation over no prompts is undefined.")
     if not callable(M):
         raise ValueError("M must be a callable prompt -> response or None.")
     if not callable(A_y):
@@ -50,21 +49,22 @@ def kamath_ch6_factscore(M, X, A_y, C):
             continue
         facts = list(A_y(resp))
         if not facts:
-            raise ValueError(
-                f"the response to {x!r} yielded no atomic facts; 1/|A_y| "
-                "is undefined.")
+            raise ValueError(f"the response to {x!r} yielded no atomic facts; 1/|A_y| is undefined.")
         flags = [1.0 if supported(a) else 0.0 for a in facts]
         per_prompt.append(float(np.mean(flags)))
     if not per_prompt:
-        raise ValueError("the model responded to no prompt; the "
-                         "conditional expectation is undefined.")
+        raise ValueError("the model responded to no prompt; the conditional expectation is undefined.")
     arr = np.asarray(per_prompt, dtype=float)
-    return RichResult(payload={
-        "estimate": float(arr.mean()), "per_prompt": per_prompt,
-        "n_responded": len(per_prompt),
-        "response_rate": len(per_prompt) / len(prompts),
-        "n": len(prompts),
-        "method": "FActScore (Kamath Eq 6.1)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr.mean()),
+            "per_prompt": per_prompt,
+            "n_responded": len(per_prompt),
+            "response_rate": len(per_prompt) / len(prompts),
+            "n": len(prompts),
+            "method": "FActScore (Kamath Eq 6.1)",
+        }
+    )
 
 
 def cheatsheet():

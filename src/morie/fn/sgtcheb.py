@@ -83,19 +83,27 @@ def cheeger(W, max_n=20):
             cut = e
             vs = volS
     s = [0.0 if d[i] == 0.0 else d[i] ** -0.5 for i in range(n)]
-    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)]
-         for i in range(n)]
+    L = [[(d[i] - W[i][i]) if i == j else -W[i][j] for j in range(n)] for i in range(n)]
     Lc = [[s[i] * L[i][j] * s[j] for j in range(n)] for i in range(n)]
     vals = list(reversed(C.eigsym(Lc)[0]))
     nz = [v for v in vals if v > 1e-10]
     lam1 = nz[0] if nz else 0.0
     sharp = 1.0 - math.sqrt(max(0.0, 1.0 - best * best)) if best <= 1 else 1.0
-    return RichResult(payload={
-        "h": best, "argmin": arg, "cut": cut, "vol_S": vs,
-        "vol_complement": vol - vs, "lambda1": lam1,
-        "upper_bound": 2.0 * best, "lower_bound": best * best / 2.0,
-        "lower_bound_sharp": sharp, "n": n,
-        "method": "Cheeger constant with Chung Theorems 2.2 and 2.3"})
+    return RichResult(
+        payload={
+            "h": best,
+            "argmin": arg,
+            "cut": cut,
+            "vol_S": vs,
+            "vol_complement": vol - vs,
+            "lambda1": lam1,
+            "upper_bound": 2.0 * best,
+            "lower_bound": best * best / 2.0,
+            "lower_bound_sharp": sharp,
+            "n": n,
+            "method": "Cheeger constant with Chung Theorems 2.2 and 2.3",
+        }
+    )
 
 
 sgt_cheeger_bound = cheeger

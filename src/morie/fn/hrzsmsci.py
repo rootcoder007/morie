@@ -62,8 +62,7 @@ def _Kprime(v):
     return np.exp(-0.5 * v * v) / np.sqrt(2.0 * np.pi)
 
 
-def smsciband(x, y, h=None, alpha=0.05, s=2, hstar=None, biascorrect=True,
-              niter=12, delta=1.0, b0=None):
+def smsciband(x, y, h=None, alpha=0.05, s=2, hstar=None, biascorrect=True, niter=12, delta=1.0, b0=None):
     """Smoothed maximum-score estimate with analytic confidence intervals.
 
     Parameters
@@ -152,22 +151,28 @@ def smsciband(x, y, h=None, alpha=0.05, s=2, hstar=None, biascorrect=True,
         Qi = np.linalg.inv(Qn + 1e-12 * np.eye(d - 1))
     except Exception:
         Qi = np.linalg.pinv(Qn)
-    Vn = Qi @ Dn @ Qi                                            # (4.32)
+    Vn = Qi @ Dn @ Qi  # (4.32)
     se = np.sqrt(np.maximum(np.diag(Vn), 0.0) / (n * hh))
     bhat = bt + (1.0 / n) ** (si / float(2 * si + 1)) * (Qi @ An)
     centre = bhat if biascorrect else bt
     zc = float(stats.norm.ppf(1.0 - float(alpha) / 2.0))
     return RichResult(
         title="Smoothed maximum score with analytic confidence intervals",
-        payload={"estimate": beta,
-                 "biascorrected": np.concatenate([np.array([1.0]), bhat]),
-                 "se": se, "lower": centre - zc * se,
-                 "upper": centre + zc * se,
-                 "tstat": np.where(se > 0, centre / np.where(se > 0, se, 1.0),
-                                   np.nan),
-                 "vcov": Vn, "bandwidth": hh, "hstar": hs, "zcrit": zc,
-                 "objective": -float(obj), "n": n,
-                 "method": "Horowitz (2009) Theorem 4.6, eq. (4.32) analytic CI"},
+        payload={
+            "estimate": beta,
+            "biascorrected": np.concatenate([np.array([1.0]), bhat]),
+            "se": se,
+            "lower": centre - zc * se,
+            "upper": centre + zc * se,
+            "tstat": np.where(se > 0, centre / np.where(se > 0, se, 1.0), np.nan),
+            "vcov": Vn,
+            "bandwidth": hh,
+            "hstar": hs,
+            "zcrit": zc,
+            "objective": -float(obj),
+            "n": n,
+            "method": "Horowitz (2009) Theorem 4.6, eq. (4.32) analytic CI",
+        },
     )
 
 
@@ -181,8 +186,7 @@ def cheatsheet():
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
     n = 200
-    X = np.column_stack([np.linspace(-2, 2, n),
-                         np.cos(np.arange(1, n + 1) * 0.8)])
+    X = np.column_stack([np.linspace(-2, 2, n), np.cos(np.arange(1, n + 1) * 0.8)])
     yv = ((X @ np.array([1.0, 0.6])) >= 0.0).astype(float)
     r = smsciband(X, yv, h=0.3)
     assert abs(float(r["estimate"][0]) - 1.0) < 1e-12

@@ -1,7 +1,6 @@
 """Tests for batchn (batch normalization)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.batchn import batch_norm
 
 

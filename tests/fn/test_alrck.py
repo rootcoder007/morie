@@ -9,5 +9,6 @@ def test_alrck_basic():
 
 def test_alrck_edge():
     import pytest
+
     with pytest.raises(ValueError, match="empty"):
         alammar_recall_at_k([1], [], 1)

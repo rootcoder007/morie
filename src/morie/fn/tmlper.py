@@ -61,10 +61,16 @@ def tmle_periodic(y, D, X, period, n_fourier=2):
             r.append(math.sin(2.0 * math.pi * j * t / p))
         rows.append(r)
     res = S.tmle(yv, Dv, rows)
-    return RichResult(payload={
-        "estimate": res["psi"], "se": res["se"], "eps": res["eps"],
-        "n_basis": 2 * int(n_fourier), "n": n,
-        "method": "TMLE with a Fourier seasonal basis"})
+    return RichResult(
+        payload={
+            "estimate": res["psi"],
+            "se": res["se"],
+            "eps": res["eps"],
+            "n_basis": 2 * int(n_fourier),
+            "n": n,
+            "method": "TMLE with a Fourier seasonal basis",
+        }
+    )
 
 
 tmleperiodic = tmle_periodic

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_conditional_prediction"]
 
 
-def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat,
-                                    gamma=None, y_grid=None, u_grid=None):
+def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat, gamma=None, y_grid=None, u_grid=None):
     r"""Prediction from a fitted transformation model (Horowitz
     Sec. 6.4), built on
 
@@ -76,8 +75,7 @@ def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat,
     if X.shape[1] != b.size:
         X = X.T
     if X.shape[1] != b.size:
-        raise ValueError(
-            f"x must have {b.size} columns to match beta_hat.")
+        raise ValueError(f"x must have {b.size} columns to match beta_hat.")
     idx = X @ b
     yq = np.atleast_1d(np.asarray(y_threshold, dtype=float)).ravel()
 
@@ -93,13 +91,13 @@ def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat,
         yg = np.atleast_1d(np.asarray(y_grid, dtype=float))
         Tg = np.atleast_1d(np.asarray(T_hat, dtype=float))
         if Tg.size != yg.size:
-            raise ValueError(
-                f"T_hat has {Tg.size} entries for {yg.size} grid points.")
+            raise ValueError(f"T_hat has {Tg.size} entries for {yg.size} grid points.")
+
         def T_of(v):
             return float(np.interp(v, yg, Tg))
+
     if np.any(np.diff(Tg) < 0):
-        raise ValueError("T_hat must be non-decreasing; assumption HT4 makes "
-                         "T strictly increasing.")
+        raise ValueError("T_hat must be non-decreasing; assumption HT4 makes T strictly increasing.")
 
     if callable(F_hat):
         F_of = F_hat
@@ -113,10 +111,11 @@ def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat,
         ug = np.atleast_1d(np.asarray(u_grid, dtype=float))
         Fg = np.atleast_1d(np.asarray(F_hat, dtype=float))
         if Fg.size != ug.size:
-            raise ValueError(
-                f"F_hat has {Fg.size} entries for {ug.size} grid points.")
+            raise ValueError(f"F_hat has {Fg.size} entries for {ug.size} grid points.")
+
         def F_of(v):
             return float(np.interp(v, ug, Fg))
+
     if np.any(Fg < 0) or np.any(Fg > 1):
         raise ValueError("F_hat must lie in [0, 1].")
 
@@ -139,15 +138,19 @@ def horowitz_conditional_prediction(x, y_threshold, T_hat, F_hat, beta_hat,
         prob_out = float(prob[0, 0]) if yq.size == 1 else prob[0]
     else:
         prob_out = prob[:, 0] if yq.size == 1 else prob
-    return RichResult(payload={
-        "probability": prob_out,
-        "quantile": quant if idx.size > 1 else float(quant[0]),
-        "gamma": g, "u_gamma": u_g,
-        "index": idx if idx.size > 1 else float(idx[0]),
-        "mean_root_n_estimable": False,
-        "quantile_root_n_estimable": True,
-        "n_points": int(idx.size),
-        "method": "P(Y<=y|x) = F[T(y) - x'b]; the conditional MEAN is not root-n estimable when T is nonparametric"})
+    return RichResult(
+        payload={
+            "probability": prob_out,
+            "quantile": quant if idx.size > 1 else float(quant[0]),
+            "gamma": g,
+            "u_gamma": u_g,
+            "index": idx if idx.size > 1 else float(idx[0]),
+            "mean_root_n_estimable": False,
+            "quantile_root_n_estimable": True,
+            "n_points": int(idx.size),
+            "method": "P(Y<=y|x) = F[T(y) - x'b]; the conditional MEAN is not root-n estimable when T is nonparametric",
+        }
+    )
 
 
 def cheatsheet():

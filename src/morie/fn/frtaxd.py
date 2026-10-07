@@ -86,12 +86,19 @@ def frtaxd(coords, species, grid=4):
             richness[cx, cy] = s_rich
             counts[cx, cy] = len(labels)
     h_all, s_all, j_all = _shannon(species)
-    return RichResult(payload={
-        "H": H, "richness": richness, "counts": counts,
-        "H_overall": h_all, "S_overall": int(s_all), "J_overall": j_all,
-        "grid": g, "n": int(n),
-        "method": "Shannon-Wiener diversity per grid cell (nats)",
-    })
+    return RichResult(
+        payload={
+            "H": H,
+            "richness": richness,
+            "counts": counts,
+            "H_overall": h_all,
+            "S_overall": int(s_all),
+            "J_overall": j_all,
+            "grid": g,
+            "n": int(n),
+            "method": "Shannon-Wiener diversity per grid cell (nats)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

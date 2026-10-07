@@ -1,8 +1,8 @@
 """Tests for morie.fn.tgscr — Tangent space projection."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tgscr import tgscr
 
 

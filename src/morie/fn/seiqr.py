@@ -76,12 +76,12 @@ def seiqr_model(
     t = np.arange(0, t_max, dt)
 
     def deriv(y, _t, _N, _b, _s, _g, _d, _k):
-        S, E, I, Q, R = y
-        dS = -_b * S * I / _N
-        dE = _b * S * I / _N - _s * E
-        dI = _s * E - (_g + _d) * I
-        dQ = _d * I - _k * Q
-        dR = _g * I + _k * Q
+        S, E, I_, Q, R = y
+        dS = -_b * S * I_ / _N
+        dE = _b * S * I_ / _N - _s * E
+        dI = _s * E - (_g + _d) * I_
+        dQ = _d * I_ - _k * Q
+        dR = _g * I_ + _k * Q
         return [dS, dE, dI, dQ, dR]
 
     y0 = [S0, E0, I0, Q0, R0_init]

@@ -28,20 +28,19 @@ def ols_beta(x, z):
     arr = np.asarray(_brus.ols_beta(x, z), dtype=float)
     value = float(arr.ravel()[0])
     payload = {"values": arr.tolist(), "value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (20.2)"
     return RichResult(
-        title='OLS coefficients of the response-surface model',
+        title="OLS coefficients of the response-surface model",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r20e2: beta_hat_OLS = (X^T X)^-1 X^T z [Brus 2022, eq. 20.2]'
+    return "r20e2: beta_hat_OLS = (X^T X)^-1 X^T z [Brus 2022, eq. 20.2]"
 
 
 # compact alias per ledger/NAMING.md

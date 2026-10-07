@@ -63,21 +63,16 @@ def geron_auc_roc(y_true, y_scores, pos_label=1):
     y_true = np.asarray(y_true).ravel()
     y_scores = np.asarray(y_scores, dtype=float).ravel()
     if y_true.size != y_scores.size:
-        raise ValueError(
-            f"y_true and y_scores must have equal length, got {y_true.size} and {y_scores.size}."
-        )
+        raise ValueError(f"y_true and y_scores must have equal length, got {y_true.size} and {y_scores.size}.")
     if y_true.size == 0:
         raise ValueError("no observations supplied.")
     if not np.all(np.isfinite(y_scores)):
         raise ValueError("y_scores contains non-finite values.")
-    pos = (y_true == pos_label)
+    pos = y_true == pos_label
     n_pos = int(pos.sum())
     n_neg = int(y_true.size - n_pos)
     if n_pos == 0 or n_neg == 0:
-        raise ValueError(
-            f"ROC needs both classes present; got {n_pos} positive and "
-            f"{n_neg} negative observations."
-        )
+        raise ValueError(f"ROC needs both classes present; got {n_pos} positive and {n_neg} negative observations.")
 
     order = np.argsort(-y_scores, kind="mergesort")
     s = y_scores[order]
@@ -99,10 +94,7 @@ def geron_auc_roc(y_true, y_scores, pos_label=1):
     return RichResult(
         title="ROC AUC",
         summary_lines=[("AUC", auc), ("Positives", n_pos), ("Negatives", n_neg)],
-        interpretation=(
-            "AUC is the probability a random positive is ranked above a random "
-            "negative; 0.5 is chance."
-        ),
+        interpretation=("AUC is the probability a random positive is ranked above a random negative; 0.5 is chance."),
         payload={
             "auc": auc,
             "fpr": fpr.tolist(),

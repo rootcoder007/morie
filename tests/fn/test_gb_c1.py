@@ -1,8 +1,8 @@
 """Tests for gb_c1 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb_c1 import gibbons_chebyshev
 
 

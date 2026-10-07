@@ -83,10 +83,8 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
         # sum theta_i x_i = q, sum theta = 1, theta >= 0.
         A_eq = np.vstack([X.T, np.ones(m)])
         b_eq = np.r_[q, 1.0]
-        res = linprog(np.zeros(m), A_eq=A_eq, b_eq=b_eq,
-                      bounds=[(0.0, None)] * m, method="highs")
-        return res.status == 0, (np.asarray(res.x, dtype=float)
-                                 if res.status == 0 else np.full(m, np.nan))
+        res = linprog(np.zeros(m), A_eq=A_eq, b_eq=b_eq, bounds=[(0.0, None)] * m, method="highs")
+        return res.status == 0, (np.asarray(res.x, dtype=float) if res.status == 0 else np.full(m, np.nan))
 
     # A generator is a vertex exactly when it is NOT in the hull of the
     # others -- which is the definition, and cheap enough at this scale.
@@ -98,8 +96,7 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
             continue
         A_eq = np.vstack([X[others].T, np.ones(others.size)])
         b_eq = np.r_[X[i], 1.0]
-        res = linprog(np.zeros(others.size), A_eq=A_eq, b_eq=b_eq,
-                      bounds=[(0.0, None)] * others.size, method="highs")
+        res = linprog(np.zeros(others.size), A_eq=A_eq, b_eq=b_eq, bounds=[(0.0, None)] * others.size, method="highs")
         if res.status != 0:
             verts.append(i)
     verts = np.asarray(verts, dtype=int)
@@ -113,12 +110,17 @@ def boyd_convex_hull(S, query=None, tol=1e-09):
         inh, wts = member(q)
     return RichResult(
         title="Convex hull",
-        summary_lines=[("points", int(m)), ("dimension", int(n)),
-                       ("vertices", int(verts.size)),
-                       ("in hull", inh if inh is not None else "n/a")],
+        summary_lines=[
+            ("points", int(m)),
+            ("dimension", int(n)),
+            ("vertices", int(verts.size)),
+            ("in hull", inh if inh is not None else "n/a"),
+        ],
         payload={
-            "vertices": verts, "n_vertices": int(verts.size),
-            "in_hull": inh, "weights": wts,
+            "vertices": verts,
+            "n_vertices": int(verts.size),
+            "in_hull": inh,
+            "weights": wts,
             "caratheodory_bound": int(n + 1),
             "method": "boyd_convex_hull",
         },

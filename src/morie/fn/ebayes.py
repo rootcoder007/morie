@@ -55,12 +55,11 @@ def empirical_bayes_shrinkage(y, cluster, sigma2_u=None, sigma2_e=None):
     J = labs.size
     if J < 3:
         raise ValueError(f"shrinkage needs at least 3 clusters, got {J}.")
-    means = np.array([yv[cl == l].mean() for l in labs])
-    nj = np.array([np.sum(cl == l) for l in labs], dtype=float)
+    means = np.array([yv[cl == ell].mean() for ell in labs])
+    nj = np.array([np.sum(cl == ell) for ell in labs], dtype=float)
     grand = float(np.average(means, weights=nj))
     if sigma2_e is None:
-        ssw = float(np.sum([np.sum((yv[cl == l] - means[i]) ** 2)
-                            for i, l in enumerate(labs)]))
+        ssw = float(np.sum([np.sum((yv[cl == ell] - means[i]) ** 2) for i, ell in enumerate(labs)]))
         s2e = ssw / max(yv.size - J, 1)
     else:
         s2e = float(sigma2_e)
@@ -73,15 +72,22 @@ def empirical_bayes_shrinkage(y, cluster, sigma2_u=None, sigma2_e=None):
         raise ValueError("variance components must be non-negative.")
     denom = s2u + s2e / nj
     lam = np.where(denom > 0, s2u / denom, 0.0)
-    return RichResult(payload={
-        "clusters": labs, "raw_means": means,
-        "shrunk": lam * means + (1 - lam) * grand,
-        "lambda": lam, "grand_mean": grand,
-        "sigma2_u": s2u, "sigma2_e": s2e, "n_j": nj.astype(int),
-        "biased_per_cluster": True,
-        "tradeoff": "lower TOTAL squared error, higher bias for any single "
-                    "named cluster; small clusters are shrunk hardest",
-        "method": "Empirical Bayes shrinkage; lambda_j depends on the cluster's OWN size"})
+    return RichResult(
+        payload={
+            "clusters": labs,
+            "raw_means": means,
+            "shrunk": lam * means + (1 - lam) * grand,
+            "lambda": lam,
+            "grand_mean": grand,
+            "sigma2_u": s2u,
+            "sigma2_e": s2e,
+            "n_j": nj.astype(int),
+            "biased_per_cluster": True,
+            "tradeoff": "lower TOTAL squared error, higher bias for any single "
+            "named cluster; small clusters are shrunk hardest",
+            "method": "Empirical Bayes shrinkage; lambda_j depends on the cluster's OWN size",
+        }
+    )
 
 
 def cheatsheet():

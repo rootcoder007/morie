@@ -60,8 +60,7 @@ def t2eigh(a):
                 if m[p][q] == 0.0:
                     continue
                 theta = (m[q][q] - m[p][p]) / (2.0 * m[p][q])
-                t = (1.0 if theta >= 0.0 else -1.0) / (
-                    abs(theta) + math.sqrt(theta * theta + 1.0))
+                t = (1.0 if theta >= 0.0 else -1.0) / (abs(theta) + math.sqrt(theta * theta + 1.0))
                 c = 1.0 / math.sqrt(t * t + 1.0)
                 s = t * c
                 for k in range(n):
@@ -96,8 +95,7 @@ def t2expsym(a):
     w, v = t2eigh(a)
     n = len(w)
     ew = [math.exp(x) for x in w]
-    return [[sum(v[i][k] * ew[k] * v[j][k] for k in range(n))
-             for j in range(n)] for i in range(n)]
+    return [[sum(v[i][k] * ew[k] * v[j][k] for k in range(n)) for j in range(n)] for i in range(n)]
 
 
 def t2degree(a):
@@ -112,8 +110,7 @@ def t2adjlist(a):
     An entry is an edge when it is non-zero; self loops are dropped.
     """
     m, n = t2square(a)
-    return [[j for j in range(n) if j != i and m[i][j] != 0.0]
-            for i in range(n)], n
+    return [[j for j in range(n) if j != i and m[i][j] != 0.0] for i in range(n)], n
 
 
 def t2brandes(adj):

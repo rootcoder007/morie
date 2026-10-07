@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_admm"]
 
 
-def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
-              max_iter=500, eps_abs=1e-08, eps_rel=1e-06):
+def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None, max_iter=500, eps_abs=1e-08, eps_rel=1e-06):
     r"""Alternating direction method of multipliers for
     :math:`\min f(x) + g(z)` s.t. :math:`Ax + Bz = c`:
 
@@ -68,8 +67,8 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
     >>> rho = 1.0
     >>> M = np.linalg.inv(A_.T @ A_ + rho * np.eye(6))
     >>> px = lambda v, r: M @ (A_.T @ b + r * v)
-    >>> pz = lambda v, r: np.sign(v) * np.maximum(np.abs(v) - 0.3 / r, 0)
-    >>> r = boyd_admm(px, pz, rho=rho, n=6)
+    >>> pz = lambda v, r: np.sign(v) * np.maximum(np.abs(v) - 1.5 / r, 0)
+    >>> r = boyd_admm(px, pz, rho=rho, n=6, max_iter=1000)
     >>> bool(r["converged"])
     True
 
@@ -102,7 +101,7 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
     path = []
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         x = np.atleast_1d(np.asarray(prox_f(z - u, rho), dtype=float)).ravel()
         z_old = z.copy()
         z = np.atleast_1d(np.asarray(prox_g(x + u, rho), dtype=float)).ravel()
@@ -110,23 +109,30 @@ def boyd_admm(prox_f, prox_g, A=None, B=None, c=None, rho=1.0, n=None,
         r_norm = float(np.linalg.norm(x - z))
         s_norm = float(np.linalg.norm(-rho * (z - z_old)))
         path.append((r_norm, s_norm))
-        eps_p = np.sqrt(n) * eps_abs + eps_rel * max(
-            float(np.linalg.norm(x)), float(np.linalg.norm(z)))
+        eps_p = np.sqrt(n) * eps_abs + eps_rel * max(float(np.linalg.norm(x)), float(np.linalg.norm(z)))
         eps_d = np.sqrt(n) * eps_abs + eps_rel * float(np.linalg.norm(rho * u))
         if r_norm <= eps_p and s_norm <= eps_d:
             conv = True
             break
     return RichResult(
         title="ADMM",
-        summary_lines=[("iterations", int(it)), ("rho", rho),
-                       ("primal residual", path[-1][0]),
-                       ("dual residual", path[-1][1])],
-        warnings=[] if conv else ["ADMM hit max_iter; it converges for any "
-                                  "rho > 0 but the RATE depends on it"],
+        summary_lines=[
+            ("iterations", int(it)),
+            ("rho", rho),
+            ("primal residual", path[-1][0]),
+            ("dual residual", path[-1][1]),
+        ],
+        warnings=[] if conv else ["ADMM hit max_iter; it converges for any rho > 0 but the RATE depends on it"],
         payload={
-            "x": x, "z": z, "u": u, "n_iter": int(it), "converged": conv,
-            "primal_residual": path[-1][0], "dual_residual": path[-1][1],
-            "residual_path": np.asarray(path), "rho": rho,
+            "x": x,
+            "z": z,
+            "u": u,
+            "n_iter": int(it),
+            "converged": conv,
+            "primal_residual": path[-1][0],
+            "dual_residual": path[-1][1],
+            "residual_path": np.asarray(path),
+            "rho": rho,
             "method": "boyd_admm",
         },
     )

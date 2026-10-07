@@ -1,7 +1,6 @@
 """Tests for dfbeta.dfbetas."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dfbeta import dfbetas
 
 
@@ -12,6 +11,8 @@ def test_dfbeta_basic():
     result = dfbetas(X, y)
     assert isinstance(result, dict)
     assert "dfbetas" in result
+
+
 def test_dfbeta_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

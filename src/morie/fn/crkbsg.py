@@ -82,13 +82,12 @@ def _rho(h, model, rng):
         if h >= rng:
             return 0.0
         r = h / rng
-        return 1.0 - (1.5 * r - 0.5 * r ** 3)
+        return 1.0 - (1.5 * r - 0.5 * r**3)
     if model == "exponential":
         return math.exp(-3.0 * h / rng)
     if model == "gaussian":
         return math.exp(-3.0 * (h / rng) ** 2)
-    raise ValueError("crkbsg: model must be spherical, exponential or "
-                     "gaussian, got %r" % (model,))
+    raise ValueError(f"crkbsg: model must be spherical, exponential or gaussian, got {model!r}")
 
 
 def _dist(a, b):
@@ -109,9 +108,11 @@ def _solve(A, b):
             if abs(M[r][col]) > abs(M[piv][col]):
                 piv = r
         if abs(M[piv][col]) < 1e-300:
-            raise ValueError("crkbsg: the cokriging system is singular -- "
-                             "duplicated sample locations, or a "
-                             "coregionalisation matrix of deficient rank")
+            raise ValueError(
+                "crkbsg: the cokriging system is singular -- "
+                "duplicated sample locations, or a "
+                "coregionalisation matrix of deficient rank"
+            )
         if piv != col:
             M[col], M[piv] = M[piv], M[col]
         d = M[col][col]
@@ -165,28 +166,23 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
     C1 = [[float(v) for v in row] for row in k.mat(coords)]
     yv = [float(v) for v in k.vec(y)]
     zv = [float(v) for v in k.vec(z)]
-    C2 = C1 if coords_z is None else [[float(v) for v in row]
-                                      for row in k.mat(coords_z)]
+    C2 = C1 if coords_z is None else [[float(v) for v in row] for row in k.mat(coords_z)]
     n1, n2 = len(C1), len(C2)
     if n1 == 0:
         raise ValueError("crkbsg: no primary observations")
     if len(yv) != n1:
-        raise ValueError("crkbsg: %d primary locations but %d values"
-                         % (n1, len(yv)))
+        raise ValueError(f"crkbsg: {int(n1)} primary locations but {int(len(yv))} values")
     if len(zv) != n2:
-        raise ValueError("crkbsg: %d secondary locations but %d values"
-                         % (n2, len(zv)))
+        raise ValueError(f"crkbsg: {int(n2)} secondary locations but {int(len(zv))} values")
     d = len(C1[0])
     if any(len(r) != d for r in C1) or any(len(r) != d for r in C2):
-        raise ValueError("crkbsg: all coordinates must have the same "
-                         "dimension")
+        raise ValueError("crkbsg: all coordinates must have the same dimension")
 
     par = dict(_DEFAULT_LMC)
     if cross_variogram:
         for key in cross_variogram:
             if key not in _DEFAULT_LMC:
-                raise ValueError("crkbsg: unknown cross_variogram key %r"
-                                 % (key,))
+                raise ValueError(f"crkbsg: unknown cross_variogram key {key!r}")
             par[key] = cross_variogram[key]
     model = str(par["model"])
     rng = float(par["range"])
@@ -198,19 +194,20 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
         raise ValueError("crkbsg: the range must be positive")
     # permissibility: an indefinite B gives negative prediction variances
     if b11 < 0.0 or b22 < 0.0 or b11 * b22 < b12 * b12 - 1e-12:
-        raise ValueError("crkbsg: the coregionalisation matrix is not "
-                         "positive semidefinite (b11*b22 = %.6g < b12^2 = "
-                         "%.6g)" % (b11 * b22, b12 * b12))
+        raise ValueError(
+            "crkbsg: the coregionalisation matrix is not "
+            f"positive semidefinite (b11*b22 = {b11 * b22:.6g} < b12^2 = "
+            f"{b12 * b12:.6g})"
+        )
     if n11 < 0.0 or n22 < 0.0 or n11 * n22 < n12 * n12 - 1e-12:
-        raise ValueError("crkbsg: the nugget matrix is not positive "
-                         "semidefinite")
+        raise ValueError("crkbsg: the nugget matrix is not positive semidefinite")
 
     tg = k.mat(s_predict)
     if tg and not isinstance(tg[0], (list, tuple)):
         tg = [list(tg)]
     targets = [[float(v) for v in row] for row in tg]
     if any(len(t) != d for t in targets):
-        raise ValueError("crkbsg: targets must have dimension %d" % d)
+        raise ValueError(f"crkbsg: targets must have dimension {int(d)}")
 
     def cov(a, b_, bij, nij):
         h = _dist(a, b_)
@@ -249,17 +246,13 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
     lam = mu = None
     lagr = [0.0, 0.0]
     for t in targets:
-        rhs = ([cov(C1[i], t, b11, n11) for i in range(n1)]
-               + [cov(C2[i], t, b12, n12) for i in range(n2)] + [1.0, 0.0])
+        rhs = [cov(C1[i], t, b11, n11) for i in range(n1)] + [cov(C2[i], t, b12, n12) for i in range(n2)] + [1.0, 0.0]
         sol = _solve(A, rhs)
         lam = sol[:n1]
-        mu = sol[n1:n1 + n2]
+        mu = sol[n1 : n1 + n2]
         lagr = [sol[n1 + n2], sol[n1 + n2 + 1]]
-        pred.append(sum(lam[i] * yv[i] for i in range(n1))
-                    + sum(mu[i] * zv[i] for i in range(n2)))
-        v = c11_0 - (sum(lam[i] * rhs[i] for i in range(n1))
-                     + sum(mu[i] * rhs[n1 + i] for i in range(n2))
-                     + lagr[0])
+        pred.append(sum(lam[i] * yv[i] for i in range(n1)) + sum(mu[i] * zv[i] for i in range(n2)))
+        v = c11_0 - (sum(lam[i] * rhs[i] for i in range(n1)) + sum(mu[i] * rhs[n1 + i] for i in range(n2)) + lagr[0])
         var.append(max(v, 0.0))
 
         rk = [cov(C1[i], t, b11, n11) for i in range(n1)] + [1.0]
@@ -269,28 +262,39 @@ def cokriging(coords, y, z, s_predict, cross_variogram=None, coords_z=None):
         vk = c11_0 - (sum(wk[i] * rk[i] for i in range(n1)) + sk[n1])
         kvar.append(max(vk, 0.0))
 
-    return RichResult(payload={
-        "estimate": pred, "prediction": pred,
-        "variance": var, "std_error": [math.sqrt(v) for v in var],
-        "kriging_prediction": kpred, "kriging_variance": kvar,
-        "variance_reduction": [kvar[i] - var[i] for i in range(len(var))],
-        "weights_primary": lam, "weights_secondary": mu, "lagrange": lagr,
-        "targets": targets,
-        "coregionalisation": [[b11, b12], [b12, b22]],
-        "nugget_matrix": [[n11, n12], [n12, n22]],
-        "model": model, "range": rng,
-        "n_primary": n1, "n_secondary": n2,
-        "method": "ordinary cokriging under a linear model of "
-                  "coregionalisation, with the two-constraint unbiasedness "
-                  "system (Wackernagel 2003 Ch. 24-25; Goovaerts 1997 "
-                  "Sec. 6.2)",
-        "note": "the cokriging variance can never exceed the primary-only "
-                "kriging variance; variance_reduction is what the secondary "
-                "variable bought, and it is exactly zero when b12 = 0",
-    })
+    return RichResult(
+        payload={
+            "estimate": pred,
+            "prediction": pred,
+            "variance": var,
+            "std_error": [math.sqrt(v) for v in var],
+            "kriging_prediction": kpred,
+            "kriging_variance": kvar,
+            "variance_reduction": [kvar[i] - var[i] for i in range(len(var))],
+            "weights_primary": lam,
+            "weights_secondary": mu,
+            "lagrange": lagr,
+            "targets": targets,
+            "coregionalisation": [[b11, b12], [b12, b22]],
+            "nugget_matrix": [[n11, n12], [n12, n22]],
+            "model": model,
+            "range": rng,
+            "n_primary": n1,
+            "n_secondary": n2,
+            "method": "ordinary cokriging under a linear model of "
+            "coregionalisation, with the two-constraint unbiasedness "
+            "system (Wackernagel 2003 Ch. 24-25; Goovaerts 1997 "
+            "Sec. 6.2)",
+            "note": "the cokriging variance can never exceed the primary-only "
+            "kriging variance; variance_reduction is what the secondary "
+            "variable bought, and it is exactly zero when b12 = 0",
+        }
+    )
 
 
 def cheatsheet():
-    return ("crkbsg: cokriging(coords, y, z, s_predict, cross_variogram) -> "
-            "ordinary cokriging prediction and variance under a linear "
-            "model of coregionalisation (Wackernagel 2003, Ch. 24-25)")
+    return (
+        "crkbsg: cokriging(coords, y, z, s_predict, cross_variogram) -> "
+        "ordinary cokriging prediction and variance under a linear "
+        "model of coregionalisation (Wackernagel 2003, Ch. 24-25)"
+    )

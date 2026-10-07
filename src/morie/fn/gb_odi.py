@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['oddsrat', 'gibbons_odds_ratio']
+__all__ = ["oddsrat", "gibbons_odds_ratio"]
 
 
 def oddsrat(table, alpha=0.05, cc=0.0):
@@ -59,10 +59,7 @@ def oddsrat(table, alpha=0.05, cc=0.0):
     a, b = tb[0]
     c, d = tb[1]
     if min(a, b, c, d) <= 0.0:
-        raise ValueError(
-            "every cell must be positive for the logit method; "
-            "pass cc=0.5 to add a continuity constant."
-        )
+        raise ValueError("every cell must be positive for the logit method; pass cc=0.5 to add a continuity constant.")
     alpha = float(alpha)
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly inside (0, 1).")

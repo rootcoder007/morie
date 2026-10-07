@@ -119,17 +119,19 @@ def em_state_space(y, init=None, max_iter=50):
         R = sum((y[t - 1] - xs[t]) ** 2 + Ps[t] for t in range(1, n + 1)) / n
         if R <= 0.0:
             R = 1e-12
-    return RichResult(payload={
-        "estimate": phi,
-        "phi": phi,
-        "Q": Q,
-        "R": R,
-        "loglik": loglik,
-        "loglik_path": path,
-        "iters": max_iter,
-        "n": n,
-        "method": "EM for state-space parameters",
-    })
+    return RichResult(
+        payload={
+            "estimate": phi,
+            "phi": phi,
+            "Q": Q,
+            "R": R,
+            "loglik": loglik,
+            "loglik_path": path,
+            "iters": max_iter,
+            "n": n,
+            "method": "EM for state-space parameters",
+        }
+    )
 
 
 def cheatsheet():

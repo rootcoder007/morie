@@ -3,19 +3,29 @@
 Sources: Zhou, H. et al. (2021) AAAI 35(12), 11106-11115,
 arXiv:2012.07436; Nie, Y., Nguyen, N. H., Sinthong, P. &
 Kalagnanam, J. (2023) ICLR 2023, arXiv:2211.14730."""
+
 import math
 
 import pytest
 
 from morie.fn import _array_core as np
 from morie.fn import infmer
-from morie.fn.informer import (complexity, full_attention,
-                               kl_from_uniform, probsparse_attention,
-                               select_queries, sparsity_measure)
-from morie.fn.patchT import (attention_cost,
-                             channel_independent_tokens,
-                             channel_mixed_tokens, instance_norm,
-                             patchify, patchtst_encode)
+from morie.fn.informer import (
+    complexity,
+    full_attention,
+    kl_from_uniform,
+    probsparse_attention,
+    select_queries,
+    sparsity_measure,
+)
+from morie.fn.patchT import (
+    attention_cost,
+    channel_independent_tokens,
+    channel_mixed_tokens,
+    instance_norm,
+    patchify,
+    patchtst_encode,
+)
 
 K0 = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
 
@@ -29,13 +39,11 @@ def qkv(LQ=32, LK=32, D=4, seed=1):
 
 
 def test_the_measure_equals_log_L_at_uniform_attention():
-    assert sparsity_measure([0.0, 0.0], K0) == pytest.approx(
-        math.log(4), abs=1e-12)
+    assert sparsity_measure([0.0, 0.0], K0) == pytest.approx(math.log(4), abs=1e-12)
 
 
 def test_the_kl_is_zero_at_uniform_attention():
-    assert kl_from_uniform([0.0, 0.0], K0) == pytest.approx(
-        0.0, abs=1e-12)
+    assert kl_from_uniform([0.0, 0.0], K0) == pytest.approx(0.0, abs=1e-12)
 
 
 def test_the_kl_is_positive_for_a_peaked_query():
@@ -50,9 +58,7 @@ def test_the_measure_never_falls_below_log_L():
 
 
 def test_the_maxmean_bound_is_zero_at_uniform():
-    assert sparsity_measure([0.0, 0.0], K0,
-                            measure="maxmean") == pytest.approx(
-        0.0, abs=1e-12)
+    assert sparsity_measure([0.0, 0.0], K0, measure="maxmean") == pytest.approx(0.0, abs=1e-12)
 
 
 def test_u_is_the_stated_function_of_the_query_count():
@@ -68,8 +74,7 @@ def test_a_full_budget_reproduces_full_attention_exactly():
     fa = full_attention(Q, K, V)
     for i in range(len(Q)):
         for a in range(len(V[0])):
-            assert ps["output"][i][a] == pytest.approx(fa[i][a],
-                                                       abs=1e-12)
+            assert ps["output"][i][a] == pytest.approx(fa[i][a], abs=1e-12)
 
 
 def test_selected_queries_are_computed_exactly():
@@ -78,20 +83,17 @@ def test_selected_queries_are_computed_exactly():
     fa = full_attention(Q, K, V)
     for i in ps["selected"]:
         for a in range(len(V[0])):
-            assert ps["output"][i][a] == pytest.approx(fa[i][a],
-                                                       abs=1e-12)
+            assert ps["output"][i][a] == pytest.approx(fa[i][a], abs=1e-12)
 
 
 def test_unselected_queries_take_the_value_mean():
     Q, K, V = qkv()
     ps = probsparse_attention(Q, K, V, factor=1)
-    vbar = [sum(V[j][a] for j in range(len(V))) / len(V)
-            for a in range(len(V[0]))]
+    vbar = [sum(V[j][a] for j in range(len(V))) / len(V) for a in range(len(V[0]))]
     unsel = [i for i in range(len(Q)) if i not in set(ps["selected"])]
     assert unsel
     for a in range(len(V[0])):
-        assert ps["output"][unsel[0]][a] == pytest.approx(vbar[a],
-                                                          abs=1e-12)
+        assert ps["output"][unsel[0]][a] == pytest.approx(vbar[a], abs=1e-12)
 
 
 def test_probsparse_is_cheaper_and_more_so_as_L_grows():
@@ -175,8 +177,7 @@ def test_channel_independence_makes_D_times_more_tokens():
 def test_patching_shrinks_the_attention_map():
     c = attention_cost(96, 16, 8, 4)
     n = (96 - 16) // 8 + 1
-    assert c["reduction"] == pytest.approx((96 * 96) / (n * n),
-                                           abs=1e-9)
+    assert c["reduction"] == pytest.approx((96 * 96) / (n * n), abs=1e-9)
 
 
 def test_a_larger_stride_shrinks_it_further():

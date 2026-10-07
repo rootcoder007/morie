@@ -1,7 +1,5 @@
 """Variance-components estimation, ANOVA or REML (Searle et al. 1992)."""
 
-import math
-
 from ._richresult import RichResult
 from .ranova import ranova
 from .remlfn import remlfn
@@ -13,6 +11,7 @@ def _f_cdf(x, d1, d2):
     # F CDF via the regularized incomplete beta:
     # P(F <= x) = I_{d1 x / (d1 x + d2)}(d1/2, d2/2)
     from . import _stats_core as sc
+
     if x <= 0:
         return 0.0
     return sc._betainc(d1 / 2.0, d2 / 2.0, d1 * x / (d1 * x + d2))
@@ -23,6 +22,7 @@ def _f_ppf(p, d1, d2, iters=300):
     for p > 1/2 instead of losing digits to 1 - p."""
     del iters
     from . import _stats_core as sc
+
     if p <= 0.0:
         return 0.0
     if p >= 1.0:
@@ -88,8 +88,7 @@ def vcomp(y, group, method="reml", conf_level=0.95):
     # conf_level = 1.5 makes alpha negative, _f_ppf returns 0, and the
     # upper limit raises ZeroDivisionError instead of saying what is wrong.
     if not 0.0 < float(conf_level) < 1.0:
-        raise ValueError("vcomp: conf_level must lie in (0, 1), got %r"
-                         % (conf_level,))
+        raise ValueError(f"vcomp: conf_level must lie in (0, 1), got {conf_level!r}")
     av = ranova(y, group)
     fit = remlfn(y, group) if method == "reml" else av
     s2a = float(fit["sigma2_a"])
@@ -113,19 +112,21 @@ def vcomp(y, group, method="reml", conf_level=0.95):
             lo = 0.0
         if hi > 1.0:
             hi = 1.0
-    return RichResult(payload={
-        "sigma2_a": s2a,
-        "sigma2_e": s2e,
-        "icc": icc,
-        "icc_lower": lo,
-        "icc_upper": hi,
-        "method_used": method,
-        "balanced": bool(av["balanced"]),
-        "a": int(av["a"]),
-        "N": int(av["N"]),
-        "fit": dict(fit),
-        "method": "variance components, %s (Searle et al. 1992)" % method,
-    })
+    return RichResult(
+        payload={
+            "sigma2_a": s2a,
+            "sigma2_e": s2e,
+            "icc": icc,
+            "icc_lower": lo,
+            "icc_upper": hi,
+            "method_used": method,
+            "balanced": bool(av["balanced"]),
+            "a": int(av["a"]),
+            "N": int(av["N"]),
+            "fit": dict(fit),
+            "method": f"variance components, {method} (Searle et al. 1992)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -133,8 +134,8 @@ variance_components = vcomp
 
 
 def cheatsheet():
-    return ("vcomp: ANOVA or REML variance components + exact ICC F "
-            "interval on balanced data (Searle Sec. 3.5)")
+    return "vcomp: ANOVA or REML variance components + exact ICC F interval on balanced data (Searle Sec. 3.5)"
+
 
 # public names resolved by fn/_lazy_map.json
 variance_components_henderson3 = vcomp

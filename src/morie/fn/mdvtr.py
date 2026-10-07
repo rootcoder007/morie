@@ -21,8 +21,7 @@ def _binom_cdf(k, n):
     lg = math.lgamma
     tot = 0.0
     for i in range(int(k) + 1):
-        tot += math.exp(lg(n + 1) - lg(i + 1) - lg(n - i + 1)
-                        - n * math.log(2.0))
+        tot += math.exp(lg(n + 1) - lg(i + 1) - lg(n - i + 1) - n * math.log(2.0))
     return min(tot, 1.0)
 
 
@@ -157,8 +156,7 @@ def median_voter(x, alpha=0.05, alternatives=None):
     x = x[np.isfinite(x)]
     n = int(x.size)
     if n == 0:
-        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": 0,
-                                   "method": _METHOD})
+        return RichResult(payload={"estimate": np.nan, "se": np.nan, "n": 0, "method": _METHOD})
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1); got {alpha}.")
     xs = np.sort(x)
@@ -171,11 +169,9 @@ def median_voter(x, alpha=0.05, alternatives=None):
         unique = interval[0] == interval[1]
 
     if n > 1:
-        se_normal = float(1.2533141373155003 * np.std(xs, ddof=1)
-                          / math.sqrt(n))
+        se_normal = float(1.2533141373155003 * np.std(xs, ddof=1) / math.sqrt(n))
         f_m = _kde_at(xs, est)
-        se = (float(1.0 / (2.0 * f_m * math.sqrt(n)))
-              if np.isfinite(f_m) and f_m > 0 else float("nan"))
+        se = float(1.0 / (2.0 * f_m * math.sqrt(n))) if np.isfinite(f_m) and f_m > 0 else float("nan")
     else:
         se_normal = se = f_m = float("nan")
 
@@ -290,15 +286,13 @@ def condorcet_winner(utility, platforms=None):
         for j in range(m):
             if i == j:
                 continue
-            beats[i, j] = int(np.sum(U[:, i] > U[:, j])) > \
-                int(np.sum(U[:, j] > U[:, i]))
+            beats[i, j] = int(np.sum(U[:, i] > U[:, j])) > int(np.sum(U[:, j] > U[:, i]))
     # a Condorcet winner beats every other option
     wins = beats.sum(axis=1)
     idx = [i for i in range(m) if wins[i] == m - 1]
     exists = len(idx) == 1
     w = idx[0] if exists else None
-    labels = (np.arange(m) if platforms is None
-              else np.asarray(platforms).ravel())
+    labels = np.arange(m) if platforms is None else np.asarray(platforms).ravel()
     out = RichResult(
         title="Condorcet winner by pairwise majority",
         summary_lines=[
@@ -309,9 +303,7 @@ def condorcet_winner(utility, platforms=None):
         payload={
             "winner_index": w,
             "winner": (labels[w] if exists else None),
-            "estimate": (float(labels[w]) if exists
-                         and np.issubdtype(np.asarray(labels).dtype,
-                                           np.number) else np.nan),
+            "estimate": (float(labels[w]) if exists and np.issubdtype(np.asarray(labels).dtype, np.number) else np.nan),
             "exists": exists,
             "cyclic": not exists,
             "net_wins": wins,

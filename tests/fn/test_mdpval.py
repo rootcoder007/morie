@@ -21,11 +21,9 @@ GAMMA = 0.9
 def _solve_policy(pol):
     """Exact V^pi from (I - gamma P_pi) V = R_pi with Fractions."""
     g = Fraction(9, 10)
-    Pf = [[Fraction(x).limit_denominator(10**6) for x in P[pol[s]][s]]
-          for s in range(3)]
+    Pf = [[Fraction(x).limit_denominator(10**6) for x in P[pol[s]][s]] for s in range(3)]
     Rf = [Fraction(R[s][pol[s]]).limit_denominator(10**6) for s in range(3)]
-    A = [[(Fraction(1) if i == j else Fraction(0)) - g * Pf[i][j]
-          for j in range(3)] + [Rf[i]] for i in range(3)]
+    A = [[(Fraction(1) if i == j else Fraction(0)) - g * Pf[i][j] for j in range(3)] + [Rf[i]] for i in range(3)]
     for col in range(3):
         piv = next(r for r in range(col, 3) if A[r][col] != 0)
         A[col], A[piv] = A[piv], A[col]

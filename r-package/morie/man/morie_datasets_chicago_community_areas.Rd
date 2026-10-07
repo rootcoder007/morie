@@ -59,7 +59,7 @@ Offline mode reads a included 77-row attribute-only fixture
 canonical name in ALL CAPS.
 }
 \examples{
-\dontshow{if (morie_has("chicago_community_areas.csv")) withAutoprint(\{ # examplesIf}
+\dontshow{if (morie_has("data:chicago_community_areas.csv")) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_community_areas(offline = TRUE)
 head(df[, c("area_numbe", "community")])
 \dontshow{\}) # examplesIf}

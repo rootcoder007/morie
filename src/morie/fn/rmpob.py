@@ -55,10 +55,7 @@ def rmpob(
             else:
                 prob = 2 * (theta + (1 - theta) * pi) * (theta + (1 - theta) * pj) / ((1 + theta) * (1 + 2 * theta))
         else:
-            if abs(pi - pj) < 1e-10:
-                prob = pi**2
-            else:
-                prob = 2 * pi * pj
+            prob = pi**2 if abs(pi - pj) < 1e-10 else 2 * pi * pj
 
         locus_probs.append(max(prob, 1e-30))
 

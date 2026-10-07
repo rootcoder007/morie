@@ -1,7 +1,6 @@
 """Tests for ca11e40.ca_chapter_11_equation_40."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca11e40 import ca_chapter_11_equation_40
 
 
@@ -12,6 +11,8 @@ def test_ca11e40_basic():
     result = ca_chapter_11_equation_40(ys, ws)
     assert isinstance(result, dict)
     assert "q" in result
+
+
 def test_ca11e40_edge():
     """Test edge cases."""
     ys = np.abs(np.random.default_rng(42).normal(0, 1, 100)) + 0.5

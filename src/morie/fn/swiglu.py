@@ -27,8 +27,7 @@ from ._richresult import RichResult
 __all__ = ["swiglu_activation"]
 
 
-def swiglu_activation(y, x=None, W=None, V=None, b=None, c=None, beta=1.0,
-                      W2=None):
+def swiglu_activation(y, x=None, W=None, V=None, b=None, c=None, beta=1.0, W2=None):
     """SwiGLU(x, W, V, b, c, beta), and optionally the full FFN.
 
     Parameters

@@ -9,14 +9,14 @@ precision rather than approximately.
 Schabenberger, O. & Gotway, C. A. (2005). Ch. 5.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.spskrg import schabenberger_simple_kriging as simple_kriging
+from morie.fn import _array_core as np
 from morie.fn.spblup import schabenberger_blup as blup
-from morie.fn.spkwt import schabenberger_kriging_weights as kriging_weights
 from morie.fn.spkfnn import schabenberger_cross_validation_kriging as loo_cv
+from morie.fn.spkwt import schabenberger_kriging_weights as kriging_weights
 from morie.fn.spnsr import schabenberger_nugget_sill_range_effect as nsr_effect
+from morie.fn.spskrg import schabenberger_simple_kriging as simple_kriging
 
 CM = {"nugget": 0.0, "sill": 1.0, "range": 2.0, "model": "exponential"}
 
@@ -41,9 +41,9 @@ def test_simple_kriging_weight_on_the_point_itself_is_one():
     np.testing.assert_allclose(np.diag(w), 1.0, atol=1e-10)
 
 
-def test_simple_kriging_matches_the_closed_form(): 
+def test_simple_kriging_matches_the_closed_form():
     """p = mu + sigma' Sigma^-1 (Z - mu), sigma^2 - sigma' Sigma^-1 sigma."""
-    from morie.fn._schab_krig import cov_from_model, _dist
+    from morie.fn._schab_krig import _dist, cov_from_model
 
     coords, z = _field(seed=5, n=12)
     tgt = np.array([[2.0, 2.0]])
@@ -111,7 +111,7 @@ def test_loo_cv_residuals_are_not_identically_zero():
     r = loo_cv(coords, z, CM)
     assert r["mspe"] > 0
     assert r["rmspe"] == pytest.approx(np.sqrt(r["mspe"]))
-    assert abs(r["me"]) < 0.5 * r["rmspe"]      # roughly unbiased
+    assert abs(r["me"]) < 0.5 * r["rmspe"]  # roughly unbiased
     assert r["residuals"].size == z.size
 
 
@@ -139,8 +139,7 @@ def test_a_pure_nugget_collapses_the_prediction_to_the_mean():
 
 
 def test_a_larger_nugget_flattens_the_weights():
-    spreads = [nsr_effect(nug, 1.0, 1.0)["weight_spread"]
-               for nug in (0.0, 0.5, 2.0, 10.0)]
+    spreads = [nsr_effect(nug, 1.0, 1.0)["weight_spread"] for nug in (0.0, 0.5, 2.0, 10.0)]
     assert spreads[0] > spreads[1] > spreads[2] > spreads[3]
 
 

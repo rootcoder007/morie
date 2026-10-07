@@ -64,33 +64,42 @@ def icc_one_way_average(y, cluster, rater=None):
             "ICC(1,k) as defined by Shrout-Fleiss assumes k ratings per "
             f"target; the group sizes here are {sorted(set(sizes.tolist()))}. "
             "An unbalanced one-way design needs a variance-components fit, "
-            "not this formula.")
+            "not this formula."
+        )
     k = int(sizes[0])
     if k < 2:
         raise ValueError(f"need at least 2 ratings per target, got {k}.")
     grand = float(yv.mean())
     means = np.array([yv[g == v].mean() for v in groups])
     ms_r = float(k * np.sum((means - grand) ** 2) / (n - 1))
-    ss_w = float(sum(np.sum((yv[g == v] - m) ** 2)
-                     for v, m in zip(groups, means)))
+    ss_w = float(sum(np.sum((yv[g == v] - m) ** 2) for v, m in zip(groups, means)))
     ms_w = ss_w / (n * (k - 1))
     if ms_r <= 0:
-        raise ValueError("between-target mean square is zero; every target "
-                         "has the same mean and no reliability is defined.")
+        raise ValueError(
+            "between-target mean square is zero; every target has the same mean and no reliability is defined."
+        )
     icc_k = (ms_r - ms_w) / ms_r
     icc_1 = (ms_r - ms_w) / (ms_r + (k - 1) * ms_w)
-    return RichResult(payload={
-        "value": icc_k, "icc_single": icc_1, "k": k, "n": int(n),
-        "MSR": ms_r, "MSW": ms_w, "case": "ICC(1,k)",
-        "design_assumption": "each target rated by a DIFFERENT randomly "
-                             "chosen set of raters; rater identity is not "
-                             "crossed with target",
-        "smallest_because": "rater and error variance cannot be separated, "
-                            "so MSW pools them and systematic rater "
-                            "differences are charged to error -- ICC(1,*) "
-                            "is the smallest of the three cases",
-        "rater_ignored": rater is not None,
-        "method": "Shrout-Fleiss (1979) ICC(1,k) = (MSR - MSW)/MSR"})
+    return RichResult(
+        payload={
+            "value": icc_k,
+            "icc_single": icc_1,
+            "k": k,
+            "n": int(n),
+            "MSR": ms_r,
+            "MSW": ms_w,
+            "case": "ICC(1,k)",
+            "design_assumption": "each target rated by a DIFFERENT randomly "
+            "chosen set of raters; rater identity is not "
+            "crossed with target",
+            "smallest_because": "rater and error variance cannot be separated, "
+            "so MSW pools them and systematic rater "
+            "differences are charged to error -- ICC(1,*) "
+            "is the smallest of the three cases",
+            "rater_ignored": rater is not None,
+            "method": "Shrout-Fleiss (1979) ICC(1,k) = (MSR - MSW)/MSR",
+        }
+    )
 
 
 def cheatsheet():

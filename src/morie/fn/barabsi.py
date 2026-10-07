@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Barabasi-Albert preferential attachment graph."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['bamodel', 'barabasi_albert']
+__all__ = ["bamodel", "barabasi_albert"]
 
 
 def bamodel(n, m=2, m0=None, seed=1):
@@ -39,7 +37,8 @@ def bamodel(n, m=2, m0=None, seed=1):
     Science 286:509-512, arXiv:cond-mat/9910332.  Verified against the
     paper for Pi(k_i) = k_i / sum_j k_j and the growth rule.
     """
-    n = int(n); m = int(m)
+    n = int(n)
+    m = int(m)
     m0 = int(m0) if m0 is not None else m + 1
     if m < 1 or m0 < m or n < m0:
         raise ValueError("need 1 <= m <= m0 <= n")
@@ -65,10 +64,17 @@ def bamodel(n, m=2, m0=None, seed=1):
         for t in targets:
             deg[t] += 1
             edges.append((t, v))
-    return RichResult(payload={
-        "degree": deg, "mean_degree": sum(deg) / n,
-        "max_degree": max(deg), "edges": edges, "n": n, "m": m,
-        "method": "Barabasi-Albert preferential attachment"})
+    return RichResult(
+        payload={
+            "degree": deg,
+            "mean_degree": sum(deg) / n,
+            "max_degree": max(deg),
+            "edges": edges,
+            "n": n,
+            "m": m,
+            "method": "Barabasi-Albert preferential attachment",
+        }
+    )
 
 
 barabasi_albert = bamodel

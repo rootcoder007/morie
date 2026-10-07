@@ -1,7 +1,5 @@
 """Tests for mecpd.markov_equivalence_class."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mecpd import mectest
 
 

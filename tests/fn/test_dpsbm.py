@@ -1,7 +1,5 @@
 """Tests for dpsbm.dp_stochastic_block."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dpsbm import dp_stochastic_block
 
 

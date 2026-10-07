@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch1_penalized_loglikelihood"]
 
 
-def kosorok_ch1_penalized_loglikelihood(loglik_terms, J_eta, lambda_n, n=None,
-                                        beta=None, eta=None, X=None):
+def kosorok_ch1_penalized_loglikelihood(loglik_terms, J_eta, lambda_n, n=None, beta=None, eta=None, X=None):
     r"""Penalised log-likelihood criterion (Kosorok Ch. 1):
 
     .. math:: \tilde L_n(\beta, \eta) = n^{-1}\sum_i
@@ -57,9 +56,15 @@ def kosorok_ch1_penalized_loglikelihood(loglik_terms, J_eta, lambda_n, n=None,
     mean_ll = float(np.mean(ll))
     pen = lam**2 * J**2
     return RichResult(
-        payload={"criterion": mean_ll - pen, "mean_loglik": mean_ll,
-                 "penalty": pen, "lambda_n": lam, "J_eta": J, "n": int(ll.size),
-                 "method": "n^-1 sum log p - lambda_n^2 J^2(eta) (both squared)"}
+        payload={
+            "criterion": mean_ll - pen,
+            "mean_loglik": mean_ll,
+            "penalty": pen,
+            "lambda_n": lam,
+            "J_eta": J,
+            "n": int(ll.size),
+            "method": "n^-1 sum log p - lambda_n^2 J^2(eta) (both squared)",
+        }
     )
 
 

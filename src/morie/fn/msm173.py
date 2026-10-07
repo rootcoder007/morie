@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,10 +23,14 @@ def mvsml_ridge_lasso_elastic_eq_9_5(X, beta0, beta):
     separable training set y_i f(x_i) > 0 holds for every observation.
     Keys: estimate."""
     v = _gp.svm_decision_values(X, beta0, beta)
-    res = RichResult(payload={"estimate": v[0], "f": v,
-                              "labels": [1 if u > 0 else -1
-                                         for u in v],
-                              "method": "SVM fitting function (MVSML 2022 eq. 9.5)"})
+    res = RichResult(
+        payload={
+            "estimate": v[0],
+            "f": v,
+            "labels": [1 if u > 0 else -1 for u in v],
+            "method": "SVM fitting function (MVSML 2022 eq. 9.5)",
+        }
+    )
     return with_describe_pointer(res, "msm173")
 
 

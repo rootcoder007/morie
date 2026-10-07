@@ -70,8 +70,7 @@ def moetop(x, W_g, experts, k=2, alpha=0.01):
         raise ValueError(f"moetop: W_g rows {Wg.shape[0]} != token width {din}")
     N = Wg.shape[1]
     if not experts or len(experts) != N:
-        raise ValueError(
-            f"moetop: need one expert per router column ({N}), got {len(experts) if experts else 0}")
+        raise ValueError(f"moetop: need one expert per router column ({N}), got {len(experts) if experts else 0}")
     k = int(k)
     if not 1 <= k <= N:
         raise ValueError(f"moetop: k must lie in 1..{N}, got {k}")
@@ -115,20 +114,22 @@ def moetop(x, W_g, experts, k=2, alpha=0.01):
     f = [c / T for c in argmax_count]
     P = [sum(gates[t][i] for t in range(T)) / T for i in range(N)]
     aux = float(alpha) * N * sum(fi * pi for fi, pi in zip(f, P))
-    return RichResult(payload={
-        "output": out,
-        "gates": gates,
-        "topk_indices": top_idx,
-        "topk_gates": top_gate,
-        "aux_loss": aux,
-        "f": f,
-        "P": P,
-        "n_experts": N,
-        "k": k,
-        "estimate": float(out[0][0]),
-        "n": int(T),
-        "method": "MoE top-k routing + Switch aux load-balance loss (GShard Sec 2.1; Switch Eqs 4-6)",
-    })
+    return RichResult(
+        payload={
+            "output": out,
+            "gates": gates,
+            "topk_indices": top_idx,
+            "topk_gates": top_gate,
+            "aux_loss": aux,
+            "f": f,
+            "P": P,
+            "n_experts": N,
+            "k": k,
+            "estimate": float(out[0][0]),
+            "n": int(T),
+            "method": "MoE top-k routing + Switch aux load-balance loss (GShard Sec 2.1; Switch Eqs 4-6)",
+        }
+    )
 
 
 def moe_topk_routing(y=None, x=None, W_g=None, experts=None, k=2, alpha=0.01):
@@ -140,6 +141,7 @@ def moe_topk_routing(y=None, x=None, W_g=None, experts=None, k=2, alpha=0.01):
 
 def cheatsheet():
     return "moetop: MoE top-k routing + aux loss (GShard arXiv:2006.16668; Switch arXiv:2101.03961 Eqs 4-6)"
+
 
 # public names resolved by fn/_lazy_map.json
 moetopkrouting = moetop

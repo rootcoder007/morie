@@ -64,13 +64,17 @@ doi:10.1111/biom.12105.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["cluster_variance", "naive_variance",
-           "g_formula_pooled", "g_formula_sequential",
-           "ltmle_clustered", "design_effect"]
+__all__ = [
+    "cluster_variance",
+    "naive_variance",
+    "g_formula_pooled",
+    "g_formula_sequential",
+    "ltmle_clustered",
+    "design_effect",
+]
 
 _EPS = 1e-12
 
@@ -93,8 +97,7 @@ def cluster_variance(ic, cluster):
     v = [float(q) for q in k.vec(ic)]
     c = list(cluster)
     if len(v) != len(c):
-        raise ValueError("tlclust: %d influence values for %d cluster "
-                         "labels" % (len(v), len(c)))
+        raise ValueError(f"tlclust: {int(len(v))} influence values for {int(len(c))} cluster labels")
     agg = {}
     for i in range(len(v)):
         agg[c[i]] = agg.get(c[i], 0.0) + v[i]
@@ -104,20 +107,24 @@ def cluster_variance(ic, cluster):
     sums = list(agg.values())
     m = sum(sums) / J
     var = sum((q - m) ** 2 for q in sums) / (J - 1)
-    return {"se": math.sqrt(var / J) / (len(v) / float(J)),
-            "n_clusters": J, "cluster_sums": sums,
-            "note": "the CLUSTER is independent, not the individual"}
+    return {
+        "se": math.sqrt(var / J) / (len(v) / float(J)),
+        "n_clusters": J,
+        "cluster_sums": sums,
+        "note": "the CLUSTER is independent, not the individual",
+    }
 
 
 def design_effect(ic, cluster):
     r"""How badly the independence assumption understates the error."""
     a = naive_variance(ic)
     b = cluster_variance(ic, cluster)["se"]
-    return {"se_naive": a, "se_clustered": b,
-            "ratio": b / a if a > 0 else float("nan"),
-            "note": "a ratio above 1 is the understatement caused by "
-                    "treating within-cluster observations as "
-                    "independent"}
+    return {
+        "se_naive": a,
+        "se_clustered": b,
+        "ratio": b / a if a > 0 else float("nan"),
+        "note": "a ratio above 1 is the understatement caused by treating within-cluster observations as independent",
+    }
 
 
 def g_formula_pooled(Q_final, weights=None):
@@ -127,14 +134,15 @@ def g_formula_pooled(Q_final, weights=None):
     of them has to be right about the whole history at once.
     """
     q = [float(v) for v in k.vec(Q_final)]
-    w = [1.0] * len(q) if weights is None else [float(v)
-                                                for v in k.vec(weights)]
+    w = [1.0] * len(q) if weights is None else [float(v) for v in k.vec(weights)]
     t = sum(w)
     if t <= _EPS:
         raise ValueError("tlclust: the weights sum to zero")
-    return {"psi": sum(w[i] * q[i] for i in range(len(q))) / t,
-            "parametrization": "pooled",
-            "note": "one regression on the full history"}
+    return {
+        "psi": sum(w[i] * q[i] for i in range(len(q))) / t,
+        "parametrization": "pooled",
+        "note": "one regression on the full history",
+    }
 
 
 def g_formula_sequential(Q_seq):
@@ -150,14 +158,14 @@ def g_formula_sequential(Q_seq):
     for t in range(len(Q_seq) - 2, -1, -1):
         nxt = [float(v) for v in k.vec(Q_seq[t])]
         if len(nxt) != len(cur):
-            raise ValueError("tlclust: the regressions differ in "
-                             "length at time %d" % t)
+            raise ValueError(f"tlclust: the regressions differ in length at time {int(t)}")
         cur = nxt
-    return {"psi": sum(cur) / len(cur),
-            "parametrization": "sequential",
-            "T": len(Q_seq),
-            "note": "identifies the same estimand; fails differently "
-                    "under misspecification"}
+    return {
+        "psi": sum(cur) / len(cur),
+        "parametrization": "sequential",
+        "T": len(Q_seq),
+        "note": "identifies the same estimand; fails differently under misspecification",
+    }
 
 
 def ltmle_clustered(Q_seq, H_seq, Y, cluster):
@@ -167,37 +175,42 @@ def ltmle_clustered(Q_seq, H_seq, Y, cluster):
     variance recognises the design.
     """
     from .tlltmle import ltmle
+
     r = ltmle(Q_seq, H_seq, Y)
     q = r["Q_star"][-1]
     psi = r["psi"]
     ic = [float(v) - psi for v in q]
     cv = cluster_variance(ic, cluster)
     nv = naive_variance(ic)
-    return RichResult(payload={
-        "estimate": psi, "psi": psi,
-        "se_clustered": cv["se"], "se_naive": nv,
-        "ci": (psi - 1.96 * cv["se"], psi + 1.96 * cv["se"]),
-        "n_clusters": cv["n_clusters"],
-        "design_effect": cv["se"] / nv if nv > 0 else float("nan"),
-        "method": "LTMLE with cluster-level influence-curve inference; "
-                  "van der Laan & Rose (2018) Chap. 15",
-        "note": "clustering changes the VARIANCE, not the point "
-                "estimate",
-    })
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "psi": psi,
+            "se_clustered": cv["se"],
+            "se_naive": nv,
+            "ci": (psi - 1.96 * cv["se"], psi + 1.96 * cv["se"]),
+            "n_clusters": cv["n_clusters"],
+            "design_effect": cv["se"] / nv if nv > 0 else float("nan"),
+            "method": "LTMLE with cluster-level influence-curve inference; van der Laan & Rose (2018) Chap. 15",
+            "note": "clustering changes the VARIANCE, not the point estimate",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tlclust: PROBIT randomised HOSPITALS because breastfeeding "
-            "cannot be allocated. Hospitalisation is both part of the "
-            "outcome and a TIME-VARYING CONFOUNDER affected by prior "
-            "exposure -- condition on it and you block the effect, "
-            "ignore it and confounding stays; sequential "
-            "g-computation is what handles it. TWO parametrizations of "
-            "the g-formula identify the same estimand and misspecify "
-            "differently, so implement both. Clustering changes the "
-            "VARIANCE only: aggregate the influence curve to the "
-            "cluster before taking its variance, or the standard error "
-            "is understated.")
+    return (
+        "tlclust: PROBIT randomised HOSPITALS because breastfeeding "
+        "cannot be allocated. Hospitalisation is both part of the "
+        "outcome and a TIME-VARYING CONFOUNDER affected by prior "
+        "exposure -- condition on it and you block the effect, "
+        "ignore it and confounding stays; sequential "
+        "g-computation is what handles it. TWO parametrizations of "
+        "the g-formula identify the same estimand and misspecify "
+        "differently, so implement both. Clustering changes the "
+        "VARIANCE only: aggregate the influence curve to the "
+        "cluster before taking its variance, or the standard error "
+        "is understated."
+    )
 
 
 # compact alias per ledger/NAMING.md

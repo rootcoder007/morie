@@ -63,14 +63,19 @@ def hillq(x, q=1.0):
     sh = -sum(v * math.log(v) for v in pos)
     si = sum(v * v for v in pos)
     q = float(q)
-    if abs(q - 1.0) < 1e-12:
-        h = math.exp(sh)
-    else:
-        h = sum(v ** q for v in pos) ** (1.0 / (1.0 - q))
-    return RichResult(payload={
-        "hill": h, "q": q, "prop": p, "richness": len(pos),
-        "shannon": sh, "simpson": si, "D": D,
-        "method": "Hill number of order q (Hill 1973 eq. 2)"})
+    h = math.exp(sh) if abs(q - 1.0) < 1e-12 else sum(v**q for v in pos) ** (1.0 / (1.0 - q))
+    return RichResult(
+        payload={
+            "hill": h,
+            "q": q,
+            "prop": p,
+            "richness": len(pos),
+            "shannon": sh,
+            "simpson": si,
+            "D": D,
+            "method": "Hill number of order q (Hill 1973 eq. 2)",
+        }
+    )
 
 
 compositional_hill = hillq

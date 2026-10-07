@@ -1,7 +1,5 @@
 """Tests for psm_standardized_bias.psm_standardized_bias."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.psm_standardized_bias import psm_standardized_bias
 
 

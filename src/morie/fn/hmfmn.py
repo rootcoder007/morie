@@ -9,8 +9,16 @@ from .grcos import geron_conv_output_size
 __all__ = ["geron_fashion_mnist"]
 
 _CLASSES = [
-    "T-shirt/top", "Trouser", "Pullover", "Dress", "Coat",
-    "Sandal", "Shirt", "Sneaker", "Bag", "Ankle boot",
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
 ]
 
 
@@ -132,23 +140,28 @@ def geron_fashion_mnist(epochs=10, lr=0.001, batch_size=32, n_classes=10, input_
     layers.append({"kind": "fc", "out": dense, "channels": dense, "params": flat * dense + dense})
     layers.append({"kind": "fc", "out": C, "channels": C, "params": dense * C + C, "activation": "softmax"})
 
-    total = int(sum(l["params"] for l in layers))
-    fc_params = int(sum(l["params"] for l in layers if l["kind"] == "fc"))
+    total = int(sum(ell["params"] for ell in layers))
+    fc_params = int(sum(ell["params"] for ell in layers if ell["kind"] == "fc"))
 
     return RichResult(
         title="FashionMNIST CNN",
         summary_lines=[("Total parameters", total), ("Flatten dim", flat), ("Classes", C)],
-        tables=[{"title": "Layers", "headers": ["kind", "out", "channels", "params"],
-                 "rows": [[l["kind"], l["out"], l["channels"], l["params"]] for l in layers]}],
+        tables=[
+            {
+                "title": "Layers",
+                "headers": ["kind", "out", "channels", "params"],
+                "rows": [[ell["kind"], ell["out"], ell["channels"], ell["params"]] for ell in layers],
+            }
+        ],
         interpretation="Nearly all the parameters sit in the dense layer after the flatten; that is where overfitting starts.",
         payload={
             "layers": layers,
             "total_params": total,
-            "conv_params": int(sum(l["params"] for l in layers if l["kind"] == "conv")),
+            "conv_params": int(sum(ell["params"] for ell in layers if ell["kind"] == "conv")),
             "fc_params": fc_params,
             "fc_share": float(fc_params / total),
             "flatten_dim": flat,
-            "class_names": list(_CLASSES[:C]) if C <= len(_CLASSES) else [f"class_{i}" for i in range(C)],
+            "class_names": list(_CLASSES[:C]) if len(_CLASSES) >= C else [f"class_{i}" for i in range(C)],
             "output_shape": (C,),
             "training_config": {"epochs": E, "lr": eta, "batch_size": bs, "loss": "sparse categorical cross-entropy"},
             "steps_per_epoch": int(np.ceil(60000 / bs)),

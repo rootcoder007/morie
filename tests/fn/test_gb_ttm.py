@@ -11,6 +11,8 @@ def test_gb_ttm_basic():
     result = gibbons_two_sample_t_efficacy(N, sigma, lam)
     assert isinstance(result, dict)
     assert "efficacy" in result
+
+
 def test_gb_ttm_edge():
     """Test edge cases."""
     N = 100

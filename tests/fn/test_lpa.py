@@ -1,7 +1,6 @@
 """Tests for latent_profile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lpa import latent_profile
 
 

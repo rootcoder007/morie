@@ -19,7 +19,6 @@ __all__ = ["qplincon", "mvsml_ridge_lasso_elastic_eq_9_15"]
 
 
 def qplincon(a, c):
-
     """minimize z'z subject to a'z >= c, the shape of both illustrative
     examples of the chapter.  Its Wolfe dual is
     L = z'z - 2 alpha (a'z - c) (eq. 9.17); stationarity (eq. 9.18)

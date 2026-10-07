@@ -64,14 +64,10 @@ def geron_self_attention(X, WQ, WK, WV, mask=None):
     for name, W in (("WQ", WQ), ("WK", WK), ("WV", WV)):
         A = np.atleast_2d(np.asarray(W, dtype=float))
         if A.ndim != 2 or A.shape[0] != X.shape[1]:
-            raise ValueError(
-                f"{name} must have {X.shape[1]} rows to match d_model, got shape {A.shape}."
-            )
+            raise ValueError(f"{name} must have {X.shape[1]} rows to match d_model, got shape {A.shape}.")
         mats[name] = A
     if mats["WQ"].shape[1] != mats["WK"].shape[1]:
-        raise ValueError(
-            f"WQ maps to d_k={mats['WQ'].shape[1]} but WK maps to {mats['WK'].shape[1]}."
-        )
+        raise ValueError(f"WQ maps to d_k={mats['WQ'].shape[1]} but WK maps to {mats['WK'].shape[1]}.")
 
     Q = X @ mats["WQ"]
     K = X @ mats["WK"]

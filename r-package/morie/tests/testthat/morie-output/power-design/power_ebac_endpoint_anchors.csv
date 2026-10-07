@@ -1,0 +1,4 @@
+"endpoint","endpoint_definition","source_doc","formula_inputs_required_for_recompute","formula_recompute_feasible_in_public_df","missing_formula_inputs","power_endpoint_usage","analysis_mode","power_scope"
+"heavy_drinking_30d","Binary heavy drinking in past 30 days.","20212022-cpads-pumf-user-guide.pdf","Two-proportion power by gender.",TRUE,"","sample-size planning","design","cpads"
+"ebac_legal","Binary legal-threshold eBAC indicator among observed drinkers.","20212022-cpads-pumf-user-guide.pdf","Two-proportion power by gender in the observed eBAC domain.",TRUE,"","sample-size planning","design","cpads"
+"ebac_tot","Continuous total eBAC among observed drinkers.","20212022-cpads-pumf-user-guide.pdf","Two-group mean-difference power by gender in the observed eBAC domain.",TRUE,"","sample-size planning","design","cpads"

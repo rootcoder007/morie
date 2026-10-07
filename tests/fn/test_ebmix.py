@@ -1,7 +1,6 @@
 """Tests for morie.fn.ebmix -- Empirical Bayes mixture."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ebmix import eb_mixture
 
 

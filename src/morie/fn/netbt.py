@@ -44,7 +44,7 @@ def network_betweenness(
     dist[mask] = 1.0 / np.abs(A[mask])
 
     # Floyd-Warshall shortest paths + counting
-    d = dist.copy()
+    dist.copy()
     sigma = np.zeros((p, p))
     sigma[np.arange(p), np.arange(p)] = 1.0
     for e in range(p):

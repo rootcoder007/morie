@@ -85,6 +85,7 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
 
     def _phi(v):
         return math.exp(-0.5 * v * v) / math.sqrt(2.0 * math.pi)
+
     # V_{1,h}(x, y) = int_x^inf g'(z) V((z - y)/h) dz in closed form for
     # the Gaussian kernel, V(u) = Phi(-u), with a = (x - y)/h:
     #   g = exp:      e^{y + h^2/2} Phi(h - a) - e^x Phi(-a)
@@ -97,20 +98,25 @@ def fauzi_cumulative_survival_1(x, t_grid, h=None, transform="log"):
         for y in zxl:
             a = (zv - y) / hh
             if log_t:
-                acc.append(math.exp(y + 0.5 * hh * hh) * _Phi(hh - a)
-                           - math.exp(zv) * _Phi(-a))
+                acc.append(math.exp(y + 0.5 * hh * hh) * _Phi(hh - a) - math.exp(zv) * _Phi(-a))
             else:
                 acc.append(hh * (_phi(a) - a * _Phi(-a)))
         S_cum[j] = math.fsum(acc) / len(acc)
     S_surv = kernel_V((zt[:, None] - zx[None, :]) / hh).mean(axis=1)
-    return RichResult(payload={
-        "t_grid": tg, "S_cumulative": S_cum, "S_survival": S_surv,
-        "bandwidth": hh, "preserves_derivative_relation": True,
-        "bias_coefficient": "b_2 (4.15)",
-        "mirror_note": "V_1 integrates x to infinity with argument (z - y)/h; "
-                       "V_2 integrates minus infinity to y with (x - z)/h",
-        "n": int(n),
-        "method": "First cumulative survival estimator (4.8); d/dt gives -S_tilde exactly"})
+    return RichResult(
+        payload={
+            "t_grid": tg,
+            "S_cumulative": S_cum,
+            "S_survival": S_surv,
+            "bandwidth": hh,
+            "preserves_derivative_relation": True,
+            "bias_coefficient": "b_2 (4.15)",
+            "mirror_note": "V_1 integrates x to infinity with argument (z - y)/h; "
+            "V_2 integrates minus infinity to y with (x - z)/h",
+            "n": int(n),
+            "method": "First cumulative survival estimator (4.8); d/dt gives -S_tilde exactly",
+        }
+    )
 
 
 def cheatsheet():

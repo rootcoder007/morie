@@ -32,7 +32,10 @@ def csshrink(beta_hat, D, psi, n, sigma2=1.0):
     >>> round(csshrink([0.2], [[1.0]], [0.25], n=1000)["beta"][0], 12)
     0.04
     """
-    return RichResult(title="Continuous-shrinkage polygenic effects", payload=_c.csshrink(beta_hat=beta_hat, D=D, psi=psi, n=n, sigma2=sigma2))
+    return RichResult(
+        title="Continuous-shrinkage polygenic effects",
+        payload=_c.csshrink(beta_hat=beta_hat, D=D, psi=psi, n=n, sigma2=sigma2),
+    )
 
 
 prs_cs = csshrink

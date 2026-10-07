@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcerr -- roll-call errors."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rcerr import rcerr, roll_call_errors
 
 

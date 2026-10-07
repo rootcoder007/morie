@@ -93,8 +93,7 @@ def bymfit(y, E, A, u, v, taus=1.0, tauv=1.0, X=None, beta=None):
         eta0 = [sum(Xm[i][j] * b[j] for j in range(len(b))) for i in range(n)]
     rr = [math.exp(eta0[i] + u[i] + v[i]) for i in range(n)]
     mu = [E[i] * rr[i] for i in range(n)]
-    ll = sum(y[i] * math.log(mu[i]) - mu[i] - math.lgamma(y[i] + 1.0)
-             for i in range(n))
+    ll = sum(y[i] * math.log(mu[i]) - mu[i] - math.lgamma(y[i] + 1.0) for i in range(n))
     q = 0.0
     npair = 0
     for i in range(n):
@@ -103,13 +102,21 @@ def bymfit(y, E, A, u, v, taus=1.0, tauv=1.0, X=None, beta=None):
                 q += (u[i] - u[j]) ** 2
                 npair += 1
     lpu = 0.5 * (n - 1) * math.log(ts) - 0.5 * ts * q
-    lpv = 0.5 * n * math.log(tv) - 0.5 * tv * sum(t * t for t in v) \
-        - 0.5 * n * math.log(2.0 * math.pi)
-    return RichResult(payload={
-        "logpost": ll + lpu + lpv, "loglik": ll, "logpu": lpu,
-        "logpv": lpv, "rr": rr, "fitted": mu, "usum": sum(u),
-        "npair": npair, "n": n,
-        "method": "BYM convolution log-posterior kernel (Besag-York-Mollie 1991)"})
+    lpv = 0.5 * n * math.log(tv) - 0.5 * tv * sum(t * t for t in v) - 0.5 * n * math.log(2.0 * math.pi)
+    return RichResult(
+        payload={
+            "logpost": ll + lpu + lpv,
+            "loglik": ll,
+            "logpu": lpu,
+            "logpv": lpv,
+            "rr": rr,
+            "fitted": mu,
+            "usum": sum(u),
+            "npair": npair,
+            "n": n,
+            "method": "BYM convolution log-posterior kernel (Besag-York-Mollie 1991)",
+        }
+    )
 
 
 besag_York_Mollie = bymfit

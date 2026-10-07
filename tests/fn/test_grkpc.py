@@ -1,7 +1,6 @@
 """Tests for grkpc.geron_kernel_pca_rbf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grkpc import geron_kernel_pca_rbf
 
 

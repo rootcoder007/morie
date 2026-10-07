@@ -8,9 +8,9 @@ d-separations are known in closed form. Edges are (parent, child).
 
 from morie.fn.faithA import faithchk, faithfulness_assumption
 
-CHAIN = [("A", "B"), ("B", "C")]        # A -> B -> C
-FORK = [("B", "A"), ("B", "C")]         # A <- B -> C
-COLLIDER = [("A", "B"), ("C", "B")]     # A -> B <- C
+CHAIN = [("A", "B"), ("B", "C")]  # A -> B -> C
+FORK = [("B", "A"), ("B", "C")]  # A <- B -> C
+COLLIDER = [("A", "B"), ("C", "B")]  # A -> B <- C
 
 
 def _sep(g, z):

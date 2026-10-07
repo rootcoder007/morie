@@ -93,8 +93,15 @@ def lamb_optimizer(g, w, lr=0.001, beta1=0.9, beta2=0.999, wd=0.01, eps=1e-6, st
     trust = wn / rn if wn > 0 and rn > 0 else 1.0
     update = -lr * trust * r
     return step_result(
-        update, st, "LAMB", trust_ratio=float(trust), w_norm=wn, r_norm=rn,
-        m=st["m"], v=st["v"], direction=r,
+        update,
+        st,
+        "LAMB",
+        trust_ratio=float(trust),
+        w_norm=wn,
+        r_norm=rn,
+        m=st["m"],
+        v=st["v"],
+        direction=r,
     )
 
 

@@ -3,13 +3,12 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_glmm import canonical_link, link, predict_glm
+from ._schab_glmm import predict_glm
 
 __all__ = ["schabenberger_glm_kriging"]
 
 
-def schabenberger_glm_kriging(nu, Sigma_nu, sigma_0, X, x0, mu0,
-                              link_kind="log", beta=None):
+def schabenberger_glm_kriging(nu, Sigma_nu, sigma_0, X, x0, mu0, link_kind="log", beta=None):
     """Predict a new observation in a spatial GLM, Sec. 6.3.6.
 
     Prediction happens on the PSEUDO-data scale, where the model is linear
@@ -93,8 +92,8 @@ def schabenberger_glm_kriging(nu, Sigma_nu, sigma_0, X, x0, mu0,
     # universal kriging on the pseudo-scale, Sec. 5.3.3
     resid = nu - X @ beta
     nu0 = float(x0 @ beta + s0 @ Sinv @ resid)
-    c00 = float(np.max(np.diag(S)))          # Var[nu(s0)], same stationary sill
-    m = x0 - X.T @ Sinv @ s0                 # unbiasedness correction
+    c00 = float(np.max(np.diag(S)))  # Var[nu(s0)], same stationary sill
+    m = x0 - X.T @ Sinv @ s0  # unbiasedness correction
     var0 = float(c00 - s0 @ Sinv @ s0 + m @ np.linalg.solve(xsx, m))
     var0 = max(var0, 0.0)
 
@@ -103,20 +102,23 @@ def schabenberger_glm_kriging(nu, Sigma_nu, sigma_0, X, x0, mu0,
     payload["beta"] = beta
     payload["link"] = link_kind
     payload["pseudo_scale_note"] = (
-        "kriging is done on the pseudo-data, where the model is linear; the "
-        "GLM enters only on the return trip")
-    lines = [("prediction, eq (6.90)", payload["prediction"]),
-             ("prediction std error, eq (6.91)", payload["prediction_error"]),
-             ("inverse-link predictor, eq (6.87)",
-              payload["inverse_link_prediction"]),
-             ("pseudo-scale prediction", payload["pseudo_scale_prediction"])]
-    return RichResult(title="Spatial prediction in a GLM",
-                      summary_lines=lines, payload=payload)
+        "kriging is done on the pseudo-data, where the model is linear; the GLM enters only on the return trip"
+    )
+    lines = [
+        ("prediction, eq (6.90)", payload["prediction"]),
+        ("prediction std error, eq (6.91)", payload["prediction_error"]),
+        ("inverse-link predictor, eq (6.87)", payload["inverse_link_prediction"]),
+        ("pseudo-scale prediction", payload["pseudo_scale_prediction"]),
+    ]
+    return RichResult(title="Spatial prediction in a GLM", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("spglmk: spatial prediction in GLMs (Sec. 6.3.6) -- eq (6.90) with "
-            "its own MSPE (6.91), kept apart from the inverse-link (6.87)")
+    return (
+        "spglmk: spatial prediction in GLMs (Sec. 6.3.6) -- eq (6.90) with "
+        "its own MSPE (6.91), kept apart from the inverse-link (6.87)"
+    )
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

@@ -44,29 +44,30 @@ def kamath_scaling_laws(N, N_c, alpha_N, L_inf=0.0):
     if n.size == 0:
         raise ValueError("no scale supplied.")
     if np.any(n <= 0):
-        raise ValueError(
-            "N must be positive; a model with zero parameters has no "
-            "loss curve.")
+        raise ValueError("N must be positive; a model with zero parameters has no loss curve.")
     if N_c <= 0:
         raise ValueError(f"N_c must be positive; got {N_c}.")
     if alpha <= 0:
         raise ValueError(
-            f"alpha_N must be positive; got {alpha}. A non-positive "
-            "exponent makes the loss grow with scale.")
+            f"alpha_N must be positive; got {alpha}. A non-positive exponent makes the loss grow with scale."
+        )
     if L_inf < 0:
-        raise ValueError(
-            f"the irreducible loss must be non-negative; got {L_inf}.")
+        raise ValueError(f"the irreducible loss must be non-negative; got {L_inf}.")
     reducible = (N_c / n) ** alpha
     loss = reducible + L_inf
     scalar = n.size == 1
-    return RichResult(payload={
-        "estimate": float(loss[0]) if scalar else [float(v) for v in loss],
-        "loss": float(loss[0]) if scalar else [float(v) for v in loss],
-        "reducible": float(reducible[0]) if scalar
-        else [float(v) for v in reducible],
-        "irreducible": L_inf,
-        "N_c": N_c, "alpha_N": alpha, "n": int(n.size),
-        "method": "Power-law scaling L(N) = (N_c/N)^alpha + L_inf"})
+    return RichResult(
+        payload={
+            "estimate": float(loss[0]) if scalar else [float(v) for v in loss],
+            "loss": float(loss[0]) if scalar else [float(v) for v in loss],
+            "reducible": float(reducible[0]) if scalar else [float(v) for v in reducible],
+            "irreducible": L_inf,
+            "N_c": N_c,
+            "alpha_N": alpha,
+            "n": int(n.size),
+            "method": "Power-law scaling L(N) = (N_c/N)^alpha + L_inf",
+        }
+    )
 
 
 def cheatsheet():

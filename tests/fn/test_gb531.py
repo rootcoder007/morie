@@ -1,7 +1,6 @@
 """Tests for gb531.gibbons_quantile_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb531 import gibbons_quantile_test
 
 
@@ -37,7 +36,7 @@ def test_gb531_basic():
     from math import comb
 
     def pmf(i):
-        return comb(n, i) * p ** i * (1.0 - p) ** (n - i)
+        return comb(n, i) * p**i * (1.0 - p) ** (n - i)
 
     lower = sum(pmf(i) for i in range(k + 1))
     upper = sum(pmf(i) for i in range(k, n + 1))

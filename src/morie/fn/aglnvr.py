@@ -36,13 +36,11 @@ def effective_sample_size(x, max_lag=None):
     v = v[np.isfinite(v)]
     n = v.size
     if n < 4:
-        return {"ess": float(n), "rho": np.zeros(0), "tau_int": 1.0,
-                "n_lags_used": 0}
+        return {"ess": float(n), "rho": np.zeros(0), "tau_int": 1.0, "n_lags_used": 0}
     c = v - v.mean()
     denom = float(c @ c)
     if denom <= 0:
-        return {"ess": float(n), "rho": np.zeros(0), "tau_int": 1.0,
-                "n_lags_used": 0}
+        return {"ess": float(n), "rho": np.zeros(0), "tau_int": 1.0, "n_lags_used": 0}
     m = int(n // 2) if max_lag is None else min(int(max_lag), n - 1)
     # autocovariance by direct summation; n is a training run, not a
     # signal, so the FFT is not worth the wrap-around care it needs
@@ -62,12 +60,10 @@ def effective_sample_size(x, max_lag=None):
         k += 2
     tau = 1.0 + 2.0 * total
     tau = max(tau, 1e-12)
-    return {"ess": float(n / tau), "rho": rho, "tau_int": float(tau),
-            "n_lags_used": used}
+    return {"ess": float(n / tau), "rho": rho, "tau_int": float(tau), "n_lags_used": used}
 
 
-def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
-                       reg_loss=None, alpha=0.05):
+def alphazero_loss_var(losses, value_loss=None, policy_loss=None, reg_loss=None, alpha=0.05):
     r"""Uncertainty of a mean training loss, with the correlation kept.
 
     The AlphaZero objective is a sum of three terms with different
@@ -140,15 +136,12 @@ def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
 
     comps = {}
     shares = {}
-    for name, arr in (("value", value_loss), ("policy", policy_loss),
-                      ("regularisation", reg_loss)):
+    for name, arr in (("value", value_loss), ("policy", policy_loss), ("regularisation", reg_loss)):
         if arr is None:
             continue
         a = np.asarray(arr, dtype=float).ravel()
         if a.size != n:
-            raise ValueError(
-                f"{name}_loss has length {a.size} but losses has {n}."
-            )
+            raise ValueError(f"{name}_loss has length {a.size} but losses has {n}.")
         comps[name] = {
             "mean": float(np.mean(a)),
             "variance": float(np.var(a, ddof=1)) if n > 1 else 0.0,
@@ -167,13 +160,17 @@ def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
             ("Effective sample size", ess),
             ("Recorded steps", n),
         ],
-        tables=([{
-            "title": "Loss components",
-            "headers": ["Component", "Mean", "Variance", "tau_int",
-                        "Share of total"],
-            "rows": [[k, v["mean"], v["variance"], v["tau_int"], shares[k]]
-                     for k, v in comps.items()],
-        }] if comps else []),
+        tables=(
+            [
+                {
+                    "title": "Loss components",
+                    "headers": ["Component", "Mean", "Variance", "tau_int", "Share of total"],
+                    "rows": [[k, v["mean"], v["variance"], v["tau_int"], shares[k]] for k, v in comps.items()],
+                }
+            ]
+            if comps
+            else []
+        ),
         payload={
             "estimate": mean,
             "variance": var,
@@ -186,10 +183,8 @@ def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
             "n_lags_used": ac["n_lags_used"],
             "ci_lower": mean - zc * se if np.isfinite(se) else float("nan"),
             "ci_upper": mean + zc * se if np.isfinite(se) else float("nan"),
-            "ci_naive_lower": (mean - zc * se_naive if np.isfinite(se_naive)
-                               else float("nan")),
-            "ci_naive_upper": (mean + zc * se_naive if np.isfinite(se_naive)
-                               else float("nan")),
+            "ci_naive_lower": (mean - zc * se_naive if np.isfinite(se_naive) else float("nan")),
+            "ci_naive_upper": (mean + zc * se_naive if np.isfinite(se_naive) else float("nan")),
             "components": comps,
             "component_shares": shares,
             "n": n,
@@ -199,7 +194,8 @@ def alphazero_loss_var(losses, value_loss=None, policy_loss=None,
             f"{n} recorded steps carry the information of about {ess:.0f} "
             "independent ones, so the honest interval is wider than the "
             f"naive one by a factor of {infl:.2f}."
-            if np.isfinite(infl) else "Too few steps to assess correlation."
+            if np.isfinite(infl)
+            else "Too few steps to assess correlation."
         ),
     )
     if np.isfinite(infl) and infl > 1.5:

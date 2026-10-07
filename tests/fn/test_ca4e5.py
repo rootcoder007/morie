@@ -1,7 +1,6 @@
 """Tests for ca4e5.ca_chapter_4_equation_5."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca4e5 import ca_chapter_4_equation_5
 
 
@@ -15,6 +14,7 @@ def test_ca4e5_basic():
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
 
 
@@ -27,5 +27,6 @@ def test_ca4e5_edge():
     assert isinstance(result, dict)
     assert "value" in result
     import math
+
     assert math.isfinite(result["value"])
     assert result["value"] == 0.0

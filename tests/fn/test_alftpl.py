@@ -1,9 +1,6 @@
 """Tests for alftpl.alphafold_template_embed."""
 
-import math
-
 from morie.fn import _array_core as np
-
 from morie.fn.alftpl import alphafold_template_embed
 
 

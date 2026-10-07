@@ -88,22 +88,28 @@ def bsmed(x, m, y, B=1000, alpha=0.05, seed=1):
         )
         boots.append(ar * br)
     s = sorted(boots)
-    lo_i = int(B * (alpha / 2.0))          # 1-based rank, PH2004 p.722
+    lo_i = int(B * (alpha / 2.0))  # 1-based rank, PH2004 p.722
     hi_i = int(B * (1.0 - alpha / 2.0)) + 1
     lo_i = min(max(lo_i, 1), B)
     hi_i = min(max(hi_i, 1), B)
     bmean = float(np.mean(np.asarray(boots)))
     bse = float(np.std(np.asarray(boots), ddof=1))
-    return RichResult(payload={
-        "estimate": a * b,
-        "boot_estimate": bmean,
-        "se": bse,
-        "ci_lower": float(s[lo_i - 1]),
-        "ci_upper": float(s[hi_i - 1]),
-        "a": a, "b": b, "c_prime": c_prime,
-        "B": B, "n": n, "conf_level": 1.0 - alpha,
-        "method": "Preacher-Hayes (2004) bootstrap percentile CI for a*b",
-    })
+    return RichResult(
+        payload={
+            "estimate": a * b,
+            "boot_estimate": bmean,
+            "se": bse,
+            "ci_lower": float(s[lo_i - 1]),
+            "ci_upper": float(s[hi_i - 1]),
+            "a": a,
+            "b": b,
+            "c_prime": c_prime,
+            "B": B,
+            "n": n,
+            "conf_level": 1.0 - alpha,
+            "method": "Preacher-Hayes (2004) bootstrap percentile CI for a*b",
+        }
+    )
 
 
 bootstrap_mediation_ci = bsmed

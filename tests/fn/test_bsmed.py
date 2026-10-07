@@ -1,7 +1,6 @@
 """Tests for bsmed.bootstrap_mediation_ci."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsmed import bootstrap_mediation_ci
 
 

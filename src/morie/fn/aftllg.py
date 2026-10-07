@@ -91,20 +91,33 @@ def aft_log_logistic(time, event, X, **kwargs):
         raise ValueError("AFT models need strictly positive times")
     beta, log_sigma, ll, cov, it, conv = aft_fit(t, e, Xm, family="loglogistic", **kwargs)
     p = beta.size
-    se = (np.sqrt(np.clip(np.diag(cov)[:p], 0, None))
-          if cov is not None else np.full(p, np.nan))
+    se = np.sqrt(np.clip(np.diag(cov)[:p], 0, None)) if cov is not None else np.full(p, np.nan)
     return RichResult(
         title="Log-logistic AFT model",
-        summary_lines=[("n", int(t.size)), ("events", int(e.sum())),
-                       ("sigma", float(np.exp(log_sigma))), ("loglik", ll)],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events", int(e.sum())),
+            ("sigma", float(np.exp(log_sigma))),
+            ("loglik", ll),
+        ],
         warnings=[] if conv else ["the optimiser did not converge"],
         payload={
-            "beta": beta, "se": se, "time_ratio": np.exp(beta),
-            "sigma": float(np.exp(log_sigma)), "log_sigma": log_sigma,
-            "loglik": ll, "aic": float(2 * (p + 1) - 2 * ll),
-            "family": "loglogistic", "n": int(t.size), "n_events": int(e.sum()),
-            "n_iter": it, "converged": conv, "cov": cov,
-            "time": t, "event": e, "X": Xm,
+            "beta": beta,
+            "se": se,
+            "time_ratio": np.exp(beta),
+            "sigma": float(np.exp(log_sigma)),
+            "log_sigma": log_sigma,
+            "loglik": ll,
+            "aic": float(2 * (p + 1) - 2 * ll),
+            "family": "loglogistic",
+            "n": int(t.size),
+            "n_events": int(e.sum()),
+            "n_iter": it,
+            "converged": conv,
+            "cov": cov,
+            "time": t,
+            "event": e,
+            "X": Xm,
             "method": "aft_log_logistic",
         },
     )

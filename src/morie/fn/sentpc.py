@@ -65,12 +65,7 @@ the sampling of alternative segmentations.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
-from ._richresult import RichResult
-
-__all__ = ["escape_whitespace", "unescape_whitespace", "train_bpe",
-           "encode_bpe", "viterbi_segment", "decode"]
+__all__ = ["escape_whitespace", "unescape_whitespace", "train_bpe", "encode_bpe", "viterbi_segment", "decode"]
 
 _EPS = 1e-300
 SPACE = "▁"
@@ -123,8 +118,7 @@ def decode(pieces, strip_prefix=True):
     No language-specific rules, which is why it is the same code for
     English and Japanese.
     """
-    return unescape_whitespace("".join(str(p) for p in pieces),
-                               strip_prefix=strip_prefix)
+    return unescape_whitespace("".join(str(p) for p in pieces), strip_prefix=strip_prefix)
 
 
 def train_bpe(corpus, vocab_size, add_prefix=True):
@@ -149,8 +143,7 @@ def train_bpe(corpus, vocab_size, add_prefix=True):
         pairs = {}
         for w, f in words.items():
             for i in range(len(w) - 1):
-                pairs[(w[i], w[i + 1])] = \
-                    pairs.get((w[i], w[i + 1]), 0) + f
+                pairs[(w[i], w[i + 1])] = pairs.get((w[i], w[i + 1]), 0) + f
         if not pairs:
             break
         best = max(sorted(pairs), key=lambda p: pairs[p])
@@ -168,11 +161,14 @@ def train_bpe(corpus, vocab_size, add_prefix=True):
                     i += 1
             nw[tuple(out)] = nw.get(tuple(out), 0) + f
         words = nw
-    return {"merges": merges, "vocab": sorted(vocab),
-            "vocab_size": len(vocab), "requested": V,
-            "algorithm": "bpe",
-            "note": "greedy and deterministic -- the merge list fixes "
-                    "every later segmentation"}
+    return {
+        "merges": merges,
+        "vocab": sorted(vocab),
+        "vocab_size": len(vocab),
+        "requested": V,
+        "algorithm": "bpe",
+        "note": "greedy and deterministic -- the merge list fixes every later segmentation",
+    }
 
 
 def encode_bpe(text, model, add_prefix=True):
@@ -185,8 +181,7 @@ def encode_bpe(text, model, add_prefix=True):
             i = 0
             new = []
             while i < len(toks):
-                if i < len(toks) - 1 and toks[i] == a \
-                        and toks[i + 1] == b:
+                if i < len(toks) - 1 and toks[i] == a and toks[i + 1] == b:
                     new.append(a + b)
                     i += 2
                 else:
@@ -214,7 +209,7 @@ def viterbi_segment(text, piece_logp, add_prefix=True):
     best[0] = 0.0
     for i in range(1, n + 1):
         for L in range(1, min(maxlen, i) + 1):
-            piece = s[i - L:i]
+            piece = s[i - L : i]
             lp = piece_logp.get(piece)
             if lp is None:
                 continue
@@ -222,29 +217,28 @@ def viterbi_segment(text, piece_logp, add_prefix=True):
                 best[i] = best[i - L] + lp
                 back[i] = (i - L, piece)
     if best[n] == -math.inf:
-        raise ValueError("sentpc: no segmentation covers the input -- "
-                         "the piece set must include every character")
+        raise ValueError("sentpc: no segmentation covers the input -- the piece set must include every character")
     pieces, i = [], n
     while i > 0:
         j, p = back[i]
         pieces.append(p)
         i = j
     pieces.reverse()
-    return {"pieces": pieces, "logp": best[n],
-            "n_pieces": len(pieces),
-            "algorithm": "unigram (Viterbi)"}
+    return {"pieces": pieces, "logp": best[n], "n_pieces": len(pieces), "algorithm": "unigram (Viterbi)"}
 
 
 def cheatsheet():
-    return ("sentpc: SentencePiece. Whitespace is ESCAPED as U+2581, "
-            "not dropped, so Decode(Encode(x)) == x EXACTLY -- no "
-            "language-specific detokeniser, which is what makes "
-            "multilingual and non-segmented languages work. Two "
-            "algorithms: BPE merges the most frequent pair greedily "
-            "(one segmentation by construction), the unigram LM "
-            "scores ALL segmentations and takes the Viterbi best (so "
-            "it can also sample). Vocabulary size is fixed in "
-            "advance, because the neural model needs it.")
+    return (
+        "sentpc: SentencePiece. Whitespace is ESCAPED as U+2581, "
+        "not dropped, so Decode(Encode(x)) == x EXACTLY -- no "
+        "language-specific detokeniser, which is what makes "
+        "multilingual and non-segmented languages work. Two "
+        "algorithms: BPE merges the most frequent pair greedily "
+        "(one segmentation by construction), the unigram LM "
+        "scores ALL segmentations and takes the Viterbi best (so "
+        "it can also sample). Vocabulary size is fixed in "
+        "advance, because the neural model needs it."
+    )
 
 
 # compact alias per ledger/NAMING.md

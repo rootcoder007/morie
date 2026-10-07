@@ -1,13 +1,12 @@
 """Tests for edgrn.edger_diff."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.edgrn import edger_diff
 
 
 def test_edgrn_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     lrt = 5.0
     q = 1
     quasi_dispersion = 1.0
@@ -37,7 +36,7 @@ def test_edgrn_basic():
 
 def test_edgrn_edge():
     """Test edge cases with df_prior shrunken dispersion."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     lrt = 3.5
     q = 2
     quasi_dispersion = 0.5

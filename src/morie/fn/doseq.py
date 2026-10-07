@@ -53,12 +53,16 @@ def dose_response(
     if len(x) < 2:
         raise ValueError("Need at least 2 dose levels")
 
-    p = r / n
+    r / n
 
     if link == "logit":
-        inv_link = lambda z: 1 / (1 + np.exp(-z))
+
+        def inv_link(z):
+            return 1 / (1 + np.exp(-z))
     elif link == "probit":
-        inv_link = lambda z: stats.norm.cdf(z)
+
+        def inv_link(z):
+            return stats.norm.cdf(z)
     else:
         raise ValueError("link must be 'logit' or 'probit'")
 
@@ -87,7 +91,7 @@ def dose_response(
     except Exception:
         se_beta = np.nan
 
-    z = stats.norm.ppf((1 + confidence) / 2)
+    stats.norm.ppf((1 + confidence) / 2)
 
     return ESRes(
         measure="dose_response",

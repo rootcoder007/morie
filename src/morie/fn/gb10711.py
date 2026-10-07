@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Asymptotic covariance of the k-sample control vector -- Theorem 10.7.1."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['kctrlasymp', 'gibbons_ctrl_normal_asymp']
+__all__ = ["kctrlasymp", "gibbons_ctrl_normal_asymp"]
 
 
 def kctrlasymp(lam, dens, pval):

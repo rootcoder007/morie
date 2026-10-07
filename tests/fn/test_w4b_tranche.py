@@ -11,9 +11,11 @@ satisfy.
 """
 
 import math
+import pathlib
+
+import pytest
 
 from morie.fn import _array_core as np
-import pytest
 
 # ── deterministic data --------------------------------------------------
 
@@ -202,7 +204,9 @@ def test_lstm_cell_state_is_gated_sum():
 def test_memory_cell_unrolls_a_geometric_series():
     from morie.fn.hmmcel import geron_memory_cell
 
-    leaky = lambda c, x: 0.5 * np.asarray(c) + np.asarray(x)
+    def leaky(c, x):
+        return 0.5 * np.asarray(c) + np.asarray(x)
+
     r = geron_memory_cell([0.0], [[1.0]] * 6, leaky)
     hand = 0.0
     for _ in range(6):
@@ -262,7 +266,10 @@ def test_leaky_relu_derivative_matches_finite_difference():
     from morie.fn.hmlrel import geron_leaky_relu
 
     for z0 in (-3.0, -0.4, 0.7, 5.0):
-        f = lambda v: float(geron_leaky_relu(v, alpha=0.2)["activation"][0])
+
+        def f(v):
+            return float(geron_leaky_relu(v, alpha=0.2)["activation"][0])
+
         num = central_diff(f, [z0], 0)
         ana = float(geron_leaky_relu([z0], alpha=0.2)["derivative"][0])
         assert num == pytest.approx(ana, abs=1e-6)
@@ -271,7 +278,9 @@ def test_leaky_relu_derivative_matches_finite_difference():
 def test_mish_derivative_matches_finite_difference_and_is_nonmonotonic():
     from morie.fn.hmmish import geron_mish
 
-    f = lambda v: float(geron_mish(v)["activation"][0])
+    def f(v):
+        return float(geron_mish(v)["activation"][0])
+
     for z0 in (-2.5, -1.0, 0.3, 4.0):
         num = central_diff(f, [z0], 0)
         ana = float(geron_mish([z0])["derivative"][0])
@@ -350,7 +359,10 @@ def test_l2_gradient_matches_finite_difference_of_penalty():
     from morie.fn.hml2r import geron_l2_regularization
 
     theta = np.array([1.5, -2.0, 0.25])
-    f = lambda v: geron_l2_regularization(v, 0.7)["penalty"]
+
+    def f(v):
+        return geron_l2_regularization(v, 0.7)["penalty"]
+
     g = geron_l2_regularization(theta, 0.7)["gradient"]
     for i in range(3):
         assert central_diff(f, theta, i) == pytest.approx(g[i], abs=1e-6)
@@ -374,7 +386,10 @@ def test_lasso_gradient_matches_finite_difference_away_from_kink():
     X = lcg_matrix(8, 3, seed=77)
     y = lcg(8, seed=88) * 4
     theta = np.array([0.6, -1.3, 2.2])
-    f = lambda v: geron_lasso_cost(X, y, v, alpha=0.35)["cost"]
+
+    def f(v):
+        return geron_lasso_cost(X, y, v, alpha=0.35)["cost"]
+
     g = geron_lasso_cost(X, y, theta, alpha=0.35)["gradient"]
     for i in range(3):
         assert central_diff(f, theta, i) == pytest.approx(g[i], abs=1e-5)
@@ -410,7 +425,10 @@ def test_logistic_gradient_matches_finite_difference_of_the_cost():
     X = np.hstack([np.ones((10, 1)), lcg_matrix(10, 2, seed=5) * 3 - 1.5])
     y = (lcg(10, seed=6) > 0.5).astype(int)
     theta = np.array([0.2, -0.9, 1.1])
-    f = lambda v: geron_logistic_cost(X, y, v)["cost"]
+
+    def f(v):
+        return geron_logistic_cost(X, y, v)["cost"]
+
     g = geron_logistic_gradient(X, y, theta)["gradient"]
     for i in range(3):
         assert central_diff(f, theta, i) == pytest.approx(g[i], abs=1e-6)
@@ -451,7 +469,10 @@ def test_minibatch_gd_gradient_matches_finite_difference_of_mse():
     X = np.hstack([np.ones((6, 1)), lcg_matrix(6, 1, seed=41) * 5])
     y = lcg(6, seed=42) * 10
     theta = np.array([0.3, 1.7])
-    mse = lambda v: float(np.mean((X @ v - y) ** 2))
+
+    def mse(v):
+        return float(np.mean((X @ v - y) ** 2))
+
     g = geron_minibatch_gd(X, y, theta, eta=1e-8, b=6)["gradient"]
     for i in range(2):
         assert central_diff(mse, theta, i) == pytest.approx(g[i], abs=1e-5)
@@ -811,7 +832,10 @@ def test_depth_heuristic_returns_the_best_depth_not_the_last():
 
     X = lcg_matrix(30, 2, seed=1818)
     y = lcg(30, seed=1819)
-    vshape = lambda L, Xt, yt, Xv, yv: abs(L - 4) + 1.0
+
+    def vshape(L, Xt, yt, Xv, yv):
+        return abs(L - 4) + 1.0
+
     r = geron_hidden_layers_heuristic(vshape, X, y, max_layers=12, patience=3)
     assert r["best_n_layers"] == 4
     assert r["stopped_early"] is True
@@ -980,7 +1004,10 @@ def test_masked_lm_loss_scores_only_masked_positions():
     from morie.fn.hmmlm import geron_masked_lm
 
     X = [0, 1, 2, 3] * 5
-    uniform = lambda mx, pos: np.full((len(pos), 4), 0.25)
+
+    def uniform(mx, pos):
+        return np.full((len(pos), 4), 0.25)
+
     u = geron_masked_lm(X, mask_frac=0.25, seed=1, model=uniform, vocab_size=4)
     assert u["loss"] == pytest.approx(math.log(4))
     assert u["perplexity"] == pytest.approx(4.0)
@@ -1043,9 +1070,12 @@ def test_trainer_selects_the_best_eval_checkpoint():
         r = Xb @ p - yb
         return float(np.mean(r**2)), (2.0 / len(yb)) * (Xb.T @ r)
 
-    out = geron_hf_trainer({"params": np.zeros(2), "loss_and_grad": lg},
-                           {"epochs": 400, "batch_size": 5, "learning_rate": 0.1, "seed": 0},
-                           (X, y), (X, y))
+    out = geron_hf_trainer(
+        {"params": np.zeros(2), "loss_and_grad": lg},
+        {"epochs": 400, "batch_size": 5, "learning_rate": 0.1, "seed": 0},
+        (X, y),
+        (X, y),
+    )
     assert np.allclose(out["params"], [1.0, 2.0], atol=1e-2)
     best = min(h["eval_loss"] for h in out["history"])
     assert out["eval_loss"] == pytest.approx(best)
@@ -1058,14 +1088,19 @@ def test_trainer_enforces_the_gradient_shape_contract():
     X = np.ones((4, 2))
     y = np.zeros(4)
     with pytest.raises(ValueError, match="gradient of shape"):
-        geron_hf_trainer({"params": np.zeros(2), "loss_and_grad": lambda p, a, b: (1.0, np.zeros(5))},
-                         {"epochs": 1, "batch_size": 4}, (X, y))
+        geron_hf_trainer(
+            {"params": np.zeros(2), "loss_and_grad": lambda p, a, b: (1.0, np.zeros(5))},
+            {"epochs": 1, "batch_size": 4},
+            (X, y),
+        )
 
 
 def test_mcp_requires_matching_ids_and_exactly_one_of_result_or_error():
     from morie.fn.hmmcp import geron_model_context_protocol
 
-    ok = lambda req: {"jsonrpc": "2.0", "id": req["id"], "result": {"n": 1}}
+    def ok(req):
+        return {"jsonrpc": "2.0", "id": req["id"], "result": {"n": 1}}
+
     reqs = [{"jsonrpc": "2.0", "id": i, "method": "tools/list"} for i in (1, 2, 3)]
     r = geron_model_context_protocol(ok, reqs)
     assert r["n_ok"] == 3 and r["n_errors"] == 0
@@ -1083,7 +1118,9 @@ def test_mcp_requires_matching_ids_and_exactly_one_of_result_or_error():
 def test_mc_dropout_mean_is_unbiased_under_inverted_scaling():
     from morie.fn.hmmcd import geron_mc_dropout
 
-    f = lambda z: np.asarray([float(np.sum(z))])
+    def f(z):
+        return np.asarray([float(np.sum(z))])
+
     total = 1.0 + 2.0 + 3.0 + 4.0
     r = geron_mc_dropout(f, [1.0, 2.0, 3.0, 4.0], K=20000, p=0.5, seed=0)
     assert abs(float(r["mean"][0]) - total) < 0.15
@@ -1327,12 +1364,13 @@ def test_every_module_returns_the_required_payload_keys():
     globbing a sandbox directory layout."""
     import importlib
     import re
+
     # the shelf's modules are the ones this file imports (a list read
     # from a sandbox path on one machine made the test unrunnable)
-    names = sorted(set(re.findall(r"from morie\.fn\.(hm\w+) import",
-                                  open(__file__).read())))
+    names = sorted(
+        set(re.findall(r"from morie\.fn\.(hm\w+) import", pathlib.Path(__file__).read_text(encoding="utf-8")))
+    )
     assert len(names) >= 70
     for n in names:
         m = importlib.import_module(f"morie.fn.{n}")
         assert hasattr(m, "cheatsheet")
-

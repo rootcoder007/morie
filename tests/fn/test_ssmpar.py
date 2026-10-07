@@ -4,8 +4,7 @@ import math
 
 import pytest
 
-from morie.fn.ssmpar import (check_associativity, compose, parallel_scan,
-                             scan_depth, sequential_scan, ssm_parallel_scan)
+from morie.fn.ssmpar import check_associativity, compose, parallel_scan, scan_depth, sequential_scan, ssm_parallel_scan
 
 
 def _pairs(L):
@@ -27,7 +26,7 @@ def test_ssmpar_basic():
         # the last prefix is the whole composition: (prod A_t, x_L at x0 = 0)
         prodA = math.prod(A for A, _ in P)
         A_, b_ = r["prefix"][-1]
-        assert A_ == pytest.approx(prodA, abs=1e-12)
+        assert pytest.approx(prodA, abs=1e-12) == A_
         assert b_ == pytest.approx(parallel_scan(P, 0.0)["states"][-1], abs=1e-12)
 
 

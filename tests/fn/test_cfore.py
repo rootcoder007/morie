@@ -1,8 +1,8 @@
 """Tests for morie.fn.cfore — Causal forest CATE."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.cfore import cfore
 
 

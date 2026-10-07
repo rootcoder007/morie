@@ -81,8 +81,7 @@ def dr_continuous_treatment(y, D_dose, X=None):
             att.append(float("nan"))
             se.append(float("nan"))
             continue
-        f = k.drdid_panel([yv[i] for i in idx], lab,
-                          [Xr[i] for i in idx] if Xr is not None else None)
+        f = k.drdid_panel([yv[i] for i in idx], lab, [Xr[i] for i in idx] if Xr is not None else None)
         att.append(f["tau"])
         se.append(f["se"])
     acrt, adose = [], []

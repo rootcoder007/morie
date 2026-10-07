@@ -1,7 +1,6 @@
 """Tests for acclso.accelerated_lasso."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.acclso import accelerated_lasso
 
 
@@ -13,6 +12,8 @@ def test_acclso_basic():
     result = accelerated_lasso(X, y, lam)
     assert isinstance(result, dict)
     assert "beta" in result
+
+
 def test_acclso_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

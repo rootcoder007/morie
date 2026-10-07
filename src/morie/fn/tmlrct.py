@@ -83,14 +83,21 @@ def tmle_rct_assisted(y_rct, y_obs, D, X):
     Q1s = [Q1[i] + eps * Sv[i] / (pt * g0) for i in range(n)]
     Q0s = [Q0[i] - eps * Sv[i] / (pt * (1.0 - g0)) for i in range(n)]
     psi = sum(Q1s[i] - Q0s[i] for i in range(n1)) / n1
-    ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Sv[i] / pt * (Q1s[i] - Q0s[i] - psi)
-          for i in range(n)]
+    ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Sv[i] / pt * (Q1s[i] - Q0s[i] - psi) for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "g_rct": g0,
-        "n_rct": float(n1), "n_obs": float(n - n1), "n": n,
-        "method": "RCT-assisted TMLE for the trial-population ATE"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "g_rct": g0,
+            "n_rct": float(n1),
+            "n_obs": float(n - n1),
+            "n": n,
+            "method": "RCT-assisted TMLE for the trial-population ATE",
+        }
+    )
 
 
 def cheatsheet():

@@ -70,8 +70,8 @@ def multiview_cca(
     A = C11_inv_sqrt @ U[:, :k]
     B = C22_inv_sqrt @ Vt[:k, :].T
 
-    Z1 = X1c @ A
-    Z2 = X2c @ B
+    X1c @ A
+    X2c @ B
 
     return DescriptiveResult(
         name="Multi-View CCA",

@@ -1,7 +1,6 @@
 """Tests for morie.fn.mlp — simple MLP."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mlp import mlp_simple
 
 

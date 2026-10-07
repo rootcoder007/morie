@@ -1,7 +1,6 @@
 """Tests for matrxP.matrix_profile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.matrxP import matrix_profile
 
 

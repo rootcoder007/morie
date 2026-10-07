@@ -1,10 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Intraclass correlation, consistency."""
 
-import math
-
 from . import _s04core as S
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["icc_consistency"]
@@ -47,11 +44,17 @@ def icc_consistency(y, subject, rater):
     """
     ms = S.icc_ms(y, subject, rater)
     den = ms["ms_r"] + (ms["k"] - 1.0) * ms["ms_e"]
-    return RichResult(payload={
-        "estimate": (ms["ms_r"] - ms["ms_e"]) / den if den != 0.0 else float("nan"),
-        "ms_r": ms["ms_r"], "ms_c": ms["ms_c"], "ms_e": ms["ms_e"],
-        "k": ms["k"], "n_subjects": ms["n"],
-        "method": "Intraclass correlation ICC(C,1)"})
+    return RichResult(
+        payload={
+            "estimate": (ms["ms_r"] - ms["ms_e"]) / den if den != 0.0 else float("nan"),
+            "ms_r": ms["ms_r"],
+            "ms_c": ms["ms_c"],
+            "ms_e": ms["ms_e"],
+            "k": ms["k"],
+            "n_subjects": ms["n"],
+            "method": "Intraclass correlation ICC(C,1)",
+        }
+    )
 
 
 iccconsistency = icc_consistency

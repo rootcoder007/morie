@@ -61,12 +61,16 @@ def esl_effective_dof(S):
         raise ValueError(f"the smoother matrix must be square; got shape {S.shape}.")
     tr = float(np.trace(S))
     tr_ssT = float(np.trace(S @ S.T))
-    return RichResult(payload={
-        "estimate": tr, "trace_ssT": tr_ssT,
-        "df_variance": float(np.trace(2.0 * S - S @ S.T)),
-        "is_projection": bool(np.allclose(S, S.T) and np.allclose(S @ S, S)),
-        "n": int(S.shape[0]),
-        "method": "df(S) = trace(S); trace(SS') and 2S-SS' alongside"})
+    return RichResult(
+        payload={
+            "estimate": tr,
+            "trace_ssT": tr_ssT,
+            "df_variance": float(np.trace(2.0 * S - S @ S.T)),
+            "is_projection": bool(np.allclose(S, S.T) and np.allclose(S @ S, S)),
+            "n": int(S.shape[0]),
+            "method": "df(S) = trace(S); trace(SS') and 2S-SS' alongside",
+        }
+    )
 
 
 def cheatsheet():

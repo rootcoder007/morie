@@ -1,7 +1,6 @@
 """Tests for hrzlew.horowitz_lewbel_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzlew import horowitz_lewbel_estimator
 
 
@@ -21,10 +20,19 @@ def test_hrzlew_basic():
     assert isinstance(result, dict)
     # Verify that all expected keys are present
     expected_keys = [
-        "beta", "se", "coefficient_on_V", "min_density", "max_weight",
-        "root_n_consistent", "heteroskedasticity_allowed",
-        "identifies_choice_probabilities", "bandwidth", "endogenous",
-        "n", "d", "method"
+        "beta",
+        "se",
+        "coefficient_on_V",
+        "min_density",
+        "max_weight",
+        "root_n_consistent",
+        "heteroskedasticity_allowed",
+        "identifies_choice_probabilities",
+        "bandwidth",
+        "endogenous",
+        "n",
+        "d",
+        "method",
     ]
     for key in expected_keys:
         assert key in result
@@ -65,10 +73,19 @@ def test_hrzlew_edge():
     assert isinstance(result, dict)
     # Check keys
     expected_keys = [
-        "beta", "se", "coefficient_on_V", "min_density", "max_weight",
-        "root_n_consistent", "heteroskedasticity_allowed",
-        "identifies_choice_probabilities", "bandwidth", "endogenous",
-        "n", "d", "method"
+        "beta",
+        "se",
+        "coefficient_on_V",
+        "min_density",
+        "max_weight",
+        "root_n_consistent",
+        "heteroskedasticity_allowed",
+        "identifies_choice_probabilities",
+        "bandwidth",
+        "endogenous",
+        "n",
+        "d",
+        "method",
     ]
     for key in expected_keys:
         assert key in result

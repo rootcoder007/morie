@@ -152,15 +152,17 @@ def emd_decomposition(y, max_imf=10, max_sift=50, sd_tol=0.2):
         r = [r[i] - h[i] for i in range(n)]
     tot = [sum(f[i] for f in imfs) + r[i] for i in range(n)]
     comp = max(abs(tot[i] - y[i]) for i in range(n))
-    return RichResult(payload={
-        "estimate": float(len(imfs)),
-        "n_imf": len(imfs),
-        "imfs": [v for f in imfs for v in f],
-        "residual": r,
-        "completeness": comp,
-        "n": n,
-        "method": "Empirical Mode Decomposition",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(len(imfs)),
+            "n_imf": len(imfs),
+            "imfs": [v for f in imfs for v in f],
+            "residual": r,
+            "completeness": comp,
+            "n": n,
+            "method": "Empirical Mode Decomposition",
+        }
+    )
 
 
 def cheatsheet():

@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['ctrlmedcur', 'gibbons_ctrl_median_curtail']
+__all__ = ["ctrlmedcur", "gibbons_ctrl_median_curtail"]
 
 
 def ctrlmedcur(m, n, alpha=0.05):
@@ -58,10 +58,7 @@ def ctrlmedcur(m, n, alpha=0.05):
     draw = m / 2.0 - za * math.sqrt(m * (m + n) / (4.0 * n))
     r = (n - 1) // 2
     den = math.comb(m + 2 * r + 1, m)
-    pmf = [
-        math.comb(m + r - j, m - j) * math.comb(j + r, j) / den
-        for j in range(m + 1)
-    ]
+    pmf = [math.comb(m + r - j, m - j) * math.comb(j + r, j) / den for j in range(m + 1)]
     dex = float("nan")
     aex = 0.0
     acc = 0.0

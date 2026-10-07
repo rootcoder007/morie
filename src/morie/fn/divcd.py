@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Divergent transition count and rate."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['divrate', 'divergent_transitions_count']
+__all__ = ["divrate", "divergent_transitions_count"]
 
 
 def divrate(divergent):
@@ -42,12 +40,17 @@ def divrate(divergent):
     per = [sum(1 for v in row if v != 0) for row in D]
     tot = sum(len(row) for row in D)
     cnt = sum(per)
-    return RichResult(payload={
-        "count": cnt, "rate": cnt / tot if tot else float("nan"),
-        "per_chain": per,
-        "per_chain_rate": [per[i] / len(D[i]) for i in range(len(D))],
-        "any": cnt > 0, "n": tot,
-        "method": "Divergent transition count and rate"})
+    return RichResult(
+        payload={
+            "count": cnt,
+            "rate": cnt / tot if tot else float("nan"),
+            "per_chain": per,
+            "per_chain_rate": [per[i] / len(D[i]) for i in range(len(D))],
+            "any": cnt > 0,
+            "n": tot,
+            "method": "Divergent transition count and rate",
+        }
+    )
 
 
 divergent_transitions_count = divrate

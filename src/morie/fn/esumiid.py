@@ -3,7 +3,6 @@
 Morin (2016), Probability: For the Enthusiastic Beginner, eq (3.15).
 """
 
-
 from ._richresult import RichResult
 
 __all__ = ["esumiid"]

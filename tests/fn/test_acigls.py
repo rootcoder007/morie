@@ -1,7 +1,6 @@
 """Tests for acigls.adjusted_ipgls."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.acigls import adjusted_ipgls
 
 

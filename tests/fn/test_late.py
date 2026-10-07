@@ -1,11 +1,9 @@
 """Tests for morie.fn.late — Local Average Treatment Effect via instrumental variables."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-import math
-
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.late import estimate_late
 
 

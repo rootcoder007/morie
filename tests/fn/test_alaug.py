@@ -10,5 +10,6 @@ def test_alaug_basic():
 
 def test_alaug_edge():
     import pytest
+
     with pytest.raises(ValueError, match="callable"):
         alammar_augmented_sbert([("x", "y")], "not a function")

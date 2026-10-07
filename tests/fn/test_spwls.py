@@ -8,9 +8,9 @@ because Sec 4.5.1 requires that updates to theta be followed by updates to
 R(theta).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_fit import _objective, _start_and_bounds
 from morie.fn._schab_vario import semivariogram
 from morie.fn.spols import schabenberger_ols_variogram as spols
@@ -56,10 +56,10 @@ def test_counts_reach_wls_and_do_not_leak_into_ols(schab_fit_table):
     lag, gam, cnt = schab_fit_table
     skew = cnt.copy()
     skew[: len(skew) // 2] *= 40.0
-    assert (spwls((lag, gam, cnt), "exponential")["range"]
-            != spwls((lag, gam, skew), "exponential")["range"])
-    assert spols((lag, gam, cnt), "exponential")["range"] == \
-        pytest.approx(spols((lag, gam, skew), "exponential")["range"], rel=1e-9)
+    assert spwls((lag, gam, cnt), "exponential")["range"] != spwls((lag, gam, skew), "exponential")["range"]
+    assert spols((lag, gam, cnt), "exponential")["range"] == pytest.approx(
+        spols((lag, gam, skew), "exponential")["range"], rel=1e-9
+    )
 
 
 def test_weights_are_refreshed_not_frozen(schab_fit_table):

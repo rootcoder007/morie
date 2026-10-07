@@ -8,9 +8,9 @@ from ._schab_glmm import canonical_link, fit_pseudo_likelihood, pql_score, reml_
 __all__ = ["schabenberger_pql"]
 
 
-def schabenberger_pql(z, X, Sigma_S, family="poisson", link_kind=None,
-                      sigma2=1.0, R=None, max_iter=100, tol=1e-8,
-                      check_score=True):
+def schabenberger_pql(
+    z, X, Sigma_S, family="poisson", link_kind=None, sigma2=1.0, R=None, max_iter=100, tol=1e-8, check_score=True
+):
     """Fit a spatial GLMM by pseudo-likelihood, Sec. 6.3.5.
 
     The problem is linearised with a first-order Taylor expansion of the
@@ -80,45 +80,50 @@ def schabenberger_pql(z, X, Sigma_S, family="poisson", link_kind=None,
     """
     if link_kind is None:
         link_kind = canonical_link(family)
-    fit = fit_pseudo_likelihood(z, X, Sigma_S, family=family,
-                                link_kind=link_kind, sigma2=sigma2, R=R,
-                                max_iter=max_iter, tol=tol)
+    fit = fit_pseudo_likelihood(
+        z, X, Sigma_S, family=family, link_kind=link_kind, sigma2=sigma2, R=R, max_iter=max_iter, tol=tol
+    )
     payload = dict(fit)
     payload["reml"] = reml_objective(X, fit["Sigma_nu"], fit["pseudo_data"])
     payload["specification"] = "marginal" if R is not None else "conditional"
-    lines = [("family", family), ("link", link_kind),
-             ("specification", payload["specification"]),
-             ("iterations", fit["n_iter"]), ("converged", fit["converged"]),
-             ("-2 restricted log likelihood", payload["reml"])]
+    lines = [
+        ("family", family),
+        ("link", link_kind),
+        ("specification", payload["specification"]),
+        ("iterations", fit["n_iter"]),
+        ("converged", fit["converged"]),
+        ("-2 restricted log likelihood", payload["reml"]),
+    ]
 
     if not fit["converged"]:
         payload["warning"] = (
             f"the doubly iterative scheme did not converge in {max_iter} "
-            f"outer steps; the estimates below are wherever it stopped")
+            f"outer steps; the estimates below are wherever it stopped"
+        )
 
     if check_score:
-        sc = pql_score(z, X, fit["beta"], fit["S"], Sigma_S, family,
-                       link_kind, sigma2=sigma2, R=R)
+        sc = pql_score(z, X, fit["beta"], fit["S"], Sigma_S, family, link_kind, sigma2=sigma2, R=R)
         payload["score_beta_max"] = float(np.max(np.abs(sc["score_beta"])))
         payload["score_S_max"] = float(np.max(np.abs(sc["score_S"])))
-        payload["pql_pl_equivalent"] = bool(
-            payload["score_beta_max"] < 1e-6 and payload["score_S_max"] < 1e-6)
-        lines.append(("PQL score vanishes (PQL = PL)",
-                      payload["pql_pl_equivalent"]))
+        payload["pql_pl_equivalent"] = bool(payload["score_beta_max"] < 1e-6 and payload["score_S_max"] < 1e-6)
+        lines.append(("PQL score vanishes (PQL = PL)", payload["pql_pl_equivalent"]))
         if not payload["pql_pl_equivalent"]:
             payload["score_warning"] = (
                 "the PQL score equations do not vanish at the "
                 "pseudo-likelihood solution, so the two are not agreeing "
                 "here as Sec. 6.3.5.3 says they should -- treat the fit as "
-                "unconverged")
+                "unconverged"
+            )
 
-    return RichResult(title="Spatial GLMM by pseudo-likelihood (PQL)",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Spatial GLMM by pseudo-likelihood (PQL)", summary_lines=lines, payload=payload)
 
 
 def cheatsheet():
-    return ("sppql: pseudo-likelihood / penalized quasi-likelihood for spatial "
-            "GLMMs (Sec. 6.3.5) -- eqs (6.78)-(6.85), six-step algorithm")
+    return (
+        "sppql: pseudo-likelihood / penalized quasi-likelihood for spatial "
+        "GLMMs (Sec. 6.3.5) -- eqs (6.78)-(6.85), six-step algorithm"
+    )
+
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.

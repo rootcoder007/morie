@@ -1,7 +1,6 @@
 """Tests for wsmkmn.wasserman_kmeans."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmkmn import wasserman_kmeans
 
 

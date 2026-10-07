@@ -166,10 +166,7 @@ def binary_outcome_mediation(X, M, Y, C=None, B=0, seed=None, alpha=0.05):
             lo, hi = np.percentile(good, [100 * alpha / 2, 100 * (1 - alpha / 2)], axis=0)
             ci_lo = dict(zip(keys, map(float, lo)))
             ci_hi = dict(zip(keys, map(float, hi)))
-            pval = {
-                k: float(2 * min((good[:, i] <= 0).mean(), (good[:, i] >= 0).mean()))
-                for i, k in enumerate(keys)
-            }
+            pval = {k: float(2 * min((good[:, i] <= 0).mean(), (good[:, i] >= 0).mean())) for i, k in enumerate(keys)}
 
     return RichResult(
         title="Binary-outcome mediation (inverse odds-ratio weighting)",

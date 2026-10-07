@@ -30,18 +30,14 @@ def kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo):
     ('use_docs', ['d1'])
     """
     if not callable(clf):
-        raise ValueError("clf must be callable clf(query, doc) -> "
-                         "confidence.")
+        raise ValueError("clf must be callable clf(query, doc) -> confidence.")
     D = list(docs)
     if len(D) == 0:
-        raise ValueError("no documents were retrieved; there is "
-                         "nothing to grade.")
+        raise ValueError("no documents were retrieved; there is nothing to grade.")
     hi = float(tau_hi)
     lo = float(tau_lo)
     if lo > hi:
-        raise ValueError(
-            f"tau_lo = {lo} exceeds tau_hi = {hi}; the ambiguous band "
-            "would be empty and inverted.")
+        raise ValueError(f"tau_lo = {lo} exceeds tau_hi = {hi}; the ambiguous band would be empty and inverted.")
     s = np.array([float(clf(query, d)) for d in D])
     if not np.all(np.isfinite(s)):
         raise ValueError("clf returned a non-finite confidence.")
@@ -53,14 +49,20 @@ def kamath_corrective_rag(query, docs, clf, tau_hi, tau_lo):
     else:
         action = "mixed"
     keep = [d for d, v in zip(D, s) if v >= hi]
-    ctx = keep if action == "use_docs" else (
-        [] if action == "fallback_web" else
-        [d for d, v in zip(D, s) if v > lo])
-    return RichResult(payload={
-        "estimate": best, "action": action, "ctx": ctx,
-        "scores": [float(v) for v in s], "best_score": best,
-        "tau_hi": hi, "tau_lo": lo, "n": len(D),
-        "method": "Corrective RAG retrieval router (Kamath Ch 7)"})
+    ctx = keep if action == "use_docs" else ([] if action == "fallback_web" else [d for d, v in zip(D, s) if v > lo])
+    return RichResult(
+        payload={
+            "estimate": best,
+            "action": action,
+            "ctx": ctx,
+            "scores": [float(v) for v in s],
+            "best_score": best,
+            "tau_hi": hi,
+            "tau_lo": lo,
+            "n": len(D),
+            "method": "Corrective RAG retrieval router (Kamath Ch 7)",
+        }
+    )
 
 
 def cheatsheet():

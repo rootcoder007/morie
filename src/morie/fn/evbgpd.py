@@ -18,6 +18,7 @@ def evt_bayes_gpd(y, n_draws=2000, seed=42, prior_sd=(10.0, 1.0)):
     posterior with vague normal priors (Coles 2001 sec. 9.1.3 recipe
     on the ch. 4 threshold likelihood)."""
     import math
+
     ys = _ev._flat(y)
     f = _ev.gpd_mle(ys)
     rng = np.random.default_rng(seed)
@@ -41,7 +42,7 @@ def evt_bayes_gpd(y, n_draws=2000, seed=42, prior_sd=(10.0, 1.0)):
             prop[j] += step[j] * float(rng.normal())
             lp_new = logpost(*prop)
             tot += 1
-            if math.log(max(float(rng.uniform(0, 1)), 1e-300))                     < lp_new - lp:
+            if math.log(max(float(rng.uniform(0, 1)), 1e-300)) < lp_new - lp:
                 th, lp = prop, lp_new
                 acc += 1
                 if it < warm:
@@ -50,10 +51,14 @@ def evt_bayes_gpd(y, n_draws=2000, seed=42, prior_sd=(10.0, 1.0)):
                 step[j] *= 0.97
         if it >= warm:
             draws.append([math.exp(th[0]), th[1]])
-    res = RichResult(payload={"draws": draws,
-                              "accept_rate": acc / max(tot, 1),
-                              "n_draws": len(draws),
-                              "method": "random-walk Metropolis GPD posterior (Coles 2001 sec. 9.1.3)"})
+    res = RichResult(
+        payload={
+            "draws": draws,
+            "accept_rate": acc / max(tot, 1),
+            "n_draws": len(draws),
+            "method": "random-walk Metropolis GPD posterior (Coles 2001 sec. 9.1.3)",
+        }
+    )
     return with_describe_pointer(res, "evbgpd")
 
 

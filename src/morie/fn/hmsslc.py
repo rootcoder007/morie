@@ -102,9 +102,7 @@ def geron_semisupervised_cluster(X, X_labeled, y_labeled, n_clusters=2, seed=0, 
     if B.ndim != 2 or B.size == 0:
         raise ValueError("geron_semisupervised_cluster: X_labeled must be a non-empty (m, d) matrix")
     if B.shape[1] != A.shape[1]:
-        raise ValueError(
-            f"geron_semisupervised_cluster: X has {A.shape[1]} features but X_labeled has {B.shape[1]}"
-        )
+        raise ValueError(f"geron_semisupervised_cluster: X has {A.shape[1]} features but X_labeled has {B.shape[1]}")
     yl = np.asarray(y_labeled).ravel()
     if yl.size != B.shape[0]:
         raise ValueError(
@@ -116,9 +114,7 @@ def geron_semisupervised_cluster(X, X_labeled, y_labeled, n_clusters=2, seed=0, 
     if k < 1:
         raise ValueError(f"geron_semisupervised_cluster: n_clusters must be >= 1, got {k}")
     if k > A.shape[0]:
-        raise ValueError(
-            f"geron_semisupervised_cluster: asked for {k} clusters from {A.shape[0]} unlabeled points"
-        )
+        raise ValueError(f"geron_semisupervised_cluster: asked for {k} clusters from {A.shape[0]} unlabeled points")
 
     cluster, C = _lloyd(A, k, seed=seed)
     reps = np.empty(k, dtype=int)

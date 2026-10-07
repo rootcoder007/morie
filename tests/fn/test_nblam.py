@@ -1,7 +1,6 @@
 """Tests for morie.fn.nblam -- cloud mass function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nblam import cloud_mass_function, nblam
 

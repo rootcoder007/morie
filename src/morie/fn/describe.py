@@ -100,7 +100,9 @@ def describe(name: str):
     REGISTRY metadata + docstring with a "(full guide pending)" header.
 
     >>> from morie.fn import describe
-    >>> print(describe("welcht"))
+    >>> print(describe("welcht"))   # doctest: +ELLIPSIS
+    describe('welcht') -- Welch's two-sample t-test (unequal variances)
+    ...
     """
     from ._registry import REGISTRY
 
@@ -180,6 +182,15 @@ def _is_not_implemented(name: str) -> bool:
 
 
 @functools.lru_cache(maxsize=1)
+def _lazy_map() -> dict:
+    """{public callable name: fn module short name} from the lazy import table."""
+    try:
+        return dict(json.loads((_FN_DIR / "_lazy_map.json").read_text()))
+    except (OSError, ValueError):
+        return {}
+
+
+@functools.lru_cache(maxsize=1)
 def _backed_names() -> frozenset:
     """The real symbol table: names actually resolvable via the lazy import
     map. describe() must not invent documentation for anything outside this."""
@@ -188,6 +199,11 @@ def _backed_names() -> frozenset:
         return frozenset(json.loads(path.read_text()))
     except (OSError, ValueError):
         return frozenset()
+
+
+def _shown(entry) -> str:
+    """The name a user typed: the public callable for an auto-generated entry, else the short name."""
+    return entry.full if getattr(entry, "category", "") == "auto-generated" else entry.short
 
 
 def _synthesize_entry_from_module(name: str):
@@ -200,7 +216,10 @@ def _synthesize_entry_from_module(name: str):
     """
     if name not in _backed_names():
         return None
-    text = _read_fn_source(name)
+    # the public name and its module differ for most exports (kamath_ch9_fom_loss lives in km143):
+    # the source and the describe_<module>.md guide are filed under the module
+    module = _lazy_map().get(name, name)
+    text = _read_fn_source(module)
     if text is None:
         return None
     from ._registry import FnEntry
@@ -208,12 +227,12 @@ def _synthesize_entry_from_module(name: str):
     # First docstring line is the description
     desc = ""
     for line in text.splitlines():
-        s = line.strip().strip('"""').strip()
-        if s and not s.startswith(("import", "from", "__all__")):
+        s = line.strip().strip('"').strip()
+        if s and not s.startswith(("import", "from", "__all__", "#")):
             desc = s
             break
     return FnEntry(
-        short=name,
+        short=module,
         full=name,
         category="auto-generated",
         description=desc or f"Auto-generated callable {name}",
@@ -239,7 +258,7 @@ def _render_from_md(md_text: str, entry, md_path: Path):
             )
 
     return RichResult(
-        title=f"describe({entry.short!r}) -- {entry.description or entry.full}",
+        title=f"describe({_shown(entry)!r}) -- {entry.description or entry.full}",
         summary_lines=[
             ("Short name", entry.short),
             ("Category", entry.category),
@@ -263,7 +282,7 @@ def _render_skeleton(entry):
     from ._richresult import RichResult
 
     return RichResult(
-        title=f"describe({entry.short!r}) -- {entry.full}",
+        title=f"describe({_shown(entry)!r}) -- {entry.full}",
         summary_lines=[
             ("Short name", entry.short),
             ("Category", entry.category),
@@ -274,7 +293,7 @@ def _render_skeleton(entry):
             {
                 "title": "WHAT IT DOES",
                 "text": (entry.description or "(no description provided)") + "\n\n"
-                "We are what we repeatedly do. Excellence is a habit. -- Aristotle"
+                "(The full guide is pending: add "
                 f"`describe_{entry.short}.md` next to its source file.)",
             }
         ],

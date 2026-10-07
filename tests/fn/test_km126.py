@@ -1,7 +1,6 @@
 """Tests for km126.kamath_ch8_smd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.km126 import kamath_ch8_smd
 
 

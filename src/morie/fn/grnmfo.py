@@ -83,9 +83,7 @@ def geron_nmf_objective(X, W, H):
     if Hm.shape[1] != A.shape[1]:
         raise ValueError(f"H has {Hm.shape[1]} columns but X has {A.shape[1]}.")
     if Wm.shape[1] != Hm.shape[0]:
-        raise ValueError(
-            f"W has inner dimension {Wm.shape[1]} but H has {Hm.shape[0]}."
-        )
+        raise ValueError(f"W has inner dimension {Wm.shape[1]} but H has {Hm.shape[0]}.")
 
     R = Wm @ Hm
     E = A - R

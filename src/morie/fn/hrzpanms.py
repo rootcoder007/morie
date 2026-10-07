@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_panel_max_score"]
 
 
-def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
-                             n_restarts=8, seed=0):
+def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None, n_restarts=8, seed=0):
     r"""Maximum-score estimator for panel binary response with fixed
     effects (Horowitz Sec. 4.4.2), equations (4.39) and (4.40):
 
@@ -80,8 +79,7 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     yv = np.asarray(y, dtype=float)
     if X.ndim == 2:
         if X.shape[0] % T:
-            raise ValueError(
-                f"x has {X.shape[0]} rows, not a multiple of n_periods={T}.")
+            raise ValueError(f"x has {X.shape[0]} rows, not a multiple of n_periods={T}.")
         X = X.reshape(X.shape[0] // T, T, X.shape[1])
     elif X.ndim != 3:
         raise ValueError("x must be (n, T, d) or (n*T, d).")
@@ -108,8 +106,7 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     # a covariate constant within every individual differences to zero
     # and carries no information about beta -- say so instead of
     # returning a number for it
-    const_cols = [int(j) for j in range(d)
-                  if np.allclose(X[:, :, j] - X[:, :1, j], 0.0)]
+    const_cols = [int(j) for j in range(d) if np.allclose(X[:, :, j] - X[:, :1, j], 0.0)]
 
     hh = float(n ** (-0.2)) if h is None else float(h)
     if hh <= 0:
@@ -122,24 +119,30 @@ def horowitz_panel_max_score(x, y, n_periods, smoothed=True, h=None,
     keep = dY != 0.0
     Wd = W[keep]
     dYd = dY[keep]
+
     def score(b):
         v = Wd @ b
         ind = stats.norm.cdf(v / hh) if smoothed else (v >= 0.0).astype(float)
         return float(np.sum(dYd * ind)) / n
 
-    beta, negval = optimize_scale_normalized(lambda b: -score(b), d,
-                                             n_restarts=n_restarts, seed=seed)
-    return RichResult(payload={
-        "beta": beta, "score": -negval,
-        "n_pairs": n_pairs,
-        "n_discordant_pairs": int(dYd.size),
-        "unidentified_columns": const_cols,
-        "intercept_identified": False,
-        "smoothed": bool(smoothed),
-        "bandwidth": hh if smoothed else None,
-        "rate_exponent": -0.4 if smoothed else -1.0 / 3.0,
-        "n": int(n), "T": T, "d": int(d),
-        "method": "Panel max score (4.39)/(4.40); differencing kills U_i and the intercept with it"})
+    beta, negval = optimize_scale_normalized(lambda b: -score(b), d, n_restarts=n_restarts, seed=seed)
+    return RichResult(
+        payload={
+            "beta": beta,
+            "score": -negval,
+            "n_pairs": n_pairs,
+            "n_discordant_pairs": int(dYd.size),
+            "unidentified_columns": const_cols,
+            "intercept_identified": False,
+            "smoothed": bool(smoothed),
+            "bandwidth": hh if smoothed else None,
+            "rate_exponent": -0.4 if smoothed else -1.0 / 3.0,
+            "n": int(n),
+            "T": T,
+            "d": int(d),
+            "method": "Panel max score (4.39)/(4.40); differencing kills U_i and the intercept with it",
+        }
+    )
 
 
 def cheatsheet():

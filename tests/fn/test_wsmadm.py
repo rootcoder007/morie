@@ -1,7 +1,6 @@
 """Tests for wsmadm.wasserman_admissible."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmadm import wasserman_admissible
 
 

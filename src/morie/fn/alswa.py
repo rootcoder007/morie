@@ -22,22 +22,25 @@ def alammar_sliding_window_attention(Q, K, V, window_size):
     K = np.atleast_2d(np.asarray(K, dtype=float))
     W = int(window_size)
     if W < 1:
-        raise ValueError(f"window_size must be positive; got "
-                         f"{window_size}.")
+        raise ValueError(f"window_size must be positive; got {window_size}.")
     n, m = Q.shape[0], K.shape[0]
     if n != m:
-        raise ValueError(
-            "sliding-window attention is defined over one sequence; "
-            f"got {n} queries and {m} keys.")
+        raise ValueError(f"sliding-window attention is defined over one sequence; got {n} queries and {m} keys.")
     mask = np.full((n, m), -np.inf)
     for i in range(n):
         lo = max(0, i - W + 1)
-        mask[i, lo:i + 1] = 0.0
+        mask[i, lo : i + 1] = 0.0
     out = scaled_dot_product_attention(Q, K, V, mask=mask)
-    return RichResult(payload={
-        "output": out["output"], "attention": out["attention"],
-        "window": W, "estimate": out["estimate"], "n": n,
-        "method": "Sliding-window causal attention (Beltagy et al. 2020)"})
+    return RichResult(
+        payload={
+            "output": out["output"],
+            "attention": out["attention"],
+            "window": W,
+            "estimate": out["estimate"],
+            "n": n,
+            "method": "Sliding-window causal attention (Beltagy et al. 2020)",
+        }
+    )
 
 
 def cheatsheet():

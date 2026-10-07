@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import math
 
-from . import _array_core as np
 from . import _tail1core as C
 from ._richresult import hypothesis_test_result
 

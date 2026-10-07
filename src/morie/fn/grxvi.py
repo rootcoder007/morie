@@ -115,8 +115,7 @@ def geron_glorot_xavier_init(fan_in, fan_out, distribution="normal", seed=42):
 
     return RichResult(
         title="Glorot initialization",
-        summary_lines=[("Target variance", target), ("Achieved variance", achieved),
-                       ("Distribution", distribution)],
+        summary_lines=[("Target variance", target), ("Achieved variance", achieved), ("Distribution", distribution)],
         payload={
             "weights": W.tolist(),
             "target_variance": target,

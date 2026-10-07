@@ -86,8 +86,7 @@ def quanrg(y, X=None, theta=0.5):
     if not (0.0 < theta < 1.0):
         raise ValueError("theta must be in (0, 1)")
     if k > 3:
-        raise ValueError("basis enumeration supports at most 3 "
-                         "coefficients (intercept + 2 regressors)")
+        raise ValueError("basis enumeration supports at most 3 coefficients (intercept + 2 regressors)")
     if n < k + 1:
         raise ValueError("need more observations than coefficients")
     best = None
@@ -99,22 +98,23 @@ def quanrg(y, X=None, theta=0.5):
         if beta is None:
             continue
         checked += 1
-        res = [yv[i] - sum(bb * v for bb, v in zip(beta, rows[i]))
-               for i in range(n)]
+        res = [yv[i] - sum(bb * v for bb, v in zip(beta, rows[i])) for i in range(n)]
         obj = _check_loss(res, theta)
         if best is None or obj < best[0] - 1e-15:
             best = (obj, beta, h)
     if best is None:
         raise ValueError("design matrix has no nonsingular basis")
     obj, beta, h = best
-    return RichResult(payload={
-        "coefficients": beta,
-        "objective": obj,
-        "basis": list(h),
-        "n_bases_checked": checked,
-        "theta": theta,
-        "method": "exact regression quantile (K&B 1978 Thm 3.1 bases)",
-    })
+    return RichResult(
+        payload={
+            "coefficients": beta,
+            "objective": obj,
+            "basis": list(h),
+            "n_bases_checked": checked,
+            "theta": theta,
+            "method": "exact regression quantile (K&B 1978 Thm 3.1 bases)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

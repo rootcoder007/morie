@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['spearrho', 'gibbons_spearman_rho']
+__all__ = ["spearrho", "gibbons_spearman_rho"]
 
 
 def spearrho(x, y):
@@ -68,9 +68,7 @@ def spearrho(x, y):
     mx = sum(rx) / n
     my = sum(ry) / n
     num = sum((rx[i] - mx) * (ry[i] - my) for i in range(n))
-    den = math.sqrt(
-        sum((v - mx) ** 2 for v in rx) * sum((v - my) ** 2 for v in ry)
-    )
+    den = math.sqrt(sum((v - mx) ** 2 for v in rx) * sum((v - my) ** 2 for v in ry))
     full = num / den if den > 0 else float("nan")
     return RichResult(
         payload={

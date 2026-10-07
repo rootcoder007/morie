@@ -49,9 +49,7 @@ def test_daily_and_case_numbers_are_both_reported():
 
 
 def test_validation():
-    for call in (lambda: rtwall([1], [0.0, 1.0]),
-                 lambda: rtwall([1, 2], []),
-                 lambda: rtwall([1, 2], [-0.5, 1.0])):
+    for call in (lambda: rtwall([1], [0.0, 1.0]), lambda: rtwall([1, 2], []), lambda: rtwall([1, 2], [-0.5, 1.0])):
         try:
             call()
             raise AssertionError("expected ValueError")

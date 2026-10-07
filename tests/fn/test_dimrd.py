@@ -6,9 +6,9 @@ scree gap. The module previously cited "Armstrong Ch 7"; that book has six
 chapters.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dimrd import dimensionality_test as dt
 
 
@@ -19,8 +19,7 @@ def test_dimrd_recovers_a_planted_two_factor_structure():
     n = 4000
     f1, f2 = rng.standard_normal(n), rng.standard_normal(n)
     X = np.column_stack(
-        [f1 + 0.2 * rng.standard_normal(n) for _ in range(3)]
-        + [f2 + 0.2 * rng.standard_normal(n) for _ in range(3)]
+        [f1 + 0.2 * rng.standard_normal(n) for _ in range(3)] + [f2 + 0.2 * rng.standard_normal(n) for _ in range(3)]
     )
     assert dt(X)["n_dims"] == 2
 
@@ -48,8 +47,7 @@ def test_dimrd_threshold_is_the_kaiser_rule_and_is_tunable():
     n = 3000
     f1, f2 = rng.standard_normal(n), rng.standard_normal(n)
     X = np.column_stack(
-        [f1 + 0.3 * rng.standard_normal(n) for _ in range(3)]
-        + [f2 + 0.3 * rng.standard_normal(n) for _ in range(3)]
+        [f1 + 0.3 * rng.standard_normal(n) for _ in range(3)] + [f2 + 0.3 * rng.standard_normal(n) for _ in range(3)]
     )
     counts = [dt(X, threshold=t)["n_dims"] for t in (0.5, 1.0, 2.0, 3.0)]
     assert counts == sorted(counts, reverse=True)

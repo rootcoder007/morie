@@ -82,10 +82,9 @@ def synthetic_did(
 
     first_treat = None
     for tt in times:
-        if tt in treat_status.columns:
-            if treat_status.loc[treated_units, tt].mean() > 0:
-                first_treat = tt
-                break
+        if tt in treat_status.columns and treat_status.loc[treated_units, tt].mean() > 0:
+            first_treat = tt
+            break
 
     if first_treat is None:
         raise ValueError("Cannot determine treatment onset")
@@ -127,7 +126,7 @@ def synthetic_did(
     tau = (y_treat_post - y_ctrl_post) - (y_treat_pre - y_ctrl_pre)
 
     n_total = len(df)
-    n_treat = len(treated_units) * T_post
+    len(treated_units) * T_post
     placebo_effects = []
     for i, cu in enumerate(control_units):
         y_pbo_post = float(panel.loc[cu, post_times].mean())
@@ -144,10 +143,7 @@ def synthetic_did(
         y_synth_pre = float(np.sum(lam_pre * (w_other @ Y_c_pre[other_idx])))
         placebo_effects.append((y_pbo_post - y_synth_post) - (y_pbo_pre - y_synth_pre))
 
-    if len(placebo_effects) > 1:
-        se = float(np.std(placebo_effects, ddof=1))
-    else:
-        se = float("nan")
+    se = float(np.std(placebo_effects, ddof=1)) if len(placebo_effects) > 1 else float("nan")
 
     z = stats.norm.ppf(1 - alpha / 2)
 

@@ -1,6 +1,5 @@
 """Tests for gb2112 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2112 import gibbons_block_freq_dist
@@ -8,6 +7,7 @@ from morie.fn.gb2112 import gibbons_block_freq_dist
 
 def test_gb2112_basic():
     from math import comb
+
     assert gibbons_block_freq_dist(4, 3)["n_compositions"] == comb(7, 3)
 
 

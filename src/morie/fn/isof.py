@@ -98,29 +98,37 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
             return 0.0
         return 2.0 * (np.log(m - 1) + 0.5772156649) - 2.0 * (m - 1) / m
 
-    def path(x, idx, depth, sub):
-        if depth >= limit or idx.size <= 1:
-            return depth + c(idx.size)
-        lo = sub[idx].min(axis=0)
-        hi = sub[idx].max(axis=0)
-        wide = np.flatnonzero(hi > lo)
-        if wide.size == 0:
-            return depth + c(idx.size)
+    def grow(rows, depth):
+        """One isolation tree (Liu, Ting & Zhou 2008, iTree): random feature, random split."""
+        if depth >= limit or len(rows) <= 1:
+            return (len(rows),)
+        lo = [min(r[j] for r in rows) for j in range(d)]
+        hi = [max(r[j] for r in rows) for j in range(d)]
+        wide = [j for j in range(d) if hi[j] > lo[j]]
+        if not wide:
+            return (len(rows),)
         j = int(rng.choice(wide))
-        thr = rng.uniform(lo[j], hi[j])
-        left = idx[sub[idx, j] < thr]
-        right = idx[sub[idx, j] >= thr]
-        nxt = left if x[j] < thr else right
-        if nxt.size == 0:
-            return depth + 1.0
-        return path(x, nxt, depth + 1, sub)
+        thr = float(rng.uniform(lo[j], hi[j]))
+        return (
+            j,
+            thr,
+            grow([r for r in rows if r[j] < thr], depth + 1),
+            grow([r for r in rows if r[j] >= thr], depth + 1),
+        )
 
+    def path(x, node):
+        depth = 0
+        while len(node) == 4:
+            node = node[2] if x[node[0]] < node[1] else node[3]
+            depth += 1
+        return depth + c(node[0])
+
+    pts = [[float(v) for v in np.atleast_1d(X[i])] for i in range(n)]
     lengths = np.zeros(n)
     for _ in range(n_trees):
-        sub = X[rng.choice(n, psi, replace=False)]
-        idx0 = np.arange(psi)
+        tree = grow([pts[int(i)] for i in rng.choice(n, psi, replace=False)], 0)
         for i in range(n):
-            lengths[i] += path(X[i], idx0, 0, sub)
+            lengths[i] += path(pts[i], tree)
     lengths /= n_trees
     score = 2.0 ** (-lengths / max(c(psi), 1e-12))
     order = np.argsort(-score, kind="stable")
@@ -128,14 +136,19 @@ def isolation_forest(X, n_trees=100, sample_size=256, seed=0):
     rank[order] = np.arange(n)
     return RichResult(
         title="Isolation forest",
-        summary_lines=[("n", n), ("trees", n_trees), ("sample", psi),
-                       ("max score", float(score.max()))],
-        warnings=["splits are axis-parallel, so structure at an angle is "
-                  "invisible: points inside a tight diagonal band score as "
-                  "anomalous"],
+        summary_lines=[("n", n), ("trees", n_trees), ("sample", psi), ("max score", float(score.max()))],
+        warnings=[
+            "splits are axis-parallel, so structure at an angle is "
+            "invisible: points inside a tight diagonal band score as "
+            "anomalous"
+        ],
         payload={
-            "score": score, "rank": rank, "path_length": lengths,
-            "threshold": 0.5, "n_trees": n_trees, "sample_size": psi,
+            "score": score,
+            "rank": rank,
+            "path_length": lengths,
+            "threshold": 0.5,
+            "n_trees": n_trees,
+            "sample_size": psi,
             "method": "isolation_forest",
         },
     )

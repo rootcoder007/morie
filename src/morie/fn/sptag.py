@@ -55,11 +55,7 @@ def spatial_agreement(x):
     # same roll call. np.nanmean of an all-NaN slice returns NaN but emits a
     # RuntimeWarning doing it; the NaN is the right answer here (an undefined
     # mean of undefined agreements), so the warning is noise, not a signal.
-    mean_a = (
-        float(np.nanmean(off))
-        if off.size and not np.all(np.isnan(off))
-        else float("nan")
-    )
+    mean_a = float(np.nanmean(off)) if off.size and not np.all(np.isnan(off)) else float("nan")
     return RichResult(
         title="Pairwise vote agreement (Armstrong sec. 3.2.2, p.88)",
         summary_lines=[("Mean off-diagonal agreement", mean_a), ("n legislators", n), ("m votes", m)],

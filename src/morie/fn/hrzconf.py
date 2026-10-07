@@ -80,8 +80,11 @@ def npconfband(x, y, grid=None, h=None, alpha=0.05, s=2, c=1.0, ngrid=25):
     hh = float(c) * float(n ** (-1.0 / (2 * int(s) + 1))) if h is None else float(h)
     if hh <= 0:
         raise ValueError("bandwidth must be positive.")
-    g = (np.linspace(float(np.min(xv)), float(np.max(xv)), int(ngrid))
-         if grid is None else np.atleast_1d(np.asarray(grid, dtype=float)))
+    g = (
+        np.linspace(float(np.min(xv)), float(np.max(xv)), int(ngrid))
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
 
     K = _gauss((g[:, None] - xv[None, :]) / hh)
     ksum = np.sum(K, axis=1)
@@ -94,12 +97,20 @@ def npconfband(x, y, grid=None, h=None, alpha=0.05, s=2, c=1.0, ngrid=25):
     z = float(stats.norm.ppf(1.0 - float(alpha) / 2.0))
     return RichResult(
         title="Nonparametric regression with pointwise confidence bands",
-        payload={"grid": g, "ghat": ghat, "se": se,
-                 "lower": ghat - z * se, "upper": ghat + z * se,
-                 "density": dens, "bandwidth": hh, "zcrit": z,
-                 "unifrate": float(np.sqrt(np.log(n) / (n * hh))),
-                 "alpha": float(alpha), "n": n,
-                 "method": "Horowitz (2009) Appendix A.2.1 pointwise bands (bias uncorrected)"},
+        payload={
+            "grid": g,
+            "ghat": ghat,
+            "se": se,
+            "lower": ghat - z * se,
+            "upper": ghat + z * se,
+            "density": dens,
+            "bandwidth": hh,
+            "zcrit": z,
+            "unifrate": float(np.sqrt(np.log(n) / (n * hh))),
+            "alpha": float(alpha),
+            "n": n,
+            "method": "Horowitz (2009) Appendix A.2.1 pointwise bands (bias uncorrected)",
+        },
     )
 
 
@@ -114,11 +125,10 @@ def cheatsheet():
 if __name__ == "__main__":  # pragma: no cover
     n = 400
     xv = np.linspace(0.0, 1.0, n)
-    yv = np.sin(3.0 * xv)                    # noiseless
+    yv = np.sin(3.0 * xv)  # noiseless
     r = npconfband(xv, yv, h=0.05)
     err = float(np.max(np.abs(r["ghat"][2:-2] - np.sin(3.0 * r["grid"][2:-2]))))
     assert err < 0.05, err
-    assert bool(np.all(r["lower"] <= r["ghat"])) and bool(
-        np.all(r["upper"] >= r["ghat"]))
+    assert bool(np.all(r["lower"] <= r["ghat"])) and bool(np.all(r["upper"] >= r["ghat"]))
     assert abs(r["zcrit"] - 1.959963984540054) < 1e-9, r["zcrit"]
     print("ok", err)

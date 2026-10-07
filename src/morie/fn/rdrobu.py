@@ -87,21 +87,23 @@ def rdrobu(y, x, cutoff=0.0, alpha=0.05, **kwargs):
     se_c = fit["se_conventional"]
     se_r = fit["se_robust"]
     payload = dict(fit)
-    payload.update({
-        "estimate": fit["estimate"],
-        "intervals": {"conventional": ci_c, "bias_corrected": ci_b,
-                      "robust": ci_r},
-        "widths": {"conventional": ci_c[1] - ci_c[0],
-                   "bias_corrected": ci_b[1] - ci_b[0],
-                   "robust": ci_r[1] - ci_r[0]},
-        "correction_factor": (se_r / se_c) if se_c > 0 else float("nan"),
-        "bias_estimate": fit["estimate"] - fit["bias_corrected"],
-        "method": "robust bias-corrected RD confidence intervals "
-                  "(Calonico, Cattaneo & Titiunik 2014)",
-        "note": "one implementation, shared with morie.fn.causrddc; the "
-                "conventional interval is the one the paper shows to "
-                "undercover at an MSE-optimal bandwidth",
-    })
+    payload.update(
+        {
+            "estimate": fit["estimate"],
+            "intervals": {"conventional": ci_c, "bias_corrected": ci_b, "robust": ci_r},
+            "widths": {
+                "conventional": ci_c[1] - ci_c[0],
+                "bias_corrected": ci_b[1] - ci_b[0],
+                "robust": ci_r[1] - ci_r[0],
+            },
+            "correction_factor": (se_r / se_c) if se_c > 0 else float("nan"),
+            "bias_estimate": fit["estimate"] - fit["bias_corrected"],
+            "method": "robust bias-corrected RD confidence intervals (Calonico, Cattaneo & Titiunik 2014)",
+            "note": "one implementation, shared with morie.fn.causrddc; the "
+            "conventional interval is the one the paper shows to "
+            "undercover at an MSE-optimal bandwidth",
+        }
+    )
     return RichResult(payload=payload)
 
 
@@ -111,11 +113,13 @@ def calonico_cattaneo_titiunik(y, x, cutoff=0.0, **kwargs):
 
 
 def cheatsheet():
-    return ("rdrobu: the three RD intervals of Calonico, Cattaneo & "
-            "Titiunik (2014) side by side -- conventional, bias-corrected, "
-            "and robust (recentred AND rescaled by V + C^bc). Shares its "
-            "implementation with causrddc; see that module for the "
-            "estimator, bandwidths and designs.")
+    return (
+        "rdrobu: the three RD intervals of Calonico, Cattaneo & "
+        "Titiunik (2014) side by side -- conventional, bias-corrected, "
+        "and robust (recentred AND rescaled by V + C^bc). Shares its "
+        "implementation with causrddc; see that module for the "
+        "estimator, bandwidths and designs."
+    )
 
 
 # compact alias per ledger/NAMING.md

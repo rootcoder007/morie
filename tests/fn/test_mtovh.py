@@ -1,7 +1,6 @@
 """Tests for morie.fn.mtovh — vehicle type."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mtovh import mto_vehicle_type
 

@@ -1,7 +1,6 @@
 """Tests for gb1122tr.gibbons_kendall_trend."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb1122tr import gibbons_kendall_trend
 
 

@@ -99,15 +99,15 @@ def horowitz_ph_discrete_obs(t_discrete, x, event=None, K=None, cycles=40, gs_it
     def cumA(c):
         A = [0.0] * (kk + 1)
         s = 0.0
-        for l in range(kk):
-            s += math.exp(min(max(c[l], -300.0), 300.0))
-            A[l + 1] = s
+        for ell in range(kk):
+            s += math.exp(min(max(c[ell], -300.0), 300.0))
+            A[ell + 1] = s
         return A
 
     def negll(par):
         tau = par[0]
-        b = par[1:1 + p]
-        A = cumA(par[1 + p:])
+        b = par[1 : 1 + p]
+        A = cumA(par[1 + p :])
         th = math.exp(min(max(tau, -30.0), 30.0))
         tot = 0.0
         for i in range(n):
@@ -126,8 +126,8 @@ def horowitz_ph_discrete_obs(t_discrete, x, event=None, K=None, cycles=40, gs_it
         return -tot
 
     par = [0.0] * (1 + p + kk)
-    for l in range(kk):
-        par[1 + p + l] = -1.0
+    for ell in range(kk):
+        par[1 + p + ell] = -1.0
     cur = negll(par)
     for _ in range(int(cycles)):
         moved = 0.0
@@ -166,9 +166,9 @@ def horowitz_ph_discrete_obs(t_discrete, x, event=None, K=None, cycles=40, gs_it
         if moved < 1e-10:
             break
     th = math.exp(min(max(par[0], -30.0), 30.0))
-    beta = list(par[1:1 + p])
-    A = cumA(par[1 + p:])
-    jumps = [A[l + 1] - A[l] for l in range(kk)]
+    beta = list(par[1 : 1 + p])
+    A = cumA(par[1 + p :])
+    jumps = [A[ell + 1] - A[ell] for ell in range(kk)]
     # cell probabilities for the first observation: these must sum to one
     e = 0.0
     for k in range(p):

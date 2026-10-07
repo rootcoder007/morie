@@ -1,7 +1,6 @@
 """Tests for informer.informer_long_horizon."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.informer import informer_long_horizon
 
 

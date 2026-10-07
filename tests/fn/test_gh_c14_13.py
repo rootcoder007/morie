@@ -1,7 +1,6 @@
 """Tests for gh_c14_13.ghosal_pk_levy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_13 import ghosal_pk_levy
 
 

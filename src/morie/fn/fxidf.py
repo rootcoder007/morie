@@ -53,11 +53,18 @@ def effect_modification(Y, X, C_mod):
     dof = n - 4
     s2 = sum(t * t for t in resid) / dof if dof > 0 else float("nan")
     se = math.sqrt(s2 * xtxinv[3][3]) if dof > 0 and xtxinv[3][3] > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": beta[3], "se": se,
-        "t": beta[3] / se if se == se and se > 0 else float("nan"),
-        "coef": beta, "effect_at_0": beta[1], "effect_at_1": beta[1] + beta[3],
-        "n": n, "method": "Additive effect modification, X by V interaction"})
+    return RichResult(
+        payload={
+            "estimate": beta[3],
+            "se": se,
+            "t": beta[3] / se if se == se and se > 0 else float("nan"),
+            "coef": beta,
+            "effect_at_0": beta[1],
+            "effect_at_1": beta[1] + beta[3],
+            "n": n,
+            "method": "Additive effect modification, X by V interaction",
+        }
+    )
 
 
 def cheatsheet():

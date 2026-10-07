@@ -1,7 +1,5 @@
 """Tests for prratio.prevalence_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.prratio import prevalence_ratio
 
 

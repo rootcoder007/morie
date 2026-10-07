@@ -84,8 +84,7 @@ def tmle_spillover(y, D, X, network, exposure_summary=None):
         raise ValueError("tmle_spillover: X must have one row per subject")
     if len(A) != n or len(A[0]) != n:
         raise ValueError("tmle_spillover: network must be n by n")
-    E = _frac_treated(Dv, A) if exposure_summary is None else \
-        [float(v) for v in exposure_summary(Dv, A)]
+    E = _frac_treated(Dv, A) if exposure_summary is None else [float(v) for v in exposure_summary(Dv, A)]
     if len(E) != n:
         raise ValueError("tmle_spillover: exposure_summary must return one value per unit")
     ebar = sum(E) / n
@@ -114,13 +113,22 @@ def tmle_spillover(y, D, X, network, exposure_summary=None):
     var /= float(n * n)
     se = math.sqrt(var) if var > 0.0 else float("nan")
     se_iid = math.sqrt(sum(v * v for v in ce) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "se_iid": se_iid, "eps": eps, "ebar": ebar, "n": n,
-        "method": "TMLE for the direct effect under interference at fixed exposure"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "se_iid": se_iid,
+            "eps": eps,
+            "ebar": ebar,
+            "n": n,
+            "method": "TMLE for the direct effect under interference at fixed exposure",
+        }
+    )
 
 
 def cheatsheet():
     return "tmlspl: TMLE for a direct effect under network interference."
+
 
 # public names resolved by fn/_lazy_map.json
 tmlespillover = tmle_spillover

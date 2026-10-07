@@ -1,7 +1,6 @@
 """Tests for gross.gross_error_sensitivity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gross import gross_error_sensitivity
 
 

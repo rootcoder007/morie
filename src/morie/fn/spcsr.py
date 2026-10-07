@@ -48,7 +48,7 @@ def schabenberger_csr_def(points, region=None):
     p = as_points(points)
     reg = as_region(region, p)
     lam = intensity(p, reg)
-    k = max(2, int(np.sqrt(p.shape[0] / 5.0)))          # ~5 events per quadrat
+    k = max(2, int(np.sqrt(p.shape[0] / 5.0)))  # ~5 events per quadrat
     xe = np.linspace(reg[0], reg[2], k + 1)
     ye = np.linspace(reg[1], reg[3], k + 1)
     counts, _, _ = np.histogram2d(p[:, 0], p[:, 1], bins=[xe, ye])
@@ -61,15 +61,20 @@ def schabenberger_csr_def(points, region=None):
     expected_nn = 1.0 / (2.0 * np.sqrt(lam)) if lam > 0 else float("nan")
     return RichResult(
         title="Complete spatial randomness",
-        summary_lines=[("index of dispersion", iod),
-                       ("Clark-Evans ratio", mean_nn / expected_nn
-                        if expected_nn else float("nan"))],
-        payload={"index_of_dispersion": iod, "quadrat_counts": counts,
-                 "n_quadrats": int(counts.size), "mean_nn": mean_nn,
-                 "expected_nn": float(expected_nn),
-                 "clark_evans": float(mean_nn / expected_nn)
-                 if expected_nn else float("nan"),
-                 "lambda_est": lam, "area": region_area(reg)},
+        summary_lines=[
+            ("index of dispersion", iod),
+            ("Clark-Evans ratio", mean_nn / expected_nn if expected_nn else float("nan")),
+        ],
+        payload={
+            "index_of_dispersion": iod,
+            "quadrat_counts": counts,
+            "n_quadrats": int(counts.size),
+            "mean_nn": mean_nn,
+            "expected_nn": float(expected_nn),
+            "clark_evans": float(mean_nn / expected_nn) if expected_nn else float("nan"),
+            "lambda_est": lam,
+            "area": region_area(reg),
+        },
     )
 
 

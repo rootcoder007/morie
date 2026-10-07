@@ -83,49 +83,49 @@ def alphafold_evoformer(m, z, w, nblock=1, drop=None):
         d = dm.get(name)
         if d is None:
             return upd
-        return [[[upd[a][b2][c] * d[a][b2][c] for c in range(len(upd[a][b2]))]
-                 for b2 in range(len(upd[a]))] for a in range(len(upd))]
+        return [
+            [[upd[a][b2][c] * d[a][b2][c] for c in range(len(upd[a][b2]))] for b2 in range(len(upd[a]))]
+            for a in range(len(upd))
+        ]
 
     def _addm(base, upd):
-        return [[[base[a][b2][c] + upd[a][b2][c]
-                  for c in range(len(base[a][b2]))]
-                 for b2 in range(len(base[a]))] for a in range(len(base))]
+        return [
+            [[base[a][b2][c] + upd[a][b2][c] for c in range(len(base[a][b2]))] for b2 in range(len(base[a]))]
+            for a in range(len(base))
+        ]
 
     for _ in range(nblock):
         # lines 2-4: MSA stack
-        u = alphafold_msa_attention(m, w["rowq"], w["rowk"], w["rowv"],
-                                    w["rowg"], w["rowo"], z=z, wb=w["rowb"],
-                                    mode="row")["m"]
+        u = alphafold_msa_attention(
+            m, w["rowq"], w["rowk"], w["rowv"], w["rowg"], w["rowo"], z=z, wb=w["rowb"], mode="row"
+        )["m"]
         m = _addm(m, _dropm("row", u))
-        u = alphafold_msa_attention(m, w["colq"], w["colk"], w["colv"],
-                                    w["colg"], w["colo"], mode="column")["m"]
+        u = alphafold_msa_attention(m, w["colq"], w["colk"], w["colv"], w["colg"], w["colo"], mode="column")["m"]
         m = _addm(m, u)
-        u = [[_transition(m[si][i], w["mt1"], w["mt2"]) for i in range(n)]
-             for si in range(s)]
+        u = [[_transition(m[si][i], w["mt1"], w["mt2"]) for i in range(n)] for si in range(s)]
         m = _addm(m, u)
         # line 5: communication
         u = alphafold_pair_repr(m, w["opa"], w["opb"], w["opo"])["z"]
         z = _addm(z, u)
         # lines 6-9: pair stack
-        u = alphafold_triangle_mult(z, w["tmoag"], w["tmoav"], w["tmobg"],
-                                    w["tmobv"], w["tmog"], w["tmoo"],
-                                    mode="outgoing")["z"]
+        u = alphafold_triangle_mult(
+            z, w["tmoag"], w["tmoav"], w["tmobg"], w["tmobv"], w["tmog"], w["tmoo"], mode="outgoing"
+        )["z"]
         z = _addm(z, _dropm("trimulout", u))
-        u = alphafold_triangle_mult(z, w["tmiag"], w["tmiav"], w["tmibg"],
-                                    w["tmibv"], w["tmig"], w["tmio"],
-                                    mode="incoming")["z"]
+        u = alphafold_triangle_mult(
+            z, w["tmiag"], w["tmiav"], w["tmibg"], w["tmibv"], w["tmig"], w["tmio"], mode="incoming"
+        )["z"]
         z = _addm(z, _dropm("trimulin", u))
-        u = alphafold_triangle_attn(z, w["tasq"], w["task"], w["tasv"],
-                                    w["tasb"], w["tasg"], w["taso"],
-                                    mode="starting")["z"]
+        u = alphafold_triangle_attn(
+            z, w["tasq"], w["task"], w["tasv"], w["tasb"], w["tasg"], w["taso"], mode="starting"
+        )["z"]
         z = _addm(z, _dropm("triattnstart", u))
-        u = alphafold_triangle_attn(z, w["taeq"], w["taek"], w["taev"],
-                                    w["taeb"], w["taeg"], w["taeo"],
-                                    mode="ending")["z"]
+        u = alphafold_triangle_attn(z, w["taeq"], w["taek"], w["taev"], w["taeb"], w["taeg"], w["taeo"], mode="ending")[
+            "z"
+        ]
         z = _addm(z, _dropm("triattnend", u))
         # line 10: pair transition
-        u = [[_transition(z[i][j], w["pt1"], w["pt2"]) for j in range(n)]
-             for i in range(n)]
+        u = [[_transition(z[i][j], w["pt1"], w["pt2"]) for j in range(n)] for i in range(n)]
         z = _addm(z, u)
 
     # line 12: the single representation is a projection of the first MSA row

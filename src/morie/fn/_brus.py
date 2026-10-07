@@ -94,7 +94,7 @@ def stratified_variance(stratum_variances, stratum_weights):
     v, w = _v(stratum_variances), _v(stratum_weights)
     if v.shape != w.shape or (v < 0).any():
         raise ValueError("invalid inputs")
-    return float(np.dot(w ** 2, v))
+    return float(np.dot(w**2, v))
 
 
 def stratified_cost(c0, stratum_costs, stratum_sizes):
@@ -161,7 +161,7 @@ def twostage_optimal_n_variance(s_w, s_b, c1, c2, v_max):
     """n = (S_w S_b sqrt(c2/c1) + S_b^2)/V_max, eq (7.9)."""
     if min(s_w, s_b, c1, c2, v_max) <= 0:
         raise ValueError("all inputs must be positive")
-    return float((s_w * s_b * math.sqrt(c2 / c1) + s_b ** 2) / v_max)
+    return float((s_w * s_b * math.sqrt(c2 / c1) + s_b**2) / v_max)
 
 
 def twostage_optimal_m(s_w, s_b, c1, c2):
@@ -182,11 +182,10 @@ def twostage_total_variance_pps(p, t_j, t_total, m_j, f2_j, s2_j, m_j_sampled, n
     """True two-stage pps variance, eq (7.12)."""
     p, t_j, m_j = _v(p), _v(t_j), _v(m_j)
     f2_j, s2_j, m_s = _v(f2_j), _v(s2_j), _v(m_j_sampled)
-    if not (p.shape == t_j.shape == m_j.shape == f2_j.shape == s2_j.shape
-            == m_s.shape) or (p <= 0).any() or n <= 0:
+    if not (p.shape == t_j.shape == m_j.shape == f2_j.shape == s2_j.shape == m_s.shape) or (p <= 0).any() or n <= 0:
         raise ValueError("invalid inputs")
     first = np.sum(p * (t_j / p - t_total) ** 2) / n
-    second = np.sum(m_j ** 2 * (1.0 - f2_j) * s2_j / (m_s * p)) / n
+    second = np.sum(m_j**2 * (1.0 - f2_j) * s2_j / (m_s * p)) / n
     return float(first + second)
 
 
@@ -224,7 +223,7 @@ def balanced_variance(e, pi, c, n_population, p):
     n = e.size
     if not (e.shape == pi.shape == c.shape) or (pi <= 0).any() or n <= p:
         raise ValueError("invalid inputs")
-    return float(np.sum(c * (e / pi) ** 2) * n / (n - p) / n_population ** 2)
+    return float(np.sum(c * (e / pi) ** 2) * n / (n - p) / n_population**2)
 
 
 def local_mean_variance(e, pi, e_local_mean, n, p):
@@ -232,8 +231,7 @@ def local_mean_variance(e, pi, e_local_mean, n, p):
     e, pi, eb = _v(e), _v(pi), _v(e_local_mean)
     if not (e.shape == pi.shape == eb.shape) or (pi <= 0).any() or n <= p:
         raise ValueError("invalid inputs")
-    return float(n / (n - p) * p / (p + 1)
-                 * np.sum((1.0 - pi) * (e / pi - eb) ** 2))
+    return float(n / (n - p) * p / (p + 1) * np.sum((1.0 - pi) * (e / pi - eb) ** 2))
 
 
 # ------------------------------------------------- ch 10: model-assisted
@@ -277,8 +275,7 @@ def gls_sample_slope(x, z, sigma2, pi):
     return gls_population_slope(x, z, _v(sigma2) * pi)
 
 
-def regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample,
-                                 n_population):
+def regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_population):
     """zbar_regr = mean(x^T b) + HT mean of residuals, eq (10.8)."""
     x_all = np.asarray(x_all, float)
     x_s = np.asarray(x_sample, float)
@@ -307,7 +304,7 @@ def si_regression_variance(e, n, n_population):
     e = _v(e)
     if e.size != n or n < 2 or n > n_population:
         raise ValueError("invalid inputs")
-    s2_e = float(np.sum(e ** 2) / (n - 1))
+    s2_e = float(np.sum(e**2) / (n - 1))
     return {"s2_e": s2_e, "variance": (1.0 - n / n_population) * s2_e / n}
 
 
@@ -323,8 +320,7 @@ def g_weighted_variance(g, e, n, n_population):
     g, e = _v(g), _v(e)
     if g.shape != e.shape or n < 2:
         raise ValueError("invalid inputs")
-    return float((1.0 - n / n_population) * np.sum(g ** 2 * e ** 2)
-                 / (n * (n - 1)))
+    return float((1.0 - n / n_population) * np.sum(g**2 * e**2) / (n * (n - 1)))
 
 
 def ratio_total(t_pi_z, t_pi_x, t_x_true):
@@ -343,7 +339,7 @@ def ratio_total_variance(e, n, n_population):
     e = _v(e)
     if e.size != n or n < 2:
         raise ValueError("invalid inputs")
-    return float(n_population ** 2 * np.sum(e ** 2) / (n - 1) / n)
+    return float(n_population**2 * np.sum(e**2) / (n - 1) / n)
 
 
 def ratio_g_weight(t_x_true, t_pi_x):
@@ -359,8 +355,7 @@ def poststratified_mean(group_means_sample, group_weights):
     return stratified_mean(group_means_sample, group_weights)
 
 
-def mixed_calibration_mean(zbar_pi, a_hat, pi_sample, m_all_mean, m_ht_mean,
-                           b_hat, n_population):
+def mixed_calibration_mean(zbar_pi, a_hat, pi_sample, m_all_mean, m_ht_mean, b_hat, n_population):
     """Mixed-model calibration estimator, eq (10.36)."""
     pi = _v(pi_sample)
     if (pi <= 0).any():
@@ -396,8 +391,7 @@ def mc_variance_via_residuals(e, pi, n_population):
     if e.shape != pi.shape or (pi <= 0).any() or n < 2 or n_population <= 0:
         raise ValueError("invalid inputs")
     t_hat = float(np.sum(e / pi))
-    return float(np.sum((n * e / pi - t_hat) ** 2) / (n * (n - 1))
-                 / n_population ** 2)
+    return float(np.sum((n * e / pi - t_hat) ** 2) / (n * (n - 1)) / n_population**2)
 
 
 # ------------------------------------------------- ch 11: two-phase sampling
@@ -417,8 +411,7 @@ def twophase_regression_variance(s2_z, n1, s2_e, n2, n_population):
     """V_hat = (1-n1/N) S2(z)/n1 + (1-n2/n1) S2(e)/n2, eqs (11.7)-(11.8)."""
     if min(s2_z, s2_e) < 0 or not 0 < n2 <= n1 <= n_population:
         raise ValueError("invalid inputs")
-    return float((1.0 - n1 / n_population) * s2_z / n1
-                 + (1.0 - n2 / n1) * s2_e / n2)
+    return float((1.0 - n1 / n_population) * s2_z / n1 + (1.0 - n2 / n1) * s2_e / n2)
 
 
 def s2_residuals(e, n):
@@ -426,7 +419,7 @@ def s2_residuals(e, n):
     e = _v(e)
     if e.size != n or n < 2:
         raise ValueError("invalid inputs")
-    return float(np.sum(e ** 2) / (n - 1))
+    return float(np.sum(e**2) / (n - 1))
 
 
 # ------------------------------------------------- ch 12: required sample size
@@ -457,8 +450,7 @@ def n_for_proportion_length(u_crit, p_star, l_max):
     """n = (u sqrt(p(1-p))/(l_max/2))^2 + 1, eq (12.11)."""
     if not 0 < p_star < 1 or min(u_crit, l_max) <= 0:
         raise ValueError("invalid inputs")
-    return float((u_crit * math.sqrt(p_star * (1 - p_star))
-                  / (l_max / 2.0)) ** 2 + 1)
+    return float((u_crit * math.sqrt(p_star * (1 - p_star)) / (l_max / 2.0)) ** 2 + 1)
 
 
 def n_design_effect(design_effect, n_si):
@@ -477,8 +469,7 @@ def beta_posterior_pdf(p, z, n, c, d):
     if not 0 < p < 1 or z < 0 or z > n or c <= 0 or d <= 0:
         raise ValueError("invalid inputs")
     a, b = z + c, n - z + d
-    return math.exp((a - 1) * math.log(p) + (b - 1) * math.log(1 - p)
-                    - _log_beta(a, b))
+    return math.exp((a - 1) * math.log(p) + (b - 1) * math.log(1 - p) - _log_beta(a, b))
 
 
 def _beta_cdf(x, a, b, n_grid=20001):
@@ -490,13 +481,12 @@ def _beta_cdf(x, a, b, n_grid=20001):
     # hand-rolled -- numpy 2 removed trapz and the de-numpy campaign is
     # heading this way regardless
     xs = np.linspace(1e-12, x, n_grid)
-    f = np.exp((a - 1) * np.log(xs) + (b - 1) * np.log1p(-xs)
-               - _log_beta(a, b))
+    f = np.exp((a - 1) * np.log(xs) + (b - 1) * np.log1p(-xs) - _log_beta(a, b))
     dx = (xs[-1] - xs[0]) / (n_grid - 1)
     return float((f.sum() - 0.5 * (f[0] + f[-1])) * dx)
 
 
-def beta_posterior_interval_prob(v, l, z, n, c, d):
+def beta_posterior_interval_prob(v, l, z, n, c, d):  # noqa: E741
     """Pr{p in (v, v+l)} under the Beta posterior, eqs (12.18), (12.27)."""
     if l < 0 or not 0 <= v <= 1:
         raise ValueError("invalid inputs")
@@ -578,7 +568,7 @@ def mean_semivariance_stsi_variance(gamma_bar_h, weights, n_h):
     g, w, n = _v(gamma_bar_h), _v(weights), _v(n_h)
     if not (g.shape == w.shape == n.shape) or (n <= 0).any() or (g < 0).any():
         raise ValueError("invalid inputs")
-    return float(np.sum(w ** 2 * g / n))
+    return float(np.sum(w**2 * g / n))
 
 
 def mean_semivariance_equal_area(gamma_bar_h, n):
@@ -586,7 +576,7 @@ def mean_semivariance_equal_area(gamma_bar_h, n):
     g = _v(gamma_bar_h)
     if n <= 0 or (g < 0).any():
         raise ValueError("invalid inputs")
-    return float(g.sum() / n ** 2)
+    return float(g.sum() / n**2)
 
 
 def optimal_allocation_variance(weights, s_h, c_h, n):
@@ -619,7 +609,7 @@ def expected_stratum_variance(d2_matrix_upper_sum, n_h):
     """
     if n_h <= 0:
         raise ValueError("N_h must be positive")
-    return float(d2_matrix_upper_sum / n_h ** 2)
+    return float(d2_matrix_upper_sum / n_h**2)
 
 
 def ospats_objective(per_stratum_sums, n_population):

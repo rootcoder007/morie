@@ -1,9 +1,9 @@
 """Tests for morie.fn.trmwt -- Trimmed weights."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.trmwt import trimmed_weights, trmwt
 
 
@@ -12,7 +12,7 @@ class TestTrimmedWeights:
         assert trmwt is trimmed_weights
 
     def test_quantile_trimming(self):
-        rng = np.random.default_rng(42)
+        np.random.default_rng(42)
         weights = np.concatenate([np.ones(90), np.array([100.0] * 10)])
         df = pd.DataFrame({"weight": weights})
         trimmed = trimmed_weights(df, lower=0.01, upper=0.90)

@@ -1,7 +1,6 @@
 """Tests for rghaar.rangayyan_haar_wavelet."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_haar_wavelet
 
 

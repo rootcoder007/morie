@@ -70,10 +70,7 @@ def geron_overfitting(train_err, val_err, tol=0.0):
 
     gaps = va - tr
     gap = float(gaps[-1])
-    if tr[-1] == 0.0:
-        ratio = float("inf") if va[-1] > 0 else 1.0
-    else:
-        ratio = float(va[-1] / tr[-1])
+    ratio = (float("inf") if va[-1] > 0 else 1.0) if tr[-1] == 0.0 else float(va[-1] / tr[-1])
     k = int(np.argmin(va))
     over = bool(gap > t)
     if over:

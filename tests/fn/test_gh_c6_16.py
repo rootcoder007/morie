@@ -1,7 +1,6 @@
 """Tests for gh_c6_16.ghosal_alpha_post."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_16 import ghosal_alpha_post
 
 
@@ -38,8 +37,7 @@ def test_gh_c6_16_basic():
     # The alpha-posterior variance must be >= the full-data variance
     # for 0 < alpha < 1 (documented: "flatter than the full posterior").
     assert result["variance"] > 0.0
-    full_var = (a + successes) * (b + n - successes) / ((a + b + n) ** 2
-                                                       * (a + b + n + 1.0))
+    full_var = (a + successes) * (b + n - successes) / ((a + b + n) ** 2 * (a + b + n + 1.0))
     assert result["variance"] > full_var
     assert result["wider_than_full"] is True
 

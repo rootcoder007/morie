@@ -65,11 +65,9 @@ class _RandomFeatures:
     def __init__(self, n_in, n_hidden, n_out, rng, scale=1.0):
         s1 = scale / math.sqrt(max(1, n_in))
         s2 = scale / math.sqrt(max(1, n_hidden))
-        self.W1 = [[(rng.random() * 2.0 - 1.0) * s1 for _ in range(n_hidden)]
-                   for _ in range(n_in)]
+        self.W1 = [[(rng.random() * 2.0 - 1.0) * s1 for _ in range(n_hidden)] for _ in range(n_in)]
         self.b1 = [(rng.random() * 2.0 - 1.0) * s1 for _ in range(n_hidden)]
-        self.W2 = [[(rng.random() * 2.0 - 1.0) * s2 for _ in range(n_out)]
-                   for _ in range(n_hidden)]
+        self.W2 = [[(rng.random() * 2.0 - 1.0) * s2 for _ in range(n_out)] for _ in range(n_hidden)]
         self.n_in, self.n_hidden, self.n_out = n_in, n_hidden, n_out
 
     def hidden(self, x):
@@ -153,10 +151,21 @@ class _RunningStats:
         return [math.sqrt(v / (self.n - 1)) + eps for v in self.m2]
 
 
-def rndnet(observations, n_hidden=64, n_out=8, lr=0.05, clip=5.0,
-           normalize_obs=True, normalize_reward=True, init_steps=0,
-           gamma_int=0.99, seed=0, target=None, predictor=None,
-           update=True):
+def rndnet(
+    observations,
+    n_hidden=64,
+    n_out=8,
+    lr=0.05,
+    clip=5.0,
+    normalize_obs=True,
+    normalize_reward=True,
+    init_steps=0,
+    gamma_int=0.99,
+    seed=0,
+    target=None,
+    predictor=None,
+    update=True,
+):
     r"""Compute the RND exploration bonus along an observation stream.
 
     Parameters
@@ -213,8 +222,7 @@ def rndnet(observations, n_hidden=64, n_out=8, lr=0.05, clip=5.0,
     ----------
     Burda et al. (2019) arXiv:1810.12894, sections 2.2, 2.3 and 2.4.
     """
-    X = [[float(v) for v in row]
-         for row in np.atleast_2d(np.asarray(observations, dtype=float))]
+    X = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(observations, dtype=float))]
     if not X:
         raise ValueError("rndnet: observations must be non-empty")
     d = len(X[0])
@@ -229,10 +237,8 @@ def rndnet(observations, n_hidden=64, n_out=8, lr=0.05, clip=5.0,
         raise ValueError("rndnet: clip must be > 0")
 
     rng = np.random.default_rng(seed)
-    tgt = target if target is not None else _RandomFeatures(
-        d, n_hidden, n_out, rng)
-    prd = predictor if predictor is not None else _Predictor(
-        d, n_hidden, n_out, np.random.default_rng(seed + 1))
+    tgt = target if target is not None else _RandomFeatures(d, n_hidden, n_out, rng)
+    prd = predictor if predictor is not None else _Predictor(d, n_hidden, n_out, np.random.default_rng(seed + 1))
 
     obs_stats = _RunningStats(d)
     for t in range(init_steps):
@@ -271,23 +277,24 @@ def rndnet(observations, n_hidden=64, n_out=8, lr=0.05, clip=5.0,
 
     n = len(rewards)
     tenth = max(1, n // 10)
-    return RichResult(payload={
-        "estimate": rewards,
-        "intrinsic_reward": rewards,
-        "raw_error": raw,
-        "returns": returns,
-        "mse": float(sum(raw) / n),
-        "mean_first": float(sum(rewards[:tenth]) / tenth),
-        "mean_last": float(sum(rewards[-tenth:]) / tenth),
-        "n": n,
-        "target": tgt,
-        "predictor": prd,
-        "method": "RND (Burda et al. 2019)",
-    })
+    return RichResult(
+        payload={
+            "estimate": rewards,
+            "intrinsic_reward": rewards,
+            "raw_error": raw,
+            "returns": returns,
+            "mse": float(sum(raw) / n),
+            "mean_first": float(sum(rewards[:tenth]) / tenth),
+            "mean_last": float(sum(rewards[-tenth:]) / tenth),
+            "n": n,
+            "target": tgt,
+            "predictor": prd,
+            "method": "RND (Burda et al. 2019)",
+        }
+    )
 
 
-def combine_returns(reward_ext, reward_int, gamma_ext=0.999, gamma_int=0.99,
-                    done=None):
+def combine_returns(reward_ext, reward_int, gamma_ext=0.999, gamma_int=0.99, done=None):
     r"""Section 2.3: :math:`R = R_E + R_I`, fitted as two heads.
 
     The extrinsic stream is **episodic** -- its return is truncated at
@@ -300,13 +307,10 @@ def combine_returns(reward_ext, reward_int, gamma_ext=0.999, gamma_int=0.99,
     Returns the two return series and their sum, which is the target for
     :math:`V = V_E + V_I`.
     """
-    re = [float(v) for v in np.atleast_1d(np.asarray(reward_ext,
-                                                     dtype=float))]
-    ri = [float(v) for v in np.atleast_1d(np.asarray(reward_int,
-                                                     dtype=float))]
+    re = [float(v) for v in np.atleast_1d(np.asarray(reward_ext, dtype=float))]
+    ri = [float(v) for v in np.atleast_1d(np.asarray(reward_int, dtype=float))]
     if len(re) != len(ri):
-        raise ValueError("combine_returns: the two reward streams must have "
-                         "the same length")
+        raise ValueError("combine_returns: the two reward streams must have the same length")
     T = len(re)
     d = [False] * T if done is None else [bool(v) for v in done]
     if len(d) != T:
@@ -317,27 +321,31 @@ def combine_returns(reward_ext, reward_int, gamma_ext=0.999, gamma_int=0.99,
     acc_i = 0.0
     for t in range(T - 1, -1, -1):
         acc_e = re[t] + (0.0 if d[t] else gamma_ext * acc_e)
-        acc_i = ri[t] + gamma_int * acc_i          # never truncated
+        acc_i = ri[t] + gamma_int * acc_i  # never truncated
         Re[t] = acc_e
         Ri[t] = acc_i
-    return RichResult(payload={
-        "estimate": [Re[t] + Ri[t] for t in range(T)],
-        "return_ext": Re,
-        "return_int": Ri,
-        "return_total": [Re[t] + Ri[t] for t in range(T)],
-        "gamma_ext": float(gamma_ext),
-        "gamma_int": float(gamma_int),
-        "method": "RND two value heads (Burda et al. 2019 sec. 2.3)",
-    })
+    return RichResult(
+        payload={
+            "estimate": [Re[t] + Ri[t] for t in range(T)],
+            "return_ext": Re,
+            "return_int": Ri,
+            "return_total": [Re[t] + Ri[t] for t in range(T)],
+            "gamma_ext": float(gamma_ext),
+            "gamma_int": float(gamma_int),
+            "method": "RND two value heads (Burda et al. 2019 sec. 2.3)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rndnet: RND bonus r^i = ||fhat(x) - f(x)||^2 with f a "
-            "FROZEN random net (Burda 2019). Random deterministic "
-            "target kills the noisy-TV problem. Obs whitened and "
-            "clipped to +-5, r^i divided by the running std of "
-            "intrinsic RETURNS (sec 2.4). combine_returns is V = V_E + "
-            "V_I with the intrinsic stream non-episodic (sec 2.3).")
+    return (
+        "rndnet: RND bonus r^i = ||fhat(x) - f(x)||^2 with f a "
+        "FROZEN random net (Burda 2019). Random deterministic "
+        "target kills the noisy-TV problem. Obs whitened and "
+        "clipped to +-5, r^i divided by the running std of "
+        "intrinsic RETURNS (sec 2.4). combine_returns is V = V_E + "
+        "V_I with the intrinsic stream non-episodic (sec 2.3)."
+    )
 
 
 # compact alias per ledger/NAMING.md

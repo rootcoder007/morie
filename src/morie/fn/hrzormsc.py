@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_ordered_max_score"]
 
 
-def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
-                               n_restarts=8, seed=0):
+def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None, n_restarts=8, seed=0):
     r"""Maximum-score estimator for an ordered-response model
     (Horowitz Sec. 4.4.3), equation (4.43):
 
@@ -91,8 +90,7 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
     n, d = X.shape
     M = int(yi.max()) + 1
     if M < 3:
-        raise ValueError(
-            f"an ordered-response model needs at least 3 categories, got {M}.")
+        raise ValueError(f"an ordered-response model needs at least 3 categories, got {M}.")
     if d < 2:
         raise ValueError(f"need at least 2 covariates, got {d}.")
 
@@ -104,8 +102,7 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
     if known:
         a0 = np.asarray(thresholds, dtype=float).ravel()
         if a0.size != M - 1:
-            raise ValueError(
-                f"thresholds must have M-1 = {M - 1} entries, got {a0.size}.")
+            raise ValueError(f"thresholds must have M-1 = {M - 1} entries, got {a0.size}.")
         if np.any(np.diff(a0) <= 0):
             raise ValueError("thresholds must be strictly increasing.")
     else:
@@ -117,13 +114,12 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
         raise ValueError(f"bandwidth must be positive, got {hh}.")
 
     def unpack(z):
-        b = np.r_[1.0, z[:d - 1]]
+        b = np.r_[1.0, z[: d - 1]]
         if known:
             return b, a0
         # keep the cut-points ordered by cumulating positive gaps
-        gaps = np.abs(z[d - 1:])
-        return b, np.concatenate([[0.0], np.cumsum(gaps)]) if M > 2 else \
-            np.array([0.0])
+        gaps = np.abs(z[d - 1 :])
+        return b, np.concatenate([[0.0], np.cumsum(gaps)]) if M > 2 else np.array([0.0])
 
     def objective(z):
         b, a = unpack(z)
@@ -133,8 +129,7 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
             # K((X_i'b - a_m)/h): a genuine max-score objective, so it
             # is MAXIMISED and negated here
             Wim = (yi[:, None] > np.arange(M - 1)[None, :]).astype(float)
-            s = np.sum((2.0 * Wim - 1.0) *
-                       stats.norm.cdf((v[:, None] - a[None, :]) / hh))
+            s = np.sum((2.0 * Wim - 1.0) * stats.norm.cdf((v[:, None] - a[None, :]) / hh))
             return -s / n
         pred = 1.0 + np.sum(v[:, None] > a[None, :], axis=1)
         return float(np.mean(np.abs(W - pred)))
@@ -145,39 +140,49 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None,
         # rather than trusting a simplex on a step function
         from ._horowitz import optimize_scale_normalized
 
-        beta, val = optimize_scale_normalized(
-            lambda b: objective(b[1:]), d, n_restarts=n_restarts, seed=seed)
-        return RichResult(payload={
-            "beta": beta, "thresholds": a0,
-            "objective": -val if smoothed else val,
-            "sense": "maximised" if smoothed else "minimised",
-            "thresholds_estimated": False,
-            "scale_normalisation_required": False,
-            "smoothed": bool(smoothed),
-            "bandwidth": hh if smoothed else None,
-            "M": M, "n": int(n), "d": int(d),
-            "method": "Ordered max score (4.43); a median regression, so absolute deviations are MINIMISED"})
+        beta, val = optimize_scale_normalized(lambda b: objective(b[1:]), d, n_restarts=n_restarts, seed=seed)
+        return RichResult(
+            payload={
+                "beta": beta,
+                "thresholds": a0,
+                "objective": -val if smoothed else val,
+                "sense": "maximised" if smoothed else "minimised",
+                "thresholds_estimated": False,
+                "scale_normalisation_required": False,
+                "smoothed": bool(smoothed),
+                "bandwidth": hh if smoothed else None,
+                "M": M,
+                "n": int(n),
+                "d": int(d),
+                "method": "Ordered max score (4.43); a median regression, so absolute deviations are MINIMISED",
+            }
+        )
 
     k = (d - 1) + max(M - 2, 0)
     rng = np.random.default_rng(seed)
     starts = [np.zeros(k)] + [rng.standard_normal(k) for _ in range(int(n_restarts))]
     best, best_val = None, np.inf
     for st in starts:
-        r = optimize.minimize(objective, st, method="Nelder-Mead",
-                              options={"maxiter": 5000, "fatol": 1e-9})
+        r = optimize.minimize(objective, st, method="Nelder-Mead", options={"maxiter": 5000, "fatol": 1e-9})
         if r.fun < best_val:
             best_val, best = float(r.fun), r.x
     beta, alpha = unpack(best)
-    return RichResult(payload={
-        "beta": beta, "thresholds": alpha,
-        "objective": -best_val if smoothed else best_val,
-        "sense": "maximised" if smoothed else "minimised",
-        "thresholds_estimated": not known,
-        "scale_normalisation_required": False,
-        "smoothed": bool(smoothed),
-        "bandwidth": hh if smoothed else None,
-        "M": M, "n": int(n), "d": int(d),
-        "method": "Ordered max score (4.43); a median regression, so absolute deviations are MINIMISED"})
+    return RichResult(
+        payload={
+            "beta": beta,
+            "thresholds": alpha,
+            "objective": -best_val if smoothed else best_val,
+            "sense": "maximised" if smoothed else "minimised",
+            "thresholds_estimated": not known,
+            "scale_normalisation_required": False,
+            "smoothed": bool(smoothed),
+            "bandwidth": hh if smoothed else None,
+            "M": M,
+            "n": int(n),
+            "d": int(d),
+            "method": "Ordered max score (4.43); a median regression, so absolute deviations are MINIMISED",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for btpct.boot_percentile_ci."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btpct import boot_percentile_ci
 
 

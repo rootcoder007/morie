@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Empirical distribution function S_n(x) -- Gibbons eq. (2.3.1)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['edfstep', 'gibbons_edf_def']
+__all__ = ["edfstep", "gibbons_edf_def"]
 
 
 def edfstep(x, t):

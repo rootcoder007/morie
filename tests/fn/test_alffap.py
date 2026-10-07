@@ -3,8 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.alffap import alphafold_fape_loss
 
 
@@ -39,9 +37,7 @@ def test_alffap_basic():
     frames = _make_frames(rng, nframes)
     points = _make_points(rng, natoms)
 
-    result = alphafold_fape_loss(
-        frames, points, frames, points, Z=10.0, dclamp=10.0, eps=1e-4
-    )
+    result = alphafold_fape_loss(frames, points, frames, points, Z=10.0, dclamp=10.0, eps=1e-4)
 
     # The function returns a RichResult; support both dict-style and
     # attribute-style access so the test is robust to either wrapper.
@@ -90,9 +86,13 @@ def test_alffap_edge():
     x_pred = [p + 1000.0 for p in x_true]
 
     result = alphafold_fape_loss(
-        frames_pred, x_pred,
-        frames_true, x_true,
-        Z=10.0, dclamp=10.0, eps=1e-4,
+        frames_pred,
+        x_pred,
+        frames_true,
+        x_true,
+        Z=10.0,
+        dclamp=10.0,
+        eps=1e-4,
     )
 
     payload = result.payload if hasattr(result, "payload") else result

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Liu simplicial depth."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -78,23 +76,24 @@ def simplicial_depth(X, theta):
                     s1 = side(a, b, th)
                     s2 = side(b, c, th)
                     s3 = side(c, a, th)
-                    if (s1 >= 0 and s2 >= 0 and s3 >= 0) or \
-                       (s1 <= 0 and s2 <= 0 and s3 <= 0):
+                    if (s1 >= 0 and s2 >= 0 and s3 >= 0) or (s1 <= 0 and s2 <= 0 and s3 <= 0):
                         cnt += 1
         F = float("nan")
         cf = float("nan")
     depth = cnt / float(tot) if tot else float("nan")
-    return RichResult(payload={
-        "estimate": depth,
-        "depth": depth,
-        "n_containing": cnt,
-        "n_simplices": tot,
-        "ecdf": F,
-        "closed_form_1d": cf,
-        "n": n,
-        "d": d,
-        "method": "Liu simplicial depth",
-    })
+    return RichResult(
+        payload={
+            "estimate": depth,
+            "depth": depth,
+            "n_containing": cnt,
+            "n_simplices": tot,
+            "ecdf": F,
+            "closed_form_1d": cf,
+            "n": n,
+            "d": d,
+            "method": "Liu simplicial depth",
+        }
+    )
 
 
 def cheatsheet():

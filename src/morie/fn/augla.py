@@ -55,7 +55,7 @@ def augmented_lagrangian(
     x = np.asarray(x0, dtype=float).copy()
     nc = len(constraints)
     lam = np.zeros(nc)
-    for outer in range(1, maxiter + 1):
+    for outer in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         for _ in range(inner_maxiter):
             g = np.asarray(grad_f(x), dtype=float)
             h = 1e-7

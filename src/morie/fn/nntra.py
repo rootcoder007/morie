@@ -60,7 +60,7 @@ def nn_train(
     b2 = np.zeros(1)
 
     losses = []
-    for ep in range(epochs):
+    for _ep in range(epochs):
         z1 = X @ W1 + b1
         a1 = _sigmoid(z1)
         z2 = a1 @ W2 + b2

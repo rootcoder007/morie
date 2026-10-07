@@ -33,20 +33,18 @@ def kamath_ch3_prefix_tuning_obj(phi, x, y, h, Y_idx=None):
     True
     """
     if not callable(phi):
-        raise ValueError("phi must be a callable (z_i, h_prefix) -> "
-                         "probability.")
+        raise ValueError("phi must be a callable (z_i, h_prefix) -> probability.")
     toks = list(y)
     states = list(h)
     if not toks:
         raise ValueError("the target sequence y is empty.")
     if len(states) != len(toks):
         raise ValueError(
-            f"h has {len(states)} activations for {len(toks)} target "
-            "tokens; h_<i must exist at every scored position.")
+            f"h has {len(states)} activations for {len(toks)} target tokens; h_<i must exist at every scored position."
+        )
     idx = list(range(len(toks))) if Y_idx is None else [int(i) for i in Y_idx]
     if not idx:
-        raise ValueError("Y_idx is empty; a sum over no positions is "
-                         "undefined, not 0.")
+        raise ValueError("Y_idx is empty; a sum over no positions is undefined, not 0.")
     if len(set(idx)) != len(idx):
         raise ValueError("Y_idx contains duplicates.")
     if any(i < 0 or i >= len(toks) for i in idx):
@@ -55,15 +53,19 @@ def kamath_ch3_prefix_tuning_obj(phi, x, y, h, Y_idx=None):
     for i in idx:
         p = float(phi(toks[i], states[:i]))
         if not (0.0 < p <= 1.0):
-            raise ValueError(
-                f"phi returned {p:.6g} at position {i}; it must lie in "
-                "(0, 1].")
+            raise ValueError(f"phi returned {p:.6g} at position {i}; it must lie in (0, 1].")
         logs.append(math.log(p))
     arr = np.asarray(logs, dtype=float)
-    return RichResult(payload={
-        "estimate": float(arr.sum()), "per_position": [float(v) for v in arr],
-        "positions_scored": idx, "prompt": x, "n": len(toks),
-        "method": "prefix-tuning objective (Kamath Eq 3.12)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr.sum()),
+            "per_position": [float(v) for v in arr],
+            "positions_scored": idx,
+            "prompt": x,
+            "n": len(toks),
+            "method": "prefix-tuning objective (Kamath Eq 3.12)",
+        }
+    )
 
 
 def cheatsheet():

@@ -61,22 +61,23 @@ def bfassum(kernel=None, g=None, h=None, n=None, smooth=None, tol=1e-6, lo=-8.0,
     from . import _stats_core as stats
 
     if kernel is None:
-        kfun = lambda t: float(stats.norm.pdf(t))
+
+        def kfun(t):
+            return float(stats.norm.pdf(t))
     elif callable(kernel):
-        kfun = lambda t: float(kernel(t))
+
+        def kfun(t):
+            return float(kernel(t))
     else:
         raise ValueError("kernel must be None or a callable K(v).")
     v = np.linspace(float(lo), float(hi), int(ngrid))
     kv = np.asarray([kfun(float(t)) for t in v], dtype=float)
     mass = float(np.trapezoid(kv, v))
     sym = float(np.max(np.abs(kv - kv[::-1])))
-    mu2 = float(np.trapezoid(v ** 2 * kv, v))
+    mu2 = float(np.trapezoid(v**2 * kv, v))
     d1 = bool(np.all(kv >= 0) and sym < float(tol))
     d2 = bool(np.isfinite(mu2) and abs(mass - 1.0) < float(tol))
-    if h is None or n is None:
-        d3 = None
-    else:
-        d3 = bool(float(h) > 0 and float(h) < 1 and int(n) * float(h) > 1)
+    d3 = None if h is None or n is None else bool(float(h) > 0 and float(h) < 1 and int(n) * float(h) > 1)
     if g is None:
         d4 = None
         monotone = "unknown"

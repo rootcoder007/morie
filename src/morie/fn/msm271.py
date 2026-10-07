@@ -18,8 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["basmat", "mvsml_convolutional_nn_eq_14_8"]
 
 
-def basmat(t, n_basis, kind='fourier', period=None):
-
+def basmat(t, n_basis, kind="fourier", period=None):
     """Psi is the m x L2 matrix whose (j, o) entry is psi_o(t_j)
     (eq. 14.8): rows are the times t_1, ..., t_m at which the
     covariate curve was actually observed and columns are the L2
@@ -29,12 +28,11 @@ def basmat(t, n_basis, kind='fourier', period=None):
     form the design matrix.  Keys: Psi, m, L2, PsiTPsi.
     """
 
-    Psi = _gp.fda_basis_matrix(t, n_basis, kind=kind,
-                               period=period)
-    PtP = [[sum(Psi[r][i] * Psi[r][j] for r in range(len(Psi)))
-            for j in range(len(Psi[0]))] for i in range(len(Psi[0]))]
-    res = RichResult(payload={"Psi": Psi, "m": len(Psi),
-                              "L2": len(Psi[0]), "PsiTPsi": PtP})
+    Psi = _gp.fda_basis_matrix(t, n_basis, kind=kind, period=period)
+    PtP = [
+        [sum(Psi[r][i] * Psi[r][j] for r in range(len(Psi))) for j in range(len(Psi[0]))] for i in range(len(Psi[0]))
+    ]
+    res = RichResult(payload={"Psi": Psi, "m": len(Psi), "L2": len(Psi[0]), "PsiTPsi": PtP})
 
     return with_describe_pointer(res, "msm271")
 

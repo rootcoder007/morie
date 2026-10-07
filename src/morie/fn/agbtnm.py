@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["bnrunstat", "alphazero_batch_norm"]
 
 
-def bnrunstat(x, runmean=0.0, runvar=1.0, momentum=0.1, eps=1e-5,
-              gamma=1.0, beta=0.0):
+def bnrunstat(x, runmean=0.0, runvar=1.0, momentum=0.1, eps=1e-5, gamma=1.0, beta=0.0):
     """Update batch-norm moving statistics and normalise for inference.
 
     During training a batch-normalised activation is centred and scaled by
@@ -75,10 +74,19 @@ def bnrunstat(x, runmean=0.0, runvar=1.0, momentum=0.1, eps=1e-5,
     g, b, eps = float(gamma), float(beta), float(eps)
     inf = [g * (v - rm) / math.sqrt(rv + eps) + b for v in x]
     trn = [g * (v - mu) / math.sqrt(vb + eps) + b for v in x]
-    return RichResult(payload={
-        "runmean": rm, "runvar": rv, "batchmean": mu, "batchvar": vb,
-        "batchvarunb": vu, "normalized": inf, "trainnorm": trn, "m": m,
-        "method": "Batch-norm running statistics (Ioffe-Szegedy 2015 Sect. 3.1)"})
+    return RichResult(
+        payload={
+            "runmean": rm,
+            "runvar": rv,
+            "batchmean": mu,
+            "batchvar": vb,
+            "batchvarunb": vu,
+            "normalized": inf,
+            "trainnorm": trn,
+            "m": m,
+            "method": "Batch-norm running statistics (Ioffe-Szegedy 2015 Sect. 3.1)",
+        }
+    )
 
 
 alphazero_batch_norm = bnrunstat

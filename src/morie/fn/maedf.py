@@ -1,10 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Mean absolute error of a set of predictions."""
 
-
 from ._richresult import RichResult
 
-__all__ = ['maetst', 'mae_metric', 'maemetric']
+__all__ = ["maetst", "mae_metric", "maemetric"]
 
 
 def maetst(y, yhat):
@@ -36,9 +35,7 @@ def maetst(y, yhat):
     if n == 0:
         raise ValueError("y must be non-empty")
     mae = sum(abs(a - b) for a, b in zip(y, yhat)) / n
-    return RichResult(payload={
-        "mae": mae, "n": n,
-        "method": "Test-set mean absolute error, MVSML Eq. (4.3)"})
+    return RichResult(payload={"mae": mae, "n": n, "method": "Test-set mean absolute error, MVSML Eq. (4.3)"})
 
 
 mae_metric = maetst
@@ -46,4 +43,4 @@ maemetric = maetst
 
 
 def cheatsheet():
-    return 'maedf: Mean absolute error of a set of predictions.'
+    return "maedf: Mean absolute error of a set of predictions."

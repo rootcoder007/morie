@@ -134,54 +134,58 @@ doi:10.1080/01621459.1993.10476296, for log-rank splitting.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["nelson_aalen", "logrank_statistic",
-           "conservation_residuals", "conserve_statistic",
-           "logrank_scores", "logrank_score_statistic",
-           "best_split",
-           "grow_tree", "predict_tree", "forest", "ensemble_chf",
-           "mortality", "c_index", "conservation_check", "vimp",
-           "rule_status", "SPLIT_RULES"]
+__all__ = [
+    "nelson_aalen",
+    "logrank_statistic",
+    "conservation_residuals",
+    "conserve_statistic",
+    "logrank_scores",
+    "logrank_score_statistic",
+    "best_split",
+    "grow_tree",
+    "predict_tree",
+    "forest",
+    "ensemble_chf",
+    "mortality",
+    "c_index",
+    "conservation_check",
+    "vimp",
+    "rule_status",
+    "SPLIT_RULES",
+]
 
 SPLIT_RULES = ("logrank", "logrankrandom", "conserve", "logrankscore")
-_AVAILABLE = ("logrank", "logrankrandom", "logrankscore",
-              "conserve")
+_AVAILABLE = ("logrank", "logrankrandom", "logrankscore", "conserve")
 _UNSOURCED = {}
 
 
 def rule_status(rule=None):
     r"""Which of the paper's four splitting rules are implemented."""
     if rule is None:
-        return {"rules": SPLIT_RULES, "available": _AVAILABLE,
-                "unavailable": dict(_UNSOURCED)}
+        return {"rules": SPLIT_RULES, "available": _AVAILABLE, "unavailable": dict(_UNSOURCED)}
     if rule not in SPLIT_RULES:
-        raise ValueError("survrsf: rule must be one of %s, got %r"
-                         % (", ".join(SPLIT_RULES), rule))
-    return {"rule": rule, "available": rule in _AVAILABLE,
-            "reason": _UNSOURCED.get(rule, "")}
+        raise ValueError("survrsf: rule must be one of {}, got {!r}".format(", ".join(SPLIT_RULES), rule))
+    return {"rule": rule, "available": rule in _AVAILABLE, "reason": _UNSOURCED.get(rule, "")}
 
 
 def _check_rule(rule):
     if rule not in SPLIT_RULES:
-        raise ValueError("survrsf: rule must be one of %s, got %r"
-                         % (", ".join(SPLIT_RULES), rule))
+        raise ValueError("survrsf: rule must be one of {}, got {!r}".format(", ".join(SPLIT_RULES), rule))
     if rule not in _AVAILABLE:
-        raise ValueError("survrsf: the %r splitting rule is not "
-                         "implemented -- %s" % (rule, _UNSOURCED[rule]))
+        raise ValueError(f"survrsf: the {rule!r} splitting rule is not implemented -- {_UNSOURCED[rule]}")
 
 
 class _Rng:
     """Small deterministic generator (no external imports here)."""
 
     def __init__(self, seed=0):
-        self.s = (int(seed) * 6364136223846793005 + 1442695040888963407)
+        self.s = int(seed) * 6364136223846793005 + 1442695040888963407
         self.s &= (1 << 64) - 1
 
     def next(self):
-        self.s = (self.s * 6364136223846793005
-                  + 1442695040888963407) & ((1 << 64) - 1)
+        self.s = (self.s * 6364136223846793005 + 1442695040888963407) & ((1 << 64) - 1)
         return (self.s >> 11) / float(1 << 53)
 
     def randint(self, n):
@@ -199,8 +203,7 @@ def nelson_aalen(times, events):
     r"""The terminal-node estimator of equation (3.1)."""
     n = len(times)
     if n != len(events):
-        raise ValueError("survrsf: %d times but %d event indicators"
-                         % (n, len(events)))
+        raise ValueError(f"survrsf: {int(n)} times but {int(len(events))} event indicators")
     if n == 0:
         raise ValueError("survrsf: no observations")
     order = sorted(range(n), key=lambda i: times[i])
@@ -220,8 +223,7 @@ def nelson_aalen(times, events):
             ts.append(float(t))
             ds.append(cum)
         i = j
-    return {"time": ts, "chf": ds, "n": n,
-            "deaths": int(sum(1 for e in events if e))}
+    return {"time": ts, "chf": ds, "n": n, "deaths": int(sum(1 for e in events if e))}
 
 
 def _chf_at(na, t):
@@ -243,17 +245,14 @@ def conservation_check(times, events):
     na = nelson_aalen(times, events)
     total = sum(_chf_at(na, t) for t in times)
     deaths = float(sum(1 for e in events if e))
-    return {"sum_chf": total, "deaths": deaths,
-            "difference": total - deaths,
-            "conserved": abs(total - deaths) < 1e-9}
+    return {"sum_chf": total, "deaths": deaths, "difference": total - deaths, "conserved": abs(total - deaths) < 1e-9}
 
 
 def logrank_statistic(times, events, group):
     r"""The two-sample log-rank statistic used for splitting."""
     n = len(times)
     if not (n == len(events) == len(group)):
-        raise ValueError("survrsf: times, events and group must have "
-                         "the same length")
+        raise ValueError("survrsf: times, events and group must have the same length")
     order = sorted(range(n), key=lambda i: times[i])
     num = 0.0
     var = 0.0
@@ -272,9 +271,7 @@ def logrank_statistic(times, events, group):
         r1 = sum(1 for k in range(i, n) if group[order[k]])
         if d and at_risk > 1:
             num += d1 - d * r1 / float(at_risk)
-            var += (d * (r1 / float(at_risk))
-                    * (1.0 - r1 / float(at_risk))
-                    * (at_risk - d) / float(at_risk - 1))
+            var += d * (r1 / float(at_risk)) * (1.0 - r1 / float(at_risk)) * (at_risk - d) / float(at_risk - 1)
         elif d:
             num += d1 - d * r1 / float(at_risk)
         i = j
@@ -294,9 +291,8 @@ def logrank_scores(times, events):
     sum to zero -- an exact identity the anchor uses.
     """
     N = len(times)
-    if N != len(events):
-        raise ValueError("survrsf: times and events must have the "
-                         "same length")
+    if len(events) != N:
+        raise ValueError("survrsf: times and events must have the same length")
     if N == 0:
         raise ValueError("survrsf: no observations")
     gamma = [sum(1 for t in times if t <= times[j]) for j in range(N)]
@@ -328,8 +324,7 @@ def logrank_score_statistic(times, events, group, scores=None):
     N = len(times)
     a = logrank_scores(times, events) if scores is None else list(scores)
     if not (N == len(group) == len(a)):
-        raise ValueError("survrsf: times, group and scores must have "
-                         "the same length")
+        raise ValueError("survrsf: times, group and scores must have the same length")
     m = sum(1 for g in group if not g)
     n = N - m
     if m == 0 or n == 0 or N < 2:
@@ -357,8 +352,7 @@ def conservation_residuals(times, events):
     """
     n = len(times)
     if n != len(events):
-        raise ValueError("survrsf: times and events must have the "
-                         "same length")
+        raise ValueError("survrsf: times and events must have the same length")
     if n == 0:
         return []
     na = nelson_aalen(times, events)
@@ -386,16 +380,14 @@ def conserve_statistic(times, events, group):
     """
     n = len(times)
     if not (n == len(events) == len(group)):
-        raise ValueError("survrsf: times, events and group must have "
-                         "the same length")
+        raise ValueError("survrsf: times, events and group must have the same length")
     total = 0.0
     weight = 0.0
     for g in (0, 1):
         idx = [i for i in range(n) if int(bool(group[i])) == g]
         if not idx:
             return 0.0
-        m = conservation_residuals([times[i] for i in idx],
-                                   [events[i] for i in idx])
+        m = conservation_residuals([times[i] for i in idx], [events[i] for i in idx])
         y1 = float(len(idx))
         total += y1 * sum(abs(v) for v in m[:-1])
         weight += y1
@@ -403,20 +395,17 @@ def conserve_statistic(times, events, group):
     return 1.0 / (1.0 + conserve)
 
 
-def best_split(X, times, events, features, min_deaths=3,
-               rule="logrank", rng=None):
+def best_split(X, times, events, features, min_deaths=3, rule="logrank", rng=None):
     r"""Search the candidate variables for the best split."""
     _check_rule(rule)
     n = len(times)
     best = None
-    scores = (logrank_scores(times, events)
-              if rule == "logrankscore" else None)
+    scores = logrank_scores(times, events) if rule == "logrankscore" else None
     for j in features:
         vals = sorted(set(X[i][j] for i in range(n)))
         if len(vals) < 2:
             continue
-        cuts = [(vals[k] + vals[k + 1]) / 2.0
-                for k in range(len(vals) - 1)]
+        cuts = [(vals[k] + vals[k + 1]) / 2.0 for k in range(len(vals) - 1)]
         if rule == "logrankrandom":
             if rng is None:
                 rng = _Rng(0)
@@ -425,25 +414,20 @@ def best_split(X, times, events, features, min_deaths=3,
             grp = [1 if X[i][j] > c else 0 for i in range(n)]
             left = [i for i in range(n) if not grp[i]]
             right = [i for i in range(n) if grp[i]]
-            if (sum(1 for i in left if events[i]) < min_deaths
-                    or sum(1 for i in right if events[i])
-                    < min_deaths):
+            if sum(1 for i in left if events[i]) < min_deaths or sum(1 for i in right if events[i]) < min_deaths:
                 continue
             if rule == "logrankscore":
-                stat = logrank_score_statistic(times, events, grp,
-                                               scores)
+                stat = logrank_score_statistic(times, events, grp, scores)
             elif rule == "conserve":
                 stat = conserve_statistic(times, events, grp)
             else:
                 stat = logrank_statistic(times, events, grp)
             if best is None or stat > best["statistic"]:
-                best = {"variable": j, "cut": c, "statistic": stat,
-                        "left": left, "right": right}
+                best = {"variable": j, "cut": c, "statistic": stat, "left": left, "right": right}
     return best
 
 
-def grow_tree(X, times, events, mtry=None, min_deaths=3,
-              rule="logrank", seed=0, rng=None):
+def grow_tree(X, times, events, mtry=None, min_deaths=3, rule="logrank", seed=0, rng=None):
     r"""One survival tree, grown to saturation under :math:`d_0`."""
     _check_rule(rule)
     n = len(times)
@@ -458,23 +442,24 @@ def grow_tree(X, times, events, mtry=None, min_deaths=3,
         t = [times[i] for i in idx]
         e = [events[i] for i in idx]
         if sum(1 for v in e if v) < 2 * min_deaths or depth > 40:
-            return {"leaf": True, "na": nelson_aalen(t, e),
-                    "n": len(idx), "idx": list(idx)}
+            return {"leaf": True, "na": nelson_aalen(t, e), "n": len(idx), "idx": list(idx)}
         feats = rng.sample(range(d), mtry)
         sub = [[X[i][j] for j in range(d)] for i in idx]
         sp = best_split(sub, t, e, feats, min_deaths, rule, rng)
         if sp is None:
-            return {"leaf": True, "na": nelson_aalen(t, e),
-                    "n": len(idx), "idx": list(idx)}
+            return {"leaf": True, "na": nelson_aalen(t, e), "n": len(idx), "idx": list(idx)}
         left = [idx[i] for i in sp["left"]]
         right = [idx[i] for i in sp["right"]]
-        return {"leaf": False, "variable": sp["variable"],
-                "cut": sp["cut"], "statistic": sp["statistic"],
-                "left": build(left, depth + 1),
-                "right": build(right, depth + 1)}
+        return {
+            "leaf": False,
+            "variable": sp["variable"],
+            "cut": sp["cut"],
+            "statistic": sp["statistic"],
+            "left": build(left, depth + 1),
+            "right": build(right, depth + 1),
+        }
 
-    return {"root": build(list(range(n)), 0), "rule": rule,
-            "mtry": mtry, "min_deaths": int(min_deaths), "n": n}
+    return {"root": build(list(range(n)), 0), "rule": rule, "mtry": mtry, "min_deaths": int(min_deaths), "n": n}
 
 
 def _leaves(node, out=None):
@@ -495,8 +480,7 @@ def predict_tree(tree, x, random_variable=None, rng=None):
     """
     node = tree["root"]
     while not node["leaf"]:
-        if random_variable is not None \
-                and node["variable"] == random_variable:
+        if random_variable is not None and node["variable"] == random_variable:
             go_right = (rng or _Rng(0)).next() < 0.5
         else:
             go_right = x[node["variable"]] > node["cut"]
@@ -504,14 +488,13 @@ def predict_tree(tree, x, random_variable=None, rng=None):
     return node
 
 
-def forest(X, times, events, n_trees=50, mtry=None, min_deaths=3,
-           rule="logrank", seed=0):
+def forest(X, times, events, n_trees=50, mtry=None, min_deaths=3, rule="logrank", seed=0):
     r"""Grow the forest, keeping the out-of-bag membership."""
     _check_rule(rule)
     n = len(times)
     rng = _Rng(seed)
     trees, inbag = [], []
-    for b in range(int(n_trees)):
+    for _b in range(int(n_trees)):
         boot = [rng.randint(n) for _ in range(n)]
         used = set(boot)
         Xb = [X[i] for i in boot]
@@ -519,19 +502,23 @@ def forest(X, times, events, n_trees=50, mtry=None, min_deaths=3,
         eb = [events[i] for i in boot]
         if sum(1 for v in eb if v) < 2 * min_deaths:
             continue
-        trees.append(grow_tree(Xb, tb, eb, mtry, min_deaths, rule,
-                               rng=rng))
+        trees.append(grow_tree(Xb, tb, eb, mtry, min_deaths, rule, rng=rng))
         inbag.append(used)
     if not trees:
-        raise ValueError("survrsf: no tree could be grown; the data "
-                         "hold too few deaths for min_deaths = %d"
-                         % min_deaths)
-    oob_fraction = (sum(n - len(u) for u in inbag)
-                    / float(len(inbag) * n))
-    return {"trees": trees, "inbag": inbag, "n": n,
-            "rule": rule, "n_trees": len(trees),
-            "oob_fraction": oob_fraction,
-            "times": list(times), "events": list(events)}
+        raise ValueError(
+            f"survrsf: no tree could be grown; the data hold too few deaths for min_deaths = {int(min_deaths)}"
+        )
+    oob_fraction = sum(n - len(u) for u in inbag) / float(len(inbag) * n)
+    return {
+        "trees": trees,
+        "inbag": inbag,
+        "n": n,
+        "rule": rule,
+        "n_trees": len(trees),
+        "oob_fraction": oob_fraction,
+        "times": list(times),
+        "events": list(events),
+    }
 
 
 def ensemble_chf(fit, X, t, oob=True, random_variable=None, seed=1):
@@ -576,8 +563,7 @@ def c_index(times, events, predicted):
     """
     n = len(times)
     if not (n == len(events) == len(predicted)):
-        raise ValueError("survrsf: times, events and predictions must "
-                         "have the same length")
+        raise ValueError("survrsf: times, events and predictions must have the same length")
     permissible = 0.0
     concordance = 0.0
     for i in range(n):
@@ -609,48 +595,51 @@ def c_index(times, events, predicted):
                 else:
                     concordance += 0.5
     if permissible == 0.0:
-        raise ValueError("survrsf: no permissible pairs -- every pair "
-                         "has its shorter time censored")
-    return {"c_index": concordance / permissible,
-            "concordance": concordance, "permissible": permissible,
-            "prediction_error": 1.0 - concordance / permissible}
+        raise ValueError("survrsf: no permissible pairs -- every pair has its shorter time censored")
+    return {
+        "c_index": concordance / permissible,
+        "concordance": concordance,
+        "permissible": permissible,
+        "prediction_error": 1.0 - concordance / permissible,
+    }
 
 
 def vimp(fit, X, variables=None, seed=1):
     r"""Sec. 7: random daughter assignment at splits on :math:`x`."""
     base = mortality(fit, X, oob=True, seed=seed)
-    base_pe = c_index(fit["times"], fit["events"],
-                      base)["prediction_error"]
-    variables = (range(len(X[0])) if variables is None
-                 else [int(v) for v in variables])
+    base_pe = c_index(fit["times"], fit["events"], base)["prediction_error"]
+    variables = range(len(X[0])) if variables is None else [int(v) for v in variables]
     out = {}
     for v in variables:
         m = mortality(fit, X, oob=True, random_variable=v, seed=seed)
-        pe = c_index(fit["times"], fit["events"],
-                     m)["prediction_error"]
+        pe = c_index(fit["times"], fit["events"], m)["prediction_error"]
         out[v] = pe - base_pe
-    return RichResult(payload={
-        "estimate": max(out.values()) if out else 0.0,
-        "vimp": out, "baseline_error": base_pe,
-        "note": "VIMP is the change in error for a fresh case if x "
-                "were unavailable, NOT the change from regrowing the "
-                "forest without x",
-        "method": "variable importance by random daughter "
-                  "assignment; Ishwaran et al. (2008) Sec. 7",
-    })
+    return RichResult(
+        payload={
+            "estimate": max(out.values()) if out else 0.0,
+            "vimp": out,
+            "baseline_error": base_pe,
+            "note": "VIMP is the change in error for a fresh case if x "
+            "were unavailable, NOT the change from regrowing the "
+            "forest without x",
+            "method": "variable importance by random daughter assignment; Ishwaran et al. (2008) Sec. 7",
+        }
+    )
 
 
 def cheatsheet():
-    return ("survrsf: bootstrap survival trees split on the log-rank "
-            "statistic, Nelson-Aalen in each terminal node, averaged "
-            "into an out-of-bag ensemble CHF. Conservation of events "
-            "(Lemma 1) is exact: the hazard summed over ALL observed "
-            "times, censored included, equals the number of deaths. "
-            "Mortality is that sum, a count of deaths, not a "
-            "probability. Error is 1 - C with Harrell's four-step "
-            "recipe. Two of the paper's four splitting rules are "
-            "implemented; the other two are refused with their "
-            "citations rather than guessed.")
+    return (
+        "survrsf: bootstrap survival trees split on the log-rank "
+        "statistic, Nelson-Aalen in each terminal node, averaged "
+        "into an out-of-bag ensemble CHF. Conservation of events "
+        "(Lemma 1) is exact: the hazard summed over ALL observed "
+        "times, censored included, equals the number of deaths. "
+        "Mortality is that sum, a count of deaths, not a "
+        "probability. Error is 1 - C with Harrell's four-step "
+        "recipe. Two of the paper's four splitting rules are "
+        "implemented; the other two are refused with their "
+        "citations rather than guessed."
+    )
 
 
 # compact alias per ledger/NAMING.md

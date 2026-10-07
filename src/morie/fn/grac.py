@@ -64,10 +64,7 @@ def geron_actor_critic_advantage(V, s, s_next, r, gamma, done=None):
     s_next = np.asarray(s_next).ravel()
     r = np.asarray(r, dtype=float).ravel()
     if not (s.size == s_next.size == r.size):
-        raise ValueError(
-            f"s, s_next and r must have equal length, got {s.size}, "
-            f"{s_next.size}, {r.size}."
-        )
+        raise ValueError(f"s, s_next and r must have equal length, got {s.size}, {s_next.size}, {r.size}.")
     if s.size == 0:
         raise ValueError("no transitions supplied.")
     if not np.issubdtype(s.dtype, np.integer) or not np.issubdtype(s_next.dtype, np.integer):
@@ -83,9 +80,7 @@ def geron_actor_critic_advantage(V, s, s_next, r, gamma, done=None):
     else:
         done_arr = np.asarray(done).ravel()
         if done_arr.size != s.size:
-            raise ValueError(
-                f"done must have one flag per transition ({s.size}), got {done_arr.size}."
-            )
+            raise ValueError(f"done must have one flag per transition ({s.size}), got {done_arr.size}.")
         mask = done_arr.astype(bool).astype(float)
 
     v_s = V[s]

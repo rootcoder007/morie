@@ -65,8 +65,7 @@ def glsstk(x, y, subject, v=None):
         if s not in order:
             order.append(s)
     idx = [[i for i in range(n) if lab[i] == s] for s in order]
-    bx = [np.asarray([[float(X[i, j]) for j in range(int(X.shape[1]))] for i in ii],
-                     dtype=float) for ii in idx]
+    bx = [np.asarray([[float(X[i, j]) for j in range(int(X.shape[1]))] for i in ii], dtype=float) for ii in idx]
     by = [np.asarray([float(z[i]) for i in ii], dtype=float) for ii in idx]
     res = glsblk(bx, by, v)
     payload = dict(res)

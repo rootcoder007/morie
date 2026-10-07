@@ -1,7 +1,5 @@
 """Tests for rghmm.rangayyan_fitzhugh_nagumo."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsaphys import rangayyan_fitzhugh_nagumo
 
 

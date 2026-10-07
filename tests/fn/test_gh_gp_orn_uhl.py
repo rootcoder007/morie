@@ -1,7 +1,6 @@
 """Tests for gh_gp_orn_uhl.ghosal_gp_ornstein_uhlenbeck."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_gp_orn_uhl import ghosal_gp_ornstein_uhlenbeck
 
 
@@ -33,5 +32,4 @@ def test_gh_gp_orn_uhl_edge():
 
 def pytest_approx(x):
     """Tiny local helper since pytest is not imported here."""
-    import math
     return x

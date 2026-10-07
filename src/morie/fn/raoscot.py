@@ -1,8 +1,5 @@
 """Rao-Scott corrected chi-square for complex surveys (Rao & Scott 1981)."""
 
-import math
-
-from . import _array_core as np
 from ._richresult import RichResult
 from ._stats_core import chi2
 
@@ -91,14 +88,16 @@ def raoscot(p_hat, p0, n, V=None, deffs=None):
     if lam <= 0:
         raise ValueError("estimated mean design effect is not positive")
     xc = x2 / lam
-    return RichResult(payload={
-        "statistic": x2,
-        "corrected": xc,
-        "lambda_bar": lam,
-        "df": df,
-        "p_value": float(chi2.sf(xc, df)),
-        "method": "Rao-Scott (1981) first-order corrected chi-square",
-    })
+    return RichResult(
+        payload={
+            "statistic": x2,
+            "corrected": xc,
+            "lambda_bar": lam,
+            "df": df,
+            "p_value": float(chi2.sf(xc, df)),
+            "method": "Rao-Scott (1981) first-order corrected chi-square",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -107,6 +106,7 @@ rao_scott_chisq = raoscot
 
 def cheatsheet():
     return "raoscot: X2 / mean generalized deff ~ chi2_{k-1}"
+
 
 # public names resolved by fn/_lazy_map.json
 raoscottchisq = raoscot

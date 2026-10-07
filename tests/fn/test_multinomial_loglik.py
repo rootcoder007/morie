@@ -1,7 +1,6 @@
 """Tests for multinomial_loglik.multinomial_loglik."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.multinomial_loglik import multinomial_loglik
 
 

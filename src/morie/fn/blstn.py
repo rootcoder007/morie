@@ -94,12 +94,12 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["blstn", "blast_nucleotide", "blast", "msp_exact", "blast_pvalue", "estimate_gumbel",
-           "word_hits"]
+__all__ = ["blstn", "blast_nucleotide", "blast", "msp_exact", "blast_pvalue", "estimate_gumbel", "word_hits"]
 
 
 def _scorer(match, mismatch, matrix, alphabet):
     if matrix is None:
+
         def f(a, b):
             return match if a == b else mismatch
     else:
@@ -107,11 +107,11 @@ def _scorer(match, mismatch, matrix, alphabet):
 
         def f(a, b):
             return matrix[idx[a]][idx[b]]
+
     return f
 
 
-def msp_exact(query, subject, match=5, mismatch=-4, matrix=None,
-              alphabet="ACGT"):
+def msp_exact(query, subject, match=5, mismatch=-4, matrix=None, alphabet="ACGT"):
     r"""The exact maximal segment pair score, by dynamic programming.
 
     Every segment pair lies on one diagonal, so the best ungapped segment
@@ -140,14 +140,12 @@ def msp_exact(query, subject, match=5, mismatch=-4, matrix=None,
             else:
                 run += v
             if run > best[0]:
-                best = (run, qi + run_start, si + run_start,
-                        t - run_start + 1)
+                best = (run, qi + run_start, si + run_start, t - run_start + 1)
             t += 1
     return best
 
 
-def word_hits(query, subject, w, mode="exact", threshold=None, match=5,
-              mismatch=-4, matrix=None, alphabet="ACGT"):
+def word_hits(query, subject, w, mode="exact", threshold=None, match=5, mismatch=-4, matrix=None, alphabet="ACGT"):
     r"""Hits between the query word list and the subject (step 2).
 
     ``mode="exact"`` is the DNA route: the word list is every contiguous
@@ -168,16 +166,15 @@ def word_hits(query, subject, w, mode="exact", threshold=None, match=5,
         raise ValueError("blstn: mode must be 'exact' or 'neighborhood'")
     table = {}
     for i in range(len(q) - w + 1):
-        table.setdefault(q[i:i + w], []).append(i)
+        table.setdefault(q[i : i + w], []).append(i)
     if mode == "exact":
-        return [(i, j) for j in range(len(s) - w + 1)
-                for i in table.get(s[j:j + w], ())]
+        return [(i, j) for j in range(len(s) - w + 1) for i in table.get(s[j : j + w], ())]
     if threshold is None:
         raise ValueError("blstn: mode='neighborhood' needs a threshold T")
     sc = _scorer(match, mismatch, matrix, alphabet)
     hits = []
     for j in range(len(s) - w + 1):
-        word = s[j:j + w]
+        word = s[j : j + w]
         for qword, positions in table.items():
             tot = 0.0
             for t in range(w):
@@ -222,10 +219,24 @@ def _extend(q, s, qi, si, w, sc, X):
     return best, qs, ss, length
 
 
-def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
-          word_mode="exact", threshold=None, matrix=None, alphabet="ACGT",
-          lam=None, K=None, max_hsps=None, letter_probs=None,
-          pvalues=True):
+def blstn(
+    query,
+    subjects,
+    w=11,
+    match=5,
+    mismatch=-4,
+    cutoff=None,
+    X=20,
+    word_mode="exact",
+    threshold=None,
+    matrix=None,
+    alphabet="ACGT",
+    lam=None,
+    K=None,
+    max_hsps=None,
+    letter_probs=None,
+    pvalues=True,
+):
     r"""Search ``subjects`` for locally maximal segment pairs with ``query``.
 
     Parameters
@@ -297,8 +308,7 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
     q = str(query)
     if not q:
         raise ValueError("blstn: query must be non-empty")
-    subs = [subjects] if isinstance(subjects, str) else [str(x) for x in
-                                                        subjects]
+    subs = [subjects] if isinstance(subjects, str) else [str(x) for x in subjects]
     if not subs:
         raise ValueError("blstn: subjects must be non-empty")
     w = int(w)
@@ -309,28 +319,25 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
         raise ValueError("blstn: X must be >= 0")
     sc = _scorer(match, mismatch, matrix, alphabet)
     if cutoff is None:
-        cutoff = w * (match if matrix is None else
-                      max(matrix[k][k] for k in range(len(matrix))))
+        cutoff = w * (match if matrix is None else max(matrix[k][k] for k in range(len(matrix))))
     cutoff = float(cutoff)
 
     hsps = []
     n_hits = 0
     for si, s in enumerate(subs):
-        hits = word_hits(q, s, w, word_mode, threshold, match, mismatch,
-                         matrix, alphabet)
+        hits = word_hits(q, s, w, word_mode, threshold, match, mismatch, matrix, alphabet)
         n_hits += len(hits)
         seen = set()
-        for (qi, sj) in hits:
+        for qi, sj in hits:
             score, qs, ss, length = _extend(q, s, qi, sj, w, sc, X)
             key = (si, qs - ss, qs, length)
             if key in seen or score < cutoff:
                 continue
             seen.add(key)
-            ident = sum(1 for t in range(length)
-                        if q[qs + t] == s[ss + t])
-            hsps.append({"subject": si, "score": score, "qstart": qs,
-                         "sstart": ss, "length": length,
-                         "identities": ident})
+            ident = sum(1 for t in range(length) if q[qs + t] == s[ss + t])
+            hsps.append(
+                {"subject": si, "score": score, "qstart": qs, "sstart": ss, "length": length, "identities": ident}
+            )
     # locally maximal: drop a segment pair contained in a better one on the
     # same diagonal
     hsps.sort(key=lambda h: -h["score"])
@@ -339,24 +346,23 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
         d = h["qstart"] - h["sstart"]
         covered = False
         for g in kept:
-            if (g["subject"] == h["subject"] and
-                    g["qstart"] - g["sstart"] == d and
-                    g["qstart"] <= h["qstart"] and
-                    h["qstart"] + h["length"] <=
-                    g["qstart"] + g["length"]):
+            if (
+                g["subject"] == h["subject"]
+                and g["qstart"] - g["sstart"] == d
+                and g["qstart"] <= h["qstart"]
+                and h["qstart"] + h["length"] <= g["qstart"] + g["length"]
+            ):
                 covered = True
                 break
         if not covered:
             kept.append(h)
     if max_hsps is not None:
-        kept = kept[:int(max_hsps)]
+        kept = kept[: int(max_hsps)]
 
     ka = None
     if pvalues and (lam is None or K is None):
         try:
-            ka = karlin_altschul(None, match, mismatch,
-                                 letter_probs or [1.0 / len(alphabet)] *
-                                 len(alphabet), matrix)
+            ka = karlin_altschul(None, match, mismatch, letter_probs or [1.0 / len(alphabet)] * len(alphabet), matrix)
             lam = ka["lam"] if lam is None else lam
             K = ka["K"] if K is None else K
         except ValueError:
@@ -365,24 +371,26 @@ def blstn(query, subjects, w=11, match=5, mismatch=-4, cutoff=None, X=20,
         for h in kept:
             m = len(subs[h["subject"]])
             h["pvalue"] = blast_pvalue(h["score"], len(q), m, lam, K)
-    return RichResult(payload={
-        "estimate": kept,
-        "hsps": kept,
-        "best_score": max([h["score"] for h in kept] or [0.0]),
-        "n_hsps": len(kept),
-        "n_hits": n_hits,
-        "w": w,
-        "cutoff": cutoff,
-        "X": X,
-        "word_mode": word_mode,
-        "lam": lam,
-        "K": K,
-        "karlin_altschul": ka,
-        "note": "the X-drop extension is a heuristic: it may miss a "
-                "higher-scoring extension (Altschul et al. 1990, section "
-                "2c); msp_exact gives the guaranteed MSP score",
-        "method": "BLAST maximal segment pairs (Altschul et al. 1990)",
-    })
+    return RichResult(
+        payload={
+            "estimate": kept,
+            "hsps": kept,
+            "best_score": max([h["score"] for h in kept] or [0.0]),
+            "n_hsps": len(kept),
+            "n_hits": n_hits,
+            "w": w,
+            "cutoff": cutoff,
+            "X": X,
+            "word_mode": word_mode,
+            "lam": lam,
+            "K": K,
+            "karlin_altschul": ka,
+            "note": "the X-drop extension is a heuristic: it may miss a "
+            "higher-scoring extension (Altschul et al. 1990, section "
+            "2c); msp_exact gives the guaranteed MSP score",
+            "method": "BLAST maximal segment pairs (Altschul et al. 1990)",
+        }
+    )
 
 
 def _lattice(x):
@@ -398,14 +406,15 @@ def _lattice(x):
     v = float(x)
     n = int(round(v))
     if abs(v - n) > 1e-9:
-        raise ValueError("blstn: scores must lie on the integer lattice "
-                         "(got %r); multiply the whole scheme by a common "
-                         "factor first" % (x,))
+        raise ValueError(
+            "blstn: scores must lie on the integer lattice "
+            f"(got {x!r}); multiply the whole scheme by a common "
+            "factor first"
+        )
     return n
 
 
-def score_distribution(match=5, mismatch=-4, letter_probs=None,
-                       matrix=None, subject_probs=None):
+def score_distribution(match=5, mismatch=-4, letter_probs=None, matrix=None, subject_probs=None):
     r"""The distribution of a single aligned-pair score.
 
     For DNA-style scoring, :math:`P(s) = \sum_{i,j: s_{ij} = s} p_i q_j`
@@ -440,9 +449,11 @@ def _lambda_star(dist, hi=20.0, tol=1e-14, max_iter=300):
     scores = sorted(dist)
     mean = sum(s * dist[s] for s in scores)
     if mean >= 0:
-        raise ValueError("blstn: the expected score per letter must be "
-                         "negative (it is %.6g); otherwise the maximal "
-                         "segment is the whole sequence" % mean)
+        raise ValueError(
+            "blstn: the expected score per letter must be "
+            f"negative (it is {mean:.6g}); otherwise the maximal "
+            "segment is the whole sequence"
+        )
     if max(scores) <= 0:
         raise ValueError("blstn: at least one score must be positive")
 
@@ -475,9 +486,17 @@ def _gcd_span(scores):
     return g if g > 0 else 1
 
 
-def karlin_altschul(dist=None, match=5, mismatch=-4, letter_probs=None,
-                    matrix=None, subject_probs=None, max_terms=1000,
-                    tol=1e-12, bound="upper"):
+def karlin_altschul(
+    dist=None,
+    match=5,
+    mismatch=-4,
+    letter_probs=None,
+    matrix=None,
+    subject_probs=None,
+    max_terms=1000,
+    tol=1e-12,
+    bound="upper",
+):
     r"""Karlin & Altschul (1990): :math:`\lambda^*` and :math:`K^*`.
 
     Give either a score distribution ``dist`` (``{score: probability}``) or
@@ -494,8 +513,7 @@ def karlin_altschul(dist=None, match=5, mismatch=-4, letter_probs=None,
     the result either way.
     """
     if dist is None:
-        dist = score_distribution(match, mismatch, letter_probs, matrix,
-                                  subject_probs)
+        dist = score_distribution(match, mismatch, letter_probs, matrix, subject_probs)
     dist = dict((_lattice(s), float(p)) for s, p in dist.items() if p > 0)
     tot = sum(dist.values())
     dist = dict((s, p / tot) for s, p in dist.items())
@@ -507,8 +525,7 @@ def karlin_altschul(dist=None, match=5, mismatch=-4, letter_probs=None,
     # E[S_1 e^{lambda S_1}]
     denom = lam * sum(s * dist[s] * math.exp(lam * s) for s in dist)
     if denom <= 0:
-        raise ValueError("blstn: the normalising expectation is not "
-                         "positive; check the scoring scheme")
+        raise ValueError("blstn: the normalising expectation is not positive; check the scoring scheme")
 
     # the Appendix series, over the convolutions S_k
     conv = dict(dist)
@@ -527,19 +544,24 @@ def karlin_altschul(dist=None, match=5, mismatch=-4, letter_probs=None,
             for b, pb in dist.items():
                 nxt[a + b] = nxt.get(a + b, 0.0) + pa * pb
         # drop negligible far-negative tail to keep the convolution finite
-        conv = dict((s, p) for s, p in nxt.items()
-                    if p * math.exp(lam * min(s, 0)) > 1e-300 and p > 1e-300)
+        conv = dict((s, p) for s, p in nxt.items() if p * math.exp(lam * min(s, 0)) > 1e-300 and p > 1e-300)
     c_star = math.exp(-2.0 * series) / denom
     x = lam * delta
     k_low = c_star * x / (math.exp(x) - 1.0)
     k_high = c_star * x / (1.0 - math.exp(-x))
-    k = {"upper": k_high, "lower": k_low,
-         "mid": 0.5 * (k_low + k_high)}[bound]
-    return {"lam": lam, "K": k, "K_upper": k_high, "K_lower": k_low,
-            "C": c_star, "delta": delta, "terms": len(terms),
-            "series": series,
-            "mean_score": sum(s * dist[s] for s in dist),
-            "distribution": dist}
+    k = {"upper": k_high, "lower": k_low, "mid": 0.5 * (k_low + k_high)}[bound]
+    return {
+        "lam": lam,
+        "K": k,
+        "K_upper": k_high,
+        "K_lower": k_low,
+        "C": c_star,
+        "delta": delta,
+        "terms": len(terms),
+        "series": series,
+        "mean_score": sum(s * dist[s] for s in dist),
+        "distribution": dist,
+    }
 
 
 def blast_pvalue(score, m, n, lam, K, c=1):
@@ -568,8 +590,9 @@ def blast_pvalue(score, m, n, lam, K, c=1):
     return min(max(p, 0.0), 1.0)
 
 
-def estimate_gumbel(m, n, letter_freqs, match=5, mismatch=-4, matrix=None,
-                    alphabet="ACGT", n_sim=200, seed=0, quantiles=(0.2, 0.9)):
+def estimate_gumbel(
+    m, n, letter_freqs, match=5, mismatch=-4, matrix=None, alphabet="ACGT", n_sim=200, seed=0, quantiles=(0.2, 0.9)
+):
     r"""Estimate :math:`\lambda` and :math:`K` by simulation from equation 1.
 
     Karlin & Altschul (1990) give closed forms; that paper is not in this
@@ -628,8 +651,7 @@ def estimate_gumbel(m, n, letter_freqs, match=5, mismatch=-4, matrix=None,
             xs.append(scores[r - 1])
             ys.append(math.log(-math.log(F)))
     if len(xs) < 2:
-        raise ValueError("blstn: too few distinct simulated scores to fit; "
-                         "raise n_sim")
+        raise ValueError("blstn: too few distinct simulated scores to fit; raise n_sim")
     mx = sum(xs) / len(xs)
     my = sum(ys) / len(ys)
     sxy = sum((a - mx) * (b - my) for a, b in zip(xs, ys))
@@ -640,28 +662,31 @@ def estimate_gumbel(m, n, letter_freqs, match=5, mismatch=-4, matrix=None,
     intercept = my - slope * mx
     lam = -slope
     if lam <= 0:
-        raise ValueError("blstn: the fitted lambda is not positive -- the "
-                         "expected score per pair is probably non-negative, "
-                         "which breaks the local-alignment model")
-    return {"lam": lam, "K": math.exp(intercept) / (float(m) * float(n)),
-            "scores": scores}
+        raise ValueError(
+            "blstn: the fitted lambda is not positive -- the "
+            "expected score per pair is probably non-negative, "
+            "which breaks the local-alignment model"
+        )
+    return {"lam": lam, "K": math.exp(intercept) / (float(m) * float(n)), "scores": scores}
 
 
 def cheatsheet():
-    return ("blstn: BLAST (Altschul et al. 1990). The measure is the "
-            "MAXIMAL SEGMENT PAIR -- the best-scoring equal-length "
-            "ungapped segment pair, boundaries chosen to maximise the "
-            "score. Exact by DP in O(mn) (msp_exact); the heuristic seeds "
-            "on word hits (all contiguous w-mers for DNA, or all w-mers "
-            "scoring >= T against a query word for protein) and extends "
-            "each hit until the score falls X below the best seen, so it "
-            "can MISS the true MSP -- that is the trade, not a bug. "
-            "Significance from eq.1, 1 - exp(-Kmn e^{-lambda S}), and "
-            "eq.2 for c or more distinct segment pairs. lambda and K come "
-            "from Karlin & Altschul (1990) in closed form: lambda solves "
-            "sum p_i e^{lambda s_i} = 1, and K from the Appendix series "
-            "C* with the bracket K- <= K <= K+, K+ being the conservative "
-            "choice. estimate_gumbel is the simulation alternative.")
+    return (
+        "blstn: BLAST (Altschul et al. 1990). The measure is the "
+        "MAXIMAL SEGMENT PAIR -- the best-scoring equal-length "
+        "ungapped segment pair, boundaries chosen to maximise the "
+        "score. Exact by DP in O(mn) (msp_exact); the heuristic seeds "
+        "on word hits (all contiguous w-mers for DNA, or all w-mers "
+        "scoring >= T against a query word for protein) and extends "
+        "each hit until the score falls X below the best seen, so it "
+        "can MISS the true MSP -- that is the trade, not a bug. "
+        "Significance from eq.1, 1 - exp(-Kmn e^{-lambda S}), and "
+        "eq.2 for c or more distinct segment pairs. lambda and K come "
+        "from Karlin & Altschul (1990) in closed form: lambda solves "
+        "sum p_i e^{lambda s_i} = 1, and K from the Appendix series "
+        "C* with the bracket K- <= K <= K+, K+ being the conservative "
+        "choice. estimate_gumbel is the simulation alternative."
+    )
 
 
 # compact alias per ledger/NAMING.md

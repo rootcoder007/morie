@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 2.27: the translation language modelling (TLM) loss."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km022 import kamath_ch2_mlm_loss
 
@@ -28,11 +27,15 @@ def kamath_ch2_tlm_loss(x, y, M_x, M_y):
     """
     lx = kamath_ch2_mlm_loss(x, M_x)
     ly = kamath_ch2_mlm_loss(y, M_y)
-    return RichResult(payload={
-        "estimate": lx["estimate"] + ly["estimate"],
-        "source_loss": lx["estimate"], "target_loss": ly["estimate"],
-        "n": lx["n"] + ly["n"],
-        "method": "TLM = source MLM + target MLM (Kamath Eq 2.27)"})
+    return RichResult(
+        payload={
+            "estimate": lx["estimate"] + ly["estimate"],
+            "source_loss": lx["estimate"],
+            "target_loss": ly["estimate"],
+            "n": lx["n"] + ly["n"],
+            "method": "TLM = source MLM + target MLM (Kamath Eq 2.27)",
+        }
+    )
 
 
 def cheatsheet():

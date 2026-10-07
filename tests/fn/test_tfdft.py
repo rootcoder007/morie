@@ -1,7 +1,6 @@
 """Tests for tfdft.py - TFD feature extraction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tfdft import tfdft, tfdft_fn
 
 

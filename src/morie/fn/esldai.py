@@ -110,8 +110,10 @@ def esl_dirichlet_proc(alpha=1.0, G0=None, n_atoms=50, size=None, seed=0):
         raise ValueError(f"G0 returned {atoms.size} atoms, expected {n_atoms}")
 
     payload = {
-        "weights": weights, "atoms": atoms,
-        "truncation_mass": trunc, "alpha": float(alpha),
+        "weights": weights,
+        "atoms": atoms,
+        "truncation_mass": trunc,
+        "alpha": float(alpha),
         "n_atoms": n_atoms,
         "method": "esl_dirichlet_proc",
     }
@@ -131,8 +133,7 @@ def esl_dirichlet_proc(alpha=1.0, G0=None, n_atoms=50, size=None, seed=0):
         payload["expected_clusters"] = float(alpha * np.log1p(size / alpha))
     return RichResult(
         title="Dirichlet process (stick-breaking)",
-        summary_lines=[("alpha", float(alpha)), ("atoms", n_atoms),
-                       ("truncation mass", trunc)],
+        summary_lines=[("alpha", float(alpha)), ("atoms", n_atoms), ("truncation mass", trunc)],
         warnings=warn,
         payload=payload,
     )

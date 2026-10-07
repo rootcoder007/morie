@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["sparse_autoencoder_penalty", "geron_sparse_autoencoder"]
 
 
-def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0,
-                               kind="kl"):
+def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0, kind="kl"):
     r"""Sparsity penalty on the mean activation of a coding layer.
 
     With :math:`\hat\rho_j` the mean activation of unit :math:`j` over
@@ -63,20 +62,17 @@ def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0,
     if A.ndim != 2:
         raise ValueError("activations must be 2-dimensional.")
     if np.any(A < -1e-9) or np.any(A > 1 + 1e-9):
-        raise ValueError(
-            "activations must lie in [0, 1]; apply a sigmoid first."
-        )
+        raise ValueError("activations must lie in [0, 1]; apply a sigmoid first.")
     if not 0.0 < target < 1.0:
-        raise ValueError("target must lie in (0, 1), got %r." % target)
+        raise ValueError(f"target must lie in (0, 1), got {target!r}.")
     if kind not in ("kl", "l1"):
-        raise ValueError("kind must be 'kl' or 'l1', got %r." % kind)
+        raise ValueError(f"kind must be 'kl' or 'l1', got {kind!r}.")
 
     rho_hat = A.mean(axis=0)
     eps = 1e-12
     r = np.clip(rho_hat, eps, 1 - eps)
     if kind == "kl":
-        per = (target * np.log(target / r)
-               + (1 - target) * np.log((1 - target) / (1 - r)))
+        per = target * np.log(target / r) + (1 - target) * np.log((1 - target) / (1 - r))
     else:
         per = np.abs(r - target)
     pen = float(weight * np.sum(per))
@@ -99,16 +95,13 @@ def sparse_autoencoder_penalty(activations, target=0.1, weight=1.0,
             "weight": float(weight),
             "n_units": int(A.shape[1]),
             "n": int(A.shape[0]),
-            "method": "Sparse-autoencoder %s activation penalty" % kind.upper(),
+            "method": f"Sparse-autoencoder {kind.upper()} activation penalty",
         }
     )
 
 
 def cheatsheet():
-    return (
-        "hmspae: KL (or l1) sparsity penalty on mean activation, with dead "
-        "and saturated unit counts"
-    )
+    return "hmspae: KL (or l1) sparsity penalty on mean activation, with dead and saturated unit counts"
 
 
 #: Catalogue alias for :func:`sparse_autoencoder_penalty`.

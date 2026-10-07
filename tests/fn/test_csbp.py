@@ -1,7 +1,6 @@
 """Tests for morie.fn.csbp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.csbp import csbp
 
 

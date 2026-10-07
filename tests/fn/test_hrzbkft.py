@@ -1,7 +1,6 @@
 """Tests for hrzbkft.horowitz_backfitting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzbkft import horowitz_backfitting
 
 

@@ -26,8 +26,7 @@ def _lcg_normal(n, seed):
     return out
 
 
-def geron_ncsn(X, sigmas=(1.0,), epochs=400, lr=0.5, n_noise=32, seed=0,
-               n_samples=0, langevin_steps=20, step_eps=0.05):
+def geron_ncsn(X, sigmas=(1.0,), epochs=400, lr=0.5, n_noise=32, seed=0, n_samples=0, langevin_steps=20, step_eps=0.05):
     """
     Noise Conditional Score Network (NCSN): a score-based generative model.
 

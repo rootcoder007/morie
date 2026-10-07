@@ -39,10 +39,7 @@ def euclidean_utility(ideal_point, policy_position):
     x = np.atleast_2d(np.asarray(ideal_point, dtype=float))
     p = np.atleast_2d(np.asarray(policy_position, dtype=float))
     if x.shape[1] != p.shape[1]:
-        raise ValueError(
-            f"dimension mismatch: ideal points have {x.shape[1]} coordinates, "
-            f"policies have {p.shape[1]}."
-        )
+        raise ValueError(f"dimension mismatch: ideal points have {x.shape[1]} coordinates, policies have {p.shape[1]}.")
     diff = x[:, None, :] - p[None, :, :]
     sq = (diff**2).sum(axis=2)
     scalar = np.ndim(ideal_point) <= 1 and np.ndim(policy_position) <= 1

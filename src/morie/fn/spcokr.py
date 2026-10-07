@@ -34,8 +34,7 @@ def schabenberger_cokriging(coords, z1, z2, target, cross_cov_model=None):
     Schabenberger, O. & Gotway, C. A. (2005). Statistical Methods for
     Spatial Data Analysis. Chapman & Hall/CRC. Ch. 5.
     """
-    keys = ("sill_p", "range_p", "sill_s", "range_s",
-            "cross_sill", "cross_range", "nugget")
+    keys = ("sill_p", "range_p", "sill_s", "range_s", "cross_sill", "cross_range", "nugget")
     cm = dict(cross_cov_model or {})
     kw = {k: cm[k] for k in keys if k in cm}
     return cokriging(z1, z2, coords, target, **kw)

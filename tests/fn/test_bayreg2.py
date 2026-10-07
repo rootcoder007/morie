@@ -5,9 +5,9 @@ Rewritten against student_t_regression and anchored on the property that
 makes a heavy-tailed likelihood worth having: resistance to an outlier.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bayreg2 import student_t_regression
 
 X = [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0]]

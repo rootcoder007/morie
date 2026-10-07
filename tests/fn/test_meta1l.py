@@ -14,12 +14,12 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-        math.cos(2 * math.pi * r())
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
 
 
 def _panel(n=400, seed=5, tau_slope=2.0, base=1.0):
@@ -60,12 +60,10 @@ def test_the_s_learner_misses_a_heterogeneous_effect_it_cannot_express():
     res = meta1l(y, w, X)
     truth = _truth(X)
     spread = max(res["cate_s"]) - min(res["cate_s"])
-    assert spread < 1e-6                       # a single number for all
-    err_s = max(abs(res["cate_s"][i] - truth[i])
-                for i in range(len(truth)))
-    err_t = max(abs(res["cate_t"][i] - truth[i])
-                for i in range(len(truth)))
-    assert err_s > 5.0 > err_t                 # measured: 5.9 against 0.15
+    assert spread < 1e-6  # a single number for all
+    err_s = max(abs(res["cate_s"][i] - truth[i]) for i in range(len(truth)))
+    err_t = max(abs(res["cate_t"][i] - truth[i]) for i in range(len(truth)))
+    assert err_s > 5.0 > err_t  # measured: 5.9 against 0.15
     assert max(res["cate_t"]) - min(res["cate_t"]) > 1.0
 
 
@@ -82,17 +80,14 @@ def test_the_reported_average_effect_matches_its_learner():
     res = meta1l(y, w, X)
     # "estimate" carries one average effect per learner
     assert sorted(res["estimate"]) == ["r", "s", "t", "x"]
-    assert abs(res["estimate"]["t"] -
-               sum(res["cate_t"]) / len(res["cate_t"])) < 0.5
+    assert abs(res["estimate"]["t"] - sum(res["cate_t"]) / len(res["cate_t"])) < 0.5
     assert res["n"] == len(y)
     assert res["n_treat"] == sum(w)
 
 
 def test_validation():
     y, w, X = _panel(n=60)
-    for call in (lambda: meta1l(y[:-1], w, X),
-                 lambda: meta1l(y, [2] * len(y), X),
-                 lambda: meta1l(y[:6], w[:6], X[:6])):
+    for call in (lambda: meta1l(y[:-1], w, X), lambda: meta1l(y, [2] * len(y), X), lambda: meta1l(y[:6], w[:6], X[:6])):
         try:
             call()
             raise AssertionError("expected ValueError")

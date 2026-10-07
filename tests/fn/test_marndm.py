@@ -1,7 +1,6 @@
 """Tests for marndm.ma_random_dl."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.marndm import ma_random_dl
 
 

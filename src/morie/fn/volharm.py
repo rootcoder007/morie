@@ -56,26 +56,33 @@ def vol_harmonic(sigma):
     if n < 1:
         raise ValueError("need at least one volatility.")
     if np.any(s <= 0):
-        raise ValueError("volatilities must be positive; a zero makes the "
-                         "harmonic mean zero regardless of everything else.")
+        raise ValueError(
+            "volatilities must be positive; a zero makes the harmonic mean zero regardless of everything else."
+        )
     hm = float(n / np.sum(1.0 / s))
     gm = float(np.exp(np.mean(np.log(s))))
     am = float(np.mean(s))
-    rms = float(np.sqrt(np.mean(s ** 2)))
-    return RichResult(payload={
-        "harmonic": hm, "geometric": gm, "arithmetic": am, "rms": rms,
-        "inequality_holds": bool(hm <= gm + 1e-12 and gm <= am + 1e-12),
-        "which_to_use": "arithmetic on VARIANCES (the rms here) for "
-                        "aggregating sub-period volatility into a total -- "
-                        "integrated variance is a sum (ABDL 2003); harmonic "
-                        "when the quantity enters through its reciprocal "
-                        "(precision weights, rates)",
-        "contamination_asymmetry": "the harmonic mean is dominated by the "
-                                   "SMALLEST values: robust to spuriously "
-                                   "large sigmas, worst-case for spuriously "
-                                   "small ones",
-        "n": int(n),
-        "method": "Harmonic / geometric / arithmetic / rms volatility aggregates"})
+    rms = float(np.sqrt(np.mean(s**2)))
+    return RichResult(
+        payload={
+            "harmonic": hm,
+            "geometric": gm,
+            "arithmetic": am,
+            "rms": rms,
+            "inequality_holds": bool(hm <= gm + 1e-12 and gm <= am + 1e-12),
+            "which_to_use": "arithmetic on VARIANCES (the rms here) for "
+            "aggregating sub-period volatility into a total -- "
+            "integrated variance is a sum (ABDL 2003); harmonic "
+            "when the quantity enters through its reciprocal "
+            "(precision weights, rates)",
+            "contamination_asymmetry": "the harmonic mean is dominated by the "
+            "SMALLEST values: robust to spuriously "
+            "large sigmas, worst-case for spuriously "
+            "small ones",
+            "n": int(n),
+            "method": "Harmonic / geometric / arithmetic / rms volatility aggregates",
+        }
+    )
 
 
 def cheatsheet():

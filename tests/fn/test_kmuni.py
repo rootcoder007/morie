@@ -1,11 +1,10 @@
 """Tests for kmuni.kamath_unigram_lm_tokenizer."""
 
-from morie.fn import _array_core as np
+import math
+
+import pytest
 
 from morie.fn.kmuni import kamath_unigram_lm_tokenizer
-
-import math
-import pytest
 
 
 def test_kmuni_basic():

@@ -1,7 +1,5 @@
 """Tests for spbino.schabenberger_binomial_process."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.spbino import schabenberger_binomial_process
 
 

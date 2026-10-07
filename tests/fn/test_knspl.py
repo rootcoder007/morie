@@ -1,8 +1,8 @@
 """Tests for morie.fn.knspl — Kernel non-stationary spatial prediction."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.knspl import knspl
 
 

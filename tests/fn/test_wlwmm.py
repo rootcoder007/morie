@@ -42,11 +42,10 @@ def _breslow(beta, time, event, X, occ):
         idx = [i for i, o in enumerate(occ) if o == k]
         for tk in sorted({time[i] for i in idx if event[i] == 1.0}):
             D = [i for i in idx if time[i] == tk and event[i] == 1.0]
-            R = [i for i in idx if tk <= time[i]]      # start = 0 for all
+            R = [i for i in idx if tk <= time[i]]  # start = 0 for all
             S0 = sum(w[i] for i in R)
             S1 = [sum(w[i] * X[i][j] for i in R) for j in range(p)]
-            S2 = [[sum(w[i] * X[i][j] * X[i][m] for i in R)
-                   for m in range(p)] for j in range(p)]
+            S2 = [[sum(w[i] * X[i][j] * X[i][m] for i in R) for m in range(p)] for j in range(p)]
             d = float(len(D))
             xbar = [S1[j] / S0 for j in range(p)]
             for i in D:
@@ -113,8 +112,7 @@ def test_wlwmm_basic():
         assert len([float(v) for v in per[k]]) == 2
 
     # wlwmm is the public alias
-    assert [float(v) for v in wlwmm(time, event, X, occ)["estimate"]] == (
-        pytest.approx(beta, rel=1e-9, abs=1e-12))
+    assert [float(v) for v in wlwmm(time, event, X, occ)["estimate"]] == (pytest.approx(beta, rel=1e-9, abs=1e-12))
 
 
 def test_wlwmm_is_invariant_to_shifting_and_scaling_the_covariates():
@@ -123,13 +121,11 @@ def test_wlwmm_is_invariant_to_shifting_and_scaling_the_covariates():
     base = [float(v) for v in wlw_marginal_model(time, event, X, occ)["estimate"]]
 
     shifted = [[row[0] + 10.0, row[1] - 3.0] for row in X]
-    s = [float(v) for v in
-         wlw_marginal_model(time, event, shifted, occ)["estimate"]]
+    s = [float(v) for v in wlw_marginal_model(time, event, shifted, occ)["estimate"]]
     assert s == pytest.approx(base, rel=1e-6, abs=1e-8)
 
     scaled = [[2.0 * row[0], row[1]] for row in X]
-    z = [float(v) for v in
-         wlw_marginal_model(time, event, scaled, occ)["estimate"]]
+    z = [float(v) for v in wlw_marginal_model(time, event, scaled, occ)["estimate"]]
     assert z[0] == pytest.approx(base[0] / 2.0, rel=1e-6)
     assert z[1] == pytest.approx(base[1], rel=1e-6)
 
@@ -144,8 +140,7 @@ def test_wlwmm_edge():
     ll, U, info = _breslow(b, time, event, x1, occ)
     assert U[0] == pytest.approx(0.0, abs=1e-7)
     assert res["loglik"] == pytest.approx(ll, rel=1e-9, abs=1e-9)
-    assert float(res["se"][0]) == pytest.approx(1.0 / math.sqrt(info[0][0]),
-                                                rel=1e-7)
+    assert float(res["se"][0]) == pytest.approx(1.0 / math.sqrt(info[0][0]), rel=1e-7)
 
     # a single occurrence reduces to one marginal model, and the
     # stratified summary is that same model
@@ -156,8 +151,7 @@ def test_wlwmm_edge():
     o1 = [1] * len(one)
     solo = wlw_marginal_model(t1, e1, m1, o1)
     assert set(solo["per_event_beta"]) == {1}
-    assert float(solo["per_event_beta"][1][0]) == pytest.approx(
-        float(solo["estimate"][0]), rel=1e-6, abs=1e-9)
+    assert float(solo["per_event_beta"][1][0]) == pytest.approx(float(solo["estimate"][0]), rel=1e-6, abs=1e-9)
 
     # an occurrence with no events contributes no marginal fit
     e_mixed = [0.0 if o == 2 else ev for ev, o in zip(event, occ)]
@@ -166,10 +160,10 @@ def test_wlwmm_edge():
     assert mixed["n_events"] == int(sum(e_mixed))
 
     with pytest.raises(ValueError):
-        wlw_marginal_model([0.0] + time[1:], event, x1, occ)   # stop <= start
+        wlw_marginal_model([0.0] + time[1:], event, x1, occ)  # stop <= start
     with pytest.raises(ValueError):
-        wlw_marginal_model(time, [0.5] * len(time), x1, occ)   # event not 0/1
+        wlw_marginal_model(time, [0.5] * len(time), x1, occ)  # event not 0/1
     with pytest.raises(ValueError):
-        wlw_marginal_model(time, [0.0] * len(time), x1, occ)   # no events
+        wlw_marginal_model(time, [0.0] * len(time), x1, occ)  # no events
     with pytest.raises(ValueError):
-        wlw_marginal_model(time, event, x1, occ[:-1])          # strata length
+        wlw_marginal_model(time, event, x1, occ[:-1])  # strata length

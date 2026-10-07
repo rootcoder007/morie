@@ -85,15 +85,22 @@ def cauchy_weight(y, c=2.3849):
         w.append(1.0 / d)
         psi.append(r / d)
         rho.append(0.5 * cc * cc * math.log(d))
-    return RichResult(payload={
-        "estimate": w, "weights": w, "psi": psi, "rho": rho,
-        "objective": sum(rho), "c": cc, "n": int(n),
-        "method": "Holland-Welsch (1977) Cauchy weight w(r) = 1/(1 + (r/c)^2)"})
+    return RichResult(
+        payload={
+            "estimate": w,
+            "weights": w,
+            "psi": psi,
+            "rho": rho,
+            "objective": sum(rho),
+            "c": cc,
+            "n": int(n),
+            "method": "Holland-Welsch (1977) Cauchy weight w(r) = 1/(1 + (r/c)^2)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("cauchw: downweights from r = 0 and never to zero -- redescends "
-            "without rejecting; psi peaks at r = c")
+    return "cauchw: downweights from r = 0 and never to zero -- redescends without rejecting; psi peaks at r = c"
 
 
 # compact alias per ledger/NAMING.md

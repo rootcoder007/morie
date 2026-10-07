@@ -27,18 +27,17 @@ def ca_chapter_9_equation_6(groups):
     ch.9 eq.9.6
     """
     payload = dict(_ca_crim.anova_oneway(groups))
-    value = payload['ms_within']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["ms_within"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.6)"
     return RichResult(
-        title='One-way ANOVA mean square within groups',
+        title="One-way ANOVA mean square within groups",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e6: MS_within = sum sum (y_ij - ybar_j)^2 / (N - a) [Weisburd et al. 2022, eq. 9.6]'
+    return "ca9e6: MS_within = sum sum (y_ij - ybar_j)^2 / (N - a) [Weisburd et al. 2022, eq. 9.6]"

@@ -1,7 +1,6 @@
 """Tests for stlAn.stl_anomaly."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stlAn import stl_anomaly
 
 

@@ -1,7 +1,5 @@
 """Tests for morans_i_expected.morans_i_expected."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.morans_i_expected import morans_i_expected
 
 

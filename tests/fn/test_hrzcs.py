@@ -1,7 +1,5 @@
 """Tests for hrzcs.horowitz_curse_dimensionality."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hrzcs import horowitz_curse_dimensionality
 
 

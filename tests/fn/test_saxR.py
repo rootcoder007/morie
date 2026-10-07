@@ -1,7 +1,5 @@
 """Tests for saxR.sax_representation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.saxR import sax_representation
 
 

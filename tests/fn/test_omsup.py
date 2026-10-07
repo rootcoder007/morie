@@ -1,7 +1,6 @@
 """Tests for morie.fn.omsup -- minimax optimization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.omsup import minimax_solve, omsup
 

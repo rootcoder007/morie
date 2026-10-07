@@ -55,9 +55,7 @@ def geron_confusion_matrix(y_true, y_pred, n_classes=None):
     y_true = np.asarray(y_true).ravel()
     y_pred = np.asarray(y_pred).ravel()
     if y_true.size != y_pred.size:
-        raise ValueError(
-            f"y_true and y_pred must have equal length, got {y_true.size} and {y_pred.size}."
-        )
+        raise ValueError(f"y_true and y_pred must have equal length, got {y_true.size} and {y_pred.size}.")
     if y_true.size == 0:
         raise ValueError("no observations supplied.")
     try:
@@ -73,9 +71,7 @@ def geron_confusion_matrix(y_true, y_pred, n_classes=None):
     if K < 1:
         raise ValueError(f"n_classes must be at least 1, got {K}.")
     if yt.max() >= K or yp.max() >= K:
-        raise ValueError(
-            f"labels reach {int(max(yt.max(), yp.max()))} but n_classes={K}."
-        )
+        raise ValueError(f"labels reach {int(max(yt.max(), yp.max()))} but n_classes={K}.")
 
     cm = np.zeros((K, K), dtype=int)
     np.add.at(cm, (yt, yp), 1)
@@ -93,11 +89,13 @@ def geron_confusion_matrix(y_true, y_pred, n_classes=None):
     return RichResult(
         title="Confusion matrix",
         summary_lines=[("Accuracy", acc), ("Classes", K)],
-        tables=[{
-            "title": "rows = true, columns = predicted",
-            "headers": [f"pred {j}" for j in range(K)],
-            "rows": cm.tolist(),
-        }],
+        tables=[
+            {
+                "title": "rows = true, columns = predicted",
+                "headers": [f"pred {j}" for j in range(K)],
+                "rows": cm.tolist(),
+            }
+        ],
         payload={
             "matrix": cm.tolist(),
             "accuracy": acc,

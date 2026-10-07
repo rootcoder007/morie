@@ -1,7 +1,6 @@
 """Tests for otker.ot_kernel_emd_approx."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otker import ot_kernel_emd_approx
 
 

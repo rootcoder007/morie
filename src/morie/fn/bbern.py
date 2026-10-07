@@ -68,10 +68,7 @@ def bayesian_bernoulli(
     post_mean = post_a / (post_a + post_b)
     post_var = (post_a * post_b) / ((post_a + post_b) ** 2 * (post_a + post_b + 1))
 
-    if post_a > 1 and post_b > 1:
-        post_mode = (post_a - 1) / (post_a + post_b - 2)
-    else:
-        post_mode = float("nan")
+    post_mode = (post_a - 1) / (post_a + post_b - 2) if post_a > 1 and post_b > 1 else float("nan")
 
     ci_lo = float(stats.beta.ppf((1 - prob) / 2, post_a, post_b))
     ci_hi = float(stats.beta.ppf(1 - (1 - prob) / 2, post_a, post_b))

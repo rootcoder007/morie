@@ -42,14 +42,10 @@ backpropagated; and that the model predicts a confidence score
 (estimated IoU) for each mask so they can be ranked.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["average_of_valid_masks", "iou", "min_loss_over_masks",
-           "rank_masks", "whole_part_subpart"]
+__all__ = ["average_of_valid_masks", "iou", "min_loss_over_masks", "rank_masks", "whole_part_subpart"]
 
 _EPS = 1e-12
 _NESTING = ("whole", "part", "subpart")
@@ -74,10 +70,12 @@ def average_of_valid_masks(masks):
         raise ValueError("sammkr: the masks differ in size")
     avg = [sum(f[i] for f in F) / len(F) for i in range(n)]
     frac = sum(1 for v in avg if 0.05 < v < 0.95) / float(n)
-    return {"mask": avg, "ambiguous_fraction": frac,
-            "n_averaged": len(F),
-            "note": "pixels strictly between 0 and 1 belong to no "
-                    "single valid interpretation"}
+    return {
+        "mask": avg,
+        "ambiguous_fraction": frac,
+        "n_averaged": len(F),
+        "note": "pixels strictly between 0 and 1 belong to no single valid interpretation",
+    }
 
 
 def iou(a, b, threshold=0.5):
@@ -103,30 +101,33 @@ def min_loss_over_masks(predictions, target, loss_fn):
     losses = [float(loss_fn(p, target)) for p in predictions]
     j = min(range(len(losses)), key=lambda i: losses[i])
     mean = sum(losses) / len(losses)
-    return {"loss": losses[j], "index": j, "losses": losses,
-            "mean_loss": mean, "gap": mean - losses[j],
-            "note": "only output %d receives gradient; the others "
-                    "are free to specialise elsewhere" % j}
+    return {
+        "loss": losses[j],
+        "index": j,
+        "losses": losses,
+        "mean_loss": mean,
+        "gap": mean - losses[j],
+        "note": f"only output {int(j)} receives gradient; the others are free to specialise elsewhere",
+    }
 
 
 def whole_part_subpart(masks, target_hierarchy=None):
     r"""Name the three outputs by the nesting they were meant for."""
     if len(masks) != 3:
-        raise ValueError("sammkr: the paper's argument is about "
-                         "THREE outputs (whole, part, subpart), got "
-                         "%d" % len(masks))
+        raise ValueError(
+            f"sammkr: the paper's argument is about THREE outputs (whole, part, subpart), got {int(len(masks))}"
+        )
     sizes = [sum(1 for v in _flat(m) if v > 0.5) for m in masks]
     order = sorted(range(3), key=lambda i: -sizes[i])
     named = {}
     for rank, i in enumerate(order):
         named[_NESTING[rank]] = i
     nested = all(
-        set(i for i, v in enumerate(_flat(masks[order[r + 1]]))
-            if v > 0.5)
-        <= set(i for i, v in enumerate(_flat(masks[order[r]]))
-               if v > 0.5) for r in range(2))
-    return {"assignment": named, "sizes": sizes, "nested": nested,
-            "note": "nested masks are often at most three deep"}
+        set(i for i, v in enumerate(_flat(masks[order[r + 1]])) if v > 0.5)
+        <= set(i for i, v in enumerate(_flat(masks[order[r]])) if v > 0.5)
+        for r in range(2)
+    )
+    return {"assignment": named, "sizes": sizes, "nested": nested, "note": "nested masks are often at most three deep"}
 
 
 def rank_masks(masks, predicted_iou, target=None):
@@ -138,39 +139,44 @@ def rank_masks(masks, predicted_iou, target=None):
     """
     p = [float(v) for v in k.vec(predicted_iou)]
     if len(p) != len(masks):
-        raise ValueError("sammkr: %d masks but %d predicted IoUs"
-                         % (len(masks), len(p)))
+        raise ValueError(f"sammkr: {int(len(masks))} masks but {int(len(p))} predicted IoUs")
     order = sorted(range(len(p)), key=lambda i: -p[i])
     out = {"order": order, "best": order[0], "predicted_iou": p}
     if target is not None:
         true = [iou(m, target) for m in masks]
         best_true = max(range(len(true)), key=lambda i: true[i])
-        out.update({
-            "true_iou": true, "best_true": best_true,
-            "correct": order[0] == best_true,
-            "calibration_error": sum(abs(p[i] - true[i])
-                                     for i in range(len(p))) / len(p),
-            "regret": true[best_true] - true[order[0]],
-        })
-    return RichResult(payload=dict(
-        out, estimate=order[0],
-        method="multi-mask output with IoU ranking; Kirillov et al. "
-               "(2023)",
-        note="the score is a LEARNED estimate, so its error is "
-             "reported rather than assumed away"))
+        out.update(
+            {
+                "true_iou": true,
+                "best_true": best_true,
+                "correct": order[0] == best_true,
+                "calibration_error": sum(abs(p[i] - true[i]) for i in range(len(p))) / len(p),
+                "regret": true[best_true] - true[order[0]],
+            }
+        )
+    return RichResult(
+        payload=dict(
+            out,
+            estimate=order[0],
+            method="multi-mask output with IoU ranking; Kirillov et al. (2023)",
+            note="the score is a LEARNED estimate, so its error is reported rather than assumed away",
+        )
+    )
 
 
 def cheatsheet():
-    return ("sammkr: one output forces the model to AVERAGE the valid "
-            "masks of an ambiguous prompt -- a blur that answers "
-            "nobody. So predict THREE, because segmentation nesting is "
-            "usually at most three deep: whole, part, subpart. During "
-            "training backprop only the MINIMUM loss, which is what "
-            "makes the three specialise instead of collapsing into one "
-            "(the mean would collapse them). At inference there is no "
-            "ground truth, so the model predicts its own IoU per mask "
-            "to rank them -- a learned estimate, so report its "
-            "calibration error.")
+    return (
+        "sammkr: one output forces the model to AVERAGE the valid "
+        "masks of an ambiguous prompt -- a blur that answers "
+        "nobody. So predict THREE, because segmentation nesting is "
+        "usually at most three deep: whole, part, subpart. During "
+        "training backprop only the MINIMUM loss, which is what "
+        "makes the three specialise instead of collapsing into one "
+        "(the mean would collapse them). At inference there is no "
+        "ground truth, so the model predicts its own IoU per mask "
+        "to rank them -- a learned estimate, so report its "
+        "calibration error."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -66,14 +66,13 @@ def wasserman_kmeans(X, k, max_iter=300):
     first = int(np.argmin(np.sum((X - grand) ** 2, axis=1)))
     centre_idx = [first]
     for _ in range(1, k):
-        dmin = np.min(
-            [np.sum((X - X[i]) ** 2, axis=1) for i in centre_idx], axis=0)
+        dmin = np.min([np.sum((X - X[i]) ** 2, axis=1) for i in centre_idx], axis=0)
         centre_idx.append(int(np.argmax(dmin)))
     C = X[centre_idx].copy()
     labels = np.full(n, -1)
     converged = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         dist = np.sum((X[:, None, :] - C[None, :, :]) ** 2, axis=2)
         new = np.argmin(dist, axis=1)
         if np.array_equal(new, labels):
@@ -85,11 +84,19 @@ def wasserman_kmeans(X, k, max_iter=300):
             if members.size:
                 C[j] = np.mean(members, axis=0)
     wcss = float(np.sum((X - C[labels]) ** 2))
-    return RichResult(payload={
-        "estimate": wcss, "centers": [float(v) for v in C.ravel()],
-        "labels": [int(v) for v in labels], "iterations": int(it),
-        "converged": bool(converged), "n": int(n), "d": int(d), "k": k,
-        "method": "Lloyd k-means, farthest-first deterministic seeding"})
+    return RichResult(
+        payload={
+            "estimate": wcss,
+            "centers": [float(v) for v in C.ravel()],
+            "labels": [int(v) for v in labels],
+            "iterations": int(it),
+            "converged": bool(converged),
+            "n": int(n),
+            "d": int(d),
+            "k": k,
+            "method": "Lloyd k-means, farthest-first deterministic seeding",
+        }
+    )
 
 
 def cheatsheet():

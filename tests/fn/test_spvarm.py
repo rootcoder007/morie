@@ -1,7 +1,5 @@
 """Tests for spvarm.spherical_variogram_model."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.spvarm import spherical_variogram_model
 
 

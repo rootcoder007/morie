@@ -30,7 +30,7 @@ test_that("every wrapper forwards its arguments to the hub dispatcher", {
   # local_mocked_bindings() cannot rebind the covr-instrumented namespace
   testthat::skip_on_covr()
   seen <- NULL
-  local_mocked_bindings(.package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie", 
+  local_mocked_bindings(.package = if (isNamespaceLoaded("morie")) "morie" else "morie", 
     morie_datasets_tps_arcgis_hub_by_id = function(hub_id, format = "json",
                                                    where = "1=1",
                                                    max_features = NULL,
@@ -88,7 +88,7 @@ test_that("each hub_id is the catalog entry whose title slugifies to the name", 
     gsub("_+", "_", gsub("^_+|_+$", "", s))
   }
   seen <- NULL
-  local_mocked_bindings(.package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie", 
+  local_mocked_bindings(.package = if (isNamespaceLoaded("morie")) "morie" else "morie", 
     morie_datasets_tps_arcgis_hub_by_id = function(hub_id, ...) {
       seen <<- hub_id
       NULL

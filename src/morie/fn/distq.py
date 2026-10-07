@@ -67,13 +67,18 @@ the iteration in :func:`value_distribution_iteration` converges.
 
 import math
 
-from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["atoms", "categorical_projection", "categorical_loss",
-           "greedy_action", "c51_update", "bernoulli_algorithm",
-           "value_distribution_iteration", "distribution_mean"]
+__all__ = [
+    "atoms",
+    "categorical_projection",
+    "categorical_loss",
+    "greedy_action",
+    "c51_update",
+    "bernoulli_algorithm",
+    "value_distribution_iteration",
+    "distribution_mean",
+]
 
 _EPS = 1e-12
 
@@ -82,11 +87,10 @@ def atoms(v_min, v_max, n_atoms):
     """The fixed support {z_i} and its spacing."""
     n = int(n_atoms)
     if n < 2:
-        raise ValueError("distq: need at least 2 atoms, got %d" % n)
+        raise ValueError(f"distq: need at least 2 atoms, got {int(n)}")
     lo, hi = float(v_min), float(v_max)
     if not hi > lo:
-        raise ValueError("distq: need v_max > v_min, got %r and %r"
-                         % (v_min, v_max))
+        raise ValueError(f"distq: need v_max > v_min, got {v_min!r} and {v_max!r}")
     dz = (hi - lo) / (n - 1)
     return [lo + i * dz for i in range(n)], dz
 
@@ -94,13 +98,11 @@ def atoms(v_min, v_max, n_atoms):
 def distribution_mean(probs, z):
     """E[Z] = sum_i z_i p_i."""
     if len(probs) != len(z):
-        raise ValueError("distq: %d probabilities for %d atoms"
-                         % (len(probs), len(z)))
+        raise ValueError(f"distq: {int(len(probs))} probabilities for {int(len(z))} atoms")
     return sum(z[i] * probs[i] for i in range(len(z)))
 
 
-def categorical_projection(reward, gamma, next_probs, v_min, v_max,
-                           n_atoms=None, done=False):
+def categorical_projection(reward, gamma, next_probs, v_min, v_max, n_atoms=None, done=False):
     r"""Eq. (7) / Algorithm 1: project r + gamma*z onto {z_i}.
 
     Parameters
@@ -125,17 +127,15 @@ def categorical_projection(reward, gamma, next_probs, v_min, v_max,
     p = [float(v) for v in next_probs]
     n = len(p) if n_atoms is None else int(n_atoms)
     if len(p) != n:
-        raise ValueError("distq: %d next probabilities for %d atoms"
-                         % (len(p), n))
+        raise ValueError(f"distq: {int(len(p))} next probabilities for {int(n)} atoms")
     if any(v < -1e-9 for v in p):
         raise ValueError("distq: next_probs has a negative entry")
     tot = sum(p)
     if abs(tot - 1.0) > 1e-6:
-        raise ValueError("distq: next_probs sums to %.9f, not 1" % tot)
+        raise ValueError(f"distq: next_probs sums to {tot:.9f}, not 1")
     g = 0.0 if done else float(gamma)
     if not 0.0 <= g <= 1.0:
-        raise ValueError("distq: gamma must be in [0, 1], got %r"
-                         % (gamma,))
+        raise ValueError(f"distq: gamma must be in [0, 1], got {gamma!r}")
     z, dz = atoms(v_min, v_max, n)
     m = [0.0] * n
     for j in range(n):
@@ -160,8 +160,7 @@ def categorical_projection(reward, gamma, next_probs, v_min, v_max,
 def categorical_loss(m, probs, eps=1e-12):
     """The cross-entropy term of D_KL(Phi T_hat Z || Z): -sum m log p."""
     if len(m) != len(probs):
-        raise ValueError("distq: %d targets for %d probabilities"
-                         % (len(m), len(probs)))
+        raise ValueError(f"distq: {int(len(m))} targets for {int(len(probs))} probabilities")
     tot = 0.0
     for i in range(len(m)):
         tot -= m[i] * math.log(max(float(probs[i]), eps))
@@ -172,14 +171,12 @@ def greedy_action(next_probs_by_action, z):
     """a* = argmax_a sum_i z_i p_i(x', a), the first line of Algorithm 1."""
     if not next_probs_by_action:
         raise ValueError("distq: no actions given")
-    qs = [distribution_mean([float(v) for v in row], z)
-          for row in next_probs_by_action]
+    qs = [distribution_mean([float(v) for v in row], z) for row in next_probs_by_action]
     best = max(range(len(qs)), key=lambda a: qs[a])
     return best, qs
 
 
-def c51_update(reward, gamma, next_probs_by_action, current_probs,
-               v_min, v_max, done=False):
+def c51_update(reward, gamma, next_probs_by_action, current_probs, v_min, v_max, done=False):
     r"""Algorithm 1 end to end: greedy action, projection, loss.
 
     Returns the projected target ``m``, the cross-entropy loss, the
@@ -189,23 +186,25 @@ def c51_update(reward, gamma, next_probs_by_action, current_probs,
     n = len(cur)
     z, _ = atoms(v_min, v_max, n)
     a_star, qs = greedy_action(next_probs_by_action, z)
-    m = categorical_projection(reward, gamma,
-                               next_probs_by_action[a_star], v_min,
-                               v_max, n_atoms=n, done=done)
+    m = categorical_projection(reward, gamma, next_probs_by_action[a_star], v_min, v_max, n_atoms=n, done=done)
     loss = categorical_loss(m, cur)
-    return RichResult(payload={
-        "estimate": loss, "loss": loss, "target": m,
-        "action": a_star, "q_values": qs,
-        "q_target": distribution_mean(m, z),
-        "q_current": distribution_mean(cur, z),
-        "atoms": z, "n_atoms": n,
-        "method": "categorical algorithm (C51), Bellemare, Dabney & "
-                  "Munos (2017) Algorithm 1",
-    })
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "loss": loss,
+            "target": m,
+            "action": a_star,
+            "q_values": qs,
+            "q_target": distribution_mean(m, z),
+            "q_current": distribution_mean(cur, z),
+            "atoms": z,
+            "n_atoms": n,
+            "method": "categorical algorithm (C51), Bellemare, Dabney & Munos (2017) Algorithm 1",
+        }
+    )
 
 
-def bernoulli_algorithm(reward, gamma, next_probs, v_min, v_max,
-                        done=False):
+def bernoulli_algorithm(reward, gamma, next_probs, v_min, v_max, done=False):
     r"""The one-parameter N = 2 alternative the paper names.
 
     :math:`\Phi\hat{\mathcal{T}}Z := [(E[\hat{\mathcal{T}}Z] -
@@ -216,15 +215,12 @@ def bernoulli_algorithm(reward, gamma, next_probs, v_min, v_max,
     z, dz = atoms(v_min, v_max, len(p))
     g = 0.0 if done else float(gamma)
     if not 0.0 <= g <= 1.0:
-        raise ValueError("distq: gamma must be in [0, 1], got %r"
-                         % (gamma,))
+        raise ValueError(f"distq: gamma must be in [0, 1], got {gamma!r}")
     ex = float(reward) + g * distribution_mean(p, z)
     return min(max((ex - v_min) / dz, 0.0), 1.0)
 
 
-def value_distribution_iteration(reward_atoms, reward_probs, gamma,
-                                 v_min, v_max, n_atoms, iters=400,
-                                 tol=1e-13):
+def value_distribution_iteration(reward_atoms, reward_probs, gamma, v_min, v_max, n_atoms, iters=400, tol=1e-13):
     r"""Iterate the projected operator on a single self-looping state.
 
     The return is :math:`Z = R + \gamma Z'` with R drawn afresh each
@@ -235,38 +231,35 @@ def value_distribution_iteration(reward_atoms, reward_probs, gamma,
     ra = [float(v) for v in reward_atoms]
     rp = [float(v) for v in reward_probs]
     if len(ra) != len(rp):
-        raise ValueError("distq: %d reward atoms but %d probabilities"
-                         % (len(ra), len(rp)))
+        raise ValueError(f"distq: {int(len(ra))} reward atoms but {int(len(rp))} probabilities")
     if abs(sum(rp) - 1.0) > 1e-9:
-        raise ValueError("distq: reward_probs sums to %.9f, not 1"
-                         % sum(rp))
+        raise ValueError(f"distq: reward_probs sums to {sum(rp):.9f}, not 1")
     z, _ = atoms(v_min, v_max, n_atoms)
     n = len(z)
     cur = [1.0 / n] * n
     for step in range(int(iters)):
         nxt = [0.0] * n
         for t in range(len(ra)):
-            proj = categorical_projection(ra[t], gamma, cur, v_min,
-                                          v_max, n_atoms=n)
+            proj = categorical_projection(ra[t], gamma, cur, v_min, v_max, n_atoms=n)
             for i in range(n):
                 nxt[i] += rp[t] * proj[i]
         shift = max(abs(nxt[i] - cur[i]) for i in range(n))
         cur = nxt
         if shift < tol:
-            return cur, {"iterations": step + 1, "converged": True,
-                         "shift": shift}
-    return cur, {"iterations": int(iters), "converged": False,
-                 "shift": shift}
+            return cur, {"iterations": step + 1, "converged": True, "shift": shift}
+    return cur, {"iterations": int(iters), "converged": False, "shift": shift}
 
 
 def cheatsheet():
-    return ("distq: C51. Atoms z_i on [v_min, v_max]; project "
-            "T_hat z_j = clip(r + gamma z_j) onto the grid, splitting "
-            "p_j between the two neighbours by (u-b) and (b-l); loss is "
-            "the cross-entropy -sum m_i log p_i (Bellemare-Dabney-Munos "
-            "2017 Alg. 1). When b lands EXACTLY on an atom, l == u and "
-            "both split factors are zero -- add the full mass or it "
-            "vanishes.")
+    return (
+        "distq: C51. Atoms z_i on [v_min, v_max]; project "
+        "T_hat z_j = clip(r + gamma z_j) onto the grid, splitting "
+        "p_j between the two neighbours by (u-b) and (b-l); loss is "
+        "the cross-entropy -sum m_i log p_i (Bellemare-Dabney-Munos "
+        "2017 Alg. 1). When b lands EXACTLY on an atom, l == u and "
+        "both split factors are zero -- add the full mass or it "
+        "vanishes."
+    )
 
 
 # compact alias per ledger/NAMING.md

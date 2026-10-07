@@ -1,7 +1,6 @@
 """Tests for joses.joseph_simple_exponential_smoothing."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.joses import joseph_simple_exponential_smoothing
 
 

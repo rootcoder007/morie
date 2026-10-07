@@ -1,7 +1,6 @@
 """Tests for funkM.funk_svd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.funkM import funk_svd
 
 
@@ -11,9 +10,7 @@ def test_funkM_basic():
     nu, ni = 5, 5
     n_ratings = 10
     ratings = [
-        (int(rng.integers(0, nu)), int(rng.integers(0, ni)),
-         float(rng.uniform(1.0, 5.0)))
-        for _ in range(n_ratings)
+        (int(rng.integers(0, nu)), int(rng.integers(0, ni)), float(rng.uniform(1.0, 5.0))) for _ in range(n_ratings)
     ]
     result = funk_svd(ratings, nu, ni, factors=2, epochs=2)
     assert isinstance(result, dict)
@@ -42,9 +39,7 @@ def test_funkM_edge():
     nu, ni = 3, 4
     n_ratings = 8
     ratings = [
-        (int(rng.integers(0, nu)), int(rng.integers(0, ni)),
-         float(rng.uniform(1.0, 5.0)))
-        for _ in range(n_ratings)
+        (int(rng.integers(0, nu)), int(rng.integers(0, ni)), float(rng.uniform(1.0, 5.0))) for _ in range(n_ratings)
     ]
     result = funk_svd(ratings, nu, ni, factors=2, epochs=1)
     assert isinstance(result, dict)

@@ -1,7 +1,6 @@
 """Tests for cvxlnf.boyd_l1_fitting."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxlnf import boyd_l1_fitting
 
 

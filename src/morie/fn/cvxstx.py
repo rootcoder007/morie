@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_strict_convex"]
 
 
-def boyd_strict_convex(f, lower=-1.0, upper=1.0, n_dim=1, n_pairs=400,
-                       tol=1e-09, seed=0):
+def boyd_strict_convex(f, lower=-1.0, upper=1.0, n_dim=1, n_pairs=400, tol=1e-09, seed=0):
     r"""Probe whether :math:`f` is convex, STRICTLY convex, or neither.
 
     Convexity is :math:`f((1-t)x + ty) \le (1-t)f(x) + tf(y)`; strict
@@ -185,25 +184,30 @@ def boyd_strict_convex(f, lower=-1.0, upper=1.0, n_dim=1, n_pairs=400,
         # Strong convexity with modulus m gives
         # deficit >= (m/2) t (1-t) |x-y|^2; the midpoint case t = 1/2
         # is the familiar m/8 form.
-        mod = float(np.min(2.0 * deficit[keep]
-                           / (T[keep] * (1.0 - T[keep]) * d2[keep])))
+        mod = float(np.min(2.0 * deficit[keep] / (T[keep] * (1.0 - T[keep]) * d2[keep])))
         mod = max(mod, 0.0)
     else:
         min_def, mod = 0.0, 0.0
     strict = bool(convex and min_def > tol)
     return RichResult(
         title="Convexity probe",
-        summary_lines=[("dimension", n_dim), ("chords", n_pairs),
-                       ("convex", convex), ("strict", strict),
-                       ("modulus", mod)],
+        summary_lines=[
+            ("dimension", n_dim),
+            ("chords", n_pairs),
+            ("convex", convex),
+            ("strict", strict),
+            ("modulus", mod),
+        ],
         payload={
-            "convex": convex, "strictly_convex": strict,
+            "convex": convex,
+            "strictly_convex": strict,
             "strongly_convex": bool(strict and mod > 1e-06),
             "modulus": mod,
             "worst_violation": max(violation, 0.0),
             "min_deficit": min_def,
             "unique_minimiser": strict,
-            "n_pairs": n_pairs, "method": "boyd_strict_convex",
+            "n_pairs": n_pairs,
+            "method": "boyd_strict_convex",
         },
     )
 

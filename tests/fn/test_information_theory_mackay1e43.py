@@ -14,7 +14,7 @@ from morie.fn.information_theory_mackay1e43 import repcpb
 def test_repcpb_leading_term_and_approximation():
     n, f = 61, 0.1
     k = (n + 1) // 2
-    leading = math.comb(n, k) * f ** k * (1.0 - f) ** (n - k)
+    leading = math.comb(n, k) * f**k * (1.0 - f) ** (n - k)
     # (1.43): p_b approximately (pi N / 8)^(-1/2) f (4 f (1-f))^((N-1)/2)
     approx2 = (1.0 / math.sqrt(math.pi * n / 8.0)) * f * (4.0 * f * (1.0 - f)) ** ((n - 1) / 2.0)
     res = repcpb(n, f)

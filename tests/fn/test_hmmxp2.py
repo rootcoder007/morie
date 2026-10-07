@@ -1,7 +1,6 @@
 """Tests for hmmxp2.geron_mixed_precision."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmxp2 import geron_mixed_precision
 
 

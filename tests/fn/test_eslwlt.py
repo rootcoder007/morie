@@ -1,7 +1,6 @@
 """Tests for eslwlt.esl_wavelet_smooth."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslwlt import esl_wavelet_smooth
 
 
@@ -11,6 +10,8 @@ def test_eslwlt_basic():
     result = esl_wavelet_smooth(y)
     assert isinstance(result, dict)
     assert "signal" in result
+
+
 def test_eslwlt_edge():
     """Test edge cases."""
     y = np.random.default_rng(43).normal(0, 1, 100)

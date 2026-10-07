@@ -1,7 +1,6 @@
 """Tests for madAd.mad_anomaly_score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.madAd import mad_anomaly_score
 
 

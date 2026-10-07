@@ -221,11 +221,14 @@ def test_load_dataset_ocp21_pages_through_ckan_and_caches(tmp_path, monkeypatch)
     calls = []
 
     class Reply:
+        # a file-like body, as urlopen's response: read(n) gives at most n bytes, then b""
         def __init__(self, body):
-            self._body = body
+            import io
 
-        def read(self):
-            return json.dumps(self._body).encode()
+            self._buf = io.BytesIO(json.dumps(body).encode())
+
+        def read(self, n=-1):
+            return self._buf.read(n)
 
     def fake_urlopen(url, timeout=30):
         calls.append(url)

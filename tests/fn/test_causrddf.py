@@ -1,7 +1,6 @@
 """Tests for causrddf.causal_rdd_fuzzy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.causrddf import causal_rdd_fuzzy
 
 
@@ -20,7 +19,7 @@ def test_causrddf_basic():
     # Outcome: smooth in x with a positive jump at the cutoff.
     y = 0.5 * x + 1.0 + (x >= 0.0) * 1.0 + rng.normal(0, 0.2, n)
     # Treatment: near-deterministic step function (fuzzy = not perfectly sharp).
-    treat = ((x >= 0.0).astype(float) + rng.normal(0, 0.05, n))
+    treat = (x >= 0.0).astype(float) + rng.normal(0, 0.05, n)
     treat = np.clip(treat, 0.0, 1.0)
 
     cutoff = 0.0
@@ -28,10 +27,17 @@ def test_causrddf_basic():
     result = causal_rdd_fuzzy(x, y, treat, cutoff, h)
     assert isinstance(result, dict)
     # Documented keys in the RichResult payload.
-    for key in ("estimate", "se", "ci",
-                "jump_outcome", "jump_treatment",
-                "se_outcome", "se_treatment",
-                "h_outcome", "h_treatment"):
+    for key in (
+        "estimate",
+        "se",
+        "ci",
+        "jump_outcome",
+        "jump_treatment",
+        "se_outcome",
+        "se_treatment",
+        "h_outcome",
+        "h_treatment",
+    ):
         assert key in result, f"missing key {key!r} in result"
 
     # Point estimate is the documented ratio of the two jumps.
@@ -42,9 +48,7 @@ def test_causrddf_basic():
     # se^2 = (se_outcome^2 + tau^2 * se_treatment^2) / jump_treatment^2.
     tau = result["estimate"]
     expected_se = np.sqrt(
-        (result["se_outcome"] ** 2
-         + tau ** 2 * result["se_treatment"] ** 2)
-        / result["jump_treatment"] ** 2
+        (result["se_outcome"] ** 2 + tau**2 * result["se_treatment"] ** 2) / result["jump_treatment"] ** 2
     )
     assert result["se"] == expected_se
 
@@ -62,7 +66,8 @@ def test_causrddf_edge():
     y = 0.5 * x + 1.0 + (x >= 0.0) * 1.0 + rng.normal(0, 0.2, n)
     treat = np.clip(
         (x >= 0.0).astype(float) + rng.normal(0, 0.05, n),
-        0.0, 1.0,
+        0.0,
+        1.0,
     )
     cutoff = 0.0
     h = 2.0

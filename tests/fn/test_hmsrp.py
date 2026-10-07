@@ -1,7 +1,6 @@
 """Tests for hmsrp.geron_sparse_rand_projection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsrp import geron_sparse_rand_projection
 
 

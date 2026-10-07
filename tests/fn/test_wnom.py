@@ -1,7 +1,6 @@
 """Tests for morie.fn.wnom — W-NOMINATE scaling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wnom import wnom
 
 

@@ -24,20 +24,11 @@ def wvasym(weights_a, weights_b=None, quotas=None):
     DescriptiveResult
     """
     weights_a = np.asarray(weights_a, dtype=float)
-    if weights_b is None:
-        weights_b = np.ones_like(weights_a)
-    else:
-        weights_b = np.asarray(weights_b, dtype=float)
-    if quotas is None:
-        quotas = np.ones_like(weights_a)
-    else:
-        quotas = np.asarray(quotas, dtype=float)
+    weights_b = np.ones_like(weights_a) if weights_b is None else np.asarray(weights_b, dtype=float)
+    quotas = np.ones_like(weights_a) if quotas is None else np.asarray(quotas, dtype=float)
     combined = weights_a * weights_b
     total = float(np.sum(combined))
-    if total > 0:
-        stat = float(np.sum(combined * quotas) / total)
-    else:
-        stat = 0.0
+    stat = float(np.sum(combined * quotas) / total) if total > 0 else 0.0
     return DescriptiveResult(
         name="wvasym",
         value=stat,

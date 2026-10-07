@@ -82,7 +82,11 @@ def geron_cross_attention(dec_h, enc_h, W_Q, W_K, W_V, mask=None):
 
     return RichResult(
         title="Cross-attention",
-        summary_lines=[("Decoder length", int(A.shape[0])), ("Encoder length", int(A.shape[1])), ("d_k", int(base["d_k"]))],
+        summary_lines=[
+            ("Decoder length", int(A.shape[0])),
+            ("Encoder length", int(A.shape[1])),
+            ("d_k", int(base["d_k"])),
+        ],
         interpretation="Queries come from the decoder, keys and values from the encoder, so no causal mask is needed.",
         payload={
             "context": out.tolist(),

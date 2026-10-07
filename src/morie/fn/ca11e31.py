@@ -28,17 +28,16 @@ def ca_chapter_11_equation_31(d):
     """
     value = _ca_crim.r_from_d(d)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.31)"
     return RichResult(
-        title='Point-biserial r from d (equal n): d/sqrt(d^2+4)',
+        title="Point-biserial r from d (equal n): d/sqrt(d^2+4)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e31: r = d / sqrt(d^2 + 4) [Weisburd et al. 2022, eq. 11.31]'
+    return "ca11e31: r = d / sqrt(d^2 + 4) [Weisburd et al. 2022, eq. 11.31]"

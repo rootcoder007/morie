@@ -36,8 +36,8 @@ def _rows(X):
     """Accept a single composition or a matrix of them; always return rows."""
     try:
         first = X[0]
-    except (TypeError, IndexError, KeyError):
-        raise ValueError("compositional_zero_multreplace: X is empty")
+    except (TypeError, IndexError, KeyError) as exc:
+        raise ValueError("compositional_zero_multreplace: X is empty") from exc
     if hasattr(first, "__len__") and not isinstance(first, (str, bytes)):
         out = [[float(v) for v in r] for r in X]
         if not out:

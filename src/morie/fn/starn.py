@@ -50,7 +50,6 @@ def starn(
         lagged = (Wk @ data[:-1].T).T
         X_parts.append(lagged.reshape(-1, 1) if lagged.ndim == 1 else lagged.reshape(-1, 1))
 
-
     X = np.hstack(X_parts)
     coeffs, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
     fitted = X @ coeffs
@@ -61,8 +60,7 @@ def starn(
     rss = float(np.sum(residuals**2))
     sigma2 = rss / max(n_obs - k_params, 1)
     # Gaussian AIC uses the ML variance rss / n, not the unbiased one
-    aic = (n_obs * float(np.log(rss / n_obs)) + 2 * k_params
-           if rss > 0 else float("-inf"))
+    aic = n_obs * float(np.log(rss / n_obs)) + 2 * k_params if rss > 0 else float("-inf")
 
     return {
         "coefficients": coeffs,

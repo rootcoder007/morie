@@ -685,7 +685,6 @@ def _qmd_to_ipynb_content(qmd_text: str, *, title: str = "") -> dict[str, Any]:
     cells: list[dict[str, Any]] = []
     lines = qmd_text.splitlines()
     current_chunk: list[str] = []
-    current_type = "markdown"
     in_code = False
     in_yaml = False
 
@@ -708,7 +707,7 @@ def _qmd_to_ipynb_content(qmd_text: str, *, title: str = "") -> dict[str, Any]:
                     {
                         "cell_type": "markdown",
                         "metadata": {},
-                        "source": [l + "\n" for l in current_chunk],
+                        "source": [line + "\n" for line in current_chunk],
                     }
                 )
                 current_chunk = []
@@ -720,7 +719,7 @@ def _qmd_to_ipynb_content(qmd_text: str, *, title: str = "") -> dict[str, Any]:
                 {
                     "cell_type": "code",
                     "metadata": {},
-                    "source": [l + "\n" for l in current_chunk],
+                    "source": [line + "\n" for line in current_chunk],
                     "outputs": [],
                     "execution_count": None,
                 }
@@ -737,7 +736,7 @@ def _qmd_to_ipynb_content(qmd_text: str, *, title: str = "") -> dict[str, Any]:
         cell: dict[str, Any] = {
             "cell_type": cell_type,
             "metadata": {},
-            "source": [l + "\n" for l in current_chunk],
+            "source": [line + "\n" for line in current_chunk],
         }
         if cell_type == "code":
             cell["outputs"] = []
@@ -1787,7 +1786,6 @@ def diff_notebooks(
     meta_b = get_metadata(path_b)
 
     # Simple cell-level diff
-    max_len = max(len(cells_a), len(cells_b))
     modified = 0
     for i in range(min(len(cells_a), len(cells_b))):
         if cells_a[i].strip() != cells_b[i].strip():

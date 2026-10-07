@@ -1,7 +1,6 @@
 """Tests for irtmp -- MAP theta estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.irtmp import irt_map_theta
 

@@ -70,19 +70,20 @@ def kosorok_ch2_weak_convergence_iff(X_n, X=None, T=None, eps=0.1):
         pooled_sd = float(np.sqrt(0.5 * (A.var() + B.var())))
         z = 4.0  # multiplicity allowance over the k grid points
         mtol = z * pooled_sd * np.sqrt(1.0 / na + 1.0 / nb) * np.sqrt(np.log(max(k, 2)))
-        vtol = z * pooled_sd**2 * np.sqrt(2.0 / na + 2.0 / nb) * np.sqrt(
-            np.log(max(k, 2))
-        )
+        vtol = z * pooled_sd**2 * np.sqrt(2.0 / na + 2.0 / nb) * np.sqrt(np.log(max(k, 2)))
         fidi = bool(mgap < mtol and vgap < vtol)
     return RichResult(
-        payload={"fidi_converged": fidi,
-                 "asymptotically_tight": tight["decreasing"],
-                 "weak_convergence": None if fidi is None else bool(
-                     fidi and tight["decreasing"]),
-                 "mean_gap": mgap, "var_gap": vgap,
-                 "mean_tol": mtol, "var_tol": vtol,
-                 "tightness_probabilities": tight["probabilities"],
-                 "method": "fidi convergence AND tightness, reported separately"}
+        payload={
+            "fidi_converged": fidi,
+            "asymptotically_tight": tight["decreasing"],
+            "weak_convergence": None if fidi is None else bool(fidi and tight["decreasing"]),
+            "mean_gap": mgap,
+            "var_gap": vgap,
+            "mean_tol": mtol,
+            "var_tol": vtol,
+            "tightness_probabilities": tight["probabilities"],
+            "method": "fidi convergence AND tightness, reported separately",
+        }
     )
 
 

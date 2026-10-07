@@ -1,7 +1,6 @@
 """Tests for rgs.functional_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rgs import functional_regression
 
 

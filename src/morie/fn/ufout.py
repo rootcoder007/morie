@@ -29,10 +29,7 @@ def unfolding_outliers(residuals, threshold=2.0):
         return DescriptiveResult(name="unfolding_outliers", value=[], extra={"n_outliers": 0, "threshold": threshold})
 
     z = np.abs((R - mu) / sd)
-    if R.ndim == 2:
-        outliers = list(zip(*np.where(z > threshold)))
-    else:
-        outliers = list(np.where(z > threshold)[0])
+    outliers = list(zip(*np.where(z > threshold))) if R.ndim == 2 else list(np.where(z > threshold)[0])
     return DescriptiveResult(
         name="unfolding_outliers",
         value=outliers,

@@ -4,10 +4,10 @@ series and quantile estimators.
 Tests target the properties each method is CHOSEN for -- boundary bias,
 rate in d, identification normalisations -- not just output shape."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._horowitz import check_rate, kde, local_linear, nw_regression
+from morie.fn import _array_core as np
+from morie.fn._horowitz import check_rate
 from morie.fn.hrzbkft import hrz_backfitting
 from morie.fn.hrzbwopt import hrz_bandwidth_optimal
 from morie.fn.hrzderiv import hrz_density_derivative
@@ -73,7 +73,10 @@ def test_local_linear_beats_nw_at_the_boundary():
     rng = np.random.default_rng(3)
     n = 400
     x = rng.uniform(0, 1, n)
-    truth = lambda z: 2.0 * z          # a straight line
+
+    def truth(z):
+        return 2.0 * z  # a straight line
+
     y = truth(x) + rng.standard_normal(n) * 0.05
     edge = np.array([0.02, 0.05])
     ll = hrz_local_linear(x, y, grid=edge)["fitted"]
@@ -149,8 +152,9 @@ def test_max_score_and_its_smoothed_version_differ_in_what_they_promise():
     assert ms["rate_exponent"] == pytest.approx(-1 / 3)
     assert ms["standard_errors_valid"] is False  # Chernoff limit
     sm = hrz_smoothed_max_score(X, y)
-    assert sm["standard_errors_valid"] is True   # normality restored
+    assert sm["standard_errors_valid"] is True  # normality restored
     assert sm["rate_exponent"] == pytest.approx(-2 / 5)
+
     # Consistency over seeds, not one draw: the median over seeds of
     # |beta_1 - (-0.8)|. Six seeds were too few -- their median of the
     # estimates sat closer to the truth at n = 400 than at 1600 by

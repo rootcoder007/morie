@@ -19,46 +19,46 @@ from ._richresult import RichResult, with_describe_pointer
 from .bsacorr import rangayyan_acf_estimate
 
 __all__ = [
-    'burg_psd',
-    'rangayyan_ar_order_aic',
-    'rangayyan_ar_burg',
-    'rangayyan_ar_spectrum',
-    'rangayyan_burg_method',
-    'fpeorder',
-    'rangayyan_ar_order_fpe',
-    'hrvratio',
-    'rangayyan_hrv_ar_ratio',
-    'hrvar',
-    'rangayyan_hrv_ar_model',
-    'levinson',
-    'rangayyan_levinson_durbin',
-    'lpc',
-    'rangayyan_lpc_analysis',
-    'lpcsynth',
-    'rangayyan_lpc_synthesis',
-    'mdlorder',
-    'rangayyan_ar_order_mdl',
-    'arfit',
-    'rangayyan_parametric_sysid',
-    'pcgar',
-    'rangayyan_pcg_ar_model',
-    'armafit',
-    'rangayyan_pole_zero_model',
-    'polezero',
-    'rangayyan_pole_zero_plot',
-    'rangayyan_yule_walker',
-    'pzform',
-    'rangayyan_ch3_pole_zero_factored_form',
-    'pzformz',
-    'rangayyan_ch3_pole_zero_factored_form_alt',
-    'pzresp',
-    'rangayyan_ch3_frequency_response_from_pole_zero',
+    "burg_psd",
+    "rangayyan_ar_order_aic",
+    "rangayyan_ar_burg",
+    "rangayyan_ar_spectrum",
+    "rangayyan_burg_method",
+    "fpeorder",
+    "rangayyan_ar_order_fpe",
+    "hrvratio",
+    "rangayyan_hrv_ar_ratio",
+    "hrvar",
+    "rangayyan_hrv_ar_model",
+    "levinson",
+    "rangayyan_levinson_durbin",
+    "lpc",
+    "rangayyan_lpc_analysis",
+    "lpcsynth",
+    "rangayyan_lpc_synthesis",
+    "mdlorder",
+    "rangayyan_ar_order_mdl",
+    "arfit",
+    "rangayyan_parametric_sysid",
+    "pcgar",
+    "rangayyan_pcg_ar_model",
+    "armafit",
+    "rangayyan_pole_zero_model",
+    "polezero",
+    "rangayyan_pole_zero_plot",
+    "rangayyan_yule_walker",
+    "pzform",
+    "rangayyan_ch3_pole_zero_factored_form",
+    "pzformz",
+    "rangayyan_ch3_pole_zero_factored_form_alt",
+    "pzresp",
+    "rangayyan_ch3_frequency_response_from_pole_zero",
 ]
+
 
 def _angle(z):
     """Principal argument in (-pi, pi], without importing cmath."""
     return _atan2(z.imag, z.real)
-
 
 
 # -- burgp: Burg AR spectral estimation.
@@ -218,10 +218,9 @@ def rangayyan_ar_order_aic(prediction_errors, n_samples, window="hamming"):
         raise ValueError("n_samples must be positive")
 
     if isinstance(window, str):
-        frac = {"hamming": 0.4, "rectangular": 1.0, "none": 1.0}.get(
-            window.lower())
+        frac = {"hamming": 0.4, "rectangular": 1.0, "none": 1.0}.get(window.lower())
         if frac is None:
-            raise ValueError("unknown window %r" % window)
+            raise ValueError(f"unknown window {window!r}")
     else:
         frac = float(window)
         if not (0.0 < frac <= 1.0):
@@ -235,9 +234,7 @@ def rangayyan_ar_order_aic(prediction_errors, n_samples, window="hamming"):
     return RichResult(
         title="Akaike order selection (Rangayyan eq. 7.60)",
         summary_lines=[("order", best + 1), ("min I(P)", crit[best])],
-        payload={"order": best + 1, "criterion": crit,
-                 "n_effective": n_eff,
-                 "method": "Rangayyan (2024) eq. (7.60)"},
+        payload={"order": best + 1, "criterion": crit, "n_effective": n_eff, "method": "Rangayyan (2024) eq. (7.60)"},
     )
 
 
@@ -394,10 +391,17 @@ def rangayyan_ar_spectrum(x, order=8, fs=1.0, n_freqs=512):
         denom.append(re * re + im * im)
     denom = np.array(denom)
     psd = yw["sigma2"] / np.maximum(denom, 1e-300)
-    return RichResult(payload={"freqs": freqs, "psd": psd, "a": a,
-                               "sigma2": yw["sigma2"], "order": yw["order"],
-                               "stable": yw["stable"],
-                               "method": "All-pole AR spectrum; high order invents peaks"})
+    return RichResult(
+        payload={
+            "freqs": freqs,
+            "psd": psd,
+            "a": a,
+            "sigma2": yw["sigma2"],
+            "order": yw["order"],
+            "stable": yw["stable"],
+            "method": "All-pole AR spectrum; high order invents peaks",
+        }
+    )
 
 
 # -- rgburg: Burg AR estimation.
@@ -439,7 +443,7 @@ def rangayyan_burg_method(x, order=8, fs=1.0):
     N = x.size
     if p < 1:
         raise ValueError(f"order must be at least 1, got {p}.")
-    if N < p + 1:
+    if p + 1 > N:
         raise ValueError(f"need more than order = {p} samples, got {N}.")
     if float(fs) <= 0:
         raise ValueError("fs must be positive.")
@@ -463,10 +467,17 @@ def rangayyan_burg_method(x, order=8, fs=1.0):
         b = np.r_[np.zeros(m), b_new]
         E *= 1.0 - k**2
     roots = np.roots(np.r_[1.0, a])
-    return RichResult(payload={"a": a, "reflection": np.array(ks), "sigma2": float(E),
-                               "order": p, "stable": bool(np.all(np.abs(roots) < 1.0)),
-                               "fs": float(fs),
-                               "method": "Burg lattice; |k| <= 1 guarantees a stable model"})
+    return RichResult(
+        payload={
+            "a": a,
+            "reflection": np.array(ks),
+            "sigma2": float(E),
+            "order": p,
+            "stable": bool(np.all(np.abs(roots) < 1.0)),
+            "fs": float(fs),
+            "method": "Burg lattice; |k| <= 1 guarantees a stable model",
+        }
+    )
 
 
 # -- rgfpe: Final prediction error (FPE) criterion for AR model order.
@@ -510,11 +521,15 @@ def fpeorder(errors, n_samples):
     for i, s2 in enumerate(eps, start=1):
         crit.append(s2 * (n + i + 1) / (n - i - 1))
     best = min(range(len(crit)), key=lambda i: crit[i])
-    return RichResult(payload={
-        "order": best + 1, "criterion": crit, "n": n,
-        "start_order": 1,
-        "method": "Akaike (1970) FPE; Rangayyan (2024) Section 7.5.2 "
-                  "gives AIC at eq. (7.60) instead"})
+    return RichResult(
+        payload={
+            "order": best + 1,
+            "criterion": crit,
+            "n": n,
+            "start_order": 1,
+            "method": "Akaike (1970) FPE; Rangayyan (2024) Section 7.5.2 gives AIC at eq. (7.60) instead",
+        }
+    )
 
 
 rangayyan_ar_order_fpe = fpeorder  # pre-policy spelling
@@ -536,17 +551,22 @@ def hrvratio(rr, order=16, fs=4.0):
     interpretation on the ratio alone.
     """
     r = hrvar(rr, order=order, fs=fs)
-    return RichResult(payload={
-        "lf_hf_ratio": r["lf_hf_ratio"], "lf": r["lf"], "hf": r["hf"],
-        "vlf": r["vlf"], "total_power": r["total_power"],
-        "lf_nu": r["lf_nu"],
-        "hf_nu": (100.0 - r["lf_nu"]) if r["lf_nu"] is not None else None,
-        "order": r["order"], "bands": r["bands"],
-        "interpretation_caveat":
-            "LF reflects both autonomic branches and the baroreflex; the "
+    return RichResult(
+        payload={
+            "lf_hf_ratio": r["lf_hf_ratio"],
+            "lf": r["lf"],
+            "hf": r["hf"],
+            "vlf": r["vlf"],
+            "total_power": r["total_power"],
+            "lf_nu": r["lf_nu"],
+            "hf_nu": (100.0 - r["lf_nu"]) if r["lf_nu"] is not None else None,
+            "order": r["order"],
+            "bands": r["bands"],
+            "interpretation_caveat": "LF reflects both autonomic branches and the baroreflex; the "
             "ratio is not a clean index of sympathovagal balance",
-        "method": "Rangayyan (2024) Section 7.5 AR model; bands per Task "
-                  "Force of the ESC and NASPE (1996)"})
+            "method": "Rangayyan (2024) Section 7.5 AR model; bands per Task Force of the ESC and NASPE (1996)",
+        }
+    )
 
 
 rangayyan_hrv_ar_ratio = hrvratio  # pre-policy spelling
@@ -610,16 +630,22 @@ def hrvar(rr, order=16, fs=4.0, nfreq=512):
         power[name] = fsum(v * df for u, v in zip(f, s) if lo <= u < hi)
     total = power["vlf"] + power["lf"] + power["hf"]
     out = dict(fit)
-    out.update({
-        "mean_rr": mu, "resampled": series, "resample_fs": fsv,
-        "vlf": power["vlf"], "lf": power["lf"], "hf": power["hf"],
-        "total_power": total,
-        "lf_hf_ratio": power["lf"] / power["hf"] if power["hf"] > 0 else None,
-        "lf_nu": 100.0 * power["lf"] / (power["lf"] + power["hf"])
-        if (power["lf"] + power["hf"]) > 0 else None,
-        "bands": bands, "order": p,
-        "method": "Rangayyan (2024) Section 7.5 AR model; bands per Task "
-                  "Force of the ESC and NASPE (1996)"})
+    out.update(
+        {
+            "mean_rr": mu,
+            "resampled": series,
+            "resample_fs": fsv,
+            "vlf": power["vlf"],
+            "lf": power["lf"],
+            "hf": power["hf"],
+            "total_power": total,
+            "lf_hf_ratio": power["lf"] / power["hf"] if power["hf"] > 0 else None,
+            "lf_nu": 100.0 * power["lf"] / (power["lf"] + power["hf"]) if (power["lf"] + power["hf"]) > 0 else None,
+            "bands": bands,
+            "order": p,
+            "method": "Rangayyan (2024) Section 7.5 AR model; bands per Task Force of the ESC and NASPE (1996)",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -658,8 +684,7 @@ def levinson(acf, order=None):
     if p < 1:
         raise ValueError("order must be at least 1")
     if p > len(r) - 1:
-        raise ValueError("order %d needs %d ACF lags, got %d"
-                         % (p, p + 1, len(r) - 1))
+        raise ValueError(f"order {int(p)} needs {int(p + 1)} ACF lags, got {int(len(r) - 1)}")
     if r[0] <= 0:
         raise ValueError("phi(0) must be positive")
     a = []
@@ -675,15 +700,21 @@ def levinson(acf, order=None):
         a = new
         eps = (1.0 - g * g) * eps
         errors.append(eps)
-    return RichResult(payload={
-        "a": a, "reflection": gammas, "error": eps, "errors": errors,
-        "gain": sqrt(eps) if eps > 0 else 0.0, "order": p,
-        "stable": all(abs(g) < 1.0 for g in gammas),
-        "monotone": all(errors[i] <= errors[i - 1] + 1e-12
-                        for i in range(1, len(errors))),
-        "normalized_error": eps / r[0],
-        "sign_convention": "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
-        "method": "Rangayyan (2024) eqs. (7.37)-(7.39)"})
+    return RichResult(
+        payload={
+            "a": a,
+            "reflection": gammas,
+            "error": eps,
+            "errors": errors,
+            "gain": sqrt(eps) if eps > 0 else 0.0,
+            "order": p,
+            "stable": all(abs(g) < 1.0 for g in gammas),
+            "monotone": all(errors[i] <= errors[i - 1] + 1e-12 for i in range(1, len(errors))),
+            "normalized_error": eps / r[0],
+            "sign_convention": "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
+            "method": "Rangayyan (2024) eqs. (7.37)-(7.39)",
+        }
+    )
 
 
 rangayyan_levinson_durbin = levinson  # pre-policy spelling
@@ -728,13 +759,10 @@ def lpc(x, order, method="autocorrelation"):
     if p < 1:
         raise ValueError("order must be at least 1")
     if n <= p:
-        raise ValueError("need more samples (%d) than the order (%d)"
-                         % (n, p))
+        raise ValueError(f"need more samples ({int(n)}) than the order ({int(p)})")
     if method != "autocorrelation":
-        raise ValueError("only the autocorrelation method is implemented; "
-                         "eq. (7.40)'s covariance method is not")
-    acf = [fsum(xs[i] * xs[i + m] for i in range(n - m)) / n
-           for m in range(p + 1)]
+        raise ValueError("only the autocorrelation method is implemented; eq. (7.40)'s covariance method is not")
+    acf = [fsum(xs[i] * xs[i + m] for i in range(n - m)) / n for m in range(p + 1)]
     if acf[0] <= 0:
         raise ValueError("the signal has zero energy")
     lev = levinson(acf, order=p)
@@ -747,14 +775,22 @@ def lpc(x, order, method="autocorrelation"):
                 acc += a[k - 1] * xs[i - k]
         resid.append(acc)
     tse = fsum(v * v for v in resid[p:])
-    return RichResult(payload={
-        "a": a, "gain": lev["gain"], "error": lev["error"],
-        "reflection": lev["reflection"], "acf": acf, "order": p,
-        "residual": resid, "residual_energy": tse,
-        "stable": lev["stable"],
-        "normalized_error": lev["normalized_error"],
-        "sign_convention": "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
-        "method": "Rangayyan (2024) eqs. (7.17)-(7.18), (7.25), (7.35)"})
+    return RichResult(
+        payload={
+            "a": a,
+            "gain": lev["gain"],
+            "error": lev["error"],
+            "reflection": lev["reflection"],
+            "acf": acf,
+            "order": p,
+            "residual": resid,
+            "residual_energy": tse,
+            "stable": lev["stable"],
+            "normalized_error": lev["normalized_error"],
+            "sign_convention": "A(z) = 1 + sum a_k z^-k, per eq. (7.18)",
+            "method": "Rangayyan (2024) eqs. (7.17)-(7.18), (7.25), (7.35)",
+        }
+    )
 
 
 rangayyan_lpc_analysis = lpc  # pre-policy spelling
@@ -787,7 +823,7 @@ def lpcsynth(a, excitation, gain=1.0, initial=None):
     p = len(ak)
     hist = [0.0] * p if initial is None else aslist(initial)
     if len(hist) != p:
-        raise ValueError("initial state must hold %d samples" % p)
+        raise ValueError(f"initial state must hold {int(p)} samples")
     y = []
     limit = 1e12 * (1.0 + max(abs(v) for v in e))
     diverged = False
@@ -800,11 +836,17 @@ def lpcsynth(a, excitation, gain=1.0, initial=None):
             break
         y.append(acc)
         hist = [acc] + hist[:-1]
-    return RichResult(payload={
-        "y": y, "n": len(y), "order": p, "gain": float(gain),
-        "diverged": diverged,
-        "sign_convention": "y(n) = G e(n) - sum a_k y(n-k)",
-        "method": "Rangayyan (2024) Section 7.5 (all-pole synthesis)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "n": len(y),
+            "order": p,
+            "gain": float(gain),
+            "diverged": diverged,
+            "sign_convention": "y(n) = G e(n) - sum a_k y(n-k)",
+            "method": "Rangayyan (2024) Section 7.5 (all-pole synthesis)",
+        }
+    )
 
 
 rangayyan_lpc_synthesis = lpcsynth  # pre-policy spelling
@@ -840,13 +882,19 @@ def mdlorder(errors, n_samples):
     aic = [n * log(s2) + 2.0 * i for i, s2 in enumerate(eps, start=1)]
     bm = min(range(len(mdl)), key=lambda i: mdl[i])
     ba = min(range(len(aic)), key=lambda i: aic[i])
-    return RichResult(payload={
-        "order": bm + 1, "criterion": mdl, "aic": aic,
-        "aic_order": ba + 1, "n": n, "start_order": 1,
-        "penalty_per_parameter": log(n),
-        "stricter_than_aic": log(n) > 2.0,
-        "method": "Rissanen (1978) MDL; Rangayyan (2024) Section 7.5.2 "
-                  "gives AIC at eq. (7.60) instead"})
+    return RichResult(
+        payload={
+            "order": bm + 1,
+            "criterion": mdl,
+            "aic": aic,
+            "aic_order": ba + 1,
+            "n": n,
+            "start_order": 1,
+            "penalty_per_parameter": log(n),
+            "stricter_than_aic": log(n) > 2.0,
+            "method": "Rissanen (1978) MDL; Rangayyan (2024) Section 7.5.2 gives AIC at eq. (7.60) instead",
+        }
+    )
 
 
 rangayyan_ar_order_mdl = mdlorder  # pre-policy spelling
@@ -889,9 +937,15 @@ def arfit(x, order, fs=1.0, nfreq=256):
         freqs.append(f)
         psd.append(g2 / denom if denom > 0 else float("inf"))
     out = dict(fit)
-    out.update({"freqs": freqs, "psd": psd, "fs": fsv,
-                "max_peaks": len(a) // 2,
-                "method": "Rangayyan (2024) Section 7.5 (all-pole PSD)"})
+    out.update(
+        {
+            "freqs": freqs,
+            "psd": psd,
+            "fs": fsv,
+            "max_peaks": len(a) // 2,
+            "method": "Rangayyan (2024) Section 7.5 (all-pole PSD)",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -925,7 +979,7 @@ def pcgar(x, fs, order=None, segment=None):
         raise ValueError("fs must be positive")
     if segment is not None:
         lo, hi = segment
-        xs = xs[int(lo):int(hi)]
+        xs = xs[int(lo) : int(hi)]
     if len(xs) < 16:
         raise ValueError("need at least sixteen samples in the segment")
     p = int(order) if order is not None else max(4, int(round(2 + fsv / 1000.0)))
@@ -935,19 +989,25 @@ def pcgar(x, fs, order=None, segment=None):
     for pole in pz["poles"]:
         ang = _angle(pole)
         if ang <= 0:
-            continue                       # keep one of each conjugate pair
+            continue  # keep one of each conjugate pair
         mag = abs(pole)
         if mag <= 0:
             continue
-        res.append({"frequency": fsv * ang / (2.0 * pi),
-                    "bandwidth": -fsv * log(mag) / pi,
-                    "radius": mag, "pole": pole})
+        res.append(
+            {"frequency": fsv * ang / (2.0 * pi), "bandwidth": -fsv * log(mag) / pi, "radius": mag, "pole": pole}
+        )
     res.sort(key=lambda d: d["frequency"])
     out = dict(fit)
-    out.update({"poles": pz["poles"], "resonances": res, "order": p,
-                "stable": pz["stable"], "fs": fsv,
-                "method": "Rangayyan (2024) Chapter 7 (AR modelling of "
-                          "the PCG)"})
+    out.update(
+        {
+            "poles": pz["poles"],
+            "resonances": res,
+            "order": p,
+            "stable": pz["stable"],
+            "fs": fsv,
+            "method": "Rangayyan (2024) Chapter 7 (AR modelling of the PCG)",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -980,31 +1040,36 @@ def armafit(x, p, q, fs=1.0):
     resid = ar["residual"][pi_:]
     n = len(resid)
     if n <= qi:
-        raise ValueError("too few residual samples (%d) for MA order %d"
-                         % (n, qi))
+        raise ValueError(f"too few residual samples ({int(n)}) for MA order {int(qi)}")
     if qi == 0:
         b = [ar["gain"]]
     else:
-        rr = [fsum(resid[i] * resid[i + m] for i in range(n - m)) / n
-              for m in range(qi + 1)]
+        rr = [fsum(resid[i] * resid[i + m] for i in range(n - m)) / n for m in range(qi + 1)]
         if rr[0] <= 0:
             raise ValueError("the residual has zero energy")
         # Durbin's two-stage MA estimate: fit a long AR to the residual
         # and invert it to get the MA coefficients
         long_order = min(4 * qi, n - 1)
-        acf_long = [fsum(resid[i] * resid[i + m] for i in range(n - m)) / n
-                    for m in range(long_order + 1)]
+        acf_long = [fsum(resid[i] * resid[i + m] for i in range(n - m)) / n for m in range(long_order + 1)]
         inner = levinson(acf_long, order=long_order)
         b = levinson([1.0] + inner["a"][:qi], order=qi)["a"]
         b = [ar["gain"]] + b
     pz = polezero(b, ar["a"])
-    return RichResult(payload={
-        "a": ar["a"], "b": b, "p": pi_, "q": qi,
-        "gain": ar["gain"], "poles": pz["poles"], "zeros": pz["zeros"],
-        "stable": pz["stable"], "ar_error": ar["error"],
-        "two_stage": True,
-        "method": "Rangayyan (2024) Section 7.7 (pole-zero model), "
-                  "fitted AR-then-MA rather than jointly"})
+    return RichResult(
+        payload={
+            "a": ar["a"],
+            "b": b,
+            "p": pi_,
+            "q": qi,
+            "gain": ar["gain"],
+            "poles": pz["poles"],
+            "zeros": pz["zeros"],
+            "stable": pz["stable"],
+            "ar_error": ar["error"],
+            "two_stage": True,
+            "method": "Rangayyan (2024) Section 7.7 (pole-zero model), fitted AR-then-MA rather than jointly",
+        }
+    )
 
 
 rangayyan_pole_zero_model = armafit  # pre-policy spelling
@@ -1045,7 +1110,7 @@ def polezero(b, a=None):
         lead = c[0]
         if lead == 0:
             raise ValueError("leading coefficient must be nonzero")
-        mono = [v / lead for v in c]           # z^deg + m1 z^(deg-1) + ...
+        mono = [v / lead for v in c]  # z^deg + m1 z^(deg-1) + ...
         est = [complex(0.4, 0.9) ** k for k in range(1, deg + 1)]
         for _ in range(500):
             shift = 0.0
@@ -1056,7 +1121,7 @@ def polezero(b, a=None):
                 den = 1.0 + 0j
                 for j in range(deg):
                     if j != i:
-                        den *= (est[i] - est[j])
+                        den *= est[i] - est[j]
                 if den == 0:
                     continue
                 step = num / den
@@ -1068,14 +1133,18 @@ def polezero(b, a=None):
 
     zeros = roots(bs)
     poles = roots([1.0] + as_)
-    return RichResult(payload={
-        "zeros": zeros, "poles": poles,
-        "n_zeros": len(zeros), "n_poles": len(poles),
-        "stable": all(abs(p) < 1.0 for p in poles),
-        "minimum_phase": all(abs(z) < 1.0 for z in zeros),
-        "zeros_on_unit_circle": [z for z in zeros
-                                 if abs(abs(z) - 1.0) < 1e-9],
-        "method": "Rangayyan (2024) eqs. (3.67), (3.69)"})
+    return RichResult(
+        payload={
+            "zeros": zeros,
+            "poles": poles,
+            "n_zeros": len(zeros),
+            "n_poles": len(poles),
+            "stable": all(abs(p) < 1.0 for p in poles),
+            "minimum_phase": all(abs(z) < 1.0 for z in zeros),
+            "zeros_on_unit_circle": [z for z in zeros if abs(abs(z) - 1.0) < 1e-9],
+            "method": "Rangayyan (2024) eqs. (3.67), (3.69)",
+        }
+    )
 
 
 rangayyan_pole_zero_plot = polezero  # pre-policy spelling
@@ -1129,10 +1198,16 @@ def rangayyan_yule_walker(x, order=4):
         a = np.linalg.lstsq(Rm, -r, rcond=None)[0]
     sigma2 = float(R[0] + a @ r)
     roots = np.roots(np.r_[1.0, a])
-    return RichResult(payload={"a": a, "sigma2": sigma2, "order": p,
-                               "stable": bool(np.all(np.abs(roots) < 1.0)),
-                               "reflection_roots": roots,
-                               "method": "Toeplitz Yule-Walker on the BIASED ACF (guarantees stability)"})
+    return RichResult(
+        payload={
+            "a": a,
+            "sigma2": sigma2,
+            "order": p,
+            "stable": bool(np.all(np.abs(roots) < 1.0)),
+            "reflection_roots": roots,
+            "method": "Toeplitz Yule-Walker on the BIASED ACF (guarantees stability)",
+        }
+    )
 
 
 # -- rng058: Pole-zero factored transfer function in terms of (1 - z_k z^-1) factors..
@@ -1154,11 +1229,16 @@ def pzform(zeros, poles, z=None, gain=1.0):
     """
     zs = [complex(v) for v in zeros]
     ps = [complex(v) for v in poles]
-    out = {"zeros": zs, "poles": ps, "n_zeros": len(zs),
-           "n_poles": len(ps), "gain": complex(gain),
-           "stable": all(abs(p) < 1.0 for p in ps),
-           "poles_on_unit_circle": [p for p in ps if abs(abs(p) - 1.0) < 1e-12],
-           "method": "Rangayyan (2024) eq. (3.69)"}
+    out = {
+        "zeros": zs,
+        "poles": ps,
+        "n_zeros": len(zs),
+        "n_poles": len(ps),
+        "gain": complex(gain),
+        "stable": all(abs(p) < 1.0 for p in ps),
+        "poles_on_unit_circle": [p for p in ps if abs(abs(p) - 1.0) < 1e-12],
+        "method": "Rangayyan (2024) eq. (3.69)",
+    }
     if z is None:
         out["H"] = None
         return RichResult(payload=out)
@@ -1167,14 +1247,13 @@ def pzform(zeros, poles, z=None, gain=1.0):
     vals = []
     for zv in pts:
         if zv == 0:
-            raise ValueError("the z^-1 form of eq. (3.69) is undefined at "
-                             "z = 0; use pzformz for eq. (3.70)")
+            raise ValueError("the z^-1 form of eq. (3.69) is undefined at z = 0; use pzformz for eq. (3.70)")
         num = complex(gain)
         for zk in zs:
-            num *= (1.0 - zk / zv)
+            num *= 1.0 - zk / zv
         den = 1.0 + 0j
         for pk in ps:
-            den *= (1.0 - pk / zv)
+            den *= 1.0 - pk / zv
         if den == 0:
             raise ValueError("z coincides with a pole of H")
         vals.append(num / den)
@@ -1206,9 +1285,14 @@ def pzformz(zeros, poles, z=None, gain=1.0):
     zs = [complex(v) for v in zeros]
     ps = [complex(v) for v in poles]
     n, m = len(zs), len(ps)
-    out = {"zeros": zs, "poles": ps, "exponent": m - n,
-           "gain": complex(gain), "stable": all(abs(p) < 1.0 for p in ps),
-           "method": "Rangayyan (2024) eq. (3.70)"}
+    out = {
+        "zeros": zs,
+        "poles": ps,
+        "exponent": m - n,
+        "gain": complex(gain),
+        "stable": all(abs(p) < 1.0 for p in ps),
+        "method": "Rangayyan (2024) eq. (3.70)",
+    }
     if z is None:
         out["H"] = None
         return RichResult(payload=out)
@@ -1218,10 +1302,10 @@ def pzformz(zeros, poles, z=None, gain=1.0):
     for zv in pts:
         num = complex(gain) * (zv ** (m - n))
         for zk in zs:
-            num *= (zv - zk)
+            num *= zv - zk
         den = 1.0 + 0j
         for pk in ps:
-            den *= (zv - pk)
+            den *= zv - pk
         if den == 0:
             raise ValueError("z coincides with a pole of H")
         vals.append(num / den)
@@ -1275,10 +1359,10 @@ def pzresp(zeros, poles, omega, gain=1.0):
             raise ValueError("a pole lies exactly on the evaluation point")
         num = complex(gain) * (z0 ** (m - n))
         for zk in zs:
-            num *= (z0 - zk)
+            num *= z0 - zk
         den = 1.0 + 0j
         for pk in ps:
-            den *= (z0 - pk)
+            den *= z0 - pk
         val = num / den
         H.append(val)
         prod_l = 1.0
@@ -1294,41 +1378,44 @@ def pzresp(zeros, poles, omega, gain=1.0):
         dist_z.append(lk)
         dist_p.append(rk)
     gap = max(abs(abs(a) - b) for a, b in zip(H, mags))
-    return RichResult(payload={
-        "H": H[0] if scalar else H,
-        "magnitude": mags[0] if scalar else mags,
-        "phase": phases[0] if scalar else phases,
-        "zero_distances": dist_z[0] if scalar else dist_z,
-        "pole_distances": dist_p[0] if scalar else dist_p,
-        "omega": ws[0] if scalar else ws,
-        "magnitude_matches_product": gap <= 1e-9 * (1 + max(mags)),
-        "method": "Rangayyan (2024) eqs. (3.71)-(3.73)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "magnitude": mags[0] if scalar else mags,
+            "phase": phases[0] if scalar else phases,
+            "zero_distances": dist_z[0] if scalar else dist_z,
+            "pole_distances": dist_p[0] if scalar else dist_p,
+            "omega": ws[0] if scalar else ws,
+            "magnitude_matches_product": gap <= 1e-9 * (1 + max(mags)),
+            "method": "Rangayyan (2024) eqs. (3.71)-(3.73)",
+        }
+    )
 
 
 rangayyan_ch3_frequency_response_from_pole_zero = pzresp  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'burgp: Burg AR spectral estimation.',
+    "burgp: Burg AR spectral estimation.",
     "rgaic: AR model order selection by Akaike's information criterion.",
     "rgarb: AR(p) model via Burg's recursion -- Rangayyan & Krishnan Sec 7.5 / 8.6.2.",
-    'rgarsp: AR power spectrum.',
-    'rgburg: Burg AR estimation.',
-    'rgfpe: Akaike final prediction error criterion (Akaike 1970)',
-    'rghrvar: HRV LF/HF ratio from the AR model PSD',
-    'rghrvmod: AR spectral model of HRV, Section 7.5 + Task Force bands',
-    'rglevd: Levinson-Durbin recursion, Rangayyan eqs. (7.37)-(7.39)',
-    'rglpca: LPC/AR analysis, Rangayyan eqs. (7.17)-(7.35)',
-    'rglpcs: all-pole synthesis filter, Rangayyan Section 7.5',
-    'rgmdl: minimum description length order criterion (Rissanen 1978)',
-    'rgparmod: all-pole model and its PSD, Rangayyan Section 7.5',
-    'rgpcgar: AR model of the PCG and its resonances, Chapter 7',
-    'rgpzmod: ARMA pole-zero model, Rangayyan Section 7.7',
-    'rgpzp: poles and zeros of H(z), Rangayyan eqs. (3.67), (3.69)',
-    'rgyw: Yule-Walker AR estimation.',
-    'rng058: pole-zero factored form, Rangayyan eq. (3.69)',
-    'rng059: pole-zero form in z, Rangayyan eq. (3.70)',
-    'rng060: frequency response from the pole-zero plot, eqs. (3.71)-(3.73)',
+    "rgarsp: AR power spectrum.",
+    "rgburg: Burg AR estimation.",
+    "rgfpe: Akaike final prediction error criterion (Akaike 1970)",
+    "rghrvar: HRV LF/HF ratio from the AR model PSD",
+    "rghrvmod: AR spectral model of HRV, Section 7.5 + Task Force bands",
+    "rglevd: Levinson-Durbin recursion, Rangayyan eqs. (7.37)-(7.39)",
+    "rglpca: LPC/AR analysis, Rangayyan eqs. (7.17)-(7.35)",
+    "rglpcs: all-pole synthesis filter, Rangayyan Section 7.5",
+    "rgmdl: minimum description length order criterion (Rissanen 1978)",
+    "rgparmod: all-pole model and its PSD, Rangayyan Section 7.5",
+    "rgpcgar: AR model of the PCG and its resonances, Chapter 7",
+    "rgpzmod: ARMA pole-zero model, Rangayyan Section 7.7",
+    "rgpzp: poles and zeros of H(z), Rangayyan eqs. (3.67), (3.69)",
+    "rgyw: Yule-Walker AR estimation.",
+    "rng058: pole-zero factored form, Rangayyan eq. (3.69)",
+    "rng059: pole-zero form in z, Rangayyan eq. (3.70)",
+    "rng060: frequency response from the pole-zero plot, eqs. (3.71)-(3.73)",
 ]
 
 

@@ -148,7 +148,7 @@ def skater(X, adjacency, k, min_size=1, weights=None, min_weight=None, squared=F
             break
         cands.sort(key=lambda t: (-t[0], t[1], t[2]))
         done = False
-        for gain, gi, ei in cands:
+        for _gain, gi, ei in cands:
             (A, EA), (B, EB) = _split(groups[gi][1], ei)
             if ok(A) and ok(B):
                 groups[gi] = (A, EA)

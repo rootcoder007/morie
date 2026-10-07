@@ -18,14 +18,12 @@ def _implicit_rewards(pi_star, pi_ref, beta):
     beta = float(beta)
     if beta <= 0:
         raise ValueError("beta must be strictly positive.")
-    p = [float(v) for v in (pi_star.values() if isinstance(pi_star, dict)
-                            else pi_star)]
-    q = [float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict)
-                            else pi_ref)]
+    p = [float(v) for v in (pi_star.values() if isinstance(pi_star, dict) else pi_star)]
+    q = [float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict) else pi_ref)]
     if len(p) != 2 or len(q) != 2:
         raise ValueError(
-            "pi_star and pi_ref must each hold exactly two probabilities, "
-            f"(winner, loser); got {len(p)} and {len(q)}.")
+            f"pi_star and pi_ref must each hold exactly two probabilities, (winner, loser); got {len(p)} and {len(q)}."
+        )
     if any(not (0.0 < v <= 1.0) for v in p + q):
         raise ValueError("every probability must lie in (0, 1].")
     return (beta * np.log(p[0] / q[0]), beta * np.log(p[1] / q[1]), beta)
@@ -55,11 +53,17 @@ def kamath_ch5_dpo_pref_simplified(pi_star, pi_ref, beta):
     """
     rw, rl, beta = _implicit_rewards(pi_star, pi_ref, beta)
     inner = kamath_ch5_pref_sigmoid_form([rw, rl])
-    return RichResult(payload={
-        "estimate": inner["estimate"], "margin": inner["margin"],
-        "implicit_reward_w": float(rw), "implicit_reward_l": float(rl),
-        "beta": beta, "n": 2,
-        "method": "DPO preference, Z cancelled (Kamath Eq 5.11)"})
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "margin": inner["margin"],
+            "implicit_reward_w": float(rw),
+            "implicit_reward_l": float(rl),
+            "beta": beta,
+            "n": 2,
+            "method": "DPO preference, Z cancelled (Kamath Eq 5.11)",
+        }
+    )
 
 
 def cheatsheet():

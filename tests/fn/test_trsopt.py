@@ -1,7 +1,6 @@
 """Tests for trsopt.trust_region_subproblem."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.trsopt import trust_region_subproblem
 
 

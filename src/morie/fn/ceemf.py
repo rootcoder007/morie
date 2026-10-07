@@ -84,10 +84,7 @@ def ceemd_decompose(
             for i in range(min(n_found, len(accum))):
                 accum[i] += trial_imfs[i][: len(x)]
             count += 1
-    if accum is None:
-        accum = []
-    else:
-        accum = [a / count for a in accum]
+    accum = [] if accum is None else [a / count for a in accum]
     return DescriptiveResult(
         name="ceemd_decompose",
         value=float(len(accum)),

@@ -85,11 +85,12 @@ Usage
 
 .. code-block:: python
 
+   # the expanded OTIS placement frame (1.9 million rows; data.rmorie.com, with the key from rmorie.com/access stored by `morie login --token`).
+   # It is stored as an R object (.rds); morie reads it natively, no R needed.
    from morie.otis import rplace, astcmb, otdml
-   import pandas as pd
+   from morie.data import load_dataset
 
-   # Load expanded placement data (via R bridge or direct)
-   # df = pd.read_csv("data/cache/dt_expanded.csv")
+   df = load_dataset("otisexp")
 
    # Regional placement by year
    result = rplace(df, year=2024, sex="Male")

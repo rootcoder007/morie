@@ -337,22 +337,10 @@ def mrm_causal_design(
         # Hájek ATE
         w1 = D / e
         w0 = (1 - D) / (1 - e)
-        tau = (w1 * Y).sum() / w1.sum() - (w0 * Y).sum() / w0.sum()
-        # bootstrap SE
-        rng = np.random.default_rng(42)
-        boots = []
-        for _ in range(199):
-            idx = [int(v) for v in rng.integers(0, n, n)]
-            D_b, Y_b, X_b = D[idx], Y[idx], X[idx]
-            try:
-                e_b = _ps(X_b, D_b)
-                e_b = np.clip(e_b, 1e-6, 1 - 1e-6)
-                w1b = D_b / e_b
-                w0b = (1 - D_b) / (1 - e_b)
-                boots.append((w1b * Y_b).sum() / w1b.sum() - (w0b * Y_b).sum() / w0b.sum())
-            except Exception:
-                pass
-        se = float(np.std(boots, ddof=1)) if boots else float("nan")
+        mu1 = (w1 * Y).sum() / w1.sum()
+        mu0 = (w0 * Y).sum() / w0.sum()
+        tau = mu1 - mu0
+        se = _ipw_hajek_se(Y, D, e, np.column_stack([np.ones(n), X]), mu1, mu0)
     else:
         # plain difference of means (no adjustment)
         Y1, Y0 = Y[D == 1], Y[D == 0]
@@ -384,3 +372,22 @@ def mrm_causal_design(
 # keep the alias indefinitely so v0.x code does not break under
 # fresh-user pip installs.
 anova_oneway = mrm_anova_oneway
+
+
+def _ipw_hajek_se(Y, D, e, X, mu1, mu0):
+    """Sandwich SE of the Hájek IPW ATE with an estimated logistic propensity.
+
+    The two weighted-mean estimating equations stacked on the logistic score
+    (Lunceford & Davidian 2004, Stat Med 23:2937, IPW2). Deterministic, and the
+    formula the R arm's ``.rmorie_ipw_hajek_se`` evaluates.
+    """
+    n = len(Y)
+    score = (D - e)[:, None] * X
+    B = X.T @ (X * (e * (1 - e))[:, None]) / n
+    psi1 = D * (Y - mu1) / e
+    psi0 = (1 - D) * (Y - mu0) / (1 - e)
+    A1 = ((-psi1 * (1 - e))[:, None] * X).mean(axis=0)
+    A0 = ((psi0 * e)[:, None] * X).mean(axis=0)
+    if1 = (psi1 + score @ np.linalg.solve(B, A1)) / np.mean(D / e)
+    if0 = (psi0 + score @ np.linalg.solve(B, A0)) / np.mean((1 - D) / (1 - e))
+    return float(np.sqrt(np.sum((if1 - if0) ** 2)) / n)

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["tpe_suggest", "geron_optuna"]
 
 
-def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
-                bandwidth=None):
+def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0, bandwidth=None):
     r"""Suggest the next hyperparameter point by the TPE rule.
 
     TPE splits the observed trials at the :math:`\gamma` quantile of
@@ -74,14 +73,11 @@ def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
     n, p = X.shape
     B = np.atleast_2d(np.asarray(bounds, dtype=float))
     if B.shape != (p, 2):
-        raise ValueError(
-            "bounds must have one (low, high) pair per parameter: expected "
-            "%d, got %s." % (p, B.shape)
-        )
+        raise ValueError(f"bounds must have one (low, high) pair per parameter: expected {int(p)}, got {B.shape}.")
     if np.any(B[:, 1] <= B[:, 0]):
         raise ValueError("every bound must have high > low.")
     if not 0.0 < gamma < 1.0:
-        raise ValueError("gamma must lie in (0, 1), got %r." % gamma)
+        raise ValueError(f"gamma must lie in (0, 1), got {gamma!r}.")
 
     rng = np.random.default_rng(int(seed))
     span = B[:, 1] - B[:, 0]
@@ -91,18 +87,15 @@ def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
     if bad.shape[0] == 0:
         bad = X
 
-    bw = (np.maximum(span * n ** (-1.0 / (p + 4)), 1e-9)
-          if bandwidth is None
-          else np.full(p, float(bandwidth)) * span)
+    bw = np.maximum(span * n ** (-1.0 / (p + 4)), 1e-9) if bandwidth is None else np.full(p, float(bandwidth)) * span
 
     def dens(pts, sample):
         d = (sample[:, None, :] - pts[None, :, :]) / bw[None, None, :]
-        k = np.exp(-0.5 * np.sum(d ** 2, axis=2))
+        k = np.exp(-0.5 * np.sum(d**2, axis=2))
         return k.mean(axis=1) + 1e-300
 
     pick = good[rng.integers(0, good.shape[0], size=int(n_candidates))]
-    cand = np.clip(pick + rng.normal(size=(int(n_candidates), p)) * bw,
-                   B[:, 0], B[:, 1])
+    cand = np.clip(pick + rng.normal(size=(int(n_candidates), p)) * bw, B[:, 0], B[:, 1])
     ratio = dens(good, cand) / dens(bad, cand)
     best = int(np.argmax(ratio))
     return RichResult(
@@ -116,8 +109,7 @@ def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
             "n_bad": int(bad.shape[0]),
             "gamma": float(gamma),
             "bandwidth": bw,
-            "improvement_over_random": float(ratio[best] / max(
-                float(np.median(ratio)), 1e-300)),
+            "improvement_over_random": float(ratio[best] / max(float(np.median(ratio)), 1e-300)),
             "improvement_note": (
                 "the l/g ratio at the suggestion; near 1 means the model has "
                 "learned nothing yet and the suggestion is effectively random"
@@ -136,10 +128,7 @@ def tpe_suggest(trials, bounds, n_candidates=64, gamma=0.25, seed=0,
 
 
 def cheatsheet():
-    return (
-        "hmoptn: TPE next-point suggestion from the l/g density ratio, with "
-        "how much it has actually learned"
-    )
+    return "hmoptn: TPE next-point suggestion from the l/g density ratio, with how much it has actually learned"
 
 
 #: Catalogue alias for :func:`tpe_suggest`.

@@ -36,10 +36,7 @@ def bayesian_nonparametric_quantiles(
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
 
-    if quantiles is None:
-        quantiles = np.array([0.25, 0.5, 0.75])
-    else:
-        quantiles = np.asarray(quantiles, dtype=float).ravel()
+    quantiles = np.array([0.25, 0.5, 0.75]) if quantiles is None else np.asarray(quantiles, dtype=float).ravel()
 
     if np.any((quantiles < 0) | (quantiles > 1)):
         raise ValueError("quantiles must be in [0, 1]")

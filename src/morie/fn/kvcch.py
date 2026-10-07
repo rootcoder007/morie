@@ -43,15 +43,9 @@ def kvcch(
     key = np.asarray(key, dtype=float)
     value = np.asarray(value, dtype=float)
 
-    if cache_k is None:
-        cache_k = key
-    else:
-        cache_k = np.concatenate([cache_k, key], axis=0)
+    cache_k = key if cache_k is None else np.concatenate([cache_k, key], axis=0)
 
-    if cache_v is None:
-        cache_v = value
-    else:
-        cache_v = np.concatenate([cache_v, value], axis=0)
+    cache_v = value if cache_v is None else np.concatenate([cache_v, value], axis=0)
 
     return {
         "cache_k": cache_k,

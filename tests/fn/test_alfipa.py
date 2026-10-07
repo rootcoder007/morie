@@ -2,16 +2,12 @@
 
 import math
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.alfipa import alphafold_invariant_point
 
 
 def _make_frames(n, seed=42):
     """Construct n identity frames [R, t] with R = I, t = 0."""
-    return [[[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
-             [0.0, 0.0, 0.0]] for _ in range(n)]
+    return [[[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], [0.0, 0.0, 0.0]] for _ in range(n)]
 
 
 def _matvec(w, x):
@@ -33,7 +29,7 @@ def _vnorm2(a):
 
 def _smax(logits):
     m = max(logits)
-    exps = [math.exp(l - m) for l in logits]
+    exps = [math.exp(ell - m) for ell in logits]
     s = sum(exps)
     return [e / s for e in exps]
 
@@ -52,11 +48,7 @@ def test_alfipa_basic():
     """
     n = 1
     cs = 1
-    cz = 1
-    c = 1
     nh = 1
-    nqp = 1
-    npv = 1
 
     # Single-residue single representation (n=1, cs=1).
     s = [[1.0]]
@@ -88,16 +80,11 @@ def test_alfipa_basic():
     # Here nh=1, cz=1, c=1, npv=1, so width = 1 + 1 + 4 = 6.
     wo = [[0.0] * 6]  # zero output -> s update is zero
 
-    result = alphafold_invariant_point(
-        s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo
-    )
+    result = alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo)
 
     # Must be a RichResult with the documented keys.
     assert hasattr(result, "keys") or isinstance(result, dict)
-    if isinstance(result, dict):
-        keys = result.keys()
-    else:
-        keys = result.keys()
+    keys = result.keys() if isinstance(result, dict) else result.keys()
 
     for k in ("s", "attn", "points", "estimate", "n", "method"):
         assert k in keys, f"missing key {k!r}"
@@ -129,11 +116,7 @@ def test_alfipa_edge():
     """Test edge cases with n=2 residues and nh=1."""
     n = 2
     cs = 1
-    cz = 1
     c = 1
-    nh = 1
-    nqp = 1
-    npv = 1
 
     s = [[0.5], [-0.5]]
     z = [[[0.1], [0.2]], [[0.3], [0.4]]]
@@ -151,9 +134,7 @@ def test_alfipa_edge():
     # Output width = nh*(cz + c + 4*npv) = 1*(1+1+4) = 6.
     wo = [[0.0] * 6]
 
-    result = alphafold_invariant_point(
-        s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo
-    )
+    result = alphafold_invariant_point(s, z, frames, wq, wk, wv, wqp, wkp, wvp, wb, gamma, wo)
 
     # Documented keys present.
     keys = result.keys()
@@ -170,13 +151,12 @@ def test_alfipa_edge():
     wL = math.sqrt(1.0 / 3.0)
 
     # Independent computation of attention weights for head 0.
-    logits = [[wL * scale * s[i][0] * s[j][0] for j in range(n)]
-              for i in range(n)]
+    logits = [[wL * scale * s[i][0] * s[j][0] for j in range(n)] for i in range(n)]
     # Softmax along each row independently.
     expected_attn = []
     for i in range(n):
         m = max(logits[i])
-        exps = [math.exp(l - m) for l in logits[i]]
+        exps = [math.exp(ell - m) for ell in logits[i]]
         ssum = sum(exps)
         expected_attn.append([e / ssum for e in exps])
 

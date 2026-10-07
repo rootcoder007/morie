@@ -1,7 +1,6 @@
 """Tests for gh_ap_e3.ghosal_wavelet_mra."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_e3 import ghosal_wavelet_mra
 
 
@@ -70,10 +69,6 @@ def test_gh_ap_e3_edge():
     default_result = ghosal_wavelet_mra()
     for key in ("estimate", "l2_norm2", "parseval_gap", "method"):
         assert key in default_result
-    default_estimate = float(
-        np.asarray(default_result["estimate"], dtype=float)
-    )
-    explicit_estimate = float(
-        np.asarray(ghosal_wavelet_mra(n_levels=6)["estimate"], dtype=float)
-    )
+    default_estimate = float(np.asarray(default_result["estimate"], dtype=float))
+    explicit_estimate = float(np.asarray(ghosal_wavelet_mra(n_levels=6)["estimate"], dtype=float))
     assert abs(default_estimate - explicit_estimate) < 1e-15

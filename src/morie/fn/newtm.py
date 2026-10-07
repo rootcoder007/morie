@@ -47,7 +47,7 @@ def newton_method(
     x = np.atleast_1d(np.asarray(x0, dtype=float)).copy()
     n = len(x)
     converged = False
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         fx = np.atleast_1d(np.asarray(f(x[0] if scalar else x), dtype=float))
         if np.linalg.norm(fx) < tol:
             converged = True

@@ -3,8 +3,7 @@
 import math
 
 from morie.fn import _schab_gwr as G
-from morie.fn.gwrcal import (bandwidth_profile, global_ols_aicc,
-                             gwr_bandwidth_select, gwr_calibrate)
+from morie.fn.gwrcal import bandwidth_profile, global_ols_aicc, gwr_bandwidth_select, gwr_calibrate
 
 
 def _lcg(seed):
@@ -13,12 +12,12 @@ def _lcg(seed):
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
 def _gauss(r):
-    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * \
-        math.cos(2 * math.pi * r())
+    return math.sqrt(-2 * math.log(max(r(), 1e-12))) * math.cos(2 * math.pi * r())
 
 
 def _panel(seed=3, varying=True, n=60):
@@ -36,18 +35,16 @@ def _panel(seed=3, varying=True, n=60):
 
 def test_a_huge_bandwidth_is_ordinary_least_squares():
     from morie.fn import _array_core as np
+
     y, X, C = _panel()
     D = G.pairwise_distances(C)
     fit = G.gwr_fit(y, X, D, 1e6, "gaussian", False)
-    beta, _, _, _ = np.linalg.lstsq(np.asarray(X, dtype=float),
-                                    np.asarray(y, dtype=float))
+    beta, _, _, _ = np.linalg.lstsq(np.asarray(X, dtype=float), np.asarray(y, dtype=float))
     for i in (0, 17, len(y) - 1):
         for j in (0, 1):
             assert abs(float(fit["params"][i][j]) - float(beta[j])) < 1e-6
     assert abs(float(fit["tr_S"]) - 2.0) < 1e-6
-    assert abs(G.aicc_from_parts(len(y), float(fit["sigma2"]),
-                                 float(fit["tr_S"])) -
-               global_ols_aicc(y, X)) < 1e-6
+    assert abs(G.aicc_from_parts(len(y), float(fit["sigma2"]), float(fit["tr_S"])) - global_ols_aicc(y, X)) < 1e-6
 
 
 def test_the_criteria_match_their_formulae():
@@ -56,11 +53,8 @@ def test_the_criteria_match_their_formulae():
     fit = G.gwr_fit(y, X, D, 2.0, "gaussian", False)
     n = len(y)
     s2, tr = float(fit["sigma2"]), float(fit["tr_S"])
-    want_aic = (2 * n * math.log(math.sqrt(s2)) +
-                n * math.log(2 * math.pi) + n + tr)
-    want_aicc = (2 * n * math.log(math.sqrt(s2)) +
-                 n * math.log(2 * math.pi) +
-                 n * (n + tr) / (n - 2.0 - tr))
+    want_aic = 2 * n * math.log(math.sqrt(s2)) + n * math.log(2 * math.pi) + n + tr
+    want_aicc = 2 * n * math.log(math.sqrt(s2)) + n * math.log(2 * math.pi) + n * (n + tr) / (n - 2.0 - tr)
     assert abs(G.aic_from_parts(n, s2, tr) - want_aic) < 1e-9
     assert abs(G.aicc_from_parts(n, s2, tr) - want_aicc) < 1e-9
     assert G.aicc_from_parts(n, s2, tr) > G.aic_from_parts(n, s2, tr)
@@ -68,6 +62,7 @@ def test_the_criteria_match_their_formulae():
 
 def test_cv_is_leave_one_out():
     from morie.fn import _array_core as np
+
     y, X, C = _panel(n=30)
     D = G.pairwise_distances(C)
     cv = G.cv_score(y, X, D, 2.0, "gaussian", False)
@@ -75,11 +70,8 @@ def test_cv_is_leave_one_out():
     for i in range(len(y)):
         w = [float(t) for t in G.kernel_weights(D[i], 2.0, "gaussian")]
         w[i] = 0.0
-        b_i, _, _ = G._wls(np.asarray(X, dtype=float),
-                           np.asarray(y, dtype=float),
-                           np.asarray(w, dtype=float))
-        by_hand += (y[i] - sum(X[i][j] * float(b_i[j])
-                               for j in range(2))) ** 2
+        b_i, _, _ = G._wls(np.asarray(X, dtype=float), np.asarray(y, dtype=float), np.asarray(w, dtype=float))
+        by_hand += (y[i] - sum(X[i][j] * float(b_i[j]) for j in range(2))) ** 2
     assert abs(cv - by_hand) < 1e-8
 
 
@@ -144,15 +136,16 @@ def test_profile_is_returned():
 
 def test_validation():
     y, X, C = _panel(n=20)
-    for call in (lambda: gwr_calibrate([1.0, 2.0], [[1.0], [1.0]],
-                                       [[0.0], [1.0]]),
-                 lambda: gwr_calibrate(y, X[:-1], C),
-                 lambda: gwr_calibrate(y, X, C[:-1]),
-                 lambda: gwr_calibrate(y, X, C, kernel="epanechnikov"),
-                 lambda: gwr_calibrate(y, X, C, criterion="bic"),
-                 lambda: gwr_calibrate(y, X, C, search="brent"),
-                 lambda: gwr_calibrate(y, X, C, bounds=(5.0, 1.0)),
-                 lambda: gwr_calibrate([float("nan")] + y[1:], X, C)):
+    for call in (
+        lambda: gwr_calibrate([1.0, 2.0], [[1.0], [1.0]], [[0.0], [1.0]]),
+        lambda: gwr_calibrate(y, X[:-1], C),
+        lambda: gwr_calibrate(y, X, C[:-1]),
+        lambda: gwr_calibrate(y, X, C, kernel="epanechnikov"),
+        lambda: gwr_calibrate(y, X, C, criterion="bic"),
+        lambda: gwr_calibrate(y, X, C, search="brent"),
+        lambda: gwr_calibrate(y, X, C, bounds=(5.0, 1.0)),
+        lambda: gwr_calibrate([float("nan")] + y[1:], X, C),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

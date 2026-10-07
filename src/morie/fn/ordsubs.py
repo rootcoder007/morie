@@ -32,8 +32,7 @@ def ordsubs(N, n):
     Createspace Independent Publishing. Eqs. (1.5)-(1.6).
     """
     count = _morin.partial_permutations(N, n)
-    payload = {"n_objects": float(N), "n_picks": float(n),
-               "count": float(count), "forms_agree": 1.0}
+    payload = {"n_objects": float(N), "n_picks": float(n), "count": float(count), "forms_agree": 1.0}
     return RichResult(
         title="Ordered subgroups N_P_n = N!/(N-n)!.",
         summary_lines=[("N", N), ("n", n), ("count", count)],

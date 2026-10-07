@@ -85,10 +85,7 @@ def gaussian_dp(mech=None, mu=None, alpha=None, epsilon=1.0):
             raise ValueError("gaussian_dp: every alpha must lie in (0, 1)")
     e = float(epsilon)
     trade = [core.pnorm(core.qnorm(1.0 - v) - m) for v in a]
-    if m == 0.0:
-        delta = 0.0
-    else:
-        delta = core.pnorm(-e / m + m / 2.0) - math.exp(e) * core.pnorm(-e / m - m / 2.0)
+    delta = 0.0 if m == 0.0 else core.pnorm(-e / m + m / 2.0) - math.exp(e) * core.pnorm(-e / m - m / 2.0)
     if delta < 0:
         delta = 0.0
     return RichResult(

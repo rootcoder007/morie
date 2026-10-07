@@ -63,13 +63,18 @@ def normalized_inverse_gauss(y, alpha=1.0, tau=1.0, u_max=10.0, n_grid=6000):
     for v in vals:
         if v not in seen:
             seen.append(v)
-    return RichResult(payload={
-        "estimate": float(base["estimate"]),
-        "theory": float(base["theory"]),
-        "gap": float(base["gap"]),
-        "alpha": float(alpha), "tau": t,
-        "n": len(vals), "n_distinct": len(seen),
-        "method": "Normalized inverse-Gaussian process (Lijoi-Mena-Prunster 2005)"})
+    return RichResult(
+        payload={
+            "estimate": float(base["estimate"]),
+            "theory": float(base["theory"]),
+            "gap": float(base["gap"]),
+            "alpha": float(alpha),
+            "tau": t,
+            "n": len(vals),
+            "n_distinct": len(seen),
+            "method": "Normalized inverse-Gaussian process (Lijoi-Mena-Prunster 2005)",
+        }
+    )
 
 
 def cheatsheet():

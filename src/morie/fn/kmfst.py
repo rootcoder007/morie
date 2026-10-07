@@ -19,8 +19,7 @@ def word_ngrams(word, n_min, n_max, boundary="<>"):
     if not word:
         raise ValueError("the empty word has no n-grams.")
     marked = boundary[0] + str(word) + boundary[1]
-    grams = [marked[i:i + n] for n in range(n_min, n_max + 1)
-             for i in range(len(marked) - n + 1)]
+    grams = [marked[i : i + n] for n in range(n_min, n_max + 1) for i in range(len(marked) - n + 1)]
     if marked not in grams:
         grams.append(marked)
     return grams
@@ -69,21 +68,25 @@ def kamath_fasttext_subword(word, ngram_embeddings, n_min, n_max):
             dim, total = z.size, z.copy()
         else:
             if z.size != dim:
-                raise ValueError(
-                    f"n-gram {g!r} has width {z.size}, expected {dim}.")
+                raise ValueError(f"n-gram {g!r} has width {z.size}, expected {dim}.")
             total = total + z
         known += 1
     if total is None:
         raise ValueError(
-            f"none of the {len(grams)} n-grams of {word!r} is in the "
-            "table, so the word has no representation at all.")
-    return RichResult(payload={
-        "vector": [float(v) for v in total],
-        "estimate": float(total[0]),
-        "ngrams": grams, "n_known": known,
-        "n_missing": len(missing), "missing": missing,
-        "n": len(grams),
-        "method": "FastText subword sum v_w = sum z_g"})
+            f"none of the {len(grams)} n-grams of {word!r} is in the table, so the word has no representation at all."
+        )
+    return RichResult(
+        payload={
+            "vector": [float(v) for v in total],
+            "estimate": float(total[0]),
+            "ngrams": grams,
+            "n_known": known,
+            "n_missing": len(missing),
+            "missing": missing,
+            "n": len(grams),
+            "method": "FastText subword sum v_w = sum z_g",
+        }
+    )
 
 
 def cheatsheet():

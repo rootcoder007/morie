@@ -213,6 +213,7 @@ def cheatsheet() -> str:
         "climate and agreement statistics."
     )
 
+
 # alias kept from the retired placeholder of the same name
 breakdown_point = empirical_breakdown_point
 

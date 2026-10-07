@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -30,18 +28,20 @@ def mvsml_ridge_lasso_elastic_eq_9_32(alpha, X, y, K=None, fit=False, C=None):
     Keys: estimate."""
     if fit:
         f = _gp.svm_fit_dual(X, y, C=C, K=K)
-        res = RichResult(payload={"estimate": f["objective"],
-                                  "L": f["objective"],
-                                  "alpha": f["alpha"],
-                                  "beta": f["beta"],
-                                  "beta0": f["beta0"],
-                                  "support_vectors":
-                                      f["support_vectors"],
-                                  "method": "dual problem, fitted (MVSML 2022 eq. 9.32)"})
+        res = RichResult(
+            payload={
+                "estimate": f["objective"],
+                "L": f["objective"],
+                "alpha": f["alpha"],
+                "beta": f["beta"],
+                "beta0": f["beta0"],
+                "support_vectors": f["support_vectors"],
+                "method": "dual problem, fitted (MVSML 2022 eq. 9.32)",
+            }
+        )
     else:
         val = _gp.svm_dual_objective(alpha, X, y, K=K)
-        res = RichResult(payload={"estimate": val, "L": val,
-                                  "method": "dual objective (MVSML 2022 eq. 9.32)"})
+        res = RichResult(payload={"estimate": val, "L": val, "method": "dual objective (MVSML 2022 eq. 9.32)"})
     return with_describe_pointer(res, "msm212")
 
 

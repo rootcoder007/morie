@@ -56,11 +56,16 @@ def hrz_sieve_iv(T, Ey_w, K=None):
     g = np.zeros(k)
     g[:Kd] = gk
     cond = float(np.linalg.cond(Tk.T @ Tk))
-    return RichResult(payload={"g": g, "K": Kd,
-                               "residual_norm": float(np.linalg.norm(Tk @ gk - b)),
-                               "condition_number_at_K": cond,
-                               "regularisation": "truncation",
-                               "method": "Sieve NPIV; K regularises exactly as alpha does"})
+    return RichResult(
+        payload={
+            "g": g,
+            "K": Kd,
+            "residual_norm": float(np.linalg.norm(Tk @ gk - b)),
+            "condition_number_at_K": cond,
+            "regularisation": "truncation",
+            "method": "Sieve NPIV; K regularises exactly as alpha does",
+        }
+    )
 
 
 def cheatsheet():

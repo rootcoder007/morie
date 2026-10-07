@@ -101,10 +101,8 @@ def wasserman_boosting(X, y, model, T):
         if err >= 0.5:
             break
         rounds += 1
-        if err == 0.0:
-            alpha = 10.0  # capped: a perfect stump dominates the committee
-        else:
-            alpha = 0.5 * math.log((1.0 - err) / err)
+        # capped: a perfect stump dominates the committee
+        alpha = 10.0 if err == 0.0 else 0.5 * math.log((1.0 - err) / err)
         alphas.append(float(alpha))
         F += alpha * pred
         if err == 0.0:
@@ -113,11 +111,16 @@ def wasserman_boosting(X, y, model, T):
         w /= np.sum(w)
     committee = np.where(F >= 0, 1, -1)
     train_err = float(np.mean(committee != y))
-    return RichResult(payload={
-        "estimate": train_err,
-        "prediction": [int(v) for v in committee],
-        "alphas": alphas, "rounds_used": rounds, "n": int(n),
-        "method": "AdaBoost.M1, exhaustive stumps, deterministic ties; perfect-stump alpha capped at 10"})
+    return RichResult(
+        payload={
+            "estimate": train_err,
+            "prediction": [int(v) for v in committee],
+            "alphas": alphas,
+            "rounds_used": rounds,
+            "n": int(n),
+            "method": "AdaBoost.M1, exhaustive stumps, deterministic ties; perfect-stump alpha capped at 10",
+        }
+    )
 
 
 def cheatsheet():

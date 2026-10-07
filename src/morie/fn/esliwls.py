@@ -102,7 +102,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
         raise ValueError(f"beta0 must have {p} entries")
 
     converged = False
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         eta = X @ beta
         if family == "binomial":
             mu = 1.0 / (1.0 + np.exp(-np.clip(eta, -500, 500)))
@@ -138,10 +138,7 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
     # Under separation the fitted probabilities are driven to exactly 0/1 while
     # the coefficients are still climbing, so the probabilities detect it a long
     # way before any coefficient threshold does.
-    separated = bool(
-        family == "binomial"
-        and (np.max(np.abs(beta)) > 25 or np.all(np.abs(mu - y) < 1e-6))
-    )
+    separated = bool(family == "binomial" and (np.max(np.abs(beta)) > 25 or np.all(np.abs(mu - y) < 1e-6)))
     try:
         cov = np.linalg.inv(X.T @ (X * w[:, None]))
         se = np.sqrt(np.clip(np.diag(cov), 0, None))
@@ -165,11 +162,17 @@ def esl_iwls(X, y, beta0=None, family="binomial", max_iter=50, tol=1e-8, add_int
         summary_lines=[("n", n), ("p", p), ("loglik", ll), ("iterations", it)],
         warnings=warn,
         payload={
-            "beta": beta, "se": se, "z": zstat,
+            "beta": beta,
+            "se": se,
+            "z": zstat,
             "p_value": 2 * norm.sf(np.abs(zstat)),
-            "fitted": mu, "loglik": ll, "deviance": float(-2 * ll),
-            "n_iter": int(it), "converged": bool(converged),
-            "separated": separated, "family": family,
+            "fitted": mu,
+            "loglik": ll,
+            "deviance": float(-2 * ll),
+            "n_iter": int(it),
+            "converged": bool(converged),
+            "separated": separated,
+            "family": family,
             "method": "esl_iwls",
         },
     )

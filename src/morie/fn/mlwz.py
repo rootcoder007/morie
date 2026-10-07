@@ -99,11 +99,19 @@ def multilevel_within_cluster_z(y, cluster, ddof=1):
             bad += 1
         else:
             z.append(cent[i] / s)
-    return RichResult(payload={
-        "estimate": z, "z": z, "cluster_means": means, "cluster_sds": sds,
-        "cluster_ids": ids, "n_undefined": bad, "n_clusters": len(ids),
-        "n": n,
-        "method": "Within-cluster standardisation (cluster z-score)"})
+    return RichResult(
+        payload={
+            "estimate": z,
+            "z": z,
+            "cluster_means": means,
+            "cluster_sds": sds,
+            "cluster_ids": ids,
+            "n_undefined": bad,
+            "n_clusters": len(ids),
+            "n": n,
+            "method": "Within-cluster standardisation (cluster z-score)",
+        }
+    )
 
 
 multilevelwithinclusterz = multilevel_within_cluster_z

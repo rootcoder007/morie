@@ -27,7 +27,7 @@ test_that("case and legislation readers build the documented paths", {
   # local_mocked_bindings() cannot rebind the covr-instrumented namespace
   testthat::skip_on_covr()
   env <- new.env()
-  local_mocked_bindings(.package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie", .morie_canlii_call = cl_mock(env))
+  local_mocked_bindings(.package = if (isNamespaceLoaded("morie")) "morie" else "morie", .morie_canlii_call = cl_mock(env))
   cs <- morie_ingest_canlii_case("onsc", "2020onsc1234")
   expect_equal(env$path, "caseBrowse/en/onsc/2020onsc1234/")
   expect_equal(nrow(cs), 1L)
@@ -48,7 +48,7 @@ test_that("identifiers and languages are validated before any request", {
   # local_mocked_bindings() cannot rebind the covr-instrumented namespace
   testthat::skip_on_covr()
   env <- new.env()
-  local_mocked_bindings(.package = if (isNamespaceLoaded("rmorie")) "rmorie" else "morie", .morie_canlii_call = cl_mock(env))
+  local_mocked_bindings(.package = if (isNamespaceLoaded("morie")) "morie" else "morie", .morie_canlii_call = cl_mock(env))
   expect_error(morie_ingest_canlii_case("ONSC", "x"), "database_id must be one lower-case")
   expect_error(morie_ingest_canlii_case("onsc", "2020 onsc"), "case_id must be one lower-case")
   expect_error(morie_ingest_canlii_legislations(c("a", "b")), "database_id")

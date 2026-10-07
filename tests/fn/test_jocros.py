@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.jocros import joseph_croston_intermittent
 
 
@@ -29,7 +28,7 @@ def test_jocros_basic():
 
 def test_jocros_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(44)
+    np.random.default_rng(44)
     # Constant positive demand: interval = 1, CV^2 = 0 -> "smooth".
     y = [5] * 20
     result = joseph_croston_intermittent(y, alpha=0.2)
@@ -57,7 +56,7 @@ import morie.fn.jocros as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -56,7 +56,11 @@ def gibbons_kendall_tau(x, y):
     var = 2.0 * (2 * n + 5) / (9.0 * n * (n - 1))
     return RichResult(
         payload={
-            "tau": float(tau), "P": P, "Q": Q, "n_pairs": npairs, "n": int(n),
+            "tau": float(tau),
+            "P": P,
+            "Q": Q,
+            "n_pairs": npairs,
+            "n": int(n),
             "z": float(tau / np.sqrt(var)),
             "method": "Kendall tau = (P - Q)/C(n,2) (Gibbons Ch. 11.2)",
         }

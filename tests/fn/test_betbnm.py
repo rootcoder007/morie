@@ -1,7 +1,5 @@
 """Tests for betbnm.beta_binomial."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.betbnm import beta_binomial
 
 
@@ -14,8 +12,16 @@ def test_betbnm_basic():
 
     # The function returns a RichResult (dict-like) with these documented keys.
     expected_keys = {
-        "postalpha", "postbeta", "postmean", "postvar", "postmode",
-        "priormean", "logmarglik", "predmean", "predvar", "m",
+        "postalpha",
+        "postbeta",
+        "postmean",
+        "postvar",
+        "postmode",
+        "priormean",
+        "logmarglik",
+        "predmean",
+        "predvar",
+        "m",
     }
     assert expected_keys.issubset(set(result.keys()))
 
@@ -45,12 +51,11 @@ def test_betbnm_basic():
     # log marginal likelihood: lgamma(n+1) - lgamma(y+1) - lgamma(n-y+1)
     # + lbeta(alpha+y, beta+n-y) - lbeta(alpha, beta).
     from math import lgamma
+
     def lbeta(x, z):
         return lgamma(x) + lgamma(z) - lgamma(x + z)
-    log_marg_expected = (
-        lgamma(n + 1.0) - lgamma(y + 1.0) - lgamma(n - y + 1.0)
-        + lbeta(pa, pb) - lbeta(alpha, beta)
-    )
+
+    log_marg_expected = lgamma(n + 1.0) - lgamma(y + 1.0) - lgamma(n - y + 1.0) + lbeta(pa, pb) - lbeta(alpha, beta)
     assert result["logmarglik"] == log_marg_expected
 
 
@@ -70,6 +75,7 @@ def test_betbnm_edge():
 
     # Postmode is NaN when either posterior shape is <= 1.
     import math
+
     assert math.isnan(result["postmode"])
 
     # Predictive uses the supplied m rather than defaulting to n.

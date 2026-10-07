@@ -9,8 +9,7 @@ def test_chnntp_basic():
     # Binary symmetric channel with crossover probability 0.1.
     # Row x is the output distribution given input x.
     p = 0.1
-    channel = [[1.0 - p, p],
-               [p, 1.0 - p]]
+    channel = [[1.0 - p, p], [p, 1.0 - p]]
     result = channel_capacity(channel)
 
     # For a BSC the capacity is 1 - H2(p), where H2(p) = -p log2 p - (1-p) log2(1-p).
@@ -45,8 +44,7 @@ def test_chnntp_basic():
 def test_chnntp_edge():
     """Test edge cases on a noiseless and a completely-noisy channel."""
     # Noiseless binary channel: each input maps deterministically to its own output.
-    noiseless = [[1.0, 0.0],
-                 [0.0, 1.0]]
+    noiseless = [[1.0, 0.0], [0.0, 1.0]]
     result = channel_capacity(noiseless)
     # Capacity of a noiseless channel is log2(|X|) = 1 bit here.
     assert np.all(np.isfinite(np.asarray(result["capacity_bits"], dtype=float)))  # N6: was a generator-guessed value
@@ -55,8 +53,7 @@ def test_chnntp_edge():
 
     # Completely noisy channel: both inputs give the same output distribution,
     # so X and Y are independent and the capacity must be ~0.
-    noisy = [[0.5, 0.5],
-             [0.5, 0.5]]
+    noisy = [[0.5, 0.5], [0.5, 0.5]]
     result = channel_capacity(noisy)
     assert abs(result["capacity_bits"]) < 1e-6
     assert abs(result["capacity_nats"]) < 1e-6
@@ -64,9 +61,11 @@ def test_chnntp_edge():
 
 def _log2(x):
     import math
+
     return math.log(x, 2)
 
 
 def _ln(x):
     import math
+
     return math.log(x)

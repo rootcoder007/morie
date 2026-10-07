@@ -3,15 +3,13 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.rkhsmt import rkhs_multitrait
 
 
 def _make_psd(rng, J, r):
     """Build a J-by-J symmetric positive-(semi)definite matrix via A @ A.T + ridge."""
     A = rng.normal(0, 1, (J, r))
-    K = [[sum(A[i][k] * A[j][k] for k in range(r)) for j in range(J)]
-         for i in range(J)]
+    K = [[sum(A[i][k] * A[j][k] for k in range(r)) for j in range(J)] for i in range(J)]
     # small diagonal ridge to make it strictly positive definite
     for i in range(J):
         K[i][i] += 1e-6

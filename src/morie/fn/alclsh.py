@@ -24,20 +24,22 @@ def alammar_classification_head(h_cls, W_cls, b):
     W = np.atleast_2d(np.asarray(W_cls, dtype=float))
     b = np.atleast_1d(np.asarray(b, dtype=float))
     if W.shape[1] != len(h):
-        raise ValueError(
-            f"W has {W.shape[1]} columns but h_cls has {len(h)} entries.")
+        raise ValueError(f"W has {W.shape[1]} columns but h_cls has {len(h)} entries.")
     if W.shape[0] != len(b):
-        raise ValueError(
-            f"W has {W.shape[0]} rows but b has {len(b)} entries.")
+        raise ValueError(f"W has {W.shape[0]} rows but b has {len(b)} entries.")
     logits = W @ h + b
     z = logits - logits.max()
     p = np.exp(z) / np.exp(z).sum()
-    return RichResult(payload={
-        "logits": [float(v) for v in logits],
-        "probabilities": [float(v) for v in p],
-        "predicted_class": int(np.argmax(logits)),
-        "estimate": float(logits[0]), "n": len(b),
-        "method": "Linear classification head + softmax (Alammar Ch 4)"})
+    return RichResult(
+        payload={
+            "logits": [float(v) for v in logits],
+            "probabilities": [float(v) for v in p],
+            "predicted_class": int(np.argmax(logits)),
+            "estimate": float(logits[0]),
+            "n": len(b),
+            "method": "Linear classification head + softmax (Alammar Ch 4)",
+        }
+    )
 
 
 def cheatsheet():

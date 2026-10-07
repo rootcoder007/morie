@@ -1,7 +1,5 @@
 """Tests for rgnrnst.rangayyan_nernst_potential."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsaphys import rangayyan_nernst_potential
 
 

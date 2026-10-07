@@ -28,17 +28,16 @@ def variance_components_sigma2_u(ms_between, ms_within, n_per_cluster):
     """
     value = _ca_crim.variance_components_sigma2_u(ms_between, ms_within, n_per_cluster)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.6)"
     return RichResult(
-        title='Variance component sigma2_u = (MSbetween - MSwithin)/n',
+        title="Variance component sigma2_u = (MSbetween - MSwithin)/n",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e6: sigma^2_u = (MS_between - MS_within) / n [Weisburd et al. 2022, eq. 7.6]'
+    return "ca7e6: sigma^2_u = (MS_between - MS_within) / n [Weisburd et al. 2022, eq. 7.6]"

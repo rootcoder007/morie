@@ -1,8 +1,8 @@
 """Tests for morie.fn.scstd — score standardization."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.scstd import score_standardize
 
 

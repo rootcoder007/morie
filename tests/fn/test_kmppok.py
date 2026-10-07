@@ -2,8 +2,6 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
 from morie.fn.kmppok import kamath_ppo_rlhf_objective
 
@@ -19,8 +17,7 @@ def test_kmppok_basic():
     beta = 0.8
     result = kamath_ppo_rlhf_objective(rewards, logp_theta, logp_ref, beta)
     assert isinstance(result, dict)
-    for key in ("estimate", "objective", "mean_reward", "kl_estimate",
-                "penalty", "per_sample", "beta", "n", "method"):
+    for key in ("estimate", "objective", "mean_reward", "kl_estimate", "penalty", "per_sample", "beta", "n", "method"):
         assert key in result
     assert math.isfinite(result["estimate"])
     assert math.isfinite(result["objective"])
@@ -64,7 +61,7 @@ import morie.fn.kmppok as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

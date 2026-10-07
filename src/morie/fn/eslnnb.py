@@ -84,13 +84,19 @@ def esl_naive_bayes(X, y, query=None, var_smoothing=1e-9):
         ll = -0.5 * np.sum(np.log(2.0 * np.pi * v) + (Q - mus[j]) ** 2 / v, axis=1)
         L[:, j] = ll + np.log(pis[j])
     pred = [classes[i] for i in np.argmax(L, axis=1)]
-    return RichResult(payload={
-        "estimate": pred[0], "prediction": pred,
-        "log_posterior": [float(v) for v in L.ravel()],
-        "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
-        "priors": [float(v) for v in pis],
-        "n": int(n), "p": int(p), "K": int(K),
-        "method": "Gaussian naive Bayes in log space; posteriors over-confident by design"})
+    return RichResult(
+        payload={
+            "estimate": pred[0],
+            "prediction": pred,
+            "log_posterior": [float(v) for v in L.ravel()],
+            "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
+            "priors": [float(v) for v in pis],
+            "n": int(n),
+            "p": int(p),
+            "K": int(K),
+            "method": "Gaussian naive Bayes in log space; posteriors over-confident by design",
+        }
+    )
 
 
 def cheatsheet():

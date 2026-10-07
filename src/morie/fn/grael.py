@@ -59,15 +59,11 @@ def geron_autoencoder_reconstruction_loss(X, encoded, decoded):
     decoded = np.atleast_2d(np.asarray(decoded, dtype=float))
     encoded = np.atleast_2d(np.asarray(encoded, dtype=float))
     if X.shape != decoded.shape:
-        raise ValueError(
-            f"decoded shape {decoded.shape} must match X shape {X.shape}."
-        )
+        raise ValueError(f"decoded shape {decoded.shape} must match X shape {X.shape}.")
     if X.size == 0:
         raise ValueError("X is empty.")
     if encoded.shape[0] != X.shape[0]:
-        raise ValueError(
-            f"encoded has {encoded.shape[0]} rows but X has {X.shape[0]}."
-        )
+        raise ValueError(f"encoded has {encoded.shape[0]} rows but X has {X.shape[0]}.")
     if not np.all(np.isfinite(X)) or not np.all(np.isfinite(decoded)):
         raise ValueError("X and decoded must be finite.")
 

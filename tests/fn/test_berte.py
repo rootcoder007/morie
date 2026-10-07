@@ -1,7 +1,9 @@
 """Tests for berte. Full anchor: ledger/wave3/anchor_nlp_family.py."""
+
 import pytest
+
 from morie.fn import _array_core as np
-from morie.fn.berte import (attention_weights, bert_encoder, layer_norm)
+from morie.fn.berte import attention_weights, bert_encoder, layer_norm
 
 L, D, H = 5, 8, 2
 
@@ -29,14 +31,12 @@ def test_padding_does_not_leak_into_the_softmax(X):
     batch happened to need."""
     pad = [True, True, True, False, False]
     wp = attention_weights(X, X, H, pad_mask=pad)
-    assert max(wp[h][i][j] for h in range(H) for i in range(L)
-               for j in (3, 4)) < 1e-12
+    assert max(wp[h][i][j] for h in range(H) for i in range(L) for j in (3, 4)) < 1e-12
     short = attention_weights(X[:3], X[:3], H)
     for h in range(H):
         for i in range(3):
             for j in range(3):
-                assert wp[h][i][j] == pytest.approx(short[h][i][j],
-                                                    abs=1e-12)
+                assert wp[h][i][j] == pytest.approx(short[h][i][j], abs=1e-12)
 
 
 def test_layer_norm_centres_and_scales():
@@ -54,11 +54,9 @@ def test_the_encoder_stack(X):
         r = np.random.default_rng(seed)
 
         def M(a, b):
-            return [[r.standard_normal() * 0.2 for _ in range(b)]
-                    for _ in range(a)]
+            return [[r.standard_normal() * 0.2 for _ in range(b)] for _ in range(a)]
 
-        return (M(D, D), M(D, D), M(D, D), M(D, D), M(D, 16),
-                [0.0] * 16, M(16, D), [0.0] * D)
+        return (M(D, D), M(D, D), M(D, D), M(D, D), M(D, 16), [0.0] * 16, M(16, D), [0.0] * D)
 
     r = bert_encoder(X, [blk(1), blk(2)], H)
     assert r["L"] == L and r["d"] == D

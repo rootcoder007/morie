@@ -67,10 +67,7 @@ def horowitz_average_derivative(x, y, bandwidth=None):
     # IID-style SE
     psi = -2 * y[:, None] * grad_f  # (n, p)
     cov = np.cov(psi, rowvar=False) / n
-    if p == 1:
-        se = np.array([float(np.sqrt(max(cov, 0)))])
-    else:
-        se = np.sqrt(np.maximum(np.diag(cov), 0))
+    se = np.array([float(np.sqrt(max(cov, 0)))]) if p == 1 else np.sqrt(np.maximum(np.diag(cov), 0))
     return RichResult(
         payload={
             "estimate": delta.astype(float) if delta.size > 1 else float(delta[0]),

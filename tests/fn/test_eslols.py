@@ -1,7 +1,6 @@
 """Tests for eslols.esl_ols_normal_equations."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslols import esl_ols_normal_equations
 
 

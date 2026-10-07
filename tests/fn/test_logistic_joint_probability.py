@@ -1,7 +1,6 @@
 """Tests for logistic_joint_probability.logistic_joint_probability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.logistic_joint_probability import (
     logistic_joint_probability,
 )

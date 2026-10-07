@@ -71,13 +71,12 @@ def sparseattn(Q, K, V, S=None):
         if len(Sm) != nq or len(Sm[0]) != nk:
             raise ValueError("S must be nq by nk")
     sc = math.sqrt(d)
-    sco = [[sum(Qm[i][t] * Km[j][t] for t in range(d)) / sc
-            for j in range(nk)] for i in range(nq)]
+    sco = [[sum(Qm[i][t] * Km[j][t] for t in range(d)) / sc for j in range(nk)] for i in range(nq)]
     Wt = []
     for i in range(nq):
         allow = [j for j in range(nk) if Sm[i][j] != 0.0]
         if not allow:
-            raise ValueError("row %d of S allows no key" % i)
+            raise ValueError(f"row {int(i)} of S allows no key")
         mx = max(sco[i][j] for j in allow)
         e = [0.0] * nk
         tot = 0.0
@@ -85,14 +84,21 @@ def sparseattn(Q, K, V, S=None):
             e[j] = math.exp(sco[i][j] - mx)
             tot += e[j]
         Wt.append([v / tot for v in e])
-    out = [[sum(Wt[i][j] * Vm[j][t] for j in range(nk)) for t in range(dv)]
-           for i in range(nq)]
-    dens = sum(1 for i in range(nq) for j in range(nk)
-               if Sm[i][j] != 0.0) / float(nq * nk)
-    return RichResult(payload={
-        "out": out, "weight": Wt, "score": sco, "nq": nq, "nk": nk,
-        "d": d, "dv": dv, "density": dens,
-        "method": "Sparse scaled dot-product attention (Child et al. 2019)"})
+    out = [[sum(Wt[i][j] * Vm[j][t] for j in range(nk)) for t in range(dv)] for i in range(nq)]
+    dens = sum(1 for i in range(nq) for j in range(nk) if Sm[i][j] != 0.0) / float(nq * nk)
+    return RichResult(
+        payload={
+            "out": out,
+            "weight": Wt,
+            "score": sco,
+            "nq": nq,
+            "nk": nk,
+            "d": d,
+            "dv": dv,
+            "density": dens,
+            "method": "Sparse scaled dot-product attention (Child et al. 2019)",
+        }
+    )
 
 
 sparse_attention = sparseattn

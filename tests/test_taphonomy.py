@@ -32,7 +32,7 @@ from morie.taphonomy import (
 
 def test_schema_is_typed_zero_row_template():
     s = taphonomy_schema()
-    assert (hasattr(s, "columns") or hasattr(s, "_cols"))
+    assert hasattr(s, "columns") or hasattr(s, "_cols")
     assert len(s) == 0
     assert {"lime_treatment", "preservation_score", "pxrf_ca_ppm"} <= set(s.columns)
     assert s.attrs["role"]["lime_treatment"] == "treatment"
@@ -60,17 +60,15 @@ def _synthetic(n=100, seed=1):
 
 def test_cate_none_reports_no_se_but_keeps_dispersion():
     r = taphonomy_preservation_delta(_synthetic(), estimator="cate", se_method="none")
-    assert np.isfinite(r["value"])       # point estimate is a float
-    assert r["se"] is None               # no invalid SE emitted
+    assert np.isfinite(r["value"])  # point estimate is a float
+    assert r["se"] is None  # no invalid SE emitted
     assert r["p_value"] is None
-    assert np.isfinite(r["cate_sd"])     # heterogeneity still reported
+    assert np.isfinite(r["cate_sd"])  # heterogeneity still reported
     assert len(r["cate_per_unit"]) == 100
 
 
 def test_cate_bootstrap_gives_valid_se_and_ordered_ci():
-    r = taphonomy_preservation_delta(
-        _synthetic(), estimator="cate", se_method="bootstrap", n_boot=15
-    )
+    r = taphonomy_preservation_delta(_synthetic(), estimator="cate", se_method="bootstrap", n_boot=15)
     assert r["se"] is not None and r["se"] > 0
     assert r["ci_lower"] < r["ci_upper"]
     assert r["p_value"] is not None
@@ -154,14 +152,11 @@ def test_bhm_recovers_effect_and_prior_shrinks():
     assert ((eff["prob_positive"] >= 0) & (eff["prob_positive"] <= 1)).all()
 
     b_tight = taphonomy_bhm(
-        df, covariates=["lime_treatment"],
+        df,
+        covariates=["lime_treatment"],
         priors={"lime_treatment": {"mean": 0.0, "sd": 0.01}},
     )
-    tight = float(
-        b_tight["coefficients"].loc[
-            b_tight["coefficients"]["term"] == "lime_treatment", "post_mean"
-        ].iloc[0]
-    )
+    tight = float(b_tight["coefficients"].loc[b_tight["coefficients"]["term"] == "lime_treatment", "post_mean"].iloc[0])
     assert abs(tight) < abs(lime_mean)  # tight prior at 0 pulls the estimate down
 
 
@@ -169,24 +164,17 @@ def test_bhm_cmdstanpy_backend_recovers_effect():
     pytest.importorskip("cmdstanpy")
     try:
         import cmdstanpy
+
         cmdstanpy.cmdstan_path()
     except Exception:  # noqa: BLE001
         pytest.skip("CmdStan not installed")
     rng = np.random.default_rng(1)
     n = 120
     lime = rng.integers(0, 2, n)
-    df = pd.DataFrame(
-        {"preservation_score": 0.5 * lime + rng.normal(0, 0.3, n),
-         "lime_treatment": lime}
-    )
-    fit = taphonomy_bhm(df, covariates=["lime_treatment"],
-                        backend="cmdstanpy", chains=2, iter=400)
+    df = pd.DataFrame({"preservation_score": 0.5 * lime + rng.normal(0, 0.3, n), "lime_treatment": lime})
+    fit = taphonomy_bhm(df, covariates=["lime_treatment"], backend="cmdstanpy", chains=2, iter=400)
     assert "NUTS" in fit["backend"]
-    eff = float(
-        fit["coefficients"].loc[
-            fit["coefficients"]["term"] == "lime_treatment", "post_mean"
-        ].iloc[0]
-    )
+    eff = float(fit["coefficients"].loc[fit["coefficients"]["term"] == "lime_treatment", "post_mean"].iloc[0])
     assert 0.3 < eff < 0.7
     assert fit["stanfit"] is not None
 
@@ -244,19 +232,14 @@ def test_end_to_end_simulate_ilr_bhm_recovers_lime_signal():
     ilr = taphonomy_ilr(raw.iloc[:, :6])
     df = pd.DataFrame(
         {
-            "preservation_score": 0.6 * raw["lime_treatment"].to_numpy()
-            + rng.normal(0, 0.3, len(raw)),
+            "preservation_score": 0.6 * raw["lime_treatment"].to_numpy() + rng.normal(0, 0.3, len(raw)),
             "lime_treatment": raw["lime_treatment"].to_numpy(),
         }
     )
     for j in range(ilr.shape[1]):
         df[f"ilr{j + 1}"] = ilr[:, j]
     fit = taphonomy_bhm(df, covariates=["lime_treatment"])
-    eff = float(
-        fit["coefficients"].loc[
-            fit["coefficients"]["term"] == "lime_treatment", "post_mean"
-        ].iloc[0]
-    )
+    eff = float(fit["coefficients"].loc[fit["coefficients"]["term"] == "lime_treatment", "post_mean"].iloc[0])
     assert eff > 0.3
 
 
@@ -264,9 +247,7 @@ def test_usgs_soil_zip_parser_reads_csv_member(tmp_path):
     import zipfile
 
     csv = tmp_path / "ngdbsoil.csv"
-    pd.DataFrame(
-        {"lab_id": [1, 2], "ca_pct": [3.1, 8.2], "fe_pct": [2.0, 1.1]}
-    ).to_csv(csv, index=False)
+    pd.DataFrame({"lab_id": [1, 2], "ca_pct": [3.1, 8.2], "fe_pct": [2.0, 1.1]}).to_csv(csv, index=False)
     zpath = tmp_path / "ngdbsoil-csv.zip"
     with zipfile.ZipFile(zpath, "w") as zf:
         zf.write(csv, arcname="ngdbsoil.csv")
@@ -286,11 +267,11 @@ def test_morphosource_key_resolves_arg_then_env_then_errors(monkeypatch):
     from morie.taphonomy import _morphosource_key
 
     monkeypatch.delenv("MORPHOSOURCE_API_KEY", raising=False)
-    assert _morphosource_key("explicit") == "explicit"          # arg wins
+    assert _morphosource_key("explicit") == "explicit"  # arg wins
     monkeypatch.setenv("MORPHOSOURCE_API_KEY", "from_env")
-    assert _morphosource_key() == "from_env"                    # env fallback
+    assert _morphosource_key() == "from_env"  # env fallback
     monkeypatch.delenv("MORPHOSOURCE_API_KEY", raising=False)
-    assert _morphosource_key(required=False) is None            # optional
+    assert _morphosource_key(required=False) is None  # optional
     with pytest.raises(ValueError, match="MORPHOSOURCE_API_KEY"):
         _morphosource_key(required=True)
 
@@ -298,8 +279,7 @@ def test_morphosource_key_resolves_arg_then_env_then_errors(monkeypatch):
 def test_morphosource_search_params_encode_query_facets_paging():
     from morie.taphonomy import _morphosource_search_params
 
-    p = _morphosource_search_params(query="cranium", media_type="Mesh",
-                                    per_page=25, page=2)
+    p = _morphosource_search_params(query="cranium", media_type="Mesh", per_page=25, page=2)
     assert p["q"] == "cranium"
     assert p["search_field"] == "all_fields"
     assert p["f.media_type"] == "Mesh"

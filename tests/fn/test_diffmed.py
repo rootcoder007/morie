@@ -1,7 +1,5 @@
 """Tests for diffmed.difference_in_coefficients."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.diffmed import difference_in_coefficients
 
 

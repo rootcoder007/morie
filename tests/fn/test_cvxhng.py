@@ -1,7 +1,6 @@
 """Tests for cvxhng.boyd_hinge_loss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxhng import boyd_hinge_loss
 
 
@@ -11,6 +10,8 @@ def test_cvxhng_basic():
     result = boyd_hinge_loss(u)
     assert isinstance(result, dict)
     assert "loss" in result
+
+
 def test_cvxhng_edge():
     """Test edge cases."""
     u = np.random.default_rng(44).normal(0, 1, 100)

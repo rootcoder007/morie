@@ -1,7 +1,6 @@
 """Tests for hmlcv.geron_learning_curves."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlcv import geron_learning_curves
 
 

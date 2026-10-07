@@ -24,26 +24,31 @@ def kamath_ch2_decoder_token_distribution(s_t_1, y_t_1, c, W=None):
     >>> sum(out["distribution"])
     1.0
     """
-    feats = np.concatenate([
-        np.atleast_1d(np.asarray(s_t_1, dtype=float)),
-        np.atleast_1d(np.asarray(y_t_1, dtype=float)),
-        np.atleast_1d(np.asarray(c, dtype=float))])
+    feats = np.concatenate(
+        [
+            np.atleast_1d(np.asarray(s_t_1, dtype=float)),
+            np.atleast_1d(np.asarray(y_t_1, dtype=float)),
+            np.atleast_1d(np.asarray(c, dtype=float)),
+        ]
+    )
     if W is not None:
         Wm = np.atleast_2d(np.asarray(W, dtype=float))
         if Wm.shape[1] != len(feats):
-            raise ValueError(
-                f"W has {Wm.shape[1]} columns but the concatenated "
-                f"features have {len(feats)}.")
+            raise ValueError(f"W has {Wm.shape[1]} columns but the concatenated features have {len(feats)}.")
         scores = Wm @ feats
     else:
         scores = feats
     z = scores - scores.max()
     p = np.exp(z) / np.exp(z).sum()
-    return RichResult(payload={
-        "distribution": [float(v) for v in p],
-        "predicted_token": int(np.argmax(p)),
-        "estimate": float(p.max()), "n": len(p),
-        "method": "Decoder token distribution softmax (Kamath Eq 2.5)"})
+    return RichResult(
+        payload={
+            "distribution": [float(v) for v in p],
+            "predicted_token": int(np.argmax(p)),
+            "estimate": float(p.max()),
+            "n": len(p),
+            "method": "Decoder token distribution softmax (Kamath Eq 2.5)",
+        }
+    )
 
 
 def cheatsheet():

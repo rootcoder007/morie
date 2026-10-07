@@ -1,7 +1,6 @@
 """Tests for retlv.return_level."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.retlv import return_level
 
 

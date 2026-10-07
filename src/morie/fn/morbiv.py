@@ -68,10 +68,16 @@ def morbiv(x, y, W, scale=True, row_standardize=True):
         y = (y - float(np.mean(y))) / float(np.std(y, ddof=1))
     lag_y = W @ y
     stat = float(np.sum(x * lag_y) / np.sum(x**2))
-    return RichResult(payload={
-        "statistic": stat, "lag_y": lag_y, "x_std": x, "y_std": y, "n": int(n),
-        "method": "Bivariate Moran I (Anselin-Syabri-Smirnov 2002)",
-    })
+    return RichResult(
+        payload={
+            "statistic": stat,
+            "lag_y": lag_y,
+            "x_std": x,
+            "y_std": y,
+            "n": int(n),
+            "method": "Bivariate Moran I (Anselin-Syabri-Smirnov 2002)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

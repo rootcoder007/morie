@@ -49,8 +49,7 @@ def _dlogistic(v):
 _LINKS = {
     "identity": (lambda v: v, lambda v: np.ones_like(v)),
     "logistic": (_logistic, _dlogistic),
-    "exp": (lambda v: np.exp(np.clip(v, -500.0, 500.0)),
-            lambda v: np.exp(np.clip(v, -500.0, 500.0))),
+    "exp": (lambda v: np.exp(np.clip(v, -500.0, 500.0)), lambda v: np.exp(np.clip(v, -500.0, 500.0))),
 }
 
 
@@ -86,13 +85,11 @@ def addlink(x, y, link="logistic", K=4, h=None, niter=20, ngrid=25):
         raise ValueError("an additive model needs at least two covariates.")
     if isinstance(link, str):
         if link not in _LINKS:
-            raise ValueError(
-                "link must be one of %s or a (G, Gprime) pair, got %r."
-                % (sorted(_LINKS), link))
+            raise ValueError(f"link must be one of {sorted(_LINKS)} or a (G, Gprime) pair, got {link!r}.")
         G, Gp = _LINKS[link]
     else:
         G, Gp = link
-    hh = float(n ** -0.2) if h is None else float(h)
+    hh = float(n**-0.2) if h is None else float(h)
     Ki = int(K)
 
     # series design: intercept plus powers 1..K in each coordinate
@@ -102,11 +99,11 @@ def addlink(x, y, link="logistic", K=4, h=None, niter=20, ngrid=25):
         rng = float(np.max(sc) - np.min(sc))
         sc = (sc - float(np.min(sc))) / (rng if rng > 0 else 1.0) * 2.0 - 1.0
         for k in range(1, Ki + 1):
-            cols.append(sc ** k)
+            cols.append(sc**k)
     P = np.column_stack(cols)
     theta = np.zeros(P.shape[1])
     theta[0] = float(np.mean(yv))
-    for _ in range(int(niter)):                     # FIXED iterations
+    for _ in range(int(niter)):  # FIXED iterations
         eta = P @ theta
         w = Gp(eta)
         r = yv - G(eta)
@@ -119,11 +116,9 @@ def addlink(x, y, link="logistic", K=4, h=None, niter=20, ngrid=25):
     gs = []
     comps = []
     w = Gp(eta)
-    work = eta + np.where(np.abs(w) > 1e-12, (yv - G(eta)) / np.where(
-        np.abs(w) > 1e-12, w, 1.0), 0.0)
+    work = eta + np.where(np.abs(w) > 1e-12, (yv - G(eta)) / np.where(np.abs(w) > 1e-12, w, 1.0), 0.0)
     for j in range(d):
-        g = np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])),
-                        int(ngrid))
+        g = np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])), int(ngrid))
         gs.append(g)
         Kj = _gauss((g[:, None] - X[:, j][None, :]) / hh)
         den = np.sum(Kj, axis=1)
@@ -139,11 +134,20 @@ def addlink(x, y, link="logistic", K=4, h=None, niter=20, ngrid=25):
     r = yv - fitted
     return RichResult(
         title="Additive model with a known nonidentity link (eq. 3.19)",
-        payload={"mu": mu, "grids": gs, "components": comps,
-                 "fitted": fitted, "eta": fit_eta, "resid": r,
-                 "rss": float(np.sum(r * r)), "bandwidth": hh,
-                 "K": Ki, "d": d, "n": n,
-                 "method": "Horowitz (2009) eq. (3.19), series then one Newton step"},
+        payload={
+            "mu": mu,
+            "grids": gs,
+            "components": comps,
+            "fitted": fitted,
+            "eta": fit_eta,
+            "resid": r,
+            "rss": float(np.sum(r * r)),
+            "bandwidth": hh,
+            "K": Ki,
+            "d": d,
+            "n": n,
+            "method": "Horowitz (2009) eq. (3.19), series then one Newton step",
+        },
     )
 
 
@@ -164,5 +168,5 @@ if __name__ == "__main__":  # pragma: no cover
     r = addlink(np.column_stack([x1, x2]), y, link="logistic", h=0.4)
     assert r["rss"] < 0.5, r["rss"]
     c1 = r["components"][0]
-    assert float(c1[-1]) > float(c1[0])       # increasing in x1
+    assert float(c1[-1]) > float(c1[0])  # increasing in x1
     print("ok", r["rss"], float(c1[0]), float(c1[-1]))

@@ -1,13 +1,12 @@
 """Tests for beta_standardized.beta_standardized."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.beta_standardized import beta_standardized
 
 
 def test_ca2e20_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     b = 2.5
     s_x = 3.0
     s_y = 1.5

@@ -8,7 +8,7 @@ from morie.fn.manskif import manskif
 
 def test_the_bounds_are_the_closed_form():
     y = [2.0, 4.0, 6.0, 8.0]
-    observed = [1, 1, 0, 0]            # only the first two are seen
+    observed = [1, 1, 0, 0]  # only the first two are seen
     res = manskif(y, observed, (0.0, 10.0))
     seen = [2.0, 4.0]
     p = 0.5
@@ -25,7 +25,7 @@ def test_full_observation_pins_the_mean():
 
 
 def test_the_width_is_the_missing_share_times_the_support():
-    y = [2.0] * 10                     # inside the declared support
+    y = [2.0] * 10  # inside the declared support
     res = manskif(y, [1] * 3 + [0] * 7, (0.0, 4.0))
     assert abs((res["upper"] - res["lower"]) - 0.7 * 4.0) < 1e-9
 

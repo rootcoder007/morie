@@ -7,8 +7,6 @@ p.107). The 2PL item-response form is
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.irtsp import irt_spatial as irt
 
 

@@ -68,10 +68,17 @@ def ot_sinkhorn_divergence(a, b, Cab, Caa, Cbb, epsilon, max_iter=200):
     ab = _ot_eps(aa, bb, Cx, eps, max_iter)
     a2 = _ot_eps(aa, aa, Ca, eps, max_iter)
     b2 = _ot_eps(bb, bb, Cb, eps, max_iter)
-    return RichResult(payload={
-        "S_eps": ab - 0.5 * (a2 + b2), "OT_ab": ab, "OT_aa": a2,
-        "OT_bb": b2, "n": n, "m": m,
-        "method": "Sinkhorn divergence"})
+    return RichResult(
+        payload={
+            "S_eps": ab - 0.5 * (a2 + b2),
+            "OT_ab": ab,
+            "OT_aa": a2,
+            "OT_bb": b2,
+            "n": n,
+            "m": m,
+            "method": "Sinkhorn divergence",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for vbnpc.vb_nonparametric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vbnpc import vb_nonparametric
 
 

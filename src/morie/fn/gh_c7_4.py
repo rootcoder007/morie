@@ -54,20 +54,23 @@ def ghosal_norm_mix_con(x, grid=None, alpha=1.0, K=50, seed=0, n_draws=200):
     xv = np.asarray(x, dtype=float).ravel()
     if xv.size < 5:
         raise ValueError(f"need at least 5 observations, got {xv.size}.")
-    fit = ghosal_gauss_ker(xv, grid=grid, alpha=alpha, K=K, seed=seed,
-                           n_draws=n_draws)
+    fit = ghosal_gauss_ker(xv, grid=grid, alpha=alpha, K=K, seed=seed, n_draws=n_draws)
     g = fit["grid"]
-    h = 1.06 * float(xv.std(ddof=1)) * xv.size ** -0.2
-    ref = np.exp(-0.5 * ((g[:, None] - xv) / h) ** 2).sum(axis=1) / \
-        (xv.size * h * np.sqrt(2 * np.pi))
-    return RichResult(payload={
-        "grid": g, "density": fit["density"], "reference_density": ref,
-        "hellinger_to_reference": hellinger(fit["density"], ref, g),
-        "consistency": "weak and Hellinger, at any p0 in the KL support",
-        "requires": "positive prior mass on every KL neighbourhood of p0 "
-                    "(a property of the PRIOR, not of the data)",
-        "n": int(xv.size),
-        "method": "DP normal mixture (Sec. 7.2.1); Schwartz consistency via KL support"})
+    h = 1.06 * float(xv.std(ddof=1)) * xv.size**-0.2
+    ref = np.exp(-0.5 * ((g[:, None] - xv) / h) ** 2).sum(axis=1) / (xv.size * h * np.sqrt(2 * np.pi))
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": fit["density"],
+            "reference_density": ref,
+            "hellinger_to_reference": hellinger(fit["density"], ref, g),
+            "consistency": "weak and Hellinger, at any p0 in the KL support",
+            "requires": "positive prior mass on every KL neighbourhood of p0 "
+            "(a property of the PRIOR, not of the data)",
+            "n": int(xv.size),
+            "method": "DP normal mixture (Sec. 7.2.1); Schwartz consistency via KL support",
+        }
+    )
 
 
 def cheatsheet():

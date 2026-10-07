@@ -86,17 +86,13 @@ def geron_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta=0.1):
     sizes = {a.size, b.size, ra.size, rb.size}
     if len(sizes) != 1:
         raise ValueError(
-            f"all four log-probability arrays must have the same length, got "
-            f"{a.size}, {b.size}, {ra.size}, {rb.size}."
+            f"all four log-probability arrays must have the same length, got {a.size}, {b.size}, {ra.size}, {rb.size}."
         )
-    for name, arr in (("logp_w", a), ("logp_l", b),
-                      ("logp_ref_w", ra), ("logp_ref_l", rb)):
+    for name, arr in (("logp_w", a), ("logp_l", b), ("logp_ref_w", ra), ("logp_ref_l", rb)):
         if not np.all(np.isfinite(arr)):
             raise ValueError(f"{name} must be finite.")
         if np.any(arr > 0):
-            raise ValueError(
-                f"{name} holds log-probabilities and must be <= 0; got a positive value."
-            )
+            raise ValueError(f"{name} holds log-probabilities and must be <= 0; got a positive value.")
     beta = float(beta)
     if not np.isfinite(beta) or beta <= 0:
         raise ValueError(f"beta must be a positive finite float, got {beta}.")
@@ -104,13 +100,12 @@ def geron_dpo_loss(logp_w, logp_l, logp_ref_w, logp_ref_l, beta=0.1):
     rw = a - ra
     rl = b - rb
     margin = rw - rl
-    per = np.logaddexp(0.0, -beta * margin)      # = -log sigmoid(beta * margin)
+    per = np.logaddexp(0.0, -beta * margin)  # = -log sigmoid(beta * margin)
     loss = float(per.mean())
 
     return RichResult(
         title="DPO loss",
-        summary_lines=[("Loss", loss), ("Mean margin", float(margin.mean())),
-                       ("beta", beta)],
+        summary_lines=[("Loss", loss), ("Mean margin", float(margin.mean())), ("beta", beta)],
         payload={
             "loss": loss,
             "margin": margin.tolist(),

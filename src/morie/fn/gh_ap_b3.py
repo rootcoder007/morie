@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,15 +19,16 @@ def ghosal_renyi_div(p, q, alpha=0.5):
     Keys: estimate."""
     p = _bnp.normalize_weights(p)
     q = _bnp.normalize_weights(q)
-    rho = sum(a ** alpha * b ** (1.0 - alpha) for a, b in zip(p, q))
+    rho = sum(a**alpha * b ** (1.0 - alpha) for a, b in zip(p, q))
     D = math.log(rho) / (alpha - 1.0)
     h2 = 1.0 - sum(math.sqrt(a * b) for a, b in zip(p, q))
-    res = RichResult(payload={"estimate": D,
-                              "hellinger_link_gap":
-                                  abs(D + 2.0 * math.log(1.0 - h2))
-                                  if abs(alpha - 0.5) < 1e-12
-                                  else None,
-                              "method": "Renyi divergence (GvdV 2017 App B)"})
+    res = RichResult(
+        payload={
+            "estimate": D,
+            "hellinger_link_gap": abs(D + 2.0 * math.log(1.0 - h2)) if abs(alpha - 0.5) < 1e-12 else None,
+            "method": "Renyi divergence (GvdV 2017 App B)",
+        }
+    )
     return with_describe_pointer(res, "gh_ap_b3")
 
 

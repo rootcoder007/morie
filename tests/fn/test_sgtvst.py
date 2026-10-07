@@ -1,7 +1,6 @@
 """Tests for sgtvst.sgt_vertex_strengths."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtvst import sgt_vertex_strengths
 
 

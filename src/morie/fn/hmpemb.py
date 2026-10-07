@@ -117,7 +117,9 @@ def geron_pretrained_embeddings(vocab, pretrained, freeze=True, seed=0, oov_scal
     return RichResult(
         title="Pretrained embeddings",
         summary_lines=[("Vocabulary", len(words)), ("Dimension", int(dim)), ("Coverage", cover)],
-        warnings=(["coverage is below 50 %: most rows are random, so this table is barely pretrained"] if cover < 0.5 else []),
+        warnings=(
+            ["coverage is below 50 %: most rows are random, so this table is barely pretrained"] if cover < 0.5 else []
+        ),
         interpretation="Fine-tuning on a small set moves only the seen words and breaks the geometry; freeze it then.",
         payload={
             "embeddings": E,

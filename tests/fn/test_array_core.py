@@ -25,9 +25,9 @@ def close(a, b, tol=1e-12):
         for e in v:
             out.extend(flat(e)) if isinstance(e, list) else out.append(e)
         return out
+
     fa, fb = flat(av), flat(bv)
-    return len(fa) == len(fb) and fa == pytest.approx(fb, rel=tol,
-                                                      abs=tol)
+    return len(fa) == len(fb) and fa == pytest.approx(fb, rel=tol, abs=tol)
 
 
 X = [2.0, 5.0, 3.0, 8.0, 4.0]
@@ -41,7 +41,7 @@ class TestElementwise:
         assert close(2.0 - a, [2.0 - v for v in X])
         assert close(a * a, [v * v for v in X])
         assert close(a / 4.0, [v / 4.0 for v in X])
-        assert close(a ** 2, [v ** 2 for v in X])
+        assert close(a**2, [v**2 for v in X])
         assert close(-a, [-v for v in X])
 
     def test_ufuncs(self):
@@ -51,16 +51,14 @@ class TestElementwise:
         assert close(mnp.log(a), [math.log(v) for v in X])
         assert close(mnp.log1p(a), [math.log1p(v) for v in X])
         assert close(mnp.abs(-a), X)
-        assert close(mnp.clip(a, 3.0, 6.0),
-                     [min(max(v, 3.0), 6.0) for v in X])
+        assert close(mnp.clip(a, 3.0, 6.0), [min(max(v, 3.0), 6.0) for v in X])
         assert close(mnp.maximum(a, 4.0), [max(v, 4.0) for v in X])
         assert close(mnp.minimum(a, 4.0), [min(v, 4.0) for v in X])
-        assert mnp.sqrt(4.0) == pytest.approx(2.0)   # scalar passthrough
+        assert mnp.sqrt(4.0) == pytest.approx(2.0)  # scalar passthrough
 
     def test_where_and_masks(self):
         a = mnp.asarray(X)
-        assert close(mnp.where(a > 3.0, a, 0.0),
-                     [v if v > 3.0 else 0.0 for v in X])
+        assert close(mnp.where(a > 3.0, a, 0.0), [v if v > 3.0 else 0.0 for v in X])
         assert (a > 3.0).sum() == float(sum(1 for v in X if v > 3.0))
 
 
@@ -73,10 +71,8 @@ class TestReductions:
         assert a.sum() == pytest.approx(sum(X), rel=1e-15)
         assert a.mean() == pytest.approx(mean, rel=1e-15)
         assert a.std() == pytest.approx(math.sqrt(var0), rel=1e-14)
-        assert a.std(ddof=1) == pytest.approx(statistics.stdev(X),
-                                              rel=1e-14)
-        assert a.var(ddof=1) == pytest.approx(statistics.variance(X),
-                                              rel=1e-14)
+        assert a.std(ddof=1) == pytest.approx(statistics.stdev(X), rel=1e-14)
+        assert a.var(ddof=1) == pytest.approx(statistics.variance(X), rel=1e-14)
         assert a.max() == max(X)
         assert a.min() == min(X)
 
@@ -92,15 +88,11 @@ class TestConstruction:
         assert close(mnp.zeros(3), [0.0, 0.0, 0.0])
         assert close(mnp.ones(3), [1.0, 1.0, 1.0])
         assert close(mnp.full(3, 2.5), [2.5, 2.5, 2.5])
-        assert close(mnp.linspace(0, 1, 5),
-                     [0.0, 0.25, 0.5, 0.75, 1.0])
-        assert close(mnp.eye(3), [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
-                                  [0.0, 0.0, 1.0]])
+        assert close(mnp.linspace(0, 1, 5), [0.0, 0.25, 0.5, 0.75, 1.0])
+        assert close(mnp.eye(3), [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
         assert close(mnp.diag([1.0, 2.0]), [[1.0, 0.0], [0.0, 2.0]])
-        assert close(mnp.column_stack([[1.0, 2], [3.0, 4]]),
-                     [[1.0, 3.0], [2.0, 4.0]])
-        assert close(mnp.concatenate([[1.0], [2.0, 3.0]]),
-                     [1.0, 2.0, 3.0])
+        assert close(mnp.column_stack([[1.0, 2], [3.0, 4]]), [[1.0, 3.0], [2.0, 4.0]])
+        assert close(mnp.concatenate([[1.0], [2.0, 3.0]]), [1.0, 2.0, 3.0])
 
 
 class TestLinalg:
@@ -115,8 +107,7 @@ class TestLinalg:
     def test_solve_inv_norm(self):
         # M x = [1, 2]: det = 5, x = (1/5, 3/5)
         assert close(mnp.linalg.solve(M, [1.0, 2.0]), [0.2, 0.6], 1e-12)
-        assert close(mnp.linalg.inv(M),
-                     [[0.6, -0.2], [-0.2, 0.4]], 1e-12)
+        assert close(mnp.linalg.inv(M), [[0.6, -0.2], [-0.2, 0.4]], 1e-12)
         assert mnp.linalg.norm([3.0, 4.0]) == pytest.approx(5.0)
         with pytest.raises(ValueError):
             mnp.linalg.solve([[1.0, 2.0], [2.0, 4.0]], [1.0, 1.0])
@@ -135,8 +126,7 @@ class TestLinalg:
         # single vector -- a wrong answer with no error raised.
         a = [[2.0, 1.0], [1.0, 3.0], [0.0, 1.0], [4.0, -1.0]]
         xt = [[1.0, -2.0], [0.5, 3.0]]
-        b = [[sum(a[r][k] * xt[k][c] for k in range(2)) for c in range(2)]
-             for r in range(4)]
+        b = [[sum(a[r][k] * xt[k][c] for k in range(2)) for c in range(2)] for r in range(4)]
         sol, *_ = mnp.linalg.lstsq(a, b, rcond=None)
         assert sol.shape == (2, 2)
         for i in range(2):
@@ -144,8 +134,7 @@ class TestLinalg:
                 assert sol[i][j] == pytest.approx(xt[i][j], abs=1e-10)
         # each column must equal the one-dimensional solve of that column
         for c in range(2):
-            one, *_ = mnp.linalg.lstsq(a, [b[r][c] for r in range(4)],
-                                       rcond=None)
+            one, *_ = mnp.linalg.lstsq(a, [b[r][c] for r in range(4)], rcond=None)
             for i in range(2):
                 assert sol[i][c] == pytest.approx(one[i], abs=1e-12)
         with pytest.raises(ValueError):
@@ -158,11 +147,11 @@ class TestRandom:
         rng2 = mnp.random.default_rng(42)
         a = rng.normal(0, 1, 4000)
         b = rng2.normal(0, 1, 4000)
-        assert close(a, b)                        # reproducible
+        assert close(a, b)  # reproducible
         assert a.mean() == pytest.approx(0.0, abs=0.06)
         assert a.std() == pytest.approx(1.0, abs=0.05)
         u = mnp.random.default_rng(7).uniform(0, 1, 4000)
-        assert 0.0 <= u.min() and u.max() <= 1.0
+        assert u.min() >= 0.0 and u.max() <= 1.0
         assert u.mean() == pytest.approx(0.5, abs=0.03)
         ints = mnp.random.default_rng(3).integers(0, 10, 100)
         assert ints.min() >= 0 and ints.max() < 10
@@ -194,7 +183,9 @@ def test_setitem_integer_row_index_as_long_as_the_array_is_not_a_mask():
     for idx in (npc.flatnonzero(npc.asarray([True, True, True])), npc.asarray([0, 1, 2]), [2, 0, 1]):
         x = npc.full((3, 2), -1.0)
         x[idx, 1] = npc.asarray([10.0, 20.0, 30.0])
-        want = {r: 10.0 * (k + 1) for k, r in enumerate(int(v) for v in (idx.tolist() if hasattr(idx, "tolist") else idx))}
+        want = {
+            r: 10.0 * (k + 1) for k, r in enumerate(int(v) for v in (idx.tolist() if hasattr(idx, "tolist") else idx))
+        }
         assert [row[1] for row in x.tolist()] == [want[0], want[1], want[2]]
         assert [row[0] for row in x.tolist()] == [-1.0, -1.0, -1.0]
     m = npc.full((3, 1), 0.0)

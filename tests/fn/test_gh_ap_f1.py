@@ -1,7 +1,6 @@
 """Tests for gh_ap_f1.ghosal_donsker_class."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_f1 import ghosal_donsker_class
 
 

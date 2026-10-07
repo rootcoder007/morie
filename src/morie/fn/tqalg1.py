@@ -59,9 +59,16 @@ def turboquant_online_key_quantizer(k, S_mat, q=None):
     if q is not None:
         sq = C.matvec(Sm, C.vec(q))
         est = math.sqrt(math.pi / 2.0) / m * nu * sum(sq[i] * ktil[i] for i in range(m))
-    return RichResult(payload={
-        "k_tilde": ktil, "nu": nu, "m": m, "d": len(kv), "estimate": est,
-        "method": "QJL online key quantizer with unbiased inner product"})
+    return RichResult(
+        payload={
+            "k_tilde": ktil,
+            "nu": nu,
+            "m": m,
+            "d": len(kv),
+            "estimate": est,
+            "method": "QJL online key quantizer with unbiased inner product",
+        }
+    )
 
 
 def cheatsheet():

@@ -6,9 +6,9 @@ contract: it returns a real semivariogram, not the placeholder payload
 it used to return.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spnug import schabenberger_nugget_effect
 
 

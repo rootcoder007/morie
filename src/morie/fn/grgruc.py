@@ -92,8 +92,7 @@ def geron_gru_cell(x_t, h_prev, Wz, Wr, W):
         A = np.atleast_2d(np.asarray(M, dtype=float))
         if A.shape != (H, H + n):
             raise ValueError(
-                f"{name} must have shape (H, H + n) = ({H}, {H + n}) to act on a "
-                f"concatenated [h, x], got {A.shape}."
+                f"{name} must have shape (H, H + n) = ({H}, {H + n}) to act on a concatenated [h, x], got {A.shape}."
             )
         if not np.all(np.isfinite(A)):
             raise ValueError(f"{name} must be finite.")

@@ -27,18 +27,17 @@ def anova_randomized_block(y, treatment, block):
     ch.9 eq.9.13
     """
     payload = dict(_ca_crim.anova_randomized_block(y, treatment, block))
-    value = payload['f_treatment']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["f_treatment"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (9.13)"
     return RichResult(
-        title='Block randomized ANOVA y = mu + alpha_j + beta_k + e',
+        title="Block randomized ANOVA y = mu + alpha_j + beta_k + e",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca9e13: y_ikj = mu + alpha_j + beta_k + e_ijk [Weisburd et al. 2022, eq. 9.13]'
+    return "ca9e13: y_ikj = mu + alpha_j + beta_k + e_ijk [Weisburd et al. 2022, eq. 9.13]"

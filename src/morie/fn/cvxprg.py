@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["boyd_proximal_grad"]
 
 
-def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
-                       tol=1e-09, h=None):
+def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500, tol=1e-09, h=None):
     r"""Iterate :math:`x^{k+1} = \operatorname{prox}_{t h}\!\left(x^k -
     t\nabla f(x^k)\right)` for :math:`\min f(x) + h(x)`.
 
@@ -101,10 +100,9 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
     obj = [float(f(x)) + (float(h(x)) if h is not None else 0.0)]
     conv = False
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         g = np.atleast_1d(np.asarray(grad_f(x), dtype=float)).ravel()
-        x_new = np.atleast_1d(np.asarray(prox(x - t * g, t),
-                                         dtype=float)).ravel()
+        x_new = np.atleast_1d(np.asarray(prox(x - t * g, t), dtype=float)).ravel()
         obj.append(float(f(x_new)) + (float(h(x_new)) if h is not None else 0.0))
         if np.max(np.abs(x_new - x)) < tol:
             x = x_new
@@ -113,14 +111,21 @@ def boyd_proximal_grad(f, grad_f, prox, x0, t=0.1, max_iter=500,
         x = x_new
     return RichResult(
         title="Proximal gradient",
-        summary_lines=[("iterations", int(it)), ("objective", obj[-1]),
-                       ("converged", conv),
-                       ("exact zeros", int(np.sum(np.abs(x) <= 1e-12)))],
+        summary_lines=[
+            ("iterations", int(it)),
+            ("objective", obj[-1]),
+            ("converged", conv),
+            ("exact zeros", int(np.sum(np.abs(x) <= 1e-12))),
+        ],
         payload={
-            "x": x, "f": float(f(x)), "objective": obj[-1],
-            "n_iter": int(it), "converged": conv,
+            "x": x,
+            "f": float(f(x)),
+            "objective": obj[-1],
+            "n_iter": int(it),
+            "converged": conv,
             "n_zero": int(np.sum(np.abs(x) <= 1e-12)),
-            "objective_path": np.asarray(obj), "step": float(t),
+            "objective_path": np.asarray(obj),
+            "step": float(t),
             "method": "boyd_proximal_grad",
         },
     )

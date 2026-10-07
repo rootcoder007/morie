@@ -1,7 +1,6 @@
 """Anchored tests for snpblr.snp_blup (Meuwissen 2001 BLUP / MME)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.snpblr import snp_blup
 
 
@@ -30,11 +29,20 @@ def test_gls_route_equivalence():
     """Independent algebra route: with V = Z Z' + lam I,
     beta = (1'V^-1 1)^-1 1'V^-1 y (GLS) and u = Z' V^-1 (y - 1 beta)
     must reproduce the MME solution (Henderson 1975 equivalence)."""
-    n, m = 8, 3
-    M = np.asarray([
-        [0, 1, 2], [2, 0, 1], [1, 1, 0], [2, 2, 2],
-        [0, 0, 1], [1, 2, 0], [2, 1, 1], [0, 2, 2],
-    ], dtype=float)
+    n, _m = 8, 3
+    M = np.asarray(
+        [
+            [0, 1, 2],
+            [2, 0, 1],
+            [1, 1, 0],
+            [2, 2, 2],
+            [0, 0, 1],
+            [1, 2, 0],
+            [2, 1, 1],
+            [0, 2, 2],
+        ],
+        dtype=float,
+    )
     y = np.asarray([0.3, -1.2, 0.7, 2.1, -0.4, 0.9, 1.5, -0.8])
     lam = 2.7
     res = snp_blup(y, M, lam=lam)
@@ -52,11 +60,21 @@ def test_gls_route_equivalence():
 
 def test_shrinkage_monotone():
     """Larger lam shrinks marker effects towards zero."""
-    M = np.asarray([
-        [0, 1, 2, 1], [2, 0, 1, 0], [1, 1, 0, 2], [2, 2, 2, 1],
-        [0, 0, 1, 2], [1, 2, 0, 0], [2, 1, 1, 1], [0, 2, 2, 0],
-        [1, 0, 0, 2], [2, 1, 2, 1],
-    ], dtype=float)
+    M = np.asarray(
+        [
+            [0, 1, 2, 1],
+            [2, 0, 1, 0],
+            [1, 1, 0, 2],
+            [2, 2, 2, 1],
+            [0, 0, 1, 2],
+            [1, 2, 0, 0],
+            [2, 1, 1, 1],
+            [0, 2, 2, 0],
+            [1, 0, 0, 2],
+            [2, 1, 2, 1],
+        ],
+        dtype=float,
+    )
     y = np.asarray([0.3, -1.2, 0.7, 2.1, -0.4, 0.9, 1.5, -0.8, 0.2, 1.1])
     u1 = snp_blup(y, M, lam=0.5)["u"]
     u2 = snp_blup(y, M, lam=50.0)["u"]

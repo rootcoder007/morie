@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 
@@ -18,23 +17,20 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from morie.fn._ml_core import RandomForestClassifier
 except ImportError:
-    RandomForestClassifier = _MissingDep('RandomForestClassifier')
+    RandomForestClassifier = _MissingDep("RandomForestClassifier")
 try:
     from morie.fn._ml_core import classification_report
 except ImportError:
-    classification_report = _MissingDep('classification_report')
+    classification_report = _MissingDep("classification_report")
 
 
 def eval_robustness(
@@ -84,8 +80,8 @@ def apply_smote(
         k_neighbors = min(5, minority_count - 1) if minority_count > 1 else 1
 
     from morie.fn.smote import apply_smote as _native_smote
-    X_res, y_res, _st = _native_smote(
-        X, y, random_state=random_state, k_neighbors=k_neighbors)
+
+    X_res, y_res, _st = _native_smote(X, y, random_state=random_state, k_neighbors=k_neighbors)
     method = _st["method"]
 
     counts_after = y_res.value_counts().to_dict()

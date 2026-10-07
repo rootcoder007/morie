@@ -280,7 +280,7 @@ def facrisk(alpha0, W, phi):
     Wm, p = _as_mat(W), _as_vec(phi)
     if any(len(row) != len(p) for row in Wm):
         raise ValueError("each row of W must have one weight per component")
-    lr = [float(alpha0) + sum(row[l] * p[l] for l in range(len(p))) for row in Wm]
+    lr = [float(alpha0) + sum(row[ell] * p[ell] for ell in range(len(p))) for row in Wm]
     return {"logrisk": lr, "risk": [math.exp(t) for t in lr], "n": len(lr), "n_components": len(p)}
 
 
@@ -415,7 +415,7 @@ def indevk(p, joint):
     k = len(pv)
     jv = _as_vec(joint)
     if len(jv) != 2**k:
-        raise ValueError(f"joint must hold one probability per subset mask, i.e. {2 ** k} entries")
+        raise ValueError(f"joint must hold one probability per subset mask, i.e. {2**k} entries")
     n_cond = 2**k - k - 1
     worst = 0.0
     for m in range(2**k):
@@ -615,9 +615,9 @@ def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
                 for j in range(n):
                     d = X[i][j]
                     Tj = T[j]
-                    for l in range(m):
-                        e = d - Y[k][l]
-                        tot += e * e * tik * Tj[l]
+                    for ell in range(m):
+                        e = d - Y[k][ell]
+                        tot += e * e * tik * Tj[ell]
         return tot
 
     def grad(T):
@@ -629,9 +629,9 @@ def gwdist(Cx, Cy, a, b, n_iter=50, epsilon=0.05, n_sinkhorn=50):
                 for j in range(n):
                     d = X[i][j]
                     Tj = T[j]
-                    for l in range(m):
-                        e = d - Y[k][l]
-                        s += e * e * Tj[l]
+                    for ell in range(m):
+                        e = d - Y[k][ell]
+                        s += e * e * Tj[ell]
                 G[i][k] = 2.0 * s
         return G
 
@@ -695,7 +695,10 @@ def _lr_impute(X, dl, n_iter, draw=None):
         Z = [_alr(row) for row in W]
         p = d - 1
         mu = [sum(Z[i][j] for i in range(n)) / n for j in range(p)]
-        S = [[sum((Z[i][r] - mu[r]) * (Z[i][c] - mu[c]) for i in range(n)) / max(n - 1, 1) for c in range(p)] for r in range(p)]
+        S = [
+            [sum((Z[i][r] - mu[r]) * (Z[i][c] - mu[c]) for i in range(n)) / max(n - 1, 1) for c in range(p)]
+            for r in range(p)
+        ]
         for i in range(n):
             for j in range(p):
                 if not cens[i][j]:
@@ -721,8 +724,13 @@ def _lr_impute(X, dl, n_iter, draw=None):
                     zj = min(cm + sd * u, psi)
                 Z[i][j] = zj
                 W[i] = _alr_inv(Z[i], totals[i])
-    return {"X": W, "n": n, "n_parts": d, "n_iter": int(n_iter),
-            "n_censored": sum(sum(1 for c in row if c) for row in cens)}
+    return {
+        "X": W,
+        "n": n,
+        "n_parts": d,
+        "n_iter": int(n_iter),
+        "n_censored": sum(sum(1 for c in row if c) for row in cens),
+    }
 
 
 def lrem(X, dl, n_iter=20):
@@ -775,8 +783,7 @@ def jackd(theta, n, d):
         raise ValueError(f"expected one estimate per size-(n-d) subset, i.e. {nsub}, got {len(tv)}")
     bar = _mean(tv)
     v = (n - d) / (d * nsub) * sum((t - bar) ** 2 for t in tv)
-    return {"variance": v, "se": math.sqrt(max(v, 0.0)), "mean": bar,
-            "n_subsets": nsub, "n": n, "d": d}
+    return {"variance": v, "se": math.sqrt(max(v, 0.0)), "mean": bar, "n_subsets": nsub, "n": n, "d": d}
 
 
 # ====================================================================
@@ -805,8 +812,7 @@ def lrankmom(a, m):
     ss = sum((t - abar) ** 2 for t in av)
     ev = m * abar
     var = m * n * ss / (N * (N - 1))
-    return {"mean": ev, "variance": var, "se": math.sqrt(max(var, 0.0)),
-            "score_mean": abar, "N": N, "m": m, "n": n}
+    return {"mean": ev, "variance": var, "se": math.sqrt(max(var, 0.0)), "score_mean": abar, "N": N, "m": m, "n": n}
 
 
 # ====================================================================
@@ -835,8 +841,14 @@ def wtrunc(w, q=0.99):
     hi = min(lo + 1, n - 1)
     cap = s[lo] + (h - lo) * (s[hi] - s[lo])
     out = [min(t, cap) for t in wv]
-    return {"weights": out, "cap": cap, "n_truncated": sum(1 for t in wv if t > cap),
-            "n": n, "mean_before": _mean(wv), "mean_after": _mean(out)}
+    return {
+        "weights": out,
+        "cap": cap,
+        "n_truncated": sum(1 for t in wv if t > cap),
+        "n": n,
+        "mean_before": _mean(wv),
+        "mean_after": _mean(out),
+    }
 
 
 # ====================================================================
@@ -879,8 +891,7 @@ def gwasmlm(y, X, snp, Vinv):
     se = math.sqrt(max(s2 * Ainv_last[p - 1], 0.0))
     b = beta[p - 1]
     t = b / se if se > 0 else float("nan")
-    return {"beta": b, "se": se, "statistic": t, "df": dfres,
-            "coefficients": beta, "sigma2": s2, "n": n}
+    return {"beta": b, "se": se, "statistic": t, "df": dfres, "coefficients": beta, "sigma2": s2, "n": n}
 
 
 # ====================================================================
@@ -908,7 +919,10 @@ def mitest(theta, U):
     Us = [_as_mat(u) for u in U]
     qbar = [sum(Th[i][j] for i in range(m)) / m for j in range(k)]
     Ubar = [[sum(Us[i][r][c] for i in range(m)) / m for c in range(k)] for r in range(k)]
-    B = [[sum((Th[i][r] - qbar[r]) * (Th[i][c] - qbar[c]) for i in range(m)) / (m - 1) for c in range(k)] for r in range(k)]
+    B = [
+        [sum((Th[i][r] - qbar[r]) * (Th[i][c] - qbar[c]) for i in range(m)) / (m - 1) for c in range(k)]
+        for r in range(k)
+    ]
     # r1 = (1 + 1/m) tr(B Ubar^-1) / k
     BU = [solve(Ubar, [B[r][c] for r in range(k)]) for c in range(k)]
     tr = sum(BU[c][c] for c in range(k))
@@ -921,8 +935,7 @@ def mitest(theta, U):
         v = 4.0 + (a - 4.0) * (1.0 + (1.0 - 2.0 / a) / r1) ** 2
     else:
         v = 0.5 * a * (1.0 + 1.0 / k) * (1.0 + 1.0 / r1) ** 2
-    return {"statistic": D1, "df1": k, "df2": v, "r": r1,
-            "estimate": qbar, "m": m}
+    return {"statistic": D1, "df1": k, "df2": v, "r": r1, "estimate": qbar, "m": m}
 
 
 # ====================================================================
@@ -959,8 +972,7 @@ def csshrink(beta_hat, D, psi, n, sigma2=1.0):
     A = [[Dm[r][c] + (1.0 / ps[r] if r == c else 0.0) for c in range(p)] for r in range(p)]
     post = solve(A, bh)
     shrink = [post[j] / bh[j] if bh[j] != 0 else float("nan") for j in range(p)]
-    return {"beta": post, "shrinkage": shrink, "n": nn,
-            "sigma2": float(sigma2), "n_snp": p}
+    return {"beta": post, "shrinkage": shrink, "n": nn, "sigma2": float(sigma2), "n_snp": p}
 
 
 # ====================================================================
@@ -1007,11 +1019,17 @@ def shedcurve(days, load, t_peak, t_plateau):
     br, ar = _slope(rise)
     bd, ad = _slope(dec)
     return {
-        "rise_slope": br, "rise_intercept": ar,
+        "rise_slope": br,
+        "rise_intercept": ar,
         "plateau_level": _mean([y[i] for i in plat]) if plat else float("nan"),
-        "decay_slope": bd, "decay_intercept": ad,
-        "peak_load": max(y), "peak_day": d[max(range(len(y)), key=lambda i: y[i])],
-        "n": len(d), "n_rise": len(rise), "n_plateau": len(plat), "n_decay": len(dec),
+        "decay_slope": bd,
+        "decay_intercept": ad,
+        "peak_load": max(y),
+        "peak_day": d[max(range(len(y)), key=lambda i: y[i])],
+        "n": len(d),
+        "n_rise": len(rise),
+        "n_plateau": len(plat),
+        "n_decay": len(dec),
     }
 
 
@@ -1081,8 +1099,7 @@ def cvtmle(y, a, q0, q1, g, fold, n_newton=50):
             ic[i] = H[q] * (yv[i] - qa) + q1s[q] - q0s[q] - pf
     psi = sum(psi_fold) / len(psi_fold)
     se = math.sqrt(sum(t * t for t in ic) / n / n)
-    return {"estimate": psi, "se": se, "psi_fold": psi_fold, "eps_fold": eps_fold,
-            "n_folds": len(psi_fold), "n": n}
+    return {"estimate": psi, "se": se, "psi_fold": psi_fold, "eps_fold": eps_fold, "n_folds": len(psi_fold), "n": n}
 
 
 def ndeff(y10, y00):
@@ -1100,8 +1117,7 @@ def ndeff(y10, y00):
     d = [a[i] - b[i] for i in range(len(a))]
     n = len(d)
     se = math.sqrt(_var(d) / n) if n > 1 else float("nan")
-    return {"estimate": _mean(d), "se": se, "mean_y10": _mean(a),
-            "mean_y00": _mean(b), "n": n}
+    return {"estimate": _mean(d), "se": se, "mean_y10": _mean(a), "mean_y00": _mean(b), "n": n}
 
 
 def nieff(y11, y10):
@@ -1118,8 +1134,7 @@ def nieff(y11, y10):
     d = [a[i] - b[i] for i in range(len(a))]
     n = len(d)
     se = math.sqrt(_var(d) / n) if n > 1 else float("nan")
-    return {"estimate": _mean(d), "se": se, "mean_y11": _mean(a),
-            "mean_y10": _mean(b), "n": n}
+    return {"estimate": _mean(d), "se": se, "mean_y11": _mean(a), "mean_y10": _mean(b), "n": n}
 
 
 # ====================================================================
@@ -1198,7 +1213,7 @@ def grpnorm(x, n_groups, eps=1e-5):
     out = [0.0] * len(xv)
     mus, sds = [], []
     for g in range(G):
-        seg = xv[g * per:(g + 1) * per]
+        seg = xv[g * per : (g + 1) * per]
         mu = _mean(seg)
         var = sum((t - mu) ** 2 for t in seg) / per
         sd = math.sqrt(var + float(eps))
@@ -1222,9 +1237,13 @@ def sumpl(H):
         raise ValueError("H must have at least one node")
     d = len(Hm[0])
     s = [sum(row[j] for row in Hm) for j in range(d)]
-    return {"sum": s, "mean": [t / len(Hm) for t in s],
-            "max": [max(row[j] for row in Hm) for j in range(d)],
-            "n_nodes": len(Hm), "dim": d}
+    return {
+        "sum": s,
+        "mean": [t / len(Hm) for t in s],
+        "max": [max(row[j] for row in Hm) for j in range(d)],
+        "n_nodes": len(Hm),
+        "dim": d,
+    }
 
 
 def ginagg(A, H, eps=0.0):
@@ -1241,7 +1260,9 @@ def ginagg(A, H, eps=0.0):
     if len(Am) != n or any(len(r) != n for r in Am):
         raise ValueError("A must be n x n matching H")
     e = float(eps)
-    out = [[(1.0 + e) * Hm[v][j] + sum(Am[v][u] * Hm[u][j] for u in range(n)) for j in range(len(Hm[0]))] for v in range(n)]
+    out = [
+        [(1.0 + e) * Hm[v][j] + sum(Am[v][u] * Hm[u][j] for u in range(n)) for j in range(len(Hm[0]))] for v in range(n)
+    ]
     return {"H": out, "eps": e, "n_nodes": n, "dim": len(Hm[0])}
 
 
@@ -1324,8 +1345,7 @@ def linucb(x, theta, Ainv, alpha=1.0):
         bonus.append(bo)
         score.append(mu + bo)
     best = max(range(len(score)), key=lambda a: score[a])
-    return {"score": score, "mean": mean, "bonus": bonus, "arm": best,
-            "n_arms": len(score), "alpha": float(alpha)}
+    return {"score": score, "mean": mean, "bonus": bonus, "arm": best, "n_arms": len(score), "alpha": float(alpha)}
 
 
 def ssmk(A, B, C, L):
@@ -1351,7 +1371,7 @@ def ssmk(A, B, C, L):
 def ssmconv(K, x):
     """Causal convolution y_t = sum_{l<=t} K_l x_{t-l}; standard."""
     Kv, xv = _as_vec(K), _as_vec(x)
-    return [sum(Kv[l] * xv[t - l] for l in range(min(t + 1, len(Kv)))) for t in range(len(xv))]
+    return [sum(Kv[ell] * xv[t - ell] for ell in range(min(t + 1, len(Kv)))) for t in range(len(xv))]
 
 
 def fftperiod(x, k=1):
@@ -1376,8 +1396,13 @@ def fftperiod(x, k=1):
         raise ValueError(f"k must lie in 1..{len(cand)}")
     # ties broken by the lower frequency, so the ordering is total
     order = sorted(cand, key=lambda f: (-amps[f], f))[:kk]
-    return {"frequency": order, "period": [n / f for f in order],
-            "amplitude": [amps[f] for f in order], "spectrum": amps[:half + 1], "n": n}
+    return {
+        "frequency": order,
+        "period": [n / f for f in order],
+        "amplitude": [amps[f] for f in order],
+        "spectrum": amps[: half + 1],
+        "n": n,
+    }
 
 
 def serdecomp(x, kernel):
@@ -1397,10 +1422,12 @@ def serdecomp(x, kernel):
         raise ValueError("kernel must not exceed the series length")
     h = kk // 2
     pad = [xv[0]] * h + xv + [xv[-1]] * h
-    trend = [sum(pad[i:i + kk]) / kk for i in range(n)]
+    trend = [sum(pad[i : i + kk]) / kk for i in range(n)]
     seas = [xv[i] - trend[i] for i in range(n)]
     m = _mean(seas)
     den = sum((t - m) ** 2 for t in seas)
-    acf = [(sum((seas[i] - m) * (seas[i + lag] - m) for i in range(n - lag)) / den) if den > 0 else float("nan")
-           for lag in range(n)]
+    acf = [
+        (sum((seas[i] - m) * (seas[i + lag] - m) for i in range(n - lag)) / den) if den > 0 else float("nan")
+        for lag in range(n)
+    ]
     return {"trend": trend, "seasonal": seas, "acf": acf, "kernel": kk, "n": n}

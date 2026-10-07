@@ -1,7 +1,6 @@
 """Tests for morie.fn.brdge -- Bayesian ridge regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.brdge import bayesian_ridge
 
 

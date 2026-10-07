@@ -20,8 +20,13 @@ No external numeric dependency: plain Python throughout.
 import math
 
 __all__ = [
-    "ols", "robust_vcov", "robust_se", "newey_west_vcov",
-    "breusch_pagan", "durbin_watson", "variance_inflation_factors",
+    "ols",
+    "robust_vcov",
+    "robust_se",
+    "newey_west_vcov",
+    "breusch_pagan",
+    "durbin_watson",
+    "variance_inflation_factors",
 ]
 
 
@@ -43,13 +48,11 @@ def _flat(v):
 def _solve(A, b):
     """Gauss-Jordan with partial pivoting."""
     n = len(A)
-    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
-         for i in range(n)]
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])] for i in range(n)]
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
-            raise ValueError("singular design matrix: predictors are "
-                             "perfectly collinear")
+            raise ValueError("singular design matrix: predictors are perfectly collinear")
         M[c], M[piv] = M[piv], M[c]
         d = M[c][c]
         M[c] = [v / d for v in M[c]]
@@ -71,8 +74,7 @@ def _inv(A):
 
 def _xtx(X):
     n, k = len(X), len(X[0])
-    return [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)]
-            for a in range(k)]
+    return [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
 
 
 # ------------------------------------------------------ distributions
@@ -110,8 +112,7 @@ def _betainc(a, b, x):
     front = math.exp(a * math.log(x) + b * math.log1p(-x) - lb)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
-    return 1.0 - math.exp(b * math.log1p(-x) + a * math.log(x) - lb) \
-        * _betacf(b, a, 1 - x) / b
+    return 1.0 - math.exp(b * math.log1p(-x) + a * math.log(x) - lb) * _betacf(b, a, 1 - x) / b
 
 
 def _t_sf(t, df):
@@ -141,7 +142,7 @@ def _chi2_sf(x, df):
         return 1.0
     a = df / 2.0
     xx = x / 2.0
-    if xx < a + 1.0:                       # series
+    if xx < a + 1.0:  # series
         term = 1.0 / a
         s = term
         n = a
@@ -191,13 +192,12 @@ def ols(y, X, add_intercept=True, names=None):
     Xm = _mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     k = len(Xm[0])
     if n <= k:
-        raise ValueError("need more observations than parameters "
-                         "(n=%d, k=%d)" % (n, k))
+        raise ValueError(f"need more observations than parameters (n={int(n)}, k={int(k)})")
     XtX = _xtx(Xm)
     Xty = [sum(Xm[i][a] * ys[i] for i in range(n)) for a in range(k)]
     beta = _solve(XtX, Xty)
@@ -209,18 +209,14 @@ def ols(y, X, add_intercept=True, names=None):
     s2 = rss / df_resid
     XtXinv = _inv(XtX)
     se = [math.sqrt(s2 * XtXinv[j][j]) for j in range(k)]
-    tvals = [beta[j] / se[j] if se[j] > 0 else float("nan")
-             for j in range(k)]
-    pvals = [2.0 * _t_sf(abs(t), df_resid) if se[j] > 0 else float("nan")
-             for j, t in enumerate(tvals)]
+    tvals = [beta[j] / se[j] if se[j] > 0 else float("nan") for j in range(k)]
+    pvals = [2.0 * _t_sf(abs(t), df_resid) if se[j] > 0 else float("nan") for j, t in enumerate(tvals)]
 
     ybar = sum(ys) / n
-    tss = sum((t - ybar) ** 2 for t in ys) if add_intercept \
-        else sum(t * t for t in ys)
+    tss = sum((t - ybar) ** 2 for t in ys) if add_intercept else sum(t * t for t in ys)
     r2 = 1.0 - rss / tss if tss > 0 else float("nan")
     df_model = k - 1 if add_intercept else k
-    adj = (1.0 - (1.0 - r2) * (n - (1 if add_intercept else 0))
-           / df_resid) if df_model > 0 else float("nan")
+    adj = (1.0 - (1.0 - r2) * (n - (1 if add_intercept else 0)) / df_resid) if df_model > 0 else float("nan")
     if df_model > 0:
         fstat = ((tss - rss) / df_model) / s2
         fp = _f_sf(fstat, df_model, df_resid)
@@ -228,16 +224,33 @@ def ols(y, X, add_intercept=True, names=None):
         fstat = fp = float("nan")
 
     if names is None:
-        names = (["(Intercept)"] if add_intercept else []) + \
-            ["x%d" % (j + 1) for j in range(k - (1 if add_intercept else 0))]
-    return {"coef": beta, "se": se, "t": tvals, "p_value": pvals,
-            "names": list(names), "fitted": fitted, "residuals": resid,
-            "n": n, "k": k, "df_resid": df_resid, "df_model": df_model,
-            "rss": rss, "tss": tss, "sigma2": s2,
-            "sigma": math.sqrt(s2), "r_squared": r2,
-            "adj_r_squared": adj, "f_statistic": fstat, "f_p_value": fp,
-            "XtX_inv": XtXinv, "design": Xm,
-            "method": "ordinary least squares"}
+        names = (["(Intercept)"] if add_intercept else []) + [
+            f"x{int(j + 1)}" for j in range(k - (1 if add_intercept else 0))
+        ]
+    return {
+        "coef": beta,
+        "se": se,
+        "t": tvals,
+        "p_value": pvals,
+        "names": list(names),
+        "fitted": fitted,
+        "residuals": resid,
+        "n": n,
+        "k": k,
+        "df_resid": df_resid,
+        "df_model": df_model,
+        "rss": rss,
+        "tss": tss,
+        "sigma2": s2,
+        "sigma": math.sqrt(s2),
+        "r_squared": r2,
+        "adj_r_squared": adj,
+        "f_statistic": fstat,
+        "f_p_value": fp,
+        "XtX_inv": XtXinv,
+        "design": Xm,
+        "method": "ordinary least squares",
+    }
 
 
 # --------------------------------------------- robust covariance
@@ -267,8 +280,7 @@ def robust_vcov(fit, kind="HC1"):
     n, k = fit["n"], fit["k"]
     h = []
     for i in range(n):
-        h.append(sum(X[i][a] * Ainv[a][b] * X[i][b]
-                     for a in range(k) for b in range(k)))
+        h.append(sum(X[i][a] * Ainv[a][b] * X[i][b] for a in range(k) for b in range(k)))
     kind = kind.upper()
     if kind == "HC0":
         om = [e[i] ** 2 for i in range(n)]
@@ -280,14 +292,18 @@ def robust_vcov(fit, kind="HC1"):
         om = [e[i] ** 2 / (1.0 - h[i]) ** 2 for i in range(n)]
     else:
         raise ValueError("kind must be HC0, HC1, HC2 or HC3")
-    meat = [[sum(X[i][a] * om[i] * X[i][b] for i in range(n))
-             for b in range(k)] for a in range(k)]
-    V = [[sum(Ainv[a][p] * meat[p][q] * Ainv[q][b]
-              for p in range(k) for q in range(k))
-          for b in range(k)] for a in range(k)]
-    return {"vcov": V, "se": [math.sqrt(V[j][j]) for j in range(k)],
-            "leverage": h, "kind": kind,
-            "method": "heteroskedasticity-consistent covariance"}
+    meat = [[sum(X[i][a] * om[i] * X[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
+    V = [
+        [sum(Ainv[a][p] * meat[p][q] * Ainv[q][b] for p in range(k) for q in range(k)) for b in range(k)]
+        for a in range(k)
+    ]
+    return {
+        "vcov": V,
+        "se": [math.sqrt(V[j][j]) for j in range(k)],
+        "leverage": h,
+        "kind": kind,
+        "method": "heteroskedasticity-consistent covariance",
+    }
 
 
 def robust_se(fit, kind="HC1"):
@@ -296,12 +312,15 @@ def robust_se(fit, kind="HC1"):
     se = r["se"]
     b = fit["coef"]
     df = fit["df_resid"]
-    t = [b[j] / se[j] if se[j] > 0 else float("nan")
-         for j in range(len(b))]
-    return {"se": se, "t": t,
-            "p_value": [2.0 * _t_sf(abs(v), df) for v in t],
-            "kind": kind, "vcov": r["vcov"],
-            "method": "robust standard errors"}
+    t = [b[j] / se[j] if se[j] > 0 else float("nan") for j in range(len(b))]
+    return {
+        "se": se,
+        "t": t,
+        "p_value": [2.0 * _t_sf(abs(v), df) for v in t],
+        "kind": kind,
+        "vcov": r["vcov"],
+        "method": "robust standard errors",
+    }
 
 
 def newey_west_vcov(fit, lags=None, prewhite=False):
@@ -324,30 +343,31 @@ def newey_west_vcov(fit, lags=None, prewhite=False):
     Ainv = fit["XtX_inv"]
     n, k = fit["n"], fit["k"]
     if prewhite:
-        raise NotImplementedError("prewhitening is not implemented; "
-                                  "pass prewhite=False")
+        raise NotImplementedError("prewhitening is not implemented; pass prewhite=False")
     if lags is None:
         lags = int(math.floor(4.0 * (n / 100.0) ** (2.0 / 9.0)))
     u = [[X[i][a] * e[i] for a in range(k)] for i in range(n)]
 
-    def gamma(l):
-        return [[sum(u[i][a] * u[i - l][b] for i in range(l, n))
-                 for b in range(k)] for a in range(k)]
+    def gamma(ell):
+        return [[sum(u[i][a] * u[i - ell][b] for i in range(ell, n)) for b in range(k)] for a in range(k)]
 
     S = gamma(0)
-    for l in range(1, lags + 1):
-        g = gamma(l)
-        w = 1.0 - l / (lags + 1.0)
+    for ell in range(1, lags + 1):
+        g = gamma(ell)
+        w = 1.0 - ell / (lags + 1.0)
         for a in range(k):
             for b in range(k):
                 S[a][b] += w * (g[a][b] + g[b][a])
     S = [[S[a][b] * n / (n - k) for b in range(k)] for a in range(k)]
-    V = [[sum(Ainv[a][p] * S[p][q] * Ainv[q][b]
-              for p in range(k) for q in range(k))
-          for b in range(k)] for a in range(k)]
-    return {"vcov": V, "se": [math.sqrt(V[j][j]) for j in range(k)],
-            "lags": lags,
-            "method": "Newey-West HAC covariance"}
+    V = [
+        [sum(Ainv[a][p] * S[p][q] * Ainv[q][b] for p in range(k) for q in range(k)) for b in range(k)] for a in range(k)
+    ]
+    return {
+        "vcov": V,
+        "se": [math.sqrt(V[j][j]) for j in range(k)],
+        "lags": lags,
+        "method": "Newey-West HAC covariance",
+    }
 
 
 # ------------------------------------------------------- diagnostics
@@ -369,21 +389,22 @@ def breusch_pagan(fit, studentise=True):
     n, k = fit["n"], fit["k"]
     e2 = [t * t for t in e]
     sigma2 = sum(e2) / n
-    aux = ols([t / sigma2 for t in e2], [r[1:] for r in X],
-              add_intercept=True)
+    aux = ols([t / sigma2 for t in e2], [r[1:] for r in X], add_intercept=True)
     if studentise:
-        stat = 0.5 * (aux["tss"] - aux["rss"]) * sigma2 ** 2 * 2 / \
-            (sum((t - sum(e2) / n) ** 2 for t in e2) / n)
+        stat = 0.5 * (aux["tss"] - aux["rss"]) * sigma2**2 * 2 / (sum((t - sum(e2) / n) ** 2 for t in e2) / n)
         # Koenker: n * R^2 of e^2 on X
         aux2 = ols(e2, [r[1:] for r in X], add_intercept=True)
         stat = n * aux2["r_squared"]
     else:
         stat = 0.5 * (aux["tss"] - aux["rss"])
     df = k - 1
-    return {"statistic": stat, "df": df,
-            "p_value": _chi2_sf(stat, df),
-            "studentised": bool(studentise),
-            "method": "Breusch-Pagan test for heteroskedasticity"}
+    return {
+        "statistic": stat,
+        "df": df,
+        "p_value": _chi2_sf(stat, df),
+        "studentised": bool(studentise),
+        "method": "Breusch-Pagan test for heteroskedasticity",
+    }
 
 
 def durbin_watson(fit):
@@ -406,8 +427,7 @@ def durbin_watson(fit):
     den = sum(t * t for t in e)
     dw = num / den
     rho = sum(e[i] * e[i - 1] for i in range(1, n)) / den
-    return {"statistic": dw, "rho": rho, "n": n,
-            "method": "Durbin-Watson test for autocorrelation"}
+    return {"statistic": dw, "rho": rho, "n": n, "method": "Durbin-Watson test for autocorrelation"}
 
 
 def variance_inflation_factors(X, add_intercept=True, names=None):
@@ -427,11 +447,9 @@ def variance_inflation_factors(X, add_intercept=True, names=None):
     out = []
     for j in range(p):
         yj = [Xm[i][j] for i in range(n)]
-        others = [[Xm[i][q] for q in range(p) if q != j]
-                  for i in range(n)]
+        others = [[Xm[i][q] for q in range(p) if q != j] for i in range(n)]
         r2 = ols(yj, others, add_intercept=add_intercept)["r_squared"]
         out.append(1.0 / (1.0 - r2) if r2 < 1 else float("inf"))
     if names is None:
-        names = ["x%d" % (j + 1) for j in range(p)]
-    return {"vif": out, "names": list(names),
-            "method": "variance inflation factors"}
+        names = [f"x{int(j + 1)}" for j in range(p)]
+    return {"vif": out, "names": list(names), "method": "variance inflation factors"}

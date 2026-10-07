@@ -1,7 +1,5 @@
 """Tests for ok_variance_covariance_form.ok_variance_covariance_form."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ok_variance_covariance_form import (
     ok_variance_covariance_form,
 )

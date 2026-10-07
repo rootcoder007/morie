@@ -55,8 +55,7 @@ def hrz_kernel_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"
     h = silverman_bw(x) if h is None else float(h)
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
-    g = np.linspace(x.min(), x.max(), 100) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(x.min(), x.max(), 100) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     order = np.argsort(y)
     ys = y[order]
     out = np.empty((g.size, taus.size))
@@ -70,11 +69,16 @@ def hrz_kernel_quantile(x, y, tau=0.5, grid=None, h=None, kernel_name="gaussian"
         for j, t in enumerate(taus):
             k = int(np.searchsorted(cdf, t, side="left"))
             out[i, j] = ys[min(k, ys.size - 1)]
-    return RichResult(payload={"grid": g,
-                               "quantile": out[:, 0] if taus.size == 1 else out,
-                               "tau": taus[0] if taus.size == 1 else taus,
-                               "bandwidth": h, "monotone_in_tau": True,
-                               "method": "Invert a kernel conditional CDF; no quantile crossing"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "quantile": out[:, 0] if taus.size == 1 else out,
+            "tau": taus[0] if taus.size == 1 else taus,
+            "bandwidth": h,
+            "monotone_in_tau": True,
+            "method": "Invert a kernel conditional CDF; no quantile crossing",
+        }
+    )
 
 
 def cheatsheet():

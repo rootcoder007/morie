@@ -140,8 +140,7 @@ def ik_bandwidth(x, y, cutoff=0.0):
     nl = int(np.sum(il.astype(float)))
     nr = int(np.sum(ir.astype(float)))
     if nl < 3 or nr < 3:
-        raise ValueError("fewer than 3 observations within the pilot "
-                         "window on one side of the cutoff")
+        raise ValueError("fewer than 3 observations within the pilot window on one side of the cutoff")
     yl = ya[il]
     yr = ya[ir]
     s2l = float(np.var(yl, ddof=1))
@@ -160,9 +159,7 @@ def ik_bandwidth(x, y, cutoff=0.0):
     keep = (d >= med_l) & (d <= med_r)
     dk = d[keep]
     yk = ya[keep]
-    Xc = np.column_stack(
-        [np.ones(len(dk)), (dk >= 0.0).astype(float), dk, dk ** 2,
-         dk ** 3])
+    Xc = np.column_stack([np.ones(len(dk)), (dk >= 0.0).astype(float), dk, dk**2, dk**3])
     g = _ols(Xc, yk)
     m3 = 6.0 * float(g[4])
     base = (sigma2 / (f_hat * max(m3 * m3, 0.01))) ** (1.0 / 7.0)
@@ -174,9 +171,8 @@ def ik_bandwidth(x, y, cutoff=0.0):
         ym = ya[mask]
         n2 = int(len(dm))
         if n2 < 4:
-            raise ValueError("fewer than 4 observations in a pilot "
-                             "quadratic window")
-        Xq = np.column_stack([np.ones(n2), dm, dm ** 2])
+            raise ValueError("fewer than 4 observations in a pilot quadratic window")
+        Xq = np.column_stack([np.ones(n2), dm, dm**2])
         b = _ols(Xq, ym)
         # the fit uses the full-sample window; the regularization
         # count is taken within the median-trimmed sample (see the
@@ -188,40 +184,39 @@ def ik_bandwidth(x, y, cutoff=0.0):
     m2l, n2l_full, n2l = _quad(left & (d >= -h2l), d >= med_l)
 
     # ---- Step 3 ----
-    rr = 720.0 * sigma2 / (n2r * h2r ** 4)
-    rl = 720.0 * sigma2 / (n2l * h2l ** 4)
+    rr = 720.0 * sigma2 / (n2r * h2r**4)
+    rl = 720.0 * sigma2 / (n2l * h2l**4)
     curv = (m2r - m2l) ** 2
-    h_opt = _CK_EDGE * (2.0 * sigma2 / (f_hat * (curv + rr + rl))) ** 0.2 \
-        * n ** (-0.2)
-    h_unreg = _CK_EDGE * (2.0 * sigma2 / (f_hat * curv)) ** 0.2 \
-        * n ** (-0.2) if curv > 0 else np.inf
+    h_opt = _CK_EDGE * (2.0 * sigma2 / (f_hat * (curv + rr + rl))) ** 0.2 * n ** (-0.2)
+    h_unreg = _CK_EDGE * (2.0 * sigma2 / (f_hat * curv)) ** 0.2 * n ** (-0.2) if curv > 0 else np.inf
 
-    return RichResult(payload={
-        "estimate": float(h_opt),
-        "h1": float(h1),
-        "f_hat": float(f_hat),
-        "sigma2": float(sigma2),
-        "n_left_h1": nl,
-        "n_right_h1": nr,
-        "mean_left_h1": float(np.mean(yl)),
-        "mean_right_h1": float(np.mean(yr)),
-        "m3": float(m3),
-        "h2_left": float(h2l),
-        "h2_right": float(h2r),
-        "m2_left": float(m2l),
-        "m2_right": float(m2r),
-        "n2_left": n2l,
-        "n2_right": n2r,
-        "n2_left_full": n2l_full,
-        "n2_right_full": n2r_full,
-        "r_left": float(rl),
-        "r_right": float(rr),
-        "h_unregularized": float(h_unreg),
-        "kernel_constant": _CK_EDGE,
-        "n": n,
-        "method": ("Imbens-Kalyanaraman (2009/2012) plug-in bandwidth, "
-                   "edge kernel, NBER w14726 algorithm"),
-    })
+    return RichResult(
+        payload={
+            "estimate": float(h_opt),
+            "h1": float(h1),
+            "f_hat": float(f_hat),
+            "sigma2": float(sigma2),
+            "n_left_h1": nl,
+            "n_right_h1": nr,
+            "mean_left_h1": float(np.mean(yl)),
+            "mean_right_h1": float(np.mean(yr)),
+            "m3": float(m3),
+            "h2_left": float(h2l),
+            "h2_right": float(h2r),
+            "m2_left": float(m2l),
+            "m2_right": float(m2r),
+            "n2_left": n2l,
+            "n2_right": n2r,
+            "n2_left_full": n2l_full,
+            "n2_right_full": n2r_full,
+            "r_left": float(rl),
+            "r_right": float(rr),
+            "h_unregularized": float(h_unreg),
+            "kernel_constant": _CK_EDGE,
+            "n": n,
+            "method": ("Imbens-Kalyanaraman (2009/2012) plug-in bandwidth, edge kernel, NBER w14726 algorithm"),
+        }
+    )
 
 
 # primary name = module name; descriptive name kept as the canonical one.
@@ -231,6 +226,8 @@ causal_rdd_imbens_kalyanaraman = ik_bandwidth
 
 
 def cheatsheet():
-    return ("causrddh: Imbens-Kalyanaraman plug-in RDD bandwidth "
-            "(NBER w14726 Section 4.4; eq. 4.8 erratum corrected per "
-            "the Section 6.2 worked example)")
+    return (
+        "causrddh: Imbens-Kalyanaraman plug-in RDD bandwidth "
+        "(NBER w14726 Section 4.4; eq. 4.8 erratum corrected per "
+        "the Section 6.2 worked example)"
+    )

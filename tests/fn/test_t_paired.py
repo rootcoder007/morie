@@ -1,7 +1,6 @@
 """Tests for t_paired.t_paired."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.t_paired import t_paired
 
 

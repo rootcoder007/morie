@@ -14,8 +14,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_prior_mass_cnd"]
 
 
-def ghosal_prior_mass_cnd(p0, eps=0.3, alpha=None, n_sim=4000,
-                          seed=42):
+def ghosal_prior_mass_cnd(p0, eps=0.3, alpha=None, n_sim=4000, seed=42):
     """B_2(p0, eps) = {p: K(p0; p) < eps^2, V_{2,0}(p0; p) < eps^2}
     (eq. 8.3): Monte Carlo prior mass under a Dirichlet prior --
     condition (8.4) needs it >= e^{-C n eps_n^2}. Keys: estimate."""
@@ -28,17 +27,20 @@ def ghosal_prior_mass_cnd(p0, eps=0.3, alpha=None, n_sim=4000,
     for _ in range(n_sim):
         g = [float(rng.gamma(a, 1.0)) for a in alpha]
         p = _bnp.normalize_weights(g)
-        lr = [math.log(q / max(pi, 1e-300))
-              for q, pi in zip(p0, p)]
-        K = sum(q * l for q, l in zip(p0, lr))
-        V = sum(q * max(l - K, 0.0) ** 2 for q, l in zip(p0, lr))
-        if K < eps ** 2 and V < eps ** 2:
+        lr = [math.log(q / max(pi, 1e-300)) for q, pi in zip(p0, p)]
+        K = sum(q * ell for q, ell in zip(p0, lr))
+        V = sum(q * max(ell - K, 0.0) ** 2 for q, ell in zip(p0, lr))
+        if eps**2 > K and eps**2 > V:
             hits += 1
     mass = max(hits, 0) / n_sim
-    res = RichResult(payload={"estimate": mass,
-                              "log_mass": math.log(max(mass, 1e-12)),
-                              "positive": mass > 0,
-                              "method": "B_2 prior mass (GvdV 2017 eq. 8.3-8.4)"})
+    res = RichResult(
+        payload={
+            "estimate": mass,
+            "log_mass": math.log(max(mass, 1e-12)),
+            "positive": mass > 0,
+            "method": "B_2 prior mass (GvdV 2017 eq. 8.3-8.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_4")
 
 

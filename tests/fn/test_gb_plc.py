@@ -1,7 +1,6 @@
 """Tests for gb_plc.gibbons_placement_def."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_plc import gibbons_placement_def
 
 
@@ -12,6 +11,8 @@ def test_gb_plc_basic():
     result = gibbons_placement_def(x, y)
     assert isinstance(result, dict)
     assert "placements" in result
+
+
 def test_gb_plc_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

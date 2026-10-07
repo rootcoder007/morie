@@ -70,12 +70,19 @@ def hotcld(x, W, alpha=0.05):
         k = int(passing[-1])
         significant[order[: k + 1]] = True
     category = np.where(significant & (z > 0), 1, np.where(significant & (z < 0), -1, 0))
-    return RichResult(payload={
-        "z": z, "p": p, "significant": significant, "category": category,
-        "n_hot": int(np.sum(category == 1)), "n_cold": int(np.sum(category == -1)),
-        "alpha": alpha, "n": int(n),
-        "method": "Getis-Ord Gi* hot/cold spots, BH-FDR screened",
-    })
+    return RichResult(
+        payload={
+            "z": z,
+            "p": p,
+            "significant": significant,
+            "category": category,
+            "n_hot": int(np.sum(category == 1)),
+            "n_cold": int(np.sum(category == -1)),
+            "alpha": alpha,
+            "n": int(n),
+            "method": "Getis-Ord Gi* hot/cold spots, BH-FDR screened",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

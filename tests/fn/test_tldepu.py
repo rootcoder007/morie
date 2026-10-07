@@ -1,7 +1,6 @@
 """Tests for tldepu.upper_tail_dependence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tldepu import upper_tail_dependence
 
 

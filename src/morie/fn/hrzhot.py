@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_T_F_estimators"]
 
 
-def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
-                            y_grid=None, u_grid=None, y1=None, y2=None):
+def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None, y_grid=None, u_grid=None, y1=None, y2=None):
     r"""Horowitz's (1996) nonparametric estimators of T and F in the
     transformation model :math:`T(Y) = X'\beta + U` (Horowitz
     Sec. 6.3.1), equations (6.60) and (6.66):
@@ -97,15 +96,17 @@ def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
         raise ValueError(f"beta_hat has {b.size} entries for {d} covariates.")
 
     hb = np.atleast_1d(np.asarray(bandwidth, dtype=float)).ravel()
-    h_ny, h_nz = (float(hb[0]), float(hb[0])) if hb.size == 1 else \
-        (float(hb[0]), float(hb[1]))
+    h_ny, h_nz = (float(hb[0]), float(hb[0])) if hb.size == 1 else (float(hb[0]), float(hb[1]))
     if h_ny <= 0 or h_nz <= 0:
         raise ValueError(f"bandwidths must be positive, got {(h_ny, h_nz)}.")
 
     Z = X @ b
     yy0 = float(np.median(yv)) if y0 is None else float(y0)
-    yg = np.linspace(np.quantile(yv, 0.05), np.quantile(yv, 0.95), 41) \
-        if y_grid is None else np.atleast_1d(np.asarray(y_grid, dtype=float))
+    yg = (
+        np.linspace(np.quantile(yv, 0.05), np.quantile(yv, 0.95), 41)
+        if y_grid is None
+        else np.atleast_1d(np.asarray(y_grid, dtype=float))
+    )
 
     # w is a weight on z with compact support S_w, integrating to 1
     # (6.58). The interquartile range of Z keeps S_w where p_Z is
@@ -126,17 +127,16 @@ def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
         kz = kernel_Kz_sixth(a)
         kzp = kernel_Kz_sixth_deriv(a)
         ind = (yv <= v).astype(float)
-        dd = kz.sum() / (n * h_nz)                     # D = p_nZ(z)
+        dd = kz.sum() / (n * h_nz)  # D = p_nZ(z)
         if dd <= 0:
             return 0.0
-        nn_ = float(np.sum(ind * kz)) / (n * h_nz)     # N(z)
-        d_dd = -kzp.sum() / (n * h_nz**2)              # dD/dz
+        nn_ = float(np.sum(ind * kz)) / (n * h_nz)  # N(z)
+        d_dd = -kzp.sum() / (n * h_nz**2)  # dD/dz
         d_nn = -float(np.sum(ind * kzp)) / (n * h_nz**2)
         g_nz = (d_nn * dd - nn_ * d_dd) / dd**2
         if g_nz == 0:
             return 0.0
-        g_ny = float(np.sum(kernel_K((yv - v) / h_ny) * kz)) / \
-            (n * h_ny * h_nz * dd)
+        g_ny = float(np.sum(kernel_K((yv - v) / h_ny) * kz)) / (n * h_ny * h_nz * dd)
         return g_ny / g_nz
 
     def _T_on(points):
@@ -150,12 +150,9 @@ def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
         lo = min(float(pts.min()), yy0)
         hi = max(float(pts.max()), yy0)
         vs = np.linspace(lo, hi, 61)
-        inner = np.array([
-            np.trapezoid([w[k] * _ratio(v, zs[k]) for k in range(zs.size)], zs)
-            for v in vs])
+        inner = np.array([np.trapezoid([w[k] * _ratio(v, zs[k]) for k in range(zs.size)], zs) for v in vs])
         # -integral from y0 to y, so cumulate then re-base at y0
-        cum = np.concatenate([[0.0], np.cumsum(
-            np.diff(vs) * (inner[:-1] + inner[1:]) / 2.0)])
+        cum = np.concatenate([[0.0], np.cumsum(np.diff(vs) * (inner[:-1] + inner[1:]) / 2.0)])
         base = np.interp(yy0, vs, cum)
         return -(np.interp(pts, vs, cum) - base), vs, cum
 
@@ -174,22 +171,36 @@ def horowitz_T_F_estimators(x, y, bandwidth, beta_hat, y0=None,
     # T_n is a function of y alone, so it is interpolated off the
     # same integration grid rather than re-integrated per observation
     Uni = -(np.interp(yv, _vs, _cum) - _base) - Z
-    ug = np.linspace(np.quantile(Uni, 0.1), np.quantile(Uni, 0.9), 41) \
-        if u_grid is None else np.atleast_1d(np.asarray(u_grid, dtype=float))
+    ug = (
+        np.linspace(np.quantile(Uni, 0.1), np.quantile(Uni, 0.9), 41)
+        if u_grid is None
+        else np.atleast_1d(np.asarray(u_grid, dtype=float))
+    )
     F_hat = np.empty(ug.size)
     for j, u in enumerate(ug):
-        inwin = (T_y2 - u < Z) & (Z <= T_y1 - u)
+        inwin = (T_y2 - u < Z) & (T_y1 - u >= Z)
         Bn = float(np.mean(inwin))
         An = float(np.mean((Uni <= u) & inwin))
         F_hat[j] = An / Bn if Bn > 0 else np.nan
 
-    return RichResult(payload={
-        "y_grid": yg, "T_hat": T_hat, "u_grid": ug, "F_hat": F_hat,
-        "beta": b, "y0": yy0, "window": (q2, q1),
-        "h_ny": h_ny, "h_nz": h_nz,
-        "F_is_empirical_cdf": False,
-        "normalisation": SCALE_NOTE, "n": int(n), "d": int(d),
-        "method": "Horowitz (1996) T_n (6.60) and F_n (6.66); F is not the EDF of U_n"})
+    return RichResult(
+        payload={
+            "y_grid": yg,
+            "T_hat": T_hat,
+            "u_grid": ug,
+            "F_hat": F_hat,
+            "beta": b,
+            "y0": yy0,
+            "window": (q2, q1),
+            "h_ny": h_ny,
+            "h_nz": h_nz,
+            "F_is_empirical_cdf": False,
+            "normalisation": SCALE_NOTE,
+            "n": int(n),
+            "d": int(d),
+            "method": "Horowitz (1996) T_n (6.60) and F_n (6.66); F is not the EDF of U_n",
+        }
+    )
 
 
 def cheatsheet():

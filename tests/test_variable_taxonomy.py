@@ -197,7 +197,6 @@ def test_overrides_have_valid_field_names():
     ],
 )
 def test_recommended_summary_mentions_appropriate_method(level, fragment):
-    spec = ColumnSpec(name="X", dtype="string")
     t = VariableTaxonomy(
         dataset_name="X",
         column_name="X",

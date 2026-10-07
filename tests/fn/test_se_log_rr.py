@@ -1,7 +1,5 @@
 """Tests for se_log_rr.se_log_rr."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.se_log_rr import se_log_rr
 
 

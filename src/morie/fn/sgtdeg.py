@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['degmat', 'sgt_degree_matrix']
+__all__ = ["degmat", "sgt_degree_matrix"]
 
 
 def degmat(Adj):
@@ -39,13 +39,13 @@ def degmat(Adj):
     d = [sum(A[i]) for i in range(n)]
 
     D = [[d[i] if i == j else 0.0 for j in range(n)] for i in range(n)]
-    return RichResult(payload={
-        "degrees": d, "D": D, "volume": sum(d), "n": n,
-        "method": "Degree matrix and graph volume"})
+    return RichResult(
+        payload={"degrees": d, "D": D, "volume": sum(d), "n": n, "method": "Degree matrix and graph volume"}
+    )
 
 
 sgt_degree_matrix = degmat
 
 
 def cheatsheet():
-    return 'sgtdeg: Degree matrix and volume of a graph.'
+    return "sgtdeg: Degree matrix and volume of a graph."

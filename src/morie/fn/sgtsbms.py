@@ -69,14 +69,14 @@ def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
     A = np.atleast_2d(np.asarray(adjacency, dtype=float))
     n = A.shape[0]
     if A.shape[1] != n:
-        raise ValueError("adjacency must be square, got %s." % (A.shape,))
+        raise ValueError(f"adjacency must be square, got {A.shape}.")
     if not np.allclose(A, A.T, atol=1e-8):
         raise ValueError("adjacency must be symmetric.")
     if np.any(np.abs(np.diag(A)) > 1e-12):
         raise ValueError("adjacency must have a zero diagonal.")
     K = int(k)
-    if K < 1 or K > n:
-        raise ValueError("k must lie between 1 and n, got %d." % K)
+    if K < 1 or n < K:
+        raise ValueError(f"k must lie between 1 and n, got {int(K)}.")
 
     deg = A.sum(axis=1)
     mean_deg = float(deg.mean())
@@ -123,12 +123,12 @@ def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
         for c in range(K):
             m = labels == c
             q += A[np.ix_(m, m)].sum() / tot - (deg[m].sum() / tot) ** 2
-    gap = float(abs(w[K - 1]) - abs(w[K])) if K < n else np.nan
+    gap = float(abs(w[K - 1]) - abs(w[K])) if n > K else np.nan
     return RichResult(
         payload={
             "estimate": labels,
             "labels": labels,
-            "eigenvalues": w[:min(K + 3, n)],
+            "eigenvalues": w[: min(K + 3, n)],
             "eigengap": gap,
             "eigengap_note": (
                 "the gap between the K-th and (K+1)-th eigenvalue is the "
@@ -139,11 +139,11 @@ def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
             "log_n": thresh,
             "degree_condition": bool(ok),
             "degree_note": (
-                None if ok else
-                "mean degree %.2f is below log n = %.2f; the graph is too "
+                None
+                if ok
+                else f"mean degree {mean_deg:.2f} is below log n = {thresh:.2f}; the graph is too "
                 "sparse for the leading eigenvectors to separate blocks, and "
                 "the partition will largely reflect degree instead"
-                % (mean_deg, thresh)
             ),
             "regularized": bool(regularized),
             "regularization_note": (
@@ -161,10 +161,7 @@ def spectral_sbm(adjacency, k=2, regularized=True, n_iter=100, seed=0):
 
 
 def cheatsheet():
-    return (
-        "sgtsbms: spectral SBM clustering with the log-n degree condition "
-        "and the eigengap that justifies K"
-    )
+    return "sgtsbms: spectral SBM clustering with the log-n degree condition and the eigengap that justifies K"
 
 
 #: Catalogue alias for :func:`spectral_sbm`.

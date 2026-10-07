@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['jtstat', 'gibbons_jonckheere']
+__all__ = ["jtstat", "gibbons_jonckheere"]
 
 
 def jtstat(samples, alternative="greater"):
@@ -65,10 +65,7 @@ def jtstat(samples, alternative="greater"):
     ns = [len(s) for s in ss]
     nn = sum(ns)
     mean = (float(nn) ** 2 - sum(float(v) ** 2 for v in ns)) / 4.0
-    var = (
-        float(nn) ** 2 * (2.0 * nn + 3.0)
-        - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in ns)
-    ) / 72.0
+    var = (float(nn) ** 2 * (2.0 * nn + 3.0) - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in ns)) / 72.0
     z = (b - mean) / math.sqrt(var)
     if alternative == "greater":
         pv = stats.norm.sf(z)

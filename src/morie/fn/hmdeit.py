@@ -140,9 +140,7 @@ def geron_deit(
     loss = lcls = ldist = agree = None
     if logits_cls is not None or logits_dist is not None:
         if logits_cls is None or logits_dist is None or y is None or teacher is None:
-            raise ValueError(
-                "geron_deit: computing the loss needs logits_cls, logits_dist, y and teacher together"
-            )
+            raise ValueError("geron_deit: computing the loss needs logits_cls, logits_dist, y and teacher together")
         t = teacher(X) if callable(teacher) else teacher
         base = geron_deit_distillation_loss(logits_cls, logits_dist, y, t, alpha=alpha)
         loss = float(base["loss"])

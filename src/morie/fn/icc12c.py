@@ -80,7 +80,8 @@ def _form(model, k):
         raise ValueError(
             "icc_two_way: model must name one of the six Shrout-Fleiss "
             "forms ICC(1,1), ICC(1,k), ICC(2,1), ICC(2,k), ICC(3,1), "
-            "ICC(3,k); got %r" % (model,))
+            f"ICC(3,k); got {model!r}"
+        )
     return s
 
 
@@ -119,8 +120,8 @@ def icc_two_way(X, model="2,k"):
     for row in M:
         if len(row) != k:
             raise ValueError(
-                "icc_two_way: the design must be complete and crossed; "
-                "every target must be rated by the same k judges")
+                "icc_two_way: the design must be complete and crossed; every target must be rated by the same k judges"
+            )
     if k < 2:
         raise ValueError("icc_two_way: need at least two judges")
     y, subject, rater = [], [], []
@@ -143,19 +144,32 @@ def icc_two_way(X, model="2,k"):
         "3k": _div(bms - ems, bms),
     }
     f = _form(model, k)
-    return RichResult(payload={
-        "estimate": icc[f], "model": f,
-        "icc11": icc["11"], "icc1k": icc["1k"],
-        "icc21": icc["21"], "icc2k": icc["2k"],
-        "icc31": icc["31"], "icc3k": icc["3k"],
-        "BMS": bms, "WMS": wms, "JMS": jms, "EMS": ems,
-        "n": int(n), "k": int(k),
-        "method": "Shrout-Fleiss (1979) ICC(%s,%s)" % (f[0], f[1])})
+    return RichResult(
+        payload={
+            "estimate": icc[f],
+            "model": f,
+            "icc11": icc["11"],
+            "icc1k": icc["1k"],
+            "icc21": icc["21"],
+            "icc2k": icc["2k"],
+            "icc31": icc["31"],
+            "icc3k": icc["3k"],
+            "BMS": bms,
+            "WMS": wms,
+            "JMS": jms,
+            "EMS": ems,
+            "n": int(n),
+            "k": int(k),
+            "method": f"Shrout-Fleiss (1979) ICC({f[0]},{f[1]})",
+        }
+    )
 
 
 def cheatsheet():
-    return ("icc12c: six ICCs, one table -- .17 to .91 on the Shrout-Fleiss "
-            "own example; the case is a design claim, not arithmetic")
+    return (
+        "icc12c: six ICCs, one table -- .17 to .91 on the Shrout-Fleiss "
+        "own example; the case is a design claim, not arithmetic"
+    )
 
 
 # compact alias per ledger/NAMING.md

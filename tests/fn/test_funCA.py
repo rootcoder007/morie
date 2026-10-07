@@ -1,7 +1,6 @@
 """Tests for funCA.functional_cca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.funCA import functional_cca
 
 

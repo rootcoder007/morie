@@ -247,6 +247,19 @@ def tsls(
     ----------
     Angrist, J. D., & Pischke, J.-S. (2009). *Mostly Harmless
     Econometrics*. Princeton University Press.
+
+    Examples
+    --------
+    >>> import random
+    >>> from morie.fn import _frame_core as pd
+    >>> r = random.Random(3)
+    >>> z = [r.gauss(0, 1) for _ in range(120)]
+    >>> u = [r.gauss(0, 1) for _ in range(120)]                 # the confounder
+    >>> d = [0.8 * zi + ui + r.gauss(0, 0.5) for zi, ui in zip(z, u)]
+    >>> y = [1.5 * di + ui + r.gauss(0, 0.5) for di, ui in zip(d, u)]
+    >>> fit = tsls(pd.DataFrame({"y": y, "d": d, "z": z}), "y", ["d"], ["z"])
+    >>> (fit.variable_names, [round(float(c), 3) for c in fit.coefficients], fit.n_obs)
+    (['const', 'd'], [-0.081, 1.48], 120)
     """
     cols = [outcome] + endogenous + instruments
     if exogenous:
@@ -1016,20 +1029,19 @@ def kleibergen_paap_test(
     endogenous: list[str],
     instruments: list[str],
     exogenous: list[str] | None = None,
+    vcov: str = "robust",
+    cluster: str | None = None,
 ) -> DiagnosticResult:
-    """Kleibergen-Paap (2006) rk statistic for weak instruments.
+    """Kleibergen-Paap (2006) rk statistic and its Wald F for weak instruments.
 
-    Robust to heteroskedasticity and clustering, unlike Cragg-Donald.
-
-    Parameters
-    ----------
-    data : pd.DataFrame
-    endogenous, instruments : list of str
-    exogenous : list of str, optional
-
-    Returns
-    -------
-    DiagnosticResult
+    Theta = chol(Qzz) Pi chol(Qxx)^-1 from the partialled first stage; the
+    rk statistic n lambda' V_lambda^-1 lambda projects vec(Theta) on the
+    smallest-singular-value directions (A_perp, B_perp of the SVD), with
+    V_lambda the robust, iid or clustered covariance of vec(Theta).  The
+    ``statistic`` is the rk Wald F, rk/n (n - L)/K (clustered: rk/(n-1)
+    (n - L)(G-1)/G/K), compared with the rule of thumb 10 rather than the
+    Stock-Yogo tables, which assume iid errors.  Matches the R arm's
+    morie_iv_kleibergen_paap() to 1e-14.
 
     References
     ----------
@@ -1037,45 +1049,59 @@ def kleibergen_paap_test(
     using the singular value decomposition. *Journal of Econometrics*,
     133(1), 97--126.
     """
-    cols = endogenous + instruments
-    if exogenous:
-        cols += exogenous
-    df = data[list(set(cols))].dropna().copy()
-    n = len(df)
+    from morie._iv_weak import kleibergen_paap
 
-    W = _add_const(df[exogenous].values.astype(float)) if exogenous else np.ones((n, 1))
-
-    M_W = _annihilator(W)
-    D = df[endogenous].values.astype(float)
-    Z_excl = df[instruments].values.astype(float)
-
-    D_tilde = M_W @ D
-    Z_tilde = M_W @ Z_excl
-
-    # First-stage coefficient matrix
-    Pi_hat = np.linalg.pinv(Z_tilde.T @ Z_tilde) @ (Z_tilde.T @ D_tilde)
-    resid = D_tilde - Z_tilde @ Pi_hat
-
-    # Robust covariance
-    k_z = Z_tilde.shape[1]
-    k_d = D_tilde.shape[1]
-    Omega = np.zeros((k_z * k_d, k_z * k_d))
-    for i in range(n):
-        zi = Z_tilde[i]
-        ei = resid[i]
-        gi = np.kron(zi, ei)
-        Omega += np.outer(gi, gi)
-    Omega /= n
-
-    # Singular values of Pi_hat (scaled)
-    sv = np.linalg.svd(Pi_hat, compute_uv=False)
-    rk_stat = float(n * np.min(sv) ** 2) if len(sv) > 0 else 0.0
-
+    r = kleibergen_paap(data, endogenous, instruments, exogenous, vcov=vcov, cluster=cluster)
     return DiagnosticResult(
-        statistic=rk_stat,
-        p_value=np.nan,
+        statistic=r["statistic"],
+        p_value=r["p_value"],
         test_name="kleibergen_paap",
-        critical_values=stock_yogo_critical_values(len(endogenous), len(instruments)),
+        critical_values={"rule_of_thumb": 10.0},
+        details=r,
+    )
+
+
+def montiel_olea_pflueger_test(
+    data: pd.DataFrame,
+    outcome: str,
+    endogenous: str,
+    instruments: list[str],
+    exogenous: list[str] | None = None,
+    vcov: str = "robust",
+    cluster: str | None = None,
+    lag: int | None = None,
+    alpha: float = 0.05,
+    tau: tuple = (0.05, 0.10, 0.20, 0.30),
+) -> DiagnosticResult:
+    """Montiel Olea-Pflueger (2013) effective F with computed critical values.
+
+    F_eff = x' P_Z x / tr(W2) on the partialled, orthonormalised
+    instruments, robust to heteroskedasticity, clustering and serial
+    correlation (``vcov`` "robust", "iid", "cluster" or "hac").  Critical
+    values come from the Patnaik approximation for the simplified test
+    (x = 1/tau) and the TSLS and LIML tests (x = B/tau, B the worst-case
+    Nagar bias maximised over beta), computed from the data, not a table.
+    ``critical_values`` maps "tau_10" etc. to the TSLS critical value;
+    ``details`` holds every column.  Matches the R arm's
+    morie_iv_montiel_olea_pflueger().
+
+    References
+    ----------
+    Montiel Olea, J. L., & Pflueger, C. (2013). A robust test for weak
+    instruments. *Journal of Business & Economic Statistics*, 31(3),
+    358--369.
+    """
+    from morie._iv_weak import montiel_olea_pflueger
+
+    r = montiel_olea_pflueger(
+        data, outcome, endogenous, instruments, exogenous, vcov=vcov, cluster=cluster, lag=lag, alpha=alpha, tau=tau
+    )
+    return DiagnosticResult(
+        statistic=r["F_eff"],
+        p_value=float("nan"),
+        test_name="montiel_olea_pflueger",
+        critical_values={f"tau_{round(100 * c['tau'])}": c["tsls"] for c in r["critical_values"]},
+        details=r,
     )
 
 

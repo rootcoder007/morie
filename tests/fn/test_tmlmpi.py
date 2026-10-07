@@ -1,7 +1,6 @@
 """Tests for tmlmpi.tmle_marginal_pim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlmpi import tmle_marginal_pim
 
 

@@ -67,9 +67,15 @@ def gibbons_run_lengths_dist(lengths1, lengths2, n1=None, n2=None):
     c = 2 if r1 == r2 else 1
     pmf = c * multiset_perms(L1) * multiset_perms(L2) / comb(n1 + n2, n1)
     return RichResult(
-        payload={"pmf": float(pmf), "r1": r1, "r2": r2, "c": c,
-                 "n1": n1, "n2": n2,
-                 "method": "Run-lengths joint pmf (Gibbons Theorem 3.3.1)"}
+        payload={
+            "pmf": float(pmf),
+            "r1": r1,
+            "r2": r2,
+            "c": c,
+            "n1": n1,
+            "n2": n2,
+            "method": "Run-lengths joint pmf (Gibbons Theorem 3.3.1)",
+        }
     )
 
 

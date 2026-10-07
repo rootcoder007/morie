@@ -42,8 +42,7 @@ def kamath_self_consistency(samples, parse=None):
     """
     traces = list(samples)
     if not traces:
-        raise ValueError(
-            "no samples; a majority vote over nothing has no winner.")
+        raise ValueError("no samples; a majority vote over nothing has no winner.")
     if parse is not None and not callable(parse):
         raise ValueError("parse must be callable(sample) -> answer.")
     answers, unparsed = [], 0
@@ -54,25 +53,27 @@ def kamath_self_consistency(samples, parse=None):
             continue
         answers.append(a)
     if not answers:
-        raise ValueError(
-            f"all {len(traces)} samples failed to parse; there is no "
-            "answer to vote on.")
+        raise ValueError(f"all {len(traces)} samples failed to parse; there is no answer to vote on.")
     counts = Counter(answers)
     top = max(counts.values())
     tied = [a for a in counts if counts[a] == top]
     # First appearance among the tied answers.
     winner = next(a for a in answers if a in tied)
-    return RichResult(payload={
-        "answer": winner, "votes": top,
-        "agreement": top / len(answers),
-        "counts": dict(counts),
-        "tie": len(tied) > 1,
-        "tied_answers": sorted(tied, key=repr),
-        "n_unparsed": unparsed,
-        "n_voted": len(answers),
-        "estimate": top / len(answers),
-        "n": len(traces),
-        "method": "Self-consistency majority vote over parsed answers"})
+    return RichResult(
+        payload={
+            "answer": winner,
+            "votes": top,
+            "agreement": top / len(answers),
+            "counts": dict(counts),
+            "tie": len(tied) > 1,
+            "tied_answers": sorted(tied, key=repr),
+            "n_unparsed": unparsed,
+            "n_voted": len(answers),
+            "estimate": top / len(answers),
+            "n": len(traces),
+            "method": "Self-consistency majority vote over parsed answers",
+        }
+    )
 
 
 def cheatsheet():

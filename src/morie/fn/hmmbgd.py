@@ -128,9 +128,7 @@ def geron_minibatch_gd(X, y, theta, eta, b, seed=0, n_steps=1):
             ("MSE", mse),
             ("||full gradient||", float(np.linalg.norm(full_grad))),
         ],
-        interpretation=(
-            "b = m is batch GD, b = 1 is SGD; the mini-batch gradient's noise falls like 1/sqrt(b)."
-        ),
+        interpretation=("b = m is batch GD, b = 1 is SGD; the mini-batch gradient's noise falls like 1/sqrt(b)."),
         payload={
             "theta": t,
             "gradient": grad,

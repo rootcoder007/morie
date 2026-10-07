@@ -40,9 +40,15 @@ def hrz_nw_regression(x, y, grid=None, h=None, kernel_name="gaussian"):
     Econometrics*. Springer. Ch. 2 (kernel regression).
     """
     g, m, hh = nw_regression(x, y, grid=grid, h=h, name=kernel_name)
-    return RichResult(payload={"grid": g, "fitted": m, "bandwidth": hh,
-                               "n": int(np.asarray(x).size),
-                               "method": "NW local constant; O(h) boundary bias"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "fitted": m,
+            "bandwidth": hh,
+            "n": int(np.asarray(x).size),
+            "method": "NW local constant; O(h) boundary bias",
+        }
+    )
 
 
 def cheatsheet():

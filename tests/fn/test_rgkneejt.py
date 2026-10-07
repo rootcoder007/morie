@@ -1,7 +1,6 @@
 """Tests for rgkneejt.rangayyan_knee_joint_sound."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rgkneejt import rangayyan_knee_joint_sound
 
 

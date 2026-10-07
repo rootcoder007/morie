@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['rosenbm', 'gibbons_fligner_killeen']
+__all__ = ["rosenbm", "gibbons_fligner_killeen"]
 
 
 def rosenbm(x, y):
@@ -55,14 +55,9 @@ def rosenbm(x, y):
     r = sum(1 for v in xs if v < ymin or v > ymax)
 
     def _beta(a, b):
-        return math.exp(
-            math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
-        )
+        return math.exp(math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b))
 
-    pmf = [
-        n * (n - 1.0) * math.comb(m, k) * _beta(m + n - 1.0 - k, k + 2.0)
-        for k in range(m + 1)
-    ]
+    pmf = [n * (n - 1.0) * math.comb(m, k) * _beta(m + n - 1.0 - k, k + 2.0) for k in range(m + 1)]
     mean = sum(k * p for k, p in enumerate(pmf))
     return RichResult(
         payload={

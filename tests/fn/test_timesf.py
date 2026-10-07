@@ -1,14 +1,15 @@
 """Tests for timesf.timesfm_foundation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.timesf import timesfm_foundation
 
 
 def test_timesf_basic():
     """Test basic functionality."""
     history = [1.0] * 16
-    predictor = lambda p: [0.0] * 8
+
+    def predictor(p):
+        return [0.0] * 8
+
     horizon = 20
     input_patch_len = 16
     output_patch_len = 8
@@ -20,7 +21,10 @@ def test_timesf_basic():
 def test_timesf_edge():
     """Test edge cases."""
     history = [1.0] * 16
-    predictor = lambda p: [0.0] * 8
+
+    def predictor(p):
+        return [0.0] * 8
+
     horizon = 20
     input_patch_len = 16
     output_patch_len = 8

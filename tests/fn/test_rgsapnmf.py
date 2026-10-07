@@ -1,7 +1,6 @@
 """Tests for rgsapnmf.rangayyan_sleep_apnea_nmf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaclass import rangayyan_sleep_apnea_nmf
 
 

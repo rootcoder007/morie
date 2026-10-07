@@ -93,7 +93,7 @@ def _find_knee(k_values: list[int], inertias: list[float]) -> int:
 
     best_dist = -1.0
     best_k = k_values[0]
-    for i, (k, inert) in enumerate(zip(k_values, inertias)):
+    for _i, (k, inert) in enumerate(zip(k_values, inertias)):
         pt = np.array([k, inert])
         # Perpendicular distance from point to line (2D cross product)
         v = p1 - pt

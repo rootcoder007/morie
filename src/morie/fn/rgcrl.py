@@ -81,8 +81,7 @@ def rangayyan_correlation_dimension(x, m=3, tau=1, n_r=20):
     M = N - (m - 1) * tau
     if M < 10:
         raise ValueError(
-            f"Series too short for embedding: {N} samples at m={m}, tau={tau} "
-            f"gives {M} embedded points, need >= 10."
+            f"Series too short for embedding: {N} samples at m={m}, tau={tau} gives {M} embedded points, need >= 10."
         )
     Y = np.empty((M, m))
     for i in range(m):

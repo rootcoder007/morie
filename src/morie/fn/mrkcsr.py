@@ -25,8 +25,7 @@ def _ripley_k(P, radii, area):
     n = len(pts)
     # each unordered pair once, sorted: the count of ordered pairs with
     # d_ij <= r is twice the number of sorted distances <= r
-    dist = sorted(math.dist(pts[i], pts[j])
-                  for i in range(n) for j in range(i + 1, n))
+    dist = sorted(math.dist(pts[i], pts[j]) for i in range(n) for j in range(i + 1, n))
     rr = [float(v) for v in np.atleast_1d(radii).tolist()]
     counts = [2 * bisect.bisect_right(dist, r) for r in rr]
     return np.array([area * c / (n * n) for c in counts])

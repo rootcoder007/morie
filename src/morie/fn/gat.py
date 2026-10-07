@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Graph attention layer."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -61,18 +59,22 @@ def gat(A, X, W, a, alpha_leaky=0.2):
         nb = [j for j in range(n) if Am[i][j] != 0.0 or i == j]
         e = []
         for j in nb:
-            s = sum(av[k] * Wh[i][k] for k in range(fo)) + \
-                sum(av[fo + k] * Wh[j][k] for k in range(fo))
+            s = sum(av[k] * Wh[i][k] for k in range(fo)) + sum(av[fo + k] * Wh[j][k] for k in range(fo))
             e.append(s if s > 0.0 else alpha_leaky * s)
         sm = S.softmax(e)
         for t, j in enumerate(nb):
             alpha[i][j] = sm[t]
-    H = [[sum(alpha[i][j] * Wh[j][k] for j in range(n)) for k in range(fo)]
-         for i in range(n)]
-    return RichResult(payload={
-        "H": H, "alpha": alpha,
-        "estimate": sum(sum(row) for row in H) / (n * fo), "n": n, "f_out": fo,
-        "method": "Graph attention layer"})
+    H = [[sum(alpha[i][j] * Wh[j][k] for j in range(n)) for k in range(fo)] for i in range(n)]
+    return RichResult(
+        payload={
+            "H": H,
+            "alpha": alpha,
+            "estimate": sum(sum(row) for row in H) / (n * fo),
+            "n": n,
+            "f_out": fo,
+            "method": "Graph attention layer",
+        }
+    )
 
 
 def cheatsheet():

@@ -30,17 +30,22 @@ def kamath_ch6_gedi_combined_loss(L_g, L_d, lam):
     """
     lam = float(lam)
     if not (0.0 <= lam <= 1.0):
-        raise ValueError(
-            f"lam = {lam:.6g} is outside [0, 1]; Eq 6.29 is a convex "
-            "combination.")
+        raise ValueError(f"lam = {lam:.6g} is outside [0, 1]; Eq 6.29 is a convex combination.")
     lg, ld = float(L_g), float(L_d)
     if not (np.isfinite(lg) and np.isfinite(ld)):
         raise ValueError("both component losses must be finite.")
     contrib = [lam * lg, (1.0 - lam) * ld]
-    return RichResult(payload={
-        "estimate": float(sum(contrib)), "contributions": contrib,
-        "L_g": lg, "L_d": ld, "lam": lam, "n": 2,
-        "method": "GeDi combined loss (Kamath Eq 6.29)"})
+    return RichResult(
+        payload={
+            "estimate": float(sum(contrib)),
+            "contributions": contrib,
+            "L_g": lg,
+            "L_d": ld,
+            "lam": lam,
+            "n": 2,
+            "method": "GeDi combined loss (Kamath Eq 6.29)",
+        }
+    )
 
 
 def cheatsheet():

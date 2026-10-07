@@ -1,7 +1,6 @@
 """Tests for klotz (Klotz normal-scores test)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.klotz import klotz
 
 

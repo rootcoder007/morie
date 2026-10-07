@@ -1,7 +1,5 @@
 """Tests for vpc.variance_partition_coefficient."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.vpc import variance_partition_coefficient
 
 

@@ -39,15 +39,14 @@ def ols_simple(x, y):
     xd = x - x.mean()
     yd = y - y.mean()
     sxx = float(np.dot(xd, xd))
-    b1 = float(np.dot(xd, yd) / sxx)                      # eq (2.2)
-    b0 = float(y.mean() - b1 * x.mean())                  # eq (2.3)
-    r = float(np.dot(yd, xd) / math.sqrt(np.dot(yd, yd) * sxx))   # eq (2.4)
+    b1 = float(np.dot(xd, yd) / sxx)  # eq (2.2)
+    b0 = float(y.mean() - b1 * x.mean())  # eq (2.3)
+    r = float(np.dot(yd, xd) / math.sqrt(np.dot(yd, yd) * sxx))  # eq (2.4)
     resid = y - (b0 + b1 * x)
     se_b1 = math.sqrt(float(np.dot(resid, resid)) / (n - 2) / sxx)
-    t_b1 = b1 / se_b1                                     # eq (2.5)
-    t_r = r * math.sqrt((n - 2) / (1.0 - r * r))          # eq (2.6)
-    return {"b1": b1, "b0": b0, "r": r, "se_b1": se_b1, "t": float(t_b1),
-            "t_from_r": float(t_r), "df": n - 2, "n": n}
+    t_b1 = b1 / se_b1  # eq (2.5)
+    t_r = r * math.sqrt((n - 2) / (1.0 - r * r))  # eq (2.6)
+    return {"b1": b1, "b0": b0, "r": r, "se_b1": se_b1, "t": float(t_b1), "t_from_r": float(t_r), "df": n - 2, "n": n}
 
 
 def ols_two_iv(r_y1, r_y2, r_12, s_y, s_1, s_2):
@@ -55,8 +54,8 @@ def ols_two_iv(r_y1, r_y2, r_12, s_y, s_1, s_2):
     if not (-1 < r_12 < 1):
         raise ValueError("|r_12| must be < 1")
     den = 1.0 - r_12 * r_12
-    b1 = (r_y1 - r_y2 * r_12) / den * (s_y / s_1)         # eq (2.7)
-    b2 = (r_y2 - r_y1 * r_12) / den * (s_y / s_2)         # eq (2.8)
+    b1 = (r_y1 - r_y2 * r_12) / den * (s_y / s_1)  # eq (2.7)
+    b2 = (r_y2 - r_y1 * r_12) / den * (s_y / s_2)  # eq (2.8)
     return {"b1": float(b1), "b2": float(b2)}
 
 
@@ -86,11 +85,13 @@ def variance_partition(y, yhat):
     ss_model = float(np.sum((yhat - ybar) ** 2))
     ss_resid = float(np.sum((y - yhat) ** 2))
     return {
-        "var_total": ss_total / n,        # eq (2.11)
-        "var_model": ss_model / n,        # eq (2.12)
-        "var_resid": ss_resid / n,        # eq (2.13)
-        "ss_total": ss_total, "ss_model": ss_model, "ss_resid": ss_resid,
-        "r2": ss_model / ss_total,        # eq (2.14)
+        "var_total": ss_total / n,  # eq (2.11)
+        "var_model": ss_model / n,  # eq (2.12)
+        "var_resid": ss_resid / n,  # eq (2.13)
+        "ss_total": ss_total,
+        "ss_model": ss_model,
+        "ss_resid": ss_resid,
+        "r2": ss_model / ss_total,  # eq (2.14)
         "n": n,
     }
 
@@ -108,8 +109,7 @@ def f_overall_ss(ss_model, ss_resid, n, k):
     df_resid = n - k
     if df_model <= 0 or df_resid <= 0:
         raise ValueError("invalid degrees of freedom")
-    return {"f": float((ss_model / df_model) / (ss_resid / df_resid)),
-            "df1": df_model, "df2": df_resid}
+    return {"f": float((ss_model / df_model) / (ss_resid / df_resid)), "df1": df_model, "df2": df_resid}
 
 
 def f_overall_r2(r2, n, k):
@@ -262,7 +262,7 @@ def likelihood_ratio_chi2(neg2ll_reduced, neg2ll_full):
 def multinomial_probs(xbs):
     """P(y=m) = e^{xb_m} / sum_j e^{xb_j}, eq (5.3) (softmax over categories)."""
     xbs = np.atleast_1d(np.asarray(xbs, dtype=float))
-    z = np.exp(xbs - xbs.max())          # stable softmax, same ratios
+    z = np.exp(xbs - xbs.max())  # stable softmax, same ratios
     return z / z.sum()
 
 
@@ -353,8 +353,7 @@ def grand_mean_model(y):
     y = np.asarray(y, dtype=float)
     if y.ndim != 1 or y.size < 2:
         raise ValueError("y must be 1-D with n >= 2")
-    return {"intercept": float(y.mean()),
-            "var_error": float(y.var(ddof=1)), "n": y.size}
+    return {"intercept": float(y.mean()), "var_error": float(y.var(ddof=1)), "n": y.size}
 
 
 def cluster_means_model(groups):
@@ -366,8 +365,7 @@ def cluster_means_model(groups):
             raise ValueError("empty cluster")
         means.append(float(g.mean()))
     allv = np.concatenate([np.asarray(g, dtype=float) for g in groups])
-    return {"cluster_means": means, "grand_mean": float(allv.mean()),
-            "u_j": [m - float(allv.mean()) for m in means]}
+    return {"cluster_means": means, "grand_mean": float(allv.mean()), "u_j": [m - float(allv.mean()) for m in means]}
 
 
 def variance_components_sigma2_u(ms_between, ms_within, n_per_cluster):
@@ -397,8 +395,7 @@ def grand_mean_center(x):
 
 def cluster_mean_center(groups):
     """x_ij - cluster mean, per cluster (ch 7 centering; eq 7.11 input)."""
-    return [np.asarray(g, dtype=float) - np.asarray(g, dtype=float).mean()
-            for g in groups]
+    return [np.asarray(g, dtype=float) - np.asarray(g, dtype=float).mean() for g in groups]
 
 
 def multilevel_predict(b0, bs, xs, u_terms, e_ij=0.0):
@@ -450,8 +447,7 @@ def power_from_delta_t(delta, t_cv, df):
     if df <= 0:
         raise ValueError("df must be positive")
     beta = _noncentral_t_cdf(t_cv, df, delta)
-    return {"t_beta": float(delta - t_cv), "beta": float(beta),
-            "power": float(1.0 - beta)}
+    return {"t_beta": float(delta - t_cv), "beta": float(beta), "power": float(1.0 - beta)}
 
 
 def cohens_f(sigma_means, sigma_error):
@@ -514,8 +510,7 @@ def t_independent(m1, m2, s1, s2, n1, n2):
     se = math.sqrt(pooled_var * (n1 + n2) / (n1 * n2))
     if se == 0:
         raise ValueError("zero pooled variance")
-    return {"t": float((m1 - m2) / se), "df": df, "se": float(se),
-            "s_pooled": float(math.sqrt(pooled_var))}
+    return {"t": float((m1 - m2) / se), "df": df, "se": float(se), "s_pooled": float(math.sqrt(pooled_var))}
 
 
 def chi2_2x2(a, b, c, d):
@@ -541,12 +536,17 @@ def anova_oneway(groups):
     grand = allv.mean()
     ss_between = sum(g.size * (g.mean() - grand) ** 2 for g in arrays)
     ss_within = sum(float(np.sum((g - g.mean()) ** 2)) for g in arrays)
-    ms_between = ss_between / (a - 1)                       # eq (9.5)
-    ms_within = ss_within / (n_total - a)                   # eq (9.6)
-    return {"ms_between": float(ms_between), "ms_within": float(ms_within),
-            "f": float(ms_between / ms_within),             # eq (9.7)
-            "df1": a - 1, "df2": n_total - a,
-            "ss_between": float(ss_between), "ss_within": float(ss_within)}
+    ms_between = ss_between / (a - 1)  # eq (9.5)
+    ms_within = ss_within / (n_total - a)  # eq (9.6)
+    return {
+        "ms_between": float(ms_between),
+        "ms_within": float(ms_within),
+        "f": float(ms_between / ms_within),  # eq (9.7)
+        "df1": a - 1,
+        "df2": n_total - a,
+        "ss_between": float(ss_between),
+        "ss_within": float(ss_within),
+    }
 
 
 def repeated_measures_ms(data):
@@ -567,18 +567,20 @@ def repeated_measures_ms(data):
     ss_subjects = 0.0
     ss_b_subjects = 0.0
     for g in groups:
-        subj_mean = g.mean(axis=1)                       # ybar_ij
-        a_mean = g.mean()                                # ybar_.j
+        subj_mean = g.mean(axis=1)  # ybar_ij
+        a_mean = g.mean()  # ybar_.j
         ss_subjects += b * float(np.sum((subj_mean - a_mean) ** 2))
-        k_mean = g.mean(axis=0)                          # ybar_k within group
+        k_mean = g.mean(axis=0)  # ybar_k within group
         resid = g - subj_mean[:, None] - k_mean[None, :] + a_mean
-        ss_b_subjects += float(np.sum(resid ** 2))
-    ms_subjects = ss_subjects / (n_total - a)               # eq (9.8)
-    ms_b_subjects = ss_b_subjects / ((n_total - a) * (b - 1))   # eq (9.9)
-    return {"ms_subjects": float(ms_subjects),
-            "ms_b_subjects": float(ms_b_subjects),
-            "df_subjects": n_total - a,
-            "df_b_subjects": (n_total - a) * (b - 1)}
+        ss_b_subjects += float(np.sum(resid**2))
+    ms_subjects = ss_subjects / (n_total - a)  # eq (9.8)
+    ms_b_subjects = ss_b_subjects / ((n_total - a) * (b - 1))  # eq (9.9)
+    return {
+        "ms_subjects": float(ms_subjects),
+        "ms_b_subjects": float(ms_b_subjects),
+        "df_subjects": n_total - a,
+        "df_b_subjects": (n_total - a) * (b - 1),
+    }
 
 
 def t_paired(differences):
@@ -609,10 +611,8 @@ def anova_randomized_block(y, treatment, block):
     if a < 2 or b < 2:
         raise ValueError("need >= 2 treatment levels and >= 2 blocks")
     grand = y.mean()
-    ss_treat = sum((y[treatment == t]).size * (y[treatment == t].mean() - grand) ** 2
-                   for t in t_levels)
-    ss_block = sum((y[block == k]).size * (y[block == k].mean() - grand) ** 2
-                   for k in b_levels)
+    ss_treat = sum((y[treatment == t]).size * (y[treatment == t].mean() - grand) ** 2 for t in t_levels)
+    ss_block = sum((y[block == k]).size * (y[block == k].mean() - grand) ** 2 for k in b_levels)
     ss_total = float(np.sum((y - grand) ** 2))
     ss_resid = ss_total - ss_treat - ss_block
     df_resid = y.size - a - b + 1
@@ -620,9 +620,14 @@ def anova_randomized_block(y, treatment, block):
         raise ValueError("insufficient residual degrees of freedom")
     ms_treat = ss_treat / (a - 1)
     ms_resid = ss_resid / df_resid
-    return {"f_treatment": float(ms_treat / ms_resid),
-            "ms_treatment": float(ms_treat), "ms_resid": float(ms_resid),
-            "ss_block": float(ss_block), "df1": a - 1, "df2": df_resid}
+    return {
+        "f_treatment": float(ms_treat / ms_resid),
+        "ms_treatment": float(ms_treat),
+        "ms_resid": float(ms_resid),
+        "ss_block": float(ss_block),
+        "df1": a - 1,
+        "df2": df_resid,
+    }
 
 
 # ---------------------------------------------------------- ch 10: PSM
@@ -632,8 +637,7 @@ def psm_standardized_bias(mean_t, mean_c, s_t, s_c):
     """Bias = 100 (xbar_t - xbar_c) / sqrt((s_t^2 + s_c^2)/2), eq (10.1)."""
     if s_t < 0 or s_c < 0 or (s_t == 0 and s_c == 0):
         raise ValueError("need nonnegative s with at least one positive")
-    return float(100.0 * (mean_t - mean_c)
-                 / math.sqrt((s_t * s_t + s_c * s_c) / 2.0))
+    return float(100.0 * (mean_t - mean_c) / math.sqrt((s_t * s_t + s_c * s_c) / 2.0))
 
 
 # ------------------------------------------------------ ch 11: meta-analysis
@@ -643,8 +647,7 @@ def pooled_sd(s1, s2, n1, n2):
     """s_pooled = sqrt(((n1-1)s1^2 + (n2-1)s2^2)/(n1+n2-2)), eq (11.2)."""
     if n1 < 2 or n2 < 2:
         raise ValueError("need n >= 2 per group")
-    return math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2)
-                     / (n1 + n2 - 2))
+    return math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2))
 
 
 def cohens_d_sample(m1, m2, s1, s2, n1, n2):
@@ -729,7 +732,7 @@ def r_from_fisher_z(z):
     return math.tanh(float(z))
 
 
-LOGISTIC_SD = math.sqrt(math.pi ** 2 / 3.0)   # eq (11.15)
+LOGISTIC_SD = math.sqrt(math.pi**2 / 3.0)  # eq (11.15)
 
 
 def d_from_log_or(ln_or, method="logit"):
@@ -748,34 +751,55 @@ def se_d_from_se_log_or(se_ln_or, method="logit"):
     div = LOGISTIC_SD if method == "logit" else 1.65 if method == "cox" else None
     if div is None:
         raise ValueError("method must be 'logit' or 'cox'")
-    return float(math.sqrt(se_ln_or ** 2 / div ** 2))
+    return float(math.sqrt(se_ln_or**2 / div**2))
 
 
 def _probit(p):
     """Inverse standard normal CDF (Acklam rational approximation, |err|<1.2e-9)."""
     if not 0 < p < 1:
         raise ValueError("p must be strictly between 0 and 1")
-    a = (-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02,
-         1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00)
-    b = (-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02,
-         6.680131188771972e+01, -1.328068155288572e+01)
-    c = (-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00,
-         -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00)
-    d = (7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00,
-         3.754408661907416e+00)
+    a = (
+        -3.969683028665376e01,
+        2.209460984245205e02,
+        -2.759285104469687e02,
+        1.383577518672690e02,
+        -3.066479806614716e01,
+        2.506628277459239e00,
+    )
+    b = (
+        -5.447609879822406e01,
+        1.615858368580409e02,
+        -1.556989798598866e02,
+        6.680131188771972e01,
+        -1.328068155288572e01,
+    )
+    c = (
+        -7.784894002430293e-03,
+        -3.223964580411365e-01,
+        -2.400758277161838e00,
+        -2.549732539343734e00,
+        4.374664141464968e00,
+        2.938163982698783e00,
+    )
+    d = (7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e00, 3.754408661907416e00)
     p_low, p_high = 0.02425, 1 - 0.02425
     if p < p_low:
         q = math.sqrt(-2 * math.log(p))
-        return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) \
-            / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+        return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+        )
     if p <= p_high:
         q = p - 0.5
         r = q * q
-        return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q \
+        return (
+            (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5])
+            * q
             / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+        )
     q = math.sqrt(-2 * math.log(1 - p))
-    return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) \
-        / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+    return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+        (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+    )
 
 
 def d_probit(p1, p2):
@@ -804,7 +828,7 @@ def se_d_from_se_r(r, se_r):
     """se_d = sqrt(4 se_r^2 / (1 - r^2)^3), eq (11.23)."""
     if not -1 < r < 1 or se_r <= 0:
         raise ValueError("need |r| < 1 and se_r > 0")
-    return math.sqrt(4.0 * se_r ** 2 / (1.0 - r * r) ** 3)
+    return math.sqrt(4.0 * se_r**2 / (1.0 - r * r) ** 3)
 
 
 def log_or_from_d(d, method="logit"):
@@ -823,7 +847,7 @@ def se_log_or_from_se_d(se_d, method="logit"):
     div = 0.551 if method == "logit" else 0.606 if method == "cox" else None
     if div is None:
         raise ValueError("method must be 'logit' or 'cox'")
-    return float(math.sqrt(se_d ** 2 / div ** 2))
+    return float(math.sqrt(se_d**2 / div**2))
 
 
 def or_from_rr(rr, p2):
@@ -855,7 +879,7 @@ def se_r_from_se_d(d, se_d, n1=None, n2=None):
     if se_d <= 0:
         raise ValueError("se must be positive")
     h = 4.0 if (n1 is None or n2 is None) else (n1 + n2) ** 2 / (n1 * n2)
-    return math.sqrt(h * se_d ** 2 / (d * d + h) ** 3)
+    return math.sqrt(h * se_d**2 / (d * d + h) ** 3)
 
 
 def fixed_effect_weight(se):
@@ -882,7 +906,7 @@ def mean_effect_size(ys, ws):
         raise ValueError("weights must be positive")
     wsum = ws.sum()
     ybar = float(np.dot(ws, ys) / wsum)
-    se = float(math.sqrt(1.0 / wsum))                      # eq (11.36)
+    se = float(math.sqrt(1.0 / wsum))  # eq (11.36)
     return {"mean": ybar, "se": se, "z": ybar / se, "k": ys.size}
 
 
@@ -891,8 +915,8 @@ def q_statistic(ys, ws):
     ys = np.asarray(ys, dtype=float)
     ws = np.asarray(ws, dtype=float)
     m = mean_effect_size(ys, ws)["mean"]
-    q_def = float(np.dot(ws, (ys - m) ** 2))               # eq (11.40)
-    q_comp = float(np.dot(ws, ys ** 2) - np.dot(ws, ys) ** 2 / ws.sum())  # eq (11.41)
+    q_def = float(np.dot(ws, (ys - m) ** 2))  # eq (11.40)
+    q_comp = float(np.dot(ws, ys**2) - np.dot(ws, ys) ** 2 / ws.sum())  # eq (11.41)
     return {"q": q_def, "q_computational": q_comp, "df": ys.size - 1}
 
 
@@ -924,11 +948,13 @@ def q_within_between(ys_by_group, ws_by_group):
         all_y.extend(np.asarray(ys, dtype=float))
         all_w.extend(np.asarray(ws, dtype=float))
     q_total = q_statistic(all_y, all_w)["q"]
-    return {"q_within": float(q_within),
-            "q_between": float(q_total - q_within),
-            "q_total": float(q_total),
-            "df_within": len(all_y) - len(ys_by_group),
-            "df_between": len(ys_by_group) - 1}
+    return {
+        "q_within": float(q_within),
+        "q_between": float(q_total - q_within),
+        "q_total": float(q_total),
+        "df_within": len(all_y) - len(ys_by_group),
+        "df_between": len(ys_by_group) - 1,
+    }
 
 
 # ---------------------------------------------------------- ch 12: spatial

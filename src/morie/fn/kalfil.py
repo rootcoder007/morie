@@ -49,16 +49,10 @@ def kalman_filter(
         z = z.reshape(-1, 1)
     T, m = z.shape
 
-    if F is None:
-        F = np.eye(m)
-    else:
-        F = np.asarray(F, dtype=float)
+    F = np.eye(m) if F is None else np.asarray(F, dtype=float)
     n_state = F.shape[0]
 
-    if H is None:
-        H = np.eye(m, n_state)
-    else:
-        H = np.asarray(H, dtype=float)
+    H = np.eye(m, n_state) if H is None else np.asarray(H, dtype=float)
 
     Q_mat = Q * np.eye(n_state) if np.isscalar(Q) else np.asarray(Q, dtype=float)
     R_mat = R * np.eye(m) if np.isscalar(R) else np.asarray(R, dtype=float)

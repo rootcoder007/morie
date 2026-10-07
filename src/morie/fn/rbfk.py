@@ -46,12 +46,20 @@ def rbf_kernel(x, y, sigma):
     d2 = sum((a[i] - b[i]) ** 2 for i in range(len(a)))
     g = 1.0 / (2.0 * s * s)
     k = math.exp(-d2 * g)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(k), "value": float(k),
-        "sq_distance": float(d2), "distance": math.sqrt(d2),
-        "sigma": s, "gamma": float(g),
-        "method": "radial basis (Gaussian) kernel",
-    }), "rbfk")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(k),
+                "value": float(k),
+                "sq_distance": float(d2),
+                "distance": math.sqrt(d2),
+                "sigma": s,
+                "gamma": float(g),
+                "method": "radial basis (Gaussian) kernel",
+            }
+        ),
+        "rbfk",
+    )
 
 
 def cheatsheet():

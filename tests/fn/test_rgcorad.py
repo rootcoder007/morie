@@ -6,10 +6,11 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_coronary_ad
 
-
 FS = 2000.0
-X = [math.sin(2 * math.pi * 100 * t / FS) + 0.2 * math.sin(2 * math.pi * 500 * t / FS)
-     + 0.1 * math.sin(13.1 * t) for t in range(1024)]
+X = [
+    math.sin(2 * math.pi * 100 * t / FS) + 0.2 * math.sin(2 * math.pi * 500 * t / FS) + 0.1 * math.sin(13.1 * t)
+    for t in range(1024)
+]
 
 
 def _acf(x, p):

@@ -48,8 +48,7 @@ def test_trncfg_basic():
     idx = [i for i in range(len(y)) if keep[i]]
     w1 = [d[i] / e[i] for i in idx]
     w0 = [(1 - d[i]) / (1 - e[i]) for i in idx]
-    est = (sum(w * y[i] for w, i in zip(w1, idx)) / sum(w1)
-           - sum(w * y[i] for w, i in zip(w0, idx)) / sum(w0))
+    est = sum(w * y[i] for w, i in zip(w1, idx)) / sum(w1) - sum(w * y[i] for w, i in zip(w0, idx)) / sum(w0)
     assert r["estimate"] == pytest.approx(est, abs=1e-12)
     assert r["n_dropped"] == len(y) - 98
 
@@ -78,7 +77,7 @@ import morie.fn.trncfg as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

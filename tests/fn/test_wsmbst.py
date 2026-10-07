@@ -61,9 +61,7 @@ def test_wsmbst_imperfect_stump_uses_the_adaboost_weight():
     # The best stump misclassifies exactly one of four equally weighted
     # points, so err = 1/4 and alpha = (1/2) log((1 - err) / err).
     err = 0.25
-    assert alt["alphas"][0] == pytest.approx(
-        0.5 * math.log((1.0 - err) / err), rel=1e-12
-    )
+    assert alt["alphas"][0] == pytest.approx(0.5 * math.log((1.0 - err) / err), rel=1e-12)
     # One round of a stump that is right on 3 of 4 points.
     assert alt["estimate"] == pytest.approx(1.0 / 4.0, rel=1e-12)
 
@@ -120,7 +118,7 @@ import morie.fn.wsmbst as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -1,7 +1,6 @@
 """Tests for ksr20.kosorok_censoring_survival."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr20 import kosorok_censoring_survival
 
 

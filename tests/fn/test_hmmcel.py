@@ -1,16 +1,19 @@
 """Tests for hmmcel.geron_memory_cell."""
+
 import math
 
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmcel import geron_memory_cell
 
 
 def test_hmmcel_basic():
     """Test basic single-step functionality with the leaky integrator."""
-    leaky = lambda c, x: 0.5 * np.asarray(c, dtype=float) + np.asarray(x, dtype=float)
+
+    def leaky(c, x):
+        return 0.5 * np.asarray(c, dtype=float) + np.asarray(x, dtype=float)
+
     rng = np.random.default_rng(42)
     n_units = 4
     c_prev = rng.normal(0, 1, n_units)
@@ -31,7 +34,10 @@ def test_hmmcel_basic():
 
 def test_hmmcel_edge():
     """Test unrolled 2-D sequence and shape-change rejection."""
-    leaky = lambda c, x: 0.5 * np.asarray(c, dtype=float) + np.asarray(x, dtype=float)
+
+    def leaky(c, x):
+        return 0.5 * np.asarray(c, dtype=float) + np.asarray(x, dtype=float)
+
     rng = np.random.default_rng(0)
     T = 5
     n_in = 3
@@ -62,7 +68,7 @@ import morie.fn.hmmcel as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

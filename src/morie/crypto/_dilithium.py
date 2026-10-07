@@ -1,232 +1,73 @@
-"""ML-DSA / Dilithium-lite -- simplified lattice-based signature.
+"""ML-DSA signatures (FIPS 204): the morie.crypto entry points.
 
-Educational reference capturing the core Dilithium construction:
-MLWE keygen, rejection sampling sign, HighBits/LowBits verify.
-Uses a simplified parameter set, NOT full FIPS 204 compliance.
-
-NOT constant-time. Educational/research only.
+``mldsa_keygen``, ``mldsa_sign`` and ``mldsa_verify`` are the standard's ML-DSA-44/65/87 with its
+byte encodings (``morie.crypto._mldsa``), so keys and signatures interoperate with rmorie and
+rmoriebricklayer, OpenSSL 3.5 and liboqs. Until 1.4.0 these names ran a simplified
+"Dilithium-lite" with JSON keys that no ML-DSA implementation could read or verify.
 """
 
 from __future__ import annotations
 
-import hashlib
-import os
+from morie.crypto import _mldsa
 
-from morie.crypto._poly_ring import poly_add, poly_ring_mul, poly_sub
-
-Q_DIL = 8380417
-N_DIL = 256
-K_DIL = 4
-L_DIL = 4
-GAMMA1 = 1 << 17
-GAMMA2 = (Q_DIL - 1) // 88
-ETA_DIL = 2
-BETA_DIL = 78
-OMEGA_DIL = 80
+__all__ = ["mldsa_keygen", "mldsa_sign", "mldsa_verify"]
 
 
-def _mod_q(x: int) -> int:
-    return x % Q_DIL
+def _as_bytes(x, what: str) -> bytes:
+    if isinstance(x, str):
+        return x.encode("utf-8")
+    if isinstance(x, (bytes, bytearray, memoryview)):
+        return bytes(x)
+    raise TypeError(f"{what} must be bytes or str, not {type(x).__name__}")
 
 
-def _mod_pm(x: int, q: int) -> int:
-    r = x % q
-    if r > q // 2:
-        r -= q
-    return r
+def mldsa_keygen(level: int = 65, seed: bytes | None = None) -> tuple[bytes, bytes]:
+    """Generate an ML-DSA key pair.
 
+    :param level: 44, 65 (default) or 87 -- ML-DSA-44/65/87.
+    :param seed: Optional 32-byte seed; the same seed gives the same key pair (FIPS 204 KeyGen_internal).
+    :return: ``(public_key, secret_key)`` as bytes (1312/2560, 1952/4032 or 2592/4896 bytes).
 
-def _high_bits(r: int) -> int:
-    r_pos = r % Q_DIL
-    r0 = _mod_pm(r_pos, 2 * GAMMA2)
-    return (r_pos - r0) // (2 * GAMMA2)
-
-
-def _low_bits(r: int) -> int:
-    r_pos = r % Q_DIL
-    return _mod_pm(r_pos, 2 * GAMMA2)
-
-
-def _sample_uniform(seed: bytes, n: int = N_DIL) -> list[int]:
-    stream = hashlib.shake_128(seed).digest(n * 4)
-    poly = []
-    for i in range(n):
-        val = int.from_bytes(stream[i * 4 : i * 4 + 4], "little") % Q_DIL
-        poly.append(val)
-    return poly
-
-
-def _sample_short(seed: bytes, eta: int = ETA_DIL, n: int = N_DIL) -> list[int]:
-    stream = hashlib.shake_256(seed).digest(n * 2)
-    poly = []
-    for i in range(n):
-        val = stream[i * 2] % (2 * eta + 1)
-        poly.append(_mod_q(val - eta))
-    return poly
-
-
-def _sample_gamma1(seed: bytes, n: int = N_DIL) -> list[int]:
-    stream = hashlib.shake_256(seed).digest(n * 4)
-    poly = []
-    for i in range(n):
-        val = int.from_bytes(stream[i * 4 : i * 4 + 4], "little") % (2 * GAMMA1)
-        poly.append(val - GAMMA1)
-    return poly
-
-
-def mldsa_keygen() -> tuple[bytes, bytes]:
-    """Generate ML-DSA key pair (simplified Dilithium).
-
-    :return: (pk_bytes, sk_bytes).
+    >>> pk, sk = mldsa_keygen(44, seed=bytes(32))
+    >>> len(pk), len(sk)
+    (1312, 2560)
     """
-    seed = os.urandom(32)
-    rho = hashlib.sha3_256(seed).digest()
-    sigma = hashlib.sha3_256(seed + b"\x01").digest()
-
-    A = []
-    for i in range(K_DIL):
-        row = []
-        for j in range(L_DIL):
-            poly = _sample_uniform(rho + bytes([i, j]))
-            row.append(poly)
-        A.append(row)
-
-    s1 = [_sample_short(sigma + bytes([i])) for i in range(L_DIL)]
-    s2 = [_sample_short(sigma + bytes([L_DIL + i])) for i in range(K_DIL)]
-
-    t = []
-    for i in range(K_DIL):
-        ti = [0] * N_DIL
-        for j in range(L_DIL):
-            prod = poly_ring_mul(A[i][j], s1[j], Q_DIL, N_DIL)
-            ti = poly_add(ti, prod, Q_DIL)
-        ti = poly_add(ti, s2[i], Q_DIL)
-        t.append(ti)
-
-    import json
-
-    pk_bytes = json.dumps({"rho": rho.hex(), "t": t}).encode()
-    sk_bytes = json.dumps(
-        {
-            "rho": rho.hex(),
-            "s1": s1,
-            "s2": s2,
-            "t": t,
-            "sigma": sigma.hex(),
-        }
-    ).encode()
-
-    return pk_bytes, sk_bytes
+    return _mldsa.keygen(level, seed)
 
 
-def mldsa_sign(message: bytes, sk_bytes: bytes) -> bytes:
-    """Sign a message with ML-DSA (simplified Dilithium).
+def mldsa_sign(message, sk_bytes: bytes, context: bytes = b"", deterministic: bool = False) -> bytes:
+    """Sign a message with ML-DSA (pure ML-DSA, FIPS 204 Algorithm 2).
 
-    :param message: Message to sign.
-    :param sk_bytes: Secret key from mldsa_keygen().
-    :return: Signature bytes.
+    :param message: Message (bytes, or str as UTF-8).
+    :param sk_bytes: Secret key from :func:`mldsa_keygen`; its length gives the parameter set.
+    :param context: Context string, at most 255 bytes (empty by default).
+    :param deterministic: Use the deterministic variant (32 zero bytes of signing randomness)
+        instead of the hedged default.
+    :return: The signature (2420, 3309 or 4627 bytes).
+
+    >>> pk, sk = mldsa_keygen(44, seed=bytes(32))
+    >>> len(mldsa_sign(b"manifest", sk))
+    2420
     """
-    import json
-
-    sk = json.loads(sk_bytes)
-    rho = bytes.fromhex(sk["rho"])
-    s1 = sk["s1"]
-
-    A = []
-    for i in range(K_DIL):
-        row = []
-        for j in range(L_DIL):
-            poly = _sample_uniform(rho + bytes([i, j]))
-            row.append(poly)
-        A.append(row)
-
-    mu = hashlib.sha3_256(message).digest()
-    nonce = 0
-
-    for _ in range(1000):
-        y = [_sample_gamma1(mu + nonce.to_bytes(4, "little") + bytes([i])) for i in range(L_DIL)]
-        nonce += 1
-
-        w = []
-        for i in range(K_DIL):
-            wi = [0] * N_DIL
-            for j in range(L_DIL):
-                prod = poly_ring_mul(A[i][j], y[j], Q_DIL, N_DIL)
-                wi = poly_add(wi, prod, Q_DIL)
-            w.append(wi)
-
-        w1 = [[_high_bits(c) for c in wi] for wi in w]
-
-        w1_bytes = str(w1).encode()
-        c_hash = hashlib.sha3_256(mu + w1_bytes).digest()
-        c_poly = [0] * N_DIL
-        for i in range(min(60, N_DIL)):
-            c_poly[i] = 1 if (c_hash[i % 32] >> (i % 8)) & 1 else 0
-
-        z = []
-        for j in range(L_DIL):
-            cs1 = poly_ring_mul(c_poly, s1[j], Q_DIL, N_DIL)
-            zj = poly_add(y[j], cs1, Q_DIL)
-            z.append(zj)
-
-        max_z = max(abs(_mod_pm(c, Q_DIL)) for zj in z for c in zj)
-        if max_z >= GAMMA1 - BETA_DIL:
-            continue
-
-        sig_data = {"z": z, "c_hash": c_hash.hex()}
-        return json.dumps(sig_data).encode()
-
-    raise RuntimeError("signing failed after 1000 attempts")
+    return _mldsa.sign(
+        _as_bytes(sk_bytes, "sk_bytes"), _as_bytes(message, "message"), _as_bytes(context, "context"), deterministic
+    )
 
 
-def mldsa_verify(message: bytes, signature: bytes, pk_bytes: bytes) -> bool:
-    """Verify an ML-DSA signature (simplified Dilithium).
+def mldsa_verify(message, signature: bytes, pk_bytes: bytes, context: bytes = b"") -> bool:
+    """Verify an ML-DSA signature; ``False`` for any signature, key or context that does not fit.
 
-    :param message: Original message.
-    :param signature: Signature from mldsa_sign().
-    :param pk_bytes: Public key from mldsa_keygen().
-    :return: True if valid.
+    >>> pk, sk = mldsa_keygen(44, seed=bytes(32))
+    >>> sig = mldsa_sign(b"manifest", sk)
+    >>> mldsa_verify(b"manifest", sig, pk), mldsa_verify(b"other", sig, pk)
+    (True, False)
     """
-    import json
-
-    pk = json.loads(pk_bytes)
-    sig = json.loads(signature)
-
-    rho = bytes.fromhex(pk["rho"])
-    t = pk["t"]
-    z = sig["z"]
-    c_hash = bytes.fromhex(sig["c_hash"])
-
-    A = []
-    for i in range(K_DIL):
-        row = []
-        for j in range(L_DIL):
-            poly = _sample_uniform(rho + bytes([i, j]))
-            row.append(poly)
-        A.append(row)
-
-    c_poly = [0] * N_DIL
-    for i in range(min(60, N_DIL)):
-        c_poly[i] = 1 if (c_hash[i % 32] >> (i % 8)) & 1 else 0
-
-    w_prime = []
-    for i in range(K_DIL):
-        wi = [0] * N_DIL
-        for j in range(L_DIL):
-            prod = poly_ring_mul(A[i][j], z[j], Q_DIL, N_DIL)
-            wi = poly_add(wi, prod, Q_DIL)
-        ct = poly_ring_mul(c_poly, t[i], Q_DIL, N_DIL)
-        wi = poly_sub(wi, ct, Q_DIL)
-        w_prime.append(wi)
-
-    w1_prime = [[_high_bits(c) for c in wi] for wi in w_prime]
-
-    mu = hashlib.sha3_256(message).digest()
-    w1_bytes = str(w1_prime).encode()
-    c_check = hashlib.sha3_256(mu + w1_bytes).digest()
-
-    max_z = max(abs(_mod_pm(c, Q_DIL)) for zj in z for c in zj)
-    if max_z >= GAMMA1 - BETA_DIL:
+    try:
+        return _mldsa.verify(
+            _as_bytes(pk_bytes, "pk_bytes"),
+            _as_bytes(message, "message"),
+            _as_bytes(signature, "signature"),
+            _as_bytes(context, "context"),
+        )
+    except (TypeError, ValueError):
         return False
-
-    return c_check == c_hash

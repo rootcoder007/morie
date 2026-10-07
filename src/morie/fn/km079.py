@@ -30,21 +30,23 @@ def kamath_ch6_alignscore_total_loss(L_3way, L_bin, L_reg, lambdas):
     """
     lam = np.atleast_1d(np.asarray(lambdas, dtype=float))
     if lam.size != 3:
-        raise ValueError(
-            f"lambdas must hold exactly three weights; got {lam.size}.")
+        raise ValueError(f"lambdas must hold exactly three weights; got {lam.size}.")
     if np.any(lam < 0) or not np.all(np.isfinite(lam)):
         raise ValueError("every weight must be finite and non-negative.")
-    losses = np.asarray([float(L_3way), float(L_bin), float(L_reg)],
-                        dtype=float)
+    losses = np.asarray([float(L_3way), float(L_bin), float(L_reg)], dtype=float)
     if not np.all(np.isfinite(losses)):
         raise ValueError("every component loss must be finite.")
     contrib = lam * losses
-    return RichResult(payload={
-        "estimate": float(contrib.sum()),
-        "contributions": [float(v) for v in contrib],
-        "losses": [float(v) for v in losses],
-        "lambdas": [float(v) for v in lam], "n": 3,
-        "method": "AlignScore joint loss (Kamath Eq 6.3)"})
+    return RichResult(
+        payload={
+            "estimate": float(contrib.sum()),
+            "contributions": [float(v) for v in contrib],
+            "losses": [float(v) for v in losses],
+            "lambdas": [float(v) for v in lam],
+            "n": 3,
+            "method": "AlignScore joint loss (Kamath Eq 6.3)",
+        }
+    )
 
 
 def cheatsheet():

@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_in_context_learning_prob"]
 
 
-def kamath_in_context_learning_prob(demonstrations, query, model,
-                                    answer=None, sep="\n"):
+def kamath_in_context_learning_prob(demonstrations, query, model, answer=None, sep="\n"):
     """P(y | x, D_K) = P_LLM(y | [ex_1, ..., ex_K, x]).
 
     The prompt is assembled by concatenating the K demonstrations
@@ -39,25 +38,28 @@ def kamath_in_context_learning_prob(demonstrations, query, model,
     """
     demos = [str(d) for d in demonstrations]
     if not callable(model):
-        raise ValueError(
-            "model must be callable (prompt, answer) -> probability.")
+        raise ValueError("model must be callable (prompt, answer) -> probability.")
     parts = demos + [str(query)]
     prompt = sep.join(parts)
     p = model(prompt, answer)
     try:
         p = float(p)
     except (TypeError, ValueError):
-        raise ValueError(
-            "the model must return a numeric probability.") from None
+        raise ValueError("the model must return a numeric probability.") from None
     if not 0.0 <= p <= 1.0:
-        raise ValueError(
-            f"the model returned {p}, which is not a probability; "
-            "P(y | x, D_K) must lie in [0, 1].")
+        raise ValueError(f"the model returned {p}, which is not a probability; P(y | x, D_K) must lie in [0, 1].")
     with_log = -math.inf if p == 0.0 else math.log(p)
-    return RichResult(payload={
-        "estimate": p, "probability": p, "log_prob": with_log,
-        "prompt": prompt, "K": len(demos), "n": len(parts),
-        "method": "In-context learning conditional probability"})
+    return RichResult(
+        payload={
+            "estimate": p,
+            "probability": p,
+            "log_prob": with_log,
+            "prompt": prompt,
+            "K": len(demos),
+            "n": len(parts),
+            "method": "In-context learning conditional probability",
+        }
+    )
 
 
 def cheatsheet():

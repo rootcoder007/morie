@@ -1,7 +1,6 @@
 """Tests for nested variogram."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgnst import sgnst
 
 

@@ -1,7 +1,6 @@
 """Tests for btatest.boot_anderson_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btatest import boot_anderson_test
 
 
@@ -9,7 +8,10 @@ def test_btatest_basic():
     """Test basic functionality."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     fit = np.random.default_rng(42).normal(0, 1, 100)
-    rvs_fn = lambda v: v
+
+    def rvs_fn(v):
+        return v
+
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_anderson_test(x, fit, rvs_fn, B)
     assert isinstance(result, dict)
@@ -20,7 +22,10 @@ def test_btatest_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)
     fit = np.random.default_rng(42).normal(0, 1, 100)
-    rvs_fn = lambda v: v
+
+    def rvs_fn(v):
+        return v
+
     B = np.random.default_rng(43).normal(0, 1, (10, 10))
     result = boot_anderson_test(x, fit, rvs_fn, B)
     assert isinstance(result, dict)

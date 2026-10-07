@@ -82,9 +82,7 @@ def geron_local_outlier_factor(X, k=5):
     m = A.shape[0]
     k = int(k)
     if not (1 <= k <= m - 1):
-        raise ValueError(
-            f"k must lie in [1, {m - 1}] (a point cannot be its own neighbour), got {k}."
-        )
+        raise ValueError(f"k must lie in [1, {m - 1}] (a point cannot be its own neighbour), got {k}.")
 
     D = np.linalg.norm(A[:, None, :] - A[None, :, :], axis=2)
     np.fill_diagonal(D, np.inf)
@@ -104,8 +102,7 @@ def geron_local_outlier_factor(X, k=5):
 
     return RichResult(
         title="Local outlier factor",
-        summary_lines=[("k", k), ("Max LOF", float(lof.max())),
-                       ("Most outlying", int(lof.argmax()))],
+        summary_lines=[("k", k), ("Max LOF", float(lof.max())), ("Most outlying", int(lof.argmax()))],
         payload={
             "lof": lof.tolist(),
             "lrd": lrd.tolist(),

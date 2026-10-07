@@ -21,10 +21,16 @@ def ghosal_countable_dp(x, alpha_total=5.0, k=6, seed=42):
     tail = alpha_total - sum(a)
     g = [float(rng.gamma(max(ai, 1e-8), 1.0)) for ai in a + [tail]]
     p = _bnp.normalize_weights(g)
-    res = RichResult(payload={"estimate": p[0], "p_cells": p[:k],
-                              "p_tail": p[k], "alpha": a,
-                              "alpha_tail": tail,
-                              "method": "countable Dirichlet process (GvdV 2017 eq. 3.4)"})
+    res = RichResult(
+        payload={
+            "estimate": p[0],
+            "p_cells": p[:k],
+            "p_tail": p[k],
+            "alpha": a,
+            "alpha_tail": tail,
+            "method": "countable Dirichlet process (GvdV 2017 eq. 3.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_5")
 
 

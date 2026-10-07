@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_panel_deconvolution", "horowitz_panel_deconv"]
 
 
-def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
-                                 grid_u=None, grid_z=None, kernel="fourfold"):
+def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None, grid_u=None, grid_z=None, kernel="fourfold"):
     r"""Nonparametric densities of the individual effect and the
     idiosyncratic error in a panel model (Horowitz Sec. 5.2.1),
     equations (5.21)-(5.26):
@@ -83,6 +82,7 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     and Theorem 5.4; Horowitz and Markatou (1996).
     """
     from ._hrz_paneldec import _check_kernel, deconvolve_pair, default_bandwidths, panel_residuals
+
     _check_kernel(kernel)
     Y = np.atleast_2d(np.asarray(y, dtype=float))
     n, T = Y.shape
@@ -94,21 +94,37 @@ def horowitz_panel_deconvolution(y, x, beta, nu_U=None, nu_eps=None,
     dU, dE = default_bandwidths(eta, n, kernel, W)
     nU = dU if nu_U is None else float(nu_U)
     ne = dE if nu_eps is None else float(nu_eps)
-    gu = np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61) \
-        if grid_u is None else np.atleast_1d(np.asarray(grid_u, dtype=float))
-    gz = np.linspace(np.quantile(eta, 0.05), np.quantile(eta, 0.95), 61) \
-        if grid_z is None else np.atleast_1d(np.asarray(grid_z, dtype=float))
+    gu = (
+        np.linspace(np.quantile(W, 0.05), np.quantile(W, 0.95), 61)
+        if grid_u is None
+        else np.atleast_1d(np.asarray(grid_u, dtype=float))
+    )
+    gz = (
+        np.linspace(np.quantile(eta, 0.05), np.quantile(eta, 0.95), 61)
+        if grid_z is None
+        else np.atleast_1d(np.asarray(grid_z, dtype=float))
+    )
 
     f_U, f_eps = deconvolve_pair(W, eta, gu, gz, nU, ne, kernel=kernel)
-    return RichResult(payload={
-        "kernel": kernel,
-        "grid_u": gu, "f_U": f_U, "grid_z": gz, "f_eps": f_eps,
-        "psi_eps_from_root": True, "symmetry_required": True,
-        "nu_U": nU, "nu_eps": ne,
-        "fastest_possible_rate": "(log n)^{-1} for normal eps",
-        "asymptotics_in": "n with T fixed",
-        "n": int(n), "T": int(T), "d": int(b.size),
-        "method": "Panel deconvolution (5.21)-(5.26); psi_eps = psi_eta^{1/2} needs eps symmetric"})
+    return RichResult(
+        payload={
+            "kernel": kernel,
+            "grid_u": gu,
+            "f_U": f_U,
+            "grid_z": gz,
+            "f_eps": f_eps,
+            "psi_eps_from_root": True,
+            "symmetry_required": True,
+            "nu_U": nU,
+            "nu_eps": ne,
+            "fastest_possible_rate": "(log n)^{-1} for normal eps",
+            "asymptotics_in": "n with T fixed",
+            "n": int(n),
+            "T": int(T),
+            "d": int(b.size),
+            "method": "Panel deconvolution (5.21)-(5.26); psi_eps = psi_eta^{1/2} needs eps symmetric",
+        }
+    )
 
 
 def cheatsheet():

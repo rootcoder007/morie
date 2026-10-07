@@ -18,9 +18,7 @@ def _phi(name):
     if callable(name):
         return name
     if name not in table:
-        raise ValueError(
-            f"unknown activation {name!r}; pass a callable or one of "
-            f"{sorted(table)}.")
+        raise ValueError(f"unknown activation {name!r}; pass a callable or one of {sorted(table)}.")
     return table[name]
 
 
@@ -39,18 +37,20 @@ def burkov_lm_ch1_layer1_output(W_1, x, b_1, phi="relu"):
     x = np.atleast_1d(np.asarray(x, dtype=float))
     b = np.atleast_1d(np.asarray(b_1, dtype=float))
     if W.shape[1] != len(x):
-        raise ValueError(
-            f"W_1 has {W.shape[1]} columns but x has {len(x)} entries.")
+        raise ValueError(f"W_1 has {W.shape[1]} columns but x has {len(x)} entries.")
     if W.shape[0] != len(b):
-        raise ValueError(
-            f"W_1 has {W.shape[0]} rows but b_1 has {len(b)} entries.")
+        raise ValueError(f"W_1 has {W.shape[0]} rows but b_1 has {len(b)} entries.")
     pre = W @ x + b
     out = _phi(phi)(pre)
-    return RichResult(payload={
-        "output": [float(v) for v in out],
-        "preactivation": [float(v) for v in pre],
-        "estimate": float(out[0]), "n": len(out),
-        "method": "Layer 1 output phi(W1 x + b1) (Burkov Eq 1.6)"})
+    return RichResult(
+        payload={
+            "output": [float(v) for v in out],
+            "preactivation": [float(v) for v in pre],
+            "estimate": float(out[0]),
+            "n": len(out),
+            "method": "Layer 1 output phi(W1 x + b1) (Burkov Eq 1.6)",
+        }
+    )
 
 
 def cheatsheet():

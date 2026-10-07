@@ -65,15 +65,17 @@ def equating_mean_sigma(y, b_R, b_F, ddof=1):
     B = core.mean(bR) - A * core.mean(bF)
     yy = [float(v) for v in ([y] if isinstance(y, (int, float)) else y)]
     eq = [A * v + B for v in yy]
-    return RichResult(payload={
-        "estimate": A,
-        "A": A,
-        "B": B,
-        "equated": eq,
-        "n_items": k,
-        "n": len(yy),
-        "method": "Mean-sigma equating coefficients",
-    })
+    return RichResult(
+        payload={
+            "estimate": A,
+            "A": A,
+            "B": B,
+            "equated": eq,
+            "n_items": k,
+            "n": len(yy),
+            "method": "Mean-sigma equating coefficients",
+        }
+    )
 
 
 def cheatsheet():

@@ -70,10 +70,16 @@ def wasserman_mutual_info(x, y):
     py = joint.sum(axis=0)
     prod = np.outer(px, py)
     kl = wasserman_kullback_leibler(joint.ravel(), prod.ravel())
-    return RichResult(payload={
-        "estimate": kl["estimate"], "bits": kl["bits"],
-        "levels_x": len(lx), "levels_y": len(ly), "n": int(n),
-        "method": "I(X;Y) = KL(joint || product of marginals), empirical"})
+    return RichResult(
+        payload={
+            "estimate": kl["estimate"],
+            "bits": kl["bits"],
+            "levels_x": len(lx),
+            "levels_y": len(ly),
+            "n": int(n),
+            "method": "I(X;Y) = KL(joint || product of marginals), empirical",
+        }
+    )
 
 
 def cheatsheet():

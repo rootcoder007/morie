@@ -9,5 +9,6 @@ def test_bktf_basic():
 
 def test_bktf_edge():
     import pytest
+
     with pytest.raises(ValueError, match="empty"):
         burkov_term_frequency("a", [])

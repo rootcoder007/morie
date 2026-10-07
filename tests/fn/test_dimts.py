@@ -1,7 +1,6 @@
 """Tests for morie.fn.dimts -- dimensionality test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dimts import dimensionality_test, dimts
 
 

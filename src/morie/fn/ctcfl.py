@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Counterfactual notation: Y_x -- outcome had X been set to x by intervention."""
 
+import contextlib
+
 from ._richresult import RichResult
 from .scmdf import scm_definition
 
@@ -56,10 +58,8 @@ def counterfactual_notation(exogenous, equations, X, x_val, Y):
     cf = scm_definition(exogenous, mutilated)["values"][Y]
 
     effect = None
-    try:
+    with contextlib.suppress(TypeError):
         effect = cf - factual
-    except TypeError:
-        pass
 
     return RichResult(
         payload={

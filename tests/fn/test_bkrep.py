@@ -10,5 +10,6 @@ def test_bkrep_basic():
 
 def test_bkrep_edge():
     import pytest
+
     with pytest.raises(ValueError, match="out of range"):
         burkov_repetition_penalty([1.0], [3])

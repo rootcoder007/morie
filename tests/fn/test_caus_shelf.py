@@ -10,9 +10,9 @@ removes the regularisation bias, and the Sun-Abraham weights must be
 shares where the two-way fixed-effects weights are not.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._caus_iv import first_stage_f, k_class
 from morie.fn.causaipw import causal_aipw
 from morie.fn.causdidsap import causal_did_sun_abraham
@@ -122,7 +122,7 @@ def test_liml_would_be_ols_if_the_constant_leaked_into_the_ratio():
     excludes the constant is the check."""
     y, D, Z = iv_design(n=2000, n_instr=3)
     o = causal_iv_liml(y, D, Z)
-    assert 0 not in list(o["endogenous_columns"])   # column 0 is the constant
+    assert 0 not in list(o["endogenous_columns"])  # column 0 is the constant
     assert o["kappa"] >= 1.0
     X = np.column_stack([np.ones(len(y)), D])
     ols = np.linalg.lstsq(X, y, rcond=None)[0]
@@ -133,8 +133,7 @@ def test_liml_fuller_shifts_kappa_down_by_a_over_n_minus_m():
     y, D, Z = iv_design(n=2000, n_instr=4)
     plain = causal_iv_liml(y, D, Z)
     full = causal_iv_liml(y, D, Z, fuller=1.0)
-    assert full["kappa"] == pytest.approx(
-        plain["kappa"] - 1.0 / (2000 - 5), rel=1e-9)
+    assert full["kappa"] == pytest.approx(plain["kappa"] - 1.0 / (2000 - 5), rel=1e-9)
     assert full["fuller_a"] == 1.0
     with pytest.raises(ValueError, match="non-negative"):
         causal_iv_liml(y, D, Z, fuller=-1.0)
@@ -177,7 +176,7 @@ def test_late_refuses_a_zero_first_stage():
     rng = np.random.default_rng(11)
     n = 500
     Z = (rng.random(n) < 0.5).astype(float)
-    D = (rng.random(n) < 0.5).astype(float)   # independent of Z
+    D = (rng.random(n) < 0.5).astype(float)  # independent of Z
     y = rng.normal(size=n)
     o = causal_iv_late(y, D, Z)
     assert o["weak_first_stage"] is True or abs(o["first_stage"]) < 0.1
@@ -233,8 +232,7 @@ def test_aipw_is_doubly_robust_and_fails_only_when_both_are_wrong():
     assert both == pytest.approx(2.0, abs=0.08)
     assert ps_wrong == pytest.approx(2.0, abs=0.08)
     assert out_wrong == pytest.approx(2.0, abs=0.15)
-    assert abs(all_wrong - 2.0) > 2 * max(abs(ps_wrong - 2.0),
-                                          abs(out_wrong - 2.0))
+    assert abs(all_wrong - 2.0) > 2 * max(abs(ps_wrong - 2.0), abs(out_wrong - 2.0))
 
 
 def test_aipw_reduces_to_the_regression_estimator_when_augmentation_vanishes():
@@ -245,8 +243,7 @@ def test_aipw_reduces_to_the_regression_estimator_when_augmentation_vanishes():
     o = causal_aipw(y, T, e, m1, m0)
     assert o["regression_component"] == pytest.approx(2.0, abs=0.01)
     assert abs(o["augmentation_component"]) < 0.1
-    assert o["ate"] == pytest.approx(
-        o["regression_component"] + o["augmentation_component"], rel=1e-12)
+    assert o["ate"] == pytest.approx(o["regression_component"] + o["augmentation_component"], rel=1e-12)
 
 
 def test_aipw_trims_extreme_propensities_and_says_so():
@@ -309,7 +306,7 @@ def test_dml_orthogonality_beats_residualising_only_the_outcome():
     y = 1.0 * D + g + rng.normal(size=n)
     o = causal_dml_partial_lin(y, D, X, n_folds=5)
     yres = o["y_residual"]
-    half_done = float(yres @ D / (D @ D))     # only Y residualised
+    half_done = float(yres @ D / (D @ D))  # only Y residualised
     assert abs(o["theta"] - 1.0) < abs(half_done - 1.0)
 
 

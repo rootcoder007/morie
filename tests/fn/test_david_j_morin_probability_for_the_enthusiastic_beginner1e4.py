@@ -14,7 +14,7 @@ def test_david_j_morin_probability_for_the_enthusiastic_beginner1e4_basic():
     count = result["count"]
     assert isinstance(count, (int, float))
     assert math.isfinite(count)
-    assert count == 5 ** 3
+    assert count == 5**3
 
 
 def test_david_j_morin_probability_for_the_enthusiastic_beginner1e4_edge():

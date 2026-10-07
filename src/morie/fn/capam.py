@@ -35,10 +35,7 @@ def circular_mean(
     if a.ndim != 1 or len(a) == 0:
         raise ValueError("angles must be a non-empty 1D array")
 
-    if degrees:
-        theta = np.deg2rad(a)
-    else:
-        theta = a.copy()
+    theta = np.deg2rad(a) if degrees else a.copy()
 
     if weights is not None:
         w = np.asarray(weights, dtype=float)
@@ -62,10 +59,7 @@ def circular_mean(
     else:
         kappa = 1.0 / (R_bar**3 - 4 * R_bar**2 + 3 * R_bar) if R_bar < 1.0 else 1e6
 
-    if degrees:
-        mean_dir_out = float(np.rad2deg(mean_dir)) % 360
-    else:
-        mean_dir_out = float(mean_dir) % (2 * np.pi)
+    mean_dir_out = float(np.rad2deg(mean_dir)) % 360 if degrees else float(mean_dir) % (2 * np.pi)
 
     return DescriptiveResult(
         name="circular_mean",

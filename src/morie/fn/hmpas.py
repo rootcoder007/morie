@@ -108,7 +108,9 @@ def geron_pasting(X, y, base_estimator=None, n_estimators=10, sample_size=None, 
     else:
         s = int(sample_size)
     if not (1 <= s <= n):
-        raise ValueError(f"geron_pasting: sample_size must lie in [1, {n}] (drawn without replacement), got {sample_size!r}")
+        raise ValueError(
+            f"geron_pasting: sample_size must lie in [1, {n}] (drawn without replacement), got {sample_size!r}"
+        )
     classify = task == "classification" or (task == "auto" and set(np.unique(yv).tolist()) <= {0.0, 1.0})
 
     models, samples = [], []

@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['vitlnorm', 'vit_layer_norm']
+__all__ = ["vitlnorm", "vit_layer_norm"]
 
 
 def vitlnorm(x, gamma=None, beta=None):
@@ -36,9 +36,9 @@ def vitlnorm(x, gamma=None, beta=None):
     Ba, Kiros and Hinton (2016), Layer Normalization, arXiv:1607.06450,
     equation (3).  Verified against the paper.
     """
-    X = C.mat(x) if isinstance(x, (list, tuple)) and x and isinstance(x[0], (list, tuple)) \
-        else [C.vec(x)]
-    n = len(X); H = len(X[0])
+    X = C.mat(x) if isinstance(x, (list, tuple)) and x and isinstance(x[0], (list, tuple)) else [C.vec(x)]
+    n = len(X)
+    H = len(X[0])
     g = C.vec(gamma) if gamma is not None else [1.0] * H
     b = C.vec(beta) if beta is not None else [0.0] * H
     if len(g) != H or len(b) != H:
@@ -49,11 +49,10 @@ def vitlnorm(x, gamma=None, beta=None):
         s = math.sqrt(sum((v - mu) ** 2 for v in row) / H)
         if s <= 0:
             raise ValueError("a row has zero variance; layer norm is undefined")
-        mus.append(mu); sds.append(s)
+        mus.append(mu)
+        sds.append(s)
         Y.append([g[j] * (row[j] - mu) / s + b[j] for j in range(H)])
-    return RichResult(payload={
-        "y": Y, "mu": mus, "sigma": sds, "n": n, "H": H,
-        "method": "Layer normalisation"})
+    return RichResult(payload={"y": Y, "mu": mus, "sigma": sds, "n": n, "H": H, "method": "Layer normalisation"})
 
 
 vit_layer_norm = vitlnorm

@@ -18,8 +18,7 @@ def _direct(Q, K, V):
         e = [math.exp(v - m) for v in s]
         z = sum(e)
         w = [v / z for v in e]
-        out.append([sum(wi * vr[c] for wi, vr in zip(w, V))
-                    for c in range(len(V[0]))])
+        out.append([sum(wi * vr[c] for wi, vr in zip(w, V)) for c in range(len(V[0]))])
     return out
 
 

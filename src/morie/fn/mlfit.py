@@ -50,21 +50,28 @@ def ml_loglik(y, X, V):
     Vm = C.mat(V)
     n = len(C.vec(y))
     if len(Vm) != n or any(len(row) != n for row in Vm):
-        raise ValueError("V must be %d by %d" % (n, n))
+        raise ValueError(f"V must be {int(n)} by {int(n)}")
     # Certify positive definiteness here, by Cholesky, before delegating.
     # lmmll screens with the sign of the log-determinant, and that test
     # cannot see a negative definite matrix of EVEN order: the sign of
     # |V| is (-1)^n = +1 there.  The R arm factorises, so without this
     # the two arms would disagree on the error path.
-    C.chol([[0.5 * (Vm[i][j] + Vm[j][i]) for j in range(n)]
-            for i in range(n)])
+    C.chol([[0.5 * (Vm[i][j] + Vm[j][i]) for j in range(n)] for i in range(n)])
     r = lmm_loglik(y, X, V=V, reml=False)
-    return RichResult(payload={
-        "estimate": r["loglik"], "loglik": r["loglik"],
-        "neg2loglik": r["neg2loglik"], "logdet_V": r["logdet_V"],
-        "quadratic_form": r["quadratic_form"], "aic": r["aic"],
-        "bic": r["bic"], "n": r["n"], "p": r["p"],
-        "method": "ML log-likelihood of a linear mixed model"})
+    return RichResult(
+        payload={
+            "estimate": r["loglik"],
+            "loglik": r["loglik"],
+            "neg2loglik": r["neg2loglik"],
+            "logdet_V": r["logdet_V"],
+            "quadratic_form": r["quadratic_form"],
+            "aic": r["aic"],
+            "bic": r["bic"],
+            "n": r["n"],
+            "p": r["p"],
+            "method": "ML log-likelihood of a linear mixed model",
+        }
+    )
 
 
 mlloglik = ml_loglik

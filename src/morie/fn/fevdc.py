@@ -46,16 +46,14 @@ def fevd(
     Theta = [[[1.0 if i == j else 0.0 for j in range(k)] for i in range(k)]]
     A_pow = [[1.0 if i == j else 0.0 for j in range(k)] for i in range(k)]
     for _h in range(1, periods + 1):
-        A_pow = [[sum(A_pow[i][t] * Am[t][j] for t in range(k)) for j in range(k)]
-                 for i in range(k)]
+        A_pow = [[sum(A_pow[i][t] * Am[t][j] for t in range(k)) for j in range(k)] for i in range(k)]
         Theta.append([row[:] for row in A_pow])
     mse = []
     decomp = []
     for h in range(periods + 1):
         contrib = [[0.0] * k for _ in range(k)]
         for s_ in range(h + 1):
-            TP = [[sum(Theta[s_][i][t] * P[t][j] for t in range(k)) for j in range(k)]
-                  for i in range(k)]
+            TP = [[sum(Theta[s_][i][t] * P[t][j] for t in range(k)) for j in range(k)] for i in range(k)]
             for i in range(k):
                 for j in range(k):
                     contrib[i][j] += TP[i][j] ** 2

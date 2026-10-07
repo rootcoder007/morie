@@ -6,7 +6,6 @@ names no owning source: it is the textbook definition used by every
 evaluation toolkit, and no citation is manufactured for it here.
 """
 
-
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["recall_at_k"]
@@ -39,10 +38,18 @@ def recall_at_k(pred_rank, relevant, k):
         raise ValueError("recall is undefined with no relevant items")
     top = list(pred_rank)[:kk]
     hits = sum(1 for t in top if t in rel)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(hits) / len(rel), "hits": hits, "k": kk,
-        "n_relevant": len(rel), "method": "recall at k",
-    }), "colMet")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(hits) / len(rel),
+                "hits": hits,
+                "k": kk,
+                "n_relevant": len(rel),
+                "method": "recall at k",
+            }
+        ),
+        "colMet",
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for kanon.k_anonymity_check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kanon import k_anonymity_check
 
 

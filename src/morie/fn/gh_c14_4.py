@@ -5,17 +5,13 @@ Implements sec. 14.1.2 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_crf_def"]
 
 
-def ghosal_crf_def(n_per_rest=(60, 60), alpha=2.0, gamma=2.0,
-                   seed=42):
+def ghosal_crf_def(n_per_rest=(60, 60), alpha=2.0, gamma=2.0, seed=42):
     """CRF: per-restaurant CRPs whose new tables order dishes from a
     global CRP -- G_j ~ DP(alpha, G0), G0 ~ DP(gamma, H)
     (sec. 14.1.2): dishes are SHARED across restaurants.
@@ -54,10 +50,14 @@ def ghosal_crf_def(n_per_rest=(60, 60), alpha=2.0, gamma=2.0,
                         break
         per_rest_dishes.append(set(dish_of_table))
     shared = len(per_rest_dishes[0] & per_rest_dishes[1])
-    res = RichResult(payload={"estimate": float(shared),
-                              "n_global_dishes": len(global_dishes),
-                              "dishes_shared": shared > 0,
-                              "method": "Chinese restaurant franchise (GvdV 2017 sec. 14.1.2)"})
+    res = RichResult(
+        payload={
+            "estimate": float(shared),
+            "n_global_dishes": len(global_dishes),
+            "dishes_shared": shared > 0,
+            "method": "Chinese restaurant franchise (GvdV 2017 sec. 14.1.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_4")
 
 

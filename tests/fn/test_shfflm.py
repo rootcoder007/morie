@@ -1,7 +1,5 @@
 """Tests for shfflm.shuffle_model."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.shfflm import shuffle_model
 
 

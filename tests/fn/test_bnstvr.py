@@ -1,7 +1,6 @@
 """Tests for bnstvr.bound_treatment_variation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnstvr import bound_treatment_variation
 
 

@@ -57,7 +57,7 @@ def max_pooling(x, kernel, stride):
         raise ValueError("max_pooling: kernel must be a positive integer")
     if S <= 0:
         raise ValueError("max_pooling: stride must be a positive integer")
-    if P > n:
+    if n < P:
         raise ValueError("max_pooling: kernel is wider than the input")
     m = (n - P) // S + 1
     pooled = []

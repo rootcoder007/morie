@@ -31,7 +31,7 @@ def binomvar(n, p):
     """
     second = _morin.binomial_second_moment(n, p)
     mean = _morin.binomial_mean(n, p)
-    value = second - mean ** 2
+    value = second - mean**2
     direct = _morin.binomial_variance(n, p)
     if abs(value - direct) > 1e-9 * max(1.0, direct):
         raise AssertionError("moment identity disagrees with npq")

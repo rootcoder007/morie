@@ -1,6 +1,5 @@
 """Tests for gb2311 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb2311 import gibbons_edf_mean_var

@@ -115,8 +115,11 @@ def geron_dino_self_distillation(student_logits, teacher_logits, tau_s, tau_t, c
 
     return RichResult(
         title="DINO self-distillation",
-        summary_lines=[("Loss", loss), ("tau_s / tau_t", f"{ts} / {tt}"),
-                       ("Teacher entropy", float(-np.sum(P * logp_t, axis=1).mean()))],
+        summary_lines=[
+            ("Loss", loss),
+            ("tau_s / tau_t", f"{ts} / {tt}"),
+            ("Teacher entropy", float(-np.sum(P * logp_t, axis=1).mean())),
+        ],
         payload={
             "loss": loss,
             "teacher_probs": P[0].tolist() if m == 1 else P.tolist(),

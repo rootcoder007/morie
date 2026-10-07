@@ -37,7 +37,7 @@ _C = 299792458.0  # m s^-1
 
 
 def _sigma():
-    return 2.0 * math.pi ** 5 * _K_B ** 4 / (15.0 * _H ** 3 * _C ** 2)
+    return 2.0 * math.pi**5 * _K_B**4 / (15.0 * _H**3 * _C**2)
 
 
 def stefan_boltzmann(T, emissivity=1.0):
@@ -61,7 +61,7 @@ def stefan_boltzmann(T, emissivity=1.0):
     t = k.vec(T)
     eps = float(emissivity)
     sig = _sigma()
-    out = [eps * sig * x ** 4 for x in t]
+    out = [eps * sig * x**4 for x in t]
     tot = 0.0
     for v in out:
         tot += v

@@ -73,16 +73,14 @@ def spectral_clustering(a, k=2):
     deg = [fsum(row) for row in w]
     for i in range(n):
         if deg[i] <= 0:
-            raise ValueError("node %d has degree 0; an isolated node "
-                             "belongs to no cluster" % i)
+            raise ValueError(f"node {int(i)} has degree 0; an isolated node belongs to no cluster")
     ds = [1.0 / sqrt(t) for t in deg]
 
     lsym = eye(n)
     for i in range(n):
         for j in range(n):
             lsym[i][j] = lsym[i][j] - ds[i] * w[i][j] * ds[j]
-    shifted = [[(2.0 if i == j else 0.0) - lsym[i][j] for j in range(n)]
-               for i in range(n)]
+    shifted = [[(2.0 if i == j else 0.0) - lsym[i][j] for j in range(n)] for i in range(n)]
     # a full Jacobi decomposition, not power iteration: the Fiedler gap
     # (2 - l1)/2 is close to 1 exactly when the clusters are well
     # separated, and a fixed number of power steps then stops short
@@ -110,22 +108,25 @@ def spectral_clustering(a, k=2):
                 if mem:
                     cen[c] = fsum(mem) / len(mem)
 
-    sizes = [float(len([t for t in labels if t == float(c)]))
-             for c in range(k)]
+    sizes = [float(len([t for t in labels if t == float(c)])) for c in range(k)]
 
-    return RichResult(payload={
-        "labels": labels,
-        "sizes": sizes,
-        "eigenvalues": eig,
-        "fiedler": fied,
-        "degree": deg,
-        "smallest_eigenvalues_not_largest": True,
-        "k": float(k),
-        "n": n,
-        "method": ("Normalized spectral clustering (Ng, Jordan & Weiss "
-                   "2001) with deterministic order-statistic starts; NOT "
-                   "in Schabenberger & Gotway"),
-    })
+    return RichResult(
+        payload={
+            "labels": labels,
+            "sizes": sizes,
+            "eigenvalues": eig,
+            "fiedler": fied,
+            "degree": deg,
+            "smallest_eigenvalues_not_largest": True,
+            "k": float(k),
+            "n": n,
+            "method": (
+                "Normalized spectral clustering (Ng, Jordan & Weiss "
+                "2001) with deterministic order-statistic starts; NOT "
+                "in Schabenberger & Gotway"
+            ),
+        }
+    )
 
 
 def cheatsheet():

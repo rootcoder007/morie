@@ -75,10 +75,9 @@ def union_bound_exists(n_events, event_probability):
             "method": "First moment method",
         },
         interpretation=(
-            f"The expected number of bad events is {expected:.6g} < 1, so an "
-            "outcome avoiding all of them exists."
-            if expected < 1 else
-            f"The expected count is {expected:.6g}, which is at least 1. The "
+            f"The expected number of bad events is {expected:.6g} < 1, so an outcome avoiding all of them exists."
+            if expected < 1
+            else f"The expected count is {expected:.6g}, which is at least 1. The "
             "first moment method says nothing here -- it does NOT show that "
             "no good outcome exists."
         ),
@@ -107,8 +106,7 @@ def first_moment_ramsey(k):
     best = k - 1
     capped = False
     while n < CAP:
-        log2e = (math.lgamma(n + 1) - math.lgamma(k + 1)
-                 - math.lgamma(n - k + 1)) / math.log(2.0) + expo
+        log2e = (math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)) / math.log(2.0) + expo
         if log2e < 0:
             best = n
             n += 1
@@ -117,20 +115,19 @@ def first_moment_ramsey(k):
     # a search that runs to its own ceiling has not found the bound, it
     # has found the ceiling. Silently returning it would read as a result.
     capped = n >= CAP
-    log2_at = (math.lgamma(best + 1) - math.lgamma(k + 1)
-               - math.lgamma(best - k + 1)) / math.log(2.0) + expo
+    log2_at = (math.lgamma(best + 1) - math.lgamma(k + 1) - math.lgamma(best - k + 1)) / math.log(2.0) + expo
     out = RichResult(
         title=f"First moment lower bound on R({k},{k})",
         summary_lines=[
             ("Bound", best),
             ("Certifies", f"R({k},{k}) > {best}"),
-            ("Expected count there", 2.0 ** log2_at),
+            ("Expected count there", 2.0**log2_at),
         ],
         payload={
             "bound": best,
             "estimate": float(best),
             "certifies": f"R({k},{k}) > {best}",
-            "expected_at_bound": 2.0 ** log2_at,
+            "expected_at_bound": 2.0**log2_at,
             "asymptotic_2_to_k_over_2": 2.0 ** (k / 2.0),
             "search_capped": capped,
             "search_cap": CAP,
@@ -193,12 +190,11 @@ def alteration_ramsey(k):
     best_n, best_val = k, 0.0
     reached_end = True
     for n in range(k, ACAP):
-        log2e = (math.lgamma(n + 1) - math.lgamma(k + 1)
-                 - math.lgamma(n - k + 1)) / math.log(2.0) + expo
+        log2e = (math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)) / math.log(2.0) + expo
         if log2e > 60:
             reached_end = False
             break
-        val = n - 2.0 ** log2e
+        val = n - 2.0**log2e
         if val > best_val:
             best_val, best_n = val, n
         elif n > best_n + 5000:
@@ -299,8 +295,8 @@ def lovasz_local_lemma(p, d, symmetric=True):
         interpretation=(
             f"e p (d+1) = {lhs:.6g} <= 1, so with positive probability none "
             "of the bad events occurs -- regardless of how many there are."
-            if applies else
-            f"e p (d+1) = {lhs:.6g} > 1, so the symmetric Local Lemma does "
+            if applies
+            else f"e p (d+1) = {lhs:.6g} > 1, so the symmetric Local Lemma does "
             "not apply. That is not a proof that a good outcome fails to "
             "exist."
         ),
@@ -346,19 +342,12 @@ def chernoff_bound(n, p, t, tail="upper"):
 
     if tail == "upper":
         delta = t / mu - 1.0
-        if delta <= 0:
-            bound = 1.0
-        else:
-            bound = math.exp(
-                mu * (delta - (1 + delta) * math.log1p(delta))
-            )
-        exact = sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i)
-                    for i in range(math.ceil(t), n + 1))
+        bound = 1.0 if delta <= 0 else math.exp(mu * (delta - (1 + delta) * math.log1p(delta)))
+        exact = sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(math.ceil(t), n + 1))
     else:
         delta = 1.0 - t / mu
         bound = 1.0 if delta <= 0 else math.exp(-mu * delta * delta / 2.0)
-        exact = sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i)
-                    for i in range(0, math.floor(t) + 1))
+        exact = sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(0, math.floor(t) + 1))
     bound = min(bound, 1.0)
 
     out = RichResult(
@@ -499,8 +488,8 @@ def second_moment_threshold(expectation, variance):
         },
         interpretation=(
             f"Var/E^2 = {ratio:.6g}, so P(X = 0) is at most {bound:.6g}."
-            if ratio < 1 else
-            "Var/E^2 is at least 1, so Chebyshev gives nothing here."
+            if ratio < 1
+            else "Var/E^2 is at least 1, so Chebyshev gives nothing here."
         ),
     )
 

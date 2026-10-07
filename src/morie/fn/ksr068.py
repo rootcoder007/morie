@@ -9,8 +9,7 @@ from ._sci_core import optimize
 __all__ = ["kosorok_ch3_cox_profile_score"]
 
 
-def kosorok_ch3_cox_profile_score(beta=None, Z=None, Y=None, X=None, tau=None,
-                                  n=None, time=None, event=None):
+def kosorok_ch3_cox_profile_score(beta=None, Z=None, Y=None, X=None, tau=None, n=None, time=None, event=None):
     r"""Empirical profile score for the Cox model (Kosorok Ch. 3):
 
     .. math:: \hat\ell_{\beta,n} = \int_0^\tau \Big\{ Z -
@@ -58,18 +57,20 @@ def kosorok_ch3_cox_profile_score(beta=None, Z=None, Y=None, X=None, tau=None,
     b0 = np.zeros(p) if beta is None else np.atleast_1d(np.asarray(beta, float))
     at_beta = cox_score(b0, Z, time, event)
 
-    res = optimize.root(
-        lambda b: cox_score(b, Z, time, event)["score"], np.zeros(p), method="hybr"
-    )
+    res = optimize.root(lambda b: cox_score(b, Z, time, event)["score"], np.zeros(p), method="hybr")
     root = res.x
     at_root = cox_score(root, Z, time, event)
     return RichResult(
-        payload={"score_at_beta": at_beta["score"], "beta_hat": root,
-                 "score_at_root": at_root["score"],
-                 "information": at_root["information"],
-                 "loglik": at_root["loglik"], "converged": bool(res.success),
-                 "n": at_root["n"],
-                 "method": "Empirical profile score; its root is the Cox estimator"}
+        payload={
+            "score_at_beta": at_beta["score"],
+            "beta_hat": root,
+            "score_at_root": at_root["score"],
+            "information": at_root["information"],
+            "loglik": at_root["loglik"],
+            "converged": bool(res.success),
+            "n": at_root["n"],
+            "method": "Empirical profile score; its root is the Cox estimator",
+        }
     )
 
 

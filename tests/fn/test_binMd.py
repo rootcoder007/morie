@@ -1,9 +1,8 @@
 """Tests for binMd -- the outcome-first front-end over binmed."""
 
 from morie.fn import _array_core as np
-
-from morie.fn.binmed import binary_outcome_mediation as canonical
 from morie.fn.binMd import binary_outcome_mediation as frontend
+from morie.fn.binmed import binary_outcome_mediation as canonical
 
 
 def _data(seed=0, n=2000):

@@ -27,18 +27,21 @@ def burkov_lm_ch1_cosine_similarity(x, y):
     x = np.atleast_1d(np.asarray(x, dtype=float))
     y = np.atleast_1d(np.asarray(y, dtype=float))
     if x.shape != y.shape:
-        raise ValueError(
-            f"x and y must have the same length; got {len(x)} and "
-            f"{len(y)}.")
-    nx = float(np.linalg.norm(x)); ny = float(np.linalg.norm(y))
+        raise ValueError(f"x and y must have the same length; got {len(x)} and {len(y)}.")
+    nx = float(np.linalg.norm(x))
+    ny = float(np.linalg.norm(y))
     if nx == 0.0 or ny == 0.0:
-        raise ValueError("a zero vector has no direction; cosine "
-                         "similarity with it is undefined.")
+        raise ValueError("a zero vector has no direction; cosine similarity with it is undefined.")
     c = float(np.dot(x, y) / (nx * ny))
     c = max(-1.0, min(1.0, c))
-    return RichResult(payload={
-        "estimate": c, "angle_radians": float(np.arccos(c)),
-        "n": len(x), "method": "Cosine similarity (Burkov Eq 1.5)"})
+    return RichResult(
+        payload={
+            "estimate": c,
+            "angle_radians": float(np.arccos(c)),
+            "n": len(x),
+            "method": "Cosine similarity (Burkov Eq 1.5)",
+        }
+    )
 
 
 def cheatsheet():

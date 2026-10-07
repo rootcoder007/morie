@@ -73,9 +73,7 @@ def geron_standardization(X, ddof=0):
     sd = A.std(axis=0, ddof=ddof)
     bad = np.flatnonzero(sd == 0)
     if bad.size:
-        raise ValueError(
-            f"columns {bad.tolist()} are constant (sd = 0); standardization is undefined."
-        )
+        raise ValueError(f"columns {bad.tolist()} are constant (sd = 0); standardization is undefined.")
     Z = (A - mu) / sd
     out = Z.ravel().tolist() if flat else Z.tolist()
 

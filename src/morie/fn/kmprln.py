@@ -43,19 +43,23 @@ def kamath_pre_ln_transformer(x, attn_fn, ffn_fn, eps=1e-5):
         out = np.atleast_2d(np.asarray(f(v), dtype=float))
         if out.shape != v.shape:
             raise ValueError(
-                f"{name} returned {out.shape} for a {v.shape} input; the "
-                "residual connection needs the shape preserved.")
+                f"{name} returned {out.shape} for a {v.shape} input; the residual connection needs the shape preserved."
+            )
         return out
 
     y = x + _sub(attn_fn, layer_norm(x, eps), "attn_fn")
     z = y + _sub(ffn_fn, layer_norm(y, eps), "ffn_fn")
-    return RichResult(payload={
-        "output": [[float(v) for v in row] for row in z],
-        "after_attention": [[float(v) for v in row] for row in y],
-        "estimate": float(z[0, 0]),
-        "placement": "pre-LN", "eps": float(eps),
-        "n": int(z.shape[0]),
-        "method": "Pre-LayerNorm transformer block"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in row] for row in z],
+            "after_attention": [[float(v) for v in row] for row in y],
+            "estimate": float(z[0, 0]),
+            "placement": "pre-LN",
+            "eps": float(eps),
+            "n": int(z.shape[0]),
+            "method": "Pre-LayerNorm transformer block",
+        }
+    )
 
 
 def cheatsheet():

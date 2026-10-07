@@ -127,14 +127,14 @@ _COMPLEMENT = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N"}
 
 # ------------------------------------------------------------- helpers
 
+
 def _pair(p):
     """Normalise one read pair; mate 1 is the left-most alignment."""
     try:
         c1, p1, s1 = p["chrom1"], int(p["pos1"]), p["strand1"]
         c2, p2, s2 = p["chrom2"], int(p["pos2"]), p["strand2"]
-    except (KeyError, TypeError):
-        raise ValueError("sv_dl: a pair needs chrom1/pos1/strand1 and "
-                         "chrom2/pos2/strand2")
+    except (KeyError, TypeError) as exc:
+        raise ValueError("sv_dl: a pair needs chrom1/pos1/strand1 and chrom2/pos2/strand2") from exc
     l1 = int(p.get("len1", p.get("read_length", 100)))
     l2 = int(p.get("len2", p.get("read_length", 100)))
     if l1 < 1 or l2 < 1:
@@ -145,9 +145,18 @@ def _pair(p):
         raise ValueError("sv_dl: strands must be '+' or '-'")
     if (c2, p2) < (c1, p1):
         c1, p1, s1, l1, c2, p2, s2, l2 = c2, p2, s2, l2, c1, p1, s1, l1
-    return {"chrom1": c1, "pos1": p1, "strand1": s1, "len1": l1,
-            "chrom2": c2, "pos2": p2, "strand2": s2, "len2": l2,
-            "seq": p.get("seq"), "id": p.get("id")}
+    return {
+        "chrom1": c1,
+        "pos1": p1,
+        "strand1": s1,
+        "len1": l1,
+        "chrom2": c2,
+        "pos2": p2,
+        "strand2": s2,
+        "len2": l2,
+        "seq": p.get("seq"),
+        "id": p.get("id"),
+    }
 
 
 def _median(v):
@@ -186,8 +195,7 @@ def insert_size_stats(pairs, orientation=None, spread="mad"):
     ps = [_pair(p) for p in pairs]
     same = [p for p in ps if p["chrom1"] == p["chrom2"]]
     if not same:
-        raise ValueError("sv_dl: no same-chromosome pairs to estimate the "
-                         "insert size distribution from")
+        raise ValueError("sv_dl: no same-chromosome pairs to estimate the insert size distribution from")
     if orientation is None:
         counts = {}
         for p in same:
@@ -197,8 +205,7 @@ def insert_size_stats(pairs, orientation=None, spread="mad"):
     orientation = tuple(orientation)
     if orientation[0] not in ("+", "-") or orientation[1] not in ("+", "-"):
         raise ValueError("sv_dl: orientation must be a pair of strands")
-    concordant = [_insert(p) for p in same
-                  if (p["strand1"], p["strand2"]) == orientation]
+    concordant = [_insert(p) for p in same if (p["strand1"], p["strand2"]) == orientation]
     if not concordant:
         raise ValueError("sv_dl: no pairs in the default orientation")
     if spread not in ("mad", "sd"):
@@ -209,13 +216,11 @@ def insert_size_stats(pairs, orientation=None, spread="mad"):
             sd = 1.4826 * _median([abs(v - med) for v in concordant])
         else:
             mu = sum(concordant) / float(len(concordant))
-            var = sum((v - mu) ** 2 for v in concordant) / \
-                (len(concordant) - 1.0)
+            var = sum((v - mu) ** 2 for v in concordant) / (len(concordant) - 1.0)
             sd = math.sqrt(var)
     else:
         sd = 0.0
-    return {"median": float(med), "sd": float(sd), "spread": spread,
-            "orientation": orientation, "n": len(concordant)}
+    return {"median": float(med), "sd": float(sd), "spread": spread, "orientation": orientation, "n": len(concordant)}
 
 
 def classify_pair(p, median, sd, orientation=("+", "-"), n_sd=3.0):
@@ -231,8 +236,7 @@ def classify_pair(p, median, sd, orientation=("+", "-"), n_sd=3.0):
         # four translocation classes: chromosomes already in sorted order
         # is guaranteed by _pair, so the class is fixed by which strands
         # departed from the library orientation
-        t = 2 * (1 if p["strand1"] != d1 else 0) + \
-            (1 if p["strand2"] != d2 else 0)
+        t = 2 * (1 if p["strand1"] != d1 else 0) + (1 if p["strand2"] != d2 else 0)
         return ("TRA", str(t))
     s1, s2 = p["strand1"], p["strand2"]
     if s1 == s2:
@@ -256,8 +260,7 @@ def _sv_size(p, label, median):
     return _insert(p) - median
 
 
-def build_sv_graph(pairs, median, sd, label, orientation=("+", "-"),
-                   n_sd=3.0, window=None):
+def build_sv_graph(pairs, median, sd, label, orientation=("+", "-"), n_sd=3.0, window=None):
     """Nodes are pairs of one signature; edges join pairs that agree.
 
     An edge requires that both left and right ends are within the
@@ -315,8 +318,7 @@ def maximal_clique(members, edges):
     endpoint is adjacent to every member. Returns the member indices.
     """
     keep = set(members)
-    sub = sorted((w, i, j) for w, i, j in edges
-                 if i in keep and j in keep)
+    sub = sorted((w, i, j) for w, i, j in edges if i in keep and j in keep)
     if not sub:
         return []
     adj = {}
@@ -331,17 +333,15 @@ def maximal_clique(members, edges):
             if inside != 1:
                 continue
             outside = j if i in clique else i
-            if all(outside in adj and m in adj[outside] for m in clique):
-                if best is None or w < best[0]:
-                    best = (w, outside)
+            if all(outside in adj and m in adj[outside] for m in clique) and (best is None or w < best[0]):
+                best = (w, outside)
         if best is None:
             break
         clique.add(best[1])
     return sorted(clique)
 
 
-def paired_end_calls(pairs, median=None, sd=None, orientation=None,
-                     n_sd=3.0, min_support=2, window=None, spread="mad"):
+def paired_end_calls(pairs, median=None, sd=None, orientation=None, n_sd=3.0, min_support=2, window=None, spread="mad"):
     """Cluster the discordant pairs into paired-end SV calls."""
     ps = [_pair(p) for p in pairs]
     if not ps:
@@ -350,8 +350,7 @@ def paired_end_calls(pairs, median=None, sd=None, orientation=None,
         st = insert_size_stats(ps, orientation, spread)
         median = st["median"] if median is None else median
         sd = st["sd"] if sd is None else sd
-        orientation = st["orientation"] if orientation is None \
-            else tuple(orientation)
+        orientation = st["orientation"] if orientation is None else tuple(orientation)
     if n_sd < 0:
         raise ValueError("sv_dl: n_sd must be non-negative")
     if min_support < 1:
@@ -375,23 +374,26 @@ def paired_end_calls(pairs, median=None, sd=None, orientation=None,
             size = None
             if lab[0] != "TRA":
                 size = sum(g["sizes"][i] for i in members) / len(members)
-            calls.append({
-                "type": lab[0],
-                "subtype": lab[1],
-                "chrom": sel[0]["chrom1"],
-                "chrom2": sel[0]["chrom2"],
-                "start": int(start),
-                "end": int(end),
-                "size": None if size is None else float(size),
-                "support": len(members),
-                "pairs": [dict(p) for p in sel],
-                "precise": False,
-            })
+            calls.append(
+                {
+                    "type": lab[0],
+                    "subtype": lab[1],
+                    "chrom": sel[0]["chrom1"],
+                    "chrom2": sel[0]["chrom2"],
+                    "start": int(start),
+                    "end": int(end),
+                    "size": None if size is None else float(size),
+                    "support": len(members),
+                    "pairs": [dict(p) for p in sel],
+                    "precise": False,
+                }
+            )
     calls.sort(key=lambda c: (c["type"], c["chrom"], c["start"]))
     return calls
 
 
 # ------------------------------------------------------- split reads
+
 
 def _revcomp(s):
     return "".join(_COMPLEMENT.get(c, "N") for c in reversed(s.upper()))
@@ -404,7 +406,7 @@ def deletion_type_reference(ref, sv_type):
     its second half reverse complemented, a translocation gets both.
     """
     if sv_type not in _SV_TYPES:
-        raise ValueError("sv_dl: sv_type must be one of %s" % (_SV_TYPES,))
+        raise ValueError(f"sv_dl: sv_type must be one of {_SV_TYPES}")
     s = str(ref).upper()
     if sv_type == "DEL":
         return s
@@ -434,14 +436,14 @@ def kmer_diagonals(read, ref, k=7, k_min=3, require_half=True):
         return None
     index = {}
     for pos in range(len(g) - k + 1):
-        km = g[pos:pos + k]
+        km = g[pos : pos + k]
         if "N" in km:
             continue
         index.setdefault(km, []).append(pos)
     per_diag = {}
     total = 0
     for off in range(len(r) - k + 1):
-        km = r[off:off + k]
+        km = r[off : off + k]
         if "N" in km:
             continue
         total += 1
@@ -461,7 +463,7 @@ def kmer_diagonals(read, ref, k=7, k_min=3, require_half=True):
     top2 = sum(h for _, h, _ in sorted(kept, key=lambda t: -t[1])[:2])
     if require_half and total and top2 * 2 < total:
         return None
-    kept.sort(key=lambda t: t[2])                  # order along the read
+    kept.sort(key=lambda t: t[2])  # order along the read
     return [(d, h) for d, h, _ in kept]
 
 
@@ -493,13 +495,12 @@ def split_read_consensus(reads, starts=None):
                 base = r[col - a]
                 counts[base] = counts.get(base, 0) + 1
         if not counts:
-            break                      # the consensus stays contiguous
+            break  # the consensus stays contiguous
         out.append(max(sorted(counts), key=lambda x: counts[x]))
     return "".join(out), lo
 
 
-def _gotoh(query, ref, match=1.0, mismatch=-2.0, gap_open=-4.0,
-           gap_extend=-1.0):
+def _gotoh(query, ref, match=1.0, mismatch=-2.0, gap_open=-4.0, gap_extend=-1.0):
     """Affine-gap DP; returns, for each query prefix, its best score.
 
     The query must be aligned from its start but may end anywhere in the
@@ -511,7 +512,7 @@ def _gotoh(query, ref, match=1.0, mismatch=-2.0, gap_open=-4.0,
     # M: ends aligned; I: gap in the reference; D: gap in the query
     Mrow = [neg] * (m + 1)
     Irow = [neg] * (m + 1)
-    Drow = [0.0] + [0.0] * m          # free leading gap in the query
+    Drow = [0.0] + [0.0] * m  # free leading gap in the query
     Mrow[0] = 0.0
     best, best_at = [], []
     for i in range(1, n + 1):
@@ -533,8 +534,7 @@ def _gotoh(query, ref, match=1.0, mismatch=-2.0, gap_open=-4.0,
     return best, best_at
 
 
-def gotoh_score_vectors(consensus, ref, match=1.0, mismatch=-2.0,
-                        gap_open=-4.0, gap_extend=-1.0):
+def gotoh_score_vectors(consensus, ref, match=1.0, mismatch=-2.0, gap_open=-4.0, gap_extend=-1.0):
     r"""The paper's :math:`f` and :math:`r` (Section 2.2).
 
     :math:`f_i` is the best score for the prefix :math:`c_1 \dots c_i`
@@ -548,8 +548,7 @@ def gotoh_score_vectors(consensus, ref, match=1.0, mismatch=-2.0,
     if not c or not g:
         raise ValueError("sv_dl: consensus and reference must be non-empty")
     f, f_at = _gotoh(c, g, match, mismatch, gap_open, gap_extend)
-    rb, rb_at = _gotoh(c[::-1], g[::-1], match, mismatch, gap_open,
-                       gap_extend)
+    rb, rb_at = _gotoh(c[::-1], g[::-1], match, mismatch, gap_open, gap_extend)
     n, m = len(c), len(g)
     # rb[t] is the suffix of length t+1, i.e. it starts at c_{n-t}
     r = [0.0] * n
@@ -581,10 +580,19 @@ def optimal_split(f, r):
     return best[1], best[2], best[0]
 
 
-def refine_breakpoint(call, reference, reads, k=7, k_min=3,
-                      min_split_support=2, max_length_diff=0.10,
-                      match=1.0, mismatch=-2.0, gap_open=-4.0,
-                      gap_extend=-1.0):
+def refine_breakpoint(
+    call,
+    reference,
+    reads,
+    k=7,
+    k_min=3,
+    min_split_support=2,
+    max_length_diff=0.10,
+    match=1.0,
+    mismatch=-2.0,
+    gap_open=-4.0,
+    gap_extend=-1.0,
+):
     """Take one paired-end call to single-nucleotide resolution.
 
     ``reference`` is the SV region as a string, ``reads`` the candidate
@@ -615,15 +623,13 @@ def refine_breakpoint(call, reference, reads, k=7, k_min=3,
         return None
     starts = [first_diag[i] for i in support]
     consensus, _ = split_read_consensus([reads[i] for i in support], starts)
-    f, f_at, r, r_at = gotoh_score_vectors(consensus, region, match,
-                                           mismatch, gap_open, gap_extend)
+    f, f_at, r, r_at = gotoh_score_vectors(consensus, region, match, mismatch, gap_open, gap_extend)
     i, j, score = optimal_split(f, r)
     left_ref = f_at[i - 1]
     right_ref = r_at[j - 1]
     size = right_ref - left_ref
-    if call["size"] is not None and call["size"] > 0:
-        if abs(size - call["size"]) > max_length_diff * abs(call["size"]):
-            return None
+    if call["size"] is not None and call["size"] > 0 and abs(size - call["size"]) > max_length_diff * abs(call["size"]):
+        return None
     # Microhomology: bases shared by the two breakpoint flanks. The
     # junction slides freely across them, so a call inside the homology
     # is not wrong -- it describes the same haplotype. DELLY's alignment
@@ -634,23 +640,44 @@ def refine_breakpoint(call, reference, reads, k=7, k_min=3,
     # breakpoint matches the base after the right one, the cut can slide
     # by one and describe the same haplotype.
     hom = 0
-    while (left_ref + hom < len(region) and right_ref + hom < len(region) and
-           region[left_ref + hom] == region[right_ref + hom]):
+    while (
+        left_ref + hom < len(region)
+        and right_ref + hom < len(region)
+        and region[left_ref + hom] == region[right_ref + hom]
+    ):
         hom += 1
-    return {"start": int(left_ref), "end": int(right_ref),
-            "size": int(size), "split_support": len(support),
-            "consensus": consensus, "score": float(score),
-            "microinsertion": consensus[i:j - 1],
-            "microhomology": int(hom),
-            "kmer_offset": int(best_off)}
+    return {
+        "start": int(left_ref),
+        "end": int(right_ref),
+        "size": int(size),
+        "split_support": len(support),
+        "consensus": consensus,
+        "score": float(score),
+        "microinsertion": consensus[i : j - 1],
+        "microhomology": int(hom),
+        "kmer_offset": int(best_off),
+    }
 
 
 # ------------------------------------------------------------- driver
 
-def structural_variant(pairs, reference=None, split_reads=None,
-                       orientation=None, median=None, sd=None, n_sd=3.0,
-                       min_support=2, k=7, k_min=3, min_split_support=2,
-                       max_length_diff=0.10, window=None, spread="mad"):
+
+def structural_variant(
+    pairs,
+    reference=None,
+    split_reads=None,
+    orientation=None,
+    median=None,
+    sd=None,
+    n_sd=3.0,
+    min_support=2,
+    k=7,
+    k_min=3,
+    min_split_support=2,
+    max_length_diff=0.10,
+    window=None,
+    spread="mad",
+):
     """Call structural variants from read pairs, refined by split reads.
 
     ``pairs`` is a sequence of dicts with ``chrom1/pos1/strand1`` and
@@ -659,8 +686,7 @@ def structural_variant(pairs, reference=None, split_reads=None,
     single-nucleotide breakpoints; without them the calls come back at
     paired-end resolution with ``precise=False``.
     """
-    calls = paired_end_calls(pairs, median, sd, orientation, n_sd,
-                             min_support, window, spread)
+    calls = paired_end_calls(pairs, median, sd, orientation, n_sd, min_support, window, spread)
     st = insert_size_stats(pairs, orientation, spread)
     refined = 0
     if reference is not None and split_reads:
@@ -670,8 +696,7 @@ def structural_variant(pairs, reference=None, split_reads=None,
             region = str(reference)[lo:hi]
             if not region:
                 continue
-            got = refine_breakpoint(call, region, split_reads, k, k_min,
-                                    min_split_support, max_length_diff)
+            got = refine_breakpoint(call, region, split_reads, k, k_min, min_split_support, max_length_diff)
             if got is None:
                 continue
             call["start"] = got["start"] + lo
@@ -683,38 +708,46 @@ def structural_variant(pairs, reference=None, split_reads=None,
             call["microhomology"] = got["microhomology"]
             call["precise"] = True
             refined += 1
-    return RichResult(payload={
-        "estimate": calls,
-        "calls": calls,
-        "n_calls": len(calls),
-        "n_precise": refined,
-        "insert_median": st["median"],
-        "insert_sd": st["sd"],
-        "spread": spread,
-        "orientation": st["orientation"],
-        "n_sd": float(n_sd),
-        "min_support": int(min_support),
-        "method": ("DELLY (Rausch et al. 2012): discordant paired-end "
-                   "clustering by maximal clique, refined by k-mer "
-                   "split-read search and a double-dynamic-programming "
-                   "split alignment"),
-        "note": ("calls are imprecise (paired-end resolution) unless a "
-                 "reference and split reads are supplied and the "
-                 "split-read length agrees with the paired-end estimate "
-                 "to within max_length_diff"),
-    })
+    return RichResult(
+        payload={
+            "estimate": calls,
+            "calls": calls,
+            "n_calls": len(calls),
+            "n_precise": refined,
+            "insert_median": st["median"],
+            "insert_sd": st["sd"],
+            "spread": spread,
+            "orientation": st["orientation"],
+            "n_sd": float(n_sd),
+            "min_support": int(min_support),
+            "method": (
+                "DELLY (Rausch et al. 2012): discordant paired-end "
+                "clustering by maximal clique, refined by k-mer "
+                "split-read search and a double-dynamic-programming "
+                "split alignment"
+            ),
+            "note": (
+                "calls are imprecise (paired-end resolution) unless a "
+                "reference and split reads are supplied and the "
+                "split-read length agrees with the paired-end estimate "
+                "to within max_length_diff"
+            ),
+        }
+    )
 
 
 sv_delly = structural_variant
 
 
 def cheatsheet():
-    return ("sv_dl: DELLY (Rausch et al. 2012). Discordant pairs are "
-            "typed by orientation and insert size (DEL, DUP, INV "
-            "left/right, four TRA classes), made into a weighted graph "
-            "where the weight is the disagreement in implied SV size, "
-            "and each component yields a maximal clique grown from its "
-            "lowest-weight edge. Split reads are then found by k-mer "
-            "diagonal counting, a majority-vote consensus is built, and "
-            "forward and reverse Gotoh score vectors are split at "
-            "argmax_{i<j} f_i + r_j to give the breakpoint to a base.")
+    return (
+        "sv_dl: DELLY (Rausch et al. 2012). Discordant pairs are "
+        "typed by orientation and insert size (DEL, DUP, INV "
+        "left/right, four TRA classes), made into a weighted graph "
+        "where the weight is the disagreement in implied SV size, "
+        "and each component yields a maximal clique grown from its "
+        "lowest-weight edge. Split reads are then found by k-mer "
+        "diagonal counting, a majority-vote consensus is built, and "
+        "forward and reverse Gotoh score vectors are split at "
+        "argmax_{i<j} f_i + r_j to give the breakpoint to a base."
+    )

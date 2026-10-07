@@ -11,34 +11,64 @@ import math
 
 import pytest
 
-from morie.fn.bsacorr import (cardioresp, cauchysch, ccfouter, cohere,
-                              contproj, csd, dotprod, emgfreq, erpartifact,
-                              idft, matchedfilt, mfacf, mfimpeeg, mfimpulse,
-                              mfinput, mfmaxsnr, mfnoisein, mfnoiseout,
-                              mfoutput, mfpeak, mfpsd, mfratio, mfsnr, mftf,
-                              mftfeeg, msc, parseval, pcgsyncavg, psdhz,
-                              refpattern, schwarzc, schwarzr, seizcohere,
-                              sigenergy, specmoments, specres, syncsum,
-                              template, triangle)
+from morie.fn.bsacorr import (
+    cardioresp,
+    cauchysch,
+    ccfouter,
+    cohere,
+    contproj,
+    csd,
+    dotprod,
+    emgfreq,
+    erpartifact,
+    idft,
+    matchedfilt,
+    mfacf,
+    mfimpeeg,
+    mfimpulse,
+    mfinput,
+    mfmaxsnr,
+    mfnoisein,
+    mfnoiseout,
+    mfoutput,
+    mfpeak,
+    mfpsd,
+    mfratio,
+    mfsnr,
+    mftf,
+    mftfeeg,
+    msc,
+    parseval,
+    pcgsyncavg,
+    psdhz,
+    refpattern,
+    schwarzc,
+    schwarzr,
+    seizcohere,
+    sigenergy,
+    specmoments,
+    specres,
+    syncsum,
+    template,
+    triangle,
+)
 
 
 def sine(n, cycles, amp=1.0, phase=0.0):
-    return [amp * math.sin(2 * math.pi * cycles * i / n + phase)
-            for i in range(n)]
+    return [amp * math.sin(2 * math.pi * cycles * i / n + phase) for i in range(n)]
 
 
 # ------------------------------------------------- inner products 4.24-4.29
 
+
 def test_dotprod_eqs424_425():
     r = dotprod([1.0, 2.0, 3.0], [4.0, 5.0, 6.0])
     assert r["dot_product"] == pytest.approx(32.0)
-    assert r["gamma"] == pytest.approx(
-        32.0 / math.sqrt(14.0 * 77.0))
+    assert r["gamma"] == pytest.approx(32.0 / math.sqrt(14.0 * 77.0))
 
 
 def test_dotprod_gamma_is_one_for_a_scaled_copy():
-    assert dotprod([1.0, 2.0, 3.0], [2.0, 4.0, 6.0])["gamma"] == \
-        pytest.approx(1.0)
+    assert dotprod([1.0, 2.0, 3.0], [2.0, 4.0, 6.0])["gamma"] == pytest.approx(1.0)
 
 
 def test_dotprod_mean_removal_changes_the_answer():
@@ -46,7 +76,7 @@ def test_dotprod_mean_removal_changes_the_answer():
     y = [3.0, 2.0, 1.0]
     raw = dotprod(x, y)["gamma"]
     centred = dotprod(x, y, subtract_mean=True)["gamma"]
-    assert raw == pytest.approx(10.0 / 14.0)   # both positive, so > 0
+    assert raw == pytest.approx(10.0 / 14.0)  # both positive, so > 0
     assert centred == pytest.approx(-1.0)  # perfectly anti-correlated
 
 
@@ -82,6 +112,7 @@ def test_ccfouter_rejects_too_short_a_record():
 
 # ---------------------------------------------------- PSD, CSD, coherence
 
+
 def test_csd_eqs430_431_two_routes_agree():
     x = sine(64, 5)
     y = sine(64, 5, phase=0.4)
@@ -109,8 +140,7 @@ def test_cohere_is_high_for_a_linearly_related_pair():
     x = [sine(n, 13)[i] + 0.2 * sine(n, 97)[i] for i in range(n)]
     y = [2.0 * x[i] for i in range(n)]
     r = cohere(x, y, fs=128.0, nperseg=128)
-    peak = max(range(len(r["coherence"])),
-               key=lambda i: r["sxx"][i])
+    peak = max(range(len(r["coherence"])), key=lambda i: r["sxx"][i])
     assert r["coherence"][peak] == pytest.approx(1.0, abs=1e-6)
     assert r["n_segments"] >= 2
 
@@ -122,8 +152,7 @@ def test_cohere_reports_the_phase_difference():
     x = sine(n, cyc)
     y = sine(n, cyc, phase=math.pi / 2)
     r = cohere(x, y, fs=fs, nperseg=256)
-    k = min(range(len(r["freqs"])),
-            key=lambda i: abs(r["freqs"][i] - cyc * fs / n))
+    k = min(range(len(r["freqs"])), key=lambda i: abs(r["freqs"][i] - cyc * fs / n))
     assert abs(abs(r["phase"][k]) - math.pi / 2) < 0.3
 
 
@@ -139,6 +168,7 @@ def test_msc_is_the_square_of_the_magnitude_coherence():
 
 # ------------------------------------------------------ template matching
 
+
 def test_template_finds_the_planted_copy():
     ref = [0.0, 1.0, 3.0, 1.0, 0.0]
     x = [0.0] * 20
@@ -153,9 +183,9 @@ def test_template_normalization_beats_a_large_smooth_excursion():
     ref = [0.0, 1.0, 3.0, 1.0, 0.0]
     x = [0.0] * 30
     for i, v in enumerate(ref):
-        x[5 + i] = 0.1 * v                # a faint but exact match
+        x[5 + i] = 0.1 * v  # a faint but exact match
     for i in range(15, 25):
-        x[i] = 50.0                       # a huge but shapeless plateau
+        x[i] = 50.0  # a huge but shapeless plateau
     r = template(x, ref)
     assert r["best_shift"] == 5
 
@@ -222,8 +252,7 @@ def test_mftf_delay_adds_a_linear_phase():
     X = [complex(1.0, 0.0), complex(1.0, 0.0)]
     freqs = [0.0, 0.25]
     r = mftf(X, freqs, t0=1.0)
-    assert r["H"][1] == pytest.approx(
-        complex(math.cos(-2 * math.pi * 0.25), math.sin(-2 * math.pi * 0.25)))
+    assert r["H"][1] == pytest.approx(complex(math.cos(-2 * math.pi * 0.25), math.sin(-2 * math.pi * 0.25)))
 
 
 def test_mftfeeg_and_mfimpeeg_delegate_to_the_general_forms():
@@ -238,7 +267,7 @@ def test_mftfeeg_and_mfimpeeg_delegate_to_the_general_forms():
 
 def test_mfinput_eq433_scales_by_dt():
     r = mfinput([1.0, 1.0], omega=0.0, dt=0.5)
-    assert r["X"].real == pytest.approx(1.0)   # 2 samples x 0.5
+    assert r["X"].real == pytest.approx(1.0)  # 2 samples x 0.5
 
 
 def test_mfoutput_eq434_peaks_where_the_filter_is_matched():
@@ -282,7 +311,7 @@ def test_sigenergy_eq440_time_domain_is_the_integral_not_the_sum():
     # makes by writing an integral
     x = [4.0, 0.0, 0.0, 0.0]
     r = sigenergy(x, dt=1.0)
-    assert r["energy"] == pytest.approx(8.0)      # 0.5 * (16 + 0)
+    assert r["energy"] == pytest.approx(8.0)  # 0.5 * (16 + 0)
     assert sum(v * v for v in x) == 16.0
 
 
@@ -296,7 +325,7 @@ def test_sigenergy_frequency_branch_integrates_the_spectrum():
 
 def test_sigenergy_reports_the_gap_when_both_domains_are_given():
     x = [1.0, 1.0, 1.0, 1.0]
-    X = [complex(0.0, 0.0)] * 4               # deliberately inconsistent
+    X = [complex(0.0, 0.0)] * 4  # deliberately inconsistent
     r = sigenergy(x, X=X, freqs=[0.0, 1.0, 2.0, 3.0])
     assert r["parseval_holds"] is False
     assert r["max_difference"] > 0
@@ -312,8 +341,7 @@ def test_mfratio_eq441_reaches_its_bound_only_at_the_optimum():
     X = [complex(math.cos(k), math.sin(2 * k)) for k in range(9)]
     opt = mftf(X, freqs, t0=0.0)["H"]
     good = mfratio(X, opt, freqs, t0=0.0, noise_power=2.0)
-    bad = mfratio(X, [complex(1.0, 0.0)] * 9, freqs, t0=0.0,
-                  noise_power=2.0)
+    bad = mfratio(X, [complex(1.0, 0.0)] * 9, freqs, t0=0.0, noise_power=2.0)
     assert good["optimality"] == pytest.approx(1.0, abs=1e-9)
     assert bad["optimality"] < 1.0
     assert good["bound"] == pytest.approx(1.0)
@@ -322,7 +350,7 @@ def test_mfratio_eq441_reaches_its_bound_only_at_the_optimum():
 def test_schwarzc_eq442_equality_at_the_conjugate_condition():
     grid = [k / 8.0 for k in range(9)]
     B = [complex(math.cos(k), math.sin(k)) for k in range(9)]
-    A = [3.0 * v.conjugate() for v in B]     # A = K B*
+    A = [3.0 * v.conjugate() for v in B]  # A = K B*
     r = schwarzc(A, B, grid)
     assert r["holds"] is True
     assert r["equality"] is True
@@ -376,7 +404,7 @@ def test_mfmaxsnr_eq446_is_two_E_over_N0():
 
 def test_mfmaxsnr_depends_on_the_signal_only_through_its_energy():
     # two differently shaped signals with the same trapezoidal energy
-    a = mfmaxsnr([0.0, 2.0, 2.0, 0.0], 1.0)          # energy 8
+    a = mfmaxsnr([0.0, 2.0, 2.0, 0.0], 1.0)  # energy 8
     b = mfmaxsnr([0.0, math.sqrt(8.0), 0.0, 0.0], 1.0)
     assert a["energy"] == pytest.approx(b["energy"])
     assert a["snr"] == pytest.approx(b["snr"])
@@ -417,8 +445,10 @@ def test_matchedfilt_rejects_a_nonpositive_noise_psd():
 
 # ----------------------------------------------------- spectral quantities
 
+
 def test_idft_eq381_inverts_the_dft():
     from morie.fn.bsaxfrm import dft
+
     x = [1.0, 2.0, 3.0, 4.0]
     assert idft(dft(x)["X"])["x"] == pytest.approx(x)
 
@@ -440,10 +470,12 @@ def test_specmoments_finds_a_single_tone():
     n, fs, cyc = 512, 256.0, 32
     x = sine(n, cyc)
     from morie.fn.bsastat import sigfeatures
+
     # build the one-sided periodogram the same way sigfeatures does
     mu = sum(x) / n
     seg = [v - mu for v in x]
     from morie.fn.bsaxfrm import dft
+
     X = dft(seg)["X"]
     p = [abs(X[k]) ** 2 / n for k in range(n // 2 + 1)]
     r = specmoments(p, fs=fs)
@@ -451,8 +483,7 @@ def test_specmoments_finds_a_single_tone():
     assert r["mean_frequency"] == pytest.approx(want, abs=1.0)
     assert r["median_frequency"] == pytest.approx(want, abs=1.0)
     assert r["bandwidth"] < 3.0
-    assert sigfeatures(x, fs=fs)["spectral_centroid"] == pytest.approx(
-        want, abs=1.0)
+    assert sigfeatures(x, fs=fs)["spectral_centroid"] == pytest.approx(want, abs=1.0)
 
 
 def test_specmoments_flags_a_flat_spectrum():
@@ -464,7 +495,7 @@ def test_specmoments_flags_a_flat_spectrum():
 def test_specmoments_median_splits_the_power():
     p = [0.0] * 10 + [1.0] * 10
     r = specmoments(p, fs=40.0)
-    below = sum(p[:int(r["median_frequency"] / (40.0 / 38.0))])
+    below = sum(p[: int(r["median_frequency"] / (40.0 / 38.0))])
     assert below <= 0.5 * sum(p) + 1e-9
 
 
@@ -478,8 +509,7 @@ def test_emgfreq_mean_exceeds_median_for_a_right_skewed_spectrum():
     x = [sine(n, 40)[i] + 0.25 * sine(n, 300)[i] for i in range(n)]
     r = emgfreq(x, fs=fs)
     assert r["mean_frequency"] > r["median_frequency"]
-    assert r["difference"] == pytest.approx(
-        r["mean_frequency"] - r["median_frequency"])
+    assert r["difference"] == pytest.approx(r["mean_frequency"] - r["median_frequency"])
 
 
 def test_emgfreq_both_indices_fall_when_the_spectrum_shifts_down():
@@ -527,16 +557,15 @@ def test_psdhz_rejects_an_inverted_band():
 
 # ----------------------------------------------------------- applications
 
+
 def test_pcgsyncavg_keeps_murmur_power_that_waveform_averaging_cancels():
     n, m = 128, 12
     cycles = []
     for k in range(m):
         # a fixed S1 plus a murmur whose phase changes cycle to cycle
-        cycles.append([sine(n, 3)[i]
-                       + 0.8 * math.sin(2 * math.pi * 30 * i / n + k * 1.7)
-                       for i in range(n)])
+        cycles.append([sine(n, 3)[i] + 0.8 * math.sin(2 * math.pi * 30 * i / n + k * 1.7) for i in range(n)])
     r = pcgsyncavg(cycles)
-    assert r["power_retained"] < 0.7      # waveform averaging loses power
+    assert r["power_retained"] < 0.7  # waveform averaging loses power
     assert sum(r["average_psd"]) > sum(r["psd_of_average"])
 
 
@@ -570,8 +599,7 @@ def test_seizcohere_tracks_bands_over_a_moving_window():
     r = seizcohere([a, b], fs=fs, window=512, step=256, nperseg=128)
     assert r["n_windows"] >= 2
     assert set(r["coherence"]) == {"delta", "theta", "alpha", "beta"}
-    assert all(0.0 <= v <= 1.0 + 1e-9
-               for band in r["coherence"].values() for v in band)
+    assert all(0.0 <= v <= 1.0 + 1e-9 for band in r["coherence"].values() for v in band)
 
 
 def test_seizcohere_needs_two_channels():
@@ -602,10 +630,12 @@ def test_cardioresp_rejects_a_band_outside_nyquist():
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsacorr import (rangayyan_ch3_parseval_theorem,
-                                  rangayyan_ch4_dot_product_discrete,
-                                  rangayyan_matched_filter_snr)
-    assert rangayyan_ch4_dot_product_discrete(
-        [1.0, 2.0], [3.0, 4.0])["dot_product"] == pytest.approx(11.0)
+    from morie.fn.bsacorr import (
+        rangayyan_ch3_parseval_theorem,
+        rangayyan_ch4_dot_product_discrete,
+        rangayyan_matched_filter_snr,
+    )
+
+    assert rangayyan_ch4_dot_product_discrete([1.0, 2.0], [3.0, 4.0])["dot_product"] == pytest.approx(11.0)
     assert rangayyan_ch3_parseval_theorem([1.0, 2.0])["holds"] is True
     assert rangayyan_matched_filter_snr([1.0, 1.0], 2.0)["snr"] > 0

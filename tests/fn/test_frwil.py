@@ -1,4 +1,5 @@
 """Free-Wilson additive substituent analysis."""
+
 import importlib
 
 import pytest
@@ -45,9 +46,7 @@ def test_but_agree_on_every_fitted_value():
 def test_the_sum_zero_contributions_sum_to_zero():
     f = F.free_wilson(C, Y, "sum_zero")
     for p, grp in enumerate([P1, P2]):
-        tot = sum(f["occurrences"]["P%d:%s" % (p + 1, g)]
-                  * f["coefficients"]["P%d:%s" % (p + 1, g)]
-                  for g in grp)
+        tot = sum(f["occurrences"][f"P{int(p + 1)}:{g}"] * f["coefficients"][f"P{int(p + 1)}:{g}"] for g in grp)
         assert tot == pytest.approx(0.0, abs=1e-9)
 
 
@@ -58,8 +57,7 @@ def test_prediction_adds_the_parts():
 
 def test_both_parameterisations_predict_alike():
     a = F.predict_activity(F.free_wilson(C, Y), ("Br", "Et"))
-    b = F.predict_activity(F.free_wilson(C, Y, "sum_zero"),
-                           ("Br", "Et"))
+    b = F.predict_activity(F.free_wilson(C, Y, "sum_zero"), ("Br", "Et"))
     assert a == pytest.approx(b, abs=1e-9)
 
 
@@ -86,14 +84,17 @@ def test_the_design_matrix_names_its_columns():
     assert all(len(r) == 5 for r in d["matrix"])
 
 
-@pytest.mark.parametrize("call", [
-    lambda: F.free_wilson([], []),
-    lambda: F.free_wilson(C, Y[:3]),
-    lambda: F.free_wilson([("H", "H"), ("H", "Me")], [1.0, 2.0]),
-    lambda: F.free_wilson(C, Y, "ridge"),
-    lambda: F.predict_activity(F.free_wilson(C, Y), ("Br",)),
-    lambda: F.predict_activity(F.free_wilson(C, Y), ("I", "Me")),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: F.free_wilson([], []),
+        lambda: F.free_wilson(C, Y[:3]),
+        lambda: F.free_wilson([("H", "H"), ("H", "Me")], [1.0, 2.0]),
+        lambda: F.free_wilson(C, Y, "ridge"),
+        lambda: F.predict_activity(F.free_wilson(C, Y), ("Br",)),
+        lambda: F.predict_activity(F.free_wilson(C, Y), ("I", "Me")),
+    ],
+)
 def test_bad_input_is_refused(call):
     with pytest.raises(ValueError):
         call()

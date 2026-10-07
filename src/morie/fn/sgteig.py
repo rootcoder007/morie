@@ -1,12 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eigenvector centrality from the leading eigenvector (re-export)."""
 
-import math
-
-from . import _tail1core as C
-from ._richresult import RichResult
-
-__all__ = ['sgteigcent', 'sgt_eigenvector_centrality']
+__all__ = ["sgteigcent", "sgt_eigenvector_centrality"]
 
 
 def sgteigcent(A):
@@ -37,6 +32,7 @@ def sgteigcent(A):
     22:357-365, which restates his own definition).
     """
     from .eigcen import eigcent as _e
+
     return _e(A)
 
 

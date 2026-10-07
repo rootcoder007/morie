@@ -3,7 +3,6 @@
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bpdn import basis_pursuit, bpdn
 
@@ -34,8 +33,7 @@ class TestBpdn:
         norm2 = sum(v * v for v in d10)
         assert c[10] == pytest.approx(5.0 - lam / norm2, rel=1e-9)
         # lasso optimality: |d_j' r| <= lambda off the support, = on it
-        resid = [float(x[i]) - sum(float(D[i, j]) * c[j] for j in range(60))
-                 for i in range(30)]
+        resid = [float(x[i]) - sum(float(D[i, j]) * c[j] for j in range(60)) for i in range(30)]
         for j in range(60):
             g = sum(float(D[i, j]) * resid[i] for i in range(30))
             if j == 10:

@@ -76,9 +76,15 @@ def wasserman_viterbi(obs, A, B, pi):
     for t in range(T - 1, 0, -1):
         path.append(int(back[t][path[-1]]))
     path.reverse()
-    return RichResult(payload={
-        "estimate": float(delta[end]), "path": path, "T": T, "S": int(S),
-        "method": "log-space Viterbi, ties to lower state index"})
+    return RichResult(
+        payload={
+            "estimate": float(delta[end]),
+            "path": path,
+            "T": T,
+            "S": int(S),
+            "method": "log-space Viterbi, ties to lower state index",
+        }
+    )
 
 
 def cheatsheet():

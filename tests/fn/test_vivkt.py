@@ -1,7 +1,6 @@
 """Tests for vivkt.vansteelandt_vanderweele."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vivkt import vansteelandt_vanderweele
 
 

@@ -113,12 +113,12 @@ def splrtest(x, y, fitted=None, h=None, degree=1, kernel="closed"):
         raise ValueError("x and y must have the same length.")
     if n < 5:
         raise ValueError("need at least five observations.")
-    hh = float(n ** -0.2) if h is None else float(h)
+    hh = float(n**-0.2) if h is None else float(h)
     if hh <= 0:
         raise ValueError("bandwidth must be positive.")
 
     if fitted is None:
-        P = np.column_stack([xv ** k for k in range(int(degree) + 1)])
+        P = np.column_stack([xv**k for k in range(int(degree) + 1)])
         coef = np.linalg.lstsq(P, yv, rcond=None)[0]
         f0 = P @ coef
     else:
@@ -154,13 +154,20 @@ def splrtest(x, y, fitted=None, h=None, degree=1, kernel="closed"):
     pval = float(stats.chi2.sf(statv, df)) if df > 0 else float("nan")
     return RichResult(
         title="Generalized likelihood ratio test (Fan, Zhang and Zhang 2001)",
-        payload={"statistic": float(statv),
-                 "p_value": float(min(max(pval, 0.0), 1.0)),
-                 "n": n,
-                 "method": "Fan, Zhang and Zhang (2001) eq. (4.1) GLR / Wilks",
-                 "lambdan": float(lam), "rk": float(rk), "ck": float(ck),
-                 "df": float(df), "rss0": rss0, "rss1": rss1,
-                 "bandwidth": hh, "support": support},
+        payload={
+            "statistic": float(statv),
+            "p_value": float(min(max(pval, 0.0), 1.0)),
+            "n": n,
+            "method": "Fan, Zhang and Zhang (2001) eq. (4.1) GLR / Wilks",
+            "lambdan": float(lam),
+            "rk": float(rk),
+            "ck": float(ck),
+            "df": float(df),
+            "rss0": rss0,
+            "rss1": rss1,
+            "bandwidth": hh,
+            "support": support,
+        },
     )
 
 

@@ -11,169 +11,169 @@ from __future__ import annotations
 from math import atan, atan2, ceil, cos, exp, fsum, log, log10, pi, sin, tan
 
 from . import _array_core as np
-from . import _stats_core as stats
 from ._rgcore import aslist
 from ._richresult import RichResult, with_describe_pointer
 from ._sci_core import integrate
 
 __all__ = [
-    'bwhp',
-    'rangayyan_butterworth_hp',
-    'bwlp',
-    'rangayyan_butterworth_lp',
-    'comb',
-    'rangayyan_comb_filter',
-    'diff1',
-    'rangayyan_first_diff',
-    'diff2',
-    'rangayyan_second_diff',
-    'rangayyan_fir_filter',
-    'freqresp',
-    'rangayyan_freq_response',
-    'grpdelay',
-    'rangayyan_group_delay',
-    'rangayyan_iir_filter',
-    'rangayyan_moving_average',
-    'notch',
-    'rangayyan_notch_filter',
-    'osfilt',
-    'rangayyan_order_stat_flt',
-    'phaseresp',
-    'rangayyan_phase_response',
-    'sinckern',
-    'rangayyan_sinc_kernel',
-    'rangayyan_transfer_func_est',
-    'blackman',
-    'rangayyan_blackman_window',
-    'hamming',
-    'rangayyan_hamming_window',
-    'hannwin',
-    'rangayyan_hann_window',
-    'windowfn',
-    'rangayyan_window_functions',
-    'shannon',
-    'rangayyan_ch3_shannon_entropy_discrete',
-    'rangayyan_ch3_ma_filter_11pt',
-    'rampfilt',
-    'rangayyan_ch3_linear_ramp_filter',
-    'lsiserh',
-    'rangayyan_ch3_lsi_series_combined_h',
-    'lsiparh',
-    'rangayyan_ch3_lsi_parallel_combined_h',
-    'laplace',
-    'rangayyan_ch3_laplace_transform',
-    'laplacefr',
-    'rangayyan_ch3_frequency_response_from_laplace',
-    'rangayyan_ch3_z_transform_fir',
-    'iirtf',
-    'rangayyan_ch3_iir_transfer_function',
-    'iirdiff',
-    'rangayyan_ch3_iir_difference_equation',
-    'pzmag',
-    'rangayyan_ch3_magnitude_response_from_pole_zero',
-    'pzphase',
-    'rangayyan_ch3_phase_response_from_pole_zero',
-    'mafir',
-    'rangayyan_ch3_ma_filter_general',
-    'matf',
-    'rangayyan_ch3_ma_transfer_function',
-    'hannfilt',
-    'rangayyan_ch3_hann_filter',
-    'hannimp',
-    'rangayyan_ch3_hann_impulse_response',
-    'hannz',
-    'rangayyan_ch3_hann_z_output',
-    'hanntf',
-    'rangayyan_ch3_hann_transfer_function',
-    'hannfr',
-    'rangayyan_ch3_hann_frequency_response_raw',
-    'hannfrs',
-    'rangayyan_ch3_hann_frequency_response_simplified',
-    'hannmag',
-    'rangayyan_ch3_hann_magnitude_response',
-    'hannph',
-    'rangayyan_ch3_hann_phase_response',
-    'rangayyan_ch3_ma_8point',
-    'ma8imp',
-    'rangayyan_ch3_ma_8point_impulse_response',
-    'ma8tf',
-    'rangayyan_ch3_ma_8point_transfer_function',
-    'ma8fr',
-    'rangayyan_ch3_ma_8point_frequency_response',
-    'runint',
-    'rangayyan_ch3_running_integral_window',
-    'runintall',
-    'rangayyan_ch3_integral_general',
-    'rangayyan_ch3_integral_causal',
-    'intft',
-    'rangayyan_ch3_fourier_of_integral',
-    'intfr',
-    'rangayyan_ch3_integrator_frequency_response',
-    'intmag',
-    'rangayyan_ch3_integrator_magnitude_response',
-    'intph',
-    'rangayyan_ch3_integrator_phase_response',
-    'ma8rec',
-    'rangayyan_ch3_ma_8point_recursive',
-    'ma8rectf',
-    'rangayyan_ch3_ma_8point_recursive_transfer_function',
-    'ma8sinc',
-    'rangayyan_ch3_ma_8point_sinc_frequency_response',
-    'fdiff',
-    'rangayyan_ch3_first_difference_operator',
-    'fdifftf',
-    'rangayyan_ch3_first_difference_transfer_function',
-    'fdifffr',
-    'rangayyan_ch3_first_difference_frequency_response',
-    'fdiffmag',
-    'rangayyan_ch3_first_difference_magnitude',
-    'fdiffph',
-    'rangayyan_ch3_first_difference_phase',
-    'cdiff3',
-    'rangayyan_ch3_three_point_central_difference',
-    'cdiff3tf',
-    'rangayyan_ch3_three_point_central_diff_transfer_function',
-    'cdiff3mag',
-    'rangayyan_ch3_three_point_central_diff_magnitude',
-    'cdiff3ph',
-    'rangayyan_ch3_three_point_central_diff_phase',
-    'bwander',
-    'rangayyan_ch3_baseline_wander_filter_z_form_a',
-    'bwanderz',
-    'rangayyan_ch3_baseline_wander_filter_z_form_b',
-    'bwandereq',
-    'rangayyan_ch3_baseline_wander_filter_difference_eq',
-    'bwsqmag',
-    'rangayyan_ch3_butterworth_lowpass_squared_magnitude',
-    'bwsqlap',
-    'rangayyan_ch3_butterworth_squared_laplace',
-    'bwpoles',
-    'rangayyan_ch3_butterworth_pole_positions',
-    'bwanalog',
-    'rangayyan_ch3_butterworth_analog_transfer_function',
-    'bilinear',
-    'rangayyan_ch3_bilinear_transformation',
-    'bilinunit',
-    'rangayyan_ch3_bilinear_unit_circle_relation',
-    'bilinwarp',
-    'rangayyan_ch3_bilinear_warping_omega_to_Omega',
-    'bilinunwarp',
-    'rangayyan_ch3_bilinear_warping_Omega_to_omega',
-    'bwdigital',
-    'rangayyan_ch3_butterworth_digital_transfer_function',
-    'iirdiffgen',
-    'rangayyan_ch3_iir_difference_eq_general',
-    'bwdirect',
-    'rangayyan_ch3_butterworth_lowpass_direct_specification',
-    'bwlpdft',
-    'rangayyan_ch3_butterworth_lowpass_dft_indexed',
-    'bwhpdft',
-    'rangayyan_ch3_butterworth_highpass_dft_indexed',
-    'notch60',
-    'rangayyan_ch3_notch_filter_60Hz',
-    'mfilth',
-    'rangayyan_ch4_matched_filter_h_example',
+    "bwhp",
+    "rangayyan_butterworth_hp",
+    "bwlp",
+    "rangayyan_butterworth_lp",
+    "comb",
+    "rangayyan_comb_filter",
+    "diff1",
+    "rangayyan_first_diff",
+    "diff2",
+    "rangayyan_second_diff",
+    "rangayyan_fir_filter",
+    "freqresp",
+    "rangayyan_freq_response",
+    "grpdelay",
+    "rangayyan_group_delay",
+    "rangayyan_iir_filter",
+    "rangayyan_moving_average",
+    "notch",
+    "rangayyan_notch_filter",
+    "osfilt",
+    "rangayyan_order_stat_flt",
+    "phaseresp",
+    "rangayyan_phase_response",
+    "sinckern",
+    "rangayyan_sinc_kernel",
+    "rangayyan_transfer_func_est",
+    "blackman",
+    "rangayyan_blackman_window",
+    "hamming",
+    "rangayyan_hamming_window",
+    "hannwin",
+    "rangayyan_hann_window",
+    "windowfn",
+    "rangayyan_window_functions",
+    "shannon",
+    "rangayyan_ch3_shannon_entropy_discrete",
+    "rangayyan_ch3_ma_filter_11pt",
+    "rampfilt",
+    "rangayyan_ch3_linear_ramp_filter",
+    "lsiserh",
+    "rangayyan_ch3_lsi_series_combined_h",
+    "lsiparh",
+    "rangayyan_ch3_lsi_parallel_combined_h",
+    "laplace",
+    "rangayyan_ch3_laplace_transform",
+    "laplacefr",
+    "rangayyan_ch3_frequency_response_from_laplace",
+    "rangayyan_ch3_z_transform_fir",
+    "iirtf",
+    "rangayyan_ch3_iir_transfer_function",
+    "iirdiff",
+    "rangayyan_ch3_iir_difference_equation",
+    "pzmag",
+    "rangayyan_ch3_magnitude_response_from_pole_zero",
+    "pzphase",
+    "rangayyan_ch3_phase_response_from_pole_zero",
+    "mafir",
+    "rangayyan_ch3_ma_filter_general",
+    "matf",
+    "rangayyan_ch3_ma_transfer_function",
+    "hannfilt",
+    "rangayyan_ch3_hann_filter",
+    "hannimp",
+    "rangayyan_ch3_hann_impulse_response",
+    "hannz",
+    "rangayyan_ch3_hann_z_output",
+    "hanntf",
+    "rangayyan_ch3_hann_transfer_function",
+    "hannfr",
+    "rangayyan_ch3_hann_frequency_response_raw",
+    "hannfrs",
+    "rangayyan_ch3_hann_frequency_response_simplified",
+    "hannmag",
+    "rangayyan_ch3_hann_magnitude_response",
+    "hannph",
+    "rangayyan_ch3_hann_phase_response",
+    "rangayyan_ch3_ma_8point",
+    "ma8imp",
+    "rangayyan_ch3_ma_8point_impulse_response",
+    "ma8tf",
+    "rangayyan_ch3_ma_8point_transfer_function",
+    "ma8fr",
+    "rangayyan_ch3_ma_8point_frequency_response",
+    "runint",
+    "rangayyan_ch3_running_integral_window",
+    "runintall",
+    "rangayyan_ch3_integral_general",
+    "rangayyan_ch3_integral_causal",
+    "intft",
+    "rangayyan_ch3_fourier_of_integral",
+    "intfr",
+    "rangayyan_ch3_integrator_frequency_response",
+    "intmag",
+    "rangayyan_ch3_integrator_magnitude_response",
+    "intph",
+    "rangayyan_ch3_integrator_phase_response",
+    "ma8rec",
+    "rangayyan_ch3_ma_8point_recursive",
+    "ma8rectf",
+    "rangayyan_ch3_ma_8point_recursive_transfer_function",
+    "ma8sinc",
+    "rangayyan_ch3_ma_8point_sinc_frequency_response",
+    "fdiff",
+    "rangayyan_ch3_first_difference_operator",
+    "fdifftf",
+    "rangayyan_ch3_first_difference_transfer_function",
+    "fdifffr",
+    "rangayyan_ch3_first_difference_frequency_response",
+    "fdiffmag",
+    "rangayyan_ch3_first_difference_magnitude",
+    "fdiffph",
+    "rangayyan_ch3_first_difference_phase",
+    "cdiff3",
+    "rangayyan_ch3_three_point_central_difference",
+    "cdiff3tf",
+    "rangayyan_ch3_three_point_central_diff_transfer_function",
+    "cdiff3mag",
+    "rangayyan_ch3_three_point_central_diff_magnitude",
+    "cdiff3ph",
+    "rangayyan_ch3_three_point_central_diff_phase",
+    "bwander",
+    "rangayyan_ch3_baseline_wander_filter_z_form_a",
+    "bwanderz",
+    "rangayyan_ch3_baseline_wander_filter_z_form_b",
+    "bwandereq",
+    "rangayyan_ch3_baseline_wander_filter_difference_eq",
+    "bwsqmag",
+    "rangayyan_ch3_butterworth_lowpass_squared_magnitude",
+    "bwsqlap",
+    "rangayyan_ch3_butterworth_squared_laplace",
+    "bwpoles",
+    "rangayyan_ch3_butterworth_pole_positions",
+    "bwanalog",
+    "rangayyan_ch3_butterworth_analog_transfer_function",
+    "bilinear",
+    "rangayyan_ch3_bilinear_transformation",
+    "bilinunit",
+    "rangayyan_ch3_bilinear_unit_circle_relation",
+    "bilinwarp",
+    "rangayyan_ch3_bilinear_warping_omega_to_Omega",
+    "bilinunwarp",
+    "rangayyan_ch3_bilinear_warping_Omega_to_omega",
+    "bwdigital",
+    "rangayyan_ch3_butterworth_digital_transfer_function",
+    "iirdiffgen",
+    "rangayyan_ch3_iir_difference_eq_general",
+    "bwdirect",
+    "rangayyan_ch3_butterworth_lowpass_direct_specification",
+    "bwlpdft",
+    "rangayyan_ch3_butterworth_lowpass_dft_indexed",
+    "bwhpdft",
+    "rangayyan_ch3_butterworth_highpass_dft_indexed",
+    "notch60",
+    "rangayyan_ch3_notch_filter_60Hz",
+    "mfilth",
+    "rangayyan_ch4_matched_filter_h_example",
 ]
+
 
 def _poly_from_roots(roots):
     """Expand prod (z - r_k) into ascending-power coefficients."""
@@ -185,6 +185,7 @@ def _poly_from_roots(roots):
             nxt[i + 1] += c
         coefs = nxt
     return coefs
+
 
 def _cnum(v):
     """Accept a real or complex scalar and return a complex."""
@@ -222,8 +223,7 @@ def bwhp(cutoff_hz, order=4, fs=1000.0, z=None):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the cutoff must lie strictly between 0 and the "
-                         "Nyquist frequency %g Hz" % (fsv / 2.0))
+        raise ValueError(f"the cutoff must lie strictly between 0 and the Nyquist frequency {fsv / 2.0:g} Hz")
     n = int(order)
     lp = bwdigital(N=n, fc=fcv, fs=fsv)
     a = list(lp["a"])
@@ -247,12 +247,25 @@ def bwhp(cutoff_hz, order=4, fs=1000.0, z=None):
                 raise ValueError("z is a pole of H(z)")
             vals.append(_polyz(b, zv) / dd)
         Hz = vals[0] if scalar else vals
-    return RichResult(payload={
-        "b": b, "a": a, "gain": G, "H": Hz, "N": n,
-        "cutoff_hz": fcv, "fs": fsv, "order": n, "kind": "highpass",
-        "zeros_at_plus_one": n, "dc_gain": 0.0, "nyquist_gain": 1.0,
-        "prewarped": True, "normalized_at_nyquist": True,
-        "method": "Rangayyan (2024) Section 3.7; Butterworth highpass"})
+    return RichResult(
+        payload={
+            "b": b,
+            "a": a,
+            "gain": G,
+            "H": Hz,
+            "N": n,
+            "cutoff_hz": fcv,
+            "fs": fsv,
+            "order": n,
+            "kind": "highpass",
+            "zeros_at_plus_one": n,
+            "dc_gain": 0.0,
+            "nyquist_gain": 1.0,
+            "prewarped": True,
+            "normalized_at_nyquist": True,
+            "method": "Rangayyan (2024) Section 3.7; Butterworth highpass",
+        }
+    )
 
 
 rangayyan_butterworth_hp = bwhp  # pre-policy spelling
@@ -277,15 +290,19 @@ def bwlp(cutoff_hz, order=4, fs=1000.0, z=None):
     if fsv <= 0:
         raise ValueError("fs must be positive")
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the cutoff must lie strictly between 0 and the "
-                         "Nyquist frequency %g Hz" % (fsv / 2.0))
+        raise ValueError(f"the cutoff must lie strictly between 0 and the Nyquist frequency {fsv / 2.0:g} Hz")
     r = bwdigital(N=int(order), fc=fcv, fs=fsv, z=z)
     out = dict(r)
-    out.update({
-        "cutoff_hz": fcv, "fs": fsv, "order": int(order),
-        "prewarped": True, "kind": "lowpass",
-        "method": "Rangayyan (2024) eqs. (3.135)-(3.143); Butterworth "
-                  "lowpass via the bilinear transform"})
+    out.update(
+        {
+            "cutoff_hz": fcv,
+            "fs": fsv,
+            "order": int(order),
+            "prewarped": True,
+            "kind": "lowpass",
+            "method": "Rangayyan (2024) eqs. (3.135)-(3.143); Butterworth lowpass via the bilinear transform",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -323,12 +340,23 @@ def comb(period_samples, fs=1000.0, z=None):
         vals = [_polyz(b, zv) for zv in zs]
         Hz = vals[0] if scalar else vals
     notches = [k * fsv / N for k in range(N // 2 + 1)]
-    return RichResult(payload={
-        "b": b, "a": [1.0], "H": Hz, "period_samples": N, "fs": fsv,
-        "notch_frequencies_hz": notches, "n_zeros": N,
-        "notch_spacing_hz": fsv / N, "dc_gain": 0.0,
-        "removes_dc_as_well": True, "fir": True, "linear_phase": True,
-        "method": "Rangayyan (2024) Section 3.7 (comb filter)"})
+    return RichResult(
+        payload={
+            "b": b,
+            "a": [1.0],
+            "H": Hz,
+            "period_samples": N,
+            "fs": fsv,
+            "notch_frequencies_hz": notches,
+            "n_zeros": N,
+            "notch_spacing_hz": fsv / N,
+            "dc_gain": 0.0,
+            "removes_dc_as_well": True,
+            "fir": True,
+            "linear_phase": True,
+            "method": "Rangayyan (2024) Section 3.7 (comb filter)",
+        }
+    )
 
 
 rangayyan_comb_filter = comb  # pre-policy spelling
@@ -347,11 +375,16 @@ def diff1(x, T=1.0):
     """
     r = fdiff(x, T=T)
     out = dict(r)
-    out.update({
-        "b": [1.0 / float(T), -1.0 / float(T)], "a": [1.0],
-        "zeros": [1.0], "highpass": True,
-        "use_bwander_to_avoid_the_noise_boost": True,
-        "method": "Rangayyan (2024) eq. (3.123) applied to a record"})
+    out.update(
+        {
+            "b": [1.0 / float(T), -1.0 / float(T)],
+            "a": [1.0],
+            "zeros": [1.0],
+            "highpass": True,
+            "use_bwander_to_avoid_the_noise_boost": True,
+            "method": "Rangayyan (2024) eq. (3.123) applied to a record",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -393,14 +426,23 @@ def diff2(x, T=1.0, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "T": Tv,
-        "as_cascaded_first_differences": cascade, "max_difference": gap,
-        "cascade_agrees": gap <= 1e-9,
-        "b": [1.0 / (Tv * Tv), -2.0 / (Tv * Tv), 1.0 / (Tv * Tv)],
-        "a": [1.0], "zeros": [1.0, 1.0], "double_zero_at_dc": True,
-        "gain_rises_quadratically": True,
-        "method": "Rangayyan (2024) Section 3.3.3 (second derivative)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "T": Tv,
+            "as_cascaded_first_differences": cascade,
+            "max_difference": gap,
+            "cascade_agrees": gap <= 1e-9,
+            "b": [1.0 / (Tv * Tv), -2.0 / (Tv * Tv), 1.0 / (Tv * Tv)],
+            "a": [1.0],
+            "zeros": [1.0, 1.0],
+            "double_zero_at_dc": True,
+            "gain_rises_quadratically": True,
+            "method": "Rangayyan (2024) Section 3.3.3 (second derivative)",
+        }
+    )
 
 
 rangayyan_second_diff = diff2  # pre-policy spelling
@@ -482,8 +524,7 @@ def rangayyan_fir_filter(x, cutoff, order=51, fs=1.0, window="hamming"):
     # caller error into a plausible-looking wrong answer.
     if not (0.0 < cutoff < nyq):
         raise ValueError(
-            f"cutoff must satisfy 0 < cutoff < fs/2 (Nyquist); "
-            f"got cutoff={cutoff!r} with fs={fs!r} (Nyquist={nyq!r})"
+            f"cutoff must satisfy 0 < cutoff < fs/2 (Nyquist); got cutoff={cutoff!r} with fs={fs!r} (Nyquist={nyq!r})"
         )
     fc = cutoff / nyq
     taps = firwin(order, fc, window=window)
@@ -561,24 +602,27 @@ def freqresp(b, a=None, fs=1000.0, n_freqs=512):
     for i in range(m):
         f = 0.5 * fsv * i / (m - 1)
         w = 2.0 * pi * f / fsv
-        num = sum(bs[k] * complex(cos(-w * k), sin(-w * k))
-                  for k in range(len(bs)))
-        den = sum(az[k] * complex(cos(-w * k), sin(-w * k))
-                  for k in range(len(az)))
+        num = sum(bs[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(bs)))
+        den = sum(az[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(az)))
         if abs(den) <= 1e-300:
-            raise ValueError("the denominator vanishes at f = %g Hz; the "
-                             "filter has a pole on the unit circle" % f)
+            raise ValueError(f"the denominator vanishes at f = {f:g} Hz; the filter has a pole on the unit circle")
         freqs.append(f)
         H.append(num / den)
     mag = [abs(v) for v in H]
-    return RichResult(payload={
-        "f": freqs, "H": H, "magnitude": mag,
-        "magnitude_db": [20.0 * log10(v) if v > 0 else float("-inf")
-                         for v in mag],
-        "phase": [atan2(v.imag, v.real) for v in H],
-        "fs": fsv, "n_freqs": m, "one_sided": True,
-        "includes_nyquist": True,
-        "method": "Rangayyan (2024) Section 3.5 (frequency response)"})
+    return RichResult(
+        payload={
+            "f": freqs,
+            "H": H,
+            "magnitude": mag,
+            "magnitude_db": [20.0 * log10(v) if v > 0 else float("-inf") for v in mag],
+            "phase": [atan2(v.imag, v.real) for v in H],
+            "fs": fsv,
+            "n_freqs": m,
+            "one_sided": True,
+            "includes_nyquist": True,
+            "method": "Rangayyan (2024) Section 3.5 (frequency response)",
+        }
+    )
 
 
 rangayyan_freq_response = freqresp  # pre-policy spelling
@@ -622,10 +666,8 @@ def grpdelay(b, a=None, fs=1000.0, n_freqs=512):
         raise ValueError("need at least two frequency points")
 
     def ratio(coefs, w):
-        num = sum(k * coefs[k] * complex(cos(-w * k), sin(-w * k))
-                  for k in range(len(coefs)))
-        den = sum(coefs[k] * complex(cos(-w * k), sin(-w * k))
-                  for k in range(len(coefs)))
+        num = sum(k * coefs[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(coefs)))
+        den = sum(coefs[k] * complex(cos(-w * k), sin(-w * k)) for k in range(len(coefs)))
         return num, den
 
     freqs, tau, defined = [], [], []
@@ -643,19 +685,24 @@ def grpdelay(b, a=None, fs=1000.0, n_freqs=512):
             defined.append(True)
     good = [v for v in tau if v is not None]
     if not good:
-        raise ValueError("the response vanishes at every frequency "
-                         "evaluated; the group delay is undefined")
+        raise ValueError("the response vanishes at every frequency evaluated; the group delay is undefined")
     mu = fsum(good) / len(good)
     spread = max(abs(v - mu) for v in good)
-    return RichResult(payload={
-        "f": freqs, "group_delay": tau, "fs": fsv,
-        "mean": mu, "max_deviation": spread,
-        "approximately_constant": spread <= 1e-9 * max(1.0, abs(mu)),
-        "defined": defined,
-        "n_undefined": sum(1 for v in defined if not v),
-        "from_the_coefficients": True,
-        "phase_differentiation_breaks_at_unit_circle_zeros": True,
-        "method": "Rangayyan (2024) Section 3.5 (group delay)"})
+    return RichResult(
+        payload={
+            "f": freqs,
+            "group_delay": tau,
+            "fs": fsv,
+            "mean": mu,
+            "max_deviation": spread,
+            "approximately_constant": spread <= 1e-9 * max(1.0, abs(mu)),
+            "defined": defined,
+            "n_undefined": sum(1 for v in defined if not v),
+            "from_the_coefficients": True,
+            "phase_differentiation_breaks_at_unit_circle_zeros": True,
+            "method": "Rangayyan (2024) Section 3.5 (group delay)",
+        }
+    )
 
 
 rangayyan_group_delay = grpdelay  # pre-policy spelling
@@ -709,9 +756,7 @@ def rangayyan_iir_filter(x, cutoff, order=4, fs=1.0, btype="low"):
     if isinstance(cutoff, (list, tuple, np.ndarray)):
         wn = [float(c) / nyq for c in cutoff]
         if not wn[0] < wn[1]:
-            raise ValueError(
-                f"band cutoffs must be increasing, got cutoff={cutoff!r}"
-            )
+            raise ValueError(f"band cutoffs must be increasing, got cutoff={cutoff!r}")
     else:
         wn = float(cutoff) / nyq
     sos = butter(int(order), wn, btype=btype, output="sos")
@@ -780,9 +825,15 @@ def rangayyan_moving_average(x, M=8):
     if x.size < M:
         raise ValueError(f"need at least M = {M} samples, got {x.size}.")
     y = np.convolve(x, np.ones(M) / M, mode="full")[: x.size]
-    return RichResult(payload={"y": y, "group_delay": (M - 1) / 2.0, "M": M,
-                               "N": int(x.size),
-                               "method": "y[n] = (1/M) sum x[n-k]; sinc response, delay (M-1)/2"})
+    return RichResult(
+        payload={
+            "y": y,
+            "group_delay": (M - 1) / 2.0,
+            "M": M,
+            "N": int(x.size),
+            "method": "y[n] = (1/M) sum x[n-k]; sinc response, delay (M-1)/2",
+        }
+    )
 
 
 # -- rgntch: Notch filter for powerline interference removal (50/60 Hz).
@@ -806,25 +857,21 @@ def notch(notch_freq, bandwidth=None, fs=1000.0, r=None, z=None):
         raise ValueError("fs must be positive")
     f0 = float(notch_freq)
     if not 0 < f0 < fsv / 2.0:
-        raise ValueError("the notch frequency must lie strictly between 0 "
-                         "and the Nyquist frequency")
+        raise ValueError("the notch frequency must lie strictly between 0 and the Nyquist frequency")
     if (bandwidth is None) == (r is None):
-        raise ValueError("give either the bandwidth or the pole radius r, "
-                         "not both and not neither")
+        raise ValueError("give either the bandwidth or the pole radius r, not both and not neither")
     if bandwidth is not None:
         bw = float(bandwidth)
         if bw <= 0:
             raise ValueError("the bandwidth must be positive")
         rv = 1.0 - pi * bw / fsv
         if rv <= 0:
-            raise ValueError("that bandwidth needs a pole radius <= 0; ask "
-                             "for a narrower notch")
+            raise ValueError("that bandwidth needs a pole radius <= 0; ask for a narrower notch")
     else:
         rv = float(r)
         bw = (1.0 - rv) * fsv / pi
     if not 0 < rv < 1:
-        raise ValueError("the pole radius must satisfy 0 < r < 1; at r = 1 "
-                         "the poles cancel the zeros")
+        raise ValueError("the pole radius must satisfy 0 < r < 1; at r = 1 the poles cancel the zeros")
     w0 = 2.0 * pi * f0 / fsv
     bb = [1.0, -2.0 * cos(w0), 1.0]
     aa = [1.0, -2.0 * rv * cos(w0), rv * rv]
@@ -844,16 +891,26 @@ def notch(notch_freq, bandwidth=None, fs=1000.0, r=None, z=None):
             vals.append(_polyz(bb, zv) / dd)
         Hz = vals[0] if scalar else vals
     zc = complex(cos(w0), sin(w0))
-    return RichResult(payload={
-        "b": bb, "a": aa, "gain": G, "H": Hz,
-        "f0": f0, "fs": fsv, "r": rv, "bandwidth_hz": bw,
-        "omega_0": w0,
-        "zeros": [zc, zc.conjugate()],
-        "poles": [rv * zc, rv * zc.conjugate()],
-        "gain_at_the_notch": abs(_polyz(bb, zc)) / abs(_polyz(aa, zc)),
-        "dc_gain": 1.0, "iir": True,
-        "poles_narrow_the_notch": True,
-        "method": "Rangayyan (2024) Section 3.7 (notch filter with poles)"})
+    return RichResult(
+        payload={
+            "b": bb,
+            "a": aa,
+            "gain": G,
+            "H": Hz,
+            "f0": f0,
+            "fs": fsv,
+            "r": rv,
+            "bandwidth_hz": bw,
+            "omega_0": w0,
+            "zeros": [zc, zc.conjugate()],
+            "poles": [rv * zc, rv * zc.conjugate()],
+            "gain_at_the_notch": abs(_polyz(bb, zc)) / abs(_polyz(aa, zc)),
+            "dc_gain": 1.0,
+            "iir": True,
+            "poles_narrow_the_notch": True,
+            "method": "Rangayyan (2024) Section 3.7 (notch filter with poles)",
+        }
+    )
 
 
 rangayyan_notch_filter = notch  # pre-policy spelling
@@ -893,25 +950,21 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
     if w < 1:
         raise ValueError("the window must hold at least one sample")
     if w % 2 == 0:
-        raise ValueError("the window must be odd so it can be centred, "
-                         "got %d" % w)
+        raise ValueError(f"the window must be odd so it can be centred, got {int(w)}")
     if w > n:
         raise ValueError("the window is longer than the record")
     kinds = ("min", "max", "minmax", "median", "trimmed", "l", "order")
     if kind not in kinds:
-        raise ValueError("kind must be one of %s, got %r"
-                         % (", ".join(kinds), kind))
+        raise ValueError("kind must be one of {}, got {!r}".format(", ".join(kinds), kind))
     av = float(alpha)
     if kind == "trimmed" and not 0.0 <= av < 0.5:
-        raise ValueError("the book writes 0 <= alpha < 0.5; at 0.5 the "
-                         "whole list is trimmed away, got %g" % av)
+        raise ValueError(f"the book writes 0 <= alpha < 0.5; at 0.5 the whole list is trimmed away, got {av:g}")
     if kind == "l":
         if weights is None:
             raise ValueError("the L-filter needs one weight per rank")
         wts = aslist(weights)
         if len(wts) != w:
-            raise ValueError("the L-filter needs %d weights, one per "
-                             "rank, got %d" % (w, len(wts)))
+            raise ValueError(f"the L-filter needs {int(w)} weights, one per rank, got {int(len(wts))}")
         tot = fsum(wts)
         if abs(tot) <= 1e-300:
             raise ValueError("the L-filter weights sum to zero")
@@ -920,8 +973,7 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
             raise ValueError("kind='order' needs the rank to take")
         i_ord = int(order)
         if not 1 <= i_ord <= w:
-            raise ValueError("order must lie in 1..%d, got %d"
-                             % (w, i_ord))
+            raise ValueError(f"order must lie in 1..{int(w)}, got {int(i_ord)}")
 
     half = w // 2
 
@@ -931,12 +983,12 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
         # Half-sample reflection (dropping the edge) shifts the ends by a
         # sample, which shows up as a spurious step in the output.
         left = list(reversed(seq[:half]))
-        right = list(reversed(seq[len(seq) - half:]))
+        right = list(reversed(seq[len(seq) - half :]))
         return left + list(seq) + right
 
     def rank_pass(seq, take):
         pad = padded(seq)
-        return [take(sorted(pad[i:i + w])) for i in range(len(seq))]
+        return [take(sorted(pad[i : i + w])) for i in range(len(seq))]
 
     if kind == "min":
         out = rank_pass(xs, lambda r: r[0])
@@ -952,21 +1004,25 @@ def osfilt(x, window, kind="median", alpha=0.0, weights=None, order=None):
         drop = int(av * w)
         if 2 * drop >= w:
             drop = (w - 1) // 2
-        out = rank_pass(xs, lambda r: fsum(r[drop:w - drop])
-                        / (w - 2 * drop))
+        out = rank_pass(xs, lambda r: fsum(r[drop : w - drop]) / (w - 2 * drop))
     else:
-        out = rank_pass(xs, lambda r: fsum(a * b for a, b in zip(wts, r))
-                        / tot)
+        out = rank_pass(xs, lambda r: fsum(a * b for a, b in zip(wts, r)) / tot)
 
-    return RichResult(payload={
-        "y": out, "n": len(out), "window": w, "kind": kind,
-        "alpha": av if kind == "trimmed" else None,
-        "trimmed_each_end": int(av * w) if kind == "trimmed" else None,
-        "order": i_ord if kind == "order" else None,
-        "nonlinear": True, "no_frequency_response": True,
-        "edges": "symmetric reflection",
-        "method": "Rangayyan (2024) Section 3.8 (order-statistic "
-                  "filters)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "n": len(out),
+            "window": w,
+            "kind": kind,
+            "alpha": av if kind == "trimmed" else None,
+            "trimmed_each_end": int(av * w) if kind == "trimmed" else None,
+            "order": i_ord if kind == "order" else None,
+            "nonlinear": True,
+            "no_frequency_response": True,
+            "edges": "symmetric reflection",
+            "method": "Rangayyan (2024) Section 3.8 (order-statistic filters)",
+        }
+    )
 
 
 rangayyan_order_stat_flt = osfilt  # pre-policy spelling
@@ -992,8 +1048,7 @@ def phaseresp(b, a=None, fs=1000.0, n_freqs=512, unwrap=True):
     # which is not a phase.  Those points are marked and skipped by the
     # unwrap, which otherwise carries the bogus value into every later
     # sample.  The Hann filter of eq. (3.100) hits this at Nyquist.
-    defined = [v > 1e-9 * scale for v in mag] if scale > 0 \
-        else [False] * len(mag)
+    defined = [v > 1e-9 * scale for v in mag] if scale > 0 else [False] * len(mag)
     unw, last = [], None
     for i in range(len(wrapped)):
         if not defined[i]:
@@ -1009,14 +1064,21 @@ def phaseresp(b, a=None, fs=1000.0, n_freqs=512, unwrap=True):
                 d += 2.0 * pi
             unw.append(unw[last] + d)
         last = i
-    return RichResult(payload={
-        "f": r["f"], "phase": unw if unwrap else wrapped,
-        "wrapped": wrapped, "unwrapped": unw, "unwrap": bool(unwrap),
-        "fs": r["fs"], "defined": defined,
-        "n_undefined": sum(1 for v in defined if not v),
-        "phase_undefined_where_the_response_vanishes": True,
-        "wrapping_is_an_arctangent_artifact": True,
-        "method": "Rangayyan (2024) Section 3.5 (phase response)"})
+    return RichResult(
+        payload={
+            "f": r["f"],
+            "phase": unw if unwrap else wrapped,
+            "wrapped": wrapped,
+            "unwrapped": unw,
+            "unwrap": bool(unwrap),
+            "fs": r["fs"],
+            "defined": defined,
+            "n_undefined": sum(1 for v in defined if not v),
+            "phase_undefined_where_the_response_vanishes": True,
+            "wrapping_is_an_arctangent_artifact": True,
+            "method": "Rangayyan (2024) Section 3.5 (phase response)",
+        }
+    )
 
 
 rangayyan_phase_response = phaseresp  # pre-policy spelling
@@ -1043,8 +1105,7 @@ def sinckern(fc, fs=1000.0, M=64, window=None):
         raise ValueError("fs must be positive")
     fcv = float(fc)
     if not 0 < fcv < fsv / 2.0:
-        raise ValueError("the cutoff must lie strictly between 0 and the "
-                         "Nyquist frequency")
+        raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency")
     m = int(M)
     if m < 1:
         raise ValueError("M must be at least 1")
@@ -1063,13 +1124,22 @@ def sinckern(fc, fs=1000.0, M=64, window=None):
     total = fsum(h)
     if abs(total) > 1e-300:
         h = [v / total for v in h]
-    return RichResult(payload={
-        "h": h, "n_taps": m + 1, "fc": fcv, "fs": fsv, "M": m,
-        "window": window, "window_values": win,
-        "delay_samples": m / 2.0, "dc_gain": 1.0,
-        "truncation_causes_gibbs_ripple": window is None,
-        "ripple_height_does_not_shrink_with_M": True,
-        "method": "Rangayyan (2024) Section 3.4 (windowed sinc)"})
+    return RichResult(
+        payload={
+            "h": h,
+            "n_taps": m + 1,
+            "fc": fcv,
+            "fs": fsv,
+            "M": m,
+            "window": window,
+            "window_values": win,
+            "delay_samples": m / 2.0,
+            "dc_gain": 1.0,
+            "truncation_causes_gibbs_ripple": window is None,
+            "ripple_height_does_not_shrink_with_M": True,
+            "method": "Rangayyan (2024) Section 3.4 (windowed sinc)",
+        }
+    )
 
 
 rangayyan_sinc_kernel = sinckern  # pre-policy spelling
@@ -1124,8 +1194,7 @@ def rangayyan_transfer_func_est(x, y, fs=1.0, nperseg=None):
     starts = list(range(0, N - seg + 1, step))
     if len(starts) < 2:
         raise ValueError(
-            "coherence needs at least 2 segments; a single segment gives "
-            "gamma^2 == 1 everywhere and is uninformative."
+            "coherence needs at least 2 segments; a single segment gives gamma^2 == 1 everywhere and is uninformative."
         )
     w = np.hanning(seg)
     Sxx = Syy = Sxy = 0.0
@@ -1137,11 +1206,17 @@ def rangayyan_transfer_func_est(x, y, fs=1.0, nperseg=None):
         Sxy = Sxy + np.conj(X) * Y
     Hf = Sxy / np.maximum(Sxx, 1e-300)
     coh = np.abs(Sxy) ** 2 / np.maximum(Sxx * Syy, 1e-300)
-    return RichResult(payload={"freqs": np.fft.rfftfreq(seg, d=1.0 / fs), "H": Hf,
-                               "magnitude": np.abs(Hf), "phase": np.angle(Hf),
-                               "coherence": np.clip(coh, 0.0, 1.0),
-                               "n_segments": len(starts),
-                               "method": "H = Sxy/Sxx with coherence; low gamma^2 invalidates H"})
+    return RichResult(
+        payload={
+            "freqs": np.fft.rfftfreq(seg, d=1.0 / fs),
+            "H": Hf,
+            "magnitude": np.abs(Hf),
+            "phase": np.angle(Hf),
+            "coherence": np.clip(coh, 0.0, 1.0),
+            "n_segments": len(starts),
+            "method": "H = Sxy/Sxx with coherence; low gamma^2 invalidates H",
+        }
+    )
 
 
 # -- rgwblkm: Blackman window function.
@@ -1159,20 +1234,29 @@ def blackman(N):
     if n < 1:
         raise ValueError("N must be at least 1")
     if n == 1:
-        return RichResult(payload={
-            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
-            "method": "Rangayyan (2024) Section 3.4 (Blackman window)"})
-    w = [0.42 - 0.5 * cos(2.0 * pi * i / (n - 1))
-         + 0.08 * cos(4.0 * pi * i / (n - 1)) for i in range(n)]
-    return RichResult(payload={
-        "w": w, "N": n, "sum": fsum(w),
-        "endpoints": [w[0], w[-1]],
-        "coherent_gain": fsum(w) / n,
-        "widest_main_lobe_of_the_three": True,
-        "resolution_traded_for_leakage": True,
-        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
-                         for i in range(n)),
-        "method": "Rangayyan (2024) Section 3.4 (Blackman window)"})
+        return RichResult(
+            payload={
+                "w": [1.0],
+                "N": 1,
+                "sum": 1.0,
+                "endpoints": [1.0, 1.0],
+                "method": "Rangayyan (2024) Section 3.4 (Blackman window)",
+            }
+        )
+    w = [0.42 - 0.5 * cos(2.0 * pi * i / (n - 1)) + 0.08 * cos(4.0 * pi * i / (n - 1)) for i in range(n)]
+    return RichResult(
+        payload={
+            "w": w,
+            "N": n,
+            "sum": fsum(w),
+            "endpoints": [w[0], w[-1]],
+            "coherent_gain": fsum(w) / n,
+            "widest_main_lobe_of_the_three": True,
+            "resolution_traded_for_leakage": True,
+            "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12 for i in range(n)),
+            "method": "Rangayyan (2024) Section 3.4 (Blackman window)",
+        }
+    )
 
 
 rangayyan_blackman_window = blackman  # pre-policy spelling
@@ -1194,19 +1278,29 @@ def hamming(N):
     if n < 1:
         raise ValueError("N must be at least 1")
     if n == 1:
-        return RichResult(payload={
-            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
-            "reaches_zero_at_the_ends": False,
-            "method": "Rangayyan (2024) Section 3.4 (Hamming window)"})
+        return RichResult(
+            payload={
+                "w": [1.0],
+                "N": 1,
+                "sum": 1.0,
+                "endpoints": [1.0, 1.0],
+                "reaches_zero_at_the_ends": False,
+                "method": "Rangayyan (2024) Section 3.4 (Hamming window)",
+            }
+        )
     w = [0.54 - 0.46 * cos(2.0 * pi * i / (n - 1)) for i in range(n)]
-    return RichResult(payload={
-        "w": w, "N": n, "sum": fsum(w),
-        "endpoints": [w[0], w[-1]],
-        "reaches_zero_at_the_ends": False,
-        "coherent_gain": fsum(w) / n,
-        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
-                         for i in range(n)),
-        "method": "Rangayyan (2024) Section 3.4 (Hamming window)"})
+    return RichResult(
+        payload={
+            "w": w,
+            "N": n,
+            "sum": fsum(w),
+            "endpoints": [w[0], w[-1]],
+            "reaches_zero_at_the_ends": False,
+            "coherent_gain": fsum(w) / n,
+            "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12 for i in range(n)),
+            "method": "Rangayyan (2024) Section 3.4 (Hamming window)",
+        }
+    )
 
 
 rangayyan_hamming_window = hamming  # pre-policy spelling
@@ -1230,20 +1324,30 @@ def hannwin(N):
     if n < 1:
         raise ValueError("N must be at least 1")
     if n == 1:
-        return RichResult(payload={
-            "w": [1.0], "N": 1, "sum": 1.0, "endpoints": [1.0, 1.0],
-            "reaches_zero_at_the_ends": False,
-            "method": "Rangayyan (2024) Section 3.4 (Hann window)"})
+        return RichResult(
+            payload={
+                "w": [1.0],
+                "N": 1,
+                "sum": 1.0,
+                "endpoints": [1.0, 1.0],
+                "reaches_zero_at_the_ends": False,
+                "method": "Rangayyan (2024) Section 3.4 (Hann window)",
+            }
+        )
     w = [0.5 * (1.0 - cos(2.0 * pi * i / (n - 1))) for i in range(n)]
-    return RichResult(payload={
-        "w": w, "N": n, "sum": fsum(w),
-        "endpoints": [w[0], w[-1]],
-        "reaches_zero_at_the_ends": True,
-        "coherent_gain": fsum(w) / n,
-        "not_the_hann_filter_of_eq_3_100": True,
-        "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12
-                         for i in range(n)),
-        "method": "Rangayyan (2024) Section 3.4 (Hann window)"})
+    return RichResult(
+        payload={
+            "w": w,
+            "N": n,
+            "sum": fsum(w),
+            "endpoints": [w[0], w[-1]],
+            "reaches_zero_at_the_ends": True,
+            "coherent_gain": fsum(w) / n,
+            "not_the_hann_filter_of_eq_3_100": True,
+            "symmetric": all(abs(w[i] - w[n - 1 - i]) < 1e-12 for i in range(n)),
+            "method": "Rangayyan (2024) Section 3.4 (Hann window)",
+        }
+    )
 
 
 rangayyan_hann_window = hannwin  # pre-policy spelling
@@ -1267,12 +1371,10 @@ def windowfn(N, window_type="hamming"):
         raise ValueError("N must be at least 1")
     kinds = ("rectangular", "hann", "hamming", "blackman")
     if window_type not in kinds:
-        raise ValueError("window_type must be one of %s, got %r"
-                         % (", ".join(kinds), window_type))
+        raise ValueError("window_type must be one of {}, got {!r}".format(", ".join(kinds), window_type))
     if window_type == "rectangular":
         w = [1.0] * n
-        r = {"w": w, "N": n, "sum": float(n), "endpoints": [1.0, 1.0],
-             "coherent_gain": 1.0, "symmetric": True}
+        r = {"w": w, "N": n, "sum": float(n), "endpoints": [1.0, 1.0], "coherent_gain": 1.0, "symmetric": True}
     elif window_type == "hann":
         r = dict(hannwin(n))
     elif window_type == "hamming":
@@ -1335,11 +1437,16 @@ def shannon(p, levels=None):
     ln2 = log(2.0)
     h = -fsum(q * log(q) / ln2 for q in probs if q > 0)
     lv = len(probs)
-    return RichResult(payload={
-        "entropy": float(h), "units": "bits", "levels": lv,
-        "max_entropy": log(lv) / ln2 if lv > 1 else 0.0,
-        "probabilities": probs,
-        "method": "Rangayyan (2024) eq. (3.11)"})
+    return RichResult(
+        payload={
+            "entropy": float(h),
+            "units": "bits",
+            "levels": lv,
+            "max_entropy": log(lv) / ln2 if lv > 1 else 0.0,
+            "probabilities": probs,
+            "method": "Rangayyan (2024) eq. (3.11)",
+        }
+    )
 
 
 rangayyan_ch3_shannon_entropy_discrete = shannon  # pre-policy spelling
@@ -1379,9 +1486,15 @@ def rangayyan_ch3_ma_filter_11pt(x, n=None):
         if not 0 <= idx < y.size:
             raise ValueError(f"n must lie in 0..{y.size - 1}, got {idx}.")
         at_n = float(y[idx])
-    return RichResult(payload={"y": y, "y_at_n": at_n, "group_delay": 5.0,
-                               "N": int(y.size),
-                               "method": "11-point moving average, delay 5 samples"})
+    return RichResult(
+        payload={
+            "y": y,
+            "y_at_n": at_n,
+            "group_delay": 5.0,
+            "N": int(y.size),
+            "method": "11-point moving average, delay 5 samples",
+        }
+    )
 
 
 # -- rng040: Linear-ramp smoothing filter (Rangayyan eq. 3.42).
@@ -1417,9 +1530,15 @@ def rampfilt(x=None, fs=2000.0, duration=0.25, slope=10.0):
     if gain <= 0:
         raise ValueError("ramp has nonpositive total weight")
     hn = [v / gain for v in h]
-    out = {"h": h, "h_normalized": hn, "gain": gain, "n_taps": n_taps,
-           "fs": float(fs), "duration": float(duration),
-           "method": "Rangayyan (2024) eq. (3.42)"}
+    out = {
+        "h": h,
+        "h_normalized": hn,
+        "gain": gain,
+        "n_taps": n_taps,
+        "fs": float(fs),
+        "duration": float(duration),
+        "method": "Rangayyan (2024) eq. (3.42)",
+    }
     if x is not None:
         xs = aslist(x)
         y = []
@@ -1453,20 +1572,24 @@ def lsiserh(h_1, h_2, n=None):
     if not a or not b:
         raise ValueError("both impulse responses need at least one tap")
     m = len(a) + len(b) - 1
-    out = [fsum(a[j] * b[i - j]
-                for j in range(max(0, i - len(b) + 1), min(i, len(a) - 1) + 1))
-           for i in range(m)]
+    out = [fsum(a[j] * b[i - j] for j in range(max(0, i - len(b) + 1), min(i, len(a) - 1) + 1)) for i in range(m)]
     val = None
     if n is not None:
         k = int(n)
         if k < 0:
             raise ValueError("n must be a nonnegative index")
         val = out[k] if k < m else 0.0
-    return RichResult(payload={
-        "h": out, "n_taps": m, "value": val, "index": n,
-        "commutes": True, "longer_than_either_input": True,
-        "method": "Rangayyan (2024) eq. (3.45); series LSI systems "
-                  "convolve"})
+    return RichResult(
+        payload={
+            "h": out,
+            "n_taps": m,
+            "value": val,
+            "index": n,
+            "commutes": True,
+            "longer_than_either_input": True,
+            "method": "Rangayyan (2024) eq. (3.45); series LSI systems convolve",
+        }
+    )
 
 
 rangayyan_ch3_lsi_series_combined_h = lsiserh  # pre-policy spelling
@@ -1487,18 +1610,23 @@ def lsiparh(h_1, h_2, n=None):
     if not a or not b:
         raise ValueError("both impulse responses need at least one tap")
     m = max(len(a), len(b))
-    out = [(a[i] if i < len(a) else 0.0) + (b[i] if i < len(b) else 0.0)
-           for i in range(m)]
+    out = [(a[i] if i < len(a) else 0.0) + (b[i] if i < len(b) else 0.0) for i in range(m)]
     val = None
     if n is not None:
         k = int(n)
         if k < 0:
             raise ValueError("n must be a nonnegative index")
         val = out[k] if k < m else 0.0
-    return RichResult(payload={
-        "h": out, "n_taps": m, "value": val, "index": n,
-        "length_is_the_longer_branch": True,
-        "method": "Rangayyan (2024) eq. (3.49); parallel LSI systems add"})
+    return RichResult(
+        payload={
+            "h": out,
+            "n_taps": m,
+            "value": val,
+            "index": n,
+            "length_is_the_longer_branch": True,
+            "method": "Rangayyan (2024) eq. (3.49); parallel LSI systems add",
+        }
+    )
 
 
 rangayyan_ch3_lsi_parallel_combined_h = lsiparh  # pre-policy spelling
@@ -1533,11 +1661,18 @@ def laplace(h, t, s):
         for i in range(len(ts) - 1):
             acc += 0.5 * (f[i] + f[i + 1]) * (ts[i + 1] - ts[i])
         out.append(acc)
-    return RichResult(payload={
-        "H": out[0] if scalar else out, "s": s,
-        "t_min": ts[0], "t_max": ts[-1], "n": len(ts),
-        "trapezoidal": True, "over_the_sampled_interval_only": True,
-        "method": "Rangayyan (2024) eq. (3.50)"})
+    return RichResult(
+        payload={
+            "H": out[0] if scalar else out,
+            "s": s,
+            "t_min": ts[0],
+            "t_max": ts[-1],
+            "n": len(ts),
+            "trapezoidal": True,
+            "over_the_sampled_interval_only": True,
+            "method": "Rangayyan (2024) eq. (3.50)",
+        }
+    )
 
 
 rangayyan_ch3_laplace_transform = laplace  # pre-policy spelling
@@ -1564,8 +1699,7 @@ def laplacefr(h, omega, t=None, T=None):
         raise ValueError("need at least two samples")
     if t is None:
         if T is None:
-            raise ValueError("give either the sample times t or the "
-                             "duration T")
+            raise ValueError("give either the sample times t or the duration T")
         Tv = float(T)
         if Tv <= 0:
             raise ValueError("T must be positive")
@@ -1579,20 +1713,23 @@ def laplacefr(h, omega, t=None, T=None):
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     out = []
     for w in ws:
-        f = [complex(hs[i] * cos(-w * ts[i]), hs[i] * sin(-w * ts[i]))
-             for i in range(len(ts))]
+        f = [complex(hs[i] * cos(-w * ts[i]), hs[i] * sin(-w * ts[i])) for i in range(len(ts))]
         acc = 0j
         for i in range(len(ts) - 1):
             acc += 0.5 * (f[i] + f[i + 1]) * (ts[i + 1] - ts[i])
         out.append(acc)
-    return RichResult(payload={
-        "H": out[0] if scalar else out, "omega": omega,
-        "magnitude": abs(out[0]) if scalar else [abs(v) for v in out],
-        "phase": atan2(out[0].imag, out[0].real) if scalar
-        else [atan2(v.imag, v.real) for v in out],
-        "t_min": ts[0], "t_max": ts[-1],
-        "valid_only_inside_the_roc": True,
-        "method": "Rangayyan (2024) eq. (3.52)"})
+    return RichResult(
+        payload={
+            "H": out[0] if scalar else out,
+            "omega": omega,
+            "magnitude": abs(out[0]) if scalar else [abs(v) for v in out],
+            "phase": atan2(out[0].imag, out[0].real) if scalar else [atan2(v.imag, v.real) for v in out],
+            "t_min": ts[0],
+            "t_max": ts[-1],
+            "valid_only_inside_the_roc": True,
+            "method": "Rangayyan (2024) eq. (3.52)",
+        }
+    )
 
 
 rangayyan_ch3_frequency_response_from_laplace = laplacefr  # pre-policy spelling
@@ -1663,11 +1800,9 @@ def iirtf(b_k, a_k, z, N=None, M=None):
     if not b:
         raise ValueError("need at least one numerator coefficient")
     if N is not None and int(N) != len(b) - 1:
-        raise ValueError("N must be len(b_k) - 1, got %d for %d "
-                         "coefficients" % (int(N), len(b)))
+        raise ValueError(f"N must be len(b_k) - 1, got {int(int(N))} for {int(len(b))} coefficients")
     if M is not None and int(M) != len(a):
-        raise ValueError("M must be len(a_k), got %d for %d coefficients"
-                         % (int(M), len(a)))
+        raise ValueError(f"M must be len(a_k), got {int(int(M))} for {int(len(a))} coefficients")
     den_coefs = [1.0] + list(a)
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
@@ -1675,15 +1810,20 @@ def iirtf(b_k, a_k, z, N=None, M=None):
     for zv in zs:
         den = _polyz(den_coefs, zv)
         if abs(den) <= 1e-300:
-            raise ValueError("z is a pole of H(z); the transfer function "
-                             "is unbounded there")
+            raise ValueError("z is a pole of H(z); the transfer function is unbounded there")
         H.append(_polyz(b, zv) / den)
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z,
-        "numerator": list(b), "denominator": den_coefs,
-        "N": len(b) - 1, "M": len(a),
-        "leading_one_is_implicit": True,
-        "method": "Rangayyan (2024) eq. (3.67)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "numerator": list(b),
+            "denominator": den_coefs,
+            "N": len(b) - 1,
+            "M": len(a),
+            "leading_one_is_implicit": True,
+            "method": "Rangayyan (2024) eq. (3.67)",
+        }
+    )
 
 
 rangayyan_ch3_iir_transfer_function = iirtf  # pre-policy spelling
@@ -1715,8 +1855,7 @@ def iirdiff(x, b_k, a_k=None, y=None, N=None, M=None, n=None):
     start = len(hist)
     for i in range(start, len(xs)):
         acc = fsum(b[k] * xs[i - k] for k in range(len(b)) if i - k >= 0)
-        fb = fsum(a[k] * out[i - k - 1]
-                  for k in range(len(a)) if i - k - 1 >= 0)
+        fb = fsum(a[k] * out[i - k - 1] for k in range(len(a)) if i - k - 1 >= 0)
         out.append(acc - fb)
     val = None
     if n is not None:
@@ -1724,11 +1863,18 @@ def iirdiff(x, b_k, a_k=None, y=None, N=None, M=None, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the computed output")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n,
-        "N": len(b) - 1, "M": len(a), "recursive": bool(a),
-        "feedback_is_subtracted": True,
-        "method": "Rangayyan (2024) eq. (3.68)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "N": len(b) - 1,
+            "M": len(a),
+            "recursive": bool(a),
+            "feedback_is_subtracted": True,
+            "method": "Rangayyan (2024) eq. (3.68)",
+        }
+    )
 
 
 rangayyan_ch3_iir_difference_equation = iirdiff  # pre-policy spelling
@@ -1757,19 +1903,24 @@ def pzmag(l_k, r_k, N=None, M=None):
         raise ValueError("a distance cannot be negative")
     for v in rs:
         if v <= 1e-300:
-            raise ValueError("a pole lies on the evaluation point; the "
-                             "magnitude response is unbounded there")
+            raise ValueError("a pole lies on the evaluation point; the magnitude response is unbounded there")
     num = 1.0
     for v in ls:
         num *= v
     den = 1.0
     for v in rs:
         den *= v
-    return RichResult(payload={
-        "magnitude": num / den, "zero_product": num, "pole_product": den,
-        "n_zeros": len(ls), "n_poles": len(rs),
-        "on_a_zero": any(v <= 1e-300 for v in ls),
-        "method": "Rangayyan (2024) eq. (3.72)"})
+    return RichResult(
+        payload={
+            "magnitude": num / den,
+            "zero_product": num,
+            "pole_product": den,
+            "n_zeros": len(ls),
+            "n_poles": len(rs),
+            "on_a_zero": any(v <= 1e-300 for v in ls),
+            "method": "Rangayyan (2024) eq. (3.72)",
+        }
+    )
 
 
 rangayyan_ch3_magnitude_response_from_pole_zero = pzmag  # pre-policy spelling
@@ -1801,12 +1952,20 @@ def pzphase(z_0, alpha_k, beta_k, N=None, M=None):
     origin = (m - n) * ang
     phase = origin + fsum(al) - fsum(be)
     wrapped = (phase + pi) % (2.0 * pi) - pi
-    return RichResult(payload={
-        "phase": phase, "wrapped": wrapped, "origin_term": origin,
-        "zero_angle_sum": fsum(al), "pole_angle_sum": fsum(be),
-        "z_0_angle": ang, "n_zeros": n, "n_poles": m,
-        "origin_term_vanishes_when_orders_match": n == m,
-        "method": "Rangayyan (2024) eq. (3.73)"})
+    return RichResult(
+        payload={
+            "phase": phase,
+            "wrapped": wrapped,
+            "origin_term": origin,
+            "zero_angle_sum": fsum(al),
+            "pole_angle_sum": fsum(be),
+            "z_0_angle": ang,
+            "n_zeros": n,
+            "n_poles": m,
+            "origin_term_vanishes_when_orders_match": n == m,
+            "method": "Rangayyan (2024) eq. (3.73)",
+        }
+    )
 
 
 rangayyan_ch3_phase_response_from_pole_zero = pzphase  # pre-policy spelling
@@ -1829,8 +1988,7 @@ def mafir(x, b_k=None, N=None, n=None):
         raise ValueError("need at least one sample")
     if b_k is None:
         if N is None:
-            raise ValueError("give either the coefficients b_k or the "
-                             "order N")
+            raise ValueError("give either the coefficients b_k or the order N")
         m = int(N)
         if m < 0:
             raise ValueError("N must be nonnegative")
@@ -1841,8 +1999,7 @@ def mafir(x, b_k=None, N=None, n=None):
             raise ValueError("need at least one coefficient")
         if N is not None and int(N) != len(b) - 1:
             raise ValueError("N must be len(b_k) - 1")
-    out = [fsum(b[k] * xs[i - k] for k in range(len(b)) if i - k >= 0)
-           for i in range(len(xs))]
+    out = [fsum(b[k] * xs[i - k] for k in range(len(b)) if i - k >= 0) for i in range(len(xs))]
     val = None
     if n is not None:
         idx = int(n)
@@ -1858,14 +2015,23 @@ def mafir(x, b_k=None, N=None, n=None):
     sym = all(abs(b[k] - b[-1 - k]) <= tol for k in range(len(b)))
     anti = all(abs(b[k] + b[-1 - k]) <= tol for k in range(len(b)))
     lin = bool(sym or anti)
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "b": list(b),
-        "N": len(b) - 1, "settled_from": len(b) - 1,
-        "dc_gain": fsum(b), "equal_weights": b_k is None,
-        "symmetric": bool(sym), "antisymmetric": bool(anti),
-        "linear_phase": lin,
-        "delay_samples": (len(b) - 1) / 2.0 if lin else None,
-        "method": "Rangayyan (2024) eqs. (3.97)-(3.99)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "b": list(b),
+            "N": len(b) - 1,
+            "settled_from": len(b) - 1,
+            "dc_gain": fsum(b),
+            "equal_weights": b_k is None,
+            "symmetric": bool(sym),
+            "antisymmetric": bool(anti),
+            "linear_phase": lin,
+            "delay_samples": (len(b) - 1) / 2.0 if lin else None,
+            "method": "Rangayyan (2024) eqs. (3.97)-(3.99)",
+        }
+    )
 
 
 rangayyan_ch3_ma_filter_general = mafir  # pre-policy spelling
@@ -1889,11 +2055,18 @@ def matf(b_k, z, N=None):
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
     H = [_polyz(b, zv) for zv in zs]
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z, "b": list(b),
-        "N": len(b) - 1, "dc_gain": fsum(b),
-        "always_stable": True, "poles_only_at_the_origin": True,
-        "method": "Rangayyan (2024) eq. (3.99)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "b": list(b),
+            "N": len(b) - 1,
+            "dc_gain": fsum(b),
+            "always_stable": True,
+            "poles_only_at_the_origin": True,
+            "method": "Rangayyan (2024) eq. (3.99)",
+        }
+    )
 
 
 rangayyan_ch3_ma_transfer_function = matf  # pre-policy spelling
@@ -1926,11 +2099,19 @@ def hannfilt(x, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "n": len(out),
-        "taps": [0.25, 0.5, 0.25], "delay_samples": 1.0,
-        "settled_from": 2, "dc_gain": 1.0,
-        "method": "Rangayyan (2024) eq. (3.100)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "n": len(out),
+            "taps": [0.25, 0.5, 0.25],
+            "delay_samples": 1.0,
+            "settled_from": 2,
+            "dc_gain": 1.0,
+            "method": "Rangayyan (2024) eq. (3.100)",
+        }
+    )
 
 
 rangayyan_ch3_hann_filter = hannfilt  # pre-policy spelling
@@ -1951,10 +2132,18 @@ def hannimp(n=None):
     if n is not None:
         idx = int(n)
         val = taps[idx] if 0 <= idx < 3 else 0.0
-    return RichResult(payload={
-        "h": taps, "value": val, "index": n, "n_taps": 3,
-        "sum": 1.0, "finite": True, "symmetric": True,
-        "method": "Rangayyan (2024) eq. (3.101)"})
+    return RichResult(
+        payload={
+            "h": taps,
+            "value": val,
+            "index": n,
+            "n_taps": 3,
+            "sum": 1.0,
+            "finite": True,
+            "symmetric": True,
+            "method": "Rangayyan (2024) eq. (3.101)",
+        }
+    )
 
 
 rangayyan_ch3_hann_impulse_response = hannimp  # pre-policy spelling
@@ -1975,11 +2164,17 @@ def hannz(X, z):
     if zc == 0:
         raise ValueError("z = 0 is a pole of a causal transfer function")
     Xc = _cnum(X)
-    H = 0.25 * (1.0 + 2.0 * zc ** -1 + zc ** -2)
-    return RichResult(payload={
-        "Y": H * Xc, "H": H, "X": Xc, "z": zc,
-        "transfer_function_is_input_independent": True,
-        "method": "Rangayyan (2024) eq. (3.102)"})
+    H = 0.25 * (1.0 + 2.0 * zc**-1 + zc**-2)
+    return RichResult(
+        payload={
+            "Y": H * Xc,
+            "H": H,
+            "X": Xc,
+            "z": zc,
+            "transfer_function_is_input_independent": True,
+            "method": "Rangayyan (2024) eq. (3.102)",
+        }
+    )
 
 
 rangayyan_ch3_hann_z_output = hannz  # pre-policy spelling
@@ -2002,14 +2197,19 @@ def hanntf(z):
     for zv in zs:
         zc = _cnum(zv)
         if zc == 0:
-            raise ValueError("z = 0 is a pole of a causal transfer "
-                             "function")
-        H.append(0.25 * (1.0 + zc ** -1) ** 2)
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z,
-        "zeros": [-1.0, -1.0], "zero_multiplicity": 2,
-        "zeros_at_nyquist": True, "dc_gain": 1.0,
-        "method": "Rangayyan (2024) eq. (3.103)"})
+            raise ValueError("z = 0 is a pole of a causal transfer function")
+        H.append(0.25 * (1.0 + zc**-1) ** 2)
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "zeros": [-1.0, -1.0],
+            "zero_multiplicity": 2,
+            "zeros_at_nyquist": True,
+            "dc_gain": 1.0,
+            "method": "Rangayyan (2024) eq. (3.103)",
+        }
+    )
 
 
 rangayyan_ch3_hann_transfer_function = hanntf  # pre-policy spelling
@@ -2030,13 +2230,16 @@ def hannfr(omega):
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     H = []
     for w in ws:
-        H.append(0.25 * (1.0 + 2.0 * complex(cos(-w), sin(-w))
-                         + complex(cos(-2.0 * w), sin(-2.0 * w))))
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "omega": omega,
-        "magnitude": abs(H[0]) if scalar else [abs(v) for v in H],
-        "on_the_unit_circle": True,
-        "method": "Rangayyan (2024) eq. (3.104)"})
+        H.append(0.25 * (1.0 + 2.0 * complex(cos(-w), sin(-w)) + complex(cos(-2.0 * w), sin(-2.0 * w))))
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "omega": omega,
+            "magnitude": abs(H[0]) if scalar else [abs(v) for v in H],
+            "on_the_unit_circle": True,
+            "method": "Rangayyan (2024) eq. (3.104)",
+        }
+    )
 
 
 rangayyan_ch3_hann_frequency_response_raw = hannfr  # pre-policy spelling
@@ -2059,16 +2262,20 @@ def hannfrs(omega):
     H, raw = [], []
     for w in ws:
         H.append(0.5 * (1.0 + cos(w)) * complex(cos(-w), sin(-w)))
-        raw.append(0.25 * (1.0 + 2.0 * complex(cos(-w), sin(-w))
-                           + complex(cos(-2.0 * w), sin(-2.0 * w))))
+        raw.append(0.25 * (1.0 + 2.0 * complex(cos(-w), sin(-w)) + complex(cos(-2.0 * w), sin(-2.0 * w))))
     gap = max(abs(a - b) for a, b in zip(H, raw))
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "omega": omega,
-        "envelope": [0.5 * (1.0 + cos(w)) for w in ws],
-        "max_difference_from_eq_3_104": gap,
-        "agrees_with_raw_form": gap <= 1e-12,
-        "real_factor_times_a_pure_delay": True, "linear_phase": True,
-        "method": "Rangayyan (2024) eq. (3.105)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "omega": omega,
+            "envelope": [0.5 * (1.0 + cos(w)) for w in ws],
+            "max_difference_from_eq_3_104": gap,
+            "agrees_with_raw_form": gap <= 1e-12,
+            "real_factor_times_a_pure_delay": True,
+            "linear_phase": True,
+            "method": "Rangayyan (2024) eq. (3.105)",
+        }
+    )
 
 
 rangayyan_ch3_hann_frequency_response_simplified = hannfrs  # pre-policy spelling
@@ -2088,11 +2295,17 @@ def hannmag(omega):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     mag = [abs(0.5 * (1.0 + cos(w))) for w in ws]
-    return RichResult(payload={
-        "magnitude": mag[0] if scalar else mag, "omega": omega,
-        "dc_gain": 1.0, "nyquist_gain": 0.0,
-        "lowpass": True, "absolute_value_is_redundant": True,
-        "method": "Rangayyan (2024) eq. (3.106)"})
+    return RichResult(
+        payload={
+            "magnitude": mag[0] if scalar else mag,
+            "omega": omega,
+            "dc_gain": 1.0,
+            "nyquist_gain": 0.0,
+            "lowpass": True,
+            "absolute_value_is_redundant": True,
+            "method": "Rangayyan (2024) eq. (3.106)",
+        }
+    )
 
 
 rangayyan_ch3_hann_magnitude_response = hannmag  # pre-policy spelling
@@ -2112,11 +2325,17 @@ def hannph(omega):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     ph = [-w for w in ws]
-    return RichResult(payload={
-        "phase": ph[0] if scalar else ph, "omega": omega,
-        "group_delay": 1.0, "slope": -1.0,
-        "linear_phase": True, "constant_group_delay": True,
-        "method": "Rangayyan (2024) eq. (3.107)"})
+    return RichResult(
+        payload={
+            "phase": ph[0] if scalar else ph,
+            "omega": omega,
+            "group_delay": 1.0,
+            "slope": -1.0,
+            "linear_phase": True,
+            "constant_group_delay": True,
+            "method": "Rangayyan (2024) eq. (3.107)",
+        }
+    )
 
 
 rangayyan_ch3_hann_phase_response = hannph  # pre-policy spelling
@@ -2156,9 +2375,15 @@ def rangayyan_ch3_ma_8point(x, n=None):
         if not 0 <= idx < y.size:
             raise ValueError(f"n must lie in 0..{y.size - 1}, got {idx}.")
         at_n = float(y[idx])
-    return RichResult(payload={"y": y, "y_at_n": at_n, "group_delay": 3.5,
-                               "N": int(y.size),
-                               "method": "8-point moving average, delay 3.5 (non-integer)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "y_at_n": at_n,
+            "group_delay": 3.5,
+            "N": int(y.size),
+            "method": "8-point moving average, delay 3.5 (non-integer)",
+        }
+    )
 
 
 # -- rng098: Impulse response of the 8-point MA filter as a sum of shifted deltas..
@@ -2177,11 +2402,19 @@ def ma8imp(n=None):
     if n is not None:
         idx = int(n)
         val = taps[idx] if 0 <= idx < 8 else 0.0
-    return RichResult(payload={
-        "h": taps, "value": val, "index": n, "n_taps": 8,
-        "sum": 1.0, "finite": True, "equal_weights": True,
-        "attenuation_is_poor": True,
-        "method": "Rangayyan (2024) eq. (3.109)"})
+    return RichResult(
+        payload={
+            "h": taps,
+            "value": val,
+            "index": n,
+            "n_taps": 8,
+            "sum": 1.0,
+            "finite": True,
+            "equal_weights": True,
+            "attenuation_is_poor": True,
+            "method": "Rangayyan (2024) eq. (3.109)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_impulse_response = ma8imp  # pre-policy spelling
@@ -2201,11 +2434,18 @@ def ma8tf(z):
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
     H = [_polyz([0.125] * 8, zv) for zv in zs]
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z, "n_taps": 8,
-        "n_zeros": 7, "zeros_at_multiples_of_fs_over_8": True,
-        "dc_gain": 1.0, "always_stable": True,
-        "method": "Rangayyan (2024) eq. (3.110)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "n_taps": 8,
+            "n_zeros": 7,
+            "zeros_at_multiples_of_fs_over_8": True,
+            "dc_gain": 1.0,
+            "always_stable": True,
+            "method": "Rangayyan (2024) eq. (3.110)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_transfer_function = ma8tf  # pre-policy spelling
@@ -2230,20 +2470,22 @@ def ma8fr(omega):
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     direct, factored = [], []
     for w in ws:
-        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k))
-                                  for k in range(8)))
+        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k)) for k in range(8)))
         brack = 1.0 + 2.0 * cos(w) + 2.0 * cos(2.0 * w) + 2.0 * cos(3.0 * w)
-        factored.append(0.125 * (1.0 + complex(cos(-4.0 * w),
-                                               sin(-4.0 * w)) * brack))
+        factored.append(0.125 * (1.0 + complex(cos(-4.0 * w), sin(-4.0 * w)) * brack))
     gap = max(abs(a - b) for a, b in zip(direct, factored))
-    return RichResult(payload={
-        "H": direct[0] if scalar else direct,
-        "factored": factored[0] if scalar else factored,
-        "omega": omega,
-        "magnitude": abs(direct[0]) if scalar else [abs(v) for v in direct],
-        "max_difference": gap, "factored_form_agrees": gap <= 1e-12,
-        "bracket_is_inside_the_product": True,
-        "method": "Rangayyan (2024) eq. (3.111)"})
+    return RichResult(
+        payload={
+            "H": direct[0] if scalar else direct,
+            "factored": factored[0] if scalar else factored,
+            "omega": omega,
+            "magnitude": abs(direct[0]) if scalar else [abs(v) for v in direct],
+            "max_difference": gap,
+            "factored_form_agrees": gap <= 1e-12,
+            "bracket_is_inside_the_product": True,
+            "method": "Rangayyan (2024) eq. (3.111)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_frequency_response = ma8fr  # pre-policy spelling
@@ -2283,16 +2525,22 @@ def runint(x, t, tau):
             if b <= lo:
                 continue
             fa, fb = xs[j], xs[j + 1]
-            if a < lo:                       # partial panel at the edge
+            if a < lo:  # partial panel at the edge
                 fa = fa + (fb - fa) * (lo - a) / (b - a)
                 a = lo
             acc += 0.5 * (fa + fb) * (b - a)
         out.append(acc)
-    return RichResult(payload={
-        "y": out, "n": len(out), "tau": tv, "clipped_windows": clipped,
-        "trapezoidal": True,
-        "continuous_counterpart_of_the_ma_filter": True,
-        "method": "Rangayyan (2024) eq. (3.112)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "n": len(out),
+            "tau": tv,
+            "clipped_windows": clipped,
+            "trapezoidal": True,
+            "continuous_counterpart_of_the_ma_filter": True,
+            "method": "Rangayyan (2024) eq. (3.112)",
+        }
+    )
 
 
 rangayyan_ch3_running_integral_window = runint  # pre-policy spelling
@@ -2327,13 +2575,18 @@ def runintall(x, t):
     for i in range(len(ts) - 1):
         acc += 0.5 * (xs[i] + xs[i + 1]) * (ts[i + 1] - ts[i])
         out.append(acc)
-    return RichResult(payload={
-        "y": out, "n": len(out), "total": acc,
-        "lower_limit": ts[0],
-        "constant_of_integration_is_arbitrary": True,
-        "discrete_pole_on_the_unit_circle": True,
-        "seldom_used_for_filtering": True,
-        "method": "Rangayyan (2024) eq. (3.113)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "n": len(out),
+            "total": acc,
+            "lower_limit": ts[0],
+            "constant_of_integration_is_arbitrary": True,
+            "discrete_pole_on_the_unit_circle": True,
+            "seldom_used_for_filtering": True,
+            "method": "Rangayyan (2024) eq. (3.113)",
+        }
+    )
 
 
 rangayyan_ch3_integral_general = runintall  # pre-policy spelling
@@ -2401,26 +2654,29 @@ def intft(X, omega, X0=None):
     """
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
-    Xs = [_cnum(X)] * len(ws) if not isinstance(X, (list, tuple)) \
-        else [_cnum(v) for v in X]
+    Xs = [_cnum(X)] * len(ws) if not isinstance(X, (list, tuple)) else [_cnum(v) for v in X]
     if len(Xs) != len(ws):
         raise ValueError("X and omega must have the same length")
     dc = _cnum(X0) if X0 is not None else None
     out, at_dc = [], []
     for w, xv in zip(ws, Xs):
         if abs(w) <= 1e-300:
-            out.append(None)                # 1/(jw) is unbounded at w = 0
+            out.append(None)  # 1/(jw) is unbounded at w = 0
             at_dc.append(True)
         else:
             out.append(xv / complex(0.0, w))
             at_dc.append(False)
-    return RichResult(payload={
-        "Y": out[0] if scalar else out, "omega": omega,
-        "delta_weight": (pi * dc) if dc is not None else None,
-        "at_dc": at_dc[0] if scalar else at_dc,
-        "dc_term_carried_by_the_delta": True,
-        "undefined_at_zero_without_the_delta": True,
-        "method": "Rangayyan (2024) eq. (3.115)"})
+    return RichResult(
+        payload={
+            "Y": out[0] if scalar else out,
+            "omega": omega,
+            "delta_weight": (pi * dc) if dc is not None else None,
+            "at_dc": at_dc[0] if scalar else at_dc,
+            "dc_term_carried_by_the_delta": True,
+            "undefined_at_zero_without_the_delta": True,
+            "method": "Rangayyan (2024) eq. (3.115)",
+        }
+    )
 
 
 rangayyan_ch3_fourier_of_integral = intft  # pre-policy spelling
@@ -2440,14 +2696,18 @@ def intfr(omega):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     if any(abs(w) <= 1e-300 for w in ws):
-        raise ValueError("H(w) = 1/(jw) is unbounded at w = 0; the DC "
-                         "content sits in the delta term of eq. (3.115)")
+        raise ValueError("H(w) = 1/(jw) is unbounded at w = 0; the DC content sits in the delta term of eq. (3.115)")
     H = [1.0 / complex(0.0, w) for w in ws]
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "omega": omega,
-        "lowpass": True, "dc_term_set_aside": True,
-        "gain_falls_nonlinearly_with_frequency": True,
-        "method": "Rangayyan (2024) eq. (3.116)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "omega": omega,
+            "lowpass": True,
+            "dc_term_set_aside": True,
+            "gain_falls_nonlinearly_with_frequency": True,
+            "method": "Rangayyan (2024) eq. (3.116)",
+        }
+    )
 
 
 rangayyan_ch3_integrator_frequency_response = intfr  # pre-policy spelling
@@ -2468,11 +2728,15 @@ def intmag(omega):
     if any(abs(w) <= 1e-300 for w in ws):
         raise ValueError("the magnitude is unbounded at w = 0")
     mag = [1.0 / abs(w) for w in ws]
-    return RichResult(payload={
-        "magnitude": mag[0] if scalar else mag, "omega": omega,
-        "book_prints_one_over_omega": True,
-        "absolute_value_needed_for_negative_omega": True,
-        "method": "Rangayyan (2024) eq. (3.117)"})
+    return RichResult(
+        payload={
+            "magnitude": mag[0] if scalar else mag,
+            "omega": omega,
+            "book_prints_one_over_omega": True,
+            "absolute_value_needed_for_negative_omega": True,
+            "method": "Rangayyan (2024) eq. (3.117)",
+        }
+    )
 
 
 rangayyan_ch3_integrator_magnitude_response = intmag  # pre-policy spelling
@@ -2494,12 +2758,17 @@ def intph(omega):
     if any(abs(w) <= 1e-300 for w in ws):
         raise ValueError("the phase is undefined at w = 0")
     ph = [-pi / 2.0 if w > 0 else pi / 2.0 for w in ws]
-    return RichResult(payload={
-        "phase": ph[0] if scalar else ph, "omega": omega,
-        "constant": True, "group_delay": 0.0,
-        "constant_phase_is_not_constant_delay": True,
-        "sign_flips_for_negative_omega": True,
-        "method": "Rangayyan (2024) eq. (3.118)"})
+    return RichResult(
+        payload={
+            "phase": ph[0] if scalar else ph,
+            "omega": omega,
+            "constant": True,
+            "group_delay": 0.0,
+            "constant_phase_is_not_constant_delay": True,
+            "sign_flips_for_negative_omega": True,
+            "method": "Rangayyan (2024) eq. (3.118)",
+        }
+    )
 
 
 rangayyan_ch3_integrator_phase_response = intph  # pre-policy spelling
@@ -2530,8 +2799,7 @@ def ma8rec(x, n=None):
         if i >= 8:
             acc -= 0.125 * xs[i - 8]
         out.append(acc)
-    direct = [fsum(xs[i - k] for k in range(8) if i - k >= 0) / 8.0
-              for i in range(len(xs))]
+    direct = [fsum(xs[i - k] for k in range(8) if i - k >= 0) / 8.0 for i in range(len(xs))]
     gap = max(abs(a - b) for a, b in zip(out, direct))
     val = None
     if n is not None:
@@ -2539,12 +2807,20 @@ def ma8rec(x, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "direct_form": direct,
-        "max_difference": gap, "agrees_with_direct_form": gap <= 1e-9,
-        "additions_per_sample": 2, "direct_form_additions": 8,
-        "error_accumulates": True,
-        "method": "Rangayyan (2024) eq. (3.120)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "direct_form": direct,
+            "max_difference": gap,
+            "agrees_with_direct_form": gap <= 1e-9,
+            "additions_per_sample": 2,
+            "direct_form_additions": 8,
+            "error_accumulates": True,
+            "method": "Rangayyan (2024) eq. (3.120)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_recursive = ma8rec  # pre-policy spelling
@@ -2568,19 +2844,23 @@ def ma8rectf(z):
     for zv in zs:
         zc = _cnum(zv)
         if zc == 0:
-            raise ValueError("z = 0 is a pole of a causal transfer "
-                             "function")
-        den = 1.0 - zc ** -1
+            raise ValueError("z = 0 is a pole of a causal transfer function")
+        den = 1.0 - zc**-1
         if abs(den) <= 1e-12:
-            H.append(complex(1.0, 0.0))      # the removable singularity
+            H.append(complex(1.0, 0.0))  # the removable singularity
         else:
-            H.append(0.125 * (1.0 - zc ** -8) / den)
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z,
-        "pole_at_dc_cancelled_by_a_zero": True,
-        "still_fir": True, "dc_gain": 1.0,
-        "removable_singularity_at_z_equals_one": True,
-        "method": "Rangayyan (2024) eq. (3.121)"})
+            H.append(0.125 * (1.0 - zc**-8) / den)
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "pole_at_dc_cancelled_by_a_zero": True,
+            "still_fir": True,
+            "dc_gain": 1.0,
+            "removable_singularity_at_z_equals_one": True,
+            "method": "Rangayyan (2024) eq. (3.121)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_recursive_transfer_function = ma8rectf  # pre-policy spelling
@@ -2609,17 +2889,21 @@ def ma8sinc(omega):
         if abs(s2) <= 1e-12:
             closed.append(complex(1.0, 0.0))
         else:
-            closed.append(0.125 * complex(cos(-3.5 * w), sin(-3.5 * w))
-                          * sin(4.0 * w) / s2)
-        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k))
-                                  for k in range(8)))
+            closed.append(0.125 * complex(cos(-3.5 * w), sin(-3.5 * w)) * sin(4.0 * w) / s2)
+        direct.append(0.125 * sum(complex(cos(-w * k), sin(-w * k)) for k in range(8)))
     gap = max(abs(a - b) for a, b in zip(closed, direct))
-    return RichResult(payload={
-        "H": closed[0] if scalar else closed, "omega": omega,
-        "direct_sum": direct[0] if scalar else direct,
-        "max_difference": gap, "agrees_with_eq_3_111": gap <= 1e-9,
-        "group_delay": 3.5, "delay_is_not_an_integer": True,
-        "method": "Rangayyan (2024) eq. (3.122)"})
+    return RichResult(
+        payload={
+            "H": closed[0] if scalar else closed,
+            "omega": omega,
+            "direct_sum": direct[0] if scalar else direct,
+            "max_difference": gap,
+            "agrees_with_eq_3_111": gap <= 1e-9,
+            "group_delay": 3.5,
+            "delay_is_not_an_integer": True,
+            "method": "Rangayyan (2024) eq. (3.122)",
+        }
+    )
 
 
 rangayyan_ch3_ma_8point_sinc_frequency_response = ma8sinc  # pre-policy spelling
@@ -2647,20 +2931,26 @@ def fdiff(x, T=1.0, n=None):
     Tv = float(T)
     if Tv <= 0:
         raise ValueError("the sampling interval T must be positive")
-    out = [(xs[i] - (xs[i - 1] if i >= 1 else 0.0)) / Tv
-           for i in range(len(xs))]
+    out = [(xs[i] - (xs[i - 1] if i >= 1 else 0.0)) / Tv for i in range(len(xs))]
     val = None
     if n is not None:
         idx = int(n)
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "T": Tv,
-        "scale_factor_gives_true_time_rate": True,
-        "highpass": True, "amplifies_noise": True,
-        "removes_dc": True,
-        "method": "Rangayyan (2024) eq. (3.123)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "T": Tv,
+            "scale_factor_gives_true_time_rate": True,
+            "highpass": True,
+            "amplifies_noise": True,
+            "removes_dc": True,
+            "method": "Rangayyan (2024) eq. (3.123)",
+        }
+    )
 
 
 rangayyan_ch3_first_difference_operator = fdiff  # pre-policy spelling
@@ -2681,10 +2971,17 @@ def fdifftf(z, T=1.0):
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
     H = [_polyz([1.0 / Tv, -1.0 / Tv], zv) for zv in zs]
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z, "T": Tv,
-        "zeros": [1.0], "zero_at_dc": True, "dc_gain": 0.0,
-        "method": "Rangayyan (2024) eq. (3.124)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "T": Tv,
+            "zeros": [1.0],
+            "zero_at_dc": True,
+            "dc_gain": 0.0,
+            "method": "Rangayyan (2024) eq. (3.124)",
+        }
+    )
 
 
 rangayyan_ch3_first_difference_transfer_function = fdifftf  # pre-policy spelling
@@ -2709,15 +3006,20 @@ def fdifffr(omega, T=1.0):
     raw, split = [], []
     for w in ws:
         raw.append((1.0 - complex(cos(-w), sin(-w))) / Tv)
-        split.append(complex(cos(-w / 2.0), sin(-w / 2.0))
-                     * complex(0.0, 2.0 * sin(w / 2.0)) / Tv)
+        split.append(complex(cos(-w / 2.0), sin(-w / 2.0)) * complex(0.0, 2.0 * sin(w / 2.0)) / Tv)
     gap = max(abs(a - b) for a, b in zip(raw, split))
-    return RichResult(payload={
-        "H": raw[0] if scalar else raw, "omega": omega, "T": Tv,
-        "split_form": split[0] if scalar else split,
-        "max_difference": gap, "forms_agree": gap <= 1e-12,
-        "half_sample_delay": 0.5,
-        "method": "Rangayyan (2024) eq. (3.125)"})
+    return RichResult(
+        payload={
+            "H": raw[0] if scalar else raw,
+            "omega": omega,
+            "T": Tv,
+            "split_form": split[0] if scalar else split,
+            "max_difference": gap,
+            "forms_agree": gap <= 1e-12,
+            "half_sample_delay": 0.5,
+            "method": "Rangayyan (2024) eq. (3.125)",
+        }
+    )
 
 
 rangayyan_ch3_first_difference_frequency_response = fdifffr  # pre-policy spelling
@@ -2744,12 +3046,18 @@ def fdiffmag(omega, T=1.0):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     mag = [2.0 * abs(sin(w / 2.0)) / Tv for w in ws]
-    return RichResult(payload={
-        "magnitude": mag[0] if scalar else mag, "omega": omega, "T": Tv,
-        "dc_gain": 0.0, "nyquist_gain": 2.0 / Tv,
-        "roughly_proportional_to_frequency": True,
-        "book_omits_the_absolute_value": True,
-        "method": "Rangayyan (2024) eq. (3.126)"})
+    return RichResult(
+        payload={
+            "magnitude": mag[0] if scalar else mag,
+            "omega": omega,
+            "T": Tv,
+            "dc_gain": 0.0,
+            "nyquist_gain": 2.0 / Tv,
+            "roughly_proportional_to_frequency": True,
+            "book_omits_the_absolute_value": True,
+            "method": "Rangayyan (2024) eq. (3.126)",
+        }
+    )
 
 
 rangayyan_ch3_first_difference_magnitude = fdiffmag  # pre-policy spelling
@@ -2770,11 +3078,17 @@ def fdiffph(omega):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     ph = [pi / 2.0 - w / 2.0 for w in ws]
-    return RichResult(payload={
-        "phase": ph[0] if scalar else ph, "omega": omega,
-        "group_delay": 0.5, "slope": -0.5,
-        "quarter_turn_offset": pi / 2.0, "linear_phase": True,
-        "method": "Rangayyan (2024) eq. (3.127)"})
+    return RichResult(
+        payload={
+            "phase": ph[0] if scalar else ph,
+            "omega": omega,
+            "group_delay": 0.5,
+            "slope": -0.5,
+            "quarter_turn_offset": pi / 2.0,
+            "linear_phase": True,
+            "method": "Rangayyan (2024) eq. (3.127)",
+        }
+    )
 
 
 rangayyan_ch3_first_difference_phase = fdiffph  # pre-policy spelling
@@ -2798,12 +3112,10 @@ def cdiff3(x, T=1.0, n=None):
     Tv = float(T)
     if Tv <= 0:
         raise ValueError("the sampling interval T must be positive")
-    out = [(xs[i] - (xs[i - 2] if i >= 2 else 0.0)) / (2.0 * Tv)
-           for i in range(len(xs))]
+    out = [(xs[i] - (xs[i - 2] if i >= 2 else 0.0)) / (2.0 * Tv) for i in range(len(xs))]
     # the book's derivation: the mean of two successive first differences
     d1 = fdiff(xs, T=Tv)["y"]
-    avg = [0.5 * (d1[i] + (d1[i - 1] if i >= 1 else 0.0))
-           for i in range(len(xs))]
+    avg = [0.5 * (d1[i] + (d1[i - 1] if i >= 1 else 0.0)) for i in range(len(xs))]
     gap = max(abs(a - b) for a, b in zip(out, avg))
     val = None
     if n is not None:
@@ -2811,13 +3123,20 @@ def cdiff3(x, T=1.0, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "T": Tv,
-        "as_averaged_first_differences": avg, "max_difference": gap,
-        "derivation_agrees": gap <= 1e-9,
-        "controls_noise_amplification": True,
-        "poor_above_fs_over_10": True,
-        "method": "Rangayyan (2024) eq. (3.128)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "T": Tv,
+            "as_averaged_first_differences": avg,
+            "max_difference": gap,
+            "derivation_agrees": gap <= 1e-9,
+            "controls_noise_amplification": True,
+            "poor_above_fs_over_10": True,
+            "method": "Rangayyan (2024) eq. (3.128)",
+        }
+    )
 
 
 rangayyan_ch3_three_point_central_difference = cdiff3  # pre-policy spelling
@@ -2847,18 +3166,24 @@ def cdiff3tf(z, T=1.0):
     for zv in zs:
         zc = _cnum(zv)
         if zc == 0:
-            raise ValueError("z = 0 is a pole of a causal transfer "
-                             "function")
-        direct.append((1.0 - zc ** -2) / (2.0 * Tv))
-        cascade.append(((1.0 - zc ** -1) / Tv) * (0.5 * (1.0 + zc ** -1)))
+            raise ValueError("z = 0 is a pole of a causal transfer function")
+        direct.append((1.0 - zc**-2) / (2.0 * Tv))
+        cascade.append(((1.0 - zc**-1) / Tv) * (0.5 * (1.0 + zc**-1)))
     gap = max(abs(a - b) for a, b in zip(direct, cascade))
-    return RichResult(payload={
-        "H": direct[0] if scalar else direct, "z": z, "T": Tv,
-        "cascade": cascade[0] if scalar else cascade,
-        "max_difference": gap, "cascade_agrees": gap <= 1e-12,
-        "zeros": [1.0, -1.0], "bandpass": True,
-        "is_first_difference_times_two_point_ma": True,
-        "method": "Rangayyan (2024) eq. (3.129)"})
+    return RichResult(
+        payload={
+            "H": direct[0] if scalar else direct,
+            "z": z,
+            "T": Tv,
+            "cascade": cascade[0] if scalar else cascade,
+            "max_difference": gap,
+            "cascade_agrees": gap <= 1e-12,
+            "zeros": [1.0, -1.0],
+            "bandpass": True,
+            "is_first_difference_times_two_point_ma": True,
+            "method": "Rangayyan (2024) eq. (3.129)",
+        }
+    )
 
 
 rangayyan_ch3_three_point_central_diff_transfer_function = cdiff3tf  # pre-policy spelling
@@ -2883,11 +3208,18 @@ def cdiff3mag(omega, T=1.0):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     mag = [abs(sin(w)) / Tv for w in ws]
-    return RichResult(payload={
-        "magnitude": mag[0] if scalar else mag, "omega": omega, "T": Tv,
-        "dc_gain": 0.0, "nyquist_gain": 0.0, "peak_at": pi / 2.0,
-        "bandpass": True,
-        "method": "Rangayyan (2024) eq. (3.130)"})
+    return RichResult(
+        payload={
+            "magnitude": mag[0] if scalar else mag,
+            "omega": omega,
+            "T": Tv,
+            "dc_gain": 0.0,
+            "nyquist_gain": 0.0,
+            "peak_at": pi / 2.0,
+            "bandpass": True,
+            "method": "Rangayyan (2024) eq. (3.130)",
+        }
+    )
 
 
 rangayyan_ch3_three_point_central_diff_magnitude = cdiff3mag  # pre-policy spelling
@@ -2907,12 +3239,17 @@ def cdiff3ph(omega):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     ph = [pi / 2.0 - w for w in ws]
-    return RichResult(payload={
-        "phase": ph[0] if scalar else ph, "omega": omega,
-        "group_delay": 1.0, "slope": -1.0,
-        "quarter_turn_offset": pi / 2.0,
-        "integer_delay_can_be_undone_by_shifting": True,
-        "method": "Rangayyan (2024) eq. (3.131)"})
+    return RichResult(
+        payload={
+            "phase": ph[0] if scalar else ph,
+            "omega": omega,
+            "group_delay": 1.0,
+            "slope": -1.0,
+            "quarter_turn_offset": pi / 2.0,
+            "integer_delay_can_be_undone_by_shifting": True,
+            "method": "Rangayyan (2024) eq. (3.131)",
+        }
+    )
 
 
 rangayyan_ch3_three_point_central_diff_phase = cdiff3ph  # pre-policy spelling
@@ -2940,26 +3277,32 @@ def bwander(z, T=1.0, pole=0.995):
         raise ValueError("the sampling interval T must be positive")
     p = float(pole)
     if not 0.0 <= p < 1.0:
-        raise ValueError("the pole must lie inside the unit circle, "
-                         "0 <= pole < 1; at 1 it cancels the zero exactly")
+        raise ValueError("the pole must lie inside the unit circle, 0 <= pole < 1; at 1 it cancels the zero exactly")
     scalar = not isinstance(z, (list, tuple))
     zs = [z] if scalar else list(z)
     H = []
     for zv in zs:
         zc = _cnum(zv)
         if zc == 0:
-            raise ValueError("z = 0 is a pole of a causal transfer "
-                             "function")
-        den = 1.0 - p * zc ** -1
+            raise ValueError("z = 0 is a pole of a causal transfer function")
+        den = 1.0 - p * zc**-1
         if abs(den) <= 1e-300:
             raise ValueError("z is the pole of H(z)")
-        H.append((1.0 - zc ** -1) / (Tv * den))
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z, "T": Tv, "pole": p,
-        "zeros": [1.0], "poles": [p], "dc_gain": 0.0,
-        "pole_nearly_cancels_the_zero_away_from_dc": True,
-        "no_longer_fir": True,
-        "method": "Rangayyan (2024) eq. (3.132)"})
+        H.append((1.0 - zc**-1) / (Tv * den))
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "T": Tv,
+            "pole": p,
+            "zeros": [1.0],
+            "poles": [p],
+            "dc_gain": 0.0,
+            "pole_nearly_cancels_the_zero_away_from_dc": True,
+            "no_longer_fir": True,
+            "method": "Rangayyan (2024) eq. (3.132)",
+        }
+    )
 
 
 rangayyan_ch3_baseline_wander_filter_z_form_a = bwander  # pre-policy spelling
@@ -2994,13 +3337,19 @@ def bwanderz(z, T=1.0, pole=0.995):
         H.append((zc - 1.0) / (Tv * (zc - p)))
         other.append(bwander(zc, T=Tv, pole=p)["H"])
     gap = max(abs(a - b) for a, b in zip(H, other))
-    return RichResult(payload={
-        "H": H[0] if scalar else H, "z": z, "T": Tv, "pole": p,
-        "max_difference_from_eq_3_132": gap,
-        "forms_agree": gap <= 1e-9,
-        "numerator_is_the_distance_to_the_zero": True,
-        "denominator_is_the_distance_to_the_pole": True,
-        "method": "Rangayyan (2024) eq. (3.133)"})
+    return RichResult(
+        payload={
+            "H": H[0] if scalar else H,
+            "z": z,
+            "T": Tv,
+            "pole": p,
+            "max_difference_from_eq_3_132": gap,
+            "forms_agree": gap <= 1e-9,
+            "numerator_is_the_distance_to_the_zero": True,
+            "denominator_is_the_distance_to_the_pole": True,
+            "method": "Rangayyan (2024) eq. (3.133)",
+        }
+    )
 
 
 rangayyan_ch3_baseline_wander_filter_z_form_b = bwanderz  # pre-policy spelling
@@ -3041,11 +3390,19 @@ def bwandereq(x, T=1.0, pole=0.995, n=None):
         if not 0 <= idx < len(out):
             raise ValueError("n is outside the record")
         val = out[idx]
-    return RichResult(payload={
-        "y": out, "value": val, "index": n, "T": Tv, "pole": p,
-        "feedback_sign": "+", "iir": True,
-        "sign_already_moved_to_the_right_hand_side": True,
-        "method": "Rangayyan (2024) eq. (3.134)"})
+    return RichResult(
+        payload={
+            "y": out,
+            "value": val,
+            "index": n,
+            "T": Tv,
+            "pole": p,
+            "feedback_sign": "+",
+            "iir": True,
+            "sign_already_moved_to_the_right_hand_side": True,
+            "method": "Rangayyan (2024) eq. (3.134)",
+        }
+    )
 
 
 rangayyan_ch3_baseline_wander_filter_difference_eq = bwandereq  # pre-policy spelling
@@ -3072,13 +3429,20 @@ def bwsqmag(Omega, Omega_c, N):
     scalar = not isinstance(Omega, (list, tuple))
     ws = [float(Omega)] if scalar else [float(v) for v in Omega]
     sq = [1.0 / (1.0 + (abs(w) / Wc) ** (2 * n)) for w in ws]
-    return RichResult(payload={
-        "squared_magnitude": sq[0] if scalar else sq,
-        "magnitude": (sq[0] ** 0.5) if scalar else [v ** 0.5 for v in sq],
-        "Omega": Omega, "Omega_c": Wc, "N": n,
-        "half_power_at_cutoff": 0.5, "monotonic": True, "no_ripple": True,
-        "cutoff_is_half_power_for_every_order": True,
-        "method": "Rangayyan (2024) eq. (3.135)"})
+    return RichResult(
+        payload={
+            "squared_magnitude": sq[0] if scalar else sq,
+            "magnitude": (sq[0] ** 0.5) if scalar else [v**0.5 for v in sq],
+            "Omega": Omega,
+            "Omega_c": Wc,
+            "N": n,
+            "half_power_at_cutoff": 0.5,
+            "monotonic": True,
+            "no_ripple": True,
+            "cutoff_is_half_power_for_every_order": True,
+            "method": "Rangayyan (2024) eq. (3.135)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_lowpass_squared_magnitude = bwsqmag  # pre-policy spelling
@@ -3110,11 +3474,18 @@ def bwsqlap(s, Omega_c, N):
         if abs(den) <= 1e-300:
             raise ValueError("s is a pole of H_a(s) H_a(-s)")
         out.append(1.0 / den)
-    return RichResult(payload={
-        "H": out[0] if scalar else out, "s": s, "Omega_c": Wc, "N": n,
-        "n_poles": 2 * n, "half_are_right_half_plane": True,
-        "not_a_filter_until_the_poles_are_selected": True,
-        "method": "Rangayyan (2024) eq. (3.136)"})
+    return RichResult(
+        payload={
+            "H": out[0] if scalar else out,
+            "s": s,
+            "Omega_c": Wc,
+            "N": n,
+            "n_poles": 2 * n,
+            "half_are_right_half_plane": True,
+            "not_a_filter_until_the_poles_are_selected": True,
+            "method": "Rangayyan (2024) eq. (3.136)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_squared_laplace = bwsqlap  # pre-policy spelling
@@ -3151,15 +3522,22 @@ def bwpoles(Omega_c, N, k=None):
         if not 1 <= kk <= 2 * n:
             raise ValueError("k must lie in 1..2N")
         val = allp[kk - 1]
-    return RichResult(payload={
-        "poles": allp, "left_half_plane": lhp, "value": val, "k": k,
-        "Omega_c": Wc, "N": n, "radius": Wc,
-        "angular_spacing": pi / n,
-        "n_left_half_plane": len(lhp),
-        "none_on_the_imaginary_axis": all(abs(p.real) > 1e-12
-                                          for p in allp),
-        "real_pole_for_odd_order": n % 2 == 1,
-        "method": "Rangayyan (2024) eq. (3.137)"})
+    return RichResult(
+        payload={
+            "poles": allp,
+            "left_half_plane": lhp,
+            "value": val,
+            "k": k,
+            "Omega_c": Wc,
+            "N": n,
+            "radius": Wc,
+            "angular_spacing": pi / n,
+            "n_left_half_plane": len(lhp),
+            "none_on_the_imaginary_axis": all(abs(p.real) > 1e-12 for p in allp),
+            "real_pole_for_odd_order": n % 2 == 1,
+            "method": "Rangayyan (2024) eq. (3.137)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_pole_positions = bwpoles  # pre-policy spelling
@@ -3187,8 +3565,7 @@ def bwanalog(Omega_c, N, G=None, s=None):
         raise ValueError("the order N must be at least 1")
     poles = bwpoles(Wc, n)["left_half_plane"]
     if len(poles) != n:
-        raise ValueError("expected %d left-half-plane poles, found %d"
-                         % (n, len(poles)))
+        raise ValueError(f"expected {int(n)} left-half-plane poles, found {int(len(poles))}")
     coefs = _poly_from_roots(poles)
     resid = max(abs(c.imag) for c in coefs)
     den = [c.real for c in coefs]
@@ -3200,20 +3577,26 @@ def bwanalog(Omega_c, N, G=None, s=None):
         vals = []
         for sv in ss:
             sc = _cnum(sv)
-            d = sum(den[i] * sc ** i for i in range(len(den)))
+            d = sum(den[i] * sc**i for i in range(len(den)))
             if abs(d) <= 1e-300:
                 raise ValueError("s is a pole of H_a(s)")
             vals.append(gain / d)
         Hs = vals[0] if scalar else vals
-    return RichResult(payload={
-        "poles": poles, "denominator": den, "gain": gain, "H": Hs,
-        "Omega_c": Wc, "N": n,
-        "max_imaginary_residue": resid,
-        "coefficients_are_real": resid <= 1e-9 * max(1.0, max(
-            abs(c) for c in den)),
-        "gain_normalizes_dc_to_unity": G is None,
-        "left_half_plane_only": True,
-        "method": "Rangayyan (2024) eq. (3.138)"})
+    return RichResult(
+        payload={
+            "poles": poles,
+            "denominator": den,
+            "gain": gain,
+            "H": Hs,
+            "Omega_c": Wc,
+            "N": n,
+            "max_imaginary_residue": resid,
+            "coefficients_are_real": resid <= 1e-9 * max(1.0, max(abs(c) for c in den)),
+            "gain_normalizes_dc_to_unity": G is None,
+            "left_half_plane_only": True,
+            "method": "Rangayyan (2024) eq. (3.138)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_analog_transfer_function = bwanalog  # pre-policy spelling
@@ -3243,18 +3626,23 @@ def bilinear(z, T=1.0):
     for zv in zs:
         zc = _cnum(zv)
         if zc == 0:
-            raise ValueError("z = 0 is not in the domain of the bilinear "
-                             "transformation")
-        den = 1.0 + zc ** -1
+            raise ValueError("z = 0 is not in the domain of the bilinear transformation")
+        den = 1.0 + zc**-1
         if abs(den) <= 1e-300:
             raise ValueError("z = -1 maps to s = infinity")
-        out.append((2.0 / Tv) * (1.0 - zc ** -1) / den)
-    return RichResult(payload={
-        "s": out[0] if scalar else out, "z": z, "T": Tv,
-        "maps_lhp_into_the_unit_disc": True,
-        "stability_is_preserved": True, "no_aliasing": True,
-        "warps_the_frequency_axis": True,
-        "method": "Rangayyan (2024) eq. (3.139)"})
+        out.append((2.0 / Tv) * (1.0 - zc**-1) / den)
+    return RichResult(
+        payload={
+            "s": out[0] if scalar else out,
+            "z": z,
+            "T": Tv,
+            "maps_lhp_into_the_unit_disc": True,
+            "stability_is_preserved": True,
+            "no_aliasing": True,
+            "warps_the_frequency_axis": True,
+            "method": "Rangayyan (2024) eq. (3.139)",
+        }
+    )
 
 
 rangayyan_ch3_bilinear_transformation = bilinear  # pre-policy spelling
@@ -3281,19 +3669,26 @@ def bilinunit(omega, T=1.0):
     direct, closed = [], []
     for w in ws:
         zc = complex(cos(w), sin(w))
-        den = 1.0 + zc ** -1
+        den = 1.0 + zc**-1
         if abs(den) <= 1e-300:
             raise ValueError("w = pi maps to s = infinity")
-        direct.append((2.0 / Tv) * (1.0 - zc ** -1) / den)
+        direct.append((2.0 / Tv) * (1.0 - zc**-1) / den)
         closed.append(complex(0.0, 2.0 * tan(w / 2.0) / Tv))
     gap = max(abs(a - b) for a, b in zip(direct, closed))
     sigma = max(abs(v.real) for v in direct)
-    return RichResult(payload={
-        "s": direct[0] if scalar else direct, "omega": omega, "T": Tv,
-        "closed_form": closed[0] if scalar else closed,
-        "max_difference": gap, "forms_agree": gap <= 1e-9,
-        "max_real_part": sigma, "sigma_vanishes": sigma <= 1e-9,
-        "method": "Rangayyan (2024) eq. (3.140)"})
+    return RichResult(
+        payload={
+            "s": direct[0] if scalar else direct,
+            "omega": omega,
+            "T": Tv,
+            "closed_form": closed[0] if scalar else closed,
+            "max_difference": gap,
+            "forms_agree": gap <= 1e-9,
+            "max_real_part": sigma,
+            "sigma_vanishes": sigma <= 1e-9,
+            "method": "Rangayyan (2024) eq. (3.140)",
+        }
+    )
 
 
 rangayyan_ch3_bilinear_unit_circle_relation = bilinunit  # pre-policy spelling
@@ -3318,14 +3713,19 @@ def bilinwarp(omega, T=1.0):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     if any(abs(w) >= pi for w in ws):
-        raise ValueError("eq. (3.141) needs |w| < pi; w = pi maps to an "
-                         "infinite analog frequency")
+        raise ValueError("eq. (3.141) needs |w| < pi; w = pi maps to an infinite analog frequency")
     out = [(2.0 / Tv) * tan(w / 2.0) for w in ws]
-    return RichResult(payload={
-        "Omega": out[0] if scalar else out, "omega": omega, "T": Tv,
-        "nonlinear": True, "prewarping_is_required": True,
-        "compression_is_severe_near_nyquist": True,
-        "method": "Rangayyan (2024) eq. (3.141)"})
+    return RichResult(
+        payload={
+            "Omega": out[0] if scalar else out,
+            "omega": omega,
+            "T": Tv,
+            "nonlinear": True,
+            "prewarping_is_required": True,
+            "compression_is_severe_near_nyquist": True,
+            "method": "Rangayyan (2024) eq. (3.141)",
+        }
+    )
 
 
 rangayyan_ch3_bilinear_warping_omega_to_Omega = bilinwarp  # pre-policy spelling
@@ -3350,11 +3750,17 @@ def bilinunwarp(Omega, T=1.0):
     out = [2.0 * atan(W * Tv / 2.0) for W in Ws]
     back = [(2.0 / Tv) * tan(w / 2.0) for w in out]
     gap = max(abs(a - b) for a, b in zip(Ws, back)) if Ws else 0.0
-    return RichResult(payload={
-        "omega": out[0] if scalar else out, "Omega": Omega, "T": Tv,
-        "round_trip_error": gap, "inverts_eq_3_141": gap <= 1e-9,
-        "always_inside_the_open_interval": all(abs(w) < pi for w in out),
-        "method": "Rangayyan (2024) eq. (3.142)"})
+    return RichResult(
+        payload={
+            "omega": out[0] if scalar else out,
+            "Omega": Omega,
+            "T": Tv,
+            "round_trip_error": gap,
+            "inverts_eq_3_141": gap <= 1e-9,
+            "always_inside_the_open_interval": all(abs(w) < pi for w in out),
+            "method": "Rangayyan (2024) eq. (3.142)",
+        }
+    )
 
 
 rangayyan_ch3_bilinear_warping_Omega_to_omega = bilinunwarp  # pre-policy spelling
@@ -3385,15 +3791,13 @@ def bwdigital(Omega_c=None, N=None, T=1.0, fc=None, fs=None, z=None):
     if n < 1:
         raise ValueError("the order N must be at least 1")
     if (Omega_c is None) == (fc is None):
-        raise ValueError("give either the prewarped Omega_c or a digital "
-                         "cutoff fc with fs, not both and not neither")
+        raise ValueError("give either the prewarped Omega_c or a digital cutoff fc with fs, not both and not neither")
     if fc is not None:
         if fs is None:
             raise ValueError("fc needs the sampling rate fs")
         fsv, fcv = float(fs), float(fc)
         if not 0 < fcv < fsv / 2.0:
-            raise ValueError("the cutoff must lie strictly between 0 and "
-                             "the Nyquist frequency")
+            raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency")
         Tv = 1.0 / fsv
         Wc = (2.0 / Tv) * tan(pi * fcv / fsv)
         prewarped = True
@@ -3409,7 +3813,7 @@ def bwdigital(Omega_c=None, N=None, T=1.0, fc=None, fs=None, z=None):
     for p in poles_s:
         poles_z.append((2.0 / Tv + p) / (2.0 / Tv - p))
     den = [c.real for c in _poly_from_roots(poles_z)]
-    den = [c / den[-1] for c in den]              # a_0 = 1 in z^-1 form
+    den = [c / den[-1] for c in den]  # a_0 = 1 in z^-1 form
     a = list(reversed(den))
     num = [c.real for c in _poly_from_roots([-1.0] * n)]
     b = list(reversed(num))
@@ -3430,13 +3834,24 @@ def bwdigital(Omega_c=None, N=None, T=1.0, fc=None, fs=None, z=None):
                 raise ValueError("z is a pole of H(z)")
             vals.append(_polyz(b, zv) / dd)
         Hz = vals[0] if scalar else vals
-    return RichResult(payload={
-        "b": b, "a": a, "gain": Gp, "poles_z": poles_z, "H": Hz,
-        "N": n, "Omega_c": Wc, "T": Tv, "prewarped_here": prewarped,
-        "zeros_at_minus_one": n,
-        "zeros_are_forced_by_the_bilinear_transform": True,
-        "dc_gain": 1.0, "leading_a_is_one": abs(a[0] - 1.0) < 1e-12,
-        "method": "Rangayyan (2024) eq. (3.143)"})
+    return RichResult(
+        payload={
+            "b": b,
+            "a": a,
+            "gain": Gp,
+            "poles_z": poles_z,
+            "H": Hz,
+            "N": n,
+            "Omega_c": Wc,
+            "T": Tv,
+            "prewarped_here": prewarped,
+            "zeros_at_minus_one": n,
+            "zeros_are_forced_by_the_bilinear_transform": True,
+            "dc_gain": 1.0,
+            "leading_a_is_one": abs(a[0] - 1.0) < 1e-12,
+            "method": "Rangayyan (2024) eq. (3.143)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_digital_transfer_function = bwdigital  # pre-policy spelling
@@ -3486,13 +3901,20 @@ def bwdirect(omega, omega_c, N):
     scalar = not isinstance(omega, (list, tuple))
     ws = [float(omega)] if scalar else [float(v) for v in omega]
     sq = [1.0 / (1.0 + (abs(w) / wc) ** (2 * n)) for w in ws]
-    return RichResult(payload={
-        "squared_magnitude": sq[0] if scalar else sq,
-        "magnitude": (sq[0] ** 0.5) if scalar else [v ** 0.5 for v in sq],
-        "omega": omega, "omega_c": wc, "N": n,
-        "half_power_at_cutoff": 0.5, "no_warping": True,
-        "zero_phase": True, "not_causal": True,
-        "method": "Rangayyan (2024) eq. (3.145)"})
+    return RichResult(
+        payload={
+            "squared_magnitude": sq[0] if scalar else sq,
+            "magnitude": (sq[0] ** 0.5) if scalar else [v**0.5 for v in sq],
+            "omega": omega,
+            "omega_c": wc,
+            "N": n,
+            "half_power_at_cutoff": 0.5,
+            "no_warping": True,
+            "zero_phase": True,
+            "not_causal": True,
+            "method": "Rangayyan (2024) eq. (3.145)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_lowpass_direct_specification = bwdirect  # pre-policy spelling
@@ -3521,15 +3943,13 @@ def bwlpdft(K, kc=None, N=2, fc=None, fs=None):
     if n < 1:
         raise ValueError("the order N must be at least 1")
     if (kc is None) == (fc is None):
-        raise ValueError("give either the cutoff index kc or a cutoff fc "
-                         "with fs, not both and not neither")
+        raise ValueError("give either the cutoff index kc or a cutoff fc with fs, not both and not neither")
     if fc is not None:
         if fs is None:
             raise ValueError("fc needs the sampling rate fs")
         fsv, fcv = float(fs), float(fc)
         if not 0 < fcv < fsv / 2.0:
-            raise ValueError("the cutoff must lie strictly between 0 and "
-                             "the Nyquist frequency")
+            raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency")
         kcv = int(ceil(Kv * fcv / fsv))
     else:
         kcv = int(kc)
@@ -3540,13 +3960,20 @@ def bwlpdft(K, kc=None, N=2, fc=None, fs=None):
     full = list(sq)
     for k in range(half + 1, Kv):
         full.append(sq[Kv - k])
-    return RichResult(payload={
-        "squared_magnitude": full,
-        "magnitude": [v ** 0.5 for v in full],
-        "half_spectrum": sq, "K": Kv, "kc": kcv, "N": n,
-        "dc_gain": 1.0, "reflected": True,
-        "cutoff_index_uses_a_ceiling": True,
-        "method": "Rangayyan (2024) eq. (3.146)"})
+    return RichResult(
+        payload={
+            "squared_magnitude": full,
+            "magnitude": [v**0.5 for v in full],
+            "half_spectrum": sq,
+            "K": Kv,
+            "kc": kcv,
+            "N": n,
+            "dc_gain": 1.0,
+            "reflected": True,
+            "cutoff_index_uses_a_ceiling": True,
+            "method": "Rangayyan (2024) eq. (3.146)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_lowpass_dft_indexed = bwlpdft  # pre-policy spelling
@@ -3573,15 +4000,13 @@ def bwhpdft(K, kc=None, N=2, fc=None, fs=None):
     if n < 1:
         raise ValueError("the order N must be at least 1")
     if (kc is None) == (fc is None):
-        raise ValueError("give either the cutoff index kc or a cutoff fc "
-                         "with fs, not both and not neither")
+        raise ValueError("give either the cutoff index kc or a cutoff fc with fs, not both and not neither")
     if fc is not None:
         if fs is None:
             raise ValueError("fc needs the sampling rate fs")
         fsv, fcv = float(fs), float(fc)
         if not 0 < fcv < fsv / 2.0:
-            raise ValueError("the cutoff must lie strictly between 0 and "
-                             "the Nyquist frequency")
+            raise ValueError("the cutoff must lie strictly between 0 and the Nyquist frequency")
         kcv = int(ceil(Kv * fcv / fsv))
     else:
         kcv = int(kc)
@@ -3594,13 +4019,20 @@ def bwhpdft(K, kc=None, N=2, fc=None, fs=None):
     full = list(sq)
     for k in range(half + 1, Kv):
         full.append(sq[Kv - k])
-    return RichResult(payload={
-        "squared_magnitude": full,
-        "magnitude": [v ** 0.5 for v in full],
-        "half_spectrum": sq, "K": Kv, "kc": kcv, "N": n,
-        "dc_gain": 0.0, "reflected": True,
-        "leaves_high_frequency_noise_untouched": True,
-        "method": "Rangayyan (2024) eq. (3.149)"})
+    return RichResult(
+        payload={
+            "squared_magnitude": full,
+            "magnitude": [v**0.5 for v in full],
+            "half_spectrum": sq,
+            "K": Kv,
+            "kc": kcv,
+            "N": n,
+            "dc_gain": 0.0,
+            "reflected": True,
+            "leaves_high_frequency_noise_untouched": True,
+            "method": "Rangayyan (2024) eq. (3.149)",
+        }
+    )
 
 
 rangayyan_ch3_butterworth_highpass_dft_indexed = bwhpdft  # pre-policy spelling
@@ -3625,14 +4057,12 @@ def notch60(fs, f0=60.0, z=None):
         raise ValueError("fs must be positive")
     f0v = float(f0)
     if not 0 < f0v < fsv / 2.0:
-        raise ValueError("the notch frequency must lie strictly between 0 "
-                         "and the Nyquist frequency")
+        raise ValueError("the notch frequency must lie strictly between 0 and the Nyquist frequency")
     w0 = 2.0 * pi * f0v / fsv
     b = [1.0, -2.0 * cos(w0), 1.0]
     dc = fsum(b)
     if abs(dc) <= 1e-300:
-        raise ValueError("the notch sits at DC; the gain cannot be "
-                         "normalized there")
+        raise ValueError("the notch sits at DC; the gain cannot be normalized there")
     G = 1.0 / dc
     b = [G * v for v in b]
     Hz = None
@@ -3642,14 +4072,24 @@ def notch60(fs, f0=60.0, z=None):
         vals = [_polyz(b, zv) for zv in zs]
         Hz = vals[0] if scalar else vals
     zeros = [complex(cos(w0), sin(w0)), complex(cos(w0), -sin(w0))]
-    return RichResult(payload={
-        "b": b, "a": [1.0], "gain": G, "zeros": zeros, "H": Hz,
-        "f0": f0v, "fs": fsv, "omega_0": w0,
-        "gain_at_the_notch": abs(_polyz(b, complex(cos(w0), sin(w0)))),
-        "dc_gain": 1.0, "fir": True, "linear_phase": True,
-        "notch_is_wide_without_poles": True,
-        "method": "Rangayyan (2024) Section 3.7 (notch filter with two "
-                  "zeros)"})
+    return RichResult(
+        payload={
+            "b": b,
+            "a": [1.0],
+            "gain": G,
+            "zeros": zeros,
+            "H": Hz,
+            "f0": f0v,
+            "fs": fsv,
+            "omega_0": w0,
+            "gain_at_the_notch": abs(_polyz(b, complex(cos(w0), sin(w0)))),
+            "dc_gain": 1.0,
+            "fir": True,
+            "linear_phase": True,
+            "notch_is_wide_without_poles": True,
+            "method": "Rangayyan (2024) Section 3.7 (notch filter with two zeros)",
+        }
+    )
 
 
 rangayyan_ch3_notch_filter_60Hz = notch60  # pre-policy spelling
@@ -3679,103 +4119,109 @@ def mfilth(g, normalize=False):
     energy = fsum(v * v for v in gs)
     if normalize:
         if energy <= 0:
-            raise ValueError("a template with no energy cannot be "
-                             "normalized")
-        h = [v / (energy ** 0.5) for v in h]
-    return RichResult(payload={
-        "h": h, "template": list(gs), "n": len(h),
-        "energy": energy, "normalized": bool(normalize),
-        "peak_index": len(gs) - 1, "time_reversed": True,
-        "output_is_the_cross_correlation": True,
-        "method": "Rangayyan (2024) Ch. 4 (matched filter)"})
+            raise ValueError("a template with no energy cannot be normalized")
+        h = [v / (energy**0.5) for v in h]
+    return RichResult(
+        payload={
+            "h": h,
+            "template": list(gs),
+            "n": len(h),
+            "energy": energy,
+            "normalized": bool(normalize),
+            "peak_index": len(gs) - 1,
+            "time_reversed": True,
+            "output_is_the_cross_correlation": True,
+            "method": "Rangayyan (2024) Ch. 4 (matched filter)",
+        }
+    )
 
 
 rangayyan_ch4_matched_filter_h_example = mfilth  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'Butterworth highpass design',
-    'Butterworth lowpass design, eqs. (3.135)-(3.143)',
-    'comb filter, notches at every multiple of fs/N',
-    'first difference applied to a record',
-    'second-order difference operator',
-    'rgfir: FIR filter design (windowed sinc) -- see rangayyan_fir_filter for sources.',
-    'frequency response from filter coefficients',
-    'group delay from the unwrapped phase',
-    'rgiir: IIR Butterworth filter -- Rangayyan & Krishnan Sec 3.7.1 / 3.7.2.',
-    'rgmavg: Moving-average filter.',
-    'notch filter with two zeros and two poles',
-    'rgosflt: Order-statistic (median) filter.',
-    'phase response, unwrapped by default',
-    'ideal sinc lowpass kernel, optionally windowed',
-    'rgtfe: Transfer function estimate.',
-    'Blackman window',
-    'Hamming window',
-    'Hann window',
-    'window functions: rectangular, Hann, Hamming, Blackman',
-    'rng011: Shannon entropy of a discrete process (Rangayyan eq. 3.11).',
-    'rng039: 11-point moving average.',
-    'rng040: Linear-ramp smoothing filter (Rangayyan eq. 3.42).',
-    'rng043: Combined impulse response of two LSI systems in series is their convolution..',
-    'rng047: Combined impulse response of two LSI systems in parallel is their sum..',
-    'rng048: Bilateral Laplace transform of an impulse response h(t)..',
-    'rng050: Frequency response obtained by evaluating the Laplace transform on the imaginary axis..',
-    'rng053: Z-transform of a causal FIR system of length N (transfer function).',
-    'rng056: Generic rational transfer function of an IIR filter..',
-    'rng057: Time-domain difference equation form of an IIR filter..',
-    'rng061: Magnitude response from products of distances to zeros and poles..',
-    'rng062: Phase response from sums of angles to zeros and poles..',
-    'rng087: General FIR filter.',
-    'rng088: Transfer function of a generic MA (FIR) filter of order N..',
-    'rng089: Time-domain difference equation of the von Hann (Hanning) smoothing filter..',
-    'rng090: Impulse response of the Hann smoothing filter..',
-    'rng091: Z-domain expression for the Hann filter output..',
-    'rng092: Transfer function of the Hann filter (double zero at z=-1)..',
-    'rng093: Frequency response of the Hann filter on the unit circle..',
-    'rng094: Simplified closed-form frequency response of the Hann filter..',
-    'rng095: Magnitude response of the Hann filter..',
-    'rng096: Linear phase response of the Hann filter..',
-    'rng097: 8-point moving average.',
-    'rng098: Impulse response of the 8-point MA filter as a sum of shifted deltas..',
-    'rng099: Transfer function of the 8-point MA filter..',
-    'rng100: Frequency response of the 8-point MA filter..',
-    'rng101: Continuous-time integral over a sliding window of duration tau..',
-    'rng102: General definition of running integral over (-inf, t]..',
-    'rng103: Running integral of a causal signal over [0, t].',
-    'rng104: Fourier transform of the integral of x(t) including DC term..',
-    'rng105: Frequency response of the ideal integrator (DC term aside)..',
-    'rng106: Magnitude response of the ideal integrator..',
-    'rng107: Phase response of the ideal integrator (constant -pi/2)..',
-    'rng108: Recursive form of the 8-point MA filter using delayed output..',
-    'rng109: Transfer function of the recursive 8-point MA filter (sinc-like)..',
-    'rng110: Closed-form sinc-type frequency response of the recursive 8-point MA filter..',
-    'rng111: First-order difference operator approximating the time derivative..',
-    'rng112: Transfer function of the first-order difference operator..',
-    'rng113: Frequency response of the first-order difference operator..',
-    'rng114: Magnitude response of the first-order difference operator..',
-    'rng115: Phase response of the first-order difference operator..',
-    'rng116: Three-point central-difference operator (lower-noise derivative)..',
-    'rng117: Transfer function of the three-point central-difference operator..',
-    'rng118: Magnitude response of the three-point central-difference operator..',
-    'rng119: Phase response of the three-point central-difference operator..',
-    'rng120: Modified first-difference filter with pole at 0.995 to remove baseline wander..',
-    'rng121: Equivalent (z, not z^-1) form of the baseline-wander filter..',
-    'rng122: Time-domain difference equation of the baseline-wander filter..',
-    'rng123: Squared-magnitude response of the analog Butterworth lowpass filter..',
-    'rng124: Squared transfer function of the Butterworth lowpass filter in s-domain..',
-    'rng125: Pole positions on the Butterworth circle in the s-plane..',
-    'rng126: Analog Butterworth transfer function from N left-half-plane poles..',
-    'rng127: Bilinear transformation mapping s-domain to z-domain..',
-    'rng128: Bilinear transform restricted to the unit circle (sigma=0)..',
-    'rng129: Bilinear frequency warping: analog Omega from discrete omega..',
-    'rng130: Bilinear frequency warping: discrete omega from analog Omega..',
-    'rng131: Digital Butterworth transfer function after bilinear transform (IIR form)..',
-    'rng132: General time-domain difference equation of an IIR filter..',
-    'rng133: Direct discrete-domain specification of the Butterworth lowpass response..',
-    'rng134: Butterworth lowpass response indexed by DFT bin k..',
-    'rng135: Butterworth highpass response indexed by DFT bin k..',
-    'rng136: Notch filter with two zeros at 60 Hz on the unit circle..',
-    'rng226: Matched-filter impulse response for the basic pattern g(n)..',
+    "Butterworth highpass design",
+    "Butterworth lowpass design, eqs. (3.135)-(3.143)",
+    "comb filter, notches at every multiple of fs/N",
+    "first difference applied to a record",
+    "second-order difference operator",
+    "rgfir: FIR filter design (windowed sinc) -- see rangayyan_fir_filter for sources.",
+    "frequency response from filter coefficients",
+    "group delay from the unwrapped phase",
+    "rgiir: IIR Butterworth filter -- Rangayyan & Krishnan Sec 3.7.1 / 3.7.2.",
+    "rgmavg: Moving-average filter.",
+    "notch filter with two zeros and two poles",
+    "rgosflt: Order-statistic (median) filter.",
+    "phase response, unwrapped by default",
+    "ideal sinc lowpass kernel, optionally windowed",
+    "rgtfe: Transfer function estimate.",
+    "Blackman window",
+    "Hamming window",
+    "Hann window",
+    "window functions: rectangular, Hann, Hamming, Blackman",
+    "rng011: Shannon entropy of a discrete process (Rangayyan eq. 3.11).",
+    "rng039: 11-point moving average.",
+    "rng040: Linear-ramp smoothing filter (Rangayyan eq. 3.42).",
+    "rng043: Combined impulse response of two LSI systems in series is their convolution..",
+    "rng047: Combined impulse response of two LSI systems in parallel is their sum..",
+    "rng048: Bilateral Laplace transform of an impulse response h(t)..",
+    "rng050: Frequency response obtained by evaluating the Laplace transform on the imaginary axis..",
+    "rng053: Z-transform of a causal FIR system of length N (transfer function).",
+    "rng056: Generic rational transfer function of an IIR filter..",
+    "rng057: Time-domain difference equation form of an IIR filter..",
+    "rng061: Magnitude response from products of distances to zeros and poles..",
+    "rng062: Phase response from sums of angles to zeros and poles..",
+    "rng087: General FIR filter.",
+    "rng088: Transfer function of a generic MA (FIR) filter of order N..",
+    "rng089: Time-domain difference equation of the von Hann (Hanning) smoothing filter..",
+    "rng090: Impulse response of the Hann smoothing filter..",
+    "rng091: Z-domain expression for the Hann filter output..",
+    "rng092: Transfer function of the Hann filter (double zero at z=-1)..",
+    "rng093: Frequency response of the Hann filter on the unit circle..",
+    "rng094: Simplified closed-form frequency response of the Hann filter..",
+    "rng095: Magnitude response of the Hann filter..",
+    "rng096: Linear phase response of the Hann filter..",
+    "rng097: 8-point moving average.",
+    "rng098: Impulse response of the 8-point MA filter as a sum of shifted deltas..",
+    "rng099: Transfer function of the 8-point MA filter..",
+    "rng100: Frequency response of the 8-point MA filter..",
+    "rng101: Continuous-time integral over a sliding window of duration tau..",
+    "rng102: General definition of running integral over (-inf, t]..",
+    "rng103: Running integral of a causal signal over [0, t].",
+    "rng104: Fourier transform of the integral of x(t) including DC term..",
+    "rng105: Frequency response of the ideal integrator (DC term aside)..",
+    "rng106: Magnitude response of the ideal integrator..",
+    "rng107: Phase response of the ideal integrator (constant -pi/2)..",
+    "rng108: Recursive form of the 8-point MA filter using delayed output..",
+    "rng109: Transfer function of the recursive 8-point MA filter (sinc-like)..",
+    "rng110: Closed-form sinc-type frequency response of the recursive 8-point MA filter..",
+    "rng111: First-order difference operator approximating the time derivative..",
+    "rng112: Transfer function of the first-order difference operator..",
+    "rng113: Frequency response of the first-order difference operator..",
+    "rng114: Magnitude response of the first-order difference operator..",
+    "rng115: Phase response of the first-order difference operator..",
+    "rng116: Three-point central-difference operator (lower-noise derivative)..",
+    "rng117: Transfer function of the three-point central-difference operator..",
+    "rng118: Magnitude response of the three-point central-difference operator..",
+    "rng119: Phase response of the three-point central-difference operator..",
+    "rng120: Modified first-difference filter with pole at 0.995 to remove baseline wander..",
+    "rng121: Equivalent (z, not z^-1) form of the baseline-wander filter..",
+    "rng122: Time-domain difference equation of the baseline-wander filter..",
+    "rng123: Squared-magnitude response of the analog Butterworth lowpass filter..",
+    "rng124: Squared transfer function of the Butterworth lowpass filter in s-domain..",
+    "rng125: Pole positions on the Butterworth circle in the s-plane..",
+    "rng126: Analog Butterworth transfer function from N left-half-plane poles..",
+    "rng127: Bilinear transformation mapping s-domain to z-domain..",
+    "rng128: Bilinear transform restricted to the unit circle (sigma=0)..",
+    "rng129: Bilinear frequency warping: analog Omega from discrete omega..",
+    "rng130: Bilinear frequency warping: discrete omega from analog Omega..",
+    "rng131: Digital Butterworth transfer function after bilinear transform (IIR form)..",
+    "rng132: General time-domain difference equation of an IIR filter..",
+    "rng133: Direct discrete-domain specification of the Butterworth lowpass response..",
+    "rng134: Butterworth lowpass response indexed by DFT bin k..",
+    "rng135: Butterworth highpass response indexed by DFT bin k..",
+    "rng136: Notch filter with two zeros at 60 Hz on the unit circle..",
+    "rng226: Matched-filter impulse response for the basic pattern g(n)..",
 ]
 
 

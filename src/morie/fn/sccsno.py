@@ -79,12 +79,10 @@ groups, multiple risk periods and pre-exposure windows followed here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["build_intervals", "sccs_loglik", "sccs_fit",
-           "relative_incidence", "check_assumptions"]
+__all__ = ["build_intervals", "sccs_loglik", "sccs_fit", "relative_incidence", "check_assumptions"]
 
 _EPS = 1e-12
 
@@ -97,8 +95,7 @@ def _cuts(start, end, exposure, risk_periods, age_breaks):
             pts.add(float(b))
     if exposure is not None:
         for a, b in risk_periods:
-            for p in (float(exposure) + float(a),
-                      float(exposure) + float(b)):
+            for p in (float(exposure) + float(a), float(exposure) + float(b)):
                 if float(start) < p < float(end):
                     pts.add(p)
     return sorted(pts)
@@ -125,8 +122,7 @@ def _risk(t, exposure, risk_periods):
     return 0
 
 
-def build_intervals(start, end, exposure, event_times, risk_periods,
-                    age_breaks):
+def build_intervals(start, end, exposure, event_times, risk_periods, age_breaks):
     r"""One individual's follow-up, cut into (age band, risk period)
     cells with their exposure times and event counts.
 
@@ -136,30 +132,22 @@ def build_intervals(start, end, exposure, event_times, risk_periods,
     """
     s, e = float(start), float(end)
     if not e > s:
-        raise ValueError("sccsno: the observation period must have "
-                         "positive length, got [%g, %g]" % (s, e))
+        raise ValueError(f"sccsno: the observation period must have positive length, got [{s:g}, {e:g}]")
     for a, b in risk_periods:
         if not float(b) > float(a):
-            raise ValueError("sccsno: a risk period must satisfy "
-                             "b > a, got (%g, %g]" % (a, b))
+            raise ValueError(f"sccsno: a risk period must satisfy b > a, got ({a:g}, {b:g}]")
     if exposure is not None and not s <= float(exposure) <= e:
-        raise ValueError("sccsno: the exposure at %g lies outside the "
-                         "observation period [%g, %g]"
-                         % (exposure, s, e))
+        raise ValueError(f"sccsno: the exposure at {exposure:g} lies outside the observation period [{s:g}, {e:g}]")
     cuts = _cuts(s, e, exposure, risk_periods, age_breaks)
     cells = []
     for q in range(len(cuts) - 1):
         lo, hi = cuts[q], cuts[q + 1]
         mid = 0.5 * (lo + hi)
-        cells.append([_band(mid, age_breaks),
-                      _risk(mid, exposure, risk_periods),
-                      hi - lo, 0])
+        cells.append([_band(mid, age_breaks), _risk(mid, exposure, risk_periods), hi - lo, 0])
     for t in event_times:
         tv = float(t)
         if not s <= tv <= e:
-            raise ValueError("sccsno: an event at %g lies outside the "
-                             "observation period [%g, %g]"
-                             % (tv, s, e))
+            raise ValueError(f"sccsno: an event at {tv:g} lies outside the observation period [{s:g}, {e:g}]")
         placed = False
         for q in range(len(cuts) - 1):
             if cuts[q] < tv <= cuts[q + 1] or (q == 0 and tv == cuts[0]):
@@ -180,7 +168,7 @@ def sccs_loglik(params, cells_by_person, n_risk, n_age):
     conditioning.
     """
     beta = [0.0] + [float(v) for v in params[:n_risk]]
-    alpha = [0.0] + [float(v) for v in params[n_risk:n_risk + n_age - 1]]
+    alpha = [0.0] + [float(v) for v in params[n_risk : n_risk + n_age - 1]]
     ll = 0.0
     for cells in cells_by_person:
         tot = sum(n for _, _, _, n in cells)
@@ -190,9 +178,8 @@ def sccs_loglik(params, cells_by_person, n_risk, n_age):
         for j, r, e, _ in cells:
             den += e * math.exp(alpha[j] + beta[r])
         if den <= _EPS:
-            raise ValueError("sccsno: an individual has no observation "
-                             "time")
-        for j, r, e, n in cells:
+            raise ValueError("sccsno: an individual has no observation time")
+        for j, r, e, n in cells:  # noqa: B007 - read after the loop
             if n:
                 ll += n * (alpha[j] + beta[r])
         ll -= tot * math.log(den)
@@ -227,23 +214,20 @@ def _grad_hess(params, cells_by_person, n_risk, n_age):
             w.append(v)
             rows.append(idx(j, r))
         pr = [v / den for v in w]
-        for c, (j, r, e, n) in enumerate(cells):
+        for c, (_j, _r, _e, n) in enumerate(cells):
             if n:
                 for a in range(p):
                     g[a] += n * rows[c][a]
-        mean = [sum(pr[c] * rows[c][a] for c in range(len(cells)))
-                for a in range(p)]
+        mean = [sum(pr[c] * rows[c][a] for c in range(len(cells))) for a in range(p)]
         for a in range(p):
             g[a] -= tot * mean[a]
             for b in range(p):
-                sec = sum(pr[c] * rows[c][a] * rows[c][b]
-                          for c in range(len(cells)))
+                sec = sum(pr[c] * rows[c][a] * rows[c][b] for c in range(len(cells)))
                 H[a][b] -= tot * (sec - mean[a] * mean[b])
     return g, H
 
 
-def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10,
-             ridge=1e-10):
+def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10, ridge=1e-10):
     r"""Maximise the conditional likelihood by Newton-Raphson.
 
     ``cases`` is a sequence of dicts with keys ``start``, ``end``,
@@ -263,8 +247,7 @@ def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10,
         ev = list(c.get("events", ()))
         if not ev:
             continue
-        cells = build_intervals(c["start"], c["end"], c.get("exposure"),
-                                ev, rp, ab)
+        cells = build_intervals(c["start"], c["end"], c.get("exposure"), ev, rp, ab)
         cells_by_person.append(cells)
         used += 1
     if used == 0:
@@ -272,16 +255,15 @@ def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10,
     p = n_risk + n_age - 1
     par = [0.0] * p
     conv, it = False, 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         g, H = _grad_hess(par, cells_by_person, n_risk, n_age)
-        A = [[-H[a][b] + (ridge if a == b else 0.0) for b in range(p)]
-             for a in range(p)]
+        A = [[-H[a][b] + (ridge if a == b else 0.0) for b in range(p)] for a in range(p)]
         try:
             step = k.cholsolve(A, g)
-        except Exception:
-            raise ValueError("sccsno: the information matrix is "
-                             "singular -- some interval carries no "
-                             "events or no exposure time")
+        except Exception as exc:
+            raise ValueError(
+                "sccsno: the information matrix is singular -- some interval carries no events or no exposure time"
+            ) from exc
         mx = 0.0
         for a in range(p):
             par[a] += step[a]
@@ -290,27 +272,30 @@ def sccs_fit(cases, risk_periods, age_breaks=(), iters=100, tol=1e-10,
             conv = True
             break
     g, H = _grad_hess(par, cells_by_person, n_risk, n_age)
-    A = [[-H[a][b] + (ridge if a == b else 0.0) for b in range(p)]
-         for a in range(p)]
-    cols = [k.cholsolve(A, [1.0 if q == a else 0.0 for q in range(p)])
-            for a in range(p)]
-    se = [math.sqrt(cols[a][a]) if cols[a][a] > 0 else float("nan")
-          for a in range(p)]
+    A = [[-H[a][b] + (ridge if a == b else 0.0) for b in range(p)] for a in range(p)]
+    cols = [k.cholsolve(A, [1.0 if q == a else 0.0 for q in range(p)]) for a in range(p)]
+    se = [math.sqrt(cols[a][a]) if cols[a][a] > 0 else float("nan") for a in range(p)]
     beta = par[:n_risk]
-    return RichResult(payload={
-        "estimate": [math.exp(v) for v in beta],
-        "relative_incidence": [math.exp(v) for v in beta],
-        "log_ri": beta, "se_log_ri": se[:n_risk],
-        "age_effects": par[n_risk:], "se_age": se[n_risk:],
-        "coef": par, "se": se,
-        "loglik": sccs_loglik(par, cells_by_person, n_risk, n_age),
-        "n_cases": used, "converged": conv, "iterations": it,
-        "n_risk_periods": n_risk, "n_age_bands": n_age,
-        "method": "self-controlled case series, conditional "
-                  "likelihood of Farrington (1995) Sec. 3",
-        "conditions_out": "individual frailty and every "
-                          "time-invariant covariate",
-    })
+    return RichResult(
+        payload={
+            "estimate": [math.exp(v) for v in beta],
+            "relative_incidence": [math.exp(v) for v in beta],
+            "log_ri": beta,
+            "se_log_ri": se[:n_risk],
+            "age_effects": par[n_risk:],
+            "se_age": se[n_risk:],
+            "coef": par,
+            "se": se,
+            "loglik": sccs_loglik(par, cells_by_person, n_risk, n_age),
+            "n_cases": used,
+            "converged": conv,
+            "iterations": it,
+            "n_risk_periods": n_risk,
+            "n_age_bands": n_age,
+            "method": "self-controlled case series, conditional likelihood of Farrington (1995) Sec. 3",
+            "conditions_out": "individual frailty and every time-invariant covariate",
+        }
+    )
 
 
 def relative_incidence(fit, level=0.95):
@@ -318,10 +303,9 @@ def relative_incidence(fit, level=0.95):
     z = k.qnorm(0.5 + float(level) / 2.0)
     out = []
     for b, s in zip(fit["log_ri"], fit["se_log_ri"]):
-        out.append({"ri": math.exp(b),
-                    "lower": math.exp(b - z * s),
-                    "upper": math.exp(b + z * s),
-                    "log_ri": b, "se": s})
+        out.append(
+            {"ri": math.exp(b), "lower": math.exp(b - z * s), "upper": math.exp(b + z * s), "log_ri": b, "se": s}
+        )
     return {"intervals": out, "level": float(level)}
 
 
@@ -334,24 +318,28 @@ def check_assumptions(fit_with_pre, pre_index=0, tol=0.25):
     """
     ri = fit_with_pre["relative_incidence"][int(pre_index)]
     ok = abs(math.log(ri)) <= float(tol)
-    return {"pre_exposure_ri": ri, "consistent_with_design": ok,
-            "tolerance_log": float(tol),
-            "interpretation":
-                "a pre-exposure RI near 1 is consistent with "
-                "event-independent exposure; far from 1 indicates the "
-                "event affected exposure, which invalidates the "
-                "design rather than biasing it"}
+    return {
+        "pre_exposure_ri": ri,
+        "consistent_with_design": ok,
+        "tolerance_log": float(tol),
+        "interpretation": "a pre-exposure RI near 1 is consistent with "
+        "event-independent exposure; far from 1 indicates the "
+        "event affected exposure, which invalidates the "
+        "design rather than biasing it",
+    }
 
 
 def cheatsheet():
-    return ("sccsno: SCCS. Cases ONLY. Conditioning on each person's "
-            "event count cancels phi_i exactly, so every "
-            "time-INVARIANT confounder -- measured or not -- is gone "
-            "by construction. What does NOT cancel is anything varying "
-            "WITHIN a person: age must be modelled with bands or it "
-            "leaks into beta. Requires no event-dependent censoring "
-            "and no event-dependent exposure; a pre-exposure window "
-            "with RI far from 1 says the latter failed.")
+    return (
+        "sccsno: SCCS. Cases ONLY. Conditioning on each person's "
+        "event count cancels phi_i exactly, so every "
+        "time-INVARIANT confounder -- measured or not -- is gone "
+        "by construction. What does NOT cancel is anything varying "
+        "WITHIN a person: age must be modelled with bands or it "
+        "leaks into beta. Requires no event-dependent censoring "
+        "and no event-dependent exposure; a pre-exposure window "
+        "with RI far from 1 says the latter failed."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -45,7 +45,7 @@ def dp_density(
 
     for _ in range(n_iter):
         for i in range(n):
-            old_k = assignments[i]
+            assignments[i]
             counts = {}
             for j in range(n):
                 if j != i:

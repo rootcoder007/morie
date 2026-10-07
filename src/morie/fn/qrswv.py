@@ -8,7 +8,7 @@ from ._containers import DescriptiveResult
 
 
 def qrs_waveform_features(beat: np.ndarray) -> DescriptiveResult:
-    """Everything flows. -- Heraclitus"""
+    """Waveform features of a single QRS complex (one heartbeat)."""
     from morie._waveform import qrs_waveform_features as _backend
 
     features = _backend(beat)

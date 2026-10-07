@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner5e17 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner5e17 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_5_equation_17,
+)
 
 
 def test_stirling_form_tracks_the_exact_poisson_probability():

@@ -763,11 +763,12 @@ def otis_aipw_superlearner(
     # (_ml_core, the same second-order split rule as xgboost) instead
     # of the external xgboost package.
     from morie.fn._ml_core import (
-        GradientBoostingClassifier as _GBC,
+        GradientBoostingClassifier as _GbClassifier,
     )
     from morie.fn._ml_core import (
-        GradientBoostingRegressor as _GBR,
+        GradientBoostingRegressor as _GbRegressor,
     )
+
     HAS_XGB = True
 
     data = df[[treatment, outcome] + covariates].dropna().copy()
@@ -791,8 +792,7 @@ def otis_aipw_superlearner(
             out.append(
                 (
                     "gb",
-                    _GBR(n_estimators=300, max_depth=4,
-                         learning_rate=0.05, random_state=seed),
+                    _GbRegressor(n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -806,8 +806,7 @@ def otis_aipw_superlearner(
             out.append(
                 (
                     "gb",
-                    _GBC(n_estimators=300, max_depth=4,
-                         learning_rate=0.05, random_state=seed),
+                    _GbClassifier(n_estimators=300, max_depth=4, learning_rate=0.05, random_state=seed),
                 )
             )
         return out
@@ -829,7 +828,7 @@ def otis_aipw_superlearner(
         test = folds[k]
         train = np.setdiff1d(np.arange(n), test)
         # Propensity learners
-        for j, (name, model) in enumerate(prop_learn):
+        for j, (_name, model) in enumerate(prop_learn):
             try:
                 m = type(model)(**model.get_params())
                 m.fit(X[train], d[train])
@@ -841,7 +840,7 @@ def otis_aipw_superlearner(
             except Exception:  # noqa: BLE001
                 e_oof[test, j] = float(d.mean())
         # Outcome learners (separate for D=1 and D=0)
-        for j, (name, model) in enumerate(out_learn):
+        for j, (_name, model) in enumerate(out_learn):
             for dval, mu_oof in ((1, mu1_oof), (0, mu0_oof)):
                 mask = train[d[train] == dval]
                 if mask.size < 5:
@@ -1226,7 +1225,7 @@ def _multiway_cluster_se(scores: np.ndarray, clusters: list[np.ndarray]) -> floa
         v_ab = _cluster_se(scores, intersect) ** 2
         return math.sqrt(max(v_a + v_b - v_ab, 0.0))
     # 3+ way: fall back to first axis with a warning emit
-    warnings.warn(f"multiway clustering with {len(clusters)} dims not implemented; using first axis only")
+    warnings.warn(f"multiway clustering with {len(clusters)} dims not implemented; using first axis only", stacklevel=2)
     return _cluster_se(scores, clusters[0])
 
 
@@ -1288,35 +1287,25 @@ def otis_irm_dml(
     data = df[_cols].dropna().copy()
 
     if match_first:
-        # Pre-match on the full data, then keep only the matched rows.
-        d_all = _binarise(data[treatment])
+        # 1:1 nearest neighbour without replacement on the propensity score, caliper in its SD,
+        # treated in decreasing score: MatchIt's matcher (the R arm's native port), so both arms
+        # keep the same rows
+        from morie._matchit_native import nn_match
+
+        d_all = [int(v) for v in _binarise(data[treatment]).tolist()]
         X_all = _design_matrix(data, covariates)
-        beta = _logit_fit(X_all, d_all)
+        beta = _logit_fit(X_all, np.asarray(d_all))
         eta = np.clip(X_all @ beta, -30, 30)
-        e_all = _propensity_clip(1.0 / (1.0 + np.exp(-eta)), eps=eps)
-        logit_e = np.log(e_all / (1 - e_all))
-        sd_logit = float(logit_e.std(ddof=1))
-        caliper = match_caliper_sd * sd_logit if match_caliper_sd is not None else None
-        rng_m = np.random.default_rng(seed + 7)
-        treated_idx = np.where(d_all == 1)[0]
-        control_idx = np.where(d_all == 0)[0]
-        treated_order = rng_m.permutation(treated_idx)
-        available = np.ones(control_idx.size, dtype=bool)
-        kept = []
-        for t in treated_order:
-            dist = np.abs(logit_e[control_idx] - logit_e[t])
-            dist = np.where(available, dist, np.inf)
-            if caliper is not None:
-                dist = np.where(dist <= caliper, dist, np.inf)
-            nearest = int(np.argmin(dist))
-            if not np.isfinite(dist[nearest]):
-                continue
-            available[nearest] = False
-            kept.append(int(t))
-            kept.append(int(control_idx[nearest]))
+        e_all = [float(v) for v in (1.0 / (1.0 + np.exp(-eta))).tolist()]
+        m_e = sum(e_all) / len(e_all)
+        sd_e = math.sqrt(sum((v - m_e) ** 2 for v in e_all) / (len(e_all) - 1))
+        idx_t = [i for i, t in enumerate(d_all) if t == 1]
+        cal = match_caliper_sd * sd_e if match_caliper_sd is not None else None
+        rows = nn_match(d_all, e_all, [1] * len(idx_t), False, cal)
+        kept = sorted([idx_t[r] for r, cu in enumerate(rows) if cu] + [c for cu in rows for c in cu])
         if not kept:
             raise RuntimeError("match_first: no treated unit had a control inside the caliper")
-        data = data.iloc[sorted(set(kept))].reset_index(drop=True)
+        data = data.iloc[kept].reset_index(drop=True)
 
     d = _binarise(data[treatment]).astype(np.float64)
     y = data[outcome].astype(np.float64).to_numpy()
@@ -1949,7 +1938,7 @@ def otis_causal_grid(df: pd.DataFrame | None = None, *, seed: int = 123) -> Rich
     rows = []
     for label, (data, T, Y, covs) in pairs.items():
         if data[T].sum() == 0 or data[T].sum() == data.shape[0]:
-            warnings.warn(f"{label}: degenerate treatment, skipping")
+            warnings.warn(f"{label}: degenerate treatment, skipping", stacklevel=2)
             continue
         for fn, kind in ((otis_ipw, "IPW"), (otis_aipw, "AIPW"), (otis_dml, "DML"), (otis_psm, "PSM")):
             try:

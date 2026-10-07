@@ -13,7 +13,7 @@ __all__ = ["tsimpute", "joseph_missing_data_imputation_ts"]
 _METHOD = "Missing-data imputation for time series"
 
 
-def tsimpute(x, method='linear', season=1):
+def tsimpute(x, method="linear", season=1):
     """Missing-data imputation for time series.
 
     Missing-data imputation for time series, ch. 2 pp. 44-52.

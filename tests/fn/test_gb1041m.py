@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1041m import gibbons_kw_mult_comp
 
 
@@ -36,7 +34,8 @@ def test_gb1041m_basic():
     assert "method" in result
 
     # Equal-n case: bound should equal z* sqrt(k(N+1)/6).
-    from scipy import stats
+    from morie.fn import _stats_core as stats
+
     expected_zstar = stats.norm.ppf(1.0 - alpha / (k * (k - 1.0)))
     expected_bound = expected_zstar * math.sqrt(k * (N + 1.0) / 6.0)
 
@@ -58,8 +57,7 @@ def test_gb1041m_basic():
         assert result["diffs"][i][i] == 0.0
         for j in range(k):
             expected_diff = abs(rank_means[i] - rank_means[j])
-            assert math.isclose(result["diffs"][i][j], expected_diff,
-                                rel_tol=1e-12)
+            assert math.isclose(result["diffs"][i][j], expected_diff, rel_tol=1e-12)
 
     # The largest pairwise difference is 15 (between groups 0 and 3),
     # which is greater than the bound of ~11.125, so that pair must be
@@ -87,12 +85,10 @@ def test_gb1041m_edge():
 
     # Pairwise bounds must use the general formula
     # z* sqrt(N(N+1)/12 * (1/n_i + 1/n_j)).
-    from scipy import stats
+    from morie.fn import _stats_core as stats
+
     zstar = stats.norm.ppf(1.0 - alpha / (k * (k - 1.0)))
     for i in range(k):
         for j in range(k):
-            expected = zstar * math.sqrt(
-                N * (N + 1.0) / 12.0 * (1.0 / ns[i] + 1.0 / ns[j])
-            )
-            assert math.isclose(result["bounds"][i][j], expected,
-                                rel_tol=1e-12)
+            expected = zstar * math.sqrt(N * (N + 1.0) / 12.0 * (1.0 / ns[i] + 1.0 / ns[j]))
+            assert math.isclose(result["bounds"][i][j], expected, rel_tol=1e-12)

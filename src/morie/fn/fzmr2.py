@@ -63,17 +63,20 @@ def fauzi_mrl_boundary_free_2(x, t_grid, h=None, transform="log"):
     out = fauzi_cumulative_survival_2(x, t_grid, h=h, transform=transform)
     S = out["S_survival"]
     with np.errstate(divide="ignore", invalid="ignore"):
-        mrl = np.where(S > 0, out["S_cumulative"] / np.maximum(S, 1e-300),
-                       np.nan)
-    return RichResult(payload={
-        "t_grid": out["t_grid"], "mrl": mrl, "bandwidth": out["bandwidth"],
-        "bias_order": "O(h^2) everywhere, including the boundary region",
-        "bias_formula": "h^2/(2 S_X(t)) [b_3(t) + m_X(t) b_1(t)] int y^2 K(y) dy",
-        "variance_vanishes_at_boundary": True,
-        "prefer_variant_1_when": "the analytic relation between S and S_cum "
-                                 "must be preserved (Remark 4.2)",
-        "n": out["n"],
-        "method": "Boundary-free MRL estimator m_tilde_{X,2} (4.24); Theorem 4.3 bias"})
+        mrl = np.where(S > 0, out["S_cumulative"] / np.maximum(S, 1e-300), np.nan)
+    return RichResult(
+        payload={
+            "t_grid": out["t_grid"],
+            "mrl": mrl,
+            "bandwidth": out["bandwidth"],
+            "bias_order": "O(h^2) everywhere, including the boundary region",
+            "bias_formula": "h^2/(2 S_X(t)) [b_3(t) + m_X(t) b_1(t)] int y^2 K(y) dy",
+            "variance_vanishes_at_boundary": True,
+            "prefer_variant_1_when": "the analytic relation between S and S_cum must be preserved (Remark 4.2)",
+            "n": out["n"],
+            "method": "Boundary-free MRL estimator m_tilde_{X,2} (4.24); Theorem 4.3 bias",
+        }
+    )
 
 
 def cheatsheet():

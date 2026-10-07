@@ -113,9 +113,7 @@ def geron_learning_curves(X, y, n_splits=10, val_fraction=0.2):
 
     return RichResult(
         title="Learning curves",
-        summary_lines=[("Sizes", sizes.tolist()),
-                       ("Final train RMSE", tr_rmse[-1]),
-                       ("Final val RMSE", va_rmse[-1])],
+        summary_lines=[("Sizes", sizes.tolist()), ("Final train RMSE", tr_rmse[-1]), ("Final val RMSE", va_rmse[-1])],
         payload={
             "train_sizes": sizes.tolist(),
             "train_rmse": tr_rmse,

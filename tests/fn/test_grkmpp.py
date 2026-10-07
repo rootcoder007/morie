@@ -1,7 +1,6 @@
 """Tests for grkmpp.geron_kmeans_pp_seeding."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grkmpp import geron_kmeans_pp_seeding
 
 

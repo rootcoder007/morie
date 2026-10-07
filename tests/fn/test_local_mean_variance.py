@@ -13,14 +13,12 @@ from morie.fn.local_mean_variance import local_mean_variance
 
 
 def test_local_mean_variance_matches_the_book_equation():
-    r = local_mean_variance([2.0, 4.0, 6.0], [0.5, 0.5, 0.5],
-                              [3.0, 3.0, 3.0], 6, 2)
+    r = local_mean_variance([2.0, 4.0, 6.0], [0.5, 0.5, 0.5], [3.0, 3.0, 3.0], 6, 2)
     assert r["value"] == pytest.approx(53.5, abs=1e-12)
 
 
 def test_local_mean_variance_is_zero_when_residuals_match_their_local_mean():
-    r = local_mean_variance([2.0, 4.0, 6.0], [0.5, 0.5, 0.5],
-                            [4.0, 8.0, 12.0], 6, 2)
+    r = local_mean_variance([2.0, 4.0, 6.0], [0.5, 0.5, 0.5], [4.0, 8.0, 12.0], 6, 2)
     assert r["value"] == pytest.approx(0.0, abs=1e-12)
 
 

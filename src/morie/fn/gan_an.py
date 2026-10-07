@@ -56,14 +56,18 @@ Representation Learning with Deep Convolutional Generative Adversarial
 Networks", *ICLR 2016*, arXiv:1511.06434. The DCGAN architecture used.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["residual_loss", "discrimination_loss", "anomaly_score",
-           "invert_to_latent", "residual_map", "score_separation"]
+__all__ = [
+    "residual_loss",
+    "discrimination_loss",
+    "anomaly_score",
+    "invert_to_latent",
+    "residual_map",
+    "score_separation",
+]
 
 _EPS = 1e-12
 
@@ -73,8 +77,7 @@ def residual_loss(x, g_z):
     a = [float(v) for v in k.vec(x)]
     b = [float(v) for v in k.vec(g_z)]
     if len(a) != len(b):
-        raise ValueError("gan_an: the query and reconstruction "
-                         "differ in size (%d, %d)" % (len(a), len(b)))
+        raise ValueError(f"gan_an: the query and reconstruction differ in size ({int(len(a))}, {int(len(b))})")
     return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
 
@@ -89,27 +92,21 @@ def discrimination_loss(f_x, f_gz):
     if len(a) != len(b):
         raise ValueError("gan_an: the feature vectors differ in size")
     if len(a) < 2:
-        raise ValueError("gan_an: a scalar discriminator output "
-                         "carries no gradient; use an intermediate "
-                         "feature layer")
+        raise ValueError("gan_an: a scalar discriminator output carries no gradient; use an intermediate feature layer")
     return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
 
 def anomaly_score(x, g_z, f_x, f_gz, lam=0.1):
     r""":math:`(1-\lambda)L_R + \lambda L_D`."""
-    l = float(lam)
-    if not 0.0 <= l <= 1.0:
-        raise ValueError("gan_an: lambda must lie in [0,1], got %r"
-                         % (lam,))
+    ell = float(lam)
+    if not 0.0 <= ell <= 1.0:
+        raise ValueError(f"gan_an: lambda must lie in [0,1], got {lam!r}")
     lr = residual_loss(x, g_z)
     ld = discrimination_loss(f_x, f_gz)
-    return {"score": (1.0 - l) * lr + l * ld,
-            "residual": lr, "discrimination": ld, "lambda": l}
+    return {"score": (1.0 - ell) * lr + ell * ld, "residual": lr, "discrimination": ld, "lambda": ell}
 
 
-def invert_to_latent(x, generator, feature_fn, z_dim, steps=200,
-                     lr=0.05, lam=0.1, seed=0, h=1e-4,
-                     step_decay=0.05):
+def invert_to_latent(x, generator, feature_fn, z_dim, steps=200, lr=0.05, lam=0.1, seed=0, h=1e-4, step_decay=0.05):
     r"""Search the latent space with the generator FIXED.
 
     Only :math:`z` moves. Because the network cannot adapt, an image
@@ -151,16 +148,20 @@ def invert_to_latent(x, generator, feature_fn, z_dim, steps=200,
     z = best_z
     g = generator(z)
     fin = anomaly_score(x, g, fx, feature_fn(g), lam)
-    return RichResult(payload={
-        "estimate": fin["score"], "score": fin["score"], "z": z,
-        "reconstruction": g, "loss_history": hist,
-        "residual": fin["residual"],
-        "discrimination": fin["discrimination"],
-        "final_step": float(lr) / (1.0 + (steps - 1) * float(step_decay)),
-        "method": "AnoGAN latent inversion; Schlegl et al. (2017)",
-        "note": "the generator is FIXED; only z moves, so an "
-                "off-manifold image cannot be memorised",
-    })
+    return RichResult(
+        payload={
+            "estimate": fin["score"],
+            "score": fin["score"],
+            "z": z,
+            "reconstruction": g,
+            "loss_history": hist,
+            "residual": fin["residual"],
+            "discrimination": fin["discrimination"],
+            "final_step": float(lr) / (1.0 + (steps - 1) * float(step_decay)),
+            "method": "AnoGAN latent inversion; Schlegl et al. (2017)",
+            "note": "the generator is FIXED; only z moves, so an off-manifold image cannot be memorised",
+        }
+    )
 
 
 def residual_map(x, g_z, shape=None):
@@ -172,19 +173,18 @@ def residual_map(x, g_z, shape=None):
     a = [float(v) for v in k.vec(x)]
     b = [float(v) for v in k.vec(g_z)]
     if len(a) != len(b):
-        raise ValueError("gan_an: the query and reconstruction "
-                         "differ in size")
+        raise ValueError("gan_an: the query and reconstruction differ in size")
     r = [abs(a[i] - b[i]) for i in range(len(a))]
     if shape is not None:
         h, w = int(shape[0]), int(shape[1])
         if h * w != len(r):
-            raise ValueError("gan_an: the shape %dx%d does not match "
-                             "%d values" % (h, w, len(r)))
-        r = [r[i * w:(i + 1) * w] for i in range(h)]
-    return {"map": r, "max": max(k.vec(r) if shape is None
-                                 else [v for row in r for v in row]),
-            "note": "localises the anomaly rather than only flagging "
-                    "the image"}
+            raise ValueError(f"gan_an: the shape {int(h)}x{int(w)} does not match {int(len(r))} values")
+        r = [r[i * w : (i + 1) * w] for i in range(h)]
+    return {
+        "map": r,
+        "max": max(k.vec(r) if shape is None else [v for row in r for v in row]),
+        "note": "localises the anomaly rather than only flagging the image",
+    }
 
 
 def score_separation(normal_scores, anomalous_scores):
@@ -200,24 +200,28 @@ def score_separation(normal_scores, anomalous_scores):
         raise ValueError("gan_an: both populations are needed")
     hits = sum(1 for x in a for y in b if y > x)
     auc = hits / float(len(a) * len(b))
-    return {"auc": auc, "mean_normal": sum(a) / len(a),
-            "mean_anomalous": sum(b) / len(b),
-            "separated": auc > 0.7,
-            "note": "an over-capable generator reconstructs anomalies "
-                    "too and collapses this to 0.5"}
+    return {
+        "auc": auc,
+        "mean_normal": sum(a) / len(a),
+        "mean_anomalous": sum(b) / len(b),
+        "separated": auc > 0.7,
+        "note": "an over-capable generator reconstructs anomalies too and collapses this to 0.5",
+    }
 
 
 def cheatsheet():
-    return ("gan_an: train a GAN on NORMAL data only, then score a "
-            "query by how well it can be reproduced from that "
-            "manifold. A GAN has no inverse, so find z by OPTIMISATION "
-            "with the generator FIXED -- nothing adapts, so an "
-            "off-manifold image stays badly reconstructed. Two losses: "
-            "pixel residual, and a discrimination loss on INTERMEDIATE "
-            "discriminator features (the scalar verdict would give no "
-            "gradient). The residual map LOCALISES the anomaly. A "
-            "generator that can reproduce anything scores everything "
-            "zero -- limited capacity is load-bearing.")
+    return (
+        "gan_an: train a GAN on NORMAL data only, then score a "
+        "query by how well it can be reproduced from that "
+        "manifold. A GAN has no inverse, so find z by OPTIMISATION "
+        "with the generator FIXED -- nothing adapts, so an "
+        "off-manifold image stays badly reconstructed. Two losses: "
+        "pixel residual, and a discrimination loss on INTERMEDIATE "
+        "discriminator features (the scalar verdict would give no "
+        "gradient). The residual map LOCALISES the anomaly. A "
+        "generator that can reproduce anything scores everything "
+        "zero -- limited capacity is load-bearing."
+    )
 
 
 # compact alias per ledger/NAMING.md

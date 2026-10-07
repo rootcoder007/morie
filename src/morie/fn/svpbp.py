@@ -14,10 +14,7 @@ def svpbp(voter, cA, cB=None, cdf=None, *, beta=1.0):
 
     voter = np.asarray(voter, dtype=float)
     cA = np.asarray(cA, dtype=float)
-    if cB is None:
-        cB = np.zeros_like(cA)
-    else:
-        cB = np.asarray(cB, dtype=float)
+    cB = np.zeros_like(cA) if cB is None else np.asarray(cB, dtype=float)
     from ._stats_core import norm as _norm
 
     dA = float(np.sum((voter - cA) ** 2))

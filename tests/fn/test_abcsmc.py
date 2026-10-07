@@ -1,7 +1,6 @@
 """Tests for abcsmc.abc_smc_epi."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.abcsmc import abc_smc_epi
 
 
@@ -14,14 +13,18 @@ def _toy_model(theta):
 
 def test_abcsmc_basic():
     """Test basic functionality with a simple recoverable model."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Observed summary statistics: we want the model to match when theta[0] == 0.7.
     summary_stats = [0.7, 0.0]
     priors = [[0.0, 1.0]]
     n_particles = 32
     result = abc_smc_epi(
-        _toy_model, summary_stats, priors=priors, n_particles=n_particles,
-        schedule=[1.0, 0.5, 0.1], kernel_sd=0.1,
+        _toy_model,
+        summary_stats,
+        priors=priors,
+        n_particles=n_particles,
+        schedule=[1.0, 0.5, 0.1],
+        kernel_sd=0.1,
     )
 
     # Function returns a RichResult with a .payload dict, not a bare dict.
@@ -63,14 +66,18 @@ def test_abcsmc_basic():
 
 def test_abcsmc_edge():
     """Test edge cases: minimum n_particles and tight prior around truth."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     summary_stats = [0.5, 0.0]
     priors = [[0.0, 1.0]]
     # Smallest reasonable particle count.
     n_particles = 4
     result = abc_smc_epi(
-        _toy_model, summary_stats, priors=priors, n_particles=n_particles,
-        schedule=[0.5, 0.1], kernel_sd=0.05,
+        _toy_model,
+        summary_stats,
+        priors=priors,
+        n_particles=n_particles,
+        schedule=[0.5, 0.1],
+        kernel_sd=0.05,
     )
     assert hasattr(result, "payload")
     payload = result.payload

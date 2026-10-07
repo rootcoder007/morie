@@ -1,7 +1,6 @@
 """Tests for fzgn.fauzi_gn_edgeworth_correction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzgn import fauzi_gn_edgeworth_correction
 
 
@@ -14,9 +13,7 @@ def test_fzgn_basic():
     sigma = 0.5
     e1, e2, e3, e4, e5, e6 = 0.1, -0.2, 0.05, 0.02, -0.03, 0.04
     delta = 0.0
-    result = fauzi_gn_edgeworth_correction(
-        x, n, h, sigma, e1, e2, e3, e4, e5, e6, delta=delta, book=False
-    )
+    result = fauzi_gn_edgeworth_correction(x, n, h, sigma, e1, e2, e3, e4, e5, e6, delta=delta, book=False)
 
     # Documented keys
     for key in ("estimate", "normal", "correction", "book", "method"):
@@ -31,14 +28,14 @@ def test_fzgn_basic():
     xv = np.asarray(x, dtype=float) - delta / (sigma * np.sqrt(n))
     phi = stats.norm.pdf(xv)
     base = stats.norm.cdf(xv)
-    he2 = xv ** 2 - 1.0
-    he3 = xv ** 3 - 3.0 * xv
-    he5 = xv ** 5 - 10.0 * xv ** 3 + 15.0 * xv
-    term1 = he2 / (6.0 * np.sqrt(n) * sigma ** 3) * (e1 + 3.0 * e2 / h)
+    he2 = xv**2 - 1.0
+    he3 = xv**3 - 3.0 * xv
+    he5 = xv**5 - 10.0 * xv**3 + 15.0 * xv
+    term1 = he2 / (6.0 * np.sqrt(n) * sigma**3) * (e1 + 3.0 * e2 / h)
     inner = (
-        xv / (4.0 * sigma ** 2) * (4.0 * e5 + e6)
-        + he3 / (6.0 * sigma ** 4) * (3.0 * e3 + e4)
-        + he5 / (8.0 * sigma ** 6) * e2 ** 2
+        xv / (4.0 * sigma**2) * (4.0 * e5 + e6)
+        + he3 / (6.0 * sigma**4) * (3.0 * e3 + e4)
+        + he5 / (8.0 * sigma**6) * e2**2
     )
     corr = phi * (term1 + inner / (n * h * h))
     expected_estimate = base - corr
@@ -59,12 +56,8 @@ def test_fzgn_edge():
     sigma = 0.7
     e1, e2, e3, e4, e5, e6 = 0.11, 0.22, 0.33, 0.44, 0.55, 0.66
 
-    result_book = fauzi_gn_edgeworth_correction(
-        x, n, h, sigma, e1, e2, e3, e4, e5, e6, book=True
-    )
-    result_paper = fauzi_gn_edgeworth_correction(
-        x, n, h, sigma, e1, e2, e3, e4, e5, e6, book=False
-    )
+    result_book = fauzi_gn_edgeworth_correction(x, n, h, sigma, e1, e2, e3, e4, e5, e6, book=True)
+    result_paper = fauzi_gn_edgeworth_correction(x, n, h, sigma, e1, e2, e3, e4, e5, e6, book=False)
 
     assert isinstance(result_book, dict)
     assert isinstance(result_paper, dict)

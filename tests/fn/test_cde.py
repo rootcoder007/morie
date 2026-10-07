@@ -1,24 +1,20 @@
 """Tests for cde.controlled_direct_effect."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.cde import controlled_direct_effect
 
 
 def _design_matrix(X, M):
     """Build the OLS design matrix [1, X, M, X*M] from 1-D inputs."""
     n = len(X)
-    return [[1.0, float(X[i]), float(M[i]), float(X[i]) * float(M[i])]
-            for i in range(n)]
+    return [[1.0, float(X[i]), float(M[i]), float(X[i]) * float(M[i])] for i in range(n)]
 
 
 def _ols(D, y):
     """Plain-python OLS for the 4-parameter design used by CDE."""
     n = len(y)
     p = len(D[0])
-    XtX = [[sum(D[i][r] * D[i][c] for i in range(n)) for c in range(p)]
-           for r in range(p)]
+    XtX = [[sum(D[i][r] * D[i][c] for i in range(n)) for c in range(p)] for r in range(p)]
     Xty = [sum(D[i][j] * y[i] for i in range(n)) for j in range(p)]
     inv = _inv4(XtX)
     return [sum(inv[j][k] * Xty[k] for k in range(p)) for j in range(p)]
@@ -26,32 +22,31 @@ def _ols(D, y):
 
 def _inv4(A):
     """Invert a 4x4 symmetric positive-definite matrix by cofactors."""
+
     def det3(m):
-        return (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
-                - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
-                + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
-    M = [[A[1][1], A[1][2], A[1][3]],
-         [A[2][1], A[2][2], A[2][3]],
-         [A[3][1], A[3][2], A[3][3]]]
-    detA = (A[0][0] * det3(M)
-            - A[0][1] * det3([[A[1][0], A[1][2], A[1][3]],
-                              [A[2][0], A[2][2], A[2][3]],
-                              [A[3][0], A[3][2], A[3][3]]])
-            + A[0][2] * det3([[A[1][0], A[1][1], A[1][3]],
-                              [A[2][0], A[2][1], A[2][3]],
-                              [A[3][0], A[3][1], A[3][3]]])
-            - A[0][3] * det3([[A[1][0], A[1][1], A[1][2]],
-                              [A[2][0], A[2][1], A[2][2]],
-                              [A[3][0], A[3][1], A[3][2]]]))
+        return (
+            m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+            - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+            + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])
+        )
+
+    M = [[A[1][1], A[1][2], A[1][3]], [A[2][1], A[2][2], A[2][3]], [A[3][1], A[3][2], A[3][3]]]
+    detA = (
+        A[0][0] * det3(M)
+        - A[0][1] * det3([[A[1][0], A[1][2], A[1][3]], [A[2][0], A[2][2], A[2][3]], [A[3][0], A[3][2], A[3][3]]])
+        + A[0][2] * det3([[A[1][0], A[1][1], A[1][3]], [A[2][0], A[2][1], A[2][3]], [A[3][0], A[3][1], A[3][3]]])
+        - A[0][3] * det3([[A[1][0], A[1][1], A[1][2]], [A[2][0], A[2][1], A[2][2]], [A[3][0], A[3][1], A[3][2]]])
+    )
     C = [[0.0] * 4 for _ in range(4)]
     for r in range(4):
         for c in range(4):
-            sub = [[A[i][j] for j in range(4) if j != c]
-                   for i in range(4) if i != r]
+            sub = [[A[i][j] for j in range(4) if j != c] for i in range(4) if i != r]
             sign = -1.0 if (r + c) % 2 else 1.0
-            C[r][c] = sign * (sub[0][0] * (sub[1][1] * sub[2][2] - sub[1][2] * sub[2][1])
-                              - sub[0][1] * (sub[1][0] * sub[2][2] - sub[1][2] * sub[2][0])
-                              + sub[0][2] * (sub[1][0] * sub[2][1] - sub[1][1] * sub[2][0]))
+            C[r][c] = sign * (
+                sub[0][0] * (sub[1][1] * sub[2][2] - sub[1][2] * sub[2][1])
+                - sub[0][1] * (sub[1][0] * sub[2][2] - sub[1][2] * sub[2][0])
+                + sub[0][2] * (sub[1][0] * sub[2][1] - sub[1][1] * sub[2][0])
+            )
     return [[C[c][r] / detA for c in range(4)] for r in range(4)]
 
 
@@ -121,7 +116,7 @@ def test_cde_zero_interaction():
 
 def test_cde_edge():
     """Edge case: minimum number of observations (n == 5, just enough)."""
-    rng = np.random.default_rng(7)
+    np.random.default_rng(7)
     X = np.array([0.0, 1.0, 0.0, 1.0, 1.0])
     M = np.array([0.5, 1.5, -0.5, 2.0, 0.0])
     Y = np.array([0.1, 1.2, -0.3, 2.1, 0.9])

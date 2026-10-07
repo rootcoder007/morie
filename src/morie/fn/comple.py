@@ -53,8 +53,10 @@ def complex(triples, dim, re_e=None, im_e=None, re_r=None, im_r=None, seed=1):
     ne = max(max(r[0], r[2]) for r in T) + 1
     nr = max(r[1] for r in T) + 1
     g = C.Lcg(seed)
+
     def draw(rows):
         return [[g.norm() for _ in range(d)] for _ in range(rows)]
+
     re_e = C.mat(re_e) if re_e is not None else draw(ne)
     im_e = C.mat(im_e) if im_e is not None else draw(ne)
     re_r = C.mat(re_r) if re_r is not None else draw(nr)
@@ -63,14 +65,22 @@ def complex(triples, dim, re_e=None, im_e=None, re_r=None, im_r=None, seed=1):
     for h, r, t in T:
         s = 0.0
         for k in range(d):
-            s += (re_e[h][k] * re_r[r][k] * re_e[t][k]
-                  + re_e[h][k] * im_r[r][k] * im_e[t][k]
-                  + im_e[h][k] * re_r[r][k] * im_e[t][k]
-                  - im_e[h][k] * im_r[r][k] * re_e[t][k])
+            s += (
+                re_e[h][k] * re_r[r][k] * re_e[t][k]
+                + re_e[h][k] * im_r[r][k] * im_e[t][k]
+                + im_e[h][k] * re_r[r][k] * im_e[t][k]
+                - im_e[h][k] * im_r[r][k] * re_e[t][k]
+            )
         scores.append(s)
-    return RichResult(payload={
-        "estimate": sum(scores) / len(scores), "scores": scores,
-        "m": len(scores), "dim": d, "method": "ComplEx triple score"})
+    return RichResult(
+        payload={
+            "estimate": sum(scores) / len(scores),
+            "scores": scores,
+            "m": len(scores),
+            "dim": d,
+            "method": "ComplEx triple score",
+        }
+    )
 
 
 def cheatsheet():

@@ -44,12 +44,19 @@ def surv_truncation_left(entry, time, event):
     """
     r = lftrt(entry, time, event)
     s = list(r["survival"])
-    return RichResult(payload={
-        "estimate": float(s[-1]) if s else float("nan"),
-        "times": r["times"], "survival": r["survival"], "se": r["se"],
-        "ci_lower": r["ci_lower"], "ci_upper": r["ci_upper"],
-        "n_obs": int(r["n_obs"]), "n_events": int(r["n_events"]),
-        "method": "delayed-entry Kaplan-Meier [Klein & Moeschberger 2003]"})
+    return RichResult(
+        payload={
+            "estimate": float(s[-1]) if s else float("nan"),
+            "times": r["times"],
+            "survival": r["survival"],
+            "se": r["se"],
+            "ci_lower": r["ci_lower"],
+            "ci_upper": r["ci_upper"],
+            "n_obs": int(r["n_obs"]),
+            "n_events": int(r["n_events"]),
+            "method": "delayed-entry Kaplan-Meier [Klein & Moeschberger 2003]",
+        }
+    )
 
 
 # CANONICAL TEST

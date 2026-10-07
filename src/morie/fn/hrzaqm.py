@@ -72,7 +72,7 @@ def addquant(x, y, alpha=0.5, K=4, h=None, niter=40, ngrid=25):
     a = float(alpha)
     if not 0.0 < a < 1.0:
         raise ValueError("alpha must lie strictly between 0 and 1.")
-    hh = float(n ** -0.2) if h is None else float(h)
+    hh = float(n**-0.2) if h is None else float(h)
     Ki = int(K)
 
     cols = [np.ones(n)]
@@ -81,7 +81,7 @@ def addquant(x, y, alpha=0.5, K=4, h=None, niter=40, ngrid=25):
         rng = float(np.max(sc) - np.min(sc))
         sc = (sc - float(np.min(sc))) / (rng if rng > 0 else 1.0) * 2.0 - 1.0
         for k in range(1, Ki + 1):
-            cols.append(sc ** k)
+            cols.append(sc**k)
     P = np.column_stack(cols)
     theta = qirls(P, yv, np.ones(n), a, niter=int(niter))
     stage1 = P @ theta
@@ -90,8 +90,7 @@ def addquant(x, y, alpha=0.5, K=4, h=None, niter=40, ngrid=25):
     comps = []
     resid1 = yv - stage1
     for j in range(d):
-        g = np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])),
-                        int(ngrid))
+        g = np.linspace(float(np.min(X[:, j])), float(np.max(X[:, j])), int(ngrid))
         gs.append(g)
         mj = np.zeros(g.size)
         for t in range(int(g.size)):
@@ -109,10 +108,20 @@ def addquant(x, y, alpha=0.5, K=4, h=None, niter=40, ngrid=25):
     loss = float(np.sum(np.abs(r) + (2.0 * a - 1.0) * r))
     return RichResult(
         title="Additive conditional-quantile model (eq. 3.29)",
-        payload={"mu": mu, "grids": gs, "components": comps,
-                 "fitted": fit, "resid": r, "checkloss": loss,
-                 "alpha": a, "bandwidth": hh, "K": Ki, "d": d, "n": n,
-                 "method": "Horowitz (2009) eq. (3.29), check-loss series then local fit"},
+        payload={
+            "mu": mu,
+            "grids": gs,
+            "components": comps,
+            "fitted": fit,
+            "resid": r,
+            "checkloss": loss,
+            "alpha": a,
+            "bandwidth": hh,
+            "K": Ki,
+            "d": d,
+            "n": n,
+            "method": "Horowitz (2009) eq. (3.29), check-loss series then local fit",
+        },
     )
 
 
@@ -128,7 +137,7 @@ if __name__ == "__main__":  # pragma: no cover
     n = 120
     x1 = np.linspace(-2, 2, n)
     x2 = np.cos(np.arange(1, n + 1) * 0.9)
-    y = 1.0 + 0.7 * x1 + 0.4 * x2 ** 2
+    y = 1.0 + 0.7 * x1 + 0.4 * x2**2
     r = addquant(np.column_stack([x1, x2]), y, alpha=0.5, h=0.5)
     assert r["checkloss"] >= 0.0
     # the additive median must track the additive mean here

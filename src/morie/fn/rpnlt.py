@@ -31,7 +31,6 @@ as equation (14.11) requires.
 from __future__ import annotations
 
 from . import _array_core as np  # noqa: F401
-from . import _s03core as k
 from ._richresult import RichResult
 
 __all__ = ["roughness_penalty"]
@@ -106,8 +105,7 @@ def roughness_penalty(basis, lam, a=0.0, b=1.0, p=2):
                 if i == 0:
                     row.append((2.0 * B[0][j] - 5.0 * B[1][j] + 4.0 * B[2][j] - B[3][j]) / (h * h))
                 elif i == m - 1:
-                    row.append((2.0 * B[m - 1][j] - 5.0 * B[m - 2][j]
-                                + 4.0 * B[m - 3][j] - B[m - 4][j]) / (h * h))
+                    row.append((2.0 * B[m - 1][j] - 5.0 * B[m - 2][j] + 4.0 * B[m - 3][j] - B[m - 4][j]) / (h * h))
                 else:
                     row.append((B[i + 1][j] - 2.0 * B[i][j] + B[i - 1][j]) / (h * h))
         D.append(row)

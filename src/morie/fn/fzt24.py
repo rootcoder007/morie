@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """MISE of the bias-reduced KDFE (Theorem 2.4)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gekdfmise", "fauzi_thm2_4_mise_brdkdfe"]
@@ -71,9 +70,9 @@ def gekdfmise(n, h, a, biasint, varint, r1=None, r2=None):
         r1 = float(kdfr1()["estimate"])
     if r2 is None:
         r2 = float(kdfr2(a=a)["estimate"])
-    biasterm = h ** 8 * a ** 4 * float(biasint)
+    biasterm = h**8 * a**4 * float(biasint)
     varterm = float(varint) / n
-    bracket = 2.0 * (a ** 4 + 1.0) / (a * a - 1.0) ** 2 * float(r1) + float(r2)
+    bracket = 2.0 * (a**4 + 1.0) / (a * a - 1.0) ** 2 * float(r1) + float(r2)
     gain = h / n * bracket
     return RichResult(
         payload={

@@ -58,7 +58,7 @@ def irt_spatial(x, n_iter: int = 60, tol: float = 1e-6):
     beta = np.zeros(m)
     prev_ll = -np.inf
     it = 0
-    for it in range(1, n_iter + 1):
+    for it in range(1, n_iter + 1):  # noqa: B007 - read after the loop
         # Update item params (alpha_j, beta_j) via Newton on each column
         for j in range(m):
             yj = M[:, j]

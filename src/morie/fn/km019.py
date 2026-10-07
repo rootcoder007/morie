@@ -40,8 +40,7 @@ def kamath_ch2_masked_attention(Q, K, V, M, d_k=None):
         raise ValueError("K and V must have the same number of rows.")
     d = Q.shape[1] if d_k is None else int(d_k)
     if d != Q.shape[1]:
-        raise ValueError(f"d_k = {d} contradicts Q's width "
-                         f"{Q.shape[1]}.")
+        raise ValueError(f"d_k = {d} contradicts Q's width {Q.shape[1]}.")
     scores = (Q @ K.T + M) / np.sqrt(d)
     if M.shape != scores.shape:
         raise ValueError("M's shape must match QK^T.")
@@ -49,12 +48,15 @@ def kamath_ch2_masked_attention(Q, K, V, M, d_k=None):
     with np.errstate(invalid="ignore"):
         A = np.exp(z) / np.exp(z).sum(axis=1, keepdims=True)
     out = A @ V
-    return RichResult(payload={
-        "output": [[float(v) for v in r] for r in out],
-        "attention": [[float(v) for v in r] for r in A],
-        "estimate": float(out[0, 0]), "n": Q.shape[0],
-        "method": "Masked attention, mask inside the scaling "
-                  "(Kamath Eq 2.19)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in r] for r in out],
+            "attention": [[float(v) for v in r] for r in A],
+            "estimate": float(out[0, 0]),
+            "n": Q.shape[0],
+            "method": "Masked attention, mask inside the scaling (Kamath Eq 2.19)",
+        }
+    )
 
 
 def cheatsheet():

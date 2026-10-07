@@ -71,7 +71,7 @@ def spatial_autocorrelation(x, w):
         )
     num = z @ W @ z
     den = np.dot(z, z)
-    I = (n / S0) * (num / den)
+    I_ = (n / S0) * (num / den)
 
     # Expectation and variance under randomization (Cliff & Ord 1981).
     EI = -1.0 / (n - 1)
@@ -93,12 +93,12 @@ def spatial_autocorrelation(x, w):
             zscore = float("nan")
             p_value = float("nan")
         else:
-            zscore = (I - EI) / np.sqrt(var_I)
+            zscore = (I_ - EI) / np.sqrt(var_I)
             p_value = 2.0 * (_scistats.norm.sf(abs(zscore)))
 
     return RichResult(
         payload={
-            "statistic": float(I),
+            "statistic": float(I_),
             "p_value": float(p_value),
             "expectation": float(EI),
             "variance": float(var_I) if np.isfinite(var_I) else float("nan"),

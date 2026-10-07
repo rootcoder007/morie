@@ -1,12 +1,11 @@
 """Tests for morie.fn.hasht."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hasht import hash_table
 
 
 def test_hasht_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = hash_table(keys=["alpha", "beta", "gamma"], values=[1, 2, 3])
     assert result is not None
     assert hasattr(result, "name")

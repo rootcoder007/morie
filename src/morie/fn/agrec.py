@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Andersen-Gill model for recurrent events."""
 
-from . import _array_core as np
 from ._recur_core import cox_counting_process
 from ._richresult import RichResult
 
@@ -35,17 +34,18 @@ def andersen_gill_recurrent(start, stop, event, X, max_iter=50, tol=1e-9):
     result : RichResult
         Keys: estimate (beta), se, cov, loglik, n_iter, n_events.
     """
-    fit = cox_counting_process(start, stop, event, X,
-                               max_iter=max_iter, tol=tol)
-    return RichResult(payload={
-        "estimate": fit["beta"],
-        "se": fit["se"],
-        "cov": fit["cov"],
-        "loglik": fit["loglik"],
-        "n_iter": fit["n_iter"],
-        "n_events": fit["n_events"],
-        "method": "Andersen-Gill (1982) counting-process Cox, Breslow ties",
-    })
+    fit = cox_counting_process(start, stop, event, X, max_iter=max_iter, tol=tol)
+    return RichResult(
+        payload={
+            "estimate": fit["beta"],
+            "se": fit["se"],
+            "cov": fit["cov"],
+            "loglik": fit["loglik"],
+            "n_iter": fit["n_iter"],
+            "n_events": fit["n_events"],
+            "method": "Andersen-Gill (1982) counting-process Cox, Breslow ties",
+        }
+    )
 
 
 def cheatsheet():

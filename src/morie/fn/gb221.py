@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Derivatives of the quantile function."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_quantile_deriv"]
@@ -48,22 +47,23 @@ def gibbons_quantile_deriv(p, f, f_prime=None, Q=None):
         qp = float(dist.ppf(p))
         fq = float(dist.pdf(qp))
         h = 1e-6
-        fpq = (float(dist.pdf(qp + h)) - float(dist.pdf(qp - h))) / (2 * h) \
-            if f_prime is None else float(f_prime(qp))
+        fpq = (float(dist.pdf(qp + h)) - float(dist.pdf(qp - h))) / (2 * h) if f_prime is None else float(f_prime(qp))
     else:
         if Q is None:
             raise ValueError("supply Q when f is a bare density function.")
         qp = float(Q(p))
         fq = float(f(qp))
         h = 1e-6
-        fpq = (float(f(qp + h)) - float(f(qp - h))) / (2 * h) \
-            if f_prime is None else float(f_prime(qp))
+        fpq = (float(f(qp + h)) - float(f(qp - h))) / (2 * h) if f_prime is None else float(f_prime(qp))
     if fq <= 0:
         raise ValueError("density is zero at the quantile; Q' is undefined.")
     return RichResult(
         payload={
-            "Q_p": qp, "Q_prime": 1.0 / fq, "Q_double_prime": -fpq / fq**3,
-            "f_at_Q": fq, "p": p,
+            "Q_p": qp,
+            "Q_prime": 1.0 / fq,
+            "Q_double_prime": -fpq / fq**3,
+            "f_at_Q": fq,
+            "p": p,
             "method": "Q' = 1/f(Q), Q'' = -f'(Q)/f(Q)^3 (Gibbons Theorem 2.2.1)",
         }
     )

@@ -1,7 +1,6 @@
 """Tests for INDSCAL."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.idmds import idmds
 
 

@@ -10,8 +10,7 @@ from ._richresult import RichResult
 __all__ = ["convnext_block"]
 
 
-def convnext_block(x, filters=None, kernel=7, expand=4, layer_scale=0.0,
-                   seed=42):
+def convnext_block(x, filters=None, kernel=7, expand=4, layer_scale=0.0, seed=42):
     """
     ConvNeXt block
 
@@ -64,10 +63,8 @@ def convnext_block(x, filters=None, kernel=7, expand=4, layer_scale=0.0,
         raise ValueError("expand must be at least 1")
     rng = np.random.default_rng(seed)
     dw = [[float(rng.normal(0.0, 1.0)) / k for _ in range(k)] for _ in range(k)]
-    w1 = [[float(rng.normal(0.0, 0.02)) for _ in range(expand)]
-          for _ in range(1)]
-    w2 = [[float(rng.normal(0.0, 0.02)) for _ in range(1)]
-          for _ in range(expand)]
+    w1 = [[float(rng.normal(0.0, 0.02)) for _ in range(expand)] for _ in range(1)]
+    w2 = [[float(rng.normal(0.0, 0.02)) for _ in range(1)] for _ in range(expand)]
     r = k // 2
     conv = [[0.0] * W for _ in range(H)]
     for i in range(H):
@@ -92,17 +89,18 @@ def convnext_block(x, filters=None, kernel=7, expand=4, layer_scale=0.0,
                 z = h * w1[0][e]
                 acc += core.gelu(z) * w2[e][0]
             out[i][j] = M[i][j] + layer_scale * acc
-    res = math.sqrt(sum((out[i][j] - M[i][j]) ** 2
-                        for i in range(H) for j in range(W)))
-    return RichResult(payload={
-        "estimate": sum(out[i][j] for i in range(H) for j in range(W)) / (H * W),
-        "out": out,
-        "residual_norm": res,
-        "H": H,
-        "W": W,
-        "C": C,
-        "method": "ConvNeXt block",
-    })
+    res = math.sqrt(sum((out[i][j] - M[i][j]) ** 2 for i in range(H) for j in range(W)))
+    return RichResult(
+        payload={
+            "estimate": sum(out[i][j] for i in range(H) for j in range(W)) / (H * W),
+            "out": out,
+            "residual_norm": res,
+            "H": H,
+            "W": W,
+            "C": C,
+            "method": "ConvNeXt block",
+        }
+    )
 
 
 def cheatsheet():

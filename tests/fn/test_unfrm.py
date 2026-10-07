@@ -1,7 +1,6 @@
 """Tests for morie.fn.unfrm — uniform quantizer."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.unfrm import uniform_quantize
 
 

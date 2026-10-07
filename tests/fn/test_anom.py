@@ -1,16 +1,15 @@
 """Tests for alpha-NOMINATE."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.anom import anom
 
 
 def test_anom_smoke():
     rng = np.random.default_rng(42)
     votes = (rng.random((8, 10)) > 0.4).astype(float)
-    r = anom(votes, n_dims=1, n_samples=20, burn_in=10)
+    r = anom(votes, n_dims=1, n_samples=20, burn_in=10, minvotes=5)
     assert r.name == "alpha_nominate_estimate"
-    assert 0.0 <= r.extra["alpha_mean"] <= 1.0
+    assert 0.0 <= r.extra["alpha"] <= 1.0
     assert "ideal_points" in r.extra
 
 

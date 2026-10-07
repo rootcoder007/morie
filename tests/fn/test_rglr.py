@@ -1,8 +1,6 @@
 """Tests for rglr.rangayyan_logistic_regression."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.bsaclass import rangayyan_logistic_regression
 
 

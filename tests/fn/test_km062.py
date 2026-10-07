@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), eq. 4.9, the merged KronA weights. E
 recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km062 import kamath_ch4_krona_tuned_weights

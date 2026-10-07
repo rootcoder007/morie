@@ -1,7 +1,6 @@
 """Tests for morie.fn.pstcp -- compare posterior parameters."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pstcp import posterior_compare_params, pstcp
 
 

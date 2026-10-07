@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_
     """
     value = _brus.regression_estimator_general(x_all, b_hat, z_sample, x_sample, pi_sample, n_population)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (10.8)"
     return RichResult(
-        title='Generalized regression estimator of the mean',
+        title="Generalized regression estimator of the mean",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r10e8: zbar_regr = mean(x^T b_hat) + HT mean of residuals [Brus 2022, eq. 10.8]'
+    return "r10e8: zbar_regr = mean(x^T b_hat) + HT mean of residuals [Brus 2022, eq. 10.8]"

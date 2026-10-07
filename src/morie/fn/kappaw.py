@@ -84,11 +84,16 @@ def weighted_kappa(rater1, rater2, weights="linear"):
     if qe <= 0.0:
         raise ValueError("expected disagreement is zero; kappa_w is undefined")
     kap = 1.0 - qo / qe
-    return RichResult(payload={
-        "kappa": float(kap), "observed_disagreement": float(qo),
-        "expected_disagreement": float(qe),
-        "n": n, "n_categories": k,
-        "method": "Cohen (1968) weighted kappa, 1 - sum(W O)/sum(W E)"})
+    return RichResult(
+        payload={
+            "kappa": float(kap),
+            "observed_disagreement": float(qo),
+            "expected_disagreement": float(qe),
+            "n": n,
+            "n_categories": k,
+            "method": "Cohen (1968) weighted kappa, 1 - sum(W O)/sum(W E)",
+        }
+    )
 
 
 def cheatsheet():

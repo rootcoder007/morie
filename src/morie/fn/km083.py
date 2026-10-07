@@ -34,30 +34,31 @@ def kamath_ch6_ceat_random_effects(S_A1, S_A2, S_W1, S_W2, v, ddof=0):
     groups = [list(S_A1), list(S_A2), list(S_W1), list(S_W2)]
     N = len(groups[0])
     if N == 0:
-        raise ValueError("no samples; a pooled effect over nothing is "
-                         "undefined.")
+        raise ValueError("no samples; a pooled effect over nothing is undefined.")
     if any(len(g) != N for g in groups):
         raise ValueError(
-            "S_A1, S_A2, S_W1 and S_W2 must hold the same number of "
-            f"samples; got {[len(g) for g in groups]}.")
+            f"S_A1, S_A2, S_W1 and S_W2 must hold the same number of samples; got {[len(g) for g in groups]}."
+        )
     w = np.atleast_1d(np.asarray(v, dtype=float))
     if w.size != N:
         raise ValueError(f"v has {w.size} weights for {N} samples.")
     if np.any(w < 0) or not np.all(np.isfinite(w)):
-        raise ValueError("every weight v_i must be finite and "
-                         "non-negative.")
+        raise ValueError("every weight v_i must be finite and non-negative.")
     if float(w.sum()) == 0:
-        raise ValueError("the weights sum to 0; the pooled effect is "
-                         "undefined.")
-    eff = np.asarray([
-        float(kamath_ch6_weat_effect_size(a1, a2, w1, w2, ddof=ddof)
-              ["estimate"])
-        for a1, a2, w1, w2 in zip(*groups)], dtype=float)
-    return RichResult(payload={
-        "estimate": float(np.sum(w * eff) / np.sum(w)),
-        "weat": [float(x) for x in eff], "weights": [float(x) for x in w],
-        "n": N,
-        "method": "CEAT random-effects pooled WEAT (Kamath Eq 6.7)"})
+        raise ValueError("the weights sum to 0; the pooled effect is undefined.")
+    eff = np.asarray(
+        [float(kamath_ch6_weat_effect_size(a1, a2, w1, w2, ddof=ddof)["estimate"]) for a1, a2, w1, w2 in zip(*groups)],
+        dtype=float,
+    )
+    return RichResult(
+        payload={
+            "estimate": float(np.sum(w * eff) / np.sum(w)),
+            "weat": [float(x) for x in eff],
+            "weights": [float(x) for x in w],
+            "n": N,
+            "method": "CEAT random-effects pooled WEAT (Kamath Eq 6.7)",
+        }
+    )
 
 
 def cheatsheet():

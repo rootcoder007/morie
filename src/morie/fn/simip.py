@@ -19,10 +19,7 @@ def simulate_ideal_points(n: int = 100, n_dims: int = 2, dist: str = "normal", s
     from morie.fn import _array_core as np
 
     rng = np.random.default_rng(seed)
-    if dist == "uniform":
-        points = rng.uniform(-2, 2, (n, n_dims))
-    else:
-        points = rng.standard_normal((n, n_dims))
+    points = rng.uniform(-2, 2, (n, n_dims)) if dist == "uniform" else rng.standard_normal((n, n_dims))
     return DescriptiveResult(
         name="simulate_ideal_points",
         value=n,

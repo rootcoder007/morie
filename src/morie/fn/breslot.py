@@ -84,12 +84,11 @@ def breslow_tie_correction(time, event, X, **kwargs):
     ValueError: event must be 0 (censored) or 1 (event)
     """
     t, e, Xm = prepare(time, event, X)
-    beta, ll, I, U, it, conv = cox_fit(t, e, Xm, ties="breslow", **kwargs)
-    return _cox_result(t, e, beta, ll, I, it, conv, "Breslow",
-                       "breslow_tie_correction", X=Xm)
+    beta, ll, I_, U, it, conv = cox_fit(t, e, Xm, ties="breslow", **kwargs)
+    return _cox_result(t, e, beta, ll, I_, it, conv, "Breslow", "breslow_tie_correction", X=Xm)
 
 
-def _cox_result(t, e, beta, ll, I, it, conv, label, method, X=None):
+def _cox_result(t, e, beta, ll, I, it, conv, label, method, X=None):  # noqa: E741
     from ._stats_core import norm
 
     try:
@@ -103,18 +102,28 @@ def _cox_result(t, e, beta, ll, I, it, conv, label, method, X=None):
     n_ties = int(ev.size - np.unique(ev).size)
     return RichResult(
         title=f"Cox model ({label} ties)",
-        summary_lines=[("n", int(t.size)), ("events", int(e.sum())),
-                       ("tied events", n_ties), ("loglik", ll)],
+        summary_lines=[("n", int(t.size)), ("events", int(e.sum())), ("tied events", n_ties), ("loglik", ll)],
         warnings=[] if conv else ["Newton-Raphson did not converge"],
         payload={
-            "beta": beta, "se": se, "z": z,
+            "beta": beta,
+            "se": se,
+            "z": z,
             "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(beta), "loglik": ll, "cov": cov,
-            "information": I, "n_ties": n_ties, "n_events": int(e.sum()),
-            "n": int(t.size), "n_iter": it, "converged": conv,
-            "ties": label.lower(), "method": method,
+            "hazard_ratio": np.exp(beta),
+            "loglik": ll,
+            "cov": cov,
+            "information": I,
+            "n_ties": n_ties,
+            "n_events": int(e.sum()),
+            "n": int(t.size),
+            "n_iter": it,
+            "converged": conv,
+            "ties": label.lower(),
+            "method": method,
             # Carried so the residual modules can work from a fit alone.
-            "time": t, "event": e, "X": X,
+            "time": t,
+            "event": e,
+            "X": X,
         },
     )
 

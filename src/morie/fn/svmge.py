@@ -48,10 +48,7 @@ def svm_genomic(x, y, markers, C: float = 1.0, epsilon: float = 0.1, gamma: floa
     Xa = np.asarray(x, dtype=float)
     if Xa.ndim == 1 and Xa.size > 0:
         Xa = Xa.reshape(-1, 1)
-    if Xa.size == 0:
-        feats = M
-    else:
-        feats = np.column_stack([Xa, M])
+    feats = M if Xa.size == 0 else np.column_stack([Xa, M])
     method_used = "sklearn SVR (epsilon-SVR, RBF)"
     try:
         from ._ml_core import SVR

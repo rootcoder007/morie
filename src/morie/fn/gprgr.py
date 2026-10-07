@@ -64,7 +64,7 @@ def gaussian_process_regression(
         if x_test.ndim == 1:
             x_test = x_test.reshape(-1, 1)
 
-    m = len(x_test)
+    len(x_test)
 
     # Squared-exponential kernel
     def se_kernel(x1, x2):
@@ -94,7 +94,7 @@ def gaussian_process_regression(
     try:
         v = solve_triangular(L, K_test.T, lower=True)
         var = np.diag(K_test_test) - np.sum(v**2, axis=0)
-    except:
+    except Exception:
         var = np.diag(K_test_test) - np.diag(K_test @ np.linalg.inv(K_train) @ K_test.T)
 
     return {

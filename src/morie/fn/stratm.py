@@ -87,12 +87,23 @@ def stratmean(y, h, Nh, level=0.95):
     var = sum(W[i] * W[i] * vh[i] for i in range(L))
     se = math.sqrt(var)
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": est, "se": se, "ci_lower": est - z * se,
-        "ci_upper": est + z * se, "stratum_mean": mh, "stratum_var": vh,
-        "nh": nh, "Wh": W, "unweighted_mean": sum(y) / len(y),
-        "N": N, "n": len(y), "L": L,
-        "method": "Stratified mean, Cochran Theorem 5.3"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "ci_lower": est - z * se,
+            "ci_upper": est + z * se,
+            "stratum_mean": mh,
+            "stratum_var": vh,
+            "nh": nh,
+            "Wh": W,
+            "unweighted_mean": sum(y) / len(y),
+            "N": N,
+            "n": len(y),
+            "L": L,
+            "method": "Stratified mean, Cochran Theorem 5.3",
+        }
+    )
 
 
 stratified_mean = stratmean

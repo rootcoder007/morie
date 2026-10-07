@@ -7,6 +7,8 @@ tests pin that re-export and the basic shape of the result; the
 statistical content is tested in ``test_johsn.py``.
 """
 
+import pathlib
+
 import pytest
 
 from morie.fn import _array_core as np
@@ -19,7 +21,7 @@ def test_johanc_is_the_johsn_implementation():
 
 
 def test_johanc_has_no_ks_residue():
-    src = open(johanc.__file__).read()
+    src = pathlib.Path(johanc.__file__).read_text(encoding="utf-8")
     for token in ("d_plus", "d_minus", "ecdf", "ksone"):
         assert token not in src, "pasted KS body still present: " + token
 
@@ -27,8 +29,12 @@ def test_johanc_has_no_ks_residue():
 def test_johanc_runs_on_a_cointegrated_pair():
     n = 120
     common = np.array([float((i * 7) % 13) + 0.5 * i for i in range(n)])
-    Y = np.column_stack([common + np.array([float((i * 3) % 5) for i in range(n)]),
-                         2.0 * common + np.array([float((i * 11) % 7) for i in range(n)])])
+    Y = np.column_stack(
+        [
+            common + np.array([float((i * 3) % 5) for i in range(n)]),
+            2.0 * common + np.array([float((i * 11) % 7) for i in range(n)]),
+        ]
+    )
     res = johansen_cointegration(Y, k_ar_diff=1)
     assert len(res["trace_stat"]) == 2
     assert len(res["eigenvalues"]) >= 2

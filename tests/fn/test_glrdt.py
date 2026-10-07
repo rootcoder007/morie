@@ -1,7 +1,6 @@
 """Test glr_detector (glrdt)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.glrdt import glr_detector, glrdt
 

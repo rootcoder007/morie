@@ -5,10 +5,7 @@ Implements sec. 14.9.5 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_nested_dp"]
@@ -36,11 +33,14 @@ def ghosal_nested_dp(n_groups=6, gamma=1.0, alpha=2.0, seed=42):
                     labels.append(c)
                     break
     ties = int(n_groups) - len(clusters)
-    res = RichResult(payload={"estimate": float(len(clusters)),
-                              "group_labels": labels,
-                              "groups_share_distributions":
-                                  ties >= 0,
-                              "method": "nested DP (GvdV 2017 sec. 14.9.5)"})
+    res = RichResult(
+        payload={
+            "estimate": float(len(clusters)),
+            "group_labels": labels,
+            "groups_share_distributions": ties >= 0,
+            "method": "nested DP (GvdV 2017 sec. 14.9.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c14_22")
 
 

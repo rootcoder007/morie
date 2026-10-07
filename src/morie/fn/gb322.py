@@ -50,12 +50,15 @@ def gibbons_total_runs_dist(r, n1, n2):
         num = 2 * comb(n1 - 1, k - 1) * comb(n2 - 1, k - 1)
     else:
         k = (r - 1) // 2
-        num = comb(n1 - 1, k) * comb(n2 - 1, k - 1) + comb(n1 - 1, k - 1) * comb(
-            n2 - 1, k
-        )
+        num = comb(n1 - 1, k) * comb(n2 - 1, k - 1) + comb(n1 - 1, k - 1) * comb(n2 - 1, k)
     return RichResult(
-        payload={"pmf": float(num / denom), "r": r, "n1": n1, "n2": n2,
-                 "method": "Total-runs pmf (Gibbons Theorem 3.2.2)"}
+        payload={
+            "pmf": float(num / denom),
+            "r": r,
+            "n1": n1,
+            "n2": n2,
+            "method": "Total-runs pmf (Gibbons Theorem 3.2.2)",
+        }
     )
 
 

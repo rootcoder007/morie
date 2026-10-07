@@ -15,6 +15,24 @@ def pdf_to_text(
     strip_footers: bool = True,
     detect_chapters: bool = True,
 ) -> DescriptiveResult:
+    """Extract the text of a PDF, optionally writing it to a file.
+
+    Repeated page headers and footers are dropped and chapter headings
+    are detected unless switched off.
+
+    Args:
+        pdf_path: the PDF to read.
+        pages: a ``(start, end)`` page range, 0-based with ``end`` excluded; ``None`` reads all.
+        output_path: also write the text here when given.
+        strip_headers, strip_footers: drop lines repeated at the top or
+            bottom of most pages.
+        detect_chapters: mark chapter headings in the output.
+
+    Returns:
+        A ``DescriptiveResult`` whose value is the word count, with the
+        text, page counts, chapters, metadata, character, word and line
+        counts and the output path in ``extra``.
+    """
     from morie._pdf_extract import extract_text, pdf_to_file
 
     result = extract_text(

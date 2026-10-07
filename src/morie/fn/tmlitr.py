@@ -92,10 +92,16 @@ def tmle_individual_regime(y, D, W, X):
     ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Qds[i] - psi for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps,
-        "n_treated": float(sum(rule)), "n": n,
-        "method": "TMLE for the value of the estimated optimal individualized rule"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "n_treated": float(sum(rule)),
+            "n": n,
+            "method": "TMLE for the value of the estimated optimal individualized rule",
+        }
+    )
 
 
 def cheatsheet():

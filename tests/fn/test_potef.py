@@ -1,8 +1,8 @@
 """Tests for potef.potential_outcomes_individual."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.potef import potential_outcomes_individual
 
 

@@ -1,7 +1,6 @@
 """Tests for morie.fn.kreg -- Nadaraya-Watson kernel regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.kreg import kernel_regression, kreg
 

@@ -153,9 +153,11 @@ class MORIEEngine:
 
     Examples
     --------
-    >>> engine = MORIEEngine("~/.ollama/models/blobs/sha256-abc123", kv_bits=3)
-    >>> result = engine.generate("The capital of France is", max_tokens=20)
-    >>> print(result.text)
+    Needs a GGUF model file on disk (the path below is a placeholder):
+
+    >>> engine = MORIEEngine("~/.ollama/models/blobs/sha256-abc123", kv_bits=3)  # doctest: +SKIP
+    >>> result = engine.generate("The capital of France is", max_tokens=20)  # doctest: +SKIP
+    >>> print(result.text)  # doctest: +SKIP
     """
 
     def __init__(
@@ -270,10 +272,7 @@ class MORIEEngine:
             x = _rmsnorm(x, norm_w, eps=norm_eps)
 
         output_w = self._get_weight("output.weight")
-        if _mx is not None:
-            logits = _from_mx(_to_mx(x) @ output_w.T)
-        else:
-            logits = x @ output_w.T
+        logits = _from_mx(_to_mx(x) @ output_w.T) if _mx is not None else x @ output_w.T
 
         if self._is_morie_gpt:
             cap = self.config.get("logit_softcap", 15.0)
@@ -398,10 +397,7 @@ class MORIEEngine:
 
         # Output projection
         wo = self._get_weight(f"{prefix}.attn_output.weight")
-        if _mx is not None:
-            result = _to_mx(attn_concat) @ wo.T
-        else:
-            result = attn_concat @ wo.T
+        result = _to_mx(attn_concat) @ wo.T if _mx is not None else attn_concat @ wo.T
 
         return result
 

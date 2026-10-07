@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 5.3: the Bradley-Terry reward-model objective."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km065 import kamath_ch5_reward_loss_pairwise
 
@@ -28,12 +27,16 @@ def kamath_ch5_rm_bradley_terry(x, y_w, y_l, r_theta):
     >>> abs(out["estimate"] - math.log(1 + math.exp(-1))) < 1e-12
     True
     """
-    inner = kamath_ch5_reward_loss_pairwise(
-        r_theta, x, y_w, y_l, [0] * len(list(x)))
-    return RichResult(payload={
-        "estimate": inner["estimate"], "margins": inner["margins"],
-        "per_pair": inner["per_pair"], "n": inner["n"],
-        "method": "Bradley-Terry reward-model loss (Kamath Eq 5.3)"})
+    inner = kamath_ch5_reward_loss_pairwise(r_theta, x, y_w, y_l, [0] * len(list(x)))
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "margins": inner["margins"],
+            "per_pair": inner["per_pair"],
+            "n": inner["n"],
+            "method": "Bradley-Terry reward-model loss (Kamath Eq 5.3)",
+        }
+    )
 
 
 def cheatsheet():

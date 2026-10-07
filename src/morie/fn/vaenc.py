@@ -55,16 +55,10 @@ def vae_elbo(x, x_recon, mu, log_var, reduction: str = "mean"):
 
     diff = x - x_recon
     recon = 0.5 * diff * diff
-    if recon.ndim > 1:
-        recon = recon.sum(axis=tuple(range(1, recon.ndim)))
-    else:
-        recon = np.atleast_1d(recon.sum())
+    recon = recon.sum(axis=tuple(range(1, recon.ndim))) if recon.ndim > 1 else np.atleast_1d(recon.sum())
 
     kl = -0.5 * (1.0 + log_var - mu**2 - np.exp(log_var))
-    if kl.ndim > 1:
-        kl = kl.sum(axis=tuple(range(1, kl.ndim)))
-    else:
-        kl = np.atleast_1d(kl.sum())
+    kl = kl.sum(axis=tuple(range(1, kl.ndim))) if kl.ndim > 1 else np.atleast_1d(kl.sum())
 
     if reduction == "mean":
         recon_loss = float(recon.mean())

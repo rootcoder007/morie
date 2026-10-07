@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,17 +25,19 @@ def ghosal_convex_misp(p0, q1, q2, n_grid=101):
     for i in range(n_grid):
         t = i / (n_grid - 1.0)
         q = [(1.0 - t) * a + t * b for a, b in zip(q1, q2)]
-        kls.append(sum(x * math.log(x / max(y, 1e-300))
-                       for x, y in zip(p0, q) if x > 0))
+        kls.append(sum(x * math.log(x / max(y, 1e-300)) for x, y in zip(p0, q) if x > 0))
         ts.append(t)
     # discrete convexity check
-    convex = all(kls[i + 1] - 2.0 * kls[i] + kls[i - 1] >= -1e-9
-                 for i in range(1, n_grid - 1))
+    convex = all(kls[i + 1] - 2.0 * kls[i] + kls[i - 1] >= -1e-9 for i in range(1, n_grid - 1))
     t_min = ts[kls.index(min(kls))]
-    res = RichResult(payload={"estimate": t_min,
-                              "kl_min": min(kls),
-                              "convex_along_segment": convex,
-                              "method": "convex misspecification (GvdV 2017 sec. 8.5.1)"})
+    res = RichResult(
+        payload={
+            "estimate": t_min,
+            "kl_min": min(kls),
+            "convex_along_segment": convex,
+            "method": "convex misspecification (GvdV 2017 sec. 8.5.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_14")
 
 

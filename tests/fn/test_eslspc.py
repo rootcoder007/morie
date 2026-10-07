@@ -1,7 +1,6 @@
 """Tests for eslspc.esl_spectral_cluster."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslspc import esl_spectral_cluster
 
 
@@ -18,8 +17,7 @@ def test_eslspc_basic():
     result = esl_spectral_cluster(W, k)
     assert isinstance(result, dict)
     # Keys documented in the function's docstring / return spec.
-    for key in ("estimate", "labels", "eigenvalues", "n_components",
-                "embedding", "normalized", "n", "k", "method"):
+    for key in ("estimate", "labels", "eigenvalues", "n_components", "embedding", "normalized", "n", "k", "method"):
         assert key in result
     assert isinstance(result["estimate"], (int, float))
     assert isinstance(result["labels"], list)
@@ -43,17 +41,18 @@ def test_eslspc_basic():
 
 def test_eslspc_edge():
     """Test edge cases: two disconnected triangles, k=2."""
-    W = [[0, 1, 1, 0, 0, 0],
-         [1, 0, 1, 0, 0, 0],
-         [1, 1, 0, 0, 0, 0],
-         [0, 0, 0, 0, 1, 1],
-         [0, 0, 0, 1, 0, 1],
-         [0, 0, 0, 1, 1, 0]]
+    W = [
+        [0, 1, 1, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 1, 0],
+    ]
     k = 2
     result = esl_spectral_cluster(W, k)
     assert isinstance(result, dict)
-    for key in ("estimate", "labels", "eigenvalues", "n_components",
-                "embedding", "normalized", "n", "k", "method"):
+    for key in ("estimate", "labels", "eigenvalues", "n_components", "embedding", "normalized", "n", "k", "method"):
         assert key in result
     # The graph has two connected components, so two ~zero eigenvalues.
     assert result["n_components"] == 2

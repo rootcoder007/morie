@@ -110,7 +110,7 @@ def _act(name, z):
         return core.sigmoid(z)
     if name == "tanh":
         return math.tanh(z)
-    raise ValueError("dnn_multitrait: unknown activation %r" % (name,))
+    raise ValueError(f"dnn_multitrait: unknown activation {name!r}")
 
 
 def _dact(name, z, g):
@@ -123,7 +123,7 @@ def _dact(name, z, g):
         return g * (1.0 - g)
     if name == "tanh":
         return 1.0 - g * g
-    raise ValueError("dnn_multitrait: unknown activation %r" % (name,))
+    raise ValueError(f"dnn_multitrait: unknown activation {name!r}")
 
 
 def _head_weights(Yc, T, n):
@@ -137,16 +137,25 @@ def _head_weights(Yc, T, n):
         dt = max(abs(med - q1), abs(q3 - med))
         if not dt > 0.0:
             raise ValueError(
-                "dnn_multitrait: trait %d has a zero interquartile spread, so the "
-                "p.493 head-weight recipe divides by zero; pass heads explicitly" % (t + 1)
+                f"dnn_multitrait: trait {int(t + 1)} has a zero interquartile spread, so the p.493 head-weight recipe divides by zero; pass heads explicitly"
             )
         d.append(dt)
     return [d[0] if t == 0 else d[0] / d[t] for t in range(T)]
 
 
-def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
-                   out_activation="linear", eta=0.1, epochs=200, tol=0.0,
-                   seed=1, init=None):
+def dnn_multitrait(
+    X,
+    Y,
+    layers,
+    heads=None,
+    activation="relu",
+    out_activation="linear",
+    eta=0.1,
+    epochs=200,
+    tol=0.0,
+    seed=1,
+    init=None,
+):
     """Shared-hidden multi-head DNN trained by the Chapter 10 backpropagation.
 
     Parameters
@@ -229,7 +238,7 @@ def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
             raise ValueError("dnn_multitrait: init must give one weight matrix per layer")
         for k in range(nlay):
             if len(W[k]) != dims[k] + 1 or len(W[k][0]) != dims[k + 1]:
-                raise ValueError("dnn_multitrait: init layer %d has the wrong shape" % (k + 1))
+                raise ValueError(f"dnn_multitrait: init layer {int(k + 1)} has the wrong shape")
     else:
         s = int(seed) % _LCG_M
         W = []
@@ -252,8 +261,9 @@ def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
         Z = []
         A = [[[1.0] + list(Xm[i]) for i in range(n)]]
         for k in range(nlay):
-            zk = [[sum(A[k][i][q] * W[k][q][j] for q in range(dims[k] + 1))
-                   for j in range(dims[k + 1])] for i in range(n)]
+            zk = [
+                [sum(A[k][i][q] * W[k][q][j] for q in range(dims[k] + 1)) for j in range(dims[k + 1])] for i in range(n)
+            ]
             gk = [[_act(acts[k], zk[i][j]) for j in range(dims[k + 1])] for i in range(n)]
             Z.append(zk)
             if k < nlay - 1:
@@ -271,19 +281,28 @@ def dnn_multitrait(X, Y, layers, heads=None, activation="relu",
         if tol > 0.0 and loss <= tol:
             break
         # Step 9, output deltas
-        D = [[wt[t] * (Yc[i][t] - Yhat[i][t]) * _dact(acts[nlay - 1], Z[nlay - 1][i][t], Yhat[i][t])
-              for t in range(T)] for i in range(n)]
+        D = [
+            [wt[t] * (Yc[i][t] - Yhat[i][t]) * _dact(acts[nlay - 1], Z[nlay - 1][i][t], Yhat[i][t]) for t in range(T)]
+            for i in range(n)
+        ]
         # Steps 10-12: all deltas from the OLD weights, then update
         newW = [None] * nlay
         Dk = D
         for k in range(nlay - 1, -1, -1):
-            newW[k] = [[W[k][q][j] + eta * sum(A[k][i][q] * Dk[i][j] for i in range(n))
-                        for j in range(dims[k + 1])] for q in range(dims[k] + 1)]
+            newW[k] = [
+                [W[k][q][j] + eta * sum(A[k][i][q] * Dk[i][j] for i in range(n)) for j in range(dims[k + 1])]
+                for q in range(dims[k] + 1)
+            ]
             if k > 0:
                 # Step 10; row 0 of W[k] is the intercept and is excluded
-                Dk = [[_dact(acts[k - 1], Z[k - 1][i][q], A[k][i][q + 1])
-                       * sum(Dk[i][j] * W[k][q + 1][j] for j in range(dims[k + 1]))
-                       for q in range(dims[k])] for i in range(n)]
+                Dk = [
+                    [
+                        _dact(acts[k - 1], Z[k - 1][i][q], A[k][i][q + 1])
+                        * sum(Dk[i][j] * W[k][q + 1][j] for j in range(dims[k + 1]))
+                        for q in range(dims[k])
+                    ]
+                    for i in range(n)
+                ]
         W = newW
 
     return RichResult(

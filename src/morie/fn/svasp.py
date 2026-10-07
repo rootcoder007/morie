@@ -24,14 +24,8 @@ def svasp(position, ideal=None, saliences=None):
     DescriptiveResult
     """
     position = np.asarray(position, dtype=float)
-    if ideal is None:
-        ideal = np.zeros_like(position)
-    else:
-        ideal = np.asarray(ideal, dtype=float)
-    if saliences is None:
-        saliences = np.ones(len(position)) / len(position)
-    else:
-        saliences = np.asarray(saliences, dtype=float)
+    ideal = np.zeros_like(position) if ideal is None else np.asarray(ideal, dtype=float)
+    saliences = np.ones(len(position)) / len(position) if saliences is None else np.asarray(saliences, dtype=float)
     dist_sq = float(np.sum(saliences * (position - ideal) ** 2))
     stat = float(np.exp(-0.5 * dist_sq))
     return DescriptiveResult(

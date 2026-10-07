@@ -1,7 +1,6 @@
 """Tests for maeggr.ma_egger_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.maeggr import ma_egger_test
 
 

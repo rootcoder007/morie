@@ -1,7 +1,5 @@
 """Tests for powsrv.power_survey."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.powsrv import power_survey
 
 

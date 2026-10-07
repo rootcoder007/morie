@@ -1,7 +1,6 @@
 """Tests for morie.fn.msdst -- Distance matrix computation"""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msdst import dist_matrix
 
 

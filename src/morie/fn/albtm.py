@@ -30,15 +30,13 @@ def alammar_bertopic_pipeline(documents, embeddings, min_cluster_size=2):
     C = E - E.mean(axis=0)
     U, S, Vt = np.linalg.svd(C, full_matrices=False)
     Z = C @ Vt[:2].T
-    cl = alammar_hdbscan_cluster(Z, min_cluster_size=min_cluster_size,
-                                 min_samples=1)
+    cl = alammar_hdbscan_cluster(Z, min_cluster_size=min_cluster_size, min_samples=1)
     labels = cl["labels"]
     vocab = sorted({w for d in docs for w in d})
     widx = {w: i for i, w in enumerate(vocab)}
-    clusters = sorted({l for l in labels if l >= 0})
+    clusters = sorted({ell for ell in labels if ell >= 0})
     if not clusters:
-        raise ValueError(
-            "every document came out as noise; loosen min_cluster_size.")
+        raise ValueError("every document came out as noise; loosen min_cluster_size.")
     M = np.zeros((len(clusters), len(vocab)))
     for lab, d in zip(labels, docs):
         if lab >= 0:
@@ -47,14 +45,19 @@ def alammar_bertopic_pipeline(documents, embeddings, min_cluster_size=2):
                 M[row, widx[w]] += 1
     ct = alammar_c_tfidf(M)
     W = np.asarray(ct["weights"])
-    top_words = {int(clusters[i]): vocab[int(np.argmax(W[i]))]
-                 for i in range(len(clusters))}
-    return RichResult(payload={
-        "labels": labels, "reduced": [[float(v) for v in r] for r in Z],
-        "topic_top_word": top_words,
-        "n_topics": len(clusters), "vocabulary": vocab,
-        "estimate": float(len(clusters)), "n": len(docs),
-        "method": "BERTopic: reduce, cluster, c-TF-IDF (Grootendorst 2022)"})
+    top_words = {int(clusters[i]): vocab[int(np.argmax(W[i]))] for i in range(len(clusters))}
+    return RichResult(
+        payload={
+            "labels": labels,
+            "reduced": [[float(v) for v in r] for r in Z],
+            "topic_top_word": top_words,
+            "n_topics": len(clusters),
+            "vocabulary": vocab,
+            "estimate": float(len(clusters)),
+            "n": len(docs),
+            "method": "BERTopic: reduce, cluster, c-TF-IDF (Grootendorst 2022)",
+        }
+    )
 
 
 def cheatsheet():

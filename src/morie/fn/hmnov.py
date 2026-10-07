@@ -110,9 +110,13 @@ def geron_novelty_detection(model, X_new, reference=None):
         if train.ndim == 1:
             train = train.reshape(-1, 1)
         if train.ndim != 2 or train.shape[0] < 2:
-            raise ValueError(f"geron_novelty_detection: training data must be 2-D with at least 2 rows, got shape {train.shape}")
+            raise ValueError(
+                f"geron_novelty_detection: training data must be 2-D with at least 2 rows, got shape {train.shape}"
+            )
         if train.shape[1] != B.shape[1]:
-            raise ValueError(f"geron_novelty_detection: training data has {train.shape[1]} features but X_new has {B.shape[1]}")
+            raise ValueError(
+                f"geron_novelty_detection: training data has {train.shape[1]} features but X_new has {B.shape[1]}"
+            )
         log_density = _gaussian_model(train)
         if ref is None:
             ref = float(np.mean(log_density(train)))
@@ -132,7 +136,11 @@ def geron_novelty_detection(model, X_new, reference=None):
     novel = log_ratio < 0
     return RichResult(
         title="Novelty detection",
-        summary_lines=[("Points", int(B.shape[0])), ("Novel fraction", float(np.mean(novel))), ("Reference log density", ref)],
+        summary_lines=[
+            ("Points", int(B.shape[0])),
+            ("Novel fraction", float(np.mean(novel))),
+            ("Reference log density", ref),
+        ],
         interpretation="Assumes the training set was clean; contamination silently rescales the reference.",
         payload={
             "ratio": ratio,

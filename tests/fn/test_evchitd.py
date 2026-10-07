@@ -1,4 +1,5 @@
 """Tests for evchitd.evt_chi_tail_dependence."""
+
 from morie.fn import _array_core as np
 from morie.fn.evchitd import evt_chi_tail_dependence
 

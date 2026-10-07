@@ -7,13 +7,11 @@ from . import _hrz3 as H
 from . import _s03core as core
 from ._richresult import RichResult
 from .hrztf import horowitz_both_nonpar_transform
-from .hrztmod import horowitz_transformation_model
 
 __all__ = ["horowitz_ph_frailty_nonpar"]
 
 
-def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
-                               q=0.22, delta=0.85, bandwidth=None):
+def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21, q=0.22, delta=0.85, bandwidth=None):
     r"""Proportional hazards model with unobserved heterogeneity, with
     the baseline hazard AND the frailty distribution both
     nonparametric.
@@ -172,28 +170,24 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
     d = int(X.shape[1])
     for i in range(n_all):
         if not (float(tv[i]) > 0):
-            raise ValueError(
-                f"durations must be strictly positive; t[{i}] = {float(tv[i])}.")
+            raise ValueError(f"durations must be strictly positive; t[{i}] = {float(tv[i])}.")
     if event is None:
         keep = list(range(n_all))
     else:
         ev = np.asarray(event, dtype=float).ravel()
         if ev.size != n_all:
-            raise ValueError(
-                f"t has {n_all} points but event has {ev.size}.")
+            raise ValueError(f"t has {n_all} points but event has {ev.size}.")
         keep = [i for i in range(n_all) if float(ev[i]) != 0.0]
     n = len(keep)
     if n < 10:
-        raise ValueError(
-            f"need at least 10 uncensored observations, got {n}.")
+        raise ValueError(f"need at least 10 uncensored observations, got {n}.")
     q = float(q)
     delta = float(delta)
     if not (0.2 < q < 0.25):
         raise ValueError(f"q must lie strictly in (1/5, 1/4), got {q}.")
     lo_d = 1.0 / (2.0 * q) - 1.5
     if not (lo_d < delta < 1.0):
-        raise ValueError(
-            f"delta must lie in ({lo_d:.6g}, 1); got {delta}.")
+        raise ValueError(f"delta must lie in ({lo_d:.6g}, 1); got {delta}.")
     nq = int(nq)
     if nq < 3:
         raise ValueError(f"nq must be at least 3, got {nq}.")
@@ -201,8 +195,7 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
     yv = [float(tv[i]) for i in keep]
     Xk = [[float(X[i][k]) for k in range(d)] for i in keep]
 
-    hb = float(bandwidth) if bandwidth is not None else HZ.silverman_bw(
-        [Xk[i][0] for i in range(n)])
+    hb = float(bandwidth) if bandwidth is not None else HZ.silverman_bw([Xk[i][0] for i in range(n)])
     alpha = H.index_dir(Xk, yv, hb)
     Z = [sum(Xk[i][k] * float(alpha[k]) for k in range(d)) for i in range(n)]
     hz = float(bandwidth) if bandwidth is not None else HZ.silverman_bw(Z)
@@ -226,7 +219,7 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
             for i in range(n):
                 u = (z - Z[i]) / hz
                 kk = np.exp(-0.5 * u * u) / H.SQRT2PI
-                dk = -(u / hz) * kk        # d/dz K((z - Z_i)/h)
+                dk = -(u / hz) * kk  # d/dz K((z - Z_i)/h)
                 ind = 1.0 if yv[i] <= yy else 0.0
                 A += ind * kk
                 B += kk
@@ -240,9 +233,7 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
             num += wq[k] * Gnz * pnz * pnz
             den += wq[k] * Gn * pnz * pnz
         if abs(den) < 1e-300:
-            raise ValueError(
-                "the denominator of (6.80) vanished; y is too small for the "
-                "sample to identify sigma.")
+            raise ValueError("the denominator of (6.80) vanished; y is too small for the sample to identify sigma.")
         return -num / den
 
     yn1 = core.quantile7(yv, min(n ** (-q), 0.99))
@@ -254,8 +245,7 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
         raise ValueError("the bias-correction weight in (6.81) is degenerate.")
     sigma = (s1 - fac * s2) / (1.0 - fac)
 
-    tf = horowitz_both_nonpar_transform(Xk, yv, ny=ny, nz=nz,
-                                        bandwidth=bandwidth).payload
+    tf = horowitz_both_nonpar_transform(Xk, yv, ny=ny, nz=nz, bandwidth=bandwidth).payload
     T = tf["T_hat"]
     yg = tf["y_grid"]
     m = len(yg)
@@ -269,27 +259,29 @@ def horowitz_ph_frailty_nonpar(t, x, event=None, ny=21, nz=21, nq=21,
         else:
             Tp[k] = (T[k + 1] - T[k - 1]) / (2.0 * dv)
 
-    Lam = [np.exp(sigma * T[k]) for k in range(m)]           # (6.70)
+    Lam = [np.exp(sigma * T[k]) for k in range(m)]  # (6.70)
     lam = [sigma * Tp[k] * np.exp(sigma * T[k]) for k in range(m)]  # (6.71)
     beta = [sigma * float(alpha[k]) for k in range(d)]
 
-    return RichResult(payload={
-        "beta_hat": beta,
-        "alpha_hat": [float(t) for t in alpha],
-        "sigma": float(sigma),
-        "sigma_y1": float(s1),
-        "sigma_y2": float(s2),
-        "h0_hat": lam,
-        "Lambda0_hat": Lam,
-        "frailty_dist": tf["F_hat"],
-        "frailty_grid": tf["u_grid"],
-        "T_hat": T,
-        "y_grid": yg,
-        "y0": tf["y0"],
-        "n": n_all,
-        "n_used": n,
-        "method": "Horowitz (2009) eqs. (6.80)-(6.81), (6.70)-(6.71)",
-    })
+    return RichResult(
+        payload={
+            "beta_hat": beta,
+            "alpha_hat": [float(t) for t in alpha],
+            "sigma": float(sigma),
+            "sigma_y1": float(s1),
+            "sigma_y2": float(s2),
+            "h0_hat": lam,
+            "Lambda0_hat": Lam,
+            "frailty_dist": tf["F_hat"],
+            "frailty_grid": tf["u_grid"],
+            "T_hat": T,
+            "y_grid": yg,
+            "y0": tf["y0"],
+            "n": n_all,
+            "n_used": n,
+            "method": "Horowitz (2009) eqs. (6.80)-(6.81), (6.70)-(6.71)",
+        }
+    )
 
 
 def cheatsheet():

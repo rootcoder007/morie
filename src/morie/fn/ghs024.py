@@ -13,8 +13,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_ch3_tailfree_canonical_summability"]
 
 
-def ghosal_ch3_tailfree_canonical_summability(EV_by_level,
-                                              varV_by_level):
+def ghosal_ch3_tailfree_canonical_summability(EV_by_level, varV_by_level):
     """sum_m max_e |E(V) - 1/2| < infty and sum_m max_e var(V) < infty
     (eq. 3.17) -- the two series that guarantee absolute continuity
     for canonical partitions. Keys: value."""
@@ -22,12 +21,16 @@ def ghosal_ch3_tailfree_canonical_summability(EV_by_level,
     vv = _bnp._flat(varV_by_level)
     s1 = sum(abs(v - 0.5) for v in ev)
     s2 = sum(vv)
-    res = RichResult(payload={"estimate": s1 + s2,
-                              "value": [s1, s2],
-                              "mean_series": s1, "var_series": s2,
-                              "summable": math.isfinite(s1)
-                              and math.isfinite(s2),
-                              "method": "canonical summability (GvdV 2017 eq. 3.17)"})
+    res = RichResult(
+        payload={
+            "estimate": s1 + s2,
+            "value": [s1, s2],
+            "mean_series": s1,
+            "var_series": s2,
+            "summable": math.isfinite(s1) and math.isfinite(s2),
+            "method": "canonical summability (GvdV 2017 eq. 3.17)",
+        }
+    )
     return with_describe_pointer(res, "ghs024")
 
 

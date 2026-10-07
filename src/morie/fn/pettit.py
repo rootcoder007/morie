@@ -61,7 +61,7 @@ def pettitt_test(x):
         uk.append(2.0 * acc - k * (n + 1.0))
     ustar = max(abs(v) for v in uk)
     kstar = min(k + 1 for k in range(n) if abs(uk[k]) == ustar)
-    p = min(1.0, 2.0 * math.exp(-6.0 * ustar * ustar / (n ** 3 + n ** 2)))
+    p = min(1.0, 2.0 * math.exp(-6.0 * ustar * ustar / (n**3 + n**2)))
     return RichResult(
         payload={
             "statistic": float(ustar),

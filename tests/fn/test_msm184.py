@@ -6,8 +6,6 @@ Springer, ch 9, eqs. 9.9 to 9.14 pp.346-347, the Wolfe dual. Expected values are
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm184 import wolfedual
@@ -15,10 +13,8 @@ from morie.fn.msm184 import wolfedual
 
 def test_the_dual_objective_subtracts_both_multiplier_terms():
     # eq 9.12: L = f - sum lambda_i h_i - sum alpha_i g_i
-    res = wolfedual(10.0, [1.0], h=[2.0], grad_h=[[1.0]], g=[3.0],
-               grad_g=[[1.0]], lam=[0.5], alpha=[2.0])
-    assert res["L"] == pytest.approx(
-        10.0 - 0.5 * 2.0 - 2.0 * 3.0, rel=1e-12)
+    res = wolfedual(10.0, [1.0], h=[2.0], grad_h=[[1.0]], g=[3.0], grad_g=[[1.0]], lam=[0.5], alpha=[2.0])
+    assert res["L"] == pytest.approx(10.0 - 0.5 * 2.0 - 2.0 * 3.0, rel=1e-12)
 
 
 def test_the_book_s_first_illustrative_example_is_stationary_at_its_optimum():

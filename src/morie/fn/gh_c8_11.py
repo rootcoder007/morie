@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ts_crt"]
@@ -32,17 +31,21 @@ def ghosal_ts_crt(ns=(256, 2048), n_bins=8, seed=42):
             for t, v in enumerate(x):
                 wr += v * math.cos(ang * t)
                 wi += v * math.sin(ang * t)
-            I = (wr * wr + wi * wi) / (2.0 * math.pi * n)
+            I_ = (wr * wr + wi * wi) / (2.0 * math.pi * n)
             b = min(int(n_bins * j / m), n_bins - 1)
-            binsum[b] += I
+            binsum[b] += I_
             bincnt[b] += 1
         truth = 1.0 / (2.0 * math.pi)
         est = [(0.5 + s) / (1.0 + c) for s, c in zip(binsum, bincnt)]
         errs.append(sum(abs(e - truth) for e in est) / n_bins)
-    res = RichResult(payload={"estimate": errs[-1],
-                              "error_by_n": errs,
-                              "contracting": errs[-1] < errs[0],
-                              "method": "Whittle spectral contraction (GvdV 2017 sec. 8.3.5)"})
+    res = RichResult(
+        payload={
+            "estimate": errs[-1],
+            "error_by_n": errs,
+            "contracting": errs[-1] < errs[0],
+            "method": "Whittle spectral contraction (GvdV 2017 sec. 8.3.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_11")
 
 

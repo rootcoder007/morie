@@ -1,8 +1,6 @@
 """Tests for genrgr.calibration_greg."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.genrgr import calibration_greg
 
 

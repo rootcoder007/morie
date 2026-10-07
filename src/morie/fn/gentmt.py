@@ -59,18 +59,15 @@ mean-1 diagnostic.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["generalized_treatment_msm", "gps_subclassify",
-           "dose_response_curve"]
+__all__ = ["generalized_treatment_msm", "gps_subclassify", "dose_response_curve"]
 
 _METHODS = ("weight", "subclassify", "doseresponse")
 
 
-def generalized_treatment_msm(y, A, H, method="weight", degree=1,
-                              n_strata=5, doses=None, trim=None):
+def generalized_treatment_msm(y, A, H, method="weight", degree=1, n_strata=5, doses=None, trim=None):
     r"""Dose-response MSM for a continuous treatment.
 
     Parameters
@@ -105,57 +102,52 @@ def generalized_treatment_msm(y, A, H, method="weight", degree=1,
         r["estimate"]
     """
     if method not in _METHODS:
-        raise ValueError("generalized_treatment_msm: method must be one of "
-                         "%r, got %r" % (_METHODS, method))
+        raise ValueError(f"generalized_treatment_msm: method must be one of {_METHODS!r}, got {method!r}")
     deg = int(degree)
     if deg < 1:
-        raise ValueError("generalized_treatment_msm: degree must be at "
-                         "least 1, got %r" % (degree,))
+        raise ValueError(f"generalized_treatment_msm: degree must be at least 1, got {degree!r}")
     yv = k.vec(y)
     av = k.vec(A)
     n = len(yv)
     if len(av) != n:
-        raise ValueError("generalized_treatment_msm: %d outcomes but %d "
-                         "doses" % (n, len(av)))
+        raise ValueError(f"generalized_treatment_msm: {int(n)} outcomes but {int(len(av))} doses")
     if len(set(av)) < 3:
         raise ValueError(
-            "generalized_treatment_msm: the dose takes %d distinct values; "
-            "this is the continuous-treatment estimator and a binary or "
-            "near-binary exposure belongs in a binary MSM"
-            % len(set(av)))
+            f"generalized_treatment_msm: the dose takes {int(len(set(av)))} distinct values; this is the continuous-treatment estimator and a binary or near-binary exposure belongs in a binary MSM"
+        )
 
     if method == "weight":
-        w, info = k.ip_weights(av, H, kind="normal", stabilize=True,
-                               trim=trim)
+        w, info = k.ip_weights(av, H, kind="normal", stabilize=True, trim=trim)
         X = [[av[i] ** d for d in range(1, deg + 1)] for i in range(n)]
         fit = k.wls(X, yv, w)
         crude = k.wls(X, yv, [1.0] * n)
-        return RichResult(payload={
-            "estimate": fit["coef"][1],
-            "se": fit["se"][1],
-            "coef": fit["coef"], "vcov": fit["vcov"],
-            "crude": crude["coef"][1],
-            "weights": w,
-            "mean_weight": info["mean_weight"],
-            "max_weight": info["max_weight"],
-            "effective_sample_size": info["effective_sample_size"],
-            "finite_variance": info["finite_variance"],
-            "variance_ratio": info["variance_ratio"],
-            "gps": info["denominator"],
-            "degree": deg, "n": n,
-            "method": "stabilized IP weighting for a continuous dose, "
-                      "Robins, Hernan & Brumback (2000)",
-        })
+        return RichResult(
+            payload={
+                "estimate": fit["coef"][1],
+                "se": fit["se"][1],
+                "coef": fit["coef"],
+                "vcov": fit["vcov"],
+                "crude": crude["coef"][1],
+                "weights": w,
+                "mean_weight": info["mean_weight"],
+                "max_weight": info["max_weight"],
+                "effective_sample_size": info["effective_sample_size"],
+                "finite_variance": info["finite_variance"],
+                "variance_ratio": info["variance_ratio"],
+                "gps": info["denominator"],
+                "degree": deg,
+                "n": n,
+                "method": "stabilized IP weighting for a continuous dose, Robins, Hernan & Brumback (2000)",
+            }
+        )
 
     if method == "subclassify":
         out = gps_subclassify(yv, av, H, n_strata=n_strata, degree=deg)
-        out["method"] = ("generalized propensity score subclassification, "
-                         "Imai & van Dyk (2004)")
+        out["method"] = "generalized propensity score subclassification, Imai & van Dyk (2004)"
         return RichResult(payload=out)
 
     out = dose_response_curve(yv, av, H, doses=doses, degree=deg)
-    out["method"] = ("dose-response function via the GPS, "
-                     "Hirano & Imbens (2004)")
+    out["method"] = "dose-response function via the GPS, Hirano & Imbens (2004)"
     return RichResult(payload=out)
 
 
@@ -173,20 +165,18 @@ def gps_subclassify(y, A, H, n_strata=5, degree=1):
     n = len(yv)
     J = int(n_strata)
     if J < 2:
-        raise ValueError("gps_subclassify: need at least 2 strata, got %r"
-                         % (n_strata,))
+        raise ValueError(f"gps_subclassify: need at least 2 strata, got {n_strata!r}")
     if n < 4 * J:
         raise ValueError(
-            "gps_subclassify: %d observations cannot support %d strata; "
-            "each needs enough points to fit a degree-%d dose model"
-            % (n, J, degree))
+            f"gps_subclassify: {int(n)} observations cannot support {int(J)} strata; each needs enough points to fit a degree-{int(degree)} dose model"
+        )
     _, info = k.treatment_density(av, H, kind="normal")
     mu = list(info["mu"])
     order = sorted(range(n), key=lambda i: mu[i])
     edges = [int(round(j * n / float(J))) for j in range(J + 1)]
     slopes, sizes, ses = [], [], []
     for j in range(J):
-        idx = order[edges[j]:edges[j + 1]]
+        idx = order[edges[j] : edges[j + 1]]
         if len(idx) < degree + 2:
             continue
         Xs = [[av[i] ** d for d in range(1, int(degree) + 1)] for i in idx]
@@ -196,17 +186,21 @@ def gps_subclassify(y, A, H, n_strata=5, degree=1):
         ses.append(f["se"][1])
         sizes.append(len(idx))
     if not slopes:
-        raise ValueError("gps_subclassify: every stratum was too small to "
-                         "fit; reduce n_strata")
+        raise ValueError("gps_subclassify: every stratum was too small to fit; reduce n_strata")
     tot = float(sum(sizes))
     est = sum(slopes[j] * sizes[j] for j in range(len(slopes))) / tot
-    var = sum((sizes[j] / tot) ** 2 * ses[j] ** 2
-              for j in range(len(slopes)))
-    return {"estimate": est, "se": math.sqrt(var) if var > 0 else
-            float("nan"),
-            "stratum_slopes": slopes, "stratum_sizes": sizes,
-            "stratum_se": ses, "gps_mean": mu, "n_strata": len(slopes),
-            "n": n, "degree": int(degree)}
+    var = sum((sizes[j] / tot) ** 2 * ses[j] ** 2 for j in range(len(slopes)))
+    return {
+        "estimate": est,
+        "se": math.sqrt(var) if var > 0 else float("nan"),
+        "stratum_slopes": slopes,
+        "stratum_sizes": sizes,
+        "stratum_se": ses,
+        "gps_mean": mu,
+        "n_strata": len(slopes),
+        "n": n,
+        "degree": int(degree),
+    }
 
 
 def dose_response_curve(y, A, H, doses=None, degree=1):
@@ -229,9 +223,7 @@ def dose_response_curve(y, A, H, doses=None, degree=1):
         r = a - mu[i]
         return math.exp(-0.5 * r * r / s2) / math.sqrt(2.0 * math.pi * s2)
 
-    X = [[av[i] ** d for d in range(1, deg + 1)]
-         + [dens[i], dens[i] * dens[i], av[i] * dens[i]]
-         for i in range(n)]
+    X = [[av[i] ** d for d in range(1, deg + 1)] + [dens[i], dens[i] * dens[i], av[i] * dens[i]] for i in range(n)]
     fit = k.wls(X, yv, [1.0] * n)
     b = fit["coef"]
 
@@ -244,24 +236,33 @@ def dose_response_curve(y, A, H, doses=None, degree=1):
         tot = 0.0
         for i in range(n):
             r = gps_at(a, i)
-            row = [1.0] + [a ** d for d in range(1, deg + 1)] \
-                + [r, r * r, a * r]
+            row = [1.0] + [a**d for d in range(1, deg + 1)] + [r, r * r, a * r]
             tot += sum(b[j] * row[j] for j in range(len(b)))
         curve.append(tot / n)
-    slopes = [(curve[t + 1] - curve[t]) / (doses[t + 1] - doses[t])
-              for t in range(len(doses) - 1)
-              if doses[t + 1] != doses[t]]
+    slopes = [
+        (curve[t + 1] - curve[t]) / (doses[t + 1] - doses[t]) for t in range(len(doses) - 1) if doses[t + 1] != doses[t]
+    ]
     est = sum(slopes) / len(slopes) if slopes else float("nan")
-    return {"estimate": est, "se": float("nan"), "doses": doses,
-            "curve": curve, "slopes": slopes, "coef": b,
-            "gps": dens, "n": n, "degree": deg}
+    return {
+        "estimate": est,
+        "se": float("nan"),
+        "doses": doses,
+        "curve": curve,
+        "slopes": slopes,
+        "coef": b,
+        "gps": dens,
+        "n": n,
+        "degree": deg,
+    }
 
 
 def cheatsheet():
-    return ("gentmt: continuous-dose MSM. weight = SW = f(A)/f(A|L) "
-            "(Robins-Hernan-Brumback 2000, default); subclassify = GPS "
-            "strata (Imai-van Dyk 2004); doseresponse = E[Y^a] curve "
-            "(Hirano-Imbens 2004). Reports finite_variance.")
+    return (
+        "gentmt: continuous-dose MSM. weight = SW = f(A)/f(A|L) "
+        "(Robins-Hernan-Brumback 2000, default); subclassify = GPS "
+        "strata (Imai-van Dyk 2004); doseresponse = E[Y^a] curve "
+        "(Hirano-Imbens 2004). Reports finite_variance."
+    )
 
 
 # compact alias per ledger/NAMING.md

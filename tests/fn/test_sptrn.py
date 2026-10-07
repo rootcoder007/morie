@@ -1,7 +1,6 @@
 """Tests for sptrn.spatial_trend_surface."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sptrn import spatial_trend_surface
 
 

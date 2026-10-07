@@ -22,7 +22,9 @@ def postres(y, e, theta_draws):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Posterior-averaged Poisson residual", payload=_c.postres(y=y, e=e, theta_draws=theta_draws))
+    return RichResult(
+        title="Posterior-averaged Poisson residual", payload=_c.postres(y=y, e=e, theta_draws=theta_draws)
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_5_equation_2 = postres

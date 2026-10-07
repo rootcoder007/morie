@@ -86,9 +86,7 @@ def geron_zero_shot(model, prompt, labels=None, null_prompt=None):
     s, keys = _score(prompt)
     names = list(labels) if labels is not None else keys
     if names is None:
-        raise ValueError(
-            "geron_zero_shot: labels are required unless the model returns a {label: score} mapping"
-        )
+        raise ValueError("geron_zero_shot: labels are required unless the model returns a {label: score} mapping")
     if len(names) != s.size:
         raise ValueError(f"geron_zero_shot: model returned {s.size} scores but {len(names)} labels were given")
     if s.size < 2:
@@ -101,9 +99,7 @@ def geron_zero_shot(model, prompt, labels=None, null_prompt=None):
     if null_prompt is not None:
         s0, _ = _score(null_prompt)
         if s0.size != s.size:
-            raise ValueError(
-                f"geron_zero_shot: null prompt produced {s0.size} scores but the prompt produced {s.size}"
-            )
+            raise ValueError(f"geron_zero_shot: null prompt produced {s0.size} scores but the prompt produced {s.size}")
         if not np.all(np.isfinite(s0)):
             raise ValueError("geron_zero_shot: model returned non-finite scores for the null prompt")
         s = s - s0

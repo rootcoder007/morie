@@ -93,15 +93,12 @@ def boyd_kkt(grad_L, f=None, h=None, lambda_=None, nu=None, tol=1e-08):
     g = np.atleast_1d(np.asarray(grad_L, dtype=float)).ravel()
     fv = np.atleast_1d(np.asarray(f, dtype=float)).ravel() if f is not None else np.zeros(0)
     hv = np.atleast_1d(np.asarray(h, dtype=float)).ravel() if h is not None else np.zeros(0)
-    lam = (np.zeros(fv.size) if lambda_ is None
-           else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel())
-    nuv = (np.zeros(hv.size) if nu is None
-           else np.atleast_1d(np.asarray(nu, dtype=float)).ravel())
+    lam = np.zeros(fv.size) if lambda_ is None else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel()
+    np.zeros(hv.size) if nu is None else np.atleast_1d(np.asarray(nu, dtype=float)).ravel()
     if lam.size != fv.size:
         raise ValueError(f"lambda_ has {lam.size} entries but f has {fv.size}")
     stat = bool(np.max(np.abs(g)) <= tol) if g.size else True
-    pf = bool((np.all(fv <= tol) if fv.size else True)
-              and (np.all(np.abs(hv) <= tol) if hv.size else True))
+    pf = bool((np.all(fv <= tol) if fv.size else True) and (np.all(np.abs(hv) <= tol) if hv.size else True))
     df = bool(np.all(lam >= -tol)) if lam.size else True
     cs_vec = lam * fv if fv.size else np.zeros(0)
     cs = bool(np.all(np.abs(cs_vec) <= tol)) if cs_vec.size else True
@@ -116,19 +113,26 @@ def boyd_kkt(grad_L, f=None, h=None, lambda_=None, nu=None, tol=1e-08):
         viol.append("complementary slackness")
     return RichResult(
         title="KKT conditions",
-        summary_lines=[("stationarity", stat), ("primal feasible", pf),
-                       ("dual feasible", df),
-                       ("complementary slackness", cs)],
-        warnings=["these are necessary AND sufficient only for a convex "
-                  "problem under a constraint qualification; otherwise a "
-                  "point satisfying them may be a saddle or a maximum"],
+        summary_lines=[
+            ("stationarity", stat),
+            ("primal feasible", pf),
+            ("dual feasible", df),
+            ("complementary slackness", cs),
+        ],
+        warnings=[
+            "these are necessary AND sufficient only for a convex "
+            "problem under a constraint qualification; otherwise a "
+            "point satisfying them may be a saddle or a maximum"
+        ],
         payload={
-            "satisfied": bool(not viol), "stationarity": stat,
-            "primal_feasible": pf, "dual_feasible": df,
-            "complementary_slackness": cs, "violations": viol,
+            "satisfied": bool(not viol),
+            "stationarity": stat,
+            "primal_feasible": pf,
+            "dual_feasible": df,
+            "complementary_slackness": cs,
+            "violations": viol,
             "slackness_products": cs_vec,
-            "active_constraints": np.flatnonzero(np.abs(fv) <= tol)
-            if fv.size else np.zeros(0, dtype=int),
+            "active_constraints": np.flatnonzero(np.abs(fv) <= tol) if fv.size else np.zeros(0, dtype=int),
             "stationarity_residual": float(np.max(np.abs(g))) if g.size else 0.0,
             "method": "boyd_kkt",
         },

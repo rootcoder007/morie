@@ -5,9 +5,9 @@
 RMSNorm differs from LayerNorm precisely by NOT subtracting the mean.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rmsnr import rms_norm as rn
 
 
@@ -47,9 +47,7 @@ def test_rmsnr_is_scale_invariant_up_to_eps():
     """
     rng = np.random.default_rng(1627)
     x = rng.standard_normal((4, 16))
-    assert np.asarray(rn(x * 13.0)["tensor"]) == pytest.approx(
-        np.asarray(rn(x)["tensor"]), abs=1e-5
-    )
+    assert np.asarray(rn(x * 13.0)["tensor"]) == pytest.approx(np.asarray(rn(x)["tensor"]), abs=1e-5)
     # With a negligible eps the invariance is exact to floating point.
     tiny = 1e-300
     assert np.asarray(rn(x * 13.0, eps=tiny)["tensor"]) == pytest.approx(
@@ -61,9 +59,7 @@ def test_rmsnr_gamma_scales_each_feature():
     rng = np.random.default_rng(1631)
     x = rng.standard_normal((3, 5))
     g = np.array([1.0, 2.0, 3.0, 0.5, -1.0])
-    assert np.asarray(rn(x, gamma=g)["tensor"]) == pytest.approx(
-        np.asarray(rn(x)["tensor"]) * g
-    )
+    assert np.asarray(rn(x, gamma=g)["tensor"]) == pytest.approx(np.asarray(rn(x)["tensor"]) * g)
 
 
 def test_rmsnr_all_zero_row_stays_finite():

@@ -1,7 +1,6 @@
 """Tests for ncfs.py - Neighbourhood Component Feature Selection."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ncfs import ncfs, ncfs_fn
 
 

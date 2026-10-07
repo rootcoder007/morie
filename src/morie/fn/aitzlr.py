@@ -23,7 +23,9 @@ def lrem(X, dl, n_iter=20):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Log-ratio EM for values below a detection limit", payload=_c.lrem(X=X, dl=dl, n_iter=n_iter))
+    return RichResult(
+        title="Log-ratio EM for values below a detection limit", payload=_c.lrem(X=X, dl=dl, n_iter=n_iter)
+    )
 
 
 compositional_zero_lrem = lrem

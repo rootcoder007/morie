@@ -69,32 +69,36 @@ def fauzi_lemma_3_1(x, p, h=None, q_true=None):
     # still the only available centre, so it is used and flagged
     # rather than silently substituted.
     if q_true is None:
-        centred_at = ("sample quantile -- the linear term is degenerate here; "
-                      "supply q_true for the lemma as stated")
+        centred_at = "sample quantile -- the linear term is degenerate here; supply q_true for the lemma as stated"
         Q = float(np.quantile(xv, pp))
     else:
         centred_at = "population quantile (supplied)"
         Q = float(q_true)
-    hb = 1.06 * float(np.std(xv, ddof=1)) * n ** -0.2
+    hb = 1.06 * float(np.std(xv, ddof=1)) * n**-0.2
     fQ = float(np.mean(kernel_K((Q - xv) / hb)) / hb)
     if fQ <= 0:
-        raise ValueError("the estimated density at the quantile is zero; "
-                         "the representation divides by it.")
+        raise ValueError("the estimated density at the quantile is zero; the representation divides by it.")
     infl = (pp - (xv <= Q).astype(float)) / fQ
     lin = float(infl.mean())
     est = float(fauzi_kernel_quantile(xv, pp, h=h)["quantile"][0])
-    return RichResult(payload={
-        "influence": infl, "linear_term": lin, "estimate": est,
-        "remainder": float(est - Q - lin),
-        "density_at_quantile": fQ,
-        "centre": Q, "centred_at": centred_at,
-        "asymptotic_variance": float(pp * (1 - pp) / (n * fQ ** 2)),
-        "representation": "Bahadur-type: an i.i.d. average plus a smaller-order "
-                          "remainder, which is what makes normality, the "
-                          "variance and the Edgeworth expansion all follow "
-                          "from standard theory for sums",
-        "n": int(n),
-        "method": "Lemma 3.1: asymptotic representation of the kernel quantile estimator"})
+    return RichResult(
+        payload={
+            "influence": infl,
+            "linear_term": lin,
+            "estimate": est,
+            "remainder": float(est - Q - lin),
+            "density_at_quantile": fQ,
+            "centre": Q,
+            "centred_at": centred_at,
+            "asymptotic_variance": float(pp * (1 - pp) / (n * fQ**2)),
+            "representation": "Bahadur-type: an i.i.d. average plus a smaller-order "
+            "remainder, which is what makes normality, the "
+            "variance and the Edgeworth expansion all follow "
+            "from standard theory for sums",
+            "n": int(n),
+            "method": "Lemma 3.1: asymptotic representation of the kernel quantile estimator",
+        }
+    )
 
 
 def cheatsheet():

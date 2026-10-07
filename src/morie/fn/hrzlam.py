@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["horowitz_baseline_hazard_est"]
 
 
-def horowitz_baseline_hazard_est(t, x, event, beta_hat, bandwidth=None,
-                                 grid=None):
+def horowitz_baseline_hazard_est(t, x, event, beta_hat, bandwidth=None, grid=None):
     r"""Kernel-smoothed baseline hazard for the proportional hazards
     model (Horowitz Sec. 6.2.4), equation (6.44):
 
@@ -82,8 +81,7 @@ def horowitz_baseline_hazard_est(t, x, event, beta_hat, bandwidth=None,
     if X.shape[0] != tv.size:
         raise ValueError("x must have one row per entry of t.")
     if ev.size != tv.size:
-        raise ValueError(
-            f"event has {ev.size} entries for {tv.size} durations.")
+        raise ValueError(f"event has {ev.size} entries for {tv.size} durations.")
     if not np.all(np.isin(ev, (0.0, 1.0))):
         raise ValueError("event must be binary 0/1.")
     if np.any(tv < 0):
@@ -110,26 +108,30 @@ def horowitz_baseline_hazard_est(t, x, event, beta_hat, bandwidth=None,
     cumhaz = np.cumsum(jump_w)
 
     spread = float(jump_t.max() - jump_t.min())
-    hh = (spread if spread > 0 else 1.0) * n ** (-0.2) if bandwidth is None \
-        else float(bandwidth)
+    hh = (spread if spread > 0 else 1.0) * n ** (-0.2) if bandwidth is None else float(bandwidth)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(jump_t.min(), jump_t.max(), 50) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(jump_t.min(), jump_t.max(), 50) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
 
     # (6.44) as a Stieltjes sum: the measure dLambda_n0 puts mass
     # jump_w at each event time
-    lam = (kernel_K((g[:, None] - jump_t[None, :]) / hh) *
-           jump_w[None, :]).sum(axis=1) / hh
+    lam = (kernel_K((g[:, None] - jump_t[None, :]) / hh) * jump_w[None, :]).sum(axis=1) / hh
 
-    return RichResult(payload={
-        "grid": g, "lambda0_hat": lam,
-        "cumhaz_times": jump_t, "cumhaz": cumhaz,
-        "bandwidth": hh,
-        "A_K": 1.0,  # second moment of the standard normal kernel
-        "rate_exponent": -0.4, "root_n_attainable": False,
-        "n_events": int(jump_t.size), "n": int(n),
-        "method": "Breslow cumulative hazard smoothed by (6.44); differentiating the step function does not work"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "lambda0_hat": lam,
+            "cumhaz_times": jump_t,
+            "cumhaz": cumhaz,
+            "bandwidth": hh,
+            "A_K": 1.0,  # second moment of the standard normal kernel
+            "rate_exponent": -0.4,
+            "root_n_attainable": False,
+            "n_events": int(jump_t.size),
+            "n": int(n),
+            "method": "Breslow cumulative hazard smoothed by (6.44); differentiating the step function does not work",
+        }
+    )
 
 
 def cheatsheet():

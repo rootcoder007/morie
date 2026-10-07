@@ -1,7 +1,6 @@
 """Tests for amgen.py - ARMA process generation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.amgen import amgen, arma_generate_fn
 
 

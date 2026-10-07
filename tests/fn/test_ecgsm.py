@@ -1,7 +1,6 @@
 """Tests for morie.fn.ecgsm -- simulated 12-lead ECG."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ecgsm import ecgsm
 
 

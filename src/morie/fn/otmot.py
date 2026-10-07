@@ -68,8 +68,7 @@ def ot_multimarginal_iter(margins, C_tensor, epsilon, max_iter=200):
     strides = [1] * S
     for s in range(S - 2, -1, -1):
         strides[s] = strides[s + 1] * dims[s + 1]
-    idx = [[(t // strides[s]) % dims[s] for s in range(S)]
-           for t in range(total)]
+    idx = [[(t // strides[s]) % dims[s] for s in range(S)] for t in range(total)]
     K = [math.exp(-c / eps) for c in C]
     u = [[1.0] * dims[s] for s in range(S)]
     it = int(max_iter)
@@ -93,10 +92,18 @@ def ot_multimarginal_iter(margins, C_tensor, epsilon, max_iter=200):
             e = abs(marg[i] - ms[s][i])
             if e > err:
                 err = e
-    return RichResult(payload={
-        "T": P, "cost": sum(P[t] * C[t] for t in range(total)),
-        "mass": sum(P), "marg_err": err, "dims": dims, "S": S, "iters": it,
-        "method": "Multimarginal entropic optimal transport"})
+    return RichResult(
+        payload={
+            "T": P,
+            "cost": sum(P[t] * C[t] for t in range(total)),
+            "mass": sum(P),
+            "marg_err": err,
+            "dims": dims,
+            "S": S,
+            "iters": it,
+            "method": "Multimarginal entropic optimal transport",
+        }
+    )
 
 
 def _prod(u, ix, S):

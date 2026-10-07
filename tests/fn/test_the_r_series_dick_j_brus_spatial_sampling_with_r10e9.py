@@ -4,11 +4,11 @@ Brus (2022), Spatial Sampling with R, eq. (10.9), the regression estimator in sl
 recomputed from the formula in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e9 import the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_9
+from morie.fn.the_r_series_dick_j_brus_spatial_sampling_with_r10e9 import (
+    the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_9,
+)
 
 
 def test_slope_form_sums_one_correction_per_covariate():
@@ -28,5 +28,7 @@ def test_a_single_covariate_reduces_to_the_simple_form():
 
 
 def test_covariates_already_on_target_contribute_nothing():
-    res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_9(6.0, [0.5, 2.0], [10.0, 3.0], [10.0, 3.0])
+    res = the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_10_equation_9(
+        6.0, [0.5, 2.0], [10.0, 3.0], [10.0, 3.0]
+    )
     assert res["value"] == pytest.approx(6.0, rel=1e-12)

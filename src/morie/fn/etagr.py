@@ -44,10 +44,9 @@ def etiologic_fraction(
     ef = (rr - 1) / rr
 
     ci_lo = ci_hi = None
-    if rr_ci_lower is not None and rr_ci_upper is not None:
-        if rr_ci_lower > 0 and rr_ci_upper > 0:
-            ci_lo = (rr_ci_lower - 1) / rr_ci_lower
-            ci_hi = (rr_ci_upper - 1) / rr_ci_upper
+    if rr_ci_lower is not None and rr_ci_upper is not None and rr_ci_lower > 0 and rr_ci_upper > 0:
+        ci_lo = (rr_ci_lower - 1) / rr_ci_lower
+        ci_hi = (rr_ci_upper - 1) / rr_ci_upper
 
     return ESRes(
         measure="etiologic_fraction",

@@ -53,7 +53,8 @@ def gibbons_linrank_sym_special(N):
         payload={
             "scores": a,
             "palindromic": bool(np.allclose(a, a[::-1])),
-            "symmetric": True, "N": N,
+            "symmetric": True,
+            "N": N,
             "method": "Folded scores, even N (Gibbons Theorem 7.3.6, p. 282)",
         }
     )

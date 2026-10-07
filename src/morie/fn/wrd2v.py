@@ -96,8 +96,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["wrd2v", "word2vec", "analogy", "training_complexity",
-           "noise_distribution", "subsample_probability"]
+__all__ = ["wrd2v", "word2vec", "analogy", "training_complexity", "noise_distribution", "subsample_probability"]
 
 _ARCH = ("skip-gram", "cbow")
 
@@ -109,8 +108,7 @@ def _softmax(v):
     return [x / s for x in e]
 
 
-def training_complexity(architecture, D, V, N=None, C=None,
-                        hierarchical=True):
+def training_complexity(architecture, D, V, N=None, C=None, hierarchical=True):
     r"""The paper's :math:`Q` for one training example (eqs. 4-5).
 
     ``N`` is the number of context words for CBOW; ``C`` the maximum
@@ -119,8 +117,7 @@ def training_complexity(architecture, D, V, N=None, C=None,
     of the plain softmax this module actually evaluates.
     """
     if architecture not in _ARCH:
-        raise ValueError("wrd2v: architecture must be one of %r, got %r"
-                         % (_ARCH, architecture))
+        raise ValueError(f"wrd2v: architecture must be one of {_ARCH!r}, got {architecture!r}")
     out = math.log(V, 2) if hierarchical else float(V)
     if architecture == "cbow":
         if N is None:
@@ -166,9 +163,21 @@ def subsample_probability(counts, t=1e-5):
     return out
 
 
-def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
-          epochs=20, min_count=1, dynamic_window=True, loss="softmax",
-          negative=5, noise_power=0.75, subsample=None, seed=0):
+def wrd2v(
+    corpus,
+    size=16,
+    window=5,
+    architecture="skip-gram",
+    lr=0.05,
+    epochs=20,
+    min_count=1,
+    dynamic_window=True,
+    loss="softmax",
+    negative=5,
+    noise_power=0.75,
+    subsample=None,
+    seed=0,
+):
     r"""Train word vectors with CBOW or continuous skip-gram.
 
     Parameters
@@ -225,16 +234,16 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
     3.1-3.2 and eqs. 4-5.
     """
     if architecture not in _ARCH:
-        raise ValueError("wrd2v: architecture must be one of %r, got %r"
-                         % (_ARCH, architecture))
+        raise ValueError(f"wrd2v: architecture must be one of {_ARCH!r}, got {architecture!r}")
     if loss not in ("softmax", "neg"):
-        raise ValueError("wrd2v: loss must be 'softmax' or 'neg', got %r"
-                         % (loss,))
+        raise ValueError(f"wrd2v: loss must be 'softmax' or 'neg', got {loss!r}")
     if loss == "neg" and architecture != "skip-gram":
-        raise ValueError("wrd2v: negative sampling is defined in Mikolov "
-                         "et al. (2013b) eq. 4 as a replacement for the "
-                         "terms of the SKIP-GRAM objective; use "
-                         "architecture='skip-gram' or loss='softmax'")
+        raise ValueError(
+            "wrd2v: negative sampling is defined in Mikolov "
+            "et al. (2013b) eq. 4 as a replacement for the "
+            "terms of the SKIP-GRAM objective; use "
+            "architecture='skip-gram' or loss='softmax'"
+        )
     negative = int(negative)
     if loss == "neg" and negative < 1:
         raise ValueError("wrd2v: negative must be >= 1")
@@ -247,33 +256,27 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
 
     sents = [list(s) for s in corpus]
     if not sents or not any(sents):
-        raise ValueError("wrd2v: corpus must contain at least one "
-                         "non-empty sentence")
+        raise ValueError("wrd2v: corpus must contain at least one non-empty sentence")
     counts = {}
     for s in sents:
         for w in s:
             counts[w] = counts.get(w, 0) + 1
-    vocab = sorted([w for w, c in counts.items() if c >= int(min_count)],
-                   key=repr)
+    vocab = sorted([w for w, c in counts.items() if c >= int(min_count)], key=repr)
     if not vocab:
-        raise ValueError("wrd2v: min_count = %r discarded every word"
-                         % (min_count,))
+        raise ValueError(f"wrd2v: min_count = {min_count!r} discarded every word")
     idx = dict((w, i) for i, w in enumerate(vocab))
     V = len(vocab)
     sents = [[w for w in s if w in idx] for s in sents]
 
     # 2013b eq. 5: discard frequent words before training.
     if subsample is not None:
-        keep_drop = subsample_probability(
-            dict((w, counts[w]) for w in vocab), subsample)
+        keep_drop = subsample_probability(dict((w, counts[w]) for w in vocab), subsample)
         srng = np.random.default_rng(seed + 7)
-        sents = [[w for w in s if srng.random() >= keep_drop[w]]
-                 for s in sents]
+        sents = [[w for w in s if srng.random() >= keep_drop[w]] for s in sents]
 
     rng = np.random.default_rng(seed)
     # 2013b 2.2: the noise distribution, as a cumulative table.
-    noise = noise_distribution(dict((w, counts[w]) for w in vocab),
-                               noise_power)
+    noise = noise_distribution(dict((w, counts[w]) for w in vocab), noise_power)
     cum = []
     acc = 0.0
     for w in vocab:
@@ -292,9 +295,8 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
         return lo
 
     scale = 0.5 / size
-    W = [[(rng.random() * 2.0 - 1.0) * scale for _ in range(size)]
-         for _ in range(V)]        # projection (input) vectors
-    O = [[0.0] * size for _ in range(V)]     # output layer
+    W = [[(rng.random() * 2.0 - 1.0) * scale for _ in range(size)] for _ in range(V)]  # projection (input) vectors
+    O_ = [[0.0] * size for _ in range(V)]  # output layer
 
     curve = []
     for _ep in range(max(1, int(epochs))):
@@ -303,8 +305,7 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
         for s in sents:
             L = len(s)
             for t in range(L):
-                R = (1 + int(rng.random() * window) if dynamic_window
-                     else window)
+                R = 1 + int(rng.random() * window) if dynamic_window else window
                 lo = max(0, t - R)
                 hi = min(L, t + R + 1)
                 ctx = [idx[s[k]] for k in range(lo, hi) if k != t]
@@ -312,59 +313,58 @@ def wrd2v(corpus, size=16, window=5, architecture="skip-gram", lr=0.05,
                     continue
                 c = idx[s[t]]
                 if architecture == "cbow":
-                    total += _cbow_step(W, O, ctx, c, size, V, lr)
+                    total += _cbow_step(W, O_, ctx, c, size, V, lr)
                     n_ex += 1
                 elif loss == "neg":
                     for j in ctx:
-                        total += _neg_step(W, O, c, j, size, lr,
-                                           negative, draw_noise)
+                        total += _neg_step(W, O_, c, j, size, lr, negative, draw_noise)
                         n_ex += 1
                 else:
                     for j in ctx:
-                        total += _sg_step(W, O, c, j, size, V, lr)
+                        total += _sg_step(W, O_, c, j, size, V, lr)
                         n_ex += 1
         curve.append(total / n_ex if n_ex else 0.0)
 
     vectors = dict((vocab[i], list(W[i])) for i in range(V))
-    outv = dict((vocab[i], list(O[i])) for i in range(V))
+    outv = dict((vocab[i], list(O_[i])) for i in range(V))
 
     def similarity(a, b):
         return _cos(vectors[a], vectors[b])
 
     def most_similar(word, topn=5):
         if word not in vectors:
-            raise KeyError("wrd2v: %r is not in the vocabulary" % (word,))
-        sims = [(w, _cos(vectors[word], v)) for w, v in vectors.items()
-                if w != word]
+            raise KeyError(f"wrd2v: {word!r} is not in the vocabulary")
+        sims = [(w, _cos(vectors[word], v)) for w, v in vectors.items() if w != word]
         sims.sort(key=lambda p: -p[1])
         return sims[:topn]
 
-    return RichResult(payload={
-        "estimate": vectors,
-        "vectors": vectors,
-        "output_vectors": outv,
-        "vocab": dict((w, counts[w]) for w in vocab),
-        "loss_curve": curve,
-        "final_loss": curve[-1] if curve else float("nan"),
-        "similarity": similarity,
-        "most_similar": most_similar,
-        "size": size,
-        "window": window,
-        "architecture": architecture,
-        "loss": loss,
-        "negative": negative if loss == "neg" else 0,
-        "noise": noise,
-        "method": "word2vec (Mikolov et al. 2013a secs 3.1-3.2"
-                  + ("; 2013b eq. 4 negative sampling)"
-                     if loss == "neg" else ")"),
-    })
+    return RichResult(
+        payload={
+            "estimate": vectors,
+            "vectors": vectors,
+            "output_vectors": outv,
+            "vocab": dict((w, counts[w]) for w in vocab),
+            "loss_curve": curve,
+            "final_loss": curve[-1] if curve else float("nan"),
+            "similarity": similarity,
+            "most_similar": most_similar,
+            "size": size,
+            "window": window,
+            "architecture": architecture,
+            "loss": loss,
+            "negative": negative if loss == "neg" else 0,
+            "noise": noise,
+            "method": "word2vec (Mikolov et al. 2013a secs 3.1-3.2"
+            + ("; 2013b eq. 4 negative sampling)" if loss == "neg" else ")"),
+        }
+    )
 
 
-def _scores(O, h, V, size):
+def _scores(O, h, V, size):  # noqa: E741
     return [sum(O[k][d] * h[d] for d in range(size)) for k in range(V)]
 
 
-def _sg_step(W, O, c, j, size, V, lr):
+def _sg_step(W, O, c, j, size, V, lr):  # noqa: E741
     """Skip-gram: input is the centre word, target a context word."""
     h = W[c]
     p = _softmax(_scores(O, h, V, size))
@@ -391,7 +391,7 @@ def _sigmoid(z):
     return e / (1.0 + e)
 
 
-def _neg_step(W, O, c, j, size, lr, k, draw_noise):
+def _neg_step(W, O, c, j, size, lr, k, draw_noise):  # noqa: E741
     r"""Mikolov et al. (2013b) eq. 4, one positive and k noise draws.
 
     The loss minimised is the negative of eq. 4:
@@ -418,7 +418,7 @@ def _neg_step(W, O, c, j, size, lr, k, draw_noise):
     return loss
 
 
-def _cbow_step(W, O, ctx, c, size, V, lr):
+def _cbow_step(W, O, ctx, c, size, V, lr):  # noqa: E741
     """CBOW: the projection is the MEAN of the context vectors."""
     n = float(len(ctx))
     h = [0.0] * size
@@ -462,26 +462,26 @@ def analogy(vectors, a, b, c, topn=1):
     """
     for w in (a, b, c):
         if w not in vectors:
-            raise KeyError("analogy: %r is not in the vocabulary" % (w,))
+            raise KeyError(f"analogy: {w!r} is not in the vocabulary")
     size = len(vectors[a])
-    target = [vectors[b][d] - vectors[a][d] + vectors[c][d]
-              for d in range(size)]
-    sims = [(w, _cos(target, v)) for w, v in vectors.items()
-            if w not in (a, b, c)]
+    target = [vectors[b][d] - vectors[a][d] + vectors[c][d] for d in range(size)]
+    sims = [(w, _cos(target, v)) for w, v in vectors.items() if w not in (a, b, c)]
     sims.sort(key=lambda p: -p[1])
     return sims[:topn]
 
 
 def cheatsheet():
-    return ("wrd2v: log-linear word vectors (Mikolov 2013a). CBOW "
-            "predicts the centre word from AVERAGED context vectors "
-            "(sec 3.1, Q = N*D + D*log2 V); skip-gram predicts context "
-            "from the centre word (sec 3.2, Q = C*(D + D*log2 V)) with "
-            "a DYNAMIC window R ~ Unif{1..C}, so distance d is used "
-            "with probability (C-d+1)/C. loss='neg' is negative "
-            "sampling from the FOLLOW-UP paper (2013b eq. 4) with "
-            "Pn(w) = U(w)^0.75/Z, plus eq. 5 subsampling. analogy() "
-            "is the b - a + c offset query of 2013a sec 4.")
+    return (
+        "wrd2v: log-linear word vectors (Mikolov 2013a). CBOW "
+        "predicts the centre word from AVERAGED context vectors "
+        "(sec 3.1, Q = N*D + D*log2 V); skip-gram predicts context "
+        "from the centre word (sec 3.2, Q = C*(D + D*log2 V)) with "
+        "a DYNAMIC window R ~ Unif{1..C}, so distance d is used "
+        "with probability (C-d+1)/C. loss='neg' is negative "
+        "sampling from the FOLLOW-UP paper (2013b eq. 4) with "
+        "Pn(w) = U(w)^0.75/Z, plus eq. 5 subsampling. analogy() "
+        "is the b - a + c offset query of 2013a sec 4."
+    )
 
 
 # compact alias per ledger/NAMING.md

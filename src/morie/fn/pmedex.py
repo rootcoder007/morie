@@ -36,10 +36,14 @@ def proportion_te_explained(nie, te):
     """
     nie = float(nie)
     te = float(te)
-    return RichResult(payload={
-        "estimate": nie / te if te != 0.0 else float("nan"),
-        "implied_nde": te - nie, "te": te,
-        "method": "Proportion of the total effect explained"})
+    return RichResult(
+        payload={
+            "estimate": nie / te if te != 0.0 else float("nan"),
+            "implied_nde": te - nie,
+            "te": te,
+            "method": "Proportion of the total effect explained",
+        }
+    )
 
 
 def cheatsheet():

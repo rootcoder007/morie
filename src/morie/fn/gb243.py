@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['ostatbeta', 'gibbons_order_beta']
+__all__ = ["ostatbeta", "gibbons_order_beta"]
 
 
 def ostatbeta(u, r, n):

@@ -25,7 +25,9 @@ def gwasmlm(y, X, snp, Vinv):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Unified mixed-model per-SNP association test", payload=_c.gwasmlm(y=y, X=X, snp=snp, Vinv=Vinv))
+    return RichResult(
+        title="Unified mixed-model per-SNP association test", payload=_c.gwasmlm(y=y, X=X, snp=snp, Vinv=Vinv)
+    )
 
 
 gwas_linear = gwasmlm

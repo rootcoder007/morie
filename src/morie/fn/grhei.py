@@ -106,8 +106,7 @@ def geron_he_init(fan_in, fan_out=None, seed=0):
 
     return RichResult(
         title="He initialization",
-        summary_lines=[("Shape", (fan_out, fan_in)), ("Target var", var),
-                       ("Achieved var", achieved)],
+        summary_lines=[("Shape", (fan_out, fan_in)), ("Target var", var), ("Achieved var", achieved)],
         payload={
             "W": W.tolist(),
             "target_variance": var,

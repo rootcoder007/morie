@@ -1,7 +1,6 @@
 """Tests for sgtegap.sgt_eigengap_heuristic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtegap import sgt_eigengap_heuristic
 
 

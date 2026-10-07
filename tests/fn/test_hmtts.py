@@ -1,7 +1,6 @@
 """Tests for hmtts.geron_train_test_split."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmtts import geron_train_test_split
 
 

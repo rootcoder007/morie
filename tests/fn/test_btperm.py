@@ -1,7 +1,6 @@
 """Tests for btperm.boot_permutation_test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btperm import boot_permutation_test
 
 

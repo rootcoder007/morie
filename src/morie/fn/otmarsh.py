@@ -63,11 +63,18 @@ def ot_marginal_shift(a, b, C, delta):
         raise ValueError("delta removes more mass than a bin holds")
     ash = [t if t > 0.0 else 0.0 for t in ash]
     P, cost = ot.partial_plan(ash, bb, Cm, sum(ash))
-    return RichResult(payload={
-        "T": P, "cost": cost, "a_shift": ash, "removed": sum(d),
-        "mass": sum(P[i][j] for i in range(n) for j in range(m)),
-        "n": n, "m": m,
-        "method": "Optimal transport under a marginal shift"})
+    return RichResult(
+        payload={
+            "T": P,
+            "cost": cost,
+            "a_shift": ash,
+            "removed": sum(d),
+            "mass": sum(P[i][j] for i in range(n) for j in range(m)),
+            "n": n,
+            "m": m,
+            "method": "Optimal transport under a marginal shift",
+        }
+    )
 
 
 def cheatsheet():

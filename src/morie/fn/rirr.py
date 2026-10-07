@@ -88,14 +88,14 @@ def rirr(
     cat_idx = {c: i for i, c in enumerate(cats)}
 
     # Observed confusion matrix
-    O = np.zeros((q, q), dtype=np.float64)
+    O_ = np.zeros((q, q), dtype=np.float64)
     for a, b in zip(r1, r2):
-        O[cat_idx[a], cat_idx[b]] += 1.0
-    O /= n  # normalise to proportions
+        O_[cat_idx[a], cat_idx[b]] += 1.0
+    O_ /= n  # normalise to proportions
 
     # Marginals
-    row_marg = O.sum(axis=1)
-    col_marg = O.sum(axis=0)
+    row_marg = O_.sum(axis=1)
+    col_marg = O_.sum(axis=0)
 
     # Expected matrix under independence
     E = np.outer(row_marg, col_marg)
@@ -118,7 +118,7 @@ def rirr(
         raise ValueError(f"Unrecognised weight type '{weights}'. Use 'quadratic', 'linear', or 'identity'.")
 
     # Weighted observed and expected agreement
-    po = np.sum(W * O)
+    po = np.sum(W * O_)
     pe = np.sum(W * E)
 
     if abs(1.0 - pe) < 1e-15:
@@ -147,7 +147,7 @@ def rirr(
     for i in range(q):
         for j in range(q):
             term = W[i, j] - (W_row[i] + W_col[j]) * (1.0 - kappa)
-            var_sum += O[i, j] * term**2
+            var_sum += O_[i, j] * term**2
 
     se_sq = (var_sum - (kappa - pe * (1.0 - kappa)) ** 2) / (n * (1.0 - pe) ** 2)
     se = np.sqrt(max(se_sq, 0.0))

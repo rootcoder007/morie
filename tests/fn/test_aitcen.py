@@ -1,7 +1,6 @@
 """Tests for aitcen.aitchison_center."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitcen import aitchison_center
 
 
@@ -18,10 +17,7 @@ def test_aitcen_basic():
     # Independent computation of the closed geometric mean from the documented
     # formula: xi-hat = C(g_1, ..., g_D), g_i = exp(mean(log X[:, i]))
     n, D = X.shape
-    g_expected = [
-        float(np.exp(np.sum(np.log(X[:, j])) / n))
-        for j in range(D)
-    ]
+    g_expected = [float(np.exp(np.sum(np.log(X[:, j])) / n)) for j in range(D)]
     s = float(np.sum(g_expected))
     center_expected = [v / s for v in g_expected]  # total=1.0
 

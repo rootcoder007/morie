@@ -73,11 +73,7 @@ def ssgnmom(n, ftheta=0.5, h=None, f0=None, fpp0=None, a11=None, a13=None):
         hh = float(h)
         if hh <= 0:
             raise ValueError(f"bandwidth must be positive, got {hh}.")
-        var = (
-            n / 4.0
-            - 2.0 * n * hh * float(f0) * float(a11)
-            - n * hh ** 3 / 3.0 * float(fpp0) * float(a13)
-        )
+        var = n / 4.0 - 2.0 * n * hh * float(f0) * float(a11) - n * hh**3 / 3.0 * float(fpp0) * float(a13)
         refined = True
     return RichResult(
         payload={

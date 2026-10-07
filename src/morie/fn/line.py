@@ -68,14 +68,8 @@ def line(G, dim=2, order=1, U=None, Uc=None, steps=0, lr=0.05):
     W = k.mat(G)
     n = len(W)
     d = int(dim)
-    if U is None:
-        U = [[k.vdc(i * d + j, 2) - 0.5 for j in range(d)] for i in range(n)]
-    else:
-        U = k.mat(U)
-    if Uc is None:
-        Uc = [[k.vdc(i * d + j, 3) - 0.5 for j in range(d)] for i in range(n)]
-    else:
-        Uc = k.mat(Uc)
+    U = [[k.vdc(i * d + j, 2) - 0.5 for j in range(d)] for i in range(n)] if U is None else k.mat(U)
+    Uc = [[k.vdc(i * d + j, 3) - 0.5 for j in range(d)] for i in range(n)] if Uc is None else k.mat(Uc)
 
     def obj():
         o = 0.0
@@ -97,8 +91,7 @@ def line(G, dim=2, order=1, U=None, Uc=None, steps=0, lr=0.05):
                     s = 0.0
                     for a in range(d):
                         s += U[i][a] * U[j][a]
-                    o -= W[i][j] * math.log(k.sigmoid(s) if k.sigmoid(s) > 1e-300
-                                            else 1e-300)
+                    o -= W[i][j] * math.log(k.sigmoid(s) if k.sigmoid(s) > 1e-300 else 1e-300)
         return o
 
     o0 = obj()

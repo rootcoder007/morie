@@ -1,7 +1,6 @@
 """Tests for mTriple.triply_robust_mediation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mTriple import triply_robust_mediation
 
 
@@ -20,9 +19,16 @@ def test_mTriple_basic():
     C = rng_c.normal(0, 1, (n, p))
     result = triply_robust_mediation(Y, X, M, C)
     assert isinstance(result, dict)
-    for key in ("nie", "nde", "total", "se", "ci",
-                "proportion_mediated", "decomposition_residual",
-                "nuisance_agreement"):
+    for key in (
+        "nie",
+        "nde",
+        "total",
+        "se",
+        "ci",
+        "proportion_mediated",
+        "decomposition_residual",
+        "nuisance_agreement",
+    ):
         assert key in result
 
 
@@ -54,7 +60,7 @@ import morie.fn.mTriple as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

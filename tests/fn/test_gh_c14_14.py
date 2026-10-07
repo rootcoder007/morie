@@ -1,7 +1,6 @@
 """Tests for gh_c14_14.ghosal_nig_proc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_14 import ghosal_nig_proc
 
 
@@ -21,8 +20,7 @@ def test_gh_c14_14_basic():
     h = u_max / n_grid
     i = np.arange(n_grid, dtype=float)
     u = (i + 0.5) * h
-    integrand = u * u ** (-1.5) * np.exp(-alpha_par ** 2 * u / 2.0) \
-        / np.sqrt(2.0 * np.pi)
+    integrand = u * u ** (-1.5) * np.exp(-(alpha_par**2) * u / 2.0) / np.sqrt(2.0 * np.pi)
     expected_estimate = float(np.sum(integrand) * h)
     theory = 1.0 / alpha_par
 

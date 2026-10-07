@@ -1,9 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Moments of Moran's I under Gaussianity and under randomization."""
 
-from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_moran import geary_c, moran_i, moran_moments, weight_sums
+from ._schab_moran import moran_moments
 
 __all__ = ["schabenberger_moran_expectation"]
 
@@ -64,10 +63,8 @@ def schabenberger_moran_expectation(x, w):
         ("Z (Gaussian)", m["z_normal"]),
         ("Z (randomization)", m["z_randomization"]),
     ]
-    return RichResult(title="Moments of Moran's I", summary_lines=lines,
-                      payload=dict(m, moments=m))
+    return RichResult(title="Moments of Moran's I", summary_lines=lines, payload=dict(m, moments=m))
 
 
 def cheatsheet():
-    return ("spmenv: E[I] and Var[I] for Moran's I under Gaussianity and "
-            "under randomization (Sec. 1.3.2, Problem 1.8)")
+    return "spmenv: E[I] and Var[I] for Moran's I under Gaussianity and under randomization (Sec. 1.3.2, Problem 1.8)"

@@ -10,6 +10,8 @@ def test_gb1331t_basic():
     result = gibbons_t_efficacy(N, sigma)
     assert isinstance(result, dict)
     assert "efficacy" in result
+
+
 def test_gb1331t_edge():
     """Test edge cases."""
     N = 100

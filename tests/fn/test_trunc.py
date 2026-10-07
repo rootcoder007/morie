@@ -1,7 +1,6 @@
 """Tests for morie.fn.trunc."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.trunc import trunc
 
 

@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """morie._safe_expr ships in the wheel; bexpr() and moncar() depend on it."""
+
 import pytest
 
 from morie._safe_expr import safe_eval_expr

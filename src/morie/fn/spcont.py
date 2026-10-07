@@ -70,14 +70,24 @@ def schabenberger_spatial_continuity(cov_func, tol=1e-8):
     nugget = 0.0 if is_cont else float(gaps[-1])
     return RichResult(
         title="Mean-square continuity",
-        summary_lines=[("C(0)", c0), ("gap at h=1e-6", float(gaps[-1])),
-                       ("gap ratio 1e-6/1e-2", ratio),
-                       ("continuous", is_cont)],
-        payload={"is_continuous": is_cont, "c0": c0,
-                 "limit_at_zero_plus": float(approach[-1]),
-                 "gap": float(gaps[-1]), "nugget": nugget,
-                 "gap_ratio": ratio, "gamma_limit": float(2.0 * nugget),
-                 "approach": approach, "gaps": gaps, "lags": hs},
+        summary_lines=[
+            ("C(0)", c0),
+            ("gap at h=1e-6", float(gaps[-1])),
+            ("gap ratio 1e-6/1e-2", ratio),
+            ("continuous", is_cont),
+        ],
+        payload={
+            "is_continuous": is_cont,
+            "c0": c0,
+            "limit_at_zero_plus": float(approach[-1]),
+            "gap": float(gaps[-1]),
+            "nugget": nugget,
+            "gap_ratio": ratio,
+            "gamma_limit": float(2.0 * nugget),
+            "approach": approach,
+            "gaps": gaps,
+            "lags": hs,
+        },
     )
 
 

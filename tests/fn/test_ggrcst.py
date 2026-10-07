@@ -1,16 +1,18 @@
 """Tests for ggrcst.granger_causality."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ggrcst import granger_causality
 
 
 def test_ggrcst_basic():
     rng = np.random.default_rng(42)
     n = 1500
-    x = np.zeros(n); y = np.zeros(n)
-    ex = rng.normal(size=n); ey = rng.normal(size=n)
+    x = np.zeros(n)
+    y = np.zeros(n)
+    ex = rng.normal(size=n)
+    ey = rng.normal(size=n)
     for t in range(1, n):
         x[t] = 0.5 * x[t - 1] + ex[t]
         y[t] = 0.4 * y[t - 1] + 0.6 * x[t - 1] + ey[t]

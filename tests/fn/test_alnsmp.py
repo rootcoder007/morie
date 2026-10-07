@@ -10,5 +10,6 @@ def test_alnsmp_basic():
 
 def test_alnsmp_edge():
     import pytest
+
     with pytest.raises(ValueError, match="dimension"):
         alammar_negative_sampling_skipgram([1.0], [1.0, 2.0], [[1.0]])

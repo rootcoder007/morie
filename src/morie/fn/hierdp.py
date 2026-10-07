@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["hierarchical_dp_density"]
 
 
-def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
-                            n_iter=300, bandwidth=None, seed=0):
+def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0, n_iter=300, bandwidth=None, seed=0):
     r"""Group densities that share atoms through a common base measure.
 
     .. math::
@@ -69,10 +68,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
     G = [np.asarray(g, dtype=float).ravel() for g in groups]
     J = len(G)
     if J < 2:
-        raise ValueError(
-            "need at least 2 groups; with one group this reduces to a "
-            "plain Dirichlet process."
-        )
+        raise ValueError("need at least 2 groups; with one group this reduces to a plain Dirichlet process.")
     if any(g.size < 2 for g in G):
         raise ValueError("every group needs at least 2 observations.")
     if alpha <= 0 or gamma <= 0:
@@ -80,7 +76,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
     allx = np.concatenate(G)
     n_all = allx.size
     sd = float(np.std(allx, ddof=1)) or 1.0
-    h = (1.06 * sd * n_all ** -0.2) if bandwidth is None else float(bandwidth)
+    h = (1.06 * sd * n_all**-0.2) if bandwidth is None else float(bandwidth)
     if h <= 0:
         raise ValueError("bandwidth must be positive.")
 
@@ -88,7 +84,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
     # Chinese restaurant franchise: table per observation, dish per table
     k_history = []
     atoms = [float(np.mean(allx))]
-    z = [np.zeros(g.size, dtype=int) for g in G]   # component per obs
+    z = [np.zeros(g.size, dtype=int) for g in G]  # component per obs
     prior_sd = sd
 
     def loglik(x, k):
@@ -109,17 +105,17 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
                 n_jk[j, k_old] -= 1
                 m_global[k_old] -= 1
                 # existing components, weighted by the franchise rule
-                w = np.array([
-                    (n_jk[j, k] + alpha * (m_global[k] + 1e-12)
-                     / (m_global.sum() + gamma))
-                    for k in range(K)
-                ])
+                w = np.array(
+                    [(n_jk[j, k] + alpha * (m_global[k] + 1e-12) / (m_global.sum() + gamma)) for k in range(K)]
+                )
                 ll = np.array([loglik(G[j][i], k) for k in range(K)])
                 lw = np.log(np.maximum(w, 1e-300)) + ll
                 # a new component drawn from the base measure
-                lnew = (np.log(alpha * gamma / (m_global.sum() + gamma))
-                        - 0.5 * ((G[j][i] - np.mean(allx)) / prior_sd) ** 2
-                        - np.log(prior_sd))
+                lnew = (
+                    np.log(alpha * gamma / (m_global.sum() + gamma))
+                    - 0.5 * ((G[j][i] - np.mean(allx)) / prior_sd) ** 2
+                    - np.log(prior_sd)
+                )
                 allw = np.append(lw, lnew)
                 allw -= allw.max()
                 pr = np.exp(allw)
@@ -135,8 +131,11 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
                 m_global[pick] += 1
         # update atom locations to their assigned means
         for k in range(K):
-            vals = np.concatenate([G[j][z[j] == k] for j in range(J)]) \
-                if any((z[j] == k).any() for j in range(J)) else np.array([])
+            vals = (
+                np.concatenate([G[j][z[j] == k] for j in range(J)])
+                if any((z[j] == k).any() for j in range(J))
+                else np.array([])
+            )
             if vals.size:
                 atoms[k] = float(vals.mean())
         # drop empty components
@@ -147,8 +146,9 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
         k_history.append(len(atoms))
 
     K = len(atoms)
-    grid = (np.linspace(allx.min() - 3 * h, allx.max() + 3 * h, 300)
-            if at is None else np.asarray(at, dtype=float).ravel())
+    grid = (
+        np.linspace(allx.min() - 3 * h, allx.max() + 3 * h, 300) if at is None else np.asarray(at, dtype=float).ravel()
+    )
     dens = np.zeros((J, grid.size))
     per_group = np.zeros(J, dtype=int)
     present = np.zeros((J, K), dtype=bool)
@@ -159,9 +159,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
         wts = cnt / max(cnt.sum(), 1)
         for k in range(K):
             if wts[k] > 0:
-                dens[j] += wts[k] * np.exp(
-                    -0.5 * ((grid - atoms[k]) / h) ** 2
-                ) / (h * np.sqrt(2 * np.pi))
+                dens[j] += wts[k] * np.exp(-0.5 * ((grid - atoms[k]) / h) ** 2) / (h * np.sqrt(2 * np.pi))
     shared = int(np.sum(present.sum(axis=0) > 1))
     return RichResult(
         payload={
@@ -187,9 +185,7 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
             "k_history": np.asarray(k_history),
             "k_moved": bool(len(set(k_history)) > 1),
             "k_moved_recently": bool(
-                len(k_history) > 20
-                and len(set(k_history[-max(int(0.2 * len(k_history)), 2):]))
-                > 1
+                len(k_history) > 20 and len(set(k_history[-max(int(0.2 * len(k_history)), 2) :])) > 1
             ),
             "mixing_note": (
                 "a single chain cannot certify that K has converged, and a "
@@ -212,6 +208,5 @@ def hierarchical_dp_density(groups, at=None, alpha=1.0, gamma=1.0,
 
 def cheatsheet():
     return (
-        "hierdp: HDP group densities sharing atoms, with the sharing index "
-        "that says whether pooling actually happened"
+        "hierdp: HDP group densities sharing atoms, with the sharing index that says whether pooling actually happened"
     )

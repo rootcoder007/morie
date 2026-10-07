@@ -1,7 +1,6 @@
 """Tests for penls.penalized_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.penls import penalized_regression
 
 

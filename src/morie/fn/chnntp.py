@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['chancap', 'channel_capacity']
+__all__ = ["chancap", "channel_capacity"]
 
 
 def chancap(P, iters=200):
@@ -37,7 +37,8 @@ def chancap(P, iters=200):
     alternating update is the standard published form of the algorithm.
     """
     P = C.mat(P)
-    m = len(P); n = len(P[0])
+    m = len(P)
+    n = len(P[0])
     for row in P:
         if any(v < 0 for v in row):
             raise ValueError("channel probabilities must be non-negative")
@@ -65,10 +66,16 @@ def chancap(P, iters=200):
         for j in range(n):
             if P[i][j] > 0 and qy[j] > 0:
                 cap += r[i] * P[i][j] * math.log(P[i][j] / qy[j])
-    return RichResult(payload={
-        "capacity_bits": cap / math.log(2.0), "capacity_nats": cap,
-        "input_dist": r, "trace": trace, "iterations": int(iters),
-        "method": "Channel capacity (Blahut-Arimoto)"})
+    return RichResult(
+        payload={
+            "capacity_bits": cap / math.log(2.0),
+            "capacity_nats": cap,
+            "input_dist": r,
+            "trace": trace,
+            "iterations": int(iters),
+            "method": "Channel capacity (Blahut-Arimoto)",
+        }
+    )
 
 
 channel_capacity = chancap

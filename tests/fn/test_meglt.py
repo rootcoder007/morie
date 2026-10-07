@@ -20,13 +20,10 @@ def test_meglt_basic():
     r = svt(M, OBS, tau=tau, step=step, iters=2)
     assert isinstance(r, dict)
     po = [[M[i][j] if (i, j) in OBS else 0.0 for j in range(4)] for i in range(3)]
-    assert r["residual_history"][0] == pytest.approx(
-        math.sqrt(sum(v * v for row in po for v in row)), rel=1e-14)
-    U, s, Vt = np.linalg.svd(np.array([[step * v for v in row] for row in po]),
-                             full_matrices=False)
+    assert r["residual_history"][0] == pytest.approx(math.sqrt(sum(v * v for row in po for v in row)), rel=1e-14)
+    U, s, Vt = np.linalg.svd(np.array([[step * v for v in row] for row in po]), full_matrices=False)
     U, s, Vt = U.tolist(), [max(0.0, float(v) - tau) for v in s], Vt.tolist()
-    X2 = [[sum(U[i][q] * s[q] * Vt[q][j] for q in range(len(s))) for j in range(4)]
-          for i in range(3)]
+    X2 = [[sum(U[i][q] * s[q] * Vt[q][j] for q in range(len(s))) for j in range(4)] for i in range(3)]
     for i in range(3):
         assert r["X"][i] == pytest.approx(X2[i], rel=1e-10, abs=1e-12)
 
@@ -37,5 +34,3 @@ def test_meglt_edge():
     assert r["fraction_observed"] == len(OBS) / 12
     with pytest.raises(ValueError):
         svt(M, [])
-
-

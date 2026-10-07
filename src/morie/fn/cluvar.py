@@ -52,8 +52,8 @@ def cluster_variance(y, cluster, N=None):
     n = labs.size
     if n < 2:
         raise ValueError(f"need at least 2 clusters, got {n}.")
-    means = np.array([yv[cl == l].mean() for l in labs])
-    sizes = np.array([np.sum(cl == l) for l in labs], dtype=float)
+    means = np.array([yv[cl == ell].mean() for ell in labs])
+    sizes = np.array([np.sum(cl == ell) for ell in labs], dtype=float)
     Sb2 = float(np.var(means, ddof=1))
     fpc = 1.0 if N is None else max(0.0, 1.0 - n / float(N))
     var = fpc * Sb2 / n
@@ -61,23 +61,29 @@ def cluster_variance(y, cluster, N=None):
     # one-way ANOVA intra-cluster correlation
     grand = float(yv.mean())
     ssb = float(np.sum(sizes * (means - grand) ** 2))
-    ssw = float(np.sum([(np.sum((yv[cl == l] - means[i]) ** 2))
-                        for i, l in enumerate(labs)]))
+    ssw = float(np.sum([(np.sum((yv[cl == ell] - means[i]) ** 2)) for i, ell in enumerate(labs)]))
     msb = ssb / (n - 1)
     msw = ssw / max(yv.size - n, 1)
     icc = float((msb - msw) / (msb + (mbar - 1) * msw)) if (msb + (mbar - 1) * msw) != 0 else 0.0
     deff = 1.0 + (mbar - 1.0) * icc
     naive = float(np.std(yv, ddof=1) / np.sqrt(yv.size))
-    return RichResult(payload={
-        "mean": float(means.mean()), "variance": var,
-        "se": float(np.sqrt(max(var, 0.0))),
-        "n_clusters": int(n), "n_elements": int(yv.size),
-        "mean_cluster_size": mbar, "icc": icc, "deff": float(deff),
-        "effective_n": float(yv.size / deff) if deff > 0 else float(yv.size),
-        "naive_se": naive,
-        "se_inflation": float(np.sqrt(max(var, 0.0)) / naive) if naive > 0 else np.nan,
-        "note": "n is the number of CLUSTERS, not elements",
-        "method": "Cluster variance from between-cluster spread; deff = 1 + (mbar - 1) rho"})
+    return RichResult(
+        payload={
+            "mean": float(means.mean()),
+            "variance": var,
+            "se": float(np.sqrt(max(var, 0.0))),
+            "n_clusters": int(n),
+            "n_elements": int(yv.size),
+            "mean_cluster_size": mbar,
+            "icc": icc,
+            "deff": float(deff),
+            "effective_n": float(yv.size / deff) if deff > 0 else float(yv.size),
+            "naive_se": naive,
+            "se_inflation": float(np.sqrt(max(var, 0.0)) / naive) if naive > 0 else np.nan,
+            "note": "n is the number of CLUSTERS, not elements",
+            "method": "Cluster variance from between-cluster spread; deff = 1 + (mbar - 1) rho",
+        }
+    )
 
 
 def cheatsheet():

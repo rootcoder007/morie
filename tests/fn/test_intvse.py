@@ -1,7 +1,6 @@
 """Tests for intvse.interventional_effect."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.intvse import interventional_effect
 
 

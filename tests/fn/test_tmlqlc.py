@@ -1,7 +1,6 @@
 """Tests for tmlqlc.tmle_qlearning."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tmlqlc import tmle_qlearning
 
 

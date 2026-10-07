@@ -1,7 +1,6 @@
 """Tests for gh_c7_6.ghosal_pt_dens_con."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c7_6 import ghosal_pt_dens_con
 
 
@@ -50,6 +49,7 @@ def test_gh_c7_6_basic():
 def test_gh_c7_6_edge():
     """Test edge cases."""
     import pytest
+
     # The docstring says: "need at least 4 observations"; a single point
     # must therefore raise rather than return n=1.
     with pytest.raises(ValueError):

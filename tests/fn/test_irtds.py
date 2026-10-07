@@ -1,7 +1,6 @@
 """Tests for morie.fn.irtds — IRT discrimination extraction."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.irtds import irt_discrimination
 
 

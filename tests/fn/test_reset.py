@@ -1,8 +1,8 @@
 """Tests for morie.fn.reset -- Ramsey RESET test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import TestResult
 from morie.fn.reset import ramsey_reset_test
 

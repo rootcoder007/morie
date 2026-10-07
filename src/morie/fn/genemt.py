@@ -62,9 +62,13 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["ld_principal_components", "gene_statistic",
-           "gene_covariates", "gene_set_regression",
-           "conditional_set_test"]
+__all__ = [
+    "ld_principal_components",
+    "gene_statistic",
+    "gene_covariates",
+    "gene_set_regression",
+    "conditional_set_test",
+]
 
 _EPS = 1e-12
 
@@ -99,8 +103,7 @@ def ld_principal_components(G, keep=0.999):
         m = sum(c) / n
         s = math.sqrt(sum((v - m) ** 2 for v in c) / max(n - 1, 1))
         cols.append([(v - m) / s if s > _EPS else 0.0 for v in c])
-    C = [[sum(cols[a][i] * cols[b][i] for i in range(n))
-          / max(n - 1, 1) for b in range(p)] for a in range(p)]
+    C = [[sum(cols[a][i] * cols[b][i] for i in range(n)) / max(n - 1, 1) for b in range(p)] for a in range(p)]
     vals, vecs = np.linalg.eigh(C)
     order = sorted(range(len(vals)), key=lambda i: -vals[i])
     tot = sum(max(v, 0.0) for v in vals) or 1.0
@@ -112,13 +115,14 @@ def ld_principal_components(G, keep=0.999):
         acc += vals[i] / tot
         if acc >= float(keep):
             break
-    PC = [[sum(cols[a][i] * vecs[a][j] for a in range(p))
-           for j in take] for i in range(n)]
-    return {"components": PC, "n_components": len(take),
-            "n_markers": p,
-            "variance_explained": acc,
-            "note": "orthogonal by construction, so LD needs no "
-                    "permutation"}
+    PC = [[sum(cols[a][i] * vecs[a][j] for a in range(p)) for j in take] for i in range(n)]
+    return {
+        "components": PC,
+        "n_components": len(take),
+        "n_markers": p,
+        "variance_explained": acc,
+        "note": "orthogonal by construction, so LD needs no permutation",
+    }
 
 
 def gene_statistic(y, G, keep=0.999):
@@ -128,14 +132,11 @@ def gene_statistic(y, G, keep=0.999):
     X = pc["components"]
     n, m = len(X), pc["n_components"]
     if len(yv) != n:
-        raise ValueError("genemt: %d phenotypes but %d individuals"
-                         % (len(yv), n))
+        raise ValueError(f"genemt: {int(len(yv))} phenotypes but {int(n)} individuals")
     if m < 1:
-        raise ValueError("genemt: the gene has no non-degenerate "
-                         "components")
+        raise ValueError("genemt: the gene has no non-degenerate components")
     co = k.wls(X, yv, [1.0] * n, 1e-8)["coef"]
-    fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(m))
-           for i in range(n)]
+    fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(m)) for i in range(n)]
     ybar = sum(yv) / n
     ssr = sum((fit[i] - ybar) ** 2 for i in range(n))
     sse = sum((yv[i] - fit[i]) ** 2 for i in range(n))
@@ -143,9 +144,15 @@ def gene_statistic(y, G, keep=0.999):
     F = (ssr / m) / (sse / d2) if sse > _EPS else float("inf")
     z = math.sqrt(2.0 * F) - math.sqrt(2.0 * m - 1.0)
     p = _norm_cdf(-(z))
-    return {"F": F, "df1": m, "df2": d2, "p": p,
-            "z": _norm_ppf(1.0 - p), "n_markers": pc["n_markers"],
-            "note": "an ANALYTIC p-value; no permutation"}
+    return {
+        "F": F,
+        "df1": m,
+        "df2": d2,
+        "p": p,
+        "z": _norm_ppf(1.0 - p),
+        "n_markers": pc["n_markers"],
+        "note": "an ANALYTIC p-value; no permutation",
+    }
 
 
 def gene_covariates(n_markers, gene_length, ld_scores=None):
@@ -157,22 +164,19 @@ def gene_covariates(n_markers, gene_length, ld_scores=None):
     nm = [float(v) for v in k.vec(n_markers)]
     gl = [float(v) for v in k.vec(gene_length)]
     if len(nm) != len(gl):
-        raise ValueError("genemt: %d marker counts but %d lengths"
-                         % (len(nm), len(gl)))
+        raise ValueError(f"genemt: {int(len(nm))} marker counts but {int(len(gl))} lengths")
     if any(v <= 0.0 for v in nm + gl):
-        raise ValueError("genemt: marker counts and lengths must be "
-                         "positive")
+        raise ValueError("genemt: marker counts and lengths must be positive")
     dens = [nm[i] / gl[i] for i in range(len(nm))]
-    cov = [[math.log(nm[i]), math.log(gl[i]), math.log(dens[i])]
-           for i in range(len(nm))]
+    cov = [[math.log(nm[i]), math.log(gl[i]), math.log(dens[i])] for i in range(len(nm))]
     if ld_scores is not None:
         ls = [float(v) for v in k.vec(ld_scores)]
         cov = [cov[i] + [ls[i]] for i in range(len(cov))]
-    return {"covariates": cov,
-            "names": ["log_n_markers", "log_length", "log_density"]
-            + (["ld_score"] if ld_scores is not None else []),
-            "note": "not optional: without them, long genes look "
-                    "enriched for everything"}
+    return {
+        "covariates": cov,
+        "names": ["log_n_markers", "log_length", "log_density"] + (["ld_score"] if ld_scores is not None else []),
+        "note": "not optional: without them, long genes look enriched for everything",
+    }
 
 
 def gene_set_regression(z_scores, membership, covariates=None):
@@ -185,18 +189,15 @@ def gene_set_regression(z_scores, membership, covariates=None):
     s = [float(v) for v in k.vec(membership)]
     n = len(z)
     if len(s) != n:
-        raise ValueError("genemt: %d z-scores but %d membership "
-                         "values" % (n, len(s)))
+        raise ValueError(f"genemt: {int(n)} z-scores but {int(len(s))} membership values")
     X = [[s[i]] for i in range(n)]
     if covariates is not None:
         C = [[float(v) for v in r] for r in k.mat(covariates)]
         if len(C) != n:
-            raise ValueError("genemt: %d covariate rows for %d genes"
-                             % (len(C), n))
+            raise ValueError(f"genemt: {int(len(C))} covariate rows for {int(n)} genes")
         X = [X[i] + list(C[i]) for i in range(n)]
     co = k.wls(X, z, [1.0] * n, 1e-8)["coef"]
-    fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(len(X[0])))
-           for i in range(n)]
+    fit = [co[0] + sum(X[i][a] * co[1 + a] for a in range(len(X[0]))) for i in range(n)]
     res = [z[i] - fit[i] for i in range(n)]
     dof = max(n - len(X[0]) - 1, 1)
     s2 = sum(v * v for v in res) / dof
@@ -204,13 +205,19 @@ def gene_set_regression(z_scores, membership, covariates=None):
     sxx = sum((s[i] - sm) ** 2 for i in range(n))
     se = math.sqrt(s2 / sxx) if sxx > _EPS else float("inf")
     t = co[1] / se if se > 0 else 0.0
-    return RichResult(payload={
-        "estimate": co[1], "beta": co[1], "se": se, "t": t,
-        "p": _norm_cdf(-(t)),
-        "n_genes": n, "covariates_used": covariates is not None,
-        "method": "MAGMA gene-set regression; de Leeuw et al. (2015)",
-        "note": "one-sided: enrichment means a POSITIVE coefficient",
-    })
+    return RichResult(
+        payload={
+            "estimate": co[1],
+            "beta": co[1],
+            "se": se,
+            "t": t,
+            "p": _norm_cdf(-(t)),
+            "n_genes": n,
+            "covariates_used": covariates is not None,
+            "method": "MAGMA gene-set regression; de Leeuw et al. (2015)",
+            "note": "one-sided: enrichment means a POSITIVE coefficient",
+        }
+    )
 
 
 def conditional_set_test(z_scores, set_a, set_b, covariates=None):
@@ -225,35 +232,37 @@ def conditional_set_test(z_scores, set_a, set_b, covariates=None):
     b = [float(v) for v in k.vec(set_b)]
     n = len(z)
     if not (len(a) == len(b) == n):
-        raise ValueError("genemt: the sets and z-scores differ in "
-                         "length")
+        raise ValueError("genemt: the sets and z-scores differ in length")
     base = [[b[i]] for i in range(n)]
     if covariates is not None:
         C = [[float(v) for v in r] for r in k.mat(covariates)]
         base = [base[i] + list(C[i]) for i in range(n)]
     marg = gene_set_regression(z, a, covariates)
     cond = gene_set_regression(z, a, base)
-    return {"marginal_beta": marg["beta"], "marginal_p": marg["p"],
-            "conditional_beta": cond["beta"],
-            "conditional_p": cond["p"],
-            "attenuation": (marg["beta"] - cond["beta"])
-            / marg["beta"] if abs(marg["beta"]) > _EPS else 0.0,
-            "note": "if the signal was really the other set, the "
-                    "conditional coefficient collapses"}
+    return {
+        "marginal_beta": marg["beta"],
+        "marginal_p": marg["p"],
+        "conditional_beta": cond["beta"],
+        "conditional_p": cond["p"],
+        "attenuation": (marg["beta"] - cond["beta"]) / marg["beta"] if abs(marg["beta"]) > _EPS else 0.0,
+        "note": "if the signal was really the other set, the conditional coefficient collapses",
+    }
 
 
 def cheatsheet():
-    return ("genemt: single markers are underpowered, so aggregate -- "
-            "but existing tools lost power to LINKAGE DISEQUILIBRIUM "
-            "and needed PERMUTATION for p-values. MAGMA's gene test is "
-            "a MULTIPLE REGRESSION on principal components of the LD "
-            "structure: orthogonal by construction, analytic p-value, "
-            "hence fast. The gene-set test is a SEPARATE LAYER around "
-            "it -- a regression of gene Z-scores on membership, which "
-            "generalises to CONTINUOUS gene properties, multiple sets "
-            "at once, and conditioning one set on another. Gene size "
-            "and density are covariates, or long genes look enriched "
-            "for everything.")
+    return (
+        "genemt: single markers are underpowered, so aggregate -- "
+        "but existing tools lost power to LINKAGE DISEQUILIBRIUM "
+        "and needed PERMUTATION for p-values. MAGMA's gene test is "
+        "a MULTIPLE REGRESSION on principal components of the LD "
+        "structure: orthogonal by construction, analytic p-value, "
+        "hence fast. The gene-set test is a SEPARATE LAYER around "
+        "it -- a regression of gene Z-scores on membership, which "
+        "generalises to CONTINUOUS gene properties, multiple sets "
+        "at once, and conditioning one set on another. Gene size "
+        "and density are covariates, or long genes look enriched "
+        "for everything."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,9 +23,14 @@ def mvsml_ridge_lasso_elastic_eq_9_29(alpha, y):
     a = _gp._flat(alpha)
     ys = _gp._flat(y)
     s = sum(ai * yi for ai, yi in zip(a, ys))
-    res = RichResult(payload={"estimate": s, "balance": s,
-                              "satisfied": abs(s) < 1e-6,
-                              "method": "intercept stationarity (MVSML 2022 eq. 9.29)"})
+    res = RichResult(
+        payload={
+            "estimate": s,
+            "balance": s,
+            "satisfied": abs(s) < 1e-6,
+            "method": "intercept stationarity (MVSML 2022 eq. 9.29)",
+        }
+    )
     return with_describe_pointer(res, "msm203")
 
 

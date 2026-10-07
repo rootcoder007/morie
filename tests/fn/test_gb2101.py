@@ -1,8 +1,5 @@
 """Tests for gb2101.gibbons_asymp_order_normal."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gb2101 import gibbons_asymp_order_normal
 
 

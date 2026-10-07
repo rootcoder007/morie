@@ -29,8 +29,11 @@ from morie.psymet import (
 def mapq():
     """Load MAPQII from morie.db (works in CI) or xlsx fallback."""
     try:
-        from morie.data import load_dataset
+        from morie.data import DATASET_CATALOG, _find_local_file, load_dataset
 
+        if _find_local_file(DATASET_CATALOG["mapq"]["local_path"]) is None:
+            # without the real file load_dataset gives the synthetic toy panel; these assert the survey's values
+            pytest.skip("MAPQ dataset not available (only the synthetic panel)")
         df = load_dataset("mapq")
         # load_dataset returns the full survey — filter to MAPQII 20 items
         mapq_cols = [f"{s}{i}" for s in ("EE", "EA", "UA", "ER") for i in range(1, 6)]
@@ -82,7 +85,8 @@ class TestCrba:
 
 class TestMcdo:
     def test_returns_omgres(self, likert):
-        o = mcdo(likert)
+        with pytest.warns(UserWarning, match="reverse-keyed item"):
+            o = mcdo(likert)
         assert isinstance(o, OmgRes)
 
     def test_mapq_omega_high(self, mapq):
@@ -90,7 +94,8 @@ class TestMcdo:
         assert o.total > 0.90
 
     def test_omega_geq_alpha(self, likert):
-        o = mcdo(likert)
+        with pytest.warns(UserWarning, match="reverse-keyed item"):
+            o = mcdo(likert)
         assert o.total >= o.alpha - 0.01  # omega >= alpha (approx)
 
 
@@ -147,7 +152,7 @@ class TestSplhf:
 class TestItcor:
     def test_returns_df(self, likert):
         r = itcor(likert)
-        assert (hasattr(r, "columns") or hasattr(r, "_cols"))
+        assert hasattr(r, "columns") or hasattr(r, "_cols")
         assert "item" in r.columns
         assert "r_corr" in r.columns
         assert len(r) == likert.shape[1]
@@ -160,14 +165,14 @@ class TestItcor:
 class TestAdel:
     def test_returns_df(self, likert):
         r = adel(likert)
-        assert (hasattr(r, "columns") or hasattr(r, "_cols"))
+        assert hasattr(r, "columns") or hasattr(r, "_cols")
         assert len(r) == likert.shape[1]
 
 
 class TestIdisc:
     def test_returns_df(self, likert):
         r = idisc(likert)
-        assert (hasattr(r, "columns") or hasattr(r, "_cols"))
+        assert hasattr(r, "columns") or hasattr(r, "_cols")
         assert "d" in r.columns
         assert len(r) == likert.shape[1]
 

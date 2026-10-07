@@ -23,8 +23,7 @@ def cov_from_model(h, cov_model=None):
 
 
 def _dist(a, b):
-    return np.linalg.norm(np.atleast_2d(a)[:, None, :]
-                          - np.atleast_2d(b)[None, :, :], axis=-1)
+    return np.linalg.norm(np.atleast_2d(a)[:, None, :] - np.atleast_2d(b)[None, :, :], axis=-1)
 
 
 def simple_kriging(coords, z, target, cov_model=None, mu=None):
@@ -45,10 +44,10 @@ def simple_kriging(coords, z, target, cov_model=None, mu=None):
     mu = float(np.mean(z)) if mu is None else float(mu)
 
     Sigma = cov_from_model(_dist(coords, coords), cov_model)
-    sig = cov_from_model(_dist(coords, target), cov_model)      # (n, m)
+    sig = cov_from_model(_dist(coords, target), cov_model)  # (n, m)
     sigma2 = float(cov_from_model(np.zeros(1), cov_model)[0])
 
-    lam = np.linalg.solve(Sigma, sig)                            # (n, m)
+    lam = np.linalg.solve(Sigma, sig)  # (n, m)
     pred = mu + lam.T @ (z - mu)
     var = sigma2 - np.einsum("ij,ij->j", sig, lam)
     return pred, np.maximum(var, 0.0), lam

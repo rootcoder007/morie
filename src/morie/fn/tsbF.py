@@ -100,14 +100,10 @@ Production Economics* 265, 109013, doi:10.1016/j.ijpe.2023.109013.
 The state-space formulation that puts Croston and TSB in one family.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tsb_forecast", "croston_forecast", "sba_forecast",
-           "intermittent_forecast", "demand_classification"]
+__all__ = ["tsb_forecast", "croston_forecast", "sba_forecast", "intermittent_forecast", "demand_classification"]
 
 _EPS = 1e-12
 _METHODS = ("tsb", "croston", "sba")
@@ -150,28 +146,24 @@ def _init(y, init="global", z0=None, x0=None, p0=None):
     if not pos:
         raise ValueError("tsbF: the series has no positive demand")
     if init not in _INITS:
-        raise ValueError("tsbF: init must be one of %s, got %r"
-                         % (", ".join(_INITS), init))
+        raise ValueError("tsbF: init must be one of {}, got {!r}".format(", ".join(_INITS), init))
     first = next(i for i, v in enumerate(yv) if v > 0.0)
     if init == "known":
         if z0 is None or (x0 is None and p0 is None):
-            raise ValueError("tsbF: init='known' needs z0 and one of "
-                             "x0 / p0")
+            raise ValueError("tsbF: init='known' needs z0 and one of x0 / p0")
         Z = float(z0)
         if x0 is None:
             if not 0.0 < float(p0) <= 1.0:
-                raise ValueError("tsbF: p0 must be in (0, 1], got %r"
-                                 % (p0,))
+                raise ValueError(f"tsbF: p0 must be in (0, 1], got {p0!r}")
             X = 1.0 / float(p0)
             P = float(p0)
         else:
             if float(x0) < 1.0:
-                raise ValueError("tsbF: x0 must be at least 1, got %r"
-                                 % (x0,))
+                raise ValueError(f"tsbF: x0 must be at least 1, got {x0!r}")
             X = float(x0)
             P = 1.0 / X if p0 is None else float(p0)
         if Z <= 0.0:
-            raise ValueError("tsbF: z0 must be positive, got %r" % (z0,))
+            raise ValueError(f"tsbF: z0 must be positive, got {z0!r}")
         return first, Z, X, P
     if init == "global":
         Z = sum(pos) / len(pos)
@@ -198,28 +190,22 @@ def _burn(seq, burn_in):
     """
     b = int(burn_in)
     if b < 0:
-        raise ValueError("tsbF: burn_in must be non-negative, got %r"
-                         % (burn_in,))
+        raise ValueError(f"tsbF: burn_in must be non-negative, got {burn_in!r}")
     if b >= len(seq):
-        raise ValueError("tsbF: burn_in %d discards the whole series "
-                         "of length %d" % (b, len(seq)))
+        raise ValueError(f"tsbF: burn_in {int(b)} discards the whole series of length {int(len(seq))}")
     return seq[b:]
 
 
-def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1, init="global",
-                 z0=None, p0=None, burn_in=0):
+def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1, init="global", z0=None, p0=None, burn_in=0):
     r"""TSB: probability updated EVERY period, size only on demand."""
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
     if n < 2:
-        raise ValueError("tsbF: need at least 2 observations, got %d"
-                         % n)
+        raise ValueError(f"tsbF: need at least 2 observations, got {int(n)}")
     for nm, v in (("alpha", alpha), ("beta", beta)):
         if not 0.0 < float(v) <= 1.0:
-            raise ValueError("tsbF: %s must be in (0, 1], got %r"
-                             % (nm, v))
-    first, zi, _, pi = _init(yv, init=init, z0=z0, p0=p0,
-                             x0=None if p0 is None else 1.0 / p0)
+            raise ValueError(f"tsbF: {nm} must be in (0, 1], got {v!r}")
+    first, zi, _, pi = _init(yv, init=init, z0=z0, p0=p0, x0=None if p0 is None else 1.0 / p0)
     a, b = float(alpha), float(beta)
     z, p = zi, pi
     fitted, probs, sizes = [], [], []
@@ -233,23 +219,29 @@ def tsb_forecast(y, alpha=0.1, beta=0.05, horizon=1, init="global",
         probs.append(p)
         sizes.append(z)
         fitted.append(p * z)
-    return RichResult(payload={
-        "estimate": [fitted[-1]] * int(horizon),
-        "forecast": [fitted[-1]] * int(horizon),
-        "fitted": _burn(fitted, burn_in),
-        "fitted_full": fitted,
-        "probability": _burn(probs, burn_in),
-        "size": _burn(sizes, burn_in),
-        "init": init, "burn_in": int(burn_in),
-        "z_init": zi, "p_init": pi,
-        "p_final": p, "z_final": z, "alpha": a, "beta": b,
-        "method": "TSB, Teunter, Syntetos & Babai (2011)",
-        "updates_on_zeros": True,
-    })
+    return RichResult(
+        payload={
+            "estimate": [fitted[-1]] * int(horizon),
+            "forecast": [fitted[-1]] * int(horizon),
+            "fitted": _burn(fitted, burn_in),
+            "fitted_full": fitted,
+            "probability": _burn(probs, burn_in),
+            "size": _burn(sizes, burn_in),
+            "init": init,
+            "burn_in": int(burn_in),
+            "z_init": zi,
+            "p_init": pi,
+            "p_final": p,
+            "z_final": z,
+            "alpha": a,
+            "beta": b,
+            "method": "TSB, Teunter, Syntetos & Babai (2011)",
+            "updates_on_zeros": True,
+        }
+    )
 
 
-def croston_forecast(y, alpha=0.1, horizon=1, init="global",
-                     z0=None, x0=None, burn_in=0):
+def croston_forecast(y, alpha=0.1, horizon=1, init="global", z0=None, x0=None, burn_in=0):
     r"""Croston: size and INTERVAL, updated only at demand epochs.
 
     Nothing updates on a zero, so an obsolete item keeps its last
@@ -258,11 +250,9 @@ def croston_forecast(y, alpha=0.1, horizon=1, init="global",
     yv = [float(v) for v in k.vec(y)]
     n = len(yv)
     if n < 2:
-        raise ValueError("tsbF: need at least 2 observations, got %d"
-                         % n)
+        raise ValueError(f"tsbF: need at least 2 observations, got {int(n)}")
     if not 0.0 < float(alpha) <= 1.0:
-        raise ValueError("tsbF: alpha must be in (0, 1], got %r"
-                         % (alpha,))
+        raise ValueError(f"tsbF: alpha must be in (0, 1], got {alpha!r}")
     first, zi, xi, _ = _init(yv, init=init, z0=z0, x0=x0)
     a = float(alpha)
     z, x = zi, xi
@@ -275,33 +265,43 @@ def croston_forecast(y, alpha=0.1, horizon=1, init="global",
             x = x + a * (since - x)
             since = 0
         fitted.append(z / max(x, _EPS))
-    return RichResult(payload={
-        "estimate": [fitted[-1]] * int(horizon),
-        "forecast": [fitted[-1]] * int(horizon),
-        "fitted": _burn(fitted, burn_in), "fitted_full": fitted,
-        "z_final": z, "x_final": x, "alpha": a,
-        "init": init, "burn_in": int(burn_in),
-        "z_init": zi, "x_init": xi,
-        "method": "Croston (1972)", "updates_on_zeros": False,
-    })
+    return RichResult(
+        payload={
+            "estimate": [fitted[-1]] * int(horizon),
+            "forecast": [fitted[-1]] * int(horizon),
+            "fitted": _burn(fitted, burn_in),
+            "fitted_full": fitted,
+            "z_final": z,
+            "x_final": x,
+            "alpha": a,
+            "init": init,
+            "burn_in": int(burn_in),
+            "z_init": zi,
+            "x_init": xi,
+            "method": "Croston (1972)",
+            "updates_on_zeros": False,
+        }
+    )
 
 
-def sba_forecast(y, alpha=0.1, horizon=1, init="global",
-                 z0=None, x0=None, burn_in=0):
+def sba_forecast(y, alpha=0.1, horizon=1, init="global", z0=None, x0=None, burn_in=0):
     r"""Syntetos-Boylan: Croston deflated by :math:`(1-\alpha/2)`."""
-    c = croston_forecast(y, alpha=alpha, horizon=horizon,
-                         init=init, z0=z0, x0=x0, burn_in=burn_in)
+    c = croston_forecast(y, alpha=alpha, horizon=horizon, init=init, z0=z0, x0=x0, burn_in=burn_in)
     d = 1.0 - float(alpha) / 2.0
-    return RichResult(payload={
-        "estimate": [v * d for v in c["forecast"]],
-        "forecast": [v * d for v in c["forecast"]],
-        "fitted": [v * d for v in c["fitted"]],
-        "fitted_full": [v * d for v in c["fitted_full"]],
-        "init": init, "burn_in": int(burn_in),
-        "deflator": d, "alpha": float(alpha),
-        "method": "Syntetos-Boylan Approximation (2005)",
-        "updates_on_zeros": False,
-    })
+    return RichResult(
+        payload={
+            "estimate": [v * d for v in c["forecast"]],
+            "forecast": [v * d for v in c["forecast"]],
+            "fitted": [v * d for v in c["fitted"]],
+            "fitted_full": [v * d for v in c["fitted_full"]],
+            "init": init,
+            "burn_in": int(burn_in),
+            "deflator": d,
+            "alpha": float(alpha),
+            "method": "Syntetos-Boylan Approximation (2005)",
+            "updates_on_zeros": False,
+        }
+    )
 
 
 def demand_classification(y, adi_cut=1.32, cv2_cut=0.49):
@@ -326,42 +326,37 @@ def demand_classification(y, adi_cut=1.32, cv2_cut=0.49):
         cls = "intermittent"
     else:
         cls = "lumpy"
-    return {"class": cls, "adi": adi, "cv2": cv2,
-            "n_positive": len(pos), "n": len(yv)}
+    return {"class": cls, "adi": adi, "cv2": cv2, "n_positive": len(pos), "n": len(yv)}
 
 
-def intermittent_forecast(y, method="tsb", alpha=0.1, beta=0.05,
-                          horizon=1, init="global", z0=None,
-                          x0=None, p0=None, burn_in=0):
+def intermittent_forecast(
+    y, method="tsb", alpha=0.1, beta=0.05, horizon=1, init="global", z0=None, x0=None, p0=None, burn_in=0
+):
     """Dispatch, so the three can be compared on one series."""
     if method not in _METHODS:
-        raise ValueError("tsbF: method must be one of %s, got %r"
-                         % (", ".join(_METHODS), method))
+        raise ValueError("tsbF: method must be one of {}, got {!r}".format(", ".join(_METHODS), method))
     if method == "tsb":
-        return tsb_forecast(y, alpha=alpha, beta=beta,
-                            horizon=horizon, init=init, z0=z0,
-                            p0=p0, burn_in=burn_in)
+        return tsb_forecast(y, alpha=alpha, beta=beta, horizon=horizon, init=init, z0=z0, p0=p0, burn_in=burn_in)
     if method == "croston":
-        return croston_forecast(y, alpha=alpha, horizon=horizon,
-                                init=init, z0=z0, x0=x0,
-                                burn_in=burn_in)
-    return sba_forecast(y, alpha=alpha, horizon=horizon, init=init,
-                        z0=z0, x0=x0, burn_in=burn_in)
+        return croston_forecast(y, alpha=alpha, horizon=horizon, init=init, z0=z0, x0=x0, burn_in=burn_in)
+    return sba_forecast(y, alpha=alpha, horizon=horizon, init=init, z0=z0, x0=x0, burn_in=burn_in)
 
 
 def cheatsheet():
-    return ("tsbF: TSB updates the PROBABILITY every period (p' += "
-            "beta(occ - p')) and the SIZE only on demand; forecast is "
-            "the PRODUCT p'z', which is unbiased because the two are "
-            "independent. Croston smooths the INTERVAL and forecasts "
-            "z'/x' -- nothing updates on a zero, so an obsolete item "
-            "keeps its forecast forever, and the ratio carries an "
-            "inversion bias. SBA deflates by (1 - alpha/2). The "
-            "inversion bias is ASYMPTOTIC: use init='known' to see "
-            "it, because with init='heuristic' the initial state "
-            "decays as (1-alpha)^t and takes ~3/alpha periods to "
-            "clear, which can flip the measured sign (Prak et al. "
-            "2021). burn_in drops that transient.")
+    return (
+        "tsbF: TSB updates the PROBABILITY every period (p' += "
+        "beta(occ - p')) and the SIZE only on demand; forecast is "
+        "the PRODUCT p'z', which is unbiased because the two are "
+        "independent. Croston smooths the INTERVAL and forecasts "
+        "z'/x' -- nothing updates on a zero, so an obsolete item "
+        "keeps its forecast forever, and the ratio carries an "
+        "inversion bias. SBA deflates by (1 - alpha/2). The "
+        "inversion bias is ASYMPTOTIC: use init='known' to see "
+        "it, because with init='heuristic' the initial state "
+        "decays as (1-alpha)^t and takes ~3/alpha periods to "
+        "clear, which can flip the measured sign (Prak et al. "
+        "2021). burn_in drops that transient."
+    )
 
 
 # compact alias per ledger/NAMING.md

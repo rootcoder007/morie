@@ -1,8 +1,6 @@
 """Tests for eslr2.esl_r_squared."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.eslr2 import esl_r_squared
 
 
@@ -28,7 +26,7 @@ def test_eslr2_basic():
     X_arr = np.asarray(X, dtype=float)
     beta_arr = np.asarray(beta, dtype=float)
     residuals = y_arr - X_arr @ beta_arr
-    rss_manual = float(np.sum(residuals ** 2))
+    rss_manual = float(np.sum(residuals**2))
     y_mean = float(np.mean(y_arr))
     tss_manual = float(np.sum((y_arr - y_mean) ** 2))
     expected_r2 = 1.0 - rss_manual / tss_manual

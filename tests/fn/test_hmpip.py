@@ -1,7 +1,6 @@
 """Tests for hmpip.geron_pipeline."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmpip import geron_pipeline
 
 

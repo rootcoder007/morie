@@ -32,7 +32,7 @@ def bayesian_spline(
     """
     x_arr = np.asarray(x, dtype=float).ravel()
     y_arr = np.asarray(y, dtype=float).ravel()
-    n = len(x_arr)
+    len(x_arr)
 
     knots = np.linspace(np.min(x_arr), np.max(x_arr), n_knots + 2)
 

@@ -46,7 +46,12 @@ def calfeat(dates):
     res = _core.calfeat(dates=dates)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("n", res["n"]), ("nweekend", res["nweekend"]), ("meandoy", res["meandoy"]), ("meanmonthsin", res["meanmonthsin"])],
+        summary_lines=[
+            ("n", res["n"]),
+            ("nweekend", res["nweekend"]),
+            ("meandoy", res["meandoy"]),
+            ("meanmonthsin", res["meanmonthsin"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

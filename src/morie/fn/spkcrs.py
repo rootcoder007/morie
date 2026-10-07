@@ -3,14 +3,14 @@
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._schab_pp import as_points, as_region, cross_k_combined, cross_k_function, diggle_chetwynd_d
+from ._schab_pp import as_points, as_region, cross_k_combined, diggle_chetwynd_d
 
 __all__ = ["schabenberger_cross_k_function"]
 
 
-def schabenberger_cross_k_function(points1, points2, lambda1=None, lambda2=None,
-                                   r=None, region=None, correction="ripley",
-                                   hypothesis="independence"):
+def schabenberger_cross_k_function(
+    points1, points2, lambda1=None, lambda2=None, r=None, region=None, correction="ripley", hypothesis="independence"
+):
     """Cross K-function, Sec. 3.4.4, eq (3.9).
 
     ``Khat_ij(h) = [lam_i lam_j nu(A)]^-1 sum_k sum_l w(s_k,u_l)^-1
@@ -70,9 +70,7 @@ def schabenberger_cross_k_function(points1, points2, lambda1=None, lambda2=None,
     if lambda2 is not None:
         payload["lambda_2_supplied"] = float(lambda2)
 
-    lines = [("n1, n2", (p1.shape[0], p2.shape[0])),
-             ("correction", correction),
-             ("hypothesis", hypothesis)]
+    lines = [("n1, n2", (p1.shape[0], p2.shape[0])), ("correction", correction), ("hypothesis", hypothesis)]
     if hypothesis == "random_labelling":
         d = diggle_chetwynd_d(p1, p2, region, r)
         payload.update({"D": d["D"], "K_11": d["K_11"], "K_22": d["K_22"]})
@@ -85,5 +83,4 @@ def schabenberger_cross_k_function(points1, points2, lambda1=None, lambda2=None,
 
 
 def cheatsheet():
-    return ("spkcrs: cross K-function for bivariate point patterns with "
-            "Ripley edge correction (Sec. 3.4.4, eq (3.9))")
+    return "spkcrs: cross K-function for bivariate point patterns with Ripley edge correction (Sec. 3.4.4, eq (3.9))"

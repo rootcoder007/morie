@@ -1,7 +1,6 @@
 """Tests for ordtm.ordinal_threshold_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ordtm import ordinal_threshold_model
 
 

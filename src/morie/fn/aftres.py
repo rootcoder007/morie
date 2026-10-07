@@ -89,9 +89,7 @@ def aft_residuals(fit):
     """
     for k in ("time", "event", "X", "beta", "log_sigma", "family"):
         if fit.get(k) is None:
-            raise ValueError(
-                f"fit is missing {k!r}; pass a result from one of the AFT fitters"
-            )
+            raise ValueError(f"fit is missing {k!r}; pass a result from one of the AFT fitters")
     t = np.asarray(fit["time"], dtype=float)
     e = np.asarray(fit["event"], dtype=float)
     X = np.atleast_2d(np.asarray(fit["X"], dtype=float))
@@ -102,18 +100,24 @@ def aft_residuals(fit):
     A = np.column_stack([np.ones(t.size), X]) if beta.size == X.shape[1] + 1 else X
     z = (np.log(np.maximum(t, 1e-300)) - A @ beta) / sigma
     _, log_surv = log_dens_surv(z, fam)
-    cs = -log_surv                      # unit exponential under a correct model
+    cs = -log_surv  # unit exponential under a correct model
     mart = e - cs
     inner = -2.0 * (mart + np.where(e > 0, e * np.log(np.maximum(e - mart, 1e-300)), 0.0))
     dev = np.sign(mart) * np.sqrt(np.maximum(inner, 0.0))
     return RichResult(
         title=f"AFT residuals ({fam})",
-        summary_lines=[("n", int(t.size)), ("family", fam),
-                       ("mean Cox-Snell (events)",
-                        float(cs[e == 1].mean()) if np.any(e == 1) else float("nan"))],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("family", fam),
+            ("mean Cox-Snell (events)", float(cs[e == 1].mean()) if np.any(e == 1) else float("nan")),
+        ],
         payload={
-            "standardized": z, "cox_snell": cs, "martingale": mart,
-            "deviance": dev, "event": e, "family": fam,
+            "standardized": z,
+            "cox_snell": cs,
+            "martingale": mart,
+            "deviance": dev,
+            "event": e,
+            "family": fam,
             "method": "aft_residuals",
         },
     )

@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._containers import DescriptiveResult
-from ._signal_core import stft as _stft
 
 _QUOTE = "Let the past die. Kill it, if you have to."
 
@@ -68,13 +67,13 @@ def reassigned_stft(
     nf = L // 2 + 1
 
     def dft(seg):
-        return [sum(seg[k] * cmath.exp(-2j * math.pi * m * k / L) for k in range(L))
-                for m in range(nf)]
+        return [sum(seg[k] * cmath.exp(-2j * math.pi * m * k / L) for k in range(L)) for m in range(nf)]
+
     freqs = [m * fs / L for m in range(nf)]
     times, P, RT, RF = [], [], [], []
     start = 0
     while start + L <= n:
-        seg = xs[start:start + L]
+        seg = xs[start : start + L]
         Xh = dft([v * w for v, w in zip(seg, h)])
         Xt = dft([v * w for v, w in zip(seg, th)])
         Xd = dft([v * w for v, w in zip(seg, dh)])
@@ -95,7 +94,10 @@ def reassigned_stft(
         RT.append(colt)
         RF.append(colf)
         start += step
-    T = lambda M: np.array([[M[j][i] for j in range(len(M))] for i in range(nf)])
+
+    def T(M):
+        return np.array([[M[j][i] for j in range(len(M))] for i in range(nf)])
+
     power = T(P)
     return DescriptiveResult(
         name="reassigned_stft",

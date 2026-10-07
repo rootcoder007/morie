@@ -33,8 +33,7 @@ def _prod_rows(P):
     return out
 
 
-def stabilized_weights(treatment=None, history=None, numerator_model=None,
-                       denominator_model=None):
+def stabilized_weights(treatment=None, history=None, numerator_model=None, denominator_model=None):
     """Stabilized IPT weights over a treatment history,
 
         sw_i = prod_t f(A_it | A_i,t-1) / f(A_it | H_it).
@@ -87,12 +86,21 @@ def stabilized_weights(treatment=None, history=None, numerator_model=None,
     num = _prod_rows(N)
     w = [num[i] / den[i] for i in range(n)]
     uw = [1.0 / den[i] for i in range(n)]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(w) / n), "weights": w,
-        "unstabilized": uw, "mean_weight": float(sum(w) / n),
-        "max_weight": float(max(w)), "n": n, "n_times": nt,
-        "method": "stabilized IPT weights (Robins, Hernan & Brumback 2000)",
-    }), "gstabwt")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(w) / n),
+                "weights": w,
+                "unstabilized": uw,
+                "mean_weight": float(sum(w) / n),
+                "max_weight": float(max(w)),
+                "n": n,
+                "n_times": nt,
+                "method": "stabilized IPT weights (Robins, Hernan & Brumback 2000)",
+            }
+        ),
+        "gstabwt",
+    )
 
 
 def cheatsheet():

@@ -60,8 +60,13 @@ def gibbons_type1_run_lengths(lengths1, n1=None, n2=None):
         perms //= factorial(int(cnt))
     pmf = perms * comb(n2 + 1, r1) / comb(n1 + n2, n1)
     return RichResult(
-        payload={"pmf": float(pmf), "r1": r1, "n1": n1, "n2": n2,
-                 "method": "Type-1 run-lengths pmf (Gibbons Theorem 3.3.2)"}
+        payload={
+            "pmf": float(pmf),
+            "r1": r1,
+            "n1": n1,
+            "n2": n2,
+            "method": "Type-1 run-lengths pmf (Gibbons Theorem 3.3.2)",
+        }
     )
 
 

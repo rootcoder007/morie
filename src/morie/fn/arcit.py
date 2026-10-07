@@ -54,7 +54,7 @@ def gauss_seidel(
     it = 0
     residual = float("inf")
 
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         x_old = x.copy()
         for i in range(n):
             sigma = np.dot(A[i, :i], x[:i]) + np.dot(A[i, i + 1 :], x_old[i + 1 :])

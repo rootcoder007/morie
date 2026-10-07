@@ -74,8 +74,7 @@ def _regime_mean(yv, d1, d2, X1, X2, a1, a2, n):
         p2 = g2[i] if a2 > 0.5 else 1.0 - g2[i]
         h2 = ind1 * ind2 / (p1 * p2) if p1 > 0.0 and p2 > 0.0 else 0.0
         h1 = ind1 / p1 if p1 > 0.0 else 0.0
-        ic.append(h2 * (yv[i] - qbar2[i]) + h1 * (qbar2[i] - qbar1[i])
-                  + qbar1[i] - m)
+        ic.append(h2 * (yv[i] - qbar2[i]) + h1 * (qbar2[i] - qbar1[i]) + qbar1[i] - m)
     return m, ic
 
 

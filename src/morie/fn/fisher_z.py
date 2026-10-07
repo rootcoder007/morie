@@ -28,8 +28,7 @@ def fisher_z(r):
     """
     value = _ca_crim.fisher_z(r)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.12)"
@@ -41,7 +40,7 @@ def fisher_z(r):
 
 
 def cheatsheet():
-    return 'ca11e12: Zr = (1/2) ln((1+r)/(1-r)) [Weisburd et al. 2022, eq. 11.12]'
+    return "ca11e12: Zr = (1/2) ln((1+r)/(1-r)) [Weisburd et al. 2022, eq. 11.12]"
 
 
 # compact alias per ledger/NAMING.md

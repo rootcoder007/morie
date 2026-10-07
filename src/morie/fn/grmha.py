@@ -82,22 +82,16 @@ def geron_multi_head_attention(Q, K, V, WQ, WK, WV, WO, h, mask=None):
         raise ValueError(f"K has {Ka.shape[0]} positions but V has {Va.shape[0]}.")
     d_model = Qa.shape[1]
     if Ka.shape[1] != d_model or Va.shape[1] != d_model:
-        raise ValueError(
-            f"Q, K and V must share d_model; got {d_model}, {Ka.shape[1]}, {Va.shape[1]}."
-        )
+        raise ValueError(f"Q, K and V must share d_model; got {d_model}, {Ka.shape[1]}, {Va.shape[1]}.")
     h = int(h)
     if h < 1:
         raise ValueError(f"h must be a positive integer, got {h}.")
     if d_model % h:
-        raise ValueError(
-            f"h = {h} does not divide d_model = {d_model}; heads must partition the "
-            f"model width exactly."
-        )
+        raise ValueError(f"h = {h} does not divide d_model = {d_model}; heads must partition the model width exactly.")
     d_head = d_model // h
 
     mats = {}
-    for name, M, cols in (("WQ", WQ, d_model), ("WK", WK, d_model),
-                          ("WV", WV, d_model), ("WO", WO, None)):
+    for name, M, cols in (("WQ", WQ, d_model), ("WK", WK, d_model), ("WV", WV, d_model), ("WO", WO, None)):
         A = np.atleast_2d(np.asarray(M, dtype=float))
         if A.shape[0] != d_model:
             raise ValueError(f"{name} must have {d_model} rows, got shape {A.shape}.")
@@ -121,8 +115,7 @@ def geron_multi_head_attention(Q, K, V, WQ, WK, WV, WO, h, mask=None):
 
     return RichResult(
         title="Multi-head attention",
-        summary_lines=[("Heads", h), ("d_head", d_head),
-                       ("Queries", int(Qa.shape[0]))],
+        summary_lines=[("Heads", h), ("d_head", d_head), ("Queries", int(Qa.shape[0]))],
         payload={
             "output": out.tolist(),
             "head_outputs": [H.tolist() for H in heads],

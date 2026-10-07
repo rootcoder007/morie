@@ -1,12 +1,11 @@
 """Tests for morie.fn.cloze."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cloze import cloze
 
 
 def test_cloze_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = cloze(text="The quick brown fox jumps over the lazy dog", n_deletions=3)
     assert result is not None
     assert hasattr(result, "name")

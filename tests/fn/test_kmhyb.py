@@ -1,7 +1,6 @@
 """Tests for kmhyb.kamath_hybrid_retrieval_fusion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmhyb import kamath_hybrid_retrieval_fusion
 
 

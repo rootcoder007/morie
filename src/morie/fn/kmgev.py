@@ -20,9 +20,7 @@ def _rubric_scores(rubric):
     if isinstance(rubric, dict):
         scores = rubric.get("scores")
         if scores is None:
-            raise ValueError(
-                "a dict rubric must carry a 'scores' key listing the "
-                "score points the judge may emit.")
+            raise ValueError("a dict rubric must carry a 'scores' key listing the score points the judge may emit.")
     else:
         scores = rubric
     s = np.atleast_1d(np.asarray(scores, dtype=float)).ravel()
@@ -58,26 +56,25 @@ def kamath_g_eval(x, y, rubric, model):
     """
     s = _rubric_scores(rubric)
     if not callable(model):
-        raise ValueError(
-            "model must be callable (x, y, rubric) -> logits over the "
-            "rubric's score points.")
+        raise ValueError("model must be callable (x, y, rubric) -> logits over the rubric's score points.")
     logits = model(x, y, rubric)
     logits = np.atleast_1d(np.asarray(logits, dtype=float)).ravel()
     if logits.size != s.size:
-        raise ValueError(
-            f"the judge returned {logits.size} logits for {s.size} "
-            "rubric score points.")
+        raise ValueError(f"the judge returned {logits.size} logits for {s.size} rubric score points.")
     if not np.all(np.isfinite(logits)):
         raise ValueError("the judge returned a non-finite logit.")
     p = _softmax(logits)
     score = float(np.dot(s, p))
-    return RichResult(payload={
-        "estimate": score,
-        "probabilities": [float(v) for v in p],
-        "score_points": [float(v) for v in s],
-        "logits": [float(v) for v in logits],
-        "n": int(s.size),
-        "method": "G-Eval probability-weighted rubric score"})
+    return RichResult(
+        payload={
+            "estimate": score,
+            "probabilities": [float(v) for v in p],
+            "score_points": [float(v) for v in s],
+            "logits": [float(v) for v in logits],
+            "n": int(s.size),
+            "method": "G-Eval probability-weighted rubric score",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for morie.fn.ufcmp -- compare unfolding methods."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ufcmp import compare_unfolding_methods, ufcmp
 
 

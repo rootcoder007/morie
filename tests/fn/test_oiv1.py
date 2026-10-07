@@ -1,7 +1,6 @@
 """Tests for morie.fn.oiv1 — IV estimation (2SLS)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.oiv1 import otis_iv_distance
 
 

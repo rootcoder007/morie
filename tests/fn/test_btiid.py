@@ -1,7 +1,6 @@
 """Tests for btiid.boot_iid_resample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btiid import boot_iid_resample
 
 

@@ -1,8 +1,8 @@
 """Tests for plcmt.rank_placements."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.plcmt import rank_placements
 
 
@@ -26,8 +26,8 @@ def test_plcmt_u_matches_the_mann_whitney_count():
 
 def test_plcmt_variance_matches_the_null_formula():
     """Var U = mn(m+n+1)/12 without ties."""
-    x = np.arange(1.0, 9.0)          # m = 8
-    y = np.arange(1.5, 7.0)          # n = 6, no ties with x
+    x = np.arange(1.0, 9.0)  # m = 8
+    y = np.arange(1.5, 7.0)  # n = 6, no ties with x
     r = rank_placements(x, y)
     m, n = 8, 6
     assert float(r["Var_U"]) == pytest.approx(m * n * (m + n + 1) / 12, rel=1e-9)

@@ -28,20 +28,19 @@ def rr_from_or(or_value, p2):
     """
     value = _ca_crim.rr_from_or(or_value, p2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.29)"
     return RichResult(
-        title='Convert an odds ratio to a risk ratio',
+        title="Convert an odds ratio to a risk ratio",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e29: RR = OR / (1 - p2 + p2 OR) [Weisburd et al. 2022, eq. 11.29]'
+    return "ca11e29: RR = OR / (1 - p2 + p2 OR) [Weisburd et al. 2022, eq. 11.29]"
 
 
 # compact alias per ledger/NAMING.md

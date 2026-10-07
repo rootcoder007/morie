@@ -19,10 +19,7 @@ def spatial_distance(x, y, metric: str = "euclidean") -> DescriptiveResult:
 
     x = np.asarray(x, dtype=float).ravel()
     y = np.asarray(y, dtype=float).ravel()
-    if metric == "manhattan":
-        d = float(np.sum(np.abs(x - y)))
-    else:
-        d = float(np.sqrt(np.sum((x - y) ** 2)))
+    d = float(np.sum(np.abs(x - y))) if metric == "manhattan" else float(np.sqrt(np.sum((x - y) ** 2)))
     return DescriptiveResult(
         name="spatial_distance",
         value=d,

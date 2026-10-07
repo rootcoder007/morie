@@ -1,7 +1,5 @@
 """Tests for sdxlcd.sdxl_unet."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.sdxlcd import sdxl_unet
 
 

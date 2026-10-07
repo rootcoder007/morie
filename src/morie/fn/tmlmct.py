@@ -106,9 +106,16 @@ def tmle_multivariate_treatment(y, A, X):
     ic = [H[i] * (yv[i] - Qobs[i] - eps * H[i]) + Q1s[i] - Q0s[i] - psi for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "eps": eps, "q": float(q), "n": n,
-        "method": "TMLE for a vector-valued binary treatment"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "eps": eps,
+            "q": float(q),
+            "n": n,
+            "method": "TMLE for a vector-valued binary treatment",
+        }
+    )
 
 
 def cheatsheet():

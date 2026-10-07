@@ -61,9 +61,8 @@ def spatial_detrending(values, grid=None, iters=10):
         if len(g) != 2 or g[0] < 1 or g[1] < 1:
             raise ValueError("`grid` must be (nrow, ncol), both positive")
         if len(flat) != g[0] * g[1]:
-            raise ValueError("`values` has %d entries but `grid` asks for %d"
-                             % (len(flat), g[0] * g[1]))
-        y = [flat[r * g[1]:(r + 1) * g[1]] for r in range(g[0])]
+            raise ValueError(f"`values` has {int(len(flat))} entries but `grid` asks for {int(g[0] * g[1])}")
+        y = [flat[r * g[1] : (r + 1) * g[1]] for r in range(g[0])]
     else:
         y = mat(values, "values")
     nr = len(y)
@@ -98,26 +97,28 @@ def spatial_detrending(values, grid=None, iters=10):
         for i in range(nr):
             row[i] = row[i] - d
 
-    fitted = [[overall + row[i] + col[j] for j in range(nc)]
-              for i in range(nr)]
+    fitted = [[overall + row[i] + col[j] for j in range(nc)] for i in range(nr)]
 
-    return RichResult(payload={
-        "overall": overall,
-        "row": row,
-        "col": col,
-        "residuals": res,
-        "fitted": fitted,
-        "abs_residual_sum": fsum([abs(res[i][j]) for i in range(nr)
-                                  for j in range(nc)]),
-        "sweeps": iters,
-        "resistant_to_outliers": True,
-        "nrow": nr,
-        "ncol": nc,
-        "n": nr * nc,
-        "method": ("Median polish (Tukey 1977, *Exploratory Data "
-                   "Analysis*); NOT in Schabenberger & Gotway, whose "
-                   "trend removal is the OLS trend surface of Sec. 5.3.1"),
-    })
+    return RichResult(
+        payload={
+            "overall": overall,
+            "row": row,
+            "col": col,
+            "residuals": res,
+            "fitted": fitted,
+            "abs_residual_sum": fsum([abs(res[i][j]) for i in range(nr) for j in range(nc)]),
+            "sweeps": iters,
+            "resistant_to_outliers": True,
+            "nrow": nr,
+            "ncol": nc,
+            "n": nr * nc,
+            "method": (
+                "Median polish (Tukey 1977, *Exploratory Data "
+                "Analysis*); NOT in Schabenberger & Gotway, whose "
+                "trend removal is the OLS trend surface of Sec. 5.3.1"
+            ),
+        }
+    )
 
 
 def cheatsheet():

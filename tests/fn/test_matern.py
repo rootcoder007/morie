@@ -1,7 +1,5 @@
 """Tests for matern.matern_cluster."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.matern import matern_cluster
 
 

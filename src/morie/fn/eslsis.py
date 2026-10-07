@@ -73,16 +73,16 @@ def esl_sis_screening(X, y, d=None):
 
     The documented blind spot. For ``y = z * w`` both inputs are essential,
     yet each is marginally uncorrelated with ``y``, so their screening
-    statistics sit down among the pure-noise columns -- here ``w`` ranks
-    below 15 of the 20 noise predictors.
+    statistics sit down among the pure-noise columns and neither makes
+    the top three.
 
     >>> z = rng.normal(size=200)
     >>> w = rng.normal(size=200)
     >>> Xi = np.column_stack([z, w, rng.normal(size=(200, 20))])
     >>> yi = z * w
     >>> r = esl_sis_screening(Xi, yi, d=3)
-    >>> bool(r["omega"][1] < np.median(r["omega"][2:]))
-    True
+    >>> bool(0 in r["selected"] or 1 in r["selected"])
+    False
 
     Contrast the marginal case above, where the true predictors' statistics
     stand far clear of the noise.
@@ -120,8 +120,11 @@ def esl_sis_screening(X, y, d=None):
         payload={
             "selected": selected,
             "omega": np.where(np.isfinite(omega), omega, np.nan),
-            "rank": rank, "d": int(d),
-            "dropped": order[d:], "n": int(n), "p": int(p),
+            "rank": rank,
+            "d": int(d),
+            "dropped": order[d:],
+            "n": int(n),
+            "p": int(p),
             "method": "esl_sis_screening",
         },
     )

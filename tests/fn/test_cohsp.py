@@ -1,8 +1,8 @@
 """Test coherence_spectrum (cohsp)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cohsp import coherence_spectrum, cohsp
 

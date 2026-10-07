@@ -31,8 +31,7 @@ def theta_eap(X, items, prior=(0.0, 1.0), n_nodes=61):
     if it.shape[0] != Xm.shape[1]:
         it = it.T
     if it.shape[0] != Xm.shape[1]:
-        raise ValueError(
-            f"items has {it.shape[0]} rows for {Xm.shape[1]} item columns.")
+        raise ValueError(f"items has {it.shape[0]} rows for {Xm.shape[1]} item columns.")
     if it.shape[1] < 2:
         raise ValueError("items needs at least an a and a b column.")
     a = it[:, 0]
@@ -41,18 +40,22 @@ def theta_eap(X, items, prior=(0.0, 1.0), n_nodes=61):
     thetas = np.empty(Xm.shape[0])
     ses = np.empty(Xm.shape[0])
     for i in range(Xm.shape[0]):
-        o = eap_theta_estimator(Xm[i], a=a, b=b, c=c, prior=prior,
-                                n_nodes=n_nodes)
+        o = eap_theta_estimator(Xm[i], a=a, b=b, c=c, prior=prior, n_nodes=n_nodes)
         thetas[i] = o["theta"]
         ses[i] = o["se"]
-    return RichResult(payload={
-        "theta": thetas if thetas.size > 1 else float(thetas[0]),
-        "se": ses if ses.size > 1 else float(ses[0]),
-        "n_examinees": int(Xm.shape[0]), "n_items": int(Xm.shape[1]),
-        "prior_mean": float(prior[0]), "prior_sd": float(prior[1]),
-        "n_nodes": int(n_nodes),
-        "alias_of": "morie.fn.eapth.eap_theta_estimator",
-        "method": "EAP theta over a response matrix (Bock-Mislevy 1982)"})
+    return RichResult(
+        payload={
+            "theta": thetas if thetas.size > 1 else float(thetas[0]),
+            "se": ses if ses.size > 1 else float(ses[0]),
+            "n_examinees": int(Xm.shape[0]),
+            "n_items": int(Xm.shape[1]),
+            "prior_mean": float(prior[0]),
+            "prior_sd": float(prior[1]),
+            "n_nodes": int(n_nodes),
+            "alias_of": "morie.fn.eapth.eap_theta_estimator",
+            "method": "EAP theta over a response matrix (Bock-Mislevy 1982)",
+        }
+    )
 
 
 def cheatsheet():

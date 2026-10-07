@@ -1,7 +1,6 @@
 """Test noise_floor (nflor)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.nflor import nflor, noise_floor
 

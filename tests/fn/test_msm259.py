@@ -1,7 +1,6 @@
 """Tests for msm259.mvsml_deep_learning_eq_13_1."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.msm259 import mvsml_deep_learning_eq_13_1
 
 

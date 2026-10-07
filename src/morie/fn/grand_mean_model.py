@@ -27,21 +27,20 @@ def grand_mean_model(y):
     ch.7 eq.7.1
     """
     payload = dict(_ca_crim.grand_mean_model(y))
-    value = payload['intercept']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["intercept"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.1)"
     return RichResult(
-        title='Grand-mean model y_i = beta0 + e_i',
+        title="Grand-mean model y_i = beta0 + e_i",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e1: y_i = beta0 + e_i; beta0 = mean(y) [Weisburd et al. 2022, eq. 7.1]'
+    return "ca7e1: y_i = beta0 + e_i; beta0 = mean(y) [Weisburd et al. 2022, eq. 7.1]"
 
 
 # compact alias per ledger/NAMING.md

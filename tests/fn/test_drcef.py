@@ -1,7 +1,6 @@
 """Tests for drcef.dr_callaway_event_study."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drcef import dr_callaway_event_study
 
 

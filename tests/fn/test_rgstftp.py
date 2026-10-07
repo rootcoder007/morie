@@ -1,7 +1,5 @@
 """Tests for rgstftp.rangayyan_stft_params."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_stft_params
 
 

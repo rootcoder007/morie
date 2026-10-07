@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.category_prob_from_cumulative import (
     category_prob_from_cumulative,
 )
@@ -11,7 +10,7 @@ from morie.fn.category_prob_from_cumulative import (
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo3e12_basic():
     """Test basic functionality."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     cum_probs = np.array([0.1, 0.3, 0.6, 0.8, 1.0])
     j = 2
     result = category_prob_from_cumulative(cum_probs, j)

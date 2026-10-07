@@ -1,12 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eigenvector centrality of a network (re-export)."""
 
-import math
-
-from . import _tail1core as C
-from ._richresult import RichResult
-
-__all__ = ['neteigcent', 'eigenvector_centrality']
+__all__ = ["neteigcent", "eigenvector_centrality"]
 
 
 def neteigcent(A):
@@ -37,6 +32,7 @@ def neteigcent(A):
     22:357-365, which restates his own definition).
     """
     from .eigcen import eigcent as _e
+
     return _e(A)
 
 

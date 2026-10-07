@@ -32,7 +32,7 @@ def _best_cut(proj, votes):
     best = (len(pts) + 1, 0.0, 1)
     # errors with yea above cut: nays above + yeas below
     ya, na = yea_total, len(pts) - yea_total
-    below_y, below_n = 0, 0
+    _below_y, _below_n = 0, 0
     cands = (
         [pts[0][0] - 1.0]
         + [0.5 * (pts[i][0] + pts[i + 1][0]) for i in range(len(pts) - 1) if pts[i][0] != pts[i + 1][0]]

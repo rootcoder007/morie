@@ -75,14 +75,20 @@ def esl_kernel_density(x, data, lambda_=None):
         g = Q.ravel()
         if np.all(np.diff(g) > 0):
             mass = float(np.trapezoid(dens, g))
-    return RichResult(payload={
-        "x": Q if p > 1 else Q.ravel(), "density": dens, "lambda": lam,
-        "n": int(N), "p": int(p), "mass": mass,
-        "normaliser": float(N * (2.0 * lam ** 2 * np.pi) ** (p / 2.0)),
-        "is_convolution": True,
-        "convolution_note": "(6.23): the empirical df convolved with a "
-                            "Gaussian of standard deviation lambda",
-        "method": "ESL (6.23)/(6.24) Parzen density with a Gaussian product kernel"})
+    return RichResult(
+        payload={
+            "x": Q if p > 1 else Q.ravel(),
+            "density": dens,
+            "lambda": lam,
+            "n": int(N),
+            "p": int(p),
+            "mass": mass,
+            "normaliser": float(N * (2.0 * lam**2 * np.pi) ** (p / 2.0)),
+            "is_convolution": True,
+            "convolution_note": "(6.23): the empirical df convolved with a Gaussian of standard deviation lambda",
+            "method": "ESL (6.23)/(6.24) Parzen density with a Gaussian product kernel",
+        }
+    )
 
 
 def cheatsheet():

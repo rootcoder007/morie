@@ -9,8 +9,6 @@ Note: the stub name carries a topic label from another chapter; the
 canonical name below reflects the chapter this equation is actually in.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -23,9 +21,9 @@ def mvsml_functional_regression_eq_15_4(theta_hat, mu_hat, threshold=0.5):
     to a binary label, and the 0.5 threshold is used because it
     assumes no prior information. Keys: estimate."""
     v = _gp.zapc_predict(theta_hat, mu_hat, threshold=threshold)
-    res = RichResult(payload={"estimate": v, "y_hat": v,
-                              "is_zero": v == 0.0,
-                              "method": "ZAPC_RF prediction (MVSML 2022 eq. 15.4)"})
+    res = RichResult(
+        payload={"estimate": v, "y_hat": v, "is_zero": v == 0.0, "method": "ZAPC_RF prediction (MVSML 2022 eq. 15.4)"}
+    )
     return with_describe_pointer(res, "msm329")
 
 

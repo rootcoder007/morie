@@ -1,9 +1,8 @@
 """Tests for clcrp.clustered_crp."""
 
-from morie.fn import _array_core as np
-
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.clcrp import clustered_crp
 
 

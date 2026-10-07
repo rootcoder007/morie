@@ -1,7 +1,6 @@
 """Tests for grsig.geron_sigmoid."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grsig import geron_sigmoid
 
 

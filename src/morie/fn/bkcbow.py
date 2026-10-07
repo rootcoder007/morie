@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["burkov_cbow"]
 
 
-def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
-                output_bias=None):
+def burkov_cbow(context_ids, center_ids, embeddings, output_weights, output_bias=None):
     r"""Continuous bag-of-words forward pass and loss.
 
     .. math::
@@ -65,30 +64,19 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
     W = np.atleast_2d(np.asarray(output_weights, dtype=float))
     V, d = E.shape
     if W.shape[1] != d:
-        raise ValueError(
-            "output_weights has dimension %d, embeddings %d."
-            % (W.shape[1], d)
-        )
+        raise ValueError(f"output_weights has dimension {int(W.shape[1])}, embeddings {int(d)}.")
     n, k = C.shape
     if y.size != n:
-        raise ValueError(
-            "center_ids has %d entries for %d context rows." % (y.size, n)
-        )
+        raise ValueError(f"center_ids has {int(y.size)} entries for {int(n)} context rows.")
     if C.min() < 0 or C.max() >= V or y.min() < 0 or y.max() >= W.shape[0]:
         raise ValueError("a word index is out of range for the vocabulary.")
-    b = np.zeros(W.shape[0]) if output_bias is None else np.asarray(
-        output_bias, dtype=float
-    ).ravel()
+    b = np.zeros(W.shape[0]) if output_bias is None else np.asarray(output_bias, dtype=float).ravel()
     if b.size != W.shape[0]:
-        raise ValueError(
-            "output_bias has %d entries for %d output rows."
-            % (b.size, W.shape[0])
-        )
+        raise ValueError(f"output_bias has {int(b.size)} entries for {int(W.shape[0])} output rows.")
 
     # ponytail: E[C] would need 3-D fancy indexing, which the array
     # core does not provide; average the context rows directly
-    h = np.asarray([[sum(E[int(c)][j] for c in row) / float(k)
-                     for j in range(d)] for row in C])
+    h = np.asarray([[sum(E[int(c)][j] for c in row) / float(k) for j in range(d)] for row in C])
     logits = h @ W.T + b
     mx = logits.max(axis=1, keepdims=True)
     ex = np.exp(logits - mx)
@@ -113,8 +101,7 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
                 "skip-gram gives every context word its own gradient instead"
             ),
             "order_note": (
-                "averaging discards word order entirely -- any permutation "
-                "of the context gives the same hidden vector"
+                "averaging discards word order entirely -- any permutation of the context gives the same hidden vector"
             ),
             "context_size": int(k),
             "vocab_size": int(V),
@@ -126,10 +113,7 @@ def burkov_cbow(context_ids, center_ids, embeddings, output_weights,
 
 
 def cheatsheet():
-    return (
-        "bkcbow: CBOW averaged-context softmax, with the order loss and "
-        "rare-word dilution it trades for speed"
-    )
+    return "bkcbow: CBOW averaged-context softmax, with the order loss and rare-word dilution it trades for speed"
 
 
 # compact alias per ledger/NAMING.md

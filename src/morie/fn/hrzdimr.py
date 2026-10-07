@@ -25,7 +25,6 @@ Closed-form rate arithmetic; no estimation, no randomness.
 
 from __future__ import annotations
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["dimredrate", "horowitz_dimension_reduction"]
@@ -64,12 +63,21 @@ def dimredrate(d, n, s=2, M=1):
     idxrate = float(n ** (-idxexp))
     return RichResult(
         title="Dimension reduction in an index model",
-        payload={"fullexp": fullexp, "fullrate": fullrate,
-                 "indexexp": idxexp, "indexrate": idxrate,
-                 "betaexp": betaexp, "betarate": float(n ** -0.5),
-                 "gain": float(fullrate / idxrate), "effdim": M,
-                 "d": d, "M": M, "s": s, "n": n,
-                 "method": "Horowitz (2009) Sections 1.2, 2.2, 2.4 rate comparison"},
+        payload={
+            "fullexp": fullexp,
+            "fullrate": fullrate,
+            "indexexp": idxexp,
+            "indexrate": idxrate,
+            "betaexp": betaexp,
+            "betarate": float(n**-0.5),
+            "gain": float(fullrate / idxrate),
+            "effdim": M,
+            "d": d,
+            "M": M,
+            "s": s,
+            "n": n,
+            "method": "Horowitz (2009) Sections 1.2, 2.2, 2.4 rate comparison",
+        },
     )
 
 
@@ -85,7 +93,7 @@ if __name__ == "__main__":  # pragma: no cover
     r = dimredrate(5, 10000)
     assert abs(r["indexexp"] - 2.0 / 5.0) < 1e-12, r["indexexp"]
     assert abs(r["fullexp"] - 2.0 / 9.0) < 1e-12, r["fullexp"]
-    assert r["indexrate"] < r["fullrate"]      # the index model is faster
-    assert r["betarate"] < r["indexrate"]      # beta is faster still
+    assert r["indexrate"] < r["fullrate"]  # the index model is faster
+    assert r["betarate"] < r["indexrate"]  # beta is faster still
     assert abs(dimredrate(5, 10000, M=5)["indexexp"] - r["fullexp"]) < 1e-12
     print("ok", r["fullrate"], r["indexrate"], r["betarate"])

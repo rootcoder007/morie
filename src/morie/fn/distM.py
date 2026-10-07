@@ -1,9 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DistMult knowledge-graph score."""
 
-import math
-
-from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -62,9 +59,16 @@ def distmult(triples, dim, E=None, R=None, seed=1):
         sc.append(s)
         if abs(s - rev) > gap:
             gap = abs(s - rev)
-    return RichResult(payload={
-        "estimate": sum(sc) / len(sc), "scores": sc, "symmetric_gap": gap,
-        "m": len(sc), "dim": d, "method": "DistMult triple score"})
+    return RichResult(
+        payload={
+            "estimate": sum(sc) / len(sc),
+            "scores": sc,
+            "symmetric_gap": gap,
+            "m": len(sc),
+            "dim": d,
+            "method": "DistMult triple score",
+        }
+    )
 
 
 def cheatsheet():

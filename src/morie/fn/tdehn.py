@@ -11,10 +11,7 @@ def dehn_twist(curve_type: str = "a", n: int = 1) -> DescriptiveResult:
     curve_type = curve_type.lower()
     if curve_type not in ("a", "b"):
         raise ValueError(f"curve_type must be 'a' or 'b', got '{curve_type}'.")
-    if curve_type == "a":
-        M = np.array([[1, 0], [n, 1]], dtype=int)
-    else:
-        M = np.array([[1, n], [0, 1]], dtype=int)
+    M = np.array([[1, 0], [n, 1]], dtype=int) if curve_type == "a" else np.array([[1, n], [0, 1]], dtype=int)
     tr = int(M[0, 0] + M[1, 1])
     classification = "parabolic" if n != 0 else "identity"
     return DescriptiveResult(

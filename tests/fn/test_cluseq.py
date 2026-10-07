@@ -1,7 +1,5 @@
 """Tests for cluseq.sequence_clustering."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.cluseq import sequence_clustering
 
 
@@ -82,8 +80,13 @@ def test_cluseq_basic():
 
     # The docstring lists the keys the function returns.
     for key in (
-        "estimate", "z", "counts", "n_clusters",
-        "distances", "max_distance", "n",
+        "estimate",
+        "z",
+        "counts",
+        "n_clusters",
+        "distances",
+        "max_distance",
+        "n",
     ):
         assert key in result, f"missing documented key: {key}"
 

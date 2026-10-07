@@ -50,7 +50,6 @@ why penalisation is unavoidable).
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -77,8 +76,7 @@ def _fpca(C, w, n_keep):
     lam, U = k.jacobi(Cw)
     order = sorted(range(T), key=lambda j: -lam[j])
     lam = [max(lam[j], 0.0) for j in order]
-    phi = [[U[s][j] / (rw[s] if rw[s] > _EPS else 1.0) for s in range(T)]
-           for j in order]
+    phi = [[U[s][j] / (rw[s] if rw[s] > _EPS else 1.0) for s in range(T)] for j in order]
     # sign is arbitrary; pin it so the reported weights are reproducible
     for j in range(len(phi)):
         top = max(range(T), key=lambda t: abs(phi[j][t]))
@@ -126,8 +124,7 @@ def functional_cca(X, Y, p=None, q=None):
     if n == 0 or len(Ym) != n:
         raise ValueError("funCA: X and Y must hold the same number of curves")
     if n < 3:
-        raise ValueError("funCA: canonical analysis needs at least three "
-                         "paired curves")
+        raise ValueError("funCA: canonical analysis needs at least three paired curves")
     T, S = len(Xm[0]), len(Ym[0])
     wx, wy = _grid_weights(T), _grid_weights(S)
 
@@ -136,10 +133,8 @@ def functional_cca(X, Y, p=None, q=None):
     Xc = [[Xm[i][t] - xbar[t] for t in range(T)] for i in range(n)]
     Yc = [[Ym[i][t] - ybar[t] for t in range(S)] for i in range(n)]
 
-    Cx = [[sum(Xc[i][a] * Xc[i][b] for i in range(n)) / n
-           for b in range(T)] for a in range(T)]
-    Cy = [[sum(Yc[i][a] * Yc[i][b] for i in range(n)) / n
-           for b in range(S)] for a in range(S)]
+    Cx = [[sum(Xc[i][a] * Xc[i][b] for i in range(n)) / n for b in range(T)] for a in range(T)]
+    Cy = [[sum(Yc[i][a] * Yc[i][b] for i in range(n)) / n for b in range(S)] for a in range(S)]
 
     def pick(lam_all, want, cap):
         tot = sum(lam_all)
@@ -167,14 +162,11 @@ def functional_cca(X, Y, p=None, q=None):
     lam_x, phi_x, _ = _fpca(Cx, wx, pp)
     lam_y, phi_y, _ = _fpca(Cy, wy, qq)
 
-    xi = [[sum(Xc[i][t] * phi_x[j][t] * wx[t] for t in range(T))
-           for j in range(pp)] for i in range(n)]
-    eta = [[sum(Yc[i][t] * phi_y[j][t] * wy[t] for t in range(S))
-            for j in range(qq)] for i in range(n)]
+    xi = [[sum(Xc[i][t] * phi_x[j][t] * wx[t] for t in range(T)) for j in range(pp)] for i in range(n)]
+    eta = [[sum(Yc[i][t] * phi_y[j][t] * wy[t] for t in range(S)) for j in range(qq)] for i in range(n)]
 
     def cross(A, B, na, nb):
-        return [[sum(A[i][a] * B[i][b] for i in range(n)) / n
-                 for b in range(nb)] for a in range(na)]
+        return [[sum(A[i][a] * B[i][b] for i in range(n)) / n for b in range(nb)] for a in range(na)]
 
     Sxx = cross(xi, xi, pp, pp)
     Syy = cross(eta, eta, qq, qq)
@@ -186,13 +178,14 @@ def functional_cca(X, Y, p=None, q=None):
 
     Rx = _sym_inv_sqrt(Sxx)
     Ry = _sym_inv_sqrt(Syy)
-    M = [[sum(Rx[a][u] * sum(Sxy[u][v] * Ry[v][b] for v in range(qq))
-              for u in range(pp)) for b in range(qq)] for a in range(pp)]
+    M = [
+        [sum(Rx[a][u] * sum(Sxy[u][v] * Ry[v][b] for v in range(qq)) for u in range(pp)) for b in range(qq)]
+        for a in range(pp)
+    ]
 
     # canonical correlations are the singular values of M; get them from
     # the symmetric eigenproblem of M M' so no SVD routine is needed
-    MMt = [[sum(M[a][c] * M[b][c] for c in range(qq)) for b in range(pp)]
-           for a in range(pp)]
+    MMt = [[sum(M[a][c] * M[b][c] for c in range(qq)) for b in range(pp)] for a in range(pp)]
     d, V = k.jacobi(MMt)
     order = sorted(range(pp), key=lambda j: -d[j])
     r = min(pp, qq)
@@ -202,54 +195,53 @@ def functional_cca(X, Y, p=None, q=None):
     for j in range(r):
         u = [V[a][order[j]] for a in range(pp)]
         a_coef = [sum(Rx[a][b] * u[b] for b in range(pp)) for a in range(pp)]
-        wxj = [sum(a_coef[a] * phi_x[a][t] for a in range(pp))
-               for t in range(T)]
+        wxj = [sum(a_coef[a] * phi_x[a][t] for a in range(pp)) for t in range(T)]
         Mtu = [sum(M[a][b] * u[a] for a in range(pp)) for b in range(qq)]
         nrm = math.sqrt(sum(v * v for v in Mtu))
         v_coef = [v / nrm if nrm > _EPS else 0.0 for v in Mtu]
-        b_coef = [sum(Ry[a][b] * v_coef[b] for b in range(qq))
-                  for a in range(qq)]
-        wyj = [sum(b_coef[a] * phi_y[a][t] for a in range(qq))
-               for t in range(S)]
+        b_coef = [sum(Ry[a][b] * v_coef[b] for b in range(qq)) for a in range(qq)]
+        wyj = [sum(b_coef[a] * phi_y[a][t] for a in range(qq)) for t in range(S)]
         top = max(range(T), key=lambda t: abs(wxj[t]))
         if wxj[top] < 0.0:
             wxj = [-v for v in wxj]
             wyj = [-v for v in wyj]
         weights_x.append(wxj)
         weights_y.append(wyj)
-        var_x.append([sum(Xc[i][t] * wxj[t] * wx[t] for t in range(T))
-                      for i in range(n)])
-        var_y.append([sum(Yc[i][t] * wyj[t] * wy[t] for t in range(S))
-                      for i in range(n)])
+        var_x.append([sum(Xc[i][t] * wxj[t] * wx[t] for t in range(T)) for i in range(n)])
+        var_y.append([sum(Yc[i][t] * wyj[t] * wy[t] for t in range(S)) for i in range(n)])
 
     tx, ty = sum(lam_x_all), sum(lam_y_all)
-    return RichResult(payload={
-        "estimate": corrs,
-        "correlations": corrs,
-        "weights_x": weights_x,
-        "weights_y": weights_y,
-        "variates_x": var_x,
-        "variates_y": var_y,
-        "p": int(pp),
-        "q": int(qq),
-        "explained_x": sum(lam_x[:pp]) / tx if tx > _EPS else 0.0,
-        "explained_y": sum(lam_y[:qq]) / ty if ty > _EPS else 0.0,
-        "eigenvalues_x": lam_x,
-        "eigenvalues_y": lam_y,
-        "n": n,
-        "method": "functional canonical analysis restricted to the leading "
-                  "functional principal components (He, Muller & Wang 2003)",
-        "note": "unrestricted functional CCA is ill-posed -- the supremum "
-                "is 1 for almost any pair of processes -- so the "
-                "correlations are only interpretable against the "
-                "truncation p, q that produced them",
-    })
+    return RichResult(
+        payload={
+            "estimate": corrs,
+            "correlations": corrs,
+            "weights_x": weights_x,
+            "weights_y": weights_y,
+            "variates_x": var_x,
+            "variates_y": var_y,
+            "p": int(pp),
+            "q": int(qq),
+            "explained_x": sum(lam_x[:pp]) / tx if tx > _EPS else 0.0,
+            "explained_y": sum(lam_y[:qq]) / ty if ty > _EPS else 0.0,
+            "eigenvalues_x": lam_x,
+            "eigenvalues_y": lam_y,
+            "n": n,
+            "method": "functional canonical analysis restricted to the leading "
+            "functional principal components (He, Muller & Wang 2003)",
+            "note": "unrestricted functional CCA is ill-posed -- the supremum "
+            "is 1 for almost any pair of processes -- so the "
+            "correlations are only interpretable against the "
+            "truncation p, q that produced them",
+        }
+    )
 
 
 def cheatsheet():
-    return ("funCA: functional_cca(X, Y, p, q) -> canonical correlations "
-            "between two sets of curves, restricted to the leading FPCs "
-            "(He, Muller & Wang 2003, J. Multivar. Anal. 85(1), 54-77)")
+    return (
+        "funCA: functional_cca(X, Y, p, q) -> canonical correlations "
+        "between two sets of curves, restricted to the leading FPCs "
+        "(He, Muller & Wang 2003, J. Multivar. Anal. 85(1), 54-77)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

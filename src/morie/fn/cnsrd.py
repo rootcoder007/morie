@@ -60,10 +60,7 @@ def cnsrd(
     if n < p + 5:
         raise ValueError(f"Need at least {p + 5} observations.")
 
-    if censoring is None:
-        censoring = (y > 0).astype(float)
-    else:
-        censoring = np.asarray(censoring, dtype=float).ravel()
+    censoring = (y > 0).astype(float) if censoring is None else np.asarray(censoring, dtype=float).ravel()
 
     n_cens = int((censoring == 0).sum())
 

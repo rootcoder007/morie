@@ -38,8 +38,8 @@ def kamath_stereoset_bias(stereo_probs, anti_probs):
     a = np.atleast_1d(np.asarray(anti_probs, dtype=float)).ravel()
     if s.size != a.size:
         raise ValueError(
-            f"{s.size} stereotype probabilities against {a.size} "
-            "anti-stereotype ones; StereoSet compares PAIRS.")
+            f"{s.size} stereotype probabilities against {a.size} anti-stereotype ones; StereoSet compares PAIRS."
+        )
     if s.size == 0:
         raise ValueError("no pairs supplied.")
     if np.any(s < 0) or np.any(a < 0):
@@ -49,15 +49,19 @@ def kamath_stereoset_bias(stereo_probs, anti_probs):
     wins = int(np.sum(s > a))
     ties = int(np.sum(s == a))
     score = wins / s.size
-    return RichResult(payload={
-        "estimate": score, "ss_score": score,
-        "n_stereotype_preferred": wins,
-        "n_anti_preferred": int(np.sum(s < a)),
-        "n_ties": ties,
-        "bias_magnitude": abs(score - 0.5),
-        "unbiased_point": 0.5,
-        "n": int(s.size),
-        "method": "StereoSet stereotype-preference fraction"})
+    return RichResult(
+        payload={
+            "estimate": score,
+            "ss_score": score,
+            "n_stereotype_preferred": wins,
+            "n_anti_preferred": int(np.sum(s < a)),
+            "n_ties": ties,
+            "bias_magnitude": abs(score - 0.5),
+            "unbiased_point": 0.5,
+            "n": int(s.size),
+            "method": "StereoSet stereotype-preference fraction",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for lag class binning."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sglgc import sglgc
 
 

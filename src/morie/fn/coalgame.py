@@ -352,6 +352,7 @@ def cheatsheet() -> str:
         "-> coalition and party competition games."
     )
 
+
 # alias kept from the retired placeholder of the same name
 coalition_equil = weighted_game_core
 

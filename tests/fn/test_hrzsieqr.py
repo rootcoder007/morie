@@ -1,7 +1,6 @@
 """Tests for hrzsieqr.horowitz_series_quantile."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzsieqr import horowitz_series_quantile
 
 

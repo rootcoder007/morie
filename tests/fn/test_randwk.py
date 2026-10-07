@@ -1,7 +1,6 @@
 """Tests for randwk.random_walk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.randwk import random_walk
 
 
@@ -42,7 +41,7 @@ def test_randwk_basic():
 
 def test_randwk_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     n = 5
     G = np.eye(n)
     start = 2

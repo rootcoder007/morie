@@ -1,12 +1,11 @@
 """Tests for morie.fn.edtds."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.edtds import edtds
 
 
 def test_edtds_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = edtds(str_a="kitten", str_b="sitting")
     assert result is not None
     assert hasattr(result, "name")

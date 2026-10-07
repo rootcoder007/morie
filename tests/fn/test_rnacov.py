@@ -1,19 +1,20 @@
 """Tests for rnacov.rna_covariance."""
 
-from morie.fn import _array_core as np
 import math
+
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rnacov import rna_covariance
 
 
 def _make_alignment(rng, n_seq, length):
     """Generate a random RNA alignment as a list of equal-length strings."""
-    alphabet = ['A', 'C', 'G', 'U']
+    alphabet = ["A", "C", "G", "U"]
     alignment = []
     for _ in range(n_seq):
         indices = rng.integers(0, 4, length)
-        seq = ''.join(alphabet[i] for i in indices)
+        seq = "".join(alphabet[i] for i in indices)
         alignment.append(seq)
     return alignment
 
@@ -32,9 +33,16 @@ def test_rnacov_basic():
 
     # All expected keys from the return payload
     expected_keys = {
-        "pair_i", "pair_j", "mutual_information", "support",
-        "cells_seen", "n_pairs", "n_weak", "n_covarying",
-        "covarying", "total"
+        "pair_i",
+        "pair_j",
+        "mutual_information",
+        "support",
+        "cells_seen",
+        "n_pairs",
+        "n_weak",
+        "n_covarying",
+        "covarying",
+        "total",
     }
     assert expected_keys.issubset(result.keys())
 

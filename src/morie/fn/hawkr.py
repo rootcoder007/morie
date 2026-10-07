@@ -46,7 +46,7 @@ def hawkr(
 
     rs = 2.0 * G * M / c**2
 
-    sigma_sb = 2.0 * np.pi**5 * kB**4 / (15.0 * hbar**3 * c**6)
+    2.0 * np.pi**5 * kB**4 / (15.0 * hbar**3 * c**6)
     sigma_sb_real = 5.670374419e-8
     A = 4.0 * np.pi * rs**2
     L = sigma_sb_real * A * T_H**4

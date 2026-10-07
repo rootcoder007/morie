@@ -94,10 +94,7 @@ def mcesm(
 
     for i in range(n_bins):
         lo, hi = edges[i], edges[i + 1]
-        if i < n_bins - 1:
-            mask = (y_prob >= lo) & (y_prob < hi)
-        else:
-            mask = (y_prob >= lo) & (y_prob <= hi)
+        mask = (y_prob >= lo) & (y_prob < hi) if i < n_bins - 1 else (y_prob >= lo) & (y_prob <= hi)
         bin_centers[i] = (lo + hi) / 2.0
         counts[i] = int(mask.sum())
         if counts[i] >= min_bin_count:

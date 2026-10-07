@@ -59,15 +59,14 @@ def alphazero_stockfish_baseline(games, ladder, base="e", c_elo=1.0 / 400.0):
     num = 0.0
     den = 0.0
     for i in range(len(rows)):
-        w, d, l = rows[i][0], rows[i][1], rows[i][2]
-        n = w + d + l
+        w, d, ell = rows[i][0], rows[i][1], rows[i][2]
+        n = w + d + ell
         ns.append(n)
         s = (w + 0.5 * d) / n if n > 0.0 else float("nan")
         scores.append(s)
         if 0.0 < s < 1.0:
             odds = math.log(s / (1.0 - s))
-            r = anchors[i] + (odds / c_elo if base == "e"
-                              else odds / (math.log(10.0) * c_elo))
+            r = anchors[i] + (odds / c_elo if base == "e" else odds / (math.log(10.0) * c_elo))
         else:
             r = float("-inf") if s <= 0.0 else float("inf")
         per.append(r)

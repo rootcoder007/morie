@@ -1,7 +1,6 @@
 """Tests for s2_residuals.s2_residuals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.s2_residuals import (
     s2_residuals,
 )

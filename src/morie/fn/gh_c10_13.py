@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["ptnulltst", "ghosal_pt_null_tst"]
@@ -71,11 +70,17 @@ def ptnulltst(loglik_null, log_marginal_alt, lam=0.5):
         bf = math.exp(lbf)
     except OverflowError:
         bf = math.inf
-    return RichResult(payload={
-        "log_bayes_factor": lbf, "bayes_factor": bf,
-        "posterior_null": post0, "posterior_alt": 1.0 - post0,
-        "prior_null": 1.0 - lam, "lam": lam,
-        "method": "Point-null Bayes factor, Ghosal Section 10.5.1"})
+    return RichResult(
+        payload={
+            "log_bayes_factor": lbf,
+            "bayes_factor": bf,
+            "posterior_null": post0,
+            "posterior_alt": 1.0 - post0,
+            "prior_null": 1.0 - lam,
+            "lam": lam,
+            "method": "Point-null Bayes factor, Ghosal Section 10.5.1",
+        }
+    )
 
 
 ghosal_pt_null_tst = ptnulltst

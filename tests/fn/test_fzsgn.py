@@ -1,7 +1,6 @@
 """Tests for fzsgn.fauzi_smoothed_sign."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzsgn import fauzi_smoothed_sign
 
 

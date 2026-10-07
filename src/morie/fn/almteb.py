@@ -33,12 +33,16 @@ def alammar_mteb_benchmark_score(task_scores, category_map):
     cat_means = {c: float(np.mean(v)) for c, v in sorted(by_cat.items())}
     overall = float(np.mean(list(cat_means.values())))
     flat = float(np.mean([float(v) for v in task_scores.values()]))
-    return RichResult(payload={
-        "estimate": overall, "category_means": cat_means,
-        "flat_task_mean": flat,
-        "weighting_matters": abs(overall - flat) > 1e-12,
-        "n": len(task_scores),
-        "method": "MTEB mean-of-category-means (Muennighoff et al. 2023)"})
+    return RichResult(
+        payload={
+            "estimate": overall,
+            "category_means": cat_means,
+            "flat_task_mean": flat,
+            "weighting_matters": abs(overall - flat) > 1e-12,
+            "n": len(task_scores),
+            "method": "MTEB mean-of-category-means (Muennighoff et al. 2023)",
+        }
+    )
 
 
 def cheatsheet():

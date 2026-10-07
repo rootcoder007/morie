@@ -1,8 +1,8 @@
 """Tests for pluginM.plug_in_mediation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pluginM import plug_in_mediation
 
 

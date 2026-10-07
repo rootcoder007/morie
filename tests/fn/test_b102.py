@@ -9,5 +9,6 @@ def test_b102_basic():
 
 def test_b102_edge():
     import pytest
+
     with pytest.raises(ValueError, match="same shape"):
         burkov_lm_ch1_squared_error([1.0, 2.0], [1.0])

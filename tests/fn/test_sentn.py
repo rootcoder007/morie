@@ -1,12 +1,11 @@
 """Tests for morie.fn.sentn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sentn import sentiment_lexicon
 
 
 def test_sentn_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = sentiment_lexicon(text="The quick brown fox jumps over the lazy dog")
     assert result is not None
     assert hasattr(result, "name")

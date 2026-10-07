@@ -7,12 +7,11 @@ import pytest
 
 from morie import tox
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 
 
 def test_matrix_schema_is_typed_zero_row():
     s = tox.tox_matrix_schema()
-    assert (hasattr(s, "columns") or hasattr(s, "_cols"))
+    assert hasattr(s, "columns") or hasattr(s, "_cols")
     assert len(s) == 0
     assert {"case_id", "analyte", "matrix", "conc", "lod", "loq"} <= set(s.columns)
     assert s.attrs["role"]["conc"] == "measurement"
@@ -37,9 +36,7 @@ def test_calibration_flags_below_lod():
     response = 1000 * conc + rng.normal(0, 20, conc.size)
     cal = tox.tox_calibration(conc, response, weights="1/x^2")
     assert cal["lod"] > 0 and cal["loq"] > cal["lod"]
-    below = tox.tox_calibration(
-        conc, response, weights="1/x^2", response_unknown=1000 * cal["lod"] * 0.5
-    )
+    below = tox.tox_calibration(conc, response, weights="1/x^2", response_unknown=1000 * cal["lod"] * 0.5)
     assert below["flag"] == "below_lod"
 
 
@@ -62,14 +59,10 @@ def test_pmr_ratio_classifies_redistribution():
 
 
 def test_antemortem_lr_direction():
-    res = tox.tox_antemortem_lr(
-        2.0, {"mean": 2.0, "sd": 0.5}, {"mean": 0.1, "sd": 0.3}
-    )
+    res = tox.tox_antemortem_lr(2.0, {"mean": 2.0, "sd": 0.5}, {"mean": 0.1, "sd": 0.3})
     assert res["lr"] > 1
     assert "antemortem" in res["interpretation"]
-    res2 = tox.tox_antemortem_lr(
-        0.1, {"mean": 2.0, "sd": 0.5}, {"mean": 0.1, "sd": 0.3}
-    )
+    res2 = tox.tox_antemortem_lr(0.1, {"mean": 2.0, "sd": 0.5}, {"mean": 0.1, "sd": 0.3})
     assert res2["lr"] < 1
 
 
@@ -95,9 +88,7 @@ def test_left_censor_impute():
     assert out["n_missing"] == 1
     only_na = tox.tox_left_censor_impute([np.nan], lod=0.1, method="sqrt2")
     assert np.isnan(only_na["imputed"][0]) and np.isnan(only_na["fraction_censored"])
-    assert tox.tox_left_censor_impute([0.01], lod=0.1, method="sqrt2")[
-        "imputed"
-    ][0] == pytest.approx(0.1 / np.sqrt(2))
+    assert tox.tox_left_censor_impute([0.01], lod=0.1, method="sqrt2")["imputed"][0] == pytest.approx(0.1 / np.sqrt(2))
     with pytest.raises(ValueError, match="> 0"):
         tox.tox_left_censor_impute([1], lod=0)
 

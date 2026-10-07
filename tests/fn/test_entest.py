@@ -1,7 +1,6 @@
 """Tests for entest.entropy_knn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.entest import entropy_knn
 
 

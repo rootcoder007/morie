@@ -1,21 +1,22 @@
 """Tests for zero_inflated_negbin."""
 
-from morie.fn import _array_core as np
-
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.zinb import _loglik_grad, zero_inflated_negbin
 
 
 def _counts():
     """Overdispersed counts with extra zeros, built without an RNG."""
     import math
+
     n = 120
     x1 = [math.sin(1.3 * i) for i in range(n)]
     x2 = [((i * 7) % 11 - 5) / 5 for i in range(n)]
-    y = [0 if (i * 5) % 6 == 0 else
-         math.floor(math.exp(0.6 + 0.5 * a - 0.3 * b) * ((i * 17) % 7) ** 2 / 6.0)
-         for i, (a, b) in enumerate(zip(x1, x2))]
+    y = [
+        0 if (i * 5) % 6 == 0 else math.floor(math.exp(0.6 + 0.5 * a - 0.3 * b) * ((i * 17) % 7) ** 2 / 6.0)
+        for i, (a, b) in enumerate(zip(x1, x2))
+    ]
     return y, [[a, b] for a, b in zip(x1, x2)]
 
 
@@ -54,6 +55,7 @@ class TestZINB:
         one, with a gap of order alpha (it used to lose every digit to
         lgamma cancellation)."""
         import math
+
         y, X = _counts()
         Xi = [[1.0] + x for x in X]
         g, b = -0.9, [0.6, 0.7, -0.5]
@@ -61,9 +63,11 @@ class TestZINB:
         zip_ll = 0.0
         for yi, x in zip(y, Xi):
             mu = math.exp(sum(c * v for c, v in zip(b, x)))
-            zip_ll += (math.log(pi + (1 - pi) * math.exp(-mu)) if yi == 0 else
-                       math.log(1 - pi) - mu + yi * math.log(mu) - math.lgamma(yi + 1))
-        gaps = [_loglik_grad([g] + b + [math.log(a)], [float(v) for v in y], Xi)[0] - zip_ll
-                for a in (1e-6, 1e-9)]
+            zip_ll += (
+                math.log(pi + (1 - pi) * math.exp(-mu))
+                if yi == 0
+                else math.log(1 - pi) - mu + yi * math.log(mu) - math.lgamma(yi + 1)
+            )
+        gaps = [_loglik_grad([g] + b + [math.log(a)], [float(v) for v in y], Xi)[0] - zip_ll for a in (1e-6, 1e-9)]
         assert abs(gaps[0]) < 1e-3
         assert abs(gaps[1]) < abs(gaps[0]) * 1e-2

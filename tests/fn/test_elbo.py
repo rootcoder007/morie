@@ -1,7 +1,6 @@
 """Tests for morie.fn.elbo -- ELBO computation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.elbo import compute_elbo
 
 

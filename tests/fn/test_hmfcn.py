@@ -10,20 +10,27 @@ def _xcorr(x, k, b):
     # x (C, H, W), k (F, C, kh, kw): valid cross-correlation plus bias
     C, H, W = len(x), len(x[0]), len(x[0][0])
     F, kh, kw = len(k), len(k[0][0]), len(k[0][0][0])
-    return [[[b[f] + sum(x[c][i + u][j + v] * k[f][c][u][v]
-                         for c in range(C) for u in range(kh) for v in range(kw))
-              for j in range(W - kw + 1)] for i in range(H - kh + 1)]
-            for f in range(F)]
+    return [
+        [
+            [
+                b[f] + sum(x[c][i + u][j + v] * k[f][c][u][v] for c in range(C) for u in range(kh) for v in range(kw))
+                for j in range(W - kw + 1)
+            ]
+            for i in range(H - kh + 1)
+        ]
+        for f in range(F)
+    ]
 
 
 def _img():
-    return [[[float((i * 5 + j * 3 + c) % 7) - 3.0 for j in range(5)]
-             for i in range(4)] for c in range(2)]
+    return [[[float((i * 5 + j * 3 + c) % 7) - 3.0 for j in range(5)] for i in range(4)] for c in range(2)]
 
 
 def _k(F, C, s):
-    return [[[[float((f + 2 * c + u - v + s) % 5) - 2.0 for v in range(2)]
-              for u in range(2)] for c in range(C)] for f in range(F)]
+    return [
+        [[[float((f + 2 * c + u - v + s) % 5) - 2.0 for v in range(2)] for u in range(2)] for c in range(C)]
+        for f in range(F)
+    ]
 
 
 def test_hmfcn_basic():
@@ -70,7 +77,7 @@ import morie.fn.hmfcn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

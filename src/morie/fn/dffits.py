@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dffitsols']
+__all__ = ["dffitsols"]
 
 
 def dffitsols(X, y, intercept=True):
@@ -44,7 +44,8 @@ def dffitsols(X, y, intercept=True):
     if intercept:
         X = C.cbind1(X)
     y = C.vec(y)
-    n = len(X); p = len(X[0])
+    n = len(X)
+    p = len(X[0])
     beta, fit, res, xtxinv = C.lstsq(X, y)
     h = C.hatdiag(X, xtxinv)
     rss = sum(v * v for v in res)
@@ -53,17 +54,25 @@ def dffitsols(X, y, intercept=True):
     for i in range(n):
         d = 1.0 - h[i]
         if d <= 0 or df <= 1:
-            dff.append(float("nan")); stu.append(float("nan")); continue
+            dff.append(float("nan"))
+            stu.append(float("nan"))
+            continue
         s2i = (rss - res[i] * res[i] / d) / (df - 1)
         s = math.sqrt(s2i) if s2i > 0 else float("nan")
         t = res[i] / (s * math.sqrt(d))
         stu.append(t)
         dff.append(t * math.sqrt(h[i] / d))
-    return RichResult(payload={
-        "dffits": dff, "cutoff": 2.0 * math.sqrt(p / float(n)),
-        "leverage": h, "student": stu, "n": n, "p": p,
-        "method": "DFFITS (Belsley-Kuh-Welsch)"})
-
+    return RichResult(
+        payload={
+            "dffits": dff,
+            "cutoff": 2.0 * math.sqrt(p / float(n)),
+            "leverage": h,
+            "student": stu,
+            "n": n,
+            "p": p,
+            "method": "DFFITS (Belsley-Kuh-Welsch)",
+        }
+    )
 
 
 def cheatsheet():

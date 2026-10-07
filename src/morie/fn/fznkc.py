@@ -77,7 +77,7 @@ def kerncvm(x, quantile, h=None, ngrid=2001):
     if stat > 0:
         acc = 0.0
         for k in range(100):
-            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi ** 2 / (8.0 * stat)))
+            acc += float(np.exp(-((4.0 * k + 1.0) ** 2) * np.pi**2 / (8.0 * stat)))
         pval = max(0.0, min(1.0, 1.0 - acc * float(np.sqrt(2.0 / stat))))
     return RichResult(
         payload={

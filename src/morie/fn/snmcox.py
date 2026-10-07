@@ -76,7 +76,6 @@ statement of the estimating equation and of artificial censoring.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -123,8 +122,7 @@ def _treat_model(A, L, ridge=1e-8):
     return list(k.matvec(Z, b)), b, "linear"
 
 
-def gest_score(psi, time, event, A, L, treat_times, censor_time=None,
-               ridge=1e-8):
+def gest_score(psi, time, event, A, L, treat_times, censor_time=None, ridge=1e-8):
     r"""The g-estimation score :math:`S(\psi)` and its standardisation.
 
     Each subject contributes :math:`(A_i - \hat E[A_i \mid L_i])
@@ -175,9 +173,19 @@ def gest_score(psi, time, event, A, L, treat_times, censor_time=None,
     return s, z, len(used), U, ehat
 
 
-def snmcox(time, event, treatment_history, covariate_history=None,
-           treat_times=None, censor_time=None, level=0.95,
-           psi_range=(-3.0, 3.0), n_grid=241, tol=1e-10, ridge=1e-8):
+def snmcox(
+    time,
+    event,
+    treatment_history,
+    covariate_history=None,
+    treat_times=None,
+    censor_time=None,
+    level=0.95,
+    psi_range=(-3.0, 3.0),
+    n_grid=241,
+    tol=1e-10,
+    ridge=1e-8,
+):
     r"""G-estimate :math:`\psi` in the structural nested failure time model.
 
     Parameters
@@ -221,20 +229,17 @@ def snmcox(time, event, treatment_history, covariate_history=None,
         raise ValueError("snmcox: no subjects")
     ev = [float(v) for v in k.vec(event)]
     if len(ev) != n:
-        raise ValueError("snmcox: %d times but %d event indicators"
-                         % (n, len(ev)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(ev))} event indicators")
     if any(v not in (0.0, 1.0) for v in ev):
         raise ValueError("snmcox: event must be 0/1")
     A = [float(v) for v in k.vec(treatment_history)]
     if len(A) != n:
-        raise ValueError("snmcox: %d times but %d treatment values"
-                         % (n, len(A)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(A))} treatment values")
     L = covariate_history
     if treat_times is None:
         treat_times = [([(0.0, T[i])] if A[i] > 0 else []) for i in range(n)]
     if len(treat_times) != n:
-        raise ValueError("snmcox: %d times but %d treatment histories"
-                         % (n, len(treat_times)))
+        raise ValueError(f"snmcox: {int(n)} times but {int(len(treat_times))} treatment histories")
     if censor_time is not None:
         raise NotImplementedError(
             "snmcox: g-estimation under administrative censoring needs "
@@ -292,39 +297,43 @@ def snmcox(time, event, treatment_history, covariate_history=None,
     ci_lo = min(inside) if inside else float("nan")
     ci_hi = max(inside) if inside else float("nan")
 
-    s_hat, z_hat, m_hat, U_hat, ehat = gest_score(root, T, ev, A, L,
-                                                  treat_times, ct, ridge)
+    s_hat, z_hat, m_hat, U_hat, ehat = gest_score(root, T, ev, A, L, treat_times, ct, ridge)
     n_art = 0
     if ct is not None:
         shrink = min(1.0, math.exp(root))
-        n_art = sum(1 for i in range(n)
-                    if not (U_hat[i] <= ct[i] * shrink))
+        n_art = sum(1 for i in range(n) if not (U_hat[i] <= ct[i] * shrink))
 
-    return RichResult(payload={
-        "estimate": root,
-        "psi": root,
-        "time_ratio": math.exp(root),
-        "lower": ci_lo,
-        "upper": ci_hi,
-        "score_at_estimate": s_hat,
-        "z_at_estimate": z_hat,
-        "n_used": m_hat,
-        "artificial_censored": n_art,
-        "blipped": list(U_hat),
-        "propensity": list(ehat),
-        "converged": converged,
-        "grid_psi": [r[0] for r in scores],
-        "grid_score": [r[1] for r in scores],
-        "n": n,
-        "level": float(level),
-        "method": ("g-estimation of a rank-preserving structural nested "
-                   "failure time model, Robins (1992) Biometrika 79, 321"),
-        "note": ("psi > 0 means treatment LENGTHENS survival; U(psi) = "
-                 "int_0^T exp(psi A(u)) du, so a never-treated subject has "
-                 "U = T and one treated throughout has U = T exp(psi); the "
-                 "interval inverts the score test rather than assuming a "
-                 "Wald variance the semiparametric model does not give"),
-    })
+    return RichResult(
+        payload={
+            "estimate": root,
+            "psi": root,
+            "time_ratio": math.exp(root),
+            "lower": ci_lo,
+            "upper": ci_hi,
+            "score_at_estimate": s_hat,
+            "z_at_estimate": z_hat,
+            "n_used": m_hat,
+            "artificial_censored": n_art,
+            "blipped": list(U_hat),
+            "propensity": list(ehat),
+            "converged": converged,
+            "grid_psi": [r[0] for r in scores],
+            "grid_score": [r[1] for r in scores],
+            "n": n,
+            "level": float(level),
+            "method": (
+                "g-estimation of a rank-preserving structural nested "
+                "failure time model, Robins (1992) Biometrika 79, 321"
+            ),
+            "note": (
+                "psi > 0 means treatment LENGTHENS survival; U(psi) = "
+                "int_0^T exp(psi A(u)) du, so a never-treated subject has "
+                "U = T and one treated throughout has U = T exp(psi); the "
+                "interval inverts the score test rather than assuming a "
+                "Wald variance the semiparametric model does not give"
+            ),
+        }
+    )
 
 
 # the descriptive name kept as an alias, per the naming rules
@@ -332,10 +341,12 @@ snm_cox = snmcox
 
 
 def cheatsheet():
-    return ("snmcox: structural nested failure time model by g-estimation. "
-            "Blip down U(psi) = int_0^T exp(psi A(u)) du; the true psi is "
-            "the one making U independent of treatment given the covariate "
-            "history, so solve sum (A - E[A|L])(U - Ubar) = 0. Never "
-            "treated -> U = T; always treated -> U = T exp(psi). Censoring "
-            "needs Robins' artificial censoring at C min(1, e^psi). "
-            "CI by inverting the score test. Robins (1992) Biometrika 79, 321.")
+    return (
+        "snmcox: structural nested failure time model by g-estimation. "
+        "Blip down U(psi) = int_0^T exp(psi A(u)) du; the true psi is "
+        "the one making U independent of treatment given the covariate "
+        "history, so solve sum (A - E[A|L])(U - Ubar) = 0. Never "
+        "treated -> U = T; always treated -> U = T exp(psi). Censoring "
+        "needs Robins' artificial censoring at C min(1, e^psi). "
+        "CI by inverting the score test. Robins (1992) Biometrika 79, 321."
+    )

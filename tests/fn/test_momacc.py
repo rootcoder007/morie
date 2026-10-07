@@ -1,7 +1,5 @@
 """Tests for momacc.moments_accountant."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.momacc import moments_accountant
 
 

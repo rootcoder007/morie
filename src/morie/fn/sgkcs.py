@@ -53,11 +53,8 @@ def kriging_conditional_sim(
     usims = np.asarray(unconditional_sims, dtype=np.float64)
     n = len(Z)
 
-    if sim_coords is None:
-        sim_coords = coords.copy()
-    else:
-        sim_coords = np.asarray(sim_coords, dtype=np.float64)
-    m = len(sim_coords)
+    sim_coords = coords.copy() if sim_coords is None else np.asarray(sim_coords, dtype=np.float64)
+    len(sim_coords)
 
     params = vario_params or {"sill": 1.0, "range": 1.0, "nugget": 0.0}
     sill = params.get("sill", 1.0)

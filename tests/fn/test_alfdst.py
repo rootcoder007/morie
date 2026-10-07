@@ -1,7 +1,6 @@
 """Tests for alfdst.alphafold_distogram."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfdst import alphafold_distogram
 
 

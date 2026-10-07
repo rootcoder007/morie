@@ -63,14 +63,20 @@ def tmleinf(psi, ic, level=0.95, null_value=0.0):
     se = math.sqrt(C.var(ic, 1) / n)
     z = C.qnorm((1.0 + float(level)) / 2.0)
     st = (psi - float(null_value)) / se if se > 0 else float("inf")
-    return RichResult(payload={
-        "estimate": psi, "se": se, "ci_lower": psi - z * se,
-        "ci_upper": psi + z * se, "statistic": st,
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(st))) if se > 0 else 0.0,
-        "ic_mean": m,
-        "score_solved": 1.0 if abs(m) < 1e-8 * (sd if sd > 0 else 1.0) else 0.0,
-        "n": float(n),
-        "method": "Influence-curve inference for a targeted estimate"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "se": se,
+            "ci_lower": psi - z * se,
+            "ci_upper": psi + z * se,
+            "statistic": st,
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(st))) if se > 0 else 0.0,
+            "ic_mean": m,
+            "score_solved": 1.0 if abs(m) < 1e-8 * (sd if sd > 0 else 1.0) else 0.0,
+            "n": float(n),
+            "method": "Influence-curve inference for a targeted estimate",
+        }
+    )
 
 
 tmle_inference = tmleinf

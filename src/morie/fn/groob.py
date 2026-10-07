@@ -65,14 +65,9 @@ def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
     M = np.atleast_2d(np.asarray(in_bag)).astype(bool)
     n = yv.size
     if P.shape[1] != n or M.shape != P.shape:
-        raise ValueError(
-            "predictions and in_bag must both be (B, %d); got %s and %s."
-            % (n, P.shape, M.shape)
-        )
+        raise ValueError(f"predictions and in_bag must both be (B, {int(n)}); got {P.shape} and {M.shape}.")
     if task not in ("regression", "classification"):
-        raise ValueError(
-            "task must be 'regression' or 'classification', got %r." % task
-        )
+        raise ValueError(f"task must be 'regression' or 'classification', got {task!r}.")
     oob = ~M
     votes = oob.sum(axis=0)
     have = votes > 0
@@ -85,8 +80,7 @@ def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
         err = float(np.mean(pred_lab[have] != yv[have])) if have.any() else np.nan
         score = 1.0 - err if have.any() else np.nan
     else:
-        err = float(np.mean((pred[have] - yv[have]) ** 2)) if have.any() \
-            else np.nan
+        err = float(np.mean((pred[have] - yv[have]) ** 2)) if have.any() else np.nan
         var = float(np.var(yv[have])) if have.any() else np.nan
         score = 1.0 - err / var if var > 0 else np.nan
     return RichResult(
@@ -112,10 +106,7 @@ def geron_oob_evaluation(y, predictions, in_bag, task="regression"):
 
 
 def cheatsheet():
-    return (
-        "groob: out-of-bag error from bag masks, with the 1/e leave-out rate "
-        "and the pessimism it carries"
-    )
+    return "groob: out-of-bag error from bag masks, with the 1/e leave-out rate and the pessimism it carries"
 
 
 #: Catalogue alias for :func:`geron_oob_evaluation`.

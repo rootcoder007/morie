@@ -52,20 +52,20 @@ def morebs(cases, population, W):
         Keys: statistic (EBI), z (EB deviates), rates (raw), eb_rates
         (marginal EB shrunk rates), a, b, S0.
     """
-    O = np.asarray(cases, dtype=float).ravel()
+    O_ = np.asarray(cases, dtype=float).ravel()
     n = np.asarray(population, dtype=float).ravel()
     W = np.asarray(W, dtype=float)
-    m = O.size
+    m = O_.size
     if n.size != m:
         raise ValueError("`cases` and `population` must have equal length")
     if W.shape != (m, m):
         raise ValueError(f"W must be ({m}, {m}), got {W.shape}")
     if np.any(n <= 0):
         raise ValueError("population must be strictly positive")
-    if np.any(O < 0):
+    if np.any(O_ < 0):
         raise ValueError("cases must be non-negative")
-    p = O / n
-    b = float(np.sum(O) / np.sum(n))
+    p = O_ / n
+    b = float(np.sum(O_) / np.sum(n))
     s2 = float(np.sum(n * (p - b) ** 2) / np.sum(n))
     a = s2 - b / (float(np.sum(n)) / m)
     if a < 0:
@@ -77,11 +77,20 @@ def morebs(cases, population, W):
     zt = z - float(np.mean(z))
     lz = W @ zt
     ebi = (m / S0) * float(np.sum(zt * lz)) / float(np.sum(zt**2))
-    return RichResult(payload={
-        "statistic": float(ebi), "z": z, "rates": p, "eb_rates": eb_rates,
-        "a": float(a), "b": b, "s2": s2, "S0": S0, "n": int(m),
-        "method": "Assuncao-Reis EB-standardized Moran I",
-    })
+    return RichResult(
+        payload={
+            "statistic": float(ebi),
+            "z": z,
+            "rates": p,
+            "eb_rates": eb_rates,
+            "a": float(a),
+            "b": b,
+            "s2": s2,
+            "S0": S0,
+            "n": int(m),
+            "method": "Assuncao-Reis EB-standardized Moran I",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

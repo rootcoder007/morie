@@ -34,7 +34,28 @@ class DataHubAuthError(RuntimeError):
 
 
 def data_url() -> str:
-    return os.environ.get("MORIE_DATA_URL", DEFAULT_DATA_URL).rstrip("/")
+    """Base URL of the hosted dataset hub, without a trailing slash.
+
+    ``MORIE_DATA_URL`` overrides; otherwise the signed services document decides
+    (``morie.services``). Raises ``RuntimeError`` when the document says the
+    service is off.
+
+    Examples:
+        >>> data_url().startswith("https://")
+        True
+    """
+    env = os.environ.get("MORIE_DATA_URL", "").strip()
+    if env:
+        return env.rstrip("/")
+    from . import services
+
+    data = services.data()
+    if data.get("mode") != "key" or not data.get("base_url"):
+        raise RuntimeError(
+            "the curated-data service is not available right now "
+            f"(see {data.get('request_access') or 'https://rmorie.com/access'})"
+        )
+    return str(data["base_url"]).rstrip("/")
 
 
 def _key() -> str | None:
@@ -52,7 +73,11 @@ def _manifest_cache_path() -> Path:
 def _open(path: str, timeout: int = 60):
     key = _key()
     if not key:
-        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+        raise DataHubAuthError(
+            "the curated tables need your MORIE key: keys are personal and issued on request at "
+            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
+            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
+        )
     req = Request(
         data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
     )
@@ -75,7 +100,11 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
 
     key = _key()
     if not key:
-        raise DataHubAuthError("data.rmorie.com needs your MORIE key: run `morie login` (or `rmorie login`) once.")
+        raise DataHubAuthError(
+            "the curated tables need your MORIE key: keys are personal and issued on request at "
+            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
+            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
+        )
     try:
         return download_url(
             data_url() + path,
@@ -91,8 +120,15 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
         raise
 
 
+def offline() -> bool:
+    """True under ``MORIE_OFFLINE`` (set by ``morie selftest``): nothing is fetched, the disk copy is used."""
+    return os.environ.get("MORIE_OFFLINE", "").strip() not in ("", "0", "false", "no")
+
+
 def hosted_manifest(refresh: bool = False) -> dict:
-    """The gateway's manifest, cached for a day under the user cache dir."""
+    """The gateway's manifest, cached for a day under the user cache dir (only the cached copy when offline)."""
+    if offline() and not refresh:
+        return cached_manifest() or {}
     p = _manifest_cache_path()
     if not refresh and p.exists() and time.time() - p.stat().st_mtime < _MANIFEST_TTL:
         return json.loads(p.read_text(encoding="utf-8"))
@@ -109,10 +145,22 @@ def cached_manifest() -> dict | None:
 
 
 def hosted_table_name(key: str) -> str:
+    """Cache-table name for a hosted dataset key: ``hub_`` plus the key with ``/`` written as ``__``.
+
+    Examples:
+        >>> hosted_table_name("ethereum_tokens/ethereum_tokens")
+        'hub_ethereum_tokens__ethereum_tokens'
+    """
     return "hub_" + key.replace("/", "__")
 
 
 def is_hosted_key(key: str) -> bool:
+    """True for a hosted dataset key of the form ``group/table`` (not a file path).
+
+    Examples:
+        >>> is_hosted_key("ethereum_tokens/ethereum_tokens"), is_hosted_key("./data.csv"), is_hosted_key("cihi849")
+        (True, False, False)
+    """
     return "/" in key and not key.startswith(("/", ".")) and not key.endswith("/")
 
 
@@ -130,6 +178,7 @@ def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh:
             cached = None
         if cached is not None and len(cached) > 0:
             return cached  # an empty cached table is a miss: the edge copy may have been rebuilt
+    _check_known(key)
     db, tbl = key.split("/", 1)
     # streamed to disk, not held in memory: a table can be a gigabyte compressed
     with tempfile.TemporaryDirectory() as tmp:
@@ -141,6 +190,58 @@ def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh:
         df = pd.read_csv(str(csv_path), low_memory=False)
     cache_store(df, table, db_path)
     return df
+
+
+def _manifest_rows(key: str) -> int | None:
+    """Row count the manifest gives for ``key`` (None when unknown or the manifest is not at hand)."""
+    m = cached_manifest()
+    for d in (m or {}).get("datasets", []):
+        if d.get("key") == key:
+            return d.get("rows")
+    return None
+
+
+def _check_known(key: str) -> None:
+    """A key the manifest does not list is named as unknown (a raw HTTP 404 said nothing)."""
+    try:
+        m = hosted_manifest()
+    except Exception:  # noqa: BLE001 - no key or no network: the download reports that
+        return
+    keys = {d.get("key") for d in m.get("datasets", [])}
+    if keys and key not in keys:
+        raise KeyError(
+            f"unknown dataset key {key!r}: not a curated table at data.rmorie.com (morie list-datasets shows them)"
+        )
+
+
+def hosted_to_csv(key: str, out: str | Path) -> tuple[int, int]:
+    """Write ``db/table`` straight to a CSV file, row by row: (rows, columns).
+
+    For tables too large to build in memory (chicago_crime/incidents, 8.6M rows, was killed
+    after its download); nothing is cached.
+    """
+    import csv
+
+    _check_known(key)
+    db, tbl = key.split("/", 1)
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    rows = ncol = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        gz = Path(tmp) / "table.csv.gz"
+        _get_to_file(f"/{db}/{tbl}.csv.gz", gz, key, timeout=600)
+        with (
+            gzip.open(gz, "rt", encoding="utf-8", newline="") as src,
+            out.open("w", encoding="utf-8", newline="") as dst,
+        ):
+            reader, writer = csv.reader(src), csv.writer(dst)
+            header = next(reader, [])
+            ncol = len(header)
+            writer.writerow(header)
+            for row in reader:
+                writer.writerow(row)
+                rows += 1
+    return rows, ncol
 
 
 def hosted_entries(manifest: dict | None) -> list[dict]:

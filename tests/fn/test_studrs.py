@@ -1,7 +1,6 @@
 """Tests for studrs.studentized_residual."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.studrs import studentized_residual
 
 

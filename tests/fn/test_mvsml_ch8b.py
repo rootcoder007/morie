@@ -1,9 +1,9 @@
 """Known-answer tests for MVSML chapter 8, eq. (8.4)-(8.5)."""
+
 import math
 
 from morie.fn import _gp_core as gp
-from morie.fn.msm131 import (mvsml_categorical_count_eq_8_4,
-                             mvsml_arccos_kernel)
+from morie.fn.msm131 import mvsml_arccos_kernel, mvsml_categorical_count_eq_8_4
 from morie.fn.msm132 import mvsml_categorical_count_eq_8_5
 
 X = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [-1.0, 0.5]]
@@ -46,7 +46,7 @@ def test_diagonal_is_heterogeneous_unlike_the_gaussian():
     assert max(diag) - min(diag) > 1e-6
     G = gp.kernel_matrix(X, kernel="gaussian")
     gdiag = [G[i][i] for i in range(len(X))]
-    assert max(gdiag) - min(gdiag) < 1e-12       # all ones
+    assert max(gdiag) - min(gdiag) < 1e-12  # all ones
 
 
 def test_depth_one_matches_eq_8_4():
@@ -63,8 +63,7 @@ def test_deeper_layers_stay_psd_and_change_the_kernel():
     assert r2["positive_semidefinite"] is True
     assert r3["positive_semidefinite"] is True
     K1 = gp.arccos_kernel(X, depth=1)
-    assert any(abs(r2["kernel"][i][j] - K1[i][j]) > 1e-9
-               for i in range(len(X)) for j in range(len(X)))
+    assert any(abs(r2["kernel"][i][j] - K1[i][j]) > 1e-9 for i in range(len(X)) for j in range(len(X)))
 
 
 def test_median_normalization_matches_the_book_r_code():
@@ -73,8 +72,7 @@ def test_median_normalization_matches_the_book_r_code():
     raw = gp.arccos_kernel(X)
     flat = sorted(v for row in raw for v in row)
     n = len(flat)
-    med = flat[n // 2] if n % 2 else 0.5 * (flat[n // 2 - 1]
-                                            + flat[n // 2])
+    med = flat[n // 2] if n % 2 else 0.5 * (flat[n // 2 - 1] + flat[n // 2])
     assert abs(K[0][0] - raw[0][0] / med) < 1e-12
 
 

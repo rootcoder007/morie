@@ -1,7 +1,6 @@
 """Tests for morie.fn.tsnred -- t-SNE dimensionality reduction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import TsneRes
 from morie.fn.tsnred import tsne_reduce, tsnred
 

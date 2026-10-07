@@ -4,10 +4,10 @@ copjoe plkt taukcp spcoef blncop ginicop copExt clyfr copfr.
 Anchored on Czado (2019) Table 3.2 p.54 (read in the PDF) plus the
 copula axioms every family must satisfy."""
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn._copula import FAMILIES, copula_cdf, copula_tau, tau_to_theta
+from morie.fn import _array_core as np
+from morie.fn._copula import copula_cdf, copula_tau, tau_to_theta
 from morie.fn.blncop import blomqvists_beta_copula
 from morie.fn.clyfr import clayton_copula_frailty
 from morie.fn.copcla import clayton_copula
@@ -46,8 +46,8 @@ def test_every_family_satisfies_the_copula_axioms():
         # Frechet-Hoeffding bounds
         U, V = np.meshgrid(u, u, indexing="ij")
         C = copula_cdf(fam, U, V, th, nu)
-        assert np.all(C <= np.minimum(U, V) + 1e-6)
-        assert np.all(C >= np.maximum(U + V - 1, 0.0) - 1e-6)
+        assert np.all(np.minimum(U, V) + 1e-6 >= C)
+        assert np.all(np.maximum(U + V - 1, 0.0) - 1e-6 <= C)
         # 2-increasing (nonnegative rectangle mass)
         rect = C[1:, 1:] - C[1:, :-1] - C[:-1, 1:] + C[:-1, :-1]
         assert np.all(rect >= -1e-8), fam
@@ -142,9 +142,7 @@ def test_dependence_measures_order_correctly():
     assert ginis_gamma_copula("independence")["gamma"] == pytest.approx(0.0, abs=1e-6)
     # rho_s > tau for these copulas, and the elliptical rho is exact
     assert spearmans_rho_copula("gaussian", 0.6)["exact"] is True
-    assert spearmans_rho_copula("gaussian", 0.6)["rho_s"] == pytest.approx(
-        6 / np.pi * np.arcsin(0.3)
-    )
+    assert spearmans_rho_copula("gaussian", 0.6)["rho_s"] == pytest.approx(6 / np.pi * np.arcsin(0.3))
     assert spearmans_rho_copula("clayton", 2.0)["exact"] is False
 
 
@@ -168,9 +166,7 @@ def test_copExt_is_max_stable():
     ind = extremal_copula(u, v, "gumbel", 1.0)
     assert ind["cdf"] == pytest.approx(u * v)
     # Gumbel via Pickands equals the Archimedean Gumbel (Czado Table 3.1)
-    assert extremal_copula(u, v, "gumbel", 2.0)["cdf"] == pytest.approx(
-        copula_cdf("gumbel", u, v, 2.0)
-    )
+    assert extremal_copula(u, v, "gumbel", 2.0)["cdf"] == pytest.approx(copula_cdf("gumbel", u, v, 2.0))
     with pytest.raises(ValueError):
         extremal_copula(u, v, "weibull", 2.0)
 
@@ -187,8 +183,10 @@ def _paired_survival(seed=0, n=200, theta=2.0):
     c1 = rng.exponential(4.0, size=n)
     c2 = rng.exponential(4.0, size=n)
     return (
-        np.minimum(t1, c1), (t1 <= c1).astype(float),
-        np.minimum(t2, c2), (t2 <= c2).astype(float),
+        np.minimum(t1, c1),
+        (t1 <= c1).astype(float),
+        np.minimum(t2, c2),
+        (t2 <= c2).astype(float),
     )
 
 
@@ -267,9 +265,7 @@ def test_zxcpc_marks_pairs_clayton_cannot_represent():
     assert out["theta_matrix"][0, 1] > 0  # positive pair fitted
     assert np.isnan(out["theta_matrix"][0, 2])  # negative pair marked, not clamped
     # the fitted theta reproduces that pair's tau
-    assert copula_tau("clayton", out["theta_matrix"][0, 1]) == pytest.approx(
-        out["tau_matrix"][0, 1], abs=1e-6
-    )
+    assert copula_tau("clayton", out["theta_matrix"][0, 1]) == pytest.approx(out["tau_matrix"][0, 1], abs=1e-6)
 
 
 def test_zxcpv_picks_the_hub_as_root():
@@ -279,11 +275,13 @@ def test_zxcpv_picks_the_hub_as_root():
     # variable 1 is the hub: correlated with both others, which are not
     # correlated with each other
     z = rng.normal(size=400)
-    X = np.column_stack([
-        0.9 * z + 0.4 * rng.normal(size=400),
-        z,
-        0.9 * z + 0.4 * rng.normal(size=400),
-    ])
+    X = np.column_stack(
+        [
+            0.9 * z + 0.4 * rng.normal(size=400),
+            z,
+            0.9 * z + 0.4 * rng.normal(size=400),
+        ]
+    )
     out = copula_vine_sp(X)
     assert out["root"] == 1
     assert len(out["tree1_edges"]) == 2

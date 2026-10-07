@@ -63,10 +63,19 @@ def ot_sliced_distance_quant(X, Y, p=2, n_proj=32):
         qy = ot.quantiles(ot.project(B, th), grid)
         per.append(sum(abs(qx[k] - qy[k]) ** pp for k in range(G)) / G)
     swp = sum(per) / L
-    return RichResult(payload={
-        "SW": swp ** (1.0 / pp), "SW_p": swp, "per_proj": per,
-        "n": n, "m": m, "d": d, "n_proj": L, "grid_size": G,
-        "method": "Quantile-based sliced Wasserstein distance"})
+    return RichResult(
+        payload={
+            "SW": swp ** (1.0 / pp),
+            "SW_p": swp,
+            "per_proj": per,
+            "n": n,
+            "m": m,
+            "d": d,
+            "n_proj": L,
+            "grid_size": G,
+            "method": "Quantile-based sliced Wasserstein distance",
+        }
+    )
 
 
 def cheatsheet():

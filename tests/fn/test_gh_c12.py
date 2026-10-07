@@ -1,19 +1,18 @@
 """Tests for Ghosal Ch 12 BvM modules."""
-import math
 
 from morie.fn.gh_c12_1 import ghosal_infdim_bvm
 from morie.fn.gh_c12_2 import ghosal_dp_bvm
 from morie.fn.gh_c12_3 import ghosal_strong_apx_dp
 from morie.fn.gh_c12_4 import ghosal_semipara_bvm
-from morie.fn.gh_c12_6 import ghosal_semipara_eff
-from morie.fn.gh_mises_eff import ghosal_mises_efficiency
 from morie.fn.gh_c12_5 import ghosal_eff_infl_fn
+from morie.fn.gh_c12_6 import ghosal_semipara_eff
 from morie.fn.gh_c12_7 import ghosal_strict_sbvm
 from morie.fn.gh_c12_8 import ghosal_cox_bvm_sp
 from morie.fn.gh_c12_9 import ghosal_wn_full_bvm
 from morie.fn.gh_c12_10 import ghosal_wn_lin_bvm
 from morie.fn.gh_c12_11 import ghosal_cred_set_cov
 from morie.fn.gh_inf_dim_cr import ghosal_inf_dim_credible
+from morie.fn.gh_mises_eff import ghosal_mises_efficiency
 
 
 def test_parametric_bvm_tv_small():
@@ -55,8 +54,7 @@ def test_influence_function_variance():
 
 def test_strict_sbvm_aggregation():
     assert ghosal_strict_sbvm()["bvm_holds"] is True
-    assert ghosal_strict_sbvm(lan_remainder=0.5)["bvm_holds"] \
-        is False
+    assert ghosal_strict_sbvm(lan_remainder=0.5)["bvm_holds"] is False
 
 
 def test_cox_partial_likelihood_recovers():
@@ -72,7 +70,7 @@ def test_wn_full_bvm_exact():
 
 def test_linear_functional_variance():
     r = ghosal_wn_lin_bvm()
-    assert r["gap"] < 0.25          # ||L||^2 = 1.0
+    assert r["gap"] < 0.25  # ||L||^2 = 1.0
 
 
 def test_credible_coverage_near_nominal():

@@ -74,12 +74,12 @@ def simplex_lp(c, A, b, max_iter=1000, tol=1e-12):
             raise ValueError(
                 "every entry of b must be non-negative; a negative "
                 "right-hand side needs a phase-1 problem, which this "
-                "function does not build")
+                "function does not build"
+            )
 
     total = nvar + ncon
     # tableau rows: [A | I | b], objective row: [-c | 0 | 0]
-    T = [A[i] + [1.0 if j == i else 0.0 for j in range(ncon)] + [b[i]]
-         for i in range(ncon)]
+    T = [A[i] + [1.0 if j == i else 0.0 for j in range(ncon)] + [b[i]] for i in range(ncon)]
     z = [-v for v in c] + [0.0] * ncon + [0.0]
     basis = [nvar + i for i in range(ncon)]
 
@@ -99,9 +99,7 @@ def simplex_lp(c, A, b, max_iter=1000, tol=1e-12):
         for i in range(ncon):
             if T[i][enter] > tol:
                 ratio = T[i][total] / T[i][enter]
-                if (best is None or ratio < best - 1e-12
-                        or (abs(ratio - best) <= 1e-12
-                            and basis[i] < basis[leave])):
+                if best is None or ratio < best - 1e-12 or (abs(ratio - best) <= 1e-12 and basis[i] < basis[leave]):
                     best = ratio if best is None or ratio < best else best
                     leave = i
         if leave == -1:
@@ -120,8 +118,9 @@ def simplex_lp(c, A, b, max_iter=1000, tol=1e-12):
             z = [z[k] - f * T[leave][k] for k in range(total + 1)]
         basis[leave] = enter
     else:
-        raise ValueError("pivot budget exhausted; Bland's rule should have "
-                         "terminated, so the problem is larger than max_iter")
+        raise ValueError(
+            "pivot budget exhausted; Bland's rule should have terminated, so the problem is larger than max_iter"
+        )
 
     sol = [0.0] * total
     for i in range(ncon):

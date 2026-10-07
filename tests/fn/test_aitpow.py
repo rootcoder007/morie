@@ -1,7 +1,6 @@
 """Tests for aitpow.aitchison_powering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitpow import aitchison_powering
 
 
@@ -19,7 +18,7 @@ def test_aitpow_basic():
     assert result["D"] == 4
     assert result["total"] == 1.0
 
-    p = [v ** alpha for v in x]
+    p = [v**alpha for v in x]
     s = sum(p)
     expected = [1.0 * v / s for v in p]
     assert len(result["composition"]) == len(x)

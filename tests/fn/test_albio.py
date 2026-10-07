@@ -10,5 +10,6 @@ def test_albio_basic():
 
 def test_albio_edge():
     import pytest
+
     with pytest.raises(ValueError, match="overlap"):
         alammar_bio_tagging(["a", "b"], [(0, 2, "X"), (1, 2, "Y")])

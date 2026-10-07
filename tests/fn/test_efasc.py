@@ -1,7 +1,6 @@
 """Tests for morie.fn.efasc -- factor scores."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.efasc import efa_scores
 
 

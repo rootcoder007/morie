@@ -1,16 +1,16 @@
 """Tests for the Pearl identification cluster:
 causmedb, mdian, backDR, medfm, fdadj, fdcrt, medFront."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.backDR import back_door
 from morie.fn.causmedb import causal_mediation_baron_kenny
 from morie.fn.fdadj import frontdoor_adjustment
 from morie.fn.fdcrt import frontdoor_criterion
 from morie.fn.mdian import mediation_analysis
-from morie.fn.medFront import front_door
 from morie.fn.medfm import mediation_formula
+from morie.fn.medFront import front_door
 
 
 def test_mediation_delegates_recover_the_paths():
@@ -60,7 +60,11 @@ def test_backdr_delegates_to_the_adjustment_formula():
     x = np.concatenate([np.repeat([1, 0], [50, 50]), np.repeat([1, 0], [90, 10])])
     y = (z == 1).astype(int)
     r = back_door(y, x, z)
-    assert float(r["distribution"]["1"]["1"] if isinstance(r["distribution"], dict) and "1" in r["distribution"] else list(r["distribution"].values())[1][1]) == pytest.approx(0.5, abs=1e-9)
+    assert float(
+        r["distribution"]["1"]["1"]
+        if isinstance(r["distribution"], dict) and "1" in r["distribution"]
+        else list(r["distribution"].values())[1][1]
+    ) == pytest.approx(0.5, abs=1e-9)
 
 
 def test_fdadj_cancels_an_unobserved_confounder():

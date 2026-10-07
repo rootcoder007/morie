@@ -1,7 +1,6 @@
 """Tests for morie.fn.rskdc — outcome rate by risk decile."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rskdc import risk_decile
 
 

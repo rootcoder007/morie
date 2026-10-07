@@ -28,17 +28,16 @@ def negative_binomial_variance(mu, alpha):
     """
     value = _ca_crim.negative_binomial_variance(mu, alpha)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (6.8)"
     return RichResult(
-        title='Negative binomial variance Var(Y) = mu + mu^2 alpha',
+        title="Negative binomial variance Var(Y) = mu + mu^2 alpha",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca6e8: Var(Y) = mu + mu^2 alpha [Weisburd et al. 2022, eq. 6.8]'
+    return "ca6e8: Var(Y) = mu + mu^2 alpha [Weisburd et al. 2022, eq. 6.8]"

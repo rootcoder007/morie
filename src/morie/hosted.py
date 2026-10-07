@@ -1,11 +1,13 @@
 """The hosted MORIE inference tier at llm.rmorie.com.
 
 An authenticated, rate-limited OpenAI-compatible endpoint run by the
-project (LiteLLM in front of an Ollama server). It is the second stop in
-the provider chain, after a local Ollama and before any cloud API key,
-and it only ever speaks when the user has logged in: ``morie login`` runs
-the GitHub device flow, receives a per-user key, and stores it with mode
-0600 under the XDG config directory. Nothing is sent anywhere without
+project (LiteLLM in front of an Ollama server). It is the last resort in
+the provider chain, after a local Ollama and after every cloud API key of
+the user's own, and it only ever speaks when the user has a key: issued on
+request at https://rmorie.com/access and stored with ``morie login --token``,
+or minted by ``morie login`` (GitHub device flow) or ``morie login --email``,
+with mode 0600 under the XDG config directory. Its address comes from the
+signed services document (``morie.services``), not from a constant here. Nothing is sent anywhere without
 that key, and no anonymous endpoint is contacted.
 
 Environment
@@ -25,7 +27,10 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+import shlex
 import stat
+import subprocess
+import sys
 import time
 import webbrowser
 from pathlib import Path
@@ -39,21 +44,51 @@ _PROBE_TIMEOUT = 2.0
 
 
 def hosted_base_url() -> str | None:
-    """Return the hosted endpoint, or None when disabled via an override of "" or "off"."""
+    """The hosted endpoint, or None when disabled.
+
+    ``MORIE_HOSTED_BASE_URL`` overrides ("" or "off" disables); otherwise the signed
+    services document decides (``morie.services``), and a document with the tier
+    switched off disables it here too. The tier is a last resort behind a local model
+    or your own API key; keys are issued on request at https://rmorie.com/access.
+    """
     if "MORIE_HOSTED_BASE_URL" in os.environ:
         url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
         if url.lower() in ("off", "none", "disabled"):
             return None
         return url.rstrip("/") or None
-    return DEFAULT_HOSTED_BASE_URL
+    from . import services
+
+    llm = services.llm()
+    if llm.get("mode") != "key" or not llm.get("base_url"):
+        return None
+    return str(llm["base_url"]).rstrip("/")
 
 
 def hosted_auth_url() -> str:
-    return os.environ.get("MORIE_HOSTED_AUTH_URL", DEFAULT_HOSTED_AUTH_URL).strip().rstrip("/")
+    """Base URL of the hosted-tier login service (``MORIE_HOSTED_AUTH_URL``, else the services document), without a trailing slash."""
+    env = os.environ.get("MORIE_HOSTED_AUTH_URL", "").strip()
+    if env:
+        return env.rstrip("/")
+    from . import services
+
+    return (str(services.llm().get("auth_url") or "") or DEFAULT_HOSTED_AUTH_URL).rstrip("/")
 
 
 def hosted_model() -> str:
-    return os.environ.get("MORIE_HOSTED_MODEL", DEFAULT_HOSTED_MODEL).strip() or DEFAULT_HOSTED_MODEL
+    """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the services document, else the built-in default)."""
+    env = os.environ.get("MORIE_HOSTED_MODEL", "").strip()
+    if env:
+        return env
+    from . import services
+
+    return str(services.llm().get("default_model") or "") or DEFAULT_HOSTED_MODEL
+
+
+def access_hint() -> str:
+    """One line on how to get a hosted key."""
+    from . import services
+
+    return services.access_hint()
 
 
 def credentials_path() -> Path:
@@ -63,6 +98,7 @@ def credentials_path() -> Path:
 
 
 def read_credentials() -> dict:
+    """The stored credentials as a dict; ``{}`` when the file is missing, unreadable or not a JSON object."""
     try:
         with open(credentials_path(), encoding="utf-8") as fh:
             data = json.load(fh)
@@ -98,6 +134,7 @@ _hosted_failure: str | None = None
 
 
 def reset_probe_cache() -> None:
+    """Forget the cached hosted-tier probe (reachability, model list, last failure) so the next call probes again."""
     global _hosted_cached, _hosted_models, _hosted_failure
     _hosted_cached = None
     _hosted_models = None
@@ -176,6 +213,67 @@ def _say(msg: str) -> None:
     print(msg, flush=True)  # the code must reach a redirected stdout before polling starts
 
 
+def _can_open_browser() -> bool:
+    """False over SSH and on a Linux/BSD machine without a desktop session."""
+    if os.environ.get("SSH_CONNECTION") or os.environ.get("SSH_TTY"):
+        return False
+    if sys.platform.startswith(("linux", "freebsd", "openbsd", "netbsd")):
+        return bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+    return True
+
+
+def _open_browser(uri: str) -> None:
+    """Open ``uri`` without ever waiting on the browser.
+
+    With ``$BROWSER`` set, :func:`webbrowser.open` runs that command and waits
+    for it; a browser that stays open (Brave, Firefox) then blocked the sign-in
+    before its first poll. Each ``$BROWSER`` entry is started detached instead.
+    Without a desktop session nothing is opened (a console browser such as
+    lynx would take over the terminal): the printed URL works on any device.
+    """
+    if not _can_open_browser():
+        return
+    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)):
+        try:
+            cmd = shlex.split(entry)
+        except ValueError:
+            continue
+        cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
+        try:
+            subprocess.Popen(
+                cmd,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+            return
+        except OSError:
+            continue
+    with contextlib.suppress(Exception):
+        browser = webbrowser.get()
+        # a plain GenericBrowser is a console browser webbrowser waits on; the GUI launchers return at once
+        if type(browser) is not webbrowser.GenericBrowser:
+            browser.open(uri)
+
+
+def _browsable(uri: object) -> bool:
+    """Only an https address of a public host is handed to the browser: the sign-in service
+    names the page, and bricklayer's fourth review found that name taken on trust."""
+    import ipaddress
+    from urllib.parse import urlsplit
+
+    if not isinstance(uri, str) or not uri.startswith("https://"):
+        return False
+    host = (urlsplit(uri).hostname or "").lower()
+    if not host or "." not in host or host.endswith((".local", ".internal", ".localhost", ".lan", ".home", ".corp")):
+        return False
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return True
+
+
 def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
     """Run the GitHub device flow against the gateway's auth service.
 
@@ -192,10 +290,9 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
         raise RuntimeError(f"the sign-in service answered {start.status_code}")
     info = start.json()
     user_code, uri = info["user_code"], info["verification_uri"]
-    echo(f"Sign in at {uri} and enter the code: {user_code}")
-    if open_browser:
-        with contextlib.suppress(Exception):
-            webbrowser.open(uri)
+    echo(f"Sign in at {uri} and enter the code: {user_code}  (no GitHub? run: morie login --email you@example.com)")
+    if open_browser and _browsable(uri):
+        _open_browser(uri)
     interval = float(info.get("interval", 5))
     deadline = time.monotonic() + poll_max_seconds
     while time.monotonic() < deadline:
@@ -234,14 +331,19 @@ def store_token(token: str, echo=_say) -> str:
     if not token:
         raise ValueError("an empty token cannot be stored")
     data = read_credentials()
+    previous = dict(data)
     data.update({"hosted_key": token, "hosted_base_url": hosted_base_url()})
     path = write_credentials(data)
     reset_probe_cache()
     if probe_hosted():
         echo(f"Token stored in {path}; the gateway accepts it.")
-    else:
-        echo(f"Token stored in {path}, but the gateway did not accept it (check the key, or run `morie login` again).")
-    return token
+        return token
+    why = hosted_failure()
+    write_credentials(previous)  # nothing is kept that the gateway refused
+    reset_probe_cache()
+    if why == "rejected":
+        raise ValueError("the gateway rejected that key; nothing stored (check it, or run `morie login` again)")
+    raise ValueError(f"the gateway could not be reached to check that key ({why}); nothing stored, try again")
 
 
 def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
@@ -306,7 +408,9 @@ def models_lines() -> list[str]:
     if not s["base_url"]:
         return ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
     if not s["logged_in"]:
-        return [f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login`"]
+        return [
+            f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
+        ]
     if not s["reachable"]:
         return [f"Hosted tier ({s['base_url']}): {hosted_problem_line()}"]
     default = hosted_model_available()
@@ -365,6 +469,14 @@ def provider_set(base_url: str, key: str, model: str | None = None, echo=_say) -
 
 
 def provider_show(echo=_say) -> dict:
+    """Describe the attached OpenAI-compatible endpoint without printing its key.
+
+    Args:
+        echo: where the description goes (default: stdout).
+
+    Returns:
+        The stored ``api_base_url``, ``api_model`` and ``api_key`` entries (``None`` where unset).
+    """
     data = read_credentials()
     base, model = data.get("api_base_url"), data.get("api_model")
     if not base:
@@ -378,6 +490,18 @@ def provider_show(echo=_say) -> dict:
 
 
 def provider_unset(echo=_say) -> bool:
+    """Detach the OpenAI-compatible endpoint from the stored credentials.
+
+    Other stored credentials are kept; the file is removed only when
+    nothing else is left in it, and nothing is written when no endpoint
+    was attached.
+
+    Args:
+        echo: where the outcome line goes (default: stdout).
+
+    Returns:
+        True if an endpoint was attached.
+    """
     data = read_credentials()
     had = any(k in data for k in _PROVIDER_KEYS)
     for k in _PROVIDER_KEYS:

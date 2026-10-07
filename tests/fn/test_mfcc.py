@@ -1,7 +1,6 @@
 """Test mel_cepstral_coeffs (mfcc)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.mfcc import mel_cepstral_coeffs, mfcc
 

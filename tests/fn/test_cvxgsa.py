@@ -1,7 +1,6 @@
 """Tests for cvxgsa.boyd_generalized_p."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxgsa import boyd_generalized_p
 
 
@@ -12,6 +11,8 @@ def test_cvxgsa_basic():
     result = boyd_generalized_p(x, y)
     assert isinstance(result, dict)
     assert "precedes" in result
+
+
 def test_cvxgsa_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

@@ -1,7 +1,6 @@
 """Tests for btjkn.boot_jackknife."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btjkn import boot_jackknife
 
 
@@ -18,9 +17,18 @@ def test_btjkn_basic():
     # The documented return is a mapping with the listed keys; RichResult
     # supports dict-like access.
     assert isinstance(result, dict)
-    for key in ("leave_one_out", "estimate", "bias", "corrected",
-                "variance", "se", "pseudovalues", "n",
-                "smoothness_caveat", "method"):
+    for key in (
+        "leave_one_out",
+        "estimate",
+        "bias",
+        "corrected",
+        "variance",
+        "se",
+        "pseudovalues",
+        "n",
+        "smoothness_caveat",
+        "method",
+    ):
         assert key in result, f"missing key {key!r}"
 
     # Independent recomputation of the jackknife outputs from the closed-form
@@ -28,8 +36,7 @@ def test_btjkn_basic():
     # EXACTLY s^2 / n, not merely asymptotically.
     n = x.shape[0]
     th_indep = float(np.mean(x))
-    loo_indep = np.array([float(np.mean(x[i != np.arange(n)]))
-                          for i in range(n)])
+    loo_indep = np.array([float(np.mean(x[i != np.arange(n)])) for i in range(n)])
     m_indep = float(loo_indep.mean())
     bias_indep = (n - 1) * (m_indep - th_indep)
     var_indep = (n - 1) / n * float(np.sum((loo_indep - m_indep) ** 2))

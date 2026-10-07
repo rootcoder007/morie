@@ -28,12 +28,16 @@ def ghosal_partspec_pt(x, levels=(2, 4), a_scale=1.0, seed=42):
             a = a_scale * m * m
             V0 = float(rng.beta(a, a))
         else:
-            V0 = 0.5                     # marginalized level
+            V0 = 0.5  # marginalized level
         mass *= V0 if b == 0 else (1.0 - V0)
-    res = RichResult(payload={"estimate": mass * 2.0 ** depth,
-                              "cell_mass": mass,
-                              "specified_levels": list(levels),
-                              "method": "partially specified PT (GvdV 2017 sec. 3.7.3)"})
+    res = RichResult(
+        payload={
+            "estimate": mass * 2.0**depth,
+            "cell_mass": mass,
+            "specified_levels": list(levels),
+            "method": "partially specified PT (GvdV 2017 sec. 3.7.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_15")
 
 

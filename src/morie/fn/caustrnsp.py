@@ -91,15 +91,19 @@ def caustrnsp(y, z, s, mode="transport", pr_w0=None):
         raise ValueError("need both treatment arms in the trial sample")
     mu1 = sum(w[i] * float(yv[i]) for i in i1) / sum(w[i] for i in i1)
     mu0 = sum(w[i] * float(yv[i]) for i in i0) / sum(w[i] for i in i0)
-    return RichResult(payload={
-        "estimate": mu1 - mu0,
-        "mean_treated": mu1,
-        "mean_control": mu0,
-        "weights": np.asarray(w),
-        "n": n, "n_treat": len(i1), "n_control": len(i0),
-        "mode": mode,
-        "method": "Tipton-Hartman Eq. 3.10 weighted PATE, %s weights" % mode,
-    })
+    return RichResult(
+        payload={
+            "estimate": mu1 - mu0,
+            "mean_treated": mu1,
+            "mean_control": mu0,
+            "weights": np.asarray(w),
+            "n": n,
+            "n_treat": len(i1),
+            "n_control": len(i0),
+            "mode": mode,
+            "method": f"Tipton-Hartman Eq. 3.10 weighted PATE, {mode} weights",
+        }
+    )
 
 
 causal_transport_weights = caustrnsp
@@ -107,6 +111,7 @@ causal_transport_weights = caustrnsp
 
 def cheatsheet():
     return "caustrnsp(y, z, s, mode) -> trial effect generalized/transported to a target population."
+
 
 # public names resolved by fn/_lazy_map.json
 causal_transportability_weights = caustrnsp

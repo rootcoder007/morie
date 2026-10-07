@@ -1,7 +1,6 @@
 """Tests for morie.fn.rankt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rankt import rank_transform
 
 

@@ -42,9 +42,15 @@ def compclos(x, total=1.0):
         raise ValueError("compositions must be strictly positive")
     s = sum(x)
     k = float(total)
-    return RichResult(payload={
-        "closed": [k * v / s for v in x], "total": k, "sum_raw": s,
-        "D": len(x), "method": "Closure C(x) onto the simplex"})
+    return RichResult(
+        payload={
+            "closed": [k * v / s for v in x],
+            "total": k,
+            "sum_raw": s,
+            "D": len(x),
+            "method": "Closure C(x) onto the simplex",
+        }
+    )
 
 
 aitchison_closure = compclos

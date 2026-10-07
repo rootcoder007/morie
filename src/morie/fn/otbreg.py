@@ -68,10 +68,17 @@ def ot_bregman_proj(K, a, b, max_iter=200):
                 T[i][j] *= f
     row_err = max(abs(sum(T[i]) - aa[i]) for i in range(n))
     col_err = max(abs(sum(T[i][j] for i in range(n)) - bb[j]) for j in range(m))
-    return RichResult(payload={
-        "T": T, "iters": it, "row_err": row_err, "col_err": col_err,
-        "n": n, "m": m,
-        "method": "Iterative Bregman projections"})
+    return RichResult(
+        payload={
+            "T": T,
+            "iters": it,
+            "row_err": row_err,
+            "col_err": col_err,
+            "n": n,
+            "m": m,
+            "method": "Iterative Bregman projections",
+        }
+    )
 
 
 def cheatsheet():

@@ -6,8 +6,6 @@ Implements eq. (5.5a) p.153 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,9 +17,15 @@ def mvsml_linear_mixed_models_eq_5_5a(Y, Z, G, Sigma_T, R_T, X=None):
     multi-trait model of eq. (5.5) extended with a fixed-effects term
     X beta. Keys: estimate."""
     f = _gp.multitrait_model(Y, Z, G, Sigma_T, R_T, X=X)
-    res = RichResult(payload={"estimate": f["mu"][0], "mu": f["mu"],
-                              "beta": f["beta"], "b": f["b"],
-                              "method": "multi-trait LMM with fixed effects (MVSML 2022 eq. 5.5a)"})
+    res = RichResult(
+        payload={
+            "estimate": f["mu"][0],
+            "mu": f["mu"],
+            "beta": f["beta"],
+            "b": f["b"],
+            "method": "multi-trait LMM with fixed effects (MVSML 2022 eq. 5.5a)",
+        }
+    )
     return with_describe_pointer(res, "msm028")
 
 

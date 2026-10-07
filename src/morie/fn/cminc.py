@@ -71,7 +71,7 @@ def cminc(
     if cause not in event:
         raise ValueError(f"Cause {cause} not found in event array.")
 
-    n = len(time)
+    len(time)
     # Unique event times across all causes
     all_event_times = np.unique(time[event > 0])
 
@@ -86,7 +86,6 @@ def cminc(
     km_times = []
     km_surv = []
     S = 1.0
-    idx = 0
     for t_j in all_event_times:
         # Risk set size just before t_j
         n_risk = np.sum(t_s >= t_j)
@@ -121,7 +120,6 @@ def cminc(
     # 95% CI via log transformation on CIF: CI on log(F_k) scale.
     # Lower CI = F_k * exp(-z * se / F_k)
     # Upper CI = F_k * exp(+z * se / F_k)
-    alpha = 0.05
     z = 1.959963985  # qnorm(0.975)
     eps = 1e-15
     with np.errstate(divide="ignore", invalid="ignore"):

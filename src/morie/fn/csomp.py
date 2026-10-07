@@ -43,7 +43,7 @@ def omp(A, y, sparsity: int, **kwargs) -> DescriptiveResult:
 
     residual = y.copy()
     support = []
-    x = np.zeros(n)
+    np.zeros(n)
 
     for _ in range(sparsity):
         correlations = np.abs(A.T @ residual)

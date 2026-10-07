@@ -1,7 +1,6 @@
 """Tests for dnnmt.dnn_multitrait."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dnnmt import dnn_multitrait
 
 
@@ -31,7 +30,9 @@ def test_dnnmt_basic():
     heads = [1.0, 1.0, 1.0]
 
     result = dnn_multitrait(
-        X, Y, layers,
+        X,
+        Y,
+        layers,
         heads=heads,
         activation="relu",
         out_activation="linear",
@@ -73,7 +74,9 @@ def test_dnnmt_edge():
 
     layers = [3]
     result = dnn_multitrait(
-        X, Y, layers,
+        X,
+        Y,
+        layers,
         heads=None,
         activation="tanh",
         out_activation="linear",

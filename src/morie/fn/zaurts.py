@@ -233,4 +233,3 @@ def zivot_andrews_unit_root(x, model="intercept", lags=0):
 
 def cheatsheet():
     return "zaurts: Zivot-Andrews unit root test with endogenous break"
-

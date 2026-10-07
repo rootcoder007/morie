@@ -1,7 +1,6 @@
 """Test harmonic_ratio (hrmnc)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hrmnc import harmonic_ratio, hrmnc
 

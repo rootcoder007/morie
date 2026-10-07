@@ -1,7 +1,6 @@
 """Tests for gb_hg2.gibbons_hodges_lehmann_2."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_hg2 import gibbons_hodges_lehmann_2
 
 
@@ -14,8 +13,12 @@ def test_gb_hg2_basic():
 
     # All documented keys are present.
     for key in (
-        "estimate", "ci", "coverage", "n_differences",
-        "median_difference", "shift_plausible",
+        "estimate",
+        "ci",
+        "coverage",
+        "n_differences",
+        "median_difference",
+        "shift_plausible",
     ):
         assert key in result
 
@@ -39,6 +42,7 @@ def test_gb_hg2_basic():
 def test_gb_hg2_edge():
     """Test edge cases: empty input raises."""
     import pytest
+
     with pytest.raises(ValueError):
         gibbons_hodges_lehmann_2([], [1, 2, 3])
     with pytest.raises(ValueError):

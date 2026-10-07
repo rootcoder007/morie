@@ -40,17 +40,21 @@ def kamath_prompt_tuning(P, X):
         raise ValueError(
             f"the soft prompt is {P.shape[1]}-dim but the input "
             f"embeddings are {X.shape[1]}-dim; a prompt must live in "
-            "the model's embedding space.")
+            "the model's embedding space."
+        )
     aug = np.vstack([P, X])
-    return RichResult(payload={
-        "X_aug": [[float(v) for v in row] for row in aug],
-        "prompt_len": int(P.shape[0]),
-        "seq_len": int(aug.shape[0]),
-        "d_model": int(P.shape[1]),
-        "n_trainable": int(P.size),
-        "estimate": int(P.size),
-        "n": int(aug.shape[0]),
-        "method": "Prompt tuning soft-prompt prepend"})
+    return RichResult(
+        payload={
+            "X_aug": [[float(v) for v in row] for row in aug],
+            "prompt_len": int(P.shape[0]),
+            "seq_len": int(aug.shape[0]),
+            "d_model": int(P.shape[1]),
+            "n_trainable": int(P.size),
+            "estimate": int(P.size),
+            "n": int(aug.shape[0]),
+            "method": "Prompt tuning soft-prompt prepend",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simulated power of the signed-rank test from caller-supplied samples."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['wsrsimpow', 'gibbons_wsrt_simpower']
+__all__ = ["wsrsimpow", "gibbons_wsrt_simpower"]
 
 
 def wsrsimpow(samples, m0, tcrit):

@@ -1,8 +1,6 @@
 """Tests for gb1061.gibbons_jonckheere."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gb1061 import gibbons_jonckheere
 
 
@@ -47,10 +45,7 @@ def test_gb1061_basic():
     ns = [len(s) for s in samples]
     nn = sum(ns)
     expected_mean = (float(nn) ** 2 - sum(float(v) ** 2 for v in ns)) / 4.0
-    expected_var = (
-        float(nn) ** 2 * (2.0 * nn + 3.0)
-        - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in ns)
-    ) / 72.0
+    expected_var = (float(nn) ** 2 * (2.0 * nn + 3.0) - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in ns)) / 72.0
 
     assert result["mean"] == expected_mean
     assert result["var"] == expected_var

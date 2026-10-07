@@ -113,14 +113,21 @@ def mean_excess(x, u_grid=None, conf_level=0.95):
         ses.append(se)
         los.append(mu - zq * se)
         his.append(mu + zq * se)
-    return RichResult(payload={
-        "u": [float(v) for v in us], "e": [float(v) for v in es],
-        "se": [float(v) for v in ses], "sd_excess": [float(v) for v in sds],
-        "ci_lower": [float(v) for v in los],
-        "ci_upper": [float(v) for v in his],
-        "n_exceed": cnt, "conf_level": float(conf_level), "n": n,
-        "method": "Davison & Smith (1990) mean excess e(u)=E[X-u|X>u]; "
-                  "linear in u above a generalised Pareto threshold"})
+    return RichResult(
+        payload={
+            "u": [float(v) for v in us],
+            "e": [float(v) for v in es],
+            "se": [float(v) for v in ses],
+            "sd_excess": [float(v) for v in sds],
+            "ci_lower": [float(v) for v in los],
+            "ci_upper": [float(v) for v in his],
+            "n_exceed": cnt,
+            "conf_level": float(conf_level),
+            "n": n,
+            "method": "Davison & Smith (1990) mean excess e(u)=E[X-u|X>u]; "
+            "linear in u above a generalised Pareto threshold",
+        }
+    )
 
 
 def cheatsheet():

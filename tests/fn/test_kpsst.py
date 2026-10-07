@@ -1,8 +1,8 @@
 """Tests for morie.fn.kpsst -- KPSS stationarity test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.kpsst import kpss_test
 
 

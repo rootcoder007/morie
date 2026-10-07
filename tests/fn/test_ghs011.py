@@ -1,7 +1,5 @@
 """Tests for ghs011.ghosal_ch3_countable_dirichlet_marginal."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ghs011 import ghosal_ch3_countable_dirichlet_marginal
 
 

@@ -54,9 +54,11 @@ def test_successful_chat_with_tool_call():
             "tool_calls": [{"function": {"name": "dnorm", "arguments": {"x": 0}}}],
         }
     }
-    with patch("httpx.post", return_value=mock_resp):
-        with patch("morie.fn.gmafn._execute_morie_function", return_value=0.3989):
-            r = gemma_function_call("compute dnorm(0)")
+    with (
+        patch("httpx.post", return_value=mock_resp),
+        patch("morie.fn.gmafn._execute_morie_function", return_value=0.3989),
+    ):
+        r = gemma_function_call("compute dnorm(0)")
     assert r.name == "Function call(s) returned"
     assert len(r.extra["executed_results"]) == 1
     assert r.extra["executed_results"][0]["function"] == "dnorm"
@@ -76,7 +78,7 @@ def test_custom_model_and_url():
     mock_resp.raise_for_status = MagicMock()
     mock_resp.json.return_value = {"message": {"content": "ok", "tool_calls": []}}
     with patch("httpx.post", return_value=mock_resp) as mock_post:
-        r = gemma_function_call("test", model="gemma4:12b", base_url="http://remote:11434")
+        gemma_function_call("test", model="gemma4:12b", base_url="http://remote:11434")
     call_args = mock_post.call_args
     assert "remote:11434" in call_args[0][0]
     body = call_args[1]["json"]

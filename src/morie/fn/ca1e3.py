@@ -28,17 +28,16 @@ def ca_chapter_1_equation_3(p):
     """
     value = _ca_crim.logit(p)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (1.3)"
     return RichResult(
-        title='Logit link: logit(pi) = ln(pi / (1 - pi))',
+        title="Logit link: logit(pi) = ln(pi / (1 - pi))",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca1e3: logit(pi) = ln(pi / (1 - pi)) [Weisburd et al. 2022, eq. 1.3]'
+    return "ca1e3: logit(pi) = ln(pi / (1 - pi)) [Weisburd et al. 2022, eq. 1.3]"

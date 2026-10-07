@@ -8,9 +8,9 @@ the house LCG.
 
 import math
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.grn016 import geron_ch4_logistic_regression_prediction
 from morie.fn.grn021 import geron_ch4_softmax_function
 from morie.fn.grn024 import geron_ch4_cross_entropy_gradient_vector
@@ -200,8 +200,7 @@ def test_grxeng_gradient_matches_finite_differences():
             up[i, k] += h
             dn[i, k] -= h
             num[i, k] = (
-                geron_softmax_cross_entropy_cost(X, Y, up)["cost"]
-                - geron_softmax_cross_entropy_cost(X, Y, dn)["cost"]
+                geron_softmax_cross_entropy_cost(X, Y, up)["cost"] - geron_softmax_cross_entropy_cost(X, Y, dn)["cost"]
             ) / (2 * h)
     assert np.allclose(G, num, atol=1e-6)
 
@@ -303,7 +302,7 @@ def test_grrmse_against_manual_square_root():
     r = geron_rmse(yt, yp)
     assert abs(r["rmse"] - want) < TOL
     assert r["rmse"] >= r["mae"]
-    assert abs(r["rmse"] - float(np.mean(yt))) > 0.1        # not a mean-of-inputs stub
+    assert abs(r["rmse"] - float(np.mean(yt))) > 0.1  # not a mean-of-inputs stub
 
 
 def test_grpre_and_grrec_from_hand_counts():
@@ -404,50 +403,54 @@ def test_grsdpa_weights_match_manual_softmax():
     want = [e0 / (e0 + e1), e1 / (e0 + e1)]
     r = geron_scaled_dot_product_attention(Q, K, V)
     assert np.allclose(r["weights"][0], want, atol=TOL)
-    assert np.allclose(r["output"][0], want, atol=TOL)      # V is the identity
+    assert np.allclose(r["output"][0], want, atol=TOL)  # V is the identity
 
 
 def test_grsdpa_mask_zeroes_blocked_keys():
     r = geron_scaled_dot_product_attention(
-        [[1.0, 0.0]], [[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]],
+        [[1.0, 0.0]],
+        [[1.0, 0.0], [0.0, 1.0]],
+        [[1.0, 0.0], [0.0, 1.0]],
         mask=[[True, False]],
     )
     assert r["weights"][0] == [1.0, 0.0]
     with pytest.raises(ValueError):
         geron_scaled_dot_product_attention(
-            [[1.0, 0.0]], [[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [0.0, 1.0]],
+            [[1.0, 0.0]],
+            [[1.0, 0.0], [0.0, 1.0]],
+            [[1.0, 0.0], [0.0, 1.0]],
             mask=[[False, False]],
         )
 
 
 def test_grsa_identity_projections_reduce_to_plain_attention():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = geron_self_attention(I, I, I, I)["weights"]
-    b = geron_scaled_dot_product_attention(I, I, I)["weights"]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = geron_self_attention(I_, I_, I_, I_)["weights"]
+    b = geron_scaled_dot_product_attention(I_, I_, I_)["weights"]
     assert np.allclose(a, b, atol=TOL)
 
 
 def test_grsa_causal_mask_is_lower_triangular_in_effect():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    W = geron_self_attention(I, I, I, I, mask=[[True, False], [True, True]])["weights"]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    W = geron_self_attention(I_, I_, I_, I_, mask=[[True, False], [True, True]])["weights"]
     assert W[0][1] == 0.0
     assert abs(sum(W[1]) - 1.0) < 1e-12
 
 
 def test_grteb_output_rows_are_layernormed():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    mha = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    mha = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     ffn = {"W1": [[0.0], [0.0]], "W2": [[0.0, 0.0]]}
-    Y = np.array(geron_transformer_encoder_block(I, mha, ffn)["output"])
+    Y = np.array(geron_transformer_encoder_block(I_, mha, ffn)["output"])
     assert np.allclose(Y.mean(axis=1), 0.0, atol=1e-12)
     assert np.allclose(Y.var(axis=1), 1.0, atol=1e-4)
 
 
 def test_grtdb_builds_its_own_causal_mask():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    att = {"WQ": [I], "WK": [I], "WV": [I], "WO": I}
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    att = {"WQ": [I_], "WK": [I_], "WV": [I_], "WO": I_}
     W = {"self": att, "cross": att, "ffn": {"W1": [[0.0], [0.0]], "W2": [[0.0, 0.0]]}}
-    r = geron_transformer_decoder_block(I, I, W)
+    r = geron_transformer_decoder_block(I_, I_, W)
     assert r["causal_mask"] == [[True, False], [True, True]]
     assert r["self_attention_weights"][0][0] == [1.0, 0.0]
     # cross-attention is NOT masked: token 0 sees both source positions
@@ -456,45 +459,45 @@ def test_grtdb_builds_its_own_causal_mask():
 
 def test_grswin_window_size_one_is_pure_value_projection():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    r = geron_swin_window_attention(X, 1, I, I, I)
+    I_ = [[1.0]]
+    r = geron_swin_window_attention(X, 1, I_, I_, I_)
     assert r["output"] == X
     assert r["n_windows"] == 4
 
 
 def test_grswin_single_window_equals_global_attention():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
+    I_ = [[1.0]]
     flat = [[1.0], [2.0], [3.0], [4.0]]
     want = geron_scaled_dot_product_attention(flat, flat, flat)["output"]
-    got = geron_swin_window_attention(X, 2, I, I, I)["output"]
+    got = geron_swin_window_attention(X, 2, I_, I_, I_)["output"]
     assert np.allclose(np.array(got).reshape(4, 1), want, atol=TOL)
 
 
 def test_grpvt_full_reduction_gives_the_spatial_mean():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
-    r = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=2)
+    I_ = [[1.0]]
+    r = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=2)
     assert r["reduced_tokens"] == 1
     assert np.allclose(r["output"], [[2.5]] * 4, atol=TOL)
 
 
 def test_grpvt_identity_reduction_matches_self_attention():
     X = [[[1.0], [2.0]], [[3.0], [4.0]]]
-    I = [[1.0]]
+    I_ = [[1.0]]
     flat = [[1.0], [2.0], [3.0], [4.0]]
     want = geron_scaled_dot_product_attention(flat, flat, flat)["output"]
-    got = geron_pyramid_vit_stage(X, I, I, I, reduction_ratio=1)["output"]
+    got = geron_pyramid_vit_stage(X, I_, I_, I_, reduction_ratio=1)["output"]
     assert np.allclose(got, want, atol=TOL)
 
 
 def test_grpio_latent_bottleneck_and_shapes():
     X = [[1.0, 0.0], [2.0, 0.0], [3.0, 0.0], [4.0, 0.0]]
     r = geron_perceiver_io(X, [[0.0, 0.0]], [[0.0, 0.0]])
-    assert np.allclose(r["latent"][0], [2.5, 0.0], atol=TOL)   # uniform attention
+    assert np.allclose(r["latent"][0], [2.5, 0.0], atol=TOL)  # uniform attention
     assert r["complexity_ratio"] == 4.0
     with pytest.raises(ValueError):
-        geron_perceiver_io([[1.0]], [[0.0], [0.0]], [[0.0]])   # latent not smaller
+        geron_perceiver_io([[1.0]], [[0.0], [0.0]], [[0.0]])  # latent not smaller
 
 
 def test_grpe_positional_encoding_matches_the_closed_form():
@@ -512,7 +515,7 @@ def test_grpe_row_norms_are_constant():
     norms = np.linalg.norm(PE, axis=1)
     assert np.allclose(norms, math.sqrt(4.0), atol=1e-12)
     with pytest.raises(ValueError):
-        geron_sinusoidal_positional_encoding(3, 5)             # odd d_model
+        geron_sinusoidal_positional_encoding(3, 5)  # odd d_model
 
 
 def test_grvit_patch_order_is_row_major():
@@ -525,8 +528,8 @@ def test_grvit_patch_order_is_row_major():
 
 def test_grsen_gates_are_sigmoids_of_the_bottleneck():
     X = [[[1.0, 3.0]]]
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    r = geron_senet_squeeze_excite(X, I, I)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    r = geron_senet_squeeze_excite(X, I_, I_)
     want = [1 / (1 + math.exp(-1.0)), 1 / (1 + math.exp(-3.0))]
     assert np.allclose(r["scale"], want, atol=TOL)
     assert np.allclose(r["output"][0][0], [1.0 * want[0], 3.0 * want[1]], atol=TOL)
@@ -536,9 +539,9 @@ def test_grsen_gates_are_sigmoids_of_the_bottleneck():
 
 
 def test_grrnnc_matches_manual_tanh_step():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     Wxh = [[2.0], [0.0]]
-    r = geron_simple_rnn_cell([1.0], [0.5, -0.5], I, Wxh, [0.1, -0.1])
+    r = geron_simple_rnn_cell([1.0], [0.5, -0.5], I_, Wxh, [0.1, -0.1])
     want = [math.tanh(0.5 + 2.0 + 0.1), math.tanh(-0.5 + 0.0 - 0.1)]
     assert np.allclose(r["h"], want, atol=TOL)
     assert abs(r["spectral_norm_Whh"] - 1.0) < 1e-12
@@ -546,10 +549,8 @@ def test_grrnnc_matches_manual_tanh_step():
 
 def test_grpels_gates_use_the_right_cell_state():
     W = [[0.0, 0.0]]
-    r = geron_peephole_lstm_cell(
-        [0.0], [0.0], [1.0], W, W, W, W, [2.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0]
-    )
-    f_want = 1 / (1 + math.exp(-2.0))          # peephole sees c_prev = 1
+    r = geron_peephole_lstm_cell([0.0], [0.0], [1.0], W, W, W, W, [2.0], [0.0], [0.0], [0.0], [0.0], [0.0], [0.0])
+    f_want = 1 / (1 + math.exp(-2.0))  # peephole sees c_prev = 1
     i_want, g_want = 0.5, 0.0
     assert abs(r["f"][0] - f_want) < TOL
     assert abs(r["c"][0] - (f_want * 1.0 + i_want * g_want)) < TOL
@@ -557,10 +558,8 @@ def test_grpels_gates_use_the_right_cell_state():
 
 def test_grpels_output_gate_peeps_at_the_new_state():
     W = [[0.0, 0.0]]
-    r = geron_peephole_lstm_cell(
-        [0.0], [0.0], [1.0], W, W, W, W, [0.0], [0.0], [1.0], [0.0], [0.0], [0.0], [0.0]
-    )
-    assert abs(r["c"][0] - 0.5) < TOL                    # f=i=0.5, g=0 -> c = 0.5
+    r = geron_peephole_lstm_cell([0.0], [0.0], [1.0], W, W, W, W, [0.0], [0.0], [1.0], [0.0], [0.0], [0.0], [0.0])
+    assert abs(r["c"][0] - 0.5) < TOL  # f=i=0.5, g=0 -> c = 0.5
     assert abs(r["o"][0] - 1 / (1 + math.exp(-0.5))) < TOL
 
 
@@ -599,9 +598,7 @@ def test_grwdc_first_step_equals_adam_plus_decay():
 def test_grwdc_decay_is_not_routed_through_the_second_moment():
     # Two parameters, identical gradients, different magnitudes: the decay
     # must scale with theta, not with the normalised Adam step.
-    r = geron_adamw_decoupled_weight_decay(
-        [1.0, 10.0], [0.1, 0.1], [0.0, 0.0], [0.0, 0.0], 1, 0.01, lam=0.5
-    )
+    r = geron_adamw_decoupled_weight_decay([1.0, 10.0], [0.1, 0.1], [0.0, 0.0], [0.0, 0.0], 1, 0.01, lam=0.5)
     assert abs(r["adam_step"][0] - r["adam_step"][1]) < 1e-9
     assert abs(r["decay_step"][1] / r["decay_step"][0] - 10.0) < 1e-9
 
@@ -667,7 +664,7 @@ def test_grptq_calibrates_each_layer_range():
 
 def test_grptq_enforces_the_layer_contract():
     with pytest.raises(ValueError):
-        geron_static_ptq([lambda a: a[:1]], [[1.0], [2.0]])   # batch size changed
+        geron_static_ptq([lambda a: a[:1]], [[1.0], [2.0]])  # batch size changed
     with pytest.raises(ValueError):
         geron_static_ptq([], [[1.0]])
 
@@ -758,9 +755,7 @@ def test_grstk_enforces_custom_blender_contract():
 
 def test_grxgbg_gain_matches_the_formula():
     GL, HL, GR, HR, lam, gamma = -2.0, 2.0, 2.0, 2.0, 1.0, 0.5
-    want = 0.5 * (
-        GL**2 / (HL + lam) + GR**2 / (HR + lam) - (GL + GR) ** 2 / (HL + HR + lam)
-    ) - gamma
+    want = 0.5 * (GL**2 / (HL + lam) + GR**2 / (HR + lam) - (GL + GR) ** 2 / (HL + HR + lam)) - gamma
     r = geron_xgboost_gain(GL, HL, GR, HR, lam, gamma)
     assert abs(r["gain"] - want) < TOL
     assert abs(r["left_weight"] - (-GL / (HL + lam))) < TOL
@@ -882,7 +877,7 @@ def test_grret_backward_recursion_matches_explicit_sum():
     want = [sum(g**k * rew[t + k] for k in range(len(rew) - t)) for t in range(len(rew))]
     got = geron_discounted_return(rew, g)["returns"]
     assert np.allclose(got, want, atol=1e-12)
-    assert abs(got[0] - float(np.mean(rew))) > 1.0        # not a mean-of-inputs stub
+    assert abs(got[0] - float(np.mean(rew))) > 1.0  # not a mean-of-inputs stub
 
 
 def test_grret_horizon_and_gamma_zero():
@@ -947,9 +942,7 @@ def test_grrein_gradient_is_the_return_weighted_score_sum():
 
 
 def test_grrein_mean_baseline_centres_advantages():
-    r = geron_reinforce_policy_gradient(
-        [0.0, 0.0], [[1.0, 0.0], [0.0, 1.0]], [2.0, -1.0], 0.5, baseline="mean"
-    )
+    r = geron_reinforce_policy_gradient([0.0, 0.0], [[1.0, 0.0], [0.0, 1.0]], [2.0, -1.0], 0.5, baseline="mean")
     assert abs(sum(r["advantages"])) < 1e-12
     with pytest.raises(ValueError):
         geron_reinforce_policy_gradient([0.0], [-1.0, -2.0], [1.0, 1.0], 0.5)
@@ -1160,9 +1153,7 @@ def test_grrad_matches_a_hand_chain_rule_and_rejects_cycles():
 def test_grsmd_derivative_agrees_with_numerical_differentiation():
     f = ("+", ("*", ("^", "x", 3), 2.0), ("sin", "x"))
     d = geron_symbolic_differentiation(f, "x", at={"x": 1.3})
-    num = geron_numerical_differentiation(
-        lambda t: 2.0 * t**3 + math.sin(t), 1.3, h=1e-5
-    )["derivative"]
+    num = geron_numerical_differentiation(lambda t: 2.0 * t**3 + math.sin(t), 1.3, h=1e-5)["derivative"]
     assert abs(d["value"] - num) < 1e-6
 
 
@@ -1188,9 +1179,7 @@ def test_grrnd_requires_fit_score_and_valid_k():
     with pytest.raises(ValueError):
         geron_randomized_search_cv(X, y, {"a": (0, 1)}, 2, 2)
     with pytest.raises(ValueError):
-        geron_randomized_search_cv(
-            X, y, {"a": (0, 1)}, 2, 9, fit_score=lambda *a: 0.0
-        )
+        geron_randomized_search_cv(X, y, {"a": (0, 1)}, 2, 9, fit_score=lambda *a: 0.0)
 
 
 def test_grrsk_adds_the_identity_shortcut():

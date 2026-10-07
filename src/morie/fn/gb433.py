@@ -59,7 +59,10 @@ def gibbons_ks_kolmogorov_limit(d, n=None):
     Ld, terms = L(d)
     Ld = float(min(max(Ld, 0.0), 1.0))
     payload = {
-        "L": Ld, "p_value": float(1.0 - Ld), "terms": int(terms), "d": d,
+        "L": Ld,
+        "p_value": float(1.0 - Ld),
+        "terms": int(terms),
+        "d": d,
         "method": "L(d) = 1 - 2 sum (-1)^{i-1} exp(-2 i^2 d^2) (Theorem 4.3.3)",
     }
     if n is not None:

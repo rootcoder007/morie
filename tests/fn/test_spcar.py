@@ -46,8 +46,7 @@ def _profile(rho, A, X, z, form):
     XtQX = [[sum(X[i][a] * QX[i][b] for i in range(n)) for b in range(2)] for a in range(2)]
     XtQz = [sum(X[i][a] * Qz[i] for i in range(n)) for a in range(2)]
     det = XtQX[0][0] * XtQX[1][1] - XtQX[0][1] * XtQX[1][0]
-    beta = [(XtQX[1][1] * XtQz[0] - XtQX[0][1] * XtQz[1]) / det,
-            (XtQX[0][0] * XtQz[1] - XtQX[1][0] * XtQz[0]) / det]
+    beta = [(XtQX[1][1] * XtQz[0] - XtQX[0][1] * XtQz[1]) / det, (XtQX[0][0] * XtQz[1] - XtQX[1][0] * XtQz[0]) / det]
     e = [z[i] - X[i][0] * beta[0] - X[i][1] * beta[1] for i in range(n)]
     s2 = sum(e[i] * Q[i][j] * e[j] for i in range(n) for j in range(n)) / n
     ld, _ = _lu_logdet_solve(Q, [])

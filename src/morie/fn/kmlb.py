@@ -42,28 +42,28 @@ def kamath_moe_load_balance_loss(fractions, gate_means, N, alpha, tol=1e-6):
     if N < 1:
         raise ValueError(f"N must be at least 1; got {N}.")
     if f.size != N or P.size != N:
-        raise ValueError(
-            f"expected {N} experts; got {f.size} fractions and "
-            f"{P.size} gate means.")
+        raise ValueError(f"expected {N} experts; got {f.size} fractions and {P.size} gate means.")
     if np.any(f < 0) or np.any(P < 0):
         raise ValueError("fractions and gate means must be non-negative.")
     if abs(f.sum() - 1.0) > tol:
-        raise ValueError(
-            f"the dispatch fractions sum to {f.sum():.6f}, not 1; every "
-            "token goes somewhere.")
+        raise ValueError(f"the dispatch fractions sum to {f.sum():.6f}, not 1; every token goes somewhere.")
     if abs(P.sum() - 1.0) > tol:
-        raise ValueError(
-            f"the mean router probabilities sum to {P.sum():.6f}, not 1.")
+        raise ValueError(f"the mean router probabilities sum to {P.sum():.6f}, not 1.")
     if alpha < 0:
         raise ValueError("alpha must be non-negative.")
     val = alpha * N * float(np.dot(f, P))
-    return RichResult(payload={
-        "estimate": val, "loss": val,
-        "per_expert": [float(a * b) for a, b in zip(f, P)],
-        "balanced_floor": alpha,
-        "imbalance_ratio": (val / alpha) if alpha > 0 else float("nan"),
-        "alpha": alpha, "n": N,
-        "method": "MoE auxiliary load-balancing loss alpha*N*sum f_i P_i"})
+    return RichResult(
+        payload={
+            "estimate": val,
+            "loss": val,
+            "per_expert": [float(a * b) for a, b in zip(f, P)],
+            "balanced_floor": alpha,
+            "imbalance_ratio": (val / alpha) if alpha > 0 else float("nan"),
+            "alpha": alpha,
+            "n": N,
+            "method": "MoE auxiliary load-balancing loss alpha*N*sum f_i P_i",
+        }
+    )
 
 
 def cheatsheet():

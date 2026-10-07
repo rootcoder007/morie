@@ -1,7 +1,6 @@
 """Tests for agvslr.alphazero_value_lr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agvslr import alphazero_value_lr
 
 
@@ -16,6 +15,7 @@ def test_agvslr_basic():
     # Independent computation of the documented cosine formula:
     # lr = floor + (lr_0 - floor) * 0.5 * (1 + cos(pi * t/T))
     import math
+
     frac = t / T
     expected_lr = 0.0 + (lr_0 - 0.0) * 0.5 * (1.0 + math.cos(math.pi * frac))
     expected_frac = frac

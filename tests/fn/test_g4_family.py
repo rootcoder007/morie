@@ -1,5 +1,6 @@
 """Tests for the Vee-sourced batch (strec, edgrn, inlasm, bhltmsm)
 and the sobolI correction."""
+
 import importlib
 import math
 
@@ -17,8 +18,7 @@ I2 = [[1.0, 0.0], [0.0, 1.0]]
 
 def test_strec_trilinear_is_the_hadamard_form():
     st = M("strec")
-    assert st.trilinear([1.0, 2.0], [3.0, 4.0],
-                        [5.0, 6.0]) == pytest.approx(63.0)
+    assert st.trilinear([1.0, 2.0], [3.0, 4.0], [5.0, 6.0]) == pytest.approx(63.0)
     with pytest.raises(ValueError):
         st.trilinear([1.0], [1.0, 2.0], [1.0])
 
@@ -28,8 +28,7 @@ def test_strec_product_needs_both_memories_where_a_sum_does_not():
     h_s, h_t = [10.0, 1.0], [0.01, 1.0]
     items = [[1.0, 0.0], [0.0, 1.0]]
     tri = [st.trilinear(h_s, h_t, v) for v in items]
-    add = [sum((h_s[a] + h_t[a]) * v[a] for a in range(2))
-           for v in items]
+    add = [sum((h_s[a] + h_t[a]) * v[a] for a in range(2)) for v in items]
     assert add[0] > add[1]
     assert tri[1] > tri[0]
 
@@ -47,9 +46,7 @@ def test_strec_attention_is_not_normalised_and_sees_the_last_click():
     st = M("strec")
     W = [[1.0, 0.0], [0.0, 1.0]]
     a = st.attention_weights(SESS, W, W, W, [1.0, 1.0], [0.0, 0.0])
-    alt = st.attention_weights([[1.0, 0.0], [0.0, 1.0], [0.0, 1.0],
-                                [0.0, 1.0]], W, W, W, [1.0, 1.0],
-                               [0.0, 0.0])
+    alt = st.attention_weights([[1.0, 0.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]], W, W, W, [1.0, 1.0], [0.0, 0.0])
     assert abs(a["sum_alpha"] - 1.0) > 0.1
     assert abs(a["alpha"][0] - alt["alpha"][0]) > 1e-6
 
@@ -66,8 +63,7 @@ def test_strec_stamp_and_stmp_differ():
 
 def test_strec_cross_entropy_prefers_the_truth():
     st = M("strec")
-    assert st.cross_entropy([0.9, 0.1], 0) < st.cross_entropy(
-        [0.9, 0.1], 1)
+    assert st.cross_entropy([0.9, 0.1], 0) < st.cross_entropy([0.9, 0.1], 1)
     with pytest.raises(ValueError):
         st.cross_entropy([0.9, 0.1], 5)
 
@@ -109,16 +105,13 @@ def test_edgrn_moderation_shrinks_toward_the_common_value():
     raw = [0.001, 0.5, 0.05]
     r = eg.moderate_dispersion(raw, prior_df=10.0, df_residual=1.0)
     for i in range(3):
-        assert abs(r["dispersion"][i] - r["common"]) < abs(
-            raw[i] - r["common"])
+        assert abs(r["dispersion"][i] - r["common"]) < abs(raw[i] - r["common"])
 
 
 def test_edgrn_exact_test_separates_shift_from_no_shift():
     eg = M("edgrn")
-    assert eg.exact_test(100.0, 10.0, 1000.0, 1000.0,
-                         0.01)["p_value"] < 0.01
-    assert eg.exact_test(50.0, 50.0, 1000.0, 1000.0,
-                         0.01)["p_value"] > 0.5
+    assert eg.exact_test(100.0, 10.0, 1000.0, 1000.0, 0.01)["p_value"] < 0.01
+    assert eg.exact_test(50.0, 50.0, 1000.0, 1000.0, 0.01)["p_value"] > 0.5
 
 
 def test_edgrn_ql_f_test_matches_the_t_identity_and_beats_the_lrt():
@@ -133,20 +126,15 @@ def test_edgrn_ql_f_test_matches_the_t_identity_and_beats_the_lrt():
 def test_inlasm_gaussian_likelihood_is_exact():
     il = M("inlasm")
     tau, y, m0, q0 = 2.0, 3.0, 1.0, 0.5
-    r = il.gaussian_approximation(
-        lambda x: -0.5 * tau * (y - x) ** 2,
-        lambda x: tau * (y - x), lambda x: -tau, m0, q0)
-    assert r["mode"] == pytest.approx((q0 * m0 + tau * y) / (q0 + tau),
-                                      abs=1e-12)
+    r = il.gaussian_approximation(lambda x: -0.5 * tau * (y - x) ** 2, lambda x: tau * (y - x), lambda x: -tau, m0, q0)
+    assert r["mode"] == pytest.approx((q0 * m0 + tau * y) / (q0 + tau), abs=1e-12)
     assert r["precision"] == pytest.approx(q0 + tau, abs=1e-12)
 
 
 def test_inlasm_non_concave_objective_refused():
     il = M("inlasm")
     with pytest.raises(ValueError):
-        il.gaussian_approximation(lambda x: x ** 3,
-                                  lambda x: 3 * x * x,
-                                  lambda x: 6 * x, 0.0, 0.5, x0=5.0)
+        il.gaussian_approximation(lambda x: x**3, lambda x: 3 * x * x, lambda x: 6 * x, 0.0, 0.5, x0=5.0)
 
 
 def test_inlasm_skewness_is_zero_only_for_a_gaussian():
@@ -168,13 +156,10 @@ def test_inlasm_outer_sum_weights_the_marginals():
     grid = [(-6.0 + 12.0 * i / 400.0) for i in range(401)]
 
     def gauss(mu):
-        return [math.exp(-0.5 * (x - mu) ** 2) / math.sqrt(2 * math.pi)
-                for x in grid]
+        return [math.exp(-0.5 * (x - mu) ** 2) / math.sqrt(2 * math.pi) for x in grid]
 
-    even = il.integrate_marginals([gauss(-1.0), gauss(1.0)],
-                                  [0.0, 0.0], grid)
-    tilt = il.integrate_marginals([gauss(-1.0), gauss(1.0)],
-                                  [math.log(3.0), 0.0], grid)
+    even = il.integrate_marginals([gauss(-1.0), gauss(1.0)], [0.0, 0.0], grid)
+    tilt = il.integrate_marginals([gauss(-1.0), gauss(1.0)], [math.log(3.0), 0.0], grid)
     assert even["mean"] == pytest.approx(0.0, abs=1e-9)
     assert tilt["mean"] == pytest.approx(-0.5, abs=1e-6)
     assert tilt["theta_weights"][0] == pytest.approx(0.75, abs=1e-12)
@@ -191,11 +176,9 @@ def test_bhltmsm_cumulative_counts_the_periods():
 
 def test_bhltmsm_weights_stabilise_and_reject_zero_propensity():
     bh = M("bhltmsm")
-    same = bh.treatment_weights([["none", "none"]], [[0.5, 0.5]],
-                                stabilise=True, marginal=[[0.5, 0.5]])
+    same = bh.treatment_weights([["none", "none"]], [[0.5, 0.5]], stabilise=True, marginal=[[0.5, 0.5]])
     assert same["weights"][0] == pytest.approx(1.0)
-    plain = bh.treatment_weights([["none", "none"]], [[0.5, 0.5]],
-                                 stabilise=False)
+    plain = bh.treatment_weights([["none", "none"]], [[0.5, 0.5]], stabilise=False)
     assert plain["weights"][0] == pytest.approx(4.0)
     with pytest.raises(ValueError):
         bh.treatment_weights([["none"]], [[0.0]], stabilise=False)
@@ -218,18 +201,15 @@ def test_bhltmsm_iptw_fixes_a_sign_reversal():
         treated = 1.0 if float(rng.uniform()) < p else 0.0
         pr = p if treated else 1.0 - p
         cum.append([treated])
-        y.append(5.0 * sick - 2.0 * treated
-                 + 0.2 * (float(rng.uniform()) - 0.5))
+        y.append(5.0 * sick - 2.0 * treated + 0.2 * (float(rng.uniform()) - 0.5))
         w.append((0.55 if treated else 0.45) / pr)
     assert bh.fit_msm(y, cum)["estimate"] > 0.0
-    assert abs(bh.fit_msm(y, cum, w,
-                          states=("treated",))["estimate"] + 2.0) < 0.6
+    assert abs(bh.fit_msm(y, cum, w, states=("treated",))["estimate"] + 2.0) < 0.6
 
 
 def test_bhltmsm_detects_the_feedback_condition():
     bh = M("bhltmsm")
-    r = bh.confounding_check([[1.0, 1.0], [0.0, 0.0]] * 20,
-                             [[1.0, 1.0], [0.0, 0.0]] * 20)
+    r = bh.confounding_check([[1.0, 1.0], [0.0, 0.0]] * 20, [[1.0, 1.0], [0.0, 0.0]] * 20)
     assert r["is_treatment_confounder_feedback"]
 
 
@@ -261,9 +241,7 @@ def test_sobolI_estimates_match_the_closed_form():
 def test_sobolI_first_order_and_total_are_different_questions():
     sb = M("sobolI")
     pi = math.pi
-    r = sb.sobol_indices(sb.ishigami,
-                         [lambda u: -pi + 2.0 * pi * u] * 3,
-                         N=4096, d=3)
+    r = sb.sobol_indices(sb.ishigami, [lambda u: -pi + 2.0 * pi * u] * 3, N=4096, d=3)
     assert abs(r["S"][2]) < 0.03
     assert r["ST"][2] > 0.2
     assert not r["additive"]

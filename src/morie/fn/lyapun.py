@@ -76,12 +76,10 @@ __all__ = [
 def _as_series(y):
     out = [float(v) for v in np.atleast_1d(np.asarray(y, dtype=float))]
     if len(out) < 10:
-        raise ValueError("lyapun: need at least 10 observations, got %d"
-                         % len(out))
+        raise ValueError(f"lyapun: need at least 10 observations, got {int(len(out))}")
     for v in out:
         if v != v or v in (float("inf"), float("-inf")):
-            raise ValueError("lyapun: the series contains a non-finite "
-                             "value")
+            raise ValueError("lyapun: the series contains a non-finite value")
     return out
 
 
@@ -99,8 +97,7 @@ def embed(y, m, tau):
         raise ValueError("lyapun: the reconstruction delay must be >= 1")
     n_pts = len(y) - (m - 1) * tau
     if n_pts < 3:
-        raise ValueError("lyapun: m = %d and J = %d leave only %d "
-                         "reconstructed points" % (m, tau, n_pts))
+        raise ValueError(f"lyapun: m = {int(m)} and J = {int(tau)} leave only {int(n_pts)} reconstructed points")
     return [[y[j + k * tau] for k in range(m)] for j in range(n_pts)]
 
 
@@ -118,8 +115,7 @@ def autocorrelation_lag(y, threshold=None):
     mu = sum(y) / n
     c0 = sum((v - mu) ** 2 for v in y) / n
     if c0 <= 0.0:
-        raise ValueError("lyapun: the series is constant, so no delay can "
-                         "be chosen from its autocorrelation")
+        raise ValueError("lyapun: the series is constant, so no delay can be chosen from its autocorrelation")
     for lag in range(1, n):
         c = sum((y[t] - mu) * (y[t + lag] - mu) for t in range(n - lag)) / n
         if c / c0 <= threshold:
@@ -144,8 +140,7 @@ def mean_period(y, dt=1.0):
     wsum = sum(power[1:])
     if wsum <= 0.0:
         return 1.0
-    f_mean = sum(float(freqs[k]) * power[k]
-                 for k in range(1, len(power))) / wsum
+    f_mean = sum(float(freqs[k]) * power[k] for k in range(1, len(power))) / wsum
     if f_mean <= 0.0:
         return float(n)
     return (1.0 / f_mean) / dt
@@ -189,8 +184,7 @@ def _distance(pts, a, b):
     return math.sqrt(s)
 
 
-def divergence_curve(y, m=None, tau=None, dt=1.0, min_sep=None,
-                     max_steps=None):
+def divergence_curve(y, m=None, tau=None, dt=1.0, min_sep=None, max_steps=None):
     r"""The paper's :math:`y(i) = \langle \ln d_j(i) \rangle`, and the
     pieces every route is built from.
 
@@ -215,10 +209,9 @@ def divergence_curve(y, m=None, tau=None, dt=1.0, min_sep=None,
     if min_sep < 0:
         raise ValueError("lyapun: min_sep must be >= 0")
     if min_sep >= n_pts - 2:
-        raise ValueError("lyapun: the mean period (%d samples) leaves no "
-                         "admissible neighbours among %d reconstructed "
-                         "points; pass min_sep explicitly"
-                         % (min_sep, n_pts))
+        raise ValueError(
+            f"lyapun: the mean period ({int(min_sep)} samples) leaves no admissible neighbours among {int(n_pts)} reconstructed points; pass min_sep explicitly"
+        )
     nn, d0 = _nearest_neighbours(pts, min_sep)
     usable = [j for j in range(n_pts) if nn[j] >= 0 and d0[j] > 0.0]
     if len(usable) < 3:
@@ -248,8 +241,8 @@ def divergence_curve(y, m=None, tau=None, dt=1.0, min_sep=None,
         counts.append(cnt)
     return {
         "time": times,
-        "log_divergence": curve,     # <ln d_j(i)>, eq. 13 before 1/dt
-        "log_ratio": ratio,          # <ln (d_j(i)/d_j(0))>, for eq. 9
+        "log_divergence": curve,  # <ln d_j(i)>, eq. 13 before 1/dt
+        "log_ratio": ratio,  # <ln (d_j(i)/d_j(0))>, for eq. 9
         "n_pairs": counts,
         "neighbour": nn,
         "d0": d0,
@@ -314,21 +307,20 @@ def _ols_slope(xs, ys):
     my = sum(ys) / n
     sxx = sum((v - mx) ** 2 for v in xs)
     if sxx <= 0:
-        raise ValueError("lyapun: the fitting window has no spread in "
-                         "time")
+        raise ValueError("lyapun: the fitting window has no spread in time")
     sxy = sum((xs[k] - mx) * (ys[k] - my) for k in range(n))
     slope = sxy / sxx
     intercept = my - slope * mx
     resid = [ys[k] - intercept - slope * xs[k] for k in range(n)]
     sse = sum(r * r for r in resid)
     sst = sum((v - my) ** 2 for v in ys)
-    se = (math.sqrt(sse / (n - 2) / sxx) if n > 2 and sse > 0 else 0.0)
+    se = math.sqrt(sse / (n - 2) / sxx) if n > 2 and sse > 0 else 0.0
     return slope, intercept, se, (1.0 - sse / sst if sst > 0 else 1.0)
 
 
-def lyapunov_exponent(y, embedding=None, tau=None, dt=1.0, fit=None,
-                      min_sep=None, max_steps=None, method="rosenstein",
-                      k=None):
+def lyapunov_exponent(
+    y, embedding=None, tau=None, dt=1.0, fit=None, min_sep=None, max_steps=None, method="rosenstein", k=None
+):
     r"""Largest Lyapunov exponent, Rosenstein et al. (1993).
 
     Parameters
@@ -368,10 +360,8 @@ def lyapunov_exponent(y, embedding=None, tau=None, dt=1.0, fit=None,
         ``estimate`` is the exponent from the chosen route.
     """
     if method not in ("rosenstein", "sato", "sato_k"):
-        raise ValueError("lyapun: method must be 'rosenstein', 'sato' or "
-                         "'sato_k'")
-    dv = divergence_curve(y, m=embedding, tau=tau, dt=dt, min_sep=min_sep,
-                          max_steps=max_steps)
+        raise ValueError("lyapun: method must be 'rosenstein', 'sato' or 'sato_k'")
+    dv = divergence_curve(y, m=embedding, tau=tau, dt=dt, min_sep=min_sep, max_steps=max_steps)
     times = dv["time"]
     curve = dv["log_divergence"]
     n_steps = len(curve)
@@ -380,15 +370,14 @@ def lyapunov_exponent(y, embedding=None, tau=None, dt=1.0, fit=None,
     else:
         lo, hi = int(fit[0]), int(fit[1])
         if lo < 0 or hi > n_steps or hi - lo < 2:
-            raise ValueError("lyapun: the fitting window must lie inside "
-                             "0..%d and span at least two steps"
-                             % n_steps)
+            raise ValueError(
+                f"lyapun: the fitting window must lie inside 0..{int(n_steps)} and span at least two steps"
+            )
     slope, intercept, se, r2 = _ols_slope(times[lo:hi], curve[lo:hi])
 
     # eq. 9, read at the end of the same window
     i_end = hi - 1
-    sato = (dv["log_ratio"][i_end] / (i_end * dt)) if i_end > 0 else \
-        float("nan")
+    sato = (dv["log_ratio"][i_end] / (i_end * dt)) if i_end > 0 else float("nan")
 
     # eq. 10, on the same window
     if k is None:
@@ -419,63 +408,67 @@ def lyapunov_exponent(y, embedding=None, tau=None, dt=1.0, fit=None,
             # it the curve has saturated and its flattest stretch is the
             # zero tail, which would be reported as "no chaos" for every
             # chaotic system.
-            search = sato_k_curve[:max(3, min(hi, len(sato_k_curve)))]
+            search = sato_k_curve[: max(3, min(hi, len(sato_k_curve)))]
             w = max(2, len(search) // 4)
             best, best_var = 0, float("inf")
             for s in range(0, len(search) - w + 1):
-                seg = search[s:s + w]
+                seg = search[s : s + w]
                 mu = sum(seg) / w
                 var = sum((v - mu) ** 2 for v in seg) / w
                 if var < best_var:
                     best_var, best = var, s
-            seg = search[best:best + w]
+            seg = search[best : best + w]
             sato_k = sum(seg) / len(seg)
 
-    estimate = {"rosenstein": slope, "sato": sato,
-                "sato_k": sato_k}[method]
-    return RichResult(payload={
-        "estimate": estimate,
-        "lambda1": estimate,
-        "rosenstein": slope,
-        "sato": sato,
-        "sato_k": sato_k,
-        "sato_k_curve": sato_k_curve,
-        "se": se,
-        "r_squared": r2,
-        "intercept": intercept,
-        "time": times,
-        "log_divergence": curve,
-        "log_ratio": dv["log_ratio"],
-        "n_pairs": dv["n_pairs"],
-        "fit_range": (lo, hi),
-        "k": k,
-        "m": dv["m"],
-        "tau": dv["tau"],
-        "min_sep": dv["min_sep"],
-        "n_points": dv["n_points"],
-        "n": dv["n_obs"],
-        "dt": dt,
-        "method": ("largest Lyapunov exponent, Rosenstein, Collins & "
-                   "De Luca (1993), route '%s'" % method),
-        "note": ("the exponent is the slope of <ln d_j(i)> over the "
-                 "initial rise; a positive value indicates chaos, and the "
-                 "fitting window is the caller's to choose because the "
-                 "curve saturates once the neighbours are as far apart as "
-                 "the attractor allows"),
-    })
+    estimate = {"rosenstein": slope, "sato": sato, "sato_k": sato_k}[method]
+    return RichResult(
+        payload={
+            "estimate": estimate,
+            "lambda1": estimate,
+            "rosenstein": slope,
+            "sato": sato,
+            "sato_k": sato_k,
+            "sato_k_curve": sato_k_curve,
+            "se": se,
+            "r_squared": r2,
+            "intercept": intercept,
+            "time": times,
+            "log_divergence": curve,
+            "log_ratio": dv["log_ratio"],
+            "n_pairs": dv["n_pairs"],
+            "fit_range": (lo, hi),
+            "k": k,
+            "m": dv["m"],
+            "tau": dv["tau"],
+            "min_sep": dv["min_sep"],
+            "n_points": dv["n_points"],
+            "n": dv["n_obs"],
+            "dt": dt,
+            "method": (f"largest Lyapunov exponent, Rosenstein, Collins & De Luca (1993), route '{method}'"),
+            "note": (
+                "the exponent is the slope of <ln d_j(i)> over the "
+                "initial rise; a positive value indicates chaos, and the "
+                "fitting window is the caller's to choose because the "
+                "curve saturates once the neighbours are as far apart as "
+                "the attractor allows"
+            ),
+        }
+    )
 
 
 largest_lyapunov = lyapunov_exponent
 
 
 def cheatsheet():
-    return ("lyapun: largest Lyapunov exponent (Rosenstein, Collins & De "
-            "Luca 1993). Embed with delay J and dimension m, find each "
-            "point's nearest neighbour at least a mean period away, and "
-            "take lambda_1 as the slope of <ln d_j(i)> against i*dt over "
-            "the initial rise -- no normalisation by d_j(0) is needed, "
-            "since a constant offset does not change a slope. Expected "
-            "values from the paper's table 1: 0.693 for the logistic map "
-            "at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' "
-            "(eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose "
-            "plateau the paper itself calls unreliable).")
+    return (
+        "lyapun: largest Lyapunov exponent (Rosenstein, Collins & De "
+        "Luca 1993). Embed with delay J and dimension m, find each "
+        "point's nearest neighbour at least a mean period away, and "
+        "take lambda_1 as the slope of <ln d_j(i)> against i*dt over "
+        "the initial rise -- no normalisation by d_j(0) is needed, "
+        "since a constant offset does not change a slope. Expected "
+        "values from the paper's table 1: 0.693 for the logistic map "
+        "at mu = 4, 0.418 for the Henon map. Routes: 'rosenstein' "
+        "(eq. 13, default), 'sato' (eq. 9), 'sato_k' (eq. 10, whose "
+        "plateau the paper itself calls unreliable)."
+    )

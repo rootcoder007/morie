@@ -91,19 +91,17 @@ def joseph_holt_linear(y, alpha=None, beta=None, horizon=1, damped=False, phi=0.
             p = lev[t - 1] + (phi if damped else 1.0) * tr[t - 1]
             fit[t] = p
             lev[t] = a * y[t] + (1 - a) * p
-            tr[t] = b * (lev[t] - lev[t - 1]) + (1 - b) * (
-                phi if damped else 1.0
-            ) * tr[t - 1]
+            tr[t] = b * (lev[t] - lev[t - 1]) + (1 - b) * (phi if damped else 1.0) * tr[t - 1]
         return lev, tr, fit
 
     if alpha is None or beta is None:
+
         def sse(x):
             a, b = _squash(x)
             _, _, f = run(a, b)
             return float(np.sum((y[1:] - f[1:]) ** 2))
 
-        res = optimize.minimize(sse, [0.0, -1.0], method="Nelder-Mead",
-                                options={"maxiter": 500})
+        res = optimize.minimize(sse, [0.0, -1.0], method="Nelder-Mead", options={"maxiter": 500})
         a_hat, b_hat = _squash(res.x)
         alpha = a_hat if alpha is None else float(alpha)
         beta = b_hat if beta is None else float(beta)
@@ -113,18 +111,21 @@ def joseph_holt_linear(y, alpha=None, beta=None, horizon=1, damped=False, phi=0.
             raise ValueError(f"{nm} must lie in (0, 1), got {v}.")
 
     lev, tr, fit = run(alpha, beta)
-    steps = (
-        np.cumsum(phi ** np.arange(1, h + 1)) if damped else np.arange(1, h + 1, dtype=float)
-    )
+    steps = np.cumsum(phi ** np.arange(1, h + 1)) if damped else np.arange(1, h + 1, dtype=float)
     return RichResult(
         payload={
-            "forecast": lev[-1] + steps * tr[-1], "level": lev, "trend": tr,
-            "fitted": fit, "residuals": y - fit,
+            "forecast": lev[-1] + steps * tr[-1],
+            "level": lev,
+            "trend": tr,
+            "fitted": fit,
+            "residuals": y - fit,
             "sse": float(np.sum((y[1:] - fit[1:]) ** 2)),
-            "alpha": alpha, "beta": beta, "damped": bool(damped),
-            "phi": float(phi) if damped else None, "n": int(n),
-            "method": "Holt linear trend exponential smoothing"
-            + (" (damped)" if damped else ""),
+            "alpha": alpha,
+            "beta": beta,
+            "damped": bool(damped),
+            "phi": float(phi) if damped else None,
+            "n": int(n),
+            "method": "Holt linear trend exponential smoothing" + (" (damped)" if damped else ""),
         }
     )
 

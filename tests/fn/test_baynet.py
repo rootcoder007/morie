@@ -1,7 +1,5 @@
 """Tests for baynet.bayes_network."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.baynet import bayes_network
 
 
@@ -18,10 +16,10 @@ def test_baynet_basic():
     # P(rain): [0.8, 0.2]
     # P(sprinkler | rain): dry->[0.6,0.4], wet->[0.2,0.8]
     # P(grass_wet | rain, sprinkler):
-        # (rain=dry, spr=off)->[1.0,0.0]
-        # (rain=dry, spr=on) ->[0.2,0.8]
-        # (rain=wet,  spr=off)->[0.4,0.6]
-        # (rain=wet,  spr=on) ->[0.0,1.0]
+    # (rain=dry, spr=off)->[1.0,0.0]
+    # (rain=dry, spr=on) ->[0.2,0.8]
+    # (rain=wet,  spr=off)->[0.4,0.6]
+    # (rain=wet,  spr=on) ->[0.0,1.0]
     cpts = {
         "rain": [0.8, 0.2],
         "sprinkler": [[0.6, 0.4], [0.2, 0.8]],
@@ -51,14 +49,12 @@ def test_baynet_basic():
     # Using the formula directly:
     normalizer_expected = 0.0
     rain_prior = cpts["rain"]
-    spr_cpt = cpts["sprinkler"]        # shape [rain, spr]
-    grass_cpt = cpts["grass_wet"]      # shape [rain, spr, grass]
+    spr_cpt = cpts["sprinkler"]  # shape [rain, spr]
+    grass_cpt = cpts["grass_wet"]  # shape [rain, spr, grass]
     for r in range(2):
         for s in range(2):
             normalizer_expected += (
-                rain_prior[r]
-                * spr_cpt[r][s]
-                * grass_cpt[r][s][1]   # grass_wet = 1
+                rain_prior[r] * spr_cpt[r][s] * grass_cpt[r][s][1]  # grass_wet = 1
             )
     assert abs(result["normalizer"] - normalizer_expected) < 1e-9
 

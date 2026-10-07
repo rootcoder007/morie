@@ -1,7 +1,6 @@
 """Tests for otpush.ot_pushforward_density."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otpush import ot_pushforward_density
 
 

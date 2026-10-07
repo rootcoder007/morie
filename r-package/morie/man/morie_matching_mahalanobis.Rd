@@ -28,7 +28,13 @@ morie_matching_mahalanobis(
 \item{replace}{If \code{TRUE}, controls may be re-used. The default
 \code{FALSE} matches MatchIt; with fewer controls than treated units it
 leaves treated units unmatched (a warning says so) and the ATT then
-describes the matchable subset: pass \code{TRUE} in that case.}
+describes the matchable subset: pass \code{TRUE} in that case. \code{NULL} (the
+default) re-uses controls only when there are fewer controls than
+treated units, where 1:1 matching without replacement would leave
+treated units unmatched and bias the ATT. \code{NULL} (the
+default) re-uses controls only when there are fewer controls than
+treated units, where 1:1 matching without replacement would leave
+treated units unmatched and bias the ATT.}
 
 \item{exact}{Optional character vector of variables to match exactly
 prior to distance matching.}
@@ -37,7 +43,9 @@ prior to distance matching.}
 A list of class \code{morie_match_result}.
 }
 \description{
-Thin wrapper around \code{MatchIt::matchit(distance = "mahalanobis")}.
+Native nearest-neighbour matching on the Mahalanobis distance of the
+covariates (cross-validated against \code{MatchIt::matchit(distance =
+"mahalanobis")}).
 }
 \examples{
 \donttest{

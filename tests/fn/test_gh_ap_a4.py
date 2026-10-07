@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_a4 import ghosal_hellinger_dist
 
 

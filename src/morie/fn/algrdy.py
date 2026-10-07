@@ -29,10 +29,15 @@ def alammar_greedy_decoding(logits):
         winners = np.flatnonzero(row == m)
         toks.append(int(winners[0]))
         ties.append(len(winners) > 1)
-    return RichResult(payload={
-        "tokens": toks, "had_ties": ties,
-        "estimate": float(toks[0]), "n": len(toks),
-        "method": "Greedy decoding argmax (Alammar Ch 6)"})
+    return RichResult(
+        payload={
+            "tokens": toks,
+            "had_ties": ties,
+            "estimate": float(toks[0]),
+            "n": len(toks),
+            "method": "Greedy decoding argmax (Alammar Ch 6)",
+        }
+    )
 
 
 def cheatsheet():

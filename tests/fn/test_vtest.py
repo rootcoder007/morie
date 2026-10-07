@@ -1,7 +1,6 @@
 """Tests for morie.fn.vtest — Test-retest reliability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vtest import validity_test_retest
 
 

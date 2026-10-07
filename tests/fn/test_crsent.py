@@ -1,7 +1,6 @@
 """Tests for crsent.cross_entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crsent import cross_entropy
 
 

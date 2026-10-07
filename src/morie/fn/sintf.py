@@ -93,10 +93,7 @@ def natural_neighbor(
 
         raw_w = np.maximum(inv_d2 - fence_inv, 0.0)
         w_sum = raw_w.sum()
-        if w_sum < 1e-30:
-            w = np.ones(k) / k
-        else:
-            w = raw_w / w_sum
+        w = np.ones(k) / k if w_sum < 1e-30 else raw_w / w_sum
 
         interp[j] = float(np.dot(w, values[idx]))
 

@@ -4,7 +4,6 @@
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["basEvap", "penman_monteith"]
@@ -83,15 +82,22 @@ def penman_monteith(T, R_n, u2, VPD, G=0.0, P=101.3):
     rad = 0.408 * delta * (R_n - G) / denom
     aero = gamma * (900.0 / (T + 273.0)) * u2 * VPD / denom
     et0 = rad + aero
-    return RichResult(payload={
-        "estimate": et0,
-        "radiative_term": rad,
-        "aerodynamic_term": aero,
-        "delta": delta,
-        "gamma": gamma,
-        "T": T, "R_n": R_n, "u2": u2, "VPD": VPD, "G": G, "P": P,
-        "method": "FAO-56 Penman-Monteith ET0 (Allen et al. 1998, Eq. 6)",
-    })
+    return RichResult(
+        payload={
+            "estimate": et0,
+            "radiative_term": rad,
+            "aerodynamic_term": aero,
+            "delta": delta,
+            "gamma": gamma,
+            "T": T,
+            "R_n": R_n,
+            "u2": u2,
+            "VPD": VPD,
+            "G": G,
+            "P": P,
+            "method": "FAO-56 Penman-Monteith ET0 (Allen et al. 1998, Eq. 6)",
+        }
+    )
 
 
 basEvap = penman_monteith
@@ -99,6 +105,7 @@ basEvap = penman_monteith
 
 def cheatsheet():
     return "basEvap(T, R_n, u2, VPD, G=0, P=101.3) -> FAO-56 Eq. 6 reference ET0 (mm/day)"
+
 
 # public names resolved by fn/_lazy_map.json
 penmanmonteith = penman_monteith

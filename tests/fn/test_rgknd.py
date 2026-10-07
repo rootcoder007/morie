@@ -1,8 +1,8 @@
 """Tests for morie.fn.rgknd — Regression kink design."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rgknd import rgknd
 
 

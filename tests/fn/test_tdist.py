@@ -1,8 +1,8 @@
 """Tests for morie.fn.tdist — geodesic distance on torus."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.tdist import torus_distance
 
 

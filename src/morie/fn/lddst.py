@@ -36,10 +36,7 @@ def local_dirichlet_density_estimate(
     x = np.asarray(x, dtype=float).ravel()
     n = len(x)
 
-    if x_eval is None:
-        x_eval = np.quantile(x, np.linspace(0.05, 0.95, 50))
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = np.quantile(x, np.linspace(0.05, 0.95, 50)) if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     if bandwidth is None:
         # Silverman's rule

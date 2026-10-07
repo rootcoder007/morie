@@ -1,7 +1,6 @@
 """Tests for gb_wt2.gibbons_ww_two_samp_runs."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_wt2 import gibbons_ww_two_samp_runs
 
 

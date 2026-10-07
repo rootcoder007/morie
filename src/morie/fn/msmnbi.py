@@ -19,8 +19,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["msm_negative_binomial"]
 
 
-def msm_negative_binomial(y, treatment_history, covariate_history=None, alpha=1.0,
-         offset=None, weights=None):
+def msm_negative_binomial(y, treatment_history, covariate_history=None, alpha=1.0, offset=None, weights=None):
     """log E[Y(a-bar)] = beta_0 + beta_a a-bar with a
     negative-binomial variance V(mu) = mu + alpha mu^2, which allows
     the overdispersion a Poisson MSM cannot represent (Hilbe 2011).
@@ -28,15 +27,19 @@ def msm_negative_binomial(y, treatment_history, covariate_history=None, alpha=1.
     the Poisson IRLS and alpha rescales the variance.
     Keys: estimate."""
     d = _gp.msm_design(treatment_history)
-    f = _gp.msm_weighted_glm(y, d["X"], weights=weights,
-                             family="poisson", offset=offset)
+    f = _gp.msm_weighted_glm(y, d["X"], weights=weights, family="poisson", offset=offset)
     mu = f["fitted"]
     var = [m + float(alpha) * m * m for m in mu]
-    res = RichResult(payload={"estimate": f["beta"][1],
-                              "beta": f["beta"],
-                              "rate_ratio": math.exp(f["beta"][1]),
-                              "variance": var, "alpha": float(alpha),
-                              "method": "negative-binomial MSM (Hilbe 2011; Robins et al. 2000)"})
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][1],
+            "beta": f["beta"],
+            "rate_ratio": math.exp(f["beta"][1]),
+            "variance": var,
+            "alpha": float(alpha),
+            "method": "negative-binomial MSM (Hilbe 2011; Robins et al. 2000)",
+        }
+    )
     return with_describe_pointer(res, "msmnbi")
 
 

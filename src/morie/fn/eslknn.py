@@ -79,16 +79,22 @@ def esl_knn(X, y, k, query=None):
     preds, nbrs = [], []
     for q in Q:
         d = np.sum((X - q) ** 2, axis=1)
-        idx = np.argsort(d, kind="stable")[:k]      # stable => ties to lower index
+        idx = np.argsort(d, kind="stable")[:k]  # stable => ties to lower index
         nbrs.append(idx)
         preds.append(float(np.mean(y[idx])))
     sd = X.std(axis=0)
-    return RichResult(payload={
-        "estimate": preds[0], "prediction": preds,
-        "neighbours": [int(v) for row in nbrs for v in row],
-        "k": k, "columns_standardised": bool(np.allclose(sd, 1.0, atol=1e-8)),
-        "n": int(n), "p": int(p),
-        "method": "kNN mean of k nearest responses; ties to lower index"})
+    return RichResult(
+        payload={
+            "estimate": preds[0],
+            "prediction": preds,
+            "neighbours": [int(v) for row in nbrs for v in row],
+            "k": k,
+            "columns_standardised": bool(np.allclose(sd, 1.0, atol=1e-8)),
+            "n": int(n),
+            "p": int(p),
+            "method": "kNN mean of k nearest responses; ties to lower index",
+        }
+    )
 
 
 def cheatsheet():

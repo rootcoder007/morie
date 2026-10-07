@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dfbetas']
+__all__ = ["dfbetas"]
 
 
 def dfbetas(X, y, intercept=True):
@@ -44,7 +44,8 @@ def dfbetas(X, y, intercept=True):
     if intercept:
         X = C.cbind1(X)
     y = C.vec(y)
-    n = len(X); p = len(X[0])
+    n = len(X)
+    p = len(X[0])
     beta, fit, res, xtxinv = C.lstsq(X, y)
     h = C.hatdiag(X, xtxinv)
     rss = sum(v * v for v in res)
@@ -53,18 +54,26 @@ def dfbetas(X, y, intercept=True):
     for i in range(n):
         d = 1.0 - h[i]
         if d <= 0:
-            out.append([float("nan")] * p); si.append(float("nan")); continue
+            out.append([float("nan")] * p)
+            si.append(float("nan"))
+            continue
         s2i = (rss - res[i] * res[i] / d) / (df - 1) if df > 1 else float("nan")
         s = math.sqrt(s2i) if s2i == s2i and s2i > 0 else float("nan")
         si.append(s)
         cx = C.matvec(xtxinv, X[i])
-        out.append([cx[j] * res[i] / d / (s * math.sqrt(xtxinv[j][j]))
-                    for j in range(p)])
-    return RichResult(payload={
-        "dfbetas": out, "cutoff": 2.0 / math.sqrt(n), "leverage": h,
-        "beta": beta, "sigma_i": si, "n": n, "p": p,
-        "method": "DFBETAS (Belsley-Kuh-Welsch)"})
-
+        out.append([cx[j] * res[i] / d / (s * math.sqrt(xtxinv[j][j])) for j in range(p)])
+    return RichResult(
+        payload={
+            "dfbetas": out,
+            "cutoff": 2.0 / math.sqrt(n),
+            "leverage": h,
+            "beta": beta,
+            "sigma_i": si,
+            "n": n,
+            "p": p,
+            "method": "DFBETAS (Belsley-Kuh-Welsch)",
+        }
+    )
 
 
 def cheatsheet():

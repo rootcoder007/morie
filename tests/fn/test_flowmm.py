@@ -16,8 +16,7 @@ def test_flowmm_basic():
     sink = n - 1
     result = max_flow_min_cut(G, source, sink)
     assert isinstance(result, dict)
-    for key in ("estimate", "max_flow", "min_cut", "cut_size",
-                "source_side", "augmentations", "n", "method"):
+    for key in ("estimate", "max_flow", "min_cut", "cut_size", "source_side", "augmentations", "n", "method"):
         assert key in result
     # Max-flow min-cut theorem: flow value equals min-cut capacity
     assert math.isclose(result["max_flow"], result["min_cut"])

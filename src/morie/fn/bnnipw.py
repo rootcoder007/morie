@@ -60,16 +60,25 @@ def bound_no_iv_proxy(y, D, Z_proxy):
     hi = hi1 - lo0
     wcw = whi - wlo
     info = 0.0 if wcw <= 0.0 else 1.0 - (hi - lo) / wcw
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "wc_width": wcw,
-        "informativeness": info, "valid": 0.0 if empty else 1.0,
-        "n_cells": len(B.cells(zv)), "n": n,
-        "method": "Bound without IV using proxy"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "wc_width": wcw,
+            "informativeness": info,
+            "valid": 0.0 if empty else 1.0,
+            "n_cells": len(B.cells(zv)),
+            "n": n,
+            "method": "Bound without IV using proxy",
+        }
+    )
 
 
 def cheatsheet():
     return "bnnipw: proxy intersection bound with a validity check"
+
 
 # public names resolved by fn/_lazy_map.json
 boundnoivproxy = bound_no_iv_proxy

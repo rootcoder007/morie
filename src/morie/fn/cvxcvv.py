@@ -102,14 +102,21 @@ def boyd_cvxlin_complement(A, B, C, tol=1e-09):
     wF = np.linalg.eigvalsh(0.5 * (full + full.T))
     return RichResult(
         title="Schur complement",
-        summary_lines=[("A psd", A_psd), ("Schur psd", S_psd),
-                       ("range condition", rng_ok),
-                       ("min eigenvalue", float(wF.min()))],
+        summary_lines=[
+            ("A psd", A_psd),
+            ("Schur psd", S_psd),
+            ("range condition", rng_ok),
+            ("min eigenvalue", float(wF.min())),
+        ],
         payload={
-            "psd": bool(A_psd and S_psd and rng_ok), "A_psd": A_psd,
-            "schur_psd": S_psd, "range_condition": rng_ok,
-            "schur_complement": schur, "min_eigenvalue": float(wF.min()),
-            "eigenvalues": wF, "method": "boyd_cvxlin_complement",
+            "psd": bool(A_psd and S_psd and rng_ok),
+            "A_psd": A_psd,
+            "schur_psd": S_psd,
+            "range_condition": rng_ok,
+            "schur_complement": schur,
+            "min_eigenvalue": float(wF.min()),
+            "eigenvalues": wF,
+            "method": "boyd_cvxlin_complement",
         },
     )
 

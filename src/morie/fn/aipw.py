@@ -227,10 +227,15 @@ def estimate_aipw(
     nonignorable drop-out using semiparametric nonresponse models. *JASA*,
     94(448), 1096--1120.
     """
+    _yv = [float(v) for v in data[outcome]]
     if outcome_model == "auto":
         # binary outcome: logistic; anything else: linear (the R arm makes the same choice)
-        _yv = [float(v) for v in data[outcome]]
         outcome_model = "logistic" if set(_yv) <= {0.0, 1.0} else "linear"
+    elif outcome_model == "logistic" and not set(_yv) <= {0.0, 1.0}:
+        raise ValueError(
+            f"outcome_model='logistic' needs a 0/1 outcome; {outcome!r} has {len(set(_yv))} distinct values "
+            "(pass outcome_model='linear', or leave the default 'auto')"
+        )
     if len(data) < 4:
         raise ValueError("at least 4 rows are needed")
     _tv = {float(v) for v in data[treatment]}

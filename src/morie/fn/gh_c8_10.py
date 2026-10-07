@@ -7,8 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_wn_crt"]
@@ -25,16 +23,18 @@ def ghosal_wn_crt(s_true=1.0, alpha_prior=1.0, ns=(100, 10000)):
         for i in range(1, 4000):
             th0 = float(i) ** (-(s_true + 0.5))
             lam = float(i) ** (2.0 * a + 1.0)
-            tot += (th0 * lam / (n + lam)) ** 2 \
-                + n / (n + lam) ** 2 + 1.0 / (n + lam)
+            tot += (th0 * lam / (n + lam)) ** 2 + n / (n + lam) ** 2 + 1.0 / (n + lam)
         risks.append(tot)
-    rate_hat = math.log(risks[0] / risks[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
+    rate_hat = math.log(risks[0] / risks[-1]) / math.log(float(ns[-1]) / ns[0])
     expect = 2.0 * min(a, s_true) / (2.0 * a + 1.0)
-    res = RichResult(payload={"estimate": rate_hat,
-                              "expected_exponent": expect,
-                              "risk_by_n": risks,
-                              "method": "white-noise contraction (GvdV 2017 Ex 8.6, eq. 8.1)"})
+    res = RichResult(
+        payload={
+            "estimate": rate_hat,
+            "expected_exponent": expect,
+            "risk_by_n": risks,
+            "method": "white-noise contraction (GvdV 2017 Ex 8.6, eq. 8.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_10")
 
 

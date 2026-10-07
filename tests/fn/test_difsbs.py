@@ -1,8 +1,8 @@
 """Tests for difsbs.dif_sibtest (Shealy & Stout 1993)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.difsbs import dif_sibtest
 
 
@@ -30,10 +30,7 @@ def test_no_dif_is_not_flagged_despite_an_ability_gap():
     reliable enough for the corrected statistic to hold roughly its
     nominal size.
     """
-    rate = np.mean([
-        np.mean(dif_sibtest(*_items(seed=s, p=20, dif=0.0))["p_value"] < 0.05)
-        for s in range(6)
-    ])
+    rate = np.mean([np.mean(dif_sibtest(*_items(seed=s, p=20, dif=0.0))["p_value"] < 0.05) for s in range(6)])
     # Averaged over seeds: one draw of 20 items is far too noisy to
     # pin a rejection rate on. Measured at 0.075 here against a
     # nominal 0.05.

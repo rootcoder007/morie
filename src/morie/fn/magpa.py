@@ -93,11 +93,9 @@ def ma_glmm_ipd_proportion(xi, ni, quad=21, level=0.95):
     fmm = _nll(x, n, lgc, mu + h, sigma, nodes, wts)
     fpp = _nll(x, n, lgc, mu - h, sigma, nodes, wts)
     hmm = (fmm - 2.0 * nll + fpp) / (h * h)
-    fss = (
-        _nll(x, n, lgc, mu, sigma + h, nodes, wts)
-        - 2.0 * nll
-        + _nll(x, n, lgc, mu, abs(sigma - h), nodes, wts)
-    ) / (h * h)
+    fss = (_nll(x, n, lgc, mu, sigma + h, nodes, wts) - 2.0 * nll + _nll(x, n, lgc, mu, abs(sigma - h), nodes, wts)) / (
+        h * h
+    )
     fms = (
         _nll(x, n, lgc, mu + h, sigma + h, nodes, wts)
         - _nll(x, n, lgc, mu + h, abs(sigma - h), nodes, wts)
@@ -107,7 +105,10 @@ def ma_glmm_ipd_proportion(xi, ni, quad=21, level=0.95):
     det = hmm * fss - fms * fms
     se = float(np.sqrt(fss / det)) if det > 0.0 and fss > 0.0 else float("nan")
     crit = k02z(0.5 + 0.5 * float(level))
-    ilogit = lambda t: 1.0 / (1.0 + float(np.exp(-t)))
+
+    def ilogit(t):
+        return 1.0 / (1.0 + float(np.exp(-t)))
+
     return RichResult(
         payload={
             "estimate": float(ilogit(mu)),

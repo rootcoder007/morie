@@ -17,12 +17,8 @@ def _mixture_loglik(X, pi, mu1, mu2, sd1, sd2):
     module reports is checked against an independent computation."""
     total = 0.0
     for x in X:
-        d1 = (1.0 - pi) * math.exp(-0.5 * ((x - mu1) / sd1) ** 2) / (
-            sd1 * math.sqrt(2.0 * math.pi)
-        )
-        d2 = pi * math.exp(-0.5 * ((x - mu2) / sd2) ** 2) / (
-            sd2 * math.sqrt(2.0 * math.pi)
-        )
+        d1 = (1.0 - pi) * math.exp(-0.5 * ((x - mu1) / sd1) ** 2) / (sd1 * math.sqrt(2.0 * math.pi))
+        d2 = pi * math.exp(-0.5 * ((x - mu2) / sd2) ** 2) / (sd2 * math.sqrt(2.0 * math.pi))
         total += math.log(d1 + d2)
     return total
 
@@ -54,9 +50,7 @@ def test_wsmemt_basic():
     # The reported log-likelihood is the mixture log-likelihood at the
     # reported parameters.
     assert out["log_likelihood"] == pytest.approx(
-        _mixture_loglik(
-            _X, out["pi"], out["mu1"], out["mu2"], out["sd1"], out["sd2"]
-        ),
+        _mixture_loglik(_X, out["pi"], out["mu1"], out["mu2"], out["sd1"], out["sd2"]),
         rel=1e-6,
     )
 
@@ -91,9 +85,7 @@ def test_wsmemt_single_cluster_data():
     assert out["mu2"] == pytest.approx(xbar, abs=0.25)
     assert 0.0 < out["pi"] < 1.0
     assert out["log_likelihood"] == pytest.approx(
-        _mixture_loglik(
-            X, out["pi"], out["mu1"], out["mu2"], out["sd1"], out["sd2"]
-        ),
+        _mixture_loglik(X, out["pi"], out["mu1"], out["mu2"], out["sd1"], out["sd2"]),
         rel=1e-6,
     )
 
@@ -131,7 +123,7 @@ import morie.fn.wsmemt as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

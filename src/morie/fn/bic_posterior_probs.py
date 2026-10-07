@@ -29,17 +29,16 @@ def bic_posterior_probs(bics):
     probs = [float(v) for v in _acd.bic_posterior_probs(bics)]
     value = probs[0]
     payload = {"value": value, "probs": probs}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (5.2)"
     return RichResult(
-        title='BIC-based posterior model probabilities',
+        title="BIC-based posterior model probabilities",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '5e2: tau_m = exp(-Delta_m/2)/sum_a exp(-Delta_a/2) [Bilder & Loughin 2025, eq. 5.2]'
+    return "5e2: tau_m = exp(-Delta_m/2)/sum_a exp(-Delta_a/2) [Bilder & Loughin 2025, eq. 5.2]"

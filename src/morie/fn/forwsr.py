@@ -69,8 +69,7 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["ols_fit", "lms_start", "forward_search", "forward_plot",
-           "forward_search_regression", "consistency_factor"]
+__all__ = ["ols_fit", "lms_start", "forward_search", "forward_plot", "forward_search_regression", "consistency_factor"]
 
 
 def _prep(X, y):
@@ -78,16 +77,14 @@ def _prep(X, y):
     yy = [float(v) for v in y]
     n = len(M)
     if n != len(yy):
-        raise ValueError("forwsr: %d rows of X but %d responses"
-                         % (n, len(yy)))
+        raise ValueError(f"forwsr: {int(n)} rows of X but {int(len(yy))} responses")
     if n < 4:
         raise ValueError("forwsr: need at least four observations")
     p = len(M[0]) if M else 0
     if p == 0 or any(len(r) != p for r in M):
         raise ValueError("forwsr: the design is ragged or empty")
     if n <= p:
-        raise ValueError("forwsr: %d observations cannot support %d "
-                         "coefficients" % (n, p))
+        raise ValueError(f"forwsr: {int(n)} observations cannot support {int(p)} coefficients")
     return M, yy, n, p
 
 
@@ -97,8 +94,7 @@ def _solve(A, b):
     for c in range(p):
         piv = max(range(c, p), key=lambda r: abs(Ab[r][c]))
         if abs(Ab[piv][c]) < 1e-12:
-            raise ValueError("forwsr: the subset is rank deficient; "
-                             "its design has collinear columns")
+            raise ValueError("forwsr: the subset is rank deficient; its design has collinear columns")
         if piv != c:
             Ab[c], Ab[piv] = Ab[piv], Ab[c]
         Ab[c], Ab[piv] = Ab[piv], Ab[c]
@@ -127,62 +123,140 @@ def _norm_ppf(p):
     doi:10.2307/2347330. Coefficients as in R's src/nmath/qnorm.c.
     """
     if not 0.0 < p < 1.0:
-        raise ValueError("forwsr: a probability must lie in (0, 1), "
-                         "got %r" % (p,))
+        raise ValueError(f"forwsr: a probability must lie in (0, 1), got {p!r}")
     q = p - 0.5
     if abs(q) <= 0.425:
         r = 0.180625 - q * q
-        return q * (((((((r * 2509.0809287301226727 +
-                          33430.575583588128105) * r +
-                         67265.770927008700853) * r +
-                        45921.953931549871457) * r +
-                       13731.693765509461125) * r +
-                      1971.5909503065514427) * r +
-                     133.14166789178437745) * r +
-                    3.387132872796366608) / \
-               (((((((r * 5226.495278852854561 +
-                      28729.085735721942674) * r +
-                     39307.89580009271061) * r +
-                    21213.794301586595867) * r +
-                   5394.1960214247511077) * r +
-                  687.1870074920579083) * r +
-                 42.313330701600911252) * r + 1.0)
+        return (
+            q
+            * (
+                (
+                    (
+                        (
+                            (
+                                ((r * 2509.0809287301226727 + 33430.575583588128105) * r + 67265.770927008700853) * r
+                                + 45921.953931549871457
+                            )
+                            * r
+                            + 13731.693765509461125
+                        )
+                        * r
+                        + 1971.5909503065514427
+                    )
+                    * r
+                    + 133.14166789178437745
+                )
+                * r
+                + 3.387132872796366608
+            )
+            / (
+                (
+                    (
+                        (
+                            (
+                                ((r * 5226.495278852854561 + 28729.085735721942674) * r + 39307.89580009271061) * r
+                                + 21213.794301586595867
+                            )
+                            * r
+                            + 5394.1960214247511077
+                        )
+                        * r
+                        + 687.1870074920579083
+                    )
+                    * r
+                    + 42.313330701600911252
+                )
+                * r
+                + 1.0
+            )
+        )
     r = p if q < 0.0 else 1.0 - p
     r = math.sqrt(-math.log(r))
     if r <= 5.0:
         r -= 1.6
-        val = (((((((r * 7.7454501427834140764e-4 +
-                     0.0227238449892691845833) * r +
-                    0.24178072517745061177) * r +
-                   1.27045825245236838258) * r +
-                  3.64784832476320460504) * r +
-                 5.7694972214606914055) * r +
-                4.6303378461565452959) * r +
-               1.42343711074968357734) / \
-              (((((((r * 1.05075007164441684324e-9 +
-                     5.475938084995344946e-4) * r +
-                    0.0151986665636164571966) * r +
-                   0.14810397642748007459) * r +
-                  0.68976733498510000455) * r +
-                 1.6763848301838038494) * r +
-                2.05319162663775882187) * r + 1.0)
+        val = (
+            (
+                (
+                    (
+                        (
+                            ((r * 7.7454501427834140764e-4 + 0.0227238449892691845833) * r + 0.24178072517745061177) * r
+                            + 1.27045825245236838258
+                        )
+                        * r
+                        + 3.64784832476320460504
+                    )
+                    * r
+                    + 5.7694972214606914055
+                )
+                * r
+                + 4.6303378461565452959
+            )
+            * r
+            + 1.42343711074968357734
+        ) / (
+            (
+                (
+                    (
+                        (
+                            ((r * 1.05075007164441684324e-9 + 5.475938084995344946e-4) * r + 0.0151986665636164571966)
+                            * r
+                            + 0.14810397642748007459
+                        )
+                        * r
+                        + 0.68976733498510000455
+                    )
+                    * r
+                    + 1.6763848301838038494
+                )
+                * r
+                + 2.05319162663775882187
+            )
+            * r
+            + 1.0
+        )
     else:
         r -= 5.0
-        val = (((((((r * 2.01033439929228813265e-7 +
-                     2.71155556874348757815e-5) * r +
-                    0.0012426609473880784386) * r +
-                   0.026532189526576123093) * r +
-                  0.29656057182850489123) * r +
-                 1.7848265399172913358) * r +
-                5.4637849111641143699) * r +
-               6.6579046435011037772) / \
-              (((((((r * 2.04426310338993978564e-15 +
-                     1.4215117583164458887e-7) * r +
-                    1.8463183175100546818e-5) * r +
-                   7.868691311456132591e-4) * r +
-                  0.0148753612908506148525) * r +
-                 0.13692988092273580531) * r +
-                0.59983220655588793769) * r + 1.0)
+        val = (
+            (
+                (
+                    (
+                        (
+                            ((r * 2.01033439929228813265e-7 + 2.71155556874348757815e-5) * r + 0.0012426609473880784386)
+                            * r
+                            + 0.026532189526576123093
+                        )
+                        * r
+                        + 0.29656057182850489123
+                    )
+                    * r
+                    + 1.7848265399172913358
+                )
+                * r
+                + 5.4637849111641143699
+            )
+            * r
+            + 6.6579046435011037772
+        ) / (
+            (
+                (
+                    (
+                        (
+                            ((r * 2.04426310338993978564e-15 + 1.4215117583164458887e-7) * r + 1.8463183175100546818e-5)
+                            * r
+                            + 7.868691311456132591e-4
+                        )
+                        * r
+                        + 0.0148753612908506148525
+                    )
+                    * r
+                    + 0.13692988092273580531
+                )
+                * r
+                + 0.59983220655588793769
+            )
+            * r
+            + 1.0
+        )
     return -val if q < 0.0 else val
 
 
@@ -233,18 +307,14 @@ def ols_fit(X, y, subset=None):
     M, yy, n, p = _prep(X, y)
     idx = list(range(n)) if subset is None else [int(i) for i in subset]
     if len(idx) < p:
-        raise ValueError("forwsr: a subset of %d cannot fit %d "
-                         "coefficients" % (len(idx), p))
-    A = [[sum(M[i][a] * M[i][b] for i in idx) for b in range(p)]
-         for a in range(p)]
+        raise ValueError(f"forwsr: a subset of {int(len(idx))} cannot fit {int(p)} coefficients")
+    A = [[sum(M[i][a] * M[i][b] for i in idx) for b in range(p)] for a in range(p)]
     v = [sum(M[i][a] * yy[i] for i in idx) for a in range(p)]
     beta = _solve(A, v)
-    resid = [yy[i] - sum(M[i][k] * beta[k] for k in range(p))
-             for i in range(n)]
+    resid = [yy[i] - sum(M[i][k] * beta[k] for k in range(p)) for i in range(n)]
     df = len(idx) - p
     s2 = (sum(resid[i] ** 2 for i in idx) / df) if df > 0 else 0.0
-    return {"beta": beta, "residuals": resid, "s2": s2,
-            "sigma": math.sqrt(s2), "subset": idx, "df": df}
+    return {"beta": beta, "residuals": resid, "s2": s2, "sigma": math.sqrt(s2), "subset": idx, "df": df}
 
 
 def lms_start(X, y, n_draw=500, seed=1):
@@ -272,8 +342,7 @@ def lms_start(X, y, n_draw=500, seed=1):
         if med < best_med:
             best_med, best = med, sorted(idx)
     if best is None:
-        raise ValueError("forwsr: every sampled subset was rank "
-                         "deficient; is the design collinear?")
+        raise ValueError("forwsr: every sampled subset was rank deficient; is the design collinear?")
     return {"subset": best, "median_sq_residual": best_med}
 
 
@@ -286,8 +355,7 @@ def forward_search(X, y, start=None, n_draw=500, seed=1):
     else:
         cur = sorted(int(i) for i in start)
         if len(cur) < p:
-            raise ValueError("forwsr: the starting subset must hold "
-                             "at least %d observations" % p)
+            raise ValueError(f"forwsr: the starting subset must hold at least {int(p)} observations")
     steps = []
     while True:
         f = ols_fit(X, y, cur)
@@ -298,21 +366,26 @@ def forward_search(X, y, start=None, n_draw=500, seed=1):
         if outside and f["sigma"] > 0:
             # scale the truncated s before comparing anything to it
             sig = f["sigma"] / math.sqrt(consistency_factor(len(cur), n))
-            mdr = (min(abs(f["residuals"][i]) for i in outside) / sig
-                   if sig > 0.0 else float("nan"))
+            mdr = min(abs(f["residuals"][i]) for i in outside) / sig if sig > 0.0 else float("nan")
         else:
             mdr = float("nan")
         cfac = consistency_factor(len(cur), n)
-        steps.append({"m": len(cur), "beta": list(f["beta"]),
-                      "sigma": f["sigma"], "s2": f["s2"],
-                      "consistency_factor": cfac,
-                      "sigma_corrected": f["sigma"] / math.sqrt(cfac),
-                      "min_deletion_residual": mdr,
-                      "subset": list(cur)})
+        steps.append(
+            {
+                "m": len(cur),
+                "beta": list(f["beta"]),
+                "sigma": f["sigma"],
+                "s2": f["s2"],
+                "consistency_factor": cfac,
+                "sigma_corrected": f["sigma"] / math.sqrt(cfac),
+                "min_deletion_residual": mdr,
+                "subset": list(cur),
+            }
+        )
         if len(cur) >= n:
             break
         order = sorted(range(n), key=lambda i: abs(f["residuals"][i]))
-        cur = sorted(order[:len(cur) + 1])
+        cur = sorted(order[: len(cur) + 1])
     return steps
 
 
@@ -321,15 +394,15 @@ def forward_plot(steps, key="min_deletion_residual"):
     if not steps:
         raise ValueError("forwsr: no steps to monitor")
     if key not in steps[0]:
-        raise ValueError("forwsr: %r is not monitored; available: %s"
-                         % (key, ", ".join(sorted(k for k in steps[0]
-                                                  if k != "subset"))))
-    return {"m": [s["m"] for s in steps],
-            key: [s[key] for s in steps]}
+        raise ValueError(
+            "forwsr: {!r} is not monitored; available: {}".format(
+                key, ", ".join(sorted(k for k in steps[0] if k != "subset"))
+            )
+        )
+    return {"m": [s["m"] for s in steps], key: [s[key] for s in steps]}
 
 
-def forward_search_regression(X, y, start=None, n_draw=500, seed=1,
-                              threshold=3.0, min_df=5):
+def forward_search_regression(X, y, start=None, n_draw=500, seed=1, threshold=3.0, min_df=5):
     r"""Entry point: run the search and report where it jumps.
 
     ``threshold`` is on the minimum deletion residual. The units
@@ -356,21 +429,26 @@ def forward_search_regression(X, y, start=None, n_draw=500, seed=1,
     for a, b in zip(steps, steps[1:]):
         new = [i for i in b["subset"] if i not in a["subset"]]
         entered.append((b["m"], new[0] if new else None))
-    flagged = [i for m, i in entered
-               if jump is not None and m > jump and i is not None]
+    flagged = [i for m, i in entered if jump is not None and m > jump and i is not None]
     full = ols_fit(X, y)
-    return RichResult(payload={
-        "estimate": full["beta"], "coefficients": full["beta"],
-        "steps": steps, "n": n, "n_flagged": len(flagged),
-        "flagged": flagged, "jump_at_m": jump,
-        "threshold": float(threshold), "min_df": int(min_df),
-        "monitored_from_m": p + int(min_df),
-        "entry_order": entered,
-        "sigma_trajectory": [s["sigma"] for s in steps],
-        "mdr_trajectory": [s["min_deletion_residual"] for s in steps],
-        "method": "forward search (Atkinson & Riani 2000) from a "
-                  "least-median-of-squares start",
-    })
+    return RichResult(
+        payload={
+            "estimate": full["beta"],
+            "coefficients": full["beta"],
+            "steps": steps,
+            "n": n,
+            "n_flagged": len(flagged),
+            "flagged": flagged,
+            "jump_at_m": jump,
+            "threshold": float(threshold),
+            "min_df": int(min_df),
+            "monitored_from_m": p + int(min_df),
+            "entry_order": entered,
+            "sigma_trajectory": [s["sigma"] for s in steps],
+            "mdr_trajectory": [s["min_deletion_residual"] for s in steps],
+            "method": "forward search (Atkinson & Riani 2000) from a least-median-of-squares start",
+        }
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

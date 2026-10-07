@@ -24,10 +24,7 @@ def svout(position, ideal=None, thresholds=None):
     DescriptiveResult
     """
     position = np.asarray(position, dtype=float)
-    if ideal is None:
-        ideal = np.zeros_like(position)
-    else:
-        ideal = np.asarray(ideal, dtype=float)
+    ideal = np.zeros_like(position) if ideal is None else np.asarray(ideal, dtype=float)
     dist = float(np.sqrt(np.sum((position - ideal) ** 2)))
     if thresholds is not None:
         thresholds = np.asarray(thresholds, dtype=float)

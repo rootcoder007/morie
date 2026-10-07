@@ -37,7 +37,7 @@ def continued_fraction_pi(n):
     """
     nn = int(n)
     if not 1 <= nn <= len(_PI_TERMS):
-        raise ValueError("n must be between 1 and %d" % len(_PI_TERMS))
+        raise ValueError(f"n must be between 1 and {int(len(_PI_TERMS))}")
     terms = _PI_TERMS[:nn]
     hm1, hm2 = 1, 0
     km1, km2 = 0, 1
@@ -50,12 +50,21 @@ def continued_fraction_pi(n):
         km2, km1 = km1, k
     h, k = conv[-1]
     val = h / float(k)
-    return with_describe_pointer(RichResult(payload={
-        "estimate": val, "terms": terms, "convergents": conv,
-        "numerator": h, "denominator": k,
-        "error": val - 3.141592653589793, "n": nn,
-        "method": "continued fraction convergents of pi",
-    }), "conti")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": val,
+                "terms": terms,
+                "convergents": conv,
+                "numerator": h,
+                "denominator": k,
+                "error": val - 3.141592653589793,
+                "n": nn,
+                "method": "continued fraction convergents of pi",
+            }
+        ),
+        "conti",
+    )
 
 
 def cheatsheet():

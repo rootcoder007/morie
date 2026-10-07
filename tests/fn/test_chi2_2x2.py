@@ -1,7 +1,5 @@
 """Tests for chi2_2x2.chi2_2x2."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.chi2_2x2 import chi2_2x2
 
 
@@ -29,9 +27,7 @@ def test_ca9e4_basic():
     # chi-square statistic for a 2x2 table: (ad - bc)^2 * N /
     # [(a+b)(c+d)(a+c)(b+d)]
     N = a + b + c + d
-    expected_chi2 = (a * d - b * c) ** 2 * N / (
-        (a + b) * (c + d) * (a + c) * (b + d)
-    )
+    expected_chi2 = (a * d - b * c) ** 2 * N / ((a + b) * (c + d) * (a + c) * (b + d))
     assert result["chi2"] == expected_chi2
 
     # The method should be documented in the payload.
@@ -50,8 +46,6 @@ def test_ca9e4_edge():
 
     # With a 1:1:1:1 table, ad - bc == 0, so chi2 must be 0.0.
     N = a + b + c + d
-    expected_chi2 = (a * d - b * c) ** 2 * N / (
-        (a + b) * (c + d) * (a + c) * (b + d)
-    )
+    expected_chi2 = (a * d - b * c) ** 2 * N / ((a + b) * (c + d) * (a + c) * (b + d))
     assert result["chi2"] == expected_chi2
     assert result["chi2"] == 0.0

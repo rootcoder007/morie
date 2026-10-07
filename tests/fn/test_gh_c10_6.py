@@ -1,7 +1,6 @@
 """Tests for gh_c10_6.ghosal_rnd_series_pr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c10_6 import ghosal_rnd_series_pr
 
 
@@ -14,7 +13,7 @@ def test_gh_c10_6_basic():
 
     # The posterior mean is a weighted average of K in [0, K_max] with
     # non-negative weights summing to 1, so the estimate must lie in [0, K_max].
-    assert 0.0 <= est <= float(K_max := 15)
+    assert 0.0 <= est <= 15.0  # K_max = 15
 
     # Independent recomputation of the posterior mean from the function's
     # own posterior (documented in the docstring: "Keys: estimate",

@@ -1,7 +1,6 @@
 """Tests for patchT.patch_tst."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.patchT import patch_tst
 
 

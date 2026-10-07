@@ -85,16 +85,20 @@ def geron_explained_variance_ratio(X, n_components=None, center=True):
 
     k = len(evr) if n_components is None else int(n_components)
     if k < 1 or k > len(evr):
-        raise ValueError(f"geron_explained_variance_ratio: n_components must lie in 1..{len(evr)}, got {n_components!r}")
+        raise ValueError(
+            f"geron_explained_variance_ratio: n_components must lie in 1..{len(evr)}, got {n_components!r}"
+        )
 
     return RichResult(
         title="Explained variance ratio",
         summary_lines=[("Components", int(k)), ("Variance kept", float(cum[k - 1]))],
-        tables=[{
-            "title": "components",
-            "headers": ["k", "singular value", "variance", "ratio", "cumulative"],
-            "rows": [[i + 1, float(s[i]), float(var[i]), float(evr[i]), float(cum[i])] for i in range(k)],
-        }],
+        tables=[
+            {
+                "title": "components",
+                "headers": ["k", "singular value", "variance", "ratio", "cumulative"],
+                "rows": [[i + 1, float(s[i]), float(var[i]), float(evr[i]), float(cum[i])] for i in range(k)],
+            }
+        ],
         interpretation="Ratios sum to 1 over all components, so `cumulative` is the fraction of variance kept.",
         payload={
             "explained_variance_ratio": evr[:k].tolist(),

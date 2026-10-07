@@ -1,7 +1,6 @@
 """Tests for assort.degree_assortativity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.assort import degree_assortativity
 
 
@@ -39,8 +38,8 @@ def test_assort_basic():
     sk = 0.0
     sj2 = 0.0
     sk2 = 0.0
-    for (u, v) in edges:
-        for (p, q) in ((u, v), (v, u)):
+    for u, v in edges:
+        for p, q in ((u, v), (v, u)):
             jj = deg[p] - off
             kk = deg[q] - off
             sjk += jj * kk

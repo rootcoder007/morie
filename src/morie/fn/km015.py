@@ -32,14 +32,17 @@ def kamath_ch2_multihead_head_i(Q, K, V, W_Qi, W_Ki, W_Vi):
     Wv = np.atleast_2d(np.asarray(W_Vi, dtype=float))
     for nm, X, W in (("Q", Q, Wq), ("K", K, Wk), ("V", V, Wv)):
         if X.shape[1] != W.shape[0]:
-            raise ValueError(
-                f"{nm} has width {X.shape[1]} but its projection has "
-                f"{W.shape[0]} rows.")
+            raise ValueError(f"{nm} has width {X.shape[1]} but its projection has {W.shape[0]} rows.")
     out = scaled_dot_product_attention(Q @ Wq, K @ Wk, V @ Wv)
-    return RichResult(payload={
-        "head": out["output"], "attention": out["attention"],
-        "estimate": out["estimate"], "n": Q.shape[0],
-        "method": "Single projected attention head (Kamath Eq 2.15)"})
+    return RichResult(
+        payload={
+            "head": out["output"],
+            "attention": out["attention"],
+            "estimate": out["estimate"],
+            "n": Q.shape[0],
+            "method": "Single projected attention head (Kamath Eq 2.15)",
+        }
+    )
 
 
 def cheatsheet():

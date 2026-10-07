@@ -9,7 +9,6 @@
 # morie.fn.rmsyt, morie.fn.ramsy and the R implementation. One core,
 # one fix.
 
-
 from __future__ import annotations
 
 from . import _array_core as np
@@ -56,8 +55,7 @@ def ramsey_reset_test(
         df=float(df1),
         method=f"RESET with powers 2..{int(power)}",
         n=n,
-        extra={"df_num": df1, "df_den": df2, "powers": powers,
-               "ssr_restricted": ssr_r, "ssr_unrestricted": ssr_u},
+        extra={"df_num": df1, "df_den": df2, "powers": powers, "ssr_restricted": ssr_r, "ssr_unrestricted": ssr_u},
     )
 
 

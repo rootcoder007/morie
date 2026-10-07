@@ -1,8 +1,8 @@
 """Tests for morie.fn.cstmd — custody medical rate."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import CrimeResult
 from morie.fn.cstmd import custody_medical
 

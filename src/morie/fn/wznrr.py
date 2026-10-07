@@ -61,7 +61,7 @@ def wznrr(
 
     eps = 1e-300
     n_x, n_y = pxy.shape
-    n_xhat = D.shape[1]
+    D.shape[1]
 
     px = pxy.sum(axis=1)
     py = pxy.sum(axis=0)
@@ -73,15 +73,9 @@ def wznrr(
     h_x_given_y = h_xy - h_y
 
     d_max = np.max(D)
-    if target_distortion >= d_max:
-        rate_no_si = 0.0
-    else:
-        rate_no_si = max(h_x * (1.0 - target_distortion / (d_max + eps)), 0.0)
+    rate_no_si = 0.0 if target_distortion >= d_max else max(h_x * (1.0 - target_distortion / (d_max + eps)), 0.0)
 
-    if target_distortion >= d_max:
-        rate_wz = 0.0
-    else:
-        rate_wz = max(h_x_given_y * (1.0 - target_distortion / (d_max + eps)), 0.0)
+    rate_wz = 0.0 if target_distortion >= d_max else max(h_x_given_y * (1.0 - target_distortion / (d_max + eps)), 0.0)
 
     return {
         "rate_wz": rate_wz,

@@ -58,11 +58,6 @@ def cooccurrence_matrix(
     pmi = np.log2(C / expected + 1e-30)
     np.fill_diagonal(pmi, 0)
 
-    if normalize:
-        result_matrix = jaccard
-    else:
-        result_matrix = C
-
     return DescriptiveResult(
         name="cooccurrence_matrix",
         value={

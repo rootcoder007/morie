@@ -1,7 +1,6 @@
 """Tests for hwadd.holt_winters_additive."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hwadd import holt_winters_additive
 
 

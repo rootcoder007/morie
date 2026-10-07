@@ -1,7 +1,6 @@
 """Tests for kmbon.kamath_best_of_n_sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmbon import kamath_best_of_n_sampling
 
 

@@ -5,8 +5,6 @@ recomputed in the test body and the docstring's own worked value is
 asserted too.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km149 import kamath_ch9_flamingo_factorized

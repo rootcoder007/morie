@@ -1,7 +1,6 @@
 """Tests for morie.fn.cpelt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cpelt import cpelt
 
 

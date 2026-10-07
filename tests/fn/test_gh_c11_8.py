@@ -1,8 +1,6 @@
 """Tests for gh_c11_8.ghosal_fbm_prior."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gh_c11_8 import ghosal_fbm_prior
 
 
@@ -14,8 +12,7 @@ def test_gh_c11_8_basic():
     estimate = float(np.asarray(result["estimate"], dtype=float))
     # Independent computation of K(ts[0], ts[0]) via the documented formula:
     H = 0.7
-    expected_estimate = 0.5 * (ts[0] ** (2 * H) + ts[0] ** (2 * H)
-                                - abs(ts[0] - ts[0]) ** (2 * H))
+    expected_estimate = 0.5 * (ts[0] ** (2 * H) + ts[0] ** (2 * H) - abs(ts[0] - ts[0]) ** (2 * H))
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))
     assert abs(estimate - expected_estimate) < 1e-12
 

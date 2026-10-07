@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE of the sign test against the Wilcoxon signed-rank test."""
 
-from . import _array_core as np
 from ._gb_are import efficacy_are
 from ._richresult import RichResult
 
@@ -39,7 +38,8 @@ def gibbons_are_sign_wilcoxon(f, cdf=None):
     out = efficacy_are(f)
     return RichResult(
         payload={
-            "are": out["sign_vs_wilcoxon"], "f0": out["f0"],
+            "are": out["sign_vs_wilcoxon"],
+            "f0": out["f0"],
             "int_f2": out["int_f2"],
             "method": "ARE(K, T+) = f(0)^2/[3 (int f^2)^2] (Gibbons Ch. 13.3)",
         }

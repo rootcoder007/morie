@@ -51,7 +51,12 @@ def bicdag(data, dag, names=None):
     res = _core.bicdag(data=data, dag=dag, names=names)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("score", res["score"]), ("loglik", res["loglik"]), ("k", res["k"]), ("penalty", res["penalty"])],
+        summary_lines=[
+            ("score", res["score"]),
+            ("loglik", res["loglik"]),
+            ("k", res["k"]),
+            ("penalty", res["penalty"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

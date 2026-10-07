@@ -1,7 +1,6 @@
 """Tests for maedf.mae_metric."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.maedf import mae_metric
 
 

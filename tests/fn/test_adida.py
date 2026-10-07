@@ -1,9 +1,9 @@
 """Tests for adida. Full anchor: wave3/anchor_intermittent.py."""
+
 import pytest
+
 from morie.fn import _array_core as np
-from morie.fn.adida import (adida_forecast, aggregate_buckets,
-                            disaggregate, temporal_combination,
-                            zero_fraction)
+from morie.fn.adida import adida_forecast, aggregate_buckets, disaggregate, temporal_combination, zero_fraction
 
 
 @pytest.fixture(scope="module")
@@ -45,8 +45,7 @@ def test_lead_time_aggregation_needs_no_disaggregation(demand):
     forecast BE lead-time demand."""
     r = adida_forecast(demand, 1, horizon=6, lead_time=6)
     assert r["lead_time_demand"] is not None
-    assert sum(r["forecast"]) == pytest.approx(r["aggregate_forecast"],
-                                               abs=1e-9)
+    assert sum(r["forecast"]) == pytest.approx(r["aggregate_forecast"], abs=1e-9)
     plain = adida_forecast(demand, 4, horizon=8)
     assert plain["disaggregation_sums_back"]
 

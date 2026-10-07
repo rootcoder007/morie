@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['enetobj', 'elastic_net_objective']
+__all__ = ["enetobj", "elastic_net_objective"]
 
 
 def enetobj(X, y, beta, lam, alpha, add_intercept=True):
@@ -52,20 +52,29 @@ def enetobj(X, y, beta, lam, alpha, add_intercept=True):
         raise ValueError("lambda must be non-negative")
     if not 0.0 <= a <= 1.0:
         raise ValueError("alpha must lie in [0, 1]")
-    rss = sum((y[i] - sum(Xm[i][j] * b[j] for j in range(p))) ** 2
-              for i in range(n))
+    rss = sum((y[i] - sum(Xm[i][j] * b[j] for j in range(p))) ** 2 for i in range(n))
     start = 1 if add_intercept else 0
     l2 = sum(b[j] * b[j] for j in range(start, p))
     l1 = sum(abs(b[j]) for j in range(start, p))
     pen = lam * (0.5 * (1.0 - a) * l2 + a * l1)
-    return RichResult(payload={
-        "prss": rss + pen, "rss": rss, "penalty": pen, "l1": l1, "l2": l2,
-        "lambda": lam, "alpha": a, "n": n, "p": p,
-        "method": "Elastic net penalized RSS, MVSML Sect. 3.6.2 / Chap. 7"})
+    return RichResult(
+        payload={
+            "prss": rss + pen,
+            "rss": rss,
+            "penalty": pen,
+            "l1": l1,
+            "l2": l2,
+            "lambda": lam,
+            "alpha": a,
+            "n": n,
+            "p": p,
+            "method": "Elastic net penalized RSS, MVSML Sect. 3.6.2 / Chap. 7",
+        }
+    )
 
 
 elastic_net_objective = enetobj
 
 
 def cheatsheet():
-    return 'enobj: Elastic net penalized residual sum of squares.'
+    return "enobj: Elastic net penalized residual sum of squares."

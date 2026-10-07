@@ -1,8 +1,8 @@
 """Tests for morie.fn.garch — GARCH(1,1)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.garch import garch_fit
 
 

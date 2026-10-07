@@ -15,6 +15,8 @@ Adding a new module's output files means adding entries here.
 
 from __future__ import annotations
 
+import re
+
 # Map filename (no path) → multi-line explanation.
 # Keep each entry to a paragraph + a short table; the goal is "scan
 # in 30 seconds, know what to do next", not a methodology paper.
@@ -39,19 +41,26 @@ The actual power/sample-size grids live in the companion files:
 Question this file answers: "How many participants per gender group
 do I need to detect an effect of size X?"
 
-Read each row: pick the effect_size you want to detect; the row tells
-you the per-group sample size needed.
+Read each row: it compares two groups (group1 vs group2) as observed in the
+data; p1 and p2 are their weighted prevalences of the outcome and h is the
+gap between them as an effect size.
 
-Columns:
-  - effect_size          The difference in proportions you want to detect
-                         (e.g. 0.05 = a 5 percentage-point gap between
-                          men and women)
-  - n_per_group          Number of participants per group required
-  - power                Achieved power at this n (should match your design)
-  - assumed_baseline     The baseline proportion the calculation uses
+Columns (both routes write all of them; one row per group pair and outcome):
+  - group1, group2       The two groups compared (e.g. men vs women)
+  - p1, p2               The weighted outcome prevalence observed in each group
+  - h                    Cohen's h for the two proportions
+  - n1, n2               The observed group sizes in the data (not sample sizes needed)
+  - n_eq                 Per-group n needed for 80% power at this h, equal allocation,
+                         simple random sampling: 2((z_a + z_b) / h)^2
+  - power_srs            Power the observed n1, n2 give under simple random sampling
+  - n_eq_eff             n_eq inflated by Kish's design effect of the two groups' weights
+  - power_deff           Power the observed sizes give once the design effect is applied
+  - analysis_mode        "observational": the groups are as surveyed, not assigned
+  - power_scope          The outcome the comparison is about (e.g. heavy_drinking_30d)
 
-Typical usage: scroll to the row matching your hypothesised effect, read
-n_per_group, double it for total sample.
+Typical usage: read n_eq_eff (the design-adjusted per-group n needed) and double
+it for the total sample; power_srs / power_deff say what the survey as it stands
+can detect.
 """.strip(),
     "power_one_proportion_grid.csv": """
 Same idea as power_two_proportion_gender.csv, but for a single-proportion
@@ -127,7 +136,8 @@ Step-by-step log of what the data-wrangling module did to your input
     # ─── descriptive-statistics outputs ─────────────────────────────────
     "binomial_summaries.csv": """
 Unweighted binomial summaries (e.g. heavy_drinking_30d prevalence): plain
-sample proportions with Wilson intervals, no survey weights applied. Compare
+sample proportions with 95% Wald intervals (ci_low_wald, ci_high_wald;
+p +/- 1.96 sqrt(p(1-p)/n), clipped to [0, 1]), no survey weights applied. Compare
 against binomial_summaries_survey_weighted to see how much the design
 weights shift the estimates.
 """.strip(),
@@ -141,19 +151,22 @@ Read column by column; row labels indicate the conditioning event.
 """.strip(),
     # ─── frequentist-inference outputs ──────────────────────────────────
     "frequentist_heavy_drinking_prevalence_ci.csv": """
-Frequentist (Wilson / Clopper-Pearson) confidence intervals for the
-prevalence of heavy drinking.  Each row is one subgroup; columns are
-estimate, ci_lower, ci_upper.
+Survey-weighted prevalence of heavy drinking with 95% Wald intervals on the
+Kish effective sample size (n_eff = (sum w)^2 / sum w^2).  Each row is one
+subgroup: prev, se, ci_lower, ci_upper, n_unweighted_nonmissing.
 """.strip(),
     "frequentist_effect_sizes.csv": """
-Cohen's-d / odds-ratio / risk-difference effect sizes for the primary
-contrasts of the analysis.  Read alongside p-values from
+Effect sizes for each pair of subgroups' weighted heavy-drinking prevalence
+(p1, p2) on three scales: Cohen's h = 2 asin(sqrt(p1)) - 2 asin(sqrt(p2))
+(|h| < 0.2 small, < 0.5 medium, otherwise large), risk_difference = p1 - p2,
+and odds_ratio = [p1/(1-p1)] / [p2/(1-p2)].  Read alongside p-values from
 frequentist_hypothesis_tests.csv.
 """.strip(),
     "frequentist_hypothesis_tests.csv": """
-Per-contrast p-values and test statistics.  CAUTION: these are
-NOT corrected for multiple comparisons by default — apply
-Bonferroni / Benjamini-Hochberg yourself if your design demands it.
+Per-contrast test statistics and p-values.  p_value is unadjusted;
+p_bonferroni and p_fdr_bh adjust it across all the tests in this table
+(Bonferroni; Benjamini-Hochberg), and sig_nominal / sig_bonf / sig_fdr flag
+p < 0.05 on each scale.
 """.strip(),
 }
 
@@ -161,9 +174,14 @@ Bonferroni / Benjamini-Hochberg yourself if your design demands it.
 def describe(filename: str) -> str:
     """Return the human-readable description of an output CSV, or a fallback."""
     # Normalise: strip path, lowercase, common suffix variations
-    name = filename.rsplit("/", 1)[-1]
+    name = re.split(r"[\\/]", filename)[-1]  # a Windows path names the file after a backslash
     if name in _EXPLANATIONS:
         return _EXPLANATIONS[name]
+    from ._explain_tables import explain_table
+
+    table = explain_table(name, filename)  # every module table: purpose + the columns the file really has
+    if table is not None:
+        return table
     # Try without extension swap
     base = name.rsplit(".", 1)[0]
     for candidate, body in _EXPLANATIONS.items():
@@ -211,11 +229,11 @@ morie cheat sheet
   morie run-module power-design --output-dir out/
   morie run-module descriptive-statistics --output-dir out/
   morie run-module frequentist-inference --output-dir out/
-  morie run-modules all --output-dir out/
+  morie pipeline --all --output-dir out/
 
 {t("cheatsheet.pull")}
   morie pull tps-major --year 2024 --out tps-2024.csv
-  morie pull chicago_crime/incidents --out incidents.csv   # curated tables at data.rmorie.com (after morie login)
+  morie pull chicago_crime/incidents --out incidents.csv   # curated tables at data.rmorie.com (after morie login, GitHub or --email)
   morie pull tps-shootings --year 2024
   morie pull tps-homicide --year 2024
   morie pull tps-layers                                   # registry
@@ -226,7 +244,7 @@ morie cheat sheet
 {t("cheatsheet.ingest")}
   morie ingest tps --layer major-crime --year 2024 --out tps.csv
   morie ingest ckan --portal https://open.canada.ca/data --search alcohol
-  morie ingest siu --report-id 22-OFD-001 --out report/
+  morie ingest siu --report-id 17-OVI-201 --out report/
 
 {t("cheatsheet.help")}
   morie login                     Sign in to the hosted model tier (free; GitHub or email)
@@ -243,7 +261,7 @@ morie cheat sheet
   Docs:     https://rootcoder007.github.io/morie/
   Issues:   https://github.com/rootcoder007/morie/issues
   PyPI:     https://pypi.org/project/morie/
-  R:        https://rootcoder007.r-universe.dev/morie
+  R:        https://rootcoder007.r-universe.dev/rmorie
 """.strip()
 
 
@@ -252,4 +270,5 @@ CHEATSHEET = _cheatsheet_body.__doc__ or ""
 
 
 def print_cheatsheet() -> None:
+    """Print the ``morie explain`` cheatsheet: the output-file glossary in brief."""
     print(_cheatsheet_body())

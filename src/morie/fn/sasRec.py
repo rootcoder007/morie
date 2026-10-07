@@ -59,12 +59,10 @@ Hidasi, B., Karatzoglou, A., Baltrunas, L. & Tikk, D. (2016)
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["causal_mask", "self_attention", "attention_span",
-           "predict_next", "complexity"]
+__all__ = ["causal_mask", "self_attention", "attention_span", "predict_next", "complexity"]
 
 _EPS = 1e-12
 
@@ -78,19 +76,17 @@ def causal_mask(n):
     m = int(n)
     if m < 1:
         raise ValueError("sasRec: the sequence must be non-empty")
-    return [[1.0 if j <= i else 0.0 for j in range(m)]
-            for i in range(m)]
+    return [[1.0 if j <= i else 0.0 for j in range(m)] for i in range(m)]
 
 
 def self_attention(E, WQ, WK, WV, mask=None):
     r"""Masked scaled dot-product attention over the item embeddings."""
     X = [[float(v) for v in r] for r in k.mat(E)]
-    n, d = len(X), len(X[0])
+    n, _d = len(X), len(X[0])
     M = causal_mask(n) if mask is None else mask
 
     def proj(W, x):
-        return [sum(W[o][j] * x[j] for j in range(len(x)))
-                for o in range(len(W))]
+        return [sum(W[o][j] * x[j] for j in range(len(x))) for o in range(len(W))]
 
     dk = len(WQ)
     out, weights = [], []
@@ -102,19 +98,15 @@ def self_attention(E, WQ, WK, WV, mask=None):
                 sc.append(-1e30)
                 continue
             kk = proj(WK, X[j])
-            sc.append(sum(q[a] * kk[a] for a in range(dk))
-                      / math.sqrt(dk))
+            sc.append(sum(q[a] * kk[a] for a in range(dk)) / math.sqrt(dk))
         mx = max(sc)
         e = [math.exp(v - mx) if v > -1e29 else 0.0 for v in sc]
         z = sum(e) or 1.0
         w = [v / z for v in e]
         weights.append(w)
         vs = [proj(WV, X[j]) for j in range(n)]
-        out.append([sum(w[j] * vs[j][a] for j in range(n))
-                    for a in range(len(vs[0]))])
-    return {"output": out, "weights": weights,
-            "note": "the mask is a correctness condition, not an "
-                    "optimisation"}
+        out.append([sum(w[j] * vs[j][a] for j in range(n)) for a in range(len(vs[0]))])
+    return {"output": out, "weights": weights, "note": "the mask is a correctness condition, not an optimisation"}
 
 
 def attention_span(weights, position=None):
@@ -127,15 +119,16 @@ def attention_span(weights, position=None):
     W = [[float(v) for v in r] for r in k.mat(weights)]
     i = len(W) - 1 if position is None else int(position)
     row = W[i]
-    tot = sum(row[:i + 1])
+    tot = sum(row[: i + 1])
     if tot <= _EPS:
         raise ValueError("sasRec: the attention row has no mass")
     span = sum((i - j) * row[j] for j in range(i + 1)) / tot
-    return {"mean_lookback": span,
-            "mass_on_last": row[i] / tot,
-            "effective_order": span + 1.0,
-            "note": "a short span IS Markov behaviour; a long one is "
-                    "RNN behaviour, chosen per sequence"}
+    return {
+        "mean_lookback": span,
+        "mass_on_last": row[i] / tot,
+        "effective_order": span + 1.0,
+        "note": "a short span IS Markov behaviour; a long one is RNN behaviour, chosen per sequence",
+    }
 
 
 def predict_next(state, item_embeddings, top_k=5, exclude=()):
@@ -143,15 +136,16 @@ def predict_next(state, item_embeddings, top_k=5, exclude=()):
     s = [float(v) for v in k.vec(state)]
     E = [[float(v) for v in r] for r in k.mat(item_embeddings)]
     ex = set(int(v) for v in exclude)
-    sc = [(i, sum(s[a] * E[i][a] for a in range(len(s))))
-          for i in range(len(E)) if i not in ex]
+    sc = [(i, sum(s[a] * E[i][a] for a in range(len(s)))) for i in range(len(E)) if i not in ex]
     sc.sort(key=lambda t: -t[1])
-    return RichResult(payload={
-        "estimate": sc[:int(top_k)], "ranking": sc[:int(top_k)],
-        "n_scored": len(sc),
-        "method": "self-attentive sequential recommendation; Kang & "
-                  "McAuley (2018)",
-    })
+    return RichResult(
+        payload={
+            "estimate": sc[: int(top_k)],
+            "ranking": sc[: int(top_k)],
+            "n_scored": len(sc),
+            "method": "self-attentive sequential recommendation; Kang & McAuley (2018)",
+        }
+    )
 
 
 def complexity(n, d):
@@ -163,25 +157,28 @@ def complexity(n, d):
     nn, dd = int(n), int(d)
     if nn < 1 or dd < 1:
         raise ValueError("sasRec: n and d must be positive")
-    return {"attention_ops": nn * nn * dd, "rnn_ops": nn * dd * dd,
-            "attention_sequential_steps": 1, "rnn_sequential_steps":
-            nn,
-            "note": "the parallelism, not the operation count, is "
-                    "where the order-of-magnitude speed-up comes "
-                    "from"}
+    return {
+        "attention_ops": nn * nn * dd,
+        "rnn_ops": nn * dd * dd,
+        "attention_sequential_steps": 1,
+        "rnn_sequential_steps": nn,
+        "note": "the parallelism, not the operation count, is where the order-of-magnitude speed-up comes from",
+    }
 
 
 def cheatsheet():
-    return ("sasRec: Markov chains win where data are SPARSE (parsimony "
-            "is critical), RNNs where they are DENSE (complexity is "
-            "affordable) -- and the choice is normally made once for a "
-            "whole dataset. Self-attention picks per sequence: it can "
-            "reach far back like an RNN while predicting from FEW "
-            "actions like an MC, and the attention weights show it "
-            "adapting to density. Causal masking is a CORRECTNESS "
-            "condition -- attending forward leaks the target. O(n^2 d) "
-            "but fully parallel against an RNN's inherently sequential "
-            "O(n d^2).")
+    return (
+        "sasRec: Markov chains win where data are SPARSE (parsimony "
+        "is critical), RNNs where they are DENSE (complexity is "
+        "affordable) -- and the choice is normally made once for a "
+        "whole dataset. Self-attention picks per sequence: it can "
+        "reach far back like an RNN while predicting from FEW "
+        "actions like an MC, and the attention weights show it "
+        "adapting to density. Causal masking is a CORRECTNESS "
+        "condition -- attending forward leaks the target. O(n^2 d) "
+        "but fully parallel against an RNN's inherently sequential "
+        "O(n d^2)."
+    )
 
 
 # compact alias per ledger/NAMING.md

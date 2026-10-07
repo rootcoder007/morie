@@ -70,9 +70,7 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
     if p + q == 0:
         raise ValueError("need at least one AR or MA term.")
     if n <= p + q + 2:
-        raise ValueError(
-            "series of length %d is too short for ARMA(%d, %d)." % (n, p, q)
-        )
+        raise ValueError(f"series of length {int(n)} is too short for ARMA({int(p)}, {int(q)}).")
 
     m = max(p, q)
     eps = np.zeros(n)
@@ -97,11 +95,11 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
             break
 
     c = float(coef[0])
-    phi = coef[1:1 + p]
-    theta = coef[1 + p:]
+    phi = coef[1 : 1 + p]
+    theta = coef[1 + p :]
     resid = eps[m:]
     k = 1 + p + q
-    s2 = float(np.sum(resid ** 2) / max(resid.size - k, 1))
+    s2 = float(np.sum(resid**2) / max(resid.size - k, 1))
     ll = -0.5 * resid.size * (np.log(2 * np.pi * s2) + 1.0)
     ar_roots = np.roots(np.concatenate([[1.0], -phi])) if p else np.array([])
     ma_roots = np.roots(np.concatenate([[1.0], theta])) if q else np.array([])
@@ -123,28 +121,28 @@ def arma_model(x, p=1, q=1, max_iter=200, tol=1e-10):
             "stationary": stat,
             "invertible": inv,
             "stationarity_note": (
-                None if stat else
-                "an AR root is inside the unit circle: the process has no "
-                "fixed mean and forecasts will diverge"
+                None
+                if stat
+                else "an AR root is inside the unit circle: the process has no fixed mean and forecasts will diverge"
             ),
             "invertibility_note": (
-                None if inv else
-                "an MA root is inside the unit circle: the model has no "
+                None
+                if inv
+                else "an MA root is inside the unit circle: the model has no "
                 "infinite-AR representation and theta is not identified, "
                 "since theta and 1/theta give identical autocorrelations"
             ),
             "p": p,
             "q": q,
             "n": int(n),
-            "method": "ARMA(%d, %d) by conditional least squares" % (p, q),
+            "method": f"ARMA({int(p)}, {int(q)}) by conditional least squares",
         }
     )
 
 
 def cheatsheet():
     return (
-        "hmarma: ARMA(p,q) by conditional least squares with stationarity "
-        "and invertibility read off the fitted roots"
+        "hmarma: ARMA(p,q) by conditional least squares with stationarity and invertibility read off the fitted roots"
     )
 
 

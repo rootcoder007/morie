@@ -1,7 +1,6 @@
 """Tests for morie.fn.ufstr — Unfolding stress."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ufstr import ufstr
 
 

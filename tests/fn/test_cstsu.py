@@ -1,7 +1,6 @@
 """Tests for morie.fn.cstsu — custody substance flag by age."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cstsu import custody_substance
 
 

@@ -32,10 +32,7 @@ def wavelet_cross_spectrum(x, y, scales=None) -> DescriptiveResult:
     y = np.asarray(y, dtype=float).ravel()
     N = min(len(x), len(y))
     x, y = x[:N], y[:N]
-    if scales is None:
-        scales = np.arange(1, min(N // 2, 64) + 1, dtype=float)
-    else:
-        scales = np.asarray(scales, dtype=float)
+    scales = np.arange(1, min(N // 2, 64) + 1, dtype=float) if scales is None else np.asarray(scales, dtype=float)
 
     cwt_x = np.zeros((len(scales), N), dtype=complex)
     cwt_y = np.zeros((len(scales), N), dtype=complex)

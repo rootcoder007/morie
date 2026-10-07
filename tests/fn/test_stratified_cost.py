@@ -1,7 +1,5 @@
 """Tests for stratified_cost.stratified_cost."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.stratified_cost import (
     stratified_cost,
 )

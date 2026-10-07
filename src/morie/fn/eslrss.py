@@ -60,10 +60,16 @@ def esl_residual_sum_squares(X, y, beta):
         raise ValueError(f"X has {p} columns but beta has {beta.size} entries.")
     resid = y - X @ beta
     rss = float(resid @ resid)
-    return RichResult(payload={
-        "estimate": rss, "residuals": [float(v) for v in resid],
-        "mean_squared_error": rss / n, "n": int(n), "p": int(p),
-        "method": "RSS(beta) = sum (y_i - x_i' beta)^2 at the supplied beta"})
+    return RichResult(
+        payload={
+            "estimate": rss,
+            "residuals": [float(v) for v in resid],
+            "mean_squared_error": rss / n,
+            "n": int(n),
+            "p": int(p),
+            "method": "RSS(beta) = sum (y_i - x_i' beta)^2 at the supplied beta",
+        }
+    )
 
 
 def cheatsheet():

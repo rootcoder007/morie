@@ -1,12 +1,11 @@
 """Tests for morie.fn.tfidf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.tfidf import tfidf
 
 
 def test_tfidf_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = tfidf(documents=["hello world", "foo bar baz", "hello foo"])
     assert result is not None
     assert hasattr(result, "name")

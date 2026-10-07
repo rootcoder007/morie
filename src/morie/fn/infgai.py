@@ -59,7 +59,7 @@ def information_gain(
 
     h_y_given_x = 0.0
     n = len(df)
-    for val, grp in df.groupby(x.values):
+    for _val, grp in df.groupby(x.values):
         w = len(grp) / n
         h_y_given_x += w * _entropy(grp[target])
 

@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficacy of the one-sample Student t test -- Gibbons eq. (13.3.2)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['efft', 'gibbons_t_efficacy']
+__all__ = ["efft", "gibbons_t_efficacy"]
 
 
 def efft(n, sigma2):

@@ -17,8 +17,7 @@ def _ln(v):
 
 
 def _zero_block(n_in, n_hid, n_out):
-    return ([[0.0] * n_in] * n_hid, [0.0] * n_hid, [[0.0] * n_hid] * n_out, [0.0] * n_out,
-            [[0.0] * n_in] * n_out)
+    return ([[0.0] * n_in] * n_hid, [0.0] * n_hid, [[0.0] * n_hid] * n_out, [0.0] * n_out, [[0.0] * n_in] * n_out)
 
 
 def test_jotide_basic():
@@ -27,8 +26,7 @@ def test_jotide_basic():
     the lookback that TiDE adds to its output."""
     y = [1.0, 3.0, 2.0, 5.0]
     wg = [[0.1, 0.2, 0.3, 0.4], [0.5, -0.5, 0.0, 1.0]]
-    r = joseph_tide_encoder(y, [], None, _zero_block(4, 3, 4), _zero_block(4, 3, 6),
-                            _zero_block(3, 2, 1), wg, 2)
+    r = joseph_tide_encoder(y, [], None, _zero_block(4, 3, 4), _zero_block(4, 3, 6), _zero_block(3, 2, 1), wg, 2)
     assert r["forecast"] == pytest.approx([sum(a * b for a, b in zip(w, y)) for w in wg], rel=1e-14)
     assert (r["p"], r["horizon"]) == (3, 2)
 
@@ -36,7 +34,6 @@ def test_jotide_basic():
 def test_jotide_edge():
     y = [1.0, 3.0, 2.0, 5.0]
     with pytest.raises(ValueError, match="multiple of horizon"):
-        joseph_tide_encoder(y, [], None, _zero_block(4, 3, 4), _zero_block(4, 3, 5),
-                            _zero_block(3, 2, 1), [[0.0] * 4] * 2, 2)
-
-
+        joseph_tide_encoder(
+            y, [], None, _zero_block(4, 3, 4), _zero_block(4, 3, 5), _zero_block(3, 2, 1), [[0.0] * 4] * 2, 2
+        )

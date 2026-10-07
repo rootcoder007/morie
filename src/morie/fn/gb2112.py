@@ -54,8 +54,11 @@ def gibbons_block_freq_dist(m, n, block_counts=None):
         valid = bool(b.sum() == n)
     return RichResult(
         payload={
-            "pmf": 1.0 / total, "n_compositions": int(total),
-            "valid_composition": valid, "m": m, "n": n,
+            "pmf": 1.0 / total,
+            "n_compositions": int(total),
+            "valid_composition": valid,
+            "m": m,
+            "n": n,
             "method": "Block frequencies uniform over C(m+n, n) compositions",
         }
     )

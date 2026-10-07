@@ -50,16 +50,24 @@ def turboquant_value_cache_quantization(v, bits=4):
     """
     vv = C.vec(v)
     b = int(bits)
-    lev = float(2 ** b - 1)
+    lev = float(2**b - 1)
     s = max(abs(t) for t in vv)
     if s <= 0.0:
         s = 1.0
     vq = [S.rnd(t / s * lev) for t in vv]
     vhat = [t * s / lev for t in vq]
     err = sum((vv[i] - vhat[i]) ** 2 for i in range(len(vv))) / len(vv)
-    return RichResult(payload={
-        "v_q": vq, "s": s, "v_hat": vhat, "estimate": err ** 0.5, "bits": b,
-        "d": len(vv), "method": "Token-wise value-cache quantization"})
+    return RichResult(
+        payload={
+            "v_q": vq,
+            "s": s,
+            "v_hat": vhat,
+            "estimate": err**0.5,
+            "bits": b,
+            "d": len(vv),
+            "method": "Token-wise value-cache quantization",
+        }
+    )
 
 
 def cheatsheet():

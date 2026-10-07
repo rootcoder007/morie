@@ -1,11 +1,11 @@
 """Tests for morie.fn.holo_b -- box plot."""
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 plt = pytest.importorskip("matplotlib.pyplot")
 from morie.fn import _frame_core as pd
-
 from morie.fn.holo_b import holo_box
 
 

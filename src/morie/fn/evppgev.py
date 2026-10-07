@@ -6,7 +6,6 @@ Modeling of Extreme Values*, Springer (equation checked against the
 library PDF).
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,11 +19,10 @@ def evt_gev_pp_plot(x, mu, sigma, xi):
     xs = sorted(_ev._flat(x))
     n = len(xs)
     p_emp = [(i + 1.0) / (n + 1.0) for i in range(n)]
-    p_model = [_ev.gev_cdf(v, float(mu), float(sigma), float(xi))
-               for v in xs]
-    res = RichResult(payload={"p_emp": p_emp, "p_model": p_model,
-                              "n": n,
-                              "method": "GEV probability plot (Coles 2001 sec. 3.3.4)"})
+    p_model = [_ev.gev_cdf(v, float(mu), float(sigma), float(xi)) for v in xs]
+    res = RichResult(
+        payload={"p_emp": p_emp, "p_model": p_model, "n": n, "method": "GEV probability plot (Coles 2001 sec. 3.3.4)"}
+    )
     return with_describe_pointer(res, "evppgev")
 
 

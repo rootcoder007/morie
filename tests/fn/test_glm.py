@@ -9,8 +9,7 @@ from morie.fn.glm import glr_test
 
 def _page(scores):
     """max_k sum_{i=k}^n z_i by brute force over k, for every n."""
-    return [max(0.0, max(sum(scores[k:n + 1]) for k in range(n + 1)))
-            for n in range(len(scores))]
+    return [max(0.0, max(sum(scores[k : n + 1]) for k in range(n + 1))) for n in range(len(scores))]
 
 
 def test_glm_basic():
@@ -51,7 +50,7 @@ import morie.fn.glm as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

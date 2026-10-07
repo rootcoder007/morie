@@ -1,18 +1,18 @@
 """grdcl: gradient clipping by global norm (Pascanu et al. 2013).
 
-    g <- g * min(1, max_norm / ||g||)
+g <- g * min(1, max_norm / ||g||)
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.grdcl import gradient_clipping as clip
 
 
 def test_grdcl_short_gradient_is_left_exactly_alone():
     """Below the threshold the coefficient is 1 and nothing changes -- this
     is what makes clipping safe to leave switched on."""
-    g = np.array([0.3, 0.4])          # norm 0.5
+    g = np.array([0.3, 0.4])  # norm 0.5
     r = clip(g, max_norm=1.0)
     assert r["total_norm"] == pytest.approx(0.5)
     assert r["clip_coef"] == pytest.approx(1.0)
@@ -20,7 +20,7 @@ def test_grdcl_short_gradient_is_left_exactly_alone():
 
 
 def test_grdcl_long_gradient_is_rescaled_to_exactly_max_norm():
-    g = np.array([3.0, 4.0])          # norm 5
+    g = np.array([3.0, 4.0])  # norm 5
     out = np.asarray(clip(g, max_norm=1.0)["tensor"])
     assert np.linalg.norm(out) == pytest.approx(1.0)
     assert out == pytest.approx(g / 5.0)

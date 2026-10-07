@@ -41,7 +41,7 @@ def test_consistent_mediation_is_flagged_as_such():
 
 def test_a_zero_total_effect_is_refused():
     try:
-        propme(0.5, 0.4, -0.2)      # c' + ab = 0 exactly
+        propme(0.5, 0.4, -0.2)  # c' + ab = 0 exactly
         raise AssertionError("expected ValueError")
     except ValueError:
         pass

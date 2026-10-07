@@ -15,53 +15,52 @@ from ._rgcore import aslist
 from ._richresult import RichResult
 
 __all__ = [
-    'rangayyan_ar_to_cepstrum',
-    'ccepx',
-    'rangayyan_complex_cepstrum',
-    'rangayyan_cepstrum_pitch',
-    'cepstrum',
-    'rangayyan_cepstrum',
-    'homdeconv',
-    'rangayyan_homomorphic_deconv',
-    'homofilt',
-    'rangayyan_homomorphic',
-    'hompred',
-    'rangayyan_homomorphic_pred',
-    'lifter',
-    'rangayyan_liftering',
-    'mfcc',
-    'rangayyan_mfcc',
-    'minphase',
-    'rangayyan_min_phase',
-    'vocaltract',
-    'rangayyan_vocal_tract',
-    'multmodel',
-    'rangayyan_ch4_homomorphic_multiplicative',
-    'logsep',
-    'rangayyan_ch4_homomorphic_log_separation',
-    'convmodel',
-    'rangayyan_ch4_convolution_model',
-    'ccepstrum',
-    'rangayyan_ch4_complex_cepstrum_definition',
-    'ccepsum',
-    'rangayyan_ch4_complex_cepstra_sum',
-    'ratz',
-    'rangayyan_ch4_rational_z_transform_form',
-    'ccepclosed',
-    'rangayyan_ch4_complex_cepstrum_closed_form',
-    'ccepdecay',
-    'rangayyan_ch4_complex_cepstrum_decay_bound',
-    'echoseries',
-    'rangayyan_ch4_log_echo_power_series',
-    'pcepstrum',
-    'rangayyan_ch4_power_cepstrum_definition',
-    'pcepsum',
-    'rangayyan_ch4_power_cepstrum_sum',
-    'pceprel',
-    'rangayyan_ch4_power_cepstrum_relation',
-    'rangayyanmfcc',
+    "rangayyan_ar_to_cepstrum",
+    "ccepx",
+    "rangayyan_complex_cepstrum",
+    "rangayyan_cepstrum_pitch",
+    "cepstrum",
+    "rangayyan_cepstrum",
+    "homdeconv",
+    "rangayyan_homomorphic_deconv",
+    "homofilt",
+    "rangayyan_homomorphic",
+    "hompred",
+    "rangayyan_homomorphic_pred",
+    "lifter",
+    "rangayyan_liftering",
+    "mfcc",
+    "rangayyan_mfcc",
+    "minphase",
+    "rangayyan_min_phase",
+    "vocaltract",
+    "rangayyan_vocal_tract",
+    "multmodel",
+    "rangayyan_ch4_homomorphic_multiplicative",
+    "logsep",
+    "rangayyan_ch4_homomorphic_log_separation",
+    "convmodel",
+    "rangayyan_ch4_convolution_model",
+    "ccepstrum",
+    "rangayyan_ch4_complex_cepstrum_definition",
+    "ccepsum",
+    "rangayyan_ch4_complex_cepstra_sum",
+    "ratz",
+    "rangayyan_ch4_rational_z_transform_form",
+    "ccepclosed",
+    "rangayyan_ch4_complex_cepstrum_closed_form",
+    "ccepdecay",
+    "rangayyan_ch4_complex_cepstrum_decay_bound",
+    "echoseries",
+    "rangayyan_ch4_log_echo_power_series",
+    "pcepstrum",
+    "rangayyan_ch4_power_cepstrum_definition",
+    "pcepsum",
+    "rangayyan_ch4_power_cepstrum_sum",
+    "pceprel",
+    "rangayyan_ch4_power_cepstrum_relation",
+    "rangayyanmfcc",
 ]
-
 
 
 # -- rgar2cep: Cepstral coefficients from AR coefficients.
@@ -113,7 +112,7 @@ def rangayyan_ar_to_cepstrum(a_coeffs, gain=None):
     if p == 0:
         raise ValueError("need at least one AR coefficient")
 
-    h = [0.0] * (p + 1)          # h[n] for n = 1..P
+    h = [0.0] * (p + 1)  # h[n] for n = 1..P
     for n in range(1, p + 1):
         acc = -a[n - 1]
         for k in range(1, n):
@@ -131,8 +130,7 @@ def rangayyan_ar_to_cepstrum(a_coeffs, gain=None):
     return RichResult(
         title="AR to cepstrum (Rangayyan eq. 7.65)",
         summary_lines=[("order", p)],
-        payload={"cepstrum": cep, "c0": c0, "order": p,
-                 "method": "Rangayyan (2024) eq. (7.65)"},
+        payload={"cepstrum": cep, "c0": c0, "order": p, "method": "Rangayyan (2024) eq. (7.65)"},
     )
 
 
@@ -156,13 +154,16 @@ def ccepx(x):
     r = ccepstrum(x)
     phase = r["phase"]
     wrapped = [_atan2(sin(p), cos(p)) for p in phase]
-    jumps = sum(1 for i in range(1, len(wrapped))
-                if abs(wrapped[i] - wrapped[i - 1]) > pi)
+    jumps = sum(1 for i in range(1, len(wrapped)) if abs(wrapped[i] - wrapped[i - 1]) > pi)
     out = dict(r)
-    out.update({"wrapped_phase": wrapped, "phase_jumps": jumps,
-                "well_conditioned": jumps < len(wrapped) // 4,
-                "method": "Rangayyan (2024) eqs. (4.63)-(4.64), with the "
-                          "phase-unwrapping diagnostics"})
+    out.update(
+        {
+            "wrapped_phase": wrapped,
+            "phase_jumps": jumps,
+            "well_conditioned": jumps < len(wrapped) // 4,
+            "method": "Rangayyan (2024) eqs. (4.63)-(4.64), with the phase-unwrapping diagnostics",
+        }
+    )
     return RichResult(payload=out)
 
 
@@ -219,10 +220,16 @@ def rangayyan_cepstrum_pitch(x, fs, f0_range=(50.0, 500.0)):
         raise ValueError("f0_range maps outside the available quefrencies.")
     ipk = band[int(np.argmax(ceps[band]))]
     T0 = float(q[ipk])
-    return RichResult(payload={"f0": 1.0 / T0 if T0 > 0 else np.nan, "period_s": T0,
-                               "quefrency": ipk, "cepstrum": ceps,
-                               "peak_value": float(ceps[ipk]),
-                               "method": "log turns convolution into addition; search inside f0_range"})
+    return RichResult(
+        payload={
+            "f0": 1.0 / T0 if T0 > 0 else np.nan,
+            "period_s": T0,
+            "quefrency": ipk,
+            "cepstrum": ceps,
+            "peak_value": float(ceps[ipk]),
+            "method": "log turns convolution into addition; search inside f0_range",
+        }
+    )
 
 
 # -- rgcepst: Real cepstrum of a signal.
@@ -293,10 +300,16 @@ def cepstrum(x):
     zeros = sum(1 for v in mags if v <= floor)
     logmag = [log(v if v > floor else floor) for v in mags]
     c = _ifft_real(logmag, [0.0] * n)
-    return RichResult(payload={
-        "cepstrum": c, "log_magnitude": logmag, "n": n,
-        "zero_bins": zeros, "invertible": False,
-        "method": "real cepstrum; contrast Rangayyan (2024) eq. (4.64)"})
+    return RichResult(
+        payload={
+            "cepstrum": c,
+            "log_magnitude": logmag,
+            "n": n,
+            "zero_bins": zeros,
+            "invertible": False,
+            "method": "real cepstrum; contrast Rangayyan (2024) eq. (4.64)",
+        }
+    )
 
 
 rangayyan_cepstrum = cepstrum  # pre-policy spelling
@@ -340,14 +353,20 @@ def homdeconv(y, cutoff, keep="low"):
         out_im.append(m * sin(b))
     rec = _ifft_real(out_re, out_im)
     imag_energy = fsum(v * v for v in out_im)
-    return RichResult(payload={
-        "y": rec, "cepstrum": c, "liftered": lf, "cutoff": int(cutoff),
-        "keep": keep, "n": n,
-        "linear_phase_removed": cep["linear_phase_removed"],
-        "imaginary_energy": imag_energy,
-        "stages": ("DFT", "complex log", "IDFT", "lifter", "DFT", "exp",
-                   "IDFT"),
-        "method": "Rangayyan (2024) Section 4.7.2, eqs. (4.61)-(4.66)"})
+    return RichResult(
+        payload={
+            "y": rec,
+            "cepstrum": c,
+            "liftered": lf,
+            "cutoff": int(cutoff),
+            "keep": keep,
+            "n": n,
+            "linear_phase_removed": cep["linear_phase_removed"],
+            "imaginary_energy": imag_energy,
+            "stages": ("DFT", "complex log", "IDFT", "lifter", "DFT", "exp", "IDFT"),
+            "method": "Rangayyan (2024) Section 4.7.2, eqs. (4.61)-(4.66)",
+        }
+    )
 
 
 rangayyan_homomorphic_deconv = homdeconv  # pre-policy spelling
@@ -378,9 +397,11 @@ def homofilt(y, cutoff, keep="low"):
     if n < 4:
         raise ValueError("need at least four samples")
     if any(v <= 0 for v in ys):
-        raise ValueError("the multiplicative homomorphic filter needs a "
-                         "strictly positive signal (eq. 4.59); use the "
-                         "complex-cepstrum route for signed data")
+        raise ValueError(
+            "the multiplicative homomorphic filter needs a "
+            "strictly positive signal (eq. 4.59); use the "
+            "complex-cepstrum route for signed data"
+        )
     if keep not in ("low", "high"):
         raise ValueError("keep must be 'low' or 'high'")
     k = int(cutoff)
@@ -395,11 +416,18 @@ def homofilt(y, cutoff, keep="low"):
             re[i] = 0.0
             im[i] = 0.0
     filtered = _ifft_real(re, im)
-    return RichResult(payload={
-        "y": [exp(v) for v in filtered], "log_domain": filtered,
-        "log_input": ly, "cutoff": k, "keep": keep, "n": n,
-        "stages": ("log", "linear filter", "exp"),
-        "method": "Rangayyan (2024) Section 4.7.1, eqs. (4.58)-(4.60)"})
+    return RichResult(
+        payload={
+            "y": [exp(v) for v in filtered],
+            "log_domain": filtered,
+            "log_input": ly,
+            "cutoff": k,
+            "keep": keep,
+            "n": n,
+            "stages": ("log", "linear filter", "exp"),
+            "method": "Rangayyan (2024) Section 4.7.1, eqs. (4.58)-(4.60)",
+        }
+    )
 
 
 rangayyan_homomorphic = homofilt  # pre-policy spelling
@@ -440,17 +468,22 @@ def hompred(y, cutoff):
     # CIRCULAR convolution of the two components -- the DFT works on the
     # circle.  Reconstructing with a linear convolution instead leaves a
     # wrap-around error that looks like a failure of the separation.
-    conv = [fsum(low[j] * high[(i - j) % n] for j in range(n))
-            for i in range(n)]
+    conv = [fsum(low[j] * high[(i - j) % n] for j in range(n)) for i in range(n)]
     err = max(abs(a - b) for a, b in zip(conv, ys))
     scale = max(abs(v) for v in ys) or 1.0
-    return RichResult(payload={
-        "low_time": low, "high_time": high, "cutoff": k, "n": n,
-        "reconstruction": conv, "reconstruction_error": err,
-        "relative_error": err / scale,
-        "separation_premise": "eq. (4.66) assumes the two components "
-                              "occupy non-overlapping quefrency ranges",
-        "method": "Rangayyan (2024) Section 4.7.3"})
+    return RichResult(
+        payload={
+            "low_time": low,
+            "high_time": high,
+            "cutoff": k,
+            "n": n,
+            "reconstruction": conv,
+            "reconstruction_error": err,
+            "relative_error": err / scale,
+            "separation_premise": "eq. (4.66) assumes the two components occupy non-overlapping quefrency ranges",
+            "method": "Rangayyan (2024) Section 4.7.3",
+        }
+    )
 
 
 rangayyan_homomorphic_pred = hompred  # pre-policy spelling
@@ -511,12 +544,19 @@ def lifter(cepstrum_values, low=None, high=None, keep="low"):
             take = lo <= q <= hi
         out.append(v if take else 0.0)
     kept = sum(1 for i in range(n) if out[i] != 0.0 or c[i] == 0.0)
-    return RichResult(payload={
-        "liftered": out, "n": n, "low": lo, "high": hi, "keep": keep,
-        "symmetric": True, "n_kept": kept,
-        "energy_kept": (fsum(v * v for v in out)
-                        / fsum(v * v for v in c)) if any(c) else 0.0,
-        "method": "Rangayyan (2024) Section 4.7.3 (cepstral liftering)"})
+    return RichResult(
+        payload={
+            "liftered": out,
+            "n": n,
+            "low": lo,
+            "high": hi,
+            "keep": keep,
+            "symmetric": True,
+            "n_kept": kept,
+            "energy_kept": (fsum(v * v for v in out) / fsum(v * v for v in c)) if any(c) else 0.0,
+            "method": "Rangayyan (2024) Section 4.7.3 (cepstral liftering)",
+        }
+    )
 
 
 rangayyan_liftering = lifter  # pre-policy spelling
@@ -572,8 +612,7 @@ def mfcc(x, fs, n_filters=26, n_coeffs=13, fmin=0.0, fmax=None):
         return 700.0 * (10.0 ** (m / 2595.0) - 1.0)
 
     m_lo, m_hi = to_mel(fmin), to_mel(top)
-    edges = [from_mel(m_lo + (m_hi - m_lo) * i / (nf + 1))
-             for i in range(nf + 2)]
+    edges = [from_mel(m_lo + (m_hi - m_lo) * i / (nf + 1)) for i in range(nf + 2)]
     energies = []
     for i in range(nf):
         lo, mid, hi = edges[i], edges[i + 1], edges[i + 2]
@@ -589,16 +628,23 @@ def mfcc(x, fs, n_filters=26, n_coeffs=13, fmin=0.0, fmax=None):
     logs = [log(v if v > floor else floor) for v in energies]
     coeffs = []
     for k in range(nc):
-        coeffs.append(fsum(logs[i] * cos(pi * k * (i + 0.5) / nf)
-                           for i in range(nf)))
-    return RichResult(payload={
-        "mfcc": coeffs, "filterbank_energies": energies,
-        "log_energies": logs, "edges": edges, "n_filters": nf,
-        "n_coeffs": nc, "fs": fsv, "empty_filters": empty,
-        "c0_is_energy": True,
-        "method": "Davis and Mermelstein (1980); a mel-warped, DCT-based "
-                  "cepstrum, not the homomorphic cepstrum of Rangayyan "
-                  "(2024) Section 4.7"})
+        coeffs.append(fsum(logs[i] * cos(pi * k * (i + 0.5) / nf) for i in range(nf)))
+    return RichResult(
+        payload={
+            "mfcc": coeffs,
+            "filterbank_energies": energies,
+            "log_energies": logs,
+            "edges": edges,
+            "n_filters": nf,
+            "n_coeffs": nc,
+            "fs": fsv,
+            "empty_filters": empty,
+            "c0_is_energy": True,
+            "method": "Davis and Mermelstein (1980); a mel-warped, DCT-based "
+            "cepstrum, not the homomorphic cepstrum of Rangayyan "
+            "(2024) Section 4.7",
+        }
+    )
 
 
 rangayyan_mfcc = mfcc  # pre-policy spelling
@@ -646,21 +692,24 @@ def minphase(x):
     dst = [sqrt(a * a + b * b) for a, b in zip(dre, dim)]
     gap = max(abs(a - b) for a, b in zip(src, dst))
     scale = max(src) or 1.0
-    return RichResult(payload={
-        "y": y, "cepstrum": c, "n": n,
-        "magnitude_error": gap, "magnitude_preserved": gap <= 1e-6 * scale,
-        "energy_front_loaded": fsum(v * v for v in y[:half])
-        >= fsum(v * v for v in y[half:]),
-        "method": "Rangayyan (2024) Section 4.7.2 (minimum-phase "
-                  "correspondent from the causal cepstrum)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "cepstrum": c,
+            "n": n,
+            "magnitude_error": gap,
+            "magnitude_preserved": gap <= 1e-6 * scale,
+            "energy_front_loaded": fsum(v * v for v in y[:half]) >= fsum(v * v for v in y[half:]),
+            "method": "Rangayyan (2024) Section 4.7.2 (minimum-phase correspondent from the causal cepstrum)",
+        }
+    )
 
 
 rangayyan_min_phase = minphase  # pre-policy spelling
 
 
 # -- rgvocal: Vocal tract transfer function extraction via homomorphic deconvolution.
-def vocaltract(y, fs, pitch_period=None, cutoff=None,
-               pitch_range=(0.002, 0.020)):
+def vocaltract(y, fs, pitch_period=None, cutoff=None, pitch_range=(0.002, 0.020)):
     """Vocal-tract response from the low-quefrency cepstrum.
 
     Rangayyan (2024) Section 4.7.3, under eq. (4.85): a voiced speech
@@ -694,13 +743,11 @@ def vocaltract(y, fs, pitch_period=None, cutoff=None,
     lo_q = max(1, int(pitch_range[0] * fsv))
     hi_q = min(half, int(pitch_range[1] * fsv) + 1)
     if hi_q <= lo_q:
-        raise ValueError("the pitch range holds no quefrency bins at this "
-                         "sampling rate and record length")
+        raise ValueError("the pitch range holds no quefrency bins at this sampling rate and record length")
     if pitch_period is None:
         cand = [(abs(cep[i]), i) for i in range(lo_q, hi_q)]
         if not cand:
-            raise ValueError("the record is too short to hold a pitch peak "
-                             "in the requested range")
+            raise ValueError("the record is too short to hold a pitch peak in the requested range")
         peak = max(cand)[1]
         period = peak / fsv
     else:
@@ -708,15 +755,21 @@ def vocaltract(y, fs, pitch_period=None, cutoff=None,
         peak = int(round(period * fsv))
     k = int(cutoff) if cutoff is not None else max(1, int(0.9 * peak))
     if k >= half:
-        raise ValueError("the lifter cutoff exceeds the usable quefrency "
-                         "range")
+        raise ValueError("the lifter cutoff exceeds the usable quefrency range")
     est = homdeconv(ys, k, keep="low")
-    return RichResult(payload={
-        "response": est["y"], "cepstrum": cep, "cutoff": k,
-        "pitch_period": period, "pitch_hz": 1.0 / period if period > 0
-        else None, "peak_quefrency": peak, "fs": fsv, "n": n,
-        "method": "Rangayyan (2024) Section 4.7.3 (vocal-tract response "
-                  "by low-time liftering)"})
+    return RichResult(
+        payload={
+            "response": est["y"],
+            "cepstrum": cep,
+            "cutoff": k,
+            "pitch_period": period,
+            "pitch_hz": 1.0 / period if period > 0 else None,
+            "peak_quefrency": peak,
+            "fs": fsv,
+            "n": n,
+            "method": "Rangayyan (2024) Section 4.7.3 (vocal-tract response by low-time liftering)",
+        }
+    )
 
 
 rangayyan_vocal_tract = vocaltract  # pre-policy spelling
@@ -740,11 +793,16 @@ def multmodel(x, p):
     if not xs:
         raise ValueError("need at least one sample")
     y = [a * b for a, b in zip(xs, ps)]
-    return RichResult(payload={
-        "y": y, "x": xs, "p": ps, "n": len(y),
-        "separable_by_log": all(v != 0 for v in xs)
-        and all(v != 0 for v in ps),
-        "method": "Rangayyan (2024) eq. (4.58)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "x": xs,
+            "p": ps,
+            "n": len(y),
+            "separable_by_log": all(v != 0 for v in xs) and all(v != 0 for v in ps),
+            "method": "Rangayyan (2024) eq. (4.58)",
+        }
+    )
 
 
 rangayyan_ch4_homomorphic_multiplicative = multmodel  # pre-policy spelling
@@ -770,18 +828,22 @@ def logsep(x, p):
     if not xs:
         raise ValueError("need at least one sample")
     if any(v <= 0 for v in xs) or any(v <= 0 for v in ps):
-        raise ValueError("eq. (4.59) needs x(t) != 0 and p(t) != 0; the real "
-                         "logarithm also needs them positive")
+        raise ValueError("eq. (4.59) needs x(t) != 0 and p(t) != 0; the real logarithm also needs them positive")
     y = [a * b for a, b in zip(xs, ps)]
     lhs = [log(v) for v in y]
     rhs = [log(a) + log(b) for a, b in zip(xs, ps)]
     gap = max(abs(u - v) for u, v in zip(lhs, rhs))
-    return RichResult(payload={
-        "log_y": lhs, "log_x": [log(v) for v in xs],
-        "log_p": [log(v) for v in ps], "sum": rhs,
-        "max_difference": gap, "additive": gap <= 1e-12 * (1 + max(
-            abs(v) for v in lhs)),
-        "method": "Rangayyan (2024) eq. (4.59)"})
+    return RichResult(
+        payload={
+            "log_y": lhs,
+            "log_x": [log(v) for v in xs],
+            "log_p": [log(v) for v in ps],
+            "sum": rhs,
+            "max_difference": gap,
+            "additive": gap <= 1e-12 * (1 + max(abs(v) for v in lhs)),
+            "method": "Rangayyan (2024) eq. (4.59)",
+        }
+    )
 
 
 rangayyan_ch4_homomorphic_log_separation = logsep  # pre-policy spelling
@@ -806,9 +868,9 @@ def convmodel(x, h):
     for k in range(len(xs) + len(hs) - 1):
         lo, hi = max(0, k - len(hs) + 1), min(k, len(xs) - 1)
         y.append(fsum(xs[i] * hs[k - i] for i in range(lo, hi + 1)))
-    return RichResult(payload={
-        "y": y, "n": len(y), "n_x": len(xs), "n_h": len(hs),
-        "method": "Rangayyan (2024) eq. (4.61)"})
+    return RichResult(
+        payload={"y": y, "n": len(y), "n_x": len(xs), "n_h": len(hs), "method": "Rangayyan (2024) eq. (4.61)"}
+    )
 
 
 rangayyan_ch4_convolution_model = convmodel  # pre-policy spelling
@@ -844,9 +906,9 @@ def ccepstrum(x):
     mags = [sqrt(a * a + b * b) for a, b in zip(re, im)]
     floor = 1e-300
     if any(v <= floor for v in mags):
-        raise ValueError("the complex log needs a nonzero spectrum at every "
-                         "bin; %d bins vanish" % sum(1 for v in mags
-                                                     if v <= floor))
+        raise ValueError(
+            f"the complex log needs a nonzero spectrum at every bin; {int(sum(1 for v in mags if v <= floor))} bins vanish"
+        )
     # Unwrap over the HALF circle only, then impose odd symmetry.  For a
     # real signal the DFT phase satisfies angle(X(N-k)) = -angle(X(k)),
     # so unwrapping straight through k = 0..N-1 forces a monotone ramp
@@ -854,7 +916,7 @@ def ccepstrum(x):
     # spurious 1/n tail.
     half = n // 2
     raw = [_atan2(b, a) for a, b in zip(re, im)]
-    up = _unwrap(raw[:half + 1])
+    up = _unwrap(raw[: half + 1])
     # remove the linear phase (the z^r delay of eq. 4.68): for a real
     # signal the unwrapped phase at Nyquist is an integer multiple of pi,
     # and that integer is the delay r
@@ -864,11 +926,18 @@ def ccepstrum(x):
     detr = list(up) + [-up[n - k] for k in range(half + 1, n)]
     logmag = [log(v) for v in mags]
     c = _ifft_real(logmag, detr)
-    return RichResult(payload={
-        "cepstrum": c, "log_magnitude": logmag, "phase": detr,
-        "detrended_phase": detr, "linear_phase_removed": slope,
-        "delay_removed": r_int, "n": n,
-        "method": "Rangayyan (2024) eqs. (4.63)-(4.64)"})
+    return RichResult(
+        payload={
+            "cepstrum": c,
+            "log_magnitude": logmag,
+            "phase": detr,
+            "detrended_phase": detr,
+            "linear_phase_removed": slope,
+            "delay_removed": r_int,
+            "n": n,
+            "method": "Rangayyan (2024) eqs. (4.63)-(4.64)",
+        }
+    )
 
 
 rangayyan_ch4_complex_cepstrum_definition = ccepstrum  # pre-policy spelling
@@ -905,13 +974,20 @@ def ccepsum(x, h):
     ch = ccepstrum(hp)["cepstrum"]
     resid = [a - b - c for a, b, c in zip(cy, cx, ch)]
     scale = max(abs(v) for v in cy) or 1.0
-    return RichResult(payload={
-        "y": y, "cepstrum_y": cy, "cepstrum_x": cx, "cepstrum_h": ch,
-        "residual": resid, "max_residual": max(abs(v) for v in resid),
-        "relative_residual": max(abs(v) for v in resid) / scale,
-        "truncation_note": "the complex cepstrum is of infinite duration "
-                           "(eq. 4.73), so a finite DFT leaves a residual",
-        "method": "Rangayyan (2024) eqs. (4.65)-(4.66)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "cepstrum_y": cy,
+            "cepstrum_x": cx,
+            "cepstrum_h": ch,
+            "residual": resid,
+            "max_residual": max(abs(v) for v in resid),
+            "relative_residual": max(abs(v) for v in resid) / scale,
+            "truncation_note": "the complex cepstrum is of infinite duration "
+            "(eq. 4.73), so a finite DFT leaves a residual",
+            "method": "Rangayyan (2024) eqs. (4.65)-(4.66)",
+        }
+    )
 
 
 rangayyan_ch4_complex_cepstra_sum = ccepsum  # pre-policy spelling
@@ -944,21 +1020,26 @@ def ratz(gain, r, zeros_in, zeros_out, poles_in, poles_out, z=None):
     for name, group in (("zeros_in", ai), ("poles_in", ci)):
         bad = [v for v in group if abs(v) >= 1.0]
         if bad:
-            raise ValueError("%s must lie inside the unit circle; |%r| = %g"
-                             % (name, bad[0], abs(bad[0])))
+            raise ValueError(f"{name} must lie inside the unit circle; |{bad[0]!r}| = {abs(bad[0]):g}")
     for name, group in (("zeros_out", bo), ("poles_out", do)):
         bad = [v for v in group if abs(v) >= 1.0]
         if bad:
-            raise ValueError("%s holds the RECIPROCAL of a root outside the "
-                             "unit circle, so it must itself be inside; "
-                             "|%r| = %g" % (name, bad[0], abs(bad[0])))
-    out = {"gain": complex(gain), "r": int(r),
-           "zeros_in": ai, "zeros_out": bo,
-           "poles_in": ci, "poles_out": do,
-           "minimum_phase": not bo and not do,
-           "maximum_phase": not ai and not ci,
-           "method": "Rangayyan (2024) the rational form expanded at "
-                     "eq. (4.68)"}
+            raise ValueError(
+                f"{name} holds the RECIPROCAL of a root outside the "
+                "unit circle, so it must itself be inside; "
+                f"|{bad[0]!r}| = {abs(bad[0]):g}"
+            )
+    out = {
+        "gain": complex(gain),
+        "r": int(r),
+        "zeros_in": ai,
+        "zeros_out": bo,
+        "poles_in": ci,
+        "poles_out": do,
+        "minimum_phase": not bo and not do,
+        "maximum_phase": not ai and not ci,
+        "method": "Rangayyan (2024) the rational form expanded at eq. (4.68)",
+    }
     if z is None:
         out["X"] = None
         return RichResult(payload=out)
@@ -970,14 +1051,14 @@ def ratz(gain, r, zeros_in, zeros_out, poles_in, poles_out, z=None):
             raise ValueError("z = 0 is a pole of the z^-1 factors")
         num = complex(gain) * zv ** int(r)
         for ak in ai:
-            num *= (1.0 - ak / zv)
+            num *= 1.0 - ak / zv
         for bk in bo:
-            num *= (1.0 - bk * zv)
+            num *= 1.0 - bk * zv
         den = 1.0 + 0j
         for ck in ci:
-            den *= (1.0 - ck / zv)
+            den *= 1.0 - ck / zv
         for dk in do:
-            den *= (1.0 - dk * zv)
+            den *= 1.0 - dk * zv
         if den == 0:
             raise ValueError("z coincides with a pole of X")
         vals.append(num / den)
@@ -1022,27 +1103,31 @@ def ccepclosed(gain, zeros_in, zeros_out, poles_in, poles_out, nmax=32):
         raise ValueError("the gain must be nonzero")
     pos, neg = [], []
     for n in range(1, k + 1):
-        pos.append(sum(-(a ** n) / n for a in ai)
-                   + sum((c ** n) / n for c in ci))
-        neg.append(sum((b ** n) / n for b in bo)
-                   - sum((d ** n) / n for d in do))
+        pos.append(sum(-(a**n) / n for a in ai) + sum((c**n) / n for c in ci))
+        neg.append(sum((b**n) / n for b in bo) - sum((d**n) / n for d in do))
     quef = list(range(-k, k + 1))
     vals = list(reversed(neg)) + [complex(log(g))] + pos
-    return RichResult(payload={
-        "cepstrum": vals, "quefrency": quef, "c0": log(g),
-        "positive": pos, "negative": list(reversed(neg)),
-        "causal": not bo and not do,
-        "anticausal": not ai and not ci,
-        "infinite_duration": True, "nmax": k,
-        "method": "Rangayyan (2024) eq. (4.72)"})
+    return RichResult(
+        payload={
+            "cepstrum": vals,
+            "quefrency": quef,
+            "c0": log(g),
+            "positive": pos,
+            "negative": list(reversed(neg)),
+            "causal": not bo and not do,
+            "anticausal": not ai and not ci,
+            "infinite_duration": True,
+            "nmax": k,
+            "method": "Rangayyan (2024) eq. (4.72)",
+        }
+    )
 
 
 rangayyan_ch4_complex_cepstrum_closed_form = ccepclosed  # pre-policy spelling
 
 
 # -- rng245: Decay bound for the complex cepstrum: at least as fast as 1/n..
-def ccepdecay(zeros_in, zeros_out, poles_in, poles_out, nmax=32,
-              constant=None):
+def ccepdecay(zeros_in, zeros_out, poles_in, poles_out, nmax=32, constant=None):
     """Decay bound on the complex cepstrum.
 
     Rangayyan (2024) eq. (4.73):
@@ -1060,9 +1145,12 @@ def ccepdecay(zeros_in, zeros_out, poles_in, poles_out, nmax=32,
     the term-by-term bound on eq. (4.72) gives: each of the K sums has
     at most one term of size alpha^n / n.
     """
-    roots = ([complex(v) for v in zeros_in] + [complex(v) for v in zeros_out]
-             + [complex(v) for v in poles_in]
-             + [complex(v) for v in poles_out])
+    roots = (
+        [complex(v) for v in zeros_in]
+        + [complex(v) for v in zeros_out]
+        + [complex(v) for v in poles_in]
+        + [complex(v) for v in poles_out]
+    )
     if not roots:
         raise ValueError("need at least one root")
     alpha = max(abs(v) for v in roots)
@@ -1072,13 +1160,18 @@ def ccepdecay(zeros_in, zeros_out, poles_in, poles_out, nmax=32,
     if k < 1:
         raise ValueError("nmax must be positive")
     kk = float(len(roots)) if constant is None else float(constant)
-    bound = [kk * (alpha ** n) / n for n in range(1, k + 1)]
-    return RichResult(payload={
-        "alpha": alpha, "K": kk, "bound": bound,
-        "quefrency": list(range(1, k + 1)),
-        "decays_at_least_as_one_over_n": True,
-        "near_unit_circle": alpha > 0.95,
-        "method": "Rangayyan (2024) eq. (4.73)"})
+    bound = [kk * (alpha**n) / n for n in range(1, k + 1)]
+    return RichResult(
+        payload={
+            "alpha": alpha,
+            "K": kk,
+            "bound": bound,
+            "quefrency": list(range(1, k + 1)),
+            "decays_at_least_as_one_over_n": True,
+            "near_unit_circle": alpha > 0.95,
+            "method": "Rangayyan (2024) eq. (4.73)",
+        }
+    )
 
 
 rangayyan_ch4_complex_cepstrum_decay_bound = ccepdecay  # pre-policy spelling
@@ -1107,18 +1200,24 @@ def echoseries(a, n0, terms=10, omega=None):
     """
     av = float(a)
     if not abs(av) < 1.0:
-        raise ValueError("eq. (4.79) needs |a| < 1; got %g" % av)
+        raise ValueError(f"eq. (4.79) needs |a| < 1; got {av:g}")
     d = int(n0)
     if d < 1:
         raise ValueError("the echo delay must be at least one sample")
     k = int(terms)
     if k < 1:
         raise ValueError("terms must be positive")
-    amps = [((-1) ** (i + 1)) * (av ** i) / i for i in range(1, k + 1)]
+    amps = [((-1) ** (i + 1)) * (av**i) / i for i in range(1, k + 1)]
     lags = [i * d for i in range(1, k + 1)]
-    out = {"amplitudes": amps, "quefrencies": lags, "a": av, "n0": d,
-           "terms": k, "first_peak": d,
-           "method": "Rangayyan (2024) eqs. (4.79)-(4.80)"}
+    out = {
+        "amplitudes": amps,
+        "quefrencies": lags,
+        "a": av,
+        "n0": d,
+        "terms": k,
+        "first_peak": d,
+        "method": "Rangayyan (2024) eqs. (4.79)-(4.80)",
+    }
     if omega is not None:
         scalar = isinstance(omega, (int, float))
         ws = [float(omega)] if scalar else [float(v) for v in omega]
@@ -1171,12 +1270,19 @@ def pcepstrum(x, square=True):
     logp = [log(v if v > floor else floor) for v in p2]
     base = _ifft_real(logp, [0.0] * n)
     vals = [v * v for v in base] if square else list(base)
-    return RichResult(payload={
-        "cepstrum": vals, "unsquared": base, "log_power": logp, "n": n,
-        "squared": bool(square), "zero_bins": zeros,
-        "retains_phase": False,
-        "additivity_exact": not square,
-        "method": "Rangayyan (2024) eq. (4.81)"})
+    return RichResult(
+        payload={
+            "cepstrum": vals,
+            "unsquared": base,
+            "log_power": logp,
+            "n": n,
+            "squared": bool(square),
+            "zero_bins": zeros,
+            "retains_phase": False,
+            "additivity_exact": not square,
+            "method": "Rangayyan (2024) eq. (4.81)",
+        }
+    )
 
 
 rangayyan_ch4_power_cepstrum_definition = pcepstrum  # pre-policy spelling
@@ -1215,12 +1321,20 @@ def pcepsum(x, h, square=False):
     ch = pcepstrum(hp, square=square)["cepstrum"]
     resid = [a - b - c for a, b, c in zip(cy, cx, ch)]
     scale = max(abs(v) for v in cy) or 1.0
-    return RichResult(payload={
-        "y": y, "cepstrum_y": cy, "cepstrum_x": cx, "cepstrum_h": ch,
-        "residual": resid, "max_residual": max(abs(v) for v in resid),
-        "relative_residual": max(abs(v) for v in resid) / scale,
-        "squared": bool(square), "exact": not square,
-        "method": "Rangayyan (2024) eq. (4.82)"})
+    return RichResult(
+        payload={
+            "y": y,
+            "cepstrum_y": cy,
+            "cepstrum_x": cx,
+            "cepstrum_h": ch,
+            "residual": resid,
+            "max_residual": max(abs(v) for v in resid),
+            "relative_residual": max(abs(v) for v in resid) / scale,
+            "squared": bool(square),
+            "exact": not square,
+            "method": "Rangayyan (2024) eq. (4.82)",
+        }
+    )
 
 
 rangayyan_ch4_power_cepstrum_sum = pcepsum  # pre-policy spelling
@@ -1252,46 +1366,53 @@ def pceprel(x):
     direct = pcepstrum(xs, square=True)["cepstrum"]
     resid = [a - b for a, b in zip(folded, direct)]
     scale = max(abs(v) for v in direct) or 1.0
-    return RichResult(payload={
-        "from_complex": folded, "direct": direct, "residual": resid,
-        "max_residual": max(abs(v) for v in resid),
-        "relative_residual": max(abs(v) for v in resid) / scale,
-        "phase_lost": True, "n": n,
-        "method": "Rangayyan (2024) eq. (4.83)"})
+    return RichResult(
+        payload={
+            "from_complex": folded,
+            "direct": direct,
+            "residual": resid,
+            "max_residual": max(abs(v) for v in resid),
+            "relative_residual": max(abs(v) for v in resid) / scale,
+            "phase_lost": True,
+            "n": n,
+            "method": "Rangayyan (2024) eq. (4.83)",
+        }
+    )
 
 
 rangayyan_ch4_power_cepstrum_relation = pceprel  # pre-policy spelling
 
 
 _CHEATSHEET = [
-    'rgar2cep: Cepstral coefficients from AR coefficients.',
-    'rgccep: complex cepstrum with unwrapping diagnostics',
-    'rgcepsp: Cepstral pitch detection.',
-    'rgcepst: real cepstrum',
-    'rghomdc: homomorphic deconvolution, Section 4.7.2',
-    'rghomo: multiplicative homomorphic filter, Section 4.7.1',
-    'rghompr: low-time / high-time cepstral prediction, Section 4.7.3',
-    'rglift: cepstral liftering, Rangayyan Section 4.7.3',
-    'rgmfcc: mel-frequency cepstral coefficients (Davis-Mermelstein 1980)',
-    'rgminph: minimum-phase correspondent, Section 4.7.2',
-    'rgvocal: vocal-tract response by low-time liftering, Section 4.7.3',
-    'rng230: multiplicative model, Rangayyan eq. (4.58)',
-    'rng231: log of a product is a sum, Rangayyan eq. (4.59)',
-    'rng233: convolutional model, Rangayyan eq. (4.61)',
-    'rng236: complex cepstrum, Rangayyan eqs. (4.63)-(4.64)',
-    'rng238: complex cepstra of a convolution add, eqs. (4.65)-(4.66)',
-    'rng239: rational z-transform in pole-zero form, before eq. (4.68)',
-    'rng244: closed-form complex cepstrum, Rangayyan eq. (4.72)',
-    'rng245: complex-cepstrum decay bound, Rangayyan eq. (4.73)',
-    'rng251: echo term of the log spectrum, eqs. (4.79)-(4.80)',
-    'rng253: power cepstrum, Rangayyan eq. (4.81)',
-    'rng254: power cepstra add, Rangayyan eq. (4.82)',
-    'rng255: power cepstrum from the complex cepstrum, eq. (4.83)',
+    "rgar2cep: Cepstral coefficients from AR coefficients.",
+    "rgccep: complex cepstrum with unwrapping diagnostics",
+    "rgcepsp: Cepstral pitch detection.",
+    "rgcepst: real cepstrum",
+    "rghomdc: homomorphic deconvolution, Section 4.7.2",
+    "rghomo: multiplicative homomorphic filter, Section 4.7.1",
+    "rghompr: low-time / high-time cepstral prediction, Section 4.7.3",
+    "rglift: cepstral liftering, Rangayyan Section 4.7.3",
+    "rgmfcc: mel-frequency cepstral coefficients (Davis-Mermelstein 1980)",
+    "rgminph: minimum-phase correspondent, Section 4.7.2",
+    "rgvocal: vocal-tract response by low-time liftering, Section 4.7.3",
+    "rng230: multiplicative model, Rangayyan eq. (4.58)",
+    "rng231: log of a product is a sum, Rangayyan eq. (4.59)",
+    "rng233: convolutional model, Rangayyan eq. (4.61)",
+    "rng236: complex cepstrum, Rangayyan eqs. (4.63)-(4.64)",
+    "rng238: complex cepstra of a convolution add, eqs. (4.65)-(4.66)",
+    "rng239: rational z-transform in pole-zero form, before eq. (4.68)",
+    "rng244: closed-form complex cepstrum, Rangayyan eq. (4.72)",
+    "rng245: complex-cepstrum decay bound, Rangayyan eq. (4.73)",
+    "rng251: echo term of the log spectrum, eqs. (4.79)-(4.80)",
+    "rng253: power cepstrum, Rangayyan eq. (4.81)",
+    "rng254: power cepstra add, Rangayyan eq. (4.82)",
+    "rng255: power cepstrum from the complex cepstrum, eq. (4.83)",
 ]
 
 
 def cheatsheet():
     return "\n".join(_CHEATSHEET)
+
 
 # Pre-policy run-together spellings.  These were in the lazy
 # map but not in the module, so morie.fn.<name> raised
@@ -1301,6 +1422,10 @@ rangayyanmfcc = rangayyan_mfcc  # pre-policy spelling, kept live
 
 # Names the lazy map still points at from before a rename.
 # Without these, morie.fn.<name> raises AttributeError.
-rangayyan_ch4_homomorphic_multiplicative_signal = rangayyan_ch4_homomorphic_multiplicative  # pre-rename spelling, kept live
+rangayyan_ch4_homomorphic_multiplicative_signal = (
+    rangayyan_ch4_homomorphic_multiplicative  # pre-rename spelling, kept live
+)
 rangayyan_ch4_log_echo_power_series_expansion = rangayyan_ch4_log_echo_power_series  # pre-rename spelling, kept live
-rangayyan_ch4_power_cepstrum_relation_to_complex = rangayyan_ch4_power_cepstrum_relation  # pre-rename spelling, kept live
+rangayyan_ch4_power_cepstrum_relation_to_complex = (
+    rangayyan_ch4_power_cepstrum_relation  # pre-rename spelling, kept live
+)

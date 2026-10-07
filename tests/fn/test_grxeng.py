@@ -1,9 +1,8 @@
 """Tests for grxeng.geron_softmax_cost_gradient."""
 
-from morie.fn import _array_core as np
-
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.grxeng import geron_softmax_cost_gradient
 
 

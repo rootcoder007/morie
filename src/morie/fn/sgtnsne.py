@@ -84,8 +84,7 @@ def sgt_isomap(X, k_nn=3, dim=2):
     gm = 0.0
     for v in rm:
         gm += v / n
-    B = [[-0.5 * (S[i][j] - rm[i] - rm[j] + gm) for j in range(n)]
-         for i in range(n)]
+    B = [[-0.5 * (S[i][j] - rm[i] - rm[j] + gm) for j in range(n)] for i in range(n)]
     vals, vecs = k.jacobi(B)
     d = int(dim)
     if d > n:

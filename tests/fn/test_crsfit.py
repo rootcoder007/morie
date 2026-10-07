@@ -46,9 +46,7 @@ def test_crsfit_basic():
     m1f, m0f, ef = _nuis(y, d, X, X)
     trunc = 0.01
     ef = np.clip(ef, trunc, 1 - trunc)
-    expected_naive = float(np.mean(
-        m1f - m0f + d * (y - m1f) / ef - (1 - d) * (y - m0f) / (1 - ef)
-    ))
+    expected_naive = float(np.mean(m1f - m0f + d * (y - m1f) / ef - (1 - d) * (y - m0f) / (1 - ef)))
     assert abs(result["no_crossfit_estimate"] - expected_naive) < 1e-8
 
     # And the cross-fit estimate should be reasonably close to the true

@@ -74,8 +74,7 @@ def two_locus_dprime(geno1, geno2):
     g2 = T.vec(geno2)
     if len(g1) != len(g2):
         raise ValueError("geno1 and geno2 must be the same length")
-    pairs = [(int(a), int(b)) for a, b in zip(g1, g2)
-             if a == int(a) and b == int(b) and 0 <= a <= 2 and 0 <= b <= 2]
+    pairs = [(int(a), int(b)) for a, b in zip(g1, g2) if a == int(a) and b == int(b) and 0 <= a <= 2 and 0 <= b <= 2]
     n = len(pairs)
     if n < 2:
         raise ValueError("need at least 2 complete genotype pairs")

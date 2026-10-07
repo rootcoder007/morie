@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Kolmogorov-Smirnov confidence band for the population cdf."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['ksband', 'gibbons_ks_conf_band']
+__all__ = ["ksband", "gibbons_ks_conf_band"]
 
 
 def ksband(x, dcrit, at=None):

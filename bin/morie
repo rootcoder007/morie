@@ -607,12 +607,24 @@ cmd_config() {
                 die "Usage: morie config set <KEY> <VALUE>"
             fi
             local key="$1" value="$2"
+            # the file is sourced by the shell (opt-in): the key must be an identifier and the
+            # value must not be able to close the quotes or start a command
+            if [[ ! "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+                die "config set: KEY must be a shell identifier (letters, digits, underscore), got '$key'"
+            fi
+            case "$value" in
+                *[\"\`\$\\]*|*$'\n'*) die "config set: VALUE may not contain quotes, backticks, dollar signs, backslashes or newlines" ;;
+            esac
             mkdir -p "$(dirname "$ESML_RC")"
             if grep -q "^${key}=" "$ESML_RC" 2>/dev/null; then
-                sed -i.bak "s|^${key}=.*|${key}=\"${value}\"|" "$ESML_RC"
-                rm -f "${ESML_RC}.bak"
+                # rebuild the file line by line rather than through a sed pattern built from user input
+                local tmp; tmp="$(mktemp "${ESML_RC}.XXXXXX")"
+                while IFS= read -r line || [[ -n "$line" ]]; do
+                    if [[ "$line" == "${key}="* ]]; then printf '%s="%s"\n' "$key" "$value"; else printf '%s\n' "$line"; fi
+                done < "$ESML_RC" > "$tmp"
+                mv "$tmp" "$ESML_RC"
             else
-                echo "${key}=\"${value}\"" >> "$ESML_RC"
+                printf '%s="%s"\n' "$key" "$value" >> "$ESML_RC"
             fi
             success "Set ${key}=${value} in $ESML_RC"
             ;;
@@ -1344,7 +1356,8 @@ _check_python_pkg() {
     local py
     py="$(_resolve_python 2>/dev/null)" || return 1
     local ver
-    ver="$("$py" -c "import $pkg; print(getattr($pkg, '__version__', 'installed'))" 2>/dev/null)"
+    # the package name travels as an argument, never inside the Python source
+    ver="$("$py" -c 'import importlib, sys; m = importlib.import_module(sys.argv[1]); print(getattr(m, "__version__", "installed"))' "$pkg" 2>/dev/null)"
     if [[ $? -eq 0 ]]; then
         printf "  ${GREEN}  OK ${RESET} %-25s %s\n" "import $pkg" "$ver"
         return 0

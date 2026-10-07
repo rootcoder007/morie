@@ -64,14 +64,10 @@ doi:10.1145/2623330.2623732. The uniform random walk node2vec
 generalises.
 """
 
-import math
-
 from . import _array_core as np
-from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["alpha_pq", "transition_probabilities", "walk",
-           "generate_walks", "skipgram_pairs"]
+__all__ = ["alpha_pq", "transition_probabilities", "walk", "generate_walks", "skipgram_pairs"]
 
 _EPS = 1e-12
 
@@ -88,8 +84,7 @@ def alpha_pq(d_tx, p, q):
         return 1.0
     if d == 2:
         return 1.0 / float(q)
-    raise ValueError("node2v: d_tx must be 0, 1 or 2 for a "
-                     "second-order walk, got %d" % d)
+    raise ValueError(f"node2v: d_tx must be 0, 1 or 2 for a second-order walk, got {int(d)}")
 
 
 def _dist(adj, t, x):
@@ -109,15 +104,14 @@ def transition_probabilities(adj, t, v, p, q, weights=None):
     """
     nb = sorted(adj.get(v, ()))
     if not nb:
-        raise ValueError("node2v: node %r has no neighbours" % (v,))
+        raise ValueError(f"node2v: node {v!r} has no neighbours")
     pi = []
     for x in nb:
         w = 1.0 if weights is None else float(weights.get((v, x), 1.0))
         a = 1.0 if t is None else alpha_pq(_dist(adj, t, x), p, q)
         pi.append(a * w)
     Z = sum(pi)
-    return {"nodes": nb, "probabilities": [v_ / Z for v_ in pi],
-            "unnormalized": pi, "Z": Z}
+    return {"nodes": nb, "probabilities": [v_ / Z for v_ in pi], "unnormalized": pi, "Z": Z}
 
 
 def walk(adj, start, length, p=1.0, q=1.0, rng=None, weights=None):
@@ -126,8 +120,7 @@ def walk(adj, start, length, p=1.0, q=1.0, rng=None, weights=None):
     path = [start]
     prev = None
     for _ in range(int(length) - 1):
-        tp = transition_probabilities(adj, prev, path[-1], p, q,
-                                      weights)
+        tp = transition_probabilities(adj, prev, path[-1], p, q, weights)
         u = float(r.uniform())
         acc, nxt = 0.0, tp["nodes"][-1]
         for i in range(len(tp["nodes"])):
@@ -140,22 +133,25 @@ def walk(adj, start, length, p=1.0, q=1.0, rng=None, weights=None):
     return path
 
 
-def generate_walks(adj, num_walks=10, length=10, p=1.0, q=1.0, seed=0,
-                   weights=None):
+def generate_walks(adj, num_walks=10, length=10, p=1.0, q=1.0, seed=0, weights=None):
     r"""``num_walks`` walks from every node."""
     rng = np.random.default_rng(seed)
     out = []
     for _ in range(int(num_walks)):
         for v in sorted(adj):
             out.append(walk(adj, v, length, p, q, rng, weights))
-    return RichResult(payload={
-        "estimate": out, "walks": out, "p": float(p), "q": float(q),
-        "n_walks": len(out), "length": int(length),
-        "method": "second-order biased random walk; Grover & Leskovec "
-                  "(2016) Sec. 3.2.2",
-        "note": "large q keeps the walk local (BFS-like), small q "
-                "pushes it outward (DFS-like); p prices returning",
-    })
+    return RichResult(
+        payload={
+            "estimate": out,
+            "walks": out,
+            "p": float(p),
+            "q": float(q),
+            "n_walks": len(out),
+            "length": int(length),
+            "method": "second-order biased random walk; Grover & Leskovec (2016) Sec. 3.2.2",
+            "note": "large q keeps the walk local (BFS-like), small q pushes it outward (DFS-like); p prices returning",
+        }
+    )
 
 
 def skipgram_pairs(walks, window=2):
@@ -174,14 +170,16 @@ def skipgram_pairs(walks, window=2):
 
 
 def cheatsheet():
-    return ("node2v: graph as document, walk as sentence, skip-gram on "
-            "top. The point is that NO sampling strategy wins "
-            "everywhere: BFS gives a low-variance local structural "
-            "view, DFS a macroscopic community view, and real networks "
-            "mix both. A SECOND-ORDER walk interpolates -- having come "
-            "from t, the bias to x is 1/p if returning, 1 if x "
-            "neighbours t, 1/q otherwise. Large q stays local, small q "
-            "roams. A first-order walk cannot express this.")
+    return (
+        "node2v: graph as document, walk as sentence, skip-gram on "
+        "top. The point is that NO sampling strategy wins "
+        "everywhere: BFS gives a low-variance local structural "
+        "view, DFS a macroscopic community view, and real networks "
+        "mix both. A SECOND-ORDER walk interpolates -- having come "
+        "from t, the bias to x is 1/p if returning, 1 if x "
+        "neighbours t, 1/q otherwise. Large q stays local, small q "
+        "roams. A first-order walk cannot express this."
+    )
 
 
 # compact alias per ledger/NAMING.md

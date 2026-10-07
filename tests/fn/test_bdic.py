@@ -1,7 +1,6 @@
 """Tests for morie.fn.bdic -- Bayesian DIC."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bdic import bayesian_dic
 
 

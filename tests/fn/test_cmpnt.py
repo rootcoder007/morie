@@ -1,12 +1,11 @@
 """Tests for morie.fn.cmpnt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmpnt import cmpnt
 
 
 def test_cmpnt_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = cmpnt(adj_matrix=np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], dtype=float))
     assert result is not None
     assert hasattr(result, "name")

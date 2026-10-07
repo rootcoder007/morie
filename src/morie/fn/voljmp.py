@@ -99,9 +99,12 @@ def vol_jump_test_bnshep(r_intraday, block_index=None):
             pvalue=float(stats.norm.sf(z)),
             extra_summary=[("n_returns", len(r)), ("rv", rv), ("bpv", bpv)],
             extra_payload={
-                "rv": rv, "bpv": bpv, "tpq": tpq,
+                "rv": rv,
+                "bpv": bpv,
+                "tpq": tpq,
                 "jump_component": rv - bpv,
-                "n_returns": len(r), "days": None,
+                "n_returns": len(r),
+                "days": None,
                 "method": "BNS (2006) linear jump test, bipower vs realised variance",
             },
         )

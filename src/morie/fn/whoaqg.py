@@ -80,11 +80,12 @@ def who_aqg_compliance(
 
     Examples
     --------
-    Annual PM₂.₅ of 12 µg/m³ (above WHO AQG of 5):
+    Annual PM₂.₅ of 12 µg/m³ is above the AQG of 5 and the IT-4 target of
+    10, but within IT-3 (15):
 
     >>> r = who_aqg_compliance(12, "pm25", "annual")
     >>> r.extra["level"]
-    'IT-4'
+    'IT-3'
 
     References
     ----------

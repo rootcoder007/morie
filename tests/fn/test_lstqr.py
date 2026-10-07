@@ -1,7 +1,6 @@
 """Tests for morie.fn.lstqr -- Least squares via QR."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lstqr import lstqr, lstsq_qr
 

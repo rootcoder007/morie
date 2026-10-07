@@ -42,6 +42,7 @@ The DLRM methodology attribution and the wider acknowledgements
 from __future__ import annotations
 
 import json
+import warnings as _warnings
 from pathlib import Path
 from typing import Any
 
@@ -590,6 +591,12 @@ def _d_simple(ds_id: str, by: str) -> callable:
             ],
         )
 
+    _fn.__name__ = f"analyze_{ds_id}"
+    _fn.__doc__ = (
+        f"OTIS {ds_id}: custodial deaths by year and by {by}.\n\n"
+        f"    Args:\n        df: the {ds_id} table; ``None`` loads it.\n\n"
+        f"    Returns:\n        A ``RichResult`` with the dataset summary, the yearly trend and the {by}-by-year crosstab.\n"
+    )
     return _fn
 
 
@@ -600,6 +607,14 @@ analyze_d05 = _d_simple("d05", "Age_Category")
 
 
 def analyze_d06(df: pd.DataFrame | None = None) -> RichResult:
+    """OTIS d06: custodial deaths by alert type and medical cause of death.
+
+    Args:
+        df: the d06 table; ``None`` loads it.
+
+    Returns:
+        A ``RichResult`` with the dataset summary and the cause-by-alert crosstab.
+    """
     df = df if df is not None else load_otis_dataset("d06")
     return RichResult(
         title="d06 -- Custodial deaths × alert × medical cause",
@@ -611,6 +626,14 @@ def analyze_d06(df: pd.DataFrame | None = None) -> RichResult:
 
 
 def analyze_d07(df: pd.DataFrame | None = None) -> RichResult:
+    """OTIS d07: custodial deaths by alert type and housing-unit type.
+
+    Args:
+        df: the d07 table; ``None`` loads it.
+
+    Returns:
+        A ``RichResult`` with the dataset summary and the housing-unit-by-alert crosstab.
+    """
     df = df if df is not None else load_otis_dataset("d07")
     return RichResult(
         title="d07 -- Custodial deaths × alert × housing unit",
@@ -1208,7 +1231,6 @@ def _ruhela_formulations_on(
     # === Multi-SE comparison on IRM-DML primary point estimate ===
     multi_se_rows: list = []
     if include_multi_se and irm_results:
-        ate_pt = irm_results.get("ate", float("nan"))
         # Try four SE flavours: pooled, EFY-cluster, UID-cluster, multi-way
         flavours = [
             ("pooled (iid)", None),
@@ -1271,9 +1293,9 @@ def _ruhela_formulations_on(
     balance_summary = "--"
     try:
         balance = oc.otis_balance(data_r, treatment=T_r, covariates=cov_r)
-        smd_data = balance.payload if hasattr(balance, "payload") else {}
-        max_smd = smd_data.get("max_abs_smd", "n/a")
-        balance_summary = f"max |SMD| = {max_smd:.3f}" if isinstance(max_smd, (int, float)) else str(max_smd)
+        # otis_balance returns one row per covariate; report the largest raw |SMD|, as the R arm does
+        raw = [abs(float(v)) for v in balance["smd_raw"] if v == v]
+        balance_summary = f"max |SMD| = {max(raw):.3f}" if raw else "n/a"
     except Exception as e:  # noqa: BLE001
         balance_summary = f"err: {type(e).__name__}: {e}"
 
@@ -1377,7 +1399,7 @@ def analyze_a01_ruhela_formulations(
             "across IPW (single-robust on propensity), g-computation "
             "(single-robust on outcome), AIPW (doubly-robust), PSM-NN "
             "(ATT, nonparametric), PSM-subclass (ATE, nonparametric), "
-            "then-DoubleML pipeline) is the strongest practical signal "
+            "IRM-DML and the MatchIt-then-DoubleML pipeline is the strongest practical signal "
             "of identification. Naive-arm sensitivity (any-flag, vm-"
             "binary) shows the same Goffmanian sign at smaller magnitude."
         ),
@@ -1533,7 +1555,7 @@ def analyze_ruhela_per_year(
         covariates=covariates,
         year_col=year_col,
         cluster_cols=cl,
-        full_ensemble=True,
+        full_battery=True,
         propensity_calibration=propensity_calibration,
     )
 
@@ -1557,7 +1579,7 @@ def analyze_ruhela_per_year(
                     f"{est.get('se', float('nan')):.4f}",
                     f"[{ci[0]:+.3f}, {ci[1]:+.3f}]",
                     f"{est.get('p', float('nan')):.2e}",
-                    f"n={est.get('n', '?')}",
+                    f"n={est.get('n', n)}",
                 ]
             )
         # IRM-DML: report ATE + ATTE + ATC inline
@@ -1658,7 +1680,7 @@ def analyze_a01_ruhela_per_year(
 
     if df is None:
         df = load_otis_dataset("a01")
-    data, T, Y, cov = oc.make_pair_alert_to_volatility_a01()
+    data, T, Y, cov = oc.make_pair_alert_to_volatility_a01(df)
     return analyze_ruhela_per_year(
         data, ds_id="a01", treatment=T, outcome=Y, covariates=cov, cluster_col="EndFiscalYear"
     )
@@ -3363,7 +3385,7 @@ def analyze_ruhela_grid() -> RichResult:
         # 2. GEE-Poisson Exch -- cluster-robust, equidispersed
         # 3. NB GLM       -- overdispersion-aware, no cluster
         # 4. Poisson GLM  -- fallback
-        def _find(label_substr):
+        def _find(label_substr, r=r):
             return next(
                 (row for row in r.tables[0]["rows"] if label_substr in str(row[0]) and row[2] != "fit failed"), None
             )
@@ -3983,7 +4005,7 @@ def analyze_c11_mandela_classification(
     df["mandela_class"] = df["Aggregate_Duration"].astype(str).apply(_classify_otis_bins)
 
     rows = []
-    for (year, kind), gdf in df.groupby(
+    for (_year, _kind), _gdf in df.groupby(
         [
             "EndFiscalYear",  # noqa: PD010
             df["mandela_class"],
@@ -4694,7 +4716,6 @@ analyze_d05_mrm_aggregate = analyze_d05_ruhela_aggregate
 
 
 # ── Deprecation aliases: pre-0.9.5.4 names (Doob → MRM chi-square rename) ──
-import warnings as _warnings
 
 
 def analyze_c_doob_chi2(*args, **kwargs):

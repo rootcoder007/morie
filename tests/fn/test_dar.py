@@ -1,8 +1,8 @@
 """Tests for morie.fn.dar -- direct age-adjustment."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dar import direct_age_adjustment
 
 
@@ -14,7 +14,7 @@ class TestDAR:
         std_w = np.array([6000, 4000])
         res = direct_age_adjustment(rates, pop_w, std_w)
         assert res.measure == "DAR"
-        w = np.array([0.6, 0.4])
+        np.array([0.6, 0.4])
         expected = (0.6 * 0.01 + 0.4 * 0.05) * 100_000
         assert res.estimate == pytest.approx(expected, rel=0.01)
 

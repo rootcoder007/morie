@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Nakagawa-Schielzeth marginal and conditional R-squared."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -79,8 +77,7 @@ def nakagawa_conditional_r2(y, X=None, Z=None, cluster=None):
         groups = [[res[i] for i in range(n) if ids[i] == k] for k in keys]
         sizes = [len(g) for g in groups]
         gm = sum(res) / n
-        ssb = sum(sizes[j] * (sum(groups[j]) / sizes[j] - gm) ** 2
-                  for j in range(a))
+        ssb = sum(sizes[j] * (sum(groups[j]) / sizes[j] - gm) ** 2 for j in range(a))
         ssw = sum((v - sum(g) / len(g)) ** 2 for g in groups for v in g)
         if a > 1 and n > a:
             msb = ssb / (a - 1)
@@ -97,18 +94,20 @@ def nakagawa_conditional_r2(y, X=None, Z=None, cluster=None):
     r2m = var_f / tot
     r2c = (var_f + var_r) / tot
     icc = var_r / (var_r + var_e) if (var_r + var_e) > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": r2c,
-        "r2_marginal": r2m,
-        "r2_conditional": r2c,
-        "var_fixed": var_f,
-        "var_random": var_r,
-        "var_resid": var_e,
-        "icc": icc,
-        "n": n,
-        "n_groups": a,
-        "method": "Nakagawa-Schielzeth marginal and conditional R-squared",
-    })
+    return RichResult(
+        payload={
+            "estimate": r2c,
+            "r2_marginal": r2m,
+            "r2_conditional": r2c,
+            "var_fixed": var_f,
+            "var_random": var_r,
+            "var_resid": var_e,
+            "icc": icc,
+            "n": n,
+            "n_groups": a,
+            "method": "Nakagawa-Schielzeth marginal and conditional R-squared",
+        }
+    )
 
 
 def cheatsheet():

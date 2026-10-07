@@ -32,5 +32,3 @@ def test_rgdaub_edge():
     assert rangayyan_daubechies(1)["rec_lo"] == pytest.approx([1 / math.sqrt(2)] * 2, rel=1e-15)
     with pytest.raises(ValueError, match="1..10"):
         rangayyan_daubechies(11)
-
-

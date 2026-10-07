@@ -74,11 +74,7 @@ def test_gb641p_basic():
     log_norm = log_beta(a, b)
     h0_power = 0.0
     for i in range(min(wcrit, n + 1)):
-        log_pmf_i = (
-            log_binom(n, i)
-            + log_beta(i + a, n - i + b)
-            - log_norm
-        )
+        log_pmf_i = log_binom(n, i) + log_beta(i + a, n - i + b) - log_norm
         h0_power += exp(log_pmf_i)
 
     assert abs(result["power"] - h0_power) < 1e-4

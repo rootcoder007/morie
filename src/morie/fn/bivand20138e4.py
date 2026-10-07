@@ -72,10 +72,7 @@ def svariog(coords, z, breaks=None, nbins=10, cutoff=None):
             dd = math.sqrt(sum((P[i][t] - P[j][t]) ** 2 for t in range(k)))
             d.append(dd)
             g.append((z[i] - z[j]) ** 2)
-    if cutoff is None:
-        cut = max(d) / 3.0
-    else:
-        cut = float(cutoff)
+    cut = max(d) / 3.0 if cutoff is None else float(cutoff)
     if breaks is None:
         nb = int(nbins)
         if nb < 1:
@@ -98,13 +95,20 @@ def svariog(coords, z, breaks=None, nbins=10, cutoff=None):
         ssq[b] += g[t]
         sdi[b] += d[t]
         cnt[b] += 1
-    gam = [ssq[b] / (2.0 * cnt[b]) if cnt[b] else float("nan")
-           for b in range(nb)]
+    gam = [ssq[b] / (2.0 * cnt[b]) if cnt[b] else float("nan") for b in range(nb)]
     dis = [sdi[b] / cnt[b] if cnt[b] else float("nan") for b in range(nb)]
-    return RichResult(payload={
-        "gamma": gam, "np": cnt, "dist": dis, "breaks": br, "cutoff": cut,
-        "n": n, "npair": len(d),
-        "method": "Sample semivariogram (Bivand et al. 2013 eq. 8.4)"})
+    return RichResult(
+        payload={
+            "gamma": gam,
+            "np": cnt,
+            "dist": dis,
+            "breaks": br,
+            "cutoff": cut,
+            "n": n,
+            "npair": len(d),
+            "method": "Sample semivariogram (Bivand et al. 2013 eq. 8.4)",
+        }
+    )
 
 
 bivand2013_chapter_8_equation_4 = svariog

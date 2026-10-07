@@ -13,17 +13,13 @@ __all__ = ["kamath_ch6_differential_privacy"]
 def _mass(M, D, S, name):
     dist = M(D)
     if not isinstance(dist, dict) or not dist:
-        raise ValueError(f"M({name}) must return a non-empty outcome "
-                         "distribution.")
+        raise ValueError(f"M({name}) must return a non-empty outcome distribution.")
     p = np.asarray([float(v) for v in dist.values()], dtype=float)
     if np.any(p < 0) or abs(float(p.sum()) - 1.0) > 1e-8:
-        raise ValueError(
-            f"M({name}) must be a distribution; it sums to "
-            f"{float(p.sum()):.6g}.")
+        raise ValueError(f"M({name}) must be a distribution; it sums to {float(p.sum()):.6g}.")
     missing = [s for s in S if s not in dist]
     if missing:
-        raise ValueError(
-            f"the outcomes {missing!r} are absent from M({name}).")
+        raise ValueError(f"the outcomes {missing!r} are absent from M({name}).")
     return float(sum(float(dist[s]) for s in S))
 
 
@@ -53,28 +49,32 @@ def kamath_ch6_differential_privacy(M, A, B, S, epsilon):
     False
     """
     if not callable(M):
-        raise ValueError("M must be a callable dataset -> outcome "
-                         "distribution.")
+        raise ValueError("M must be a callable dataset -> outcome distribution.")
     outs = list(S)
     if not outs:
-        raise ValueError("S is empty; the guarantee is vacuous for the "
-                         "empty outcome set.")
+        raise ValueError("S is empty; the guarantee is vacuous for the empty outcome set.")
     eps = float(epsilon)
     if eps < 0:
         raise ValueError("epsilon must be non-negative.")
     pA = _mass(M, A, outs, "A")
     pB = _mass(M, B, outs, "B")
     if pB <= 0:
-        raise ValueError(
-            "P[M(B) in S] is 0; no finite epsilon can bound a positive "
-            "P[M(A) in S] against it.")
+        raise ValueError("P[M(B) in S] is 0; no finite epsilon can bound a positive P[M(A) in S] against it.")
     required = float(math.log(pA / pB)) if pA > 0 else float("-inf")
-    return RichResult(payload={
-        "estimate": required, "epsilon_required": required,
-        "satisfied": bool(pA <= math.exp(eps) * pB + 1e-12),
-        "p_A": pA, "p_B": pB, "ratio": pA / pB, "epsilon": eps,
-        "bound": float(math.exp(eps) * pB), "n": len(outs),
-        "method": "differential privacy check (Kamath Eq 6.32)"})
+    return RichResult(
+        payload={
+            "estimate": required,
+            "epsilon_required": required,
+            "satisfied": bool(pA <= math.exp(eps) * pB + 1e-12),
+            "p_A": pA,
+            "p_B": pB,
+            "ratio": pA / pB,
+            "epsilon": eps,
+            "bound": float(math.exp(eps) * pB),
+            "n": len(outs),
+            "method": "differential privacy check (Kamath Eq 6.32)",
+        }
+    )
 
 
 def cheatsheet():

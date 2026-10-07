@@ -58,7 +58,7 @@ def gcn(G, X, W):
     if len(Wm) != len(H[0]):
         raise ValueError("gcn: W must have one row per input feature")
     An = _norm_adj(M, n, False)
-    for i in range(n):          # the identity term of eq. (7)
+    for i in range(n):  # the identity term of eq. (7)
         An[i][i] += 1.0
     AH = core.matmul(An, H)
     Z = core.matmul(AH, Wm)

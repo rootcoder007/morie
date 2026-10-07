@@ -1,9 +1,10 @@
 """Tests for copt."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.copt import t_copula
+
 
 def test_copt_basic():
     out = t_copula(0.4, 0.6, 0.5, nu=5.0)

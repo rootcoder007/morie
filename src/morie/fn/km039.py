@@ -29,12 +29,9 @@ def kamath_ch2_moe_output(x, G, E_i):
     2
     """
     x = np.atleast_1d(np.asarray(x, dtype=float))
-    g = np.atleast_1d(np.asarray(G(x) if callable(G) else G,
-                                 dtype=float))
+    g = np.atleast_1d(np.asarray(G(x) if callable(G) else G, dtype=float))
     if len(g) != len(E_i):
-        raise ValueError(
-            f"the gate produced {len(g)} weights for {len(E_i)} "
-            "experts.")
+        raise ValueError(f"the gate produced {len(g)} weights for {len(E_i)} experts.")
     if np.any(g < 0):
         raise ValueError("gate weights must be non-negative.")
     total = None
@@ -42,19 +39,21 @@ def kamath_ch2_moe_output(x, G, E_i):
     for gi, Ei in zip(g, E_i):
         if gi == 0.0:
             continue
-        out_i = np.atleast_1d(np.asarray(
-            Ei(x) if callable(Ei) else Ei, dtype=float))
+        out_i = np.atleast_1d(np.asarray(Ei(x) if callable(Ei) else Ei, dtype=float))
         ran += 1
         total = gi * out_i if total is None else total + gi * out_i
     if total is None:
-        raise ValueError("every gate weight is 0; the mixture selects "
-                         "no expert.")
-    return RichResult(payload={
-        "output": [float(v) for v in np.atleast_1d(total)],
-        "gate_weights": [float(v) for v in g],
-        "experts_evaluated": ran,
-        "estimate": float(np.atleast_1d(total)[0]), "n": len(E_i),
-        "method": "Mixture-of-experts combination (Kamath Eq 2.39)"})
+        raise ValueError("every gate weight is 0; the mixture selects no expert.")
+    return RichResult(
+        payload={
+            "output": [float(v) for v in np.atleast_1d(total)],
+            "gate_weights": [float(v) for v in g],
+            "experts_evaluated": ran,
+            "estimate": float(np.atleast_1d(total)[0]),
+            "n": len(E_i),
+            "method": "Mixture-of-experts combination (Kamath Eq 2.39)",
+        }
+    )
 
 
 def cheatsheet():

@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.gtrf import laplacian, sparse_attention
 
-
 ADJ = {0: [1], 1: [0, 2], 2: [1]}
 
 
@@ -31,5 +30,3 @@ def test_gtrf_edge():
     s2 = sum(H[1][a] * H[2][a] for a in range(2)) / math.sqrt(2)
     w0 = math.exp(s0) / (math.exp(s0) + math.exp(s2))
     assert out[1] == pytest.approx([w0 * 1.0 + (1 - w0) * 2.0, w0 * 0.0 + (1 - w0) * 1.0], rel=1e-14)
-
-

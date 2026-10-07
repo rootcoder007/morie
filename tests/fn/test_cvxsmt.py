@@ -1,7 +1,6 @@
 """Tests for cvxsmt.boyd_smooth_min."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxsmt import boyd_smooth_min
 
 
@@ -11,6 +10,8 @@ def test_cvxsmt_basic():
     result = boyd_smooth_min(x)
     assert isinstance(result, dict)
     assert "value" in result
+
+
 def test_cvxsmt_edge():
     """Test edge cases."""
     x = np.random.default_rng(42).normal(0, 1, 100)

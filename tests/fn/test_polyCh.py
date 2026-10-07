@@ -1,7 +1,6 @@
 """Tests for polyCh.chebyshev_basis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.polyCh import chebyshev_basis
 
 

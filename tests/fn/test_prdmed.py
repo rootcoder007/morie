@@ -1,7 +1,6 @@
 """Tests for prdmed.product_of_coefficients."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prdmed import product_of_coefficients
 
 

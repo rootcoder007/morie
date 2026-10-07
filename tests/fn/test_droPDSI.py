@@ -6,9 +6,9 @@ palmer_pdsi with inputs that are physically meaningful -- the old one fed
 standard-normal draws as precipitation, i.e. rain of -1.4 mm.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.droPDSI import palmer_pdsi
 
 

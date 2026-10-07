@@ -1,7 +1,6 @@
 """Tests for rcsem — conditional SEM."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rcsem import rcsem
 
 

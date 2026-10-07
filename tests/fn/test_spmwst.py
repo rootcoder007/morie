@@ -1,8 +1,8 @@
 """spmwst -- Haas moving windows, Schabenberger & Gotway Sec. 8.3.1."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._schab_nonstat import haas_window
 from morie.fn.spmwst import schabenberger_moving_window as mw
 
@@ -89,8 +89,7 @@ def test_convergence_is_reported_per_window():
     assert r["converged"].shape == (4,)
     # `converged` may be a numpy boolean array; compare elementwise against Python bool.
     assert all(bool(c) == c for c in r["converged"])
-    assert np.asarray(r["converged"]).astype(bool).tolist() == \
-        [bool(c) for c in np.asarray(r["converged"])]
+    assert np.asarray(r["converged"]).astype(bool).tolist() == [bool(c) for c in np.asarray(r["converged"])]
 
 
 def test_rejects_mismatched_lengths_and_bad_window():

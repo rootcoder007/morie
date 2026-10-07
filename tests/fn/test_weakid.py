@@ -1,8 +1,8 @@
 """Tests for weakid.weak_identification_mediation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.weakid import weak_identification_mediation
 
 

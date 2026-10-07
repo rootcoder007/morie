@@ -5,9 +5,6 @@ Implements Theorem 4.6, eq. (4.10)-(4.12) of Ghosal & van der Vaart (2017), *Fun
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -24,11 +21,15 @@ def ghosal_dp_post(G0_A, alpha, n_in_A, n):
     pn = float(n_in_A) / n if n > 0 else 0.0
     mean = M / (M + n) * g + n / (M + n) * pn
     var = mean * (1.0 - mean) / (1.0 + M + n)
-    res = RichResult(payload={"estimate": mean,
-                              "posterior_var": var,
-                              "var_bound": 1.0 / (4.0 * (1.0 + M + n)),
-                              "posterior_precision": M + n,
-                              "method": "DP conjugate posterior (GvdV 2017 eq. 4.10-4.12)"})
+    res = RichResult(
+        payload={
+            "estimate": mean,
+            "posterior_var": var,
+            "var_bound": 1.0 / (4.0 * (1.0 + M + n)),
+            "posterior_precision": M + n,
+            "method": "DP conjugate posterior (GvdV 2017 eq. 4.10-4.12)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_6")
 
 

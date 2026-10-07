@@ -3,10 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 10.2.3, two-model adaptation.
 """
 
-import math
-
-import pytest
-
 from morie.fn.gh_c10_4 import ghosal_two_model_adp
 
 

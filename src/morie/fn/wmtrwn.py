@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Row-normalised spatial weights."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['rownorm', 'weights_row_normalize']
+__all__ = ["rownorm", "weights_row_normalize"]
 
 
 def rownorm(W):
@@ -37,12 +35,16 @@ def rownorm(W):
     W = C.mat(W)
     n = len(W)
     rs = [sum(row) for row in W]
-    out = [[W[i][j] / rs[i] if rs[i] != 0 else 0.0 for j in range(n)]
-           for i in range(n)]
-    return RichResult(payload={
-        "W": out, "row_sums": rs,
-        "islands": [i for i in range(n) if rs[i] == 0], "n": n,
-        "method": "Row-normalised spatial weights"})
+    out = [[W[i][j] / rs[i] if rs[i] != 0 else 0.0 for j in range(n)] for i in range(n)]
+    return RichResult(
+        payload={
+            "W": out,
+            "row_sums": rs,
+            "islands": [i for i in range(n) if rs[i] == 0],
+            "n": n,
+            "method": "Row-normalised spatial weights",
+        }
+    )
 
 
 weights_row_normalize = rownorm

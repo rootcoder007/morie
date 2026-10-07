@@ -1,7 +1,5 @@
 """Tests for ospats_objective.ospats_objective."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ospats_objective import (
     ospats_objective,
 )

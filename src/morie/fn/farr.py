@@ -51,7 +51,7 @@ def farrington_detect(
     var = float(np.var(hist, ddof=1))
     phi = max(var / mu, 1.0) if mu > 0 else 1.0
 
-    se = np.sqrt(phi * mu / len(hist))
+    np.sqrt(phi * mu / len(hist))
     z = stats.norm.ppf(1 - alpha)
     threshold = mu + z * np.sqrt(phi * mu)
     exceedance = current > threshold

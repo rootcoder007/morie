@@ -10,8 +10,7 @@ __all__ = ["geron_bidirectional_rnn"]
 _METHOD = "Bidirectional RNN state concatenation"
 
 
-def geron_bidirectional_rnn(h_forward, h_backward, backward_in_reverse_order=False,
-                            combine="concat"):
+def geron_bidirectional_rnn(h_forward, h_backward, backward_in_reverse_order=False, combine="concat"):
     r"""Combine the two directions of a bidirectional recurrent layer.
 
     .. math::
@@ -67,9 +66,7 @@ def geron_bidirectional_rnn(h_forward, h_backward, backward_in_reverse_order=Fal
     if F.size == 0 or B.size == 0:
         raise ValueError("h_forward and h_backward must be non-empty.")
     if F.shape[0] != B.shape[0]:
-        raise ValueError(
-            f"h_forward has {F.shape[0]} time steps but h_backward has {B.shape[0]}."
-        )
+        raise ValueError(f"h_forward has {F.shape[0]} time steps but h_backward has {B.shape[0]}.")
     if not np.all(np.isfinite(F)) or not np.all(np.isfinite(B)):
         raise ValueError("hidden states contain non-finite values.")
     if backward_in_reverse_order:
@@ -79,16 +76,12 @@ def geron_bidirectional_rnn(h_forward, h_backward, backward_in_reverse_order=Fal
         h = np.concatenate([F, B], axis=1)
     elif combine in ("sum", "mean"):
         if F.shape[1] != B.shape[1]:
-            raise ValueError(
-                f"combine={combine!r} needs equal widths, got {F.shape[1]} and {B.shape[1]}."
-            )
+            raise ValueError(f"combine={combine!r} needs equal widths, got {F.shape[1]} and {B.shape[1]}.")
         h = F + B
         if combine == "mean":
             h = h / 2.0
     else:
-        raise ValueError(
-            f"combine must be one of 'concat', 'sum', 'mean', got {combine!r}."
-        )
+        raise ValueError(f"combine must be one of 'concat', 'sum', 'mean', got {combine!r}.")
 
     return RichResult(
         title="Bidirectional RNN states",

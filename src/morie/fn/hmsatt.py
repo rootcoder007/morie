@@ -72,9 +72,7 @@ def geron_self_attention(X, W_Q, W_K, W_V, mask=None):
         if A.ndim != 2:
             raise ValueError(f"geron_self_attention: {nm} must be a 2-D projection matrix")
         if A.shape[0] != d_model:
-            raise ValueError(
-                f"geron_self_attention: X has d_model={d_model} but {nm} has {A.shape[0]} rows"
-            )
+            raise ValueError(f"geron_self_attention: X has d_model={d_model} but {nm} has {A.shape[0]} rows")
         if not np.all(np.isfinite(A)):
             raise ValueError(f"geron_self_attention: {nm} contains non-finite values")
         mats[nm] = A

@@ -39,7 +39,9 @@ def gibbons_spearman_rho_var(n, r_s=None):
         raise ValueError(f"n must be at least 2, got {n}.")
     var = 1.0 / (n - 1)
     payload = {
-        "var": float(var), "sd": float(np.sqrt(var)), "n": n,
+        "var": float(var),
+        "sd": float(np.sqrt(var)),
+        "n": n,
         "method": "Var(r_s) = 1/(n-1), exact under the null (Gibbons Ch. 11.3)",
     }
     if r_s is not None:

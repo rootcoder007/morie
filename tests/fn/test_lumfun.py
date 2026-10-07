@@ -1,7 +1,6 @@
 """Tests for morie.fn.lumfun -- Luminosity function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.lumfun import lumfun, luminosity_function
 

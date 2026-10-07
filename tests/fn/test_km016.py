@@ -13,6 +13,8 @@ def test_km016_doctest():
 
 def test_km016_edge():
     import pytest
+
     from morie.fn.km016 import kamath_ch2_multihead_concat
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_multihead_concat(*([None] * 2))

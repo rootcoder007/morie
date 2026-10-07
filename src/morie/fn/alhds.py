@@ -30,10 +30,9 @@ def alammar_hdbscan_cluster(X, min_cluster_size=3, min_samples=None):
     if mcs < 2:
         raise ValueError("min_cluster_size must be at least 2.")
     if not 1 <= ms < n:
-        raise ValueError(
-            f"min_samples must lie in [1, {n - 1}]; got {ms}.")
+        raise ValueError(f"min_samples must lie in [1, {n - 1}]; got {ms}.")
     D = np.linalg.norm(X[:, None, :] - X[None, :, :], axis=2)
-    core = np.sort(D, axis=1)[:, ms]     # ms-th neighbour, self at 0
+    core = np.sort(D, axis=1)[:, ms]  # ms-th neighbour, self at 0
     MR = np.maximum(np.maximum(core[:, None], core[None, :]), D)
     np.fill_diagonal(MR, 0.0)
 
@@ -56,6 +55,7 @@ def alammar_hdbscan_cluster(X, min_cluster_size=3, min_samples=None):
         dist[upd] = MR[j][upd]
         dist[visited] = np.inf
     edges.sort()
+
     # flat cut: try every distinct edge weight as a strict threshold
     # and keep the one yielding the MOST clusters of size >= mcs
     # (ties to the smaller threshold, which keeps clusters tight). A
@@ -96,14 +96,19 @@ def alammar_hdbscan_cluster(X, min_cluster_size=3, min_samples=None):
             for i in members:
                 labels[i] = lab
             lab += 1
-    return RichResult(payload={
-        "labels": labels, "n_clusters": lab,
-        "n_noise": labels.count(-1),
-        "core_distances": [float(v) for v in core],
-        "cut_threshold": float(threshold),
-        "estimate": float(lab), "n": n,
-        "method": "Mutual-reachability single linkage with min cluster "
-                  "size (Campello et al. 2013, simplified flat cut)"})
+    return RichResult(
+        payload={
+            "labels": labels,
+            "n_clusters": lab,
+            "n_noise": labels.count(-1),
+            "core_distances": [float(v) for v in core],
+            "cut_threshold": float(threshold),
+            "estimate": float(lab),
+            "n": n,
+            "method": "Mutual-reachability single linkage with min cluster "
+            "size (Campello et al. 2013, simplified flat cut)",
+        }
+    )
 
 
 def cheatsheet():

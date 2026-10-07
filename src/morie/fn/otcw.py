@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cyclical monotonicity check for a coupling."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -53,10 +51,15 @@ def ot_cyclical_weight(X, Y, Cost, perm):
             d = (M[p[j]][i] + M[p[i]][j]) - (M[p[i]][i] + M[p[j]][j])
             if d < worst:
                 worst = d
-    return RichResult(payload={
-        "is_cm": 1.0 if worst >= 0.0 else 0.0, "slack": worst,
-        "estimate": total, "n": n,
-        "method": "Cyclical monotonicity over transpositions"})
+    return RichResult(
+        payload={
+            "is_cm": 1.0 if worst >= 0.0 else 0.0,
+            "slack": worst,
+            "estimate": total,
+            "n": n,
+            "method": "Cyclical monotonicity over transpositions",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,9 +1,8 @@
 """Tests for analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e5.analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5."""
 
-from morie.fn import _array_core as np
-
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e5 import (
     analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5,
 )
@@ -16,10 +15,12 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e5_basic()
     counts = rng.integers(1, 100, size=10)
     beta = 0.5
     t_obs = float(t_values[5])
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5(t_values, counts, beta, t_obs)
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5(
+        t_values, counts, beta, t_obs
+    )
     assert isinstance(result, dict)
-    assert 'p_at_t' in result
-    p = result['p_at_t']
+    assert "p_at_t" in result
+    p = result["p_at_t"]
     assert math.isfinite(p)
     assert 0.0 <= p <= 1.0
 
@@ -31,9 +32,11 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo6e5_edge():
     counts = np.array([1, 1], dtype=int)
     beta = 1.0
     t_obs = 0.0
-    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5(t_values, counts, beta, t_obs)
+    result = analysis_of_categorical_data_with_r_chapman_hall_crc_christo_chapter_6_equation_5(
+        t_values, counts, beta, t_obs
+    )
     assert isinstance(result, dict)
-    assert 'p_at_t' in result
-    p = result['p_at_t']
+    assert "p_at_t" in result
+    p = result["p_at_t"]
     assert math.isfinite(p)
     assert 0.0 <= p <= 1.0

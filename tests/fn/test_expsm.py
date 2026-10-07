@@ -1,7 +1,6 @@
 """Tests for morie.fn.expsm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.expsm import expsm
 
 

@@ -28,6 +28,17 @@ else
   echo "[guard] Rscript not found — R symbol check SKIPPED" >&2
 fi
 
+# the same pinned ruff gate as static-guards.yml (uvx fetches that exact version)
+if command -v uvx >/dev/null 2>&1; then
+  run "ruff check" uvx ruff@0.16.10 check --quiet .
+  run "ruff format --check" uvx ruff@0.16.10 format --check --quiet .
+elif command -v ruff >/dev/null 2>&1; then
+  run "ruff check" ruff check --quiet .
+  run "ruff format --check" ruff format --check --quiet .
+else
+  echo "[guard] ruff not found -- lint check SKIPPED" >&2
+fi
+
 if [ "${1:-}" != "--skip-catalogue" ] && [ -f src/morie/fn/_lazy_map.json ]; then
   printf '\n[guard] Python catalogue resolves\n'
   PYTHONPATH="$PWD/src" python3 - <<'PY' || fail=1

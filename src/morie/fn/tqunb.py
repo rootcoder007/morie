@@ -65,14 +65,11 @@ def turboquant_prodqjl_unbiasedness(q, k, m=64, trials=2000, seed=0):
     qv = np.asarray(q, dtype=float).ravel()
     kv = np.asarray(k, dtype=float).ravel()
     if qv.size != kv.size:
-        raise ValueError(
-            "q and k must have the same dimension, got %d and %d."
-            % (qv.size, kv.size)
-        )
+        raise ValueError(f"q and k must have the same dimension, got {int(qv.size)} and {int(kv.size)}.")
     d = qv.size
     m = int(m)
     if m < 1:
-        raise ValueError("m must be positive, got %d." % m)
+        raise ValueError(f"m must be positive, got {int(m)}.")
     nk = float(np.linalg.norm(kv))
     if nk == 0:
         raise ValueError("k must be non-zero.")
@@ -98,14 +95,12 @@ def turboquant_prodqjl_unbiasedness(q, k, m=64, trials=2000, seed=0):
             "z": z,
             "unbiased": bool(abs(z) < 4.0) if np.isfinite(z) else False,
             "z_note": (
-                "standardised bias; |z| under about 4 is consistent with "
-                "exact unbiasedness at this number of trials"
+                "standardised bias; |z| under about 4 is consistent with exact unbiasedness at this number of trials"
             ),
             "variance": float(ests.var(ddof=1)),
             "variance_scaling": float(ests.var(ddof=1) * m),
             "scaling_note": (
-                "variance times m should be roughly constant in m, which is "
-                "the O(1/m) rate the lemma implies"
+                "variance times m should be roughly constant in m, which is the O(1/m) rate the lemma implies"
             ),
             "downstream_note": (
                 "bias would shift every attention score the same way and the "
@@ -121,7 +116,4 @@ def turboquant_prodqjl_unbiasedness(q, k, m=64, trials=2000, seed=0):
 
 
 def cheatsheet():
-    return (
-        "tqunb: measures the ProdQJL bias against the exact inner product "
-        "and checks the O(1/m) variance rate"
-    )
+    return "tqunb: measures the ProdQJL bias against the exact inner product and checks the O(1/m) variance rate"

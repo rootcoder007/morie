@@ -1,7 +1,6 @@
 """Tests for average covariance block."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgavgc import sgavgc
 
 

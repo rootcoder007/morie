@@ -28,17 +28,16 @@ def ca_chapter_7_equation_7(sigma2_u, sigma2_e):
     """
     value = _ca_crim.intraclass_correlation(sigma2_u, sigma2_e)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (7.7)"
     return RichResult(
-        title='Intraclass correlation rho = sigma2_u/(sigma2_u + sigma2_e)',
+        title="Intraclass correlation rho = sigma2_u/(sigma2_u + sigma2_e)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca7e7: rho = sigma^2_u / (sigma^2_u + sigma^2_e) [Weisburd et al. 2022, eq. 7.7]'
+    return "ca7e7: rho = sigma^2_u / (sigma^2_u + sigma^2_e) [Weisburd et al. 2022, eq. 7.7]"

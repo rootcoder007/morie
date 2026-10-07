@@ -1,7 +1,6 @@
 """Test template_match_lib (tmpml)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.tmpml import template_match_lib, tmpml
 

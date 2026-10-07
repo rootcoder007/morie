@@ -67,10 +67,18 @@ def ot_minibatch_loss(X, Y, batch_size, n_batches, epsilon):
         C = ot.costmat(xi, yi, 2)
         T, _, _ = ot.sinkhorn(u, u, C, eps, 200)
         per.append(ot.frob(T, C))
-    return RichResult(payload={
-        "loss": sum(per) / M, "per_batch": per, "batch_size": bs,
-        "n_batches": M, "n": n, "m": m, "d": d,
-        "method": "Minibatch optimal transport loss"})
+    return RichResult(
+        payload={
+            "loss": sum(per) / M,
+            "per_batch": per,
+            "batch_size": bs,
+            "n_batches": M,
+            "n": n,
+            "m": m,
+            "d": d,
+            "method": "Minibatch optimal transport loss",
+        }
+    )
 
 
 def cheatsheet():

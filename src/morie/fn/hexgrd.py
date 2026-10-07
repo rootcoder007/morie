@@ -76,10 +76,7 @@ def hexgrd(coords, values=None, cell_size=1.0):
         else:
             j2, i2 = int(np.floor(sxi)), int(np.floor(syi))
             d2 = (sxi - j2 - 0.5) ** 2 + 3.0 * (syi - i2 - 0.5) ** 2
-            if d1 > con2 or d1 > d2:
-                key = (j2, i2, 1)
-            else:
-                key = (j1, i1, 0)
+            key = (j2, i2, 1) if d1 > con2 or d1 > d2 else (j1, i1, 0)
         keys.append(key)
     uniq = sorted(set(keys))
     index = {k: c for c, k in enumerate(uniq)}
@@ -103,8 +100,13 @@ def hexgrd(coords, values=None, cell_size=1.0):
         centers[c, 0] = xmin + (j + 0.5 * off) * w
         centers[c, 1] = ymin + (i + 0.5 * off) * w * np.sqrt(3.0)
     payload = {
-        "cell_id": cell_id, "centers": centers, "counts": counts,
-        "xcm": xcm, "ycm": ycm, "cell_size": w, "n": int(n),
+        "cell_id": cell_id,
+        "centers": centers,
+        "counts": counts,
+        "xcm": xcm,
+        "ycm": ycm,
+        "cell_size": w,
+        "n": int(n),
         "method": "Carr hexagon binning (hbin transcription)",
     }
     if vals is not None:
@@ -118,6 +120,7 @@ hexagonal_grid = hexgrd
 
 def cheatsheet():
     return "hexgrd: Carr hbin hexagon binning; nearest of two offset lattices"
+
 
 # public names resolved by fn/_lazy_map.json
 hexagonalgrid = hexgrd

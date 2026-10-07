@@ -11,8 +11,10 @@ from morie.fn.xpehh1 import xp_ehh
 def _hap(N, L, seed, sweep=0):
     """Deterministic 0/1 haplotypes; `sweep` copies the first haplotype
     into that many others, giving long shared haplotypes."""
-    H = [[int(((math.sin(12.9898 * (seed * 1000 + i * L + j)) * 43758.5453) % 1) < 0.5)
-          for j in range(L)] for i in range(N)]
+    H = [
+        [int(((math.sin(12.9898 * (seed * 1000 + i * L + j)) * 43758.5453) % 1) < 0.5) for j in range(L)]
+        for i in range(N)
+    ]
     for i in range(1, sweep + 1):
         H[i] = list(H[0])
     return H
@@ -22,7 +24,7 @@ def _ehh(H, core, j):
     """Site EHH between core and marker j (inclusive): sum_i C(n_i,2) /
     C(N,2) over groups of identical haplotypes on that stretch."""
     lo, hi = min(core, j), max(core, j)
-    c = Counter(tuple(h[lo:hi + 1]) for h in H)
+    c = Counter(tuple(h[lo : hi + 1]) for h in H)
     N = len(H)
     return sum(v * (v - 1) / 2 for v in c.values()) / (N * (N - 1) / 2)
 
@@ -67,5 +69,3 @@ def test_xpehh1_edge():
     assert xp_ehh(A, B, core=7, standardize=(0.2, 0.5))["estimate"] == pytest.approx((u - 0.2) / 0.5, abs=1e-12)
     with pytest.raises(ValueError):
         xp_ehh(A, B, core=7, standardize=(0.0, 0.0))
-
-

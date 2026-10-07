@@ -28,10 +28,7 @@ def otis_correlation(
     DataFrame
         Symmetric correlation matrix.
     """
-    if cols is not None:
-        data = df[cols].select_dtypes(include="number")
-    else:
-        data = df.select_dtypes(include="number")
+    data = df[cols].select_dtypes(include="number") if cols is not None else df.select_dtypes(include="number")
 
     return data.corr(method=method)
 

@@ -1,7 +1,6 @@
 """Tests for fzmrb.fauzi_mrl_boundary_free."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzmrb import fauzi_mrl_boundary_free
 
 

@@ -1,7 +1,6 @@
 """Tests for rpl_rg — region x gender cross-tab."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_rg import rplace_region_gender
 
 

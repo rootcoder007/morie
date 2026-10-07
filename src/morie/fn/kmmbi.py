@@ -40,21 +40,21 @@ def kamath_membership_inference(losses, threshold, labels=None):
     if L.size == 0:
         raise ValueError("no losses supplied.")
     if not np.all(np.isfinite(L)):
-        raise ValueError(
-            "a non-finite loss cannot be compared with a threshold.")
-    pred = (L < tau).astype(int)
+        raise ValueError("a non-finite loss cannot be compared with a threshold.")
+    pred = (tau > L).astype(int)
     payload = {
         "predictions": [int(v) for v in pred],
         "n_predicted_members": int(pred.sum()),
         "member_rate": float(pred.mean()),
-        "threshold": tau, "n": int(L.size),
+        "threshold": tau,
+        "n": int(L.size),
         "estimate": float(pred.mean()),
-        "method": "Membership inference by loss threshold"}
+        "method": "Membership inference by loss threshold",
+    }
     if labels is not None:
         y = np.atleast_1d(np.asarray(labels)).ravel().astype(int)
         if y.size != L.size:
-            raise ValueError(
-                f"got {y.size} labels for {L.size} losses.")
+            raise ValueError(f"got {y.size} labels for {L.size} losses.")
         if not np.all(np.isin(y, (0, 1))):
             raise ValueError("labels must be 0 (non-member) or 1 (member).")
         tp = int(np.sum((pred == 1) & (y == 1)))
@@ -62,8 +62,8 @@ def kamath_membership_inference(losses, threshold, labels=None):
         pos, neg = int((y == 1).sum()), int((y == 0).sum())
         if pos == 0 or neg == 0:
             raise ValueError(
-                "the labels contain only one class, so TPR or FPR is "
-                "0/0; an attack cannot be scored on it.")
+                "the labels contain only one class, so TPR or FPR is 0/0; an attack cannot be scored on it."
+            )
         payload["accuracy"] = float(np.mean(pred == y))
         payload["tpr"] = tp / pos
         payload["fpr"] = fp / neg

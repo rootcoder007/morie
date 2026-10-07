@@ -4,7 +4,9 @@ from morie.fn.sgipp import sgipp
 
 
 def test_sgipp_smoke():
-    fn = lambda x, y: 10.0
+    def fn(x, y):
+        return 10.0
+
     r = sgipp(fn, (0, 10, 0, 10), max_intensity=10.0, seed=42)
     assert r.name == "inhomogeneous_poisson"
     assert "points" in r.extra

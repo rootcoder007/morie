@@ -1,7 +1,6 @@
 """Tests for wsmpca.wasserman_pca."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmpca import wasserman_pca
 
 

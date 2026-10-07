@@ -1,7 +1,6 @@
 """Tests for zaurts.zivot_andrews_unit_root."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.zaurts import zivot_andrews_unit_root
 
 

@@ -44,13 +44,20 @@ def uno_concordance(time, event, predicted_risk):
     Medicine 30(10):1105-1117.  <https://doi.org/10.1002/sim.4154>
     """
     r = cstat(time, event, predicted_risk, method="uno")
-    return RichResult(payload={
-        "estimate": float(r["c_statistic"]), "c_statistic": float(r["c_statistic"]),
-        "se": float(r["se"]), "ci_lower": float(r["ci_lower"]),
-        "ci_upper": float(r["ci_upper"]), "concordant": int(r["concordant"]),
-        "discordant": int(r["discordant"]), "tied": int(r["tied"]),
-        "comparable": int(r["comparable"]),
-        "method": "Uno IPCW-weighted truncated C-statistic [Uno et al. 2011]"})
+    return RichResult(
+        payload={
+            "estimate": float(r["c_statistic"]),
+            "c_statistic": float(r["c_statistic"]),
+            "se": float(r["se"]),
+            "ci_lower": float(r["ci_lower"]),
+            "ci_upper": float(r["ci_upper"]),
+            "concordant": int(r["concordant"]),
+            "discordant": int(r["discordant"]),
+            "tied": int(r["tied"]),
+            "comparable": int(r["comparable"]),
+            "method": "Uno IPCW-weighted truncated C-statistic [Uno et al. 2011]",
+        }
+    )
 
 
 # CANONICAL TEST
@@ -64,6 +71,7 @@ def uno_concordance(time, event, predicted_risk):
 
 def cheatsheet():
     return "survci2(time, event, predicted_risk): Uno C (alias of cstat)."
+
 
 # public names resolved by fn/_lazy_map.json
 unoconcordance = uno_concordance

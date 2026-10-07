@@ -80,27 +80,36 @@ def simgrate(x, y, beta, grid=None, h=None, s=2, c=1.0, ngrid=25):
         raise ValueError("bandwidth must be positive.")
 
     z = X @ b
-    g = (np.linspace(float(np.min(z)), float(np.max(z)), int(ngrid))
-         if grid is None else np.atleast_1d(np.asarray(grid, dtype=float)))
+    g = (
+        np.linspace(float(np.min(z)), float(np.max(z)), int(ngrid))
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     K = _gauss((g[:, None] - z[None, :]) / hh)
-    dens = np.sum(K, axis=1) / (n * hh)                       # (2.18)
+    dens = np.sum(K, axis=1) / (n * hh)  # (2.18)
     num = (K @ yv) / (n * hh)
     safe = np.where(dens > 1e-300, dens, 1e-300)
-    ghat = num / safe                                         # (2.17)
+    ghat = num / safe  # (2.17)
 
     # local residual variance sigma^2(z), kernel weighted
     resid2 = (yv[None, :] - ghat[:, None]) ** 2
-    sig2 = np.sum(K * resid2, axis=1) / np.where(
-        np.sum(K, axis=1) > 1e-300, np.sum(K, axis=1), 1e-300)
+    sig2 = np.sum(K * resid2, axis=1) / np.where(np.sum(K, axis=1) > 1e-300, np.sum(K, axis=1), 1e-300)
     se = np.sqrt(_BGAUSS * sig2 / (n * hh * safe))
     expo = int(s) / float(2 * int(s) + 1)
     return RichResult(
         title="Kernel estimate of G on the index (eq. 2.17)",
-        payload={"grid": g, "ghat": ghat, "se": se, "density": dens,
-                 "bandwidth": hh, "exponent": expo,
-                 "rate": float(n ** (-expo)), "effn": float(n * hh),
-                 "n": n,
-                 "method": "Horowitz (2009) eq. (2.17)-(2.18), rate n^{-s/(2s+1)}"},
+        payload={
+            "grid": g,
+            "ghat": ghat,
+            "se": se,
+            "density": dens,
+            "bandwidth": hh,
+            "exponent": expo,
+            "rate": float(n ** (-expo)),
+            "effn": float(n * hh),
+            "n": n,
+            "method": "Horowitz (2009) eq. (2.17)-(2.18), rate n^{-s/(2s+1)}",
+        },
     )
 
 
@@ -119,7 +128,7 @@ if __name__ == "__main__":  # pragma: no cover
     X = np.column_stack([x1, x2])
     beta = np.array([1.0, 0.5])
     z = X @ beta
-    y = z ** 2                      # G(v) = v^2, noiseless
+    y = z**2  # G(v) = v^2, noiseless
     r = simgrate(X, y, beta, h=0.15)
     err = float(np.max(np.abs(r["ghat"][3:-3] - r["grid"][3:-3] ** 2)))
     assert err < 0.15, err

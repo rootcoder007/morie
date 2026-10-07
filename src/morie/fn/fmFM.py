@@ -62,14 +62,11 @@ Rendle, S., Freudenthaler, C., Gantner, Z. & Schmidt-Thieme, L.
 an FM may be trained under; implemented in :mod:`bprMF`.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["predict", "predict_naive", "design_mf", "fit_fm",
-           "gradient"]
+__all__ = ["predict", "predict_naive", "design_mf", "fit_fm", "gradient"]
 
 _EPS = 1e-12
 
@@ -81,8 +78,7 @@ def predict_naive(x, w0, w, V):
     s = float(w0) + sum(w[i] * xs[i] for i in range(n))
     for i in range(n):
         for j in range(i + 1, n):
-            s += sum(V[i][f] * V[j][f] for f in range(len(V[0]))) \
-                * xs[i] * xs[j]
+            s += sum(V[i][f] * V[j][f] for f in range(len(V[0]))) * xs[i] * xs[j]
     return s
 
 
@@ -123,8 +119,7 @@ def fit_fm(X, y, k_dim=4, iters=300, alpha=0.02, lam=0.01, seed=0):
     rows = [[float(v) for v in r] for r in k.mat(X)]
     t = [float(v) for v in k.vec(y)]
     if len(rows) != len(t):
-        raise ValueError("fmFM: %d rows but %d targets"
-                         % (len(rows), len(t)))
+        raise ValueError(f"fmFM: {int(len(rows))} rows but {int(len(t))} targets")
     if not rows:
         raise ValueError("fmFM: no data")
     n, kk = len(rows[0]), int(k_dim)
@@ -133,11 +128,10 @@ def fit_fm(X, y, k_dim=4, iters=300, alpha=0.02, lam=0.01, seed=0):
     rng = np.random.default_rng(seed)
     w0 = 0.0
     w = [0.0] * n
-    V = [[(float(rng.uniform()) - 0.5) * 0.1 for _ in range(kk)]
-         for _ in range(n)]
+    V = [[(float(rng.uniform()) - 0.5) * 0.1 for _ in range(kk)] for _ in range(n)]
     a, lm = float(alpha), float(lam)
     hist = []
-    for it in range(int(iters)):
+    for _it in range(int(iters)):
         for r in range(len(rows)):
             e = predict(rows[r], w0, w, V) - t[r]
             w0 -= a * e
@@ -147,28 +141,35 @@ def fit_fm(X, y, k_dim=4, iters=300, alpha=0.02, lam=0.01, seed=0):
                     for f in range(kk):
                         g = gradient(rows[r], V, f, i)
                         V[i][f] -= a * (e * g + lm * V[i][f])
-        hist.append(sum((predict(rows[r], w0, w, V) - t[r]) ** 2
-                        for r in range(len(rows))) / len(rows))
-    return RichResult(payload={
-        "estimate": (w0, w, V), "w0": w0, "w": w, "V": V,
-        "mse_history": hist, "final_mse": hist[-1],
-        "k": kk, "n_features": n,
-        "method": "factorization machine, SGD; Rendle (2010) eq. (1) "
-                  "with the linear-time reformulation",
-    })
+        hist.append(sum((predict(rows[r], w0, w, V) - t[r]) ** 2 for r in range(len(rows))) / len(rows))
+    return RichResult(
+        payload={
+            "estimate": (w0, w, V),
+            "w0": w0,
+            "w": w,
+            "V": V,
+            "mse_history": hist,
+            "final_mse": hist[-1],
+            "k": kk,
+            "n_features": n,
+            "method": "factorization machine, SGD; Rendle (2010) eq. (1) with the linear-time reformulation",
+        }
+    )
 
 
 def cheatsheet():
-    return ("fmFM: y = w0 + sum w_i x_i + sum_{i<j} <v_i,v_j> x_i x_j. "
-            "Factorising the interaction parameter COUPLES pairs that "
-            "an SVM treats independently, which is why FMs estimate "
-            "interactions under sparsity where SVMs fail -- a free "
-            "w_ij needs both features non-zero in the same row, and "
-            "almost none are. Lemma 3.1 turns the double sum into "
-            "O(kn). Because the model equation is direct, parameters "
-            "are learned in the PRIMAL with no support vectors. MF, "
-            "SVD++, PITF and FPMC are FMs with a particular input "
-            "encoding.")
+    return (
+        "fmFM: y = w0 + sum w_i x_i + sum_{i<j} <v_i,v_j> x_i x_j. "
+        "Factorising the interaction parameter COUPLES pairs that "
+        "an SVM treats independently, which is why FMs estimate "
+        "interactions under sparsity where SVMs fail -- a free "
+        "w_ij needs both features non-zero in the same row, and "
+        "almost none are. Lemma 3.1 turns the double sum into "
+        "O(kn). Because the model equation is direct, parameters "
+        "are learned in the PRIMAL with no support vectors. MF, "
+        "SVD++, PITF and FPMC are FMs with a particular input "
+        "encoding."
+    )
 
 
 # compact alias per ledger/NAMING.md

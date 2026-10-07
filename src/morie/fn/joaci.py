@@ -52,7 +52,12 @@ def aci(inside, alpha=0.1, gamma=0.01):
     res = _core.aci(inside=inside, alpha=alpha, gamma=gamma)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("final", res["final"]), ("empirical", res["empirical"]), ("minalpha", res["minalpha"]), ("maxalpha", res["maxalpha"])],
+        summary_lines=[
+            ("final", res["final"]),
+            ("empirical", res["empirical"]),
+            ("minalpha", res["minalpha"]),
+            ("maxalpha", res["maxalpha"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

@@ -1,9 +1,9 @@
 """covsp: one-sample coverages (Gibbons & Chakraborti 5e, Ch 2 -- Order
 Statistics, Quantiles, and Coverages)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.covsp import one_sample_coverage as cov
 
 

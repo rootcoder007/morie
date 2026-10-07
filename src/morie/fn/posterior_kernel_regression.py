@@ -27,17 +27,16 @@ def posterior_kernel_regression(logliks, log_priors):
     """
     value = float(_acd.posterior_kernel_regression(logliks, log_priors)[0])
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (6.25)"
     return RichResult(
-        title='Posterior for regression parameters (grid-normalized)',
+        title="Posterior for regression parameters (grid-normalized)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '6e25: p(beta|y) prop prod f(y_i|beta) prod p(beta_r) [Bilder & Loughin 2025, eq. 6.25]'
+    return "6e25: p(beta|y) prop prod f(y_i|beta) prod p(beta_r) [Bilder & Loughin 2025, eq. 6.25]"

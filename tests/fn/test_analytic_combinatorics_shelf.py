@@ -24,10 +24,10 @@ from morie.fn.anlcmb import (
 )
 from morie.fn.enumcb import catalan_number, derangements, partition_count
 
-
 # --------------------------------------------------------------------
 # Rational generating functions
 # --------------------------------------------------------------------
+
 
 def test_fibonacci_comes_out_of_its_generating_function():
     got = rational_gf_coefficients([0, 1], [1, -1, -1], 30)
@@ -39,8 +39,7 @@ def test_fibonacci_comes_out_of_its_generating_function():
 
 
 def test_geometric_and_binary_string_series():
-    assert rational_gf_coefficients([1], [1, -2], 10)["coefficients"] == \
-        [2 ** k for k in range(10)]
+    assert rational_gf_coefficients([1], [1, -2], 10)["coefficients"] == [2**k for k in range(10)]
     # strings over {a,b} with no two consecutive a's: 1/(1-x-x^2) shifted
     got = rational_gf_coefficients([1], [1, -1, -1], 10)["coefficients"]
     assert got == [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
@@ -49,8 +48,7 @@ def test_geometric_and_binary_string_series():
 def test_non_integer_coefficients_are_exact_fractions():
     got = rational_gf_coefficients([1], [2, -1], 5)
     assert got["all_integral"] is False
-    assert got["coefficients"] == [Fraction(1, 2 ** (k + 1))
-                                   for k in range(5)]
+    assert got["coefficients"] == [Fraction(1, 2 ** (k + 1)) for k in range(5)]
 
 
 def test_coefficients_stay_exact_far_past_double_range():
@@ -59,7 +57,7 @@ def test_coefficients_stay_exact_far_past_double_range():
     while len(fib) < 300:
         fib.append(fib[-1] + fib[-2])
     assert got["coefficients"][-1] == fib[-1]
-    assert fib[-1] > 2 ** 53
+    assert fib[-1] > 2**53
 
 
 def test_gf_validation():
@@ -73,10 +71,10 @@ def test_gf_validation():
 # Dominant singularity
 # --------------------------------------------------------------------
 
+
 def test_the_fibonacci_growth_rate_is_the_golden_ratio():
     out = dominant_singularity_growth([1, -1, -1])
-    assert out["growth_rate"] == pytest.approx((1 + math.sqrt(5)) / 2,
-                                               abs=1e-12)
+    assert out["growth_rate"] == pytest.approx((1 + math.sqrt(5)) / 2, abs=1e-12)
     assert out["radius"] == pytest.approx((math.sqrt(5) - 1) / 2, abs=1e-12)
 
 
@@ -93,16 +91,16 @@ def test_a_simple_pole_is_found_exactly():
 
 def test_a_denominator_with_no_positive_root_is_refused():
     with pytest.raises(ValueError, match="Pringsheim"):
-        dominant_singularity_growth([1, 0, 1])   # roots at +-i
+        dominant_singularity_growth([1, 0, 1])  # roots at +-i
 
 
 # --------------------------------------------------------------------
 # Transfer theorem
 # --------------------------------------------------------------------
 
+
 def test_the_transfer_ratio_converges_to_one():
-    ratios = [abs(singularity_transfer(0.5, n)["ratio"] - 1)
-              for n in (10, 100, 1000)]
+    ratios = [abs(singularity_transfer(0.5, n)["ratio"] - 1) for n in (10, 100, 1000)]
     assert ratios[0] > ratios[1] > ratios[2]
     assert ratios[2] < 2e-4
 
@@ -117,11 +115,9 @@ def test_the_first_order_correction_earns_its_name():
 def test_integer_alpha_reduces_to_binomials():
     # (1-x)^-2 has coefficients n+1
     for n in (1, 5, 20):
-        assert singularity_transfer(2, n)["exact_coefficient"] == \
-            pytest.approx(n + 1)
+        assert singularity_transfer(2, n)["exact_coefficient"] == pytest.approx(n + 1)
     # (1-x)^-1 is all ones
-    assert singularity_transfer(1, 50)["exact_coefficient"] == \
-        pytest.approx(1.0)
+    assert singularity_transfer(1, 50)["exact_coefficient"] == pytest.approx(1.0)
 
 
 def test_catalan_asymptotics_derive_from_the_transfer_theorem():
@@ -129,7 +125,7 @@ def test_catalan_asymptotics_derive_from_the_transfer_theorem():
     # is alpha = -1/2 of the sqrt singularity of the Catalan GF
     for n in (50, 200):
         exact = catalan_number(n)
-        asym = 4.0 ** n / (math.sqrt(math.pi) * n ** 1.5)
+        asym = 4.0**n / (math.sqrt(math.pi) * n**1.5)
         ratio = asym / float(exact)
         assert ratio == pytest.approx(1.0, abs=5.0 / n)
 
@@ -145,6 +141,7 @@ def test_transfer_validation():
 # Stirling's series
 # --------------------------------------------------------------------
 
+
 def test_the_error_bound_holds_at_every_n_and_term_count():
     for n in (1, 2, 5, 10, 50, 170, 1000):
         for k in range(5):
@@ -159,7 +156,7 @@ def test_more_terms_help_until_the_double_floor():
 def test_the_bound_is_the_first_omitted_term():
     out = stirling_series_error(10, 2)
     b6 = Fraction(1, 42)
-    assert out["bound"] == pytest.approx(float(b6) / (6 * 5 * 10 ** 5))
+    assert out["bound"] == pytest.approx(float(b6) / (6 * 5 * 10**5))
 
 
 def test_the_series_is_sharp_not_just_valid():
@@ -180,10 +177,10 @@ def test_stirling_validation():
 # Derangements
 # --------------------------------------------------------------------
 
+
 def test_the_recurrence_agrees_with_the_enumerative_shelf():
     for n in range(11):
-        assert derangement_rounding(n)["derangements"] == \
-            derangements(n)
+        assert derangement_rounding(n)["derangements"] == derangements(n)
 
 
 def test_the_rounding_identity_holds_exactly_for_every_n_to_60():
@@ -202,9 +199,8 @@ def test_the_distance_bound_shrinks_like_one_over_n():
 
 def test_derangements_far_past_double_range_are_exact():
     out = derangement_rounding(50)
-    assert out["exact"] == ("1118871961078248050463025807075773432401"
-                            "1354208865721592720336801")
-    assert out["derangements"] > 2 ** 53
+    assert out["exact"] == ("11188719610782480504630258070757734324011354208865721592720336801")
+    assert out["derangements"] > 2**53
 
 
 def test_derangement_validation():
@@ -216,24 +212,22 @@ def test_derangement_validation():
 # Hardy-Ramanujan
 # --------------------------------------------------------------------
 
+
 def test_exact_partition_counts_agree_with_the_enumerative_shelf():
     for n in (10, 50, 100):
-        assert hardy_ramanujan_partitions(n)["partitions"] == \
-            partition_count(n)
+        assert hardy_ramanujan_partitions(n)["partitions"] == partition_count(n)
 
 
 def test_the_relative_error_decays_but_slowly():
-    errs = [hardy_ramanujan_partitions(n)["relative_error"]
-            for n in (10, 100, 1000)]
-    assert all(e > 0 for e in errs)          # always an overestimate
+    errs = [hardy_ramanujan_partitions(n)["relative_error"] for n in (10, 100, 1000)]
+    assert all(e > 0 for e in errs)  # always an overestimate
     assert errs[0] > errs[1] > errs[2]
-    assert errs[1] > 0.04                     # still 4.6% off at n = 100
+    assert errs[1] > 0.04  # still 4.6% off at n = 100
 
 
 def test_known_partition_values():
     assert hardy_ramanujan_partitions(100)["partitions"] == 190569292
-    assert hardy_ramanujan_partitions(1000)["exact"] == \
-        "24061467864032622473692149727991"
+    assert hardy_ramanujan_partitions(1000)["exact"] == "24061467864032622473692149727991"
 
 
 def test_hardy_ramanujan_validation():

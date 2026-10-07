@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.dssm import dssm
 
 
@@ -28,10 +27,7 @@ def test_dssm_basic():
     rng_c = np.random.default_rng(7)
     clicked = rng_c.normal(0, 1, 100)
 
-    unclicked = [
-        np.random.default_rng(101 + i).normal(0, 1, 100)
-        for i in range(3)
-    ]
+    unclicked = [np.random.default_rng(101 + i).normal(0, 1, 100) for i in range(3)]
 
     result = dssm(query, clicked, unclicked)
     assert isinstance(result, dict)
@@ -67,22 +63,16 @@ def test_dssm_basic():
     for got, exp in zip(result["posterior"], p_expected):
         assert math.isclose(got, exp, rel_tol=1e-9, abs_tol=1e-12)
 
-    assert math.isclose(
-        result["estimate"], p_expected[0], rel_tol=1e-9, abs_tol=1e-12
-    )
+    assert math.isclose(result["estimate"], p_expected[0], rel_tol=1e-9, abs_tol=1e-12)
 
     # Posterior sums to 1.
-    assert math.isclose(
-        sum(result["posterior"]), 1.0, rel_tol=1e-9, abs_tol=1e-12
-    )
+    assert math.isclose(sum(result["posterior"]), 1.0, rel_tol=1e-9, abs_tol=1e-12)
 
     # Loss is -log(estimate), guarded by a small epsilon in the impl, so
     # compare against max(estimate, eps).
     eps = 1e-300  # matches the implementation's _EPS
     loss_expected = -math.log(max(result["estimate"], eps))
-    assert math.isclose(
-        result["loss"], loss_expected, rel_tol=1e-9, abs_tol=1e-12
-    )
+    assert math.isclose(result["loss"], loss_expected, rel_tol=1e-9, abs_tol=1e-12)
 
 
 def test_dssm_edge():
@@ -95,6 +85,4 @@ def test_dssm_edge():
     assert "estimate" in result
     assert "posterior" in result
     assert len(result["posterior"]) == 2
-    assert math.isclose(
-        sum(result["posterior"]), 1.0, rel_tol=1e-9, abs_tol=1e-12
-    )
+    assert math.isclose(sum(result["posterior"]), 1.0, rel_tol=1e-9, abs_tol=1e-12)

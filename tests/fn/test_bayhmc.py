@@ -2,9 +2,7 @@
 
 import math
 
-from morie.fn.bayhmc import (bayhmc, dual_averaging_update,
-                             find_reasonable_epsilon, hmc_nuts, leapfrog,
-                             no_u_turn)
+from morie.fn.bayhmc import bayhmc, dual_averaging_update, find_reasonable_epsilon, hmc_nuts, leapfrog, no_u_turn
 
 
 def logp_std(t):
@@ -16,13 +14,11 @@ def grad_std(t):
 
 
 RHO = 0.8
-INV = [[1.0 / (1 - RHO ** 2), -RHO / (1 - RHO ** 2)],
-       [-RHO / (1 - RHO ** 2), 1.0 / (1 - RHO ** 2)]]
+INV = [[1.0 / (1 - RHO**2), -RHO / (1 - RHO**2)], [-RHO / (1 - RHO**2), 1.0 / (1 - RHO**2)]]
 
 
 def logp_corr(t):
-    return -0.5 * sum(t[i] * INV[i][j] * t[j]
-                      for i in range(2) for j in range(2))
+    return -0.5 * sum(t[i] * INV[i][j] * t[j] for i in range(2) for j in range(2))
 
 
 def grad_corr(t):
@@ -68,19 +64,15 @@ def test_find_reasonable_epsilon_brackets_a_half():
         theta = [0.0, 0.0]
         r = [0.5, 0.5]
         t2, r2 = leapfrog(theta, r, eps, grad_std)
-        lr = ((logp_std(t2) - 0.5 * sum(v * v for v in r2)) -
-              (logp_std(theta) - 0.5 * sum(v * v for v in r)))
+        lr = (logp_std(t2) - 0.5 * sum(v * v for v in r2)) - (logp_std(theta) - 0.5 * sum(v * v for v in r))
         return math.exp(min(lr, 700.0))
 
     eps = find_reasonable_epsilon([0.0, 0.0], logp_std, grad_std, fixed)
     assert 0.0 < eps < 10.0
     here = accept_at(eps)
-    assert ((accept_at(eps * 2.0) - 0.5) * (here - 0.5) <= 0 or
-            (accept_at(eps / 2.0) - 0.5) * (here - 0.5) <= 0)
-    assert find_reasonable_epsilon([0.0, 0.0], logp_std, grad_std, fixed,
-                                   eps=1e-6) > 1e-4
-    assert find_reasonable_epsilon([0.0, 0.0], logp_std, grad_std, fixed,
-                                   eps=100.0) < 10.0
+    assert (accept_at(eps * 2.0) - 0.5) * (here - 0.5) <= 0 or (accept_at(eps / 2.0) - 0.5) * (here - 0.5) <= 0
+    assert find_reasonable_epsilon([0.0, 0.0], logp_std, grad_std, fixed, eps=1e-6) > 1e-4
+    assert find_reasonable_epsilon([0.0, 0.0], logp_std, grad_std, fixed, eps=100.0) < 10.0
 
 
 def test_equation_6():
@@ -100,24 +92,21 @@ def test_the_standard_normal_is_recovered():
     res = bayhmc(logp_std, [0.0, 0.0], n_iter=2000, grad=grad_std, seed=7)
     assert all(abs(v) < 0.12 for v in res["mean"])
     assert all(abs(s - 1.0) < 0.12 for s in res["sd"])
-    tail = sum(1 for x in res["samples"] if abs(x[0]) > 1.96) / \
-        float(res["n_samples"])
+    tail = sum(1 for x in res["samples"] if abs(x[0]) > 1.96) / float(res["n_samples"])
     assert 0.02 < tail < 0.09
 
 
 def test_adaptation_hits_the_target_acceptance():
     a = bayhmc(logp_std, [0.0, 0.0], n_iter=2000, grad=grad_std, seed=7)
-    b = bayhmc(logp_std, [0.0, 0.0], n_iter=1500, grad=grad_std,
-               delta=0.9, seed=7)
+    b = bayhmc(logp_std, [0.0, 0.0], n_iter=1500, grad=grad_std, delta=0.9, seed=7)
     assert abs(a["acceptance"] - 0.65) < 0.12
     assert abs(b["acceptance"] - 0.9) < 0.12
     assert b["eps"] < a["eps"]
-    assert len(set(a["eps_trace"][a["warmup"]:])) == 1
+    assert len(set(a["eps_trace"][a["warmup"] :])) == 1
 
 
 def test_a_correlated_gaussian():
-    res = bayhmc(logp_corr, [0.0, 0.0], n_iter=3000, grad=grad_corr,
-                 seed=11)
+    res = bayhmc(logp_corr, [0.0, 0.0], n_iter=3000, grad=grad_corr, seed=11)
     xs = res["samples"]
     n = float(len(xs))
     m = [sum(p[i] for p in xs) / n for i in range(2)]
@@ -128,8 +117,7 @@ def test_a_correlated_gaussian():
 def test_nuts_adapts_its_depth_and_hmc_does_not():
     res = bayhmc(logp_std, [0.0, 0.0], n_iter=1500, grad=grad_std, seed=7)
     assert len(set(res["depths"])) > 1
-    hmc = bayhmc(logp_std, [0.0, 0.0], n_iter=1500, grad=grad_std,
-                 sampler="hmc", n_steps=12, seed=7)
+    hmc = bayhmc(logp_std, [0.0, 0.0], n_iter=1500, grad=grad_std, sampler="hmc", n_steps=12, seed=7)
     assert set(hmc["depths"]) == {12}
     assert all(abs(v) < 0.15 for v in hmc["mean"])
     assert all(abs(s - 1.0) < 0.15 for s in hmc["sd"])
@@ -141,20 +129,20 @@ def test_a_numerical_gradient_works():
 
 
 def test_validation():
-    for call in (lambda: bayhmc(logp_std, []),
-                 lambda: bayhmc(logp_std, [0.0], n_iter=0),
-                 lambda: bayhmc(logp_std, [0.0], sampler="gibbs"),
-                 lambda: bayhmc(logp_std, [0.0], delta=0.0),
-                 lambda: bayhmc(logp_std, [0.0], delta=1.0),
-                 lambda: bayhmc(logp_std, [0.0], eps=0.0),
-                 lambda: bayhmc(logp_std, [0.0], max_depth=0),
-                 lambda: bayhmc(logp_std, [0.0], n_steps=0),
-                 lambda: bayhmc(logp_std, [0.0], n_iter=10, warmup=11),
-                 lambda: dual_averaging_update(0, 0.0, 0.0, 0.1, 1.0),
-                 lambda: dual_averaging_update(1, 0.0, 0.0, 0.1, 1.0,
-                                               gamma=0.0),
-                 lambda: dual_averaging_update(1, 0.0, 0.0, 0.1, 1.0,
-                                               kappa=0.4)):
+    for call in (
+        lambda: bayhmc(logp_std, []),
+        lambda: bayhmc(logp_std, [0.0], n_iter=0),
+        lambda: bayhmc(logp_std, [0.0], sampler="gibbs"),
+        lambda: bayhmc(logp_std, [0.0], delta=0.0),
+        lambda: bayhmc(logp_std, [0.0], delta=1.0),
+        lambda: bayhmc(logp_std, [0.0], eps=0.0),
+        lambda: bayhmc(logp_std, [0.0], max_depth=0),
+        lambda: bayhmc(logp_std, [0.0], n_steps=0),
+        lambda: bayhmc(logp_std, [0.0], n_iter=10, warmup=11),
+        lambda: dual_averaging_update(0, 0.0, 0.0, 0.1, 1.0),
+        lambda: dual_averaging_update(1, 0.0, 0.0, 0.1, 1.0, gamma=0.0),
+        lambda: dual_averaging_update(1, 0.0, 0.0, 0.1, 1.0, kappa=0.4),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

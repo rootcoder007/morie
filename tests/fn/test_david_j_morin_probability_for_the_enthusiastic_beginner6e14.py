@@ -4,11 +4,11 @@ Morin (2016), eq (6.14) -- the covariance shortcut. Expected values are recomput
 from the identity in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e14 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_14
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e14 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_14,
+)
 
 
 def test_covariance_shortcut_equals_the_deviation_form():
@@ -30,4 +30,5 @@ def test_covariance_of_a_variable_with_itself_is_its_variance():
     n = len(x)
     m = sum(x) / n
     assert david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_14(x, x)["cov"] == pytest.approx(
-        sum((a - m) ** 2 for a in x) / n, rel=1e-12)
+        sum((a - m) ** 2 for a in x) / n, rel=1e-12
+    )

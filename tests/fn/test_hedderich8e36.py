@@ -10,7 +10,6 @@ import pytest
 
 from morie.fn.hedderich8e36 import hedderich_chapter_8_equation_36
 
-
 X = [[1.0, 1.0], [1.0, 2.0], [1.0, 3.0], [1.0, 4.0], [1.0, 6.0]]
 Y = [2.0, 3.0, 5.0, 4.0, 7.0]
 X0 = [1.0, 5.0]

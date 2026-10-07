@@ -4,9 +4,9 @@ Armstrong et al., Ch 6 (Bayesian Scaling Models, printed p.181). Ideal points
 are smoothed across periods with an evolution variance sigma_w.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dwnmn import dynamic_wnominate as dw
 
 
@@ -18,9 +18,7 @@ def test_dwnmn_smoothing_reduces_period_to_period_variation():
     raw = truth + rng.normal(0, 0.8, (5, 20))
     r = dw(raw, sigma_w=0.1)
     sm = np.asarray(r["smoothed"])
-    assert np.mean(np.std(np.diff(sm, axis=1), axis=1)) < np.mean(
-        np.std(np.diff(raw, axis=1), axis=1)
-    )
+    assert np.mean(np.std(np.diff(sm, axis=1), axis=1)) < np.mean(np.std(np.diff(raw, axis=1), axis=1))
 
 
 def test_dwnmn_a_larger_sigma_w_smooths_less():
@@ -54,8 +52,7 @@ def test_dwnmn_error_is_U_shaped_in_sigma_w():
     truth = np.vstack([np.sin(2 * np.pi * t), -np.sin(2 * np.pi * t)])
     raw = truth + rng.normal(0, 0.5, truth.shape)
     grid = [0.05, 0.2, 0.5, 1.0, 5.0]
-    mse = [float(np.mean((np.asarray(dw(raw, sigma_w=s)["smoothed"]) - truth) ** 2))
-           for s in grid]
+    mse = [float(np.mean((np.asarray(dw(raw, sigma_w=s)["smoothed"]) - truth) ** 2)) for s in grid]
     best = int(np.argmin(mse))
     assert 0 < best < len(grid) - 1, f"expected an interior optimum, got {mse}"
     assert mse[best] < float(np.mean((raw - truth) ** 2)) / 3

@@ -2,15 +2,16 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.kmgev import kamath_g_eval
 
 
 def test_kmgev_basic():
     """Test basic functionality with uniform logits over a 3-point rubric."""
     rubric = [1, 2, 3]
-    model = lambda x, y, r: [0.0, 0.0, 0.0]
+
+    def model(x, y, r):
+        return [0.0, 0.0, 0.0]
+
     result = kamath_g_eval("q", "a", rubric, model)
     assert isinstance(result, dict)
     assert "estimate" in result
@@ -29,7 +30,10 @@ def test_kmgev_basic():
 def test_kmgev_edge():
     """Test edge case with a 2-point rubric and non-uniform logits."""
     rubric = [1, 5]
-    model = lambda x, y, r: [0.0, math.log(3)]
+
+    def model(x, y, r):
+        return [0.0, math.log(3)]
+
     result = kamath_g_eval("q", "a", rubric, model)
     assert isinstance(result, dict)
     assert "estimate" in result
@@ -52,7 +56,7 @@ import morie.fn.kmgev as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

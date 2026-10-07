@@ -25,10 +25,7 @@ def score_matrix(X, theta):
     if T.ndim != 2:
         raise ValueError(f"theta must be (n, K), got shape {T.shape}.")
     if T.shape[0] != X.shape[1]:
-        raise ValueError(
-            f"theta has {T.shape[0]} rows but X has {X.shape[1]} features; "
-            "theta must be (n_features, K)."
-        )
+        raise ValueError(f"theta has {T.shape[0]} rows but X has {X.shape[1]} features; theta must be (n_features, K).")
     if not np.all(np.isfinite(X)) or not np.all(np.isfinite(T)):
         raise ValueError("X and theta must be finite.")
     return X, T, X @ T

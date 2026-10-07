@@ -19,8 +19,10 @@ def _data(n=40):
     W = [math.sin(1.7 * k) for k in range(n)]
     g1 = [_expit(0.3 + 0.8 * w) for w in W]
     A = [1.0 if ((37 * k + 11) % 97 + 0.5) / 97.0 < g else 0.0 for k, g in enumerate(g1)]
-    Y = [1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + a + 0.9 * w) else 0.0
-         for k, (a, w) in enumerate(zip(A, W))]
+    Y = [
+        1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + a + 0.9 * w) else 0.0
+        for k, (a, w) in enumerate(zip(A, W))
+    ]
     Q1 = [_expit(-0.3 + 1.0 + 0.6 * w) for w in W]
     Q0 = [_expit(-0.3 + 0.6 * w) for w in W]
     QA = [q1 if a else q0 for a, q1, q0 in zip(A, Q1, Q0)]
@@ -40,6 +42,7 @@ def _target(Y, A, QA, Q1, Q0, g1W, gb=0.025):
 
         def score(e):
             return sum((Y[i] - _expit(_logit(QA[i]) + e / g[i])) / g[i] for i in idx)
+
         lo, hi = -50.0, 50.0
         for _ in range(200):
             mid = 0.5 * (lo + hi)
@@ -48,6 +51,7 @@ def _target(Y, A, QA, Q1, Q0, g1W, gb=0.025):
             else:
                 hi = mid
         return 0.5 * (lo + hi)
+
     e1, e0 = solve(1.0, g1), solve(0.0, g0)
     Q1s = [_expit(_logit(q) + e1 / g) for q, g in zip(Q1, g1)]
     Q0s = [_expit(_logit(q) + e0 / g) for q, g in zip(Q0, g0)]
@@ -56,6 +60,7 @@ def _target(Y, A, QA, Q1, Q0, g1W, gb=0.025):
     IC1 = [a / g * (y - q) + q1 - mu1 for a, g, y, q, q1 in zip(A, g1, Y, QAs, Q1s)]
     IC0 = [(1 - a) / g * (y - q) + q0 - mu0 for a, g, y, q, q0 in zip(A, g0, Y, QAs, Q0s)]
     return mu1, mu0, IC1, IC0, (e0, e1), g1, Q1s, Q0s, QAs
+
 
 from morie.fn.tmlmro import tmle_marginal_or
 

@@ -1,7 +1,6 @@
 """Tests for sequential Gaussian simulation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgsqs import sgsqs
 
 

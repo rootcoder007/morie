@@ -1,7 +1,6 @@
 """Tests for gh_c11_3.ghosal_gp_crt_thm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_3 import ghosal_gp_crt_thm
 
 
@@ -24,8 +23,7 @@ def test_gh_c11_3_basic():
     # the rate equation phi(eps) = n*eps^2 is solved up to a tiny residual
     a = float(phi_exponent)
     eps_n = expected
-    expected_gap = abs(eps_n ** (-a) - float(n) * eps_n ** 2) \
-        / (float(n) * eps_n ** 2)
+    expected_gap = abs(eps_n ** (-a) - float(n) * eps_n**2) / (float(n) * eps_n**2)
     assert float(result["balance_gap"]) == expected_gap
 
 

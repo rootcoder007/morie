@@ -1,7 +1,5 @@
 """Tests for chemsc.chemscore_dock."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.chemsc import chemscore_dock
 
 
@@ -19,7 +17,7 @@ def test_chemsc_basic():
     # Place atoms so distance d between heavy atoms is large -> no hbond term,
     # no lipophilic/lipo/metal contacts -> score comes only from general clashes.
     receptor = [
-        [0.0, 0.0, 0.0, "donor", 0.0, 0.0, 1.0],   # donor heavy at origin, H along +z
+        [0.0, 0.0, 0.0, "donor", 0.0, 0.0, 1.0],  # donor heavy at origin, H along +z
     ]
     ligand = [
         [5.0, 0.0, 0.0, "acceptor", 4.0, 0.0, 0.0],  # acceptor heavy at (5,0,0)
@@ -33,6 +31,7 @@ def test_chemsc_basic():
     # The exact numeric estimate is not asserted; we only check it is finite.
     score = result.get("estimate", result.get("statistic"))
     import math
+
     assert math.isfinite(score)
 
 

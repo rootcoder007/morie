@@ -1,14 +1,12 @@
 """Tests for gh_c6_1.ghosal_weak_consist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_1 import ghosal_weak_consist
 
 
 def test_gh_c6_1_basic():
     """Test basic functionality."""
-    result = ghosal_weak_consist(theta0=0.3, eps=0.1, ns=(20, 80, 320, 1280),
-                                 seed=42)
+    result = ghosal_weak_consist(theta0=0.3, eps=0.1, ns=(20, 80, 320, 1280), seed=42)
     assert "estimate" in result
     assert "mass_outside_by_n" in result
     estimate = result["estimate"]

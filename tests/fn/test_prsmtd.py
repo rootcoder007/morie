@@ -1,10 +1,10 @@
 """Tests for prsmtd.propensity_score_method."""
 
-from morie.fn import _array_core as np
 import math
 
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.prsmtd import propensity_score_method
 
 

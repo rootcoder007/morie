@@ -90,7 +90,6 @@ def test_grm_category_probs_sum_to_one():
     Samejima (1969) Ch 5, eqs (5-4) with (5-8) and (5-9), p.23-24.
     """
     from morie.fn import _array_core as np
-
     from morie.fn.irtgr import _grm_category_probs
 
     theta = np.linspace(-4.0, 4.0, 81)
@@ -106,8 +105,7 @@ def test_grm_category_probs_sum_to_one():
         # [1e-10, 1.0] to keep log() finite in the EM step, which can perturb
         # the sum by at most n_categories * 1e-10.
         assert np.allclose(total, 1.0, atol=1e-9), (
-            f"mass not conserved for a={a}, b={thresholds}: "
-            f"max deviation {np.max(np.abs(total - 1.0)):.3e}"
+            f"mass not conserved for a={a}, b={thresholds}: max deviation {np.max(np.abs(total - 1.0)):.3e}"
         )
         assert np.all(probs > 0.0)
 
@@ -121,7 +119,6 @@ def test_grm_cumulative_boundaries_are_monotone():
     threshold vector were ever passed unsorted, this is what would catch it.
     """
     from morie.fn import _array_core as np
-
     from morie.fn.irtgr import _grm_category_probs
 
     theta = np.linspace(-3.0, 3.0, 25)

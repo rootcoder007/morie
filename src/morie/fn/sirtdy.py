@@ -9,7 +9,7 @@ from ._richresult import RichResult
 __all__ = ["sir_age_structured"]
 
 
-def sir_age_structured(S, I, R, contact_matrix, gamma, t_max=160.0, dt=0.1):
+def sir_age_structured(S, I, R, contact_matrix, gamma, t_max=160.0, dt=0.1):  # noqa: E741
     r"""Integrate an SIR model stratified into age groups, with mixing
     supplied by a POLYMOD-style contact matrix.
 

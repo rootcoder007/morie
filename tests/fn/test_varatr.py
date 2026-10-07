@@ -1,7 +1,6 @@
 """Tests for varatr.value_at_risk."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.varatr import value_at_risk
 
 

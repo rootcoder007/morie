@@ -71,7 +71,7 @@ def copula_cdf(family, u, v, theta=None, nu=None):
         if not -1 < rho < 1:
             raise ValueError(f"gaussian rho must lie in (-1, 1), got {rho}.")
         x, y = stats.norm.ppf(u), stats.norm.ppf(v)
-        out = np.empty(np.shape(x))
+        np.empty(np.shape(x))
         flat_x, flat_y = np.atleast_1d(x).ravel(), np.atleast_1d(y).ravel()
         vals = np.array(
             [
@@ -133,9 +133,9 @@ def _bt_cdf(x, y, rho, nu):
     def inner(w):
         # given the scale mixture, (x, y) sqrt(nu/w) is bivariate normal
         s = np.sqrt(w / nu)
-        return stats.multivariate_normal.cdf(
-            [x * s, y * s], mean=[0, 0], cov=[[1, rho], [rho, 1]]
-        ) * stats.chi2.pdf(w, nu)
+        return stats.multivariate_normal.cdf([x * s, y * s], mean=[0, 0], cov=[[1, rho], [rho, 1]]) * stats.chi2.pdf(
+            w, nu
+        )
 
     val, _ = integrate.quad(inner, 1e-8, nu + 12 * np.sqrt(2 * nu), limit=120)
     return float(val)
@@ -180,8 +180,11 @@ def copula_tau(family, theta=None, nu=None):
         d = float(theta)
         if d == 0:
             raise ValueError("frank theta must be non-zero.")
+
         # Debye function of order 1, D_1(d) = (1/d) int_0^d x/(e^x - 1) dx
-        f = lambda x: x / np.expm1(x) if x != 0 else 1.0
+        def f(x):
+            return x / np.expm1(x) if x != 0 else 1.0
+
         val, _ = integrate.quad(f, 0.0, abs(d), limit=200)
         D1 = val / abs(d)
         tau = 1.0 - 4.0 / abs(d) * (1.0 - D1)
@@ -195,8 +198,7 @@ def copula_tau(family, theta=None, nu=None):
         g = 0.5772156649015329  # Euler-Mascheroni
         return float(
             1.0
-            + (-2.0 + 2.0 * g + 2.0 * np.log(2.0) + special.digamma(1.0 / d)
-               + special.digamma(0.5 * (2.0 + d) / d) + d)
+            + (-2.0 + 2.0 * g + 2.0 * np.log(2.0) + special.digamma(1.0 / d) + special.digamma(0.5 * (2.0 + d) / d) + d)
             / (-2.0 + d)
         )
     # plackett: numeric, no closed form in Table 3.2
@@ -251,7 +253,10 @@ def tau_to_theta(family, tau):
         lo = 1.0 + 1e-9
     if family == "frank" and tau < 0:
         lo, hi = -60.0, -1e-6
-    f = lambda t: copula_tau(family, t) - tau
+
+    def f(t):
+        return copula_tau(family, t) - tau
+
     return float(optimize.brentq(f, lo, hi, xtol=1e-10))
 
 

@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -21,20 +20,24 @@ def evt_return_level_ci(x, T, alpha=0.05):
     import math
 
     from ._stats_core import norm as _norm
+
     f = _ev.gev_mle(x)
     z = _ev.gev_return_level(float(T), f["mu"], f["sigma"], f["xi"])
-    g = _ev.gev_return_level_grad(float(T), f["mu"], f["sigma"],
-                                  f["xi"])
+    g = _ev.gev_return_level_grad(float(T), f["mu"], f["sigma"], f["xi"])
     V = f["cov"]
-    var = sum(g[i] * V[i][j] * g[j]
-              for i in range(3) for j in range(3))
+    var = sum(g[i] * V[i][j] * g[j] for i in range(3) for j in range(3))
     se = math.sqrt(max(var, 0.0))
     zc = float(_norm.ppf(1.0 - alpha / 2.0))
-    res = RichResult(payload={"z_T": float(z),
-                              "ci_lo": float(z - zc * se),
-                              "ci_hi": float(z + zc * se),
-                              "se": se, "T": float(T),
-                              "method": "delta-method return-level CI (Coles 2001 sec. 3.3.3)"})
+    res = RichResult(
+        payload={
+            "z_T": float(z),
+            "ci_lo": float(z - zc * se),
+            "ci_hi": float(z + zc * se),
+            "se": se,
+            "T": float(T),
+            "method": "delta-method return-level CI (Coles 2001 sec. 3.3.3)",
+        }
+    )
     return with_describe_pointer(res, "evrlci")
 
 

@@ -10,7 +10,7 @@ paper notes the S for [1-2-3-4, 5-6] ties with [7, 8], and the
 row-major pin selects the pair (7, 8) first).
 """
 
-from morie.fn.phylotr import phylotr, phylogenetic_tree, _sij
+from morie.fn.phylotr import _sij, phylogenetic_tree, phylotr
 
 D = [
     [0, 7, 8, 11, 13, 16, 13, 17],
@@ -58,9 +58,16 @@ def test_phylotr_saitou_nei_printed_example():
 def test_phylotr_table2_cycle1_s_values():
     # Table 2A prints all cycle-1 S values to 2 dp; check a spread.
     Dl = [[float(v) for v in row] for row in D]
-    printed = {(0, 1): 36.67, (0, 2): 38.33, (1, 2): 38.33,
-               (2, 3): 38.67, (4, 5): 37.00, (6, 7): 37.67,
-               (3, 4): 39.67, (5, 6): 38.83}
+    printed = {
+        (0, 1): 36.67,
+        (0, 2): 38.33,
+        (1, 2): 38.33,
+        (2, 3): 38.67,
+        (4, 5): 37.00,
+        (6, 7): 37.67,
+        (3, 4): 39.67,
+        (5, 6): 38.83,
+    }
     for (i, jj), s in printed.items():
         assert abs(_sij(Dl, 8, i, jj) - s) < 0.005
 
@@ -71,21 +78,16 @@ def test_phylotr_table2_cycle2_s_values():
     # S43 = 32.30, S56 = 31.30, S87 = 31.90, S5,(1-2) = 33.90.
     old = [[float(v) for v in row] for row in D]
     keep = [2, 3, 4, 5, 6, 7]
-    D2 = [[old[a][b] for b in keep] + [(old[0][a] + old[1][a]) / 2.0]
-          for a in keep]
+    D2 = [[old[a][b] for b in keep] + [(old[0][a] + old[1][a]) / 2.0] for a in keep]
     D2.append([(old[0][b] + old[1][b]) / 2.0 for b in keep] + [0.0])
-    printed = {(0, 6): 31.50, (0, 1): 32.30, (2, 3): 31.30,
-               (4, 5): 31.90, (2, 6): 33.90}
+    printed = {(0, 6): 31.50, (0, 1): 32.30, (2, 3): 31.30, (4, 5): 31.90, (2, 6): 33.90}
     for (i, jj), s in printed.items():
         assert abs(_sij(D2, 7, i, jj) - s) < 0.005
 
 
 def test_phylotr_additive_four_taxa():
     # additive quartet: tree ((a:1,b:2):1,(c:3,d:4)) hand distances
-    Dq = [[0, 3, 5, 6],
-          [3, 0, 6, 7],
-          [5, 6, 0, 7],
-          [6, 7, 7, 0]]
+    Dq = [[0, 3, 5, 6], [3, 0, 6, 7], [5, 6, 0, 7], [6, 7, 7, 0]]
     res = phylotr(Dq, labels=["a", "b", "c", "d"])
     j0 = res["joins"][0]
     assert {j0["a"], j0["b"]} == {"a", "b"}
@@ -112,19 +114,18 @@ def test_saitou_nei_and_studier_keppler_pick_the_same_pair():
         return (m - 2.0) * D[i][j] - ri - rj
 
     mats = [
-        [[0.0, 7.0, 11.0, 14.0],
-         [7.0, 0.0, 6.0, 9.0],
-         [11.0, 6.0, 0.0, 7.0],
-         [14.0, 9.0, 7.0, 0.0]],
+        [[0.0, 7.0, 11.0, 14.0], [7.0, 0.0, 6.0, 9.0], [11.0, 6.0, 0.0, 7.0], [14.0, 9.0, 7.0, 0.0]],
         # Saitou & Nei (1987) Table 1 distances
-        [[0, 7, 8, 11, 13, 16, 13, 17],
-         [7, 0, 5, 8, 10, 13, 10, 14],
-         [8, 5, 0, 5, 7, 10, 7, 11],
-         [11, 8, 5, 0, 8, 11, 8, 12],
-         [13, 10, 7, 8, 0, 5, 6, 10],
-         [16, 13, 10, 11, 5, 0, 9, 13],
-         [13, 10, 7, 8, 6, 9, 0, 8],
-         [17, 14, 11, 12, 10, 13, 8, 0]],
+        [
+            [0, 7, 8, 11, 13, 16, 13, 17],
+            [7, 0, 5, 8, 10, 13, 10, 14],
+            [8, 5, 0, 5, 7, 10, 7, 11],
+            [11, 8, 5, 0, 8, 11, 8, 12],
+            [13, 10, 7, 8, 0, 5, 6, 10],
+            [16, 13, 10, 11, 5, 0, 9, 13],
+            [13, 10, 7, 8, 6, 9, 0, 8],
+            [17, 14, 11, 12, 10, 13, 8, 0],
+        ],
     ]
     for raw in mats:
         D = [[float(v) for v in row] for row in raw]

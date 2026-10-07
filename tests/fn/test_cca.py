@@ -1,7 +1,6 @@
 """Tests for canonical_correlation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cca import canonical_correlation
 
 

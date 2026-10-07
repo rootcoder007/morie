@@ -16,10 +16,10 @@ including the places where the sources contradict the placeholder
 docstrings.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn._wsm import adaptive_spread, silverman_bandwidth
 from morie.fn.wsmadm import wasserman_admissible
 from morie.fn.wsmbgn import wasserman_bagging
@@ -28,7 +28,6 @@ from morie.fn.wsmiis import wasserman_importance_sampling
 from morie.fn.wsmkdn import wasserman_kde
 from morie.fn.wsmmle import wasserman_mle
 from morie.fn.wsmpst import wasserman_plug_in_estimator
-
 
 # ------------------------------------------------- Silverman, KDE
 
@@ -40,18 +39,14 @@ def test_silverman_rule_is_0_9_A_not_1_06_sigma():
     starting point and then improves on twice."""
     x = np.random.default_rng(3).normal(size=500)
     a = adaptive_spread(x)
-    assert silverman_bandwidth(x, "3.31") == pytest.approx(
-        0.9 * a * 500 ** -0.2, rel=1e-12)
-    assert silverman_bandwidth(x, "3.28") == pytest.approx(
-        1.06 * np.std(x, ddof=1) * 500 ** -0.2, rel=1e-12)
+    assert silverman_bandwidth(x, "3.31") == pytest.approx(0.9 * a * 500**-0.2, rel=1e-12)
+    assert silverman_bandwidth(x, "3.28") == pytest.approx(1.06 * np.std(x, ddof=1) * 500**-0.2, rel=1e-12)
     r = np.subtract(*np.percentile(x, [75, 25]))
-    assert silverman_bandwidth(x, "3.29") == pytest.approx(
-        0.79 * r * 500 ** -0.2, rel=1e-12)
+    assert silverman_bandwidth(x, "3.29") == pytest.approx(0.79 * r * 500**-0.2, rel=1e-12)
     # on normal data A is the standard deviation, so the two rules
     # differ by exactly the constant 0.9 / 1.06
     assert a == pytest.approx(np.std(x, ddof=1), rel=0.05)
-    assert (silverman_bandwidth(x, "3.31")
-            < silverman_bandwidth(x, "3.28"))
+    assert silverman_bandwidth(x, "3.31") < silverman_bandwidth(x, "3.28")
     with pytest.raises(ValueError, match="3.28"):
         silverman_bandwidth(x, "silverman")
 
@@ -64,23 +59,19 @@ def test_the_adaptive_spread_resists_an_outlier_that_moves_the_sd():
     x = np.random.default_rng(5).normal(size=400)
     dirty = np.r_[x, [60.0]]
     assert np.std(dirty, ddof=1) > 2 * np.std(x, ddof=1)
-    assert adaptive_spread(dirty) == pytest.approx(adaptive_spread(x),
-                                                   rel=0.15)
+    assert adaptive_spread(dirty) == pytest.approx(adaptive_spread(x), rel=0.15)
     clean_h = silverman_bandwidth(x, "3.31")
     dirty_h = silverman_bandwidth(dirty, "3.31")
     assert dirty_h == pytest.approx(clean_h, rel=0.15)
     # the normal reference is not nearly so stable
-    assert (silverman_bandwidth(dirty, "3.28")
-            > 2 * silverman_bandwidth(x, "3.28"))
+    assert silverman_bandwidth(dirty, "3.28") > 2 * silverman_bandwidth(x, "3.28")
 
 
 def test_kde_is_a_density_and_matches_silverman_2_2a():
     x = np.random.default_rng(7).normal(size=600)
     g = np.linspace(-4, 4, 401)
     o = wasserman_kde(g, x, h=0.35)
-    direct = np.array([
-        np.mean(np.exp(-0.5 * ((t - x) / 0.35) ** 2)
-                / (0.35 * np.sqrt(2 * np.pi))) for t in g])
+    direct = np.array([np.mean(np.exp(-0.5 * ((t - x) / 0.35) ** 2) / (0.35 * np.sqrt(2 * np.pi))) for t in g])
     assert np.allclose(o["density"], direct, rtol=1e-12)
     assert np.all(o["density"] >= 0)
     assert o["mass"] == pytest.approx(1.0, abs=1e-3)
@@ -94,7 +85,7 @@ def test_kde_tracks_a_known_density_and_reports_all_three_rules():
     x = np.random.default_rng(11).normal(size=5000)
     g = np.linspace(-3, 3, 200)
     o = wasserman_kde(g, x)
-    truth = np.exp(-0.5 * g ** 2) / np.sqrt(2 * np.pi)
+    truth = np.exp(-0.5 * g**2) / np.sqrt(2 * np.pi)
     err = np.max(np.abs(o["density"] - truth))
     # the residual sits at the mode, where any second-order kernel
     # estimate is biased downward by h^2 f''(x) mu_2 / 2; what matters
@@ -102,8 +93,7 @@ def test_kde_tracks_a_known_density_and_reports_all_three_rules():
     # BOTH directions, which is the property (3.31) is claimed to have
     assert err < 0.04
     over = np.max(np.abs(wasserman_kde(g, x, h=5 * o["h"])["density"] - truth))
-    under = np.max(np.abs(wasserman_kde(g, x, h=o["h"] / 20)["density"]
-                          - truth))
+    under = np.max(np.abs(wasserman_kde(g, x, h=o["h"] / 20)["density"] - truth))
     assert err < over
     assert err < under
     assert o["rule"] == "3.31"
@@ -119,8 +109,7 @@ def test_importance_sampling_recovers_a_known_expectation():
     Cauchy draws. The Cauchy is the heavy-tailed sampler MacKay
     recommends, and it should give a usable effective sample size."""
     xs = stats.cauchy.rvs(size=200_000, random_state=1)
-    o = wasserman_importance_sampling(
-        lambda x: x ** 2, stats.norm.pdf, stats.cauchy.pdf, samples=xs)
+    o = wasserman_importance_sampling(lambda x: x**2, stats.norm.pdf, stats.cauchy.pdf, samples=xs)
     assert o["estimate"] == pytest.approx(1.0, rel=0.05)
     assert o["self_normalised"] is True
     assert o["ess_fraction"] > 0.3
@@ -133,19 +122,22 @@ def test_the_self_normalised_estimator_needs_no_normalising_constants():
     alternative cannot do."""
     xs = stats.norm.rvs(size=20_000, random_state=2, scale=2.0)
     kw = dict(samples=xs)
-    base = wasserman_importance_sampling(
-        lambda x: x ** 2, stats.norm.pdf,
-        lambda x: stats.norm.pdf(x, scale=2.0), **kw)["estimate"]
+    base = wasserman_importance_sampling(lambda x: x**2, stats.norm.pdf, lambda x: stats.norm.pdf(x, scale=2.0), **kw)[
+        "estimate"
+    ]
     scaled = wasserman_importance_sampling(
-        lambda x: x ** 2, lambda x: 137.0 * stats.norm.pdf(x),
-        lambda x: 0.004 * stats.norm.pdf(x, scale=2.0), **kw)["estimate"]
+        lambda x: x**2, lambda x: 137.0 * stats.norm.pdf(x), lambda x: 0.004 * stats.norm.pdf(x, scale=2.0), **kw
+    )["estimate"]
     assert scaled == pytest.approx(base, rel=1e-12)
     # the unnormalised estimator is NOT invariant to that rescaling
     un = wasserman_importance_sampling(
-        lambda x: x ** 2, lambda x: 137.0 * stats.norm.pdf(x),
+        lambda x: x**2,
+        lambda x: 137.0 * stats.norm.pdf(x),
         lambda x: 0.004 * stats.norm.pdf(x, scale=2.0),
-        normalised=True, **kw)["estimate"]
-    assert not un == pytest.approx(base, rel=0.5)
+        normalised=True,
+        **kw,
+    )["estimate"]
+    assert un != pytest.approx(base, rel=0.5)
 
 
 def test_a_light_tailed_sampler_degrades_the_effective_sample_size():
@@ -155,11 +147,9 @@ def test_a_light_tailed_sampler_degrades_the_effective_sample_size():
     draws, and the effective sample size is what shows it."""
     xs = stats.norm.rvs(size=50_000, random_state=4)
     heavy = wasserman_importance_sampling(
-        lambda x: np.abs(x), lambda x: stats.t.pdf(x, df=1.5),
-        stats.norm.pdf, samples=xs)
-    light = wasserman_importance_sampling(
-        lambda x: np.abs(x), stats.norm.pdf,
-        stats.norm.pdf, samples=xs)
+        lambda x: np.abs(x), lambda x: stats.t.pdf(x, df=1.5), stats.norm.pdf, samples=xs
+    )
+    light = wasserman_importance_sampling(lambda x: np.abs(x), stats.norm.pdf, stats.norm.pdf, samples=xs)
     assert heavy["ess_fraction"] < light["ess_fraction"]
     assert heavy["max_weight_share"] > light["max_weight_share"]
     assert "HEAVY TAILS" in heavy["heavy_tail_advice"]
@@ -168,8 +158,7 @@ def test_a_light_tailed_sampler_degrades_the_effective_sample_size():
 def test_importance_sampling_refuses_an_invalid_sampler():
     xs = np.array([0.0, 1.0, 2.0])
     with pytest.raises(ValueError, match="zero or negative"):
-        wasserman_importance_sampling(lambda x: x, lambda x: np.ones_like(x),
-                                      lambda x: np.zeros_like(x), samples=xs)
+        wasserman_importance_sampling(lambda x: x, lambda x: np.ones_like(x), lambda x: np.zeros_like(x), samples=xs)
     with pytest.raises(ValueError, match="rvs method"):
         wasserman_importance_sampling(lambda x: x, lambda x: x, lambda x: x)
 
@@ -182,11 +171,9 @@ def test_bootstrap_variance_divides_by_B_minus_one():
     carries n - 1: the replicates are centred at their own mean."""
     x = np.random.default_rng(13).normal(loc=3, scale=2, size=300)
     o = wasserman_bootstrap(x, np.mean, B=200, seed=1)
-    assert o["variance_ddof0"] / o["variance_ddof1"] == pytest.approx(
-        199 / 200, rel=1e-12)
+    assert o["variance_ddof0"] / o["variance_ddof1"] == pytest.approx(199 / 200, rel=1e-12)
     assert o["value"] == o["variance_ddof1"]
-    assert wasserman_bootstrap(x, np.mean, B=200, seed=1,
-                               ddof=0)["value"] == o["variance_ddof0"]
+    assert wasserman_bootstrap(x, np.mean, B=200, seed=1, ddof=0)["value"] == o["variance_ddof0"]
     with pytest.raises(ValueError, match="ddof"):
         wasserman_bootstrap(x, np.mean, B=50, ddof=2)
 
@@ -199,9 +186,8 @@ def test_bootstrap_variance_of_the_mean_matches_the_closed_form():
     got = []
     for _ in range(20):
         x = rng.normal(scale=sigma, size=n)
-        got.append(wasserman_bootstrap(x, np.mean, B=400,
-                                       seed=int(rng.integers(1e6)))["value"])
-    assert np.mean(got) == pytest.approx(sigma ** 2 / n, rel=0.1)
+        got.append(wasserman_bootstrap(x, np.mean, B=400, seed=int(rng.integers(1e6)))["value"])
+    assert np.mean(got) == pytest.approx(sigma**2 / n, rel=0.1)
 
 
 def test_plug_in_estimator_and_its_bootstrap_standard_error():
@@ -225,8 +211,7 @@ def test_plug_in_works_for_a_functional_that_is_not_the_mean():
     x = np.random.default_rng(23).normal(size=2000)
     o = wasserman_plug_in_estimator(x, np.median, B=500)
     assert o["estimate"] == pytest.approx(float(np.median(x)), rel=1e-12)
-    assert o["se"] == pytest.approx(np.sqrt(np.pi / 2) / np.sqrt(2000),
-                                    rel=0.2)
+    assert o["se"] == pytest.approx(np.sqrt(np.pi / 2) / np.sqrt(2000), rel=0.2)
 
 
 def test_bagging_does_nothing_for_a_linear_procedure():
@@ -239,8 +224,7 @@ def test_bagging_does_nothing_for_a_linear_procedure():
     y = X @ [1.0, -2.0, 0.5] + rng.normal(scale=0.5, size=150)
     o = wasserman_bagging(X, y, B=500)
     assert o["max_shift_from_single_fit"] < 0.05 * np.std(y)
-    assert o["bagged_spread"] == pytest.approx(
-        o["replicate_spread"] / 500, rel=1e-12)
+    assert o["bagged_spread"] == pytest.approx(o["replicate_spread"] / 500, rel=1e-12)
 
 
 def test_bagging_moves_a_deep_tree_a_great_deal():
@@ -260,8 +244,7 @@ def test_bagging_moves_a_deep_tree_a_great_deal():
 
     linear = wasserman_bagging(X, y, B=60, seed=2)
     nonlinear = wasserman_bagging(X, y, model=tree, B=60, seed=2)
-    assert (nonlinear["max_shift_from_single_fit"]
-            > 10 * linear["max_shift_from_single_fit"])
+    assert nonlinear["max_shift_from_single_fit"] > 10 * linear["max_shift_from_single_fit"]
     assert nonlinear["replicate_spread"] > linear["replicate_spread"]
     assert nonlinear["n_oob_missing"] == 0
 
@@ -275,8 +258,7 @@ def test_mle_recovers_normal_parameters_with_textbook_standard_errors():
     the MLE of the standard deviation has sigma/sqrt(2n)."""
     n, mu, sigma = 800, 2.5, 1.5
     x = np.random.default_rng(37).normal(loc=mu, scale=sigma, size=n)
-    o = wasserman_mle(x, lambda d, t: stats.norm.pdf(d, t[0], abs(t[1])),
-                      [0.0, 1.0])
+    o = wasserman_mle(x, lambda d, t: stats.norm.pdf(d, t[0], abs(t[1])), [0.0, 1.0])
     assert o["estimate"][0] == pytest.approx(mu, abs=0.15)
     assert abs(o["estimate"][1]) == pytest.approx(sigma, abs=0.15)
     assert o["is_maximum"] is True
@@ -293,8 +275,7 @@ def test_mle_reports_no_standard_error_when_it_did_not_find_a_maximum():
     o = wasserman_mle(x, lambda d, t: stats.norm.pdf(d, t[0], 1.0), [0.0])
     assert o["is_maximum"] is True and o["se"] is not None
     # a likelihood flat in the parameter has a singular Hessian
-    flat = wasserman_mle(x, lambda d, t: stats.norm.pdf(d, 0.0, 1.0)
-                         + 0 * t[0], [0.5])
+    flat = wasserman_mle(x, lambda d, t: stats.norm.pdf(d, 0.0, 1.0) + 0 * t[0], [0.5])
     assert flat["is_maximum"] is False
     assert flat["se"] is None
     assert "not a maximum" in flat["not_a_maximum_note"]
@@ -340,8 +321,7 @@ def test_a_constant_rule_can_be_admissible_without_being_good():
     state and dreadful everywhere else is admissible as long as
     nothing beats it at that state, which is why admissibility alone
     is a weak recommendation."""
-    o = wasserman_admissible([[0.0, 99.0], [1.0, 1.0]],
-                             names=["silly", "sensible"])
+    o = wasserman_admissible([[0.0, 99.0], [1.0, 1.0]], names=["silly", "sensible"])
     assert list(o["admissible"]) == [True, True]
     assert o["minimax_rule"] == "sensible"
 

@@ -1,7 +1,6 @@
 """Tests for ckmra (Cochran-Mantel-Haenszel test)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ckmra import cochran_mantel
 
 

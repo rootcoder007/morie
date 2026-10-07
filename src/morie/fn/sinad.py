@@ -27,16 +27,13 @@ def sinad_compute(x, fs: float = 1.0, **kwargs) -> DescriptiveResult:
     DescriptiveResult
     """
     x = np.asarray(x, dtype=float)
-    N = len(x)
+    len(x)
     X = np.fft.rfft(x)
     mag = np.abs(X)
     fund_idx = np.argmax(mag[1:]) + 1
     signal_power = mag[fund_idx] ** 2
     noise_dist_power = np.sum(mag**2) - signal_power
-    if noise_dist_power <= 0:
-        sinad_db = float("inf")
-    else:
-        sinad_db = 10.0 * np.log10(signal_power / noise_dist_power)
+    sinad_db = float("inf") if noise_dist_power <= 0 else 10.0 * np.log10(signal_power / noise_dist_power)
     return DescriptiveResult(
         name="sinad",
         value=float(sinad_db),

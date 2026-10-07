@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Concurrent calibration of two groups on common anchor items."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -128,19 +126,21 @@ def concurrent_calibration(y, item=None, group=None, anchor=None, iters=200):
         tf = sum(thf) / len(thf)
         tr = sum(thr) / len(thr)
         drift = [bf[j] - br[j] for j in anc]
-    return RichResult(payload={
-        "estimate": sum(abs(v) for v in drift) / len(drift),
-        "b": b,
-        "b_focal": bf,
-        "b_reference": br,
-        "drift": drift,
-        "theta_mean_focal": tf,
-        "theta_mean_reference": tr,
-        "n": n,
-        "k": k,
-        "n_anchor": len(anc),
-        "method": "concurrent calibration with anchor items",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(abs(v) for v in drift) / len(drift),
+            "b": b,
+            "b_focal": bf,
+            "b_reference": br,
+            "drift": drift,
+            "theta_mean_focal": tf,
+            "theta_mean_reference": tr,
+            "n": n,
+            "k": k,
+            "n_anchor": len(anc),
+            "method": "concurrent calibration with anchor items",
+        }
+    )
 
 
 def cheatsheet():

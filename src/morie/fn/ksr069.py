@@ -75,12 +75,11 @@ def kosorok_ch3_cox_likelihood_breslow(beta, Lambda, Z, V, d, n=None):
 
     w = np.exp(Z @ beta)
     ev = np.sort(V[d == 1])
-    inc = np.array([1.0 / max(float(w[V >= t].sum()), 1e-300) for t in ev])
+    inc = np.array([1.0 / max(float(w[t <= V].sum()), 1e-300) for t in ev])
     cum = np.cumsum(inc)
 
     at_beta = cox_score(beta, Z, V, d)
-    res = optimize.root(lambda b: cox_score(b, Z, V, d)["score"], np.zeros(p),
-                        method="hybr")
+    res = optimize.root(lambda b: cox_score(b, Z, V, d)["score"], np.zeros(p), method="hybr")
     hat = res.x
     info = cox_score(hat, Z, V, d)["information"]
     try:
@@ -89,12 +88,15 @@ def kosorok_ch3_cox_likelihood_breslow(beta, Lambda, Z, V, d, n=None):
         se = np.full(p, np.nan)
     return RichResult(
         payload={
-            "breslow_times": ev, "breslow_cumhaz": cum,
+            "breslow_times": ev,
+            "breslow_cumhaz": cum,
             "loglik": at_beta["loglik"],
             "estimate": hat if p > 1 else float(hat[0]),
             "se": se if p > 1 else float(se[0]),
-            "information": info, "converged": bool(res.success),
-            "n_events": int(d.sum()), "n": int(nobs),
+            "information": info,
+            "converged": bool(res.success),
+            "n_events": int(d.sum()),
+            "n": int(nobs),
             "method": "Breslow baseline = the profile maximiser given beta",
         }
     )

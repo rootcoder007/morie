@@ -1,15 +1,19 @@
 """Tests for wsmprb.wasserman_parametric_boot."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmprb import wasserman_parametric_boot
 
 
 def test_wsmprb_basic():
     """Test basic functionality."""
     data = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    f = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
-    T = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+
+    def f(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
+    def T(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     B = 5
     result = wasserman_parametric_boot(data, f, T, B)
     assert isinstance(result, dict)
@@ -19,8 +23,13 @@ def test_wsmprb_basic():
 def test_wsmprb_edge():
     """Test edge cases."""
     data = np.random.default_rng(42).normal(0.0, 1.0, 40)
-    f = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
-    T = (lambda *a, **k: float(np.sum(np.asarray(a[0]) ** 2)))
+
+    def f(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
+    def T(*a, **k):
+        return float(np.sum(np.asarray(a[0]) ** 2))
+
     B = 5
     result = wasserman_parametric_boot(data, f, T, B)
     assert isinstance(result, dict)

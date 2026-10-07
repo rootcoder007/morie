@@ -47,9 +47,9 @@ def cramer_von_mises(
         raise ValueError("Cramer-von Mises requires at least 3 observations.")
 
     try:
-        dist = getattr(stats, cdf)
-    except AttributeError:
-        raise ValueError(f"Unknown distribution: {cdf}.")
+        getattr(stats, cdf)
+    except AttributeError as exc:
+        raise ValueError(f"Unknown distribution: {cdf}.") from exc
 
     result = stats.cramervonmises(x, cdf, args=cdf_params)
 

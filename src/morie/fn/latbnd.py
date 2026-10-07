@@ -95,7 +95,7 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
     if z is not None:
         zv = np.asarray(z, dtype=float).ravel()
         if zv.size != n:
-            raise ValueError("z has %d entries for %d rows." % (zv.size, n))
+            raise ValueError(f"z has {int(zv.size)} entries for {int(n)} rows.")
         if not np.all(np.isin(zv, (0.0, 1.0))):
             raise ValueError("z must be binary 0/1.")
         m1z, m0z = zv == 1, zv == 0
@@ -109,12 +109,9 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
             n1, n0 = int(m1z.sum()), int(m0z.sum())
             v_rf = yv[m1z].var(ddof=1) / n1 + yv[m0z].var(ddof=1) / n0
             v_fs = dv[m1z].var(ddof=1) / n1 + dv[m0z].var(ddof=1) / n0
-            c = (np.cov(yv[m1z], dv[m1z], ddof=1)[0, 1] / n1
-                 + np.cov(yv[m0z], dv[m0z], ddof=1)[0, 1] / n0)
-            se = float(np.sqrt(max(v_rf / fs ** 2 + rf ** 2 * v_fs / fs ** 4
-                                   - 2 * (rf / fs ** 3) * c, 0.0)))
-            late_ci = (late - 1.959963984540054 * se,
-                       late + 1.959963984540054 * se)
+            c = np.cov(yv[m1z], dv[m1z], ddof=1)[0, 1] / n1 + np.cov(yv[m0z], dv[m0z], ddof=1)[0, 1] / n0
+            se = float(np.sqrt(max(v_rf / fs**2 + rf**2 * v_fs / fs**4 - 2 * (rf / fs**3) * c, 0.0)))
+            late_ci = (late - 1.959963984540054 * se, late + 1.959963984540054 * se)
             w = late_ci[1] - late_ci[0]
             cost = float(width / w) if w > 0 else np.inf
     return RichResult(
@@ -134,25 +131,24 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
             "late_ci": late_ci,
             "complier_share": share,
             "complier_note": (
-                None if share is None else
-                "the LATE speaks for the %.1f %% of the sample who comply; "
-                "reporting it as an ATE silently generalises beyond them"
-                % (100 * share)
+                None
+                if share is None
+                else f"the LATE speaks for the {100 * share:.1f} % of the sample who comply; reporting it as an ATE silently generalises beyond them"
             ),
             "assumption_cost": cost,
             "cost_note": (
-                None if cost is None else
-                "the exclusion restriction and monotonicity together bought "
-                "an interval %.1f times narrower than the data alone support"
-                % cost
+                None
+                if cost is None
+                else "the exclusion restriction and monotonicity together bought "
+                f"an interval {cost:.1f} times narrower than the data alone support"
             ),
             "monotonicity": bool(mono),
             "support": (lo_y, hi_y),
             "support_from_data": bool(from_data),
             "support_note": (
-                None if not from_data else
-                "the outcome support was taken from the observed range, "
-                "which UNDERSTATES the true bounds"
+                None
+                if not from_data
+                else "the outcome support was taken from the observed range, which UNDERSTATES the true bounds"
             ),
             "n": int(n),
             "method": "Manski worst-case bounds, with the LATE when identified",
@@ -161,10 +157,7 @@ def late_bounds(y, d, z=None, y_min=None, y_max=None, mono=True):
 
 
 def cheatsheet():
-    return (
-        "latbnd: no-assumption bounds against the instrumented LATE, showing "
-        "what the identifying assumptions bought"
-    )
+    return "latbnd: no-assumption bounds against the instrumented LATE, showing what the identifying assumptions bought"
 
 
 # compact alias per ledger/NAMING.md

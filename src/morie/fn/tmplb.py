@@ -39,10 +39,7 @@ def template_library(templates, signal, method="correlation", **kwargs) -> Descr
             if method == "correlation":
                 s_std = np.std(seg)
                 t_std = np.std(t)
-                if s_std > 0 and t_std > 0:
-                    val = float(np.corrcoef(seg, t)[0, 1])
-                else:
-                    val = 0.0
+                val = float(np.corrcoef(seg, t)[0, 1]) if s_std > 0 and t_std > 0 else 0.0
                 best = max(best, val)
             else:
                 val = float(np.sqrt(np.sum((seg - t) ** 2)))
@@ -50,10 +47,7 @@ def template_library(templates, signal, method="correlation", **kwargs) -> Descr
         scores.append(best)
 
     scores = np.array(scores)
-    if method == "correlation":
-        best_idx = int(np.argmax(scores))
-    else:
-        best_idx = int(np.argmin(scores))
+    best_idx = int(np.argmax(scores)) if method == "correlation" else int(np.argmin(scores))
 
     return DescriptiveResult(
         name="template_library",

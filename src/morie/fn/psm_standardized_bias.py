@@ -28,17 +28,16 @@ def psm_standardized_bias(mean_t, mean_c, s_t, s_c):
     """
     value = _ca_crim.psm_standardized_bias(mean_t, mean_c, s_t, s_c)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (10.1)"
     return RichResult(
-        title='Rosenbaum-Rubin standardized absolute bias for PSM balance',
+        title="Rosenbaum-Rubin standardized absolute bias for PSM balance",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca10e1: Bias = 100 (xbar_t - xbar_c) / sqrt((s_t^2 + s_c^2)/2) [Weisburd et al. 2022, eq. 10.1]'
+    return "ca10e1: Bias = 100 (xbar_t - xbar_c) / sqrt((s_t^2 + s_c^2)/2) [Weisburd et al. 2022, eq. 10.1]"

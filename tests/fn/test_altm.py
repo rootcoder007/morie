@@ -1,7 +1,6 @@
 """Tests for altm — alert timeline."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.altm import altmrng
 
 

@@ -86,16 +86,30 @@ def dp_sum(x, a, b, epsilon=1.0, seed=None):
     rel = float(xc.sum() + rng.laplace(0.0, scale))
     return RichResult(
         title="DP sum",
-        summary_lines=[("epsilon", epsilon), ("bounds", f"[{a:g}, {b:g}]"),
-                       ("noise scale", scale), ("clipped", clipped_frac)],
-        warnings=(["more than 10% of values were clipped; the bounds are biting "
-                   "and the release is biased toward the interior"]
-                  if clipped_frac > 0.10 else []),
+        summary_lines=[
+            ("epsilon", epsilon),
+            ("bounds", f"[{a:g}, {b:g}]"),
+            ("noise scale", scale),
+            ("clipped", clipped_frac),
+        ],
+        warnings=(
+            [
+                "more than 10% of values were clipped; the bounds are biting "
+                "and the release is biased toward the interior"
+            ]
+            if clipped_frac > 0.10
+            else []
+        ),
         payload={
-            "release": rel, "true_sum": float(xc.sum()),
-            "noise_scale": scale, "sensitivity": float(sens),
-            "clipped_fraction": clipped_frac, "bounds": (a, b),
-            "n": int(xc.size), "epsilon": epsilon, "method": "dp_sum",
+            "release": rel,
+            "true_sum": float(xc.sum()),
+            "noise_scale": scale,
+            "sensitivity": float(sens),
+            "clipped_fraction": clipped_frac,
+            "bounds": (a, b),
+            "n": int(xc.size),
+            "epsilon": epsilon,
+            "method": "dp_sum",
         },
     )
 

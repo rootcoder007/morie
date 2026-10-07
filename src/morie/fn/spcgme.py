@@ -1,7 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cohen's kappa over spatial neighbour pairs."""
 
-from math import fsum, sqrt
+from math import fsum
 
 from ._richresult import RichResult
 from ._spx import sqmat, vec
@@ -82,37 +82,41 @@ def spatial_concordance_kappa(x, y, w):
             raise ValueError("`w` must have a zero diagonal")
         for j in range(n):
             if ww[i][j] < 0:
-                raise ValueError("`w` must be non-negative for kappa to be "
-                                 "a proportion")
+                raise ValueError("`w` must be non-negative for kappa to be a proportion")
     s0 = fsum([fsum(row) for row in ww])
     if s0 <= 0:
         raise ValueError("total weight w.. must be positive")
 
     cats = sorted(set(xi) | set(yi))
-    po = fsum([ww[i][j] for i in range(n) for j in range(n)
-               if xi[i] == yi[j]]) / s0
+    po = fsum([ww[i][j] for i in range(n) for j in range(n) if xi[i] == yi[j]]) / s0
     rows = [fsum(ww[i]) for i in range(n)]
     cols = [fsum([ww[i][j] for i in range(n)]) for j in range(n)]
-    pe = fsum([
-        (fsum([rows[i] for i in range(n) if xi[i] == c]) / s0)
-        * (fsum([cols[j] for j in range(n) if yi[j] == c]) / s0)
-        for c in cats])
+    pe = fsum(
+        [
+            (fsum([rows[i] for i in range(n) if xi[i] == c]) / s0)
+            * (fsum([cols[j] for j in range(n) if yi[j] == c]) / s0)
+            for c in cats
+        ]
+    )
     if abs(1.0 - pe) < 1e-12:
-        raise ValueError("expected agreement is 1; kappa is undefined "
-                         "(both maps are effectively constant)")
+        raise ValueError("expected agreement is 1; kappa is undefined (both maps are effectively constant)")
 
-    return RichResult(payload={
-        "kappa": (po - pe) / (1.0 - pe),
-        "p_observed": po,
-        "p_expected": pe,
-        "categories": [float(c) for c in cats],
-        "s0": s0,
-        "compares_neighbours_not_same_site": True,
-        "n": n,
-        "method": ("Cohen's kappa (Cohen 1960) over the neighbour pairs of "
-                   "Mantel's M2, Schabenberger & Gotway (2005) eq (1.5); "
-                   "the kappa coefficient is NOT in that book"),
-    })
+    return RichResult(
+        payload={
+            "kappa": (po - pe) / (1.0 - pe),
+            "p_observed": po,
+            "p_expected": pe,
+            "categories": [float(c) for c in cats],
+            "s0": s0,
+            "compares_neighbours_not_same_site": True,
+            "n": n,
+            "method": (
+                "Cohen's kappa (Cohen 1960) over the neighbour pairs of "
+                "Mantel's M2, Schabenberger & Gotway (2005) eq (1.5); "
+                "the kappa coefficient is NOT in that book"
+            ),
+        }
+    )
 
 
 def cheatsheet():

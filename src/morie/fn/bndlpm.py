@@ -106,20 +106,26 @@ def bound_lp_method(y, D, Z, moment_eqs=None):
     for j in range(4):
         for k in range(4):
             cvec[j * 4 + k] = float(_YK[k][1] - _YK[k][0])
-    r = bound_convex_estimator(cvec, A_eq=A, b_eq=bvec,
-                               bounds=[(0.0, 1.0)] * 16)
+    r = bound_convex_estimator(cvec, A_eq=A, b_eq=bvec, bounds=[(0.0, 1.0)] * 16)
     lo = float(r["lower"])
     hi = float(r["upper"])
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi),
-        "feasible": 1.0 if r["feasible"] else 0.0,
-        "n_constraints": len(A), "n": n,
-        "method": "Linear programming method for bounds"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "feasible": 1.0 if r["feasible"] else 0.0,
+            "n_constraints": len(A),
+            "n": n,
+            "method": "Linear programming method for bounds",
+        }
+    )
 
 
 def cheatsheet():
     return "bndlpm: Balke-Pearl sharp ATE bounds by linear programming"
+
 
 # public names resolved by fn/_lazy_map.json
 boundlpmethod = bound_lp_method

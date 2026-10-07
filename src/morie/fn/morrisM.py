@@ -79,14 +79,12 @@ def morrisM(fun, k, r=10, p=4, seed=0, bounds=None):
     n_runs = 0
 
     def _scale(u):
-        return [bounds[i][0] + u[i] * (bounds[i][1] - bounds[i][0])
-                for i in range(k)]
+        return [bounds[i][0] + u[i] * (bounds[i][1] - bounds[i][0]) for i in range(k)]
 
     for _ in range(r):
         # all randomness from sequential scalar uniforms so the R arm
         # (.ghc_unif) can mirror the stream draw for draw
-        x = [levels[min(int(float(rng.uniform()) * len(levels)),
-                        len(levels) - 1)] for _ in range(k)]
+        x = [levels[min(int(float(rng.uniform()) * len(levels)), len(levels) - 1)] for _ in range(k)]
         keys = [float(rng.uniform()) for _ in range(k)]
         order = sorted(range(k), key=lambda i: keys[i])
         y = float(fun(_scale(x)))
@@ -108,16 +106,23 @@ def morrisM(fun, k, r=10, p=4, seed=0, bounds=None):
     sigma = []
     for v, m in zip(ee, mu):
         if len(v) > 1:
-            sigma.append(math.sqrt(sum((x_ - m) ** 2 for x_ in v)
-                                   / (len(v) - 1)))
+            sigma.append(math.sqrt(sum((x_ - m) ** 2 for x_ in v) / (len(v) - 1)))
         else:
             sigma.append(float("nan"))
-    return RichResult(payload={
-        "mu": mu, "mu_star": mu_star, "sigma": sigma,
-        "ee": ee, "n_runs": n_runs, "delta": delta,
-        "r": r, "p": p, "seed": int(seed),
-        "method": "Morris elementary effects (Saltelli 2008 Eq. 3.1)",
-    })
+    return RichResult(
+        payload={
+            "mu": mu,
+            "mu_star": mu_star,
+            "sigma": sigma,
+            "ee": ee,
+            "n_runs": n_runs,
+            "delta": delta,
+            "r": r,
+            "p": p,
+            "seed": int(seed),
+            "method": "Morris elementary effects (Saltelli 2008 Eq. 3.1)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

@@ -96,20 +96,28 @@ def dp_pca(X, k=2, epsilon=1.0, delta=1e-5, C=1.0, seed=None):
     total = float(np.sum(np.clip(vals, 0, None)))
     return RichResult(
         title="DP PCA",
-        summary_lines=[("epsilon", cov["epsilon"]), ("k", k),
-                       ("eigengap", gap)],
-        warnings=(list(cov.warnings)
-                  + (["the eigengap is small relative to the leading eigenvalue; "
-                      "individual components are unstable, though the subspace "
-                      "they span may not be"]
-                     if np.isfinite(gap) and vals[0] > 0 and gap < 0.05 * vals[0] else [])),
+        summary_lines=[("epsilon", cov["epsilon"]), ("k", k), ("eigengap", gap)],
+        warnings=(
+            list(cov.warnings)
+            + (
+                [
+                    "the eigengap is small relative to the leading eigenvalue; "
+                    "individual components are unstable, though the subspace "
+                    "they span may not be"
+                ]
+                if np.isfinite(gap) and vals[0] > 0 and gap < 0.05 * vals[0]
+                else []
+            )
+        ),
         payload={
-            "components": vecs[:, :k], "eigenvalues": vals,
+            "components": vecs[:, :k],
+            "eigenvalues": vals,
             "eigengap": gap,
-            "explained_variance_ratio": (np.clip(vals[:k], 0, None) / total
-                                         if total > 0 else np.full(k, np.nan)),
-            "scores": X @ vecs[:, :k], "covariance": cov["release"],
-            "epsilon": cov["epsilon"], "delta": cov["delta"],
+            "explained_variance_ratio": (np.clip(vals[:k], 0, None) / total if total > 0 else np.full(k, np.nan)),
+            "scores": X @ vecs[:, :k],
+            "covariance": cov["release"],
+            "epsilon": cov["epsilon"],
+            "delta": cov["delta"],
             "method": "dp_pca",
         },
     )

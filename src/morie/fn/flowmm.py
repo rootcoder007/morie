@@ -108,16 +108,18 @@ def max_flow_min_cut(G, source, sink):
         for j in range(n):
             if not seen[j]:
                 cut += C[i][j]
-    return RichResult(payload={
-        "estimate": flow,
-        "max_flow": flow,
-        "min_cut": cut,
-        "cut_size": len(side),
-        "source_side": side,
-        "augmentations": aug,
-        "n": n,
-        "method": "Maximum flow / minimum cut",
-    })
+    return RichResult(
+        payload={
+            "estimate": flow,
+            "max_flow": flow,
+            "min_cut": cut,
+            "cut_size": len(side),
+            "source_side": side,
+            "augmentations": aug,
+            "n": n,
+            "method": "Maximum flow / minimum cut",
+        }
+    )
 
 
 def cheatsheet():

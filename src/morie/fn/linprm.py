@@ -93,19 +93,16 @@ def _chol_solve(L, b):
     n = len(b)
     y = [0.0] * n
     for i in range(n):
-        y[i] = (b[i] - sum(L[i][k] * y[k]
-                           for k in range(i))) / L[i][i]
+        y[i] = (b[i] - sum(L[i][k] * y[k] for k in range(i))) / L[i][i]
     x = [0.0] * n
     for i in range(n - 1, -1, -1):
-        x[i] = (y[i] - sum(L[k][i] * x[k]
-                           for k in range(i + 1, n))) / L[i][i]
+        x[i] = (y[i] - sum(L[k][i] * x[k] for k in range(i + 1, n))) / L[i][i]
     return x
 
 
 def _ada(A, d):
     m, n = len(A), len(A[0])
-    return [[sum(A[i][k] * d[k] * A[j][k] for k in range(n))
-             for j in range(m)] for i in range(m)]
+    return [[sum(A[i][k] * d[k] * A[j][k] for k in range(n)) for j in range(m)] for i in range(m)]
 
 
 def interior_point(c, A, b, tol=1e-10, max_iter=200):
@@ -115,40 +112,43 @@ def interior_point(c, A, b, tol=1e-10, max_iter=200):
     bb = [float(v) for v in b]
     m, n = len(M), len(cv)
     if m == 0 or any(len(r) != n for r in M) or len(bb) != m:
-        raise ValueError("linprm: A must be %d by %d with a "
-                         "right-hand side of length %d"
-                         % (m, n, m))
+        raise ValueError(f"linprm: A must be {int(m)} by {int(n)} with a right-hand side of length {int(m)}")
     x = [1.0] * n
     s = [1.0] * n
     y = [0.0] * m
     hist = []
     for it in range(int(max_iter)):
-        rp = [bb[i] - sum(M[i][j] * x[j] for j in range(n))
-              for i in range(m)]
-        rd = [cv[j] - sum(M[i][j] * y[i] for i in range(m)) - s[j]
-              for j in range(n)]
+        rp = [bb[i] - sum(M[i][j] * x[j] for j in range(n)) for i in range(m)]
+        rd = [cv[j] - sum(M[i][j] * y[i] for i in range(m)) - s[j] for j in range(n)]
         mu = sum(x[j] * s[j] for j in range(n)) / n
         gap = sum(x[j] * s[j] for j in range(n))
         pr = math.sqrt(sum(v * v for v in rp))
         dr = math.sqrt(sum(v * v for v in rd))
         hist.append(mu)
         if gap < tol and pr < tol and dr < tol:
-            return {"x": x, "y": y, "s": s, "iterations": it,
-                    "gap": gap, "primal_residual": pr,
-                    "dual_residual": dr, "converged": True,
-                    "mu_history": hist}
+            return {
+                "x": x,
+                "y": y,
+                "s": s,
+                "iterations": it,
+                "gap": gap,
+                "primal_residual": pr,
+                "dual_residual": dr,
+                "converged": True,
+                "mu_history": hist,
+            }
         d = [x[j] / s[j] for j in range(n)]
         L = _cholesky(_ada(M, d))
 
-        def step(r3):
+        def step(r3, *, L=L, d=d, rd=rd, rp=rp, s=s):
             # dy from A D A' dy = rp - A S^-1 r3 + A D rd
             t = [r3[j] / s[j] for j in range(n)]
-            rhs = [rp[i] - sum(M[i][j] * t[j] for j in range(n))
-                   + sum(M[i][j] * d[j] * rd[j] for j in range(n))
-                   for i in range(m)]
+            rhs = [
+                rp[i] - sum(M[i][j] * t[j] for j in range(n)) + sum(M[i][j] * d[j] * rd[j] for j in range(n))
+                for i in range(m)
+            ]
             dy = _chol_solve(L, rhs)
-            ds = [rd[j] - sum(M[i][j] * dy[i] for i in range(m))
-                  for j in range(n)]
+            ds = [rd[j] - sum(M[i][j] * dy[i] for i in range(m)) for j in range(n)]
             dx = [t[j] - d[j] * ds[j] for j in range(n)]
             return dx, dy, ds
 
@@ -162,27 +162,41 @@ def interior_point(c, A, b, tol=1e-10, max_iter=200):
         dxa, dya, dsa = step([-x[j] * s[j] for j in range(n)])
         ap = min(1.0, alpha(x, dxa))
         ad = min(1.0, alpha(s, dsa))
-        mu_aff = sum((x[j] + ap * dxa[j]) * (s[j] + ad * dsa[j])
-                     for j in range(n)) / n
+        mu_aff = sum((x[j] + ap * dxa[j]) * (s[j] + ad * dsa[j]) for j in range(n)) / n
         sigma = (mu_aff / mu) ** 3 if mu > 0 else 0.0
-        r3 = [-x[j] * s[j] - dxa[j] * dsa[j] + sigma * mu
-              for j in range(n)]
+        r3 = [-x[j] * s[j] - dxa[j] * dsa[j] + sigma * mu for j in range(n)]
         dx, dy, ds = step(r3)
         ap = min(1.0, 0.99 * alpha(x, dx))
         ad = min(1.0, 0.99 * alpha(s, ds))
         x = [x[j] + ap * dx[j] for j in range(n)]
         s = [s[j] + ad * ds[j] for j in range(n)]
         y = [y[i] + ad * dy[i] for i in range(m)]
-    return {"x": x, "y": y, "s": s, "iterations": int(max_iter),
-            "gap": sum(x[j] * s[j] for j in range(n)),
-            "converged": False, "mu_history": hist,
-            "primal_residual": float("nan"),
-            "dual_residual": float("nan")}
+    return {
+        "x": x,
+        "y": y,
+        "s": s,
+        "iterations": int(max_iter),
+        "gap": sum(x[j] * s[j] for j in range(n)),
+        "converged": False,
+        "mu_history": hist,
+        "primal_residual": float("nan"),
+        "dual_residual": float("nan"),
+    }
 
 
-def solve_lp(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
-             upper=None, method="auto", maximise=False, tol=1e-10,
-             max_iter=200, rule="bland"):
+def solve_lp(
+    c,
+    A_ub=None,
+    b_ub=None,
+    A_eq=None,
+    b_eq=None,
+    upper=None,
+    method="auto",
+    maximise=False,
+    tol=1e-10,
+    max_iter=200,
+    rule="bland",
+):
     r"""Solve a linear program by whichever method is asked for.
 
     ``auto`` uses simplex, which is exact on integral data and gives a
@@ -190,42 +204,43 @@ def solve_lp(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
     the optimal face is wanted instead.
     """
     if method not in METHODS:
-        raise ValueError("linprm: method must be one of %s, got %r"
-                         % (", ".join(METHODS), method))
+        raise ValueError("linprm: method must be one of {}, got {!r}".format(", ".join(METHODS), method))
     if method in ("simplex", "auto"):
-        r = _simplex_solve(c, A_ub, b_ub, A_eq, b_eq, upper, rule,
-                           maximise, 10000)
+        r = _simplex_solve(c, A_ub, b_ub, A_eq, b_eq, upper, rule, maximise, 10000)
         out = dict(r)
-        out["method"] = ("two-phase primal simplex (Dantzig 1963)"
-                         if r["status"] == "optimal" else out.get(
-                             "method", "simplex"))
+        out["method"] = (
+            "two-phase primal simplex (Dantzig 1963)" if r["status"] == "optimal" else out.get("method", "simplex")
+        )
         out["solver"] = "simplex"
         return RichResult(payload=out)
     sign = -1.0 if maximise else 1.0
-    sf = standard_form([sign * float(v) for v in c], A_ub, b_ub,
-                       A_eq, b_eq, upper)
+    sf = standard_form([sign * float(v) for v in c], A_ub, b_ub, A_eq, b_eq, upper)
     r = interior_point(sf["c"], sf["A"], sf["b"], tol, max_iter)
     n = sf["n_original"]
     x = [max(0.0, v) for v in r["x"][:n]]
-    fun = sign * sum(sf["c"][j] * r["x"][j]
-                     for j in range(len(sf["c"])))
-    return RichResult(payload={
-        "estimate": x, "x": x, "fun": fun,
-        "duals": [sign * v for v in r["y"]],
-        "slack": r["x"][n:],
-        "status": "optimal" if r["converged"] else "no_convergence",
-        "gap": r["gap"], "iterations": r["iterations"],
-        "primal_residual": r["primal_residual"],
-        "dual_residual": r["dual_residual"],
-        "maximise": bool(maximise), "solver": "interior_point",
-        "n_original": n, "n_slack": sf["n_slack"],
-        "method": "Mehrotra (1992) predictor-corrector primal-dual "
-                  "interior point",
-    })
+    fun = sign * sum(sf["c"][j] * r["x"][j] for j in range(len(sf["c"])))
+    return RichResult(
+        payload={
+            "estimate": x,
+            "x": x,
+            "fun": fun,
+            "duals": [sign * v for v in r["y"]],
+            "slack": r["x"][n:],
+            "status": "optimal" if r["converged"] else "no_convergence",
+            "gap": r["gap"],
+            "iterations": r["iterations"],
+            "primal_residual": r["primal_residual"],
+            "dual_residual": r["dual_residual"],
+            "maximise": bool(maximise),
+            "solver": "interior_point",
+            "n_original": n,
+            "n_slack": sf["n_slack"],
+            "method": "Mehrotra (1992) predictor-corrector primal-dual interior point",
+        }
+    )
 
 
-def linear_program(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None,
-                   upper=None, method="auto", **kw):
+def linear_program(c, A_ub=None, b_ub=None, A_eq=None, b_eq=None, upper=None, method="auto", **kw):
     r"""Entry point: see :func:`solve_lp`."""
     return solve_lp(c, A_ub, b_ub, A_eq, b_eq, upper, method, **kw)
 

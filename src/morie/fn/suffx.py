@@ -55,10 +55,14 @@ def suffx(
 
     if data.ndim == 1:
         n = len(data)
-        get_x = lambda i: data[i]
+
+        def get_x(i):
+            return data[i]
     else:
         n = data.shape[0]
-        get_x = lambda i: data[i]
+
+        def get_x(i):
+            return data[i]
 
     t_values = np.array([statistic(get_x(i)) for i in range(n)])
 
@@ -87,7 +91,7 @@ def suffx(
                 for theta in theta_grid[:10]:
                     ll_i = log_likelihood(xi, theta)
                     ll_j = log_likelihood(xj, theta)
-                    ratio = ll_i - ll_j
+                    ll_i - ll_j
 
                 for t1_idx, theta1 in enumerate(theta_grid[:10]):
                     ll_i_1 = log_likelihood(xi, theta1)

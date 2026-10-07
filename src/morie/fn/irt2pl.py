@@ -60,7 +60,7 @@ def two_parameter_logistic(theta, a=1.0, b=0.0):
     bv = broadcast(b, n, "b")
     for v in av:
         if v != v or v in (INF, -INF):
-            raise ValueError("a must be finite; got %r" % (v,))
+            raise ValueError(f"a must be finite; got {v!r}")
 
     logit = [av[i] * (th[i] - bv[i]) for i in range(n)]
     p = [expit(z) for z in logit]

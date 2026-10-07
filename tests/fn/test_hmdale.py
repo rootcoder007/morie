@@ -3,19 +3,30 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdale import geron_dalle
 
 
 def test_hmdale_basic():
     """Test basic functionality."""
     text = [0, 1]
-    model = lambda ctx: np.zeros(2)
+
+    def model(ctx):
+        return np.zeros(2)
+
     result = geron_dalle(text, model, n_image_tokens=4)
     assert isinstance(result, dict)
-    for key in ("image_tokens", "token_grid", "log_likelihood",
-                "token_logprobs", "perplexity", "context",
-                "n_steps", "estimate", "n", "method"):
+    for key in (
+        "image_tokens",
+        "token_grid",
+        "log_likelihood",
+        "token_logprobs",
+        "perplexity",
+        "context",
+        "n_steps",
+        "estimate",
+        "n",
+        "method",
+    ):
         assert key in result
     assert len(result["image_tokens"]) == 4
     assert result["n_steps"] == 4
@@ -27,7 +38,10 @@ def test_hmdale_basic():
 def test_hmdale_edge():
     """Test edge cases with a custom grid shape."""
     text = [0]
-    model = lambda ctx: np.array([0.0, 5.0])
+
+    def model(ctx):
+        return np.array([0.0, 5.0])
+
     result = geron_dalle(text, model, n_image_tokens=6, grid=(2, 3))
     assert isinstance(result, dict)
     assert len(result["image_tokens"]) == 6
@@ -50,7 +64,7 @@ import morie.fn.hmdale as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

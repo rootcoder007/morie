@@ -84,8 +84,8 @@ def pfas_hazard_index(
     ... })
     >>> round(r.value, 2)      # HI = 0.8 + 0.5 = 1.3 -> violation
     1.3
-    >>> "pfhxs+hfpo-da HI" in r.extra["violation"][0]
-    True
+    >>> r.extra["violation"]   # the EPA mixture HI sums all four of its PFAS
+    ['pfhxs+hfpo-da+pfna+pfbs HI = 1.300 > 1.0']
 
     References
     ----------

@@ -146,9 +146,7 @@ def geron_incremental_pca(X_iter, n_components, batch_size=None):
     if not (1 <= d <= n_feat):
         raise ValueError(f"geron_incremental_pca: n_components must lie in 1..{n_feat}, got {n_components!r}")
     if seen < 2:
-        raise ValueError(
-            f"geron_incremental_pca: needs at least 2 samples for a sample covariance, saw {seen}"
-        )
+        raise ValueError(f"geron_incremental_pca: needs at least 2 samples for a sample covariance, saw {seen}")
 
     cov = S / (seen - 1)
     cov = 0.5 * (cov + cov.T)

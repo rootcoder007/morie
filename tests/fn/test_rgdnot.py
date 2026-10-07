@@ -1,7 +1,6 @@
 """Tests for rgdnot.rangayyan_dicrotic_notch."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_dicrotic_notch
 
 

@@ -1,7 +1,6 @@
 """Tests for gh_c11_15.ghosal_ep_gp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c11_15 import ghosal_ep_gp
 
 

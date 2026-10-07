@@ -1,3 +1,69 @@
+# morie 1.4.0 - 2026-10-03
+
+* **Security: `morie_crypto_hybrid_encrypt()` and `morie crypto (R) encrypt` now keep files private.**
+  The R package still wrote the 1.3.x container, whose wrapping key was derived from the KEM ciphertext
+  and the public key alone (the shared secret was computed and discarded), so anyone holding the
+  file and the PUBLIC key could open it. The wrapping key now comes from
+  `HKDF(shared_secret || kem_ct || pk)` behind the 1.4.0 marker `MORIEHYB 0x02`, the same bytes
+  morie writes: rmorie and morie open each other's files, and a 1.3.x file still opens, with a
+  warning to encrypt it again. Files encrypted with rmorie 1.3.x or an earlier 1.4.0 build should
+  be encrypted again. `morie_crypto_hybrid_container_version()` tells the two apart.
+* `morie crypto (R) keygen --output DIR` writes marked key files (`MORIEPK`/`MORIESK`, as morie) and
+  the secret key owner-only (mode 600; it was world-readable), and refuses to replace an existing
+  secret key without `--force`. `decrypt --key` takes a `.moriesk` file as well as a keystore name
+  (a key pair from `keygen --output` could not decrypt anything); `encrypt` and `decrypt` take
+  `--out` and refuse to overwrite an existing file without `--force`; the wrong kind of key file,
+  a missing one and a 1.3.x public key are each refused with their own message.
+* `morie_mrm_estimate_causal_effect()`'s consensus standard error is the weighted mean of the
+  estimators' standard errors. It pooled them as independent studies (`sqrt(1 / sum(w))`), but all
+  four run on the same rows, so the interval was about half as wide as it should be: in 300
+  simulated data sets (n = 500, true effect 0.8) its 95% interval covered the truth 70% of the time
+  (morie's run); it now covers 96%.
+* `morie_matching_att_matched()` counts a control matched to several treated units once per pair
+  squared (Abadie and Imbens 2006), not once per pair: with matching with replacement its interval
+  covered the truth 83% of the time in the same simulation; it now covers 93% (95% in morie). With
+  every control used once the standard error is unchanged.
+* Citations without a title now carry the publisher's title, and the citation gate also catches a
+  reference written "Author (year), \emph{Journal} ...", which it had missed.
+* `morie_mrm_estimate_causal_effect()`'s matching estimate matches with replacement and takes the
+  ATT from the matched pairs. Without replacement, when controls were no more numerous than treated
+  units, nearly every control was used and nothing was balanced: on a simulated design with true
+  effect 0.8 it returned the unadjusted difference, 1.13, while IPW, AIPW and DML gave 0.85; it now
+  gives 0.92, the same ATT and standard error as the Python package to ten decimals.
+* SIU `police_service` is the service of the subject officials, read from the director's analysis
+  (the package's SIU core, as in rmoriebricklayer 0.5.5), not the force that notified the SIU.
+* Research: four new problems join the Lean-backed programme, each with its R function and
+  tests. `morie_meta_random_effects()` and `morie_meta_dl_bias()` (pooling evaluations:
+  the DerSimonian-Laird truncation is biased upward under homogeneity and the random-effects
+  variance is never below the fixed-effect one, `Research.P13`); `morie_logit_separation()`
+  (complete or quasi-complete separation makes the logistic likelihood climb without a
+  maximiser, the Baldus proportionality-review logit, `Research.P5`);
+  `morie_bounds_confidence()` (Imbens-Manski intervals for partially identified sentencing
+  effects, `Research.P11`); `morie_cheeger_bound()` (the conductance of a hot-spot set
+  bounds the spectral gap of the street graph, `Research.P3`). The Python package carries
+  every research function at parity.
+
+* Research: seven more problems join the Lean-backed programme, each with its R
+  function and tests: Duncan-Davis bounds (`morie_ecological_bounds()`,
+  `Research.P12`), monotone treatment selection (`morie_sentence_effect_mts()`,
+  `Research.P11`), the extinction probability of a near-repeat chain
+  (`morie_contagion_extinction()`, `Research.P10`), judge-leniency designs and what the
+  Wald ratio identifies (`morie_judge_iv()`, `morie_judge_iv_population()`,
+  `Research.P14`), the Oaxaca-Blinder decomposition of a sentencing gap with both
+  references and the interaction (`morie_disparity_decomposition()`, `Research.P15`),
+  Little's law on a court docket (`morie_court_backlog()`, `Research.P16`) and the
+  incapacitation identity with its marginal year (`morie_incapacitation()`,
+  `Research.P17`), and selective labels for release rules (`morie_selective_labels()`,
+  `Research.P18`), and regression to the mean at selected hot spots
+  (`morie_regression_to_mean()`, `Research.P19`).
+
+* Datasets: the fourteen Health Infobase tables (CPADS, CSADS, CSUS) download from
+  the portal and fall back to the copy at data.rmorie.com (`hib/...` keys); the three
+  OTIS research environments are fetched from data.rmorie.com as R objects
+  (`morie_load_dataset("otisfin")` returns the environment); the Ontario correctional
+  institution locations join the catalog as `otisloc`. The message for a missing
+  own file now says what it means.
+
 # morie 1.3.9 - 2026-10-01
 
 * Command line, from a hostile QA pass: the launcher works under R 4.6 (which

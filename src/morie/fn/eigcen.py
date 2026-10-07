@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Eigenvector centrality."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['eigcent', 'eigenvector_centrality']
+__all__ = ["eigcent", "eigenvector_centrality"]
 
 
 def eigcent(A):
@@ -43,10 +41,15 @@ def eigcent(A):
     if sum(v) < 0:
         v = [-x for x in v]
     mx = max(abs(x) for x in v)
-    return RichResult(payload={
-        "centrality": [x / mx for x in v] if mx > 0 else v,
-        "unit": v, "eigenvalue": vals[0], "n": n,
-        "method": "Eigenvector centrality (principal eigenvector)"})
+    return RichResult(
+        payload={
+            "centrality": [x / mx for x in v] if mx > 0 else v,
+            "unit": v,
+            "eigenvalue": vals[0],
+            "n": n,
+            "method": "Eigenvector centrality (principal eigenvector)",
+        }
+    )
 
 
 eigenvector_centrality = eigcent

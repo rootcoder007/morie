@@ -4,8 +4,6 @@ Kamath, Keenan, Somers and Sorenson (2024), Large Language Models: A
 Deep Dive, the RAG faithfulness metric. Expected values are recomputed in the test body.
 """
 
-import math
-
 import pytest
 
 from morie.fn.km111 import kamath_ch7_faithfulness_metric

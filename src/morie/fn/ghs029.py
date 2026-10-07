@@ -5,9 +5,6 @@ Implements eq. (3.22), p.49 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_ch3_polya_tree_density_moments"]
@@ -20,16 +17,21 @@ def ghosal_ch3_polya_tree_density_moments(alpha_path, depth=None):
     Keys: value."""
     pairs = [(float(a), float(b)) for a, b in alpha_path]
     if depth is not None:
-        pairs = pairs[:int(depth)]
+        pairs = pairs[: int(depth)]
     m1 = 1.0
     m2 = 1.0
     for a_take, a_other in pairs:
         s = a_take + a_other
         m1 *= 2.0 * a_take / s
         m2 *= 4.0 * a_take * (a_take + 1.0) / (s * (s + 1.0))
-    res = RichResult(payload={"estimate": m1, "value": [m1, m2],
-                              "second_moment": m2,
-                              "method": "PT density moments (GvdV 2017 eq. 3.22)"})
+    res = RichResult(
+        payload={
+            "estimate": m1,
+            "value": [m1, m2],
+            "second_moment": m2,
+            "method": "PT density moments (GvdV 2017 eq. 3.22)",
+        }
+    )
     return with_describe_pointer(res, "ghs029")
 
 

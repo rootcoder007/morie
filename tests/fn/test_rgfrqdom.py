@@ -7,10 +7,11 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_freq_domain_feat
 
-
 FS = 1000.0
-X = [math.sin(2 * math.pi * 50 * t / FS) + 0.3 * math.sin(2 * math.pi * 400 * t / FS)
-     + 0.05 * math.sin(7.3 * t) for t in range(256)]
+X = [
+    math.sin(2 * math.pi * 50 * t / FS) + 0.3 * math.sin(2 * math.pi * 400 * t / FS) + 0.05 * math.sin(7.3 * t)
+    for t in range(256)
+]
 
 
 def _psd(x, fs):
@@ -21,8 +22,7 @@ def _psd(x, fs):
     w = [0.5 - 0.5 * math.cos(2 * math.pi * i / (n - 1)) for i in range(n)]
     s2 = sum(v * v for v in w)
     xs = [(v - m) * wi for v, wi in zip(x, w)]
-    P = [abs(sum(xs[t] * cmath.exp(-2j * math.pi * k * t / n) for t in range(n))) ** 2 / s2
-         for k in range(n // 2 + 1)]
+    P = [abs(sum(xs[t] * cmath.exp(-2j * math.pi * k * t / n) for t in range(n))) ** 2 / s2 for k in range(n // 2 + 1)]
     return [k * fs / n for k in range(n // 2 + 1)], P
 
 
@@ -39,8 +39,8 @@ def test_rgfrqdom_basic():
     assert r["total_power"] == pytest.approx(tot, rel=1e-10)
     assert r["mean_freq_hz"] == pytest.approx(mf, rel=1e-10)
     assert r["fm2_hz2"] == pytest.approx(m2, rel=1e-9)
-    assert r["spectral_skewness"] == pytest.approx(m3 / m2 ** 1.5, rel=1e-9)
-    assert r["spectral_kurtosis"] == pytest.approx(m4 / m2 ** 2, rel=1e-9)
+    assert r["spectral_skewness"] == pytest.approx(m3 / m2**1.5, rel=1e-9)
+    assert r["spectral_kurtosis"] == pytest.approx(m4 / m2**2, rel=1e-9)
     bands = r["band_power_fraction"]
     assert [(lo, hi) for lo, hi, _ in bands] == [(0.0, 100.0), (100.0, 300.0), (300.0, 500.0)]
     assert sum(fr for _, _, fr in bands) == pytest.approx(1.0, abs=1e-12)

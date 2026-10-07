@@ -118,18 +118,22 @@ def causal_falsification_test(y_pre, treat, X_baseline=None):
     mde = float(2.8 * se) if se > 0 else float("nan")
     return RichResult(
         title="Falsification (pre-trend) test",
-        summary_lines=[("estimate", est), ("se", se), ("p", p),
-                       ("min detectable effect", mde)],
-        warnings=["failing is informative, passing is not: a null here has "
-                  "only the power the sample gives it and does not establish "
-                  "parallel trends"],
+        summary_lines=[("estimate", est), ("se", se), ("p", p), ("min detectable effect", mde)],
+        warnings=[
+            "failing is informative, passing is not: a null here has "
+            "only the power the sample gives it and does not establish "
+            "parallel trends"
+        ],
         payload={
-            "estimate": est, "se": se, "z": float(z), "p_value": p,
+            "estimate": est,
+            "se": se,
+            "z": float(z),
+            "p_value": p,
             "passed": bool(p > 0.05) if np.isfinite(p) else False,
             "min_detectable_effect": mde,
-            "power_note": ("a null result rules out effects larger than about "
-                           f"{mde:.3g}, and nothing smaller"),
-            "n": int(y.size), "method": "causal_falsification_test",
+            "power_note": (f"a null result rules out effects larger than about {mde:.3g}, and nothing smaller"),
+            "n": int(y.size),
+            "method": "causal_falsification_test",
         },
     )
 

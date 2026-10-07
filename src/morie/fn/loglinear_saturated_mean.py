@@ -27,17 +27,16 @@ def loglinear_saturated_mean(b0, beta_x_i, beta_z_j, beta_xz_ij):
     """
     value = _acd.loglinear_saturated_mean(b0, beta_x_i, beta_z_j, beta_xz_ij)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.6)"
     return RichResult(
-        title='Saturated loglinear model with interaction',
+        title="Saturated loglinear model with interaction",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '4e6: log(mu_ij) = b0 + bX_i + bZ_j + bXZ_ij [Bilder & Loughin 2025, eq. 4.6]'
+    return "4e6: log(mu_ij) = b0 + bX_i + bZ_j + bXZ_ij [Bilder & Loughin 2025, eq. 4.6]"

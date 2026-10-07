@@ -5,9 +5,9 @@ exist. Rewritten against dlm_local_level and anchored on the filter's
 defining behaviour rather than on the presence of a dictionary key.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.baytsm import dlm_local_level
 
 Y = [1.0, 1.2, 0.9, 1.1, 1.3, 1.0, 1.15, 0.95]

@@ -1,7 +1,6 @@
 """Tests for spatial permutation test."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgpmt import sgpmt
 
 

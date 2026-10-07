@@ -50,8 +50,8 @@ def gp_density_shift(y_stream, window=10, tau=0.5, floor=1e-12):
     flags = []
     pos = []
     for s in range(w, n - w + 1):
-        a = v[s - w:s]
-        b = v[s:s + w]
+        a = v[s - w : s]
+        b = v[s : s + w]
         ma = sum(a) / w
         mb = sum(b) / w
         va = sum((x - ma) ** 2 for x in a) / (w - 1.0)

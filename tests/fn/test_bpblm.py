@@ -1,16 +1,16 @@
 """bpblm: bits-per-byte (Gao et al. 2020, The Pile).
 
-    BPB = nll_nats / (ln 2 * n_bytes)
+BPB = nll_nats / (ln 2 * n_bytes)
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bpblm import bits_per_byte as bpb
 
 
 def test_bpblm_matches_the_closed_form():
-    nll = np.array([1.0, 2.0, 3.0])       # nats
+    nll = np.array([1.0, 2.0, 3.0])  # nats
     n_bytes = 4
     got = bpb(nll, n_bytes=n_bytes)
     assert got["nll_nats"] == pytest.approx(6.0)
@@ -36,9 +36,7 @@ def test_bpblm_normalises_by_BYTES_not_by_tokens():
     across tokenizers. The same total nats over twice the bytes halves it.
     """
     nll = np.full(8, 1.0)
-    assert bpb(nll, n_bytes=20)["value"] == pytest.approx(
-        2.0 * bpb(nll, n_bytes=40)["value"]
-    )
+    assert bpb(nll, n_bytes=20)["value"] == pytest.approx(2.0 * bpb(nll, n_bytes=40)["value"])
 
 
 def test_bpblm_is_tokenizer_invariant_at_fixed_total_loss():
@@ -46,9 +44,7 @@ def test_bpblm_is_tokenizer_invariant_at_fixed_total_loss():
     only the byte count matters."""
     coarse = np.array([4.0, 4.0])
     fine = np.full(8, 1.0)
-    assert bpb(coarse, n_bytes=32)["value"] == pytest.approx(
-        bpb(fine, n_bytes=32)["value"]
-    )
+    assert bpb(coarse, n_bytes=32)["value"] == pytest.approx(bpb(fine, n_bytes=32)["value"])
 
 
 def test_bpblm_rejects_a_non_positive_byte_count():

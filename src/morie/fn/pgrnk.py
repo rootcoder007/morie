@@ -13,7 +13,7 @@ def pagerank(
     max_iter: int = 100,
     tol: float = 1e-8,
 ) -> DescriptiveResult:
-    """It does not matter how slowly you go as long as you do not stop. -- Confucius"""
+    """PageRank scores of the nodes of a graph, by power iteration with damping ``damping``."""
     A = np.asarray(adj_matrix, dtype=np.float64)
     if A.ndim != 2 or A.shape[0] != A.shape[1]:
         raise ValueError("adj_matrix must be square.")
@@ -33,7 +33,7 @@ def pagerank(
     converged = False
     n_iter = 0
 
-    for n_iter in range(1, max_iter + 1):
+    for n_iter in range(1, max_iter + 1):  # noqa: B007 -- reported after the loop
         r_new = damping * (M.T @ r) + damping * (dangling @ r) / n + (1 - damping) / n
         if np.sum(np.abs(r_new - r)) < tol:
             converged = True

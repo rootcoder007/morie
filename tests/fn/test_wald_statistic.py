@@ -1,7 +1,5 @@
 """Tests for wald_statistic.wald_statistic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.wald_statistic import wald_statistic
 
 

@@ -54,15 +54,13 @@ def vecm(Y, k_ar=1, coint_rank=1):
         payload={
             "alpha": np.asarray(fit.alpha),
             "beta": np.asarray(fit.beta),
-            "Gamma": ([np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)]
-                      if k_ar > 0 else []),
+            "Gamma": ([np.asarray(g) for g in fit.gamma.reshape(k_ar, k, k)] if k_ar > 0 else []),
             "Sigma": np.asarray(fit.sigma_u),
             "loglik": float(fit.llf),
             "n": int(T),
             "k": int(k),
             "rank": int(coint_rank),
-            "method": "VECM by Johansen reduced-rank regression, beta "
-                      "normalised to an identity leading block",
+            "method": "VECM by Johansen reduced-rank regression, beta normalised to an identity leading block",
         }
     )
 

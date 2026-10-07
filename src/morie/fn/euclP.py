@@ -89,18 +89,17 @@ def polynomial_gcd(p, q, tol=1e-10):
                 raise ValueError("Euclid's algorithm failed to terminate")
         g = a
     lead = g[-1]
-    if abs(lead) <= tol:
-        g = [1.0]
-    else:
-        g = [v / lead for v in g]
-    return RichResult(payload={
-        "estimate": float(len(g) - 1),
-        "gcd": g,
-        "degree": len(g) - 1,
-        "steps": steps,
-        "n": len(g),
-        "method": "Polynomial GCD via Euclid",
-    })
+    g = [1.0] if abs(lead) <= tol else [v / lead for v in g]
+    return RichResult(
+        payload={
+            "estimate": float(len(g) - 1),
+            "gcd": g,
+            "degree": len(g) - 1,
+            "steps": steps,
+            "n": len(g),
+            "method": "Polynomial GCD via Euclid",
+        }
+    )
 
 
 def cheatsheet():

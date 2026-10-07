@@ -76,10 +76,20 @@ def mtsbound(y, z, d, ymin, ymax):
     pat = len(at) / n
     ub = (pb + pat) * cm + pa * hi
     lb = pb * lo + (pat + pa) * cm
-    return RichResult(payload={
-        "lower": lb, "upper": ub, "width": ub - lb, "condmean": cm,
-        "pbelow": pb, "pat": pat, "pabove": pa, "n": n, "d": d,
-        "method": "Monotone treatment selection bounds (Manski-Pepper 2000)"})
+    return RichResult(
+        payload={
+            "lower": lb,
+            "upper": ub,
+            "width": ub - lb,
+            "condmean": cm,
+            "pbelow": pb,
+            "pat": pat,
+            "pabove": pa,
+            "n": n,
+            "d": d,
+            "method": "Monotone treatment selection bounds (Manski-Pepper 2000)",
+        }
+    )
 
 
 bound_monot_selection = mtsbound

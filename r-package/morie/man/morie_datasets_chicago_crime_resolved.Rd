@@ -86,7 +86,7 @@ Both \code{mode = "soda2"} and \code{mode = "soda3"} are honoured for the
 crime fetch, matching the dual-API design from 3VV+.
 }
 \examples{
-\dontshow{if (morie_has("chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
+\dontshow{if (morie_has("data:chicago_iucr_codes.csv")) withAutoprint(\{ # examplesIf}
 df <- morie_datasets_chicago_crime_resolved(
   offline = TRUE,
   max_features = 5L,

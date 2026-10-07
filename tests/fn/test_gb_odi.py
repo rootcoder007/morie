@@ -1,7 +1,6 @@
 """Tests for gb_odi.gibbons_odds_ratio."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_odi import gibbons_odds_ratio
 
 
@@ -11,7 +10,7 @@ def test_gb_odi_basic():
     # 2x2 contingency table with positive integer counts
     table = [
         [int(rng.integers(10, 50)), int(rng.integers(10, 50))],
-        [int(rng.integers(10, 50)), int(rng.integers(10, 50))]
+        [int(rng.integers(10, 50)), int(rng.integers(10, 50))],
     ]
     result = gibbons_odds_ratio(table)
     assert isinstance(result, dict)
@@ -21,7 +20,7 @@ def test_gb_odi_basic():
 
 def test_gb_odi_edge():
     """Test edge cases with small counts (Gibbons method handles small samples)."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Small 2x2 table - Gibbons method is designed for this
     table = [[1, 2], [3, 4]]
     result = gibbons_odds_ratio(table)

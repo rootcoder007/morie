@@ -16,10 +16,9 @@ __all__ = ["schabenberger_cov_param_estimation_kriging"]
 METHODS = ("wls", "ols", "ml", "reml", "cl")
 
 
-def schabenberger_cov_param_estimation_kriging(coords, z,
-                                               variogram_model="exponential",
-                                               method="reml", X=None,
-                                               max_iter=25, tol=1e-8):
+def schabenberger_cov_param_estimation_kriging(
+    coords, z, variogram_model="exponential", method="reml", X=None, max_iter=25, tol=1e-8
+):
     r"""Covariance parameters for kriging, Schabenberger section 5.5.
 
     With a constant mean the section 4.5 machinery applies directly.
@@ -93,14 +92,12 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
     """
     model = variogram_model
     if model not in MODELS:
-        raise ValueError("model must be one of %s, got %r." % (MODELS, model))
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     if method not in METHODS:
-        raise ValueError("method must be one of %s, got %r." % (METHODS, method))
+        raise ValueError(f"method must be one of {METHODS}, got {method!r}.")
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
-    Xd = np.ones((n, 1)) if X is None else add_intercept(
-        np.atleast_2d(np.asarray(X, dtype=float))
-    )
+    Xd = np.ones((n, 1)) if X is None else add_intercept(np.atleast_2d(np.asarray(X, dtype=float)))
     if Xd.shape[0] != n:
         Xd = Xd.T
     varying = Xd.shape[1] > 1
@@ -108,21 +105,22 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
     def _cov_params(resid):
         if method in ("ml", "reml"):
             from .spml import schabenberger_ml_variogram
+
             f = schabenberger_ml_variogram(coords, resid, model, method)
             return f["nugget"], f["psill"], f["range"]
         if method == "cl":
             from ._schaben import composite_likelihood_fit
+
             f = composite_likelihood_fit(coords, resid, model)
             return f["nugget"], f["psill"], f["range"]
         lag, gam, npair, _ = matheron(coords, resid)
-        f = fit_variogram_wls(lag, gam, npair, model,
-                              "ols" if method == "ols" else "cressie")
+        f = fit_variogram_wls(lag, gam, npair, model, "ols" if method == "ols" else "cressie")
         return f["nugget"], f["psill"], f["range"]
 
     beta = ols_fit(Xd, zz)
     theta = None
     converged, it = False, 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         r = zz - Xd @ beta
         new = _cov_params(r)
         P = np.atleast_2d(np.asarray(coords, dtype=float))
@@ -138,9 +136,9 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
             beta_new = np.linalg.solve(XtCiX, CiX.T @ zz)
         except np.linalg.LinAlgError:
             beta_new, XtCiX = beta, Xd.T @ Xd
-        moved = (np.max(np.abs(beta_new - beta))
-                 + (0.0 if theta is None
-                    else float(np.max(np.abs(np.array(new) - np.array(theta))))))
+        moved = np.max(np.abs(beta_new - beta)) + (
+            0.0 if theta is None else float(np.max(np.abs(np.array(new) - np.array(theta))))
+        )
         beta, theta = beta_new, new
         if not varying or moved < tol:
             converged = True
@@ -154,12 +152,11 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
     C = sill - _vgm(D, model, *theta)
     C = C + np.eye(n) * 1e-10 * max(sill, 1e-12)
     CiX = np.linalg.solve(C, Xd)
-    cov_beta = np.linalg.inv(Xd.T @ CiX)          # equation (5.40)
+    cov_beta = np.linalg.inv(Xd.T @ CiX)  # equation (5.40)
     return RichResult(
         payload={
             "estimate": np.array([theta[0], theta[1], theta[2]]),
-            "parameters": {"nugget": float(theta[0]), "psill": float(theta[1]),
-                           "range": float(theta[2])},
+            "parameters": {"nugget": float(theta[0]), "psill": float(theta[1]), "range": float(theta[2])},
             "nugget": float(theta[0]),
             "psill": float(theta[1]),
             "range": float(theta[2]),
@@ -184,11 +181,11 @@ def schabenberger_cov_param_estimation_kriging(coords, z,
                 "the semivariogram is estimated from residuals, which are "
                 "rank-deficient and heteroscedastic; the bias grows with the "
                 "lag, which is why long lags are down-weighted"
-                if varying else None
+                if varying
+                else None
             ),
             "n": n,
-            "method": "Covariance-parameter estimation for kriging (%s)"
-                      % method.upper(),
+            "method": f"Covariance-parameter estimation for kriging ({method.upper()})",
         }
     )
 

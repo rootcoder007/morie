@@ -1,7 +1,5 @@
 """Tests for bleuS.bleu."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bleuS import bleu
 
 
@@ -22,6 +20,7 @@ def test_bleuS_basic():
     assert result.payload["p_n"] == [1.0, 1.0, 1.0, 1.0]
     # independent recomputation of the BLEU score from the formula
     import math
+
     c = result.payload["c"]
     r = result.payload["r"]
     bp = 1.0 if c > r else math.exp(1.0 - (r + 0.0) / c)
@@ -45,6 +44,7 @@ def test_bleuS_edge():
     assert len(result.payload["p_n"]) == 1
     # independence check: p_1 is 1.0 and c == r, so bp == 1.
     import math
+
     c = result.payload["c"]
     r = result.payload["r"]
     bp = 1.0 if c > r else math.exp(1.0 - (r + 0.0) / c)

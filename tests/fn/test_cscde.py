@@ -1,7 +1,6 @@
 """Test cascade_classify (cscde)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.cscde import cascade_classify, cscde
 
@@ -10,8 +9,13 @@ class TestCscde:
     def test_basic(self):
         rng = np.random.default_rng(42)
         X = rng.standard_normal((20, 3))
-        clf1 = lambda x: x[:, 0]
-        clf2 = lambda x: x[:, 1]
+
+        def clf1(x):
+            return x[:, 0]
+
+        def clf2(x):
+            return x[:, 1]
+
         result = cascade_classify(X, [clf1, clf2], [0.5, 0.3])
         assert isinstance(result, DescriptiveResult)
         assert result.name == "cascade_classify"
@@ -19,7 +23,10 @@ class TestCscde:
 
     def test_all_accepted(self):
         X = np.ones((5, 2))
-        clf = lambda x: np.ones(len(x)) * 10
+
+        def clf(x):
+            return np.ones(len(x)) * 10
+
         result = cascade_classify(X, [clf], [0.0])
         assert result.extra["n_accepted"] == 5
 

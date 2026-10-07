@@ -18,12 +18,17 @@ def spatial_error_model(y, X, W, add_intercept=True):
     here is a nuisance in the errors rather than a substantive lag, so
     beta keeps its usual interpretation. Keys: estimate."""
     r = _rc.spatial_error_model(y, X, W, add_intercept=add_intercept)
-    res = RichResult(payload={"estimate": r["lambda"],
-                              "lambda": r["lambda"], "beta": r["beta"],
-                              "sigma2": r["sigma2"],
-                              "loglik": r["loglik"],
-                              "residuals": r["residuals"],
-                              "method": r["method"]})
+    res = RichResult(
+        payload={
+            "estimate": r["lambda"],
+            "lambda": r["lambda"],
+            "beta": r["beta"],
+            "sigma2": r["sigma2"],
+            "loglik": r["loglik"],
+            "residuals": r["residuals"],
+            "method": r["method"],
+        }
+    )
     return with_describe_pointer(res, "semmod")
 
 

@@ -34,10 +34,7 @@ def nmds(
         ``coordinates``, ``stress``, ``eigenvalues`` (empty for NMDS).
     """
     D = np.asarray(data, dtype=np.float64)
-    if D.ndim == 2 and D.shape[0] == D.shape[1]:
-        dist = D
-    else:
-        dist = squareform(pdist(D, metric="euclidean"))
+    dist = D if D.ndim == 2 and D.shape[0] == D.shape[1] else squareform(pdist(D, metric="euclidean"))
 
     n = dist.shape[0]
     rng = np.random.default_rng(seed)

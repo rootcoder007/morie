@@ -1,7 +1,6 @@
 """Tests for hmsrnn.geron_simple_rnn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmsrnn import geron_simple_rnn
 
 

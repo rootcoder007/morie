@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Exact null distribution of Page's L by enumeration."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['pageexact', 'gibbons_page_exact']
+__all__ = ["pageexact", "gibbons_page_exact"]
 
 
 def pageexact(k, n, ell=None):

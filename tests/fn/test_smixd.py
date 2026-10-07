@@ -1,7 +1,6 @@
 """Tests for smixd.spatial_mixed_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.smixd import spatial_mixed_model
 
 

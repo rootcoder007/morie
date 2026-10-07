@@ -1,7 +1,6 @@
 """Test higuchi_fd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.higfd import higfd, higuchi_fd
 

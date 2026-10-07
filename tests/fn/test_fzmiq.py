@@ -1,8 +1,5 @@
 """Tests for fzmiq.fauzi_moment_ineq_ustat."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.fzmiq import fauzi_moment_ineq_ustat
 
 
@@ -41,6 +38,7 @@ def test_fzmiq_edge():
     assert result["bound"] == 1.0 * (float(n) ** (q * k / 2.0))
 
     import pytest
+
     with pytest.raises(ValueError):
         fauzi_moment_ineq_ustat(0, 1, 2.0)
     with pytest.raises(ValueError):

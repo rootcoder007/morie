@@ -109,6 +109,21 @@ morie is not a wrapper. At runtime it does not call:
 Those packages appear in `Suggests` solely so `tests/cross/` can
 prove that the native engines match them.
 
+## What's in v1.4.0
+
+The Lean-backed research programme grows by four problems, each with its R
+function and tests: pooling evaluations (DerSimonian-Laird), separation in a
+logistic fit, Imbens-Manski intervals for partially identified sentencing
+effects, the Cheeger bound on a hot-spot boundary, Duncan-Davis bounds, monotone
+treatment selection, the extinction probability of a near-repeat chain, judge-leniency
+designs, the Oaxaca-Blinder decomposition, Little's law on a docket and the
+incapacitation identity. The Health Infobase tables and the OTIS research
+environments are served from data.rmorie.com. The Python package carries every
+research function at parity. Seven continuations close the Lean ledger (264
+theorems, 0 sorry), every finding from the 1.3.9 stress test is fixed with a
+test, ML-KEM-768 and the hybrid container follow FIPS 203 (files from 1.3.x
+still open) and the Python sdist carries only what the build needs.
+
 ## What's in v1.3.9
 
 Hotfix: module runs fall back to rmoriedata's synthetic CPADS PUMF, the
@@ -145,9 +160,10 @@ function.
   points (13,655 exports in all), each with a test that recomputes its
   value, and the same names in the Python package, checked against each
   other in CI.
-- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first and
-  falls back to <https://llm.rmorie.com>; sign in with
-  `morie_llm_login()` (GitHub or an emailed code).
+- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first, then
+  your own keys, then <https://llm.rmorie.com> as a last resort; the key is
+  issued on request at <https://rmorie.com/access> and stored with
+  `morie_llm_login(token = )`.
 - **Command line inside the package** — `install_cli()` puts `rmorie` on
   your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
 - **Policing, search and staffing** — police operations research, search
@@ -332,7 +348,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 1.3.9},
+  note    = {R package version 1.4.0},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```

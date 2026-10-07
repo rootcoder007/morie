@@ -34,10 +34,7 @@ def gpool(x):
     if x.ndim < 2:
         raise ValueError("Input must be at least 2D")
 
-    if x.ndim == 3:
-        spatial_axes = (1, 2)
-    else:
-        spatial_axes = tuple(range(2, x.ndim))
+    spatial_axes = (1, 2) if x.ndim == 3 else tuple(range(2, x.ndim))
 
     output = np.mean(x, axis=spatial_axes)
 

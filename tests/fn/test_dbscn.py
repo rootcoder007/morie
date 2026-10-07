@@ -1,7 +1,6 @@
 """Tests for morie.fn.dbscn — DBSCAN clustering."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DbscnRes
 from morie.fn.dbscn import dbscn
 

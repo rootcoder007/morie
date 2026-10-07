@@ -1,7 +1,6 @@
 """Tests for jotfe.joseph_calendar_features."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jotfe import joseph_calendar_features
 
 

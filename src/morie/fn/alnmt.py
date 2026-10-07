@@ -17,7 +17,7 @@ def alpha_nominate_score(votes=None, *, dims=1, n=10, m=5, n_iter=20):
         rng = np.random.default_rng(0)
         votes = (rng.random((n, m)) > 0.5).astype(float)
     votes = np.asarray(votes, dtype=float)
-    result = _alpha_nominate(votes, n_dims=dims, n_samples=n_iter, burn_in=10)
+    result = _alpha_nominate(votes, n_dims=dims, n_samples=n_iter, burn_in=10, minvotes=min(20, votes.shape[1]))
     return DescriptiveResult(
         name="alpha-NOMINATE",
         value=result.get("alpha", 0.0),

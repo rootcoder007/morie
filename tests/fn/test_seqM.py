@@ -1,8 +1,8 @@
 """Tests for seqM.sequential_mediators."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.medstg import sequential_mediation
 from morie.fn.seqM import sequential_mediators
 

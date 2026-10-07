@@ -108,8 +108,7 @@ def boyd_central_path(f0, f, t, x0=None):
         if not callable(fi):
             raise TypeError(f"f[{k}] must be callable")
     if not fs:
-        raise ValueError("no constraints: there is no barrier and hence "
-                         "no central path")
+        raise ValueError("no constraints: there is no barrier and hence no central path")
     tv = np.atleast_1d(np.asarray(t, dtype=float)).ravel()
     if tv.size == 0:
         raise ValueError("t is empty")
@@ -121,9 +120,7 @@ def boyd_central_path(f0, f, t, x0=None):
     for k, fi in enumerate(fs):
         v = float(fi(x))
         if not (v < 0):
-            raise ValueError(
-                f"x0 is not strictly feasible: constraint {k} has "
-                f"f(x0) = {v:g}")
+            raise ValueError(f"x0 is not strictly feasible: constraint {k} has f(x0) = {v:g}")
     # Ascending order lets each solve warm-start from the previous
     # point, which is the entire reason the barrier method is cheap:
     # consecutive centering problems differ only slightly.
@@ -141,15 +138,20 @@ def boyd_central_path(f0, f, t, x0=None):
     gap = m / tv
     return RichResult(
         title="Central path",
-        summary_lines=[("n", int(path.shape[1])), ("constraints", int(m)),
-                       ("points", int(tv.size)),
-                       ("t range", f"{tv[0]:g} to {tv[-1]:g}"),
-                       ("final gap", float(gap[-1]))],
+        summary_lines=[
+            ("n", int(path.shape[1])),
+            ("constraints", int(m)),
+            ("points", int(tv.size)),
+            ("t range", f"{tv[0]:g} to {tv[-1]:g}"),
+            ("final gap", float(gap[-1])),
+        ],
         payload={
-            "t": tv, "path": path, "objective": objs, "gap": gap,
+            "t": tv,
+            "path": path,
+            "objective": objs,
+            "gap": gap,
             "slack": slack,
-            "suboptimality_bounded": bool(
-                np.all(objs - objs[-1] <= gap + 1e-09)),
+            "suboptimality_bounded": bool(np.all(objs - objs[-1] <= gap + 1e-09)),
             "strictly_feasible": bool(np.all(slack < 0)),
             "method": "boyd_central_path",
         },

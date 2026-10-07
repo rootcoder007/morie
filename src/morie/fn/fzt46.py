@@ -59,16 +59,21 @@ def fauzi_theorem_4_6(x, a1, mrl_at_a1, h=None):
     xbar = float(xv.mean())
     gap = abs(lhs - xbar)
     tol = None if h is None else float(h) ** 2
-    return RichResult(payload={
-        "identity_lhs": lhs, "sample_mean": xbar, "gap": gap,
-        "expected_order": "O(h^2)",
-        "within_expected": None if tol is None else bool(gap <= 5 * tol),
-        "a1": a, "n": int(n),
-        "why_it_holds": "at the start of the support everyone is still at "
-                        "risk, so MRL(a_1) + a_1 is the overall mean",
-        "diagnostic_use": "a large gap indicates a bandwidth too big or a "
-                          "transformation mismatched to the support",
-        "method": "Theorem 4.6 (4.29): m_tilde(a_1) + a_1 = Xbar + O_p(h^2)"})
+    return RichResult(
+        payload={
+            "identity_lhs": lhs,
+            "sample_mean": xbar,
+            "gap": gap,
+            "expected_order": "O(h^2)",
+            "within_expected": None if tol is None else bool(gap <= 5 * tol),
+            "a1": a,
+            "n": int(n),
+            "why_it_holds": "at the start of the support everyone is still at "
+            "risk, so MRL(a_1) + a_1 is the overall mean",
+            "diagnostic_use": "a large gap indicates a bandwidth too big or a transformation mismatched to the support",
+            "method": "Theorem 4.6 (4.29): m_tilde(a_1) + a_1 = Xbar + O_p(h^2)",
+        }
+    )
 
 
 def cheatsheet():

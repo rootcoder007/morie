@@ -29,7 +29,7 @@ __all__ = ["item_nonresponse"]
 
 
 def _classkey(row):
-    return "|".join("%.12g" % v for v in row)
+    return "|".join(f"{v:.12g}" for v in row)
 
 
 def item_nonresponse(y, R, X, weights=None):
@@ -100,7 +100,11 @@ def item_nonresponse(y, R, X, weights=None):
     rates = [resp[k] / tot[k] for k in order]
     return RichResult(
         title="Item nonresponse adjustment",
-        summary_lines=[("classes", len(order)), ("response rate", sum(resp.values()) / sum(tot.values())), ("estimate", est)],
+        summary_lines=[
+            ("classes", len(order)),
+            ("response rate", sum(resp.values()) / sum(tot.values())),
+            ("estimate", est),
+        ],
         payload={
             "estimate": est,
             "se": se,

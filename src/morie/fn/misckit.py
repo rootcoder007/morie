@@ -328,5 +328,6 @@ def cheatsheet() -> str:
         "crime severity, meta-learners, resampling, ICA and rStress MDS."
     )
 
+
 # alias kept from the retired placeholder of the same name
 u_learner = u_learner_cate

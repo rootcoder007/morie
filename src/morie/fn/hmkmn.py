@@ -102,7 +102,7 @@ def geron_kmeans(X, n_clusters, seed=0, max_iter=300, tol=1e-10, n_init=10):
         centers = geron_kmeans_plus_plus(A, k, seed=int(seed) + run)["centers"].copy()
         labels = np.zeros(m, dtype=int)
         it = 0
-        for it in range(1, int(max_iter) + 1):
+        for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
             d2 = np.sum((A[:, None, :] - centers[None, :, :]) ** 2, axis=2)
             labels = np.argmin(d2, axis=1)
             new = centers.copy()

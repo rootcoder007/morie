@@ -61,18 +61,25 @@ def esl_ols_normal_equations(X, y):
         raise ValueError(f"OLS needs n > p; got n={n}, p={p}.")
     beta, _, rank, _ = np.linalg.lstsq(X, y, rcond=None)
     if rank < p:
-        raise ValueError(f"the design matrix is rank deficient (rank {rank} < p = {p}); "
-                         "beta is not unique.")
+        raise ValueError(f"the design matrix is rank deficient (rank {rank} < p = {p}); beta is not unique.")
     resid = y - X @ beta
     rss = float(resid @ resid)
     dfr = n - p
     sigma2 = rss / dfr
     se = np.sqrt(np.diag(sigma2 * np.linalg.inv(X.T @ X)))
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "se": [float(v) for v in se], "sigma2": float(sigma2), "rss": rss,
-        "df_residual": int(dfr), "n": int(n), "p": int(p),
-        "method": "OLS (Eq. 3.6) solved by QR; rank-deficient designs refused"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "se": [float(v) for v in se],
+            "sigma2": float(sigma2),
+            "rss": rss,
+            "df_residual": int(dfr),
+            "n": int(n),
+            "p": int(p),
+            "method": "OLS (Eq. 3.6) solved by QR; rank-deficient designs refused",
+        }
+    )
 
 
 def cheatsheet():

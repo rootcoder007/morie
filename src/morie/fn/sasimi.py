@@ -55,10 +55,19 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ["fingerprint", "counts", "tanimoto", "dice", "cosine",
-           "tversky", "distance", "similarity_matrix",
-           "nearest_neighbours", "COEFFICIENTS",
-           "tanimoto_similarity"]
+__all__ = [
+    "fingerprint",
+    "counts",
+    "tanimoto",
+    "dice",
+    "cosine",
+    "tversky",
+    "distance",
+    "similarity_matrix",
+    "nearest_neighbours",
+    "COEFFICIENTS",
+    "tanimoto_similarity",
+]
 
 COEFFICIENTS = ("tanimoto", "dice", "cosine")
 
@@ -72,30 +81,26 @@ def fingerprint(bits, n_bits=None):
         idx = {int(b) for b in bits}
     else:
         seq = list(bits)
-        if seq and all(v in (0, 1, True, False) for v in seq) \
-                and (n_bits is None or len(seq) == int(n_bits)):
+        if seq and all(v in (0, 1, True, False) for v in seq) and (n_bits is None or len(seq) == int(n_bits)):
             idx = {i for i, v in enumerate(seq) if v}
         else:
             idx = {int(b) for b in seq}
     if any(i < 0 for i in idx):
         raise ValueError("sasimi: a bit index cannot be negative")
     if n_bits is not None and idx and max(idx) >= int(n_bits):
-        raise ValueError("sasimi: bit %d is outside a %d-bit "
-                         "fingerprint" % (max(idx), int(n_bits)))
+        raise ValueError(f"sasimi: bit {int(max(idx))} is outside a {int(int(n_bits))}-bit fingerprint")
     return frozenset(idx)
 
 
 def counts(fp_a, fp_b):
     r"""The three numbers every coefficient here is a function of."""
     A, B = fingerprint(fp_a), fingerprint(fp_b)
-    return {"a": len(A), "b": len(B), "c": len(A & B),
-            "union": len(A | B)}
+    return {"a": len(A), "b": len(B), "c": len(A & B), "union": len(A | B)}
 
 
 def _guard(n):
     if n["a"] == 0 and n["b"] == 0:
-        raise ValueError("sasimi: both fingerprints are empty, so no "
-                         "similarity is defined")
+        raise ValueError("sasimi: both fingerprints are empty, so no similarity is defined")
 
 
 def tanimoto(fp_a, fp_b):
@@ -125,15 +130,14 @@ def tversky(fp_a, fp_b, alpha=1.0, beta=1.0):
     r"""The asymmetric general case; see the module docstring."""
     al, be = float(alpha), float(beta)
     if al < 0.0 or be < 0.0:
-        raise ValueError("sasimi: the Tversky weights cannot be "
-                         "negative")
+        raise ValueError("sasimi: the Tversky weights cannot be negative")
     n = counts(fp_a, fp_b)
     _guard(n)
     den = al * (n["a"] - n["c"]) + be * (n["b"] - n["c"]) + n["c"]
     if den == 0:
-        raise ValueError("sasimi: the Tversky denominator vanishes "
-                         "for alpha=%g, beta=%g on these "
-                         "fingerprints" % (al, be))
+        raise ValueError(
+            f"sasimi: the Tversky denominator vanishes for alpha={al:g}, beta={be:g} on these fingerprints"
+        )
     return n["c"] / float(den)
 
 
@@ -144,8 +148,7 @@ def _coef(name):
         return dice
     if name == "cosine":
         return cosine
-    raise ValueError("sasimi: coefficient must be one of %s, got %r"
-                     % (", ".join(COEFFICIENTS), name))
+    raise ValueError("sasimi: coefficient must be one of {}, got {!r}".format(", ".join(COEFFICIENTS), name))
 
 
 def distance(fp_a, fp_b, coefficient="tanimoto"):
@@ -175,33 +178,32 @@ def nearest_neighbours(query, fps, k=5, coefficient="tanimoto"):
     scored.sort(key=lambda t: (-t[0], t[1]))
     if int(k) < 1:
         raise ValueError("sasimi: k must be at least 1")
-    return [{"index": i, "similarity": s}
-            for s, i in scored[:int(k)]]
+    return [{"index": i, "similarity": s} for s, i in scored[: int(k)]]
 
 
-def tanimoto_similarity(fp_a, fp_b, coefficient="tanimoto",
-                        alpha=None, beta=None):
+def tanimoto_similarity(fp_a, fp_b, coefficient="tanimoto", alpha=None, beta=None):
     r"""Entry point: the similarity of two fingerprints, reported
     with the bit counts it was computed from.
     """
     n = counts(fp_a, fp_b)
     if alpha is not None or beta is not None:
-        s = tversky(fp_a, fp_b,
-                    1.0 if alpha is None else alpha,
-                    1.0 if beta is None else beta)
-        how = "Tversky(alpha=%g, beta=%g)" % (
-            1.0 if alpha is None else alpha,
-            1.0 if beta is None else beta)
+        s = tversky(fp_a, fp_b, 1.0 if alpha is None else alpha, 1.0 if beta is None else beta)
+        how = f"Tversky(alpha={1.0 if alpha is None else alpha:g}, beta={1.0 if beta is None else beta:g})"
     else:
         s = _coef(coefficient)(fp_a, fp_b)
         how = coefficient
-    return RichResult(payload={
-        "estimate": s, "similarity": s, "distance": 1.0 - s,
-        "bits_a": n["a"], "bits_b": n["b"], "bits_shared": n["c"],
-        "coefficient": how,
-        "method": "Willett, Barnard & Downs (1998) binary "
-                  "fingerprint coefficients",
-    })
+    return RichResult(
+        payload={
+            "estimate": s,
+            "similarity": s,
+            "distance": 1.0 - s,
+            "bits_a": n["a"],
+            "bits_b": n["b"],
+            "bits_shared": n["c"],
+            "coefficient": how,
+            "method": "Willett, Barnard & Downs (1998) binary fingerprint coefficients",
+        }
+    )
 
 
 def cheatsheet() -> str:

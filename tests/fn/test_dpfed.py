@@ -1,7 +1,6 @@
 """Tests for dpfed.dp_fedavg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.dpfed import dp_fedavg
 
 
@@ -28,7 +27,7 @@ def test_dpfed_basic():
     sigma = 1.0
     norms = np.linalg.norm(clients, axis=1)
     uc = clients * np.minimum(1.0, C / np.maximum(norms, 1e-12))[:, None]
-    expected = uc.sum(axis=0) / m
+    uc.sum(axis=0) / m
     # Zero noise at sigma=0 to compare exactly; here sigma=1.0 so we just
     # check the noise-free structure via clipping_fraction and scale.
     assert result["clipped_fraction"] == 0.0

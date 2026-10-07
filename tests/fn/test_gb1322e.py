@@ -1,7 +1,5 @@
 """Tests for gb1322e.gibbons_efficacy."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1322e import gibbons_efficacy
 
 

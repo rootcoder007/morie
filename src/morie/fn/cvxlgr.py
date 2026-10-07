@@ -72,11 +72,12 @@ def boyd_logistic_loss(u):
     grad = -(1.0 - prob)
     return RichResult(
         title="Logistic loss",
-        summary_lines=[("n", int(uv.size)), ("total", float(loss.sum())),
-                       ("mean", float(loss.mean()))],
+        summary_lines=[("n", int(uv.size)), ("total", float(loss.sum())), ("mean", float(loss.mean()))],
         payload={
-            "loss": loss, "total": float(loss.sum()),
-            "mean": float(loss.mean()), "gradient": grad,
+            "loss": loss,
+            "total": float(loss.sum()),
+            "mean": float(loss.mean()),
+            "gradient": grad,
             "probability": prob,
             "max_gradient": float(np.max(np.abs(grad))),
             "method": "boyd_logistic_loss",

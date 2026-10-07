@@ -46,10 +46,7 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
     n = len(x)
     if n < 10:
         raise ValueError("need at least ten observations to select a threshold")
-    if u_grid is None:
-        u_grid = [core.quantile7(x, 0.5 + 0.05 * i) for i in range(9)]
-    else:
-        u_grid = core.vec(u_grid)
+    u_grid = [core.quantile7(x, 0.5 + 0.05 * i) for i in range(9)] if u_grid is None else core.vec(u_grid)
     window = int(window)
     if window < 2:
         raise ValueError("window must be at least 2")
@@ -67,8 +64,8 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
         raise ValueError("too few usable thresholds after filtering")
     scores = []
     for i in range(len(us) - window + 1):
-        xw = xis[i:i + window]
-        mw = mods[i:i + window]
+        xw = xis[i : i + window]
+        mw = mods[i : i + window]
         if any(v <= 0.0 for v in mw):
             scores.append(float("inf"))
             continue
@@ -78,17 +75,19 @@ def evt_threshold_select_lvar(x, u_grid=None, window=3):
     for i in range(1, len(scores)):
         if scores[i] < scores[best]:
             best = i
-    return RichResult(payload={
-        "u_star": us[best],
-        "score": scores[best],
-        "estimate": us[best],
-        "u": us,
-        "scores": scores,
-        "xi": xis,
-        "mod_scale": mods,
-        "n": n,
-        "method": "threshold selection by local variance of GPD estimates",
-    })
+    return RichResult(
+        payload={
+            "u_star": us[best],
+            "score": scores[best],
+            "estimate": us[best],
+            "u": us,
+            "scores": scores,
+            "xi": xis,
+            "mod_scale": mods,
+            "n": n,
+            "method": "threshold selection by local variance of GPD estimates",
+        }
+    )
 
 
 def cheatsheet():

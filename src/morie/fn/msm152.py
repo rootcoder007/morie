@@ -10,8 +10,6 @@ chapter 8 is Reproducing Kernel Hilbert Spaces regression, and the
 canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,13 +26,18 @@ def mvsml_categorical_count_eq_8_12(X, m_index, kernel="linear", gamma=None):
     Q = K_{n,m} K_{m,m}^-1 K_{n,m}', so only m effects are
     estimated and projected into the n-dimensional space.
     Keys: estimate."""
-    f = _gp.sparse_kernel_design(X, m_index, kernel=kernel,
-                                 gamma=gamma)
-    res = RichResult(payload={"estimate": float(f["rank"]),
-                              "P": f["P"], "Q": f["Q"],
-                              "rank": f["rank"],
-                              "K_mm": f["K_mm"], "K_nm": f["K_nm"],
-                              "method": "compressed kernel design (MVSML 2022 eq. 8.12)"})
+    f = _gp.sparse_kernel_design(X, m_index, kernel=kernel, gamma=gamma)
+    res = RichResult(
+        payload={
+            "estimate": float(f["rank"]),
+            "P": f["P"],
+            "Q": f["Q"],
+            "rank": f["rank"],
+            "K_mm": f["K_mm"],
+            "K_nm": f["K_nm"],
+            "method": "compressed kernel design (MVSML 2022 eq. 8.12)",
+        }
+    )
     return with_describe_pointer(res, "msm152")
 
 

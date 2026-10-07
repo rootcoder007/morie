@@ -13,10 +13,7 @@ def plot_coombs_data(mesh_result) -> DescriptiveResult:
     """
     from morie.fn import _array_core as np
 
-    if hasattr(mesh_result, "extra"):
-        extra = mesh_result.extra
-    else:
-        extra = mesh_result
+    extra = mesh_result.extra if hasattr(mesh_result, "extra") else mesh_result
     grid = np.asarray(extra.get("yea_fraction_grid", []))
     gx = np.asarray(extra.get("grid_x", []))
     gy = np.asarray(extra.get("grid_y", []))

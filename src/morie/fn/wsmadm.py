@@ -75,8 +75,7 @@ def wasserman_admissible(risk, names=None, tol=1e-12):
     if names is not None:
         names = list(names)
         if len(names) != m:
-            raise ValueError(
-                f"names has {len(names)} entries for {m} rules.")
+            raise ValueError(f"names has {len(names)} entries for {m} rules.")
 
     adm = np.ones(m, dtype=bool)
     dominated_by = {}
@@ -85,32 +84,30 @@ def wasserman_admissible(risk, names=None, tol=1e-12):
             if i == j:
                 continue
             # j dominates i: never worse anywhere, strictly better somewhere
-            if (np.all(R[j] <= R[i] + tol)
-                    and np.any(R[j] < R[i] - tol)):
+            if np.all(R[j] <= R[i] + tol) and np.any(R[j] < R[i] - tol):
                 adm[i] = False
-                dominated_by.setdefault(
-                    names[i] if names else i, []).append(
-                        names[j] if names else j)
+                dominated_by.setdefault(names[i] if names else i, []).append(names[j] if names else j)
     worst = R.max(axis=1)
-    return RichResult(payload={
-        "admissible": adm,
-        "bool": bool(np.all(adm)),
-        "dominated_by": dominated_by,
-        "admissible_names": ([names[i] for i in range(m) if adm[i]]
-                             if names else np.flatnonzero(adm)),
-        "n_rules": int(m), "n_states": int(s),
-        "minimax_rule": (names[int(np.argmin(worst))] if names
-                         else int(np.argmin(worst))),
-        "minimax_risk": float(worst.min()),
-        "is_complete_class": bool(np.all(adm)),
-        "definition": "T is inadmissible when some T' has R(T',F) <= R(T,F) "
-                      "for all F and R(T',F) < R(T,F) for some F",
-        "ties_note": "two rules with identical risk everywhere do NOT "
-                     "dominate each other; both stay admissible",
-        "scope_note": "admissibility is relative to the supplied rules and "
-                      "states; a rule admissible against three sampled "
-                      "states may be inadmissible against the full family",
-        "method": "Admissibility by pairwise risk dominance"})
+    return RichResult(
+        payload={
+            "admissible": adm,
+            "bool": bool(np.all(adm)),
+            "dominated_by": dominated_by,
+            "admissible_names": ([names[i] for i in range(m) if adm[i]] if names else np.flatnonzero(adm)),
+            "n_rules": int(m),
+            "n_states": int(s),
+            "minimax_rule": (names[int(np.argmin(worst))] if names else int(np.argmin(worst))),
+            "minimax_risk": float(worst.min()),
+            "is_complete_class": bool(np.all(adm)),
+            "definition": "T is inadmissible when some T' has R(T',F) <= R(T,F) "
+            "for all F and R(T',F) < R(T,F) for some F",
+            "ties_note": "two rules with identical risk everywhere do NOT dominate each other; both stay admissible",
+            "scope_note": "admissibility is relative to the supplied rules and "
+            "states; a rule admissible against three sampled "
+            "states may be inadmissible against the full family",
+            "method": "Admissibility by pairwise risk dominance",
+        }
+    )
 
 
 def cheatsheet():

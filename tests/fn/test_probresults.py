@@ -39,7 +39,11 @@ def test_berkson_by_enumeration():
     for C in (0, 1):
         for H1 in (0, 1):
             for H2 in (0, 1):
-                pr = (g if C else 1 - g) * ((c if H1 else 1 - c) if C else (1.0 if H1 == 0 else 0.0)) * (a if H2 else 1 - a)
+                pr = (
+                    (g if C else 1 - g)
+                    * ((c if H1 else 1 - c) if C else (1.0 if H1 == 0 else 0.0))
+                    * (a if H2 else 1 - a)
+                )
                 X = 1 if (H1 or H2) else 0
                 Y = 1 if (C and X) else 0
                 px += pr * X
@@ -128,7 +132,10 @@ def test_wiener_schur():
     C = [[min(p, q) for q in T] for p in T]
     d = C[2][2] * C[3][3] - C[2][3] ** 2
     inv = [[C[3][3] / d, -C[2][3] / d], [-C[2][3] / d, C[2][2] / d]]
-    cond = [[C[i][j] - sum(C[i][2 + k] * inv[k][m] * C[2 + m][j] for k in range(2) for m in range(2)) for j in range(2)] for i in range(2)]
+    cond = [
+        [C[i][j] - sum(C[i][2 + k] * inv[k][m] * C[2 + m][j] for k in range(2) for m in range(2)) for j in range(2)]
+        for i in range(2)
+    ]
     assert abs(wiener_conditional_correlation(s, t, u, v) - cond[0][1] / math.sqrt(cond[0][0] * cond[1][1])) < 1e-12
 
 
@@ -138,6 +145,9 @@ def test_epidemic_stirling_ma():
     assert abs(r.mean - sum(1 / (lam * i * (N + 1 - i)) for i in range(1, N + 1))) < 1e-12
     assert abs(r.variance - sum(1 / (lam * i * (N + 1 - i)) ** 2 for i in range(1, N + 1))) < 1e-12
     for t in (2.5, 10.0, 40.0):
-        assert abs(stirling_gamma_ratio(t) - math.gamma(t) / (t ** (t - 0.5) * math.exp(-t) * math.sqrt(2 * math.pi))) < 1e-12
+        assert (
+            abs(stirling_gamma_ratio(t) - math.gamma(t) / (t ** (t - 0.5) * math.exp(-t) * math.sqrt(2 * math.pi)))
+            < 1e-12
+        )
     a = -0.7
     assert abs(ma_autocorrelation([a], 3)[1] - a / (1 + a * a)) < 1e-15

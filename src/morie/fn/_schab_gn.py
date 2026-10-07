@@ -58,11 +58,11 @@ def semivariogram_jacobian(h, nugget, sill, rng, model):
     h = np.asarray(h, dtype=float).ravel()
     c = PRACTICAL_RANGE_C
     r = correlogram(h, rng, model)
-    if model == "exponential":                      # R = exp(-c h / a)
+    if model == "exponential":  # R = exp(-c h / a)
         dr_da = r * (c * h / rng**2)
-    elif model == "gaussian":                       # R = exp(-c (h/a)^2)
+    elif model == "gaussian":  # R = exp(-c (h/a)^2)
         dr_da = r * (2.0 * c * h**2 / rng**3)
-    elif model == "spherical":                      # R = 1 - 1.5u + 0.5u^3
+    elif model == "spherical":  # R = 1 - 1.5u + 0.5u^3
         dr_da = np.zeros_like(h)
         inside = h <= rng
         hi = h[inside]
@@ -103,9 +103,9 @@ def _project(theta):
     return t
 
 
-def gauss_newton_semivariogram(lags, ghat, counts, start, model="exponential",
-                               kind="wls", max_iter=200, tol=1e-12,
-                               max_halvings=40):
+def gauss_newton_semivariogram(
+    lags, ghat, counts, start, model="exponential", kind="wls", max_iter=200, tol=1e-12, max_halvings=40
+):
     """Fit by Gauss-Newton with iterative re-weighting.
 
     Returns (theta, objective, converged, n_iter).
@@ -135,7 +135,7 @@ def gauss_newton_semivariogram(lags, ghat, counts, start, model="exponential",
     obj, fitted, w, resid = objective(theta)
     converged = False
     it = 0
-    for it in range(1, max_iter + 1):
+    for it in range(1, max_iter + 1):  # noqa: B007 - read after the loop
         jac = semivariogram_jacobian(h, theta[0], theta[1], theta[2], model)
         # Normal equations of the weighted Gauss-Newton step:
         #   (J' W J) delta = J' W r
@@ -161,7 +161,7 @@ def gauss_newton_semivariogram(lags, ghat, counts, start, model="exponential",
             if np.isfinite(trial_obj) and trial_obj < obj:
                 rel = (obj - trial_obj) / max(abs(obj), 1e-300)
                 theta, obj = trial, trial_obj
-                fitted, w, resid = t_fitted, t_w, t_resid
+                _fitted, w, resid = t_fitted, t_w, t_resid
                 stepped = True
                 converged = rel < tol
                 break

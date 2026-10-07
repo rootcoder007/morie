@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['sampquant', 'gibbons_marginal_quant']
+__all__ = ["sampquant", "gibbons_marginal_quant"]
 
 
 def sampquant(x, p):

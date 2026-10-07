@@ -1,7 +1,5 @@
 """Tests for comemb.node2vec."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.comemb import node2vec
 
 
@@ -68,6 +66,7 @@ def test_comemb_edge():
     est = result["estimate"]
     assert isinstance(est, float)
     import math
+
     assert not math.isnan(est)
 
     # Number of walks equals n_walks * n_nodes with the defaults

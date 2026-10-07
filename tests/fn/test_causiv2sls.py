@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.causiv2sls import causal_iv_2sls
 
 
@@ -19,10 +18,22 @@ def test_causiv2sls_basic():
     result = causal_iv_2sls(y, X, Z)
     assert isinstance(result, dict)
     expected_keys = {
-        "beta", "se", "t", "residuals", "fitted",
-        "first_stage_F", "order_condition", "overidentified",
-        "n_overid_restrictions", "sargan", "sargan_p",
-        "vcov_type", "n", "k", "m", "method",
+        "beta",
+        "se",
+        "t",
+        "residuals",
+        "fitted",
+        "first_stage_F",
+        "order_condition",
+        "overidentified",
+        "n_overid_restrictions",
+        "sargan",
+        "sargan_p",
+        "vcov_type",
+        "n",
+        "k",
+        "m",
+        "method",
     }
     assert expected_keys.issubset(set(result.keys()))
     assert math.isfinite(float(result["first_stage_F"]))

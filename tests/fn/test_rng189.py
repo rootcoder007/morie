@@ -1,7 +1,6 @@
 """Tests for rng189.rangayyan_ch4_pan_tompkins_moving_window_integrator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_moving_window_integrator
 
 

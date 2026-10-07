@@ -27,18 +27,17 @@ def ca_chapter_2_equation_14(y, yhat):
     ch.2 eq.2.14
     """
     payload = dict(_ca_crim.variance_partition(y, yhat))
-    value = payload['r2']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["r2"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.14)"
     return RichResult(
-        title='R^2 = SS_model / SS_total',
+        title="R^2 = SS_model / SS_total",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e14: R^2 = sum(yhat-ybar)^2 / sum(y-ybar)^2 [Weisburd et al. 2022, eq. 2.14]'
+    return "ca2e14: R^2 = sum(yhat-ybar)^2 / sum(y-ybar)^2 [Weisburd et al. 2022, eq. 2.14]"

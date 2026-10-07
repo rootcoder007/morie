@@ -79,9 +79,19 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["bnppvl", "np_predictive_value", "pyramid_draw",
-           "pyramid_log_prior", "cell_counts", "log_likelihood",
-           "LIKELIHOODS", "CENTRINGS", "SCHEDULES", "INITS", "cheatsheet"]
+__all__ = [
+    "bnppvl",
+    "np_predictive_value",
+    "pyramid_draw",
+    "pyramid_log_prior",
+    "cell_counts",
+    "log_likelihood",
+    "LIKELIHOODS",
+    "CENTRINGS",
+    "SCHEDULES",
+    "INITS",
+    "cheatsheet",
+]
 
 LIKELIHOODS = ("exact", "substitute")
 INITS = ("prior", "empirical")
@@ -102,7 +112,7 @@ def _concentration(level, c, schedule):
         return float(c) * level * level * level
     if schedule == "constant":
         return float(c)
-    raise ValueError("schedule must be one of %r" % (SCHEDULES,))
+    raise ValueError(f"schedule must be one of {SCHEDULES!r}")
 
 
 def _null_mean(nullq, j, level):
@@ -118,8 +128,7 @@ def _null_mean(nullq, j, level):
     cc = nullq((j + 1) * d)
     wide = cc - a
     if wide <= 0.0:
-        raise ValueError("the centring quantile function is not strictly "
-                         "increasing on the dyadic grid")
+        raise ValueError("the centring quantile function is not strictly increasing on the dyadic grid")
     return (b - a) / wide
 
 
@@ -132,13 +141,11 @@ def _ab(level, c, schedule, centring, nullq, j):
         return 0.5 * a_m, 0.5 * a_m
     mu = _null_mean(nullq, j, level)
     if not 0.0 < mu < 1.0:
-        raise ValueError("the centring puts a node on the edge of its "
-                         "parent interval")
+        raise ValueError("the centring puts a node on the edge of its parent interval")
     return a_m * mu, a_m * (1.0 - mu)
 
 
-def pyramid_draw(rng, m, c=2.5, schedule="cubic", centring="uniform",
-                 nullq=None):
+def pyramid_draw(rng, m, c=2.5, schedule="cubic", centring="uniform", nullq=None):
     """One draw of the quantile pyramid down to level m.
 
     Returns the full dyadic grid of length 2^m + 1, with 0 and 1 at the
@@ -167,12 +174,10 @@ def pyramid_draw(rng, m, c=2.5, schedule="cubic", centring="uniform",
 def _log_beta_density(v, a, b):
     if not 0.0 < v < 1.0:
         return float("-inf")
-    return ((a - 1.0) * math.log(v) + (b - 1.0) * math.log1p(-v)
-            + _w.lgamma(a + b) - _w.lgamma(a) - _w.lgamma(b))
+    return (a - 1.0) * math.log(v) + (b - 1.0) * math.log1p(-v) + _w.lgamma(a + b) - _w.lgamma(a) - _w.lgamma(b)
 
 
-def pyramid_log_prior(q, m, c=2.5, schedule="cubic", centring="uniform",
-                      nullq=None):
+def pyramid_log_prior(q, m, c=2.5, schedule="cubic", centring="uniform", nullq=None):
     """The log prior density of a pyramid, factorised level by level.
 
     Each node contributes the density of its own V plus the Jacobian of
@@ -193,8 +198,7 @@ def pyramid_log_prior(q, m, c=2.5, schedule="cubic", centring="uniform",
             if wide <= 0.0 or not lo < q[i] < hi:
                 return float("-inf")
             a, b = _ab(level, c, schedule, centring, nullq, j)
-            terms.append(_log_beta_density((q[i] - lo) / wide, a, b)
-                         - math.log(wide))
+            terms.append(_log_beta_density((q[i] - lo) / wide, a, b) - math.log(wide))
             j += 2
     return _w.csum(terms)
 
@@ -231,7 +235,7 @@ def log_likelihood(u, q, kind="exact"):
     conservative.
     """
     if kind not in LIKELIHOODS:
-        raise ValueError("kind must be one of %r" % (LIKELIHOODS,))
+        raise ValueError(f"kind must be one of {LIKELIHOODS!r}")
     k = len(q) - 1
     cnt = cell_counts(u, q)
     n = sum(cnt)
@@ -317,11 +321,24 @@ def _empirical_start(u, k):
     return q
 
 
-def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
-                        centring="uniform", nullq=None, likelihood="exact",
-                        lo=0.0, hi=1.0, sweeps=400, burn=100, thin=2,
-                        seed=0, init="prior", grid=None,
-                        probs=(0.05, 0.25, 0.5, 0.75, 0.95)):
+def np_predictive_value(
+    x,
+    m=4,
+    c=2.5,
+    schedule="cubic",
+    centring="uniform",
+    nullq=None,
+    likelihood="exact",
+    lo=0.0,
+    hi=1.0,
+    sweeps=400,
+    burn=100,
+    thin=2,
+    seed=0,
+    init="prior",
+    grid=None,
+    probs=(0.05, 0.25, 0.5, 0.75, 0.95),
+):
     """Fit a Beta quantile pyramid and report the predictive for a new draw.
 
     Parameters
@@ -374,13 +391,13 @@ def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
     Hjort and Walker (2009) Annals of Statistics 37(1), 105-131.
     """
     if likelihood not in LIKELIHOODS:
-        raise ValueError("likelihood must be one of %r" % (LIKELIHOODS,))
+        raise ValueError(f"likelihood must be one of {LIKELIHOODS!r}")
     if centring not in CENTRINGS:
-        raise ValueError("centring must be one of %r" % (CENTRINGS,))
+        raise ValueError(f"centring must be one of {CENTRINGS!r}")
     if schedule not in SCHEDULES:
-        raise ValueError("schedule must be one of %r" % (SCHEDULES,))
+        raise ValueError(f"schedule must be one of {SCHEDULES!r}")
     if init not in INITS:
-        raise ValueError("init must be one of %r" % (INITS,))
+        raise ValueError(f"init must be one of {INITS!r}")
     if centring == "null" and nullq is None:
         raise ValueError("centring on a null distribution needs nullq")
     m = int(m)
@@ -405,10 +422,7 @@ def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
     n = len(u)
 
     rng = _core._SplitMix64(seed)
-    if init == "prior":
-        q = pyramid_draw(rng, m, c, schedule, centring, nullq)
-    else:
-        q = _empirical_start(u, k)
+    q = pyramid_draw(rng, m, c, schedule, centring, nullq) if init == "prior" else _empirical_start(u, k)
     lp = pyramid_log_prior(q, m, c, schedule, centring, nullq)
     cnt = cell_counts(u, q)
 
@@ -449,14 +463,11 @@ def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
                 # current counts over the proposed widths raised to the
                 # proposed counts, because the density is one over the
                 # width.
-                num = (cnt[j] * math.log(q[j] - a)
-                       + cnt[j + 1] * math.log(b - q[j]) + lpp)
-                den = (left * math.log(prop - a)
-                       + right * math.log(b - prop) + lp)
+                num = cnt[j] * math.log(q[j] - a) + cnt[j + 1] * math.log(b - q[j]) + lpp
+                den = left * math.log(prop - a) + right * math.log(b - prop) + lp
             else:
-                num = (_w.lgamma(cnt[j] + 1.0) + _w.lgamma(cnt[j + 1] + 1.0)
-                       + lpp)
-                den = (_w.lgamma(left + 1.0) + _w.lgamma(right + 1.0) + lp)
+                num = _w.lgamma(cnt[j] + 1.0) + _w.lgamma(cnt[j + 1] + 1.0) + lpp
+                den = _w.lgamma(left + 1.0) + _w.lgamma(right + 1.0) + lp
             logr = num - den
             acc = float(rng.uniform())
             if logr >= 0.0 or (acc > 0.0 and math.log(acc) < logr):
@@ -490,8 +501,7 @@ def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
     cdf = []
     for g in grid:
         gu = (g - lo) / span
-        dens.append(_w.csum(_density_at(gu, dr, k) for dr in draws)
-                    / (d * span))
+        dens.append(_w.csum(_density_at(gu, dr, k) for dr in draws) / (d * span))
         cdf.append(_w.csum(_cdf_at(gu, dr, k) for dr in draws) / d)
 
     def _F(t):
@@ -501,51 +511,59 @@ def np_predictive_value(x, m=4, c=2.5, schedule="cubic",
     for p in probs:
         p = float(p)
         if not 0.0 < p < 1.0:
-            raise ValueError("every predictive probability must lie "
-                             "strictly inside (0, 1)")
+            raise ValueError("every predictive probability must lie strictly inside (0, 1)")
         # A fixed number of bisection steps on the averaged distribution
         # function: the predictive CDF is a mixture of piecewise linear
         # pieces and has no closed-form inverse, and a fixed step count
         # is the only root find that cannot iterate a different number
         # of times in the two arms.
-        pq.append(lo + span * _w.bisect(lambda t: _F(t) - p, 0.0, 1.0))
+        pq.append(lo + span * _w.bisect(lambda t, *, p=p: _F(t) - p, 0.0, 1.0))
 
     ll = log_likelihood(u, [(v - lo) / span for v in qbar], likelihood)
-    return RichResult(payload={
-        "quantile_mean": qbar,
-        "estimate": pred_mean,
-        "se": pred_sd / math.sqrt(d),
-        "predictive_mean": pred_mean,
-        "predictive_sd": pred_sd,
-        "grid": grid,
-        "density": dens,
-        "cdf": cdf,
-        "probs": [float(p) for p in probs],
-        "predictive_quantile": pq,
-        "counts": cnt[1:],
-        "log_likelihood": ll,
-        "log_prior": lp,
-        "accept_rate": taken / float(tried) if tried else float("nan"),
-        "n_draws": d,
-        "n": n,
-        "k": k,
-        "m": m,
-        "c": float(c),
-        "lo": lo,
-        "hi": hi,
-        "schedule": schedule,
-        "centring": centring,
-        "likelihood": likelihood,
-        "init": init,
-        "method": "Beta quantile pyramid predictive",
-    })
+    return RichResult(
+        payload={
+            "quantile_mean": qbar,
+            "estimate": pred_mean,
+            "se": pred_sd / math.sqrt(d),
+            "predictive_mean": pred_mean,
+            "predictive_sd": pred_sd,
+            "grid": grid,
+            "density": dens,
+            "cdf": cdf,
+            "probs": [float(p) for p in probs],
+            "predictive_quantile": pq,
+            "counts": cnt[1:],
+            "log_likelihood": ll,
+            "log_prior": lp,
+            "accept_rate": taken / float(tried) if tried else float("nan"),
+            "n_draws": d,
+            "n": n,
+            "k": k,
+            "m": m,
+            "c": float(c),
+            "lo": lo,
+            "hi": hi,
+            "schedule": schedule,
+            "centring": centring,
+            "likelihood": likelihood,
+            "init": init,
+            "method": "Beta quantile pyramid predictive",
+        }
+    )
 
 
 bnppvl = np_predictive_value
 
 
 def cheatsheet():
-    return ("bnppvl: quantile-pyramid predictive for a new observation. "
-            "likelihoods " + ", ".join(LIKELIHOODS) + "; inits "
-            + ", ".join(INITS) + "; centrings "
-            + ", ".join(CENTRINGS) + "; schedules " + ", ".join(SCHEDULES))
+    return (
+        "bnppvl: quantile-pyramid predictive for a new observation. "
+        "likelihoods "
+        + ", ".join(LIKELIHOODS)
+        + "; inits "
+        + ", ".join(INITS)
+        + "; centrings "
+        + ", ".join(CENTRINGS)
+        + "; schedules "
+        + ", ".join(SCHEDULES)
+    )

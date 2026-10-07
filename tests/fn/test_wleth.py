@@ -85,7 +85,7 @@ def test_wleth_perfect_patterns_stay_finite_where_ml_does_not():
         res = weighted_likelihood_theta(y, b=B)
         th = res["theta"]
         assert math.isfinite(th)
-        assert -6.0 < th < 6.0            # strictly interior, not a bound hit
+        assert -6.0 < th < 6.0  # strictly interior, not a bound hit
         assert res["se"] > 0.0 and math.isfinite(res["se"])
         # ML has no finite maximiser here, so there is nothing to compare to
         assert mle_theta_estimator(y, b=B)["finite"] is False
@@ -109,12 +109,11 @@ def test_wleth_reports_its_offset_from_ml_for_ordinary_patterns():
     estimate toward the middle of the scale."""
     from morie.fn.mleth import mle_theta_estimator
 
-    y = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0]     # 7 of 8 correct
+    y = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0]  # 7 of 8 correct
     res = weighted_likelihood_theta(y, b=B)
     ml = mle_theta_estimator(y, b=B)
     assert ml["finite"] is True
-    assert res["vs_ml"] == pytest.approx(res["theta"] - ml["theta"], rel=1e-9,
-                                         abs=1e-12)
+    assert res["vs_ml"] == pytest.approx(res["theta"] - ml["theta"], rel=1e-9, abs=1e-12)
     # the bias correction pulls a high ML estimate back down
     assert res["theta"] < ml["theta"]
     assert abs(res["theta"]) < abs(ml["theta"])
@@ -150,8 +149,8 @@ def test_wleth_edge():
     with pytest.raises(ValueError):
         weighted_likelihood_theta([0.0, 0.5, 1.0], b=[0.0, 0.0, 0.0])
     with pytest.raises(ValueError):
-        weighted_likelihood_theta(y)                      # b is required
+        weighted_likelihood_theta(y)  # b is required
     with pytest.raises(ValueError):
-        weighted_likelihood_theta(y, b=B[:4])             # length mismatch
+        weighted_likelihood_theta(y, b=B[:4])  # length mismatch
     with pytest.raises(ValueError):
         weighted_likelihood_theta(y, a=[1.0] * 4, b=B)

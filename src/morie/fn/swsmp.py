@@ -67,11 +67,20 @@ def sysrs(y, k, seed=1):
     Yb = sum(y) / N
     means = [sum(y[j] for j in range(i, N, k)) / n for i in range(k)]
     V = sum((m - Yb) ** 2 for m in means) / k
-    return RichResult(payload={
-        "start": r + 1, "index": [i + 1 for i in idx], "sample": smp,
-        "estimate": sum(smp) / n, "design_se": math.sqrt(V),
-        "population_mean": Yb, "N": N, "n": n, "k": k,
-        "method": "Systematic sample with a pinned random start"})
+    return RichResult(
+        payload={
+            "start": r + 1,
+            "index": [i + 1 for i in idx],
+            "sample": smp,
+            "estimate": sum(smp) / n,
+            "design_se": math.sqrt(V),
+            "population_mean": Yb,
+            "N": N,
+            "n": n,
+            "k": k,
+            "method": "Systematic sample with a pinned random start",
+        }
+    )
 
 
 systematic_with_random_start = sysrs

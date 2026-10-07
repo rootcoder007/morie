@@ -1,7 +1,6 @@
 """Tests for morie.fn.netei — Expected influence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.netei import network_expected_influence
 
 

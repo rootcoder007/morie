@@ -1,7 +1,6 @@
 """Tests for cohens_d_sample.cohens_d_sample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cohens_d_sample import cohens_d_sample
 
 
@@ -15,7 +14,7 @@ def test_ca11e1_basic():
     # Independent computation of the documented formula:
     # Cohen's d = (m1 - m2) / s_pooled, with
     # s_pooled = sqrt(((n1 - 1) * s1**2 + (n2 - 1) * s2**2) / (n1 + n2 - 2))
-    sp = np.sqrt(((n1 - 1) * s1 ** 2 + (n2 - 1) * s2 ** 2) / (n1 + n2 - 2))
+    sp = np.sqrt(((n1 - 1) * s1**2 + (n2 - 1) * s2**2) / (n1 + n2 - 2))
     expected_value = (m1 - m2) / sp
     assert np.isclose(result["value"], expected_value)
 

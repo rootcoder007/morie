@@ -64,7 +64,7 @@ def frglt(
     t_s = time[order]
     e_s = event[order]
     exp_lp_s = exp_lp[order]
-    cl_s = cluster_idx[order]
+    cluster_idx[order]
 
     event_times = np.unique(t_s[e_s == 1])
     H0 = np.zeros(n)

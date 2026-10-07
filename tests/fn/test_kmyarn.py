@@ -13,8 +13,7 @@ def test_kmyarn_basic():
     assert isinstance(result, dict)
     th = [10000.0 ** (-2 * i / 8) for i in range(4)]
     assert result["theta"] == pytest.approx(th, rel=1e-14)
-    assert result["theta_new"] == pytest.approx(
-        [t / 4.0 ** (2 * i / 8) for i, t in enumerate(th)], rel=1e-14)
+    assert result["theta_new"] == pytest.approx([t / 4.0 ** (2 * i / 8) for i, t in enumerate(th)], rel=1e-14)
     assert result["theta_new"][0] == result["theta"][0]
     assert result["effective_context_multiplier"] == 4.0
 
@@ -36,7 +35,7 @@ import morie.fn.kmyarn as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

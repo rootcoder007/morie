@@ -63,12 +63,19 @@ def wasserman_hoeffding(n, t, a, b):
     if not a < b:
         raise ValueError(f"Hoeffding needs a < b; got a={a}, b={b}.")
     expo = math.exp(-2.0 * n * t * t / (b - a) ** 2)
-    return RichResult(payload={
-        "estimate": float(min(2.0 * expo, 1.0)),
-        "two_sided_raw": float(2.0 * expo),
-        "one_sided": float(min(expo, 1.0)), "one_sided_raw": float(expo),
-        "n": n, "t": t, "a": a, "b": b,
-        "method": "Hoeffding 2 exp(-2 n t^2/(b-a)^2) (capped at 1)"})
+    return RichResult(
+        payload={
+            "estimate": float(min(2.0 * expo, 1.0)),
+            "two_sided_raw": float(2.0 * expo),
+            "one_sided": float(min(expo, 1.0)),
+            "one_sided_raw": float(expo),
+            "n": n,
+            "t": t,
+            "a": a,
+            "b": b,
+            "method": "Hoeffding 2 exp(-2 n t^2/(b-a)^2) (capped at 1)",
+        }
+    )
 
 
 def cheatsheet():

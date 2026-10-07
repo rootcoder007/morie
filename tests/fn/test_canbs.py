@@ -1,7 +1,6 @@
 """Tests for canbs (Canberra distance)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.canbs import canberra_dist
 
 

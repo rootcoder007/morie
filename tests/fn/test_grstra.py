@@ -1,7 +1,6 @@
 """Tests for grstra.geron_stratified_split."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grstra import geron_stratified_split
 
 

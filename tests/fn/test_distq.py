@@ -9,10 +9,16 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.distq import (atoms, bernoulli_algorithm, c51_update,
-                            categorical_loss, categorical_projection,
-                            distribution_mean, greedy_action,
-                            value_distribution_iteration)
+from morie.fn.distq import (
+    atoms,
+    bernoulli_algorithm,
+    c51_update,
+    categorical_loss,
+    categorical_projection,
+    distribution_mean,
+    greedy_action,
+    value_distribution_iteration,
+)
 
 VMIN, VMAX, NA = -10.0, 10.0, 51
 
@@ -31,9 +37,9 @@ def test_the_support_is_the_papers(grid):
     assert grid["dz"] == pytest.approx(0.4)
 
 
-@pytest.mark.parametrize("r,g", [
-    (0.37, 0.99), (0.0, 1.0), (0.0, 0.0), (100.0, 0.9),
-    (-100.0, 0.9), (0.4, 1.0), (0.8, 0.5), (2.0, 0.0)])
+@pytest.mark.parametrize(
+    "r,g", [(0.37, 0.99), (0.0, 1.0), (0.0, 0.0), (100.0, 0.9), (-100.0, 0.9), (0.4, 1.0), (0.8, 0.5), (2.0, 0.0)]
+)
 def test_mass_is_preserved(grid, r, g):
     """Including the exact-hit case: when b lands on an atom, l == u and
     Algorithm 1 written literally adds p*(u-b) + p*(b-l) = 0, losing the
@@ -60,8 +66,7 @@ def test_r_zero_gamma_one_is_the_identity(grid):
 
 
 def test_done_equals_gamma_zero(grid):
-    a = categorical_projection(1.3, 0.97, grid["p"], VMIN, VMAX,
-                               done=True)
+    a = categorical_projection(1.3, 0.97, grid["p"], VMIN, VMAX, done=True)
     b = categorical_projection(1.3, 0.0, grid["p"], VMIN, VMAX)
     assert a == pytest.approx(b, abs=1e-15)
 
@@ -74,8 +79,7 @@ def test_the_projected_mean_is_r_plus_gamma_ez(grid, r, g):
         narrow[i] = 1.0 / 11.0
     m = categorical_projection(r, g, narrow, VMIN, VMAX)
     want = r + g * distribution_mean(narrow, grid["z"])
-    assert distribution_mean(m, grid["z"]) == pytest.approx(want,
-                                                            abs=1e-12)
+    assert distribution_mean(m, grid["z"]) == pytest.approx(want, abs=1e-12)
 
 
 def test_clipping_moves_the_mean_and_piles_on_the_boundary(grid):
@@ -109,16 +113,14 @@ def test_the_greedy_action_maximises_the_expected_return(grid):
     up = c51_update(0.5, 0.9, [lo, hi, mid], grid["p"], VMIN, VMAX)
     assert up["action"] == 1
     assert up["q_target"] == pytest.approx(0.5 + 0.9 * z[40], abs=1e-9)
-    assert up["loss"] == pytest.approx(
-        categorical_loss(up["target"], grid["p"]), abs=1e-15)
+    assert up["loss"] == pytest.approx(categorical_loss(up["target"], grid["p"]), abs=1e-15)
 
 
 @pytest.mark.parametrize("gamma", [0.5, 0.8])
 def test_the_fixed_point_matches_the_closed_form(grid, gamma):
     """Z = R + gamma Z' with R = +-1 at even odds has E[Z] = 0 and
     Var[Z] = 1/(1 - gamma^2)."""
-    dist, info = value_distribution_iteration(
-        [-1.0, 1.0], [0.5, 0.5], gamma, VMIN, VMAX, NA, iters=800)
+    dist, info = value_distribution_iteration([-1.0, 1.0], [0.5, 0.5], gamma, VMIN, VMAX, NA, iters=800)
     assert info["converged"]
     assert sum(dist) == pytest.approx(1.0, abs=1e-9)
     mean = distribution_mean(dist, grid["z"])
@@ -130,8 +132,7 @@ def test_the_fixed_point_matches_the_closed_form(grid, gamma):
 def test_the_bernoulli_alternative(grid):
     b = bernoulli_algorithm(0.0, 1.0, grid["p"], VMIN, VMAX)
     assert 0.0 <= b <= 1.0
-    assert bernoulli_algorithm(1000.0, 1.0, grid["p"], VMIN,
-                               VMAX) == 1.0
+    assert bernoulli_algorithm(1000.0, 1.0, grid["p"], VMIN, VMAX) == 1.0
 
 
 def test_argument_checks(grid):
@@ -153,5 +154,4 @@ def test_argument_checks(grid):
     with pytest.raises(ValueError):
         greedy_action([], grid["z"])
     with pytest.raises(ValueError):
-        value_distribution_iteration([-1.0, 1.0], [0.5], 0.5, VMIN,
-                                     VMAX, NA)
+        value_distribution_iteration([-1.0, 1.0], [0.5], 0.5, VMIN, VMAX, NA)

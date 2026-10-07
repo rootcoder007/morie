@@ -9,8 +9,7 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.cdaeRC import (cdae, corrupt, decode, encode, fit_cdae,
-                             loss, recommend)
+from morie.fn.cdaeRC import cdae, corrupt, decode, encode, fit_cdae, loss, recommend
 
 
 def _sig(x):
@@ -61,7 +60,7 @@ def test_encode_and_decode_match_equations_10_and_11():
 
 
 def test_the_four_losses_match_their_closed_forms():
-    assert loss(1.0, 0.3, "square") == pytest.approx(0.5 * 0.7 ** 2, rel=1e-15)
+    assert loss(1.0, 0.3, "square") == pytest.approx(0.5 * 0.7**2, rel=1e-15)
     assert loss(-1.0, 0.3, "log") == pytest.approx(math.log(1 + math.exp(0.3)), rel=1e-15)
     assert loss(1.0, 0.3, "hinge") == pytest.approx(0.7, rel=1e-15)
     assert loss(-1.0, -2.0, "hinge") == 0.0
@@ -76,8 +75,7 @@ def test_fit_recommends_the_held_out_item_of_the_users_cluster():
     pos = {u: [0, 1, 2, 3] for u in range(6)}
     pos.update({u: [4, 5, 6, 7] for u in range(6, 12)})
     pos[0] = [0, 1, 2]
-    m = fit_cdae(pos, n_users=12, n_items=8, k_dim=4, q=0.2, alpha=0.2,
-                 iters=200, n_neg=3, seed=1)
+    m = fit_cdae(pos, n_users=12, n_items=8, k_dim=4, q=0.2, alpha=0.2, iters=200, n_neg=3, seed=1)
     assert m["loss_history"][-1] < m["loss_history"][0]
     rec = recommend(m, pos, 0, 8, top_k=5)
     assert rec["ranking"][0][0] == 3

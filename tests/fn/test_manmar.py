@@ -1,7 +1,5 @@
 """Tests for manmar.ma_network_indirect."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.manmar import ma_network_indirect
 
 

@@ -15,8 +15,7 @@ def _log_softmax(z):
     return z - np.log(np.exp(z).sum())
 
 
-def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn,
-                                     temperature=1.0, top_k=None):
+def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn, temperature=1.0, top_k=None):
     r"""Score an image-token prefix and produce the next-token distribution.
 
     .. math::
@@ -82,9 +81,7 @@ def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn
     text = [int(t) for t in np.asarray(text_tokens).ravel().tolist()]
     prefix = [int(t) for t in np.asarray(image_tokens_prefix).ravel().tolist()]
     if not callable(logits_fn):
-        raise ValueError(
-            f"logits_fn must be callable(context) -> logits, got {type(logits_fn).__name__}."
-        )
+        raise ValueError(f"logits_fn must be callable(context) -> logits, got {type(logits_fn).__name__}.")
     temperature = float(temperature)
     if not np.isfinite(temperature) or temperature <= 0:
         raise ValueError(f"temperature must be a positive finite float, got {temperature}.")
@@ -101,16 +98,11 @@ def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn
         if V is None:
             V = z.size
         elif z.size != V:
-            raise ValueError(
-                f"logits_fn changed vocabulary size from {V} to {z.size} at step {step}."
-            )
+            raise ValueError(f"logits_fn changed vocabulary size from {V} to {z.size} at step {step}.")
         if step < len(prefix):
             tok = prefix[step]
             if not (0 <= tok < V):
-                raise ValueError(
-                    f"image token {tok} at position {step} is outside the "
-                    f"vocabulary of size {V}."
-                )
+                raise ValueError(f"image token {tok} at position {step} is outside the vocabulary of size {V}.")
             logprobs.append(float(_log_softmax(z)[tok]))
             context.append(tok)
         else:
@@ -134,8 +126,7 @@ def geron_dalle_autoregressive_token(text_tokens, image_tokens_prefix, logits_fn
 
     return RichResult(
         title="DALL-E autoregressive tokens",
-        summary_lines=[("Log-likelihood", ll), ("Perplexity", ppl),
-                       ("Vocabulary", int(V))],
+        summary_lines=[("Log-likelihood", ll), ("Perplexity", ppl), ("Vocabulary", int(V))],
         payload={
             "log_likelihood": ll,
             "token_logprobs": logprobs,

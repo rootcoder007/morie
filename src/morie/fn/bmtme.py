@@ -71,8 +71,7 @@ from .rkhsmt import _inv, _kron, _unvec, _vec
 __all__ = ["bmtme_model"]
 
 
-def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
-                S_E=None, v_R=None, S_R=None, tol=1e-12):
+def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None, S_E=None, v_R=None, S_R=None, tol=1e-12):
     """BMTME of eq. (6.11), every Gibbs step at its conditional mean.
 
     Parameters
@@ -126,10 +125,10 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
         for j in range(i + 1, J):
             if abs(GG[i][j] - GG[j][i]) > 1e-12:
                 raise ValueError("bmtme_model: G must be symmetric")
-    I = int(n_env)
-    if I < 1:
+    I_ = int(n_env)
+    if I_ < 1:
         raise ValueError("bmtme_model: n_env must be at least 1")
-    if I * J != N:
+    if I_ * J != N:
         raise ValueError("bmtme_model: Y must have n_env * nrow(G) rows")
     if X is None:
         XX = None
@@ -140,15 +139,18 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
             raise ValueError("bmtme_model: X has a different number of rows than Y")
         p = len(XX[0])
     vT = float(nT + 2) if v_T is None else float(v_T)
-    vE = float(I + 2) if v_E is None else float(v_E)
+    vE = float(I_ + 2) if v_E is None else float(v_E)
     vR = float(nT + 2) if v_R is None else float(v_R)
     if vT <= nT + 1 or vR <= nT + 1:
         raise ValueError("bmtme_model: v_T and v_R must exceed n_T + 1")
-    if vE <= I + 1:
+    if vE <= I_ + 1:
         raise ValueError("bmtme_model: v_E must exceed n_env + 1")
-    eye = lambda k: [[1.0 if a == b else 0.0 for b in range(k)] for a in range(k)]
+
+    def eye(k):
+        return [[1.0 if a == b else 0.0 for b in range(k)] for a in range(k)]
+
     ST = eye(nT) if S_T is None else core.mat(S_T)
-    SE = eye(I) if S_E is None else core.mat(S_E)
+    SE = eye(I_) if S_E is None else core.mat(S_E)
     SR = eye(nT) if S_R is None else core.mat(S_R)
     it = int(n_iter)
     if it < 1:
@@ -165,7 +167,7 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
     beta = [[0.0] * nT for _ in range(p)]
     mu = [0.0] * nT
     SigT = eye(nT)
-    SigE = eye(I)
+    SigE = eye(I_)
     Rm = eye(nT)
 
     def resid(drop_mu=False, drop_beta=False, drop_b1=False, drop_b2=False):
@@ -227,25 +229,26 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
         Gb = [[sum(Ginv[i][k] * b1[k][t] for k in range(J)) for t in range(nT)] for i in range(J)]
         SEG = _kron(SEinv, Ginv)
         Wb = [[sum(SEG[i][k] * b2[k][t] for k in range(N)) for t in range(nT)] for i in range(N)]
-        SS = [[sum(b1[i][s] * Gb[i][t] for i in range(J))
-               + sum(b2[i][s] * Wb[i][t] for i in range(N)) + ST[s][t]
-               for t in range(nT)] for s in range(nT)]
+        SS = [
+            [
+                sum(b1[i][s] * Gb[i][t] for i in range(J)) + sum(b2[i][s] * Wb[i][t] for i in range(N)) + ST[s][t]
+                for t in range(nT)
+            ]
+            for s in range(nT)
+        ]
         den = vT + J + N - nT - 1.0
         SigT = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         # step 6: Sigma_E, through the b_2* reshaping
         STinv = _inv(SigT)
-        b2s = [[b2[e * J + j][t] for e in range(I)] for j in range(J) for t in range(nT)]
+        b2s = [[b2[e * J + j][t] for e in range(I_)] for j in range(J) for t in range(nT)]
         GS = _kron(Ginv, STinv)
-        Ab = [[sum(GS[r][k] * b2s[k][e] for k in range(J * nT)) for e in range(I)]
-              for r in range(J * nT)]
-        SS = [[sum(b2s[r][a] * Ab[r][b] for r in range(J * nT)) + SE[a][b] for b in range(I)]
-              for a in range(I)]
-        den = vE + J * nT - I - 1.0
-        SigE = [[SS[a][b] / den for b in range(I)] for a in range(I)]
+        Ab = [[sum(GS[r][k] * b2s[k][e] for k in range(J * nT)) for e in range(I_)] for r in range(J * nT)]
+        SS = [[sum(b2s[r][a] * Ab[r][b] for r in range(J * nT)) + SE[a][b] for b in range(I_)] for a in range(I_)]
+        den = vE + J * nT - I_ - 1.0
+        SigE = [[SS[a][b] / den for b in range(I_)] for a in range(I_)]
         # step 7: R, with S_R and not the book's misprinted S_T
         E = resid()
-        SS = [[sum(E[i][s] * E[i][t] for i in range(N)) + SR[s][t] for t in range(nT)]
-              for s in range(nT)]
+        SS = [[sum(E[i][s] * E[i][t] for i in range(N)) + SR[s][t] for t in range(nT)] for s in range(nT)]
         den = vR + N - nT - 1.0
         Rm = [[SS[s][t] / den for t in range(nT)] for s in range(nT)]
         d = 0.0
@@ -261,7 +264,7 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
             tot += gebv[i][t]
     return RichResult(
         title="Bayesian multi-trait multi-environment model",
-        summary_lines=[("environments", I), ("lines", J), ("traits", nT)],
+        summary_lines=[("environments", I_), ("lines", J), ("traits", nT)],
         payload={
             "estimate": tot / (N * nT),
             "gebv": gebv,
@@ -274,8 +277,7 @@ def bmtme_model(Y, G, n_env, n_iter=200, X=None, v_T=None, S_T=None, v_E=None,
             "mu": mu,
             "beta": beta,
             "n": N,
-            "method": "Chapter 6 eq. (6.11) BMTME, the eight-step p.196 sampler taken at "
-                      "its conditional means",
+            "method": "Chapter 6 eq. (6.11) BMTME, the eight-step p.196 sampler taken at its conditional means",
         },
     )
 

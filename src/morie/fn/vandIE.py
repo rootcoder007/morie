@@ -56,14 +56,25 @@ def vanderweele_decomposition(Y, X, M, Cc=None, a=1.0, astar=0.0, m=0.0):
     cde, intref, intmed, pie, te = S.fourway(theta, beta, cbar, a, astar, m)
     parts = [cde, intref, intmed, pie]
     same = 1.0 if all((v >= 0.0) == (parts[0] >= 0.0) for v in parts) else 0.0
+
     def sh(v):
         return v / te if te != 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": sh(intref + intmed + pie), "p_cde": sh(cde),
-        "p_intref": sh(intref), "p_intmed": sh(intmed), "p_pie": sh(pie),
-        "p_mediated": sh(intmed + pie), "p_interaction": sh(intref + intmed),
-        "te": te, "same_sign": same, "n": len(list(Y)),
-        "method": "VanderWeele four-way decomposition, proportions"})
+
+    return RichResult(
+        payload={
+            "estimate": sh(intref + intmed + pie),
+            "p_cde": sh(cde),
+            "p_intref": sh(intref),
+            "p_intmed": sh(intmed),
+            "p_pie": sh(pie),
+            "p_mediated": sh(intmed + pie),
+            "p_interaction": sh(intref + intmed),
+            "te": te,
+            "same_sign": same,
+            "n": len(list(Y)),
+            "method": "VanderWeele four-way decomposition, proportions",
+        }
+    )
 
 
 def cheatsheet():

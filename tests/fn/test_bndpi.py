@@ -1,8 +1,8 @@
 """Tests for morie.fn.bndpi — Sheather-Jones plug-in bandwidth."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bndpi import bndpi
 
 

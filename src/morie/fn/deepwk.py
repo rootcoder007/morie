@@ -9,7 +9,7 @@ it -- a second copy would agree with the first at 1e-9 forever and tell
 nobody anything.
 """
 
-from .deepw import adjacency_lists, deepwalk, skipgram, uniform_walk
+from .deepw import deepwalk
 
 __all__ = ["deepwalk"]
 

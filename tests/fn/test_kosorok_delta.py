@@ -1,9 +1,9 @@
 """Kosorok tranche 3: delta method, Kaplan-Meier derivatives,
 M-estimators, KMT, Ch. 1 models."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr022 import kosorok_ch1_multiplicative_intensity
 from morie.fn.ksr025 import kosorok_ch1_penalized_loglikelihood
 from morie.fn.ksr042 import kosorok_ch2_functional_delta_method
@@ -18,17 +18,13 @@ from morie.fn.ksr059 import kosorok_ch2_kmt_strong_approximation
 
 def test_delta_method_remainder_vanishes_for_smooth_phi():
     # phi(x) = x^2 is smooth: the linearisation is exact to O(dev^2)
-    out = kosorok_ch2_functional_delta_method(
-        lambda x: x**2, np.array(2.01), np.array(2.0), r_n=100.0
-    )
+    out = kosorok_ch2_functional_delta_method(lambda x: x**2, np.array(2.01), np.array(2.0), r_n=100.0)
     assert out["derivative_converged"] is True
     # d/dx x^2 at 2 in direction 0.01 is 0.04
     assert float(out["derivative"]) == pytest.approx(0.04, abs=1e-6)
     assert abs(float(out["remainder"])) < 0.02  # the o_P(1) term
     # shrinking the deviation shrinks the remainder quadratically
-    small = kosorok_ch2_functional_delta_method(
-        lambda x: x**2, np.array(2.001), np.array(2.0), r_n=1000.0
-    )
+    small = kosorok_ch2_functional_delta_method(lambda x: x**2, np.array(2.001), np.array(2.0), r_n=1000.0)
     assert abs(float(small["remainder"])) < abs(float(out["remainder"]))
     with pytest.raises(ValueError):
         kosorok_ch2_functional_delta_method(lambda x: x**2, 2.0, 2.0, r_n=0.0)
@@ -61,22 +57,27 @@ def test_continuous_invertibility_detects_a_degenerate_map():
     bad = kosorok_ch2_continuous_invertibility(lambda th: B @ th, np.zeros(2))
     assert bad["c_estimate"] < 0.5
     assert bad["holds_for_c"] is None
-    assert kosorok_ch2_continuous_invertibility(
-        lambda th: A @ th, np.zeros(2), c=1.0
-    )["holds_for_c"] is True
+    assert kosorok_ch2_continuous_invertibility(lambda th: A @ th, np.zeros(2), c=1.0)["holds_for_c"] is True
     with pytest.raises(ValueError):
-        kosorok_ch2_continuous_invertibility(lambda th: th, np.zeros(2),
-                                             theta_2=np.zeros(2))
+        kosorok_ch2_continuous_invertibility(lambda th: th, np.zeros(2), theta_2=np.zeros(2))
 
 
 def test_kaplan_meier_derivative_and_its_inverse_are_consistent():
-    S0 = lambda u: np.exp(-0.5 * u)
+    def S0(u):
+        return np.exp(-0.5 * u)
+
     # L is an at-risk-type probability: positive at 0. A hazard-like
     # L(u) = 0.5u would vanish there and make the INVERSE integrand
     # 1/(L(u-)S_0(u-)) genuinely undefined, which ksr053 refuses.
-    L = lambda u: np.exp(-0.3 * u)
-    G = lambda u: u
-    h = lambda u: 1.0
+    def L(u):
+        return np.exp(-0.3 * u)
+
+    def G(u):
+        return u
+
+    def h(u):
+        return 1.0
+
     d = kosorok_ch2_kaplan_meier_derivative(S0, L, G, h, 1.0)
     # both terms are negative contributions, so the derivative is < 0
     assert d["derivative"] < 0
@@ -95,23 +96,24 @@ def test_kaplan_meier_derivative_and_its_inverse_are_consistent():
     with pytest.raises(ValueError):
         # a hazard-like L vanishing at 0 makes 1/(L(u-)S_0(u-)) blow
         # up; the module refuses rather than returning a finite lie
-        kosorok_ch2_kaplan_meier_inverse(S0, lambda u: 0.5 * u, None,
-                                         lambda u: u, 1.0)
+        kosorok_ch2_kaplan_meier_inverse(S0, lambda u: 0.5 * u, None, lambda u: u, 1.0)
 
 
 def test_m_estimator_remainder_is_second_order_for_smooth_criteria():
     rng = np.random.default_rng(0)
     X = rng.standard_normal(500)
+
     # squared loss: the expectation is exactly quadratic, so the
     # second-order remainder is exactly zero
-    m = lambda th, x: (x - th[0]) ** 2
+    def m(th, x):
+        return (x - th[0]) ** 2
+
     thetas = [np.array([0.5]), np.array([0.2]), np.array([0.05]), np.array([0.01])]
     out = kosorok_ch2_m_estimator_taylor_expansion(m, thetas, np.array([0.0]), X)
     assert out["ratios"].max() < 1.5  # bounded ratio => O(||delta||^2)
     assert out["distances"][0] > out["distances"][-1]
     with pytest.raises(ValueError):
-        kosorok_ch2_m_estimator_taylor_expansion(m, [np.array([0.1])],
-                                                 np.array([0.0]), X)
+        kosorok_ch2_m_estimator_taylor_expansion(m, [np.array([0.1])], np.array([0.0]), X)
 
 
 def test_lad_lipschitz_bound_holds_pointwise():
@@ -150,8 +152,7 @@ def test_multiplicative_intensity_recovers_a_known_baseline():
     T = rng.exponential(1.0 / np.exp(Z[:, 0] * beta))
     C = rng.exponential(3.0, size=n)
     time, event = np.minimum(T, C), (T <= C).astype(float)
-    out = kosorok_ch1_multiplicative_intensity(time, event, Z, beta=[beta],
-                                               t=[0.25, 0.5, 1.0])
+    out = kosorok_ch1_multiplicative_intensity(time, event, Z, beta=[beta], t=[0.25, 0.5, 1.0])
     # the true baseline is Lambda(t) = t for a unit exponential
     assert out["cumulative_hazard"][0] == pytest.approx(0.25, rel=0.35)
     assert out["cumulative_hazard"][2] == pytest.approx(1.0, rel=0.35)

@@ -1,7 +1,6 @@
 """Tests for morie.fn.nbglm — Negative binomial GLM."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nbglm import negbin_glm
 
 

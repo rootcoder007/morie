@@ -1,8 +1,8 @@
 """Tests for morie.fn.slepw — Slepian-Wolf bound."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.slepw import slepw
 
 

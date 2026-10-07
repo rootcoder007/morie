@@ -44,8 +44,9 @@ from ._richresult import RichResult
 __all__ = ["chambolle_pock", "tv_denoise_1d", "primal"]
 
 
-def chambolle_pock(K, Kt, prox_f_star, prox_g, x0, y0, tau=None, sigma=None,
-                   theta=1.0, norm_K=None, max_iter=500, tol=1e-10):
+def chambolle_pock(
+    K, Kt, prox_f_star, prox_g, x0, y0, tau=None, sigma=None, theta=1.0, norm_K=None, max_iter=500, tol=1e-10
+):
     r"""Algorithm 1 of Chambolle & Pock (2011).
 
     Parameters
@@ -89,28 +90,25 @@ def chambolle_pock(K, Kt, prox_f_star, prox_g, x0, y0, tau=None, sigma=None,
         sigma = 1.0 / norm_K
     tau, sigma = float(tau), float(sigma)
     if tau <= 0.0 or sigma <= 0.0:
-        raise ValueError(
-            "chambolle_pock: tau and sigma must be positive, got %r and %r"
-            % (tau, sigma))
+        raise ValueError(f"chambolle_pock: tau and sigma must be positive, got {tau!r} and {sigma!r}")
     prod = tau * sigma * norm_K * norm_K
     if prod >= 1.0 + 1e-12:
         raise ValueError(
             "chambolle_pock: Theorem 1 requires tau*sigma*||K||^2 <= 1, "
             "got "
-            "%.6g. The iteration diverges outside this range while still "
+            f"{prod:.6g}. The iteration diverges outside this range while still "
             "returning finite numbers, so this is refused rather than "
-            "warned about." % prod)
+            "warned about."
+        )
 
     xbar = list(x)
     it = 0
     converged = False
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         Kx = K(xbar)
-        y = list(prox_f_star([y[i] + sigma * float(Kx[i])
-                              for i in range(len(y))], sigma))
+        y = list(prox_f_star([y[i] + sigma * float(Kx[i]) for i in range(len(y))], sigma))
         Kty = Kt(y)
-        x_new = list(prox_g([x[j] - tau * float(Kty[j])
-                             for j in range(len(x))], tau))
+        x_new = list(prox_g([x[j] - tau * float(Kty[j]) for j in range(len(x))], tau))
         xbar = [x_new[j] + theta * (x_new[j] - x[j]) for j in range(len(x))]
         step = math.sqrt(sum((x_new[j] - x[j]) ** 2 for j in range(len(x))))
         x = x_new
@@ -118,20 +116,21 @@ def chambolle_pock(K, Kt, prox_f_star, prox_g, x0, y0, tau=None, sigma=None,
             converged = True
             break
 
-    return RichResult(payload={
-        "estimate": x,
-        "x": x,
-        "y": y,
-        "tau": tau,
-        "sigma": sigma,
-        "theta": theta,
-        "norm_K": norm_K,
-        "step_condition": prod,
-        "iterations": int(it),
-        "converged": bool(converged),
-        "method": "Chambolle-Pock primal-dual hybrid gradient "
-                  "(Chambolle & Pock 2011, Algorithm 1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": x,
+            "x": x,
+            "y": y,
+            "tau": tau,
+            "sigma": sigma,
+            "theta": theta,
+            "norm_K": norm_K,
+            "step_condition": prod,
+            "iterations": int(it),
+            "converged": bool(converged),
+            "method": "Chambolle-Pock primal-dual hybrid gradient (Chambolle & Pock 2011, Algorithm 1)",
+        }
+    )
 
 
 def tv_denoise_1d(signal, lam=1.0, max_iter=1000, tol=1e-12, theta=1.0):
@@ -171,20 +170,22 @@ def tv_denoise_1d(signal, lam=1.0, max_iter=1000, tol=1e-12, theta=1.0):
         return [(x[j] + t * b[j]) / (1.0 + t) for j in range(n)]
 
     # ||grad||^2 <= 4 for the forward difference, so ||K|| <= 2.
-    res = chambolle_pock(K, Kt, prox_fs, prox_g, b, [0.0] * (n - 1),
-                         theta=theta, norm_K=2.0, max_iter=max_iter, tol=tol)
+    res = chambolle_pock(
+        K, Kt, prox_fs, prox_g, b, [0.0] * (n - 1), theta=theta, norm_K=2.0, max_iter=max_iter, tol=tol
+    )
     d = dict(res)
     d["lambda"] = lam
     d["signal"] = b
-    d["objective"] = (0.5 * sum((d["x"][j] - b[j]) ** 2 for j in range(n))
-                      + lam * sum(abs(v) for v in K(d["x"])))
+    d["objective"] = 0.5 * sum((d["x"][j] - b[j]) ** 2 for j in range(n)) + lam * sum(abs(v) for v in K(d["x"]))
     return RichResult(payload=d)
 
 
 def cheatsheet():
-    return ("primal: Chambolle-Pock, y = prox_{s F*}(y + s K xbar), "
-            "x = prox_{t G}(x - t K* y), xbar = x + theta (x - x_prev); "
-            "requires tau sigma ||K||^2 < 1.")
+    return (
+        "primal: Chambolle-Pock, y = prox_{s F*}(y + s K xbar), "
+        "x = prox_{t G}(x - t K* y), xbar = x + theta (x - x_prev); "
+        "requires tau sigma ||K||^2 < 1."
+    )
 
 
 primal = chambolle_pock

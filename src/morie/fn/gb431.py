@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Distribution-freeness of the Kolmogorov-Smirnov statistics."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['ksdistfree', 'gibbons_ks_dist_free']
+__all__ = ["ksdistfree", "gibbons_ks_dist_free"]
 
 
 def ksdistfree(x, cdf):

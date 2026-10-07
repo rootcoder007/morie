@@ -62,12 +62,20 @@ def truncated_combined_weights(sw_A, sw_C, quantile=0.99):
     m0 = sum(prod) / n
     m1 = sum(tw) / n
     v1 = sum((v - m1) ** 2 for v in tw) / (n - 1) if n > 1 else 0.0
-    return RichResult(payload={
-        "estimate": float(m1), "weights": tw, "cut": float(cut),
-        "n_truncated": int(sum(1 for v in prod if v > cut)),
-        "max_before": float(max(prod)), "max_after": float(max(tw)),
-        "sd": float(v1 ** 0.5), "mean_untruncated": float(m0), "n": n,
-        "method": "sw = min(sw_A sw_C, q-th percentile) [Cole & Hernan 2008]"})
+    return RichResult(
+        payload={
+            "estimate": float(m1),
+            "weights": tw,
+            "cut": float(cut),
+            "n_truncated": int(sum(1 for v in prod if v > cut)),
+            "max_before": float(max(prod)),
+            "max_after": float(max(tw)),
+            "sd": float(v1**0.5),
+            "mean_untruncated": float(m0),
+            "n": n,
+            "method": "sw = min(sw_A sw_C, q-th percentile) [Cole & Hernan 2008]",
+        }
+    )
 
 
 # CANONICAL TEST

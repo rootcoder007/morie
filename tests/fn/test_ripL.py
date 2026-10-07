@@ -1,7 +1,6 @@
 """Tests for ripL.ripley_l_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ripL import ripley_l_function
 
 

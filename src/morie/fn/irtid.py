@@ -74,9 +74,7 @@ def irt_identification_constraints(x, polarity_idx=None, pivot_idx=None):
                 z = -z
                 reflected = True
         elif z[j] <= 0:
-            raise ValueError(
-                "infeasible constraints: polarity and pivot legislators fall on the same side."
-            )
+            raise ValueError("infeasible constraints: polarity and pivot legislators fall on the same side.")
 
     return RichResult(
         payload={
@@ -92,6 +90,7 @@ def irt_identification_constraints(x, polarity_idx=None, pivot_idx=None):
 
 def cheatsheet():
     return "irtid: normalise to mean 0 / sd 1, reflect so polarity_idx < 0 (< pivot_idx)"
+
 
 # alias kept from the retired placeholder of the same name
 leg_polarity = irt_identification_constraints

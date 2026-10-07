@@ -1,8 +1,8 @@
 """Tests for morie.fn.acf — Autocorrelation function."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.acf import acf, autocorrelation
 
 

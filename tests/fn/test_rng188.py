@@ -1,7 +1,6 @@
 """Tests for rng188.rangayyan_ch4_pan_tompkins_derivative_operator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_ch4_pan_tompkins_derivative_operator
 
 

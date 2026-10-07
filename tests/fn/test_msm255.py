@@ -12,7 +12,6 @@ import pytest
 
 from morie.fn.msm255 import mvsml_reproducing_kernel_eq_10_17
 
-
 X = [[1.0, 2.0]]
 Y = [[1.0]]
 W = [[[1.0, 0.0], [0.0, 1.0]], [[1.0, 1.0]]]
@@ -38,21 +37,21 @@ def test_the_training_loss_falls_at_every_iteration():
 
 def test_the_first_recorded_loss_is_the_untrained_one():
     from morie.fn.msm246 import mvsml_ann_gradient as grad
+
     res = mvsml_reproducing_kernel_eq_10_17(X, Y, W, eta=0.1, n_iter=5)
-    assert res["history"][0] == pytest.approx(
-        grad(X, Y, W, eta=0.1)["loss"], rel=1e-12)
+    assert res["history"][0] == pytest.approx(grad(X, Y, W, eta=0.1)["loss"], rel=1e-12)
 
 
 def test_the_reported_loss_is_the_one_the_last_weights_give():
     res = mvsml_reproducing_kernel_eq_10_17(X, Y, W, eta=0.1, n_iter=5)
-    _, out = res["output"], res["output"]
-    assert res["loss"] == pytest.approx(
-        0.5 * (1.0 - res["output"][0][0]) ** 2, rel=1e-9)
+    _, _out = res["output"], res["output"]
+    assert res["loss"] == pytest.approx(0.5 * (1.0 - res["output"][0][0]) ** 2, rel=1e-9)
     assert res["iterations"] == 5
 
 
 def test_a_single_iteration_matches_one_output_weight_update():
     from morie.fn.msm251 import mvsml_ann_update_output as one_step
+
     a = mvsml_reproducing_kernel_eq_10_17(X, Y, W, eta=0.1, n_iter=1)
     b = one_step(X, Y, W, eta=0.1, n_iter=1)
     assert a["loss"] == pytest.approx(b["loss"], rel=1e-9)
@@ -60,6 +59,7 @@ def test_a_single_iteration_matches_one_output_weight_update():
 
 def test_training_moves_the_prediction_towards_the_target():
     from morie.fn.msm245 import mvsml_ann_forward as forward
+
     start = forward(X, W)["estimate"]
     res = mvsml_reproducing_kernel_eq_10_17(X, Y, W, eta=0.1, n_iter=20)
     assert abs(res["output"][0][0] - 1.0) < abs(start - 1.0)

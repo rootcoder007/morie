@@ -69,8 +69,7 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["rlhf_recommendation", "rollout", "off_policy_value",
-           "precision_at_k", "ndcg_at_k", "mrr", "cheatsheet"]
+__all__ = ["rlhf_recommendation", "rollout", "off_policy_value", "precision_at_k", "ndcg_at_k", "mrr", "cheatsheet"]
 
 _ESTIMATORS = ("ips", "snips", "dr")
 
@@ -142,8 +141,7 @@ def rollout(env, policy, n_episodes=20, horizon=10, gamma=0.9, seed=0):
     n_s = len(P)
     n_a = len(P[0])
     if len(policy) != n_s or any(len(row) != n_a for row in policy):
-        raise ValueError("the policy must give a distribution over the "
-                         "environment's actions in every state")
+        raise ValueError("the policy must give a distribution over the environment's actions in every state")
     start = env.get("start", 0) if hasattr(env, "get") else 0
     rng = _core._SplitMix64(seed)
     rets = []
@@ -176,16 +174,14 @@ def rollout(env, policy, n_episodes=20, horizon=10, gamma=0.9, seed=0):
         rets.append(g)
     mean = _w.csum(rets) / len(rets)
     if len(rets) > 1:
-        var = _w.csum((v - mean) * (v - mean) for v in rets) \
-            / (len(rets) - 1)
+        var = _w.csum((v - mean) * (v - mean) for v in rets) / (len(rets) - 1)
         se = math.sqrt(var / len(rets))
     else:
         se = float("nan")
     return rets, mean, se, visits
 
 
-def off_policy_value(log, policy, behaviour, estimator="ips",
-                     reward_model=None, clip=None):
+def off_policy_value(log, policy, behaviour, estimator="ips", reward_model=None, clip=None):
     """Estimate a policy's value from another policy's log.
 
     ``log`` is a list of (state, action, reward) triples as they were
@@ -212,9 +208,8 @@ def off_policy_value(log, policy, behaviour, estimator="ips",
         s, a, r = log[i]
         if behaviour[i] <= 0.0 and policy[s][a] > 0.0:
             raise ValueError(
-                "the target policy takes action %d in state %d, which "
-                "the logging policy never could: no reweighting of this "
-                "log can estimate its value there" % (a, s))
+                f"the target policy takes action {int(a)} in state {int(s)}, which the logging policy never could: no reweighting of this log can estimate its value there"
+            )
     w = []
     clipped = 0
     for i in range(n):
@@ -229,17 +224,14 @@ def off_policy_value(log, policy, behaviour, estimator="ips",
         est = _w.csum(w[i] * rs[i] for i in range(n)) / n
     elif estimator == "snips":
         tot = _w.csum(w)
-        est = (_w.csum(w[i] * rs[i] for i in range(n)) / tot) \
-            if tot > 0.0 else 0.0
+        est = (_w.csum(w[i] * rs[i] for i in range(n)) / tot) if tot > 0.0 else 0.0
     else:
         if reward_model is None:
-            raise ValueError("the doubly robust estimator needs a "
-                             "reward model")
+            raise ValueError("the doubly robust estimator needs a reward model")
         terms = []
         for i in range(n):
             s, a, r = log[i]
-            base = _w.csum(policy[s][j] * reward_model[s][j]
-                           for j in range(len(policy[s])))
+            base = _w.csum(policy[s][j] * reward_model[s][j] for j in range(len(policy[s])))
             terms.append(base + w[i] * (rs[i] - reward_model[s][a]))
         est = _w.csum(terms) / n
     ess = 0.0
@@ -247,15 +239,31 @@ def off_policy_value(log, policy, behaviour, estimator="ips",
     sw2 = _w.csum(v * v for v in w)
     if sw2 > 0.0:
         ess = sw * sw / sw2
-    return {"estimate": est, "weights": w, "n": n,
-            "mean_weight": sw / n, "max_weight": max(w) if w else 0.0,
-            "ess": ess, "n_clipped": clipped, "estimator": estimator}
+    return {
+        "estimate": est,
+        "weights": w,
+        "n": n,
+        "mean_weight": sw / n,
+        "max_weight": max(w) if w else 0.0,
+        "ess": ess,
+        "n_clipped": clipped,
+        "estimator": estimator,
+    }
 
 
-def rlhf_recommendation(env, policy, n_episodes=20, horizon=10,
-                        gamma=0.9, seed=0, estimator="ips",
-                        reward_model=None, clip=None, relevance=None,
-                        k=5):
+def rlhf_recommendation(
+    env,
+    policy,
+    n_episodes=20,
+    horizon=10,
+    gamma=0.9,
+    seed=0,
+    estimator="ips",
+    reward_model=None,
+    clip=None,
+    relevance=None,
+    k=5,
+):
     """Evaluate a recommendation policy, on-policy or from a log.
 
     An ``env`` carrying ``transition`` and ``reward`` is simulated. An
@@ -277,24 +285,18 @@ def rlhf_recommendation(env, policy, n_episodes=20, horizon=10,
     Zhao et al. (2018) KDD, 1040-1048; Swaminathan and Joachims (2015)
     NeurIPS 28, 3231-3239; Dudik et al. (2011) ICML, 1097-1104.
     """
-    out = {"method": "session-MDP recommendation with off-policy "
-                     "evaluation"}
+    out = {"method": "session-MDP recommendation with off-policy evaluation"}
     has_sim = "transition" in env and "reward" in env
     has_log = "log" in env and "behaviour" in env
     if not has_sim and not has_log:
-        raise ValueError("an environment must carry either a "
-                         "transition and reward model or a log and its "
-                         "propensities")
+        raise ValueError("an environment must carry either a transition and reward model or a log and its propensities")
     if has_sim:
-        rets, mean, se, visits = rollout(env, policy, n_episodes,
-                                         horizon, gamma, seed)
+        rets, mean, se, visits = rollout(env, policy, n_episodes, horizon, gamma, seed)
         out["returns"] = rets
         out["value"] = mean
         out["se"] = se
-        out["ci_lower"] = mean - 1.959963984540054 * se if se == se \
-            else float("nan")
-        out["ci_upper"] = mean + 1.959963984540054 * se if se == se \
-            else float("nan")
+        out["ci_lower"] = mean - 1.959963984540054 * se if se == se else float("nan")
+        out["ci_upper"] = mean + 1.959963984540054 * se if se == se else float("nan")
         out["visits"] = visits
         out["n_episodes"] = int(n_episodes)
         out["horizon"] = int(horizon)
@@ -308,8 +310,7 @@ def rlhf_recommendation(env, policy, n_episodes=20, horizon=10,
         out["n_episodes"] = 0
         out["horizon"] = 0
     if has_log:
-        r = off_policy_value(env["log"], policy, env["behaviour"],
-                             estimator, reward_model, clip)
+        r = off_policy_value(env["log"], policy, env["behaviour"], estimator, reward_model, clip)
         out["off_policy"] = r["estimate"]
         out["weights"] = r["weights"]
         out["mean_weight"] = r["mean_weight"]
@@ -342,6 +343,8 @@ def rlhf_recommendation(env, policy, n_episodes=20, horizon=10,
 
 
 def cheatsheet():
-    return ("rlhfRS: recommendation as a session MDP. Discounted "
-            "rollout plus IPS, self-normalised IPS or doubly robust "
-            "off-policy value; the support condition is enforced")
+    return (
+        "rlhfRS: recommendation as a session MDP. Discounted "
+        "rollout plus IPS, self-normalised IPS or doubly robust "
+        "off-policy value; the support condition is enforced"
+    )

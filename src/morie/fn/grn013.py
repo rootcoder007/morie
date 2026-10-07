@@ -88,8 +88,12 @@ def geron_ch4_elastic_net_cost_function(X, y, theta, alpha, r, penalize_intercep
 
     return RichResult(
         title="Elastic net cost (Eq 4-13)",
-        summary_lines=[("Cost", cost), ("MSE", inner["mse"]),
-                       ("L1 term", inner["l1_penalty"]), ("L2 term", l2_penalty)],
+        summary_lines=[
+            ("Cost", cost),
+            ("MSE", inner["mse"]),
+            ("L1 term", inner["l1_penalty"]),
+            ("L2 term", l2_penalty),
+        ],
         payload={
             "cost": cost,
             "mse": inner["mse"],

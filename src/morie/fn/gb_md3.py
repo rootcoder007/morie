@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Observations tied at the combined median in the median test."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['medties', 'gibbons_median_ties']
+__all__ = ["medties", "gibbons_median_ties"]
 
 
 def medties(x, y):
@@ -43,11 +41,7 @@ def medties(x, y):
         raise ValueError("both samples must be non-empty.")
     pooled = sorted(xs + ys)
     nn = m + n
-    med = (
-        pooled[nn // 2]
-        if nn % 2
-        else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
-    )
+    med = pooled[nn // 2] if nn % 2 else (pooled[nn // 2 - 1] + pooled[nn // 2]) / 2.0
     nties = sum(1 for v in pooled if v == med)
     xt = sum(1 for v in xs if v == med)
     us = sum(1 for v in xs if v > med)

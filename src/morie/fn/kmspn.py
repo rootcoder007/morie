@@ -11,12 +11,13 @@ __all__ = ["kamath_t5_span_corruption"]
 def _lcg(seed):
     """The deterministic generator used across this package's tests --
     no global RNG state, same masks on every machine."""
-    s = int(seed) % 2 ** 32
+    s = int(seed) % 2**32
 
     def nxt():
         nonlocal s
-        s = (1664525 * s + 1013904223) % 2 ** 32
-        return (s + 0.5) / 2 ** 32
+        s = (1664525 * s + 1013904223) % 2**32
+        return (s + 0.5) / 2**32
+
     return nxt
 
 
@@ -25,8 +26,7 @@ def _segment(total, parts, rnd):
     choosing parts-1 dividers -- T5's random_spans_noise_mask, so the
     span lengths are random but every span is non-empty."""
     if parts > total:
-        raise ValueError(
-            f"cannot split {total} tokens into {parts} non-empty spans.")
+        raise ValueError(f"cannot split {total} tokens into {parts} non-empty spans.")
     cuts = set()
     while len(cuts) < parts - 1:
         c = 1 + int(rnd() * (total - 1))
@@ -36,9 +36,7 @@ def _segment(total, parts, rnd):
     return [bounds[i + 1] - bounds[i] for i in range(parts)]
 
 
-def kamath_t5_span_corruption(tokens, mean_span_len=3.0,
-                              corruption_rate=0.15, seed=0,
-                              sentinel="<extra_id_{}>"):
+def kamath_t5_span_corruption(tokens, mean_span_len=3.0, corruption_rate=0.15, seed=0, sentinel="<extra_id_{}>"):
     """Input: the sequence with each masked span replaced by ONE
     sentinel; target: sentinel + span, repeated, then a final
     sentinel.
@@ -72,15 +70,13 @@ def kamath_t5_span_corruption(tokens, mean_span_len=3.0,
     toks = list(tokens)
     L = len(toks)
     if L < 2:
-        raise ValueError(
-            f"need at least 2 tokens to corrupt a span; got {L}.")
+        raise ValueError(f"need at least 2 tokens to corrupt a span; got {L}.")
     if not 0.0 < float(corruption_rate) < 1.0:
         raise ValueError(
-            f"corruption_rate must lie in (0, 1); got {corruption_rate}. "
-            "At 1 the model sees nothing to condition on.")
+            f"corruption_rate must lie in (0, 1); got {corruption_rate}. At 1 the model sees nothing to condition on."
+        )
     if float(mean_span_len) < 1.0:
-        raise ValueError(
-            f"mean_span_len must be at least 1; got {mean_span_len}.")
+        raise ValueError(f"mean_span_len must be at least 1; got {mean_span_len}.")
     n_mask = int(round(L * float(corruption_rate)))
     n_mask = max(1, min(n_mask, L - 1))
     n_spans = int(round(n_mask / float(mean_span_len)))
@@ -88,8 +84,8 @@ def kamath_t5_span_corruption(tokens, mean_span_len=3.0,
     n_keep = L - n_mask
     if n_keep < n_spans:
         raise ValueError(
-            f"{n_spans} spans need at least {n_spans} unmasked tokens to "
-            f"separate them, but only {n_keep} remain.")
+            f"{n_spans} spans need at least {n_spans} unmasked tokens to separate them, but only {n_keep} remain."
+        )
 
     rnd = _lcg(seed)
     noise = _segment(n_mask, n_spans, rnd)
@@ -98,9 +94,9 @@ def kamath_t5_span_corruption(tokens, mean_span_len=3.0,
     inp, tgt, spans = [], [], []
     pos = 0
     for i in range(n_spans):
-        inp.extend(toks[pos:pos + keep[i]])
+        inp.extend(toks[pos : pos + keep[i]])
         pos += keep[i]
-        span = toks[pos:pos + noise[i]]
+        span = toks[pos : pos + noise[i]]
         pos += noise[i]
         s = sentinel.format(i)
         inp.append(s)
@@ -109,13 +105,20 @@ def kamath_t5_span_corruption(tokens, mean_span_len=3.0,
         spans.append(span)
     inp.extend(toks[pos:])
     tgt.append(sentinel.format(n_spans))
-    return RichResult(payload={
-        "input": inp, "target": tgt, "spans": spans,
-        "n_masked": n_mask, "n_spans": n_spans,
-        "span_lengths": noise,
-        "compression": len(inp) / L,
-        "estimate": n_mask, "n": L,
-        "method": "T5 span corruption with sentinel tokens"})
+    return RichResult(
+        payload={
+            "input": inp,
+            "target": tgt,
+            "spans": spans,
+            "n_masked": n_mask,
+            "n_spans": n_spans,
+            "span_lengths": noise,
+            "compression": len(inp) / L,
+            "estimate": n_mask,
+            "n": L,
+            "method": "T5 span corruption with sentinel tokens",
+        }
+    )
 
 
 def cheatsheet():

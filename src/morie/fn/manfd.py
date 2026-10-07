@@ -65,9 +65,17 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["manfd", "manifold_functional", "l2_distances", "knn_graph",
-           "shortest_paths", "jacobi_eigen", "classical_scaling",
-           "METHODS", "cheatsheet"]
+__all__ = [
+    "manfd",
+    "manifold_functional",
+    "l2_distances",
+    "knn_graph",
+    "shortest_paths",
+    "jacobi_eigen",
+    "classical_scaling",
+    "METHODS",
+    "cheatsheet",
+]
 
 METHODS = ("isomap", "mds", "geodesic_only")
 
@@ -102,8 +110,7 @@ def l2_distances(Y, grid=None):
             for t in range(p - 1):
                 a = Y[i][t] - Y[j][t]
                 b = Y[i][t + 1] - Y[j][t + 1]
-                terms.append(0.5 * (a * a + b * b)
-                             * (grid[t + 1] - grid[t]))
+                terms.append(0.5 * (a * a + b * b) * (grid[t + 1] - grid[t]))
             v = math.sqrt(_w.csum(terms)) if terms else 0.0
             D[i][j] = v
             D[j][i] = v
@@ -202,8 +209,7 @@ def jacobi_eigen(A, sweeps=60):
                 if abs(a[p][q]) <= 1e-300:
                     continue
                 theta = (a[q][q] - a[p][p]) / (2.0 * a[p][q])
-                t = (1.0 if theta >= 0.0 else -1.0) / (
-                    abs(theta) + math.sqrt(theta * theta + 1.0))
+                t = (1.0 if theta >= 0.0 else -1.0) / (abs(theta) + math.sqrt(theta * theta + 1.0))
                 c = 1.0 / math.sqrt(t * t + 1.0)
                 s = t * c
                 for r in range(n):
@@ -253,8 +259,7 @@ def classical_scaling(D, dim=2, sweeps=60):
     rmean = [_w.csum(d2[i]) / n for i in range(n)]
     cmean = [_w.csum(d2[i][j] for i in range(n)) / n for j in range(n)]
     gmean = _w.csum(rmean) / n
-    B = [[-0.5 * (d2[i][j] - rmean[i] - cmean[j] + gmean)
-          for j in range(n)] for i in range(n)]
+    B = [[-0.5 * (d2[i][j] - rmean[i] - cmean[j] + gmean) for j in range(n)] for i in range(n)]
     ev, vec = jacobi_eigen(B, sweeps)
     dim = int(dim)
     if dim < 1 or dim > n:
@@ -270,8 +275,7 @@ def classical_scaling(D, dim=2, sweeps=60):
     return coords, ev, n_neg, B
 
 
-def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2,
-                        sweeps=60):
+def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2, sweeps=60):
     """Embed functional data on its manifold.
 
     Parameters
@@ -300,7 +304,7 @@ def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2,
     and Langford (2000) Science 290(5500), 2319-2323.
     """
     if method not in METHODS:
-        raise ValueError("method must be one of %r" % (METHODS,))
+        raise ValueError(f"method must be one of {METHODS!r}")
     ys = [[float(v) for v in row] for row in Y]
     n = len(ys)
     if n < 3:
@@ -337,10 +341,11 @@ def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2,
         for i in range(n):
             for j in range(i + 1, n):
                 a.append(src[i][j])
-                e = math.sqrt(_w.csum(
-                    (coords[i][t] - coords[j][t])
-                    * (coords[i][t] - coords[j][t])
-                    for t in range(len(coords[i]))))
+                e = math.sqrt(
+                    _w.csum(
+                        (coords[i][t] - coords[j][t]) * (coords[i][t] - coords[j][t]) for t in range(len(coords[i]))
+                    )
+                )
                 b.append(e)
         ma = _w.csum(a) / len(a)
         mb = _w.csum(b) / len(b)
@@ -351,33 +356,36 @@ def manifold_functional(Y, k=4, method="isomap", grid=None, dim=2,
             r = sab / math.sqrt(saa * sbb)
             resid = 1.0 - r * r
 
-    finite = [G[i][j] for i in range(n) for j in range(n)
-              if G[i][j] < _INF]
-    return RichResult(payload={
-        "coords": coords,
-        "eigenvalues": ev,
-        "distance": D,
-        "geodesic": G,
-        "n_components": comp,
-        "disconnected": disconnected,
-        "n_negative_eigenvalues": n_neg,
-        "residual_variance": resid,
-        "estimate": resid,
-        "se": float("nan"),
-        "geodesic_max": max(finite) if finite else float("nan"),
-        "n": n,
-        "k": int(k),
-        "dim": int(dim),
-        "method": method,
-        "name": "functional manifold representation",
-    })
+    finite = [G[i][j] for i in range(n) for j in range(n) if G[i][j] < _INF]
+    return RichResult(
+        payload={
+            "coords": coords,
+            "eigenvalues": ev,
+            "distance": D,
+            "geodesic": G,
+            "n_components": comp,
+            "disconnected": disconnected,
+            "n_negative_eigenvalues": n_neg,
+            "residual_variance": resid,
+            "estimate": resid,
+            "se": float("nan"),
+            "geodesic_max": max(finite) if finite else float("nan"),
+            "n": n,
+            "k": int(k),
+            "dim": int(dim),
+            "method": method,
+            "name": "functional manifold representation",
+        }
+    )
 
 
 manfd = manifold_functional
 
 
 def cheatsheet():
-    return ("manfd: functional manifold learning. methods "
-            + ", ".join(METHODS)
-            + "; L2 curve distances, k-NN graph geodesics, Torgerson "
-              "scaling on a written-out Jacobi eigensolver")
+    return (
+        "manfd: functional manifold learning. methods "
+        + ", ".join(METHODS)
+        + "; L2 curve distances, k-NN graph geodesics, Torgerson "
+        "scaling on a written-out Jacobi eigensolver"
+    )

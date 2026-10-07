@@ -1,7 +1,6 @@
 """Tests for plncF.planck_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.plncF import planck_function
 
 

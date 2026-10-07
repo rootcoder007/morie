@@ -29,19 +29,25 @@ def burkov_tf_idf(term, document, corpus):
     doc = [str(x) for x in np.atleast_1d(np.asarray(document, dtype=object))]
     if not corpus:
         raise ValueError("the corpus is empty.")
-    docs = [[str(x) for x in np.atleast_1d(np.asarray(d, dtype=object))]
-            for d in corpus]
+    docs = [[str(x) for x in np.atleast_1d(np.asarray(d, dtype=object))] for d in corpus]
     tf = doc.count(t)
     df = sum(1 for d in docs if t in d)
     if df == 0:
         raise ValueError(
-            f"term {t!r} appears in no corpus document, so IDF is "
-            "undefined; is the query document part of the corpus?")
+            f"term {t!r} appears in no corpus document, so IDF is undefined; is the query document part of the corpus?"
+        )
     idf = math.log(len(docs) / df)
-    return RichResult(payload={
-        "estimate": tf * idf, "tf": tf, "df": df, "idf": idf,
-        "n_documents": len(docs), "n": len(doc),
-        "method": "TF-IDF (Burkov Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": tf * idf,
+            "tf": tf,
+            "df": df,
+            "idf": idf,
+            "n_documents": len(docs),
+            "n": len(doc),
+            "method": "TF-IDF (Burkov Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

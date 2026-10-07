@@ -156,8 +156,7 @@ def _huber_centre(pts, c, tol=1e-10, max_iter=200):
     return m
 
 
-def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100,
-            huber_c=1.345, seed=0, centers=None):
+def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100, huber_c=1.345, seed=0, centers=None):
     r"""Fit an impartially :math:`\alpha`-trimmed :math:`k`-mean.
 
     Parameters
@@ -209,12 +208,12 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100,
 
     References
     ----------
-    Cuesta-Albertos, Gordaliza & Matrán (1997), *Ann. Statist.* 25(2),
-    553-576: section 1 for :math:`V_\Phi`, section 2 for the trimming
+    Cuesta-Albertos, J. A., Gordaliza, A. & Matrán, C. (1997). Trimmed
+    k-means: an attempt to robustify quantizers. *Annals of Statistics*
+    25(2), 553-576: section 1 for :math:`V_\Phi`, section 2 for the trimming
     functions, Corollary 3.2 for the sufficiency of hard trimming.
     """
-    rows = [[float(v) for v in r]
-            for r in np.atleast_2d(np.asarray(X, dtype=float))]
+    rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(X, dtype=float))]
     if not rows or not rows[0]:
         raise ValueError("rkmeans: X must be a non-empty (n, p) matrix")
     p = len(rows[0])
@@ -226,28 +225,24 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100,
     if k < 1:
         raise ValueError("rkmeans: k must be >= 1")
     if k > n:
-        raise ValueError("rkmeans: k = %d exceeds n = %d" % (k, n))
+        raise ValueError(f"rkmeans: k = {int(k)} exceeds n = {int(n)}")
     alpha = float(alpha)
     if not 0.0 <= alpha < 1.0:
-        raise ValueError("rkmeans: alpha must lie in [0, 1), got %r"
-                         % (alpha,))
+        raise ValueError(f"rkmeans: alpha must lie in [0, 1), got {alpha!r}")
     if penalty not in _PENALTIES:
-        raise ValueError("rkmeans: penalty must be one of %r, got %r"
-                         % (_PENALTIES, penalty))
+        raise ValueError(f"rkmeans: penalty must be one of {_PENALTIES!r}, got {penalty!r}")
     huber_c = float(huber_c)
     if penalty == "huber" and not huber_c > 0.0:
         raise ValueError("rkmeans: huber_c must be > 0")
 
     n_keep = int(math.ceil(n * (1.0 - alpha)))
     if n_keep < k:
-        raise ValueError("rkmeans: alpha = %g keeps only %d points, fewer "
-                         "than k = %d" % (alpha, n_keep, k))
+        raise ValueError(f"rkmeans: alpha = {alpha:g} keeps only {int(n_keep)} points, fewer than k = {int(k)}")
 
     rng = np.random.default_rng(seed)
     starts = []
     if centers is not None:
-        c0 = [[float(v) for v in r]
-              for r in np.atleast_2d(np.asarray(centers, dtype=float))]
+        c0 = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(centers, dtype=float))]
         if len(c0) != k or len(c0[0]) != p:
             raise ValueError("rkmeans: centers must be (k, p)")
         starts.append(c0)
@@ -259,8 +254,7 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100,
 
     best = None
     for init in starts:
-        got = _concentrate(rows, init, k, n_keep, penalty, huber_c,
-                           int(max_iter))
+        got = _concentrate(rows, init, k, n_keep, penalty, huber_c, int(max_iter))
         if best is None or got[0] < best[0]:
             best = got
     crit, cen, labels, kept, dists = best
@@ -270,22 +264,24 @@ def rkmeans(X, k=2, alpha=0.1, penalty="square", n_start=20, max_iter=100,
         sizes[labels[i]] += 1
     outliers = [i for i in range(n) if labels[i] < 0]
 
-    return RichResult(payload={
-        "estimate": cen,
-        "centers": cen,
-        "labels": labels,
-        "kept": kept,
-        "outliers": outliers,
-        "criterion": float(crit),
-        "distances": dists,
-        "sizes": sizes,
-        "n_trimmed": len(outliers),
-        "n_kept": len(kept),
-        "alpha": alpha,
-        "k": k,
-        "penalty": penalty,
-        "method": "trimmed k-means (Cuesta-Albertos et al. 1997)",
-    })
+    return RichResult(
+        payload={
+            "estimate": cen,
+            "centers": cen,
+            "labels": labels,
+            "kept": kept,
+            "outliers": outliers,
+            "criterion": float(crit),
+            "distances": dists,
+            "sizes": sizes,
+            "n_trimmed": len(outliers),
+            "n_kept": len(kept),
+            "alpha": alpha,
+            "k": k,
+            "penalty": penalty,
+            "method": "trimmed k-means (Cuesta-Albertos et al. 1997)",
+        }
+    )
 
 
 def _concentrate(rows, cen, k, n_keep, penalty, huber_c, max_iter):
@@ -311,8 +307,7 @@ def _concentrate(rows, cen, k, n_keep, penalty, huber_c, max_iter):
                     bd, bj = d, j
             dists[i] = bd
             best_j[i] = bj
-        scores = sorted(range(n), key=lambda i: (_phi(dists[i], penalty,
-                                                      huber_c), i))
+        scores = sorted(range(n), key=lambda i: (_phi(dists[i], penalty, huber_c), i))
         # 2. keep the n_keep smallest -- the trimming set.
         kept = sorted(scores[:n_keep])
         keptset = set(kept)
@@ -342,13 +337,15 @@ def _concentrate(rows, cen, k, n_keep, penalty, huber_c, max_iter):
 
 
 def cheatsheet():
-    return ("rkmeans: impartially alpha-trimmed k-Phi-means "
-            "(Cuesta-Albertos, Gordaliza & Matran 1997). Minimises "
-            "V = (1/P(A)) int_A Phi(d(x, M)) dP over k-sets M AND "
-            "trimming sets A with P(A) >= 1-alpha -- the data choose "
-            "what to discard, not the analyst. Phi in {square (k-means), "
-            "absolute (k-medians), huber}. Corollary 3.2: hard trimming "
-            "is optimal. Trimmed points are returned as outliers.")
+    return (
+        "rkmeans: impartially alpha-trimmed k-Phi-means "
+        "(Cuesta-Albertos, Gordaliza & Matran 1997). Minimises "
+        "V = (1/P(A)) int_A Phi(d(x, M)) dP over k-sets M AND "
+        "trimming sets A with P(A) >= 1-alpha -- the data choose "
+        "what to discard, not the analyst. Phi in {square (k-means), "
+        "absolute (k-medians), huber}. Corollary 3.2: hard trimming "
+        "is optimal. Trimmed points are returned as outliers."
+    )
 
 
 # compact alias per ledger/NAMING.md

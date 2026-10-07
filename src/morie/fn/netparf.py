@@ -90,12 +90,22 @@ def network_paf(y, exposure, network):
     me, mn = C.mean(ev), C.mean(nu)
     pd_ = b1 * me / my
     ps = b2 * mn / my
-    return RichResult(payload={
-        "estimate": pd_ + ps, "paf": pd_ + ps,
-        "paf_direct": pd_, "paf_spillover": ps,
-        "b0": b0, "b1": b1, "b2": b2,
-        "mean_y": my, "mean_exposure": me, "mean_nu": mn, "n": n,
-        "method": "Network attributable fraction with spillover"})
+    return RichResult(
+        payload={
+            "estimate": pd_ + ps,
+            "paf": pd_ + ps,
+            "paf_direct": pd_,
+            "paf_spillover": ps,
+            "b0": b0,
+            "b1": b1,
+            "b2": b2,
+            "mean_y": my,
+            "mean_exposure": me,
+            "mean_nu": mn,
+            "n": n,
+            "method": "Network attributable fraction with spillover",
+        }
+    )
 
 
 def cheatsheet():

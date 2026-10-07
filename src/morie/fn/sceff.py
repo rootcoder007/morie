@@ -49,7 +49,7 @@ def sceff(
     eps = 1e-6
     converged = False
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         scores = np.array([score_func(x[i], theta) for i in range(n)])
         total_score = np.sum(scores)
 

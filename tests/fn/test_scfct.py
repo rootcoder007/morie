@@ -1,7 +1,6 @@
 """Tests for morie.fn.scfct — factor scores."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.scfct import score_factor
 
 

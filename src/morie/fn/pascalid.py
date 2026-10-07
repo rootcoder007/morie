@@ -41,9 +41,15 @@ def pascalid(n, k):
     lhs = _morin.binom(n, k)
     if left + right != lhs:
         raise AssertionError("Pascal's rule failed")
-    payload = {"n": float(n), "k": float(k), "lhs": float(lhs),
-               "rhs": float(left + right), "term_left": float(left),
-               "term_right": float(right), "forms_agree": 1.0}
+    payload = {
+        "n": float(n),
+        "k": float(k),
+        "lhs": float(lhs),
+        "rhs": float(left + right),
+        "term_left": float(left),
+        "term_right": float(right),
+        "forms_agree": 1.0,
+    }
     return RichResult(
         title="Pascal's rule C(n,k) = C(n-1,k-1) + C(n-1,k).",
         summary_lines=[("C(n,k)", lhs), ("sum", left + right)],

@@ -90,17 +90,13 @@ def geron_peephole_lstm_cell(x_t, h_prev, c_prev, Wf, Wi, Wg, Wo, Uf, Ui, Uo, bf
     for name, M in (("Wf", Wf), ("Wi", Wi), ("Wg", Wg), ("Wo", Wo)):
         A = np.atleast_2d(np.asarray(M, dtype=float))
         if A.shape != (n_h, n_cat):
-            raise ValueError(
-                f"{name} must be ({n_h}, {n_cat}) to act on [h_prev, x_t], got {A.shape}."
-            )
+            raise ValueError(f"{name} must be ({n_h}, {n_cat}) to act on [h_prev, x_t], got {A.shape}.")
         W[name] = A
     U = {}
     for name, v in (("Uf", Uf), ("Ui", Ui), ("Uo", Uo)):
         a = np.asarray(v, dtype=float).ravel()
         if a.size != n_h:
-            raise ValueError(
-                f"{name} is a diagonal peephole and must have {n_h} entries, got {a.size}."
-            )
+            raise ValueError(f"{name} is a diagonal peephole and must have {n_h} entries, got {a.size}.")
         U[name] = a
     B = {}
     for name, v in (("bf", bf), ("bi", bi), ("bg", bg), ("bo", bo)):

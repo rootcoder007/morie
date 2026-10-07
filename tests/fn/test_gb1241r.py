@@ -1,7 +1,5 @@
 """Tests for gb1241r.gibbons_concordance_rho_link."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1241r import gibbons_concordance_rho_link
 
 

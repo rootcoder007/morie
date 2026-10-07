@@ -1,7 +1,6 @@
 """Tests for morie.fn.biccg -- BiCGSTAB solver."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.biccg import biccg, bicgstab
 

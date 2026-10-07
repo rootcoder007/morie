@@ -47,7 +47,7 @@ def gradient_descent(
     x = np.asarray(x0, dtype=float).copy()
     v = np.zeros_like(x)
     converged = False
-    for it in range(1, maxiter + 1):
+    for it in range(1, maxiter + 1):  # noqa: B007 - read after the loop
         g = np.asarray(grad(x), dtype=float)
         gnorm = float(np.linalg.norm(g))
         if gnorm < tol:

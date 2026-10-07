@@ -71,15 +71,16 @@ doi:10.3982/ECTA7347. The extension where length and location are
 estimated at the same rate.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["identified_set_interval", "posterior_hpd",
-           "frequentist_confidence_set", "compare_sets",
-           "conditional_prior_uniform"]
+__all__ = [
+    "identified_set_interval",
+    "posterior_hpd",
+    "frequentist_confidence_set",
+    "compare_sets",
+    "conditional_prior_uniform",
+]
 
 _EPS = 1e-12
 
@@ -94,10 +95,8 @@ def identified_set_interval(phi_hat, half_width):
     """
     h = float(half_width)
     if h < 0.0:
-        raise ValueError("bndbye: the half-width must be "
-                         "non-negative, got %r" % (half_width,))
-    return {"lower": float(phi_hat) - h, "upper": float(phi_hat) + h,
-            "width": 2.0 * h, "phi_hat": float(phi_hat)}
+        raise ValueError(f"bndbye: the half-width must be non-negative, got {half_width!r}")
+    return {"lower": float(phi_hat) - h, "upper": float(phi_hat) + h, "width": 2.0 * h, "phi_hat": float(phi_hat)}
 
 
 def conditional_prior_uniform(theta_set, n_grid=401):
@@ -108,13 +107,11 @@ def conditional_prior_uniform(theta_set, n_grid=401):
         raise ValueError("bndbye: the identified set is empty")
     if hi - lo <= _EPS:
         return {"grid": [lo], "density": [1.0]}
-    g = [lo + (hi - lo) * i / (int(n_grid) - 1)
-         for i in range(int(n_grid))]
+    g = [lo + (hi - lo) * i / (int(n_grid) - 1) for i in range(int(n_grid))]
     return {"grid": g, "density": [1.0 / (hi - lo)] * len(g)}
 
 
-def posterior_hpd(theta_set, level=0.95, conditional_prior=None,
-                  n_grid=401):
+def posterior_hpd(theta_set, level=0.95, conditional_prior=None, n_grid=401):
     r"""The highest-posterior-density credible set, in the large-sample
     limit.
 
@@ -126,16 +123,13 @@ def posterior_hpd(theta_set, level=0.95, conditional_prior=None,
     """
     if not 0.0 < float(level) < 1.0:
         raise ValueError("bndbye: level must lie in (0, 1)")
-    cp = conditional_prior or conditional_prior_uniform(theta_set,
-                                                        n_grid)
+    cp = conditional_prior or conditional_prior_uniform(theta_set, n_grid)
     g = [float(v) for v in cp["grid"]]
     d = [float(v) for v in cp["density"]]
     if len(g) != len(d):
-        raise ValueError("bndbye: the prior grid and density differ "
-                         "in length")
+        raise ValueError("bndbye: the prior grid and density differ in length")
     if len(g) == 1:
-        return {"lower": g[0], "upper": g[0], "width": 0.0,
-                "level": float(level), "covered": 1.0}
+        return {"lower": g[0], "upper": g[0], "width": 0.0, "level": float(level), "covered": 1.0}
     step = (g[-1] - g[0]) / (len(g) - 1)
     mass = [v * step for v in d]
     tot = sum(mass)
@@ -151,16 +145,20 @@ def posterior_hpd(theta_set, level=0.95, conditional_prior=None,
             break
     lo = min(g[i] for i in chosen)
     hi = max(g[i] for i in chosen)
-    return {"lower": lo, "upper": hi, "width": hi - lo,
-            "level": float(level), "covered": acc,
-            "n_grid_points": len(chosen),
-            "method": "HPD of the conditional prior at phi_hat -- the "
-                      "large-sample limit of the posterior "
-                      "(Moon & Schorfheide 2012)"}
+    return {
+        "lower": lo,
+        "upper": hi,
+        "width": hi - lo,
+        "level": float(level),
+        "covered": acc,
+        "n_grid_points": len(chosen),
+        "method": "HPD of the conditional prior at phi_hat -- the "
+        "large-sample limit of the posterior "
+        "(Moon & Schorfheide 2012)",
+    }
 
 
-def frequentist_confidence_set(theta_set, se_phi, level=0.95,
-                               target="parameter"):
+def frequentist_confidence_set(theta_set, se_phi, level=0.95, target="parameter"):
     r"""A confidence set that must cover every point of the identified
     set.
 
@@ -171,66 +169,62 @@ def frequentist_confidence_set(theta_set, se_phi, level=0.95,
     :math:`\Theta(\hat\phi_n)`, because :math:`\hat\phi_n` is noisy.
     """
     if target not in ("parameter", "set"):
-        raise ValueError("bndbye: target must be parameter or set, "
-                         "got %r" % (target,))
+        raise ValueError(f"bndbye: target must be parameter or set, got {target!r}")
     s = float(se_phi)
     if s < 0.0:
-        raise ValueError("bndbye: the standard error must be "
-                         "non-negative")
+        raise ValueError("bndbye: the standard error must be non-negative")
     if not 0.0 < float(level) < 1.0:
         raise ValueError("bndbye: level must lie in (0, 1)")
-    c = (k.qnorm(float(level)) if target == "parameter"
-         else k.qnorm(0.5 + float(level) / 2.0))
-    return {"lower": theta_set["lower"] - c * s,
-            "upper": theta_set["upper"] + c * s,
-            "width": theta_set["width"] + 2.0 * c * s,
-            "critical_value": c, "target": target,
-            "level": float(level),
-            "note": "extends beyond Theta(phi_hat) by c * se on each "
-                    "side, because phi_hat is estimated"}
+    c = k.qnorm(float(level)) if target == "parameter" else k.qnorm(0.5 + float(level) / 2.0)
+    return {
+        "lower": theta_set["lower"] - c * s,
+        "upper": theta_set["upper"] + c * s,
+        "width": theta_set["width"] + 2.0 * c * s,
+        "critical_value": c,
+        "target": target,
+        "level": float(level),
+        "note": "extends beyond Theta(phi_hat) by c * se on each side, because phi_hat is estimated",
+    }
 
 
-def compare_sets(phi_hat, half_width, se_phi, level=0.95,
-                 conditional_prior=None, n_grid=401):
+def compare_sets(phi_hat, half_width, se_phi, level=0.95, conditional_prior=None, n_grid=401):
     r"""The paper's comparison, reported together as it recommends."""
     ts = identified_set_interval(phi_hat, half_width)
-    hpd = posterior_hpd(ts, level=level,
-                        conditional_prior=conditional_prior,
-                        n_grid=n_grid)
+    hpd = posterior_hpd(ts, level=level, conditional_prior=conditional_prior, n_grid=n_grid)
     cs = frequentist_confidence_set(ts, se_phi, level=level)
-    return RichResult(payload={
-        "estimate": hpd["width"] / max(cs["width"], _EPS),
-        "identified_set": ts, "credible_hpd": hpd,
-        "confidence_set": cs,
-        "hpd_inside_identified_set":
-            hpd["lower"] >= ts["lower"] - 1e-9
-            and hpd["upper"] <= ts["upper"] + 1e-9,
-        "cs_contains_identified_set":
-            cs["lower"] <= ts["lower"] + 1e-9
-            and cs["upper"] >= ts["upper"] - 1e-9,
-        "width_ratio_hpd_over_cs": hpd["width"] / max(cs["width"],
-                                                      _EPS),
-        "conditional_prior_reported": conditional_prior is not None,
-        "method": "Moon & Schorfheide (2012): HPD excludes parts of "
-                  "Theta(phi_hat); the confidence set extends beyond "
-                  "it",
-        "recommendation": "report Theta(phi_hat) and the conditional "
-                          "prior alongside any credible set -- the "
-                          "credible set alone cannot be interpreted",
-    })
+    return RichResult(
+        payload={
+            "estimate": hpd["width"] / max(cs["width"], _EPS),
+            "identified_set": ts,
+            "credible_hpd": hpd,
+            "confidence_set": cs,
+            "hpd_inside_identified_set": hpd["lower"] >= ts["lower"] - 1e-9 and hpd["upper"] <= ts["upper"] + 1e-9,
+            "cs_contains_identified_set": cs["lower"] <= ts["lower"] + 1e-9 and cs["upper"] >= ts["upper"] - 1e-9,
+            "width_ratio_hpd_over_cs": hpd["width"] / max(cs["width"], _EPS),
+            "conditional_prior_reported": conditional_prior is not None,
+            "method": "Moon & Schorfheide (2012): HPD excludes parts of "
+            "Theta(phi_hat); the confidence set extends beyond "
+            "it",
+            "recommendation": "report Theta(phi_hat) and the conditional "
+            "prior alongside any credible set -- the "
+            "credible set alone cannot be interpreted",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bndbye: partial identification, Bayes vs frequentist. "
-            "Data update phi through the likelihood, but the "
-            "CONDITIONAL prior of theta given phi is NEVER updated "
-            "(Kadane). So the posterior tends to the conditional "
-            "prior at phi_hat, and the HPD set EXCLUDES parts of "
-            "Theta(phi_hat) unless that prior is uniform. A "
-            "confidence set must instead EXTEND BEYOND Theta(phi_hat) "
-            "because phi_hat is noisy. Hence credible sets are "
-            "SMALLER than confidence sets. Report the identified set "
-            "and the conditional prior, not just the credible set.")
+    return (
+        "bndbye: partial identification, Bayes vs frequentist. "
+        "Data update phi through the likelihood, but the "
+        "CONDITIONAL prior of theta given phi is NEVER updated "
+        "(Kadane). So the posterior tends to the conditional "
+        "prior at phi_hat, and the HPD set EXCLUDES parts of "
+        "Theta(phi_hat) unless that prior is uniform. A "
+        "confidence set must instead EXTEND BEYOND Theta(phi_hat) "
+        "because phi_hat is noisy. Hence credible sets are "
+        "SMALLER than confidence sets. Report the identified set "
+        "and the conditional prior, not just the credible set."
+    )
 
 
 # compact alias per ledger/NAMING.md

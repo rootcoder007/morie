@@ -88,30 +88,31 @@ def pseudo(B, x, y, edges=None):
         raise ValueError("B is not acyclic (B^k != 0)")
     if edges is None:
         Bg = Bm
-        used = int(sum(1 for i in range(k) for j in range(k)
-                       if float(Bm[i, j]) != 0.0))
+        used = int(sum(1 for i in range(k) for j in range(k) if float(Bm[i, j]) != 0.0))
     else:
         Bg = np.zeros((k, k))
         used = 0
-        for (i, j) in edges:
+        for i, j in edges:
             i = int(i)
             j = int(j)
             if not (0 <= i < k and 0 <= j < k):
-                raise ValueError("edge (%d, %d) out of range" % (i, j))
+                raise ValueError(f"edge ({int(i)}, {int(j)}) out of range")
             Bg[i, j] = Bm[i, j]
             used += 1
     T_g = _path_sum(Bg, k)
     T_full = _path_sum(Bm, k)
     direct = float(Bm[x, y])
     total = float(T_full[x, y])
-    return RichResult(payload={
-        "estimate": float(T_g[x, y]),
-        "total": total,
-        "direct": direct,
-        "indirect": total - direct,
-        "n_edges_used": used,
-        "method": "Avin-Shpitser-Pearl (2005) path-specific effect, linear path rule",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(T_g[x, y]),
+            "total": total,
+            "direct": direct,
+            "indirect": total - direct,
+            "n_edges_used": used,
+            "method": "Avin-Shpitser-Pearl (2005) path-specific effect, linear path rule",
+        }
+    )
 
 
 path_specific_effect = pseudo

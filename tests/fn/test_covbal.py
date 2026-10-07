@@ -1,7 +1,6 @@
 """Tests for covbal.covariate_balance_check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.covbal import covariate_balance_check
 
 
@@ -54,9 +53,7 @@ def test_covbal_basic():
     assert abs(float(r2["variance_ratio"][0]) - 1.0) < 1e-12
 
     # n_imbalanced and balanced must be consistent.
-    assert int(result["n_imbalanced"]) == int(
-        np.sum(np.abs(result["smd_after"]) > result["threshold"])
-    )
+    assert int(result["n_imbalanced"]) == int(np.sum(np.abs(result["smd_after"]) > result["threshold"]))
     assert bool(result["balanced"]) == (int(result["n_imbalanced"]) == 0)
 
     # worst is the index of the covariate with the largest |smd_after|.

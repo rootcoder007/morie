@@ -1,7 +1,6 @@
 """Tests for gh_c3_11.ghosal_tailfree_def."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c3_11 import ghosal_tailfree_def
 
 

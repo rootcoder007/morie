@@ -21,20 +21,28 @@ def burkov_ngram_mle(counts_ngram, counts_prefix):
     >>> burkov_ngram_mle(3, 4)["estimate"]
     0.75
     """
-    c = float(counts_ngram); p = float(counts_prefix)
+    c = float(counts_ngram)
+    p = float(counts_prefix)
     if c < 0 or p < 0:
         raise ValueError("counts must be non-negative.")
     if p == 0:
         raise ValueError(
-            "the prefix was never observed, so the MLE conditional is "
-            "undefined (0/0); use smoothing or backoff.")
+            "the prefix was never observed, so the MLE conditional is undefined (0/0); use smoothing or backoff."
+        )
     if c > p:
         raise ValueError(
             f"count(ngram) = {c} exceeds count(prefix) = {p}, which is "
-            "impossible: every ngram occurrence contains its prefix.")
-    return RichResult(payload={
-        "estimate": c / p, "count_ngram": c, "count_prefix": p, "n": int(p),
-        "method": "N-gram MLE count/prefix (Burkov Ch 2)"})
+            "impossible: every ngram occurrence contains its prefix."
+        )
+    return RichResult(
+        payload={
+            "estimate": c / p,
+            "count_ngram": c,
+            "count_prefix": p,
+            "n": int(p),
+            "method": "N-gram MLE count/prefix (Burkov Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

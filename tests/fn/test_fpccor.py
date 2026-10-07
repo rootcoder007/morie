@@ -1,8 +1,8 @@
 """fpccor: integrated functional correlation (Ramsay & Silverman 2005)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fpccor import functional_correlation as fcorr
 
 
@@ -55,9 +55,7 @@ def test_fpccor_is_invariant_to_scaling_each_sample():
     rng = np.random.default_rng(1069)
     X = rng.standard_normal((40, 30))
     Y = rng.standard_normal((40, 30))
-    assert fcorr(3.0 * X, 0.2 * Y)["estimate"] == pytest.approx(
-        fcorr(X, Y)["estimate"]
-    )
+    assert fcorr(3.0 * X, 0.2 * Y)["estimate"] == pytest.approx(fcorr(X, Y)["estimate"])
 
 
 def test_fpccor_irregular_grid_changes_the_weighting():
@@ -72,9 +70,7 @@ def test_fpccor_irregular_grid_changes_the_weighting():
     t[0], t[-1] = 0.0, 1.0
     X = rng.standard_normal((60, n_pts))
     Y = 0.5 * X + rng.standard_normal((60, n_pts))
-    assert fcorr(X, Y, argvals=t)["estimate"] != pytest.approx(
-        fcorr(X, Y)["estimate"], abs=1e-9
-    )
+    assert fcorr(X, Y, argvals=t)["estimate"] != pytest.approx(fcorr(X, Y)["estimate"], abs=1e-9)
 
 
 def test_fpccor_rejects_mismatched_or_degenerate_input():

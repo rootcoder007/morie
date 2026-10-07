@@ -67,8 +67,7 @@ def geron_ch4_linear_regression_prediction(theta, x):
     Xm = x.reshape(1, -1) if not batch else x
     if Xm.shape[1] != n:
         raise ValueError(
-            f"x has {Xm.shape[1]} features but theta implies {n} "
-            f"(theta[0] is the bias, so len(theta) = n + 1)."
+            f"x has {Xm.shape[1]} features but theta implies {n} (theta[0] is the bias, so len(theta) = n + 1)."
         )
 
     pred = theta[0] + Xm @ theta[1:]

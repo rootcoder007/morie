@@ -61,14 +61,11 @@ def ot_mahalanobis_distance_ot(X, Y, Sigma):
         row = []
         for yj in B:
             dv = [xi[k] - yj[k] for k in range(d)]
-            row.append(sum(dv[k] * Si[k][l] * dv[l]
-                           for k in range(d) for l in range(d)))
+            row.append(sum(dv[k] * Si[k][ell] * dv[ell] for k in range(d) for ell in range(d)))
         C.append(row)
     n, m = len(A), len(B)
     _, cost = ot.emd([1.0 / n] * n, [1.0 / m] * m, C)
-    return RichResult(payload={
-        "C": C, "cost": cost, "n": n, "m": m, "d": d,
-        "method": "Mahalanobis ground cost"})
+    return RichResult(payload={"C": C, "cost": cost, "n": n, "m": m, "d": d, "method": "Mahalanobis ground cost"})
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """Tests for morie.fn.moran — Moran's I global spatial autocorrelation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.moran import morans_i
 
 

@@ -1,8 +1,8 @@
 """Tests for morie.fn.qf — F-distribution quantile."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pf import pf
 from morie.fn.qf import qf
 

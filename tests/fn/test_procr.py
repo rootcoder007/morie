@@ -1,8 +1,8 @@
 """Tests for procrustes rotation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.procr import procr, procrustes_rotation
 
 

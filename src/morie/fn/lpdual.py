@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Linear-programming duality certificate."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -92,23 +90,31 @@ def lpdual(A, b, c, x=None, y=None):
     Aty = C.matvec(At, y)
     slack = [b[i] - Ax[i] for i in range(m)]
     surp = [Aty[j] - c[j] for j in range(n)]
-    pf = 1.0 if (all(v >= -1e-9 for v in slack)
-                 and all(v >= -1e-9 for v in x)) else 0.0
-    df = 1.0 if (all(v >= -1e-9 for v in surp)
-                 and all(v >= -1e-9 for v in y)) else 0.0
+    pf = 1.0 if (all(v >= -1e-9 for v in slack) and all(v >= -1e-9 for v in x)) else 0.0
+    df = 1.0 if (all(v >= -1e-9 for v in surp) and all(v >= -1e-9 for v in y)) else 0.0
     po = sum(c[j] * x[j] for j in range(n))
     do = sum(b[i] * y[i] for i in range(m))
     gap = do - po
-    return RichResult(payload={
-        "dual_A": At, "dual_b": c, "dual_c": b,
-        "primal_objective": po, "dual_objective": do, "gap": gap,
-        "primal_feasible": pf, "dual_feasible": df,
-        "optimal": 1.0 if (pf and df and abs(gap) <= 1e-9) else 0.0,
-        "slack": slack, "surplus": surp,
-        "cs_constraint": [y[i] * slack[i] for i in range(m)],
-        "cs_variable": [x[j] * surp[j] for j in range(n)],
-        "m": float(m), "n": float(n),
-        "method": "LP duality certificate (no LP is solved)"})
+    return RichResult(
+        payload={
+            "dual_A": At,
+            "dual_b": c,
+            "dual_c": b,
+            "primal_objective": po,
+            "dual_objective": do,
+            "gap": gap,
+            "primal_feasible": pf,
+            "dual_feasible": df,
+            "optimal": 1.0 if (pf and df and abs(gap) <= 1e-9) else 0.0,
+            "slack": slack,
+            "surplus": surp,
+            "cs_constraint": [y[i] * slack[i] for i in range(m)],
+            "cs_variable": [x[j] * surp[j] for j in range(n)],
+            "m": float(m),
+            "n": float(n),
+            "method": "LP duality certificate (no LP is solved)",
+        }
+    )
 
 
 lp_dual = lpdual

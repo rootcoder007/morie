@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmptr — compliance trend."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.cmptr import compliance_trend
 
 

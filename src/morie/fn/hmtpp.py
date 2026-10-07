@@ -91,7 +91,9 @@ def geron_tensor_parallelism(model, n_devices=2, x=None, scheme="column"):
         raise ValueError("geron_tensor_parallelism: model must be a 2-D weight matrix or a list of them")
     for i, w in enumerate(mats):
         if w.ndim != 2 or w.size == 0:
-            raise ValueError(f"geron_tensor_parallelism: weight {i} must be a non-empty 2-D matrix, got shape {w.shape}")
+            raise ValueError(
+                f"geron_tensor_parallelism: weight {i} must be a non-empty 2-D matrix, got shape {w.shape}"
+            )
         if not np.all(np.isfinite(w)):
             raise ValueError(f"geron_tensor_parallelism: weight {i} contains non-finite values")
     N = int(n_devices)

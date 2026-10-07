@@ -59,7 +59,7 @@ def stick_breaking(V):
     left = 1.0
     for v in vs:
         out.append(left * v)
-        left *= (1.0 - v)
+        left *= 1.0 - v
     return out
 
 
@@ -86,7 +86,7 @@ def cdp_posterior_params(alpha, counts, alpha_tail=0.0):
         raise ValueError("alpha and counts must align")
     n = sum(N)
     upd = [ai + Ni for ai, Ni in zip(a, N)]
-    tail = float(alpha_tail) + n - sum(N[:len(a)])
+    tail = float(alpha_tail) + n - sum(N[: len(a)])
     return upd, tail
 
 
@@ -183,8 +183,7 @@ def bernstein_feller_cdf(F, x, K):
         raise ValueError("x must lie in [0, 1]")
     tot = 0.0
     for k in range(K + 1):
-        tot += F(k / K) * math.comb(K, k) * x ** k \
-            * (1.0 - x) ** (K - k)
+        tot += F(k / K) * math.comb(K, k) * x**k * (1.0 - x) ** (K - k)
     return tot
 
 
@@ -195,16 +194,15 @@ def gp_regression_posterior_mean(x, y, xstar, kernel, sigma2):
     xs = _flat(x)
     ys = _flat(y)
     n = len(xs)
-    K = [[kernel(xs[i], xs[j]) + (sigma2 if i == j else 0.0)
-          for j in range(n)] for i in range(n)]
+    K = [[kernel(xs[i], xs[j]) + (sigma2 if i == j else 0.0) for j in range(n)] for i in range(n)]
     w = np.linalg.solve(np.marr(K), np.marr(ys))
     wl = [float(v) for v in w._flat()]
-    return [sum(kernel(xq, xs[i]) * wl[i] for i in range(n))
-            for xq in _flat(xstar)]
+    return [sum(kernel(xq, xs[i]) * wl[i] for i in range(n)) for xq in _flat(xstar)]
 
 
 def rbf_kernel(length=1.0, var=1.0):
     def k(a, b):
         d = (a - b) / length
         return var * math.exp(-0.5 * d * d)
+
     return k

@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Chi-square approximation to the Kruskal-Wallis statistic."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['kwchi', 'gibbons_kw_chi2_approx']
+__all__ = ["kwchi", "gibbons_kw_chi2_approx"]
 
 
 def kwchi(h, k, ns=None):

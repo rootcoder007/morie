@@ -80,11 +80,10 @@ def geron_f1_score(y_true, y_pred, positive_class=1):
             f"(labels present: {labels.tolist()}); F1 for it is undefined."
         )
 
-    cm = geron_confusion_matrix(y_true, y_pred)   # classes indexed 0 .. max(label)
+    cm = geron_confusion_matrix(y_true, y_pred)  # classes indexed 0 .. max(label)
     prec = float(np.asarray(cm["precision"])[pc])
     rec = float(np.asarray(cm["recall"])[pc])
-    f1 = 0.0 if (not np.isfinite(prec) or not np.isfinite(rec) or prec + rec == 0) \
-        else 2.0 * prec * rec / (prec + rec)
+    f1 = 0.0 if (not np.isfinite(prec) or not np.isfinite(rec) or prec + rec == 0) else 2.0 * prec * rec / (prec + rec)
 
     warns = []
     if not np.isfinite(prec):

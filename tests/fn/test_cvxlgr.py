@@ -1,7 +1,6 @@
 """Tests for cvxlgr.boyd_logistic_loss."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxlgr import boyd_logistic_loss
 
 
@@ -11,6 +10,8 @@ def test_cvxlgr_basic():
     result = boyd_logistic_loss(u)
     assert isinstance(result, dict)
     assert "loss" in result
+
+
 def test_cvxlgr_edge():
     """Test edge cases."""
     u = np.random.default_rng(44).normal(0, 1, 100)

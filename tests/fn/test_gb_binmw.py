@@ -1,6 +1,5 @@
 """Tests for gb_binmw (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_binmw import gibbons_mw_binomial_link

@@ -63,18 +63,20 @@ def rosenbaum_bound_signed(pairs, Gamma=1.0):
     z_lo = (W - mu_m) / sd_m if sd_m > 0.0 else float("nan")
     p_up = 1.0 - core.pnorm(z_up)
     p_lo = 1.0 - core.pnorm(z_lo)
-    return RichResult(payload={
-        "estimate": p_up,
-        "p_upper": p_up,
-        "p_lower": p_lo,
-        "W": W,
-        "mu_plus": mu_p,
-        "sigma_plus": sd_p,
-        "z_upper": z_up,
-        "n_pairs": n,
-        "Gamma": G,
-        "method": "Rosenbaum sensitivity bounds, Wilcoxon signed-rank",
-    })
+    return RichResult(
+        payload={
+            "estimate": p_up,
+            "p_upper": p_up,
+            "p_lower": p_lo,
+            "W": W,
+            "mu_plus": mu_p,
+            "sigma_plus": sd_p,
+            "z_upper": z_up,
+            "n_pairs": n,
+            "Gamma": G,
+            "method": "Rosenbaum sensitivity bounds, Wilcoxon signed-rank",
+        }
+    )
 
 
 def cheatsheet():

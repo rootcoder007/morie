@@ -133,7 +133,10 @@ def bq_query(db: str, sql: str) -> list[dict[str, Any]]:
 
     Examples
     --------
-    >>> rows = bq_query("nyc_311_historic", "SELECT borough, count(*) FROM nyc_311_historic GROUP BY 1")
+    Needs MORIE_REMOTE_URL (a query endpoint) or MORIE_LOCAL_DB_DIR (a local
+    SQLite mirror):
+
+    >>> rows = bq_query("nyc_311_historic", "SELECT borough, count(*) FROM nyc_311_historic GROUP BY 1")  # doctest: +SKIP
     """
     return _query(db, sql)
 
@@ -189,7 +192,7 @@ def bq_summary(db: str, table: str, column: str) -> ColumnSummary:
     # client-side from a SELECT of the column. For huge tables the user
     # should use a sample.
     vals = [r[column] for r in _query(db, f"SELECT {c} FROM {t} WHERE {c} IS NOT NULL LIMIT 100000")]
-    nums = [float(v) for v in vals if isinstance(v, (int, float))]
+    nums = [float(v) for v in vals if isinstance(v, int | float)]
     median = None
     std = None
     if nums:

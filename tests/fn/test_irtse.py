@@ -1,7 +1,6 @@
 """Tests for irtse -- SE(theta)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.irtse import irt_se_theta
 

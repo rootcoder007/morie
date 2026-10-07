@@ -7,7 +7,6 @@ Modeling of Extreme Values*, Springer. The mathematics live in
 shelf's result contract.
 """
 
-from . import _array_core as np
 from . import _evt_core as _ev
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,8 +18,7 @@ def evt_gpd_loglik(y, sigma, xi):
     eq. 4.10); -inf outside the support."""
     ll = _ev.gpd_loglik(y, float(sigma), float(xi))
     n = len(_ev._flat(y))
-    res = RichResult(payload={"ll": float(ll), "n": n,
-                              "method": "GPD log-likelihood (Coles 2001 eq. 4.10)"})
+    res = RichResult(payload={"ll": float(ll), "n": n, "method": "GPD log-likelihood (Coles 2001 eq. 4.10)"})
     return with_describe_pointer(res, "evgpdl")
 
 

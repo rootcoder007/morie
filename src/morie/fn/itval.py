@@ -43,10 +43,7 @@ def item_validity_index(
     rows = []
     for j in range(k):
         sd_item = float(np.std(X[:, j], ddof=1))
-        if sd_item < 1e-15 or sd_c < 1e-15:
-            ric = 0.0
-        else:
-            ric = float(np.corrcoef(X[:, j], c)[0, 1])
+        ric = 0.0 if sd_item < 1e-15 or sd_c < 1e-15 else float(np.corrcoef(X[:, j], c)[0, 1])
         vi = ric * sd_item
         rows.append(
             {

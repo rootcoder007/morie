@@ -111,10 +111,15 @@ def boyd_basis_pursuit(A, b, eps=0.0):
         # feeding a degenerate equality to a general NLP solver.
         c = np.r_[np.zeros(n), np.ones(n)]
         A_ub = np.block([[np.eye(n), -np.eye(n)], [-np.eye(n), -np.eye(n)]])
-        res = linprog(c, A_ub=A_ub, b_ub=np.zeros(2 * n),
-                      A_eq=np.hstack([Am, np.zeros((m, n))]), b_eq=bv,
-                      bounds=[(None, None)] * n + [(0.0, None)] * n,
-                      method="highs")
+        res = linprog(
+            c,
+            A_ub=A_ub,
+            b_ub=np.zeros(2 * n),
+            A_eq=np.hstack([Am, np.zeros((m, n))]),
+            b_eq=bv,
+            bounds=[(None, None)] * n + [(0.0, None)] * n,
+            method="highs",
+        )
         if res.status != 0:
             raise ValueError(f"exact basis pursuit infeasible: {res.message}")
         x = np.asarray(res.x[:n], dtype=float)
@@ -123,21 +128,23 @@ def boyd_basis_pursuit(A, b, eps=0.0):
         z0 = np.r_[x0, np.abs(x0) + 1e-06]
         eye = np.eye(n)
         cons = [
-            {"type": "ineq",
-             "fun": lambda z: z[n:] - z[:n],
-             "jac": lambda z: np.hstack([-eye, eye])},
-            {"type": "ineq",
-             "fun": lambda z: z[n:] + z[:n],
-             "jac": lambda z: np.hstack([eye, eye])},
-            {"type": "ineq",
-             "fun": lambda z: eps**2 - np.sum((Am @ z[:n] - bv) ** 2),
-             "jac": lambda z: np.r_[-2.0 * Am.T @ (Am @ z[:n] - bv),
-                                    np.zeros(n)]},
+            {"type": "ineq", "fun": lambda z: z[n:] - z[:n], "jac": lambda z: np.hstack([-eye, eye])},
+            {"type": "ineq", "fun": lambda z: z[n:] + z[:n], "jac": lambda z: np.hstack([eye, eye])},
+            {
+                "type": "ineq",
+                "fun": lambda z: eps**2 - np.sum((Am @ z[:n] - bv) ** 2),
+                "jac": lambda z: np.r_[-2.0 * Am.T @ (Am @ z[:n] - bv), np.zeros(n)],
+            },
         ]
         obj = np.r_[np.zeros(n), np.ones(n)]
-        res = minimize(lambda z: float(obj @ z), z0,
-                       jac=lambda z: obj, constraints=cons, method="SLSQP",
-                       options={"maxiter": 800, "ftol": 1e-12})
+        res = minimize(
+            lambda z: float(obj @ z),
+            z0,
+            jac=lambda z: obj,
+            constraints=cons,
+            method="SLSQP",
+            options={"maxiter": 800, "ftol": 1e-12},
+        )
         x = np.asarray(res.x[:n], dtype=float)
     # SLSQP lands microscopically off zero on the coordinates it means
     # to kill; without a cut the support count is meaningless.
@@ -146,18 +153,25 @@ def boyd_basis_pursuit(A, b, eps=0.0):
     rnorm = float(np.linalg.norm(resid))
     return RichResult(
         title="Basis pursuit denoising",
-        summary_lines=[("m", int(m)), ("n", int(n)), ("eps", eps),
-                       ("l1 norm", float(np.abs(x).sum())),
-                       ("residual", rnorm),
-                       ("nonzeros", int(np.count_nonzero(x)))],
+        summary_lines=[
+            ("m", int(m)),
+            ("n", int(n)),
+            ("eps", eps),
+            ("l1 norm", float(np.abs(x).sum())),
+            ("residual", rnorm),
+            ("nonzeros", int(np.count_nonzero(x))),
+        ],
         payload={
-            "x": x, "l1_norm": float(np.abs(x).sum()),
-            "residual": resid, "residual_norm": rnorm,
+            "x": x,
+            "l1_norm": float(np.abs(x).sum()),
+            "residual": resid,
+            "residual_norm": rnorm,
             "n_nonzero": int(np.count_nonzero(x)),
             "support": np.flatnonzero(x),
             "feasible": bool(rnorm <= eps + 1e-06),
             "trivial": bool(np.count_nonzero(x) == 0),
-            "eps": eps, "method": "boyd_basis_pursuit",
+            "eps": eps,
+            "method": "boyd_basis_pursuit",
         },
     )
 

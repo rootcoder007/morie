@@ -82,14 +82,18 @@ def privacy_amplification(epsilon, q, delta=0.0):
     eps_a = float(np.log1p(q * np.expm1(epsilon)))
     return RichResult(
         title="Privacy amplification by subsampling",
-        summary_lines=[("epsilon", epsilon), ("q", q),
-                       ("amplified epsilon", eps_a)],
-        warnings=["amplification holds only for secret, freshly drawn "
-                  "subsamples; a fixed or observable subsample gives none"],
+        summary_lines=[("epsilon", epsilon), ("q", q), ("amplified epsilon", eps_a)],
+        warnings=[
+            "amplification holds only for secret, freshly drawn subsamples; a fixed or observable subsample gives none"
+        ],
         payload={
-            "epsilon_amplified": eps_a, "delta_amplified": float(q * delta),
-            "ratio": float(eps_a / epsilon), "linear_approx": float(q * epsilon),
-            "epsilon": epsilon, "q": q, "method": "privacy_amplification",
+            "epsilon_amplified": eps_a,
+            "delta_amplified": float(q * delta),
+            "ratio": float(eps_a / epsilon),
+            "linear_approx": float(q * epsilon),
+            "epsilon": epsilon,
+            "q": q,
+            "method": "privacy_amplification",
         },
     )
 

@@ -1,7 +1,5 @@
 """Tests for extended_predictor.extended_predictor."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.extended_predictor import extended_predictor
 
 

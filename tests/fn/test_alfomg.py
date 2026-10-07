@@ -1,7 +1,6 @@
 """Tests for alfomg.openfold_msa_pair."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfomg import openfold_msa_pair
 
 
@@ -53,7 +52,7 @@ def test_alfomg_edge():
     assert result["gated"] is False
 
     # Also exercise w_opm supplied as a [n_pair_channel][c*c] matrix.
-    s, r, c, cz = 1, 1, 1, 2
+    _s, _r, c, cz = 1, 1, 1, 2
     w_opm = [[0.5 for _ in range(c * c)] for _ in range(cz)]
     result2 = openfold_msa_pair(msa, pair, w_opm=w_opm)
     assert result2["pair_updated"] is True

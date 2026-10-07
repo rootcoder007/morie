@@ -124,7 +124,7 @@ def _flatten_nibrs_record(rec: dict[str, Any]) -> dict[str, Any]:
                 out[f"{k}.{sk}"] = sv
         elif isinstance(v, list):
             # Best-effort: keep scalar lists, json-serialise the rest.
-            if all(not isinstance(x, (dict, list)) for x in v):
+            if all(not isinstance(x, dict | list) for x in v):
                 out[k] = ";".join("" if x is None else str(x) for x in v)
             else:
                 out[k] = json.dumps(v, default=str)
@@ -391,7 +391,7 @@ def _flatten_nist_record(rec: dict[str, Any]) -> dict[str, Any]:
         publisher = publisher.get("name") or publisher.get("@id")
 
     license_ = rec.get("license") or rec.get("rights")
-    if isinstance(license_, (dict, list)):
+    if isinstance(license_, dict | list):
         license_ = json.dumps(license_, default=str)
 
     return {
@@ -443,17 +443,20 @@ def fetch_nist_rds(
         flattened :data:`NIST_RDS_COLUMNS` shape.
     """
     headers = {"User-Agent": DEFAULT_USER_AGENT, "Accept": "application/json"}
-    params: dict[str, Any] = {"size": page_size}
+    # the NIST records API refuses a query whose first parameter is not searchphrase (HTTP 400);
+    # httpx keeps the dict's order
+    params: dict[str, Any] = {}
     if dataset_id is not None:
         params["@id"] = dataset_id
     elif query:
         params["searchphrase"] = query
+    params["size"] = page_size
 
     rows: list[dict[str, Any]] = []
-    offset = 0
+    page = 1
     with httpx.Client(timeout=timeout, headers=headers, follow_redirects=True) as c:
         while True:
-            params["from"] = offset
+            params["page"] = page  # 1-based; the API answers an empty set to a `from` offset
             r = c.get(NIST_RDS_BASE, params=params)
             if r.status_code >= 400:
                 raise ForensicsError(f"NIST RDS -> HTTP {r.status_code}: {r.text[:200]}")
@@ -469,9 +472,10 @@ def fetch_nist_rds(
             if max_features is not None and len(rows) >= max_features:
                 rows = rows[:max_features]
                 break
-            if len(batch) < page_size:
+            total = payload.get("ResultCount")
+            if len(batch) < page_size or (isinstance(total, int) and len(rows) >= total):
                 break
-            offset += len(batch)
+            page += 1
 
     if not rows:
         raise ForensicsError(f"NIST RDS returned zero records (dataset_id={dataset_id!r}, query={query!r})")

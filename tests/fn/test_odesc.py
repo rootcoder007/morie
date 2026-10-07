@@ -1,7 +1,6 @@
 """Tests for morie.fn.odesc — OTIS demographic summary."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.odesc import otis_demographic_summary
 
 

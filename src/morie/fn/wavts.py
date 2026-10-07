@@ -148,7 +148,7 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         # two. The padding is zeros, which leaves the energy identity intact.
         # This mirrors the R implementation exactly.
         N = 1 << int(np.ceil(np.log2(n)))
-        yp = np.concatenate([y, np.zeros(N - n)]) if N > n else y
+        yp = np.concatenate([y, np.zeros(N - n)]) if n < N else y
         J = min(level, int(np.floor(np.log2(N))))
         cA, Ws = _pw_dwt(yp, key, J)
         # Ws is shallowest-first (W_1 ... W_J); reverse so details run
@@ -177,7 +177,8 @@ def wavelet_time_series(x, wavelet="haar", level=None):
         raise ValueError(
             f"wavelet={wavelet!r} is not a native family; available: "
             f"{sorted(_FAMS)}. Substituting a different basis would be "
-            "silently wrong.")
+            "silently wrong."
+        )
 
     if wkey not in ("haar", "db1"):
         # Errors from pywt propagate: an unknown wavelet name is a caller
@@ -221,8 +222,7 @@ def wavelet_time_series(x, wavelet="haar", level=None):
                 cd_n.append(d)
             cDs_native.append(cd_n)
             cur = ca_n
-        coeffs = [np.asarray(cur)] + [np.asarray(c)
-                                      for c in cDs_native[::-1]]
+        coeffs = [np.asarray(cur)] + [np.asarray(c) for c in cDs_native[::-1]]
         cA = coeffs[0]
         cDs = coeffs[1:]
         # coeffs is [cA_n, cD_n, ..., cD_1], so energies line up with

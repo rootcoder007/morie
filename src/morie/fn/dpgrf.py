@@ -62,16 +62,19 @@ Womble, W. H. (1951) "Differential Systematics", *Science*
 problem the method is named for.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
 from . import posspr as urn
 from ._richresult import RichResult
 
-__all__ = ["adjacency_pairs", "car_precision", "sample_labels",
-           "coclustering", "boundary_probabilities",
-           "continuous_prior_tie_probability"]
+__all__ = [
+    "adjacency_pairs",
+    "car_precision",
+    "sample_labels",
+    "coclustering",
+    "boundary_probabilities",
+    "continuous_prior_tie_probability",
+]
 
 _EPS = 1e-12
 
@@ -83,14 +86,10 @@ def adjacency_pairs(W):
     n = len(A)
     if any(len(r) != n for r in A):
         raise ValueError("dpgrf: the adjacency matrix is not square")
-    if any(abs(A[i][j] - A[j][i]) > _EPS
-           for i in range(n) for j in range(n)):
-        raise ValueError("dpgrf: the adjacency matrix must be "
-                         "symmetric")
-    pairs = [(i, j) for i in range(n) for j in range(i + 1, n)
-             if A[i][j] != 0.0]
-    return {"pairs": pairs, "n_pairs": len(pairs), "n_regions": n,
-            "degrees": [sum(A[i]) for i in range(n)]}
+    if any(abs(A[i][j] - A[j][i]) > _EPS for i in range(n) for j in range(n)):
+        raise ValueError("dpgrf: the adjacency matrix must be symmetric")
+    pairs = [(i, j) for i in range(n) for j in range(i + 1, n) if A[i][j] != 0.0]
+    return {"pairs": pairs, "n_pairs": len(pairs), "n_regions": n, "degrees": [sum(A[i]) for i in range(n)]}
 
 
 def car_precision(W, rho=0.99, tau=1.0):
@@ -107,16 +106,17 @@ def car_precision(W, rho=0.99, tau=1.0):
         raise ValueError("dpgrf: rho must lie in [0,1]")
     D = [sum(A[i]) for i in range(n)]
     if any(v <= 0.0 for v in D):
-        raise ValueError("dpgrf: a region has no neighbours, so its "
-                         "conditional variance is undefined")
-    Q = [[float(tau) * ((D[i] if i == j else 0.0) - r_ * A[i][j])
-          for j in range(n)] for i in range(n)]
+        raise ValueError("dpgrf: a region has no neighbours, so its conditional variance is undefined")
+    Q = [[float(tau) * ((D[i] if i == j else 0.0) - r_ * A[i][j]) for j in range(n)] for i in range(n)]
     vals, _ = np.linalg.eigh(Q)
-    return {"Q": Q, "degrees": D, "rho": r_,
-            "min_eigenvalue": min(vals),
-            "singular": min(vals) < 1e-9,
-            "note": "rho = 1 is the intrinsic CAR and IS singular; "
-                    "it is a proper prior only up to a constant"}
+    return {
+        "Q": Q,
+        "degrees": D,
+        "rho": r_,
+        "min_eigenvalue": min(vals),
+        "singular": min(vals) < 1e-9,
+        "note": "rho = 1 is the intrinsic CAR and IS singular; it is a proper prior only up to a constant",
+    }
 
 
 def sample_labels(n_regions, alpha, rng=None, seed=0):
@@ -147,11 +147,13 @@ def coclustering(label_draws):
                 if d[i] == d[j]:
                     M[i][j] += 1.0
     M = [[v / len(L) for v in row] for row in M]
-    return {"matrix": M, "n_draws": len(L), "n": n,
-            "symmetric": all(abs(M[i][j] - M[j][i]) < 1e-12
-                             for i in range(n) for j in range(n)),
-            "unit_diagonal": all(abs(M[i][i] - 1.0) < 1e-12
-                                 for i in range(n))}
+    return {
+        "matrix": M,
+        "n_draws": len(L),
+        "n": n,
+        "symmetric": all(abs(M[i][j] - M[j][i]) < 1e-12 for i in range(n) for j in range(n)),
+        "unit_diagonal": all(abs(M[i][i] - 1.0) < 1e-12 for i in range(n)),
+    }
 
 
 def boundary_probabilities(W, label_draws, threshold=0.5):
@@ -163,22 +165,22 @@ def boundary_probabilities(W, label_draws, threshold=0.5):
     pairs = adjacency_pairs(W)["pairs"]
     co = coclustering(label_draws)["matrix"]
     out = []
-    for (i, j) in pairs:
+    for i, j in pairs:
         p = 1.0 - co[i][j]
-        out.append({"pair": (i, j), "p_difference": p,
-                    "boundary": p > float(threshold)})
+        out.append({"pair": (i, j), "p_difference": p, "boundary": p > float(threshold)})
     out.sort(key=lambda d: -d["p_difference"])
-    return RichResult(payload={
-        "estimate": [d["pair"] for d in out if d["boundary"]],
-        "boundaries": [d["pair"] for d in out if d["boundary"]],
-        "ranked": out, "n_adjacent": len(pairs),
-        "n_boundaries": sum(1 for d in out if d["boundary"]),
-        "threshold": float(threshold),
-        "method": "areal difference boundaries by DP clustering; Li, "
-                  "Banerjee, Hanson & McBean (2015)",
-        "note": "each number is a posterior probability that two "
-                "adjacent regions DIFFER, not a rescaled gap",
-    })
+    return RichResult(
+        payload={
+            "estimate": [d["pair"] for d in out if d["boundary"]],
+            "boundaries": [d["pair"] for d in out if d["boundary"]],
+            "ranked": out,
+            "n_adjacent": len(pairs),
+            "n_boundaries": sum(1 for d in out if d["boundary"]),
+            "threshold": float(threshold),
+            "method": "areal difference boundaries by DP clustering; Li, Banerjee, Hanson & McBean (2015)",
+            "note": "each number is a posterior probability that two adjacent regions DIFFER, not a rescaled gap",
+        }
+    )
 
 
 def continuous_prior_tie_probability():
@@ -188,24 +190,28 @@ def continuous_prior_tie_probability():
     regions are exactly equal is 0, so a boundary can only be defined
     by thresholding a difference.
     """
-    return {"probability": 0.0,
-            "note": "a continuous prior assigns no mass to a point, "
-                    "so 'are these two equal?' cannot be answered -- "
-                    "which is why the DP is used here"}
+    return {
+        "probability": 0.0,
+        "note": "a continuous prior assigns no mass to a point, "
+        "so 'are these two equal?' cannot be answered -- "
+        "which is why the DP is used here",
+    }
 
 
 def cheatsheet():
-    return ("dpgrf: areal wombling asks WHERE THE MAP BREAKS. Under a "
-            "continuous prior (plain CAR random effects) the "
-            "probability that two regions are EQUAL is exactly zero, "
-            "so a boundary can only be a threshold on a difference -- "
-            "and the threshold is arbitrary. A DIRICHLET PROCESS prior "
-            "puts positive mass on ties, so regions genuinely cluster "
-            "and P(phi_i != phi_j) for adjacent i, j is an honest "
-            "posterior probability. Keep the CAR part too: the DP "
-            "handles ties, the CAR handles the map. Co-clustering is "
-            "symmetric with a unit diagonal -- a free check on the "
-            "indexing.")
+    return (
+        "dpgrf: areal wombling asks WHERE THE MAP BREAKS. Under a "
+        "continuous prior (plain CAR random effects) the "
+        "probability that two regions are EQUAL is exactly zero, "
+        "so a boundary can only be a threshold on a difference -- "
+        "and the threshold is arbitrary. A DIRICHLET PROCESS prior "
+        "puts positive mass on ties, so regions genuinely cluster "
+        "and P(phi_i != phi_j) for adjacent i, j is an honest "
+        "posterior probability. Keep the CAR part too: the DP "
+        "handles ties, the CAR handles the map. Co-clustering is "
+        "symmetric with a unit diagonal -- a free check on the "
+        "indexing."
+    )
 
 
 # compact alias per ledger/NAMING.md

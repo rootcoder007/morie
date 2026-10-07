@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["mine_mutual_information", "mi_neural_estimator"]
 
 
-def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
-                            seed=0, ema=0.99):
+def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01, seed=0, ema=0.99):
     r"""Donsker-Varadhan lower bound on mutual information.
 
     .. math::
@@ -81,7 +80,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
     if Y.shape[0] != n:
         raise ValueError("x and y must have the same number of rows.")
     if n < 20:
-        raise ValueError("need at least 20 paired observations, got %d." % n)
+        raise ValueError(f"need at least 20 paired observations, got {int(n)}.")
     X = (X - X.mean(0)) / (X.std(0) + 1e-12)
     Y = (Y - Y.mean(0)) / (Y.std(0) + 1e-12)
     d = X.shape[1] + Y.shape[1]
@@ -103,7 +102,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
 
     denom_ema = None
     curve = []
-    for it in range(int(n_iter)):
+    for _it in range(int(n_iter)):
         idx = rng.permutation(cut)
         Xj, Yj = X[tr], Y[tr]
         Ym = Yj[idx]
@@ -122,7 +121,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
         g_j = np.ones_like(tj) / tj.size
         g_m = -np.exp(tm - mx) * np.exp(mx) / (tj.size * max(denom_ema, 1e-300))
 
-        def backprop(g, A, Z):
+        def backprop(g, A, Z, *, W2=W2):
             gW2 = A.T @ g[:, None]
             gb2 = np.array([g.sum()])
             dA = np.outer(g, W2.ravel()) * (A > 0)
@@ -152,7 +151,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
     if X.shape[1] == 1 and Y.shape[1] == 1:
         r = float(np.corrcoef(X.ravel(), Y.ravel())[0, 1])
         if abs(r) < 1:
-            ref = -0.5 * np.log(1 - r ** 2)
+            ref = -0.5 * np.log(1 - r**2)
     return RichResult(
         payload={
             "estimate": float(mi_tr),
@@ -183,9 +182,7 @@ def mine_mutual_information(x, y, n_hidden=32, n_iter=600, lr=0.01,
                 "network has not converged"
             ),
             "curve": np.asarray(curve),
-            "converged": bool(len(curve) > 20 and
-                              abs(np.mean(curve[-10:])
-                                  - np.mean(curve[-20:-10])) < 0.05),
+            "converged": bool(len(curve) > 20 and abs(np.mean(curve[-10:]) - np.mean(curve[-20:-10])) < 0.05),
             "n_train": int(cut),
             "n_holdout": int(n - cut),
             "n": int(n),

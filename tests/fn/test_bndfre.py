@@ -1,7 +1,6 @@
 """Tests for bndfre.bound_frequentist."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bndfre import bound_frequentist
 
 
@@ -13,6 +12,8 @@ def test_bndfre_basic():
     result = bound_frequentist(lower, upper, alpha)
     assert isinstance(result, dict)
     assert "lower" in result
+
+
 def test_bndfre_edge():
     """Test edge cases."""
     lower = np.random.default_rng(42).normal(0, 1, 100)

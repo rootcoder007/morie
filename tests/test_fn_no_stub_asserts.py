@@ -35,8 +35,7 @@ _FN = Path(__file__).resolve().parent / "fn"
 # latter pushed real assertions out in favour of vacuous finiteness
 # checks, so the scan is limited to the tolerance form.
 _BOGUS = re.compile(
-    rb"assert\s+abs\(\s*[A-Za-z_]\w*\[[^\]]+\]\s*-\s*[-+0-9.eE]+\s*\)"
-    rb"\s*<=?\s*(?P<tol>[-+0-9.eE]+)\s*(?:,|#|\r?\n)"
+    rb"assert\s+abs\(\s*[A-Za-z_]\w*\[[^\]]+\]\s*-\s*[-+0-9.eE]+\s*\)" rb"\s*<=?\s*(?P<tol>[-+0-9.eE]+)\s*(?:,|#|\r?\n)"
 )
 
 # A tolerance at machine-epsilon scale (1e-9 or tighter) means the
@@ -64,72 +63,74 @@ _TIGHT = 1e-9
 # which follows MASS and is computed from the previous iteration's
 # residuals; the key it actually pins is "scale_final". That was fixed
 # rather than allowlisted.
-_REVIEWED = frozenset({
-    # 2026-09-25: true simulation parameters with Monte Carlo bounds of
-    # about five standard errors, derived in each docstring (a g-formula
-    # ATE of 2.8, an MH stationary variance of 1, a Gibbs rho of 0.9)
-    "test_gcomp.py",
-    "test_gh_ap_m1.py",
-    "test_wsmgib.py",
-    "test_abdpd_pearl.py",
-    "test_batch4_family.py",
-    "test_bayhmc.py",
-    "test_bayrjmcmc.py",
-    "test_blockMx.py",
-    "test_bounds_privacy_shelf.py",
-    "test_causdr2.py",
-    "test_causrddc.py",
-    "test_dccmd.py",
-    "test_deseq2.py",
-    "test_did_shelf.py",
-    "test_evgevm.py",
-    "test_evgpdm.py",
-    "test_fauzi_kernel.py",
-    "test_forest_tmle_cluster.py",
-    "test_g2_family.py",
-    "test_gformula_cluster.py",
-    "test_gh_ap.py",
-    "test_gh_c1.py",
-    "test_gh_c10.py",
-    "test_gh_c45b.py",
-    "test_gh_c4a.py",
-    "test_gh_c67.py",
-    "test_gh_c8.py",
-    "test_gh_c9.py",
-    "test_gwrcal.py",
-    "test_linkhae.py",
-    "test_linkqp.py",
-    "test_lyapun.py",
-    "test_mafft.py",
-    "test_mixed_model_shelf.py",
-    "test_ml_causal_shelf.py",
-    "test_mmreg.py",
-    "test_msm_causal.py",
-    "test_mvsml_ch1_4.py",
-    "test_nignst.py",
-    "test_plcbsc.py",
-    "test_prgrl.py",
-    "test_qtl_jl.py",
-    "test_rec_family.py",
-    "test_regression_core.py",
-    "test_rgbwbnd.py",
-    "test_robust_wilcox.py",
-    "test_robust_wrs.py",
-    "test_schaben_spatial_shelf.py",
-    "test_shewh.py",
-    "test_smt.py",
-    "test_snmcox.py",
-    "test_spatial_econometrics.py",
-    "test_spmsd.py",
-    "test_survey_survival.py",
-    "test_timeseries_robust.py",
-    "test_tl_book1.py",
-    "test_tl_book2.py",
-    "test_tml_dl_family.py",
-    "test_tmlefp.py",
-    "test_tqlld.py",
-    "test_w3b_tranche.py",
-})
+_REVIEWED = frozenset(
+    {
+        # 2026-09-25: true simulation parameters with Monte Carlo bounds of
+        # about five standard errors, derived in each docstring (a g-formula
+        # ATE of 2.8, an MH stationary variance of 1, a Gibbs rho of 0.9)
+        "test_gcomp.py",
+        "test_gh_ap_m1.py",
+        "test_wsmgib.py",
+        "test_abdpd_pearl.py",
+        "test_batch4_family.py",
+        "test_bayhmc.py",
+        "test_bayrjmcmc.py",
+        "test_blockMx.py",
+        "test_bounds_privacy_shelf.py",
+        "test_causdr2.py",
+        "test_causrddc.py",
+        "test_dccmd.py",
+        "test_deseq2.py",
+        "test_did_shelf.py",
+        "test_evgevm.py",
+        "test_evgpdm.py",
+        "test_fauzi_kernel.py",
+        "test_forest_tmle_cluster.py",
+        "test_g2_family.py",
+        "test_gformula_cluster.py",
+        "test_gh_ap.py",
+        "test_gh_c1.py",
+        "test_gh_c10.py",
+        "test_gh_c45b.py",
+        "test_gh_c4a.py",
+        "test_gh_c67.py",
+        "test_gh_c8.py",
+        "test_gh_c9.py",
+        "test_gwrcal.py",
+        "test_linkhae.py",
+        "test_linkqp.py",
+        "test_lyapun.py",
+        "test_mafft.py",
+        "test_mixed_model_shelf.py",
+        "test_ml_causal_shelf.py",
+        "test_mmreg.py",
+        "test_msm_causal.py",
+        "test_mvsml_ch1_4.py",
+        "test_nignst.py",
+        "test_plcbsc.py",
+        "test_prgrl.py",
+        "test_qtl_jl.py",
+        "test_rec_family.py",
+        "test_regression_core.py",
+        "test_rgbwbnd.py",
+        "test_robust_wilcox.py",
+        "test_robust_wrs.py",
+        "test_schaben_spatial_shelf.py",
+        "test_shewh.py",
+        "test_smt.py",
+        "test_snmcox.py",
+        "test_spatial_econometrics.py",
+        "test_spmsd.py",
+        "test_survey_survival.py",
+        "test_timeseries_robust.py",
+        "test_tl_book1.py",
+        "test_tl_book2.py",
+        "test_tml_dl_family.py",
+        "test_tmlefp.py",
+        "test_tqlld.py",
+        "test_w3b_tranche.py",
+    }
+)
 
 
 def _is_guess(match) -> bool:
@@ -141,15 +142,12 @@ def _is_guess(match) -> bool:
 
 @pytest.mark.skipif(
     sys.platform == "win32",
-    reason="repo-content check; identical on every platform, and a 36k-file "
-    "walk is pathologically slow on Windows I/O",
+    reason="repo-content check; identical on every platform, and a 36k-file walk is pathologically slow on Windows I/O",
 )
 def test_no_generator_guessed_value_asserts():
     offenders = []
     for p in _FN.rglob("test_*.py"):
-        if p.name not in _REVIEWED and any(
-                _is_guess(m)
-                for m in _BOGUS.finditer(p.read_bytes())):
+        if p.name not in _REVIEWED and any(_is_guess(m) for m in _BOGUS.finditer(p.read_bytes())):
             offenders.append(p.name)
     assert not offenders, (
         f"{len(offenders)} tests/fn file(s) have generator-guessed "

@@ -28,7 +28,7 @@ def _linear_sum_assignment(cost):
 
     u = np.zeros(n + 1)
     v = np.zeros(m + 1)
-    p = np.zeros(m + 1, dtype=int)   # p[j] = row (1-based) assigned to column j
+    p = np.zeros(m + 1, dtype=int)  # p[j] = row (1-based) assigned to column j
     way = np.zeros(m + 1, dtype=int)
     for i in range(1, n + 1):
         p[0] = i
@@ -122,10 +122,18 @@ def _log_softmax_rows(Z):
     return Z - np.log(np.exp(Z).sum(axis=1, keepdims=True))
 
 
-def geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes,
-                                  lam_bbox=5.0, lam_giou=2.0, box_format="xyxy",
-                                  no_object_class=None, eos_coef=0.1,
-                                  class_is_logits=True):
+def geron_detr_hungarian_matching(
+    pred_boxes,
+    pred_classes,
+    gt_boxes,
+    gt_classes,
+    lam_bbox=5.0,
+    lam_giou=2.0,
+    box_format="xyxy",
+    no_object_class=None,
+    eos_coef=0.1,
+    class_is_logits=True,
+):
     r"""Match predictions to ground truth one-to-one, then score the match.
 
     The pairwise cost is DETR's
@@ -228,8 +236,7 @@ def geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes
         raise ValueError(f"lam_bbox and lam_giou must be non-negative, got {lam_bbox}, {lam_giou}.")
     if N < M:
         raise ValueError(
-            f"DETR needs at least as many queries as objects; got {N} predictions "
-            f"for {M} ground-truth boxes."
+            f"DETR needs at least as many queries as objects; got {N} predictions for {M} ground-truth boxes."
         )
 
     if class_is_logits:
@@ -243,8 +250,8 @@ def geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes
             logp = np.log(np.maximum(Z, 1e-300))
     prob = np.exp(logp)
 
-    l1 = np.sum(np.abs(P[:, None, :] - G[None, :, :]), axis=2)     # (N, M)
-    giou = _giou(P, G)                                             # (N, M)
+    l1 = np.sum(np.abs(P[:, None, :] - G[None, :, :]), axis=2)  # (N, M)
+    giou = _giou(P, G)  # (N, M)
     cost = -prob[:, gt] + lam_bbox * l1 - lam_giou * giou
 
     rows, cols = _linear_sum_assignment(cost)
@@ -271,8 +278,7 @@ def geron_detr_hungarian_matching(pred_boxes, pred_classes, gt_boxes, gt_classes
 
     return RichResult(
         title="DETR Hungarian matching",
-        summary_lines=[("Matched pairs", len(matching)), ("Loss", loss),
-                       ("Assignment cost", total_cost)],
+        summary_lines=[("Matched pairs", len(matching)), ("Loss", loss), ("Assignment cost", total_cost)],
         payload={
             "matching": matching,
             "cost_matrix": cost.tolist(),

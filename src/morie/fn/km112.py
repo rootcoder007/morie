@@ -12,8 +12,7 @@ def _cosine(a, B):
     na = np.linalg.norm(a)
     nb = np.linalg.norm(B, axis=1)
     if na == 0 or np.any(nb == 0):
-        raise ValueError("a zero-length embedding has no direction, so "
-                         "its cosine similarity is undefined.")
+        raise ValueError("a zero-length embedding has no direction, so its cosine similarity is undefined.")
     return (B @ a) / (nb * na)
 
 
@@ -41,19 +40,18 @@ def kamath_ch7_answer_relevance(E_g, E_o, N=None):
     if G.size == 0:
         raise ValueError("no reverse-generated questions were given.")
     if G.shape[1] != o.size:
-        raise ValueError(
-            f"embedding widths differ: E_g is {G.shape[1]}-dimensional, "
-            f"E_o is {o.size}-dimensional.")
+        raise ValueError(f"embedding widths differ: E_g is {G.shape[1]}-dimensional, E_o is {o.size}-dimensional.")
     if N is not None and int(N) != G.shape[0]:
-        raise ValueError(
-            f"N = {N} contradicts the {G.shape[0]} question embeddings "
-            "supplied.")
+        raise ValueError(f"N = {N} contradicts the {G.shape[0]} question embeddings supplied.")
     sims = _cosine(o, G)
-    return RichResult(payload={
-        "estimate": float(sims.mean()),
-        "similarities": [float(v) for v in sims],
-        "n": int(G.shape[0]),
-        "method": "RAGAS answer relevance (Kamath Eq 7.3)"})
+    return RichResult(
+        payload={
+            "estimate": float(sims.mean()),
+            "similarities": [float(v) for v in sims],
+            "n": int(G.shape[0]),
+            "method": "RAGAS answer relevance (Kamath Eq 7.3)",
+        }
+    )
 
 
 def cheatsheet():

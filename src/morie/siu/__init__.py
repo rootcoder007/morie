@@ -19,6 +19,14 @@ Public API:
     write_csv(rows, path) -> None
     write_jsonl(rows, path) -> None         # for narrative_full bodies
     SIU_COLUMNS                              # 45-col canonical schema
+
+Examples
+--------
+>>> from morie.siu import html_to_text, to_iso_date
+>>> to_iso_date("2nd February 2018")
+'2018-02-02'
+>>> html_to_text("<p>Qu&eacute;bec &amp; Ontario</p>").strip()
+'Québec & Ontario'
 """
 
 from . import analyze, llm

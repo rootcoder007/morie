@@ -74,9 +74,16 @@ import math
 from . import _array_core as _core
 from ._richresult import RichResult
 
-__all__ = ["tipping_point_sensitivity", "tipsne", "ancova_fit",
-           "rubin_pool", "impute_once", "cheatsheet", "MI_ROUTES",
-           "POOLING_ROUTES"]
+__all__ = [
+    "tipping_point_sensitivity",
+    "tipsne",
+    "ancova_fit",
+    "rubin_pool",
+    "impute_once",
+    "cheatsheet",
+    "MI_ROUTES",
+    "POOLING_ROUTES",
+]
 
 MI_ROUTES = ("proper", "improper", "deterministic")
 POOLING_ROUTES = ("rubin1987", "barnard_rubin")
@@ -178,8 +185,7 @@ def ancova_fit(y, design):
     """
     n = len(y)
     p = len(design[0])
-    xtx = [[_csum(design[i][a] * design[i][b] for i in range(n))
-            for b in range(p)] for a in range(p)]
+    xtx = [[_csum(design[i][a] * design[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     xty = [_csum(design[i][a] * y[i] for i in range(n)) for a in range(p)]
     lo = _chol(xtx)
     beta = _solve_chol(lo, xty)
@@ -188,8 +194,15 @@ def ancova_fit(y, design):
     df = n - p
     if df < 1:
         raise ValueError("no residual degrees of freedom")
-    return {"beta": beta, "rss": rss, "df": df, "sigma2": rss / df,
-            "xtx_inv": _inv_from_chol(lo), "fitted": fitted, "chol": lo}
+    return {
+        "beta": beta,
+        "rss": rss,
+        "df": df,
+        "sigma2": rss / df,
+        "xtx_inv": _inv_from_chol(lo),
+        "fitted": fitted,
+        "chol": lo,
+    }
 
 
 def _design(arm, X, n):
@@ -208,11 +221,10 @@ def _draw_beta(rng, beta, xtx_inv, sigma2_draw):
     covariance. The draw is coordinate by coordinate so the stream
     position matches the R arm term for term."""
     p = len(beta)
-    cov = [[sigma2_draw * xtx_inv[i][j] for j in range(p)]
-           for i in range(p)]
+    cov = [[sigma2_draw * xtx_inv[i][j] for j in range(p)] for i in range(p)]
     lo = _chol(cov)
     z = [float(rng.normal()) for _ in range(p)]
-    return [beta[i] + _dot(lo[i][:i + 1], z[:i + 1]) for i in range(p)]
+    return [beta[i] + _dot(lo[i][: i + 1], z[: i + 1]) for i in range(p)]
 
 
 def impute_once(rng, y, arm, X, miss, fit, mi):
@@ -255,12 +267,11 @@ def _betainc(a, b, x):
         return 0.0
     if x >= 1.0:
         return 1.0
-    lbeta = (_lgamma(a) + _lgamma(b) - _lgamma(a + b))
+    lbeta = _lgamma(a) + _lgamma(b) - _lgamma(a + b)
     front = math.exp(a * math.log(x) + b * math.log(1.0 - x) - lbeta)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
-    return 1.0 - math.exp(b * math.log(1.0 - x) + a * math.log(x)
-                          - lbeta) * _betacf(b, a, 1.0 - x) / b
+    return 1.0 - math.exp(b * math.log(1.0 - x) + a * math.log(x) - lbeta) * _betacf(b, a, 1.0 - x) / b
 
 
 def _betacf(a, b, x):
@@ -299,8 +310,14 @@ def _betacf(a, b, x):
     return h
 
 
-_LG = (76.18009172947146, -86.50532032941677, 24.01409824083091,
-       -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5)
+_LG = (
+    76.18009172947146,
+    -86.50532032941677,
+    24.01409824083091,
+    -1.231739572450155,
+    0.1208650973866179e-2,
+    -0.5395239384953e-5,
+)
 
 
 def _lgamma(z):
@@ -336,10 +353,7 @@ def rubin_pool(ests, vars_, pooling="rubin1987", df_complete=None):
     m = len(ests)
     qbar = _csum(ests) / m
     ubar = _csum(vars_) / m
-    if m > 1:
-        b = _csum((e - qbar) * (e - qbar) for e in ests) / (m - 1)
-    else:
-        b = 0.0
+    b = _csum((e - qbar) * (e - qbar) for e in ests) / (m - 1) if m > 1 else 0.0
     total = ubar + (1.0 + 1.0 / m) * b
     if b <= 0.0 or m < 2:
         # No between-imputation variance: the imputation added nothing,
@@ -353,15 +367,21 @@ def rubin_pool(ests, vars_, pooling="rubin1987", df_complete=None):
             if df_complete is None:
                 raise ValueError("barnard_rubin needs df_complete")
             gamma = (1.0 + 1.0 / m) * b / total
-            dfo = ((df_complete + 1.0) / (df_complete + 3.0)
-                   * df_complete * (1.0 - gamma))
+            dfo = (df_complete + 1.0) / (df_complete + 3.0) * df_complete * (1.0 - gamma)
             df = 1.0 / (1.0 / df + 1.0 / dfo)
     se = math.sqrt(total)
     t = qbar / se if se > 0.0 else 0.0
-    return {"estimate": qbar, "se": se, "df": df, "t": t,
-            "p": 2.0 * _t_sf(abs(t), df), "within": ubar, "between": b,
-            "total": total,
-            "fmi": ((1.0 + 1.0 / m) * b / total) if total > 0.0 else 0.0}
+    return {
+        "estimate": qbar,
+        "se": se,
+        "df": df,
+        "t": t,
+        "p": 2.0 * _t_sf(abs(t), df),
+        "within": ubar,
+        "between": b,
+        "total": total,
+        "fmi": ((1.0 + 1.0 / m) * b / total) if total > 0.0 else 0.0,
+    }
 
 
 def _sd(vals):
@@ -370,11 +390,20 @@ def _sd(vals):
     return math.sqrt(_csum((v - mu) * (v - mu) for v in vals) / (n - 1))
 
 
-def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
-                              delta_treat=None, delta_control=None,
-                              n_imputations=20, seed=1, alpha=0.05,
-                              mi="proper", pooling="rubin1987",
-                              standardise=True):
+def tipping_point_sensitivity(
+    y,
+    D,
+    missing_indicator=None,
+    X=None,
+    delta_treat=None,
+    delta_control=None,
+    n_imputations=20,
+    seed=1,
+    alpha=0.05,
+    mi="proper",
+    pooling="rubin1987",
+    standardise=True,
+):
     """Delta-adjusted tipping-point sensitivity analysis.
 
     Parameters
@@ -422,9 +451,9 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
     Rubin (1987) ch. 3; Barnard and Rubin (1999) Biometrika 86, 948-955.
     """
     if mi not in MI_ROUTES:
-        raise ValueError("mi must be one of %r" % (MI_ROUTES,))
+        raise ValueError(f"mi must be one of {MI_ROUTES!r}")
     if pooling not in POOLING_ROUTES:
-        raise ValueError("pooling must be one of %r" % (POOLING_ROUTES,))
+        raise ValueError(f"pooling must be one of {POOLING_ROUTES!r}")
     yv = [None if v is None or v != v else float(v) for v in y]
     n = len(yv)
     arm = [float(v) for v in D]
@@ -433,10 +462,8 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
         miss = derived
     else:
         miss = [1 if v else 0 for v in missing_indicator]
-        if miss != derived and any(miss[i] == 0 and derived[i] == 1
-                                   for i in range(n)):
-            raise ValueError("missing_indicator says observed where y "
-                             "is missing")
+        if miss != derived and any(miss[i] == 0 and derived[i] == 1 for i in range(n)):
+            raise ValueError("missing_indicator says observed where y is missing")
     if X is not None:
         X = [[float(v) for v in row] for row in X]
     obs = [i for i in range(n) if not miss[i]]
@@ -453,10 +480,7 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
         delta_treat = [-step * k for k in range(11)]
     else:
         delta_treat = [float(v) for v in delta_treat]
-    if delta_control is None:
-        delta_control = [0.0]
-    else:
-        delta_control = [float(v) for v in delta_control]
+    delta_control = [0.0] if delta_control is None else [float(v) for v in delta_control]
 
     m = 1 if mi == "deterministic" else int(n_imputations)
 
@@ -481,10 +505,17 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
     for dc in delta_control:
         row = [cell(dc, dt) for dt in delta_treat]
         for dt, r in zip(delta_treat, row):
-            grid.append({"delta_control": dc, "delta_treat": dt,
-                         "estimate": r["estimate"], "se": r["se"],
-                         "df": r["df"], "p": r["p"],
-                         "significant": r["p"] < alpha})
+            grid.append(
+                {
+                    "delta_control": dc,
+                    "delta_treat": dt,
+                    "estimate": r["estimate"],
+                    "se": r["se"],
+                    "df": r["df"],
+                    "p": r["p"],
+                    "significant": r["p"] < alpha,
+                }
+            )
         # The crossing, by linear interpolation between the two grid
         # points that bracket it. Reported as None when the row never
         # crosses -- an extrapolated tipping point outside the grid
@@ -494,13 +525,15 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
             p0, p1 = row[k - 1]["p"], row[k]["p"]
             if (p0 < alpha) != (p1 < alpha) and p1 != p0:
                 w = (alpha - p0) / (p1 - p0)
-                tp = delta_treat[k - 1] + w * (delta_treat[k]
-                                               - delta_treat[k - 1])
+                tp = delta_treat[k - 1] + w * (delta_treat[k] - delta_treat[k - 1])
                 break
-        tips.append({"delta_control": dc, "tipping_point": tp,
-                     "tipping_point_sd": (None if tp is None or
-                                          pooled_sd == 0.0
-                                          else tp / pooled_sd)})
+        tips.append(
+            {
+                "delta_control": dc,
+                "tipping_point": tp,
+                "tipping_point_sd": (None if tp is None or pooled_sd == 0.0 else tp / pooled_sd),
+            }
+        )
 
     payload = {
         "estimate": mar["estimate"],
@@ -513,10 +546,8 @@ def tipping_point_sensitivity(y, D, missing_indicator=None, X=None,
         "tipped": any(t["tipping_point"] is not None for t in tips),
         "n": n,
         "n_missing": sum(miss),
-        "n_missing_treat": sum(1 for i in range(n)
-                               if miss[i] and arm[i] == 1.0),
-        "n_missing_control": sum(1 for i in range(n)
-                                 if miss[i] and arm[i] == 0.0),
+        "n_missing_treat": sum(1 for i in range(n) if miss[i] and arm[i] == 1.0),
+        "n_missing_control": sum(1 for i in range(n) if miss[i] and arm[i] == 0.0),
         "pooled_sd": pooled_sd if standardise else None,
         "m": m,
         "mi": mi,
@@ -532,6 +563,7 @@ tipsne = tipping_point_sensitivity
 
 
 def cheatsheet():
-    return ("tipsne: delta-adjusted tipping-point sensitivity analysis "
-            "for MNAR missingness. mi routes " + ", ".join(MI_ROUTES) +
-            "; pooling " + ", ".join(POOLING_ROUTES))
+    return (
+        "tipsne: delta-adjusted tipping-point sensitivity analysis "
+        "for MNAR missingness. mi routes " + ", ".join(MI_ROUTES) + "; pooling " + ", ".join(POOLING_ROUTES)
+    )

@@ -126,6 +126,7 @@ def _bold_significant_cells(df: pd.DataFrame, fmt: str) -> pd.DataFrame:
             except ValueError:
                 return v
             return f"{open_}{s_}{close}" if val < 0.05 else v
+
         out[col] = out[col].map(_mark)
     return out
 
@@ -208,7 +209,6 @@ def _to_format(
         return "\n".join(parts)
 
     if fmt == "latex":
-        n_cols = len(df.columns) + 1  # +1 for index
         col_spec = "l" + "c" * len(df.columns)
         lines = [
             "\\begin{table}[htbp]",
@@ -227,7 +227,7 @@ def _to_format(
             lines.append(" & ".join([""] + parts_sh) + " \\\\")
             # cmidrule
             col_idx = 2
-            for span_label, cols in spanning_headers.items():
+            for cols in spanning_headers.values():
                 lines.append(f"\\cmidrule(lr){{{col_idx}-{col_idx + len(cols) - 1}}}")
                 col_idx += len(cols)
 
@@ -336,10 +336,7 @@ def table1(
             c for c in df.select_dtypes(include=["object", "category", "bool"]).columns if c != group_col
         ]
 
-    if group_col is not None:
-        groups = sorted(df[group_col].dropna().unique())
-    else:
-        groups = [None]
+    groups = sorted(df[group_col].dropna().unique()) if group_col is not None else [None]
 
     # Build result rows
     rows: list[dict[str, str]] = []
@@ -348,10 +345,7 @@ def table1(
     # N row
     n_row: dict[str, str] = {}
     for g in groups:
-        if g is not None:
-            sub = df[df[group_col] == g]
-        else:
-            sub = df
+        sub = df[df[group_col] == g] if g is not None else df
         n_row[str(g) if g is not None else "Overall"] = str(len(sub))
     rows.append(n_row)
     row_labels.append("N")
@@ -541,7 +535,6 @@ def regression_table(
         model_stats = ["nobs", "rsquared", "aic", "bic", "llf"]
 
     footnotes = FootnoteRegistry()
-    model_names = list(models.keys())
 
     # Collect all parameter names
     all_params: list[str] = []
@@ -858,7 +851,6 @@ def model_comparison_table(
     records = []
     prev_llf = None
     prev_df = None
-    prev_name = None
 
     for mname, model_obj in models.items():
         nobs = getattr(model_obj, "nobs", np.nan)
@@ -900,7 +892,6 @@ def model_comparison_table(
 
         prev_llf = llf
         prev_df = df_model
-        prev_name = mname
         records.append(rec)
 
     result_df = pd.DataFrame(records).set_index("Model")

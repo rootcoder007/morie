@@ -1,12 +1,7 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Closeness centrality of a node (re-export)."""
 
-import math
-
-from . import _tail1core as C
-from ._richresult import RichResult
-
-__all__ = ['netclocent', 'closeness_centrality']
+__all__ = ["netclocent", "closeness_centrality"]
 
 
 def netclocent(A):
@@ -36,6 +31,7 @@ def netclocent(A):
     is as restated in the centrality literature that cites him.
     """
     from .clocen import clocent as _c
+
     return _c(A)
 
 

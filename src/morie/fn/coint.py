@@ -30,7 +30,7 @@ def cointegration_test(x: np.ndarray, y: np.ndarray, max_lag: int = 1, cdf=None)
     beta = np.linalg.lstsq(X, y, rcond=None)[0]
     resid = y - X @ beta
     dr = np.diff(resid)
-    m = len(dr)
+    len(dr)
     start = max_lag
     Y_adf = dr[start:]
     T = len(Y_adf)

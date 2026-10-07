@@ -44,10 +44,7 @@ def sample_entropy(x, m=2, r=0.2, **kwargs) -> DescriptiveResult:
 
     A = _count_matches(m + 1)
     B = _count_matches(m)
-    if B == 0:
-        se = float("inf")
-    else:
-        se = -float(np.log(A / B)) if A > 0 else float("inf")
+    se = float("inf") if B == 0 else -float(np.log(A / B)) if A > 0 else float("inf")
     return DescriptiveResult(
         name="sample_entropy",
         value=se,

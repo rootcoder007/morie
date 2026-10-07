@@ -155,7 +155,7 @@ def geron_sac(env, policy=None, critic=None, epochs=20, lr=0.5, alpha=0.2, gamma
             total += rew
             s = int(env.reset()) if done else s2
         V = _soft_V(Pi, Q)
-        for (bs, ba, br, bs2, bd) in batch:
+        for bs, ba, br, bs2, bd in batch:
             target = br + (0.0 if bd else g * V[bs2])
             Q[bs, ba] += step_size * (target - Q[bs, ba])
         Pi = np.vstack([np.asarray(geron_softmax_function(Q[i] / temp)["p"], dtype=float) for i in range(n_s)])

@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ctrlmedpow', 'gibbons_ctrl_median_power']
+__all__ = ["ctrlmedpow", "gibbons_ctrl_median_power"]
 
 
 def ctrlmedpow(m, n, d, h, nodes=2001):
@@ -58,6 +58,7 @@ def ctrlmedpow(m, n, d, h, nodes=2001):
     coef = math.factorial(n) / (math.factorial(r) * math.factorial(r))
     pmf = []
     for j in range(m + 1):
+
         def integrand(v, j=j):
             hv = float(h(v))
             hv = min(1.0, max(0.0, hv))

@@ -66,13 +66,18 @@ Modeling and Inference", *Journal of Machine Learning Research* 22(57),
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["coupling_forward", "coupling_inverse", "flow_forward",
-           "flow_inverse", "log_prob", "anomaly_score",
-           "alternating_masks"]
+__all__ = [
+    "coupling_forward",
+    "coupling_inverse",
+    "flow_forward",
+    "flow_inverse",
+    "log_prob",
+    "anomaly_score",
+    "alternating_masks",
+]
 
 _EPS = 1e-12
 _LOG2PI = math.log(2.0 * math.pi)
@@ -86,8 +91,7 @@ def alternating_masks(d, n_layers):
     trains and simply never sees half its input.
     """
     if d < 2:
-        raise ValueError("flow_an: need at least 2 dimensions, got %d"
-                         % d)
+        raise ValueError(f"flow_an: need at least 2 dimensions, got {int(d)}")
     out = []
     for t in range(int(n_layers)):
         par = t % 2
@@ -98,14 +102,11 @@ def alternating_masks(d, n_layers):
 def _st(x, mask, Ws, bs, Wt, bt, scale_cap=5.0):
     """s and t computed from the MASKED-IN half alone."""
     xin = [x[i] * mask[i] for i in range(len(x))]
-    hs = [sum(xin[i] * Ws[i][j] for i in range(len(x))) + bs[j]
-          for j in range(len(bs))]
-    ht = [sum(xin[i] * Wt[i][j] for i in range(len(x))) + bt[j]
-          for j in range(len(bt))]
+    hs = [sum(xin[i] * Ws[i][j] for i in range(len(x))) + bs[j] for j in range(len(bs))]
+    ht = [sum(xin[i] * Wt[i][j] for i in range(len(x))) + bt[j] for j in range(len(bt))]
     # tanh-capped log-scale: an uncapped s exponentiates and the
     # determinant overflows long before the model is any good
-    s = [scale_cap * math.tanh(v) * (1.0 - mask[j])
-         for j, v in enumerate(hs)]
+    s = [scale_cap * math.tanh(v) * (1.0 - mask[j]) for j, v in enumerate(hs)]
     t = [ht[j] * (1.0 - mask[j]) for j in range(len(ht))]
     return s, t
 
@@ -113,9 +114,7 @@ def _st(x, mask, Ws, bs, Wt, bt, scale_cap=5.0):
 def coupling_forward(x, mask, Ws, bs, Wt, bt, scale_cap=5.0):
     r"""One affine coupling layer, and its exact log-determinant."""
     s, t = _st(x, mask, Ws, bs, Wt, bt, scale_cap)
-    y = [x[i] * mask[i]
-         + (1.0 - mask[i]) * (x[i] * math.exp(s[i]) + t[i])
-         for i in range(len(x))]
+    y = [x[i] * mask[i] + (1.0 - mask[i]) * (x[i] * math.exp(s[i]) + t[i]) for i in range(len(x))]
     return y, sum(s)
 
 
@@ -123,9 +122,7 @@ def coupling_inverse(y, mask, Ws, bs, Wt, bt, scale_cap=5.0):
     """The exact inverse -- available because the untouched half is
     enough to recompute s and t."""
     s, t = _st(y, mask, Ws, bs, Wt, bt, scale_cap)
-    x = [y[i] * mask[i]
-         + (1.0 - mask[i]) * ((y[i] - t[i]) * math.exp(-s[i]))
-         for i in range(len(y))]
+    x = [y[i] * mask[i] + (1.0 - mask[i]) * ((y[i] - t[i]) * math.exp(-s[i])) for i in range(len(y))]
     return x, -sum(s)
 
 
@@ -133,7 +130,7 @@ def flow_forward(x, layers):
     """Compose the layers, accumulating the log-determinant."""
     z = list(x)
     logdet = 0.0
-    for (mask, Ws, bs, Wt, bt) in layers:
+    for mask, Ws, bs, Wt, bt in layers:
         z, ld = coupling_forward(z, mask, Ws, bs, Wt, bt)
         logdet += ld
     return z, logdet
@@ -143,7 +140,7 @@ def flow_inverse(z, layers):
     """Invert the composition, in reverse order."""
     x = list(z)
     logdet = 0.0
-    for (mask, Ws, bs, Wt, bt) in reversed(layers):
+    for mask, Ws, bs, Wt, bt in reversed(layers):
         x, ld = coupling_inverse(x, mask, Ws, bs, Wt, bt)
         logdet += ld
     return x, logdet
@@ -167,31 +164,37 @@ def anomaly_score(X, layers, threshold_quantile=0.95, reference=None):
     """
     Xm = k.mat(X)
     scores = [-log_prob(row, layers)[0] for row in Xm]
-    ref = scores if reference is None else [
-        -log_prob(r, layers)[0] for r in k.mat(reference)]
+    ref = scores if reference is None else [-log_prob(r, layers)[0] for r in k.mat(reference)]
     q = float(threshold_quantile)
     if not 0.0 < q < 1.0:
-        raise ValueError("flow_an: threshold_quantile must be in "
-                         "(0, 1), got %r" % (threshold_quantile,))
+        raise ValueError(f"flow_an: threshold_quantile must be in (0, 1), got {threshold_quantile!r}")
     thr = k.quantile7(sorted(ref), q)
     flags = [1.0 if v > thr else 0.0 for v in scores]
-    return RichResult(payload={
-        "estimate": scores, "score": scores, "threshold": thr,
-        "flag": flags, "n_flagged": int(sum(flags)), "n": len(Xm),
-        "quantile": q, "self_referenced": reference is None,
-        "log_likelihood": [-v for v in scores],
-        "method": "RealNVP negative log-likelihood anomaly score, "
-                  "Dinh, Sohl-Dickstein & Bengio (2017)",
-    })
+    return RichResult(
+        payload={
+            "estimate": scores,
+            "score": scores,
+            "threshold": thr,
+            "flag": flags,
+            "n_flagged": int(sum(flags)),
+            "n": len(Xm),
+            "quantile": q,
+            "self_referenced": reference is None,
+            "log_likelihood": [-v for v in scores],
+            "method": "RealNVP negative log-likelihood anomaly score, Dinh, Sohl-Dickstein & Bengio (2017)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("flow_an: coupling layer y1 = x1, y2 = x2*exp(s(x1)) + "
-            "t(x1). Jacobian is TRIANGULAR so log|det| = sum(s), and s, "
-            "t can be arbitrary nets because they are never "
-            "differentiated for the determinant. log p(x) = log p_z(f(x))"
-            " + sum(s), exact. Masks must ALTERNATE or half the input "
-            "is never transformed. Cap the log-scale or exp overflows.")
+    return (
+        "flow_an: coupling layer y1 = x1, y2 = x2*exp(s(x1)) + "
+        "t(x1). Jacobian is TRIANGULAR so log|det| = sum(s), and s, "
+        "t can be arbitrary nets because they are never "
+        "differentiated for the determinant. log p(x) = log p_z(f(x))"
+        " + sum(s), exact. Masks must ALTERNATE or half the input "
+        "is never transformed. Cap the log-scale or exp overflows."
+    )
 
 
 # compact alias per ledger/NAMING.md

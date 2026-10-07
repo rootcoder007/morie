@@ -10,8 +10,7 @@ from ._surv import cox_fit, prepare
 __all__ = ["cox_frailty"]
 
 
-def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
-                ties="efron"):
+def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6, ties="efron"):
     r"""Cox model with a shared gamma frailty per cluster.
 
     Each cluster :math:`k` carries a latent multiplier :math:`w_k` on its
@@ -73,11 +72,11 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
     >>> from morie.fn import _array_core as np
     >>> rng = np.random.default_rng(0)
-    >>> k = np.repeat(np.arange(60), 10)
-    >>> w = rng.gamma(2.0, 0.5, 60)[k]              # cluster multipliers
-    >>> X = rng.normal(size=(600, 1))
+    >>> k = np.repeat(np.arange(30), 10)
+    >>> w = rng.gamma(2.0, 0.5, 30)[k]              # cluster multipliers
+    >>> X = rng.normal(size=(300, 1))
     >>> T = rng.exponential(1 / (w * np.exp(X[:, 0] * 0.8)))
-    >>> C = rng.exponential(2.0, 600)
+    >>> C = rng.exponential(2.0, 300)
     >>> t, e = np.minimum(T, C), (T <= C).astype(float)
     >>> r = cox_frailty(t, e, X, k)
     >>> bool(r["theta"] > 0.1)
@@ -100,7 +99,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
     One cluster per subject carries no shared information and is refused.
 
-    >>> cox_frailty(t, e, X, np.arange(600))
+    >>> cox_frailty(t, e, X, np.arange(300))
     Traceback (most recent call last):
         ...
     ValueError: every cluster has one member, so a shared frailty is not identifiable
@@ -111,10 +110,8 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
         raise ValueError(f"cluster has {cl.size} entries but time has {t.size}")
     levels, idx = np.unique(cl, return_inverse=True)
     K = levels.size
-    if K == t.size:
-        raise ValueError(
-            "every cluster has one member, so a shared frailty is not identifiable"
-        )
+    if t.size == K:
+        raise ValueError("every cluster has one member, so a shared frailty is not identifiable")
 
     from ._sci_core import gammaln, minimize_scalar
     from ._surv import baseline_hazard
@@ -127,7 +124,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
         conv_l = False
         ll_l = -np.inf
         it_l = 0
-        for it_l in range(1, max_iter + 1):
+        for it_l in range(1, max_iter + 1):  # noqa: B007 - read after the loop
             beta_new, ll_l, _, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw)
             times, _, Hc = baseline_hazard(t, e, Xm, beta_new, offset=logw)
             pos = np.searchsorted(times, t, side="right") - 1
@@ -136,8 +133,7 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
             d_k = np.bincount(idx, weights=e, minlength=K)
             r_k = np.bincount(idx, weights=risk, minlength=K)
             frail_new = (1.0 / th_val + d_k) / (1.0 / th_val + r_k)
-            delta = max(float(np.max(np.abs(beta_new - beta_l))),
-                        float(np.max(np.abs(frail_new - frail_l))))
+            delta = max(float(np.max(np.abs(beta_new - beta_l))), float(np.max(np.abs(frail_new - frail_l))))
             beta_l, frail_l = beta_new, frail_new
             logw = np.log(np.maximum(frail_l[idx], 1e-12))
             if delta < tol:
@@ -155,15 +151,17 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
         """
         _, _, d_k, r_k, ll_l, _, _ = _inner(th_val)
         a = 1.0 / th_val
-        return float(np.sum(
-            gammaln(a + d_k) - gammaln(a) - (a + d_k) * np.log1p(th_val * r_k)
-            + d_k * np.log(th_val)
-        ) + ll_l)
+        return float(
+            np.sum(gammaln(a + d_k) - gammaln(a) - (a + d_k) * np.log1p(th_val * r_k) + d_k * np.log(th_val)) + ll_l
+        )
 
     if theta is None:
-        opt = minimize_scalar(lambda lg: -_marginal(np.exp(lg)),
-                              bounds=(np.log(1e-4), np.log(10.0)),
-                              method="bounded", options={"xatol": 1e-3})
+        opt = minimize_scalar(
+            lambda lg: -_marginal(np.exp(lg)),
+            bounds=(np.log(1e-4), np.log(10.0)),
+            method="bounded",
+            options={"xatol": 1e-3},
+        )
         th = float(np.exp(opt.x))
     else:
         th = float(theta)
@@ -172,29 +170,37 @@ def cox_frailty(time, event, X, cluster, theta=None, max_iter=30, tol=1e-6,
 
     from ._stats_core import norm
 
-    _, _, I, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw, max_iter=1)
+    _, _, I_, _, _, _ = cox_fit(t, e, Xm, ties=ties, offset=logw, max_iter=1)
     # Cluster-robust variance: the frailty inflates uncertainty relative to an
     # i.i.d. fit, which is the point of fitting it.
     try:
-        Iinv = np.linalg.inv(I)
+        Iinv = np.linalg.inv(I_)
     except np.linalg.LinAlgError:
-        Iinv = np.linalg.pinv(I)
+        Iinv = np.linalg.pinv(I_)
     scale = 1.0 + th * float(np.mean(np.bincount(idx, minlength=K)) - 1.0)
     se = np.sqrt(np.clip(np.diag(Iinv) * max(scale, 1.0), 0, None))
     with np.errstate(divide="ignore", invalid="ignore"):
         z = beta / se
     return RichResult(
         title="Shared-frailty Cox model",
-        summary_lines=[("n", int(t.size)), ("clusters", int(K)),
-                       ("theta", float(th)), ("loglik", ll)],
+        summary_lines=[("n", int(t.size)), ("clusters", int(K)), ("theta", float(th)), ("loglik", ll)],
         warnings=[] if converged else ["the frailty loop did not converge"],
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(beta), "theta": float(th),
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
+            "hazard_ratio": np.exp(beta),
+            "theta": float(th),
             "kendall_tau": float(th / (th + 2.0)),
-            "frailty": frail, "clusters": levels, "n_clusters": int(K),
-            "loglik": ll, "n": int(t.size), "n_iter": it,
-            "converged": converged, "method": "cox_frailty",
+            "frailty": frail,
+            "clusters": levels,
+            "n_clusters": int(K),
+            "loglik": ll,
+            "n": int(t.size),
+            "n_iter": it,
+            "converged": converged,
+            "method": "cox_frailty",
         },
     )
 

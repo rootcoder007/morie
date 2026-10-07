@@ -53,10 +53,7 @@ def years_lived_with_disability(
     r = discount_rate
     total_yld = 0.0
     for i in range(len(n)):
-        if r > 0 and dur[i] > 0:
-            disc_dur = (1 - np.exp(-r * dur[i])) / r
-        else:
-            disc_dur = dur[i]
+        disc_dur = (1 - np.exp(-r * dur[i])) / r if r > 0 and dur[i] > 0 else dur[i]
         total_yld += n[i] * dw[i] * disc_dur
 
     return ESRes(

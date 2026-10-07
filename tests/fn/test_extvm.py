@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn import extvm
 from morie.fn.extvm import extreme_value_gev
 
@@ -52,13 +51,11 @@ def test_extvm_basic(monkeypatch):
     expected_mu = float(np.mean(x))
     expected_sigma = float(np.std(x, ddof=1) / np.sqrt(2.0))
     expected_xi = 0.0
-    expected_z = ((x - expected_mu) / expected_sigma)
-    expected_loglik = float(np.sum(-(expected_z + np.exp(-expected_z))
-                                   - np.log(expected_sigma)))
+    expected_z = (x - expected_mu) / expected_sigma
+    expected_loglik = float(np.sum(-(expected_z + np.exp(-expected_z)) - np.log(expected_sigma)))
 
     # The RichResult must expose the documented keys.
-    for key in ("mu", "sigma", "xi", "se_mu", "se_sigma", "se_xi",
-                "loglik", "n", "method", "estimate"):
+    for key in ("mu", "sigma", "xi", "se_mu", "se_sigma", "se_xi", "loglik", "n", "method", "estimate"):
         assert key in result, f"missing key: {key!r}"
 
     # Shape-based / numeric sanity for the documented keys.

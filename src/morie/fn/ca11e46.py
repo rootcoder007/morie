@@ -27,18 +27,17 @@ def ca_chapter_11_equation_46(ys_by_group, ws_by_group):
     ch.11 eq.11.46
     """
     payload = dict(_ca_crim.q_within_between(ys_by_group, ws_by_group))
-    value = payload['q_between']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["q_between"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.46)"
     return RichResult(
-        title='Q_between = Q - Q_within',
+        title="Q_between = Q - Q_within",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e46: Q_between = Q_total - Q_within [Weisburd et al. 2022, eq. 11.46]'
+    return "ca11e46: Q_between = Q_total - Q_within [Weisburd et al. 2022, eq. 11.46]"

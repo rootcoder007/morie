@@ -92,8 +92,7 @@ def yarn(base, s, d, L, beta_fast=32.0, beta_slow=1.0):
     alpha = float(beta_slow)
     beta = float(beta_fast)
     if not alpha < beta:
-        raise ValueError(
-            f"yarn: need beta_slow < beta_fast, got {beta_slow} and {beta_fast}")
+        raise ValueError(f"yarn: need beta_slow < beta_fast, got {beta_slow} and {beta_fast}")
     half = d // 2
     t = None if isinstance(base, (int, float)) else np.asarray(base, dtype=float)
     if t is None:
@@ -104,8 +103,7 @@ def yarn(base, s, d, L, beta_fast=32.0, beta_slow=1.0):
     else:
         freqs = [float(v) for v in t.ravel()]
         if len(freqs) != half:
-            raise ValueError(
-                f"yarn: need the d/2 = {half} frequencies, got {len(freqs)}")
+            raise ValueError(f"yarn: need the d/2 = {half} frequencies, got {len(freqs)}")
         if any(v <= 0 for v in freqs):
             raise ValueError("yarn: frequencies must be positive")
     # Eq 17: lambda_d = 2 pi / theta_d, r(d) = L / lambda_d
@@ -117,22 +115,23 @@ def yarn(base, s, d, L, beta_fast=32.0, beta_slow=1.0):
     sqrt_inv_t = 0.1 * math.log(s) + 1.0
     inv_t = sqrt_inv_t * sqrt_inv_t
     temperature = 1.0 / inv_t
-    return RichResult(payload={
-        "theta": freqs,
-        "theta_new": new,
-        "rotations": rot,
-        "gamma": gam,
-        "temperature": temperature,
-        "logit_scale": inv_t,
-        "scale": s,
-        "estimate": float(new[-1]),
-        "n": half,
-        "method": "YaRN NTK-by-parts + ramp + temperature (Peng et al. 2023, Eqs 17/18/20/22)",
-    })
+    return RichResult(
+        payload={
+            "theta": freqs,
+            "theta_new": new,
+            "rotations": rot,
+            "gamma": gam,
+            "temperature": temperature,
+            "logit_scale": inv_t,
+            "scale": s,
+            "estimate": float(new[-1]),
+            "n": half,
+            "method": "YaRN NTK-by-parts + ramp + temperature (Peng et al. 2023, Eqs 17/18/20/22)",
+        }
+    )
 
 
-def yarn_context_scaling(y=None, q=None, m=None, theta=None, s=None,
-                         beta_fast=32.0, beta_slow=1.0, d=None, L=None):
+def yarn_context_scaling(y=None, q=None, m=None, theta=None, s=None, beta_fast=32.0, beta_slow=1.0, d=None, L=None):
     """Back-compatible wrapper over :func:`yarn` (old stub name).
 
     The stub's argument list carried unused placeholders (y, q, m);

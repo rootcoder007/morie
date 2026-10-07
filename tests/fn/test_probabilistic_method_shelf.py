@@ -25,34 +25,31 @@ from morie.fn.prbmth import (
 )
 from morie.fn.ramthy import ramsey_lower_bound_probabilistic, ramsey_number
 
-
 # --------------------------------------------------------------------
 # First moment
 # --------------------------------------------------------------------
 
+
 def test_the_union_bound_triggers_exactly_at_expectation_one():
     assert union_bound_exists(10, 0.05)["exists"] is True
     assert union_bound_exists(100, 0.05)["exists"] is False
-    assert union_bound_exists(20, 0.05)["exists"] is False   # exactly 1
+    assert union_bound_exists(20, 0.05)["exists"] is False  # exactly 1
 
 
 def test_failing_the_union_bound_is_not_a_proof_of_nonexistence():
     out = union_bound_exists(100, 0.5)
     assert out["exists"] is False
-    assert "does NOT show" in out["method"] or \
-        "does NOT show" in out.interpretation
+    assert "does NOT show" in out["method"] or "does NOT show" in out.interpretation
 
 
 def test_the_first_moment_ramsey_bound_agrees_with_the_ramsey_shelf():
     for k in (3, 4, 6, 10, 15, 20):
-        assert first_moment_ramsey(k)["bound"] == \
-            ramsey_lower_bound_probabilistic(k)["bound"]
+        assert first_moment_ramsey(k)["bound"] == ramsey_lower_bound_probabilistic(k)["bound"]
 
 
 def test_the_bound_lies_below_the_true_value_where_known():
     for k in (3, 4):
-        assert first_moment_ramsey(k)["bound"] < \
-            ramsey_number(k, k)["value"]
+        assert first_moment_ramsey(k)["bound"] < ramsey_number(k, k)["value"]
 
 
 def test_the_expected_count_at_the_bound_is_below_one():
@@ -71,6 +68,7 @@ def test_a_capped_search_says_so_rather_than_returning_the_ceiling():
 # --------------------------------------------------------------------
 # Alteration
 # --------------------------------------------------------------------
+
 
 def test_alteration_beats_the_union_bound_for_moderate_k():
     for k in (8, 10, 15, 20):
@@ -103,13 +101,13 @@ def test_the_improvement_grows_with_k():
 
 def test_alteration_bounds_lie_below_the_truth_where_known():
     for k in (3, 4):
-        assert alteration_ramsey(k)["best_bound"] < \
-            ramsey_number(k, k)["value"]
+        assert alteration_ramsey(k)["best_bound"] < ramsey_number(k, k)["value"]
 
 
 # --------------------------------------------------------------------
 # Lovasz Local Lemma
 # --------------------------------------------------------------------
+
 
 def test_the_local_lemma_condition_is_e_p_d_plus_one():
     out = lovasz_local_lemma(0.01, 20)
@@ -154,6 +152,7 @@ def test_local_lemma_validation():
 # Chernoff
 # --------------------------------------------------------------------
 
+
 def test_the_upper_chernoff_bound_is_never_violated():
     rng = random.Random(0)
     for _ in range(300):
@@ -183,14 +182,13 @@ def test_the_bound_is_not_vacuous_at_a_real_deviation():
 
 
 def test_a_vacuous_bound_is_flagged():
-    out = chernoff_bound(100, 0.5, 50)      # the mean itself
+    out = chernoff_bound(100, 0.5, 50)  # the mean itself
     assert out["vacuous"] is True
     assert any("says nothing" in w for w in out.warnings)
 
 
 def test_the_bound_tightens_as_the_deviation_grows():
-    bounds = [chernoff_bound(200, 0.5, 100 * (1 + d))["bound"]
-              for d in (0.1, 0.2, 0.3, 0.4)]
+    bounds = [chernoff_bound(200, 0.5, 100 * (1 + d))["bound"] for d in (0.1, 0.2, 0.3, 0.4)]
     assert all(x > y for x, y in zip(bounds, bounds[1:]))
 
 
@@ -199,13 +197,14 @@ def test_chernoff_validation():
         chernoff_bound(0, 0.5, 1)
     with pytest.raises(ValueError, match="p must lie"):
         chernoff_bound(10, 2.0, 1)
-    with pytest.raises(ValueError, match='tail must be'):
+    with pytest.raises(ValueError, match="tail must be"):
         chernoff_bound(10, 0.5, 6, tail="both")
 
 
 # --------------------------------------------------------------------
 # Azuma
 # --------------------------------------------------------------------
+
 
 def test_azuma_bounds_a_simulated_random_walk():
     # a +/-1 walk is a martingale with c = 1; the bound must hold
@@ -252,6 +251,7 @@ def test_azuma_validation():
 # --------------------------------------------------------------------
 # Second moment
 # --------------------------------------------------------------------
+
 
 def test_the_second_moment_bound_is_variance_over_expectation_squared():
     out = second_moment_threshold(100.0, 50.0)

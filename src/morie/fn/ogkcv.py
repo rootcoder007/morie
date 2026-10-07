@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Orthogonalized Gnanadesikan-Kettenring robust covariance."""
 
-import math
-
 from . import _s03core as core
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -95,22 +93,26 @@ def orthogonalized_gk(y, X=None):
             U[j][k] = U[k][j] = (a * a - b * b) / 4.0
     vals, vecs = core.jacobi(U)
     # jacobi returns columns of `vecs` as eigenvectors of U
-    Z = [[sum(Y[i][j] * vecs[j][l] for j in range(p)) for l in range(p)]
-         for i in range(n)]
-    gam = [core.mad([Z[i][l] for i in range(n)]) ** 2 for l in range(p)]
-    med = [core.median([Z[i][l] for i in range(n)]) for l in range(p)]
-    A = [[sig[j] * vecs[j][l] for l in range(p)] for j in range(p)]
-    S = [[sum(A[j][l] * gam[l] * A[k][l] for l in range(p)) for k in range(p)]
-         for j in range(p)]
-    mu = [sum(A[j][l] * med[l] for l in range(p)) for j in range(p)]
+    Z = [[sum(Y[i][j] * vecs[j][ell] for j in range(p)) for ell in range(p)] for i in range(n)]
+    gam = [core.mad([Z[i][ell] for i in range(n)]) ** 2 for ell in range(p)]
+    med = [core.median([Z[i][ell] for i in range(n)]) for ell in range(p)]
+    A = [[sig[j] * vecs[j][ell] for ell in range(p)] for j in range(p)]
+    S = [[sum(A[j][ell] * gam[ell] * A[k][ell] for ell in range(p)) for k in range(p)] for j in range(p)]
+    mu = [sum(A[j][ell] * med[ell] for ell in range(p)) for j in range(p)]
 
-    out = {"sigma": S, "location": mu, "scales": sig,
-           "estimate": S[0][0], "eigenvalues": vals,
-           "n": n, "p": p,
-           "method": "Orthogonalized Gnanadesikan-Kettenring scatter"}
+    out = {
+        "sigma": S,
+        "location": mu,
+        "scales": sig,
+        "estimate": S[0][0],
+        "eigenvalues": vals,
+        "n": n,
+        "p": p,
+        "method": "Orthogonalized Gnanadesikan-Kettenring scatter",
+    }
     d = 1.0
-    for l in range(p):
-        d *= gam[l]
+    for ell in range(p):
+        d *= gam[ell]
     for j in range(p):
         d *= sig[j] * sig[j]
     out["det"] = d

@@ -1,7 +1,6 @@
 """Tests for irtnm -- Nominal Response Model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import IRTResult
 from morie.fn.irtnm import irt_nominal
 

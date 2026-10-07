@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['olsnormeq', 'ols_normal_equations']
+__all__ = ["olsnormeq", "ols_normal_equations"]
 
 
 def olsnormeq(X, y, add_intercept=True):
@@ -45,16 +45,24 @@ def olsnormeq(X, y, add_intercept=True):
     bhat, fitted, resid, xtxinv = C.lstsq(Xm, y)
     rss = sum(r * r for r in resid)
     s2 = rss / (n - p)
-    return RichResult(payload={
-        "beta": bhat, "fitted": fitted, "resid": resid,
-        "rss": rss, "sigma2": s2,
-        "se": [math.sqrt(s2 * xtxinv[j][j]) for j in range(p)],
-        "leverage": C.hatdiag(Xm, xtxinv), "n": n, "p": p,
-        "method": "OLS via the normal equations, MVSML Sect. 3.2"})
+    return RichResult(
+        payload={
+            "beta": bhat,
+            "fitted": fitted,
+            "resid": resid,
+            "rss": rss,
+            "sigma2": s2,
+            "se": [math.sqrt(s2 * xtxinv[j][j]) for j in range(p)],
+            "leverage": C.hatdiag(Xm, xtxinv),
+            "n": n,
+            "p": p,
+            "method": "OLS via the normal equations, MVSML Sect. 3.2",
+        }
+    )
 
 
 ols_normal_equations = olsnormeq
 
 
 def cheatsheet():
-    return 'olsnm: Ordinary least squares through the normal equations.'
+    return "olsnm: Ordinary least squares through the normal equations."

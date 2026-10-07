@@ -65,11 +65,16 @@ def kosorok_ch1_linear_regression_model(Y, Z, beta=None, e=None):
     v = np.array([float(np.var(resid[s])) for s in strata if s.size > 1])
     ratio = float(v.max() / v.min()) if v.size and v.min() > 0 else np.inf
     return RichResult(
-        payload={"beta": beta, "residuals": resid,
-                 "sigma2": float(resid @ resid / max(n - p, 1)),
-                 "cond_var_ratio": ratio, "bounded_cond_var": bool(ratio < 10.0),
-                 "n": int(n), "p": int(p),
-                 "method": "Y = beta'Z + e with the model's own assumption checks"}
+        payload={
+            "beta": beta,
+            "residuals": resid,
+            "sigma2": float(resid @ resid / max(n - p, 1)),
+            "cond_var_ratio": ratio,
+            "bounded_cond_var": bool(ratio < 10.0),
+            "n": int(n),
+            "p": int(p),
+            "method": "Y = beta'Z + e with the model's own assumption checks",
+        }
     )
 
 

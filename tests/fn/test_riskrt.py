@@ -1,7 +1,5 @@
 """Tests for riskrt.risk_ratio."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.riskrt import risk_ratio
 
 

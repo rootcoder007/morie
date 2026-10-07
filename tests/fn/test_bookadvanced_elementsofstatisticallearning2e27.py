@@ -2,10 +2,7 @@
 
 import math
 
-import pytest
-
 from morie.fn import _array_core as np
-
 from morie.fn.bookadvanced_elementsofstatisticallearning2e27 import (
     bookadvanced_elementsofstatisticallearning_chapter_2_equation_27,
 )

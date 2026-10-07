@@ -1,8 +1,8 @@
 """Tests for rndut."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rndut import random_utility_model
 
 

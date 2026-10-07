@@ -72,11 +72,19 @@ def wasserman_least_squares(X, y):
     se = np.sqrt(np.diag(cov))
     tss = float(np.sum((y - np.mean(y)) ** 2))
     r2 = 1.0 - rss / tss if tss > 0 else float("nan")
-    return RichResult(payload={
-        "estimate": float(beta[0]), "beta": [float(v) for v in beta],
-        "se": [float(v) for v in se], "sigma2": float(sigma2),
-        "rss": rss, "r_squared": float(r2), "n": int(n), "p": int(p),
-        "method": "OLS via QR; classical se sigma2 (X'X)^-1"})
+    return RichResult(
+        payload={
+            "estimate": float(beta[0]),
+            "beta": [float(v) for v in beta],
+            "se": [float(v) for v in se],
+            "sigma2": float(sigma2),
+            "rss": rss,
+            "r_squared": float(r2),
+            "n": int(n),
+            "p": int(p),
+            "method": "OLS via QR; classical se sigma2 (X'X)^-1",
+        }
+    )
 
 
 def cheatsheet():

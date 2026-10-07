@@ -1,7 +1,6 @@
 """Tests for hmlof.geron_local_outlier_factor."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmlof import geron_local_outlier_factor
 
 

@@ -1,8 +1,6 @@
 """Tests for fzavar.fauzi_quantile_asymp_var."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.fzavar import fauzi_quantile_asymp_var
 
 
@@ -26,6 +24,7 @@ def test_fzavar_basic():
     # Use a known, hand-computed value: at p = 0.95, z_p ~= 1.6448536269514722,
     # f(z_p) = phi(z_p) = exp(-z_p^2/2) / sqrt(2*pi).
     import math
+
     z_p = 1.6448536269514722
     density = math.exp(-0.5 * z_p * z_p) / math.sqrt(2.0 * math.pi)
     qp_val = 1.0 / density

@@ -8,10 +8,12 @@ import pytest
 
 from morie.fn.catnxt import cat_next_item, catnext
 
-ITEMS = [[1.2, -0.5, 0.0, 1.0],     # 2PL
-         [0.8, 0.3, 0.2, 1.0],      # 3PL
-         [2.0, 0.1, 0.1, 0.95],     # 4PL, sharp
-         [1.0, 1.5, 0.0, 1.0]]
+ITEMS = [
+    [1.2, -0.5, 0.0, 1.0],  # 2PL
+    [0.8, 0.3, 0.2, 1.0],  # 3PL
+    [2.0, 0.1, 0.1, 0.95],  # 4PL, sharp
+    [1.0, 1.5, 0.0, 1.0],
+]
 
 
 def _info(a, b, c, d, theta, D=1.0):
@@ -49,8 +51,7 @@ def test_administered_items_are_skipped_and_exposure_reweights():
     assert r["n_available"] == 3
     expo = [1.0, 1.0, 0.0, 1.0]
     r2 = cat_next_item(ITEMS, theta, exposure=expo)
-    assert list(r2["weighted"]) == pytest.approx(
-        [e * w for e, w in zip(expo, want)], rel=1e-12)
+    assert list(r2["weighted"]) == pytest.approx([e * w for e, w in zip(expo, want)], rel=1e-12)
     assert r2["next_item"] != 3
 
 

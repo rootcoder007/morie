@@ -28,17 +28,16 @@ def ca_chapter_4_equation_2(b0, b1, x1):
     """
     value = _ca_crim.inv_logit(_ca_crim.linear_predictor(b0, [b1], [x1]))
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.2)"
     return RichResult(
-        title='Cumulative logistic probability P(Y=1) = 1/(1+e^-(b0+b1x1))',
+        title="Cumulative logistic probability P(Y=1) = 1/(1+e^-(b0+b1x1))",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e2: P(Y=1) = 1 / (1 + e^-(b0 + b1 x1)) [Weisburd et al. 2022, eq. 4.2]'
+    return "ca4e2: P(Y=1) = 1 / (1 + e^-(b0 + b1 x1)) [Weisburd et al. 2022, eq. 4.2]"

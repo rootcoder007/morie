@@ -68,25 +68,24 @@ def appnp(A, H, alpha=0.1, K=10, exact=False, softmax=True):
     alpha = float(alpha)
     if not 0.0 < alpha <= 1.0:
         raise ValueError("alpha must lie in (0, 1]")
-    At = [[(Am[i][j] + Am[j][i]) / 2.0 + (1.0 if i == j else 0.0)
-           for j in range(n)] for i in range(n)]
+    At = [[(Am[i][j] + Am[j][i]) / 2.0 + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
     deg = [sum(r) for r in At]
     if any(d <= 0.0 for d in deg):
         raise ValueError("every node must have positive degree after A + I")
     ds = [1.0 / math.sqrt(d) for d in deg]
     Ah = [[ds[i] * At[i][j] * ds[j] for j in range(n)] for i in range(n)]
     if exact:
-        Mm = [[(1.0 if i == j else 0.0) - (1.0 - alpha) * Ah[i][j]
-               for j in range(n)] for i in range(n)]
-        Z = C.solve(Mm, [[alpha * Hm[i][j] for j in range(c)]
-                         for i in range(n)])
+        Mm = [[(1.0 if i == j else 0.0) - (1.0 - alpha) * Ah[i][j] for j in range(n)] for i in range(n)]
+        Z = C.solve(Mm, [[alpha * Hm[i][j] for j in range(c)] for i in range(n)])
         steps = 0
     else:
         steps = int(K)
         Z = [row[:] for row in Hm]
         for _ in range(steps):
-            Z = [[(1.0 - alpha) * sum(Ah[i][l] * Z[l][j] for l in range(n))
-                  + alpha * Hm[i][j] for j in range(c)] for i in range(n)]
+            Z = [
+                [(1.0 - alpha) * sum(Ah[i][ell] * Z[ell][j] for ell in range(n)) + alpha * Hm[i][j] for j in range(c)]
+                for i in range(n)
+            ]
     if softmax:
         out = []
         for r in Z:
@@ -95,10 +94,17 @@ def appnp(A, H, alpha=0.1, K=10, exact=False, softmax=True):
             s = sum(e)
             out.append([v / s for v in e])
         Z = out
-    return RichResult(payload={
-        "Z": Z, "alpha": alpha, "K": steps, "exact": bool(exact),
-        "n": n, "c": c,
-        "method": "APPNP personalised-PageRank propagation (Klicpera et al. 2019)"})
+    return RichResult(
+        payload={
+            "Z": Z,
+            "alpha": alpha,
+            "K": steps,
+            "exact": bool(exact),
+            "n": n,
+            "c": c,
+            "method": "APPNP personalised-PageRank propagation (Klicpera et al. 2019)",
+        }
+    )
 
 
 def cheatsheet():

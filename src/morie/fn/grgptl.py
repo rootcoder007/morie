@@ -95,8 +95,7 @@ def geron_gpt_autoregressive_loss(logits, targets, reduction="sum"):
 
     return RichResult(
         title="Autoregressive next-token loss",
-        summary_lines=[("Loss (sum)", total), ("Mean", mean),
-                       ("Perplexity", float(np.exp(mean)))],
+        summary_lines=[("Loss (sum)", total), ("Mean", mean), ("Perplexity", float(np.exp(mean)))],
         payload={
             "loss": total,
             "mean_loss": mean,

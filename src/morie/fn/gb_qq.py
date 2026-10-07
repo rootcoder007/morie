@@ -48,15 +48,17 @@ def gibbons_qq_plot(x, F0_inv=None):
     if n < 3:
         raise ValueError(f"need at least 3 observations, got {n}.")
     pp = (np.arange(1, n + 1) - 0.5) / n
-    q = stats.norm.ppf(pp) if F0_inv is None else np.asarray(
-        [F0_inv(p) for p in pp], dtype=float
-    )
+    q = stats.norm.ppf(pp) if F0_inv is None else np.asarray([F0_inv(p) for p in pp], dtype=float)
     slope, intercept = np.polyfit(q, x, 1)
     corr = float(np.corrcoef(q, x)[0, 1])
     return RichResult(
         payload={
-            "theoretical": q, "observed": x, "correlation": corr,
-            "slope": float(slope), "intercept": float(intercept), "n": int(n),
+            "theoretical": q,
+            "observed": x,
+            "correlation": corr,
+            "slope": float(slope),
+            "intercept": float(intercept),
+            "n": int(n),
             "method": "Q-Q pairs (F0^{-1}((i-.5)/n), X_(i)); tail-sensitive (Ch. 4.8)",
         }
     )

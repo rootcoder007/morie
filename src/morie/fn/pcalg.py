@@ -104,7 +104,7 @@ def pcalg(
             if adj[i, j] == 0:
                 continue
             for k in range(p):
-                if k == i or k == j:
+                if k in (i, j):
                     continue
                 # i - k - j (k not in sepset(i,j)) -> i -> k ← j
                 if adj[i, k] and adj[j, k] and not adj[i, j]:

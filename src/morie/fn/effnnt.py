@@ -39,8 +39,7 @@ _BETA = 1.1
 _GAMMA = 1.15
 
 
-def efficientnet_block(x, expand_ratio=6.0, filters=None, se_ratio=0.25,
-                       phi=None):
+def efficientnet_block(x, expand_ratio=6.0, filters=None, se_ratio=0.25, phi=None):
     """One MBConv block, and the compound-scaling factors at ``phi``.
 
     Parameters
@@ -119,7 +118,7 @@ def efficientnet_block(x, expand_ratio=6.0, filters=None, se_ratio=0.25,
             "depth": d,
             "width": w,
             "resolution": res,
-            "constraint": _ALPHA * _BETA ** 2 * _GAMMA ** 2,
+            "constraint": _ALPHA * _BETA**2 * _GAMMA**2,
             "method": "MBConv with squeeze-and-excitation, plus EfficientNet compound scaling (Tan and Le 2019, eqs. 2-3)",
         },
     )

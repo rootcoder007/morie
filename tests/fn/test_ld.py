@@ -1,8 +1,8 @@
 """Tests for morie.fn.ld -- Linkage disequilibrium."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ld import linkage_disequilibrium
 
 

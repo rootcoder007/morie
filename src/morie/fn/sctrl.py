@@ -135,7 +135,7 @@ def synthetic_control(
         Y_pbo_pre = panel.loc[cu, pre_times].to_numpy(dtype=float)
         Y_others_pre = Y_ctrl_pre[other_idx]
 
-        def pbo_obj(w):
+        def pbo_obj(w, *, Y_others_pre=Y_others_pre, Y_pbo_pre=Y_pbo_pre):
             return float(np.sum((Y_pbo_pre - w @ Y_others_pre) ** 2))
 
         w0_p = np.ones(len(other_idx)) / len(other_idx)

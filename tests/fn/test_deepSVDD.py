@@ -10,8 +10,7 @@ from morie.fn.deepSVDD import svdd
 
 
 def _ring(n=24, r=2.0, cx=1.0, cy=-1.0):
-    return [[cx + r * math.cos(2 * math.pi * i / n),
-             cy + r * math.sin(2 * math.pi * i / n)] for i in range(n)]
+    return [[cx + r * math.cos(2 * math.pi * i / n), cy + r * math.sin(2 * math.pi * i / n)] for i in range(n)]
 
 
 def test_points_on_a_circle_give_back_its_centre_and_radius():
@@ -28,7 +27,7 @@ def test_the_dual_weights_are_a_probability_vector():
 
 
 def test_interior_points_are_not_support_vectors():
-    X = _ring() + [[1.0, -1.0], [1.2, -0.9]]     # two interior points
+    X = _ring() + [[1.0, -1.0], [1.2, -0.9]]  # two interior points
     res = svdd(X, C=1.0)
     assert len(X) - 2 not in res["support"]
     assert len(X) - 1 not in res["support"]
@@ -50,9 +49,7 @@ def test_the_rbf_kernel_runs_and_keeps_the_kkt_conditions():
 
 
 def test_validation():
-    for call in (lambda: svdd([[1.0, 2.0]]),
-                 lambda: svdd(_ring(), C=0.001),
-                 lambda: svdd(_ring(), kernel="poly")):
+    for call in (lambda: svdd([[1.0, 2.0]]), lambda: svdd(_ring(), C=0.001), lambda: svdd(_ring(), kernel="poly")):
         try:
             call()
             raise AssertionError("expected ValueError")

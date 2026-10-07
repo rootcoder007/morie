@@ -28,22 +28,24 @@ def burkov_elman_rnn(x_t, h_prev, Wh, Wx, Wy, bh, by):
     bh = np.atleast_1d(np.asarray(bh, dtype=float))
     by = np.atleast_1d(np.asarray(by, dtype=float))
     if Wh.shape != (len(h0), len(h0)):
-        raise ValueError(
-            f"Wh must be {len(h0)} x {len(h0)}; got {Wh.shape}.")
+        raise ValueError(f"Wh must be {len(h0)} x {len(h0)}; got {Wh.shape}.")
     if Wx.shape != (len(h0), len(x)):
-        raise ValueError(
-            f"Wx must be {len(h0)} x {len(x)}; got {Wx.shape}.")
+        raise ValueError(f"Wx must be {len(h0)} x {len(x)}; got {Wx.shape}.")
     if Wy.shape[1] != len(h0):
-        raise ValueError(
-            f"Wy must have {len(h0)} columns; got {Wy.shape}.")
+        raise ValueError(f"Wy must have {len(h0)} columns; got {Wy.shape}.")
     if len(bh) != len(h0) or len(by) != Wy.shape[0]:
         raise ValueError("bias lengths must match Wh rows and Wy rows.")
     h = np.tanh(Wh @ h0 + Wx @ x + bh)
     y = Wy @ h + by
-    return RichResult(payload={
-        "h": [float(v) for v in h], "y": [float(v) for v in y],
-        "estimate": float(y[0]), "n": len(h),
-        "method": "Elman RNN step (Burkov Ch 3)"})
+    return RichResult(
+        payload={
+            "h": [float(v) for v in h],
+            "y": [float(v) for v in y],
+            "estimate": float(y[0]),
+            "n": len(h),
+            "method": "Elman RNN step (Burkov Ch 3)",
+        }
+    )
 
 
 def cheatsheet():

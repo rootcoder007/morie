@@ -6,12 +6,9 @@ Springer, ch 14, eqs. 14.7 and 14.8 p.469, the basis matrix. Expected values are
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm271 import basmat
-
 
 GRID = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
@@ -30,8 +27,7 @@ def test_the_cross_product_is_the_basis_matrix_times_its_transpose():
     Psi, PtP = res["Psi"], res["PsiTPsi"]
     for i in range(3):
         for j in range(3):
-            expected = sum(Psi[r][i] * Psi[r][j]
-                           for r in range(len(GRID)))
+            expected = sum(Psi[r][i] * Psi[r][j] for r in range(len(GRID)))
             assert PtP[i][j] == pytest.approx(expected, rel=1e-12)
 
 

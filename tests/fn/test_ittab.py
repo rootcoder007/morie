@@ -1,7 +1,6 @@
 """Tests for morie.fn.ittab — full item analysis table."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.ittab import item_table
 
 

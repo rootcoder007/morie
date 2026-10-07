@@ -59,8 +59,6 @@ References
     for Mediation and Interaction." Oxford University Press.
 """
 
-import math
-
 from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
@@ -75,9 +73,9 @@ def _augment(D, M, X):
     return [[float(D[i]), float(M[i])] + list(X[i]) for i in range(len(X))]
 
 
-def causal_three_layer_grf(y, D, M, X, route="gcomputed", n_trees=8,
-                           min_leaf=3, max_depth=3, seed=0, n_draw=8,
-                           newX=None):
+def causal_three_layer_grf(
+    y, D, M, X, route="gcomputed", n_trees=8, min_leaf=3, max_depth=3, seed=0, n_draw=8, newX=None
+):
     """Natural direct and indirect effects from three honest forests.
 
     Parameters
@@ -106,7 +104,7 @@ def causal_three_layer_grf(y, D, M, X, route="gcomputed", n_trees=8,
     JASA 119(545), 97-102.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     ys = [float(v) for v in y]
     d = [1.0 if v else 0.0 for v in D]
     m = [float(v) for v in M]
@@ -123,16 +121,13 @@ def causal_three_layer_grf(y, D, M, X, route="gcomputed", n_trees=8,
     # Layer one: the propensity, reported for overlap rather than used
     # to reweight.
     rng = _core._SplitMix64(seed)
-    fe = honest_forest(xs, d, rows, n_trees, None, min_leaf, max_depth,
-                       seed, rng)
+    fe = honest_forest(xs, d, rows, n_trees, None, min_leaf, max_depth, seed, rng)
     # Layer two: the mediator, one forest per arm so the arms may differ.
     mx = [[dd] + xx for dd, xx in zip(d, xs)]
-    fm = honest_forest(mx, m, rows, n_trees, None, min_leaf, max_depth,
-                       seed + 1, rng)
+    fm = honest_forest(mx, m, rows, n_trees, None, min_leaf, max_depth, seed + 1, rng)
     # Layer three: the outcome on treatment, mediator and covariates.
     ax = _augment(d, m, xs)
-    fy = honest_forest(ax, ys, rows, n_trees, None, min_leaf, max_depth,
-                       seed + 2, rng)
+    fy = honest_forest(ax, ys, rows, n_trees, None, min_leaf, max_depth, seed + 2, rng)
 
     # The mediator residuals carry its conditional spread. Sorting them
     # and sweeping evenly is a deterministic quadrature over the
@@ -184,34 +179,39 @@ def causal_three_layer_grf(y, D, M, X, route="gcomputed", n_trees=8,
     atot = _w.csum(tot) / q
     lo = min(ps)
     hi = max(ps)
-    return RichResult(payload={
-        "direct": nde,
-        "indirect": nie,
-        "total": tot,
-        "propensity": ps,
-        "mediator_control": m0v,
-        "mediator_treated": m1v,
-        "nde": ande,
-        "nie": anie,
-        "estimate": atot,
-        "se": float("nan"),
-        "proportion_mediated": anie / atot if atot != 0.0 else float("nan"),
-        "overlap_min": lo,
-        "overlap_max": hi,
-        "n_extreme": sum(1 for e in ps if e < 0.05 or e > 0.95),
-        "n_draw": len(draws),
-        "residual_spread": resid[-1] - resid[0] if resid else 0.0,
-        "n": n,
-        "n_treated": int(sum(d)),
-        "n_query": q,
-        "route": route,
-        "method": "three-layer causal forest with a mediator",
-    })
+    return RichResult(
+        payload={
+            "direct": nde,
+            "indirect": nie,
+            "total": tot,
+            "propensity": ps,
+            "mediator_control": m0v,
+            "mediator_treated": m1v,
+            "nde": ande,
+            "nie": anie,
+            "estimate": atot,
+            "se": float("nan"),
+            "proportion_mediated": anie / atot if atot != 0.0 else float("nan"),
+            "overlap_min": lo,
+            "overlap_max": hi,
+            "n_extreme": sum(1 for e in ps if e < 0.05 or e > 0.95),
+            "n_draw": len(draws),
+            "residual_spread": resid[-1] - resid[0] if resid else 0.0,
+            "n": n,
+            "n_treated": int(sum(d)),
+            "n_query": q,
+            "route": route,
+            "method": "three-layer causal forest with a mediator",
+        }
+    )
 
 
 cthrgr = causal_three_layer_grf
 
 
 def cheatsheet():
-    return ("cthrgr: three-layer causal forest with a mediator. routes "
-            + ", ".join(ROUTES) + "; direct plus indirect is the total")
+    return (
+        "cthrgr: three-layer causal forest with a mediator. routes "
+        + ", ".join(ROUTES)
+        + "; direct plus indirect is the total"
+    )

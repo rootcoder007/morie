@@ -1,7 +1,6 @@
 """Tests for gh_ap_c2.ghosal_packing_num."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_c2 import ghosal_packing_num
 
 
@@ -60,7 +59,7 @@ def test_gh_ap_c2_edge():
     r = 42.0
     e = 0.25
     d = 2
-    N_eps = (3.0 * r / e) ** d   # (3*42/0.25)^2 = 504^2
+    N_eps = (3.0 * r / e) ** d  # (3*42/0.25)^2 = 504^2
     N_half = (6.0 * r / e) ** d  # (6*42/0.25)^2 = 1008^2
 
     est = float(np.asarray(result["estimate"], dtype=float))

@@ -6,10 +6,11 @@ import pytest
 
 from morie.fn.bsaphys import rangayyan_freq_domain_feat, rangayyan_oae
 
-
 FS = 8000.0
-X = [math.sin(2 * math.pi * 1500 * t / FS) + 0.5 * math.sin(2 * math.pi * 3000 * t / FS)
-     + 0.05 * math.sin(9.1 * t) for t in range(2048)]
+X = [
+    math.sin(2 * math.pi * 1500 * t / FS) + 0.5 * math.sin(2 * math.pi * 3000 * t / FS) + 0.05 * math.sin(9.1 * t)
+    for t in range(2048)
+]
 
 
 def test_rgoae_basic():

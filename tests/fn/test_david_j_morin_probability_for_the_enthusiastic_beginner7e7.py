@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e7 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e7 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7,
+)
 
 
 def test_taylor_series_converges_to_the_exponential():
@@ -23,6 +25,6 @@ def test_taylor_series_converges_to_the_exponential():
 def test_early_partial_sums_match_the_series_by_hand():
     x = 1.0
     res = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_7(x, 5)
-    by_hand = [sum(x ** k / math.factorial(k) for k in range(m + 1)) for m in range(5)]
+    by_hand = [sum(x**k / math.factorial(k) for k in range(m + 1)) for m in range(5)]
     for got, want in zip(res["partial_sums"], by_hand):
         assert got == pytest.approx(want, rel=1e-12)

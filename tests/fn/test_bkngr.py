@@ -9,5 +9,6 @@ def test_bkngr_basic():
 
 def test_bkngr_edge():
     import pytest
+
     with pytest.raises(ValueError, match="undefined"):
         burkov_ngram_mle(0, 0)

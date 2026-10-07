@@ -41,10 +41,7 @@ def _gram(z, kernel, bandwidth):
         if bandwidth is None:
             ds = sorted(dists)
             m = len(ds)
-            if m % 2 == 1:
-                bandwidth = ds[m // 2]
-            else:
-                bandwidth = 0.5 * (ds[m // 2 - 1] + ds[m // 2])
+            bandwidth = ds[m // 2] if m % 2 == 1 else 0.5 * (ds[m // 2 - 1] + ds[m // 2])
             if bandwidth <= 0.0:
                 bandwidth = 1.0
         for i in range(n):
@@ -57,8 +54,7 @@ def _gram(z, kernel, bandwidth):
     raise ValueError("kernel must be 'linear' or 'gaussian'")
 
 
-def kcusum(x, kernel="gaussian", threshold=None, gamma=0.1,
-           bandwidth=None, kmin=2, kmax=None):
+def kcusum(x, kernel="gaussian", threshold=None, gamma=0.1, bandwidth=None, kmin=2, kmax=None):
     """
     Kernel change-point analysis (KCpA) running-maximum scan.
 
@@ -128,10 +124,7 @@ def kcusum(x, kernel="gaussian", threshold=None, gamma=0.1,
     harchaoui-moulines-bach-2008-kernel-changepoint-analysis-nips.pdf
     """
     xv = np.asarray(x, dtype=float)
-    if xv.ndim == 1:
-        z = [float(v) for v in xv]
-    else:
-        z = [[float(v) for v in row] for row in xv]
+    z = [float(v) for v in xv] if xv.ndim == 1 else [[float(v) for v in row] for row in xv]
     n = len(z)
     if n < 4:
         raise ValueError("need n >= 4")

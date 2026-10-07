@@ -1,6 +1,5 @@
 """ANOVA estimation of variance components (Searle, Casella & McCulloch 1992)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["ranova", "anova_variance_components"]
@@ -81,7 +80,7 @@ def ranova(y, group):
     means = [sum(g) / len(g) for g in gs]
     ssa = sum(ns[i] * (means[i] - grand) ** 2 for i in range(a))
     sse = sum((v - means[i]) ** 2 for i in range(a) for v in gs[i])
-    if N == a:
+    if a == N:
         raise ValueError("need replication within classes")
     msa = ssa / (a - 1)
     mse = sse / (N - a)
@@ -92,22 +91,24 @@ def ranova(y, group):
     s2a = s2a_raw if s2a_raw > 0.0 else 0.0
     s2e = mse
     denom = s2a + s2e
-    return RichResult(payload={
-        "sigma2_a": s2a,
-        "sigma2_e": s2e,
-        "sigma2_a_raw": s2a_raw,
-        "msa": msa,
-        "mse": mse,
-        "ssa": ssa,
-        "sse": sse,
-        "n0": n0,
-        "a": a,
-        "N": N,
-        "n_i": ns,
-        "balanced": balanced,
-        "icc": (s2a / denom) if denom > 0 else 0.0,
-        "method": "ANOVA variance components (Searle et al. 1992, Eq. 21)",
-    })
+    return RichResult(
+        payload={
+            "sigma2_a": s2a,
+            "sigma2_e": s2e,
+            "sigma2_a_raw": s2a_raw,
+            "msa": msa,
+            "mse": mse,
+            "ssa": ssa,
+            "sse": sse,
+            "n0": n0,
+            "a": a,
+            "N": N,
+            "n_i": ns,
+            "balanced": balanced,
+            "icc": (s2a / denom) if denom > 0 else 0.0,
+            "method": "ANOVA variance components (Searle et al. 1992, Eq. 21)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -115,8 +116,8 @@ anova_variance_components = ranova
 
 
 def cheatsheet():
-    return ("ranova: sigma2_e = MSE; sigma2_a = (MSA - MSE)/n0, "
-            "n0 = (N - sum n_i^2/N)/(a-1)")
+    return "ranova: sigma2_e = MSE; sigma2_a = (MSA - MSE)/n0, n0 = (N - sum n_i^2/N)/(a-1)"
+
 
 # public names resolved by fn/_lazy_map.json
 random_effects_anova_decomp = ranova

@@ -1,7 +1,6 @@
 """Test ceemdan (ceemd)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ceemd import ceemd, ceemdan
 

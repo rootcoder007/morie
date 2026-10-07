@@ -86,15 +86,12 @@ def geron_dynamic_quantization(x, w):
         raise ValueError("x and w must be finite.")
     mx, mw = float(np.max(np.abs(X))), float(np.max(np.abs(W)))
     if mx == 0 or mw == 0:
-        raise ValueError(
-            "x or w is all zeros, so its INT8 scale would be 0 and the "
-            "dequantization divides by zero."
-        )
+        raise ValueError("x or w is all zeros, so its INT8 scale would be 0 and the dequantization divides by zero.")
 
     sx, sw = mx / 127.0, mw / 127.0
     Xq = np.rint(X / sx).astype(np.int32)
     Wq = np.rint(W / sw).astype(np.int32)
-    acc = Xq @ Wq                                  # INT32 accumulation
+    acc = Xq @ Wq  # INT32 accumulation
     out = acc.astype(float) * sx * sw
     ref = X @ W
     err = float(np.max(np.abs(out - ref)))
@@ -102,8 +99,7 @@ def geron_dynamic_quantization(x, w):
 
     return RichResult(
         title="Dynamic INT8 quantization",
-        summary_lines=[("scale_x", sx), ("scale_w", sw),
-                       ("Max abs error", err)],
+        summary_lines=[("scale_x", sx), ("scale_w", sw), ("Max abs error", err)],
         payload={
             "output": out.tolist(),
             "reference": ref.tolist(),

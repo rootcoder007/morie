@@ -11,16 +11,13 @@ The stabilized inverse-probability weights are computed by
 model fitted in the pseudo-population those weights create.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["msm_time_varying_exposure"]
 
 
-def msm_time_varying_exposure(y, exposure_history, covariate_history=None, time=None,
-         weights=None):
+def msm_time_varying_exposure(y, exposure_history, covariate_history=None, time=None, weights=None):
     """The stabilized weight
     sw_i = prod_t f(A_t | A-bar_{t-1}) / f(A_t | H_t) reweights the
     sample into a pseudo-population where exposure is independent of
@@ -33,18 +30,21 @@ def msm_time_varying_exposure(y, exposure_history, covariate_history=None, time=
         import morie.fn._array_core as _np
 
         from .msmwt import msmwt as _msmwt
-        weights = _msmwt(_np.marr(_gp._mat(exposure_history)),
-                         _np.marr(_gp._mat(covariate_history)))["sw"]
+
+        weights = _msmwt(_np.marr(_gp._mat(exposure_history)), _np.marr(_gp._mat(covariate_history)))["sw"]
     d = _gp.msm_design(exposure_history)
-    f = _gp.msm_weighted_glm(y, d["X"], weights=weights,
-                             family="gaussian")
+    f = _gp.msm_weighted_glm(y, d["X"], weights=weights, family="gaussian")
     ws = f["weights"]
-    res = RichResult(payload={"estimate": f["beta"][1],
-                              "beta": f["beta"],
-                              "a_bar": d["a_bar"],
-                              "weight_mean": sum(ws) / len(ws),
-                              "weight_max": max(ws),
-                              "method": "time-varying exposure MSM (Robins et al. 2000)"})
+    res = RichResult(
+        payload={
+            "estimate": f["beta"][1],
+            "beta": f["beta"],
+            "a_bar": d["a_bar"],
+            "weight_mean": sum(ws) / len(ws),
+            "weight_max": max(ws),
+            "method": "time-varying exposure MSM (Robins et al. 2000)",
+        }
+    )
     return with_describe_pointer(res, "msmtve")
 
 

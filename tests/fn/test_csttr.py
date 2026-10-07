@@ -1,7 +1,6 @@
 """Tests for morie.fn.csttr — custody transfer rate."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.csttr import custody_transfer_rate
 
 

@@ -48,7 +48,12 @@ def adfur(x, lags=1):
     res = _core.adfur(x=x, lags=lags)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("stat", res["stat"]), ("se", res["se"]), ("crit5", res["crit5"]), ("stationary5", res["stationary5"])],
+        summary_lines=[
+            ("stat", res["stat"]),
+            ("se", res["se"]),
+            ("crit5", res["crit5"]),
+            ("stationary5", res["stationary5"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

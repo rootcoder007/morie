@@ -1,7 +1,5 @@
 """Tests for poisson_rate_mean.poisson_rate_mean."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.poisson_rate_mean import (
     poisson_rate_mean,
 )

@@ -51,10 +51,7 @@ def optimal_threshold(y_true, y_score, *, method="youden", fp_cost=1.0, fn_cost=
         tn = np.sum((yt == 0) & (yp == 0))
         sens = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         spec = tn / (tn + fp) if (tn + fp) > 0 else 0.0
-        if method == "youden":
-            score = sens + spec - 1.0
-        else:
-            score = -(fp_cost * fp + fn_cost * fn)
+        score = sens + spec - 1.0 if method == "youden" else -(fp_cost * fp + fn_cost * fn)
         if score > best_score:
             best_score = score
             best_thresh = float(t)

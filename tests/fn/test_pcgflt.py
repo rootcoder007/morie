@@ -1,8 +1,8 @@
 """Tests for pcg_filter."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.pcgflt import pcg_filter
 
 

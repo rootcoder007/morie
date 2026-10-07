@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.aitlrm import compositional_lrmean
 
 
@@ -44,8 +43,7 @@ def test_aitlrm_basic():
         assert math.isclose(got, exp, rel_tol=1e-10, abs_tol=1e-12)
 
     # sum_clr_mean must equal sum(clr_mean) and be ~0 (clr is zero-sum by def).
-    assert math.isclose(result["sum_clr_mean"], sum(result["clr_mean"]),
-                        rel_tol=1e-10, abs_tol=1e-12)
+    assert math.isclose(result["sum_clr_mean"], sum(result["clr_mean"]), rel_tol=1e-10, abs_tol=1e-12)
     assert math.isclose(result["sum_clr_mean"], 0.0, abs_tol=1e-10)
 
 

@@ -1,12 +1,11 @@
 """Tests for morie.fn.modin."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.modin import modin
 
 
 def test_modin_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = modin(a=12, m=7)
     assert result is not None
     assert hasattr(result, "name")

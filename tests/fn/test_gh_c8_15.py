@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_15 import ghosal_alpha_pst_crt
 
 
@@ -23,8 +22,7 @@ def test_gh_c8_15_basic():
     # Independently recompute the rate from the recorded var_by_n
     # using the documented log-ratio formula and verify it matches.
     ns = (100, 10000)
-    expected_rate = math.log(var_seq[0] / var_seq[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
+    expected_rate = math.log(var_seq[0] / var_seq[-1]) / math.log(float(ns[-1]) / ns[0])
     assert abs(expected_rate - estimate) < 1e-12
 
 

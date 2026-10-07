@@ -1,7 +1,6 @@
 """Tests for ca9e11.ca_chapter_9_equation_11."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca9e11 import ca_chapter_9_equation_11
 
 
@@ -15,10 +14,7 @@ def test_ca9e11_basic():
     assert "t" in result
     # Verify the formula directly from the docstring.
     df = (n1 + n2) - 2
-    t_expected = (m1 - m2) / np.sqrt(
-        ((s1**2 * (n1 - 1) + s2**2 * (n2 - 1)) / df)
-        * ((n1 + n2) / (n1 * n2))
-    )
+    t_expected = (m1 - m2) / np.sqrt(((s1**2 * (n1 - 1) + s2**2 * (n2 - 1)) / df) * ((n1 + n2) / (n1 * n2)))
     assert result["t"] == t_expected
 
 

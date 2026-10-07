@@ -66,7 +66,7 @@ def _loss(kind, y, yh):
             p = min(max(yh[i], 1e-15), 1.0)
             s -= y[i] * math.log(p)
         return s / n
-    raise ValueError("joint_loss_mixed_outcomes: unknown outcome type %r" % (kind,))
+    raise ValueError(f"joint_loss_mixed_outcomes: unknown outcome type {kind!r}")
 
 
 def joint_loss_mixed_outcomes(y_dict, y_hat_dict, weights=None):
@@ -97,15 +97,15 @@ def joint_loss_mixed_outcomes(y_dict, y_hat_dict, weights=None):
     for nm in names:
         kd, v = y_dict[nm]
         if kd not in _TYPES:
-            raise ValueError("joint_loss_mixed_outcomes: unknown outcome type %r" % (kd,))
+            raise ValueError(f"joint_loss_mixed_outcomes: unknown outcome type {kd!r}")
         kinds[nm] = kd
         ys[nm] = core.vec(v)
         if nm not in y_hat_dict:
-            raise ValueError("joint_loss_mixed_outcomes: no prediction for outcome %r" % (nm,))
+            raise ValueError(f"joint_loss_mixed_outcomes: no prediction for outcome {nm!r}")
         if len(core.vec(y_hat_dict[nm])) != len(ys[nm]):
-            raise ValueError("joint_loss_mixed_outcomes: outcome %r has mismatched lengths" % (nm,))
+            raise ValueError(f"joint_loss_mixed_outcomes: outcome {nm!r} has mismatched lengths")
         if not ys[nm]:
-            raise ValueError("joint_loss_mixed_outcomes: outcome %r is empty" % (nm,))
+            raise ValueError(f"joint_loss_mixed_outcomes: outcome {nm!r} is empty")
     if weights is None:
         # Section 12.4 recipe: max |median - quartile| per trait, then the
         # first trait's distance divided by each subsequent trait's.

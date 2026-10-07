@@ -63,10 +63,7 @@ def wet_bulb_globe_temp(
     if not (Ta.shape == Tw.shape == Tg.shape):
         raise ValueError("T_air_C, T_wet_C, T_globe_C must match in shape.")
 
-    if outdoor:
-        W = 0.7 * Tw + 0.2 * Tg + 0.1 * Ta
-    else:
-        W = 0.7 * Tw + 0.3 * Tg
+    W = 0.7 * Tw + 0.2 * Tg + 0.1 * Ta if outdoor else 0.7 * Tw + 0.3 * Tg
 
     def _classify(w: float) -> str:
         if w <= 28.0:

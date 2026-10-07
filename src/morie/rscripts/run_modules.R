@@ -32,7 +32,12 @@ if (is.null(output_dir) || !nzchar(output_dir)) {
   stop("run_modules.R: --output-dir is required.", call. = FALSE)
 }
 
-if (!requireNamespace("morie", quietly = TRUE)) {
+# rmorie (r-universe, what `morie r-install` installs) carries the same modules as the
+# repository's own R arm; whichever is installed runs them.
+# morie passes the one whose version matches it (MORIE_R_PACKAGE); run by hand, rmorie first.
+pkg <- Sys.getenv("MORIE_R_PACKAGE", "")
+if (!nzchar(pkg)) pkg <- if (requireNamespace("rmorie", quietly = TRUE)) "rmorie" else "morie"
+if (!requireNamespace(pkg, quietly = TRUE)) {
   # requireNamespace() returns FALSE for two very different situations:
   # the package is absent, or it is installed but cannot be loaded (most
   # often a shared library its DLL links against is not on the runtime
@@ -43,10 +48,10 @@ if (!requireNamespace("morie", quietly = TRUE)) {
 
   if (is.null(installed_at)) {
     stop(
-      "The R 'morie' package is required for R-backed modules but is not ",
-      "installed. Install it from the repository's r-package/morie ",
-      "(`R CMD INSTALL r-package/morie`) or from r-universe ",
-      "(`install.packages('morie', repos = 'https://rootcoder007.r-universe.dev')`).",
+      "The R package for the R-backed modules is required for R-backed modules but is not ",
+      "installed: install R, then run `morie r-install` (rmorie from r-universe, prebuilt on ",
+      "macOS and Windows; `install.packages('rmorie', repos = c('https://rootcoder007.r-universe.dev', ",
+      "'https://cloud.r-project.org'))` does the same).",
       call. = FALSE
     )
   }
@@ -74,8 +79,9 @@ if (!requireNamespace("morie", quietly = TRUE)) {
   )
 }
 
+ns <- getNamespace(pkg)
 modules <- if (is.null(modules_raw) || !nzchar(modules_raw)) {
-  morie::morie_list_morie_modules()$name
+  get("morie_list_morie_modules", envir = ns)()$name
 } else {
   trimws(strsplit(modules_raw, ",", fixed = TRUE)[[1L]])
 }
@@ -85,4 +91,4 @@ if (!is.null(cpads_csv) && nzchar(cpads_csv)) {
   call_args$cpads_csv <- cpads_csv
 }
 
-invisible(do.call(morie::morie_run_morie_modules, call_args))
+invisible(do.call(get("morie_run_morie_modules", envir = ns), call_args))

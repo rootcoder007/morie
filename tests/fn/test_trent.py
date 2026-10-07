@@ -1,8 +1,8 @@
 """Tests for morie.fn.trent -- Trend test for survival."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.trent import trent
 
 

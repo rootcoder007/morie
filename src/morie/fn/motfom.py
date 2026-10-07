@@ -33,8 +33,7 @@ def _staden_pdist(llr, background, scale):
     # under the zero-order background model. Returns (offset, pdf)
     # with pdf[s - offset] = P(total integer score = s).
     w = len(llr)
-    illr = [[int(round(llr[j][a] * scale)) for a in range(4)]
-            for j in range(w)]
+    illr = [[int(round(llr[j][a] * scale)) for a in range(4)] for j in range(w)]
     lo = sum(min(illr[j]) for j in range(w))
     hi = sum(max(illr[j]) for j in range(w))
     pdf = {0: 1.0}
@@ -147,16 +146,18 @@ def motfom(sequence, pwm, background=None, pseudocount=0.0, scale=1000):
             best = i
     if best is None:
         raise ValueError("no scorable window (non-ACGT sequence)")
-    return RichResult(payload={
-        "scores": np.asarray(scores),
-        "pvalues": np.asarray(pvals),
-        "best_score": scores[best],
-        "best_pvalue": pvals[best],
-        "best_position": best,
-        "width": w,
-        "n_windows": n_win,
-        "method": "FIMO PWM scan, Staden DP p-values (Grant et al. 2011)",
-    })
+    return RichResult(
+        payload={
+            "scores": np.asarray(scores),
+            "pvalues": np.asarray(pvals),
+            "best_score": scores[best],
+            "best_pvalue": pvals[best],
+            "best_position": best,
+            "width": w,
+            "n_windows": n_win,
+            "method": "FIMO PWM scan, Staden DP p-values (Grant et al. 2011)",
+        }
+    )
 
 
 motif_fimo = motfom
@@ -164,5 +165,4 @@ motiffimo = motfom
 
 
 def cheatsheet():
-    return ("motfom(sequence, pwm) -> log2-odds PWM scores per position "
-            "with exact Staden dynamic-programming p-values.")
+    return "motfom(sequence, pwm) -> log2-odds PWM scores per position with exact Staden dynamic-programming p-values."

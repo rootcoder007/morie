@@ -21,10 +21,17 @@ def alammar_tokenizer_vocab_overlap(vocab_a, vocab_b):
         raise ValueError("both vocabularies are empty; 0/0.")
     inter = len(A & B)
     union = len(A | B)
-    return RichResult(payload={
-        "estimate": inter / union, "intersection": inter, "union": union,
-        "only_a": len(A - B), "only_b": len(B - A), "n": union,
-        "method": "Jaccard vocabulary overlap (Alammar Ch 2)"})
+    return RichResult(
+        payload={
+            "estimate": inter / union,
+            "intersection": inter,
+            "union": union,
+            "only_a": len(A - B),
+            "only_b": len(B - A),
+            "n": union,
+            "method": "Jaccard vocabulary overlap (Alammar Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

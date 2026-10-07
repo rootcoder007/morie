@@ -59,16 +59,18 @@ def kosorok_ch2_functional_delta_method(phi, X_n, theta, r_n, h=None):
     dev = Xn - th
     direction = dev if h is None else np.asarray(h, dtype=float)
     der, _drift, ok = hadamard_derivative(phi, th, direction)
-    actual = r_n * (np.asarray(phi(Xn), dtype=float)
-                    - np.asarray(phi(th), dtype=float))
-    linear = r_n * np.asarray(der, dtype=float) if h is None else np.asarray(
-        der, dtype=float
-    )
+    actual = r_n * (np.asarray(phi(Xn), dtype=float) - np.asarray(phi(th), dtype=float))
+    linear = r_n * np.asarray(der, dtype=float) if h is None else np.asarray(der, dtype=float)
     return RichResult(
-        payload={"scaled_increment": actual, "linear_approximation": linear,
-                 "remainder": actual - linear, "derivative": der,
-                 "derivative_converged": ok, "r_n": r_n,
-                 "method": "r_n(phi(X_n) - phi(theta)) vs phi'_theta; remainder shown"}
+        payload={
+            "scaled_increment": actual,
+            "linear_approximation": linear,
+            "remainder": actual - linear,
+            "derivative": der,
+            "derivative_converged": ok,
+            "r_n": r_n,
+            "method": "r_n(phi(X_n) - phi(theta)) vs phi'_theta; remainder shown",
+        }
     )
 
 

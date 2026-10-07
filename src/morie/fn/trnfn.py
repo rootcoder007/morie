@@ -43,10 +43,7 @@ def transfer_function(
     if response not in ("step", "impulse"):
         raise ValueError(f"response must be 'step' or 'impulse', got '{response}'.")
 
-    if t is None:
-        t = np.linspace(0, 10, n_points)
-    else:
-        t = np.asarray(t, dtype=np.float64)
+    t = np.linspace(0, 10, n_points) if t is None else np.asarray(t, dtype=np.float64)
 
     poles = np.roots(den)
     dc_gain = float(np.polyval(num, 0) / np.polyval(den, 0)) if np.polyval(den, 0) != 0 else float("inf")

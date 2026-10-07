@@ -8,7 +8,7 @@ from ._richresult import RichResult
 __all__ = ["seir_compartmental"]
 
 
-def seir_compartmental(S, E, I, R, beta, sigma, gamma, t_max=160.0, dt=0.1):
+def seir_compartmental(S, E, I, R, beta, sigma, gamma, t_max=160.0, dt=0.1):  # noqa: E741
     r"""Integrate the deterministic SEIR model.
 
     .. math::

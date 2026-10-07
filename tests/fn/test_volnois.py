@@ -1,7 +1,6 @@
 """Tests for volnois.vol_noise_variance_est."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.volnois import vol_noise_variance_est
 
 

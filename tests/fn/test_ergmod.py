@@ -1,7 +1,5 @@
 """Tests for ergmod.ergm."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.ergmod import ergm
 
 
@@ -26,8 +24,7 @@ def test_ergmod_basic():
     result = ergm(G, statistics, theta_init)
     assert isinstance(result, dict)
     # documented return keys
-    for key in ("estimate", "theta", "se", "observed_stats",
-               "pseudo_loglik", "n_dyads", "iters_used", "n", "method"):
+    for key in ("estimate", "theta", "se", "observed_stats", "pseudo_loglik", "n_dyads", "iters_used", "n", "method"):
         assert key in result
 
     # n must match the input size

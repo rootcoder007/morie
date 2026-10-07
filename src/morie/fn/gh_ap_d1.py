@@ -3,7 +3,6 @@
 
 import math
 
-from . import _tail1core as C
 from ._richresult import RichResult
 
 __all__ = ["exptest", "ghosal_exp_test"]
@@ -61,11 +60,17 @@ def exptest(err_null, err_alt, n):
     c0 = -math.log(e0) / n
     c1 = -math.log(e1) / n
     c = min(c0, c1)
-    return RichResult(payload={
-        "rate": c, "rate_null": c0, "rate_alt": c1,
-        "bound": math.exp(-c * n), "exponential": 1.0 if c > 0 else 0.0,
-        "n": float(n),
-        "method": "Exponential test-consistency rate, Ghosal Theorem 6.16"})
+    return RichResult(
+        payload={
+            "rate": c,
+            "rate_null": c0,
+            "rate_alt": c1,
+            "bound": math.exp(-c * n),
+            "exponential": 1.0 if c > 0 else 0.0,
+            "n": float(n),
+            "method": "Exponential test-consistency rate, Ghosal Theorem 6.16",
+        }
+    )
 
 
 ghosal_exp_test = exptest

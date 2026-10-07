@@ -1,7 +1,6 @@
 """Tests for ghmmt.ghosal_moment_matching."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghmmt import ghosal_moment_matching
 
 

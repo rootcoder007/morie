@@ -1,5 +1,7 @@
 """Tests for otsobm.ot_sobolev_w1."""
+
 import math
+
 import pytest
 
 from morie.fn import _array_core as np
@@ -38,8 +40,6 @@ def test_otsobm_edge():
     mu = [0.1, 0.2]
     nu = [0.4, 0.5, 0.6]
     # Any Laplacian matrix will do; the length mismatch triggers the ValueError
-    Laplace_inv = [[0.0, 0.0, 0.0],
-                   [0.0, 0.0, 0.0],
-                   [0.0, 0.0, 0.0]]
+    Laplace_inv = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
     with pytest.raises(ValueError):
         ot_sobolev_w1(mu, nu, Laplace_inv)

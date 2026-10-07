@@ -1,7 +1,6 @@
 """Tests for bigtm.bigram_topic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bigtm import bigram_topic
 
 
@@ -37,7 +36,7 @@ def test_bigtm_edge():
     """Test edge cases."""
     V = 10
     T = 4
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # Two tiny documents; bigram model still runs (first token unassigned).
     docs = [
         [0, 1, 2, 3],

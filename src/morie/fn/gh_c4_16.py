@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -25,11 +24,16 @@ def ghosal_dp_tails(MG_x, r=2.0):
     r = float(r)
     ll = abs(math.log(m))
     lo = math.exp(-r * math.log(ll) / m) if ll > 1.0 else 0.0
-    hi = math.exp(-1.0 / (m * ll ** r))
-    res = RichResult(payload={"estimate": hi, "lower": lo,
-                              "upper": hi,
-                              "thinner_than_base": hi < m,
-                              "method": "DP tail bounds (GvdV 2017 eq. 4.24)"})
+    hi = math.exp(-1.0 / (m * ll**r))
+    res = RichResult(
+        payload={
+            "estimate": hi,
+            "lower": lo,
+            "upper": hi,
+            "thinner_than_base": hi < m,
+            "method": "DP tail bounds (GvdV 2017 eq. 4.24)",
+        }
+    )
     return with_describe_pointer(res, "gh_c4_16")
 
 

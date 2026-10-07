@@ -29,7 +29,7 @@ def dynamic_irt_model(
     result = _fn(votes, time_periods, n_samples=n_samples, burn_in=burn_in, seed=seed)
     return DescriptiveResult(
         name="dynamic_irt_model",
-        value=result["tau_mean"],
+        value=sum(result["tau2"]) / len(result["tau2"]),
         extra=result,
     )
 

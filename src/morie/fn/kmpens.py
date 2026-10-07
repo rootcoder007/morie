@@ -58,23 +58,19 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
     """
     Q = np.asarray(probabilities, dtype=float)
     if Q.ndim != 3:
-        raise ValueError(
-            "probabilities must be (P, n, C), got %d dimensions." % Q.ndim
-        )
+        raise ValueError(f"probabilities must be (P, n, C), got {int(Q.ndim)} dimensions.")
     P, n, C = Q.shape
     if P < 2:
-        raise ValueError("need at least 2 prompts, got %d." % P)
+        raise ValueError(f"need at least 2 prompts, got {int(P)}.")
     if np.any(Q < -1e-9) or np.any(Q > 1 + 1e-9):
         raise ValueError("probabilities must lie in [0, 1].")
     if not np.allclose(Q.sum(axis=2), 1.0, atol=1e-6):
         raise ValueError("each prompt's probabilities must sum to 1.")
     if method not in ("mean", "logmean"):
-        raise ValueError("method must be 'mean' or 'logmean', got %r." % method)
-    w = np.ones(P) / P if weights is None else np.asarray(
-        weights, dtype=float
-    ).ravel()
+        raise ValueError(f"method must be 'mean' or 'logmean', got {method!r}.")
+    w = np.ones(P) / P if weights is None else np.asarray(weights, dtype=float).ravel()
     if w.size != P:
-        raise ValueError("weights has %d entries for %d prompts." % (w.size, P))
+        raise ValueError(f"weights has {int(w.size)} entries for {int(P)} prompts.")
     if np.any(w < 0) or w.sum() <= 0:
         raise ValueError("weights must be non-negative and not all zero.")
     w = w / w.sum()
@@ -97,9 +93,7 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
             "the spread across phrasings is what the ensemble buys; near "
             "zero means the prompts agreed and the ensembling was idle"
         ),
-        "unanimity": float(np.mean(
-            (per_pred == per_pred[0][None, :]).all(axis=0)
-        )),
+        "unanimity": float(np.mean((per_pred == per_pred[0][None, :]).all(axis=0))),
         "method_used": method,
         "logmean_note": (
             "logmean is the geometric mean, so one prompt assigning near-zero "
@@ -107,32 +101,33 @@ def prompt_ensemble(probabilities, y=None, weights=None, method="mean"):
         ),
         "n_prompts": int(P),
         "n": int(n),
-        "method": "Prompt ensemble (%s)" % method,
+        "method": f"Prompt ensemble ({method})",
     }
     if y is not None:
         yv = np.asarray(y).ravel()
         if yv.size != n:
-            raise ValueError("y has %d entries for %d rows." % (yv.size, n))
+            raise ValueError(f"y has {int(yv.size)} entries for {int(n)} rows.")
         acc = np.array([float(np.mean(per_pred[i] == yv)) for i in range(P)])
-        payload.update({
-            "accuracy": float(np.mean(pred == yv)),
-            "per_prompt_accuracy": acc,
-            "best_prompt_accuracy": float(acc.max()),
-            "worst_prompt_accuracy": float(acc.min()),
-            "spread": float(acc.max() - acc.min()),
-            "spread_note": (
-                "the gap between the best and worst phrasing of the same "
-                "task; tuning the prompt on held-out data to close it is how "
-                "few-shot numbers stop reproducing"
-            ),
-        })
+        payload.update(
+            {
+                "accuracy": float(np.mean(pred == yv)),
+                "per_prompt_accuracy": acc,
+                "best_prompt_accuracy": float(acc.max()),
+                "worst_prompt_accuracy": float(acc.min()),
+                "spread": float(acc.max() - acc.min()),
+                "spread_note": (
+                    "the gap between the best and worst phrasing of the same "
+                    "task; tuning the prompt on held-out data to close it is how "
+                    "few-shot numbers stop reproducing"
+                ),
+            }
+        )
     return RichResult(payload=payload)
 
 
 def cheatsheet():
     return (
-        "kmpens: prompt ensembling by arithmetic or geometric mean, "
-        "reporting the phrasing spread it is averaging out"
+        "kmpens: prompt ensembling by arithmetic or geometric mean, reporting the phrasing spread it is averaging out"
     )
 
 

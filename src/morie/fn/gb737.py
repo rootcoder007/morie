@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Symmetry properties of linear rank statistics -- Theorem 7.3.7."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['lrankprop', 'gibbons_linrank_properties']
+__all__ = ["lrankprop", "gibbons_linrank_properties"]
 
 
 def lrankprop(a, z):

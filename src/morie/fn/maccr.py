@@ -55,7 +55,7 @@ def multiclass_precision(y_true, y_pred, *, average="macro", labels=None, **kwar
         measure=f"precision_{average}",
         estimate=result,
         n=len(yt),
-        extra={"per_class": dict(zip([str(l) for l in labels], per_class_prec)), "average": average},
+        extra={"per_class": dict(zip([str(ell) for ell in labels], per_class_prec)), "average": average},
     )
 
 

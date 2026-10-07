@@ -1,18 +1,28 @@
 """LL(1) top-down parsing."""
+
 import importlib
 
 import pytest
 
 L = importlib.import_module("morie.fn.prsLL")
 
-LREC = L.grammar([("E", ["E", "+", "T"]), ("E", ["T"]),
-                  ("T", ["T", "*", "F"]), ("T", ["F"]),
-                  ("F", ["(", "E", ")"]), ("F", ["id"])], "E")
-G = L.grammar([("E", ["T", "E'"]),
-               ("E'", ["+", "T", "E'"]), ("E'", []),
-               ("T", ["F", "T'"]),
-               ("T'", ["*", "F", "T'"]), ("T'", []),
-               ("F", ["(", "E", ")"]), ("F", ["id"])], "E")
+LREC = L.grammar(
+    [("E", ["E", "+", "T"]), ("E", ["T"]), ("T", ["T", "*", "F"]), ("T", ["F"]), ("F", ["(", "E", ")"]), ("F", ["id"])],
+    "E",
+)
+G = L.grammar(
+    [
+        ("E", ["T", "E'"]),
+        ("E'", ["+", "T", "E'"]),
+        ("E'", []),
+        ("T", ["F", "T'"]),
+        ("T'", ["*", "F", "T'"]),
+        ("T'", []),
+        ("F", ["(", "E", ")"]),
+        ("F", ["id"]),
+    ],
+    "E",
+)
 
 
 def test_first_sets():
@@ -45,8 +55,7 @@ def test_left_recursion_is_detected():
 
 
 def test_indirect_left_recursion_is_detected():
-    ind = L.grammar([("A", ["B", "x"]), ("B", ["A", "y"]),
-                     ("A", ["z"]), ("B", ["w"])], "A")
+    ind = L.grammar([("A", ["B", "x"]), ("B", ["A", "y"]), ("A", ["z"]), ("B", ["w"])], "A")
     assert set(L.left_recursive(ind)) == {"A", "B"}
 
 
@@ -58,8 +67,7 @@ def test_removing_left_recursion_gives_an_ll1_grammar():
 
 def test_the_two_routes_build_the_same_tree():
     toks = ["id", "+", "id", "*", "id"]
-    assert L.parse(G, toks, "table") \
-        == L.parse(G, toks, "recursive_descent")
+    assert L.parse(G, toks, "table") == L.parse(G, toks, "recursive_descent")
 
 
 def test_the_tree_yields_its_input():
@@ -70,8 +78,7 @@ def test_the_tree_yields_its_input():
 def _ev(node, vals):
     s, k = node["symbol"], node["children"]
     if s == "F":
-        return vals.pop(0) if k[0]["symbol"] == "id" else _ev(k[1],
-                                                              vals)
+        return vals.pop(0) if k[0]["symbol"] == "id" else _ev(k[1], vals)
     if s in ("T", "E"):
         acc = _ev(k[0], vals)
         tail, op = k[1], ("*" if s == "T" else "+")
@@ -83,21 +90,31 @@ def _ev(node, vals):
     raise AssertionError(s)
 
 
-@pytest.mark.parametrize("toks,nums,want", [
-    (["id", "+", "id", "*", "id"], [1, 2, 3], 7),
-    (["(", "id", "+", "id", ")", "*", "id"], [1, 2, 3], 9),
-    (["id", "*", "id", "+", "id"], [2, 3, 4], 10),
-    (["id", "+", "id", "+", "id"], [1, 2, 3], 6),
-    (["id"], [42], 42),
-])
+@pytest.mark.parametrize(
+    "toks,nums,want",
+    [
+        (["id", "+", "id", "*", "id"], [1, 2, 3], 7),
+        (["(", "id", "+", "id", ")", "*", "id"], [1, 2, 3], 9),
+        (["id", "*", "id", "+", "id"], [2, 3, 4], 10),
+        (["id", "+", "id", "+", "id"], [1, 2, 3], 6),
+        (["id"], [42], 42),
+    ],
+)
 def test_the_tree_encodes_precedence(toks, nums, want):
     assert _ev(L.parse(G, toks), list(nums)) == want
 
 
-@pytest.mark.parametrize("toks", [
-    ["id", "+"], ["+", "id"], ["id", "id"], ["(", "id"], [],
-    ["id", ")"],
-])
+@pytest.mark.parametrize(
+    "toks",
+    [
+        ["id", "+"],
+        ["+", "id"],
+        ["id", "id"],
+        ["(", "id"],
+        [],
+        ["id", ")"],
+    ],
+)
 def test_malformed_input_is_rejected(toks):
     with pytest.raises(ValueError):
         L.parse(G, toks)
@@ -108,15 +125,17 @@ def test_a_non_ll1_grammar_is_not_parsed():
         L.parse(LREC, ["id"])
 
 
-@pytest.mark.parametrize("call", [
-    lambda: L.grammar([]),
-    lambda: L.grammar([("E", ["id"])], "S"),
-    lambda: L.grammar([("E", ["id"]), ("X", ["y"])], "E"),
-    lambda: L.grammar([("E", ["$"])]),
-    lambda: L.parse(G, ["id"], "psychic"),
-    lambda: L.remove_left_recursion(L.grammar([("A", ["A", "x"])],
-                                              "A")),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: L.grammar([]),
+        lambda: L.grammar([("E", ["id"])], "S"),
+        lambda: L.grammar([("E", ["id"]), ("X", ["y"])], "E"),
+        lambda: L.grammar([("E", ["$"])]),
+        lambda: L.parse(G, ["id"], "psychic"),
+        lambda: L.remove_left_recursion(L.grammar([("A", ["A", "x"])], "A")),
+    ],
+)
 def test_bad_grammars_are_refused(call):
     with pytest.raises(ValueError):
         call()

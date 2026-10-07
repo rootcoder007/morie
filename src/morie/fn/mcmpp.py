@@ -31,7 +31,7 @@ def _irt_gibbs(V, n_iter, burnin, seed, prior_sd=5.0, polarity_idx=None):
     Vl = [[float(v) for v in row] for row in np.asarray(V, dtype=float).tolist()]
     n, q = len(Vl), len(Vl[0])
     obs = [[v == v for v in row] for row in Vl]
-    tau2 = prior_sd ** 2
+    tau2 = prior_sd**2
 
     # initialise ideal points from row yea-rates
     x = []

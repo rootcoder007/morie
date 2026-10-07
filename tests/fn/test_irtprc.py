@@ -1,7 +1,6 @@
 """Tests for irtprc.partial_credit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.irtprc import partial_credit
 
 

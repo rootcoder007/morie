@@ -1,13 +1,15 @@
+import functools
 import json
 import logging
 import os
 import re
 import sqlite3
 from copy import deepcopy
+from http.client import HTTPException
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import urlopen
 
 from morie.fn import _frame_core as pd
@@ -45,7 +47,36 @@ def _user_cache_dir() -> Path:
     always user-writable and never depends on the install location.
     """
     base = os.environ.get("XDG_CACHE_HOME") or (Path.home() / ".cache")
-    return Path(base).expanduser() / "morie"
+    chosen = Path(base).expanduser() / "morie"
+    # A read-only or quota-limited home (HPC, containers) must not stop a
+    # dataset from being pulled to a writable --out: the cache is a
+    # convenience tier, so fall back to a private directory under the
+    # system temporary directory, once, with a note.
+    global _CACHE_FALLBACK_NOTED
+    try:
+        chosen.mkdir(parents=True, exist_ok=True)
+        if os.access(chosen, os.W_OK):
+            return chosen
+    except OSError:
+        pass
+    import tempfile
+
+    alt = Path(tempfile.gettempdir()) / f"morie-cache-{_uid()}"
+    alt.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if not _CACHE_FALLBACK_NOTED:
+        _CACHE_FALLBACK_NOTED = True
+        logger.warning("%s is not writable; caching under %s for this session", chosen, alt)
+    return alt
+
+
+_CACHE_FALLBACK_NOTED = False
+
+
+def _uid() -> str:
+    try:
+        return str(os.getuid())
+    except AttributeError:  # Windows
+        return os.environ.get("USERNAME", "user")
 
 
 def _project_root() -> Path:
@@ -298,6 +329,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CPADS/CPADS.csv",
+        "hosted_key": "hib/cpads_cpads",
         "table_name": "hibp",
         "ckan_resource_id": "",
     },
@@ -310,6 +342,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/provinces.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "provinces.csv",
+        "hosted_key": "hib/csads_provinces",
         "table_name": "hibsa",
         "ckan_resource_id": "",
     },
@@ -322,6 +357,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSADS/trends.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csads/downloadable/CSADS-data.zip",
+        "zip_member": "trends.csv",
+        "hosted_key": "hib/csads_trends",
         "table_name": "hibsb",
         "ckan_resource_id": "",
     },
@@ -334,6 +372,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Alcohol.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Alcohol.csv",
+        "hosted_key": "hib/csus_alcohol",
         "table_name": "hibua",
         "ckan_resource_id": "",
     },
@@ -346,6 +387,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cannabis.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cannabis.csv",
+        "hosted_key": "hib/csus_cannabis",
         "table_name": "hibub",
         "ckan_resource_id": "",
     },
@@ -358,6 +402,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Cigarette smoking and vaping.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Cigarette smoking and vaping.csv",
+        "hosted_key": "hib/csus_cigarette_smoking_and_vaping",
         "table_name": "hibuc",
         "ckan_resource_id": "",
     },
@@ -370,6 +417,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Illegal substances.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Illegal substances.csv",
+        "hosted_key": "hib/csus_illegal_substances",
         "table_name": "hibud",
         "ckan_resource_id": "",
     },
@@ -382,6 +432,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Opioids.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Opioids.csv",
+        "hosted_key": "hib/csus_opioids",
         "table_name": "hibue",
         "ckan_resource_id": "",
     },
@@ -394,6 +447,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Over the counter products.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Over the counter products.csv",
+        "hosted_key": "hib/csus_over_the_counter_products",
         "table_name": "hibuf",
         "ckan_resource_id": "",
     },
@@ -406,6 +462,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Polysubstance.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Polysubstance.csv",
+        "hosted_key": "hib/csus_polysubstance",
         "table_name": "hibug",
         "ckan_resource_id": "",
     },
@@ -418,6 +477,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Sedatives.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Sedatives.csv",
+        "hosted_key": "hib/csus_sedatives",
         "table_name": "hibuh",
         "ckan_resource_id": "",
     },
@@ -430,6 +492,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Stimulants.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Stimulants.csv",
+        "hosted_key": "hib/csus_stimulants",
         "table_name": "hibui",
         "ckan_resource_id": "",
     },
@@ -442,6 +507,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Substance use harms.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Substance use harms.csv",
+        "hosted_key": "hib/csus_substance_use_harms",
         "table_name": "hibuj",
         "ckan_resource_id": "",
     },
@@ -454,6 +522,9 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "aggregate",
         "large_file": False,
         "local_path": "data/datasets/hib/CSUS/Treatment.csv",
+        "download_url": "https://health-infobase.canada.ca/src/data/csus/CADS_data.zip",
+        "zip_member": "Treatment.csv",
+        "hosted_key": "hib/csus_treatment",
         "table_name": "hibuk",
         "ckan_resource_id": "",
     },
@@ -589,6 +660,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": False,
         "local_path": "data/cache/correctional_stats_report_environment1b.RData",
+        "hosted_file": "otis/correctional_stats_report_environment1b.RData",
         "table_name": "otis",
         "ckan_resource_id": "",
     },
@@ -601,6 +673,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/dt_expanded.rds",
+        "hosted_file": "otis/dt_expanded.rds",
         "table_name": "otisexp",
         "ckan_resource_id": "",
     },
@@ -613,7 +686,21 @@ DATASET_CATALOG: dict[str, dict] = {
         "type": "correctional",
         "large_file": True,
         "local_path": "data/cache/finne_env.RData",
+        "hosted_file": "otis/finne_env.RData",
         "table_name": "otisfin",
+        "ckan_resource_id": "",
+    },
+    "otisloc": {
+        "name": "OTIS: Ontario's adult provincial correctional institutions (locations)",
+        "source": "otis",
+        "survey": "otis",
+        "year": "",
+        "format": "csv",
+        "type": "correctional",
+        "large_file": False,
+        "local_path": "data/datasets/otis/institutional_locations_en.csv",
+        "download_url": "https://data.ontario.ca/dataset/3ca4505b-091c-4b04-89e8-c316ffaa0d9e/resource/97d82317-539c-479d-9479-4dd9b7e9e08c/download/institutional_locations_en.csv",
+        "table_name": "otisloc",
         "ckan_resource_id": "",
     },
     # ── OTIS public release per-table CSVs (used by morie.mrm_otis_*) ──
@@ -1145,11 +1232,23 @@ def cache_connect(db_path: str | Path | None = None) -> sqlite3.Connection:
     return conn
 
 
-def cache_store(df: pd.DataFrame, table: str, db_path: str | Path | None = None) -> int:
+def cache_store(df: pd.DataFrame, table: str, db_path: str | Path | None = None, quiet: bool = False) -> int:
     """Write a DataFrame to the SQLite cache, replacing any existing table."""
+    if not quiet and len(df) * max(len(df.columns), 1) >= _STAGES_MIN_CELLS:
+        from ._progress import note
+
+        # a large table takes a while to cache: say so instead of sitting silent
+        note(table, f"caching {len(df):,} rows x {len(df.columns):,} columns so the next load is fast")
     conn = cache_connect(db_path)
     try:
-        df.to_sql(table, conn, if_exists="replace", index=False)
+        try:
+            df.to_sql(table, conn, if_exists="replace", index=False)
+        except Exception as exc:  # noqa: BLE001
+            # a second process caching the same key at the same moment created the table between
+            # this one's drop and create: the table is there, so the cache is fine
+            if "already exists" not in str(exc):
+                raise
+            logger.info("%s was cached by another process at the same time", table)
         n = len(df)
         logger.info("Cached %d rows -> %s", n, table)
         return n
@@ -1221,11 +1320,67 @@ def download_with_wayback(url: str, timeout: int = 60) -> tuple[bytes, str]:
         return urlopen(snap, timeout=timeout).read(), snap
 
 
+def _read_with_progress(resp, label: str | None) -> bytes:
+    """The body of ``resp``, with a progress bar under ``label`` (a datastore page can be ~50 MB)."""
+    if not label or getattr(resp, "headers", None) is None:
+        return resp.read()  # no label, or not an HTTP response (an opener's own object): read it whole
+    from ._progress import Progress
+
+    size = resp.headers.get("Content-Length") if getattr(resp, "headers", None) else None
+    prog = Progress(label, int(size) if size and size.isdigit() else None)
+    parts = []
+    while True:
+        chunk = resp.read(1 << 20)
+        if not chunk:
+            break
+        parts.append(chunk)
+        prog.update(len(chunk))
+    prog.close()
+    return b"".join(parts)
+
+
+def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: str | None = None) -> dict:
+    """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff,
+    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection), which
+    escaped every handler before and ended the pull."""
+    import sys as _sys
+    import time as _time
+    from http.client import HTTPException
+
+    delay = 2.0
+    for attempt in range(attempts):
+        try:
+            resp = urlopen(url, timeout=timeout)
+            try:
+                return json.loads(_read_with_progress(resp, label).decode())
+            finally:
+                getattr(resp, "close", lambda: None)()
+        except HTTPError as exc:
+            if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
+                raise
+            logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
+        except (HTTPException, ConnectionError, TimeoutError) as exc:
+            if attempt == attempts - 1:
+                raise
+            _sys.stderr.write(
+                f"{label or 'CKAN datastore'}: the transfer dropped ({type(exc).__name__}); "
+                f"retrying in {delay:.0f} s, attempt {attempt + 2} of {attempts}\n"
+            )
+        _time.sleep(delay)
+        delay *= 2
+    raise RuntimeError("unreachable")
+
+
+# a table this many cells or larger gets stage lines while it is built and cached
+_STAGES_MIN_CELLS = 1_000_000
+
+
 def fetch_ckan_to_cache(
     dataset_key: str = "cpads",
     limit: int = 32000,
     db_path: str | Path | None = None,
     timeout: int = 60,
+    max_records: int | None = None,
 ) -> pd.DataFrame:
     """Fetch a dataset from CKAN and store it in the SQLite cache.
 
@@ -1234,7 +1389,9 @@ def fetch_ckan_to_cache(
     dataset_key : str
         Key in CKAN_DATASETS (e.g., "cpads", "csads", "csus").
     limit : int
-        Max records to fetch from CKAN DataStore API.
+        Records per page of the CKAN DataStore API.
+    max_records : int, optional
+        Stop once this many records have been fetched (``morie download-bootstrap --limit``).
     db_path : str | Path | None
         Override cache database path.
     timeout : int
@@ -1275,8 +1432,9 @@ def fetch_ckan_to_cache(
     while True:
         params = {"resource_id": resource_id, "limit": limit, "offset": offset}
         url = f"{DEFAULT_CKAN_API_BASE}?{urlencode(params)}"
+        page = offset // limit + 1
         try:
-            payload = json.loads(urlopen(url, timeout=timeout).read().decode())
+            payload = _urlopen_json_with_retry(url, timeout, label=f"{dataset_key} (CKAN datastore, page {page})")
         except HTTPError as exc:
             # 404: no datastore behind this resource. 500: the datastore
             # cannot serve a full page of it (the 2018-2022 CCS microdata,
@@ -1285,9 +1443,9 @@ def fetch_ckan_to_cache(
             if exc.code not in (404, 500) or offset:
                 raise
             payload = {}
-        except (URLError, OSError) as exc:
-            # The datastore API is unreachable: the resource file is the
-            # route, live or from its Wayback Machine snapshot.
+        except (URLError, OSError, HTTPException) as exc:
+            # The datastore API is unreachable, or its first page kept dropping: the
+            # resource file is the route, live or from its Wayback Machine snapshot.
             if offset:
                 raise
             logger.warning("CKAN datastore unreachable for %s (%s); reading the resource file", dataset_key, exc)
@@ -1298,16 +1456,28 @@ def fetch_ckan_to_cache(
         total = result.get("total")
         if batch:
             if prog is None:
-                prog = Progress(
-                    f"{dataset_key} (CKAN datastore)", total if isinstance(total, int) else None, unit="rows"
-                )
+                want = total if isinstance(total, int) else None
+                if max_records is not None:  # a --limit preview fetches only that many
+                    want = max_records if want is None else min(want, max_records)
+                prog = Progress(f"{dataset_key} (CKAN datastore)", want, unit="rows")
             prog.update(len(batch))
         if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
+            break
+        if max_records is not None and len(records) >= max_records:
             break
         offset += len(batch)
     if prog is not None:
         prog.close()
 
+    # building and caching a big table takes longer than fetching it (ocp21: 16 s fetched, then
+    # ~110 s silent): say which step is running
+    big = len(records) * max(len(records[0]) if records else 0, 1) >= _STAGES_MIN_CELLS
+    stages = None
+    if big:
+        from ._progress import Stages
+
+        stages = Stages(dataset_key, 3 if is_cpads else 2)
+        stages.step(f"building the table ({len(records):,} rows x {len(records[0]):,} columns)")
     if records:
         df = pd.DataFrame.from_records(records)
         # Drop CKAN internal column.
@@ -1321,11 +1491,20 @@ def fetch_ckan_to_cache(
 
     logger.info("Fetched %d rows x %d cols for %s", len(df), len(df.columns), dataset_key)
 
+    if max_records is not None:
+        # a --limit preview is not the dataset: caching it made later pulls and modules
+        # silently use the first rows (10 of 61,096 bootstrap replicates)
+        logger.info("%s: first %d rows fetched (--limit); not cached", dataset_key, len(df))
+        return df
     # Cache under the name load_dataset() looks up next time.
-    cache_store(df, table_name, db_path)
+    if stages is not None:
+        stages.step("caching it so the next pull is fast")
+    cache_store(df, table_name, db_path, quiet=stages is not None)
 
     # If CPADS, also canonicalize and cache the canonical version.
     if is_cpads and has_raw_cpads_columns(df):
+        if stages is not None:
+            stages.step("adding the canonical CPADS columns")
         canonical = canonicalize_cpads_frame(df)
         cache_store(canonical, "cpads_canonical", db_path)
         return canonical
@@ -1362,6 +1541,220 @@ def _download_file(url: str, dest: Path, timeout: int = 60, label: str | None = 
         logger.warning("Live download of %s failed (%s); using the Wayback snapshot %s", url, live_exc, snap)
         _stream(snap)
         return snap
+
+
+def _download_url_table(entry: dict, matched: str, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: the catalog's ``download_url`` (a CSV/XLSX, or a zip whose ``zip_member`` is the table)."""
+    import zipfile
+
+    url = entry["download_url"]
+    dest = _user_cache_dir() / "direct" / matched / url.rsplit("/", 1)[-1]
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        _download_file(url, tmp, timeout, label=matched)
+        tmp.replace(dest)
+    from ._progress import fmt_bytes, note
+
+    if dest.stat().st_size >= 5_000_000:
+        note(matched, f"reading {dest.name} ({fmt_bytes(dest.stat().st_size)})")
+    if zipfile.is_zipfile(dest):
+        member = entry.get("zip_member") or ""
+        with zipfile.ZipFile(dest) as zf:
+            names = zf.namelist()
+            pick = [n for n in names if n.rsplit("/", 1)[-1].lower() == member.lower()]
+            if not pick:
+                raise RuntimeError(f"{dest.name} for {matched} has no member {member!r}; it holds {', '.join(names)}")
+            with zf.open(pick[0]) as fh:
+                return pd.read_csv(fh, low_memory=False)
+    if entry.get("format") == "xlsx":
+        return _xlsx_data_sheet(dest)
+    return pd.read_csv(dest, low_memory=False)
+
+
+_COVER_SHEET = re.compile(
+    r"^(instructions?|notes?( to readers?)?|(table of )?contents|about|read ?me|cover|footnotes?|glossary|definitions|methodology)$",
+    re.IGNORECASE,
+)
+
+
+def _xlsx_data_sheet(path) -> pd.DataFrame:
+    """The data sheet of a workbook: cover sheets ("Instructions", "Notes to readers") skipped, the most filled cells wins.
+
+    CIHI data tables open on an Instructions sheet; reading sheet 0 returned that cover text as the dataset.
+    """
+    import zipfile
+
+    from .fn._frame_core import _xlsx_sheet_map
+
+    with zipfile.ZipFile(path) as zf:
+        names = [nm for nm, _ in _xlsx_sheet_map(zf)]
+    candidates = [nm for nm in names if not _COVER_SHEET.match((nm or "").strip())] or names
+    best, best_cells = None, -1
+    for nm in candidates:
+        try:
+            df = pd.read_excel(path, sheet_name=nm)
+        except Exception:  # noqa: BLE001 - an unreadable sheet is skipped; the others still count
+            continue
+        # filled cells, not the rectangle: a stray note far to the right widens a sheet without adding data
+        cells = sum(1 for c in df.columns for v in df[c].tolist() if _xlsx_cell_set(v))
+        if cells > best_cells:
+            best, best_cells = df, cells
+    if best is None:
+        raise RuntimeError(f"no readable sheet in {Path(path).name}")
+    # header cells wrapped inside the workbook ("Number of \nhospital stays") become one-line names
+    best.columns = [" ".join(str(c).split()) for c in best.columns]
+    return _xlsx_promote_header(best)
+
+
+_PLACEHOLDER = re.compile(r"^(Unnamed: \d+|\.\.\.\d+)$")
+
+
+def _xlsx_cell_set(v) -> bool:
+    return v is not None and not (isinstance(v, float) and v != v) and str(v).strip() != ""
+
+
+def _xlsx_number(vals: list):
+    """The column as numbers when every set cell is one, else unchanged."""
+    out = []
+    for v in vals:
+        if not _xlsx_cell_set(v):
+            out.append(float("nan"))
+            continue
+        if isinstance(v, int | float) and not isinstance(v, bool):
+            out.append(v)
+            continue
+        try:
+            f = float(str(v).strip())
+        except ValueError:
+            return vals
+        out.append(int(f) if f.is_integer() and "." not in str(v) else f)
+    return out
+
+
+def _xlsx_promote_header(df: pd.DataFrame) -> pd.DataFrame:
+    """A sheet whose first row is a title, its real header a few rows down (CIHI data tables).
+
+    The title in A1 becomes the first column name and the rest are placeholders. The first row
+    filled across most columns is the header; the table ends at the first blank row (what
+    follows is notes, or further tables stacked on the same tab). Same rule as rmorie.
+    """
+    names = [str(c) for c in df.columns]
+    n_rows, n_cols = df.shape
+    if n_cols < 2 or not n_rows:
+        return df
+    if sum(bool(_PLACEHOLDER.match(c)) or not c.strip() for c in names[1:]) < 0.5 * (n_cols - 1):
+        return df
+    cols = [df[c].tolist() for c in df.columns]
+    # the share is of the columns the table uses: a stray note far to the right widens the sheet
+    # (cihi820b: a 5-column table on a 13-column tab) without being part of it
+    head = min(n_rows, 20)
+    used = sum(1 for col in cols if any(_xlsx_cell_set(col[i]) for i in range(head)))
+    need = max(2, -(-4 * used // 5))
+    hdr = next((i for i in range(head) if sum(_xlsx_cell_set(col[i]) for col in cols) >= need), None)
+    if hdr is None:
+        return df
+    end = n_rows
+    for i in range(hdr + 1, n_rows):
+        if not any(_xlsx_cell_set(col[i]) for col in cols):
+            end = i
+            if any(_xlsx_cell_set(col[j]) for col in cols for j in range(i, n_rows)):
+                logger.info("rows after the table's first blank line (notes, or further tables) are left out")
+            break
+    # an unnamed column with nothing in the table is not part of it
+    cols = [col for col in cols if _xlsx_cell_set(col[hdr]) or any(_xlsx_cell_set(v) for v in col[hdr + 1 : end])]
+    new, seen = [], {}
+    for j, col in enumerate(cols):
+        nm = " ".join(str(col[hdr]).split()) if _xlsx_cell_set(col[hdr]) else f"...{j + 1}"
+        k = seen.get(nm, 0)
+        seen[nm] = k + 1
+        new.append(nm if k == 0 else f"{nm}.{k}")
+    return pd.DataFrame({nm: _xlsx_number(col[hdr + 1 : end]) for nm, col in zip(new, cols)})
+
+
+def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> pd.DataFrame:
+    """Tier 3c: portal first, the data.rmorie.com copy second; cache whichever answered."""
+    err: Exception | None = None
+    df = None
+    if entry.get("download_url"):
+        try:
+            df = _download_url_table(entry, matched, timeout)
+        except Exception as exc:  # noqa: BLE001 - the hosted copy is the fallback
+            err = exc
+            from .i18n import t as _t
+
+            # in the user's language, like the error line that may follow it
+            logger.warning("%s", _t("data.direct_failed", dataset=matched, err=exc))
+    hk = entry.get("hosted_key")
+    if df is None and hk:
+        from .datahub import load_hosted_dataset
+        from .hosted import hosted_key
+
+        if hosted_key():
+            df = load_hosted_dataset(hk, db_path=db_path)
+        elif err is not None:
+            raise RuntimeError(
+                f"{matched}: the portal download failed ({err}); the data.rmorie.com copy ({hk}) "
+                "opens with your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once."
+            ) from err
+        else:
+            raise RuntimeError(
+                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` (GitHub) or `morie login --email you@example.com` once, then "
+                f"`morie pull {matched}` (or `morie pull {hk}`)."
+            )
+    if df is None:
+        assert err is not None
+        raise err
+    try:
+        cache_store(df, entry["table_name"], db_path)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not cache %s: %s", matched, exc)
+    return df
+
+
+def _r_object_frame(path: Path) -> pd.DataFrame | None:
+    """The data frame in an R object file (an .rds, or an .RData holding exactly one), read natively; else None."""
+    import struct
+
+    from .rds import read_rdata, read_rds
+
+    try:
+        if str(path).lower().endswith(".rds"):
+            obj = read_rds(path)
+            return obj if hasattr(obj, "columns") else None
+        frames = [v for v in read_rdata(path).values() if hasattr(v, "columns")]
+        return frames[0] if len(frames) == 1 else None
+    except (ValueError, OSError, EOFError, IndexError, KeyError, struct.error) as exc:
+        logger.info("%s is not readable as R data here (%s)", path, exc)
+        return None
+
+
+class RObjectSavedError(NotImplementedError):
+    """The dataset is an R object (RData/rds): Python cannot open it, but it is saved at ``path`` for R."""
+
+    def __init__(self, key: str, path: Path):
+        self.key, self.path = key, Path(path)
+        super().__init__(
+            f"{key} is an R object ({self.path.suffix}), saved at {self.path}. Open it in R with "
+            f"rmorie::morie_load_dataset('{key}'), or {'readRDS' if str(path).lower().endswith('.rds') else 'load'}() on that file."
+        )
+
+
+def _load_hosted_file(entry: dict, matched: str):
+    """Tier 3b: fetch an R object (RData/rds) from data.rmorie.com into the data directory and say where it is."""
+    from .datahub import _get_to_file
+
+    rel = Path(entry["local_path"])
+    tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+    dest = _data_dir_candidates()[0] / tail
+    if not dest.exists():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
+    # a data frame in it is read natively (no R needed); anything else is saved for R
+    df = _r_object_frame(dest)
+    if df is None:
+        raise RObjectSavedError(matched, dest)
+    return df
 
 
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
@@ -1429,6 +1822,13 @@ def _data_dir_candidates() -> list[Path]:
     return out
 
 
+def _own_file_target(rel: str) -> Path:
+    """Where a user puts an own-file dataset: under ``MORIE_DATA_DIR`` when set, else the per-user data dir."""
+    p = Path(rel)
+    tail = Path(*p.parts[1:]) if p.parts and p.parts[0] == "data" else p
+    return _data_dir_candidates()[0] / tail
+
+
 def _find_local_file(rel: str) -> Path | None:
     """Resolve a catalog ``local_path`` through :func:`_data_dir_candidates`."""
     p = Path(rel)
@@ -1442,8 +1842,16 @@ def _find_local_file(rel: str) -> Path | None:
     return None
 
 
-RMORIEDATA_VERSION = "0.3.3"
+RMORIEDATA_VERSION = "0.3.4"
+# The release this morie was built against: CRAN once it carries it, the
+# GitHub release tag (the same tarball contents) meanwhile. morie 1.4.0
+# read CRAN's 0.3.3, whose SIU corpus predates the 2026-10 recrawl
+# (police_service empty in every French row); rmorie 1.4.0 ships 0.3.4.
 RMORIEDATA_TARBALL = f"https://cran.r-project.org/src/contrib/rmoriedata_{RMORIEDATA_VERSION}.tar.gz"
+RMORIEDATA_SOURCES = (
+    RMORIEDATA_TARBALL,
+    f"https://github.com/rootcoder007/rmoriedata/archive/refs/tags/v{RMORIEDATA_VERSION}.tar.gz",
+)
 
 
 def _rmoriedata_extdata(timeout: int = 120) -> Path:
@@ -1460,18 +1868,38 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     import tempfile
 
     root.mkdir(parents=True, exist_ok=True)
+    from urllib.error import HTTPError, URLError
+
     from ._progress import download_url
 
-    logger.info("Fetching rmoriedata %s from CRAN (%s)...", RMORIEDATA_VERSION, RMORIEDATA_TARBALL)
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
-        download_url(
-            RMORIEDATA_TARBALL,
-            tgz,
-            f"rmoriedata {RMORIEDATA_VERSION} (CRAN)",
-            timeout=timeout,
-            opener=lambda req, timeout: urlopen(req, timeout=timeout),
-        )
+        last: Exception | None = None
+        for url in RMORIEDATA_SOURCES:
+            logger.info("Fetching rmoriedata %s (%s)...", RMORIEDATA_VERSION, url)
+            try:
+                download_url(
+                    url,
+                    tgz,
+                    f"rmoriedata {RMORIEDATA_VERSION}",
+                    timeout=timeout,
+                    opener=lambda req, timeout: urlopen(req, timeout=timeout),
+                )
+                last = None
+                break
+            except HTTPError as exc:
+                last = exc  # CRAN does not carry this version yet: try the release tag
+                continue
+            except (URLError, OSError, TimeoutError) as exc:
+                last = exc
+                break
+        if last is not None:
+            host = ", ".join(u.split("/")[2] for u in RMORIEDATA_SOURCES)
+            raise RuntimeError(
+                f"could not fetch rmoriedata {RMORIEDATA_VERSION} ({last}). The SIU corpus and the other "
+                f"rmoriedata tables are downloaded once from {host} into {root}; connect to the "
+                "network (or copy that directory from another machine) and try again."
+            ) from last
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:
@@ -1493,7 +1921,12 @@ def list_rmoriedata(timeout: int = 120) -> list[dict]:
 
     ext = _rmoriedata_extdata(timeout=timeout)
     with (ext / "_catalog.csv").open(newline="", encoding="utf-8-sig") as fh:
-        return list(csv.DictReader(fh))
+        rows = list(csv.DictReader(fh))
+    for r in rows:  # counts are numbers (r["n_rows"] > 100 raised TypeError on the CSV strings)
+        for k in ("n_rows", "n_cols"):
+            v = (r.get(k) or "").strip()
+            r[k] = int(v) if v.lstrip("-").isdigit() else None
+    return rows
 
 
 def load_rmoriedata(slug: str, timeout: int = 120) -> pd.DataFrame:
@@ -1556,7 +1989,19 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
             xlsx.parent.mkdir(parents=True, exist_ok=True)
             logger.info("Fetching the CIHI indicator library (72 MB) from %s", CIHI_INDICATOR_LIBRARY_URL)
             req = Request(CIHI_INDICATOR_LIBRARY_URL, headers={"User-Agent": "morie/1 (+https://rmorie.com)"})
-            xlsx.write_bytes(urlopen(req, timeout=timeout).read())
+            import tempfile
+
+            from ._progress import stream_to_file
+
+            fd, part = tempfile.mkstemp(dir=xlsx.parent, prefix=xlsx.name + ".", suffix=".part")
+            os.close(fd)
+            try:
+                with urlopen(req, timeout=timeout) as resp:
+                    stream_to_file(resp, part, "CIHI indicator library")
+                os.replace(part, xlsx)
+            finally:
+                if os.path.exists(part):
+                    os.remove(part)
     csv_path = _user_cache_dir() / "cihi" / "indicator-library-all-indicator-data-en.csv"
     if not csv_path.exists() or csv_path.stat().st_mtime < xlsx.stat().st_mtime:
         import openpyxl
@@ -1564,13 +2009,29 @@ def fetch_cihi_indicator_library(timeout: int = 120) -> pd.DataFrame:
         csv_path.parent.mkdir(parents=True, exist_ok=True)
         wb = openpyxl.load_workbook(xlsx, read_only=True, data_only=True)
         ws = wb.worksheets[0]
-        tmp = csv_path.with_suffix(".csv.tmp")
-        with tmp.open("w", newline="", encoding="utf-8") as fh:
-            w = csv.writer(fh)
-            for row in ws.iter_rows(values_only=True):
-                w.writerow(["" if v is None else v for v in row])
-        wb.close()
-        tmp.replace(csv_path)
+        import tempfile
+
+        fd, tmp_name = tempfile.mkstemp(dir=csv_path.parent, prefix=csv_path.name + ".", suffix=".tmp")
+        tmp = Path(tmp_name)
+        try:
+            from ._progress import Progress
+
+            with (
+                open(fd, "w", newline="", encoding="utf-8") as fh,
+                Progress("CIHI workbook -> CSV", unit="rows") as prog,
+            ):
+                w = csv.writer(fh)
+                for row in ws.iter_rows(values_only=True):
+                    w.writerow(["" if v is None else v for v in row])
+                    prog.update(1)
+            wb.close()
+            tmp.replace(csv_path)  # atomic: a concurrent pull either sees the old file or the new one
+        finally:
+            tmp.unlink(missing_ok=True)
+    from ._progress import fmt_bytes, note
+
+    # reading the converted table back is the long part (cihidt: ~3 minutes, silent before)
+    note("CIHI workbook", f"reading the converted table ({fmt_bytes(csv_path.stat().st_size)})")
     return pd.read_csv(csv_path, low_memory=False)
 
 
@@ -1702,7 +2163,42 @@ def _fuzzy_match_key(key: str) -> str | None:
     return None
 
 
-def load_dataset(
+def synthetic_mapq_panel(n: int = 400, seed: int = 2026) -> pd.DataFrame:
+    """Deterministic synthetic MAPQII panel: a toy stand-in for TKARONTOMAPQ.xlsx.
+
+    The same design as rmorie's ``.morie_mapq_synth_panel()``: 20 Likert items (1-5) in four
+    subscales (EE, EA, UA, ER) with a planted one-factor-per-subscale structure, ``gender_male``
+    and ``age``, subscale scores, and a Knowledge Scale score ``ks_score`` driven by epistemic
+    attitudes, gender and age, so the psychometric and DML stages have a real signal to recover.
+    Participant-level MAPQ data are not distributed; this panel is.
+    """
+    import random
+
+    from morie.fn._mapq_const import SUBSCALES
+
+    rng = random.Random(seed)
+    cols: dict[str, list] = {
+        "gender_male": [1 if rng.random() < 0.5 else 0 for _ in range(n)],
+        "age": [rng.randint(18, 65) for _ in range(n)],
+    }
+    for items in SUBSCALES.values():
+        latent = [rng.gauss(0.0, 1.0) for _ in range(n)]
+        for item in items:
+            cols[item] = [min(5, max(1, round(3 + 0.9 * z + rng.gauss(0.0, 0.8)))) for z in latent]
+    for name, items in SUBSCALES.items():
+        cols[f"{name.lower()}_score"] = [sum(cols[i][r] for i in items) for r in range(n)]
+    cols["ks_score"] = [
+        10 + 0.4 * cols["ea_score"][r] + 1.5 * cols["gender_male"][r] + 0.02 * cols["age"][r] + rng.gauss(0.0, 1.0)
+        for r in range(n)
+    ]
+    return pd.DataFrame(cols)
+
+
+# own-file datasets with a synthetic toy stand-in used when the real file is absent
+SYNTHETIC_OWN_FILES = {"mapq": synthetic_mapq_panel}
+
+
+def _load_dataset_raw(
     key: str,
     *,
     db_path: str | Path | None = None,
@@ -1729,11 +2225,34 @@ def load_dataset(
         available = ", ".join(sorted(DATASET_CATALOG))
         raise KeyError(
             f"Unknown dataset key: {key!r}. Available: {available}; "
-            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after morie login)."
+            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after `morie login`, GitHub or --email)."
         )
 
     entry = DATASET_CATALOG[matched]
     table_name = entry["table_name"]
+
+    if dataset_route(entry).startswith("own file"):
+        # your own research file: read it where it is, every time, and keep it out of the cache
+        local_path = _find_local_file(entry["local_path"])
+        if local_path is None and matched in SYNTHETIC_OWN_FILES:
+            import warnings
+
+            warnings.warn(
+                f"{matched}: your file is not at {_own_file_target(entry['local_path'])}; "
+                "returning the synthetic toy panel (n = 400, planted structure) so the analyses run. "
+                "Its numbers demonstrate the pipeline, they are not findings.",
+                UserWarning,
+                stacklevel=2,
+            )
+            return SYNTHETIC_OWN_FILES[matched]()
+        if local_path is None:
+            raise FileNotFoundError(dataset_recommendation(matched, entry))
+        logger.info("Reading %s from your file: %s", matched, local_path)
+        if entry["format"] == "csv":
+            return pd.read_csv(local_path, low_memory=False)
+        if entry["format"] == "xlsx":
+            return pd.read_excel(local_path)
+        raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
 
     # 1. Built-in database (ships with package).
     builtin = _builtin_db_connect()
@@ -1746,6 +2265,8 @@ def load_dataset(
             if tables:
                 df = pd.read_sql(f"SELECT * FROM [{_safe_table_name(table_name)}]", builtin)
                 logger.info("Loaded %s from built-in DB (%d rows)", matched, len(df))
+                if matched == "ocp21" and has_raw_cpads_columns(df):
+                    return canonicalize_cpads_frame(df)  # the same frame the cache tier returns
                 return df
         finally:
             builtin.close()
@@ -1805,6 +2326,12 @@ def load_dataset(
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
 
+    # 3a. Research files that are not tables (R environments) kept at data.rmorie.com live in the
+    #     data directory in effect (MORIE_DATA_DIR when set): a copy saved earlier under another
+    #     directory must not win over the one the user chose.
+    if entry.get("hosted_file"):
+        return _load_hosted_file(entry, matched)
+
     # 3. Local file: the catalog path is relative to a data directory.
     #    An installed package has no source tree, so the cascade is
     #    MORIE_DATA_DIR, the per-user data directory, the source checkout
@@ -1816,6 +2343,10 @@ def load_dataset(
             df = pd.read_csv(local_path, low_memory=False)
         elif entry["format"] == "xlsx":
             df = pd.read_excel(local_path)
+        elif str(entry["format"]).lower() in ("rdata", "rda", "rds"):
+            df = _r_object_frame(Path(local_path))
+            if df is None:
+                raise RObjectSavedError(matched, local_path)
         else:
             raise NotImplementedError(f"Format {entry['format']} not supported for on-the-fly ingest")
         try:
@@ -1823,6 +2354,12 @@ def load_dataset(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Could not cache %s: %s", matched, exc)
         return df
+
+    # 3c. A direct portal download (a file, or one member of a zip), then the
+    #     data.rmorie.com copy of the same table when the portal fails or the
+    #     catalog only names the copy.
+    if entry.get("download_url") or entry.get("hosted_key"):
+        return _direct_or_hosted(entry, matched, db_path, timeout)
 
     # 4. Open data portals: Ontario's catalogue for the OTIS tables (their
     #    downloader lives in morie.otis_datasets), open.canada.ca for the
@@ -1845,7 +2382,7 @@ def load_dataset(
     raise FileNotFoundError(f"Dataset {matched!r} could not be loaded.\n" + dataset_recommendation(matched, entry))
 
 
-def list_datasets(db_path: str | Path | None = None) -> list[dict]:
+def list_datasets(db_path: str | Path | None = None, *, hosted: bool = True) -> list[dict]:
     """List all datasets with their cache status.
 
     Returns a list of dicts with keys: key, name, source, survey, year,
@@ -1896,7 +2433,8 @@ def list_datasets(db_path: str | Path | None = None) -> list[dict]:
     try:
         from .hosted import hosted_key
 
-        manifest = hosted_manifest() if hosted_key() else cached_manifest()
+        # hosted=False: the copy already on disk only (selftest promises no downloads)
+        manifest = hosted_manifest() if hosted and hosted_key() else cached_manifest()
     except DataHubAuthError:
         manifest = cached_manifest()
     except Exception as exc:  # noqa: BLE001 - offline: the local list still prints
@@ -1924,22 +2462,60 @@ def dataset_route(entry: dict) -> str:
         }.get(entry.get("source", ""), "fetched on demand")
     if entry.get("ckan_resource_id"):
         return "data.ontario.ca" if entry.get("source") == "otis" else "open.canada.ca"
+    if entry.get("download_url"):
+        host = urlparse(entry["download_url"]).netloc
+        return host + (" (or data.rmorie.com)" if entry.get("hosted_key") else "")
+    if entry.get("hosted_key"):
+        return "data.rmorie.com (your MORIE key)"
+    if entry.get("hosted_file"):
+        return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
         return "open.canada.ca"
-    return "own file: " + entry.get("local_path", "")
+    return f"own file: {_own_file_target(entry.get('local_path', ''))}"
+
+
+def _cache_rows(table: str, db_path: str | Path | None = None) -> int | None:
+    """Row count of a cached table without loading it; None when it is not cached."""
+    conn = cache_connect(db_path)
+    try:
+        if not conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone():
+            return None
+        return int(conn.execute(f"SELECT COUNT(*) FROM [{_safe_table_name(table)}]").fetchone()[0])
+    finally:
+        conn.close()
 
 
 def dataset_info(key: str) -> dict:
-    """Return full metadata for a dataset by catalog key."""
-    matched = _fuzzy_match_key(key)
-    if matched is None:
-        raise KeyError(f"Unknown dataset key: {key!r}")
-    info = dict(DATASET_CATALOG[matched])
-    info["key"] = matched
-    info["local_exists"] = Path(info["local_path"]).exists()
-    cached = cache_load(info["table_name"])
-    info["cached"] = cached is not None
-    info["cached_rows"] = len(cached) if cached is not None else None
+    """Return full metadata for a dataset: a catalog key, or a curated ``db/table`` key."""
+    from .datahub import cached_manifest, hosted_entries, hosted_manifest, is_hosted_key
+
+    if is_hosted_key(key):
+        manifest = cached_manifest()
+        if manifest is None:
+            try:
+                manifest = hosted_manifest()
+            except Exception:  # noqa: BLE001 - no key or no network: said below
+                manifest = None
+        row = next((d for d in (manifest or {}).get("datasets", []) if d.get("key") == key), None)
+        if row is None:
+            hint = (
+                ""
+                if manifest
+                else " (no data.rmorie.com manifest at hand: run `morie login`, then `morie list-datasets`)"
+            )
+            raise KeyError(f"Unknown dataset key: {key!r}{hint}")
+        info = hosted_entries({"datasets": [row]})[0]
+        info["meta"] = row.get("meta") or {}
+    else:
+        matched = _fuzzy_match_key(key)
+        if matched is None:
+            raise KeyError(f"Unknown dataset key: {key!r}")
+        info = dict(DATASET_CATALOG[matched])
+        info["key"] = matched
+        info["local_exists"] = Path(info["local_path"]).exists()
+    rows = _cache_rows(info["table_name"])
+    info["cached"] = rows is not None
+    info["cached_rows"] = rows
     return info
 
 
@@ -2170,7 +2746,13 @@ def dataset_recommendation(key: str, entry: "dict | None" = None) -> str:
             "morie."
         )
         if local_path:
-            lines.append(f"  Place the data file at: {local_path}")
+            rel = Path(local_path)
+            tail = Path(*rel.parts[1:]) if rel.parts and rel.parts[0] == "data" else rel
+            lines.append(f"  Place the data file at: {(_data_dir_candidates()[0] / tail)}")
+            lines.append(
+                f"  (catalog path {local_path}: the file goes under the directory MORIE_DATA_DIR names, else under "
+                "the per-user data directory; it is read in place and never copied into the cache)"
+            )
     return "\n".join(lines)
 
 
@@ -2307,3 +2889,24 @@ def check_datasets(
             "recommendations": recommendations,
         },
     )
+
+
+def _post_load(key: str, df):
+    """Column clean-ups a dataset needs however it arrived (portal, data.rmorie.com, cache)."""
+    if key == "siu" and df is not None and "sex_gender_affected" in getattr(df, "columns", ()):
+        # the published corpus holds page text cut at the wrong place in this column
+        # ("ual assault. the unit's jurisdiction ..."): the few real categories, missing kept missing
+        from .siu.analyze import _sex
+
+        df["sex_gender_affected"] = [
+            None if v is None or (isinstance(v, float) and v != v) or v == "" else _sex(v)
+            for v in df["sex_gender_affected"].tolist()
+        ]
+    return df
+
+
+@functools.wraps(_load_dataset_raw)
+def load_dataset(key: str, *args, **kwargs):
+    df = _load_dataset_raw(key, *args, **kwargs)
+    matched = _fuzzy_match_key(key) or key
+    return _post_load(matched, df)

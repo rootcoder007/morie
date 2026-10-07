@@ -68,8 +68,7 @@ def theil_sen(x, y, alpha=0.05):
     ok = dx != 0
     n_tied = int(np.sum(~ok))
     if not ok.any():
-        raise ValueError("every pair of x values is tied; no slope is "
-                         "defined.")
+        raise ValueError("every pair of x values is tied; no slope is defined.")
     slopes = np.sort(dy[ok] / dx[ok])
     N = slopes.size
     slope = float(np.median(slopes))
@@ -81,17 +80,22 @@ def theil_sen(x, y, alpha=0.05):
     C = z * np.sqrt(var_s)
     m1 = int(np.floor((N - C) / 2))
     m2 = int(np.ceil((N + C) / 2))
-    ci = (float(slopes[max(m1, 0)]),
-          float(slopes[min(m2, N - 1)]))
-    return RichResult(payload={
-        "slope": slope, "intercept": intercept, "ci": ci,
-        "n_pairs": int(N), "n_tied_x": n_tied,
-        "breakdown": 0.29289321881345254,      # 1 - 1/sqrt(2)
-        "ci_method": "Sen (1968) Sec. 5: order statistics of the pairwise "
-                     "slopes at Kendall-tau ranks; no residual variance "
-                     "is estimated",
-        "n": int(n),
-        "method": "Theil-Sen: median of pairwise slopes, median-residual intercept"})
+    ci = (float(slopes[max(m1, 0)]), float(slopes[min(m2, N - 1)]))
+    return RichResult(
+        payload={
+            "slope": slope,
+            "intercept": intercept,
+            "ci": ci,
+            "n_pairs": int(N),
+            "n_tied_x": n_tied,
+            "breakdown": 0.29289321881345254,  # 1 - 1/sqrt(2)
+            "ci_method": "Sen (1968) Sec. 5: order statistics of the pairwise "
+            "slopes at Kendall-tau ranks; no residual variance "
+            "is estimated",
+            "n": int(n),
+            "method": "Theil-Sen: median of pairwise slopes, median-residual intercept",
+        }
+    )
 
 
 def cheatsheet():

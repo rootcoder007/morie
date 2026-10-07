@@ -27,36 +27,36 @@ __all__ = []
 def vec(x, name="x"):
     v = aslist(x)
     if not v:
-        raise ValueError("`%s` must contain at least one value" % name)
+        raise ValueError(f"`{name}` must contain at least one value")
     for t in v:
         if t != t or t in (float("inf"), float("-inf")):
-            raise ValueError("`%s` must be finite" % name)
+            raise ValueError(f"`{name}` must be finite")
     return v
 
 
 def mat(a, name="a"):
     try:
         rows = [aslist(r) for r in a]
-    except TypeError:
-        raise ValueError("`%s` must be a matrix" % name)
+    except TypeError as exc:
+        raise ValueError(f"`{name}` must be a matrix") from exc
     if not rows or not rows[0]:
-        raise ValueError("`%s` must be a non-empty matrix" % name)
+        raise ValueError(f"`{name}` must be a non-empty matrix")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("`%s` must be rectangular" % name)
+            raise ValueError(f"`{name}` must be rectangular")
         for t in r:
             if t != t or t in (float("inf"), float("-inf")):
-                raise ValueError("`%s` must be finite" % name)
+                raise ValueError(f"`{name}` must be finite")
     return rows
 
 
 def sqmat(a, n=None, name="w"):
     m = mat(a, name)
     if len(m) != len(m[0]):
-        raise ValueError("`%s` must be square" % name)
+        raise ValueError(f"`{name}` must be square")
     if n is not None and len(m) != n:
-        raise ValueError("`%s` must be %d by %d" % (name, n, n))
+        raise ValueError(f"`{name}` must be {int(n)} by {int(n)}")
     return m
 
 
@@ -221,8 +221,7 @@ def idftre(re, im):
     out = []
     for i in range(n):
         w = 2.0 * pi * i / n
-        out.append(fsum([re[k] * cos(w * k) - im[k] * sin(w * k)
-                         for k in range(n)]) / n)
+        out.append(fsum([re[k] * cos(w * k) - im[k] * sin(w * k) for k in range(n)]) / n)
     return out
 
 
@@ -248,6 +247,7 @@ def eucdist(a, b):
 def normcdf(z):
     """Phi(z) via erf; used only for the two-sided normal p-values."""
     from math import erf
+
     return 0.5 * (1.0 + erf(z / sqrt(2.0)))
 
 

@@ -1,8 +1,8 @@
 """Tests for ksr064 (Kosorok shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr064 import kosorok_ch3_cox_partial_likelihood
 
 

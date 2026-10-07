@@ -1,7 +1,6 @@
 """Tests for morie.fn.ultra -- ensemble aggregation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.ultra import ensemble_aggregate, ultra
 

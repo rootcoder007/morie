@@ -70,11 +70,17 @@ def glivenko(x, F):
             best = max(a, b)
             arg = i + 1
     D = max(dp, dm)
-    return RichResult(payload={
-        "statistic": D, "d_plus": dp, "d_minus": dm, "argmax": float(arg),
-        "dkw_bound": min(1.0, 2.0 * math.exp(-2.0 * n * D * D)),
-        "n": float(n),
-        "method": "Glivenko-Cantelli supremum with the DKW-Massart bound"})
+    return RichResult(
+        payload={
+            "statistic": D,
+            "d_plus": dp,
+            "d_minus": dm,
+            "argmax": float(arg),
+            "dkw_bound": min(1.0, 2.0 * math.exp(-2.0 * n * D * D)),
+            "n": float(n),
+            "method": "Glivenko-Cantelli supremum with the DKW-Massart bound",
+        }
+    )
 
 
 kosorok_glivenko_cantelli = glivenko

@@ -1,7 +1,6 @@
 """Tests for agprtg.alphazero_priority_target."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agprtg import alphazero_priority_target
 
 
@@ -11,8 +10,14 @@ def test_agprtg_basic():
     z = np.random.default_rng(7).normal(0, 1, 100)
     v = np.random.default_rng(13).normal(0, 1, 100)
     result = alphazero_priority_target(
-        replay_buffer=None, priorities=priorities, z=z, v=v,
-        alpha=0.6, beta=0.4, eps=1e-6, variant="proportional",
+        replay_buffer=None,
+        priorities=priorities,
+        z=z,
+        v=v,
+        alpha=0.6,
+        beta=0.4,
+        eps=1e-6,
+        variant="proportional",
     )
     assert isinstance(result, dict)
     assert "estimate" in result
@@ -58,8 +63,14 @@ def test_agprtg_edge():
     z = np.random.default_rng(7).normal(0, 1, 50)
     v = np.random.default_rng(13).normal(0, 1, 50)
     result = alphazero_priority_target(
-        replay_buffer=None, priorities=priorities, z=z, v=v,
-        alpha=0.6, beta=0.4, eps=1e-6, variant="proportional",
+        replay_buffer=None,
+        priorities=priorities,
+        z=z,
+        v=v,
+        alpha=0.6,
+        beta=0.4,
+        eps=1e-6,
+        variant="proportional",
     )
     assert isinstance(result, dict)
     assert "estimate" in result

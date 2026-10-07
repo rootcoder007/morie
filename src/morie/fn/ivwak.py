@@ -27,16 +27,13 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
     Z = np.asarray(instrument, dtype=np.float64)
     if Z.ndim == 1:
         Z = Z[:, None]
-    n, l = Z.shape
+    n, ell = Z.shape
 
-    if covariates is not None:
-        W = np.column_stack([np.ones(n), np.asarray(covariates)])
-    else:
-        W = np.ones((n, 1))
+    W = np.column_stack([np.ones(n), np.asarray(covariates)]) if covariates is not None else np.ones((n, 1))
 
     Mw = np.eye(n) - W @ np.linalg.pinv(W)
     y_res = Mw @ y
-    Z_res = Mw @ Z
+    Mw @ Z
 
     X_full = np.column_stack([W, Z])
     beta_full = np.linalg.lstsq(X_full, y, rcond=None)[0]
@@ -44,12 +41,12 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
     beta_red = np.linalg.lstsq(W, y, rcond=None)[0]
     ss_red = np.sum((y - W @ beta_red) ** 2)
 
-    df1 = l
-    df2 = n - W.shape[1] - l
+    df1 = ell
+    df2 = n - W.shape[1] - ell
     f_stat = ((ss_red - ss_full) / df1) / (ss_full / df2) if df2 > 0 else 0.0
     f_pval = stats.f.sf(f_stat, df1, df2) if df2 > 0 else 1.0
 
-    ss_total_res = np.sum(y_res**2)
+    np.sum(y_res**2)
     partial_r2 = 1 - ss_full / ss_red if ss_red > 0 else 0.0
     weak = f_stat < 10
 
@@ -60,7 +57,7 @@ def iv_weak_test(endogenous, instrument, covariates=None, cdf=None):
             "f_statistic": float(f_stat),
             "f_pvalue": float(f_pval),
             "partial_r_squared": float(partial_r2),
-            "n_instruments": l,
+            "n_instruments": ell,
             "weak_instrument": bool(weak),
             "n": n,
         },

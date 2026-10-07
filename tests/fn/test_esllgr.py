@@ -1,7 +1,6 @@
 """Tests for esllgr.esl_logistic_reg."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esllgr import esl_logistic_reg
 
 
@@ -65,6 +64,7 @@ def test_esllgr_edge():
 
     # Threshold must be in (0, 1); an invalid value raises ValueError
     import pytest
+
     with pytest.raises(ValueError):
         esl_logistic_reg(X, y, threshold=1.5)
 

@@ -1,9 +1,9 @@
 """Tests for morie.fn.elnet -- Elastic net regression."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn._containers import RegressionResult
 from morie.fn.elnet import elastic_net, elnet
 

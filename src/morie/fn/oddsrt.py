@@ -72,33 +72,45 @@ def odds_ratio(a, b, c, d, conf_level=0.95, correction=0.0):
         if v < 0.0:
             raise ValueError("2 x 2 cell counts must be non-negative")
     n = float(a) + float(b) + float(c) + float(d)
-    if bb == 0.0 or cc == 0.0:
-        est = float("inf")
-    else:
-        est = (aa * dd) / (bb * cc)
+    est = float("inf") if bb == 0.0 or cc == 0.0 else aa * dd / (bb * cc)
     if aa == 0.0 or bb == 0.0 or cc == 0.0 or dd == 0.0:
         nan = float("nan")
-        return RichResult(payload={
-            "estimate": est, "log_estimate": nan, "se_log": nan,
-            "ci_lower": nan, "ci_upper": nan, "z": nan, "p_value": nan,
-            "n": n, "conf_level": float(conf_level),
-            "method": "Cornfield (1951) cross-product odds ratio; "
-                      "a zero cell leaves the Woolf variance undefined"})
+        return RichResult(
+            payload={
+                "estimate": est,
+                "log_estimate": nan,
+                "se_log": nan,
+                "ci_lower": nan,
+                "ci_upper": nan,
+                "z": nan,
+                "p_value": nan,
+                "n": n,
+                "conf_level": float(conf_level),
+                "method": "Cornfield (1951) cross-product odds ratio; a zero cell leaves the Woolf variance undefined",
+            }
+        )
     log_or = math.log(est)
     var = 1.0 / aa + 1.0 / bb + 1.0 / cc + 1.0 / dd
-    se = var ** 0.5
+    se = var**0.5
     zq = float(stats.norm.ppf(0.5 + 0.5 * float(conf_level)))
     lo = log_or - zq * se
     hi = log_or + zq * se
     z = log_or / se
     p = 2.0 * (1.0 - float(stats.norm.cdf(abs(z))))
-    return RichResult(payload={
-        "estimate": float(est), "log_estimate": float(log_or),
-        "se_log": float(se), "ci_lower": float(math.exp(lo)),
-        "ci_upper": float(math.exp(hi)), "z": float(z), "p_value": float(p),
-        "n": float(n), "conf_level": float(conf_level),
-        "method": "Cornfield (1951) cross-product odds ratio, "
-                  "Woolf (1955) log-scale variance 1/a+1/b+1/c+1/d"})
+    return RichResult(
+        payload={
+            "estimate": float(est),
+            "log_estimate": float(log_or),
+            "se_log": float(se),
+            "ci_lower": float(math.exp(lo)),
+            "ci_upper": float(math.exp(hi)),
+            "z": float(z),
+            "p_value": float(p),
+            "n": float(n),
+            "conf_level": float(conf_level),
+            "method": "Cornfield (1951) cross-product odds ratio, Woolf (1955) log-scale variance 1/a+1/b+1/c+1/d",
+        }
+    )
 
 
 def cheatsheet():

@@ -87,9 +87,9 @@ def boyd_minimum_norm(A, b, norm=2):
         A_ub = np.block([[np.eye(n), -np.eye(n)], [-np.eye(n), -np.eye(n)]])
         b_ub = np.zeros(2 * n)
         A_eq = np.hstack([Am, np.zeros((m, n))])
-        res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=bv,
-                      bounds=[(None, None)] * n + [(0.0, None)] * n,
-                      method="highs")
+        res = linprog(
+            c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=bv, bounds=[(None, None)] * n + [(0.0, None)] * n, method="highs"
+        )
         x = np.asarray(res.x[:n], dtype=float) if res.status == 0 else np.full(n, np.nan)
         val = float(np.abs(x).sum())
     elif norm in ("inf", np.inf, float("inf")):
@@ -98,9 +98,9 @@ def boyd_minimum_norm(A, b, norm=2):
         A_ub = np.block([[np.eye(n), -ones], [-np.eye(n), -ones]])
         b_ub = np.zeros(2 * n)
         A_eq = np.hstack([Am, np.zeros((m, 1))])
-        res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=bv,
-                      bounds=[(None, None)] * n + [(0.0, None)],
-                      method="highs")
+        res = linprog(
+            c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=bv, bounds=[(None, None)] * n + [(0.0, None)], method="highs"
+        )
         x = np.asarray(res.x[:n], dtype=float) if res.status == 0 else np.full(n, np.nan)
         val = float(np.max(np.abs(x)))
     else:
@@ -112,16 +112,21 @@ def boyd_minimum_norm(A, b, norm=2):
     proj = Am.T @ np.linalg.lstsq(Am @ Am.T, Am @ x, rcond=None)[0]
     return RichResult(
         title=f"Minimum {norm}-norm solution",
-        summary_lines=[("n", int(n)), ("norm", str(norm)),
-                       ("value", val),
-                       ("nonzeros", int(np.sum(np.abs(x) > 1e-08)))],
+        summary_lines=[
+            ("n", int(n)),
+            ("norm", str(norm)),
+            ("value", val),
+            ("nonzeros", int(np.sum(np.abs(x) > 1e-08))),
+        ],
         payload={
-            "x": x, "norm_value": val,
+            "x": x,
+            "norm_value": val,
             "n_nonzero": int(np.sum(np.abs(x) > 1e-08)),
             "residual": resid,
             "feasible": bool(np.max(np.abs(resid)) < 1e-07),
             "in_row_space": bool(np.max(np.abs(x - proj)) < 1e-07),
-            "norm": str(norm), "method": "boyd_minimum_norm",
+            "norm": str(norm),
+            "method": "boyd_minimum_norm",
         },
     )
 

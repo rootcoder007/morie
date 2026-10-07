@@ -89,12 +89,17 @@ def boyd_smooth_min(x, axis=None):
         gap = None
     return RichResult(
         title="Log-sum-exp",
-        summary_lines=[("value", val if np.isscalar(val) else float(np.mean(val))),
-                       ("terms", int(n)), ("bound log n", float(np.log(n)))],
+        summary_lines=[
+            ("value", val if np.isscalar(val) else float(np.mean(val))),
+            ("terms", int(n)),
+            ("bound log n", float(np.log(n))),
+        ],
         payload={
-            "value": val, "gradient": grad,
+            "value": val,
+            "gradient": grad,
             "max": float(np.max(xv)) if axis is None else np.max(xv, axis=axis),
-            "gap": gap, "bound": float(np.log(n)),
+            "gap": gap,
+            "bound": float(np.log(n)),
             "method": "boyd_smooth_min",
         },
     )

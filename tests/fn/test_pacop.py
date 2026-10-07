@@ -1,7 +1,6 @@
 """Tests for morie.fn.pacop."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.pacop import pacop
 
 

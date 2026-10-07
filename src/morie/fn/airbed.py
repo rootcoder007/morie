@@ -55,12 +55,17 @@ def emisinv(activity, factor, gwp=None):
         if len(g) != f:
             raise ValueError("gwp must have one entry per column")
     cell = [[A[i][j] * E[i][j] * g[j] for j in range(f)] for i in range(s)]
-    return RichResult(payload={
-        "total": sum(sum(r) for r in cell), "cell": cell,
-        "bysector": [sum(r) for r in cell],
-        "byfuel": [sum(cell[i][j] for i in range(s)) for j in range(f)],
-        "s": s, "f": f,
-        "method": "IPCC inventory equation Emissions = AD * EF"})
+    return RichResult(
+        payload={
+            "total": sum(sum(r) for r in cell),
+            "cell": cell,
+            "bysector": [sum(r) for r in cell],
+            "byfuel": [sum(cell[i][j] for i in range(s)) for j in range(f)],
+            "s": s,
+            "f": f,
+            "method": "IPCC inventory equation Emissions = AD * EF",
+        }
+    )
 
 
 emissions_inventory = emisinv

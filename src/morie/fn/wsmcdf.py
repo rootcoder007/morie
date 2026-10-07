@@ -52,10 +52,15 @@ def wasserman_empirical_cdf(x, data):
     if n == 0:
         raise ValueError("the eCDF of an empty sample is undefined.")
     vals = np.searchsorted(np.sort(data), x, side="right") / float(n)
-    return RichResult(payload={
-        "estimate": float(vals[0]), "values": [float(v) for v in vals],
-        "x": [float(v) for v in x], "n": int(n),
-        "method": "eCDF F_n(x) = (1/n) sum I(X_i <= x)"})
+    return RichResult(
+        payload={
+            "estimate": float(vals[0]),
+            "values": [float(v) for v in vals],
+            "x": [float(v) for v in x],
+            "n": int(n),
+            "method": "eCDF F_n(x) = (1/n) sum I(X_i <= x)",
+        }
+    )
 
 
 def cheatsheet():

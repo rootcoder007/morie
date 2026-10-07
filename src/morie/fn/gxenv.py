@@ -67,10 +67,7 @@ def gxenv(
     df1 = 1
     df2 = max(n - X_full.shape[1], 1)
 
-    if rss_f > 0 and rss_r >= rss_f:
-        f_stat = ((rss_r - rss_f) / df1) / (rss_f / df2)
-    else:
-        f_stat = 0.0
+    f_stat = (rss_r - rss_f) / df1 / (rss_f / df2) if rss_f > 0 and rss_r >= rss_f else 0.0
 
     p_value = float(1.0 - _f_dist.cdf(f_stat, df1, df2))
 

@@ -67,10 +67,7 @@ def geron_linear_layer_forward(X, W, b):
     batch = X.ndim == 2
     Xm = X if batch else X.reshape(1, -1)
     if Xm.shape[1] != in_f:
-        raise ValueError(
-            f"X has {Xm.shape[1]} features but W expects {in_f} "
-            f"(W is stored as (out, in) = {W.shape})."
-        )
+        raise ValueError(f"X has {Xm.shape[1]} features but W expects {in_f} (W is stored as (out, in) = {W.shape}).")
     b_arr = np.asarray(b, dtype=float).ravel()
     if b_arr.size == 1:
         b_arr = np.full(out_f, float(b_arr[0]))

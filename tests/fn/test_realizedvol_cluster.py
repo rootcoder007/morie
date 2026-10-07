@@ -2,9 +2,9 @@
 volrs volyz volhar volhar1 volharj volraq voldoc voltsr voljr volpow
 volmuk volopn volsk volrls volrlmt."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volbpv import vol_bipower_variation
 from morie.fn.voldoc import vol_decomposed_realised
 from morie.fn.volhar import vol_har_rv
@@ -12,7 +12,7 @@ from morie.fn.volhar1 import vol_har_q
 from morie.fn.volharj import vol_har_rv_jump
 from morie.fn.voljr import vol_jump_robust_var
 from morie.fn.volmuk import vol_multi_kernel_rk
-from morie.fn.volopn import vol_implied_volatility_bs, _bs_price
+from morie.fn.volopn import _bs_price, vol_implied_volatility_bs
 from morie.fn.volpow import vol_power_variation
 from morie.fn.volraq import vol_realised_quadratic_var
 from morie.fn.volrk import vol_realised_kernel
@@ -153,21 +153,24 @@ def test_volyz_recovers_sigma():
     rng = np.random.default_rng(4)
     n, steps = 300, 50
     sig_step = 0.02 / np.sqrt(steps)
-    o = np.empty(n); h = np.empty(n); l = np.empty(n); c = np.empty(n)
+    o = np.empty(n)
+    h = np.empty(n)
+    ell = np.empty(n)
+    c = np.empty(n)
     price = 0.0
     for d in range(n):
         o[d] = price
         path = price + np.cumsum(rng.normal(scale=sig_step, size=steps))
         h[d] = max(path.max(), price)
-        l[d] = min(path.min(), price)
+        ell[d] = min(path.min(), price)
         c[d] = path[-1]
         price = c[d]
-    O, H, L, C = (np.exp(v) for v in (o, h, l, c))
-    out = vol_yang_zhang(O, H, L, C)
+    O_, H, L, C = (np.exp(v) for v in (o, h, ell, c))
+    out = vol_yang_zhang(O_, H, L, C)
     assert out["sigma"] == pytest.approx(0.02, rel=0.2)  # daily sigma
     assert out["k"] == pytest.approx(0.34 / (1.34 + (n + 1) / (n - 1)))
     with pytest.raises(ValueError):
-        vol_yang_zhang(O[:1], H[:1], L[:1], C[:1])
+        vol_yang_zhang(O_[:1], H[:1], L[:1], C[:1])
 
 
 def _har_sim(seed, n=600):
@@ -248,10 +251,12 @@ def test_volopn_round_trip():
 
 def test_volsk_tracks_a_regime_shift():
     rng = np.random.default_rng(7)
-    r = np.concatenate([
-        rng.normal(scale=0.01, size=300),
-        rng.normal(scale=0.04, size=300),
-    ])
+    r = np.concatenate(
+        [
+            rng.normal(scale=0.01, size=300),
+            rng.normal(scale=0.04, size=300),
+        ]
+    )
     out = vol_stochastic_kalman(r)
     assert out["sigma"][350:].mean() > 2.0 * out["sigma"][:250].mean()
     with pytest.raises(ValueError):

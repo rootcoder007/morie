@@ -9,5 +9,6 @@ def test_alndcg_basic():
 
 def test_alndcg_edge():
     import pytest
+
     with pytest.raises(ValueError, match="undefined"):
         alammar_ndcg_at_k([0, 0], 2)

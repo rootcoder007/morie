@@ -64,7 +64,7 @@ def alphazero_play_log(game, path=None, values=None, visits=None):
     vis = k.vec(visits) if visits is not None else [0.0] * n
     lines = []
     for i in range(n):
-        lines.append("%d,%.17g,%.17g,%.17g" % (i, acts[i], vis[i], v[i]))
+        lines.append(f"{int(i)},{acts[i]:.17g},{vis[i]:.17g},{v[i]:.17g}")
     text = "\n".join(lines)
     written = False
     if path is not None:

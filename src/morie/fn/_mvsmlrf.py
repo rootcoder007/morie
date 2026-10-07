@@ -262,7 +262,7 @@ def standardize(Y, n, q):
     for j in range(q):
         m = sum(Y[i][j] for i in range(n)) / n
         v = sum((Y[i][j] - m) ** 2 for i in range(n)) / n
-        sd = v ** 0.5
+        sd = v**0.5
         for i in range(n):
             out[i][j] = (Y[i][j] - m) / sd if sd > 0.0 else 0.0
     return out
@@ -277,7 +277,7 @@ def perm_importance(trees, oob, X, Y, q, normalise=True):
     deviation of the differences."  The permutation is the deterministic
     reversal of the OOB row order, so both arms permute identically.
     """
-    n = len(X)
+    len(X)
     p = len(X[0])
     imp = [0.0] * p
     for j in range(p):
@@ -308,7 +308,7 @@ def perm_importance(trees, oob, X, Y, q, normalise=True):
         m = sum(diffs) / len(diffs)
         if normalise and len(diffs) > 1:
             var = sum((d - m) ** 2 for d in diffs) / (len(diffs) - 1)
-            sd = var ** 0.5
+            sd = var**0.5
             imp[j] = m / sd if sd > 0.0 else 0.0
         else:
             imp[j] = m

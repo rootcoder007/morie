@@ -1,7 +1,5 @@
 """Tests for gh_c9_10.ghosal_spline_crt."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c9_10 import ghosal_spline_crt
 
 

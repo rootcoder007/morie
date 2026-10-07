@@ -23,4 +23,6 @@ def ghosal_ch3_dirichlet_posterior_mean(*args, **kwargs):
 
 
 def cheatsheet() -> str:
-    return "ghs014: ghosal_ch3_dirichlet_posterior_mean() -> Deprecated; use :func:`morie.fn.cdp_posterior_mean` instead."
+    return (
+        "ghs014: ghosal_ch3_dirichlet_posterior_mean() -> Deprecated; use :func:`morie.fn.cdp_posterior_mean` instead."
+    )

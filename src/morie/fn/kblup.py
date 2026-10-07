@@ -5,7 +5,7 @@ from . import _gp_core as G
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['kernblup', 'kernel_blup', 'kernelblup']
+__all__ = ["kernblup", "kernel_blup", "kernelblup"]
 
 
 def kernblup(Z, K, sigma2_u=1.0):
@@ -33,9 +33,14 @@ def kernblup(Z, K, sigma2_u=1.0):
     """
     Ks = G.kernel_blup_replicated(Z, K, float(sigma2_u))
     Zm = C.mat(Z)
-    return RichResult(payload={
-        "K_star": Ks, "n": len(Zm), "J": len(Zm[0]),
-        "method": "Replicated-line kernel covariance, MVSML Eq. (8.9)"})
+    return RichResult(
+        payload={
+            "K_star": Ks,
+            "n": len(Zm),
+            "J": len(Zm[0]),
+            "method": "Replicated-line kernel covariance, MVSML Eq. (8.9)",
+        }
+    )
 
 
 kernel_blup = kernblup
@@ -43,4 +48,4 @@ kernelblup = kernblup
 
 
 def cheatsheet():
-    return 'kblup: Kernel covariance of a replicated-line predictor.'
+    return "kblup: Kernel covariance of a replicated-line predictor."

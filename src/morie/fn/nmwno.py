@@ -115,5 +115,6 @@ wnom = wnominate
 def cheatsheet() -> str:
     return "wnominate(votes, x, z_yea, z_nay) -> W-NOMINATE log-likelihood, GMP, classification"
 
+
 # alias kept from the retired placeholder of the same name
 wnominate_weight = wnominate

@@ -1,7 +1,6 @@
 """Tests for hmclsn.geron_classification_mlp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmclsn import geron_classification_mlp
 
 

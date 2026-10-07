@@ -1,7 +1,6 @@
 """Tests for wsmlgc.wasserman_log_linear."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wsmlgc import wasserman_log_linear
 
 

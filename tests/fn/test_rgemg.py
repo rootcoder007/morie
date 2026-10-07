@@ -8,9 +8,9 @@ global RMS; eq (5.24) is the running RMS this function computes,
 which is CAUSAL and therefore undefined for n < M-1.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsatf import rangayyan_emg_rms
 
 

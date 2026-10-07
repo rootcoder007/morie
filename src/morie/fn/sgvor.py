@@ -27,7 +27,7 @@ def voronoi_tessellation(points):
     vor = Voronoi(pts)
 
     areas = []
-    for i, region_idx in enumerate(vor.point_region):
+    for _i, region_idx in enumerate(vor.point_region):
         region = vor.regions[region_idx]
         if -1 in region or len(region) == 0:
             areas.append(np.inf)

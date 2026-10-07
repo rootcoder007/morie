@@ -1,8 +1,8 @@
 """rng014: sigma_y^2 = sigma_x^2 + sigma_eta^2 (Rangayyan 2024, Eq. 3.14, p. 96)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.bsastat import rangayyan_ch3_variance_of_sum_uncorrelated as var_sum
 
 

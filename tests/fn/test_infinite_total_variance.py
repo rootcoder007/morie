@@ -1,7 +1,5 @@
 """Tests for infinite_total_variance.infinite_total_variance."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.infinite_total_variance import (
     infinite_total_variance,
 )

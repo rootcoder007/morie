@@ -4,15 +4,14 @@ import doctest as _doctest
 
 import pytest
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmfsf import geron_few_shot
 
 
 def test_hmfsf_basic():
     """Test basic functionality."""
+
     def copycat(prompt):
-        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        lines = [ell for ell in prompt.split("\n") if "->" in ell and not ell.endswith("-> ")]
         return lines[-1].split("-> ")[1] if lines else "?"
 
     examples = [("a", "1"), ("b", "2"), ("c", "3"), ("d", "4"), ("e", "5")]
@@ -32,8 +31,9 @@ def test_hmfsf_basic():
 
 def test_hmfsf_edge():
     """Test edge cases."""
+
     def copycat(prompt):
-        lines = [l for l in prompt.split("\n") if "->" in l and not l.endswith("-> ")]
+        lines = [ell for ell in prompt.split("\n") if "->" in ell and not ell.endswith("-> ")]
         return lines[-1].split("-> ")[1] if lines else "?"
 
     examples = [("a", "1")]
@@ -48,13 +48,12 @@ def test_hmfsf_edge():
 # of whatever the tests above already check.
 
 
-
 import morie.fn.hmfsf as _doctest_module
 
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

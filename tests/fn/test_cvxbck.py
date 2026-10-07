@@ -12,7 +12,10 @@ def test_cvxbck_basic():
     """Test basic functionality on a quadratic objective."""
     # f(x) = x @ x, grad = 2x; from x = [1.0] a full steepest-descent step overshoots
     x = np.array([1.0])
-    f = lambda z: float(z @ z)
+
+    def f(z):
+        return float(z @ z)
+
     grad = 2 * x
     dx = -grad  # descent direction
     result = boyd_backtracking(f, grad, x, dx)
@@ -28,7 +31,10 @@ def test_cvxbck_basic():
 def test_cvxbck_edge():
     """Test that an ascent direction is rejected with ValueError."""
     x = np.array([1.0])
-    f = lambda z: float(z @ z)
+
+    def f(z):
+        return float(z @ z)
+
     grad = 2 * x
     dx = 2 * x  # ascent direction: grad @ dx > 0
     with pytest.raises(ValueError):

@@ -53,7 +53,7 @@ def multiclass_recall(y_true, y_pred, *, average="macro", labels=None, **kwargs)
         measure=f"recall_{average}",
         estimate=result,
         n=len(yt),
-        extra={"per_class": dict(zip([str(l) for l in labels], per_class_rec)), "average": average},
+        extra={"per_class": dict(zip([str(ell) for ell in labels], per_class_rec)), "average": average},
     )
 
 

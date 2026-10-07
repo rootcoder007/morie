@@ -1,7 +1,6 @@
 """Tests for gh_c14_21.ghosal_ord_dep_sbp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_21 import ghosal_ord_dep_sbp
 
 

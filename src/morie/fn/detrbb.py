@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """DETR set prediction with Hungarian bipartite matching."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -116,8 +114,7 @@ def detr_set_prediction(image, queries, n_objects=None, targets=None):
         raise ValueError("more ground-truth boxes than queries")
 
     def corners(b):
-        return (b[0] - b[2] / 2.0, b[1] - b[3] / 2.0,
-                b[0] + b[2] / 2.0, b[1] + b[3] / 2.0)
+        return (b[0] - b[2] / 2.0, b[1] - b[3] / 2.0, b[0] + b[2] / 2.0, b[1] + b[3] / 2.0)
 
     l1 = [[0.0] * Q for _ in range(G)]
     giou = [[0.0] * Q for _ in range(G)]
@@ -136,24 +133,25 @@ def detr_set_prediction(image, queries, n_objects=None, targets=None):
             area_c = cw * ch
             g_iou = iou - (area_c - ua) / area_c if area_c > 0.0 else iou
             giou[g][q] = 1.0 - g_iou
-    cost = [[5.0 * l1[g][q] + 2.0 * giou[g][q] for q in range(Q)]
-            for g in range(G)]
+    cost = [[5.0 * l1[g][q] + 2.0 * giou[g][q] for q in range(Q)] for g in range(G)]
     assign = hungarian(cost)
     total = sum(cost[g][assign[g]] for g in range(G))
     matched = sorted(assign)
     unmatched = [q for q in range(Q) if q not in matched]
-    return RichResult(payload={
-        "estimate": total,
-        "assignment": assign,
-        "cost": total,
-        "matched": matched,
-        "unmatched": unmatched,
-        "l1_cost": sum(l1[g][assign[g]] for g in range(G)),
-        "giou_cost": sum(giou[g][assign[g]] for g in range(G)),
-        "Q": Q,
-        "G": G,
-        "method": "DETR set prediction with Hungarian matching",
-    })
+    return RichResult(
+        payload={
+            "estimate": total,
+            "assignment": assign,
+            "cost": total,
+            "matched": matched,
+            "unmatched": unmatched,
+            "l1_cost": sum(l1[g][assign[g]] for g in range(G)),
+            "giou_cost": sum(giou[g][assign[g]] for g in range(G)),
+            "Q": Q,
+            "G": G,
+            "method": "DETR set prediction with Hungarian matching",
+        }
+    )
 
 
 def cheatsheet():

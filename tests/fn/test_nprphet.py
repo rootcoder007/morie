@@ -1,7 +1,6 @@
 """Tests for nprphet.neural_prophet."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nprphet import neural_prophet
 
 

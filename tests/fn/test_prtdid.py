@@ -1,7 +1,6 @@
 """Tests for prtdid.partition_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.prtdid import partition_did
 
 

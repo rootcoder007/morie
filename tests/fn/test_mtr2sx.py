@@ -5,9 +5,9 @@ Rewritten against mendelian_randomization_ivw and anchored on the IVW
 closed form rather than on a fabricated payload key.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mtr2sx import mendelian_randomization_ivw, ratio_estimates
 
 
@@ -18,8 +18,8 @@ def test_ivw_matches_the_closed_form():
     sy = [0.02, 0.03, 0.02, 0.04]
     sx = [0.01, 0.01, 0.01, 0.01]
     r = mendelian_randomization_ivw(bx, sx, by, sy)
-    num = sum(b * a / s ** 2 for a, b, s in zip(bx, by, sy))
-    den = sum(a * a / s ** 2 for a, s in zip(bx, sy))
+    num = sum(b * a / s**2 for a, b, s in zip(bx, by, sy))
+    den = sum(a * a / s**2 for a, s in zip(bx, sy))
     assert r["estimate"] == pytest.approx(num / den)
 
 

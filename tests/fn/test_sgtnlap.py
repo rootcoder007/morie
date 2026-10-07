@@ -1,7 +1,6 @@
 """Tests for sgtnlap.sgt_normalised_laplacian."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtnlap import sgt_normalised_laplacian
 
 

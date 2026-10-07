@@ -1,7 +1,6 @@
 """Tests for gh_c7_5.ghosal_dpm_gen_con."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c7_5 import ghosal_dpm_gen_con
 
 
@@ -41,8 +40,7 @@ def test_gh_c7_5_arith():
     q = 1.0
     data = [1.05, 0.95, 1.10]  # arbitrary observed data, n=3
     n = len(data)
-    pred = alpha / (alpha + n) * npdf(q, 0.0, s_marg) \
-        + sum(npdf(q, xj, sd) for xj in data) / (alpha + n)
+    pred = alpha / (alpha + n) * npdf(q, 0.0, s_marg) + sum(npdf(q, xj, sd) for xj in data) / (alpha + n)
 
     # Truth density at q=1.0 under N(1, sd^2)
     truth = npdf(q, 1.0, sd)

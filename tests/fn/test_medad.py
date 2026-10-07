@@ -1,7 +1,6 @@
 """Tests for morie.fn.medad — mediation analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.medad import mediation_analysis
 
 

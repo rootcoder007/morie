@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['sgltukey', 'gibbons_siegel_tukey']
+__all__ = ["sgltukey", "gibbons_siegel_tukey"]
 
 
 def _tagged(xs, ys):

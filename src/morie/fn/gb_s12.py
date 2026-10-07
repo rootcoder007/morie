@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['smirnov1', 'gibbons_smirnov_one_sided']
+__all__ = ["smirnov1", "gibbons_smirnov_one_sided"]
 
 
 def smirnov1(d, m, n):

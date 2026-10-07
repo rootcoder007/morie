@@ -1,13 +1,13 @@
 """Tests for gb_ksc.gibbons_ks_cvm_comparison."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_ksc import gibbons_ks_cvm_comparison
 
 
 def _normal_cdf(x):
     """Standard normal CDF using math.erf (no scipy dependency)."""
     import math
+
     return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
 
 
@@ -41,9 +41,7 @@ def test_gb_ksc_basic():
     expected_d = max(devs)
     expected_arg = devs.index(expected_d)
 
-    terms = [
-        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
-    ]
+    terms = [(z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)]
     expected_w2 = 1.0 / (12.0 * n) + sum(terms)
     expected_share = terms[expected_arg] / expected_w2
 
@@ -84,9 +82,7 @@ def test_gb_ksc_edge():
     expected_d = max(devs)
     expected_arg = devs.index(expected_d)
 
-    terms = [
-        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
-    ]
+    terms = [(z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)]
     expected_w2 = 1.0 / (12.0 * n) + sum(terms)
     expected_share = terms[expected_arg] / expected_w2
 

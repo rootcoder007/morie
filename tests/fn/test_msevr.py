@@ -1,7 +1,6 @@
 """Test mse_variance_bias (msevr)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.msevr import mse_variance_bias, msevr
 

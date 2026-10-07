@@ -52,7 +52,7 @@ def detection_metrics(
     cum_tp = np.cumsum(yt_sorted)
     cum_fp = np.cumsum(1 - yt_sorted)
     prec_at_k = cum_tp / (cum_tp + cum_fp)
-    rec_at_k = cum_tp / max(1, yt.sum())
+    cum_tp / max(1, yt.sum())
     ap = float(np.sum(prec_at_k * yt_sorted) / max(1, yt.sum()))
 
     return DescriptiveResult(

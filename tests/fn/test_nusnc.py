@@ -1,8 +1,8 @@
 """Tests for morie.fn.nusnc — nuisance parameter profiling."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.nusnc import nusnc
 
 

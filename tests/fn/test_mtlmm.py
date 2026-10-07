@@ -1,7 +1,6 @@
 """Tests for mtlmm.multi_trait_lmm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mtlmm import multi_trait_lmm
 
 

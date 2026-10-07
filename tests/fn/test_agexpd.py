@@ -1,7 +1,6 @@
 """Tests for agexpd.alphazero_expand."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agexpd import alphazero_expand
 
 

@@ -111,10 +111,18 @@ def manski_no_assumption_outcome(y, D, X, y_min, y_max):
             ilo = klo
         if khi < ihi:
             ihi = khi
-    return RichResult(payload={
-        "lower": tot_lo, "upper": tot_hi, "width": tot_hi - tot_lo,
-        "inter_lower": ilo, "inter_upper": ihi, "n_strata": len(levels), "n": n,
-        "method": "Manski no-assumption ATE bounds within covariate strata"})
+    return RichResult(
+        payload={
+            "lower": tot_lo,
+            "upper": tot_hi,
+            "width": tot_hi - tot_lo,
+            "inter_lower": ilo,
+            "inter_upper": ihi,
+            "n_strata": len(levels),
+            "n": n,
+            "method": "Manski no-assumption ATE bounds within covariate strata",
+        }
+    )
 
 
 manskinoassumptionoutcome = manski_no_assumption_outcome

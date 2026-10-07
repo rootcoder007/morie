@@ -1,7 +1,6 @@
 """Tests for sgtcoml.sgt_louvain_step."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtcoml import sgt_louvain_step
 
 

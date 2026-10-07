@@ -3,8 +3,6 @@
 Ghosal and van der Vaart (2017), sec. 13.2, the Dirichlet-process posterior survival function.
 """
 
-import math
-
 import pytest
 
 from morie.fn.gh_c13_2 import ghosal_surv_dp_km

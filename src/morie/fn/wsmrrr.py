@@ -70,14 +70,19 @@ def wasserman_relative_risk(table):
     log_rr = math.log(rr)
     se = math.sqrt((1 - p1) / n11 + (1 - p0) / n01)
     z = 1.959963984540054
-    return RichResult(payload={
-        "estimate": float(rr), "risk_exposed": float(p1),
-        "risk_unexposed": float(p0), "log_rr": float(log_rr),
-        "se": float(se),
-        "ci_lower": float(math.exp(log_rr - z * se)),
-        "ci_upper": float(math.exp(log_rr + z * se)),
-        "n": float(np.sum(T)),
-        "method": "RR = p_exposed/p_unexposed, Katz log-scale CI"})
+    return RichResult(
+        payload={
+            "estimate": float(rr),
+            "risk_exposed": float(p1),
+            "risk_unexposed": float(p0),
+            "log_rr": float(log_rr),
+            "se": float(se),
+            "ci_lower": float(math.exp(log_rr - z * se)),
+            "ci_upper": float(math.exp(log_rr + z * se)),
+            "n": float(np.sum(T)),
+            "method": "RR = p_exposed/p_unexposed, Katz log-scale CI",
+        }
+    )
 
 
 def cheatsheet():

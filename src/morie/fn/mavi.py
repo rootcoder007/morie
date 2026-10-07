@@ -74,10 +74,7 @@ def ma_var_inflation_correlated(V, rho):
     if not np.all(np.isfinite(v)):
         raise ValueError(f"V must be finite; got {V!r}")
     if np.any(v < 0):
-        raise ValueError(
-            f"variances must be non-negative; got {V!r}. These are variances, "
-            "not standard errors."
-        )
+        raise ValueError(f"variances must be non-negative; got {V!r}. These are variances, not standard errors.")
     if not (-1.0 <= rho <= 1.0):
         raise ValueError(f"rho must lie in [-1, 1]; got {rho!r}")
     if k > 1 and rho < -1.0 / (k - 1):

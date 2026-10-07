@@ -75,13 +75,15 @@ def rtwall(onset_times, gi_pmf):
     for d in days:
         vals = [r[j] for j in range(n) if t[j] == d]
         r_daily[d] = sum(vals) / len(vals)
-    return RichResult(payload={
-        "r_case": r,
-        "r_daily": r_daily,
-        "n_cases": n,
-        "mass_check": sum(r) - n_with_infector,
-        "method": "Wallinga-Teunis (2004) case reproduction numbers",
-    })
+    return RichResult(
+        payload={
+            "r_case": r,
+            "r_daily": r_daily,
+            "n_cases": n,
+            "mass_check": sum(r) - n_with_infector,
+            "method": "Wallinga-Teunis (2004) case reproduction numbers",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -90,6 +92,7 @@ wallinga_teunis_rt = rtwall
 
 def cheatsheet():
     return "rtwall: p_ij = w(ti-tj)/sum_k w(ti-tk); R_j = sum_i p_ij"
+
 
 # public names resolved by fn/_lazy_map.json
 rt_wallinga_teunis = rtwall

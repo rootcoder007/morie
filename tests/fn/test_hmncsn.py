@@ -1,7 +1,6 @@
 """Tests for hmncsn.geron_ncsn."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmncsn import geron_ncsn
 
 

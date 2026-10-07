@@ -1,4 +1,5 @@
 from morie.fn import _array_core as np
+
 """Tests for morie.fn.bic2b -- BIC-based Bayes factor."""
 
 import math

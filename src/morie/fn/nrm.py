@@ -71,8 +71,7 @@ def nominal_response_bock(theta, a_k=(0.0, 1.0), c_k=(0.0, 0.0)):
     if len(av) < 2:
         raise ValueError("a_k needs at least two categories.")
     if len(cv) != len(av):
-        raise ValueError("c_k has length %d; expected %d to match a_k"
-                         % (len(cv), len(av)))
+        raise ValueError(f"c_k has length {int(len(cv))}; expected {int(len(av))} to match a_k")
 
     p = []
     eta = []

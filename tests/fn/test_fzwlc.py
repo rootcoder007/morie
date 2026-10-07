@@ -4,9 +4,9 @@ Fauzi, R. R. & Maesono, Y. (2023), *Statistical Inference Based on Kernel
 Distribution Function Estimators*, Ch. 5 -- in the library.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.fzwlc import fauzi_smoothed_wilcoxon as sw
 
 

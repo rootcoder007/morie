@@ -1,7 +1,6 @@
 """Tests for coxfrl.cox_frailty."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxfrl import cox_frailty
 
 

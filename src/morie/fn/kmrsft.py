@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_rejection_sampling_finetune"]
 
 
-def kamath_rejection_sampling_finetune(prompts, samples, rewards, k,
-                                       sft=None):
+def kamath_rejection_sampling_finetune(prompts, samples, rewards, k, sft=None):
     """For each prompt: sample {y_i}, keep the top k by r_phi, then SFT
     on what survived.
 
@@ -50,21 +49,19 @@ def kamath_rejection_sampling_finetune(prompts, samples, rewards, k,
         raise ValueError(
             f"need one sample list and one reward list per prompt; got "
             f"{len(samples)} and {len(rewards)} for {len(prompts)} "
-            "prompts.")
+            "prompts."
+        )
     if k < 1:
         raise ValueError(f"k must be at least 1; got {k}.")
     retained, kept_rewards, dropped = [], [], 0
     for p, ys, rs in zip(prompts, samples, rewards):
         if len(ys) != len(rs):
-            raise ValueError(
-                f"prompt {p!r}: {len(ys)} samples but {len(rs)} rewards.")
+            raise ValueError(f"prompt {p!r}: {len(ys)} samples but {len(rs)} rewards.")
         if not ys:
             raise ValueError(f"prompt {p!r} has no samples.")
         r = np.asarray(rs, dtype=float)
         if not np.all(np.isfinite(r)):
-            raise ValueError(
-                f"prompt {p!r}: a reward is non-finite, so the ranking "
-                "is undefined.")
+            raise ValueError(f"prompt {p!r}: a reward is non-finite, so the ranking is undefined.")
         take = min(k, len(ys))
         order = np.argsort(-r, kind="stable")[:take]
         for i in sorted(int(v) for v in order):
@@ -74,10 +71,14 @@ def kamath_rejection_sampling_finetune(prompts, samples, rewards, k,
     payload = {
         "retained": retained,
         "retained_rewards": kept_rewards,
-        "n_retained": len(retained), "n_dropped": dropped,
+        "n_retained": len(retained),
+        "n_dropped": dropped,
         "mean_retained_reward": float(np.mean(kept_rewards)),
-        "k": k, "estimate": len(retained), "n": len(prompts),
-        "method": "Rejection-sampling fine-tuning (per-prompt top-k)"}
+        "k": k,
+        "estimate": len(retained),
+        "n": len(prompts),
+        "method": "Rejection-sampling fine-tuning (per-prompt top-k)",
+    }
     if sft is not None:
         if not callable(sft):
             raise ValueError("sft must be callable(retained_pairs) -> policy.")

@@ -534,7 +534,7 @@ def omitted_variable_bias(
     ky = kd if ky is None else ky
     bounds = {}
     for name, r2 in (benchmark_covariates or {}).items():
-        r2dxj, r2yxj = (r2, r2) if isinstance(r2, (int, float)) else r2
+        r2dxj, r2yxj = (r2, r2) if isinstance(r2, int | float) else r2
         r2dz = kd * r2dxj / (1 - r2dxj)
         if r2dz >= 1:
             raise ValueError(f"Implied bound on r2dz.x >= 1 for {name!r}; use a lower kd.")

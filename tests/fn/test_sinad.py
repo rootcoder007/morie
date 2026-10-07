@@ -1,7 +1,6 @@
 """Test sinad_compute (sinad)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.sinad import sinad, sinad_compute
 

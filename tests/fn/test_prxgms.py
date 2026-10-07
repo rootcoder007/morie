@@ -26,8 +26,7 @@ def test_a_smooth_quadratic_is_minimised():
 
 def test_lasso_sets_small_coefficients_to_zero():
     # y = 3 x1, with x2 and x3 irrelevant
-    A = [[1.0, 0.5, -0.2], [2.0, -0.3, 0.1], [3.0, 0.2, 0.4],
-         [4.0, -0.1, -0.3], [5.0, 0.4, 0.2]]
+    A = [[1.0, 0.5, -0.2], [2.0, -0.3, 0.1], [3.0, 0.2, 0.4], [4.0, -0.1, -0.3], [5.0, 0.4, 0.2]]
     b = [3.0 * row[0] for row in A]
     res = lasso_fista(A, b, lam=1.0)
     assert abs(res["x"][0] - 3.0) < 0.5
@@ -62,8 +61,7 @@ def test_acceleration_reaches_at_least_as_low_an_objective():
 
 def test_validation():
     try:
-        prox_gradient(lambda x: 0.0, lambda x: [0.0], lambda v, t: v,
-                      [0.0], L=0.0)
+        prox_gradient(lambda x: 0.0, lambda x: [0.0], lambda v, t: v, [0.0], L=0.0)
         raise AssertionError("expected ValueError")
     except ValueError:
         pass

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmlv import kamath_llava_visual_instruction
 
 
@@ -16,11 +15,13 @@ def test_kmlv_basic():
     image = "img"  # placeholder; the encoder does not have to consume it
     W = rng.normal(0, 1, (d, d_v))
     feats = rng.normal(0, 1, (n_patches, d_v))
-    visual_encoder = lambda im: feats
+
+    def visual_encoder(im):
+        return feats
+
     text_tokens = rng.normal(0, 1, (n_text, d))
 
-    result = kamath_llava_visual_instruction(
-        image, W, visual_encoder, text_tokens)
+    result = kamath_llava_visual_instruction(image, W, visual_encoder, text_tokens)
 
     # The docstring / return payload advertises these keys
     assert "visual_tokens" in result
@@ -60,14 +61,20 @@ def test_kmlv_edge():
     image = "img"
     W = rng.normal(0, 1, (d, d_v))
     feats = rng.normal(0, 1, (n_patches, d_v))
-    visual_encoder = lambda im: feats
+
+    def visual_encoder(im):
+        return feats
+
     text_tokens = rng.normal(0, 1, (n_text, d))
-    lm_head = lambda x: rng.normal(0, 1, (x.shape[0], vocab_size))
+
+    def lm_head(x):
+        return rng.normal(0, 1, (x.shape[0], vocab_size))
+
     targets = np.array([ignore_index, ignore_index, 0, 1, 2])
 
     result = kamath_llava_visual_instruction(
-        image, W, visual_encoder, text_tokens,
-        lm_head=lm_head, targets=targets, ignore_index=ignore_index)
+        image, W, visual_encoder, text_tokens, lm_head=lm_head, targets=targets, ignore_index=ignore_index
+    )
 
     assert "loss" in result
     assert "perplexity" in result
@@ -94,7 +101,7 @@ import morie.fn.kmlv as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP (appendices).
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_slice_sampler"]
@@ -27,10 +26,9 @@ def ghosal_slice_sampler(n_draws=4000, seed=42):
         t = float(rng.uniform(0, 1)) * upper
         ts.append(t)
     m = sum(ts) / len(ts)
-    res = RichResult(payload={"estimate": m,
-                              "target_mean": 1.0,
-                              "gap": abs(m - 1.0),
-                              "method": "slice sampler (GvdV 2017 App M)"})
+    res = RichResult(
+        payload={"estimate": m, "target_mean": 1.0, "gap": abs(m - 1.0), "method": "slice sampler (GvdV 2017 App M)"}
+    )
     return with_describe_pointer(res, "gh_ap_m3")
 
 

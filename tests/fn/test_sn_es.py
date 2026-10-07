@@ -1,8 +1,8 @@
 """Tests for sn_estimator."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sn_es import sn_estimator
 
 

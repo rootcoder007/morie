@@ -103,17 +103,11 @@ def geron_multihead_attention(Q, K, V, n_heads, W_O=None, mask=None):
             f"geron_multihead_attention: Q has width {Qa.shape[1]} but K has {Ka.shape[1]}; they share d_k"
         )
     if Ka.shape[0] != Va.shape[0]:
-        raise ValueError(
-            f"geron_multihead_attention: K has {Ka.shape[0]} rows but V has {Va.shape[0]}"
-        )
+        raise ValueError(f"geron_multihead_attention: K has {Ka.shape[0]} rows but V has {Va.shape[0]}")
     if Qa.shape[1] % h:
-        raise ValueError(
-            f"geron_multihead_attention: n_heads={h} does not divide the query/key width {Qa.shape[1]}"
-        )
+        raise ValueError(f"geron_multihead_attention: n_heads={h} does not divide the query/key width {Qa.shape[1]}")
     if Va.shape[1] % h:
-        raise ValueError(
-            f"geron_multihead_attention: n_heads={h} does not divide the value width {Va.shape[1]}"
-        )
+        raise ValueError(f"geron_multihead_attention: n_heads={h} does not divide the value width {Va.shape[1]}")
 
     d_head = Qa.shape[1] // h
     d_vhead = Va.shape[1] // h

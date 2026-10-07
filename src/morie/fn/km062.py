@@ -14,9 +14,7 @@ def _tuned(W, A_k, B_k, s):
     Wm = np.atleast_2d(np.asarray(W, dtype=float))
     K, _, _ = _kron(A_k, B_k)
     if K.shape != Wm.shape:
-        raise ValueError(
-            f"A_k (x) B_k is {K.shape} but W is {Wm.shape}; the adapter "
-            "cannot be merged.")
+        raise ValueError(f"A_k (x) B_k is {K.shape} but W is {Wm.shape}; the adapter cannot be merged.")
     s = float(s)
     if not np.isfinite(s):
         raise ValueError("the scaling factor s must be finite.")
@@ -43,12 +41,17 @@ def kamath_ch4_krona_tuned_weights(W, A_k, B_k, s):
     [[3.0, 1.0], [1.0, 3.0]]
     """
     Wt, Wm, K, s = _tuned(W, A_k, B_k, s)
-    return RichResult(payload={
-        "W_tuned": [[float(v) for v in row] for row in Wt],
-        "delta": [[float(v) for v in row] for row in s * K],
-        "s": s, "shape": (int(Wt.shape[0]), int(Wt.shape[1])),
-        "estimate": float(Wt[0, 0]), "n": int(Wt.size),
-        "method": "merged KronA weights (Kamath Eq 4.9)"})
+    return RichResult(
+        payload={
+            "W_tuned": [[float(v) for v in row] for row in Wt],
+            "delta": [[float(v) for v in row] for row in s * K],
+            "s": s,
+            "shape": (int(Wt.shape[0]), int(Wt.shape[1])),
+            "estimate": float(Wt[0, 0]),
+            "n": int(Wt.size),
+            "method": "merged KronA weights (Kamath Eq 4.9)",
+        }
+    )
 
 
 def cheatsheet():

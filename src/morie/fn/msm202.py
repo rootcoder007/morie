@@ -10,8 +10,6 @@ chapter 9 is Support Vector Machines and Support Vector Regression,
 and the canonical name below reflects that.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -26,9 +24,14 @@ def mvsml_ridge_lasso_elastic_eq_9_28(alpha, X, y):
     alpha_i != 0 -- those are the support vectors. Keys: estimate."""
     b = _gp.svm_beta_from_alpha(alpha, X, y)
     sv = [i for i, v in enumerate(_gp._flat(alpha)) if abs(v) > 1e-9]
-    res = RichResult(payload={"estimate": b[0], "beta": b,
-                              "support_vectors": sv,
-                              "method": "weights from multipliers (MVSML 2022 eq. 9.28)"})
+    res = RichResult(
+        payload={
+            "estimate": b[0],
+            "beta": b,
+            "support_vectors": sv,
+            "method": "weights from multipliers (MVSML 2022 eq. 9.28)",
+        }
+    )
     return with_describe_pointer(res, "msm202")
 
 

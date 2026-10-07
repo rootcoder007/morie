@@ -13,6 +13,8 @@ def test_km006_doctest():
 
 def test_km006_edge():
     import pytest
+
     from morie.fn.km006 import kamath_ch2_seq2seq_cross_entropy
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_seq2seq_cross_entropy(*([None] * 3))

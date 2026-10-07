@@ -1,7 +1,6 @@
 """Tests for morie.fn.clfrt — Classification rate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clfrt import clfrt
 
 

@@ -19,12 +19,12 @@ from . import _array_core as _ac
 
 # ------------------------------------------------------------ helpers
 
+
 def _poly(roots):
     """Monic polynomial coefficients from roots (complex ok, real out)."""
     c = [complex(1.0)]
     for r in roots:
-        c = [c[0]] + [c[i + 1] - r * c[i] for i in range(len(c) - 1)] \
-            + [-r * c[-1]]
+        c = [c[0]] + [c[i + 1] - r * c[i] for i in range(len(c) - 1)] + [-r * c[-1]]
         # rebuild properly: convolve c with (1, -r)
     return c
 
@@ -50,9 +50,9 @@ def _real(coeffs):
 
 # ------------------------------------------------------------ design
 
+
 def _butter_analog_poles(n):
-    return [_cmath.exp(1j * _math.pi * (2.0 * k + n + 1.0) / (2.0 * n))
-            for k in range(n)]
+    return [_cmath.exp(1j * _math.pi * (2.0 * k + n + 1.0) / (2.0 * n)) for k in range(n)]
 
 
 def _bilinear_zpk(z, p, k, fs):
@@ -63,9 +63,9 @@ def _bilinear_zpk(z, p, k, fs):
     num = complex(1.0)
     den = complex(1.0)
     for zi in z:
-        num *= (fs2 - zi)
+        num *= fs2 - zi
     for pi in p:
-        den *= (fs2 - pi)
+        den *= fs2 - pi
     kd = (k * num / den).real
     return zd, pd, kd
 
@@ -79,14 +79,13 @@ def _butter_zpk(n, wn, btype):
     if btype in ("low", "lowpass"):
         warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
         p = [pi * warped for pi in p]
-        k *= warped ** n
+        k *= warped**n
     elif btype in ("high", "highpass"):
         warped = 2.0 * fs * _math.tan(_math.pi * float(wn) / fs)
         prod = complex(1.0)
         for pi in p:
             prod *= -pi
-        k /= prod.real if abs(prod.imag) < 1e-12 * abs(prod.real) \
-            else prod.real
+        k /= prod.real if abs(prod.imag) < 1e-12 * abs(prod.real) else prod.real
         z = [0j] * n
         p = [warped / pi for pi in p]
     elif btype in ("band", "bandpass"):
@@ -103,7 +102,7 @@ def _butter_zpk(n, wn, btype):
             pn.append(pb - disc)
         z = [0j] * n
         p = pn
-        k *= bw ** n
+        k *= bw**n
     elif btype in ("bandstop", "stop", "bs"):
         # scipy lp2bs_zpk on the lowpass prototype (no finite zeros)
         lo, hi = float(wn[0]), float(wn[1])
@@ -124,7 +123,7 @@ def _butter_zpk(n, wn, btype):
         k *= (1.0 / prod).real
         p = pn
     else:
-        raise ValueError("unsupported btype %r" % btype)
+        raise ValueError(f"unsupported btype {btype!r}")
     return _bilinear_zpk(z, p, k, fs)
 
 
@@ -140,6 +139,7 @@ def _zpk2sos(z, p, k):
     ponytail: simple conjugate pairing (Butterworth-only inputs here) —
     scipy's nearest-neighbour pairing if other filters ever need it.
     """
+
     def split(vals):
         cplx, real = [], []
         used = [False] * len(vals)
@@ -197,10 +197,7 @@ def _zpk2sos(z, p, k):
 
 def butter(N, Wn, btype="low", output="ba", fs=None):
     if fs is not None:
-        if isinstance(Wn, (list, tuple)):
-            Wn = [2.0 * w / fs for w in Wn]
-        else:
-            Wn = 2.0 * float(Wn) / fs
+        Wn = [2.0 * w / fs for w in Wn] if isinstance(Wn, (list, tuple)) else 2.0 * float(Wn) / fs
     if hasattr(Wn, "tolist"):
         Wn = Wn.tolist()
     z, p, k = _butter_zpk(int(N), Wn, btype)
@@ -208,10 +205,11 @@ def butter(N, Wn, btype="low", output="ba", fs=None):
         return _zpk2tf(z, p, k)
     if output == "sos":
         return _ac.marr(_zpk2sos(z, p, k))
-    raise ValueError("unsupported output %r" % output)
+    raise ValueError(f"unsupported output {output!r}")
 
 
 # ------------------------------------------------------------ filtering
+
 
 def lfilter(b, a, x, zi=None):
     b = list(_ac.asarray(b)._flat())
@@ -268,26 +266,22 @@ def filtfilt(b, a, x, axis=-1):
     xa = _ac.asarray(x)
     if len(xa.shape) == 2:
         if axis in (-1, 1):
-            return _ac.marr([list(filtfilt(b, a, row)._flat())
-                             for row in xa.data])
-        cols = [list(filtfilt(b, a, [xa.data[i][j] for i in
-                                     range(xa.shape[0])])._flat())
-                for j in range(xa.shape[1])]
-        return _ac.marr([[cols[j][i] for j in range(xa.shape[1])]
-                         for i in range(xa.shape[0])])
+            return _ac.marr([list(filtfilt(b, a, row)._flat()) for row in xa.data])
+        cols = [list(filtfilt(b, a, [xa.data[i][j] for i in range(xa.shape[0])])._flat()) for j in range(xa.shape[1])]
+        return _ac.marr([[cols[j][i] for j in range(xa.shape[1])] for i in range(xa.shape[0])])
     bs = list(_ac.asarray(b)._flat())
     as_ = list(_ac.asarray(a)._flat())
     xs = list(_ac.asarray(x)._flat())
     edge = 3 * max(len(as_), len(bs))
     if len(xs) <= edge:
-        raise ValueError("input too short for padlen %d" % edge)
+        raise ValueError(f"input too short for padlen {int(edge)}")
     ext = _odd_ext(xs, edge)
     zi = lfilter_zi(bs, as_)
     y, _ = lfilter(bs, as_, ext, zi=[z * ext[0] for z in zi])
     y = list(y._flat())[::-1]
     y2, _ = lfilter(bs, as_, y, zi=[z * y[0] for z in zi])
     y2 = list(y2._flat())[::-1]
-    return _ac.marr(y2[edge:len(y2) - edge])
+    return _ac.marr(y2[edge : len(y2) - edge])
 
 
 def _sos_rows(sos):
@@ -298,13 +292,11 @@ def _sos_rows(sos):
 def sosfilt(sos, x, zi=None):
     rows = _sos_rows(sos)
     xs = list(_ac.asarray(x)._flat())
-    z = [list(zs) for zs in zi] if zi is not None \
-        else [[0.0, 0.0] for _ in rows]
+    z = [list(zs) for zs in zi] if zi is not None else [[0.0, 0.0] for _ in rows]
     for s, r in enumerate(rows):
         b0, b1, b2, a0, a1, a2 = r
         if a0 != 1.0:
-            b0, b1, b2, a1, a2 = (b0 / a0, b1 / a0, b2 / a0,
-                                  a1 / a0, a2 / a0)
+            b0, b1, b2, a1, a2 = (b0 / a0, b1 / a0, b2 / a0, a1 / a0, a2 / a0)
         z0, z1 = z[s]
         out = []
         for xv in xs:
@@ -336,20 +328,17 @@ def sosfiltfilt(sos, x):
     xs = list(_ac.asarray(x)._flat())
     n_sections = len(rows)
     ntaps = 2 * n_sections + 1
-    ntaps -= min(sum(1 for r in rows if r[2] == 0.0),
-                 sum(1 for r in rows if r[5] == 0.0))
+    ntaps -= min(sum(1 for r in rows if r[2] == 0.0), sum(1 for r in rows if r[5] == 0.0))
     edge = ntaps * 3
     if len(xs) <= edge:
-        raise ValueError("input too short for padlen %d" % edge)
+        raise ValueError(f"input too short for padlen {int(edge)}")
     ext = _odd_ext(xs, edge)
     zi = sosfilt_zi(rows)
-    y, _ = sosfilt(rows, ext,
-                   zi=[[v * ext[0] for v in zs] for zs in zi])
+    y, _ = sosfilt(rows, ext, zi=[[v * ext[0] for v in zs] for zs in zi])
     y = list(y._flat())[::-1]
-    y2, _ = sosfilt(rows, y,
-                    zi=[[v * y[0] for v in zs] for zs in zi])
+    y2, _ = sosfilt(rows, y, zi=[[v * y[0] for v in zs] for zs in zi])
     y2 = list(y2._flat())[::-1]
-    return _ac.marr(y2[edge:len(y2) - edge])
+    return _ac.marr(y2[edge : len(y2) - edge])
 
 
 class signal:  # namespace mirror for `from scipy import signal`
@@ -364,28 +353,28 @@ class signal:  # namespace mirror for `from scipy import signal`
 
 # ------------------------------------------------------- spectral tail
 
+
 def _hann(n):
     if n == 1:
         return [1.0]
-    return [0.5 - 0.5 * _math.cos(2.0 * _math.pi * i / n)
-            for i in range(n)]
+    return [0.5 - 0.5 * _math.cos(2.0 * _math.pi * i / n) for i in range(n)]
 
 
 def get_window(window, nperseg):
     # an array is the window itself (scipy's stft/welch accept one)
-    if not isinstance(window, (str, tuple)) and window is not None and (
-            hasattr(window, "tolist") or isinstance(window, list)):
-        vals = [float(v) for v in (window.tolist() if hasattr(window, "tolist")
-                                   else window)]
+    if (
+        not isinstance(window, (str, tuple))
+        and window is not None
+        and (hasattr(window, "tolist") or isinstance(window, list))
+    ):
+        vals = [float(v) for v in (window.tolist() if hasattr(window, "tolist") else window)]
         if len(vals) != int(nperseg):
-            raise ValueError("window is %d long but nperseg is %d"
-                             % (len(vals), int(nperseg)))
+            raise ValueError(f"window is {int(len(vals))} long but nperseg is {int(int(nperseg))}")
         return vals
     if window in ("hann", "hanning"):
         return _hann(nperseg)
     if window == "hamming":
-        return [0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / nperseg)
-                for i in range(nperseg)]
+        return [0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / nperseg) for i in range(nperseg)]
     if window in ("boxcar", "rectangular", None):
         return [1.0] * nperseg
     if isinstance(window, tuple) and window[0] == "tukey":
@@ -399,19 +388,18 @@ def get_window(window, nperseg):
         width = int(alpha * (n - 1) / 2.0)
         for i in range(n):
             if i <= width:
-                w.append(0.5 * (1.0 + _math.cos(_math.pi * (
-                    -1.0 + 2.0 * i / (alpha * (n - 1))))))
+                w.append(0.5 * (1.0 + _math.cos(_math.pi * (-1.0 + 2.0 * i / (alpha * (n - 1))))))
             elif i >= n - width - 1:
-                w.append(0.5 * (1.0 + _math.cos(_math.pi * (
-                    -2.0 / alpha + 1.0 + 2.0 * i / (alpha * (n - 1))))))
+                w.append(0.5 * (1.0 + _math.cos(_math.pi * (-2.0 / alpha + 1.0 + 2.0 * i / (alpha * (n - 1))))))
             else:
                 w.append(1.0)
         return w[:-1]
     if window == "blackman":
-        return [0.42 - 0.5 * _math.cos(2.0 * _math.pi * i / nperseg)
-                + 0.08 * _math.cos(4.0 * _math.pi * i / nperseg)
-                for i in range(nperseg)]
-    raise ValueError("unsupported window %r" % (window,))
+        return [
+            0.42 - 0.5 * _math.cos(2.0 * _math.pi * i / nperseg) + 0.08 * _math.cos(4.0 * _math.pi * i / nperseg)
+            for i in range(nperseg)
+        ]
+    raise ValueError(f"unsupported window {window!r}")
 
 
 def _csd_core(x, y, fs, window, nperseg, noverlap, detrend):
@@ -429,8 +417,8 @@ def _csd_core(x, y, fs, window, nperseg, noverlap, detrend):
     nseg = 0
     start = 0
     while start + nperseg <= n:
-        segx = xs[start:start + nperseg]
-        segy = ys[start:start + nperseg]
+        segx = xs[start : start + nperseg]
+        segy = ys[start : start + nperseg]
         if detrend in ("constant", True):
             mx = _math.fsum(segx) / nperseg
             my = _math.fsum(segy) / nperseg
@@ -452,40 +440,33 @@ def _csd_core(x, y, fs, window, nperseg, noverlap, detrend):
     return _ac.marr(freqs), pxy
 
 
-def welch(x, fs=1.0, window="hann", nperseg=256, noverlap=None,
-          detrend="constant", **kw):
+def welch(x, fs=1.0, window="hann", nperseg=256, noverlap=None, detrend="constant", **kw):
     del kw
-    freqs, pxy = _csd_core(x, x, fs, window, nperseg, noverlap,
-                           detrend)
+    freqs, pxy = _csd_core(x, x, fs, window, nperseg, noverlap, detrend)
     return freqs, _ac.marr([v.real for v in pxy])
 
 
-def csd(x, y, fs=1.0, window="hann", nperseg=256, noverlap=None,
-        detrend="constant", **kw):
+def csd(x, y, fs=1.0, window="hann", nperseg=256, noverlap=None, detrend="constant", **kw):
     del kw
-    freqs, pxy = _csd_core(x, y, fs, window, nperseg, noverlap,
-                           detrend)
+    freqs, pxy = _csd_core(x, y, fs, window, nperseg, noverlap, detrend)
     from . import _array_core as _ac2
+
     return freqs, _ac2.carr(pxy)
 
 
-def coherence(x, y, fs=1.0, window="hann", nperseg=256,
-              noverlap=None, **kw):
+def coherence(x, y, fs=1.0, window="hann", nperseg=256, noverlap=None, **kw):
     del kw
     f1, pxx = welch(x, fs, window, nperseg, noverlap)
     _, pyy = welch(y, fs, window, nperseg, noverlap)
     _, pxy = csd(x, y, fs, window, nperseg, noverlap)
-    cxy = [abs(pxy.tolist()[k]) ** 2
-           / max(pxx.tolist()[k] * pyy.tolist()[k], 1e-300)
-           for k in range(len(f1))]
+    cxy = [abs(pxy.tolist()[k]) ** 2 / max(pxx.tolist()[k] * pyy.tolist()[k], 1e-300) for k in range(len(f1))]
     return f1, _ac.marr(cxy)
 
 
 def periodogram(x, fs=1.0, window="boxcar", **kw):
     del kw
     xs = list(_ac.asarray(x)._flat())
-    return welch(xs, fs=fs, window=window, nperseg=len(xs),
-                 noverlap=0)
+    return welch(xs, fs=fs, window=window, nperseg=len(xs), noverlap=0)
 
 
 def stft(x, fs=1.0, window="hann", nperseg=256, noverlap=None, **kw):
@@ -503,21 +484,18 @@ def stft(x, fs=1.0, window="hann", nperseg=256, noverlap=None, **kw):
     times = []
     start = 0
     while start + nperseg <= n:
-        seg = [v * w for v, w in
-               zip(xs[start:start + nperseg], win)]
+        seg = [v * w for v, w in zip(xs[start : start + nperseg], win)]
         cols.append([v * scale for v in _ac.fft.rfft(seg).tolist()])
         times.append((start + nperseg / 2.0) / fs)
         start += step
     freqs = _ac.marr([k * fs / nperseg for k in range(nfreq)])
-    z = [[cols[t][k] for t in range(len(cols))]
-         for k in range(nfreq)]
+    z = [[cols[t][k] for t in range(len(cols))] for k in range(nfreq)]
     # a complex 2-D array (freq x time), as scipy returns -- a nested
     # list had no masking, .copy() or elementwise arithmetic
     return freqs, _ac.marr(times), _ac.carr(z)
 
 
-def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256,
-                noverlap=None, **kw):
+def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256, noverlap=None, **kw):
     del kw
     xs = list(_ac.asarray(x)._flat())
     n = len(xs)
@@ -532,7 +510,7 @@ def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256,
     times = []
     start = 0
     while start + nperseg <= n:
-        seg = xs[start:start + nperseg]
+        seg = xs[start : start + nperseg]
         m = _math.fsum(seg) / nperseg
         seg = [(v - m) * w for v, w in zip(seg, win)]
         fx = _ac.fft.rfft(seg).tolist()
@@ -543,8 +521,7 @@ def spectrogram(x, fs=1.0, window=("tukey", 0.25), nperseg=256,
         times.append((start + nperseg / 2.0) / fs)
         start += step
     freqs = _ac.marr([k * fs / nperseg for k in range(nfreq)])
-    sxx = [[cols[t][k] for t in range(len(cols))]
-           for k in range(nfreq)]
+    sxx = [[cols[t][k] for t in range(len(cols))] for k in range(nfreq)]
     return freqs, _ac.marr(times), _ac.marr(sxx)
 
 
@@ -564,6 +541,7 @@ def hilbert(x):
             h[k] = 2.0
     Y = [X[k] * h[k] for k in range(n)]
     from . import _array_core as _ac2
+
     return _ac2.carr(_ac.fft.ifft(Y).tolist())
 
 
@@ -582,12 +560,12 @@ def fftconvolve(a, b, mode="full"):
         return _ac.marr(full)
     if mode == "same":
         start = (len(bv) - 1) // 2
-        return _ac.marr(full[start:start + len(av)])
+        return _ac.marr(full[start : start + len(av)])
     if mode == "valid":
         lo = min(len(av), len(bv)) - 1
         hi = max(len(av), len(bv))
         return _ac.marr(full[lo:hi])
-    raise ValueError("unsupported mode %r" % mode)
+    raise ValueError(f"unsupported mode {mode!r}")
 
 
 def find_peaks(x, height=None, distance=None, prominence=None, **kw):
@@ -609,16 +587,13 @@ def find_peaks(x, height=None, distance=None, prominence=None, **kw):
         i += 1
     props = {}
     if height is not None:
-        hmin = height[0] if isinstance(height, (tuple, list)) \
-            else float(height)
+        hmin = height[0] if isinstance(height, (tuple, list)) else float(height)
         peaks = [p for p in peaks if xs[p] >= hmin]
     if prominence is not None:
-        pmin = prominence[0] if isinstance(prominence, (tuple, list)) \
-            else float(prominence)
+        pmin = prominence[0] if isinstance(prominence, (tuple, list)) else float(prominence)
         kept = []
         proms = []
         for p in peaks:
-            lo = p
             left_min = xs[p]
             for k in range(p - 1, -1, -1):
                 if xs[k] > xs[p]:
@@ -637,15 +612,13 @@ def find_peaks(x, height=None, distance=None, prominence=None, **kw):
         props["prominences"] = _ac.marr(proms)
     if distance is not None:
         dmin = int(distance)
-        order = sorted(range(len(peaks)),
-                       key=lambda k: -xs[peaks[k]])
+        order = sorted(range(len(peaks)), key=lambda k: -xs[peaks[k]])
         keep = [True] * len(peaks)
         for oi in order:
             if not keep[oi]:
                 continue
             for oj in range(len(peaks)):
-                if oj != oi and keep[oj] \
-                        and abs(peaks[oj] - peaks[oi]) < dmin:
+                if oj != oi and keep[oj] and abs(peaks[oj] - peaks[oi]) < dmin:
                     keep[oj] = False
         peaks = [p for p, k in zip(peaks, keep) if k]
     props["peak_heights"] = _ac.marr([xs[p] for p in peaks])
@@ -663,16 +636,13 @@ def savgol_filter(x, window_length, polyorder, **kw):
     # design matrix on offsets -half..half
     off = list(range(-half, half + 1))
     A = [[float(o) ** j for j in range(polyorder + 1)] for o in off]
-    AtA = [[_math.fsum(A[i][a] * A[i][b] for i in range(wl))
-            for b in range(polyorder + 1)]
-           for a in range(polyorder + 1)]
+    AtA = [
+        [_math.fsum(A[i][a] * A[i][b] for i in range(wl)) for b in range(polyorder + 1)] for a in range(polyorder + 1)
+    ]
     # solve AtA c = At e_row for the smoothing (0th derivative) weights
-    At0 = [[A[i][a] for i in range(wl)]
-           for a in range(polyorder + 1)]
+    At0 = [[A[i][a] for i in range(wl)] for a in range(polyorder + 1)]
     inv = _ac.linalg.inv(_ac.marr(AtA)).tolist()
-    w = [_math.fsum(inv[0][a] * At0[a][i]
-                    for a in range(polyorder + 1))
-         for i in range(wl)]
+    w = [_math.fsum(inv[0][a] * At0[a][i] for a in range(polyorder + 1)) for i in range(wl)]
     n = len(xs)
     out = []
     for i in range(n):
@@ -717,17 +687,29 @@ def detrend(x, type="linear"):
     stt = _math.fsum((i - tbar) ** 2 for i in range(n))
     sxt = _math.fsum((i - tbar) * (xs[i] - xbar) for i in range(n))
     slope = sxt / stt
-    return _ac.marr([xs[i] - (xbar + slope * (i - tbar))
-                     for i in range(n)])
+    return _ac.marr([xs[i] - (xbar + slope * (i - tbar)) for i in range(n)])
 
 
-for _n in ("welch", "csd", "coherence", "periodogram", "stft",
-           "spectrogram", "hilbert", "fftconvolve", "find_peaks",
-           "savgol_filter", "medfilt", "detrend", "get_window"):
+for _n in (
+    "welch",
+    "csd",
+    "coherence",
+    "periodogram",
+    "stft",
+    "spectrogram",
+    "hilbert",
+    "fftconvolve",
+    "find_peaks",
+    "savgol_filter",
+    "medfilt",
+    "detrend",
+    "get_window",
+):
     setattr(signal, _n, staticmethod(globals()[_n]))
 
 
 # ------------------------------------------------------- design tail
+
 
 def _cheb1_analog_zpk(n, rp):
     eps = _math.sqrt(10.0 ** (0.1 * rp) - 1.0)
@@ -735,8 +717,7 @@ def _cheb1_analog_zpk(n, rp):
     p = []
     for k in range(n):
         theta = _math.pi * (2.0 * k + 1.0) / (2.0 * n)
-        p.append(complex(-_math.sinh(mu) * _math.sin(theta),
-                         _math.cosh(mu) * _math.cos(theta)))
+        p.append(complex(-_math.sinh(mu) * _math.sin(theta), _math.cosh(mu) * _math.cos(theta)))
     kgain = 1.0
     prod = complex(1.0)
     for pi in p:
@@ -755,10 +736,9 @@ def _cheb2_analog_zpk(n, rs):
     for k in range(n):
         theta = _math.pi * (2.0 * k + 1.0) / (2.0 * n)
         # chebyshev-1 pole, inverted
-        p1 = complex(-_math.sinh(mu) * _math.sin(theta),
-                     _math.cosh(mu) * _math.cos(theta))
+        p1 = complex(-_math.sinh(mu) * _math.sin(theta), _math.cosh(mu) * _math.cos(theta))
         p.append(1.0 / p1)
-        s = _math.sin(theta)
+        _math.sin(theta)
         if abs(_math.cos(theta)) > 1e-15:
             z.append(complex(0.0, 1.0 / _math.cos(theta)))
     # pure imaginary zeros come in conjugate pairs; odd n drops one
@@ -834,18 +814,15 @@ def iirnotch(w0, Q, fs=2.0):
 
 def firwin(numtaps, cutoff, window="hamming", pass_zero=True, fs=None):
     if fs is not None:
-        if isinstance(cutoff, (list, tuple)):
-            cutoff = [2.0 * c / fs for c in cutoff]
-        else:
-            cutoff = 2.0 * float(cutoff) / fs
+        cutoff = [2.0 * c / fs for c in cutoff] if isinstance(cutoff, (list, tuple)) else 2.0 * float(cutoff) / fs
     n = int(numtaps)
     m = (n - 1) / 2.0
     if not isinstance(cutoff, (list, tuple)):
         cutoff = [float(cutoff)]
 
     def sinc(x):
-        return 1.0 if x == 0.0 else _math.sin(_math.pi * x) / (
-            _math.pi * x)
+        return 1.0 if x == 0.0 else _math.sin(_math.pi * x) / (_math.pi * x)
+
     # ideal impulse response (lowpass or bandpass sum)
     h = [0.0] * n
     bands = []
@@ -861,9 +838,11 @@ def firwin(numtaps, cutoff, window="hamming", pass_zero=True, fs=None):
         for i in range(n):
             x = i - m
             h[i] += hi * sinc(hi * x) - lo * sinc(lo * x)
-    win = get_window(window, n) if window != "hamming" else [
-        0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / (n - 1))
-        for i in range(n)]
+    win = (
+        get_window(window, n)
+        if window != "hamming"
+        else [0.54 - 0.46 * _math.cos(2.0 * _math.pi * i / (n - 1)) for i in range(n)]
+    )
     h = [h[i] * win[i] for i in range(n)]
     # normalize DC gain to 1 for pass_zero
     if pass_zero:
@@ -874,9 +853,7 @@ def firwin(numtaps, cutoff, window="hamming", pass_zero=True, fs=None):
 
 def freqz(b, a=1, worN=512, fs=None):
     bv = [float(v) for v in _ac.asarray(b)._flat()]
-    av = [float(v) for v in (_ac.asarray(a)._flat()
-                             if not isinstance(a, (int, float))
-                             else [float(a)])]
+    av = [float(v) for v in (_ac.asarray(a)._flat() if not isinstance(a, (int, float)) else [float(a)])]
     if isinstance(worN, int):
         ws = [_math.pi * k / worN for k in range(worN)]
     else:
@@ -884,6 +861,7 @@ def freqz(b, a=1, worN=512, fs=None):
         if fs is not None:
             ws = [2.0 * _math.pi * v / fs for v in ws]
     from . import _array_core as _ac2
+
     h = []
     for w in ws:
         zi = complex(_math.cos(-w), _math.sin(-w))
@@ -898,8 +876,7 @@ def freqz(b, a=1, worN=512, fs=None):
             den += c * zp
             zp *= zi
         h.append(num / den)
-    wout = ws if fs is None else [v * fs / (2.0 * _math.pi)
-                                  for v in ws]
+    wout = ws if fs is None else [v * fs / (2.0 * _math.pi) for v in ws]
     return _ac.marr(wout), _ac2.carr(h)
 
 
@@ -930,8 +907,7 @@ def group_delay(system, w=512, fs=None):
         elif i == len(wl) - 1:
             gd.append(-(ph[-1] - ph[-2]) / (wl[-1] - wl[-2]))
         else:
-            gd.append(-(ph[i + 1] - ph[i - 1])
-                      / (wl[i + 1] - wl[i - 1]))
+            gd.append(-(ph[i + 1] - ph[i - 1]) / (wl[i + 1] - wl[i - 1]))
     return _ac.marr(wl), _ac.marr(gd)
 
 
@@ -939,6 +915,7 @@ def bilinear(b, a, fs=1.0):
     """Bilinear transform of an analog (b, a) to digital."""
     bv = [float(v) for v in _ac.asarray(b)._flat()]
     av = [float(v) for v in _ac.asarray(a)._flat()]
+
     # roots via companion matrix eig? ponytail: polynomial orders in
     # morie call sites are <= 4 — use numpy-free Durand-Kerner
     def roots(c):
@@ -953,7 +930,7 @@ def bilinear(b, a, fs=1.0):
                 num = complex(1.0)
                 for j in range(n):
                     if j != i:
-                        num *= (rs[i] - rs[j])
+                        num *= rs[i] - rs[j]
                 pv = complex(0.0)
                 for cf in c:
                     pv = pv * rs[i] + cf
@@ -963,6 +940,7 @@ def bilinear(b, a, fs=1.0):
                 break
             rs = new
         return rs
+
     z = roots(bv) if len(bv) > 1 else []
     p = roots(av) if len(av) > 1 else []
     k = bv[0] / av[0]
@@ -1023,12 +1001,9 @@ def convolve2d(a, b, mode="full", boundary="fill", fillvalue=0.0):
     if mode == "same":
         r0 = (mb - 1) // 2
         c0 = (nb - 1) // 2
-        return _ac.marr([[out[i + r0][j + c0] for j in range(na)]
-                         for i in range(ma)])
+        return _ac.marr([[out[i + r0][j + c0] for j in range(na)] for i in range(ma)])
     if mode == "valid":
-        return _ac.marr([[out[i][j]
-                          for j in range(nb - 1, na)]
-                         for i in range(mb - 1, ma)])
+        return _ac.marr([[out[i][j] for j in range(nb - 1, na)] for i in range(mb - 1, ma)])
     raise ValueError(mode)
 
 
@@ -1040,8 +1015,7 @@ def dpss(M, NW, Kmax=None, sym=True, norm=None, return_ratios=False):
     del sym, norm
     M = int(M)
     W = float(NW) / M
-    diag = [((M - 1.0 - 2.0 * i) / 2.0) ** 2
-            * _math.cos(2.0 * _math.pi * W) for i in range(M)]
+    diag = [((M - 1.0 - 2.0 * i) / 2.0) ** 2 * _math.cos(2.0 * _math.pi * W) for i in range(M)]
     off = [i * (M - i) / 2.0 for i in range(1, M)]
     k = int(Kmax) if Kmax is not None else 1
     out = []
@@ -1111,7 +1085,7 @@ def _tri_kth_largest(diag, off, k):
     hi = max(diag[i] + rad[i] for i in range(n))
     for _ in range(200):
         mid = 0.5 * (lo + hi)
-        if mid == lo or mid == hi:
+        if mid in (lo, hi):
             break
         if _tri_count_greater(diag, off, mid) > k:
             lo = mid
@@ -1163,14 +1137,17 @@ def _general_cosine(M, a, sym=True):
     if M == 1:
         return _ac.marr([1.0])
     L = M if sym else M + 1
-    w = [_math.fsum((-1) ** k * c * _math.cos(2.0 * _math.pi * k * i / (L - 1))
-                    for k, c in enumerate(a)) for i in range(L)]
+    w = [
+        _math.fsum((-1) ** k * c * _math.cos(2.0 * _math.pi * k * i / (L - 1)) for k, c in enumerate(a))
+        for i in range(L)
+    ]
     return _ac.marr(w[:M])
 
 
 class windows:
     """scipy.signal.windows: symmetric by default (sym=True), unlike
     get_window, which returns the periodic form for spectral use."""
+
     dpss = staticmethod(dpss)
 
     @staticmethod
@@ -1199,25 +1176,35 @@ class windows:
         return _ac.marr(w[:M])
 
 
-def iirfilter(N, Wn, rp=None, rs=None, btype="low", ftype="butter",
-              output="ba", fs=None):
+def iirfilter(N, Wn, rp=None, rs=None, btype="low", ftype="butter", output="ba", fs=None):
     if ftype == "butter":
         return butter(N, Wn, btype=btype, output=output, fs=fs)
     if ftype in ("cheby1", "chebyshev1"):
         return cheby1(N, rp, Wn, btype=btype, output=output, fs=fs)
     if ftype in ("cheby2", "chebyshev2"):
         return cheby2(N, rs, Wn, btype=btype, output=output, fs=fs)
-    raise NotImplementedError("iirfilter ftype %r" % ftype)
+    raise NotImplementedError(f"iirfilter ftype {ftype!r}")
 
 
-for _n in ("cheby1", "cheby2", "iirnotch", "firwin", "freqz",
-           "group_delay", "bilinear", "resample_poly", "convolve2d",
-           "dpss", "iirfilter"):
+for _n in (
+    "cheby1",
+    "cheby2",
+    "iirnotch",
+    "firwin",
+    "freqz",
+    "group_delay",
+    "bilinear",
+    "resample_poly",
+    "convolve2d",
+    "dpss",
+    "iirfilter",
+):
     setattr(signal, _n, staticmethod(globals()[_n]))
 signal.windows = windows
 
 
 # ------------------------------------------------------- elliptic filter
+
 
 def _landen_seq(k, m=12):
     v = []
@@ -1250,8 +1237,7 @@ def _asne(w, k):
     vs = _landen_seq(k)
     kp = k
     for v in vs:
-        w = 2.0 * w / ((1.0 + v) * (1.0 + _cmath.sqrt(
-            1.0 - kp * kp * w * w)))
+        w = 2.0 * w / ((1.0 + v) * (1.0 + _cmath.sqrt(1.0 - kp * kp * w * w)))
         kp = v
     return 2.0 / _math.pi * _cmath.asin(w)
 

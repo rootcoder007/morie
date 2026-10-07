@@ -1,7 +1,6 @@
 """Tests for hmcart.geron_cart_algorithm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmcart import geron_cart_algorithm
 
 

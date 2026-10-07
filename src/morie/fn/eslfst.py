@@ -30,10 +30,7 @@ __all__ = ["esl_f_test"]
 def _rss(X, y, cols):
     n = y.shape[0]
     cols = list(cols)
-    if cols:
-        D = np.column_stack([np.ones(n)] + [X[:, int(j)] for j in cols])
-    else:
-        D = np.ones((n, 1))
+    D = np.column_stack([np.ones(n)] + [X[:, int(j)] for j in cols]) if cols else np.ones((n, 1))
     beta, *_ = np.linalg.lstsq(D, y, rcond=None)
     r = y - D @ beta
     return float(r @ r), len(cols)

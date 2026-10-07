@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.2: AlignScore's alignment function f: (a, b) -> y."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["kamath_ch6_alignment_function"]
@@ -38,32 +37,33 @@ def kamath_ch6_alignment_function(a, b, y, f=None):
     0.25
     """
     if f is None:
-        raise ValueError(
-            "Eq 6.2 defines the SHAPE of the alignment function; supply a "
-            "trained f as f=(a, b) -> label.")
+        raise ValueError("Eq 6.2 defines the SHAPE of the alignment function; supply a trained f as f=(a, b) -> label.")
     if not callable(f):
         raise ValueError("f must be callable.")
     if y not in SPACES and y != "reg":
-        raise ValueError(
-            f"unknown output space {y!r}; use 'bin', '3way' or 'reg'.")
+        raise ValueError(f"unknown output space {y!r}; use 'bin', '3way' or 'reg'.")
     out = f(a, b)
     if y == "reg":
         v = float(out)
         if not (0.0 <= v <= 1.0):
-            raise ValueError(
-                f"the regression head returned {v:.6g}; y_reg lies in "
-                "[0, 1].")
+            raise ValueError(f"the regression head returned {v:.6g}; y_reg lies in [0, 1].")
         label, est = None, v
     else:
         if out not in SPACES[y]:
-            raise ValueError(
-                f"{out!r} is not in the {y} label space {SPACES[y]!r}.")
+            raise ValueError(f"{out!r} is not in the {y} label space {SPACES[y]!r}.")
         label, est = out, 1.0 if out == "ALIGNED" else 0.0
-    return RichResult(payload={
-        "estimate": est, "label": label, "space": y,
-        "labels": list(SPACES[y]) if y in SPACES else None,
-        "a": a, "b": b, "n": 2,
-        "method": "AlignScore alignment function (Kamath Eq 6.2)"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "label": label,
+            "space": y,
+            "labels": list(SPACES[y]) if y in SPACES else None,
+            "a": a,
+            "b": b,
+            "n": 2,
+            "method": "AlignScore alignment function (Kamath Eq 6.2)",
+        }
+    )
 
 
 def cheatsheet():

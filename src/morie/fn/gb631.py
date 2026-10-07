@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ks2', 'gibbons_ks2']
+__all__ = ["ks2", "gibbons_ks2"]
 
 
 def _ks2count(m, n, d, onesided=False):

@@ -1,7 +1,6 @@
 """Tests for bnscom.bound_compliance."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bnscom import bound_compliance
 
 
@@ -12,18 +11,20 @@ def test_bnscom_basic():
     # directly from the formulas stated in the docstring.
 
     # Rows: (y, D, Z)
-    data = np.array([
-        [1.0, 1.0, 1.0],
-        [2.0, 1.0, 1.0],
-        [3.0, 1.0, 1.0],
-        [4.0, 1.0, 1.0],
-        [5.0, 0.0, 1.0],
-        [6.0, 0.0, 1.0],
-        [0.0, 1.0, 0.0],
-        [1.5, 0.0, 0.0],
-        [2.5, 0.0, 0.0],
-        [3.5, 0.0, 0.0],
-    ])
+    data = np.array(
+        [
+            [1.0, 1.0, 1.0],
+            [2.0, 1.0, 1.0],
+            [3.0, 1.0, 1.0],
+            [4.0, 1.0, 1.0],
+            [5.0, 0.0, 1.0],
+            [6.0, 0.0, 1.0],
+            [0.0, 1.0, 0.0],
+            [1.5, 0.0, 0.0],
+            [2.5, 0.0, 0.0],
+            [3.5, 0.0, 0.0],
+        ]
+    )
 
     y = data[:, 0]
     D = data[:, 1]
@@ -37,11 +38,11 @@ def test_bnscom_basic():
     # First-stage shares
     n_z1 = 6.0
     n_z0 = 4.0
-    pd1 = 4.0 / n_z1            # P(D=1 | Z=1)
-    pd0 = 1.0 / n_z0            # P(D=1 | Z=0)
-    pi_c = pd1 - pd0            # complier share
-    pi_a = pd0                  # always-taker share
-    pi_n = 1.0 - pd1            # never-taker share
+    pd1 = 4.0 / n_z1  # P(D=1 | Z=1)
+    pd0 = 1.0 / n_z0  # P(D=1 | Z=0)
+    pi_c = pd1 - pd0  # complier share
+    pi_a = pd0  # always-taker share
+    pi_n = 1.0 - pd1  # never-taker share
 
     # E[y D | Z=z] and E[y (1-D) | Z=z]
     # Z=1: D=1 for rows 0..3 (y sum = 10), D=0 for rows 4,5 (y sum = 11)
@@ -55,8 +56,8 @@ def test_bnscom_basic():
     e0c = (e_y1mD_z0 - e_y1mD_z1) / pi_c
     late = e1c - e0c
 
-    y0 = 0.0   # min(y)
-    y1 = 6.0   # max(y)
+    y0 = 0.0  # min(y)
+    y1 = 6.0  # max(y)
 
     rest = 1.0 - pi_c
     lo = pi_c * late + rest * (y0 - y1)
@@ -65,8 +66,7 @@ def test_bnscom_basic():
     # The result is a dict-like RichResult; check documented keys/values.
     assert isinstance(result, dict)
 
-    for key in ("lower", "upper", "width", "estimate", "late",
-                "pi_c", "pi_a", "pi_n", "e1c", "e0c", "n"):
+    for key in ("lower", "upper", "width", "estimate", "late", "pi_c", "pi_a", "pi_n", "e1c", "e0c", "n"):
         assert key in result
 
     assert result["n"] == n

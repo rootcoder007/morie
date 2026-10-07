@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """The defining form of the Kruskal-Wallis statistic -- eq. (10.4.2)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['kwalt', 'gibbons_kw_alt_form']
+__all__ = ["kwalt", "gibbons_kw_alt_form"]
 
 
 def kwalt(rank_sums, ns):
@@ -49,12 +47,8 @@ def kwalt(rank_sums, ns):
     if any(v < 1 for v in nv):
         raise ValueError("sample sizes must be at least 1.")
     nn = sum(nv)
-    h1 = 12.0 / (nn * (nn + 1.0)) * sum(
-        (rs[i] - nv[i] * (nn + 1.0) / 2.0) ** 2 / nv[i] for i in range(k)
-    )
-    h2 = 12.0 / (nn * (nn + 1.0)) * sum(
-        rs[i] ** 2 / nv[i] for i in range(k)
-    ) - 3.0 * (nn + 1.0)
+    h1 = 12.0 / (nn * (nn + 1.0)) * sum((rs[i] - nv[i] * (nn + 1.0) / 2.0) ** 2 / nv[i] for i in range(k))
+    h2 = 12.0 / (nn * (nn + 1.0)) * sum(rs[i] ** 2 / nv[i] for i in range(k)) - 3.0 * (nn + 1.0)
     return RichResult(
         payload={
             "statistic": float(h1),

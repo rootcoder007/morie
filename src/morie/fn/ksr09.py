@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Z-estimator for a location parameter."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -75,10 +73,17 @@ def zestim(x, kind="huber", k=1.345, iters=200):
     lo = min(x)
     hi = max(x)
     if lo == hi:
-        return RichResult(payload={
-            "estimate": lo, "psi_at_estimate": 0.0, "lower": lo,
-            "upper": hi, "iters": 0.0, "n": float(n),
-            "method": "Z-estimator, Kosorok Section 2.2.5"})
+        return RichResult(
+            payload={
+                "estimate": lo,
+                "psi_at_estimate": 0.0,
+                "lower": lo,
+                "upper": hi,
+                "iters": 0.0,
+                "n": float(n),
+                "method": "Z-estimator, Kosorok Section 2.2.5",
+            }
+        )
     a = lo
     b = hi
     it = int(iters)
@@ -89,10 +94,17 @@ def zestim(x, kind="huber", k=1.345, iters=200):
         else:
             a = m
     th = 0.5 * (a + b)
-    return RichResult(payload={
-        "estimate": th, "psi_at_estimate": Psi(th), "lower": a, "upper": b,
-        "iters": float(it), "n": float(n),
-        "method": "Z-estimator, Kosorok Section 2.2.5"})
+    return RichResult(
+        payload={
+            "estimate": th,
+            "psi_at_estimate": Psi(th),
+            "lower": a,
+            "upper": b,
+            "iters": float(it),
+            "n": float(n),
+            "method": "Z-estimator, Kosorok Section 2.2.5",
+        }
+    )
 
 
 kosorok_z_estimator = zestim

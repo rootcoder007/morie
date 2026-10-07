@@ -12,8 +12,7 @@ from morie.fn.meteor import meteor, meteor_score
 
 
 def test_meteor_paper_example():
-    res = meteor("the president spoke to the audience",
-                 "the president then spoke to the audience")
+    res = meteor("the president spoke to the audience", "the president then spoke to the audience")
     assert res["matches"] == 6
     assert res["chunks"] == 2
     p, r = 1.0, 6.0 / 7.0

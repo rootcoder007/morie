@@ -1,7 +1,6 @@
 """Tests for aglnvr.alphazero_loss_var."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aglnvr import alphazero_loss_var
 
 

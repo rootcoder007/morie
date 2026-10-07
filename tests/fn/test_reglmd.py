@@ -2,7 +2,6 @@
 
 import pytest
 
-from morie.fn import _array_core as np
 from morie.fn.reglmd import regression_estimator
 
 Y = [4.1, 5.0, 3.2, 6.8, 5.5, 4.4, 7.1, 6.0]

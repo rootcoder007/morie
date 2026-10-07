@@ -66,14 +66,18 @@ def wasserman_dkw_cb(data, alpha):
     ecdf = np.arange(1, n + 1) / float(n)
     lower = np.maximum(ecdf - eps, 0.0)
     upper = np.minimum(ecdf + eps, 1.0)
-    return RichResult(payload={
-        "estimate": float(eps),
-        "lower": [float(v) for v in lower],
-        "upper": [float(v) for v in upper],
-        "ecdf": [float(v) for v in ecdf],
-        "x_sorted": [float(v) for v in data],
-        "alpha": alpha, "n": int(n),
-        "method": "DKW band F_n +/- sqrt(log(2/alpha)/(2n))"})
+    return RichResult(
+        payload={
+            "estimate": float(eps),
+            "lower": [float(v) for v in lower],
+            "upper": [float(v) for v in upper],
+            "ecdf": [float(v) for v in ecdf],
+            "x_sorted": [float(v) for v in data],
+            "alpha": alpha,
+            "n": int(n),
+            "method": "DKW band F_n +/- sqrt(log(2/alpha)/(2n))",
+        }
+    )
 
 
 def cheatsheet():

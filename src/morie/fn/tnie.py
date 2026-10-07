@@ -49,13 +49,15 @@ def total_natural_indirect_effect(X, M, Y, C=None, a=1.0, astar=0.0):
     beta, theta, cbar, n = _fit(X, M, Y, C, "total_natural_indirect_effect")
     eff = _effects(beta, theta, cbar, float(a), float(astar))
     out = dict(eff)
-    out.update({
-        "estimate": eff["tnie"],
-        "a": float(a),
-        "astar": float(astar),
-        "n": n,
-        "method": "Total natural indirect effect",
-    })
+    out.update(
+        {
+            "estimate": eff["tnie"],
+            "a": float(a),
+            "astar": float(astar),
+            "n": n,
+            "method": "Total natural indirect effect",
+        }
+    )
     return RichResult(payload=out)
 
 

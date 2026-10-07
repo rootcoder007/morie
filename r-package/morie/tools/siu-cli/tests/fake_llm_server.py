@@ -1,4 +1,5 @@
 """Tiny fake model server speaking the Ollama and OpenAI-compatible chat APIs (test fixture)."""
+
 import json
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -11,8 +12,10 @@ def answer(prompt):
         return "OK"
     if "You are the AUDITOR" in prompt:
         return '{"police_service": "Barrie Police Service", "number_of_subject_officers": 1}'
-    return ('{"police_service": {"value": "Barrie", "quote": "Barrie Police", "confidence": "high"},'
-            ' "number_of_subject_officers": {"value": 1, "quote": "SO", "confidence": "high"}}')
+    return (
+        '{"police_service": {"value": "Barrie", "quote": "Barrie Police", "confidence": "high"},'
+        ' "number_of_subject_officers": {"value": 1, "quote": "SO", "confidence": "high"}}'
+    )
 
 
 class H(BaseHTTPRequestHandler):

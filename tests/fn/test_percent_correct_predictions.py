@@ -1,7 +1,5 @@
 """Tests for percent_correct_predictions.percent_correct_predictions."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.percent_correct_predictions import percent_correct_predictions
 
 

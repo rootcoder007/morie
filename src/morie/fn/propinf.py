@@ -100,12 +100,14 @@ _CONTEXTS = ("paired", "as_printed", "none")
 
 # ---------------------------------------------------------------- rng
 
+
 def _rng(seed):
     st = [int(seed) & 0x7FFFFFFF or 1]
 
     def f():
         st[0] = (1103515245 * st[0] + 12345) % (1 << 31)
         return st[0] / float(1 << 31)
+
     return f
 
 
@@ -119,6 +121,7 @@ def _normal(rnd, scale=1.0):
 # A network is a list of layers, each {"W": [[...]], "b": [...]}, with
 # ReLU on the hidden layers and a logistic output.  Small and explicit
 # so that the permutation argument can be checked on it directly.
+
 
 def _relu(v):
     return v if v > 0.0 else 0.0
@@ -137,11 +140,12 @@ def _init_net(n_in, hidden, rnd):
     for t in range(1, len(sizes)):
         fan_in = sizes[t - 1]
         s = math.sqrt(2.0 / fan_in)
-        net.append({
-            "W": [[_normal(rnd, s) for _ in range(fan_in)]
-                  for _ in range(sizes[t])],
-            "b": [0.0] * sizes[t],
-        })
+        net.append(
+            {
+                "W": [[_normal(rnd, s) for _ in range(fan_in)] for _ in range(sizes[t])],
+                "b": [0.0] * sizes[t],
+            }
+        )
     return net
 
 
@@ -151,11 +155,9 @@ def _forward(net, x):
     pre = []
     last = len(net) - 1
     for t, layer in enumerate(net):
-        z = [sum(w * a for w, a in zip(row, acts[-1])) + bias
-             for row, bias in zip(layer["W"], layer["b"])]
+        z = [sum(w * a for w, a in zip(row, acts[-1])) + bias for row, bias in zip(layer["W"], layer["b"])]
         pre.append(z)
-        acts.append([_sigmoid(v) for v in z] if t == last
-                    else [_relu(v) for v in z])
+        acts.append([_sigmoid(v) for v in z] if t == last else [_relu(v) for v in z])
     return acts, pre
 
 
@@ -183,8 +185,7 @@ def _rows(X):
     return out
 
 
-def train_fcnn(X, y, hidden=(8, 4), epochs=40, lr=0.1, batch_size=16,
-               seed=0):
+def train_fcnn(X, y, hidden=(8, 4), epochs=40, lr=0.1, batch_size=16, seed=0):
     """Train a fully connected binary classifier by minibatch SGD.
 
     Cross-entropy loss, ReLU hidden units, logistic output -- the
@@ -209,11 +210,11 @@ def train_fcnn(X, y, hidden=(8, 4), epochs=40, lr=0.1, batch_size=16,
     n = len(rows)
     order = list(range(n))
     for _ in range(int(epochs)):
-        for i in range(n - 1, 0, -1):        # Fisher-Yates on the LCG
+        for i in range(n - 1, 0, -1):  # Fisher-Yates on the LCG
             j = int(rnd() * (i + 1))
             order[i], order[j] = order[j], order[i]
         for start in range(0, n, int(batch_size)):
-            chunk = order[start:start + int(batch_size)]
+            chunk = order[start : start + int(batch_size)]
             gW = [[[0.0] * len(r) for r in L["W"]] for L in net]
             gb = [[0.0] * len(L["b"]) for L in net]
             for idx in chunk:
@@ -233,8 +234,7 @@ def train_fcnn(X, y, hidden=(8, 4), epochs=40, lr=0.1, batch_size=16,
                             wrow = net[t]["W"][i2]
                             for j2 in range(len(a_in)):
                                 nxt[j2] += d * wrow[j2]
-                        delta = [g if pre[t - 1][j2] > 0.0 else 0.0
-                                 for j2, g in enumerate(nxt)]
+                        delta = [g if pre[t - 1][j2] > 0.0 else 0.0 for j2, g in enumerate(nxt)]
             scale = lr / float(len(chunk))
             for t, layer in enumerate(net):
                 for i2, row in enumerate(layer["W"]):
@@ -246,6 +246,7 @@ def train_fcnn(X, y, hidden=(8, 4), epochs=40, lr=0.1, batch_size=16,
 
 
 # ----------------------------------------------- permutation machinery
+
 
 def permute_hidden_layer(net, t, sigma):
     """Reorder the neurons of hidden layer ``t`` by ``sigma``.
@@ -302,9 +303,7 @@ def sorted_representation(net, metric=None):
 
 def set_representation(net):
     """Algorithm 2's input: each layer as a set of ``(weights, bias)``."""
-    return [[list(row) + [bias]
-             for row, bias in zip(layer["W"], layer["b"])]
-            for layer in net]
+    return [[list(row) + [bias] for row, bias in zip(layer["W"], layer["b"])] for layer in net]
 
 
 # --------------------------------------------------- meta-classifiers
@@ -312,15 +311,17 @@ def set_representation(net):
 # Two of them: an ordinary MLP over a flat vector (baseline and
 # sorting), and the DeepSets network of Section 6.2 (set-based).
 
+
 def _mlp_init(sizes, rnd):
     net = []
     for t in range(1, len(sizes)):
         s = math.sqrt(2.0 / sizes[t - 1])
-        net.append({
-            "W": [[_normal(rnd, s) for _ in range(sizes[t - 1])]
-                  for _ in range(sizes[t])],
-            "b": [0.0] * sizes[t],
-        })
+        net.append(
+            {
+                "W": [[_normal(rnd, s) for _ in range(sizes[t - 1])] for _ in range(sizes[t])],
+                "b": [0.0] * sizes[t],
+            }
+        )
     return net
 
 
@@ -328,8 +329,7 @@ def _mlp_forward(net, x, final="relu", hidden_act="relu"):
     acts, pre = [list(x)], []
     last = len(net) - 1
     for t, layer in enumerate(net):
-        z = [sum(w * a for w, a in zip(row, acts[-1])) + bias
-             for row, bias in zip(layer["W"], layer["b"])]
+        z = [sum(w * a for w, a in zip(row, acts[-1])) + bias for row, bias in zip(layer["W"], layer["b"])]
         pre.append(z)
         if t == last and final == "linear":
             acts.append(list(z))
@@ -342,22 +342,18 @@ def _mlp_forward(net, x, final="relu", hidden_act="relu"):
     return acts, pre
 
 
-def _mlp_backward(net, acts, pre, dout, grads, final="relu",
-                  hidden_act="relu"):
+def _mlp_backward(net, acts, pre, dout, grads, final="relu", hidden_act="relu"):
     """Accumulate gradients into ``grads``; return the gradient w.r.t. x."""
     delta = list(dout)
     last = len(net) - 1
     for t in range(last, -1, -1):
         if t == last and final == "tanh":
-            delta = [d * (1.0 - acts[t + 1][i] ** 2)
-                     for i, d in enumerate(delta)]
+            delta = [d * (1.0 - acts[t + 1][i] ** 2) for i, d in enumerate(delta)]
         elif not (t == last and final in ("linear", "sigmoid")):
             if hidden_act == "tanh":
-                delta = [d * (1.0 - acts[t + 1][i] ** 2)
-                         for i, d in enumerate(delta)]
+                delta = [d * (1.0 - acts[t + 1][i] ** 2) for i, d in enumerate(delta)]
             else:
-                delta = [d if pre[t][i] > 0.0 else 0.0
-                         for i, d in enumerate(delta)]
+                delta = [d if pre[t][i] > 0.0 else 0.0 for i, d in enumerate(delta)]
         a_in = acts[t]
         for i, d in enumerate(delta):
             grads[t]["b"][i] += d
@@ -374,8 +370,7 @@ def _mlp_backward(net, acts, pre, dout, grads, final="relu",
 
 
 def _zero_like(net):
-    return [{"W": [[0.0] * len(r) for r in L["W"]], "b": [0.0] * len(L["b"])}
-            for L in net]
+    return [{"W": [[0.0] * len(r) for r in L["W"]], "b": [0.0] * len(L["b"])} for L in net]
 
 
 def _sgd_step(net, grads, lr, scale):
@@ -400,8 +395,7 @@ def _train_vector_meta(feats, labels, hidden, epochs, lr, seed):
         for idx in order:
             acts, pre = _mlp_forward(net, feats[idx], final="sigmoid")
             grads = _zero_like(net)
-            _mlp_backward(net, acts, pre, [acts[-1][0] - labels[idx]],
-                          grads, final="sigmoid")
+            _mlp_backward(net, acts, pre, [acts[-1][0] - labels[idx]], grads, final="sigmoid")
             _sgd_step(net, grads, lr, 1.0)
     return net
 
@@ -410,18 +404,16 @@ def _vector_meta_predict(net, f):
     return _mlp_forward(net, f, final="sigmoid")[0][-1][0]
 
 
-def _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd,
-                   context="paired", edge_hidden=None):
+def _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd, context="paired", edge_hidden=None):
     """One phi per layer (plus, for ``"paired"``, one psi) and a single rho.
 
     ``shapes`` is ``[(n_nodes, n_inputs), ...]`` for the network under
     attack. See :func:`_deepsets_forward` for what ``context`` does.
     """
     if context not in _CONTEXTS:
-        raise ValueError("propinf: context must be one of %s" % (_CONTEXTS,))
+        raise ValueError(f"propinf: context must be one of {_CONTEXTS}")
     phi_hidden = [int(h) for h in phi_hidden]
-    edge_hidden = phi_hidden if edge_hidden is None else \
-        [int(h) for h in edge_hidden]
+    edge_hidden = phi_hidden if edge_hidden is None else [int(h) for h in edge_hidden]
     phis, psis = [], []
     prev_nodes = 0
     for t, (n_nodes, n_in) in enumerate(shapes):
@@ -431,15 +423,21 @@ def _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd,
         elif context == "paired":
             psi = _mlp_init([1 + repr_dim] + edge_hidden + [repr_dim], rnd)
             d_in = 1 + repr_dim
-        else:                                    # "as_printed"
+        else:  # "as_printed"
             d_in = n_in + 1 + prev_nodes * repr_dim
         psis.append(psi)
         phis.append(_mlp_init([d_in] + phi_hidden + [repr_dim], rnd))
         prev_nodes = n_nodes
-    rho = _mlp_init([len(shapes) * repr_dim] + [int(h) for h in rho_hidden] +
-                    [1], rnd)
-    return {"phis": phis, "psis": psis, "rho": rho, "repr_dim": repr_dim,
-            "shapes": shapes, "context": context, "scalers": None}
+    rho = _mlp_init([len(shapes) * repr_dim] + [int(h) for h in rho_hidden] + [1], rnd)
+    return {
+        "phis": phis,
+        "psis": psis,
+        "rho": rho,
+        "repr_dim": repr_dim,
+        "shapes": shapes,
+        "context": context,
+        "scalers": None,
+    }
 
 
 def _layer_scalers(sets_list):
@@ -509,37 +507,33 @@ def _deepsets_forward(model, sets):
             elif ctx == "paired":
                 acc, edges = [0.0] * r, []
                 for j, wij in enumerate(w):
-                    ea, ep = _mlp_forward(psis[t], [wij] + prev_reprs[j],
-                                          final="tanh",
-                                          hidden_act="tanh")
+                    ea, ep = _mlp_forward(psis[t], [wij] + prev_reprs[j], final="tanh", hidden_act="tanh")
                     edges.append((ea, ep))
                     for c in range(r):
                         acc[c] += ea[-1][c]
                 x = [b] + acc
             else:
                 x = list(w) + [b] + [v for nr in prev_reprs for v in nr]
-            acts, pre = _mlp_forward(phis[t], x, final="tanh",
-                                     hidden_act="tanh")
+            acts, pre = _mlp_forward(phis[t], x, final="tanh", hidden_act="tanh")
             node_reprs.append(acts[-1])
             layer_cache.append((acts, pre, len(w), edges))
         caches.append(layer_cache)
         L.append([sum(nr[c] for nr in node_reprs) for c in range(r)])
         prev_reprs = node_reprs
     F = [v for Lt in L for v in Lt]
-    racts, rpre = _mlp_forward(model["rho"], F, final="sigmoid",
-                                hidden_act="tanh")
-    return racts[-1][0], {"caches": caches, "L": L, "F": F,
-                          "racts": racts, "rpre": rpre}
+    racts, rpre = _mlp_forward(model["rho"], F, final="sigmoid", hidden_act="tanh")
+    return racts[-1][0], {"caches": caches, "L": L, "F": F, "racts": racts, "rpre": rpre}
 
 
 def _deepsets_backward(model, sets, cache, dout, grads):
     r = model["repr_dim"]
     ctx = model["context"]
-    dF = _mlp_backward(model["rho"], cache["racts"], cache["rpre"], [dout],
-                       grads["rho"], final="sigmoid", hidden_act="tanh")
+    dF = _mlp_backward(
+        model["rho"], cache["racts"], cache["rpre"], [dout], grads["rho"], final="sigmoid", hidden_act="tanh"
+    )
     # split dF back into one gradient per layer sum L_t; every node of
     # layer t received the same dL_t, because the sum is unweighted
-    dL = [dF[t * r:(t + 1) * r] for t in range(len(sets))]
+    dL = [dF[t * r : (t + 1) * r] for t in range(len(sets))]
     # gradients arriving at layer t's node representations from layer t+1
     d_from_next = [None] * len(sets)
     for t in range(len(sets) - 1, -1, -1):
@@ -552,21 +546,19 @@ def _deepsets_backward(model, sets, cache, dout, grads):
             if extra is not None:
                 for c in range(r):
                     dnode[c] += extra[i][c]
-            dx = _mlp_backward(model["phis"][t], acts, pre, dnode,
-                               grads["phis"][t], final="tanh",
-                               hidden_act="tanh")
+            dx = _mlp_backward(model["phis"][t], acts, pre, dnode, grads["phis"][t], final="tanh", hidden_act="tanh")
             if t == 0 or ctx == "none":
                 continue
             if ctx == "paired":
-                dacc = dx[1:1 + r]
+                dacc = dx[1 : 1 + r]
                 for j, (ea, ep) in enumerate(edges):
-                    de = _mlp_backward(model["psis"][t], ea, ep, dacc,
-                                       grads["psis"][t], final="tanh",
-                                       hidden_act="tanh")
+                    de = _mlp_backward(
+                        model["psis"][t], ea, ep, dacc, grads["psis"][t], final="tanh", hidden_act="tanh"
+                    )
                     for c in range(r):
                         d_prev[j][c] += de[1 + c]
             else:
-                tail = dx[n_w + 1:]
+                tail = dx[n_w + 1 :]
                 for j in range(n_prev):
                     for c in range(r):
                         d_prev[j][c] += tail[j * r + c]
@@ -575,18 +567,17 @@ def _deepsets_backward(model, sets, cache, dout, grads):
 
 
 def _zero_grads(model):
-    return {"phis": [_zero_like(p) for p in model["phis"]],
-            "psis": [None if p is None else _zero_like(p)
-                     for p in model["psis"]],
-            "rho": _zero_like(model["rho"])}
+    return {
+        "phis": [_zero_like(p) for p in model["phis"]],
+        "psis": [None if p is None else _zero_like(p) for p in model["psis"]],
+        "rho": _zero_like(model["rho"]),
+    }
 
 
-def _train_set_meta(sets_list, labels, phi_hidden, repr_dim, rho_hidden,
-                    epochs, lr, seed, context="paired"):
+def _train_set_meta(sets_list, labels, phi_hidden, repr_dim, rho_hidden, epochs, lr, seed, context="paired"):
     rnd = _rng(seed + 11)
     shapes = [(len(layer), len(layer[0]) - 1) for layer in sets_list[0]]
-    model = _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd,
-                           context=context)
+    model = _deepsets_init(shapes, phi_hidden, repr_dim, rho_hidden, rnd, context=context)
     model["scalers"] = _layer_scalers(sets_list)
     n = len(sets_list)
     order = list(range(n))
@@ -597,8 +588,7 @@ def _train_set_meta(sets_list, labels, phi_hidden, repr_dim, rho_hidden,
         for idx in order:
             out, cache = _deepsets_forward(model, sets_list[idx])
             grads = _zero_grads(model)
-            _deepsets_backward(model, sets_list[idx], cache,
-                               out - labels[idx], grads)
+            _deepsets_backward(model, sets_list[idx], cache, out - labels[idx], grads)
             for p, g in zip(model["phis"], grads["phis"]):
                 _sgd_step(p, g, lr, 1.0)
             for p, g in zip(model["psis"], grads["psis"]):
@@ -609,6 +599,7 @@ def _train_set_meta(sets_list, labels, phi_hidden, repr_dim, rho_hidden,
 
 
 # ------------------------------------------------------------- driver
+
 
 def _standardise(feats):
     d = len(feats[0])
@@ -625,11 +616,21 @@ def _apply_standardise(f, mu, sd):
     return [(f[j] - mu[j]) / sd[j] for j in range(len(f))]
 
 
-def property_inference(shadow_models, shadow_labels, target_models=None,
-                       target_labels=None, representation="set",
-                       meta_hidden=(16,), phi_hidden=(8,), repr_dim=4,
-                       rho_hidden=(8,), context="paired", epochs=30, lr=0.05,
-                       seed=0):
+def property_inference(
+    shadow_models,
+    shadow_labels,
+    target_models=None,
+    target_labels=None,
+    representation="set",
+    meta_hidden=(16,),
+    phi_hidden=(8,),
+    repr_dim=4,
+    rho_hidden=(8,),
+    context="paired",
+    epochs=30,
+    lr=0.05,
+    seed=0,
+):
     r"""Infer a training-set property from released model weights.
 
     Parameters
@@ -656,8 +657,7 @@ def property_inference(shadow_models, shadow_labels, target_models=None,
         invariant, ``"paired"`` is.
     """
     if representation not in _REPRS:
-        raise ValueError("propinf: representation must be one of %s"
-                         % (_REPRS,))
+        raise ValueError(f"propinf: representation must be one of {_REPRS}")
     nets = list(shadow_models)
     lab = [float(v) for v in shadow_labels]
     if len(nets) != len(lab):
@@ -671,10 +671,9 @@ def property_inference(shadow_models, shadow_labels, target_models=None,
     arch = [(len(L["W"]), len(L["W"][0])) for L in nets[0]]
     for net in nets:
         if [(len(L["W"]), len(L["W"][0])) for L in net] != arch:
-            raise ValueError("propinf: all shadow models must share one "
-                             "architecture")
+            raise ValueError("propinf: all shadow models must share one architecture")
     if context not in _CONTEXTS:
-        raise ValueError("propinf: context must be one of %s" % (_CONTEXTS,))
+        raise ValueError(f"propinf: context must be one of {_CONTEXTS}")
     if repr_dim < 1:
         raise ValueError("propinf: repr_dim must be at least 1")
     if epochs < 1 or lr <= 0:
@@ -683,69 +682,65 @@ def property_inference(shadow_models, shadow_labels, target_models=None,
     targets = list(target_models) if target_models is not None else nets
     for net in targets:
         if [(len(L["W"]), len(L["W"][0])) for L in net] != arch:
-            raise ValueError("propinf: target model architecture differs "
-                             "from the shadow models")
+            raise ValueError("propinf: target model architecture differs from the shadow models")
 
     if representation == "set":
         train_sets = [set_representation(net) for net in nets]
-        model = _train_set_meta(train_sets, lab, phi_hidden, int(repr_dim),
-                                rho_hidden, epochs, lr, seed, context)
-        scores = [_deepsets_forward(model, set_representation(net))[0]
-                  for net in targets]
+        model = _train_set_meta(train_sets, lab, phi_hidden, int(repr_dim), rho_hidden, epochs, lr, seed, context)
+        scores = [_deepsets_forward(model, set_representation(net))[0] for net in targets]
         fit = [_deepsets_forward(model, s)[0] for s in train_sets]
         meta = model
     else:
-        extract = (sorted_representation if representation == "sorting"
-                   else flat_representation)
+        extract = sorted_representation if representation == "sorting" else flat_representation
         raw = [extract(net) for net in nets]
         feats, mu, sd = _standardise(raw)
         model = _train_vector_meta(feats, lab, meta_hidden, epochs, lr, seed)
-        scores = [_vector_meta_predict(
-            model, _apply_standardise(extract(net), mu, sd))
-            for net in targets]
+        scores = [_vector_meta_predict(model, _apply_standardise(extract(net), mu, sd)) for net in targets]
         fit = [_vector_meta_predict(model, f) for f in feats]
         meta = model
 
     pred = [1 if s >= 0.5 else 0 for s in scores]
-    train_acc = sum(1 for s, y in zip(fit, lab)
-                    if (1.0 if s >= 0.5 else 0.0) == y) / float(len(lab))
+    train_acc = sum(1 for s, y in zip(fit, lab) if (1.0 if s >= 0.5 else 0.0) == y) / float(len(lab))
     acc = None
     if target_labels is not None:
         tl = [float(v) for v in target_labels]
         if len(tl) != len(targets):
             raise ValueError("propinf: one target label per target model")
-        acc = sum(1 for p, y in zip(pred, tl)
-                  if float(p) == y) / float(len(tl))
+        acc = sum(1 for p, y in zip(pred, tl) if float(p) == y) / float(len(tl))
 
-    return RichResult(payload={
-        "estimate": acc if acc is not None else train_acc,
-        "accuracy": acc,
-        "train_accuracy": train_acc,
-        "prediction": pred,
-        "score": scores,
-        "representation": representation,
-        "context": context if representation == "set" else None,
-        "n_shadow": len(nets),
-        "n_target": len(targets),
-        "architecture": arch,
-        "meta_classifier": meta,
-        "method": ("property inference by shadow training "
-                   "(Ganju et al. 2018), %s representation"
-                   % representation),
-        "note": ("baseline flattening is not permutation invariant and "
-                 "the paper reports 55-77% for it; sorting (Algorithm 1) "
-                 "canonicalises each hidden layer, set (Algorithm 2) is "
-                 "invariant by construction and is the paper's best"),
-    })
+    return RichResult(
+        payload={
+            "estimate": acc if acc is not None else train_acc,
+            "accuracy": acc,
+            "train_accuracy": train_acc,
+            "prediction": pred,
+            "score": scores,
+            "representation": representation,
+            "context": context if representation == "set" else None,
+            "n_shadow": len(nets),
+            "n_target": len(targets),
+            "architecture": arch,
+            "meta_classifier": meta,
+            "method": (f"property inference by shadow training (Ganju et al. 2018), {representation} representation"),
+            "note": (
+                "baseline flattening is not permutation invariant and "
+                "the paper reports 55-77% for it; sorting (Algorithm 1) "
+                "canonicalises each hidden layer, set (Algorithm 2) is "
+                "invariant by construction and is the paper's best"
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("propinf: property inference on fully connected networks "
-            "(Ganju et al. 2018). Train shadow classifiers half with the "
-            "property and half without, turn each into features, fit a "
-            "meta-classifier, apply it to the target's weights. "
-            "representation='baseline' flattens the weights (and is beaten "
-            "by permutation equivalence), 'sorting' sorts each hidden "
-            "layer by |sum of weights| into a canonical form, 'set' uses "
-            "DeepSets rho(sum phi(node)) over each layer and is invariant "
-            "by construction.")
+    return (
+        "propinf: property inference on fully connected networks "
+        "(Ganju et al. 2018). Train shadow classifiers half with the "
+        "property and half without, turn each into features, fit a "
+        "meta-classifier, apply it to the target's weights. "
+        "representation='baseline' flattens the weights (and is beaten "
+        "by permutation equivalence), 'sorting' sorts each hidden "
+        "layer by |sum of weights| into a canonical form, 'set' uses "
+        "DeepSets rho(sum phi(node)) over each layer and is invariant "
+        "by construction."
+    )

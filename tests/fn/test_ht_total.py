@@ -1,7 +1,6 @@
 """Tests for ht_total.ht_total."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ht_total import (
     ht_total,
 )

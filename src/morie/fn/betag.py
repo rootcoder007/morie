@@ -78,10 +78,7 @@ def beta_regression(
 
     try:
         H = res.hess_inv if hasattr(res, "hess_inv") and res.hess_inv is not None else np.eye(k + 1)
-        if isinstance(H, np.ndarray):
-            se_all = np.sqrt(np.diag(H).clip(0))
-        else:
-            se_all = np.full(k + 1, float("nan"))
+        se_all = np.sqrt(np.diag(H).clip(0)) if isinstance(H, np.ndarray) else np.full(k + 1, float("nan"))
         se_arr = se_all[:k]
     except Exception:
         se_arr = np.full(k, float("nan"))

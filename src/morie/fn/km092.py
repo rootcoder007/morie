@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 6.16: Stereotypical Associations."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km091 import _count, _tokens
 
@@ -35,17 +34,22 @@ def kamath_ch6_stereotypical_assoc(w, A_i, Yhat):
     words = list(A_i)
     outs = list(Yhat)
     if not words:
-        raise ValueError("A_i is empty; a group with no attribute words "
-                         "cannot be counted.")
+        raise ValueError("A_i is empty; a group with no attribute words cannot be counted.")
     if not outs:
         raise ValueError("Yhat is empty; there is nothing to count in.")
     gated = [Y for Y in outs if _tokens(Y).count(w) > 0]
     per = {a: int(_count(a, gated)) for a in words}
     total = float(sum(per.values()))
-    return RichResult(payload={
-        "estimate": total, "word": w, "per_attribute": per,
-        "n_outputs_with_w": len(gated), "n": len(outs),
-        "method": "Stereotypical Associations count (Kamath Eq 6.16)"})
+    return RichResult(
+        payload={
+            "estimate": total,
+            "word": w,
+            "per_attribute": per,
+            "n_outputs_with_w": len(gated),
+            "n": len(outs),
+            "method": "Stereotypical Associations count (Kamath Eq 6.16)",
+        }
+    )
 
 
 def cheatsheet():

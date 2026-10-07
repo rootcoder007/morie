@@ -1,7 +1,6 @@
 """Tests for alesc — alert escalation."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.alesc import alescl
 
 

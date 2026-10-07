@@ -355,6 +355,18 @@ def did_2x2(
     ----------
     Angrist, J. D., & Pischke, J.-S. (2009). *Mostly Harmless
     Econometrics*. Princeton University Press.
+
+    Examples
+    --------
+    >>> from morie.fn import _frame_core as pd
+    >>> df = pd.DataFrame({
+    ...     "y": [1.0, 1.2, 1.1, 1.3, 2.0, 2.4, 2.1, 2.6, 1.5, 1.6, 1.4, 1.7, 2.6, 2.9, 2.7, 3.1],
+    ...     "treated": [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+    ...     "post": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+    ... })
+    >>> r = did_2x2(df, "y", "treated", "post")
+    >>> (round(r.estimate, 4), r.n_treated, r.n_control)   # (2.825 - 2.275) - (1.55 - 1.15)
+    (0.15, 8, 8)
     """
     df = data.dropna(subset=[outcome, treatment, post]).copy()
     d = df[treatment].values.astype(float)

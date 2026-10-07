@@ -1,7 +1,6 @@
 """Tests for sgtspn.sgt_spanning_tree_count."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgtspn import sgt_spanning_tree_count
 
 

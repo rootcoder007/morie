@@ -42,7 +42,10 @@ def gibbons_contingency_coeff(table):
     Cmax = float(np.sqrt((k - 1) / k))
     return RichResult(
         payload={
-            "C": C, "C_max": Cmax, "C_adjusted": C / Cmax, "chi2": Q,
+            "C": C,
+            "C_max": Cmax,
+            "C_adjusted": C / Cmax,
+            "chi2": Q,
             "n": ntot,
             "method": "C = sqrt(chi2/(chi2 + n)); max depends on shape (Ch. 14.2.1)",
         }

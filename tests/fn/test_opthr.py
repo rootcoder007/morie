@@ -1,7 +1,5 @@
 """Tests for opthr.optimal_huber_k."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.opthr import optimal_huber_k
 
 

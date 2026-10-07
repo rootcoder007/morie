@@ -70,6 +70,7 @@ def geron_conv_output_size(in_size, kernel, padding=0, stride=1, dilation=1):
     >>> geron_conv_output_size([32, 64], [5, 3], padding=[2, 1], stride=[1, 2])["out_size"]
     [32, 32]
     """
+
     def _vec(v, name, ndim=None):
         a = np.atleast_1d(np.asarray(v))
         if a.ndim != 1:

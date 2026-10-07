@@ -1,7 +1,6 @@
 """Tests for drbnk.dr_bandit_did."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drbnk import dr_bandit_did
 
 
@@ -20,6 +19,7 @@ def test_drbnk_basic():
     rng_d.shuffle(D_t) if hasattr(rng_d, "shuffle") else None
     # Manual shuffle via python RNG to keep the shim happy:
     import random as _pyr
+
     _pyr.seed(42)
     _pyr.shuffle(D_t)
 
@@ -33,8 +33,7 @@ def test_drbnk_basic():
 
     # Documented return keys.
     assert isinstance(result, dict)
-    for key in ("estimate", "se", "aipw_unweighted",
-                "h", "sum_h2_over_e", "n_treat", "n"):
+    for key in ("estimate", "se", "aipw_unweighted", "h", "sum_h2_over_e", "n_treat", "n"):
         assert key in result, f"missing key: {key}"
 
     assert result["n"] == n
@@ -98,9 +97,7 @@ def test_drbnk_basic():
     psi = []
     for i in range(n):
         psi.append(
-            m1[i] - m0[i]
-            + D_t[i] * (y[i] - m1[i]) / pi_t[i]
-            - (1.0 - D_t[i]) * (y[i] - m0[i]) / (1.0 - pi_t[i])
+            m1[i] - m0[i] + D_t[i] * (y[i] - m1[i]) / pi_t[i] - (1.0 - D_t[i]) * (y[i] - m0[i]) / (1.0 - pi_t[i])
         )
 
     aipw_unweighted_indep = sum(psi) / float(n)
@@ -109,7 +106,7 @@ def test_drbnk_basic():
     est_indep = sum(h_indep[i] * psi[i] for i in range(n)) / sh
 
     v = sum((h_indep[i] * (psi[i] - est_indep)) ** 2 for i in range(n))
-    se_indep = (v ** 0.5) / sh
+    se_indep = (v**0.5) / sh
 
     assert abs(result["sum_h2_over_e"] - acc) < 1e-9
     assert abs(result["aipw_unweighted"] - aipw_unweighted_indep) < 1e-9
@@ -122,7 +119,7 @@ def test_drbnk_edge():
     """Test edge cases: still-valid inputs plus both documented result keys."""
     n = 100
     rng_y = np.random.default_rng(43)
-    rng_d = np.random.default_rng(42)
+    np.random.default_rng(42)
     rng_x = np.random.default_rng(42)
     rng_p = np.random.default_rng(41)
 
@@ -131,6 +128,7 @@ def test_drbnk_edge():
     # 50/50 binary assignment, reshuffled.
     D_t = [1.0] * (n // 2) + [0.0] * (n - n // 2)
     import random as _pyr
+
     _pyr.seed(7)
     _pyr.shuffle(D_t)
 

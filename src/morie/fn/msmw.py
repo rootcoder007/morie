@@ -61,6 +61,7 @@ def marginal_structural(
     Xd = np.column_stack([np.ones(len(X)), X])
     try:
         from morie.fn._array_core import linalg as _acl
+
         lstsq = _acl.lstsq
 
         beta, _, _, _ = lstsq(Xd, A, rcond=None)

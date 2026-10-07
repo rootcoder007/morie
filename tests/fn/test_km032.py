@@ -13,6 +13,8 @@ def test_km032_doctest():
 
 def test_km032_edge():
     import pytest
+
     from morie.fn.km032 import kamath_ch2_seq2seq_loss
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_seq2seq_loss(*([None] * 4))

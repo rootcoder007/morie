@@ -28,17 +28,16 @@ def ca_chapter_4_equation_6(logit_value):
     """
     value = _ca_crim.inv_logit(logit_value)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.6)"
     return RichResult(
-        title='Convert a logit to a probability: p = e^logit/(1+e^logit)',
+        title="Convert a logit to a probability: p = e^logit/(1+e^logit)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e6: p = e^logit / (1 + e^logit) [Weisburd et al. 2022, eq. 4.6]'
+    return "ca4e6: p = e^logit / (1 + e^logit) [Weisburd et al. 2022, eq. 4.6]"

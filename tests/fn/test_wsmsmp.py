@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.wsmsmp import wasserman_smoothing_spline
 
-
 X = [0.0, 0.5, 1.5, 2.0, 3.5, 4.0, 5.5]
 Y = [1.0, 1.8, 1.1, 2.9, 2.2, 3.8, 3.1]
 
@@ -39,8 +38,9 @@ def test_wsmsmp_edge():
     line = [yb + b * (a - xb) for a in X]
     # the approach to the least-squares line is O(1/lam): the gap shrinks
     # tenfold per decade of lam (round-off takes over beyond about 1e7)
-    gap = [max(abs(u - v) for u, v in zip(wasserman_smoothing_spline(X, Y, lam)["estimate"], line))
-           for lam in (1e5, 1e6)]
+    gap = [
+        max(abs(u - v) for u, v in zip(wasserman_smoothing_spline(X, Y, lam)["estimate"], line)) for lam in (1e5, 1e6)
+    ]
     assert gap[1] < 2e-6 and 9 < gap[0] / gap[1] < 11
     lin = [2 * a - 1 for a in X]
     assert wasserman_smoothing_spline(X, lin, 5.0)["estimate"] == pytest.approx(lin, abs=1e-12)
@@ -62,7 +62,7 @@ import morie.fn.wsmsmp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

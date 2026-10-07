@@ -25,8 +25,7 @@ def twocoinvar():
     Morin, D. J. (2016). Probability: For the Enthusiastic Beginner.
     Createspace Independent Publishing. Eq (3.28).
     """
-    values, probs = _morin.pmf_sum_convolution([0.0, 1.0], [0.5, 0.5],
-                                               [0.0, 1.0], [0.5, 0.5])
+    values, probs = _morin.pmf_sum_convolution([0.0, 1.0], [0.5, 0.5], [0.0, 1.0], [0.5, 0.5])
     variance, mu = _morin.pmf_variance(values, probs)
     payload = {"variance": variance, "mean": mu}
     lines = [("Var(X+Y)", variance)]

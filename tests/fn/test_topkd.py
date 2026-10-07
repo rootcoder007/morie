@@ -1,8 +1,8 @@
 """topkd: top-k decoding (Fan et al. 2018)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.topkd import top_k_decoding as tk
 
 

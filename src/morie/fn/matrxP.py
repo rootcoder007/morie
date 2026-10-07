@@ -80,7 +80,7 @@ def matrxP(x, window):
         sd[i] = math.sqrt(v) if v > 0.0 else 0.0
     excl = m // 2
     P = [math.inf] * nsub
-    I = [-1] * nsub
+    I_ = [-1] * nsub
     for i in range(nsub):
         for j in range(i + 1, nsub):
             if j - i <= excl:
@@ -99,10 +99,10 @@ def matrxP(x, window):
                 d = math.sqrt(2.0 * m * arg)
             if d < P[i]:
                 P[i] = d
-                I[i] = j
+                I_[i] = j
             if d < P[j]:
                 P[j] = d
-                I[j] = i
+                I_[j] = i
     ib = 0
     iw = 0
     for i in range(1, nsub):
@@ -110,18 +110,20 @@ def matrxP(x, window):
             ib = i
         if P[i] < P[iw]:
             iw = i
-    return RichResult(payload={
-        "profile": [float(v) for v in P],
-        "index": [i + 1 for i in I],
-        "discord": ib + 1,
-        "discord_distance": float(P[ib]),
-        "motif": [iw + 1, I[iw] + 1],
-        "motif_distance": float(P[iw]),
-        "window": m,
-        "estimate": ib + 1,
-        "n": nlen,
-        "method": "Matrix profile self-join (Yeh et al. 2016)",
-    })
+    return RichResult(
+        payload={
+            "profile": [float(v) for v in P],
+            "index": [i + 1 for i in I_],
+            "discord": ib + 1,
+            "discord_distance": float(P[ib]),
+            "motif": [iw + 1, I_[iw] + 1],
+            "motif_distance": float(P[iw]),
+            "window": m,
+            "estimate": ib + 1,
+            "n": nlen,
+            "method": "Matrix profile self-join (Yeh et al. 2016)",
+        }
+    )
 
 
 def matrix_profile(x, window):
@@ -131,6 +133,7 @@ def matrix_profile(x, window):
 
 def cheatsheet():
     return "matrxP(x, m) -> matrix profile + index; max = discord, min = motif"
+
 
 # public names resolved by fn/_lazy_map.json
 matrixprofile = matrxP

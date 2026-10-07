@@ -1,7 +1,6 @@
 """Tests for rfOOB.rf_oob_error."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.rfOOB import rf_oob_error
 
 

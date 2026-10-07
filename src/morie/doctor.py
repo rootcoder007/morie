@@ -11,10 +11,12 @@ text fallback for minimal environments.
 from __future__ import annotations
 
 import importlib
+import importlib.util
 import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -32,10 +34,37 @@ def _check_python_version() -> tuple[bool, str]:
 def _check_import(package: str) -> tuple[bool, str]:
     try:
         mod = importlib.import_module(package)
-        version = getattr(mod, "__version__", "?")
-        return True, version
     except ImportError:
         return False, "not installed"
+    version = getattr(mod, "__version__", None)
+    if not version:  # rich, textual and others keep their version in the package metadata only
+        try:
+            from importlib.metadata import version as _dist_version
+
+            version = _dist_version(package)
+        except Exception:
+            version = "installed"
+    return True, str(version)
+
+
+def _check_interactive_layer() -> tuple[bool, str]:
+    """The repl/exec/agent/edit/tui verbs need five modules the wheel leaves out."""
+    try:
+        from . import _interactive as inter
+
+        pkg_dir = Path(__file__).resolve().parent
+        if all((pkg_dir / n).is_file() for n in inter.FILES):
+            return True, "bundled (source checkout)"
+        d = inter.data_dir()
+        have = inter.present(d)
+        iv = inter.installed_version(d)
+        if len(have) == len(inter.FILES) and iv == inter.package_version():
+            return True, f"installed for morie {iv} in {d}"
+        if have:
+            return False, f"installed for morie {iv} (this is {inter.package_version()}): morie interactive install"
+        return False, "not installed (morie repl/exec/agent/edit/tui): morie interactive install"
+    except Exception as exc:
+        return False, f"error: {exc}"
 
 
 def _check_r() -> tuple[bool, str]:
@@ -79,7 +108,7 @@ def _check_hosted() -> tuple[bool, str]:
     if not s["base_url"]:
         return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
     if not s["logged_in"]:
-        return False, "not logged in -- run `morie login`"
+        return False, "not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
         from .hosted import hosted_problem_line
@@ -120,7 +149,10 @@ def _check_datasets() -> tuple[bool, str]:
 
         db_path = morie_db()
         if not db_path.exists():
-            return False, "morie.db not found -- it is fetched, not shipped: run `morie download-bootstrap`"
+            return (
+                False,
+                "morie.db not found -- it is built on first use: run `morie pull KEY` (keys: morie list-datasets)",
+            )
         size_mb = db_path.stat().st_size // (1024 * 1024)
         ds = list_datasets()
         catalog = [d for d in ds if d["type"] != "hosted"]
@@ -175,7 +207,36 @@ _REQUIRED_IMPORTS = [
 ]
 
 # morie's core is native: these only speed up or extend a few paths and are reported, not required
-_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels"]
+_OPTIONAL_IMPORTS: list[str] = ["pandas", "numpy", "scipy", "sklearn", "statsmodels", "textual"]
+
+
+# The trust knobs as morie._exec_guard defines them (that module ships with the interactive layer):
+# environment variables, read the same way, so a plain install reports its posture too.
+_KNOB_DETAILS = (
+    ("MORIE_NO_EXEC", "when set: ALL dynamic execution (REPL/exec/shell) is disabled"),
+    (
+        "MORIE_ALLOW_REMOTE_INSTALL",
+        "when set: the shell launcher (bin/morie, git checkouts) may run the downloaded Ollama install.sh",
+    ),
+    (
+        "MORIE_TRUST_CHECKPOINT",
+        "when set: convert-checkpoint / pt2gguf deserialize a .pt (tensors and plain containers only)",
+    ),
+    ("MORIE_ALLOW_RC", "when set: the shell launcher (bin/morie, git checkouts) sources the ESML_RC shell config"),
+    (
+        "MORIE_ALLOW_CRON",
+        "when set: the shell launcher's `cron add/remove` (bin/morie, git checkouts) may edit your crontab",
+    ),
+)
+
+
+def _knob_status_without_layer() -> list[dict[str, Any]]:
+    out = []
+    for name, detail in _KNOB_DETAILS:
+        v = os.environ.get(name, "").strip()
+        on = v not in ("", "0") if name == "MORIE_NO_EXEC" else v.lower() in ("1", "true", "yes", "on")
+        out.append({"name": name, "enabled": on, "detail": detail})
+    return out
 
 
 def run_checks() -> dict[str, Any]:
@@ -203,7 +264,16 @@ def run_checks() -> dict[str, Any]:
     # Optional Python packages
     for pkg in _OPTIONAL_IMPORTS:
         ok, detail = _check_import(pkg)
+        if not ok:
+            detail = (
+                'not installed (morie tui needs it): pip install "morie[interactive]"'
+                if pkg == "textual"
+                else "not installed (optional: morie's native cores need none of these)"
+            )
         _add(f"import {pkg}", ok, detail, required=False)
+
+    ok, detail = _check_interactive_layer()
+    _add("Interactive layer", ok, detail, required=False)
 
     # R
     ok, detail = _check_r()
@@ -239,7 +309,7 @@ def run_checks() -> dict[str, Any]:
     try:
         from morie._exec_guard import knob_status
     except ImportError:
-        knob_status = None
+        knob_status = _knob_status_without_layer
 
     if knob_status is not None:
         for knob in knob_status():
@@ -255,7 +325,9 @@ def run_checks() -> dict[str, Any]:
 
 
 def _render_plain(results: dict[str, Any]) -> None:
-    print("MORIE Doctor -- environment diagnostics")
+    from .i18n import t
+
+    print(t("doctor.heading"))
     print("=" * 50)
     for check in results["checks"]:
         status = "OK " if check["passed"] else ("FAIL" if check["required"] else "WARN")
@@ -274,7 +346,7 @@ def _render_rich(results: dict[str, Any]) -> None:
 
     console = Console()
     table = Table(
-        title="MORIE Doctor -- environment diagnostics",
+        title=__import__("morie.i18n", fromlist=["t"]).t("doctor.heading"),
         box=box.SIMPLE_HEAVY,
         show_header=True,
         header_style="bold cyan",
@@ -327,6 +399,16 @@ def _render(results: dict[str, Any]) -> None:
             _render_plain(results)
 
 
+def _installer() -> list[str] | None:
+    """The command that installs into this interpreter: pip when it has pip, uv when uv made it."""
+    if importlib.util.find_spec("pip") is not None:
+        return [sys.executable, "-m", "pip", "install"]
+    import shutil
+
+    uv = shutil.which("uv")
+    return [uv, "pip", "install", "--python", sys.executable] if uv else None
+
+
 def _heal(results: dict[str, Any]) -> bool:
     """Attempt to remediate failed checks (``morie doctor --fix``).
 
@@ -347,6 +429,7 @@ def _heal(results: dict[str, Any]) -> bool:
         print(f"  [fail] could not create {cache_dir}: {exc}")
 
     fixed_any = False
+    installer = _installer()
     for check in results["checks"]:
         if check["passed"]:
             continue
@@ -354,9 +437,13 @@ def _heal(results: dict[str, Any]) -> bool:
         if label.startswith("import "):
             pkg = label[len("import ") :]
             pip_name = _PIP_NAME.get(pkg, pkg)
-            print(f"  ...    installing {pip_name} via pip ...")
-            rc = subprocess.run([sys.executable, "-m", "pip", "install", pip_name]).returncode
-            print(f"  [{'ok' if rc == 0 else 'fail'}]   pip install {pip_name}")
+            if installer is None:
+                # a uv-made venv has no pip: say what to run instead of printing "No module named pip"
+                print(f"  [hint] {pip_name}: this environment has no pip; run `uv pip install {pip_name}`")
+                continue
+            print(f"  ...    installing {pip_name} ({' '.join(installer[-3:])}) ...")
+            rc = subprocess.run([*installer, pip_name]).returncode
+            print(f"  [{'ok' if rc == 0 else 'fail'}]   install {pip_name}")
             fixed_any = fixed_any or rc == 0
         elif label == "morie version":
             print("  [hint] run `morie update` to upgrade morie itself.")

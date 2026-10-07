@@ -11,20 +11,18 @@ __all__ = ["kamath_ch5_dpo_reward_optimal"]
 
 
 def _ratio_logs(pi_star, pi_ref):
-    p = np.atleast_1d(np.asarray(
-        [float(v) for v in (pi_star.values() if isinstance(pi_star, dict)
-                            else pi_star)], dtype=float))
-    q = np.atleast_1d(np.asarray(
-        [float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict)
-                            else pi_ref)], dtype=float))
+    p = np.atleast_1d(
+        np.asarray([float(v) for v in (pi_star.values() if isinstance(pi_star, dict) else pi_star)], dtype=float)
+    )
+    q = np.atleast_1d(
+        np.asarray([float(v) for v in (pi_ref.values() if isinstance(pi_ref, dict) else pi_ref)], dtype=float)
+    )
     if p.size == 0 or q.size == 0:
         raise ValueError("pi_star or pi_ref is empty.")
     if p.shape != q.shape:
-        raise ValueError(
-            f"pi_star has {p.size} entries but pi_ref has {q.size}.")
+        raise ValueError(f"pi_star has {p.size} entries but pi_ref has {q.size}.")
     if np.any(p <= 0) or np.any(q <= 0) or np.any(p > 1) or np.any(q > 1):
-        raise ValueError("every probability must lie in (0, 1]; a zero "
-                         "makes the log ratio undefined.")
+        raise ValueError("every probability must lie in (0, 1]; a zero makes the log ratio undefined.")
     return np.log(p / q), p, q
 
 
@@ -57,11 +55,18 @@ def kamath_ch5_dpo_reward_optimal(pi_star, pi_ref, beta, Z=None):
     if Zv <= 0:
         raise ValueError("Z must be strictly positive.")
     r = beta * logs + beta * math.log(Zv)
-    return RichResult(payload={
-        "r": [float(v) for v in r], "log_ratio": [float(v) for v in logs],
-        "beta": beta, "Z": Zv, "offset": float(beta * math.log(Zv)),
-        "estimate": float(r[0]), "n": int(r.size),
-        "method": "reward implied by an optimal policy (Kamath Eq 5.7)"})
+    return RichResult(
+        payload={
+            "r": [float(v) for v in r],
+            "log_ratio": [float(v) for v in logs],
+            "beta": beta,
+            "Z": Zv,
+            "offset": float(beta * math.log(Zv)),
+            "estimate": float(r[0]),
+            "n": int(r.size),
+            "method": "reward implied by an optimal policy (Kamath Eq 5.7)",
+        }
+    )
 
 
 def cheatsheet():

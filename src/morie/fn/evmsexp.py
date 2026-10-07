@@ -65,15 +65,17 @@ def evt_max_stable_logistic(x, y, alpha):
         V.append(v)
         F.append(math.exp(-v))
     a_half = (0.5 ** (1.0 / alpha) + 0.5 ** (1.0 / alpha)) ** alpha
-    return RichResult(payload={
-        "F": F,
-        "estimate": F[0],
-        "V": V,
-        "A_half": a_half,
-        "chi": 2.0 - 2.0 ** alpha,
-        "n": len(xs),
-        "method": "bivariate logistic max-stable distribution",
-    })
+    return RichResult(
+        payload={
+            "F": F,
+            "estimate": F[0],
+            "V": V,
+            "A_half": a_half,
+            "chi": 2.0 - 2.0**alpha,
+            "n": len(xs),
+            "method": "bivariate logistic max-stable distribution",
+        }
+    )
 
 
 def cheatsheet():

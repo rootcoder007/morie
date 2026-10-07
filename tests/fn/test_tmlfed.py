@@ -35,13 +35,15 @@ def _site(y, D, X, gb=0.025):
     b = [0.0] * p
     for _ in range(60):
         mu = [_expit(sum(a * c for a, c in zip(w, b))) for w in W]
-        I = [[sum(W[i][r] * W[i][s] * mu[i] * (1 - mu[i]) for i in range(n)) for s in range(p)] for r in range(p)]
+        I_ = [[sum(W[i][r] * W[i][s] * mu[i] * (1 - mu[i]) for i in range(n)) for s in range(p)] for r in range(p)]
         sc = [sum(W[i][r] * (D[i] - mu[i]) for i in range(n)) for r in range(p)]
-        b = [x + d for x, d in zip(b, _solve(I, sc))]
+        b = [x + d for x, d in zip(b, _solve(I_, sc))]
     g = [min(max(_expit(sum(a * c for a, c in zip(w, b))), gb), 1 - gb) for w in W]
     Z = [[d] + w for d, w in zip(D, W)]
-    q = _solve([[sum(z[r] * z[s] for z in Z) for s in range(p + 1)] for r in range(p + 1)],
-               [sum(z[r] * t for z, t in zip(Z, y)) for r in range(p + 1)])
+    q = _solve(
+        [[sum(z[r] * z[s] for z in Z) for s in range(p + 1)] for r in range(p + 1)],
+        [sum(z[r] * t for z, t in zip(Z, y)) for r in range(p + 1)],
+    )
     Q1 = [q[0] + sum(a * c for a, c in zip(w, q[1:])) for w in W]
     Q0 = [sum(a * c for a, c in zip(w, q[1:])) for w in W]
     H = [d / e - (1 - d) / (1 - e) for d, e in zip(D, g)]

@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def the_r_series_dick_j_brus_spatial_sampling_with_r_chapter_26_equation_4(n, rh
     """
     value = _brus.effective_sample_size(n, rho_bar)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (26.4)"
     return RichResult(
-        title='Effective sample size under autocorrelation',
+        title="Effective sample size under autocorrelation",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r26e4: n_eff = n/(1 + (n-1) rhobar) [Brus 2022, eq. 26.4]'
+    return "r26e4: n_eff = n/(1 + (n-1) rhobar) [Brus 2022, eq. 26.4]"

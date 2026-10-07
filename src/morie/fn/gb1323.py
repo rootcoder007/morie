@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """ARE invariance for two-sided tests."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_are_twosided"]
@@ -42,7 +41,8 @@ def gibbons_are_twosided(efficacy_T, efficacy_T_star):
     are = (cT / cS) ** 2
     return RichResult(
         payload={
-            "are_two_sided": float(are), "are_one_sided": float(are),
+            "are_two_sided": float(are),
+            "are_one_sided": float(are),
             "equal": True,
             "method": "Two-sided ARE equals the one-sided ratio (Theorem 13.2.3)",
         }

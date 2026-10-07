@@ -28,7 +28,7 @@ def topological_sort(adj_list: dict[int, list[int]]) -> DescriptiveResult:
         nodes.update(succs)
 
     in_degree = {n: 0 for n in nodes}
-    for u, succs in adj_list.items():
+    for u, succs in adj_list.items():  # noqa: B007 - read after the loop
         for v in succs:
             in_degree[v] = in_degree.get(v, 0) + 1
 

@@ -1,7 +1,6 @@
 """Tests for gh_c4_21.ghosal_inv_dp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c4_21 import ghosal_inv_dp
 
 
@@ -15,8 +14,7 @@ def test_gh_c4_21_basic():
     assert "estimate" in result
     # Independent computation of the formula:
     # count = 0.5 * sum(1{v <= x} + 1{v >= -x})
-    count = sum(0.5 * ((1.0 if v <= x else 0.0)
-                       + (1.0 if v >= -x else 0.0)) for v in list(data))
+    count = sum(0.5 * ((1.0 if v <= x else 0.0) + (1.0 if v >= -x else 0.0)) for v in list(data))
     n = len(list(data))
     expected = (float(alpha_x) + count) / (float(alpha_total) + n)
     assert np.all(np.isfinite(np.asarray(result["estimate"], dtype=float)))

@@ -9,12 +9,10 @@ Usage
 -----
 
     >>> import morie.fast as mf
-    >>> mf.is_jit_available()
-    True            # after `pip install morie[fast]`
-    False           # otherwise (kernels still work, just no JIT)
-    >>> x = np.random.normal(size=10_000)
-    >>> mf.normal_pdf(x, 0.0, 1.0)
-    array([...])
+    >>> mf.is_jit_available() in (True, False)  # True with the compiled core loaded
+    True
+    >>> [round(float(v), 4) for v in mf.normal_pdf([0.0, 1.0], 0.0, 1.0)]
+    [0.3989, 0.242]
 
 Functions
 ---------

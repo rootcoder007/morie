@@ -82,29 +82,29 @@ def boyd_dual_function(L, lambda_=None, nu=None, x_grid=None):
     if vals.size == 0:
         raise ValueError("L must supply at least one value")
     i = int(np.argmin(vals))
-    lam = (np.zeros(0) if lambda_ is None
-           else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel())
-    nuv = (np.zeros(0) if nu is None
-           else np.atleast_1d(np.asarray(nu, dtype=float)).ravel())
+    lam = np.zeros(0) if lambda_ is None else np.atleast_1d(np.asarray(lambda_, dtype=float)).ravel()
+    nuv = np.zeros(0) if nu is None else np.atleast_1d(np.asarray(nu, dtype=float)).ravel()
     valid = bool(lam.size == 0 or np.all(lam >= 0))
     # A grid minimum sitting at an endpoint, with the function still
     # falling, is the signature of an unbounded infimum on a finite grid.
     unbounded = bool(
         not np.isfinite(vals[i])
-        or (i in (0, vals.size - 1) and vals.size > 2
-            and abs(vals[i] - vals[1 if i == 0 else -2]) > 1e6)
+        or (i in (0, vals.size - 1) and vals.size > 2 and abs(vals[i] - vals[1 if i == 0 else -2]) > 1e6)
     )
     return RichResult(
         title="Lagrange dual function",
-        summary_lines=[("dual value", float(vals[i])),
-                       ("argmin", float(xs[i])),
-                       ("weak-duality bound valid", valid)],
-        warnings=["the infimum appears unbounded below; this multiplier "
-                  "choice gives a vacuous bound"] if unbounded else [],
+        summary_lines=[("dual value", float(vals[i])), ("argmin", float(xs[i])), ("weak-duality bound valid", valid)],
+        warnings=["the infimum appears unbounded below; this multiplier choice gives a vacuous bound"]
+        if unbounded
+        else [],
         payload={
-            "value": float(vals[i]), "argmin": float(xs[i]),
-            "unbounded": unbounded, "bound_valid": valid,
-            "lambda": lam, "nu": nuv, "values": vals,
+            "value": float(vals[i]),
+            "argmin": float(xs[i]),
+            "unbounded": unbounded,
+            "bound_valid": valid,
+            "lambda": lam,
+            "nu": nuv,
+            "values": vals,
             "method": "boyd_dual_function",
         },
     )

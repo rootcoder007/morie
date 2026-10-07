@@ -50,13 +50,19 @@ def horvitz_thompson(y, pi, N=None):
         raise ValueError("need at least one sampled unit.")
     total = ht_total(yv, p)
     wsum = float(np.sum(1.0 / p))
-    return RichResult(payload={
-        "total": total, "mean": total / wsum,
-        "weight_sum": wsum, "implied_N": wsum,
-        "N": None if N is None else int(N),
-        "design_unbiased": True, "uses_known_N": False,
-        "n": int(yv.size),
-        "method": "Horvitz-Thompson total; design-unbiased for any positive-pi design"})
+    return RichResult(
+        payload={
+            "total": total,
+            "mean": total / wsum,
+            "weight_sum": wsum,
+            "implied_N": wsum,
+            "N": None if N is None else int(N),
+            "design_unbiased": True,
+            "uses_known_N": False,
+            "n": int(yv.size),
+            "method": "Horvitz-Thompson total; design-unbiased for any positive-pi design",
+        }
+    )
 
 
 def cheatsheet():

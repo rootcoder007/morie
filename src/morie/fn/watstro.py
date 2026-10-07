@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Watts-Strogatz small-world graph."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -73,10 +71,16 @@ def watts_strogatz(n, k, p, seed=1):
                 A[i][cand] = A[cand][i] = 1.0
                 rew += 1
     edges = sum(sum(row) for row in A) / 2.0
-    return RichResult(payload={
-        "A": A, "estimate": 2.0 * edges / n, "n_rewired": rew,
-        "n_edges": edges, "n": n,
-        "method": "Watts-Strogatz small-world graph"})
+    return RichResult(
+        payload={
+            "A": A,
+            "estimate": 2.0 * edges / n,
+            "n_rewired": rew,
+            "n_edges": edges,
+            "n": n,
+            "method": "Watts-Strogatz small-world graph",
+        }
+    )
 
 
 wattsstrogatz = watts_strogatz

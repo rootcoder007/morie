@@ -43,24 +43,23 @@ def kamath_rms_norm(x, g=None, eps=1e-6):
     if g is not None:
         gg = np.atleast_1d(np.asarray(g, dtype=float)).ravel()
         if gg.size != x.shape[-1]:
-            raise ValueError(
-                f"the gain has {gg.size} entries for a feature axis of "
-                f"{x.shape[-1]}.")
+            raise ValueError(f"the gain has {gg.size} entries for a feature axis of {x.shape[-1]}.")
     if eps == 0.0 and np.all(np.atleast_2d(x) == 0):
-        raise ValueError(
-            "RMS(x) is 0 with eps = 0, so the normalisation divides by "
-            "zero; pass a positive eps.")
+        raise ValueError("RMS(x) is 0 with eps = 0, so the normalisation divides by zero; pass a positive eps.")
     base = rms_norm(x, gamma=g, eps=eps)
     y = np.asarray(base["tensor"], dtype=float)
     rms = np.atleast_1d(np.asarray(base["rms"], dtype=float)).ravel()
-    return RichResult(payload={
-        "y": [float(v) for v in np.atleast_1d(y).ravel()],
-        "tensor": y,
-        "rms": [float(v) for v in rms],
-        "estimate": float(np.atleast_1d(y).ravel()[0]),
-        "eps": eps, "n": int(x.shape[-1]),
-        "method": "RMSNorm x / sqrt(mean(x^2) + eps) * g "
-                  "(delegates to rmsnr)"})
+    return RichResult(
+        payload={
+            "y": [float(v) for v in np.atleast_1d(y).ravel()],
+            "tensor": y,
+            "rms": [float(v) for v in rms],
+            "estimate": float(np.atleast_1d(y).ravel()[0]),
+            "eps": eps,
+            "n": int(x.shape[-1]),
+            "method": "RMSNorm x / sqrt(mean(x^2) + eps) * g (delegates to rmsnr)",
+        }
+    )
 
 
 def cheatsheet():

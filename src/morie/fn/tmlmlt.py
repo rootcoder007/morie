@@ -107,10 +107,17 @@ def tmle_multiple_treatments(y, D, X, arm_set):
     ic = [ics[k - 1][i] - ics[0][i] for i in range(n)]
     m = sum(ic) / n
     se = math.sqrt(sum((v - m) ** 2 for v in ic) / (n - 1) / n) if n > 1 else float("nan")
-    return RichResult(payload={
-        "estimate": contrasts[k - 1], "se": se, "psi": psi,
-        "contrasts": contrasts, "n_arms": float(k), "n": n,
-        "method": "TMLE for a multi-arm treatment with pairwise contrasts"})
+    return RichResult(
+        payload={
+            "estimate": contrasts[k - 1],
+            "se": se,
+            "psi": psi,
+            "contrasts": contrasts,
+            "n_arms": float(k),
+            "n": n,
+            "method": "TMLE for a multi-arm treatment with pairwise contrasts",
+        }
+    )
 
 
 def cheatsheet():

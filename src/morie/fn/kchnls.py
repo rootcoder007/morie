@@ -1,6 +1,5 @@
 """KL chain rule."""
 
-from . import _array_core as np
 from . import _big2 as _big2
 from ._richresult import RichResult
 
@@ -58,8 +57,7 @@ def k_l_divergence_chain(pxy, qxy, base=2.0):
         if qx[i] <= 0.0:
             cond = inf
             break
-        term = _big2.kldiv([p[i][j] / px[i] for j in range(ny)],
-                           [q[i][j] / qx[i] for j in range(ny)], base)
+        term = _big2.kldiv([p[i][j] / px[i] for j in range(ny)], [q[i][j] / qx[i] for j in range(ny)], base)
         if term == inf:
             cond = inf
             break

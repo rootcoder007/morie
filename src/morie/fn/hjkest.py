@@ -49,14 +49,19 @@ def hajek_estimator(y, pi):
         raise ValueError(f"need at least 2 sampled units, got {yv.size}.")
     m = hajek_mean(yv, p)
     wsum = float(np.sum(1.0 / p))
-    return RichResult(payload={
-        "mean": m, "ht_mean_if_N_known": ht_total(yv, p) / wsum,
-        "weight_sum": wsum, "design_unbiased": False,
-        "bias_order": "O(1/n), against a first-order variance reduction",
-        "cancellation_note": "numerator and denominator move together; the gain "
-                             "vanishes when y is uncorrelated with the weights",
-        "n": int(yv.size),
-        "method": "Hajek ratio estimator; biased but usually far less variable than HT"})
+    return RichResult(
+        payload={
+            "mean": m,
+            "ht_mean_if_N_known": ht_total(yv, p) / wsum,
+            "weight_sum": wsum,
+            "design_unbiased": False,
+            "bias_order": "O(1/n), against a first-order variance reduction",
+            "cancellation_note": "numerator and denominator move together; the gain "
+            "vanishes when y is uncorrelated with the weights",
+            "n": int(yv.size),
+            "method": "Hajek ratio estimator; biased but usually far less variable than HT",
+        }
+    )
 
 
 def cheatsheet():

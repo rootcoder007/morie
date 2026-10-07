@@ -5,9 +5,9 @@ p.88 -- verified against the PDF. The module previously cited "Armstrong
 Ch 8"; that book has six chapters.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sptag import spatial_agreement as sa
 
 
@@ -15,9 +15,9 @@ def test_sptag_canonical_example_from_the_module():
     """The example recorded in the module's own CANONICAL TEST comment."""
     M = np.array([[1, 1, 0], [1, 1, 0], [0, 0, 1]], dtype=float)
     A = np.asarray(sa(M)["agreement"])
-    assert A[0, 1] == 1.0          # rows 0 and 1 are identical
-    assert A[0, 2] == 0.0          # row 2 is the exact complement
-    assert A[2, 2] == 1.0          # self-agreement
+    assert A[0, 1] == 1.0  # rows 0 and 1 are identical
+    assert A[0, 2] == 0.0  # row 2 is the exact complement
+    assert A[2, 2] == 1.0  # self-agreement
 
 
 def test_sptag_matrix_is_symmetric_with_unit_diagonal():

@@ -75,9 +75,7 @@ def geron_beam_search_decoder(scores, beam_width, max_len=None, length_penalty=0
         if steps < 1:
             raise ValueError(f"max_len must be at least 1, got {max_len}.")
         if steps > T:
-            raise ValueError(
-                f"max_len={steps} exceeds the {T} steps of scores supplied."
-            )
+            raise ValueError(f"max_len={steps} exceeds the {T} steps of scores supplied.")
     length_penalty = float(length_penalty)
     if length_penalty < 0:
         raise ValueError(f"length_penalty must be non-negative, got {length_penalty}.")

@@ -29,8 +29,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_search_horizon"]
 
 
-def alphazero_search_horizon(depth_limit, state, rewards=None, values=None,
-                             gamma=1.0, k_start=0):
+def alphazero_search_horizon(depth_limit, state, rewards=None, values=None, gamma=1.0, k_start=0):
     """Truncated return at a search horizon.
 
     Parameters
@@ -58,29 +57,29 @@ def alphazero_search_horizon(depth_limit, state, rewards=None, values=None,
     """
     r = k.vec(rewards) if rewards is not None else []
     v = k.vec(values) if values is not None else []
-    l = int(depth_limit)
-    if l > len(r):
-        l = len(r) if r else l
+    ell = int(depth_limit)
+    if ell > len(r):
+        ell = len(r) if r else ell
     kk = int(k_start)
     g = float(gamma)
     part = 0.0
     tau = 0
-    while kk + tau < l:
-        part += (g ** tau) * r[kk + tau]
+    while kk + tau < ell:
+        part += (g**tau) * r[kk + tau]
         tau += 1
     if v:
-        idx = l if l < len(v) else len(v) - 1
-        boot = (g ** (l - kk)) * v[idx]
+        idx = ell if ell < len(v) else len(v) - 1
+        boot = (g ** (ell - kk)) * v[idx]
     else:
         boot = 0.0
     return RichResult(
         title="AlphaZero search horizon",
-        summary_lines=[("G", part + boot), ("depth", l)],
+        summary_lines=[("G", part + boot), ("depth", ell)],
         payload={
             "estimate": part + boot,
             "bootstrap": boot,
             "reward_part": part,
-            "depth": l,
+            "depth": ell,
             "state": state,
             "method": "Truncated search return: discounted rewards + bootstrapped value",
         },

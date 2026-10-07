@@ -1,8 +1,8 @@
 """Tests for morie.fn.herit -- GREML heritability."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.herit import herit
 
 

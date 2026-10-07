@@ -1,7 +1,6 @@
 """Tests for morie.fn.rcdrt — recidivism trend over years."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rcdrt import recidivism_trend
 
 

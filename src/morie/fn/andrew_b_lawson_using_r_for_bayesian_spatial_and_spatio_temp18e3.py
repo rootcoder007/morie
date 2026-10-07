@@ -21,7 +21,9 @@ def epiar(beta0, beta1, i_lag, b1):
     RichResult
         Inherits from ``dict``; keys are listed above.
     """
-    return RichResult(title="Epidemic log-autoregression", payload=_c.epiar(beta0=beta0, beta1=beta1, i_lag=i_lag, b1=b1))
+    return RichResult(
+        title="Epidemic log-autoregression", payload=_c.epiar(beta0=beta0, beta1=beta1, i_lag=i_lag, b1=b1)
+    )
 
 
 andrew_b_lawson_using_r_for_bayesian_spatial_and_spatio_temp_chapter_18_equation_3 = epiar

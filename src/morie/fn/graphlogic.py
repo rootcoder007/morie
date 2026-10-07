@@ -460,6 +460,7 @@ def cheatsheet() -> str:
         "crf_marginals -> graphs, CDCL satisfiability and linear-chain CRFs."
     )
 
+
 # alias kept from the retired placeholder of the same name
 crf_sequence = crf_fit
 

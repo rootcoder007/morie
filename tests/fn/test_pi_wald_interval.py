@@ -1,7 +1,5 @@
 """Tests for pi_wald_interval.pi_wald_interval."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.pi_wald_interval import (
     pi_wald_interval,
 )

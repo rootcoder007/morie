@@ -156,12 +156,21 @@ def kvmse(K, b=2, seed=1):
         rel.append(e / (nrm * nrm) if nrm > 0 else float("nan"))
     bnd = math.sqrt(3.0) * math.pi / 2.0 * 4.0 ** (-b)
     mr = sum(rel) / n
-    return RichResult(payload={
-        "mse": mse, "relative_mse": rel, "mean_mse": sum(mse) / n,
-        "mean_relative": mr, "worst_relative": max(rel), "bound": bnd,
-        "within_bound": 1.0 if mr <= bnd else 0.0, "n": float(n),
-        "d": float(d), "b": float(b),
-        "method": "Key-cache MSE under TurboQuant_mse, arXiv:2504.19874"})
+    return RichResult(
+        payload={
+            "mse": mse,
+            "relative_mse": rel,
+            "mean_mse": sum(mse) / n,
+            "mean_relative": mr,
+            "worst_relative": max(rel),
+            "bound": bnd,
+            "within_bound": 1.0 if mr <= bnd else 0.0,
+            "n": float(n),
+            "d": float(d),
+            "b": float(b),
+            "method": "Key-cache MSE under TurboQuant_mse, arXiv:2504.19874",
+        }
+    )
 
 
 turboquant_kv_mse = kvmse

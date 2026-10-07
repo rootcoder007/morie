@@ -7,7 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,13 +27,11 @@ def _config_logscore(xs, z, M, sigma):
         members = [xs[j] for j in range(len(xs)) if z[j] == lab]
         lp += math.lgamma(len(members))
         mu = sum(members) / len(members)
-        lp += sum(math.log(max(_norm_pdf(v, mu, sigma), 1e-300))
-                  for v in members)
+        lp += sum(math.log(max(_norm_pdf(v, mu, sigma), 1e-300)) for v in members)
     return lp
 
 
-def ghosal_splitmerge(data, z_current, split_label=None, alpha=1.0,
-                      sigma=0.5):
+def ghosal_splitmerge(data, z_current, split_label=None, alpha=1.0, sigma=0.5):
     """MH split/merge on the configuration: propose splitting one
     cluster at its mean (or merging two), accept with
     min(1, score(new)/score(old)) where the score is the Dirichlet
@@ -44,7 +41,7 @@ def ghosal_splitmerge(data, z_current, split_label=None, alpha=1.0,
     z = [int(v) for v in _bnp._flat(z_current)]
     M = float(alpha)
     if split_label is None:
-        split_label = max(set(z), key=lambda l: z.count(l))
+        split_label = max(set(z), key=lambda ell: z.count(ell))
     members = [j for j in range(len(xs)) if z[j] == int(split_label)]
     if len(members) < 2:
         raise ValueError("cluster too small to split")
@@ -54,16 +51,20 @@ def ghosal_splitmerge(data, z_current, split_label=None, alpha=1.0,
     for j in members:
         if xs[j] > mu:
             z_prop[j] = new_lab
-    if len(set(z_prop)) == len(set(z)):     # degenerate split
+    if len(set(z_prop)) == len(set(z)):  # degenerate split
         z_prop = z
     old = _config_logscore(xs, z, M, sigma)
     new = _config_logscore(xs, z_prop, M, sigma)
     accept = min(1.0, math.exp(min(new - old, 50.0)))
-    res = RichResult(payload={"estimate": accept,
-                              "log_score_old": old,
-                              "log_score_new": new,
-                              "z_proposed": z_prop,
-                              "method": "split-merge MH ratio (GvdV 2017 sec. 5.2, prior 4.20)"})
+    res = RichResult(
+        payload={
+            "estimate": accept,
+            "log_score_old": old,
+            "log_score_new": new,
+            "z_proposed": z_prop,
+            "method": "split-merge MH ratio (GvdV 2017 sec. 5.2, prior 4.20)",
+        }
+    )
     return with_describe_pointer(res, "gh_c5_4")
 
 

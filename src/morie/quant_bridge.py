@@ -204,7 +204,6 @@ class GGMLTurboQuant:
     def _make_ctx(self, bits: int, dim: int = TQ_BLOCK_SIZE) -> Any:
         """Create and initialize a tq_context via the C library."""
         # tq_context is opaque; allocate as raw bytes and call tq_init
-        ctx_size = 4 + 4 + (4 + 4 + 4 + 16 * 4)  # dim + bits + codebook struct
         ctx_buf = (ctypes.c_char * 256)()  # oversized to be safe
         self._lib.tq_init(ctypes.byref(ctx_buf), c_int(dim), c_int(bits))
         return ctx_buf
@@ -291,6 +290,9 @@ def compile_ggml_lib(
     logger.info(
         "GGML C library compilation not yet implemented (would use %s %s -o %s) -- "
         "header validated at %s. Using NumPy fallback.",
-        cc, " ".join(flags), output, header,
+        cc,
+        " ".join(flags),
+        output,
+        header,
     )
     return None

@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """RAS matrix scaling to prescribed margins."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['rasscale', 'ot_matrix_scaling']
+__all__ = ["rasscale", "ot_matrix_scaling"]
 
 
 def rasscale(K, row_target, col_target, max_iter=200):
@@ -42,8 +40,10 @@ def rasscale(K, row_target, col_target, max_iter=200):
     form of the method.
     """
     K = C.mat(K)
-    r = C.vec(row_target); c = C.vec(col_target)
-    m = len(K); n = len(K[0])
+    r = C.vec(row_target)
+    c = C.vec(col_target)
+    m = len(K)
+    n = len(K[0])
     if len(r) != m or len(c) != n:
         raise ValueError("targets must match the shape of K")
     if any(v < 0 for row in K for v in row):
@@ -62,9 +62,17 @@ def rasscale(K, row_target, col_target, max_iter=200):
     M = [[u[i] * K[i][j] * v[j] for j in range(n)] for i in range(m)]
     rerr = max(abs(sum(M[i]) - r[i]) for i in range(m))
     cerr = max(abs(sum(M[i][j] for i in range(m)) - c[j]) for j in range(n))
-    return RichResult(payload={
-        "M": M, "u": u, "v": v, "row_error": rerr, "col_error": cerr,
-        "iterations": int(max_iter), "method": "RAS matrix scaling"})
+    return RichResult(
+        payload={
+            "M": M,
+            "u": u,
+            "v": v,
+            "row_error": rerr,
+            "col_error": cerr,
+            "iterations": int(max_iter),
+            "method": "RAS matrix scaling",
+        }
+    )
 
 
 ot_matrix_scaling = rasscale

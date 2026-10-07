@@ -1,7 +1,6 @@
 """Tests for hmstrn.history_adjusted_msm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmstrn import history_adjusted_msm
 
 

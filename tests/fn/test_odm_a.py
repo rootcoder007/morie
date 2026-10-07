@@ -1,7 +1,6 @@
 """Tests for morie.fn.odm_a — Demographic profile per age group."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.odm_a import otis_demo_age
 
 

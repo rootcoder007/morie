@@ -5,12 +5,12 @@ draws rather than an (n, n) weights matrix, so it raised "shape mismatch
 among x, y, w" and had never passed.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.spsar import schabenberger_sar_model
-from morie.fn.sarla import spatial_ar_lag
+from morie.fn import _array_core as np
 from morie.fn._schab_rho import rho_bounds
+from morie.fn.sarla import spatial_ar_lag
+from morie.fn.spsar import schabenberger_sar_model
 
 
 def _case(n=24):
@@ -20,15 +20,13 @@ def _case(n=24):
     W = W / np.maximum(W.sum(axis=1, keepdims=True), 1e-12)
     rng = np.random.default_rng(0)
     X = np.column_stack([np.ones(n), rng.random(n)])
-    y = np.linalg.solve(np.eye(n) - 0.4 * W, X @ np.array([1.0, -0.5])
-                        + rng.normal(0, 0.3, n))
+    y = np.linalg.solve(np.eye(n) - 0.4 * W, X @ np.array([1.0, -0.5]) + rng.normal(0, 0.3, n))
     return X, y, W
 
 
 def test_spsar_delegates_to_spatial_ar_lag():
     X, y, W = _case()
-    assert float(schabenberger_sar_model(X, y, W)["rho"]) == \
-        float(spatial_ar_lag(X, y, W)["rho"])
+    assert float(schabenberger_sar_model(X, y, W)["rho"]) == float(spatial_ar_lag(X, y, W)["rho"])
 
 
 def test_spsar_rho_lies_inside_the_valid_parameter_space():
@@ -49,8 +47,7 @@ def test_spsar_recovers_a_known_rho():
     X = np.column_stack([np.ones(n), rng.random(n)])
     est = []
     for _ in range(40):
-        y = np.linalg.solve(np.eye(n) - 0.5 * W,
-                            X @ np.array([1.0, -0.5]) + rng.normal(0, 0.3, n))
+        y = np.linalg.solve(np.eye(n) - 0.5 * W, X @ np.array([1.0, -0.5]) + rng.normal(0, 0.3, n))
         est.append(float(schabenberger_sar_model(X, y, W)["rho"]))
     assert np.mean(est) == pytest.approx(0.5, abs=0.2)
 

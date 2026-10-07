@@ -5,8 +5,6 @@ Implements sec. 13.3 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
 from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
@@ -31,12 +29,14 @@ def ghosal_beta_proc_def(grid_t, c=2.0, Lambda0_rate=1.0, seed=42):
         H += float(rng.beta(a, b))
         path.append(H)
         prev = t
-    res = RichResult(payload={"estimate": path[-1],
-                              "cum_hazard": path,
-                              "nondecreasing": all(
-                                  path[i + 1] >= path[i] - 1e-12
-                                  for i in range(len(path) - 1)),
-                              "method": "beta process (GvdV 2017 sec. 13.3)"})
+    res = RichResult(
+        payload={
+            "estimate": path[-1],
+            "cum_hazard": path,
+            "nondecreasing": all(path[i + 1] >= path[i] - 1e-12 for i in range(len(path) - 1)),
+            "method": "beta process (GvdV 2017 sec. 13.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_3")
 
 

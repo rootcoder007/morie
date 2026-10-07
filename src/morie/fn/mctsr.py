@@ -9,8 +9,7 @@ __all__ = ["mctsr", "monte_carlo_tree_search"]
 
 
 class _Node:
-    __slots__ = ("state", "parent", "action", "children", "untried",
-                 "N", "Q")
+    __slots__ = ("state", "parent", "action", "children", "untried", "N", "Q")
 
     def __init__(self, state, parent, action, untried):
         self.state = state
@@ -31,11 +30,7 @@ def _best_child(node, c, rng):
     # the native RNG so both language arms agree.
     best, ties = -math.inf, []
     for ch in node.children:
-        if ch.N == 0:
-            v = math.inf
-        else:
-            v = ch.Q / ch.N + 2.0 * c * math.sqrt(
-                2.0 * math.log(node.N) / ch.N)
+        v = math.inf if ch.N == 0 else ch.Q / ch.N + 2.0 * c * math.sqrt(2.0 * math.log(node.N) / ch.N)
         if v > best:
             best, ties = v, [ch]
         elif v == best:
@@ -45,9 +40,18 @@ def _best_child(node, c, rng):
     return ties[int(float(rng.uniform()) * len(ties))]
 
 
-def mctsr(root_state, actions, step, reward, is_terminal,
-          n_iter=200, c=0.7071067811865476, seed=0,
-          backup="sum", final="robust"):
+def mctsr(
+    root_state,
+    actions,
+    step,
+    reward,
+    is_terminal,
+    n_iter=200,
+    c=0.7071067811865476,
+    seed=0,
+    backup="sum",
+    final="robust",
+):
     """
     Vanilla Monte Carlo tree search with UCT and random rollouts.
 
@@ -162,23 +166,21 @@ def mctsr(root_state, actions, step, reward, is_terminal,
     if final == "robust":
         best = max(root.children, key=lambda ch: (ch.N, -id(ch)))
     else:
-        best = max(root.children,
-                   key=lambda ch: (ch.Q / ch.N if ch.N else -math.inf,
-                                   -id(ch)))
-    return RichResult(payload={
-        "action": best.action,
-        "root_visits": root.N,
-        "child_visits": {str(ch.action): ch.N for ch in root.children},
-        "child_values": {str(ch.action): (ch.Q / ch.N if ch.N else 0.0)
-                         for ch in root.children},
-        "n_iter": int(n_iter),
-        "c": float(c),
-        "backup": backup,
-        "final": final,
-        "seed": int(seed),
-        "method": "UCT MCTS (Browne et al. 2012, Algorithm %s)"
-                  % ("2" if backup == "sum" else "3"),
-    })
+        best = max(root.children, key=lambda ch: (ch.Q / ch.N if ch.N else -math.inf, -id(ch)))
+    return RichResult(
+        payload={
+            "action": best.action,
+            "root_visits": root.N,
+            "child_visits": {str(ch.action): ch.N for ch in root.children},
+            "child_values": {str(ch.action): (ch.Q / ch.N if ch.N else 0.0) for ch in root.children},
+            "n_iter": int(n_iter),
+            "c": float(c),
+            "backup": backup,
+            "final": final,
+            "seed": int(seed),
+            "method": "UCT MCTS (Browne et al. 2012, Algorithm %s)" % ("2" if backup == "sum" else "3"),
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -186,8 +188,8 @@ monte_carlo_tree_search = mctsr
 
 
 def cheatsheet():
-    return ("mctsr: UCT = Xbar_j + 2*Cp*sqrt(2*ln n / n_j); "
-            "Cp=1/sqrt(2); robust=most-visited root child")
+    return "mctsr: UCT = Xbar_j + 2*Cp*sqrt(2*ln n / n_j); Cp=1/sqrt(2); robust=most-visited root child"
+
 
 # public names resolved by fn/_lazy_map.json
 mcts_rollout = mctsr

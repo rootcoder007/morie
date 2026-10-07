@@ -13,5 +13,6 @@ def test_almqa_basic():
 
 def test_almqa_edge():
     import pytest
+
     with pytest.raises(ValueError, match="query heads"):
         alammar_multi_query_attention([[[1.0]]], [[1.0]], [[1.0]], 2)

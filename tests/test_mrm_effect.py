@@ -44,8 +44,13 @@ def test_the_consensus_is_inverse_variance_pooled():
     w = [1 / r["std_error"] ** 2 for r in eff.results]
     want = sum(wi * r["estimate"] for wi, r in zip(w, eff.results)) / sum(w)
     assert eff.consensus["estimate"] == pytest.approx(want, abs=1e-12)
-    assert eff.consensus["std_error"] == pytest.approx((1 / sum(w)) ** 0.5,
-                                                       abs=1e-12)
+    # The four estimators share one data set, so the standard error is the
+    # weighted mean of theirs (perfect correlation), never the
+    # independent-studies 1 / sqrt(sum w), which halved the interval.
+    se = sum(wi * r["std_error"] for wi, r in zip(w, eff.results)) / sum(w)
+    assert eff.consensus["std_error"] == pytest.approx(se, abs=1e-12)
+    assert eff.consensus["std_error"] >= min(r["std_error"] for r in eff.results)
+    assert eff.consensus["std_error"] > (1 / sum(w)) ** 0.5
 
 
 def test_asking_more_than_once_costs_something():
@@ -55,8 +60,7 @@ def test_asking_more_than_once_costs_something():
     eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"])
     for r in eff.results:
         assert r["p_adjusted"] >= r["p_value"] - 1e-15
-    raw = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
-                                           correction="none")
+    raw = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"], correction="none")
     for r in raw.results:
         assert r["p_adjusted"] == pytest.approx(r["p_value"])
 
@@ -73,8 +77,7 @@ def test_nothing_requested_is_silently_dropped():
     # A consensus over an unknown subset is not a consensus, so every
     # requested method must land in exactly one of results or failed.
     methods = ("matching", "ate", "aipw", "dml")
-    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
-                                           methods=methods)
+    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"], methods=methods)
     assert len(eff.results) + len(eff.failed) == len(methods)
     assert not (set(eff.failed) & {r["method"] for r in eff.results})
 
@@ -84,16 +87,15 @@ def test_aipw_runs_on_a_continuous_outcome():
     # default on a continuous outcome fails inside the native core with
     # "binary only", which reads like a missing capability and is really
     # the wrong link function.
-    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
-                                           methods=("aipw",))
+    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"], methods=("aipw",))
     assert eff.failed == {}
     assert abs(eff.results[0]["estimate"] - 0.8) < 0.2
 
 
 def test_aipw_runs_on_a_binary_outcome():
     eff = morie.mrm_estimate_causal_effect(
-        _sim(n=600, effect=0.9, seed=7, binary_outcome=True),
-        "t", "y", ["x"], methods=("aipw", "ate"))
+        _sim(n=600, effect=0.9, seed=7, binary_outcome=True), "t", "y", ["x"], methods=("aipw", "ate")
+    )
     assert eff.failed == {}
     got = {r["method"].split(" (")[0]: r["estimate"] for r in eff.results}
     # both are risk differences here, so they should broadly agree
@@ -101,8 +103,7 @@ def test_aipw_runs_on_a_binary_outcome():
 
 
 def test_a_categorical_treatment_is_refused():
-    rows = [{"y": 1.0, "t": "high", "x": 0.1},
-            {"y": 2.0, "t": "low", "x": 0.2}]
+    rows = [{"y": 1.0, "t": "high", "x": 0.1}, {"y": 2.0, "t": "low", "x": 0.2}]
     with pytest.raises(ValueError, match="binary 0/1 treatment"):
         morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"])
 
@@ -112,12 +113,9 @@ def test_inputs_are_checked_before_any_estimator_runs():
     with pytest.raises(ValueError, match="missing column"):
         morie.mrm_estimate_causal_effect(rows, "t", "y", ["nope"])
     with pytest.raises(ValueError, match="unknown method"):
-        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"],
-                                         methods=("bogus",))
+        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"], methods=("bogus",))
     with pytest.raises(ValueError, match="unknown correction"):
-        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"],
-                                         methods=("dml",),
-                                         correction="bogus")
+        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"], methods=("dml",), correction="bogus")
     with pytest.raises(ValueError, match="must not be empty"):
         morie.mrm_estimate_causal_effect([], "t", "y", ["x"])
 
@@ -128,13 +126,36 @@ def test_every_estimator_failing_is_an_error_not_an_empty_answer():
     # empty results table would look like a finding of nothing.
     rows = _sim(n=4)
     with pytest.raises(RuntimeError, match="every requested estimator"):
-        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"],
-                                         methods=("dml",))
+        morie.mrm_estimate_causal_effect(rows, "t", "y", ["x"], methods=("dml",))
 
 
 def test_the_effect_renders_through_the_report():
-    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"],
-                                           methods=("ate", "dml"))
+    eff = morie.mrm_estimate_causal_effect(_sim(), "t", "y", ["x"], methods=("ate", "dml"))
     out = morie.mrm_report(effect=eff)
     assert "Causal effect" in out and "consensus" in out
     assert "dml plr" in out
+
+
+def test_a_reused_control_counts_once_per_pair_squared():
+    # Treated 1-3 share control c1, treated 4 has c2: c1 enters the ATT
+    # with weight 3/4, so its noise counts 9 times, not 3 (Abadie & Imbens
+    # 2006). Same fixture as rmorie's test-matching.R.
+    import statistics
+
+    pd = pytest.importorskip("pandas")
+
+    from morie.matching import estimate_att_matched
+
+    df = pd.DataFrame(
+        {"y": [3, 4, 6, 5, 1, 2], "d": [1, 1, 1, 1, 0, 0]},
+        index=["t1", "t2", "t3", "t4", "c1", "c2"],
+    )
+    pairs = pd.DataFrame({"treated_idx": ["t1", "t2", "t3", "t4"], "control_idx": ["c1", "c1", "c1", "c2"]})
+    res = estimate_att_matched(df, "y", "d", pairs)
+    d = [2, 3, 5, 3]
+    v = statistics.variance(d) / 4 + statistics.variance(d) / 2 * ((3**2 - 3) + (1**2 - 1)) / 4**2
+    assert res.estimate == pytest.approx(3.25, abs=1e-12)
+    assert res.std_error == pytest.approx(v**0.5, abs=1e-12)
+    assert res.std_error == pytest.approx(0.69270833333333333**0.5, abs=1e-12)
+    one = estimate_att_matched(df, "y", "d", pd.DataFrame({"treated_idx": ["t1", "t4"], "control_idx": ["c1", "c2"]}))
+    assert one.std_error == pytest.approx(statistics.stdev([2, 3]) / 2**0.5, abs=1e-12)

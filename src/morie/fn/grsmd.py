@@ -109,20 +109,18 @@ def _diff(e, var):
         return ("+", _diff(e[1], var), _diff(e[2], var))
     if op == "-":
         return ("-", _diff(e[1], var), _diff(e[2], var))
-    if op == "*":                                        # product rule
+    if op == "*":  # product rule
         return ("+", ("*", _diff(e[1], var), e[2]), ("*", e[1], _diff(e[2], var)))
-    if op == "/":                                        # quotient rule
+    if op == "/":  # quotient rule
         num = ("-", ("*", _diff(e[1], var), e[2]), ("*", e[1], _diff(e[2], var)))
         return ("/", num, ("^", e[2], 2))
-    if op == "^":                                        # power rule (constant exponent)
+    if op == "^":  # power rule (constant exponent)
         if not _is_const(e[2]):
-            raise ValueError(
-                "only constant exponents are supported; rewrite a^b as exp(b*log(a))."
-            )
+            raise ValueError("only constant exponents are supported; rewrite a^b as exp(b*log(a)).")
         return ("*", ("*", e[2], ("^", e[1], e[2] - 1)), _diff(e[1], var))
     if op == "neg":
         return ("neg", _diff(e[1], var))
-    if op in _UNARY:                                     # chain rule
+    if op in _UNARY:  # chain rule
         inner = _diff(e[1], var)
         if op == "sin":
             outer = ("cos", e[1])

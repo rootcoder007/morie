@@ -1,7 +1,6 @@
 """Tests for dcblk -- DC blocker."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import SignalResult
 from morie.fn.dcblk import dcblk
 
@@ -20,7 +19,7 @@ def test_dcblk_iir_method():
 
 
 def test_dcblk_preserves_ac():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     t = np.arange(0, 1.0, 0.001)
     x = np.sin(2 * np.pi * 50 * t) + 5.0
     result = dcblk(x)

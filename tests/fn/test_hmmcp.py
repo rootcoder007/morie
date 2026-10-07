@@ -2,8 +2,6 @@
 
 import doctest as _doctest
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmmcp import geron_model_context_protocol
 
 
@@ -19,13 +17,11 @@ def test_hmmcp_basic():
             a = req["params"]["arguments"]["a"]
             b = req["params"]["arguments"]["b"]
             return {"jsonrpc": "2.0", "id": req["id"], "result": {"content": a + b}}
-        return {"jsonrpc": "2.0", "id": req["id"],
-                "error": {"code": -32601, "message": "Method not found"}}
+        return {"jsonrpc": "2.0", "id": req["id"], "error": {"code": -32601, "message": "Method not found"}}
 
     reqs = [
         {"jsonrpc": "2.0", "id": 1, "method": "tools/list"},
-        {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
-         "params": {"name": "add", "arguments": {"a": 2, "b": 3}}},
+        {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "add", "arguments": {"a": 2, "b": 3}}},
     ]
 
     result = geron_model_context_protocol(server, reqs)
@@ -47,9 +43,9 @@ def test_hmmcp_basic():
 
 def test_hmmcp_edge():
     """Test edge cases - unknown method returns a well-formed error."""
+
     def server(req):
-        return {"jsonrpc": "2.0", "id": req["id"],
-                "error": {"code": -32601, "message": "Method not found"}}
+        return {"jsonrpc": "2.0", "id": req["id"], "error": {"code": -32601, "message": "Method not found"}}
 
     reqs = [{"jsonrpc": "2.0", "id": 9, "method": "nope"}]
 
@@ -74,7 +70,7 @@ import morie.fn.hmmcp as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

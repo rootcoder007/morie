@@ -28,17 +28,16 @@ def ca_chapter_6_equation_6(neg2ll_null, neg2ll_full):
     """
     value = _ca_crim.model_chi2(neg2ll_null, neg2ll_full)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (6.6)"
     return RichResult(
-        title='Worked model chi-square for the rearrest Poisson model',
+        title="Worked model chi-square for the rearrest Poisson model",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca6e6: Model chi2 = (-2LL_null) - (-2LL_full) [Weisburd et al. 2022, eq. 6.6]'
+    return "ca6e6: Model chi2 = (-2LL_null) - (-2LL_full) [Weisburd et al. 2022, eq. 6.6]"

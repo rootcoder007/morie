@@ -33,9 +33,16 @@ def test_trupek_edge():
     """On a convex quadratic the exact subproblem takes the Newton step
     once the radius allows it; the Cauchy variant still converges on it;
     an unknown subproblem raises."""
-    q = lambda x: (x[0] - 3) ** 2 + 10 * (x[1] + 1) ** 2
-    qg = lambda x: [2 * (x[0] - 3), 20 * (x[1] + 1)]
-    qh = lambda x: [[2.0, 0.0], [0.0, 20.0]]
+
+    def q(x):
+        return (x[0] - 3) ** 2 + 10 * (x[1] + 1) ** 2
+
+    def qg(x):
+        return [2 * (x[0] - 3), 20 * (x[1] + 1)]
+
+    def qh(x):
+        return [[2.0, 0.0], [0.0, 20.0]]
+
     r = trust_region(q, qg, qh, [0.0, 0.0], delta=10.0, subproblem="exact")
     assert r["x"] == pytest.approx([3.0, -1.0], abs=1e-12)
     assert r["iterations"] <= 3

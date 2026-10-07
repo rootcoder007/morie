@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["cross_fit_estimator", "cross_fit_one_step"]
 
 
-def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
-                        trunc=0.01):
+def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0, trunc=0.01):
     r"""Double machine learning with cross-fitting.
 
     The estimator is the AIPW score evaluated with nuisances fitted on
@@ -107,7 +106,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
         raise ValueError("fit_nuisance must be callable.")
     K = int(n_folds)
     if K < 2:
-        raise ValueError("cross-fitting needs at least 2 folds, got %d." % K)
+        raise ValueError(f"cross-fitting needs at least 2 folds, got {int(K)}.")
 
     rng = np.random.default_rng(int(seed))
     folds = rng.permutation(n) % K
@@ -122,9 +121,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
         m1 = np.asarray(m1, dtype=float).ravel()
         m0 = np.asarray(m0, dtype=float).ravel()
         e = np.clip(np.asarray(e, dtype=float).ravel(), trunc, 1 - trunc)
-        psi[te] = (m1 - m0
-                   + dv[te] * (yv[te] - m1) / e
-                   - (1 - dv[te]) * (yv[te] - m0) / (1 - e))
+        psi[te] = m1 - m0 + dv[te] * (yv[te] - m1) / e - (1 - dv[te]) * (yv[te] - m0) / (1 - e)
         fold_est.append(float(np.mean(psi[te])))
     est = float(np.mean(psi))
     se = float(np.std(psi, ddof=1) / np.sqrt(n))
@@ -136,9 +133,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
     m1a = np.asarray(m1a, dtype=float).ravel()
     m0a = np.asarray(m0a, dtype=float).ravel()
     ea = np.clip(np.asarray(ea, dtype=float).ravel(), trunc, 1 - trunc)
-    naive = float(np.mean(
-        m1a - m0a + dv * (yv - m1a) / ea - (1 - dv) * (yv - m0a) / (1 - ea)
-    ))
+    naive = float(np.mean(m1a - m0a + dv * (yv - m1a) / ea - (1 - dv) * (yv - m0a) / (1 - ea)))
     z = 1.959963984540054
     return RichResult(
         payload={
@@ -147,8 +142,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
             "ci": (est - z * se, est + z * se),
             "score": psi,
             "fold_estimates": np.asarray(fold_est),
-            "fold_spread": float(np.std(fold_est, ddof=1))
-            if len(fold_est) > 1 else np.nan,
+            "fold_spread": float(np.std(fold_est, ddof=1)) if len(fold_est) > 1 else np.nan,
             "no_crossfit_estimate": naive,
             "own_observation_bias": float(naive - est),
             "bias_note": (
@@ -166,11 +160,9 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
             "n_folds": K,
             "fold_train_size": int(round(n * (K - 1) / K)),
             "fold_size_warning": (
-                None if n * (K - 1) / K > 5 * Xa.shape[1] else
-                "each fold trains on %d rows for %d covariates; the fold "
-                "models may be worse than the full-sample one by more than "
-                "the bias cross-fitting removes"
-                % (int(round(n * (K - 1) / K)), Xa.shape[1])
+                None
+                if n * (K - 1) / K > 5 * Xa.shape[1]
+                else f"each fold trains on {int(int(round(n * (K - 1) / K)))} rows for {int(Xa.shape[1])} covariates; the fold models may be worse than the full-sample one by more than the bias cross-fitting removes"
             ),
             "n": int(n),
             "method": "Cross-fitted one-step (double machine learning) ATE",
@@ -179,10 +171,7 @@ def cross_fit_estimator(y, d, X, fit_nuisance, n_folds=5, seed=0,
 
 
 def cheatsheet():
-    return (
-        "crsfit: cross-fitted AIPW with the own-observation bias measured "
-        "against the no-cross-fitting version"
-    )
+    return "crsfit: cross-fitted AIPW with the own-observation bias measured against the no-cross-fitting version"
 
 
 #: Catalogue alias for :func:`cross_fit_estimator`.

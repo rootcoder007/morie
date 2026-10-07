@@ -60,8 +60,7 @@ def ev_madogram(x, y, t=None):
     n = xv.size
     if n < 20:
         raise ValueError(f"need at least 20 pairs, got {n}.")
-    tg = np.linspace(0.05, 0.95, 19) if t is None else \
-        np.atleast_1d(np.asarray(t, dtype=float)).ravel()
+    tg = np.linspace(0.05, 0.95, 19) if t is None else np.atleast_1d(np.asarray(t, dtype=float)).ravel()
     if np.any((tg <= 0) | (tg >= 1)):
         raise ValueError("t must lie strictly in (0, 1).")
     # rank margins, scaled by n+1 to stay inside (0, 1)
@@ -69,29 +68,32 @@ def ev_madogram(x, y, t=None):
     V = (np.argsort(np.argsort(yv)) + 1.0) / (n + 1.0)
     A_raw = np.empty(tg.size)
     for i, tt in enumerate(tg):
-        nu = 0.5 * float(np.mean(np.abs(U ** (1.0 / tt)
-                                        - V ** (1.0 / (1.0 - tt)))))
+        nu = 0.5 * float(np.mean(np.abs(U ** (1.0 / tt) - V ** (1.0 / (1.0 - tt)))))
         c = tt / (2.0 * (1.0 + tt)) + (1.0 - tt) / (2.0 * (2.0 - tt))
         A_raw[i] = (nu + c) / (1.0 - nu - c)
     lower = np.maximum(tg, 1.0 - tg)
     A = np.clip(A_raw, lower, 1.0)
     clipped = float(np.mean(np.abs(A - A_raw) > 1e-12))
     # 2(1 - A(1/2)) in [0, 1]: 0 = independence, 1 = complete dependence
-    nu_h = 0.5 * float(np.mean(np.abs(U ** 2 - V ** 2)))
+    nu_h = 0.5 * float(np.mean(np.abs(U**2 - V**2)))
     c_h = 0.5 / 3.0 + 0.5 / 3.0
     A_half = np.clip((nu_h + c_h) / (1.0 - nu_h - c_h), 0.5, 1.0)
-    return RichResult(payload={
-        "t": tg, "A": A, "A_raw": A_raw,
-        "clipped_fraction": clipped,
-        "dependence_summary": float(2.0 * (1.0 - A_half)),
-        "envelope": "max(t, 1-t) <= A <= 1; A = 1 is asymptotic "
-                    "independence, the lower envelope complete dependence",
-        "clipping_note": "heavy clipping means the extreme-value model "
-                         "itself fits badly, not that the estimator "
-                         "misfired",
-        "n": int(n),
-        "method": "Lambda-madogram estimate of the Pickands dependence "
-                  "function (Naveau et al. 2009, Prop. 3)"})
+    return RichResult(
+        payload={
+            "t": tg,
+            "A": A,
+            "A_raw": A_raw,
+            "clipped_fraction": clipped,
+            "dependence_summary": float(2.0 * (1.0 - A_half)),
+            "envelope": "max(t, 1-t) <= A <= 1; A = 1 is asymptotic "
+            "independence, the lower envelope complete dependence",
+            "clipping_note": "heavy clipping means the extreme-value model "
+            "itself fits badly, not that the estimator "
+            "misfired",
+            "n": int(n),
+            "method": "Lambda-madogram estimate of the Pickands dependence function (Naveau et al. 2009, Prop. 3)",
+        }
+    )
 
 
 def cheatsheet():

@@ -80,8 +80,7 @@ def blupslope(y, group, Z, D, s2e, X=None, beta=None):
         b = C.vec(beta)
         if len(b) != len(Xm[0]):
             raise ValueError("beta must have one entry per column of X")
-        r = [y[i] - sum(Xm[i][j] * b[j] for j in range(len(b)))
-             for i in range(n)]
+        r = [y[i] - sum(Xm[i][j] * b[j] for j in range(len(b))) for i in range(n)]
     labs = []
     for v in g:
         if v not in labs:
@@ -95,20 +94,27 @@ def blupslope(y, group, Z, D, s2e, X=None, beta=None):
         nj.append(m)
         Zj = [Zm[i] for i in idx]
         ZD = C.matmul(Zj, Dm)
-        M = [[sum(ZD[a][t] * Zj[b][t] for t in range(q))
-              + (s2e if a == b else 0.0) for b in range(m)]
-             for a in range(m)]
+        M = [
+            [sum(ZD[a][t] * Zj[b][t] for t in range(q)) + (s2e if a == b else 0.0) for b in range(m)] for a in range(m)
+        ]
         w = C.solvev(M, [r[i] for i in idx])
-        DZt = [[sum(Dm[a][t] * Zj[b][t] for t in range(q))
-                for b in range(m)] for a in range(q)]
+        DZt = [[sum(Dm[a][t] * Zj[b][t] for t in range(q)) for b in range(m)] for a in range(q)]
         vj = [sum(DZt[a][b] * w[b] for b in range(m)) for a in range(q)]
         V.append(vj)
         for i in idx:
             fit[i] = sum(Zm[i][a] * vj[a] for a in range(q))
-    return RichResult(payload={
-        "v": V, "levels": labs, "nj": nj, "fitted": fit,
-        "J": len(labs), "q": q, "n": n,
-        "method": "BLUP of random coefficients (Henderson 1975; Robinson 1991)"})
+    return RichResult(
+        payload={
+            "v": V,
+            "levels": labs,
+            "nj": nj,
+            "fitted": fit,
+            "J": len(labs),
+            "q": q,
+            "n": n,
+            "method": "BLUP of random coefficients (Henderson 1975; Robinson 1991)",
+        }
+    )
 
 
 blup_random_slope = blupslope

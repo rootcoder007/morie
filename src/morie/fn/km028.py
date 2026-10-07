@@ -39,19 +39,22 @@ def kamath_ch2_alm_loss(x, M):
     p = _validate_probs(x, "x")
     idx = np.atleast_1d(np.asarray(M)).astype(int)
     if len(idx) == 0:
-        raise ValueError("the scored index set is empty; a loss over "
-                         "nothing is not 0, it is undefined.")
+        raise ValueError("the scored index set is empty; a loss over nothing is not 0, it is undefined.")
     if np.any((idx < 0) | (idx >= len(p))):
         raise ValueError("an index lies outside the sequence.")
     if len(set(int(i) for i in idx)) != len(idx):
         raise ValueError("the index set contains duplicates.")
     with np.errstate(divide="ignore"):
         losses = -np.log(p[idx])
-    return RichResult(payload={
-        "estimate": float(np.mean(losses)),
-        "per_position": [float(v) for v in losses],
-        "positions_scored": [int(i) for i in idx], "n": len(p),
-        "method": "alternate language modelling (ALM) loss (Kamath Eq 2.28)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(losses)),
+            "per_position": [float(v) for v in losses],
+            "positions_scored": [int(i) for i in idx],
+            "n": len(p),
+            "method": "alternate language modelling (ALM) loss (Kamath Eq 2.28)",
+        }
+    )
 
 
 def cheatsheet():

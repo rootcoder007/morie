@@ -83,16 +83,22 @@ def _date_series(df: pd.DataFrame, *, min_year: int = 2014) -> pd.Series:
     """
     ts: pd.Series | None = None
     if {"OCC_YEAR", "OCC_MONTH", "OCC_DAY"}.issubset(df.columns):
+        # the feed gives the parts as text and the month as a name ("January"): the frame assembles them
         ts = pd.to_datetime(
             df[["OCC_YEAR", "OCC_MONTH", "OCC_DAY"]].rename(
                 columns={"OCC_YEAR": "year", "OCC_MONTH": "month", "OCC_DAY": "day"}
             ),
             errors="coerce",
         ).dropna()
+        if len(ts) == 0:
+            ts = None
     if ts is None:
         for c in ("OCC_DATE", "REPORT_DATE"):
             if c in df.columns:
-                ts = pd.to_datetime(df[c], errors="coerce").dropna()
+                first = next((v for v in df[c].tolist() if v == v and v is not None), None)
+                # the ArcGIS feed gives epoch milliseconds, a CSV export gives text
+                unit = "ms" if isinstance(first, int | float) else None
+                ts = pd.to_datetime(df[c], errors="coerce", unit=unit).dropna()
                 break
     if ts is None:
         return pd.Series(dtype="datetime64[ns]")
@@ -162,7 +168,6 @@ def hawkes_temporal_fit(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 50
     aic = 2 * 3 + 2 * nll
     bic = 3 * math.log(n) + 2 * nll
 
-    branching = kappa  # fraction of events triggering offspring
     # Visualisation
     fig_path = None
     try:

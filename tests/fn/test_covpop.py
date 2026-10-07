@@ -1,7 +1,6 @@
 """Tests for covpop.coverage_correction."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.covpop import coverage_correction
 
 
@@ -40,7 +39,7 @@ def test_covpop_edge():
     """Test edge cases with explicit post-strata."""
     rng_y = np.random.default_rng(43)
     rng_w = np.random.default_rng(45)
-    rng_s = np.random.default_rng(47)
+    np.random.default_rng(47)
     n = 100
     y = rng_y.normal(0, 1, n)
     weights = rng_w.exponential(1, n)

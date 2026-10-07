@@ -49,10 +49,7 @@ def e_value(
     e_ci = None
     if ci_lower is not None and ci_lower > 0:
         rr_ci = ci_lower if ci_lower >= 1 else 1 / ci_lower
-        if rr_ci <= 1:
-            e_ci = 1.0
-        else:
-            e_ci = float(rr_ci + np.sqrt(rr_ci * (rr_ci - 1)))
+        e_ci = 1.0 if rr_ci <= 1 else float(rr_ci + np.sqrt(rr_ci * (rr_ci - 1)))
 
     return ESRes(
         measure="e_value",

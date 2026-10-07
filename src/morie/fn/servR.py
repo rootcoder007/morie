@@ -110,7 +110,10 @@ def serendipity(pred, baseline, relevant):
             "n_baseline": float(len(pm)),
             "n_relevant": float(len(rel)),
             "n_universe": float(len(universe)),
-            "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "tn": tn,
             "method": "Serendipity of a recommendation list (Ge et al. 2010; Adamopoulos & Tuzhilin 2014)",
         }
     )

@@ -1,7 +1,6 @@
 """Tests for yolovx.yolo_decoupled_head."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.yolovx import yolo_decoupled_head
 
 

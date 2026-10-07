@@ -71,14 +71,16 @@ def coverage_correction(y, weights, target_totals, strata=None):
             w_adj[i] = w[i] * f
     tot = sum(w_adj)
     est = sum(w_adj[i] * y[i] for i in range(n)) / tot
-    return RichResult(payload={
-        "estimate": est,
-        "w_adj": w_adj,
-        "factors": factors,
-        "total": tot,
-        "n": n,
-        "method": "coverage correction of weights to known population totals",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "w_adj": w_adj,
+            "factors": factors,
+            "total": tot,
+            "n": n,
+            "method": "coverage correction of weights to known population totals",
+        }
+    )
 
 
 def cheatsheet():

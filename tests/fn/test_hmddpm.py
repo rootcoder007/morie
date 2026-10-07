@@ -12,6 +12,7 @@ def test_hmddpm_basic():
     the least-squares fit of eps_t on x_t, recomputed here from the same
     noise draws."""
     from morie.fn.hmdfw import lcg_normal
+
     X = [[1.0], [2.0], [3.0], [4.0], [2.5]]
     T, seed = 3, 2
     r = geron_ddpm(X, T=T, epochs=4000, lr=0.1, seed=seed)
@@ -37,5 +38,3 @@ def test_hmddpm_edge():
         geron_ddpm([[1.0]], T=0)
     with pytest.raises(ValueError, match="lr must be"):
         geron_ddpm([[1.0]], lr=-1)
-
-

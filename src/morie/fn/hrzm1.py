@@ -35,14 +35,14 @@ def horowitz_mixture_model(y, k=2, maxiter=200, tol=1e-6, seed=0):
     if n < max(10, 3 * k):
         return RichResult(payload={"estimate": np.nan, "n": n, "method": "mixture-EM (insufficient data)"})
     k = max(2, int(k))
-    rng = np.random.default_rng(seed)
+    np.random.default_rng(seed)
     # k-means style warm start via quantile init
     qs = np.linspace(0.1, 0.9, k)
     mu = np.quantile(y, qs).astype(float)
     sigma = np.full(k, float(np.std(y, ddof=1) / k + 1e-3))
     pi = np.full(k, 1.0 / k)
     ll_prev = -np.inf
-    for it in range(maxiter):
+    for it in range(maxiter):  # noqa: B007 - read after the loop
         # E-step
         comps = np.column_stack([pi[j] * _gauss_pdf(y, mu[j], sigma[j]) for j in range(k)])
         denom = comps.sum(axis=1, keepdims=True)

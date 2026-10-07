@@ -7,8 +7,7 @@ from ._schab_vario import empirical_semivariogram
 __all__ = ["schabenberger_geometric_anisotropy"]
 
 
-def schabenberger_geometric_anisotropy(coords, z, A_matrix=None, n_bins=15,
-                                       max_dist=None):
+def schabenberger_geometric_anisotropy(coords, z, A_matrix=None, n_bins=15, max_dist=None):
     r"""
     Correct geometric anisotropy by an affine map of the coordinates.
 
@@ -60,19 +59,22 @@ def schabenberger_geometric_anisotropy(coords, z, A_matrix=None, n_bins=15,
     if A.shape != (d, d):
         raise ValueError(f"`A_matrix` must be ({d}, {d}) to match `coords`")
     if abs(np.linalg.det(A)) < 1e-300:
-        raise ValueError("`A_matrix` is singular; it must be invertible "
-                         "(A = B^-1 for the anisotropy map B)")
+        raise ValueError("`A_matrix` is singular; it must be invertible (A = B^-1 for the anisotropy map B)")
 
     star = coords @ A.T
     lag, gam, cnt = empirical_semivariogram(star, z, n_bins, max_dist)
     _, gam_raw, _ = empirical_semivariogram(coords, z, n_bins, max_dist)
     return RichResult(
         title="Geometric anisotropy correction",
-        summary_lines=[("det(A)", float(np.linalg.det(A))),
-                       ("bins", int(n_bins))],
-        payload={"lag": lag, "gamma": gam, "n_pairs": cnt,
-                 "gamma_raw": gam_raw, "coords_corrected": star,
-                 "A_matrix": A},
+        summary_lines=[("det(A)", float(np.linalg.det(A))), ("bins", int(n_bins))],
+        payload={
+            "lag": lag,
+            "gamma": gam,
+            "n_pairs": cnt,
+            "gamma_raw": gam_raw,
+            "coords_corrected": star,
+            "A_matrix": A,
+        },
     )
 
 

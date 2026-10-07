@@ -79,10 +79,12 @@ def spectral_radius(g, iters=400):
     for i in range(n):
         for j in range(i + 1, n):
             if abs(w[i][j] - w[j][i]) > 1e-12:
-                raise ValueError("`g` must be symmetric; power iteration "
-                                 "on a non-symmetric matrix can converge "
-                                 "to a complex pair and report a modulus "
-                                 "that is not the spectral radius")
+                raise ValueError(
+                    "`g` must be symmetric; power iteration "
+                    "on a non-symmetric matrix can converge "
+                    "to a complex pair and report a modulus "
+                    "that is not the spectral radius"
+                )
 
     # Iterate on W^2, not W.  A symmetric W can have BOTH +rho and -rho
     # as extreme eigenvalues (every bipartite graph does -- a rook grid,
@@ -96,8 +98,7 @@ def spectral_radius(g, iters=400):
         u = matvec(w, matvec(w, v))
         s = sqrt(dot(u, u))
         if s < 1e-300:
-            raise ValueError("`g` is numerically zero; the spectral "
-                             "radius is 0 and no eigenvector is defined")
+            raise ValueError("`g` is numerically zero; the spectral radius is 0 and no eigenvector is defined")
         v = [t / s for t in u]
     wv = matvec(w, v)
     rho = sqrt(dot(wv, wv))
@@ -120,19 +121,23 @@ def spectral_radius(g, iters=400):
     if v[j] < 0:
         v = [-t for t in v]
 
-    return RichResult(payload={
-        "rho": rho,
-        "dominant_eigenvalue": lam,
-        "eigenvector": v,
-        "sar_rho_bound": 1.0 / rho,
-        "symmetric": True,
-        "iterations": float(iters),
-        "n": n,
-        "method": ("Spectral radius by power iteration on W^2 (Golub & "
-                   "Van Loan 2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is "
-                   "Schabenberger & Gotway (2005) Sec. 6.2.2.1, p. 336 -- "
-                   "NOT eq (6.48)"),
-    })
+    return RichResult(
+        payload={
+            "rho": rho,
+            "dominant_eigenvalue": lam,
+            "eigenvector": v,
+            "sar_rho_bound": 1.0 / rho,
+            "symmetric": True,
+            "iterations": float(iters),
+            "n": n,
+            "method": (
+                "Spectral radius by power iteration on W^2 (Golub & "
+                "Van Loan 2013, Sec. 7.3); the SAR bound |rho| < 1/rho(W) is "
+                "Schabenberger & Gotway (2005) Sec. 6.2.2.1, p. 336 -- "
+                "NOT eq (6.48)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

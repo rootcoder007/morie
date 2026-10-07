@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["product_of_coefficients"]
 
 
-def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
-                            alpha=0.05, n_boot=0, seed=0):
+def product_of_coefficients(a, b, se_a=None, se_b=None, n=None, alpha=0.05, n_boot=0, seed=0):
     r"""Indirect effect as :math:`a\,b`, with an honest interval.
 
     In the two-equation linear system
@@ -68,8 +67,7 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
     bv = np.atleast_1d(np.asarray(b, dtype=float)).ravel()
     if av.size != bv.size and av.size != 1 and bv.size != 1:
         raise ValueError(
-            "a and b must be scalars or arrays of the same length, got "
-            "%d and %d." % (av.size, bv.size)
+            f"a and b must be scalars or arrays of the same length, got {int(av.size)} and {int(bv.size)}."
         )
     ab = av * bv
     point = float(np.mean(ab))
@@ -81,7 +79,7 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
         if sa < 0 or sb < 0:
             raise ValueError("standard errors must be non-negative.")
         a0, b0 = float(av[0]), float(bv[0])
-        sobel_se = float(np.sqrt(a0 ** 2 * sb ** 2 + b0 ** 2 * sa ** 2))
+        sobel_se = float(np.sqrt(a0**2 * sb**2 + b0**2 * sa**2))
         sobel_ci = (point - z * sobel_se, point + z * sobel_se)
 
     boot_ci = None
@@ -91,15 +89,14 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
         draws = ab
     elif n_boot and se_a is not None and se_b is not None:
         rng = np.random.default_rng(int(seed))
-        draws = (rng.normal(float(av[0]), float(se_a), int(n_boot))
-                 * rng.normal(float(bv[0]), float(se_b), int(n_boot)))
+        draws = rng.normal(float(av[0]), float(se_a), int(n_boot)) * rng.normal(float(bv[0]), float(se_b), int(n_boot))
     if draws is not None and draws.size > 2:
         lo = float(np.quantile(draws, alpha / 2))
         hi = float(np.quantile(draws, 1 - alpha / 2))
         boot_ci = (lo, hi)
         c = draws - draws.mean()
         s = float(draws.std(ddof=1))
-        skew = float(np.mean(c ** 3) / s ** 3) if s > 0 else np.nan
+        skew = float(np.mean(c**3) / s**3) if s > 0 else np.nan
 
     return RichResult(
         payload={
@@ -118,14 +115,14 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
             ),
             "boot_ci": boot_ci,
             "boot_note": (
-                None if boot_ci is None else
-                "percentile interval, which respects the asymmetry the Sobel "
-                "interval cannot"
+                None
+                if boot_ci is None
+                else "percentile interval, which respects the asymmetry the Sobel interval cannot"
             ),
             "skewness": skew,
-            "asymmetry": (None if boot_ci is None or sobel_ci is None else
-                          float(abs((boot_ci[1] - point)
-                                    - (point - boot_ci[0])))),
+            "asymmetry": (
+                None if boot_ci is None or sobel_ci is None else float(abs((boot_ci[1] - point) - (point - boot_ci[0])))
+            ),
             "identification_note": (
                 "ab is causal only under no unmeasured confounding of the "
                 "MEDIATOR-outcome relation; randomising X fixes a and does "
@@ -139,6 +136,7 @@ def product_of_coefficients(a, b, se_a=None, se_b=None, n=None,
 
 def _z(qq):
     import math
+
     lo, hi = -12.0, 12.0
     for _ in range(200):
         mid = 0.5 * (lo + hi)
@@ -150,7 +148,4 @@ def _z(qq):
 
 
 def cheatsheet():
-    return (
-        "prdmed: indirect effect ab with Sobel and bootstrap intervals, and "
-        "why the symmetric one is wrong"
-    )
+    return "prdmed: indirect effect ab with Sobel and bootstrap intervals, and why the symmetric one is wrong"

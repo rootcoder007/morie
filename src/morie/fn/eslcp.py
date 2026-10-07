@@ -66,11 +66,17 @@ def esl_mallows_cp(RSS, d, n, sigma2):
         raise ValueError(f"C_p needs n >= 1; got {n}.")
     if sigma2 <= 0:
         raise ValueError(f"the noise variance must be positive; got {sigma2}.")
-    return RichResult(payload={
-        "estimate": (RSS + 2.0 * d * sigma2) / n,
-        "cp_classical": RSS / sigma2 - n + 2.0 * d,
-        "RSS": RSS, "d": d, "n": n, "sigma2": sigma2,
-        "method": "C_p = (1/n)(RSS + 2 d sigma^2), ESL scaling"})
+    return RichResult(
+        payload={
+            "estimate": (RSS + 2.0 * d * sigma2) / n,
+            "cp_classical": RSS / sigma2 - n + 2.0 * d,
+            "RSS": RSS,
+            "d": d,
+            "n": n,
+            "sigma2": sigma2,
+            "method": "C_p = (1/n)(RSS + 2 d sigma^2), ESL scaling",
+        }
+    )
 
 
 def cheatsheet():

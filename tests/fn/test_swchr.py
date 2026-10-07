@@ -1,7 +1,6 @@
 """Tests for morie.fn.swchr -- Solar System body summary."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.swchr import solar_body_summary, swchr
 

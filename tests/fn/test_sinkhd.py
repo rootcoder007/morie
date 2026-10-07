@@ -4,7 +4,6 @@ import pytest
 
 from morie.fn.sinkhd import sinkhorn_distance
 
-
 A = [0.2, 0.3, 0.1, 0.4]
 B = [0.25, 0.25, 0.5]
 XA = [0.0, 1.0, 2.5, 4.0]
@@ -32,5 +31,3 @@ def test_sinkhd_edge():
     assert lo["entropy"] < hi["entropy"]
     with pytest.raises(ValueError, match="positive"):
         sinkhorn_distance(A, B, C, 0.0)
-
-

@@ -1,12 +1,11 @@
 """Tests for morie.fn.catln."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.catln import catln
 
 
 def test_catln_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = catln(n=5)
     assert result is not None
     assert hasattr(result, "name")

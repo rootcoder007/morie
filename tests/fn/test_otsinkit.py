@@ -1,7 +1,6 @@
 """Tests for otsinkit.ot_sinkhorn_iter_count."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.otsinkit import ot_sinkhorn_iter_count
 
 
@@ -27,6 +26,7 @@ def test_otsinkit_basic():
     assert "trace" in result
     assert "method" in result
     import math
+
     assert math.isfinite(result["estimate"])
     assert 0.0 <= result["estimate"] <= float(max_iter)
     assert isinstance(result["reached"], bool)

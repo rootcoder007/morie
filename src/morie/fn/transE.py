@@ -90,7 +90,7 @@ def transe(triples, dim, epochs=50, lr=0.05, margin=1.0, seed=1):
         return math.sqrt(sum((E[h][d] + R[r][d] - E[t][d]) ** 2 for d in range(dim)))
 
     loss = 0.0
-    for ep in range(int(epochs)):
+    for _ep in range(int(epochs)):
         loss = 0.0
         for j in range(m):
             h, r, t = hs[j], rs[j], ts[j]
@@ -118,15 +118,21 @@ def transe(triples, dim, epochs=50, lr=0.05, margin=1.0, seed=1):
     hits = 0
     for j in range(m):
         d0 = dists[j]
-        better = sum(1 for e in range(ne)
-                     if e != ts[j] and dist(hs[j], rs[j], e) < d0)
+        better = sum(1 for e in range(ne) if e != ts[j] and dist(hs[j], rs[j], e) < d0)
         if better == 0:
             hits += 1
-    return RichResult(payload={
-        "loss": loss, "mean_dist": mean_dist, "hits_at_1": hits / float(m),
-        "dim": float(dim), "n_entities": float(ne), "n_relations": float(nr),
-        "n_triples": float(m),
-        "method": "TransE translation embeddings, margin ranking loss"})
+    return RichResult(
+        payload={
+            "loss": loss,
+            "mean_dist": mean_dist,
+            "hits_at_1": hits / float(m),
+            "dim": float(dim),
+            "n_entities": float(ne),
+            "n_relations": float(nr),
+            "n_triples": float(m),
+            "method": "TransE translation embeddings, margin ranking loss",
+        }
+    )
 
 
 def cheatsheet():

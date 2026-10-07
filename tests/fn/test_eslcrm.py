@@ -1,7 +1,6 @@
 """Tests for eslcrm.esl_cross_entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslcrm import esl_cross_entropy
 
 
@@ -55,6 +54,7 @@ def test_eslcrm_edge():
     assert result["label_form"] == "one-hot"
     # Independent arithmetic: -1 * log(0.75)
     import math
+
     expected = -math.log(0.75)
     assert abs(result["estimate"] - expected) < 1e-12
     assert abs(result["per_observation"][0] - expected) < 1e-12

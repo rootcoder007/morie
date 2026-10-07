@@ -68,7 +68,7 @@ def geron_arima(y, p=1, d=0, q=0, include_mean=True):
     P, D, Q = int(p), int(d), int(q)
     if P < 0 or D < 0 or Q < 0:
         raise ValueError("geron_arima: p, d and q must all be non-negative")
-    if D >= ys.size:
+    if ys.size <= D:
         raise ValueError(f"geron_arima: cannot difference a length-{ys.size} series {D} times")
 
     anchors = []
@@ -79,8 +79,7 @@ def geron_arima(y, p=1, d=0, q=0, include_mean=True):
     m = z.size
     if m <= P + Q:
         raise ValueError(
-            f"geron_arima: differenced series has {m} points, too few for ARMA({P},{Q}) "
-            f"(need more than {P + Q})"
+            f"geron_arima: differenced series has {m} points, too few for ARMA({P},{Q}) (need more than {P + Q})"
         )
 
     def ols(A, b):

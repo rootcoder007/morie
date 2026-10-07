@@ -103,8 +103,7 @@ def geron_hyperparameter_tuning(param_grid, X, y, estimator=None, search="grid",
         raise ValueError(f"geron_hyperparameter_tuning: search must be 'grid' or 'random', got {search!r}")
     if not hasattr(param_grid, "items"):
         raise ValueError(
-            f"geron_hyperparameter_tuning: param_grid must be a mapping name -> values, "
-            f"got {type(param_grid).__name__}"
+            f"geron_hyperparameter_tuning: param_grid must be a mapping name -> values, got {type(param_grid).__name__}"
         )
     names = list(param_grid.keys())
     if not names:

@@ -1,4 +1,5 @@
 """Butina exclusion-sphere clustering."""
+
 import importlib
 
 import pytest
@@ -11,18 +12,16 @@ def block(base, drop):
     return set(range(base, base + 20)) - {base + d for d in drop}
 
 
-GROUPS = [[block(b, d) for d in ([], [0], [1], [0, 1])]
-          for b in (0, 100, 200, 300)]
+GROUPS = [[block(b, d) for d in ([], [0], [1], [0, 1])] for b in (0, 100, 200, 300)]
 FPS = [fp for g in GROUPS for fp in g]
 TRUE = [i // 4 for i in range(16)]
 
 
 def test_the_fixture_is_separated():
-    within = min(S.tanimoto(a, b) for g in GROUPS for a in g
-                 for b in g if a != b)
-    across = max(S.tanimoto(a, b) for i, g in enumerate(GROUPS)
-                 for j, h in enumerate(GROUPS) if i != j
-                 for a in g for b in h)
+    within = min(S.tanimoto(a, b) for g in GROUPS for a in g for b in g if a != b)
+    across = max(
+        S.tanimoto(a, b) for i, g in enumerate(GROUPS) for j, h in enumerate(GROUPS) if i != j for a in g for b in h
+    )
     assert within > 0.8 > across
 
 
@@ -45,13 +44,12 @@ def test_every_member_is_within_the_threshold_of_its_centroid(th):
 def test_centroids_are_mutually_beyond_the_threshold():
     cents = [c["centroid"] for c in C.butina_clusters(FPS, 0.8)]
     for i, a in enumerate(cents):
-        for b in cents[i + 1:]:
+        for b in cents[i + 1 :]:
             assert S.tanimoto(FPS[a], FPS[b]) < 0.8
 
 
 def test_the_clusters_partition_the_collection():
-    members = [m for c in C.butina_clusters(FPS, 0.8)
-               for m in c["members"]]
+    members = [m for c in C.butina_clusters(FPS, 0.8) for m in c["members"]]
     assert sorted(members) == list(range(16))
 
 
@@ -77,8 +75,7 @@ def test_both_recount_settings_keep_the_sphere_property(recount):
 
 
 def test_clustering_is_deterministic():
-    assert C.butina_clustering(FPS, 0.8)["assignment"] \
-        == C.butina_clustering(FPS, 0.8)["assignment"]
+    assert C.butina_clustering(FPS, 0.8)["assignment"] == C.butina_clustering(FPS, 0.8)["assignment"]
 
 
 def test_the_summary_agrees_with_the_clusters():
@@ -89,11 +86,14 @@ def test_the_summary_agrees_with_the_clusters():
     assert s["centroids"] == [c["centroid"] for c in cl]
 
 
-@pytest.mark.parametrize("call", [
-    lambda: C.butina_clusters(FPS, 1.5),
-    lambda: C.butina_clusters(FPS, -0.1),
-    lambda: C.butina_clusters([], 0.8),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: C.butina_clusters(FPS, 1.5),
+        lambda: C.butina_clusters(FPS, -0.1),
+        lambda: C.butina_clusters([], 0.8),
+    ],
+)
 def test_bad_input_is_refused(call):
     with pytest.raises(ValueError):
         call()

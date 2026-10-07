@@ -1,7 +1,8 @@
 """spbym -- Besag-York-Mollie convolution, BYM (1991) Sec. 4."""
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 
 def _areas(n=10, seed=3):
@@ -12,13 +13,13 @@ def _areas(n=10, seed=3):
         A[i, i + 1] = A[i + 1, i] = 1.0
     A[0, 4] = A[4, 0] = 1.0
     E = rs.uniform(8, 30, n)
-    y = np.array([float(rs.poisson(e * np.exp(x)))
-                  for e, x in zip(E, np.linspace(-0.3, 0.3, n))])
+    y = np.array([float(rs.poisson(e * np.exp(x))) for e, x in zip(E, np.linspace(-0.3, 0.3, n))])
     return A, E, y
+
 
 from morie.fn.spbym import schabenberger_bym
 
-KAPPA, LAM = 0.129, 0.011          # the paper's thyroid-cancer estimates
+KAPPA, LAM = 0.129, 0.011  # the paper's thyroid-cancer estimates
 
 
 def test_sum_of_v_is_zero():

@@ -1,8 +1,8 @@
 """Tests for morie.fn.siavg — Single-index via average derivative."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.siavg import siavg
 
 

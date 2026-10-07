@@ -5,10 +5,6 @@ Implements Appendix F of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP (appendices).
 """
 
-import math
-
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_donsker_class"]
@@ -23,9 +19,9 @@ def ghosal_donsker_class(smoothness=1.0):
     exponent = 1.0 / (2.0 * s)
     finite = exponent < 1.0
     J = 1.0 / (1.0 - exponent) if finite else float("inf")
-    res = RichResult(payload={"estimate": J,
-                              "donsker": finite,
-                              "method": "Donsker bracketing integral (GvdV 2017 App F)"})
+    res = RichResult(
+        payload={"estimate": J, "donsker": finite, "method": "Donsker bracketing integral (GvdV 2017 App F)"}
+    )
     return with_describe_pointer(res, "gh_ap_f1")
 
 

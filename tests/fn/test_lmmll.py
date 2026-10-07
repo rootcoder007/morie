@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.lmmll import lmm_loglik
 
 
@@ -27,8 +26,8 @@ def test_lmmll_basic():
     R = R @ R.T + np.eye(n)
     result = lmm_loglik(y, X, Z, beta, D, R)
     assert isinstance(result, dict)
-    assert 'loglik' in result
-    assert math.isfinite(result['loglik'])
+    assert "loglik" in result
+    assert math.isfinite(result["loglik"])
 
 
 def test_lmmll_edge():
@@ -51,18 +50,19 @@ def test_lmmll_edge():
     R = R @ R.T + np.eye(n)
     result = lmm_loglik(y, X, Z, beta, D, R)
     assert isinstance(result, dict)
-    assert 'loglik' in result
-    assert math.isfinite(result['loglik'])
+    assert "loglik" in result
+    assert math.isfinite(result["loglik"])
 
 
 # --- appended: the module's own worked example as a gate -----------
 import doctest as _doctest
+
 import morie.fn.lmmll as _doctest_module
 
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

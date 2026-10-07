@@ -10,8 +10,7 @@ __all__ = ["geron_in_context_learning"]
 _METHOD = "In-context / few-shot prompt assembly"
 
 
-def geron_in_context_learning(examples, query, predict=None, separator="\n",
-                              template="{input} -> {output}"):
+def geron_in_context_learning(examples, query, predict=None, separator="\n", template="{input} -> {output}"):
     r"""Prepend ``K`` demonstrations to the query.
 
     .. math::
@@ -87,9 +86,7 @@ def geron_in_context_learning(examples, query, predict=None, separator="\n",
         try:
             a, b = pair
         except (TypeError, ValueError):
-            raise ValueError(
-                f"examples[{i}] must be an (input, output) pair, got {pair!r}."
-            ) from None
+            raise ValueError(f"examples[{i}] must be an (input, output) pair, got {pair!r}.") from None
         blocks.append(template.format(input=a, output=b))
     tail = template.format(input=query, output="").rstrip()
     prompt = separator.join(blocks + [tail])

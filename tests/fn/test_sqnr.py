@@ -1,8 +1,8 @@
 """Tests for morie.fn.sqnr — signal-to-quantization-noise ratio."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.sqnr import signal_quant_noise_ratio
 
 

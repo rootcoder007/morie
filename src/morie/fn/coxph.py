@@ -65,7 +65,7 @@ def coxph(
         raise ValueError("time, event, and X must have the same number of rows.")
 
     order = np.argsort(-time)
-    time_s = time[order]
+    time[order]
     event_s = event[order]
     X_s = X[order]
 

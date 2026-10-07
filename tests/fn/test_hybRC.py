@@ -21,5 +21,3 @@ def test_hybRC_edge():
     assert r["primary_respected"] and r["tie_groups_broken"] == 1
     with pytest.raises(ValueError, match="weight"):
         weighted([{"a": 1.0}, {"a": 2.0}], [1.0])
-
-

@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.autocorrelated_mean_variance import (
     autocorrelated_mean_variance,
 )

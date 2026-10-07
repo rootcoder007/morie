@@ -73,11 +73,18 @@ def bound_coverage_check(lower, upper, theta_true, alpha=0.05):
         tail += term
     if tail > 1.0:
         tail = 1.0
-    return RichResult(payload={
-        "coverage": k / float(R), "nominal": p, "n_covered": k, "R": R,
-        "p_value": tail, "reject": 1.0 if tail < a else 0.0,
-        "mean_width": w / R,
-        "method": "Coverage probability check"})
+    return RichResult(
+        payload={
+            "coverage": k / float(R),
+            "nominal": p,
+            "n_covered": k,
+            "R": R,
+            "p_value": tail,
+            "reject": 1.0 if tail < a else 0.0,
+            "mean_width": w / R,
+            "method": "Coverage probability check",
+        }
+    )
 
 
 def cheatsheet():

@@ -28,17 +28,16 @@ def ca_chapter_4_equation_4(p):
     """
     value = _ca_crim.logit(p)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.4)"
     return RichResult(
-        title='Logit form: logit(p) = ln(p/(1-p)) = b0 + b1 x1',
+        title="Logit form: logit(p) = ln(p/(1-p)) = b0 + b1 x1",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e4: logit(p) = ln(p/(1-p)) [Weisburd et al. 2022, eq. 4.4]'
+    return "ca4e4: logit(p) = ln(p/(1-p)) [Weisburd et al. 2022, eq. 4.4]"

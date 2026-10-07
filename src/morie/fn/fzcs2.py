@@ -84,6 +84,7 @@ def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
 
     def _phi(v):
         return math.exp(-0.5 * v * v) / math.sqrt(2.0 * math.pi)
+
     # V_{2,h}(x, y) = int_{-inf}^y g'(z) V((x - z)/h) dz in closed form
     # for the Gaussian kernel, with b = (y - x)/h:
     #   g = exp:      e^y Phi(b) - e^{x + h^2/2} Phi(b - h)
@@ -96,21 +97,26 @@ def fauzi_cumulative_survival_2(x, t_grid, h=None, transform="log"):
         for y in zxl:
             b = (y - zv) / hh
             if log_t:
-                acc.append(math.exp(y) * _Phi(b)
-                           - math.exp(zv + 0.5 * hh * hh) * _Phi(b - hh))
+                acc.append(math.exp(y) * _Phi(b) - math.exp(zv + 0.5 * hh * hh) * _Phi(b - hh))
             else:
                 acc.append(hh * (b * _Phi(b) + _phi(b)))
         S_cum[j] = math.fsum(acc) / len(acc)
     S_surv = kernel_V((zt[:, None] - zx[None, :]) / hh).mean(axis=1)
-    return RichResult(payload={
-        "t_grid": tg, "S_cumulative": S_cum, "S_survival": S_surv,
-        "bandwidth": hh, "preserves_derivative_relation": False,
-        "bias_coefficient": "b_3 (4.21)",
-        "g_prime_note": "multiplying V by g' is what makes this an estimator "
-                        "of the cumulative survival function at all",
-        "same_covariance_as_first": True,
-        "n": int(n),
-        "method": "Second cumulative survival estimator (4.17); mirror of the first, bias b_3"})
+    return RichResult(
+        payload={
+            "t_grid": tg,
+            "S_cumulative": S_cum,
+            "S_survival": S_surv,
+            "bandwidth": hh,
+            "preserves_derivative_relation": False,
+            "bias_coefficient": "b_3 (4.21)",
+            "g_prime_note": "multiplying V by g' is what makes this an estimator "
+            "of the cumulative survival function at all",
+            "same_covariance_as_first": True,
+            "n": int(n),
+            "method": "Second cumulative survival estimator (4.17); mirror of the first, bias b_3",
+        }
+    )
 
 
 def cheatsheet():

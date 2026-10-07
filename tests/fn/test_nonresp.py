@@ -1,6 +1,5 @@
 """Tests for nonresp.nonresponse_adjustment."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.nonresp import nonresponse_adjustment

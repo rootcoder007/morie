@@ -73,18 +73,23 @@ def nignst(y, mu0, kappa0, nu0, sigma0_sq):
     kappa_n = kappa0 + n
     nu_n = nu0 + n
     mu_n = (kappa0 * mu0 + n * ybar) / kappa_n
-    nusq = (nu0 * sigma0_sq + (n - 1) * s_sq
-            + kappa0 * n * (ybar - mu0) ** 2 / kappa_n)
+    nusq = nu0 * sigma0_sq + (n - 1) * s_sq + kappa0 * n * (ybar - mu0) ** 2 / kappa_n
     sigma_n_sq = nusq / nu_n
-    return RichResult(payload={
-        "estimate": mu_n,
-        "mu_n": mu_n, "kappa_n": kappa_n, "nu_n": nu_n,
-        "sigma_n_sq": sigma_n_sq,
-        "mu_scale_sq": sigma_n_sq / kappa_n,
-        "pred_scale_sq": sigma_n_sq * (kappa_n + 1.0) / kappa_n,
-        "n": n, "ybar": ybar, "s_sq": s_sq,
-        "method": "BDA3 Section 3.3 N-Inv-chi2 conjugate update",
-    })
+    return RichResult(
+        payload={
+            "estimate": mu_n,
+            "mu_n": mu_n,
+            "kappa_n": kappa_n,
+            "nu_n": nu_n,
+            "sigma_n_sq": sigma_n_sq,
+            "mu_scale_sq": sigma_n_sq / kappa_n,
+            "pred_scale_sq": sigma_n_sq * (kappa_n + 1.0) / kappa_n,
+            "n": n,
+            "ybar": ybar,
+            "s_sq": s_sq,
+            "method": "BDA3 Section 3.3 N-Inv-chi2 conjugate update",
+        }
+    )
 
 
 normal_invgamma_update = nignst
@@ -92,6 +97,7 @@ normal_invgamma_update = nignst
 
 def cheatsheet():
     return "nignst(y, mu0, kappa0, nu0, sigma0_sq) -> exact N-Inv-chi2 posterior parameters."
+
 
 # public names resolved by fn/_lazy_map.json
 normal_inv_gamma = nignst

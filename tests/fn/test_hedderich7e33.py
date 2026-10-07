@@ -33,9 +33,7 @@ def _ad_by_integral(u):
             v -= (1.0 - c) ** 2 * math.log(1.0 - x)
         return v
 
-    return n * sum(
-        F(pts[k + 1], k / n) - F(pts[k], k / n) for k in range(n + 1) if pts[k + 1] > pts[k]
-    )
+    return n * sum(F(pts[k + 1], k / n) - F(pts[k], k / n) for k in range(n + 1) if pts[k + 1] > pts[k])
 
 
 def test_matches_its_defining_integral():

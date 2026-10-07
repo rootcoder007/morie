@@ -27,19 +27,13 @@ def exact_perm_test(x, y, n_perm=9999, stat="mean"):
     n_total = len(combined)
     rng = np.random.default_rng(42)
 
-    if stat == "median":
-        obs = float(np.median(x) - np.median(y))
-    else:
-        obs = float(x.mean() - y.mean())
+    obs = float(np.median(x) - np.median(y)) if stat == "median" else float(x.mean() - y.mean())
 
     count = 0
     for _ in range(n_perm):
         perm = rng.permutation(n_total)
         xp, yp = combined[perm[:nx]], combined[perm[nx:]]
-        if stat == "median":
-            perm_stat = np.median(xp) - np.median(yp)
-        else:
-            perm_stat = xp.mean() - yp.mean()
+        perm_stat = np.median(xp) - np.median(yp) if stat == "median" else xp.mean() - yp.mean()
         if abs(perm_stat) >= abs(obs):
             count += 1
 

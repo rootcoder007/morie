@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def augmented_kriging_variance(v_ok, e_tau2):
     """
     value = _brus.augmented_kriging_variance(v_ok, e_tau2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (24.4)"
     return RichResult(
-        title='Augmented kriging variance AKV = V_OK + E[tau2]',
+        title="Augmented kriging variance AKV = V_OK + E[tau2]",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r24e4: AKV = V_OK + E[tau^2] [Brus 2022, eq. 24.4]'
+    return "r24e4: AKV = V_OK + E[tau^2] [Brus 2022, eq. 24.4]"

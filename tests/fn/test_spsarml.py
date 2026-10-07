@@ -104,15 +104,15 @@ def test_spsarml_basic(model):
     else:
         Xb = [sum(X[i][a] * b[a] for a in range(2)) for i in range(n)]
         WXb = [sum(WA[i][j] * Xb[j] for j in range(n)) for i in range(n)]
-        I = [[0.0] * 4 for _ in range(4)]
+        I_ = [[0.0] * 4 for _ in range(4)]
         for a in range(2):
             for c in range(2):
-                I[a][c] = sum(X[i][a] * X[i][c] for i in range(n)) / s2
-            I[a][3] = I[3][a] = sum(X[i][a] * WXb[i] for i in range(n)) / s2
-        I[2][2] = n / (2 * s2 * s2)
-        I[2][3] = I[3][2] = tr1 / s2
-        I[3][3] = t2 + sum(v * v for v in WXb) / s2
-        Ii = _inv(I)
+                I_[a][c] = sum(X[i][a] * X[i][c] for i in range(n)) / s2
+            I_[a][3] = I_[3][a] = sum(X[i][a] * WXb[i] for i in range(n)) / s2
+        I_[2][2] = n / (2 * s2 * s2)
+        I_[2][3] = I_[3][2] = tr1 / s2
+        I_[3][3] = t2 + sum(v * v for v in WXb) / s2
+        Ii = _inv(I_)
         cb = [row[:2] for row in Ii[:2]]
         vr = Ii[3][3]
     assert [float(v) for v in r["se"]] == pytest.approx([math.sqrt(cb[0][0]), math.sqrt(cb[1][1])], rel=1e-8)
@@ -154,7 +154,7 @@ import morie.fn.spsarml as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

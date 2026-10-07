@@ -42,9 +42,18 @@ from ._richresult import RichResult
 __all__ = ["alphazero_search"]
 
 
-def alphazero_search(state, net, num_sim, step=None, c_puct=1.25,
-                     max_depth=None, terminal=None, alternate=True,
-                     root_noise=None, eps=0.25):
+def alphazero_search(
+    state,
+    net,
+    num_sim,
+    step=None,
+    c_puct=1.25,
+    max_depth=None,
+    terminal=None,
+    alternate=True,
+    root_noise=None,
+    eps=0.25,
+):
     """Run ``num_sim`` PUCT simulations from ``state``.
 
     Returns
@@ -146,8 +155,7 @@ def alphazero_search(state, net, num_sim, step=None, c_puct=1.25,
     for x in N[root]:
         tot += x
     pi = [x / tot if tot > 0.0 else 0.0 for x in N[root]]
-    q = [W[root][a] / N[root][a] if N[root][a] > 0.0 else 0.0
-         for a in range(len(N[root]))]
+    q = [W[root][a] / N[root][a] if N[root][a] > 0.0 else 0.0 for a in range(len(N[root]))]
     best = 0
     for a in range(1, len(pi)):
         if pi[a] > pi[best]:

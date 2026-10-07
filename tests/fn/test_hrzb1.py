@@ -1,7 +1,6 @@
 """Tests for hrzb1.horowitz_binary_response."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzb1 import horowitz_binary_response
 
 

@@ -8,7 +8,9 @@ import math
 
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e9 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner7e9 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_7_equation_9,
+)
 
 
 def test_linear_approximation_to_the_exponential():

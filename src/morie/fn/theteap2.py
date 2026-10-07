@@ -31,8 +31,7 @@ def theta_map(X, items, prior=(0.0, 1.0)):
     if it.shape[0] != Xm.shape[1]:
         it = it.T
     if it.shape[0] != Xm.shape[1]:
-        raise ValueError(
-            f"items has {it.shape[0]} rows for {Xm.shape[1]} item columns.")
+        raise ValueError(f"items has {it.shape[0]} rows for {Xm.shape[1]} item columns.")
     a = it[:, 0]
     b = it[:, 1]
     c = it[:, 2] if it.shape[1] > 2 else None
@@ -42,16 +41,21 @@ def theta_map(X, items, prior=(0.0, 1.0)):
         o = map_theta_estimator(Xm[i], a=a, b=b, c=c, prior=prior)
         thetas[i] = o["theta"]
         ses[i] = o["se"]
-    return RichResult(payload={
-        "theta": thetas if thetas.size > 1 else float(thetas[0]),
-        "se": ses if ses.size > 1 else float(ses[0]),
-        "n_examinees": int(Xm.shape[0]), "n_items": int(Xm.shape[1]),
-        "prior_mean": float(prior[0]), "prior_sd": float(prior[1]),
-        "mode_not_mean": "this is the posterior MODE; theta_eap is the "
-                         "MEAN, and they differ whenever the posterior is "
-                         "skewed -- short tests and extreme patterns",
-        "alias_of": "morie.fn.mapth.map_theta_estimator",
-        "method": "MAP theta over a response matrix (Mislevy 1986)"})
+    return RichResult(
+        payload={
+            "theta": thetas if thetas.size > 1 else float(thetas[0]),
+            "se": ses if ses.size > 1 else float(ses[0]),
+            "n_examinees": int(Xm.shape[0]),
+            "n_items": int(Xm.shape[1]),
+            "prior_mean": float(prior[0]),
+            "prior_sd": float(prior[1]),
+            "mode_not_mean": "this is the posterior MODE; theta_eap is the "
+            "MEAN, and they differ whenever the posterior is "
+            "skewed -- short tests and extreme patterns",
+            "alias_of": "morie.fn.mapth.map_theta_estimator",
+            "method": "MAP theta over a response matrix (Mislevy 1986)",
+        }
+    )
 
 
 def cheatsheet():

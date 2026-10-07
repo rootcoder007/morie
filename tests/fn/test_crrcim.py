@@ -1,7 +1,6 @@
 """Tests for crrcim.cumulative_incidence."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crrcim import cumulative_incidence
 
 

@@ -27,17 +27,16 @@ def product_multinomial_pmf(count_table, cond_prob_table):
     """
     value = _acd.product_multinomial_pmf(count_table, cond_prob_table)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.3)"
     return RichResult(
-        title='Product multinomial PMF (I independent row multinomials)',
+        title="Product multinomial PMF (I independent row multinomials)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e3: prod_i [n_i+!/(prod_j n_ij!) prod_j pi_j|i^n_ij] [Bilder & Loughin 2025, eq. 3.3]'
+    return "3e3: prod_i [n_i+!/(prod_j n_ij!) prod_j pi_j|i^n_ij] [Bilder & Loughin 2025, eq. 3.3]"

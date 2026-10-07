@@ -1,7 +1,6 @@
 """Tests for morie.fn.omiss — Missing data report."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.omiss import otis_missing_report
 
 

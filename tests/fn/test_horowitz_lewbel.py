@@ -1,8 +1,8 @@
 """Lewbel's special-regressor estimator (Horowitz Sec. 4.5)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hrzlew import horowitz_lewbel_estimator
 
 
@@ -43,9 +43,10 @@ def test_lewbel_recovers_beta_under_unknown_heteroskedasticity():
 
 def test_lewbel_converges_as_n_grows():
     def err(n):
-        return np.median([
-            abs(horowitz_lewbel_estimator(*_draw(n, np.random.default_rng(s)))["beta"][1] - 1.0)
-            for s in range(6)])
+        return np.median(
+            [abs(horowitz_lewbel_estimator(*_draw(n, np.random.default_rng(s)))["beta"][1] - 1.0) for s in range(6)]
+        )
+
     assert err(1500) < err(500)
 
 
@@ -69,6 +70,7 @@ def test_the_indicator_direction_matters():
     X, y, V = _draw(1500, rng)
     out = horowitz_lewbel_estimator(X, y, V)
     from morie.fn._horowitz import kernel, silverman_bw
+
     Vc = V - V.mean()
     coef, *_ = np.linalg.lstsq(X, Vc, rcond=None)
     U = Vc - X @ coef

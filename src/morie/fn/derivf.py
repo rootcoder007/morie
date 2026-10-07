@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["smoothed_derivative", "derivative_function"]
 
 
-def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
-                        penalty_order=None):
+def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4, penalty_order=None):
     r"""Derivative from a penalised spline, differentiated analytically.
 
     A global polynomial (monomial) basis is fitted with a roughness
@@ -80,16 +79,14 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
     if yv.size != n:
         raise ValueError("x and y must agree in length.")
     if n < 6:
-        raise ValueError("need at least 6 points, got %d." % n)
+        raise ValueError(f"need at least 6 points, got {int(n)}.")
     order = int(order)
     if order < 0:
         raise ValueError("order must be non-negative.")
     m = order + 2 if penalty_order is None else int(penalty_order)
     K = int(n_basis) if n_basis else min(max(n // 4, m + 2), 40)
-    if K < m + 2:
-        raise ValueError(
-            "n_basis must exceed the penalty order by at least 2."
-        )
+    if m + 2 > K:
+        raise ValueError("n_basis must exceed the penalty order by at least 2.")
     o = np.argsort(xv)
     xs, ys = xv[o], yv[o]
     lo, hi = float(xs[0]), float(xs[-1])
@@ -103,13 +100,13 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
         cols = []
         for j in range(K):
             if d == 0:
-                cols.append(u ** j)
+                cols.append(u**j)
             elif j < d:
                 cols.append(np.zeros_like(u))
             else:
                 c = 1.0
                 for q in range(d):
-                    c *= (j - q)
+                    c *= j - q
                 cols.append(c * u ** (j - d))
         return np.column_stack(cols)
 
@@ -122,8 +119,8 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
                 continue
             cj = ck = 1.0
             for q in range(m):
-                cj *= (j - q)
-                ck *= (k - q)
+                cj *= j - q
+                ck *= k - q
             p = (j - m) + (k - m)
             R[j, k] = cj * ck / (p + 1.0)
     scale = float(np.mean(np.diag(Phi.T @ Phi))) or 1.0
@@ -158,8 +155,7 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
             "lambda": float(lam),
             "n_basis": K,
             "finite_difference": fd,
-            "noise_amplification": (float(rough_d / rough_f)
-                                    if rough_f > 0 else np.inf),
+            "noise_amplification": (float(rough_d / rough_f) if rough_f > 0 else np.inf),
             "amplification_note": (
                 "roughness of the derivative against the fit's; finite "
                 "differencing amplifies noise by 1/h and each further "
@@ -167,7 +163,7 @@ def smoothed_derivative(x, y, at=None, order=1, n_basis=None, lam=1e-4,
                 "have a derivative that is pure noise"
             ),
             "n": int(n),
-            "method": "Order-%d derivative from a penalised smooth" % order,
+            "method": f"Order-{int(order)} derivative from a penalised smooth",
         }
     )
 

@@ -13,9 +13,7 @@ def _pos_prob(v, name):
     if p.size == 0:
         raise ValueError(f"{name} is empty.")
     if np.any(p <= 0) or np.any(p > 1):
-        raise ValueError(
-            f"every entry of {name} must lie in (0, 1]; a zero makes the "
-            "log ratio undefined.")
+        raise ValueError(f"every entry of {name} must lie in (0, 1]; a zero makes the log ratio undefined.")
     return p
 
 
@@ -41,25 +39,28 @@ def kamath_ch5_reward_kl_penalty(x, y, pi_RL, pi_SFT, beta, r_theta=None):
     True
     """
     if r_theta is None:
-        raise ValueError("r_theta is required: Eq 5.2 penalises a reward, "
-                         "and there is no default reward model.")
+        raise ValueError("r_theta is required: Eq 5.2 penalises a reward, and there is no default reward model.")
     beta = float(beta)
     if beta < 0:
         raise ValueError("beta must be non-negative.")
     p_rl = _pos_prob(pi_RL, "pi_RL")
     p_sft = _pos_prob(pi_SFT, "pi_SFT")
     if p_rl.shape != p_sft.shape:
-        raise ValueError(
-            f"pi_RL has shape {p_rl.shape} but pi_SFT has {p_sft.shape}.")
+        raise ValueError(f"pi_RL has shape {p_rl.shape} but pi_SFT has {p_sft.shape}.")
     r = float(r_theta(x, y)) if callable(r_theta) else float(r_theta)
     penalty = beta * np.log(p_rl / p_sft)
     R = r - penalty
-    return RichResult(payload={
-        "estimate": float(R[0]) if R.size == 1 else float(R.mean()),
-        "penalised_reward": [float(v) for v in R],
-        "raw_reward": r, "penalty": [float(v) for v in penalty],
-        "beta": beta, "n": int(R.size),
-        "method": "KL-penalised RLHF reward (Kamath Eq 5.2)"})
+    return RichResult(
+        payload={
+            "estimate": float(R[0]) if R.size == 1 else float(R.mean()),
+            "penalised_reward": [float(v) for v in R],
+            "raw_reward": r,
+            "penalty": [float(v) for v in penalty],
+            "beta": beta,
+            "n": int(R.size),
+            "method": "KL-penalised RLHF reward (Kamath Eq 5.2)",
+        }
+    )
 
 
 def cheatsheet():

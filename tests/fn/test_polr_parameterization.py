@@ -1,7 +1,5 @@
 """Tests for polr_parameterization.polr_parameterization."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.polr_parameterization import (
     polr_parameterization,
 )

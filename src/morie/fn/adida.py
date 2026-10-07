@@ -57,13 +57,11 @@ doi:10.2307/3007885.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 from .tsbF import intermittent_forecast
 
-__all__ = ["aggregate_buckets", "disaggregate", "adida_forecast",
-           "temporal_combination", "zero_fraction"]
+__all__ = ["aggregate_buckets", "disaggregate", "adida_forecast", "temporal_combination", "zero_fraction"]
 
 _EPS = 1e-12
 
@@ -88,17 +86,14 @@ def aggregate_buckets(y, m, overlapping=False):
     n = len(yv)
     mm = int(m)
     if mm < 1:
-        raise ValueError("adida: the bucket size must be at least 1, "
-                         "got %d" % mm)
+        raise ValueError(f"adida: the bucket size must be at least 1, got {int(mm)}")
     if mm > n:
-        raise ValueError("adida: bucket size %d exceeds the %d "
-                         "observations" % (mm, n))
+        raise ValueError(f"adida: bucket size {int(mm)} exceeds the {int(n)} observations")
     if overlapping:
-        return [sum(yv[t:t + mm]) for t in range(n - mm + 1)]
+        return [sum(yv[t : t + mm]) for t in range(n - mm + 1)]
     n_buckets = n // mm
     start = n - n_buckets * mm
-    return [sum(yv[start + b * mm:start + (b + 1) * mm])
-            for b in range(n_buckets)]
+    return [sum(yv[start + b * mm : start + (b + 1) * mm]) for b in range(n_buckets)]
 
 
 def disaggregate(aggregate_value, m, profile=None):
@@ -117,11 +112,9 @@ def disaggregate(aggregate_value, m, profile=None):
     else:
         w = [float(v) for v in profile]
         if len(w) != mm:
-            raise ValueError("adida: the profile has %d weights for a "
-                             "bucket of %d" % (len(w), mm))
+            raise ValueError(f"adida: the profile has {int(len(w))} weights for a bucket of {int(mm)}")
         if any(v < 0.0 for v in w):
-            raise ValueError("adida: profile weights must be "
-                             "non-negative")
+            raise ValueError("adida: profile weights must be non-negative")
         tot = sum(w)
         if tot <= 0.0:
             raise ValueError("adida: the profile sums to zero")
@@ -129,8 +122,9 @@ def disaggregate(aggregate_value, m, profile=None):
     return [float(aggregate_value) * v for v in w]
 
 
-def adida_forecast(y, m, horizon=1, method="tsb", alpha=0.1, beta=0.05,
-                   overlapping=False, profile=None, lead_time=None):
+def adida_forecast(
+    y, m, horizon=1, method="tsb", alpha=0.1, beta=0.05, overlapping=False, profile=None, lead_time=None
+):
     r"""Aggregate to level ``m``, forecast, disaggregate.
 
     ``lead_time`` sets ``m`` to the lead time, the paper's
@@ -142,32 +136,32 @@ def adida_forecast(y, m, horizon=1, method="tsb", alpha=0.1, beta=0.05,
         m = int(lead_time)
     agg = aggregate_buckets(yv, m, overlapping=overlapping)
     if len(agg) < 2:
-        raise ValueError("adida: bucket size %d leaves only %d "
-                         "aggregated points" % (int(m), len(agg)))
-    f = intermittent_forecast(agg, method=method, alpha=alpha,
-                              beta=beta, horizon=1)
+        raise ValueError(f"adida: bucket size {int(int(m))} leaves only {int(len(agg))} aggregated points")
+    f = intermittent_forecast(agg, method=method, alpha=alpha, beta=beta, horizon=1)
     agg_fc = f["forecast"][0]
     per_period = disaggregate(agg_fc, int(m), profile=profile)
     reps = int(math.ceil(horizon / float(m)))
     flat = [per_period[t % int(m)] for t in range(reps * int(m))]
-    return RichResult(payload={
-        "estimate": flat[:int(horizon)],
-        "forecast": flat[:int(horizon)],
-        "aggregate_forecast": agg_fc,
-        "lead_time_demand": agg_fc if lead_time is not None else None,
-        "aggregated": agg, "m": int(m),
-        "zero_fraction_original": zero_fraction(yv),
-        "zero_fraction_aggregated": zero_fraction(agg),
-        "n_buckets": len(agg), "overlapping": bool(overlapping),
-        "base_method": method,
-        "disaggregation_sums_back": abs(sum(per_period) - agg_fc) < 1e-9,
-        "method": "ADIDA, Nikolopoulos, Syntetos, Boylan, Petropoulos "
-                  "& Assimakopoulos (2011)",
-    })
+    return RichResult(
+        payload={
+            "estimate": flat[: int(horizon)],
+            "forecast": flat[: int(horizon)],
+            "aggregate_forecast": agg_fc,
+            "lead_time_demand": agg_fc if lead_time is not None else None,
+            "aggregated": agg,
+            "m": int(m),
+            "zero_fraction_original": zero_fraction(yv),
+            "zero_fraction_aggregated": zero_fraction(agg),
+            "n_buckets": len(agg),
+            "overlapping": bool(overlapping),
+            "base_method": method,
+            "disaggregation_sums_back": abs(sum(per_period) - agg_fc) < 1e-9,
+            "method": "ADIDA, Nikolopoulos, Syntetos, Boylan, Petropoulos & Assimakopoulos (2011)",
+        }
+    )
 
 
-def temporal_combination(y, levels, horizon=1, method="tsb",
-                         alpha=0.1, beta=0.05, weights=None):
+def temporal_combination(y, levels, horizon=1, method="tsb", alpha=0.1, beta=0.05, weights=None):
     r"""Combine forecasts made at several aggregation levels.
 
     Petropoulos & Kourentzes: rather than choosing one level, forecast
@@ -176,43 +170,45 @@ def temporal_combination(y, levels, horizon=1, method="tsb",
     """
     lv = [int(v) for v in levels]
     if len(lv) < 2:
-        raise ValueError("adida: need at least 2 levels to combine, "
-                         "got %d" % len(lv))
+        raise ValueError(f"adida: need at least 2 levels to combine, got {int(len(lv))}")
     per = []
     for m in lv:
-        r = adida_forecast(y, m, horizon=horizon, method=method,
-                           alpha=alpha, beta=beta)
+        r = adida_forecast(y, m, horizon=horizon, method=method, alpha=alpha, beta=beta)
         per.append(r["forecast"])
     if weights is None:
         w = [1.0 / len(lv)] * len(lv)
     else:
         w = [float(v) for v in weights]
         if len(w) != len(lv):
-            raise ValueError("adida: %d weights for %d levels"
-                             % (len(w), len(lv)))
+            raise ValueError(f"adida: {int(len(w))} weights for {int(len(lv))} levels")
         tot = sum(w)
         if tot <= 0.0:
             raise ValueError("adida: the weights sum to zero")
         w = [v / tot for v in w]
-    comb = [sum(w[j] * per[j][h] for j in range(len(lv)))
-            for h in range(int(horizon))]
-    return RichResult(payload={
-        "estimate": comb, "forecast": comb, "levels": lv,
-        "per_level": per, "weights": w,
-        "spread": (max(p[0] for p in per) - min(p[0] for p in per)),
-        "method": "temporal combination across aggregation levels, "
-                  "Petropoulos & Kourentzes (2015)",
-    })
+    comb = [sum(w[j] * per[j][h] for j in range(len(lv))) for h in range(int(horizon))]
+    return RichResult(
+        payload={
+            "estimate": comb,
+            "forecast": comb,
+            "levels": lv,
+            "per_level": per,
+            "weights": w,
+            "spread": (max(p[0] for p in per) - min(p[0] for p in per)),
+            "method": "temporal combination across aggregation levels, Petropoulos & Kourentzes (2015)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("adida: sum into buckets of m, forecast the aggregate, "
-            "divide back by m. Aggregation cuts the zero fraction, "
-            "which is the self-improving mechanism. Set m = LEAD TIME "
-            "and the aggregate forecast IS lead-time demand, so no "
-            "disaggregation error at all. Equal-weight disaggregation "
-            "must sum back to the aggregate exactly. Combine several "
-            "levels instead of choosing one.")
+    return (
+        "adida: sum into buckets of m, forecast the aggregate, "
+        "divide back by m. Aggregation cuts the zero fraction, "
+        "which is the self-improving mechanism. Set m = LEAD TIME "
+        "and the aggregate forecast IS lead-time demand, so no "
+        "disaggregation error at all. Equal-weight disaggregation "
+        "must sum back to the aggregate exactly. Combine several "
+        "levels instead of choosing one."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -77,30 +77,36 @@ def boyd_linf_fitting(A, b):
     ones = np.ones((m, 1))
     A_ub = np.block([[Am, -ones], [-Am, -ones]])
     b_ub = np.r_[bv, -bv]
-    res = linprog(c, A_ub=A_ub, b_ub=b_ub,
-                  bounds=[(None, None)] * n + [(0.0, None)], method="highs")
+    res = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=[(None, None)] * n + [(0.0, None)], method="highs")
     if res.status != 0:
         return RichResult(
             title="l-infinity fitting",
             summary_lines=[("status", str(res.message))],
             warnings=["the Chebyshev LP did not solve"],
-            payload={"x": np.full(n, np.nan), "residual": np.full(m, np.nan),
-                     "linf_norm": float("nan"), "n_active": 0,
-                     "equioscillates": False,
-                     "method": "boyd_linf_fitting"})
+            payload={
+                "x": np.full(n, np.nan),
+                "residual": np.full(m, np.nan),
+                "linf_norm": float("nan"),
+                "n_active": 0,
+                "equioscillates": False,
+                "method": "boyd_linf_fitting",
+            },
+        )
     x = np.asarray(res.x[:n], dtype=float)
     resid = Am @ x - bv
     t = float(np.max(np.abs(resid)))
     active = np.abs(np.abs(resid) - t) <= 1e-8 * max(1.0, t)
     return RichResult(
         title="l-infinity fitting",
-        summary_lines=[("m", int(m)), ("n", int(n)), ("linf norm", t),
-                       ("active residuals", int(active.sum()))],
+        summary_lines=[("m", int(m)), ("n", int(n)), ("linf norm", t), ("active residuals", int(active.sum()))],
         payload={
-            "x": x, "residual": resid, "linf_norm": t,
+            "x": x,
+            "residual": resid,
+            "linf_norm": t,
             "n_active": int(active.sum()),
             "equioscillates": bool(active.sum() >= n + 1),
-            "active": active, "method": "boyd_linf_fitting",
+            "active": active,
+            "method": "boyd_linf_fitting",
         },
     )
 

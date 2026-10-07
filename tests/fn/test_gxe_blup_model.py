@@ -1,9 +1,8 @@
 """Tests for gxe_blup_model.gxe_blup_model."""
 
-from morie.fn import _array_core as np
-
 import math
 
+from morie.fn import _array_core as np
 from morie.fn.gxe_blup_model import gxe_blup_model
 
 
@@ -43,9 +42,7 @@ def test_msm018_basic():
     rng = np.random.default_rng(42)
     y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e = _build_inputs(rng)
 
-    result = gxe_blup_model(
-        y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e
-    )
+    result = gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e)
 
     # The returned object must behave like a mapping
     assert isinstance(result, dict)
@@ -73,13 +70,9 @@ def test_msm018_edge():
     rng = np.random.default_rng(0)
 
     # Small but still valid configuration
-    y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e = _build_inputs(
-        rng, n=8, p_E=1, n_lines=2, n_envs=2
-    )
+    y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e = _build_inputs(rng, n=8, p_E=1, n_lines=2, n_envs=2)
 
-    result = gxe_blup_model(
-        y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e
-    )
+    result = gxe_blup_model(y, X_E, Z_L, Z_EL, G, sigma2_g, Sigma_E, sigma2_e)
 
     assert isinstance(result, dict)
     for key in ("estimate", "beta", "b_lines", "b_gxe", "method"):

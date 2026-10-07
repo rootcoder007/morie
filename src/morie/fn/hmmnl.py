@@ -119,9 +119,7 @@ def geron_multinomial_logistic(X, Y, lr=0.1, n_iter=1000, add_bias=True, alpha=0
         idx = idx.astype(int)
         K = int(idx.max()) + 1
         if K < 2:
-            raise ValueError(
-                f"geron_multinomial_logistic: only one class present; softmax regression needs at least 2"
-            )
+            raise ValueError("geron_multinomial_logistic: only one class present; softmax regression needs at least 2")
         Yh = np.eye(K)[idx]
     else:
         Yh = np.asarray(Ya, dtype=float)
@@ -184,8 +182,7 @@ def geron_multinomial_logistic(X, Y, lr=0.1, n_iter=1000, add_bias=True, alpha=0
             else []
         ),
         interpretation=(
-            "The logit gradient is exactly P - Y; that cancellation is why softmax and cross-entropy "
-            "belong together."
+            "The logit gradient is exactly P - Y; that cancellation is why softmax and cross-entropy belong together."
         ),
         payload={
             "Theta": Theta,

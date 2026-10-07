@@ -1,8 +1,8 @@
 """rlhfd: linear reward head (Ouyang et al. 2022, InstructGPT).  r = w'h + b"""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.rlhfd import rlhf_reward as rw
 
 

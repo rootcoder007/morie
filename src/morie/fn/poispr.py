@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Gamma-Poisson posterior and predictive distribution."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -72,11 +70,19 @@ def poispred(y, alpha, beta, exposure=None):
     bp = b + sum(e)
     pm = ap / bp
     pv = pm * (1.0 + 1.0 / bp)
-    return RichResult(payload={
-        "alpha_post": ap, "beta_post": bp, "rate_mean": pm,
-        "rate_var": ap / (bp * bp), "pred_mean": pm, "pred_var": pv,
-        "overdispersion": pv / pm, "n": float(n),
-        "method": "Gamma-Poisson posterior and negative-binomial predictive"})
+    return RichResult(
+        payload={
+            "alpha_post": ap,
+            "beta_post": bp,
+            "rate_mean": pm,
+            "rate_var": ap / (bp * bp),
+            "pred_mean": pm,
+            "pred_var": pv,
+            "overdispersion": pv / pm,
+            "n": float(n),
+            "method": "Gamma-Poisson posterior and negative-binomial predictive",
+        }
+    )
 
 
 poisson_predictive = poispred

@@ -117,8 +117,8 @@ def compositional_classifyAP(X, y, x_new, k):
         raise ValueError("compositional_classifyAP: k must lie between 1 and the sample size")
     try:
         first = x_new[0]
-    except (TypeError, IndexError, KeyError):
-        raise ValueError("compositional_classifyAP: x_new is empty")
+    except (TypeError, IndexError, KeyError) as exc:
+        raise ValueError("compositional_classifyAP: x_new is empty") from exc
     if hasattr(first, "__len__") and not isinstance(first, (str, bytes)):
         news = [[float(v) for v in r] for r in x_new]
         many = True

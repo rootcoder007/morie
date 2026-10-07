@@ -1,7 +1,6 @@
 """Anchored tests for singgw.single_step_h (Christensen-Lund 2010)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.singgw import single_step_h
 
 # Pedigree: 1,2 founders; 3 = 1x2; 4 = 1x3.  Tabular-method A,

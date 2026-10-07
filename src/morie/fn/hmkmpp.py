@@ -96,9 +96,7 @@ def geron_kmeans_plus_plus(X, n_clusters, seed=0):
             # back to any index not already used rather than repeating one.
             remaining = [i for i in range(m) if i not in chosen]
             if not remaining:
-                raise ValueError(
-                    f"geron_kmeans_plus_plus: cannot pick {k} distinct centres from {m} points"
-                )
+                raise ValueError(f"geron_kmeans_plus_plus: cannot pick {k} distinct centres from {m} points")
             nxt = int(remaining[0])
         else:
             u = float(rng.random()) * total

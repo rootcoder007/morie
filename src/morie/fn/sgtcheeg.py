@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['cheeger', 'sgt_cheeger_constant']
+__all__ = ["cheeger", "sgt_cheeger_constant"]
 
 
 def cheeger(A):
@@ -42,9 +42,7 @@ def cheeger(A):
     if any(d <= 0 for d in deg):
         raise ValueError("isolated vertices: conductance is undefined")
     ds = [1.0 / math.sqrt(d) for d in deg]
-    L = [[(1.0 if i == j else 0.0)
-          - (ds[i] * A[i][j] * ds[j] if i != j else 0.0)
-          for j in range(n)] for i in range(n)]
+    L = [[(1.0 if i == j else 0.0) - (ds[i] * A[i][j] * ds[j] if i != j else 0.0) for j in range(n)] for i in range(n)]
     vals, vecs = C.eigsym(L)
     lam2 = vals[n - 2]
     f = [vecs[i][n - 2] * ds[i] for i in range(n)]
@@ -56,19 +54,25 @@ def cheeger(A):
         inS = [False] * n
         for v in Sset:
             inS[v] = True
-        cut = sum(A[i][j] for i in range(n) for j in range(n)
-                  if i != j and inS[i] and not inS[j])
+        cut = sum(A[i][j] for i in range(n) for j in range(n) if i != j and inS[i] and not inS[j])
         vol = sum(deg[v] for v in Sset)
         den = min(vol, total - vol)
         if den > 0:
             val = cut / den
             if val < best:
                 best, bestset = val, sorted(Sset)
-    return RichResult(payload={
-        "sweep_min": best, "lower_bound": lam2 / 2.0,
-        "upper_bound": math.sqrt(2.0 * lam2) if lam2 > 0 else 0.0,
-        "lambda2": lam2, "cut_set": bestset, "fiedler": f, "n": n,
-        "method": "Cheeger constant (Fiedler sweep upper bound)"})
+    return RichResult(
+        payload={
+            "sweep_min": best,
+            "lower_bound": lam2 / 2.0,
+            "upper_bound": math.sqrt(2.0 * lam2) if lam2 > 0 else 0.0,
+            "lambda2": lam2,
+            "cut_set": bestset,
+            "fiedler": f,
+            "n": n,
+            "method": "Cheeger constant (Fiedler sweep upper bound)",
+        }
+    )
 
 
 sgt_cheeger_constant = cheeger

@@ -60,12 +60,10 @@ input/output asymmetry added.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout",
-           "horizon_plan"]
+__all__ = ["input_patches", "causal_mask", "rollout_steps", "rollout", "horizon_plan"]
 
 _EPS = 1e-12
 
@@ -86,11 +84,14 @@ def input_patches(x, patch_len, pad_value=0.0):
     pad = (p - rem) % p
     padded = [float(pad_value)] * pad + v
     n = len(padded) // p
-    return {"patches": [padded[i * p:(i + 1) * p] for i in range(n)],
-            "n_patches": n, "patch_len": p, "n_padded": pad,
-            "L": len(v),
-            "note": "padded on the LEFT so the newest point ends the "
-                    "final patch"}
+    return {
+        "patches": [padded[i * p : (i + 1) * p] for i in range(n)],
+        "n_patches": n,
+        "patch_len": p,
+        "n_padded": pad,
+        "L": len(v),
+        "note": "padded on the LEFT so the newest point ends the final patch",
+    }
 
 
 def causal_mask(n_patches):
@@ -104,10 +105,11 @@ def causal_mask(n_patches):
     n = int(n_patches)
     if n < 1:
         raise ValueError("timesfm: need at least one patch")
-    return {"mask": [[1.0 if j <= i else 0.0 for j in range(n)]
-                     for i in range(n)],
-            "n_patches": n,
-            "training_signals": n}
+    return {
+        "mask": [[1.0 if j <= i else 0.0 for j in range(n)] for i in range(n)],
+        "n_patches": n,
+        "training_signals": n,
+    }
 
 
 def rollout_steps(horizon, output_patch_len):
@@ -116,11 +118,8 @@ def rollout_steps(horizon, output_patch_len):
     if H < 1:
         raise ValueError("timesfm: the horizon must be at least 1")
     if q < 1:
-        raise ValueError("timesfm: output_patch_len must be at least "
-                         "1")
-    return {"steps": int(math.ceil(H / float(q))), "horizon": H,
-            "output_patch_len": q,
-            "single_step": q >= H}
+        raise ValueError("timesfm: output_patch_len must be at least 1")
+    return {"steps": int(math.ceil(H / float(q))), "horizon": H, "output_patch_len": q, "single_step": q >= H}
 
 
 def horizon_plan(horizon, input_patch_len, output_patch_len):
@@ -132,20 +131,19 @@ def horizon_plan(horizon, input_patch_len, output_patch_len):
     """
     H = int(horizon)
     p, q = int(input_patch_len), int(output_patch_len)
-    return {"steps_asymmetric": rollout_steps(H, q)["steps"],
-            "steps_symmetric": rollout_steps(H, p)["steps"],
-            "steps_direct": rollout_steps(H, H)["steps"],
-            "input_patch_len": p, "output_patch_len": q,
-            "horizon": H,
-            "speedup_vs_symmetric":
-                rollout_steps(H, p)["steps"]
-                / float(rollout_steps(H, q)["steps"]),
-            "note": "q > p cuts generation steps; q >= H makes the "
-                    "forecast a single direct prediction"}
+    return {
+        "steps_asymmetric": rollout_steps(H, q)["steps"],
+        "steps_symmetric": rollout_steps(H, p)["steps"],
+        "steps_direct": rollout_steps(H, H)["steps"],
+        "input_patch_len": p,
+        "output_patch_len": q,
+        "horizon": H,
+        "speedup_vs_symmetric": rollout_steps(H, p)["steps"] / float(rollout_steps(H, q)["steps"]),
+        "note": "q > p cuts generation steps; q >= H makes the forecast a single direct prediction",
+    }
 
 
-def rollout(history, predictor, horizon, input_patch_len,
-            output_patch_len):
+def rollout(history, predictor, horizon, input_patch_len, output_patch_len):
     r"""Autoregressive forecast, feeding predictions back as context.
 
     ``predictor`` maps a list of input patches to the next
@@ -160,32 +158,35 @@ def rollout(history, predictor, horizon, input_patch_len,
         pat = input_patches(ctx, p)["patches"]
         nxt = [float(z) for z in predictor(pat)]
         if len(nxt) != q:
-            raise ValueError("timesfm: the predictor returned %d "
-                             "values but output_patch_len is %d"
-                             % (len(nxt), q))
+            raise ValueError(f"timesfm: the predictor returned {int(len(nxt))} values but output_patch_len is {int(q)}")
         out.extend(nxt)
         ctx.extend(nxt)
-    return RichResult(payload={
-        "estimate": out[:int(horizon)],
-        "forecast": out[:int(horizon)],
-        "steps": plan["steps"], "horizon": int(horizon),
-        "input_patch_len": p, "output_patch_len": q,
-        "context_grew_to": len(ctx),
-        "method": "decoder-only patched rollout; Das, Kong, Sen & "
-                  "Zhou (2024)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out[: int(horizon)],
+            "forecast": out[: int(horizon)],
+            "steps": plan["steps"],
+            "horizon": int(horizon),
+            "input_patch_len": p,
+            "output_patch_len": q,
+            "context_grew_to": len(ctx),
+            "method": "decoder-only patched rollout; Das, Kong, Sen & Zhou (2024)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("timesfm: decoder-only + input patching. Causal attention "
-            "over patches means N patches give N training signals, "
-            "not one. The design choice that matters: the OUTPUT "
-            "patch may be LONGER than the input patch, so a horizon H "
-            "needs ceil(H/q) generation steps rather than ceil(H/p) "
-            "-- fewer rollouts, less accumulated drift. q >= H is a "
-            "single direct prediction. 200M parameters and O(100B) "
-            "timepoints beats prompting a large language model, at a "
-            "fraction of the cost.")
+    return (
+        "timesfm: decoder-only + input patching. Causal attention "
+        "over patches means N patches give N training signals, "
+        "not one. The design choice that matters: the OUTPUT "
+        "patch may be LONGER than the input patch, so a horizon H "
+        "needs ceil(H/q) generation steps rather than ceil(H/p) "
+        "-- fewer rollouts, less accumulated drift. q >= H is a "
+        "single direct prediction. 200M parameters and O(100B) "
+        "timepoints beats prompting a large language model, at a "
+        "fraction of the cost."
+    )
 
 
 # compact alias per ledger/NAMING.md -- timesf and timesfm are the

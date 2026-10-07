@@ -63,25 +63,27 @@ def ev_pickands(x, k=None):
     b = xv[n - 2 * kk]
     c = xv[n - 4 * kk]
     if not (a > b > c):
-        raise ValueError("the three order statistics are tied; the spacing "
-                         "ratio is undefined.")
+        raise ValueError("the three order statistics are tied; the spacing ratio is undefined.")
     xi = float(np.log((a - b) / (b - c)) / np.log(2))
     # asymptotic variance (de Haan-Ferreira Thm 3.3.5)
     if abs(xi) < 1e-8:
         avar = 3.0 / (4.0 * np.log(2) ** 2)
     else:
-        avar = (xi ** 2 * (2.0 ** (2 * xi + 1) + 1)
-                / (2 * (2.0 ** xi - 1) * np.log(2)) ** 2)
-    return RichResult(payload={
-        "xi": xi, "se": float(np.sqrt(avar / kk)),
-        "k": kk,
-        "order_stats_used": (float(a), float(b), float(c)),
-        "valid_for": "every real xi -- heavy, light and bounded tails alike",
-        "versus_hill": "far less efficient than Hill where Hill is valid "
-                       "(xi > 0); the tool for when the sign of xi is "
-                       "itself in question",
-        "n": int(n),
-        "method": "Pickands (1975): log spacing ratio at k, 2k, 4k over log 2"})
+        avar = xi**2 * (2.0 ** (2 * xi + 1) + 1) / (2 * (2.0**xi - 1) * np.log(2)) ** 2
+    return RichResult(
+        payload={
+            "xi": xi,
+            "se": float(np.sqrt(avar / kk)),
+            "k": kk,
+            "order_stats_used": (float(a), float(b), float(c)),
+            "valid_for": "every real xi -- heavy, light and bounded tails alike",
+            "versus_hill": "far less efficient than Hill where Hill is valid "
+            "(xi > 0); the tool for when the sign of xi is "
+            "itself in question",
+            "n": int(n),
+            "method": "Pickands (1975): log spacing ratio at k, 2k, 4k over log 2",
+        }
+    )
 
 
 def cheatsheet():

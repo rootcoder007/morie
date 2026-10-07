@@ -1,8 +1,8 @@
 """spmenv -- Moran's I moments, Schabenberger & Gotway Sec. 1.3.2 + Problem 1.8."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spmenv import schabenberger_moran_expectation as menv
 
 
@@ -26,7 +26,7 @@ def _z_example17(seed=0):
     """Example 1.7's design: G(mu(x,y), 1) on a 10x10 lattice."""
     rs = np.random.RandomState(seed)
     x, y = np.meshgrid(np.arange(10), np.arange(10), indexing="ij")
-    return (1.4 + 0.1 * x + 0.2 * y + 0.002 * x ** 2).ravel() + rs.standard_normal(100)
+    return (1.4 + 0.1 * x + 0.2 * y + 0.002 * x**2).ravel() + rs.standard_normal(100)
 
 
 def test_weight_sums_match_the_rook_lattice():

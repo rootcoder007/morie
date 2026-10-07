@@ -1,11 +1,11 @@
 """Tests for morie.fn.aipw — Augmented IPW doubly-robust ATE estimator."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
 import math
 
 import pytest
 
+from morie.fn import _array_core as np
+from morie.fn import _frame_core as pd
 from morie.fn.aipw import estimate_aipw
 
 
@@ -95,7 +95,8 @@ def test_aipw_linear_recomputed_from_its_parts():
     n = len(psi)
     ate = sum(psi) / n
     se = math.sqrt(sum((v - ate) ** 2 for v in psi) / (n - 1) / n)
-    r = estimate_aipw(pd.DataFrame({"t": t, "x": x, "y": y}), treatment="t", outcome="y", covariates=["x"],
-                      outcome_model="linear")
+    r = estimate_aipw(
+        pd.DataFrame({"t": t, "x": x, "y": y}), treatment="t", outcome="y", covariates=["x"], outcome_model="linear"
+    )
     assert r["ate"] == pytest.approx(ate, rel=1e-9)
     assert r["se"] == pytest.approx(se, rel=1e-9)

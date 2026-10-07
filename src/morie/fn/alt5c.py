@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["alammar_t5_text_to_text_classify"]
 
 
-def alammar_t5_text_to_text_classify(input_text, label_tokens, model,
-                                     prefix=""):
+def alammar_t5_text_to_text_classify(input_text, label_tokens, model, prefix=""):
     """y = argmax over label strings of p_model(label | prefix + input).
 
     ``model`` is a callable (input_text, label) -> log-probability.
@@ -19,24 +18,25 @@ def alammar_t5_text_to_text_classify(input_text, label_tokens, model,
 
     References: Alammar and Grootendorst, Ch 4; Raffel et al. (2020).
     """
-    labels = [str(l) for l in label_tokens]
+    labels = [str(ell) for ell in label_tokens]
     if not labels:
         raise ValueError("no label tokens supplied.")
     if not callable(model):
-        raise ValueError("model must be a callable "
-                         "(input, label) -> log-probability.")
-    lp = np.array([float(model(prefix + str(input_text), l))
-                   for l in labels])
+        raise ValueError("model must be a callable (input, label) -> log-probability.")
+    lp = np.array([float(model(prefix + str(input_text), ell)) for ell in labels])
     z = lp - lp.max()
     p = np.exp(z) / np.exp(z).sum()
     best = int(np.argmax(p))
-    return RichResult(payload={
-        "predicted_label": labels[best],
-        "probabilities": {labels[i]: float(p[i])
-                          for i in range(len(labels))},
-        "log_scores": [float(v) for v in lp],
-        "estimate": float(p[best]), "n": len(labels),
-        "method": "T5 text-to-text classification (Raffel et al. 2020)"})
+    return RichResult(
+        payload={
+            "predicted_label": labels[best],
+            "probabilities": {labels[i]: float(p[i]) for i in range(len(labels))},
+            "log_scores": [float(v) for v in lp],
+            "estimate": float(p[best]),
+            "n": len(labels),
+            "method": "T5 text-to-text classification (Raffel et al. 2020)",
+        }
+    )
 
 
 def cheatsheet():

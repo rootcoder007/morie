@@ -41,10 +41,7 @@ def epidemic_curve_analysis(
     peak_day = int(np.argmax(inc))
     peak_value = float(inc[peak_day])
 
-    if len(inc) >= window:
-        ma = np.convolve(inc, np.ones(window) / window, mode="valid")
-    else:
-        ma = inc.copy()
+    ma = np.convolve(inc, np.ones(window) / window, mode="valid") if len(inc) >= window else inc.copy()
 
     growth_rates = []
     for i in range(1, len(inc)):

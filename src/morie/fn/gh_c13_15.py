@@ -66,8 +66,7 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
     """
     X = np.atleast_2d(np.asarray(x, dtype=float))
     if time is None:
-        raise ValueError("time is required: the Cox partial likelihood needs "
-                         "follow-up times as well as covariates.")
+        raise ValueError("time is required: the Cox partial likelihood needs follow-up times as well as covariates.")
     tv = np.asarray(time, dtype=float).ravel()
     if X.shape[0] != tv.size:
         X = X.T
@@ -76,8 +75,7 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
     n, p = X.shape
     if n < 5:
         raise ValueError(f"need at least 5 observations, got {n}.")
-    ev = np.ones(n) if event is None else \
-        np.asarray(event, dtype=float).ravel()
+    ev = np.ones(n) if event is None else np.asarray(event, dtype=float).ravel()
     if ev.size != n:
         raise ValueError(f"event has {ev.size} entries for {n} times.")
     if not np.all(np.isin(ev, (0.0, 1.0))):
@@ -102,18 +100,15 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
             sw = _math.fsum(float(w[j]) for j in rows)
             if sw <= 0:
                 continue
-            xb = [_math.fsum(float(w[j]) * float(X[j][k]) for j in rows) / sw
-                  for k in range(p)]
+            xb = [_math.fsum(float(w[j]) * float(X[j][k]) for j in rows) / sw for k in range(p)]
             ll += float(eta[i]) - _math.log(sw)
             for k in range(p):
                 gr[k] += float(X[i][k]) - xb[k]
             for k in range(p):
-                for l in range(p):
-                    xx = _math.fsum(float(w[j]) * float(X[j][k])
-                                    * float(X[j][l]) for j in rows) / sw
-                    he[k][l] -= xx - xb[k] * xb[l]
-        return (-ll, np.marr([-v for v in gr]),
-                np.marr([[-v for v in row] for row in he]))
+                for ell in range(p):
+                    xx = _math.fsum(float(w[j]) * float(X[j][k]) * float(X[j][ell]) for j in rows) / sw
+                    he[k][ell] -= xx - xb[k] * xb[ell]
+        return (-ll, np.marr([-v for v in gr]), np.marr([[-v for v in row] for row in he]))
 
     b = np.zeros(p)
     for _ in range(50):
@@ -125,19 +120,27 @@ def ghosal_cox_bvm(x, time=None, event=None, beta_grid=None):
     _, _, info = nll_grad_hess(b)
     cov = np.linalg.pinv(info)
     se = np.sqrt(np.maximum(np.diag(cov), 0.0))
-    bg = np.linspace(b[0] - 4 * se[0], b[0] + 4 * se[0], 101) \
-        if beta_grid is None else \
-        np.atleast_1d(np.asarray(beta_grid, dtype=float))
-    post = np.exp(-0.5 * ((bg - b[0]) / max(se[0], 1e-12)) ** 2) / \
-        (max(se[0], 1e-12) * np.sqrt(2 * np.pi))
-    return RichResult(payload={
-        "beta": b, "se": se, "efficient_information": info,
-        "beta_grid": bg, "posterior_normal": post,
-        "efficient": True, "credible_equals_confidence": True,
-        "caveat": "BvM can FAIL for other semiparametric functionals; "
-                  "validity here is a theorem about this one",
-        "n_events": int(ev.sum()), "n": int(n),
-        "method": "Cox partial likelihood with the semiparametric BvM of Sec. 13.6.2"})
+    bg = (
+        np.linspace(b[0] - 4 * se[0], b[0] + 4 * se[0], 101)
+        if beta_grid is None
+        else np.atleast_1d(np.asarray(beta_grid, dtype=float))
+    )
+    post = np.exp(-0.5 * ((bg - b[0]) / max(se[0], 1e-12)) ** 2) / (max(se[0], 1e-12) * np.sqrt(2 * np.pi))
+    return RichResult(
+        payload={
+            "beta": b,
+            "se": se,
+            "efficient_information": info,
+            "beta_grid": bg,
+            "posterior_normal": post,
+            "efficient": True,
+            "credible_equals_confidence": True,
+            "caveat": "BvM can FAIL for other semiparametric functionals; validity here is a theorem about this one",
+            "n_events": int(ev.sum()),
+            "n": int(n),
+            "method": "Cox partial likelihood with the semiparametric BvM of Sec. 13.6.2",
+        }
+    )
 
 
 def cheatsheet():

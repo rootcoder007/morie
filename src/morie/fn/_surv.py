@@ -13,6 +13,8 @@ for the event of interest and 0 for right-censoring. The risk set at time
 
 from __future__ import annotations
 
+import math
+
 from . import _array_core as np
 
 __all__ = ["prepare", "cox_fit", "baseline_hazard", "km_estimate"]
@@ -50,93 +52,127 @@ def cox_fit(t, e, X, ties="efron", max_iter=50, tol=1e-9, offset=None):
     tied events, which is materially more accurate when ties are common and is
     the default for that reason.
     """
+    if ties not in ("breslow", "efron"):
+        raise ValueError('ties must be "breslow" or "efron"')
     n, p = X.shape
     beta = np.zeros(p)
     off = np.zeros(n) if offset is None else np.asarray(offset, dtype=float).ravel()
-    order = np.argsort(t)
-    ts, es, Xs, offs = t[order], e[order], X[order], off[order]
-    utimes = np.unique(ts[es == 1])
+    # One pass from the latest time down: the risk set at time u is every
+    # subject with t >= u, so its sums S0, S1, S2 grow as earlier times are
+    # reached. Plain floats, O(n p^2) per Newton step.
+    order = sorted(range(n), key=lambda i: float(t[i]), reverse=True)
+    ts = [float(t[i]) for i in order]
+    es = [float(e[i]) == 1.0 for i in order]
+    Xs = [[float(v) for v in np.atleast_1d(X[i])] for i in order]
+    offs = [float(off[i]) for i in order]
+    R = range(p)
 
     loglik = -np.inf
     converged = False
     it = 0
-    for it in range(1, max_iter + 1):
-        eta = Xs @ beta + offs
-        eta = np.clip(eta, -500, 500)
-        w = np.exp(eta)
+    U = np.zeros(p)
+    info = np.zeros((p, p))
+    for it in range(1, max_iter + 1):  # noqa: B007 - the count is returned after the loop
+        bl = [float(v) for v in beta]
+        eta = [min(500.0, max(-500.0, sum(x[j] * bl[j] for j in R) + o)) for x, o in zip(Xs, offs)]
+        w = [math.exp(v) for v in eta]
         ll = 0.0
-        U = np.zeros(p)
-        I = np.zeros((p, p))
-        for ut in utimes:
-            at_risk = ts >= ut
-            died = at_risk & (ts == ut) & (es == 1)
-            d = int(died.sum())
+        Ul = [0.0] * p
+        info_l = [[0.0] * p for _ in R]
+        S0r, S1r, S2r = 0.0, [0.0] * p, [[0.0] * p for _ in R]
+        i = 0
+        while i < n:
+            ut = ts[i]
+            S0d, S1d, S2d = 0.0, [0.0] * p, [[0.0] * p for _ in R]
+            d = 0
+            while i < n and ts[i] == ut:
+                wi, xi = w[i], Xs[i]
+                S0r += wi
+                for j in R:
+                    S1r[j] += wi * xi[j]
+                    for k in R:
+                        S2r[j][k] += wi * xi[j] * xi[k]
+                if es[i]:
+                    d += 1
+                    S0d += wi
+                    ll += eta[i]
+                    for j in R:
+                        S1d[j] += wi * xi[j]
+                        Ul[j] += xi[j]
+                        for k in R:
+                            S2d[j][k] += wi * xi[j] * xi[k]
+                i += 1
             if d == 0:
                 continue
-            wr = w[at_risk]
-            Xr = Xs[at_risk]
-            wd = w[died]
-            Xd = Xs[died]
-            S0r = wr.sum()
-            S1r = wr @ Xr
-            S2r = (wr[:, None] * Xr).T @ Xr
-            S0d = wd.sum()
-            S1d = wd @ Xd
-            S2d = (wd[:, None] * Xd).T @ Xd
-            ll += eta[died].sum()
-            U += Xd.sum(axis=0)
-            if ties == "breslow" or d == 1:
-                ll -= d * np.log(S0r)
-                mu = S1r / S0r
-                U -= d * mu
-                I += d * (S2r / S0r - np.outer(mu, mu))
-            elif ties == "efron":
-                for l in range(d):
-                    f = l / d
-                    S0 = S0r - f * S0d
-                    S1 = S1r - f * S1d
-                    S2 = S2r - f * S2d
-                    ll -= np.log(S0)
-                    mu = S1 / S0
-                    U -= mu
-                    I += S2 / S0 - np.outer(mu, mu)
-            else:
-                raise ValueError('ties must be "breslow" or "efron"')
+            steps = [0.0] if (ties == "breslow" or d == 1) else [k / d for k in range(d)]
+            mult = d if len(steps) == 1 else 1
+            for f in steps:
+                S0 = S0r - f * S0d
+                mu = [(S1r[j] - f * S1d[j]) / S0 for j in R]
+                ll -= mult * math.log(S0)
+                for j in R:
+                    Ul[j] -= mult * mu[j]
+                    for k in R:
+                        info_l[j][k] += mult * ((S2r[j][k] - f * S2d[j][k]) / S0 - mu[j] * mu[k])
+        U = np.array(Ul)
+        info = np.array(info_l)
         try:
-            step = np.linalg.solve(I, U)
+            step = np.linalg.solve(info, U)
         except np.linalg.LinAlgError:
-            step = np.linalg.lstsq(I, U, rcond=None)[0]
+            step = np.linalg.lstsq(info, U, rcond=None)[0]
         beta = beta + step
         if np.max(np.abs(step)) < tol:
             loglik = ll
             converged = True
             break
         loglik = ll
-    return beta, float(loglik), I, U, int(it), bool(converged)
+    return beta, float(loglik), info, U, int(it), bool(converged)
 
 
 def baseline_hazard(t, e, X, beta, offset=None):
     """Breslow baseline cumulative hazard at each distinct event time."""
     n = t.size
     off = np.zeros(n) if offset is None else np.asarray(offset, dtype=float).ravel()
-    w = np.exp(np.clip(X @ beta + off, -500, 500))
-    utimes = np.unique(t[e == 1])
-    dH = np.empty(utimes.size)
-    for i, ut in enumerate(utimes):
-        at_risk = t >= ut
-        d = int(((t == ut) & (e == 1)).sum())
-        dH[i] = d / max(w[at_risk].sum(), 1e-300)
-    return utimes, dH, np.cumsum(dH)
+    w = [float(v) for v in np.exp(np.clip(X @ beta + off, -500, 500))]
+    tl = [float(v) for v in t]
+    el = [float(v) == 1.0 for v in e]
+    # one pass from the latest time down: the risk-set sum at u covers every t >= u
+    order = sorted(range(n), key=lambda i: tl[i], reverse=True)
+    times, dHs = [], []
+    S0, i = 0.0, 0
+    while i < n:
+        ut = tl[order[i]]
+        d = 0
+        while i < n and tl[order[i]] == ut:
+            S0 += w[order[i]]
+            d += el[order[i]]
+            i += 1
+        if d:
+            times.append(ut)
+            dHs.append(d / max(S0, 1e-300))
+    times.reverse()
+    dHs.reverse()
+    dH = np.array(dHs) if dHs else np.empty(0)
+    return (np.array(times) if times else np.empty(0)), dH, np.cumsum(dH)
 
 
 def km_estimate(t, e):
     """Kaplan-Meier survival at each distinct event time."""
-    utimes = np.unique(t[e == 1])
-    surv = np.empty(utimes.size)
-    s = 1.0
-    for i, ut in enumerate(utimes):
-        n_risk = int((t >= ut).sum())
-        d = int(((t == ut) & (e == 1)).sum())
-        s *= 1.0 - d / max(n_risk, 1)
-        surv[i] = s
-    return utimes, surv
+    tl = [float(v) for v in t]
+    el = [float(v) == 1.0 for v in e]
+    n = len(tl)
+    order = sorted(range(n), key=lambda i: tl[i])
+    times, surv = [], []
+    s, i = 1.0, 0
+    while i < n:  # ascending: the number at risk at u is everyone not yet passed
+        ut = tl[order[i]]
+        n_risk = n - i
+        d = 0
+        while i < n and tl[order[i]] == ut:
+            d += el[order[i]]
+            i += 1
+        if d:
+            s *= 1.0 - d / max(n_risk, 1)
+            times.append(ut)
+            surv.append(s)
+    return (np.array(times) if times else np.empty(0)), (np.array(surv) if surv else np.empty(0))

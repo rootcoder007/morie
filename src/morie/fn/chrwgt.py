@@ -112,16 +112,22 @@ def censoring_at_risk_weight(time, censor, at=None, stabilize=True):
     ess = float(tot**2 / max(float(np.sum(w**2)), 1e-300))
     return RichResult(
         title="IPCW weights",
-        summary_lines=[("n", int(t.size)), ("censored", int(c.sum())),
-                       ("ESS", ess), ("max weight share", share)],
-        warnings=(["weights explode as the censoring survivor approaches zero "
-                   "at long follow-up; truncate the time axis rather than "
-                   "weighting through administrative censoring"]
-                  + ([f"one subject carries {share:.1%} of the weight"]
-                     if share > 0.1 else [])),
+        summary_lines=[("n", int(t.size)), ("censored", int(c.sum())), ("ESS", ess), ("max weight share", share)],
+        warnings=(
+            [
+                "weights explode as the censoring survivor approaches zero "
+                "at long follow-up; truncate the time axis rather than "
+                "weighting through administrative censoring"
+            ]
+            + ([f"one subject carries {share:.1%} of the weight"] if share > 0.1 else [])
+        ),
         payload={
-            "weights": w, "G": g, "max_weight_share": share, "ess": ess,
-            "n_censored": int(c.sum()), "n": int(t.size),
+            "weights": w,
+            "G": g,
+            "max_weight_share": share,
+            "ess": ess,
+            "n_censored": int(c.sum()),
+            "n": int(t.size),
             "method": "censoring_at_risk_weight",
         },
     )

@@ -56,11 +56,18 @@ def survey_p_value(test_stat, DEFF=1.0, df=1):
     adj = x / d
     p0 = 1.0 - C.pchisq(x, k)
     p1 = 1.0 - C.pchisq(adj, k)
-    return RichResult(payload={
-        "estimate": float(p1), "p_naive": float(p0), "statistic": float(adj),
-        "statistic_naive": float(x), "deff": d, "df": k,
-        "inflation": float(p1 / p0) if p0 > 0.0 else float("inf"),
-        "method": "first-order design correction X2/deff [Korn & Graubard 1999]"})
+    return RichResult(
+        payload={
+            "estimate": float(p1),
+            "p_naive": float(p0),
+            "statistic": float(adj),
+            "statistic_naive": float(x),
+            "deff": d,
+            "df": k,
+            "inflation": float(p1 / p0) if p0 > 0.0 else float("inf"),
+            "method": "first-order design correction X2/deff [Korn & Graubard 1999]",
+        }
+    )
 
 
 # CANONICAL TEST
@@ -72,6 +79,7 @@ def survey_p_value(test_stat, DEFF=1.0, df=1):
 
 def cheatsheet():
     return "survip(test_stat, DEFF, df): design-corrected chi-square p-value."
+
 
 # public names resolved by fn/_lazy_map.json
 surveypvalue = survey_p_value

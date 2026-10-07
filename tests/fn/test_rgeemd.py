@@ -1,7 +1,6 @@
 """Tests for rgeemd.rangayyan_eemd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_eemd
 
 

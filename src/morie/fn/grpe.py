@@ -73,9 +73,7 @@ def geron_sinusoidal_positional_encoding(seq_len, d_model, base=10000.0):
     if d_model < 2:
         raise ValueError(f"d_model must be at least 2, got {d_model}.")
     if d_model % 2 != 0:
-        raise ValueError(
-            f"d_model must be even so each sine has a paired cosine, got {d_model}."
-        )
+        raise ValueError(f"d_model must be even so each sine has a paired cosine, got {d_model}.")
     base = float(base)
     if not np.isfinite(base) or base <= 1:
         raise ValueError(f"base must be a finite float greater than 1, got {base}.")

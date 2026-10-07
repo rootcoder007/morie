@@ -1,7 +1,6 @@
 """Tests for ghtst.ghosal_np_testing."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghtst import ghosal_np_testing
 
 
@@ -18,6 +17,7 @@ def test_ghtst_basic():
     assert 0 <= result["p_value"] <= 1
     # Independent check of BF10 == exp(log_BF10):
     import math
+
     assert math.isclose(result["BF10"], math.exp(result["log_BF10"]), rel_tol=1e-9)
 
 

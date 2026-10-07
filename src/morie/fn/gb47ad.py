@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['adtest', 'gibbons_anderson_darling']
+__all__ = ["adtest", "gibbons_anderson_darling"]
 
 
 _AD_LEVELS = (0.01, 0.025, 0.05, 0.10, 0.15)
@@ -76,9 +76,7 @@ def adtest(x, cdf, case="specified", alpha=0.05):
         raise ValueError("F_0 values must lie strictly inside (0, 1).")
     s = 0.0
     for j in range(1, n + 1):
-        s += (2.0 * j - 1.0) * (
-            math.log(z[j - 1]) + math.log(1.0 - z[n - j])
-        )
+        s += (2.0 * j - 1.0) * (math.log(z[j - 1]) + math.log(1.0 - z[n - j]))
     a2 = -n - s / n
     if case == "normal-both":
         astar = a2 * (1.0 + 0.75 / n + 2.25 / (n * n))

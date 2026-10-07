@@ -80,13 +80,15 @@ def evt_trimmed_lmom(x, s=0, t=0, order=2):
     if len(lam) >= 2 and lam[1] != 0.0:
         for r in range(2, len(lam)):
             tau[r] = lam[r] / lam[1]
-    return RichResult(payload={
-        "lambda": lam,
-        "estimate": lam[-1],
-        "tau": tau,
-        "n": n,
-        "method": "trimmed L-moments TL(s,t)",
-    })
+    return RichResult(
+        payload={
+            "lambda": lam,
+            "estimate": lam[-1],
+            "tau": tau,
+            "n": n,
+            "method": "trimmed L-moments TL(s,t)",
+        }
+    )
 
 
 def cheatsheet():

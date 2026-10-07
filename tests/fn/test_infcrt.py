@@ -1,7 +1,6 @@
 """Tests for infcrt.information_criterion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.infcrt import information_criterion
 
 

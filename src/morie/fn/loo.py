@@ -70,7 +70,7 @@ def compute_loo(
             k_hat[i] = 0.0
 
         # Self-normalised importance sampling estimate of LOO predictive
-        lw_i = ll[:, i] + raw_lw  # cancel out: this = 0 for self, but
+        ll[:, i] + raw_lw  # cancel out: this = 0 for self, but
         # actually we want: w_s * p(y_i | theta_s) normalised
         w_norm = raw_w / np.sum(raw_w)
         lik_i = np.exp(ll[:, i])

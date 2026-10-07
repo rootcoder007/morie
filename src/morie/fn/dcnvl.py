@@ -76,10 +76,7 @@ def dcnvl(
 
     phi_w = np.mean(np.exp(1j * np.outer(t, W)), axis=1)
 
-    if error_type == "laplace":
-        phi_u = 1.0 / (1.0 + (error_sd * t) ** 2)
-    else:
-        phi_u = np.exp(-0.5 * (error_sd * t) ** 2)
+    phi_u = 1.0 / (1.0 + (error_sd * t) ** 2) if error_type == "laplace" else np.exp(-0.5 * (error_sd * t) ** 2)
 
     phi_u = np.where(np.abs(phi_u) < 1e-10, 1e-10, phi_u)
 

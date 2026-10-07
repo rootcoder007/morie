@@ -1,8 +1,8 @@
 """Kosorok Z/M-estimator theory and semiparametric efficiency."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ksr021 import kosorok_residual_edf
 from morie.fn.ksr023 import kosorok_cox_score_process
 from morie.fn.ksr046 import kosorok_z_consistency
@@ -26,7 +26,7 @@ def test_residual_edf_is_a_distribution_function():
     y = Z @ beta + rng.standard_normal(n)
     out = kosorok_residual_edf(y, Z, beta)
     F = out["F_hat"]
-    assert np.all(np.diff(F) >= -1e-12)          # non-decreasing
+    assert np.all(np.diff(F) >= -1e-12)  # non-decreasing
     assert F[0] > 0 and F[-1] == pytest.approx(1.0)
     # the whole point of the example
     assert out["limit_is_brownian_bridge"] is False
@@ -36,6 +36,7 @@ def test_residual_edf_is_a_distribution_function():
 
 def test_cox_score_is_a_process_that_vanishes_at_the_mle():
     from morie.fn import _sci_core as optimize
+
     rng = np.random.default_rng(1)
     n = 300
     z = rng.standard_normal(n)
@@ -99,8 +100,7 @@ def test_z_consistency_needs_both_conditions():
     assert out["both_needed"] is True
     # a fixed perturbation breaks uniform convergence, and then the
     # theorem gives nothing even though the near-root condition holds
-    fixed = kosorok_z_consistency(lambda th, t: psi(th, t) + 0.3 * np.sin(10 * t),
-                                  psi, seq, 1.0)
+    fixed = kosorok_z_consistency(lambda th, t: psi(th, t) + 0.3 * np.sin(10 * t), psi, seq, 1.0)
     assert fixed["uniform_convergence"] is False
     assert fixed["consistent"] is False
     with pytest.raises(ValueError):
@@ -112,7 +112,7 @@ def test_stochastic_equicontinuity_ratio_shrinks():
         return float(np.asarray(th).ravel()[0]) * t
 
     def psi_n(th, t):
-        return psi(th, t) + 0.01 * t   # a fixed, theta-free perturbation
+        return psi(th, t) + 0.01 * t  # a fixed, theta-free perturbation
 
     ns = [100, 400, 1600, 6400]
     ths = [1.0 + 1.0 / np.sqrt(m) for m in ns]
@@ -130,21 +130,24 @@ def test_stochastic_equicontinuity_ratio_shrinks():
 
 def test_asymptotic_linearity_reports_the_residual_and_invertibility():
     out = kosorok_asymptotic_linearity(
-        np.array([[2.0]]), lambda th, t: 0.1 * t, lambda th, t: 0.0,
-        np.array([1.01]), np.array([1.0]), 400)
+        np.array([[2.0]]), lambda th, t: 0.1 * t, lambda th, t: 0.0, np.array([1.01]), np.array([1.0]), 400
+    )
     assert out["derivative_invertible"] is True
     assert np.isfinite(out["residual_norm"])
     singular = kosorok_asymptotic_linearity(
-        np.array([[0.0]]), lambda th, t: 0.0, lambda th, t: 0.0,
-        np.array([1.0]), np.array([1.0]), 100)
+        np.array([[0.0]]), lambda th, t: 0.0, lambda th, t: 0.0, np.array([1.0]), np.array([1.0]), 100
+    )
     assert singular["derivative_invertible"] is False
 
 
 def test_lipschitz_envelope_holds_for_smooth_and_fails_for_a_jump():
     x = np.linspace(-2, 2, 101)
     smooth = kosorok_lipschitz_envelope(
-        lambda th, v: float(np.sin(th[0] * v)), lambda v: abs(v) + 1e-9,
-        [np.array([0.5]), np.array([0.7]), np.array([1.1])], x)
+        lambda th, v: float(np.sin(th[0] * v)),
+        lambda v: abs(v) + 1e-9,
+        [np.array([0.5]), np.array([0.7]), np.array([1.1])],
+        x,
+    )
     assert smooth["holds"] is True
     # an indicator in theta has no envelope: this is exactly why
     # maximum-score estimators are n^{-1/3}, not root-n
@@ -152,8 +155,8 @@ def test_lipschitz_envelope_holds_for_smooth_and_fails_for_a_jump():
     # the indicators never differ and the violation is invisible
     xj = np.array([-1.0, 0.0005, 1.0])
     jump = kosorok_lipschitz_envelope(
-        lambda th, v: float(v > th[0]), lambda v: 1e-6,
-        [np.array([0.0]), np.array([0.001])], xj)
+        lambda th, v: float(v > th[0]), lambda v: 1e-6, [np.array([0.0]), np.array([0.001])], xj
+    )
     assert jump["holds"] is False
     assert jump["worst_ratio"] > 1.0
 
@@ -181,7 +184,7 @@ def test_no_bias_tolerance_includes_the_distance_term():
     assert out["holds"] is True
     # the tolerance is n^{-1/2} + ||theta_n - theta||, which here is
     # twice n^{-1/2}, not n^{-1/2}
-    assert out["tolerance"][0] == pytest.approx(2 * 100 ** -0.5)
+    assert out["tolerance"][0] == pytest.approx(2 * 100**-0.5)
 
 
 def test_efficient_score_conditions_are_reported_separately():

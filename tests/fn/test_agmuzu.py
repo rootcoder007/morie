@@ -1,14 +1,13 @@
 """Tests for agmuzu.muzero_world_model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agmuzu import muzero_world_model
 
 
 def test_agmuzu_basic():
     """Test basic functionality."""
     rng_obs = np.random.default_rng(42)
-    rng_dyn = np.random.default_rng(43)
+    np.random.default_rng(43)
     observations = rng_obs.normal(0, 1, 100)
 
     K = 3

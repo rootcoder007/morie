@@ -7,7 +7,6 @@ from ._richresult import RichResult
 __all__ = ["differential_entropy"]
 
 
-
 def differential_entropy(density, x=None, base=2.0):
     """
     Differential entropy of a density given on a grid.

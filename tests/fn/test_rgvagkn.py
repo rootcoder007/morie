@@ -1,7 +1,6 @@
 """Tests for rgvagkn.rangayyan_vag_knee_cartilage."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaphys import rangayyan_vag_knee_cartilage
 
 

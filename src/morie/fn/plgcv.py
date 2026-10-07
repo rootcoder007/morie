@@ -88,7 +88,7 @@ def plgcv(
         except np.linalg.LinAlgError:
             beta = np.linalg.lstsq(XtX, X_tilde.T @ y_tilde, rcond=None)[0]
 
-        g_hat = ey - (S @ X) @ beta + X @ beta
+        ey - (S @ X) @ beta + X @ beta
         resid = y - X @ beta - (S @ (y - X @ beta))
         mse = np.mean(resid**2)
 

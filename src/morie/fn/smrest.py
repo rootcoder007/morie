@@ -1,12 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Standardised mortality ratio, indirect standardisation."""
 
-import math
-
-from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['smrind', 'standardized_mortality_ratio']
+__all__ = ["smrind", "standardized_mortality_ratio"]
 
 
 def smrind(observed, expected, alpha=0.05):
@@ -39,12 +36,18 @@ def smrind(observed, expected, alpha=0.05):
     published form, and is what the existing morie.fn.smr implements.
     """
     from .smr import standardized_mortality_ratio as _smr
+
     out = _smr(observed, expected, alpha=alpha)
-    return RichResult(payload={
-        "smr": out["smr"], "ci_lower": out["ci_lower"],
-        "ci_upper": out["ci_upper"], "observed": float(observed),
-        "expected": float(expected),
-        "method": "Standardised mortality ratio (indirect)"})
+    return RichResult(
+        payload={
+            "smr": out["smr"],
+            "ci_lower": out["ci_lower"],
+            "ci_upper": out["ci_upper"],
+            "observed": float(observed),
+            "expected": float(expected),
+            "method": "Standardised mortality ratio (indirect)",
+        }
+    )
 
 
 standardized_mortality_ratio = smrind

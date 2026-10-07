@@ -1,4 +1,5 @@
 """Term rewriting, critical pairs and Knuth-Bendix completion."""
+
 import importlib
 
 import pytest
@@ -34,17 +35,20 @@ def test_the_completed_system_is_confluent():
 
 
 def test_the_raw_axioms_are_not():
-    raw = [T.rule(l, r) for l, r in AX]
+    raw = [T.rule(ell, r) for ell, r in AX]
     assert not T.is_locally_confluent(raw)["locally_confluent"]
 
 
-@pytest.mark.parametrize("lhs,rhs", [
-    (inv(inv(X)), X),
-    (inv(E), E),
-    (m(X, E), X),
-    (m(X, inv(X)), E),
-    (inv(m(X, Y)), m(inv(Y), inv(X))),
-])
+@pytest.mark.parametrize(
+    "lhs,rhs",
+    [
+        (inv(inv(X)), X),
+        (inv(E), E),
+        (m(X, E), X),
+        (m(X, inv(X)), E),
+        (inv(m(X, Y)), m(inv(Y), inv(X))),
+    ],
+)
 def test_it_decides_group_identities(lhs, rhs):
     assert T.decides(lhs, rhs, G)["equal"]
 
@@ -55,8 +59,7 @@ def test_it_does_not_prove_commutativity():
 
 def test_the_two_strategies_agree_on_a_convergent_system():
     t = m(m(inv(m(X, Y)), m(X, Y)), inv(E))
-    assert T.normal_form(t, G, "innermost")["normal_form"] \
-        == T.normal_form(t, G, "outermost")["normal_form"]
+    assert T.normal_form(t, G, "innermost")["normal_form"] == T.normal_form(t, G, "outermost")["normal_form"]
 
 
 def test_non_confluence_is_detected():
@@ -64,8 +67,7 @@ def test_non_confluence_is_detected():
     lc = T.is_locally_confluent(bad)
     assert not lc["locally_confluent"]
     assert lc["n_critical_pairs"] > 0
-    assert T.normal_form(c("a"), bad)["normal_form"] \
-        != T.normal_form(c("a"), list(reversed(bad)))["normal_form"]
+    assert T.normal_form(c("a"), bad)["normal_form"] != T.normal_form(c("a"), list(reversed(bad)))["normal_form"]
 
 
 def test_the_lpo_orients_the_completed_rules():
@@ -113,13 +115,16 @@ def test_the_entry_point_carries_the_trace():
     assert r["steps"] == len(r["trace"]) == 2
 
 
-@pytest.mark.parametrize("call", [
-    lambda: T.rule(v("x"), c("e")),
-    lambda: T.rule(m(v("x"), c("e")), m(v("x"), v("y"))),
-    lambda: T.subterm_at(m(v("x"), c("e")), (9,)),
-    lambda: T.replace_at(m(v("x"), c("e")), (9,), c("e")),
-    lambda: T.normal_form(c("a"), G, "clever"),
-])
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: T.rule(v("x"), c("e")),
+        lambda: T.rule(m(v("x"), c("e")), m(v("x"), v("y"))),
+        lambda: T.subterm_at(m(v("x"), c("e")), (9,)),
+        lambda: T.replace_at(m(v("x"), c("e")), (9,), c("e")),
+        lambda: T.normal_form(c("a"), G, "clever"),
+    ],
+)
 def test_bad_input_is_refused(call):
     with pytest.raises(ValueError):
         call()

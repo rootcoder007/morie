@@ -90,12 +90,22 @@ def bound_compliance(y, D, Z):
     rest = 1.0 - pi_c
     lo = pi_c * late + rest * (y0 - y1)
     hi = pi_c * late + rest * (y1 - y0)
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "late": late,
-        "pi_c": pi_c, "pi_a": pi_a, "pi_n": pi_n,
-        "e1c": e1c, "e0c": e0c, "n": n,
-        "method": "Bound under unknown compliance"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "late": late,
+            "pi_c": pi_c,
+            "pi_a": pi_a,
+            "pi_n": pi_n,
+            "e1c": e1c,
+            "e0c": e0c,
+            "n": n,
+            "method": "Bound under unknown compliance",
+        }
+    )
 
 
 def cheatsheet():

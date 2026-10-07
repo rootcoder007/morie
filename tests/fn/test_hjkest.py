@@ -1,7 +1,6 @@
 """Tests for hjkest.hajek_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hjkest import hajek_estimator
 
 
@@ -14,12 +13,12 @@ def test_hjkest_basic():
     pi = rng_pi.uniform(0.05, 1.0, n)
     result = hajek_estimator(y, pi)
     assert isinstance(result, dict)
-    for key in ("mean", "ht_mean_if_N_known", "weight_sum",
-                "design_unbiased", "bias_order", "n", "method"):
+    for key in ("mean", "ht_mean_if_N_known", "weight_sum", "design_unbiased", "bias_order", "n", "method"):
         assert key in result
     assert result["design_unbiased"] is False
     assert result["n"] == n
     import math
+
     assert math.isfinite(result["mean"])
     assert math.isfinite(result["weight_sum"])
     assert result["weight_sum"] > 0
@@ -37,5 +36,6 @@ def test_hjkest_edge():
     assert result["n"] == n
     assert result["method"].startswith("Hajek")
     import math
+
     assert math.isfinite(result["mean"])
     assert result["design_unbiased"] is False

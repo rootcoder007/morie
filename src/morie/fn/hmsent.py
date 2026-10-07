@@ -81,7 +81,9 @@ def geron_sentiment_analysis(texts, model, tokenizer=None, y_true=None, labels=N
         token_lists.append(toks)
         sc = np.asarray(model(toks), dtype=float).ravel()
         if sc.size < 2:
-            raise ValueError(f"geron_sentiment_analysis: model returned {sc.size} scores for text {i}; need >= 2 classes")
+            raise ValueError(
+                f"geron_sentiment_analysis: model returned {sc.size} scores for text {i}; need >= 2 classes"
+            )
         if not np.all(np.isfinite(sc)):
             raise ValueError(f"geron_sentiment_analysis: model returned non-finite scores for text {i}")
         if K is None:

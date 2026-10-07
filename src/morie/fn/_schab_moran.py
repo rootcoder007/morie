@@ -124,7 +124,7 @@ def _kurtosis_b(z):
     s2 = float(d @ d)
     if s2 <= 0:
         raise ValueError("z is constant; the kurtosis is undefined")
-    return float(d.size * float((d ** 4).sum()) / (s2 ** 2))
+    return float(d.size * float((d**4).sum()) / (s2**2))
 
 
 def moran_moments(z, w):

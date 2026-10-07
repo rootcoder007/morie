@@ -1,7 +1,6 @@
 """Tests for benfd (Benford law test)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.benfd import benfords_law_test
 
 

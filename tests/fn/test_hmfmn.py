@@ -1,7 +1,5 @@
 """Tests for hmfmn.geron_fashion_mnist."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmfmn import geron_fashion_mnist
 
 

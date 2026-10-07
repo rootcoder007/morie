@@ -1,7 +1,6 @@
 """Tests for gb571z.gibbons_wsrt_ties_zeros."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb571z import gibbons_wsrt_ties_zeros
 
 
@@ -11,6 +10,8 @@ def test_gb571z_basic():
     result = gibbons_wsrt_ties_zeros(differences)
     assert isinstance(result, dict)
     assert "var" in result
+
+
 def test_gb571z_edge():
     """Test edge cases."""
     differences = np.random.default_rng(42).normal(0, 1, 100)

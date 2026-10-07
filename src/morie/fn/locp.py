@@ -12,7 +12,7 @@ def _kernel(name, t):
     if t >= 1.0 and name != "gaussian":
         return 0.0
     if name == "tricube":
-        return (1.0 - t ** 3) ** 3
+        return (1.0 - t**3) ** 3
     if name == "epanechnikov":
         return 0.75 * (1.0 - t * t)
     if name == "gaussian":
@@ -93,10 +93,7 @@ def locp(x, y, x0=None, degree=1, bandwidth=None, kernel="tricube"):
     d = int(degree)
     if d < 0:
         raise ValueError("degree must be >= 0")
-    if x0 is None:
-        pts = sorted(set(xv))
-    else:
-        pts = [float(v) for v in x0]
+    pts = sorted(set(xv)) if x0 is None else [float(v) for v in x0]
     if bandwidth is None:
         bandwidth = (max(xv) - min(xv)) / 2.0
     lam = float(bandwidth)
@@ -136,12 +133,18 @@ def locp(x, y, x0=None, degree=1, bandwidth=None, kernel="tricube"):
             fitted.append(beta[0])
             slope.append(beta[1] if d >= 1 else float("nan"))
         neff.append(sw)
-    return RichResult(payload={
-        "fitted": fitted, "x0": pts, "slope": slope,
-        "n_effective": neff, "degree": d, "bandwidth": lam,
-        "kernel": kern,
-        "method": "local polynomial WLS (Fan-Gijbels 1996; ESL Eq. 6.11)",
-    })
+    return RichResult(
+        payload={
+            "fitted": fitted,
+            "x0": pts,
+            "slope": slope,
+            "n_effective": neff,
+            "degree": d,
+            "bandwidth": lam,
+            "kernel": kern,
+            "method": "local polynomial WLS (Fan-Gijbels 1996; ESL Eq. 6.11)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -150,6 +153,7 @@ local_polynomial_smoother = locp
 
 def cheatsheet():
     return "locp: per-x0 kernel-WLS on centered polynomial; f_hat = alpha_hat"
+
 
 # public names resolved by fn/_lazy_map.json
 local_polynomial = locp

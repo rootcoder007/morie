@@ -93,7 +93,7 @@ def nakagawa_marginal_r2(y, X, Z=None, cluster=None):
     for i in range(N):
         j = idx[lab[i]]
         msw += (resid[i] - si[j] / ni[j]) ** 2
-    msw /= (N - k)
+    msw /= N - k
     n0 = (N - sum(v * v for v in ni) / N) / (k - 1)
     s2l = (msb - msw) / n0
     if s2l < 0.0:
@@ -102,13 +102,20 @@ def nakagawa_marginal_r2(y, X, Z=None, cluster=None):
     tot = s2f + s2l + s2e
     if tot <= 0.0:
         raise ValueError("nakagawa_marginal_r2: total variance is zero")
-    return RichResult(payload={
-        "estimate": s2f / tot, "r2_marginal": s2f / tot,
-        "r2_conditional": (s2f + s2l) / tot,
-        "sigma2_f": s2f, "sigma2_l": s2l, "sigma2_e": s2e,
-        "icc": s2l / (s2l + s2e) if (s2l + s2e) > 0.0 else float("nan"),
-        "n": N, "n_clusters": k,
-        "method": "Nakagawa-Schielzeth marginal R^2 (random intercept)"})
+    return RichResult(
+        payload={
+            "estimate": s2f / tot,
+            "r2_marginal": s2f / tot,
+            "r2_conditional": (s2f + s2l) / tot,
+            "sigma2_f": s2f,
+            "sigma2_l": s2l,
+            "sigma2_e": s2e,
+            "icc": s2l / (s2l + s2e) if (s2l + s2e) > 0.0 else float("nan"),
+            "n": N,
+            "n_clusters": k,
+            "method": "Nakagawa-Schielzeth marginal R^2 (random intercept)",
+        }
+    )
 
 
 def cheatsheet():

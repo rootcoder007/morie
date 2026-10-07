@@ -32,10 +32,7 @@ def otis_demo_index(
         return ESRes(measure=f"demo_{method}_index", estimate=0.0, n=0)
     p = counts / n
     p = p[p > 0]
-    if method == "shannon":
-        idx = -float(np.sum(p * np.log(p)))
-    else:
-        idx = 1.0 - float(np.sum(p**2))
+    idx = -float(np.sum(p * np.log(p))) if method == "shannon" else 1.0 - float(np.sum(p**2))
     return ESRes(
         measure=f"demo_{method}_index", estimate=float(idx), n=int(n), extra={"method": method, "n_groups": len(p)}
     )

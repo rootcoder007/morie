@@ -3,12 +3,12 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrnfc import geron_reinforce
 
 
 def test_hmrnfc_basic():
     """Test basic functionality with a single episode."""
+
     def policy(state, action):
         if action == 0:
             return np.array([1.0, 0.0])
@@ -31,6 +31,7 @@ def test_hmrnfc_basic():
 
 def test_hmrnfc_edge():
     """Test edge case: multiple episodes, baseline off, with a custom theta."""
+
     def policy(state, action):
         if action == 0:
             return np.array([1.0, 0.0])
@@ -42,8 +43,12 @@ def test_hmrnfc_edge():
     ]
     theta_init = np.zeros(2)
     result = geron_reinforce(
-        episodes, policy, gamma=0.9, eta=0.05,
-        theta=theta_init, baseline=False,
+        episodes,
+        policy,
+        gamma=0.9,
+        eta=0.05,
+        theta=theta_init,
+        baseline=False,
     )
     assert isinstance(result, dict)
     for key in ("theta", "step", "gradient"):
@@ -68,7 +73,7 @@ import morie.fn.hmrnfc as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

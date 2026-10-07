@@ -1,7 +1,6 @@
 """Tests for morie.fn.gwrtri."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gwrtri import gwrtri
 
 

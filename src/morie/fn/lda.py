@@ -81,8 +81,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["e_log_theta", "variational_inference", "elbo",
-           "variational_em", "topic_words"]
+__all__ = ["e_log_theta", "variational_inference", "elbo", "variational_em", "topic_words"]
 
 _EPS = 1e-12
 
@@ -91,8 +90,7 @@ def e_log_theta(gamma):
     r"""Eq. (8): :math:`\Psi(\gamma_i) - \Psi(\sum_j \gamma_j)`."""
     g = [float(v) for v in k.vec(gamma)]
     if any(v <= 0.0 for v in g):
-        raise ValueError("lda: gamma must be strictly positive, got "
-                         "%r" % (min(g),))
+        raise ValueError(f"lda: gamma must be strictly positive, got {min(g)!r}")
     s = k.digamma(sum(g))
     return [k.digamma(v) - s for v in g]
 
@@ -111,41 +109,42 @@ def variational_inference(doc, alpha, beta, iters=100, tol=1e-8):
         raise ValueError("lda: beta must have at least one topic")
     V = len(B[0])
     if any(v < 0 or v >= V for v in w):
-        raise ValueError("lda: a word index is outside the "
-                         "vocabulary of %d" % V)
+        raise ValueError(f"lda: a word index is outside the vocabulary of {int(V)}")
     N = len(w)
     if N < 1:
         raise ValueError("lda: the document is empty")
-    a = ([float(alpha)] * K if isinstance(alpha, (int, float))
-         else [float(v) for v in k.vec(alpha)])
+    a = [float(alpha)] * K if isinstance(alpha, (int, float)) else [float(v) for v in k.vec(alpha)]
     if len(a) != K:
-        raise ValueError("lda: alpha has %d entries for %d topics"
-                         % (len(a), K))
+        raise ValueError(f"lda: alpha has {int(len(a))} entries for {int(K)} topics")
     if any(v <= 0.0 for v in a):
         raise ValueError("lda: alpha must be strictly positive")
     phi = [[1.0 / K] * K for _ in range(N)]
     gam = [a[i] + N / float(K) for i in range(K)]
     it, conv = 0, False
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         elog = e_log_theta(gam)
         new = []
         for n in range(N):
             row = [B[i][w[n]] * math.exp(elog[i]) for i in range(K)]
             z = sum(row)
             if z <= _EPS:
-                raise ValueError("lda: word %d has zero probability "
-                                 "under every topic" % w[n])
+                raise ValueError(f"lda: word {int(w[n])} has zero probability under every topic")
             new.append([v / z for v in row])
-        ng = [a[i] + sum(new[n][i] for n in range(N))
-              for i in range(K)]
+        ng = [a[i] + sum(new[n][i] for n in range(N)) for i in range(K)]
         delta = max(abs(ng[i] - gam[i]) for i in range(K))
         phi, gam = new, ng
         if delta < float(tol):
             conv = True
             break
-    return {"phi": phi, "gamma": gam, "iterations": it,
-            "converged": conv, "K": K, "N": N,
-            "topic_proportions": [v / sum(gam) for v in gam]}
+    return {
+        "phi": phi,
+        "gamma": gam,
+        "iterations": it,
+        "converged": conv,
+        "K": K,
+        "N": N,
+        "topic_proportions": [v / sum(gam) for v in gam],
+    }
 
 
 def elbo(doc, alpha, beta, phi, gamma):
@@ -158,8 +157,7 @@ def elbo(doc, alpha, beta, phi, gamma):
     w = [int(v) for v in doc]
     B = [[float(v) for v in r] for r in k.mat(beta)]
     K, N = len(B), len(w)
-    a = ([float(alpha)] * K if isinstance(alpha, (int, float))
-         else [float(v) for v in k.vec(alpha)])
+    a = [float(alpha)] * K if isinstance(alpha, (int, float)) else [float(v) for v in k.vec(alpha)]
     g = [float(v) for v in k.vec(gamma)]
     elog = e_log_theta(g)
     val = k.lgamma(sum(a)) - sum(k.lgamma(v) for v in a)
@@ -177,8 +175,7 @@ def elbo(doc, alpha, beta, phi, gamma):
     return val
 
 
-def variational_em(docs, K, V, alpha=0.1, iters=30, inner=50,
-                   seed=0, tol=1e-6):
+def variational_em(docs, K, V, alpha=0.1, iters=30, inner=50, seed=0, tol=1e-6):
     r"""Alternate variational inference with the :math:`\beta` update.
 
     The M step is the expected word-topic count, normalised:
@@ -197,7 +194,7 @@ def variational_em(docs, K, V, alpha=0.1, iters=30, inner=50,
         z = sum(row)
         B.append([v / z for v in row])
     hist, prev = [], None
-    for it in range(1, int(iters) + 1):
+    for _it in range(1, int(iters) + 1):
         counts = [[_EPS] * int(V) for _ in range(int(K))]
         total = 0.0
         for d in D:
@@ -215,14 +212,19 @@ def variational_em(docs, K, V, alpha=0.1, iters=30, inner=50,
         if prev is not None and abs(total - prev) < float(tol):
             break
         prev = total
-    return RichResult(payload={
-        "estimate": B, "beta": B, "elbo_history": hist,
-        "final_elbo": hist[-1] if hist else float("nan"),
-        "K": int(K), "V": int(V), "n_docs": len(D),
-        "iterations": len(hist),
-        "method": "variational EM; Blei, Ng & Jordan (2003) "
-                  "Sec. 5.1, eqs. (6)-(8)",
-    })
+    return RichResult(
+        payload={
+            "estimate": B,
+            "beta": B,
+            "elbo_history": hist,
+            "final_elbo": hist[-1] if hist else float("nan"),
+            "K": int(K),
+            "V": int(V),
+            "n_docs": len(D),
+            "iterations": len(hist),
+            "method": "variational EM; Blei, Ng & Jordan (2003) Sec. 5.1, eqs. (6)-(8)",
+        }
+    )
 
 
 def topic_words(beta, n_top=5, vocab=None):
@@ -231,23 +233,24 @@ def topic_words(beta, n_top=5, vocab=None):
     out = []
     for i in range(len(B)):
         idx = sorted(range(len(B[i])), key=lambda j: -B[i][j])
-        idx = idx[:int(n_top)]
-        out.append([(vocab[j] if vocab else j, B[i][j])
-                    for j in idx])
+        idx = idx[: int(n_top)]
+        out.append([(vocab[j] if vocab else j, B[i][j]) for j in idx])
     return out
 
 
 def cheatsheet():
-    return ("lda: theta ~ Dir(alpha), z_n ~ Mult(theta), w_n ~ "
-            "p(.|z_n, beta). The posterior is intractable because "
-            "theta and z couple through beta, so DELETE those edges "
-            "and fit the wreckage by minimising KL (eq. 5). Fixed "
-            "point: phi_ni prop beta_{i,w_n} exp(E_q[log theta_i]), "
-            "gamma_i = alpha_i + sum_n phi_ni, with E_q[log theta_i] "
-            "= Psi(gamma_i) - Psi(sum gamma). Note it is exp(E[log]) "
-            "not E[.] -- smaller by Jensen, which is why variational "
-            "inference under-weights rare topics. The bound only "
-            "rises.")
+    return (
+        "lda: theta ~ Dir(alpha), z_n ~ Mult(theta), w_n ~ "
+        "p(.|z_n, beta). The posterior is intractable because "
+        "theta and z couple through beta, so DELETE those edges "
+        "and fit the wreckage by minimising KL (eq. 5). Fixed "
+        "point: phi_ni prop beta_{i,w_n} exp(E_q[log theta_i]), "
+        "gamma_i = alpha_i + sum_n phi_ni, with E_q[log theta_i] "
+        "= Psi(gamma_i) - Psi(sum gamma). Note it is exp(E[log]) "
+        "not E[.] -- smaller by Jensen, which is why variational "
+        "inference under-weights rare topics. The bound only "
+        "rises."
+    )
 
 
 # compact alias per ledger/NAMING.md

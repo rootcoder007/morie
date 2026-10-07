@@ -85,19 +85,16 @@ def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
     B = add_intercept(Xa)
     beta, sep = logit_fit(B, dv)
     e = logit_predict(B, beta)
-    r = dv - e                                   # residualised treatment
+    r = dv - e  # residualised treatment
     den = float(r @ dv)
     if abs(den) < 1e-12:
-        raise ValueError(
-            "the residualised treatment is orthogonal to treatment; psi is "
-            "not identified."
-        )
+        raise ValueError("the residualised treatment is orthogonal to treatment; psi is not identified.")
     psi = float(r @ yv / den)
 
     resid = yv - psi * dv
     # sandwich variance of the estimating equation
     u = r * (resid - float(np.mean(resid)))
-    se = float(np.sqrt(np.sum(u ** 2)) / abs(den))
+    se = float(np.sqrt(np.sum(u**2)) / abs(den))
 
     if grid is None:
         w = span if span is not None else max(6.0 * se, 1e-6)
@@ -108,7 +105,7 @@ def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
     # invert the test: |S(psi)| <= 1.96 * sd(S) is the acceptance region
     sd_s = float(np.sqrt(np.sum((r * (yv - psi * dv)) ** 2)))
     acc = np.abs(curve) <= 1.959963984540054 * sd_s
-    ci_inv = ((float(g[acc][0]), float(g[acc][-1])) if acc.any() else None)
+    ci_inv = (float(g[acc][0]), float(g[acc][-1])) if acc.any() else None
     slope = float(abs(np.polyfit(g, curve, 1)[0])) if g.size > 2 else np.nan
     z = 1.959963984540054
     return RichResult(
@@ -126,9 +123,7 @@ def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
             "test_curve": curve,
             "grid": g,
             "curve_slope": slope,
-            "weakly_identified": bool(
-                np.isfinite(slope) and slope < 1e-6 * max(abs(den), 1.0)
-            ),
+            "weakly_identified": bool(np.isfinite(slope) and slope < 1e-6 * max(abs(den), 1.0)),
             "logic_note": (
                 "g-estimation searches for the effect that would make "
                 "treatment look randomised given X, rather than modelling "
@@ -146,8 +141,7 @@ def g_estimation_snmm(y, d, X, grid=None, n_grid=401, span=None):
 
 def cheatsheet():
     return (
-        "gestid: g-estimation by solving the residualised score, with a "
-        "test-inversion interval for weak identification"
+        "gestid: g-estimation by solving the residualised score, with a test-inversion interval for weak identification"
     )
 
 

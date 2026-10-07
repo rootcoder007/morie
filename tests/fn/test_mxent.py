@@ -1,8 +1,8 @@
 """Tests for morie.fn.mxent — maximum entropy distribution."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mxent import mxent
 
 
@@ -33,7 +33,7 @@ class TestMxent:
         w = [math.exp(-lam * x) for x in range(4)]
         assert [float(v) for v in result["pmf"]] == pytest.approx([v / sum(w) for v in w], rel=1e-12)
         assert abs(result["constraint_errors"][0]) < 1e-6
-        assert lam > 0      # a mean below the centre tilts towards small x
+        assert lam > 0  # a mean below the centre tilts towards small x
 
     def test_pmf_sums_to_one(self):
         support = np.arange(4, dtype=float)

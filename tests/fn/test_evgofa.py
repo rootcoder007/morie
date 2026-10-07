@@ -16,9 +16,7 @@ X = [0.31, 0.87, 1.02, 1.44, 1.91, 2.05, 2.63, 3.10, 3.88, 5.02, 6.41, 8.20]
 
 def test_zero_shape_is_the_gumbel():
     for x in (-1.0, 0.0, 1.0, 2.5, 7.0):
-        assert float(gev_cdf([x], 1.0, 1.5, 0.0)[0]) == pytest.approx(
-            math.exp(-math.exp(-(x - 1.0) / 1.5)), abs=1e-15
-        )
+        assert float(gev_cdf([x], 1.0, 1.5, 0.0)[0]) == pytest.approx(math.exp(-math.exp(-(x - 1.0) / 1.5)), abs=1e-15)
 
 
 def test_cdf_is_monotone_and_in_the_unit_interval():

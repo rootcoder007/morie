@@ -1,20 +1,21 @@
 """Tests for gb_cons.gibbons_consistency."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_cons import gibbons_consistency
 
 
 def _expected_power(nvals, effect, alpha=0.05):
-    from scipy import stats
     import math
+
+    from morie.fn import _stats_core as stats
+
     za = stats.norm.ppf(1.0 - alpha)
     return [1.0 - stats.norm.cdf(za - math.sqrt(v) * effect) for v in nvals]
 
 
 def test_gb_cons_basic():
     """Test basic functionality with a documented sequence of sample sizes and a positive effect."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     nvals = [5, 10, 20, 40, 80]
     effect = 0.3
     result = gibbons_consistency(nvals, effect)

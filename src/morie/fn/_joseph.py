@@ -30,7 +30,7 @@ _TWOPI = 2.0 * math.pi
 def _vec(x, name="x"):
     v = [float(t) for t in x]
     if not v:
-        raise ValueError("%s must be non-empty" % name)
+        raise ValueError(f"{name} must be non-empty")
     return v
 
 
@@ -71,8 +71,7 @@ def _ols(x, y):
     """Least squares by normal equations; x is a list of rows."""
     n = len(x)
     p = len(x[0])
-    xtx = [[sum(x[i][a] * x[i][b] for i in range(n)) for b in range(p)]
-           for a in range(p)]
+    xtx = [[sum(x[i][a] * x[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     xty = [sum(x[i][a] * y[i] for i in range(n)) for a in range(p)]
     for a in range(p):
         xtx[a][a] += 1e-12
@@ -83,13 +82,13 @@ def _ols(x, y):
 # Forecast error metrics -- ch. 19, "Evaluating Forecast Errors"
 # =====================================================================
 
+
 def rmse(y, yhat):
     """Root mean squared error, ch. 19 p. 566."""
     a, b = _pair(y, yhat)
     e = [a[i] - b[i] for i in range(len(a))]
     mse = sum(v * v for v in e) / len(e)
-    return {"rmse": math.sqrt(mse), "mse": mse, "mae": sum(abs(v) for v in e) / len(e),
-            "bias": _mean(e), "n": len(e)}
+    return {"rmse": math.sqrt(mse), "mse": mse, "mae": sum(abs(v) for v in e) / len(e), "bias": _mean(e), "n": len(e)}
 
 
 def mapets(y, yhat):
@@ -156,8 +155,7 @@ def rmsse(y, yhat, insample, season=1):
         raise ValueError("in-sample naive error is zero; RMSSE is undefined")
     num = sum((a[i] - b[i]) ** 2 for i in range(len(a))) / len(a)
     mase = (sum(abs(a[i] - b[i]) for i in range(len(a))) / len(a)) / (
-        sum(abs(ins[i] - ins[i - season]) for i in range(season, len(ins)))
-        / float(len(ins) - season)
+        sum(abs(ins[i] - ins[i - season]) for i in range(season, len(ins))) / float(len(ins) - season)
     )
     return {"rmsse": math.sqrt(num / den), "scale": den, "mase": mase, "n": len(a)}
 
@@ -176,8 +174,7 @@ def relmae(y, yhat, benchmark):
     base = sum(abs(a[i] - c[i]) for i in range(len(a))) / len(a)
     if base <= 0.0:
         raise ValueError("benchmark MAE is zero; RelMAE is undefined")
-    return {"relmae": mae / base, "mae": mae, "benchmae": base,
-            "better": bool(mae < base), "n": len(a)}
+    return {"relmae": mae / base, "mae": mae, "benchmae": base, "better": bool(mae < base), "n": len(a)}
 
 
 def pinball(y, qhat, q):
@@ -198,13 +195,9 @@ def pinball(y, qhat, q):
     q = float(q)
     if not 0.0 < q < 1.0:
         raise ValueError("q must lie strictly in (0, 1)")
-    losses = [
-        q * max(a[i] - b[i], 0.0) + (1.0 - q) * max(b[i] - a[i], 0.0)
-        for i in range(len(a))
-    ]
+    losses = [q * max(a[i] - b[i], 0.0) + (1.0 - q) * max(b[i] - a[i], 0.0) for i in range(len(a))]
     cov = sum(1 for i in range(len(a)) if a[i] <= b[i]) / float(len(a))
-    return {"loss": _mean(losses), "total": sum(losses), "coverage": cov,
-            "q": q, "n": len(a)}
+    return {"loss": _mean(losses), "total": sum(losses), "coverage": cov, "q": q, "n": len(a)}
 
 
 def winkler(y, lower, upper, alpha=0.1):
@@ -246,32 +239,32 @@ def winkler(y, lower, upper, alpha=0.1):
         else:
             inside += 1
         scores.append(s)
-    return {"score": _mean(scores), "total": sum(scores),
-            "coverage": inside / float(len(a)),
-            "meanwidth": _mean([up[i] - lo[i] for i in range(len(a))]),
-            "n": len(a)}
+    return {
+        "score": _mean(scores),
+        "total": sum(scores),
+        "coverage": inside / float(len(a)),
+        "meanwidth": _mean([up[i] - lo[i] for i in range(len(a))]),
+        "n": len(a),
+    }
 
 
 # =====================================================================
 # Transformations -- ch. 6 pp. 163-166
 # =====================================================================
 
+
 def boxcox(x, lam):
     """Box-Cox transformation, ch. 6 p. 164.
 
-        w = (x^lambda - 1) / lambda   for lambda != 0
-        w = log(x)                    for lambda == 0
+    w = (x^lambda - 1) / lambda   for lambda != 0
+    w = log(x)                    for lambda == 0
     """
     v = _vec(x)
     lam = float(lam)
     if any(t <= 0.0 for t in v):
         raise ValueError("Box-Cox needs strictly positive values")
-    if lam == 0.0:
-        w = [math.log(t) for t in v]
-    else:
-        w = [(t ** lam - 1.0) / lam for t in v]
-    return {"w": w, "lam": lam, "mean": _mean(w),
-            "var": sum((t - _mean(w)) ** 2 for t in w) / len(w), "n": len(w)}
+    w = [math.log(t) for t in v] if lam == 0.0 else [(t**lam - 1.0) / lam for t in v]
+    return {"w": w, "lam": lam, "mean": _mean(w), "var": sum((t - _mean(w)) ** 2 for t in w) / len(w), "n": len(w)}
 
 
 def logtrans(x, offset=0.0):
@@ -289,9 +282,14 @@ def logtrans(x, offset=0.0):
     mv, mw = _mean(v), _mean(w)
     sv = math.sqrt(sum((t - mv) ** 2 for t in v) / len(v))
     sw = math.sqrt(sum((t - mw) ** 2 for t in w) / len(w))
-    return {"w": w, "mean": mw, "sd": sw,
-            "cvbefore": sv / abs(mv) if mv else float("nan"),
-            "cvafter": sw / abs(mw) if mw else float("nan"), "n": len(w)}
+    return {
+        "w": w,
+        "mean": mw,
+        "sd": sw,
+        "cvbefore": sv / abs(mv) if mv else float("nan"),
+        "cvafter": sw / abs(mw) if mw else float("nan"),
+        "n": len(w),
+    }
 
 
 def diffser(x, order=1, season=1):
@@ -311,14 +309,13 @@ def diffser(x, order=1, season=1):
     for _ in range(order):
         w = [w[i] - w[i - season] for i in range(season, len(w))]
     mw = _mean(w)
-    return {"w": w, "mean": mw,
-            "var": sum((t - mw) ** 2 for t in w) / len(w),
-            "dropped": len(v) - len(w), "n": len(w)}
+    return {"w": w, "mean": mw, "var": sum((t - mw) ** 2 for t in w) / len(w), "dropped": len(v) - len(w), "n": len(w)}
 
 
 # =====================================================================
 # Feature engineering -- ch. 6 pp. 168-186
 # =====================================================================
+
 
 def lagfeat(x, lags):
     """Lag features, ch. 6 p. 170.
@@ -335,8 +332,14 @@ def lagfeat(x, lags):
         raise ValueError("series is too short for the largest lag")
     rows = [[v[i - lg] for lg in lags] for i in range(start, len(v))]
     flat = [c for r in rows for c in r]
-    return {"rows": rows, "target": v[start:], "lags": lags,
-            "nrows": len(rows), "ncols": len(lags), "mean": _mean(flat)}
+    return {
+        "rows": rows,
+        "target": v[start:],
+        "lags": lags,
+        "nrows": len(rows),
+        "ncols": len(lags),
+        "mean": _mean(flat),
+    }
 
 
 def rollfeat(x, window, minperiods=None):
@@ -357,7 +360,7 @@ def rollfeat(x, window, minperiods=None):
     means, sds, mins, maxs = [], [], [], []
     for i in range(len(v)):
         lo = max(0, i - window + 1)
-        w = v[lo:i + 1]
+        w = v[lo : i + 1]
         if len(w) < mp:
             continue
         m = _mean(w)
@@ -365,9 +368,15 @@ def rollfeat(x, window, minperiods=None):
         sds.append(math.sqrt(sum((t - m) ** 2 for t in w) / len(w)))
         mins.append(min(w))
         maxs.append(max(w))
-    return {"mean": means, "sd": sds, "min": mins, "max": maxs,
-            "nrows": len(means), "lastmean": means[-1] if means else float("nan"),
-            "meanofmeans": _mean(means) if means else float("nan")}
+    return {
+        "mean": means,
+        "sd": sds,
+        "min": mins,
+        "max": maxs,
+        "nrows": len(means),
+        "lastmean": means[-1] if means else float("nan"),
+        "meanofmeans": _mean(means) if means else float("nan"),
+    }
 
 
 def fourfeat(n, period, k, start=0):
@@ -394,9 +403,15 @@ def fourfeat(n, period, k, start=0):
             row.append(math.cos(ang))
         rows.append(row)
     flat = [c for r in rows for c in r]
-    return {"rows": rows, "nrows": n, "ncols": 2 * k, "k": k,
-            "period": period, "mean": _mean(flat),
-            "sumsq": sum(c * c for c in flat)}
+    return {
+        "rows": rows,
+        "nrows": n,
+        "ncols": 2 * k,
+        "k": k,
+        "period": period,
+        "mean": _mean(flat),
+        "sumsq": sum(c * c for c in flat),
+    }
 
 
 _MONTH_LEN = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
@@ -445,21 +460,31 @@ def calfeat(dates):
         dn = _daynum(y, m, d)
         dow = (dn + 4) % 7  # 1970-01-01 was a Thursday
         doy = dn - _daynum(y, 1, 1) + 1
-        rows.append({
-            "year": y, "month": m, "day": d, "dow": dow, "doy": doy,
-            "quarter": (m - 1) // 3 + 1, "week": (doy - 1) // 7 + 1,
-            "weekend": 1 if dow >= 5 else 0,
-            "monthstart": 1 if d == 1 else 0,
-            "monthend": 1 if d == mlen else 0,
-            "monthsin": math.sin(_TWOPI * m / 12.0),
-            "monthcos": math.cos(_TWOPI * m / 12.0),
-            "dowsin": math.sin(_TWOPI * dow / 7.0),
-            "dowcos": math.cos(_TWOPI * dow / 7.0),
-        })
-    return {"rows": rows, "n": len(rows),
-            "nweekend": sum(r["weekend"] for r in rows),
-            "meandoy": _mean([float(r["doy"]) for r in rows]),
-            "meanmonthsin": _mean([r["monthsin"] for r in rows])}
+        rows.append(
+            {
+                "year": y,
+                "month": m,
+                "day": d,
+                "dow": dow,
+                "doy": doy,
+                "quarter": (m - 1) // 3 + 1,
+                "week": (doy - 1) // 7 + 1,
+                "weekend": 1 if dow >= 5 else 0,
+                "monthstart": 1 if d == 1 else 0,
+                "monthend": 1 if d == mlen else 0,
+                "monthsin": math.sin(_TWOPI * m / 12.0),
+                "monthcos": math.cos(_TWOPI * m / 12.0),
+                "dowsin": math.sin(_TWOPI * dow / 7.0),
+                "dowcos": math.cos(_TWOPI * dow / 7.0),
+            }
+        )
+    return {
+        "rows": rows,
+        "n": len(rows),
+        "nweekend": sum(r["weekend"] for r in rows),
+        "meandoy": _mean([float(r["doy"]) for r in rows]),
+        "meanmonthsin": _mean([r["monthsin"] for r in rows]),
+    }
 
 
 def tsimpute(x, method="linear", season=1):
@@ -514,16 +539,21 @@ def tsimpute(x, method="linear", season=1):
             else:
                 out.append(gm)
         else:
-            raise ValueError("unknown method %r" % (method,))
-    return {"x": out, "nmissing": n - len(obs), "n": n,
-            "mean": _mean(out), "method": method,
-            "imputedmean": _mean([out[i] for i in range(n) if i not in known])
-            if n - len(obs) else float("nan")}
+            raise ValueError(f"unknown method {method!r}")
+    return {
+        "x": out,
+        "nmissing": n - len(obs),
+        "n": n,
+        "mean": _mean(out),
+        "method": method,
+        "imputedmean": _mean([out[i] for i in range(n) if i not in known]) if n - len(obs) else float("nan"),
+    }
 
 
 # =====================================================================
 # Diagnostics -- ch. 3 pp. 61-68 and ch. 6 p. 149
 # =====================================================================
+
 
 def autocorf(x, maxlag=20):
     """Autocorrelation function, ch. 3.
@@ -545,12 +575,16 @@ def autocorf(x, maxlag=20):
     den = sum((t - m) ** 2 for t in v)
     if den <= 0.0:
         raise ValueError("series is constant; the ACF is undefined")
-    r = [sum((v[t] - m) * (v[t - k] - m) for t in range(k, n)) / den
-         for k in range(0, maxlag + 1)]
+    r = [sum((v[t] - m) * (v[t - k] - m) for t in range(k, n)) / den for k in range(0, maxlag + 1)]
     ci = 1.96 / math.sqrt(n)
-    return {"acf": r, "ci": ci, "maxlag": maxlag, "n": n,
-            "r1": r[1], "nsignif": sum(1 for k in range(1, maxlag + 1)
-                                       if abs(r[k]) > ci)}
+    return {
+        "acf": r,
+        "ci": ci,
+        "maxlag": maxlag,
+        "n": n,
+        "r1": r[1],
+        "nsignif": sum(1 for k in range(1, maxlag + 1) if abs(r[k]) > ci),
+    }
 
 
 def pacfts(x, maxlag=20):
@@ -575,22 +609,26 @@ def pacfts(x, maxlag=20):
         num = r[k] - sum(phi[k - 1][j] * r[k - j] for j in range(1, k))
         den = 1.0 - sum(phi[k - 1][j] * r[j] for j in range(1, k))
         if abs(den) < 1e-300:
-            raise ValueError("Durbin-Levinson recursion broke down at lag %d" % k)
+            raise ValueError(f"Durbin-Levinson recursion broke down at lag {int(k)}")
         phi[k][k] = num / den
         for j in range(1, k):
             phi[k][j] = phi[k - 1][j] - phi[k][k] * phi[k - 1][k - j]
         pacf.append(phi[k][k])
     ci = 1.96 / math.sqrt(n)
-    return {"pacf": pacf, "ci": ci, "maxlag": maxlag, "n": n,
-            "p1": pacf[1], "nsignif": sum(1 for k in range(1, maxlag + 1)
-                                          if abs(pacf[k]) > ci)}
+    return {
+        "pacf": pacf,
+        "ci": ci,
+        "maxlag": maxlag,
+        "n": n,
+        "p1": pacf[1],
+        "nsignif": sum(1 for k in range(1, maxlag + 1) if abs(pacf[k]) > ci),
+    }
 
 
 # Dickey-Fuller critical values, MacKinnon (1991) response-surface
 # constants for the constant-only ("c") regression, the case the book
 # uses on p. 149. Reported so the caller can compare without a table.
-_DF_C = {0.01: (-3.43035, -6.5393, -16.786), 0.05: (-2.86154, -2.8903, -4.234),
-         0.10: (-2.56677, -1.5384, -2.809)}
+_DF_C = {0.01: (-3.43035, -6.5393, -16.786), 0.05: (-2.86154, -2.8903, -4.234), 0.10: (-2.56677, -1.5384, -2.809)}
 
 
 def adfur(x, lags=1):
@@ -615,7 +653,7 @@ def adfur(x, lags=1):
     start = lags
     n = len(d) - start
     if n <= lags + 3:
-        raise ValueError("series is too short for %d augmenting lags" % lags)
+        raise ValueError(f"series is too short for {int(lags)} augmenting lags")
     rows, y = [], []
     for i in range(start, len(d)):
         row = [1.0, v[i]]
@@ -625,14 +663,12 @@ def adfur(x, lags=1):
         y.append(d[i])
     beta = _ols(rows, y)
     p = len(beta)
-    resid = [y[i] - sum(rows[i][k] * beta[k] for k in range(p))
-             for i in range(n)]
+    resid = [y[i] - sum(rows[i][k] * beta[k] for k in range(p)) for i in range(n)]
     dof = n - p
     if dof < 1:
         raise ValueError("not enough degrees of freedom")
     s2 = sum(t * t for t in resid) / dof
-    xtx = [[sum(rows[i][a] * rows[i][b] for i in range(n)) for b in range(p)]
-           for a in range(p)]
+    xtx = [[sum(rows[i][a] * rows[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     for a in range(p):
         xtx[a][a] += 1e-12
     e1 = [1.0 if k == 1 else 0.0 for k in range(p)]
@@ -641,10 +677,17 @@ def adfur(x, lags=1):
     crit = {}
     for lvl, (b0, b1, b2) in _DF_C.items():
         crit[lvl] = b0 + b1 / n + b2 / (n * n)
-    return {"stat": stat, "gamma": beta[1], "se": se, "lags": lags,
-            "n": n, "crit1": crit[0.01], "crit5": crit[0.05],
-            "crit10": crit[0.10],
-            "stationary5": bool(stat < crit[0.05])}
+    return {
+        "stat": stat,
+        "gamma": beta[1],
+        "se": se,
+        "lags": lags,
+        "n": n,
+        "crit1": crit[0.01],
+        "crit5": crit[0.05],
+        "crit10": crit[0.10],
+        "stationary5": bool(stat < crit[0.05]),
+    }
 
 
 def stldecomp(x, period, robust=False, iters=2):
@@ -689,8 +732,7 @@ def stldecomp(x, period, robust=False, iters=2):
             grp = sorted(detr[i] for i in range(s, n, period))
             if robust:
                 mid = len(grp) // 2
-                agg.append(grp[mid] if len(grp) % 2
-                           else 0.5 * (grp[mid - 1] + grp[mid]))
+                agg.append(grp[mid] if len(grp) % 2 else 0.5 * (grp[mid - 1] + grp[mid]))
             else:
                 agg.append(sum(grp) / len(grp))
         off = sum(agg) / period
@@ -699,16 +741,22 @@ def stldecomp(x, period, robust=False, iters=2):
     remainder = [v[i] - trend[i] - seasonal[i] for i in range(n)]
     vr = sum(t * t for t in remainder) / n
     vv = sum((t - _mean(v)) ** 2 for t in v) / n
-    return {"trend": trend, "seasonal": seasonal, "remainder": remainder,
-            "period": period, "n": n,
-            "seasonalstrength": max(0.0, 1.0 - vr / max(vv, 1e-300)),
-            "remaindervar": vr,
-            "seasonalrange": max(seasonal) - min(seasonal)}
+    return {
+        "trend": trend,
+        "seasonal": seasonal,
+        "remainder": remainder,
+        "period": period,
+        "n": n,
+        "seasonalstrength": max(0.0, 1.0 - vr / max(vv, 1e-300)),
+        "remaindervar": vr,
+        "seasonalrange": max(seasonal) - min(seasonal),
+    }
 
 
 # =====================================================================
 # Multi-step strategies -- ch. 18 pp. 545-555
 # =====================================================================
+
 
 def tsregmat(x, lags, horizon=1):
     """Time series as a regression problem, ch. 5 p. 118.
@@ -729,9 +777,16 @@ def tsregmat(x, lags, horizon=1):
         y.append(v[i + horizon - 1])
     if not rows:
         raise ValueError("series is too short for these lags and horizon")
-    return {"rows": rows, "y": y, "lags": lags, "horizon": horizon,
-            "nrows": len(rows), "ncols": len(lags),
-            "ymean": _mean(y), "xmean": _mean([c for r in rows for c in r])}
+    return {
+        "rows": rows,
+        "y": y,
+        "lags": lags,
+        "horizon": horizon,
+        "nrows": len(rows),
+        "ncols": len(lags),
+        "ymean": _mean(y),
+        "xmean": _mean([c for r in rows for c in r]),
+    }
 
 
 def _fit_predict(rows, y, newrow):
@@ -762,9 +817,15 @@ def recmulti(x, lags, horizon):
         p, _b = _fit_predict(tr["rows"], tr["y"], newrow)
         preds.append(p)
         hist.append(p)
-    return {"forecast": preds, "horizon": horizon, "nmodels": 1,
-            "ntrain": tr["nrows"], "first": preds[0], "last": preds[-1],
-            "mean": _mean(preds)}
+    return {
+        "forecast": preds,
+        "horizon": horizon,
+        "nmodels": 1,
+        "ntrain": tr["nrows"],
+        "first": preds[0],
+        "last": preds[-1],
+        "mean": _mean(preds),
+    }
 
 
 def dirmulti(x, lags, horizon):
@@ -786,8 +847,14 @@ def dirmulti(x, lags, horizon):
         tr = tsregmat(v, lags, h)
         p, _b = _fit_predict(tr["rows"], tr["y"], newrow)
         preds.append(p)
-    return {"forecast": preds, "horizon": horizon, "nmodels": horizon,
-            "first": preds[0], "last": preds[-1], "mean": _mean(preds)}
+    return {
+        "forecast": preds,
+        "horizon": horizon,
+        "nmodels": horizon,
+        "first": preds[0],
+        "last": preds[-1],
+        "mean": _mean(preds),
+    }
 
 
 def dirrec(x, lags, horizon):
@@ -825,9 +892,16 @@ def dirrec(x, lags, horizon):
         p, _b = _fit_predict(rows, ys, newrow)
         preds.append(p)
         ncols.append(len(newrow))
-    return {"forecast": preds, "horizon": horizon, "nmodels": horizon,
-            "ncolsfirst": ncols[0], "ncolslast": ncols[-1],
-            "first": preds[0], "last": preds[-1], "mean": _mean(preds)}
+    return {
+        "forecast": preds,
+        "horizon": horizon,
+        "nmodels": horizon,
+        "ncolsfirst": ncols[0],
+        "ncolslast": ncols[-1],
+        "first": preds[0],
+        "last": preds[-1],
+        "mean": _mean(preds),
+    }
 
 
 def seasnaive(x, season, horizon):
@@ -844,13 +918,20 @@ def seasnaive(x, season, horizon):
     if len(v) < season:
         raise ValueError("series is shorter than one season")
     preds = [v[len(v) - season + ((h) % season)] for h in range(horizon)]
-    return {"forecast": preds, "season": season, "horizon": horizon,
-            "first": preds[0], "last": preds[-1], "mean": _mean(preds)}
+    return {
+        "forecast": preds,
+        "season": season,
+        "horizon": horizon,
+        "first": preds[0],
+        "last": preds[-1],
+        "mean": _mean(preds),
+    }
 
 
 # =====================================================================
 # Validation -- ch. 5 pp. 126-133
 # =====================================================================
+
 
 def slidecv(n, trainsize, testsize, step=None):
     """Sliding-window cross-validation, ch. 5 p. 128.
@@ -870,9 +951,15 @@ def slidecv(n, trainsize, testsize, step=None):
         s += step
     if not folds:
         raise ValueError("n is too small for this window layout")
-    return {"folds": folds, "nfolds": len(folds), "trainsize": trainsize,
-            "testsize": testsize, "step": step,
-            "firsttest": folds[0][2], "lasttest": folds[-1][3]}
+    return {
+        "folds": folds,
+        "nfolds": len(folds),
+        "trainsize": trainsize,
+        "testsize": testsize,
+        "step": step,
+        "firsttest": folds[0][2],
+        "lasttest": folds[-1][3],
+    }
 
 
 def expandcv(n, initial, testsize, step=None):
@@ -892,9 +979,15 @@ def expandcv(n, initial, testsize, step=None):
         end += step
     if not folds:
         raise ValueError("n is too small for this window layout")
-    return {"folds": folds, "nfolds": len(folds), "initial": initial,
-            "testsize": testsize, "step": step,
-            "firsttrainend": folds[0][1], "lasttrainend": folds[-1][1]}
+    return {
+        "folds": folds,
+        "nfolds": len(folds),
+        "initial": initial,
+        "testsize": testsize,
+        "step": step,
+        "firsttrainend": folds[0][1],
+        "lasttrainend": folds[-1][1],
+    }
 
 
 def walkfwd(y, yhat, initial, testsize, step=None):
@@ -908,18 +1001,24 @@ def walkfwd(y, yhat, initial, testsize, step=None):
     a, b = _pair(y, yhat)
     lay = expandcv(len(a), initial, testsize, step)
     scores = []
-    for (_ts, _te, s, e) in lay["folds"]:
+    for _ts, _te, s, e in lay["folds"]:
         errs = [(a[i] - b[i]) ** 2 for i in range(s, e)]
         scores.append(math.sqrt(sum(errs) / len(errs)))
     m = _mean(scores)
-    return {"scores": scores, "nfolds": len(scores), "rmse": m,
-            "sd": math.sqrt(sum((t - m) ** 2 for t in scores) / len(scores)),
-            "best": min(scores), "worst": max(scores)}
+    return {
+        "scores": scores,
+        "nfolds": len(scores),
+        "rmse": m,
+        "sd": math.sqrt(sum((t - m) ** 2 for t in scores) / len(scores)),
+        "best": min(scores),
+        "worst": max(scores),
+    }
 
 
 # =====================================================================
 # Probabilistic forecasting -- ch. 17 pp. 494-520
 # =====================================================================
+
 
 def quantreg(x, y, q, iters=25):
     """Linear quantile regression, ch. 17 p. 500.
@@ -948,16 +1047,14 @@ def quantreg(x, y, q, iters=25):
         for i in range(n):
             r = yv[i] - sum(rows[i][k] * beta[k] for k in range(p))
             w.append((q if r > 0.0 else (1.0 - q)) / max(abs(r), eps))
-        xtx = [[sum(w[i] * rows[i][a] * rows[i][b] for i in range(n))
-                for b in range(p)] for a in range(p)]
+        xtx = [[sum(w[i] * rows[i][a] * rows[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
         xty = [sum(w[i] * rows[i][a] * yv[i] for i in range(n)) for a in range(p)]
         for a in range(p):
             xtx[a][a] += 1e-10
         beta = _solve(xtx, xty)
     fit = [sum(rows[i][k] * beta[k] for k in range(p)) for i in range(n)]
     loss = pinball(yv, fit, q)["loss"]
-    return {"beta": beta, "fitted": fit, "loss": loss, "q": q,
-            "intercept": beta[0], "n": n, "p": p}
+    return {"beta": beta, "fitted": fit, "loss": loss, "q": q, "intercept": beta[0], "n": n, "p": p}
 
 
 def cqr(callo, calhi, caly, lo, hi, alpha=0.1):
@@ -998,9 +1095,15 @@ def cqr(callo, calhi, caly, lo, hi, alpha=0.1):
         raise ValueError("lo and hi must be the same length")
     newlo = [t - qhat for t in lo]
     newhi = [t + qhat for t in hi]
-    return {"qhat": qhat, "lower": newlo, "upper": newhi, "k": k, "n": n,
-            "meanwidth": _mean([newhi[i] - newlo[i] for i in range(len(lo))]),
-            "widening": 2.0 * qhat}
+    return {
+        "qhat": qhat,
+        "lower": newlo,
+        "upper": newhi,
+        "k": k,
+        "n": n,
+        "meanwidth": _mean([newhi[i] - newlo[i] for i in range(len(lo))]),
+        "widening": 2.0 * qhat,
+    }
 
 
 def aci(inside, alpha=0.1, gamma=0.01):
@@ -1034,9 +1137,16 @@ def aci(inside, alpha=0.1, gamma=0.01):
         nerr += int(err)
         at = at + gamma * (alpha - err)
         path.append(at)
-    return {"alpha": path, "final": at, "empirical": nerr / float(len(seq)),
-            "target": alpha, "gamma": gamma, "n": len(seq),
-            "minalpha": min(path), "maxalpha": max(path)}
+    return {
+        "alpha": path,
+        "final": at,
+        "empirical": nerr / float(len(seq)),
+        "target": alpha,
+        "gamma": gamma,
+        "n": len(seq),
+        "minalpha": min(path),
+        "maxalpha": max(path),
+    }
 
 
 # =====================================================================
@@ -1048,6 +1158,7 @@ def aci(inside, alpha=0.1, gamma=0.01):
 # equation number. Every weight is CALLER-SUPPLIED, so no layer
 # initializes anything at random and the R mirror matches exactly.
 # =====================================================================
+
 
 def _matvec(w, v):
     if any(len(r) != len(v) for r in w):
@@ -1098,7 +1209,7 @@ def _maxpool(v, k):
         return list(v)
     out = []
     for s in range(0, len(v), k):
-        w = v[s:s + k]
+        w = v[s : s + k]
         if w:
             out.append(max(w))
     return out
@@ -1139,11 +1250,17 @@ def seriesdecomp(x, kernel):
         raise ValueError("kernel must be at least 1")
     half = kernel // 2
     pad = [v[0]] * half + v + [v[-1]] * (kernel - 1 - half)
-    trend = [sum(pad[i:i + kernel]) / kernel for i in range(len(v))]
+    trend = [sum(pad[i : i + kernel]) / kernel for i in range(len(v))]
     seas = [v[i] - trend[i] for i in range(len(v))]
-    return {"trend": trend, "seasonal": seas, "kernel": kernel, "n": len(v),
-            "trendmean": _mean(trend), "seasmean": _mean(seas),
-            "seasrange": max(seas) - min(seas)}
+    return {
+        "trend": trend,
+        "seasonal": seas,
+        "kernel": kernel,
+        "n": len(v),
+        "trendmean": _mean(trend),
+        "seasmean": _mean(seas),
+        "seasrange": max(seas) - min(seas),
+    }
 
 
 def autoform(q, k, v, kernel=3, c=1.0):
@@ -1180,10 +1297,18 @@ def autoform(q, k, v, kernel=3, c=1.0):
     for w, tau in zip(weights, taus):
         for t in range(L):
             out[t] += w * vv[(t - tau) % L]
-    return {"out": out, "taus": taus, "weights": weights, "k": kk, "L": L,
-            "r1": r[1] if L > 1 else float("nan"),
-            "outmean": _mean(out), "outmax": max(out),
-            "trendmean": dec["trendmean"], "seasrange": dec["seasrange"]}
+    return {
+        "out": out,
+        "taus": taus,
+        "weights": weights,
+        "k": kk,
+        "L": L,
+        "r1": r[1] if L > 1 else float("nan"),
+        "outmean": _mean(out),
+        "outmax": max(out),
+        "trendmean": dec["trendmean"],
+        "seasrange": dec["seasrange"],
+    }
 
 
 def patchts(x, patchlen, stride, eps=1e-5):
@@ -1229,15 +1354,22 @@ def patchts(x, patchlen, stride, eps=1e-5):
             s = i * S
             if s + P > len(padded):
                 break
-            patches.append(padded[s:s + P])
+            patches.append(padded[s : s + P])
         allpatches.append(patches)
         stats.append((m, sd))
     flat = [t for ch in allpatches for p in ch for t in p]
-    return {"patches": allpatches, "npatches": len(allpatches[0]),
-            "n": N, "patchlen": P, "stride": S, "nchannels": len(chans),
-            "mean": stats[0][0], "sd": stats[0][1],
-            "patchmean": _mean(flat),
-            "patchsumsq": sum(t * t for t in flat)}
+    return {
+        "patches": allpatches,
+        "npatches": len(allpatches[0]),
+        "n": N,
+        "patchlen": P,
+        "stride": S,
+        "nchannels": len(chans),
+        "mean": stats[0][0],
+        "sd": stats[0][1],
+        "patchmean": _mean(flat),
+        "patchsumsq": sum(t * t for t in flat),
+    }
 
 
 def nhitsnet(y, horizon, kernels, ratios, wf, wb):
@@ -1279,24 +1411,30 @@ def nhitsnet(y, horizon, kernels, ratios, wf, wb):
     resid = list(v)
     fc = [0.0] * H
     sizes = []
-    for l in range(len(ks)):
-        pooled = _maxpool(resid, ks[l])
-        need = int(math.ceil(rs[l] * H))
+    for ell in range(len(ks)):
+        pooled = _maxpool(resid, ks[ell])
+        need = int(math.ceil(rs[ell] * H))
         if need < 1:
-            raise ValueError("ratio %r gives no coefficients" % (rs[l],))
-        thf = _matvec(wf[l], pooled)
-        thb = _matvec(wb[l], pooled)
+            raise ValueError(f"ratio {rs[ell]!r} gives no coefficients")
+        thf = _matvec(wf[ell], pooled)
+        thb = _matvec(wb[ell], pooled)
         if len(thf) != need:
-            raise ValueError(
-                "wf[%d] must produce ceil(r_l H) = %d coefficients" % (l, need))
+            raise ValueError(f"wf[{int(ell)}] must produce ceil(r_l H) = {int(need)} coefficients")
         sizes.append(need)
         f = _interp(thf, H)
         b = _interp(thb, len(resid))
         fc = [fc[i] + f[i] for i in range(H)]
         resid = [resid[i] - b[i] for i in range(len(resid))]
-    return {"forecast": fc, "residual": resid, "nblocks": len(ks),
-            "sizes": sizes, "first": fc[0], "last": fc[-1],
-            "mean": _mean(fc), "residnorm": math.sqrt(sum(t * t for t in resid))}
+    return {
+        "forecast": fc,
+        "residual": resid,
+        "nblocks": len(ks),
+        "sizes": sizes,
+        "first": fc[0],
+        "last": fc[-1],
+        "mean": _mean(fc),
+        "residnorm": math.sqrt(sum(t * t for t in resid)),
+    }
 
 
 def _glu(gamma, w4, b4, w5, b5):
@@ -1306,8 +1444,7 @@ def _glu(gamma, w4, b4, w5, b5):
     return [_sigmoid(a[i]) * b[i] for i in range(len(a))]
 
 
-def tftnet(a, w1, b1, w2, b2, w4, b4, w5, b5, wsel, bsel, wq, bq,
-           c=None, wc=None, y=None, q=0.5):
+def tftnet(a, w1, b1, w2, b2, w4, b4, w5, b5, wsel, bsel, wq, bq, c=None, wc=None, y=None, q=0.5):
     """Temporal Fusion Transformer gating and variable selection.
 
     Quoted from the paper:
@@ -1342,12 +1479,17 @@ def tftnet(a, w1, b1, w2, b2, w4, b4, w5, b5, wsel, bsel, wq, bq,
     grn = _layernorm(_addv(av, gated))
     sel = _softmaxv(_addv(_matvec(wsel, grn), bsel))
     yhat = _addv(_matvec(wq, grn), bq)
-    out = {"grn": grn, "gate": gated, "weights": sel, "yhat": yhat,
-           "topvar": max(range(len(sel)), key=lambda i: sel[i]),
-           "maxweight": max(sel), "entropy": -sum(t * math.log(t)
-                                                  for t in sel if t > 0.0),
-           "grnnorm": math.sqrt(sum(t * t for t in grn)),
-           "yhatmean": _mean(yhat)}
+    out = {
+        "grn": grn,
+        "gate": gated,
+        "weights": sel,
+        "yhat": yhat,
+        "topvar": max(range(len(sel)), key=lambda i: sel[i]),
+        "maxweight": max(sel),
+        "entropy": -sum(t * math.log(t) for t in sel if t > 0.0),
+        "grnnorm": math.sqrt(sum(t * t for t in grn)),
+        "yhatmean": _mean(yhat),
+    }
     if y is not None:
         out["ql"] = pinball(_vec(y, "y"), yhat, q)["loss"]
     return out
@@ -1408,9 +1550,18 @@ def tide(y, feats, fproj, enc, dec, tdec, wglobal, horizon):
     if len(glob) != H:
         raise ValueError("wglobal must map the lookback to the horizon")
     out = [temporal[t] + glob[t] for t in range(H)]
-    return {"forecast": out, "temporal": temporal, "global": glob,
-            "horizon": H, "p": p, "encdim": len(e), "nfeat": len(proj),
-            "first": out[0], "last": out[-1], "mean": _mean(out)}
+    return {
+        "forecast": out,
+        "temporal": temporal,
+        "global": glob,
+        "horizon": H,
+        "p": p,
+        "encdim": len(e),
+        "nfeat": len(proj),
+        "first": out[0],
+        "last": out[-1],
+        "mean": _mean(out),
+    }
 
 
 def tsmixer(x, wtime, btime, wfeat, bfeat, wproj, bproj, horizon):
@@ -1458,14 +1609,20 @@ def tsmixer(x, wtime, btime, wfeat, bfeat, wproj, bproj, horizon):
     if any(len(p) != H for p in preds):
         raise ValueError("wproj must map L to the horizon")
     flat = [t for p in preds for t in p]
-    return {"forecast": preds, "mixed": out, "nchannels": C, "L": L,
-            "horizon": H, "mean": _mean(flat),
-            "first": preds[0][0], "last": preds[-1][-1],
-            "sumsq": sum(t * t for t in flat)}
+    return {
+        "forecast": preds,
+        "mixed": out,
+        "nchannels": C,
+        "L": L,
+        "horizon": H,
+        "mean": _mean(flat),
+        "first": preds[0][0],
+        "last": preds[-1][-1],
+        "sumsq": sum(t * t for t in flat),
+    }
 
 
-def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2,
-           wproj, bproj):
+def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2, wproj, bproj):
     """iTransformer: variates as tokens, attention across variates.
 
     Quoted from the paper:
@@ -1498,11 +1655,9 @@ def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2,
     K = [_matvec(wk, t) for t in toks]
     V = [_matvec(wv, t) for t in toks]
     dk = len(Q[0])
-    scores = [[sum(Q[i][d] * K[j][d] for d in range(dk)) / math.sqrt(dk)
-               for j in range(N)] for i in range(N)]
+    scores = [[sum(Q[i][d] * K[j][d] for d in range(dk)) / math.sqrt(dk) for j in range(N)] for i in range(N)]
     attn = [_softmaxv(row) for row in scores]
-    ctx = [[sum(attn[i][j] * V[j][d] for j in range(N)) for d in range(len(V[0]))]
-           for i in range(N)]
+    ctx = [[sum(attn[i][j] * V[j][d] for j in range(N)) for d in range(len(V[0]))] for i in range(N)]
     # residual + LayerNorm (eq. 2), then the position-wise FFN
     h1 = [_layernorm(_addv(toks[i], ctx[i])) for i in range(N)]
     ffn = []
@@ -1511,8 +1666,16 @@ def itrans(x, wembed, bembed, wq, wk, wv, wffn1, bffn1, wffn2, bffn2,
         ffn.append(_layernorm(_addv(t, _addv(_matvec(wffn2, u), bffn2))))
     preds = [_addv(_matvec(wproj, t), bproj) for t in ffn]
     flat = [t for p in preds for t in p]
-    return {"forecast": preds, "attn": attn, "tokens": ffn, "nvariates": N,
-            "T": T, "D": D, "horizon": len(preds[0]),
-            "attndiag": sum(attn[i][i] for i in range(N)) / N,
-            "mean": _mean(flat), "first": preds[0][0],
-            "sumsq": sum(t * t for t in flat)}
+    return {
+        "forecast": preds,
+        "attn": attn,
+        "tokens": ffn,
+        "nvariates": N,
+        "T": T,
+        "D": D,
+        "horizon": len(preds[0]),
+        "attndiag": sum(attn[i][i] for i in range(N)) / N,
+        "mean": _mean(flat),
+        "first": preds[0][0],
+        "sumsq": sum(t * t for t in flat),
+    }

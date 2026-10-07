@@ -9,7 +9,7 @@ table that a transcription slip would break.
 
 import pytest
 
-from morie.fn.gwPot import gwPot, global_warming_potential
+from morie.fn.gwPot import global_warming_potential, gwPot
 
 
 def test_printed_gwp_values():
@@ -40,8 +40,7 @@ def test_gwp_reproduces_agwp_ratio():
     for gas in ("CH4", "N2O", "CFC-11", "CFC-12", "HFC-134a", "SF6"):
         for h in (20, 100, 500):
             r = gwPot(gas, h)
-            assert r["gwp_from_agwp"] == pytest.approx(r["estimate"],
-                                                       rel=0.01), (gas, h)
+            assert r["gwp_from_agwp"] == pytest.approx(r["estimate"], rel=0.01), (gas, h)
 
 
 def test_lifetime_orders_the_horizon_response():

@@ -9,9 +9,10 @@ def test_gb5714_basic():
     """Eq. (5.7.15): N = (z_a + z_b)^2 / (3 (p2 - 1/2)^2), recomputed here
     and against scipy.stats.norm (1150.3160944283197 for p2 = 0.556)."""
     import math
+
     r = gibbons_wsrt_sampsize(0.556, alpha=0.05, beta=0.05)
     z = 1.6448536269514722  # scipy.stats.norm.ppf(0.95)
-    assert r["n_raw"] == pytest.approx((2 * z) ** 2 / (3 * 0.056 ** 2), rel=1e-12)
+    assert r["n_raw"] == pytest.approx((2 * z) ** 2 / (3 * 0.056**2), rel=1e-12)
     assert r["n_raw"] == pytest.approx(1150.3160944283197, rel=1e-12)
     assert r["n"] == math.ceil(r["n_raw"]) == 1151
     assert gibbons_wsrt_sampsize(0.921)["n"] == 21
@@ -40,7 +41,7 @@ import morie.fn.gb5714 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

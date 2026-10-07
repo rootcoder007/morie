@@ -37,11 +37,15 @@ def alammar_mean_reciprocal_rank(rankings, relevant_indices):
         if rr == 0.0:
             missed += 1
         rrs.append(rr)
-    return RichResult(payload={
-        "estimate": float(np.mean(rrs)),
-        "reciprocal_ranks": rrs, "queries_missed": missed,
-        "n": len(rrs),
-        "method": "Mean reciprocal rank (Alammar Ch 8)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(rrs)),
+            "reciprocal_ranks": rrs,
+            "queries_missed": missed,
+            "n": len(rrs),
+            "method": "Mean reciprocal rank (Alammar Ch 8)",
+        }
+    )
 
 
 def cheatsheet():

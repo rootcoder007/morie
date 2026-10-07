@@ -11,10 +11,7 @@ def test_calculate_ipw_weights():
 
     # Verify IPW formula: treated weight = 1/ps, control weight = 1/(1-ps)
     for i, row in df.iterrows():
-        if row["treated"] == 1:
-            expected = 1.0 / row["ps"]
-        else:
-            expected = 1.0 / (1.0 - row["ps"])
+        expected = 1.0 / row["ps"] if row["treated"] == 1 else 1.0 / (1.0 - row["ps"])
         assert np.isclose(weights[i], expected, atol=1e-10), (
             f"Row {i}: expected {expected:.6f} got {weights[i]:.6f} (treated={row['treated']}, ps={row['ps']:.2f})"
         )

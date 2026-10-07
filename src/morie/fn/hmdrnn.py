@@ -149,10 +149,10 @@ def geron_deep_rnn(X, hidden_sizes=(4,), n_layers=None, weights=None, seed=0, ac
     outputs = []
     for t in range(T):
         inp = Xa[t]
-        for l, (Wx, Wh, b) in enumerate(layers):
-            h = phi(inp @ Wx + h_prev[l] @ Wh + b)
-            h_prev[l] = h
-            states[l].append(h.tolist())
+        for ell, (Wx, Wh, b) in enumerate(layers):
+            h = phi(inp @ Wx + h_prev[ell] @ Wh + b)
+            h_prev[ell] = h
+            states[ell].append(h.tolist())
             inp = h
         outputs.append(inp.tolist())
 

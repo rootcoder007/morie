@@ -105,9 +105,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
     True
     """
     if estimator not in _ESTIMATORS:
-        raise ValueError(
-            "estimator must be one of %s, got %r." % (_ESTIMATORS, estimator)
-        )
+        raise ValueError(f"estimator must be one of {_ESTIMATORS}, got {estimator!r}.")
     y = np.asarray(Y, dtype=float).ravel()
     t = np.asarray(T, dtype=float).ravel()
     Xa = np.asarray(X, dtype=float)
@@ -115,18 +113,12 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
         Xa = Xa[:, None]
     n = y.size
     if not (t.size == n == Xa.shape[0]):
-        raise ValueError(
-            "Y, T and X must agree in length, got %d, %d and %d."
-            % (n, t.size, Xa.shape[0])
-        )
+        raise ValueError(f"Y, T and X must agree in length, got {int(n)}, {int(t.size)} and {int(Xa.shape[0])}.")
     if not np.all(np.isin(t, (0.0, 1.0))):
         raise ValueError("T must be binary 0/1.")
     n1, n0 = int(t.sum()), int((1 - t).sum())
     if n1 < 5 or n0 < 5:
-        raise ValueError(
-            "need at least 5 units in each arm, got %d treated and %d "
-            "control." % (n1, n0)
-        )
+        raise ValueError(f"need at least 5 units in each arm, got {int(n1)} treated and {int(n0)} control.")
 
     B = _basis(Xa, int(degree))
     tr, ct = t == 1, t == 0
@@ -138,9 +130,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
     # S-learner: one model, with T and its interactions
     Bs = np.column_stack([B, t[:, None] * B])
     cs = ols_fit(Bs, y)
-    out["s"] = (np.column_stack([B, B]) @ cs) - (
-        np.column_stack([B, 0 * B]) @ cs
-    )
+    out["s"] = (np.column_stack([B, B]) @ cs) - (np.column_stack([B, 0 * B]) @ cs)
 
     # T-learner: one model per arm
     b1 = ols_fit(B[tr], y[tr])
@@ -162,9 +152,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
     # tau(x) = B(x)'theta: (B Ttilde)'(B Ttilde) theta = (B Ttilde)' Ytilde.
     # The outcome residual enters ONCE -- weighting it by Ttilde again
     # solves a different problem and returns a near-zero effect.
-    out["r"] = B @ np.linalg.solve(
-        Bw.T @ Bw + 1e-10 * np.eye(B.shape[1]), Bw.T @ yt
-    )
+    out["r"] = B @ np.linalg.solve(Bw.T @ Bw + 1e-10 * np.eye(B.shape[1]), Bw.T @ yt)
 
     forest = CausalForest(n_trees=int(n_trees), seed=int(seed)).fit(Xa, y, t)
     out["forest"] = forest.predict()
@@ -183,8 +171,7 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
                 "it says how much the answer depends on the recipe"
             ),
             "by_estimator": {k: out[k] for k in _ESTIMATORS},
-            "ate_by_estimator": {k: float(np.mean(out[k]))
-                                 for k in _ESTIMATORS},
+            "ate_by_estimator": {k: float(np.mean(out[k])) for k in _ESTIMATORS},
             "agreement": corr,
             "agreement_note": (
                 "learners that disagree about the SHAPE of tau(x) are the "
@@ -197,16 +184,13 @@ def cate_estimation(Y, T, X, estimator="x", degree=2, n_trees=200, seed=0):
             "n_treated": n1,
             "n_control": n0,
             "n": n,
-            "method": "CATE by %s-learner" % estimator,
+            "method": f"CATE by {estimator}-learner",
         }
     )
 
 
 def cheatsheet():
-    return (
-        "catep: CATE by S-, T-, X-, R-learner or causal forest, all five "
-        "returned so their disagreement is visible"
-    )
+    return "catep: CATE by S-, T-, X-, R-learner or causal forest, all five returned so their disagreement is visible"
 
 
 # compact alias per ledger/NAMING.md

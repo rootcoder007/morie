@@ -32,15 +32,17 @@ def kamath_ch2_multihead_concat(heads, W_O):
     concat = np.concatenate(hs, axis=1)
     Wo = np.atleast_2d(np.asarray(W_O, dtype=float))
     if concat.shape[1] != Wo.shape[0]:
-        raise ValueError(
-            f"concatenated width {concat.shape[1]} does not match W_O's "
-            f"{Wo.shape[0]} rows.")
+        raise ValueError(f"concatenated width {concat.shape[1]} does not match W_O's {Wo.shape[0]} rows.")
     out = concat @ Wo
-    return RichResult(payload={
-        "output": [[float(v) for v in r] for r in out],
-        "heads": len(hs), "estimate": float(out[0, 0]), "n": rows,
-        "method": "Multi-head concat + output projection "
-                  "(Kamath Eq 2.16)"})
+    return RichResult(
+        payload={
+            "output": [[float(v) for v in r] for r in out],
+            "heads": len(hs),
+            "estimate": float(out[0, 0]),
+            "n": rows,
+            "method": "Multi-head concat + output projection (Kamath Eq 2.16)",
+        }
+    )
 
 
 def cheatsheet():

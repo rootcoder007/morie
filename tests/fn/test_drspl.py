@@ -1,7 +1,6 @@
 """Tests for drspl.dr_did_split_sample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.drspl import dr_did_split_sample
 
 

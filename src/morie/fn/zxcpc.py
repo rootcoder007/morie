@@ -3,7 +3,7 @@
 
 from . import _array_core as np
 from . import _stats_core as stats
-from ._copula import copula_tau, tau_to_theta
+from ._copula import tau_to_theta
 from ._richresult import RichResult
 
 __all__ = ["copula_clayton_sp"]
@@ -15,9 +15,9 @@ def copula_clayton_sp(data):
     Ranks each column to pseudo-observations, then fits the clayton
     dependence structure by matching Kendall's tau pairwise (Czado
     2019 Table 3.2, p. 54).
-    
+
     Pairwise thetas are reported rather than a single global parameter, because a one-parameter Archimedean cannot represent an arbitrary correlation pattern -- averaging them would hide that.
-    
+
 
     Parameters
     ----------

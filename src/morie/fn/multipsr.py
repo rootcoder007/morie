@@ -70,7 +70,7 @@ def twostage(Y, Nl, M, N, level=0.95):
         raise ValueError("Nl must have one entry per sampled PSU")
     M = float(M)
     N = float(N)
-    if M < m:
+    if m > M:
         raise ValueError("M must be at least the number of sampled PSUs")
     yb = []
     s2 = []
@@ -90,17 +90,26 @@ def twostage(Y, Nl, M, N, level=0.95):
     f1 = (M - m) / M
     VB = sum((Nl[i] * yb[i] - Nl[i] * est) ** 2 for i in range(m))
     between = f1 / (m * (m - 1)) * VB
-    within = sum(Nl[i] ** 2 * ((Nl[i] - nl[i]) / Nl[i]) * s2[i] / nl[i]
-                 for i in range(m)) / (m * M)
+    within = sum(Nl[i] ** 2 * ((Nl[i] - nl[i]) / Nl[i]) * s2[i] / nl[i] for i in range(m)) / (m * M)
     var = (M / N) ** 2 * (between + within)
     se = math.sqrt(var)
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": est, "se": se, "ci_lower": est - z * se,
-        "ci_upper": est + z * se, "psu_mean": yb, "psu_var": s2,
-        "between_term": (M / N) ** 2 * between,
-        "within_term": (M / N) ** 2 * within, "m": m, "M": M, "N": N,
-        "method": "Two-stage sampling, ratio form"})
+    return RichResult(
+        payload={
+            "estimate": est,
+            "se": se,
+            "ci_lower": est - z * se,
+            "ci_upper": est + z * se,
+            "psu_mean": yb,
+            "psu_var": s2,
+            "between_term": (M / N) ** 2 * between,
+            "within_term": (M / N) ** 2 * within,
+            "m": m,
+            "M": M,
+            "N": N,
+            "method": "Two-stage sampling, ratio form",
+        }
+    )
 
 
 multi_stage_sampling = twostage

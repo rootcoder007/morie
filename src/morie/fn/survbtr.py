@@ -75,8 +75,7 @@ def bart_survival(time, event, X=None, n_trees=5, shrink=0.3, grid=None):
     e = k.vec(event)
     n = len(t)
     Xr = k.mat(X) if X is not None else [[0.0] for _ in range(n)]
-    g = sorted(set(k.vec(grid))) if grid is not None else sorted(
-        set([t[i] for i in range(n) if e[i] > 0.5]))
+    g = sorted(set(k.vec(grid))) if grid is not None else sorted(set([t[i] for i in range(n) if e[i] > 0.5]))
     rows = []
     ys = []
     who = []
@@ -116,7 +115,7 @@ def bart_survival(time, event, X=None, n_trees=5, shrink=0.3, grid=None):
     haz = [k.pnorm(v) for v in f]
     surv = [1.0] * n
     for i in range(m):
-        surv[who[i]] *= (1.0 - haz[i])
+        surv[who[i]] *= 1.0 - haz[i]
     return RichResult(
         title="BART survival",
         summary_lines=[("person-periods", m), ("trees", len(trees))],
@@ -127,8 +126,10 @@ def bart_survival(time, event, X=None, n_trees=5, shrink=0.3, grid=None):
             "trees": trees,
             "grid": g,
             "n": n,
-            "method": ("Person-period probit hazard with a boosted sum of stumps "
-                       "(Sparapani et al. 2016 recasting; deterministic fit, not a posterior sample)"),
+            "method": (
+                "Person-period probit hazard with a boosted sum of stumps "
+                "(Sparapani et al. 2016 recasting; deterministic fit, not a posterior sample)"
+            ),
         },
     )
 

@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['bocpd']
+__all__ = ["bocpd"]
 
 
 def bocpd(x, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
@@ -48,8 +48,10 @@ def bocpd(x, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
     x = C.vec(x)
     n = len(x)
     H = float(hazard)
-    mu = [float(mu0)]; kap = [float(kappa0)]
-    al = [float(alpha0)]; be = [float(beta0)]
+    mu = [float(mu0)]
+    kap = [float(kappa0)]
+    al = [float(alpha0)]
+    be = [float(beta0)]
     R = [1.0]
     cp_prob, run_len = [], []
     for t in range(n):
@@ -60,9 +62,13 @@ def bocpd(x, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
             s2 = be[r] * (kap[r] + 1.0) / (al[r] * kap[r])
             s = math.sqrt(s2)
             z = (xt - mu[r]) / s
-            lg = (math.lgamma((df + 1.0) / 2.0) - math.lgamma(df / 2.0)
-                  - 0.5 * math.log(df * math.pi) - math.log(s)
-                  - (df + 1.0) / 2.0 * math.log(1.0 + z * z / df))
+            lg = (
+                math.lgamma((df + 1.0) / 2.0)
+                - math.lgamma(df / 2.0)
+                - 0.5 * math.log(df * math.pi)
+                - math.log(s)
+                - (df + 1.0) / 2.0 * math.log(1.0 + z * z / df)
+            )
             pi.append(math.exp(lg))
         growth = [R[r] * pi[r] * (1.0 - H) for r in range(len(R))]
         cp = sum(R[r] * pi[r] * H for r in range(len(R)))
@@ -72,17 +78,21 @@ def bocpd(x, hazard=0.004, mu0=0.0, kappa0=1.0, alpha0=1.0, beta0=1.0):
         nmu = [float(mu0)] + [(kap[r] * mu[r] + xt) / (kap[r] + 1.0) for r in range(len(R))]
         nkap = [float(kappa0)] + [kap[r] + 1.0 for r in range(len(R))]
         nal = [float(alpha0)] + [al[r] + 0.5 for r in range(len(R))]
-        nbe = [float(beta0)] + [be[r] + kap[r] * (xt - mu[r]) ** 2
-                                / (2.0 * (kap[r] + 1.0)) for r in range(len(R))]
+        nbe = [float(beta0)] + [be[r] + kap[r] * (xt - mu[r]) ** 2 / (2.0 * (kap[r] + 1.0)) for r in range(len(R))]
         R, mu, kap, al, be = newR, nmu, nkap, nal, nbe
         cp_prob.append(R[1] if len(R) > 1 else float("nan"))
         run_len.append(max(range(len(R)), key=lambda i: R[i]))
-    return RichResult(payload={
-        "cp_prob": cp_prob, "run_length": run_len,
-        "max_cp_prob": max(v for v in cp_prob if v == v),
-        "reset_prob": H, "hazard": H, "n": n,
-        "method": "Bayesian online changepoint detection (Normal-Inverse-Gamma)"})
-
+    return RichResult(
+        payload={
+            "cp_prob": cp_prob,
+            "run_length": run_len,
+            "max_cp_prob": max(v for v in cp_prob if v == v),
+            "reset_prob": H,
+            "hazard": H,
+            "n": n,
+            "method": "Bayesian online changepoint detection (Normal-Inverse-Gamma)",
+        }
+    )
 
 
 def cheatsheet():

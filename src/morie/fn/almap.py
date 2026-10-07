@@ -66,11 +66,9 @@ def mean_average_precision(relevance, k=None):
     for q, rel in enumerate(relevance):
         r = np.asarray(rel, dtype=float).ravel()
         if r.size == 0:
-            raise ValueError("query %d has an empty ranking." % q)
+            raise ValueError(f"query {int(q)} has an empty ranking.")
         if not np.all(np.isin(r, (0.0, 1.0))):
-            raise ValueError(
-                "relevance must be binary 0/1; query %d is not." % q
-            )
+            raise ValueError(f"relevance must be binary 0/1; query {int(q)} is not.")
         total_rel = float(r.sum())
         rr = r if k is None else r[: int(k)]
         if total_rel == 0:
@@ -97,10 +95,9 @@ def mean_average_precision(relevance, k=None):
             "n_queries": int(len(relevance)),
             "queries_without_relevant": empty,
             "empty_note": (
-                None if empty == 0 else
-                "%d quer(y/ies) had no relevant document at all; AP is "
-                "undefined there and they are excluded from the mean rather "
-                "than scored zero" % empty
+                None
+                if empty == 0
+                else f"{int(empty)} quer(y/ies) had no relevant document at all; AP is undefined there and they are excluded from the mean rather than scored zero"
             ),
             "normalisation_note": (
                 "AP divides by the number of relevant documents for THAT "
@@ -118,10 +115,7 @@ def mean_average_precision(relevance, k=None):
 
 
 def cheatsheet():
-    return (
-        "almap: MAP over queries, with precision/recall at k and the binary "
-        "relevance limitation stated"
-    )
+    return "almap: MAP over queries, with precision/recall at k and the binary relevance limitation stated"
 
 
 #: Catalogue alias for :func:`mean_average_precision`.

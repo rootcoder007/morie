@@ -34,25 +34,30 @@ def kamath_emergent_abilities(scales, scores, threshold):
     N = np.atleast_1d(np.asarray(scales, dtype=float))
     f = np.atleast_1d(np.asarray(scores, dtype=float))
     if N.shape != f.shape:
-        raise ValueError(
-            f"{N.size} scales but {f.size} scores.")
+        raise ValueError(f"{N.size} scales but {f.size} scores.")
     if N.size == 0:
         raise ValueError("no model scales were given.")
     thr = float(threshold)
-    above = N >= thr
+    above = thr <= N
     if not above.any() or above.all():
         raise ValueError(
-            f"the threshold {thr} puts every model on one side; an "
-            "emergence jump needs models above AND below it.")
+            f"the threshold {thr} puts every model on one side; an emergence jump needs models above AND below it."
+        )
     gated = np.where(above, f, 0.0)
     jump = float(f[above].mean() - f[~above].mean())
-    return RichResult(payload={
-        "estimate": jump, "jump": jump,
-        "emergent_score": [float(v) for v in gated],
-        "mean_above": float(f[above].mean()),
-        "mean_below": float(f[~above].mean()),
-        "n_above": int(above.sum()), "threshold": thr, "n": int(N.size),
-        "method": "emergent-ability step metric (Kamath Ch 1)"})
+    return RichResult(
+        payload={
+            "estimate": jump,
+            "jump": jump,
+            "emergent_score": [float(v) for v in gated],
+            "mean_above": float(f[above].mean()),
+            "mean_below": float(f[~above].mean()),
+            "n_above": int(above.sum()),
+            "threshold": thr,
+            "n": int(N.size),
+            "method": "emergent-ability step metric (Kamath Ch 1)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for gh_ap_f2.ghosal_glivenko."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_f2 import ghosal_glivenko
 
 
@@ -37,9 +36,7 @@ def test_gh_ap_f2_basic():
         data = sorted(float(rng.uniform(0, 1)) for _ in range(n))
         sup = 0.0
         for i, v in enumerate(data):
-            sup = max(sup,
-                      abs((i + 1) / n - v),
-                      abs(i / n - v))
+            sup = max(sup, abs((i + 1) / n - v), abs(i / n - v))
         expected_sups.append(sup)
 
     got = np.asarray(sup_by_n, dtype=float)
@@ -48,9 +45,7 @@ def test_gh_ap_f2_basic():
 
     # Documented behaviour: "vanishing" is True iff the last sup is
     # smaller than the first sup AND smaller than 0.02.
-    assert result["vanishing"] is bool(
-        sup_by_n[-1] < sup_by_n[0] and sup_by_n[-1] < 0.02
-    )
+    assert result["vanishing"] is bool(sup_by_n[-1] < sup_by_n[0] and sup_by_n[-1] < 0.02)
 
 
 def test_gh_ap_f2_edge():
@@ -67,9 +62,7 @@ def test_gh_ap_f2_edge():
     data = sorted(float(rng.uniform(0, 1)) for _ in range(50))
     sup = 0.0
     for i, v in enumerate(data):
-        sup = max(sup,
-                  abs((i + 1) / 50 - v),
-                  abs(i / 50 - v))
+        sup = max(sup, abs((i + 1) / 50 - v), abs(i / 50 - v))
     assert abs(float(result["sup_by_n"][0]) - sup) < 1e-12
 
     # The function does not return an "n" key; the documented keys are

@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Elementary coverages are Beta(1, n)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gibbons_elementary_coverage_beta"]
@@ -39,8 +38,11 @@ def gibbons_elementary_coverage_beta(n):
         raise ValueError(f"n must be at least 1, got {n}.")
     return RichResult(
         payload={
-            "alpha": 1, "beta": n, "mean": 1.0 / (n + 1),
-            "var": float(n / ((n + 1.0) ** 2 * (n + 2.0))), "n": n,
+            "alpha": 1,
+            "beta": n,
+            "mean": 1.0 / (n + 1),
+            "var": float(n / ((n + 1.0) ** 2 * (n + 2.0))),
+            "n": n,
             "method": "C_i ~ Beta(1, n), position-free (Corollary 2.11.1.1)",
         }
     )

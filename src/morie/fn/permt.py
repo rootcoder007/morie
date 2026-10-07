@@ -56,7 +56,10 @@ def permutation_test_general(x, y, statistic=None, B: int = 5000, alternative: s
             }
         )
     if statistic is None:
-        statistic = lambda a, b: float(np.mean(a) - np.mean(b))
+
+        def statistic(a, b):
+            return float(np.mean(a) - np.mean(b))
+
     T_obs = float(statistic(x, y))
     pool = np.concatenate([x, y])
     rng = np.random.default_rng(seed)

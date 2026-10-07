@@ -33,6 +33,7 @@ import warnings
 from collections.abc import Callable
 from typing import Any
 
+from morie._frames import as_frame
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
@@ -76,7 +77,7 @@ def simple_random_sample(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"x": range(100)})
     >>> sample = simple_random_sample(df, 10, seed=0)
     >>> len(sample)
@@ -86,11 +87,14 @@ def simple_random_sample(
     ----------
     Cochran, W. G. (1977). *Sampling Techniques* (3rd ed.), Chapter 2.
     """
+    df = as_frame(df, name="df")
     if not replace and n > len(df):
         raise ValueError(f"Cannot draw n={n} without replacement from a frame of size {len(df)}")
     rng = np.random.default_rng(seed)
     indices = rng.choice(len(df), size=n, replace=replace)
-    return df.iloc[indices].copy()
+    out = df.iloc[indices].copy()
+    out[".weight"] = [1.0] * n if replace else [len(df) / n] * n  # N / n: each row stands for N/n units
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -141,7 +145,7 @@ def stratified_sample(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"stratum": ["A"]*50 + ["B"]*50, "x": range(100)})
     >>> sample = stratified_sample(df, "stratum", 10, seed=0)
     >>> sample.groupby("stratum").size().to_dict()
@@ -151,6 +155,7 @@ def stratified_sample(
     ----------
     Cochran, W. G. (1977). *Sampling Techniques* (3rd ed.), Chapter 5.
     """
+    df = as_frame(df, name="df")
     _warn_missing(df, strata_col, "stratified_sample")
     clean = df.dropna(subset=[strata_col])
     rng = np.random.default_rng(seed)
@@ -165,15 +170,25 @@ def stratified_sample(
         fractions = stratum_sizes / stratum_sizes.sum()
         allocation = (fractions * total_n).round().astype(int)
         # Adjust rounding: add/remove from largest stratum
-        diff = total_n - allocation.sum()
+        diff = int(total_n - int(allocation.sum()))
         if diff != 0:
             largest = allocation.idxmax()
             allocation[largest] += diff
-        n_map = allocation.to_dict()
+        n_map = {k: int(v) for k, v in allocation.to_dict().items()}  # counts, never floats
     elif isinstance(n_per_stratum, dict):
         n_map = n_per_stratum
     else:
         n_map = {name: n_per_stratum for name in groups.groups}
+
+    if proportional:
+        empty_strata = [str(k) for k, v in n_map.items() if v == 0]
+        if empty_strata:
+            # the weights then stand for the strata that were drawn only: say which are missing
+            warnings.warn(
+                f"stratified sample: {total_n} row(s) over {len(n_map)} strata leaves {', '.join(empty_strata)} with no"
+                " rows (the allocation rounds small strata to zero); raise the total or allocate per stratum",
+                stacklevel=2,
+            )
 
     samples = []
     for stratum_val, group_df in groups:
@@ -182,9 +197,15 @@ def stratified_sample(
             raise ValueError(f"Stratum '{stratum_val}': requested n={n_draw} exceeds population size {len(group_df)}")
         if n_draw > 0:
             idx = rng.choice(len(group_df), size=n_draw, replace=False)
-            samples.append(group_df.iloc[idx])
+            drawn = group_df.iloc[idx].copy()
+            drawn[".weight"] = [len(group_df) / n_draw] * n_draw  # each row stands for N_h / n_h units
+            samples.append(drawn)
 
-    return pd.concat(samples).copy() if samples else clean.iloc[:0].copy()
+    if not samples:
+        empty = clean.iloc[:0].copy()
+        empty[".weight"] = []
+        return empty
+    return pd.concat(samples).copy()
 
 
 # ---------------------------------------------------------------------------
@@ -227,7 +248,7 @@ def cluster_sample(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({
     ...     "cluster": [1]*10 + [2]*10 + [3]*10,
     ...     "y": range(30),
@@ -240,6 +261,7 @@ def cluster_sample(
     ----------
     Cochran, W. G. (1977). *Sampling Techniques* (3rd ed.), Chapter 9.
     """
+    df = as_frame(df, name="df")
     _warn_missing(df, cluster_col, "cluster_sample")
     clean = df.dropna(subset=[cluster_col])
     clusters = clean[cluster_col].unique()
@@ -249,7 +271,9 @@ def cluster_sample(
 
     rng = np.random.default_rng(seed)
     selected = rng.choice(clusters, size=n_clusters, replace=False)
-    return clean[clean[cluster_col].isin(selected)].copy()
+    out = clean[clean[cluster_col].isin(selected)].copy()
+    out[".weight"] = [len(clusters) / n_clusters] * len(out)  # every unit of a chosen cluster: M / m
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -296,7 +320,7 @@ def pps_sample(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"pop": [1000, 500, 200, 100], "name": ["A","B","C","D"]})
     >>> sample = pps_sample(df, "pop", 2, seed=0)
     >>> len(sample)
@@ -307,6 +331,7 @@ def pps_sample(
     Brewer, K. R. W., & Hanif, M. (1983). *Sampling with Unequal
     Probabilities*. Springer.
     """
+    df = as_frame(df, name="df")
     _warn_missing(df, size_col, "pps_sample")
     clean = df.dropna(subset=[size_col]).copy()
     mask = clean[size_col] > 0
@@ -399,7 +424,8 @@ def bootstrap_sample(
 
     Examples
     --------
-    >>> import pandas as pd, numpy as np
+    >>> from morie.fn import _array_core as np
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"x": np.random.default_rng(0).normal(5, 1, 200)})
     >>> result = bootstrap_sample(df, 500, statistic=lambda d: d["x"].mean(), seed=0)
     >>> 4.5 < result["mean"] < 5.5
@@ -410,6 +436,7 @@ def bootstrap_sample(
     Efron, B., & Tibshirani, R. J. (1993). *An Introduction to the
     Bootstrap*. Chapman & Hall/CRC.
     """
+    df = as_frame(df, name="df")
     rng = np.random.default_rng(seed)
     n = len(df)
     boot_stats = np.empty(n_bootstrap, dtype=float)
@@ -468,7 +495,7 @@ def jackknife_estimate(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"x": [1.0, 2.0, 3.0, 4.0, 5.0]})
     >>> jk = jackknife_estimate(df, statistic=lambda d: d["x"].mean())
     >>> abs(jk["estimate"] - 3.0) < 1e-10
@@ -482,6 +509,7 @@ def jackknife_estimate(
     Tukey, J. W. (1958). Bias and confidence in not-quite large samples
     (abstract). *Annals of Mathematical Statistics*, 29, 614.
     """
+    df = as_frame(df, name="df")
     n = len(df)
     theta_full = statistic(df)
     theta_loo = np.empty(n, dtype=float)
@@ -544,7 +572,7 @@ def compute_design_weights(
 
     Examples
     --------
-    >>> import pandas as pd
+    >>> from morie.fn import _frame_core as pd
     >>> df = pd.DataFrame({"stratum": ["A"]*10 + ["B"]*20})
     >>> w = compute_design_weights(df, "stratum", {"A": 1000, "B": 2000})
     >>> float(w[df["stratum"] == "A"].iloc[0])
@@ -554,6 +582,7 @@ def compute_design_weights(
     ----------
     Kish, L. (1965). *Survey Sampling*, Chapter 2. Wiley.
     """
+    df = as_frame(df, name="df")
     weights = pd.Series(np.nan, index=df.index, dtype=float, name="design_weight")
     sample_sizes = df[strata_col].value_counts()
 
@@ -600,10 +629,9 @@ def effective_sample_size(weights: np.ndarray | pd.Series) -> float:
 
     Examples
     --------
-    >>> import numpy as np
-    >>> effective_sample_size(np.ones(100))
+    >>> effective_sample_size([1.0] * 100)
     100.0
-    >>> ess = effective_sample_size(np.array([1.0, 1.0, 10.0]))
+    >>> ess = effective_sample_size([1.0, 1.0, 10.0])
     >>> ess < 3.0
     True
 
@@ -642,8 +670,7 @@ def design_effect(weights: np.ndarray | pd.Series) -> float:
 
     Examples
     --------
-    >>> import numpy as np
-    >>> design_effect(np.ones(100))
+    >>> design_effect([1.0] * 100)
     1.0
 
     References

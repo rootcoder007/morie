@@ -27,18 +27,17 @@ def ca_chapter_5_equation_5(b, se):
     ch.5 eq.5.5
     """
     payload = dict(_ca_crim.coef_ci(b, se, 1.96))
-    value = payload['lower']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["lower"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (5.5)"
     return RichResult(
-        title='95% CI for a multinomial coefficient b -/+ 1.96 se',
+        title="95% CI for a multinomial coefficient b -/+ 1.96 se",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca5e5: b -/+ 1.96 se [Weisburd et al. 2022, eq. 5.5]'
+    return "ca5e5: b -/+ 1.96 se [Weisburd et al. 2022, eq. 5.5]"

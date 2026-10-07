@@ -89,8 +89,7 @@ def geron_kmeans_objective(X, centroids, labels):
 
     return RichResult(
         title="k-means objective",
-        summary_lines=[("Inertia", float(d2.sum())), ("k", int(k)),
-                       ("Sizes", sizes.tolist())],
+        summary_lines=[("Inertia", float(d2.sum())), ("k", int(k)), ("Sizes", sizes.tolist())],
         payload={
             "inertia": float(d2.sum()),
             "per_cluster_inertia": per.tolist(),

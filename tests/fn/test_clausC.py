@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.clausC import clausius_clapeyron
 
 
@@ -30,7 +29,7 @@ def test_clausC_basic():
 
 def test_clausC_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(43)
+    np.random.default_rng(43)
     T = np.linspace(260.0, 300.0, 10)
     result = clausius_clapeyron(T)
     assert isinstance(result, dict)

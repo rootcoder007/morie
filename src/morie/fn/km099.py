@@ -31,10 +31,16 @@ def kamath_ch6_emt_metric(Yhat, c):
     """
     arr, outs = _scores(Yhat, c)
     k = int(np.argmax(arr))
-    return RichResult(payload={
-        "estimate": float(arr[k]), "argmax": outs[k], "argmax_index": k,
-        "scores": [float(v) for v in arr], "n": len(outs),
-        "method": "Expected Maximum Toxicity (Kamath Eq 6.23)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr[k]),
+            "argmax": outs[k],
+            "argmax_index": k,
+            "scores": [float(v) for v in arr],
+            "n": len(outs),
+            "method": "Expected Maximum Toxicity (Kamath Eq 6.23)",
+        }
+    )
 
 
 def cheatsheet():

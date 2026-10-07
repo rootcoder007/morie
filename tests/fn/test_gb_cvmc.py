@@ -1,13 +1,13 @@
 """Tests for gb_cvmc.gibbons_cramer_von_mises."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_cvmc import gibbons_cramer_von_mises
 
 
 def _normal_cdf(z):
     """Standard normal CDF via the math library error function."""
     import math
+
     return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
 
 
@@ -28,9 +28,7 @@ def test_gb_cvmc_basic():
     xs = sorted(float(v) for v in x)
     n = len(xs)
     z = [_normal_cdf(v) for v in xs]
-    expected_w2 = 1.0 / (12.0 * n) + sum(
-        (z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n)
-    )
+    expected_w2 = 1.0 / (12.0 * n) + sum((z[j] - (2.0 * (j + 1) - 1.0) / (2.0 * n)) ** 2 for j in range(n))
 
     assert result["n"] == n
     assert result["statistic"] == float(expected_w2)

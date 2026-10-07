@@ -129,8 +129,7 @@ def _chol(A):
             if i == j:
                 s += jit
                 if s <= 0.0:
-                    raise ValueError("rrblpr: the covariance matrix is not "
-                                     "positive definite")
+                    raise ValueError("rrblpr: the covariance matrix is not positive definite")
                 L[i][i] = math.sqrt(s)
             else:
                 L[i][j] = s / L[j][j]
@@ -157,13 +156,11 @@ def _reml_at(loglam, G, y, X):
     n = len(y)
     p = len(X[0])
     lam = math.exp(loglam)
-    V = [[G[i][j] / lam + (1.0 if i == j else 0.0) for j in range(n)]
-         for i in range(n)]
+    V = [[G[i][j] / lam + (1.0 if i == j else 0.0) for j in range(n)] for i in range(n)]
     L = _chol(V)
     Viy = _chol_solve(L, y)
     ViX = [_chol_solve(L, [X[i][a] for i in range(n)]) for a in range(p)]
-    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)]
-             for a in range(p)]
+    XtViX = [[sum(X[i][a] * ViX[b][i] for i in range(n)) for b in range(p)] for a in range(p)]
     XtViy = [sum(X[i][a] * Viy[i] for i in range(n)) for a in range(p)]
     Lx = _chol(XtViX)
     beta = _chol_solve(Lx, XtViy)
@@ -172,13 +169,11 @@ def _reml_at(loglam, G, y, X):
     rss = sum(r[i] * Vir[i] for i in range(n))
     dfr = n - p
     s2e = rss / dfr
-    ll = -0.5 * (dfr * math.log(max(s2e, 1e-300)) + _logdet(L)
-                 + _logdet(Lx) + dfr)
+    ll = -0.5 * (dfr * math.log(max(s2e, 1e-300)) + _logdet(L) + _logdet(Lx) + dfr)
     return ll, lam, beta, s2e, L
 
 
-def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0,
-            log_lam_hi=12.0, max_iter=200, tol=1e-9):
+def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0, log_lam_hi=12.0, max_iter=200, tol=1e-9):
     r"""Fit ``y = X beta + M u + e`` with ``u`` random and equal-variance.
 
     Parameters
@@ -211,23 +206,21 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0,
     if n == 0:
         raise ValueError("rrblpr: no observations")
     if len(Mm) != n:
-        raise ValueError("rrblpr: %d phenotypes but %d marker rows"
-                         % (n, len(Mm)))
+        raise ValueError(f"rrblpr: {int(n)} phenotypes but {int(len(Mm))} marker rows")
     m = len(Mm[0])
     if any(len(r) != m for r in Mm):
-        raise ValueError("rrblpr: every row of M must have %d markers" % m)
-    Xm = ([[1.0] for _ in range(n)] if X is None
-          else [[float(v) for v in row] for row in k.mat(X)])
+        raise ValueError(f"rrblpr: every row of M must have {int(m)} markers")
+    Xm = [[1.0] for _ in range(n)] if X is None else [[float(v) for v in row] for row in k.mat(X)]
     if len(Xm) != n:
-        raise ValueError("rrblpr: X has %d rows, y has %d" % (len(Xm), n))
+        raise ValueError(f"rrblpr: X has {int(len(Xm))} rows, y has {int(n)}")
     p = len(Xm[0])
     if n - p < 1:
-        raise ValueError("rrblpr: %d observations and %d fixed effects "
-                         "leave no residual degrees of freedom" % (n, p))
+        raise ValueError(
+            f"rrblpr: {int(n)} observations and {int(p)} fixed effects leave no residual degrees of freedom"
+        )
 
     # the kernel MM' -- the object both forms of the predictor share
-    G = [[sum(Mm[i][a] * Mm[j][a] for a in range(m)) for j in range(n)]
-         for i in range(n)]
+    G = [[sum(Mm[i][a] * Mm[j][a] for a in range(m)) for j in range(n)] for i in range(n)]
 
     profile = []
     if lam is None:
@@ -235,28 +228,24 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0,
         # optimum is visible rather than asserted. max_iter is accepted and
         # ignored -- the grid schedule fixes the evaluation count, and
         # dropping the argument would break callers that pass it.
-        loglam = _gridmax(lambda t: _reml_at(t, G, yv, Xm)[0],
-                          log_lam_lo, log_lam_hi)
+        loglam = _gridmax(lambda t: _reml_at(t, G, yv, Xm)[0], log_lam_lo, log_lam_hi)
         ll, lam_hat, beta, s2e, L = _reml_at(loglam, G, yv, Xm)
         for t in range(21):
-            lt = float(log_lam_lo) + (float(log_lam_hi)
-                                      - float(log_lam_lo)) * t / 20.0
+            lt = float(log_lam_lo) + (float(log_lam_hi) - float(log_lam_lo)) * t / 20.0
             profile.append([lt, _reml_at(lt, G, yv, Xm)[0]])
         estimated = True
     else:
         lam_hat = float(lam)
         if lam_hat < 0.0:
-            raise ValueError("rrblpr: lambda is a variance ratio and cannot "
-                             "be negative")
+            raise ValueError("rrblpr: lambda is a variance ratio and cannot be negative")
         if lam_hat <= _EPS:
             # least squares: only defined when M has full column rank
             if m > n - p:
-                raise ValueError("rrblpr: lambda = 0 with %d markers and %d "
-                                 "residual degrees of freedom -- the least "
-                                 "squares problem is not identified" % (m,
-                                                                        n - p))
+                raise ValueError(
+                    f"rrblpr: lambda = 0 with {int(m)} markers and {int(n - p)} residual degrees of freedom -- the least squares problem is not identified"
+                )
             lam_hat = 0.0
-        ll, beta, s2e, L, estimated = None, None, None, None, False
+        ll, _beta, s2e, _L, estimated = None, None, None, None, False
 
     # ---- Henderson's mixed model equations, solved as written
     q = p + m
@@ -279,16 +268,13 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0,
     beta_h = sol[:p]
     u = sol[p:]
 
-    fitted = [sum(Xm[i][a] * beta_h[a] for a in range(p))
-              + sum(Mm[i][a] * u[a] for a in range(m)) for i in range(n)]
+    fitted = [sum(Xm[i][a] * beta_h[a] for a in range(p)) + sum(Mm[i][a] * u[a] for a in range(m)) for i in range(n)]
     gv = [sum(Mm[i][a] * u[a] for a in range(m)) for i in range(n)]
 
     # ---- the kernel form of the same predictor, computed independently
-    r = [yv[i] - sum(Xm[i][a] * beta_h[a] for a in range(p))
-         for i in range(n)]
+    r = [yv[i] - sum(Xm[i][a] * beta_h[a] for a in range(p)) for i in range(n)]
     if lam_hat > _EPS:
-        Vk = [[G[i][j] + (lam_hat if i == j else 0.0) for j in range(n)]
-              for i in range(n)]
+        Vk = [[G[i][j] + (lam_hat if i == j else 0.0) for j in range(n)] for i in range(n)]
         w = _chol_solve(_chol(Vk), r)
         gv_kernel = [sum(G[i][j] * w[j] for j in range(n)) for i in range(n)]
     else:
@@ -307,35 +293,50 @@ def rr_blup(y, M, lam=None, X=None, M_new=None, log_lam_lo=-12.0,
     if M_new is not None:
         Mn = [[float(v) for v in row] for row in k.mat(M_new)]
         if any(len(rw) != m for rw in Mn):
-            raise ValueError("rrblpr: M_new must have %d markers" % m)
+            raise ValueError(f"rrblpr: M_new must have {int(m)} markers")
         pred_new = [sum(rw[a] * u[a] for a in range(m)) for rw in Mn]
 
-    return RichResult(payload={
-        "estimate": u, "marker_effects": u, "coefficients": beta_h,
-        "breeding_values": gv, "breeding_values_kernel": gv_kernel,
-        "kernel_identity_gap": kernel_gap,
-        "fitted": fitted, "residuals": resid,
-        "lambda": lam_hat, "lambda_estimated": estimated,
-        "sigma2_e": s2e_h, "sigma2_u": s2u, "sigma2_g": s2g, "h2": h2,
-        "reml_loglik": ll, "reml_profile": profile,
-        "prediction_new": pred_new,
-        "n": n, "m": m, "p": p,
-        "method": "RR-BLUP: Henderson's mixed model equations with a single "
-                  "variance ratio, the ratio estimated by profile REML when "
-                  "it is not supplied (Whittaker et al. 2000; Meuwissen et "
-                  "al. 2001; Henderson 1975)",
-        "note": "breeding_values and breeding_values_kernel are the "
-                "marker-effect and GBLUP forms of the same predictor; "
-                "kernel_identity_gap is how far apart they came out, and it "
-                "is the check that the implementation is right rather than "
-                "merely plausible",
-    })
+    return RichResult(
+        payload={
+            "estimate": u,
+            "marker_effects": u,
+            "coefficients": beta_h,
+            "breeding_values": gv,
+            "breeding_values_kernel": gv_kernel,
+            "kernel_identity_gap": kernel_gap,
+            "fitted": fitted,
+            "residuals": resid,
+            "lambda": lam_hat,
+            "lambda_estimated": estimated,
+            "sigma2_e": s2e_h,
+            "sigma2_u": s2u,
+            "sigma2_g": s2g,
+            "h2": h2,
+            "reml_loglik": ll,
+            "reml_profile": profile,
+            "prediction_new": pred_new,
+            "n": n,
+            "m": m,
+            "p": p,
+            "method": "RR-BLUP: Henderson's mixed model equations with a single "
+            "variance ratio, the ratio estimated by profile REML when "
+            "it is not supplied (Whittaker et al. 2000; Meuwissen et "
+            "al. 2001; Henderson 1975)",
+            "note": "breeding_values and breeding_values_kernel are the "
+            "marker-effect and GBLUP forms of the same predictor; "
+            "kernel_identity_gap is how far apart they came out, and it "
+            "is the check that the implementation is right rather than "
+            "merely plausible",
+        }
+    )
 
 
 def cheatsheet():
-    return ("rrblpr: rr_blup(y, M, lam) -> marker effects and breeding "
-            "values from the mixed model equations, lambda by REML when "
-            "None (Whittaker, Thompson & Denham 2000; Meuwissen et al. 2001)")
+    return (
+        "rrblpr: rr_blup(y, M, lam) -> marker effects and breeding "
+        "values from the mixed model equations, lambda by REML when "
+        "None (Whittaker, Thompson & Denham 2000; Meuwissen et al. 2001)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

@@ -7,8 +7,7 @@ from ._schab_pp import as_region, intensity, k_function
 __all__ = ["schabenberger_k_function"]
 
 
-def schabenberger_k_function(points, lambda_est=None, r=None, region=None,
-                             correction="border"):
+def schabenberger_k_function(points, lambda_est=None, r=None, region=None, correction="border"):
     r"""
     Ripley's K-function.
 
@@ -76,8 +75,7 @@ def schabenberger_k_function(points, lambda_est=None, r=None, region=None,
     return RichResult(
         title="Ripley's K-function",
         summary_lines=[("lambda", lam), ("correction", correction)],
-        payload={"r": r, "k": k, "k_csr": np.pi * r**2,
-                 "lambda_est": lam, "correction": correction},
+        payload={"r": r, "k": k, "k_csr": np.pi * r**2, "lambda_est": lam, "correction": correction},
     )
 
 

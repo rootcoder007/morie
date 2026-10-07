@@ -72,12 +72,10 @@ def apply_smote(
     minority_label = y.value_counts().idxmin()
 
     if k_neighbors is None:
-        k_neighbors = min(5, minority_count - 1) \
-            if minority_count > 1 else 1
+        k_neighbors = min(5, minority_count - 1) if minority_count > 1 else 1
 
     cols = list(X.columns)
-    rows = [[float(X[c].tolist()[i]) for c in cols]
-            for i in range(len(y))]
+    rows = [[float(X[c].tolist()[i]) for c in cols] for i in range(len(y))]
     labels = list(y.tolist())
     n_needed = majority_count - minority_count
     rng = np.random.default_rng(random_state)
@@ -92,8 +90,7 @@ def apply_smote(
             base = int(rng.integers(0, len(pts)))
             nb = pts[nn[base][int(rng.integers(0, len(nn[base])))]]
             gap = float(rng.uniform(0.0, 1.0))
-            new_rows.append([a + gap * (b - a)
-                             for a, b in zip(pts[base], nb)])
+            new_rows.append([a + gap * (b - a) for a, b in zip(pts[base], nb)])
     elif n_needed > 0 and minority_count == 1:
         method = "random_oversample"
         seed_row = rows[labels.index(minority_label)]
@@ -103,18 +100,21 @@ def apply_smote(
 
     all_rows = rows + new_rows
     all_labels = labels + [minority_label] * len(new_rows)
-    X_res = pd.DataFrame({c: [r[j] for r in all_rows]
-                          for j, c in enumerate(cols)})
+    X_res = pd.DataFrame({c: [r[j] for r in all_rows] for j, c in enumerate(cols)})
     y_res = pd.Series(all_labels, name=getattr(y, "name", None))
     counts_after = y_res.value_counts().to_dict()
 
-    return X_res, y_res, {
-        "method": method,
-        "counts_before": counts_before,
-        "counts_after": counts_after,
-        "n_synthetic": len(new_rows),
-        "k_neighbors": k_neighbors,
-    }
+    return (
+        X_res,
+        y_res,
+        {
+            "method": method,
+            "counts_before": counts_before,
+            "counts_after": counts_after,
+            "n_synthetic": len(new_rows),
+            "k_neighbors": k_neighbors,
+        },
+    )
 
 
 # compact alias per ledger/NAMING.md

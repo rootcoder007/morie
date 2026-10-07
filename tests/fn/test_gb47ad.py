@@ -19,8 +19,7 @@ def test_gb47ad_basic():
 
     # Documented return keys (RichResult behaves dict-like)
     assert isinstance(result, dict)
-    for key in ("statistic", "astar", "crit", "reject",
-                "z", "n", "case", "alpha", "method"):
+    for key in ("statistic", "astar", "crit", "reject", "z", "n", "case", "alpha", "method"):
         assert key in result
 
     # Independent computation of W_n^2 from eq. (4.7.1)
@@ -30,9 +29,7 @@ def test_gb47ad_basic():
     assert all(0.0 < v < 1.0 for v in z_vals)
     s = 0.0
     for j in range(1, n + 1):
-        s += (2.0 * j - 1.0) * (
-            math.log(z_vals[j - 1]) + math.log(1.0 - z_vals[n - j])
-        )
+        s += (2.0 * j - 1.0) * (math.log(z_vals[j - 1]) + math.log(1.0 - z_vals[n - j]))
     expected_a2 = -n - s / n
 
     assert result["n"] == n
@@ -52,8 +49,7 @@ def test_gb47ad_edge():
     rng = np.random.default_rng(42)
     x = list(rng.normal(0, 1, 25))
 
-    result = gibbons_anderson_darling(x, _norm_cdf,
-                                      case="normal-both", alpha=0.10)
+    result = gibbons_anderson_darling(x, _norm_cdf, case="normal-both", alpha=0.10)
 
     assert isinstance(result, dict)
     assert result["case"] == "normal-both"

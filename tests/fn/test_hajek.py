@@ -1,8 +1,8 @@
 """Tests for fn/hajek.py -- Hajek estimator for population mean."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hajek import hajek, hajek_mean
 
 

@@ -1,7 +1,6 @@
 """Tests for alfldz.alphafold_loss_decomposition."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfldz import alphafold_loss_decomposition
 
 
@@ -24,9 +23,6 @@ def test_alfldz_basic():
     assert "unscaled" in result
 
     # Hand-computed weighted sum on the same inputs.
-    weights = {
-        "fape": 1.0,   # placeholder, replaced below
-    }
 
 
 def test_alfldz_edge():

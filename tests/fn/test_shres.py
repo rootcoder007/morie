@@ -1,7 +1,6 @@
 """Tests for shres.schoenfeld_residual."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.shres import schoenfeld_residual
 
 

@@ -13,27 +13,58 @@ Everything here is plain Python -- no external numeric libraries.
 import math
 
 __all__ = [
-    "ideal_fourths", "idealf_iqr", "boxplot_rule",
-    "trimmed_mean", "winsorize", "winsorized_mean", "winsorized_variance",
-    "mad", "madn", "mad_median_rule", "mad_rescaled",
-    "BOOK_MADN_CONSTANT", "R_MAD_CONSTANT",
-    "yuen_test", "welch_test", "trim_counts",
-    "harrell_davis", "theil_sen", "pbos",
-    "percentage_bend_correlation", "winsorized_correlation",
-    "mom_estimator", "one_step_m_estimator",
-    "cliff_delta", "brunner_munzel", "wilcoxon_mann_whitney",
-    "percentile_bootstrap_2group", "one_sample_bootstrap",
-    "trimmed_mean_se", "trimmed_mean_ci", "yuen_paired",
-    "trimmed_mean_anova", "boxplot_outliers",
-    "akp_effect_size", "trimmed_mean_bootstrap",
-    "median_se", "median_test_2group",
-    "winsorized_regression", "correlation_bootstrap_ci",
+    "ideal_fourths",
+    "idealf_iqr",
+    "boxplot_rule",
+    "trimmed_mean",
+    "winsorize",
+    "winsorized_mean",
+    "winsorized_variance",
+    "mad",
+    "madn",
+    "mad_median_rule",
+    "mad_rescaled",
+    "BOOK_MADN_CONSTANT",
+    "R_MAD_CONSTANT",
+    "yuen_test",
+    "welch_test",
+    "trim_counts",
+    "harrell_davis",
+    "theil_sen",
+    "pbos",
+    "percentage_bend_correlation",
+    "winsorized_correlation",
+    "mom_estimator",
+    "one_step_m_estimator",
+    "cliff_delta",
+    "brunner_munzel",
+    "wilcoxon_mann_whitney",
+    "percentile_bootstrap_2group",
+    "one_sample_bootstrap",
+    "trimmed_mean_se",
+    "trimmed_mean_ci",
+    "yuen_paired",
+    "trimmed_mean_anova",
+    "boxplot_outliers",
+    "akp_effect_size",
+    "trimmed_mean_bootstrap",
+    "median_se",
+    "median_test_2group",
+    "winsorized_regression",
+    "correlation_bootstrap_ci",
     "brunner_dette_munk",
-    "weights_totals", "morans_i", "morans_i_test",
-    "spatial_2sls", "gm_error_sar",
-    "spatial_lag_model", "spatial_error_model",
-    "ripley_k", "cokriging", "local_dp_randomised_response",
-    "adf_test", "rlm",
+    "weights_totals",
+    "morans_i",
+    "morans_i_test",
+    "spatial_2sls",
+    "gm_error_sar",
+    "spatial_lag_model",
+    "spatial_error_model",
+    "ripley_k",
+    "cokriging",
+    "local_dp_randomised_response",
+    "adf_test",
+    "rlm",
 ]
 
 
@@ -88,7 +119,7 @@ def trim_counts(n, tr):
     one value per tail, not 1.8.
     """
     if not 0 <= tr < 0.5:
-        raise ValueError("tr must satisfy 0 <= tr < 0.5, got %r" % (tr,))
+        raise ValueError(f"tr must satisfy 0 <= tr < 0.5, got {tr!r}")
     return int(math.floor(tr * n))
 
 
@@ -134,11 +165,16 @@ def boxplot_rule(x, k=1.5):
     lo = f["q1"] - k * iqr
     hi = f["q2"] + k * iqr
     flags = [t < lo or t > hi for t in v]
-    return {"lower": lo, "upper": hi, "iqr": iqr,
-            "is_outlier": flags,
-            "outliers": [t for t, b in zip(v, flags) if b],
-            "n_outliers": sum(1 for b in flags if b),
-            "q1": f["q1"], "q2": f["q2"]}
+    return {
+        "lower": lo,
+        "upper": hi,
+        "iqr": iqr,
+        "is_outlier": flags,
+        "outliers": [t for t, b in zip(v, flags) if b],
+        "n_outliers": sum(1 for b in flags if b),
+        "q1": f["q1"],
+        "q2": f["q2"],
+    }
 
 
 # --------------------------------------------- ch.2 trimming, Winsorizing
@@ -151,7 +187,7 @@ def trimmed_mean(x, tr=0.2):
     v = sorted(_flat(x))
     n = len(v)
     g = trim_counts(n, tr)
-    kept = v[g:n - g] if g else v
+    kept = v[g : n - g] if g else v
     if not kept:
         raise ValueError("trimming removed every observation")
     return sum(kept) / len(kept)
@@ -233,16 +269,17 @@ def mad_median_rule(x, crit=2.24):
     v = _flat(x)
     m = median(v)
     s = madn(v)
-    if s == 0:
-        ratios = [0.0 if t == m else float("inf") for t in v]
-    else:
-        ratios = [abs(t - m) / s for t in v]
+    ratios = [0.0 if t == m else float("inf") for t in v] if s == 0 else [abs(t - m) / s for t in v]
     flags = [r > crit for r in ratios]
-    return {"median": m, "madn": s, "ratio": ratios,
-            "is_outlier": flags,
-            "outliers": [t for t, b in zip(v, flags) if b],
-            "n_outliers": sum(1 for b in flags if b),
-            "crit": float(crit)}
+    return {
+        "median": m,
+        "madn": s,
+        "ratio": ratios,
+        "is_outlier": flags,
+        "outliers": [t for t, b in zip(v, flags) if b],
+        "n_outliers": sum(1 for b in flags if b),
+        "crit": float(crit),
+    }
 
 
 # ------------------------------------------------ ch.7 two-group methods
@@ -259,12 +296,11 @@ def _betainc(a, b, x):
         return 0.0
     if x >= 1:
         return 1.0
-    lbeta = (math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b))
+    lbeta = math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
     front = math.exp(a * math.log(x) + b * math.log1p(-x) - lbeta)
     if x < (a + 1.0) / (a + b + 2.0):
         return front * _betacf(a, b, x) / a
-    return 1.0 - math.exp(
-        b * math.log1p(-x) + a * math.log(x) - lbeta) * _betacf(b, a, 1 - x) / b
+    return 1.0 - math.exp(b * math.log1p(-x) + a * math.log(x) - lbeta) * _betacf(b, a, 1 - x) / b
 
 
 def _betacf(a, b, x, itmax=300, eps=1e-14):
@@ -318,9 +354,16 @@ def welch_test(x, y):
     tstat = (m1 - m2) / se
     df = (q1 + q2) ** 2 / (q1 * q1 / (n1 - 1) + q2 * q2 / (n2 - 1))
     p = 2.0 * (1.0 - _student_t_cdf(abs(tstat), df))
-    return {"statistic": tstat, "df": df, "p_value": p, "se": se,
-            "estimate": m1 - m2, "mean_x": m1, "mean_y": m2,
-            "method": "Welch's heteroscedastic test for means"}
+    return {
+        "statistic": tstat,
+        "df": df,
+        "p_value": p,
+        "se": se,
+        "estimate": m1 - m2,
+        "mean_x": m1,
+        "mean_y": m2,
+        "method": "Welch's heteroscedastic test for means",
+    }
 
 
 def yuen_test(x, y, tr=0.2):
@@ -352,10 +395,19 @@ def yuen_test(x, y, tr=0.2):
     tstat = (t1 - t2) / se
     df = (d1 + d2) ** 2 / (d1 * d1 / (h1 - 1.0) + d2 * d2 / (h2 - 1.0))
     p = 2.0 * (1.0 - _student_t_cdf(abs(tstat), df))
-    return {"statistic": tstat, "df": df, "p_value": p, "se": se,
-            "estimate": t1 - t2, "trimmed_mean_x": t1,
-            "trimmed_mean_y": t2, "h_x": h1, "h_y": h2, "tr": float(tr),
-            "method": "Yuen's test for two independent trimmed means"}
+    return {
+        "statistic": tstat,
+        "df": df,
+        "p_value": p,
+        "se": se,
+        "estimate": t1 - t2,
+        "trimmed_mean_x": t1,
+        "trimmed_mean_y": t2,
+        "h_x": h1,
+        "h_y": h2,
+        "tr": float(tr),
+        "method": "Yuen's test for two independent trimmed means",
+    }
 
 
 # ============================================================
@@ -364,6 +416,7 @@ def yuen_test(x, y, tr=0.2):
 # code for the book.  A copy of the exact functions we ported
 # is kept at ledger/shelves/WRS_REFERENCE_FUNCTIONS.R.
 # ============================================================
+
 
 def _pbeta(q, a, b):
     """Beta CDF, i.e. R's pbeta(q, a, b)."""
@@ -450,9 +503,14 @@ def theil_sen(x, y, intercept_at_medians=False):
     else:
         inter = _median(sorted(ys[i] - slope * xs[i] for i in range(n)))
     resid = [ys[i] - slope * xs[i] - inter for i in range(n)]
-    return {"slope": slope, "intercept": inter, "coef": [inter, slope],
-            "residuals": resid, "n_pairs": len(slopes),
-            "method": "Theil-Sen regression"}
+    return {
+        "slope": slope,
+        "intercept": inter,
+        "coef": [inter, slope],
+        "residuals": resid,
+        "n_pairs": len(slopes),
+        "method": "Theil-Sen regression",
+    }
 
 
 def pbos(x, beta=0.2):
@@ -518,8 +576,7 @@ def percentage_bend_correlation(x, y, beta=0.2):
     else:
         stat = r * math.sqrt((n - 2) / (1 - r * r))
         p = 2.0 * (1.0 - _student_t_cdf(abs(stat), n - 2))
-    return {"cor": r, "statistic": stat, "p_value": p, "n": n,
-            "method": "percentage bend correlation"}
+    return {"cor": r, "statistic": stat, "p_value": p, "n": n, "method": "percentage bend correlation"}
 
 
 def winsorized_correlation(x, y, tr=0.2):
@@ -551,8 +608,7 @@ def winsorized_correlation(x, y, tr=0.2):
     else:
         stat = r * math.sqrt((n - 2) / (1 - r * r))
         p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
-    return {"cor": r, "cov": cov, "statistic": stat, "p_value": p,
-            "n": n, "df": df, "method": "Winsorized correlation"}
+    return {"cor": r, "cov": cov, "statistic": stat, "p_value": p, "n": n, "df": df, "method": "Winsorized correlation"}
 
 
 def _winsorize_paired(v, tr):
@@ -560,7 +616,7 @@ def _winsorize_paired(v, tr):
     need -- :func:`winsorize` returns the sorted sample."""
     y = sorted(v)
     n = len(v)
-    ibot = int(math.floor(tr * n))          # 0-based index of y[g+1] in R
+    ibot = int(math.floor(tr * n))  # 0-based index of y[g+1] in R
     itop = n - ibot - 1
     lo, hi = y[ibot], y[itop]
     return [min(max(t, lo), hi) for t in v]
@@ -630,33 +686,37 @@ def cliff_delta(x, y, alpha=0.05):
     n1, n2 = len(xs), len(ys)
     if n1 < 2 or n2 < 2:
         raise ValueError("each group needs at least 2 observations")
-    signs = [[(1 if a > b else (-1 if a < b else 0)) for b in ys]
-             for a in xs]
+    signs = [[(1 if a > b else (-1 if a < b else 0)) for b in ys] for a in xs]
     flat = [s for row in signs for s in row]
     d = sum(flat) / (n1 * n2)
     phat = (1.0 - d) / 2.0
     p_less = sum(1 for s in flat if s < 0) / (n1 * n2)
     p_eq = sum(1 for s in flat if s == 0) / (n1 * n2)
     p_gt = sum(1 for s in flat if s > 0) / (n1 * n2)
-    out = {"delta": d, "p_hat": phat, "n1": n1, "n2": n2,
-           "P_x_less_y": p_less, "P_equal": p_eq, "P_x_greater_y": p_gt,
-           "method": "Cliff's delta"}
+    out = {
+        "delta": d,
+        "p_hat": phat,
+        "n1": n1,
+        "n2": n2,
+        "P_x_less_y": p_less,
+        "P_equal": p_eq,
+        "P_x_greater_y": p_gt,
+        "method": "Cliff's delta",
+    }
     if phat in (0.0, 1.0):
         out["ci"] = (float("nan"), float("nan"))
         return out
     sigdih = sum((s - d) ** 2 for s in flat) / (n1 * n2 - 1)
-    di = [sum(1 for b in ys if a > b) / n2 - sum(1 for b in ys if a < b) / n2
-          for a in xs]
-    dh = [sum(1 for a in xs if b > a) / n1 - sum(1 for a in xs if b < a) / n1
-          for b in ys]
+    di = [sum(1 for b in ys if a > b) / n2 - sum(1 for b in ys if a < b) / n2 for a in xs]
+    dh = [sum(1 for a in xs if b > a) / n1 - sum(1 for a in xs if b < a) / n1 for b in ys]
     sdi = variance(di)
     sdh = variance(dh)
     sh = ((n2 - 1) * sdi + (n1 - 1) * sdh + sigdih) / (n1 * n2)
     zv = -_norm_quantile(1.0 - alpha / 2.0)
     root = math.sqrt(sh) * math.sqrt((1 - d * d) ** 2 + zv * zv * sh)
     den = 1 - d * d + zv * zv * sh
-    cu = (d - d ** 3 - zv * root) / den
-    cl = (d - d ** 3 + zv * root) / den
+    cu = (d - d**3 - zv * root) / den
+    cl = (d - d**3 + zv * root) / den
     out["ci"] = (cl, cu)
     return out
 
@@ -666,32 +726,49 @@ def _norm_quantile(p):
     refined by one Halley step against the erf-based CDF."""
     if not 0.0 < p < 1.0:
         raise ValueError("p must lie strictly between 0 and 1")
-    a = [-3.969683028665376e+01, 2.209460984245205e+02,
-         -2.759285104469687e+02, 1.383577518672690e+02,
-         -3.066479806614716e+01, 2.506628277459239e+00]
-    b = [-5.447609879822406e+01, 1.615858368580409e+02,
-         -1.556989798598866e+02, 6.680131188771972e+01,
-         -1.328068155288572e+01]
-    c = [-7.784894002430293e-03, -3.223964580411365e-01,
-         -2.400758277161838e+00, -2.549732539343734e+00,
-         4.374664141464968e+00, 2.938163982698783e+00]
-    d = [7.784695709041462e-03, 3.224671290700398e-01,
-         2.445134137142996e+00, 3.754408661907416e+00]
+    a = [
+        -3.969683028665376e01,
+        2.209460984245205e02,
+        -2.759285104469687e02,
+        1.383577518672690e02,
+        -3.066479806614716e01,
+        2.506628277459239e00,
+    ]
+    b = [
+        -5.447609879822406e01,
+        1.615858368580409e02,
+        -1.556989798598866e02,
+        6.680131188771972e01,
+        -1.328068155288572e01,
+    ]
+    c = [
+        -7.784894002430293e-03,
+        -3.223964580411365e-01,
+        -2.400758277161838e00,
+        -2.549732539343734e00,
+        4.374664141464968e00,
+        2.938163982698783e00,
+    ]
+    d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e00, 3.754408661907416e00]
     pl = 0.02425
     if p < pl:
         q = math.sqrt(-2 * math.log(p))
-        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
-             + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+        z = (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+        )
     elif p <= 1 - pl:
         q = p - 0.5
         r = q * q
-        z = (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r
-             + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3])
-                             * r + b[4]) * r + 1)
+        z = (
+            (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5])
+            * q
+            / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1)
+        )
     else:
         q = math.sqrt(-2 * math.log(1 - p))
-        z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q
-              + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1)
+        z = -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / (
+            (((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1
+        )
     e = 0.5 * math.erfc(-z / math.sqrt(2)) - p
     u = e * math.sqrt(2 * math.pi) * math.exp(z * z / 2)
     return z - u / (1 + z * u / 2)
@@ -720,12 +797,9 @@ def brunner_munzel(x, y, alpha=0.05):
     R2 = sum(R[n1:]) / n2
     Rg1 = _rank(xs)
     Rg2 = _rank(ys)
-    s1 = sum((R[i] - Rg1[i] - R1 + (n1 + 1) / 2.0) ** 2
-             for i in range(n1)) / (n1 - 1)
-    s2 = sum((R[n1 + j] - Rg2[j] - R2 + (n2 + 1) / 2.0) ** 2
-             for j in range(n2)) / (n2 - 1)
-    se = math.sqrt(N) * math.sqrt(N * (s1 / (n2 * n2) / n1
-                                       + s2 / (n1 * n1) / n2))
+    s1 = sum((R[i] - Rg1[i] - R1 + (n1 + 1) / 2.0) ** 2 for i in range(n1)) / (n1 - 1)
+    s2 = sum((R[n1 + j] - Rg2[j] - R2 + (n2 + 1) / 2.0) ** 2 for j in range(n2)) / (n2 - 1)
+    se = math.sqrt(N) * math.sqrt(N * (s1 / (n2 * n2) / n1 + s2 / (n1 * n1) / n2))
     phat = (R2 - (n2 + 1) / 2.0) / n1
     if se == 0:
         # Complete separation: every value of one group beats every
@@ -734,19 +808,34 @@ def brunner_munzel(x, y, alpha=0.05):
         # same case (phat == 0 or 1) and falls back to a binomial
         # interval rather than a t interval.  We report the separation
         # instead of inventing a finite statistic.
-        return {"statistic": float("inf") if phat > 0.5
-                else float("-inf"),
-                "df": float("nan"), "p_value": float("nan"),
-                "p_hat": phat, "delta": 1.0 - 2.0 * phat, "se": 0.0,
-                "n1": n1, "n2": n2, "separated": True,
-                "method": "Brunner-Munzel test (complete separation)"}
+        return {
+            "statistic": float("inf") if phat > 0.5 else float("-inf"),
+            "df": float("nan"),
+            "p_value": float("nan"),
+            "p_hat": phat,
+            "delta": 1.0 - 2.0 * phat,
+            "se": 0.0,
+            "n1": n1,
+            "n2": n2,
+            "separated": True,
+            "method": "Brunner-Munzel test (complete separation)",
+        }
     stat = (R2 - R1) / se
     den = (s1 / n2) ** 2 / (n1 - 1) + (s2 / n1) ** 2 / (n2 - 1)
     df = (s1 / n2 + s2 / n1) ** 2 / den if den > 0 else float("nan")
     p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
-    return {"statistic": stat, "df": df, "p_value": p, "p_hat": phat,
-            "delta": 1.0 - 2.0 * phat, "se": se, "n1": n1, "n2": n2,
-            "separated": False, "method": "Brunner-Munzel test"}
+    return {
+        "statistic": stat,
+        "df": df,
+        "p_value": p,
+        "p_hat": phat,
+        "delta": 1.0 - 2.0 * phat,
+        "se": se,
+        "n1": n1,
+        "n2": n2,
+        "separated": False,
+        "method": "Brunner-Munzel test",
+    }
 
 
 def _rank(v):
@@ -785,7 +874,7 @@ def wilcoxon_mann_whitney(x, y):
     counts = {}
     for t in xs + ys:
         counts[t] = counts.get(t, 0) + 1
-    tie = sum(c ** 3 - c for c in counts.values())
+    tie = sum(c**3 - c for c in counts.values())
     N = n1 + n2
     var = n1 * n2 / 12.0 * ((N + 1) - tie / float(N * (N - 1)))
     if var <= 0:
@@ -793,13 +882,18 @@ def wilcoxon_mann_whitney(x, y):
     z = (W - mu) / math.sqrt(var)
     p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(z) / math.sqrt(2)))
     U = W - n1 * (n1 + 1) / 2.0
-    return {"statistic": W, "U": U, "z": z, "p_value": p,
-            "n1": n1, "n2": n2,
-            "method": "Wilcoxon-Mann-Whitney rank-sum test"}
+    return {
+        "statistic": W,
+        "U": U,
+        "z": z,
+        "p_value": p,
+        "n1": n1,
+        "n2": n2,
+        "method": "Wilcoxon-Mann-Whitney rank-sum test",
+    }
 
 
-def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05,
-                                seed=2, **kwargs):
+def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05, seed=2, **kwargs):
     """Percentile bootstrap for the difference between two estimators.
 
     Resamples each group with replacement, forms the distribution of
@@ -829,14 +923,20 @@ def percentile_bootstrap_2group(x, y, est=None, nboot=2000, alpha=0.05,
     up = int(nboot - low) - 1
     low = min(max(low, 0), nboot - 1)
     up = min(max(up, 0), nboot - 1)
-    temp = (sum(1 for v in diffs if v < 0) / nboot
-            + sum(1 for v in diffs if v == 0) / (2.0 * nboot))
+    temp = sum(1 for v in diffs if v < 0) / nboot + sum(1 for v in diffs if v == 0) / (2.0 * nboot)
     p = 2.0 * min(temp, 1.0 - temp)
     e1, e2 = est(xs, **kwargs), est(ys, **kwargs)
-    return {"est_1": e1, "est_2": e2, "est_diff": e1 - e2,
-            "ci": (diffs[low], diffs[up]), "p_value": p,
-            "n1": n1, "n2": n2, "nboot": int(nboot),
-            "method": "percentile bootstrap for a difference"}
+    return {
+        "est_1": e1,
+        "est_2": e2,
+        "est_diff": e1 - e2,
+        "ci": (diffs[low], diffs[up]),
+        "p_value": p,
+        "n1": n1,
+        "n2": n2,
+        "nboot": int(nboot),
+        "method": "percentile bootstrap for a difference",
+    }
 
 
 def _student_t_quantile(p, df, tol=1e-12, max_iter=200):
@@ -879,8 +979,7 @@ def trimmed_mean_se(x, tr=0.2):
     Ported from WRS ``trimse``.
     """
     v = _flat(x)
-    return math.sqrt(winsorized_variance(v, tr)) / (
-        (1.0 - 2.0 * tr) * math.sqrt(len(v)))
+    return math.sqrt(winsorized_variance(v, tr)) / ((1.0 - 2.0 * tr) * math.sqrt(len(v)))
 
 
 def trimmed_mean_ci(x, tr=0.2, alpha=0.05, null_value=0.0):
@@ -899,9 +998,16 @@ def trimmed_mean_ci(x, tr=0.2, alpha=0.05, null_value=0.0):
     crit = _student_t_quantile(1.0 - alpha / 2.0, df)
     stat = (est - float(null_value)) / se
     p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
-    return {"estimate": est, "ci": (est - crit * se, est + crit * se),
-            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
-            "method": "trimmed-mean confidence interval"}
+    return {
+        "estimate": est,
+        "ci": (est - crit * se, est + crit * se),
+        "statistic": stat,
+        "se": se,
+        "df": df,
+        "p_value": p,
+        "n": n,
+        "method": "trimmed-mean confidence interval",
+    }
 
 
 def yuen_paired(x, y, tr=0.2, alpha=0.05):
@@ -935,27 +1041,40 @@ def yuen_paired(x, y, tr=0.2, alpha=0.05):
         # undefined rather than infinite -- report that instead of
         # dividing by zero.
         dif0 = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
-        return {"estimate": dif0, "ci": (dif0, dif0),
-                "statistic": float("nan"), "se": 0.0, "df": df,
-                "p_value": float("nan"), "n": n,
-                "est_1": trimmed_mean(xs, tr),
-                "est_2": trimmed_mean(ys, tr), "degenerate": True,
-                "method": "Yuen's test for dependent trimmed means "
-                          "(zero Winsorized variance of the differences)"}
+        return {
+            "estimate": dif0,
+            "ci": (dif0, dif0),
+            "statistic": float("nan"),
+            "se": 0.0,
+            "df": df,
+            "p_value": float("nan"),
+            "n": n,
+            "est_1": trimmed_mean(xs, tr),
+            "est_2": trimmed_mean(ys, tr),
+            "degenerate": True,
+            "method": "Yuen's test for dependent trimmed means (zero Winsorized variance of the differences)",
+        }
     se = math.sqrt(var)
     dif = trimmed_mean(xs, tr) - trimmed_mean(ys, tr)
     crit = _student_t_quantile(1.0 - alpha / 2.0, df)
     stat = dif / se
     p = 2.0 * (1.0 - _student_t_cdf(abs(stat), df))
-    return {"estimate": dif, "ci": (dif - crit * se, dif + crit * se),
-            "statistic": stat, "se": se, "df": df, "p_value": p, "n": n,
-            "est_1": trimmed_mean(xs, tr), "est_2": trimmed_mean(ys, tr),
-            "degenerate": False,
-            "method": "Yuen's test for dependent trimmed means"}
+    return {
+        "estimate": dif,
+        "ci": (dif - crit * se, dif + crit * se),
+        "statistic": stat,
+        "se": se,
+        "df": df,
+        "p_value": p,
+        "n": n,
+        "est_1": trimmed_mean(xs, tr),
+        "est_2": trimmed_mean(ys, tr),
+        "degenerate": False,
+        "method": "Yuen's test for dependent trimmed means",
+    }
 
 
-def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
-                         null_value=0.0, seed=2, **kwargs):
+def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000, null_value=0.0, seed=2, **kwargs):
     """Percentile bootstrap interval for a single measure of location.
 
     ``est`` defaults to the one-step M-estimator, as in WRS
@@ -973,8 +1092,7 @@ def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
     # R fills column-major, so row b uses entries b, b+nboot, ...
     draw = rng.sample_int(n, n * int(nboot), replace=True)
     nb = int(nboot)
-    boot = sorted(est([v[draw[b + j * nb] - 1] for j in range(n)], **kwargs)
-                  for b in range(nb))
+    boot = sorted(est([v[draw[b + j * nb] - 1] for j in range(n)], **kwargs) for b in range(nb))
     low = int(round((alpha / 2.0) * nboot))
     up = int(nboot - low) - 1
     low = min(max(low, 0), nboot - 1)
@@ -984,15 +1102,20 @@ def one_sample_bootstrap(x, est=None, alpha=0.05, nboot=2000,
     equal = sum(1 for b in boot if b == nv) / nboot
     pv = above + 0.5 * equal
     p = 2.0 * min(pv, 1.0 - pv)
-    return {"estimate": est(v, **kwargs), "ci": (boot[low], boot[up]),
-            "p_value": p, "n": n, "nboot": int(nboot),
-            "method": "one-sample percentile bootstrap"}
+    return {
+        "estimate": est(v, **kwargs),
+        "ci": (boot[low], boot[up]),
+        "p_value": p,
+        "n": n,
+        "nboot": int(nboot),
+        "method": "one-sample percentile bootstrap",
+    }
 
 
 def _f_cdf(x, df1, df2):
     """CDF of the F distribution, i.e. R's ``pf``.
 
-        F(x; d1, d2) = I_{d1 x / (d1 x + d2)}(d1/2, d2/2)
+    F(x; d1, d2) = I_{d1 x / (d1 x + d2)}(d1/2, d2/2)
     """
     if x <= 0:
         return 0.0
@@ -1043,10 +1166,15 @@ def trimmed_mean_anova(groups, tr=0.2):
     test = A / (B + 1.0)
     nu1 = J - 1.0
     nu2 = 1.0 / (3.0 * tail / (J * J - 1.0))
-    return {"statistic": test, "df1": nu1, "df2": nu2,
-            "p_value": 1.0 - _f_cdf(test, nu1, nu2),
-            "n": nv, "trimmed_means": xbar,
-            "method": "heteroscedastic one-way ANOVA on trimmed means"}
+    return {
+        "statistic": test,
+        "df1": nu1,
+        "df2": nu2,
+        "p_value": 1.0 - _f_cdf(test, nu1, nu2),
+        "n": nv,
+        "trimmed_means": xbar,
+        "method": "heteroscedastic one-way ANOVA on trimmed means",
+    }
 
 
 def boxplot_outliers(x, carling=False, gval=None):
@@ -1071,21 +1199,25 @@ def boxplot_outliers(x, carling=False, gval=None):
     f = ideal_fourths(v)
     iqr = f["q2"] - f["q1"]
     if carling:
-        g = ((17.63 * n - 23.64) / (7.74 * n - 3.71)
-             if gval is None else float(gval))
+        g = (17.63 * n - 23.64) / (7.74 * n - 3.71) if gval is None else float(gval)
         m = median(v)
         cl, cu = m - g * iqr, m + g * iqr
     else:
         g = 1.5 if gval is None else float(gval)
         cl, cu = f["q1"] - g * iqr, f["q2"] + g * iqr
     flags = [t < cl or t > cu for t in v]
-    return {"lower": cl, "upper": cu, "gval": g, "iqr": iqr,
-            "is_outlier": flags,
-            "outliers": [t for t, b in zip(v, flags) if b],
-            "keep": [t for t, b in zip(v, flags) if not b],
-            "n": n, "n_outliers": sum(1 for b in flags if b),
-            "method": "Carling's boxplot rule" if carling
-                      else "boxplot rule on the ideal fourths"}
+    return {
+        "lower": cl,
+        "upper": cu,
+        "gval": g,
+        "iqr": iqr,
+        "is_outlier": flags,
+        "outliers": [t for t, b in zip(v, flags) if b],
+        "keep": [t for t, b in zip(v, flags) if not b],
+        "n": n,
+        "n_outliers": sum(1 for b in flags if b),
+        "method": "Carling's boxplot rule" if carling else "boxplot rule on the ideal fourths",
+    }
 
 
 def _gauss_kronrod(f, a, b):
@@ -1095,14 +1227,27 @@ def _gauss_kronrod(f, a, b):
     difference with the embedded 7-point Gauss rule -- the same pairing
     R's integrate() uses (QUADPACK's QK15).
     """
-    xk = (0.991455371120813, 0.949107912342759, 0.864864423359769,
-          0.741531185599394, 0.586087235467691, 0.405845151377397,
-          0.207784955007898, 0.000000000000000)
-    wk = (0.022935322010529, 0.063092092629979, 0.104790010322250,
-          0.140653259715525, 0.169004726639267, 0.190350578064785,
-          0.204432940075298, 0.209482141084728)
-    wg = (0.129484966168870, 0.279705391489277, 0.381830050505119,
-          0.417959183673469)
+    xk = (
+        0.991455371120813,
+        0.949107912342759,
+        0.864864423359769,
+        0.741531185599394,
+        0.586087235467691,
+        0.405845151377397,
+        0.207784955007898,
+        0.000000000000000,
+    )
+    wk = (
+        0.022935322010529,
+        0.063092092629979,
+        0.104790010322250,
+        0.140653259715525,
+        0.169004726639267,
+        0.190350578064785,
+        0.204432940075298,
+        0.209482141084728,
+    )
+    wg = (0.129484966168870, 0.279705391489277, 0.381830050505119, 0.417959183673469)
     c = 0.5 * (a + b)
     h = 0.5 * (b - a)
     resk = 0.0
@@ -1115,7 +1260,7 @@ def _gauss_kronrod(f, a, b):
         else:
             fv = f(c - h * xk[i]) + f(c + h * xk[i])
             resk += wk[i] * fv
-            if i % 2 == 1:                 # nodes shared with the Gauss rule
+            if i % 2 == 1:  # nodes shared with the Gauss rule
                 resg += wg[i // 2] * fv
     resk *= h
     resg *= h
@@ -1198,19 +1343,28 @@ def akp_effect_size(x, y, tr=0.2, equal_variance=True):
         sp = math.sqrt(((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2.0))
         if sp == 0:
             raise ValueError("pooled Winsorized variance is zero")
-        return {"effect_size": cterm * dif / sp, "cterm": cterm,
-                "pooled_sd": sp, "n1": n1, "n2": n2, "tr": float(tr),
-                "method": "AKP robust effect size (equal variances)"}
+        return {
+            "effect_size": cterm * dif / sp,
+            "cterm": cterm,
+            "pooled_sd": sp,
+            "n1": n1,
+            "n2": n2,
+            "tr": float(tr),
+            "method": "AKP robust effect size (equal variances)",
+        }
     if s1 == 0 or s2 == 0:
         raise ValueError("a Winsorized variance is zero")
-    return {"effect_size": (cterm * dif / math.sqrt(s1),
-                            cterm * dif / math.sqrt(s2)),
-            "cterm": cterm, "n1": n1, "n2": n2, "tr": float(tr),
-            "method": "AKP robust effect size (unequal variances)"}
+    return {
+        "effect_size": (cterm * dif / math.sqrt(s1), cterm * dif / math.sqrt(s2)),
+        "cterm": cterm,
+        "n1": n1,
+        "n2": n2,
+        "tr": float(tr),
+        "method": "AKP robust effect size (unequal variances)",
+    }
 
 
-def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000,
-                           null_value=0.0, seed=2):
+def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000, null_value=0.0, seed=2):
     """Percentile bootstrap interval for a single trimmed mean.
 
     The trimmed-mean specialisation of :func:`one_sample_bootstrap`;
@@ -1218,8 +1372,8 @@ def trimmed_mean_bootstrap(x, tr=0.2, alpha=0.05, nboot=2000,
     interval when the sample is small and badly skewed.
     """
     return one_sample_bootstrap(
-        x, est=lambda v: trimmed_mean(v, tr), alpha=alpha, nboot=nboot,
-        null_value=null_value, seed=seed)
+        x, est=lambda v: trimmed_mean(v, tr), alpha=alpha, nboot=nboot, null_value=null_value, seed=seed
+    )
 
 
 def median_se(x, warn_ties=True):
@@ -1249,12 +1403,23 @@ def median_se(x, warn_ties=True):
     se = (v[top - 1] - v[av - 1]) / (2.0 * z)
     ties = len(v) != len(set(v))
     if warn_ties and ties:
-        return {"se": se, "ties": True, "av": av, "top": top, "n": n,
-                "warning": "tied values detected; this standard error "
-                           "can be highly inaccurate even for large n",
-                "method": "McKean-Shrader standard error of the median"}
-    return {"se": se, "ties": ties, "av": av, "top": top, "n": n,
-            "method": "McKean-Shrader standard error of the median"}
+        return {
+            "se": se,
+            "ties": True,
+            "av": av,
+            "top": top,
+            "n": n,
+            "warning": "tied values detected; this standard error can be highly inaccurate even for large n",
+            "method": "McKean-Shrader standard error of the median",
+        }
+    return {
+        "se": se,
+        "ties": ties,
+        "av": av,
+        "top": top,
+        "n": n,
+        "method": "McKean-Shrader standard error of the median",
+    }
 
 
 def median_test_2group(x, y, alpha=0.05):
@@ -1276,11 +1441,17 @@ def median_test_2group(x, y, alpha=0.05):
     crit = _norm_quantile(1.0 - alpha / 2.0)
     p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(stat) / math.sqrt(2.0)))
     dif = m1 - m2
-    return {"estimate": dif, "statistic": stat, "se": se, "p_value": p,
-            "ci": (dif - crit * se, dif + crit * se),
-            "median_x": m1, "median_y": m2,
-            "ties": (len(xs) != len(set(xs))) or (len(ys) != len(set(ys))),
-            "method": "median comparison, McKean-Shrader errors"}
+    return {
+        "estimate": dif,
+        "statistic": stat,
+        "se": se,
+        "p_value": p,
+        "ci": (dif - crit * se, dif + crit * se),
+        "median_x": m1,
+        "median_y": m2,
+        "ties": (len(xs) != len(set(xs))) or (len(ys) != len(set(ys))),
+        "method": "median comparison, McKean-Shrader errors",
+    }
 
 
 def winsorized_regression(X, y, tr=0.2, n_iter=20, tol=1e-4):
@@ -1304,32 +1475,31 @@ def winsorized_regression(X, y, tr=0.2, n_iter=20, tol=1e-4):
     cols = [[Xm[i][j] for i in range(n)] for j in range(p)]
     mvals = [winsorized_mean(c, tr) for c in cols]
 
-    M = [[winsorized_correlation(cols[i], cols[j], tr)["cov"]
-          for j in range(p)] for i in range(p)]
+    M = [[winsorized_correlation(cols[i], cols[j], tr)["cov"] for j in range(p)] for i in range(p)]
     ma = [winsorized_correlation(cols[i], ys, tr)["cov"] for i in range(p)]
     slope = _solve_local(M, ma)
-    b0 = winsorized_mean(ys, tr) - sum(slope[j] * mvals[j]
-                                       for j in range(p))
-    res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
-           for i in range(n)]
+    b0 = winsorized_mean(ys, tr) - sum(slope[j] * mvals[j] for j in range(p))
+    res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0 for i in range(n)]
     converged = False
     for _ in range(int(n_iter)):
-        ma = [winsorized_correlation(cols[i], res, tr)["cov"]
-              for i in range(p)]
+        ma = [winsorized_correlation(cols[i], res, tr)["cov"] for i in range(p)]
         slope_add = _solve_local(M, ma)
-        b0_add = winsorized_mean(res, tr) - sum(
-            slope_add[j] * mvals[j] for j in range(p))
+        b0_add = winsorized_mean(res, tr) - sum(slope_add[j] * mvals[j] for j in range(p))
         if max(max(abs(v) for v in slope_add), abs(b0_add)) < tol:
             converged = True
             break
         slope = [slope[j] + slope_add[j] for j in range(p)]
         b0 += b0_add
-        res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0
-               for i in range(n)]
-    return {"coef": [b0] + list(slope), "intercept": b0,
-            "slope": list(slope), "residuals": res,
-            "converged": converged, "n": n,
-            "method": "Winsorized regression"}
+        res = [ys[i] - sum(Xm[i][j] * slope[j] for j in range(p)) - b0 for i in range(n)]
+    return {
+        "coef": [b0] + list(slope),
+        "intercept": b0,
+        "slope": list(slope),
+        "residuals": res,
+        "converged": converged,
+        "n": n,
+        "method": "Winsorized regression",
+    }
 
 
 def _mat_local(X):
@@ -1347,8 +1517,7 @@ def _mat_local(X):
 def _solve_local(A, b):
     """Solve A z = b by Gauss-Jordan with partial pivoting."""
     n = len(A)
-    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])]
-         for i in range(n)]
+    M = [[float(A[i][j]) for j in range(n)] + [float(b[i])] for i in range(n)]
     for c in range(n):
         piv = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[piv][c]) < 1e-300:
@@ -1365,8 +1534,7 @@ def _solve_local(A, b):
     return [M[i][n] for i in range(n)]
 
 
-def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
-                             seed=2, **kwargs):
+def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05, seed=2, **kwargs):
     """Bootstrap confidence interval for a correlation.
 
     Resamples PAIRS -- the same row index is taken from x and y -- so
@@ -1404,10 +1572,9 @@ def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
     for b in range(nb):
         idx = [draw[b + j * nb] - 1 for j in range(n)]
         try:
-            boot.append(corfun([xs[i] for i in idx],
-                               [ys[i] for i in idx], **kwargs)["cor"])
+            boot.append(corfun([xs[i] for i in idx], [ys[i] for i in idx], **kwargs)["cor"])
         except ValueError:
-            continue          # a degenerate resample contributes nothing
+            continue  # a degenerate resample contributes nothing
     if not boot:
         raise ValueError("every bootstrap resample was degenerate")
     boot.sort()
@@ -1417,16 +1584,19 @@ def correlation_bootstrap_ci(x, y, corfun=None, nboot=599, alpha=0.05,
     ilow = min(max(ilow - 1, 0), nb - 1)
     ihi = min(max(ihi - 1, 0), nb - 1)
     phat = sum(1 for b in boot if b < 0) / nb
-    return {"estimate": est, "ci": (boot[ilow], boot[ihi]),
-            "p_value": 2.0 * min(phat, 1.0 - phat), "n": n,
-            "nboot": nb,
-            "method": "bootstrap confidence interval for a correlation"}
+    return {
+        "estimate": est,
+        "ci": (boot[ilow], boot[ihi]),
+        "p_value": 2.0 * min(phat, 1.0 - phat),
+        "n": n,
+        "nboot": nb,
+        "method": "bootstrap confidence interval for a correlation",
+    }
 
 
 def _matmul(A, B):
     n, k, m = len(A), len(B), len(B[0])
-    return [[sum(A[i][t] * B[t][j] for t in range(k)) for j in range(m)]
-            for i in range(n)]
+    return [[sum(A[i][t] * B[t][j] for t in range(k)) for j in range(m)] for i in range(n)]
 
 
 def _trace(A):
@@ -1478,7 +1648,7 @@ def brunner_dette_munk(groups):
     pos = 0
     for g in gs:
         k = len(g)
-        r = rval[pos:pos + k]
+        r = rval[pos : pos + k]
         pos += k
         rvec.append(r)
         nvec.append(k)
@@ -1488,23 +1658,20 @@ def brunner_dette_munk(groups):
     phat = [(rbar[j] - 0.5) / N for j in range(J)]
 
     # within-group rank variances, scaled by N^2 and by the group size
-    svec = [sum((r - rbar[j]) ** 2 for r in rvec[j]) / (nvec[j] - 1.0)
-            / (N * N) for j in range(J)]
+    svec = [sum((r - rbar[j]) ** 2 for r in rvec[j]) / (nvec[j] - 1.0) / (N * N) for j in range(J)]
     VN = [[0.0] * J for _ in range(J)]
     for j in range(J):
         VN[j][j] = N * svec[j] / nvec[j]
 
     # C = I - J/J, the centring contrast matrix bdm passes to bdms1
-    C = [[(1.0 if i == j else 0.0) - 1.0 / J for j in range(J)]
-         for i in range(J)]
+    C = [[(1.0 if i == j else 0.0) - 1.0 / J for j in range(J)] for i in range(J)]
 
     trVN = _trace(VN)
     c11 = C[0][0]
     top = c11 * trVN
     if top == 0:
         raise ValueError("zero rank variance: the groups are degenerate")
-    quad = sum(phat[i] * C[i][j] * phat[j]
-               for i in range(J) for j in range(J))
+    quad = sum(phat[i] * C[i][j] * phat[j] for i in range(J) for j in range(J))
     F = N * quad / top
 
     CVN = _matmul(C, VN)
@@ -1514,10 +1681,16 @@ def brunner_dette_munk(groups):
         lam[j][j] = 1.0 / (nvec[j] - 1.0)
     nu2 = trVN * trVN / _trace(_matmul(_matmul(VN, VN), lam))
 
-    return {"statistic": F, "df1": nu1, "df2": nu2,
-            "p_value": 1.0 - _f_cdf(F, nu1, nu2),
-            "q_hat": phat, "n": nvec,
-            "method": "Brunner-Dette-Munk rank-based ANOVA"}
+    return {
+        "statistic": F,
+        "df1": nu1,
+        "df2": nu2,
+        "p_value": 1.0 - _f_cdf(F, nu1, nu2),
+        "q_hat": phat,
+        "n": nvec,
+        "method": "Brunner-Dette-Munk rank-based ANOVA",
+    }
+
 
 # ---------------------------------------------------------------
 # Spatial autocorrelation inference and spatial-econometric
@@ -1526,6 +1699,7 @@ def brunner_dette_munk(groups):
 # spdep::GMerrorsar (Bivand, Pebesma & Gomez-Rubio, *Applied Spatial
 # Data Analysis with R*, the Use R! volume these examples come from).
 # ---------------------------------------------------------------
+
 
 def weights_totals(W):
     """The S0, S1 and S2 constants of a spatial weights matrix.
@@ -1542,8 +1716,7 @@ def weights_totals(W):
     if any(len(r) != n for r in Wm):
         raise ValueError("W must be square")
     s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
-    s1 = 0.5 * sum((Wm[i][j] + Wm[j][i]) ** 2
-                   for i in range(n) for j in range(n))
+    s1 = 0.5 * sum((Wm[i][j] + Wm[j][i]) ** 2 for i in range(n) for j in range(n))
     s2 = 0.0
     for i in range(n):
         ri = sum(Wm[i][j] for j in range(n))
@@ -1555,19 +1728,18 @@ def weights_totals(W):
 def morans_i(x, W):
     """Moran's I.
 
-        I = (n / S0) * (sum_ij w_ij z_i z_j) / (sum_i z_i^2),
-        z = x - mean(x)
+    I = (n / S0) * (sum_ij w_ij z_i z_j) / (sum_i z_i^2),
+    z = x - mean(x)
     """
     v = _flat(x)
     Wm = _mat_local(W)
     n = len(v)
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match x" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match x")
     m = sum(v) / n
     z = [t - m for t in v]
     s0 = sum(Wm[i][j] for i in range(n) for j in range(n))
-    num = sum(Wm[i][j] * z[i] * z[j]
-              for i in range(n) for j in range(n))
+    num = sum(Wm[i][j] * z[i] * z[j] for i in range(n) for j in range(n))
     den = sum(t * t for t in z)
     return (n / s0) * (num / den)
 
@@ -1597,41 +1769,46 @@ def morans_i_test(x, W, randomisation=True, alternative="greater"):
     v = _flat(x)
     n = len(v)
     if len(_mat_local(W)) != n:
-        raise ValueError("W must be %d x %d to match x" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match x")
     t = weights_totals(W)
     s0, s1, s2 = t["S0"], t["S1"], t["S2"]
-    I = morans_i(v, W)
+    I_ = morans_i(v, W)
     ei = -1.0 / (n - 1.0)
     if randomisation:
         m = sum(v) / n
         z = [q - m for q in v]
         s2z = sum(q * q for q in z)
-        b2 = n * sum(q ** 4 for q in z) / (s2z * s2z)
-        num = (n * ((n * n - 3 * n + 3) * s1 - n * s2 + 3 * s0 * s0)
-               - b2 * ((n * n - n) * s1 - 2 * n * s2 + 6 * s0 * s0))
-        var = num / ((n - 1.0) * (n - 2.0) * (n - 3.0) * s0 * s0) \
-            - 1.0 / ((n - 1.0) ** 2)
+        b2 = n * sum(q**4 for q in z) / (s2z * s2z)
+        num = n * ((n * n - 3 * n + 3) * s1 - n * s2 + 3 * s0 * s0) - b2 * ((n * n - n) * s1 - 2 * n * s2 + 6 * s0 * s0)
+        var = num / ((n - 1.0) * (n - 2.0) * (n - 3.0) * s0 * s0) - 1.0 / ((n - 1.0) ** 2)
     else:
-        var = (n * n * s1 - n * s2 + 3 * s0 * s0) \
-            / (s0 * s0 * (n * n - 1.0)) - 1.0 / ((n - 1.0) ** 2)
+        var = (n * n * s1 - n * s2 + 3 * s0 * s0) / (s0 * s0 * (n * n - 1.0)) - 1.0 / ((n - 1.0) ** 2)
     sd = math.sqrt(var)
-    zval = (I - ei) / sd
+    zval = (I_ - ei) / sd
     if alternative == "greater":
         p = 1.0 - 0.5 * math.erfc(-zval / math.sqrt(2.0))
     elif alternative == "less":
         p = 0.5 * math.erfc(-zval / math.sqrt(2.0))
     else:
         p = 2.0 * (1.0 - 0.5 * math.erfc(-abs(zval) / math.sqrt(2.0)))
-    return {"statistic": zval, "estimate": I, "expectation": ei,
-            "variance": var, "p_value": p, "S0": s0, "S1": s1, "S2": s2,
-            "randomisation": bool(randomisation), "n": n,
-            "method": "Moran's I test for spatial autocorrelation"}
+    return {
+        "statistic": zval,
+        "estimate": I_,
+        "expectation": ei,
+        "variance": var,
+        "p_value": p,
+        "S0": s0,
+        "S1": s1,
+        "S2": s2,
+        "randomisation": bool(randomisation),
+        "n": n,
+        "method": "Moran's I test for spatial autocorrelation",
+    }
 
 
 def _lag(W, v):
     Wm = _mat_local(W)
-    return [sum(Wm[i][j] * v[j] for j in range(len(v)))
-            for i in range(len(Wm))]
+    return [sum(Wm[i][j] * v[j] for j in range(len(v))) for i in range(len(Wm))]
 
 
 def spatial_2sls(y, X, W, add_intercept=True, robust=False):
@@ -1653,10 +1830,9 @@ def spatial_2sls(y, X, W, add_intercept=True, robust=False):
     n = len(ys)
     Wm = _mat_local(W)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d"
-                         % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])
@@ -1675,32 +1851,32 @@ def spatial_2sls(y, X, W, add_intercept=True, robust=False):
     Z = [[inst[k][i] for k in range(len(inst))] for i in range(n)]
 
     # first stage: project Wy on the instruments
-    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n))
-            for b in range(len(Z[0]))] for a in range(len(Z[0]))]
-    ZtWy = [sum(Z[i][a] * Wy[i] for i in range(n))
-            for a in range(len(Z[0]))]
+    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n)) for b in range(len(Z[0]))] for a in range(len(Z[0]))]
+    ZtWy = [sum(Z[i][a] * Wy[i] for i in range(n)) for a in range(len(Z[0]))]
     g = _solve_local(ZtZ, ZtWy)
-    Wy_hat = [sum(Z[i][a] * g[a] for a in range(len(Z[0])))
-              for i in range(n)]
+    Wy_hat = [sum(Z[i][a] * g[a] for a in range(len(Z[0]))) for i in range(n)]
 
     # second stage: regress y on [Wy_hat, X]
     D = [[Wy_hat[i]] + list(Xm[i]) for i in range(n)]
     k = len(D[0])
-    DtD = [[sum(D[i][a] * D[i][b] for i in range(n)) for b in range(k)]
-           for a in range(k)]
+    DtD = [[sum(D[i][a] * D[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
     Dty = [sum(D[i][a] * ys[i] for i in range(n)) for a in range(k)]
     coef = _solve_local(DtD, Dty)
     rho = coef[0]
     beta = coef[1:]
 
     # residuals use the ACTUAL Wy, not the fitted one
-    resid = [ys[i] - rho * Wy[i]
-             - sum(Xm[i][j] * beta[j] for j in range(p))
-             for i in range(n)]
+    resid = [ys[i] - rho * Wy[i] - sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
     s2 = sum(r * r for r in resid) / n
-    return {"rho": rho, "beta": beta, "coefficients": coef,
-            "residuals": resid, "sigma2": s2, "n": n,
-            "method": "spatial two-stage least squares (Kelejian-Prucha)"}
+    return {
+        "rho": rho,
+        "beta": beta,
+        "coefficients": coef,
+        "residuals": resid,
+        "sigma2": s2,
+        "n": n,
+        "method": "spatial two-stage least squares (Kelejian-Prucha)",
+    }
 
 
 def gm_error_sar(y, X, W, add_intercept=True):
@@ -1730,24 +1906,21 @@ def gm_error_sar(y, X, W, add_intercept=True):
     n = len(ys)
     Wm = _mat_local(W)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p_ = len(Xm[0])
 
     def ols(design, target):
         k = len(design[0])
-        A = [[sum(design[i][a] * design[i][b] for i in range(n))
-              for b in range(k)] for a in range(k)]
-        b = [sum(design[i][a] * target[i] for i in range(n))
-             for a in range(k)]
+        A = [[sum(design[i][a] * design[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
+        b = [sum(design[i][a] * target[i] for i in range(n)) for a in range(k)]
         return _solve_local(A, b)
 
     beta = ols(Xm, ys)
-    u = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
-         for i in range(n)]
+    u = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_)) for i in range(n)]
 
     wu = _lag(W, u)
     wwu = _lag(W, wu)
@@ -1763,15 +1936,16 @@ def gm_error_sar(y, X, W, add_intercept=True):
     wwupwu = dot(wwu, wu)
     wwupwwu = dot(wwu, wwu)
 
-    G = [[2 * uwu / n, -uwpuw / n, 1.0],
-         [2 * wwupwu / n, -wwupwwu / n, trwpw / n],
-         [(uwwu + uwpuw) / n, -wwupwu / n, 0.0]]
+    G = [
+        [2 * uwu / n, -uwpuw / n, 1.0],
+        [2 * wwupwu / n, -wwupwwu / n, trwpw / n],
+        [(uwwu + uwpuw) / n, -wwupwu / n, 0.0],
+    ]
     g = [uu / n, uwpuw / n, uwu / n]
 
     def crit(lam, sig):
         th = (lam, lam * lam, sig)
-        return sum((sum(G[r][c] * th[c] for c in range(3)) - g[r]) ** 2
-                   for r in range(3))
+        return sum((sum(G[r][c] * th[c] for c in range(3)) - g[r]) ** 2 for r in range(3))
 
     # start where GMerrorsar starts: the correlation of u with Wu, and
     # the residual variance
@@ -1784,8 +1958,7 @@ def gm_error_sar(y, X, W, add_intercept=True):
     # one-dimensional given sigma -- both solved to convergence
     for _ in range(400):
         a = sum(G[r][2] * G[r][2] for r in range(3))
-        b = sum(G[r][2] * (g[r] - G[r][0] * lam - G[r][1] * lam * lam)
-                for r in range(3))
+        b = sum(G[r][2] * (g[r] - G[r][0] * lam - G[r][1] * lam * lam) for r in range(3))
         sig_new = b / a if a > 0 else sig
         lo, hi = -0.999, 0.999
         for _ in range(200):
@@ -1803,19 +1976,22 @@ def gm_error_sar(y, X, W, add_intercept=True):
 
     # spatially filtered GLS for beta
     lagX = [_lag(W, [Xm[q][j] for q in range(n)]) for j in range(p_)]
-    Xf = [[Xm[i][j] - lam * lagX[j][i] for j in range(p_)]
-          for i in range(n)]
+    Xf = [[Xm[i][j] - lam * lagX[j][i] for j in range(p_)] for i in range(n)]
     wy = _lag(W, ys)
     yf = [ys[i] - lam * wy[i] for i in range(n)]
     beta = ols(Xf, yf)
-    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_))
-             for i in range(n)]
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p_)) for i in range(n)]
     ub = [resid[i] - lam * _lag(W, resid)[i] for i in range(n)]
-    return {"lambda": lam, "beta": beta, "residuals": resid,
-            "sigma2": sig, "n": n, "criterion": crit(lam, sig),
-            "s2_residual": sum(t * t for t in ub) / n,
-            "method": "GM estimator for the spatial error model "
-                      "(Kelejian-Prucha 1999)"}
+    return {
+        "lambda": lam,
+        "beta": beta,
+        "residuals": resid,
+        "sigma2": sig,
+        "n": n,
+        "criterion": crit(lam, sig),
+        "s2_residual": sum(t * t for t in ub) / n,
+        "method": "GM estimator for the spatial error model (Kelejian-Prucha 1999)",
+    }
 
 
 def _logdet_I_minus(rho, Wm):
@@ -1826,8 +2002,7 @@ def _logdet_I_minus(rho, Wm):
     avoids needing the eigenvalues of W.
     """
     n = len(Wm)
-    A = [[(1.0 if i == j else 0.0) - rho * Wm[i][j] for j in range(n)]
-         for i in range(n)]
+    A = [[(1.0 if i == j else 0.0) - rho * Wm[i][j] for j in range(n)] for i in range(n)]
     logdet = 0.0
     sign = 1.0
     for c in range(n):
@@ -1852,12 +2027,10 @@ def _logdet_I_minus(rho, Wm):
 def _ols_resid(X, y):
     n = len(y)
     k = len(X[0])
-    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)]
-         for a in range(k)]
+    A = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(k)] for a in range(k)]
     b = [sum(X[i][a] * y[i] for i in range(n)) for a in range(k)]
     beta = _solve_local(A, b)
-    return beta, [y[i] - sum(X[i][j] * beta[j] for j in range(k))
-                  for i in range(n)]
+    return beta, [y[i] - sum(X[i][j] * beta[j] for j in range(k)) for i in range(n)]
 
 
 def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
@@ -1882,12 +2055,12 @@ def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
     Wm = _mat_local(W)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
-    k = len(Xm[0])
+    len(Xm[0])
     Wy = _lag(W, ys)
     _, e0 = _ols_resid(Xm, ys)
     _, ed = _ols_resid(Xm, Wy)
@@ -1912,15 +2085,19 @@ def spatial_lag_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
     yf = [ys[i] - rho * Wy[i] for i in range(n)]
     beta, resid = _ols_resid(Xm, yf)
     s2 = sum(r * r for r in resid) / n
-    ll = (_logdet_I_minus(rho, Wm)
-          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
-    return {"rho": rho, "beta": beta, "residuals": resid, "sigma2": s2,
-            "loglik": ll, "n": n,
-            "method": "spatial lag model, maximum likelihood"}
+    ll = _logdet_I_minus(rho, Wm) - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0
+    return {
+        "rho": rho,
+        "beta": beta,
+        "residuals": resid,
+        "sigma2": s2,
+        "loglik": ll,
+        "n": n,
+        "method": "spatial lag model, maximum likelihood",
+    }
 
 
-def spatial_error_model(y, X, W, add_intercept=True,
-                        interval=(-0.999, 0.999)):
+def spatial_error_model(y, X, W, add_intercept=True, interval=(-0.999, 0.999)):
     """Spatial error (SEM) model by maximum likelihood.
 
         y = X beta + u,   u = lambda W u + eps
@@ -1938,9 +2115,9 @@ def spatial_error_model(y, X, W, add_intercept=True,
     Wm = _mat_local(W)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if len(Wm) != n or len(Wm[0]) != n:
-        raise ValueError("W must be %d x %d to match y" % (n, n))
+        raise ValueError(f"W must be {int(n)} x {int(n)} to match y")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     k = len(Xm[0])
@@ -1949,8 +2126,7 @@ def spatial_error_model(y, X, W, add_intercept=True,
 
     def sse_of(lam):
         yf = [ys[i] - lam * Wy[i] for i in range(n)]
-        Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)]
-              for i in range(n)]
+        Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)] for i in range(n)]
         _, r = _ols_resid(Xf, yf)
         return sum(t * t for t in r)
 
@@ -1975,13 +2151,17 @@ def spatial_error_model(y, X, W, add_intercept=True,
     Xf = [[Xm[i][j] - lam * WX[j][i] for j in range(k)] for i in range(n)]
     beta, rf = _ols_resid(Xf, yf)
     s2 = sum(t * t for t in rf) / n
-    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(k))
-             for i in range(n)]
-    ll = (_logdet_I_minus(lam, Wm)
-          - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0)
-    return {"lambda": lam, "beta": beta, "residuals": resid,
-            "sigma2": s2, "loglik": ll, "n": n,
-            "method": "spatial error model, maximum likelihood"}
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(k)) for i in range(n)]
+    ll = _logdet_I_minus(lam, Wm) - (n / 2.0) * math.log(2 * math.pi * s2) - n / 2.0
+    return {
+        "lambda": lam,
+        "beta": beta,
+        "residuals": resid,
+        "sigma2": s2,
+        "loglik": ll,
+        "n": n,
+        "method": "spatial error model, maximum likelihood",
+    }
 
 
 def ripley_k(coords, r_grid, area=None, edge_correction=True):
@@ -2038,12 +2218,16 @@ def ripley_k(coords, r_grid, area=None, edge_correction=True):
                 if d <= r:
                     tot += weight(i, j, d)
         kvals.append(tot / (n * lam))
-    return {"r": list(grid), "K": kvals,
-            "L": [math.sqrt(k / math.pi) if k > 0 else 0.0
-                  for k in kvals],
-            "csr_K": [math.pi * r * r for r in grid],
-            "n": n, "area": area, "intensity": lam,
-            "method": "Ripley's K function"}
+    return {
+        "r": list(grid),
+        "K": kvals,
+        "L": [math.sqrt(k / math.pi) if k > 0 else 0.0 for k in kvals],
+        "csr_K": [math.pi * r * r for r in grid],
+        "n": n,
+        "area": area,
+        "intensity": lam,
+        "method": "Ripley's K function",
+    }
 
 
 def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
@@ -2082,9 +2266,12 @@ def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
     rng = (dsum / cnt) if cnt else 1.0
 
     if model is None:
+
         def model(h):
             return 1.0 - math.exp(-h / rng) if rng > 0 else 0.0
+
     if cross_vario is None:
+
         def cross_vario(h):
             return 0.5 * (1.0 - math.exp(-h / rng)) if rng > 0 else 0.0
 
@@ -2104,20 +2291,23 @@ def cokriging(coords, z1, z2, s0, cross_vario=None, model=None):
         A[2 * n + 1][n + i] = 1.0
         rhs[i] = model(dist(pts[i], tgt))
         rhs[n + i] = cross_vario(dist(pts[i], tgt))
-    rhs[2 * n] = 1.0        # sum lambda = 1
-    rhs[2 * n + 1] = 0.0    # sum mu     = 0
+    rhs[2 * n] = 1.0  # sum lambda = 1
+    rhs[2 * n + 1] = 0.0  # sum mu     = 0
 
     sol = _solve_local(A, rhs)
     lam = sol[:n]
-    mu = sol[n:2 * n]
-    pred = (sum(lam[i] * a[i] for i in range(n))
-            + sum(mu[i] * b[i] for i in range(n)))
-    var = (sum(lam[i] * rhs[i] for i in range(n))
-           + sum(mu[i] * rhs[n + i] for i in range(n))
-           + sol[2 * n])
-    return {"prediction": pred, "variance": var, "lambda": lam,
-            "mu": mu, "n": n, "range": rng,
-            "method": "ordinary co-kriging"}
+    mu = sol[n : 2 * n]
+    pred = sum(lam[i] * a[i] for i in range(n)) + sum(mu[i] * b[i] for i in range(n))
+    var = sum(lam[i] * rhs[i] for i in range(n)) + sum(mu[i] * rhs[n + i] for i in range(n)) + sol[2 * n]
+    return {
+        "prediction": pred,
+        "variance": var,
+        "lambda": lam,
+        "mu": mu,
+        "n": n,
+        "range": rng,
+        "method": "ordinary co-kriging",
+    }
 
 
 def local_dp_randomised_response(truth, k, epsilon, seed=2):
@@ -2167,10 +2357,17 @@ def local_dp_randomised_response(truth, k, epsilon, seed=2):
     obs = [c / n for c in counts]
     scale = (k - 1.0 + e) / (e - 1.0)
     debiased = [(o - p_flip) * scale for o in obs]
-    return {"reports": reports, "observed": obs,
-            "estimate": debiased, "p_keep": p_keep, "p_flip": p_flip,
-            "epsilon": float(epsilon), "k": k, "n": n,
-            "method": "k-ary randomised response (local DP)"}
+    return {
+        "reports": reports,
+        "observed": obs,
+        "estimate": debiased,
+        "p_keep": p_keep,
+        "p_flip": p_flip,
+        "epsilon": float(epsilon),
+        "k": k,
+        "n": n,
+        "method": "k-ary randomised response (local DP)",
+    }
 
 
 # ===============================================================
@@ -2178,6 +2375,7 @@ def local_dp_randomised_response(truth, k, epsilon, seed=2):
 #   adf_test  verified against R urca::ur.df
 #   rlm       verified against R MASS::rlm
 # ===============================================================
+
 
 def adf_test(y, lags=1, kind="drift"):
     """Augmented Dickey-Fuller test for a unit root.
@@ -2206,13 +2404,13 @@ def adf_test(y, lags=1, kind="drift"):
     if kind not in ("none", "drift", "trend"):
         raise ValueError('kind must be "none", "drift" or "trend"')
     if n < lags + 3:
-        raise ValueError("series too short for %d lags" % lags)
+        raise ValueError(f"series too short for {int(lags)} lags")
 
     dy = [v[i] - v[i - 1] for i in range(1, n)]
     # rows are t = lags+1 .. n-1 of the differenced series
     rows, target = [], []
     for t in range(lags, len(dy)):
-        r = [v[t]]                        # y_{t-1} in levels
+        r = [v[t]]  # y_{t-1} in levels
         if kind in ("drift", "trend"):
             r.append(1.0)
         if kind == "trend":
@@ -2223,20 +2421,36 @@ def adf_test(y, lags=1, kind="drift"):
         target.append(dy[t])
 
     from . import _regression_core as _rg
+
     fit = _rg.ols(target, rows, add_intercept=False)
     stat = fit["t"][0]
 
     # Dickey-Fuller critical values as tabulated by urca
     TAB = {
-        "none":  {25: (-2.66, -1.95, -1.60), 50: (-2.62, -1.95, -1.61),
-                  100: (-2.60, -1.95, -1.61), 250: (-2.58, -1.95, -1.62),
-                  500: (-2.58, -1.95, -1.62), 1000: (-2.58, -1.95, -1.62)},
-        "drift": {25: (-3.75, -3.00, -2.63), 50: (-3.58, -2.93, -2.60),
-                  100: (-3.51, -2.89, -2.58), 250: (-3.46, -2.88, -2.57),
-                  500: (-3.44, -2.87, -2.57), 1000: (-3.43, -2.86, -2.57)},
-        "trend": {25: (-4.38, -3.60, -3.24), 50: (-4.15, -3.50, -3.18),
-                  100: (-4.04, -3.45, -3.15), 250: (-3.99, -3.43, -3.13),
-                  500: (-3.98, -3.42, -3.13), 1000: (-3.96, -3.41, -3.12)},
+        "none": {
+            25: (-2.66, -1.95, -1.60),
+            50: (-2.62, -1.95, -1.61),
+            100: (-2.60, -1.95, -1.61),
+            250: (-2.58, -1.95, -1.62),
+            500: (-2.58, -1.95, -1.62),
+            1000: (-2.58, -1.95, -1.62),
+        },
+        "drift": {
+            25: (-3.75, -3.00, -2.63),
+            50: (-3.58, -2.93, -2.60),
+            100: (-3.51, -2.89, -2.58),
+            250: (-3.46, -2.88, -2.57),
+            500: (-3.44, -2.87, -2.57),
+            1000: (-3.43, -2.86, -2.57),
+        },
+        "trend": {
+            25: (-4.38, -3.60, -3.24),
+            50: (-4.15, -3.50, -3.18),
+            100: (-4.04, -3.45, -3.15),
+            250: (-3.99, -3.43, -3.13),
+            500: (-3.98, -3.42, -3.13),
+            1000: (-3.96, -3.41, -3.12),
+        },
     }[kind]
     sizes = sorted(TAB)
     m = len(target)
@@ -2246,14 +2460,18 @@ def adf_test(y, lags=1, kind="drift"):
         crit = TAB[lo]
     else:
         w = (m - lo) / float(hi - lo)
-        crit = tuple(TAB[lo][j] + w * (TAB[hi][j] - TAB[lo][j])
-                     for j in range(3))
-    return {"statistic": stat, "kind": kind, "lags": lags,
-            "n_used": m, "coef": fit["coef"], "se": fit["se"],
-            "critical_values": {"1pct": crit[0], "5pct": crit[1],
-                                "10pct": crit[2]},
-            "reject_5pct": stat < crit[1],
-            "method": "augmented Dickey-Fuller test"}
+        crit = tuple(TAB[lo][j] + w * (TAB[hi][j] - TAB[lo][j]) for j in range(3))
+    return {
+        "statistic": stat,
+        "kind": kind,
+        "lags": lags,
+        "n_used": m,
+        "coef": fit["coef"],
+        "se": fit["se"],
+        "critical_values": {"1pct": crit[0], "5pct": crit[1], "10pct": crit[2]},
+        "reject_5pct": stat < crit[1],
+        "method": "augmented Dickey-Fuller test",
+    }
 
 
 def _huber_psi_weight(u, k=1.345):
@@ -2262,8 +2480,7 @@ def _huber_psi_weight(u, k=1.345):
     return 1.0 if a <= k else k / a
 
 
-def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
-        scale_est="MAD"):
+def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6, scale_est="MAD"):
     """Robust linear regression by Huber M-estimation.
 
     Iteratively reweighted least squares with Huber's psi: residuals
@@ -2285,23 +2502,20 @@ def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
     Xm = _rg._mat(X)
     n = len(ys)
     if len(Xm) != n:
-        raise ValueError("X has %d rows but y has %d" % (len(Xm), n))
+        raise ValueError(f"X has {int(len(Xm))} rows but y has {int(n)}")
     if add_intercept:
         Xm = [[1.0] + list(r) for r in Xm]
     p = len(Xm[0])
 
     def wls(w):
-        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n))
-              for b in range(p)] for a in range(p)]
-        rhs = [sum(w[i] * Xm[i][a] * ys[i] for i in range(n))
-               for a in range(p)]
+        A = [[sum(w[i] * Xm[i][a] * Xm[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
+        rhs = [sum(w[i] * Xm[i][a] * ys[i] for i in range(n)) for a in range(p)]
         return _rg._solve(A, rhs)
 
-    beta = wls([1.0] * n)                     # least squares start
+    beta = wls([1.0] * n)  # least squares start
     scale = None
     for _ in range(int(max_iter)):
-        resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
-                 for i in range(n)]
+        resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
         # MASS::rlm uses mad(resid, 0): the MAD about ZERO, not about
         # the residual median.  Centring it instead shifts the scale
         # and every weight with it.
@@ -2310,14 +2524,12 @@ def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
             break
         w = [_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
         new = wls(w)
-        if max(abs(new[j] - beta[j]) for j in range(p)) < tol * max(
-                1.0, max(abs(b) for b in beta)):
+        if max(abs(new[j] - beta[j]) for j in range(p)) < tol * max(1.0, max(abs(b) for b in beta)):
             beta = new
             break
         beta = new
 
-    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p))
-             for i in range(n)]
+    resid = [ys[i] - sum(Xm[i][j] * beta[j] for j in range(p)) for i in range(n)]
 
     # MASS returns the scale computed at the START of the final
     # iteration -- it does NOT recompute from the final residuals, so
@@ -2330,12 +2542,16 @@ def rlm(y, X, add_intercept=True, k=1.345, max_iter=20, tol=1e-6,
         scale = 0.0
     mad0 = _median(sorted(abs(r) for r in resid))
     scale_final = mad0 / 0.6745 if mad0 > 0 else 0.0
-    w = ([_huber_psi_weight(resid[i] / scale, k) for i in range(n)]
-         if scale > 0 else [1.0] * n)
-    return {"coef": beta, "residuals": resid, "weights": w,
-            "scale": scale, "scale_final": scale_final,
-            "scale_follows_mass_not_the_final_residuals": True,
-            "k": float(k), "n": n,
-            "n_downweighted": sum(1 for t in w if t < 1.0 - 1e-12),
-            "method": "robust regression, Huber M-estimation "
-                      "(MASS::rlm scale convention)"}
+    w = [_huber_psi_weight(resid[i] / scale, k) for i in range(n)] if scale > 0 else [1.0] * n
+    return {
+        "coef": beta,
+        "residuals": resid,
+        "weights": w,
+        "scale": scale,
+        "scale_final": scale_final,
+        "scale_follows_mass_not_the_final_residuals": True,
+        "k": float(k),
+        "n": n,
+        "n_downweighted": sum(1 for t in w if t < 1.0 - 1e-12),
+        "method": "robust regression, Huber M-estimation (MASS::rlm scale convention)",
+    }

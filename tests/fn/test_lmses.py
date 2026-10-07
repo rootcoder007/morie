@@ -1,8 +1,8 @@
 """Tests for least_median_squares."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lmses import least_median_squares
 
 

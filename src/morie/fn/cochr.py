@@ -52,8 +52,8 @@ def cochr(data, axis=0, cdf=None):
     # of (k - 1), which is wrong for every input and could even go
     # negative, which Q cannot.
     N = float(np.sum(L))
-    num = (k - 1) * (k * float(np.sum(G ** 2)) - N * N)
-    den = k * N - float(np.sum(L ** 2))
+    num = (k - 1) * (k * float(np.sum(G**2)) - N * N)
+    den = k * N - float(np.sum(L**2))
     if den == 0:
         # Every block responded identically across treatments, so no
         # block carries information about a treatment difference and the

@@ -6,11 +6,13 @@ import pytest
 
 from morie.fn.rlhfRS import rlhf_recommendation
 
-
-ENV = {"transition": [[[0.0, 1.0], [1.0, 0.0]], [[1.0, 0.0], [0.0, 1.0]]],
-       "reward": [[1.0, 0.0], [0.5, 2.0]], "start": 0,
-       "log": [(0, 0, 1.0), (0, 1, 0.0), (1, 1, 2.0), (1, 0, 0.5)],
-       "behaviour": [0.5, 0.5, 0.25, 0.75]}
+ENV = {
+    "transition": [[[0.0, 1.0], [1.0, 0.0]], [[1.0, 0.0], [0.0, 1.0]]],
+    "reward": [[1.0, 0.0], [0.5, 2.0]],
+    "start": 0,
+    "log": [(0, 0, 1.0), (0, 1, 0.0), (1, 1, 2.0), (1, 0, 0.5)],
+    "behaviour": [0.5, 0.5, 0.25, 0.75],
+}
 PI = [[1.0, 0.0], [0.0, 1.0]]
 
 
@@ -20,9 +22,8 @@ def test_rlhfRS_basic():
     mean(w r), SNIPS sum(w r)/sum(w), DR adds the model baseline, with
     w = pi(a|s)/mu; ESS = (sum w)^2 / sum w^2; NDCG/P@k/MRR by definition."""
     g, H = 0.9, 5
-    r = rlhf_recommendation(ENV, PI, n_episodes=4, horizon=H, gamma=g,
-                            relevance=[0, 3, 0, 1], k=3)
-    ret = 1.0 + sum(2.0 * g ** t for t in range(1, H))
+    r = rlhf_recommendation(ENV, PI, n_episodes=4, horizon=H, gamma=g, relevance=[0, 3, 0, 1], k=3)
+    ret = 1.0 + sum(2.0 * g**t for t in range(1, H))
     assert r["returns"] == [pytest.approx(ret, rel=1e-15)] * 4
     assert r["se"] == pytest.approx(0.0, abs=1e-15)
     w = [2.0, 0.0, 4.0, 0.0]

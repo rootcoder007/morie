@@ -1,7 +1,6 @@
 """Tests for morie.fn.resq -- resonance Q-factor."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.resq import resonance_q, resq
 

@@ -16,10 +16,10 @@ import math
 import os
 import tempfile
 from collections import Counter
-from itertools import combinations
+
+import pytest
 
 from morie.fn import _array_core as np
-import pytest
 
 # -- modules under test -------------------------------------------------
 from morie.fn.hmrvn import geron_revnet
@@ -44,8 +44,8 @@ from morie.fn.hmsil import geron_silhouette
 from morie.fn.hmspcl import geron_spectral_clustering
 from morie.fn.hmsrnn import geron_simple_rnn
 from morie.fn.hmsrp import geron_sparse_rand_projection
-from morie.fn.hmsslc import geron_semisupervised_cluster
 from morie.fn.hmssg import geron_semantic_segmentation
+from morie.fn.hmsslc import geron_semisupervised_cluster
 from morie.fn.hmstk import geron_stacking
 from morie.fn.hmstr import geron_stratified_sampling
 from morie.fn.hmstr2 import geron_stride
@@ -128,7 +128,9 @@ def grad_fd(f, x, h=1e-6):
 # activations and elementary maps
 # =======================================================================
 def test_hmsigm_derivative_matches_finite_difference():
-    f = lambda t: float(geron_sigmoid([t])["a"][0])
+    def f(t):
+        return float(geron_sigmoid([t])["a"][0])
+
     for t in (-2.0, -0.3, 0.0, 1.7):
         assert geron_sigmoid([t])["grad"][0] == pytest.approx(central(f, t), abs=1e-7)
 
@@ -151,13 +153,18 @@ def test_hmtanh_against_exponential_definition():
 def test_hmselu_continuity_and_slope():
     r = geron_selu([-1e-9, 1e-9])
     assert float(r["a"][0]) == pytest.approx(float(r["a"][1]), abs=1e-8)
-    f = lambda z: float(geron_selu([z])["a"][0])
+
+    def f(z):
+        return float(geron_selu([z])["a"][0])
+
     for z in (-1.3, -0.2, 0.4, 2.0):
         assert float(geron_selu([z])["grad"][0]) == pytest.approx(central(f, z), abs=1e-6)
 
 
 def test_hmswi_gradient_and_nonmonotonicity():
-    f = lambda z: float(geron_swish([z])["a"][0])
+    def f(z):
+        return float(geron_swish([z])["a"][0])
+
     for z in (-3.0, -1.0, 0.0, 2.0):
         assert float(geron_swish([z])["grad"][0]) == pytest.approx(central(f, z), abs=1e-6)
     # swish dips below zero on the negative side; a monotone activation cannot.
@@ -307,8 +314,13 @@ def test_hmswin_windows_are_local_without_shift():
 def test_hmrvn_inverts_a_nonlinear_block():
     u = lcg(4, seed=11)
     x = np.array(u) * 4 - 2
-    F = lambda a: np.tanh(3 * a) - 0.5
-    G = lambda a: np.sin(a) * 2
+
+    def F(a):
+        return np.tanh(3 * a) - 0.5
+
+    def G(a):
+        return np.sin(a) * 2
+
     r = geron_revnet(x, F, G)
     y1 = x[:2] + F(x[2:])
     y2 = x[2:] + G(y1)
@@ -337,7 +349,7 @@ def test_hmxcpt_separable_saving_and_totals():
     r = geron_xception(1000)
     assert int(r["trainable_params"]) == int(r["weight_params"]) + 2 * int(r["bn_channels"])
     assert int(r["total_params"]) == int(r["trainable_params"]) + int(r["non_trainable_params"])
-    assert int(r["n_separable"]) == sum(1 for l in r["layers"] if l["kind"] == "separable3x3")
+    assert int(r["n_separable"]) == sum(1 for ell in r["layers"] if ell["kind"] == "separable3x3")
 
 
 # =======================================================================
@@ -367,8 +379,12 @@ def test_hmtsf_extrapolates_and_scores_persistence():
 
 
 def test_hmseq2_loss_matches_hand_log_sum():
-    z = lambda s: np.asarray([1.0])
-    dec = lambda zz, prefix: np.asarray([0.0, math.log(3.0), 0.0])
+    def z(s):
+        return np.asarray([1.0])
+
+    def dec(zz, prefix):
+        return np.asarray([0.0, math.log(3.0), 0.0])
+
     # softmax over (0, log 3, 0) is (1/5, 3/5, 1/5)
     r = geron_seq2seq([1], [1, 0], z, dec)
     want = -(math.log(0.6) + math.log(0.2)) / 2
@@ -378,10 +394,10 @@ def test_hmseq2_loss_matches_hand_log_sum():
 
 
 def test_hmt5_span_corruption_is_lossless():
-    toks = "a b c d e f g h i j".split()
+    toks = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
     r = geron_t5(toks, noise_density=0.4, mean_span=2, seed=5)
     assert restore(r["encoder_input"], r["decoder_target"]) == toks
-    assert int(r["n_masked"]) == sum(l for _, l in r["spans"])
+    assert int(r["n_masked"]) == sum(ell for _, ell in r["spans"])
     kept = [t for t in r["encoder_input"] if not t.startswith("<extra_id_")]
     assert len(kept) + int(r["n_masked"]) == len(toks)
 
@@ -512,7 +528,12 @@ def test_hmvf_agrees_with_value_iteration():
     # independent route: iterate the Bellman expectation operator to a fixed point
     V = np.zeros(2)
     for _ in range(2000):
-        V = np.array([sum(pi[s, a] * sum(P[s, a, t] * (R[s, a, t] + g * V[t]) for t in range(2)) for a in range(2)) for s in range(2)])
+        V = np.array(
+            [
+                sum(pi[s, a] * sum(P[s, a, t] * (R[s, a, t] + g * V[t]) for t in range(2)) for a in range(2))
+                for s in range(2)
+            ]
+        )
     assert np.allclose(r["V"], V, atol=1e-8)
     assert float(r["residual"]) < 1e-10
 
@@ -577,7 +598,10 @@ def test_hmsgdu_gradient_matches_finite_difference():
     X = np.array([[1.5, -2.0]])
     y = np.array([0.75])
     theta = np.array([0.3, -0.1])
-    loss = lambda th: float((X[0] @ th - y[0]) ** 2)
+
+    def loss(th):
+        return float((X[0] @ th - y[0]) ** 2)
+
     r = geron_sgd_update(X, y, theta, eta=0.1, index=0)
     assert np.allclose(r["gradient"], grad_fd(loss, theta), atol=1e-6)
     assert np.allclose(r["theta"], theta - 0.1 * np.asarray(r["gradient"]), atol=1e-12)
@@ -788,7 +812,14 @@ def test_hmsae_pretraining_and_finetuning_reduce_error():
 def test_hmvae_gradients_match_finite_differences():
     X = np.array([[0.2, 0.9], [0.7, 0.1], [0.4, 0.4]])
     u = np.asarray(lcg(10, seed=23)) - 0.5
-    params = [u[:2].reshape(2, 1), np.array([0.05]), u[2:4].reshape(2, 1), np.array([-0.02]), u[4:6].reshape(1, 2), np.zeros(2)]
+    params = [
+        u[:2].reshape(2, 1),
+        np.array([0.05]),
+        u[2:4].reshape(2, 1),
+        np.array([-0.02]),
+        u[4:6].reshape(1, 2),
+        np.zeros(2),
+    ]
     eps = (np.asarray(lcg(3, seed=31)) - 0.5).reshape(3, 1)
     _, _, _, grads = vae_loss_and_grads(X, params, eps, 1.0)
     for i in range(6):
@@ -976,6 +1007,7 @@ def test_hmtcmp_fusion_is_exact_and_dp_matches_brute_force():
     assert np.allclose(r["output"], x @ A @ B @ C, atol=1e-12)
 
     dims = [7, 3, 11, 2, 5]  # brute force every parenthesisation
+
     def brute(i, j):
         if j == i + 1:
             return 0
@@ -1028,7 +1060,7 @@ def test_hmtsne_rows_hit_the_requested_perplexity():
         w = np.exp(-D2[i, idx] * r["betas"][i])
         p = w / w.sum()
         H = float(-np.sum(p * np.log(p)))
-        assert H == pytest.approx(math.log(perp), abs=1e-4)
+        assert pytest.approx(math.log(perp), abs=1e-4) == H
     assert float(r["P"].sum()) == pytest.approx(1.0, abs=1e-12)
     assert np.allclose(r["P"], r["P"].T, atol=1e-15)
 
@@ -1136,7 +1168,10 @@ def test_hmzsl_calibration_removes_a_constant_bias():
     denom = math.exp(2.0) + 1.0
     assert [float(v) for v in r["probabilities"]] == pytest.approx([math.exp(2.0) / denom, 1 / denom], abs=1e-12)
     assert r["predicted_label"] == "a"
-    f = lambda p: ([1.0, 4.0] if p == "" else [3.0, 6.0])
+
+    def f(p):
+        return [1.0, 4.0] if p == "" else [3.0, 6.0]
+
     rc = geron_zero_shot(f, "x", labels=["u", "v"], null_prompt="")
     assert [float(v) for v in rc["probabilities"]] == pytest.approx([0.5, 0.5], abs=1e-12)
     with pytest.raises(ValueError):
@@ -1170,13 +1205,76 @@ def test_every_module_exposes_a_cheatsheet():
     import importlib
 
     names = [
-        "hmrvn", "hmrwd", "hmsac", "hmsae", "hmsatt", "hmsdp", "hmself", "hmselu", "hmsem", "hmsenet",
-        "hmsent", "hmseq2", "hmsft", "hmsftm", "hmsfts", "hmsgdc", "hmsgdu", "hmsigm", "hmsil", "hmspcl",
-        "hmsrnn", "hmsrp", "hmssg", "hmsslc", "hmstk", "hmstr", "hmstr2", "hmstz", "hmsup", "hmsvdp",
-        "hmsvm2", "hmswi", "hmswin", "hmsymd", "hmt5", "hmtanh", "hmtcmp", "hmtd", "hmtd3", "hmtfl",
-        "hmtfm", "hmtlu", "hmtpp", "hmtrlf", "hmtsc", "hmtsf", "hmtsne", "hmuf", "hmumap", "hmuns",
-        "hmunsp", "hmvae", "hmvbgm", "hmvbrt", "hmvf", "hmvgr", "hmvilb", "hmvit", "hmvqv", "hmvth",
-        "hmwemb", "hmwpt", "hmwrst", "hmxav", "hmxcpt", "hmxgb", "hmxgr", "hmxln", "hmyolo", "hmzsl",
+        "hmrvn",
+        "hmrwd",
+        "hmsac",
+        "hmsae",
+        "hmsatt",
+        "hmsdp",
+        "hmself",
+        "hmselu",
+        "hmsem",
+        "hmsenet",
+        "hmsent",
+        "hmseq2",
+        "hmsft",
+        "hmsftm",
+        "hmsfts",
+        "hmsgdc",
+        "hmsgdu",
+        "hmsigm",
+        "hmsil",
+        "hmspcl",
+        "hmsrnn",
+        "hmsrp",
+        "hmssg",
+        "hmsslc",
+        "hmstk",
+        "hmstr",
+        "hmstr2",
+        "hmstz",
+        "hmsup",
+        "hmsvdp",
+        "hmsvm2",
+        "hmswi",
+        "hmswin",
+        "hmsymd",
+        "hmt5",
+        "hmtanh",
+        "hmtcmp",
+        "hmtd",
+        "hmtd3",
+        "hmtfl",
+        "hmtfm",
+        "hmtlu",
+        "hmtpp",
+        "hmtrlf",
+        "hmtsc",
+        "hmtsf",
+        "hmtsne",
+        "hmuf",
+        "hmumap",
+        "hmuns",
+        "hmunsp",
+        "hmvae",
+        "hmvbgm",
+        "hmvbrt",
+        "hmvf",
+        "hmvgr",
+        "hmvilb",
+        "hmvit",
+        "hmvqv",
+        "hmvth",
+        "hmwemb",
+        "hmwpt",
+        "hmwrst",
+        "hmxav",
+        "hmxcpt",
+        "hmxgb",
+        "hmxgr",
+        "hmxln",
+        "hmyolo",
+        "hmzsl",
     ]
     assert len(names) == 70
     for name in names:

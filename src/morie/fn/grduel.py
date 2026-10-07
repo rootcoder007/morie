@@ -79,15 +79,12 @@ def geron_dueling_dqn(V, A):
     if Vv.size == 1 and Am.shape[0] != 1:
         Vv = np.full(Am.shape[0], float(Vv[0]))
     if Vv.size != Am.shape[0]:
-        raise ValueError(
-            f"V has {Vv.size} entries but A covers {Am.shape[0]} states."
-        )
+        raise ValueError(f"V has {Vv.size} entries but A covers {Am.shape[0]} states.")
     if not np.all(np.isfinite(Vv)):
         raise ValueError("V must be finite.")
     if Am.shape[1] < 2:
         raise ValueError(
-            f"the decomposition needs at least 2 actions to have a meaningful "
-            f"advantage spread, got {Am.shape[1]}."
+            f"the decomposition needs at least 2 actions to have a meaningful advantage spread, got {Am.shape[1]}."
         )
 
     mean_a = Am.mean(axis=1, keepdims=True)

@@ -75,10 +75,7 @@ def indicator_kriging(x, coords, threshold, target=None, nugget: float = 0.0, si
         p = float(np.clip(lam @ I_obs, 0.0, 1.0))
         probs.append(p)
 
-    if len(probs) == 1:
-        out = probs[0]
-    else:
-        out = probs
+    out = probs[0] if len(probs) == 1 else probs
     return RichResult(
         payload={
             "estimate": out,

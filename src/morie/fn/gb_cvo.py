@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ostatcov', 'gibbons_order_covariance']
+__all__ = ["ostatcov", "gibbons_order_covariance"]
 
 
 def ostatcov(r, s, n):

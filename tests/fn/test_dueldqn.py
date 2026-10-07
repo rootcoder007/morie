@@ -1,8 +1,9 @@
 """Tests for dueldqn. Full anchor: ledger/wave3/anchor_ts_family.py."""
+
 import pytest
+
 from morie.fn import _s03core as k
-from morie.fn.dueldqn import (double_q_target, dueling_aggregate,
-                              dueling_step)
+from morie.fn.dueldqn import double_q_target, dueling_aggregate, dueling_step
 
 V, A = 3.0, [1.0, -2.0, 0.5]
 
@@ -26,10 +27,8 @@ def test_the_naive_form_is_unidentifiable():
 
 
 def test_the_two_aggregations_have_their_stated_meanings():
-    assert max(dueling_aggregate(V, A, mode="max")) == pytest.approx(
-        V, abs=1e-14)
-    assert k.mean(dueling_aggregate(V, A, mode="mean")) == \
-        pytest.approx(V, abs=1e-14)
+    assert max(dueling_aggregate(V, A, mode="max")) == pytest.approx(V, abs=1e-14)
+    assert k.mean(dueling_aggregate(V, A, mode="mean")) == pytest.approx(V, abs=1e-14)
 
 
 def test_the_double_q_target_splits_selection_from_valuation():

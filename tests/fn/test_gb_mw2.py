@@ -1,8 +1,8 @@
 """Tests for gb_mw2 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gb_mw2 import gibbons_mw_rs_equiv
 
 

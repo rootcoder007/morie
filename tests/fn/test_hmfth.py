@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmfth import geron_finetune_lm
 
 
@@ -24,8 +23,17 @@ def test_hmfth_basic():
     result = geron_finetune_lm(model, dataset, epochs=epochs, lr=lr, theta=[0.0])
     assert isinstance(result, dict)
     expected_keys = {
-        "theta", "theta_init", "loss_history", "drift", "n_steps",
-        "lr_schedule", "frozen", "grad_norms", "estimate", "n", "method",
+        "theta",
+        "theta_init",
+        "loss_history",
+        "drift",
+        "n_steps",
+        "lr_schedule",
+        "frozen",
+        "grad_norms",
+        "estimate",
+        "n",
+        "method",
     }
     assert expected_keys.issubset(set(result.keys()))
 
@@ -37,8 +45,15 @@ def test_hmfth_edge():
     epochs = 3
     lr = 0.05
     result = geron_finetune_lm(
-        model, dataset, epochs=epochs, lr=lr, theta=[1.0],
-        freeze=[False], batch_size=2, warmup=2, weight_decay=0.01,
+        model,
+        dataset,
+        epochs=epochs,
+        lr=lr,
+        theta=[1.0],
+        freeze=[False],
+        batch_size=2,
+        warmup=2,
+        weight_decay=0.01,
     )
     assert isinstance(result, dict)
     assert "theta" in result
@@ -59,7 +74,7 @@ import morie.fn.hmfth as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -1,7 +1,6 @@
 """Tests for hrzt2.horowitz_local_ate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzt2 import horowitz_local_ate
 
 

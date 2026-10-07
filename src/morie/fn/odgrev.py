@@ -6,7 +6,7 @@ import math
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['outbrkdet', 'outbreak_detection']
+__all__ = ["outbrkdet", "outbreak_detection"]
 
 
 def outbrkdet(counts, hazard=0.01, a0=1.0, b0=1.0):
@@ -44,7 +44,8 @@ def outbrkdet(counts, hazard=0.01, a0=1.0, b0=1.0):
     y = C.vec(counts)
     n = len(y)
     H = float(hazard)
-    a = [float(a0)]; b = [float(b0)]
+    a = [float(a0)]
+    b = [float(b0)]
     R = [1.0]
     cp_prob, run_len = [], []
     for t in range(n):
@@ -53,10 +54,13 @@ def outbrkdet(counts, hazard=0.01, a0=1.0, b0=1.0):
             raise ValueError("counts must be non-negative")
         pi = []
         for r in range(len(R)):
-            lg = (math.lgamma(xt + a[r]) - math.lgamma(a[r])
-                  - math.lgamma(xt + 1.0)
-                  + a[r] * math.log(b[r] / (b[r] + 1.0))
-                  - xt * math.log(b[r] + 1.0))
+            lg = (
+                math.lgamma(xt + a[r])
+                - math.lgamma(a[r])
+                - math.lgamma(xt + 1.0)
+                + a[r] * math.log(b[r] / (b[r] + 1.0))
+                - xt * math.log(b[r] + 1.0)
+            )
             pi.append(math.exp(lg))
         growth = [R[r] * pi[r] * (1.0 - H) for r in range(len(R))]
         cp = sum(R[r] * pi[r] * H for r in range(len(R)))
@@ -68,12 +72,17 @@ def outbrkdet(counts, hazard=0.01, a0=1.0, b0=1.0):
         R = newR
         cp_prob.append(R[1] if len(R) > 1 else float("nan"))
         run_len.append(max(range(len(R)), key=lambda i: R[i]))
-    return RichResult(payload={
-        "cp_prob": cp_prob, "run_length": run_len,
-        "max_cp_prob": max(v for v in cp_prob if v == v),
-        "reset_prob": H,
-        "alarm": [i for i, v in enumerate(cp_prob) if v == v and v > 0.5], "n": n,
-        "method": "Outbreak detection (Gamma-Poisson online changepoint)"})
+    return RichResult(
+        payload={
+            "cp_prob": cp_prob,
+            "run_length": run_len,
+            "max_cp_prob": max(v for v in cp_prob if v == v),
+            "reset_prob": H,
+            "alarm": [i for i, v in enumerate(cp_prob) if v == v and v > 0.5],
+            "n": n,
+            "method": "Outbreak detection (Gamma-Poisson online changepoint)",
+        }
+    )
 
 
 outbreak_detection = outbrkdet

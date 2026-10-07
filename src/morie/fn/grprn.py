@@ -85,8 +85,7 @@ def geron_weight_pruning(W, sparsity):
 
     return RichResult(
         title="Magnitude pruning",
-        summary_lines=[("Requested sparsity", sparsity), ("Achieved", achieved),
-                       ("Threshold", thr)],
+        summary_lines=[("Requested sparsity", sparsity), ("Achieved", achieved), ("Threshold", thr)],
         payload={
             "W_pruned": P.tolist(),
             "mask": mask.tolist(),

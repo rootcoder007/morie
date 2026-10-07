@@ -1,7 +1,6 @@
 """Tests for propensity_match."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.psmch import propensity_match
 
 

@@ -1,8 +1,8 @@
 """Tests for clstcr.cluster_causal_inference."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.clstcr import cluster_causal_inference
 
 

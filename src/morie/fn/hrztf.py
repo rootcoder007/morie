@@ -35,8 +35,7 @@ def _tn_at(yv, ygrid, T, y2, y1):
     return T[ny - 1]
 
 
-def horowitz_both_nonpar_transform(x, y, ny=21, nz=21, nu=25,
-                                   bandwidth=None):
+def horowitz_both_nonpar_transform(x, y, ny=21, nz=21, nu=25, bandwidth=None):
     r"""Transformation model with BOTH T and F nonparametric.
 
     Horowitz (2009), Section 6.3, pages 215-219.  Adds the estimator
@@ -100,8 +99,7 @@ def horowitz_both_nonpar_transform(x, y, ny=21, nz=21, nu=25,
     model with an unknown transformation of the dependent variable.
     *Econometrica* 64(1), 103-137.
     """
-    base = horowitz_transformation_model(x, y, ny=ny, nz=nz,
-                                         bandwidth=bandwidth).payload
+    base = horowitz_transformation_model(x, y, ny=ny, nz=nz, bandwidth=bandwidth).payload
     T = base["T_hat"]
     ygrid = base["y_grid"]
     Z = base["index"]
@@ -119,9 +117,7 @@ def horowitz_both_nonpar_transform(x, y, ny=21, nz=21, nu=25,
 
     fin = [t for t in U if abs(t) < _BIG / 2.0]
     if len(fin) < 2:
-        raise ValueError(
-            "no observation of Y falls inside [y2, y1], so F is not "
-            "estimable; widen the interval.")
+        raise ValueError("no observation of Y falls inside [y2, y1], so F is not estimable; widen the interval.")
     ulo = min(fin)
     uhi = max(fin)
     if uhi <= ulo:
@@ -160,21 +156,23 @@ def horowitz_both_nonpar_transform(x, y, ny=21, nz=21, nu=25,
         if B[k] > 0 and not (-1e-12 <= F[k] <= 1.0 + 1e-12):
             f_unit = False
 
-    return RichResult(payload={
-        "T_hat": T,
-        "F_hat": F,
-        "beta_hat": base["beta_hat"],
-        "u_grid": ugrid,
-        "A_n": A,
-        "B_n": B,
-        "y_grid": ygrid,
-        "y0": base["y0"],
-        "index": Z,
-        "F_in_unit": f_unit,
-        "A_le_B": a_le_b,
-        "n": n,
-        "method": "Horowitz (2009) eqs. (6.60) and (6.66), T and F both nonparametric",
-    })
+    return RichResult(
+        payload={
+            "T_hat": T,
+            "F_hat": F,
+            "beta_hat": base["beta_hat"],
+            "u_grid": ugrid,
+            "A_n": A,
+            "B_n": B,
+            "y_grid": ygrid,
+            "y0": base["y0"],
+            "index": Z,
+            "F_in_unit": f_unit,
+            "A_le_B": a_le_b,
+            "n": n,
+            "method": "Horowitz (2009) eqs. (6.60) and (6.66), T and F both nonparametric",
+        }
+    )
 
 
 def cheatsheet():

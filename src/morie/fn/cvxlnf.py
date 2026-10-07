@@ -69,29 +69,38 @@ def boyd_l1_fitting(A, b):
     c = np.r_[np.zeros(n), np.ones(m)]
     A_ub = np.block([[Am, -np.eye(m)], [-Am, -np.eye(m)]])
     b_ub = np.r_[bv, -bv]
-    res = linprog(c, A_ub=A_ub, b_ub=b_ub,
-                  bounds=[(None, None)] * n + [(0.0, None)] * m,
-                  method="highs")
+    res = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=[(None, None)] * n + [(0.0, None)] * m, method="highs")
     if res.status != 0:
         return RichResult(
             title="l1 fitting",
             summary_lines=[("status", str(res.message))],
             warnings=["the l1 LP did not solve"],
-            payload={"x": np.full(n, np.nan), "residual": np.full(m, np.nan),
-                     "l1_norm": float("nan"), "n_exact": 0,
-                     "status": "failed", "method": "boyd_l1_fitting"})
+            payload={
+                "x": np.full(n, np.nan),
+                "residual": np.full(m, np.nan),
+                "l1_norm": float("nan"),
+                "n_exact": 0,
+                "status": "failed",
+                "method": "boyd_l1_fitting",
+            },
+        )
     x = np.asarray(res.x[:n], dtype=float)
     resid = Am @ x - bv
     return RichResult(
         title="l1 fitting",
-        summary_lines=[("m", int(m)), ("n", int(n)),
-                       ("l1 norm", float(np.abs(resid).sum())),
-                       ("exact fits", int(np.sum(np.abs(resid) <= 1e-8)))],
+        summary_lines=[
+            ("m", int(m)),
+            ("n", int(n)),
+            ("l1 norm", float(np.abs(resid).sum())),
+            ("exact fits", int(np.sum(np.abs(resid) <= 1e-8))),
+        ],
         payload={
-            "x": x, "residual": resid,
+            "x": x,
+            "residual": resid,
             "l1_norm": float(np.abs(resid).sum()),
             "n_exact": int(np.sum(np.abs(resid) <= 1e-8)),
-            "status": "optimal", "method": "boyd_l1_fitting",
+            "status": "optimal",
+            "method": "boyd_l1_fitting",
         },
     )
 

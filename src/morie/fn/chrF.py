@@ -45,11 +45,11 @@ __all__ = ["chrf_score", "chrF"]
 
 
 def _char_ngrams(s, n):
-    return [s[i:i + n] for i in range(len(s) - n + 1)]
+    return [s[i : i + n] for i in range(len(s) - n + 1)]
 
 
 def _word_ngrams(ws, n):
-    return [tuple(ws[i:i + n]) for i in range(len(ws) - n + 1)]
+    return [tuple(ws[i : i + n]) for i in range(len(ws) - n + 1)]
 
 
 def _counts(seq):
@@ -68,16 +68,14 @@ def _pr(hyp_grams, ref_grams):
     return match / float(len(hyp_grams)), match / float(len(ref_grams))
 
 
-def chrf_score(hypothesis, reference, n_char=6, beta=2.0,
-               remove_whitespace=True, word_order=0):
+def chrf_score(hypothesis, reference, n_char=6, beta=2.0, remove_whitespace=True, word_order=0):
     r"""chrF-beta between a hypothesis and one or more references."""
     N = int(n_char)
     if N < 1:
-        raise ValueError("chrf_score: n_char must be at least 1, got %r"
-                         % (n_char,))
+        raise ValueError(f"chrf_score: n_char must be at least 1, got {n_char!r}")
     beta = float(beta)
     if beta <= 0.0:
-        raise ValueError("chrf_score: beta must be positive, got %r" % (beta,))
+        raise ValueError(f"chrf_score: beta must be positive, got {beta!r}")
     w_order = int(word_order)
     if w_order < 0:
         raise ValueError("chrf_score: word_order must be >= 0")
@@ -119,22 +117,30 @@ def chrf_score(hypothesis, reference, n_char=6, beta=2.0,
         b2 = beta * beta
         denom = b2 * chrP + chrR
         f = (1.0 + b2) * chrP * chrR / denom if denom > 0.0 else 0.0
-        cand = {"estimate": f, "chrf": f, "chrP": chrP, "chrR": chrR,
-                "per_order": per_order, "n_char": N, "beta": beta,
-                "word_order": w_order,
-                "remove_whitespace": bool(remove_whitespace)}
+        cand = {
+            "estimate": f,
+            "chrf": f,
+            "chrP": chrP,
+            "chrR": chrR,
+            "per_order": per_order,
+            "n_char": N,
+            "beta": beta,
+            "word_order": w_order,
+            "remove_whitespace": bool(remove_whitespace),
+        }
         if best is None or cand["chrf"] > best["chrf"]:
             best = cand
 
-    best["method"] = ("chrF%g, arithmetic mean over character n-gram orders "
-                      "(Popovic 2015)" % beta)
+    best["method"] = f"chrF{beta:g}, arithmetic mean over character n-gram orders (Popovic 2015)"
     return RichResult(payload=best)
 
 
 def cheatsheet():
-    return ("chrF: chrP/chrR = ARITHMETIC mean of clipped char n-gram "
-            "precision/recall over n=1..6; chrFb = (1+b^2) PR/(b^2 P + R), "
-            "b=2; whitespace stripped; word_order>0 gives chrF++.")
+    return (
+        "chrF: chrP/chrR = ARITHMETIC mean of clipped char n-gram "
+        "precision/recall over n=1..6; chrFb = (1+b^2) PR/(b^2 P + R), "
+        "b=2; whitespace stripped; word_order>0 gives chrF++."
+    )
 
 
 chrF = chrf_score

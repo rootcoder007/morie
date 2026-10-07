@@ -98,14 +98,14 @@ def aitchison_balance(x, numerator, denominator):
     bal = norm * np.log(gn / gd)
     return RichResult(
         title="Aitchison balance",
-        summary_lines=[("parts", int(p)), ("r", int(r)), ("s", int(s)),
-                       ("normalizer", float(norm))],
+        summary_lines=[("parts", int(p)), ("r", int(r)), ("s", int(s)), ("normalizer", float(norm))],
         payload={
             "balance": bal if bal.size > 1 else float(bal[0]),
             "normalizer": float(norm),
             "geometric_mean_num": gn if gn.size > 1 else float(gn[0]),
             "geometric_mean_den": gd if gd.size > 1 else float(gd[0]),
-            "numerator": num, "denominator": den,
+            "numerator": num,
+            "denominator": den,
             "method": "aitchison_balance",
         },
     )

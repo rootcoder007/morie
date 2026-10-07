@@ -39,8 +39,7 @@ def kamath_step_back_prompting(query, model, retrieve=None, answer=None):
     'gravity, per d1,d2,d3'
     """
     if not callable(model):
-        raise ValueError(
-            "model must be callable query -> the stepped-back query.")
+        raise ValueError("model must be callable query -> the stepped-back query.")
     q_high = model(query)
     if q_high is None:
         raise ValueError("the model returned no step-back query.")
@@ -60,16 +59,18 @@ def kamath_step_back_prompting(query, model, retrieve=None, answer=None):
                     seen.add(key)
                     ctx.append(d)
     payload = {
-        "step_back_query": q_high, "query": query,
+        "step_back_query": q_high,
+        "query": query,
         "stepped_back": stepped,
-        "context": ctx, "retrieved_by_query": per_query,
+        "context": ctx,
+        "retrieved_by_query": per_query,
         "n_context": len(ctx),
-        "estimate": len(ctx), "n": len(ctx),
-        "method": "Step-back prompting (abstract query, then specific)"}
+        "estimate": len(ctx),
+        "n": len(ctx),
+        "method": "Step-back prompting (abstract query, then specific)",
+    }
     if not stepped:
-        payload["warning"] = (
-            "the model returned the original question, so no "
-            "abstraction was made.")
+        payload["warning"] = "the model returned the original question, so no abstraction was made."
     if answer is not None:
         if not callable(answer):
             raise ValueError("answer must be callable (query, context) -> str.")

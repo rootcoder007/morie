@@ -105,11 +105,9 @@ def tmle_ate(y, D, X, trunc=0.01, g=None):
             "n_truncated": n_trunc,
             "trunc": float(trunc),
             "positivity_warning": (
-                "%d of %d propensities hit the truncation bound; the clever "
-                "covariate is unbounded as g approaches 0 or 1, so these "
-                "observations would otherwise dominate the estimate"
-                % (n_trunc, gv.size)
-                if n_trunc else None
+                f"{int(n_trunc)} of {int(gv.size)} propensities hit the truncation bound; the clever covariate is unbounded as g approaches 0 or 1, so these observations would otherwise dominate the estimate"
+                if n_trunc
+                else None
             ),
             "substitution": (
                 "TMLE is a plug-in: the estimate is the parameter evaluated "

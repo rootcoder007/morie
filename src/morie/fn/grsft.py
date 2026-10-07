@@ -97,8 +97,7 @@ def geron_sft_objective(logits, response_mask, targets):
 
     return RichResult(
         title="SFT objective",
-        summary_lines=[("Loss", loss), ("Response tokens", int(mask.sum())),
-                       ("Perplexity", float(np.exp(loss)))],
+        summary_lines=[("Loss", loss), ("Response tokens", int(mask.sum())), ("Perplexity", float(np.exp(loss)))],
         payload={
             "loss": loss,
             "per_token": per.tolist(),

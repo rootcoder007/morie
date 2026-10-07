@@ -1,8 +1,8 @@
 """Tests for morie.fn.stprd — Spatio-temporal prediction intervals."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.stprd import stprd
 
 

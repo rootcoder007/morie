@@ -1,8 +1,8 @@
 """Tests for trnfen.transfer_entropy."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.granci import granger_causality_info
 from morie.fn.trnfen import transfer_entropy
 
@@ -10,8 +10,10 @@ from morie.fn.trnfen import transfer_entropy
 def test_trnfen_basic():
     rng = np.random.default_rng(42)
     n = 2000
-    x = np.zeros(n); y = np.zeros(n)
-    ex = rng.normal(size=n); ey = rng.normal(size=n)
+    x = np.zeros(n)
+    y = np.zeros(n)
+    ex = rng.normal(size=n)
+    ey = rng.normal(size=n)
     for t in range(1, n):
         x[t] = 0.5 * x[t - 1] + ex[t]
         y[t] = 0.4 * y[t - 1] + 0.7 * x[t - 1] + ey[t]

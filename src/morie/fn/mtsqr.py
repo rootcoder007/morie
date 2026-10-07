@@ -38,7 +38,7 @@ def matrix_sqrt(
     n = A.shape[0]
     Y = A.copy()
     Z = np.eye(n)
-    for it in range(maxiter):
+    for it in range(maxiter):  # noqa: B007 - read after the loop
         Y_inv = np.linalg.inv(Z)
         Z_inv = np.linalg.inv(Y)
         Y_new = 0.5 * (Y + Y_inv)

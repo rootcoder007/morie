@@ -89,11 +89,20 @@ def fcfp4(adjacency, features, nbits=2048, radius=2):
         code.append(v)
     bits, cnt, ident = _morgan(a, bonds, list(code), int(radius), int(nbits))
     uniq = sorted(set(ident))
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits),
-        "identifiers": uniq, "nenv": len(ident), "featurecode": code,
-        "a": a, "nbits": int(nbits), "radius": int(radius),
-        "method": "FCFP4 (functional-class Morgan radius 2)"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "identifiers": uniq,
+            "nenv": len(ident),
+            "featurecode": code,
+            "a": a,
+            "nbits": int(nbits),
+            "radius": int(radius),
+            "method": "FCFP4 (functional-class Morgan radius 2)",
+        }
+    )
 
 
 fcfp_4_fingerprint = fcfp4

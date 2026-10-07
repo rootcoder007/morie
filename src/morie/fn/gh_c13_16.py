@@ -5,9 +5,6 @@ Implements sec. 13.7.1 of Ghosal & van der Vaart (2017), *Fundamentals of
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
 from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -30,9 +27,13 @@ def ghosal_bb_censored(times, events, t_query):
         if ev[i] > 0:
             surv *= (at_risk - 1.0) / at_risk
         at_risk -= 1
-    res = RichResult(payload={"estimate": surv,
-                              "km_survival": surv,
-                              "method": "censored Bayesian bootstrap = Kaplan-Meier limit (GvdV 2017 sec. 13.7.1)"})
+    res = RichResult(
+        payload={
+            "estimate": surv,
+            "km_survival": surv,
+            "method": "censored Bayesian bootstrap = Kaplan-Meier limit (GvdV 2017 sec. 13.7.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c13_16")
 
 

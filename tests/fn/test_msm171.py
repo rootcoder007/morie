@@ -6,8 +6,6 @@ Springer, ch 9, eq. 9.4 p.340, the hyperplane decision rule. Expected values are
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm171 import mvsml_ridge_lasso_elastic_eq_9_4
@@ -26,6 +24,5 @@ def test_flipping_every_coefficient_flips_every_side():
 
 
 def test_the_rule_splits_the_space_into_exactly_two_halves():
-    res = mvsml_ridge_lasso_elastic_eq_9_4([[5.0, 5.0], [-5.0, -5.0], [0.0, 0.0]], -1.0,
-               [1.0, 1.0])
+    res = mvsml_ridge_lasso_elastic_eq_9_4([[5.0, 5.0], [-5.0, -5.0], [0.0, 0.0]], -1.0, [1.0, 1.0])
     assert set(res["side"]) <= {1, -1}

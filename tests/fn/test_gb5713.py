@@ -1,7 +1,6 @@
 """Tests for gb5713.gibbons_wsrt_simpower."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb5713 import gibbons_wsrt_simpower
 
 
@@ -67,7 +66,7 @@ def test_gb5713_basic():
 
 def test_gb5713_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     # All samples identical to m0 -> no non-zero differences -> T+ = 0
     # for every row, so power at any positive tcrit is 0.
     samples = [[0.0] * 25 for _ in range(50)]

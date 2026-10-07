@@ -117,7 +117,7 @@ def esl_boltzmann(v, h=4, lr=0.1, n_epochs=200, k_cd=1, seed=0, batch_size=None)
     for _ in range(n_epochs):
         idx = rng.permutation(n)
         for s in range(0, n, bs):
-            B = V[idx[s: s + bs]]
+            B = V[idx[s : s + bs]]
             m = B.shape[0]
             ph0 = sig(B @ W + b)
             hs = (rng.random(ph0.shape) < ph0).astype(float)
@@ -139,15 +139,19 @@ def esl_boltzmann(v, h=4, lr=0.1, n_epochs=200, k_cd=1, seed=0, batch_size=None)
     recon = sig(ph @ W.T + a)
     free = -(V @ a) - np.sum(np.logaddexp(0.0, V @ W + b), axis=1)
     return RichResult(
-        title="Restricted Boltzmann machine (CD-{})".format(k_cd),
-        summary_lines=[("n", n), ("visible", d), ("hidden", h),
-                       ("reconstruction error", path[-1] if path else np.nan)],
+        title=f"Restricted Boltzmann machine (CD-{k_cd})",
+        summary_lines=[("n", n), ("visible", d), ("hidden", h), ("reconstruction error", path[-1] if path else np.nan)],
         payload={
-            "W": W, "a": a, "b": b,
-            "hidden_prob": ph, "reconstruction": recon,
+            "W": W,
+            "a": a,
+            "b": b,
+            "hidden_prob": ph,
+            "reconstruction": recon,
             "reconstruction_error": float(path[-1]) if path else np.nan,
-            "error_path": np.array(path), "free_energy": free,
-            "k_cd": int(k_cd), "n_hidden": h,
+            "error_path": np.array(path),
+            "free_energy": free,
+            "k_cd": int(k_cd),
+            "n_hidden": h,
             "method": "esl_boltzmann",
         },
     )

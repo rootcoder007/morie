@@ -1,8 +1,8 @@
 """Tests for mednt (median test - two sample)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mednt import mednt
 
 

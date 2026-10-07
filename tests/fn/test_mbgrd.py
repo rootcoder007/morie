@@ -1,7 +1,6 @@
 """Tests for mbgrd.mini_batch_gradient."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mbgrd import mini_batch_gradient
 
 

@@ -86,9 +86,7 @@ def lars_optimizer(g, w, lr=0.1, mu=0.9, wd=0.0, eta=0.001, eps=1e-8, state=None
     st = init_state(state, g.size, keys=("v",))
     st["v"] = mu * st["v"] + trust * (g + wd * w)
     update = -lr * st["v"]
-    return step_result(
-        update, st, "LARS", trust_ratio=float(trust), w_norm=wn, g_norm=gn, v=st["v"]
-    )
+    return step_result(update, st, "LARS", trust_ratio=float(trust), w_norm=wn, g_norm=gn, v=st["v"])
 
 
 def cheatsheet():

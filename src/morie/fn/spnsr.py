@@ -7,8 +7,7 @@ from ._schab_krig import simple_kriging
 __all__ = ["schabenberger_nugget_sill_range_effect"]
 
 
-def schabenberger_nugget_sill_range_effect(nugget=0.0, sill=1.0, range=1.0,
-                                           target_dist=None, model="exponential"):
+def schabenberger_nugget_sill_range_effect(nugget=0.0, sill=1.0, range=1.0, target_dist=None, model="exponential"):
     r"""
     How the nugget, sill and range change a kriging prediction.
 
@@ -59,13 +58,18 @@ def schabenberger_nugget_sill_range_effect(nugget=0.0, sill=1.0, range=1.0,
     w = lam[:, 0]
     return RichResult(
         title="Effect of nugget, sill and range on kriging",
-        summary_lines=[("nugget", nugget), ("sill", sill), ("range", range),
-                       ("prediction", float(p[0]))],
-        payload={"prediction": float(p[0]), "variance": float(v[0]),
-                 "weights": w, "weight_spread": float(w.max() - w.min()),
-                 "mean": float(np.mean(z)),
-                 "nugget": float(nugget), "sill": float(sill),
-                 "range": float(range), "model": model},
+        summary_lines=[("nugget", nugget), ("sill", sill), ("range", range), ("prediction", float(p[0]))],
+        payload={
+            "prediction": float(p[0]),
+            "variance": float(v[0]),
+            "weights": w,
+            "weight_spread": float(w.max() - w.min()),
+            "mean": float(np.mean(z)),
+            "nugget": float(nugget),
+            "sill": float(sill),
+            "range": float(range),
+            "model": model,
+        },
     )
 
 

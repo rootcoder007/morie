@@ -1,8 +1,6 @@
 """Tests for ksr038 (Kosorok shelf)."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.ksr038 import kosorok_ch2_donsker_uniform_entropy
 
 

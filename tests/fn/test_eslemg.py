@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslemg import esl_em_gmm
 
 
@@ -17,8 +16,7 @@ def test_eslemg_basic():
     result = esl_em_gmm(X, k)
     assert isinstance(result, dict)
     # All keys promised by the return statement
-    for key in ("pi", "mu", "sigma", "resp", "labels", "loglik",
-                "loglik_path", "n_iter", "converged", "aic", "bic"):
+    for key in ("pi", "mu", "sigma", "resp", "labels", "loglik", "loglik_path", "n_iter", "converged", "aic", "bic"):
         assert key in result
     # Shape checks
     mu = result["mu"]

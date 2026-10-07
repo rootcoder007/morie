@@ -59,7 +59,7 @@ def ksgnr(data: np.ndarray, cdf=None, *, mu0: float = 0.0, bw: float | None = No
     smoothed = norm.cdf((data - mu0) / bw)
     s_bar = np.mean(smoothed) - 0.5
 
-    f0 = 1.0 / (bw * np.sqrt(2 * np.pi))
+    1.0 / (bw * np.sqrt(2 * np.pi))
     var_s = 0.25 / n
     z = s_bar / np.sqrt(var_s)
 

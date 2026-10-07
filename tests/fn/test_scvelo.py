@@ -1,6 +1,6 @@
 """RNA velocity from the full splicing kinetics."""
+
 import importlib
-import math
 
 import pytest
 
@@ -60,18 +60,15 @@ def test_velocity_signs_track_induction_and_repression():
     assert all(o["velocity"] < 0 for o in off)
 
 
-@pytest.mark.parametrize("bad", [(-1.0, A, B, G), (1.0, A, 0.0, G),
-                                 (1.0, A, B, 0.0), (1.0, -1.0, B, G)])
+@pytest.mark.parametrize("bad", [(-1.0, A, B, G), (1.0, A, 0.0, G), (1.0, A, B, 0.0), (1.0, -1.0, B, G)])
 def test_impossible_kinetics_are_refused(bad):
     with pytest.raises(ValueError):
         S.solve_kinetics(*bad)
 
 
 def test_steady_state_model_fits_the_u_on_s_slope():
-    obs = S.simulate_gene(A, B, G, 5.0,
-                          [0.2 * k for k in range(1, 60)])["observations"]
-    ss = S.steady_state_velocity([o["u"] for o in obs],
-                                 [o["s"] for o in obs])
+    obs = S.simulate_gene(A, B, G, 5.0, [0.2 * k for k in range(1, 60)])["observations"]
+    ss = S.steady_state_velocity([o["u"] for o in obs], [o["s"] for o in obs])
     assert abs(ss["gamma_over_beta"] - G / B) < 0.1 * (G / B)
     assert "steady states observed" in ss["assumptions"]
 
@@ -82,24 +79,20 @@ def test_steady_state_model_needs_more_than_two_cells():
 
 
 def _transient():
-    sim = S.simulate_gene(A, B, G, 5.0,
-                          [0.1 * k for k in range(1, 18)])
-    return ([o["u"] for o in sim["observations"]],
-            [o["s"] for o in sim["observations"]])
+    sim = S.simulate_gene(A, B, G, 5.0, [0.1 * k for k in range(1, 18)])
+    return ([o["u"] for o in sim["observations"]], [o["s"] for o in sim["observations"]])
 
 
 def test_em_never_increases_the_residual():
     u, s = _transient()
-    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5,
-                          t_switch0=4.0, n_iter=12, grid=80)
+    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5, t_switch0=4.0, n_iter=12, grid=80)
     h = fit["rss_history"]
     assert all(h[i] >= h[i + 1] - 1e-9 for i in range(len(h) - 1))
 
 
 def test_dynamical_model_fits_without_a_steady_state():
     u, s = _transient()
-    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5,
-                          t_switch0=4.0, n_iter=12, grid=80)
+    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5, t_switch0=4.0, n_iter=12, grid=80)
     assert max(s) < 0.6 * (A / G)
     assert fit["rss"] < 0.5
     assert len(fit["latent"]) == len(u)
@@ -108,8 +101,7 @@ def test_dynamical_model_fits_without_a_steady_state():
 
 def test_genes_couple_into_one_shared_clock():
     u, s = _transient()
-    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5,
-                          t_switch0=4.0, n_iter=8, grid=60)
+    fit = S.dynamical_fit(u, s, alpha0=4.0, beta0=1.0, gamma0=0.5, t_switch0=4.0, n_iter=8, grid=60)
     lt = S.latent_time([fit, fit])
     assert lt["n_genes"] == 2
     assert len(lt["latent_time"]) == len(u)

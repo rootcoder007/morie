@@ -1,7 +1,6 @@
 """Tests for model_averaged_estimate.model_averaged_estimate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.model_averaged_estimate import (
     model_averaged_estimate,
 )

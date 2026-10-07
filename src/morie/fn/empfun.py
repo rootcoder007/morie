@@ -63,8 +63,7 @@ def empty_space_function(coords, r_grid=None, window=None, n_grid=40):
     d = res["empty_space_distances"]
     return RichResult(
         title="Empty space function F(r)",
-        summary_lines=[("sample locations", int(len(d))),
-                       ("lambda", res["lambda_est"])],
+        summary_lines=[("sample locations", int(len(d))), ("lambda", res["lambda_est"])],
         payload={
             "r": res["r"],
             "f": res["f"],

@@ -1,7 +1,6 @@
 """Tests for mapMet.map_at_k."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mapMet import map_at_k
 
 

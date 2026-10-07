@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Configuration model with a prescribed degree sequence."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['configmodel', 'configuration_model']
+__all__ = ["configmodel", "configuration_model"]
 
 
 def configmodel(degrees, seed=1):
@@ -70,10 +68,16 @@ def configmodel(degrees, seed=1):
     for a, b in edges:
         real[a] += 1
         real[b] += 1
-    return RichResult(payload={
-        "edges": edges, "degree": real, "self_loops": loops,
-        "multi_edges": multi, "n": n,
-        "method": "Configuration model (uniform stub pairing)"})
+    return RichResult(
+        payload={
+            "edges": edges,
+            "degree": real,
+            "self_loops": loops,
+            "multi_edges": multi,
+            "n": n,
+            "method": "Configuration model (uniform stub pairing)",
+        }
+    )
 
 
 configuration_model = configmodel

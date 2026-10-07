@@ -75,12 +75,10 @@ the Lagrange dual and the KKT conditions the stopping rule rests on.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["kernel_matrix", "dual_objective", "solve_pair",
-           "kkt_violation", "smo", "recover_bias"]
+__all__ = ["kernel_matrix", "dual_objective", "solve_pair", "kkt_violation", "smo", "recover_bias"]
 
 _EPS = 1e-12
 _TAU = 1e-12
@@ -100,8 +98,7 @@ def kernel_matrix(X, kernel="linear", gamma=1.0, degree=3, coef0=0.0):
         if kernel == "rbf":
             s = sum((a[t] - b[t]) ** 2 for t in range(len(a)))
             return math.exp(-float(gamma) * s)
-        raise ValueError("svmopt: kernel must be linear, poly or "
-                         "rbf, got %r" % (kernel,))
+        raise ValueError(f"svmopt: kernel must be linear, poly or rbf, got {kernel!r}")
 
     return [[kf(M[i], M[j]) for j in range(n)] for i in range(n)]
 
@@ -140,13 +137,17 @@ def solve_pair(i, j, alpha, y, K, grad, C):
     """
     a = [float(v) for v in k.vec(alpha)]
     if i == j:
-        raise ValueError("svmopt: the working set must contain two "
-                         "DIFFERENT indices")
+        raise ValueError("svmopt: the working set must contain two DIFFERENT indices")
     L, Hh = _bounds(i, j, a, y, C)
     if Hh <= L + _EPS:
-        return {"alpha": a, "moved": 0.0, "clipped": True,
-                "L": L, "H": Hh,
-                "note": "the box leaves no room for this pair"}
+        return {
+            "alpha": a,
+            "moved": 0.0,
+            "clipped": True,
+            "L": L,
+            "H": Hh,
+            "note": "the box leaves no room for this pair",
+        }
     # The working set moves along a_i += y_i t, a_j -= y_j t, which keeps
     # sum(y a) fixed.  The numerator is the KKT gap (-y_i g_i) - (-y_j g_j)
     # -- that is where the labels enter -- and the curvature along the
@@ -163,9 +164,15 @@ def solve_pair(i, j, alpha, y, K, grad, C):
     out = list(a)
     out[j] = aj_cl
     out[i] = a[i] - y[i] * y[j] * delta
-    return {"alpha": out, "moved": abs(delta),
-            "clipped": abs(aj_cl - aj_new) > _EPS, "L": L, "H": Hh,
-            "eta": eta, "step": step}
+    return {
+        "alpha": out,
+        "moved": abs(delta),
+        "clipped": abs(aj_cl - aj_new) > _EPS,
+        "L": L,
+        "H": Hh,
+        "eta": eta,
+        "step": step,
+    }
 
 
 def kkt_violation(alpha, y, grad, C):
@@ -179,19 +186,15 @@ def kkt_violation(alpha, y, grad, C):
     yy = [float(v) for v in k.vec(y)]
     up, low = [], []
     for t in range(len(a)):
-        if (yy[t] > 0 and a[t] < C - _EPS) or \
-                (yy[t] < 0 and a[t] > _EPS):
+        if (yy[t] > 0 and a[t] < C - _EPS) or (yy[t] < 0 and a[t] > _EPS):
             up.append(t)
-        if (yy[t] > 0 and a[t] > _EPS) or \
-                (yy[t] < 0 and a[t] < C - _EPS):
+        if (yy[t] > 0 and a[t] > _EPS) or (yy[t] < 0 and a[t] < C - _EPS):
             low.append(t)
     if not up or not low:
-        return {"gap": 0.0, "i": None, "j": None,
-                "note": "no violating pair exists"}
+        return {"gap": 0.0, "i": None, "j": None, "note": "no violating pair exists"}
     i = max(up, key=lambda t: -yy[t] * grad[t])
     j = min(low, key=lambda t: -yy[t] * grad[t])
-    return {"gap": (-yy[i] * grad[i]) - (-yy[j] * grad[j]),
-            "i": i, "j": j, "n_up": len(up), "n_low": len(low)}
+    return {"gap": (-yy[i] * grad[i]) - (-yy[j] * grad[j]), "i": i, "j": j, "n_up": len(up), "n_low": len(low)}
 
 
 def recover_bias(alpha, y, grad, C):
@@ -202,14 +205,16 @@ def recover_bias(alpha, y, grad, C):
     free = [t for t in range(len(a)) if _EPS < a[t] < C - _EPS]
     if free:
         vals = [-yy[t] * grad[t] for t in free]
-        return {"b": sum(vals) / len(vals), "n_free": len(free),
-                "bracketed": False,
-                "spread": max(vals) - min(vals)}
+        return {"b": sum(vals) / len(vals), "n_free": len(free), "bracketed": False, "spread": max(vals) - min(vals)}
     v = kkt_violation(a, yy, grad, C)
     lo = -yy[v["j"]] * grad[v["j"]] if v["j"] is not None else 0.0
     hi = -yy[v["i"]] * grad[v["i"]] if v["i"] is not None else 0.0
-    return {"b": 0.5 * (lo + hi), "n_free": 0, "bracketed": True,
-            "note": "no free support vector, so b is only bracketed"}
+    return {
+        "b": 0.5 * (lo + hi),
+        "n_free": 0,
+        "bracketed": True,
+        "note": "no free support vector, so b is only bracketed",
+    }
 
 
 def smo(y, K, C=1.0, tol=1e-8, max_iter=20000):
@@ -220,14 +225,13 @@ def smo(y, K, C=1.0, tol=1e-8, max_iter=20000):
     if any(v not in (-1.0, 1.0) for v in yy):
         raise ValueError("svmopt: labels must be -1 or +1")
     if len(K) != n or len(K[0]) != n:
-        raise ValueError("svmopt: the kernel matrix is %dx%d for %d "
-                         "labels" % (len(K), len(K[0]), n))
+        raise ValueError(f"svmopt: the kernel matrix is {int(len(K))}x{int(len(K[0]))} for {int(n)} labels")
     if float(C) <= 0.0:
         raise ValueError("svmopt: C must be positive")
     a = [0.0] * n
     grad = [-1.0] * n
     it, gap = 0, float("inf")
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         v = kkt_violation(a, yy, grad, C)
         gap = v["gap"]
         if v["i"] is None or gap <= float(tol):
@@ -239,37 +243,43 @@ def smo(y, K, C=1.0, tol=1e-8, max_iter=20000):
         dj = r["alpha"][v["j"]] - a[v["j"]]
         a = r["alpha"]
         for t in range(n):
-            grad[t] += (yy[t] * yy[v["i"]] * K[t][v["i"]] * di
-                        + yy[t] * yy[v["j"]] * K[t][v["j"]] * dj)
+            grad[t] += yy[t] * yy[v["i"]] * K[t][v["i"]] * di + yy[t] * yy[v["j"]] * K[t][v["j"]] * dj
     b = recover_bias(a, yy, grad, C)
     sv = [t for t in range(n) if a[t] > _EPS]
-    return RichResult(payload={
-        "estimate": a, "alpha": a, "b": b["b"], "gap": gap,
-        "iterations": it, "converged": gap <= float(tol),
-        "support_vectors": sv, "n_sv": len(sv),
-        "n_free": b["n_free"],
-        "equality_residual": sum(a[t] * yy[t] for t in range(n)),
-        "objective": dual_objective(a, yy, K),
-        "method": "two-variable decomposition on the maximal "
-                  "violating pair; Chang & Lin (2011)",
-        "note": "the KKT gap is both the working-set rule and the "
-                "stopping criterion",
-    })
+    return RichResult(
+        payload={
+            "estimate": a,
+            "alpha": a,
+            "b": b["b"],
+            "gap": gap,
+            "iterations": it,
+            "converged": gap <= float(tol),
+            "support_vectors": sv,
+            "n_sv": len(sv),
+            "n_free": b["n_free"],
+            "equality_residual": sum(a[t] * yy[t] for t in range(n)),
+            "objective": dual_objective(a, yy, K),
+            "method": "two-variable decomposition on the maximal violating pair; Chang & Lin (2011)",
+            "note": "the KKT gap is both the working-set rule and the stopping criterion",
+        }
+    )
 
 
 def cheatsheet():
-    return ("svmopt: the SVM DUAL is where the kernel enters and where "
-            "the structure is exploitable -- max sum(a) - 0.5 a'Qa "
-            "subject to 0 <= a <= C and sum(y a) = 0. The Hessian is "
-            "dense and l x l, so decompose; the EQUALITY constraint "
-            "means one variable cannot move alone, so TWO is the "
-            "smallest workable set -- and at two the subproblem is "
-            "closed form. Choose the pair by MAXIMAL KKT VIOLATION, "
-            "which is also the stopping criterion, so convergence is "
-            "measured not assumed. Clip to [L,H], whose branch depends "
-            "on whether the labels agree -- get it wrong and the "
-            "solver still converges, to the wrong answer. b comes from "
-            "the FREE support vectors.")
+    return (
+        "svmopt: the SVM DUAL is where the kernel enters and where "
+        "the structure is exploitable -- max sum(a) - 0.5 a'Qa "
+        "subject to 0 <= a <= C and sum(y a) = 0. The Hessian is "
+        "dense and l x l, so decompose; the EQUALITY constraint "
+        "means one variable cannot move alone, so TWO is the "
+        "smallest workable set -- and at two the subproblem is "
+        "closed form. Choose the pair by MAXIMAL KKT VIOLATION, "
+        "which is also the stopping criterion, so convergence is "
+        "measured not assumed. Clip to [L,H], whose branch depends "
+        "on whether the labels agree -- get it wrong and the "
+        "solver still converges, to the wrong answer. b comes from "
+        "the FREE support vectors."
+    )
 
 
 # compact alias per ledger/NAMING.md

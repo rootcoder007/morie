@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Efficacy of a test statistic -- Gibbons eq. (13.2.4)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['efficacy', 'gibbons_efficacy']
+__all__ = ["efficacy", "gibbons_efficacy"]
 
 
 def efficacy(deriv, var):

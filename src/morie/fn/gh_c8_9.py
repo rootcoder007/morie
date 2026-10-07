@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_markov_crt"]
@@ -29,16 +28,17 @@ def ghosal_markov_crt(a0=0.3, b0=0.5, ns=(200, 800, 3200), seed=42):
             nxt = 1 - x if float(rng.uniform(0, 1)) < p else x
             c[x][1 if nxt != x else 0] += 1
             x = nxt
-        va = ((1 + c[0][1]) * (1 + c[0][0])
-              / ((2 + sum(c[0])) ** 2 * (3 + sum(c[0]))))
-        vb = ((1 + c[1][1]) * (1 + c[1][0])
-              / ((2 + sum(c[1])) ** 2 * (3 + sum(c[1]))))
+        va = (1 + c[0][1]) * (1 + c[0][0]) / ((2 + sum(c[0])) ** 2 * (3 + sum(c[0])))
+        vb = (1 + c[1][1]) * (1 + c[1][0]) / ((2 + sum(c[1])) ** 2 * (3 + sum(c[1])))
         risks.append(va + vb)
-    rate_hat = math.log(risks[0] / risks[-1]) \
-        / math.log(float(ns[-1]) / ns[0])
-    res = RichResult(payload={"estimate": rate_hat,
-                              "posterior_var_by_n": risks,
-                              "method": "Markov contraction (GvdV 2017 sec. 8.3.3)"})
+    rate_hat = math.log(risks[0] / risks[-1]) / math.log(float(ns[-1]) / ns[0])
+    res = RichResult(
+        payload={
+            "estimate": rate_hat,
+            "posterior_var_by_n": risks,
+            "method": "Markov contraction (GvdV 2017 sec. 8.3.3)",
+        }
+    )
     return with_describe_pointer(res, "gh_c8_9")
 
 

@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def stratified_cost(c0, stratum_costs, stratum_sizes):
     """
     value = _brus.stratified_cost(c0, stratum_costs, stratum_sizes)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (4.18)"
     return RichResult(
-        title='Linear cost model C = c0 + sum n_h c_h',
+        title="Linear cost model C = c0 + sum n_h c_h",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r4e18: C = c0 + sum_h n_h c_h [Brus 2022, eq. 4.18]'
+    return "r4e18: C = c0 + sum_h n_h c_h [Brus 2022, eq. 4.18]"
 
 
 # compact alias per ledger/NAMING.md

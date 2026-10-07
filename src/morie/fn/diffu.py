@@ -48,7 +48,7 @@ def heat_diffusion(
     if r > 0.5:
         raise ValueError(f"CFL condition violated: r = {r:.4f} > 0.5. Reduce dt or increase dx.")
 
-    n_x = len(T0)
+    len(T0)
     T = T0.copy()
     history = [T.copy()]
 

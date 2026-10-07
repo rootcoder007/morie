@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c6_12 import ghosal_sep_consist
 
 

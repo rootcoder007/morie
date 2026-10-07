@@ -11,8 +11,6 @@ regression, and the canonical name below reflects that.  Both names
 resolve to the same function.
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -28,13 +26,16 @@ def mvsml_categorical_count_eq_8_2(K_new, beta, eta0=0.0, K_train=None):
     ||f||_H^2 = sum_ij beta_i beta_j K(x_i, x_j) is also returned.
     Keys: estimate."""
     pred = _gp.rkhs_predict(K_new, beta, eta0)
-    norm = _gp.rkhs_norm(beta, K_train) if K_train is not None \
-        else None
-    res = RichResult(payload={"estimate": pred[0],
-                              "prediction": pred,
-                              "rkhs_norm2": norm,
-                              "n_coefficients": len(_gp._flat(beta)),
-                              "method": "representer theorem (MVSML 2022 eq. 8.2)"})
+    norm = _gp.rkhs_norm(beta, K_train) if K_train is not None else None
+    res = RichResult(
+        payload={
+            "estimate": pred[0],
+            "prediction": pred,
+            "rkhs_norm2": norm,
+            "n_coefficients": len(_gp._flat(beta)),
+            "method": "representer theorem (MVSML 2022 eq. 8.2)",
+        }
+    )
     return with_describe_pointer(res, "msm125")
 
 

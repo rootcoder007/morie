@@ -1,7 +1,6 @@
 """Tests for imai.imai_keele_yamamoto_mediation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.imai import imai_keele_yamamoto_mediation
 
 

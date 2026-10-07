@@ -63,11 +63,18 @@ def rosenb(matched_pairs, Gamma_grid=(1.0, 1.5, 2.0, 3.0), alpha=0.05):
     for g, p in zip(gs, pu):
         if p <= float(alpha):
             crit = g
-    return RichResult(payload={
-        "Gamma": gs, "p_upper": pu, "p_lower": pl,
-        "gamma_critical": crit, "n_pairs": n_pairs, "W": W,
-        "alpha": float(alpha),
-        "method": "Rosenbaum signed-rank sensitivity bounds over Gamma"})
+    return RichResult(
+        payload={
+            "Gamma": gs,
+            "p_upper": pu,
+            "p_lower": pl,
+            "gamma_critical": crit,
+            "n_pairs": n_pairs,
+            "W": W,
+            "alpha": float(alpha),
+            "method": "Rosenbaum signed-rank sensitivity bounds over Gamma",
+        }
+    )
 
 
 # stub-era long name, kept as an alias

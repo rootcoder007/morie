@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Friedman statistic corrected for ties -- eq. (12.2.12)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['friedties', 'gibbons_friedman_ties']
+__all__ = ["friedties", "gibbons_friedman_ties"]
 
 
 def friedties(data):

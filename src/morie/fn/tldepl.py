@@ -41,9 +41,14 @@ def lower_tail_dependence(y, copula, theta=0.95):
     a = [-v for v in C.vec(y)]
     b = [-v for v in C.vec(copula)]
     r = chi_dependence(a, b, theta)
-    return RichResult(payload={
-        "estimate": float(r["estimate"]), "u": float(r["u"]), "n": int(r["n"]),
-        "method": "lower tail dependence via reflected empirical chi(u) [Joe 1997]"})
+    return RichResult(
+        payload={
+            "estimate": float(r["estimate"]),
+            "u": float(r["u"]),
+            "n": int(r["n"]),
+            "method": "lower tail dependence via reflected empirical chi(u) [Joe 1997]",
+        }
+    )
 
 
 # CANONICAL TEST

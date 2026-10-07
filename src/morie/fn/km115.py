@@ -29,20 +29,23 @@ def kamath_ch8_bleu_n_geom_mean(p_n, N=None):
     if p.size == 0:
         raise ValueError("no precisions given.")
     if np.any(p < 0) or np.any(p > 1):
-        raise ValueError("each p_n is a precision and must lie in "
-                         "[0, 1].")
+        raise ValueError("each p_n is a precision and must lie in [0, 1].")
     if N is not None and int(N) != p.size:
-        raise ValueError(
-            f"N = {N} contradicts the {p.size} precisions given.")
+        raise ValueError(f"N = {N} contradicts the {p.size} precisions given.")
     if np.any(p == 0):
         gm, logmean = 0.0, float("-inf")
     else:
         logmean = float(np.mean(np.log(p)))
         gm = float(np.exp(logmean))
-    return RichResult(payload={
-        "estimate": gm, "log_mean": logmean,
-        "p_n": [float(v) for v in p], "n": int(p.size),
-        "method": "BLEU-N geometric mean of precisions (Kamath Eq 8.3)"})
+    return RichResult(
+        payload={
+            "estimate": gm,
+            "log_mean": logmean,
+            "p_n": [float(v) for v in p],
+            "n": int(p.size),
+            "method": "BLEU-N geometric mean of precisions (Kamath Eq 8.3)",
+        }
+    )
 
 
 def cheatsheet():

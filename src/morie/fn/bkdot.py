@@ -21,12 +21,8 @@ def burkov_dot_product(a, b):
     a = np.atleast_1d(np.asarray(a, dtype=float))
     b = np.atleast_1d(np.asarray(b, dtype=float))
     if a.shape != b.shape:
-        raise ValueError(
-            f"vectors must have the same length; got {len(a)} and "
-            f"{len(b)}.")
-    return RichResult(payload={
-        "estimate": float(np.dot(a, b)), "n": len(a),
-        "method": "Dot product (Burkov Ch 1)"})
+        raise ValueError(f"vectors must have the same length; got {len(a)} and {len(b)}.")
+    return RichResult(payload={"estimate": float(np.dot(a, b)), "n": len(a), "method": "Dot product (Burkov Ch 1)"})
 
 
 def cheatsheet():

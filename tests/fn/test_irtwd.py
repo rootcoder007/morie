@@ -1,7 +1,6 @@
 """Tests for morie.fn.irtwd — Wright map."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.irtwd import irt_wright_map
 
 

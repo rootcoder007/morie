@@ -1,7 +1,6 @@
 """Tests for hrzi2.horowitz_average_derivative."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzi2 import horowitz_average_derivative
 
 

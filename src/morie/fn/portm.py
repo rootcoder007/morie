@@ -72,10 +72,7 @@ def portmanteau_test(
     for k in range(1, lags + 1):
         rho[k - 1] = np.sum(x_centered[k:] * x_centered[:-k]) / (n * gamma0)
 
-    if method == "ljung-box":
-        Q = n * (n + 2) * np.sum(rho**2 / (n - np.arange(1, lags + 1)))
-    else:
-        Q = n * np.sum(rho**2)
+    Q = n * (n + 2) * np.sum(rho**2 / (n - np.arange(1, lags + 1))) if method == "ljung-box" else n * np.sum(rho**2)
 
     p_value = float(stats.chi2.sf(Q, df=lags))
 

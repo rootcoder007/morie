@@ -28,17 +28,16 @@ def tolerance(r2_x):
     """
     value = _ca_crim.tolerance(r2_x)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (3.1)"
     return RichResult(
-        title='Tolerance = 1 - R^2_x (multicollinearity diagnostic)',
+        title="Tolerance = 1 - R^2_x (multicollinearity diagnostic)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca3e1: Tolerance = 1 - R^2_x [Weisburd et al. 2022, eq. 3.1]'
+    return "ca3e1: Tolerance = 1 - R^2_x [Weisburd et al. 2022, eq. 3.1]"

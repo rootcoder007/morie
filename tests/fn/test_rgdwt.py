@@ -1,7 +1,6 @@
 """Tests for rgdwt.rangayyan_dwt."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_dwt
 
 

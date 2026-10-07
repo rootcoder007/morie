@@ -50,12 +50,10 @@ weighting, since each biLM layer has a different distribution.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["elmo_mix", "layer_weights", "bilm_forward", "lstm_step",
-           "elmo_representation"]
+__all__ = ["elmo_mix", "layer_weights", "bilm_forward", "lstm_step", "elmo_representation"]
 
 _EPS = 1e-12
 
@@ -79,9 +77,10 @@ def lstm_step(x, h, c, Wx, Wh, b):
     d = len(h)
     if len(c) != d:
         raise ValueError("elmo: hidden and cell sizes differ")
-    z = [sum(x[i] * Wx[i][j] for i in range(len(x)))
-         + sum(h[i] * Wh[i][j] for i in range(d)) + b[j]
-         for j in range(4 * d)]
+    z = [
+        sum(x[i] * Wx[i][j] for i in range(len(x))) + sum(h[i] * Wh[i][j] for i in range(d)) + b[j]
+        for j in range(4 * d)
+    ]
     i_g = [k.sigmoid(z[j]) for j in range(d)]
     f_g = [k.sigmoid(z[d + j]) for j in range(d)]
     g_g = [math.tanh(z[2 * d + j]) for j in range(d)]
@@ -115,12 +114,12 @@ def bilm_forward(X, layers):
     # broadcasting.
     reps = [[list(row) + list(row) for row in Xm]]
     cur = [list(row) for row in Xm]
-    for (Wxf, Whf, bf, Wxb, Whb, bb) in layers:
+    for Wxf, Whf, bf, Wxb, Whb, bb in layers:
         d = len(Whf)
         if len(reps[0][0]) != 2 * d:
-            raise ValueError("elmo: token dimension %d but hidden "
-                             "dimension %d; layer 0 is [x; x] so they "
-                             "must match" % (len(Xm[0]), d))
+            raise ValueError(
+                f"elmo: token dimension {int(len(Xm[0]))} but hidden dimension {int(d)}; layer 0 is [x; x] so they must match"
+            )
         h = [0.0] * d
         c = [0.0] * d
         fwd = []
@@ -133,7 +132,7 @@ def bilm_forward(X, layers):
         for t in range(L - 1, -1, -1):
             h, c = lstm_step(cur[t], h, c, Wxb, Whb, bb)
             bwd.append(list(h))
-        bwd.reverse()                # re-align: position k is token k
+        bwd.reverse()  # re-align: position k is token k
         cur = [fwd[t] + bwd[t] for t in range(L)]
         reps.append([list(row) for row in cur])
     return reps
@@ -143,21 +142,17 @@ def elmo_mix(reps, raw_weights, gamma=1.0, position=None):
     r"""Eq. (1): :math:`\gamma \sum_j s_j h_{k,j}`."""
     n_layers = len(reps)
     if len(raw_weights) != n_layers:
-        raise ValueError("elmo: %d weights for %d layers"
-                         % (len(raw_weights), n_layers))
+        raise ValueError(f"elmo: {int(len(raw_weights))} weights for {int(n_layers)} layers")
     s = layer_weights(raw_weights)
     L = len(reps[0])
     dims = {len(reps[j][0]) for j in range(n_layers)}
     if len(dims) != 1:
-        raise ValueError("elmo: layers have differing widths %s"
-                         % sorted(dims))
+        raise ValueError(f"elmo: layers have differing widths {sorted(dims)}")
     d = dims.pop()
     idx = range(L) if position is None else [int(position)]
     out = []
     for t in idx:
-        out.append([float(gamma) * sum(s[j] * reps[j][t][c]
-                                       for j in range(n_layers))
-                    for c in range(d)])
+        out.append([float(gamma) * sum(s[j] * reps[j][t][c] for j in range(n_layers)) for c in range(d)])
     return out[0] if position is not None else out
 
 
@@ -168,23 +163,32 @@ def elmo_representation(X, layers, raw_weights=None, gamma=1.0):
     raw = [0.0] * n if raw_weights is None else list(raw_weights)
     mixed = elmo_mix(reps, raw, gamma=gamma)
     s = layer_weights(raw)
-    return RichResult(payload={
-        "estimate": mixed, "elmo": mixed, "layers": reps,
-        "weights": s, "gamma": float(gamma), "n_layers": n,
-        "L": len(reps[0]), "d": len(mixed[0]) if mixed else 0,
-        "top_layer": reps[-1],
-        "method": "ELMo layer mixture, Peters et al. (2018) eq. (1)",
-    })
+    return RichResult(
+        payload={
+            "estimate": mixed,
+            "elmo": mixed,
+            "layers": reps,
+            "weights": s,
+            "gamma": float(gamma),
+            "n_layers": n,
+            "L": len(reps[0]),
+            "d": len(mixed[0]) if mixed else 0,
+            "top_layer": reps[-1],
+            "method": "ELMo layer mixture, Peters et al. (2018) eq. (1)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("elmo: ELMo_k = gamma * sum_j s_j h_{k,j}, s SOFTMAX-"
-            "normalised (eq. 1). The simplex constraint means s chooses "
-            "WHICH layers to read and cannot scale the output -- all "
-            "magnitude is in gamma. Free s makes gamma unidentifiable; "
-            "no gamma leaves the scale wherever the biLM left it. The "
-            "backward pass must be re-reversed or position k stops "
-            "meaning token k, and the shapes will not tell you.")
+    return (
+        "elmo: ELMo_k = gamma * sum_j s_j h_{k,j}, s SOFTMAX-"
+        "normalised (eq. 1). The simplex constraint means s chooses "
+        "WHICH layers to read and cannot scale the output -- all "
+        "magnitude is in gamma. Free s makes gamma unidentifiable; "
+        "no gamma leaves the scale wherever the biLM left it. The "
+        "backward pass must be re-reversed or position k stops "
+        "meaning token k, and the shapes will not tell you."
+    )
 
 
 # compact alias per ledger/NAMING.md

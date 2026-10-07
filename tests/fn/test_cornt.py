@@ -1,7 +1,6 @@
 """Tests for correlation entropy."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cornt import cornt, correlation_entropy
 
 

@@ -74,12 +74,10 @@ framework the paper refines.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["linear_strain_space", "derivatives", "simulate",
-           "endemic_equilibrium", "basic_reproduction_numbers"]
+__all__ = ["linear_strain_space", "derivatives", "simulate", "endemic_equilibrium", "basic_reproduction_numbers"]
 
 _EPS = 1e-14
 
@@ -87,31 +85,25 @@ _EPS = 1e-14
 def _check(beta, nu, mu, sigma):
     b = [float(v) for v in k.vec(beta)]
     n = len(b)
-    nv = ([float(nu)] * n if isinstance(nu, (int, float))
-          else [float(v) for v in k.vec(nu)])
+    nv = [float(nu)] * n if isinstance(nu, (int, float)) else [float(v) for v in k.vec(nu)]
     if len(nv) != n:
-        raise ValueError("hiatus: %d recovery rates for %d strains"
-                         % (len(nv), n))
+        raise ValueError(f"hiatus: {int(len(nv))} recovery rates for {int(n)} strains")
     if n < 1:
         raise ValueError("hiatus: at least one strain is needed")
     if any(v <= 0.0 for v in b):
         raise ValueError("hiatus: transmission rates must be positive")
     if any(v < 0.0 for v in nv):
-        raise ValueError("hiatus: recovery rates must be "
-                         "non-negative")
+        raise ValueError("hiatus: recovery rates must be non-negative")
     if float(mu) < 0.0:
-        raise ValueError("hiatus: the birth/death rate must be "
-                         "non-negative")
+        raise ValueError("hiatus: the birth/death rate must be non-negative")
     S = k.mat(sigma)
     if len(S) != n or any(len(r) != n for r in S):
-        raise ValueError("hiatus: sigma must be %d by %d" % (n, n))
+        raise ValueError(f"hiatus: sigma must be {int(n)} by {int(n)}")
     Sm = [[float(v) for v in r] for r in S]
     for r in Sm:
         for v in r:
             if not 0.0 <= v <= 1.0:
-                raise ValueError("hiatus: sigma entries are "
-                                 "probabilities and must lie in "
-                                 "[0, 1], got %r" % (v,))
+                raise ValueError(f"hiatus: sigma entries are probabilities and must lie in [0, 1], got {v!r}")
     return b, nv, float(mu), Sm, n
 
 
@@ -119,15 +111,13 @@ def basic_reproduction_numbers(beta, nu, mu):
     r""":math:`R_{0i} = \beta_i / (\nu_i + \mu)`, strain by strain."""
     b = [float(v) for v in k.vec(beta)]
     n = len(b)
-    nv = ([float(nu)] * n if isinstance(nu, (int, float))
-          else [float(v) for v in k.vec(nu)])
+    nv = [float(nu)] * n if isinstance(nu, (int, float)) else [float(v) for v in k.vec(nu)]
     m = float(mu)
     out = []
     for i in range(n):
         d = nv[i] + m
         if d <= _EPS:
-            raise ValueError("hiatus: strain %d never leaves the "
-                             "infectious class (nu + mu = 0)" % i)
+            raise ValueError(f"hiatus: strain {int(i)} never leaves the infectious class (nu + mu = 0)")
         out.append(b[i] / d)
     return out
 
@@ -141,35 +131,27 @@ def endemic_equilibrium(beta, nu, mu, strain=0):
     """
     R0 = basic_reproduction_numbers(beta, nu, mu)[int(strain)]
     if R0 <= 1.0:
-        return {"R0": R0, "S": 1.0, "I": 0.0,
-                "note": "R0 <= 1, so the disease-free state is the "
-                        "only equilibrium"}
+        return {"R0": R0, "S": 1.0, "I": 0.0, "note": "R0 <= 1, so the disease-free state is the only equilibrium"}
     b = [float(v) for v in k.vec(beta)]
     n = len(b)
-    nv = ([float(nu)] * n if isinstance(nu, (int, float))
-          else [float(v) for v in k.vec(nu)])
+    nv = [float(nu)] * n if isinstance(nu, (int, float)) else [float(v) for v in k.vec(nu)]
     d = nv[int(strain)] + float(mu)
-    return {"R0": R0, "S": 1.0 / R0,
-            "I": float(mu) * (1.0 - 1.0 / R0) / d}
+    return {"R0": R0, "S": 1.0 / R0, "I": float(mu) * (1.0 - 1.0 / R0) / d}
 
 
-def derivatives(S, I, beta, nu, mu, sigma):
+def derivatives(S, I, beta, nu, mu, sigma):  # noqa: E741
     r"""The right-hand sides of the two equations, as printed."""
     b, nv, m, sg, n = _check(beta, nu, mu, sigma)
     Sv = [float(v) for v in k.vec(S)]
     Iv = [float(v) for v in k.vec(I)]
     if len(Sv) != n or len(Iv) != n:
-        raise ValueError("hiatus: S and I must have one entry per "
-                         "strain (%d, %d, %d)" % (len(Sv), len(Iv), n))
-    dI = [b[i] * Sv[i] * Iv[i] - nv[i] * Iv[i] - m * Iv[i]
-          for i in range(n)]
-    dS = [m - sum(b[j] * Sv[i] * sg[i][j] * Iv[j] for j in range(n))
-          - m * Sv[i] for i in range(n)]
+        raise ValueError(f"hiatus: S and I must have one entry per strain ({int(len(Sv))}, {int(len(Iv))}, {int(n)})")
+    dI = [b[i] * Sv[i] * Iv[i] - nv[i] * Iv[i] - m * Iv[i] for i in range(n)]
+    dS = [m - sum(b[j] * Sv[i] * sg[i][j] * Iv[j] for j in range(n)) - m * Sv[i] for i in range(n)]
     return dS, dI
 
 
-def simulate(beta, nu, mu, sigma, S0=None, I0=None, t_end=2000.0,
-             dt=0.05, mutation=0.0, record_every=100):
+def simulate(beta, nu, mu, sigma, S0=None, I0=None, t_end=2000.0, dt=0.05, mutation=0.0, record_every=100):
     r"""Integrate the system by fourth-order Runge-Kutta.
 
     ``mutation`` adds the stepwise term of the applications section:
@@ -178,11 +160,9 @@ def simulate(beta, nu, mu, sigma, S0=None, I0=None, t_end=2000.0,
     """
     b, nv, m, sg, n = _check(beta, nu, mu, sigma)
     Sv = [1.0] * n if S0 is None else [float(v) for v in k.vec(S0)]
-    Iv = ([1e-4] * n if I0 is None
-          else [float(v) for v in k.vec(I0)])
+    Iv = [1e-4] * n if I0 is None else [float(v) for v in k.vec(I0)]
     if len(Sv) != n or len(Iv) != n:
-        raise ValueError("hiatus: the initial state must have one "
-                         "entry per strain")
+        raise ValueError("hiatus: the initial state must have one entry per strain")
     if float(dt) <= 0.0:
         raise ValueError("hiatus: dt must be positive")
     mu_rate = float(mutation)
@@ -222,23 +202,26 @@ def simulate(beta, nu, mu, sigma, S0=None, I0=None, t_end=2000.0,
         cI = [Iv[i] + h * k3I[i] for i in range(n)]
         k4S, k4I = rhs(cS, cI)
         for i in range(n):
-            Sv[i] += h / 6.0 * (k1S[i] + 2 * k2S[i] + 2 * k3S[i]
-                                + k4S[i])
-            Iv[i] += h / 6.0 * (k1I[i] + 2 * k2I[i] + 2 * k3I[i]
-                                + k4I[i])
+            Sv[i] += h / 6.0 * (k1S[i] + 2 * k2S[i] + 2 * k3S[i] + k4S[i])
+            Iv[i] += h / 6.0 * (k1I[i] + 2 * k2I[i] + 2 * k3I[i] + k4I[i])
             Sv[i] = min(max(Sv[i], 0.0), 1.0)
             Iv[i] = max(Iv[i], 0.0)
-    return RichResult(payload={
-        "estimate": list(Iv), "S": list(Sv), "I": list(Iv),
-        "t": traj_t, "S_traj": traj_S, "I_traj": traj_I,
-        "n_strains": n, "R0": basic_reproduction_numbers(b, nv, m),
-        "n_variables": 2 * n,
-        "n_variables_history_based": "2^%d = %d" % (n, 2 ** n)
-        if n <= 30 else "2^%d" % n,
-        "surviving": [i for i in range(n) if Iv[i] > 1e-8],
-        "method": "status-based many-strain model, Gog & Grenfell "
-                  "(2002), integrated by RK4",
-    })
+    return RichResult(
+        payload={
+            "estimate": list(Iv),
+            "S": list(Sv),
+            "I": list(Iv),
+            "t": traj_t,
+            "S_traj": traj_S,
+            "I_traj": traj_I,
+            "n_strains": n,
+            "R0": basic_reproduction_numbers(b, nv, m),
+            "n_variables": 2 * n,
+            "n_variables_history_based": f"2^{int(n)} = {int(2**n)}" if n <= 30 else f"2^{int(n)}",
+            "surviving": [i for i in range(n) if Iv[i] > 1e-8],
+            "method": "status-based many-strain model, Gog & Grenfell (2002), integrated by RK4",
+        }
+    )
 
 
 def linear_strain_space(n, width=2.0, floor=0.0):
@@ -253,20 +236,20 @@ def linear_strain_space(n, width=2.0, floor=0.0):
     if float(width) <= 0.0:
         raise ValueError("hiatus: width must be positive")
     w = float(width)
-    return [[max(float(floor),
-                 math.exp(-((i - j) ** 2) / (w * w)))
-             for j in range(int(n))] for i in range(int(n))]
+    return [[max(float(floor), math.exp(-((i - j) ** 2) / (w * w))) for j in range(int(n))] for i in range(int(n))]
 
 
 def cheatsheet():
-    return ("hiatus: many-strain dynamics in 2n variables, not 2^n. "
-            "Status-based + reduced transmission + POLARIZED immunity "
-            "(some hosts fully immune, not all partly) means one "
-            "variable per host per strain. dI_i = b_i S_i I_i - "
-            "(v_i + mu) I_i; dS_i = mu - sum_j b_j S_i sigma_ij I_j - "
-            "mu S_i. sigma_ij = P(infection by j immunises against i). "
-            "Off-diagonal sigma = 0 decouples the strains exactly; "
-            "sigma = 1 everywhere gives competitive exclusion.")
+    return (
+        "hiatus: many-strain dynamics in 2n variables, not 2^n. "
+        "Status-based + reduced transmission + POLARIZED immunity "
+        "(some hosts fully immune, not all partly) means one "
+        "variable per host per strain. dI_i = b_i S_i I_i - "
+        "(v_i + mu) I_i; dS_i = mu - sum_j b_j S_i sigma_ij I_j - "
+        "mu S_i. sigma_ij = P(infection by j immunises against i). "
+        "Off-diagonal sigma = 0 decouples the strains exactly; "
+        "sigma = 1 everywhere gives competitive exclusion."
+    )
 
 
 # compact alias per ledger/NAMING.md

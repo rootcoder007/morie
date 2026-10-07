@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["matched_case_control"]
 
 
-def matched_case_control(cases, controls, matching_id, exposure, level=0.95,
-                         max_iter=100, tol=1e-12):
+def matched_case_control(cases, controls, matching_id, exposure, level=0.95, max_iter=100, tol=1e-12):
     """Estimate the odds ratio without ever estimating the matching sets.
 
     Matching removes confounding by design, but it introduces one nuisance
@@ -69,8 +68,7 @@ def matched_case_control(cases, controls, matching_id, exposure, level=0.95,
         raise ValueError("cases must be coded 0 or 1")
     if controls is not None:
         cc = [float(t) for t in core.vec(controls)]
-        if len(cc) != n or any(abs(cc[i] - (1.0 - y[i])) > 1e-12
-                               for i in range(n)):
+        if len(cc) != n or any(abs(cc[i] - (1.0 - y[i])) > 1e-12 for i in range(n)):
             raise ValueError("controls must be the complement of cases")
     sets = {}
     for i in range(n):
@@ -85,7 +83,7 @@ def matched_case_control(cases, controls, matching_id, exposure, level=0.95,
     it = 0
     conv = False
     info = 0.0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         score = 0.0
         info = 0.0
         for k in keys:
@@ -99,8 +97,7 @@ def matched_case_control(cases, controls, matching_id, exposure, level=0.95,
             score += xc - s1 / s0
             info += s2 / s0 - (s1 / s0) ** 2
         if info <= 0.0:
-            raise ValueError("the conditional information is zero; the "
-                             "exposure does not vary within any matched set")
+            raise ValueError("the conditional information is zero; the exposure does not vary within any matched set")
         step = score / info
         beta += step
         if abs(score) < float(tol):
@@ -115,12 +112,21 @@ def matched_case_control(cases, controls, matching_id, exposure, level=0.95,
         ll += beta * xc - (mx + math.log(s0))
     se = 1.0 / math.sqrt(info)
     z = core.qnorm(1.0 - (1.0 - float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": math.exp(beta), "log_or": beta, "se": se,
-        "ci": [math.exp(beta - z * se), math.exp(beta + z * se)],
-        "information": info, "loglik": ll, "n_sets": len(keys),
-        "n_obs": n, "iters": it, "converged": 1.0 if conv else 0.0,
-        "method": "Conditional MLE for matched case-control data"})
+    return RichResult(
+        payload={
+            "estimate": math.exp(beta),
+            "log_or": beta,
+            "se": se,
+            "ci": [math.exp(beta - z * se), math.exp(beta + z * se)],
+            "information": info,
+            "loglik": ll,
+            "n_sets": len(keys),
+            "n_obs": n,
+            "iters": it,
+            "converged": 1.0 if conv else 0.0,
+            "method": "Conditional MLE for matched case-control data",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,8 +1,8 @@
 """Tests for dmlMed.dml_mediation_orthogonal."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.dmlMed import dml_mediation_orthogonal
 from morie.fn.medML import ml_mediation_dml
 

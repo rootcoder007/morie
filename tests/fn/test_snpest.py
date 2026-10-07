@@ -1,7 +1,6 @@
 """Tests for snpest.sn_pseudo_estimate."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.snpest import sn_pseudo_estimate
 
 

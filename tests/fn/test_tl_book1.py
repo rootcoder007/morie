@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Tests for targeted learning book chapters 1-10."""
+
 import importlib
 import math
 
@@ -28,8 +28,7 @@ def make_data(n=800, seed=3):
         a = 1.0 if float(rng.uniform()) < p else 0.0
         m1 = 0.2 + 0.5 * w + 0.1 * w2
         m0 = 0.1 + 0.3 * w + 0.1 * w2
-        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0
-                                           else m0) else 0.0
+        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0 else m0) else 0.0
         W.append([w, w2])
         A.append(a)
         Y.append(y)
@@ -73,21 +72,17 @@ def test_tlroad_rejects_a_positivity_violation():
 
 # ------------------------------------------------------------- tlgcmp
 def test_tlgcmp_g_computation_closed_form():
-    assert abs(tlgcmp.g_computation([0, 1], {0: 0.2, 1: 0.7},
-                                    {0: 0.5, 1: 0.5}) - 0.45) < 1e-12
+    assert abs(tlgcmp.g_computation([0, 1], {0: 0.2, 1: 0.7}, {0: 0.5, 1: 0.5}) - 0.45) < 1e-12
     with pytest.raises(ValueError):
-        tlgcmp.g_computation([0, 1], {0: 0.2, 1: 0.7},
-                             {0: 0.5, 1: 0.9})
+        tlgcmp.g_computation([0, 1], {0: 0.2, 1: 0.7}, {0: 0.5, 1: 0.9})
 
 
 def test_tlgcmp_beats_the_crude_difference_under_confounding():
     Wl = [w[0] for w in W]
-    gc = tlgcmp.counterfactual_mean(Y, A, Wl, 1.0) - \
-        tlgcmp.counterfactual_mean(Y, A, Wl, 0.0)
+    gc = tlgcmp.counterfactual_mean(Y, A, Wl, 1.0) - tlgcmp.counterfactual_mean(Y, A, Wl, 0.0)
     n1 = sum(1 for v in A if v == 1.0)
     n0 = len(A) - n1
-    crude = (sum(Y[i] for i in range(len(Y)) if A[i] == 1.0) / n1
-             - sum(Y[i] for i in range(len(Y)) if A[i] == 0.0) / n0)
+    crude = sum(Y[i] for i in range(len(Y)) if A[i] == 1.0) / n1 - sum(Y[i] for i in range(len(Y)) if A[i] == 0.0) / n0
     assert abs(gc - TRUE_ATE) < abs(crude - TRUE_ATE)
 
 
@@ -98,8 +93,7 @@ def test_tlgcmp_positivity_is_reported():
 
 def test_tlgcmp_empty_stratum_is_a_positivity_violation():
     with pytest.raises(ValueError):
-        tlgcmp.counterfactual_mean([1.0, 0.0], [1.0, 1.0], [0, 1],
-                                   0.0)
+        tlgcmp.counterfactual_mean([1.0, 0.0], [1.0, 1.0], [0, 1], 0.0)
 
 
 def test_tlgcmp_sequential_formula_ignores_the_treatment_mechanism():
@@ -107,8 +101,7 @@ def test_tlgcmp_sequential_formula_ignores_the_treatment_mechanism():
     Q = {1: lambda h: 0.3 + 0.4 * h[0] + 0.2 * h[1]}
     sup = [[0.0, 1.0]]
     probs = [lambda h: [0.5, 0.5]]
-    r = tlseq = tlgcmp.sequential_g_formula(
-        {1: Q[1]}, sup, probs, lambda h: 1.0)
+    r = tlgcmp.sequential_g_formula({1: Q[1]}, sup, probs, lambda h: 1.0)
     assert abs(r["psi"] - (0.3 + 0.4 * 0.5 + 0.2)) < 1e-12
 
 
@@ -137,25 +130,20 @@ def _toy(n=300, seed=11):
 
 def test_tlseqsl_weights_are_convex():
     X, y = _toy()
-    sl = tlseqsl.ensemble_super_learner(X, y,
-                                        {"const": _const,
-                                         "linear": _linear}, V=5)
+    sl = tlseqsl.ensemble_super_learner(X, y, {"const": _const, "linear": _linear}, V=5)
     assert abs(sum(sl["weights"].values()) - 1.0) < 1e-9
     assert all(v >= -1e-12 for v in sl["weights"].values())
 
 
 def test_tlseqsl_ensemble_is_no_worse_than_the_best_member():
     X, y = _toy()
-    sl = tlseqsl.ensemble_super_learner(X, y,
-                                        {"const": _const,
-                                         "linear": _linear}, V=5)
+    sl = tlseqsl.ensemble_super_learner(X, y, {"const": _const, "linear": _linear}, V=5)
     assert sl["cv_risk"] <= sl["best_single"] + 1e-9
 
 
 def test_tlseqsl_selector_picks_the_right_algorithm():
     X, y = _toy()
-    d = tlseqsl.discrete_super_learner(X, y, {"const": _const,
-                                              "linear": _linear}, V=5)
+    d = tlseqsl.discrete_super_learner(X, y, {"const": _const, "linear": _linear}, V=5)
     assert d["selected"] == "linear"
 
 
@@ -195,8 +183,7 @@ def test_tlltmle_clever_covariate_exposes_positivity():
 
 
 def test_tlltmle_fluctuation_solves_its_own_score():
-    r = tlltmle.fluctuate([0.4] * 100, [1.0] * 100,
-                          [1.0] * 30 + [0.0] * 70)
+    r = tlltmle.fluctuate([0.4] * 100, [1.0] * 100, [1.0] * 30 + [0.0] * 70)
     assert abs(r["score"]) < 1e-8
     assert abs(r["Q_star"][0] - 0.3) < 1e-6
 
@@ -212,8 +199,7 @@ def test_tlltmle_longitudinal_runs_backwards():
 # ------------------------------------------------------------ tl1step
 def _q_and_y(n=300, seed=4):
     rng = np.random.default_rng(seed)
-    q = [min(max(0.3 + 0.4 * float(rng.uniform()), 0.05), 0.95)
-         for _ in range(n)]
+    q = [min(max(0.3 + 0.4 * float(rng.uniform()), 0.05), 0.95) for _ in range(n)]
     y = [1.0 if float(rng.uniform()) < v else 0.0 for v in q]
     return q, y
 
@@ -226,8 +212,7 @@ def test_tl1step_submodel_is_universal_away_from_zero():
     q, _ = _q_and_y()
     u = tl1step.is_universal(q, _H, eps=0.4)
     assert u["universal"]
-    assert u["local_submodel_direction_drift"] > 100 * \
-        u["max_deviation"]
+    assert u["local_submodel_direction_drift"] > 100 * u["max_deviation"]
 
 
 def test_tl1step_one_move_solves_the_score_equation():
@@ -275,8 +260,7 @@ def test_tlhal_l1_bound_is_the_variation_norm():
     X, y = _step_data()
     f = tlhal.hal_fit(X, y, lam=1.0, iters=800)
     assert abs(f["variation_norm"] - 1.0) < 1e-6
-    assert abs(tlhal.variation_norm(f["beta"])
-               - f["variation_norm"]) < 1e-12
+    assert abs(tlhal.variation_norm(f["beta"]) - f["variation_norm"]) < 1e-12
 
 
 def test_tlhal_a_tighter_bound_underfits():
@@ -311,8 +295,7 @@ def test_tlhal_rejects_bad_input():
 # ------------------------------------------------------------ tlhaltm
 def test_tlhaltm_rate_condition_boundary():
     assert not tlhaltm.rate_condition(0.25, 0.25, 1000)["satisfied"]
-    assert tlhaltm.rate_condition(1 / 3.0, 1 / 3.0,
-                                  1000)["satisfied"]
+    assert tlhaltm.rate_condition(1 / 3.0, 1 / 3.0, 1000)["satisfied"]
 
 
 def test_tlhaltm_positivity_breaks_efficiency_not_the_rate():
@@ -348,14 +331,12 @@ def test_tlheic_recovers_the_analytic_gradient():
         t = sum(w)
         return sum(w[i] * (Q1a[i] - Q0a[i]) for i in range(n)) / t
 
-    basis = [[Q1a[i] - Q0a[i], W[i][0], W[i][1], Aa[i]]
-             for i in range(n)]
+    basis = [[Q1a[i] - Q0a[i], W[i][0], W[i][1], Aa[i]] for i in range(n)]
     est = tlheic.estimate_eic(psi_of_P, basis)
     psi = psi_of_P([1.0 / n] * n)
     part = [Q1a[i] - Q0a[i] - psi for i in range(n)]
     num = sum(est["D"][i] * part[i] for i in range(n))
-    den = math.sqrt(sum(v * v for v in est["D"])) * \
-        math.sqrt(sum(v * v for v in part))
+    den = math.sqrt(sum(v * v for v in est["D"])) * math.sqrt(sum(v * v for v in part))
     assert abs(num / den - 1.0) < 0.02
 
 
@@ -366,8 +347,7 @@ def test_tlheic_identity_holds_on_a_held_out_direction():
         t = sum(w)
         return sum(w[i] * (Q1a[i] - Q0a[i]) for i in range(n)) / t
 
-    basis = [[Q1a[i] - Q0a[i], W[i][0], W[i][1], Aa[i]]
-             for i in range(n)]
+    basis = [[Q1a[i] - Q0a[i], W[i][0], W[i][1], Aa[i]] for i in range(n)]
     est = tlheic.estimate_eic(psi_of_P, basis)
     held = [W[i][0] * W[i][1] for i in range(n)]
     assert tlheic.verify_gradient(psi_of_P, est["D"], held)["verified"]
@@ -380,8 +360,7 @@ def test_tlheic_gradient_is_mean_zero():
         t = sum(w)
         return sum(w[i] * Q1a[i] for i in range(n)) / t
 
-    est = tlheic.estimate_eic(psi_of_P, [[Q1a[i], Aa[i]]
-                                         for i in range(n)])
+    est = tlheic.estimate_eic(psi_of_P, [[Q1a[i], Aa[i]] for i in range(n)])
     assert abs(sum(est["D"]) / n) < 1e-9
 
 
@@ -393,8 +372,7 @@ def test_tlheic_rejects_bad_input():
 # ------------------------------------------------------------ tldapar
 def _snoop_setup(NN=400, seed=9):
     rng = np.random.default_rng(seed)
-    noise = [[float(rng.uniform()) for _ in range(20)]
-             for _ in range(NN)]
+    noise = [[float(rng.uniform()) for _ in range(20)] for _ in range(NN)]
     target = [float(rng.uniform()) for _ in range(NN)]
 
     def define(tr):
@@ -402,10 +380,8 @@ def _snoop_setup(NN=400, seed=9):
         for j in range(20):
             mx = sum(noise[i][j] for i in tr) / len(tr)
             my = sum(target[i] for i in tr) / len(tr)
-            num = sum((noise[i][j] - mx) * (target[i] - my)
-                      for i in tr)
-            den = math.sqrt(sum((noise[i][j] - mx) ** 2 for i in tr)
-                            * sum((target[i] - my) ** 2 for i in tr))
+            num = sum((noise[i][j] - mx) * (target[i] - my) for i in tr)
+            den = math.sqrt(sum((noise[i][j] - mx) ** 2 for i in tr) * sum((target[i] - my) ** 2 for i in tr))
             c = abs(num / den) if den > 0 else 0.0
             if best is None or c > best:
                 best, bj = c, j
@@ -415,11 +391,8 @@ def _snoop_setup(NN=400, seed=9):
         mx = sum(noise[i][j] for i in idx) / len(idx)
         my = sum(target[i] for i in idx) / len(idx)
         num = sum((noise[i][j] - mx) * (target[i] - my) for i in idx)
-        den = math.sqrt(sum((noise[i][j] - mx) ** 2 for i in idx)
-                        * sum((target[i] - my) ** 2 for i in idx))
-        return {"estimate": num / den if den > 0 else 0.0,
-                "ic": [(noise[i][j] - mx) * (target[i] - my)
-                       for i in idx]}
+        den = math.sqrt(sum((noise[i][j] - mx) ** 2 for i in idx) * sum((target[i] - my) ** 2 for i in idx))
+        return {"estimate": num / den if den > 0 else 0.0, "ic": [(noise[i][j] - mx) * (target[i] - my) for i in idx]}
 
     return define, est, NN
 
@@ -427,16 +400,14 @@ def _snoop_setup(NN=400, seed=9):
 def test_tldapar_split_beats_reusing_one_sample_on_a_null():
     define, est, NN = _snoop_setup()
     split = tldapar.data_adaptive_parameter(define, est, NN, V=5)
-    naive = tldapar.naive_reuse(
-        lambda idx: est(define(idx), idx), NN)
+    naive = tldapar.naive_reuse(lambda idx: est(define(idx), idx), NN)
     assert abs(naive["estimate"]) > abs(split["psi"]) + 0.03
     assert abs(split["psi"]) < 0.10
 
 
 def test_tldapar_splits_are_disjoint():
     sp = tldapar.split_sample(100, 5)
-    assert sorted(i for f in sp["estimation"] for i in f) == \
-        list(range(100))
+    assert sorted(i for f in sp["estimation"] for i in f) == list(range(100))
     for v in range(5):
         assert not set(sp["estimation"][v]) & set(sp["training"][v])
 
@@ -459,8 +430,7 @@ def _instrument_data(n=600, seed=17):
         p = min(max(0.5 + 0.15 * w + 0.88 * (z - 0.5), 0.03), 0.97)
         a = 1.0 if float(rng.uniform()) < p else 0.0
         m1, m0 = 0.3 + 0.4 * w, 0.2 + 0.4 * w
-        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0
-                                           else m0) else 0.0
+        y = 1.0 if float(rng.uniform()) < (m1 if a == 1.0 else m0) else 0.0
         W2.append([w, z])
         A2.append(a)
         Y2.append(y)
@@ -478,8 +448,7 @@ def test_tlctmle_rejects_the_instrument():
 def test_tlctmle_instrument_inflates_the_variance_penalty():
     W2, A2, Y2, Q12, Q02 = _instrument_data()
     c = tlctmle.ctmle(A2, Y2, Q12, Q02, W2, [[0], [0, 1]], V=5)
-    assert c["variance_penalties"][1] > 5.0 * \
-        c["variance_penalties"][0]
+    assert c["variance_penalties"][1] > 5.0 * c["variance_penalties"][0]
 
 
 def test_tlctmle_still_solves_the_score_equation():
@@ -502,6 +471,5 @@ def test_tlctmle_rejects_an_empty_candidate_list():
 
 
 def test_tl_cheatsheets_are_present():
-    for mod in (tlroad, tlgcmp, tlseqsl, tlltmle, tl1step, tlhal,
-                tlhaltm, tlheic, tldapar, tlctmle):
+    for mod in (tlroad, tlgcmp, tlseqsl, tlltmle, tl1step, tlhal, tlhaltm, tlheic, tldapar, tlctmle):
         assert len(mod.cheatsheet()) > 80

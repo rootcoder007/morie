@@ -1,8 +1,6 @@
 """Tests for cvxdle.boyd_dual_norm."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.cvxdle import boyd_dual_norm
 
 
@@ -42,20 +40,20 @@ def test_cvxdle_edge():
     # l2 is self-dual: value = sqrt(sum(z**2))
     z2 = np.array([3.0, -4.0])
     result_l2 = boyd_dual_norm(2, z2)
-    expected_l2 = float(np.sqrt(np.sum(z2 ** 2)))
+    expected_l2 = float(np.sqrt(np.sum(z2**2)))
     assert result_l2["value"] == expected_l2
     assert result_l2["dual_of"] == "2"
     assert result_l2["conjugate_exponent"] == 2.0
     x_l2 = np.asarray(result_l2["maximizer"], dtype=float).ravel()
     zflat = np.asarray(z2, dtype=float).ravel()
     # l2 maximizer lies in the l2 unit ball
-    assert float(np.sqrt(np.sum(x_l2 ** 2))) <= 1.0 + 1e-12
+    assert float(np.sqrt(np.sum(x_l2**2))) <= 1.0 + 1e-12
     assert abs(float(np.sum(zflat * x_l2)) - expected_l2) < 1e-10
 
     # Frobenius norm on a matrix: self-dual, value = sqrt(sum(z**2))
     zmat = np.array([[3.0, -4.0], [0.0, 5.0]])
     result_fro = boyd_dual_norm("fro", zmat)
-    expected_fro = float(np.sqrt(np.sum(zmat ** 2)))
+    expected_fro = float(np.sqrt(np.sum(zmat**2)))
     assert result_fro["value"] == expected_fro
     assert result_fro["dual_of"] == "fro"
     assert result_fro["conjugate_exponent"] == 2.0

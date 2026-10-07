@@ -11,12 +11,14 @@ __all__ = ["ddim_step"]
 
 def alpha_bar_cosine(t, T):
     """Nichol-Dhariwal cosine schedule for the cumulative alpha."""
-    f = lambda u: math.cos((u / T + 0.008) / 1.008 * math.pi / 2.0) ** 2
+
+    def f(u):
+        return math.cos((u / T + 0.008) / 1.008 * math.pi / 2.0) ** 2
+
     return f(t) / f(0.0)
 
 
-def ddim_step(x_t, t, eps_theta, eta=0.0, T=1000, alpha_bar_t=None,
-              alpha_bar_prev=None):
+def ddim_step(x_t, t, eps_theta, eta=0.0, T=1000, alpha_bar_t=None, alpha_bar_prev=None):
     """
     One DDIM reverse step
 
@@ -70,25 +72,25 @@ def ddim_step(x_t, t, eps_theta, eta=0.0, T=1000, alpha_bar_t=None,
     if not (0.0 <= eta <= 1.0):
         raise ValueError("eta must lie in [0, 1]")
     at = alpha_bar_cosine(t, T) if alpha_bar_t is None else float(alpha_bar_t)
-    ap = alpha_bar_cosine(t - 1, T) if alpha_bar_prev is None \
-        else float(alpha_bar_prev)
+    ap = alpha_bar_cosine(t - 1, T) if alpha_bar_prev is None else float(alpha_bar_prev)
     if not (0.0 < at <= 1.0 and 0.0 < ap <= 1.0):
         raise ValueError("cumulative alphas must lie in (0, 1]")
-    sigma = eta * math.sqrt((1.0 - ap) / (1.0 - at)) * \
-        math.sqrt(max(1.0 - at / ap, 0.0))
+    sigma = eta * math.sqrt((1.0 - ap) / (1.0 - at)) * math.sqrt(max(1.0 - at / ap, 0.0))
     x0 = [(x[i] - math.sqrt(1.0 - at) * e[i]) / math.sqrt(at) for i in range(n)]
     c = math.sqrt(max(1.0 - ap - sigma * sigma, 0.0))
     xp = [math.sqrt(ap) * x0[i] + c * e[i] for i in range(n)]
-    return RichResult(payload={
-        "estimate": sum(xp) / n,
-        "x_prev": xp,
-        "x0_pred": x0,
-        "sigma": sigma,
-        "alpha_bar_t": at,
-        "alpha_bar_prev": ap,
-        "n": n,
-        "method": "DDIM reverse step",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(xp) / n,
+            "x_prev": xp,
+            "x0_pred": x0,
+            "sigma": sigma,
+            "alpha_bar_t": at,
+            "alpha_bar_prev": ap,
+            "n": n,
+            "method": "DDIM reverse step",
+        }
+    )
 
 
 def cheatsheet():

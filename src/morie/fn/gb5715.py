@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Walsh-average confidence interval for the median."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['wsrci', 'gibbons_wsrt_ci']
+__all__ = ["wsrci", "gibbons_wsrt_ci"]
 
 
 def _wsrnull(n):
@@ -56,9 +54,7 @@ def wsrci(x, tcrit):
         raise ValueError("need at least 2 observations.")
     if tcrit < 0:
         raise ValueError("tcrit must be non-negative.")
-    walsh = sorted(
-        (xs[i] + xs[k]) / 2.0 for i in range(n) for k in range(i, n)
-    )
+    walsh = sorted((xs[i] + xs[k]) / 2.0 for i in range(n) for k in range(i, n))
     nw = len(walsh)
     if tcrit + 1 > nw:
         raise ValueError("tcrit too large for this sample size.")

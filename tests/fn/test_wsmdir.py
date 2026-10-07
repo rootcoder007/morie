@@ -26,11 +26,7 @@ def test_wsmdir_basic():
     assert out00["estimate"] == pytest.approx(0.7 * 0.8, rel=1e-12)
 
     # The four configurations of a two-node DAG form a distribution.
-    total = sum(
-        wasserman_directed_graph(_CHAIN, [a, b])["estimate"]
-        for a in (0, 1)
-        for b in (0, 1)
-    )
+    total = sum(wasserman_directed_graph(_CHAIN, [a, b])["estimate"] for a in (0, 1) for b in (0, 1))
     assert total == pytest.approx(1.0, rel=1e-12)
 
 
@@ -49,29 +45,16 @@ def test_wsmdir_three_node_collider():
             for zv in (0, 1):
                 out = wasserman_directed_graph(dag, [xv, yv, zv])
                 p1 = cpt[(xv, yv)]
-                expected = (
-                    (px if xv else 1 - px)
-                    * (py if yv else 1 - py)
-                    * (p1 if zv else 1 - p1)
-                )
+                expected = (px if xv else 1 - px) * (py if yv else 1 - py) * (p1 if zv else 1 - p1)
                 assert out["n_nodes"] == 3
                 assert out["estimate"] == pytest.approx(expected, rel=1e-12)
-                assert out["log_joint"] == pytest.approx(
-                    math.log(expected), rel=1e-12
-                )
+                assert out["log_joint"] == pytest.approx(math.log(expected), rel=1e-12)
 
-    total = sum(
-        wasserman_directed_graph(dag, [a, b, c])["estimate"]
-        for a in (0, 1)
-        for b in (0, 1)
-        for c in (0, 1)
-    )
+    total = sum(wasserman_directed_graph(dag, [a, b, c])["estimate"] for a in (0, 1) for b in (0, 1) for c in (0, 1))
     assert total == pytest.approx(1.0, rel=1e-12)
 
     # Marginalising Z out of the collider leaves P(X) P(Y).
-    marg = sum(
-        wasserman_directed_graph(dag, [1, 0, c])["estimate"] for c in (0, 1)
-    )
+    marg = sum(wasserman_directed_graph(dag, [1, 0, c])["estimate"] for c in (0, 1))
     assert marg == pytest.approx(px * (1 - py), rel=1e-12)
 
 
@@ -86,11 +69,7 @@ def test_wsmdir_zero_probability_configuration():
     assert out["estimate"] == 0.0
     assert out["log_joint"] == float("-inf")
     # The permitted configurations still sum to one.
-    total = sum(
-        wasserman_directed_graph(dag, [a, b])["estimate"]
-        for a in (0, 1)
-        for b in (0, 1)
-    )
+    total = sum(wasserman_directed_graph(dag, [a, b])["estimate"] for a in (0, 1) for b in (0, 1))
     assert total == pytest.approx(1.0, rel=1e-12)
 
 
@@ -141,7 +120,7 @@ import morie.fn.wsmdir as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

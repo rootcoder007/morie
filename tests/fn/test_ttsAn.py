@@ -1,7 +1,6 @@
 """Tests for ttsAn.twitter_anomaly."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ttsAn import twitter_anomaly
 
 

@@ -13,14 +13,14 @@ def _triad_counts(adj, n):
     # here we count the two most-used motifs explicitly (feed-forward
     # loop and 3-cycle) plus all connected triads, which is enough to
     # score any single motif the caller asks about.
-    ff = 0        # feed-forward loop: i->j, i->k, j->k
-    cyc = 0       # 3-cycle: i->j->k->i
+    ff = 0  # feed-forward loop: i->j, i->k, j->k
+    cyc = 0  # 3-cycle: i->j->k->i
     for i in range(n):
         for j in range(n):
             if j == i or not adj[i][j]:
                 continue
             for k in range(n):
-                if k == i or k == j:
+                if k in (i, j):
                     continue
                 if adj[i][k] and adj[j][k]:
                     ff += 1
@@ -87,13 +87,16 @@ def _degree_preserving_shuffle(adj, n, rng, swaps, preserve_mutual):
             if len({i1, j1, i2, j2}) < 4:
                 continue
             # new mutual pairs {i1,j2}, {i2,j1}; both directions free
-            if ((i1, j2) in present or (j2, i1) in present or
-                    (i2, j1) in present or (j1, i2) in present):
+            if (i1, j2) in present or (j2, i1) in present or (i2, j1) in present or (j1, i2) in present:
                 continue
-            present.discard((i1, j1)); present.discard((j1, i1))
-            present.discard((i2, j2)); present.discard((j2, i2))
-            present.add((i1, j2)); present.add((j2, i1))
-            present.add((i2, j1)); present.add((j1, i2))
+            present.discard((i1, j1))
+            present.discard((j1, i1))
+            present.discard((i2, j2))
+            present.discard((j2, i2))
+            present.add((i1, j2))
+            present.add((j2, i1))
+            present.add((i2, j1))
+            present.add((j1, i2))
             mutual[a] = [min(i1, j2), max(i1, j2)]
             mutual[b] = [min(i2, j1), max(i2, j1)]
         else:
@@ -111,20 +114,21 @@ def _degree_preserving_shuffle(adj, n, rng, swaps, preserve_mutual):
             # or if either would become a reciprocal (mutual) edge.
             if (i1, j2) in present or (i2, j1) in present:
                 continue
-            if preserve_mutual and \
-                    ((j2, i1) in present or (j1, i2) in present):
+            if preserve_mutual and ((j2, i1) in present or (j1, i2) in present):
                 continue
-            present.discard((i1, j1)); present.discard((i2, j2))
-            present.add((i1, j2)); present.add((i2, j1))
-            single[a] = [i1, j2]; single[b] = [i2, j1]
+            present.discard((i1, j1))
+            present.discard((i2, j2))
+            present.add((i1, j2))
+            present.add((i2, j1))
+            single[a] = [i1, j2]
+            single[b] = [i2, j1]
     new = [[0] * n for _ in range(n)]
     for i, j in present:
         new[i][j] = 1
     return new
 
 
-def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None,
-           preserve_mutual=True):
+def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None, preserve_mutual=True):
     """
     Network-motif significance by degree-preserving randomization.
 
@@ -186,32 +190,29 @@ def motiff(adjacency, motif="ffl", n_random=100, seed=0, swaps=None,
     rng = np.random.default_rng(seed)
     rand = []
     for _ in range(int(n_random)):
-        Ar = _degree_preserving_shuffle(A, n, rng, int(swaps),
-                                        bool(preserve_mutual))
+        Ar = _degree_preserving_shuffle(A, n, rng, int(swaps), bool(preserve_mutual))
         rand.append(_triad_counts(Ar, n)[motif])
     mu = sum(rand) / len(rand)
-    var = sum((c - mu) ** 2 for c in rand) / (len(rand) - 1) \
-        if len(rand) > 1 else 0.0
+    var = sum((c - mu) ** 2 for c in rand) / (len(rand) - 1) if len(rand) > 1 else 0.0
     sd = math.sqrt(var)
-    z = (real - mu) / sd if sd > 0 else (0.0 if real == mu else
-                                         math.inf)
+    z = (real - mu) / sd if sd > 0 else (0.0 if real == mu else math.inf)
     p = (sum(1 for c in rand if c >= real) + 1) / (len(rand) + 1)
-    return RichResult(payload={
-        "count": real,
-        "z_score": z,
-        "p_value": p,
-        "rand_mean": mu,
-        "rand_sd": sd,
-        "motif": motif,
-        "n_random": int(n_random),
-        "seed": int(seed),
-        "preserve_mutual": bool(preserve_mutual),
-        "method": "Milo et al. (2002) motif Z score / p-value"
-                  " (mfinder degree+mutual ensemble)"
-                  if preserve_mutual else
-                  "Milo et al. (2002) motif Z score / p-value"
-                  " (in/out-degree ensemble)",
-    })
+    return RichResult(
+        payload={
+            "count": real,
+            "z_score": z,
+            "p_value": p,
+            "rand_mean": mu,
+            "rand_sd": sd,
+            "motif": motif,
+            "n_random": int(n_random),
+            "seed": int(seed),
+            "preserve_mutual": bool(preserve_mutual),
+            "method": "Milo et al. (2002) motif Z score / p-value (mfinder degree+mutual ensemble)"
+            if preserve_mutual
+            else "Milo et al. (2002) motif Z score / p-value (in/out-degree ensemble)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -220,6 +221,7 @@ network_motifs = motiff
 
 def cheatsheet():
     return "motiff: Z = (N_real - mean N_rand)/sd; p = frac rand >= real"
+
 
 # public names resolved by fn/_lazy_map.json
 motif_count = motiff

@@ -10,8 +10,7 @@ __all__ = ["geron_batch_normalization"]
 _METHOD = "Batch normalization (Ioffe & Szegedy 2015)"
 
 
-def geron_batch_normalization(X, gamma, beta, eps=1e-5, momentum=None,
-                              running_mean=None, running_var=None):
+def geron_batch_normalization(X, gamma, beta, eps=1e-5, momentum=None, running_mean=None, running_var=None):
     r"""Normalise a mini-batch per feature, then rescale and shift.
 
     .. math::
@@ -72,8 +71,11 @@ def geron_batch_normalization(X, gamma, beta, eps=1e-5, momentum=None,
     if not np.all(np.isfinite(X)):
         raise ValueError("X contains non-finite values.")
     m, d = X.shape
-    gamma = np.broadcast_to(np.asarray(gamma, dtype=float).ravel(), (d,)).copy() \
-        if np.asarray(gamma, dtype=float).size in (1, d) else None
+    gamma = (
+        np.broadcast_to(np.asarray(gamma, dtype=float).ravel(), (d,)).copy()
+        if np.asarray(gamma, dtype=float).size in (1, d)
+        else None
+    )
     if gamma is None:
         raise ValueError(f"gamma must have 1 or {d} entries.")
     beta_arr = np.asarray(beta, dtype=float).ravel()

@@ -96,6 +96,7 @@ def canonical_link(family):
 # Sec. 6.3.4 -- the conditional specification
 # --------------------------------------------------------------------------
 
+
 def conditional_mean(X, beta, S, link_kind="log"):
     """eq (6.73): g[mu(s)] = x(s)'beta + S(s), so mu = g^{-1}(X beta + S).
 
@@ -166,6 +167,7 @@ def naive_marginal_mean(X, beta, link_kind="log"):
 # Sec. 6.3.5 -- pseudo-likelihood / penalized quasi-likelihood
 # --------------------------------------------------------------------------
 
+
 def pseudo_data(z, mu, link_kind):
     """eq (6.78): nu_i = g(mu_i) + g'(mu_i)(Z(s_i) - mu_i)."""
     z = np.asarray(z, dtype=float).ravel()
@@ -184,7 +186,7 @@ def sigma_mu(mu, sigma2, family, link_kind, R=None):
     """
     mu = np.asarray(mu, dtype=float).ravel()
     n = mu.size
-    psi_inv = link_derivative(mu, link_kind)          # Psi^-1 = g'(mu)
+    psi_inv = link_derivative(mu, link_kind)  # Psi^-1 = g'(mu)
     v_half = np.sqrt(variance_function(mu, family))
     if R is None:
         R = np.eye(n)
@@ -255,8 +257,7 @@ def reml_objective(X, Sigma_nu, nu):
     return float(logdet + logdet_xsx + r @ sinv @ r + (n - k) * np.log(2.0 * np.pi))
 
 
-def fit_pseudo_likelihood(z, X, Sigma_S, family="poisson", link_kind=None,
-                          sigma2=1.0, R=None, max_iter=100, tol=1e-8):
+def fit_pseudo_likelihood(z, X, Sigma_S, family="poisson", link_kind=None, sigma2=1.0, R=None, max_iter=100, tol=1e-8):
     """The six-step algorithm of Sec. 6.3.5.2, verbatim.
 
     1. initial mu from the non-spatial GLM;
@@ -280,21 +281,20 @@ def fit_pseudo_likelihood(z, X, Sigma_S, family="poisson", link_kind=None,
     if z.size != n or Sigma_S.shape != (n, n):
         raise ValueError("`z`, `X` and `Sigma_S` must agree on the sample size")
 
-    mu = _initial_mu(z, family)                       # step 1
+    mu = _initial_mu(z, family)  # step 1
     beta = np.zeros(k)
     S_hat = np.zeros(n)
     converged = False
-    for it in range(int(max_iter)):
-        nu = pseudo_data(z, mu, link_kind)            # step 2
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
+        nu = pseudo_data(z, mu, link_kind)  # step 2
         Sig_mu = sigma_mu(mu, sigma2, family, link_kind, R=R)
-        Sigma_nu = Sigma_S + Sig_mu                   # Var[nu], Sec. 6.3.5.2
-        beta_new, cov_beta = gls_beta(X, Sigma_nu, nu)          # step 4
+        Sigma_nu = Sigma_S + Sig_mu  # Var[nu], Sec. 6.3.5.2
+        beta_new, cov_beta = gls_beta(X, Sigma_nu, nu)  # step 4
         S_new = predict_random_field(Sigma_S, Sigma_nu, nu, X, beta_new)
         resid = nu - X @ beta_new
-        sigma2_hat = float(resid @ np.linalg.solve(Sigma_nu, resid) / n)   # (6.82)
+        sigma2_hat = float(resid @ np.linalg.solve(Sigma_nu, resid) / n)  # (6.82)
         mu_new = link(X @ beta_new + S_new, link_kind, inverse=True)  # step 5
-        delta = max(np.max(np.abs(beta_new - beta)),
-                    np.max(np.abs(S_new - S_hat)))
+        delta = max(np.max(np.abs(beta_new - beta)), np.max(np.abs(S_new - S_hat)))
         beta, S_hat, mu = beta_new, S_new, mu_new
         if delta < tol:
             converged = True
@@ -303,19 +303,27 @@ def fit_pseudo_likelihood(z, X, Sigma_S, family="poisson", link_kind=None,
     nu = pseudo_data(z, mu, link_kind)
     Sigma_nu = Sigma_S + sigma_mu(mu, sigma2, family, link_kind, R=R)
     _, cov_beta = gls_beta(X, Sigma_nu, nu)
-    return {"beta": beta, "S": S_hat, "mu": mu, "sigma2": sigma2_hat,
-            "cov_beta": cov_beta,                       # Var(beta) = (X'Sig^-1X)^-1
-            "se_beta": np.sqrt(np.diag(cov_beta)),
-            "Sigma_nu": Sigma_nu, "pseudo_data": nu,
-            "n_iter": it + 1, "converged": converged,
-            "link": link_kind, "family": family}
+    return {
+        "beta": beta,
+        "S": S_hat,
+        "mu": mu,
+        "sigma2": sigma2_hat,
+        "cov_beta": cov_beta,  # Var(beta) = (X'Sig^-1X)^-1
+        "se_beta": np.sqrt(np.diag(cov_beta)),
+        "Sigma_nu": Sigma_nu,
+        "pseudo_data": nu,
+        "n_iter": it + 1,
+        "converged": converged,
+        "link": link_kind,
+        "family": family,
+    }
 
 
 def _initial_mu(z, family):
     """Step 1: a starting mu from the data, as the text suggests."""
     z = np.asarray(z, dtype=float).ravel()
     if family == "poisson":
-        return np.maximum(z, 0.25)              # keep the log link finite
+        return np.maximum(z, 0.25)  # keep the log link finite
     if family == "binomial":
         return np.clip(z, 1e-3, 1.0 - 1e-3)
     return z.copy()
@@ -360,14 +368,16 @@ def pql_score(z, X, beta, S, Sigma_S, family, link_kind, sigma2=1.0, R=None):
     sig_mu_inv = np.linalg.inv(data_covariance(mu, sigma2, family, R=R))
     resid = z - mu
     common = psi @ sig_mu_inv @ resid
-    return {"score_beta": X.T @ common,
-            "score_S": common - np.linalg.solve(
-                np.atleast_2d(np.asarray(Sigma_S, dtype=float)), S)}
+    return {
+        "score_beta": X.T @ common,
+        "score_S": common - np.linalg.solve(np.atleast_2d(np.asarray(Sigma_S, dtype=float)), S),
+    }
 
 
 # --------------------------------------------------------------------------
 # Sec. 6.3.6 -- prediction
 # --------------------------------------------------------------------------
+
 
 def predict_glm(nu0_hat, sigma2_nu0, mu0_hat, link_kind):
     """eqs (6.87)-(6.91).
@@ -399,20 +409,21 @@ def predict_glm(nu0_hat, sigma2_nu0, mu0_hat, link_kind):
     gprime = float(link_derivative(np.array(mu0), link_kind))
     dmu_deta = 1.0 / gprime
     linearised = mu0 + (nu0 - float(link(np.array(mu0), link_kind))) / gprime
-    return {"prediction": linearised,                       # eq (6.90)
-            "mspe": dmu_deta**2 * s2,                       # eq (6.91)
-            "prediction_error": np.sqrt(dmu_deta**2 * s2),
-            "inverse_link_prediction": float(link(np.array(nu0), link_kind,
-                                                  inverse=True)),   # eq (6.87)
-            "pseudo_scale_prediction": nu0,
-            "pseudo_scale_mspe": s2,
-            "mspe_is_for": "eq (6.90), the linearised predictor -- NOT the "
-                           "inverse-link predictor of eq (6.87)"}
+    return {
+        "prediction": linearised,  # eq (6.90)
+        "mspe": dmu_deta**2 * s2,  # eq (6.91)
+        "prediction_error": np.sqrt(dmu_deta**2 * s2),
+        "inverse_link_prediction": float(link(np.array(nu0), link_kind, inverse=True)),  # eq (6.87)
+        "pseudo_scale_prediction": nu0,
+        "pseudo_scale_mspe": s2,
+        "mspe_is_for": "eq (6.90), the linearised predictor -- NOT the inverse-link predictor of eq (6.87)",
+    }
 
 
 # --------------------------------------------------------------------------
 # CAR family: structure matrices and priors
 # --------------------------------------------------------------------------
+
 
 def neighbour_structure(adjacency):
     """R with R_ii = n_i, R_ij = -1 if j ~ i, 0 otherwise (Tonui et al. eq 4).
@@ -423,7 +434,7 @@ def neighbour_structure(adjacency):
     Moore-Penrose inverse rather than an ordinary one.
     """
     A = np.atleast_2d(np.asarray(adjacency, dtype=float))
-    n = A.shape[0]
+    A.shape[0]
     if A.shape[0] != A.shape[1]:
         raise ValueError("`adjacency` must be square")
     if not np.allclose(A, A.T):
@@ -457,8 +468,7 @@ def icar_full_conditional(u, adjacency, sigma2=1.0):
     n_i = A.sum(axis=1)
     if np.any(n_i == 0):
         raise ValueError("every area must have at least one neighbour")
-    return {"mean": (A @ u) / n_i, "variance": float(sigma2) / n_i,
-            "n_neighbours": n_i}
+    return {"mean": (A @ u) / n_i, "variance": float(sigma2) / n_i, "n_neighbours": n_i}
 
 
 def lcar_precision(R, rho, sigma2=1.0):
@@ -500,8 +510,7 @@ def lcar_full_conditional(u, adjacency, rho, sigma2=1.0):
         raise ValueError("`rho` must lie in [0, 1]")
     n_i = A.sum(axis=1)
     denom = (1.0 - rho) + n_i * rho
-    return {"mean": rho * (A @ u) / denom, "variance": float(sigma2) / denom,
-            "n_neighbours": n_i}
+    return {"mean": rho * (A @ u) / denom, "variance": float(sigma2) / denom, "n_neighbours": n_i}
 
 
 def bym_convolution(u, v):
@@ -536,11 +545,13 @@ def bym_convolution(u, v):
 
 
 def bym_identifiability_note():
-    return ("only u + v enters the likelihood, so sigma_u^2 and sigma_v^2 are "
-            "not separately identifiable from the data; informative "
-            "hyperpriors are required, or use the Leroux LCAR prior, which "
-            "nests the exchangeable (rho=0) and ICAR (rho=1) cases in one "
-            "identifiable parameter")
+    return (
+        "only u + v enters the likelihood, so sigma_u^2 and sigma_v^2 are "
+        "not separately identifiable from the data; informative "
+        "hyperpriors are required, or use the Leroux LCAR prior, which "
+        "nests the exchangeable (rho=0) and ICAR (rho=1) cases in one "
+        "identifiable parameter"
+    )
 
 
 def smr(counts, expected):
@@ -567,13 +578,13 @@ def poisson_disease_mean(expected, X, beta, psi):
     """
     e = np.asarray(expected, dtype=float).ravel()
     X = np.atleast_2d(np.asarray(X, dtype=float))
-    return e * np.exp(X @ np.asarray(beta, dtype=float).ravel()
-                      + np.asarray(psi, dtype=float).ravel())
+    return e * np.exp(X @ np.asarray(beta, dtype=float).ravel() + np.asarray(psi, dtype=float).ravel())
 
 
 # --------------------------------------------------------------------------
 # temporal and space-time structures (Tonui et al. Sec. 2.2, Table 1)
 # --------------------------------------------------------------------------
+
 
 def random_walk_structure(n_time, order=1):
     """Structure matrix of an RW1 or RW2 prior.
@@ -589,12 +600,12 @@ def random_walk_structure(n_time, order=1):
     k = int(order)
     if k not in (1, 2):
         raise ValueError("`order` must be 1 or 2")
-    if T <= k:
+    if k >= T:
         raise ValueError(f"need more than {k} time points for an RW{k}")
     D = np.zeros((T - k, T))
     row = {1: [-1.0, 1.0], 2: [1.0, -2.0, 1.0]}[k]
     for i in range(T - k):
-        D[i, i:i + k + 1] = row
+        D[i, i : i + k + 1] = row
     return D.T @ D
 
 
@@ -617,12 +628,15 @@ def interaction_structure(R_space, R_time, kind):
     Rt = np.atleast_2d(np.asarray(R_time, dtype=float))
     ns, nt = Rs.shape[0], Rt.shape[0]
     Is, It = np.eye(ns), np.eye(nt)
-    M = {"I": np.kron(Is, It), "II": np.kron(Is, Rt),
-         "III": np.kron(Rs, It), "IV": np.kron(Rs, Rt)}[kind]
+    M = {"I": np.kron(Is, It), "II": np.kron(Is, Rt), "III": np.kron(Rs, It), "IV": np.kron(Rs, Rt)}[kind]
     rank = int(np.linalg.matrix_rank(M))
-    return {"structure": M, "kind": kind, "rank": rank,
-            "rank_deficiency": M.shape[0] - rank,
-            "n_constraints_required": M.shape[0] - rank}
+    return {
+        "structure": M,
+        "kind": kind,
+        "rank": rank,
+        "rank_deficiency": M.shape[0] - rank,
+        "n_constraints_required": M.shape[0] - rank,
+    }
 
 
 def null_space_constraints(R_delta, tol=None):
@@ -645,9 +659,7 @@ def null_space_constraints(R_delta, tol=None):
         tol = 1e-10 * scale * M.shape[0]
     null = np.abs(vals) <= tol
     A = vecs[:, null].T
-    return {"A": A, "e": np.zeros(A.shape[0]),
-            "n_constraints": int(A.shape[0]),
-            "rank_deficiency": int(null.sum())}
+    return {"A": A, "e": np.zeros(A.shape[0]), "n_constraints": int(A.shape[0]), "rank_deficiency": int(null.sum())}
 
 
 def apply_sum_to_zero(delta, A):
@@ -672,8 +684,7 @@ def linear_trend_log_risk(alpha, u, beta_t, delta_i, times):
     t = np.asarray(times, dtype=float).ravel()
     if u.size != d.size:
         raise ValueError("`u` and `delta_i` must have one entry per area")
-    return (float(alpha) + u[:, None]
-            + (float(beta_t) + d[:, None]) * t[None, :])
+    return float(alpha) + u[:, None] + (float(beta_t) + d[:, None]) * t[None, :]
 
 
 def nonparametric_log_risk(alpha, u, phi, gamma, delta=None):
@@ -696,9 +707,11 @@ def nonparametric_log_risk(alpha, u, phi, gamma, delta=None):
         out = out + D
     return out
 
+
 # --------------------------------------------------------------------------
 # Besag, York & Mollie (1991) Sec. 4 -- the convolution model itself
 # --------------------------------------------------------------------------
+
 
 def bym_icar_log_prior(u, adjacency, kappa):
     """eq (4.2): p(u | kappa) ~ kappa^{-n/2} exp{-(1/2 kappa) sum_{i~j}(u_i-u_j)^2}.
@@ -787,10 +800,14 @@ def bym_log_posterior(y, c, u, v, kappa, lam, adjacency, epsilon=0.01):
     n = y.size
     x = u + v
     loglik = float(np.sum(-c * np.exp(x) + y * (np.log(c) + x)))
-    return (loglik
-            + bym_icar_log_prior(u, adjacency, kappa)
-            - 0.5 * n * np.log(lam) - float(v @ v) / (2.0 * lam)
-            - eps / (2.0 * kappa) - eps / (2.0 * lam))
+    return (
+        loglik
+        + bym_icar_log_prior(u, adjacency, kappa)
+        - 0.5 * n * np.log(lam)
+        - float(v @ v) / (2.0 * lam)
+        - eps / (2.0 * kappa)
+        - eps / (2.0 * lam)
+    )
 
 
 def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
@@ -833,14 +850,13 @@ def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
 
     u = np.zeros(n)
     v = np.zeros(n)
-    I = np.eye(n)
+    I_ = np.eye(n)
     converged = False
-    for it in range(int(max_iter)):
+    for it in range(int(max_iter)):  # noqa: B007 - read after the loop
         w = c * np.exp(u + v)
         g_u = y - w - R @ u / kappa
         g_v = y - w - v / lam
-        H = np.block([[-np.diag(w) - R / kappa, -np.diag(w)],
-                      [-np.diag(w), -np.diag(w) - I / lam]])
+        H = np.block([[-np.diag(w) - R / kappa, -np.diag(w)], [-np.diag(w), -np.diag(w) - I_ / lam]])
         step = np.linalg.solve(H, np.concatenate([g_u, g_v]))
         u_new, v_new = u - step[:n], v - step[n:]
         delta = float(np.max(np.abs(np.concatenate([u_new - u, v_new - v]))))
@@ -851,10 +867,16 @@ def bym_map(y, c, adjacency, kappa, lam, max_iter=200, tol=1e-11):
 
     x = u + v
     fitted = c * np.exp(x)
-    return {"u": u, "v": v, "x": x, "relative_risk": np.exp(x),
-            "fitted": fitted, "n_iter": it + 1, "converged": converged,
-            "sum_v": float(v.sum()),
-            "fitted_total": float(fitted.sum()),
-            "observed_total": float(y.sum()),
-            "log_posterior": bym_log_posterior(y, c, u, v, kappa, lam,
-                                               adjacency)}
+    return {
+        "u": u,
+        "v": v,
+        "x": x,
+        "relative_risk": np.exp(x),
+        "fitted": fitted,
+        "n_iter": it + 1,
+        "converged": converged,
+        "sum_v": float(v.sum()),
+        "fitted_total": float(fitted.sum()),
+        "observed_total": float(y.sum()),
+        "log_posterior": bym_log_posterior(y, c, u, v, kappa, lam, adjacency),
+    }

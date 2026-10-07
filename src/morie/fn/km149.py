@@ -30,27 +30,29 @@ def kamath_ch9_flamingo_factorized(y, x=None, L=None, model=None):
     """
     if model is not None:
         if not callable(model):
-            raise ValueError("model must be callable model(y, x) or "
-                             "None when y already holds the per-token "
-                             "conditionals.")
+            raise ValueError(
+                "model must be callable model(y, x) or None when y already holds the per-token conditionals."
+            )
         y = model(y, x)
     p = np.atleast_1d(np.asarray(y, dtype=float)).ravel()
     if p.size == 0:
-        raise ValueError("the sequence is empty; p(y|x) over no tokens "
-                         "is undefined.")
+        raise ValueError("the sequence is empty; p(y|x) over no tokens is undefined.")
     if np.any((p < 0) | (p > 1)):
         raise ValueError("conditional probabilities must lie in [0, 1].")
     if L is not None and int(L) != p.size:
-        raise ValueError(
-            f"L = {L} contradicts the {p.size} tokens given.")
+        raise ValueError(f"L = {L} contradicts the {p.size} tokens given.")
     with np.errstate(divide="ignore"):
         logp = float(np.log(p).sum())
-    return RichResult(payload={
-        "estimate": float(np.prod(p)), "log_prob": logp,
-        "nll": -logp, "per_token": [float(v) for v in p],
-        "n": int(p.size),
-        "method": "Flamingo factorized text likelihood "
-                  "(Kamath Eq 9.21)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.prod(p)),
+            "log_prob": logp,
+            "nll": -logp,
+            "per_token": [float(v) for v in p],
+            "n": int(p.size),
+            "method": "Flamingo factorized text likelihood (Kamath Eq 9.21)",
+        }
+    )
 
 
 def cheatsheet():

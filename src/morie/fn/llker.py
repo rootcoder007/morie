@@ -72,10 +72,7 @@ def llker(
     if kernel not in valid_kernels:
         raise ValueError(f"Unknown kernel '{kernel}'. Choose from {valid_kernels}.")
 
-    if x_eval is None:
-        x_eval = x.copy()
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = x.copy() if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     if bandwidth is None:
         from morie.fn.nwker import _silverman_bw

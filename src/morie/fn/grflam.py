@@ -115,8 +115,11 @@ def geron_flamingo_cross_modal_attn(h, visual_features, alpha, weights, mask=Non
 
     return RichResult(
         title="Flamingo gated cross-attention",
-        summary_lines=[("alpha", alpha), ("gate = tanh(alpha)", gate),
-                       ("||delta||", float(np.linalg.norm(gate * attn)))],
+        summary_lines=[
+            ("alpha", alpha),
+            ("gate = tanh(alpha)", gate),
+            ("||delta||", float(np.linalg.norm(gate * attn))),
+        ],
         payload={
             "h_new": H_new.tolist(),
             "gate": gate,

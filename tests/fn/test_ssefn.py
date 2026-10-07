@@ -1,7 +1,6 @@
 """Tests for morie.fn.ssefn -- SSE for MDS."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ssefn import sse_mds, ssefn
 
 

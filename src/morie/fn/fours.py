@@ -80,10 +80,7 @@ def fourier_basis(t, n_harmonics, period=None):
     H = int(n_harmonics)
     if H < 0:
         raise ValueError("fourier_basis: n_harmonics must be non-negative")
-    if period is None:
-        P = max(tt) - min(tt)
-    else:
-        P = float(period)
+    P = max(tt) - min(tt) if period is None else float(period)
     if P <= 0.0:
         raise ValueError("fourier_basis: the period must be positive")
     w = 2.0 * math.pi / P

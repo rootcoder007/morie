@@ -1,7 +1,5 @@
 """Tests for mtsmtv.mts_mtr_combined."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.mtsmtv import mts_mtr_combined
 
 

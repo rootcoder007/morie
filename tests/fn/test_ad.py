@@ -1,7 +1,6 @@
 """Tests for morie.fn.ad -- Anderson-Darling test for normality."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import TestResult
 from morie.fn.ad import ad, anderson_darling
 

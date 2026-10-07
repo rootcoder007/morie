@@ -1,7 +1,6 @@
 """Tests for agvhdt.alphazero_value_head."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.agvhdt import alphazero_value_head
 
 

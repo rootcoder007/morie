@@ -34,8 +34,7 @@ from ._richresult import RichResult
 __all__ = ["moe_layer"]
 
 
-def moe_layer(y, x=None, W_g=None, experts=None, top_k=2, W_noise=None,
-              noise=None):
+def moe_layer(y, x=None, W_g=None, experts=None, top_k=2, W_noise=None, noise=None):
     """Route x to the top-k experts and mix their outputs.
 
     Parameters

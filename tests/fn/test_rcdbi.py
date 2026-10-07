@@ -1,8 +1,8 @@
 """Tests for morie.fn.rcdbi — recidivism burden."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import ESRes
 from morie.fn.rcdbi import recidivism_burden
 

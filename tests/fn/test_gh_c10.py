@@ -1,12 +1,11 @@
 """Tests for Ghosal Ch 10 adaptation modules."""
-import math
 
+from morie.fn.gh_besov_prior import ghosal_besov_prior
 from morie.fn.gh_c10_1 import ghosal_adapt_thm
 from morie.fn.gh_c10_2 import ghosal_univ_weights
 from morie.fn.gh_c10_3 import ghosal_param_rate
 from morie.fn.gh_c10_4 import ghosal_two_model_adp
 from morie.fn.gh_c10_5 import ghosal_wn_adapt
-from morie.fn.gh_besov_prior import ghosal_besov_prior
 from morie.fn.gh_c10_6 import ghosal_rnd_series_pr
 from morie.fn.gh_c10_8 import ghosal_frs_reg
 from morie.fn.gh_c10_9 import ghosal_frs_binreg
@@ -42,8 +41,8 @@ def test_two_model_small_wins_under_small_truth():
 def test_spike_slab_inclusion():
     r = ghosal_wn_adapt()
     inc = r["inclusion_probs"]
-    assert inc[0] > 0.95 and inc[1] > 0.95      # true signals
-    assert max(inc[2:]) < 0.5                    # nulls
+    assert inc[0] > 0.95 and inc[1] > 0.95  # true signals
+    assert max(inc[2:]) < 0.5  # nulls
 
 
 def test_besov_prior_finite():

@@ -9,11 +9,11 @@ entirely. The test encoded the bug.
 Schabenberger & Gotway (200), Sec 6.2.2.2, eqs (6.43)-(6.48).
 """
 
-from morie.fn import _array_core as np
 import pytest
 
-from morie.fn.sgcar import (car_rho_bounds, car_rho_ols,
-                            conditional_autoregressive as car)
+from morie.fn import _array_core as np
+from morie.fn.sgcar import car_rho_bounds, car_rho_ols
+from morie.fn.sgcar import conditional_autoregressive as car
 from morie.fn.spcar import schabenberger_car_model as spcar
 
 
@@ -71,8 +71,7 @@ def test_recovers_a_known_rho_from_simulated_car_data():
 def test_the_two_parameterizations_are_different_models():
     """weighted has conditional variance sigma^2/d_i, identity constant."""
     W, z = _chain(), _z()
-    assert car(z, W, parameterization="weighted").statistic != \
-        car(z, W, parameterization="identity").statistic
+    assert car(z, W, parameterization="weighted").statistic != car(z, W, parameterization="identity").statistic
     assert car_rho_bounds(W, "identity")[1] < car_rho_bounds(W, "weighted")[1]
 
 
@@ -81,8 +80,7 @@ def test_haining_rho_ols_matches_its_closed_form():
     W, z = _chain(), _z()
     X = np.ones((z.size, 1))
     e = z - X @ np.linalg.lstsq(X, z, rcond=None)[0]
-    assert car_rho_ols(z, W) == pytest.approx(
-        float(e @ (W @ e)) / float(e @ (W @ (W @ e))))
+    assert car_rho_ols(z, W) == pytest.approx(float(e @ (W @ e)) / float(e @ (W @ (W @ e))))
 
 
 def test_ml_beats_the_grid_it_replaced_on_its_own_likelihood():
@@ -117,8 +115,7 @@ def test_spcar_delegates_and_forwards_every_argument():
     X = np.column_stack([np.ones(z.size), np.arange(z.size) / z.size])
     assert spcar(z, W).statistic == car(z, W).statistic
     assert spcar(z, W, X).statistic == car(z, W, X).statistic
-    assert spcar(z, W, None, "identity").statistic == \
-        car(z, W, None, "identity").statistic
+    assert spcar(z, W, None, "identity").statistic == car(z, W, None, "identity").statistic
     # a delegate that dropped an argument would still pass equality above
     assert spcar(z, W, X).statistic != spcar(z, W).statistic
     assert spcar(z, W, None, "identity").statistic != spcar(z, W).statistic

@@ -1,7 +1,6 @@
 """Tests for rgdtfd.rangayyan_decomp_tfd."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsatf import rangayyan_decomp_tfd
 
 

@@ -9,5 +9,6 @@ def test_b103_basic():
 
 def test_b103_edge():
     import pytest
+
     with pytest.raises(ValueError, match="dataset size"):
         burkov_lm_ch1_mse_cost(1.0, 0.0, [1.0], [1.0], N=9)

@@ -13,11 +13,11 @@ from ._stats_core import _digamma
 def _alpha_score(la, y, mu):
     """d logL / d log(alpha) for NB2 at fixed means, r = 1/alpha."""
     import math
+
     r = math.exp(-la)
     s = 0.0
     for yi, m in zip(y, mu):
-        s += (_digamma(yi + r) - _digamma(r) + math.log(r / (r + m))
-              + (m - yi) / (r + m))
+        s += _digamma(yi + r) - _digamma(r) + math.log(r / (r + m)) + (m - yi) / (r + m)
     return -r * s
 
 
@@ -28,6 +28,7 @@ def _polish_alpha(alpha, y, mu):
     (1e-6, 100), which left alpha off the MLE in the eighth digit.
     """
     import math
+
     y = [float(v) for v in y]
     mu = [float(v) for v in mu]
     x0 = math.log(alpha)
@@ -86,7 +87,7 @@ def negbin_regression(
 
         mu_new = np.exp(np.clip(X_int @ beta_new, -20, 20))
 
-        def neg_ll(a):
+        def neg_ll(a, *, mu_new=mu_new):
             a = max(a, 1e-6)
             ll = np.sum(sp_stats.nbinom.logpmf(y.astype(int), n=1 / a, p=1 / (1 + a * mu_new)))
             return -ll

@@ -93,12 +93,10 @@ predecessor whose calibration SAIGE repairs.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["score_statistic", "cgf", "saddlepoint_pvalue",
-           "normal_pvalue", "saige_test", "variance_ratio"]
+__all__ = ["score_statistic", "cgf", "saddlepoint_pvalue", "normal_pvalue", "saige_test", "variance_ratio"]
 
 _EPS = 1e-12
 
@@ -107,8 +105,7 @@ def _fit_null(y, X, ridge=1e-8):
     """Logistic null model; returns fitted means."""
     D = k.design(X, len(y))
     beta = k.logit_irls(D, y, ridge=ridge)
-    mu = [k.sigmoid(sum(D[i][j] * beta[j] for j in range(len(beta))))
-          for i in range(len(y))]
+    mu = [k.sigmoid(sum(D[i][j] * beta[j] for j in range(len(beta)))) for i in range(len(y))]
     return mu, beta
 
 
@@ -121,17 +118,15 @@ def score_statistic(y, G, mu):
     mv = [float(v) for v in k.vec(mu)]
     n = len(yv)
     if not (len(gv) == len(mv) == n):
-        raise ValueError("saigeg: y, G and mu must agree in length "
-                         "(%d, %d, %d)" % (n, len(gv), len(mv)))
+        raise ValueError(f"saigeg: y, G and mu must agree in length ({int(n)}, {int(len(gv))}, {int(len(mv))})")
     if any(not 0.0 < v < 1.0 for v in mv):
-        raise ValueError("saigeg: fitted means must lie strictly in "
-                         "(0, 1)")
+        raise ValueError("saigeg: fitted means must lie strictly in (0, 1)")
     s = sum(gv[i] * (yv[i] - mv[i]) for i in range(n))
     var = sum(gv[i] * gv[i] * mv[i] * (1.0 - mv[i]) for i in range(n))
     if var <= _EPS:
-        raise ValueError("saigeg: the score has zero variance -- the "
-                         "variant is monomorphic or every fitted mean "
-                         "is degenerate")
+        raise ValueError(
+            "saigeg: the score has zero variance -- the variant is monomorphic or every fitted mean is degenerate"
+        )
     return {"score": s, "variance": var, "n": n}
 
 
@@ -153,8 +148,7 @@ def cgf(t, G, mu, order=0):
         e = math.exp(gt)
         d = 1.0 - mv[i] + mv[i] * e
         if d <= _EPS:
-            raise ValueError("saigeg: the CGF diverged at t = %r"
-                             % (t,))
+            raise ValueError(f"saigeg: the CGF diverged at t = {t!r}")
         if order == 0:
             tot += math.log(d) - gv[i] * float(t) * mv[i]
         elif order == 1:
@@ -171,9 +165,9 @@ def _solve_saddle(s, G, mu, lo=-50.0, hi=50.0, tol=1e-11, iters=200):
     fl = cgf(lo, G, mu, 1) - s
     fh = cgf(hi, G, mu, 1) - s
     if fl > 0 or fh < 0:
-        raise ValueError("saigeg: the observed score %g lies outside "
-                         "the range K'(t) can reach -- no saddlepoint "
-                         "exists" % s)
+        raise ValueError(
+            f"saigeg: the observed score {s:g} lies outside the range K'(t) can reach -- no saddlepoint exists"
+        )
     for _ in range(int(iters)):
         mid = 0.5 * (lo + hi)
         fm = cgf(mid, G, mu, 1) - s
@@ -200,15 +194,16 @@ def saddlepoint_pvalue(s, G, mu, two_sided=True):
         raise ValueError("saigeg: the score has zero variance")
     if abs(sv) < 1e-6 * math.sqrt(var0):
         p = 2.0 * (1.0 - k.pnorm(abs(sv) / math.sqrt(var0)))
-        return {"p_value": min(1.0, p), "method": "normal (at the "
-                "mean, where the saddlepoint is unstable and the two "
-                "agree)", "t_hat": 0.0}
+        return {
+            "p_value": min(1.0, p),
+            "method": "normal (at the mean, where the saddlepoint is unstable and the two agree)",
+            "t_hat": 0.0,
+        }
     that = _solve_saddle(sv, G, mu)
     kt = cgf(that, G, mu, 0)
     k2 = cgf(that, G, mu, 2)
     if k2 <= _EPS:
-        raise ValueError("saigeg: K''(t) is non-positive at the "
-                         "saddlepoint")
+        raise ValueError("saigeg: K''(t) is non-positive at the saddlepoint")
     inner = 2.0 * (that * sv - kt)
     w = math.copysign(math.sqrt(max(inner, 0.0)), that)
     v = that * math.sqrt(k2)
@@ -219,9 +214,15 @@ def saddlepoint_pvalue(s, G, mu, two_sided=True):
         p1 = 1.0 - k.pnorm(w) + phi * (1.0 / v - 1.0 / w)
     p1 = min(max(p1, 0.0), 1.0)
     p = 2.0 * min(p1, 1.0 - p1) if two_sided else p1
-    return {"p_value": min(1.0, max(p, 0.0)), "t_hat": that,
-            "w": w, "v": v, "K": kt, "K2": k2,
-            "method": "saddlepoint (Lugannani-Rice), all cumulants"}
+    return {
+        "p_value": min(1.0, max(p, 0.0)),
+        "t_hat": that,
+        "w": w,
+        "v": v,
+        "K": kt,
+        "K2": k2,
+        "method": "saddlepoint (Lugannani-Rice), all cumulants",
+    }
 
 
 def normal_pvalue(s, variance, two_sided=True):
@@ -229,10 +230,8 @@ def normal_pvalue(s, variance, two_sided=True):
     if float(variance) <= 0.0:
         raise ValueError("saigeg: the variance must be positive")
     z = float(s) / math.sqrt(float(variance))
-    p = 2.0 * (1.0 - k.pnorm(abs(z))) if two_sided \
-        else 1.0 - k.pnorm(z)
-    return {"p_value": min(1.0, max(p, 0.0)), "z": z,
-            "method": "normal approximation, first two moments"}
+    p = 2.0 * (1.0 - k.pnorm(abs(z))) if two_sided else 1.0 - k.pnorm(z)
+    return {"p_value": min(1.0, max(p, 0.0)), "z": z, "method": "normal approximation, first two moments"}
 
 
 def variance_ratio(scores_full, scores_naive):
@@ -251,8 +250,7 @@ def variance_ratio(scores_full, scores_naive):
     vb = k.variance(b)
     if vb <= _EPS:
         raise ValueError("saigeg: the naive scores have zero variance")
-    return {"ratio": va / vb, "var_full": va, "var_naive": vb,
-            "n_variants": len(a)}
+    return {"ratio": va / vb, "var_full": va, "var_naive": vb, "n_variants": len(a)}
 
 
 def saige_test(y, G, X=None, mu=None, ratio=1.0, two_sided=True):
@@ -265,43 +263,48 @@ def saige_test(y, G, X=None, mu=None, ratio=1.0, two_sided=True):
     yv = [float(v) for v in k.vec(y)]
     for v in yv:
         if v not in (0.0, 1.0):
-            raise ValueError("saigeg: the phenotype must be 0/1, got "
-                             "%r" % (v,))
+            raise ValueError(f"saigeg: the phenotype must be 0/1, got {v!r}")
     n_case = int(sum(yv))
     if n_case == 0 or n_case == len(yv):
-        raise ValueError("saigeg: the phenotype has only one class "
-                         "(%d cases of %d)" % (n_case, len(yv)))
+        raise ValueError(f"saigeg: the phenotype has only one class ({int(n_case)} cases of {int(len(yv))})")
     if mu is None:
         mu, _ = _fit_null(yv, X if X is not None else [[] for _ in yv])
     st = score_statistic(yv, G, mu)
     var = st["variance"] * float(ratio)
     nrm = normal_pvalue(st["score"], var, two_sided=two_sided)
     spa = saddlepoint_pvalue(st["score"], G, mu, two_sided=two_sided)
-    return RichResult(payload={
-        "estimate": spa["p_value"], "p_value": spa["p_value"],
-        "p_normal": nrm["p_value"], "score": st["score"],
-        "variance": var, "z": nrm["z"],
-        "case_control_ratio": n_case / float(len(yv) - n_case),
-        "n_cases": n_case, "n_controls": len(yv) - n_case,
-        "variance_ratio": float(ratio),
-        "saddlepoint": spa,
-        "method": "logistic mixed-model score test with saddlepoint "
-                  "calibration; Zhou et al. (2018)",
-        "why": "the Gaussian approximation keeps two moments and is "
-               "anti-conservative under case-control imbalance; the "
-               "saddlepoint keeps all of them",
-    })
+    return RichResult(
+        payload={
+            "estimate": spa["p_value"],
+            "p_value": spa["p_value"],
+            "p_normal": nrm["p_value"],
+            "score": st["score"],
+            "variance": var,
+            "z": nrm["z"],
+            "case_control_ratio": n_case / float(len(yv) - n_case),
+            "n_cases": n_case,
+            "n_controls": len(yv) - n_case,
+            "variance_ratio": float(ratio),
+            "saddlepoint": spa,
+            "method": "logistic mixed-model score test with saddlepoint calibration; Zhou et al. (2018)",
+            "why": "the Gaussian approximation keeps two moments and is "
+            "anti-conservative under case-control imbalance; the "
+            "saddlepoint keeps all of them",
+        }
+    )
 
 
 def cheatsheet():
-    return ("saigeg: SAIGE. Score S = sum G_i (Y_i - mu_i) from a "
-            "logistic mixed model. Under 1:100 case-control imbalance "
-            "S is right-skewed and the GAUSSIAN tail is far too thin, "
-            "so p-values come out much too small. The saddlepoint "
-            "approximation uses the whole CGF -- all cumulants -- via "
-            "Lugannani-Rice, and stays calibrated in the tail. The "
-            "variance ratio is estimated once and reused so the cost "
-            "is not O(MN^2).")
+    return (
+        "saigeg: SAIGE. Score S = sum G_i (Y_i - mu_i) from a "
+        "logistic mixed model. Under 1:100 case-control imbalance "
+        "S is right-skewed and the GAUSSIAN tail is far too thin, "
+        "so p-values come out much too small. The saddlepoint "
+        "approximation uses the whole CGF -- all cumulants -- via "
+        "Lugannani-Rice, and stays calibrated in the tail. The "
+        "variance ratio is estimated once and reused so the cost "
+        "is not O(MN^2)."
+    )
 
 
 # compact alias per ledger/NAMING.md

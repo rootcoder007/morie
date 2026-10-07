@@ -45,10 +45,9 @@ class _Run:
             props += "<w:i/>"
         if self.size is not None:
             hp = int(round(2 * float(self.size)))
-            props += '<w:sz w:val="%d"/>' % hp
-        rpr = "<w:rPr>%s</w:rPr>" % props if props else ""
-        return ('<w:r>%s<w:t xml:space="preserve">%s</w:t></w:r>'
-                % (rpr, escape(self.text)))
+            props += f'<w:sz w:val="{int(hp)}"/>'
+        rpr = f"<w:rPr>{props}</w:rPr>" if props else ""
+        return f'<w:r>{rpr}<w:t xml:space="preserve">{escape(self.text)}</w:t></w:r>'
 
 
 class _Paragraph:
@@ -66,10 +65,8 @@ class _Paragraph:
         return "".join(r.text for r in self.runs)
 
     def xml(self):
-        ppr = ('<w:pPr><w:pStyle w:val="%s"/></w:pPr>' % self.style
-               if self.style else "")
-        return "<w:p>%s%s</w:p>" % (ppr,
-                                    "".join(r.xml() for r in self.runs))
+        ppr = f'<w:pPr><w:pStyle w:val="{self.style}"/></w:pPr>' if self.style else ""
+        return "<w:p>{}{}</w:p>".format(ppr, "".join(r.xml() for r in self.runs))
 
 
 class _Cell:
@@ -87,8 +84,7 @@ class _Cell:
 
     def xml(self):
         body = "".join(p.xml() for p in self.paragraphs) or "<w:p/>"
-        return ("<w:tc><w:tcPr><w:tcW w:w=\"0\" w:type=\"auto\"/>"
-                "</w:tcPr>%s</w:tc>" % body)
+        return f'<w:tc><w:tcPr><w:tcW w:w="0" w:type="auto"/></w:tcPr>{body}</w:tc>'
 
 
 class _Row:
@@ -96,7 +92,7 @@ class _Row:
         self.cells = [_Cell() for _ in range(ncols)]
 
     def xml(self):
-        return "<w:tr>%s</w:tr>" % "".join(c.xml() for c in self.cells)
+        return "<w:tr>{}</w:tr>".format("".join(c.xml() for c in self.cells))
 
 
 class _Table:
@@ -114,13 +110,17 @@ class _Table:
         return row
 
     def xml(self):
-        borders = ("<w:tblBorders>" + "".join(
-            '<w:%s w:val="single" w:sz="4" w:color="auto"/>' % side
-            for side in ("top", "left", "bottom", "right",
-                         "insideH", "insideV")) + "</w:tblBorders>")
-        return ('<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/>%s'
-                "</w:tblPr>%s</w:tbl>"
-                % (borders, "".join(r.xml() for r in self.rows)))
+        borders = (
+            "<w:tblBorders>"
+            + "".join(
+                f'<w:{side} w:val="single" w:sz="4" w:color="auto"/>'
+                for side in ("top", "left", "bottom", "right", "insideH", "insideV")
+            )
+            + "</w:tblBorders>"
+        )
+        return '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/>{}</w:tblPr>{}</w:tbl>'.format(
+            borders, "".join(r.xml() for r in self.rows)
+        )
 
 
 class _PageBreak:
@@ -129,8 +129,8 @@ class _PageBreak:
         return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'
 
 
-_STYLES = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:styles xmlns:w="%s">
+_STYLES = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="{_W}">
   <w:style w:type="paragraph" w:default="1" w:styleId="Normal">
     <w:name w:val="Normal"/></w:style>
   <w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/>
@@ -141,7 +141,7 @@ _STYLES = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <w:rPr><w:b/><w:sz w:val="24"/></w:rPr></w:style>
   <w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/>
     <w:rPr><w:b/><w:sz w:val="40"/></w:rPr></w:style>
-</w:styles>""" % _W
+</w:styles>"""
 
 
 class Document:
@@ -154,7 +154,7 @@ class Document:
         self.tables = []
 
     def add_heading(self, text="", level=1):
-        style = "Title" if level == 0 else "Heading%d" % min(level, 3)
+        style = "Title" if level == 0 else f"Heading{int(min(level, 3))}"
         p = _Paragraph(style=style)
         p.add_run(str(text), bold=False)
         self._body.append(p)
@@ -179,37 +179,43 @@ class Document:
         self._body.append(_PageBreak())
 
     def save(self, path):
-        doc = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-               '<w:document xmlns:w="%s"><w:body>%s'
-               "<w:sectPr/></w:body></w:document>"
-               % (_W, "".join(el.xml() for el in self._body)))
-        ct = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-              '<Types xmlns="http://schemas.openxmlformats.org/'
-              'package/2006/content-types">'
-              '<Default Extension="rels" ContentType="application/'
-              'vnd.openxmlformats-package.relationships+xml"/>'
-              '<Default Extension="xml" ContentType="application/xml"/>'
-              '<Override PartName="/word/document.xml" ContentType='
-              '"application/vnd.openxmlformats-officedocument.'
-              'wordprocessingml.document.main+xml"/>'
-              '<Override PartName="/word/styles.xml" ContentType='
-              '"application/vnd.openxmlformats-officedocument.'
-              'wordprocessingml.styles+xml"/></Types>')
-        rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                '<Relationships xmlns="http://schemas.openxmlformats.'
-                'org/package/2006/relationships">'
-                '<Relationship Id="rId1" Type="http://schemas.'
-                'openxmlformats.org/officeDocument/2006/relationships/'
-                'officeDocument" Target="word/document.xml"/>'
-                "</Relationships>")
-        drels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-                 '<Relationships xmlns="http://schemas.openxmlformats.'
-                 'org/package/2006/relationships">'
-                 '<Relationship Id="rId1" Type="http://schemas.'
-                 'openxmlformats.org/officeDocument/2006/relationships/'
-                 'styles" Target="styles.xml"/></Relationships>')
-        with zipfile.ZipFile(str(path), "w",
-                             zipfile.ZIP_DEFLATED) as z:
+        doc = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="{}"><w:body>{}'
+            "<w:sectPr/></w:body></w:document>".format(_W, "".join(el.xml() for el in self._body))
+        )
+        ct = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Types xmlns="http://schemas.openxmlformats.org/'
+            'package/2006/content-types">'
+            '<Default Extension="rels" ContentType="application/'
+            'vnd.openxmlformats-package.relationships+xml"/>'
+            '<Default Extension="xml" ContentType="application/xml"/>'
+            '<Override PartName="/word/document.xml" ContentType='
+            '"application/vnd.openxmlformats-officedocument.'
+            'wordprocessingml.document.main+xml"/>'
+            '<Override PartName="/word/styles.xml" ContentType='
+            '"application/vnd.openxmlformats-officedocument.'
+            'wordprocessingml.styles+xml"/></Types>'
+        )
+        rels = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.'
+            'org/package/2006/relationships">'
+            '<Relationship Id="rId1" Type="http://schemas.'
+            "openxmlformats.org/officeDocument/2006/relationships/"
+            'officeDocument" Target="word/document.xml"/>'
+            "</Relationships>"
+        )
+        drels = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.'
+            'org/package/2006/relationships">'
+            '<Relationship Id="rId1" Type="http://schemas.'
+            "openxmlformats.org/officeDocument/2006/relationships/"
+            'styles" Target="styles.xml"/></Relationships>'
+        )
+        with zipfile.ZipFile(str(path), "w", zipfile.ZIP_DEFLATED) as z:
             z.writestr("[Content_Types].xml", ct)
             z.writestr("_rels/.rels", rels)
             z.writestr("word/_rels/document.xml.rels", drels)

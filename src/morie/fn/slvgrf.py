@@ -93,8 +93,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["aipw_scores", "toc_curve", "rate", "qini_coefficient",
-           "autoc", "qini_curve", "rate_test"]
+__all__ = ["aipw_scores", "toc_curve", "rate", "qini_coefficient", "autoc", "qini_curve", "rate_test"]
 
 _EPS = 1e-12
 _WEIGHTS = ("qini", "autoc", "uniform")
@@ -104,11 +103,9 @@ def _check(scores, priority):
     g = [float(v) for v in k.vec(scores)]
     s = [float(v) for v in k.vec(priority)]
     if len(g) != len(s):
-        raise ValueError("slvgrf: %d scores but %d priority values"
-                         % (len(g), len(s)))
+        raise ValueError(f"slvgrf: {int(len(g))} scores but {int(len(s))} priority values")
     if len(g) < 2:
-        raise ValueError("slvgrf: need at least 2 units, got %d"
-                         % len(g))
+        raise ValueError(f"slvgrf: need at least 2 units, got {int(len(g))}")
     return g, s
 
 
@@ -125,24 +122,19 @@ def aipw_scores(Y, W, mu1, mu0, e):
     m1 = [float(v) for v in k.vec(mu1)]
     m0 = [float(v) for v in k.vec(mu0)]
     n = len(y)
-    ev = ([float(e)] * n if isinstance(e, (int, float))
-          else [float(v) for v in k.vec(e)])
+    ev = [float(e)] * n if isinstance(e, (int, float)) else [float(v) for v in k.vec(e)]
     for nm, v in (("W", w), ("mu1", m1), ("mu0", m0), ("e", ev)):
         if len(v) != n:
-            raise ValueError("slvgrf: %s has %d entries for %d units"
-                             % (nm, len(v), n))
+            raise ValueError(f"slvgrf: {nm} has {int(len(v))} entries for {int(n)} units")
     for v in w:
         if v not in (0.0, 1.0):
-            raise ValueError("slvgrf: W must be 0/1, got %r" % (v,))
+            raise ValueError(f"slvgrf: W must be 0/1, got {v!r}")
     for v in ev:
         if not 0.0 < v < 1.0:
-            raise ValueError("slvgrf: the propensity must lie strictly "
-                             "in (0, 1); got %r -- overlap fails"
-                             % (v,))
-    return [m1[i] - m0[i]
-            + w[i] * (y[i] - m1[i]) / ev[i]
-            - (1.0 - w[i]) * (y[i] - m0[i]) / (1.0 - ev[i])
-            for i in range(n)]
+            raise ValueError(f"slvgrf: the propensity must lie strictly in (0, 1); got {v!r} -- overlap fails")
+    return [
+        m1[i] - m0[i] + w[i] * (y[i] - m1[i]) / ev[i] - (1.0 - w[i]) * (y[i] - m0[i]) / (1.0 - ev[i]) for i in range(n)
+    ]
 
 
 def toc_curve(scores, priority):
@@ -173,14 +165,10 @@ def rate(scores, priority, weight="autoc"):
     because the literature names the same weight both ways.
     """
     if weight not in _WEIGHTS:
-        raise ValueError("slvgrf: weight must be one of %s, got %r"
-                         % (", ".join(_WEIGHTS), weight))
+        raise ValueError("slvgrf: weight must be one of {}, got {!r}".format(", ".join(_WEIGHTS), weight))
     c = toc_curve(scores, priority)
     n = c["n"]
-    if weight == "qini":
-        val = sum(c["u"][j] * c["toc"][j] for j in range(n)) / n
-    else:
-        val = sum(c["toc"]) / n
+    val = sum(c["u"][j] * c["toc"][j] for j in range(n)) / n if weight == "qini" else sum(c["toc"]) / n
     return {"estimate": val, "weight": weight, "curve": c, "n": n}
 
 
@@ -209,11 +197,9 @@ def qini_curve(scores, priority, cost=None):
     if cost is None:
         cv = [1.0] * n
     else:
-        cv = ([float(cost)] * n if isinstance(cost, (int, float))
-              else [float(v) for v in k.vec(cost)])
+        cv = [float(cost)] * n if isinstance(cost, (int, float)) else [float(v) for v in k.vec(cost)]
         if len(cv) != n:
-            raise ValueError("slvgrf: %d costs for %d units"
-                             % (len(cv), n))
+            raise ValueError(f"slvgrf: {int(len(cv))} costs for {int(n)} units")
         if any(v <= 0.0 for v in cv):
             raise ValueError("slvgrf: costs must be positive")
     total = sum(cv)
@@ -223,8 +209,7 @@ def qini_curve(scores, priority, cost=None):
         spent += cv[i]
         xs.append(spent / total)
         ys.append(run / n)
-    return {"spend": xs, "gain": ys, "ate": sum(g) / n, "n": n,
-            "constrained": cost is not None}
+    return {"spend": xs, "gain": ys, "ate": sum(g) / n, "n": n, "constrained": cost is not None}
 
 
 def rate_test(scores, priority, weight="autoc", reps=500, seed=0):
@@ -245,40 +230,45 @@ def rate_test(scores, priority, weight="autoc", reps=500, seed=0):
     g, s = _check(scores, priority)
     n = len(g)
     if n < 8:
-        raise ValueError("slvgrf: the half-sample bootstrap needs at "
-                         "least 8 units, got %d" % n)
+        raise ValueError(f"slvgrf: the half-sample bootstrap needs at least 8 units, got {int(n)}")
     theta = rate(g, s, weight=weight)["estimate"]
     rng = np.random.default_rng(seed)
     half = n // 2
     draws = []
     for _ in range(int(reps)):
         idx = sorted(range(n), key=lambda _i: float(rng.uniform()))[:half]
-        draws.append(rate([g[i] for i in idx], [s[i] for i in idx],
-                          weight=weight)["estimate"])
+        draws.append(rate([g[i] for i in idx], [s[i] for i in idx], weight=weight)["estimate"])
     m = sum(draws) / len(draws)
     v = sum((d - m) ** 2 for d in draws) / (len(draws) - 1)
     se = math.sqrt(max(v, 0.0) / 2.0)
     z = theta / se if se > _EPS else 0.0
     p = 2.0 * (1.0 - k.pnorm(abs(z)))
-    return RichResult(payload={
-        "estimate": theta, "se": se, "z": z, "p_value": p,
-        "weight": weight, "reps": int(reps), "n": n,
-        "null": "the priority score is independent of the treatment "
-                "effect (Remark 1), NOT that the ATE is zero",
-        "method": "RATE with half-sample bootstrap, Yadlowsky et al. "
-                  "(2025) Corollary 5",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "se": se,
+            "z": z,
+            "p_value": p,
+            "weight": weight,
+            "reps": int(reps),
+            "n": n,
+            "null": "the priority score is independent of the treatment effect (Remark 1), NOT that the ATE is zero",
+            "method": "RATE with half-sample bootstrap, Yadlowsky et al. (2025) Corollary 5",
+        }
+    )
 
 
 def cheatsheet():
-    return ("slvgrf: score a PRIORITIZATION RULE, not a CATE fit. "
-            "TOC(u) = mean effect in the top u minus the ATE, so "
-            "TOC(1) = 0 exactly. RATE = int alpha(u) TOC(u) du; "
-            "alpha(u)=u is Qini, alpha(u)=1 is AUTOC. If the score is "
-            "independent of the effect, every RATE is exactly 0 -- so "
-            "this tests HETEROGENEITY, not the ATE. Qini has more "
-            "power when many units benefit, AUTOC when few do. "
-            "Estimate off AIPW scores; test by half-sample bootstrap.")
+    return (
+        "slvgrf: score a PRIORITIZATION RULE, not a CATE fit. "
+        "TOC(u) = mean effect in the top u minus the ATE, so "
+        "TOC(1) = 0 exactly. RATE = int alpha(u) TOC(u) du; "
+        "alpha(u)=u is Qini, alpha(u)=1 is AUTOC. If the score is "
+        "independent of the effect, every RATE is exactly 0 -- so "
+        "this tests HETEROGENEITY, not the ATE. Qini has more "
+        "power when many units benefit, AUTOC when few do. "
+        "Estimate off AIPW scores; test by half-sample bootstrap."
+    )
 
 
 # compact alias per ledger/NAMING.md

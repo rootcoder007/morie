@@ -84,7 +84,9 @@ def geron_rlhf(policy, reward_model, prompts=None, beta=0.1, lr=0.5, epochs=500)
     """
     Z0 = np.atleast_2d(np.asarray(policy, dtype=float)).astype(float)
     if Z0.ndim != 2 or Z0.size == 0:
-        raise ValueError(f"geron_rlhf: policy must be a non-empty (n_prompts, n_responses) logit matrix, got shape {Z0.shape}")
+        raise ValueError(
+            f"geron_rlhf: policy must be a non-empty (n_prompts, n_responses) logit matrix, got shape {Z0.shape}"
+        )
     P, R = Z0.shape
     if R < 2:
         raise ValueError(f"geron_rlhf: need at least 2 candidate responses, got {R}")

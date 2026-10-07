@@ -6,9 +6,15 @@ import pytest
 
 from morie.fn.timeRS import deviation, fit_time_bias, predict_time, time_bin
 
-
-R = [(0, 0, 10.0, 4.0), (0, 1, 150.0, 3.0), (1, 0, 20.0, 5.0), (1, 2, 400.0, 2.0),
-     (2, 1, 90.0, 3.5), (2, 2, 95.0, 4.5), (0, 2, 300.0, 3.0)]
+R = [
+    (0, 0, 10.0, 4.0),
+    (0, 1, 150.0, 3.0),
+    (1, 0, 20.0, 5.0),
+    (1, 2, 400.0, 2.0),
+    (2, 1, 90.0, 3.5),
+    (2, 2, 95.0, 4.5),
+    (0, 2, 300.0, 3.0),
+]
 
 
 def _replay(epochs, lr, reg, beta=0.4, bd=70, nb=30):
@@ -55,12 +61,12 @@ def test_timeRS_basic():
 def test_timeRS_edge():
     """dev is signed and concave; bins saturate at the last one; the
     prediction adds mu, both biases and the factor inner product."""
-    assert deviation(116.0, 16.0) == pytest.approx(100 ** 0.4, rel=1e-15)
-    assert deviation(0.0, 100.0) == pytest.approx(-(100 ** 0.4), rel=1e-15)
+    assert deviation(116.0, 16.0) == pytest.approx(100**0.4, rel=1e-15)
+    assert deviation(0.0, 100.0) == pytest.approx(-(100**0.4), rel=1e-15)
     assert deviation(5.0, 5.0) == 0.0
     assert time_bin(10_000, 70, 30) == 29
     pr = predict_time(3.0, 0.2, 0.1, 50.0, -0.1, [0.0, 0.05], 100.0, [1.0, 2.0], [0.5, 0.25])
-    assert pr["prediction"] == pytest.approx(3.0 + 0.2 + 0.1 * 50 ** 0.4 - 0.1 + 0.05 + 1.0, rel=1e-14)
+    assert pr["prediction"] == pytest.approx(3.0 + 0.2 + 0.1 * 50**0.4 - 0.1 + 0.05 + 1.0, rel=1e-14)
     with pytest.raises(ValueError):
         deviation(1.0, 0.0, beta=0.0)
     with pytest.raises(ValueError):

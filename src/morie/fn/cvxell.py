@@ -111,8 +111,7 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
     # support, not a requirement on the input.
     need = d + 1
     if n < need:
-        raise ValueError(
-            f"need at least {need} points in {d} dimensions, got {n}")
+        raise ValueError(f"need at least {need} points in {d} dimensions, got {n}")
     # Khachiyan works on the lifted points [x; 1]: the lift turns the
     # centre into part of the shape matrix, so a single determinant
     # maximisation handles both.
@@ -127,7 +126,8 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
             raise ValueError(
                 "points are degenerate: they lie in a lower-dimensional "
                 "affine subspace, so no covering ellipsoid has finite "
-                "volume") from exc
+                "volume"
+            ) from exc
         up = int(np.argmax(g))
         pos = np.flatnonzero(u > 0.0)
         down = int(pos[np.argmin(g[pos])])
@@ -142,13 +142,10 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
         # from the worst-served supported point and, capped, drives it
         # to exactly zero.
         j = up if excess >= deficit else down
-        if abs(g[j] - 1.0) < 1e-12:
-            # g == 1 means the point sits at the current centre: the
-            # unconstrained away step is infinite, so take the capped
-            # one directly rather than dividing by zero to get there.
-            step = -u[j] / (1.0 - u[j])
-        else:
-            step = (g[j] - d - 1.0) / ((d + 1.0) * (g[j] - 1.0))
+        # g == 1 means the point sits at the current centre: the
+        # unconstrained away step is infinite, so take the capped
+        # one directly rather than dividing by zero to get there.
+        step = -u[j] / (1.0 - u[j]) if abs(g[j] - 1.0) < 1e-12 else (g[j] - d - 1.0) / ((d + 1.0) * (g[j] - 1.0))
         if step < 0.0:
             step = max(step, -u[j] / (1.0 - u[j]))
         u = (1.0 - step) * u
@@ -172,16 +169,21 @@ def boyd_minvol_ellipsoid(X, tol=1e-07, max_iter=10000):
     maha = np.einsum("ij,jk,ik->i", diff, A, diff)
     return RichResult(
         title="Minimum volume covering ellipsoid",
-        summary_lines=[("n", int(n)), ("d", int(d)),
-                       ("volume", float(unit_vol * np.prod(axes))),
-                       ("support", int(np.sum(u > 1e-06))),
-                       ("converged", bool(converged))],
+        summary_lines=[
+            ("n", int(n)),
+            ("d", int(d)),
+            ("volume", float(unit_vol * np.prod(axes))),
+            ("support", int(np.sum(u > 1e-06))),
+            ("converged", bool(converged)),
+        ],
         payload={
-            "center": c, "A": A,
+            "center": c,
+            "A": A,
             "B": evecs @ np.diag(np.sqrt(evals)) @ evecs.T,
             "axes": axes[::-1].copy(),
             "volume": float(unit_vol * np.prod(axes)),
-            "weights": u, "support": np.flatnonzero(u > 1e-06),
+            "weights": u,
+            "support": np.flatnonzero(u > 1e-06),
             "mahalanobis": maha,
             "covers_all": bool(np.max(maha) <= 1.0 + 1e-06),
             "converged": bool(converged),

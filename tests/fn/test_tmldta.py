@@ -15,8 +15,7 @@ import pytest
 
 from morie.fn import _array_core as np
 from morie.fn import _s03core as k
-from morie.fn.tmldta import (discover_levels, split_specific_tmle,
-                             tmle_data_adaptive, variable_importance)
+from morie.fn.tmldta import discover_levels, split_specific_tmle, tmle_data_adaptive, variable_importance
 
 LEVELS = [0.0, 1.0, 2.0, 3.0]
 
@@ -32,22 +31,27 @@ def draw(n, seed, effect):
     rng = np.random.default_rng(seed)
     W1 = [rng.standard_normal() for _ in range(n)]
     W2 = [rng.standard_normal() for _ in range(n)]
-    A = [float(LEVELS[int(float(rng.uniform()) * len(LEVELS))])
-         for _ in range(n)]
+    A = [float(LEVELS[int(float(rng.uniform()) * len(LEVELS))]) for _ in range(n)]
 
     def mu(a, i):
         # non-monotone in a, so the argmax is not the largest level
         shape = (a - 1.0) * (3.0 - a) / 2.0
         return expit(-0.4 + 0.9 * W1[i] + 0.5 * W2[i] + effect * shape)
 
-    y = [1.0 if float(rng.uniform()) < mu(A[i], i) else 0.0
-         for i in range(n)]
+    y = [1.0 if float(rng.uniform()) < mu(A[i], i) else 0.0 for i in range(n)]
     means = {a: sum(mu(a, i) for i in range(n)) / n for a in LEVELS}
     aL = min(LEVELS, key=lambda a: means[a])
     aH = max(LEVELS, key=lambda a: means[a])
-    return {"y": y, "A": A, "W": [[W1[i], W2[i]] for i in range(n)],
-            "n": n, "means": means, "aL": aL, "aH": aH,
-            "truth": means[aH] - means[aL]}
+    return {
+        "y": y,
+        "A": A,
+        "W": [[W1[i], W2[i]] for i in range(n)],
+        "n": n,
+        "means": means,
+        "aL": aL,
+        "aH": aH,
+        "truth": means[aH] - means[aL],
+    }
 
 
 @pytest.fixture(scope="module")
@@ -62,23 +66,20 @@ def real():
 
 def test_the_null_design_really_is_null(null):
     d = null[0]
-    assert (max(d["means"].values())
-            - min(d["means"].values())) < 1e-12
+    assert (max(d["means"].values()) - min(d["means"].values())) < 1e-12
 
 
 def test_the_naive_estimator_is_never_negative_under_the_null(null):
     """Eq. (9.5) is the max minus the min of one noisy surface, so it is
     structurally one-sided -- a winner's curse with an interval on it."""
-    est = [tmle_data_adaptive(d["y"], d["A"], d["W"], method="naive",
-                              n_folds=3)["estimate"] for d in null]
+    est = [tmle_data_adaptive(d["y"], d["A"], d["W"], method="naive", n_folds=3)["estimate"] for d in null]
     assert all(v >= 0.0 for v in est)
     assert k.mean(est) > 3.0 * k.sd(est) / math.sqrt(len(est))
 
 
 @pytest.mark.parametrize("method", ["cv-tmle", "sample-split"])
 def test_the_split_arms_are_unbiased_under_the_null(null, method):
-    est = [tmle_data_adaptive(d["y"], d["A"], d["W"], method=method,
-                              n_folds=3)["estimate"] for d in null]
+    est = [tmle_data_adaptive(d["y"], d["A"], d["W"], method=method, n_folds=3)["estimate"] for d in null]
     se = k.sd(est) / math.sqrt(len(est))
     assert abs(k.mean(est)) < 3.0 * se
     # and unlike the naive arm it takes both signs
@@ -94,8 +95,7 @@ def test_the_search_is_not_trivial(real):
 
 def test_discover_levels_finds_the_true_argmin_and_argmax(real):
     """Eq. (9.2)-(9.3)."""
-    aL, aH, info = discover_levels(real["y"], real["A"], real["W"],
-                                   LEVELS)
+    aL, aH, info = discover_levels(real["y"], real["A"], real["W"], LEVELS)
     assert (aL, aH) == (real["aL"], real["aH"])
     assert info["spread"] > 0.0
 
@@ -110,9 +110,7 @@ def test_it_recovers_the_contrast_at_the_discovered_levels(real):
 def test_the_split_tmle_solves_its_score_equation(real):
     """Eq. (9.16)."""
     rows = list(range(real["n"]))
-    psi, D, info = split_specific_tmle(real["y"], real["A"], real["W"],
-                                       LEVELS, real["aL"], real["aH"],
-                                       rows, rows)
+    psi, D, info = split_specific_tmle(real["y"], real["A"], real["W"], LEVELS, real["aL"], real["aH"], rows, rows)
     assert abs(sum(D.values()) / len(D)) < 1e-8
     assert abs(info["eps"]) > 1e-6
 
@@ -121,15 +119,17 @@ def test_variable_importance_ranks_by_absolute_effect(real):
     """Anchored on the one contrast known exactly -- the exposure's --
     and on the ordering of the two covariates' generating coefficients
     (W1 at 0.9 against W2 at 0.5)."""
+
     def bin3(v):
         return -1.0 if v < -0.5 else (1.0 if v > 0.5 else 0.0)
 
     vi = variable_importance(
         real["y"],
-        [[real["A"][i], bin3(real["W"][i][0]), bin3(real["W"][i][1])]
-         for i in range(real["n"])],
-        method="cv-tmle", n_folds=3,
-        names=["exposure", "W1", "W2"])
+        [[real["A"][i], bin3(real["W"][i][0]), bin3(real["W"][i][1])] for i in range(real["n"])],
+        method="cv-tmle",
+        n_folds=3,
+        names=["exposure", "W1", "W2"],
+    )
     assert [v["rank"] for v in vi] == [1, 2, 3]
     assert vi[0]["variable"] == "exposure"
     assert abs(vi[0]["estimate"] - real["truth"]) < 0.15
@@ -147,8 +147,7 @@ def test_a_tie_is_flagged_and_separation_is_not(null, real):
     d = null[0]
     r_tie = tmle_data_adaptive(d["y"], d["A"], d["W"], n_folds=3)
     assert r_tie["near_tie"]
-    r_sep = tmle_data_adaptive(real["y"], real["A"], real["W"],
-                               n_folds=3)
+    r_sep = tmle_data_adaptive(real["y"], real["A"], real["W"], n_folds=3)
     assert not r_sep["near_tie"]
     assert r_sep["separation"] > r_tie["separation"]
     assert r_sep["level_agreement"] == 1.0
@@ -175,8 +174,7 @@ def test_argument_checks(real):
     with pytest.raises(ValueError):
         tmle_data_adaptive(d["y"], [1.0] * d["n"], d["W"])
     with pytest.raises(ValueError):
-        tmle_data_adaptive(d["y"], d["A"], d["W"],
-                           candidate_strata=[0.0, 1.0, 99.0])
+        tmle_data_adaptive(d["y"], d["A"], d["W"], candidate_strata=[0.0, 1.0, 99.0])
     with pytest.raises(ValueError):
         tmle_data_adaptive(d["y"][:-1], d["A"], d["W"])
     with pytest.raises(ValueError):
@@ -192,6 +190,4 @@ def test_argument_checks(real):
     with pytest.raises(ValueError):
         variable_importance(d["y"], [[a] for a in d["A"]])
     with pytest.raises(ValueError):
-        variable_importance(
-            d["y"], [[d["A"][i], round(d["W"][i][0])]
-                     for i in range(d["n"])], names=["only-one"])
+        variable_importance(d["y"], [[d["A"][i], round(d["W"][i][0])] for i in range(d["n"])], names=["only-one"])

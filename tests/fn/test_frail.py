@@ -1,7 +1,6 @@
 """Tests for morie.fn.frail — frailty model."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.frail import frailty_model
 
 

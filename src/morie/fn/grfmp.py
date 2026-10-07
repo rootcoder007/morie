@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Feature-map size of a convolutional layer."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_feature_map_dim"]
@@ -89,8 +88,7 @@ def geron_feature_map_dim(H_out, W_out, C_out, bytes_per_value=4, batch_size=1):
 
     return RichResult(
         title="Feature-map size",
-        summary_lines=[("Shape", (H_out, W_out, C_out)), ("Values", dim),
-                       ("MB (batch)", nbytes * bs / 2**20)],
+        summary_lines=[("Shape", (H_out, W_out, C_out)), ("Values", dim), ("MB (batch)", nbytes * bs / 2**20)],
         payload={
             "dim": int(dim),
             "bytes": int(nbytes),

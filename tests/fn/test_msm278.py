@@ -6,12 +6,9 @@ Springer, ch 14, eq. 14.11 p.470, the roughness penalty matrix. Expected values 
 from the equation the module cites.
 """
 
-import math
-
 import pytest
 
 from morie.fn.msm278 import penmat
-
 
 GRID = [0.0, 0.25, 0.5, 0.75, 1.0]
 
@@ -40,8 +37,7 @@ def test_the_penalty_is_the_quadratic_form_of_the_matrix():
     beta = [0.0, 1.0, 0.5]
     res = penmat(GRID, 3, p=2, beta=beta)
     P = res["P"]
-    expected = sum(beta[i] * P[i][j] * beta[j] for i in range(3)
-                   for j in range(3))
+    expected = sum(beta[i] * P[i][j] * beta[j] for i in range(3) for j in range(3))
     assert res["J"] == pytest.approx(expected, rel=1e-9, abs=1e-12)
 
 

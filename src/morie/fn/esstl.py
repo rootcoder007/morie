@@ -98,25 +98,33 @@ def effective_sample_size_tail(chains, prob=0.05):
     # directly. Rank-normalising a 0/1 series maps every 0 to one value and
     # every 1 to another, which destroys the autocorrelation structure the
     # estimate depends on.
-    lo = ess_from_chains((C < q_lo).astype(float))
-    hi = ess_from_chains((C > q_hi).astype(float))
+    lo = ess_from_chains((q_lo > C).astype(float))
+    hi = ess_from_chains((q_hi < C).astype(float))
     ess = float(min(lo, hi))
     total = m * n
     return RichResult(
         title="Tail effective sample size",
-        summary_lines=[("draws", int(total)), ("tail ESS", ess),
-                       ("prob", float(prob))],
-        warnings=([f"tail ESS below 100 per chain ({ess:.0f}); credible "
-                   "intervals are unreliable even if the mean is fine"]
-                  if ess < 100 * m else []),
+        summary_lines=[("draws", int(total)), ("tail ESS", ess), ("prob", float(prob))],
+        warnings=(
+            [f"tail ESS below 100 per chain ({ess:.0f}); credible intervals are unreliable even if the mean is fine"]
+            if ess < 100 * m
+            else []
+        ),
         payload={
-            "ess_tail": ess, "ess_lower": float(lo), "ess_upper": float(hi),
-            "n_draws": int(total), "efficiency": float(ess / total),
-            "sufficient": bool(ess >= 100 * m), "prob": float(prob),
-            "n_chains": int(m), "method": "effective_sample_size_tail",
+            "ess_tail": ess,
+            "ess_lower": float(lo),
+            "ess_upper": float(hi),
+            "n_draws": int(total),
+            "efficiency": float(ess / total),
+            "sufficient": bool(ess >= 100 * m),
+            "prob": float(prob),
+            "n_chains": int(m),
+            "method": "effective_sample_size_tail",
         },
     )
 
 
 def cheatsheet():
-    return "esstl: governs CREDIBLE INTERVALS; good bulk-ESS with bad tail-ESS means a trustworthy mean and a bad interval"
+    return (
+        "esstl: governs CREDIBLE INTERVALS; good bulk-ESS with bad tail-ESS means a trustworthy mean and a bad interval"
+    )

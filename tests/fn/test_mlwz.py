@@ -1,7 +1,6 @@
 """Tests for mlwz.multilevel_within_cluster_z."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mlwz import multilevel_within_cluster_z
 
 

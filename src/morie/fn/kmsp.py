@@ -19,16 +19,14 @@ def _seed_vocab(corpus, max_piece_len, seed_size):
         L = len(s)
         for i in range(L):
             for n in range(2, min(max_piece_len, L - i) + 1):
-                w = s[i:i + n]
+                w = s[i : i + n]
                 freq[w] = freq.get(w, 0) + 1
     ranked = sorted(freq, key=lambda w: (-freq[w] * len(w), w))
     room = max(0, seed_size - len(chars))
     return sorted(chars) + ranked[:room]
 
 
-def kamath_sentencepiece_tokenizer(corpus, vocab_size, max_piece_len=8,
-                                   seed_multiplier=4, shrink=0.75,
-                                   max_iter=50):
+def kamath_sentencepiece_tokenizer(corpus, vocab_size, max_piece_len=8, seed_multiplier=4, shrink=0.75, max_iter=50):
     """argmax over V and p of sum_s log P(s | V, p), with
     P(s) = sum over segmentations of prod_t p(w_t).
 
@@ -80,14 +78,14 @@ def kamath_sentencepiece_tokenizer(corpus, vocab_size, max_piece_len=8,
         raise ValueError(
             f"vocab_size {vocab_size} is below the {len(chars)} distinct "
             "characters in the corpus; every character must stay in the "
-            "vocabulary or some sentence becomes unsegmentable.")
+            "vocabulary or some sentence becomes unsegmentable."
+        )
     if max_piece_len < 2:
         raise ValueError("max_piece_len must be at least 2.")
     if not 0.0 < shrink < 1.0:
         raise ValueError(f"shrink must lie in (0, 1); got {shrink}.")
 
-    vocab = _seed_vocab(corpus, max_piece_len,
-                        max(vocab_size, int(seed_multiplier * vocab_size)))
+    vocab = _seed_vocab(corpus, max_piece_len, max(vocab_size, int(seed_multiplier * vocab_size)))
     fit = kamath_unigram_lm_tokenizer(corpus, vocab, max_iter=max_iter)
     probs = dict(fit["probs"])
     rounds = 0
@@ -104,11 +102,11 @@ def kamath_sentencepiece_tokenizer(corpus, vocab_size, max_piece_len=8,
             try:
                 losses[w] = base - unigram_loglik(corpus, trimmed)
             except ValueError:
-                losses[w] = float("inf")   # removal breaks segmentability
+                losses[w] = float("inf")  # removal breaks segmentability
         if not losses:
             raise ValueError(
-                "only single-character pieces remain but the vocabulary "
-                "is still too large; raise vocab_size.")
+                "only single-character pieces remain but the vocabulary is still too large; raise vocab_size."
+            )
         keep_n = max(vocab_size, int(len(probs) * shrink))
         n_drop = min(len(losses), len(probs) - keep_n)
         if n_drop <= 0:
@@ -118,16 +116,19 @@ def kamath_sentencepiece_tokenizer(corpus, vocab_size, max_piece_len=8,
         fit = kamath_unigram_lm_tokenizer(corpus, vocab, max_iter=max_iter)
         probs = dict(fit["probs"])
     segs = [viterbi_segment(s, probs)[0] for s in corpus]
-    return RichResult(payload={
-        "vocab": sorted(probs, key=lambda w: (-probs[w], w)),
-        "probs": probs,
-        "vocab_size": len(probs),
-        "log_likelihood": float(unigram_loglik(corpus, probs)),
-        "segmentations": segs,
-        "n_prune_rounds": rounds,
-        "estimate": len(probs),
-        "n": len(corpus),
-        "method": "SentencePiece unigram: seed, EM (kmuni), exact-loss prune"})
+    return RichResult(
+        payload={
+            "vocab": sorted(probs, key=lambda w: (-probs[w], w)),
+            "probs": probs,
+            "vocab_size": len(probs),
+            "log_likelihood": float(unigram_loglik(corpus, probs)),
+            "segmentations": segs,
+            "n_prune_rounds": rounds,
+            "estimate": len(probs),
+            "n": len(corpus),
+            "method": "SentencePiece unigram: seed, EM (kmuni), exact-loss prune",
+        }
+    )
 
 
 def cheatsheet():

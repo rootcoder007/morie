@@ -77,11 +77,10 @@ from . import _blake2 as b2
 from . import _sha2 as h
 from ._richresult import RichResult
 
-__all__ = ["argon2", "variable_hash", "prehash", "compress",
-           "parameter_advice"]
+__all__ = ["argon2", "variable_hash", "prehash", "compress", "parameter_advice"]
 
-_MASK64 = 0xffffffffffffffff
-_MASK32 = 0xffffffff
+_MASK64 = 0xFFFFFFFFFFFFFFFF
+_MASK32 = 0xFFFFFFFF
 BLOCK = 1024
 SL = 4
 TYPES = {"argon2d": 0, "argon2i": 1, "argon2id": 2}
@@ -105,8 +104,7 @@ def variable_hash(data, length):
     """
     T = int(length)
     if T < 1:
-        raise ValueError("secarg: the output length must be "
-                         "positive")
+        raise ValueError("secarg: the output length must be positive")
     a = h._as_bytes(data)
     if T <= 64:
         return b2.blake2b(_le32(T) + a, T)
@@ -122,9 +120,18 @@ def variable_hash(data, length):
     return bytes(out[:T])
 
 
-def prehash(password, salt, parallelism, tag_length, memory, passes,
-            variant="argon2id", secret=b"", associated=b"",
-            version=VERSION):
+def prehash(
+    password,
+    salt,
+    parallelism,
+    tag_length,
+    memory,
+    passes,
+    variant="argon2id",
+    secret=b"",
+    associated=b"",
+    version=VERSION,
+):
     r""":math:`H_0`, over EVERY parameter.
 
     Changing the memory, the passes or the variant changes the digest,
@@ -132,37 +139,43 @@ def prehash(password, salt, parallelism, tag_length, memory, passes,
     """
     y = TYPES.get(str(variant))
     if y is None:
-        raise ValueError("secarg: variant must be one of %s, got %r"
-                         % (", ".join(sorted(TYPES)), variant))
+        raise ValueError("secarg: variant must be one of {}, got {!r}".format(", ".join(sorted(TYPES)), variant))
     P = h._as_bytes(password)
     S = h._as_bytes(salt)
     K = h._as_bytes(secret)
     X = h._as_bytes(associated)
     if len(S) < 8:
-        raise ValueError("secarg: the salt must be at least 8 bytes "
-                         "(the RFC recommends 16), got %d" % len(S))
-    buf = (_le32(parallelism) + _le32(tag_length) + _le32(memory)
-           + _le32(passes) + _le32(version) + _le32(y)
-           + _le32(len(P)) + P + _le32(len(S)) + S
-           + _le32(len(K)) + K + _le32(len(X)) + X)
+        raise ValueError(f"secarg: the salt must be at least 8 bytes (the RFC recommends 16), got {int(len(S))}")
+    buf = (
+        _le32(parallelism)
+        + _le32(tag_length)
+        + _le32(memory)
+        + _le32(passes)
+        + _le32(version)
+        + _le32(y)
+        + _le32(len(P))
+        + P
+        + _le32(len(S))
+        + S
+        + _le32(len(K))
+        + K
+        + _le32(len(X))
+        + X
+    )
     return b2.blake2b(buf, 64)
 
 
 def _gb(v, a, b, c, d):
-    v[a] = (v[a] + v[b] + 2 * (v[a] & _MASK32) * (v[b] & _MASK32)) \
-        & _MASK64
+    v[a] = (v[a] + v[b] + 2 * (v[a] & _MASK32) * (v[b] & _MASK32)) & _MASK64
     v[d] = ((v[d] ^ v[a]) >> 32) | ((v[d] ^ v[a]) << 32) & _MASK64
     v[d] &= _MASK64
-    v[c] = (v[c] + v[d] + 2 * (v[c] & _MASK32) * (v[d] & _MASK32)) \
-        & _MASK64
+    v[c] = (v[c] + v[d] + 2 * (v[c] & _MASK32) * (v[d] & _MASK32)) & _MASK64
     x = v[b] ^ v[c]
     v[b] = ((x >> 24) | (x << 40)) & _MASK64
-    v[a] = (v[a] + v[b] + 2 * (v[a] & _MASK32) * (v[b] & _MASK32)) \
-        & _MASK64
+    v[a] = (v[a] + v[b] + 2 * (v[a] & _MASK32) * (v[b] & _MASK32)) & _MASK64
     x = v[d] ^ v[a]
     v[d] = ((x >> 16) | (x << 48)) & _MASK64
-    v[c] = (v[c] + v[d] + 2 * (v[c] & _MASK32) * (v[d] & _MASK32)) \
-        & _MASK64
+    v[c] = (v[c] + v[d] + 2 * (v[c] & _MASK32) * (v[d] & _MASK32)) & _MASK64
     x = v[b] ^ v[c]
     v[b] = ((x >> 63) | (x << 1)) & _MASK64
 
@@ -187,9 +200,9 @@ def compress(X, Y):
     R = [X[i] ^ Y[i] for i in range(128)]
     Q = list(R)
     for i in range(8):
-        row = Q[16 * i:16 * i + 16]
+        row = Q[16 * i : 16 * i + 16]
         _P(row)
-        Q[16 * i:16 * i + 16] = row
+        Q[16 * i : 16 * i + 16] = row
     for j in range(8):
         idx = []
         for i in range(8):
@@ -202,8 +215,7 @@ def compress(X, Y):
 
 
 def _to_words(bs):
-    return [int.from_bytes(bytes(bs[i:i + 8]), "little")
-            for i in range(0, len(bs), 8)]
+    return [int.from_bytes(bytes(bs[i : i + 8]), "little") for i in range(0, len(bs), 8)]
 
 
 def _to_bytes(ws):
@@ -226,9 +238,9 @@ def _addresses(pass_no, lane, slice_no, m_prime, passes, y, counter):
     return compress(zero, compress(zero, inp))
 
 
-def argon2(password, salt, memory=32, passes=3, parallelism=4,
-           tag_length=32, variant="argon2id", secret=b"",
-           associated=b""):
+def argon2(
+    password, salt, memory=32, passes=3, parallelism=4, tag_length=32, variant="argon2id", secret=b"", associated=b""
+):
     r"""The full function. ``memory`` is in kibibytes.
 
     Returns the tag plus the parameters it was computed under, since a
@@ -236,8 +248,7 @@ def argon2(password, salt, memory=32, passes=3, parallelism=4,
     """
     y = TYPES.get(str(variant))
     if y is None:
-        raise ValueError("secarg: variant must be one of %s, got %r"
-                         % (", ".join(sorted(TYPES)), variant))
+        raise ValueError("secarg: variant must be one of {}, got {!r}".format(", ".join(sorted(TYPES)), variant))
     p = int(parallelism)
     t = int(passes)
     m = int(memory)
@@ -246,86 +257,74 @@ def argon2(password, salt, memory=32, passes=3, parallelism=4,
     if t < 1:
         raise ValueError("secarg: at least one pass is required")
     if m < 8 * p:
-        raise ValueError("secarg: memory must be at least 8*p = %d "
-                         "KiB, got %d" % (8 * p, m))
+        raise ValueError(f"secarg: memory must be at least 8*p = {int(8 * p)} KiB, got {int(m)}")
     m_prime = (m // (SL * p)) * (SL * p)
     q = m_prime // p
     seg = q // SL
-    H0 = prehash(password, salt, p, tag_length, m, t, variant,
-                 secret, associated)
+    H0 = prehash(password, salt, p, tag_length, m, t, variant, secret, associated)
     B = [[None] * q for _ in range(p)]
     for i in range(p):
-        B[i][0] = _to_words(variable_hash(H0 + _le32(0) + _le32(i),
-                                          BLOCK))
-        B[i][1] = _to_words(variable_hash(H0 + _le32(1) + _le32(i),
-                                          BLOCK))
+        B[i][0] = _to_words(variable_hash(H0 + _le32(0) + _le32(i), BLOCK))
+        B[i][1] = _to_words(variable_hash(H0 + _le32(1) + _le32(i), BLOCK))
     for r in range(t):
         for sl in range(SL):
             for i in range(p):
-                data_indep = (y == 1) or (y == 2 and r == 0
-                                          and sl < 2)
+                data_indep = (y == 1) or (y == 2 and r == 0 and sl < 2)
                 addr, counter = None, 0
                 start = 0
                 if r == 0 and sl == 0:
                     start = 2
                     if data_indep:
                         counter += 1
-                        addr = _addresses(r, i, sl, m_prime, t, y,
-                                          counter)
+                        addr = _addresses(r, i, sl, m_prime, t, y, counter)
                 for idx in range(start, seg):
                     if data_indep and idx % 128 == 0:
                         counter += 1
-                        addr = _addresses(r, i, sl, m_prime, t, y,
-                                          counter)
+                        addr = _addresses(r, i, sl, m_prime, t, y, counter)
                     j = sl * seg + idx
                     prev = B[i][j - 1] if j > 0 else B[i][q - 1]
-                    if data_indep:
-                        pr = addr[idx % 128]
-                    else:
-                        pr = prev[0]
+                    pr = addr[idx % 128] if data_indep else prev[0]
                     J1 = pr & _MASK32
                     J2 = (pr >> 32) & _MASK32
                     lane = i if (r == 0 and sl == 0) else J2 % p
                     if r == 0:
-                        if sl == 0 or lane == i:
-                            W = j - 1
-                        else:
-                            W = sl * seg - (1 if idx == 0 else 0)
+                        W = j - 1 if sl == 0 or lane == i else sl * seg - (1 if idx == 0 else 0)
                     else:
-                        if lane == i:
-                            W = q - seg + idx - 1
-                        else:
-                            W = q - seg - (1 if idx == 0 else 0)
+                        W = q - seg + idx - 1 if lane == i else q - seg - (1 if idx == 0 else 0)
                     if W < 1:
                         W = 1
                     x = (J1 * J1) >> 32
                     yy = (W * x) >> 32
                     zz = W - 1 - yy
-                    startpos = 0 if r == 0 else \
-                        ((sl + 1) % SL) * seg
+                    startpos = 0 if r == 0 else ((sl + 1) % SL) * seg
                     ref = (startpos + zz) % q
                     new = compress(prev, B[lane][ref])
                     if r == 0:
                         B[i][j] = new
                     else:
-                        B[i][j] = [new[k] ^ B[i][j][k]
-                                   for k in range(128)]
+                        B[i][j] = [new[k] ^ B[i][j][k] for k in range(128)]
     C = list(B[0][q - 1])
     for i in range(1, p):
         C = [C[k] ^ B[i][q - 1][k] for k in range(128)]
     tag = variable_hash(_to_bytes(C), int(tag_length))
-    return RichResult(payload={
-        "estimate": h.hexlify(tag), "tag": tag,
-        "tag_hex": h.hexlify(tag), "variant": variant,
-        "memory_kib": m, "memory_used_kib": m_prime, "passes": t,
-        "parallelism": p, "version": VERSION,
-        "data_independent_first_half": y == 2,
-        "method": "Argon2 v1.3; Biryukov, Dinu, Khovratovich & "
-                  "Josefsson (2021) RFC 9106",
-        "note": "a tag is only comparable against another computed "
-                "under the SAME parameters, which is why they are "
-                "returned with it",
-    })
+    return RichResult(
+        payload={
+            "estimate": h.hexlify(tag),
+            "tag": tag,
+            "tag_hex": h.hexlify(tag),
+            "variant": variant,
+            "memory_kib": m,
+            "memory_used_kib": m_prime,
+            "passes": t,
+            "parallelism": p,
+            "version": VERSION,
+            "data_independent_first_half": y == 2,
+            "method": "Argon2 v1.3; Biryukov, Dinu, Khovratovich & Josefsson (2021) RFC 9106",
+            "note": "a tag is only comparable against another computed "
+            "under the SAME parameters, which is why they are "
+            "returned with it",
+        }
+    )
 
 
 def parameter_advice(profile="first"):
@@ -335,43 +334,50 @@ def parameter_advice(profile="first"):
     exactly the property the function exists to provide.
     """
     rec = {
-        "first": {"variant": "argon2id", "memory": 2 * 1024 * 1024,
-                  "passes": 1, "parallelism": 4, "tag_length": 32,
-                  "salt_bytes": 16,
-                  "note": "RFC 9106 Sec. 4 first recommended option: "
-                          "2 GiB, t = 1, p = 4"},
-        "second": {"variant": "argon2id", "memory": 64 * 1024,
-                   "passes": 3, "parallelism": 4, "tag_length": 32,
-                   "salt_bytes": 16,
-                   "note": "RFC 9106 Sec. 4 second option for memory-"
-                           "constrained environments: 64 MiB, t = 3, "
-                           "p = 4"},
+        "first": {
+            "variant": "argon2id",
+            "memory": 2 * 1024 * 1024,
+            "passes": 1,
+            "parallelism": 4,
+            "tag_length": 32,
+            "salt_bytes": 16,
+            "note": "RFC 9106 Sec. 4 first recommended option: 2 GiB, t = 1, p = 4",
+        },
+        "second": {
+            "variant": "argon2id",
+            "memory": 64 * 1024,
+            "passes": 3,
+            "parallelism": 4,
+            "tag_length": 32,
+            "salt_bytes": 16,
+            "note": "RFC 9106 Sec. 4 second option for memory-constrained environments: 64 MiB, t = 3, p = 4",
+        },
     }
     if profile not in rec:
-        raise ValueError("secarg: profile must be 'first' or "
-                         "'second', got %r" % (profile,))
+        raise ValueError(f"secarg: profile must be 'first' or 'second', got {profile!r}")
     out = dict(rec[profile])
     out["memory_gib"] = out["memory"] / (1024.0 * 1024.0)
-    out["warning"] = ("lowering memory in favour of more passes "
-                      "weakens time-space trade-off resistance")
+    out["warning"] = "lowering memory in favour of more passes weakens time-space trade-off resistance"
     return out
 
 
 def cheatsheet():
-    return ("secarg: iteration counts no longer make a password hash "
-            "slow -- a GPU or ASIC parallelises computation far more "
-            "cheaply than the defender can. Argon2 is MEMORY-hard: "
-            "fill m KiB and keep referring back, so an attacker "
-            "provisions the memory per guess or recomputes blocks and "
-            "pays in time. Memory is the PRIMARY parameter; trading it "
-            "for passes weakens the trade-off resistance. THREE "
-            "variants for TWO threats: 2d picks reference blocks from "
-            "the DATA (best trade-off resistance, leaks through a side "
-            "channel), 2i picks them independently (no leak, weaker), "
-            "and 2id does the first half-pass the 2i way and the rest "
-            "the 2d way -- the recommended default. G applies the "
-            "BLAKE2b permutation to ROWS then COLUMNS; rows alone "
-            "would not diffuse across the block.")
+    return (
+        "secarg: iteration counts no longer make a password hash "
+        "slow -- a GPU or ASIC parallelises computation far more "
+        "cheaply than the defender can. Argon2 is MEMORY-hard: "
+        "fill m KiB and keep referring back, so an attacker "
+        "provisions the memory per guess or recomputes blocks and "
+        "pays in time. Memory is the PRIMARY parameter; trading it "
+        "for passes weakens the trade-off resistance. THREE "
+        "variants for TWO threats: 2d picks reference blocks from "
+        "the DATA (best trade-off resistance, leaks through a side "
+        "channel), 2i picks them independently (no leak, weaker), "
+        "and 2id does the first half-pass the 2i way and the rest "
+        "the 2d way -- the recommended default. G applies the "
+        "BLAKE2b permutation to ROWS then COLUMNS; rows alone "
+        "would not diffuse across the block."
+    )
 
 
 # compact alias per ledger/NAMING.md

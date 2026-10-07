@@ -1,7 +1,5 @@
 """Tests for snr2.snijders_bosker_r2_level1."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.snr2 import snijders_bosker_r2_level1
 
 

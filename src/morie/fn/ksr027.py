@@ -53,9 +53,13 @@ def kosorok_ch2_law_large_numbers_pointwise(X, t, F=None, n_grid=None):
         raise ValueError(f"n_grid entries must lie in 1..{N}.")
     dev = np.array([abs(float(empirical_df(X[:g], t)[0]) - Ft) for g in n_grid])
     return RichResult(
-        payload={"n_grid": np.array(n_grid), "deviation": dev, "F_t": Ft,
-                 "shrinking": bool(dev[-1] <= dev[0] + 1e-12),
-                 "method": "Pointwise |F_n(t) - F(t)| witness (Kosorok Ch. 2)"}
+        payload={
+            "n_grid": np.array(n_grid),
+            "deviation": dev,
+            "F_t": Ft,
+            "shrinking": bool(dev[-1] <= dev[0] + 1e-12),
+            "method": "Pointwise |F_n(t) - F(t)| witness (Kosorok Ch. 2)",
+        }
     )
 
 

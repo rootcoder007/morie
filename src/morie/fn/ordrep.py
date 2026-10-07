@@ -34,11 +34,11 @@ def ordrep(N, n):
     """
     N = _morin._check_nonneg_int(N, "N")
     n = _morin._check_nonneg_int(n, "n")
-    count = N ** n
+    count = N**n
     import math
+
     log_count = n * math.log(N) if N > 0 and n > 0 else 0.0
-    payload = {"n_objects": float(N), "n_picks": float(n),
-               "count": float(count), "log_count": float(log_count)}
+    payload = {"n_objects": float(N), "n_picks": float(n), "count": float(count), "log_count": float(log_count)}
     return RichResult(
         title="Ordered sampling with replacement: N^n outcomes.",
         summary_lines=[("N", N), ("n", n), ("count", count)],

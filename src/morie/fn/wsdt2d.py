@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wasserstein-p between two point clouds."""
 
-import math
-
 from . import _s04core as S
 from . import _tail1core as C
 from ._richresult import RichResult
@@ -45,13 +43,18 @@ def wasserstein_p_d(X_samples, Y_samples, p=2.0):
     B = C.mat(Y_samples)
     n = len(A)
     d = len(A[0])
-    Cst = [[sum(abs(A[i][k] - B[j][k]) ** 2 for k in range(d)) ** (p / 2.0)
-            for j in range(n)] for i in range(n)]
+    Cst = [[sum(abs(A[i][k] - B[j][k]) ** 2 for k in range(d)) ** (p / 2.0) for j in range(n)] for i in range(n)]
     asg = S.hungarian(Cst)
     tot = sum(Cst[i][asg[i]] for i in range(n)) / n
-    return RichResult(payload={
-        "estimate": tot ** (1.0 / p), "wpp": tot, "assignment": asg, "n": n,
-        "method": "Wasserstein-p by optimal assignment"})
+    return RichResult(
+        payload={
+            "estimate": tot ** (1.0 / p),
+            "wpp": tot,
+            "assignment": asg,
+            "n": n,
+            "method": "Wasserstein-p by optimal assignment",
+        }
+    )
 
 
 wassersteinpd = wasserstein_p_d

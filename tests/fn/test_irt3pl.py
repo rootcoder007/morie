@@ -1,7 +1,6 @@
 """Tests for irt3pl.three_parameter_logistic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.irt3pl import three_parameter_logistic
 
 

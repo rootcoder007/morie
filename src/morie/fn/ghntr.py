@@ -52,10 +52,7 @@ def ghosal_neutral_right(time, event=None, c=1.0, lam0=None):
                 "method": "NTR process (empty input)",
             }
         )
-    if event is None:
-        d = np.ones(n, dtype=int)
-    else:
-        d = np.asarray(event, dtype=int).ravel()
+    d = np.ones(n, dtype=int) if event is None else np.asarray(event, dtype=int).ravel()
     if lam0 is None:
         lam0 = 1.0 / max(float(np.mean(t)), 1e-6)
     t_s = np.sort(t)

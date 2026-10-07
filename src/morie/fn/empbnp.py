@@ -57,19 +57,19 @@ def empirical_bayes_np(y, prior_family="poisson"):
         support = list(range(top + 1))
         theta = []
         for k in support:
-            theta.append((k + 1.0) * cnt[k + 1] / cnt[k] if cnt[k] > 0
-                         else float("nan"))
+            theta.append((k + 1.0) * cnt[k + 1] / cnt[k] if cnt[k] > 0 else float("nan"))
         per = [theta[v] for v in ks]
-        est = sum(v for v in per if v == v) / max(
-            sum(1 for v in per if v == v), 1)
-        return RichResult(payload={
-            "estimate": est,
-            "theta_hat": theta,
-            "support": support,
-            "counts": cnt[:top + 1],
-            "n": n,
-            "method": "Robbins nonparametric empirical Bayes (Poisson)",
-        })
+        est = sum(v for v in per if v == v) / max(sum(1 for v in per if v == v), 1)
+        return RichResult(
+            payload={
+                "estimate": est,
+                "theta_hat": theta,
+                "support": support,
+                "counts": cnt[: top + 1],
+                "n": n,
+                "method": "Robbins nonparametric empirical Bayes (Poisson)",
+            }
+        )
     # Tweedie: a Gaussian kernel estimate of log f and its derivative
     s = core.sd(y, 1)
     if s <= 0.0:
@@ -85,14 +85,16 @@ def empirical_bayes_np(y, prior_family="poisson"):
             f += k
             fp += k * (-u / h)
         theta.append(y[i] + fp / f if f > 0.0 else y[i])
-    return RichResult(payload={
-        "estimate": sum(theta) / n,
-        "theta_hat": theta,
-        "support": list(y),
-        "counts": [1] * n,
-        "n": n,
-        "method": "Tweedie nonparametric empirical Bayes (Gaussian)",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(theta) / n,
+            "theta_hat": theta,
+            "support": list(y),
+            "counts": [1] * n,
+            "n": n,
+            "method": "Tweedie nonparametric empirical Bayes (Gaussian)",
+        }
+    )
 
 
 def cheatsheet():

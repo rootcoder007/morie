@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_ap_b3 import ghosal_renyi_div
 
 
@@ -22,7 +21,7 @@ def test_gh_ap_b3_basic():
     q_arr = np.asarray(q, dtype=float)
     pn = p_arr / float(np.sum(p_arr))
     qn = q_arr / float(np.sum(q_arr))
-    rho = float(np.sum(pn ** alpha * qn ** (1.0 - alpha)))
+    rho = float(np.sum(pn**alpha * qn ** (1.0 - alpha)))
     expected = math.log(rho) / (alpha - 1.0)
 
     est = float(np.asarray(result["estimate"], dtype=float))

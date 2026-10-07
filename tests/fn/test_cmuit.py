@@ -1,7 +1,6 @@
 """Tests for cmuit.conditional_mutual_information."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmuit import conditional_mutual_information
 
 

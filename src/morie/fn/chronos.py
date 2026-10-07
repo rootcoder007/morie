@@ -74,14 +74,19 @@ family Chronos is built on, used unmodified apart from the vocabulary
 size.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["mean_scale", "uniform_bins", "quantile_bins", "quantize",
-           "dequantize", "tokenize", "detokenize", "forecast_summary"]
+__all__ = [
+    "mean_scale",
+    "uniform_bins",
+    "quantile_bins",
+    "quantize",
+    "dequantize",
+    "tokenize",
+    "detokenize",
+    "forecast_summary",
+]
 
 _EPS = 1e-12
 PAD, EOS = -1, -2
@@ -98,33 +103,29 @@ def mean_scale(x, context=None):
     if not v:
         raise ValueError("chronos: the series is empty")
     C = len(v) if context is None else int(context)
-    if C < 1 or C > len(v):
-        raise ValueError("chronos: the context length must lie in "
-                         "1..%d, got %d" % (len(v), C))
+    if C < 1 or len(v) < C:
+        raise ValueError(f"chronos: the context length must lie in 1..{int(len(v))}, got {int(C)}")
     s = sum(abs(q) for q in v[:C]) / C
     if s <= _EPS:
-        return {"scaled": [0.0] * len(v), "scale": 0.0,
-                "degenerate": True,
-                "note": "the context is all zeros, so no scale is "
-                        "defined"}
-    return {"scaled": [q / s for q in v], "scale": s,
-            "degenerate": False, "context": C,
-            "preserves_zero": True}
+        return {
+            "scaled": [0.0] * len(v),
+            "scale": 0.0,
+            "degenerate": True,
+            "note": "the context is all zeros, so no scale is defined",
+        }
+    return {"scaled": [q / s for q in v], "scale": s, "degenerate": False, "context": C, "preserves_zero": True}
 
 
 def uniform_bins(lo=-15.0, hi=15.0, n_bins=4096):
     r"""Evenly spaced centres with edges exactly midway between them."""
     B = int(n_bins)
     if B < 2:
-        raise ValueError("chronos: need at least 2 bins, got %d" % B)
+        raise ValueError(f"chronos: need at least 2 bins, got {int(B)}")
     if float(hi) <= float(lo):
         raise ValueError("chronos: hi must exceed lo")
-    centers = [float(lo) + (float(hi) - float(lo)) * i / (B - 1)
-               for i in range(B)]
+    centers = [float(lo) + (float(hi) - float(lo)) * i / (B - 1) for i in range(B)]
     edges = [0.5 * (centers[i] + centers[i + 1]) for i in range(B - 1)]
-    return {"centers": centers, "edges": edges, "n_bins": B,
-            "scheme": "uniform",
-            "range": (centers[0], centers[-1])}
+    return {"centers": centers, "edges": edges, "n_bins": B, "scheme": "uniform", "range": (centers[0], centers[-1])}
 
 
 def quantile_bins(samples, n_bins=4096):
@@ -137,21 +138,20 @@ def quantile_bins(samples, n_bins=4096):
     v = sorted(float(q) for q in k.vec(samples))
     B = int(n_bins)
     if len(v) < B:
-        raise ValueError("chronos: %d samples cannot define %d "
-                         "quantile bins" % (len(v), B))
-    centers = [v[min(len(v) - 1, int((i + 0.5) * len(v) / B))]
-               for i in range(B)]
+        raise ValueError(f"chronos: {int(len(v))} samples cannot define {int(B)} quantile bins")
+    centers = [v[min(len(v) - 1, int((i + 0.5) * len(v) / B))] for i in range(B)]
     centers = sorted(set(centers))
     if len(centers) < 2:
-        raise ValueError("chronos: the samples are too concentrated "
-                         "to form bins")
-    edges = [0.5 * (centers[i] + centers[i + 1])
-             for i in range(len(centers) - 1)]
-    return {"centers": centers, "edges": edges,
-            "n_bins": len(centers), "scheme": "quantile",
-            "range": (centers[0], centers[-1]),
-            "caveat": "fitted to the TRAINING distribution; an unseen "
-                      "dataset may fall where there are no bins"}
+        raise ValueError("chronos: the samples are too concentrated to form bins")
+    edges = [0.5 * (centers[i] + centers[i + 1]) for i in range(len(centers) - 1)]
+    return {
+        "centers": centers,
+        "edges": edges,
+        "n_bins": len(centers),
+        "scheme": "quantile",
+        "range": (centers[0], centers[-1]),
+        "caveat": "fitted to the TRAINING distribution; an unseen dataset may fall where there are no bins",
+    }
 
 
 def quantize(x, bins):
@@ -171,12 +171,13 @@ def quantize(x, bins):
         while j < len(e) and q >= e[j]:
             j += 1
         out.append(j)
-    return {"tokens": out, "n_clipped": clipped,
-            "clipped_fraction": clipped / float(len(v)),
-            "in_range": clipped == 0,
-            "note": "predictions are confined to [c_1, c_B]; a strong "
-                    "trend leaves that interval and cannot be "
-                    "represented"}
+    return {
+        "tokens": out,
+        "n_clipped": clipped,
+        "clipped_fraction": clipped / float(len(v)),
+        "in_range": clipped == 0,
+        "note": "predictions are confined to [c_1, c_B]; a strong trend leaves that interval and cannot be represented",
+    }
 
 
 def dequantize(tokens, bins):
@@ -188,8 +189,7 @@ def dequantize(tokens, bins):
         if j in (PAD, EOS):
             continue
         if not 0 <= j < len(c):
-            raise ValueError("chronos: token %d is outside the "
-                             "vocabulary of %d bins" % (j, len(c)))
+            raise ValueError(f"chronos: token {int(j)} is outside the vocabulary of {int(len(c))} bins")
         out.append(c[j])
     return out
 
@@ -203,15 +203,18 @@ def tokenize(x, bins, context=None, add_eos=True, pad_to=None):
         toks.append(EOS)
     if pad_to is not None and len(toks) < int(pad_to):
         toks = [PAD] * (int(pad_to) - len(toks)) + toks
-    return RichResult(payload={
-        "estimate": toks, "tokens": toks, "scale": sc["scale"],
-        "n_clipped": qz["n_clipped"],
-        "clipped_fraction": qz["clipped_fraction"],
-        "vocab_size": bins["n_bins"] + 2,
-        "method": "Chronos tokenisation: mean scaling then uniform "
-                  "quantisation; Ansari et al. (2024) Sec. 3.1",
-        "ignores": "time and frequency features, deliberately",
-    })
+    return RichResult(
+        payload={
+            "estimate": toks,
+            "tokens": toks,
+            "scale": sc["scale"],
+            "n_clipped": qz["n_clipped"],
+            "clipped_fraction": qz["clipped_fraction"],
+            "vocab_size": bins["n_bins"] + 2,
+            "method": "Chronos tokenisation: mean scaling then uniform quantisation; Ansari et al. (2024) Sec. 3.1",
+            "ignores": "time and frequency features, deliberately",
+        }
+    )
 
 
 def detokenize(tokens, bins, scale):
@@ -230,12 +233,10 @@ def forecast_summary(token_probs, bins, quantiles=(0.1, 0.5, 0.9)):
     p = [float(q) for q in k.vec(token_probs)]
     c = bins["centers"]
     if len(p) != len(c):
-        raise ValueError("chronos: %d probabilities for %d bins"
-                         % (len(p), len(c)))
+        raise ValueError(f"chronos: {int(len(p))} probabilities for {int(len(c))} bins")
     tot = sum(p)
     if tot <= _EPS:
-        raise ValueError("chronos: the predicted distribution has no "
-                         "mass")
+        raise ValueError("chronos: the predicted distribution has no mass")
     p = [q / tot for q in p]
     mean = sum(p[i] * c[i] for i in range(len(c)))
     out = {}
@@ -247,24 +248,29 @@ def forecast_summary(token_probs, bins, quantiles=(0.1, 0.5, 0.9)):
                 pick = c[i]
                 break
         out[float(qq)] = pick
-    return {"mean": mean, "quantiles": out,
-            "mode": c[max(range(len(p)), key=lambda i: p[i])],
-            "note": "cross-entropy training does not know bins are "
-                    "ordered; the model must learn that neighbouring "
-                    "bins are similar"}
+    return {
+        "mean": mean,
+        "quantiles": out,
+        "mode": c[max(range(len(p)), key=lambda i: p[i])],
+        "note": "cross-entropy training does not know bins are "
+        "ordered; the model must learn that neighbouring "
+        "bins are similar",
+    }
 
 
 def cheatsheet():
-    return ("chronos: time series as a LANGUAGE. Mean scaling with "
-            "m = 0 and s = mean|x| over the context -- m = 0 means "
-            "ZERO MAPS TO ZERO, which matters because zeros are "
-            "usually real. Uniform bins, edges exactly midway; "
-            "quantile bins rejected because unseen datasets differ "
-            "from the training CDF. Predictions confined to "
-            "[c_1, c_B], so strong TRENDS cannot be represented. "
-            "Calendar and frequency features deliberately ignored. "
-            "Cross-entropy loss, so bin ORDER is not given to the "
-            "model.")
+    return (
+        "chronos: time series as a LANGUAGE. Mean scaling with "
+        "m = 0 and s = mean|x| over the context -- m = 0 means "
+        "ZERO MAPS TO ZERO, which matters because zeros are "
+        "usually real. Uniform bins, edges exactly midway; "
+        "quantile bins rejected because unseen datasets differ "
+        "from the training CDF. Predictions confined to "
+        "[c_1, c_B], so strong TRENDS cannot be represented. "
+        "Calendar and frequency features deliberately ignored. "
+        "Cross-entropy loss, so bin ORDER is not given to the "
+        "model."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -54,8 +54,7 @@ def schabenberger_binomial_process(n=100, region=None, seed=None):
     reg = as_region(region, None) if region is not None else (0.0, 0.0, 1.0, 1.0)
     area = region_area(reg)
     rng = np.random.default_rng(seed)
-    pts = np.column_stack([rng.uniform(reg[0], reg[2], n),
-                           rng.uniform(reg[1], reg[3], n)])
+    pts = np.column_stack([rng.uniform(reg[0], reg[2], n), rng.uniform(reg[1], reg[3], n)])
 
     def counts_in_fraction(p):
         """Mean and variance of N(B) when nu(B)/nu(A) = p."""
@@ -64,12 +63,17 @@ def schabenberger_binomial_process(n=100, region=None, seed=None):
     m, v = counts_in_fraction(0.5)
     return RichResult(
         title="Binomial point process",
-        summary_lines=[("n (fixed)", n), ("area", area),
-                       ("intensity", n / area if area else float("nan"))],
-        payload={"points": pts, "n": n, "area": area,
-                 "intensity": n / area if area else float("nan"),
-                 "binomial_mean_half": m, "binomial_var_half": v,
-                 "counts_in_fraction": counts_in_fraction, "region": reg},
+        summary_lines=[("n (fixed)", n), ("area", area), ("intensity", n / area if area else float("nan"))],
+        payload={
+            "points": pts,
+            "n": n,
+            "area": area,
+            "intensity": n / area if area else float("nan"),
+            "binomial_mean_half": m,
+            "binomial_var_half": v,
+            "counts_in_fraction": counts_in_fraction,
+            "region": reg,
+        },
     )
 
 

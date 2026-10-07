@@ -13,6 +13,8 @@ def test_km030_doctest():
 
 def test_km030_edge():
     import pytest
+
     from morie.fn.km030 import kamath_ch2_nsp_loss
+
     with pytest.raises((ValueError, TypeError)):
         kamath_ch2_nsp_loss(*([None] * 3))

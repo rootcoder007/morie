@@ -84,12 +84,21 @@ def bound_no_monotonicity(y, D, Z):
     rng = y1 - y0
     lo = (itt_y - pd_max * rng) / pc_max
     hi = (itt_y + pd_max * rng) / pc_max
-    return RichResult(payload={
-        "lower": lo, "upper": hi, "width": hi - lo,
-        "estimate": 0.5 * (lo + hi), "wald": itt_y / net,
-        "pi_net": net, "pi_c_max": pc_max, "pi_d_max": pd_max,
-        "itt_y": itt_y, "n": n,
-        "method": "Bound when monotonicity violated"})
+    return RichResult(
+        payload={
+            "lower": lo,
+            "upper": hi,
+            "width": hi - lo,
+            "estimate": 0.5 * (lo + hi),
+            "wald": itt_y / net,
+            "pi_net": net,
+            "pi_c_max": pc_max,
+            "pi_d_max": pd_max,
+            "itt_y": itt_y,
+            "n": n,
+            "method": "Bound when monotonicity violated",
+        }
+    )
 
 
 def cheatsheet():

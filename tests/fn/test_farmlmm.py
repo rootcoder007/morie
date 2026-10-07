@@ -1,7 +1,6 @@
 """Tests for farmlmm.farm_cpu."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.farmlmm import farm_cpu
 
 

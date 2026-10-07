@@ -111,23 +111,27 @@ def esl_bootstrap_err(X, y, model=None, B=100, loss=None, seed=0):
     oob = ~inbag
     counts = oob.sum(axis=0)
     keep = counts > 0
-    per_i = np.where(keep, (losses * oob).sum(axis=0) / np.maximum(counts, 1),
-                     np.nan)
+    per_i = np.where(keep, (losses * oob).sum(axis=0) / np.maximum(counts, 1), np.nan)
     err_loo = float(np.nanmean(per_i[keep])) if keep.any() else np.nan
     err_train = float(np.mean(L(yv, fit(A, yv)(A))))
-    return RichResult(payload={
-        "err_boot": err_boot, "err_loo_boot": err_loo,
-        "err_train": err_train,
-        "inclusion_probability": inclusion_probability(n),
-        "optimistic": True,
-        "optimism_note": "(7.54) trains and tests on overlapping samples, so "
-                         "it is biased DOWNWARD; use err_loo_boot (7.56)",
-        "n_dropped": int((~keep).sum()),
-        "per_observation": per_i,
-        "which_to_use": "err_loo_boot for an honest estimate; feed it and "
-                        "err_train to esl_oob_632 for the .632 correction",
-        "B": int(Bn), "n": int(n),
-        "method": "ESL (7.54) Err_boot and (7.56) leave-one-out bootstrap Err^(1)"})
+    return RichResult(
+        payload={
+            "err_boot": err_boot,
+            "err_loo_boot": err_loo,
+            "err_train": err_train,
+            "inclusion_probability": inclusion_probability(n),
+            "optimistic": True,
+            "optimism_note": "(7.54) trains and tests on overlapping samples, so "
+            "it is biased DOWNWARD; use err_loo_boot (7.56)",
+            "n_dropped": int((~keep).sum()),
+            "per_observation": per_i,
+            "which_to_use": "err_loo_boot for an honest estimate; feed it and "
+            "err_train to esl_oob_632 for the .632 correction",
+            "B": int(Bn),
+            "n": int(n),
+            "method": "ESL (7.54) Err_boot and (7.56) leave-one-out bootstrap Err^(1)",
+        }
+    )
 
 
 def cheatsheet():

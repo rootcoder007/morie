@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,17 +26,16 @@ def autocorrelated_mean_variance(sigma2, n, rho_bar):
     """
     value = _brus.autocorrelated_mean_variance(sigma2, n, rho_bar)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (26.3)"
     return RichResult(
-        title='Variance of the mean under autocorrelation',
+        title="Variance of the mean under autocorrelation",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r26e3: V(mu_hat) = (sigma2/n)(1 + (n-1) rhobar) [Brus 2022, eq. 26.3]'
+    return "r26e3: V(mu_hat) = (sigma2/n)(1 + (n-1) rhobar) [Brus 2022, eq. 26.3]"

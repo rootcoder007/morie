@@ -1,7 +1,5 @@
 """Tests for gb32asy.gibbons_runs_asymp_normal."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb32asy import gibbons_runs_asymp_normal
 
 
@@ -27,11 +25,11 @@ def test_gb32asy_basic():
     n = n1 + n2
     lam = n1 / float(n)
     mean = 2.0 * n * lam * (1.0 - lam)
-    sd = 2.0 * (n ** 0.5) * lam * (1.0 - lam)
+    sd = 2.0 * (n**0.5) * lam * (1.0 - lam)
     me = 2.0 * n1 * n2 / float(n) + 1.0
     ve = 2.0 * n1 * n2 * (2.0 * n1 * n2 - n) / (float(n) ** 2 * (n - 1.0))
     expected_z = (r - mean) / sd
-    expected_z_exact = (r - me) / (ve ** 0.5)
+    expected_z_exact = (r - me) / (ve**0.5)
 
     assert result["mean"] == mean
     assert result["mean_exact"] == me
@@ -62,7 +60,7 @@ def test_gb32asy_edge():
     n = n1 + n2
     lam = n1 / float(n)
     mean = 2.0 * n * lam * (1.0 - lam)
-    sd = 2.0 * (n ** 0.5) * lam * (1.0 - lam)
+    sd = 2.0 * (n**0.5) * lam * (1.0 - lam)
     assert result["z"] == (r - mean) / sd
 
     # Continuity correction moves the numerator by 0.5 toward the mean
@@ -72,7 +70,7 @@ def test_gb32asy_edge():
     nb = n1b + n2b
     lamb = n1b / float(nb)
     meanb = 2.0 * nb * lamb * (1.0 - lamb)
-    sdb = 2.0 * (nb ** 0.5) * lamb * (1.0 - lamb)
+    sdb = 2.0 * (nb**0.5) * lamb * (1.0 - lamb)
 
     base = gibbons_runs_asymp_normal(r2, n1b, n2b, correct=False)
     corr = gibbons_runs_asymp_normal(r2, n1b, n2b, correct=True)

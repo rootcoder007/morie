@@ -95,13 +95,18 @@ explicitly declines to follow.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["dsw_embed", "attention", "cross_time_stage",
-           "cross_dimension_stage", "two_stage_attention",
-           "segment_merge", "complexity"]
+__all__ = [
+    "dsw_embed",
+    "attention",
+    "cross_time_stage",
+    "cross_dimension_stage",
+    "two_stage_attention",
+    "segment_merge",
+    "complexity",
+]
 
 _EPS = 1e-12
 
@@ -122,42 +127,40 @@ def dsw_embed(X, seg_len, E=None, pos=None):
     D = len(Xm[0])
     L = int(seg_len)
     if L < 1:
-        raise ValueError("crsfmr: seg_len must be at least 1, got %d"
-                         % L)
+        raise ValueError(f"crsfmr: seg_len must be at least 1, got {int(L)}")
     if T % L != 0:
-        raise ValueError("crsfmr: T = %d is not divisible by seg_len "
-                         "= %d; pad the series first (the paper pads "
-                         "to a proper length)" % (T, L))
+        raise ValueError(
+            f"crsfmr: T = {int(T)} is not divisible by seg_len = {int(L)}; pad the series first (the paper pads to a proper length)"
+        )
     n_seg = T // L
     if E is None:
         # identity-ish default: the segment itself, so d_model = L
-        Em = [[1.0 if a == b else 0.0 for b in range(L)]
-              for a in range(L)]
+        Em = [[1.0 if a == b else 0.0 for b in range(L)] for a in range(L)]
     else:
         Em = [[float(v) for v in r] for r in k.mat(E)]
         if len(Em[0]) != L:
-            raise ValueError("crsfmr: E must have seg_len = %d "
-                             "columns, got %d" % (L, len(Em[0])))
+            raise ValueError(f"crsfmr: E must have seg_len = {int(L)} columns, got {int(len(Em[0]))}")
     dm = len(Em)
     H = []
     for i in range(n_seg):
         row = []
         for d in range(D):
             seg = [Xm[i * L + q][d] for q in range(L)]
-            vec = [sum(Em[a][q] * seg[q] for q in range(L))
-                   for a in range(dm)]
+            vec = [sum(Em[a][q] * seg[q] for q in range(L)) for a in range(dm)]
             if pos is not None:
                 p = k.mat(pos)
-                vec = [vec[a] + float(p[i][d][a]) if isinstance(
-                    p[i][d], (list, tuple)) else vec[a]
-                    for a in range(dm)]
+                vec = [vec[a] + float(p[i][d][a]) if isinstance(p[i][d], (list, tuple)) else vec[a] for a in range(dm)]
             row.append(vec)
         H.append(row)
-    return {"H": H, "n_seg": n_seg, "D": D, "d_model": dm,
-            "seg_len": L,
-            "shape": (n_seg, D, dm),
-            "note": "each vector is ONE dimension's segment; the "
-                    "dimension axis survives embedding"}
+    return {
+        "H": H,
+        "n_seg": n_seg,
+        "D": D,
+        "d_model": dm,
+        "seg_len": L,
+        "shape": (n_seg, D, dm),
+        "note": "each vector is ONE dimension's segment; the dimension axis survives embedding",
+    }
 
 
 def attention(Q, K_, V):
@@ -167,21 +170,17 @@ def attention(Q, K_, V):
     Km = [[float(v) for v in r] for r in k.mat(K_)]
     Vm = [[float(v) for v in r] for r in k.mat(V)]
     if len(Km) != len(Vm):
-        raise ValueError("crsfmr: keys and values must have the same "
-                         "length (%d, %d)" % (len(Km), len(Vm)))
+        raise ValueError(f"crsfmr: keys and values must have the same length ({int(len(Km))}, {int(len(Vm))})")
     dk = len(Qm[0])
     if len(Km[0]) != dk:
-        raise ValueError("crsfmr: queries and keys must share a "
-                         "dimension (%d, %d)" % (dk, len(Km[0])))
+        raise ValueError(f"crsfmr: queries and keys must share a dimension ({int(dk)}, {int(len(Km[0]))})")
     scale = 1.0 / math.sqrt(dk)
     out, W = [], []
     for q in Qm:
-        logits = [scale * sum(q[a] * kk[a] for a in range(dk))
-                  for kk in Km]
+        logits = [scale * sum(q[a] * kk[a] for a in range(dk)) for kk in Km]
         w = k.softmax(logits)
         W.append(w)
-        out.append([sum(w[j] * Vm[j][a] for j in range(len(Vm)))
-                    for a in range(len(Vm[0]))])
+        out.append([sum(w[j] * Vm[j][a] for j in range(len(Vm))) for a in range(len(Vm[0]))])
     return {"out": out, "weights": W}
 
 
@@ -202,8 +201,7 @@ def cross_time_stage(Z):
         a = attention(seq, seq, seq)["out"]
         for i in range(L):
             # residual, as in eq. (3), before the norm
-            out[i][d] = [seq[i][q] + a[i][q]
-                         for q in range(len(seq[i]))]
+            out[i][d] = [seq[i][q] + a[i][q] for q in range(len(seq[i]))]
     return out
 
 
@@ -228,16 +226,16 @@ def cross_dimension_stage(Z, router=None, n_router=None):
     out = []
     for i in range(L):
         Zi = Z[i]
-        B = ([[float(v) for v in r] for r in k.mat(router)]
-             if router is not None
-             else [list(Zi[d % D]) for d in range(c)])
+        B = (
+            [[float(v) for v in r] for r in k.mat(router)]
+            if router is not None
+            else [list(Zi[d % D]) for d in range(c)]
+        )
         if len(B) != c:
-            raise ValueError("crsfmr: the router array has %d rows "
-                             "but n_router is %d" % (len(B), c))
+            raise ValueError(f"crsfmr: the router array has {int(len(B))} rows but n_router is {int(c)}")
         gathered = attention(B, Zi, Zi)["out"]
         back = attention(Zi, gathered, gathered)["out"]
-        out.append([[Zi[d][q] + back[d][q]
-                     for q in range(len(Zi[d]))] for d in range(D)])
+        out.append([[Zi[d][q] + back[d][q] for q in range(len(Zi[d]))] for d in range(D)])
     return out
 
 
@@ -247,12 +245,18 @@ def two_stage_attention(Z, n_router=None, router=None):
     zd = cross_dimension_stage(zt, router=router, n_router=n_router)
     D = len(Z[0])
     c = int(n_router) if n_router is not None else max(1, min(D, 3))
-    return RichResult(payload={
-        "estimate": zd, "output": zd, "cross_time": zt,
-        "L": len(Z), "D": D, "n_router": c,
-        "complexity": complexity(len(Z), D, c),
-        "method": "Two-Stage Attention, Zhang & Yan (2023) Sec. 3.2",
-    })
+    return RichResult(
+        payload={
+            "estimate": zd,
+            "output": zd,
+            "cross_time": zt,
+            "L": len(Z),
+            "D": D,
+            "n_router": c,
+            "complexity": complexity(len(Z), D, c),
+            "method": "Two-Stage Attention, Zhang & Yan (2023) Sec. 3.2",
+        }
+    )
 
 
 def segment_merge(Z, factor=2):
@@ -267,8 +271,7 @@ def segment_merge(Z, factor=2):
         raise ValueError("crsfmr: the merge factor must be at least 2")
     L = len(Z)
     if L % f != 0:
-        raise ValueError("crsfmr: %d segments do not divide by a "
-                         "merge factor of %d" % (L, f))
+        raise ValueError(f"crsfmr: {int(L)} segments do not divide by a merge factor of {int(f)}")
     D = len(Z[0])
     out = []
     for i in range(L // f):
@@ -293,24 +296,27 @@ def complexity(L, D, c):
     :math:`O(D^2L^2)`.
     """
     Lv, Dv, cv = int(L), int(D), int(c)
-    return {"cross_time": Dv * Lv * Lv,
-            "cross_dimension_router": cv * Dv * Lv,
-            "cross_dimension_full": Dv * Dv * Lv,
-            "flattened_2d": Dv * Dv * Lv * Lv,
-            "router_saving": (Dv * Dv * Lv)
-            / max(cv * Dv * Lv, 1)}
+    return {
+        "cross_time": Dv * Lv * Lv,
+        "cross_dimension_router": cv * Dv * Lv,
+        "cross_dimension_full": Dv * Dv * Lv,
+        "flattened_2d": Dv * Dv * Lv * Lv,
+        "router_saving": (Dv * Dv * Lv) / max(cv * Dv * Lv, 1),
+    }
 
 
 def cheatsheet():
-    return ("crsfmr: Crossformer. Earlier models embed ALL dimensions "
-            "at one time step into one vector, destroying "
-            "cross-dimension information at step one. DSW instead "
-            "segments EACH dimension and embeds the segments, giving "
-            "a 2D array (time x dimension). TSA then does cross-time "
-            "attention per dimension with SHARED weights (O(D L^2)), "
-            "then cross-dimension through a ROUTER of c << D vectors "
-            "-- gather then broadcast -- which is O(cD) rather than "
-            "O(D^2). Hierarchy: upper layers merge adjacent segments.")
+    return (
+        "crsfmr: Crossformer. Earlier models embed ALL dimensions "
+        "at one time step into one vector, destroying "
+        "cross-dimension information at step one. DSW instead "
+        "segments EACH dimension and embeds the segments, giving "
+        "a 2D array (time x dimension). TSA then does cross-time "
+        "attention per dimension with SHARED weights (O(D L^2)), "
+        "then cross-dimension through a ROUTER of c << D vectors "
+        "-- gather then broadcast -- which is O(cD) rather than "
+        "O(D^2). Hierarchy: upper layers merge adjacent segments."
+    )
 
 
 # compact alias per ledger/NAMING.md

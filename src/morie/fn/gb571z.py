@@ -1,11 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Tie correction for the signed-rank variance -- eq. (5.7.11)."""
 
-import math
-
 from ._richresult import RichResult
 
-__all__ = ['wsrties', 'gibbons_wsrt_ties_zeros']
+__all__ = ["wsrties", "gibbons_wsrt_ties_zeros"]
 
 
 def wsrties(d, m0=0.0):

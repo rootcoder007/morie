@@ -19,10 +19,9 @@ def alammar_contextualized_embedding(layer_outputs, layer_idx, position):
     """
     L = np.asarray(layer_outputs, dtype=float)
     if L.ndim != 3:
-        raise ValueError(
-            "layer_outputs must be (n_layers, seq_len, dim); got shape "
-            f"{L.shape}.")
-    li = int(layer_idx); pos = int(position)
+        raise ValueError(f"layer_outputs must be (n_layers, seq_len, dim); got shape {L.shape}.")
+    li = int(layer_idx)
+    pos = int(position)
     n_layers, seq, dim = L.shape
     if not -n_layers <= li < n_layers:
         raise ValueError(f"layer {li} out of range for {n_layers} layers.")
@@ -30,11 +29,17 @@ def alammar_contextualized_embedding(layer_outputs, layer_idx, position):
         raise ValueError(f"position {pos} out of range for length {seq}.")
     v = L[li, pos]
     varies = bool(seq > 1 and not np.allclose(L[li], L[li, 0]))
-    return RichResult(payload={
-        "embedding": [float(x) for x in v],
-        "context_varies": varies,
-        "estimate": float(v[0]), "layer": li, "position": pos, "n": seq,
-        "method": "Contextualised embedding extraction (Alammar Ch 2)"})
+    return RichResult(
+        payload={
+            "embedding": [float(x) for x in v],
+            "context_varies": varies,
+            "estimate": float(v[0]),
+            "layer": li,
+            "position": pos,
+            "n": seq,
+            "method": "Contextualised embedding extraction (Alammar Ch 2)",
+        }
+    )
 
 
 def cheatsheet():

@@ -85,11 +85,15 @@ def wasserman_mcmc_metropolis(target, proposal, x0, n, seed=13):
             accepted += 1
         samples.append(x)
     arr = np.asarray(samples)
-    return RichResult(payload={
-        "estimate": float(np.mean(arr)),
-        "samples": [float(v) for v in arr],
-        "acceptance_rate": accepted / n, "n": n,
-        "method": "random-walk Metropolis, LCG-driven, symmetric q cancels"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(arr)),
+            "samples": [float(v) for v in arr],
+            "acceptance_rate": accepted / n,
+            "n": n,
+            "method": "random-walk Metropolis, LCG-driven, symmetric q cancels",
+        }
+    )
 
 
 def cheatsheet():

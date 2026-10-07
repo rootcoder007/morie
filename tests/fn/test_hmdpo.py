@@ -1,7 +1,6 @@
 """Tests for hmdpo.geron_dpo."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmdpo import geron_dpo
 
 
@@ -17,13 +16,21 @@ def test_hmdpo_basic():
     result = geron_dpo(pi, pi_ref, preferences, beta)
     assert isinstance(result, dict)
     expected_keys = {
-        "loss", "per_pair_loss", "margin", "reward_chosen",
-        "reward_rejected", "accuracy", "prob_preferred",
-        "estimate", "n", "method",
+        "loss",
+        "per_pair_loss",
+        "margin",
+        "reward_chosen",
+        "reward_rejected",
+        "accuracy",
+        "prob_preferred",
+        "estimate",
+        "n",
+        "method",
     }
     for key in expected_keys:
         assert key in result
     import math
+
     assert math.isfinite(result["loss"])
     assert result["n"] == B
     assert 0.0 <= result["accuracy"] <= 1.0
@@ -42,6 +49,7 @@ def test_hmdpo_edge():
     result = geron_dpo(pi, pi_ref, beta=beta)
     assert isinstance(result, dict)
     import math
+
     assert math.isfinite(result["loss"])
     assert result["n"] == B
     # with default preferences all column 0 is chosen, prob_preferred
@@ -62,7 +70,7 @@ import morie.fn.hmdpo as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

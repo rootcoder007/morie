@@ -57,22 +57,30 @@ def fauzi_kde(x, grid=None, h=None):
         sd = float(np.std(xv, ddof=1))
         iqr = float(np.subtract(*np.percentile(xv, [75, 25])))
         scale = min(sd, iqr / 1.349) if iqr > 0 else sd
-        hh = 1.06 * (scale if scale > 0 else 1.0) * n ** -0.2
+        hh = 1.06 * (scale if scale > 0 else 1.0) * n**-0.2
     else:
         hh = float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(xv.min() - 3 * hh, xv.max() + 3 * hh, 200) \
-        if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
+    g = (
+        np.linspace(xv.min() - 3 * hh, xv.max() + 3 * hh, 200)
+        if grid is None
+        else np.atleast_1d(np.asarray(grid, dtype=float))
+    )
     dens = kernel_K((g[:, None] - xv[None, :]) / hh).sum(axis=1) / (n * hh)
-    return RichResult(payload={
-        "grid": g, "density": dens, "bandwidth": hh,
-        "mass": float(np.trapezoid(dens, g)),
-        "interior_bias_order": "O(h^2)",
-        "boundary_bias_order": "O(h) -- does NOT vanish at the same rate",
-        "boundary_consistent": False,
-        "n": int(n),
-        "method": "Rosenblatt-Parzen KDE; the boundary failure is what Ch. 1 and Ch. 4 are for"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "bandwidth": hh,
+            "mass": float(np.trapezoid(dens, g)),
+            "interior_bias_order": "O(h^2)",
+            "boundary_bias_order": "O(h) -- does NOT vanish at the same rate",
+            "boundary_consistent": False,
+            "n": int(n),
+            "method": "Rosenblatt-Parzen KDE; the boundary failure is what Ch. 1 and Ch. 4 are for",
+        }
+    )
 
 
 def cheatsheet():

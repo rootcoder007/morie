@@ -19,7 +19,6 @@ __all__ = ["hardsvm", "mvsml_ridge_lasso_elastic_eq_9_6"]
 
 
 def hardsvm(X, y):
-
     """maximize M subject to sum_j beta_j^2 = 1 and
     y_i(beta_0 + x_i beta) >= M (eq. 9.6).  Because the margin is
     M = 1 / ||beta|| once the scale is fixed, (9.6) is equivalent to

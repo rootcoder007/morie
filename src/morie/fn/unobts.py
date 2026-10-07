@@ -67,13 +67,10 @@ _GRID = (0.0, 0.01, 0.1, 0.5, 1.0)
 def _names(components):
     if components is None:
         return ["level"]
-    if isinstance(components, str):
-        out = [components.strip().lower()]
-    else:
-        out = [str(c).strip().lower() for c in components]
+    out = [components.strip().lower()] if isinstance(components, str) else [str(c).strip().lower() for c in components]
     for c in out:
         if c not in ("level", "trend", "seasonal", "irregular"):
-            raise ValueError("unobserved_components: unknown component %r" % (c,))
+            raise ValueError(f"unobserved_components: unknown component {c!r}")
     if "trend" in out and "level" not in out:
         out = ["level"] + out
     if "level" not in out:
@@ -163,8 +160,7 @@ def _loglik(lv, lf, d):
     return s2, ll
 
 
-def unobserved_components(y, components="level", period=4, ratio_grid=None,
-                          kappa=1.0e10):
+def unobserved_components(y, components="level", period=4, ratio_grid=None, kappa=1.0e10):
     """Fit a basic structural model and return the filtered components.
 
     Parameters

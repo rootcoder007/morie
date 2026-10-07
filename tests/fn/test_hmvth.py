@@ -2,17 +2,21 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmvth import geron_voting_hard
 
 
 def test_hmvth_basic():
     """Test basic functionality."""
+
     # Simple models returning labels for 4 rows
-    a = lambda X: [1, 1, 0, 0]
-    b = lambda X: [1, 0, 1, 0]
-    c = lambda X: [1, 1, 0, 1]
+    def a(X):
+        return [1, 1, 0, 0]
+
+    def b(X):
+        return [1, 0, 1, 0]
+
+    def c(X):
+        return [1, 1, 0, 1]
 
     X = [[0.0], [1.0], [2.0], [3.0]]
     y_true = [1, 0, 1, 0]
@@ -45,9 +49,15 @@ def test_hmvth_basic():
 
 def test_hmvth_edge():
     """Test edge cases using the docstring example."""
-    a = lambda X: [1, 1]
-    b = lambda X: [1, 0]
-    c = lambda X: [0, 0]
+
+    def a(X):
+        return [1, 1]
+
+    def b(X):
+        return [1, 0]
+
+    def c(X):
+        return [0, 0]
 
     X = [[0.0], [1.0]]
     y_true = [1, 0]
@@ -72,7 +82,7 @@ import morie.fn.hmvth as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

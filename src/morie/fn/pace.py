@@ -95,8 +95,7 @@ def local_linear(t, y, at, bw, kernel="epan"):
     boundary, where sparse designs put a large share of their points.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r"
-                         % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     if bw <= 0:
         raise ValueError("pace: the bandwidth must be positive")
     out = []
@@ -114,10 +113,9 @@ def local_linear(t, y, at, bw, kernel="epan"):
             b1 += w * d * y[i]
         det = s0 * s2 - s1 * s1
         if s0 <= 0.0:
-            raise ValueError("pace: bandwidth %g leaves the point %g "
-                             "with no data" % (bw, t0))
+            raise ValueError(f"pace: bandwidth {bw:g} leaves the point {t0:g} with no data")
         if abs(det) < 1e-12:
-            out.append(b0 / s0)          # only one distinct design point
+            out.append(b0 / s0)  # only one distinct design point
         else:
             out.append((s2 * b0 - s1 * b1) / det)
     return out
@@ -135,8 +133,7 @@ def local_linear_2d(s, t, z, at_s, at_t, bw, kernel="epan"):
     hundreds of thousands of raw covariances.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r"
-                         % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     if bw <= 0:
         raise ValueError("pace: the bandwidth must be positive")
     # a Gaussian kernel has unbounded support, so its cell radius is
@@ -158,25 +155,20 @@ def local_linear_2d(s, t, z, at_s, at_t, bw, kernel="epan"):
                 for b in range(cj - reach, cj + reach + 1):
                     for i in buckets.get((a, b), ()):
                         ds, dt = s[i] - sv, t[i] - tv
-                        w = (_kweight(ds / bw, kernel)
-                             * _kweight(dt / bw, kernel))
+                        w = _kweight(ds / bw, kernel) * _kweight(dt / bw, kernel)
                         if w == 0.0:
                             continue
                         X.append([1.0, ds, dt])
                         W.append(w)
                         Y.append(z[i])
             if not X:
-                raise ValueError("pace: bandwidth %g leaves (%g, %g) "
-                                 "with no data" % (bw, sv, tv))
-            Xw = [[X[i][a] * W[i] for a in range(3)]
-                  for i in range(len(X))]
-            XtX = [[sum(Xw[i][a] * X[i][b] for i in range(len(X)))
-                    for b in range(3)] for a in range(3)]
-            Xty = [sum(Xw[i][a] * Y[i] for i in range(len(X)))
-                   for a in range(3)]
+                raise ValueError(f"pace: bandwidth {bw:g} leaves ({sv:g}, {tv:g}) with no data")
+            Xw = [[X[i][a] * W[i] for a in range(3)] for i in range(len(X))]
+            XtX = [[sum(Xw[i][a] * X[i][b] for i in range(len(X))) for b in range(3)] for a in range(3)]
+            Xty = [sum(Xw[i][a] * Y[i] for i in range(len(X))) for a in range(3)]
             try:
                 row.append(k.ridgesolve(XtX, Xty, 1e-10)[0])
-            except Exception:                                # noqa: BLE001
+            except Exception:  # noqa: BLE001
                 sw = sum(W)
                 row.append(sum(W[i] * Y[i] for i in range(len(W))) / sw)
         out.append(row)
@@ -189,8 +181,7 @@ def _rule_of_thumb(ts):
     return max((hi - lo) * n ** (-0.2) / 2.0, (hi - lo) * 1e-3)
 
 
-def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
-         kernel="epan", shrink=True):
+def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None, kernel="epan", shrink=True):
     r"""Sparse FPCA by conditional expectation.
 
     Parameters
@@ -221,25 +212,21 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
         ``mean``, ``sigma2``, ``fve``, ``fitted``, ``grid``.
     """
     if kernel not in _KERNELS:
-        raise ValueError("pace: kernel must be epan or gauss, got %r"
-                         % (kernel,))
+        raise ValueError(f"pace: kernel must be epan or gauss, got {kernel!r}")
     ys = [[float(v) for v in row] for row in Y]
     ts = [[float(v) for v in row] for row in argvals]
     n = len(ys)
     if n == 0:
         raise ValueError("pace: no subjects")
     if len(ts) != n:
-        raise ValueError("pace: %d subjects but %d time vectors"
-                         % (n, len(ts)))
+        raise ValueError(f"pace: {int(n)} subjects but {int(len(ts))} time vectors")
     for i in range(n):
         if len(ys[i]) != len(ts[i]):
-            raise ValueError("pace: subject %d has %d values and %d "
-                             "times" % (i, len(ys[i]), len(ts[i])))
+            raise ValueError(f"pace: subject {int(i)} has {int(len(ys[i]))} values and {int(len(ts[i]))} times")
     pooled_t = [v for row in ts for v in row]
     pooled_y = [v for row in ys for v in row]
     if len(pooled_t) < 3:
-        raise ValueError("pace: need at least three observations in "
-                         "total")
+        raise ValueError("pace: need at least three observations in total")
     K = int(K)
     if K < 1:
         raise ValueError("pace: K must be at least 1")
@@ -286,17 +273,16 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
             diag_z.append(cen[a] * cen[a])
             for b in range(m):
                 if a == b:
-                    continue                 # the measurement-error term
+                    continue  # the measurement-error term
                 cs.append(ts[i][a])
                 ct.append(ts[i][b])
                 cz.append(cen[a] * cen[b])
     if not cz:
-        raise ValueError("pace: no off-diagonal pairs -- every subject "
-                         "has a single observation, so the covariance "
-                         "is not identified")
+        raise ValueError(
+            "pace: no off-diagonal pairs -- every subject has a single observation, so the covariance is not identified"
+        )
     G = local_linear_2d(cs, ct, cz, gr, gr, hcov, kernel)
-    G = [[0.5 * (G[a][b] + G[b][a]) for b in range(ng)]
-         for a in range(ng)]
+    G = [[0.5 * (G[a][b] + G[b][a]) for b in range(ng)] for a in range(ng)]
 
     # 3. sigma^2 from the gap the diagonal left behind
     dsm = local_linear(diag_s, diag_z, gr, hmu, kernel)
@@ -311,15 +297,14 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
     order = sorted(range(ng), key=lambda i: -vals[i])
     lam, phi = [], []
     for idx in order[:K]:
-        ev = max(vals[idx], 0.0) * dt          # trapezoid-free scaling
+        ev = max(vals[idx], 0.0) * dt  # trapezoid-free scaling
         f = [vecs[r][idx] for r in range(ng)]
         nrm = math.sqrt(max(sum(v * v for v in f) * dt, 1e-300))
         f = [v / nrm for v in f]
         lam.append(ev)
         phi.append(f)
     total = sum(max(v, 0.0) for v in vals) * dt
-    fve = [(sum(lam[:j + 1]) / total if total > 0 else float("nan"))
-           for j in range(len(lam))]
+    fve = [(sum(lam[: j + 1]) / total if total > 0 else float("nan")) for j in range(len(lam))]
 
     def phi_at(j, x):
         p = (x - lo) / dt
@@ -336,19 +321,20 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
     for i in range(n):
         m = len(ts[i])
         cen = [ys[i][j] - mu_at(ts[i][j]) for j in range(m)]
-        P = [[phi_at(j, ts[i][a]) for j in range(len(lam))]
-             for a in range(m)]
+        P = [[phi_at(j, ts[i][a]) for j in range(len(lam))] for a in range(m)]
         if shrink:
-            S = [[sum(lam[j] * P[a][j] * P[b][j]
-                      for j in range(len(lam)))
-                  + (sigma2 if a == b else 0.0) for b in range(m)]
-                 for a in range(m)]
+            S = [
+                [
+                    sum(lam[j] * P[a][j] * P[b][j] for j in range(len(lam))) + (sigma2 if a == b else 0.0)
+                    for b in range(m)
+                ]
+                for a in range(m)
+            ]
             try:
                 z = k.ridgesolve(S, cen, 1e-10)
-            except Exception:                                # noqa: BLE001
+            except Exception:  # noqa: BLE001
                 z = [0.0] * m
-            xi = [lam[j] * sum(P[a][j] * z[a] for a in range(m))
-                  for j in range(len(lam))]
+            xi = [lam[j] * sum(P[a][j] * z[a] for a in range(m)) for j in range(len(lam))]
         else:
             xi = []
             for j in range(len(lam)):
@@ -358,36 +344,45 @@ def pace(Y, argvals, K=2, n_grid=21, bw_mu=None, bw_cov=None,
                 tot = 0.0
                 for a in range(m - 1):
                     h = ts[i][a + 1] - ts[i][a]
-                    tot += 0.5 * h * (cen[a] * P[a][j]
-                                      + cen[a + 1] * P[a + 1][j])
+                    tot += 0.5 * h * (cen[a] * P[a][j] + cen[a + 1] * P[a + 1][j])
                 xi.append(tot)
         scores.append(xi)
-        fitted.append([mu_g[g] + sum(xi[j] * phi[j][g]
-                                     for j in range(len(lam)))
-                       for g in range(ng)])
+        fitted.append([mu_g[g] + sum(xi[j] * phi[j][g] for j in range(len(lam))) for g in range(ng)])
 
-    return RichResult(payload={
-        "estimate": scores, "scores": scores,
-        "eigenvalues": lam, "eigenfunctions": phi,
-        "mean": mu_g, "grid": gr, "sigma2": sigma2,
-        "fve": fve, "fitted": fitted,
-        "n": n, "K": len(lam), "n_grid": ng,
-        "bw_mu": hmu, "bw_cov": hcov, "kernel": kernel,
-        "shrink": shrink,
-        "n_obs": len(pooled_t),
-        "method": "PACE sparse FPCA with conditional-expectation "
-                  "scores (Yao, Müller & Wang 2005)",
-    })
+    return RichResult(
+        payload={
+            "estimate": scores,
+            "scores": scores,
+            "eigenvalues": lam,
+            "eigenfunctions": phi,
+            "mean": mu_g,
+            "grid": gr,
+            "sigma2": sigma2,
+            "fve": fve,
+            "fitted": fitted,
+            "n": n,
+            "K": len(lam),
+            "n_grid": ng,
+            "bw_mu": hmu,
+            "bw_cov": hcov,
+            "kernel": kernel,
+            "shrink": shrink,
+            "n_obs": len(pooled_t),
+            "method": "PACE sparse FPCA with conditional-expectation scores (Yao, Müller & Wang 2005)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("pace: sparse FPCA. Pool everyone's points and smooth "
-            "THAT -- the combined design is dense even when no "
-            "single subject's is. Drop the diagonal raw covariances "
-            "before smoothing, because var(Y) = var(X) + sigma^2 and "
-            "the diagonal carries the error variance; the gap it "
-            "leaves is what identifies sigma^2. Scores come from "
-            "CONDITIONING, not integration: xi = lambda * phi' "
-            "Sigma_Y^-1 (Y - mu), which shrinks toward zero when a "
-            "subject has few points -- the honest answer, and the "
-            "one an integral over four points cannot give.")
+    return (
+        "pace: sparse FPCA. Pool everyone's points and smooth "
+        "THAT -- the combined design is dense even when no "
+        "single subject's is. Drop the diagonal raw covariances "
+        "before smoothing, because var(Y) = var(X) + sigma^2 and "
+        "the diagonal carries the error variance; the gap it "
+        "leaves is what identifies sigma^2. Scores come from "
+        "CONDITIONING, not integration: xi = lambda * phi' "
+        "Sigma_Y^-1 (Y - mu), which shrinks toward zero when a "
+        "subject has few points -- the honest answer, and the "
+        "one an integral over four points cannot give."
+    )

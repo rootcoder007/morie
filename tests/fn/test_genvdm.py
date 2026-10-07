@@ -1,7 +1,6 @@
 """Tests for genvdm.d_study_decision."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.genvdm import d_study_decision
 
 

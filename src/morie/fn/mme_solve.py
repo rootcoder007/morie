@@ -6,8 +6,6 @@ Implements eq. (2.2) p.36 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,9 +18,9 @@ def mme_solve(X, Z, y, Sigma_inv, R_inv=None):
     [X'R^-1y; Z'R^-1y]. The beta solution is the BLUE and the u
     solution is the BLUP. Keys: estimate."""
     beta, u = _gp.mme_solve(X, Z, y, Sigma_inv, R_inv)
-    res = RichResult(payload={"estimate": beta[0], "blue": beta,
-                              "blup": u,
-                              "method": "Henderson MME (MVSML 2022 eq. 2.2)"})
+    res = RichResult(
+        payload={"estimate": beta[0], "blue": beta, "blup": u, "method": "Henderson MME (MVSML 2022 eq. 2.2)"}
+    )
     return with_describe_pointer(res, "msm241")
 
 

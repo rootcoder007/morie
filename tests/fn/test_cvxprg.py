@@ -1,7 +1,6 @@
 """Tests for cvxprg.boyd_proximal_grad."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxprg import boyd_proximal_grad
 
 
@@ -11,13 +10,21 @@ def test_cvxprg_basic():
 
     # Smooth part: f(z) = 0.5 * ||z - b||^2, grad_f(z) = z - b
     b = rng.normal(0, 1, 10)
-    f = lambda z: 0.5 * float(np.sum((np.asarray(z) - b) ** 2))
-    grad_f = lambda z: np.asarray(z) - b
+
+    def f(z):
+        return 0.5 * float(np.sum((np.asarray(z) - b) ** 2))
+
+    def grad_f(z):
+        return np.asarray(z) - b
 
     # Nonsmooth part: h(z) = lam * ||z||_1, prox = soft thresholding
     lam = 0.5
-    h = lambda z: lam * float(np.sum(np.abs(np.asarray(z))))
-    soft = lambda v, s: np.sign(v) * np.maximum(np.abs(v) - s * lam, 0.0)
+
+    def h(z):
+        return lam * float(np.sum(np.abs(np.asarray(z))))
+
+    def soft(v, s):
+        return np.sign(v) * np.maximum(np.abs(v) - s * lam, 0.0)
 
     x0 = rng.normal(0, 1, 10)
     t = 1.0
@@ -61,12 +68,20 @@ def test_cvxprg_edge():
     rng = np.random.default_rng(7)
 
     b = rng.normal(0, 1, 5)
-    f = lambda z: 0.5 * float(np.sum((np.asarray(z) - b) ** 2))
-    grad_f = lambda z: np.asarray(z) - b
+
+    def f(z):
+        return 0.5 * float(np.sum((np.asarray(z) - b) ** 2))
+
+    def grad_f(z):
+        return np.asarray(z) - b
 
     lam = 0.1
-    h = lambda z: lam * float(np.sum(np.abs(np.asarray(z))))
-    soft = lambda v, s: np.sign(v) * np.maximum(np.abs(v) - s * lam, 0.0)
+
+    def h(z):
+        return lam * float(np.sum(np.abs(np.asarray(z))))
+
+    def soft(v, s):
+        return np.sign(v) * np.maximum(np.abs(v) - s * lam, 0.0)
 
     # Start at the unconstrained minimizer of f; h adds an L1 penalty.
     # The first iterate is the prox-soft-thresholded version of b.

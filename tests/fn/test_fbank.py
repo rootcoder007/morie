@@ -1,7 +1,6 @@
 """Tests for fbank.py - Filter bank design."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fbank import fbank, filter_bank_design
 
 

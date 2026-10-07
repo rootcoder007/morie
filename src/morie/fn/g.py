@@ -39,10 +39,7 @@ def hedges_g(
     d = cohens_d(a1, a2, pooled=True)
     m = len(a1) + len(a2) - 2
     # Hedges correction factor: exact via gamma functions; approximate for large m
-    if m > 0:
-        j = math.exp(math.lgamma(m / 2) - math.log(math.sqrt(m / 2)) - math.lgamma((m - 1) / 2))
-    else:
-        j = 1.0
+    j = math.exp(math.lgamma(m / 2) - math.log(math.sqrt(m / 2)) - math.lgamma((m - 1) / 2)) if m > 0 else 1.0
     return float(d * j) if math.isfinite(d) else float("nan")
 
 

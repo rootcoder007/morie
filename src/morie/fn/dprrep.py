@@ -98,12 +98,15 @@ def randomized_response_dp(truth, epsilon=1.0, seed=None):
     var = raw * (1 - raw) / max(n, 1) / (2.0 * p - 1.0) ** 2
     return RichResult(
         title="Randomized response (local DP)",
-        summary_lines=[("epsilon", epsilon), ("p(truth)", p), ("n", n),
-                       ("estimate", est)],
+        summary_lines=[("epsilon", epsilon), ("p(truth)", p), ("n", n), ("estimate", est)],
         payload={
-            "responses": resp, "p_truth": p, "raw_proportion": raw,
-            "estimate": float(est), "se": float(np.sqrt(max(var, 0.0))),
-            "n": int(n), "epsilon": epsilon,
+            "responses": resp,
+            "p_truth": p,
+            "raw_proportion": raw,
+            "estimate": float(est),
+            "se": float(np.sqrt(max(var, 0.0))),
+            "n": int(n),
+            "epsilon": epsilon,
             "mechanism": "randomized_response",
             "method": "randomized_response_dp",
         },

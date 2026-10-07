@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["causal_caliper_matching"]
 
 
-def causal_caliper_matching(ps, treat, caliper=None, k=1, replace=True,
-                            on_logit=True):
+def causal_caliper_matching(ps, treat, caliper=None, k=1, replace=True, on_logit=True):
     r"""Nearest-neighbour matching with a maximum acceptable distance.
 
     Matches on the propensity score, refusing any pair further apart than
@@ -134,14 +133,22 @@ def causal_caliper_matching(ps, treat, caliper=None, k=1, replace=True,
         )
     return RichResult(
         title="Caliper matching",
-        summary_lines=[("treated", int(ti.size)), ("matched", int(ok.sum())),
-                       ("caliper", float(caliper)), ("match rate", rate)],
+        summary_lines=[
+            ("treated", int(ti.size)),
+            ("matched", int(ok.sum())),
+            ("caliper", float(caliper)),
+            ("match rate", rate),
+        ],
         warnings=warn,
         payload={
-            "matches": matches, "distances": dists, "n_unmatched": n_un,
-            "caliper_used": float(caliper), "match_rate": rate,
+            "matches": matches,
+            "distances": dists,
+            "n_unmatched": n_un,
+            "caliper_used": float(caliper),
+            "match_rate": rate,
             "estimand": "ATT among matchable units" if n_un else "ATT",
-            "matched_treated": ti[ok], "on_logit": bool(on_logit),
+            "matched_treated": ti[ok],
+            "on_logit": bool(on_logit),
             "reuse_max": int(used.max()) if used.size else 0,
             "method": "causal_caliper_matching",
         },

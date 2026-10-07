@@ -20,7 +20,7 @@ def test_three_well_separated_blobs_are_found():
     labels = res["labels"]
     # each blob keeps one label
     for start in (0, 20, 40):
-        block = labels[start:start + 20]
+        block = labels[start : start + 20]
         assert len(set(block)) == 1
         assert block[0] != -1
 
@@ -59,8 +59,7 @@ def test_stabilities_are_non_negative():
 
 
 def test_validation():
-    for call in (lambda: hdbsc(_blobs(), selection="dbscan"),
-                 lambda: hdbsc([[0.0, 0.0]], min_pts=5)):
+    for call in (lambda: hdbsc(_blobs(), selection="dbscan"), lambda: hdbsc([[0.0, 0.0]], min_pts=5)):
         try:
             call()
             raise AssertionError("expected ValueError")

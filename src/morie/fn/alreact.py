@@ -31,24 +31,36 @@ def alammar_react_agent_loop(query, tools, model, max_steps=5):
         thought = step.get("thought")
         if step.get("final") is not None:
             trace.append({"thought": thought, "final": step["final"]})
-            return RichResult(payload={
-                "answer": step["final"], "trace": trace,
-                "steps_used": len(trace), "exhausted": False,
-                "estimate": float(len(trace)), "n": len(trace),
-                "method": "ReAct loop (Yao et al. 2023)"})
+            return RichResult(
+                payload={
+                    "answer": step["final"],
+                    "trace": trace,
+                    "steps_used": len(trace),
+                    "exhausted": False,
+                    "estimate": float(len(trace)),
+                    "n": len(trace),
+                    "method": "ReAct loop (Yao et al. 2023)",
+                }
+            )
         action = step.get("action")
         if action in tools:
             obs = str(tools[action](step.get("action_input")))
         else:
-            obs = (f"ERROR: unknown action {action!r}; available: "
-                   f"{sorted(tools)}")
+            obs = f"ERROR: unknown action {action!r}; available: {sorted(tools)}"
         rec = {"thought": thought, "action": action, "observation": obs}
         trace.append(rec)
         ctx.append(rec)
-    return RichResult(payload={
-        "answer": None, "trace": trace, "steps_used": len(trace),
-        "exhausted": True, "estimate": float(len(trace)), "n": len(trace),
-        "method": "ReAct loop (Yao et al. 2023)"})
+    return RichResult(
+        payload={
+            "answer": None,
+            "trace": trace,
+            "steps_used": len(trace),
+            "exhausted": True,
+            "estimate": float(len(trace)),
+            "n": len(trace),
+            "method": "ReAct loop (Yao et al. 2023)",
+        }
+    )
 
 
 def cheatsheet():

@@ -94,10 +94,10 @@ def aalen_johansen(time, cause, n_causes=None, alpha=0.05):
         prev_S = S
         for k in range(1, K + 1):
             dk = int(np.sum((t == u) & (c == k)))
-            acc[k - 1] += prev_S * dk / nr       # S(t-) weighting
+            acc[k - 1] += prev_S * dk / nr  # S(t-) weighting
             # the naive curve censors the other causes instead
-            Sk[k - 1] *= (1.0 - dk / nr)
-        S *= (1.0 - d_all / nr)
+            Sk[k - 1] *= 1.0 - dk / nr
+        S *= 1.0 - d_all / nr
         cif[:, j] = acc
         surv[j] = S
         naive[:, j] = 1.0 - Sk
@@ -120,8 +120,7 @@ def aalen_johansen(time, cause, n_causes=None, alpha=0.05):
                 "overstates the incidence; the two agree only when the "
                 "competing hazard is zero"
             ),
-            "partition_residual": float(np.max(partition))
-            if partition.size else 0.0,
+            "partition_residual": float(np.max(partition)) if partition.size else 0.0,
             "partition_note": (
                 "the cumulative incidences over all causes plus the overall "
                 "survival equal one at every time; this residual is the "
@@ -139,8 +138,7 @@ def aalen_johansen(time, cause, n_causes=None, alpha=0.05):
 
 def cheatsheet():
     return (
-        "msmaln: Aalen-Johansen cumulative incidence with the naive "
-        "Kaplan-Meier alongside to show what it overstates"
+        "msmaln: Aalen-Johansen cumulative incidence with the naive Kaplan-Meier alongside to show what it overstates"
     )
 
 

@@ -1,7 +1,6 @@
 """Tests for cvxmin.boyd_minimum_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxmin import boyd_minimum_norm
 
 
@@ -20,8 +19,7 @@ def test_cvxmin_basic():
         assert isinstance(result.payload, dict)
 
         # Documented payload keys.
-        for key in ("x", "norm_value", "n_nonzero", "residual",
-                    "feasible", "in_row_space", "norm"):
+        for key in ("x", "norm_value", "n_nonzero", "residual", "feasible", "in_row_space", "norm"):
             assert key in result.payload
 
         # x must have the expected shape and satisfy the constraints.
@@ -58,7 +56,7 @@ def test_cvxmin_l1_specific():
     b = np.array([3.0])
     result = boyd_minimum_norm(A, b, norm=1)
 
-    x = np.asarray(result.payload["x"], dtype=float)
+    np.asarray(result.payload["x"], dtype=float)
     # Independent expectation: norm_value == sum(|x|) == |b| == 3.0.
     assert abs(float(result.payload["norm_value"]) - 3.0) < 1e-6
     assert int(result.payload["n_nonzero"]) == 1

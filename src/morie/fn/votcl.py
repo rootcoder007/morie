@@ -32,7 +32,7 @@ def voting_classify(predictions, weights=None, **kwargs) -> DescriptiveResult:
     weights = np.asarray(weights, dtype=float)
     weights = weights / weights.sum()
 
-    classes = np.unique(preds)
+    np.unique(preds)
     final = np.empty(n_samples, dtype=preds.dtype)
 
     for j in range(n_samples):

@@ -46,7 +46,7 @@ def kmeans(
         idx = rng.choice(n, size=k, replace=False)
         centers = X[idx].copy()
 
-        for it in range(max_iter):
+        for it in range(max_iter):  # noqa: B007 - read after the loop
             dists = np.sum((X[:, None, :] - centers[None, :, :]) ** 2, axis=2)
             labels = np.argmin(dists, axis=1)
 

@@ -7,8 +7,7 @@ from .ecfp4 import _bonds, _connectivity_invariants, _defaults, _morgan
 __all__ = ["ecfp6", "ecfp_6_fingerprint"]
 
 
-def ecfp6(adjacency, atomnum, numhs=None, charge=None, inring=None,
-          isotope_delta=None, nbits=2048, radius=3):
+def ecfp6(adjacency, atomnum, numhs=None, charge=None, inring=None, isotope_delta=None, nbits=2048, radius=3):
     """Extended-connectivity fingerprint of radius 3 (ECFP6).
 
     ECFP diameter 6 is Morgan radius 3.  Identical machinery to
@@ -67,11 +66,19 @@ def ecfp6(adjacency, atomnum, numhs=None, charge=None, inring=None,
     inv = _connectivity_invariants(a, bonds, at, nh, ch, ir, isd)
     bits, cnt, ident = _morgan(a, bonds, inv, int(radius), int(nbits))
     uniq = sorted(set(ident))
-    return RichResult(payload={
-        "bits": bits, "count": cnt, "nset": sum(bits),
-        "identifiers": uniq, "nenv": len(ident), "a": a,
-        "nbits": int(nbits), "radius": int(radius),
-        "method": "ECFP6 (Morgan radius 3), Rogers-Hahn / RDKit"})
+    return RichResult(
+        payload={
+            "bits": bits,
+            "count": cnt,
+            "nset": sum(bits),
+            "identifiers": uniq,
+            "nenv": len(ident),
+            "a": a,
+            "nbits": int(nbits),
+            "radius": int(radius),
+            "method": "ECFP6 (Morgan radius 3), Rogers-Hahn / RDKit",
+        }
+    )
 
 
 ecfp_6_fingerprint = ecfp6

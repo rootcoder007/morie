@@ -72,21 +72,23 @@ def esl_natural_spline(x, knots):
     xK, xKm1 = kn[-1], kn[-2]
 
     def d(k):
-        return ((np.where(x > kn[k], (x - kn[k]) ** 3, 0.0)
-                 - np.where(x > xK, (x - xK) ** 3, 0.0)) / (xK - kn[k]))
+        return (np.where(x > kn[k], (x - kn[k]) ** 3, 0.0) - np.where(x > xK, (x - xK) ** 3, 0.0)) / (xK - kn[k])
 
     cols = [np.ones_like(x), x]
-    dKm1 = ((np.where(x > xKm1, (x - xKm1) ** 3, 0.0)
-             - np.where(x > xK, (x - xK) ** 3, 0.0)) / (xK - xKm1))
+    dKm1 = (np.where(x > xKm1, (x - xKm1) ** 3, 0.0) - np.where(x > xK, (x - xK) ** 3, 0.0)) / (xK - xKm1)
     for k in range(K - 2):
         cols.append(d(k) - dKm1)
     B = np.column_stack(cols)
-    return RichResult(payload={
-        "estimate": int(B.shape[1]),
-        "basis": [float(v) for v in B.ravel()],
-        "n_basis": int(B.shape[1]),
-        "knots": [float(v) for v in kn], "n": int(x.size),
-        "method": "natural cubic spline (ESL Eq. 5.4-5.5); linear past the boundary knots"})
+    return RichResult(
+        payload={
+            "estimate": int(B.shape[1]),
+            "basis": [float(v) for v in B.ravel()],
+            "n_basis": int(B.shape[1]),
+            "knots": [float(v) for v in kn],
+            "n": int(x.size),
+            "method": "natural cubic spline (ESL Eq. 5.4-5.5); linear past the boundary knots",
+        }
+    )
 
 
 def cheatsheet():

@@ -29,10 +29,7 @@ def pchisq(
     if df <= 0:
         raise ValueError(f"df must be > 0, got {df}.")
     dist = stats.chi2(df=df)
-    if lower_tail:
-        result = dist.logcdf(x) if log else dist.cdf(x)
-    else:
-        result = dist.logsf(x) if log else dist.sf(x)
+    result = (dist.logcdf(x) if log else dist.cdf(x)) if lower_tail else dist.logsf(x) if log else dist.sf(x)
     return result
 
 

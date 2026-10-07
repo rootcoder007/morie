@@ -1,9 +1,10 @@
 """Tests for copod."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.copod import copod
+
 
 def test_copod_basic():
     rng = np.random.default_rng(42)

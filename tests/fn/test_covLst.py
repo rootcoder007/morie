@@ -1,7 +1,6 @@
 """Tests for covLst.catalog_coverage."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.covLst import catalog_coverage
 
 

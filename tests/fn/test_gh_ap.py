@@ -1,4 +1,5 @@
 """Tests for Ghosal appendix modules."""
+
 import math
 
 from morie.fn.gh_ap_a1 import ghosal_weak_conv_def
@@ -25,11 +26,11 @@ from morie.fn.gh_ap_i2 import ghosal_dudley_entropy
 from morie.fn.gh_ap_i3 import ghosal_borell_tis
 from morie.fn.gh_ap_j1 import ghosal_levy_ito
 from morie.fn.gh_ap_j2 import ghosal_crm_laplace
-from morie.fn.gh_crm_def import ghosal_completely_random_measure
 from morie.fn.gh_ap_k2 import ghosal_assouad_lemma
 from morie.fn.gh_ap_m1 import ghosal_mh_sampler
 from morie.fn.gh_ap_m2 import ghosal_gibbs_sampler
 from morie.fn.gh_ap_m3 import ghosal_slice_sampler
+from morie.fn.gh_crm_def import ghosal_completely_random_measure
 
 P = [0.5, 0.5]
 Q = [0.25, 0.75]
@@ -145,8 +146,7 @@ def test_borell_tis_monotone():
 
 def test_levy_ito_pieces():
     r = ghosal_levy_ito()
-    assert abs(r["estimate"] - r["fixed_mass"]
-               - r["poisson_mass"]) < 1e-12
+    assert abs(r["estimate"] - r["fixed_mass"] - r["poisson_mass"]) < 1e-12
 
 
 def test_crm_laplace_closed_form():

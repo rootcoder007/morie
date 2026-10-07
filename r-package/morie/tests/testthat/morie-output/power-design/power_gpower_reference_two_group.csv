@@ -1,0 +1,4 @@
+"test_family","effect_metric","effect_size","target_power","alpha","n_per_group","total_n","group_design","compute_method","analysis_mode","design_mode","power_scope"
+"z tests","Cohen_h",0.144793291318216,0.8,0.05,4295,8589.95127856524,"two_group","normal_approximation","design","srs","heavy_drinking_30d"
+"z tests","Cohen_h",0.257772110076897,0.8,0.05,4295,8589.95127856524,"two_group","normal_approximation","design","srs","ebac_legal"
+"t tests","Cohen_d",0.13131328301238,0.8,0.05,456,910.375059614413,"two_group","cohen_d_normal_approximation","design","srs","ebac_tot"

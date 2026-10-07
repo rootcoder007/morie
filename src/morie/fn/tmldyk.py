@@ -71,8 +71,7 @@ from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["laplace_noise", "ate_sensitivity", "private_release",
-           "private_ci", "composition_budget"]
+__all__ = ["laplace_noise", "ate_sensitivity", "private_release", "private_ci", "composition_budget"]
 
 _EPS = 1e-12
 
@@ -84,8 +83,7 @@ def laplace_noise(scale, rng):
     if b <= 0.0:
         raise ValueError("tmldyk: the noise scale must be positive")
     u = float(rng.uniform()) - 0.5
-    return -b * math.copysign(1.0, u) * math.log(
-        max(1.0 - 2.0 * abs(u), 1e-300))
+    return -b * math.copysign(1.0, u) * math.log(max(1.0 - 2.0 * abs(u), 1e-300))
 
 
 def ate_sensitivity(n, g_min, y_range=1.0):
@@ -102,13 +100,15 @@ def ate_sensitivity(n, g_min, y_range=1.0):
     if nn < 1:
         raise ValueError("tmldyk: n must be at least 1")
     if not 0.0 < gm <= 0.5:
-        raise ValueError("tmldyk: the propensity truncation bound "
-                         "must lie in (0, 0.5], got %r" % (g_min,))
-    return {"sensitivity": 2.0 * float(y_range) / (nn * gm),
-            "naive_1_over_n": float(y_range) / nn,
-            "inflation": 2.0 / gm, "g_min": gm, "n": nn,
-            "note": "the clever covariate carries 1/g, so the "
-                    "sensitivity is NOT O(1/n) unless g is truncated"}
+        raise ValueError(f"tmldyk: the propensity truncation bound must lie in (0, 0.5], got {g_min!r}")
+    return {
+        "sensitivity": 2.0 * float(y_range) / (nn * gm),
+        "naive_1_over_n": float(y_range) / nn,
+        "inflation": 2.0 / gm,
+        "g_min": gm,
+        "n": nn,
+        "note": "the clever covariate carries 1/g, so the sensitivity is NOT O(1/n) unless g is truncated",
+    }
 
 
 def private_release(value, sensitivity, epsilon, seed=0):
@@ -121,12 +121,16 @@ def private_release(value, sensitivity, epsilon, seed=0):
     rng = np.random.default_rng(seed)
     b = float(sensitivity) / eps
     noise = laplace_noise(b, rng)
-    return {"released": float(value) + noise, "noise": noise,
-            "scale": b, "epsilon": eps,
-            "noise_variance": 2.0 * b * b,
-            "note": "the guarantee holds only if the sensitivity is "
-                    "an upper bound; an underestimate provides no "
-                    "privacy at all"}
+    return {
+        "released": float(value) + noise,
+        "noise": noise,
+        "scale": b,
+        "epsilon": eps,
+        "noise_variance": 2.0 * b * b,
+        "note": "the guarantee holds only if the sensitivity is "
+        "an upper bound; an underestimate provides no "
+        "privacy at all",
+    }
 
 
 def private_ci(value, sensitivity, epsilon, se, seed=0, level=1.96):
@@ -140,12 +144,14 @@ def private_ci(value, sensitivity, epsilon, se, seed=0, level=1.96):
     r = private_release(value, sensitivity, epsilon, seed)
     tot = float(se) ** 2 + r["noise_variance"]
     w = float(level) * math.sqrt(tot)
-    return {"estimate": r["released"],
-            "se_private": math.sqrt(tot), "se_sampling": float(se),
-            "ci": (r["released"] - w, r["released"] + w),
-            "width_ratio": math.sqrt(tot) / float(se)
-            if float(se) > 0 else float("nan"),
-            "epsilon": float(epsilon)}
+    return {
+        "estimate": r["released"],
+        "se_private": math.sqrt(tot),
+        "se_sampling": float(se),
+        "ci": (r["released"] - w, r["released"] + w),
+        "width_ratio": math.sqrt(tot) / float(se) if float(se) > 0 else float("nan"),
+        "epsilon": float(epsilon),
+    }
 
 
 def composition_budget(epsilons):
@@ -154,13 +160,14 @@ def composition_budget(epsilons):
     e = [float(v) for v in k.vec(epsilons)]
     if any(v <= 0.0 for v in e):
         raise ValueError("tmldyk: every epsilon must be positive")
-    return {"total_epsilon": sum(e), "n_releases": len(e),
-            "note": "each release spends part of the budget; the "
-                    "guarantee degrades linearly"}
+    return {
+        "total_epsilon": sum(e),
+        "n_releases": len(e),
+        "note": "each release spends part of the budget; the guarantee degrades linearly",
+    }
 
 
-def tmle_diff_kernel(y, D, X, epsilon=1.0, g_min=0.05, seed=0,
-                     g=None, Q1=None, Q0=None):
+def tmle_diff_kernel(y, D, X, epsilon=1.0, g_min=0.05, seed=0, g=None, Q1=None, Q0=None):
     r"""Differentially private TMLE of the ATE.
 
     The propensity score is truncated at ``g_min`` -- which bounds the
@@ -174,38 +181,45 @@ def tmle_diff_kernel(y, D, X, epsilon=1.0, g_min=0.05, seed=0,
     if not (len(a) == len(W) == n):
         raise ValueError("tmldyk: the inputs differ in length")
     if any(v < 0.0 or v > 1.0 for v in yv):
-        raise ValueError("tmldyk: the outcome must lie in [0,1] for "
-                         "the stated sensitivity bound")
+        raise ValueError("tmldyk: the outcome must lie in [0,1] for the stated sensitivity bound")
     from .tmlcou import tmle_count_outcome
+
     fit = tmle_count_outcome(yv, a, W, None, g, Q1, Q0, 0.0, 1.0)
     sens = ate_sensitivity(n, g_min, 1.0)
-    ci = private_ci(fit["psi"], sens["sensitivity"], epsilon,
-                    fit["se"], seed)
-    return RichResult(payload={
-        "estimate": ci["estimate"], "psi": ci["estimate"],
-        "non_private_psi": fit["psi"],
-        "sensitivity": sens["sensitivity"],
-        "epsilon": float(epsilon), "g_min": float(g_min),
-        "se_private": ci["se_private"], "se_sampling": fit["se"],
-        "ci": ci["ci"], "width_ratio": ci["width_ratio"],
-        "method": "epsilon-differentially private TMLE by the Laplace "
-                  "mechanism; Dwork, McSherry, Nissim & Smith (2006), "
-                  "Niu et al. (2022)",
-        "note": "the propensity truncation is part of the PRIVACY "
-                "guarantee, since it is what bounds the sensitivity",
-    })
+    ci = private_ci(fit["psi"], sens["sensitivity"], epsilon, fit["se"], seed)
+    return RichResult(
+        payload={
+            "estimate": ci["estimate"],
+            "psi": ci["estimate"],
+            "non_private_psi": fit["psi"],
+            "sensitivity": sens["sensitivity"],
+            "epsilon": float(epsilon),
+            "g_min": float(g_min),
+            "se_private": ci["se_private"],
+            "se_sampling": fit["se"],
+            "ci": ci["ci"],
+            "width_ratio": ci["width_ratio"],
+            "method": "epsilon-differentially private TMLE by the Laplace "
+            "mechanism; Dwork, McSherry, Nissim & Smith (2006), "
+            "Niu et al. (2022)",
+            "note": "the propensity truncation is part of the PRIVACY "
+            "guarantee, since it is what bounds the sensitivity",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tmldyk: epsilon-DP by the LAPLACE mechanism -- add "
-            "Lap(sensitivity/epsilon), where sensitivity is how much "
-            "ONE individual can move the output. For a TMLE that is "
-            "NOT O(1/n): the clever covariate carries 1/g, so it is "
-            "2R/(n g_min) and the propensity TRUNCATION is part of the "
-            "privacy guarantee, not a numerical convenience. An "
-            "underestimated sensitivity provides no privacy at all. "
-            "The noise adds 2(scale)^2 to the variance, so the private "
-            "interval must widen; k releases cost k*epsilon.")
+    return (
+        "tmldyk: epsilon-DP by the LAPLACE mechanism -- add "
+        "Lap(sensitivity/epsilon), where sensitivity is how much "
+        "ONE individual can move the output. For a TMLE that is "
+        "NOT O(1/n): the clever covariate carries 1/g, so it is "
+        "2R/(n g_min) and the propensity TRUNCATION is part of the "
+        "privacy guarantee, not a numerical convenience. An "
+        "underestimated sensitivity provides no privacy at all. "
+        "The noise adds 2(scale)^2 to the variance, so the private "
+        "interval must widen; k releases cost k*epsilon."
+    )
 
 
 # compact alias per ledger/NAMING.md

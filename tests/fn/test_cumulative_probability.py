@@ -1,7 +1,6 @@
 """Tests for cumulative_probability.cumulative_probability."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cumulative_probability import cumulative_probability
 
 

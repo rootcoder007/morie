@@ -22,8 +22,7 @@ def _solve_lasso(v, s12, lam, beta, tol, maxit):
     for _ in range(maxit):
         delta = 0.0
         for j in range(p1):
-            r = s12[j] - sum(v[k][j] * beta[k] for k in range(p1)
-                             if k != j)
+            r = s12[j] - sum(v[k][j] * beta[k] for k in range(p1) if k != j)
             new = _soft(r, lam) / v[j][j]
             delta = max(delta, abs(new - beta[j]))
             beta[j] = new
@@ -88,16 +87,14 @@ def netcms(data=None, S=None, lam=0.1, tol=1e-8, maxit=500):
         n = len(rows)
         p = len(rows[0])
         mu = [sum(r[j] for r in rows) / n for j in range(p)]
-        S = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in rows) / n
-              for b in range(p)] for a in range(p)]
+        S = [[sum((r[a] - mu[a]) * (r[b] - mu[b]) for r in rows) / n for b in range(p)] for a in range(p)]
     else:
         S = [[float(v) for v in r] for r in S]
         p = len(S)
     lam = float(lam)
     if lam < 0:
         raise ValueError("lam must be non-negative")
-    W = [[S[a][b] + (lam if a == b else 0.0) for b in range(p)]
-         for a in range(p)]
+    W = [[S[a][b] + (lam if a == b else 0.0) for b in range(p)] for a in range(p)]
     betas = [[0.0] * (p - 1) for _ in range(p)]
     for _cycle in range(maxit):
         w_old = [row[:] for row in W]
@@ -106,13 +103,11 @@ def netcms(data=None, S=None, lam=0.1, tol=1e-8, maxit=500):
             v = [[W[a][b] for b in idx] for a in idx]
             s12 = [S[a][j] for a in idx]
             beta = _solve_lasso(v, s12, lam, betas[j], tol, maxit)
-            w12 = [sum(v[r][c] * beta[c] for c in range(p - 1))
-                   for r in range(p - 1)]
+            w12 = [sum(v[r][c] * beta[c] for c in range(p - 1)) for r in range(p - 1)]
             for t, a in enumerate(idx):
                 W[a][j] = w12[t]
                 W[j][a] = w12[t]
-        diff = max(abs(W[a][b] - w_old[a][b])
-                   for a in range(p) for b in range(p))
+        diff = max(abs(W[a][b] - w_old[a][b]) for a in range(p) for b in range(p))
         if diff < tol:
             break
     theta = [[0.0] * p for _ in range(p)]
@@ -129,21 +124,22 @@ def netcms(data=None, S=None, lam=0.1, tol=1e-8, maxit=500):
         for b in range(a + 1, p):
             v = 0.5 * (theta[a][b] + theta[b][a])
             theta[a][b] = theta[b][a] = v
-    adj = [[1 if a != b and abs(theta[a][b]) > 1e-10 else 0
-            for b in range(p)] for a in range(p)]
-    pcor = [[(-theta[a][b] / math.sqrt(theta[a][a] * theta[b][b])
-              if a != b else 1.0) for b in range(p)] for a in range(p)]
-    n_edges = sum(adj[a][b] for a in range(p)
-                  for b in range(a + 1, p))
-    return RichResult(payload={
-        "precision": theta,
-        "covariance_fit": W,
-        "adjacency": adj,
-        "partial_correlations": pcor,
-        "n_edges": n_edges,
-        "lam": lam,
-        "method": "graphical lasso (ESL Alg. 17.2; Friedman 2008)",
-    })
+    adj = [[1 if a != b and abs(theta[a][b]) > 1e-10 else 0 for b in range(p)] for a in range(p)]
+    pcor = [
+        [(-theta[a][b] / math.sqrt(theta[a][a] * theta[b][b]) if a != b else 1.0) for b in range(p)] for a in range(p)
+    ]
+    n_edges = sum(adj[a][b] for a in range(p) for b in range(a + 1, p))
+    return RichResult(
+        payload={
+            "precision": theta,
+            "covariance_fit": W,
+            "adjacency": adj,
+            "partial_correlations": pcor,
+            "n_edges": n_edges,
+            "lam": lam,
+            "method": "graphical lasso (ESL Alg. 17.2; Friedman 2008)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

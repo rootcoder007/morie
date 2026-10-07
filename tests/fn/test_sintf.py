@@ -1,7 +1,6 @@
 """Tests for morie.fn.sintf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sintf import sintf
 
 

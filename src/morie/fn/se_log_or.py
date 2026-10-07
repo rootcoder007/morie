@@ -28,20 +28,19 @@ def se_log_or(a, b, c, d):
     """
     value = _ca_crim.se_log_or(a, b, c, d)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.11)"
     return RichResult(
-        title='Standard error of the logged odds ratio',
+        title="Standard error of the logged odds ratio",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e11: se_lnOR = sqrt(1/a + 1/b + 1/c + 1/d) [Weisburd et al. 2022, eq. 11.11]'
+    return "ca11e11: se_lnOR = sqrt(1/a + 1/b + 1/c + 1/d) [Weisburd et al. 2022, eq. 11.11]"
 
 
 # compact alias per ledger/NAMING.md

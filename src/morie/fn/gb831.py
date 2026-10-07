@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['normscores', 'gibbons_terry_hoeffding']
+__all__ = ["normscores", "gibbons_terry_hoeffding"]
 
 
 def _enos(i, n, lo=-8.0, hi=8.0, nodes=4001):
@@ -14,9 +14,7 @@ def _enos(i, n, lo=-8.0, hi=8.0, nodes=4001):
     if nodes % 2 == 0:
         nodes += 1
     h = (hi - lo) / (nodes - 1)
-    coef = math.exp(
-        math.lgamma(n + 1.0) - math.lgamma(i) - math.lgamma(n - i + 1.0)
-    )
+    coef = math.exp(math.lgamma(n + 1.0) - math.lgamma(i) - math.lgamma(n - i + 1.0))
     total = 0.0
     for k in range(nodes):
         z = lo + k * h

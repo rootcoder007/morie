@@ -18,5 +18,3 @@ def test_rgspe_edge():
         rangayyan_specificity(0, 0)
     with pytest.raises(ValueError, match="negative"):
         rangayyan_specificity(-1, 2)
-
-

@@ -18,6 +18,7 @@ def _k_from_lambda2(r, rho, mu, sigma, m=20000):
     def integrand(t):
         f = math.exp(-t * t / (4 * sigma * sigma)) / (4 * math.pi * sigma * sigma)
         return 2 * math.pi * t * (lam * lam + rho * mu * mu * f)
+
     d = r / m
     s = integrand(0.0) + integrand(r) + sum((4 if i % 2 else 2) * integrand(i * d) for i in range(1, m))
     return s * d / 3 / (lam * lam)

@@ -69,17 +69,25 @@ def wasserman_bootstrap_pivotal(data, T, B, alpha, seed=13):
     if not 0 < alpha < 1:
         raise ValueError(f"alpha must lie in (0, 1); got {alpha}.")
     if T is None:
-        T = lambda a: float(np.mean(a))
+
+        def T(a):
+            return float(np.mean(a))
+
     theta = float(T(data))
     reps = np.sort(_boot_replicates(data, T, B, seed))
     q_lo = _type1_quantile(reps, alpha / 2.0)
     q_hi = _type1_quantile(reps, 1.0 - alpha / 2.0)
-    return RichResult(payload={
-        "estimate": theta,
-        "lower": float(2.0 * theta - q_hi),
-        "upper": float(2.0 * theta - q_lo),
-        "alpha": alpha, "B": B, "n": int(data.size),
-        "method": "bootstrap pivotal CI (2 theta - q*_{1-a/2}, 2 theta - q*_{a/2})"})
+    return RichResult(
+        payload={
+            "estimate": theta,
+            "lower": float(2.0 * theta - q_hi),
+            "upper": float(2.0 * theta - q_lo),
+            "alpha": alpha,
+            "B": B,
+            "n": int(data.size),
+            "method": "bootstrap pivotal CI (2 theta - q*_{1-a/2}, 2 theta - q*_{a/2})",
+        }
+    )
 
 
 def cheatsheet():

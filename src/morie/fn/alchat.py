@@ -32,15 +32,20 @@ def alammar_chat_template(turns, template_tokens=None):
         role = str(role)
         if role not in tt:
             raise ValueError(
-                f"role {role!r} has no template tokens; rendering it "
-                "unmarked would hide the turn from the model.")
+                f"role {role!r} has no template tokens; rendering it unmarked would hide the turn from the model."
+            )
         o, c = tt[role]
         parts.append(f"{o}{content}{c}")
     prompt = "".join(parts)
-    return RichResult(payload={
-        "prompt": prompt, "n_turns": len(list(turns)),
-        "estimate": float(len(prompt)), "n": len(list(turns)),
-        "method": "Chat template rendering (Alammar Ch 6)"})
+    return RichResult(
+        payload={
+            "prompt": prompt,
+            "n_turns": len(list(turns)),
+            "estimate": float(len(prompt)),
+            "n": len(list(turns)),
+            "method": "Chat template rendering (Alammar Ch 6)",
+        }
+    )
 
 
 def cheatsheet():

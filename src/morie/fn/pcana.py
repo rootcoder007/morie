@@ -82,10 +82,7 @@ def pcana(
     eigenvectors = eigenvectors[:, :n_components]
 
     # Scores: project centered data onto eigenvectors
-    if scale:
-        scores = X_scaled @ eigenvectors
-    else:
-        scores = X_centered @ eigenvectors
+    scores = X_scaled @ eigenvectors if scale else X_centered @ eigenvectors
 
     # Explained variance (as proportions)
     explained_var = eigenvalues / eigenvalues.sum()
@@ -106,4 +103,6 @@ def pcana(
 
 
 def cheatsheet() -> str:
-    return "pcana: pcana(X, n_components, scale, return_loadings) -> Principal Component Analysis via eigendecomposition."
+    return (
+        "pcana: pcana(X, n_components, scale, return_loadings) -> Principal Component Analysis via eigendecomposition."
+    )

@@ -1,12 +1,11 @@
 """Tests for morie.fn.crssp."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.crssp import crssp
 
 
 def test_crssp_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = crssp(table=np.array([[10, 20], [30, 40]]))
     assert result is not None
     assert hasattr(result, "name")

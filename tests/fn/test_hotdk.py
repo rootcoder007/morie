@@ -1,7 +1,6 @@
 """Tests for hot_deck_impute."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hotdk import hot_deck_impute
 
 

@@ -1,9 +1,9 @@
 """slvgrf -- TOC/RATE/Qini. Source: Yadlowsky et al. (2025) JASA
 120(549), 38-51; Sverdrup et al. (2025) JCGS 34(3), 948-960."""
+
 import pytest
 
-from morie.fn.slvgrf import (aipw_scores, autoc, qini_coefficient,
-                             qini_curve, rate, rate_test, toc_curve)
+from morie.fn.slvgrf import aipw_scores, autoc, qini_coefficient, qini_curve, rate, rate_test, toc_curve
 
 
 def test_toc_ends_at_zero_by_construction():
@@ -33,10 +33,8 @@ def test_a_reversed_ranking_gives_the_mirror_sign():
 def test_qini_and_autoc_are_the_same_metric_at_different_weights():
     g = [1.0, 5.0, 2.0, 4.0]
     p = [4.0, 3.0, 2.0, 1.0]
-    assert qini_coefficient(g, p) == pytest.approx(
-        rate(g, p, weight="qini")["estimate"], abs=1e-15)
-    assert autoc(g, p) == pytest.approx(
-        rate(g, p, weight="autoc")["estimate"], abs=1e-15)
+    assert qini_coefficient(g, p) == pytest.approx(rate(g, p, weight="qini")["estimate"], abs=1e-15)
+    assert autoc(g, p) == pytest.approx(rate(g, p, weight="autoc")["estimate"], abs=1e-15)
 
 
 def test_qini_curve_ends_at_the_ate():

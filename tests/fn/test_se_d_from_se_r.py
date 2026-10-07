@@ -1,7 +1,5 @@
 """Tests for se_d_from_se_r.se_d_from_se_r."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.se_d_from_se_r import se_d_from_se_r
 
 

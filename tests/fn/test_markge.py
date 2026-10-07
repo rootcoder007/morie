@@ -1,7 +1,6 @@
 """Tests for morie.fn.markge -- Markov chain generation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.markge import markge, markov_generate
 

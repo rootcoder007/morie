@@ -27,14 +27,18 @@ def kamath_ch8_bleu_final(BP, p_n, N=None):
     """
     bp = float(BP)
     if not (0.0 <= bp <= 1.0):
-        raise ValueError("the brevity penalty must lie in [0, 1]; got "
-                         f"{bp}.")
+        raise ValueError(f"the brevity penalty must lie in [0, 1]; got {bp}.")
     gm = kamath_ch8_bleu_n_geom_mean(p_n, N)
-    return RichResult(payload={
-        "estimate": bp * float(gm["estimate"]),
-        "brevity_penalty": bp, "geometric_mean": float(gm["estimate"]),
-        "p_n": gm["p_n"], "n": gm["n"],
-        "method": "BLEU (Kamath Eq 8.5; geometric mean from km115)"})
+    return RichResult(
+        payload={
+            "estimate": bp * float(gm["estimate"]),
+            "brevity_penalty": bp,
+            "geometric_mean": float(gm["estimate"]),
+            "p_n": gm["p_n"],
+            "n": gm["n"],
+            "method": "BLEU (Kamath Eq 8.5; geometric mean from km115)",
+        }
+    )
 
 
 def cheatsheet():

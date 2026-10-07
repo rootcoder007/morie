@@ -82,26 +82,24 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["safrl", "safe_rl", "cpo_step", "cmdp_returns",
-           "worst_case_violation"]
+__all__ = ["safrl", "safe_rl", "cpo_step", "cmdp_returns", "worst_case_violation"]
 
 
 def _mat(M, name):
-    rows = [[float(v) for v in r]
-            for r in np.atleast_2d(np.asarray(M, dtype=float))]
+    rows = [[float(v) for v in r] for r in np.atleast_2d(np.asarray(M, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("safrl: %s must be non-empty" % name)
+        raise ValueError(f"safrl: {name} must be non-empty")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("safrl: %s must be rectangular" % name)
+            raise ValueError(f"safrl: {name} must be rectangular")
     return rows
 
 
 def _vec(v, name):
     out = [float(x) for x in np.atleast_1d(np.asarray(v, dtype=float))]
     if not out:
-        raise ValueError("safrl: %s must be non-empty" % name)
+        raise ValueError(f"safrl: {name} must be non-empty")
     return out
 
 
@@ -111,8 +109,7 @@ def _solve(A, b):
     for c in range(n):
         p = max(range(c, n), key=lambda r: abs(M[r][c]))
         if abs(M[p][c]) < 1e-14:
-            raise ValueError("safrl: H is singular; CPO assumes the Fisher "
-                             "information matrix is positive definite")
+            raise ValueError("safrl: H is singular; CPO assumes the Fisher information matrix is positive definite")
         M[c], M[p] = M[p], M[c]
         pv = M[c][c]
         for j in range(c, n + 1):
@@ -177,7 +174,7 @@ def safrl(g, H, B=None, c=None, delta=0.01, tol=1e-12, max_iter=5000):
         raise ValueError("safrl: delta must be > 0")
 
     Hinv_g = _solve(Hm, gv)
-    q = sum(gv[i] * Hinv_g[i] for i in range(n))     # g^T H^-1 g
+    q = sum(gv[i] * Hinv_g[i] for i in range(n))  # g^T H^-1 g
     if q < 0.0:
         raise ValueError("safrl: g^T H^-1 g < 0; H is not positive definite")
 
@@ -198,8 +195,7 @@ def safrl(g, H, B=None, c=None, delta=0.01, tol=1e-12, max_iter=5000):
     cols = [[Bm[i][j] for i in range(n)] for j in range(m)]
     Hinv_b = [_solve(Hm, col) for col in cols]
     r = [sum(gv[i] * Hinv_b[j][i] for i in range(n)) for j in range(m)]
-    S = [[sum(cols[a][i] * Hinv_b[b][i] for i in range(n))
-          for b in range(m)] for a in range(m)]
+    S = [[sum(cols[a][i] * Hinv_b[b][i] for i in range(n)) for b in range(m)] for a in range(m)]
 
     # Feasibility of eq. 11: for a single constraint the trust region
     # can satisfy c + b^T dtheta <= 0 iff c <= sqrt(2 delta b^T H^-1 b),
@@ -217,8 +213,7 @@ def safrl(g, H, B=None, c=None, delta=0.01, tol=1e-12, max_iter=5000):
         j = max(range(m), key=lambda k: cv[k])
         denom = S[j][j]
         if denom <= 0.0:
-            raise ValueError("safrl: constraint %d has zero curvature; "
-                             "cannot recover" % j)
+            raise ValueError(f"safrl: constraint {int(j)} has zero curvature; cannot recover")
         scale = math.sqrt(2.0 * delta / denom)
         step = [-scale * v for v in Hinv_b[j]]
         return _finish(step, gv, cols, cv, Hm, delta, None, [], False, True)
@@ -231,7 +226,7 @@ def safrl(g, H, B=None, c=None, delta=0.01, tol=1e-12, max_iter=5000):
     rhs = [gv[i] - Bnu[i] for i in range(n)]
     Hinv_rhs = _solve(Hm, rhs)
     A = sum(rhs[i] * Hinv_rhs[i] for i in range(n))
-    if A <= 1e-12 * max(1.0, q):
+    if 1e-12 * max(1.0, q) >= A:
         # lambda* = 0: the objective gradient is entirely absorbed by
         # the constraint multipliers (g = B nu), so the KL constraint is
         # INACTIVE and eq. 13's division by lambda does not apply. The
@@ -287,8 +282,7 @@ def _dual(q, r, S, c, delta, m, tol, max_iter):
         return max(a, 0.0)
 
     def obj(v):
-        return sum(v[j] * c[j] for j in range(m)) - math.sqrt(
-            2.0 * delta * A_of(v))
+        return sum(v[j] * c[j] for j in range(m)) - math.sqrt(2.0 * delta * A_of(v))
 
     cur = obj(nu)
     lr = 1.0
@@ -299,8 +293,7 @@ def _dual(q, r, S, c, delta, m, tol, max_iter):
             break
         grad = []
         for j in range(m):
-            dA = -2.0 * r[j] + 2.0 * sum(S[j][k] * nu[k]
-                                         for k in range(m))
+            dA = -2.0 * r[j] + 2.0 * sum(S[j][k] * nu[k] for k in range(m))
             grad.append(c[j] - dA / (2.0 * lam))
         if max(abs(v) for v in grad) < tol:
             break
@@ -329,25 +322,25 @@ def _finish(step, g, cols, c, H, delta, lam, nu, feasible, recovery):
     for i in range(n):
         for j in range(n):
             kl += 0.5 * step[i] * H[i][j] * step[j]
-    viol = [c[j] + sum(cols[j][i] * step[i] for i in range(n))
-            for j in range(len(cols))]
-    return RichResult(payload={
-        "estimate": step,
-        "step": step,
-        "lambda_": lam,
-        "nu": nu,
-        "feasible": bool(feasible),
-        "recovery": bool(recovery),
-        "predicted_gain": float(sum(g[i] * step[i] for i in range(n))),
-        "predicted_violation": viol,
-        "kl": float(kl),
-        "delta": float(delta),
-        "method": "CPO step (Achiam et al. 2017, eqs. 11-14)",
-    })
+    viol = [c[j] + sum(cols[j][i] * step[i] for i in range(n)) for j in range(len(cols))]
+    return RichResult(
+        payload={
+            "estimate": step,
+            "step": step,
+            "lambda_": lam,
+            "nu": nu,
+            "feasible": bool(feasible),
+            "recovery": bool(recovery),
+            "predicted_gain": float(sum(g[i] * step[i] for i in range(n))),
+            "predicted_violation": viol,
+            "kl": float(kl),
+            "delta": float(delta),
+            "method": "CPO step (Achiam et al. 2017, eqs. 11-14)",
+        }
+    )
 
 
-def cmdp_returns(policy, states, actions, step, reward, costs, gamma=0.9,
-                 start=None, iters=5000, tol=1e-14):
+def cmdp_returns(policy, states, actions, step, reward, costs, gamma=0.9, start=None, iters=5000, tol=1e-14):
     r"""Exact :math:`J(\pi)` and :math:`J_{C_i}(\pi)` for a tabular CMDP.
 
     ``costs`` is a sequence of callables ``C_i(s, a, s_next)``. Returns
@@ -382,13 +375,15 @@ def cmdp_returns(policy, states, actions, step, reward, costs, gamma=0.9,
             out.append(sum(start(s) * V[s] for s in S))
         else:
             out.append(V[start])
-    return RichResult(payload={
-        "estimate": out[0],
-        "J": out[0],
-        "J_C": out[1:],
-        "gamma": float(gamma),
-        "method": "CMDP returns (Altman 1999; Achiam et al. 2017 sec. 4)",
-    })
+    return RichResult(
+        payload={
+            "estimate": out[0],
+            "J": out[0],
+            "J_C": out[1:],
+            "gamma": float(gamma),
+            "method": "CMDP returns (Altman 1999; Achiam et al. 2017 sec. 4)",
+        }
+    )
 
 
 def worst_case_violation(delta, gamma, epsilon):
@@ -406,19 +401,20 @@ def worst_case_violation(delta, gamma, epsilon):
         raise ValueError("worst_case_violation: delta must be >= 0")
     if not 0.0 <= gamma < 1.0:
         raise ValueError("worst_case_violation: gamma must lie in [0, 1)")
-    return (math.sqrt(2.0 * delta) * gamma * float(epsilon)
-            / (1.0 - gamma) ** 2)
+    return math.sqrt(2.0 * delta) * gamma * float(epsilon) / (1.0 - gamma) ** 2
 
 
 def cheatsheet():
-    return ("safrl: CPO (Achiam 2017). CMDP = MDP + cost returns "
-            "J_Ci <= d_i (Altman 1999); Pi_C is the feasible set. "
-            "Step solves max g'dtheta s.t. c_i + b_i'dtheta <= 0 and "
-            "0.5 dtheta'H dtheta <= delta (eq. 11) through its dual "
-            "(eq. 12), giving dtheta = H^-1(g - B nu)/lambda (eq. 13). "
-            "Unconstrained it IS the natural-gradient/TRPO step. "
-            "Infeasible -> sec 6.2 recovery step. Prop 2 bounds the "
-            "overshoot by sqrt(2 delta) gamma eps/(1-gamma)^2.")
+    return (
+        "safrl: CPO (Achiam 2017). CMDP = MDP + cost returns "
+        "J_Ci <= d_i (Altman 1999); Pi_C is the feasible set. "
+        "Step solves max g'dtheta s.t. c_i + b_i'dtheta <= 0 and "
+        "0.5 dtheta'H dtheta <= delta (eq. 11) through its dual "
+        "(eq. 12), giving dtheta = H^-1(g - B nu)/lambda (eq. 13). "
+        "Unconstrained it IS the natural-gradient/TRPO step. "
+        "Infeasible -> sec 6.2 recovery step. Prop 2 bounds the "
+        "overshoot by sqrt(2 delta) gamma eps/(1-gamma)^2."
+    )
 
 
 # compact aliases per ledger/NAMING.md

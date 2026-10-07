@@ -17,7 +17,10 @@ def _score(pAB, pA, pB, g1, g2):
     probability sums over the phased pairs giving its genotype."""
     h = {"AB": pAB, "Ab": pA - pAB, "aB": pB - pAB, "ab": 1 - pA - pB + pAB}
     dh = {"AB": 1.0, "Ab": -1.0, "aB": -1.0, "ab": 1.0}
-    hap = lambda a, b: ("A" if a else "a") + ("B" if b else "b")
+
+    def hap(a, b):
+        return ("A" if a else "a") + ("B" if b else "b")
+
     sc = 0.0
     for a, b in zip(g1, g2):
         pr = dpr = 0.0
@@ -60,5 +63,3 @@ def test_twoldp_edge():
     assert two_locus_dprime(G1 + [-1], G2 + [1])["n"] == 20
     with pytest.raises(ValueError):
         two_locus_dprime([1], [1])
-
-

@@ -77,14 +77,13 @@ def bic_ar_order(x, max_p):
     xv = core.vec(x)
     n = len(xv)
     P = int(max_p)
-    if P != max_p or P < 0:
+    if max_p != P or P < 0:
         raise ValueError("bic_ar_order: max_p must be a non-negative integer")
     T = n - P
     if T < P + 3:
         raise ValueError(
-            "bic_ar_order: too few observations; %d points leave T = %d for "
-            "order %d, which cannot support %d parameters"
-            % (n, T, P, P + 2))
+            f"bic_ar_order: too few observations; {int(n)} points leave T = {int(T)} for order {int(P)}, which cannot support {int(P + 2)} parameters"
+        )
     y = xv[P:]
     bic = []
     bic_raw = []
@@ -108,31 +107,41 @@ def bic_ar_order(x, max_p):
         s2 = rss / T
         if not s2 > 0.0:
             raise ValueError(
-                "bic_ar_order: the order-%d fit is exact, so the Gaussian "
-                "likelihood is unbounded and no BIC exists" % p)
+                f"bic_ar_order: the order-{int(p)} fit is exact, so the Gaussian likelihood is unbounded and no BIC exists"
+            )
         sig2.append(s2)
         coefs.append([float(b) for b in beta])
         bic.append(math.log(s2) + p * logT / T)
         # Schwarz's own scale: k = p + 2 (intercept, p lags, sigma^2)
-        bic_raw.append(T * (math.log(2.0 * math.pi * s2) + 1.0)
-                       + (p + 2) * logT)
+        bic_raw.append(T * (math.log(2.0 * math.pi * s2) + 1.0) + (p + 2) * logT)
     best = min(range(P + 1), key=lambda p: bic[p])
     best_raw = min(range(P + 1), key=lambda p: bic_raw[p])
     if best != best_raw:
         raise ValueError(
             "bic_ar_order: the two scalings of the criterion disagree on the "
-            "argmin, which is arithmetically impossible; the fit is degenerate")
-    return RichResult(payload={
-        "estimate": int(best), "order": int(best),
-        "bic": bic, "bic_raw": bic_raw, "sigma2": sig2,
-        "coefficients": coefs[best],
-        "n": int(n), "T": int(T), "max_p": int(P),
-        "method": "Schwarz (1978) BIC = -2 log L + k log n, AR order selection"})
+            "argmin, which is arithmetically impossible; the fit is degenerate"
+        )
+    return RichResult(
+        payload={
+            "estimate": int(best),
+            "order": int(best),
+            "bic": bic,
+            "bic_raw": bic_raw,
+            "sigma2": sig2,
+            "coefficients": coefs[best],
+            "n": int(n),
+            "T": int(T),
+            "max_p": int(P),
+            "method": "Schwarz (1978) BIC = -2 log L + k log n, AR order selection",
+        }
+    )
 
 
 def cheatsheet():
-    return ("bicarp: penalty log n per parameter, not 2 -- BIC is consistent "
-            "where AIC is not, and every order must be fitted on the same T")
+    return (
+        "bicarp: penalty log n per parameter, not 2 -- BIC is consistent "
+        "where AIC is not, and every order must be fitted on the same T"
+    )
 
 
 # compact alias per ledger/NAMING.md

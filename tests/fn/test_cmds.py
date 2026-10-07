@@ -1,7 +1,6 @@
 """Tests for morie.fn.cmds — Classical multidimensional scaling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmds import cmds
 
 

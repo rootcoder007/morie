@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.hampel import hampel_redescend
 
 
@@ -13,8 +12,7 @@ def test_hampel_basic():
     r = rng.normal(0, 1, 50)
     result = hampel_redescend(r, a=2.0, b=4.0, c=8.0)
     assert isinstance(result, dict)
-    for key in ("estimate", "psi", "psi_deriv", "n_reject",
-                "n", "a", "b", "c", "method"):
+    for key in ("estimate", "psi", "psi_deriv", "n_reject", "n", "a", "b", "c", "method"):
         assert key in result
     assert result["n"] == 50
     assert len(result["psi"]) == 50

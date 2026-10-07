@@ -1,8 +1,6 @@
 """Tests for sgnpw.sign_test_power."""
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.sgnpw import sign_test_power
 
 

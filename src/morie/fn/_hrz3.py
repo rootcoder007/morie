@@ -56,8 +56,8 @@ def kmat(a, b, h):
     if h <= 0:
         raise ValueError(f"bandwidth must be positive, got {h}.")
     return np.asarray(
-        [[np.exp(-0.5 * ((float(ai) - float(bj)) / h) ** 2) / SQRT2PI
-          for bj in b] for ai in a], dtype=float)
+        [[np.exp(-0.5 * ((float(ai) - float(bj)) / h) ** 2) / SQRT2PI for bj in b] for ai in a], dtype=float
+    )
 
 
 def ll_smooth(z, y, zq, h):
@@ -174,7 +174,8 @@ def index_dir(X, y, h):
     if abs(lead) < 1e-300:
         raise ValueError(
             "the first covariate has a zero average derivative, so the "
-            "normalisation |beta_1| = 1 (HT2(a)) is not available.")
+            "normalisation |beta_1| = 1 (HT2(a)) is not available."
+        )
     return np.asarray([float(t) / abs(lead) for t in d], dtype=float)
 
 
@@ -194,7 +195,7 @@ def bw01(n):
     n = int(n)
     if n < 2:
         raise ValueError(f"need at least 2 observations, got {n}.")
-    return 1.06 * n ** (-1.0 / 6.0) / (12.0 ** 0.5)
+    return 1.06 * n ** (-1.0 / 6.0) / (12.0**0.5)
 
 
 def fxw_grid(u, v, z, wq, h):
@@ -222,20 +223,20 @@ def fxw_grid(u, v, z, wq, h):
     m = int(np.asarray(z).size)
     f = [[0.0] * m for _ in range(m)]
     for k in range(m):
-        for l in range(m):
+        for ell in range(m):
             s = 0.0
             for i in range(n):
-                s += float(KX[k][i]) * float(KW[l][i])
-            f[k][l] = s / (n * h * h)
+                s += float(KX[k][i]) * float(KW[ell][i])
+            f[k][ell] = s / (n * h * h)
     mass = 0.0
     for k in range(m):
-        for l in range(m):
-            mass += float(wq[k]) * float(wq[l]) * f[k][l]
+        for ell in range(m):
+            mass += float(wq[k]) * float(wq[ell]) * f[k][ell]
     if mass <= 0:
         raise ValueError("the kernel density estimate has non-positive mass.")
     for k in range(m):
-        for l in range(m):
-            f[k][l] /= mass
+        for ell in range(m):
+            f[k][ell] /= mass
     return f, mass
 
 
@@ -254,14 +255,13 @@ def sieve(z, J, kind="poly"):
     if J < 1:
         raise ValueError(f"J must be at least 1, got {J}.")
     if kind == "poly":
-        return np.asarray([[float(t) ** k for k in range(J)] for t in z],
-                          dtype=float)
+        return np.asarray([[float(t) ** k for k in range(J)] for t in z], dtype=float)
     if kind == "cos":
         rows = []
         for t in z:
             row = [1.0]
             for k in range(1, J):
-                row.append(2.0 ** 0.5 * np.cos(np.pi * k * float(t)))
+                row.append(2.0**0.5 * np.cos(np.pi * k * float(t)))
             rows.append(row)
         return np.asarray(rows, dtype=float)
     raise ValueError(f"kind must be 'poly' or 'cos', got {kind!r}.")

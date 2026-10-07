@@ -40,7 +40,11 @@ def mectest(dag1, dag2):
     res = _core.mectest(dag1=dag1, dag2=dag2)
     return RichResult(
         title=_METHOD,
-        summary_lines=[("equivalent", res["equivalent"]), ("sameskeleton", res["sameskeleton"]), ("nskeleton", res["nskeleton"])],
+        summary_lines=[
+            ("equivalent", res["equivalent"]),
+            ("sameskeleton", res["sameskeleton"]),
+            ("nskeleton", res["nskeleton"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

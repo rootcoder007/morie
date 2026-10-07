@@ -1,7 +1,6 @@
 """Tests for morie.fn.kron — Kronecker product."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kron import kronecker_product
 
 
@@ -14,9 +13,9 @@ class TestKronecker:
 
     def test_identity_kron(self):
         A = np.array([[1, 2], [3, 4]])
-        I = np.eye(2)
-        res = kronecker_product(A, I)
+        I_ = np.eye(2)
+        res = kronecker_product(A, I_)
         K = res.extra["product"]
         assert K.shape == (4, 4)
-        expected = np.kron(A, I)
+        expected = np.kron(A, I_)
         np.testing.assert_allclose(K, expected)

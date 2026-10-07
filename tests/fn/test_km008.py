@@ -13,6 +13,8 @@ def test_km008_doctest():
 
 def test_km008_edge():
     import pytest
+
     from morie.fn.km008 import kamath_ch2_attention_softmax_weights
+
     with pytest.raises(ValueError):
         kamath_ch2_attention_softmax_weights([])

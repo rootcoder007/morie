@@ -64,11 +64,11 @@ def seir_model(
     t = np.arange(0, t_max, dt)
 
     def deriv(y, _t, _N, _beta, _sigma, _gamma):
-        S, E, I, R = y
-        dSdt = -_beta * S * I / _N
-        dEdt = _beta * S * I / _N - _sigma * E
-        dIdt = _sigma * E - _gamma * I
-        dRdt = _gamma * I
+        S, E, I_, R = y
+        dSdt = -_beta * S * I_ / _N
+        dEdt = _beta * S * I_ / _N - _sigma * E
+        dIdt = _sigma * E - _gamma * I_
+        dRdt = _gamma * I_
         return [dSdt, dEdt, dIdt, dRdt]
 
     y0 = [S0, E0, I0, R0_init]

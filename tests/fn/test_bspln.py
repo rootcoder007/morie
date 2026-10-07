@@ -1,7 +1,6 @@
 """Tests for morie.fn.bspln -- Bayesian spline."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bspln import bayesian_spline
 
 

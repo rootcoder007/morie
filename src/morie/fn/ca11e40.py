@@ -27,18 +27,17 @@ def ca_chapter_11_equation_40(ys, ws):
     ch.11 eq.11.40
     """
     payload = dict(_ca_crim.q_statistic(ys, ws))
-    value = payload['q']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["q"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.40)"
     return RichResult(
-        title='Homogeneity Q = sum w (y - ybar)^2',
+        title="Homogeneity Q = sum w (y - ybar)^2",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e40: Q = sum w_i (y_i - ybar)^2 [Weisburd et al. 2022, eq. 11.40]'
+    return "ca11e40: Q = sum w_i (y_i - ybar)^2 [Weisburd et al. 2022, eq. 11.40]"

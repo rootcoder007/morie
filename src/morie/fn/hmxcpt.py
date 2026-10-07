@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Xception: extreme inception using depthwise separable convolutions."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["geron_xception", "separable_params"]
@@ -93,9 +92,7 @@ def geron_xception(n_classes=1000, in_channels=3, input_size=299):
         nonlocal bn_channels
         if bn:
             bn_channels += c_out
-        layers.append(
-            {"kind": kind, "params": int(params), "channels": int(c_out), "out": int(spatial), "note": note}
-        )
+        layers.append({"kind": kind, "params": int(params), "channels": int(c_out), "out": int(spatial), "note": note})
 
     # -- entry flow -------------------------------------------------------
     spatial = _out(3, 2, 0)
@@ -130,21 +127,21 @@ def geron_xception(n_classes=1000, in_channels=3, input_size=299):
     if spatial < 1:
         raise ValueError(f"geron_xception: input_size {size} collapses the feature map before the classifier")
 
-    weight_params = int(sum(l["params"] for l in layers))
+    weight_params = int(sum(ell["params"] for ell in layers))
     bn_trainable = 2 * bn_channels
     trainable = weight_params + bn_trainable
     non_trainable = 2 * bn_channels
-    n_sep = sum(1 for l in layers if l["kind"] == "separable3x3")
+    n_sep = sum(1 for ell in layers if ell["kind"] == "separable3x3")
     std_equiv = 0
     c_prev = cin
-    for l in layers:
-        if l["kind"] == "separable3x3":
+    for ell in layers:
+        if ell["kind"] == "separable3x3":
             # what the same layer would cost as a dense 3x3 convolution
             c_in_l = c_prev
-            std_equiv += 3 * 3 * c_in_l * l["channels"]
-        if l["channels"] and l["kind"] != "fc":
-            c_prev = l["channels"]
-    sep_total = sum(l["params"] for l in layers if l["kind"] == "separable3x3")
+            std_equiv += 3 * 3 * c_in_l * ell["channels"]
+        if ell["channels"] and ell["kind"] != "fc":
+            c_prev = ell["channels"]
+    sep_total = sum(ell["params"] for ell in layers if ell["kind"] == "separable3x3")
 
     return RichResult(
         title="Xception architecture",
@@ -158,7 +155,7 @@ def geron_xception(n_classes=1000, in_channels=3, input_size=299):
             {
                 "title": "Layers",
                 "headers": ["#", "kind", "channels", "params"],
-                "rows": [[i, l["kind"], l["channels"], l["params"]] for i, l in enumerate(layers)],
+                "rows": [[i, ell["kind"], ell["channels"], ell["params"]] for i, ell in enumerate(layers)],
             }
         ],
         interpretation=(

@@ -21,9 +21,15 @@ def ghosal_stick_break_def(x, n_terms=100, a=1.0, b=1.0, seed=42):
     th = [float(v) for v in rng.uniform(0, 1, n_terms)._flat()]
     mass = sum(p)
     mean = sum(pi * t for pi, t in zip(p, th))
-    res = RichResult(payload={"estimate": mean, "weights": p,
-                              "atoms": th, "total_mass": mass,
-                              "method": "stick-breaking measure (GvdV 2017 eq. 3.2)"})
+    res = RichResult(
+        payload={
+            "estimate": mean,
+            "weights": p,
+            "atoms": th,
+            "total_mass": mass,
+            "method": "stick-breaking measure (GvdV 2017 eq. 3.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_4")
 
 

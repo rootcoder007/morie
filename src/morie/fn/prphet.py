@@ -58,22 +58,26 @@ Practice*, 3rd edn, OTexts. Fourier terms for seasonality.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["trend_matrix", "fourier_terms", "holiday_matrix",
-           "prophet_design", "prophet_fit", "prophet_predict",
-           "piecewise_trend"]
+__all__ = [
+    "trend_matrix",
+    "fourier_terms",
+    "holiday_matrix",
+    "prophet_design",
+    "prophet_fit",
+    "prophet_predict",
+    "piecewise_trend",
+]
 
 _EPS = 1e-12
 
 
-def _changepoints(t, n_changepoints, changepoint_range=0.8,
-                  changepoints=None):
+def _changepoints(t, n_changepoints, changepoint_range=0.8, changepoints=None):
     if changepoints is not None:
         return [float(v) for v in changepoints]
-    n = len(t)
+    len(t)
     hi = t[0] + changepoint_range * (t[-1] - t[0])
     m = int(n_changepoints)
     if m < 1:
@@ -92,8 +96,7 @@ def piecewise_trend(t, k_rate, m_off, deltas, cps):
     for tv in t:
         a = [1.0 if tv >= s else 0.0 for s in cps]
         rate = k_rate + sum(a[j] * deltas[j] for j in range(len(cps)))
-        off = m_off + sum(a[j] * (-cps[j] * deltas[j])
-                          for j in range(len(cps)))
+        off = m_off + sum(a[j] * (-cps[j] * deltas[j]) for j in range(len(cps)))
         out.append(rate * tv + off)
     return out
 
@@ -118,11 +121,9 @@ def trend_matrix(t, cps):
 def fourier_terms(t, period, order):
     r"""Cosine and sine pairs, exactly periodic with ``period``."""
     if period <= 0.0:
-        raise ValueError("prphet: period must be positive, got %r"
-                         % (period,))
+        raise ValueError(f"prphet: period must be positive, got {period!r}")
     if order < 1:
-        raise ValueError("prphet: order must be at least 1, got %d"
-                         % order)
+        raise ValueError(f"prphet: order must be at least 1, got {int(order)}")
     rows = []
     for tv in t:
         row = []
@@ -155,31 +156,37 @@ def holiday_matrix(t, holidays, lower=0, upper=0):
     return rows, names
 
 
-def prophet_design(t, cps, seasonalities=None, holidays=None,
-                   holiday_window=(0, 0)):
+def prophet_design(t, cps, seasonalities=None, holidays=None, holiday_window=(0, 0)):
     """Stack trend, seasonality and holiday columns into one design."""
     tm = trend_matrix(t, cps)
-    cols = ["k", "m"] + ["delta_%d" % j for j in range(len(cps))]
+    cols = ["k", "m"] + [f"delta_{int(j)}" for j in range(len(cps))]
     blocks = [tm]
     seas = seasonalities or []
-    for (name, period, order) in seas:
+    for name, period, order in seas:
         blocks.append(fourier_terms(t, period, order))
         for n in range(1, int(order) + 1):
-            cols += ["%s_cos%d" % (name, n), "%s_sin%d" % (name, n)]
+            cols += [f"{name}_cos{int(n)}", f"{name}_sin{int(n)}"]
     hn = []
     if holidays:
-        hm, hn = holiday_matrix(t, holidays, holiday_window[0],
-                                holiday_window[1])
+        hm, hn = holiday_matrix(t, holidays, holiday_window[0], holiday_window[1])
         blocks.append(hm)
-        cols += ["holiday_%s" % v for v in hn]
+        cols += [f"holiday_{v}" for v in hn]
     X = [[v for b in blocks for v in b[i]] for i in range(len(t))]
     return X, cols, hn
 
 
-def prophet_fit(t, y, n_changepoints=10, changepoint_range=0.8,
-                changepoints=None, seasonalities=None, holidays=None,
-                holiday_window=(0, 0), changepoint_prior=0.05,
-                ridge=1e-8):
+def prophet_fit(
+    t,
+    y,
+    n_changepoints=10,
+    changepoint_range=0.8,
+    changepoints=None,
+    seasonalities=None,
+    holidays=None,
+    holiday_window=(0, 0),
+    changepoint_prior=0.05,
+    ridge=1e-8,
+):
     r"""Fit by penalised least squares.
 
     The Laplace prior :math:`\delta_j \sim \mathrm{Laplace}(0,\tau)`
@@ -198,19 +205,14 @@ def prophet_fit(t, y, n_changepoints=10, changepoint_range=0.8,
     yv = k.vec(y)
     n = len(tv)
     if len(yv) != n:
-        raise ValueError("prphet: %d times but %d observations"
-                         % (n, len(yv)))
+        raise ValueError(f"prphet: {int(n)} times but {int(len(yv))} observations")
     if n < 8:
-        raise ValueError("prphet: need at least 8 observations, got %d"
-                         % n)
+        raise ValueError(f"prphet: need at least 8 observations, got {int(n)}")
     tau = float(changepoint_prior)
     if tau <= 0.0:
-        raise ValueError("prphet: changepoint_prior must be positive, "
-                         "got %r" % (changepoint_prior,))
-    cps = _changepoints(tv, n_changepoints, changepoint_range,
-                        changepoints)
-    X, cols, hn = prophet_design(tv, cps, seasonalities, holidays,
-                                 holiday_window)
+        raise ValueError(f"prphet: changepoint_prior must be positive, got {changepoint_prior!r}")
+    cps = _changepoints(tv, n_changepoints, changepoint_range, changepoints)
+    X, cols, hn = prophet_design(tv, cps, seasonalities, holidays, holiday_window)
     p = len(cols)
     pen = [0.0] * p
     for j, c in enumerate(cols):
@@ -218,8 +220,7 @@ def prophet_fit(t, y, n_changepoints=10, changepoint_range=0.8,
             pen[j] = 1.0 / tau
     # Cyclic coordinate descent: an ordinary least-squares update on
     # the unpenalised coordinates, soft-thresholded on the deltas.
-    XtX = [[sum(X[i][a] * X[i][b] for i in range(n))
-            for b in range(p)] for a in range(p)]
+    XtX = [[sum(X[i][a] * X[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     Xty = [sum(X[i][a] * yv[i] for i in range(n)) for a in range(p)]
     beta = [0.0] * p
     for _ in range(400):
@@ -228,64 +229,65 @@ def prophet_fit(t, y, n_changepoints=10, changepoint_range=0.8,
             gaa = XtX[a][a] + ridge
             if gaa <= 0.0:
                 continue
-            r = Xty[a] - sum(XtX[a][b] * beta[b] for b in range(p)
-                             if b != a)
-            if pen[a] > 0.0:
-                # soft threshold: this is what actually sets deltas to
-                # EXACTLY zero, which ridge never does
-                nb = (0.0 if abs(r) <= pen[a]
-                      else (r - math.copysign(pen[a], r)) / gaa)
-            else:
-                nb = r / gaa
+            r = Xty[a] - sum(XtX[a][b] * beta[b] for b in range(p) if b != a)
+            # soft threshold: this is what actually sets deltas to
+            # EXACTLY zero, which ridge never does
+            nb = (0.0 if abs(r) <= pen[a] else (r - math.copysign(pen[a], r)) / gaa) if pen[a] > 0.0 else r / gaa
             shift = max(shift, abs(nb - beta[a]))
             beta[a] = nb
         if shift < 1e-12:
             break
-    fitted = [sum(X[i][a] * beta[a] for a in range(p))
-              for i in range(n)]
+    fitted = [sum(X[i][a] * beta[a] for a in range(p)) for i in range(n)]
     resid = [yv[i] - fitted[i] for i in range(n)]
     named = {cols[a]: beta[a] for a in range(p)}
-    deltas = [named["delta_%d" % j] for j in range(len(cps))]
-    return RichResult(payload={
-        "estimate": fitted, "fitted": fitted, "residual": resid,
-        "coef": named, "beta": beta, "columns": cols,
-        "changepoints": cps, "deltas": deltas,
-        "k": named["k"], "m": named["m"],
-        "trend": piecewise_trend(tv, named["k"], named["m"], deltas,
-                                 cps),
-        "holiday_names": hn, "t": list(tv), "n": n,
-        "changepoint_prior": tau,
-        "n_active_changepoints": sum(1 for d in deltas if d != 0.0),
-        "sigma": math.sqrt(sum(v * v for v in resid) / max(n - p, 1)),
-        "seasonalities": [s[0] for s in (seasonalities or [])],
-        "method": "Prophet decomposable model, Taylor & Letham (2018) "
-                  "eq. (1) and (4)",
-    })
+    deltas = [named[f"delta_{int(j)}"] for j in range(len(cps))]
+    return RichResult(
+        payload={
+            "estimate": fitted,
+            "fitted": fitted,
+            "residual": resid,
+            "coef": named,
+            "beta": beta,
+            "columns": cols,
+            "changepoints": cps,
+            "deltas": deltas,
+            "k": named["k"],
+            "m": named["m"],
+            "trend": piecewise_trend(tv, named["k"], named["m"], deltas, cps),
+            "holiday_names": hn,
+            "t": list(tv),
+            "n": n,
+            "changepoint_prior": tau,
+            "n_active_changepoints": sum(1 for d in deltas if d != 0.0),
+            "sigma": math.sqrt(sum(v * v for v in resid) / max(n - p, 1)),
+            "seasonalities": [s[0] for s in (seasonalities or [])],
+            "method": "Prophet decomposable model, Taylor & Letham (2018) eq. (1) and (4)",
+        }
+    )
 
 
-def prophet_predict(fit, t_new, seasonalities=None, holidays=None,
-                    holiday_window=(0, 0)):
+def prophet_predict(fit, t_new, seasonalities=None, holidays=None, holiday_window=(0, 0)):
     """Forecast at new times, reusing the fitted coefficients."""
     tn = k.vec(t_new)
-    X, cols, _ = prophet_design(tn, fit["changepoints"], seasonalities,
-                                holidays, holiday_window)
+    X, cols, _ = prophet_design(tn, fit["changepoints"], seasonalities, holidays, holiday_window)
     if cols != fit["columns"]:
-        raise ValueError("prphet: the prediction design does not match "
-                         "the fitted one; pass the same seasonalities "
-                         "and holidays")
+        raise ValueError(
+            "prphet: the prediction design does not match the fitted one; pass the same seasonalities and holidays"
+        )
     beta = fit["beta"]
-    return [sum(X[i][a] * beta[a] for a in range(len(beta)))
-            for i in range(len(tn))]
+    return [sum(X[i][a] * beta[a] for a in range(len(beta))) for i in range(len(tn))]
 
 
 def cheatsheet():
-    return ("prphet: y = g(t) + s(t) + h(t) + eps. Trend g = (k + "
-            "a(t)'delta)t + (m + a(t)'gamma) with gamma_j = -s_j "
-            "delta_j -- that is what JOINS the segments; without it the "
-            "curve jumps at every changepoint and least squares hides "
-            "it in the residual. s(t) is a Fourier series, exactly "
-            "periodic. Holidays need their own indicators because they "
-            "move. Penalise the deltas ONLY.")
+    return (
+        "prphet: y = g(t) + s(t) + h(t) + eps. Trend g = (k + "
+        "a(t)'delta)t + (m + a(t)'gamma) with gamma_j = -s_j "
+        "delta_j -- that is what JOINS the segments; without it the "
+        "curve jumps at every changepoint and least squares hides "
+        "it in the residual. s(t) is a Fourier series, exactly "
+        "periodic. Holidays need their own indicators because they "
+        "move. Penalise the deltas ONLY."
+    )
 
 
 # compact alias per ledger/NAMING.md

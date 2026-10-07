@@ -1,7 +1,6 @@
 """Tests for morie.fn.scidl — scatter ideal points."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.scidl import scidl
 
 

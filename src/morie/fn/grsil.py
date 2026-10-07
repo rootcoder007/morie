@@ -70,13 +70,9 @@ def geron_silhouette_score(X, labels):
         raise ValueError("X contains non-finite values.")
     uniq = np.unique(lab)
     if uniq.size < 2:
-        raise ValueError(
-            f"silhouette needs at least 2 clusters, got {uniq.size}."
-        )
+        raise ValueError(f"silhouette needs at least 2 clusters, got {uniq.size}.")
     if uniq.size >= A.shape[0]:
-        raise ValueError(
-            f"{uniq.size} clusters for {A.shape[0]} points leaves no within-cluster distances."
-        )
+        raise ValueError(f"{uniq.size} clusters for {A.shape[0]} points leaves no within-cluster distances.")
 
     D = np.sqrt(((A[:, None, :] - A[None, :, :]) ** 2).sum(axis=2))
     m = A.shape[0]

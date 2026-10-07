@@ -58,10 +58,7 @@ def em_impute(
     result = data.copy()
     numeric_cols = result.select_dtypes(include=[np.number]).columns.tolist()
 
-    if columns is not None:
-        use_cols = [c for c in columns if c in numeric_cols]
-    else:
-        use_cols = numeric_cols
+    use_cols = [c for c in columns if c in numeric_cols] if columns is not None else numeric_cols
 
     if len(use_cols) < 2:
         raise ValueError("Need at least 2 numeric columns for EM imputation.")

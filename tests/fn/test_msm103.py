@@ -27,8 +27,14 @@ def test_every_shared_name_reaches_the_same_one_function():
 
 
 def test_the_alias_carries_the_hosts_documentation_unchanged():
-    assert alias.mvsml_bayesian_regression_pt2_eq_7_3.__module__ == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_3").__module__
-    assert alias.mvsml_bayesian_regression_pt2_eq_7_3.__doc__ == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_3").__doc__
+    assert (
+        alias.mvsml_bayesian_regression_pt2_eq_7_3.__module__
+        == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_3").__module__
+    )
+    assert (
+        alias.mvsml_bayesian_regression_pt2_eq_7_3.__doc__
+        == getattr(host, "mvsml_bayesian_regression_pt2_eq_7_3").__doc__
+    )
 
 
 def test_the_alias_module_carries_its_own_cheatsheet():

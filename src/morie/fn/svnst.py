@@ -22,10 +22,7 @@ def svnst(voter, candidates=None):
     DescriptiveResult
     """
     voter = np.asarray(voter, dtype=float)
-    if candidates is None:
-        candidates = np.zeros((1, len(voter)))
-    else:
-        candidates = np.asarray(candidates, dtype=float)
+    candidates = np.zeros((1, len(voter))) if candidates is None else np.asarray(candidates, dtype=float)
     if candidates.ndim == 1:
         candidates = candidates.reshape(1, -1)
     dists = np.array([float(np.sum((voter - c) ** 2)) for c in candidates])

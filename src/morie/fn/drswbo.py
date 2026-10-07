@@ -29,8 +29,7 @@ from ._richresult import RichResult
 __all__ = ["dr_did_stratified_block"]
 
 
-def dr_did_stratified_block(y, D, unit=None, time=None, X=None, clusters=None,
-                            B=199, alpha=0.05, y0=None):
+def dr_did_stratified_block(y, D, unit=None, time=None, X=None, clusters=None, B=199, alpha=0.05, y0=None):
     """DR-DiD with a cluster-block multiplier bootstrap percentile interval.
 
     Returns
@@ -48,8 +47,7 @@ def dr_did_stratified_block(y, D, unit=None, time=None, X=None, clusters=None,
     fit = k.drdid_panel(dy, D, X)
     inf = fit["inf"]
     n = len(inf)
-    src = clusters if clusters is not None else (unit if unit is not None
-                                                 else list(range(n)))
+    src = clusters if clusters is not None else (unit if unit is not None else list(range(n)))
     lab = [str(c) for c in src]
     ids = []
     for c in lab:

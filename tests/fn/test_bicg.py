@@ -1,7 +1,5 @@
 """Tests for bicg.bayesian_information_criterion."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.bicg import bayesian_information_criterion
 
 
@@ -15,6 +13,7 @@ def test_bicg_basic():
     assert "estimate" in result or "statistic" in result
     # Independent recomputation of the documented formula
     import math
+
     expected_bic = -2.0 * log_lik + n_params * math.log(n_obs)
     expected_aic = -2.0 * log_lik + 2.0 * n_params
     expected_penalty = n_params * math.log(n_obs)
@@ -39,6 +38,7 @@ def test_bicg_edge():
     n_obs2 = 0
     result_edge = bayesian_information_criterion(log_lik2, n_params2, n_obs2)
     import math
+
     assert math.isnan(result_edge["penalty"])
     assert math.isnan(result_edge["estimate"])
     # And the AIC branch should still be finite

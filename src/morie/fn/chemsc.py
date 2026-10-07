@@ -76,10 +76,26 @@ import math
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["chemsc", "chemscore_dock", "chemscore", "block", "smooth_block",
-           "hbond_term", "metal_term", "lipophilic_term", "rot_term",
-           "clash_term", "torsion_term", "SMOOTHINGS", "COEFFICIENTS",
-           "HBOND", "METAL", "LIPO", "CLASH", "cheatsheet"]
+__all__ = [
+    "chemsc",
+    "chemscore_dock",
+    "chemscore",
+    "block",
+    "smooth_block",
+    "hbond_term",
+    "metal_term",
+    "lipophilic_term",
+    "rot_term",
+    "clash_term",
+    "torsion_term",
+    "SMOOTHINGS",
+    "COEFFICIENTS",
+    "HBOND",
+    "METAL",
+    "LIPO",
+    "CLASH",
+    "cheatsheet",
+]
 
 SMOOTHINGS = ("gaussian", "none")
 
@@ -135,8 +151,7 @@ def block(d, d_ideal, d_max):
     """
     d = abs(float(d))
     if d_max <= d_ideal:
-        raise ValueError("the maximum deviation must exceed the ideal "
-                         "tolerance")
+        raise ValueError("the maximum deviation must exceed the ideal tolerance")
     if d <= d_ideal:
         return 1.0
     if d >= d_max:
@@ -160,13 +175,11 @@ def smooth_block(d, d_ideal, d_max, sigma):
         return block(d, d_ideal, d_max)
     d = abs(float(d))
     if d_max <= d_ideal:
-        raise ValueError("the maximum deviation must exceed the ideal "
-                         "tolerance")
+        raise ValueError("the maximum deviation must exceed the ideal tolerance")
     z1 = (d_ideal - d) / sigma
     z2 = (d_max - d) / sigma
     flat = _w.ncdf(z1)
-    ramp = ((d_max - d) * (_w.ncdf(z2) - _w.ncdf(z1))
-            - sigma * (_w.npdf(z1) - _w.npdf(z2))) / (d_max - d_ideal)
+    ramp = ((d_max - d) * (_w.ncdf(z2) - _w.ncdf(z1)) - sigma * (_w.npdf(z1) - _w.npdf(z2))) / (d_max - d_ideal)
     v = flat + ramp
     # The convolution of a function bounded in [0, 1] is bounded in
     # [0, 1]; only rounding can put it outside, and letting that leak
@@ -183,7 +196,7 @@ def _B(d, d_ideal, d_max, sigma, smoothing):
         return block(d, d_ideal, d_max)
     if smoothing == "gaussian":
         return smooth_block(d, d_ideal, d_max, sigma)
-    raise ValueError("smoothing must be one of %r" % (SMOOTHINGS,))
+    raise ValueError(f"smoothing must be one of {SMOOTHINGS!r}")
 
 
 def hbond_term(r, alpha, betas, smoothing="gaussian", par=None):
@@ -207,13 +220,10 @@ def hbond_term(r, alpha, betas, smoothing="gaussian", par=None):
     p = dict(HBOND)
     if par:
         p.update(par)
-    v = _B(r - p["R_IDEAL"], p["DELTA_R_IDEAL"], p["DELTA_R_MAX"],
-           p["HBOND_R_SIGMA"], smoothing)
-    v *= _B(alpha - p["ALPHA_IDEAL"], p["DELTA_ALPHA_IDEAL"],
-            p["DELTA_ALPHA_MAX"], p["HBOND_ALPHA_SIGMA"], smoothing)
+    v = _B(r - p["R_IDEAL"], p["DELTA_R_IDEAL"], p["DELTA_R_MAX"], p["HBOND_R_SIGMA"], smoothing)
+    v *= _B(alpha - p["ALPHA_IDEAL"], p["DELTA_ALPHA_IDEAL"], p["DELTA_ALPHA_MAX"], p["HBOND_ALPHA_SIGMA"], smoothing)
     for b in betas:
-        v *= _B(b - p["BETA_IDEAL"], p["DELTA_BETA_IDEAL"],
-                p["DELTA_BETA_MAX"], p["HBOND_BETA_SIGMA"], smoothing)
+        v *= _B(b - p["BETA_IDEAL"], p["DELTA_BETA_IDEAL"], p["DELTA_BETA_MAX"], p["HBOND_BETA_SIGMA"], smoothing)
     return v
 
 
@@ -239,8 +249,7 @@ def metal_term(r, smoothing="gaussian", par=None):
     p = dict(METAL)
     if par:
         p.update(par)
-    return _B(_over(r, p["METAL_R1"]), 0.0, p["METAL_R2"] - p["METAL_R1"],
-              p["METAL_R_SIGMA"], smoothing)
+    return _B(_over(r, p["METAL_R1"]), 0.0, p["METAL_R2"] - p["METAL_R1"], p["METAL_R_SIGMA"], smoothing)
 
 
 def lipophilic_term(r, smoothing="gaussian", par=None):
@@ -248,8 +257,7 @@ def lipophilic_term(r, smoothing="gaussian", par=None):
     p = dict(LIPO)
     if par:
         p.update(par)
-    return _B(_over(r, p["LIPO_R1"]), 0.0, p["LIPO_R2"] - p["LIPO_R1"],
-              p["LIPO_R_SIGMA"], smoothing)
+    return _B(_over(r, p["LIPO_R1"]), 0.0, p["LIPO_R2"] - p["LIPO_R1"], p["LIPO_R_SIGMA"], smoothing)
 
 
 def rot_term(fractions):
@@ -297,9 +305,12 @@ def clash_term(r, kind="general", slope=1.0, par=None):
     p = dict(CLASH)
     if par:
         p.update(par)
-    key = {"hbond": "CLASH_RADIUS_HBOND", "metal": "CLASH_RADIUS_METAL",
-           "sulphur": "CLASH_RADIUS_SULPHUR",
-           "general": "CLASH_RADIUS_GENERAL"}.get(kind)
+    key = {
+        "hbond": "CLASH_RADIUS_HBOND",
+        "metal": "CLASH_RADIUS_METAL",
+        "sulphur": "CLASH_RADIUS_SULPHUR",
+        "general": "CLASH_RADIUS_GENERAL",
+    }.get(kind)
     if key is None:
         raise ValueError("kind must be hbond, metal, sulphur or general")
     rc = p[key]
@@ -314,14 +325,23 @@ def torsion_term(phi, A, n, phi0):
     A, n and the phase read from lines like SP3_SP3_BOND. The angle is
     in degrees on the way in, because that is how a torsion is measured.
     """
-    return float(A) * (1.0 + math.cos(float(n) * math.radians(float(phi))
-                                      - float(phi0)))
+    return float(A) * (1.0 + math.cos(float(n) * math.radians(float(phi)) - float(phi0)))
 
 
-def chemscore(hbonds=(), metals=(), lipophilic=(), rotatable=(),
-              clashes=(), torsions=(), smoothing="gaussian", dg0=0.0,
-              clash_slope=1.0, intra_coefficient=1.0, coefficients=None,
-              par=None):
+def chemscore(
+    hbonds=(),
+    metals=(),
+    lipophilic=(),
+    rotatable=(),
+    clashes=(),
+    torsions=(),
+    smoothing="gaussian",
+    dg0=0.0,
+    clash_slope=1.0,
+    intra_coefficient=1.0,
+    coefficients=None,
+    par=None,
+):
     """Assemble a ChemScore from its already-measured geometric terms.
 
     This is the function the docking front end calls once it has turned
@@ -337,7 +357,7 @@ def chemscore(hbonds=(), metals=(), lipophilic=(), rotatable=(),
         checked against its parts.
     """
     if smoothing not in SMOOTHINGS:
-        raise ValueError("smoothing must be one of %r" % (SMOOTHINGS,))
+        raise ValueError(f"smoothing must be one of {SMOOTHINGS!r}")
     co = dict(COEFFICIENTS)
     if coefficients:
         co.update(coefficients)
@@ -359,44 +379,48 @@ def chemscore(hbonds=(), metals=(), lipophilic=(), rotatable=(),
     s_cl = _w.csum(cl) if cl else 0.0
     s_to = _w.csum(to) if to else 0.0
 
-    dg = (float(dg0) + co["HBOND_COEFFICIENT"] * s_hb
-          + co["METAL_COEFFICIENT"] * s_mt
-          + co["LIPO_COEFFICIENT"] * s_lp
-          + co["ROT_COEFFICIENT"] * h_rot)
+    dg = (
+        float(dg0)
+        + co["HBOND_COEFFICIENT"] * s_hb
+        + co["METAL_COEFFICIENT"] * s_mt
+        + co["LIPO_COEFFICIENT"] * s_lp
+        + co["ROT_COEFFICIENT"] * h_rot
+    )
     # The fitness is the negative of the free energy so that bigger is
     # better, with the penalties subtracted from it -- a clash makes a
     # pose worse whichever sign convention the energy is carrying.
     fitness = -dg - s_cl - float(intra_coefficient) * s_to
-    return RichResult(payload={
-        "dg": dg,
-        "fitness": fitness,
-        "hbond": s_hb,
-        "metal": s_mt,
-        "lipophilic": s_lp,
-        "h_rot": h_rot,
-        "clash": s_cl,
-        "torsion": s_to,
-        "hbond_terms": hb,
-        "metal_terms": mt,
-        "lipophilic_terms": lp_,
-        "clash_terms": cl,
-        "torsion_terms": to,
-        "n_hbond": len(hb),
-        "n_metal": len(mt),
-        "n_lipophilic": len(lp_),
-        "n_rotatable": len(rotatable),
-        "n_clash": len(cl),
-        "estimate": dg,
-        "se": float("nan"),
-        "dg0": float(dg0),
-        "smoothing": smoothing,
-        "method": "ChemScore empirical docking",
-    })
+    return RichResult(
+        payload={
+            "dg": dg,
+            "fitness": fitness,
+            "hbond": s_hb,
+            "metal": s_mt,
+            "lipophilic": s_lp,
+            "h_rot": h_rot,
+            "clash": s_cl,
+            "torsion": s_to,
+            "hbond_terms": hb,
+            "metal_terms": mt,
+            "lipophilic_terms": lp_,
+            "clash_terms": cl,
+            "torsion_terms": to,
+            "n_hbond": len(hb),
+            "n_metal": len(mt),
+            "n_lipophilic": len(lp_),
+            "n_rotatable": len(rotatable),
+            "n_clash": len(cl),
+            "estimate": dg,
+            "se": float("nan"),
+            "dg0": float(dg0),
+            "smoothing": smoothing,
+            "method": "ChemScore empirical docking",
+        }
+    )
 
 
 def _dist(a, b):
-    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t])
-                             for t in range(3)))
+    return math.sqrt(_w.csum((a[t] - b[t]) * (a[t] - b[t]) for t in range(3)))
 
 
 def _angle(a, b, c):
@@ -415,9 +439,18 @@ def _angle(a, b, c):
     return math.degrees(math.acos(cc))
 
 
-def chemscore_dock(receptor, ligand, smoothing="gaussian", dg0=0.0,
-                   clash_slope=1.0, intra_coefficient=1.0,
-                   rotatable=(), torsions=(), coefficients=None, par=None):
+def chemscore_dock(
+    receptor,
+    ligand,
+    smoothing="gaussian",
+    dg0=0.0,
+    clash_slope=1.0,
+    intra_coefficient=1.0,
+    rotatable=(),
+    torsions=(),
+    coefficients=None,
+    par=None,
+):
     """Score a pose from coordinates and atom roles.
 
     Parameters
@@ -447,6 +480,7 @@ def chemscore_dock(receptor, ligand, smoothing="gaussian", dg0=0.0,
     Eldridge et al. (1997) J Comput Aided Mol Des 11(5), 425-445; CCDC
     GOLD User Guide 8.4.
     """
+
     def parse(rows):
         out = []
         for r in rows:
@@ -494,21 +528,33 @@ def chemscore_dock(receptor, ligand, smoothing="gaussian", dg0=0.0,
             if pair is not None:
                 clashes.append((pair[1], pair[0]))
             else:
-                clashes.append((d, "sulphur" if rrole == "sulphur"
-                                else "general"))
-    return chemscore(hbonds, metals, lipo, rotatable, clashes, torsions,
-                     smoothing, dg0, clash_slope, intra_coefficient,
-                     coefficients, par)
+                clashes.append((d, "sulphur" if rrole == "sulphur" else "general"))
+    return chemscore(
+        hbonds,
+        metals,
+        lipo,
+        rotatable,
+        clashes,
+        torsions,
+        smoothing,
+        dg0,
+        clash_slope,
+        intra_coefficient,
+        coefficients,
+        par,
+    )
 
 
 chemsc = chemscore_dock
 
 
 def cheatsheet():
-    return ("chemsc: ChemScore empirical docking. smoothings "
-            + ", ".join(SMOOTHINGS)
-            + "; coefficients hbond -3.34, metal -6.03, lipo -0.117, "
-              "rot 2.56 (CCDC GOLD defaults)")
+    return (
+        "chemsc: ChemScore empirical docking. smoothings "
+        + ", ".join(SMOOTHINGS)
+        + "; coefficients hbond -3.34, metal -6.03, lipo -0.117, "
+        "rot 2.56 (CCDC GOLD defaults)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

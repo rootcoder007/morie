@@ -1,7 +1,6 @@
 """Tests for morie.fn.nutss -- No-U-Turn Sampler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nutss import nuts_sampler
 
 

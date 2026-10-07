@@ -85,7 +85,7 @@ def irt3p(
 
     loglik_prev = -np.inf
 
-    for iteration in range(max_iter):
+    for iteration in range(max_iter):  # noqa: B007 - read after the loop
         # E-step
         log_like_quad = np.zeros((n, n_quad))
         for q in range(n_quad):
@@ -112,7 +112,7 @@ def irt3p(
         # M-step with Beta prior on c
         for j in range(k):
 
-            def _neg_loglik_item(params):
+            def _neg_loglik_item(params, *, f_bar=f_bar, j=j, r_bar=r_bar):
                 aj, bj, cj = params
                 if aj < 0.01 or cj < 0.0 or cj > 0.5:
                     return 1e12

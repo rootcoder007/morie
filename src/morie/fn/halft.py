@@ -65,11 +65,9 @@ References
 
 import math
 
-from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["half_life", "halft", "two_compartment_rates", "ROUTES",
-           "cheatsheet"]
+__all__ = ["half_life", "halft", "two_compartment_rates", "ROUTES", "cheatsheet"]
 
 ROUTES = ("one_compartment", "two_compartment", "effective")
 LN2 = 0.6931471805599453
@@ -99,12 +97,10 @@ def two_compartment_rates(V1, V2, CL, Q):
     # numbers and loses most of its digits.
     alpha = 0.5 * (b + root)
     beta = c / alpha if alpha > 0.0 else 0.0
-    return {"alpha": alpha, "beta": beta, "k10": k10, "k12": k12,
-            "k21": k21}
+    return {"alpha": alpha, "beta": beta, "k10": k10, "k12": k12, "k21": k21}
 
 
-def half_life(smiles=None, Vd=None, Cl=None, route="one_compartment",
-              V1=None, V2=None, Q=None, dose=None):
+def half_life(smiles=None, Vd=None, Cl=None, route="one_compartment", V1=None, V2=None, Q=None, dose=None):
     """Plasma half-life from volume of distribution and clearance.
 
     Parameters
@@ -141,15 +137,14 @@ def half_life(smiles=None, Vd=None, Cl=None, route="one_compartment",
     Boxenbaum and Battle (1995) J. Clin. Pharmacol. 35(8), 763-766.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     if Cl is None or float(Cl) <= 0.0:
         raise ValueError("Cl must be positive")
     CL = float(Cl)
 
     if route == "two_compartment":
         if V1 is None or V2 is None or Q is None:
-            raise ValueError("the two-compartment route needs V1, V2 "
-                             "and Q")
+            raise ValueError("the two-compartment route needs V1, V2 and Q")
         V1 = float(V1)
         V2 = float(V2)
         Q = float(Q)
@@ -183,8 +178,7 @@ def half_life(smiles=None, Vd=None, Cl=None, route="one_compartment",
             "A_unit": Aunit,
             "B_unit": Bunit,
             "auc_unit": auc,
-            "fraction_area_terminal": auc_b / auc if auc > 0.0 else
-            float("nan"),
+            "fraction_area_terminal": auc_b / auc if auc > 0.0 else float("nan"),
             "Vss": vss,
             "V1": V1,
             "V2": V2,

@@ -54,6 +54,15 @@ def _load(ds_id: str) -> pd.DataFrame:
 
 
 def gini(x: np.ndarray) -> float:
+    """Gini coefficient of non-negative counts; 0 for an empty or all-zero input.
+
+    Computed as ``(n + 1 - 2 * sum(cumsum(sorted x)) / sum(x)) / n``.
+
+    Examples:
+        >>> from morie.fn import _array_core as np
+        >>> gini(np.array([1, 1, 1, 1])), gini(np.array([0, 0, 0, 1]))
+        (0.0, 0.75)
+    """
     if x.size == 0 or x.sum() == 0:
         return 0.0
     sx = np.sort(x.astype(float))
@@ -300,12 +309,12 @@ def mortification_cooccurrence(df: pd.DataFrame | None = None) -> RichResult:
     if "MentalHealth_Alert" in have and "SuicideRisk_Alert" in have:
         ct = pd.crosstab(flags["MentalHealth_Alert"], flags["SuicideRisk_Alert"])
         try:
-            chi2, p, dof, _ = sps.chi2_contingency(ct)
+            chi2, p, _, _ = sps.chi2_contingency(ct)
             cramer_v = float(np.sqrt(chi2 / (ct.values.sum() * max(1, min(ct.shape) - 1))))
         except Exception:
-            chi2, p, dof, cramer_v = float("nan"), float("nan"), 0, float("nan")
+            chi2, p, cramer_v = float("nan"), float("nan"), float("nan")
     else:
-        chi2, p, dof, cramer_v = float("nan"), float("nan"), 0, float("nan")
+        chi2, p, cramer_v = float("nan"), float("nan"), float("nan")
 
     return RichResult(
         title="Goffmanian: mortification co-occurrence",
@@ -835,6 +844,17 @@ def irr_glmm_vm(df: pd.DataFrame | None = None) -> RichResult:
 
 
 def analyze_all(out_dir: Path | None = None) -> dict[str, RichResult]:
+    """Run every OTIS churn analysis and write each result as text and JSON.
+
+    An analysis that fails is recorded as a result carrying the error as
+    a warning, so one failure does not stop the rest.
+
+    Args:
+        out_dir: output directory (created if needed); ``None`` uses the default.
+
+    Returns:
+        Results keyed by analysis name.
+    """
     out_dir = out_dir or DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
     results: dict[str, RichResult] = {}

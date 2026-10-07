@@ -31,17 +31,20 @@ def kamath_ch6_lstm_chain_rule(w_1_w_M):
     """
     p = np.atleast_1d(np.asarray(w_1_w_M, dtype=float))
     if p.size == 0:
-        raise ValueError("the sequence is empty; a product over no tokens "
-                         "is not a sentence probability.")
+        raise ValueError("the sequence is empty; a product over no tokens is not a sentence probability.")
     if np.any(p <= 0) or np.any(p > 1):
-        raise ValueError("every conditional probability must lie in "
-                         "(0, 1]; a zero makes the log probability "
-                         "undefined.")
-    return RichResult(payload={
-        "estimate": float(np.prod(p)),
-        "log_prob": float(np.sum(np.log(p))),
-        "per_step": [float(v) for v in p], "n": int(p.size),
-        "method": "chain rule sequence probability (Kamath Eq 6.26)"})
+        raise ValueError(
+            "every conditional probability must lie in (0, 1]; a zero makes the log probability undefined."
+        )
+    return RichResult(
+        payload={
+            "estimate": float(np.prod(p)),
+            "log_prob": float(np.sum(np.log(p))),
+            "per_step": [float(v) for v in p],
+            "n": int(p.size),
+            "method": "chain rule sequence probability (Kamath Eq 6.26)",
+        }
+    )
 
 
 def cheatsheet():

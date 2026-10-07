@@ -1,8 +1,8 @@
 """Tests for grpqa.grouped_query_attention."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.grpqa import grouped_query_attention
 
 
@@ -32,9 +32,7 @@ def test_grpqa_heads_sharing_a_kv_group_see_the_same_keys():
     K = rng.normal(size=(n_kv, seq_len, d_head))
     V = rng.normal(size=(n_kv, seq_len, d_head))
 
-    out = np.asarray(
-        grouped_query_attention(Q, K, V, n_heads=n_heads, n_kv_heads=n_kv)["tensor"], dtype=float
-    )
+    out = np.asarray(grouped_query_attention(Q, K, V, n_heads=n_heads, n_kv_heads=n_kv)["tensor"], dtype=float)
     # Heads 0,1 share KV group 0 and heads 2,3 share group 1.
     np.testing.assert_allclose(out[0], out[1], atol=1e-10)
     np.testing.assert_allclose(out[2], out[3], atol=1e-10)

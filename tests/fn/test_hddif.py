@@ -1,34 +1,42 @@
 """Tests for morie.fn.hddif -- Hadamard differentiability check."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hddif import hadamard_differentiability
 
 
 class TestHadamardDifferentiability:
     def test_linear_functional(self):
-        phi = lambda x: np.sum(x)
+        def phi(x):
+            return np.sum(x)
+
         theta = np.array([1.0, 2.0, 3.0])
         r = hadamard_differentiability(phi, theta)
         assert r["is_differentiable"]
         assert len(r["quotients"]) == 5
 
     def test_quadratic_functional(self):
-        phi = lambda x: np.sum(x**2)
+        def phi(x):
+            return np.sum(x**2)
+
         theta = np.array([1.0, 2.0])
         r = hadamard_differentiability(phi, theta, tol=1e-2)
         assert r["is_differentiable"]
 
     def test_non_differentiable_at_zero(self):
-        phi = lambda x: np.sum(np.abs(x))
+        def phi(x):
+            return np.sum(np.abs(x))
+
         theta = np.zeros(3)
         h = np.array([1.0, -1.0, 0.5])
         r = hadamard_differentiability(phi, theta, h=h)
         assert r["derivative_estimate"] != 0
 
     def test_custom_t_values(self):
-        phi = lambda x: np.mean(x)
+        def phi(x):
+            return np.mean(x)
+
         theta = np.array([1.0, 2.0])
         r = hadamard_differentiability(phi, theta, t_values=np.array([0.1, 0.01]))
         assert len(r["quotients"]) == 2

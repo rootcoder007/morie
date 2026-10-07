@@ -17,9 +17,15 @@ exists to repair that.
 
 from . import _array_core as np
 
-__all__ = ["inclusion_probability", "bootstrap_indices", "default_mtry",
-           "grow_tree", "predict_tree", "gaussian_product_kernel_density",
-           "squared_error"]
+__all__ = [
+    "inclusion_probability",
+    "bootstrap_indices",
+    "default_mtry",
+    "grow_tree",
+    "predict_tree",
+    "gaussian_product_kernel_density",
+    "squared_error",
+]
 
 # 1 - e^{-1} to double precision: the limit of (7.55).
 BOOTSTRAP_INCLUSION_LIMIT = 1.0 - np.exp(-1.0)
@@ -91,8 +97,7 @@ def grow_tree(X, y, rng, mtry, max_depth=8, min_node=5):
 
 
 def _stop(y, depth, max_depth, min_node):
-    return (depth >= max_depth or y.size <= min_node
-            or float(np.var(y)) < 1e-12)
+    return depth >= max_depth or y.size <= min_node or float(np.var(y)) < 1e-12
 
 
 def _grow(X, y, rng, mtry, depth, max_depth, min_node):
@@ -113,19 +118,20 @@ def _grow(X, y, rng, mtry, depth, max_depth, min_node):
             nl = int(left.sum())
             if nl == 0 or nl == y.size:
                 continue
-            sse = (nl * np.var(y[left])
-                   + (y.size - nl) * np.var(y[~left]))
+            sse = nl * np.var(y[left]) + (y.size - nl) * np.var(y[~left])
             if best is None or sse < best[0]:
                 best = (float(sse), int(j), float(t))
     if best is None:
         return {"leaf": True, "value": float(np.mean(y))}
     _, j, t = best
     left = X[:, j] <= t
-    return {"leaf": False, "feature": j, "threshold": t,
-            "left": _grow(X[left], y[left], rng, mtry, depth + 1,
-                          max_depth, min_node),
-            "right": _grow(X[~left], y[~left], rng, mtry, depth + 1,
-                           max_depth, min_node)}
+    return {
+        "leaf": False,
+        "feature": j,
+        "threshold": t,
+        "left": _grow(X[left], y[left], rng, mtry, depth + 1, max_depth, min_node),
+        "right": _grow(X[~left], y[~left], rng, mtry, depth + 1, max_depth, min_node),
+    }
 
 
 def predict_tree(node, X):
@@ -135,8 +141,7 @@ def predict_tree(node, X):
     for i in range(X.shape[0]):
         nd = node
         while not nd["leaf"]:
-            nd = nd["left"] if X[i, nd["feature"]] <= nd["threshold"] \
-                else nd["right"]
+            nd = nd["left"] if X[i, nd["feature"]] <= nd["threshold"] else nd["right"]
         out[i] = nd["value"]
     return out
 
@@ -168,8 +173,8 @@ def gaussian_product_kernel_density(x0, data, lam):
     if Q.shape[1] != p:
         Q = Q.reshape(-1, p)
     d2 = ((Q[:, None, :] - D[None, :, :]) ** 2).sum(axis=2)
-    norm = N * (2.0 * lam ** 2 * np.pi) ** (p / 2.0)
-    return np.exp(-0.5 * d2 / lam ** 2).sum(axis=1) / norm
+    norm = N * (2.0 * lam**2 * np.pi) ** (p / 2.0)
+    return np.exp(-0.5 * d2 / lam**2).sum(axis=1) / norm
 
 
 def squared_error(y, yhat):
@@ -177,11 +182,12 @@ def squared_error(y, yhat):
     y = np.asarray(y, dtype=float).ravel()
     yhat = np.asarray(yhat, dtype=float).ravel()
     if y.size != yhat.size:
-        raise ValueError(
-            f"y has {y.size} entries and the prediction has {yhat.size}.")
+        raise ValueError(f"y has {y.size} entries and the prediction has {yhat.size}.")
     return (y - yhat) ** 2
 
 
 def cheatsheet():
-    return ("_esl: Err_boot overlaps train and test and is biased LOW; "
-            "Err^(1) fixes that and .632 corrects what it overcorrects")
+    return (
+        "_esl: Err_boot overlaps train and test and is biased LOW; "
+        "Err^(1) fixes that and .632 corrects what it overcorrects"
+    )

@@ -93,10 +93,12 @@ def boyd_separating_hyperplane(C, D, tol=1e-08):
     #   a'x - b + s <= 0  for x in C,  -a'y + b + s <= 0 for y in D,
     # with a bounded so the LP cannot escape by scaling a.
     nc, nd = Cm.shape[0], Dm.shape[0]
-    A_ub = np.block([
-        [Cm, -np.ones((nc, 1)), np.ones((nc, 1))],
-        [-Dm, np.ones((nd, 1)), np.ones((nd, 1))],
-    ])
+    A_ub = np.block(
+        [
+            [Cm, -np.ones((nc, 1)), np.ones((nc, 1))],
+            [-Dm, np.ones((nd, 1)), np.ones((nd, 1))],
+        ]
+    )
     b_ub = np.zeros(nc + nd)
     c = np.r_[np.zeros(n), 0.0, -1.0]
     bounds = [(-1.0, 1.0)] * n + [(None, None), (None, 1.0)]
@@ -106,10 +108,16 @@ def boyd_separating_hyperplane(C, D, tol=1e-08):
             title="Separating hyperplane",
             summary_lines=[("separable", False)],
             warnings=["the separation LP did not solve"],
-            payload={"a": np.full(n, np.nan), "b": float("nan"),
-                     "separable": False, "margin": float("nan"),
-                     "violations": -1, "strictly_separable": False,
-                     "method": "boyd_separating_hyperplane"})
+            payload={
+                "a": np.full(n, np.nan),
+                "b": float("nan"),
+                "separable": False,
+                "margin": float("nan"),
+                "violations": -1,
+                "strictly_separable": False,
+                "method": "boyd_separating_hyperplane",
+            },
+        )
     a = np.asarray(res.x[:n], dtype=float)
     b = float(res.x[n])
     s = float(res.x[n + 1])
@@ -117,14 +125,15 @@ def boyd_separating_hyperplane(C, D, tol=1e-08):
     sep = bool(viol == 0 and np.linalg.norm(a) > 1e-9)
     return RichResult(
         title="Separating hyperplane",
-        summary_lines=[("dimension", int(n)), ("margin", s),
-                       ("separable", sep), ("violations", viol)],
-        warnings=[] if sep else
-        ["no separating hyperplane was found; for convex sets that means "
-         "they intersect"],
+        summary_lines=[("dimension", int(n)), ("margin", s), ("separable", sep), ("violations", viol)],
+        warnings=[] if sep else ["no separating hyperplane was found; for convex sets that means they intersect"],
         payload={
-            "a": a, "b": b, "separable": sep, "margin": s,
-            "violations": viol, "strictly_separable": bool(sep and s > tol),
+            "a": a,
+            "b": b,
+            "separable": sep,
+            "margin": s,
+            "violations": viol,
+            "strictly_separable": bool(sep and s > tol),
             "method": "boyd_separating_hyperplane",
         },
     )

@@ -1,10 +1,10 @@
 """Known-answer tests for MVSML ch13 (CNN), ch14 (functional
 regression) and ch15 (random forest for counts)."""
+
 import math
 
 from morie.fn import _gp_core as gp
-from morie.fn.msm259 import (mvsml_deep_learning_eq_13_1,
-                             mvsml_cnn_convolve)
+from morie.fn.msm259 import mvsml_cnn_convolve, mvsml_deep_learning_eq_13_1
 from morie.fn.msm260 import mvsml_deep_learning_eq_13_2
 from morie.fn.msm264 import mvsml_convolutional_nn_eq_14_3
 from morie.fn.msm267 import mvsml_convolutional_nn_eq_14_4
@@ -69,9 +69,12 @@ def _curves(n=12, seed=4):
         b = float(rng.normal(0, 1))
         c = float(rng.normal(0, 1))
         d = float(rng.normal(0, 1))
-        out.append([a + b * math.sin(2 * math.pi * t)
-                    + c * math.cos(2 * math.pi * t)
-                    + d * math.sin(4 * math.pi * t) for t in T])
+        out.append(
+            [
+                a + b * math.sin(2 * math.pi * t) + c * math.cos(2 * math.pi * t) + d * math.sin(4 * math.pi * t)
+                for t in T
+            ]
+        )
         truth.append(a)
     return out, truth
 
@@ -80,8 +83,7 @@ def test_eq_14_7_coefficients_reproduce_the_curve():
     # a curve built from the basis is recovered exactly (eq. 14.6/14.7)
     c = [1.5, -0.5, 2.0]
     r = mvsml_convolutional_nn_eq_14_6(T, c, kind="polynomial")
-    back = mvsml_convolutional_nn_eq_14_7(T, r["x_t"], L2=3,
-                                          kind="polynomial")
+    back = mvsml_convolutional_nn_eq_14_7(T, r["x_t"], L2=3, kind="polynomial")
     for a, b in zip(back["c"], c):
         assert abs(a - b) < 1e-8
 
@@ -96,7 +98,7 @@ def test_eq_14_9_design_matrix_has_the_intercept_column():
     X, _ = _curves()
     r = mvsml_convolutional_nn_eq_14_9(T, X, L1=3, L2=5)
     assert all(abs(row[0] - 1.0) < 1e-12 for row in r["X_star"])
-    assert len(r["X_star"][0]) == 4          # 1 + L1
+    assert len(r["X_star"][0]) == 4  # 1 + L1
     assert len(r["Q"]) == 3 and len(r["Q"][0]) == 5
 
 
@@ -115,16 +117,14 @@ def test_eq_14_3_and_14_4_recover_a_known_linear_functional():
     f = mvsml_convolutional_nn_eq_14_4(T, X, y, L1=3, L2=5)
     for a, b in zip(f["beta"], true_beta):
         assert abs(a - b) < 1e-6
-    assert f["sigma2"] < 1e-14               # exact fit
+    assert f["sigma2"] < 1e-14  # exact fit
 
 
 def test_eq_14_4_fits_exactly_even_when_beta_is_not_identified():
     # with a rank-deficient design many beta give the same fit, so the
     # identified quantity is the fitted vector, not the coefficients
     rng = gp.np.random.default_rng(1)
-    X = [[float(rng.normal(0, 1))
-          + float(rng.normal(0, 1)) * math.sin(2 * math.pi * t)
-          for t in T] for _ in range(20)]
+    X = [[float(rng.normal(0, 1)) + float(rng.normal(0, 1)) * math.sin(2 * math.pi * t) for t in T] for _ in range(20)]
     d = mvsml_convolutional_nn_eq_14_3(T, X, L1=3, L2=5)
     y = [sum(row) for row in d["X_star"]]
     f = mvsml_convolutional_nn_eq_14_4(T, X, y, L1=3, L2=5)
@@ -143,13 +143,12 @@ def test_eq_14_5_sigma2_divides_by_n():
 
 def test_beta_function_and_bic_and_loocv():
     b = gp.fda_beta_function(T, [1.0, 0.0, 0.0], 3)
-    assert all(abs(v - 1.0) < 1e-12 for v in b)   # constant basis
-    assert abs(gp.fda_bic(-10.0, 3, 100)
-               - (20.0 + 4 * math.log(100))) < 1e-12
+    assert all(abs(v - 1.0) < 1e-12 for v in b)  # constant basis
+    assert abs(gp.fda_bic(-10.0, 3, 100) - (20.0 + 4 * math.log(100))) < 1e-12
     x = [math.sin(2 * math.pi * t) for t in T]
     cv_good = gp.fda_loocv(T, x, 5)
     cv_poor = gp.fda_loocv(T, x, 1)
-    assert cv_good < cv_poor                 # p.583
+    assert cv_good < cv_poor  # p.583
 
 
 # ------------------------------------------------ chapter 15
@@ -163,9 +162,7 @@ def test_eq_15_2_loglik_matches_the_formula():
     ys = [1.0, 2.0, 3.0]
     mu = 2.0
     r = mvsml_functional_regression_eq_15_2(ys, mu=mu)
-    hand = (-3 * math.log(1 - math.exp(-mu))
-            + math.log(mu) * 6 - 3 * mu
-            - sum(math.lgamma(v + 1) for v in ys))
+    hand = -3 * math.log(1 - math.exp(-mu)) + math.log(mu) * 6 - 3 * mu - sum(math.lgamma(v + 1) for v in ys)
     assert abs(r["loglik"] - hand) < 1e-12
 
 
@@ -187,7 +184,7 @@ def test_split_maximizes_the_summed_child_loglik():
     r = mvsml_functional_regression_eq_15_2(y, x=x)
     s = r["split"]
     assert s["threshold"] is not None
-    assert 1.0 <= s["threshold"] <= 8.0      # separates the groups
+    assert 1.0 <= s["threshold"] <= 8.0  # separates the groups
 
 
 def test_eq_15_3_and_15_4_predictions():
@@ -207,6 +204,7 @@ def test_eq_15_3_and_15_4_predictions():
 
 def test_canonical_aliases():
     from morie.fn.msm327 import mvsml_zap_predict
+
     assert mvsml_cnn_convolve is mvsml_deep_learning_eq_13_1
     assert mvsml_zap_predict is mvsml_functional_regression_eq_15_3
 
@@ -218,9 +216,9 @@ def test_eq_15_3_mean_matches_summation_over_the_books_own_pmf():
     # the printed numerator (1-theta) exp(-mu) is a dropped mu factor.
     for theta, mu in [(0.2, 1.5), (0.6, 3.0), (0.05, 0.4), (0.4, 8.0)]:
         denom = 1.0 - math.exp(-mu)
-        direct, term = 0.0, math.exp(-mu)   # term = P_pois(y) at y=0
+        direct, term = 0.0, math.exp(-mu)  # term = P_pois(y) at y=0
         for y in range(1, 300):
-            term *= mu / y                  # avoids mu**y / y! overflow
+            term *= mu / y  # avoids mu**y / y! overflow
             direct += y * (1.0 - theta) * term / denom
         assert abs(gp.zap_predict(theta, mu) - direct) < 1e-9
         # the printed form disagrees, and by a lot
@@ -234,8 +232,7 @@ def test_eq_15_3_agrees_with_the_books_own_variance_formula():
     for theta, mu in [(0.2, 1.5), (0.6, 3.0), (0.05, 0.4)]:
         mv = gp.zap_mean_variance(theta, mu)
         k = (1.0 - theta) / (1.0 - math.exp(-mu))
-        assert abs(mv["variance"] - (k * (mu + mu * mu)
-                                     - (k * mu) ** 2)) < 1e-12
+        assert abs(mv["variance"] - (k * (mu + mu * mu) - (k * mu) ** 2)) < 1e-12
         assert abs(mv["mean"] - gp.zap_predict(theta, mu)) < 1e-12
 
 
@@ -251,8 +248,7 @@ def test_eq_15_3_prediction_grows_with_the_count_mean():
 def test_eq_15_4_predicts_mu_hat_not_the_zap_mean():
     # p.652: Y-hat = 0 if theta-hat > 0.5, and mu-hat if theta-hat <= 0.5
     assert gp.zapc_predict(0.7, 4.0) == 0.0
-    assert gp.zapc_predict(0.5, 4.0) == 4.0        # boundary is <=
+    assert gp.zapc_predict(0.5, 4.0) == 4.0  # boundary is <=
     assert gp.zapc_predict(0.2, 4.0) == 4.0
     # and that is deliberately not the ZAP mean of eq. (15.3)
-    assert abs(gp.zapc_predict(0.2, 4.0)
-               - gp.zap_predict(0.2, 4.0)) > 1e-6
+    assert abs(gp.zapc_predict(0.2, 4.0) - gp.zap_predict(0.2, 4.0)) > 1e-6

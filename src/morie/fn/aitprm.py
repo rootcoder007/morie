@@ -89,11 +89,20 @@ def permanova(X, group, aitchison=True):
     sst /= N
     ssa = sst - ssw
     df1, df2 = a - 1, N - a
-    return RichResult(payload={
-        "F": (ssa / df1) / (ssw / df2) if ssw > 0.0 else float("inf"),
-        "SSA": ssa, "SSW": ssw, "SST": sst, "df1": df1, "df2": df2,
-        "N": N, "a": a, "sizes": [size[L] for L in labs],
-        "method": "PERMANOVA pseudo-F on Aitchison distances (Anderson 2001)"})
+    return RichResult(
+        payload={
+            "F": (ssa / df1) / (ssw / df2) if ssw > 0.0 else float("inf"),
+            "SSA": ssa,
+            "SSW": ssw,
+            "SST": sst,
+            "df1": df1,
+            "df2": df2,
+            "N": N,
+            "a": a,
+            "sizes": [size[L] for L in labs],
+            "method": "PERMANOVA pseudo-F on Aitchison distances (Anderson 2001)",
+        }
+    )
 
 
 compositional_permanova = permanova

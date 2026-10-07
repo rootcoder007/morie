@@ -6,7 +6,7 @@ import math
 from . import _gp_core as G
 from ._richresult import RichResult
 
-__all__ = ['rkhsnorm', 'rkhs_norm']
+__all__ = ["rkhsnorm", "rkhs_norm"]
 
 
 def rkhsnorm(beta, K):
@@ -33,13 +33,18 @@ def rkhsnorm(beta, K):
     n2 = G.rkhs_norm(beta, K)
     if n2 < 0.0:
         raise ValueError("beta'K beta is negative: K is not positive semi-definite")
-    return RichResult(payload={
-        "norm2": n2, "norm": math.sqrt(n2), "n": len(G._flat(beta)),
-        "method": "Squared RKHS norm, MVSML Eq. (8.2)"})
+    return RichResult(
+        payload={
+            "norm2": n2,
+            "norm": math.sqrt(n2),
+            "n": len(G._flat(beta)),
+            "method": "Squared RKHS norm, MVSML Eq. (8.2)",
+        }
+    )
 
 
 rkhs_norm = rkhsnorm
 
 
 def cheatsheet():
-    return 'rkhsn: Squared RKHS norm of a kernel expansion.'
+    return "rkhsn: Squared RKHS norm of a kernel expansion."

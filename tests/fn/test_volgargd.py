@@ -1,8 +1,8 @@
 """Tests for volgargd."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.volgargd import vol_garch_ged
 
 

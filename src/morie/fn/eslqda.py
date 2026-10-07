@@ -73,15 +73,20 @@ def esl_qda(X, y, query=None):
         Xi = X[y_arr == c]
         nk = Xi.shape[0]
         if nk <= p:
-            raise ValueError(f"class {c} has {nk} observations but {p} features; "
-                             "QDA needs more observations than features per class.")
+            raise ValueError(
+                f"class {c} has {nk} observations but {p} features; "
+                "QDA needs more observations than features per class."
+            )
         mu = Xi.mean(axis=0)
         C = Xi - mu
         S = C.T @ C / (nk - 1)
         sign, ld = np.linalg.slogdet(S)
         if sign <= 0:
             raise ValueError(f"class {c} has a singular covariance; QDA cannot proceed.")
-        mus.append(mu); pis.append(nk / n); covs.append(np.linalg.inv(S)); logdets.append(ld)
+        mus.append(mu)
+        pis.append(nk / n)
+        covs.append(np.linalg.inv(S))
+        logdets.append(ld)
     Q = X if query is None else np.atleast_2d(np.asarray(query, dtype=float))
     D = np.empty((Q.shape[0], K))
     for j in range(K):
@@ -89,14 +94,20 @@ def esl_qda(X, y, query=None):
         maha = np.einsum("ij,jk,ik->i", d, covs[j], d)
         D[:, j] = -0.5 * logdets[j] - 0.5 * maha + np.log(pis[j])
     pred = [classes[i] for i in np.argmax(D, axis=1)]
-    return RichResult(payload={
-        "estimate": pred[0], "prediction": pred,
-        "discriminants": [float(v) for v in D.ravel()],
-        "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
-        "priors": [float(v) for v in pis],
-        "log_dets": [float(v) for v in logdets],
-        "n": int(n), "p": int(p), "K": int(K),
-        "method": "QDA, per-class covariance (n_k-1 divisor), quadratic boundary"})
+    return RichResult(
+        payload={
+            "estimate": pred[0],
+            "prediction": pred,
+            "discriminants": [float(v) for v in D.ravel()],
+            "classes": [c if isinstance(c, (int, float, str)) else repr(c) for c in classes],
+            "priors": [float(v) for v in pis],
+            "log_dets": [float(v) for v in logdets],
+            "n": int(n),
+            "p": int(p),
+            "K": int(K),
+            "method": "QDA, per-class covariance (n_k-1 divisor), quadratic boundary",
+        }
+    )
 
 
 def cheatsheet():

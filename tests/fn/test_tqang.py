@@ -58,8 +58,7 @@ def test_indices_stay_inside_the_codebook():
 
 
 def test_validation():
-    for call in (lambda: quantize_angles([0.0], bits=0),
-                 lambda: quantize_angles([0.0], bits=31)):
+    for call in (lambda: quantize_angles([0.0], bits=0), lambda: quantize_angles([0.0], bits=31)):
         try:
             call()
             raise AssertionError("expected ValueError")

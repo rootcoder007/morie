@@ -1,7 +1,6 @@
 """Tests for swtfn.py - Stationary Wavelet Transform."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.swtfn import swt_decompose, swtfn
 
 

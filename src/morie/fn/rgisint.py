@@ -132,7 +132,7 @@ def rangayyan_isometric_contraction(emg, force, fs, rest_level=0.0):
     rv = []
     dur = []
     ivs = []
-    for (a, b) in _runs(f):
+    for a, b in _runs(f):
         if f[a] <= rest_level:
             continue
         lev.append(f[a])

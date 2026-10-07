@@ -66,26 +66,30 @@ def ev_extremal_runs(x, threshold, run_length=1):
     exc = np.flatnonzero(xv > u)
     ne = exc.size
     if ne < 2:
-        raise ValueError(
-            f"only {ne} exceedance(s) of {u}; lower the threshold.")
+        raise ValueError(f"only {ne} exceedance(s) of {u}; lower the threshold.")
     gaps = np.diff(exc)
     nc = 1 + int(np.sum(gaps > r))
     theta = nc / ne
-    return RichResult(payload={
-        "theta": float(theta),
-        "n_exceedances": int(ne), "n_clusters": int(nc),
-        "mean_cluster_size": float(ne / nc),
-        "run_length": r, "threshold": u,
-        "interpretation": "theta is the reciprocal mean cluster size: the "
-                          "effective number of independent extremes is "
-                          "theta * n, and ignoring it overstates every "
-                          "return level",
-        "sensitivity_note": "run_length too short splits genuine clusters, "
-                            "too long merges distinct ones; the intervals "
-                            "estimator (evextint) has no such tuning "
-                            "parameter and is the usual cross-check",
-        "n": int(n),
-        "method": "Runs estimator of the extremal index (Smith-Weissman 1994)"})
+    return RichResult(
+        payload={
+            "theta": float(theta),
+            "n_exceedances": int(ne),
+            "n_clusters": int(nc),
+            "mean_cluster_size": float(ne / nc),
+            "run_length": r,
+            "threshold": u,
+            "interpretation": "theta is the reciprocal mean cluster size: the "
+            "effective number of independent extremes is "
+            "theta * n, and ignoring it overstates every "
+            "return level",
+            "sensitivity_note": "run_length too short splits genuine clusters, "
+            "too long merges distinct ones; the intervals "
+            "estimator (evextint) has no such tuning "
+            "parameter and is the usual cross-check",
+            "n": int(n),
+            "method": "Runs estimator of the extremal index (Smith-Weissman 1994)",
+        }
+    )
 
 
 def cheatsheet():

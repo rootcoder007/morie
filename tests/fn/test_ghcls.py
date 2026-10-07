@@ -1,7 +1,6 @@
 """Tests for ghcls.ghosal_np_classification."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghcls import ghosal_np_classification
 
 

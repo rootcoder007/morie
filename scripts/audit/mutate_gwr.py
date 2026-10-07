@@ -1,5 +1,6 @@
 """Mutation test: each mutant must be caught by schab_gwr_verify.py."""
 
+import pathlib
 import shutil
 import subprocess
 import sys
@@ -28,17 +29,16 @@ MUTANTS = [
 
 
 def main():
-    original = open(SRC).read()
-    backup = tempfile.NamedTemporaryFile("w", suffix=".py", delete=False)
-    backup.write(original)
-    backup.close()
+    original = pathlib.Path(SRC).read_text()
+    with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as backup:
+        backup.write(original)
     caught = 0
     try:
         for name, old, new in MUTANTS:
             if original.count(old) != 1:
                 print(f"  {name:<48} SKIP  anchor appears {original.count(old)}x")
                 continue
-            open(SRC, "w").write(original.replace(old, new))
+            pathlib.Path(SRC).write_text(original.replace(old, new))
             r = subprocess.run([sys.executable, VERIFY], capture_output=True, text=True)
             died = r.returncode != 0
             caught += died
@@ -48,10 +48,10 @@ def main():
             if not died:
                 print("    !! mutant survived -- the checks do not pin this line")
     finally:
-        open(SRC, "w").write(original)
+        pathlib.Path(SRC).write_text(original)
         shutil.copy(backup.name, backup.name + ".kept")
     print(f"\n{caught}/{len(MUTANTS)} mutants caught")
-    assert open(SRC).read() == original, "restore failed"
+    assert pathlib.Path(SRC).read_text() == original, "restore failed"
     print("source restored byte-for-byte")
     return 0 if caught == len(MUTANTS) else 1
 

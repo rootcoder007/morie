@@ -78,12 +78,18 @@ generalises.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["STATES", "solve_kinetics", "velocity", "simulate_gene",
-           "steady_state_velocity", "assign_latent_time",
-           "dynamical_fit", "latent_time"]
+__all__ = [
+    "STATES",
+    "solve_kinetics",
+    "velocity",
+    "simulate_gene",
+    "steady_state_velocity",
+    "assign_latent_time",
+    "dynamical_fit",
+    "latent_time",
+]
 
 STATES = ("on", "off", "steady_on", "steady_off")
 
@@ -93,10 +99,9 @@ def solve_kinetics(tau, alpha, beta, gamma, u0=0.0, s0=0.0):
     :math:`\tau` after a phase switch."""
     for name, v in (("beta", beta), ("gamma", gamma)):
         if v <= 0.0:
-            raise ValueError("scvelo: %s must be positive" % name)
+            raise ValueError(f"scvelo: {name} must be positive")
     if alpha < 0.0:
-        raise ValueError("scvelo: the transcription rate cannot be "
-                         "negative")
+        raise ValueError("scvelo: the transcription rate cannot be negative")
     t = float(tau)
     if t < 0.0:
         raise ValueError("scvelo: tau cannot be negative")
@@ -106,11 +111,9 @@ def solve_kinetics(tau, alpha, beta, gamma, u0=0.0, s0=0.0):
     if abs(gamma - beta) < 1e-10:
         # removable singularity: the limit gamma -> beta of the
         # (e^-gt - e^-bt)/(g-b) term is t e^-bt.
-        s = s0 * eb + (alpha / beta) * (1.0 - eb) \
-            - (alpha - beta * u0) * t * eb
+        s = s0 * eb + (alpha / beta) * (1.0 - eb) - (alpha - beta * u0) * t * eb
     else:
-        s = (s0 * eg + (alpha / gamma) * (1.0 - eg)
-             + (alpha - beta * u0) / (gamma - beta) * (eg - eb))
+        s = s0 * eg + (alpha / gamma) * (1.0 - eg) + (alpha - beta * u0) / (gamma - beta) * (eg - eb)
     return {"u": u, "s": s, "tau": t}
 
 
@@ -131,15 +134,12 @@ def simulate_gene(alpha, beta, gamma, t_switch, times):
             st = solve_kinetics(t, alpha, beta, gamma)
             k = "on"
         else:
-            st = solve_kinetics(t - t_switch, 0.0, beta, gamma,
-                                sw["u"], sw["s"])
+            st = solve_kinetics(t - t_switch, 0.0, beta, gamma, sw["u"], sw["s"])
             k = "off"
-        out.append({"t": float(t), "u": st["u"], "s": st["s"],
-                    "state": k,
-                    "velocity": velocity(st["u"], st["s"], beta,
-                                         gamma)})
-    return {"observations": out, "switch": sw,
-            "steady_on": {"u": alpha / beta, "s": alpha / gamma}}
+        out.append(
+            {"t": float(t), "u": st["u"], "s": st["s"], "state": k, "velocity": velocity(st["u"], st["s"], beta, gamma)}
+        )
+    return {"observations": out, "switch": sw, "steady_on": {"u": alpha / beta, "s": alpha / gamma}}
 
 
 def steady_state_velocity(u, s, quantile=0.95):
@@ -156,31 +156,28 @@ def steady_state_velocity(u, s, quantile=0.95):
     if n < 3:
         raise ValueError("scvelo: need at least three cells")
     order = sorted(range(n), key=lambda i: s[i])
-    keep = set(order[:max(1, int(n * (1.0 - quantile)))]) \
-        | set(order[-max(1, int(n * (1.0 - quantile))):])
+    keep = set(order[: max(1, int(n * (1.0 - quantile)))]) | set(order[-max(1, int(n * (1.0 - quantile))) :])
     num = sum(u[i] * s[i] for i in keep)
     den = sum(s[i] * s[i] for i in keep)
     if den <= 0.0:
-        raise ValueError("scvelo: the spliced counts are all zero at "
-                         "the fitted extremes")
+        raise ValueError("scvelo: the spliced counts are all zero at the fitted extremes")
     ratio = num / den
-    return {"gamma_over_beta": ratio,
-            "velocity": [u[i] - ratio * s[i] for i in range(n)],
-            "n_fitted": len(keep),
-            "assumptions": "steady states observed, and one splicing "
-                           "rate shared across genes",
-            "method": "steady-state model; La Manno et al. (2018)"}
+    return {
+        "gamma_over_beta": ratio,
+        "velocity": [u[i] - ratio * s[i] for i in range(n)],
+        "n_fitted": len(keep),
+        "assumptions": "steady states observed, and one splicing rate shared across genes",
+        "method": "steady-state model; La Manno et al. (2018)",
+    }
 
 
-def assign_latent_time(u, s, alpha, beta, gamma, t_switch,
-                       grid=200, t_max=None):
+def assign_latent_time(u, s, alpha, beta, gamma, t_switch, grid=200, t_max=None):
     r"""E step: the time on the trajectory closest to each
     observation."""
     if t_max is None:
         t_max = 2.0 * t_switch + 5.0 / min(beta, gamma)
     ts = [t_max * k / float(grid) for k in range(grid + 1)]
-    traj = simulate_gene(alpha, beta, gamma, t_switch,
-                         ts)["observations"]
+    traj = simulate_gene(alpha, beta, gamma, t_switch, ts)["observations"]
     out = []
     for i in range(len(u)):
         best = None
@@ -188,8 +185,7 @@ def assign_latent_time(u, s, alpha, beta, gamma, t_switch,
             d = (p["u"] - u[i]) ** 2 + (p["s"] - s[i]) ** 2
             if best is None or d < best[0]:
                 best = (d, p)
-        out.append({"t": best[1]["t"], "state": best[1]["state"],
-                    "distance": math.sqrt(best[0])})
+        out.append({"t": best[1]["t"], "state": best[1]["state"], "distance": math.sqrt(best[0])})
     return out
 
 
@@ -198,8 +194,7 @@ def _residual(u, s, alpha, beta, gamma, t_switch, grid=200):
     return sum(x["distance"] ** 2 for x in a), a
 
 
-def dynamical_fit(u, s, alpha0=None, beta0=1.0, gamma0=0.5,
-                  t_switch0=None, n_iter=25, grid=120):
+def dynamical_fit(u, s, alpha0=None, beta0=1.0, gamma0=0.5, t_switch0=None, n_iter=25, grid=120):
     r"""EM over the rates and the latent variables."""
     n = len(u)
     if n != len(s):
@@ -208,11 +203,10 @@ def dynamical_fit(u, s, alpha0=None, beta0=1.0, gamma0=0.5,
         raise ValueError("scvelo: need at least four cells")
     alpha = max(u) * beta0 if alpha0 is None else float(alpha0)
     beta, gamma = float(beta0), float(gamma0)
-    t_switch = (1.0 / beta if t_switch0 is None else float(t_switch0))
+    t_switch = 1.0 / beta if t_switch0 is None else float(t_switch0)
     history = []
     for _ in range(int(n_iter)):
-        rss, assign = _residual(u, s, alpha, beta, gamma, t_switch,
-                                grid)
+        rss, assign = _residual(u, s, alpha, beta, gamma, t_switch, grid)
         history.append(rss)
         best = (rss, alpha, beta, gamma, t_switch)
         for scale in (0.8, 0.9, 1.1, 1.25):
@@ -221,24 +215,28 @@ def dynamical_fit(u, s, alpha0=None, beta0=1.0, gamma0=0.5,
                 cand[which] *= scale
                 if min(cand[1], cand[2]) <= 0.0 or cand[0] < 0.0:
                     continue
-                r2, _ = _residual(u, s, cand[0], cand[1], cand[2],
-                                  cand[3], grid)
+                r2, _ = _residual(u, s, cand[0], cand[1], cand[2], cand[3], grid)
                 if r2 < best[0]:
                     best = (r2, cand[0], cand[1], cand[2], cand[3])
         if best[0] >= rss - 1e-12:
             break
         _, alpha, beta, gamma, t_switch = best
     rss, assign = _residual(u, s, alpha, beta, gamma, t_switch, grid)
-    return RichResult(payload={
-        "estimate": rss, "alpha": alpha, "beta": beta, "gamma": gamma,
-        "t_switch": t_switch, "rss": rss, "rss_history": history,
-        "latent": assign,
-        "velocity": [velocity(u[i], s[i], beta, gamma)
-                     for i in range(n)],
-        "steady_on": {"u": alpha / beta, "s": alpha / gamma},
-        "method": "dynamical model by EM on the explicit kinetics; "
-                  "Bergen et al. (2019)",
-    })
+    return RichResult(
+        payload={
+            "estimate": rss,
+            "alpha": alpha,
+            "beta": beta,
+            "gamma": gamma,
+            "t_switch": t_switch,
+            "rss": rss,
+            "rss_history": history,
+            "latent": assign,
+            "velocity": [velocity(u[i], s[i], beta, gamma) for i in range(n)],
+            "steady_on": {"u": alpha / beta, "s": alpha / gamma},
+            "method": "dynamical model by EM on the explicit kinetics; Bergen et al. (2019)",
+        }
+    )
 
 
 def latent_time(fits):
@@ -247,29 +245,32 @@ def latent_time(fits):
         raise ValueError("scvelo: no gene fits supplied")
     n = len(fits[0]["latent"])
     if any(len(f["latent"]) != n for f in fits):
-        raise ValueError("scvelo: every gene must cover the same "
-                         "cells")
+        raise ValueError("scvelo: every gene must cover the same cells")
     out = []
     for i in range(n):
         ts = sorted(f["latent"][i]["t"] for f in fits)
         m = len(ts)
-        out.append(ts[m // 2] if m % 2 else
-                   0.5 * (ts[m // 2 - 1] + ts[m // 2]))
-    return {"latent_time": out, "n_genes": len(fits), "n_cells": n,
-            "note": "gene times coupled into one clock so rates are "
-                    "comparable across genes"}
+        out.append(ts[m // 2] if m % 2 else 0.5 * (ts[m // 2 - 1] + ts[m // 2]))
+    return {
+        "latent_time": out,
+        "n_genes": len(fits),
+        "n_cells": n,
+        "note": "gene times coupled into one clock so rates are comparable across genes",
+    }
 
 
 def cheatsheet():
-    return ("scvelo: du/dt = alpha - beta u, ds/dt = beta u - gamma s, "
-            "and velocity IS ds/dt. The steady-state model reads "
-            "velocity off a fitted gamma/beta ratio and needs the "
-            "steady states to be observed and one splicing rate "
-            "shared; the dynamical model solves the kinetics in "
-            "closed form and infers rates plus a per-cell latent time "
-            "and state by EM, so unobserved steady states are still "
-            "recovered. gamma = beta is a removable singularity, "
-            "taken as a limit rather than a division by zero.")
+    return (
+        "scvelo: du/dt = alpha - beta u, ds/dt = beta u - gamma s, "
+        "and velocity IS ds/dt. The steady-state model reads "
+        "velocity off a fitted gamma/beta ratio and needs the "
+        "steady states to be observed and one splicing rate "
+        "shared; the dynamical model solves the kinetics in "
+        "closed form and infers rates plus a per-cell latent time "
+        "and state by EM, so unobserved steady states are still "
+        "recovered. gamma = beta is a removable singularity, "
+        "taken as a limit rather than a division by zero."
+    )
 
 
 # compact alias per ledger/NAMING.md

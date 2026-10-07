@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bias of the bias-reduced KDFE (Theorem 2.2)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["gekdfbias", "fauzi_thm2_2_bias_brdkdfe"]
@@ -60,7 +59,7 @@ def gekdfbias(h, a, b2, b4, fx):
     lead = (float(b2) ** 2 - 2.0 * float(b4) * fx) / (2.0 * fx)
     return RichResult(
         payload={
-            "bias": float(h ** 4 * a * a * lead),
+            "bias": float(h**4 * a * a * lead),
             "leading": float(lead),
             "h": h,
             "a": a,

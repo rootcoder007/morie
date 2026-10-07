@@ -90,27 +90,34 @@ def causal_aipw(y, T, ps, m1, m0, trim=0.01):
         raise ValueError(
             "a propensity score is exactly 0 or 1, so a unit has no "
             "counterfactual and the estimator divides by zero; trim > 0 or "
-            "drop the unit.")
+            "drop the unit."
+        )
     reg = M1 - M0
     aug = Tv * (yv - M1) / ec - (1 - Tv) * (yv - M0) / (1 - ec)
     infl = reg + aug
     ate = float(infl.mean())
     se = float(np.std(infl, ddof=1) / np.sqrt(n))
-    return RichResult(payload={
-        "ate": ate, "se": se,
-        "ci": (ate - 1.959963984540054 * se, ate + 1.959963984540054 * se),
-        "influence": infl,
-        "regression_component": float(reg.mean()),
-        "augmentation_component": float(aug.mean()),
-        "n_trimmed": n_trim, "min_ps": float(e.min()), "max_ps": float(e.max()),
-        "effective_overlap": float(np.mean((e > 0.1) & (e < 0.9))),
-        "doubly_robust": "consistent if EITHER the propensity score or the "
-                         "outcome regressions are correct, not necessarily "
-                         "both; wrong on both and it is wrong",
-        "trimming_note": "trimming changes the estimand to an average over "
-                         "the retained region, not the whole population",
-        "n": int(n),
-        "method": "AIPW / doubly robust ATE (Robins, Rotnitzky and Zhao 1994)"})
+    return RichResult(
+        payload={
+            "ate": ate,
+            "se": se,
+            "ci": (ate - 1.959963984540054 * se, ate + 1.959963984540054 * se),
+            "influence": infl,
+            "regression_component": float(reg.mean()),
+            "augmentation_component": float(aug.mean()),
+            "n_trimmed": n_trim,
+            "min_ps": float(e.min()),
+            "max_ps": float(e.max()),
+            "effective_overlap": float(np.mean((e > 0.1) & (e < 0.9))),
+            "doubly_robust": "consistent if EITHER the propensity score or the "
+            "outcome regressions are correct, not necessarily "
+            "both; wrong on both and it is wrong",
+            "trimming_note": "trimming changes the estimand to an average over "
+            "the retained region, not the whole population",
+            "n": int(n),
+            "method": "AIPW / doubly robust ATE (Robins, Rotnitzky and Zhao 1994)",
+        }
+    )
 
 
 def cheatsheet():

@@ -69,10 +69,18 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["knot_sequence", "bspline_basis", "partition_of_unity",
-           "difference_matrix", "fit", "predict",
-           "effective_dimension", "cross_validation", "aic",
-           "choose_lambda"]
+__all__ = [
+    "knot_sequence",
+    "bspline_basis",
+    "partition_of_unity",
+    "difference_matrix",
+    "fit",
+    "predict",
+    "effective_dimension",
+    "cross_validation",
+    "aic",
+    "choose_lambda",
+]
 
 
 def knot_sequence(xmin, xmax, nseg=10, degree=3):
@@ -85,8 +93,7 @@ def knot_sequence(xmin, xmax, nseg=10, degree=3):
     if not xmax > xmin:
         raise ValueError("smfd: xmax must exceed xmin")
     h = (float(xmax) - float(xmin)) / nseg
-    return [float(xmin) + h * (k - degree)
-            for k in range(nseg + 2 * degree + 1)]
+    return [float(xmin) + h * (k - degree) for k in range(nseg + 2 * degree + 1)]
 
 
 def _bspline(x, k, degree, knots):
@@ -102,8 +109,7 @@ def _bspline(x, k, degree, knots):
         out += (x - knots[k]) / d1 * _bspline(x, k, degree - 1, knots)
     d2 = knots[k + degree + 1] - knots[k + 1]
     if d2 > 0.0:
-        out += ((knots[k + degree + 1] - x) / d2
-                * _bspline(x, k + 1, degree - 1, knots))
+        out += (knots[k + degree + 1] - x) / d2 * _bspline(x, k + 1, degree - 1, knots)
     return out
 
 
@@ -112,18 +118,18 @@ def bspline_basis(x, knots, degree=3):
     degree = int(degree)
     p = len(knots) - degree - 1
     if p < 1:
-        raise ValueError("smfd: the knot sequence is too short for "
-                         "degree %d" % degree)
-    return [[_bspline(float(v), k, degree, knots) for k in range(p)]
-            for v in x]
+        raise ValueError(f"smfd: the knot sequence is too short for degree {int(degree)}")
+    return [[_bspline(float(v), k, degree, knots) for k in range(p)] for v in x]
 
 
 def partition_of_unity(B, tol=1e-10):
     r"""B-splines of any degree sum to one at every interior point."""
     sums = [sum(row) for row in B]
-    return {"sums": sums,
-            "ok": all(abs(s - 1.0) < tol for s in sums),
-            "worst": max(abs(s - 1.0) for s in sums) if sums else 0.0}
+    return {
+        "sums": sums,
+        "ok": all(abs(s - 1.0) < tol for s in sums),
+        "worst": max(abs(s - 1.0) for s in sums) if sums else 0.0,
+    }
 
 
 def difference_matrix(p, order=2):
@@ -133,28 +139,22 @@ def difference_matrix(p, order=2):
     if order < 0:
         raise ValueError("smfd: the penalty order cannot be negative")
     if order >= p:
-        raise ValueError("smfd: a %d-th order penalty needs more than "
-                         "%d coefficients" % (order, p))
+        raise ValueError(f"smfd: a {int(order)}-th order penalty needs more than {int(p)} coefficients")
     D = [[1.0 if i == j else 0.0 for j in range(p)] for i in range(p)]
     for _ in range(order):
-        D = [[D[i + 1][j] - D[i][j] for j in range(p)]
-             for i in range(len(D) - 1)]
+        D = [[D[i + 1][j] - D[i][j] for j in range(p)] for i in range(len(D) - 1)]
     return D
 
 
 def _solve(B, y, D, lam, weights=None):
     n, p = len(B), len(B[0])
     w = [1.0] * n if weights is None else [float(v) for v in weights]
-    A = [[sum(w[i] * B[i][r] * B[i][c] for i in range(n))
-          for c in range(p)] for r in range(p)]
+    A = [[sum(w[i] * B[i][r] * B[i][c] for i in range(n)) for c in range(p)] for r in range(p)]
     for r in range(p):
         for c in range(p):
-            A[r][c] += lam * sum(D[k][r] * D[k][c]
-                                 for k in range(len(D)))
-    b = [sum(w[i] * B[i][r] * y[i] for i in range(n))
-         for r in range(p)]
-    return [float(v) for v in np.linalg.solve(np.array(A),
-                                              np.array(b))], A
+            A[r][c] += lam * sum(D[k][r] * D[k][c] for k in range(len(D)))
+    b = [sum(w[i] * B[i][r] * y[i] for i in range(n)) for r in range(p)]
+    return [float(v) for v in np.linalg.solve(np.array(A), np.array(b))], A
 
 
 def fit(x, y, nseg=10, degree=3, lam=1.0, order=2, weights=None):
@@ -173,21 +173,30 @@ def fit(x, y, nseg=10, degree=3, lam=1.0, order=2, weights=None):
     a, A = _solve(B, y, D, float(lam), weights)
     fitted = [sum(B[i][k] * a[k] for k in range(p)) for i in range(n)]
     Ainv = np.linalg.inv(np.array(A))
-    hat = [sum(B[i][r] * float(Ainv[r][c]) * B[i][c]
-               for r in range(p) for c in range(p)) for i in range(n)]
+    hat = [sum(B[i][r] * float(Ainv[r][c]) * B[i][c] for r in range(p) for c in range(p)) for i in range(n)]
     resid = [y[i] - fitted[i] for i in range(n)]
     rss = sum(v * v for v in resid)
     ed = sum(hat)
-    return RichResult(payload={
-        "estimate": ed, "coefficients": a, "fitted": fitted,
-        "residuals": resid, "rss": rss, "hat_diagonal": hat,
-        "effective_dimension": ed, "knots": knots, "degree": int(degree),
-        "nseg": int(nseg), "order": int(order), "lam": float(lam),
-        "n": n, "p": p,
-        "sigma2": rss / max(n - ed, 1e-9),
-        "method": "P-spline: (B'B + lambda D'D) a = B'y; Eilers & "
-                  "Marx (1996) Sec. 3",
-    })
+    return RichResult(
+        payload={
+            "estimate": ed,
+            "coefficients": a,
+            "fitted": fitted,
+            "residuals": resid,
+            "rss": rss,
+            "hat_diagonal": hat,
+            "effective_dimension": ed,
+            "knots": knots,
+            "degree": int(degree),
+            "nseg": int(nseg),
+            "order": int(order),
+            "lam": float(lam),
+            "n": n,
+            "p": p,
+            "sigma2": rss / max(n - ed, 1e-9),
+            "method": "P-spline: (B'B + lambda D'D) a = B'y; Eilers & Marx (1996) Sec. 3",
+        }
+    )
 
 
 def predict(fit_result, x):
@@ -209,8 +218,7 @@ def cross_validation(fit_result):
     for i in range(n):
         denom = 1.0 - fit_result["hat_diagonal"][i]
         if abs(denom) < 1e-12:
-            raise ValueError("smfd: h_ii = 1 at point %d, so the "
-                             "deletion residual is undefined" % i)
+            raise ValueError(f"smfd: h_ii = 1 at point {int(i)}, so the deletion residual is undefined")
         tot += (fit_result["residuals"][i] / denom) ** 2
     return {"cv": math.sqrt(tot / n), "press": tot}
 
@@ -220,48 +228,50 @@ def aic(fit_result):
     n = fit_result["n"]
     rss = fit_result["rss"]
     if rss <= 0.0:
-        return {"aic": float("-inf"), "effective_dimension":
-                fit_result["effective_dimension"]}
-    return {"aic": n * math.log(rss / n)
-            + 2.0 * fit_result["effective_dimension"],
-            "effective_dimension": fit_result["effective_dimension"]}
+        return {"aic": float("-inf"), "effective_dimension": fit_result["effective_dimension"]}
+    return {
+        "aic": n * math.log(rss / n) + 2.0 * fit_result["effective_dimension"],
+        "effective_dimension": fit_result["effective_dimension"],
+    }
 
 
-def choose_lambda(x, y, lambdas=None, criterion="cv", nseg=10,
-                  degree=3, order=2):
+def choose_lambda(x, y, lambdas=None, criterion="cv", nseg=10, degree=3, order=2):
     r"""Search a grid and return the whole trace, not just the winner."""
     if criterion not in ("cv", "aic"):
-        raise ValueError("smfd: criterion must be 'cv' or 'aic', got "
-                         "%r" % criterion)
+        raise ValueError(f"smfd: criterion must be 'cv' or 'aic', got {criterion!r}")
     if lambdas is None:
         lambdas = [10.0 ** (k / 2.0) for k in range(-8, 13)]
     trace = []
     best = None
     for lam in lambdas:
         f = fit(x, y, nseg, degree, lam, order)
-        score = (cross_validation(f)["cv"] if criterion == "cv"
-                 else aic(f)["aic"])
-        trace.append({"lam": float(lam), "score": score,
-                      "effective_dimension":
-                          f["effective_dimension"]})
+        score = cross_validation(f)["cv"] if criterion == "cv" else aic(f)["aic"]
+        trace.append({"lam": float(lam), "score": score, "effective_dimension": f["effective_dimension"]})
         if best is None or score < best[0]:
             best = (score, lam, f)
-    return RichResult(payload={
-        "estimate": best[1], "lam": best[1], "score": best[0],
-        "fit": best[2], "trace": trace, "criterion": criterion,
-        "method": "lambda by %s over a grid; Eilers & Marx (1996) "
-                  "Sec. 6" % criterion,
-    })
+    return RichResult(
+        payload={
+            "estimate": best[1],
+            "lam": best[1],
+            "score": best[0],
+            "fit": best[2],
+            "trace": trace,
+            "criterion": criterion,
+            "method": f"lambda by {criterion} over a grid; Eilers & Marx (1996) Sec. 6",
+        }
+    )
 
 
 def cheatsheet():
-    return ("smfd: P-splines = a generous B-spline basis plus a "
-            "DIFFERENCE penalty on the coefficients, so "
-            "(B'B + lambda D'D) a = B'y. Order d of the penalty fixes "
-            "the limit: as lambda -> infinity the fit becomes a "
-            "polynomial of degree d-1 exactly (d=2 gives the OLS "
-            "line). Effective dimension is tr(H); leave-one-out CV "
-            "comes free from the hat diagonal.")
+    return (
+        "smfd: P-splines = a generous B-spline basis plus a "
+        "DIFFERENCE penalty on the coefficients, so "
+        "(B'B + lambda D'D) a = B'y. Order d of the penalty fixes "
+        "the limit: as lambda -> infinity the fit becomes a "
+        "polynomial of degree d-1 exactly (d=2 gives the OLS "
+        "line). Effective dimension is tr(H); leave-one-out CV "
+        "comes free from the hat diagonal."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -42,10 +42,7 @@ def zest(
     x = np.asarray(x, dtype=float)
     if x.size == 0:
         raise ValueError("x must be non-empty.")
-    if x.ndim == 1:
-        x_obs = x
-    else:
-        x_obs = x
+    x_obs = x if x.ndim == 1 else x
 
     n = x_obs.shape[0] if x_obs.ndim > 0 else 1
     scalar = theta0 is None or np.isscalar(theta0)
@@ -79,10 +76,7 @@ def zest(
             converged = sol.success
 
     psi_vals = np.array([psi(x_obs[i], theta_hat) for i in range(n)])
-    if psi_vals.ndim == 1:
-        B = float(np.mean(psi_vals**2))
-    else:
-        B = psi_vals.T @ psi_vals / n
+    B = float(np.mean(psi_vals**2)) if psi_vals.ndim == 1 else psi_vals.T @ psi_vals / n
 
     eps = 1e-5
     if scalar:

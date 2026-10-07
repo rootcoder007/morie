@@ -1,7 +1,6 @@
 """Tests for hmmdc.geron_mode_collapse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmmdc import geron_mode_collapse
 
 

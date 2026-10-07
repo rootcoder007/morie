@@ -1,8 +1,6 @@
 """Tests for alfsmd.alphafold_msa_attention."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.alfsmd import alphafold_msa_attention
 
 
@@ -17,8 +15,7 @@ def _build_inputs(s=2, n=3, cm=2, c=2, nh=1, cz=2, seed=42):
     """
     rng = np.random.default_rng(seed)
 
-    m = [[[float(rng.normal()) for _ in range(cm)] for _ in range(n)]
-         for _ in range(s)]
+    m = [[[float(rng.normal()) for _ in range(cm)] for _ in range(n)] for _ in range(s)]
 
     def _wm():
         return [[float(rng.normal()) for _ in range(cm)] for _ in range(c)]
@@ -28,11 +25,9 @@ def _build_inputs(s=2, n=3, cm=2, c=2, nh=1, cz=2, seed=42):
     wv = [_wm() for _ in range(nh)]
     wg = [_wm() for _ in range(nh)]
 
-    wo = [[float(rng.normal()) for _ in range(nh * c)]
-          for _ in range(cm)]
+    wo = [[float(rng.normal()) for _ in range(nh * c)] for _ in range(cm)]
 
-    z = [[[float(rng.normal()) for _ in range(cz)] for _ in range(n)]
-         for _ in range(n)]
+    z = [[[float(rng.normal()) for _ in range(cz)] for _ in range(n)] for _ in range(n)]
 
     wb = [[float(rng.normal()) for _ in range(cz)] for _ in range(nh)]
 
@@ -42,8 +37,7 @@ def _build_inputs(s=2, n=3, cm=2, c=2, nh=1, cz=2, seed=42):
 def test_alfsmd_basic():
     """Test basic row-wise functionality with the full documented signature."""
     m, wq, wk, wv, wg, wo, z, wb = _build_inputs()
-    result = alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=z, wb=wb,
-                                     mode="row")
+    result = alphafold_msa_attention(m, wq, wk, wv, wg, wo, z=z, wb=wb, mode="row")
     # The function returns a RichResult whose payload is a dict-like mapping.
     assert hasattr(result, "keys") or isinstance(result, dict)
     # The docstring lists these keys explicitly.

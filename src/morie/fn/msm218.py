@@ -19,7 +19,6 @@ __all__ = ["softsvm", "mvsml_ridge_lasso_elastic_eq_9_34"]
 
 
 def softsvm(X, y, T):
-
     """maximize M (eq. 9.34) subject to sum_j beta_j^2 = 1 (eq. 9.35),
     y_i(beta_0 + sum_j beta_j x_ij) >= M(1 - zeta_i) (eq. 9.36) and
     zeta_i >= 0 with sum_i zeta_i <= T (eq. 9.37).  The slack zeta_i

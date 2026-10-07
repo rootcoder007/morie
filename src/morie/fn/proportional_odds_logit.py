@@ -27,17 +27,16 @@ def proportional_odds_logit(bj0, bs, xs):
     """
     value = _acd.proportional_odds_logit(bj0, bs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (3.11)"
     return RichResult(
-        title='Proportional odds model logit(P(Y <= j)) = bj0 + Xb',
+        title="Proportional odds model logit(P(Y <= j)) = bj0 + Xb",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '3e11: logit(P(Y <= j)) = bj0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 3.11]'
+    return "3e11: logit(P(Y <= j)) = bj0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 3.11]"

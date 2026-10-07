@@ -1,7 +1,6 @@
 """Tests for bfac.bayes_factor."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bfac import bayes_factor
 
 

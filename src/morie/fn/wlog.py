@@ -8,6 +8,11 @@ runs a SMOTE sensitivity refit to check odds ratio stability.
 
 from __future__ import annotations
 
+from morie.cpads import validate_cpads_frame
+from morie.fn._helpers import _safe_exp
+from morie.investigation import _labelled_term
+from morie.survey import SurveyDesign
+
 from . import _array_core as np
 from . import _frame_core as pd
 
@@ -19,23 +24,16 @@ class _MissingDep:
         self._name = name
 
     def __getattr__(self, attr):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
 
     def __call__(self, *a, **k):
-        raise ImportError(
-            "%s is no longer bundled; this code path awaits its native "
-            "morie implementation" % self._name)
+        raise ImportError(f"{self._name} is no longer bundled; this code path awaits its native morie implementation")
+
 
 try:
     from . import _glm_core as sm
 except ImportError:
-    sm = _MissingDep('sm')
-
-from morie.cpads import validate_cpads_frame
-from morie.fn._helpers import _safe_exp
-from morie.survey import SurveyDesign
+    sm = _MissingDep("sm")
 
 
 def _scalarize(value) -> float:
@@ -56,7 +54,7 @@ def _extract_or_table(fit, *, model_name: str | None = None) -> pd.DataFrame:
     conf = fit.conf_int()
     table = pd.DataFrame(
         {
-            "term": fit.params.index,
+            "term": [_labelled_term(t) for t in fit.params.index],
             "log_odds": fit.params.values,
             "SE": fit.bse.values,
             "OR": _safe_exp(fit.params.values),
@@ -127,11 +125,17 @@ def run_weighted_logistic_analysis(
     frame = _prepare_analysis_frame(data, required=required)
     design = SurveyDesign(frame, weights_col=weight_col)
 
-    formula = f"{outcome} ~ {' + '.join(predictors)}"
+    # survey codes of nominal/ordinal groups are categories, as in the R route (factor labels)
+    categorical = {"age_group", "gender", "province_region", "mental_health", "physical_health"}
+
+    def term(v: str) -> str:
+        return f"C({v})" if v in categorical else v
+
+    formula = f"{outcome} ~ {' + '.join(term(v) for v in predictors)}"
     fit = design.svyglm(formula, family=sm.families.Binomial())
     or_table = _extract_or_table(fit)
 
-    interaction_formula = formula + f" + {treatment}:gender"
+    interaction_formula = formula + f" + {treatment}:{term('gender')}"
     fit_int = design.svyglm(interaction_formula, family=sm.families.Binomial())
     int_or_table = _extract_or_table(
         fit_int,
@@ -167,48 +171,62 @@ def run_weighted_logistic_analysis(
         ]
     )
 
-    # SMOTE sensitivity -- rebalance and refit to check stability of ORs
-    from morie.ml import apply_smote
-
-    y_smote = frame[outcome].astype(int)
-    X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
-    X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
-
-    smote_status = pd.DataFrame([smote_info])
-
-    # Refit logistic on SMOTE-resampled data
-    smote_frame = X_res.copy()
-    smote_frame[outcome] = y_res.values
-    smote_formula = f"{outcome} ~ " + " + ".join(X_res.columns)
-    try:
-        smote_fit = sm.GLM(
-            smote_frame[outcome],
-            sm.add_constant(X_res),
-            family=sm.families.Binomial(),
-        ).fit()
-        smote_or_table = pd.DataFrame(
-            {
-                "term": smote_fit.params.index,
-                "log_odds": smote_fit.params.values,
-                "SE": smote_fit.bse.values,
-                "OR": _safe_exp(smote_fit.params.values),
-                "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
-                "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
-                "p_value": smote_fit.pvalues.values,
-            }
-        )
-    except Exception:
-        smote_or_table = pd.DataFrame(
-            columns=[
-                "term",
-                "log_odds",
-                "SE",
-                "OR",
-                "OR_lower95",
-                "OR_upper95",
-                "p_value",
+    # SMOTE sensitivity -- rebalance and refit to check the stability of the ORs. On an outcome that is
+    # already balanced it adds nothing (1,205 synthetic rows on a 48/52 split) and the refit took 7 minutes.
+    _counts = frame[outcome].astype(int).value_counts()
+    _ratio = float(_counts.min()) / float(_counts.max()) if len(_counts) == 2 and _counts.max() else 0.0
+    if _ratio >= 0.8:
+        smote_status = pd.DataFrame(
+            [
+                {
+                    "method": "skipped: classes already balanced (minority/majority >= 0.8)",
+                    "imbalance_ratio_before": round(_ratio, 4),
+                    "total_before": int(_counts.sum()),
+                }
             ]
         )
+        smote_or_table = pd.DataFrame(columns=["term", "log_odds", "SE", "OR", "OR_lower95", "OR_upper95", "p_value"])
+    else:
+        from morie.ml import apply_smote
+
+        y_smote = frame[outcome].astype(int)
+        X_smote = pd.get_dummies(frame[predictors], drop_first=True, dtype=float)
+        X_res, y_res, smote_info = apply_smote(X_smote, y_smote)
+
+        smote_status = pd.DataFrame([smote_info])
+
+        # Refit logistic on SMOTE-resampled data
+        smote_frame = X_res.copy()
+        smote_frame[outcome] = y_res.values
+        try:
+            smote_fit = sm.GLM(
+                smote_frame[outcome],
+                sm.add_constant(X_res),
+                family=sm.families.Binomial(),
+            ).fit()
+            smote_or_table = pd.DataFrame(
+                {
+                    "term": [_labelled_term(t) for t in smote_fit.params.index],
+                    "log_odds": smote_fit.params.values,
+                    "SE": smote_fit.bse.values,
+                    "OR": _safe_exp(smote_fit.params.values),
+                    "OR_lower95": _safe_exp(smote_fit.conf_int()[0].values),
+                    "OR_upper95": _safe_exp(smote_fit.conf_int()[1].values),
+                    "p_value": smote_fit.pvalues.values,
+                }
+            )
+        except Exception:
+            smote_or_table = pd.DataFrame(
+                columns=[
+                    "term",
+                    "log_odds",
+                    "SE",
+                    "OR",
+                    "OR_lower95",
+                    "OR_upper95",
+                    "p_value",
+                ]
+            )
 
     return {
         "analysis_frame": frame,

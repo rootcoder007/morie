@@ -1,14 +1,15 @@
 """Tests for penmth.penalty_method."""
 
 import math
+
 import pytest
 
-from morie.fn import _array_core as np
 from morie.fn.penmth import penalty_method
 
 
 def test_penmth_basic():
     """Test basic functionality."""
+
     # Define a simple objective: f(x) = sum(x_i^2)
     def f(x):
         return sum(v * v for v in x)
@@ -72,6 +73,7 @@ def test_penmth_basic():
 
 def test_penmth_edge():
     """Test edge cases: invalid mu and growth raise ValueError."""
+
     def f(x):
         return sum(v * v for v in x)
 

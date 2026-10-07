@@ -1,7 +1,6 @@
 """Tests for eslsce.esl_score_match."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.eslsce import esl_score_match
 
 
@@ -19,7 +18,9 @@ def test_eslsce_basic():
     n = 4000
     d = 1
     X = rng.normal(0.0, 1.0, (n, d))
-    score_fn = lambda z: -(z - 0.0)
+
+    def score_fn(z):
+        return -(z - 0.0)
 
     result = esl_score_match(score_fn, X)
 
@@ -33,7 +34,7 @@ def test_eslsce_basic():
     psi = -(X - 0.0)
     # For psi(x) = -(x - 0), d psi / d x = -1 on the diagonal -> trace = -d.
     expected_trace = -d
-    expected_norm = 0.5 * float((psi ** 2).mean())
+    expected_norm = 0.5 * float((psi**2).mean())
     expected_objective = expected_trace + expected_norm
 
     assert abs(result["trace_term"] - expected_trace) < 1e-3
@@ -50,7 +51,9 @@ def test_eslsce_edge():
     n = 2000
     d = 1
     X = rng.normal(2.0, 1.0, (n, d))
-    score_fn = lambda z: -(z - 2.0)
+
+    def score_fn(z):
+        return -(z - 2.0)
 
     r_fd = esl_score_match(score_fn, X)
     r_an = esl_score_match(score_fn, X, grad_score=lambda z: -np.ones_like(z))

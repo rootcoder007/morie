@@ -1,7 +1,6 @@
 """Tests for atq8.int8_attention."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.atq8 import int8_attention
 
 
@@ -13,9 +12,11 @@ def test_atq8_basic():
     Q = rng_q.normal(0, 1, (n_q, d))
     K = rng_kv.normal(0, 1, (n_k, d))
     V = rng_kv.normal(0, 1, (n_k, d_v))
+
     # per-row scales must be strictly positive; build sq, sk, sv from row max-abs
     def row_absmax(M):
         return [max(abs(float(v)) for v in row) for row in M]
+
     sq = row_absmax(Q)
     sk = row_absmax(K)
     sv = row_absmax(V)
@@ -76,6 +77,7 @@ def test_atq8_edge():
 
     def row_absmax(M):
         return [max(abs(float(v)) for v in row) for row in M]
+
     sq = row_absmax(Q)
     sk = row_absmax(K)
     sv = row_absmax(V)

@@ -21,11 +21,10 @@ def test_pearson_and_deviance_residuals_for_grouped_binomial_data():
         mu = n[i] * pi[i]
         pearson = (y[i] - mu) / math.sqrt(mu * (1.0 - pi[i]))
         assert res["pearson"][i] == pytest.approx(pearson, rel=1e-10)
-        term = y[i] * math.log(y[i] / mu) + (n[i] - y[i]) * math.log(
-            (n[i] - y[i]) / (n[i] - mu))
+        term = y[i] * math.log(y[i] / mu) + (n[i] - y[i]) * math.log((n[i] - y[i]) / (n[i] - mu))
         dev = math.copysign(math.sqrt(2.0 * term), y[i] - mu)
         assert res["deviance"][i] == pytest.approx(dev, rel=1e-10)
-    assert res["D"] == pytest.approx(sum(d ** 2 for d in res["deviance"]), rel=1e-10)
+    assert res["D"] == pytest.approx(sum(d**2 for d in res["deviance"]), rel=1e-10)
 
 
 def test_a_perfect_fit_has_zero_residuals():
@@ -53,7 +52,7 @@ def test_influence_is_the_hosmer_lemeshow_deviance_change():
     for i in range(2):
         mu = n[i] * pi[i]
         r_p = (y[i] - mu) / math.sqrt(mu * (1.0 - pi[i]))
-        expected = res["deviance"][i] ** 2 + hat[i] * r_p ** 2 / (1.0 - hat[i])
+        expected = res["deviance"][i] ** 2 + hat[i] * r_p**2 / (1.0 - hat[i])
         assert res["delta_d"][i] == pytest.approx(expected, rel=1e-10)
 
 

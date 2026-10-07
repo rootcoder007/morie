@@ -30,18 +30,22 @@ def kamath_ch2_seq2seq_loss(x, xhat, i, j):
     p = np.atleast_1d(np.asarray(x, dtype=float))
     if np.any((p < 0) | (p > 1)):
         raise ValueError("probabilities must lie in [0, 1].")
-    i = int(i); j = int(j)
+    i = int(i)
+    j = int(j)
     if not 0 <= i <= j < len(p):
-        raise ValueError(
-            f"the span [{i}, {j}] must lie inside the sequence of "
-            f"length {len(p)} with i <= j.")
-    seg = p[i:j + 1]
+        raise ValueError(f"the span [{i}, {j}] must lie inside the sequence of length {len(p)} with i <= j.")
+    seg = p[i : j + 1]
     with np.errstate(divide="ignore"):
         losses = -np.log(seg)
-    return RichResult(payload={
-        "estimate": float(np.mean(losses)), "span_length": j - i + 1,
-        "per_position": [float(v) for v in losses], "n": len(p),
-        "method": "Span seq2seq loss (Kamath Eq 2.32)"})
+    return RichResult(
+        payload={
+            "estimate": float(np.mean(losses)),
+            "span_length": j - i + 1,
+            "per_position": [float(v) for v in losses],
+            "n": len(p),
+            "method": "Span seq2seq loss (Kamath Eq 2.32)",
+        }
+    )
 
 
 def cheatsheet():

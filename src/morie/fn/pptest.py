@@ -138,9 +138,9 @@ def phillips_perron_unit_root(x, lags=None, kind="Z(t_alpha)"):
         sigma2 = sum(ui * ui for ui in u) / (n - 3.0)
         se_rho = math.sqrt(sigma2 * xtxinv[2][2])
         tstat = (rho - 1.0) / se_rho
-        stat = (math.sqrt(ssqru) / math.sqrt(ssqrtl) * tstat
-                - (float(n) ** 3) / (4.0 * math.sqrt(3.0) * math.sqrt(d) * math.sqrt(ssqrtl))
-                * (ssqrtl - ssqru))
+        stat = math.sqrt(ssqru) / math.sqrt(ssqrtl) * tstat - (float(n) ** 3) / (
+            4.0 * math.sqrt(3.0) * math.sqrt(d) * math.sqrt(ssqrtl)
+        ) * (ssqrtl - ssqru)
     crit = ppcritical(n, kind)
     p = _interp(crit, list(_PP_P), stat)
     return RichResult(

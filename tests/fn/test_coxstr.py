@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.coxstr import cox_stratified
 
 
@@ -20,8 +19,7 @@ def test_coxstr_basic():
     result = cox_stratified(time, event, X, stratum)
 
     assert isinstance(result, dict)
-    for key in ("beta", "se", "z", "p_value", "hazard_ratio", "loglik",
-                "strata", "events_per_stratum", "empty_strata"):
+    for key in ("beta", "se", "z", "p_value", "hazard_ratio", "loglik", "strata", "events_per_stratum", "empty_strata"):
         assert key in result
 
     assert len(result["beta"]) == p

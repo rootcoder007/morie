@@ -1,7 +1,5 @@
 """Tests for dpgem.gem_distribution."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dpgem import gem_distribution
 
 

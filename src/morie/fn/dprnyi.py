@@ -86,11 +86,13 @@ def renyi_dp_composition(epsilons, alpha=2.0, delta=1e-5):
     conv = float(total + np.log(1.0 / delta) / (alpha - 1.0))
     return RichResult(
         title="Renyi DP composition",
-        summary_lines=[("alpha", alpha), ("k", int(eps.size)),
-                       ("RDP total", total), ("epsilon", conv)],
+        summary_lines=[("alpha", alpha), ("k", int(eps.size)), ("RDP total", total), ("epsilon", conv)],
         payload={
-            "rdp_total": total, "epsilon": conv, "delta": float(delta),
-            "alpha": alpha, "k": int(eps.size),
+            "rdp_total": total,
+            "epsilon": conv,
+            "delta": float(delta),
+            "alpha": alpha,
+            "k": int(eps.size),
             "conversion_penalty": float(np.log(1.0 / delta) / (alpha - 1.0)),
             "method": "renyi_dp_composition",
         },

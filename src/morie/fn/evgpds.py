@@ -18,8 +18,7 @@ def evt_gpd_sample(n, sigma, xi, seed=42):
     """Inverse-CDF GPD sampling of threshold excesses."""
     rng = np.random.default_rng(seed)
     y = _ev.gpd_sample(int(n), float(sigma), float(xi), rng)
-    res = RichResult(payload={"y": y, "n": int(n),
-                              "method": "GPD inverse-CDF sampler (Coles 2001 eq. 4.2)"})
+    res = RichResult(payload={"y": y, "n": int(n), "method": "GPD inverse-CDF sampler (Coles 2001 eq. 4.2)"})
     return with_describe_pointer(res, "evgpds")
 
 

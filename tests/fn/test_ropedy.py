@@ -1,7 +1,6 @@
 """Tests for ropedy.rope_ntk_dynamic."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ropedy import rope_ntk_dynamic
 
 

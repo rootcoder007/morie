@@ -1,7 +1,6 @@
 """Tests for rpl_at — age trend."""
 
 from morie.fn import _frame_core as pd
-
 from morie.fn.rpl_at import rplace_age_trend
 
 

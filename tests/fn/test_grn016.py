@@ -5,8 +5,6 @@ TensorFlow*, 3rd edition, ch 4, the logistic regression decision rule. Expected 
 the test body and the docstring's own worked value is asserted too.
 """
 
-import math
-
 import pytest
 
 from morie.fn.grn016 import geron_ch4_logistic_regression_prediction
@@ -15,8 +13,7 @@ from morie.fn.grn016 import geron_ch4_logistic_regression_prediction
 def test_the_rule_labels_a_probability_at_or_above_one_half_positive():
     res = geron_ch4_logistic_regression_prediction([0.2, 0.5, 0.9])
     assert list(res["y_hat"]) == [0, 1, 1]
-    assert round(res["positive_rate"], 10) == pytest.approx(
-        2.0 / 3.0, abs=1e-10)
+    assert round(res["positive_rate"], 10) == pytest.approx(2.0 / 3.0, abs=1e-10)
 
 
 def test_exactly_one_half_goes_positive_rather_than_negative():
@@ -45,7 +42,7 @@ import morie.fn.grn016 as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

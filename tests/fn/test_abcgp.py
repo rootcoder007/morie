@@ -11,10 +11,18 @@ import math
 
 import pytest
 
-from morie.fn.abcgp import (abc_gp_emulator, design_from_prior,
-                            gabc_log_likelihood, gp_fit, gp_predict,
-                            gps_abc, implausible, sobol_sequence,
-                            synthetic_abc, synthetic_log_likelihood)
+from morie.fn.abcgp import (
+    abc_gp_emulator,
+    design_from_prior,
+    gabc_log_likelihood,
+    gp_fit,
+    gp_predict,
+    gps_abc,
+    implausible,
+    sobol_sequence,
+    synthetic_abc,
+    synthetic_log_likelihood,
+)
 
 S2 = 0.25
 EPS = 0.8
@@ -28,8 +36,8 @@ def gauss_sim(theta, rng):
 
 def closed_form_log_gabc(theta, eps=EPS):
     """E_X[exp(-(X-D)^2 / 2 eps^2)] for X ~ N(theta, S2), in closed form."""
-    v = eps ** 2 + S2
-    return 0.5 * math.log(eps ** 2 / v) - (D_OBS - theta) ** 2 / (2.0 * v)
+    v = eps**2 + S2
+    return 0.5 * math.log(eps**2 / v) - (D_OBS - theta) ** 2 / (2.0 * v)
 
 
 # ------------------------------------------------------------ Sobol
@@ -65,8 +73,7 @@ def test_sobol_rejects_untabulated_dimensions():
 def test_design_maps_onto_the_prior_box():
     d0 = design_from_prior(4, ([-2.0, 0.0], [2.0, 10.0]), skip=0).tolist()
     d1 = design_from_prior(4, ([-2.0, 0.0], [2.0, 10.0])).tolist()
-    assert all(-2.0 <= r[0] <= 2.0 and 0.0 <= r[1] <= 10.0
-               for r in d0 + d1)
+    assert all(-2.0 <= r[0] <= 2.0 and 0.0 <= r[1] <= 10.0 for r in d0 + d1)
     # skip=0 is the box corner; the default skips it
     assert d0[0] == pytest.approx([-2.0, 0.0])
     assert d1[0] == pytest.approx([0.0, 5.0])
@@ -77,32 +84,28 @@ def test_design_through_quantile_functions():
     d = design_from_prior(6, [lambda u: -math.log(1.0 - u)]).tolist()
     assert all(r[0] > 0.0 for r in d)
     assert sorted(r[0] for r in d) == pytest.approx(
-        sorted(-math.log(1.0 - u[0])
-               for u in sobol_sequence(6, 1, skip=1).tolist()))
+        sorted(-math.log(1.0 - u[0]) for u in sobol_sequence(6, 1, skip=1).tolist())
+    )
 
 
 # --------------------------------------------------- the likelihood
 def test_eq1_converges_to_the_closed_form():
     """Wilkinson eq. (1) is an unbiased estimator of a known integral."""
     for th in (0.0, 0.5, 1.0, 1.5):
-        got, _ = gabc_log_likelihood(gauss_sim, [D_OBS], [th], n_sim=20000,
-                                     epsilon=EPS, seed=11)
+        got, _ = gabc_log_likelihood(gauss_sim, [D_OBS], [th], n_sim=20000, epsilon=EPS, seed=11)
         assert got == pytest.approx(closed_form_log_gabc(th), abs=0.02)
 
 
 def test_nugget_is_the_sampling_variance():
     """v^2 must fall like 1/M -- it is the variance of the estimate."""
-    _, v_small = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=500,
-                                     epsilon=EPS, seed=3, bootstrap=200)
-    _, v_big = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=2000,
-                                   epsilon=EPS, seed=3, bootstrap=200)
+    _, v_small = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=500, epsilon=EPS, seed=3, bootstrap=200)
+    _, v_big = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=2000, epsilon=EPS, seed=3, bootstrap=200)
     assert 2.0 < v_small / v_big < 8.0
 
 
 def test_uniform_kernel_is_rejection_abc():
     """pi(D|X) = 1{rho <= eps} makes eq. (1) the acceptance rate."""
-    got, _ = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=20000,
-                                 epsilon=EPS, kernel="uniform", seed=5)
+    got, _ = gabc_log_likelihood(gauss_sim, [D_OBS], [1.0], n_sim=20000, epsilon=EPS, kernel="uniform", seed=5)
     want = math.erf(EPS / math.sqrt(2.0 * S2))
     assert math.exp(got) == pytest.approx(want, abs=0.01)
 
@@ -146,8 +149,7 @@ def test_gp_interpolates_and_extrapolates_a_quadratic():
     assert m0 == pytest.approx(vals[3], abs=1e-6)
     assert s0 < 1e-3
     for t in (0.25, 0.75, 1.25, 1.75):
-        assert gp_predict(fit, [t])[0] == pytest.approx(
-            closed_form_log_gabc(t), abs=1e-6)
+        assert gp_predict(fit, [t])[0] == pytest.approx(closed_form_log_gabc(t), abs=1e-6)
 
 
 def test_gp_uncertainty_grows_away_from_the_design():
@@ -160,7 +162,7 @@ def test_gp_uncertainty_grows_away_from_the_design():
 
 def test_gp_rejects_an_underdetermined_design():
     with pytest.raises(ValueError):
-        gp_fit([[0.0], [1.0], [2.0]], [1.0, 2.0, 3.0])   # 3 pts, 3 coefs
+        gp_fit([[0.0], [1.0], [2.0]], [1.0, 2.0, 3.0])  # 3 pts, 3 coefs
     with pytest.raises(ValueError):
         gp_fit([[0.0], [1.0]], [1.0, 2.0])
 
@@ -184,10 +186,17 @@ def test_history_matching_rules_out_space():
     sigma came out around 10 log-units at visited design points and
     m + 3 sigma cleared the threshold everywhere.
     """
-    r = abc_gp_emulator(gauss_sim, [D_OBS],
-                        X_grid=[[t / 20.0] for t in range(-40, 61)],
-                        prior_ppf=([-3.0], [3.0]), n_waves=3, n_design=14,
-                        n_sim=400, epsilon=0.5, seed=17)
+    r = abc_gp_emulator(
+        gauss_sim,
+        [D_OBS],
+        X_grid=[[t / 20.0] for t in range(-40, 61)],
+        prior_ppf=([-3.0], [3.0]),
+        n_waves=3,
+        n_design=14,
+        n_sim=400,
+        epsilon=0.5,
+        seed=17,
+    )
     assert sum(w["ruled_implausible"] for w in r["waves"]) > 0
     # the emulator models the LIKELIHOOD, so its peak is the MLE
     assert r["estimate"][0] == pytest.approx(D_OBS, abs=0.15)
@@ -204,10 +213,22 @@ def test_gps_abc_recovers_the_conjugate_posterior():
     """N(theta, S2) data with an N(0, 4) prior has a known posterior."""
     post_v = 1.0 / (1.0 / S2 + 1.0 / 4.0)
     post_m = post_v * (D_OBS / S2)
-    g = gps_abc(gauss_sim, [D_OBS], log_prior, [0.0], n_iter=400, n_sim=8,
-                epsilon=0.0, proposal_sd=0.6, seed=23, xi=0.1, delta_s=8,
-                n_alpha=48, max_sim=64)
-    kept = g["chain"][len(g["chain"]) // 2:]
+    g = gps_abc(
+        gauss_sim,
+        [D_OBS],
+        log_prior,
+        [0.0],
+        n_iter=400,
+        n_sim=8,
+        epsilon=0.0,
+        proposal_sd=0.6,
+        seed=23,
+        xi=0.1,
+        delta_s=8,
+        n_alpha=48,
+        max_sim=64,
+    )
+    kept = g["chain"][len(g["chain"]) // 2 :]
     mean = sum(r[0] for r in kept) / len(kept)
     assert mean == pytest.approx(post_m, abs=0.15)
     assert 0.05 < g["acceptance_rate"] < 0.95
@@ -217,9 +238,8 @@ def test_synthetic_abc_agrees_with_gps_abc():
     """Algorithm 1 and Algorithm 2 target the same posterior."""
     post_v = 1.0 / (1.0 / S2 + 1.0 / 4.0)
     post_m = post_v * (D_OBS / S2)
-    s = synthetic_abc(gauss_sim, [D_OBS], log_prior, [0.0], n_iter=400,
-                      n_sim=16, epsilon=0.0, proposal_sd=0.6, seed=29)
-    kept = s["chain"][len(s["chain"]) // 2:]
+    s = synthetic_abc(gauss_sim, [D_OBS], log_prior, [0.0], n_iter=400, n_sim=16, epsilon=0.0, proposal_sd=0.6, seed=29)
+    kept = s["chain"][len(s["chain"]) // 2 :]
     mean = sum(r[0] for r in kept) / len(kept)
     assert mean == pytest.approx(post_m, abs=0.2)
 
@@ -230,6 +250,6 @@ def test_front_end_argument_checks():
     with pytest.raises(ValueError):
         abc_gp_emulator("not a callable", [D_OBS])
     with pytest.raises(ValueError):
-        abc_gp_emulator(gauss_sim, [D_OBS])              # no prior_ppf
+        abc_gp_emulator(gauss_sim, [D_OBS])  # no prior_ppf
     with pytest.raises(ValueError):
         abc_gp_emulator(gauss_sim, [D_OBS], method="gps")  # no theta0

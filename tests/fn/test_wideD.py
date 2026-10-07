@@ -28,9 +28,7 @@ def _predict(res, xw_row, xd_row, hidden_out):
     W, B = res["hidden_weights"], res["hidden_bias"]
     a = list(xd_row)
     for layer in range(len(W)):
-        a = [max(0.0, B[layer][u] + sum(W[layer][u][k] * a[k]
-                                        for k in range(len(a))))
-             for u in range(len(W[layer]))]
+        a = [max(0.0, B[layer][u] + sum(W[layer][u][k] * a[k] for k in range(len(a)))) for u in range(len(W[layer]))]
     assert len(a) == hidden_out
     z = res["bias"]
     z += sum(w * v for w, v in zip(res["coef_wide"], xw_row))
@@ -58,8 +56,7 @@ def test_wideD_basic():
     assert len(fitted) == N
     for i in range(N):
         assert 0.0 < fitted[i] < 1.0
-        assert fitted[i] == pytest.approx(_predict(res, xw[i], xd[i], 4),
-                                          abs=1e-12)
+        assert fitted[i] == pytest.approx(_predict(res, xw[i], xd[i], 4), abs=1e-12)
 
     # the two parts are one model on one logistic loss: the joint fit
     # separates the classes better than a coin
@@ -83,9 +80,7 @@ def test_wideD_first_epoch_loss_is_log_two():
     assert more["loss"] < one["loss"]
 
     # and the loss really is the mean logistic loss of the fit it reports
-    recomputed = -sum(
-        t * math.log(p) + (1.0 - t) * math.log(1.0 - p)
-        for t, p in zip(y, more["fitted"])) / N
+    recomputed = -sum(t * math.log(p) + (1.0 - t) * math.log(1.0 - p) for t, p in zip(y, more["fitted"])) / N
     assert recomputed < one["loss"]
     assert recomputed == pytest.approx(more["loss"], rel=0.05)
 
@@ -94,8 +89,7 @@ def test_wideD_crosses_widen_the_wide_design():
     """eq. (1): each index pair appends a cross-product column."""
     xw, xd, y = _data()
     plain = wide_and_deep(xw, xd, y, hidden=(4,), epochs=20, lr=0.2, seed=3)
-    crossed = wide_and_deep(xw, xd, y, hidden=(4,), epochs=20, lr=0.2, seed=3,
-                            crosses=[(0, 1), (0, 2)])
+    crossed = wide_and_deep(xw, xd, y, hidden=(4,), epochs=20, lr=0.2, seed=3, crosses=[(0, 1), (0, 2)])
     assert len(plain["coef_wide"]) == 3
     assert len(crossed["coef_wide"]) == 5
     assert crossed["n_wide"] == 5
@@ -103,8 +97,7 @@ def test_wideD_crosses_widen_the_wide_design():
     assert crossed["fitted"] != plain["fitted"]
     for i in range(N):
         row = xw[i] + [xw[i][0] * xw[i][1], xw[i][0] * xw[i][2]]
-        assert crossed["fitted"][i] == pytest.approx(
-            _predict(crossed, row, xd[i], 4), abs=1e-12)
+        assert crossed["fitted"][i] == pytest.approx(_predict(crossed, row, xd[i], 4), abs=1e-12)
 
 
 def test_wideD_is_deterministic_and_l2_shrinks():
@@ -119,26 +112,23 @@ def test_wideD_is_deterministic_and_l2_shrinks():
     assert other["hidden_weights"] != a["hidden_weights"]
 
     ridged = wide_and_deep(xw, xd, y, seed=3, l2=5.0, **kw)
-    assert (max(abs(v) for v in ridged["coef_wide"])
-            < max(abs(v) for v in a["coef_wide"]))
+    assert max(abs(v) for v in ridged["coef_wide"]) < max(abs(v) for v in a["coef_wide"])
 
 
 def test_wideD_edge():
     """Two rows, one hidden unit, and every documented rejection."""
-    res = wide_and_deep([[1.0], [0.0]], [[0.5], [-0.5]], [1.0, 0.0],
-                        hidden=(1,), epochs=5, lr=0.1)
+    res = wide_and_deep([[1.0], [0.0]], [[0.5], [-0.5]], [1.0, 0.0], hidden=(1,), epochs=5, lr=0.1)
     assert res["n"] == 2 and res["n_wide"] == 1 and res["n_deep"] == 1
     assert len(res["fitted"]) == 2
-    assert res["fitted"][0] == pytest.approx(
-        _predict(res, [1.0], [0.5], 1), abs=1e-12)
+    assert res["fitted"][0] == pytest.approx(_predict(res, [1.0], [0.5], 1), abs=1e-12)
 
     xw, xd, y = _data()
     with pytest.raises(ValueError):
-        wide_and_deep(xw, xd, [v + 0.5 for v in y], epochs=2)   # not binary
+        wide_and_deep(xw, xd, [v + 0.5 for v in y], epochs=2)  # not binary
     with pytest.raises(ValueError):
-        wide_and_deep(xw, xd, y[:-1], epochs=2)                 # row mismatch
+        wide_and_deep(xw, xd, y[:-1], epochs=2)  # row mismatch
     with pytest.raises(ValueError):
-        wide_and_deep(xw[:1], xd[:1], y[:1], epochs=2)          # n < 2
+        wide_and_deep(xw[:1], xd[:1], y[:1], epochs=2)  # n < 2
     with pytest.raises(ValueError):
         wide_and_deep(xw, xd, y, epochs=0)
     with pytest.raises(ValueError):

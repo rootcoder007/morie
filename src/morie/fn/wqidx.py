@@ -29,10 +29,7 @@ def water_quality_index(
     names = list(parameters.keys())
     vals = np.array([parameters[n] for n in names], dtype=float)
 
-    if weights is not None:
-        w = np.array([weights.get(n, 1.0) for n in names], dtype=float)
-    else:
-        w = np.ones(len(vals))
+    w = np.array([weights.get(n, 1.0) for n in names], dtype=float) if weights is not None else np.ones(len(vals))
 
     wqi = float(np.average(vals, weights=w))
 

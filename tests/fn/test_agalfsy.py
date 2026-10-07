@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.agalfsy import alphazero_alphafold_synergy
 
 
@@ -17,9 +16,7 @@ def test_agalfsy_basic():
     # site: shape (n, 3) -- reference pose matching ligand atom count
     site = ligand + rng.normal(0, 0.1, (8, 3))
 
-    result = alphazero_alphafold_synergy(
-        protein, ligand, site=site, max_steps=20, min_steps=10, window=5
-    )
+    result = alphazero_alphafold_synergy(protein, ligand, site=site, max_steps=20, min_steps=10, window=5)
     assert isinstance(result, dict)
     # the documented keys (all of these are produced by rl_pose_search)
     assert "pose" in result
@@ -51,9 +48,7 @@ def test_agalfsy_edge():
     ligand = rng.normal(0, 1, (8, 3))
     site = ligand + rng.normal(0, 0.1, (8, 3))
 
-    result = alphazero_alphafold_synergy(
-        protein, ligand, site=site, max_steps=20, min_steps=10, window=5
-    )
+    result = alphazero_alphafold_synergy(protein, ligand, site=site, max_steps=20, min_steps=10, window=5)
     assert isinstance(result, dict)
     # independently recompute the success criterion from the returned pose and
     # site: DCC is the distance between ligand centroid and site centroid, and

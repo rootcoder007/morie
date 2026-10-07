@@ -3,7 +3,6 @@
 Book-as-spec implementation; see reference for context.
 """
 
-from . import _array_core as np
 from . import _brus
 from ._richresult import RichResult
 
@@ -27,20 +26,19 @@ def n_for_cv(u_crit, cv_star, r_max):
     """
     value = _brus.n_for_cv(u_crit, cv_star, r_max)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Brus (2022) eq. (12.10)"
     return RichResult(
-        title='Required n for a relative error target',
+        title="Required n for a relative error target",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'r12e10: n = (u cv*/r_max)^2 [Brus 2022, eq. 12.10]'
+    return "r12e10: n = (u cv*/r_max)^2 [Brus 2022, eq. 12.10]"
 
 
 # compact alias per ledger/NAMING.md

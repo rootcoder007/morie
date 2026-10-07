@@ -6,8 +6,6 @@ Implements eq. (7.4) p.220 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -19,12 +17,16 @@ def ordinal_probit_gblup_gibbs(y, G, n_iter=800, burn_in=200, seed=42):
     ordinal GBLUP regression model, in which the genomic relationship
     matrix enters as an RKHS kernel rather than through a marker
     design matrix (p.220). Keys: estimate."""
-    f = _gp.ordinal_probit_gblup_gibbs(y, G, n_iter=n_iter,
-                                       burn_in=burn_in, seed=seed)
-    res = RichResult(payload={"estimate": f["b"][0], "b": f["b"],
-                              "gamma": f["gamma"],
-                              "sigma2_g": f["sigma2_g"],
-                              "method": "ordinal GBLUP (MVSML 2022 eq. 7.4)"})
+    f = _gp.ordinal_probit_gblup_gibbs(y, G, n_iter=n_iter, burn_in=burn_in, seed=seed)
+    res = RichResult(
+        payload={
+            "estimate": f["b"][0],
+            "b": f["b"],
+            "gamma": f["gamma"],
+            "sigma2_g": f["sigma2_g"],
+            "method": "ordinal GBLUP (MVSML 2022 eq. 7.4)",
+        }
+    )
     return with_describe_pointer(res, "msm095")
 
 

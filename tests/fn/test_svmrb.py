@@ -1,7 +1,6 @@
 """Test svm_rbf (svmrb)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.svmrb import svm_rbf, svmrb
 

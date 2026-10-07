@@ -1,7 +1,6 @@
 """Tests for ghs002.ghosal_ch2_random_basis_expansion."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ghs002 import ghosal_ch2_random_basis_expansion
 
 

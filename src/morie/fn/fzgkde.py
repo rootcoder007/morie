@@ -60,11 +60,10 @@ def fauzi_gamma_kde(x, grid=None, h=None, modified=False, a=2.0):
         raise ValueError(f"need at least 2 observations, got {n}.")
     if np.any(xv < 0):
         raise ValueError("gamma kernels need data on [0, infinity).")
-    hh = float(np.std(xv, ddof=1) * n ** -0.4) if h is None else float(h)
+    hh = float(np.std(xv, ddof=1) * n**-0.4) if h is None else float(h)
     if hh <= 0:
         raise ValueError(f"bandwidth must be positive, got {hh}.")
-    g = np.linspace(0.0, float(xv.max()) * 1.2, 200) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(0.0, float(xv.max()) * 1.2, 200) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     base = gamma_kernel_density(xv, g, hh)
     if modified:
         av = float(a)
@@ -76,15 +75,22 @@ def fauzi_gamma_kde(x, grid=None, h=None, modified=False, a=2.0):
     else:
         dens = base
         order = "O(h)"
-    return RichResult(payload={
-        "grid": g, "density": dens, "bandwidth": hh,
-        "modified": bool(modified), "a": float(a),
-        "boundary_consistent": True, "bias_order": order,
-        "mass": float(np.trapezoid(dens, g)),
-        "why_it_works": "the kernel's support IS [0, infinity), so no mass "
-                        "crosses the boundary and no correction is needed",
-        "n": int(n),
-        "method": "Chen gamma kernel density, with Fauzi's self-elimination modification"})
+    return RichResult(
+        payload={
+            "grid": g,
+            "density": dens,
+            "bandwidth": hh,
+            "modified": bool(modified),
+            "a": float(a),
+            "boundary_consistent": True,
+            "bias_order": order,
+            "mass": float(np.trapezoid(dens, g)),
+            "why_it_works": "the kernel's support IS [0, infinity), so no mass "
+            "crosses the boundary and no correction is needed",
+            "n": int(n),
+            "method": "Chen gamma kernel density, with Fauzi's self-elimination modification",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,6 +1,5 @@
 """Tests for gb32lu (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb32lu import gibbons_runs_up_down_recur

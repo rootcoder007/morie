@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["turboquant_estimate_scores"]
 
 
-def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None,
-                               softmax=True):
+def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None, softmax=True):
     r"""Reconstruct a row of attention scores from sketched keys.
 
     TurboQuant Algorithm 1, EstimateScores:
@@ -68,22 +67,18 @@ def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None,
     Sm = np.atleast_2d(np.asarray(S, dtype=float))
     m, d = Sm.shape
     if qv.size != d:
-        raise ValueError("q has dimension %d, S expects %d." % (qv.size, d))
+        raise ValueError(f"q has dimension {int(qv.size)}, S expects {int(d)}.")
     K = np.atleast_2d(np.asarray(k_tildes, dtype=float))
     if K.shape[1] != m:
-        raise ValueError(
-            "k_tildes has %d columns, S has %d rows." % (K.shape[1], m)
-        )
+        raise ValueError(f"k_tildes has {int(K.shape[1])} columns, S has {int(m)} rows.")
     if not np.all(np.isin(K, (-1.0, 1.0))):
         raise ValueError("k_tildes must contain only -1 and +1.")
     nu = np.asarray(norms, dtype=float).ravel()
     if nu.size != K.shape[0]:
-        raise ValueError(
-            "norms has %d entries for %d keys." % (nu.size, K.shape[0])
-        )
+        raise ValueError(f"norms has {int(nu.size)} entries for {int(K.shape[0])} keys.")
     sc = 1.0 / np.sqrt(d) if scale is None else float(scale)
 
-    Sq = Sm @ qv                      # computed once, reused for every key
+    Sq = Sm @ qv  # computed once, reused for every key
     raw = np.sqrt(np.pi / 2.0) / m * nu * (K @ Sq)
     scores = raw * sc
 
@@ -116,20 +111,18 @@ def turboquant_estimate_scores(q, k_tildes, norms, S, scale=None,
         ex = np.exp(scores - mx)
         w = ex / ex.sum()
         nz = w[w > 0]
-        payload.update({
-            "weights": w,
-            "entropy": float(-np.sum(nz * np.log(nz))),
-            "effective_context": float(np.exp(-np.sum(nz * np.log(nz)))),
-            "effective_note": (
-                "exponentiated entropy of the attention weights: how many "
-                "keys the head is effectively reading"
-            ),
-        })
+        payload.update(
+            {
+                "weights": w,
+                "entropy": float(-np.sum(nz * np.log(nz))),
+                "effective_context": float(np.exp(-np.sum(nz * np.log(nz)))),
+                "effective_note": (
+                    "exponentiated entropy of the attention weights: how many keys the head is effectively reading"
+                ),
+            }
+        )
     return RichResult(payload=payload)
 
 
 def cheatsheet():
-    return (
-        "tqest: attention scores from sketched keys, with the score gap that "
-        "bounds tolerable sketch error"
-    )
+    return "tqest: attention scores from sketched keys, with the score gap that bounds tolerable sketch error"

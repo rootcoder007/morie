@@ -1,7 +1,6 @@
 """Tests for arlin (areal interpolation)."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.arlin import areal_interpolation
 
 

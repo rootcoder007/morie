@@ -1,7 +1,6 @@
 """Tests for jormse.joseph_rmse."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.jormse import joseph_rmse
 
 

@@ -1,11 +1,11 @@
 """ewtma: RiskMetrics EWMA volatility (J.P. Morgan/Reuters, RiskMetrics 1996).
 
-    sigma_t^2 = lambda * sigma_{t-1}^2 + (1 - lambda) * r_{t-1}^2
+sigma_t^2 = lambda * sigma_{t-1}^2 + (1 - lambda) * r_{t-1}^2
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ewtma import ewma_volatility as ew
 
 
@@ -24,9 +24,7 @@ def test_ewtma_follows_the_recursion_exactly():
 def test_ewtma_volatility_is_the_square_root_of_the_variance():
     rng = np.random.default_rng(2401)
     r = ew(rng.normal(0, 0.01, 200))
-    assert np.asarray(r["conditional_volatility"]) == pytest.approx(
-        np.sqrt(np.asarray(r["conditional_variance"]))
-    )
+    assert np.asarray(r["conditional_volatility"]) == pytest.approx(np.sqrt(np.asarray(r["conditional_variance"])))
     assert r["last_volatility"] == pytest.approx(np.sqrt(r["last_variance"]))
 
 

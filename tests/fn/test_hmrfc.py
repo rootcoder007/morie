@@ -1,7 +1,6 @@
 """Tests for hmrfc.geron_random_forest."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmrfc import geron_random_forest
 
 

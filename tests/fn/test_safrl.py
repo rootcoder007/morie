@@ -1,7 +1,5 @@
 """Tests for safrl.safe_rl."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.safrl import safe_rl
 
 

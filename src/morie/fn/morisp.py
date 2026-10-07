@@ -101,10 +101,10 @@ def morans_i(x, W):
             "A constant surface has no variation to be autocorrelated."
         )
     numer = float(dev @ w @ dev)
-    I = (n / w_sum) * (numer / denom)
+    I_ = (n / w_sum) * (numer / denom)
     return RichResult(
         payload={
-            "estimate": I,
+            "estimate": I_,
             "expected": -1.0 / (n - 1),
             "n": int(n),
             "W_sum": w_sum,

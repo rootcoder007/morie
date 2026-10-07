@@ -55,14 +55,26 @@ def aftrg(
     X_aug = np.column_stack([np.ones(n), X])
 
     if dist == "lognormal":
-        log_pdf = lambda z: stats.norm.logpdf(z)
-        log_sf = lambda z: stats.norm.logsf(z)
+
+        def log_pdf(z):
+            return stats.norm.logpdf(z)
+
+        def log_sf(z):
+            return stats.norm.logsf(z)
     elif dist == "loglogistic":
-        log_pdf = lambda z: stats.logistic.logpdf(z)
-        log_sf = lambda z: stats.logistic.logsf(z)
+
+        def log_pdf(z):
+            return stats.logistic.logpdf(z)
+
+        def log_sf(z):
+            return stats.logistic.logsf(z)
     elif dist == "weibull":
-        log_pdf = lambda z: -(z + np.exp(z))
-        log_sf = lambda z: -np.exp(z)
+
+        def log_pdf(z):
+            return -(z + np.exp(z))
+
+        def log_sf(z):
+            return -np.exp(z)
     else:
         raise ValueError(f"dist must be 'lognormal', 'loglogistic', or 'weibull', got '{dist}'.")
 

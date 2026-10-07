@@ -34,8 +34,7 @@ from ._richresult import RichResult
 __all__ = ["alphazero_benchmark_eval"]
 
 
-def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e",
-                             c_elo=1.0 / 400.0):
+def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e", c_elo=1.0 / 400.0):
     """Rating implied by a score against an anchor, and the ladder's expectations.
 
     Parameters
@@ -62,8 +61,8 @@ def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e",
     """
     g = k.vec(games)
     if len(g) >= 3:
-        w, d, l = g[0], g[1], g[2]
-        tot = w + d + l
+        w, d, ell = g[0], g[1], g[2]
+        tot = w + d + ell
         score = (w + 0.5 * d) / tot if tot > 0.0 else float("nan")
     else:
         score = g[0] if g else float("nan")
@@ -71,12 +70,11 @@ def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e",
         rating = float("-inf") if score <= 0.0 else float("inf")
     else:
         odds = math.log(score / (1.0 - score))
-        rating = float(anchor) + (odds / c_elo if base == "e"
-                                  else odds / (math.log(10.0) * c_elo))
+        rating = float(anchor) + (odds / c_elo if base == "e" else odds / (math.log(10.0) * c_elo))
     exp = []
-    for r in (k.vec(ladder) if ladder is not None else []):
+    for r in k.vec(ladder) if ladder is not None else []:
         d = c_elo * (r - rating)
-        exp.append(1.0 / (1.0 + (math.exp(d) if base == "e" else 10.0 ** d)))
+        exp.append(1.0 / (1.0 + (math.exp(d) if base == "e" else 10.0**d)))
     return RichResult(
         title="Elo rating from a match pool",
         summary_lines=[("rating", rating), ("score", score)],
@@ -86,9 +84,11 @@ def alphazero_benchmark_eval(games, ladder=None, anchor=0.0, base="e",
             "score": score,
             "expected": exp,
             "base": base,
-            "method": ("Elo rating inverted in closed form from a score against an "
-                       "anchor; AlphaZero's exp convention by default, Elo's "
-                       "base-10 curve with base=10"),
+            "method": (
+                "Elo rating inverted in closed form from a score against an "
+                "anchor; AlphaZero's exp convention by default, Elo's "
+                "base-10 curve with base=10"
+            ),
         },
     )
 

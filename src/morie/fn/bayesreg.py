@@ -294,8 +294,9 @@ def bayes_b(y, M, pi=0.95, nu=4.012, s2=None, ndraw=2000, burn_in=500, seed=0):
 
     References
     ----------
-    Meuwissen, T. H. E., Hayes, B. J. and Goddard, M. E. (2001). *Genetics*
-    157, 1819-1829.
+    Meuwissen, T. H. E., Hayes, B. J. and Goddard, M. E. (2001). Prediction
+    of total genetic value using genome-wide dense marker maps. *Genetics*
+    157(4), 1819-1829.
 
     Habier, D., Fernando, R. L., Kizilkaya, K. and Garrick, D. J. (2011).
     Extension of the Bayesian alphabet for genomic selection. *BMC
@@ -390,6 +391,7 @@ def cheatsheet() -> str:
         "bayes_linear_halfcauchy / finite_mixture_gibbs / contaminated_normal_outliers / bayes_a / bayes_b / "
         "genomic_reliability -> Bayesian regression samplers."
     )
+
 
 # alias kept from the retired placeholder of the same name
 bayes_a_alpha = bayes_a

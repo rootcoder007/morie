@@ -14,8 +14,7 @@ remove.
 
 from . import _array_core as np
 
-__all__ = ["add_intercept", "projection", "annihilator", "k_class",
-           "first_stage_f", "folds"]
+__all__ = ["add_intercept", "projection", "annihilator", "k_class", "first_stage_f", "folds"]
 
 
 def add_intercept(X):
@@ -78,8 +77,11 @@ def first_stage_f(D, Z, exog=None):
     a threshold.
     """
     D = np.asarray(D, dtype=float).ravel()
-    Zf = add_intercept(Z) if exog is None else np.column_stack(
-        [add_intercept(exog), np.atleast_2d(np.asarray(Z, dtype=float))])
+    Zf = (
+        add_intercept(Z)
+        if exog is None
+        else np.column_stack([add_intercept(exog), np.atleast_2d(np.asarray(Z, dtype=float))])
+    )
     W = add_intercept(exog) if exog is not None else np.ones((D.size, 1))
     rss_r = float(np.sum(annihilator(W, D) ** 2))
     rss_u = float(np.sum(annihilator(Zf, D) ** 2))
@@ -95,12 +97,14 @@ def folds(n, n_folds, seed=0):
     n_folds = int(n_folds)
     if not 2 <= n_folds <= n:
         raise ValueError(
-            f"n_folds must lie in 2..{n}, got {n_folds}; cross-fitting with "
-            "one fold is not cross-fitting.")
+            f"n_folds must lie in 2..{n}, got {n_folds}; cross-fitting with one fold is not cross-fitting."
+        )
     idx = np.random.default_rng(seed).permutation(n)
     return [idx[i::n_folds] for i in range(n_folds)]
 
 
 def cheatsheet():
-    return ("_caus_iv: every estimator here divides by a first-stage "
-            "association -- check F before believing the standard error")
+    return (
+        "_caus_iv: every estimator here divides by a first-stage "
+        "association -- check F before believing the standard error"
+    )

@@ -1,7 +1,8 @@
 """spbayr -- Bayesian hierarchical disease mapping, Sec. 6.4."""
 
-from morie.fn import _array_core as np
 import pytest
+
+from morie.fn import _array_core as np
 
 
 def _areas(n=10, seed=3):
@@ -12,9 +13,9 @@ def _areas(n=10, seed=3):
         A[i, i + 1] = A[i + 1, i] = 1.0
     A[0, 4] = A[4, 0] = 1.0
     E = rs.uniform(8, 30, n)
-    y = np.array([float(rs.poisson(e * np.exp(x)))
-                  for e, x in zip(E, np.linspace(-0.3, 0.3, n))])
+    y = np.array([float(rs.poisson(e * np.exp(x))) for e, x in zip(E, np.linspace(-0.3, 0.3, n))])
     return A, E, y
+
 
 from morie.fn._schab_glmm import neighbour_structure
 from morie.fn.spbayr import schabenberger_bayes_hierarchical
@@ -44,21 +45,17 @@ def test_lcar_nests_both_extremes():
     assert np.allclose(hi["precision"], neighbour_structure(A))
 
 
-@pytest.mark.parametrize("kind,expected", [("I", 1), ("II", 1),
-                                           ("III", 1), ("IV", 1)])
+@pytest.mark.parametrize("kind,expected", [("I", 1), ("II", 1), ("III", 1), ("IV", 1)])
 def test_constraints_equal_the_rank_deficiency(kind, expected):
     """eq (12): one constraint per unit of rank deficiency."""
     A, E, y = _areas()
-    r = schabenberger_bayes_hierarchical(y, E, A, n_time=5,
-                                         temporal_prior="rw1",
-                                         interaction=kind)
+    r = schabenberger_bayes_hierarchical(y, E, A, n_time=5, temporal_prior="rw1", interaction=kind)
     assert r["n_constraints"] == r["rank_deficiency"]
 
 
 def test_type_one_interaction_needs_no_constraints():
     A, E, y = _areas()
-    r = schabenberger_bayes_hierarchical(y, E, A, n_time=5,
-                                         temporal_prior="rw1", interaction="I")
+    r = schabenberger_bayes_hierarchical(y, E, A, n_time=5, temporal_prior="rw1", interaction="I")
     assert r["rank_deficiency"] == 0
     assert r["n_constraints"] == 0
 
@@ -67,15 +64,13 @@ def test_type_four_rank_matches_the_table():
     """Table 1 with RW1: rank (I-1)(T-1)."""
     A, E, y = _areas()
     n, T = len(y), 5
-    r = schabenberger_bayes_hierarchical(y, E, A, n_time=T,
-                                         temporal_prior="rw1", interaction="IV")
+    r = schabenberger_bayes_hierarchical(y, E, A, n_time=T, temporal_prior="rw1", interaction="IV")
     assert r["interaction_rank"] == (n - 1) * (T - 1)
 
 
 def test_rw2_has_deficiency_two():
     A, E, y = _areas()
-    r = schabenberger_bayes_hierarchical(y, E, A, n_time=6,
-                                         temporal_prior="rw2")
+    r = schabenberger_bayes_hierarchical(y, E, A, n_time=6, temporal_prior="rw2")
     assert r["rank_deficiency_temporal"] == 2
 
 
@@ -90,5 +85,4 @@ def test_unknown_priors_rejected():
     with pytest.raises(ValueError, match="spatial_prior"):
         schabenberger_bayes_hierarchical(y, E, A, spatial_prior="wishart")
     with pytest.raises(ValueError, match="temporal_prior"):
-        schabenberger_bayes_hierarchical(y, E, A, n_time=5,
-                                         temporal_prior="ar1")
+        schabenberger_bayes_hierarchical(y, E, A, n_time=5, temporal_prior="ar1")

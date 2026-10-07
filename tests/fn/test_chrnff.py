@@ -1,7 +1,6 @@
 """Tests for chrnff.chernoff_bound."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.chrnff import chernoff_bound
 
 
@@ -36,6 +35,7 @@ def test_chrnff_basic():
 
 def test_chrnff_edge():
     """Test edge cases."""
+
     # Trivial mgf: E[exp(sX)] = 1 for any s (e.g. X identically 0).
     # Then bound is exp(-s*a) minimised by s -> +inf; the grid endpoint
     # should be selected and at_boundary flagged True.

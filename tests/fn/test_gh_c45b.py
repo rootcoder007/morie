@@ -1,4 +1,5 @@
 """Tests for Ghosal Ch 4 tail + Ch 5 DPM modules."""
+
 import math
 
 from morie.fn.gh_c4_16 import ghosal_dp_tails
@@ -74,12 +75,10 @@ def test_constrained_dp_respects_controls():
 
 
 def test_penalized_dirichlet_prefers_smooth():
-    smooth = ghosal_pen_dp([0.25, 0.25, 0.25, 0.25],
-                           [1.0] * 4, lam=10.0)
+    smooth = ghosal_pen_dp([0.25, 0.25, 0.25, 0.25], [1.0] * 4, lam=10.0)
     rough = ghosal_pen_dp([0.7, 0.1, 0.1, 0.1], [1.0] * 4, lam=10.0)
     assert smooth["estimate"] > rough["estimate"]
-    post = ghosal_pen_dp([0.25] * 4, [1.0] * 4, 1.0,
-                         counts=[3, 1, 0, 0])
+    post = ghosal_pen_dp([0.25] * 4, [1.0] * 4, 1.0, counts=[3, 1, 0, 0])
     assert post["posterior_alpha"] == [4.0, 2.0, 1.0, 1.0]
 
 
@@ -109,7 +108,7 @@ def test_cgibbs_finds_two_clusters():
 def test_splitmerge_accepts_good_split():
     z = [0] * 8
     r = ghosal_splitmerge(TWO_CLUSTERS, z, split_label=0)
-    assert r["estimate"] == 1.0            # split clearly improves
+    assert r["estimate"] == 1.0  # split clearly improves
     assert len(set(r["z_proposed"])) == 2
 
 

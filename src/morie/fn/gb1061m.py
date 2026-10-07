@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['jtmom', 'gibbons_jt_moments']
+__all__ = ["jtmom", "gibbons_jt_moments"]
 
 
 def jtmom(ns):
@@ -47,13 +47,8 @@ def jtmom(ns):
         raise ValueError("sample sizes must be at least 1.")
     nn = sum(nv)
     mean = (float(nn) ** 2 - sum(float(v) ** 2 for v in nv)) / 4.0
-    pair = sum(
-        nv[i] * nv[j] / 2.0 for i in range(k) for j in range(i + 1, k)
-    )
-    var = (
-        float(nn) ** 2 * (2.0 * nn + 3.0)
-        - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in nv)
-    ) / 72.0
+    pair = sum(nv[i] * nv[j] / 2.0 for i in range(k) for j in range(i + 1, k))
+    var = (float(nn) ** 2 * (2.0 * nn + 3.0) - sum(float(v) ** 2 * (2.0 * v + 3.0) for v in nv)) / 72.0
     return RichResult(
         payload={
             "mean": float(mean),

@@ -66,8 +66,15 @@ import math
 from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["smcsam", "smc_sampler", "sequential_mc_sampler", "ess", "resample",
-           "temperature_ladder", "random_walk_kernel"]
+__all__ = [
+    "smcsam",
+    "smc_sampler",
+    "sequential_mc_sampler",
+    "ess",
+    "resample",
+    "temperature_ladder",
+    "random_walk_kernel",
+]
 
 
 def ess(weights):
@@ -141,8 +148,7 @@ def resample(weights, rng, scheme="systematic"):
                         hi = mid
                 out.append(lo)
         return out
-    raise ValueError("smcsam: scheme must be multinomial, stratified, "
-                     "systematic or residual")
+    raise ValueError("smcsam: scheme must be multinomial, stratified, systematic or residual")
 
 
 def temperature_ladder(n_steps, kind="geometric", power=1.0):
@@ -177,24 +183,36 @@ def random_walk_kernel(scale=1.0, n_moves=1):
     accepted)``; invariance is what equation 31 requires, and a symmetric
     proposal with the Metropolis rule provides it.
     """
+
     def move(x, log_target, rng):
         cur = list(x)
         lp = log_target(cur)
         acc = 0
         for _ in range(int(n_moves)):
-            prop = [cur[k] + scale * rng.standard_normal()
-                    for k in range(len(cur))]
+            prop = [cur[k] + scale * rng.standard_normal() for k in range(len(cur))]
             lq = log_target(prop)
             if math.log(max(rng.random(), 1e-300)) < lq - lp:
                 cur, lp = prop, lq
                 acc += 1
         return cur, acc / float(n_moves)
+
     return move
 
 
-def smcsam(log_gamma, initial, n_particles=500, ladder=None, n_steps=20,
-           kernel=None, ess_threshold=0.5, scheme="systematic", seed=0,
-           weight_rule="mcmc", log_forward=None, log_backward=None):
+def smcsam(
+    log_gamma,
+    initial,
+    n_particles=500,
+    ladder=None,
+    n_steps=20,
+    kernel=None,
+    ess_threshold=0.5,
+    scheme="systematic",
+    seed=0,
+    weight_rule="mcmc",
+    log_forward=None,
+    log_backward=None,
+):
     r"""Run an SMC sampler over :math:`\pi_n \propto \gamma_n`.
 
     Parameters
@@ -257,12 +275,9 @@ def smcsam(log_gamma, initial, n_particles=500, ladder=None, n_steps=20,
     """
     if weight_rule not in ("mcmc", "general"):
         raise ValueError("smcsam: weight_rule must be 'mcmc' or 'general'")
-    if weight_rule == "general" and (log_forward is None or
-                                     log_backward is None):
-        raise ValueError("smcsam: weight_rule='general' needs log_forward "
-                         "and log_backward densities (equation 12)")
-    phis = list(ladder) if ladder is not None else temperature_ladder(
-        n_steps)
+    if weight_rule == "general" and (log_forward is None or log_backward is None):
+        raise ValueError("smcsam: weight_rule='general' needs log_forward and log_backward densities (equation 12)")
+    phis = list(ladder) if ladder is not None else temperature_ladder(n_steps)
     if len(phis) < 2:
         raise ValueError("smcsam: the ladder needs at least two steps")
     N = int(n_particles)
@@ -281,19 +296,12 @@ def smcsam(log_gamma, initial, n_particles=500, ladder=None, n_steps=20,
     for n in range(1, len(phis)):
         prev, cur = phis[n - 1], phis[n]
         # incremental weights BEFORE the move (equation 31)
-        if weight_rule == "mcmc":
-            inc = [log_gamma(X[i], cur) - log_gamma(X[i], prev)
-                   for i in range(N)]
-        else:
-            inc = None
+        inc = [log_gamma(X[i], cur) - log_gamma(X[i], prev) for i in range(N)] if weight_rule == "mcmc" else None
         if inc is not None:
             mx = max(inc)
-            wprev = [math.exp(v) for v in
-                     [lw - max(logW) for lw in logW]]
+            wprev = [math.exp(v) for v in [lw - max(logW) for lw in logW]]
             tot_prev = sum(wprev)
-            log_norm += mx + math.log(
-                sum(wprev[i] * math.exp(inc[i] - mx) for i in range(N)) /
-                tot_prev)
+            log_norm += mx + math.log(sum(wprev[i] * math.exp(inc[i] - mx) for i in range(N)) / tot_prev)
             logW = [logW[i] + inc[i] for i in range(N)]
 
         def target(x, _c=cur):
@@ -328,37 +336,40 @@ def smcsam(log_gamma, initial, n_particles=500, ladder=None, n_steps=20,
     W = [v / tot for v in w]
     dim = len(X[0])
     mean = [sum(W[i] * X[i][k] for i in range(N)) for k in range(dim)]
-    var = [sum(W[i] * (X[i][k] - mean[k]) ** 2 for i in range(N))
-           for k in range(dim)]
-    return RichResult(payload={
-        "estimate": mean,
-        "mean": mean,
-        "variance": var,
-        "particles": X,
-        "weights": W,
-        "log_norm_const": log_norm,
-        "ess": ess(w),
-        "ess_trace": ess_trace,
-        "resampled": resampled,
-        "accept_trace": accept_trace,
-        "ladder": phis,
-        "n_particles": N,
-        "weight_rule": weight_rule,
-        "method": "SMC sampler (Del Moral, Doucet & Jasra 2006)",
-    })
+    var = [sum(W[i] * (X[i][k] - mean[k]) ** 2 for i in range(N)) for k in range(dim)]
+    return RichResult(
+        payload={
+            "estimate": mean,
+            "mean": mean,
+            "variance": var,
+            "particles": X,
+            "weights": W,
+            "log_norm_const": log_norm,
+            "ess": ess(w),
+            "ess_trace": ess_trace,
+            "resampled": resampled,
+            "accept_trace": accept_trace,
+            "ladder": phis,
+            "n_particles": N,
+            "weight_rule": weight_rule,
+            "method": "SMC sampler (Del Moral, Doucet & Jasra 2006)",
+        }
+    )
 
 
 def cheatsheet():
-    return ("smcsam: SMC samplers (Del Moral, Doucet & Jasra 2006). A "
-            "sequence pi_n on a FIXED space is made sequential by an "
-            "artificial joint target built from BACKWARD kernels L_k, so "
-            "the weights update recursively (eqs.11-12). With an MCMC "
-            "kernel of invariant distribution pi_n, the natural L is its "
-            "reversal (eq.30) and the incremental weight collapses to "
-            "gamma_n(x_{n-1})/gamma_{n-1}(x_{n-1}) (eq.31) -- evaluated "
-            "BEFORE the move, and free of the kernel. Degeneracy watched "
-            "by ESS = 1/sum W^2, resample below N/2. The running product "
-            "of incremental weights estimates Z_n/Z_1.")
+    return (
+        "smcsam: SMC samplers (Del Moral, Doucet & Jasra 2006). A "
+        "sequence pi_n on a FIXED space is made sequential by an "
+        "artificial joint target built from BACKWARD kernels L_k, so "
+        "the weights update recursively (eqs.11-12). With an MCMC "
+        "kernel of invariant distribution pi_n, the natural L is its "
+        "reversal (eq.30) and the incremental weight collapses to "
+        "gamma_n(x_{n-1})/gamma_{n-1}(x_{n-1}) (eq.31) -- evaluated "
+        "BEFORE the move, and free of the kernel. Degeneracy watched "
+        "by ESS = 1/sum W^2, resample below N/2. The running product "
+        "of incremental weights estimates Z_n/Z_1."
+    )
 
 
 # compact alias per ledger/NAMING.md

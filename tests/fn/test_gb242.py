@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb242 import gibbons_order_pdf
 
 
@@ -20,7 +19,7 @@ def test_gb242_basic():
 
     # Provide F_X(x) and f_X(x) as the values they take at x (floats),
     # computed independently from the parent distribution.
-    from math import erf, sqrt, pi, exp
+    from math import erf, exp, pi, sqrt
 
     fx_val = float(0.5 * (1.0 + erf(x / sqrt(2.0))))
     dx_val = float(exp(-0.5 * x * x) / sqrt(2.0 * pi))
@@ -34,15 +33,8 @@ def test_gb242_basic():
 
     # Re-derive the expected density from the literature formula
     # using only plain arithmetic on the same inputs.
-    expected_coef = float(
-        math.factorial(n) / (math.factorial(r - 1) * math.factorial(n - r))
-    )
-    expected_pdf = (
-        expected_coef
-        * fx_val ** (r - 1)
-        * (1.0 - fx_val) ** (n - r)
-        * dx_val
-    )
+    expected_coef = float(math.factorial(n) / (math.factorial(r - 1) * math.factorial(n - r)))
+    expected_pdf = expected_coef * fx_val ** (r - 1) * (1.0 - fx_val) ** (n - r) * dx_val
 
     assert result["r"] == r
     assert result["n"] == n
@@ -55,7 +47,7 @@ def test_gb242_basic():
 
 def test_gb242_callable_cdf_pdf():
     """Test that callables for cdf/pdf are accepted and match float inputs."""
-    from math import erf, sqrt, pi, exp
+    from math import erf, exp, pi, sqrt
 
     x = 0.3
     r = 5
@@ -73,15 +65,13 @@ def test_gb242_callable_cdf_pdf():
     result_callable = gibbons_order_pdf(x, r, n, F, f)
     result_value = gibbons_order_pdf(x, r, n, fx_val, dx_val)
 
-    assert math.isclose(result_callable["pdf"], result_value["pdf"],
-                        rel_tol=1e-12, abs_tol=0.0)
-    assert math.isclose(result_callable["coef"], result_value["coef"],
-                        rel_tol=1e-12, abs_tol=0.0)
+    assert math.isclose(result_callable["pdf"], result_value["pdf"], rel_tol=1e-12, abs_tol=0.0)
+    assert math.isclose(result_callable["coef"], result_value["coef"], rel_tol=1e-12, abs_tol=0.0)
 
 
 def test_gb242_edge():
     """Test edge cases: r=1 (minimum) and r=n (maximum)."""
-    from math import erf, sqrt, pi, exp
+    from math import erf, exp, pi, sqrt
 
     rng = np.random.default_rng(42)
     x = float(rng.normal(0.0, 1.0))
@@ -93,25 +83,17 @@ def test_gb242_edge():
     r = 1
     res_min = gibbons_order_pdf(x, r, n, fx_val, dx_val)
     expected_min = float(
-        math.factorial(n) / (math.factorial(0) * math.factorial(n - 1))
-        * (1.0 - fx_val) ** (n - 1)
-        * dx_val
+        math.factorial(n) / (math.factorial(0) * math.factorial(n - 1)) * (1.0 - fx_val) ** (n - 1) * dx_val
     )
-    assert math.isclose(res_min["pdf"], expected_min,
-                        rel_tol=1e-12, abs_tol=0.0)
+    assert math.isclose(res_min["pdf"], expected_min, rel_tol=1e-12, abs_tol=0.0)
     assert res_min["r"] == 1
     assert res_min["n"] == n
 
     # r = n -> only the F^(n-1) * f factor survives.
     r = n
     res_max = gibbons_order_pdf(x, r, n, fx_val, dx_val)
-    expected_max = float(
-        math.factorial(n) / (math.factorial(n - 1) * math.factorial(0))
-        * fx_val ** (n - 1)
-        * dx_val
-    )
-    assert math.isclose(res_max["pdf"], expected_max,
-                        rel_tol=1e-12, abs_tol=0.0)
+    expected_max = float(math.factorial(n) / (math.factorial(n - 1) * math.factorial(0)) * fx_val ** (n - 1) * dx_val)
+    assert math.isclose(res_max["pdf"], expected_max, rel_tol=1e-12, abs_tol=0.0)
     assert res_max["r"] == n
     assert res_max["n"] == n
 

@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Simulation-based calibration ranks."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -72,12 +70,20 @@ def sbcrank(prior_draw, post_draws, bins=None):
     exp = J / K
     chi = sum((hist[b] - exp) ** 2 / exp for b in range(K))
     df = K - 1
-    return RichResult(payload={
-        "rank": [float(v) for v in rk], "histogram": hist,
-        "expected": exp, "statistic": chi,
-        "p_value": 1.0 - C.pchisq(chi, df) if df >= 1 else float("nan"),
-        "df": float(df), "bins": float(K), "J": float(J), "L": float(L),
-        "method": "Simulation-based calibration ranks (Talts et al. 2018)"})
+    return RichResult(
+        payload={
+            "rank": [float(v) for v in rk],
+            "histogram": hist,
+            "expected": exp,
+            "statistic": chi,
+            "p_value": 1.0 - C.pchisq(chi, df) if df >= 1 else float("nan"),
+            "df": float(df),
+            "bins": float(K),
+            "J": float(J),
+            "L": float(L),
+            "method": "Simulation-based calibration ranks (Talts et al. 2018)",
+        }
+    )
 
 
 simulation_based_calibration_rank = sbcrank

@@ -340,7 +340,10 @@ class TestBootstrapCIReproducibility:
 
     def test_same_seed_gives_identical_ci(self):
         data = self._make_data()
-        func = lambda df: float(df["x"].mean())
+
+        def func(df):
+            return float(df["x"].mean())
+
         lower1, upper1 = bootstrap_ci(func, data, n_iterations=200, seed=42)
         lower2, upper2 = bootstrap_ci(func, data, n_iterations=200, seed=42)
         assert lower1 == lower2, "Lower bound differs across runs with same seed"
@@ -348,7 +351,10 @@ class TestBootstrapCIReproducibility:
 
     def test_different_seeds_give_different_ci(self):
         data = self._make_data()
-        func = lambda df: float(df["x"].mean())
+
+        def func(df):
+            return float(df["x"].mean())
+
         lower1, upper1 = bootstrap_ci(func, data, n_iterations=200, seed=1)
         lower2, upper2 = bootstrap_ci(func, data, n_iterations=200, seed=99)
         # With 200 iterations and n=100, different seeds should produce
@@ -360,14 +366,20 @@ class TestBootstrapCIReproducibility:
 
     def test_ci_is_valid_interval(self):
         data = self._make_data()
-        func = lambda df: float(df["x"].mean())
+
+        def func(df):
+            return float(df["x"].mean())
+
         lower, upper = bootstrap_ci(func, data, n_iterations=500, seed=42)
         assert lower <= upper, f"CI lower bound {lower} > upper bound {upper}"
         assert np.isfinite(lower) and np.isfinite(upper)
 
     def test_ci_width_decreases_with_sample_size(self):
         """Larger samples should produce narrower bootstrap CIs."""
-        func = lambda df: float(df["x"].mean())
+
+        def func(df):
+            return float(df["x"].mean())
+
         rng = np.random.default_rng(0)
         small = pd.DataFrame({"x": rng.standard_normal(30)})
         large = pd.DataFrame({"x": rng.standard_normal(500)})
@@ -472,16 +484,14 @@ def test_anderson_darling_applies_case_3_normal_modification():
     x = rng.normal(size=50)
     res = anderson_darling(x, dist="norm")
     n = len(x)
-    assert res.test_statistic == pytest.approx(
-        res.extra["a_squared"] * (1 + 0.75 / n + 2.25 / n**2), rel=1e-12
-    )
+    assert res.test_statistic == pytest.approx(res.extra["a_squared"] * (1 + 0.75 / n + 2.25 / n**2), rel=1e-12)
 
 
 def test_gof_rejects_misfit_and_accepts_good_fit():
     from morie.statistics import anderson_darling, lilliefors_test
 
     rng = np.random.default_rng(4)
-    heavy = rng.exponential(size=200)          # not normal
+    heavy = rng.exponential(size=200)  # not normal
     # the normal-null p-values are nortest's formulas, not table clamps
     li = lilliefors_test(heavy, dist="norm")
     assert li.p_value < 0.001 and li.extra["p_bounded"] is None

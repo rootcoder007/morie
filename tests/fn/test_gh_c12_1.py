@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c12_1 import ghosal_infdim_bvm
 
 
@@ -49,12 +48,9 @@ def test_gh_c12_1_independent_total_variation():
     for i in range(grid):
         t = lo + (hi - lo) * (i + 0.5) / grid
         bpdf = math.exp(
-            math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b)
-            + (a - 1) * math.log(t) + (b - 1) * math.log(1.0 - t)
+            math.lgamma(a + b) - math.lgamma(a) - math.lgamma(b) + (a - 1) * math.log(t) + (b - 1) * math.log(1.0 - t)
         )
-        npdf = math.exp(-0.5 * ((t - mle) / sd) ** 2) / (
-            sd * math.sqrt(2.0 * math.pi)
-        )
+        npdf = math.exp(-0.5 * ((t - mle) / sd) ** 2) / (sd * math.sqrt(2.0 * math.pi))
         expected += 0.5 * abs(bpdf - npdf) * (hi - lo) / grid
 
     result = ghosal_infdim_bvm(theta0=theta0, n=n, seed=seed)

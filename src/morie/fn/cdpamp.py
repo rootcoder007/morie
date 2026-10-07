@@ -93,16 +93,20 @@ def cdp_subgaussian_amplification(rho, k_compositions=1, delta=1e-5):
     eps = float(total + 2.0 * np.sqrt(total * np.log(1.0 / delta)))
     return RichResult(
         title="zCDP composition",
-        summary_lines=[("rho total", total), ("epsilon", eps),
-                       ("delta", float(delta))],
-        warnings=["zCDP cannot represent pure epsilon-DP: the Laplace "
-                  "mechanism has unbounded Renyi divergence and no finite rho"],
+        summary_lines=[("rho total", total), ("epsilon", eps), ("delta", float(delta))],
+        warnings=[
+            "zCDP cannot represent pure epsilon-DP: the Laplace "
+            "mechanism has unbounded Renyi divergence and no finite rho"
+        ],
         payload={
-            "rho_total": total, "epsilon": eps, "delta": float(delta),
+            "rho_total": total,
+            "epsilon": eps,
+            "delta": float(delta),
             "sqrt_k_growth": True,
             # Gaussian mechanism with unit L2 sensitivity: rho = 1/(2 sigma^2).
             "equivalent_sigma": float(np.sqrt(1.0 / (2.0 * total))) if total > 0 else float("inf"),
-            "k": k, "method": "cdp_subgaussian_amplification",
+            "k": k,
+            "method": "cdp_subgaussian_amplification",
         },
     )
 

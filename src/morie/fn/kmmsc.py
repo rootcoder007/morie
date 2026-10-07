@@ -11,13 +11,11 @@ __all__ = ["kamath_moverscore", "word_movers_distance"]
 def _cost_matrix(H, R, metric):
     if metric == "euclidean":
         diff = H[:, None, :] - R[None, :, :]
-        return np.sqrt(np.sum(diff ** 2, axis=2))
+        return np.sqrt(np.sum(diff**2, axis=2))
     nh = np.linalg.norm(H, axis=1)
     nr = np.linalg.norm(R, axis=1)
     if np.any(nh == 0) or np.any(nr == 0):
-        raise ValueError(
-            "a zero embedding has no direction; cosine distance is "
-            "undefined.")
+        raise ValueError("a zero embedding has no direction; cosine distance is undefined.")
     return 1.0 - (H / nh[:, None]) @ (R / nr[:, None]).T
 
 
@@ -36,9 +34,12 @@ def word_movers_distance(cost, p, q, max_iter=10000):
     head = [-1] * V
 
     def add(u, v, c, w):
-        for (a, b, cc, ww) in ((u, v, c, w), (v, u, 0.0, -w)):
-            to.append(b); cap.append(cc); cst.append(ww)
-            nxt.append(head[a]); head[a] = len(to) - 1
+        for a, b, cc, ww in ((u, v, c, w), (v, u, 0.0, -w)):
+            to.append(b)
+            cap.append(cc)
+            cst.append(ww)
+            nxt.append(head[a])
+            head[a] = len(to) - 1
 
     for i in range(n):
         add(S, i, float(p[i]), 0.0)
@@ -55,9 +56,7 @@ def word_movers_distance(cost, p, q, max_iter=10000):
     while total_flow < target - 1e-12:
         it += 1
         if it > max_iter:
-            raise ValueError(
-                "the transportation problem did not converge within "
-                f"{max_iter} augmentations.")
+            raise ValueError(f"the transportation problem did not converge within {max_iter} augmentations.")
         dist = [np.inf] * V
         inq = [False] * V
         pre = [-1] * V
@@ -77,9 +76,7 @@ def word_movers_distance(cost, p, q, max_iter=10000):
                         queue.append(to[e])
                 e = nxt[e]
         if not np.isfinite(dist[T]):
-            raise ValueError(
-                "no augmenting path remains; supplies and demands are "
-                "inconsistent.")
+            raise ValueError("no augmenting path remains; supplies and demands are inconsistent.")
         push = np.inf
         v = T
         while v != S:
@@ -97,9 +94,9 @@ def word_movers_distance(cost, p, q, max_iter=10000):
     return total_cost
 
 
-def kamath_moverscore(hypothesis_embeddings, reference_embeddings,
-                      weights_h=None, weights_r=None, metric="euclidean",
-                      normalizer=None):
+def kamath_moverscore(
+    hypothesis_embeddings, reference_embeddings, weights_h=None, weights_r=None, metric="euclidean", normalizer=None
+):
     """MoverScore = 1 - WMD(emb(h), emb(r)) / normalizer.
 
     The transport is solved exactly (min-cost flow), so the distance is
@@ -133,9 +130,7 @@ def kamath_moverscore(hypothesis_embeddings, reference_embeddings,
     if H.size == 0 or R.size == 0:
         raise ValueError("both token sets must be non-empty.")
     if H.shape[1] != R.shape[1]:
-        raise ValueError(
-            f"hypothesis embeddings are {H.shape[1]}-dim and reference "
-            f"ones {R.shape[1]}-dim.")
+        raise ValueError(f"hypothesis embeddings are {H.shape[1]}-dim and reference ones {R.shape[1]}-dim.")
     if metric not in ("euclidean", "cosine"):
         raise ValueError("metric must be 'euclidean' or 'cosine'.")
 
@@ -158,16 +153,21 @@ def kamath_moverscore(hypothesis_embeddings, reference_embeddings,
     wmd = word_movers_distance(C, p, q)
     norm = float(C.max()) if normalizer is None else float(normalizer)
     if norm <= 0:
-        raise ValueError(
-            "the normaliser is 0: every token pair is at distance 0, so "
-            "1 - WMD/0 is undefined.")
+        raise ValueError("the normaliser is 0: every token pair is at distance 0, so 1 - WMD/0 is undefined.")
     score = 1.0 - wmd / norm
-    return RichResult(payload={
-        "estimate": score, "score": score, "wmd": float(wmd),
-        "normalizer": norm, "metric": metric,
-        "n_hypothesis": int(H.shape[0]), "n_reference": int(R.shape[0]),
-        "n": int(H.shape[0]),
-        "method": "MoverScore = 1 - exact WMD / normalizer"})
+    return RichResult(
+        payload={
+            "estimate": score,
+            "score": score,
+            "wmd": float(wmd),
+            "normalizer": norm,
+            "metric": metric,
+            "n_hypothesis": int(H.shape[0]),
+            "n_reference": int(R.shape[0]),
+            "n": int(H.shape[0]),
+            "method": "MoverScore = 1 - exact WMD / normalizer",
+        }
+    )
 
 
 def cheatsheet():

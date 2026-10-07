@@ -1,8 +1,5 @@
 """Tests for mleth.mle_theta_estimator."""
 
-import math
-import pytest
-
 from morie.fn import _array_core as np
 from morie.fn.mleth import mle_theta_estimator
 

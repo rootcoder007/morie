@@ -1,7 +1,6 @@
 """Tests for datasb.data_subset_refutation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.datasb import data_subset_refutation
 
 
@@ -19,9 +18,15 @@ def test_datasb_basic():
     result = data_subset_refutation(_toy_estimator, y, d, X, n_sims=10, seed=0)
     assert isinstance(result, dict)
     # documented return keys
-    for key in ("original", "subset_mean", "subset_sd",
-                "relative_change", "passed",
-                "excess_variability", "max_single_row_influence"):
+    for key in (
+        "original",
+        "subset_mean",
+        "subset_sd",
+        "relative_change",
+        "passed",
+        "excess_variability",
+        "max_single_row_influence",
+    ):
         assert key in result
 
     # independent recomputation of subset_mean from documented behaviour:

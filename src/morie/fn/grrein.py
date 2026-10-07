@@ -74,9 +74,7 @@ def geron_reinforce_policy_gradient(theta, log_probs, returns_G, alpha, baseline
     if th.size == 0:
         raise ValueError("theta is empty.")
     if S.ndim != 2:
-        raise ValueError(
-            f"log_probs must be a (T, p) array of score vectors grad log pi, got shape {S.shape}."
-        )
+        raise ValueError(f"log_probs must be a (T, p) array of score vectors grad log pi, got shape {S.shape}.")
     if S.shape[1] != th.size:
         raise ValueError(
             f"log_probs rows have {S.shape[1]} components but theta has {th.size}; "

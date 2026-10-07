@@ -1,12 +1,11 @@
 """Tests for morie.fn.clust."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.clust import clust
 
 
 def test_clust_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = clust(adj_matrix=np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]], dtype=float))
     assert result is not None
     assert hasattr(result, "name")

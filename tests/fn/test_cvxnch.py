@@ -1,7 +1,6 @@
 """Tests for cvxnch.boyd_nuclear_norm."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxnch import boyd_nuclear_norm
 
 
@@ -11,6 +10,8 @@ def test_cvxnch_basic():
     result = boyd_nuclear_norm(X)
     assert isinstance(result, dict)
     assert "nuclear" in result
+
+
 def test_cvxnch_edge():
     """Test edge cases."""
     X = np.random.default_rng(42).normal(0, 1, (100, 5))

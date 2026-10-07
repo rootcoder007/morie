@@ -9,8 +9,7 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-from morie.fn.tmlcen import (censoring_survival, coarsen_interval,
-                             ipcw_interval, tmle_censoring)
+from morie.fn.tmlcen import censoring_survival, coarsen_interval, ipcw_interval, tmle_censoring
 
 N = 2000
 K = 6
@@ -30,8 +29,7 @@ def censored():
     ignoring it biases the survival curves."""
     rng = np.random.default_rng(5)
     W = [rng.standard_normal() for _ in range(N)]
-    A = [1.0 if rng.uniform() < expit(0.3 * W[i]) else 0.0
-         for i in range(N)]
+    A = [1.0 if rng.uniform() < expit(0.3 * W[i]) else 0.0 for i in range(N)]
     T, C = [], []
     for i in range(N):
         hz = death_hazard(A[i], W[i])
@@ -48,16 +46,18 @@ def censored():
                 cc = kk
                 break
         C.append(cc)
-    truth = (sum((1.0 - death_hazard(1.0, W[i])) ** K for i in range(N))
-             - sum((1.0 - death_hazard(0.0, W[i])) ** K
-                   for i in range(N))) / N
-    return {"W": [[W[i]] for i in range(N)], "A": A,
-            "obs": [min(T[i], C[i]) for i in range(N)],
-            "ev": [1.0 if (T[i] <= C[i] and T[i] < K) else 0.0
-                   for i in range(N)],
-            "cen": [1.0 if (C[i] < T[i] and C[i] < K) else 0.0
-                    for i in range(N)],
-            "truth": truth}
+    truth = (
+        sum((1.0 - death_hazard(1.0, W[i])) ** K for i in range(N))
+        - sum((1.0 - death_hazard(0.0, W[i])) ** K for i in range(N))
+    ) / N
+    return {
+        "W": [[W[i]] for i in range(N)],
+        "A": A,
+        "obs": [min(T[i], C[i]) for i in range(N)],
+        "ev": [1.0 if (T[i] <= C[i] and T[i] < K) else 0.0 for i in range(N)],
+        "cen": [1.0 if (C[i] < T[i] and C[i] < K) else 0.0 for i in range(N)],
+        "truth": truth,
+    }
 
 
 def test_coarsening_matches_section_8_5():
@@ -104,8 +104,7 @@ def test_the_weights_reduce_bias_not_just_one_draw():
         rng = np.random.default_rng(sd)
         n = 1500
         W = [rng.standard_normal() for _ in range(n)]
-        A = [1.0 if rng.uniform() < expit(0.3 * W[i]) else 0.0
-             for i in range(n)]
+        A = [1.0 if rng.uniform() < expit(0.3 * W[i]) else 0.0 for i in range(n)]
         T, C = [], []
         for i in range(n):
             hz = death_hazard(A[i], W[i])
@@ -122,16 +121,17 @@ def test_the_weights_reduce_bias_not_just_one_draw():
                     cc = kk
                     break
             C.append(cc)
-        truth = (sum((1.0 - death_hazard(1.0, W[i])) ** K
-                     for i in range(n))
-                 - sum((1.0 - death_hazard(0.0, W[i])) ** K
-                       for i in range(n))) / n
-        r = tmle_censoring([min(T[i], C[i]) for i in range(n)],
-                           [1.0 if (T[i] <= C[i] and T[i] < K) else 0.0
-                            for i in range(n)],
-                           [1.0 if (C[i] < T[i] and C[i] < K) else 0.0
-                            for i in range(n)],
-                           A, [[W[i]] for i in range(n)])
+        truth = (
+            sum((1.0 - death_hazard(1.0, W[i])) ** K for i in range(n))
+            - sum((1.0 - death_hazard(0.0, W[i])) ** K for i in range(n))
+        ) / n
+        r = tmle_censoring(
+            [min(T[i], C[i]) for i in range(n)],
+            [1.0 if (T[i] <= C[i] and T[i] < K) else 0.0 for i in range(n)],
+            [1.0 if (C[i] < T[i] and C[i] < K) else 0.0 for i in range(n)],
+            A,
+            [[W[i]] for i in range(n)],
+        )
         ipcw_err += abs(r["estimate"] - truth)
         naive_err += abs(r["unadjusted"] - truth)
     assert ipcw_err / len(seeds) < naive_err / len(seeds)
@@ -145,37 +145,30 @@ def test_survival_curves_are_curves(censored):
         assert all(s[i + 1] <= s[i] + 1e-12 for i in range(len(s) - 1))
         assert all(0.0 <= v <= 1.0 for v in s)
     # treatment lowers the hazard here, so its curve sits above control
-    assert all(r["survival_treated"][i] >= r["survival_control"][i]
-               for i in range(len(r["grid"])))
+    assert all(r["survival_treated"][i] >= r["survival_control"][i] for i in range(len(r["grid"])))
 
 
 def test_censoring_survival_is_a_survival_curve(censored):
     d = censored
-    G, grid, _ = censoring_survival(d["obs"], d["cen"], A=d["A"],
-                                    W=d["W"])
+    G, grid, _ = censoring_survival(d["obs"], d["cen"], A=d["A"], W=d["W"])
     assert all(0.0 < v <= 1.0 for row in G for v in row)
-    assert all(row[i + 1] <= row[i] + 1e-12
-               for row in G for i in range(len(row) - 1))
+    assert all(row[i + 1] <= row[i] + 1e-12 for row in G for i in range(len(row) - 1))
 
 
 def test_interval_ipcw_and_its_positivity_guards(censored):
     d = censored
     rng = np.random.default_rng(3)
     M = 4
-    mon = [sorted(1.0 + 4.0 * float(rng.uniform()) for _ in range(M))
-           for _ in range(N)]
-    dele = [[1.0 if float(rng.uniform()) < 0.4 else 0.0
-             for _ in range(M)] for _ in range(N)]
+    mon = [sorted(1.0 + 4.0 * float(rng.uniform()) for _ in range(M)) for _ in range(N)]
+    dele = [[1.0 if float(rng.uniform()) < 0.4 else 0.0 for _ in range(M)] for _ in range(N)]
     g = [0.5] * N
     gc = [[0.25] * M for _ in range(N)]
     psi = ipcw_interval(d["W"], d["A"], mon, dele, a=1.0, g=g, gc=gc)
     assert psi > 0.0
     with pytest.raises(ValueError):
-        ipcw_interval(d["W"], d["A"], mon, dele, a=1.0, g=[0.0] * N,
-                      gc=gc)
+        ipcw_interval(d["W"], d["A"], mon, dele, a=1.0, g=[0.0] * N, gc=gc)
     with pytest.raises(ValueError):
-        ipcw_interval(d["W"], d["A"], mon, dele, a=1.0, g=g,
-                      gc=[[0.0] * M for _ in range(N)])
+        ipcw_interval(d["W"], d["A"], mon, dele, a=1.0, g=g, gc=[[0.0] * M for _ in range(N)])
 
 
 def test_argument_checks(censored):
@@ -183,5 +176,4 @@ def test_argument_checks(censored):
     with pytest.raises(ValueError):
         tmle_censoring([1.0], [1.0], [1.0], [1.0], [[0.0]])
     with pytest.raises(ValueError):
-        tmle_censoring(d["obs"], d["ev"], d["cen"], d["A"], d["W"],
-                       kind="nope")
+        tmle_censoring(d["obs"], d["ev"], d["cen"], d["A"], d["W"], kind="nope")

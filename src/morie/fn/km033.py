@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Kamath Eq 2.33: the denoising autoencoder loss."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from .km021 import kamath_ch2_clm_loss
 
@@ -26,10 +25,14 @@ def kamath_ch2_dae_loss(x, xhat):
     True
     """
     inner = kamath_ch2_clm_loss(x)
-    return RichResult(payload={
-        "estimate": inner["estimate"],
-        "per_position": inner["per_position"], "n": inner["n"],
-        "method": "Denoising autoencoder loss (Kamath Eq 2.33)"})
+    return RichResult(
+        payload={
+            "estimate": inner["estimate"],
+            "per_position": inner["per_position"],
+            "n": inner["n"],
+            "method": "Denoising autoencoder loss (Kamath Eq 2.33)",
+        }
+    )
 
 
 def cheatsheet():

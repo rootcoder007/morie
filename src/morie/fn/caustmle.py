@@ -110,20 +110,29 @@ def causal_tmle_targeted(y, T, ps, Q1, Q0, n_iter=100):
     ey1 = sum(q1s) / n
     ey0 = sum(q0s) / n
     ate = ey1 - ey0
-    ic = [h1[i] * (ys[i] - q1s[i]) - h0[i] * (ys[i] - q0s[i])
-          + (q1s[i] - q0s[i]) - ate for i in range(n)]
+    ic = [h1[i] * (ys[i] - q1s[i]) - h0[i] * (ys[i] - q0s[i]) + (q1s[i] - q0s[i]) - ate for i in range(n)]
     var = sum(v * v for v in ic) / (n * n)
     se = math.sqrt(var)
     z = 1.959963984540054
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(ate), "ATE_TMLE": float(ate), "IF": ic,
-        "se": float(se), "ci_lower": float(ate - z * se),
-        "ci_upper": float(ate + z * se),
-        "epsilon": [float(e0), float(e1)],
-        "EY1": float(ey1), "EY0": float(ey0),
-        "plugin": float(sum(q1[i] - q0[i] for i in range(n)) / n), "n": n,
-        "method": "TMLE of the ATE (van der Laan & Rubin 2006)",
-    }), "caustmle")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(ate),
+                "ATE_TMLE": float(ate),
+                "IF": ic,
+                "se": float(se),
+                "ci_lower": float(ate - z * se),
+                "ci_upper": float(ate + z * se),
+                "epsilon": [float(e0), float(e1)],
+                "EY1": float(ey1),
+                "EY0": float(ey0),
+                "plugin": float(sum(q1[i] - q0[i] for i in range(n)) / n),
+                "n": n,
+                "method": "TMLE of the ATE (van der Laan & Rubin 2006)",
+            }
+        ),
+        "caustmle",
+    )
 
 
 def cheatsheet():

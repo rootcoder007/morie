@@ -32,7 +32,10 @@ _INVPHI = (math.sqrt(5.0) - 1.0) / 2.0
 
 def _line_search(f, x, v, iters=60):
     lo, hi = 0.0, 1.0
-    pt = lambda g: [(1.0 - g) * x[j] + g * v[j] for j in range(len(x))]
+
+    def pt(g):
+        return [(1.0 - g) * x[j] + g * v[j] for j in range(len(x))]
+
     c = hi - _INVPHI * (hi - lo)
     d = lo + _INVPHI * (hi - lo)
     fc = f(pt(c))

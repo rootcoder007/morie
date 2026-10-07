@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.colE import cold_start_user
 
 
@@ -32,8 +31,7 @@ def test_colE_basic():
     result = cold_start_user(user, "popular", R=R, topn=topn)
 
     assert isinstance(result, dict)
-    for key in ("estimate", "is_cold", "n_rated", "scores",
-                "recommended", "mode", "n_users", "n_items"):
+    for key in ("estimate", "is_cold", "n_rated", "scores", "recommended", "mode", "n_users", "n_items"):
         assert key in result
 
     assert result["n_users"] == n_users

@@ -43,8 +43,12 @@ def kosorok_ch2_empirical_distribution_function(X, t=None, n=None):
         raise ValueError(f"n = {n} does not match len(X) = {X.size}.")
     tt = np.sort(X) if t is None else np.atleast_1d(np.asarray(t, dtype=float))
     return RichResult(
-        payload={"t": tt, "F_n": empirical_df(X, tt), "n": int(X.size),
-                 "method": "F_n(t) = n^-1 sum 1{X_i <= t} (Kosorok Ch. 2)"}
+        payload={
+            "t": tt,
+            "F_n": empirical_df(X, tt),
+            "n": int(X.size),
+            "method": "F_n(t) = n^-1 sum 1{X_i <= t} (Kosorok Ch. 2)",
+        }
     )
 
 

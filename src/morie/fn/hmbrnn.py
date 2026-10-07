@@ -17,9 +17,7 @@ def _phi(z, kind):
         return 1.0 / (1.0 + np.exp(-z))
     if kind == "identity":
         return z
-    raise ValueError(
-        f"geron_bidirectional_rnn: unknown activation {kind!r}; expected tanh, relu, sigmoid or identity"
-    )
+    raise ValueError(f"geron_bidirectional_rnn: unknown activation {kind!r}; expected tanh, relu, sigmoid or identity")
 
 
 def geron_bidirectional_rnn(X, Wx_f, Wh_f, Wx_b, Wh_b, b_f=None, b_b=None, h0_f=None, h0_b=None, activation="tanh"):
@@ -90,13 +88,10 @@ def geron_bidirectional_rnn(X, Wx_f, Wh_f, Wx_b, Wh_b, b_f=None, b_b=None, h0_f=
     h = Wxf.shape[1]
     if Wxf.shape[0] != d or Wxb.shape[0] != d:
         raise ValueError(
-            f"geron_bidirectional_rnn: X has {d} features but Wx_f/Wx_b expect "
-            f"{Wxf.shape[0]}/{Wxb.shape[0]}"
+            f"geron_bidirectional_rnn: X has {d} features but Wx_f/Wx_b expect {Wxf.shape[0]}/{Wxb.shape[0]}"
         )
     if Wxb.shape[1] != h:
-        raise ValueError(
-            f"geron_bidirectional_rnn: forward hidden size {h} does not match backward {Wxb.shape[1]}"
-        )
+        raise ValueError(f"geron_bidirectional_rnn: forward hidden size {h} does not match backward {Wxb.shape[1]}")
     if Whf.shape != (h, h) or Whb.shape != (h, h):
         raise ValueError(f"geron_bidirectional_rnn: Wh_f and Wh_b must both be ({h}, {h})")
 

@@ -1,7 +1,6 @@
 """Tests for kmfact.kamath_factscore."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmfact import kamath_factscore
 
 

@@ -25,9 +25,7 @@ def _sorted_counts(y_true, y_scores):
     P = int((yt == 1).sum())
     N = int((yt == 0).sum())
     if P == 0 or N == 0:
-        raise ValueError(
-            f"need both classes present: got {P} positives and {N} negatives."
-        )
+        raise ValueError(f"need both classes present: got {P} positives and {N} negatives.")
     order = np.argsort(-s, kind="mergesort")
     return yt[order].astype(int), s[order], P, N
 
@@ -93,12 +91,7 @@ def geron_roc_curve(y_true, y_scores):
         thr.append(float(ss[i]))
         i = j + 1
     # Trapezoid rule written out: np.trapz was removed in numpy 2.
-    auc = float(
-        sum(
-            (fpr[i + 1] - fpr[i]) * (tpr[i + 1] + tpr[i]) / 2.0
-            for i in range(len(fpr) - 1)
-        )
-    )
+    auc = float(sum((fpr[i + 1] - fpr[i]) * (tpr[i + 1] + tpr[i]) / 2.0 for i in range(len(fpr) - 1)))
 
     return RichResult(
         title="ROC curve",

@@ -10,11 +10,29 @@ import math
 
 import pytest
 
-from morie.fn.bsacep import (ccepclosed, ccepdecay, ccepstrum, ccepsum, ccepx,
-                             cepstrum, convmodel, echoseries, homdeconv,
-                             homofilt, hompred, lifter, logsep, mfcc, minphase,
-                             multmodel, pceprel, pcepstrum, pcepsum, ratz,
-                             vocaltract)
+from morie.fn.bsacep import (
+    ccepclosed,
+    ccepdecay,
+    ccepstrum,
+    ccepsum,
+    ccepx,
+    cepstrum,
+    convmodel,
+    echoseries,
+    homdeconv,
+    homofilt,
+    hompred,
+    lifter,
+    logsep,
+    mfcc,
+    minphase,
+    multmodel,
+    pceprel,
+    pcepstrum,
+    pcepsum,
+    ratz,
+    vocaltract,
+)
 
 N = 64
 
@@ -34,11 +52,12 @@ def wavelet(n=N):
 
 # ------------------------------------------------ the echo, eqs 4.74-4.80
 
+
 def test_ccepstrum_of_an_echo_is_the_impulse_train_of_eq480():
     a, n0 = 0.5, 8
     c = ccepstrum(echo(a, n0))["cepstrum"]
     for k in (1, 2, 3, 4):
-        want = ((-1) ** (k + 1)) * (a ** k) / k
+        want = ((-1) ** (k + 1)) * (a**k) / k
         assert c[k * n0] == pytest.approx(want, abs=2e-3)
 
 
@@ -68,8 +87,7 @@ def test_ccepstrum_rejects_a_vanishing_spectrum():
 
 def test_echoseries_amplitudes_match_the_printed_series():
     r = echoseries(0.5, 8, terms=4)
-    assert r["amplitudes"] == pytest.approx(
-        [0.5, -0.125, 1 / 24, -0.015625])
+    assert r["amplitudes"] == pytest.approx([0.5, -0.125, 1 / 24, -0.015625])
     assert r["quefrencies"] == [8, 16, 24, 32]
 
 
@@ -93,6 +111,7 @@ def test_echoseries_converges_to_the_closed_form():
 
 # ------------------------------------------------- models, eqs 4.58-4.66
 
+
 def test_multmodel_and_logsep_eqs458_459():
     x, p = [2.0, 3.0, 4.0], [5.0, 0.5, 2.0]
     assert multmodel(x, p)["y"] == pytest.approx([10.0, 1.5, 8.0])
@@ -109,8 +128,7 @@ def test_logsep_enforces_the_nonzero_condition_of_eq459():
 
 
 def test_convmodel_eq461():
-    assert convmodel([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx(
-        [3.0, 10.0, 8.0])
+    assert convmodel([1.0, 2.0], [3.0, 4.0])["y"] == pytest.approx([3.0, 10.0, 8.0])
 
 
 def test_ccepsum_eq466_residual_is_small():
@@ -120,21 +138,19 @@ def test_ccepsum_eq466_residual_is_small():
 
 # ----------------------------------------- closed form, eqs 4.67-4.73
 
+
 def test_ccepclosed_eq472_minimum_phase_is_causal():
-    r = ccepclosed(2.0, zeros_in=[0.5], zeros_out=[], poles_in=[0.3],
-                   poles_out=[], nmax=6)
+    r = ccepclosed(2.0, zeros_in=[0.5], zeros_out=[], poles_in=[0.3], poles_out=[], nmax=6)
     assert r["causal"] is True
     assert r["c0"] == pytest.approx(math.log(2.0))
     # n > 0: -sum a^n/n + sum c^n/n
     assert r["positive"][0] == pytest.approx(-0.5 + 0.3)
-    assert r["positive"][1] == pytest.approx(-(0.5 ** 2) / 2
-                                             + (0.3 ** 2) / 2)
+    assert r["positive"][1] == pytest.approx(-(0.5**2) / 2 + (0.3**2) / 2)
     assert all(abs(v) == 0 for v in r["negative"])
 
 
 def test_ccepclosed_eq472_maximum_phase_is_anticausal():
-    r = ccepclosed(1.0, zeros_in=[], zeros_out=[0.4], poles_in=[],
-                   poles_out=[], nmax=4)
+    r = ccepclosed(1.0, zeros_in=[], zeros_out=[0.4], poles_in=[], poles_out=[], nmax=4)
     assert r["anticausal"] is True
     assert all(abs(v) == 0 for v in r["positive"])
     assert r["negative"][-1] == pytest.approx(0.4)
@@ -145,8 +161,7 @@ def test_ccepclosed_agrees_with_the_numerical_cepstrum():
     x = [0.0] * N
     x[0], x[1] = 1.0, -0.5
     num = ccepstrum(x)["cepstrum"]
-    closed = ccepclosed(1.0, zeros_in=[0.5], zeros_out=[], poles_in=[],
-                        poles_out=[], nmax=5)
+    closed = ccepclosed(1.0, zeros_in=[0.5], zeros_out=[], poles_in=[], poles_out=[], nmax=5)
     for n, want in enumerate(closed["positive"], start=1):
         assert num[n] == pytest.approx(want.real, abs=1e-6)
 
@@ -157,13 +172,11 @@ def test_ccepclosed_reports_infinite_duration():
 
 def test_ratz_rejects_a_root_on_the_wrong_side():
     with pytest.raises(ValueError):
-        ratz(1.0, 0, zeros_in=[1.5], zeros_out=[], poles_in=[],
-             poles_out=[])
+        ratz(1.0, 0, zeros_in=[1.5], zeros_out=[], poles_in=[], poles_out=[])
 
 
 def test_ratz_evaluates_the_product_form():
-    r = ratz(2.0, 0, zeros_in=[0.5], zeros_out=[], poles_in=[0.25],
-             poles_out=[], z=2.0)
+    r = ratz(2.0, 0, zeros_in=[0.5], zeros_out=[], poles_in=[0.25], poles_out=[], z=2.0)
     assert r["X"] == pytest.approx(2.0 * (1 - 0.25) / (1 - 0.125))
     assert r["minimum_phase"] is True
 
@@ -184,6 +197,7 @@ def test_ccepdecay_flags_a_root_near_the_unit_circle():
 
 
 # ---------------------------------------- power cepstrum, eqs 4.81-4.83
+
 
 def test_pcepstrum_squaring_is_selectable():
     x = echo(0.5, 8)
@@ -221,6 +235,7 @@ def test_real_cepstrum_is_not_invertible_but_still_shows_the_echo():
 
 # --------------------------------------------- liftering and deconvolution
 
+
 def test_lifter_is_symmetric_about_zero_quefrency():
     c = list(range(N))
     r = lifter(c, high=3, keep="low")
@@ -246,8 +261,7 @@ def test_lifter_rejects_a_bad_window():
 def test_homofilt_separates_a_slow_times_fast_product():
     n = 128
     slow = [2.0 + math.sin(2 * math.pi * i / n) for i in range(n)]
-    fast = [1.0 + 0.3 * math.sin(2 * math.pi * 20 * i / n)
-            for i in range(n)]
+    fast = [1.0 + 0.3 * math.sin(2 * math.pi * 20 * i / n) for i in range(n)]
     y = [a * b for a, b in zip(slow, fast)]
     low = homofilt(y, cutoff=3, keep="low")["y"]
     # the recovered slow factor tracks the true one up to a constant
@@ -289,9 +303,8 @@ def test_hompred_rejects_a_cutoff_outside_the_usable_range():
 def test_vocaltract_finds_the_pitch_from_the_cepstral_peak():
     fs = 8000.0
     n = 512
-    period = 64                        # 125 Hz
-    h = [math.exp(-i / 12.0) * math.sin(2 * math.pi * 700 * i / fs)
-         for i in range(48)]
+    period = 64  # 125 Hz
+    h = [math.exp(-i / 12.0) * math.sin(2 * math.pi * 700 * i / fs) for i in range(48)]
     y = [0.0] * n
     for start in range(0, n - 48, period):
         for i, v in enumerate(h):
@@ -307,13 +320,14 @@ def test_vocaltract_finds_the_pitch_from_the_cepstral_peak():
 
 def test_minphase_preserves_the_magnitude_spectrum():
     x = [0.0] * 32
-    x[0], x[5], x[11] = 1.0, -1.5, 0.4     # a mixed-phase sequence
+    x[0], x[5], x[11] = 1.0, -1.5, 0.4  # a mixed-phase sequence
     r = minphase(x)
     assert r["magnitude_preserved"] is True
     assert r["energy_front_loaded"] is True
 
 
 # ------------------------------------------------------------------ MFCC
+
 
 def test_mfcc_returns_the_requested_number_of_coefficients():
     fs = 8000.0
@@ -329,7 +343,7 @@ def test_mfcc_mel_edges_are_warped_not_linear():
     e = r["edges"]
     low_gap = e[1] - e[0]
     high_gap = e[-1] - e[-2]
-    assert high_gap > 1.5 * low_gap        # bands widen with frequency
+    assert high_gap > 1.5 * low_gap  # bands widen with frequency
 
 
 def test_mfcc_c0_tracks_gain():
@@ -351,15 +365,12 @@ def test_ccepx_reports_the_unwrapping_diagnostics():
     r = ccepx(echo(0.5, 8))
     assert "wrapped_phase" in r
     assert r["well_conditioned"] is True
-    assert r["cepstrum"] == pytest.approx(
-        ccepstrum(echo(0.5, 8))["cepstrum"])
+    assert r["cepstrum"] == pytest.approx(ccepstrum(echo(0.5, 8))["cepstrum"])
 
 
 def test_pre_policy_spellings_still_resolve():
-    from morie.fn.bsacep import (rangayyan_cepstrum,
-                                 rangayyan_ch4_complex_cepstrum_definition,
-                                 rangayyan_liftering)
+    from morie.fn.bsacep import rangayyan_cepstrum, rangayyan_ch4_complex_cepstrum_definition, rangayyan_liftering
+
     assert rangayyan_cepstrum(echo(0.5, 8))["n"] == N
-    assert rangayyan_ch4_complex_cepstrum_definition(
-        echo(0.5, 8))["cepstrum"][8] == pytest.approx(0.5, abs=2e-3)
+    assert rangayyan_ch4_complex_cepstrum_definition(echo(0.5, 8))["cepstrum"][8] == pytest.approx(0.5, abs=2e-3)
     assert rangayyan_liftering([1.0] * 8, high=2)["keep"] == "low"

@@ -3,7 +3,7 @@
 Replaces the generated stub, which imported a name the module never had.
 """
 
-from morie.fn.respwt import respwt, response_weight_adjustment
+from morie.fn.respwt import response_weight_adjustment, respwt
 
 
 def test_the_books_printed_constants():
@@ -29,8 +29,7 @@ def test_the_balance_identity_holds_exactly():
     assert abs(res["balance_error"]) < 1e-12
     for c in ("a", "b"):
         total = sum(w[i] for i in range(6) if cls[i] == c)
-        adj = sum(res["adjusted"][i] for i in range(6)
-                  if cls[i] == c and responded[i])
+        adj = sum(res["adjusted"][i] for i in range(6) if cls[i] == c and responded[i])
         assert abs(adj - total) < 1e-9
 
 

@@ -59,14 +59,10 @@ doi:10.1214/aoms/1177730090. The weak-instrument interval used as the
 paper's second illustration.
 """
 
-import math
-
 from . import _array_core as np
 from . import _s03core as k
-from ._richresult import RichResult
 
-__all__ = ["truncated_normal_interval", "coverage_by_region",
-           "bet_violation", "bet_proof_interval"]
+__all__ = ["truncated_normal_interval", "coverage_by_region", "bet_violation", "bet_proof_interval"]
 
 _EPS = 1e-12
 
@@ -83,15 +79,18 @@ def truncated_normal_interval(x, level=0.95, lower_bound=0.0):
     lo = max(float(x) - z, float(lower_bound))
     hi = float(x) + z
     empty = hi < float(lower_bound)
-    return {"lower": lo, "upper": hi if not empty else lo,
-            "width": max(hi - lo, 0.0), "empty": empty,
-            "z": z, "level": float(level),
-            "note": "empty when x + z < the parameter bound; a valid "
-                    "set that describes nothing"}
+    return {
+        "lower": lo,
+        "upper": hi if not empty else lo,
+        "width": max(hi - lo, 0.0),
+        "empty": empty,
+        "z": z,
+        "level": float(level),
+        "note": "empty when x + z < the parameter bound; a valid set that describes nothing",
+    }
 
 
-def coverage_by_region(theta, level=0.95, lower_bound=0.0,
-                       draws=20000, seed=0, split=None):
+def coverage_by_region(theta, level=0.95, lower_bound=0.0, draws=20000, seed=0, split=None):
     r"""Marginal coverage, and coverage on a recognisable subset.
 
     ``split`` defines the subset by a threshold on :math:`x`. The
@@ -115,16 +114,19 @@ def coverage_by_region(theta, level=0.95, lower_bound=0.0,
         if x < cut:
             stot += 1
             scov += 1 if ok else 0
-    return {"marginal_coverage": cov / tot,
-            "subset_coverage": (scov / stot) if stot else float("nan"),
-            "subset_share": stot / float(tot),
-            "mean_width": sum(widths) / len(widths),
-            "p_empty": sum(1 for w in widths if w <= _EPS) / len(widths),
-            "split": cut, "theta": th, "draws": int(draws)}
+    return {
+        "marginal_coverage": cov / tot,
+        "subset_coverage": (scov / stot) if stot else float("nan"),
+        "subset_share": stot / float(tot),
+        "mean_width": sum(widths) / len(widths),
+        "p_empty": sum(1 for w in widths if w <= _EPS) / len(widths),
+        "split": cut,
+        "theta": th,
+        "draws": int(draws),
+    }
 
 
-def bet_violation(theta, level=0.95, lower_bound=0.0, draws=20000,
-                  seed=0, grid=None):
+def bet_violation(theta, level=0.95, lower_bound=0.0, draws=20000, seed=0, grid=None):
     r"""The largest conditional-coverage shortfall over a family of
     recognisable subsets.
 
@@ -133,14 +135,10 @@ def bet_violation(theta, level=0.95, lower_bound=0.0, draws=20000,
     nominal level, weighted by how often that subset occurs -- a
     bettable edge. Zero means no threshold subset is exploitable.
     """
-    cuts = (list(grid) if grid is not None
-            else [float(lower_bound) - 3.0 + 0.25 * i
-                  for i in range(25)])
-    worst = {"shortfall": 0.0, "cut": None, "coverage": None,
-             "share": 0.0}
+    cuts = list(grid) if grid is not None else [float(lower_bound) - 3.0 + 0.25 * i for i in range(25)]
+    worst = {"shortfall": 0.0, "cut": None, "coverage": None, "share": 0.0}
     for c in cuts:
-        r = coverage_by_region(theta, level, lower_bound, draws,
-                               seed, split=c)
+        r = coverage_by_region(theta, level, lower_bound, draws, seed, split=c)
         if r["subset_share"] < 0.01:
             continue
         sc = r["subset_coverage"]
@@ -148,21 +146,21 @@ def bet_violation(theta, level=0.95, lower_bound=0.0, draws=20000,
             continue
         short = float(level) - sc
         if short > worst["shortfall"]:
-            worst = {"shortfall": short, "cut": c, "coverage": sc,
-                     "share": r["subset_share"]}
-    return {"max_shortfall": worst["shortfall"],
-            "at_cut": worst["cut"],
-            "subset_coverage": worst["coverage"],
-            "subset_share": worst["share"],
-            "bet_proof": worst["shortfall"] <= 0.02,
-            "level": float(level),
-            "note": "a positive shortfall on a subset the analyst can "
-                    "SEE is a bettable edge; marginal validity does "
-                    "not rule it out"}
+            worst = {"shortfall": short, "cut": c, "coverage": sc, "share": r["subset_share"]}
+    return {
+        "max_shortfall": worst["shortfall"],
+        "at_cut": worst["cut"],
+        "subset_coverage": worst["coverage"],
+        "subset_share": worst["share"],
+        "bet_proof": worst["shortfall"] <= 0.02,
+        "level": float(level),
+        "note": "a positive shortfall on a subset the analyst can "
+        "SEE is a bettable edge; marginal validity does "
+        "not rule it out",
+    }
 
 
-def bet_proof_interval(x, level=0.95, lower_bound=0.0,
-                       min_width=None):
+def bet_proof_interval(x, level=0.95, lower_bound=0.0, min_width=None):
     r"""An interval that never collapses and is never empty.
 
     The naive set fails because it is allowed to be empty or
@@ -180,25 +178,30 @@ def bet_proof_interval(x, level=0.95, lower_bound=0.0,
     hi = max(float(x) + z, float(lower_bound) + w)
     if hi - lo < w:
         hi = lo + w
-    return {"lower": lo, "upper": hi, "width": hi - lo,
-            "empty": False, "min_width": w,
-            "naive_width": naive["width"],
-            "naive_empty": naive["empty"],
-            "widened": (hi - lo) > naive["width"] + 1e-12,
-            "method": "bet-proof by construction: never empty, never "
-                      "shorter than the floor (Muller & Norets 2016 "
-                      "Sec. 1)"}
+    return {
+        "lower": lo,
+        "upper": hi,
+        "width": hi - lo,
+        "empty": False,
+        "min_width": w,
+        "naive_width": naive["width"],
+        "naive_empty": naive["empty"],
+        "widened": (hi - lo) > naive["width"] + 1e-12,
+        "method": "bet-proof by construction: never empty, never shorter than the floor (Muller & Norets 2016 Sec. 1)",
+    }
 
 
 def cheatsheet():
-    return ("bndpcb: bet-proofness. A VALID 95% set can be empty or "
-            "absurdly short exactly where the data are least "
-            "informative -- the truncated normal is empty when "
-            "x < -1.96, and the AR interval under weak instruments is "
-            "empty 1.2% of the time and shorter than 2SLS 2.7%. "
-            "Bet-proof means no RECOGNISABLE SUBSET has conditional "
-            "coverage below nominal, so no one can bet against you. "
-            "Marginal validity does not imply it.")
+    return (
+        "bndpcb: bet-proofness. A VALID 95% set can be empty or "
+        "absurdly short exactly where the data are least "
+        "informative -- the truncated normal is empty when "
+        "x < -1.96, and the AR interval under weak instruments is "
+        "empty 1.2% of the time and shorter than 2SLS 2.7%. "
+        "Bet-proof means no RECOGNISABLE SUBSET has conditional "
+        "coverage below nominal, so no one can bet against you. "
+        "Marginal validity does not imply it."
+    )
 
 
 # compact alias per ledger/NAMING.md

@@ -64,8 +64,7 @@ def _grid(Y, treated, t_post):
         raise ValueError("causscd: treated must have one flag per unit")
     t_post = int(t_post)
     if not 1 <= t_post < T:
-        raise ValueError("causscd: t_post must lie in 1..T-1 (it is the "
-                         "number of pre-treatment periods)")
+        raise ValueError("causscd: t_post must lie in 1..T-1 (it is the number of pre-treatment periods)")
     if not any(tr):
         raise ValueError("causscd: no treated units")
     if all(tr):
@@ -85,8 +84,7 @@ def _simplex_fit(cols, target, penalty, iters=2000, tol=1e-12):
         fit = [sum(w[k] * cols[k][t] for k in range(m)) for t in range(L)]
         icept = sum(target[t] - fit[t] for t in range(L)) / L
         resid = [icept + fit[t] - target[t] for t in range(L)]
-        grad = [2.0 * sum(resid[t] * cols[k][t] for t in range(L)) +
-                2.0 * penalty * w[k] for k in range(m)]
+        grad = [2.0 * sum(resid[t] * cols[k][t] for t in range(L)) + 2.0 * penalty * w[k] for k in range(m)]
         if step is None:
             gnorm = math.sqrt(sum(g * g for g in grad)) or 1.0
             step = 1.0 / gnorm
@@ -106,12 +104,12 @@ def _project_simplex(v):
     m = len(v)
     u = sorted(v, reverse=True)
     css = 0.0
-    rho, theta = 0, 0.0
+    _rho, theta = 0, 0.0
     for k in range(m):
         css += u[k]
         t = (css - 1.0) / (k + 1)
         if u[k] - t > 0:
-            rho, theta = k + 1, t
+            _rho, theta = k + 1, t
     return [max(0.0, x - theta) for x in v]
 
 
@@ -131,12 +129,11 @@ def unit_weights(Y, treated, t_post, zeta=None):
                 diffs.append(rows[i][t] - rows[i][t - 1])
         if len(diffs) > 1:
             mu = sum(diffs) / len(diffs)
-            sd = math.sqrt(sum((v - mu) ** 2 for v in diffs) /
-                           (len(diffs) - 1))
+            sd = math.sqrt(sum((v - mu) ** 2 for v in diffs) / (len(diffs) - 1))
         else:
             sd = 1.0
         zeta = (len(trt) * (T - t_post)) ** 0.25 * sd
-    w, icept = _simplex_fit(cols, target, (zeta ** 2) * t_post)
+    w, icept = _simplex_fit(cols, target, (zeta**2) * t_post)
     full = [0.0] * n
     for k, i in enumerate(co):
         full[i] = w[k]
@@ -194,25 +191,28 @@ def sdid(Y, treated, t_post, method="sdid", zeta=None):
     d_tr = sum(delta[i] for i in trt) / len(trt)
     d_co = sum(om[i] * delta[i] for i in co)
     tau = d_tr - d_co
-    return RichResult(payload={
-        "estimate": tau,
-        "tau": tau,
-        "unit_weights": om,
-        "time_weights": lam,
-        "zeta": zeta_used,
-        "delta_treated": d_tr,
-        "delta_control": d_co,
-        "method_name": method,
-        "n_treated": len(trt),
-        "n_control": len(co),
-        "t_pre": t_post,
-        "t_post": T - t_post,
-        "method": ("synthetic DID (Arkhangelsky, Athey, Hirshberg, "
-                   "Imbens & Wager 2021), weighting '%s'" % method),
-        "note": ("all three weightings are the same estimator of eq. "
-                 "2.4; DID uses 1/N_co and uniform time weights, SC "
-                 "fitted unit weights only, SDID both"),
-    })
+    return RichResult(
+        payload={
+            "estimate": tau,
+            "tau": tau,
+            "unit_weights": om,
+            "time_weights": lam,
+            "zeta": zeta_used,
+            "delta_treated": d_tr,
+            "delta_control": d_co,
+            "method_name": method,
+            "n_treated": len(trt),
+            "n_control": len(co),
+            "t_pre": t_post,
+            "t_post": T - t_post,
+            "method": (f"synthetic DID (Arkhangelsky, Athey, Hirshberg, Imbens & Wager 2021), weighting '{method}'"),
+            "note": (
+                "all three weightings are the same estimator of eq. "
+                "2.4; DID uses 1/N_co and uniform time weights, SC "
+                "fitted unit weights only, SDID both"
+            ),
+        }
+    )
 
 
 def causscd(Y, treated, t_post, zeta=None):
@@ -226,13 +226,16 @@ def causscd(Y, treated, t_post, zeta=None):
 
 
 def cheatsheet():
-    return ("causscd: synthetic DID (Arkhangelsky et al. 2021). Same "
-            "weighted two-way regression as DID, but with unit weights "
-            "fitted over the simplex WITH a free intercept (so the "
-            "controls need only be parallel to the treated path, not "
-            "identical to it) and time weights fitted the same way "
-            "transposed. method='did' uses 1/N_co and uniform time "
-            "weights; 'sc' uses unit weights only; 'sdid' uses both.")
+    return (
+        "causscd: synthetic DID (Arkhangelsky et al. 2021). Same "
+        "weighted two-way regression as DID, but with unit weights "
+        "fitted over the simplex WITH a free intercept (so the "
+        "controls need only be parallel to the treated path, not "
+        "identical to it) and time weights fitted the same way "
+        "transposed. method='did' uses 1/N_co and uniform time "
+        "weights; 'sc' uses unit weights only; 'sdid' uses both."
+    )
+
 
 # public names resolved by fn/_lazy_map.json
 causal_synthetic_did = unit_weights

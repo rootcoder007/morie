@@ -33,9 +33,15 @@ def kamath_ch2_nsp_loss(x, y, d):
         raise ValueError("d must be 0 or 1.")
     scored = p if d == 1 else 1.0 - p
     loss = float(-np.log(scored)) if scored > 0 else float("inf")
-    return RichResult(payload={
-        "estimate": loss, "p_next": p, "label": d, "n": 1,
-        "method": "Next sentence prediction loss (Kamath Eq 2.30)"})
+    return RichResult(
+        payload={
+            "estimate": loss,
+            "p_next": p,
+            "label": d,
+            "n": 1,
+            "method": "Next sentence prediction loss (Kamath Eq 2.30)",
+        }
+    )
 
 
 def cheatsheet():

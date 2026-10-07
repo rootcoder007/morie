@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['ostatasymp', 'gibbons_asymp_order_normal']
+__all__ = ["ostatasymp", "gibbons_asymp_order_normal"]
 
 
 def ostatasymp(p, n, xp, fxp):

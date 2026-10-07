@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Wald test for a scalar parameter."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -56,11 +54,19 @@ def waldstat(theta_hat, se, theta0=0.0, level=0.95):
     W = (theta_hat - theta0) / se
     p = 2.0 * (1.0 - C.pnorm(abs(W)))
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "statistic": W, "p_value": p, "estimate": theta_hat, "se": se,
-        "ci_lower": theta_hat - z * se, "ci_upper": theta_hat + z * se,
-        "z_critical": z, "reject": 1.0 if abs(W) > z else 0.0,
-        "method": "Wald test, Wasserman Definition 10.3"})
+    return RichResult(
+        payload={
+            "statistic": W,
+            "p_value": p,
+            "estimate": theta_hat,
+            "se": se,
+            "ci_lower": theta_hat - z * se,
+            "ci_upper": theta_hat + z * se,
+            "z_critical": z,
+            "reject": 1.0 if abs(W) > z else 0.0,
+            "method": "Wald test, Wasserman Definition 10.3",
+        }
+    )
 
 
 wasserman_wald = waldstat

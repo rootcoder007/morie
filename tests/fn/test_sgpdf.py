@@ -1,7 +1,6 @@
 """Tests for positive definiteness check."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.sgpdf import sgpdf
 
 

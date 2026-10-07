@@ -70,9 +70,11 @@ def test_seed_reproducibility():
 
 
 def test_validation():
-    for call in (lambda: motiff([[0, 1], [1, 0]]),
-                 lambda: motiff([[0, 1, 0], [1, 0, 0]]),
-                 lambda: motiff(_ffl_network(), motif="clique4")):
+    for call in (
+        lambda: motiff([[0, 1], [1, 0]]),
+        lambda: motiff([[0, 1, 0], [1, 0, 0]]),
+        lambda: motiff(_ffl_network(), motif="clique4"),
+    ):
         try:
             call()
             raise AssertionError("expected ValueError")

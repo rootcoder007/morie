@@ -1,7 +1,6 @@
 """Tests for grpex.geron_prioritized_experience_weight."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grpex import geron_prioritized_experience_weight
 
 

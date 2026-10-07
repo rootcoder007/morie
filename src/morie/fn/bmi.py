@@ -74,7 +74,7 @@ def bayesian_mi(
     loading_samples: dict[str, np.ndarray] = {}
     intercept_samples: dict[str, np.ndarray] = {}
 
-    for gi, grp in enumerate(unique_g):
+    for _gi, grp in enumerate(unique_g):
         grp_str = str(grp)
         Xg = X[g == grp]
         ng_i = Xg.shape[0]
@@ -100,7 +100,7 @@ def bayesian_mi(
             Sigma = np.linalg.inv(W @ W.T + np.eye(p) * 1e-8)
 
             if t >= burn:
-                for fi, (f, idxs) in enumerate(factor_idx.items()):
+                for fi, (f, idxs) in enumerate(factor_idx.items()):  # noqa: B007 - read after the loop
                     sub = Sigma[np.ix_(idxs, idxs)]
                     eigvals, eigvecs = np.linalg.eigh(sub)
                     pc1 = eigvecs[:, np.argmax(eigvals)]

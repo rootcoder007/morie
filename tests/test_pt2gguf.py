@@ -151,7 +151,7 @@ class TestGGUFRoundTrip:
     @pytest.fixture
     def roundtrip_data(self, tmp_path, monkeypatch):
         """Build checkpoint, mock tokenizer, convert, load back."""
-        torch = pytest.importorskip("torch")
+        pytest.importorskip("torch")
 
         ckpt_path, config, np_dict = _build_fake_checkpoint(tmp_path)
         gguf_path = tmp_path / "test_f32.gguf"
@@ -293,7 +293,7 @@ class TestTurboQuantRoundTrip:
     @pytest.fixture
     def tq_roundtrip(self, tmp_path, monkeypatch):
         """Build checkpoint, convert with TQ3, load back."""
-        torch = pytest.importorskip("torch")
+        pytest.importorskip("torch")
 
         ckpt_path, config, np_dict = _build_fake_checkpoint(
             tmp_path,
@@ -429,10 +429,9 @@ class TestCheckpointTrustGate:
         # The assertion the test actually exists to make is unchanged: with
         # the knob set, convert() must get PAST the trust gate. So assert
         # that whatever it raises, it is not the gate's refusal.
-        with pytest.raises(Exception) as excinfo:
+        with pytest.raises(Exception) as excinfo, pytest.warns(RuntimeWarning, match="MORIE_TRUST_CHECKPOINT is set"):
             pt2gguf.convert("nonexistent.pt", "out.gguf")
         assert "MORIE_TRUST_CHECKPOINT" not in str(excinfo.value), (
-            "gate should have opened with the knob set, but it refused: %s"
-            % excinfo.value)
-        assert not isinstance(excinfo.value, RuntimeError) or \
-            "refusing to deserialize" not in str(excinfo.value)
+            f"gate should have opened with the knob set, but it refused: {excinfo.value}"
+        )
+        assert not isinstance(excinfo.value, RuntimeError) or "refusing to deserialize" not in str(excinfo.value)

@@ -4,7 +4,7 @@
 from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['dropmask', 'dropout_regularization']
+__all__ = ["dropmask", "dropout_regularization"]
 
 
 def dropmask(x, mask, rate):
@@ -41,14 +41,20 @@ def dropmask(x, mask, rate):
         raise ValueError("mask entries must be 0 or 1")
     s = 1.0 / (1.0 - rate)
     kept = int(sum(m))
-    return RichResult(payload={
-        "activation": [a * b * s for a, b in zip(x, m)],
-        "kept": kept, "dropped": len(x) - kept, "rate": rate, "n": len(x),
-        "method": "Inverted dropout, MVSML Sect. 10.6"})
+    return RichResult(
+        payload={
+            "activation": [a * b * s for a, b in zip(x, m)],
+            "kept": kept,
+            "dropped": len(x) - kept,
+            "rate": rate,
+            "n": len(x),
+            "method": "Inverted dropout, MVSML Sect. 10.6",
+        }
+    )
 
 
 dropout_regularization = dropmask
 
 
 def cheatsheet():
-    return 'dropr: Apply a dropout mask with inverted scaling.'
+    return "dropr: Apply a dropout mask with inverted scaling."

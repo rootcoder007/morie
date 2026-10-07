@@ -1,8 +1,5 @@
 """Tests for deepwk.deepwalk."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.deepwk import deepwalk
 
 
@@ -63,8 +60,7 @@ def test_deepwk_edge():
 
     walk_len = 5
     dim = 4
-    result = deepwalk(A, walk_len, dim, n_walks=2, window=2,
-                      epochs=1, lr=0.05, neg=1, seed=7)
+    result = deepwalk(A, walk_len, dim, n_walks=2, window=2, epochs=1, lr=0.05, neg=1, seed=7)
 
     assert isinstance(result, dict)
     assert "estimate" in result

@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.cmaopt import cma_es
 
 
@@ -67,8 +66,7 @@ def test_cmaopt_basic():
             assert math.isfinite(float(C[r, c]))
         # symmetry
         for c in range(N):
-            assert math.isclose(float(C[r, c]), float(C[c, r]),
-                                rel_tol=1e-12, abs_tol=1e-12)
+            assert math.isclose(float(C[r, c]), float(C[c, r]), rel_tol=1e-12, abs_tol=1e-12)
 
 
 def test_cmaopt_edge():

@@ -38,12 +38,12 @@ def group_sparse_decompose(
         ``active_groups``, ``group_norms``, ``iterations``.
     """
     X = np.asarray(X, dtype=float).ravel()
-    n = len(X)
+    len(X)
 
     c = X.copy()
     step = 1.0
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         grad = c - X
         z = c - step * grad
 

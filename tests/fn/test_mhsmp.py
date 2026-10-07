@@ -1,7 +1,6 @@
 """Tests for morie.fn.mhsmp -- Metropolis-Hastings sampler."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mhsmp import metropolis_hastings
 
 
@@ -40,7 +39,9 @@ def test_invalid_burn_in():
 
 
 def test_reproducibility():
-    f = lambda x: -0.5 * float(x @ x)
+    def f(x):
+        return -0.5 * float(x @ x)
+
     r1 = metropolis_hastings(f, [1.0], n_iter=100, seed=99)
     r2 = metropolis_hastings(f, [1.0], n_iter=100, seed=99)
     np.testing.assert_array_equal(r1["samples"], r2["samples"])

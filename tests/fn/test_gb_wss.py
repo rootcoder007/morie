@@ -1,7 +1,6 @@
 """Tests for gb_wss.gibbons_wrs_normal_approx."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb_wss import gibbons_wrs_normal_approx
 
 
@@ -36,7 +35,7 @@ def test_gb_wss_basic():
 
 def test_gb_wss_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     m, n = 1, 1
     N = m + n
     w = 1.0  # minimum possible W for m=n=1

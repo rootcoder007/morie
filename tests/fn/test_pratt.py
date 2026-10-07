@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.pratt import attention_entropy, pretrained_attention
 
-
 WS = [[[0.2, 0.1], [0.5, -0.3], [-0.1, 0.4]], [[0.3, 0.3], [-0.6, 0.2]]]
 Ww, bw, uw = [[0.4, -0.2], [0.1, 0.3]], [0.0, 0.1], [1.0, -0.5]
 Wsn, bsn, us = [[-0.3, 0.2], [0.5, 0.1]], [0.05, 0.0], [0.7, 0.2]

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 """Tests for the 24-module batch: recommenders, graphs, classics."""
+
 import importlib
 import math
 
@@ -32,8 +32,7 @@ pratt = importlib.import_module("morie.fn.pratt")
 np = importlib.import_module("morie.fn._array_core")
 
 ADJ = {0: [1, 2], 1: [0, 2, 3], 2: [0, 1, 4], 3: [1, 4], 4: [2, 3]}
-R = [[0.0, 3.0, 0.0, 1.0], [2.0, 0.0, 0.0, 4.0],
-     [0.0, 0.0, 5.0, 0.0], [1.0, 1.0, 0.0, 0.0]]
+R = [[0.0, 3.0, 0.0, 1.0], [2.0, 0.0, 0.0, 4.0], [0.0, 0.0, 5.0, 0.0], [1.0, 1.0, 0.0, 0.0]]
 POS = {0: [0, 1], 1: [0, 1], 2: [2, 3], 3: [2, 3]}
 
 
@@ -63,8 +62,7 @@ def test_impFB_explanation_sums_to_the_prediction():
     Y = [[0.3, -0.1], [0.5, 0.2], [-0.2, 0.4], [0.1, 0.6]]
     C0, P0 = impFB.confidence(R)[0], impFB.preference(R)[0]
     ex = impFB.explain(Y, C0, P0, 1, 0.1)
-    assert abs(sum(ex["contributions"].values())
-               - ex["prediction"]) < 1e-12
+    assert abs(sum(ex["contributions"].values()) - ex["prediction"]) < 1e-12
 
 
 def test_impFB_rejects_bad_input():
@@ -78,10 +76,8 @@ def test_impFB_rejects_bad_input():
 def test_fmFM_linear_time_form_matches_the_double_sum():
     x = [1.0, 0.0, 2.0, 1.0, 0.5]
     w = [0.1, -0.2, 0.3, 0.0, 0.4]
-    V = [[0.2, -0.1], [0.3, 0.5], [-0.4, 0.2], [0.1, 0.1],
-         [0.5, -0.3]]
-    assert abs(fmFM.predict(x, 0.3, w, V)
-               - fmFM.predict_naive(x, 0.3, w, V)) < 1e-12
+    V = [[0.2, -0.1], [0.3, 0.5], [-0.4, 0.2], [0.1, 0.1], [0.5, -0.3]]
+    assert abs(fmFM.predict(x, 0.3, w, V) - fmFM.predict_naive(x, 0.3, w, V)) < 1e-12
 
 
 def test_fmFM_gradient_matches_finite_differences():
@@ -92,8 +88,7 @@ def test_fmFM_gradient_matches_finite_differences():
     up[0][0] += h
     dn = [list(r) for r in V]
     dn[0][0] -= h
-    fd = (fmFM.predict(x, 0.0, [0.0] * 3, up)
-          - fmFM.predict(x, 0.0, [0.0] * 3, dn)) / (2 * h)
+    fd = (fmFM.predict(x, 0.0, [0.0] * 3, up) - fmFM.predict(x, 0.0, [0.0] * 3, dn)) / (2 * h)
     assert abs(fd - fmFM.gradient(x, V, 0, 0)) < 1e-6
 
 
@@ -132,21 +127,17 @@ def test_ffmFM_label_must_be_pm_one():
 # -------------------------------------------------------------- ncfRS
 def test_ncfRS_gmf_recovers_matrix_factorisation():
     p, q = [0.5, -0.2, 0.3], [1.0, 2.0, -1.0]
-    assert abs(ncfRS.gmf(p, q, None, "identity")
-               - sum(p[i] * q[i] for i in range(3))) < 1e-12
+    assert abs(ncfRS.gmf(p, q, None, "identity") - sum(p[i] * q[i] for i in range(3))) < 1e-12
 
 
 def test_ncfRS_learned_h_reweights_dimensions():
     p, q = [0.5, -0.2, 0.3], [1.0, 2.0, -1.0]
-    assert abs(ncfRS.gmf(p, q, [2.0, 0.0, 1.0], "identity")
-               - (1.0 - 0.3)) < 1e-12
+    assert abs(ncfRS.gmf(p, q, [2.0, 0.0, 1.0], "identity") - (1.0 - 0.3)) < 1e-12
 
 
 def test_ncfRS_gmf_learns_the_planted_blocks():
-    g = ncfRS.fit_gmf(POS, 4, 4, k_dim=4, alpha=0.2, iters=1500,
-                      seed=2)
-    assert ncfRS.gmf(g["P"][0], g["Q"][1], g["h"]) > \
-        ncfRS.gmf(g["P"][0], g["Q"][2], g["h"]) + 0.2
+    g = ncfRS.fit_gmf(POS, 4, 4, k_dim=4, alpha=0.2, iters=1500, seed=2)
+    assert ncfRS.gmf(g["P"][0], g["Q"][1], g["h"]) > ncfRS.gmf(g["P"][0], g["Q"][2], g["h"]) + 0.2
 
 
 def test_ncfRS_rejects_bad_input():
@@ -166,26 +157,24 @@ def test_ngcf_laplacian_coefficient():
 
 
 def test_ngcf_affinity_term_changes_the_message():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = ngcf.message([2.0, 3.0], [1.0, 4.0], I, I, 1.0, True)
-    b = ngcf.message([2.0, 3.0], [1.0, 4.0], I, I, 1.0, False)
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = ngcf.message([2.0, 3.0], [1.0, 4.0], I_, I_, 1.0, True)
+    b = ngcf.message([2.0, 3.0], [1.0, 4.0], I_, I_, 1.0, False)
     assert abs(a[0] - b[0]) > 1e-9
     assert abs(b[0] - 2.0) < 1e-12
     assert abs(a[0] - 4.0) < 1e-12
 
 
 def test_ngcf_concatenates_every_order():
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    E0 = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5],
-          [0.2, 0.8]]
-    st = ngcf.stack_layers(E0, ADJ, [(I, I), (I, I)])
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    E0 = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
+    st = ngcf.stack_layers(E0, ADJ, [(I_, I_), (I_, I_)])
     assert len(st["final"][0]) == 6
 
 
 # -------------------------------------------------------------- gru4r
 def test_gru4r_session_parallel_batches_reset_slots():
-    b = gru4r.session_parallel_batches([[1, 2, 3], [4, 5],
-                                        [6, 7, 8, 9]], 2)
+    b = gru4r.session_parallel_batches([[1, 2, 3], [4, 5], [6, 7, 8, 9]], 2)
     assert b["n_steps"] >= 3
     assert any(any(s["reset"]) for s in b["steps"])
 
@@ -194,9 +183,10 @@ def test_gru4r_top1_regularizer_punishes_inflated_scores():
     lo = gru4r.top1_loss(2.0, [0.0, -0.5])
     hi = gru4r.top1_loss(12.0, [10.0, 9.5])
     assert hi > lo + 0.2
-    assert abs(gru4r.top1_loss(2.0, [0.0, -0.5], regularize=False)
-               - gru4r.top1_loss(12.0, [10.0, 9.5],
-                                 regularize=False)) < 1e-12
+    assert (
+        abs(gru4r.top1_loss(2.0, [0.0, -0.5], regularize=False) - gru4r.top1_loss(12.0, [10.0, 9.5], regularize=False))
+        < 1e-12
+    )
 
 
 def test_gru4r_ranking_metrics():
@@ -221,16 +211,14 @@ def test_narm_bilinear_decoder_parameter_count():
 
 def test_narm_attention_is_a_distribution():
     H = [[1.0, 0.0], [0.0, 1.0], [0.9, 0.1]]
-    I = [[1.0, 0.0], [0.0, 1.0]]
-    a = narm.attention_weights([1.0, 0.0], H, I, I, [1.0, 0.0])
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
+    a = narm.attention_weights([1.0, 0.0], H, I_, I_, [1.0, 0.0])
     assert abs(sum(a) - 1.0) < 1e-12
     assert a[0] > a[1]
 
 
 def test_narm_bilinear_score_matches_by_hand():
-    bs = narm.bilinear_scores([[1.0, 0.0], [0.0, 1.0]],
-                              [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]],
-                              [2.0, 5.0, 9.0])
+    bs = narm.bilinear_scores([[1.0, 0.0], [0.0, 1.0]], [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]], [2.0, 5.0, 9.0])
     assert abs(bs["scores"][0] - 2.0) < 1e-12
     assert abs(bs["scores"][1] - 5.0) < 1e-12
 
@@ -292,8 +280,7 @@ def test_gsageemd_aggregators():
     V = [[1.0, 4.0], [3.0, 0.0], [-1.0, 2.0]]
     assert gsage.aggregate(V, "mean") == [1.0, 2.0]
     assert gsage.aggregate(V, "max_pool") == [3.0, 4.0]
-    assert gsage.aggregate(V, "lstm_order") != \
-        gsage.aggregate(list(reversed(V)), "lstm_order")
+    assert gsage.aggregate(V, "lstm_order") != gsage.aggregate(list(reversed(V)), "lstm_order")
 
 
 def test_gsageemd_is_inductive():
@@ -313,14 +300,12 @@ def test_gsageemd_rejects_bad_input():
 
 
 # --------------------------------------------------------------- mpfn
-EF = {(0, 1): 1.0, (0, 2): 0.5, (1, 2): 2.0, (1, 3): 1.0,
-      (2, 4): 1.5, (3, 4): 0.5}
+EF = {(0, 1): 1.0, (0, 2): 0.5, (1, 2): 2.0, (1, 3): 1.0, (2, 4): 1.5, (3, 4): 0.5}
 H0 = [[1.0, 0.0], [0.0, 1.0], [2.0, 1.0], [0.5, 0.5], [1.0, 1.0]]
 
 
 def test_mpfn_sum_readout_is_permutation_invariant():
-    r = mpfn.is_permutation_invariant(H0, ADJ, EF, [2, 0, 4, 1, 3],
-                                      T=2, how="sum")
+    r = mpfn.is_permutation_invariant(H0, ADJ, EF, [2, 0, 4, 1, 3], T=2, how="sum")
     assert r["invariant"]
 
 
@@ -357,16 +342,13 @@ XS = [[1.0, 0.0], [0.0, 1.0], [-1.0, -1.0]]
 def test_egnnL_is_rotation_and_translation_equivariant():
     th = 0.7
     Q = [[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]]
-    r = egnnL.equivariance_error(HS, XS, _phi_e, _phi_x, _phi_h, Q,
-                                 [2.0, -3.0], layers=3)
+    r = egnnL.equivariance_error(HS, XS, _phi_e, _phi_x, _phi_h, Q, [2.0, -3.0], layers=3)
     assert r["equivariant"]
     assert r["invariant"]
 
 
 def test_egnnL_is_reflection_equivariant_too():
-    r = egnnL.equivariance_error(HS, XS, _phi_e, _phi_x, _phi_h,
-                                 [[-1.0, 0.0], [0.0, 1.0]],
-                                 [0.0, 0.0], layers=3)
+    r = egnnL.equivariance_error(HS, XS, _phi_e, _phi_x, _phi_h, [[-1.0, 0.0], [0.0, 1.0]], [0.0, 0.0], layers=3)
     assert r["equivariant"]
 
 
@@ -387,32 +369,26 @@ KEY = [(0, 1), (1, 2)]
 
 def _predict(edges, em, fm):
     s = sum(em[i] for i in range(len(edges)) if edges[i] in KEY)
-    s -= 0.2 * sum(em[i] for i in range(len(edges))
-                   if edges[i] not in KEY)
+    s -= 0.2 * sum(em[i] for i in range(len(edges)) if edges[i] not in KEY)
     s += 0.5 * fm[0]
     p = 1.0 / (1.0 + math.exp(-2.0 * (s - 1.0)))
     return [1.0 - p, p]
 
 
 def test_gnnEx_recovers_the_planted_edges():
-    r = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250,
-                           lr=0.5, size_coef=0.15, entropy_coef=0.05)
+    r = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250, lr=0.5, size_coef=0.15, entropy_coef=0.05)
     assert all(e in KEY for e, _ in r["edges_ranked"][:2])
 
 
 def test_gnnEx_penalties_keep_the_mask_small():
-    a = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250,
-                           lr=0.5, size_coef=0.15, entropy_coef=0.05)
-    b = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250,
-                           lr=0.5, penalize=False)
+    a = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250, lr=0.5, size_coef=0.15, entropy_coef=0.05)
+    b = gnnEx.explain_node(_predict, ADJ, 1, 1, 3, L=2, iters=250, lr=0.5, penalize=False)
     assert sum(b["edge_mask"]) > sum(a["edge_mask"])
 
 
 def test_gnnEx_conditional_entropy():
-    assert gnnEx.conditional_entropy([0.99, 0.01]) < \
-        gnnEx.conditional_entropy([0.5, 0.5])
-    assert abs(gnnEx.conditional_entropy([0.5, 0.5])
-               - math.log(2)) < 1e-12
+    assert gnnEx.conditional_entropy([0.99, 0.01]) < gnnEx.conditional_entropy([0.5, 0.5])
+    assert abs(gnnEx.conditional_entropy([0.5, 0.5]) - math.log(2)) < 1e-12
 
 
 def test_gnnEx_computation_graph_grows_with_hops():
@@ -426,18 +402,16 @@ U = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
 
 
 def test_grace_agreeing_views_score_lower():
-    good = grace.grace_objective(U, [[0.99, 0.01], [0.01, 0.99],
-                                     [1.0, 1.02]])["loss"]
-    bad = grace.grace_objective(U, [[0.0, 1.0], [1.0, 0.0],
-                                    [-1.0, -1.0]])["loss"]
+    good = grace.grace_objective(U, [[0.99, 0.01], [0.01, 0.99], [1.0, 1.02]])["loss"]
+    bad = grace.grace_objective(U, [[0.0, 1.0], [1.0, 0.0], [-1.0, -1.0]])["loss"]
     assert good < bad - 0.1
 
 
 def test_grace_intra_view_negatives_matter():
     V = [[0.99, 0.01], [0.01, 0.99], [1.0, 1.02]]
-    assert abs(grace.grace_objective(U, V, intra=True)["loss"]
-               - grace.grace_objective(U, V,
-                                       intra=False)["loss"]) > 1e-6
+    assert (
+        abs(grace.grace_objective(U, V, intra=True)["loss"] - grace.grace_objective(U, V, intra=False)["loss"]) > 1e-6
+    )
 
 
 def test_grace_masks_whole_dimensions():
@@ -459,31 +433,27 @@ def test_grace_rejects_bad_input():
 
 # --------------------------------------------------------------- gtrf
 def test_gtrf_path_graph_encoding_is_a_sinusoid():
-    path = {i: [j for j in (i - 1, i + 1) if 0 <= j < 12]
-            for i in range(12)}
-    pe = gtrf.laplacian_positional_encoding(
-        path, 12, dim=2, normalized=False)["encoding"]
+    path = {i: [j for j in (i - 1, i + 1) if 0 <= j < 12] for i in range(12)}
+    pe = gtrf.laplacian_positional_encoding(path, 12, dim=2, normalized=False)["encoding"]
     v = [pe[i][0] for i in range(12)]
     ref = [math.cos(math.pi * (i + 0.5) / 12) for i in range(12)]
     num = sum(v[i] * ref[i] for i in range(12))
-    den = math.sqrt(sum(q * q for q in v)) * \
-        math.sqrt(sum(q * q for q in ref))
+    den = math.sqrt(sum(q * q for q in v)) * math.sqrt(sum(q * q for q in ref))
     assert abs(abs(num / den) - 1.0) < 1e-6
 
 
 def test_gtrf_attention_covers_every_node():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     H = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
-    out = gtrf.sparse_attention(H, ADJ, I, I, I)["output"]
+    out = gtrf.sparse_attention(H, ADJ, I_, I_, I_)["output"]
     assert len(out) == 5
 
 
 def test_gtrf_rejects_bad_norm():
-    I = [[1.0, 0.0], [0.0, 1.0]]
+    I_ = [[1.0, 0.0], [0.0, 1.0]]
     H = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0], [0.5, 0.5], [0.2, 0.8]]
     with pytest.raises(ValueError):
-        gtrf.graph_transformer_layer(H, ADJ, I, I, I, I, I,
-                                     norm="group")
+        gtrf.graph_transformer_layer(H, ADJ, I_, I_, I_, I_, I_, norm="group")
 
 
 # -------------------------------------------------------------- meglt
@@ -494,11 +464,9 @@ def test_meglt_nuclear_norm():
 
 
 def test_meglt_coherence_flags_the_spiked_matrix():
-    spike = [[1.0 if (i == 0 and j == 0) else 0.0 for j in range(8)]
-             for i in range(8)]
+    spike = [[1.0 if (i == 0 and j == 0) else 0.0 for j in range(8)] for i in range(8)]
     spread = [[math.cos(i + j) for j in range(8)] for i in range(8)]
-    assert meglt.coherence(spike)["mu"] > \
-        4.0 * meglt.coherence(spread)["mu"]
+    assert meglt.coherence(spike)["mu"] > 4.0 * meglt.coherence(spread)["mu"]
 
 
 def test_meglt_svt_recovers_a_rank_one_matrix():
@@ -506,15 +474,13 @@ def test_meglt_svt_recovers_a_rank_one_matrix():
     v = [0.5, -1.0, 2.0, 1.0, -0.5, 1.5]
     M = [[u[i] * v[j] for j in range(6)] for i in range(6)]
     rng = np.random.default_rng(7)
-    obs = [(i, j) for i in range(6) for j in range(6)
-           if float(rng.uniform()) < 0.7]
+    obs = [(i, j) for i in range(6) for j in range(6) if float(rng.uniform()) < 0.7]
     r = meglt.svt(M, obs, step=1.2, iters=600)
     assert meglt.relative_error(r["X"], M) < 0.05
 
 
 def test_meglt_sample_bound_exponents():
-    assert meglt.sample_bound(1000, 5, exponent=1.25)["m"] > \
-        meglt.sample_bound(1000, 5, exponent=1.2)["m"]
+    assert meglt.sample_bound(1000, 5, exponent=1.25)["m"] > meglt.sample_bound(1000, 5, exponent=1.2)["m"]
     with pytest.raises(ValueError):
         meglt.sample_bound(1000, 5, exponent=1.5)
 
@@ -536,9 +502,7 @@ def test_polyak_averaging_beats_the_last_iterate():
     rng = np.random.default_rng(5)
     its, th = [], 3.0
     for t in range(1, 3001):
-        th = th - (1.0 / t ** 0.7) * ((th - 1.0)
-                                      + 2.0 * (float(rng.uniform())
-                                               - 0.5))
+        th = th - (1.0 / t**0.7) * ((th - 1.0) + 2.0 * (float(rng.uniform()) - 0.5))
         its.append([th])
     av = polyak.polyak_average(its, burn_in=500)["average"][0]
     assert abs(av - 1.0) < abs(its[-1][0] - 1.0)
@@ -557,16 +521,13 @@ def test_polyak_rejects_bad_input():
 
 
 # ---------------------------------------------------------------- lsa
-X = [[1.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0],
-     [0.0, 1.0, 1.0, 0.0], [0.0, 0.0, 1.0, 1.0],
-     [0.0, 0.0, 0.0, 1.0]]
+X = [[1.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 1.0, 0.0], [0.0, 0.0, 1.0, 1.0], [0.0, 0.0, 0.0, 1.0]]
 
 
 def test_lsa_full_rank_is_plain_term_matching():
     m = lsa.lsa_decompose(X, None, "raw")
     rec = lsa.reconstruct(m)
-    assert max(abs(rec[i][j] - X[i][j]) for i in range(5)
-               for j in range(4)) < 1e-9
+    assert max(abs(rec[i][j] - X[i][j]) for i in range(5) for j in range(4)) < 1e-9
 
 
 def test_lsa_truncation_retrieves_beyond_the_literal_term():
@@ -598,27 +559,21 @@ def test_prsPEG_prioritised_choice_commits():
 
 
 def test_prsPEG_order_changes_the_language():
-    assert peg.parse(peg.choice(peg.lit("ab"), peg.lit("a")),
-                     "ab")["matched"]
+    assert peg.parse(peg.choice(peg.lit("ab"), peg.lit("a")), "ab")["matched"]
 
 
 def test_prsPEG_star_is_greedy():
-    assert peg.parse(peg.seq(peg.star(peg.lit("a")), peg.lit("b")),
-                     "aaab")["matched"]
-    assert not peg.parse(peg.seq(peg.star(peg.lit("a")),
-                                 peg.lit("a")), "aaa")["matched"]
+    assert peg.parse(peg.seq(peg.star(peg.lit("a")), peg.lit("b")), "aaab")["matched"]
+    assert not peg.parse(peg.seq(peg.star(peg.lit("a")), peg.lit("a")), "aaa")["matched"]
 
 
 def test_prsPEG_predicates_do_not_consume():
-    assert peg.parse(peg.seq(peg.not_(peg.lit("x")), peg.lit("a")),
-                     "a")["matched"]
-    assert peg.parse(peg.seq(peg.and_(peg.lit("a")), peg.lit("a")),
-                     "a")["matched"]
+    assert peg.parse(peg.seq(peg.not_(peg.lit("x")), peg.lit("a")), "a")["matched"]
+    assert peg.parse(peg.seq(peg.and_(peg.lit("a")), peg.lit("a")), "a")["matched"]
 
 
 def test_prsPEG_packrat_memoises():
-    r = peg.packrat_parse(peg.seq(peg.star(peg.lit("a")),
-                                  peg.lit("b")), "aaaaab")
+    r = peg.packrat_parse(peg.seq(peg.star(peg.lit("a")), peg.lit("b")), "aaaaab")
     assert r["matched"]
     assert r["memo_entries"] > 0
 
@@ -629,8 +584,7 @@ RW = [[1.0, 0.0], [0.0, 1.0]]
 
 
 def test_dqnv_converges_to_the_bellman_fixed_point():
-    fit = dqnv.q_learning(P, RW, 2, 2, gamma=0.9, alpha=0.2,
-                          steps=8000, C=50, seed=1)
+    fit = dqnv.q_learning(P, RW, 2, 2, gamma=0.9, alpha=0.2, steps=8000, C=50, seed=1)
     assert fit["final_residual"] < 0.05
 
 
@@ -666,13 +620,11 @@ def test_dqnv_rejects_bad_input():
 # ------------------------------------------------------------- resnxt
 WINS = [[[0.5, 0.1, 0.0, 0.2]], [[0.0, 0.3, 0.4, 0.1]]]
 WMIDS = [[[0.7]], [[-0.2]]]
-WOUTS = [[[0.3], [0.1], [0.0], [0.2]],
-         [[0.1], [-0.4], [0.2], [0.0]]]
+WOUTS = [[[0.3], [0.1], [0.0], [0.2]], [[0.1], [-0.4], [0.2], [0.0]]]
 
 
 def test_resnxt_block_forms_are_equivalent():
-    r = resnxt.block_equivalence([1.0, 0.5, -0.5, 2.0], WINS, WMIDS,
-                                 WOUTS)
+    r = resnxt.block_equivalence([1.0, 0.5, -0.5, 2.0], WINS, WMIDS, WOUTS)
     assert r["equivalent"]
 
 
@@ -698,12 +650,8 @@ def test_mienco_matched_patches_score_higher():
     def critic(s, p):
         return sum(s[i] * p[i] for i in range(len(s)))
 
-    good = mienco.local_objective([1.0, 0.0],
-                                  [[1.0, 0.1], [0.9, 0.0]],
-                                  [[-1.0, 0.0], [-0.9, 0.1]],
-                                  critic)["estimate"]
-    bad = mienco.local_objective([1.0, 0.0], [[-1.0, 0.0]],
-                                 [[1.0, 0.0]], critic)["estimate"]
+    good = mienco.local_objective([1.0, 0.0], [[1.0, 0.1], [0.9, 0.0]], [[-1.0, 0.0], [-0.9, 0.1]], critic)["estimate"]
+    bad = mienco.local_objective([1.0, 0.0], [[-1.0, 0.0]], [[1.0, 0.0]], critic)["estimate"]
     assert good > bad
 
 
@@ -719,8 +667,7 @@ def test_mienco_rejects_bad_input():
     with pytest.raises(ValueError):
         mienco.jsd_estimate([], [1.0])
     with pytest.raises(ValueError):
-        mienco.local_objective([1.0], [[1.0]], [[1.0]], critic,
-                               estimator="mine")
+        mienco.local_objective([1.0], [[1.0]], [[1.0]], critic, estimator="mine")
 
 
 # -------------------------------------------------------------- pratt
@@ -733,10 +680,8 @@ def test_pratt_attention_is_a_distribution():
 
 
 def test_pratt_entropy_extremes():
-    assert abs(pratt.attention_entropy([1.0, 0.0, 0.0])
-               ["entropy"]) < 1e-9
-    assert abs(pratt.attention_entropy([1 / 3.0] * 3)["entropy"]
-               - math.log(3)) < 1e-9
+    assert abs(pratt.attention_entropy([1.0, 0.0, 0.0])["entropy"]) < 1e-9
+    assert abs(pratt.attention_entropy([1 / 3.0] * 3)["entropy"] - math.log(3)) < 1e-9
 
 
 def test_pratt_rejects_bad_input():
@@ -747,7 +692,30 @@ def test_pratt_rejects_bad_input():
 
 
 def test_batch4_cheatsheets_are_present():
-    for mod in (impFB, fmFM, ffmFM, ncfRS, ngcf, gru4r, narm, fairRC,
-                node2v, gsage, mpfn, egnnL, egcn, gnnEx, grace, gtrf,
-                meglt, polyak, lsa, peg, dqnv, resnxt, mienco, pratt):
+    for mod in (
+        impFB,
+        fmFM,
+        ffmFM,
+        ncfRS,
+        ngcf,
+        gru4r,
+        narm,
+        fairRC,
+        node2v,
+        gsage,
+        mpfn,
+        egnnL,
+        egcn,
+        gnnEx,
+        grace,
+        gtrf,
+        meglt,
+        polyak,
+        lsa,
+        peg,
+        dqnv,
+        resnxt,
+        mienco,
+        pratt,
+    ):
         assert len(mod.cheatsheet()) > 80

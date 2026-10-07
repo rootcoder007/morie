@@ -46,13 +46,15 @@ def evt_pot_es(u, sigma, xi, VaR):
     if xi >= 1.0:
         raise ValueError("expected shortfall is infinite for xi >= 1")
     es = (VaR + sigma - xi * u) / (1.0 - xi)
-    return RichResult(payload={
-        "ES": es,
-        "estimate": es,
-        "ratio": es / VaR if VaR != 0.0 else float("nan"),
-        "xi": xi,
-        "method": "GPD expected shortfall above a POT threshold",
-    })
+    return RichResult(
+        payload={
+            "ES": es,
+            "estimate": es,
+            "ratio": es / VaR if VaR != 0.0 else float("nan"),
+            "xi": xi,
+            "method": "GPD expected shortfall above a POT threshold",
+        }
+    )
 
 
 def cheatsheet():

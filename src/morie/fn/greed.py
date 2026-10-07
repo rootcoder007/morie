@@ -44,7 +44,7 @@ def greed(
     dict
         Keys: 'sequence', 'probabilities'.
     """
-    rng = np.random.RandomState(seed)
+    np.random.RandomState(seed)
 
     if temperature <= 0:
         raise ValueError("temperature must be positive")
@@ -52,7 +52,7 @@ def greed(
     sequence = [initial_token]
     probabilities = []
 
-    for step in range(max_length - 1):
+    for _step in range(max_length - 1):
         logits = step_fn(np.array(sequence))
         scaled_logits = logits / temperature
         probs = np.exp(scaled_logits - np.max(scaled_logits))

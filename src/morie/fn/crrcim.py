@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Cumulative incidence function for competing risks."""
 
-import math
-
 from . import _s03core as core
 from ._richresult import RichResult
 
@@ -48,7 +46,7 @@ def aalen_johansen(time, event_type, cause=1):
         Y = n - i
         if d_all > 0:
             cif += surv * d_k / Y
-            surv *= (1.0 - d_all / float(Y))
+            surv *= 1.0 - d_all / float(Y)
             times.append(u)
             F.append(cif)
             S.append(surv)
@@ -91,16 +89,18 @@ def cumulative_incidence(time, event_type, cause=1):
     Aalen & Johansen (1978), Scand. J. Statist. 5(3):141-150.
     """
     times, F, S, Y, dk, n = aalen_johansen(time, event_type, cause)
-    return RichResult(payload={
-        "estimate": F[-1] if F else 0.0,
-        "time": times,
-        "cif": F,
-        "surv": S,
-        "n_risk": Y,
-        "n_event": dk,
-        "n": n,
-        "method": "Aalen-Johansen cumulative incidence function",
-    })
+    return RichResult(
+        payload={
+            "estimate": F[-1] if F else 0.0,
+            "time": times,
+            "cif": F,
+            "surv": S,
+            "n_risk": Y,
+            "n_event": dk,
+            "n": n,
+            "method": "Aalen-Johansen cumulative incidence function",
+        }
+    )
 
 
 def cheatsheet():

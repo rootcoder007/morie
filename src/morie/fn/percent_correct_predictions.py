@@ -28,17 +28,16 @@ def percent_correct_predictions(n_correct, n_total):
     """
     value = _ca_crim.percent_correct_predictions(n_correct, n_total)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (4.12)"
     return RichResult(
-        title='Percent of correct predictions',
+        title="Percent of correct predictions",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca4e12: 100 n_correct / n_total [Weisburd et al. 2022, eq. 4.12]'
+    return "ca4e12: 100 n_correct / n_total [Weisburd et al. 2022, eq. 4.12]"

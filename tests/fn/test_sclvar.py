@@ -5,7 +5,6 @@ import math
 import pytest
 
 from morie.fn import _array_core as np
-
 from morie.fn.sclvar import selection_coefficient
 
 
@@ -15,11 +14,8 @@ def test_sclvar_basic():
     n_loci, n_demes = 8, 4
     counts = rng.integers(0, 50, (n_loci, n_demes))
     n_total = [[50] * n_demes for _ in range(n_loci)]
-    result = selection_coefficient(
-        counts, n_total=n_total, generations=10, n_e=1000.0
-    )
-    expected_keys = ("fst", "fst_mean", "alpha_locus", "outlier",
-                     "selection_type", "s", "drift_dominates", "q_value")
+    result = selection_coefficient(counts, n_total=n_total, generations=10, n_e=1000.0)
+    expected_keys = ("fst", "fst_mean", "alpha_locus", "outlier", "selection_type", "s", "drift_dominates", "q_value")
     for key in expected_keys:
         assert key in result
     # fst_mean is a single genome-wide scalar.
@@ -58,7 +54,7 @@ import morie.fn.sclvar as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

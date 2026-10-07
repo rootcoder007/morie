@@ -30,17 +30,14 @@ def kamath_ch9_fom_loss(r_i, t_i, R=None, P=None):
     True
     """
     if P is None:
-        raise ValueError("P= (the frame-by-timestamp probability "
-                         "matrix) is required.")
+        raise ValueError("P= (the frame-by-timestamp probability matrix) is required.")
     Pm = np.atleast_2d(np.asarray(P, dtype=float))
     rows = np.atleast_1d(np.asarray(r_i)).astype(int)
     cols = np.atleast_1d(np.asarray(t_i)).astype(int)
     if rows.size == 0:
-        raise ValueError("no frames were reordered; the FOM loss is "
-                         "over an empty set.")
+        raise ValueError("no frames were reordered; the FOM loss is over an empty set.")
     if rows.shape != cols.shape:
-        raise ValueError(
-            f"{rows.size} frame indices but {cols.size} timestamps.")
+        raise ValueError(f"{rows.size} frame indices but {cols.size} timestamps.")
     if np.any((rows < 0) | (rows >= Pm.shape[0])):
         raise ValueError("a frame index lies outside P.")
     if np.any((cols < 0) | (cols >= Pm.shape[1])):
@@ -48,15 +45,18 @@ def kamath_ch9_fom_loss(r_i, t_i, R=None, P=None):
     if np.any((Pm < 0) | (Pm > 1)):
         raise ValueError("P holds probabilities and must lie in [0, 1].")
     if R is not None and int(R) != rows.size:
-        raise ValueError(
-            f"R = {R} contradicts the {rows.size} reordered frames.")
+        raise ValueError(f"R = {R} contradicts the {rows.size} reordered frames.")
     with np.errstate(divide="ignore"):
         per = -np.log(Pm[rows, cols])
-    return RichResult(payload={
-        "estimate": float(per.sum()),
-        "per_frame": [float(v) for v in per],
-        "n_reordered": int(rows.size), "n": int(rows.size),
-        "method": "frame order modelling loss (Kamath Eq 9.15)"})
+    return RichResult(
+        payload={
+            "estimate": float(per.sum()),
+            "per_frame": [float(v) for v in per],
+            "n_reordered": int(rows.size),
+            "n": int(rows.size),
+            "method": "frame order modelling loss (Kamath Eq 9.15)",
+        }
+    )
 
 
 def cheatsheet():

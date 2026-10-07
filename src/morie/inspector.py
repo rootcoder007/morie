@@ -99,8 +99,12 @@ def inspect_output(path: str | Path) -> InspectionResult:
         df = pd.read_excel(path)
     elif suffix == ".parquet":
         df = pd.read_parquet(path)
+    elif suffix == ".json":  # as profile-dataset and sample read it
+        from .dataset import load_dataset
+
+        df = load_dataset(str(path))
     else:
-        df = pd.read_csv(path)
+        raise ValueError(f"{path.name}: not a supported table format (csv, tsv, xlsx, xls, parquet, json)")
 
     numeric_cols = df.select_dtypes(include=[np.number])
     summary = numeric_cols.describe().T if not numeric_cols.empty else None
@@ -140,10 +144,14 @@ def inspect_directory(
         raise NotADirectoryError(f"Not a directory: {directory}")
 
     if module_name and module_name in MODULE_SPECS:
-        expected = MODULE_SPECS[module_name].output_files
-        files = [directory / f for f in expected if (directory / f).is_file()]
+        expected = [f for f in MODULE_SPECS[module_name].output_files if f.lower().endswith(".csv")]
+        files = []
+        for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
+            files = [base / f for f in expected if (base / f).is_file()]
+            if files:
+                break
     else:
-        files = sorted(directory.glob("*.csv"))
+        files = sorted(directory.glob("*.csv")) or sorted(directory.rglob("*.csv"))
 
     return [inspect_output(f) for f in files]
 
@@ -237,7 +245,7 @@ def verify_statistical_output(path: str | Path) -> VerificationReport:
             VerificationCheck(
                 f"p_value_range:{col}",
                 bad == 0,
-                f"{bad}/{len(vals)} values outside [0,1]" if bad else f"{len(vals)} values OK",
+                f"{int(bad)}/{len(vals)} values outside [0,1]" if bad else f"{len(vals)} values OK",
             )
         )
 
@@ -397,10 +405,14 @@ def verify_directory(
         raise NotADirectoryError(f"Not a directory: {directory}")
 
     if module_name and module_name in MODULE_SPECS:
-        expected = MODULE_SPECS[module_name].output_files
-        files = [directory / f for f in expected if (directory / f).is_file()]
+        expected = [f for f in MODULE_SPECS[module_name].output_files if f.lower().endswith(".csv")]
+        files = []
+        for base in (directory, directory / module_name):  # a module folder, or the folder that holds module folders
+            files = [base / f for f in expected if (base / f).is_file()]
+            if files:
+                break
     else:
-        files = sorted(directory.glob("*.csv"))
+        files = sorted(directory.glob("*.csv")) or sorted(directory.rglob("*.csv"))
 
     return [verify_statistical_output(f) for f in files]
 

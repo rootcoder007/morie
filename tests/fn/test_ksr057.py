@@ -1,7 +1,6 @@
 """Tests for ksr057.kosorok_ch2_m_estimator_master_theorem."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ksr057 import kosorok_ch2_m_estimator_master_theorem
 
 

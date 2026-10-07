@@ -1,8 +1,8 @@
 """Tests for multivariate_outlier."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mvout import multivariate_outlier
 
 

@@ -53,10 +53,7 @@ def item_select(
         rest = total - col
         sd_i = np.std(col, ddof=1)
         sd_r = np.std(rest, ddof=1)
-        if sd_i < 1e-15 or sd_r < 1e-15:
-            rc = 0.0
-        else:
-            rc = float(np.corrcoef(col, rest)[0, 1])
+        rc = 0.0 if sd_i < 1e-15 or sd_r < 1e-15 else float(np.corrcoef(col, rest)[0, 1])
 
         valid = col[~np.isnan(col)]
         nv = len(valid)

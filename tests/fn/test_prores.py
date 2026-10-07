@@ -1,7 +1,6 @@
 """Tests for morie.fn.prores -- bootstrap quantile resampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.prores import probability_resample, prores
 

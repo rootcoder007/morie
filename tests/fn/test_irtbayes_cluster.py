@@ -1,9 +1,9 @@
 """IRT/Bayesian + survey cluster: ambtc, bayam, irtdq, irtid, foldp,
 plpol, mcmpp, pscli, hsirt, emtxt, bymds, bmdul, chopit."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.ambtc import am_bootstrap_se
 from morie.fn.bayam import bayesian_am_scaling
 from morie.fn.bmdul import bayesian_mds_unfolding
@@ -222,9 +222,7 @@ def test_chopit_recovers_dif_shift():
         # per-respondent shifted thresholds: category = 1 + #{k: latent > tau_k + sh_i}
         return 1 + (latent[:, None] > (taus[None, :] + sh[:, None])).sum(axis=1)
 
-    Vg = np.column_stack(
-        [rate(mu_v[j] + rng.normal(scale=1.0, size=n), shift) for j in range(2)]
-    )
+    Vg = np.column_stack([rate(mu_v[j] + rng.normal(scale=1.0, size=n), shift) for j in range(2)])
     self_lat = rng.normal(scale=1.0, size=n)  # same true distribution in both groups
     y = rate(self_lat, shift)
     out = chopit_vignette(y, Vg, group=grp, n_categories=3)
@@ -234,9 +232,7 @@ def test_chopit_recovers_dif_shift():
     # the corrected latent means must agree, though the naive ordinal
     # means differ by construction (measured naive gap ~0.46)
     assert abs(out["naive_means"]["a"] - out["naive_means"]["b"]) > 0.2
-    assert out["corrected_means"]["a"] == pytest.approx(
-        out["corrected_means"]["b"], abs=0.25
-    )
+    assert out["corrected_means"]["a"] == pytest.approx(out["corrected_means"]["b"], abs=0.25)
     # location anchor: mean vignette level = 0, true self mean sits at
     # -mean(mu_v) = 0.1 on that scale
     assert out["corrected_means"]["a"] == pytest.approx(0.1, abs=0.3)

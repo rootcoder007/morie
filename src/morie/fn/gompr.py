@@ -50,10 +50,7 @@ def gompr(
         eta = X @ beta if p > 0 else 0
         exp_eta = np.exp(eta)
         h = lam * np.exp(gamma * time) * exp_eta
-        if gamma == 0:
-            H = lam * time * exp_eta
-        else:
-            H = (lam / gamma) * (np.exp(gamma * time) - 1) * exp_eta
+        H = lam * time * exp_eta if gamma == 0 else lam / gamma * (np.exp(gamma * time) - 1) * exp_eta
         ll = np.sum(event * np.log(h + 1e-300)) - np.sum(H)
         return -ll if np.isfinite(ll) else 1e20
 

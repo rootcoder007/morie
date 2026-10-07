@@ -1,7 +1,6 @@
 """Tests for micomp.mi_compare_models."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.micomp import mi_compare_models
 
 

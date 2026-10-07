@@ -81,12 +81,10 @@ studies with a sustained exposure period", *Mathematical Modelling*
 used for identification.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["mediator_distribution", "interventional_mean",
-           "randomized_interventional_effect", "decompose"]
+__all__ = ["mediator_distribution", "interventional_mean", "randomized_interventional_effect", "decompose"]
 
 _EPS = 1e-12
 _ROUTES = ("gformula", "weighting")
@@ -95,7 +93,7 @@ _ROUTES = ("gformula", "weighting")
 def _labels(v, name):
     out = [str(x) for x in v]
     if not out:
-        raise ValueError("randIE: %s is empty" % name)
+        raise ValueError(f"randIE: {name} is empty")
     return out
 
 
@@ -112,12 +110,10 @@ def mediator_distribution(A, M, C=None, laplace=0.0):
     m = _labels(M, "M")
     n = len(a)
     if len(m) != n:
-        raise ValueError("randIE: %d treatments but %d mediator "
-                         "values" % (n, len(m)))
+        raise ValueError(f"randIE: {int(n)} treatments but {int(len(m))} mediator values")
     c = ["*"] * n if C is None else _labels(C, "C")
     if len(c) != n:
-        raise ValueError("randIE: %d strata for %d units"
-                         % (len(c), n))
+        raise ValueError(f"randIE: {int(len(c))} strata for {int(n)} units")
     levels = sorted(set(m))
     cells = {}
     for i in range(n):
@@ -125,16 +121,17 @@ def mediator_distribution(A, M, C=None, laplace=0.0):
     out = {}
     for key, vals in cells.items():
         tot = len(vals) + float(laplace) * len(levels)
-        out[key] = {lv: (vals.count(lv) + float(laplace)) / tot
-                    for lv in levels}
-    return {"p": out, "levels": levels,
-            "strata": sorted({cc for _, cc in cells}),
-            "arms": sorted({aa for aa, _ in cells}),
-            "n": n}
+        out[key] = {lv: (vals.count(lv) + float(laplace)) / tot for lv in levels}
+    return {
+        "p": out,
+        "levels": levels,
+        "strata": sorted({cc for _, cc in cells}),
+        "arms": sorted({aa for aa, _ in cells}),
+        "n": n,
+    }
 
 
-def interventional_mean(Y, A, M, C=None, a="1", a_star="0",
-                        route="gformula", laplace=0.0):
+def interventional_mean(Y, A, M, C=None, a="1", a_star="0", route="gformula", laplace=0.0):
     r"""The functional :math:`\psi(a, a^{*})`.
 
     Outcomes are taken under treatment ``a``; the mediator is drawn
@@ -144,31 +141,25 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0",
     ``own_mediator_mean`` in the result.
     """
     if route not in _ROUTES:
-        raise ValueError("randIE: route must be gformula or "
-                         "weighting, got %r" % (route,))
+        raise ValueError(f"randIE: route must be gformula or weighting, got {route!r}")
     y = [float(v) for v in k.vec(Y)]
     av = _labels(A, "A")
     mv = _labels(M, "M")
     n = len(y)
     if not (len(av) == len(mv) == n):
-        raise ValueError("randIE: Y, A and M must agree in length "
-                         "(%d, %d, %d)" % (n, len(av), len(mv)))
+        raise ValueError(f"randIE: Y, A and M must agree in length ({int(n)}, {int(len(av))}, {int(len(mv))})")
     cv = ["*"] * n if C is None else _labels(C, "C")
     if len(cv) != n:
-        raise ValueError("randIE: %d strata for %d units"
-                         % (len(cv), n))
+        raise ValueError(f"randIE: {int(len(cv))} strata for {int(n)} units")
     a, a_star = str(a), str(a_star)
     if a not in set(av):
-        raise ValueError("randIE: treatment arm %r not observed; arms "
-                         "are %s" % (a, sorted(set(av))))
+        raise ValueError(f"randIE: treatment arm {a!r} not observed; arms are {sorted(set(av))}")
     if a_star not in set(av):
-        raise ValueError("randIE: treatment arm %r not observed; arms "
-                         "are %s" % (a_star, sorted(set(av))))
+        raise ValueError(f"randIE: treatment arm {a_star!r} not observed; arms are {sorted(set(av))}")
     md = mediator_distribution(av, mv, cv, laplace=laplace)
     strata = md["strata"]
     levels = md["levels"]
-    pc = {s: sum(1 for i in range(n) if cv[i] == s) / float(n)
-          for s in strata}
+    pc = {s: sum(1 for i in range(n) if cv[i] == s) / float(n) for s in strata}
 
     # E[Y | a, m, c] from the cell means
     ybar, cnt = {}, {}
@@ -195,10 +186,9 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0",
                 continue
             total += pc[s] * w * ybar[key]
     if missing:
-        raise ValueError("randIE: %d cell(s) needed by the g-formula "
-                         "are empty, e.g. %r -- psi(%s, %s) is not "
-                         "identified from this sample"
-                         % (len(missing), missing[0], a, a_star))
+        raise ValueError(
+            f"randIE: {int(len(missing))} cell(s) needed by the g-formula are empty, e.g. {missing[0]!r} -- psi({a}, {a_star}) is not identified from this sample"
+        )
 
     if route == "weighting":
         # reweight observed outcomes in arm a by p(m | a*, c)/p(m | a, c)
@@ -214,29 +204,30 @@ def interventional_mean(Y, A, M, C=None, a="1", a_star="0",
             num += w * y[i]
             den += w
         if den <= _EPS:
-            raise ValueError("randIE: the mediator-density ratio put "
-                             "no weight on arm %r" % (a,))
+            raise ValueError(f"randIE: the mediator-density ratio put no weight on arm {a!r}")
         total = num / den
 
-    own = ([y[i] for i in range(n) if av[i] == a])
-    return {"estimate": total, "a": a, "a_star": a_star,
-            "route": route,
-            "own_mediator_mean": sum(own) / len(own) if own else
-            float("nan"),
-            "n_arm": len(own), "n": n,
-            "note": "psi(a, a) is not the observed arm mean unless the "
-                    "mediator is degenerate: drawing M from p(m|a,c) "
-                    "breaks the individual-level M-Y dependence"}
+    own = [y[i] for i in range(n) if av[i] == a]
+    return {
+        "estimate": total,
+        "a": a,
+        "a_star": a_star,
+        "route": route,
+        "own_mediator_mean": sum(own) / len(own) if own else float("nan"),
+        "n_arm": len(own),
+        "n": n,
+        "note": "psi(a, a) is not the observed arm mean unless the "
+        "mediator is degenerate: drawing M from p(m|a,c) "
+        "breaks the individual-level M-Y dependence",
+    }
 
 
-def randomized_interventional_effect(Y, A, M, C=None, treated="1",
-                                     control="0", route="gformula",
-                                     laplace=0.0):
+def randomized_interventional_effect(Y, A, M, C=None, treated="1", control="0", route="gformula", laplace=0.0):
     r"""Total, direct and indirect effects under the random regime."""
+
     def psi(a, a_star):
-        return interventional_mean(Y, A, M, C, a=a, a_star=a_star,
-                                   route=route, laplace=laplace
-                                   )["estimate"]
+        return interventional_mean(Y, A, M, C, a=a, a_star=a_star, route=route, laplace=laplace)["estimate"]
+
     t, c = str(treated), str(control)
     p11, p10, p00 = psi(t, t), psi(t, c), psi(c, c)
     # psi(control, treated) is only needed for the control-arm direct
@@ -249,42 +240,49 @@ def randomized_interventional_effect(Y, A, M, C=None, treated="1",
         p01 = psi(c, t)
     except ValueError:
         p01 = None
-    return RichResult(payload={
-        "estimate": p11 - p00,
-        "total": p11 - p00,
-        "direct": p10 - p00,
-        "indirect": p11 - p10,
-        "direct_control_arm": (p00 - p01) if p01 is not None
-                              else None,
-        "psi": {"11": p11, "10": p10, "01": p01, "00": p00},
-        "route": route, "treated": t, "control": c,
-        "identity": "total = direct + indirect holds exactly by "
-                    "construction; it is not evidence the estimator "
-                    "is correct",
-        "method": "randomized interventional direct/indirect effects, "
-                  "Didelez, Dawid & Geneletti (2006) Secs. 3-4",
-    })
+    return RichResult(
+        payload={
+            "estimate": p11 - p00,
+            "total": p11 - p00,
+            "direct": p10 - p00,
+            "indirect": p11 - p10,
+            "direct_control_arm": (p00 - p01) if p01 is not None else None,
+            "psi": {"11": p11, "10": p10, "01": p01, "00": p00},
+            "route": route,
+            "treated": t,
+            "control": c,
+            "identity": "total = direct + indirect holds exactly by "
+            "construction; it is not evidence the estimator "
+            "is correct",
+            "method": "randomized interventional direct/indirect effects, Didelez, Dawid & Geneletti (2006) Secs. 3-4",
+        }
+    )
 
 
 def decompose(result):
     """Total / direct / indirect with the residual, which must be 0."""
     tot = result["total"]
     d, i = result["direct"], result["indirect"]
-    return {"total": tot, "direct": d, "indirect": i,
-            "residual": tot - (d + i),
-            "proportion_mediated": (i / tot) if abs(tot) > _EPS
-            else float("nan")}
+    return {
+        "total": tot,
+        "direct": d,
+        "indirect": i,
+        "residual": tot - (d + i),
+        "proportion_mediated": (i / tot) if abs(tot) > _EPS else float("nan"),
+    }
 
 
 def cheatsheet():
-    return ("randIE: randomized interventional effects. Natural "
-            "effects need a CROSS-WORLD quantity no experiment can "
-            "produce; here the mediator is instead DRAWN from "
-            "p(m|a*,c) -- an intervention on a distribution, so the "
-            "estimand is a runnable policy. psi(a,a*) = sum_c sum_m "
-            "E[Y|a,m,c] p(m|a*,c) p(c); total = direct + indirect is "
-            "an algebraic IDENTITY, not a check on the fit. psi(a,a) "
-            "is NOT the observed arm mean.")
+    return (
+        "randIE: randomized interventional effects. Natural "
+        "effects need a CROSS-WORLD quantity no experiment can "
+        "produce; here the mediator is instead DRAWN from "
+        "p(m|a*,c) -- an intervention on a distribution, so the "
+        "estimand is a runnable policy. psi(a,a*) = sum_c sum_m "
+        "E[Y|a,m,c] p(m|a*,c) p(c); total = direct + indirect is "
+        "an algebraic IDENTITY, not a check on the fit. psi(a,a) "
+        "is NOT the observed arm mean."
+    )
 
 
 # compact alias per ledger/NAMING.md

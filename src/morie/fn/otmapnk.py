@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["neural_kantorovich_map", "ot_map_neural_kantorovich"]
 
 
-def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
-                           n_basis=12, seed=0):
+def neural_kantorovich_map(source, target, n_iter=400, lr=0.05, n_basis=12, seed=0):
     r"""Monotone Brenier map from the semi-dual Kantorovich problem.
 
     Brenier's theorem says the optimal map under squared cost is the
@@ -105,7 +104,7 @@ def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
     for _ in range(int(n_iter)):
         pred, S = Tmap(zt, w, c0)
         r = pred - tgt_q
-        loss = float(np.mean(r ** 2))
+        loss = float(np.mean(r**2))
         if cur is not None and loss > cur:
             step *= 0.5
             if step < 1e-9:
@@ -149,11 +148,9 @@ def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
             ),
             "w2": w2_fit,
             "w2_exact": w2_ex,
-            "convex_potential": {"weights": w, "intercept": float(c0),
-                                 "knots": knots},
+            "convex_potential": {"weights": w, "intercept": float(c0), "knots": knots},
             "loss_history": np.asarray(hist),
-            "converged": bool(len(hist) > 2
-                              and abs(hist[-1] - hist[-2]) < 1e-10),
+            "converged": bool(len(hist) > 2 and abs(hist[-1] - hist[-2]) < 1e-10),
             "n_source": int(a.size),
             "n_target": int(b.size),
             "method": "Neural-Kantorovich monotone transport map",
@@ -162,10 +159,7 @@ def neural_kantorovich_map(source, target, n_iter=400, lr=0.05,
 
 
 def cheatsheet():
-    return (
-        "otmapnk: monotone Brenier map from a convex potential, scored "
-        "against the exact 1-D quantile coupling"
-    )
+    return "otmapnk: monotone Brenier map from a convex potential, scored against the exact 1-D quantile coupling"
 
 
 #: Catalogue alias for :func:`neural_kantorovich_map`.

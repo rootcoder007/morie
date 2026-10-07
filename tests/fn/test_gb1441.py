@@ -1,7 +1,5 @@
 """Tests for gb1441.gibbons_fisher_exact."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.gb1441 import gibbons_fisher_exact
 
 
@@ -13,8 +11,7 @@ def test_gb1441_basic():
     assert isinstance(result, dict) or hasattr(result, "__getitem__")
 
     # Required keys per the docstring
-    for key in ("p_value", "p_greater", "p_less", "prob", "statistic",
-                "support", "method"):
+    for key in ("p_value", "p_greater", "p_less", "prob", "statistic", "support", "method"):
         assert key in result, f"missing key: {key}"
 
     # Independent recomputation of the four core quantities.

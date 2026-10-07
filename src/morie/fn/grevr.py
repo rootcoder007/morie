@@ -81,8 +81,7 @@ def geron_explained_variance_ratio(singular_values, threshold=0.95):
 
     return RichResult(
         title="Explained variance ratio",
-        summary_lines=[("Components", int(s.size)),
-                       (f"Needed for {threshold:.0%}", k)],
+        summary_lines=[("Components", int(s.size)), (f"Needed for {threshold:.0%}", k)],
         payload={
             "explained_variance_ratio": evr.tolist(),
             "cumulative": cum.tolist(),

@@ -26,6 +26,7 @@ American Psychological Association* (7th ed.).
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 import textwrap
@@ -38,6 +39,76 @@ from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
 logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Text and table rendering (no pandas/tabulate needed; text is escaped per format)
+# ---------------------------------------------------------------------------
+
+_FORMATS = ("markdown", "latex", "html")
+_TEX = {
+    "\\": r"\textbackslash{}",
+    "&": r"\&",
+    "%": r"\%",
+    "$": r"\$",
+    "#": r"\#",
+    "_": r"\_",
+    "{": r"\{",
+    "}": r"\}",
+    "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}",
+}
+
+
+def _tex(text: Any) -> str:
+    """Escape text for LaTeX: a data-derived ``&``, ``%`` or ``$`` must not break the document."""
+    return "".join(_TEX.get(ch, ch) for ch in str(text))
+
+
+def _html(text: Any) -> str:
+    return html.escape(str(text), quote=True)
+
+
+def _cell(v: Any) -> str:
+    if v is None or (isinstance(v, float) and v != v):
+        return ""
+    if isinstance(v, float):
+        return str(int(v)) if v.is_integer() and abs(v) < 1e15 else f"{v:.6g}"
+    return str(v)
+
+
+def _table_rows(df: Any) -> tuple[list[str], list[list[str]]]:
+    cols = [str(c) for c in df.columns]
+    rows = [[_cell(r.get(c)) for c in df.columns] for r in df.to_dict("records")]
+    return cols, rows
+
+
+def _df_markdown(df: Any) -> str:
+    cols, rows = _table_rows(df)
+    esc = [[c.replace("|", "\\|") for c in r] for r in [cols, *rows]]
+    lines = ["| " + " | ".join(esc[0]) + " |", "|" + "|".join("---" for _ in cols) + "|"]
+    lines += ["| " + " | ".join(r) + " |" for r in esc[1:]]
+    return "\n".join(lines)
+
+
+def _df_latex(df: Any) -> str:
+    cols, rows = _table_rows(df)
+    out = [
+        "\\begin{tabular}{" + "l" * len(cols) + "}",
+        "\\hline",
+        " & ".join(_tex(c) for c in cols) + " \\\\",
+        "\\hline",
+    ]
+    out += [" & ".join(_tex(c) for c in r) + " \\\\" for r in rows]
+    out += ["\\hline", "\\end{tabular}"]
+    return "\n".join(out) + "\n"
+
+
+def _df_html(df: Any) -> str:
+    cols, rows = _table_rows(df)
+    head = "".join(f"<th>{_html(c)}</th>" for c in cols)
+    body = "".join("<tr>" + "".join(f"<td>{_html(c)}</td>" for c in r) + "</tr>" for r in rows)
+    return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
 
 
 # ---------------------------------------------------------------------------
@@ -66,7 +137,7 @@ class ReportSection:
         """Render section to LaTeX."""
         levels = {1: "section", 2: "subsection", 3: "subsubsection", 4: "paragraph"}
         cmd = levels.get(self.level, "paragraph")
-        parts = [f"\\{cmd}{{{self.title}}}", "", self.content, ""]
+        parts = [f"\\{cmd}{{{_tex(self.title)}}}", "", _tex(self.content), ""]
         for sub in self.subsections:
             parts.append(sub.to_latex())
         return "\n".join(parts)
@@ -75,8 +146,8 @@ class ReportSection:
         """Render section to HTML."""
         tag = f"h{min(self.level, 6)}"
         # Simple Markdown-like conversion for body
-        body = self.content.replace("\n\n", "</p><p>").replace("\n", " ")
-        parts = [f"<{tag}>{self.title}</{tag}>", f"<p>{body}</p>"]
+        body = _html(self.content).replace("\n\n", "</p><p>").replace("\n", " ")
+        parts = [f"<{tag}>{_html(self.title)}</{tag}>", f"<p>{body}</p>"]
         for sub in self.subsections:
             parts.append(sub.to_html())
         return "\n".join(parts)
@@ -96,6 +167,13 @@ class ReportFigure:
         label_str = f" {{#fig-{self.label}}}" if self.label else ""
         return f"![Figure {self.number}. {self.caption}]({self.path}){label_str}"
 
+    def to_html(self) -> str:
+        """Render figure in HTML."""
+        return (
+            f'<figure><img src="{_html(self.path)}" alt="{_html(self.caption)}">'
+            f"<figcaption>Figure {self.number}. {_html(self.caption)}</figcaption></figure>"
+        )
+
     def to_latex(self) -> str:
         """Render figure in LaTeX."""
         label_str = f"\\label{{fig:{self.label}}}" if self.label else ""
@@ -103,7 +181,7 @@ class ReportFigure:
             \\begin{{figure}}[htbp]
             \\centering
             \\includegraphics[width=0.8\\textwidth]{{{self.path}}}
-            \\caption{{Figure {self.number}. {self.caption}}}
+            \\caption{{Figure {self.number}. {_tex(self.caption)}}}
             {label_str}
             \\end{{figure}}""")
 
@@ -120,14 +198,18 @@ class ReportTable:
     def to_markdown(self) -> str:
         """Render table in Markdown."""
         header = f"\n**Table {self.number}.** {self.caption}\n\n"
-        return header + self.df.to_markdown(index=False) + "\n"
+        return header + _df_markdown(self.df) + "\n"
 
     def to_latex(self) -> str:
         """Render table in LaTeX."""
         label_str = f"\\label{{tab:{self.label}}}" if self.label else ""
-        body = self.df.to_latex(index=False, escape=True)
-        caption = f"\\caption{{Table {self.number}. {self.caption}}}"
+        body = _df_latex(self.df)
+        caption = f"\\caption{{Table {self.number}. {_tex(self.caption)}}}"
         return f"\\begin{{table}}[htbp]\n\\centering\n{caption}\n{label_str}\n{body}\\end{{table}}\n"
+
+    def to_html(self) -> str:
+        """Render table in HTML."""
+        return f"<p><strong>Table {self.number}.</strong> {_html(self.caption)}</p>\n{_df_html(self.df)}"
 
 
 @dataclass
@@ -227,8 +309,8 @@ def format_p_value(p: float, *, threshold: float = 0.001) -> str:
     """
     if not np.isfinite(p):
         return "p = NaN"
-    if p < 0:
-        return "p < .001"
+    if p < 0 or p > 1:
+        raise ValueError(f"a p-value lies between 0 and 1, not {p}")
     if p < threshold:
         return f"p < {threshold:.3f}".replace("0.", ".")
     return f"p = {p:.3f}".replace("0.", ".")
@@ -345,12 +427,9 @@ def format_chi_square(
     Examples
     --------
     >>> format_chi_square(12.34, 3, 0.006, n=200, cramers_v=0.18)
-    "chi-sq(3, N = 200) = 12.34, p = .006, V = 0.18"
+    'chi-sq(3, N = 200) = 12.34, p = .006, V = 0.18'
     """
-    if n is not None:
-        stat = f"chi-sq({df}, N = {n}) = {chi2:.2f}"
-    else:
-        stat = f"chi-sq({df}) = {chi2:.2f}"
+    stat = f"chi-sq({df}, N = {n}) = {chi2:.2f}" if n is not None else f"chi-sq({df}) = {chi2:.2f}"
     parts = [stat, format_p_value(p)]
     if cramers_v is not None:
         parts.append(f"V = {cramers_v:.2f}")
@@ -1114,7 +1193,7 @@ def generate_appendix(
         table_parts = []
         for i, (caption, df) in enumerate(supplementary_tables, 1):
             table_parts.append(f"**Supplementary Table S{i}. {caption}**\n")
-            table_parts.append(df.to_markdown(index=False))
+            table_parts.append(_df_markdown(df))
             table_parts.append("")
         subsections.append(
             ReportSection(
@@ -1379,7 +1458,6 @@ def audit_statistical_reporting(
             score=0.0,
         )
 
-    cols_lower = [c.lower() for c in df.columns]
     checks: list[dict[str, Any]] = []
     missing: list[str] = []
 
@@ -1584,11 +1662,14 @@ def generate_author_contributions(
 
     Examples
     --------
-    >>> generate_author_contributions({
+    >>> print(generate_author_contributions({
     ...     "Smith, J.": ["Conceptualization", "Methodology", "Writing - original draft"],
     ...     "Doe, A.": ["Formal analysis", "Software", "Writing - review & editing"],
-    ... })
-    '**Author Contributions**:\n\nSmith, J.: Conceptualization, Methodology, Writing - original draft.\nDoe, A.: Formal analysis, Software, Writing - review & editing.'
+    ... }))
+    **Author Contributions**:
+    <BLANKLINE>
+    Smith, J.: Conceptualization, Methodology, Writing - original draft.
+    Doe, A.: Formal analysis, Software, Writing - review & editing.
     """
     lines = ["**Author Contributions**:", ""]
     for author, roles in contributions.items():
@@ -1620,12 +1701,15 @@ def compile_report(
     str
         Compiled report text.
     """
+    if output_format not in _FORMATS:
+        raise ValueError(f"output_format must be one of {', '.join(_FORMATS)}, not {output_format!r}")
     parts: list[str] = []
 
     if output_format == "markdown":
         parts.append(f"# {report.title}")
         parts.append("")
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
+        parts.append(f"**Authors**: {', '.join(report.authors)}")
+        parts.append("")  # separate paragraphs: one newline ran the two lines together
         parts.append(f"**Date**: {report.date}")
         parts.append("")
         for section in report.sections:
@@ -1637,10 +1721,10 @@ def compile_report(
             parts.append(tbl.to_markdown())
 
     elif output_format == "latex":
-        parts.append(f"\\title{{{report.title}}}")
-        author_str = " \\and ".join(report.authors)
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
-        parts.append(f"\\date{{{report.date}}}")
+        parts.append(f"\\title{{{_tex(report.title)}}}")
+        author_str = " \\and ".join(_tex(a) for a in report.authors)
+        parts.append(f"\\author{{{author_str}}}")
+        parts.append(f"\\date{{{_tex(report.date)}}}")
         parts.append("\\maketitle")
         parts.append("")
         for section in report.sections:
@@ -1651,11 +1735,15 @@ def compile_report(
             parts.append(tbl.to_latex())
 
     elif output_format == "html":
-        parts.append(f"<h1>{report.title}</h1>")
-        parts.append("A journey of a thousand miles begins with a single step. -- Lao Tzu")
-        parts.append(f"<p><strong>Date</strong>: {report.date}</p>")
+        parts.append(f"<h1>{_html(report.title)}</h1>")
+        parts.append(f"<p><strong>Authors</strong>: {_html(', '.join(report.authors))}</p>")
+        parts.append(f"<p><strong>Date</strong>: {_html(report.date)}</p>")
         for section in report.sections:
             parts.append(section.to_html())
+        for fig in report.figures:
+            parts.append(fig.to_html())
+        for tbl in report.tables:
+            parts.append(tbl.to_html())
 
     return "\n".join(parts)
 
@@ -1684,8 +1772,13 @@ def save_report(
     """
     path = Path(path)
     if output_format is None:
-        ext_map = {".md": "markdown", ".tex": "latex", ".html": "html"}
-        output_format = ext_map.get(path.suffix.lower(), "markdown")
+        ext_map = {".md": "markdown", ".markdown": "markdown", ".tex": "latex", ".html": "html", ".htm": "html"}
+        output_format = ext_map.get(path.suffix.lower())
+        if output_format is None:
+            raise ValueError(
+                f"{path.name}: cannot tell the format from the extension; use .md, .tex or .html, "
+                "or pass output_format (markdown, latex, html)"
+            )
 
     content = compile_report(report, output_format=output_format)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1723,8 +1816,8 @@ def compare_reports(
     removed = set_a - set_b
 
     # Count section headings changed
-    headings_a = {l for l in text_a if l.startswith("#")}
-    headings_b = {l for l in text_b if l.startswith("#")}
+    headings_a = {line for line in text_a if line.startswith("#")}
+    headings_b = {line for line in text_b if line.startswith("#")}
     sections_added = headings_b - headings_a
     sections_removed = headings_a - headings_b
 
@@ -1813,7 +1906,18 @@ def generate_full_report(
 
     detected_methods = list(dict.fromkeys(detected_methods))  # deduplicate preserving order
 
-    report.add_section(generate_introduction(topic=title))
+    n_tables = len(csv_files)
+    report.add_section(
+        generate_introduction(
+            topic=title,
+            background=(
+                f"This report collects the analyses whose output tables are in {results_dir} "
+                f"({n_tables} table{'s' if n_tables != 1 else ''}"
+                + (f"; methods: {', '.join(m.replace('_', ' ') for m in detected_methods)}" if detected_methods else "")
+                + "). Replace this paragraph with the study's question and its population."
+            ),
+        )
+    )
     report.add_section(
         generate_methods(
             study_design=study_design,

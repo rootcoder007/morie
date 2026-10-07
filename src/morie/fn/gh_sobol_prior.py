@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_sobolev_prior"]
@@ -21,18 +20,19 @@ def ghosal_sobolev_prior(smoothness=1.0, n_terms=2000, seed=42):
     (sec. 9.5.4). Keys: estimate."""
     s = float(smoothness)
     rng = np.random.default_rng(seed)
-    th = [float(rng.normal(0, 1)) * float(j) ** (-(s + 0.5))
-          for j in range(1, n_terms + 1)]
-    norm_below = sum(float(j) ** (2.0 * (s - 0.25)) * th[j - 1] ** 2
-                     for j in range(1, n_terms + 1))
+    th = [float(rng.normal(0, 1)) * float(j) ** (-(s + 0.5)) for j in range(1, n_terms + 1)]
+    norm_below = sum(float(j) ** (2.0 * (s - 0.25)) * th[j - 1] ** 2 for j in range(1, n_terms + 1))
     # expected norm at t = s diverges logarithmically:
     e_norm_at_s = sum(1.0 / j for j in range(1, n_terms + 1))
-    res = RichResult(payload={"estimate": norm_below,
-                              "finite_below_s":
-                                  math.isfinite(norm_below),
-                              "divergent_at_s_partial": e_norm_at_s,
-                              "rate": "n^(-2s/(2s+1))",
-                              "method": "Sobolev sequence prior (GvdV 2017 sec. 9.5.4)"})
+    res = RichResult(
+        payload={
+            "estimate": norm_below,
+            "finite_below_s": math.isfinite(norm_below),
+            "divergent_at_s_partial": e_norm_at_s,
+            "rate": "n^(-2s/(2s+1))",
+            "method": "Sobolev sequence prior (GvdV 2017 sec. 9.5.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_sobol_prior")
 
 

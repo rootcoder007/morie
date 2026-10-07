@@ -1,7 +1,6 @@
 """Tests for morie.fn.stcox."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.stcox import stcox
 
 

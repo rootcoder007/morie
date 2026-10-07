@@ -8,10 +8,10 @@ from morie.fn.sglmm import (
     crps_gaussian,
     crps_poisson,
     crps_sample,
+    glmm_laplace_fit,
     glmm_residuals,
     gmrf_simulate,
     sar_covariance,
-    glmm_laplace_fit,
     spatial_glmm_predict,
     spatial_glmm_simulate,
 )

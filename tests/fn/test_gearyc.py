@@ -1,8 +1,8 @@
 """Tests for gearyc.gearyc."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.gearyc import gearyc
 
 
@@ -43,14 +43,12 @@ def test_gearyc_null_expectation_is_one_and_sides_are_correct():
     W = _rook_w(side)
     # Build gradient i + j via explicit loops (avoids np.add.outer / np.indices
     # which the numpy-like shim does not expose).
-    grad = np.array([float(r + c) for r in range(side) for c in range(side)],
-                    dtype=float)
+    grad = np.array([float(r + c) for r in range(side) for c in range(side)], dtype=float)
     assert float(gearyc(grad, W)["value"]) < 0.6
 
     # Checkerboard: alternating +/-1 via explicit loops.
     checker = np.array(
-        [(1.0 if (r + c) % 2 == 0 else -1.0)
-         for r in range(side) for c in range(side)],
+        [(1.0 if (r + c) % 2 == 0 else -1.0) for r in range(side) for c in range(side)],
         dtype=float,
     )
     assert float(gearyc(checker, W)["value"]) > 1.4

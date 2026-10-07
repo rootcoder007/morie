@@ -100,7 +100,7 @@ def spatial_flow(
             coef, residuals, _, _ = np.linalg.lstsq(X, log_T, rcond=None)
         except np.linalg.LinAlgError:
             coef = np.array([0.0, 1.0, 1.0, -1.0])
-            residuals = np.array([])
+            np.array([])
 
         k_hat = np.exp(coef[0])
         alpha = coef[1]

@@ -120,8 +120,8 @@ def _baseline(t: np.ndarray, kind: BaselineKind, alpha: tuple[float, ...], T: fl
     """Baseline intensity ν(t) on [0, T] in events / day.
 
     ``"constant"``  ->  ν(t) = exp(a₀)  (one parameter, log-link).
-    ``"sinusoidal"``->  ν(t) = exp(a₀ + a₁·(t/T) + a₂ sin(2πt/365)
-                                       + a₃ cos(2πt/365)).
+    ``"sinusoidal"``->  ν(t) = exp(a₀ + a₁·(t/T) + a₂ sin(2πt/365.25)
+                                       + a₃ cos(2πt/365.25)).
     """
     t = np.asarray(t, dtype=float)
     if kind == "constant":
@@ -193,7 +193,6 @@ def _neg_loglik_general(
         return neg_loglik_jit(theta, t, T, kernel_kind, baseline_kind)
 
     nb = _n_baseline_params(baseline_kind)
-    nk = _n_kernel_params(kernel_kind)
     a = tuple(theta[:nb])
     eta = float(theta[nb])
     psi = tuple(theta[nb + 1 :])
@@ -230,10 +229,7 @@ def _neg_loglik_general(
 
 def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind, n: int, T: float, mean_dt: float) -> np.ndarray:
     rate = max(n / T, 1e-3)
-    if baseline_kind == "constant":
-        a = [math.log(rate * 0.6)]
-    else:
-        a = [math.log(rate * 0.6), 0.0, 0.0, 0.0]
+    a = [math.log(rate * 0.6)] if baseline_kind == "constant" else [math.log(rate * 0.6), 0.0, 0.0, 0.0]
     eta = [0.4]
     if kernel_kind == "exponential":
         psi = [1.0 / max(mean_dt, 1e-3)]
@@ -249,19 +245,151 @@ def _x0(kernel_kind: KernelKind, baseline_kind: BaselineKind, n: int, T: float, 
 # ── Public fit + GoF ────────────────────────────────────────────────
 
 
+_KIND_CODE = {"exponential": 0, "weibull": 1, "gamma": 2, "lomax": 3}
+_BASELINE_CODE = {"constant": 0, "sinusoidal": 1}
+HAWKES_METHODS = ("auto", "exact", "soe", "truncate", "em", "inar")
+
+
+def _resolve_method(method: str, kernel_kind: str) -> str:
+    if method not in HAWKES_METHODS:
+        raise ValueError(f"method must be one of {', '.join(HAWKES_METHODS)}; got {method!r}")
+    if method == "auto":
+        # Weibull's exact window is where the kernel underflows: for shape < 1 that is the whole
+        # record (O(n^2)), while its tail mass passes eps within days
+        return {"exponential": "exact", "weibull": "truncate"}.get(kernel_kind, "soe")
+    if method == "soe" and kernel_kind not in ("lomax", "gamma"):
+        raise ValueError(
+            "method='soe' applies to completely monotone kernels: 'lomax', and 'gamma' with shape < 1 "
+            "(a gamma kernel with shape >= 1 is truncated at eps); use 'exact' or 'truncate'"
+        )
+    return method
+
+
+def _soe_window(t, T, kernel_kind):
+    """The sum-of-exponentials window: r = (u + c)/R in [delta, 1] for Lomax (c <= 100 in the fit),
+    r = u/R from the smallest gap for gamma -- as rmoriebricklayer's core_hawkes_fit."""
+    if kernel_kind == "lomax":
+        return float(T) + 100.0, 1e-3 / (float(T) + 100.0)
+    tl = [float(v) for v in t]
+    gaps = [b - a for a, b in zip(tl[:-1], tl[1:]) if b > a]
+    return float(T), max(min(gaps) if gaps else 1e-9, 1e-12) / float(T)
+
+
+def _core_fit(t, T, kernel_kind, baseline_kind, method, eps, x0, bounds):
+    """The whole fit in the compiled core (projected BFGS on the analytic gradient,
+    morie::core::hawkes_fit_pbfgs): (theta, nll), or None without the core. The same routine
+    rmoriebricklayer's core_hawkes_fit calls, so both arms reach the same optimum."""
+    from .tps_hawkes_jit import HAS_CORE, _f64
+
+    if not HAS_CORE:
+        return None
+    from .tps_hawkes_jit import _core_ext
+
+    if not hasattr(_core_ext, "hawkes_fit_pbfgs"):
+        return None
+    R, delta = _soe_window(t, T, kernel_kind)
+    code = {"exact": 0, "soe": 1, "truncate": 2}[method]
+    th, f, _ = _core_ext.hawkes_fit_pbfgs(
+        _f64(t),
+        float(T),
+        _BASELINE_CODE[baseline_kind],
+        _KIND_CODE[kernel_kind],
+        code,
+        float(eps),
+        R,
+        delta,
+        [float(b[0]) for b in bounds],
+        [float(b[1]) for b in bounds],
+        [float(v) for v in (x0._flat() if hasattr(x0, "_flat") else x0)],
+        2000,
+        1e-6,
+    )
+    return list(th), float(f)
+
+
+def _core_objective(t, T, kernel_kind, baseline_kind, method, eps):
+    """(nll, gradient) from the compiled core (morie::core::hawkes_nll_grad), or None without it."""
+    from .tps_hawkes_jit import HAS_CORE, _f64
+
+    if not HAS_CORE:
+        return None
+    from .tps_hawkes_jit import _core_ext
+
+    if not hasattr(_core_ext, "hawkes_nll_grad"):
+        return None
+    tb = _f64(t)
+    nb = _n_baseline_params(baseline_kind)
+    kind, bk = _KIND_CODE[kernel_kind], _BASELINE_CODE[baseline_kind]
+    code = {"exact": 0, "soe": 1, "truncate": 2}[method]
+    soe_R, soe_delta = _soe_window(t, T, kernel_kind)
+
+    def f(theta):
+        th = [float(v) for v in np.asarray(theta)._flat()] if hasattr(np.asarray(theta), "_flat") else list(theta)
+        nll, g = _core_ext.hawkes_nll_grad(
+            tb, float(T), bk, th[:nb], th[nb], kind, th[nb + 1 :], code, float(eps), soe_R, soe_delta, True
+        )
+        if not math.isfinite(nll) or nll >= 1e11:
+            return 1e12, [0.0] * len(th)
+        return nll, list(g)
+
+    return f
+
+
+def _warm_start(t, T, kernel_kind, baseline_kind, bounds):
+    """The exponential-kernel fit mapped into another kernel: Weibull (1, 1/beta) and gamma (1, beta)
+    are the exponential kernel itself; Lomax (30, 30/beta) is its nearest member (Lomax tends to it
+    as the shape grows with c = shape/beta)."""
+    nb = _n_baseline_params(baseline_kind)
+    n = int(np.asarray(t).size)
+    mean_dt = float(np.mean(np.diff(np.asarray(t)))) if n > 1 else 1.0
+    x0 = _x0("exponential", baseline_kind, n, T, mean_dt)
+    eb = list(bounds[: nb + 1]) + [(0.1, 25.0)]
+    fit = _core_fit(t, T, "exponential", baseline_kind, "exact", 1e-9, x0, eb)
+    if fit is None:
+        return None
+    th = fit[0]
+    beta = th[-1]
+    psi = {"weibull": [1.0, 1.0 / beta], "gamma": [1.0, beta], "lomax": [30.0, 30.0 / beta]}[kernel_kind]
+    start = th[:-1] + psi
+    return [min(max(v, b[0]), b[1]) for v, b in zip(start, bounds)]
+
+
 def fit_hawkes_general(
-    t: np.ndarray, T: float, kernel_kind: KernelKind = "exponential", baseline_kind: BaselineKind = "constant"
+    t: np.ndarray,
+    T: float,
+    kernel_kind: KernelKind = "exponential",
+    baseline_kind: BaselineKind = "constant",
+    *,
+    method: str = "auto",
+    eps: float = 1e-9,
 ) -> dict:
     """MLE of a non-stationary Hawkes process.
+
+    ``method`` chooses how the likelihood is evaluated (all with the analytic gradient):
+
+    * ``"exact"``: Ozaki's O(n) recursion for the exponential kernel; for Weibull and gamma the
+      double sum stops where the kernel underflows to exactly 0 (the same value as the full sum);
+      Lomax the full O(n^2) sum.
+    * ``"soe"``: the completely monotone kernels (Lomax; gamma with shape < 1) as a sum of
+      exponentials (Beylkin & Monzon 2010), relative error ``eps`` per intensity, O(n K); a gamma
+      kernel with shape >= 1 is truncated at ``eps``.
+    * ``"truncate"``: each event excites only lags with kernel tail mass above ``eps`` (light tails).
+    * ``"em"``: the EM algorithm (Veen & Schoenberg 2008): the same MLE, a different route.
+    * ``"inar"``: Kirchner's (2017) INAR(p) least-squares estimator on binned counts, constant
+      baseline only: a different (fast, approximate) estimator, also used for starting values.
+    * ``"auto"`` (default): ``"exact"`` for the exponential kernel, ``"truncate"`` for Weibull,
+      ``"soe"`` for Lomax and gamma (``"exact"`` without the compiled core).
 
     Returns a dict with ``theta``, ``nll``, ``aic``, ``bic``,
     ``branching_ratio``, ``baseline_params``, ``kernel_params``,
     and the time-rescaling KS statistic.
     """
-    # Clip events strictly inside [0, T) -- jittered timestamps that land at
-    # or past T break the kernel-CDF integral term (negative^non-integer = NaN).
+    auto = method == "auto"
+    method = _resolve_method(method, kernel_kind)
+    # keep the events in [0, T]: one past T would give the kernel CDF a negative lag; one at T
+    # (the last event, when T is the last event time) is part of the record
     t = np.asarray(t, dtype=float)
-    t = t[(t >= 0.0) & (t < T)]
+    t = t[(t >= 0.0) & (t <= T)]
     n = int(t.size)
     if n < 50:
         raise ValueError(f"too few events ({n}) for non-stationary fit")
@@ -271,7 +399,6 @@ def fit_hawkes_general(
     # L-BFGS-B with explicit bounds avoids the Hawkes spike-train
     # degeneracy that Nelder-Mead drives into via the upper β wall.
     nb = _n_baseline_params(baseline_kind)
-    nk = _n_kernel_params(kernel_kind)
     bounds: list[tuple[float, float]] = []
     bounds += [(-15.0, 15.0)] + [(-5.0, 5.0)] * (nb - 1)  # a0, then a1..a3
     bounds += [(1e-3, 0.99)]  # eta
@@ -283,16 +410,61 @@ def fit_hawkes_general(
         bounds += [(0.1, 15.0), (0.05, 25.0)]  # alpha, beta
     elif kernel_kind == "lomax":
         bounds += [(1.05, 30.0), (1e-3, 100.0)]  # alpha, c
-    res = minimize(
-        _neg_loglik_general,
-        x0,
-        args=(t, T, kernel_kind, baseline_kind),
-        method="L-BFGS-B",
-        bounds=bounds,
-        options={"maxiter": 1000, "ftol": 1e-9},
+    if method == "em":
+        from .tps_hawkes_jit import hawkes_em
+
+        theta, nll_em, n_iter = hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds)
+        # EM converges linearly: its steps shrink long before it reaches the maximum, so a small
+        # step is not a stop. Finish with the projected BFGS from EM's point, as
+        # rmoriebricklayer's core_hawkes_fit; it only moves uphill. The likelihood route is the
+        # kernel's own "auto" one (exact for exponential, truncate for Weibull, sum of
+        # exponentials for Lomax and gamma): the full O(n^2) Lomax sum made this polish the
+        # slowest part of the fit.
+        pol = _core_fit(t, T, kernel_kind, baseline_kind, _resolve_method("auto", kernel_kind), eps, theta, bounds)
+        if pol is not None and pol[1] <= nll_em:
+            theta = pol[0]
+        res = None
+    elif method == "inar":
+        from .tps_hawkes_jit import hawkes_inar
+
+        theta = hawkes_inar(t, T, kernel_kind, baseline_kind, bounds)
+        res = None
+    else:
+        best = _core_fit(t, T, kernel_kind, baseline_kind, method, eps, x0, bounds)
+        if best is not None:
+            warm = _warm_start(t, T, kernel_kind, baseline_kind, bounds) if kernel_kind != "exponential" else None
+            if warm is not None:
+                # a second, deterministic start at the exponential fit (the kernel's shape-1 member for
+                # Weibull and gamma): the likelihood is multimodal, and a model that contains the
+                # exponential one should not report a worse maximum than it
+                other = _core_fit(t, T, kernel_kind, baseline_kind, method, eps, warm, bounds)
+                if other[1] < best[1]:
+                    best = other
+            from types import SimpleNamespace
+
+            res = SimpleNamespace(x=best[0], fun=best[1], success=True)
+        elif method == "exact" or auto:
+            method = "exact"
+            res = minimize(
+                _neg_loglik_general,
+                x0,
+                args=(t, T, kernel_kind, baseline_kind),
+                method="L-BFGS-B",
+                bounds=bounds,
+                options={"maxiter": 1000, "ftol": 1e-9},
+            )
+        else:
+            raise RuntimeError(
+                f"method={method!r} needs morie's compiled core (morie._core), not built in this install"
+            )
+    theta = np.asarray(res.x) if res is not None else np.asarray(theta)
+    exact_obj = _core_objective(t, T, kernel_kind, baseline_kind, "exact", eps)
+    # the reported nll is always the exact likelihood at the estimate (AIC comparable across methods)
+    nll = (
+        float(exact_obj(theta)[0])
+        if exact_obj is not None
+        else float(_neg_loglik_general(theta, t, T, kernel_kind, baseline_kind))
     )
-    theta = res.x
-    nll = float(res.fun)
     a, eta, psi = _split_theta(theta, kernel_kind, baseline_kind)
     k = theta.size
     aic = 2 * k + 2 * nll
@@ -317,7 +489,9 @@ def fit_hawkes_general(
         "rescaled_uniforms": u.tolist()[:1000],
         "kernel_kind": kernel_kind,
         "baseline_kind": baseline_kind,
-        "converged": bool(res.success),
+        "method": method,
+        "eps": float(eps) if method in ("soe", "truncate") else None,
+        "converged": bool(res.success) if res is not None else True,
     }
 
 
@@ -333,6 +507,25 @@ def _time_rescaling_residuals(
     a = tuple(theta[:nb])
     eta = float(theta[nb])
     psi = tuple(theta[nb + 1 :])
+
+    from .tps_hawkes_jit import HAS_CORE, _f64
+
+    if HAS_CORE:
+        from .tps_hawkes_jit import _core_ext
+
+        if hasattr(_core_ext, "hawkes_rescaled"):
+            # O(n) / O(n w) in the compiled core (was an O(n^2) Python loop)
+            return np.asarray(
+                _core_ext.hawkes_rescaled(
+                    _f64(t),
+                    float(T),
+                    _BASELINE_CODE[baseline_kind],
+                    [float(v) for v in a],
+                    eta,
+                    _KIND_CODE[kernel_kind],
+                    [float(v) for v in psi],
+                )
+            )
 
     n = t.size
     # Λ(t_i) = ∫_0^{t_i} ν(s) ds + η Σ_{j<i} F̃(t_i - t_j)
@@ -358,7 +551,29 @@ def _time_rescaling_residuals(
 # ── Pretty wrappers (RichResult) ────────────────────────────────────
 
 
-def _events_to_days(df: pd.DataFrame, max_n: int) -> tuple[np.ndarray, float]:
+def splitmix_uniforms(n: int, seed: int) -> list[float]:
+    """n uniforms on [0, 1) from splitmix64 (Steele, Lea & Flood 2014): the same numbers as
+    ``rmoriebricklayer::core_uniforms(n, seed)``, so the R and Python arms draw identical values
+    where their results must agree (the within-day jitter of tied dates, a subsample).
+
+    Examples:
+        >>> [round(u, 12) for u in splitmix_uniforms(2, 42)]
+        [0.741564878772, 0.159910392877]
+    """
+    mask = (1 << 64) - 1
+    x = int(seed) & mask
+    out = []
+    for _ in range(int(n)):
+        x = (x + 0x9E3779B97F4A7C15) & mask
+        z = x
+        z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) & mask
+        z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & mask
+        z ^= z >> 31
+        out.append((z >> 11) * (1.0 / 9007199254740992.0))
+    return out
+
+
+def _events_to_days(df: pd.DataFrame, max_n: int | None) -> tuple[np.ndarray, float]:
     """Convert TPS event timestamps to a clean days-since-t0 vector.
 
     TPS open-data is daily-resolution (OCC_DATE has no hour), which
@@ -370,15 +585,22 @@ def _events_to_days(df: pd.DataFrame, max_n: int) -> tuple[np.ndarray, float]:
     from .tps_stochastic import _date_series
 
     dt = _date_series(df)
-    if dt.size > max_n:
-        dt = dt.sample(n=max_n, random_state=42).sort_values()
-    t0 = dt.min()
-    t = (dt - t0).dt.total_seconds().to_numpy() / 86400.0
-    rng = np.random.default_rng(42)
-    # Add U(0,1)-day jitter to break OCC_DATE ties; the original event
-    # ordering by day is preserved because the jitter is at most 1 day.
-    t = t + rng.random(t.size)
-    t.sort()
+    # a random subsample thins the process (its clustering is lost: Hawkes fits on thinned data
+    # flatten the kernel comparison); None keeps every event, now that the likelihood is fast
+    vals = list(dt.tolist())
+    if max_n is not None and len(vals) > max_n:
+        # the max_n events with the smallest splitmix keys (seed 43), in data order: the same
+        # subsample as rmorie's (a random sample in each language would differ)
+        keys = splitmix_uniforms(len(vals), 43)
+        keep = sorted(sorted(range(len(vals)), key=keys.__getitem__)[:max_n])
+        vals = [vals[i] for i in keep]
+    vals = sorted(vals)  # stable: ties keep data order
+    t0 = vals[0]
+    # U(0,1)-day jitter (splitmix64, seed 42, the same numbers as rmorie's) breaks the daily ties;
+    # the order of days is kept because the jitter is below one day
+    jit = splitmix_uniforms(len(vals), 42)
+    t = sorted((v - t0).total_seconds() / 86400.0 + u for v, u in zip(vals, jit))
+    t = np.asarray(t, dtype=float)
     return t, float(t[-1])
 
 
@@ -388,7 +610,9 @@ def hawkes_advanced_fit(
     kernel: KernelKind = "gamma",
     baseline: BaselineKind = "sinusoidal",
     ds_name: str = "?",
-    max_n: int = 5000,
+    max_n: int | None = None,
+    method: str = "auto",
+    eps: float = 1e-9,
 ) -> RichResult:
     """Fit a single (kernel, baseline) combination with figures.
 
@@ -397,6 +621,11 @@ def hawkes_advanced_fit(
     """
     from .tps_stochastic import _try_savefig
 
+    if isinstance(df, dict):
+        # a plain {column: values} mapping, as the R arm accepts a list
+        df = pd.DataFrame(df)
+    if not hasattr(df, "columns"):
+        raise TypeError(f"df must be a data frame or a dict of columns, got {type(df).__name__}")
     if "OCC_DATE" not in df.columns and "REPORT_DATE" not in df.columns:
         return RichResult(
             title=f"Hawkes-{kernel}/{baseline} -- {ds_name}", warnings=["no OCC_DATE or REPORT_DATE column"]
@@ -405,7 +634,7 @@ def hawkes_advanced_fit(
     if t.size < 100:
         return RichResult(title=f"Hawkes-{kernel}/{baseline} -- {ds_name}", warnings=[f"only {t.size} timestamps"])
 
-    result = fit_hawkes_general(t, T, kernel_kind=kernel, baseline_kind=baseline)
+    result = fit_hawkes_general(t, T, kernel_kind=kernel, baseline_kind=baseline, method=method, eps=eps)
 
     # QQ figure
     fig_path = None
@@ -468,9 +697,11 @@ def compare_hawkes_kernels(
     df: pd.DataFrame,
     *,
     ds_name: str = "?",
-    max_n: int = 4000,
+    max_n: int | None = None,
     baselines: tuple[BaselineKind, ...] = BASELINES,
     kernels: tuple[KernelKind, ...] = KERNELS,
+    method: str = "auto",
+    eps: float = 1e-9,
 ) -> RichResult:
     """Fit every (kernel, baseline) combination and rank by AIC.
 
@@ -488,7 +719,7 @@ def compare_hawkes_kernels(
     for k in kernels:
         for b in baselines:
             try:
-                fit = fit_hawkes_general(t, T, kernel_kind=k, baseline_kind=b)
+                fit = fit_hawkes_general(t, T, kernel_kind=k, baseline_kind=b, method=method, eps=eps)
                 rows.append(
                     {
                         "kernel": k,
@@ -548,11 +779,14 @@ def compare_hawkes_kernels(
     )
 
 
-def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *, ds_name: str = "?", max_n: int = 4000) -> RichResult:
+def hawkes_markovian_vs_nonmarkovian(
+    df: pd.DataFrame, *, ds_name: str = "?", max_n: int | None = None, method: str = "auto", eps: float = 1e-9
+) -> RichResult:
     """Focused 2-way comparison: classical exp/const vs gamma/sinusoidal.
 
     The two endpoints of the Kwan-Chen-Dunsmuir framework -- quickest to
-    run on the dashboard.
+    run on the dashboard. ``max_n=None`` keeps every event; ``method`` and ``eps`` as in
+    :func:`fit_hawkes_general`.
     """
     return compare_hawkes_kernels(
         df,
@@ -560,4 +794,6 @@ def hawkes_markovian_vs_nonmarkovian(df: pd.DataFrame, *, ds_name: str = "?", ma
         max_n=max_n,
         kernels=("exponential", "gamma"),
         baselines=("constant", "sinusoidal"),
+        method=method,
+        eps=eps,
     )

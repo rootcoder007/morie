@@ -26,23 +26,25 @@ def kamath_ch2_layer_norm(h_i, mu=None, sigma=None, g=1.0, eps=1e-5):
     """
     h = np.atleast_1d(np.asarray(h_i, dtype=float))
     if len(h) < 2 and mu is None:
-        raise ValueError(
-            "layer norm over a single element is 0/0; supply mu and "
-            "sigma or a longer vector.")
+        raise ValueError("layer norm over a single element is 0/0; supply mu and sigma or a longer vector.")
     m = float(np.mean(h)) if mu is None else float(mu)
     s = float(np.std(h)) if sigma is None else float(sigma)
     if s <= 0:
-        raise ValueError("sigma must be positive; a constant vector "
-                         "cannot be layer-normalised.")
+        raise ValueError("sigma must be positive; a constant vector cannot be layer-normalised.")
     gv = np.atleast_1d(np.asarray(g, dtype=float))
     out = gv * (h - m) / (s + eps * 0)
     normed = (h - m) / s
-    return RichResult(payload={
-        "output": [float(v) for v in out],
-        "normalised": [float(v) for v in normed],
-        "mu": m, "sigma": s, "estimate": float(out[0]), "n": len(h),
-        "method": "Layer normalisation g(h - mu)/sigma "
-                  "(Kamath Eq 2.18)"})
+    return RichResult(
+        payload={
+            "output": [float(v) for v in out],
+            "normalised": [float(v) for v in normed],
+            "mu": m,
+            "sigma": s,
+            "estimate": float(out[0]),
+            "n": len(h),
+            "method": "Layer normalisation g(h - mu)/sigma (Kamath Eq 2.18)",
+        }
+    )
 
 
 def cheatsheet():

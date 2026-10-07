@@ -1,7 +1,6 @@
 """Tests for lpcsp.py - LPC spectrum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lpcsp import lpc_spectrum_fn, lpcsp
 
 

@@ -28,17 +28,16 @@ def random_effects_weight(se, tau2):
     """
     value = _ca_crim.random_effects_weight(se, tau2)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.43)"
     return RichResult(
-        title='Random-effects weight w = 1/(se^2 + tau^2)',
+        title="Random-effects weight w = 1/(se^2 + tau^2)",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e43: w_i = 1 / (se_i^2 + tau^2) [Weisburd et al. 2022, eq. 11.43]'
+    return "ca11e43: w_i = 1 / (se_i^2 + tau^2) [Weisburd et al. 2022, eq. 11.43]"

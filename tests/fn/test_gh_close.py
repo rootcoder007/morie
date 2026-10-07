@@ -1,15 +1,16 @@
 """Tests for the 9 closing Ghosal modules."""
+
 import math
 
+from morie.fn.gh_hier_np import ghosal_hierarchical_np
+from morie.fn.gh_loc_dp_crt import ghosal_local_dp_rate
+from morie.fn.gh_var_dp_post import ghosal_variational_dp_posterior
 from morie.fn.ghs002 import ghosal_ch2_random_basis_expansion
 from morie.fn.ghs003 import ghosal_ch2_basis_truncation_error
 from morie.fn.ghs004 import ghosal_ch2_exponential_link_density
 from morie.fn.ghs005 import ghosal_ch2_location_scale_mixture_limit
 from morie.fn.ghs006 import ghosal_ch2_feller_density_approximation
 from morie.fn.ghs007 import ghosal_ch2_binary_regression_density
-from morie.fn.gh_hier_np import ghosal_hierarchical_np
-from morie.fn.gh_loc_dp_crt import ghosal_local_dp_rate
-from morie.fn.gh_var_dp_post import ghosal_variational_dp_posterior
 
 
 def test_basis_expansion_hand_value():
@@ -30,7 +31,7 @@ def test_exp_link_normalizes():
     r = ghosal_ch2_exponential_link_density([0.0], x=0.3)
     assert abs(r["estimate"] - 1.0) < 1e-9
     r2 = ghosal_ch2_exponential_link_density([0.5], x=0.0)
-    assert r2["estimate"] > 1.0          # boosted where f is large
+    assert r2["estimate"] > 1.0  # boosted where f is large
 
 
 def test_mixture_limit_converges():
@@ -41,7 +42,7 @@ def test_mixture_limit_converges():
 
 def test_feller_recovers_density():
     r = ghosal_ch2_feller_density_approximation()
-    assert r["gap"] < 0.06               # density 2x at x=0.4 is 0.8
+    assert r["gap"] < 0.06  # density 2x at x=0.4 is 0.8
 
 
 def test_binary_regression_likelihood():

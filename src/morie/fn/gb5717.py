@@ -6,7 +6,7 @@ import math
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['wsrsym', 'gibbons_wsrt_symmetry']
+__all__ = ["wsrsym", "gibbons_wsrt_symmetry"]
 
 
 def wsrsym(x, centre=0.0):

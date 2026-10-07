@@ -1,12 +1,11 @@
 """Tests for morie.fn.lotka."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lotka import lotka
 
 
 def test_lotka_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = lotka()
     assert result is not None
     assert hasattr(result, "name")

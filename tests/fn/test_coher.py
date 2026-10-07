@@ -1,13 +1,12 @@
 """Tests for coher -- Coherence between two signals."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.bsacorr import coherence
 
 
 def test_coherence_identical_signals():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     fs = 1000
     t = np.arange(0, 1.0, 1 / fs)
     x = np.sin(2 * np.pi * 50 * t)

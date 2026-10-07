@@ -72,21 +72,22 @@ computations the method rests on.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["gaussian_approximation", "laplace_marginal",
-           "hyperparameter_design", "integrate_marginals",
-           "skewness_correction"]
+__all__ = [
+    "gaussian_approximation",
+    "laplace_marginal",
+    "hyperparameter_design",
+    "integrate_marginals",
+    "skewness_correction",
+]
 
 _EPS = 1e-12
 _MAX_HYPER = 6
 
 
-def gaussian_approximation(log_lik, log_lik_d1, log_lik_d2, prior_mean,
-                           prior_precision, x0=0.0, iters=60,
-                           tol=1e-12):
+def gaussian_approximation(log_lik, log_lik_d1, log_lik_d2, prior_mean, prior_precision, x0=0.0, iters=60, tol=1e-12):
     r"""Match mode and curvature of :math:`\log p(x\mid\theta,y)`.
 
     Newton on a log-concave objective: the second derivative of the
@@ -95,28 +96,31 @@ def gaussian_approximation(log_lik, log_lik_d1, log_lik_d2, prior_mean,
     """
     m, Q = float(prior_mean), float(prior_precision)
     if Q <= 0.0:
-        raise ValueError("inlasm: the prior precision must be "
-                         "positive")
+        raise ValueError("inlasm: the prior precision must be positive")
     x = float(x0)
     it = 0
-    for it in range(1, int(iters) + 1):
+    for it in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         g = float(log_lik_d1(x)) - Q * (x - m)
         h = float(log_lik_d2(x)) - Q
         if h >= -_EPS:
-            raise ValueError("inlasm: the objective is not locally "
-                             "concave at x = %r, so the Gaussian "
-                             "approximation has no mode here" % (x,))
+            raise ValueError(
+                "inlasm: the objective is not locally "
+                f"concave at x = {x!r}, so the Gaussian "
+                "approximation has no mode here"
+            )
         step = g / h
         x -= step
         if abs(step) < float(tol):
             break
     prec = Q - float(log_lik_d2(x))
-    return {"mode": x, "precision": prec,
-            "sd": 1.0 / math.sqrt(prec), "iterations": it,
-            "log_norm": float(log_lik(x)) - 0.5 * Q * (x - m) ** 2
-            + 0.5 * math.log(2.0 * math.pi / prec),
-            "note": "exact when the likelihood is Gaussian, because "
-                    "then the objective is exactly quadratic"}
+    return {
+        "mode": x,
+        "precision": prec,
+        "sd": 1.0 / math.sqrt(prec),
+        "iterations": it,
+        "log_norm": float(log_lik(x)) - 0.5 * Q * (x - m) ** 2 + 0.5 * math.log(2.0 * math.pi / prec),
+        "note": "exact when the likelihood is Gaussian, because then the objective is exactly quadratic",
+    }
 
 
 def skewness_correction(third_derivative, precision):
@@ -128,10 +132,11 @@ def skewness_correction(third_derivative, precision):
     d3, prec = float(third_derivative), float(precision)
     if prec <= 0.0:
         raise ValueError("inlasm: the precision must be positive")
-    return {"skewness": d3 / prec ** 1.5,
-            "gaussian_adequate": abs(d3 / prec ** 1.5) < 1e-9,
-            "note": "zero for a Gaussian likelihood; non-zero is "
-                    "exactly what the simplified Laplace corrects"}
+    return {
+        "skewness": d3 / prec**1.5,
+        "gaussian_adequate": abs(d3 / prec**1.5) < 1e-9,
+        "note": "zero for a Gaussian likelihood; non-zero is exactly what the simplified Laplace corrects",
+    }
 
 
 def laplace_marginal(log_joint, x_grid, theta):
@@ -146,20 +151,15 @@ def laplace_marginal(log_joint, x_grid, theta):
     for i in range(len(xs) - 1):
         area += 0.5 * (w[i] + w[i + 1]) * (xs[i + 1] - xs[i])
     if area <= _EPS:
-        raise ValueError("inlasm: the marginal has no mass on this "
-                         "grid")
+        raise ValueError("inlasm: the marginal has no mass on this grid")
     dens = [v / area for v in w]
     mean = 0.0
     for i in range(len(xs) - 1):
-        mean += 0.5 * (dens[i] * xs[i] + dens[i + 1] * xs[i + 1]) \
-            * (xs[i + 1] - xs[i])
+        mean += 0.5 * (dens[i] * xs[i] + dens[i + 1] * xs[i + 1]) * (xs[i + 1] - xs[i])
     var = 0.0
     for i in range(len(xs) - 1):
-        var += 0.5 * (dens[i] * (xs[i] - mean) ** 2
-                      + dens[i + 1] * (xs[i + 1] - mean) ** 2) \
-            * (xs[i + 1] - xs[i])
-    return {"x": xs, "density": dens, "mean": mean,
-            "sd": math.sqrt(max(var, 0.0)), "log_scale": m}
+        var += 0.5 * (dens[i] * (xs[i] - mean) ** 2 + dens[i + 1] * (xs[i + 1] - mean) ** 2) * (xs[i + 1] - xs[i])
+    return {"x": xs, "density": dens, "mean": mean, "sd": math.sqrt(max(var, 0.0)), "log_scale": m}
 
 
 def hyperparameter_design(mode, curvature, step=1.0, dim=None):
@@ -173,25 +173,25 @@ def hyperparameter_design(mode, curvature, step=1.0, dim=None):
     m = [float(v) for v in k.vec(mode)]
     d = len(m) if dim is None else int(dim)
     if d != len(m):
-        raise ValueError("inlasm: the mode has %d entries but dim is "
-                         "%d" % (len(m), d))
+        raise ValueError(f"inlasm: the mode has {int(len(m))} entries but dim is {int(d)}")
     if d > _MAX_HYPER:
-        raise ValueError("inlasm: %d hyperparameters -- the outer "
-                         "integral is a small weighted SUM, so the "
-                         "method assumes a low-dimensional theta "
-                         "(the paper says a FEW)" % d)
-    sd = [1.0 / math.sqrt(float(v)) if float(v) > 0.0 else 1.0
-          for v in k.vec(curvature)]
+        raise ValueError(
+            f"inlasm: {int(d)} hyperparameters -- the outer integral is a small weighted SUM, so the method assumes a low-dimensional theta (the paper says a FEW)"
+        )
+    sd = [1.0 / math.sqrt(float(v)) if float(v) > 0.0 else 1.0 for v in k.vec(curvature)]
     pts = [list(m)]
     for i in range(d):
         for s in (-1.0, 1.0):
             p = list(m)
             p[i] += s * float(step) * sd[i]
             pts.append(p)
-    return {"points": pts, "n_points": len(pts), "dim": d,
-            "cost_scaling": "linear here, exponential for a full "
-                            "grid -- hence 'a few' hyperparameters",
-            "note": "a FINITE design, so the outer integral is a sum"}
+    return {
+        "points": pts,
+        "n_points": len(pts),
+        "dim": d,
+        "cost_scaling": "linear here, exponential for a full grid -- hence 'a few' hyperparameters",
+        "note": "a FINITE design, so the outer integral is a sum",
+    }
 
 
 def integrate_marginals(conditional_marginals, log_weights, x_grid):
@@ -205,17 +205,14 @@ def integrate_marginals(conditional_marginals, log_weights, x_grid):
     lw = [float(v) for v in k.vec(log_weights)]
     xs = [float(v) for v in k.vec(x_grid)]
     if len(M) != len(lw):
-        raise ValueError("inlasm: %d conditional marginals but %d "
-                         "weights" % (len(M), len(lw)))
+        raise ValueError(f"inlasm: {int(len(M))} conditional marginals but {int(len(lw))} weights")
     if any(len(m) != len(xs) for m in M):
-        raise ValueError("inlasm: a conditional marginal does not "
-                         "match the grid")
+        raise ValueError("inlasm: a conditional marginal does not match the grid")
     mx = max(lw)
     w = [math.exp(v - mx) for v in lw]
     z = sum(w)
     w = [v / z for v in w]
-    dens = [sum(w[j] * M[j][i] for j in range(len(M)))
-            for i in range(len(xs))]
+    dens = [sum(w[j] * M[j][i] for j in range(len(M))) for i in range(len(xs))]
     area = 0.0
     for i in range(len(xs) - 1):
         area += 0.5 * (dens[i] + dens[i + 1]) * (xs[i + 1] - xs[i])
@@ -223,39 +220,43 @@ def integrate_marginals(conditional_marginals, log_weights, x_grid):
         dens = [v / area for v in dens]
     mean = 0.0
     for i in range(len(xs) - 1):
-        mean += 0.5 * (dens[i] * xs[i] + dens[i + 1] * xs[i + 1]) \
-            * (xs[i + 1] - xs[i])
+        mean += 0.5 * (dens[i] * xs[i] + dens[i + 1] * xs[i + 1]) * (xs[i + 1] - xs[i])
     var = 0.0
     for i in range(len(xs) - 1):
-        var += 0.5 * (dens[i] * (xs[i] - mean) ** 2
-                      + dens[i + 1] * (xs[i + 1] - mean) ** 2) \
-            * (xs[i + 1] - xs[i])
-    return RichResult(payload={
-        "estimate": mean, "mean": mean,
-        "sd": math.sqrt(max(var, 0.0)), "density": dens, "x": xs,
-        "theta_weights": w, "n_theta": len(M),
-        "method": "integrated nested Laplace approximation; Rue, "
-                  "Martino & Chopin (2009)",
-        "note": "deterministic: no chain, no convergence diagnostic, "
-                "and the same machinery yields model comparison and "
-                "predictive measures",
-    })
+        var += 0.5 * (dens[i] * (xs[i] - mean) ** 2 + dens[i + 1] * (xs[i + 1] - mean) ** 2) * (xs[i + 1] - xs[i])
+    return RichResult(
+        payload={
+            "estimate": mean,
+            "mean": mean,
+            "sd": math.sqrt(max(var, 0.0)),
+            "density": dens,
+            "x": xs,
+            "theta_weights": w,
+            "n_theta": len(M),
+            "method": "integrated nested Laplace approximation; Rue, Martino & Chopin (2009)",
+            "note": "deterministic: no chain, no convergence diagnostic, "
+            "and the same machinery yields model comparison and "
+            "predictive measures",
+        }
+    )
 
 
 def cheatsheet():
-    return ("inlasm: latent GAUSSIAN field x, a FEW hyperparameters "
-            "theta, non-Gaussian response -- so the posterior marginals "
-            "have no closed form. MCMC works in principle but has "
-            "convergence AND time problems, sometimes badly enough "
-            "that it is not appropriate for routine analysis. INLA is "
-            "deterministic: p(x_i|y) = INTEGRAL p(x_i|theta,y) "
-            "p(theta|y) dtheta, where the inner term is a LAPLACE "
-            "approximation and the outer integral is a finite weighted "
-            "SUM over a small design of theta -- which is exactly why "
-            "dim(theta) must stay low. The Gaussian inner step is "
-            "EXACT for a Gaussian likelihood; the simplified Laplace "
-            "adds the skewness it cannot represent. Seconds or "
-            "minutes against hours or days.")
+    return (
+        "inlasm: latent GAUSSIAN field x, a FEW hyperparameters "
+        "theta, non-Gaussian response -- so the posterior marginals "
+        "have no closed form. MCMC works in principle but has "
+        "convergence AND time problems, sometimes badly enough "
+        "that it is not appropriate for routine analysis. INLA is "
+        "deterministic: p(x_i|y) = INTEGRAL p(x_i|theta,y) "
+        "p(theta|y) dtheta, where the inner term is a LAPLACE "
+        "approximation and the outer integral is a finite weighted "
+        "SUM over a small design of theta -- which is exactly why "
+        "dim(theta) must stay low. The Gaussian inner step is "
+        "EXACT for a Gaussian likelihood; the simplified Laplace "
+        "adds the skewness it cannot represent. Seconds or "
+        "minutes against hours or days."
+    )
 
 
 # compact alias per ledger/NAMING.md

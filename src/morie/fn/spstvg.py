@@ -13,9 +13,9 @@ from ._schab_st import (
 __all__ = ["schabenberger_st_variogram"]
 
 
-def schabenberger_st_variogram(coords, times, z, n_space_bins=10,
-                               n_time_bins=5, max_dist=None, max_time=None,
-                               at_time=None, model_fn=None):
+def schabenberger_st_variogram(
+    coords, times, z, n_space_bins=10, n_time_bins=5, max_dist=None, max_time=None, at_time=None, model_fn=None
+):
     """Empirical spatio-temporal semivariogram, Sec. 9.4.
 
     For a stationary spatio-temporal process the semivariogram relates to the
@@ -79,10 +79,9 @@ def schabenberger_st_variogram(coords, times, z, n_space_bins=10,
     ----------
     Schabenberger & Gotway (2005), Sec. 9.4, eqs (9.18)-(9.19).
     """
-    emp = empirical_st_semivariogram(coords, times, z,
-                                     n_space_bins=n_space_bins,
-                                     n_time_bins=n_time_bins,
-                                     max_dist=max_dist, max_time=max_time)
+    emp = empirical_st_semivariogram(
+        coords, times, z, n_space_bins=n_space_bins, n_time_bins=n_time_bins, max_dist=max_dist, max_time=max_time
+    )
     counts = emp["counts"]
     filled = int(np.count_nonzero(counts))
     payload = {
@@ -96,34 +95,35 @@ def schabenberger_st_variogram(coords, times, z, n_space_bins=10,
         "n_cells": int(counts.size),
         "n_cells_estimated": filled,
     }
-    lines = [("pairs used", payload["n_pairs"]),
-             ("cells estimated", f"{filled} of {counts.size}"),
-             ("smallest cell count", int(counts[counts > 0].min())
-              if filled else 0)]
+    lines = [
+        ("pairs used", payload["n_pairs"]),
+        ("cells estimated", f"{filled} of {counts.size}"),
+        ("smallest cell count", int(counts[counts > 0].min()) if filled else 0),
+    ]
     if filled < counts.size:
         payload["warning"] = (
             f"{counts.size - filled} of {counts.size} lag cells contain no "
-            f"pairs and are NaN; widen the tolerances or reduce the bin counts")
+            f"pairs and are NaN; widen the tolerances or reduce the bin counts"
+        )
 
     if at_time is not None:
         payload["conditional"] = conditional_spatial_semivariogram(
-            coords, times, z, at_time=at_time, n_bins=n_space_bins,
-            max_dist=max_dist)
+            coords, times, z, at_time=at_time, n_bins=n_space_bins, max_dist=max_dist
+        )
         payload["conditional_note"] = (
             "eq (9.19) is the CONDITIONAL spatial semivariogram at one time, "
             "used by two-stage analyses; it is not comparable with the joint "
-            "estimator (9.18) above")
+            "estimator (9.18) above"
+        )
         lines.append(("conditional at t", at_time))
 
     if model_fn is not None:
         payload["wls_objective"] = st_wls_objective(emp, model_fn)
-        hh, kk = np.meshgrid(emp["space_lags"], emp["time_lags"],
-                             indexing="ij")
+        hh, kk = np.meshgrid(emp["space_lags"], emp["time_lags"], indexing="ij")
         payload["fitted"] = np.asarray(model_fn(hh, kk), dtype=float)
         lines.append(("WLS objective", payload["wls_objective"]))
 
-    return RichResult(title="Spatio-temporal semivariogram",
-                      summary_lines=lines, payload=payload)
+    return RichResult(title="Spatio-temporal semivariogram", summary_lines=lines, payload=payload)
 
 
 def st_variogram_from_model(spatial_h, temporal_u, cov_fn):
@@ -132,5 +132,7 @@ def st_variogram_from_model(spatial_h, temporal_u, cov_fn):
 
 
 def cheatsheet():
-    return ("spstvg: spatio-temporal semivariogram (Sec. 9.4) -- joint "
-            "estimator (9.18), conditional (9.19), and the WLS criterion")
+    return (
+        "spstvg: spatio-temporal semivariogram (Sec. 9.4) -- joint "
+        "estimator (9.18), conditional (9.19), and the WLS criterion"
+    )

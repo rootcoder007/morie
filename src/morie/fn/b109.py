@@ -25,20 +25,23 @@ def burkov_lm_ch1_binary_cross_entropy(y_hat_i, y_i):
     yh = np.atleast_1d(np.asarray(y_hat_i, dtype=float))
     y = np.atleast_1d(np.asarray(y_i, dtype=float))
     if yh.shape != y.shape:
-        raise ValueError(
-            f"y_hat and y must have the same shape; got {yh.shape} and "
-            f"{y.shape}.")
+        raise ValueError(f"y_hat and y must have the same shape; got {yh.shape} and {y.shape}.")
     if np.any((yh < 0) | (yh > 1)):
         raise ValueError("predicted probabilities must lie in [0, 1].")
     if np.any((y != 0) & (y != 1)):
         raise ValueError("targets must be 0 or 1 for Eq 1.9.")
     with np.errstate(divide="ignore", invalid="ignore"):
         loss = -(y * np.log(yh) + (1.0 - y) * np.log(1.0 - yh))
-    loss = np.where(np.isnan(loss), 0.0, loss)   # 0*log0 limit is 0
-    return RichResult(payload={
-        "losses": [float(v) for v in loss], "estimate": float(loss[0]),
-        "mean_loss": float(np.mean(loss)), "n": len(y),
-        "method": "Binary cross-entropy (Burkov Eq 1.9)"})
+    loss = np.where(np.isnan(loss), 0.0, loss)  # 0*log0 limit is 0
+    return RichResult(
+        payload={
+            "losses": [float(v) for v in loss],
+            "estimate": float(loss[0]),
+            "mean_loss": float(np.mean(loss)),
+            "n": len(y),
+            "method": "Binary cross-entropy (Burkov Eq 1.9)",
+        }
+    )
 
 
 def cheatsheet():

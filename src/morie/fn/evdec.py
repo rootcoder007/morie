@@ -64,16 +64,18 @@ def evt_declustering_runs(x, u, r):
         cmax.append(max(vals))
     nex = sum(1 for v in cid if v > 0)
     theta = cur / float(nex) if nex else float("nan")
-    return RichResult(payload={
-        "cluster_max": cmax,
-        "cluster_id": cid,
-        "n_clusters": cur,
-        "theta": theta,
-        "n_exceed": nex,
-        "estimate": theta,
-        "n": n,
-        "method": "runs declustering of threshold exceedances",
-    })
+    return RichResult(
+        payload={
+            "cluster_max": cmax,
+            "cluster_id": cid,
+            "n_clusters": cur,
+            "theta": theta,
+            "n_exceed": nex,
+            "estimate": theta,
+            "n": n,
+            "method": "runs declustering of threshold exceedances",
+        }
+    )
 
 
 def cheatsheet():

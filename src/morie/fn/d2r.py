@@ -18,10 +18,7 @@ def d_to_r(d: float, n1: int | None = None, n2: int | None = None) -> float:
     -------
     float
     """
-    if n1 is not None and n2 is not None:
-        a = (n1 + n2) ** 2 / (n1 * n2)
-    else:
-        a = 4.0
+    a = (n1 + n2) ** 2 / (n1 * n2) if n1 is not None and n2 is not None else 4.0
     return d / math.sqrt(d**2 + a)
 
 

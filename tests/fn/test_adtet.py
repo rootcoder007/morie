@@ -1,8 +1,8 @@
 """Tests for anderson_darling_test."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.adtet import anderson_darling_test
 
 

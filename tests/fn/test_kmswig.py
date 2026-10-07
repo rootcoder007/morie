@@ -1,7 +1,6 @@
 """Tests for kmswig.kamath_swiglu_activation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.kmswig import kamath_swiglu_activation
 
 

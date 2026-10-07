@@ -56,27 +56,38 @@ def icc_two_way_random_avg(y, subject, rater):
     msr, msc, mse = a["MSR"], a["MSC"], a["MSE"]
     den_k = msr + (msc - mse) / n
     if den_k <= 0:
-        raise ValueError("the ICC(2,k) denominator is not positive; the "
-                         "variance components do not admit a reliability "
-                         "on this table.")
+        raise ValueError(
+            "the ICC(2,k) denominator is not positive; the "
+            "variance components do not admit a reliability "
+            "on this table."
+        )
     icc_k = (msr - mse) / den_k
     den_1 = msr + (k - 1) * mse + k * (msc - mse) / n
     icc_1 = (msr - mse) / den_1 if den_1 > 0 else np.nan
     icc3k = (msr - mse) / msr if msr > 0 else np.nan
-    return RichResult(payload={
-        "value": icc_k, "icc_single": icc_1, "icc3k": icc3k,
-        "rater_penalty": float(icc3k - icc_k),
-        "k": int(k), "n": int(n),
-        "MSR": msr, "MSC": msc, "MSE": mse, "case": "ICC(2,k)",
-        "design_assumption": "raters are a RANDOM SAMPLE from a larger "
-                             "population and the result should generalise "
-                             "to other raters",
-        "why_smaller_than_icc3": "the (MSC - MSE)/n term charges systematic "
-                                 "rater differences against reliability, "
-                                 "because a future rater brings their own "
-                                 "bias; ICC(3,k) drops it and is always at "
-                                 "least as large",
-        "method": "Shrout-Fleiss (1979) ICC(2,k), two-way random, average measure"})
+    return RichResult(
+        payload={
+            "value": icc_k,
+            "icc_single": icc_1,
+            "icc3k": icc3k,
+            "rater_penalty": float(icc3k - icc_k),
+            "k": int(k),
+            "n": int(n),
+            "MSR": msr,
+            "MSC": msc,
+            "MSE": mse,
+            "case": "ICC(2,k)",
+            "design_assumption": "raters are a RANDOM SAMPLE from a larger "
+            "population and the result should generalise "
+            "to other raters",
+            "why_smaller_than_icc3": "the (MSC - MSE)/n term charges systematic "
+            "rater differences against reliability, "
+            "because a future rater brings their own "
+            "bias; ICC(3,k) drops it and is always at "
+            "least as large",
+            "method": "Shrout-Fleiss (1979) ICC(2,k), two-way random, average measure",
+        }
+    )
 
 
 def cheatsheet():

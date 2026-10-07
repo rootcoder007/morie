@@ -6,8 +6,6 @@ being a distribution.
 """
 
 from morie.fn import _array_core as np
-import pytest
-
 from morie.fn.bnppvl import bnppvl
 
 X = [0.12, 0.24, 0.31, 0.44, 0.52, 0.61, 0.73, 0.85]

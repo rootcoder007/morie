@@ -1,7 +1,6 @@
 """Tests for hrzq1.horowitz_quantile_regression."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hrzq1 import horowitz_quantile_regression
 
 

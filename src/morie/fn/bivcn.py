@@ -26,8 +26,7 @@ def bivariate_causal_test(X, Y, regressor=None, cdf=None, B=200, seed=None):
     """
     if regressor not in (None, "nw", "nadaraya-watson"):
         raise ValueError(
-            f"regressor={regressor!r} is not implemented; only the Nadaraya-Watson "
-            "smoother is available. Pass None."
+            f"regressor={regressor!r} is not implemented; only the Nadaraya-Watson smoother is available. Pass None."
         )
     del cdf  # significance comes from the permutation null, not a supplied CDF
     return _anm(X, Y, B=B, seed=seed)

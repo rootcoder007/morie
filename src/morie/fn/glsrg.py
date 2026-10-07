@@ -45,8 +45,8 @@ def gls_regression(
 
     try:
         L = np.linalg.cholesky(Omega)
-    except np.linalg.LinAlgError:
-        raise ValueError("Omega must be positive definite.")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("Omega must be positive definite.") from exc
 
     L_inv = np.linalg.inv(L)
     Omega_inv = L_inv.T @ L_inv

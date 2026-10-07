@@ -45,8 +45,7 @@ __all__ = ["binresp", "horowitz_binary_response_model"]
 
 
 def _score(X, yv, b):
-    return float(np.sum((2.0 * yv - 1.0)
-                        * ((X @ b) >= 0.0).astype(float))) / X.shape[0]
+    return float(np.sum((2.0 * yv - 1.0) * ((X @ b) >= 0.0).astype(float))) / X.shape[0]
 
 
 def binresp(x, y, ngrid=41, blim=5.0):
@@ -112,11 +111,17 @@ def binresp(x, y, ngrid=41, blim=5.0):
     correct = float(np.mean((pred == yv).astype(float)))
     return RichResult(
         title="Maximum-score estimator, random-coefficients binary response",
-        payload={"estimate": best, "score": float(bestval),
-                 "ncand": int(len(cand)), "correct": correct,
-                 "rate": -1.0 / 3.0, "limit": "nonnormal",
-                 "seusable": False, "n": n,
-                 "method": "Horowitz (2009) eq. (4.2), (4.21) maximum score"},
+        payload={
+            "estimate": best,
+            "score": float(bestval),
+            "ncand": int(len(cand)),
+            "correct": correct,
+            "rate": -1.0 / 3.0,
+            "limit": "nonnormal",
+            "seusable": False,
+            "n": n,
+            "method": "Horowitz (2009) eq. (4.2), (4.21) maximum score",
+        },
     )
 
 
@@ -130,8 +135,7 @@ def cheatsheet():
 # CANONICAL TEST
 if __name__ == "__main__":  # pragma: no cover
     n = 200
-    X = np.column_stack([np.linspace(-2, 2, n),
-                         np.cos(np.arange(1, n + 1) * 0.8)])
+    X = np.column_stack([np.linspace(-2, 2, n), np.cos(np.arange(1, n + 1) * 0.8)])
     yv = ((X @ np.array([1.0, 0.6])) >= 0.0).astype(float)
     r = binresp(X, yv)
     assert r["correct"] == 1.0, r["correct"]

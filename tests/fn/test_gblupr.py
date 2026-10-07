@@ -1,7 +1,6 @@
 """Tests for gblupr.gblup_estimator."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gblupr import gblup_estimator
 
 
@@ -30,8 +29,7 @@ def test_gblupr_basic():
     beta = payload["beta"]
     u = payload["u"]
     fitted_expected = [
-        sum(X[i][a] * beta[a] for a in range(len(beta)))
-        + sum(Z[i][c] * u[c] for c in range(len(u)))
+        sum(X[i][a] * beta[a] for a in range(len(beta))) + sum(Z[i][c] * u[c] for c in range(len(u)))
         for i in range(len(y))
     ]
     for a, b in zip(payload["fitted"], fitted_expected):

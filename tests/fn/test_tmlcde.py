@@ -19,8 +19,10 @@ def _data(n=40):
     W = [math.sin(1.7 * k) for k in range(n)]
     g1 = [_expit(0.3 + 0.8 * w) for w in W]
     A = [1.0 if ((37 * k + 11) % 97 + 0.5) / 97.0 < g else 0.0 for k, g in enumerate(g1)]
-    Y = [1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + a + 0.9 * w) else 0.0
-         for k, (a, w) in enumerate(zip(A, W))]
+    Y = [
+        1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + a + 0.9 * w) else 0.0
+        for k, (a, w) in enumerate(zip(A, W))
+    ]
     Q1 = [_expit(-0.3 + 1.0 + 0.6 * w) for w in W]
     Q0 = [_expit(-0.3 + 0.6 * w) for w in W]
     QA = [q1 if a else q0 for a, q1, q0 in zip(A, Q1, Q0)]
@@ -35,12 +37,13 @@ def _cde_data(n=40):
     W = [math.sin(1.7 * k) for k in range(n)]
     g1 = [_expit(0.3 + 0.8 * w) for w in W]
     A = [1.0 if ((37 * k + 11) % 97 + 0.5) / 97.0 < g else 0.0 for k, g in enumerate(g1)]
-    h1 = [_expit(0.5 + 0.6 * w) for w in W]         # P(M = 1 | A = 1, W)
-    h0 = [_expit(-0.4 + 0.6 * w) for w in W]        # P(M = 1 | A = 0, W)
-    M = [1.0 if ((29 * k + 3) % 83 + 0.5) / 83.0 < (h1[k] if A[k] else h0[k]) else 0.0
-         for k in range(n)]
-    Y = [1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + 0.8 * a + 0.6 * mm + 0.5 * w) else 0.0
-         for k, (a, mm, w) in enumerate(zip(A, M, W))]
+    h1 = [_expit(0.5 + 0.6 * w) for w in W]  # P(M = 1 | A = 1, W)
+    h0 = [_expit(-0.4 + 0.6 * w) for w in W]  # P(M = 1 | A = 0, W)
+    M = [1.0 if ((29 * k + 3) % 83 + 0.5) / 83.0 < (h1[k] if A[k] else h0[k]) else 0.0 for k in range(n)]
+    Y = [
+        1.0 if ((53 * k + 7) % 89 + 0.5) / 89.0 < _expit(-0.5 + 0.8 * a + 0.6 * mm + 0.5 * w) else 0.0
+        for k, (a, mm, w) in enumerate(zip(A, M, W))
+    ]
     Q1 = [_expit(-0.4 + 0.8 + 0.6 + 0.4 * w) for w in W]
     Q0 = [_expit(-0.4 + 0.6 + 0.4 * w) for w in W]
     QAM = [_expit(-0.4 + 0.8 * a + 0.6 * mm + 0.4 * w) for a, mm, w in zip(A, M, W)]
@@ -63,16 +66,19 @@ def test_tmlcde_basic():
 
         def score(e):
             return sum(H[i] * (Y[i] - _expit(_logit(QAM[i]) + e * H[i])) for i in idx)
+
         lo, hi = -50.0, 50.0
         for _ in range(200):
             mid = 0.5 * (lo + hi)
             lo, hi = (mid, hi) if score(mid) > 0 else (lo, mid)
         return 0.5 * (lo + hi)
+
     e1, e0 = solve(H1), solve(H0)
     Q1s = [_expit(_logit(q) + e1 / (g * h)) for q, g, h in zip(Q1, g1, h1)]
     Q0s = [_expit(_logit(q) + e0 / ((1 - g) * h)) for q, g, h in zip(Q0, g1, h0)]
-    r = tmle_controlled_direct(Y, A, M, QAM, Q1, Q0, g1, [h1[i] if A[i] else h0[i] for i in range(n)],
-                               m=1, hm1W=h1, hm0W=h0)
+    r = tmle_controlled_direct(
+        Y, A, M, QAM, Q1, Q0, g1, [h1[i] if A[i] else h0[i] for i in range(n)], m=1, hm1W=h1, hm0W=h0
+    )
     assert r["estimate"] == pytest.approx(statistics.fmean(Q1s) - statistics.fmean(Q0s), abs=1e-9)
     assert r["max_weight"] == pytest.approx(max(max(H1), max(H0)), rel=1e-14)
 

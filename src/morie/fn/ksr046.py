@@ -53,8 +53,7 @@ def kosorok_z_consistency(psi_n, psi, theta_seq, theta0, grid=None):
     ----------
     Kosorok, Thm. 2.10, p. 24.
     """
-    g = np.linspace(0.0, 1.0, 51) if grid is None else \
-        np.atleast_1d(np.asarray(grid, dtype=float))
+    g = np.linspace(0.0, 1.0, 51) if grid is None else np.atleast_1d(np.asarray(grid, dtype=float))
     seq = list(theta_seq)
     if len(seq) < 2:
         raise ValueError("need at least 2 elements in theta_seq to see a trend.")
@@ -64,19 +63,22 @@ def kosorok_z_consistency(psi_n, psi, theta_seq, theta0, grid=None):
         b = np.array([float(psi(th, v)) for v in g])
         sup_d.append(float(np.max(np.abs(a - b))))
         root_n.append(float(np.max(np.abs(a))))
-        dist.append(float(np.abs(np.asarray(th, dtype=float) -
-                                 np.asarray(theta0, dtype=float)).max()))
+        dist.append(float(np.abs(np.asarray(th, dtype=float) - np.asarray(theta0, dtype=float)).max()))
     uc = bool(sup_d[-1] < sup_d[0])
     nr = bool(root_n[-1] < root_n[0])
-    return RichResult(payload={
-        "sup_differences": np.array(sup_d),
-        "near_root_norms": np.array(root_n),
-        "theta_distances": np.array(dist),
-        "uniform_convergence": uc, "near_root": nr,
-        "consistent": bool(uc and nr and dist[-1] < dist[0]),
-        "both_needed": True,
-        "norm": "uniform on a function space, not Euclidean",
-        "method": "Z-estimator consistency (Thm. 2.10); uniform convergence AND a near-root, together"})
+    return RichResult(
+        payload={
+            "sup_differences": np.array(sup_d),
+            "near_root_norms": np.array(root_n),
+            "theta_distances": np.array(dist),
+            "uniform_convergence": uc,
+            "near_root": nr,
+            "consistent": bool(uc and nr and dist[-1] < dist[0]),
+            "both_needed": True,
+            "norm": "uniform on a function space, not Euclidean",
+            "method": "Z-estimator consistency (Thm. 2.10); uniform convergence AND a near-root, together",
+        }
+    )
 
 
 def cheatsheet():

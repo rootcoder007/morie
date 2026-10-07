@@ -18,8 +18,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["penmat", "mvsml_convolutional_nn_eq_14_11"]
 
 
-def penmat(t, L1, p=2, kind='fourier', period=None, beta=None):
-
+def penmat(t, L1, p=2, kind="fourier", period=None, beta=None):
     """J_beta = int_0^T [ d^p beta(t) / dt^p ]^2 dt (eq. 14.11), the
     penalty based on the integrated squared pth order derivative.
     Under the basis expansion (14.2) the book writes it as the
@@ -31,8 +30,7 @@ def penmat(t, L1, p=2, kind='fourier', period=None, beta=None):
     when beta is supplied.
     """
 
-    res = RichResult(payload=_gp.fda_penalty_matrix(t, L1, p=p, kind=kind, period=period,
-                             beta=beta))
+    res = RichResult(payload=_gp.fda_penalty_matrix(t, L1, p=p, kind=kind, period=period, beta=beta))
 
     return with_describe_pointer(res, "msm278")
 

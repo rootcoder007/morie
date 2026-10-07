@@ -1,8 +1,8 @@
 """Tests for morie.fn.hc012 — HC0/HC1/HC2/HC3 robust SE."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hc012 import hc_robust_se
 
 

@@ -22,7 +22,7 @@ def test_bcoinbf_evidence_for_the_free_bias_is_the_beta_integral():
 def test_bcoinbf_evidence_for_the_fixed_bias_is_the_plain_likelihood():
     fa, fb, p0 = 4, 6, 1.0 / 6.0
     res = bcoinbf(fa, fb, p0)
-    assert res["evidence0"] == pytest.approx(p0 ** fa * (1.0 - p0) ** fb, rel=1e-12)
+    assert res["evidence0"] == pytest.approx(p0**fa * (1.0 - p0) ** fb, rel=1e-12)
     assert res["ratio"] == pytest.approx(res["evidence1"] / res["evidence0"], rel=1e-9)
 
 

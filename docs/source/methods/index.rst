@@ -31,6 +31,7 @@ matches the estimator's signature.
    hawkes
    spatial
    fairness
+   research
    statphysics
    findings
    quantization

@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["esl_oob_632"]
 
 
-def esl_oob_632(err_train, err_loo_boot, gamma=None, y=None, y_pred=None,
-                p1=None, q1=None):
+def esl_oob_632(err_train, err_loo_boot, gamma=None, y=None, y_pred=None, p1=None, q1=None):
     r"""The ".632 estimator", ESL Eq. (7.57):
 
     .. math:: \widehat{\mathrm{Err}}^{(.632)} = .368\,\overline{err}
@@ -101,15 +100,14 @@ def esl_oob_632(err_train, err_loo_boot, gamma=None, y=None, y_pred=None,
         yv = np.asarray(y, dtype=float).ravel()
         pv = np.asarray(y_pred, dtype=float).ravel()
         if yv.size != pv.size:
-            raise ValueError(
-                f"y has {yv.size} entries and y_pred has {pv.size}.")
+            raise ValueError(f"y has {yv.size} entries and y_pred has {pv.size}.")
         # (7.58): every response paired with every prediction
         gamma = float(np.mean((yv[:, None] - pv[None, :]) ** 2))
     if gamma is None and p1 is not None and q1 is not None:
         pp, qq = float(p1), float(q1)
         if not (0 <= pp <= 1 and 0 <= qq <= 1):
             raise ValueError("p1 and q1 are proportions and must lie in [0, 1].")
-        gamma = pp * (1 - qq) + (1 - pp) * qq            # (7.59)
+        gamma = pp * (1 - qq) + (1 - pp) * qq  # (7.59)
 
     w = None
     R = None
@@ -121,21 +119,29 @@ def esl_oob_632(err_train, err_loo_boot, gamma=None, y=None, y_pred=None,
             # it on its own training data leaves (7.60) undefined
             R = 0.0
         else:
-            R = (e1 - et) / (g - et)                      # (7.60)
+            R = (e1 - et) / (g - et)  # (7.60)
             R = float(min(max(R, 0.0), 1.0))
-        w = 0.632 / (1.0 - 0.368 * R)                    # (7.61)
+        w = 0.632 / (1.0 - 0.368 * R)  # (7.61)
         err632p = (1.0 - w) * et + w * e1
-    return RichResult(payload={
-        "value": err632, "err_632": err632, "err_632_plus": err632p,
-        "weight": w, "relative_overfitting_rate": R, "gamma": gamma,
-        "err_train": et, "err_loo_boot": e1,
-        "uses_leave_one_out": True,
-        "second_argument_note": "(7.57) takes Err^(1) from (7.56), NOT "
-                                "Err_boot from (7.54); the latter is biased "
-                                "downward and needs no correction downward",
-        "weight_range": "w runs from .632 at R = 0 to 1 at R = 1, so the "
-                        ".632+ estimate runs from Err^(.632) to Err^(1)",
-        "method": "ESL (7.57) .632 and (7.61) .632+ prediction-error estimators"})
+    return RichResult(
+        payload={
+            "value": err632,
+            "err_632": err632,
+            "err_632_plus": err632p,
+            "weight": w,
+            "relative_overfitting_rate": R,
+            "gamma": gamma,
+            "err_train": et,
+            "err_loo_boot": e1,
+            "uses_leave_one_out": True,
+            "second_argument_note": "(7.57) takes Err^(1) from (7.56), NOT "
+            "Err_boot from (7.54); the latter is biased "
+            "downward and needs no correction downward",
+            "weight_range": "w runs from .632 at R = 0 to 1 at R = 1, so the "
+            ".632+ estimate runs from Err^(.632) to Err^(1)",
+            "method": "ESL (7.57) .632 and (7.61) .632+ prediction-error estimators",
+        }
+    )
 
 
 def cheatsheet():

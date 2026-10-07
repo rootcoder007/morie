@@ -1,7 +1,6 @@
 """Tests for grrnd.geron_randomized_search_cv."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grrnd import geron_randomized_search_cv
 
 
@@ -18,9 +17,7 @@ def test_grrnd_basic():
         # Prefer the smallest sampled alpha.
         return -params["alpha"]
 
-    result = geron_randomized_search_cv(
-        X, y, param_dist, n_iter, K, fit_score=fit_score, seed=1
-    )
+    result = geron_randomized_search_cv(X, y, param_dist, n_iter, K, fit_score=fit_score, seed=1)
     assert isinstance(result, dict)
     assert "best_params" in result
     assert "best_score" in result
@@ -48,14 +45,11 @@ def test_grrnd_edge():
     def fit_score(Xtr, ytr, Xva, yva, params):
         return -params["alpha"]
 
-    result = geron_randomized_search_cv(
-        X, y, param_dist, n_iter, K, fit_score=fit_score, seed=1
-    )
+    result = geron_randomized_search_cv(X, y, param_dist, n_iter, K, fit_score=fit_score, seed=1)
     assert isinstance(result, dict)
     assert "best_params" in result
     assert len(result["results"]) == n_iter
-    assert all(set(row["params"].keys()) == {"alpha", "kernel"}
-               for row in result["results"])
+    assert all(set(row["params"].keys()) == {"alpha", "kernel"} for row in result["results"])
 
 
 # --- appended: the module's own worked example as a gate -----------
@@ -70,7 +64,7 @@ import morie.fn.grrnd as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

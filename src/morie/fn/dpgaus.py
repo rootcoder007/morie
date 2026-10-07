@@ -105,9 +105,13 @@ def dp_gaussian_mechanism(y, sensitivity=1.0, epsilon=1.0, delta=1e-5, seed=None
         warnings=warn,
         payload={
             "release": rel if rel.ndim else float(rel),
-            "sigma": sigma, "noise_sd": sigma,
-            "epsilon": epsilon, "delta": delta, "sensitivity": sensitivity,
-            "mechanism": "gaussian", "method": "dp_gaussian_mechanism",
+            "sigma": sigma,
+            "noise_sd": sigma,
+            "epsilon": epsilon,
+            "delta": delta,
+            "sensitivity": sensitivity,
+            "mechanism": "gaussian",
+            "method": "dp_gaussian_mechanism",
         },
     )
 

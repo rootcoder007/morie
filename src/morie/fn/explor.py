@@ -73,14 +73,13 @@ _FEATURES = ("inverse", "identity")
 
 
 def _mat(x, name):
-    rows = [[float(v) for v in row]
-            for row in np.atleast_2d(np.asarray(x, dtype=float))]
+    rows = [[float(v) for v in row] for row in np.atleast_2d(np.asarray(x, dtype=float))]
     if not rows or not rows[0]:
-        raise ValueError("explor: %s must be non-empty" % name)
+        raise ValueError(f"explor: {name} must be non-empty")
     w = len(rows[0])
     for r in rows:
         if len(r) != w:
-            raise ValueError("explor: %s must be rectangular" % name)
+            raise ValueError(f"explor: {name} must be rectangular")
     return rows
 
 
@@ -105,9 +104,20 @@ def _softmax(z):
     return [v / s for v in e]
 
 
-def explor(states, actions, next_states, n_actions=None, n_features=8,
-           eta=1.0, beta=0.2, lr=0.05, epochs=1, features="inverse",
-           discrete=True, seed=0):
+def explor(
+    states,
+    actions,
+    next_states,
+    n_actions=None,
+    n_features=8,
+    eta=1.0,
+    beta=0.2,
+    lr=0.05,
+    epochs=1,
+    features="inverse",
+    discrete=True,
+    seed=0,
+):
     r"""Train an ICM on a batch of transitions and return the curiosity
     reward for each.
 
@@ -158,8 +168,7 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
     Pathak et al. (2017) arXiv:1705.05363, eqs. 2-7.
     """
     if features not in _FEATURES:
-        raise ValueError("explor: features must be one of %r, got %r"
-                         % (_FEATURES, features))
+        raise ValueError(f"explor: features must be one of {_FEATURES!r}, got {features!r}")
     eta = float(eta)
     if not eta > 0.0:
         raise ValueError("explor: eta must be > 0")
@@ -169,19 +178,16 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
     S = _mat(states, "states")
     S1 = _mat(next_states, "next_states")
     if len(S) != len(S1):
-        raise ValueError("explor: states and next_states must have the "
-                         "same length")
+        raise ValueError("explor: states and next_states must have the same length")
     if len(S[0]) != len(S1[0]):
-        raise ValueError("explor: states and next_states must have the "
-                         "same width")
+        raise ValueError("explor: states and next_states must have the same width")
     T = len(S)
     d = len(S[0])
 
     if discrete:
         A = [int(a) for a in np.atleast_1d(np.asarray(actions))]
         if len(A) != T:
-            raise ValueError("explor: got %d actions for %d transitions"
-                             % (len(A), T))
+            raise ValueError(f"explor: got {int(len(A))} actions for {int(T)} transitions")
         nA = int(n_actions) if n_actions is not None else max(A) + 1
         if nA < 2:
             raise ValueError("explor: need at least 2 discrete actions")
@@ -191,8 +197,7 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
     else:
         Ac = _mat(actions, "actions")
         if len(Ac) != T:
-            raise ValueError("explor: got %d actions for %d transitions"
-                             % (len(Ac), T))
+            raise ValueError(f"explor: got {int(len(Ac))} actions for {int(T)} transitions")
         a_dim = len(Ac[0])
 
     rng = np.random.default_rng(seed)
@@ -206,8 +211,7 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
         # Small init: tanh saturated at initialisation has no gradient,
         # and phi is trained, so it must start in its linear regime.
         s = 0.1 / math.sqrt(d)
-        Wphi = [[(rng.random() * 2.0 - 1.0) * s for _ in range(k)]
-                for _ in range(d)]
+        Wphi = [[(rng.random() * 2.0 - 1.0) * s for _ in range(k)] for _ in range(d)]
 
     def phi(x):
         if Wphi is None:
@@ -254,7 +258,7 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
             ef = [ph[o] - p1[o] for o in range(k)]
             lf = 0.5 * sum(v * v for v in ef)
             lf_tot += lf
-            rewards.append(eta * lf)      # eq. 6: (eta/2)||.||^2 == eta*L_F
+            rewards.append(eta * lf)  # eq. 6: (eta/2)||.||^2 == eta*L_F
 
             # --- SGD on (1-beta) L_I + beta L_F  (the eq. 7 terms that
             #     do not involve the policy).
@@ -327,12 +331,14 @@ def explor(states, actions, next_states, n_actions=None, n_features=8,
 
 
 def cheatsheet():
-    return ("explor: ICM (Pathak 2017). phi learned via the INVERSE "
-            "model (eqs. 2-3) so it encodes only what the agent can "
-            "affect; forward model f(phi(s),a) (eq. 4); curiosity "
-            "r^i = (eta/2)||phihat(s') - phi(s')||^2 (eq. 6); joint "
-            "loss (1-beta)L_I + beta L_F (eq. 7). features='identity' "
-            "is the raw-observation baseline that the noisy TV fools.")
+    return (
+        "explor: ICM (Pathak 2017). phi learned via the INVERSE "
+        "model (eqs. 2-3) so it encodes only what the agent can "
+        "affect; forward model f(phi(s),a) (eq. 4); curiosity "
+        "r^i = (eta/2)||phihat(s') - phi(s')||^2 (eq. 6); joint "
+        "loss (1-beta)L_I + beta L_F (eq. 7). features='identity' "
+        "is the raw-observation baseline that the noisy TV fools."
+    )
 
 
 # compact aliases per ledger/NAMING.md

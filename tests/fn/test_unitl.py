@@ -1,7 +1,6 @@
 """Tests for unitl.unit_length_normalization."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.unitl import unit_length_normalization
 
 

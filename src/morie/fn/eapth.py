@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["eap_theta_estimator"]
 
 
-def eap_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
-                        n_nodes=61):
+def eap_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0), n_nodes=61):
     r"""Expected a posteriori estimate of :math:`\theta` -- the
     posterior MEAN rather than the mode,
 
@@ -72,8 +71,7 @@ def eap_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
         raise ValueError("a, b, c must each have one entry per item.")
     mu, sd = float(prior[0]), float(prior[1])
     if sd <= 0:
-        raise ValueError(f"the prior standard deviation must be positive, "
-                         f"got {sd}.")
+        raise ValueError(f"the prior standard deviation must be positive, got {sd}.")
     nn = int(n_nodes)
     if nn < 5:
         raise ValueError(f"need at least 5 quadrature nodes, got {nn}.")
@@ -84,35 +82,40 @@ def eap_theta_estimator(y, a=None, b=None, c=None, prior=(0.0, 1.0),
     post = np.exp(ll) * W
     tot = float(post.sum())
     if tot <= 0:
-        raise ValueError("the posterior mass underflowed; widen the prior "
-                         "or add nodes.")
+        raise ValueError("the posterior mass underflowed; widen the prior or add nodes.")
     post = post / tot
     th = float(np.sum(X * post))
     var = float(np.sum((X - th) ** 2 * post))
     shrink = None
     try:
         from .mapth import map_theta_estimator
+
         mp = map_theta_estimator(y, a=av, b=bv, c=cv, prior=prior)
         shrink = float(th - mp["theta"])
     except Exception:
         pass
-    return RichResult(payload={
-        "theta": th, "se": float(np.sqrt(var)),
-        "posterior_sd": float(np.sqrt(var)),
-        "prior_mean": mu, "prior_sd": sd, "n_nodes": nn,
-        "shrinkage_vs_map": shrink,
-        "no_optimisation": True,
-        "why_no_optimisation": "EAP is two weighted sums, so it cannot fail "
-                               "to converge and has no multimodality "
-                               "problem -- the reason adaptive testing "
-                               "prefers it",
-        "se_note": "a genuine posterior standard deviation, not a curvature "
-                   "approximation; the two differ materially for skewed "
-                   "posteriors",
-        "node_note": "too few nodes silently biases the tails, where "
-                     "extreme patterns live",
-        "n_items": int(m),
-        "method": "EAP theta by Gauss-Hermite quadrature (Bock-Mislevy 1982)"})
+    return RichResult(
+        payload={
+            "theta": th,
+            "se": float(np.sqrt(var)),
+            "posterior_sd": float(np.sqrt(var)),
+            "prior_mean": mu,
+            "prior_sd": sd,
+            "n_nodes": nn,
+            "shrinkage_vs_map": shrink,
+            "no_optimisation": True,
+            "why_no_optimisation": "EAP is two weighted sums, so it cannot fail "
+            "to converge and has no multimodality "
+            "problem -- the reason adaptive testing "
+            "prefers it",
+            "se_note": "a genuine posterior standard deviation, not a curvature "
+            "approximation; the two differ materially for skewed "
+            "posteriors",
+            "node_note": "too few nodes silently biases the tails, where extreme patterns live",
+            "n_items": int(m),
+            "method": "EAP theta by Gauss-Hermite quadrature (Bock-Mislevy 1982)",
+        }
+    )
 
 
 def cheatsheet():

@@ -1,7 +1,6 @@
 """Tests for btcicor.boot_ci_correlation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.btcicor import boot_ci_correlation
 
 

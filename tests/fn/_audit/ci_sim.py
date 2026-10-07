@@ -54,12 +54,13 @@ def _pytest(paths: list[str]) -> tuple[int, int, int, str]:
     -o addopts="" is mandatory: pyproject.toml excludes tests/fn by default,
     so without it pytest collects nothing and reports a vacuous success.
     """
-    proc = _run([PY, "-m", "pytest", *paths, "-q", "-o", "addopts=",
-                 "-p", "no:cacheprovider", "-rs"])
+    proc = _run([PY, "-m", "pytest", *paths, "-q", "-o", "addopts=", "-p", "no:cacheprovider", "-rs"])
     out = proc.stdout + proc.stderr
+
     def n(word: str) -> int:
         m = re.search(rf"(\d+) {word}", out)
         return int(m.group(1)) if m else 0
+
     return n("passed"), n("skipped"), n("failed"), out.strip().splitlines()[-1] if out.strip() else ""
 
 
@@ -72,9 +73,11 @@ def _require_uv() -> None:
     `python -m pip` inside one dies with "No module named pip".
     """
     if _run(["uv", "--version"]).returncode != 0:
-        sys.exit("[ci_sim] uv not found. Install it: "
-                 "curl -LsSf https://astral.sh/uv/install.sh | sh "
-                 '(then export PATH="$HOME/.local/bin:$PATH")')
+        sys.exit(
+            "[ci_sim] uv not found. Install it: "
+            "curl -LsSf https://astral.sh/uv/install.sh | sh "
+            '(then export PATH="$HOME/.local/bin:$PATH")'
+        )
 
 
 def _uninstall(pkg: str) -> None:
@@ -88,8 +91,7 @@ def _install(pkg: str) -> None:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("extra", help="distribution name of the optional dependency, e.g. doubleml")
     ap.add_argument("paths", nargs="+", help="test files or node ids to check")
     ap.add_argument("--json", type=Path, help="write the two-view result here")
@@ -123,13 +125,19 @@ def main() -> int:
         ok = False
 
     if args.json:
-        args.json.write_text(json.dumps({
-            "extra": args.extra,
-            "paths": args.paths,
-            "ci_equivalent": {"passed": ci_pass, "skipped": ci_skip, "failed": ci_fail},
-            "local":         {"passed": lo_pass, "skipped": lo_skip, "failed": lo_fail},
-            "ok": ok,
-        }, indent=2) + "\n")
+        args.json.write_text(
+            json.dumps(
+                {
+                    "extra": args.extra,
+                    "paths": args.paths,
+                    "ci_equivalent": {"passed": ci_pass, "skipped": ci_skip, "failed": ci_fail},
+                    "local": {"passed": lo_pass, "skipped": lo_skip, "failed": lo_fail},
+                    "ok": ok,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
 
     print(f"[ci_sim] {'OK -- both paths clean' if ok else 'BROKEN GATE'}")
     return 0 if ok else 1

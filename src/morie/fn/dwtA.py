@@ -124,7 +124,7 @@ def discrete_wavelet_anomaly(x, threshold=None, levels=None, max_span=8):
     fired = np.zeros(n, dtype=int)
     per_level = []
     for lv, d in enumerate(details, start=1):
-        span = 2 ** lv
+        span = 2**lv
         big = np.abs(d) > lam
         per_level.append(int(big.sum()))
         # Coarse coefficients describe the signal, not an anomaly: a single
@@ -143,14 +143,20 @@ def discrete_wavelet_anomaly(x, threshold=None, levels=None, max_span=8):
     anom = score > lam
     return RichResult(
         title="Wavelet anomaly detection",
-        summary_lines=[("n", int(n0)), ("sigma", sigma), ("threshold", lam),
-                       ("anomalies", int(anom.sum()))],
-        warnings=["the Haar basis localises abrupt changes well but is blind "
-                  "to slow drift, which produces no large coefficient at any scale"],
+        summary_lines=[("n", int(n0)), ("sigma", sigma), ("threshold", lam), ("anomalies", int(anom.sum()))],
+        warnings=[
+            "the Haar basis localises abrupt changes well but is blind "
+            "to slow drift, which produces no large coefficient at any scale"
+        ],
         payload={
-            "anomaly": anom, "score": score, "sigma": sigma,
-            "threshold": lam, "level_fired": fired, "per_level_count": per_level,
-            "n_anomalies": int(anom.sum()), "levels": int(levels),
+            "anomaly": anom,
+            "score": score,
+            "sigma": sigma,
+            "threshold": lam,
+            "level_fired": fired,
+            "per_level_count": per_level,
+            "n_anomalies": int(anom.sum()),
+            "levels": int(levels),
             "method": "discrete_wavelet_anomaly",
         },
     )

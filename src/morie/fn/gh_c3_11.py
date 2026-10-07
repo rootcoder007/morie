@@ -6,7 +6,6 @@ Nonparametric Bayesian Inference*, CUP.
 """
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_tailfree_def"]
@@ -28,10 +27,14 @@ def ghosal_tailfree_def(x, depth=8, seed=42):
             means[lev] += m
     means = [v / reps for v in means]
     gaps = [abs(means[m] - 2.0 ** (-(m + 1))) for m in range(depth)]
-    res = RichResult(payload={"estimate": means[-1],
-                              "mean_by_level": means,
-                              "prop312_gap": max(gaps),
-                              "method": "tail-free splits + Prop 3.12(i) check (GvdV 2017 sec. 3.6)"})
+    res = RichResult(
+        payload={
+            "estimate": means[-1],
+            "mean_by_level": means,
+            "prop312_gap": max(gaps),
+            "method": "tail-free splits + Prop 3.12(i) check (GvdV 2017 sec. 3.6)",
+        }
+    )
     return with_describe_pointer(res, "gh_c3_11")
 
 

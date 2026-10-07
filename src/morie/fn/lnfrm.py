@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Log-normal frailty for recurrent events."""
 
-import math
-
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -22,7 +20,7 @@ def _penalized_newton(t, e, Xa, D, sigma2, max_iter=50, tol=1e-10):
     etimes = sorted(set(float(t[i]) for i in range(n) if e[i] == 1.0))
     info = None
     ll = 0.0
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         eta = np.clip(Z @ theta, -500.0, 500.0)
         w = np.exp(eta)
         U = np.zeros(p + q)
@@ -99,9 +97,8 @@ def lognormal_frailty(time, event, X, cluster, max_outer=50, tol=1e-7):
         D[i, ks.index(cl[i])] = 1.0
     sigma2 = 0.5
     theta = None
-    for outer in range(max_outer):
-        theta, info, ll_pen, n_newton, etimes = _penalized_newton(
-            t, e, Xa, D, sigma2)
+    for outer in range(max_outer):  # noqa: B007 - read after the loop
+        theta, info, ll_pen, n_newton, etimes = _penalized_newton(t, e, Xa, D, sigma2)
         b = theta[p:]
         cov = np.linalg.inv(info)
         tr = sum(float(cov[p + j, p + j]) for j in range(q))
@@ -116,16 +113,18 @@ def lognormal_frailty(time, event, X, cluster, max_outer=50, tol=1e-7):
     if any(v <= 0.0 or v != v for v in dg):
         raise ValueError("penalized information is singular")
     b = theta[p:]
-    return RichResult(payload={
-        "estimate": theta[:p],
-        "se": np.sqrt(np.asarray(dg)),
-        "frailty": {ks[j]: float(b[j]) for j in range(q)},
-        "sigma2": sigma2,
-        "loglik_penalized": ll_pen,
-        "n_outer": outer + 1,
-        "n_newton": n_newton,
-        "method": "McGilchrist (1993) log-normal frailty, penalized PL + REML variance",
-    })
+    return RichResult(
+        payload={
+            "estimate": theta[:p],
+            "se": np.sqrt(np.asarray(dg)),
+            "frailty": {ks[j]: float(b[j]) for j in range(q)},
+            "sigma2": sigma2,
+            "loglik_penalized": ll_pen,
+            "n_outer": outer + 1,
+            "n_newton": n_newton,
+            "method": "McGilchrist (1993) log-normal frailty, penalized PL + REML variance",
+        }
+    )
 
 
 lnfrm = lognormal_frailty

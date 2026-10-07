@@ -102,15 +102,17 @@ def taulep(nu, propensity, x0, tau, n_steps, seed=0):
                 x[i] = 0.0
         path.append(list(x))
         times.append(s * tau)
-    return RichResult(payload={
-        "path": path,
-        "times": times,
-        "firings": fired,
-        "tau": tau,
-        "n_steps": n_steps,
-        "seed": int(seed),
-        "method": "explicit tau-leaping (Gillespie 2001, Eq. 16)",
-    })
+    return RichResult(
+        payload={
+            "path": path,
+            "times": times,
+            "firings": fired,
+            "tau": tau,
+            "n_steps": n_steps,
+            "seed": int(seed),
+            "method": "explicit tau-leaping (Gillespie 2001, Eq. 16)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -119,6 +121,7 @@ tau_leap_ssa = taulep
 
 def cheatsheet():
     return "taulep: K_j ~ Poisson(a_j(x) tau); x += sum K_j nu_j per leap"
+
 
 # public names resolved by fn/_lazy_map.json
 tau_leap_sim = taulep

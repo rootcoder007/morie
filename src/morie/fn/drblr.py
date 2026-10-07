@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["doubly_robust_ate", "doubly_robust_learner"]
 
 
-def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None,
-                      trunc=0.01):
+def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None, trunc=0.01):
     r"""Augmented IPW: consistent if EITHER nuisance model is right.
 
     .. math::
@@ -87,21 +86,14 @@ def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None,
         e_raw = np.asarray(propensity, dtype=float).ravel()
         sep = False
         if e_raw.size != n:
-            raise ValueError("propensity has %d entries for %d rows."
-                             % (e_raw.size, n))
+            raise ValueError(f"propensity has {int(e_raw.size)} entries for {int(n)} rows.")
     n_tr = int(np.sum((e_raw < trunc) | (e_raw > 1 - trunc)))
     e = np.clip(e_raw, trunc, 1 - trunc)
 
-    if mu1 is None:
-        mu1 = B @ ols_fit(B[dv == 1], yv[dv == 1])
-    else:
-        mu1 = np.asarray(mu1, dtype=float).ravel()
-    if mu0 is None:
-        mu0 = B @ ols_fit(B[dv == 0], yv[dv == 0])
-    else:
-        mu0 = np.asarray(mu0, dtype=float).ravel()
+    mu1 = B @ ols_fit(B[dv == 1], yv[dv == 1]) if mu1 is None else np.asarray(mu1, dtype=float).ravel()
+    mu0 = B @ ols_fit(B[dv == 0], yv[dv == 0]) if mu0 is None else np.asarray(mu0, dtype=float).ravel()
 
-    aug = (dv * (yv - mu1) / e - (1 - dv) * (yv - mu0) / (1 - e))
+    aug = dv * (yv - mu1) / e - (1 - dv) * (yv - mu0) / (1 - e)
     psi = mu1 - mu0 + aug
     est = float(np.mean(psi))
     se = float(np.std(psi, ddof=1) / np.sqrt(n))
@@ -141,10 +133,7 @@ def doubly_robust_ate(y, d, X, propensity=None, mu1=None, mu0=None,
 
 
 def cheatsheet():
-    return (
-        "drblr: AIPW ATE with both single-model estimates exposed, since "
-        "their disagreement is the real diagnostic"
-    )
+    return "drblr: AIPW ATE with both single-model estimates exposed, since their disagreement is the real diagnostic"
 
 
 #: Catalogue alias for :func:`doubly_robust_ate`.

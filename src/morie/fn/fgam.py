@@ -48,9 +48,6 @@ Ramsay, J. O. and Silverman, B. W. (2005) *Functional Data Analysis*,
 2nd ed., Springer, Ch. 15 (the functional linear model FGAM nests).
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -73,8 +70,7 @@ def _knots(lo, hi, n_basis, degree=3):
     """Clamped knot vector with equally spaced interior knots."""
     n_int = n_basis - degree - 1
     if n_int < 0:
-        raise ValueError("fgam: a cubic basis needs at least %d functions"
-                         % (degree + 1))
+        raise ValueError(f"fgam: a cubic basis needs at least {int(degree + 1)} functions")
     span = hi - lo
     if span <= _EPS:
         span = 1.0
@@ -117,8 +113,7 @@ def _diff_penalty(n, order=2):
         else:
             row[i], row[i + 1] = -1.0, 1.0
         D.append(row)
-    return [[sum(D[r][a] * D[r][b] for r in range(len(D)))
-             for b in range(n)] for a in range(n)]
+    return [[sum(D[r][a] * D[r][b] for r in range(len(D))) for b in range(n)] for a in range(n)]
 
 
 def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
@@ -144,7 +139,7 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
     if n == 0:
         raise ValueError("fgam: no curves")
     if len(y) != n:
-        raise ValueError("fgam: %d curves but %d responses" % (n, len(y)))
+        raise ValueError(f"fgam: {int(n)} curves but {int(len(y))} responses")
     T = len(Xm[0])
     if any(len(r) != T for r in Xm):
         raise ValueError("fgam: every curve must lie on the same grid")
@@ -152,8 +147,7 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
         n_x = n_t = int(basis)
     n_x, n_t = int(n_x), int(n_t)
     if n_x < 4 or n_t < 4:
-        raise ValueError("fgam: each cubic marginal basis needs at least 4 "
-                         "functions")
+        raise ValueError("fgam: each cubic marginal basis needs at least 4 functions")
     w = _grid_weights(T)
     grid = [i / (T - 1.0) if T > 1 else 0.0 for i in range(T)]
 
@@ -180,8 +174,7 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
 
     ybar = sum(y) / n
     yc = [v - ybar for v in y]
-    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n)) for b in range(p)]
-           for a in range(p)]
+    ZtZ = [[sum(Z[i][a] * Z[i][b] for i in range(n)) for b in range(p)] for a in range(p)]
     Zty = [sum(Z[i][a] * yc[i] for i in range(n)) for a in range(p)]
 
     Px = _diff_penalty(n_x)
@@ -208,8 +201,7 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
         ZtZ[a][a] += ridge
 
     theta = k.cholsolve(ZtZ, Zty)
-    fitted = [ybar + sum(Z[i][a] * theta[a] for a in range(p))
-              for i in range(n)]
+    fitted = [ybar + sum(Z[i][a] * theta[a] for a in range(p)) for i in range(n)]
     resid = [y[i] - fitted[i] for i in range(n)]
 
     # effective degrees of freedom, tr(H) with H = Z (Z'Z + P)^-1 Z':
@@ -230,50 +222,53 @@ def functional_gam(X, Y, basis=None, n_x=6, n_t=6, lam_x=1.0, lam_t=1.0):
     surface = []
     for xv in xs:
         bx = _bspline(xv, kx, n_x)
-        surface.append([sum(bx[a] * Bt[t][b] * theta[a * n_t + b]
-                            for a in range(n_x) for b in range(n_t))
-                        for t in range(T)])
+        surface.append(
+            [sum(bx[a] * Bt[t][b] * theta[a * n_t + b] for a in range(n_x) for b in range(n_t)) for t in range(T)]
+        )
     lin = 0.0
     for t in range(T):
         col = [surface[j][t] for j in range(nx_out)]
         mx = sum(xs) / nx_out
         mc = sum(col) / nx_out
         den = sum((xs[j] - mx) ** 2 for j in range(nx_out))
-        sl = (sum((xs[j] - mx) * (col[j] - mc) for j in range(nx_out)) / den
-              if den > _EPS else 0.0)
+        sl = sum((xs[j] - mx) * (col[j] - mc) for j in range(nx_out)) / den if den > _EPS else 0.0
         for j in range(nx_out):
             lin = max(lin, abs(col[j] - (mc + sl * (xs[j] - mx))))
 
-    return RichResult(payload={
-        "estimate": fitted,
-        "fitted": fitted,
-        "residuals": resid,
-        "coefficients": theta,
-        "intercept": ybar,
-        "surface": surface,
-        "surface_x": xs,
-        "edf": edf,
-        "r_squared": r2,
-        "n_x": n_x,
-        "n_t": n_t,
-        "lam_x": float(lam_x),
-        "lam_t": float(lam_t),
-        "linear_deviation": lin,
-        "n": n,
-        "method": "functional generalized additive model, tensor-product "
-                  "cubic B-splines with separate second-difference "
-                  "penalties (McLean et al. 2014)",
-        "note": "F(x, t) = beta(t) x recovers the functional linear model; "
-                "linear_deviation is how far the fitted surface departs "
-                "from that, so the extra flexibility is measured rather "
-                "than assumed",
-    })
+    return RichResult(
+        payload={
+            "estimate": fitted,
+            "fitted": fitted,
+            "residuals": resid,
+            "coefficients": theta,
+            "intercept": ybar,
+            "surface": surface,
+            "surface_x": xs,
+            "edf": edf,
+            "r_squared": r2,
+            "n_x": n_x,
+            "n_t": n_t,
+            "lam_x": float(lam_x),
+            "lam_t": float(lam_t),
+            "linear_deviation": lin,
+            "n": n,
+            "method": "functional generalized additive model, tensor-product "
+            "cubic B-splines with separate second-difference "
+            "penalties (McLean et al. 2014)",
+            "note": "F(x, t) = beta(t) x recovers the functional linear model; "
+            "linear_deviation is how far the fitted surface departs "
+            "from that, so the extra flexibility is measured rather "
+            "than assumed",
+        }
+    )
 
 
 def cheatsheet():
-    return ("fgam: functional_gam(X, Y, n_x, n_t, lam_x, lam_t) -> "
-            "E[Y|X] = theta0 + int F(X(t), t) dt by tensor-product "
-            "penalised splines (McLean et al. 2014, JCGS 23(1), 249-269)")
+    return (
+        "fgam: functional_gam(X, Y, n_x, n_t, lam_x, lam_t) -> "
+        "E[Y|X] = theta0 + int F(X(t), t) dt by tensor-product "
+        "penalised splines (McLean et al. 2014, JCGS 23(1), 249-269)"
+    )
 
 
 # Catalogue aliases (src/morie/fn/_lazy_map.json resolves these by name).

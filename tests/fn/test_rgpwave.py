@@ -14,9 +14,11 @@ def _ecg(p_lead, rr=0.8, fs=250.0, n=2500):
     for r in q:
         for i in range(max(0, r - 200), min(n, r + 200)):
             t = (i - r) / fs
-            x[i] += (1.2 * math.exp(-(t / 0.012) ** 2)
-                     + 0.15 * math.exp(-((t + p_lead) / 0.025) ** 2)
-                     + 0.3 * math.exp(-((t - 0.30) / 0.05) ** 2))
+            x[i] += (
+                1.2 * math.exp(-((t / 0.012) ** 2))
+                + 0.15 * math.exp(-(((t + p_lead) / 0.025) ** 2))
+                + 0.3 * math.exp(-(((t - 0.30) / 0.05) ** 2))
+            )
     return x, q
 
 
@@ -39,10 +41,8 @@ def test_rgpwave_edge():
     r = rangayyan_p_wave_detect(x, q, 250.0)
     assert all(abs((q[k + 1] - p) / 250.0 - 0.20) <= 0.008 for k, p in enumerate(r["p"]))
     x2, q2 = _ecg(0.16)
-    q2 = q2[:3] + [q2[2] + 60] + q2[3:]      # an extra beat 240 ms later
+    q2 = q2[:3] + [q2[2] + 60] + q2[3:]  # an extra beat 240 ms later
     r2 = rangayyan_p_wave_detect(x2, q2, 250.0)
     assert r2["p"][2] is None
     with pytest.raises(ValueError, match="22 Hz"):
         rangayyan_p_wave_detect([0.0] * 64, [10, 40], 20.0)
-
-

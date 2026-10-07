@@ -4,6 +4,7 @@ Each test pins a property the paper states, not the implementation's
 own output: an exact identity, a closed form, or a constructed case
 with an independently known answer.
 """
+
 import importlib
 import math
 
@@ -41,24 +42,20 @@ def test_grphmr_spatial_bias_discourages_without_masking():
     sp = g.shortest_path_matrix(adj, 3)
     bias = g.spatial_bias(sp["distance"], [0.0, -1.0, -6.0])
     H = [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]]
-    w = g.graphormer_attention(H, I2, I2, I2,
-                               bias["bias"])["weights"][0]
+    w = g.graphormer_attention(H, I2, I2, I2, bias["bias"])["weights"][0]
     assert abs(sum(w) - 1.0) < 1e-12
     assert 0.0 < w[2] < w[1]
 
 
 def test_grphmr_edge_encoding_averages_along_the_path():
     g = M("grphmr")
-    r = g.edge_encoding({(0, 2): [(0, 1), (1, 2)]},
-                        {(0, 1): [1.0], (1, 2): [3.0]},
-                        [[1.0], [1.0]])
+    r = g.edge_encoding({(0, 2): [(0, 1), (1, 2)]}, {(0, 1): [1.0], (1, 2): [3.0]}, [[1.0], [1.0]])
     assert r["edge_bias"][(0, 2)] == pytest.approx(2.0)
 
 
 # --------------------------------------------------------------- hetgnn
 def _het():
-    edges = {"m0": ["a0", "d0"], "m1": ["a0"], "m2": ["d0"],
-             "a0": ["m0", "m1"], "d0": ["m0", "m2"]}
+    edges = {"m0": ["a0", "d0"], "m1": ["a0"], "m2": ["d0"], "a0": ["m0", "m1"], "d0": ["m0", "m2"]}
     types = {"m0": "M", "m1": "M", "m2": "M", "a0": "A", "d0": "D"}
     return edges, types
 
@@ -100,8 +97,7 @@ def test_dmlqs_message_excludes_the_reverse_edge_exactly():
     d = M("dmlqs")
     h0 = {(0, 1): [1.0], (1, 0): [2.0], (1, 2): [4.0], (2, 1): [8.0]}
     ex = d.dmpnn_message_pass(h0, CHAIN, T=1)["edge_states"]
-    inc = d.dmpnn_message_pass(h0, CHAIN, T=1,
-                               exclude_reverse=False)["edge_states"]
+    inc = d.dmpnn_message_pass(h0, CHAIN, T=1, exclude_reverse=False)["edge_states"]
     assert ex[(0, 1)][0] == pytest.approx(1.0)
     assert inc[(0, 1)][0] == pytest.approx(3.0)
 
@@ -148,8 +144,7 @@ def test_llavx_stages_freeze_different_parts():
     lv = M("llavx")
     assert lv.training_stage(1)["trainable"] == ["projection"]
     assert "language_model" in lv.training_stage(1)["frozen"]
-    assert lv.training_stage(2)["trainable"] == ["projection",
-                                                 "language_model"]
+    assert lv.training_stage(2)["trainable"] == ["projection", "language_model"]
 
 
 def test_llavx_symbolic_representation_is_text_only():
@@ -186,18 +181,15 @@ def test_nrfrad_encoding_width_and_negative_density():
 def test_nrfrad_view_dependent_density_is_caught():
     nr = M("nrfrad")
     dirs = [[1, 0, 0], [0, 1, 0]]
-    good = nr.density_is_view_independent(
-        lambda p, d: {"sigma": p[0] ** 2}, [1.0, 0, 0], dirs)
-    bad = nr.density_is_view_independent(
-        lambda p, d: {"sigma": p[0] ** 2 + d[0]}, [1.0, 0, 0], dirs)
+    good = nr.density_is_view_independent(lambda p, d: {"sigma": p[0] ** 2}, [1.0, 0, 0], dirs)
+    bad = nr.density_is_view_independent(lambda p, d: {"sigma": p[0] ** 2 + d[0]}, [1.0, 0, 0], dirs)
     assert good["view_independent"] and not bad["view_independent"]
 
 
 # --------------------------------------------------------------- gsplat
 def test_gsplat_factorisation_is_always_psd():
     gs = M("gsplat")
-    cov = gs.covariance_from_scale_rotation([3.0, 0.5, 1.0],
-                                            [0.3, 0.7, -0.2, 0.6])
+    cov = gs.covariance_from_scale_rotation([3.0, 0.5, 1.0], [0.3, 0.7, -0.2, 0.6])
     assert gs.is_positive_semidefinite(cov["covariance"])["psd"]
     raw = [[1.0, 2.0, 0.0], [2.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
     assert not gs.is_positive_semidefinite(raw)["psd"]
@@ -205,10 +197,8 @@ def test_gsplat_factorisation_is_always_psd():
 
 def test_gsplat_identity_rotation_gives_scale_squared():
     gs = M("gsplat")
-    cov = gs.covariance_from_scale_rotation([2.0, 3.0, 4.0],
-                                            [1.0, 0.0, 0.0, 0.0])
-    vals = sorted(gs.is_positive_semidefinite(cov["covariance"])
-                  ["eigenvalues"])
+    cov = gs.covariance_from_scale_rotation([2.0, 3.0, 4.0], [1.0, 0.0, 0.0, 0.0])
+    vals = sorted(gs.is_positive_semidefinite(cov["covariance"])["eigenvalues"])
     assert vals == pytest.approx([4.0, 9.0, 16.0])
 
 
@@ -225,16 +215,13 @@ def test_gsplat_compositing_equals_volume_rendering():
 
 def test_gsplat_density_control_routes_by_size_and_opacity():
     gs = M("gsplat")
-    r = gs.adaptive_density_control([0.001, 0.001, 0.0, 0.001],
-                                    [0.001, 0.5, 0.001, 0.002],
-                                    [0.9, 0.9, 0.9, 0.001])
+    r = gs.adaptive_density_control([0.001, 0.001, 0.0, 0.001], [0.001, 0.5, 0.001, 0.002], [0.9, 0.9, 0.9, 0.001])
     assert (r["clone"], r["split"], r["prune"]) == ([0], [1], [3])
 
 
 # --------------------------------------------------------------- gan_an
 def _toy():
-    return (lambda z: [z[0], z[0] * 2.0, z[0] * 3.0],
-            lambda x: [x[0], x[1] - x[0], x[2] - x[1]])
+    return (lambda z: [z[0], z[0] * 2.0, z[0] * 3.0], lambda x: [x[0], x[1] - x[0], x[2] - x[1]])
 
 
 def test_gan_an_normal_reconstructs_and_anomalous_does_not():
@@ -271,16 +258,13 @@ def test_comet_kendall_tau_exact():
     cm = M("comet")
     assert cm.kendall_tau([1, 2, 3, 4], [1, 2, 3, 4])["tau"] == 1.0
     assert cm.kendall_tau([1, 2, 3, 4], [4, 3, 2, 1])["tau"] == -1.0
-    assert cm.kendall_tau([1, 2, 3, 4],
-                          [2, 1, 3, 4])["tau"] == pytest.approx(4 / 6)
+    assert cm.kendall_tau([1, 2, 3, 4], [2, 1, 3, 4])["tau"] == pytest.approx(4 / 6)
 
 
 def test_comet_triplet_loss_zero_only_when_ranking_holds():
     cm = M("comet")
-    good = cm.triplet_loss([1.0, 0.0], [9.0, 0.0], [1.0, 0.0],
-                           [1.0, 0.0])
-    bad = cm.triplet_loss([9.0, 0.0], [1.0, 0.0], [1.0, 0.0],
-                          [1.0, 0.0])
+    good = cm.triplet_loss([1.0, 0.0], [9.0, 0.0], [1.0, 0.0], [1.0, 0.0])
+    bad = cm.triplet_loss([9.0, 0.0], [1.0, 0.0], [1.0, 0.0], [1.0, 0.0])
     assert good["satisfied"] and bad["loss"] > 0.0
 
 
@@ -296,16 +280,14 @@ def test_ibpfa_log_probability_matches_the_closed_form():
     lp = ib.ibp_log_probability([[1, 0], [1, 1]], 3.0)
     hand = 2 * math.log(3.0) - 3.0 * 1.5
     for m in (2, 1):
-        hand += (math.lgamma(2 - m + 1) + math.lgamma(m)
-                 - math.lgamma(3))
+        hand += math.lgamma(2 - m + 1) + math.lgamma(m) - math.lgamma(3)
     assert lp == pytest.approx(hand, abs=1e-12)
 
 
 def test_ibpfa_expected_counts_are_two_different_quantities():
     ib = M("ibpfa")
     r = ib.expected_features(10, 3.0)
-    assert r["expected_total_features"] == pytest.approx(
-        3.0 * sum(1.0 / i for i in range(1, 11)))
+    assert r["expected_total_features"] == pytest.approx(3.0 * sum(1.0 / i for i in range(1, 11)))
     assert r["expected_per_object"] == 3.0
 
 
@@ -313,8 +295,7 @@ def test_ibpfa_simulation_matches_the_expectation():
     ib = M("ibpfa")
     tot = [ib.sample_ibp(10, 3.0, seed=s)["K"] for s in range(200)]
     mean = sum(tot) / len(tot)
-    assert abs(mean - 3.0 * sum(1.0 / i
-                                for i in range(1, 11))) < 0.7
+    assert abs(mean - 3.0 * sum(1.0 / i for i in range(1, 11))) < 0.7
 
 
 def test_ibpfa_left_ordering_is_idempotent():
@@ -336,11 +317,12 @@ def test_baynav_determinant_matches_the_numerical_jacobian():
         fu = bn.planar_flow(up, u, w, b)["z"]
         fd = bn.planar_flow(dn, u, w, b)["z"]
         J.append([(fu[a] - fd[a]) / (2 * h) for a in range(3)])
-    det = (J[0][0] * (J[1][1] * J[2][2] - J[1][2] * J[2][1])
-           - J[0][1] * (J[1][0] * J[2][2] - J[1][2] * J[2][0])
-           + J[0][2] * (J[1][0] * J[2][1] - J[1][1] * J[2][0]))
-    assert bn.planar_flow(z0, u, w, b)["det"] == pytest.approx(det,
-                                                               abs=1e-6)
+    det = (
+        J[0][0] * (J[1][1] * J[2][2] - J[1][2] * J[2][1])
+        - J[0][1] * (J[1][0] * J[2][2] - J[1][2] * J[2][0])
+        + J[0][2] * (J[1][0] * J[2][1] - J[1][1] * J[2][0])
+    )
+    assert bn.planar_flow(z0, u, w, b)["det"] == pytest.approx(det, abs=1e-6)
 
 
 def test_baynav_invertibility_constraint_binds():
@@ -365,21 +347,16 @@ def test_baynav_transform_rejects_impossible_values():
 # -------------------------------------------------------------- farmlmm
 def _gwas(seed=7, n=60, p=12, causal=3):
     rng = M("_array_core").random.default_rng(seed)
-    G = [[float(int(rng.uniform() * 3)) for _ in range(p)]
-         for _ in range(n)]
-    y = [2.0 * G[i][causal] + 0.3 * (float(rng.uniform()) - 0.5)
-         for i in range(n)]
+    G = [[float(int(rng.uniform() * 3)) for _ in range(p)] for _ in range(n)]
+    y = [2.0 * G[i][causal] + 0.3 * (float(rng.uniform()) - 0.5) for i in range(n)]
     return G, y
 
 
 def test_farmlmm_selected_kinship_drops_the_confounding():
     fl = M("farmlmm")
     G, _ = _gwas()
-    c_all = abs(fl.confounding(G, fl.kinship_from_markers(G)["K"],
-                               3)["correlation"])
-    c_sel = abs(fl.confounding(G,
-                               fl.kinship_from_markers(G, [0, 1])["K"],
-                               3)["correlation"])
+    c_all = abs(fl.confounding(G, fl.kinship_from_markers(G)["K"], 3)["correlation"])
+    c_sel = abs(fl.confounding(G, fl.kinship_from_markers(G, [0, 1])["K"], 3)["correlation"])
     assert c_all > 0.4
     assert c_sel < c_all / 2.0
 
@@ -395,10 +372,8 @@ def test_farmlmm_recovers_the_planted_marker():
 # -------------------------------------------------------------- phmmsr
 def test_phmmsr_gumbel_at_mu_is_one_minus_one_over_e():
     ph = M("phmmsr")
-    assert ph.gumbel_pvalue(10.0, 10.0, 0.7) == pytest.approx(
-        1.0 - math.exp(-1.0), abs=1e-12)
-    assert ph.gumbel_pvalue(30.0, 10.0, 0.7) < ph.gumbel_pvalue(
-        20.0, 10.0, 0.7)
+    assert ph.gumbel_pvalue(10.0, 10.0, 0.7) == pytest.approx(1.0 - math.exp(-1.0), abs=1e-12)
+    assert ph.gumbel_pvalue(30.0, 10.0, 0.7) < ph.gumbel_pvalue(20.0, 10.0, 0.7)
 
 
 def test_phmmsr_striped_layout_is_a_permutation():
@@ -413,8 +388,7 @@ def test_phmmsr_rescale_fires_only_near_the_floor():
     assert not ph.sparse_rescale([1.0, 2.0])["rescaled"]
     r = ph.sparse_rescale([1e-40, 2e-40])
     assert r["rescaled"]
-    assert math.exp(r["log_offset"]) == pytest.approx(r["factor"],
-                                                      rel=1e-9)
+    assert math.exp(r["log_offset"]) == pytest.approx(r["factor"], rel=1e-9)
 
 
 # -------------------------------------------------------------- genemt
@@ -422,8 +396,7 @@ def _sets(seed=11, ngene=80):
     rng = M("_array_core").random.default_rng(seed)
     nm = [int(3 + 40 * float(rng.uniform())) for _ in range(ngene)]
     lens = [float(v) * 1000.0 for v in nm]
-    z = [0.4 * math.log(v) + 0.2 * (float(rng.uniform()) - 0.5)
-         for v in nm]
+    z = [0.4 * math.log(v) + 0.2 * (float(rng.uniform()) - 0.5) for v in nm]
     mem = [1.0 if v > 20 else 0.0 for v in nm]
     return nm, lens, z, mem
 
@@ -441,10 +414,8 @@ def test_genemt_size_covariates_kill_the_spurious_enrichment():
 def test_genemt_gene_statistic_is_analytic():
     gm = M("genemt")
     rng = M("_array_core").random.default_rng(5)
-    G = [[float(int(rng.uniform() * 3)) for _ in range(6)]
-         for _ in range(50)]
-    y = [1.5 * G[i][0] + 0.2 * (float(rng.uniform()) - 0.5)
-         for i in range(50)]
+    G = [[float(int(rng.uniform() * 3)) for _ in range(6)] for _ in range(50)]
+    y = [1.5 * G[i][0] + 0.2 * (float(rng.uniform()) - 0.5) for i in range(50)]
     r = gm.gene_statistic(y, G)
     assert r["p"] < 1e-6 and r["df1"] >= 1
 
@@ -457,19 +428,17 @@ def test_genemt_covariates_reject_impossible_gene_sizes():
 
 # -------------------------------------------------------------- metabd
 def _rc(s):
-    return "".join({"A": "T", "C": "G", "G": "C", "T": "A"}[c]
-                   for c in reversed(s))
+    return "".join({"A": "T", "C": "G", "G": "C", "T": "A"}[c] for c in reversed(s))
 
 
 def test_metabd_canonical_tnf_is_strand_invariant():
     mb = M("metabd")
     seq = "ACGGTTAACGATCGATTACGCAGGTTACA"
-    assert (mb.tetranucleotide_frequency(seq)["frequency"]
-            == mb.tetranucleotide_frequency(_rc(seq))["frequency"])
-    assert (mb.tetranucleotide_frequency(seq, canonical=False)
-            ["frequency"]
-            != mb.tetranucleotide_frequency(_rc(seq), canonical=False)
-            ["frequency"])
+    assert mb.tetranucleotide_frequency(seq)["frequency"] == mb.tetranucleotide_frequency(_rc(seq))["frequency"]
+    assert (
+        mb.tetranucleotide_frequency(seq, canonical=False)["frequency"]
+        != mb.tetranucleotide_frequency(_rc(seq), canonical=False)["frequency"]
+    )
 
 
 def test_metabd_single_sample_abundance_is_refused():
@@ -497,9 +466,7 @@ def test_metabd_length_weight_floors_short_contigs():
 # -------------------------------------------------------------- impfun
 def test_impfun_union_beats_intersection():
     imf = M("impfun")
-    r = imf.merge_panels({"P1": ["s1", "s2", "x1"],
-                          "P2": ["s1", "s3", "x2"]},
-                         ["s1", "s2", "s3"])
+    r = imf.merge_panels({"P1": ["s1", "s2", "x1"], "P2": ["s1", "s3", "x2"]}, ["s1", "s2", "s3"])
     assert r["kept_by_union"] == 5 and r["kept_by_intersection"] == 1
     assert r["targets"] == ["x1", "x2"]
 
@@ -527,16 +494,16 @@ def test_impfun_info_and_concordance_edges():
 # -------------------------------------------------------------- ocrwit
 def test_ocrwit_bbox_is_page_size_invariant():
     oc = M("ocrwit")
-    assert (oc.normalise_bbox([10, 20, 30, 40], 100, 200)
-            == oc.normalise_bbox([20, 40, 60, 80], 200, 400)
-            == [100, 100, 300, 200])
+    assert (
+        oc.normalise_bbox([10, 20, 30, 40], 100, 200)
+        == oc.normalise_bbox([20, 40, 60, 80], 200, 400)
+        == [100, 100, 300, 200]
+    )
 
 
 def test_ocrwit_segment_boxes_are_shared_within_a_line():
     oc = M("ocrwit")
-    r = oc.segment_layout_boxes([[0, 0, 10, 10], [12, 0, 20, 10],
-                                 [0, 50, 30, 60]],
-                                ["l0", "l0", "l1"], 100, 100)
+    r = oc.segment_layout_boxes([[0, 0, 10, 10], [12, 0, 20, 10], [0, 50, 30, 60]], ["l0", "l0", "l1"], 100, 100)
     assert r["per_token"][0] == r["per_token"][1]
     assert r["per_token"][0] != r["per_token"][2]
     assert r["n_segments"] == 2
@@ -547,12 +514,10 @@ def test_ocrwit_alignment_excludes_masked_words():
     boxes = [[0, 0, 25, 25], [75, 75, 100, 100]]
     full = oc.word_patch_alignment(boxes, [0], 100, 100, 4)
     assert full["labels"][0] == 1 and full["labels"][1] == 0
-    part = oc.word_patch_alignment(boxes, [0], 100, 100, 4,
-                                   masked_text=[0])
+    part = oc.word_patch_alignment(boxes, [0], 100, 100, 4, masked_text=[0])
     assert 0 not in part["labels"] and part["n_examples"] == 1
     with pytest.raises(ValueError):
-        oc.word_patch_alignment(boxes, [0], 100, 100, 4,
-                                masked_text=[0, 1])
+        oc.word_patch_alignment(boxes, [0], 100, 100, 4, masked_text=[0, 1])
 
 
 def test_ocrwit_mask_units_partitions_the_sequence():

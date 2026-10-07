@@ -1,8 +1,8 @@
 """Tests for intraclass_correlation."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.icc_ import intraclass_correlation
 
 

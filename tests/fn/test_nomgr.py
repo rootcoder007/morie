@@ -1,12 +1,11 @@
 """Tests for morie.fn.nomgr."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.nomgr import nomgr
 
 
 def test_nomgr_smoke():
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     result = nomgr(prior=0.1, lr_pos=4.5)
     assert result is not None
     assert hasattr(result, "name")

@@ -1,7 +1,6 @@
 """Tests for difbd -- DIF bundle analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DIFResult
 from morie.fn.difbd import dif_bundle
 

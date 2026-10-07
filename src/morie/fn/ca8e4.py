@@ -28,8 +28,7 @@ def ca_chapter_8_equation_4(sigma_means, sigma_error):
     """
     value = _ca_crim.cohens_f(sigma_means, sigma_error)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (8.4)"
@@ -41,4 +40,4 @@ def ca_chapter_8_equation_4(sigma_means, sigma_error):
 
 
 def cheatsheet():
-    return 'ca8e4: f = sigma_m / sigma_e [Weisburd et al. 2022, eq. 8.4]'
+    return "ca8e4: f = sigma_m / sigma_e [Weisburd et al. 2022, eq. 8.4]"

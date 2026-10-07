@@ -1,7 +1,6 @@
 """Tests for morie.fn.hkeye -- precision-recall at top-k."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.hkeye import hkeye, precision_recall_at_k
 

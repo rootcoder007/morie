@@ -36,11 +36,11 @@ def matrix_log(
     if A.shape[0] != A.shape[1]:
         raise ValueError("A must be square")
     n = A.shape[0]
-    I = np.eye(n)
+    I_ = np.eye(n)
     T = A.copy()
     s = 0
     for _ in range(maxsqrt):
-        if np.linalg.norm(T - I, 1) < 0.5:
+        if np.linalg.norm(T - I_, 1) < 0.5:
             break
         eigvals = np.linalg.eigvals(T)
         if np.any(np.real(eigvals) <= 0):
@@ -49,7 +49,7 @@ def matrix_log(
 
         T = np.real(sqrtm(T))
         s += 1
-    X = T - I
+    X = T - I_
     L = np.zeros_like(X)
     Xk = X.copy()
     for k in range(1, pade_order + 1):

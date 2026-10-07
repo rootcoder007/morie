@@ -100,7 +100,7 @@ def geron_encoder_only(
     Géron Ch 15
     """
     A = np.asarray(X)
-    if A.ndim == 0 or A.size == 0:
+    if np.ndim(X) == 0 or A.size == 0:
         raise ValueError("geron_encoder_only: X must contain at least one token")
     raw = int(A.shape[-1])
     T = raw + 2  # [CLS] ... [SEP]

@@ -1,7 +1,6 @@
 """Tests for gh_c14_15.ghosal_ncrm_def."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c14_15 import ghosal_ncrm_def
 
 

@@ -28,17 +28,16 @@ def ca_chapter_2_equation_9(b, se):
     """
     value = _ca_crim.coef_t(b, se)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (2.9)"
     return RichResult(
-        title='t-test for an individual regression coefficient',
+        title="t-test for an individual regression coefficient",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca2e9: t = b / se_b [Weisburd et al. 2022, eq. 2.9]'
+    return "ca2e9: t = b / se_b [Weisburd et al. 2022, eq. 2.9]"

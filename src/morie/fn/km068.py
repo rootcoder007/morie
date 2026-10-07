@@ -31,16 +31,14 @@ def kamath_ch5_ppo_loss(phi, x, y, r_theta, beta, pi_ref=None):
     -0.5
     """
     if pi_ref is None:
-        raise ValueError("pi_ref is required: the KL term of Eq 5.4 has no "
-                         "meaning without the reference policy.")
+        raise ValueError("pi_ref is required: the KL term of Eq 5.4 has no meaning without the reference policy.")
     pol, refs, xs, ys = list(phi), list(pi_ref), list(x), list(y)
     if not xs:
-        raise ValueError("no prompts; an expectation over nothing is "
-                         "undefined, not 0.")
+        raise ValueError("no prompts; an expectation over nothing is undefined, not 0.")
     if not (len(pol) == len(refs) == len(xs) == len(ys)):
         raise ValueError(
-            f"phi, pi_ref, x and y must have equal length; got {len(pol)}, "
-            f"{len(refs)}, {len(xs)}, {len(ys)}.")
+            f"phi, pi_ref, x and y must have equal length; got {len(pol)}, {len(refs)}, {len(xs)}, {len(ys)}."
+        )
     if not callable(r_theta):
         raise ValueError("r_theta must be a callable (x, y) -> reward.")
     per = []
@@ -48,13 +46,17 @@ def kamath_ch5_ppo_loss(phi, x, y, r_theta, beta, pi_ref=None):
         rewards = [float(r_theta(x_i, resp)) for resp in y_i]
         per.append(kamath_ch5_rlhf_objective(p_i, q_i, rewards, beta))
     obj = np.asarray([float(o["estimate"]) for o in per], dtype=float)
-    return RichResult(payload={
-        "estimate": float(-obj.mean()),
-        "per_prompt_objective": [float(v) for v in obj],
-        "kl": [float(o["kl"]) for o in per],
-        "expected_reward": [float(o["expected_reward"]) for o in per],
-        "beta": float(beta), "n": len(xs),
-        "method": "PPO loss = -mean RLHF objective (Kamath Eq 5.4)"})
+    return RichResult(
+        payload={
+            "estimate": float(-obj.mean()),
+            "per_prompt_objective": [float(v) for v in obj],
+            "kl": [float(o["kl"]) for o in per],
+            "expected_reward": [float(o["expected_reward"]) for o in per],
+            "beta": float(beta),
+            "n": len(xs),
+            "method": "PPO loss = -mean RLHF objective (Kamath Eq 5.4)",
+        }
+    )
 
 
 def cheatsheet():

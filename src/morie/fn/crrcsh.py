@@ -93,30 +93,42 @@ def cause_specific_hazard(time, event_type, X, cause=1, ties="efron"):
         raise ValueError(f"no events of cause {cause} in event_type")
     e = (d == cause).astype(float)
     _, _, Xm = prepare(t, e, X)
-    beta, ll, I, _, it, conv = cox_fit(t, e, Xm, ties=ties)
+    beta, ll, I_, _, it, conv = cox_fit(t, e, Xm, ties=ties)
 
     from ._stats_core import norm
 
     try:
-        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+        se = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
     except np.linalg.LinAlgError:
         se = np.full(beta.size, np.nan)
     with np.errstate(divide="ignore", invalid="ignore"):
         z = beta / se
     return RichResult(
         title=f"Cause-specific hazard (cause {cause})",
-        summary_lines=[("n", int(t.size)), ("events of cause", int(e.sum())),
-                       ("competing", int(np.sum((d != 0) & (d != cause)))),
-                       ("loglik", ll)],
-        warnings=["competing events are censored here, so 1 - exp(-Lambda) "
-                  "OVERSTATES incidence; use the Fine-Gray model for actual risk"],
+        summary_lines=[
+            ("n", int(t.size)),
+            ("events of cause", int(e.sum())),
+            ("competing", int(np.sum((d != 0) & (d != cause)))),
+            ("loglik", ll),
+        ],
+        warnings=[
+            "competing events are censored here, so 1 - exp(-Lambda) "
+            "OVERSTATES incidence; use the Fine-Gray model for actual risk"
+        ],
         payload={
-            "beta": beta, "se": se, "z": z, "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(beta), "loglik": ll, "information": I,
+            "beta": beta,
+            "se": se,
+            "z": z,
+            "p_value": 2 * norm.sf(np.abs(z)),
+            "hazard_ratio": np.exp(beta),
+            "loglik": ll,
+            "information": I_,
             "n_cause": int(e.sum()),
             "n_competing": int(np.sum((d != 0) & (d != cause))),
-            "n_censored": int(np.sum(d == 0)), "cause": cause,
-            "n": int(t.size), "converged": conv,
+            "n_censored": int(np.sum(d == 0)),
+            "cause": cause,
+            "n": int(t.size),
+            "converged": conv,
             "method": "cause_specific_hazard",
         },
     )

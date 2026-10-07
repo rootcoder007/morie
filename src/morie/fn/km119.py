@@ -12,17 +12,14 @@ def _sim_matrix(x, xhat, normalize):
     X = np.atleast_2d(np.asarray(x, dtype=float))
     Y = np.atleast_2d(np.asarray(xhat, dtype=float))
     if X.size == 0 or Y.size == 0:
-        raise ValueError("both token-embedding matrices must be "
-                         "non-empty.")
+        raise ValueError("both token-embedding matrices must be non-empty.")
     if X.shape[1] != Y.shape[1]:
-        raise ValueError(
-            f"embedding widths differ: {X.shape[1]} vs {Y.shape[1]}.")
+        raise ValueError(f"embedding widths differ: {X.shape[1]} vs {Y.shape[1]}.")
     if normalize:
         nx = np.linalg.norm(X, axis=1)
         ny = np.linalg.norm(Y, axis=1)
         if np.any(nx == 0) or np.any(ny == 0):
-            raise ValueError("a zero token embedding has no direction; "
-                             "its cosine similarity is undefined.")
+            raise ValueError("a zero token embedding has no direction; its cosine similarity is undefined.")
         X = X / nx[:, None]
         Y = Y / ny[:, None]
     return X, Y, X @ Y.T
@@ -50,12 +47,15 @@ def kamath_ch8_bertscore_recall(x, xhat, normalize=False):
     """
     X, Y, S = _sim_matrix(x, xhat, normalize)
     best = S.max(axis=1)
-    return RichResult(payload={
-        "estimate": float(best.mean()),
-        "per_token": [float(v) for v in best],
-        "greedy_match": [int(j) for j in S.argmax(axis=1)],
-        "n": int(X.shape[0]),
-        "method": "BERTScore recall (Kamath Eq 8.7)"})
+    return RichResult(
+        payload={
+            "estimate": float(best.mean()),
+            "per_token": [float(v) for v in best],
+            "greedy_match": [int(j) for j in S.argmax(axis=1)],
+            "n": int(X.shape[0]),
+            "method": "BERTScore recall (Kamath Eq 8.7)",
+        }
+    )
 
 
 def cheatsheet():

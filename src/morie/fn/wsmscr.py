@@ -59,11 +59,17 @@ def scoretest(successes, n, p0=0.5):
         raise ValueError("p0 must lie strictly between 0 and 1")
     se = math.sqrt(n * p0 * (1.0 - p0))
     U = (S - n * p0) / se
-    return RichResult(payload={
-        "statistic": U, "chisq": U * U,
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(U))), "estimate": S / n,
-        "se_null": se, "n": float(n),
-        "method": "Rao score test for a binomial proportion"})
+    return RichResult(
+        payload={
+            "statistic": U,
+            "chisq": U * U,
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(U))),
+            "estimate": S / n,
+            "se_null": se,
+            "n": float(n),
+            "method": "Rao score test for a binomial proportion",
+        }
+    )
 
 
 wasserman_score_test = scoretest

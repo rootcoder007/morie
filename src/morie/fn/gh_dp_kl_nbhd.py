@@ -14,8 +14,7 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["ghosal_dp_kl_nbhd_mass"]
 
 
-def ghosal_dp_kl_nbhd_mass(p0, alpha=None, eps_list=(0.4, 0.2, 0.1),
-                           n_sim=4000, seed=42):
+def ghosal_dp_kl_nbhd_mass(p0, alpha=None, eps_list=(0.4, 0.2, 0.1), n_sim=4000, seed=42):
     """Rates come from lower bounds on Pi(K(p0; p) < eps)
     (sec. 7.2; the evidence bound of Lemma 6.26 turns this mass into
     a denominator bound). Monte Carlo log-mass under a Dirichlet
@@ -30,20 +29,19 @@ def ghosal_dp_kl_nbhd_mass(p0, alpha=None, eps_list=(0.4, 0.2, 0.1),
     for _ in range(n_sim):
         g = [float(rng.gamma(a, 1.0)) for a in alpha]
         p = _bnp.normalize_weights(g)
-        kls.append(sum(q * math.log(q / max(pi, 1e-300))
-                       for q, pi in zip(p0, p) if q > 0))
+        kls.append(sum(q * math.log(q / max(pi, 1e-300)) for q, pi in zip(p0, p) if q > 0))
     log_masses = []
     for e in eps_list:
         hits = sum(1 for v in kls if v < e)
         log_masses.append(math.log(max(hits, 1) / n_sim))
-    res = RichResult(payload={"estimate": log_masses[-1],
-                              "log_mass_by_eps": log_masses,
-                              "monotone": all(
-                                  log_masses[i + 1] <= log_masses[i]
-                                  + 1e-12
-                                  for i in range(len(log_masses)
-                                                 - 1)),
-                              "method": "KL-neighborhood prior mass (GvdV 2017 sec. 7.2)"})
+    res = RichResult(
+        payload={
+            "estimate": log_masses[-1],
+            "log_mass_by_eps": log_masses,
+            "monotone": all(log_masses[i + 1] <= log_masses[i] + 1e-12 for i in range(len(log_masses) - 1)),
+            "method": "KL-neighborhood prior mass (GvdV 2017 sec. 7.2)",
+        }
+    )
     return with_describe_pointer(res, "gh_dp_kl_nbhd")
 
 

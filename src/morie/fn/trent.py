@@ -41,10 +41,7 @@ def trent(
     if k < 2:
         raise ValueError("At least two groups required.")
 
-    if scores is None:
-        scores = np.arange(k, dtype=float)
-    else:
-        scores = np.asarray(scores, dtype=float)
+    scores = np.arange(k, dtype=float) if scores is None else np.asarray(scores, dtype=float)
 
     score_map = {g: scores[i] for i, g in enumerate(groups_sorted)}
     s = np.array([score_map[g] for g in group])

@@ -26,10 +26,7 @@ def gptq_quantize(
     if W.ndim == 1:
         W = W.reshape(1, -1)
     rows, cols = W.shape
-    if H is None:
-        H = np.eye(cols)
-    else:
-        H = np.asarray(H, dtype=np.float64)
+    H = np.eye(cols) if H is None else np.asarray(H, dtype=np.float64)
     damp = 0.01 * np.mean(np.diag(H))
     H_inv = np.linalg.inv(H + damp * np.eye(cols))
     W_q = W.copy()

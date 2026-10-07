@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.bsaclass import rangayyan_sparse_rep
 
-
 D = [[math.cos(0.37 * (k + 1) * j + 0.2 * k) for j in range(8)] for k in range(12)]
 X = [2.0 * D[3][j] - 1.0 * D[7][j] + 0.01 * math.sin(3.1 * j) for j in range(8)]
 

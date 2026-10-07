@@ -138,8 +138,7 @@ def dif_sibtest(y, group, studied=None, matching=None, correction=False, referen
     keep = [
         k
         for k in keys
-        if nr[k] > 0 and nf[k] > 0 and s2r[k] == s2r[k] and s2f[k] == s2f[k]
-        and s2r[k] > 0.0 and s2f[k] > 0.0
+        if nr[k] > 0 and nf[k] > 0 and s2r[k] == s2r[k] and s2f[k] == s2f[k] and s2r[k] > 0.0 and s2f[k] > 0.0
     ]
     if not keep:
         raise ValueError("no matching level has both groups present with non-zero within-cell variance")

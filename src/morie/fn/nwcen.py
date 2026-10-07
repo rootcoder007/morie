@@ -68,7 +68,7 @@ def network_centrality(
             if dist[s, t] >= np.inf:
                 continue
             for v in range(p):
-                if v == s or v == t:
+                if v in (s, t):
                     continue
                 if abs(dist[s, v] + dist[v, t] - dist[s, t]) < 1e-10:
                     betweenness[v] += 1.0

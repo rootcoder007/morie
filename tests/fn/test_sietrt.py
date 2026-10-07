@@ -1,7 +1,5 @@
 """Tests for sietrt.sis_epidemic."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.sietrt import sis_epidemic
 
 

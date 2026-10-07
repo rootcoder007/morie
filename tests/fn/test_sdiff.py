@@ -7,17 +7,23 @@ import pytest
 
 from morie.fn.sdiff import synthetic_did
 
-
 N, TT, T0 = 24, 12, 8
 TR = [20, 21, 22, 23]
 F = [sum(math.sin(1.3 * k) for k in range(t + 1)) for t in range(TT)]
 LOAD = [0.4 + 1.2 * ((i * 0.618) % 1) for i in range(N)]
-Y = [[LOAD[i] * F[t] + 0.5 * math.sin(12.9898 * i * i + 78.233 * t * t + 3.1 * i * t)
-      + ((2.0 + 0.3 * i) if i in TR and t >= T0 else 0.0) for t in range(TT)] for i in range(N)]
+Y = [
+    [
+        LOAD[i] * F[t]
+        + 0.5 * math.sin(12.9898 * i * i + 78.233 * t * t + 3.1 * i * t)
+        + ((2.0 + 0.3 * i) if i in TR and t >= T0 else 0.0)
+        for t in range(TT)
+    ]
+    for i in range(N)
+]
 
 
 def _eff(i, lam):
-    return sum(Y[i][T0:]) / (TT - T0) - sum(l * y for l, y in zip(lam, Y[i][:T0]))
+    return sum(Y[i][T0:]) / (TT - T0) - sum(ell * y for ell, y in zip(lam, Y[i][:T0]))
 
 
 def test_sdiff_basic():

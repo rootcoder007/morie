@@ -1,7 +1,6 @@
 """Tests for lmsreg.least_median_squares."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.lmsreg import least_median_squares
 
 

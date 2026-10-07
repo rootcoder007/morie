@@ -68,7 +68,7 @@ __all__ = ["esmfold_confidence"]
 _EPS = 1e-12
 _LDDT_BINS = 50
 _PAE_BINS = 64
-_PAE_WIDTH = 0.5          # angstroms per bin, 0..31.5 + overflow
+_PAE_WIDTH = 0.5  # angstroms per bin, 0..31.5 + overflow
 
 
 def _rows(x, what):
@@ -129,8 +129,7 @@ def _fit_multinomial(X, y, n_bins, l2=1e-3, iters=300, lr=0.5):
         gW = [[0.0] * n_bins for _ in range(d)]
         gb = [0.0] * n_bins
         for i in range(n):
-            z = [sum(X[i][a] * W[a][c] for a in range(d)) + b[c]
-                 for c in range(n_bins)]
+            z = [sum(X[i][a] * W[a][c] for a in range(d)) + b[c] for c in range(n_bins)]
             m = max(z)
             ex = [math.exp(v - m) for v in z]
             s = sum(ex)
@@ -167,10 +166,19 @@ def _fit_temperature(L, y, iters=200, lr=0.5):
     return math.exp(logt)
 
 
-def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
-                       weights=None, lddt=None, chain_id=None,
-                       temperature=1.0, l2=1e-3, iters=300, lr=0.5,
-                       pae_bin_width=_PAE_WIDTH):
+def esmfold_confidence(
+    lddt_logits=None,
+    pae_logits=None,
+    features=None,
+    weights=None,
+    lddt=None,
+    chain_id=None,
+    temperature=1.0,
+    l2=1e-3,
+    iters=300,
+    lr=0.5,
+    pae_bin_width=_PAE_WIDTH,
+):
     r"""Decode, run, fit or calibrate the ESMFold confidence heads.
 
     Parameters
@@ -209,19 +217,18 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
     # ---- training route: features + observed lddt -> a fitted head
     if features is not None and lddt is not None:
         X = _rows(features, "alfesf features")
-        obs = [float(v) for v in
-               (lddt.tolist() if hasattr(lddt, "tolist") else lddt)]
+        obs = [float(v) for v in (lddt.tolist() if hasattr(lddt, "tolist") else lddt)]
         if len(obs) != len(X):
             raise ValueError(f"alfesf: {len(X)} feature rows but {len(obs)} lddt values")
         for v in obs:
             if not 0.0 <= v <= 100.0:
                 raise ValueError(f"alfesf: lddt must be on 0..100, got {v:g}")
         y = [min(int(v / 100.0 * _LDDT_BINS), _LDDT_BINS - 1) for v in obs]
-        fitted_W, fitted_b = _fit_multinomial(X, y, _LDDT_BINS,
-                                              l2=l2, iters=iters, lr=lr)
-        lddt_logits = [[sum(X[i][a] * fitted_W[a][c]
-                            for a in range(len(X[0]))) + fitted_b[c]
-                        for c in range(_LDDT_BINS)] for i in range(len(X))]
+        fitted_W, fitted_b = _fit_multinomial(X, y, _LDDT_BINS, l2=l2, iters=iters, lr=lr)
+        lddt_logits = [
+            [sum(X[i][a] * fitted_W[a][c] for a in range(len(X[0]))) + fitted_b[c] for c in range(_LDDT_BINS)]
+            for i in range(len(X))
+        ]
         route = "fitted a multinomial LDDT head from features and observations"
 
     # ---- run route: features + supplied weights -> logits
@@ -230,13 +237,12 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
         W = _rows(weights["W"], "alfesf weights W")
         b = [float(v) for v in weights["b"]]
         if len(W) != len(X[0]):
-            raise ValueError(f"alfesf: weights W has {len(W)} rows but the "
-                             f"features have {len(X[0])} columns")
+            raise ValueError(f"alfesf: weights W has {len(W)} rows but the features have {len(X[0])} columns")
         if len(b) != len(W[0]):
-            raise ValueError(f"alfesf: bias length {len(b)} does not match "
-                             f"the {len(W[0])} output bins")
-        lddt_logits = [[sum(X[i][a] * W[a][c] for a in range(len(W))) + b[c]
-                        for c in range(len(b))] for i in range(len(X))]
+            raise ValueError(f"alfesf: bias length {len(b)} does not match the {len(W[0])} output bins")
+        lddt_logits = [
+            [sum(X[i][a] * W[a][c] for a in range(len(W))) + b[c] for c in range(len(b))] for i in range(len(X))
+        ]
         route = "ran a supplied LDDT head over the features"
 
     elif features is not None:
@@ -244,12 +250,14 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
             "alfesf: features were given with neither `weights` to run nor "
             "`lddt` to fit. Nothing is bundled and nothing will be invented: "
             "supply trained parameters, or observations to train on, or pass "
-            "the head's logits directly.")
+            "the head's logits directly."
+        )
 
     if lddt_logits is None and pae_logits is None:
         raise ValueError(
             "alfesf: give lddt_logits and/or pae_logits to decode, or "
-            "features with weights (to run) or with lddt (to fit).")
+            "features with weights (to run) or with lddt (to fit)."
+        )
 
     if route is None:
         route = "decoded supplied logits"
@@ -259,10 +267,8 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
         if temperature != "fit":
             raise ValueError("alfesf: temperature must be a number or 'fit'")
         if lddt is None or lddt_logits is None:
-            raise ValueError("alfesf: temperature='fit' needs observed lddt "
-                             "and the logits to calibrate")
-        obs = [float(v) for v in
-               (lddt.tolist() if hasattr(lddt, "tolist") else lddt)]
+            raise ValueError("alfesf: temperature='fit' needs observed lddt and the logits to calibrate")
+        obs = [float(v) for v in (lddt.tolist() if hasattr(lddt, "tolist") else lddt)]
         y = [min(int(v / 100.0 * _LDDT_BINS), _LDDT_BINS - 1) for v in obs]
         temp_used = _fit_temperature(lddt_logits, y)
         route += "; temperature calibrated"
@@ -278,42 +284,35 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
         nb = len(L[0])
         cen = _lddt_centres(nb)
         P = _softmax_rows(L, temp_used)
-        plddt = [sum(P[i][c] * cen[c] for c in range(nb))
-                 for i in range(len(P))]
+        plddt = [sum(P[i][c] * cen[c] for c in range(nb)) for i in range(len(P))]
 
     # ---- pTM / ipTM
     ptm = iptm = None
     pae = None
     n_pae_bins_used = None
     if pae_logits is not None:
-        raw = pae_logits.tolist() if hasattr(pae_logits, "tolist") \
-            else pae_logits
-        if raw and isinstance(raw[0], (list, tuple)) and raw[0] and \
-                isinstance(raw[0][0], (list, tuple)):
+        raw = pae_logits.tolist() if hasattr(pae_logits, "tolist") else pae_logits
+        if raw and isinstance(raw[0], (list, tuple)) and raw[0] and isinstance(raw[0][0], (list, tuple)):
             n = len(raw)
             flat = [raw[i][j] for i in range(n) for j in range(n)]
         else:
             flat = _rows(raw, "alfesf pae_logits")
             n = int(round(math.sqrt(len(flat))))
             if n * n != len(flat):
-                raise ValueError(f"alfesf: {len(flat)} aligned-error rows is "
-                                 "not a square number of residue pairs")
+                raise ValueError(f"alfesf: {len(flat)} aligned-error rows is not a square number of residue pairs")
         nb = len(flat[0])
         n_pae_bins_used = nb
         cen = _pae_centres(nb, pae_bin_width)
         Pp = _softmax_rows(flat, temp_used)
-        pae = [[sum(Pp[i * n + j][c] * cen[c] for c in range(nb))
-                for j in range(n)] for i in range(n)]
+        pae = [[sum(Pp[i * n + j][c] * cen[c] for c in range(nb)) for j in range(n)] for i in range(n)]
         d0 = _d0(n)
         f = [1.0 / (1.0 + (cen[c] / d0) ** 2) for c in range(nb)]
         per_i = []
         for i in range(n):
-            per_i.append(sum(sum(Pp[i * n + j][c] * f[c] for c in range(nb))
-                             for j in range(n)) / n)
+            per_i.append(sum(sum(Pp[i * n + j][c] * f[c] for c in range(nb)) for j in range(n)) / n)
         ptm = max(per_i)
         if chain_id is not None:
-            ch = list(chain_id.tolist() if hasattr(chain_id, "tolist")
-                      else chain_id)
+            ch = list(chain_id.tolist() if hasattr(chain_id, "tolist") else chain_id)
             if len(ch) != n:
                 raise ValueError(f"alfesf: {len(ch)} chain labels for {n} residues")
             if len(set(ch)) > 1:
@@ -322,44 +321,49 @@ def esmfold_confidence(lddt_logits=None, pae_logits=None, features=None,
                     js = [j for j in range(n) if ch[j] != ch[i]]
                     if not js:
                         continue
-                    inter.append(sum(sum(Pp[i * n + j][c] * f[c]
-                                         for c in range(nb))
-                                     for j in js) / len(js))
+                    inter.append(sum(sum(Pp[i * n + j][c] * f[c] for c in range(nb)) for j in js) / len(js))
                 iptm = max(inter) if inter else None
 
-    return RichResult(payload={
-        "estimate": (sum(plddt) / len(plddt)) if plddt else ptm,
-        "plddt": plddt,
-        "plddt_mean": (sum(plddt) / len(plddt)) if plddt else None,
-        "ptm": ptm,
-        "iptm": iptm,
-        "pae": pae,
-        "d0": _d0(len(pae)) if pae else None,
-        "temperature": temp_used,
-        "weights": ({"W": fitted_W, "b": fitted_b}
-                    if fitted_W is not None else None),
-        "route": route,
-        "n_lddt_bins": len(lddt_logits[0]) if lddt_logits is not None else None,
-        "n_pae_bins": n_pae_bins_used,
-        "method": ("ESMFold/AlphaFold confidence: pLDDT as the expectation "
-                   "of the binned LDDT distribution, pTM as the "
-                   "Zhang-Skolnick TM expectation under the aligned-error "
-                   "distribution with d0 = 1.24 (N-15)^(1/3) - 1.8, ipTM "
-                   "restricted to inter-chain pairs"),
-        "note": ("route says which of the four paths ran. No network "
-                 "weights are bundled: supply them, fit them here from "
-                 "observed LDDT, or pass logits straight from a model you "
-                 "ran elsewhere. iptm is None when chain_id is absent or "
-                 "names a single chain -- reporting ptm in its place would "
-                 "be wrong, since ipTM is by definition the inter-chain "
-                 "restriction."),
-    })
+    return RichResult(
+        payload={
+            "estimate": (sum(plddt) / len(plddt)) if plddt else ptm,
+            "plddt": plddt,
+            "plddt_mean": (sum(plddt) / len(plddt)) if plddt else None,
+            "ptm": ptm,
+            "iptm": iptm,
+            "pae": pae,
+            "d0": _d0(len(pae)) if pae else None,
+            "temperature": temp_used,
+            "weights": ({"W": fitted_W, "b": fitted_b} if fitted_W is not None else None),
+            "route": route,
+            "n_lddt_bins": len(lddt_logits[0]) if lddt_logits is not None else None,
+            "n_pae_bins": n_pae_bins_used,
+            "method": (
+                "ESMFold/AlphaFold confidence: pLDDT as the expectation "
+                "of the binned LDDT distribution, pTM as the "
+                "Zhang-Skolnick TM expectation under the aligned-error "
+                "distribution with d0 = 1.24 (N-15)^(1/3) - 1.8, ipTM "
+                "restricted to inter-chain pairs"
+            ),
+            "note": (
+                "route says which of the four paths ran. No network "
+                "weights are bundled: supply them, fit them here from "
+                "observed LDDT, or pass logits straight from a model you "
+                "ran elsewhere. iptm is None when chain_id is absent or "
+                "names a single chain -- reporting ptm in its place would "
+                "be wrong, since ipTM is by definition the inter-chain "
+                "restriction."
+            ),
+        }
+    )
 
 
 def cheatsheet():
-    return ("alfesf: esmfold_confidence(lddt_logits, pae_logits) -> pLDDT, "
-            "pTM, ipTM; or features+weights to run, features+lddt to fit "
-            "(Lin et al. 2023 Science 379:1123; Jumper et al. 2021 SI 1.9.6-7)")
+    return (
+        "alfesf: esmfold_confidence(lddt_logits, pae_logits) -> pLDDT, "
+        "pTM, ipTM; or features+weights to run, features+lddt to fit "
+        "(Lin et al. 2023 Science 379:1123; Jumper et al. 2021 SI 1.9.6-7)"
+    )
 
 
 # compact alias per ledger/NAMING.md

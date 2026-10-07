@@ -63,7 +63,7 @@ def geron_hard_voting(predictions):
         P = P[:, None]
     if P.ndim != 2 or P.size == 0:
         raise ValueError(f"predictions must be a non-empty (L, m) array, got shape {P.shape}.")
-    if not np.all(P == np.round(np.asarray(P, dtype=float))):
+    if not np.all(np.round(np.asarray(P, dtype=float)) == P):
         raise ValueError("hard voting needs integer class labels; pass probabilities to soft voting.")
     P = P.astype(int)
     if P.min() < 0:

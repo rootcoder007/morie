@@ -1,7 +1,6 @@
 """Tests for ali.ali_mikhail_haq_copula."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ali import ali_mikhail_haq_copula
 
 

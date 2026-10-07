@@ -1,8 +1,8 @@
 """Tests for morie.fn.mstat -- Multi-state model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.mstat import mstat
 
 
@@ -11,7 +11,6 @@ def ms_data():
     rng = np.random.default_rng(42)
     n = 50
     time = rng.exponential(3, n)
-    states = [0, 1, 2]
     state_from = rng.choice([0, 1], n)
     state_to = rng.choice([1, 2], n)
     return time, state_from, state_to

@@ -1,7 +1,6 @@
 """Tests for ca9e7.ca_chapter_9_equation_7."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.ca9e7 import ca_chapter_9_equation_7
 
 
@@ -22,7 +21,7 @@ def test_ca9e7_basic():
 
     # Independent computation of one-way ANOVA F from the formula
     # F = MS_between / MS_within.
-    all_means = [np.mean(g) for g in groups]
+    [np.mean(g) for g in groups]
     grand_mean = np.mean([np.mean(g) for g in groups])
     n_total = sum(len(g) for g in groups)
     k = len(groups)

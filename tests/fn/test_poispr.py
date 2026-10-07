@@ -15,7 +15,7 @@ def test_poispr_basic():
     ap, bp = 2.0 + 11, 0.8 + 6.0
     assert r["alpha_post"] == ap and r["beta_post"] == pytest.approx(bp, rel=1e-15)
     assert r["rate_mean"] == pytest.approx(ap / bp, rel=1e-15)
-    assert r["rate_var"] == pytest.approx(ap / bp ** 2, rel=1e-15)
+    assert r["rate_var"] == pytest.approx(ap / bp**2, rel=1e-15)
     assert r["pred_mean"] == pytest.approx(ap / bp, rel=1e-15)
     assert r["pred_var"] == pytest.approx(ap / bp * (1 + 1 / bp), rel=1e-15)
     assert r["overdispersion"] == pytest.approx(1 + 1 / bp, rel=1e-15)

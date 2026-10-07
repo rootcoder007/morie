@@ -29,7 +29,7 @@ def j_invariant(tau: complex = 1j, terms: int = 30) -> DescriptiveResult:
             continue
         j_val += c * qn
         qn *= q
-    for k in range(len(coeffs), min(terms, len(coeffs) + 5)):
+    for _k in range(len(coeffs), min(terms, len(coeffs) + 5)):
         j_val += 0 * qn
         qn *= q
     return DescriptiveResult(

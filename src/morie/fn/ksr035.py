@@ -54,9 +54,13 @@ def kosorok_ch2_donsker_bracketing_integral(N_bracket, delta=1.0, r=2, F=None, P
 
     val, err = integrate.quad(integrand, 1e-10, delta, limit=200)
     return RichResult(
-        payload={"J": float(val), "finite": bool(np.isfinite(val)),
-                 "delta": delta, "abs_error": float(err),
-                 "method": "J_[](delta) = int_0^delta sqrt(log N_[](eps)) deps"}
+        payload={
+            "J": float(val),
+            "finite": bool(np.isfinite(val)),
+            "delta": delta,
+            "abs_error": float(err),
+            "method": "J_[](delta) = int_0^delta sqrt(log N_[](eps)) deps",
+        }
     )
 
 

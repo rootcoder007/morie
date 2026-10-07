@@ -52,37 +52,34 @@ def kamath_swiglu_activation(x, W, V, b=None, c=None):
     W = np.atleast_2d(np.asarray(W, dtype=float))
     V = np.atleast_2d(np.asarray(V, dtype=float))
     if W.shape != V.shape:
-        raise ValueError(
-            f"W is {W.shape} and V is {V.shape}; the gate multiplies "
-            "elementwise, so they must match.")
+        raise ValueError(f"W is {W.shape} and V is {V.shape}; the gate multiplies elementwise, so they must match.")
     if W.shape[0] != x.size:
-        raise ValueError(
-            f"x has {x.size} features but W expects {W.shape[0]}.")
+        raise ValueError(f"x has {x.size} features but W expects {W.shape[0]}.")
     gate_pre = x @ W
     up_pre = x @ V
     if b is not None:
         bb = np.atleast_1d(np.asarray(b, dtype=float)).ravel()
         if bb.size != gate_pre.size:
-            raise ValueError(
-                f"b has {bb.size} entries for a {gate_pre.size}-wide "
-                "hidden layer.")
+            raise ValueError(f"b has {bb.size} entries for a {gate_pre.size}-wide hidden layer.")
         gate_pre = gate_pre + bb
     if c is not None:
         cc = np.atleast_1d(np.asarray(c, dtype=float)).ravel()
         if cc.size != up_pre.size:
-            raise ValueError(
-                f"c has {cc.size} entries for a {up_pre.size}-wide "
-                "hidden layer.")
+            raise ValueError(f"c has {cc.size} entries for a {up_pre.size}-wide hidden layer.")
         up_pre = up_pre + cc
     g = swish(gate_pre)
     out = g * up_pre
-    return RichResult(payload={
-        "output": [float(v) for v in out],
-        "gate": [float(v) for v in g],
-        "linear": [float(v) for v in up_pre],
-        "estimate": float(out[0]),
-        "hidden_dim": int(out.size), "n": int(out.size),
-        "method": "SwiGLU: Swish(xW + b) * (xV + c)"})
+    return RichResult(
+        payload={
+            "output": [float(v) for v in out],
+            "gate": [float(v) for v in g],
+            "linear": [float(v) for v in up_pre],
+            "estimate": float(out[0]),
+            "hidden_dim": int(out.size),
+            "n": int(out.size),
+            "method": "SwiGLU: Swish(xW + b) * (xV + c)",
+        }
+    )
 
 
 def cheatsheet():

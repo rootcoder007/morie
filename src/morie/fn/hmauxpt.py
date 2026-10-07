@@ -72,6 +72,7 @@ def geron_auxiliary_task_pretraining(model, aux_data, target_data, aux_epochs=20
     ----------
     Géron Ch 11
     """
+
     def _pair(name, data):
         if not (isinstance(data, (tuple, list)) and len(data) == 2):
             raise ValueError(f"geron_auxiliary_task_pretraining: {name} must be a (X, y) pair")
@@ -82,9 +83,7 @@ def geron_auxiliary_task_pretraining(model, aux_data, target_data, aux_epochs=20
         if Xd.ndim != 2 or Xd.shape[0] == 0:
             raise ValueError(f"geron_auxiliary_task_pretraining: {name} X must be a non-empty 2-D matrix")
         if yd.size != Xd.shape[0]:
-            raise ValueError(
-                f"geron_auxiliary_task_pretraining: {name} has {Xd.shape[0]} rows but {yd.size} targets"
-            )
+            raise ValueError(f"geron_auxiliary_task_pretraining: {name} has {Xd.shape[0]} rows but {yd.size} targets")
         if not (np.all(np.isfinite(Xd)) and np.all(np.isfinite(yd))):
             raise ValueError(f"geron_auxiliary_task_pretraining: {name} must be finite")
         return Xd, yd

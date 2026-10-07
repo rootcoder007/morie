@@ -90,8 +90,7 @@ def rf_mdi_importance(forest, X, y, mtry=None, nodesize=5):
         raise ValueError("rf_mdi_importance: nodesize must be at least 1")
     m = rf.default_mtry(p) if mtry is None else int(mtry)
     if m < 1 or m > p:
-        raise ValueError("rf_mdi_importance: mtry must lie between 1 and "
-                         "the number of columns of X")
+        raise ValueError("rf_mdi_importance: mtry must lie between 1 and the number of columns of X")
     Ys = rf.standardize(YY, n, q)
     trees, _ = rf.build_forest(XX, Ys, B, ns, m, q)
     imp = rf.mdi_importance(trees, p)
@@ -112,7 +111,7 @@ def rf_mdi_importance(forest, X, y, mtry=None, nodesize=5):
             "mtry": m,
             "n": n,
             "method": "MDI of Louppe et al. (2013) with the CART (1984) sum-of-squares "
-                      "impurity; not in the book, and not in Breiman (2001) either",
+            "impurity; not in the book, and not in Breiman (2001) either",
         },
     )
 

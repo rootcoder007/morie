@@ -1,7 +1,6 @@
 """Tests for madMov.moving_mad."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.madMov import moving_mad
 
 

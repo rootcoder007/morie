@@ -1,7 +1,6 @@
 """Test top-k and top-p sampling."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.topkp import topkp
 
 

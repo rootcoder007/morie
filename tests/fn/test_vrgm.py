@@ -1,7 +1,6 @@
 """Tests for vrgm.variogram_estimation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.vrgm import variogram_estimation
 
 

@@ -79,12 +79,20 @@ map distance into a recombination fraction.
 
 import math
 
-from . import _array_core as np
 from ._richresult import RichResult
 
-__all__ = ["haldane", "inverse_haldane", "genotype_probabilities",
-           "single_marker", "interval_map", "scan_interval", "elod",
-           "threshold", "progeny_required", "LOG10E"]
+__all__ = [
+    "haldane",
+    "inverse_haldane",
+    "genotype_probabilities",
+    "single_marker",
+    "interval_map",
+    "scan_interval",
+    "elod",
+    "threshold",
+    "progeny_required",
+    "LOG10E",
+]
 
 LOG10E = math.log10(math.e)
 
@@ -101,8 +109,7 @@ def inverse_haldane(r):
     r"""Recombination fraction back to Morgans."""
     r = float(r)
     if not 0.0 <= r < 0.5:
-        raise ValueError("rqtmpl: a recombination fraction must lie "
-                         "in [0, 0.5), got %r" % r)
+        raise ValueError(f"rqtmpl: a recombination fraction must lie in [0, 0.5), got {r!r}")
     return -0.5 * math.log(1.0 - 2.0 * r)
 
 
@@ -115,25 +122,21 @@ def genotype_probabilities(left, right, r_left, r_right):
     """
     for r in (r_left, r_right):
         if not 0.0 <= float(r) <= 0.5:
-            raise ValueError("rqtmpl: recombination fractions lie in "
-                             "[0, 0.5], got %r" % r)
+            raise ValueError(f"rqtmpl: recombination fractions lie in [0, 0.5], got {r!r}")
     out = []
     for q in (0, 1):
-        p = (float(r_left) if q != int(left) else 1.0 - float(r_left))
-        p *= (float(r_right) if int(right) != q
-              else 1.0 - float(r_right))
+        p = float(r_left) if q != int(left) else 1.0 - float(r_left)
+        p *= float(r_right) if int(right) != q else 1.0 - float(r_right)
         out.append(p)
     tot = out[0] + out[1]
     if tot <= 0.0:
-        raise ValueError("rqtmpl: the flanking marker configuration "
-                         "has probability zero")
+        raise ValueError("rqtmpl: the flanking marker configuration has probability zero")
     return [out[0] / tot, out[1] / tot]
 
 
 def _normal_ll(resid, sigma2):
     n = len(resid)
-    return (-0.5 * n * math.log(2.0 * math.pi * sigma2)
-            - sum(v * v for v in resid) / (2.0 * sigma2))
+    return -0.5 * n * math.log(2.0 * math.pi * sigma2) - sum(v * v for v in resid) / (2.0 * sigma2)
 
 
 def single_marker(y, g):
@@ -149,12 +152,10 @@ def single_marker(y, g):
         raise ValueError("rqtmpl: need at least three individuals")
     gs = [float(v) for v in g]
     if max(gs) == min(gs):
-        raise ValueError("rqtmpl: the marker is monomorphic, so no "
-                         "effect is identified")
+        raise ValueError("rqtmpl: the marker is monomorphic, so no effect is identified")
     my = sum(y) / n
     mg = sum(gs) / n
-    b = (sum((gs[i] - mg) * (y[i] - my) for i in range(n))
-         / sum((v - mg) ** 2 for v in gs))
+    b = sum((gs[i] - mg) * (y[i] - my) for i in range(n)) / sum((v - mg) ** 2 for v in gs)
     a = my - b * mg
     r1 = [y[i] - (a + b * gs[i]) for i in range(n)]
     r0 = [y[i] - my for i in range(n)]
@@ -163,26 +164,29 @@ def single_marker(y, g):
     s1 = rss1 / n
     s0 = rss0 / n
     lod_lr = (_normal_ll(r1, s1) - _normal_ll(r0, s0)) * LOG10E
-    lod_cf = 0.5 * n * math.log10(rss0 / rss1) if rss1 > 0.0 \
-        else float("inf")
-    return RichResult(payload={
-        "estimate": lod_cf, "lod": lod_cf, "lod_likelihood": lod_lr,
-        "a": a, "b": b, "sigma2": s1, "rss": rss1, "rss_null": rss0,
-        "n": n,
-        "method": "single-marker regression LOD; Lander & Botstein "
-                  "(1989) eq (4)",
-    })
+    lod_cf = 0.5 * n * math.log10(rss0 / rss1) if rss1 > 0.0 else float("inf")
+    return RichResult(
+        payload={
+            "estimate": lod_cf,
+            "lod": lod_cf,
+            "lod_likelihood": lod_lr,
+            "a": a,
+            "b": b,
+            "sigma2": s1,
+            "rss": rss1,
+            "rss_null": rss0,
+            "n": n,
+            "method": "single-marker regression LOD; Lander & Botstein (1989) eq (4)",
+        }
+    )
 
 
-def interval_map(y, left, right, r_left, r_right, max_iter=200,
-                 tol=1e-10):
+def interval_map(y, left, right, r_left, r_right, max_iter=200, tol=1e-10):
     r"""EM for the mixture likelihood (7) at one QTL position."""
     n = len(y)
     if not (n == len(left) == len(right)):
-        raise ValueError("rqtmpl: y and the two marker vectors must "
-                         "have the same length")
-    G = [genotype_probabilities(left[i], right[i], r_left, r_right)
-         for i in range(n)]
+        raise ValueError("rqtmpl: y and the two marker vectors must have the same length")
+    G = [genotype_probabilities(left[i], right[i], r_left, r_right) for i in range(n)]
     my = sum(y) / n
     a = my
     b = 0.1 * (max(y) - min(y) + 1e-12)
@@ -198,8 +202,7 @@ def interval_map(y, left, right, r_left, r_right, max_iter=200,
             m1 = G[i][1] * d1
             tot = m0 + m1
             if tot <= 0.0:
-                raise ValueError("rqtmpl: the mixture vanished at "
-                                 "individual %d" % i)
+                raise ValueError(f"rqtmpl: the mixture vanished at individual {int(i)}")
             post.append(m1 / tot)
             ll += math.log(tot / math.sqrt(2.0 * math.pi * s2))
         history.append(ll)
@@ -210,33 +213,37 @@ def interval_map(y, left, right, r_left, r_right, max_iter=200,
             b_new = 0.0
             a_new = my
         else:
-            a_new = (sum(y[i] * (1.0 - post[i]) for i in range(n))
-                     / (n - sw))
+            a_new = sum(y[i] * (1.0 - post[i]) for i in range(n)) / (n - sw)
             a_plus_b = sum(y[i] * post[i] for i in range(n)) / sw
             b_new = a_plus_b - a_new
-        s2 = sum((1.0 - post[i]) * (y[i] - a_new) ** 2
-                 + post[i] * (y[i] - (a_new + b_new)) ** 2
-                 for i in range(n)) / n
+        s2 = sum((1.0 - post[i]) * (y[i] - a_new) ** 2 + post[i] * (y[i] - (a_new + b_new)) ** 2 for i in range(n)) / n
         a, b = a_new, b_new
     s0 = sum((v - my) ** 2 for v in y) / n
     ll0 = -0.5 * n * (math.log(2.0 * math.pi * s0) + 1.0)
     lod = (history[-1] - ll0) * LOG10E
-    return RichResult(payload={
-        "estimate": lod, "lod": lod, "a": a, "b": b, "sigma2": s2,
-        "loglik": history[-1], "loglik_null": ll0,
-        "iterations": len(history), "loglik_history": history,
-        "posterior": post, "n": n,
-        "method": "interval mapping by EM on the mixture likelihood; "
-                  "Lander & Botstein (1989) eq (7)",
-    })
+    return RichResult(
+        payload={
+            "estimate": lod,
+            "lod": lod,
+            "a": a,
+            "b": b,
+            "sigma2": s2,
+            "loglik": history[-1],
+            "loglik_null": ll0,
+            "iterations": len(history),
+            "loglik_history": history,
+            "posterior": post,
+            "n": n,
+            "method": "interval mapping by EM on the mixture likelihood; Lander & Botstein (1989) eq (7)",
+        }
+    )
 
 
 def scan_interval(y, left, right, length, step=0.01, **kw):
     r"""LOD along an interval of the given length, in Morgans."""
     length = float(length)
     if length <= 0.0:
-        raise ValueError("rqtmpl: the interval length must be "
-                         "positive")
+        raise ValueError("rqtmpl: the interval length must be positive")
     positions, lods, fits = [], [], []
     d = 0.0
     while d <= length + 1e-12:
@@ -248,29 +255,35 @@ def scan_interval(y, left, right, length, step=0.01, **kw):
         fits.append(f)
         d += float(step)
     k = max(range(len(lods)), key=lambda i: lods[i])
-    return RichResult(payload={
-        "estimate": lods[k], "peak_lod": lods[k],
-        "peak_position": positions[k], "position": positions,
-        "lod": lods, "fit": fits[k],
-        "method": "interval scan; Lander & Botstein (1989)",
-    })
+    return RichResult(
+        payload={
+            "estimate": lods[k],
+            "peak_lod": lods[k],
+            "peak_position": positions[k],
+            "position": positions,
+            "lod": lods,
+            "fit": fits[k],
+            "method": "interval scan; Lander & Botstein (1989)",
+        }
+    )
 
 
 def elod(var_qtl, var_residual):
     r"""Equations (5a)-(5c): expected LOD per progeny."""
     vq, vr = float(var_qtl), float(var_residual)
     if vr <= 0.0:
-        raise ValueError("rqtmpl: the residual variance must be "
-                         "positive")
+        raise ValueError("rqtmpl: the residual variance must be positive")
     if vq < 0.0:
         raise ValueError("rqtmpl: a variance cannot be negative")
     exact = 0.5 * math.log10(1.0 + vq / vr)
     approx = 0.22 * (vq / vr)
-    return {"elod": exact, "approximation": approx,
-            "gap": approx - exact, "ratio": vq / vr,
-            "note": "0.22 = (1/2) log10(e); the approximation is a "
-                    "Taylor expansion and drifts upward as the "
-                    "effect grows"}
+    return {
+        "elod": exact,
+        "approximation": approx,
+        "gap": approx - exact,
+        "ratio": vq / vr,
+        "note": "0.22 = (1/2) log10(e); the approximation is a Taylor expansion and drifts upward as the effect grows",
+    }
 
 
 def threshold(alpha=0.05):
@@ -286,9 +299,12 @@ def threshold(alpha=0.05):
         else:
             hi = mid
     z = (lo + hi) / 2.0
-    return {"threshold": 0.5 * LOG10E * z * z, "z": z, "alpha": a,
-            "note": "single-marker only; a genome scan needs a "
-                    "permutation threshold"}
+    return {
+        "threshold": 0.5 * LOG10E * z * z,
+        "z": z,
+        "alpha": a,
+        "note": "single-marker only; a genome scan needs a permutation threshold",
+    }
 
 
 def progeny_required(var_qtl, var_residual, alpha=0.05):
@@ -296,21 +312,22 @@ def progeny_required(var_qtl, var_residual, alpha=0.05):
     t = threshold(alpha)["threshold"]
     e = elod(var_qtl, var_residual)["elod"]
     if e <= 0.0:
-        raise ValueError("rqtmpl: a QTL with no variance is never "
-                         "detected")
+        raise ValueError("rqtmpl: a QTL with no variance is never detected")
     return {"n": t / e, "threshold": t, "elod": e}
 
 
 def cheatsheet():
-    return ("rqtmpl: interval mapping walks a QTL along an interval "
-            "and maximises the MIXTURE likelihood (7) by EM, because "
-            "the QTL genotype is unknown -- G_i(x) comes from the "
-            "flanking markers. LOD = log10 of the likelihood ratio, "
-            "and at a marker it collapses to the single-marker "
-            "regression LOD (n/2) log10(RSS0/RSS1). T = 0.83 at 5% "
-            "for ONE marker; a genome scan needs permutations. "
-            "ELOD = (1/2) log10(1 + var_qtl/var_res), with the "
-            "paper's 0.22 approximation kept alongside it.")
+    return (
+        "rqtmpl: interval mapping walks a QTL along an interval "
+        "and maximises the MIXTURE likelihood (7) by EM, because "
+        "the QTL genotype is unknown -- G_i(x) comes from the "
+        "flanking markers. LOD = log10 of the likelihood ratio, "
+        "and at a marker it collapses to the single-marker "
+        "regression LOD (n/2) log10(RSS0/RSS1). T = 0.83 at 5% "
+        "for ONE marker; a genome scan needs permutations. "
+        "ELOD = (1/2) log10(1 + var_qtl/var_res), with the "
+        "paper's 0.22 approximation kept alongside it."
+    )
 
 
 # compact alias per ledger/NAMING.md

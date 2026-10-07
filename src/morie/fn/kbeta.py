@@ -79,10 +79,7 @@ def kbeta(
     if bw <= 0:
         raise ValueError(f"bw must be positive, got {bw}.")
 
-    if x_eval is None:
-        x_eval = np.linspace(lower, upper, n_grid)
-    else:
-        x_eval = np.asarray(x_eval, dtype=float).ravel()
+    x_eval = np.linspace(lower, upper, n_grid) if x_eval is None else np.asarray(x_eval, dtype=float).ravel()
 
     t = np.clip((x_eval - lower) / (upper - lower), 1e-10, 1 - 1e-10)
 

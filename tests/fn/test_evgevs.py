@@ -1,7 +1,6 @@
 """Tests for evgevs.evt_gev_sample."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evgevs import evt_gev_sample
 
 
@@ -17,10 +16,7 @@ def test_evgevs_basic():
     # G^{-1}(u) = mu + (sigma/xi) * ((-log(u))^{-xi} - 1)
     rng = np.random.default_rng(42)
     u = rng.random(n)
-    if xi == 0.0:
-        expected = mu - sigma * np.log(u)
-    else:
-        expected = mu + (sigma / xi) * (np.power(-np.log(u), -xi) - 1.0)
+    expected = mu - sigma * np.log(u) if xi == 0.0 else mu + sigma / xi * (np.power(-np.log(u), -xi) - 1.0)
     assert np.allclose(result["x"], expected)
     assert result["n"] == n
     assert result["method"] == "GEV inverse-CDF sampler (Coles 2001 eq. 3.4)"

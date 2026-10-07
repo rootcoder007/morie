@@ -1,7 +1,5 @@
 """Tests for slowdp.slow_dp_truncate."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.slowdp import slow_dp_truncate
 
 

@@ -1,7 +1,6 @@
 """Tests for wvdns.py - Wavelet denoising."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.wvdns import wavelet_denoise, wvdns
 
 
@@ -18,7 +17,7 @@ def test_wvdns_reduces_noise():
     clean = np.sin(np.linspace(0, 4 * np.pi, 256))
     noisy = clean + 2.0 * rng.standard_normal(256)
     result = wavelet_denoise(noisy, wavelet="haar")
-    denoised = result.extra["denoised"][: len(clean)]
+    result.extra["denoised"][: len(clean)]
     assert "threshold" in result.extra
     assert result.extra["threshold"] > 0
 

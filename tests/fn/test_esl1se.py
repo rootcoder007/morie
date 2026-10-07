@@ -1,7 +1,6 @@
 """Tests for esl1se.esl_one_se_rule."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.esl1se import esl_one_se_rule
 
 

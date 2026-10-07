@@ -1,7 +1,6 @@
 """Tests for hmfp16.geron_fp16_quant."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmfp16 import geron_fp16_quant
 
 

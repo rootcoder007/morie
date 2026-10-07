@@ -43,38 +43,37 @@ def kamath_word2vec_skipgram(center_indices, context_indices, V, U):
     V = np.atleast_2d(np.asarray(V, dtype=float))
     U = np.atleast_2d(np.asarray(U, dtype=float))
     if c.size != o.size:
-        raise ValueError(
-            f"{c.size} centers against {o.size} context words; the "
-            "objective sums over PAIRS.")
+        raise ValueError(f"{c.size} centers against {o.size} context words; the objective sums over PAIRS.")
     if c.size == 0:
         raise ValueError("no (center, context) pairs supplied.")
     if V.shape != U.shape:
         raise ValueError(
             f"the input embeddings are {V.shape} and the output "
             f"embeddings {U.shape}; skip-gram keeps one of each per "
-            "vocabulary entry.")
+            "vocabulary entry."
+        )
     n_vocab = V.shape[0]
     if np.any((c < 0) | (c >= n_vocab)) or np.any((o < 0) | (o >= n_vocab)):
-        raise ValueError(
-            f"an index lies outside the vocabulary [0, {n_vocab - 1}].")
+        raise ValueError(f"an index lies outside the vocabulary [0, {n_vocab - 1}].")
     if np.any(c == o):
-        raise ValueError(
-            "a word is listed as its own context (j = 0 is excluded "
-            "from the window).")
-    scores = V[c] @ U.T                      # (pairs, vocab)
+        raise ValueError("a word is listed as its own context (j = 0 is excluded from the window).")
+    scores = V[c] @ U.T  # (pairs, vocab)
     m = scores.max(axis=1, keepdims=True)
     logZ = m.ravel() + np.log(np.exp(scores - m).sum(axis=1))
     per = scores[np.arange(c.size), o] - logZ
     total = float(per.sum())
-    return RichResult(payload={
-        "log_likelihood": total,
-        "mean_log_likelihood": float(per.mean()),
-        "per_pair": [float(v) for v in per],
-        "probabilities": [float(np.exp(v)) for v in per],
-        "estimate": float(per.mean()),
-        "vocab_size": int(n_vocab),
-        "n": int(c.size),
-        "method": "Skip-gram log-likelihood with the full softmax"})
+    return RichResult(
+        payload={
+            "log_likelihood": total,
+            "mean_log_likelihood": float(per.mean()),
+            "per_pair": [float(v) for v in per],
+            "probabilities": [float(np.exp(v)) for v in per],
+            "estimate": float(per.mean()),
+            "vocab_size": int(n_vocab),
+            "n": int(c.size),
+            "method": "Skip-gram log-likelihood with the full softmax",
+        }
+    )
 
 
 def cheatsheet():

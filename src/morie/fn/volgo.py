@@ -72,9 +72,14 @@ def vol_garch_orthogonal(R_panel, k=None):
 
     return RichResult(
         payload={
-            "H": H, "component_sigma2": s2, "loadings": W,
+            "H": H,
+            "component_sigma2": s2,
+            "loadings": W,
             "explained_variance_ratio": lam / w.sum(),
-            "full_rank": bool(k == d), "k": int(k), "d": int(d), "T": int(T),
+            "full_rank": bool(k == d),
+            "k": int(k),
+            "d": int(d),
+            "T": int(T),
             "method": "Orthogonal GARCH: univariate GARCH(1,1) on principal components",
         }
     )

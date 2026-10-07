@@ -63,12 +63,10 @@ implemented in :mod:`samseg` and :mod:`samdec`.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["memory_bank", "push_memory", "temporal_embedding",
-           "memory_attention", "propagate"]
+__all__ = ["memory_bank", "push_memory", "temporal_embedding", "memory_attention", "propagate"]
 
 _EPS = 1e-12
 
@@ -78,22 +76,23 @@ def memory_bank(n_recent=7, m_prompted=1):
     N, M = int(n_recent), int(m_prompted)
     if N < 1 or M < 1:
         raise ValueError("sam2vd: both queue capacities must be >= 1")
-    return {"recent": [], "prompted": [], "pointers": [],
-            "n_recent": N, "m_prompted": M,
-            "note": "one queue would evict the frame the user "
-                    "actually prompted"}
+    return {
+        "recent": [],
+        "prompted": [],
+        "pointers": [],
+        "n_recent": N,
+        "m_prompted": M,
+        "note": "one queue would evict the frame the user actually prompted",
+    }
 
 
-def push_memory(bank, frame_index, features, prompted=False,
-                object_pointer=None):
+def push_memory(bank, frame_index, features, prompted=False, object_pointer=None):
     r"""Add a memory, evicting only within its own queue."""
     b = dict(bank)
     b["recent"] = list(bank["recent"])
     b["prompted"] = list(bank["prompted"])
     b["pointers"] = list(bank["pointers"])
-    entry = {"frame": int(frame_index),
-             "features": [float(v) for v in k.vec(features)],
-             "prompted": bool(prompted)}
+    entry = {"frame": int(frame_index), "features": [float(v) for v in k.vec(features)], "prompted": bool(prompted)}
     if prompted:
         b["prompted"].append(entry)
         if len(b["prompted"]) > b["m_prompted"]:
@@ -103,9 +102,7 @@ def push_memory(bank, frame_index, features, prompted=False,
         if len(b["recent"]) > b["n_recent"]:
             b["recent"].pop(0)
     if object_pointer is not None:
-        b["pointers"].append({
-            "frame": int(frame_index),
-            "vector": [float(v) for v in k.vec(object_pointer)]})
+        b["pointers"].append({"frame": int(frame_index), "vector": [float(v) for v in k.vec(object_pointer)]})
         cap = b["n_recent"] + b["m_prompted"]
         if len(b["pointers"]) > cap:
             b["pointers"].pop(0)
@@ -120,9 +117,7 @@ def temporal_embedding(entry, current_frame, dim=None, scale=0.1):
     """
     v = list(entry["features"])
     if entry["prompted"]:
-        return {"features": v, "embedded": False,
-                "note": "prompted memories carry no temporal "
-                        "position, by design"}
+        return {"features": v, "embedded": False, "note": "prompted memories carry no temporal position, by design"}
     d = int(current_frame) - int(entry["frame"])
     n = len(v) if dim is None else int(dim)
     out = list(v)
@@ -131,8 +126,7 @@ def temporal_embedding(entry, current_frame, dim=None, scale=0.1):
     return {"features": out, "embedded": True, "distance": d}
 
 
-def memory_attention(frame_features, bank, current_frame,
-                     n_blocks=1, include_pointers=True):
+def memory_attention(frame_features, bank, current_frame, n_blocks=1, include_pointers=True):
     r"""Condition the current frame on the memory bank.
 
     With an empty bank this is the identity, which is precisely the
@@ -143,38 +137,42 @@ def memory_attention(frame_features, bank, current_frame,
     for e in bank["prompted"] + bank["recent"]:
         t = temporal_embedding(e, current_frame)
         if len(t["features"]) != len(x):
-            raise ValueError("sam2vd: a memory has width %d but the "
-                             "frame has %d"
-                             % (len(t["features"]), len(x)))
+            raise ValueError(
+                "sam2vd: a memory has width {} but the frame has {}".format(int(len(t["features"])), int(len(x)))
+            )
         mem.append(t["features"])
     if include_pointers:
         for p in bank["pointers"]:
             if len(p["vector"]) == len(x):
                 mem.append(p["vector"])
     if not mem:
-        return {"features": x, "attended": False, "n_memories": 0,
-                "weights": [],
-                "note": "empty memory: the model IS SAM here"}
+        return {
+            "features": x,
+            "attended": False,
+            "n_memories": 0,
+            "weights": [],
+            "note": "empty memory: the model IS SAM here",
+        }
     out = list(x)
     for _ in range(int(n_blocks)):
         d = len(out)
-        sc = [sum(out[a] * m[a] for a in range(d)) / math.sqrt(d)
-              for m in mem]
+        sc = [sum(out[a] * m[a] for a in range(d)) / math.sqrt(d) for m in mem]
         top = max(sc)
         e = [math.exp(v - top) for v in sc]
         z = sum(e)
         w = [v / z for v in e]
-        ctx = [sum(w[j] * mem[j][a] for j in range(len(mem)))
-               for a in range(d)]
+        ctx = [sum(w[j] * mem[j][a] for j in range(len(mem))) for a in range(d)]
         out = [out[a] + ctx[a] for a in range(d)]
-    return {"features": out, "attended": True, "n_memories": len(mem),
-            "weights": w,
-            "note": "self-attention, then cross-attention to spatial "
-                    "memories AND object pointers"}
+    return {
+        "features": out,
+        "attended": True,
+        "n_memories": len(mem),
+        "weights": w,
+        "note": "self-attention, then cross-attention to spatial memories AND object pointers",
+    }
 
 
-def propagate(frames, encoder, decoder, prompts=None, n_recent=7,
-              m_prompted=1):
+def propagate(frames, encoder, decoder, prompts=None, n_recent=7, m_prompted=1):
     r"""Stream through the video, one frame at a time.
 
     ``prompts`` maps a frame index to a prompt; a prompted frame's
@@ -190,32 +188,34 @@ def propagate(frames, encoder, decoder, prompts=None, n_recent=7,
         conditioned.append(att["attended"])
         m = decoder(att["features"], P.get(t))
         masks.append(m)
-        bank = push_memory(bank, t, att["features"],
-                           prompted=(t in P),
-                           object_pointer=att["features"])
-    return RichResult(payload={
-        "estimate": masks, "masks": masks,
-        "conditioned": conditioned, "n_frames": len(masks),
-        "first_frame_is_sam": conditioned[0] is False
-        if conditioned else True,
-        "method": "streaming memory propagation; Ravi et al. (2024)",
-        "note": "frame 0 has an empty memory, so it is exactly the "
-                "image model",
-    })
+        bank = push_memory(bank, t, att["features"], prompted=(t in P), object_pointer=att["features"])
+    return RichResult(
+        payload={
+            "estimate": masks,
+            "masks": masks,
+            "conditioned": conditioned,
+            "n_frames": len(masks),
+            "first_frame_is_sam": conditioned[0] is False if conditioned else True,
+            "method": "streaming memory propagation; Ravi et al. (2024)",
+            "note": "frame 0 has an empty memory, so it is exactly the image model",
+        }
+    )
 
 
 def cheatsheet():
-    return ("sam2vd: video is the same objects deforming, occluding "
-            "and re-appearing, so carry a STREAMING MEMORY -- condition "
-            "each frame's features on memories of past frames before "
-            "decoding. With an EMPTY memory the model is exactly SAM, "
-            "which is the design claim. The bank is TWO FIFO queues: N "
-            "recent frames and M PROMPTED frames, because one queue "
-            "would evict the frame the user specified. Temporal "
-            "position embeddings go on recent memories only -- prompted "
-            "frames may sit at distances never trained on. OBJECT "
-            "POINTERS carry identity when appearance changes "
-            "completely.")
+    return (
+        "sam2vd: video is the same objects deforming, occluding "
+        "and re-appearing, so carry a STREAMING MEMORY -- condition "
+        "each frame's features on memories of past frames before "
+        "decoding. With an EMPTY memory the model is exactly SAM, "
+        "which is the design claim. The bank is TWO FIFO queues: N "
+        "recent frames and M PROMPTED frames, because one queue "
+        "would evict the frame the user specified. Temporal "
+        "position embeddings go on recent memories only -- prompted "
+        "frames may sit at distances never trained on. OBJECT "
+        "POINTERS carry identity when appearance changes "
+        "completely."
+    )
 
 
 # compact alias per ledger/NAMING.md

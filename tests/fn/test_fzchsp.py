@@ -1,7 +1,6 @@
 """Tests for fzchsp.fauzi_chung_smirnov."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fzchsp import fauzi_chung_smirnov
 
 
@@ -9,7 +8,10 @@ def test_fzchsp_basic():
     """Test basic functionality."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 100)
-    cdf = lambda t: 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
+    def cdf(t):
+        return 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
     h = 0.3
     result = fauzi_chung_smirnov(x, cdf, h=h)
     assert isinstance(result, dict)
@@ -21,13 +23,12 @@ def test_fzchsp_basic():
     assert "method" in result
 
     # Recompute expected statistic independently from the documented formula.
-    from scipy.stats import norm as _norm
+    from morie.fn._stats_core import norm as _norm
+
     xv = np.asarray(x, dtype=float).ravel()
     n = int(xv.size)
     g = np.sort(xv)
-    khat = np.asarray(
-        [float(np.mean(_norm.cdf((float(t) - xv) / h))) for t in g], dtype=float
-    )
+    khat = np.asarray([float(np.mean(_norm.cdf((float(t) - xv) / h))) for t in g], dtype=float)
     fv = np.asarray([float(cdf(float(t))) for t in g], dtype=float)
     sup = float(np.max(np.abs(khat - fv)))
     scale = float(np.sqrt(2.0 * n / np.log(np.log(n))))
@@ -46,7 +47,10 @@ def test_fzchsp_edge():
     """Test edge cases."""
     rng = np.random.default_rng(42)
     x = rng.normal(0, 1, 100)
-    cdf = lambda t: 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
+    def cdf(t):
+        return 0.5 * (1.0 + np.sign(t) * (1.0 - np.exp(-2.0 * t * t / np.pi)))
+
     h = 0.3
     result = fauzi_chung_smirnov(x, cdf, h=h)
     assert isinstance(result, dict)

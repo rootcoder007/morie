@@ -26,10 +26,7 @@ def parseval_identity(x, X_fft=None, **kwargs) -> DescriptiveResult:
     DescriptiveResult
     """
     x = np.asarray(x, dtype=float)
-    if X_fft is None:
-        X_fft = np.fft.fft(x)
-    else:
-        X_fft = np.asarray(X_fft, dtype=complex)
+    X_fft = np.fft.fft(x) if X_fft is None else np.asarray(X_fft, dtype=complex)
     time_energy = float(np.sum(np.abs(x) ** 2))
     freq_energy = float(np.sum(np.abs(X_fft) ** 2) / len(x))
     ratio = time_energy / (freq_energy + 1e-15)

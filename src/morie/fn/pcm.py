@@ -74,13 +74,17 @@ def pcm(theta, steps, a=1.0, D=1.0):
     den = sum(ex)
     p = [e / den for e in ex]
     esc = sum(k * pk for k, pk in enumerate(p))
-    return RichResult(payload={
-        "probabilities": p,
-        "expected_score": esc,
-        "n_categories": len(p),
-        "theta": th, "a": a, "D": D,
-        "method": "partial credit model (Masters 1982; plink Eq. 4)",
-    })
+    return RichResult(
+        payload={
+            "probabilities": p,
+            "expected_score": esc,
+            "n_categories": len(p),
+            "theta": th,
+            "a": a,
+            "D": D,
+            "method": "partial credit model (Masters 1982; plink Eq. 4)",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -89,6 +93,7 @@ partial_credit_model = pcm
 
 def cheatsheet():
     return "pcm: P(k) = exp(sum_v Da(theta-b_v)) / sum_h exp(...), a=1 Masters"
+
 
 # public names resolved by fn/_lazy_map.json
 partial_credit_masters = pcm

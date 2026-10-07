@@ -46,12 +46,20 @@ def detrend_climate(x, t=None):
     b = sum((tv[i] - tb) * (v[i] - xb) for i in range(n)) / stt
     a = xb - b * tb
     fit = [a + b * u for u in tv]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(b),
-        "detrended": [v[i] - fit[i] for i in range(n)],
-        "fitted": fit, "intercept": float(a), "slope": float(b), "n": n,
-        "method": "linear detrending by least squares",
-    }), "detrnd")
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(b),
+                "detrended": [v[i] - fit[i] for i in range(n)],
+                "fitted": fit,
+                "intercept": float(a),
+                "slope": float(b),
+                "n": n,
+                "method": "linear detrending by least squares",
+            }
+        ),
+        "detrnd",
+    )
 
 
 def cheatsheet():

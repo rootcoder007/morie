@@ -1,6 +1,5 @@
 """Tests for gb_ktv (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_ktv import gibbons_kendall_tau_var

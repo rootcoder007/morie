@@ -1,6 +1,5 @@
 """Spherical semivariogram model."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 from ._schab_vario import semivariogram
 
@@ -47,10 +46,8 @@ def schabenberger_spherical_variogram(h, nugget=0.0, sill=1.0, range=1.0):
     g = semivariogram(h, nugget, sill, range, "spherical")
     return RichResult(
         title="Spherical semivariogram model",
-        summary_lines=[("nugget", nugget), ("partial sill", sill),
-                       ("practical range", range)],
-        payload={"gamma": g, "nugget": float(nugget), "sill": float(sill),
-                 "range": float(range), "model": "spherical"},
+        summary_lines=[("nugget", nugget), ("partial sill", sill), ("practical range", range)],
+        payload={"gamma": g, "nugget": float(nugget), "sill": float(sill), "range": float(range), "model": "spherical"},
     )
 
 

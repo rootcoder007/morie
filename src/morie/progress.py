@@ -265,6 +265,7 @@ class PipelineTracker:
             outputs = run_module(
                 result.name,
                 cpads_csv=self.cpads_csv,
+                dataset_key=self.dataset_key,
                 output_dir=self.output_dir,
             )
             result.outputs = outputs
@@ -445,7 +446,12 @@ def execute_pipeline_with_progress(
         track_carbon=track_carbon,
         dataset_key=dataset_key,
     )
+    from .runner import _files_under, _tables_written_line
+
+    before = _files_under(output_dir)
     results = tracker.run()
+    if output_dir:
+        print(_tables_written_line(output_dir, before))
 
     failed = sum(1 for r in results if r.status == "error")
     return 1 if failed > 0 else 0

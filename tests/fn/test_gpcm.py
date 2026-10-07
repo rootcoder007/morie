@@ -1,7 +1,6 @@
 """Tests for gpcm.generalized_partial_credit."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpcm import generalized_partial_credit
 
 
@@ -41,7 +40,8 @@ def test_gpcm_basic():
 
     def _exp(x):
         # small dependency-free exponential
-        return 1.0 + x + x * x / 2.0 + x * x * x / 6.0 + x ** 4 / 24.0  # not accurate; placeholder
+        return 1.0 + x + x * x / 2.0 + x * x * x / 6.0 + x**4 / 24.0  # not accurate; placeholder
+
     # placeholder above is intentionally not used; we just check structural properties
     # structural check on probs_first
     pf = result["probs_first"]

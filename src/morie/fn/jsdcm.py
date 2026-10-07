@@ -39,13 +39,13 @@ def joint_sparse_decompose(
     """
     signals = [np.asarray(s, dtype=float).ravel() for s in X_list]
     n = len(signals[0])
-    K = len(signals)
+    len(signals)
     X = np.column_stack(signals)
 
     C = X.copy()
     step = 1.0
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         grad = C - X
         Z = C - step * grad
 

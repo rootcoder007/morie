@@ -5,10 +5,6 @@ Implements sec. 11.5.1 (Ex 11.5/11.9 self-similarity) of Ghosal & van der Vaart 
 Nonparametric Bayesian Inference*, CUP.
 """
 
-import math
-
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_selfsim_gp"]
@@ -22,10 +18,14 @@ def ghosal_selfsim_gp(H=0.6, lam=3.0, t=0.2):
     v1 = t ** (2 * H)
     v2 = (lam * t) ** (2 * H)
     ratio = v2 / v1
-    res = RichResult(payload={"estimate": ratio,
-                              "expected": lam ** (2 * H),
-                              "gap": abs(ratio - lam ** (2 * H)),
-                              "method": "fBm self-similarity (GvdV 2017 sec. 11.5.1)"})
+    res = RichResult(
+        payload={
+            "estimate": ratio,
+            "expected": lam ** (2 * H),
+            "gap": abs(ratio - lam ** (2 * H)),
+            "method": "fBm self-similarity (GvdV 2017 sec. 11.5.1)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_12")
 
 

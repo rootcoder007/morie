@@ -1,7 +1,6 @@
 """Tests for hmddim.geron_ddim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.hmddim import geron_ddim
 
 
@@ -14,7 +13,10 @@ def test_hmddim_basic():
         return np.zeros(len(x))
 
     result = geron_ddim(
-        x_T, zero_model, T=4, n_steps=2,
+        x_T,
+        zero_model,
+        T=4,
+        n_steps=2,
         beta_schedule=[0.5, 0.5, 0.5, 0.5],
     )
     assert isinstance(result, dict)
@@ -38,7 +40,10 @@ def test_hmddim_edge():
 
     # smallest valid configuration: T=1, n_steps=1
     result = geron_ddim(
-        x_T, zero_model, T=1, n_steps=1,
+        x_T,
+        zero_model,
+        T=1,
+        n_steps=1,
         beta_schedule=[0.5],
     )
     assert isinstance(result, dict)
@@ -63,7 +68,7 @@ import morie.fn.hmddim as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

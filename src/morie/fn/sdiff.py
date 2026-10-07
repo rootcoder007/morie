@@ -32,8 +32,7 @@ def _sdid_point(Y, treated, t0, zeta):
     return (tr_post - tr_pre) - (co_post - co_pre), w, lam
 
 
-def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
-                  n_boot=0, seed=None):
+def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None, n_boot=0, seed=None):
     r"""Reweight units AND periods, then take a difference-in-differences.
 
     Arkhangelsky, Athey, Hirshberg, Imbens and Wager's estimator sits
@@ -121,25 +120,17 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
     n_u, T = M.shape
 
     tr = np.asarray(treated)
-    if tr.dtype == bool and tr.size == n_u:
-        mask = tr
-    else:
-        mask = np.isin(units, tr)
+    mask = tr if tr.dtype == bool and tr.size == n_u else np.isin(units, tr)
     if mask.sum() < 1:
         raise ValueError("no treated unit was found in the unit set.")
     if (~mask).sum() < 2:
-        raise ValueError(
-            "need at least 2 control units, got %d." % int((~mask).sum())
-        )
+        raise ValueError(f"need at least 2 control units, got {int(int((~mask).sum()))}.")
     tt = np.nonzero(periods >= treatment_time)[0]
     if tt.size == 0:
         raise ValueError("treatment_time is after the last period.")
     t0 = int(tt[0])
     if t0 < 2:
-        raise ValueError(
-            "only %d pre-treatment period(s); both weight sets are fitted on "
-            "the pre-period." % t0
-        )
+        raise ValueError(f"only {int(t0)} pre-treatment period(s); both weight sets are fitted on the pre-period.")
     if t0 >= T:
         raise ValueError("no post-treatment period.")
 
@@ -151,10 +142,7 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
     est, w, lam = _sdid_point(M, mask, t0, float(zeta))
 
     # the two estimators it sits between, on the same data
-    did = float(
-        (M[mask][:, t0:].mean() - M[mask][:, :t0].mean())
-        - (M[ctrl][:, t0:].mean() - M[ctrl][:, :t0].mean())
-    )
+    did = float((M[mask][:, t0:].mean() - M[mask][:, :t0].mean()) - (M[ctrl][:, t0:].mean() - M[ctrl][:, :t0].mean()))
     wsc, _, _ = simplex_lstsq(M[ctrl][:, :t0].T, M[mask][:, :t0].mean(axis=0))
     sc = float(M[mask][:, t0:].mean() - wsc @ M[ctrl][:, t0:].mean(axis=1))
 
@@ -194,7 +182,11 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
         for i in tr_idx + ctrl_idx:
             wk = [wl[q] if ctrl_idx[q] != i else 0.0 for q in range(len(wl))]
             sw = sum(wk)
-            wk = [v / sw for v in wk] if sw > 0 else [1.0 / (len(wk) - 1) if ctrl_idx[q] != i else 0.0 for q in range(len(wk))]
+            wk = (
+                [v / sw for v in wk]
+                if sw > 0
+                else [1.0 / (len(wk) - 1) if ctrl_idx[q] != i else 0.0 for q in range(len(wk))]
+            )
             tk = [q for q in range(len(tr_idx)) if tr_idx[q] != i]
             tr_eff = sum(post_t[q] - pre_t[q] for q in tk) / len(tk)
             co_eff = sum(wk[q] * (post_c[q] - pre_c[q]) for q in range(len(wk)))
@@ -217,8 +209,7 @@ def synthetic_did(Y, unit_id, time_id, treated, treatment_time, zeta=None,
             "estimate": float(est),
             "att": float(est),
             "se": se,
-            "ci": ((est - z * se, est + z * se) if np.isfinite(se)
-                   else (np.nan, np.nan)),
+            "ci": ((est - z * se, est + z * se) if np.isfinite(se) else (np.nan, np.nan)),
             "unit_weights": w,
             "time_weights": lam,
             "donors": units[ctrl],

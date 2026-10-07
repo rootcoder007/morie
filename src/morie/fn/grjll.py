@@ -76,12 +76,11 @@ def geron_johnson_lindenstrauss_bound(n_samples, eps):
     denom = e**2 / 2.0 - e**3 / 3.0
     d = 4.0 * math.log(m) / denom
     d_int = np.ceil(d).astype(int)
-    scalar = np.ndim(eps) == 0     # morie has no 0-d arrays: ask the argument
+    scalar = np.ndim(eps) == 0  # morie has no 0-d arrays: ask the argument
 
     return RichResult(
         title="Johnson-Lindenstrauss bound",
-        summary_lines=[("Samples", m), ("eps", e.tolist()),
-                       ("Min dimension", d_int.tolist())],
+        summary_lines=[("Samples", m), ("eps", e.tolist()), ("Min dimension", d_int.tolist())],
         payload={
             "min_dimension": int(d_int) if scalar else d_int.tolist(),
             "exact": float(d) if scalar else d.tolist(),

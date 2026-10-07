@@ -5,7 +5,7 @@ import math
 
 from ._richresult import RichResult
 
-__all__ = ['wstnbrg', 'gibbons_conover_scale']
+__all__ = ["wstnbrg", "gibbons_conover_scale"]
 
 
 def wstnbrg(x, y):
@@ -67,14 +67,7 @@ def wstnbrg(x, y):
     u = sum(1 for v in xs if q1 <= v <= q3)
     half = nn // 2
     den = math.comb(nn, half)
-    pmf = [
-        (
-            math.comb(m, k) * math.comb(n, half - k) / den
-            if 0 <= half - k <= n
-            else 0.0
-        )
-        for k in range(m + 1)
-    ]
+    pmf = [(math.comb(m, k) * math.comb(n, half - k) / den if 0 <= half - k <= n else 0.0) for k in range(m + 1)]
     mean = m * half / float(nn)
     var = m * n * half * (nn - half) / (float(nn) ** 2 * (nn - 1.0))
     return RichResult(

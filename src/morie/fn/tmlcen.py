@@ -66,14 +66,10 @@ software package instead. The two sources above are what this is built
 from.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["tmle_censoring", "censoring_survival", "coarsen_interval",
-           "ipcw_interval"]
+__all__ = ["tmle_censoring", "censoring_survival", "coarsen_interval", "ipcw_interval"]
 
 _KINDS = ("right", "interval")
 
@@ -89,8 +85,7 @@ def coarsen_interval(times, deltas):
     ts = [float(v) for v in times]
     ds = [float(v) for v in deltas]
     if len(ts) != len(ds):
-        raise ValueError("coarsen_interval: %d monitoring times but %d "
-                         "indicators" % (len(ts), len(ds)))
+        raise ValueError(f"coarsen_interval: {int(len(ts))} monitoring times but {int(len(ds))} indicators")
     if not ts:
         raise ValueError("coarsen_interval: no monitoring times")
     order = sorted(range(len(ts)), key=lambda i: ts[i])
@@ -105,8 +100,7 @@ def coarsen_interval(times, deltas):
     return L, R
 
 
-def censoring_survival(times, censored, A=None, W=None, grid=None,
-                       by_covariate=True, ridge=1e-8):
+def censoring_survival(times, censored, A=None, W=None, grid=None, by_covariate=True, ridge=1e-8):
     r"""Gbar_c(k | A, W) = prod_{j<=k} (1 - lambda_C(j | A, W)).
 
     The censoring hazard is fitted in discrete time by pooled logistic
@@ -118,8 +112,7 @@ def censoring_survival(times, censored, A=None, W=None, grid=None,
     c = [float(v) for v in k.vec(censored)]
     n = len(t)
     if len(c) != n:
-        raise ValueError("censoring_survival: %d times but %d censoring "
-                         "indicators" % (n, len(c)))
+        raise ValueError(f"censoring_survival: {int(n)} times but {int(len(c))} censoring indicators")
     if grid is None:
         grid = sorted(set(t))
     grid = [float(v) for v in grid]
@@ -148,14 +141,13 @@ def censoring_survival(times, censored, A=None, W=None, grid=None,
     for i in range(n):
         g, cur = [], 1.0
         for kk in range(len(grid)):
-            cur *= (1.0 - haz(kk, i))
+            cur *= 1.0 - haz(kk, i)
             g.append(cur)
         G.append(g)
     return G, grid, b
 
 
-def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None,
-                  ridge=1e-8):
+def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None, ridge=1e-8):
     r"""Sec. 8.5's IPCW estimator of Psi_a = int r(t) Fbar_a(t) dt.
 
     `g` and `gc` may be supplied when the treatment and monitoring
@@ -167,11 +159,12 @@ def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None,
     Tm = [[float(v) for v in row] for row in times]
     Dm = [[float(v) for v in row] for row in deltas]
     if len(Tm) != n or len(Dm) != n:
-        raise ValueError("ipcw_interval: %d treatments but %d monitoring "
-                         "rows and %d indicator rows"
-                         % (n, len(Tm), len(Dm)))
+        raise ValueError(
+            f"ipcw_interval: {int(n)} treatments but {int(len(Tm))} monitoring rows and {int(len(Dm))} indicator rows"
+        )
     Wm = k.mat(W) if W is not None else [[] for _ in range(n)]
     if r is None:
+
         def r(t):
             return 1.0
 
@@ -187,22 +180,18 @@ def ipcw_interval(W, A, times, deltas, a=1.0, r=None, g=None, gc=None,
     for i in range(n):
         M = len(Tm[i])
         if M == 0:
-            raise ValueError("ipcw_interval: subject %d has no monitoring "
-                             "times" % i)
+            raise ValueError(f"ipcw_interval: subject {int(i)} has no monitoring times")
         if av[i] != a:
             continue
         if g[i] <= 0.0:
             raise ValueError(
-                "ipcw_interval: g(A|W) is zero for subject %d, so "
-                "positivity fails and the weight is undefined" % i)
+                f"ipcw_interval: g(A|W) is zero for subject {int(i)}, so positivity fails and the weight is undefined"
+            )
         s = 0.0
         for m in range(M):
-            dens = (gc[i][m] if gc is not None
-                    else _uniform_density(Tm[i]))
+            dens = gc[i][m] if gc is not None else _uniform_density(Tm[i])
             if dens <= 0.0:
-                raise ValueError(
-                    "ipcw_interval: the monitoring density is zero for "
-                    "subject %d at time %d" % (i, m))
+                raise ValueError(f"ipcw_interval: the monitoring density is zero for subject {int(i)} at time {int(m)}")
             s += (1.0 - Dm[i][m]) * r(Tm[i][m]) / dens
         tot += s / M / g[i]
     return tot / n
@@ -214,9 +203,9 @@ def _uniform_density(ts):
     return 1.0 / (hi - lo) if hi > lo else 1.0
 
 
-def tmle_censoring(time, event, censor, treatment, covariates,
-                   kind="right", grid=None, a=1.0, r=None, g=None,
-                   gc=None, trim=1e-3):
+def tmle_censoring(
+    time, event, censor, treatment, covariates, kind="right", grid=None, a=1.0, r=None, g=None, gc=None, trim=1e-3
+):
     r"""Causal survival under censoring.
 
     Parameters
@@ -249,17 +238,18 @@ def tmle_censoring(time, event, censor, treatment, covariates,
         r["estimate"], r["naive"]
     """
     if kind not in _KINDS:
-        raise ValueError("tmle_censoring: kind must be 'right' or "
-                         "'interval', got %r" % (kind,))
+        raise ValueError(f"tmle_censoring: kind must be 'right' or 'interval', got {kind!r}")
     if kind == "interval":
-        psi = ipcw_interval(covariates, treatment, time, event, a=a, r=r,
-                            g=g, gc=gc)
-        return RichResult(payload={
-            "estimate": psi, "psi": psi, "a": a,
-            "n": len(k.vec(treatment)),
-            "method": "interval-censored IPCW, van der Laan & Rose "
-                      "(2018) Sec. 8.5",
-        })
+        psi = ipcw_interval(covariates, treatment, time, event, a=a, r=r, g=g, gc=gc)
+        return RichResult(
+            payload={
+                "estimate": psi,
+                "psi": psi,
+                "a": a,
+                "n": len(k.vec(treatment)),
+                "method": "interval-censored IPCW, van der Laan & Rose (2018) Sec. 8.5",
+            }
+        )
 
     t = [float(v) for v in k.vec(time)]
     d = [float(v) for v in k.vec(event)]
@@ -268,13 +258,10 @@ def tmle_censoring(time, event, censor, treatment, covariates,
     n = len(t)
     for nm, arr in (("event", d), ("censor", c), ("treatment", av)):
         if len(arr) != n:
-            raise ValueError("tmle_censoring: %d times but %d %s"
-                             % (n, len(arr), nm))
+            raise ValueError(f"tmle_censoring: {int(n)} times but {int(len(arr))} {nm}")
     if any(d[i] == 1.0 and c[i] == 1.0 for i in range(n)):
-        raise ValueError("tmle_censoring: a subject cannot be both an "
-                         "event and censored at the same time")
-    Wm = k.mat(covariates) if covariates is not None else \
-        [[] for _ in range(n)]
+        raise ValueError("tmle_censoring: a subject cannot be both an event and censored at the same time")
+    Wm = k.mat(covariates) if covariates is not None else [[] for _ in range(n)]
 
     G, grid, _ = censoring_survival(t, c, A=av, W=Wm, grid=grid)
 
@@ -296,14 +283,12 @@ def tmle_censoring(time, event, censor, treatment, covariates,
         for kk in range(len(grid)):
             row = [1.0, float(kk), a_val] + list(Wm[i])
             h = k.sigmoid(sum(bh[j] * row[j] for j in range(len(bh))))
-            cur *= (1.0 - h)
+            cur *= 1.0 - h
             out.append(cur)
         return out
 
-    s1 = [sum(surv(1.0, i)[kk] for i in range(n)) / n
-          for kk in range(len(grid))]
-    s0 = [sum(surv(0.0, i)[kk] for i in range(n)) / n
-          for kk in range(len(grid))]
+    s1 = [sum(surv(1.0, i)[kk] for i in range(n)) / n for kk in range(len(grid))]
+    s0 = [sum(surv(0.0, i)[kk] for i in range(n)) / n for kk in range(len(grid))]
 
     # Two comparators, because they answer different questions.
     #
@@ -319,7 +304,7 @@ def tmle_censoring(time, event, censor, treatment, covariates,
     # altogether. That is what ignoring informative censoring actually
     # looks like, and it is the one that is biased.
     bh_n = _weighted_logit(Z, lab, [1.0] * len(lab))
-    rows_u = [[row[0], row[1]] for row in rows]     # time and treatment
+    rows_u = [[row[0], row[1]] for row in rows]  # time and treatment
     Zu = k.design(rows_u, len(rows_u))
     bh_u = _weighted_logit(Zu, lab, [1.0] * len(lab))
 
@@ -327,33 +312,34 @@ def tmle_censoring(time, event, censor, treatment, covariates,
         cur = 1.0
         for kk in range(len(grid)):
             r_ = [1.0, float(kk), a_val]
-            cur *= (1.0 - k.sigmoid(sum(bh_u[j] * r_[j]
-                                        for j in range(len(bh_u)))))
+            cur *= 1.0 - k.sigmoid(sum(bh_u[j] * r_[j] for j in range(len(bh_u))))
         return cur
+
     unadjusted = surv_u(1.0) - surv_u(0.0)
 
     def surv_n(a_val, i):
         cur = 1.0
         for kk in range(len(grid)):
             row = [1.0, float(kk), a_val] + list(Wm[i])
-            cur *= (1.0 - k.sigmoid(sum(bh_n[j] * row[j]
-                                        for j in range(len(bh_n)))))
+            cur *= 1.0 - k.sigmoid(sum(bh_n[j] * row[j] for j in range(len(bh_n))))
         return cur
-    naive = (sum(surv_n(1.0, i) for i in range(n)) / n
-             - sum(surv_n(0.0, i) for i in range(n)) / n)
 
-    return RichResult(payload={
-        "estimate": s1[-1] - s0[-1],
-        "survival_treated": s1, "survival_control": s0,
-        "grid": grid,
-        "naive": naive,
-        "unadjusted": unadjusted,
-        "censoring_survival": G,
-        "max_weight": max(1.0 / max(G[i][-1], trim) for i in range(n)),
-        "n": n,
-        "method": "IPCW survival difference, Hernan & Robins (2020) "
-                  "Ch. 17 Secs. 17.2 and 17.4",
-    })
+    naive = sum(surv_n(1.0, i) for i in range(n)) / n - sum(surv_n(0.0, i) for i in range(n)) / n
+
+    return RichResult(
+        payload={
+            "estimate": s1[-1] - s0[-1],
+            "survival_treated": s1,
+            "survival_control": s0,
+            "grid": grid,
+            "naive": naive,
+            "unadjusted": unadjusted,
+            "censoring_survival": G,
+            "max_weight": max(1.0 / max(G[i][-1], trim) for i in range(n)),
+            "n": n,
+            "method": "IPCW survival difference, Hernan & Robins (2020) Ch. 17 Secs. 17.2 and 17.4",
+        }
+    )
 
 
 def _weighted_logit(Z, y, w, iters=60, ridge=1e-10):
@@ -381,12 +367,14 @@ def _weighted_logit(Z, y, w, iters=60, ridge=1e-10):
 
 
 def cheatsheet():
-    return ("tmlcen: censoring by IPCW. right = Gbar_c(k|A,W) = "
-            "prod(1-lambda_C), weight person-time by 1/Gbar_c, hazard "
-            "to survival by the product limit (H&R Ch.17). interval = "
-            "Sec.8.5's (1/M) sum (1-Delta_m) r(C_m) I(A=a) / "
-            "(gbar_c g), with L = max C_j st Delta=0 and R = min C_j "
-            "st Delta=1.")
+    return (
+        "tmlcen: censoring by IPCW. right = Gbar_c(k|A,W) = "
+        "prod(1-lambda_C), weight person-time by 1/Gbar_c, hazard "
+        "to survival by the product limit (H&R Ch.17). interval = "
+        "Sec.8.5's (1/M) sum (1-Delta_m) r(C_m) I(A=a) / "
+        "(gbar_c g), with L = max C_j st Delta=0 and R = min C_j "
+        "st Delta=1."
+    )
 
 
 # compact alias per ledger/NAMING.md

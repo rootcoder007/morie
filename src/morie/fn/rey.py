@@ -38,8 +38,8 @@ def linear_regression(
     # OLS: beta = (X'X)^-1 X'Y
     try:
         beta, residuals_ss, rank, sv = np.linalg.lstsq(X_aug, Y, rcond=None)
-    except np.linalg.LinAlgError:
-        raise ValueError("Singular matrix -- check for perfect collinearity")
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("Singular matrix -- check for perfect collinearity") from exc
 
     fitted = X_aug @ beta
     resid = Y - fitted

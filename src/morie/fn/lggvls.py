@@ -41,7 +41,6 @@ Raton: Chapman & Hall/CRC, Sec. 21.2 for the product-over-time weights
 and Ch. 20 for why conditioning fails where weighting works.
 """
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -71,8 +70,7 @@ def lagged_design(L_hist, Y_hist=None, k_time=0, lag=1):
     return cols
 
 
-def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True,
-                   kind="binary", trim=None, contrast="cumulative"):
+def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True, kind="binary", trim=None, contrast="cumulative"):
     r"""IPTW for a sustained exposure, with lagged values in the model.
 
     Parameters
@@ -110,13 +108,10 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True,
         r["estimate"]
     """
     if contrast not in ("cumulative", "final", "everexposed"):
-        raise ValueError(
-            "laggedval_iptw: contrast must be 'cumulative', 'final' or "
-            "'everexposed', got %r" % (contrast,))
+        raise ValueError(f"laggedval_iptw: contrast must be 'cumulative', 'final' or 'everexposed', got {contrast!r}")
     lag = int(lag)
     if lag < 0:
-        raise ValueError("laggedval_iptw: lag must be non-negative, got %r"
-                         % (lag,))
+        raise ValueError(f"laggedval_iptw: lag must be non-negative, got {lag!r}")
     A_hist = _as_history(A)
     K = len(A_hist)
     L_hist = _as_history(H, allow_none=True)
@@ -127,8 +122,8 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True,
     for kk in range(K):
         if len(k.vec(A_hist[kk])) != n:
             raise ValueError(
-                "laggedval_iptw: outcome has %d rows but treatment at "
-                "time %d has %d" % (n, kk, len(k.vec(A_hist[kk]))))
+                f"laggedval_iptw: outcome has {int(n)} rows but treatment at time {int(kk)} has {int(len(k.vec(A_hist[kk])))}"
+            )
 
     # Sec. 21.2's product, with the lagged design at each time point.
     w = [1.0] * n
@@ -139,12 +134,10 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True,
         cols = lagged_design(L_hist, Y_hist, kk, lag)
         den_X = _bind(cols + past, n)
         num_X = _bind(past, n) if past else None
-        wk, info = k.ip_weights(ak, den_X, num_X, kind=kind,
-                                stabilize=stabilize)
+        wk, info = k.ip_weights(ak, den_X, num_X, kind=kind, stabilize=stabilize)
         for i in range(n):
             w[i] *= wk[i]
-        per_time.append({"time": kk, "n_covariates":
-                         len(cols) + len(past), "info": info})
+        per_time.append({"time": kk, "n_covariates": len(cols) + len(past), "info": info})
         past = past + [list(ak)]
     if trim is not None:
         q = float(trim)
@@ -165,30 +158,36 @@ def laggedval_iptw(y, A, H, lag=1, Y_hist=None, stabilize=True,
     fit = k.wls(X, yv, w)
     s1 = sum(w)
     s2 = sum(v * v for v in w)
-    return RichResult(payload={
-        "estimate": fit["coef"][1],
-        "se": fit["se"][1],
-        "intercept": fit["coef"][0],
-        "coef": fit["coef"],
-        "vcov": fit["vcov"],
-        "weights": w,
-        "mean_weight": s1 / n,
-        "max_weight": max(w),
-        "effective_sample_size": (s1 * s1 / s2) if s2 > 0.0 else 0.0,
-        "cumulative_exposure": cum,
-        "per_time": per_time,
-        "n_times": K, "lag": lag, "n": n, "contrast": contrast,
-        "method": "lagged-value IPTW, Robins (1986); weights by "
-                  "Hernan & Robins (2020) Sec. 21.2",
-    })
+    return RichResult(
+        payload={
+            "estimate": fit["coef"][1],
+            "se": fit["se"][1],
+            "intercept": fit["coef"][0],
+            "coef": fit["coef"],
+            "vcov": fit["vcov"],
+            "weights": w,
+            "mean_weight": s1 / n,
+            "max_weight": max(w),
+            "effective_sample_size": (s1 * s1 / s2) if s2 > 0.0 else 0.0,
+            "cumulative_exposure": cum,
+            "per_time": per_time,
+            "n_times": K,
+            "lag": lag,
+            "n": n,
+            "contrast": contrast,
+            "method": "lagged-value IPTW, Robins (1986); weights by Hernan & Robins (2020) Sec. 21.2",
+        }
+    )
 
 
 def _as_history(obj, allow_none=False):
     if obj is None:
         return [None] if allow_none else []
-    if isinstance(obj, (list, tuple)) and obj and (
-            isinstance(obj[0], (list, tuple)) or obj[0] is None
-            or hasattr(obj[0], "shape")):
+    if (
+        isinstance(obj, (list, tuple))
+        and obj
+        and (isinstance(obj[0], (list, tuple)) or obj[0] is None or hasattr(obj[0], "shape"))
+    ):
         return list(obj)
     return [obj]
 
@@ -200,10 +199,12 @@ def _bind(cols, n):
 
 
 def cheatsheet():
-    return ("lggvls: sustained-exposure IPTW (Robins 1986). Weight = "
-            "prod_k f(A_k|Abar_{k-1}) / f(A_k|Abar_{k-1}, Lbar_k, "
-            "L_{k-1..k-lag}, Y_{k-1..k-lag}); MSM on cumulative, final "
-            "or ever-exposed contrast.")
+    return (
+        "lggvls: sustained-exposure IPTW (Robins 1986). Weight = "
+        "prod_k f(A_k|Abar_{k-1}) / f(A_k|Abar_{k-1}, Lbar_k, "
+        "L_{k-1..k-lag}, Y_{k-1..k-lag}); MSM on cumulative, final "
+        "or ever-exposed contrast."
+    )
 
 
 # compact alias per ledger/NAMING.md

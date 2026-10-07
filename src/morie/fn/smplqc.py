@@ -118,10 +118,7 @@ def sample_qc(G, callrate_min=0.98, het_sd=3.0, small_sample=False):
         het_rate.append((n_obs - o_hom) / n_obs if n_obs > 0 else float("nan"))
     het_ok = [h for h in het_rate if h == h]
     hmean = sum(het_ok) / len(het_ok) if het_ok else float("nan")
-    if len(het_ok) > 1:
-        hsd = math.sqrt(sum((h - hmean) ** 2 for h in het_ok) / (len(het_ok) - 1))
-    else:
-        hsd = float("nan")
+    hsd = math.sqrt(sum((h - hmean) ** 2 for h in het_ok) / (len(het_ok) - 1)) if len(het_ok) > 1 else float("nan")
     flag_cr = [cr < float(callrate_min) for cr in callrate]
     flag_het = []
     for h in het_rate:
@@ -130,15 +127,26 @@ def sample_qc(G, callrate_min=0.98, het_sd=3.0, small_sample=False):
         else:
             flag_het.append(abs(h - hmean) > float(het_sd) * hsd)
     pass_qc = [not (a or b) for a, b in zip(flag_cr, flag_het)]
-    return RichResult(payload={
-        "estimate": float(sum(1 for p in pass_qc if p)),
-        "callrate": callrate, "het_rate": het_rate, "F": F,
-        "obs_hom": obs_hom, "exp_hom": exp_hom, "n_obs": n_obs_list,
-        "flag_callrate": flag_cr, "flag_het": flag_het,
-        "pass_qc": pass_qc, "het_mean": float(hmean), "het_sd": float(hsd),
-        "freq": freq, "n": int(n), "m": int(m),
-        "method": "Sample QC (Marees 2018 steps 1+5; PLINK --het F)",
-    })
+    return RichResult(
+        payload={
+            "estimate": float(sum(1 for p in pass_qc if p)),
+            "callrate": callrate,
+            "het_rate": het_rate,
+            "F": F,
+            "obs_hom": obs_hom,
+            "exp_hom": exp_hom,
+            "n_obs": n_obs_list,
+            "flag_callrate": flag_cr,
+            "flag_het": flag_het,
+            "pass_qc": pass_qc,
+            "het_mean": float(hmean),
+            "het_sd": float(hsd),
+            "freq": freq,
+            "n": int(n),
+            "m": int(m),
+            "method": "Sample QC (Marees 2018 steps 1+5; PLINK --het F)",
+        }
+    )
 
 
 def cheatsheet():

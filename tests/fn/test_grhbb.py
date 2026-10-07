@@ -1,7 +1,6 @@
 """Tests for grhbb.geron_hebb_rule."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.grhbb import geron_hebb_rule
 
 
@@ -16,8 +15,7 @@ def test_grhbb_basic():
     eta = 0.1
     result = geron_hebb_rule(x, y_true, y_pred, w, eta)
     assert isinstance(result, dict)
-    expected_keys = {"w_new", "delta_w", "error", "converged",
-                     "update_norm", "estimate", "n", "method"}
+    expected_keys = {"w_new", "delta_w", "error", "converged", "update_norm", "estimate", "n", "method"}
     assert expected_keys.issubset(set(result.keys()))
     assert isinstance(result["converged"], bool)
 
@@ -46,7 +44,7 @@ import morie.fn.grhbb as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

@@ -15,17 +15,17 @@ def logodds(p: Union[float, Sequence[float], np.ndarray]):
 
         if not (0 < p < 1):
             raise ValueError(f"p must be in (0, 1), got {p}.")
-        l = math.log(p / (1.0 - p))
+        ell = math.log(p / (1.0 - p))
         return RichResult(
             title="Log-odds (logit) transform",
             summary_lines=[
-                ("logit(p)", l),
+                ("logit(p)", ell),
                 ("p", p),
                 ("Odds (p / (1-p))", p / (1 - p)),
-                ("Inverse: 1 / (1 + e^-logit)", 1 / (1 + math.exp(-l))),
+                ("Inverse: 1 / (1 + e^-logit)", 1 / (1 + math.exp(-ell))),
             ],
             interpretation=("Logit maps (0, 1) -> ℝ; the link function in logistic regression. Inverse via `invlgt`."),
-            payload={"value": l, "statistic": l, "odds": p / (1 - p)},
+            payload={"value": ell, "statistic": ell, "odds": p / (1 - p)},
         )
     # Array input -- return raw array (skip RichResult overhead)
     a = np.asarray(p, dtype=float)

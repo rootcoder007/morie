@@ -37,6 +37,7 @@ def _silverman_h(x):
 def _kdfe_h(x):
     """DISTRIBUTION-function bandwidth, 4^(1/3) sigma n^(-1/3)."""
     from ._fauzi import kdfe_bandwidth
+
     return kdfe_bandwidth(x)
 
 
@@ -84,10 +85,7 @@ def fauzi_kernel_quantile_asymptotic(x, p=0.5, h=None):
         q_hat = float(np.quantile(x, p))
 
     f_q = _kde_density(x, q_hat, h_dens)
-    if f_q <= 0:
-        se = np.nan
-    else:
-        se = float(np.sqrt(p * (1.0 - p) / n) / f_q)
+    se = np.nan if f_q <= 0 else float(np.sqrt(p * (1.0 - p) / n) / f_q)
 
     return RichResult(
         payload={

@@ -6,8 +6,6 @@ Implements eq. (5.3) p.148 of Montesinos López, Montesinos López & Crossa
 Prediction*, Springer (DOI 10.1007/978-3-030-89010-0).
 """
 
-import math
-
 from . import _gp_core as _gp
 from ._richresult import RichResult, with_describe_pointer
 
@@ -20,9 +18,9 @@ def gblup_model(y, Z_L, G, sigma2_g, sigma2_e=1.0):
     matrix of lines and G the genomic relationship matrix; the BLUP of
     b holds the genomic estimated breeding values. Keys: estimate."""
     f = _gp.gblup_model(y, Z_L, G, sigma2_g, sigma2_e)
-    res = RichResult(payload={"estimate": f["mu"], "mu": f["mu"],
-                              "gebv": f["b"],
-                              "method": "GBLUP model (MVSML 2022 eq. 5.3)"})
+    res = RichResult(
+        payload={"estimate": f["mu"], "mu": f["mu"], "gebv": f["b"], "method": "GBLUP model (MVSML 2022 eq. 5.3)"}
+    )
     return with_describe_pointer(res, "msm015")
 
 

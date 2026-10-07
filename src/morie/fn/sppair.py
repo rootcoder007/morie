@@ -12,8 +12,7 @@ __all__ = [
 ]
 
 
-def schabenberger_pair_correlation(points, region=None, r=None,
-                                   correction="border"):
+def schabenberger_pair_correlation(points, region=None, r=None, correction="border"):
     """Pair correlation function of a mapped point pattern.
 
     Schabenberger & Gotway (2005) Sec. 3.4.1 defines Ripley's K-function
@@ -98,22 +97,19 @@ def schabenberger_pair_correlation(points, region=None, r=None,
         raise ValueError("at least 2 radii are needed to difference K")
 
     dist = [[eucdist(p[i][:2], p[j][:2]) for j in range(n)] for i in range(n)]
-    bdist = [min(p[i][0] - reg[0][0], reg[0][1] - p[i][0],
-                 p[i][1] - reg[1][0], reg[1][1] - p[i][1]) for i in range(n)]
+    bdist = [min(p[i][0] - reg[0][0], reg[0][1] - p[i][0], p[i][1] - reg[1][0], reg[1][1] - p[i][1]) for i in range(n)]
 
     kv = []
     for h in rr:
         if correction == "none":
-            cnt = fsum([1.0 for i in range(n) for j in range(n)
-                        if i != j and dist[i][j] <= h])
+            cnt = fsum([1.0 for i in range(n) for j in range(n) if i != j and dist[i][j] <= h])
             kv.append((cnt / n) / lam)
         elif correction == "border":
             keep = [j for j in range(n) if bdist[j] > h]
             if not keep:
                 kv.append(float("nan"))
                 continue
-            cnt = fsum([1.0 for i in range(n) for j in keep
-                        if i != j and dist[i][j] <= h])
+            cnt = fsum([1.0 for i in range(n) for j in keep if i != j and dist[i][j] <= h])
             kv.append((cnt / len(keep)) / lam)
         else:
             raise ValueError('`correction` must be "border" or "none"')
@@ -129,20 +125,24 @@ def schabenberger_pair_correlation(points, region=None, r=None,
             der = (kv[k + 1] - kv[k - 1]) / (rr[k + 1] - rr[k - 1])
         g.append(der / (2.0 * pi * rr[k]))
 
-    return RichResult(payload={
-        "r": rr,
-        "k": kv,
-        "pcf": g,
-        "lambda": lam,
-        "area": area,
-        "csr_k": [pi * t * t for t in rr],
-        "csr_pcf_is_one": True,
-        "correction": correction,
-        "n": n,
-        "method": ("Pair correlation R(h)=K'(h)/(2 pi h), Schabenberger & "
-                   "Gotway (2005) Sec. 3.4.1, with Khat of Sec. 3.4.2 "
-                   "and eq (3.8)"),
-    })
+    return RichResult(
+        payload={
+            "r": rr,
+            "k": kv,
+            "pcf": g,
+            "lambda": lam,
+            "area": area,
+            "csr_k": [pi * t * t for t in rr],
+            "csr_pcf_is_one": True,
+            "correction": correction,
+            "n": n,
+            "method": (
+                "Pair correlation R(h)=K'(h)/(2 pi h), Schabenberger & "
+                "Gotway (2005) Sec. 3.4.1, with Khat of Sec. 3.4.2 "
+                "and eq (3.8)"
+            ),
+        }
+    )
 
 
 def cheatsheet():

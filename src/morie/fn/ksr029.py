@@ -51,8 +51,7 @@ def kosorok_ch2_glivenko_cantelli_class(F, X, P=None, n_grid=None):
     F = list(F)
     if not F:
         raise ValueError("F must contain at least one function.")
-    Pf = np.array([float(P(f)) if P is not None else float(np.mean(f(X)))
-                   for f in F])
+    Pf = np.array([float(P(f)) if P is not None else float(np.mean(f(X))) for f in F])
     if n_grid is None:
         n_grid = [max(4, int(N * fr)) for fr in (0.1, 0.25, 0.5, 1.0)]
     n_grid = [int(g) for g in n_grid]
@@ -64,10 +63,14 @@ def kosorok_ch2_glivenko_cantelli_class(F, X, P=None, n_grid=None):
         per = dev
     sup = np.array(sup)
     return RichResult(
-        payload={"n_grid": np.array(n_grid), "sup_deviation": sup,
-                 "per_function": per, "n_functions": len(F),
-                 "shrinking": bool(sup[-1] <= sup[0] + 1e-12),
-                 "method": "sup_f |P_n f - P f| over the SUPPLIED representatives"}
+        payload={
+            "n_grid": np.array(n_grid),
+            "sup_deviation": sup,
+            "per_function": per,
+            "n_functions": len(F),
+            "shrinking": bool(sup[-1] <= sup[0] + 1e-12),
+            "method": "sup_f |P_n f - P f| over the SUPPLIED representatives",
+        }
     )
 
 

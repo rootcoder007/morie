@@ -53,10 +53,19 @@ def ganomscore(z, zhat, threshold=0.5):
     rng = hi - lo
     sc = [0.0] * m if rng == 0.0 else [(v - lo) / rng for v in s]
     flg = [1 if v > float(threshold) else 0 for v in sc]
-    return RichResult(payload={
-        "score": s, "scaled": sc, "smin": lo, "smax": hi,
-        "flagged": flg, "nflag": sum(flg), "m": m, "d": d,
-        "method": "GANomaly anomaly score (Akcay et al. 2018 eqs. 5-6)"})
+    return RichResult(
+        payload={
+            "score": s,
+            "scaled": sc,
+            "smin": lo,
+            "smax": hi,
+            "flagged": flg,
+            "nflag": sum(flg),
+            "m": m,
+            "d": d,
+            "method": "GANomaly anomaly score (Akcay et al. 2018 eqs. 5-6)",
+        }
+    )
 
 
 adversarial_anomaly = ganomscore

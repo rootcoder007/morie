@@ -1,13 +1,12 @@
 """Transformation models T(Y) = X'beta + U (Horowitz Ch. 6)."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.hrzchet import horowitz_chen_estimator_T
 from morie.fn.hrzhot import horowitz_T_F_estimators
 from morie.fn.hrzlam import horowitz_baseline_hazard_est
 from morie.fn.hrztfap import horowitz_T_F_asymp_props
-from morie.fn.hrzycp import horowitz_conditional_prediction
 
 
 def _sample(n=400, seed=0):
@@ -68,11 +67,9 @@ def test_asymptotics_report_a_process_and_the_HT9_bandwidth_split():
     # h_nz must shrink much more slowly than h_ny; the reference
     # rates differ by a factor of n^{7/30}
     assert good["h_nz_reference"] > good["h_ny_reference"]
-    assert good["h_nz_reference"] / good["h_ny_reference"] == pytest.approx(
-        n ** (1 / 3 - 1 / 10))
+    assert good["h_nz_reference"] / good["h_ny_reference"] == pytest.approx(n ** (1 / 3 - 1 / 10))
     # using one bandwidth for both violates HT9
-    assert horowitz_T_F_asymp_props(
-        X, Y, n ** (-1 / 3))["bandwidths_consistent_with_HT9"] is False
+    assert horowitz_T_F_asymp_props(X, Y, n ** (-1 / 3))["bandwidths_consistent_with_HT9"] is False
     with pytest.raises(ValueError):
         horowitz_T_F_asymp_props(X, Y, 0.0)
 
@@ -130,8 +127,7 @@ def test_baseline_hazard_smooths_the_step_function():
     t = rng.exponential(1.0, n) / np.exp(X @ beta)
     ev = np.ones(n)
     out = horowitz_baseline_hazard_est(t, X, ev, beta)
-    mid = (out["grid"] > np.quantile(out["grid"], 0.2)) & \
-          (out["grid"] < np.quantile(out["grid"], 0.6))
+    mid = (out["grid"] > np.quantile(out["grid"], 0.2)) & (out["grid"] < np.quantile(out["grid"], 0.6))
     assert abs(np.median(out["lambda0_hat"][mid]) - 1.0) < 0.4
     # the cumulative hazard is a step function: it never decreases
     assert np.all(np.diff(out["cumhaz"]) > 0)
@@ -143,8 +139,7 @@ def test_baseline_hazard_smooths_the_step_function():
 def test_baseline_hazard_handles_censoring_and_validates():
     rng = np.random.default_rng(6)
     n = 300
-    X = np.column_stack([rng.standard_normal(n), rng.standard_normal(n)])
-    beta = np.array([0.4, 0.0])
-    t = rng.exponential(1.0, n)
-    ev = (rng.random(n) > 0.3).astype(float)
-    out = horowitz_baseline_hazard_est
+    np.column_stack([rng.standard_normal(n), rng.standard_normal(n)])
+    np.array([0.4, 0.0])
+    rng.exponential(1.0, n)
+    (rng.random(n) > 0.3).astype(float)

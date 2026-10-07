@@ -1,8 +1,8 @@
 """Tests for lglog: log-logistic AFT survival model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.lglog import lglog
 
 

@@ -204,9 +204,6 @@ html_theme_options = {
     "narrow_sidebar_link": "#2980B9",
     "code_bg": "#f5f5f5",
     "pre_bg": "#fafafa",
-    "narrow_sidebar_bg": "#eee",
-    "narrow_sidebar_link": "#444",
-    "narrow_sidebar_fg": "#333",
 }
 
 html_sidebars = {
@@ -238,4 +235,3 @@ ogp_site_name = "MORIE — multi-domain scientific computing toolkit"
 ogp_description_length = 200
 ogp_enable_meta_description = True
 ogp_type = "website"
-

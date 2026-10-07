@@ -1,6 +1,5 @@
 """Tests for gb_are4 (Gibbons shelf)."""
 
-from morie.fn import _array_core as np
 import pytest
 
 from morie.fn.gb_are4 import gibbons_are_kw

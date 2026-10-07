@@ -9,5 +9,6 @@ def test_b202_basic():
 
 def test_b202_edge():
     import pytest
+
     with pytest.raises(ValueError, match="at least 2"):
         burkov_lm_ch2_lm_next_token("a", ["a"])

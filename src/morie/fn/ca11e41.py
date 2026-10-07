@@ -27,18 +27,17 @@ def ca_chapter_11_equation_41(ys, ws):
     ch.11 eq.11.41
     """
     payload = dict(_ca_crim.q_statistic(ys, ws))
-    value = payload['q_computational']
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    value = payload["q_computational"]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Weisburd et al. (2022) eq. (11.41)"
     return RichResult(
-        title='Computational form of Q',
+        title="Computational form of Q",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return 'ca11e41: Q = sum(w y^2) - (sum w y)^2 / sum w [Weisburd et al. 2022, eq. 11.41]'
+    return "ca11e41: Q = sum(w y^2) - (sum w y)^2 / sum w [Weisburd et al. 2022, eq. 11.41]"

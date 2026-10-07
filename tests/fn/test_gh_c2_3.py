@@ -1,7 +1,6 @@
 """Tests for gh_c2_3.ghosal_gp_increasing_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c2_3 import ghosal_gp_increasing_prior
 
 

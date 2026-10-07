@@ -83,17 +83,18 @@ def boyd_log_barrier(f, t=1.0, f0=None):
     bad = np.flatnonzero(fv >= 0)
     if bad.size:
         i = int(bad[0])
-        raise ValueError(
-            "the barrier needs strictly feasible constraints (f_i < 0); "
-            f"entry {i} is {fv[i]:g}")
+        raise ValueError(f"the barrier needs strictly feasible constraints (f_i < 0); entry {i} is {fv[i]:g}")
     t = float(t)
     if t <= 0:
         raise ValueError("t must be positive")
     barrier = float(-np.sum(np.log(-fv)))
     m = int(fv.size)
     out = {
-        "barrier": barrier, "gradient_factor": -1.0 / fv,
-        "suboptimality_bound": m / t, "m": m, "t": t,
+        "barrier": barrier,
+        "gradient_factor": -1.0 / fv,
+        "suboptimality_bound": m / t,
+        "m": m,
+        "t": t,
         "method": "boyd_log_barrier",
     }
     if f0 is not None:
@@ -103,8 +104,7 @@ def boyd_log_barrier(f, t=1.0, f0=None):
         out["centering_objective"] = None
     return RichResult(
         title="Log barrier",
-        summary_lines=[("constraints", m), ("t", t), ("barrier", barrier),
-                       ("suboptimality <=", m / t)],
+        summary_lines=[("constraints", m), ("t", t), ("barrier", barrier), ("suboptimality <=", m / t)],
         payload=out,
     )
 

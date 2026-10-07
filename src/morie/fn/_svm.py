@@ -38,7 +38,7 @@ def kernel_matrix(X, Z=None, kernel="rbf", gamma=None, degree=3, coef0=1.0):
         if gamma is None:
             gamma = 1.0 / X.shape[1]
         return np.tanh(gamma * X @ Z.T + coef0)
-    raise ValueError(f'unknown kernel {kernel!r}; expected linear, poly, rbf or sigmoid')
+    raise ValueError(f"unknown kernel {kernel!r}; expected linear, poly, rbf or sigmoid")
 
 
 def smo(K, y, C=1.0, tol=1e-3, max_passes=50, max_iter=100000, seed=0, p=None):

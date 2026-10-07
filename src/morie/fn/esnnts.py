@@ -22,8 +22,7 @@ def _draw(k):
     return 2.0 * core.vdc(k // len(_PRIMES) + 1, b) - 1.0
 
 
-def echo_state_network(y, reservoir_size=20, spectral_radius=0.9, leak=1.0,
-                       ridge=1e-6, washout=None):
+def echo_state_network(y, reservoir_size=20, spectral_radius=0.9, leak=1.0, ridge=1e-6, washout=None):
     """
     Echo state network (reservoir computing)
 
@@ -89,7 +88,7 @@ def echo_state_network(y, reservoir_size=20, spectral_radius=0.9, leak=1.0,
     lam = float(ridge)
     if lam < 0.0:
         raise ValueError("ridge must be non-negative")
-    wo = (min(size, n // 4) if washout is None else int(washout))
+    wo = min(size, n // 4) if washout is None else int(washout)
     if wo < 0 or wo >= n - 1:
         raise ValueError("washout must lie in [0, n-1)")
     W = [[_draw(i * size + j) for j in range(size)] for i in range(size)]
@@ -116,8 +115,7 @@ def echo_state_network(y, reservoir_size=20, spectral_radius=0.9, leak=1.0,
     k = size + 1
     if nfit < 1:
         raise ValueError("no rows left after washout")
-    XtX = [[sum(rows[r][i] * rows[r][j] for r in range(nfit)) for j in range(k)]
-           for i in range(k)]
+    XtX = [[sum(rows[r][i] * rows[r][j] for r in range(nfit)) for j in range(k)] for i in range(k)]
     for i in range(k):
         XtX[i][i] += lam
     Xty = [sum(rows[r][i] * targ[r] for r in range(nfit)) for i in range(k)]
@@ -127,18 +125,20 @@ def echo_state_network(y, reservoir_size=20, spectral_radius=0.9, leak=1.0,
     mt = sum(targ) / nfit
     vt = sum((t - mt) ** 2 for t in targ) / nfit
     nrmse = math.sqrt(mse / vt) if vt > 0.0 else float("nan")
-    return RichResult(payload={
-        "estimate": mse,
-        "mse": mse,
-        "nrmse": nrmse,
-        "coef": v,
-        "win": Win,
-        "size": size,
-        "washout": wo,
-        "nfit": nfit,
-        "n": n,
-        "method": "Echo state network (reservoir computing)",
-    })
+    return RichResult(
+        payload={
+            "estimate": mse,
+            "mse": mse,
+            "nrmse": nrmse,
+            "coef": v,
+            "win": Win,
+            "size": size,
+            "washout": wo,
+            "nfit": nfit,
+            "n": n,
+            "method": "Echo state network (reservoir computing)",
+        }
+    )
 
 
 def cheatsheet():

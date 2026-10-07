@@ -38,13 +38,31 @@ def _r_install_expr(github: bool = False) -> str:
     rmoriebricklayer). ``github``: this repository's own R arm, built from
     source with remotes (needs a C/C++ toolchain and rmoriebricklayer).
     """
+    from . import __version__ as v
+
     if github:
+        # pinned to this release's tag, as the r-universe route is: the default branch
+        # holds whatever release main is on (1.3.9 while 1.4.0 was on lean), and the
+        # R bridge refuses a mismatched arm. A dev build takes main.
+        import re
+
+        ref = f"@v{v}" if re.match(r"^\d+\.\d+\.\d+$", v) else ""
         return (
             'if (!requireNamespace("remotes", quietly = TRUE)) '
             f"install.packages('remotes', repos='{CRAN}'); "
-            f"remotes::install_github('{GITHUB_REPO}', subdir = '{GITHUB_SUBDIR}')"
+            f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', upgrade = 'never')"
         )
-    return f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}'))"
+
+    # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
+    # serves another version (it lags a release by a build cycle)
+    return (
+        f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}')); "
+        "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
+        f"if (have() != '{v}') {{ "
+        f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
+        f"remotes::install_github('rootcoder007/rmorie@v{v}', upgrade = 'never') }}; "
+        f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
+    )
 
 
 def _have_spec(name: str) -> bool:
@@ -121,6 +139,23 @@ def _mark(ok: bool, label: str) -> None:
 
 
 def run(args) -> int:
+    """Run ``morie bricklayer``: report which members of the morie family are installed.
+
+    Prints one line each for morie (Python), rmorie with its data and
+    bricklayer packages (R), the ``rmorie`` launcher and a C/C++ toolchain,
+    and warns when a compiled core is inactive. With ``args.check`` it
+    only reports. Otherwise, when the R side is missing (or
+    ``args.github`` asks for this repository's R arm), it installs it --
+    rmorie pinned to this morie's version -- after a confirmation that
+    ``args.yes`` skips; off a terminal without ``--yes`` it prints the
+    install command instead.
+
+    Args:
+        args: the parsed ``argparse`` namespace of the ``bricklayer`` verb.
+
+    Returns:
+        The process exit code (0 when everything checked is present).
+    """
     py_ok = True  # we are running inside morie
     r_ok = _have_r_morie()
     cli_ok = _which("rmorie")

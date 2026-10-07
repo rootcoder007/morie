@@ -1,7 +1,6 @@
 """Tests for gpmoe.gp_mixture_of_experts."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gpmoe import gp_mixture_of_experts
 
 

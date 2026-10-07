@@ -20,11 +20,17 @@ def spatial_lag_model(y, X, W, add_intercept=True):
     inconsistent -- use this or
     :func:`morie.fn._robust_core.spatial_2sls`. Keys: estimate."""
     r = _rc.spatial_lag_model(y, X, W, add_intercept=add_intercept)
-    res = RichResult(payload={"estimate": r["rho"], "rho": r["rho"],
-                              "beta": r["beta"], "sigma2": r["sigma2"],
-                              "loglik": r["loglik"],
-                              "residuals": r["residuals"],
-                              "method": r["method"]})
+    res = RichResult(
+        payload={
+            "estimate": r["rho"],
+            "rho": r["rho"],
+            "beta": r["beta"],
+            "sigma2": r["sigma2"],
+            "loglik": r["loglik"],
+            "residuals": r["residuals"],
+            "method": r["method"],
+        }
+    )
     return with_describe_pointer(res, "sarmod")
 
 

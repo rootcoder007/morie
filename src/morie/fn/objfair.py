@@ -1,8 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Individual fairness: Lipschitz constraint on a classifier."""
 
-import math
-
 from . import _tail1core as C
 from ._richresult import RichResult
 
@@ -103,13 +101,22 @@ def individual_fairness_lipschitz(h_values, x_pairs, L=1.0, metric=None):
             ratio = gap / d[k]
             if ratio > lreq:
                 lreq = ratio
-    return RichResult(payload={
-        "estimate": lreq, "L_required": lreq, "n_violations": float(viol),
-        "violation_rate": viol / float(m), "max_gap": maxgap,
-        "max_pair_i": float(bi), "max_pair_j": float(bj),
-        "fair": 1.0 if viol == 0 else 0.0, "L": lam, "n": n,
-        "n_pairs": float(m),
-        "method": "Individual fairness audit (Dwork et al. 2012)"})
+    return RichResult(
+        payload={
+            "estimate": lreq,
+            "L_required": lreq,
+            "n_violations": float(viol),
+            "violation_rate": viol / float(m),
+            "max_gap": maxgap,
+            "max_pair_i": float(bi),
+            "max_pair_j": float(bj),
+            "fair": 1.0 if viol == 0 else 0.0,
+            "L": lam,
+            "n": n,
+            "n_pairs": float(m),
+            "method": "Individual fairness audit (Dwork et al. 2012)",
+        }
+    )
 
 
 def cheatsheet():

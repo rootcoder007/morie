@@ -8,8 +8,7 @@ from ._richresult import RichResult
 __all__ = ["kamath_best_of_n_sampling"]
 
 
-def kamath_best_of_n_sampling(samples, rewards=None, reward_fn=None,
-                              x=None):
+def kamath_best_of_n_sampling(samples, rewards=None, reward_fn=None, x=None):
     r"""y_hat = argmax_{y in {y_1..y_N}} r_phi(x, y).
 
     Either pass the reward-model scores in ``rewards``, or a callable
@@ -30,26 +29,29 @@ def kamath_best_of_n_sampling(samples, rewards=None, reward_fn=None,
     """
     ys = list(samples)
     if len(ys) == 0:
-        raise ValueError("no samples were generated; best-of-0 has no "
-                         "argmax.")
+        raise ValueError("no samples were generated; best-of-0 has no argmax.")
     if rewards is None:
         if not callable(reward_fn):
-            raise ValueError("give rewards= or a callable reward_fn(x, "
-                             "y).")
+            raise ValueError("give rewards= or a callable reward_fn(x, y).")
         r = np.array([float(reward_fn(x, y)) for y in ys])
     else:
         r = np.atleast_1d(np.asarray(rewards, dtype=float))
         if r.size != len(ys):
-            raise ValueError(
-                f"{r.size} rewards for {len(ys)} samples.")
+            raise ValueError(f"{r.size} rewards for {len(ys)} samples.")
     if not np.all(np.isfinite(r)):
         raise ValueError("the reward model returned non-finite scores.")
     k = int(np.argmax(r))
-    return RichResult(payload={
-        "estimate": float(r[k]), "best": ys[k], "best_index": k,
-        "rewards": [float(v) for v in r],
-        "reward_spread": float(r.max() - r.min()), "n": len(ys),
-        "method": "best-of-N sampling (Kamath Ch 5)"})
+    return RichResult(
+        payload={
+            "estimate": float(r[k]),
+            "best": ys[k],
+            "best_index": k,
+            "rewards": [float(v) for v in r],
+            "reward_spread": float(r.max() - r.min()),
+            "n": len(ys),
+            "method": "best-of-N sampling (Kamath Ch 5)",
+        }
+    )
 
 
 def cheatsheet():

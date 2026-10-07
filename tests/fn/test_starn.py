@@ -1,8 +1,8 @@
 """Tests for morie.fn.starn — Spatio-temporal autoregressive model."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.starn import starn
 
 
@@ -40,13 +40,13 @@ def _ring_w(n):
 
 def _star_series(phi0, phi1, T, n, noise):
     import math
+
     w = _ring_w(n)
     z = [[math.sin(1.7 * j + 0.3) for j in range(n)]]
     for t in range(1, T):
         prev = z[-1]
         lag = [sum(w[i][j] * prev[j] for j in range(n)) for i in range(n)]
-        z.append([phi0 * prev[i] + phi1 * lag[i]
-                  + noise * math.cos(2.3 * t * (i + 1)) for i in range(n)])
+        z.append([phi0 * prev[i] + phi1 * lag[i] + noise * math.cos(2.3 * t * (i + 1)) for i in range(n)])
     return z, w
 
 
@@ -64,6 +64,7 @@ class TestStarnValues:
     def test_least_squares_and_aic(self):
         """Coefficients solve the normal equations; AIC = N log(RSS/N) + 2k."""
         import math
+
         z, w = _star_series(0.6, -0.2, 15, 5, 0.1)
         r = starn(z, w, order=1)
         x0, x1, yv = [], [], []

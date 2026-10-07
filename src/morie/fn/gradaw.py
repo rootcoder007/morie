@@ -59,13 +59,9 @@ def geron_adaboost_weight_update(y_true, y_pred, weights, alpha_t):
     y_pred = np.asarray(y_pred).ravel()
     w = np.asarray(weights, dtype=float).ravel()
     if y_true.size != y_pred.size:
-        raise ValueError(
-            f"y_true and y_pred must have equal length, got {y_true.size} and {y_pred.size}."
-        )
+        raise ValueError(f"y_true and y_pred must have equal length, got {y_true.size} and {y_pred.size}.")
     if y_true.size != w.size:
-        raise ValueError(
-            f"weights must have one entry per sample ({y_true.size}), got {w.size}."
-        )
+        raise ValueError(f"weights must have one entry per sample ({y_true.size}), got {w.size}.")
     if y_true.size == 0:
         raise ValueError("no samples supplied.")
     if np.any(w < 0):
@@ -82,9 +78,7 @@ def geron_adaboost_weight_update(y_true, y_pred, weights, alpha_t):
     w_new = w * np.exp(alpha_t * wrong)
     new_total = float(w_new.sum())
     if not np.isfinite(new_total) or new_total <= 0:
-        raise ValueError(
-            f"weight update overflowed (sum={new_total}); alpha_t={alpha_t} is too large."
-        )
+        raise ValueError(f"weight update overflowed (sum={new_total}); alpha_t={alpha_t} is too large.")
     w_new = w_new / new_total
 
     return RichResult(

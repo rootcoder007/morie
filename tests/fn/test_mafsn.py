@@ -1,7 +1,6 @@
 """Tests for mafsn.ma_fail_safe_n."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.mafsn import ma_fail_safe_n
 
 

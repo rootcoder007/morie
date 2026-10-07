@@ -71,7 +71,7 @@ def partition_tree(X, n, tree, k, ok):
                 (A, _), (B, _) = split_tree(edges, ei)
                 cands.append((base - ssd(X, A) - ssd(X, B), gi, ei))
         cands.sort(key=lambda t: (-t[0], t[1], t[2]))
-        for gain, gi, ei in cands:
+        for _gain, gi, ei in cands:
             (A, EA), (B, EB) = split_tree(groups[gi][1], ei)
             if ok(A) and ok(B):
                 groups[gi] = (A, EA)

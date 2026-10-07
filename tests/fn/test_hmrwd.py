@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.hmrwd import geron_reward_function
 
 
@@ -12,7 +10,10 @@ def test_hmrwd_basic():
     s = 0
     a = 1
     s_next = 1
-    R = lambda s, a, sp: 1.0 if sp == 1 else 0.0
+
+    def R(s, a, sp):
+        return 1.0 if sp == 1 else 0.0
+
     result = geron_reward_function(s, a, s_next, R=R, gamma=0.9)
     assert isinstance(result, dict)
     for key in ("rewards", "total_reward", "returns", "discounted_return", "estimate", "n", "method"):

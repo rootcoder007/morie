@@ -1,7 +1,6 @@
 """Tests for gb821.gibbons_wilcoxon_ranksum."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.gb821 import gibbons_wilcoxon_ranksum
 
 

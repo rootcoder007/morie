@@ -125,11 +125,16 @@ def lapEig(A, k=2):
         for r in range(n):
             emb[r, c] = sgn * f[r]
         out_vals.append(lam[c + 1])
-    return RichResult(payload={
-        "embedding": emb, "eigenvalues": out_vals,
-        "all_eigenvalues": lam, "k": k, "n": int(n),
-        "method": "Laplacian eigenmap, generalized L f = lambda D f via Jacobi",
-    })
+    return RichResult(
+        payload={
+            "embedding": emb,
+            "eigenvalues": out_vals,
+            "all_eigenvalues": lam,
+            "k": k,
+            "n": int(n),
+            "method": "Laplacian eigenmap, generalized L f = lambda D f via Jacobi",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)

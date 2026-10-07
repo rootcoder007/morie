@@ -1,7 +1,6 @@
 """Tests for smpa.smooth_sensitivity."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.smpa import smooth_sensitivity
 
 

@@ -3,9 +3,9 @@
 Book identities live in test_schab_matern_family.py.
 """
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn.spanis import schabenberger_geometric_anisotropy
 
 
@@ -26,6 +26,4 @@ def test_spanis_returns_corrected_and_raw_semivariograms():
 def test_spanis_rejects_wrong_shaped_map():
     rng = np.random.default_rng(9)
     with pytest.raises(ValueError, match="must be"):
-        schabenberger_geometric_anisotropy(
-            rng.random((20, 2)), rng.normal(size=20), np.eye(3)
-        )
+        schabenberger_geometric_anisotropy(rng.random((20, 2)), rng.normal(size=20), np.eye(3))

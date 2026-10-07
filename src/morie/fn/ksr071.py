@@ -7,8 +7,7 @@ from ._richresult import RichResult
 __all__ = ["kosorok_ch3_log_profile_expansion"]
 
 
-def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde,
-                                      log_pl_hat=0.0, n=None):
+def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde, log_pl_hat=0.0, n=None):
     r"""Quadratic expansion of the log profile likelihood (Kosorok
     Ch. 3):
 
@@ -49,8 +48,8 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde,
     th = np.atleast_1d(np.asarray(theta_hat_n, dtype=float))
     if tb.shape != th.shape:
         raise ValueError("theta_bar_n and theta_hat_n must have the same shape.")
-    I = np.atleast_2d(np.asarray(I_tilde, dtype=float))
-    if I.shape[0] != tb.size or I.shape[1] != tb.size:
+    I_ = np.atleast_2d(np.asarray(I_tilde, dtype=float))
+    if I_.shape[0] != tb.size or I_.shape[1] != tb.size:
         raise ValueError(f"I_tilde must be {tb.size}x{tb.size}.")
     if n is None:
         raise ValueError("n is required for the n-scaling of the quadratic term.")
@@ -58,11 +57,16 @@ def kosorok_ch3_log_profile_expansion(theta_bar_n, theta_hat_n, I_tilde,
     if n < 1:
         raise ValueError(f"n must be at least 1, got {n}.")
     d = tb - th
-    quad = 0.5 * n * float(d @ I @ d)
+    quad = 0.5 * n * float(d @ I_ @ d)
     return RichResult(
-        payload={"log_pl": float(log_pl_hat) - quad, "quadratic_term": quad,
-                 "delta": d, "lrt_statistic": 2.0 * quad, "n": n,
-                 "method": "log pl(theta_bar) = log pl(theta_hat) - n d'I d/2 + o_P(1)"}
+        payload={
+            "log_pl": float(log_pl_hat) - quad,
+            "quadratic_term": quad,
+            "delta": d,
+            "lrt_statistic": 2.0 * quad,
+            "n": n,
+            "method": "log pl(theta_bar) = log pl(theta_hat) - n d'I d/2 + o_P(1)",
+        }
     )
 
 

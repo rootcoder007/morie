@@ -67,15 +67,21 @@ def kosorok_joint_convergence(psi_dot, scores, n=None):
     sd = np.sqrt(np.maximum(np.diag(avar), 0.0))
     with np.errstate(invalid="ignore", divide="ignore"):
         corr = avar / np.outer(sd, sd)
-    return RichResult(payload={
-        "avar": avar, "se": sd / np.sqrt(nn),
-        "correlation": np.where(np.isfinite(corr), corr, 0.0),
-        "jointly": True, "operator_invertible": ok,
-        "conditions": "the no-bias condition (3.6) and stochastic equicontinuity",
-        "warning": "theta-hat and eta-hat solve the SAME equation and are correlated; "
-                   "combining marginal limits as if independent understates variability",
-        "n": int(nn), "d": int(d),
-        "method": "Joint convergence (Cor. 3.2); one operator inverse gives both blocks and their dependence"})
+    return RichResult(
+        payload={
+            "avar": avar,
+            "se": sd / np.sqrt(nn),
+            "correlation": np.where(np.isfinite(corr), corr, 0.0),
+            "jointly": True,
+            "operator_invertible": ok,
+            "conditions": "the no-bias condition (3.6) and stochastic equicontinuity",
+            "warning": "theta-hat and eta-hat solve the SAME equation and are correlated; "
+            "combining marginal limits as if independent understates variability",
+            "n": int(nn),
+            "d": int(d),
+            "method": "Joint convergence (Cor. 3.2); one operator inverse gives both blocks and their dependence",
+        }
+    )
 
 
 def cheatsheet():

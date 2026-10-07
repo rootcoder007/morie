@@ -67,14 +67,21 @@ def vanraden_method1(marker_matrix, freq=None):
     pj = _allele_freq(M, freq)
     Z = [[M[i][j] - 2.0 * pj[j] for j in range(p)] for i in range(J)]
     den = 2.0 * sum(q * (1.0 - q) for q in pj)
-    G = [[sum(Z[i][k] * Z[j][k] for k in range(p)) / den
-          for j in range(J)] for i in range(J)]
-    return with_describe_pointer(RichResult(payload={
-        "estimate": float(sum(G[i][i] for i in range(J)) / J),
-        "G": G, "freq": pj, "denominator": float(den),
-        "n_lines": J, "n_markers": p,
-        "method": "VanRaden (2008) method 1 genomic relationship matrix",
-    }), "vanr1")
+    G = [[sum(Z[i][k] * Z[j][k] for k in range(p)) / den for j in range(J)] for i in range(J)]
+    return with_describe_pointer(
+        RichResult(
+            payload={
+                "estimate": float(sum(G[i][i] for i in range(J)) / J),
+                "G": G,
+                "freq": pj,
+                "denominator": float(den),
+                "n_lines": J,
+                "n_markers": p,
+                "method": "VanRaden (2008) method 1 genomic relationship matrix",
+            }
+        ),
+        "vanr1",
+    )
 
 
 def cheatsheet():

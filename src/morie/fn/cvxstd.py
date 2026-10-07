@@ -115,11 +115,13 @@ def boyd_steepest_desc(grad, norm=2, P=None):
     rate = float(g @ d)
     return RichResult(
         title=f"Steepest descent (l{norm})",
-        summary_lines=[("norm", str(norm)), ("descent rate", rate),
-                       ("dual norm", dn)],
+        summary_lines=[("norm", str(norm)), ("descent rate", rate), ("dual norm", dn)],
         payload={
-            "direction": d, "descent_rate": rate, "dual_norm": dn,
-            "is_descent": bool(rate < 0), "norm": str(norm),
+            "direction": d,
+            "descent_rate": rate,
+            "dual_norm": dn,
+            "is_descent": bool(rate < 0),
+            "norm": str(norm),
             "method": "boyd_steepest_desc",
         },
     )

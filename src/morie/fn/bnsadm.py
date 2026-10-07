@@ -96,8 +96,7 @@ def _arm_fit(Xd, y, mask, family):
     return mu, np.full(y.shape, s2)
 
 
-def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
-                                alpha=0.05):
+def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01, alpha=0.05):
     r"""Efficiency and minimax bounds, with two estimators measured
     against them.
 
@@ -183,10 +182,7 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
         Xa = Xa.T
     n = yv.size
     if d.size != n or Xa.shape[0] != n:
-        raise ValueError(
-            f"y, D and X must agree in length; got {n}, {d.size} and "
-            f"{Xa.shape[0]}."
-        )
+        raise ValueError(f"y, D and X must agree in length; got {n}, {d.size} and {Xa.shape[0]}.")
     if n < 10:
         raise ValueError(f"need at least 10 observations; got {n}.")
     if not np.all(np.isin(d, (0.0, 1.0))):
@@ -211,9 +207,7 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
     tau_x = mu1 - mu0
 
     # AIPW / doubly robust point estimate and its influence function
-    psi_aipw = (tau_x
-                + d * (yv - mu1) / e
-                - (1.0 - d) * (yv - mu0) / (1.0 - e))
+    psi_aipw = tau_x + d * (yv - mu1) / e - (1.0 - d) * (yv - mu0) / (1.0 - e)
     tau = float(np.mean(psi_aipw))
     var_aipw = float(np.mean((psi_aipw - tau) ** 2))
 
@@ -221,10 +215,8 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
     # away the outcome regression and pays for it in variance
     w1 = d / e
     w0 = (1.0 - d) / (1.0 - e)
-    tau_ipw = float(np.sum(w1 * yv) / np.sum(w1)
-                    - np.sum(w0 * yv) / np.sum(w0))
-    psi_ipw = w1 * (yv - np.sum(w1 * yv) / np.sum(w1)) \
-        - w0 * (yv - np.sum(w0 * yv) / np.sum(w0))
+    tau_ipw = float(np.sum(w1 * yv) / np.sum(w1) - np.sum(w0 * yv) / np.sum(w0))
+    psi_ipw = w1 * (yv - np.sum(w1 * yv) / np.sum(w1)) - w0 * (yv - np.sum(w0 * yv) / np.sum(w0))
     var_ipw = float(np.mean((psi_ipw - np.mean(psi_ipw)) ** 2))
 
     overlap = float(np.mean(s2_1 / e + s2_0 / (1.0 - e)))
@@ -247,16 +239,16 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
             ("IPW / bound", var_ipw / v_eff if v_eff > 0 else float("nan")),
             ("Minimax regret bound", regret),
         ],
-        tables=[{
-            "title": "Where the bound comes from",
-            "headers": ["Component", "Value", "Share"],
-            "rows": [
-                ["Overlap  E[s1^2/e + s0^2/(1-e)]", overlap,
-                 overlap / v_eff if v_eff > 0 else float("nan")],
-                ["Heterogeneity  Var(tau(X))", heterogeneity,
-                 heterogeneity / v_eff if v_eff > 0 else float("nan")],
-            ],
-        }],
+        tables=[
+            {
+                "title": "Where the bound comes from",
+                "headers": ["Component", "Value", "Share"],
+                "rows": [
+                    ["Overlap  E[s1^2/e + s0^2/(1-e)]", overlap, overlap / v_eff if v_eff > 0 else float("nan")],
+                    ["Heterogeneity  Var(tau(X))", heterogeneity, heterogeneity / v_eff if v_eff > 0 else float("nan")],
+                ],
+            }
+        ],
         payload={
             "estimate": tau,
             "ate_aipw": tau,
@@ -268,10 +260,8 @@ def bound_admissible_estimators(y, D, X, family="gaussian", trim=0.01,
             "se_bound": se_bound,
             "var_aipw": var_aipw,
             "var_ipw": var_ipw,
-            "aipw_efficiency_ratio": (var_aipw / v_eff if v_eff > 0
-                                      else float("nan")),
-            "ipw_efficiency_ratio": (var_ipw / v_eff if v_eff > 0
-                                     else float("nan")),
+            "aipw_efficiency_ratio": (var_aipw / v_eff if v_eff > 0 else float("nan")),
+            "ipw_efficiency_ratio": (var_ipw / v_eff if v_eff > 0 else float("nan")),
             "overlap_term": overlap,
             "heterogeneity_term": heterogeneity,
             "minimax_regret_bound": regret,

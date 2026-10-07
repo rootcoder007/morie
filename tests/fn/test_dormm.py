@@ -1,7 +1,6 @@
 """Tests for morie.fn.dormm -- recurrence quantification analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn._containers import DescriptiveResult
 from morie.fn.dormm import dormm, recurrence_quantification
 

@@ -1,12 +1,10 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Friedman two-way analysis of variance by ranks."""
 
-import math
-
 from . import _stats_core as stats
 from ._richresult import RichResult
 
-__all__ = ['friedq', 'gibbons_friedman']
+__all__ = ["friedq", "gibbons_friedman"]
 
 
 def friedq(data, correct=True):
@@ -75,15 +73,11 @@ def friedq(data, correct=True):
             i = j + 1
         for j in range(n):
             rsum[j] += rk[j]
-    q = 12.0 / (k * n * (n + 1.0)) * sum(v * v for v in rsum) - 3.0 * k * (
-        n + 1.0
-    )
+    q = 12.0 / (k * n * (n + 1.0)) * sum(v * v for v in rsum) - 3.0 * k * (n + 1.0)
     s = sum((v - k * (n + 1.0) / 2.0) ** 2 for v in rsum)
     qc = q
     if correct and tiesum > 0.0:
-        qc = 12.0 * (n - 1.0) * s / (
-            k * n * (float(n) ** 2 - 1.0) - tiesum
-        )
+        qc = 12.0 * (n - 1.0) * s / (k * n * (float(n) ** 2 - 1.0) - tiesum)
     return RichResult(
         payload={
             "statistic": float(qc),

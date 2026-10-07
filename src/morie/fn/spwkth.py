@@ -59,8 +59,7 @@ def schabenberger_wiener_khinchin(cov_func, omega=None, h_max=200.0, n=40001):
     omega = np.atleast_1d(np.asarray(omega, dtype=float))
     h = np.linspace(-h_max, h_max, int(n))
     ch = np.asarray(cov_func(np.abs(h)), dtype=float)
-    s = np.array([np.trapezoid(np.cos(w * h) * ch, h) / (2 * np.pi)
-                  for w in omega])
+    s = np.array([np.trapezoid(np.cos(w * h) * ch, h) / (2 * np.pi) for w in omega])
     var = float(np.asarray(cov_func(np.zeros(1))).ravel()[0])
     # The omega grid cannot outrun the h grid. cos(omega h) sampled at
     # spacing dh aliases above the Nyquist frequency pi / dh, and
@@ -72,12 +71,18 @@ def schabenberger_wiener_khinchin(cov_func, omega=None, h_max=200.0, n=40001):
     sw = np.array([np.trapezoid(np.cos(w * h) * ch, h) / (2 * np.pi) for w in wide])
     return RichResult(
         title="Wiener-Khinchin pair",
-        summary_lines=[("C(0)", var),
-                       ("integral of s", float(np.trapezoid(sw, wide))),
-                       ("Nyquist omega", float(w_nyq))],
-        payload={"omega": omega, "spectral_density": s, "variance": var,
-                 "integrated_density": float(np.trapezoid(sw, wide)),
-                 "nyquist_omega": float(w_nyq)},
+        summary_lines=[
+            ("C(0)", var),
+            ("integral of s", float(np.trapezoid(sw, wide))),
+            ("Nyquist omega", float(w_nyq)),
+        ],
+        payload={
+            "omega": omega,
+            "spectral_density": s,
+            "variance": var,
+            "integrated_density": float(np.trapezoid(sw, wide)),
+            "nyquist_omega": float(w_nyq),
+        },
     )
 
 

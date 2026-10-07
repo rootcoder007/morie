@@ -1,7 +1,6 @@
 """Tests for spspec2.schabenberger_spectral_sim."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.spspec2 import schabenberger_spectral_sim
 
 

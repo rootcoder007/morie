@@ -1,8 +1,5 @@
 """Tests for fzt23.fauzi_thm2_3_var_brdkdfe."""
 
-from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.fzt23 import fauzi_thm2_3_var_brdkdfe
 
 
@@ -28,7 +25,7 @@ def test_fzt23_basic():
     # Independent computation of the documented formula:
     # Var = f(1-f)/n - (h/n) * [ 2(a^4+1)/(a^2-1)^2 * r1 + r2 ] * density
     edfvar = fx * (1.0 - fx) / n
-    bracket = 2.0 * (a ** 4 + 1.0) / (a * a - 1.0) ** 2 * r1 + r2
+    bracket = 2.0 * (a**4 + 1.0) / (a * a - 1.0) ** 2 * r1 + r2
     expected_var = edfvar - h / n * bracket * density
     assert result["variance"] == expected_var
     assert result["edfvar"] == edfvar

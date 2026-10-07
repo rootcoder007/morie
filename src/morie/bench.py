@@ -21,6 +21,7 @@ Kalibera, T. & Jones, R. (2013). Rigorous benchmarking in reasonable time.
 
 from __future__ import annotations
 
+import contextlib
 import gc
 import json
 import logging
@@ -269,10 +270,8 @@ def capture_system_info() -> SystemInfo:
     packages = ["pandas", "numpy", "scipy", "scikit-learn", "statsmodels", "DoubleML", "rich"]
     pkg_versions: dict[str, str] = {}
     for pkg in packages:
-        try:
+        with contextlib.suppress(importlib.metadata.PackageNotFoundError):
             pkg_versions[pkg] = importlib.metadata.version(pkg)
-        except importlib.metadata.PackageNotFoundError:
-            pass
 
     return SystemInfo(
         python_version=sys.version,
@@ -370,7 +369,7 @@ def benchmark(
         output_size = result.memory_usage(deep=True).sum()
     elif isinstance(result, dict):
         output_size = len(json.dumps(result, default=str).encode())
-    elif isinstance(result, (str, bytes)):
+    elif isinstance(result, str | bytes):
         output_size = len(result) if isinstance(result, bytes) else len(result.encode())
 
     sys_info = capture_system_info()
@@ -998,10 +997,7 @@ def save_results(
         path.write_text(json.dumps(data, indent=2, default=str), encoding="utf-8")
     elif format == "csv":
         path = path.with_suffix(".csv")
-        if isinstance(results, BenchmarkSuite):
-            df = results.to_dataframe()
-        else:
-            df = pd.DataFrame([results.to_dict()])
+        df = results.to_dataframe() if isinstance(results, BenchmarkSuite) else pd.DataFrame([results.to_dict()])
         df.to_csv(path, index=False)
 
     logger.info("Saved benchmarks to %s", path)

@@ -103,16 +103,24 @@ def dp_mean(x, a, b, epsilon=1.0, seed=None, split=0.5, known_n=True):
         scale = (b - a) / eps_s / n
     return RichResult(
         title="DP mean",
-        summary_lines=[("epsilon", epsilon), ("n", int(n)),
-                       ("sensitivity", float(sens)), ("release", rel)],
-        warnings=(["n was treated as private, so the release is a ratio of two "
-                   "noisy quantities and is not unbiased"] if not known_n else []),
+        summary_lines=[("epsilon", epsilon), ("n", int(n)), ("sensitivity", float(sens)), ("release", rel)],
+        warnings=(
+            ["n was treated as private, so the release is a ratio of two noisy quantities and is not unbiased"]
+            if not known_n
+            else []
+        ),
         payload={
-            "release": rel, "true_mean": float(xc.mean()),
-            "sensitivity": float(sens), "noise_scale": float(scale),
-            "clipped_fraction": clipped_frac, "bounds": (a, b), "n": int(n),
-            "epsilon": epsilon, "epsilon_sum": float(eps_s),
-            "epsilon_count": float(eps_c), "known_n": bool(known_n),
+            "release": rel,
+            "true_mean": float(xc.mean()),
+            "sensitivity": float(sens),
+            "noise_scale": float(scale),
+            "clipped_fraction": clipped_frac,
+            "bounds": (a, b),
+            "n": int(n),
+            "epsilon": epsilon,
+            "epsilon_sum": float(eps_s),
+            "epsilon_count": float(eps_c),
+            "known_n": bool(known_n),
             "method": "dp_mean",
         },
     )

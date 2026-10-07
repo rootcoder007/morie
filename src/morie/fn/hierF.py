@@ -60,14 +60,10 @@ Society* 52(1), 17-19, doi:10.1017/S0305004100030929. The generalized
 inverse the minimisation reduces to.
 """
 
-import math
-
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["summing_matrix", "mint_reconcile", "mint_P",
-           "shrink_covariance", "is_coherent"]
+__all__ = ["summing_matrix", "mint_reconcile", "mint_P", "shrink_covariance", "is_coherent"]
 
 _EPS = 1e-12
 
@@ -86,8 +82,7 @@ def summing_matrix(groups, n_bottom):
         row = [0.0] * n_bottom
         for i in g:
             if not 0 <= i < n_bottom:
-                raise ValueError("hierF: bottom index %d out of range"
-                                 % i)
+                raise ValueError(f"hierF: bottom index {int(i)} out of range")
             row[i] = 1.0
         S.append(row)
     for i in range(n_bottom):
@@ -99,9 +94,8 @@ def is_coherent(y, S, tol=1e-9):
     """Whether a full-hierarchy vector actually adds up."""
     m = len(S)
     n = len(S[0])
-    b = y[m - n:]
-    return all(abs(y[i] - sum(S[i][j] * b[j] for j in range(n))) <= tol
-               for i in range(m))
+    b = y[m - n :]
+    return all(abs(y[i] - sum(S[i][j] * b[j] for j in range(n))) <= tol for i in range(m))
 
 
 def shrink_covariance(residuals, lam=None):
@@ -115,18 +109,16 @@ def shrink_covariance(residuals, lam=None):
     """
     T = len(residuals)
     if T < 2:
-        raise ValueError("hierF: need at least 2 residual rows, got %d"
-                         % T)
+        raise ValueError(f"hierF: need at least 2 residual rows, got {int(T)}")
     m = len(residuals[0])
     mu = [sum(residuals[t][i] for t in range(T)) / T for i in range(m)]
-    Sig = [[sum((residuals[t][a] - mu[a]) * (residuals[t][b] - mu[b])
-                for t in range(T)) / (T - 1)
-            for b in range(m)] for a in range(m)]
-    D = [[Sig[a][b] if a == b else 0.0 for b in range(m)]
-         for a in range(m)]
+    Sig = [
+        [sum((residuals[t][a] - mu[a]) * (residuals[t][b] - mu[b]) for t in range(T)) / (T - 1) for b in range(m)]
+        for a in range(m)
+    ]
+    D = [[Sig[a][b] if a == b else 0.0 for b in range(m)] for a in range(m)]
     if lam is None:
-        num = sum(Sig[a][b] ** 2 for a in range(m) for b in range(m)
-                  if a != b)
+        num = sum(Sig[a][b] ** 2 for a in range(m) for b in range(m) if a != b)
         # variance of the off-diagonal entries, the Schafer-Strimmer
         # intensity in its simplest form
         var = 0.0
@@ -134,34 +126,28 @@ def shrink_covariance(residuals, lam=None):
             for b in range(m):
                 if a == b:
                     continue
-                w = [(residuals[t][a] - mu[a]) * (residuals[t][b] - mu[b])
-                     for t in range(T)]
+                w = [(residuals[t][a] - mu[a]) * (residuals[t][b] - mu[b]) for t in range(T)]
                 wm = sum(w) / T
                 var += sum((v - wm) ** 2 for v in w) * T / (T - 1) ** 3
         lam = 1.0 if num <= _EPS else min(1.0, max(0.0, var / num))
-    return [[(1.0 - lam) * Sig[a][b] + lam * D[a][b] for b in range(m)]
-            for a in range(m)], lam
+    return [[(1.0 - lam) * Sig[a][b] + lam * D[a][b] for b in range(m)] for a in range(m)], lam
 
 
 def mint_P(S, W=None, method="shrink", residuals=None, ridge=1e-10):
     r""":math:`P = (S'W^{-1}S)^{-1}S'W^{-1}`."""
     if method not in ("ols", "wls", "shrink", "custom"):
-        raise ValueError("hierF: method must be ols, wls, shrink or "
-                         "custom, got %r" % (method,))
+        raise ValueError(f"hierF: method must be ols, wls, shrink or custom, got {method!r}")
     m = len(S)
     n = len(S[0])
     lam = None
     if method == "ols":
-        Wm = [[1.0 if a == b else 0.0 for b in range(m)]
-              for a in range(m)]
+        Wm = [[1.0 if a == b else 0.0 for b in range(m)] for a in range(m)]
     elif method == "wls":
         if residuals is None:
             raise ValueError("hierF: wls needs residuals")
         T = len(residuals)
-        v = [max(sum(residuals[t][a] ** 2 for t in range(T)) / T, _EPS)
-             for a in range(m)]
-        Wm = [[v[a] if a == b else 0.0 for b in range(m)]
-              for a in range(m)]
+        v = [max(sum(residuals[t][a] ** 2 for t in range(T)) / T, _EPS) for a in range(m)]
+        Wm = [[v[a] if a == b else 0.0 for b in range(m)] for a in range(m)]
     elif method == "shrink":
         if residuals is None:
             raise ValueError("hierF: shrink needs residuals")
@@ -171,61 +157,67 @@ def mint_P(S, W=None, method="shrink", residuals=None, ridge=1e-10):
             raise ValueError("hierF: method='custom' needs W")
         Wm = [list(r) for r in W]
     # solve W X = S for X = W^-1 S, one column at a time
-    WX = [k.cholsolve([[Wm[a][b] + (ridge if a == b else 0.0)
-                        for b in range(m)] for a in range(m)],
-                      [S[a][j] for a in range(m)]) for j in range(n)]
+    WX = [
+        k.cholsolve(
+            [[Wm[a][b] + (ridge if a == b else 0.0) for b in range(m)] for a in range(m)], [S[a][j] for a in range(m)]
+        )
+        for j in range(n)
+    ]
     Winv_S = [[WX[j][a] for j in range(n)] for a in range(m)]
-    A = [[sum(S[a][i] * Winv_S[a][j] for a in range(m))
-          for j in range(n)] for i in range(n)]
+    A = [[sum(S[a][i] * Winv_S[a][j] for a in range(m)) for j in range(n)] for i in range(n)]
     P = []
     for i in range(n):
         e = [1.0 if t == i else 0.0 for t in range(n)]
-        row = k.cholsolve([[A[p][q] + (ridge if p == q else 0.0)
-                            for q in range(n)] for p in range(n)], e)
-        P.append([sum(row[j] * Winv_S[a][j] for j in range(n))
-                  for a in range(m)])
+        row = k.cholsolve([[A[p][q] + (ridge if p == q else 0.0) for q in range(n)] for p in range(n)], e)
+        P.append([sum(row[j] * Winv_S[a][j] for j in range(n)) for a in range(m)])
     return P, lam
 
 
-def mint_reconcile(base, S, method="shrink", residuals=None, W=None,
-                   ridge=1e-10):
+def mint_reconcile(base, S, method="shrink", residuals=None, W=None, ridge=1e-10):
     r"""Reconcile base forecasts: :math:`\tilde y = S P \hat y`."""
     Sm = [list(r) for r in S]
     m = len(Sm)
     n = len(Sm[0])
     yb = k.vec(base)
     if len(yb) != m:
-        raise ValueError("hierF: %d base forecasts for %d series"
-                         % (len(yb), m))
-    P, lam = mint_P(Sm, W=W, method=method, residuals=residuals,
-                    ridge=ridge)
+        raise ValueError(f"hierF: {int(len(yb))} base forecasts for {int(m)} series")
+    P, lam = mint_P(Sm, W=W, method=method, residuals=residuals, ridge=ridge)
     b = [sum(P[i][a] * yb[a] for a in range(m)) for i in range(n)]
     rec = [sum(Sm[a][j] * b[j] for j in range(n)) for a in range(m)]
     # PS = I is the constraint; check it rather than trust it
-    PS = [[sum(P[i][a] * Sm[a][j] for a in range(m)) for j in range(n)]
-          for i in range(n)]
-    ps_err = max(abs(PS[i][j] - (1.0 if i == j else 0.0))
-                 for i in range(n) for j in range(n))
-    return RichResult(payload={
-        "estimate": rec, "reconciled": rec, "bottom": b,
-        "base": list(yb), "P": P, "S": Sm, "method": method,
-        "shrinkage": lam, "n_series": m, "n_bottom": n,
-        "coherent": is_coherent(rec, Sm),
-        "ps_identity_error": ps_err,
-        "adjustment": [rec[a] - yb[a] for a in range(m)],
-        "cite": "MinT, Wickramasuriya, Athanasopoulos & Hyndman (2019)",
-        "method_detail": "P = (S' W^-1 S)^-1 S' W^-1",
-    })
+    PS = [[sum(P[i][a] * Sm[a][j] for a in range(m)) for j in range(n)] for i in range(n)]
+    ps_err = max(abs(PS[i][j] - (1.0 if i == j else 0.0)) for i in range(n) for j in range(n))
+    return RichResult(
+        payload={
+            "estimate": rec,
+            "reconciled": rec,
+            "bottom": b,
+            "base": list(yb),
+            "P": P,
+            "S": Sm,
+            "method": method,
+            "shrinkage": lam,
+            "n_series": m,
+            "n_bottom": n,
+            "coherent": is_coherent(rec, Sm),
+            "ps_identity_error": ps_err,
+            "adjustment": [rec[a] - yb[a] for a in range(m)],
+            "cite": "MinT, Wickramasuriya, Athanasopoulos & Hyndman (2019)",
+            "method_detail": "P = (S' W^-1 S)^-1 S' W^-1",
+        }
+    )
 
 
 def cheatsheet():
-    return ("hierF: y = S b, reconcile with ytilde = S P yhat where "
-            "P = (S'W^-1 S)^-1 S'W^-1 minimises tr(P W P') subject to "
-            "PS = I (MinT). PS = I makes SP a PROJECTION -- an already "
-            "coherent forecast is left alone. Wrong P still adds up, "
-            "because S forces that; it is just the wrong coherent "
-            "point. W: ols=I, wls=diag, shrink=the paper's default "
-            "because the full covariance is singular when m > T.")
+    return (
+        "hierF: y = S b, reconcile with ytilde = S P yhat where "
+        "P = (S'W^-1 S)^-1 S'W^-1 minimises tr(P W P') subject to "
+        "PS = I (MinT). PS = I makes SP a PROJECTION -- an already "
+        "coherent forecast is left alone. Wrong P still adds up, "
+        "because S forces that; it is just the wrong coherent "
+        "point. W: ols=I, wls=diag, shrink=the paper's default "
+        "because the full covariance is singular when m > T."
+    )
 
 
 # compact alias per ledger/NAMING.md

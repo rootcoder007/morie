@@ -12,7 +12,7 @@ def _natural_spline_basis(x, knots):
     """Natural cubic spline basis (Hastie-Tibshirani-Friedman Eq. 5.4-5.5)."""
     knots = np.sort(np.asarray(knots, dtype=float))
     K = knots.size
-    kK, kK1 = knots[-1], knots[-2]
+    kK, _kK1 = knots[-1], knots[-2]
 
     def d(j):
         return (np.maximum(x - knots[j], 0) ** 3 - np.maximum(x - kK, 0) ** 3) / (kK - knots[j])

@@ -53,7 +53,7 @@ def vb_gaussian_mixture(
     r = np.zeros((n, K))
     prev_elbo = -np.inf
 
-    for it in range(max_iter):
+    for it in range(max_iter):  # noqa: B007 - read after the loop
         E_ln_pi = digamma(alpha) - digamma(np.sum(alpha))
         E_ln_prec = np.zeros(K)
         for k in range(K):

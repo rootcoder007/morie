@@ -1,7 +1,6 @@
 """Tests for fligner_killeen."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.flgnr import fligner_killeen
 
 

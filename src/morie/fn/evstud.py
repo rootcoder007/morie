@@ -9,8 +9,7 @@ from ._richresult import RichResult
 __all__ = ["event_study_coefficients"]
 
 
-def event_study_coefficients(y, D, unit, time, cohort, max_lead=None,
-                             max_lag=None, ref=-1):
+def event_study_coefficients(y, D, unit, time, cohort, max_lead=None, max_lag=None, ref=-1):
     """
     Event-study leads + lags coefficients
 
@@ -98,7 +97,7 @@ def event_study_coefficients(y, D, unit, time, cohort, max_lead=None,
         raise ValueError("no event-time indicators left after dropping ref")
     p = 1 + (U - 1) + (Tn - 1) + len(ets)
     if n <= p:
-        raise ValueError("more parameters (%d) than observations (%d)" % (p, n))
+        raise ValueError(f"more parameters ({int(p)}) than observations ({int(n)})")
     X = []
     for i in range(n):
         row = [1.0]
@@ -111,29 +110,30 @@ def event_study_coefficients(y, D, unit, time, cohort, max_lead=None,
     resid = [y[i] - fit[i] for i in range(n)]
     dof = n - p
     s2 = sum(r * r for r in resid) / dof
-    XtX = [[sum(X[i][a] * X[i][c] for i in range(n)) for c in range(p)]
-           for a in range(p)]
+    XtX = [[sum(X[i][a] * X[i][c] for i in range(n)) for c in range(p)] for a in range(p)]
     off = 1 + (U - 1) + (Tn - 1)
     coef = []
     se = []
-    for k, e in enumerate(ets):
+    for k, _e in enumerate(ets):
         j = off + k
         col = core.cholsolve(XtX, [1.0 if q == j else 0.0 for q in range(p)])
         coef.append(b[j])
         se.append(math.sqrt(s2 * col[j]))
     est = coef[ets.index(0)] if 0 in ets else float("nan")
-    return RichResult(payload={
-        "estimate": est,
-        "event_times": ets,
-        "coef": coef,
-        "se": se,
-        "sigma2": s2,
-        "resid_df": dof,
-        "n_units": U,
-        "n_periods": Tn,
-        "n": n,
-        "method": "Event-study leads + lags coefficients",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "event_times": ets,
+            "coef": coef,
+            "se": se,
+            "sigma2": s2,
+            "resid_df": dof,
+            "n_units": U,
+            "n_periods": Tn,
+            "n": n,
+            "method": "Event-study leads + lags coefficients",
+        }
+    )
 
 
 def cheatsheet():

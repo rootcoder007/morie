@@ -27,7 +27,7 @@ def t_duality(
     if alpha_prime <= 0:
         raise ValueError(f"alpha_prime must be > 0, got {alpha_prime}.")
     R_dual = alpha_prime / R
-    self_dual = R**2  # self-dual radius at R = sqrt(alpha')
+    R**2  # self-dual radius at R = sqrt(alpha')
     return DescriptiveResult(
         name="t_duality",
         value=R_dual,

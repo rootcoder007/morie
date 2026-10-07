@@ -1,7 +1,6 @@
 """Tests for survrls.restricted_lifetime."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.survrls import restricted_lifetime
 
 

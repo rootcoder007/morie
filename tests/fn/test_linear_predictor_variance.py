@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.linear_predictor_variance import (
     linear_predictor_variance,
 )
@@ -24,7 +23,7 @@ def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16_basic(
 
 def test_analysis_of_categorical_data_with_r_chapman_hall_crc_christo2e16_edge():
     """Test edge cases."""
-    rng = np.random.default_rng(42)
+    np.random.default_rng(42)
     xs = np.ones(4)
     cov = np.zeros((4, 4))
     result = linear_predictor_variance(xs, cov)

@@ -58,12 +58,10 @@ chapter relies on.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["build_ulfm", "one_step_tmle", "iterative_tmle",
-           "is_universal"]
+__all__ = ["build_ulfm", "one_step_tmle", "iterative_tmle", "is_universal"]
 
 _EPS = 1e-12
 
@@ -88,8 +86,7 @@ def build_ulfm(Q, H_fn, Y, eps_max=2.0, steps=400):
     y = [float(v) for v in k.vec(Y)]
     n = len(q)
     if len(y) != n:
-        raise ValueError("tl1step: %d fits but %d outcomes"
-                         % (n, len(y)))
+        raise ValueError(f"tl1step: {int(n)} fits but {int(len(y))} outcomes")
     if int(steps) < 1:
         raise ValueError("tl1step: steps must be at least 1")
     de = float(eps_max) / int(steps)
@@ -101,14 +98,17 @@ def build_ulfm(Q, H_fn, Y, eps_max=2.0, steps=400):
         cur = list(q)
         for s in range(int(steps)):
             h = [float(v) for v in H_fn(cur)]
-            cur = [_expit(_logit(cur[i]) + sign * de * h[i])
-                   for i in range(n)]
+            cur = [_expit(_logit(cur[i]) + sign * de * h[i]) for i in range(n)]
             path.append((sign * (s + 1) * de, list(cur)))
     path.sort(key=lambda t: t[0])
-    return {"path": path, "steps": int(steps), "d_epsilon": de,
-            "note": "the direction is recomputed at every point, so "
-                    "the submodel is least favorable EVERYWHERE, not "
-                    "only at epsilon = 0"}
+    return {
+        "path": path,
+        "steps": int(steps),
+        "d_epsilon": de,
+        "note": "the direction is recomputed at every point, so "
+        "the submodel is least favorable EVERYWHERE, not "
+        "only at epsilon = 0",
+    }
 
 
 def is_universal(Q, H_fn, eps=0.3, h=1e-5):
@@ -128,8 +128,7 @@ def is_universal(Q, H_fn, eps=0.3, h=1e-5):
         de = e / steps
         for _ in range(steps):
             d = H_fn(q) if direction_at_start else H_fn(cur)
-            cur = [_expit(_logit(cur[i]) + de * d[i])
-                   for i in range(n)]
+            cur = [_expit(_logit(cur[i]) + de * d[i]) for i in range(n)]
         return cur
 
     at = move(eps)
@@ -141,12 +140,15 @@ def is_universal(Q, H_fn, eps=0.3, h=1e-5):
     local = move(eps, True)
     lg = H_fn(local)
     ldev = max(abs(lg[i] - grad[i]) for i in range(n))
-    return {"max_deviation": dev, "universal": dev < 1e-3,
-            "epsilon": eps,
-            "local_submodel_direction_drift": ldev,
-            "note": "a LOCAL submodel keeps the direction it had at "
-                    "epsilon = 0, so its score no longer equals the "
-                    "gradient once it has moved"}
+    return {
+        "max_deviation": dev,
+        "universal": dev < 1e-3,
+        "epsilon": eps,
+        "local_submodel_direction_drift": ldev,
+        "note": "a LOCAL submodel keeps the direction it had at "
+        "epsilon = 0, so its score no longer equals the "
+        "gradient once it has moved",
+    }
 
 
 def one_step_tmle(Q, H_fn, Y, eps_max=3.0, steps=600):
@@ -156,21 +158,25 @@ def one_step_tmle(Q, H_fn, Y, eps_max=3.0, steps=600):
     y = [float(v) for v in k.vec(Y)]
     n = len(y)
     best, chosen = None, b["path"][0]
-    for (e, cur) in b["path"]:
+    for e, cur in b["path"]:
         h = H_fn(cur)
         sc = abs(sum(h[i] * (y[i] - cur[i]) for i in range(n)) / n)
         if best is None or sc < best:
             best, chosen = sc, (e, cur)
     e, cur = chosen
-    return RichResult(payload={
-        "estimate": sum(cur) / n, "psi": sum(cur) / n,
-        "epsilon": e, "Q_star": cur, "abs_score": best,
-        "iterations": 1, "path_steps": b["steps"],
-        "method": "one-step TMLE along a universal least favorable "
-                  "submodel; van der Laan & Rose (2018) Chap. 5",
-        "note": "no iteration: one move along the shortest path that "
-                "achieves the required bias reduction",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(cur) / n,
+            "psi": sum(cur) / n,
+            "epsilon": e,
+            "Q_star": cur,
+            "abs_score": best,
+            "iterations": 1,
+            "path_steps": b["steps"],
+            "method": "one-step TMLE along a universal least favorable submodel; van der Laan & Rose (2018) Chap. 5",
+            "note": "no iteration: one move along the shortest path that achieves the required bias reduction",
+        }
+    )
 
 
 def iterative_tmle(Q, H_fn, Y, max_iter=25, tol=1e-8):
@@ -184,15 +190,14 @@ def iterative_tmle(Q, H_fn, Y, max_iter=25, tol=1e-8):
     n = len(q)
     cur = list(q)
     it = 0
-    for it in range(1, int(max_iter) + 1):
+    for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         h = [float(v) for v in H_fn(cur)]
         off = [_logit(v) for v in cur]
         e = 0.0
         for _ in range(50):
             p = [_expit(off[i] + e * h[i]) for i in range(n)]
             gr = sum(h[i] * (y[i] - p[i]) for i in range(n))
-            he = sum(h[i] * h[i] * p[i] * (1 - p[i])
-                     for i in range(n))
+            he = sum(h[i] * h[i] * p[i] * (1 - p[i]) for i in range(n))
             if he < 1e-12:
                 break
             e += gr / he
@@ -201,28 +206,32 @@ def iterative_tmle(Q, H_fn, Y, max_iter=25, tol=1e-8):
         if sc < float(tol):
             break
     h = H_fn(cur)
-    return RichResult(payload={
-        "estimate": sum(cur) / n, "psi": sum(cur) / n,
-        "iterations": it, "Q_star": cur,
-        "abs_score": abs(sum(h[i] * (y[i] - cur[i])
-                             for i in range(n)) / n),
-        "method": "iterative TMLE along a local least favorable "
-                  "submodel",
-    })
+    return RichResult(
+        payload={
+            "estimate": sum(cur) / n,
+            "psi": sum(cur) / n,
+            "iterations": it,
+            "Q_star": cur,
+            "abs_score": abs(sum(h[i] * (y[i] - cur[i]) for i in range(n)) / n),
+            "method": "iterative TMLE along a local least favorable submodel",
+        }
+    )
 
 
 def cheatsheet():
-    return ("tl1step: an ordinary TMLE fluctuates along a LOCAL least "
-            "favorable submodel and ITERATES, which is where it "
-            "becomes unstable when the data are sparse for the target. "
-            "A UNIVERSAL least favorable submodel has score = "
-            "canonical gradient at EVERY epsilon, not only at 0, so "
-            "one move solves the efficient score equation -- an "
-            "integral rather than a sequence of jumps, and the "
-            "shortest path achieving the required bias reduction. The "
-            "construction is characterised by the gradient, so it "
-            "extends to multivariate and infinite-dimensional "
-            "targets.")
+    return (
+        "tl1step: an ordinary TMLE fluctuates along a LOCAL least "
+        "favorable submodel and ITERATES, which is where it "
+        "becomes unstable when the data are sparse for the target. "
+        "A UNIVERSAL least favorable submodel has score = "
+        "canonical gradient at EVERY epsilon, not only at 0, so "
+        "one move solves the efficient score equation -- an "
+        "integral rather than a sequence of jumps, and the "
+        "shortest path achieving the required bias reduction. The "
+        "construction is characterised by the gradient, so it "
+        "extends to multivariate and infinite-dimensional "
+        "targets."
+    )
 
 
 # compact alias per ledger/NAMING.md

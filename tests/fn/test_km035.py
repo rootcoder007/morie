@@ -13,6 +13,8 @@ def test_km035_doctest():
 
 def test_km035_edge():
     import pytest
+
     from morie.fn.km035 import kamath_ch2_gpt_supervised_softmax
+
     with pytest.raises(ValueError):
         kamath_ch2_gpt_supervised_softmax("d", [1.0, 2.0], [[1.0]])

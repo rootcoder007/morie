@@ -15,8 +15,7 @@ from morie.fn.km145 import kamath_ch9_mmllm_autoregressive
 def test_the_autoregressive_loss_sums_the_response_log_probabilities():
     # L = -sum_i log p(R_i | I, R_<i)
     res = kamath_ch9_mmllm_autoregressive([0.5, 0.25], None)
-    assert res["estimate"] == pytest.approx(
-        -(math.log(0.5) + math.log(0.25)), rel=1e-12)
+    assert res["estimate"] == pytest.approx(-(math.log(0.5) + math.log(0.25)), rel=1e-12)
 
 
 def test_a_certain_response_costs_nothing():

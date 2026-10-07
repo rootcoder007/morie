@@ -1,7 +1,6 @@
 """Tests for alfrf2.rfdiffusion_protein."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.alfrf2 import rfdiffusion_protein
 
 
@@ -31,11 +30,25 @@ def test_alfrf2_basic():
     result = rfdiffusion_protein(target_motif, scaffold, T=20, seed=42)
     assert isinstance(result, dict)
     # The function returns a RichResult whose documented keys must be present.
-    for key in ("backbone", "motif_index", "motif_target", "motif_placed",
-                "motif_max_deviation", "motif_rmsd", "spacing",
-                "mean_spacing", "radius_of_gyration", "trace",
-                "n", "n_motif", "T", "denoise", "noise_scale", "seed",
-                "method"):
+    for key in (
+        "backbone",
+        "motif_index",
+        "motif_target",
+        "motif_placed",
+        "motif_max_deviation",
+        "motif_rmsd",
+        "spacing",
+        "mean_spacing",
+        "radius_of_gyration",
+        "trace",
+        "n",
+        "n_motif",
+        "T",
+        "denoise",
+        "noise_scale",
+        "seed",
+        "method",
+    ):
         assert key in result, f"missing documented key: {key}"
     # Shape: backbone must have one entry per residue, each a 3-vector.
     assert len(result["backbone"]) == 40

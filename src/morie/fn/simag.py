@@ -68,7 +68,7 @@ def simag(f, x0, bounds, T_init=1.0, cooling_rate=0.95, max_iter=10000, full_out
     f_best = f_x
     T = T_init
 
-    for iteration in range(max_iter):
+    for _iteration in range(max_iter):
         # Random neighbor (Gaussian perturbation)
         x_new = x + rs.normal(0, 1, len(x))
 

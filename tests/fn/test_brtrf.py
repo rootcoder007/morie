@@ -1,8 +1,8 @@
 """Tests for morie.fn.brtrf -- Brent's method."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.brtrf import brent_root, brtrf
 

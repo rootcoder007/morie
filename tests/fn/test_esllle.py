@@ -46,7 +46,7 @@ def test_esllle_basic():
     # Eigenvalues of (I-W)^T (I-W) are non-negative and returned in order.
     ev = [float(v) for v in result["eigenvalues"]]
     assert len(ev) == k + 1
-    assert ev[0] < 1e-8            # the discarded constant eigenvector
+    assert ev[0] < 1e-8  # the discarded constant eigenvector
     assert all(ev[i] <= ev[i + 1] + 1e-12 for i in range(k))
     assert all(v > -1e-9 for v in ev)
 

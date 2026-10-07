@@ -67,8 +67,7 @@ from . import _array_core as _core
 from . import _w3num as _w
 from ._richresult import RichResult
 
-__all__ = ["slice_break_dp", "slicebreakdp", "slbpdg", "stick_weights",
-           "mixture_density", "ROUTES", "cheatsheet"]
+__all__ = ["slice_break_dp", "slicebreakdp", "slbpdg", "stick_weights", "mixture_density", "ROUTES", "cheatsheet"]
 
 ROUTES = ("walker", "kalli_griffin_walker")
 
@@ -157,11 +156,26 @@ def _xi(kappa, k):
     return (1.0 - kappa) * p
 
 
-def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
-                   route="walker", kappa=0.5, m0=None, kappa0=0.01,
-                   a0=2.0, b0=None, seed=1, max_components=200,
-                   grid=None, alpha_update=None, alpha_a=2.0,
-                   alpha_b=1.0, keep_draws=False):
+def slice_break_dp(
+    y,
+    alpha=1.0,
+    n_iter=500,
+    burn=None,
+    thin=1,
+    route="walker",
+    kappa=0.5,
+    m0=None,
+    kappa0=0.01,
+    a0=2.0,
+    b0=None,
+    seed=1,
+    max_components=200,
+    grid=None,
+    alpha_update=None,
+    alpha_a=2.0,
+    alpha_b=1.0,
+    keep_draws=False,
+):
     """Slice-sampled Dirichlet-process mixture of normals.
 
     Parameters
@@ -222,7 +236,7 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
     Escobar and West (1995) JASA 90(430), 577-588.
     """
     if route not in ROUTES:
-        raise ValueError("route must be one of %r" % (ROUTES,))
+        raise ValueError(f"route must be one of {ROUTES!r}")
     if not (0.0 < kappa < 1.0):
         raise ValueError("kappa must lie strictly inside (0, 1)")
     if alpha <= 0.0:
@@ -293,7 +307,7 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
         if len(v) >= max_components:
             hit_ceiling = True
         K = len(v)
-        if K > max_carried:
+        if max_carried < K:
             max_carried = K
 
         # 3. labels, from the components the slice admits
@@ -328,8 +342,7 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
         for i in range(n):
             members[d[i]].append(ys[i])
         for k in range(K):
-            mus[k], s2s[k] = _draw_theta(rng, members[k], m0, kappa0, a0,
-                                         b0)
+            mus[k], s2s[k] = _draw_theta(rng, members[k], m0, kappa0, a0, b0)
 
         occupied = sum(1 for c in counts if c > 0)
 
@@ -339,11 +352,9 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
             odds = (alpha_a + occupied - 1.0) / (n * (alpha_b - math.log(eta)))
             pi_eta = odds / (1.0 + odds)
             if float(rng.uniform()) < pi_eta:
-                alpha = float(rng.gamma(alpha_a + occupied,
-                                        1.0 / (alpha_b - math.log(eta))))
+                alpha = float(rng.gamma(alpha_a + occupied, 1.0 / (alpha_b - math.log(eta))))
             else:
-                alpha = float(rng.gamma(alpha_a + occupied - 1.0,
-                                        1.0 / (alpha_b - math.log(eta))))
+                alpha = float(rng.gamma(alpha_a + occupied - 1.0, 1.0 / (alpha_b - math.log(eta))))
         elif alpha_update is not None:
             raise ValueError('alpha_update must be None or "escobar_west"')
 
@@ -356,8 +367,7 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
             for gi in range(len(grid)):
                 dens[gi] += mixture_density(grid[gi], w, mus, s2s)
             if keep_draws:
-                draws.append({"w": list(w), "mu": list(mus),
-                              "s2": list(s2s), "rest": rest})
+                draws.append({"w": list(w), "mu": list(mus), "s2": list(s2s), "rest": rest})
 
     if kept == 0:
         raise ValueError("burn-in consumed every sweep")
@@ -372,8 +382,7 @@ def slice_break_dp(y, alpha=1.0, n_iter=500, burn=None, thin=1,
     payload = {
         "grid": grid,
         "density": dens,
-        "density_integral": _w.simpson(
-            lambda x: _interp(grid, dens, x), grid[0], grid[-1], 200),
+        "density_integral": _w.simpson(lambda x: _interp(grid, dens, x), grid[0], grid[-1], 200),
         "n_clusters": n_clusters,
         "mean_clusters": mean_clusters,
         "modal_clusters": modal,
@@ -420,5 +429,4 @@ slbpdg = slice_break_dp
 
 
 def cheatsheet():
-    return ("slbpdg: slice-sampled Dirichlet-process mixture. routes "
-            + ", ".join(ROUTES))
+    return "slbpdg: slice-sampled Dirichlet-process mixture. routes " + ", ".join(ROUTES)

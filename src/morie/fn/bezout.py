@@ -1,12 +1,9 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bezout coefficients by the extended Euclidean algorithm."""
 
-import math
-
-from . import _tail1core as C
 from ._richresult import RichResult
 
-__all__ = ['bezout']
+__all__ = ["bezout"]
 
 
 def bezout(a, b):
@@ -35,7 +32,8 @@ def bezout(a, b):
     held locally; the extended Euclidean algorithm and the identity
     a x + b y = gcd(a, b) are standard published results.
     """
-    a0 = int(a); b0 = int(b)
+    a0 = int(a)
+    b0 = int(b)
     old_r, r = a0, b0
     old_s, s = 1, 0
     old_t, t = 0, 1
@@ -46,11 +44,17 @@ def bezout(a, b):
         old_t, t = t, old_t - q * t
     if old_r < 0:
         old_r, old_s, old_t = -old_r, -old_s, -old_t
-    return RichResult(payload={
-        "gcd": old_r, "x": old_s, "y": old_t,
-        "check": a0 * old_s + b0 * old_t, "a": a0, "b": b0,
-        "method": "Bezout coefficients (extended Euclid)"})
-
+    return RichResult(
+        payload={
+            "gcd": old_r,
+            "x": old_s,
+            "y": old_t,
+            "check": a0 * old_s + b0 * old_t,
+            "a": a0,
+            "b": b0,
+            "method": "Bezout coefficients (extended Euclid)",
+        }
+    )
 
 
 def cheatsheet():

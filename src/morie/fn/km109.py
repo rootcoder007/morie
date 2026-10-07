@@ -16,9 +16,7 @@ def _pp(source, w, name):
             raise ValueError(f"{name} has no perplexity for {w!r}.")
         v = float(source[w])
     if not np.isfinite(v) or v <= 0:
-        raise ValueError(
-            f"{name}({w!r}) = {v:.6g}; a perplexity must be finite and "
-            "strictly positive.")
+        raise ValueError(f"{name}({w!r}) = {v:.6g}; a perplexity must be finite and strictly positive.")
     return v
 
 
@@ -46,8 +44,7 @@ def kamath_ch6_perplexity_leakage(S_uniq, PP_public, PP_lm):
     """
     seqs = list(S_uniq)
     if not seqs:
-        raise ValueError("S_uniq is empty; a maximum over no sequences is "
-                         "undefined.")
+        raise ValueError("S_uniq is empty; a maximum over no sequences is undefined.")
     ratios = []
     for w in seqs:
         pub = _pp(PP_public, w, "PP_public")
@@ -55,11 +52,16 @@ def kamath_ch6_perplexity_leakage(S_uniq, PP_public, PP_lm):
         ratios.append(float(np.log(pub / lm)))
     arr = np.asarray(ratios, dtype=float)
     k = int(np.argmax(arr))
-    return RichResult(payload={
-        "estimate": float(arr[k]), "argmax": seqs[k],
-        "per_sequence": ratios, "n_leaking": int(np.sum(arr > 0)),
-        "n": len(seqs),
-        "method": "worst-case perplexity leakage (Kamath Eq 6.33)"})
+    return RichResult(
+        payload={
+            "estimate": float(arr[k]),
+            "argmax": seqs[k],
+            "per_sequence": ratios,
+            "n_leaking": int(np.sum(arr > 0)),
+            "n": len(seqs),
+            "method": "worst-case perplexity leakage (Kamath Eq 6.33)",
+        }
+    )
 
 
 def cheatsheet():

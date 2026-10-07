@@ -6,7 +6,6 @@ import pytest
 
 from morie.fn.mienco import mi_neural_encoder, prior_matching_loss
 
-
 Y = [1.0, -0.5]
 POS = [[0.8, -0.2], [1.2, -0.7], [0.3, 0.1]]
 NEG = [[-0.4, 0.9], [0.2, 0.5]]
@@ -32,7 +31,10 @@ def test_mienco_basic():
     assert (r["n_patches"], r["n_negative_patches"]) == (3, 2)
     # prior matching (eq. 7): -[log D(prior) + log(1 - D(E(x)))] with D = sigmoid
     lo = prior_matching_loss([0.4, -1.0], [2.0], lambda z: z)
-    sig = lambda z: 1 / (1 + math.exp(-z))
+
+    def sig(z):
+        return 1 / (1 + math.exp(-z))
+
     assert lo == pytest.approx(-math.log(sig(2.0)) - (math.log(1 - sig(0.4)) + math.log(1 - sig(-1.0))) / 2, rel=1e-12)
 
 

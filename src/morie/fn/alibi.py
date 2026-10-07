@@ -57,7 +57,7 @@ def alibi(scores, slopes=None, causal=False):
     for r in S:
         if len(r) != nk:
             raise ValueError("alibi: scores is ragged")
-    m = 2.0 ** -8.0 if slopes is None else float(slopes)
+    m = 2.0**-8.0 if slopes is None else float(slopes)
     B = _bias(nq, nk, m, causal)
     out = [[S[i][j] + B[i][j] for j in range(nk)] for i in range(nq)]
     return RichResult(

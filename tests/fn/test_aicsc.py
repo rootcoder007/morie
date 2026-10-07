@@ -1,7 +1,6 @@
 """Tests for aicsc.py - AIC score."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.aicsc import aic_score_fn, aicsc
 
 

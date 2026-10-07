@@ -67,12 +67,10 @@ structure for A used here.
 
 import math
 
-from . import _array_core as np
 from . import _s03core as k
 from ._richresult import RichResult
 
-__all__ = ["softplus", "discretize_zoh", "selective_ssm_step",
-           "selective_scan", "gated_rnn_equivalent", "s6_layer"]
+__all__ = ["softplus", "discretize_zoh", "selective_ssm_step", "selective_scan", "gated_rnn_equivalent", "s6_layer"]
 
 _EPS = 1e-12
 
@@ -101,17 +99,14 @@ def discretize_zoh(delta, A, B, rule="zoh"):
     use it, and refused as a silent default because it breaks Theorem 1.
     """
     if rule not in ("zoh", "euler"):
-        raise ValueError("mambss: rule must be zoh or euler, got %r"
-                         % (rule,))
+        raise ValueError(f"mambss: rule must be zoh or euler, got {rule!r}")
     d = float(delta)
     if d < 0.0:
-        raise ValueError("mambss: delta must be non-negative, got %r"
-                         % (delta,))
+        raise ValueError(f"mambss: delta must be non-negative, got {delta!r}")
     Av = [float(v) for v in A]
     Bv = [float(v) for v in B]
     if len(Av) != len(Bv):
-        raise ValueError("mambss: A has %d entries but B has %d"
-                         % (len(Av), len(Bv)))
+        raise ValueError(f"mambss: A has {int(len(Av))} entries but B has {int(len(Bv))}")
     Abar, Bbar = [], []
     for n in range(len(Av)):
         da = d * Av[n]
@@ -137,11 +132,9 @@ def selective_ssm_step(x, h, A, B, C, delta, rule="zoh"):
     """
     N = len(A)
     if len(h) != N:
-        raise ValueError("mambss: state has %d entries but A has %d"
-                         % (len(h), N))
+        raise ValueError(f"mambss: state has {int(len(h))} entries but A has {int(N)}")
     if len(C) != N:
-        raise ValueError("mambss: C has %d entries but A has %d"
-                         % (len(C), N))
+        raise ValueError(f"mambss: C has {int(len(C))} entries but A has {int(N)}")
     Abar, Bbar = discretize_zoh(delta, A, B, rule=rule)
     hn = [Abar[n] * h[n] + Bbar[n] * float(x) for n in range(N)]
     y = sum(C[n] * hn[n] for n in range(N))
@@ -150,13 +143,10 @@ def selective_ssm_step(x, h, A, B, C, delta, rule="zoh"):
 
 def _linear(x, Wm, b):
     """Wm @ x + b, with Wm given as rows."""
-    return [sum(Wm[r][c] * x[c] for c in range(len(x))) + b[r]
-            for r in range(len(Wm))]
+    return [sum(Wm[r][c] * x[c] for c in range(len(x))) + b[r] for r in range(len(Wm))]
 
 
-def selective_scan(X, A, W_B, W_C, W_delta, delta_bias=None,
-                   b_B=None, b_C=None, b_delta=0.0, rule="zoh",
-                   D_skip=None):
+def selective_scan(X, A, W_B, W_C, W_delta, delta_bias=None, b_B=None, b_C=None, b_delta=0.0, rule="zoh", D_skip=None):
     r"""Algorithm 2: run S6 over a sequence.
 
     Parameters
@@ -191,26 +181,22 @@ def selective_scan(X, A, W_B, W_C, W_delta, delta_bias=None,
     D = len(Xm[0])
     Am = k.mat(A)
     if len(Am) != D:
-        raise ValueError("mambss: A has %d rows for %d channels"
-                         % (len(Am), D))
+        raise ValueError(f"mambss: A has {int(len(Am))} rows for {int(D)} channels")
     N = len(Am[0])
     WB, WC = k.mat(W_B), k.mat(W_C)
     if len(WB) != N or len(WC) != N:
-        raise ValueError("mambss: W_B and W_C must have N=%d rows, got "
-                         "%d and %d" % (N, len(WB), len(WC)))
+        raise ValueError(f"mambss: W_B and W_C must have N={int(N)} rows, got {int(len(WB))} and {int(len(WC))}")
     Wd = k.mat(W_delta)
     if len(Wd) != 1:
-        raise ValueError("mambss: W_delta must have exactly 1 row -- "
-                         "s_Delta projects to one dimension and is "
-                         "broadcast over channels; got %d" % len(Wd))
+        raise ValueError(
+            f"mambss: W_delta must have exactly 1 row -- s_Delta projects to one dimension and is broadcast over channels; got {int(len(Wd))}"
+        )
     bB = [0.0] * N if b_B is None else [float(v) for v in b_B]
     bC = [0.0] * N if b_C is None else [float(v) for v in b_C]
-    dbias = ([0.0] * D if delta_bias is None
-             else [float(v) for v in delta_bias])
+    dbias = [0.0] * D if delta_bias is None else [float(v) for v in delta_bias]
     if len(dbias) != D:
-        raise ValueError("mambss: delta_bias has %d entries for %d "
-                         "channels" % (len(dbias), D))
-    skip = ([0.0] * D if D_skip is None else [float(v) for v in D_skip])
+        raise ValueError(f"mambss: delta_bias has {int(len(dbias))} entries for {int(D)} channels")
+    skip = [0.0] * D if D_skip is None else [float(v) for v in D_skip]
 
     h = [[0.0] * N for _ in range(D)]
     Y, deltas = [], []
@@ -223,17 +209,23 @@ def selective_scan(X, A, W_B, W_C, W_delta, delta_bias=None,
         deltas.append(dt)
         row = []
         for c in range(D):
-            h[c], yc = selective_ssm_step(xt[c], h[c], Am[c], Bt, Ct,
-                                          dt[c], rule=rule)
+            h[c], yc = selective_ssm_step(xt[c], h[c], Am[c], Bt, Ct, dt[c], rule=rule)
             row.append(yc + skip[c] * xt[c])
         Y.append(row)
-    return RichResult(payload={
-        "y": Y, "estimate": Y, "state": h, "delta": deltas,
-        "L": L, "D": D, "N": N, "rule": rule,
-        "time_invariant": False,
-        "method": "selective state space scan (S6), Gu & Dao (2023) "
-                  "Algorithm 2",
-    })
+    return RichResult(
+        payload={
+            "y": Y,
+            "estimate": Y,
+            "state": h,
+            "delta": deltas,
+            "L": L,
+            "D": D,
+            "N": N,
+            "rule": rule,
+            "time_invariant": False,
+            "method": "selective state space scan (S6), Gu & Dao (2023) Algorithm 2",
+        }
+    )
 
 
 def gated_rnn_equivalent(x, w, b=0.0):
@@ -258,12 +250,14 @@ def s6_layer(X, A, W_B, W_C, W_delta, **kw):
 
 
 def cheatsheet():
-    return ("mambss: S6. B, C, Delta are FUNCTIONS of x (Alg. 2), so "
-            "the model is time-varying and only the scan works -- no "
-            "convolution. ZOH: Abar = exp(Delta A), Bbar = "
-            "(exp(Delta A) - 1) B / A. s_Delta projects to ONE dim then "
-            "broadcasts over D. Theorem 1: N=1, A=-1, B=1, softplus "
-            "gives exactly g = sigmoid(Linear(x)), h = (1-g)h + g x.")
+    return (
+        "mambss: S6. B, C, Delta are FUNCTIONS of x (Alg. 2), so "
+        "the model is time-varying and only the scan works -- no "
+        "convolution. ZOH: Abar = exp(Delta A), Bbar = "
+        "(exp(Delta A) - 1) B / A. s_Delta projects to ONE dim then "
+        "broadcasts over D. Theorem 1: N=1, A=-1, B=1, softplus "
+        "gives exactly g = sigmoid(Linear(x)), h = (1-g)h + g x."
+    )
 
 
 # compact alias per ledger/NAMING.md

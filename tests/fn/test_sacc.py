@@ -11,8 +11,7 @@ from morie.fn.sacc import soft_policy_iteration
 def _two_state():
     # state 0: action 0 stays, action 1 moves to state 1 (the good one)
     # state 1 is absorbing and pays 1 per step
-    P = [[[1.0, 0.0], [0.0, 1.0]],
-         [[0.0, 1.0], [0.0, 1.0]]]
+    P = [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [0.0, 1.0]]]
     R = [[0.0, 0.0], [1.0, 1.0]]
     return P, R
 
@@ -20,7 +19,7 @@ def _two_state():
 def test_a_low_temperature_policy_is_almost_greedy():
     P, R = _two_state()
     res = soft_policy_iteration(P, R, gamma=0.9, temp=0.01)
-    assert res["policy"][0][1] > 0.99          # move to the good state
+    assert res["policy"][0][1] > 0.99  # move to the good state
     assert res["converged"]
 
 
@@ -49,7 +48,7 @@ def test_entropy_rises_with_temperature():
     cold = soft_policy_iteration(P, R, gamma=0.9, temp=0.05)["entropy"]
     hot = soft_policy_iteration(P, R, gamma=0.9, temp=50.0)["entropy"]
     assert sum(hot) > sum(cold)
-    assert max(hot) <= math.log(2.0) + 1e-9    # two actions
+    assert max(hot) <= math.log(2.0) + 1e-9  # two actions
 
 
 def test_a_zero_discount_looks_only_at_the_immediate_reward():

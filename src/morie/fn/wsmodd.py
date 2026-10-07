@@ -57,20 +57,26 @@ def wasserman_odds_ratio(table):
     if np.any(T < 0):
         raise ValueError("counts cannot be negative.")
     if np.any(T == 0):
-        raise ValueError("a zero cell makes the odds ratio degenerate; "
-                         "apply a continuity correction explicitly if intended.")
+        raise ValueError(
+            "a zero cell makes the odds ratio degenerate; apply a continuity correction explicitly if intended."
+        )
     n11, n10 = T[0]
     n01, n00 = T[1]
     or_ = (n11 * n00) / (n10 * n01)
     log_or = math.log(or_)
-    se = math.sqrt(1/n11 + 1/n10 + 1/n01 + 1/n00)
+    se = math.sqrt(1 / n11 + 1 / n10 + 1 / n01 + 1 / n00)
     z = 1.959963984540054
-    return RichResult(payload={
-        "estimate": float(or_), "log_or": float(log_or), "se": float(se),
-        "ci_lower": float(math.exp(log_or - z * se)),
-        "ci_upper": float(math.exp(log_or + z * se)),
-        "n": float(np.sum(T)),
-        "method": "OR = n11 n00 / (n10 n01), Woolf log-scale CI"})
+    return RichResult(
+        payload={
+            "estimate": float(or_),
+            "log_or": float(log_or),
+            "se": float(se),
+            "ci_lower": float(math.exp(log_or - z * se)),
+            "ci_upper": float(math.exp(log_or + z * se)),
+            "n": float(np.sum(T)),
+            "method": "OR = n11 n00 / (n10 n01), Woolf log-scale CI",
+        }
+    )
 
 
 def cheatsheet():

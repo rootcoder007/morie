@@ -77,12 +77,11 @@ def horowitz_series_unknown_T(x, y, w, K=4, basis="poly"):
     w = np.asarray(w, dtype=float).ravel()
     n = int(x.size)
     if y.size != n or w.size != n:
-        raise ValueError(
-            f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
+        raise ValueError(f"x, y, w must have the same length; got {n}, {y.size}, {w.size}.")
     J = int(K)
     if J < 1:
         raise ValueError(f"K must be at least 1, got {J}.")
-    if J > n:
+    if n < J:
         raise ValueError(f"K must not exceed n; got K={J}, n={n}.")
 
     u = H.u01(x)
@@ -111,23 +110,23 @@ def horowitz_series_unknown_T(x, y, w, K=4, basis="poly"):
             C[k][j] = float(sol[k])
 
     # (5.85): m_hat = C beta, solved in normal-equation form.
-    CtC = [[sum(C[r][k] * C[r][l] for r in range(J)) for l in range(J)]
-           for k in range(J)]
+    CtC = [[sum(C[r][k] * C[r][ell] for r in range(J)) for ell in range(J)] for k in range(J)]
     Ctm = [sum(C[r][k] * m_hat[r] for r in range(J)) for k in range(J)]
     beta = [float(t) for t in core.ridgesolve(CtC, Ctm)]
-    g_hat = [sum(float(Phi[i][k]) * beta[k] for k in range(J))
-             for i in range(n)]
+    g_hat = [sum(float(Phi[i][k]) * beta[k] for k in range(J)) for i in range(n)]
 
-    return RichResult(payload={
-        "g_hat": [float(t) for t in g_hat],
-        "beta": [float(t) for t in beta],
-        "m_hat": [float(t) for t in m_hat],
-        "Q": C,
-        "J": J,
-        "basis": str(basis),
-        "n": n,
-        "method": "Horowitz (2009) eqs. (5.83)-(5.85), series truncation",
-    })
+    return RichResult(
+        payload={
+            "g_hat": [float(t) for t in g_hat],
+            "beta": [float(t) for t in beta],
+            "m_hat": [float(t) for t in m_hat],
+            "Q": C,
+            "J": J,
+            "basis": str(basis),
+            "n": n,
+            "method": "Horowitz (2009) eqs. (5.83)-(5.85), series truncation",
+        }
+    )
 
 
 def cheatsheet():

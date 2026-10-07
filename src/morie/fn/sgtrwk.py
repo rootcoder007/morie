@@ -49,8 +49,7 @@ def sgt_random_walk_kernel(A, lam=0.1):
     lam = float(lam)
     if lam <= 0.0:
         raise ValueError("sgt_random_walk_kernel: lam must be positive")
-    R = [[(1.0 if i == j else 0.0) - lam * M[i][j] for j in range(n)]
-         for i in range(n)]
+    R = [[(1.0 if i == j else 0.0) - lam * M[i][j] for j in range(n)] for i in range(n)]
     K = C.inv(R)
     tot = 0.0
     tr = 0.0
@@ -58,9 +57,9 @@ def sgt_random_walk_kernel(A, lam=0.1):
         tr += K[i][i]
         for j in range(n):
             tot += K[i][j]
-    return RichResult(payload={
-        "K": K, "estimate": tot, "trace": tr, "n": n,
-        "method": "Random-walk kernel (I - lam A)^{-1}"})
+    return RichResult(
+        payload={"K": K, "estimate": tot, "trace": tr, "n": n, "method": "Random-walk kernel (I - lam A)^{-1}"}
+    )
 
 
 def cheatsheet():

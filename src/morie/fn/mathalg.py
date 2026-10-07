@@ -345,6 +345,7 @@ def cheatsheet() -> str:
         "logit_proportion / mc_standard_error -> numerical and discrete algorithms."
     )
 
+
 # alias kept from the retired placeholder of the same name
 legendre_basis = legendre_polynomials
 

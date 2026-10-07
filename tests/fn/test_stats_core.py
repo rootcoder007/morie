@@ -9,8 +9,7 @@ import pytest
 
 from morie.fn import _stats_core as ms
 
-S = json.loads(pathlib.Path(__file__).with_name(
-    "oracle_anchors.json").read_text())["stats"]
+S = json.loads(pathlib.Path(__file__).with_name("oracle_anchors.json").read_text())["stats"]
 
 
 def eq(a, b, tol=1e-9):
@@ -56,7 +55,7 @@ class TestT:
 class TestF:
     def test_all(self):
         for d1, d2 in ((1, 10), (5, 20), (10, 2)):
-            w = S["f"]["%d_%d" % (d1, d2)]
+            w = S["f"][f"{int(d1)}_{int(d2)}"]
             for x in (0.3, 1.0, 3.5):
                 eq(ms.f.pdf(x, d1, d2), w["pdf"][str(x)], 1e-10)
                 eq(ms.f.cdf(x, d1, d2), w["cdf"][str(x)], 1e-10)
@@ -75,7 +74,7 @@ class TestGammaBeta:
 
     def test_beta(self):
         for a, b in ((2, 3), (0.5, 0.5), (8, 14)):
-            w = S["beta"]["%s_%s" % (a, b)]
+            w = S["beta"][f"{a}_{b}"]
             for x in (0.1, 0.5, 0.9):
                 eq(ms.beta.pdf(x, a, b), w["pdf"][str(x)], 1e-10)
                 eq(ms.beta.cdf(x, a, b), w["cdf"][str(x)], 1e-10)

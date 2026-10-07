@@ -1,8 +1,8 @@
 """Tests for morie.fn.holo_g -- Geographic summary."""
 
-from morie.fn import _array_core as np
 import pytest
 
+from morie.fn import _array_core as np
 from morie.fn._containers import DescriptiveResult
 from morie.fn.holo_g import geo_summary, holo_g
 

@@ -8,7 +8,6 @@ Nonparametric Bayesian Inference*, CUP.
 import math
 
 from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_modsel_bic"]
@@ -22,8 +21,7 @@ def _log_evidence_K(y, n_prec, K, tau2=1.0):
     v = 1.0 / n_prec
     for k, yk in enumerate(y):
         s2 = v + (tau2 if k < K else 0.0)
-        lp += -0.5 * math.log(2.0 * math.pi * s2) \
-            - 0.5 * yk * yk / s2
+        lp += -0.5 * math.log(2.0 * math.pi * s2) - 0.5 * yk * yk / s2
     return lp
 
 
@@ -33,12 +31,15 @@ def ghosal_modsel_bic(truth_in_H1=True, n=2000, seed=42):
     0 coordinates, H1 keeps 2. Keys: estimate."""
     rng = np.random.default_rng(seed)
     mu = 0.7 if truth_in_H1 else 0.0
-    y = [mu + float(rng.normal(0, 1)) / math.sqrt(n)
-         for _ in range(2)]
+    y = [mu + float(rng.normal(0, 1)) / math.sqrt(n) for _ in range(2)]
     log_bf = _log_evidence_K(y, n, 2) - _log_evidence_K(y, n, 0)
-    res = RichResult(payload={"estimate": log_bf,
-                              "supports_H1": log_bf > 0,
-                              "method": "Bayes factor consistency (GvdV 2017 sec. 10.5)"})
+    res = RichResult(
+        payload={
+            "estimate": log_bf,
+            "supports_H1": log_bf > 0,
+            "method": "Bayes factor consistency (GvdV 2017 sec. 10.5)",
+        }
+    )
     return with_describe_pointer(res, "gh_c10_12")
 
 

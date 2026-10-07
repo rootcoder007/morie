@@ -6,10 +6,10 @@ noise, detect serial dependence, and satisfy the algebraic identities in
 Hosking's definition.
 """
 
-from morie.fn import _array_core as np
 import pytest
-from morie.fn import _stats_core as stats
 
+from morie.fn import _array_core as np
+from morie.fn import _stats_core as stats
 from morie.fn.whtnse import _autocov, white_noise_test
 
 
@@ -78,7 +78,7 @@ def test_matches_the_univariate_scalar_case():
     xc = x - x.mean()
     g0 = ((xc.T @ xc) / 300).item()
     expected = 300**2 * sum(
-        (((xc[l:].T @ xc[:-l]) / 300).item() / g0) ** 2 / (300 - l) for l in range(1, m + 1)
+        (((xc[ell:].T @ xc[:-ell]) / 300).item() / g0) ** 2 / (300 - ell) for ell in range(1, m + 1)
     )
     assert res["statistic"] == pytest.approx(expected, rel=1e-12)
 

@@ -68,8 +68,7 @@ def tmlestab(Y, A, QAW, Q1W, Q0W, g1W, gbounds=None):
         raise ValueError("every argument must have one entry per observation")
     if n < 2:
         raise ValueError("at least two observations are required")
-    gb = [0.001, 0.01, 0.025, 0.05, 0.10] if gbounds is None \
-        else C.vec(gbounds)
+    gb = [0.001, 0.01, 0.025, 0.05, 0.10] if gbounds is None else C.vec(gbounds)
     if any(not 0.0 < v < 0.5 for v in gb):
         raise ValueError("each bound must lie strictly between 0 and 0.5")
     est = []
@@ -84,10 +83,18 @@ def tmlestab(Y, A, QAW, Q1W, Q0W, g1W, gbounds=None):
         ses.append(math.sqrt(C.var(ic, 1) / n))
         mw.append(max(max(fit["H1"]), max(fit["H0"])))
         nt.append(float(sum(1 for v in g1W if v < d or v > 1.0 - d)))
-    return RichResult(payload={
-        "gbounds": gb, "estimate": est, "se": ses, "max_weight": mw,
-        "n_truncated": nt, "spread": max(est) - min(est), "n": float(n),
-        "method": "Propensity truncation trade-off for a targeted estimate"})
+    return RichResult(
+        payload={
+            "gbounds": gb,
+            "estimate": est,
+            "se": ses,
+            "max_weight": mw,
+            "n_truncated": nt,
+            "spread": max(est) - min(est),
+            "n": float(n),
+            "method": "Propensity truncation trade-off for a targeted estimate",
+        }
+    )
 
 
 tmle_stabilized = tmlestab

@@ -13,6 +13,8 @@ def test_km011_doctest():
 
 def test_km011_edge():
     import pytest
+
     from morie.fn.km011 import kamath_ch2_scaled_dot_score
+
     with pytest.raises(ValueError):
         kamath_ch2_scaled_dot_score([1.0], [1.0], d_k=9)

@@ -84,10 +84,33 @@ def tftnet(a, w1, b1, w2, b2, w4, b4, w5, b5, wsel, bsel, wq, bq, c=None, wc=Non
     ----------
     Lim, Arik, Loeff and Pfister (2021) IJF 37(4), arXiv:1912.09363, eqs. (2)-(6), (23), (25)
     """
-    res = _core.tftnet(a=a, w1=w1, b1=b1, w2=w2, b2=b2, w4=w4, b4=b4, w5=w5, b5=b5, wsel=wsel, bsel=bsel, wq=wq, bq=bq, c=c, wc=wc, y=y, q=q)
+    res = _core.tftnet(
+        a=a,
+        w1=w1,
+        b1=b1,
+        w2=w2,
+        b2=b2,
+        w4=w4,
+        b4=b4,
+        w5=w5,
+        b5=b5,
+        wsel=wsel,
+        bsel=bsel,
+        wq=wq,
+        bq=bq,
+        c=c,
+        wc=wc,
+        y=y,
+        q=q,
+    )
     return RichResult(
         title=_METHOD,
-        summary_lines=[("topvar", res["topvar"]), ("maxweight", res["maxweight"]), ("entropy", res["entropy"]), ("grnnorm", res["grnnorm"])],
+        summary_lines=[
+            ("topvar", res["topvar"]),
+            ("maxweight", res["maxweight"]),
+            ("entropy", res["entropy"]),
+            ("grnnorm", res["grnnorm"]),
+        ],
         payload=dict(res, method=_METHOD),
     )
 

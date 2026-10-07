@@ -1,7 +1,6 @@
 """Tests for evgevp.evt_gev_pdf."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.evgevp import evt_gev_pdf
 
 
@@ -27,6 +26,7 @@ def test_evgevp_basic():
     # f(x) = (1/sigma) * t(x)^(xi+1) * exp(-t(x))
     # t(x) = [1 + xi*(x-mu)/sigma]^(-1/xi)
     import math
+
     arr = np.asarray(x) if hasattr(np, "asarray") else x
     # Convert to plain Python list for element-wise access.
     xs = list(arr)
@@ -44,6 +44,7 @@ def test_evgevp_basic():
     for g, e in zip(got, expected):
         if e != e:  # nan
             import math as _m
+
             assert _m.isnan(g)
         else:
             assert abs(g - e) < 1e-10
@@ -62,5 +63,6 @@ def test_evgevp_edge():
     val = result["f"]
     # Should be a scalar (single element).
     import math
+
     expected = math.exp(-(0.0 - 0.0)) * math.exp(-math.exp(-(0.0 - 0.0)))
     assert abs(float(val) - expected) < 1e-12

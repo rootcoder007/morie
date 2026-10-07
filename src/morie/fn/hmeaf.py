@@ -87,7 +87,13 @@ def geron_error_analysis(y_true, y_pred, top_k=5):
     return RichResult(
         title="Error analysis",
         summary_lines=[("Error rate", float(1.0 - base["accuracy"])), ("Worst class", labels[worst])],
-        tables=[{"title": "row-normalised errors (diagonal zeroed)", "headers": [f"pred {v}" for v in labels], "rows": err.round(6).tolist()}],
+        tables=[
+            {
+                "title": "row-normalised errors (diagonal zeroed)",
+                "headers": [f"pred {v}" for v in labels],
+                "rows": err.round(6).tolist(),
+            }
+        ],
         interpretation="Rows are normalised by support, so a rare class's mistakes are not hidden by a common class's volume.",
         payload={
             "normalized": norm.tolist(),

@@ -46,8 +46,7 @@ re-verified against them.
 
 from . import _array_core as np
 
-__all__ = ["pwm_b", "l_moments", "gev_from_lmoments", "gpd_from_pwm",
-           "top_order", "EULER_GAMMA"]
+__all__ = ["pwm_b", "l_moments", "gev_from_lmoments", "gpd_from_pwm", "top_order", "EULER_GAMMA"]
 
 EULER_GAMMA = 0.5772156649015329
 
@@ -76,8 +75,7 @@ def l_moments(x):
     l2 = 2 * b1 - b0
     l3 = 6 * b2 - 6 * b1 + b0
     if l2 == 0:
-        raise ValueError("the second L-moment is zero; the data are "
-                         "constant.")
+        raise ValueError("the second L-moment is zero; the data are constant.")
     return l1, l2, l3, l3 / l2
 
 
@@ -101,7 +99,7 @@ def gev_from_lmoments(l1, l2, t3):
     from ._sci_core import gamma as G
 
     c = 2.0 / (3.0 + t3) - np.log(2) / np.log(3)
-    k = 7.8590 * c + 2.9554 * c ** 2
+    k = 7.8590 * c + 2.9554 * c**2
     if abs(k) < 1e-9:
         # Gumbel limit
         alpha = l2 / np.log(2)
@@ -120,7 +118,7 @@ def gpd_from_pwm(x):
     .. math:: k = \frac{l_1}{l_2} - 2, \qquad
               \sigma = l_1 (1 + k) ... \text{in Hosking's k}:
               \hat k = l_1/l_2 - 2,\ \hat\sigma = (1 + \hat k) l_1
-              \cdot \frac{l_2}{l_1} \cdot ... 
+              \cdot \frac{l_2}{l_1} \cdot ...
 
     Written plainly: :math:`\hat k = l_1/l_2 - 2` and
     :math:`\hat\sigma = (1 + \hat k)\,l_2\,(l_1/l_2)` reduces to
@@ -144,9 +142,8 @@ def top_order(x, k):
     k = int(k)
     if not 1 <= k < xs.size:
         raise ValueError(f"k must lie in 1..{xs.size - 1}, got {k}.")
-    return xs[:k + 1]
+    return xs[: k + 1]
 
 
 def cheatsheet():
-    return ("_evt: Hosking's k is MINUS the extreme-value index xi -- "
-            "heavy tail means k < 0, xi > 0")
+    return "_evt: Hosking's k is MINUS the extreme-value index xi -- heavy tail means k < 0, xi > 0"

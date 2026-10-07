@@ -1,7 +1,5 @@
 """Tests for fwlfwd.fully_corrective_fw."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.fwlfwd import fully_corrective_fw
 
 
@@ -66,12 +64,8 @@ def test_fwlfwd_basic():
 
     # For f(x) = 2*x0 + 3*x1 on the triangle conv{(0,0),(1,0),(0,1)},
     # the maximum over the vertices is attained at (0, 1) with value 3.
-    expected_f_min = min(
-        coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain
-    )
-    expected_f_max = max(
-        coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain
-    )
+    expected_f_min = min(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
+    max(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
 
     # Frank-Wolfe minimises the linear objective, so the estimate must
     # equal the vertex-minimum of f.
@@ -109,9 +103,7 @@ def test_fwlfwd_edge():
     payload = result.payload
 
     # Expected minimum over the square is 0, attained at (0,0).
-    expected_f_min = min(
-        coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain
-    )
+    expected_f_min = min(coeffs[0] * v[0] + coeffs[1] * v[1] for v in domain)
     assert payload["estimate"] == expected_f_min
     assert payload["estimate"] == 0.0
 

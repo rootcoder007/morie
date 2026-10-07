@@ -1,7 +1,6 @@
 """Tests for cvxdwl.boyd_dual_function."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.cvxdwl import boyd_dual_function
 
 
@@ -13,6 +12,8 @@ def test_cvxdwl_basic():
     result = boyd_dual_function(L, lambda_, nu)
     assert isinstance(result, dict)
     assert "value" in result
+
+
 def test_cvxdwl_edge():
     """Test edge cases."""
     L = np.random.default_rng(42).normal(0, 1, 100)

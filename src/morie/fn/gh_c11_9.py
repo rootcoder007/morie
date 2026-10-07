@@ -7,8 +7,6 @@ Nonparametric Bayesian Inference*, CUP.
 
 import math
 
-from . import _array_core as np
-from . import _bnp_core as _bnp
 from ._richresult import RichResult, with_describe_pointer
 
 __all__ = ["ghosal_statgp_spec"]
@@ -27,10 +25,14 @@ def ghosal_statgp_spec(h=0.6, n_grid=4000, lam_max=30.0):
         tot += math.cos(h * lam) * math.exp(-lam * lam / 4.0) * step
     K_num = tot / (2.0 * math.sqrt(math.pi))
     K_true = math.exp(-h * h)
-    res = RichResult(payload={"estimate": K_num,
-                              "kernel_exact": K_true,
-                              "bochner_gap": abs(K_num - K_true),
-                              "method": "Bochner spectral kernel (GvdV 2017 eq. 11.3-11.4)"})
+    res = RichResult(
+        payload={
+            "estimate": K_num,
+            "kernel_exact": K_true,
+            "bochner_gap": abs(K_num - K_true),
+            "method": "Bochner spectral kernel (GvdV 2017 eq. 11.3-11.4)",
+        }
+    )
     return with_describe_pointer(res, "gh_c11_9")
 
 

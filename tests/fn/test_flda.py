@@ -1,7 +1,6 @@
 """Tests for flda.py - Fisher Linear Discriminant Analysis."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.flda import flda, flda_fn
 
 

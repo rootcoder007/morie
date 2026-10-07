@@ -1,7 +1,5 @@
 """Tests for dsep.d_separation."""
 
-from morie.fn import _array_core as np
-
 from morie.fn.dsep import d_separation
 
 
@@ -34,7 +32,7 @@ def test_dsep_basic():
     assert "nnodes" in payload
 
     # In A -> B -> C with z = {B}, A and C are d-separated.
-    assert payload["dseparated"] is True or payload["dseparated"] == True
+    assert payload["dseparated"] is True or payload["dseparated"]
 
     # npaths must be a non-negative integer count of paths examined.
     npaths = payload["npaths"]
@@ -70,7 +68,7 @@ def test_dsep_edge():
 
     # With no conditioning, A and C are connected by an open chain
     # A -> B -> C, so they are not d-separated.
-    assert payload["dseparated"] is False or payload["dseparated"] == False
+    assert payload["dseparated"] is False or not payload["dseparated"]
 
     npaths = payload["npaths"]
     assert isinstance(npaths, int)

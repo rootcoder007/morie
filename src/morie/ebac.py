@@ -19,12 +19,20 @@ def calculate_ebac(drinks: float, weight_lbs: float, hours: float, gender_consta
     :return: The estimated Blood Alcohol Concentration level (non-negative).
     :rtype: float
     """
-    if weight_lbs <= 0:
-        return 0.0
+    # a data-entry error must not read as a sober respondent (a negative result clamps to 0 below)
+    if not weight_lbs > 0:
+        raise ValueError(f"weight_lbs must be > 0, not {weight_lbs!r}")
+    if drinks < 0 or hours < 0:
+        raise ValueError(f"drinks and hours cannot be negative (drinks={drinks!r}, hours={hours!r})")
+    if not gender_constant > 0:
+        raise ValueError(f"gender_constant must be > 0, not {gender_constant!r}")
 
-    # 1 standard drink roughly = 14 grams of alcohol
-    # Formula: (Drinks * 5.14) / (Weight * gender_constant) - 0.015 * hours
-    ebac = (drinks * 5.14) / (weight_lbs * gender_constant) - (0.015 * hours)
+    # Widmark in US units (Matthews & Miller 1979, Addict Behav 4:55-60):
+    #   BAC = (A x 5.14) / (W x r) - 0.015 h, with A in fluid ounces of ethanol and W in pounds.
+    # A 14 g standard drink is 0.6 fl oz of ethanol (NIAAA); counting each drink as 1 oz
+    # inflated every eBAC about 1.7x.
+    ounces = drinks * 0.6
+    ebac = (ounces * 5.14) / (weight_lbs * gender_constant) - (0.015 * hours)
     return max(0.0, ebac)
 
 

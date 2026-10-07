@@ -11,5 +11,6 @@ def test_alumap_basic():
 
 def test_alumap_edge():
     import pytest
+
     with pytest.raises(ValueError, match="n_neighbors"):
         alammar_umap_projection([[0, 0], [1, 1]], n_neighbors=5)

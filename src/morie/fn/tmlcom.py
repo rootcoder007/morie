@@ -126,12 +126,19 @@ def comptml(Yc, A, Q1, Q0, g1W, gbound=0.025, level=0.95):
     eff = [v - mean_e for v in eff]
     ex = [math.exp(v) for v in eff]
     s = sum(ex)
-    return RichResult(payload={
-        "effect": eff, "se": ses, "ci_lower": [v - mean_e for v in lo],
-        "ci_upper": [v - mean_e for v in hi], "sum_effect": sum(eff),
-        "perturbation": [v / s for v in ex], "n": float(n),
-        "D": float(D),
-        "method": "TMLE on clr coordinates of a compositional outcome"})
+    return RichResult(
+        payload={
+            "effect": eff,
+            "se": ses,
+            "ci_lower": [v - mean_e for v in lo],
+            "ci_upper": [v - mean_e for v in hi],
+            "sum_effect": sum(eff),
+            "perturbation": [v / s for v in ex],
+            "n": float(n),
+            "D": float(D),
+            "method": "TMLE on clr coordinates of a compositional outcome",
+        }
+    )
 
 
 tmle_compositional = comptml

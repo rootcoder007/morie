@@ -1,7 +1,6 @@
 # morie.fn -- function file (rootcoder007/morie)
 """The c_1 bias coefficient of the boundary-free KDFE (Eq. 5.8)."""
 
-from . import _array_core as np
 from ._richresult import RichResult
 
 __all__ = ["bfc1", "fauzi_c1_coefficient"]

@@ -1,7 +1,6 @@
 """Tests for fairRC.fairness_rec."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.fairRC import fairness_rec
 
 

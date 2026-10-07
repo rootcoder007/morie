@@ -36,10 +36,7 @@ def bandwidth_compute(x, fs: float = 1.0, **kwargs) -> DescriptiveResult:
     m0 = float(np.sum(psd * df))
     m1 = float(np.sum(freqs * psd * df))
     m2 = float(np.sum(freqs**2 * psd * df))
-    if m0 > 0:
-        bw = float(np.sqrt(m2 / m0 - (m1 / m0) ** 2))
-    else:
-        bw = 0.0
+    bw = float(np.sqrt(m2 / m0 - (m1 / m0) ** 2)) if m0 > 0 else 0.0
     return DescriptiveResult(
         name="bandwidth_compute",
         value=bw,

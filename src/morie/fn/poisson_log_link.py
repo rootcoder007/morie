@@ -27,20 +27,19 @@ def poisson_log_link(b0, bs, xs):
     """
     value = _acd.poisson_log_link(b0, bs, xs)
     payload = {"value": value}
-    summary = [(k, v) for k, v in payload.items()
-               if isinstance(v, (int, float))][:4]
+    summary = [(k, v) for k, v in payload.items() if isinstance(v, (int, float))][:4]
     payload = dict(payload)
     payload.setdefault("value", value)
     payload["method"] = "Bilder & Loughin (2025) eq. (4.2)"
     return RichResult(
-        title='Poisson regression log link log(mu) = Xb',
+        title="Poisson regression log link log(mu) = Xb",
         summary_lines=summary,
         payload=payload,
     )
 
 
 def cheatsheet():
-    return '4e2: log(mu) = b0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 4.2]'
+    return "4e2: log(mu) = b0 + b1 x1 + ... + bp xp [Bilder & Loughin 2025, eq. 4.2]"
 
 
 # compact alias per ledger/NAMING.md

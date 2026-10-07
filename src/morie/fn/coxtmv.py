@@ -96,9 +96,7 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
     p = Xm.shape[1]
     ev_times = np.sort(t[e == 1])
     if ev_times.size < n_intervals:
-        raise ValueError(
-            f"only {ev_times.size} events, too few for {n_intervals} intervals"
-        )
+        raise ValueError(f"only {ev_times.size} events, too few for {n_intervals} intervals")
     qs = np.linspace(0, 1, n_intervals + 1)[1:-1]
     cuts = np.unique(np.quantile(ev_times, qs)) if qs.size else np.array([])
     edges = np.r_[0.0, cuts, np.inf]
@@ -122,11 +120,11 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
         if counts[j] == 0:
             ses[j] = np.nan
             continue
-        b, ll_j, I, _, _, _ = cox_fit(tj, ej, Xm[keep], ties=ties)
+        b, ll_j, I_, _, _, _ = cox_fit(tj, ej, Xm[keep], ties=ties)
         betas[j] = b
         ll_tv += ll_j
         try:
-            ses[j] = np.sqrt(np.clip(np.diag(np.linalg.inv(I)), 0, None))
+            ses[j] = np.sqrt(np.clip(np.diag(np.linalg.inv(I_)), 0, None))
         except np.linalg.LinAlgError:
             ses[j] = np.nan
 
@@ -137,18 +135,25 @@ def cox_time_varying(time, event, X, n_intervals=3, ties="efron"):
         z = betas / ses
     return RichResult(
         title="Cox model with time-varying coefficients",
-        summary_lines=[("intervals", n_intervals), ("events", int(e.sum())),
-                       ("LR vs constant", lr)],
-        warnings=(["late intervals often hold few events; read "
-                   "events_per_interval before trusting a late coefficient"]),
+        summary_lines=[("intervals", n_intervals), ("events", int(e.sum())), ("LR vs constant", lr)],
+        warnings=(
+            ["late intervals often hold few events; read events_per_interval before trusting a late coefficient"]
+        ),
         payload={
-            "beta": betas, "se": ses, "z": z,
+            "beta": betas,
+            "se": ses,
+            "z": z,
             "p_value": 2 * norm.sf(np.abs(z)),
-            "hazard_ratio": np.exp(betas), "cutpoints": cuts,
-            "events_per_interval": counts, "constant_beta": b_const,
-            "loglik": ll_tv, "loglik_constant": ll_const,
-            "lr_vs_constant": lr, "p_vs_constant": float(chi2.sf(lr, df)),
-            "n_intervals": n_intervals, "n": int(t.size),
+            "hazard_ratio": np.exp(betas),
+            "cutpoints": cuts,
+            "events_per_interval": counts,
+            "constant_beta": b_const,
+            "loglik": ll_tv,
+            "loglik_constant": ll_const,
+            "lr_vs_constant": lr,
+            "p_vs_constant": float(chi2.sf(lr, df)),
+            "n_intervals": n_intervals,
+            "n": int(t.size),
             "method": "cox_time_varying",
         },
     )

@@ -74,21 +74,26 @@ def tmleor(Y, A, QAW, Q1W, Q0W, g1W, gbound=0.025, level=0.95):
     fit = T.target(Y, A, QAW, Q1W, Q0W, g1W, gbound)
     mu1, mu0, ic1, ic0 = T.curves(Y, A, fit)
     if not 0.0 < mu1 < 1.0 or not 0.0 < mu0 < 1.0:
-        raise ValueError(
-            "a targeted mean hit 0 or 1; the odds ratio is undefined")
+        raise ValueError("a targeted mean hit 0 or 1; the odds ratio is undefined")
     psi = (mu1 / (1.0 - mu1)) / (mu0 / (1.0 - mu0))
-    ic = [ic1[i] / (mu1 * (1.0 - mu1)) - ic0[i] / (mu0 * (1.0 - mu0))
-          for i in range(n)]
+    ic = [ic1[i] / (mu1 * (1.0 - mu1)) - ic0[i] / (mu0 * (1.0 - mu0)) for i in range(n)]
     sel = math.sqrt(C.var(ic, 1) / n)
     lp = math.log(psi)
     z = C.qnorm((1.0 + float(level)) / 2.0)
-    return RichResult(payload={
-        "estimate": psi, "log_or": lp, "se_log": sel,
-        "ci_lower": math.exp(lp - z * sel),
-        "ci_upper": math.exp(lp + z * sel),
-        "p_value": 2.0 * (1.0 - C.pnorm(abs(lp / sel))) if sel > 0 else 0.0,
-        "mu1": mu1, "mu0": mu0, "n": float(n),
-        "method": "TMLE marginal odds ratio, inference on the log scale"})
+    return RichResult(
+        payload={
+            "estimate": psi,
+            "log_or": lp,
+            "se_log": sel,
+            "ci_lower": math.exp(lp - z * sel),
+            "ci_upper": math.exp(lp + z * sel),
+            "p_value": 2.0 * (1.0 - C.pnorm(abs(lp / sel))) if sel > 0 else 0.0,
+            "mu1": mu1,
+            "mu0": mu0,
+            "n": float(n),
+            "method": "TMLE marginal odds ratio, inference on the log scale",
+        }
+    )
 
 
 tmle_marginal_or = tmleor

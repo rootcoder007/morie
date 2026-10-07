@@ -47,12 +47,12 @@ def beams(
     dict
         Keys: 'sequences', 'scores'.
     """
-    rng = np.random.RandomState(seed)
+    np.random.RandomState(seed)
 
     sequences = [[initial_token]] * beam_width
     scores = np.zeros(beam_width)
 
-    for step in range(max_length - 1):
+    for _step in range(max_length - 1):
         candidates = []
 
         for beam_idx, seq in enumerate(sequences):

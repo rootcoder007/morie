@@ -18,8 +18,7 @@ def test_grnmfo_basic():
     R = [[X[i][j] - WH[i][j] for j in range(3)] for i in range(4)]
     obj = sum(v * v for row in R for v in row)
     assert result["objective"] == pytest.approx(obj, rel=1e-14)
-    assert result["relative_error"] == pytest.approx(
-        (obj / sum(v * v for row in X for v in row)) ** 0.5, rel=1e-14)
+    assert result["relative_error"] == pytest.approx((obj / sum(v * v for row in X for v in row)) ** 0.5, rel=1e-14)
     assert result["rank"] == 2
 
 
@@ -43,7 +42,7 @@ import morie.fn.grnmfo as _doctest_module
 
 def test_every_printed_value_in_the_worked_example_reproduces():
     res = _doctest.testmod(
-        _doctest_module, verbose=False, report=False,
-        optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS)
+        _doctest_module, verbose=False, report=False, optionflags=_doctest.NORMALIZE_WHITESPACE | _doctest.ELLIPSIS
+    )
     assert res.attempted > 0
     assert res.failed == 0

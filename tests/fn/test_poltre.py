@@ -1,7 +1,6 @@
 """Tests for poltre.polya_tree_prior."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.poltre import polya_tree_prior
 
 

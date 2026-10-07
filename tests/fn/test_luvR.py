@@ -1,7 +1,6 @@
 """Tests for luvR.louvain."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.luvR import louvain
 
 

@@ -1,7 +1,6 @@
 """Test Swish activation."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.swish import swish
 
 

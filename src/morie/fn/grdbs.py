@@ -88,11 +88,9 @@ def geron_dbscan_core_point(X, eps, min_samples, metric="euclidean"):
     elif metric == "chebyshev":
         D = np.max(np.abs(diff), axis=2)
     else:
-        raise ValueError(
-            f"metric must be 'euclidean', 'manhattan' or 'chebyshev', got {metric!r}."
-        )
+        raise ValueError(f"metric must be 'euclidean', 'manhattan' or 'chebyshev', got {metric!r}.")
 
-    within = D <= eps
+    within = eps >= D
     counts = within.sum(axis=1)
     core = counts >= min_samples
     # Border: not core, but reachable from some core point.
@@ -102,8 +100,7 @@ def geron_dbscan_core_point(X, eps, min_samples, metric="euclidean"):
 
     return RichResult(
         title="DBSCAN core points",
-        summary_lines=[("Core", int(core.sum())), ("Border", int(border.sum())),
-                       ("Noise", int(noise.sum()))],
+        summary_lines=[("Core", int(core.sum())), ("Border", int(border.sum())), ("Noise", int(noise.sum()))],
         payload={
             "is_core": core.tolist(),
             "is_border": border.tolist(),

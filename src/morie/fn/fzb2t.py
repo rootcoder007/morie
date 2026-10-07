@@ -64,17 +64,21 @@ def fauzi_b2_coefficient(t, f_X, f_X_prime=None, S_X=None, transform="log"):
     b2 = np.empty(tv.size)
     for i, zv in enumerate(zt):
         zz = np.linspace(zv, zv + 12.0, 400)
-        vals = tr["d2g"](zz) * tr["dg"](zz) * np.interp(
-            tr["g"](zz), tv, fx, left=0.0, right=0.0)
+        vals = tr["d2g"](zz) * tr["dg"](zz) * np.interp(tr["g"](zz), tv, fx, left=0.0, right=0.0)
         b2[i] = gp[i] ** 2 * fx[i] + float(np.trapezoid(vals, zz))
 
-    return RichResult(payload={
-        "t": tv, "b_2": b2, "g_prime": gp, "g_double_prime": gpp,
-        "bias_order": "O(h^2) everywhere, including the boundary region",
-        "contrast": "the naive kernel estimator degrades to O(h) or O(1) "
-                    "at the boundary (Remark 4.5)",
-        "transform": tr["name"],
-        "method": "b_2 from Eq. (4.15); the transformation makes the bias constant computable"})
+    return RichResult(
+        payload={
+            "t": tv,
+            "b_2": b2,
+            "g_prime": gp,
+            "g_double_prime": gpp,
+            "bias_order": "O(h^2) everywhere, including the boundary region",
+            "contrast": "the naive kernel estimator degrades to O(h) or O(1) at the boundary (Remark 4.5)",
+            "transform": tr["name"],
+            "method": "b_2 from Eq. (4.15); the transformation makes the bias constant computable",
+        }
+    )
 
 
 def cheatsheet():

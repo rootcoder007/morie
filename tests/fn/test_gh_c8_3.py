@@ -2,8 +2,6 @@
 
 import math
 
-from morie.fn import _array_core as np
-
 from morie.fn.gh_c8_3 import ghosal_test_cond
 
 
@@ -17,9 +15,7 @@ def test_gh_c8_3_basic():
     n = 50
     Cconst = 1.5
 
-    result = ghosal_test_cond(
-        prior_ball, log_entropy, sieve_mass, eps_bar, eps, n, Cconst
-    )
+    result = ghosal_test_cond(prior_ball, log_entropy, sieve_mass, eps_bar, eps, n, Cconst)
 
     # The function returns a dict-like RichResult
     assert isinstance(result, dict)
@@ -47,10 +43,7 @@ def test_gh_c8_3_basic():
     expected_cond_prior = 1.0 if expected_slack_prior >= 0.0 else 0.0
     expected_cond_entropy = 1.0 if expected_slack_entropy >= 0.0 else 0.0
     expected_cond_sieve = 1.0 if expected_slack_sieve >= 0.0 else 0.0
-    expected_holds = (
-        1.0 if (expected_cond_prior and expected_cond_entropy and expected_cond_sieve)
-        else 0.0
-    )
+    expected_holds = 1.0 if (expected_cond_prior and expected_cond_entropy and expected_cond_sieve) else 0.0
 
     assert result["n_eps_bar_sq"] == expected_neb
     assert result["slack_prior"] == expected_slack_prior
@@ -73,9 +66,7 @@ def test_gh_c8_3_edge():
     n = 10
     Cconst = 1.0
 
-    result = ghosal_test_cond(
-        prior_ball, log_entropy, sieve_mass, eps_bar, eps, n, Cconst
-    )
+    result = ghosal_test_cond(prior_ball, log_entropy, sieve_mass, eps_bar, eps, n, Cconst)
 
     assert isinstance(result, dict)
 

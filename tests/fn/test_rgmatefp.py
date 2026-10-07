@@ -1,7 +1,6 @@
 """Tests for rgmatefp.rangayyan_maternal_ecg_filter."""
 
 from morie.fn import _array_core as np
-
 from morie.fn.bsaqrs import rangayyan_maternal_ecg_filter
 
 

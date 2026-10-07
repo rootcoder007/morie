@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.keggp import kegg_pathway
 
 
@@ -21,9 +20,21 @@ def test_keggp_basic():
     kegg_pathways = [[float(rng.integers(0, 2)) for _ in range(k)] for _ in range(n)]
     result = kegg_pathway(genes, kegg_pathways)
     assert isinstance(result, dict)
-    for key in ("estimate", "pvalue", "qvalue", "overlap", "pathway_size",
-                "top_pathway", "n_significant", "significant", "n_selected",
-                "n_pathways", "alpha", "n", "method"):
+    for key in (
+        "estimate",
+        "pvalue",
+        "qvalue",
+        "overlap",
+        "pathway_size",
+        "top_pathway",
+        "n_significant",
+        "significant",
+        "n_selected",
+        "n_pathways",
+        "alpha",
+        "n",
+        "method",
+    ):
         assert key in result
     # p-values and q-values must be valid probabilities
     assert all(0.0 <= v <= 1.0 for v in result["pvalue"])

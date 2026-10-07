@@ -31,17 +31,21 @@ def alammar_setfit_twostep(embeddings, labels, n_pairs_report=True):
         for j in range(i + 1, n):
             (pos if y[i] == y[j] else neg).append((i, j))
     if not pos or not neg:
-        raise ValueError(
-            "contrastive pairs need at least two classes with at least "
-            "two members each.")
+        raise ValueError("contrastive pairs need at least two classes with at least two members each.")
     head = alammar_embedding_classifier(X, y)
-    return RichResult(payload={
-        "positive_pairs": pos, "negative_pairs": neg,
-        "n_positive": len(pos), "n_negative": len(neg),
-        "head_train_accuracy": head["train_accuracy"],
-        "head_predictions": head["predictions"],
-        "estimate": head["train_accuracy"], "n": n,
-        "method": "SetFit pair generation + head (Tunstall et al. 2022)"})
+    return RichResult(
+        payload={
+            "positive_pairs": pos,
+            "negative_pairs": neg,
+            "n_positive": len(pos),
+            "n_negative": len(neg),
+            "head_train_accuracy": head["train_accuracy"],
+            "head_predictions": head["predictions"],
+            "estimate": head["train_accuracy"],
+            "n": n,
+            "method": "SetFit pair generation + head (Tunstall et al. 2022)",
+        }
+    )
 
 
 def cheatsheet():

@@ -32,7 +32,7 @@ def glr_detector(x, window: int = 50, **kwargs) -> DescriptiveResult:
     for k in range(window, n - window):
         x1 = x[:k]
         x2 = x[k:]
-        n1, n2 = len(x1), len(x2)
+        _n1, _n2 = len(x1), len(x2)
         mu1, mu2 = np.mean(x1), np.mean(x2)
         mu_all = np.mean(x)
         var_all = np.var(x)

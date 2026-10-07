@@ -28,17 +28,17 @@ def pareto_optimize(
         ``value`` dict with ``pareto_mask`` (bool array, n), ``pareto_front``
         (k x m), ``n_pareto``, ``hypervolume`` (2D only, otherwise None).
     """
-    O = np.asarray(objectives, dtype=float)
-    if O.ndim != 2:
+    O_ = np.asarray(objectives, dtype=float)
+    if O_.ndim != 2:
         raise ValueError("objectives must be 2D (n x m)")
-    n, m = O.shape
+    n, m = O_.shape
 
     if minimize is None:
         minimize = [True] * m
     if len(minimize) != m:
         raise ValueError("minimize must have length m")
 
-    obj = O.copy()
+    obj = O_.copy()
     for j in range(m):
         if not minimize[j]:
             obj[:, j] = -obj[:, j]
@@ -54,7 +54,7 @@ def pareto_optimize(
                 is_pareto[i] = False
                 break
 
-    front = O[is_pareto]
+    front = O_[is_pareto]
     n_pareto = int(is_pareto.sum())
 
     hv = None

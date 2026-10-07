@@ -10,8 +10,7 @@ Y = [1.0, 0.8, 0.1, -0.4, -0.2, 0.3, 0.9, 0.5, 0.0, -0.1, 0.2]
 
 
 def _trap(pts):
-    return sum(0.5 * (pts[i][1] + pts[i + 1][1]) * (pts[i + 1][0] - pts[i][0])
-               for i in range(len(pts) - 1))
+    return sum(0.5 * (pts[i][1] + pts[i + 1][1]) * (pts[i + 1][0] - pts[i][0]) for i in range(len(pts) - 1))
 
 
 def test_rng201_basic():

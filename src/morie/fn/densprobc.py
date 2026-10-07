@@ -30,8 +30,7 @@ def densprobc(grid, density, center, width):
     Createspace Independent Publishing. Eq (4.4).
     """
     half = float(width) / 2.0
-    value = _morin.density_interval_probability(
-        grid, density, float(center) - half, float(center) + half)
+    value = _morin.density_interval_probability(grid, density, float(center) - half, float(center) + half)
     payload = {"probability": value, "center": float(center), "width": float(width)}
     lines = [("P(centered interval)", value)]
     return RichResult(

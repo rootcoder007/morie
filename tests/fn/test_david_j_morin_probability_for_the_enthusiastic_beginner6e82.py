@@ -4,11 +4,11 @@ Morin (2016), eq (6.82) -- the residual sum of squares of the fit. Expected valu
 from the identity in the test body.
 """
 
-import math
-
 import pytest
 
-from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e82 import david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_82
+from morie.fn.david_j_morin_probability_for_the_enthusiastic_beginner6e82 import (
+    david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_82,
+)
 
 
 def test_least_squares_line_on_the_books_worked_data():
@@ -35,7 +35,9 @@ def test_least_squares_on_the_books_data_is_stable_under_reordering():
     y = [1.0, 1.0, 3.0, 4.0, 6.0]
     order = [4, 0, 3, 1, 2]
     a = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_82(x, y)
-    b = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_82([x[i] for i in order], [y[i] for i in order])
+    b = david_j_morin_probability_for_the_enthusiastic_beginner_chapter_6_equation_82(
+        [x[i] for i in order], [y[i] for i in order]
+    )
     assert b["A"] == pytest.approx(a["A"], rel=1e-12)
     assert b["B"] == pytest.approx(a["B"], rel=1e-12)
     assert b["S"] == pytest.approx(a["S"], rel=1e-12)

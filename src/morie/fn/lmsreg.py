@@ -122,7 +122,7 @@ def least_median_squares(y, X, c_np=1.0, max_subsets=200000):
         raise ValueError("least_median_squares: need at least p observations")
     total = R.nchoosek(n, p)
     if total > max_subsets:
-        raise ValueError("least_median_squares: %d elemental subsets exceeds max_subsets" % total)
+        raise ValueError(f"least_median_squares: {int(total)} elemental subsets exceeds max_subsets")
     ic = _has_intercept(Xm, n, p)
     hloc = n // 2 + 1
     best = None

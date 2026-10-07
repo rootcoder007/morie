@@ -1,8 +1,6 @@
 """Tests for gb651.gibbons_ctrl_median."""
 
 from morie.fn import _array_core as np
-from morie.fn import _frame_core as pd
-
 from morie.fn.gb651 import gibbons_ctrl_median
 
 
@@ -18,8 +16,7 @@ def test_gb651_basic():
 
     # The function returns a RichResult (mapping-like).
     assert isinstance(result, dict)
-    for key in ("statistic", "p_value", "z", "mean", "var",
-                "pmf", "r", "m", "n", "method"):
+    for key in ("statistic", "p_value", "z", "mean", "var", "pmf", "r", "m", "n", "method"):
         assert key in result
 
     # Independently compute the statistic V from the documented definition:
@@ -44,7 +41,7 @@ def test_gb651_basic():
     assert result["var"] == var_expected
 
     # Independently compute Z from the asymptotic formula in the docstring.
-    z_expected = (v_expected - m_expected / 2.0) / (var_expected ** 0.5)
+    z_expected = (v_expected - m_expected / 2.0) / (var_expected**0.5)
     assert abs(result["z"] - z_expected) < 1e-12
 
     # pmf must sum to 1 (it's a probability mass function).

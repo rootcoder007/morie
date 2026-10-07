@@ -57,9 +57,15 @@ def degree_centrality(A, node=0):
     for j in range(n):
         if j != v:
             deg += M[v][j]
-    return RichResult(payload={
-        "estimate": deg / (n - 1), "degree": deg, "node": v, "n": n,
-        "method": "Freeman degree centrality (normalised)"})
+    return RichResult(
+        payload={
+            "estimate": deg / (n - 1),
+            "degree": deg,
+            "node": v,
+            "n": n,
+            "method": "Freeman degree centrality (normalised)",
+        }
+    )
 
 
 degreecentrality = degree_centrality

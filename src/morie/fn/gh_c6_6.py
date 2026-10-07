@@ -28,14 +28,13 @@ def ghosal_kl_support(p0, alpha=None, eps=0.1, n_sim=3000, seed=42):
     for _ in range(n_sim):
         g = [float(rng.gamma(a, 1.0)) for a in alpha]
         p = _bnp.normalize_weights(g)
-        kl = sum(q * math.log(q / max(pi, 1e-300))
-                 for q, pi in zip(p0, p) if q > 0)
+        kl = sum(q * math.log(q / max(pi, 1e-300)) for q, pi in zip(p0, p) if q > 0)
         if kl < eps:
             hits += 1
     mass = hits / n_sim
-    res = RichResult(payload={"estimate": mass,
-                              "kl_property": mass > 0,
-                              "method": "KL support mass (GvdV 2017 Def 6.15)"})
+    res = RichResult(
+        payload={"estimate": mass, "kl_property": mass > 0, "method": "KL support mass (GvdV 2017 Def 6.15)"}
+    )
     return with_describe_pointer(res, "gh_c6_6")
 
 

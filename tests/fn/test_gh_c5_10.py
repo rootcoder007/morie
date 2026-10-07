@@ -3,7 +3,6 @@
 import math
 
 from morie.fn import _array_core as np
-
 from morie.fn.gh_c5_10 import ghosal_poi_ker
 
 
@@ -29,8 +28,7 @@ def test_gh_c5_10_edge():
     ks = [0.0, 3.0, 7.0]
     lambdas = [0.5, 2.0, 4.0]
     weights = [0.2, 0.3, 0.5]
-    result = ghosal_poi_ker(ks, lambdas=lambdas, weights=weights,
-                            alpha=1.0, n_terms=100, seed=42)
+    result = ghosal_poi_ker(ks, lambdas=lambdas, weights=weights, alpha=1.0, n_terms=100, seed=42)
 
     pmf = [float(v) for v in result["pmf"]]
     assert len(pmf) == len(ks)
@@ -41,8 +39,7 @@ def test_gh_c5_10_edge():
         k_int = int(k)
         s = 0.0
         for w, lam in zip(weights, lambdas):
-            s += w * math.exp(-lam + k_int * math.log(lam)
-                              - math.lgamma(k_int + 1.0))
+            s += w * math.exp(-lam + k_int * math.log(lam) - math.lgamma(k_int + 1.0))
         expected.append(s)
 
     # `estimate` is documented to be the mixture evaluated at the first k.

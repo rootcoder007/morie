@@ -108,15 +108,17 @@ def bipartite_matching(edges, n_left=None, n_right=None):
     unmatched = int(np.sum(match_l == -1))
     return RichResult(
         title="Maximum bipartite matching",
-        summary_lines=[("left", nL), ("right", nR), ("matched", int(size)),
-                       ("unmatched left", unmatched)],
-        warnings=(["unmatched units are dropped downstream, which changes the "
-                   "estimand"] if unmatched else []),
+        summary_lines=[("left", nL), ("right", nR), ("matched", int(size)), ("unmatched left", unmatched)],
+        warnings=(["unmatched units are dropped downstream, which changes the estimand"] if unmatched else []),
         payload={
-            "matching": match_l, "matching_right": match_r,
-            "size": int(size), "n_unmatched_left": unmatched,
+            "matching": match_l,
+            "matching_right": match_r,
+            "size": int(size),
+            "n_unmatched_left": unmatched,
             "is_perfect": bool(size == min(nL, nR)),
-            "n_left": nL, "n_right": nR, "method": "bipartite_matching",
+            "n_left": nL,
+            "n_right": nR,
+            "method": "bipartite_matching",
         },
     )
 

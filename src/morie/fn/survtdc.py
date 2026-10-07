@@ -48,14 +48,16 @@ def time_dep_concordance(time, event, marker, t):
     if comp == 0:
         raise ValueError("no comparable pairs at horizon t")
     est = (conc + 0.5 * tied) / comp
-    return RichResult(payload={
-        "estimate": est,
-        "concordant": conc,
-        "tied": tied,
-        "comparable": comp,
-        "t": t,
-        "method": "Antolini-Boracchi-Biganzoli (2005) truncated time-dependent concordance",
-    })
+    return RichResult(
+        payload={
+            "estimate": est,
+            "concordant": conc,
+            "tied": tied,
+            "comparable": comp,
+            "t": t,
+            "method": "Antolini-Boracchi-Biganzoli (2005) truncated time-dependent concordance",
+        }
+    )
 
 
 def cheatsheet():

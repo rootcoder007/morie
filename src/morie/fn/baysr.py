@@ -62,8 +62,7 @@ __all__ = ["bayes_r_prior"]
 _CLASSES = (0.0, 1e-4, 1e-3, 1e-2)
 
 
-def bayes_r_prior(y, X, pi=None, sigma_classes=None, max_iter=500, tol=1e-13,
-                  delta=None):
+def bayes_r_prior(y, X, pi=None, sigma_classes=None, max_iter=500, tol=1e-13, delta=None):
     """BayesR fitted at the EM fixed point of its own Gibbs sampler.
 
     Parameters
@@ -112,8 +111,9 @@ def bayes_r_prior(y, X, pi=None, sigma_classes=None, max_iter=500, tol=1e-13,
     if K < 2:
         raise ValueError("bayes_r_prior: need at least two variance classes")
     if sc[0] != 0.0:
-        raise ValueError("bayes_r_prior: the first variance class must be exactly 0, "
-                         "the point mass that defines BayesR")
+        raise ValueError(
+            "bayes_r_prior: the first variance class must be exactly 0, the point mass that defines BayesR"
+        )
     for v in sc:
         if v < 0.0:
             raise ValueError("bayes_r_prior: variance class multipliers must be non-negative")
@@ -216,7 +216,7 @@ def bayes_r_prior(y, X, pi=None, sigma_classes=None, max_iter=500, tol=1e-13,
             "n_nonzero": nz,
             "n": n,
             "method": "BayesR four-class mixture of Erbe et al. (2012), at the EM fixed "
-                      "point of its Gibbs sampler; not in the book",
+            "point of its Gibbs sampler; not in the book",
         },
     )
 

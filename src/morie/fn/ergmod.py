@@ -23,8 +23,7 @@ def _change_stats(A, i, j, names):
             dj = sum(A[j]) - A[i][j]
             out.append(float(di + dj))
         else:  # triangle
-            out.append(float(sum(1 for k in range(n)
-                                 if k != i and k != j and A[i][k] and A[j][k])))
+            out.append(float(sum(1 for k in range(n) if k != i and k != j and A[i][k] and A[j][k])))
     return out
 
 
@@ -90,13 +89,12 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
                 raise ValueError("G must be a 0/1 adjacency matrix")
             if A[i][j] != A[j][i]:
                 raise ValueError("G must be symmetric")
-    names = [str(s) for s in ([statistics] if isinstance(statistics, str)
-                              else statistics)]
+    names = [str(s) for s in ([statistics] if isinstance(statistics, str) else statistics)]
     if not names:
         raise ValueError("at least one statistic is required")
     for nm in names:
         if nm not in _SUPPORTED:
-            raise ValueError("unsupported statistic: %s" % nm)
+            raise ValueError(f"unsupported statistic: {nm}")
     p = len(names)
     X = []
     yv = []
@@ -111,7 +109,7 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
     if len(th) != p:
         raise ValueError("theta_init must have one entry per statistic")
     used = 0
-    for used in range(1, int(iters) + 1):
+    for used in range(1, int(iters) + 1):  # noqa: B007 - read after the loop
         H = [[0.0] * p for _ in range(p)]
         g = [0.0] * p
         for d in range(nd):
@@ -125,11 +123,12 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
                     H[a][c] += wv * X[d][a] * X[d][c]
         try:
             step = core.cholsolve(H, g)
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(
                 "pseudo-likelihood Hessian is singular: the dyad "
                 "regression is separated or the change statistics are "
-                "collinear on this graph")
+                "collinear on this graph"
+            ) from exc
         th = [th[k] + step[k] for k in range(p)]
         if max(abs(v) for v in step) < float(tol):
             break
@@ -149,11 +148,12 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
         for a in range(p):
             col = core.cholsolve(H, [1.0 if k == a else 0.0 for k in range(p)])
             se.append(math.sqrt(col[a]))
-    except ValueError:
+    except ValueError as exc:
         raise ValueError(
             "pseudo-likelihood Hessian is singular: the dyad regression "
             "is separated or the change statistics are collinear on this "
-            "graph")
+            "graph"
+        ) from exc
     obs = []
     for nm in names:
         if nm == "edges":
@@ -166,20 +166,21 @@ def ergm(G, statistics=("edges",), theta_init=None, iters=100, tol=1e-11):
             for i in range(n):
                 for j in range(i + 1, n):
                     if A[i][j]:
-                        t += sum(1 for k in range(j + 1, n)
-                                 if A[i][k] and A[j][k])
+                        t += sum(1 for k in range(j + 1, n) if A[i][k] and A[j][k])
             obs.append(t)
-    return RichResult(payload={
-        "estimate": th[0],
-        "theta": th,
-        "se": se,
-        "observed_stats": obs,
-        "pseudo_loglik": ll,
-        "n_dyads": nd,
-        "iters_used": used,
-        "n": n,
-        "method": "Exponential random graph model (MPLE)",
-    })
+    return RichResult(
+        payload={
+            "estimate": th[0],
+            "theta": th,
+            "se": se,
+            "observed_stats": obs,
+            "pseudo_loglik": ll,
+            "n_dyads": nd,
+            "iters_used": used,
+            "n": n,
+            "method": "Exponential random graph model (MPLE)",
+        }
+    )
 
 
 def cheatsheet():

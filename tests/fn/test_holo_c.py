@@ -4,7 +4,6 @@ import pytest
 
 plt = pytest.importorskip("matplotlib.pyplot")
 from morie.fn import _frame_core as pd
-
 from morie.fn.holo_c import holo_corr
 
 

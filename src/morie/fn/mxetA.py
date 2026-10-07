@@ -81,7 +81,7 @@ def mxetA(F, n_sim=1, seed=0, max_points=100000):
             gamma += -math.log(u)
             x = 1.0 / gamma
             if x * fmax <= min(y) and min(y) > 0.0:
-                break                      # exact truncation
+                break  # exact truncation
             site = min(int(float(rng.uniform()) * m), m - 1)
             for t in range(nt):
                 v = Fm[t][site] * x
@@ -90,16 +90,17 @@ def mxetA(F, n_sim=1, seed=0, max_points=100000):
             k += 1
         fields.append(y)
         counts.append(k)
-    fu = [[math.exp(-scales[t] / y[t]) if y[t] > 0 else 0.0
-           for t in range(nt)] for y in fields]
-    return RichResult(payload={
-        "fields": fields,
-        "scales": scales,
-        "n_points": counts,
-        "frechet_uniform": fu,
-        "seed": int(seed),
-        "method": "de Haan (1984) spectral max-stable simulation",
-    })
+    fu = [[math.exp(-scales[t] / y[t]) if y[t] > 0 else 0.0 for t in range(nt)] for y in fields]
+    return RichResult(
+        payload={
+            "fields": fields,
+            "scales": scales,
+            "n_points": counts,
+            "frechet_uniform": fu,
+            "seed": int(seed),
+            "method": "de Haan (1984) spectral max-stable simulation",
+        }
+    )
 
 
 # long descriptive alias (stub-era name)
@@ -108,6 +109,7 @@ max_stable_simulation = mxetA
 
 def cheatsheet():
     return "mxetA: Y_t = sup_k f_t(T_k)/Gamma_k; P(Y<=y) = exp(-c_t/y)"
+
 
 # public names resolved by fn/_lazy_map.json
 max_exceedance_curve = mxetA
