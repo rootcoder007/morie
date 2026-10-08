@@ -113,10 +113,7 @@ def test_fn_sources_load_through_zipimport_even_without_a_cache_dir(monkeypatch,
         assert [p for p in fn.__path__ if p not in before] == []
         assert list((tmp_path / "ro").iterdir()) == []
         # the finder is installed once per process; an earlier import may have added it
-        finder = next(
-            (f for f in sys.meta_path if type(f).__name__ == "_Finder" and type(f).__module__ == "morie.fn"),
-            None,
-        )
+        finder = next((f for f in sys.meta_path if isinstance(f, fn._Finder)), None)
         assert finder is not None
         short = next(iter(fn._decompress_fnsrc(str(xz))))
         spec = finder.find_spec(f"morie.fn.{short}")

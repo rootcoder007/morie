@@ -22,10 +22,16 @@ HOSTILE = [
 
 @pytest.mark.parametrize("text", HOSTILE, ids=[f"case{i}" for i in range(len(HOSTILE))])
 def test_every_siu_binding_returns_on_hostile_text(text):
-    assert isinstance(native.siu_html_to_text(text), str)
-    assert isinstance(native.siu_parse_report_html(text), dict)
-    assert isinstance(native.siu_parse_report_text(text), dict)
-    count, reason = native.siu_resolve_so(text)
+    import warnings
+
+    # a 300 KB line is split into 2000-character pieces first; that split warns by design
+    # (test_long_lines_are_split_with_a_warning_and_the_scans_are_linear asserts the warning)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message=".*split for extraction.*", category=UserWarning)
+        assert isinstance(native.siu_html_to_text(text), str)
+        assert isinstance(native.siu_parse_report_html(text), dict)
+        assert isinstance(native.siu_parse_report_text(text), dict)
+        count, reason = native.siu_resolve_so(text)
     assert isinstance(reason, str)
 
 
@@ -35,7 +41,8 @@ def test_caps_match_the_canonical_package():
         native.siu_to_iso_date("x" * 5000)
     with pytest.raises(ValueError, match="larger than 2 MiB"):
         native.siu_html_to_text("a" * (3 * 1024 * 1024))
-    out = native.siu_html_to_text("<p>" + " ".join(["word"] * 1500) + "</p>")
+    with pytest.warns(UserWarning, match="longer than 2000 characters were split"):
+        out = native.siu_html_to_text("<p>" + " ".join(["word"] * 1500) + "</p>")
     assert all(len(line) <= 4000 for line in out.split("\n"))
 
 

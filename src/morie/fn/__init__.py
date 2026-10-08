@@ -22,6 +22,8 @@ once per (version of the) archive.
 """
 
 import importlib as _importlib
+import importlib.abc
+import importlib.util
 import json as _json
 import os as _os
 import sys as _sys
@@ -229,43 +231,58 @@ def _install_fnsrc():
     _install_memory_finder(sources)
 
 
+class _MemLoader(importlib.abc.SourceLoader):
+    """SourceLoader over the in-memory source dict: the import system compiles and runs the
+    module itself (no eval/exec call in this package); inspect.getsource() / describe() read
+    get_data()."""
+
+    def __init__(self, short, sources):
+        self.short = short
+        self._sources = sources
+
+    def get_filename(self, fullname):
+        return f"morie-fnsrc:{self.short}.py"
+
+    def get_data(self, path):
+        return self._sources[self.short].encode("utf-8")
+
+    def path_stats(self, path):
+        raise OSError("no bytecode cache for in-memory sources")
+
+    def is_package(self, fullname):
+        return False
+
+
+class _Finder(importlib.abc.MetaPathFinder):
+    """Meta-path finder for ``morie.fn.<short>`` served from memory. One per process: later
+    calls to ``_install_memory_finder`` merge their sources into the existing instance."""
+
+    def __init__(self, sources):
+        self.sources = dict(sources)
+
+    def find_spec(self, fullname, path=None, target=None):
+        prefix = __name__ + "."
+        if not fullname.startswith(prefix):
+            return None
+        short = fullname[len(prefix) :]
+        if short not in self.sources:
+            return None
+        return importlib.util.spec_from_loader(
+            fullname, _MemLoader(short, self.sources), origin=f"morie-fnsrc:{short}.py"
+        )
+
+
 def _install_memory_finder(sources):
     """Import ``morie.fn.<short>`` from the decompressed source dict, no file written."""
-    import importlib.abc
-    import importlib.util
     import sys as _sys
 
-    prefix = __name__ + "."
-
-    # a SourceLoader: the import system compiles and runs the module itself (no eval/exec
-    # call in this package), and inspect.getsource() / describe() read get_data()
-    class _Loader(importlib.abc.SourceLoader):
-        def __init__(self, short):
-            self.short = short
-
-        def get_filename(self, fullname):
-            return f"morie-fnsrc:{self.short}.py"
-
-        def get_data(self, path):
-            return sources[self.short].encode("utf-8")
-
-        def path_stats(self, path):
-            raise OSError("no bytecode cache for in-memory sources")
-
-        def is_package(self, fullname):
-            return False
-
-    class _Finder(importlib.abc.MetaPathFinder):
-        def find_spec(self, fullname, path=None, target=None):
-            if not fullname.startswith(prefix):
-                return None
-            short = fullname[len(prefix) :]
-            if short not in sources:
-                return None
-            return importlib.util.spec_from_loader(fullname, _Loader(short), origin=f"morie-fnsrc:{short}.py")
-
-    if not any(isinstance(f, _Finder) for f in _sys.meta_path):
-        _sys.meta_path.append(_Finder())
+    for f in _sys.meta_path:
+        if isinstance(f, _Finder):
+            f.sources.update(sources)
+            return f
+    finder = _Finder(sources)
+    _sys.meta_path.append(finder)
+    return finder
 
 
 _install_fnsrc()
