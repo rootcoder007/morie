@@ -420,16 +420,105 @@ _ISO2_TO_ISO3 = {
 }  # fmt: skip
 
 
+@lru_cache(maxsize=1)
+def _iso3166() -> dict[str, str]:
+    """The whole ISO 3166 list, two-letter code to three-letter code (data/iso3166.csv)."""
+    out: dict[str, str] = dict(_ISO2_TO_ISO3)
+    try:
+        for line in (_DATA_DIR / "iso3166.csv").read_text(encoding="ascii").splitlines()[1:]:
+            a2, a3 = line.strip().split(",")[:2]
+            out[a2] = a3
+    except OSError:
+        pass
+    return out
+
+
+@lru_cache(maxsize=1)
+def _timezone_countries() -> dict[str, str]:
+    """IANA zone name to two-letter country code (data/timezone_countries.csv: every zone of
+    zone.tab plus every alias in `backward`, 549 names)."""
+    out: dict[str, str] = {}
+    try:
+        for line in (_DATA_DIR / "timezone_countries.csv").read_text(encoding="ascii").splitlines()[1:]:
+            tz, cc = line.strip().split(",")[:2]
+            out[tz] = cc
+    except OSError:
+        pass
+    return out
+
+
 def iso3(code: str) -> str:
     """``"fr"`` -> ``"FRA"``; an ISO-3 code (or anything else) comes back upper-cased.
+    Every two-letter code of ISO 3166 is known, not a hand-picked subset.
 
     Examples
     --------
-    >>> iso3("fr"), iso3("CAN")
-    ('FRA', 'CAN')
+    >>> iso3("fr"), iso3("CAN"), iso3("kz")
+    ('FRA', 'CAN', 'KAZ')
     """
     c = (code or "").strip().upper()
-    return _ISO2_TO_ISO3.get(c, c) if len(c) == 2 else c
+    return _iso3166().get(c, c) if len(c) == 2 else c
+
+
+def _system_timezone() -> str:
+    """The IANA name of the system time zone, or "" when it cannot be read without a library."""
+    tz = os.environ.get("TZ", "")
+    if tz.startswith(":"):
+        tz = tz[1:]
+    if tz:
+        return tz
+    try:
+        txt = Path("/etc/timezone").read_text(encoding="utf-8").strip()
+        if txt:
+            return txt
+    except OSError:
+        pass
+    try:
+        target = os.readlink("/etc/localtime")
+        if "zoneinfo/" in target:
+            return target.split("zoneinfo/", 1)[1]
+    except OSError:
+        pass
+    return ""
+
+
+def _locale_territory() -> str:
+    import locale
+
+    try:
+        name = locale.getlocale()[0] or ""
+    except (ValueError, TypeError):
+        name = ""
+    if not name:
+        name = os.environ.get("LC_ALL") or os.environ.get("LC_TIME") or os.environ.get("LANG") or ""
+    m = re.match(r"^[A-Za-z]{2,3}_([A-Z]{2})", name)
+    return m.group(1) if m else ""
+
+
+def _detect_location_offline(tz: str | None = None, territory: str | None = None) -> tuple[str, str, str, float, float]:
+    """Where the run is, without any network: the system time zone through the IANA zone
+    tables (every zone and alias: ``Europe/Stockholm`` is Sweden, ``US/Eastern`` the United
+    States), then the territory of the locale (``en_CA.UTF-8`` is Canada).
+
+    Returns (iso3, "", "", 0.0, 0.0), the code empty when neither names a country.
+
+    Examples
+    --------
+    >>> _detect_location_offline(tz="Europe/Stockholm")[0]
+    'SWE'
+    >>> _detect_location_offline(tz="Etc/UTC", territory="IN")[0]
+    'IND'
+    """
+    tz = _system_timezone() if tz is None else tz
+    if tz:
+        key = tz[6:] if tz.startswith(("posix/", "right/")) else tz
+        cc = _timezone_countries().get(key, "")
+        if cc:
+            return (iso3(cc), "", "", 0.0, 0.0)
+    territory = _locale_territory() if territory is None else territory
+    if territory:
+        return (iso3(territory), "", "", 0.0, 0.0)
+    return ("", "", "", 0.0, 0.0)
 
 
 def known_country_codes() -> set[str]:
@@ -512,16 +601,21 @@ def _detect_location() -> tuple[str, str, str, float, float]:
 
         resp = httpx.get("https://ipapi.co/json/", timeout=5)
         data = resp.json()
+        # the energy-mix table is keyed by ISO-3 ("CAN"); country_code is ISO-2 ("CA")
+        code = data.get("country_code_iso3") or data.get("country_code", "")
+        if not code:
+            raise ValueError("no country in the geolocation record")
         return (
-            # the energy-mix table is keyed by ISO-3 ("CAN"); country_code is ISO-2 ("CA")
-            data.get("country_code_iso3") or data.get("country_code", ""),
+            code,
             data.get("region", ""),
             data.get("country_name", ""),
             float(data.get("latitude", 0)),
             float(data.get("longitude", 0)),
         )
     except Exception:
-        return ("", "", "", 0.0, 0.0)
+        # no network, or nothing usable in the answer: the time zone and the locale still
+        # place the run on its own grid rather than the world average
+        return _detect_location_offline()
 
 
 def _get_cpu_model() -> str:
@@ -633,7 +727,7 @@ class EmissionsTracker:
             if env_iso:
                 iso, reg, name, lat, lon = env_iso.upper(), os.environ.get("MORIE_REGION", ""), "", 0.0, 0.0
             elif os.environ.get("MORIE_EMISSIONS_OFFLINE"):
-                iso, reg, name, lat, lon = "", "", "", 0.0, 0.0
+                iso, reg, name, lat, lon = _detect_location_offline()
             else:
                 iso, reg, name, lat, lon = _detect_location()
             self._country_iso = iso

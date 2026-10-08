@@ -6,6 +6,7 @@ advection-diffusion solver and a Lagrangian random-walk particle model."""
 from __future__ import annotations
 
 import math
+import warnings
 
 from ._qpcore import ssum
 from ._richresult import RichResult
@@ -19,6 +20,50 @@ __all__ = [
     "advection_diffusion_2d",
     "lagrangian_particles",
 ]
+
+
+def _num(x, what, *, minimum=None, positive=False, scalar=True, whole=False):
+    """One finite number (or a list of them) for the dispersion inputs."""
+    if isinstance(x, (bool, str)) or x is None:
+        raise ValueError(f"`{what}` must be numeric")
+    if scalar:
+        if isinstance(x, (list, tuple)):
+            raise ValueError(f"`{what}` must be a single number")
+        vals = [x]
+    else:
+        vals = list(x) if isinstance(x, (list, tuple)) else [x]
+    out = []
+    for v in vals:
+        if isinstance(v, (bool, str)):
+            raise ValueError(f"`{what}` must be numeric")
+        try:
+            f = float(v)
+        except (TypeError, ValueError):
+            raise ValueError(f"`{what}` must be numeric") from None
+        if not math.isfinite(f):
+            raise ValueError(f"`{what}` must be finite")
+        if positive and f <= 0:
+            raise ValueError(f"`{what}` must be positive")
+        if minimum is not None and f < minimum:
+            raise ValueError(f"`{what}` must be at least {minimum}")
+        if whole and f != math.floor(f):
+            raise ValueError(f"`{what}` must be a whole number")
+        out.append(f)
+    return out[0] if scalar else out
+
+
+def _lid(mixing_height, h):
+    if mixing_height is None:
+        return None
+    lid = _num(mixing_height, "mixing_height", positive=True)
+    if h > lid:
+        warnings.warn(
+            f"release height {h} is above the mixing height {lid}: the plume is above the lid "
+            "and the reflection terms do not describe it",
+            stacklevel=3,
+        )
+    return lid
+
 
 # Briggs (1973) open-country and urban fits: (a_y, a_z, b_z, e_z); sigma_y = a_y x (1 + 1e-4 x)^-1/2
 # (urban 4e-4); sigma_z = a_z x (1 + b_z x)^e_z
@@ -64,7 +109,7 @@ def pg_sigmas(x, stability: str = "D", *, setting: str = "rural") -> RichResult:
     tab = _RURAL if setting == "rural" else _URBAN
     ay, az, bz, ez = tab[stability.upper()]
     cy = 0.0001 if setting == "rural" else 0.0004
-    xs = [float(v) for v in (x if isinstance(x, (list, tuple)) else [x])]
+    xs = _num(x, "x", minimum=0.0, scalar=False)
     sy = [ay * v * (1.0 + cy * v) ** -0.5 for v in xs]
     sz = [az * v * (1.0 + bz * v) ** ez for v in xs]
     return RichResult(payload={"sigma_y": sy, "sigma_z": sz})
@@ -105,6 +150,20 @@ def briggs_plume_rise(
     >>> round(r.flux, 10), [round(v, 8) for v in r.rise]
     (40.45041, [23.6659688, 68.72947432])
     """
+    xs_in = _num(x, "x", minimum=0.0, scalar=False)
+    u = _num(u, "u", positive=True)
+    diameter = _num(diameter, "diameter", positive=True)
+    exit_velocity = _num(exit_velocity, "exit_velocity", positive=True)
+    stack_temp = _num(stack_temp, "stack_temp", positive=True)
+    ambient_temp = _num(ambient_temp, "ambient_temp", positive=True)
+    g = _num(g, "g", positive=True)
+    if stack_temp <= ambient_temp:
+        raise ValueError(
+            "`stack_temp` must exceed `ambient_temp`: Briggs' formulas describe a buoyant plume, "
+            "and a stack cooler than the air has no buoyancy flux"
+        )
+    if dtheta_dz is not None:
+        dtheta_dz = _num(dtheta_dz, "dtheta_dz", positive=True)
     F = g * exit_velocity * diameter**2 * (stack_temp - ambient_temp) / (4.0 * stack_temp)
     cls = stability.upper()
     if cls in ("E", "F"):
@@ -118,7 +177,7 @@ def briggs_plume_rise(
     else:
         final = 38.71 * F**0.6 / u
         xf = 119.0 * F**0.4
-    xs = [float(v) for v in (x if isinstance(x, (list, tuple)) else [x])]
+    xs = xs_in
     rise = [final if v >= xf else min(1.6 * F ** (1.0 / 3.0) * v ** (2.0 / 3.0) / u, final) for v in xs]
     return RichResult(payload={"flux": F, "final_rise": final, "x_final": xf, "rise": rise})
 
@@ -163,6 +222,11 @@ def gaussian_plume(
     >>> round(gaussian_plume(100.0, 5.0, 50.0, [(1000.0, 0.0, 0.0)])[0], 12)
     0.000923237624
     """
+    q = _num(q, "q", minimum=0.0)
+    u = _num(u, "u", positive=True)
+    h = _num(h, "h", minimum=0.0)
+    n_images = int(_num(n_images, "n_images", minimum=0.0, whole=True))
+    mixing_height = _lid(mixing_height, h)
     out = []
     for x, y, z in receptors:
         if x <= 0:
@@ -209,6 +273,12 @@ def gaussian_puff(
     >>> round(gaussian_puff(1000.0, 5.0, 10.0, [(500.0, 0.0, 0.0)], 100.0)[0], 12)
     0.003334296408
     """
+    mass = _num(mass, "mass", minimum=0.0)
+    u = _num(u, "u", positive=True)
+    h = _num(h, "h", minimum=0.0)
+    t = _num(t, "t", positive=True)
+    n_images = int(_num(n_images, "n_images", minimum=0.0, whole=True))
+    mixing_height = _lid(mixing_height, h)
     s = pg_sigmas([u * t], stability, setting=setting)
     sy, sz = s.sigma_y[0], s.sigma_z[0]
     k = mass / ((2 * math.pi) ** 1.5 * sy * sy * sz)
@@ -230,9 +300,16 @@ def advection_diffusion_2d(
 
     ``dC/dt = -u dC/dx - v dC/dy + K_x d2C/dx2 + K_y d2C/dy2 + S`` on the grid
     ``c0[i][j]`` (``i`` along ``x``), first-order upwind advection, central
-    diffusion, forward Euler, zero-concentration boundaries. ``cfl`` reports
-    ``|u| dt / dx + |v| dt / dy`` and ``diffusion_number``
-    ``2 (K_x dt / dx^2 + K_y dt / dy^2)``; both should stay at or below 1.
+    diffusion, forward Euler, zero-concentration boundaries. The explicit
+    scheme is stable when ``|u| dt / dx + |v| dt / dy + 2 (K_x dt / dx^2 + K_y dt / dy^2) <= 1``
+    (the von Neumann bound for upwind advection with forward-time
+    centred-space diffusion), returned as ``stability_number`` with
+    ``stable``. A call outside the bound is not run as given: each step is
+    split into enough sub-steps of a smaller ``dt`` to satisfy it
+    (``substeps``, ``dt``), with a warning, so the field is a solution over
+    the same physical time rather than a numerical explosion. ``cfl`` and
+    ``diffusion_number`` are reported for reference; each below 1 is
+    necessary, not sufficient.
 
     References
     ----------
@@ -246,11 +323,44 @@ def advection_diffusion_2d(
     >>> r = advection_diffusion_2d(c, 0.0, 0.0, 0.1, 0.1, 1.0, 1.0, 1.0, 1)
     >>> [round(a, 12) for a in r.field[2]]
     [0.0, 0.1, 0.6, 0.1, 0.0]
+    >>> r.stability_number, r.stable, r.substeps
+    (0.4, True, 1)
     """
     nx, ny = len(c0), len(c0[0])
     c = [[float(a) for a in row] for row in c0]
+    for row in c:
+        for a in row:
+            if not math.isfinite(a):
+                raise ValueError("`c0` must be a finite numeric grid")
+    if source is not None and (len(source) != nx or any(len(row) != ny for row in source)):
+        raise ValueError("`source` must have the dimensions of `c0`")
+    u = _num(u, "u")
+    v = _num(v, "v")
+    kx = _num(kx, "kx", minimum=0.0)
+    ky = _num(ky, "ky", minimum=0.0)
+    dx = _num(dx, "dx", positive=True)
+    dy = _num(dy, "dy", positive=True)
+    dt = _num(dt, "dt", positive=True)
+    n_steps = int(_num(n_steps, "n_steps", minimum=0.0, whole=True))
     ax, ay = u * dt / dx, v * dt / dy
     dxn, dyn = kx * dt / (dx * dx), ky * dt / (dy * dy)
+    # the explicit upwind + FTCS scheme is stable when the advection and diffusion
+    # numbers together stay within the unit interval; cfl < 1 alone is not enough
+    stab = abs(ax) + abs(ay) + 2 * (dxn + dyn)
+    substeps = 1
+    if stab > 1:
+        substeps = int(math.ceil(stab * (1 + 1e-9)))
+        warnings.warn(
+            "explicit scheme outside its stability bound (|u dt/dx| + |v dt/dy| + "
+            f"2 (kx dt/dx^2 + ky dt/dy^2) = {stab:.3f} > 1): each step is taken as {substeps} "
+            f"sub-steps of dt/{substeps}; pass a smaller dt to silence this",
+            stacklevel=2,
+        )
+        dt = dt / substeps
+        ax, ay = u * dt / dx, v * dt / dy
+        dxn, dyn = kx * dt / (dx * dx), ky * dt / (dy * dy)
+        stab = abs(ax) + abs(ay) + 2 * (dxn + dyn)
+        n_steps = n_steps * substeps
     for _ in range(n_steps):
         new = [[0.0] * ny for _ in range(nx)]
         for i in range(1, nx - 1):
@@ -267,6 +377,10 @@ def advection_diffusion_2d(
             "mass": ssum(a for row in c for a in row) * dx * dy,
             "cfl": abs(ax) + abs(ay),
             "diffusion_number": 2 * (dxn + dyn),
+            "stability_number": stab,
+            "stable": stab <= 1,
+            "dt": dt,
+            "substeps": substeps,
         }
     )
 
@@ -306,7 +420,20 @@ def lagrangian_particles(
     >>> r.x
     [3.0, 3.0, 3.0, 3.0]
     """
-    xs, ys = [float(x0)] * n, [float(y0)] * n
+    if isinstance(n, bool) or int(n) != n or int(n) < 1:
+        raise ValueError("`n` must be a positive number of particles")
+    n = int(n)
+    x0 = _num(x0, "x0")
+    y0 = _num(y0, "y0")
+    u = _num(u, "u")
+    v = _num(v, "v")
+    kx = _num(kx, "kx", minimum=0.0)
+    ky = _num(ky, "ky", minimum=0.0)
+    dt = _num(dt, "dt", positive=True)
+    n_steps = int(_num(n_steps, "n_steps", minimum=0.0, whole=True))
+    if grid is not None and len(grid) != 6:
+        raise ValueError("`grid` must be (x_min, x_max, y_min, y_max, nx, ny)")
+    xs, ys = [x0] * n, [y0] * n
     fx, fy = math.sqrt(2 * kx * dt), math.sqrt(2 * ky * dt)
     for k in range(n_steps):
         ex = random_normal(n, seed=seed, stream=2 * k) if n else []

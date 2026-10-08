@@ -2,6 +2,8 @@
 
 import math
 
+import pytest
+
 from morie.fn._rng import random_normal
 from morie.fn.airdisp import (
     advection_diffusion_2d,
@@ -87,3 +89,63 @@ def test_lagrangian_random_walk_reuses_philox_streams():
     assert max(abs(a - b) for a, b in zip(r.x, x)) <= 1e-12
     g = lagrangian_particles(40, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 2, grid=(-10, 10, -10, 10, 4, 4))
     assert abs(sum(sum(row) for row in g.concentration) * 25 - 1.0) <= 1e-12
+
+
+def test_advection_diffusion_reports_the_real_stability_bound_and_substeps():
+    c = [[0.0] * 41 for _ in range(41)]
+    c[20][20] = 1.0
+    with pytest.warns(UserWarning, match="sub-steps"):
+        r = advection_diffusion_2d(c, 0.5, 0.4, 0.1, 0.1, 1.0, 1.0, 1.0, 60)
+    assert r.stable and r.stability_number <= 1.0
+    assert r.substeps == 2 and r.dt == 0.5
+    assert max(abs(a) for row in r.field for a in row) < 1.0
+    assert r.mass <= 1.0
+    # the same solver at dt/2 for twice the steps, step for step
+    same = advection_diffusion_2d(c, 0.5, 0.4, 0.1, 0.1, 1.0, 1.0, 0.5, 120)
+    assert r.field == same.field
+    assert abs(same.stability_number - 0.5 * (0.9 + 2 * 0.2)) <= 1e-15 and same.substeps == 1
+    with pytest.raises(ValueError, match="dx"):
+        advection_diffusion_2d(c, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1)
+    with pytest.raises(ValueError, match="kx"):
+        advection_diffusion_2d(c, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1)
+    with pytest.raises(ValueError, match="whole"):
+        advection_diffusion_2d(c, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.5)
+    with pytest.raises(ValueError, match="dimensions"):
+        advection_diffusion_2d(c, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1, source=[[0.0]])
+    with pytest.raises(ValueError, match="finite"):
+        advection_diffusion_2d([[1.0, math.nan]], 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1)
+
+
+def test_dispersion_functions_refuse_unphysical_input():
+    rc = [(1000.0, 0.0, 0.0)]
+    with pytest.raises(ValueError, match="q"):
+        gaussian_plume(-100.0, 5.0, 50.0, rc)
+    with pytest.raises(ValueError, match="u"):
+        gaussian_plume(100.0, 0.0, 50.0, rc)
+    with pytest.raises(ValueError, match="whole"):
+        gaussian_plume(100.0, 5.0, 50.0, rc, n_images=2.5)
+    with pytest.warns(UserWarning, match="above the mixing height"):
+        gaussian_plume(100.0, 5.0, 500.0, rc, mixing_height=300.0)
+    with pytest.raises(ValueError, match="t"):
+        gaussian_puff(100.0, 5.0, 50.0, rc, -100.0)
+    with pytest.raises(ValueError, match="mass"):
+        gaussian_puff(-1.0, 5.0, 50.0, rc, 100.0)
+    with pytest.raises(ValueError, match="x"):
+        pg_sigmas(-500.0)
+    with pytest.raises(ValueError, match="numeric"):
+        pg_sigmas("far")
+    with pytest.raises(ValueError, match="exceed"):
+        briggs_plume_rise(100.0, 4.0, diameter=1.0, exit_velocity=12.0, stack_temp=280.0, ambient_temp=285.0)
+    with pytest.raises(ValueError, match="u"):
+        briggs_plume_rise(100.0, 0.0, diameter=1.0, exit_velocity=12.0, stack_temp=420.0, ambient_temp=285.0)
+    with pytest.raises(ValueError, match="x0"):
+        lagrangian_particles(10, [0.0, 1.0], 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2)
+    with pytest.raises(ValueError, match="kx"):
+        lagrangian_particles(10, 0.0, 0.0, 1.0, 1.0, -1.0, 1.0, 1.0, 2)
+    with pytest.raises(ValueError, match="particles"):
+        lagrangian_particles(0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2)
+    with pytest.raises(ValueError, match="grid"):
+        lagrangian_particles(10, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2, grid=(0, 1))
+    p = lagrangian_particles(10, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2)
+    assert abs(p.mean_x - sum(p.x) / 10) <= 1e-12
+    assert gaussian_plume(100.0, 5.0, 50.0, rc)[0] > 0

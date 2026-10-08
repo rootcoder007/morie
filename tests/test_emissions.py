@@ -210,3 +210,51 @@ class TestCapsuleAndVerb:
             ["emissions", "--seconds", "1", "--output-dir", "x", "--no-capsule", "--country", "CAN"]
         )
         assert (a.command, a.seconds, a.output_dir, a.no_capsule, a.country) == ("emissions", 1.0, "x", True, "CAN")
+
+
+class TestOfflineLocation:
+    def test_time_zone_then_locale_through_the_full_iso_list(self):
+        from morie import emissions as em
+
+        assert em._detect_location_offline(tz="Europe/Stockholm")[0] == "SWE"
+        assert em._detect_location_offline(tz="US/Eastern")[0] == "USA"
+        assert em._detect_location_offline(tz="Asia/Calcutta")[0] == "IND"
+        assert em._detect_location_offline(tz="posix/America/Toronto")[0] == "CAN"
+        assert em._detect_location_offline(tz="Etc/UTC", territory="IN")[0] == "IND"
+        assert em._detect_location_offline(tz="", territory="")[0] == ""
+        assert em.iso3("kz") == "KAZ" and em.iso3("se") == "SWE" and em.iso3("CAN") == "CAN"
+        table = em._timezone_countries()
+        assert len(table) > 540 and table["Europe/Oslo"] == "NO"
+
+    def test_every_geographic_zone_of_the_tz_database_resolves(self):
+        import zoneinfo
+
+        from morie import emissions as em
+
+        try:
+            zones = zoneinfo.available_timezones()
+        except Exception:  # pragma: no cover - no tz database on this host
+            return
+        geo = {z for z in zones if "/" in z and not z.startswith(("Etc/", "posix/", "right/", "SystemV/"))}
+        missing = sorted(geo - set(em._timezone_countries()))
+        assert missing == [], missing[:20]
+
+    def test_offline_env_uses_the_offline_route(self, monkeypatch):
+        from morie import emissions as em
+
+        monkeypatch.delenv("MORIE_COUNTRY_ISO", raising=False)
+        monkeypatch.setenv("MORIE_EMISSIONS_OFFLINE", "1")
+        monkeypatch.setenv("TZ", "Europe/Stockholm")
+        assert em._detect_location_offline()[0] == "SWE"
+        monkeypatch.setattr(em, "_system_timezone", lambda: "")
+        monkeypatch.setattr(em, "_locale_territory", lambda: "FR")
+        assert em._detect_location_offline()[0] == "FRA"
+
+    def test_network_failure_falls_back_to_the_offline_route(self, monkeypatch):
+        import sys
+
+        from morie import emissions as em
+
+        monkeypatch.setitem(sys.modules, "httpx", None)
+        monkeypatch.setenv("TZ", "Europe/Oslo")
+        assert em._detect_location()[0] == "NOR"

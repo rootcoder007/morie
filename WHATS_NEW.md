@@ -7,6 +7,22 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.2 (2026-10-08)
+
+* Atmospheric dispersion (`morie.fn.airdisp`, and the R package's `AdvectionDiffusion2d()` and
+  siblings), after rmoriebricklayer 0.5.10's stress test: the documented stability criterion
+  was false; the explicit scheme needs `|u dt/dx| + |v dt/dy| + 2 (kx dt/dx^2 + ky dt/dy^2) <= 1`,
+  now returned as `stability_number` and `stable`, and a call outside the bound is taken in
+  sub-steps of a smaller `dt` (reported, with a warning) instead of exploding. Physical
+  guards on every input: non-negative rates, masses, heights and distances, positive wind
+  speed, travel time and grid steps, a whole-number `n_images`, a stack hotter than the air,
+  scalar `x0`/`y0`, a warning for a release above the mixing height.
+* Emissions tracking places a run offline: after `MORIE_COUNTRY_ISO` and the geolocation
+  lookup, and whenever the lookup is skipped (`MORIE_EMISSIONS_OFFLINE`) or fails, the
+  system time zone is mapped to its country through the IANA zone tables (549 zones and
+  aliases) and then the locale's territory, before the world average. Two-letter codes map
+  to the energy table's three-letter codes through the full ISO 3166 list.
+
 ## 1.4.1 (2026-10-07)
 
 * The R package's Wayback fallback test failed on machines that cannot reach archive.org, the
