@@ -212,6 +212,12 @@ def test_emissions_unknown_country_is_labelled_world_average(tmp_path, monkeypat
     from morie.emissions import known_country_codes, run_check, summary_text
 
     monkeypatch.setenv("MORIE_EMISSIONS_OFFLINE", "1")  # the unknown code falls back to detection; keep it offline
+    # since 1.4.2 the offline route still reads the time zone and the locale; blank both so
+    # the only answer left is the world average
+    from morie import emissions as em
+
+    monkeypatch.setattr(em, "_system_timezone", lambda: "")
+    monkeypatch.setattr(em, "_locale_territory", lambda: "")
 
     if not known_country_codes():
         pytest.skip("energy-mix table not bundled")
