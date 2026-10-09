@@ -87,7 +87,7 @@ python -c "import morie; print(morie.__version__)"
 morie interactive install
 ```
 
-For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages('rmorie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
+For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
 
 Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
@@ -174,6 +174,13 @@ install.packages(
 install.packages("remotes", repos = "https://cloud.r-project.org")
 remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
                         upgrade = "always")  # the tag of your morie
+```
+
+From a terminal (single quotes outside, double quotes inside, so the shell
+passes the R code through untouched):
+
+```sh
+Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
 ```
 
 Or let morie run either install for you: `morie r-install` (r-universe) or
