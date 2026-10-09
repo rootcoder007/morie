@@ -15,6 +15,11 @@
 * DESCRIPTION floors raised to rmoriebricklayer (>= 0.5.10) and rmoriedata (>= 0.3.5).
 * This package's README no longer offers `install.packages("morie")` from r-universe,
   which publishes no `morie` package; it installs from source or from GitHub at the tag.
+* `morie_llm_detect_provider()` no longer picks an Ollama server with nothing pulled:
+  `morie_llm_probe_ollama()` is TRUE only when the server answers and has a model (one
+  pulled, or `OLLAMA_MODEL` set), so a user logged in to the hosted tier is routed there
+  instead of to an Ollama that can only fail. The same fix landed in rmoriebricklayer and in
+  morie's Python side.
 
 # morie 1.4.2 - 2026-10-08
 

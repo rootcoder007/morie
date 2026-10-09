@@ -81,20 +81,33 @@ def _check_r() -> tuple[bool, str]:
 
 
 def _check_ollama() -> tuple[bool, str]:
-    try:
-        from .loc import LocalOllama
+    """The Ollama server ollama.url names (OLLAMA_HOST, else localhost): its models, or why it is not used."""
+    from . import llm
 
-        client = LocalOllama()
-        if not client.is_running():
-            return False, f"not reachable at {client.base_url} (optional)"
-        models = client.list_models()
-        if not models:
-            return True, "running (no models pulled)"
-        labels = [f"{m.name} ({m.quantization})" if m.quantization else m.name for m in models[:3]]
-        return True, ", ".join(labels)
-    except Exception:
-        url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-        return False, f"not reachable at {url} (optional)"
+    base = llm._ollama_base_url()
+    if not base:
+        return False, "switched off (ollama.url = off)"
+    tags = llm._ollama_tags()
+    if tags is None:
+        return False, f"not reachable at {base} (optional)"
+    if not tags:
+        if llm._cfg.value("ollama.model"):
+            return True, f"running at {base}, no models listed; ollama.model = {llm._ollama_model()}"
+        return False, f"running at {base} but no model pulled, so ask skips it (`ollama pull gemma4:e2b`)"
+    labels = [t["name"] for t in tags[:3]]
+    more = f" (+{len(tags) - 3} more)" if len(tags) > 3 else ""
+    return True, f"{', '.join(labels)}{more}; default {llm._ollama_model()}"
+
+
+def _check_route() -> tuple[bool, str]:
+    """The route `morie ask` takes now (route = auto|own|ollama|hosted, `morie config`)."""
+    from .llm import route_summary
+
+    try:
+        line = route_summary()
+    except Exception as exc:  # noqa: BLE001 - a bad saved route, an unreadable services document
+        return False, f"error: {exc}"
+    return (not line.startswith("ask has no route")), f"{line}; change: morie config set route auto|own|ollama|hosted"
 
 
 def _check_hosted() -> tuple[bool, str]:
@@ -106,7 +119,7 @@ def _check_hosted() -> tuple[bool, str]:
     except Exception as exc:  # pragma: no cover - defensive
         return False, f"error: {exc}"
     if not s["base_url"]:
-        return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
+        return False, "disabled (MORIE_HOSTED_BASE_URL or hosted.url is off, or the services document switched it off)"
     if not s["logged_in"]:
         return False, "not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
     who = f" as {s['user']}" if s.get("user") else ""
@@ -130,11 +143,12 @@ def _check_gemini() -> tuple[bool, str]:
 
 
 def _check_openai_compat() -> tuple[bool, str]:
-    base = os.environ.get("LLM_API_BASE_URL", "").strip()
-    key = os.environ.get("LLM_API_KEY", "").strip()
-    if base and key:
-        return True, base
-    return False, "LLM_API_BASE_URL / LLM_API_KEY not set (optional)"
+    from .llm import _api_base_url, _api_model
+
+    base = _api_base_url()
+    if base:
+        return True, f"{base} (model {_api_model()})"
+    return False, "not set (optional): morie config set own.url URL, or morie provider set"
 
 
 def _check_openai() -> tuple[bool, str]:
@@ -294,6 +308,9 @@ def run_checks() -> dict[str, Any]:
 
     ok, detail = _check_openai()
     _add("OpenAI API key", ok, detail, required=False)
+
+    ok, detail = _check_route()
+    _add("LLM route (morie ask)", ok, detail, required=False)
 
     # Data
     ok, detail = _check_datasets()

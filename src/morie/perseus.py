@@ -70,6 +70,15 @@ def _how_to_get_a_model() -> str:
         "OpenAI-compatible endpoint (OpenAI, Anthropic's https://api.anthropic.com/v1, OpenRouter, "
         "LM Studio, vLLM ...), or GEMINI_API_KEY / OPENAI_API_KEY in the environment."
     )
+    from .llm_config import route as _saved_route
+
+    forced = _saved_route()
+    if forced != "auto":
+        lines.append(
+            f"  route = {forced} is set (MORIE_LLM_ROUTE or `morie config`), so only that route is tried; "
+            "`morie config unset route` goes back to the automatic order."
+        )
+    lines.append("`morie config setup` walks through every setting (route, addresses, models, keys).")
     lines.append(
         "`morie doctor` shows which of these answers from this machine. Until one does, "
         "`morie list-modules`, `morie explain FILE` and `morie cheatsheet` describe the modules, "
@@ -147,6 +156,7 @@ def ask_percy(
     allow_fallback: bool = True,
     stream: bool = False,
     use_agent: bool = True,
+    route: str | None = None,
 ) -> dict[str, Any]:
     """Query Perseus via the LLM provider chain.
 
@@ -156,8 +166,11 @@ def ask_percy(
 
     Returns a dict with ``mode``, ``model``, and either ``output_text`` (str)
     or ``output_stream`` (Iterator[str]).
+
+    ``route`` (``"auto"``, ``"own"``, ``"ollama"``, ``"hosted"``) forces the route; ``None``
+    uses the one saved with ``morie config set route`` (else auto).
     """
-    provider = detect_available_provider()
+    provider = detect_available_provider() if route is None else detect_available_provider(route)
 
     if use_agent and provider == "ollama":
         agent_result = _try_agent(question, stream=stream, model=model)
@@ -188,6 +201,7 @@ def ask_percy(
             stream=stream,
             model=model,
             provider=provider,
+            route=route,
             system_prompt=system_prompt,
         )
 

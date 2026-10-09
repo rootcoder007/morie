@@ -21,6 +21,28 @@ Per-package full changelogs:
   cannot be installed. On macOS, CRAN's R uses r-universe's binaries; Homebrew's R builds
   from source.
 
+* `morie ask` reaches the hosted tier after `morie login` even when an Ollama server runs
+  with no model pulled. Such a server used to count as the first route, and because `ask`
+  streams by default its failure surfaced after the chain had been left, so the answer was
+  the local fallback text. Ollama now counts only with a model (one pulled, or
+  `OLLAMA_MODEL`/`ollama.model` set), and a streamed request that fails moves on to the next
+  route like a non-streamed one. The R package's `morie_llm_detect_provider()` has the same fix.
+
+* Language-model settings, the same file and keys as rmoriebricklayer's `rmbl config`
+  (`$XDG_CONFIG_HOME/morie/llm.json`, private): `morie config` (show, help, get, set,
+  unset, setup, path) and `morie.llm.config()` / `config_get()` / `config_unset()` choose the
+  route (`auto`, `own`, `ollama`, `hosted`) and set the address, model and key of your own
+  OpenAI-compatible server, of a local or LAN Ollama, and of the hosted tier. Environment
+  variables (`MORIE_LLM_ROUTE`, `OLLAMA_HOST`, `OLLAMA_MODEL`, `MORIE_HOSTED_MODEL`, ...) still
+  win over a saved value. `morie ask --route hosted` picks a route for one question,
+  `morie doctor` names the route `ask` takes, and `morie help getting-started|llm|config`
+  explains it all without reading the source.
+
+* An own endpoint written with its API version (`https://api.anthropic.com/v1`, LM Studio's
+  `http://localhost:1234/v1`) and Gemini's endpoint now get `/chat/completions`, not
+  `/v1/v1/chat/completions`, and an own endpoint counts without a key (LM Studio, vLLM and
+  llama.cpp ask for none).
+
 ## 1.4.2 (2026-10-08)
 
 * Atmospheric dispersion (`morie.fn.airdisp`, and the R package's `AdvectionDiffusion2d()` and
