@@ -9,6 +9,13 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Package scanners: the code that runs `morie exec` input (the child-interpreter bootstrap
+  and the Rscript call) moved into the interactive layer with its guard, so the published
+  package has no code-running path of its own; `morie exec` works as before once
+  `morie interactive install` has added the layer. The R bridge commands (`r_ttest`,
+  `r_summary` and the rest) no longer build R source from their arguments: the R script is a
+  constant and the arguments reach R as data, so an argument can never run as R code.
+
 * Install routes fixed: the R companions rmoriebricklayer and rmoriedata come from
   r-universe (CRAN lags several releases), every `install.packages()` call names `repos`
   so `Rscript` no longer stops on "trying to use CRAN without setting a mirror", and the

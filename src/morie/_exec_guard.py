@@ -456,3 +456,71 @@ def safe_shell_run(command: str, *, timeout: int = 30, cwd: str | None = None) -
     return subprocess.run(  # noqa: S603 -- shlex-tokenized, allowlisted, shell=False
         argv, capture_output=True, text=True, timeout=timeout, cwd=cwd
     )
+
+
+# The child-interpreter bootstrap for ``morie exec``. It gives the user's code the names the
+# in-process version offered (np, pd, fn, REGISTRY) and runs the user's own file in place, so
+# tracebacks, __file__, sys.argv and sys.path[0] are what ``python FILE`` gives; inline code goes
+# to a temporary file first (its line numbers are still the user's).
+_EXEC_BOOT = (
+    "import os, runpy, sys\n"
+    "g = {}\n"
+    "try:\n"
+    "    from morie.fn import _array_core as np, _frame_core as pd\n"
+    "    g.update(np=np, pd=pd)\n"
+    "except ImportError:\n"
+    "    pass\n"
+    "try:\n"
+    "    from morie import fn\n"
+    "    from morie.fn._registry import REGISTRY\n"
+    "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
+    "except ImportError:\n"
+    "    pass\n"
+    "path, shown = sys.argv[1], sys.argv[2]\n"
+    "sys.argv = [path] if shown == path else ['-c']\n"
+    "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
+    "try:\n"
+    "    runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
+    "except SystemExit:\n"
+    "    raise\n"
+    "except BaseException as e:\n"
+    "    import traceback\n"
+    # drop the runner's own frames: the traceback starts at the user's code, as `python FILE` shows
+    "    tb = e.__traceback__\n"
+    "    while tb is not None and tb.tb_frame.f_code.co_filename != path:\n"
+    "        tb = tb.tb_next\n"
+    "    te = traceback.TracebackException(type(e), e, tb or e.__traceback__)\n"
+    "    for fs in te.stack:\n"
+    "        if fs.filename == path:\n"
+    "            fs.filename = shown\n"
+    "    sys.stderr.write(''.join(te.format()))\n"
+    "    sys.exit(130 if isinstance(e, KeyboardInterrupt) else 1)\n"
+)
+
+
+def run_user_code(code: str, lang: str = "python", exec_file: str | None = None) -> int:
+    """Run the local user's code for ``morie exec`` in a child process and return its exit status.
+
+    Python runs in a child interpreter (a crash in the user's code cannot take the CLI down);
+    R runs under Rscript. ``exec_file`` is run in place; otherwise ``code`` is written to a
+    temporary file first. Refused when ``MORIE_NO_EXEC`` is set.
+    """
+    import tempfile
+
+    ensure_exec_allowed("'morie exec'")
+    if lang == "r":
+        if exec_file:
+            return subprocess.call(["Rscript", exec_file])
+        with tempfile.TemporaryDirectory() as d:
+            tmp = os.path.join(d, "morie_exec.R")
+            with open(tmp, "w", encoding="utf-8") as f:
+                f.write(code)
+            return subprocess.call(["Rscript", tmp])
+    if exec_file:
+        return subprocess.run([sys.executable, "-c", _EXEC_BOOT, exec_file, exec_file], check=False).returncode
+    with tempfile.TemporaryDirectory() as d:
+        tmp = os.path.join(d, "morie_exec.py")
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(code)
+        # inline code is reported as python -c reports it: File "<string>"
+        return subprocess.run([sys.executable, "-c", _EXEC_BOOT, tmp, "<string>"], check=False).returncode
