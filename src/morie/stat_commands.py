@@ -1147,14 +1147,21 @@ def _register_descriptive() -> int:
 
 # The R bridge never builds R source from its arguments: the scripts below are constants, and the
 # function name (from the fixed table in _register_r_bridge) and the caller's arguments arrive in
-# R as command-line strings. A numeric-looking argument becomes a number, anything else stays a
-# string, so an argument can never be read as R code.
-_R_ECHO = 'a <- commandArgs(trailingOnly = TRUE); cat(a[1], "called with args:", paste(a[-1], collapse = ", "), "\\n")'
+# R as command-line strings, so an argument can never be read as R code. A Python int or float
+# arrives as an R number and anything else as an R string, as the repr()-built calls gave.
+_R_ECHO = 'a <- commandArgs(trailingOnly = TRUE); cat(a[1], "called with args:", paste(a[-1], collapse = " "), "\\n")'
 _R_CALL = (
     "a <- commandArgs(trailingOnly = TRUE); "
-    "v <- lapply(a[-1], function(x) utils::type.convert(x, as.is = TRUE)); "
+    'v <- lapply(a[-1], function(x) if (startsWith(x, "n:")) as.numeric(substring(x, 3)) else substring(x, 3)); '
     "result <- do.call(match.fun(a[1]), v); print(result)"
 )
+
+
+def _r_arg(a: Any) -> str:
+    """One R bridge argument as tagged text: n: for a number, s: for everything else."""
+    if isinstance(a, int | float) and not isinstance(a, bool):
+        return f"n:{a!r}"
+    return f"s:{a}"
 
 
 def _register_r_bridge() -> int:
@@ -1296,7 +1303,7 @@ def _register_r_bridge() -> int:
                 r_func = cn.replace("r_", "")
                 # the R source is a constant; the function name and the arguments reach R as data
                 out = subprocess.run(
-                    ["Rscript", "-e", _R_CALL, r_func, *(str(a) for a in args)],
+                    ["Rscript", "-e", _R_CALL, r_func, *(_r_arg(a) for a in args)],
                     capture_output=True,
                     text=True,
                     timeout=30,
