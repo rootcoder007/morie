@@ -1145,6 +1145,18 @@ def _register_descriptive() -> int:
 # ---------------------------------------------------------------------------
 
 
+# The R bridge never builds R source from its arguments: the scripts below are constants, and the
+# function name (from the fixed table in _register_r_bridge) and the caller's arguments arrive in
+# R as command-line strings. A numeric-looking argument becomes a number, anything else stays a
+# string, so an argument can never be read as R code.
+_R_ECHO = 'a <- commandArgs(trailingOnly = TRUE); cat(a[1], "called with args:", paste(a[-1], collapse = ", "), "\\n")'
+_R_CALL = (
+    "a <- commandArgs(trailingOnly = TRUE); "
+    "v <- lapply(a[-1], function(x) utils::type.convert(x, as.is = TRUE)); "
+    "result <- do.call(match.fun(a[1]), v); print(result)"
+)
+
+
 def _register_r_bridge() -> int:
     """Register ~80 R bridge commands that call R via subprocess."""
     count = 0
@@ -1257,12 +1269,10 @@ def _register_r_bridge() -> int:
                     log.write("[red]R not found. Install R to use R bridge commands.[/red]")
                     return
                 r_func = cn.replace("r_", "")
-                args = parts[1:]
-                _args_joined = ", ".join(repr(a) for a in args)
-                r_code = f'cat("{r_func} called with args:", paste({_args_joined}, collapse=", "), "\\n")'
                 try:
+                    # the R source is a constant; the function name and the arguments reach R as data
                     out = subprocess.run(
-                        ["Rscript", "-e", r_code],
+                        ["Rscript", "-e", _R_ECHO, r_func, *(str(a) for a in parts[1:])],
                         capture_output=True,
                         text=True,
                         timeout=30,
@@ -1284,10 +1294,9 @@ def _register_r_bridge() -> int:
                 if not shutil.which("Rscript"):
                     raise RuntimeError("R not found")
                 r_func = cn.replace("r_", "")
-                str_args = ", ".join(repr(a) for a in args)
-                r_code = f"result <- {r_func}({str_args}); print(result)"
+                # the R source is a constant; the function name and the arguments reach R as data
                 out = subprocess.run(
-                    ["Rscript", "-e", r_code],
+                    ["Rscript", "-e", _R_CALL, r_func, *(str(a) for a in args)],
                     capture_output=True,
                     text=True,
                     timeout=30,

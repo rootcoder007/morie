@@ -151,3 +151,31 @@ def test_morie_exec_runs_in_a_child_interpreter(tmp_path):
     if "not bundled" in r.stdout:
         pytest.skip("interactive layer absent")
     assert "42" in r.stdout and r.returncode == 3
+
+
+def test_no_runpy_in_the_shipped_package():
+    # `morie exec` runs user code through the interactive layer (_exec_guard.run_user_code), never the wheel itself
+    hits = []
+    for p in _shipped_py():
+        tree = ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import | ast.ImportFrom):
+                names = [a.name for a in node.names] + ([node.module] if isinstance(node, ast.ImportFrom) else [])
+                if "runpy" in names:
+                    hits.append(f"{p.relative_to(SRC)}:{node.lineno}")
+            if isinstance(node, ast.Constant) and isinstance(node.value, str) and "runpy" in node.value:
+                hits.append(f"{p.relative_to(SRC)}:{node.lineno}")
+    assert hits == [], hits
+
+
+def test_the_r_bridge_passes_arguments_as_data():
+    import shutil
+
+    from morie import stat_commands
+
+    if not shutil.which("Rscript"):
+        pytest.skip("Rscript not on PATH")
+    stat_commands._register_r_bridge()
+    out = stat_commands.COMMAND_REGISTRY["r_summary"].handler_repl('x"); print("INJECTED')
+    assert "INJECTED" not in out and "character" in out
+    assert "3.5" in stat_commands.COMMAND_REGISTRY["r_summary"].handler_repl("3.5")

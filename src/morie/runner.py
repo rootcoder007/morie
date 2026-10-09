@@ -2530,9 +2530,6 @@ def _handle_exec(args: argparse.Namespace) -> int:
     # their own machine -- same trust model as `python -c` / `Rscript -e`.
     # It never executes remote or network-supplied code. Set
     # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
-    import os
-    import subprocess
-    import tempfile
 
     # usage errors in the arguments themselves come first, on any install
     if getattr(args, "code_opt", None) is not None and args.code is not None:
@@ -2547,11 +2544,11 @@ def _handle_exec(args: argparse.Namespace) -> int:
     # there is no exec surface to authorise, so refuse rather than raise
     # ModuleNotFoundError at the user.
     try:
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
     except ModuleNotFoundError:
         if not _add_interactive_layer(getattr(args, "verb", "'morie exec'")):
             return 1
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
 
     try:
         ensure_exec_allowed("'morie exec'")
@@ -2579,63 +2576,9 @@ def _handle_exec(args: argparse.Namespace) -> int:
         print("No code provided: morie exec CODE | --file PATH", file=sys.stderr)
         return 2
 
-    if args.lang == "r":
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".R", delete=False) as f:
-            f.write(code)
-            tmp = f.name
-        try:
-            return subprocess.call(["Rscript", tmp])
-        finally:
-            os.unlink(tmp)
-
-    # The code runs in a child interpreter with the same names the in-process version offered
-    # (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution, and a crash
-    # in the user's code cannot take the CLI down with it. The user's own file is run in place,
-    # so tracebacks, __file__, sys.argv and sys.path[0] are what `python FILE` gives; inline code
-    # goes to a temporary file first (its line numbers are still the user's).
-    boot = (
-        "import os, runpy, sys\n"
-        "g = {}\n"
-        "try:\n"
-        "    from morie.fn import _array_core as np, _frame_core as pd\n"
-        "    g.update(np=np, pd=pd)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "try:\n"
-        "    from morie import fn\n"
-        "    from morie.fn._registry import REGISTRY\n"
-        "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "path, shown = sys.argv[1], sys.argv[2]\n"
-        "sys.argv = [path] if shown == path else ['-c']\n"
-        "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
-        "try:\n"
-        "    runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
-        "except SystemExit:\n"
-        "    raise\n"
-        "except BaseException as e:\n"
-        "    import traceback\n"
-        # drop the runner's own frames: the traceback starts at the user's code, as `python FILE` shows
-        "    tb = e.__traceback__\n"
-        "    while tb is not None and tb.tb_frame.f_code.co_filename != path:\n"
-        "        tb = tb.tb_next\n"
-        "    te = traceback.TracebackException(type(e), e, tb or e.__traceback__)\n"
-        "    for fs in te.stack:\n"
-        "        if fs.filename == path:\n"
-        "            fs.filename = shown\n"
-        "    sys.stderr.write(''.join(te.format()))\n"
-        "    sys.exit(130 if isinstance(e, KeyboardInterrupt) else 1)\n"
-    )
-    if args.exec_file:
-        cmd = [sys.executable, "-c", boot, args.exec_file, args.exec_file]
-        return subprocess.run(cmd, check=False).returncode
-    with tempfile.TemporaryDirectory() as d:
-        tmp = os.path.join(d, "morie_exec.py")
-        with open(tmp, "w", encoding="utf-8") as f:
-            f.write(code)
-        # inline code is reported as python -c reports it: File "<string>"
-        return subprocess.run([sys.executable, "-c", boot, tmp, "<string>"], check=False).returncode
+    # The code runs in a child interpreter (Python) or Rscript (R). That runner lives in the
+    # interactive layer with the guard, so the published package has no code-running path itself.
+    return run_user_code(code, args.lang, args.exec_file)
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:
