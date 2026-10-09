@@ -15,6 +15,12 @@ Per-package full changelogs:
   GitHub fallbacks in `install.sh` and `morie r-install` upgrade `"always"` so an old
   companion is replaced. R arm floors raised to rmoriebricklayer 0.5.10 and rmoriedata 0.3.5.
 
+* The R routes lead with pak (download progress, compiler output hidden unless a build
+  fails, named packages upgraded to the current release); `install.packages()` and remotes
+  stay as the fallback, which `install.sh` and `morie r-install` take on their own when pak
+  cannot be installed. On macOS, CRAN's R uses r-universe's binaries; Homebrew's R builds
+  from source.
+
 ## 1.4.2 (2026-10-08)
 
 * Atmospheric dispersion (`morie.fn.airdisp`, and the R package's `AdvectionDiffusion2d()` and

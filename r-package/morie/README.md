@@ -211,15 +211,22 @@ install.packages(c("rmoriebricklayer", "rmoriedata"), repos = repos)
 # from a clone, at the repository root
 install.packages("r-package/morie", repos = NULL, type = "source")
 
-# or straight from GitHub, at the tag of your morie
+# or straight from GitHub, at the tag of your morie, with pak
+install.packages("pak", repos = repos)
+pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+pak::pkg_install("rootcoder007/morie/r-package/morie@v1.4.3")
+
+# or the same with remotes
 install.packages("remotes", repos = repos)
 remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
-                        upgrade = "always")
+                        repos = repos, upgrade = "always")
 ```
 
 From a terminal:
 
 ```sh
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.3"))'
+# without pak
 Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie", repos = repos, upgrade = "always")'
 ```
 

@@ -76,12 +76,23 @@ copy already installed:
 
 .. code-block:: r
 
-   install.packages(
-     c("rmoriebricklayer", "rmoriedata", "rmorie"),
-     repos = c("https://rootcoder007.r-universe.dev",
-               "https://cloud.r-project.org")
-   )
+   if (!requireNamespace("pak", quietly = TRUE)) {
+     install.packages("pak", repos = "https://cloud.r-project.org")
+   }
+   pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+   pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
    library(rmorie)
+
+From a terminal, or without pak (keep ``repos``: ``Rscript`` has no mirror
+chooser):
+
+.. code-block:: sh
+
+   Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))'
+   Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
+
+On macOS, CRAN's R installs r-universe's prebuilt binaries; Homebrew's R
+cannot use them and compiles every package from source.
 
 The copy under ``r-package/morie`` in the repository is the same code under
 the package name ``morie``; it is what the R API pages on this site are
