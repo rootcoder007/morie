@@ -1,3 +1,16 @@
+# morie 1.4.3 - 2026-10-09
+
+* Install routes: rmoriebricklayer and rmoriedata now come from r-universe everywhere
+  (README, INSTALLATION.md, the Sphinx install pages, `install.sh`, and `morie r-install`).
+  The docs said they were on CRAN, where both lag several releases, and `install.sh`
+  installed them from there. Every `install.packages()` call names `repos`, because under
+  `Rscript` there is no mirror chooser and a bare call stops with "trying to use CRAN
+  without setting a mirror". The GitHub fallbacks use `upgrade = "always"`, so an older
+  companion already installed is replaced instead of kept.
+* DESCRIPTION floors raised to rmoriebricklayer (>= 0.5.10) and rmoriedata (>= 0.3.5).
+* This package's README no longer offers `install.packages("morie")` from r-universe,
+  which publishes no `morie` package; it installs from source or from GitHub at the tag.
+
 # morie 1.4.2 - 2026-10-08
 
 * Atmospheric dispersion, after rmoriebricklayer 0.5.10's stress test (the formulas are

@@ -198,20 +198,23 @@ function.
 
 ## Install
 
-From local source:
+This package (`morie`) is not published on r-universe or CRAN; its
+published R distribution is [rmorie](https://github.com/rootcoder007/rmorie).
+Install this copy from source. Its companions, rmoriebricklayer and
+rmoriedata, come from r-universe (CRAN carries older versions):
 
 ```r
+repos <- c(rootcoder007 = "https://rootcoder007.r-universe.dev",
+           CRAN         = "https://cloud.r-project.org")
+install.packages(c("rmoriebricklayer", "rmoriedata"), repos = repos)
+
+# from a clone, at the repository root
 install.packages("r-package/morie", repos = NULL, type = "source")
-```
 
-From r-universe (development snapshot):
-
-```r
-install.packages(
-  "morie",
-  repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev",
-            CRAN     = "https://cloud.r-project.org")
-)
+# or straight from GitHub, at the tag of your morie
+install.packages("remotes", repos = repos)
+remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
+                        upgrade = "always")
 ```
 
 The assistant bridge supports a local fallback through the Python
@@ -347,7 +350,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 1.4.2},
+  note    = {R package version 1.4.3},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```

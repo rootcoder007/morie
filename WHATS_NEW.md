@@ -7,6 +7,14 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.3 (2026-10-09)
+
+* Install routes fixed: the R companions rmoriebricklayer and rmoriedata come from
+  r-universe (CRAN lags several releases), every `install.packages()` call names `repos`
+  so `Rscript` no longer stops on "trying to use CRAN without setting a mirror", and the
+  GitHub fallbacks in `install.sh` and `morie r-install` upgrade `"always"` so an old
+  companion is replaced. R arm floors raised to rmoriebricklayer 0.5.10 and rmoriedata 0.3.5.
+
 ## 1.4.2 (2026-10-08)
 
 * Atmospheric dispersion (`morie.fn.airdisp`, and the R package's `AdvectionDiffusion2d()` and

@@ -5,8 +5,8 @@ the morie family.
 Python is already present (you ran ``morie``), so this focuses on the
 *other* ecosystems:
 
-* R: ``rmorie`` from r-universe, which pulls ``rmoriedata`` +
-  ``rmoriebricklayer`` as dependencies.
+* R: ``rmorie``, ``rmoriedata`` and ``rmoriebricklayer``, all from
+  r-universe (CRAN carries older companions).
 * the ``rmorie`` command-line launcher ships inside rmorie;
   ``rmorie::install_cli()`` links it onto PATH.
 
@@ -34,11 +34,23 @@ GITHUB_SUBDIR = "r-package/morie"
 def _r_install_expr(github: bool = False) -> str:
     """The R expression that installs the R side.
 
-    Default: rmorie from r-universe (prebuilt binaries, pulls rmoriedata and
-    rmoriebricklayer). ``github``: this repository's own R arm, built from
-    source with remotes (needs a C/C++ toolchain and rmoriebricklayer).
+    Default: rmorie from r-universe (prebuilt binaries), with its companions
+    rmoriebricklayer and rmoriedata named explicitly. ``github``: this
+    repository's own R arm, built from source with remotes (needs a C/C++
+    toolchain).
+
+    Every call carries ``repos``: under ``Rscript`` there is no mirror
+    chooser, so a bare ``install.packages()`` stops with "trying to use CRAN
+    without setting a mirror". r-universe comes first because CRAN carries
+    older companions, and the companions are named (and remotes upgrades
+    ``"always"``) because an older copy already installed satisfies a
+    dependency check and would otherwise be kept.
     """
     from . import __version__ as v
+
+    repos = f"c('{RUNIV}','{CRAN}')"
+    companions = f"install.packages(c('rmoriebricklayer','rmoriedata'), repos={repos}); "
+    remotes = f"if (!requireNamespace(\"remotes\", quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
 
     if github:
         # pinned to this release's tag, as the r-universe route is: the default branch
@@ -48,19 +60,18 @@ def _r_install_expr(github: bool = False) -> str:
 
         ref = f"@v{v}" if re.match(r"^\d+\.\d+\.\d+$", v) else ""
         return (
-            'if (!requireNamespace("remotes", quietly = TRUE)) '
-            f"install.packages('remotes', repos='{CRAN}'); "
-            f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', upgrade = 'never')"
+            companions + remotes + f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', "
+            f"repos = {repos}, upgrade = 'always')"
         )
 
     # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
     # serves another version (it lags a release by a build cycle)
     return (
-        f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}')); "
+        f"install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos={repos}); "
         "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
         f"if (have() != '{v}') {{ "
-        f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
-        f"remotes::install_github('rootcoder007/rmorie@v{v}', upgrade = 'never') }}; "
+        + remotes
+        + f"remotes::install_github('rootcoder007/rmorie@v{v}', repos = {repos}, upgrade = 'always') }}; "
         f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
     )
 
