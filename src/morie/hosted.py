@@ -20,6 +20,9 @@ MORIE_HOSTED_KEY
     Override the stored key (CI, containers).
 MORIE_HOSTED_MODEL
     Model name; the gateway only serves the cloud models of the server.
+
+The address and model can also be saved with ``morie config set hosted.url|hosted.model``
+(``$XDG_CONFIG_HOME/morie/llm.json``); a variable that is set wins over the saved value.
 """
 
 from __future__ import annotations
@@ -53,6 +56,11 @@ def hosted_base_url() -> str | None:
     """
     if "MORIE_HOSTED_BASE_URL" in os.environ:
         url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
+    else:
+        from .llm_config import saved_value
+
+        url = saved_value("hosted.url")  # `morie config set hosted.url ...`
+    if url is not None:
         if url.lower() in ("off", "none", "disabled"):
             return None
         return url.rstrip("/") or None
@@ -76,9 +84,11 @@ def hosted_auth_url() -> str:
 
 def hosted_model() -> str:
     """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the services document, else the built-in default)."""
-    env = os.environ.get("MORIE_HOSTED_MODEL", "").strip()
-    if env:
-        return env
+    from .llm_config import value
+
+    chosen = value("hosted.model")  # MORIE_HOSTED_MODEL, else `morie config set hosted.model ...`
+    if chosen:
+        return chosen
     from . import services
 
     return str(services.llm().get("default_model") or "") or DEFAULT_HOSTED_MODEL

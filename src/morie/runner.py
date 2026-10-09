@@ -189,7 +189,13 @@ def execute_pipeline(
 
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
-    parser = argparse.ArgumentParser(description="MORIE package runner")
+    parser = argparse.ArgumentParser(
+        description="MORIE package runner",
+        epilog=(
+            "New here? morie help getting-started. Language models: morie help llm. "
+            "Settings: morie help config. Each command has its own --help."
+        ),
+    )
     parser.add_argument("--version", action="version", version=f"morie {__version__}")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -260,6 +266,12 @@ def build_parser() -> argparse.ArgumentParser:
     ask_cmd.add_argument("question", help="Question to answer")
     ask_cmd.add_argument("--context", help="Optional context string")
     ask_cmd.add_argument("--model", default=None, help="Override the LLM model name")
+    ask_cmd.add_argument(
+        "--route",
+        default=None,
+        choices=("auto", "own", "ollama", "hosted"),
+        help="Which route to use for this question (default: the saved route, else auto; morie help llm)",
+    )
     ask_cmd.add_argument(
         "--no-stream",
         action="store_true",
@@ -596,6 +608,24 @@ def build_parser() -> argparse.ArgumentParser:
         _vee_register(subparsers)
     except ImportError:
         pass
+
+    # ── config: the language-model settings (route, addresses, models, keys) ──
+    from .llm_config import CLI_ACTIONS as _CFG_ACTIONS
+
+    cfg_cmd = subparsers.add_parser(
+        "config",
+        help="Show or change the language-model settings: route, Ollama/own/hosted address, model, key",
+        description=(
+            "Language-model settings, saved in $XDG_CONFIG_HOME/morie/llm.json (shared with rmoriebricklayer). "
+            "An environment variable that is set wins over a saved value. morie config help explains each key."
+        ),
+        epilog="Examples: morie config set route hosted | morie config set ollama.model qwen3:8b | morie config setup",
+    )
+    cfg_cmd.add_argument("action", nargs="?", default="show", choices=_CFG_ACTIONS, help="default: show")
+    cfg_cmd.add_argument("rest", nargs="*", metavar="KEY [VALUE]", help="the setting (and its value, for set)")
+
+    help_cmd = subparsers.add_parser("help", help="Guides: getting-started, llm, config (morie help TOPIC)")
+    help_cmd.add_argument("topic", nargs="?", default=None, help="getting-started, llm, config or commands")
 
     # ── provider: attach your own OpenAI-compatible endpoint ───────────
     prov = subparsers.add_parser(
@@ -1362,6 +1392,26 @@ def _main_impl() -> int:
             return _llm_exit_code(payload)
         return 0
 
+    if args.command == "config":
+        from .llm_config import cli as _config_cli
+
+        return _config_cli(args.action, args.rest)
+
+    if args.command == "help":
+        from .cli_help import show as _help_show
+
+        if (args.topic or "").strip().lower() in ("commands", "all"):
+            parser.print_help()
+            return 0
+        text = _help_show(args.topic)
+        if text is None:
+            from .cli_help import topics_text
+
+            print(f"morie help: no topic '{args.topic}'\n{topics_text()}", file=sys.stderr)
+            return 2
+        print(text)
+        return 0
+
     if args.command == "ask":
         use_stream = not getattr(args, "no_stream", False)
         payload = ask_percy(
@@ -1369,6 +1419,7 @@ def _main_impl() -> int:
             context=args.context,
             model=getattr(args, "model", None),
             stream=use_stream,
+            route=getattr(args, "route", None),
         )
         if use_stream:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))

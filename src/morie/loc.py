@@ -8,10 +8,12 @@ This module backs the ``ollama`` provider slot in :mod:`morie.llm`.
 
 Environment Variables
 ---------------------
-OLLAMA_BASE_URL : str
+OLLAMA_HOST, OLLAMA_BASE_URL : str
     Override the Ollama endpoint.  Default: ``http://localhost:11434``.
-MORIE_OLLAMA_MODEL : str
+OLLAMA_MODEL, MORIE_OLLAMA_MODEL : str
     Override the default local model.  Default: ``gemma4:e2b``.
+
+Both can be saved instead with ``morie config set ollama.url|ollama.model``.
 """
 
 from __future__ import annotations
@@ -19,7 +21,6 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
-import os
 from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
@@ -86,8 +87,11 @@ class LocalOllama:
         model: str | None = None,
         timeout: float = _REQUEST_TIMEOUT,
     ):
-        self.base_url = (base_url or os.environ.get("OLLAMA_BASE_URL", "").strip() or _DEFAULT_BASE_URL).rstrip("/")
-        self._model_override = model or os.environ.get("MORIE_OLLAMA_MODEL", "").strip() or _DEFAULT_MODEL
+        from .llm_config import ollama_url, value
+
+        # OLLAMA_HOST / OLLAMA_BASE_URL / the saved ollama.url (`morie config`), the same server `morie ask` uses
+        self.base_url = (base_url or ollama_url() or _DEFAULT_BASE_URL).rstrip("/")
+        self._model_override = model or value("ollama.model") or _DEFAULT_MODEL
         self.timeout = timeout
         self._model_detected: str | None = None
 

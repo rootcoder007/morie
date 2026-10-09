@@ -10,7 +10,9 @@ morie_llm_probe_ollama(timeout = 2)
 \item{timeout}{Probe timeout in seconds.}
 }
 \value{
-Logical scalar -- TRUE when reachable.
+Logical scalar -- TRUE when the server answers and has a model to
+use (one pulled, or \code{OLLAMA_MODEL} set); a server with nothing
+pulled is not a usable route.
 }
 \description{
 Probe a local Ollama instance

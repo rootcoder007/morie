@@ -261,6 +261,7 @@ class TestAsk:
 
     def test_ollama_request_made_when_detected(self, monkeypatch):
         """Verify that ask() calls the Ollama endpoint when detected."""
+        monkeypatch.setenv("OLLAMA_MODEL", "gemma4:e2b")  # a usable Ollama has a model
         monkeypatch.delenv("LLM_API_BASE_URL", raising=False)
         monkeypatch.delenv("LLM_API_KEY", raising=False)
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)
@@ -282,6 +283,7 @@ class TestAsk:
 
     def test_fallback_chain_on_ollama_failure(self, monkeypatch):
         """When Ollama is detected but the request fails, fall through to API."""
+        monkeypatch.setenv("OLLAMA_MODEL", "gemma4:e2b")
         monkeypatch.setenv("LLM_API_BASE_URL", "https://example.com/v1")
         monkeypatch.setenv("LLM_API_KEY", "test-key")
         monkeypatch.delenv("OPENAI_API_KEY", raising=False)

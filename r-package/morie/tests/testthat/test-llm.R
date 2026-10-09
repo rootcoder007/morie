@@ -174,3 +174,24 @@ test_that("ollama_models returns a typed empty data.frame when unreachable", {
                    c("name", "size_gb", "family", "parameter_size", "quantization"))
   expect_equal(nrow(res), 0L)
 })
+
+test_that("an Ollama server with no model pulled is not a route", {
+  .clean_llm_env()
+  withr::local_envvar(OLLAMA_MODEL = NA, OLLAMA_HOST = NA)
+  .morie_llm_cache$ollama_cached <- NULL
+  withr::defer(.morie_llm_cache$ollama_cached <- NULL)
+  body <- '{"models":[]}'
+  local_mocked_bindings(
+    .morie_llm_no_net = function() FALSE,
+    .morie_llm_http = function(url, ...) list(status = 200L, body = body),
+    .package = "morie"
+  )
+  expect_false(morie_llm_probe_ollama())
+  .morie_llm_cache$ollama_cached <- NULL
+  withr::local_envvar(OLLAMA_MODEL = "qwen3:8b")
+  expect_true(morie_llm_probe_ollama())
+  .morie_llm_cache$ollama_cached <- NULL
+  withr::local_envvar(OLLAMA_MODEL = NA)
+  body <- '{"models":[{"name":"gemma4:e2b"}]}'
+  expect_true(morie_llm_probe_ollama())
+})
