@@ -217,6 +217,12 @@ remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
                         upgrade = "always")
 ```
 
+From a terminal:
+
+```sh
+Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie", repos = repos, upgrade = "always")'
+```
+
 The assistant bridge supports a local fallback through the Python
 package when no live OpenAI / Anthropic credentials are configured.
 

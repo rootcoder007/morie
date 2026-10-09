@@ -358,6 +358,13 @@ install.packages(
 rmorie::install_cli()   # puts the `rmorie` command on your PATH
 ```
 
+From a terminal (single quotes outside, double quotes inside, so the shell
+passes the R code through untouched):
+
+```sh
+Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
+```
+
 From Python, `morie r-install` runs the same install for you.
 
 ## 7. The interactive layer (REPL, exec, agent, TUI)
