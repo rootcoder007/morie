@@ -60,9 +60,9 @@ Pick any one channel — each installs the current ``morie`` release:
 
    # 5. R package: rmorie and its companions rmoriebricklayer and
    #    rmoriedata, all from r-universe (CRAN's companions are older)
-   install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"),
-                    repos = c("https://rootcoder007.r-universe.dev",
-                              "https://cloud.r-project.org"))
+   install.packages("pak", repos = "https://cloud.r-project.org")
+   pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+   pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
 
 .. note::
 

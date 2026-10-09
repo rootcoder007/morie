@@ -31,26 +31,40 @@ GITHUB_REPO = "rootcoder007/morie"
 GITHUB_SUBDIR = "r-package/morie"
 
 
+def _pak_or(pak_call: str, fallback: str) -> str:
+    """R code that runs ``pak_call`` with pak (installing pak first when absent)
+    and falls back to ``fallback`` when pak cannot be installed or fails."""
+    return (
+        "if (!tryCatch({ "
+        f"if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = '{CRAN}'); "
+        f"pak::repo_add(rootcoder007 = '{RUNIV}'); {pak_call}; TRUE "
+        "}, error = function(e) { "
+        "message('pak did not finish (', conditionMessage(e), '); falling back to install.packages()'); FALSE "
+        f"}})) {{ {fallback} }}; "
+    )
+
+
 def _r_install_expr(github: bool = False) -> str:
     """The R expression that installs the R side.
 
     Default: rmorie from r-universe (prebuilt binaries), with its companions
     rmoriebricklayer and rmoriedata named explicitly. ``github``: this
-    repository's own R arm, built from source with remotes (needs a C/C++
-    toolchain).
+    repository's own R arm, built from source (needs a C/C++ toolchain).
 
-    Every call carries ``repos``: under ``Rscript`` there is no mirror
-    chooser, so a bare ``install.packages()`` stops with "trying to use CRAN
-    without setting a mirror". r-universe comes first because CRAN carries
-    older companions, and the companions are named (and remotes upgrades
-    ``"always"``) because an older copy already installed satisfies a
-    dependency check and would otherwise be kept.
+    pak does the install (progress bars, compiler output hidden unless a build
+    fails, named packages upgraded to the current release); plain
+    ``install.packages()`` / remotes is the fallback when pak is unavailable.
+    Every fallback call carries ``repos``: under ``Rscript`` there is no
+    mirror chooser, so a bare ``install.packages()`` stops with "trying to use
+    CRAN without setting a mirror". r-universe comes first because CRAN
+    carries older companions, and the companions are named (and remotes
+    upgrades ``"always"``) because an older copy already installed satisfies
+    a dependency check and would otherwise be kept.
     """
     from . import __version__ as v
 
     repos = f"c('{RUNIV}','{CRAN}')"
-    companions = f"install.packages(c('rmoriebricklayer','rmoriedata'), repos={repos}); "
-    remotes = f"if (!requireNamespace(\"remotes\", quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
+    remotes = f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos = '{CRAN}'); "
 
     if github:
         # pinned to this release's tag, as the r-universe route is: the default branch
@@ -59,20 +73,29 @@ def _r_install_expr(github: bool = False) -> str:
         import re
 
         ref = f"@v{v}" if re.match(r"^\d+\.\d+\.\d+$", v) else ""
-        return (
-            companions + remotes + f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', "
-            f"repos = {repos}, upgrade = 'always')"
+        return _pak_or(
+            f"pak::pkg_install(c('rmoriebricklayer', 'rmoriedata', '{GITHUB_REPO}/{GITHUB_SUBDIR}{ref}'))",
+            f"install.packages(c('rmoriebricklayer','rmoriedata'), repos = {repos}); "
+            + remotes
+            + f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', "
+            f"repos = {repos}, upgrade = 'always')",
         )
 
     # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
     # serves another version (it lags a release by a build cycle)
     return (
-        f"install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos={repos}); "
-        "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
-        f"if (have() != '{v}') {{ "
-        + remotes
-        + f"remotes::install_github('rootcoder007/rmorie@v{v}', repos = {repos}, upgrade = 'always') }}; "
-        f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
+        _pak_or(
+            "pak::pkg_install(c('rmoriebricklayer', 'rmoriedata', 'rmorie'))",
+            f"install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos = {repos})",
+        )
+        + "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
+        + f"if (have() != '{v}') {{ "
+        + _pak_or(
+            f"pak::pkg_install('rootcoder007/rmorie@v{v}')",
+            remotes + f"remotes::install_github('rootcoder007/rmorie@v{v}', repos = {repos}, upgrade = 'always')",
+        )
+        + "}; "
+        + f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
     )
 
 

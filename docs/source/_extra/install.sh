@@ -282,15 +282,27 @@ fi
 if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmorie, rmoriebricklayer and rmoriedata from r-universe; binaries on macOS and Windows, a build of several minutes on Linux)?"; then
   echo "[install.sh] R side: rmorie + rmoriebricklayer, rmoriedata (r-universe)"
   MORIE_R_VERSION=$("$VENV/bin/python" -c "import morie; print(morie.__version__)" 2>/dev/null || true)
-  if step "rmoriebricklayer + rmoriedata (r-universe; CRAN carries older ones)" Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))' \
-     && step "rmorie $MORIE_R_VERSION (r-universe; binaries on macOS and Windows)" env MORIE_R_VERSION="$MORIE_R_VERSION" Rscript -e '
+  if step "rmorie $MORIE_R_VERSION + rmoriebricklayer, rmoriedata (r-universe; binaries on macOS and Windows)" env MORIE_R_VERSION="$MORIE_R_VERSION" Rscript -e '
+         # pak first (named packages upgraded to the current release, so an old companion
+         # is replaced); install.packages() / remotes when pak cannot be installed or fails.
+         # Every call names repos: Rscript has no mirror chooser.
+         repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org")
+         with_pak <- function(call) tryCatch({
+           if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org")
+           pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+           call()
+           TRUE
+         }, error = function(e) { message("pak did not finish (", conditionMessage(e), "); falling back to install.packages()"); FALSE })
+         pkgs <- c("rmoriebricklayer", "rmoriedata", "rmorie")
+         if (!with_pak(function() pak::pkg_install(pkgs))) install.packages(pkgs, repos = repos)
          # the R arm must be the same release as morie: r-universe first, the release tag when it serves another version
          v <- Sys.getenv("MORIE_R_VERSION")
-         install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
          have <- function() tryCatch(as.character(utils::packageVersion("rmorie")), error = function(e) "")
          if (nzchar(v) && have() != v) {
-           if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org")
-           remotes::install_github(paste0("rootcoder007/rmorie@v", v), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"), upgrade = "always")
+           if (!with_pak(function() pak::pkg_install(paste0("rootcoder007/rmorie@v", v)))) {
+             if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org")
+             remotes::install_github(paste0("rootcoder007/rmorie@v", v), repos = repos, upgrade = "always")
+           }
          }
          if (nzchar(v) && have() != v) stop("rmorie ", v, " is not published yet; run `morie r-install` once it is")' \
      && step "rmorie command line on PATH" Rscript -e 'rmorie::install_cli()'; then

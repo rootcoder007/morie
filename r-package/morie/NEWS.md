@@ -7,6 +7,11 @@
   `Rscript` there is no mirror chooser and a bare call stops with "trying to use CRAN
   without setting a mirror". The GitHub fallbacks use `upgrade = "always"`, so an older
   companion already installed is replaced instead of kept.
+* The R routes lead with pak (download progress, compiler output hidden unless a build
+  fails, named packages upgraded to the current release); `install.packages()` and remotes
+  stay as the fallback, which `install.sh` and `morie r-install` take on their own when pak
+  cannot be installed. On macOS, CRAN's R uses r-universe's binaries; Homebrew's R builds
+  from source.
 * DESCRIPTION floors raised to rmoriebricklayer (>= 0.5.10) and rmoriedata (>= 0.3.5).
 * This package's README no longer offers `install.packages("morie")` from r-universe,
   which publishes no `morie` package; it installs from source or from GitHub at the tag.

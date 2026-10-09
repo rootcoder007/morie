@@ -344,17 +344,15 @@ The R distribution of morie is the **rmorie** package. It comes from
 r-universe (prebuilt binaries for macOS and Windows, source on Linux);
 its companions **rmoriebricklayer** (signing, capsules) and **rmoriedata**
 (the reviewed data tables) come from r-universe too. CRAN carries older
-companions, so keep r-universe first, and name the companions so an older
-copy already installed gets replaced:
+companions; pak takes r-universe first and upgrades the named packages, so
+an older copy already installed gets replaced:
 
 ```r
-install.packages(
-  c("rmoriebricklayer", "rmoriedata", "rmorie"),
-  repos = c(
-    rootcoder007 = "https://rootcoder007.r-universe.dev",
-    CRAN         = "https://cloud.r-project.org"
-  )
-)
+if (!requireNamespace("pak", quietly = TRUE)) {
+  install.packages("pak", repos = "https://cloud.r-project.org")
+}
+pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
 rmorie::install_cli()   # puts the `rmorie` command on your PATH
 ```
 
@@ -362,8 +360,14 @@ From a terminal (single quotes outside, double quotes inside, so the shell
 passes the R code through untouched):
 
 ```sh
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))'
+# without pak (keep repos: Rscript has no mirror chooser)
 Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
 ```
+
+On macOS, CRAN's R (from <https://cloud.r-project.org/bin/macosx/>) installs r-universe's
+prebuilt binaries in seconds. Homebrew's R cannot use them, so there every
+package is compiled from source.
 
 From Python, `morie r-install` runs the same install for you.
 
