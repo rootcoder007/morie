@@ -279,10 +279,10 @@ if [ "$PY" = "1" ] && [ "$HAVE_PY" = "1" ]; then
 fi
 
 # --- R morie ------------------------------------------------------
-if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmorie from r-universe, rmoriebricklayer and rmoriedata from CRAN; binaries on macOS and Windows, a build of several minutes on Linux)?"; then
-  echo "[install.sh] R side: rmorie (r-universe) + rmoriebricklayer, rmoriedata (CRAN)"
+if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmorie, rmoriebricklayer and rmoriedata from r-universe; binaries on macOS and Windows, a build of several minutes on Linux)?"; then
+  echo "[install.sh] R side: rmorie + rmoriebricklayer, rmoriedata (r-universe)"
   MORIE_R_VERSION=$("$VENV/bin/python" -c "import morie; print(morie.__version__)" 2>/dev/null || true)
-  if step "rmoriebricklayer + rmoriedata (CRAN)" Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata"), repos = "https://cloud.r-project.org")' \
+  if step "rmoriebricklayer + rmoriedata (r-universe; CRAN carries older ones)" Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))' \
      && step "rmorie $MORIE_R_VERSION (r-universe; binaries on macOS and Windows)" env MORIE_R_VERSION="$MORIE_R_VERSION" Rscript -e '
          # the R arm must be the same release as morie: r-universe first, the release tag when it serves another version
          v <- Sys.getenv("MORIE_R_VERSION")
@@ -290,7 +290,7 @@ if [ "$R" = "1" ] && [ "$HAVE_R" = "1" ] && prompt "Also install the R side (rmo
          have <- function() tryCatch(as.character(utils::packageVersion("rmorie")), error = function(e) "")
          if (nzchar(v) && have() != v) {
            if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes", repos = "https://cloud.r-project.org")
-           remotes::install_github(paste0("rootcoder007/rmorie@v", v), upgrade = "never")
+           remotes::install_github(paste0("rootcoder007/rmorie@v", v), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"), upgrade = "always")
          }
          if (nzchar(v) && have() != v) stop("rmorie ", v, " is not published yet; run `morie r-install` once it is")' \
      && step "rmorie command line on PATH" Rscript -e 'rmorie::install_cli()'; then

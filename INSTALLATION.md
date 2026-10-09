@@ -116,7 +116,7 @@ installed and working. Pick by what you have:
 - **You already have Python ≥3.10** — `pip install morie`
   ([section 4](#4-pypi-manual-pip)).
 - **You want the R package** — install **R** (Step 1), then
-  [section 6](#6-r-r-universe--cran).
+  [section 6](#6-r-r-universe).
 - **Whatever you pick** — finish with `morie interactive install`
   ([section 7](#7-the-interactive-layer-repl-exec-agent-tui)): it adds the
   REPL, exec, agent and TUI modules that every channel leaves out. The
@@ -135,7 +135,7 @@ environment — the comparison table first, then full steps for each.
 | 3 | **Homebrew tap** | macOS or Linuxbrew users | Homebrew |
 | 4 | **PyPI (pip)** | You already manage your own venv | Python ≥3.10, pip |
 | 5 | **Docker (GHCR)** | Zero-install or CI/CD | Docker |
-| 6 | **R (r-universe + CRAN)** | You want the R package | R ≥4.3 |
+| 6 | **R (r-universe)** | You want the R package | R ≥4.3 |
 
 ## 1. Curl one-liner (Linux / macOS / WSL)
 
@@ -207,10 +207,10 @@ Windows ships without `bash`, `python`, and `R` (though it *does* include `curl`
 **R** (optional — only if you want the R package):
 
 1. Go to **[cran.r-project.org/bin/windows/base](https://cran.r-project.org/bin/windows/base/)**, download the installer, and run it (the defaults are fine).
-2. Open **PowerShell** and install morie from r-universe — it ships pre-compiled Windows binaries, so no Rtools is needed:
+2. Open **PowerShell** and install rmorie (the R distribution of morie) from r-universe — it ships pre-compiled Windows binaries, so no Rtools is needed:
 
    ```powershell
-   Rscript -e "install.packages('morie', repos=c('https://rootcoder007.r-universe.dev', 'https://cloud.r-project.org'))"
+   Rscript -e "install.packages(c('rmoriebricklayer', 'rmoriedata', 'rmorie'), repos=c('https://rootcoder007.r-universe.dev', 'https://cloud.r-project.org'))"
    ```
 
 **Smoke test:**
@@ -333,27 +333,28 @@ Segmentation fault (core dumped)
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a version for reproducibility
-docker run --rm ghcr.io/rootcoder007/morie:1.4.2 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.4.3 morie --help
 ```
 
 The image is published on every release with both `:latest` and `:<version>` tags. Multi-arch (linux/amd64). Includes morie + the full SciPy + R stack + R 4.5.
 
-## 6. R (r-universe + CRAN)
+## 6. R (r-universe)
 
 The R distribution of morie is the **rmorie** package. It comes from
 r-universe (prebuilt binaries for macOS and Windows, source on Linux);
 its companions **rmoriebricklayer** (signing, capsules) and **rmoriedata**
-(the reviewed data tables) are on CRAN:
+(the reviewed data tables) come from r-universe too. CRAN carries older
+companions, so keep r-universe first, and name the companions so an older
+copy already installed gets replaced:
 
 ```r
 install.packages(
-  "rmorie",
+  c("rmoriebricklayer", "rmoriedata", "rmorie"),
   repos = c(
     rootcoder007 = "https://rootcoder007.r-universe.dev",
-    CRAN     = "https://cloud.r-project.org"
+    CRAN         = "https://cloud.r-project.org"
   )
 )
-install.packages(c("rmoriebricklayer", "rmoriedata"))
 rmorie::install_cli()   # puts the `rmorie` command on your PATH
 ```
 

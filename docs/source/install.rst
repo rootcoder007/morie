@@ -70,13 +70,14 @@ R
 
 The R side of the family is published as ``rmorie`` (with its companions
 ``rmoriebricklayer``, the shared C/C++ core, and ``rmoriedata``, the data
-corpus). ``rmoriebricklayer`` and ``rmoriedata`` are on CRAN; all three are
-served from r-universe:
+corpus). All three are served from r-universe; CRAN carries older
+companions, so keep r-universe first and name them, which replaces an older
+copy already installed:
 
 .. code-block:: r
 
    install.packages(
-     "rmorie",
+     c("rmoriebricklayer", "rmoriedata", "rmorie"),
      repos = c("https://rootcoder007.r-universe.dev",
                "https://cloud.r-project.org")
    )
@@ -88,7 +89,9 @@ built from, and it installs from source with
 
 .. code-block:: r
 
-   install.packages(c("rmoriebricklayer", "rmoriedata"))
+   install.packages(c("rmoriebricklayer", "rmoriedata"),
+                    repos = c("https://rootcoder007.r-universe.dev",
+                              "https://cloud.r-project.org"))
    install.packages("r-package/morie", repos = NULL, type = "source")
 
 Either way, every exported function is called ``morie_*``.

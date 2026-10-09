@@ -125,7 +125,7 @@ morie interactive install
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.4.2 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.4.3 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
@@ -155,22 +155,25 @@ A source checkout has all of this already. Offline: `morie interactive install
 The R distribution of morie is the **[rmorie](https://github.com/rootcoder007/rmorie)** package.
 
 ```r
-# rmorie comes from r-universe (prebuilt binaries for macOS and Windows,
-# source on Linux); its companions rmoriebricklayer and rmoriedata are on CRAN
+# rmorie and its companions rmoriebricklayer and rmoriedata all come from
+# r-universe (prebuilt binaries for macOS and Windows, source on Linux). CRAN
+# carries older companions, so keep r-universe first. Naming the companions
+# replaces an older copy already installed; keep `repos`, or Rscript stops
+# with "trying to use CRAN without setting a mirror".
 install.packages(
-  "rmorie",
+  c("rmoriebricklayer", "rmoriedata", "rmorie"),
   repos = c(
     rootcoder007 = "https://rootcoder007.r-universe.dev",
-    CRAN     = "https://cloud.r-project.org"
+    CRAN         = "https://cloud.r-project.org"
   )
 )
-install.packages(c("rmoriebricklayer", "rmoriedata"))
 
 # The same R code also lives in this repository as r-package/morie (package
 # name "morie"), tracking every commit here; build it from source with remotes
-# (needs a C++ toolchain and rmoriebricklayer):
-# install.packages("remotes")
-remotes::install_github("rootcoder007/morie@v1.4.2", subdir = "r-package/morie")  # the tag of your morie
+# (needs a C++ toolchain):
+install.packages("remotes", repos = "https://cloud.r-project.org")
+remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
+                        upgrade = "always")  # the tag of your morie
 ```
 
 Or let morie run either install for you: `morie r-install` (r-universe) or
