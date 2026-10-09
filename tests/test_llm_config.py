@@ -223,14 +223,13 @@ def test_saved_settings_are_private_and_apply(xdg, monkeypatch):
     data = json.loads(path.read_text())
     assert data["route"] == "ollama" and data["ollama.url"] == "192.168.1.20:11434"
     rows = {r["key"]: r for r in tab}
-    assert rows["route"]["source"] == "saved" and rows["ollama.key"]["value"] == "ok-1...5678"
+    assert rows["route"]["source"] == "saved" and rows["ollama.key"]["value"] == "set"
     assert llm._ollama_base_url() == "http://192.168.1.20:11434"
     assert llm._ollama_model() == "qwen3:8b"
     assert hosted.hosted_model() == "gpt-oss-120b:cf"
     llm._ollama_tags()
     assert seen == [("http://192.168.1.20:11434/api/tags", "Bearer ok-12345678")]
-    assert llm.config_get("ollama.key") == "ok-1...5678"
-    assert llm.config_get("ollama.key", reveal=True) == "ok-12345678"
+    assert llm.config_get("ollama.key") == "set"  # no character of a key is ever shown
     llm.config_unset("route", "ollama.url", "ollama.model", "ollama.key", "hosted.model")
     assert not path.exists()
     assert llm.config_get("route") == "auto"

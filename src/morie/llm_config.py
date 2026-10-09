@@ -187,16 +187,12 @@ def source(key: str) -> str:
 
 
 def mask(v: str | None) -> str:
-    """A key shortened for display: the first and last four characters."""
-    if not v:
-        return "(not set)"
-    if len(v) <= 8:
-        return "****"
-    return f"{v[:4]}...{v[-4:]}"
+    """How a key is displayed: only whether one is set. No character of it is ever printed."""
+    return "set" if v else "(not set)"
 
 
-def effective(key: str, *, reveal: bool = False) -> str:
-    """The value a setting has right now, the default spelled out, keys masked unless ``reveal``."""
+def effective(key: str) -> str:
+    """The value a setting has right now, the default spelled out; a key shows only as "set"."""
     k = _normalise_key(key)
     from . import llm
 
@@ -206,7 +202,7 @@ def effective(key: str, *, reveal: bool = False) -> str:
         return llm._api_base_url() or "(not set)"
     if k == "own.key":
         v = llm._api_key()
-        return (v or "(not set)") if reveal else mask(v)
+        return mask(v)
     if k == "own.model":
         return llm._api_model()
     if k == "ollama.url":
@@ -215,7 +211,7 @@ def effective(key: str, *, reveal: bool = False) -> str:
         return value("ollama.model") or "(the first one pulled)"
     if k == "ollama.key":
         v = value("ollama.key")
-        return (v or "(not set)") if reveal else mask(v)
+        return mask(v)
     from . import hosted
 
     if k == "hosted.url":
@@ -229,7 +225,7 @@ def effective(key: str, *, reveal: bool = False) -> str:
         except Exception:  # noqa: BLE001
             return hosted.DEFAULT_HOSTED_MODEL
     v = hosted.hosted_key()
-    return (v or "(not set)") if reveal else mask(v)
+    return mask(v)
 
 
 def _check(key: str, v: str) -> str:
@@ -255,7 +251,7 @@ def _check(key: str, v: str) -> str:
 
 
 def table() -> list[dict[str, str]]:
-    """One row per setting: key, value (keys masked), source, env, help."""
+    """One row per setting: key, value (a key only as "set"), source, env, help."""
     return [
         {
             "key": k,
@@ -342,9 +338,9 @@ def config(settings: dict | None = None, /, **kwargs) -> ConfigTable:
     return ConfigTable(table())
 
 
-def config_get(key: str, *, reveal: bool = False) -> str:
-    """The value one setting has right now (keys masked unless ``reveal=True``)."""
-    return effective(key, reveal=reveal)
+def config_get(key: str) -> str:
+    """The value one setting has right now (a key only as "set"; no character of it is returned)."""
+    return effective(key)
 
 
 def config_unset(*keys: str) -> ConfigTable:

@@ -1306,10 +1306,10 @@ if _TEXTUAL_AVAILABLE:
                 "OPENAI_API_KEY",
             ]:
                 val = os.environ.get(var, "")
-                # Mask secrets by name (KEY/TOKEN/SECRET/PASSWORD/AUTH) and any
-                # value carrying URL userinfo credentials (user:pass@host).
+                # A secret (KEY/TOKEN/SECRET/PASSWORD/AUTH by name, or a value carrying
+                # URL userinfo credentials, user:pass@host) shows only as "set".
                 if val and (any(s in var for s in ("KEY", "TOKEN", "SECRET", "PASSWORD", "AUTH")) or "@" in val):
-                    val = f"{val[:4]}...{val[-4:]}" if len(val) > 8 else "***"
+                    val = "set"
                 log.write(f"  {var}={val or '(not set)'}")
 
             log.write("")
