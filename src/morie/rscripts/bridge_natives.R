@@ -190,6 +190,17 @@ NATIVE[["r_synth"]] <- function(a, M) {
        dispersion = r$dispersion, deviance = r$deviance, null_deviance = r$null_deviance,
        df_residual = r$df_residual, aic = r$aic, converged = r$converged, n = r$n)
 }
+.lmmb_varcomp <- function(fit, residual = TRUE) {
+  vt <- fit$varcorr_table
+  vc <- data.frame(group = sub("\\.[0-9]+$", "", vt$grp), var1 = vt$var1, var2 = vt$var2,
+                   vcov = vt$vcov, sdcor = vt$sdcor, stringsAsFactors = FALSE)
+  if (residual)
+    vc <- rbind(vc, data.frame(group = "Residual", var1 = NA_character_, var2 = NA_character_,
+                               vcov = fit$sigma^2, sdcor = fit$sigma, stringsAsFactors = FALSE))
+  rownames(vc) <- NULL
+  vc
+}
+.lmmb_ranef <- function(fit) lapply(fit$ranef, function(r) cbind(level = rownames(r), r))
 NATIVE[["r_lm"]] <- function(a, M) {
     d <- .rg_design(a$formula, a$data)
     icpt <- attr(attr(d$mf, "terms"), "intercept") == 1L
@@ -204,6 +215,71 @@ NATIVE[["r_lm"]] <- function(a, M) {
 NATIVE[["r_glm"]] <- function(a, M) .rg_glm_native(a$formula, a$data, a$family, M)
 NATIVE[["r_logistic"]] <- function(a, M) .rg_glm_native(a$formula, a$data, "binomial", M)
 NATIVE[["r_poisson"]] <- function(a, M) .rg_glm_native(a$formula, a$data, "poisson", M)
+NATIVE[["r_nls"]] <- function(a, M) {
+    st <- a$start
+    if (!is.list(st)) st <- as.list(st)
+    fit <- M$morie_nls(a$formula, as.data.frame(a$data), st,
+                       algorithm = if (is.null(a$algorithm)) "gauss-newton" else a$algorithm,
+                       control = if (is.null(a$control)) list() else a$control)
+    M$summary.morie_nls(fit)
+  }
+NATIVE[["r_lme"]] <- function(a, M) {
+    method <- if (is.null(a$method)) "REML" else toupper(a$method)
+    reml <- identical(method, "REML")
+    fit <- M$morie_lmm(a$fixed, as.data.frame(a$data), REML = reml, random = a$random)
+    tab <- fit$fixef_table
+    # nlme reports ML standard errors with the REML-type divisor: SE_ML * sqrt(n / (n - p))
+    if (!reml) tab$Std.Error <- tab$Std.Error * sqrt(fit$nobs / (fit$nobs - nrow(tab)))
+    tab[["t value"]] <- tab$Estimate / tab$Std.Error
+    if (!is.null(tab$df))
+      tab[["Pr(>|t|)"]] <- 2 * stats::pt(abs(tab[["t value"]]), tab$df, lower.tail = FALSE)
+    names(tab)[names(tab) == "df"] <- "DF"
+    list(method = sprintf("%s, nlme containment df (morie_lmm)", method),
+         fixed = tab, varcomp = .lmmb_varcomp(fit), loglik = fit$logLik, aic = fit$AIC,
+         bic = fit$BIC, n = fit$nobs, n_groups = fit$ngroups, ranef = .lmmb_ranef(fit),
+         converged = fit$convergence$code == 0)
+  }
+NATIVE[["r_lmer"]] <- function(a, M) {
+    reml <- if (is.null(a$REML)) TRUE else isTRUE(a$REML)
+    fit <- M$morie_lmm(a$formula, as.data.frame(a$data), REML = reml)
+    tab <- fit$fixef_table[, c("Estimate", "Std.Error", "t value")]
+    list(method = sprintf("%s, profiled deviance as lme4 (morie_lmm)", if (reml) "REML" else "ML"),
+         fixed = tab, varcomp = .lmmb_varcomp(fit), loglik = fit$logLik, aic = fit$AIC,
+         bic = fit$BIC, reml_criterion = fit$REMLcrit, n = fit$nobs, n_groups = fit$ngroups,
+         ranef = .lmmb_ranef(fit), converged = fit$convergence$code == 0)
+  }
+NATIVE[["r_glmer"]] <- function(a, M) {
+    fam <- if (is.null(a$family)) "binomial" else .rg_family_name(a$family)
+    fit <- M$morie_glmm(a$formula, as.data.frame(a$data), family = fam)
+    list(method = sprintf("Laplace (nAGQ = 1), %s %s link, glmer's two-stage PIRLS (morie_glmm)",
+                          fit$family$family, fit$family$link),
+         fixed = fit$fixef_table, varcomp = .lmmb_varcomp(fit, residual = FALSE),
+         loglik = fit$logLik, aic = fit$AIC, bic = fit$BIC, deviance = fit$deviance, n = fit$nobs,
+         n_groups = fit$ngroups, ranef = .lmmb_ranef(fit), vcov_method = fit$vcov_method,
+         converged = fit$convergence$code == 0)
+  }
+NATIVE[["r_gam"]] <- function(a, M) {
+    fam <- if (is.null(a$family)) "gaussian" else .rg_family_name(a$family)
+    fit <- M$morie_gam(a$formula, as.data.frame(a$data), family = fam,
+                       method = if (is.null(a$method)) "GCV.Cp" else a$method,
+                       weights = a$weights, sp = a$sp)
+    s <- M$summary.morie_gam(fit)
+    list(call = sprintf("morie_gam(formula, data, family = \"%s\", method = \"%s\")",
+                        fit$family, fit$method),
+         parametric = if (!is.null(s$p.table)) as.data.frame(s$p.table),
+         smooth_terms = if (!is.null(s$s.table)) as.data.frame(s$s.table),
+         r.sq = s$r.sq, dev.expl = s$dev.expl, score = unname(fit$score),
+         method = fit$method, scale = fit$scale, sp = fit$sp,
+         edf = fit$edf_smooth, edf_total = fit$edf_total, n = fit$nobs)
+  }
+NATIVE[["r_quantreg"]] <- function(a, M) {
+    fit <- M$morie_rq(a$formula, as.data.frame(a$data),
+                      tau = if (is.null(a$tau)) 0.5 else a$tau,
+                      method = if (is.null(a$method)) "fn" else a$method,
+                      se = if (is.null(a$se)) "nid" else a$se,
+                      R = if (is.null(a$R)) 200L else a$R, seed = a$seed)
+    M$summary.morie_rq(fit)
+  }
 NATIVE[["r_robust"]] <- function(a, M) {
     fit <- M$morie_rlm(a$formula, a$data)
     s <- M$summary.morie_rlm(fit)

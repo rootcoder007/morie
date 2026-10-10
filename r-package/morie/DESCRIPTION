@@ -149,6 +149,7 @@ Suggests:
     mvtnorm,
     nanoparquet,
     nFactors,
+    nlme,
     norm,
     np,
     openssl,

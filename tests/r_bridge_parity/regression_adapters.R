@@ -79,117 +79,6 @@ if (!exists("ADAPTERS")) ADAPTERS <- list()
        reference = c(s[, 1], s[, 2], ref$deviance))
 }
 
-# --- mixed-model formulas: split y ~ x + (1 + x | g) into fixed part and bar terms -----------
-.rg_split_bars <- function(expr) {
-  bars <- list()
-  walk <- function(e) {
-    if (is.call(e) && identical(e[[1]], as.name("+")) && length(e) == 3) {
-      l <- walk(e[[2]]); r <- walk(e[[3]])
-      if (is.null(l)) return(r)
-      if (is.null(r)) return(l)
-      return(call("+", l, r))
-    }
-    if (is.call(e) && identical(e[[1]], as.name("("))) e <- e[[2]]
-    if (is.call(e) && identical(e[[1]], as.name("|"))) {
-      bars[[length(bars) + 1L]] <<- e
-      return(NULL)
-    }
-    e
-  }
-  fixed <- walk(expr)
-  list(fixed = if (is.null(fixed)) 1 else fixed, bars = bars)
-}
-
-# random-effects design: one block per bar term, columns ordered group-major
-.rg_random_design <- function(bars, data) {
-  lapply(bars, function(b) {
-    lhs <- b[[2]]
-    g <- factor(eval(b[[3]], data, environment()))
-    Zt <- stats::model.matrix(stats::as.formula(call("~", lhs)), data)
-    m <- nlevels(g); r <- ncol(Zt)
-    Z <- matrix(0, nrow(data), m * r)
-    gi <- as.integer(g)
-    for (k in seq_len(r)) Z[cbind(seq_len(nrow(data)), (gi - 1L) * r + k)] <- Zt[, k]
-    list(Z = Z, m = m, r = r, names = colnames(Zt), group = deparse(b[[3]]), g = g)
-  })
-}
-
-.rg_chol_from <- function(par, r) {
-  L <- matrix(0, r, r)
-  L[lower.tri(L, diag = TRUE)] <- par
-  diag(L) <- exp(diag(L))
-  L
-}
-
-# REML (or ML) LMM fit composed from morie natives: Remlik / morie_lmm_loglik give the
-# (restricted) log-likelihood and GLS beta for given covariances, NelderMead maximises it.
-.rg_lmm_native <- function(fixed, bars, data, M, reml = TRUE, restarts = 1L) {
-  mf_vars <- unique(c(all.vars(fixed), unlist(lapply(bars, all.vars))))
-  data <- data[stats::complete.cases(data[mf_vars]), , drop = FALSE]
-  d <- .rg_design(fixed, data)
-  y <- as.numeric(d$y); X <- d$X
-  blocks <- .rg_random_design(bars, data)
-  Z <- do.call(cbind, lapply(blocks, `[[`, "Z"))
-  n <- length(y)
-  npar <- vapply(blocks, function(b) b$r * (b$r + 1L) / 2L, 1)
-  build <- function(th) {
-    s2 <- exp(2 * th[1]); pos <- 1L
-    Ds <- lapply(seq_along(blocks), function(i) {
-      b <- blocks[[i]]
-      L <- .rg_chol_from(th[pos + seq_len(npar[i])], b$r); pos <<- pos + npar[i]
-      list(S = L %*% t(L), D = kronecker(diag(b$m), L %*% t(L)))
-    })
-    q <- ncol(Z); D <- matrix(0, q, q); off <- 0L
-    for (x in Ds) { k <- nrow(x$D); D[off + seq_len(k), off + seq_len(k)] <- x$D; off <- off + k }
-    list(s2 = s2, D = D, S = lapply(Ds, `[[`, "S"))
-  }
-  obj <- function(th) {
-    p <- build(th)
-    r <- tryCatch(if (reml) M$Remlik(X, Z, y, p$D, R = diag(p$s2, n))$loglik
-                  else M$morie_lmm_loglik(X, Z, y, p$D, R = diag(p$s2, n))$loglik,
-                  error = function(e) -Inf)
-    if (!is.finite(r)) 1e100 else -r
-  }
-  ols <- M$morie_ols(y, X, add_intercept = FALSE)
-  s0 <- sqrt(ols$rss / ols$df_resid)
-  th0 <- c(log(s0 / sqrt(2)), unlist(lapply(blocks, function(b) {
-    L <- diag(log(s0 / sqrt(2)), b$r); L[lower.tri(L, diag = TRUE)]
-  })))
-  # Nelder-Mead, restarted from its own optimum until the objective stops moving (a restart
-  # rebuilds a fresh simplex, the standard guard against a collapsed one)
-  opt <- M$NelderMead(obj, th0, xtol = 1e-8, ftol = 1e-12, max_iter = 20000)
-  for (k in seq_len(restarts)) {
-    prev <- opt$fun
-    opt <- M$NelderMead(obj, opt$x, xtol = 1e-9, ftol = 1e-13, max_iter = 20000)
-    if (prev - opt$fun < 1e-10) break
-  }
-  p <- build(opt$x)
-  V <- M$morie_lmm_v(Z, p$D, diag(p$s2, n))
-  Vi <- M$morie_solve(V)
-  vb <- M$morie_solve(crossprod(X, Vi %*% X))
-  beta <- as.numeric(vb %*% crossprod(X, Vi %*% y))
-  names(beta) <- colnames(X)
-  vc <- do.call(rbind, lapply(seq_along(blocks), function(i) {
-    b <- blocks[[i]]; S <- p$S[[i]]
-    rows <- data.frame(group = b$group, var1 = b$names, var2 = NA_character_,
-                       vcov = diag(S), sdcor = sqrt(diag(S)), stringsAsFactors = FALSE)
-    if (b$r > 1) {
-      idx <- which(lower.tri(S), arr.ind = TRUE)
-      R <- stats::cov2cor(S)
-      rows <- rbind(rows, data.frame(group = b$group, var1 = b$names[idx[, 2]],
-                                     var2 = b$names[idx[, 1]], vcov = S[idx], sdcor = R[idx],
-                                     stringsAsFactors = FALSE))
-    }
-    rows
-  }))
-  vc <- rbind(vc, data.frame(group = "Residual", var1 = NA_character_, var2 = NA_character_,
-                             vcov = p$s2, sdcor = sqrt(p$s2), stringsAsFactors = FALSE))
-  list(method = if (reml) "REML (morie Remlik + NelderMead)" else "ML (morie_lmm_loglik + NelderMead)",
-       fixed = .rg_coef_table(beta, sqrt(diag(vb)), "t", n - ncol(X)),
-       varcomp = vc, loglik = -opt$fun, converged = opt$converged, n = n,
-       n_groups = vapply(blocks, `[[`, 1, "m"))
-}
-
 .rg_merMod_vc <- function(f) {
   v <- as.data.frame(lme4::VarCorr(f))
   v$vcov
@@ -279,188 +168,188 @@ ADAPTERS[["r_poisson"]] <- list(
 )
 
 # ---------------------------------------------------------------------------------------------
-# r_nls(formula, data, start)
+# r_nls(formula, data, start) -- stats::nls
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_nls"]] <- list(
-  ship = FALSE,  # evaluates the model formula at trial parameters; the bridge keeps stats::nls (part of R)
   native = function(a, M) {
-    start <- unlist(a$start)
-    pn <- names(start)
-    rhs <- a$formula[[3]]
-    yv <- as.numeric(eval(a$formula[[2]], a$data, environment(a$formula)))
-    # nlsgn differentiates model(x, theta) by central differences and needs length(x) == n,
-    # so x is the row index and the formula is evaluated on those rows of the data
-    dat <- as.list(a$data)
-    model <- function(x, theta) {
-      env <- lapply(dat, `[`, x)
-      env[pn] <- as.list(theta)
-      as.numeric(eval(rhs, env, environment(a$formula)))
-    }
-    r <- M$nlsgn(model, seq_along(yv), yv, start)
-    beta <- setNames(r$coefficients, pn)
-    df <- length(yv) - length(pn)
-    list(call = "nlsgn(model, data, y, start)",
-         coefficients = .rg_coef_table(beta, r$se, "t", df),
-         sigma = r$sigma, rss = r$rss, iterations = r$iterations, converged = r$converged)
+    st <- a$start
+    if (!is.list(st)) st <- as.list(st)
+    fit <- M$morie_nls(a$formula, as.data.frame(a$data), st,
+                       algorithm = if (is.null(a$algorithm)) "gauss-newton" else a$algorithm,
+                       control = if (is.null(a$control)) list() else a$control)
+    M$summary.morie_nls(fit)
   },
   reference = function(a) stats::nls(a$formula, data = a$data, start = a$start),
   compare = function(nat, ref) {
     s <- summary(ref)
-    list(native = c(nat$coefficients$Estimate, nat$coefficients$Std.Error, nat$sigma),
+    list(native = c(nat$coefficients[, 1], nat$coefficients[, 2], nat$sigma),
          reference = c(s$coefficients[, 1], s$coefficients[, 2], s$sigma))
   },
   tol = 1e-6,
   args = list(formula = ynls ~ A * (1 - exp(-k * xn)), data = .rg_data, start = list(A = 5, k = 0.2)),
-  note = "nlsgn (Gauss-Newton, nls's convergence criterion); Jacobian by central differences vs nls's forward differences, so SEs agree to ~1e-7"
+  note = "morie_nls (Gauss-Newton with nls's step halving and convergence criterion; analytic derivatives from the formula)"
 )
 
+# shared by r_lme / r_lmer / r_glmer: variance components and random effects as plain tables
+.lmmb_varcomp <- function(fit, residual = TRUE) {
+  vt <- fit$varcorr_table
+  vc <- data.frame(group = sub("\\.[0-9]+$", "", vt$grp), var1 = vt$var1, var2 = vt$var2,
+                   vcov = vt$vcov, sdcor = vt$sdcor, stringsAsFactors = FALSE)
+  if (residual)
+    vc <- rbind(vc, data.frame(group = "Residual", var1 = NA_character_, var2 = NA_character_,
+                               vcov = fit$sigma^2, sdcor = fit$sigma, stringsAsFactors = FALSE))
+  rownames(vc) <- NULL
+  vc
+}
+.lmmb_ranef <- function(fit) lapply(fit$ranef, function(r) cbind(level = rownames(r), r))
+
 # ---------------------------------------------------------------------------------------------
-# r_lme(fixed, data, random) -- nlme::lme, REML
+# r_lme(fixed, data, random) -- nlme::lme
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_lme"]] <- list(
-  ship = FALSE,  # dense n x n fit (about 14 s at n = 300, cubic in n); the bridge keeps nlme::lme until morie has a sparse mixed-model fitter
   native = function(a, M) {
-    rnd <- a$random
-    rexpr <- if (inherits(rnd, "formula")) rnd[[length(rnd)]] else rnd
-    if (!(is.call(rexpr) && identical(rexpr[[1]], as.name("|"))))
-      stop("random must be a formula of the form ~ terms | group", call. = FALSE)
-    fit <- .rg_lmm_native(a$fixed, list(rexpr), a$data, M, reml = TRUE)
-    fit
+    method <- if (is.null(a$method)) "REML" else toupper(a$method)
+    reml <- identical(method, "REML")
+    fit <- M$morie_lmm(a$fixed, as.data.frame(a$data), REML = reml, random = a$random)
+    tab <- fit$fixef_table
+    # nlme reports ML standard errors with the REML-type divisor: SE_ML * sqrt(n / (n - p))
+    if (!reml) tab$Std.Error <- tab$Std.Error * sqrt(fit$nobs / (fit$nobs - nrow(tab)))
+    tab[["t value"]] <- tab$Estimate / tab$Std.Error
+    if (!is.null(tab$df))
+      tab[["Pr(>|t|)"]] <- 2 * stats::pt(abs(tab[["t value"]]), tab$df, lower.tail = FALSE)
+    names(tab)[names(tab) == "df"] <- "DF"
+    list(method = sprintf("%s, nlme containment df (morie_lmm)", method),
+         fixed = tab, varcomp = .lmmb_varcomp(fit), loglik = fit$logLik, aic = fit$AIC,
+         bic = fit$BIC, n = fit$nobs, n_groups = fit$ngroups, ranef = .lmmb_ranef(fit),
+         converged = fit$convergence$code == 0)
   },
   reference = function(a) nlme::lme(fixed = a$fixed, data = a$data, random = a$random),
   compare = function(nat, ref) {
     vc <- nlme::getVarCov(ref)
-    list(native = c(nat$fixed$Estimate, nat$fixed$Std.Error,
-                    nat$varcomp$vcov[is.na(nat$varcomp$var2) & nat$varcomp$group != "Residual"],
-                    nat$varcomp$vcov[nat$varcomp$group == "Residual"]),
-         reference = c(nlme::fixef(ref), sqrt(diag(stats::vcov(ref))), diag(vc), ref$sigma^2))
+    v <- nat$varcomp
+    list(native = c(nat$fixed$Estimate, nat$fixed$Std.Error, nat$fixed$DF,
+                    v$vcov[is.na(v$var2) & v$group != "Residual"], v$vcov[v$group == "Residual"],
+                    nat$loglik),
+         reference = c(nlme::fixef(ref), sqrt(diag(stats::vcov(ref))),
+                       summary(ref)$tTable[, "DF"], diag(vc), ref$sigma^2,
+                       as.numeric(stats::logLik(ref))))
   },
   tol = 1e-4,
   args = list(fixed = ymix ~ x1 + x2, data = .rg_data, random = ~ 1 + x1 | g),
-  note = "REML maximised by morie NelderMead over morie Remlik (GLS beta, vcov from morie_lmm_v/morie_solve); random intercept+slope; lme stops at its own optimiser tolerance (~1e-6..1e-5)"
+  note = "morie_lmm (profiled REML deviance as lme4, block-diagonal Cholesky by group level), nlme containment df; lme stops at its own optimiser tolerance (~1e-6..1e-5)"
 )
 
 # ---------------------------------------------------------------------------------------------
-# r_lmer(formula, data) -- lme4::lmer, REML
+# r_lmer(formula, data) -- lme4::lmer
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_lmer"]] <- list(
-  ship = FALSE,  # dense n x n fit (about 14 s at n = 300, cubic in n); the bridge keeps lme4::lmer until morie has a sparse mixed-model fitter
   native = function(a, M) {
-    sp <- .rg_split_bars(a$formula[[3]])
-    if (!length(sp$bars)) stop("the formula has no random-effects term ( ... | group)", call. = FALSE)
-    fixed <- stats::as.formula(call("~", a$formula[[2]], sp$fixed), env = environment(a$formula))
     reml <- if (is.null(a$REML)) TRUE else isTRUE(a$REML)
-    .rg_lmm_native(fixed, sp$bars, a$data, M, reml = reml)
+    fit <- M$morie_lmm(a$formula, as.data.frame(a$data), REML = reml)
+    tab <- fit$fixef_table[, c("Estimate", "Std.Error", "t value")]
+    list(method = sprintf("%s, profiled deviance as lme4 (morie_lmm)", if (reml) "REML" else "ML"),
+         fixed = tab, varcomp = .lmmb_varcomp(fit), loglik = fit$logLik, aic = fit$AIC,
+         bic = fit$BIC, reml_criterion = fit$REMLcrit, n = fit$nobs, n_groups = fit$ngroups,
+         ranef = .lmmb_ranef(fit), converged = fit$convergence$code == 0)
   },
   reference = function(a) lme4::lmer(a$formula, data = a$data),
   compare = function(nat, ref) {
-    list(native = c(nat$fixed$Estimate, nat$fixed$Std.Error, nat$varcomp$vcov),
-         reference = c(lme4::fixef(ref), sqrt(diag(as.matrix(stats::vcov(ref)))), .rg_merMod_vc(ref)))
+    list(native = c(nat$fixed$Estimate, nat$fixed$Std.Error, nat$varcomp$vcov, nat$reml_criterion),
+         reference = c(lme4::fixef(ref), sqrt(diag(as.matrix(stats::vcov(ref)))), .rg_merMod_vc(ref),
+                       lme4::REMLcrit(ref)))
   },
-  # The largest relative gap is the near-zero intercept-slope covariance (-0.015568 vs -0.015573,
-  # absolute 5e-6, the same absolute size as the other components' gaps). lme4's REML criterion at
-  # morie's estimates is 856.71036928 vs 856.71036930 at its own, i.e. morie is at least as optimal:
-  # the gap is lmer's stopping tolerance along a flat direction.
+  # the near-zero intercept-slope covariance is the loosest component: lmer stops at bobyqa's
+  # tolerance along a flat direction, and morie's REML criterion is never higher than lmer's
   tol = 5e-4,
   args = list(formula = ymix ~ x1 + x2 + (1 + x1 | g), data = .rg_data),
-  note = "same morie REML fit as r_lme (Remlik + NelderMead), lmer bar syntax parsed; varcomp = var(Int), var(x1), cov, residual as VarCorr; bobyqa tolerance ~1e-6"
+  note = "morie_lmm: lme4's profiled REML deviance (penalised least squares, block-diagonal Cholesky); varcomp as VarCorr"
 )
 
 # ---------------------------------------------------------------------------------------------
 # r_glmer(formula, data, family) -- lme4::glmer, Laplace
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_glmer"]] <- list(
-  ship = FALSE,  # random intercept only and no fixed-effect SEs; the bridge keeps lme4::glmer
   native = function(a, M) {
-    fam <- .rg_family_name(a$family)
-    if (!fam %in% c("binomial", "poisson"))
-      stop("SpatialGlmmFit fits binomial or poisson GLMMs", call. = FALSE)
-    sp <- .rg_split_bars(a$formula[[3]])
-    if (length(sp$bars) != 1L || !identical(sp$bars[[1]][[2]], 1))
-      stop("the native GLMM (SpatialGlmmFit) supports one random intercept (1 | group) only",
-           call. = FALSE)
-    fixed <- stats::as.formula(call("~", a$formula[[2]], sp$fixed), env = environment(a$formula))
-    d <- .rg_design(fixed, a$data)
-    g <- factor(eval(sp$bars[[1]][[3]], a$data, environment()))
-    y <- if (fam == "binomial") .rg_binary(d$y) else as.numeric(d$y)
-    r <- M$SpatialGlmmFit(y, d$X, family = fam, groups = g)
-    list(method = "Laplace approximation (SpatialGlmmFit, iid group intercepts)",
-         fixed = .rg_coef_table(setNames(r$beta, colnames(d$X))),
-         varcomp = data.frame(group = deparse(sp$bars[[1]][[3]]), var1 = "(Intercept)",
-                              vcov = r$sigma2, sdcor = sqrt(r$sigma2)),
-         loglik = r$loglik, aic = r$aic, converged = r$converged)
+    fam <- if (is.null(a$family)) "binomial" else .rg_family_name(a$family)
+    fit <- M$morie_glmm(a$formula, as.data.frame(a$data), family = fam)
+    list(method = sprintf("Laplace (nAGQ = 1), %s %s link, glmer's two-stage PIRLS (morie_glmm)",
+                          fit$family$family, fit$family$link),
+         fixed = fit$fixef_table, varcomp = .lmmb_varcomp(fit, residual = FALSE),
+         loglik = fit$logLik, aic = fit$AIC, bic = fit$BIC, deviance = fit$deviance, n = fit$nobs,
+         n_groups = fit$ngroups, ranef = .lmmb_ranef(fit), vcov_method = fit$vcov_method,
+         converged = fit$convergence$code == 0)
   },
-  reference = function(a) lme4::glmer(a$formula, data = a$data, family = a$family),
+  # lme4's default PIRLS stops at tolPwrss = 1e-7 and perturbs its Laplace deviance by up to ~1e-3;
+  # with tolPwrss = 1e-13 and a tight bobyqa it computes the exact Laplace deviance morie uses
+  reference = function(a) lme4::glmer(a$formula, data = a$data, family = a$family,
+                                      control = lme4::glmerControl(tolPwrss = 1e-13,
+                                        optimizer = c("bobyqa", "bobyqa"),
+                                        optCtrl = list(rhoend = 1e-12, maxfun = 1e5))),
   compare = function(nat, ref) {
-    list(native = c(nat$fixed$Estimate, nat$varcomp$vcov, nat$loglik),
-         reference = c(lme4::fixef(ref), .rg_merMod_vc(ref), as.numeric(stats::logLik(ref))))
+    list(native = c(nat$fixed$Estimate, nat$fixed[[2]], nat$varcomp$vcov, nat$loglik),
+         reference = c(lme4::fixef(ref), sqrt(diag(as.matrix(stats::vcov(ref)))), .rg_merMod_vc(ref),
+                       as.numeric(stats::logLik(ref))))
   },
-  # Both maximise the Laplace likelihood; lme4 evaluates it with a PIRLS mode found to tolPwrss=1e-7,
-  # morie to 1e-12. Measured on args: each objective evaluated at the other's optimum is lower by only
-  # 7e-6 log-lik units (lme4 devfun: -174.1253887 at lme4 vs -174.1253957 at morie; morie's
-  # Laplace: -174.1249625 at morie vs -174.1249693 at lme4), so the 1.5e-3 gap in sigma^2 is the
-  # flatness of the likelihood, not a different estimator; tightening glmer's bobyqa leaves it unchanged.
-  tol = 2e-3,
+  tol = 1e-4,
   args = list(formula = ybmix ~ x1 + x2 + (1 | g), data = .rg_data, family = "binomial"),
-  note = "SpatialGlmmFit(groups=), same Laplace (nAGQ=1) likelihood as glmer; random intercept only, no beta SEs; sigma^2 differs ~1e-3 rel on a flat likelihood (7e-6 loglik units)"
+  note = "morie_glmm: the exact Laplace (nAGQ = 1) deviance with glmer's two-stage PIRLS; checked against glmer run to tolPwrss = 1e-13"
 )
 
 # ---------------------------------------------------------------------------------------------
 # r_gam(formula, data) -- mgcv::gam
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_gam"]] <- list(
-  ship = FALSE,  # a different smoother (P-spline basis, not mgcv's thin plate); the bridge keeps mgcv::gam
   native = function(a, M) {
-    rhs <- a$formula[[3]]
-    if (!(is.call(rhs) && identical(rhs[[1]], as.name("s")) && length(rhs) == 2L))
-      stop("the native GAM supports one smooth term: y ~ s(x)", call. = FALSE)
-    x <- as.numeric(eval(rhs[[2]], a$data, environment()))
-    y <- as.numeric(eval(a$formula[[2]], a$data, environment()))
-    gcv <- function(ll) {
-      r <- M$pspln(x, y, n_knots = 20L, degree = 3L, lam = exp(ll))
-      M$morie_esl_gcv(y, r$fitted, r$edf)$gcv
-    }
-    grid <- seq(-10, 15, by = 0.5)
-    ll0 <- grid[which.min(vapply(grid, gcv, 1))]
-    opt <- M$NelderMead(function(p) gcv(p), ll0, xtol = 1e-9, ftol = 1e-14)
-    r <- M$pspln(x, y, n_knots = 20L, degree = 3L, lam = exp(opt$x))
-    list(method = "P-spline (cubic B-splines, 20 knots, 2nd-difference penalty), lambda by GCV",
-         lambda = exp(opt$x), edf = r$edf, gcv = opt$fun, r2 = r$r2,
-         fitted = r$fitted, coefficients = r$coef)
+    fam <- if (is.null(a$family)) "gaussian" else .rg_family_name(a$family)
+    fit <- M$morie_gam(a$formula, as.data.frame(a$data), family = fam,
+                       method = if (is.null(a$method)) "GCV.Cp" else a$method,
+                       weights = a$weights, sp = a$sp)
+    s <- M$summary.morie_gam(fit)
+    list(call = sprintf("morie_gam(formula, data, family = \"%s\", method = \"%s\")",
+                        fit$family, fit$method),
+         parametric = if (!is.null(s$p.table)) as.data.frame(s$p.table),
+         smooth_terms = if (!is.null(s$s.table)) as.data.frame(s$s.table),
+         r.sq = s$r.sq, dev.expl = s$dev.expl, score = unname(fit$score),
+         method = fit$method, scale = fit$scale, sp = fit$sp,
+         edf = fit$edf_smooth, edf_total = fit$edf_total, n = fit$nobs)
   },
   reference = function(a) mgcv::gam(a$formula, data = a$data),
   compare = function(nat, ref) {
-    list(native = c(nat$fitted, nat$edf), reference = c(stats::fitted(ref), sum(ref$edf)))
+    s <- summary(ref)
+    # the x1 estimate itself is ~3e-5 (ys does not depend on x1): its SE is compared, not its value
+    list(native = c(nat$score, nat$edf, nat$r.sq, nat$parametric[1, 1], nat$parametric[, 2]),
+         reference = c(ref$gcv.ubre, s$edf, s$r.sq, s$p.table[1, 1], s$p.table[, 2]))
   },
-  tol = 1e-6,
-  args = list(formula = ys ~ s(xs), data = .rg_data),
-  mismatch = TRUE,
-  note = "no native mgcv equivalent: morie has fixed-lambda smoothers (pspln, morie_esl_gam); native = pspln + GCV (morie_esl_gcv) -- same criterion as gam's GCV.Cp but a 22-dim P-spline basis vs mgcv's k=10 thin-plate basis, so fits/EDF differ by basis, not error"
+  # mgcv stops its smoothing-parameter search at |grad| < 1e-6 x score; morie converges further,
+  # so the criterion agrees to ~1e-9 and the EDF to ~1e-6
+  tol = 1e-4,
+  args = list(formula = ys ~ s(xs) + x1, data = .rg_data),
+  note = "morie_gam: mgcv's thin plate regression spline basis and GCV/REML smoothness selection; same coefficients at mgcv's sp to ~1e-13"
 )
 
 # ---------------------------------------------------------------------------------------------
 # r_quantreg(formula, data, tau) -- quantreg::rq
 # ---------------------------------------------------------------------------------------------
 ADAPTERS[["r_quantreg"]] <- list(
-  ship = FALSE,  # dense simplex tableau (about 5 s at n = 200); the bridge keeps quantreg::rq
   native = function(a, M) {
-    tau <- if (is.null(a$tau)) 0.5 else as.numeric(a$tau)
-    d <- .rg_design(a$formula, a$data)
-    out <- lapply(tau, function(t) {
-      r <- M$QuantileRegressionLp(as.numeric(d$y), d$X, tau = t)
-      setNames(r$coefficients, colnames(d$X))
-    })
-    cf <- do.call(cbind, out)
-    colnames(cf) <- paste0("tau= ", format(tau))
-    list(method = "Koenker-Bassett regression quantiles by simplex (QuantileRegressionLp)",
-         coefficients = cf, tau = tau)
+    fit <- M$morie_rq(a$formula, as.data.frame(a$data),
+                      tau = if (is.null(a$tau)) 0.5 else a$tau,
+                      method = if (is.null(a$method)) "fn" else a$method,
+                      se = if (is.null(a$se)) "nid" else a$se,
+                      R = if (is.null(a$R)) 200L else a$R, seed = a$seed)
+    M$summary.morie_rq(fit)
   },
   reference = function(a) quantreg::rq(a$formula, tau = a$tau, data = a$data),
-  compare = function(nat, ref) list(native = as.numeric(nat$coefficients),
-                                    reference = as.numeric(stats::coef(ref))),
-  tol = 1e-8,
-  args = list(formula = y ~ x1 + x2 + f, data = .rg_data[1:150, ], tau = 0.3),
-  note = "QuantileRegressionLp (two-phase simplex, same LP as rq's Barrodale-Roberts); coefficients only (rq's default summary gives rank-inversion CIs, no SEs); dense tableau so O(n^2) memory"
+  compare = function(nat, ref) {
+    s <- summary(ref, se = "nid")
+    tb <- nat$coefficients
+    if (is.list(tb) && !is.data.frame(tb)) tb <- tb[[1]]
+    list(native = c(tb[, 1], tb[, 2]),
+         reference = c(as.numeric(stats::coef(ref)), s$coefficients[, 2]))
+  },
+  tol = 1e-6,
+  args = list(formula = y ~ x1 + x2 + f, data = .rg_data, tau = 0.3),
+  note = "morie_rq: Frisch-Newton interior point (as rq method \"fn\") with Barrodale-Roberts vertex polish; nid sandwich SEs as summary.rq"
 )
 
 # ---------------------------------------------------------------------------------------------

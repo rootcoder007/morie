@@ -9,6 +9,12 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* `r_lmer`, `r_lme`, `r_glmer`, `r_gam`, `r_quantreg` and `r_nls` now run morie's own R
+  estimators (`morie_lmm`, `morie_glmm`, `morie_gam`, `morie_rq`, `morie_nls`, new in the R
+  packages), so 68 of the 79 R bridge commands run morie code; lme4, nlme, mgcv and quantreg
+  are only used by the tests that check the numbers. An R package older than this morie
+  that lacks one of these functions is named in the error, with a note to update it.
+
 * Package scanners: the published package no longer starts any program itself. Every
   launch (R and the R bridge, the R-backed modules, Docker, `morie edit`, `doctor --fix`,
   the C-kernel compiler, notebooks, gcloud, ssh, `$BROWSER`) goes through one module,
