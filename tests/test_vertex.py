@@ -86,7 +86,7 @@ def test_ask_gemini_sends_correct_payload(monkeypatch):
         mock_client.post = MagicMock(return_value=mock_resp)
         mock_client_cls.return_value = mock_client
 
-        out = vertex.ask_gemini("hello", system="be terse", temperature=0.3)
+        out = vertex.ask_gemini("hello", instructions="be terse", temperature=0.3)
         assert out == "hello back"
 
         # Inspect the payload sent

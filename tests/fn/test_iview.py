@@ -29,7 +29,7 @@ def _make_minimal_png(path: str) -> None:
 class TestIview:
     def test_view_image_calls_open(self):
         with (
-            patch("morie.fn.iview.subprocess.run") as mock_run,
+            patch("morie._launch.run") as mock_run,
             patch("morie.fn.iview.os.path.isfile", return_value=True),
         ):
             view_image("/tmp/fake.png")

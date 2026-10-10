@@ -255,7 +255,7 @@ def _open_browser(uri: str) -> None:
             continue
         cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
         try:
-            sp.Popen(
+            sp.start(
                 cmd,
                 stdin=sp.DEVNULL,
                 stdout=sp.DEVNULL,

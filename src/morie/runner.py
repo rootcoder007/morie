@@ -2967,7 +2967,7 @@ def _percysuits_pull_ssh(ssh_target: str, to_pull: list) -> int:
     for i, (name, size, _cat, _desc) in enumerate(to_pull, 1):
         print(f"[{i}/{len(to_pull)}] {name} ({size}) ...")
         try:
-            proc = sp.Popen(
+            proc = sp.start(
                 ["ssh", ssh_target, f"ollama pull {name}"],
                 stdout=sp.PIPE,
                 stderr=sp.STDOUT,
