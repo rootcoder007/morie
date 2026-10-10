@@ -160,6 +160,42 @@ def c_provider(s: Smoke):
     check("No endpoint" in s.run("provider", "show").stdout, "unset did not clear the endpoint")
 
 
+@case("config")
+def c_config(s: Smoke):
+    r = s.run("config")
+    check(r.returncode == 0 and "route" in r.stdout and "r.mismatch" in r.stdout, r.stdout[:300] + r.stderr[-300:])
+    path = s.run("config", "path").stdout.strip()
+    check(path.startswith(s.env["XDG_CONFIG_HOME"]), f"config path is not under XDG_CONFIG_HOME: {path!r}")
+    check(s.run("config", "set", "r.mismatch", "strict").returncode == 0, "config set r.mismatch strict failed")
+    check(s.run("config", "get", "r.mismatch").stdout.strip() == "strict", "config get did not read the saved value")
+    r = s.run("config", "set", "r.mismatch", "bogus")
+    check(r.returncode != 0 and "one of" in (r.stdout + r.stderr), "an invalid r.mismatch value was accepted")
+    s.run("config", "unset", "r.mismatch")
+    check(s.run("config", "get", "r.mismatch").stdout.strip() == "warn", "unset did not restore the default (warn)")
+    # a key is stored but never printed back
+    check(s.run("config", "set", "own.key", "sk-smoke-secret-999").returncode == 0, "config set own.key failed")
+    shown = s.run("config").stdout + s.run("config", "get", "own.key").stdout
+    check("sk-smoke-secret-999" not in shown and "set" in shown, "the stored key was printed")
+    s.run("config", "unset", "own.key")
+    check("(not set)" in s.run("config", "get", "own.key").stdout, "unset did not forget the key")
+
+
+@case("help")
+def c_help(s: Smoke):
+    r = s.run("help")
+    check(r.returncode == 0 and "getting-started" in r.stdout and "commands" in r.stdout, r.stdout[:300])
+    for topic, marker in (
+        ("getting-started", "morie doctor"),
+        ("llm", "ask"),
+        ("config", "r.mismatch"),
+        ("commands", "interactive"),
+    ):
+        r = s.run("help", topic)
+        check(r.returncode == 0 and marker in r.stdout, f"help {topic}: " + r.stdout[:200] + r.stderr[-200:])
+    r = s.run("help", "no-such-topic")
+    check(r.returncode == 2 and "no topic" in (r.stdout + r.stderr), "an unknown help topic did not exit 2")
+
+
 def _answered(r, verb: str) -> None:
     """With a key: a model answered (exit 0). Without: the local fallback text, exit 1 by design. Never empty."""
     check(r.stdout.strip(), f"{verb} printed nothing: " + r.stderr[-300:])
@@ -321,19 +357,23 @@ def c_interactive(s: Smoke):
     r = s.run("interactive", "status")
     check(r.returncode == 0 and "interactive layer directory" in r.stdout, r.stdout[-300:] + r.stderr[-300:])
     src = Path(__file__).resolve().parents[2] / "src" / "morie"
-    if all((src / n).is_file() for n in ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")):
-        r = s.run("interactive", "install", "--from", str(src))  # offline, from this checkout
-    else:
-        r = s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
-        if r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
-            RESULTS.append(
-                (
-                    "interactive",
-                    "SKIP",
-                    "no checkout beside the suite and the release tag is not downloadable from here",
-                )
+    from_checkout = all((src / n).is_file() for n in _LAYER_FILES)
+
+    def install():
+        if from_checkout:
+            return s.run("interactive", "install", "--from", str(src))  # offline, from this checkout
+        return s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
+
+    r = install()
+    if not from_checkout and r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
+        RESULTS.append(
+            (
+                "interactive",
+                "SKIP",
+                "no checkout beside the suite and the release tag is not downloadable from here",
             )
-            return
+        )
+        return
     check(r.returncode == 0 and "Installed the interactive layer" in r.stdout, r.stdout[-400:] + r.stderr[-300:])
     r = s.run("interactive", "status")
     check("active" in r.stdout, "status after install: " + r.stdout[-300:])
@@ -346,6 +386,9 @@ def c_interactive(s: Smoke):
         _source_tree_only(r.stdout + r.stderr) or "42" in r.stdout,
         "exec after remove: " + r.stdout[-300:] + r.stderr[-300:],
     )
+    # put it back, as a user would: the cases after this one launch programs (an editor, R)
+    r = install()
+    check(r.returncode == 0 and "active" in s.run("interactive", "status").stdout, "reinstall: " + r.stdout[-300:])
 
 
 @case("logout")
@@ -432,6 +475,9 @@ def c_pull(s: Smoke):
         )
         return
     r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
+    if r.returncode != 0 and _source_tree_only(r.stdout + r.stderr):
+        RESULTS.append(("pull -> module", "SKIP", "the R-backed modules need the interactive layer, not installed"))
+        return
     check(r.returncode == 0, r.stderr[-400:])
     check("SYNTHETIC" not in r.stderr.upper(), "after the pull the module still used the synthetic frame")
 
@@ -541,9 +587,16 @@ def _r_arm_ok() -> bool:
     return _R_ARM
 
 
+_LAYER_FILES = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py", "_launch.py")
+
+
 def _source_tree_only(text: str) -> bool:
-    """The exec/REPL layer is excluded from the wheel on purpose; its verbs must refuse honestly."""
-    return "not bundled in this install" in text or "not available in this build" in text
+    """The interactive layer is excluded from the wheel on purpose; what needs it must refuse honestly."""
+    return (
+        "not bundled in this install" in text
+        or "not available in this build" in text
+        or "needs the interactive layer" in text
+    )
 
 
 @case("edit")
@@ -560,6 +613,11 @@ def c_edit(s: Smoke):
         text=True,
         timeout=300,
     )
+    if _source_tree_only(r.stdout + r.stderr) and not (s.work / "f.py").exists():
+        # starting the editor is itself a launch, which the interactive layer provides
+        check(r.returncode != 0, "edit must fail when the interactive layer is missing")
+        RESULTS.append(("edit", "SKIP", "the interactive layer is not installed; the honest message was verified"))
+        return
     check("print(6 * 7)" in (s.work / "f.py").read_text(), "the editor stub did not write the file: " + r.stderr[-300:])
     if _source_tree_only(r.stdout + r.stderr):
         check(r.returncode != 0, "--run must fail when exec is not in this build")
