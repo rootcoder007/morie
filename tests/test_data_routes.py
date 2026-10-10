@@ -6,6 +6,7 @@ import json
 import tarfile
 import zipfile
 from urllib.error import HTTPError
+from urllib.parse import urlparse
 
 import pytest
 
@@ -115,14 +116,15 @@ def test_rmoriedata_tries_the_github_release_and_cran_when_r_universe_lacks_the_
     def fake_urlopen(url, timeout=30):
         url = getattr(url, "full_url", url)
         calls.append(url)
-        if "cran.r-project.org" not in url:
+        if urlparse(url).hostname != "cran.r-project.org":
             raise HTTPError(url, 404, "Not Found", None, None)
         return _Reply(_fake_rmoriedata_tarball())
 
     monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
     assert len(mdata.load_dataset("siu", db_path=db)) == 2
     assert calls == list(mdata._rmoriedata_sources("0.3.9"))  # r-universe, GitHub release, then CRAN
-    assert "r-universe.dev" in calls[0] and "github.com" in calls[1] and "cran" in calls[2]
+    hosts = [urlparse(u).hostname for u in calls]
+    assert hosts == ["rootcoder007.r-universe.dev", "github.com", "cran.r-project.org"]
 
 
 def test_cran_older_release_is_the_last_resort_with_a_warning(monkeypatch, tmp_path):
@@ -134,7 +136,7 @@ def test_cran_older_release_is_the_last_resort_with_a_warning(monkeypatch, tmp_p
 
     def fake_urlopen(url, timeout=30):
         url = getattr(url, "full_url", url)
-        if url.endswith("rmoriedata_0.3.3.tar.gz") and "cran" in url:
+        if url.endswith("rmoriedata_0.3.3.tar.gz") and urlparse(url).hostname == "cran.r-project.org":
             return _Reply(_fake_rmoriedata_tarball())
         raise HTTPError(url, 404, "Not Found", None, None)
 

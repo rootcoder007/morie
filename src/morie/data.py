@@ -1906,7 +1906,7 @@ def _rmoriedata_latest_version(timeout: int = 20) -> str | None:
             body = _get_text(url, timeout)
         except Exception:  # noqa: BLE001 - an unreachable source is skipped
             continue
-        if "api.github.com" in url:
+        if urlparse(url).hostname == "api.github.com":
             try:
                 tag = str(_json.loads(body).get("tag_name", ""))
             except ValueError:
