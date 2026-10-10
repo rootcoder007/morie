@@ -34,7 +34,7 @@ def geron_pvt(image, stage_cfgs, seed=0):
     N * N / r^2 instead of N^2 -- which is what makes the large early
     grids affordable at all. Both numbers are reported per stage.
 
-    The patch embedding is executed on the concrete ``image``, so the
+    The patch embedding is run on the concrete ``image``, so the
     per-stage grids, token counts and parameter counts are resolved
     against real data rather than asserted.
 

@@ -25,7 +25,7 @@ try:
 except ImportError:
     __version__ = "0.0.0+unknown"
 
-# The interactive layer (polyglot REPL, agent, TUI, exec) stays out of the
+# The interactive layer (polyglot REPL, agent, TUI, `morie exec`) stays out of the
 # published package; `morie interactive install` keeps a per-user copy that
 # joins the package path here when its version matches. One stat when absent.
 try:

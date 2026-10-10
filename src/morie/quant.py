@@ -913,7 +913,7 @@ def unpack_indices(data: bytes, bits: int, count: int) -> U8:
 # Following the GPTQ / SmoothQuant / SpQR family, we split outliers off,
 # quantize the bulk at the same bit budget, and store outliers in fp16 with
 # their indices.  Cosine recovery on Llama-3 V_proj rises from 0.983 -> 0.991
-# at 4-bit on internal eval (2026-04-30).
+# at 4-bit on internal evaluation (2026-04-30).
 # ---------------------------------------------------------------------------
 
 

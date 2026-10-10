@@ -69,7 +69,7 @@ def horowitz_kernel_density(x, bandwidth=None, sample=None):
     h = float(bandwidth) if bandwidth is not None else _silverman_bandwidth(data)
     if h <= 0:
         h = _silverman_bandwidth(data)
-    # f_hat on grid: each row = one eval point, col = data point
+    # f_hat on grid: each row = one evaluation point, col = data point
     diffs = (grid[:, None] - data[None, :]) / h
     weights = np.exp(-0.5 * diffs * diffs) / np.sqrt(2 * np.pi)
     f_hat = weights.mean(axis=1) / h

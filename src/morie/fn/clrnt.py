@@ -141,7 +141,9 @@ def blood_from_plasma(cl_plasma, fu_plasma, blood_plasma_ratio=None, charge="neu
     return float(cl_plasma) / rb, float(fu_plasma) / rb, rb
 
 
-def scale_to_liver(clint_in_vitro, fu_incubation, incubation="hepatocytes", species="human", pbsf=None, liver_weight=None):
+def scale_to_liver(
+    clint_in_vitro, fu_incubation, incubation="hepatocytes", species="human", pbsf=None, liver_weight=None
+):
     r"""Equation 3: scale in vitro :math:`CL_{int}` to predicted in vivo
     :math:`CL_{int,u}`.
 
@@ -156,7 +158,11 @@ def scale_to_liver(clint_in_vitro, fu_incubation, incubation="hepatocytes", spec
     if not 0.0 < float(fu_incubation) <= 1.0:
         raise ValueError("clrnt: the incubational unbound fraction must lie in (0, 1]")
     c = CONSTANTS[species]
-    p = (c["hepatocytes_pbsf"] if incubation == "hepatocytes" else c["microsomes_pbsf"]) if pbsf is None else float(pbsf)
+    p = (
+        (c["hepatocytes_pbsf"] if incubation == "hepatocytes" else c["microsomes_pbsf"])
+        if pbsf is None
+        else float(pbsf)
+    )
     lw = c["liver_weight"] if liver_weight is None else float(liver_weight)
     if incubation == "hepatocytes":
         p = p / 1e6  # CLint is quoted per 10^6 cells

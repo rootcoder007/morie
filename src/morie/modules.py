@@ -1,4 +1,4 @@
-"""Module-level execution surface for MORIE dataset analyses."""
+"""Module-level run surface for MORIE dataset analyses."""
 
 from __future__ import annotations
 

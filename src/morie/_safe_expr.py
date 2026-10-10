@@ -4,7 +4,7 @@
 Shipped in the wheel, unlike :mod:`morie._exec_guard`: ``bexpr()`` and
 ``moncar()`` evaluate a user-written formula and were dead on every
 ``pip install`` because they imported the evaluator from the module the
-wheel strips. Nothing here executes statements; only arithmetic, boolean
+wheel strips. Nothing here runs statements; only arithmetic, boolean
 and comparison operators, literals, and attribute/call chains on the
 names handed in are accepted, and no builtin is reachable.
 """

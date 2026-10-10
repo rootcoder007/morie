@@ -86,7 +86,7 @@ def miord2(data, m=5, maxit=5, seed=0, kappa=1e-4):
     (V = (S + diag(S) kappa)^{-1}, sigma^2 = SSR/chi^2_{n1-q},
     beta_dot = beta_hat + sigma L z1 with L the Cholesky factor of
     V), and the missing entries are drawn as X_mis beta_dot +
-    sigma z2.  Executing the chain m times in parallel yields m
+    sigma z2.  Running the chain m times in parallel yields m
     completed data sets; being a Gibbs-type sampler, imputations are
     "proper" in Rubin's sense.
 

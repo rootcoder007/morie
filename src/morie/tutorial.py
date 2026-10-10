@@ -1,7 +1,7 @@
 """morie.tutorial — interactive first-time-user walkthrough.
 
 Reached via ``morie tutorial`` on the CLI.  Walks the user through
-the same sequence documented in TUTORIAL.md but executes each step
+the same sequence documented in TUTORIAL.md but runs each step
 live and prompts before continuing, so a non-coder doesn't have to
 copy-paste from a markdown file in another window.
 

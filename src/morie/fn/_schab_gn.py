@@ -21,7 +21,7 @@ iteration; they are not frozen at the starting values.
 The estimating equation (4.42)/(4.43) is written in terms of
 d gamma(h, theta) / d theta, so those derivatives are taken analytically
 here. That matters for cross-language agreement: an analytic Jacobian has
-no finite-difference step to choose, so R and Python execute the same
+no finite-difference step to choose, so R and Python run the same
 arithmetic rather than two differently-tuned approximations.
 
 References

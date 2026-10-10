@@ -79,7 +79,7 @@ def execute_pipeline(
     """
     Run the specified epidemiologic analysis modules.
 
-    :param modules: A list of module names to execute, defaults to None.
+    :param modules: A list of module names to run, defaults to None.
     :type modules: list[str], optional
     :param silent: If True, skips the safety confirmation prompt, defaults to False.
     :type silent: bool, optional
@@ -2530,7 +2530,7 @@ def _main_impl() -> int:
 def _handle_exec(args: argparse.Namespace) -> int:
     # TRUST BOUNDARY: 'morie exec' runs code the LOCAL USER supplies on
     # their own machine -- the same trust model as running a script they wrote.
-    # It never executes remote or network-supplied code. Set
+    # It never runs remote or network-supplied code. Set
     # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
 
     # usage errors in the arguments themselves come first, on any install
@@ -2543,7 +2543,7 @@ def _handle_exec(args: argparse.Namespace) -> int:
         return 2
 
     # Absent from the published wheel by design: without the guard module
-    # there is no exec surface to authorise, so refuse rather than raise
+    # there is no run surface to authorise, so refuse rather than raise
     # ModuleNotFoundError at the user.
     try:
         from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code

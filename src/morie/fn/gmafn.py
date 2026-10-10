@@ -82,7 +82,7 @@ def gemma_function_call(
 
 
 def _execute_morie_function(name: str, args: dict):
-    """Execute an morie fn/ function by name with given arguments."""
+    """Run an morie fn/ function by name with given arguments."""
     try:
         from morie.fn._registry import REGISTRY
 

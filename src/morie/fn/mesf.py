@@ -71,7 +71,7 @@ def moran_eigenvector_filter(
     :param zerovalue: Eigenvalues within it of zero are never candidates.
     :param alpha: Optional p-value stopping rule in place of ``tol``.
     :return: :class:`RichResult` with ``selection`` (rows ``step``,
-        ``evec`` (1-based index in decreasing eigenvalue order), ``eval``,
+        ``evec`` (1-based index in decreasing eigenvalue order), ``evaluation``,
         ``moran``, ``z``, ``p_value``, ``r2``, ``gamma``), ``vectors`` (the
         selected eigenvectors as columns), ``coefficients`` (``X`` then the
         eigenvectors), ``fitted`` and ``stop_reason`` (``tol``, ``alpha``,

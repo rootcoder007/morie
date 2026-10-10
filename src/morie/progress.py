@@ -1,4 +1,4 @@
-"""Rich live-progress wrapper for MORIE pipeline execution.
+"""Rich live-progress wrapper for MORIE pipeline run.
 
 Provides :class:`PipelineTracker` which wraps :func:`morie.modules.run_module`
 with ``rich.progress`` bars, live status tables, and output-file validation.
@@ -34,7 +34,7 @@ from .modules import DEFAULT_CPADS_CSV, MODULE_SPECS, list_modules, run_module
 
 @dataclass
 class ModuleResult:
-    """Outcome of a single module execution."""
+    """Outcome of a single module run."""
 
     name: str
     status: str = "pending"  # pending | running | success | error | skipped
@@ -86,7 +86,7 @@ class PipelineTracker:
         self.results: list[ModuleResult] = []
 
     # ------------------------------------------------------------------
-    # Core execution
+    # Core run
     # ------------------------------------------------------------------
 
     def run(self) -> list[ModuleResult]:
@@ -193,7 +193,7 @@ class PipelineTracker:
                 progress.update(overall_task, description=f"[{idx + 1}/{len(self.results)}] {result.name}")
                 live.update(Group(progress, _build_status_table()))
 
-                self._execute_module(result)
+                self._run_one_module(result)
 
                 progress.update(overall_task, advance=1)
                 live.update(Group(progress, _build_status_table()))
@@ -213,7 +213,7 @@ class PipelineTracker:
             console=console,
         ) as progress:
             progress.add_task(result.name, total=None)
-            self._execute_module(result)
+            self._run_one_module(result)
 
         if result.status == "success":
             console.print(f"[green]OK[/green] {result.name} ({result.elapsed_seconds:.1f}s)")
@@ -229,7 +229,7 @@ class PipelineTracker:
         for idx, result in enumerate(self.results, start=1):
             result.status = "running"
             print(f"[{idx}/{total}] Running module: {result.name}", flush=True)
-            self._execute_module(result)
+            self._run_one_module(result)
             if result.status == "success":
                 print(
                     f"[{idx}/{total}] Finished module: {result.name} "
@@ -248,17 +248,17 @@ class PipelineTracker:
 
     def _run_single_plain(self, result: ModuleResult) -> None:
         print(f"Running module: {result.name}", flush=True)
-        self._execute_module(result)
+        self._run_one_module(result)
         if result.status == "success":
             print(f"Finished: {result.name} ({result.elapsed_seconds:.1f}s)")
         else:
             print(f"FAILED: {result.name}: {result.error_message}")
 
     # ------------------------------------------------------------------
-    # Module execution (shared logic)
+    # Module run (shared logic)
     # ------------------------------------------------------------------
 
-    def _execute_module(self, result: ModuleResult) -> None:
+    def _run_one_module(self, result: ModuleResult) -> None:
         """Run a single module and populate the result."""
         t0 = time.monotonic()
         try:

@@ -1,6 +1,6 @@
 """Benchmarking and performance analysis for MORIE.
 
-Provides comprehensive tools for profiling module execution, tracking memory
+Provides comprehensive tools for profiling module run, tracking memory
 usage, detecting performance regressions, and generating benchmark reports.
 All benchmarks capture system metadata for reproducibility.
 
@@ -88,27 +88,27 @@ class BenchmarkResult:
 
     @property
     def mean_time(self) -> float:
-        """Mean execution time in seconds."""
+        """Mean run time in seconds."""
         return float(np.mean(self.times)) if self.times else 0.0
 
     @property
     def median_time(self) -> float:
-        """Median execution time."""
+        """Median run time."""
         return float(np.median(self.times)) if self.times else 0.0
 
     @property
     def std_time(self) -> float:
-        """Standard deviation of execution time."""
+        """Standard deviation of run time."""
         return float(np.std(self.times, ddof=1)) if len(self.times) > 1 else 0.0
 
     @property
     def min_time(self) -> float:
-        """Minimum execution time."""
+        """Minimum run time."""
         return float(np.min(self.times)) if self.times else 0.0
 
     @property
     def max_time(self) -> float:
-        """Maximum execution time."""
+        """Maximum run time."""
         return float(np.max(self.times)) if self.times else 0.0
 
     @property
@@ -300,7 +300,7 @@ def benchmark(
     gc_collect: bool = True,
     **kwargs: Any,
 ) -> BenchmarkResult:
-    """Benchmark a function's execution time and memory usage.
+    """Benchmark a function's run time and memory usage.
 
     Parameters
     ----------
@@ -518,7 +518,7 @@ def memory_profile(
 ) -> MemoryProfile:
     """Profile memory usage of a function over time.
 
-    Samples memory allocation at regular intervals during execution.
+    Samples memory allocation at regular intervals during run.
 
     Parameters
     ----------
@@ -686,10 +686,10 @@ def scalability_analysis(
     name: str | None = None,
     seed: int = 42,
 ) -> pd.DataFrame:
-    """Analyze how execution time scales with data size.
+    """Analyze how run time scales with data size.
 
     Runs a function with increasing subsets of the input data and records
-    execution time and memory for each size.
+    run time and memory for each size.
 
     Parameters
     ----------

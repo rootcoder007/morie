@@ -11,7 +11,7 @@ The container workflow supports:
 * Running MORIE modules inside containers with volume-mounted data.
 * Inspecting container contents and verifying environment health.
 * CI simulation (run the full test suite inside a container).
-* Resource monitoring during pipeline execution.
+* Resource monitoring during pipeline run.
 * Ollama sidecar networking for local LLM integration.
 
 References
@@ -159,7 +159,7 @@ def _run_docker(
     capture: bool = True,
     env: dict[str, str] | None = None,
 ) -> DockerResult:
-    """Execute a docker command and return structured output.
+    """Run a docker command and return structured output.
 
     Parameters
     ----------
@@ -231,7 +231,7 @@ def _run_compose(
     compose_file: str | Path | None = None,
     timeout: int = 600,
 ) -> DockerResult:
-    """Execute a docker compose command.
+    """Run a docker compose command.
 
     Parameters
     ----------
@@ -356,7 +356,7 @@ def build_multistage(
         Base image name.
     stages : list[str] | None
         Stage names to build individually before the final build.
-        If None, only the final build is executed.
+        If None, only the final build is run.
     final_tag : str
         Tag for the final image.
     timeout : int
@@ -669,14 +669,14 @@ def exec_in_container(
     interactive: bool = False,
     timeout: int = 300,
 ) -> DockerResult:
-    """Execute a command inside a running container.
+    """Run a command inside a running container.
 
     Parameters
     ----------
     container : str
         Container name or ID.
     command : str
-        Command to execute.
+        Command to run.
     workdir : str | None
         Working directory inside the container.
     user : str | None
@@ -1165,7 +1165,7 @@ def run_ci_simulation(
     image : str
         Docker image to use.
     test_command : str
-        Test command to execute.
+        Test command to run.
     data_dir : str | Path | None
         Host data directory to mount.
     timeout : int
