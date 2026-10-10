@@ -78,15 +78,6 @@ expensive mistakes in this codebase.
 These are repeat patterns the maintainer has already corrected; do
 not reintroduce them.
 
-- **No Zenodo DOIs.** They were taken down. Never write
-  `10.5281/zenodo.*` anywhere.
-- **No false paper citations.** Methodology and empirical-applications
-  papers are in preparation; they are NOT yet published. Do not cite
-  them with version numbers, fabricated DOIs, or "v1" labels until
-  they have real preprint URLs.
-- **No CRAN or win-builder submissions during pre-alpha.** Uwe Ligges
-  archived morie 0.9.4 and asked us to wait. PyPI / GHCR / Homebrew /
-  r-universe are fine; CRAN is not until v1.0.0.
 - **No fabricated bundled data.** `inst/extdata/*.csv` must be real
   slices from public APIs OR typed-empty 0-row frames with documented
   schema. Never `rnorm()` / `sample()` fake values.
@@ -183,16 +174,9 @@ not regenerated. Never hand-edit that file.
 
 - Subject in imperative ("fix", "feat", "ci", "docs", "chore", "test")
 - Body: focus on the WHY, not the WHAT (the diff shows what changed)
-- Dual co-author trailer is required on every commit:
-
-  ```
-  Co-Authored-By: Claude <noreply@anthropic.com>
-  Co-Authored-By: Vansh Singh Ruhela (rootcoder007) <vsruhela@proton.me>
-  ```
-
-  PUBLIC repos use `Claude <noreply@anthropic.com>`; internal
-  coordination repos use `Yoda <noreply@hadesllm.com>` instead. This
-  is morie (public), so use Claude.
+- Don't put AI session links in commit messages, PR or issue text, or
+  code: no `Claude-Session:` lines and no `claude.ai/code/session_...`
+  URLs.
 
 ## Releases
 
