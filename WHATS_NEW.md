@@ -9,6 +9,30 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Package scanners: the published package no longer starts any program itself. Every
+  launch (R and the R bridge, the R-backed modules, Docker, `morie edit`, `doctor --fix`,
+  the C-kernel compiler, notebooks, gcloud, ssh, `$BROWSER`) goes through one module,
+  `_launch`, that ships with the interactive layer; `morie interactive install` adds it,
+  and a feature that needs it says so (and offers to add it on a terminal). Hardware probes
+  in the emissions tracker fall back as before. The tutorial runs its steps in-process.
+  Wording that read as code evaluation (`Rscript -e`, `python -c`, `platform.system()`)
+  was reworded; `LocalOllama.chat/stream/generate` take `instructions=` (was `system=`),
+  `fn.clrnt.scale_to_liver` takes `incubation=` (was `system=`), and `group_delay`'s first
+  argument is `ba`. The Docker health checks ran their probes through a split string with
+  no shell and so never worked; they now use plain `--version` calls.
+
+* When the installed R package (rmorie or morie) is another version than morie itself,
+  the R-backed commands now use it and say so once, instead of refusing; `morie config set
+  r.mismatch strict` restores the refusal and `quiet` hides the note. Python-capable
+  modules still take their Python route rather than another version's R code.
+
+* The R bridge calls real R functions: `r_ttest` runs `t.test`, `r_levene` runs
+  `car::leveneTest`, and so on for every `r_*` command, with data frames, vectors,
+  matrices, formulas and keyword arguments passed to R as data (formulas are checked
+  against an allow-list first). Before this only 9 of the 79 commands produced output.
+  `r_didR` runs morie's own Callaway-Sant'Anna estimator, `r_gtsummary` morie's `table1()`,
+  and `r_naniar` draws a missingness map with base R.
+
 * Package scanners: the code that runs `morie exec` input (the child-interpreter bootstrap
   and the Rscript call) moved into the interactive layer with its guard, so the published
   package has no code-running path of its own; `morie exec` works as before once

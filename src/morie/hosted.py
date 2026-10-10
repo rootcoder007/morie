@@ -32,7 +32,6 @@ import json
 import os
 import shlex
 import stat
-import subprocess
 import sys
 import time
 import webbrowser
@@ -243,18 +242,24 @@ def _open_browser(uri: str) -> None:
     """
     if not _can_open_browser():
         return
-    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)):
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        sp = launcher("Opening $BROWSER", offer=False)
+    except LayerMissingError:
+        sp = None  # without the launcher the standard webbrowser module below opens it
+    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)) if sp else ():
         try:
             cmd = shlex.split(entry)
         except ValueError:
             continue
         cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
         try:
-            subprocess.Popen(
+            sp.Popen(
                 cmd,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdin=sp.DEVNULL,
+                stdout=sp.DEVNULL,
+                stderr=sp.DEVNULL,
                 start_new_session=True,
             )
             return

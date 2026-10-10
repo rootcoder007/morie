@@ -32,7 +32,9 @@ def test_heal_pip_installs_failed_imports(monkeypatch):
     class _Result:
         returncode = 0
 
-    monkeypatch.setattr(doctor.subprocess, "run", lambda cmd, *a, **k: (calls.append(cmd), _Result())[1])
+    from morie import _launch
+
+    monkeypatch.setattr(_launch, "run", lambda cmd, *a, **k: (calls.append(cmd), _Result())[1])
     # an environment with pip (a uv-made venv has none: that branch has its own test)
     monkeypatch.setattr(doctor, "_installer", lambda: [doctor.sys.executable, "-m", "pip", "install"])
     results = {

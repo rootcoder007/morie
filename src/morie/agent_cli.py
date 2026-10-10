@@ -13,7 +13,6 @@ the environment (the key is never passed as an argument).
 from __future__ import annotations
 
 import shutil
-import subprocess
 
 
 def agent(
@@ -51,7 +50,7 @@ def agent(
     if not binary:
         return (
             "the rmorie launcher is not on PATH: install the rmorie R package (morie r-install) and run "
-            "Rscript -e 'rmorie::install_cli()' once, then morie.agent() works."
+            "rmorie::install_cli() in R once, then morie.agent() works."
         )
     args = [binary, "agent", "--backend", backend]
     if model:
@@ -59,5 +58,7 @@ def agent(
     if dry_run:
         args += ["--dry-run"]
     args.append(task)
-    proc = subprocess.run(args, capture_output=True, text=True)
+    from ._interactive import launcher
+
+    proc = launcher("The rmorie agent").run(args, capture_output=True, text=True)
     return (proc.stdout + proc.stderr).strip()

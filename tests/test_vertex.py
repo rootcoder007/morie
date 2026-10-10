@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from morie import vertex
+from morie import _launch, vertex
 
 
 @pytest.fixture(autouse=True)
@@ -43,7 +43,7 @@ def test_resolve_config_falls_back_to_morie_ee_project(monkeypatch):
 def test_access_token_caches(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "test-project")
     cfg = vertex.resolve_config()
-    with patch.object(vertex.subprocess, "run") as mock_run:
+    with patch.object(_launch, "run") as mock_run:
         mock_run.return_value = MagicMock(stdout="ya29.test.TOKEN\n", stderr="")
         t1 = vertex._access_token(cfg)
         t2 = vertex._access_token(cfg)
@@ -56,7 +56,7 @@ def test_access_token_caches(monkeypatch):
 def test_access_token_propagates_gcloud_error(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "test-project")
     cfg = vertex.resolve_config()
-    with patch.object(vertex.subprocess, "run") as mock_run:
+    with patch.object(_launch, "run") as mock_run:
         mock_run.side_effect = subprocess.CalledProcessError(1, "gcloud", stderr="reauth required")
         with pytest.raises(RuntimeError, match="reauth required"):
             vertex._access_token(cfg)

@@ -1145,185 +1145,58 @@ def _register_descriptive() -> int:
 # ---------------------------------------------------------------------------
 
 
-# The R bridge never builds R source from its arguments: the scripts below are constants, and the
-# function name (from the fixed table in _register_r_bridge) and the caller's arguments arrive in
-# R as command-line strings, so an argument can never be read as R code. A Python int or float
-# arrives as an R number and anything else as an R string, as the repr()-built calls gave.
-_R_ECHO = 'a <- commandArgs(trailingOnly = TRUE); cat(a[1], "called with args:", paste(a[-1], collapse = " "), "\\n")'
-_R_CALL = (
-    "a <- commandArgs(trailingOnly = TRUE); "
-    'v <- lapply(a[-1], function(x) if (startsWith(x, "n:")) as.numeric(substring(x, 3)) else substring(x, 3)); '
-    "result <- do.call(match.fun(a[1]), v); print(result)"
-)
-
-
-def _r_arg(a: Any) -> str:
-    """One R bridge argument as tagged text: n: for a number, s: for everything else."""
-    if isinstance(a, int | float) and not isinstance(a, bool):
-        return f"n:{a!r}"
-    return f"s:{a}"
+def _r_description(spec: Any, native: bool = False) -> str:
+    if spec.label:
+        return spec.label
+    pkg, name = spec.fn.split("::")
+    fixed = ", ".join(f"{k} = {v!r}" for k, v in spec.fixed.items()).replace("True", "TRUE").replace("False", "FALSE")
+    shown = name if pkg in ("base", "stats", "utils") else spec.fn
+    if native:
+        return f"morie native, checked against R {shown}({fixed})"
+    return f"R {shown}({fixed})"
 
 
 def _register_r_bridge() -> int:
-    """Register ~80 R bridge commands that call R via subprocess."""
+    """Register the r_* commands, which call real R functions through morie.r_bridge."""
+    from morie import r_bridge
+
     count = 0
+    natives = r_bridge.native_commands()
+    for cmd_name, spec in r_bridge.SPECS.items():
 
-    r_commands = {
-        # Statistical tests
-        "r_ttest": ("R t.test()", "r_ttest(x, mu)"),
-        "r_ttest2": ("R two-sample t.test()", "r_ttest2(x, y)"),
-        "r_paired_t": ("R paired t.test()", "r_paired_t(x, y)"),
-        "r_wilcox": ("R wilcox.test()", "r_wilcox(x, y)"),
-        "r_anova": ("R aov()", "r_anova(formula, data)"),
-        "r_kruskal": ("R kruskal.test()", "r_kruskal(formula, data)"),
-        "r_chisq": ("R chisq.test()", "r_chisq(x, y)"),
-        "r_fisher": ("R fisher.test()", "r_fisher(x, y)"),
-        "r_shapiro": ("R shapiro.test()", "r_shapiro(x)"),
-        "r_ks": ("R ks.test()", "r_ks(x, y)"),
-        "r_cor": ("R cor.test()", "r_cor(x, y, method)"),
-        "r_mcnemar": ("R mcnemar.test()", "r_mcnemar(x)"),
-        "r_bartlett": ("R bartlett.test()", "r_bartlett(formula, data)"),
-        "r_levene": ("R car::leveneTest()", "r_levene(formula, data)"),
-        "r_friedman": ("R friedman.test()", "r_friedman(formula, data)"),
-        # Regression
-        "r_lm": ("R lm()", "r_lm(formula, data)"),
-        "r_glm": ("R glm()", "r_glm(formula, data, family)"),
-        "r_logistic": ("R glm(family=binomial)", "r_logistic(formula, data)"),
-        "r_poisson": ("R glm(family=poisson)", "r_poisson(formula, data)"),
-        "r_nls": ("R nls()", "r_nls(formula, data, start)"),
-        "r_lme": ("R nlme::lme()", "r_lme(formula, data, random)"),
-        "r_lmer": ("R lme4::lmer()", "r_lmer(formula, data)"),
-        "r_glmer": ("R lme4::glmer()", "r_glmer(formula, data, family)"),
-        "r_gam": ("R mgcv::gam()", "r_gam(formula, data)"),
-        "r_quantreg": ("R quantreg::rq()", "r_quantreg(formula, data, tau)"),
-        "r_robust": ("R MASS::rlm()", "r_robust(formula, data)"),
-        # Survival
-        "r_surv": ("R survival::Surv()", "r_surv(time, event)"),
-        "r_survfit": ("R survival::survfit()", "r_survfit(formula, data)"),
-        "r_coxph": ("R survival::coxph()", "r_coxph(formula, data)"),
-        "r_survdiff": ("R survival::survdiff()", "r_survdiff(formula, data)"),
-        "r_aft": ("R survival::survreg()", "r_aft(formula, data, dist)"),
-        # Causal
-        "r_matchit": ("R MatchIt::matchit()", "r_matchit(formula, data, method)"),
-        "r_ipw": ("R ipw::ipwpoint()", "r_ipw(formula, data)"),
-        "r_aipw": ("R AIPW::AIPW()", "r_aipw(y, a, w)"),
-        "r_dml": ("R DoubleML::DoubleMLPLR()", "r_dml(data, y, d, x)"),
-        "r_irm": ("R DoubleML::DoubleMLIRM()", "r_irm(data, y, d, x)"),
-        "r_didR": ("R did::att_gt()", "r_didR(formula, data, gname, tname)"),
-        "r_rdrobust": ("R rdrobust::rdrobust()", "r_rdrobust(y, x, c)"),
-        "r_ivreg": ("R ivreg::ivreg()", "r_ivreg(formula, data)"),
-        "r_synth": ("R Synth::synth()", "r_synth(data)"),
-        # Multiple testing
-        "r_p_adjust": ("R p.adjust()", "r_p_adjust(p, method)"),
-        # Diagnostics
-        "r_vif": ("R car::vif()", "r_vif(model)"),
-        "r_durbinwatson": ("R car::durbinWatsonTest()", "r_durbinwatson(model)"),
-        "r_bptest": ("R lmtest::bptest()", "r_bptest(model)"),
-        "r_resettest": ("R lmtest::resettest()", "r_resettest(model)"),
-        # Effect sizes
-        "r_cohens_d": ("R effectsize::cohens_d()", "r_cohens_d(x, y)"),
-        "r_hedges_g": ("R effectsize::hedges_g()", "r_hedges_g(x, y)"),
-        "r_eta_sq": ("R effectsize::eta_squared()", "r_eta_sq(model)"),
-        "r_cramers_v": ("R effectsize::cramers_v()", "r_cramers_v(x)"),
-        # Power
-        "r_power_t": ("R pwr::pwr.t.test()", "r_power_t(d, n, sig, power)"),
-        "r_power_anova": ("R pwr::pwr.anova.test()", "r_power_anova(k, n, f, sig)"),
-        "r_power_chisq": ("R pwr::pwr.chisq.test()", "r_power_chisq(w, N, df, sig)"),
-        "r_power_prop": ("R pwr::pwr.2p.test()", "r_power_prop(h, n, sig)"),
-        # Tables
-        "r_table1": ("R tableone::CreateTableOne()", "r_table1(data, vars, strata)"),
-        "r_gtsummary": ("R gtsummary::tbl_summary()", "r_gtsummary(data, by)"),
-        "r_stargazer": ("R stargazer::stargazer()", "r_stargazer(model)"),
-        # Missing
-        "r_mice": ("R mice::mice()", "r_mice(data, m, method)"),
-        "r_amelia": ("R Amelia::amelia()", "r_amelia(data, m)"),
-        "r_naniar": ("R naniar::vis_miss()", "r_naniar(data)"),
-        # Visualization
-        "r_ggplot": ("R ggplot2 wrapper", "r_ggplot(data, aes)"),
-        "r_ggsurvplot": ("R survminer::ggsurvplot()", "r_ggsurvplot(fit, data)"),
-        "r_forestplot": ("R forestplot::forestplot()", "r_forestplot(data)"),
-        # Weights
-        "r_svydesign": ("R survey::svydesign()", "r_svydesign(ids, weights, data)"),
-        "r_svymean": ("R survey::svymean()", "r_svymean(formula, design)"),
-        "r_svytotal": ("R survey::svytotal()", "r_svytotal(formula, design)"),
-        "r_svyglm": ("R survey::svyglm()", "r_svyglm(formula, design, family)"),
-        "r_calibrate": ("R survey::calibrate()", "r_calibrate(design, formula, pop)"),
-        "r_rake": ("R survey::rake()", "r_rake(design, sample, population)"),
-        # Bootstrap
-        "r_boot": ("R boot::boot()", "r_boot(data, statistic, R)"),
-        "r_boot_ci": ("R boot::boot.ci()", "r_boot_ci(boot_obj, type)"),
-        # Meta-analysis
-        "r_metafor": ("R metafor::rma()", "r_metafor(yi, vi, method)"),
-        "r_meta_bin": ("R meta::metabin()", "r_meta_bin(event_e, n_e, event_c, n_c)"),
-        # Misc
-        "r_summary": ("R summary()", "r_summary(obj)"),
-        "r_str": ("R str()", "r_str(obj)"),
-        "r_head": ("R head()", "r_head(data, n)"),
-        "r_tail": ("R tail()", "r_tail(data, n)"),
-        "r_dim": ("R dim()", "r_dim(data)"),
-        "r_names": ("R names()", "r_names(data)"),
-        "r_class": ("R class()", "r_class(obj)"),
-    }
-
-    for cmd_name, (desc, usage) in r_commands.items():
-
-        def _make_r_stat(cn: str, d: str) -> Callable:
+        def _make_r_stat(cn: str) -> Callable:
             def handler(parts: list[str], log: Any, store: Callable) -> None:
-                import shutil
-                import subprocess
-
-                if not shutil.which("Rscript"):
-                    log.write("[red]R not found. Install R to use R bridge commands.[/red]")
-                    return
-                r_func = cn.replace("r_", "")
                 try:
-                    # the R source is a constant; the function name and the arguments reach R as data
-                    out = subprocess.run(
-                        ["Rscript", "-e", _R_ECHO, r_func, *(str(a) for a in parts[1:])],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                    )
-                    if out.stdout:
-                        log.write(out.stdout.strip())
-                    if out.stderr:
-                        log.write(f"[dim]{out.stderr.strip()}[/dim]")
+                    args, kwargs = r_bridge.parse_words(parts[1:])
+                    out = r_bridge.call(cn, *args, **kwargs)
+                except r_bridge.RBridgeError as e:
+                    log.write(f"[red]{e}[/red]")
+                    return
                 except Exception as e:
                     log.write(f"[red]R error: {e}[/red]")
+                    return
+                log.write(out.rstrip())
+                store(out)
 
             return handler
 
-        def _make_r_repl(cn: str, desc: str) -> Callable:
+        def _make_r_repl(cn: str, desc: str, usage: str) -> Callable:
             def handler(*args: Any, **kwargs: Any) -> str:
-                import shutil
-                import subprocess
-
-                if not shutil.which("Rscript"):
-                    raise RuntimeError("R not found")
-                r_func = cn.replace("r_", "")
-                # the R source is a constant; the function name and the arguments reach R as data
-                out = subprocess.run(
-                    ["Rscript", "-e", _R_CALL, r_func, *(_r_arg(a) for a in args)],
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                )
-                if out.returncode != 0:
-                    raise RuntimeError(out.stderr)
-                return out.stdout
+                return r_bridge.call(cn, *args, **kwargs)
 
             handler.__name__ = cn
-            handler.__doc__ = f"R bridge: {desc}"
+            handler.__doc__ = f"R bridge: {desc}\n\nUsage: {usage}"
             return handler
 
+        desc = _r_description(spec, cmd_name in natives)
         register(
             StatCommand(
                 name=cmd_name,
                 category="R Bridge",
-                usage=usage,
+                usage=spec.usage,
                 description=desc,
-                handler_stat=_make_r_stat(cmd_name, desc),
-                handler_repl=_make_r_repl(cmd_name, desc),
+                handler_stat=_make_r_stat(cmd_name),
+                handler_repl=_make_r_repl(cmd_name, desc, spec.usage),
                 aliases=[],
                 is_r_bridge=True,
             )

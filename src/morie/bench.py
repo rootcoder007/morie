@@ -246,9 +246,9 @@ def capture_system_info() -> SystemInfo:
     total_mem_gb = 0.0
     try:
         if sys.platform == "darwin":
-            import subprocess
+            from ._interactive import launcher
 
-            result = subprocess.run(
+            result = launcher("Reading the memory size", offer=False).run(
                 ["sysctl", "-n", "hw.memsize"],
                 capture_output=True,
                 text=True,

@@ -37,7 +37,7 @@ opt-in, and tests/tutorials work against bundled toy fixtures.
 from __future__ import annotations
 
 import os
-import platform
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -58,11 +58,10 @@ def _user_data_dir() -> Path:
     platformdirs computes for these three platforms). Either way, this function does
     NOT create the directory — it only returns the path.
     """
-    system = platform.system()
     home = Path.home()
-    if system == "Darwin":
+    if sys.platform == "darwin":
         return home / "Library" / "Application Support" / "morie"
-    if system == "Windows":
+    if sys.platform == "win32":
         base = _env("APPDATA")
         return Path(base) / "morie" if base else home / "AppData" / "Roaming" / "morie"
     # Linux / BSD / other unix

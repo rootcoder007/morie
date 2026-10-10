@@ -106,14 +106,15 @@ def render_figures() -> dict[str, str]:
     """Re-render all paper-205 figures from existing JSON outputs.
     Tries R/ggplot first, falls back to matplotlib if R unavailable."""
     _step("Render paper-205 figures (R/ggplot first)")
-    import subprocess
+    from ._interactive import launcher
 
     result = {}
     r_script = PROJECT / "r-package/morie/R/viz_ggplot.R"
     if r_script.exists():
         try:
-            cmd = ["Rscript", "-e", f'source("{r_script}"); morie_render_all()']
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=PROJECT)
+            r = launcher("Rendering figures with R").r_expr(
+                f'source("{r_script}"); morie_render_all()', capture_output=True, text=True, timeout=300, cwd=PROJECT
+            )
             print(r.stdout[-2000:])
             if r.returncode == 0:
                 result["r_render"] = "ok"

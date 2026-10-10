@@ -497,7 +497,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Execute code inline, from stdin, or create-and-open (co) a file",
     )
     exec_cmd.add_argument("code", nargs="?", default=None, help="Code string, or 'co' for create-and-open mode")
-    exec_cmd.add_argument("-c", dest="code_opt", default=None, metavar="CODE", help="Code string, as python -c")
+    exec_cmd.add_argument(
+        "-c", dest="code_opt", default=None, metavar="CODE", help="Code given on the command line instead of in a file"
+    )
     exec_cmd.add_argument("filename", nargs="?", default=None, help="Filename for 'co' mode (e.g. test.py)")
     exec_cmd.add_argument("--lang", choices=["python", "r"], default="python", help="Language (default: python)")
     exec_cmd.add_argument("--file", default=None, dest="exec_file", help="Read code from file instead")
@@ -701,8 +703,8 @@ def build_parser() -> argparse.ArgumentParser:
     template_cmd.add_argument("--force", action="store_true", help="replace an existing output file")
 
     # ── pull: one-line CLI shortcuts to named morie.datasets loaders ───
-    # This is the non-coder entry point.  Users never have to write
-    # `python -c "import morie.datasets ..."` — they say
+    # This is the non-coder entry point.  Users never have to write a Python
+    # one-liner that imports morie.datasets; they say
     #   morie pull tps-major --year 2024 --out file.csv
     # and a DataFrame lands on disk.
     pull_cmd = subparsers.add_parser(
@@ -2527,7 +2529,7 @@ def _main_impl() -> int:
 
 def _handle_exec(args: argparse.Namespace) -> int:
     # TRUST BOUNDARY: 'morie exec' runs code the LOCAL USER supplies on
-    # their own machine -- same trust model as `python -c` / `Rscript -e`.
+    # their own machine -- the same trust model as running a script they wrote.
     # It never executes remote or network-supplied code. Set
     # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
 
@@ -2914,10 +2916,16 @@ def _handle_percysuits(args: argparse.Namespace) -> int:
 
 def _percysuits_get_installed_ssh(ssh_target: str):
     import json as _json
-    import subprocess
+
+    from ._interactive import LayerMissingError, launcher
 
     try:
-        result = subprocess.run(
+        sp = launcher("Reaching Ollama over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return None, None
+    try:
+        result = sp.run(
             ["ssh", ssh_target, "curl -s http://localhost:11434/api/tags"],
             capture_output=True,
             text=True,
@@ -2947,17 +2955,22 @@ def _percysuits_get_installed_ssh(ssh_target: str):
 
 
 def _percysuits_pull_ssh(ssh_target: str, to_pull: list) -> int:
-    import subprocess
+    from ._interactive import LayerMissingError, launcher
 
+    try:
+        sp = launcher("Pulling models over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return 1
     pulled = 0
     failed = []
     for i, (name, size, _cat, _desc) in enumerate(to_pull, 1):
         print(f"[{i}/{len(to_pull)}] {name} ({size}) ...")
         try:
-            proc = subprocess.Popen(
+            proc = sp.Popen(
                 ["ssh", ssh_target, f"ollama pull {name}"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                stdout=sp.PIPE,
+                stderr=sp.STDOUT,
                 text=True,
             )
             for line in proc.stdout:

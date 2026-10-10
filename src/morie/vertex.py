@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -79,15 +78,18 @@ def _access_token(cfg: VertexConfig) -> str:
     now = time.time()
     if _TOKEN_CACHE["token"] and now < _TOKEN_CACHE["expires_at"]:
         return _TOKEN_CACHE["token"]
+    from ._interactive import launcher
+
+    sp = launcher("Getting a Google Cloud access token (gcloud)")
     try:
-        out = subprocess.run(
+        out = sp.run(
             [cfg.gcloud_path, "auth", "print-access-token"],
             check=True,
             capture_output=True,
             text=True,
             timeout=30,
         ).stdout.strip()
-    except subprocess.CalledProcessError as exc:
+    except sp.CalledProcessError as exc:
         raise RuntimeError(f"gcloud print-access-token failed: {exc.stderr.strip()}") from exc
     except FileNotFoundError as exc:
         raise RuntimeError(f"gcloud not found at {cfg.gcloud_path}. Set GCLOUD_PATH env var.") from exc

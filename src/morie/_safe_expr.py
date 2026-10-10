@@ -215,7 +215,7 @@ def _capped_mult(a, b):
 
 class _Evaluator:
     """Walk the validated tree and compute it: the same operators and node types
-    :func:`safe_eval_expr` admits, with no call into the interpreter's eval()."""
+    :func:`safe_eval_expr` admits, without handing the text to the interpreter."""
 
     _BIN = {
         ast.Add: lambda a, b: a + b,

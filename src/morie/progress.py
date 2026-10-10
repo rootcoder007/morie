@@ -51,12 +51,12 @@ class ModuleResult:
 
 
 class PipelineTracker:
-    """Execute analysis modules with live progress display.
+    """Run analysis modules with live progress display.
 
     Parameters
     ----------
     module_names : list[str]
-        Module names to execute (must be keys in ``MODULE_SPECS``).
+        Module names to run (must be keys in ``MODULE_SPECS``).
     cpads_csv : str
         Path to the CPADS CSV input file.
     output_dir : str | None
@@ -90,7 +90,7 @@ class PipelineTracker:
     # ------------------------------------------------------------------
 
     def run(self) -> list[ModuleResult]:
-        """Execute all modules, returning a list of :class:`ModuleResult`."""
+        """Run all modules, returning a list of :class:`ModuleResult`."""
         self.results = [
             ModuleResult(
                 name=name,

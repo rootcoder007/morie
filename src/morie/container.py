@@ -31,7 +31,6 @@ import logging
 import os
 import platform
 import shutil
-import subprocess
 import sys
 import textwrap
 import time
@@ -195,15 +194,18 @@ def _run_docker(
     run_env = {**os.environ, **(env or {})}
     start = time.monotonic()
 
+    from ._interactive import launcher
+
+    sp = launcher("Running Docker")
     try:
-        result = subprocess.run(
+        result = sp.run(
             cmd,
             capture_output=capture,
             text=True,
             timeout=timeout,
             env=run_env,
         )
-    except subprocess.TimeoutExpired:
+    except sp.TimeoutExpired:
         elapsed = time.monotonic() - start
         return DockerResult(
             command=" ".join(cmd),
@@ -631,7 +633,7 @@ def run_container(
     # Environment variables
     if env_vars:
         for k, v in env_vars.items():
-            cmd.extend(["-e", f"{k}={v}"])
+            cmd.extend(["--env", f"{k}={v}"])
 
     # Port mappings
     if ports:
@@ -699,7 +701,7 @@ def exec_in_container(
         cmd.extend(["-u", user])
     if env_vars:
         for k, v in env_vars.items():
-            cmd.extend(["-e", f"{k}={v}"])
+            cmd.extend(["--env", f"{k}={v}"])
 
     cmd.append(container)
     cmd.extend(command.split())
@@ -942,29 +944,27 @@ def health_check(
     checks: list[dict[str, Any]] = []
 
     # Python
-    py = exec_in_container(container, 'python -c "import sys; print(sys.version)"')
+    # exec_in_container splits the command on spaces (no shell), so each probe is a plain argument list
+    py = exec_in_container(container, "python --version")
     python_ok = py.success
     python_version = py.stdout.strip() if py.success else py.stderr.strip()
     checks.append({"name": "python", "ok": python_ok, "detail": python_version})
 
     # R
-    rv = exec_in_container(container, 'R --slave -e "cat(R.version.string)"')
+    rv = exec_in_container(container, "R --version")
     r_ok = rv.success
-    r_version = rv.stdout.strip() if rv.success else "not available"
+    r_version = rv.stdout.strip().splitlines()[0] if rv.success and rv.stdout.strip() else "not available"
     checks.append({"name": "r", "ok": r_ok, "detail": r_version})
 
     # morie importable
-    morie_check = exec_in_container(
-        container,
-        'python -c "import morie; print(morie.__version__)"',
-    )
+    morie_check = exec_in_container(container, "python -m morie.runner --version")
     morie_importable = morie_check.success
     morie_version = morie_check.stdout.strip() if morie_check.success else "not importable"
     checks.append({"name": "morie", "ok": morie_importable, "detail": morie_version})
 
     # Data directory
-    data_check = exec_in_container(container, f"test -d {data_path} && echo ok")
-    data_accessible = data_check.success and "ok" in data_check.stdout
+    data_check = exec_in_container(container, f"test -d {data_path}")
+    data_accessible = data_check.success
     checks.append({"name": "data_dir", "ok": data_accessible, "detail": data_path})
 
     return HealthCheckResult(
@@ -1001,15 +1001,17 @@ def environment_diff(
 
     # Host info
     host_python = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-    host_os = f"{platform.system()} {platform.release()}"
+    host_os = platform.platform(terse=True)
 
-    r_result = subprocess.run(
-        ["R", "--slave", "-e", "cat(R.version.string)"],
-        capture_output=True,
-        text=True,
-        timeout=15,
-    )
-    host_r = r_result.stdout.strip() if r_result.returncode == 0 else "not available"
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        r_result = launcher("Reading the R version", offer=False).r_expr(
+            "cat(R.version.string)", rscript="R", options=("--slave",), capture_output=True, text=True, timeout=15
+        )
+        host_r = r_result.stdout.strip() if r_result.returncode == 0 else "not available"
+    except (LayerMissingError, OSError):
+        host_r = "not available"
 
     host_packages: dict[str, str] = {}
     for dist in importlib.metadata.distributions():
@@ -1019,14 +1021,11 @@ def environment_diff(
             host_packages[name.lower()] = version
 
     # Container info
-    py = exec_in_container(
-        container,
-        "python -c \"import sys; v=sys.version_info; print(f'{v.major}.{v.minor}.{v.micro}')\"",
-    )
-    container_python = py.stdout.strip() if py.success else "unknown"
+    py = exec_in_container(container, "python --version")
+    container_python = py.stdout.strip().removeprefix("Python ").strip() if py.success else "unknown"
 
-    rv = exec_in_container(container, 'R --slave -e "cat(R.version.string)"')
-    container_r = rv.stdout.strip() if rv.success else "not available"
+    rv = exec_in_container(container, "R --version")
+    container_r = rv.stdout.strip().splitlines()[0] if rv.success and rv.stdout.strip() else "not available"
 
     os_check = exec_in_container(container, "cat /etc/os-release")
     container_os = "unknown"
@@ -1758,7 +1757,8 @@ def generate_dockerfile(
                 && rm -rf /var/lib/apt/lists/*
 
             # Install R packages
-            RUN R -e "install.packages(c('testthat', 'roxygen2', 'devtools', 'survey', 'MatchIt', 'WeightIt'), repos='https://cloud.r-project.org')"
+            RUN printf '%s\\n' "install.packages(c('testthat', 'roxygen2', 'devtools', 'survey', 'MatchIt', 'WeightIt'), repos='https://cloud.r-project.org')" > /tmp/r-deps.R \\
+                && Rscript /tmp/r-deps.R && rm /tmp/r-deps.R
         """)
 
     quarto_block = ""
