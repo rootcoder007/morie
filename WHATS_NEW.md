@@ -9,6 +9,24 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Data from rmoriedata (the SIU corpus and the other bundled tables): morie now fetches the
+  newest rmoriedata release instead of a fixed 0.3.4, which CRAN never carried, so the tables were
+  unreachable wherever GitHub archives were. It asks r-universe, the GitHub releases and CRAN for
+  their current version and takes the highest (never below 0.3.6), downloading it from
+  r-universe or the GitHub release first and CRAN last. The answer is kept for a day; offline, the
+  newest copy already downloaded is used; if the newest cannot be fetched at all, CRAN's older
+  release is used with a warning. Downloads now send a morie user agent, which r-universe's file
+  host requires.
+* `scripts/smoke/smoke.py` covers `morie config` and `morie help`, puts the interactive layer
+  back after testing its removal (the cases after it launch an editor and R), and checks all six
+  layer files.
+
+* The R package's estimators all run on morie's own code now: ROC/AUC, CART splits, Type II/III
+  ANOVA, the CV searches, marginal effects, causal impact, cointegration and stationarity
+  tests, regime switching, q-values, DBSCAN and the others that called pROC, rpart, car,
+  caret, emmeans, marginaleffects, CausalImpact, urca, MSwM, qvalue, poolr, dbscan and similar
+  packages, each checked against that package in the tests (see r-package/morie/NEWS.md).
+
 * `r_lmer`, `r_lme`, `r_glmer`, `r_gam`, `r_quantreg` and `r_nls` now run morie's own R
   estimators (`morie_lmm`, `morie_glmm`, `morie_gam`, `morie_rq`, `morie_nls`, new in the R
   packages), so 68 of the 79 R bridge commands run morie code; lme4, nlme, mgcv and quantreg

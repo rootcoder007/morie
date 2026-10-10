@@ -105,13 +105,85 @@ def _fake_rmoriedata_tarball() -> bytes:
     return buf.getvalue()
 
 
-def test_rmoriedata_tables_are_read_from_the_cran_tarball(monkeypatch, tmp_path):
+def test_rmoriedata_tries_the_github_release_and_cran_when_r_universe_lacks_the_version(monkeypatch, tmp_path):
+    from urllib.error import HTTPError
+
     db = _isolate(monkeypatch, tmp_path)
+    monkeypatch.setattr(mdata, "_rmoriedata_latest_version", lambda timeout=20: "0.3.9")
     calls = []
 
     def fake_urlopen(url, timeout=30):
+        url = getattr(url, "full_url", url)
         calls.append(url)
-        assert url == mdata.RMORIEDATA_TARBALL
+        if "cran.r-project.org" not in url:
+            raise HTTPError(url, 404, "Not Found", None, None)
+        return _Reply(_fake_rmoriedata_tarball())
+
+    monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
+    assert len(mdata.load_dataset("siu", db_path=db)) == 2
+    assert calls == list(mdata._rmoriedata_sources("0.3.9"))  # r-universe, GitHub release, then CRAN
+    assert "r-universe.dev" in calls[0] and "github.com" in calls[1] and "cran" in calls[2]
+
+
+def test_cran_older_release_is_the_last_resort_with_a_warning(monkeypatch, tmp_path):
+    from urllib.error import HTTPError
+
+    db = _isolate(monkeypatch, tmp_path)
+    monkeypatch.setattr(mdata, "_rmoriedata_latest_version", lambda timeout=20: "0.3.9")
+    monkeypatch.setattr(mdata, "_cran_rmoriedata_version", lambda timeout=20: "0.3.3")
+
+    def fake_urlopen(url, timeout=30):
+        url = getattr(url, "full_url", url)
+        if url.endswith("rmoriedata_0.3.3.tar.gz") and "cran" in url:
+            return _Reply(_fake_rmoriedata_tarball())
+        raise HTTPError(url, 404, "Not Found", None, None)
+
+    monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
+    with pytest.warns(UserWarning, match="CRAN's older 0.3.3"):
+        assert len(mdata.load_dataset("siu", db_path=db)) == 2
+
+
+def test_the_newest_rmoriedata_any_source_reports_is_used(monkeypatch):
+    bodies = {
+        mdata.RMORIEDATA_LATEST_SOURCES[0]: b"Package: rmoriedata\nVersion: 0.3.7\n\nPackage: other\nVersion: 9.9.9\n",
+        mdata.RMORIEDATA_LATEST_SOURCES[1]: b'{"tag_name": "v0.3.10"}',
+        mdata.RMORIEDATA_LATEST_SOURCES[2]: b"Package: rmoriedata\nVersion: 0.3.3\n",
+    }
+    monkeypatch.setattr("morie.data.urlopen", lambda req, timeout=20: _Reply(bodies[req.full_url]))
+    assert mdata._rmoriedata_latest_version() == "0.3.10"  # compared as numbers, not text
+
+    def offline(url, timeout=20):
+        raise OSError("no network")
+
+    monkeypatch.setattr("morie.data.urlopen", offline)
+    assert mdata._rmoriedata_latest_version() is None
+
+
+def test_the_version_check_is_kept_for_a_day_and_offline_uses_the_newest_copy(monkeypatch, tmp_path):
+    base = tmp_path / "rmoriedata"
+    asked = []
+    monkeypatch.setattr(mdata, "_rmoriedata_latest_version", lambda timeout=20: asked.append(1) or "0.3.8")
+    assert mdata._rmoriedata_version(base) == "0.3.8"
+    assert mdata._rmoriedata_version(base) == "0.3.8"
+    assert len(asked) == 1  # the second call read the day-old answer
+    (base / "latest.json").unlink()
+    for v in ("0.3.6", "0.3.12"):
+        (base / v / "extdata").mkdir(parents=True)
+        (base / v / "extdata" / "_catalog.csv").write_text("slug\n")
+    monkeypatch.setattr(mdata, "_rmoriedata_latest_version", lambda timeout=20: None)
+    assert mdata._rmoriedata_version(base) == "0.3.12"
+    assert mdata._rmoriedata_version(tmp_path / "empty") == mdata.RMORIEDATA_MIN_VERSION
+
+
+def test_rmoriedata_tables_are_read_from_the_newest_tarball(monkeypatch, tmp_path):
+    db = _isolate(monkeypatch, tmp_path)
+    monkeypatch.setattr(mdata, "_rmoriedata_latest_version", lambda timeout=20: "0.3.6")
+    calls = []
+
+    def fake_urlopen(url, timeout=30):
+        url = getattr(url, "full_url", url)
+        calls.append(url)
+        assert url == mdata._rmoriedata_sources("0.3.6")[0]
         return _Reply(_fake_rmoriedata_tarball())
 
     monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
@@ -120,7 +192,7 @@ def test_rmoriedata_tables_are_read_from_the_cran_tarball(monkeypatch, tmp_path)
     df = mdata.load_dataset("siu", db_path=db)
     assert len(df) == 2
     assert list(df.columns) == ["case_number", "_language", "officer_count"]  # schema names, not the mangled header
-    assert calls == [mdata.RMORIEDATA_TARBALL]  # fetched once, then served from the extracted copy
+    assert calls == [mdata._rmoriedata_sources("0.3.6")[0]]  # fetched once, then served from the extracted copy
     with pytest.raises(ValueError, match="dictionary"):
         mdata.load_rmoriedata("tps_dictionary")
     with pytest.raises(KeyError, match="siu_directors_reports"):
