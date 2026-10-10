@@ -344,3 +344,29 @@ def test_ckan_resource_without_a_datastore_is_downloaded_as_a_file(monkeypatch, 
     assert list(bt.columns) == ["PUMF_ID", "BWGT1"] and len(bt) == 3
     assert sum(u.endswith("CSV.zip") for u in calls) == 1  # one download serves both keys
     assert len(mdata.load_dataset("cu20mf", db_path=db)) == 2  # cached under the table name
+
+
+def test_a_ckan_page_cut_off_mid_transfer_is_fetched_again(monkeypatch, capsys):
+    from http.client import IncompleteRead
+
+    bodies = [
+        b'{"result": {"records": [{"a": 1}], "tot',
+        IncompleteRead(b"partial"),
+        b'{"result": {"records": [], "total": 1}}',
+    ]
+    calls = []
+
+    def fake_urlopen(url, timeout=30):
+        calls.append(url)
+        body = bodies[len(calls) - 1]
+        if isinstance(body, Exception):
+            raise body
+        return _Reply(body)
+
+    monkeypatch.setattr("morie.data.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    out = mdata._urlopen_json_with_retry("https://ckan.example/api", 30, label="ocp21 (CKAN datastore, page 1)")
+    assert out == {"result": {"records": [], "total": 1}}
+    assert len(calls) == 3
+    err = capsys.readouterr().err
+    assert "JSONDecodeError" in err and "IncompleteRead" in err
