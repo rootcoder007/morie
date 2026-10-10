@@ -427,7 +427,14 @@ if (identical(recipe, "native")) {
   natives <- new.env(parent = globalenv())
   sys.source(call[5], envir = natives)
   args <- read_args(file.path(d, "args"))
-  res <- tryCatch(natives$NATIVE[[call[4]]](args, asNamespace(call[3])), error = function(e) fail(conditionMessage(e)))
+  res <- tryCatch(natives$NATIVE[[call[4]]](args, asNamespace(call[3])), error = function(e) {
+    msg <- conditionMessage(e)
+    # an installed R package older than this morie lacks the function the adapter calls
+    if (grepl("non-function", msg, fixed = TRUE))
+      msg <- sprintf("the installed R package '%s' (%s) lacks a function this command uses; update it to the version matching this morie",
+                     call[3], format(utils::packageVersion(call[3])))
+    fail(msg)
+  })
   if (is.list(res) && is.null(oldClass(res)) && length(names(res))) {
     # a plain list: one line per short value, a heading above each table or longer value
     for (n in names(res)) {

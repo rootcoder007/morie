@@ -25,14 +25,14 @@ def _morie_r_package():
             "Rscript",
             "--vanilla",
             "-e",
-            'for (p in c("morie", "rmorie")) if (requireNamespace(p, quietly = TRUE)) cat(p)',
+            'for (p in c("morie", "rmorie")) if (requireNamespace(p, quietly = TRUE)) { cat(p); break }',
         ],
         capture_output=True,
         text=True,
         timeout=120,
         check=False,
     )
-    return (probe.stdout.strip()[:6] or None) if probe.returncode == 0 else None
+    return (probe.stdout.strip() or None) if probe.returncode == 0 else None
 
 
 PKG = _morie_r_package()
