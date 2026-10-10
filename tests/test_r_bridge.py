@@ -100,7 +100,9 @@ def test_a_data_frame_and_formula_reach_r_as_data():
 @needs_r
 def test_arguments_never_run_as_r_code():
     out = rb.call("r_summary", 'x"); print("INJECTED')
-    assert "INJECTED" not in out and "character" in out
+    # the string arrives as one value: "Length Class Mode ... character", or from R 4.6 on
+    # "Length N.unique ... Max.nchar" with its 20 characters
+    assert "INJECTED" not in out and ("character" in out or "nchar" in out)
     assert "numeric" in rb.call("r_class", 3.5)
     assert "character" in rb.call("r_class", "3.5")
     with pytest.raises(rb.RBridgeError, match="not allowed in a formula"):

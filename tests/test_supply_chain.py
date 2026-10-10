@@ -177,7 +177,9 @@ def test_the_r_bridge_passes_arguments_as_data():
         pytest.skip("Rscript not on PATH")
     stat_commands._register_r_bridge()
     out = stat_commands.COMMAND_REGISTRY["r_summary"].handler_repl('x"); print("INJECTED')
-    assert "INJECTED" not in out and "character" in out
+    # the string arrives as one value: "Length Class Mode ... character", or from R 4.6 on
+    # "Length N.unique ... Max.nchar" with its 20 characters
+    assert "INJECTED" not in out and ("character" in out or "nchar" in out)
     # a Python number arrives as an R number, a string as an R string (what the repr()-built calls gave)
     assert "numeric" in stat_commands.COMMAND_REGISTRY["r_class"].handler_repl(3.5)
     assert "character" in stat_commands.COMMAND_REGISTRY["r_class"].handler_repl("3.5")
