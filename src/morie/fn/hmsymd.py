@@ -246,7 +246,7 @@ def to_string(t):
 
 
 def evaluate(t, env):
-    """Evaluate a tree against ``env`` (a name -> value mapping). No ``eval``."""
+    """Evaluate a tree against ``env`` (a name -> value mapping). No ``evaluation``."""
     k = t[0]
     if k == "num":
         return float(t[1])

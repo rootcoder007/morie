@@ -4,7 +4,7 @@ The R arms used to call jsonlite for JSON. That was the last runtime
 dependency doing real work, and it is gone: aaa_helpers_s03.R carries a
 codec covering the four functions that were in use. This module is the
 rest of it -- jsonlite's actual surface, which is much wider than four
-functions, in both languages so the mapping can be checked by execution
+functions, in both languages so the mapping can be checked by run
 rather than asserted.
 
 What makes this more than "call json.dumps" is that jsonlite is not a JSON

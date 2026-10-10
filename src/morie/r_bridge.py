@@ -610,13 +610,17 @@ def call(command: str, *args: Any, timeout: float | None = None, **kwargs: Any) 
         timeout = float(os.environ.get("MORIE_R_TIMEOUT", "300"))
     with tempfile.TemporaryDirectory(prefix="morie-r-") as tmp:
         root = Path(tmp)
-        native = command in native_commands()
-        pkg = _morie_r_package() if native or spec.fn.startswith(MORIE_R) else ""
-        _write_lines(root / "call.txt", [spec.fn, "native" if native else spec.recipe, pkg, command, str(_NATIVES_R)])
+        # arguments first: a formula that is not allowed is refused before anything else happens
         writer = _ArgWriter(root / "args")
         for name, value in bind_arguments(spec, args, kwargs):
             writer.add(name, value)
         writer.close()
+        native = command in native_commands()
+        try:
+            pkg = _morie_r_package() if native or spec.fn.startswith(MORIE_R) else ""
+        except RBridgeError as e:
+            raise RBridgeError(f"{command}: {e}") from e
+        _write_lines(root / "call.txt", [spec.fn, "native" if native else spec.recipe, pkg, command, str(_NATIVES_R)])
         script = root / "bridge.R"
         script.write_text(_R_SCRIPT, encoding="utf-8")
         try:

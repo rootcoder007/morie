@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """The interactive layer (polyglot REPL, agent, TUI, ``morie exec``, program launcher) for installed copies.
 
-Six modules stay out of the published wheel and sdist on purpose: five execute
+Six modules stay out of the published wheel and sdist on purpose: five run
 code that a person or a model types, and ``_launch`` starts every other program
 morie uses (R, Docker, the editor, the C compiler, pip, ssh, gcloud, quarto).
 Package scanners flag both surfaces (see ``wheel.exclude`` in pyproject.toml). ``morie interactive install`` fetches

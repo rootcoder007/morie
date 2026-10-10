@@ -40,7 +40,7 @@ __all__ = ["hierarchical_rl"]
 def hierarchical_rl(
     env, options=None, meta=None, rewards=None, gamma=0.99, alpha=0.1, Q=None, q_next=None, k_steps=None
 ):
-    """SMDP option-value backup for one executed option.
+    """SMDP option-value backup for one run option.
 
     Parameters
     ----------

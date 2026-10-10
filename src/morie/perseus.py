@@ -161,7 +161,7 @@ def ask_percy(
     """Query Perseus via the LLM provider chain.
 
     When ``use_agent=True`` (default) and Ollama is available, Perseus uses the
-    full agentic loop with 13 tools (search, execute, read/write, shell, data).
+    full agentic loop with 13 tools (search, run, read/write, shell, data).
     Falls back to simple LLM chat or static text when tools are unavailable.
 
     Returns a dict with ``mode``, ``model``, and either ``output_text`` (str)

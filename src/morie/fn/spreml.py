@@ -29,7 +29,7 @@ def schabenberger_reml_variogram(coords, z, X=None, variogram_model="exponential
     * Sec. 5.5.2 names the optimiser: "Newton-Raphson, Quasi-Newton, or some
       other suitable algorithm". The quasi-Newton branch is used, driven by
       the exact analytic gradient, so no finite-difference step enters and
-      both language arms execute the same steps.
+      both language arms run the same steps.
 
     There is no REML estimator of the mean. The text is explicit that
     beta_reml "is simply an EGLS estimator evaluated at theta_reml", which is

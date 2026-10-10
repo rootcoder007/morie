@@ -517,7 +517,7 @@ def _mle_lengthscale(X, y, nugget, kernel):
 
     Wilkinson estimates the length-scales by maximum likelihood and
     plugs them in. A coordinate search over a log-spaced grid is used
-    rather than a gradient method so that the R arm executes the same
+    rather than a gradient method so that the R arm runs the same
     arithmetic and the two agree exactly rather than approximately.
     """
     n = len(X)

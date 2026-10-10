@@ -9,6 +9,20 @@ from morie import r_bridge as rb
 needs_r = pytest.mark.skipif(shutil.which("Rscript") is None, reason="Rscript not on PATH")
 
 
+def _morie_r_installed() -> bool:
+    if shutil.which("Rscript") is None:
+        return False
+    try:
+        rb._morie_r_package()
+    except rb.RBridgeError:
+        return False
+    return True
+
+
+# commands with a native adapter run morie's own R functions: they need its R package (or rmorie)
+needs_morie_r = pytest.mark.skipif(not _morie_r_installed(), reason="morie's R package (or rmorie) not installed")
+
+
 def test_every_command_names_a_package_qualified_r_function():
     for name, spec in rb.SPECS.items():
         pkg, _, fn = spec.fn.partition("::")
@@ -62,7 +76,7 @@ def test_prompt_words_become_values(tmp_path):
     assert kwargs == {"method": "BH"}
 
 
-@needs_r
+@needs_morie_r
 def test_r_commands_give_the_numbers_of_the_r_function():
     # morie's native when one is installed (t = 1.45048, df = 4, p = 0.2205, as stats::t.test), else R's
     out = rb.call("r_ttest", [5.1, 4.9, 5.6, 5.0, 5.3], 5)
@@ -72,7 +86,7 @@ def test_r_commands_give_the_numbers_of_the_r_function():
     assert "0.04" in rb.call("r_p_adjust", [0.01, 0.02, 0.04, 0.3], "BH")
 
 
-@needs_r
+@needs_morie_r
 def test_a_data_frame_and_formula_reach_r_as_data():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"y": [1.0, 2.1, 2.9, 4.2, 5.1, 5.8], "x": [1, 2, 3, 4, 5, 6], "g": list("aabbcc")})

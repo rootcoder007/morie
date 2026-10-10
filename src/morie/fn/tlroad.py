@@ -1,5 +1,5 @@
 # morie.fn -- function file (rootcoder007/morie)
-r"""The targeted learning roadmap, as executable structure.
+r"""The targeted learning roadmap, as runnable structure.
 
 The roadmap is a sequence, and its order is the argument: (1) the data
 are a realisation of a random variable with distribution :math:`P_0`;

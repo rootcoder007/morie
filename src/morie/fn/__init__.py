@@ -233,7 +233,7 @@ def _install_fnsrc():
 
 class _MemLoader(importlib.abc.SourceLoader):
     """SourceLoader over the in-memory source dict: the import system compiles and runs the
-    module itself (no eval/exec call in this package); inspect.getsource() / describe() read
+    module itself (no evaluation/run call in this package); inspect.getsource() / describe() read
     get_data()."""
 
     def __init__(self, short, sources):

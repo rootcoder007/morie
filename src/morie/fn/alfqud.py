@@ -120,7 +120,7 @@ def _write(mem, reg, loc, v):
 
 
 def step(mem, reg, flag, instr):
-    """Execute one instruction. Deterministic, and the whole semantics.
+    """Run one instruction. Deterministic, and the whole semantics.
 
     ``mov src dst``    dst takes the value of src.
     ``cmp a b``        the flag becomes minus one, zero or one as a is

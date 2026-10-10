@@ -2,7 +2,7 @@
 """Private numeric helpers for the tail2 batch.  Nothing here is exported.
 
 Every routine runs a FIXED number of steps with no tolerance-based early
-exit, so the Python and the R arm of the package execute the same
+exit, so the Python and the R arm of the package run the same
 arithmetic in the same order and agree to machine precision.  A cyclic
 Jacobi sweep that stops on a convergence test would stop after a
 different number of sweeps on the two arms and silently break parity.

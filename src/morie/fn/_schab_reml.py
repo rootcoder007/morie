@@ -152,7 +152,7 @@ def fit_reml(coords, z, X, model="exponential", start=(0.1, None), max_iter=200,
     Sec. 5.5.2 sanctions "Newton-Raphson, Quasi-Newton, or some other
     suitable algorithm"; BFGS needs only the gradient, which is analytic
     here, so no finite-difference step enters and the two language arms
-    execute the same steps. The line search is Armijo backtracking with the
+    run the same steps. The line search is Armijo backtracking with the
     textbook constants c1 = 1e-4 and rho = 1/2 (Nocedal & Wright), fixed
     rather than tuned.
     """

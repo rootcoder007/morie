@@ -25,7 +25,7 @@ def geron_senet(x, r=16, W1=None, W2=None, seed=0):
 
     Formula: s = sigmoid(W2 ReLU(W1 GAP(x))); y = s * x
 
-    The three stages are executed literally: *squeeze* is global average
+    The three stages are run literally: *squeeze* is global average
     pooling over the spatial axes, *excitation* is the bottleneck MLP
     ``C -> C/r -> C`` with ReLU then sigmoid (delegated to
     :func:`morie.fn.hmsigm.geron_sigmoid`), and *scale* multiplies each

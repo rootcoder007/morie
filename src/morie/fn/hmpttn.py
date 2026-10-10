@@ -54,7 +54,7 @@ def geron_pytorch_tensor(x, device="cpu", dtype=None):
     x : array-like
         Data.
     device : {"cpu", "cuda", "mps"}, default "cpu"
-        Target device; only "cpu" can actually execute here.
+        Target device; only "cpu" can actually run here.
     dtype : str, optional
         Torch dtype name; defaults to float32 for floating input, as
         ``torch.tensor`` does, and to the natural integer type otherwise.

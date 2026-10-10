@@ -47,7 +47,7 @@ def _check_import(package: str) -> tuple[bool, str]:
 
 
 def _check_interactive_layer() -> tuple[bool, str]:
-    """The repl/exec/agent/edit/tui verbs need five modules the wheel leaves out."""
+    """The repl/run/agent/edit/tui verbs need five modules the wheel leaves out."""
     try:
         from . import _interactive as inter
 

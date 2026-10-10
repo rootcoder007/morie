@@ -1,7 +1,7 @@
 """Interactive chat REPL for MORIE -- Claude Code-like terminal experience.
 
 Provides a multi-turn conversational interface with streaming LLM responses,
-slash commands for module execution, and agent persona switching.  Uses only
+slash commands for module run, and agent persona switching.  Uses only
 ``rich`` (core dependency) -- does NOT require Textual.
 
 Usage::
