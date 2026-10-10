@@ -880,8 +880,8 @@ def freqz(b, a=1, worN=512, fs=None):
     return _ac.marr(wout), _ac2.carr(h)
 
 
-def group_delay(system, w=512, fs=None):
-    b, a = system
+def group_delay(ba, w=512, fs=None):
+    b, a = ba
     # numerical derivative of phase
     ws, h = freqz(b, a, worN=w, fs=None)
     wl = list(ws._flat())

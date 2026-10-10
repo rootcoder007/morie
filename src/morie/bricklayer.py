@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import importlib.util
 import shutil
-import subprocess
 import sys
 
 RUNIV = "https://rootcoder007.r-universe.dev"
@@ -118,9 +117,13 @@ def _r_eval_ok(expr: str) -> bool:
     rs = _rscript()
     if not rs:
         return False
+    from ._interactive import LayerMissingError, launcher
+
     try:
-        return subprocess.run([rs, "-e", expr], capture_output=True).returncode == 0
-    except OSError:
+        return (
+            launcher("Checking the R side", offer=False).r_expr(expr, rscript=rs, capture_output=True).returncode == 0
+        )
+    except (OSError, LayerMissingError):
         return False
 
 
@@ -198,7 +201,7 @@ def run(args) -> int:
     print("morie family status:")
     _mark(py_ok, "morie            (Python / this interpreter)")
     _mark(r_ok, "rmorie + data + bricklayer  (R / r-universe)")
-    _mark(cli_ok, "rmorie launcher  (rmorie on PATH; Rscript -e 'rmorie::install_cli()')")
+    _mark(cli_ok, "rmorie launcher  (rmorie on PATH; in R: rmorie::install_cli())")
     _mark(tc_ok, "C/C++ toolchain  (cc + c++ -- REQUIRED for the compiled core)")
 
     if not _py_backend_ok():
@@ -221,8 +224,8 @@ def run(args) -> int:
 
     if r_ok and not cli_ok:
         print(
-            "note: the rmorie launcher is not on PATH; put it there with "
-            "Rscript -e 'rmorie::install_cli()' (then: rmorie login, rmorie models, rmorie ask ...)"
+            "note: the rmorie launcher is not on PATH; put it there by running "
+            "rmorie::install_cli() in R (then: rmorie login, rmorie models, rmorie ask ...)"
         )
 
     if r_ok and not getattr(args, "github", False):
@@ -232,14 +235,14 @@ def run(args) -> int:
     github = bool(getattr(args, "github", False))
     expr = _r_install_expr(github)
     if not _rscript():
-        print("R is not installed. Install R first (https://cloud.r-project.org), then:")
-        print(f'  Rscript -e "{expr}"')
+        print("R is not installed. Install R first (https://cloud.r-project.org), then run this in R:")
+        print(f"  {expr}")
         return 0
 
     if not getattr(args, "yes", False):
         if not sys.stdin.isatty():
-            print("Non-interactive; not installing. Re-run with --yes, or:")
-            print(f'  Rscript -e "{expr}"')
+            print("Non-interactive; not installing. Re-run with --yes, or run this in R:")
+            print(f"  {expr}")
             return 0
         what = (
             "this repository's R arm (r-package/morie) from GitHub"
@@ -251,10 +254,11 @@ def run(args) -> int:
             print("Skipped. Re-run `morie bricklayer` anytime.")
             return 0
 
+    from ._interactive import launcher
     from ._progress import run_step
 
     rc = run_step(
-        [_rscript(), "-e", expr],
+        launcher("Installing the R side").r_cmd(expr, rscript=_rscript()),
         "installing the R side from GitHub (compiles; minutes)"
         if github
         else "installing rmorie, rmoriedata, rmoriebricklayer",

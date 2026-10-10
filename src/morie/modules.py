@@ -6,7 +6,6 @@ import logging
 import math as _math
 import os
 import shutil
-import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -457,7 +456,7 @@ def _run_r_module(
             f"--output-dir={output_dir}",
         ]
         env = dict(os.environ, MORIE_R_PACKAGE=_R_PACKAGE) if _R_PACKAGE else None
-        proc = subprocess.run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True, env=env)
+        proc = _sp().run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True, env=env)
         if proc.returncode != 0:
             raise RuntimeError(
                 f"R-backed module run failed for {module_name}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
@@ -1012,28 +1011,67 @@ _R_READY: bool | None = None
 _R_PACKAGE: str | None = None  # the R package the bridge loads: rmorie or morie, whichever matches this version
 
 
-def _r_route_ready() -> None:
+def _sp():
+    """The program launcher (``morie._launch``, interactive layer); the R route needs it."""
+    from ._interactive import launcher
+
+    return launcher("Running R-backed modules")
+
+
+def _r_stage_error(exc: BaseException) -> bool:
+    """RuntimeError, OSError, or an error from the program launcher: the R stage itself failed."""
+    if isinstance(exc, RuntimeError | OSError):
+        return True
+    try:
+        from . import _launch
+    except ImportError:  # no launcher, so it cannot have raised this
+        return False
+    return isinstance(exc, _launch.SubprocessError)
+
+
+def _r_mismatch_mode() -> str:
+    """warn, quiet or strict; MORIE_ALLOW_R_VERSION_MISMATCH (the older switch) still means quiet."""
+    if os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
+        return "quiet"
+    try:
+        from .llm_config import r_mismatch_mode
+
+        return r_mismatch_mode()
+    except Exception:  # noqa: BLE001 - an unreadable settings file must not stop an analysis
+        return "warn"
+
+
+_R_VERSION_MATCH: bool | None = None  # the R package in use has this morie's version
+_R_MISMATCH_NOTE: str | None = None  # the warning for another version, shown once
+_R_WARNED = False
+
+
+def _r_route_ready(*, warn: bool = True) -> None:
     """Raise at once when Rscript or a matching R package (rmorie or morie) is missing; cached per process.
 
     Both R arms carry the modules. The one whose version equals this morie's is used (rmorie when both
-    match); another version computes other numbers without saying so, so it is refused unless
-    ``MORIE_ALLOW_R_VERSION_MISMATCH`` is set.
+    match). When only another version is installed, the ``r.mismatch`` setting decides: warn (the
+    default) uses it and says so once, quiet uses it silently, strict refuses. Set it with
+    ``morie config set r.mismatch ...`` or ``MORIE_R_VERSION_MISMATCH``.
     """
-    global _R_READY, _R_PACKAGE
+    global _R_READY, _R_PACKAGE, _R_VERSION_MATCH, _R_MISMATCH_NOTE, _R_WARNED
     if _R_READY:
+        if warn and _R_MISMATCH_NOTE and not _R_WARNED:
+            import warnings
+
+            _R_WARNED = True
+            warnings.warn(_R_MISMATCH_NOTE, RuntimeWarning, stacklevel=2)
         return
     rscript = _rscript_bin()
     if rscript is None:
         raise RuntimeError("Rscript is not available on PATH.")
-    probe = subprocess.run(
-        [
-            rscript,
-            "--vanilla",
-            "-e",
-            'for (p in c("rmorie", "morie")) if (requireNamespace(p, quietly = TRUE)) '
-            'cat(p, as.character(utils::packageVersion(p)), "\\n")',
-        ],
-        stdin=subprocess.DEVNULL,
+    sp = _sp()
+    probe = sp.r_expr(
+        'for (p in c("rmorie", "morie")) if (requireNamespace(p, quietly = TRUE)) '
+        'cat(p, as.character(utils::packageVersion(p)), "\\n")',
+        rscript=rscript,
+        options=("--vanilla",),
+        stdin=sp.DEVNULL,
         capture_output=True,
         text=True,
         timeout=120,
@@ -1045,16 +1083,30 @@ def _r_route_ready() -> None:
 
     match = next((pkg for pkg, ver in found if ver == py_version), None)
     if match is None:
-        if not os.environ.get("MORIE_ALLOW_R_VERSION_MISMATCH"):
-            have = ", ".join(f"{pkg} {ver}" for pkg, ver in found)
-            raise RuntimeError(
-                f"R {have} {'is' if len(found) == 1 else 'are'} installed, but this is morie {py_version}: "
-                f"the R-backed modules need the same version (run `morie r-install`; "
-                f"MORIE_ALLOW_R_VERSION_MISMATCH=1 runs the other version anyway)"
-            )
         match = found[0][0]
+        have = ", ".join(f"{pkg} {ver}" for pkg, ver in found)
+        mode = _r_mismatch_mode()
+        dev = py_version.startswith("0.0.0") or "+" in py_version  # a source checkout has no release version
+        if mode == "strict":
+            raise RuntimeError(
+                f"R {have} {'is' if len(found) == 1 else 'are'} installed, but this is morie {py_version}, and "
+                f"r.mismatch is strict (run `morie r-install` for the same version, or "
+                f"`morie config set r.mismatch warn` to use the installed one)"
+            )
+        if mode == "warn" and not dev:
+            _R_MISMATCH_NOTE = (
+                f"using R {match} {dict(found)[match]} with morie {py_version}: results may differ from "
+                f"morie {py_version}'s R code (`morie r-install` installs the same version; "
+                f"`morie config set r.mismatch quiet` hides this)"
+            )
     _R_PACKAGE = match
+    _R_VERSION_MATCH = any(pkg == match and ver == py_version for pkg, ver in found)
     _R_READY = True
+    if warn and _R_MISMATCH_NOTE:
+        import warnings
+
+        _R_WARNED = True
+        warnings.warn(_R_MISMATCH_NOTE, RuntimeWarning, stacklevel=2)
 
 
 def _r_package_absent(exc: BaseException) -> bool:
@@ -1175,11 +1227,16 @@ def run_module(
 def _run_module_on(module_name: str, cpads_csv, dataset_key, output_dir) -> dict[str, object]:
     """``run_module`` once its input CSV is staged."""
     try:
-        # the same version rule for every module: a Python-capable one takes the Python route
-        # instead of running another version of the R arm
-        _r_route_ready()
+        # a Python-capable module takes the Python route (this morie's own code) rather than run
+        # another version of the R arm; an R-only module uses the installed R package (r.mismatch)
+        python_capable = module_name in _PY_FALLBACK_MODULES
+        _r_route_ready(warn=not python_capable)
+        if python_capable and not _R_VERSION_MATCH:
+            raise RuntimeError("the R-backed modules need the same version")
         return _run_r_module(module_name, cpads_csv=cpads_csv, output_dir=output_dir)
-    except (RuntimeError, OSError, subprocess.SubprocessError) as exc:
+    except Exception as exc:
+        if not _r_stage_error(exc):
+            raise
         # Only these exception classes mean "the R stage itself failed"
         # (missing R, bridge error, R-side error). Anything else is a bug
         # in OUR code and must not be masked by the Python fallback.

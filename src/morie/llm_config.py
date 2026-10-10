@@ -73,6 +73,13 @@ SPEC: dict[str, tuple[tuple[str, ...], bool, str]] = {
         "your MORIE key (stored by `morie login`; checked with the gateway before it is saved)",
     ),
 }
+SPEC["r.mismatch"] = (
+    ("MORIE_R_VERSION_MISMATCH",),
+    False,
+    "when the installed R package (rmorie or morie) is another version than this morie: "
+    "warn (default: use it and say so once), quiet (use it silently) or strict (refuse)",
+)
+R_MISMATCH_MODES = ("warn", "quiet", "strict")
 KEYS = tuple(SPEC)
 
 
@@ -194,6 +201,8 @@ def mask(v: str | None) -> str:
 def effective(key: str) -> str:
     """The value a setting has right now, the default spelled out; a key shows only as "set"."""
     k = _normalise_key(key)
+    if k == "r.mismatch":
+        return r_mismatch_mode()
     from . import llm
 
     if k == "route":
@@ -243,6 +252,10 @@ def _check(key: str, v: str) -> str:
             if not v.lower().startswith("https://"):
                 raise ValueError("hosted.url must be an https:// address (your key is sent to it), or off")
             v = v.rstrip("/")
+    elif key == "r.mismatch":
+        v = v.lower()
+        if v not in R_MISMATCH_MODES:
+            raise ValueError(f"r.mismatch must be one of: {', '.join(R_MISMATCH_MODES)}")
     elif key == "ollama.url":
         if re.search(r"\s", v):
             raise ValueError("ollama.url must be an address such as http://localhost:11434")
@@ -336,6 +349,12 @@ def config(settings: dict | None = None, /, **kwargs) -> ConfigTable:
                 stacklevel=2,
             )
     return ConfigTable(table())
+
+
+def r_mismatch_mode() -> str:
+    """warn, quiet or strict: what the R-backed commands do when the R package is another version."""
+    v = (value("r.mismatch") or "").strip().lower()
+    return v if v in R_MISMATCH_MODES else "warn"
 
 
 def config_get(key: str) -> str:

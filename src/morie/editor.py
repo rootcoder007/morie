@@ -12,7 +12,6 @@ from __future__ import annotations
 import os
 import shlex
 import shutil
-import subprocess
 import sys
 
 _TERMINAL_EDITORS = frozenset({"vi", "vim", "nvim", "nano", "pico", "emacs", "ed", "micro", "joe", "ne", "helix", "hx"})
@@ -41,8 +40,15 @@ def edit_file(path: str, lang_hint: str | None = None) -> int:
     if shutil.which(parts[0]) is None and not os.path.isfile(parts[0]):
         print(f"editor {parts[0]!r} not found on PATH (set $EDITOR to one that is)", file=sys.stderr)
         return 1
+    from ._interactive import LayerMissingError, launcher
+
     try:
-        return subprocess.call([*parts, path])
+        sp = launcher("Opening an editor")
+    except LayerMissingError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    try:
+        return sp.call([*parts, path])
     except OSError as exc:
         print(f"could not start {parts[0]!r}: {exc}", file=sys.stderr)
         return 1

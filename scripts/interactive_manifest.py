@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "src" / "morie"
 OUT = PKG / "_interactive_manifest.json"
-FILES = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")
+FILES = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py", "_launch.py")
 
 
 def build() -> str:

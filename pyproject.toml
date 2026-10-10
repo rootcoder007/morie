@@ -139,6 +139,7 @@ wheel.exclude = [
   "morie/agent.py",
   "morie/tui.py",
   "morie/_exec_guard.py",
+  "morie/_launch.py",
   "morie/repl_init.py",
 ]
 # The sdist is a build input, not a repository snapshot: the package, the C++ core,
@@ -171,6 +172,7 @@ sdist.exclude = [
   "src/morie/agent.py",
   "src/morie/tui.py",
   "src/morie/_exec_guard.py",
+  "src/morie/_launch.py",
   "src/morie/repl_init.py",
   # the placeholder test package ships in neither artifact; listed after the "!/src/morie/**"
   # re-include because the last matching pattern wins

@@ -64,7 +64,10 @@ Language-model settings
   morie config path               where they are saved
 
 Keys: route (auto | own | ollama | hosted), own.url, own.key, own.model, ollama.url,
-ollama.model, ollama.key, hosted.url, hosted.model, hosted.key.
+ollama.model, ollama.key, hosted.url, hosted.model, hosted.key, and r.mismatch
+(warn | quiet | strict): what the R-backed commands do when the installed R package is
+another version than this morie. warn, the default, uses it and says so once;
+`morie config set r.mismatch strict` refuses instead.
 
 They are saved in $XDG_CONFIG_HOME/morie/llm.json (default ~/.config/morie/llm.json,
 private), shared with rmoriebricklayer's `rmbl config`. hosted.key is checked with the

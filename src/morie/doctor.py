@@ -14,7 +14,6 @@ import importlib
 import importlib.util
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -62,9 +61,26 @@ def _check_interactive_layer() -> tuple[bool, str]:
             return True, f"installed for morie {iv} in {d}"
         if have:
             return False, f"installed for morie {iv} (this is {inter.package_version()}): morie interactive install"
-        return False, "not installed (morie repl/exec/agent/edit/tui): morie interactive install"
+        return (
+            False,
+            "not installed (morie repl/exec/agent/edit/tui, and R, Docker and the other programs morie starts): morie interactive install",
+        )
     except Exception as exc:
         return False, f"error: {exc}"
+
+
+def _probe(cmd: list[str]) -> str | None:
+    """A program's version line, or None when the launcher (interactive layer) is not installed."""
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        sp = launcher("Checking program versions", offer=False)
+    except LayerMissingError:
+        return None
+    return sp.check_output(cmd, stderr=sp.STDOUT, timeout=5).decode().strip()
+
+
+_NO_LAUNCHER = "found (its version shows once `morie interactive install` has run)"
 
 
 def _check_r() -> tuple[bool, str]:
@@ -72,11 +88,13 @@ def _check_r() -> tuple[bool, str]:
     if rscript is None:
         return False, "Rscript not found (optional)"
     try:
-        out = subprocess.check_output(["Rscript", "--version"], stderr=subprocess.STDOUT, timeout=5).decode().strip()
+        out = _probe(["Rscript", "--version"])
+        if out is None:
+            return True, _NO_LAUNCHER
         # "R scripting front-end version 4.4.1 (2024-06-14)"
         version = out.split("version")[-1].strip().split()[0] if "version" in out else out
         return True, version
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+    except Exception:  # noqa: BLE001 - a non-zero exit, a timeout or an OS error: it did not run
         return False, "Rscript found but failed to run"
 
 
@@ -183,9 +201,9 @@ def _check_docker() -> tuple[bool, str]:
     if docker is None:
         return False, "docker not found (optional)"
     try:
-        out = subprocess.check_output(["docker", "--version"], stderr=subprocess.STDOUT, timeout=5).decode().strip()
-        return True, out
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+        out = _probe(["docker", "--version"])
+        return True, _NO_LAUNCHER if out is None else out
+    except Exception:  # noqa: BLE001 - a non-zero exit, a timeout or an OS error: it did not run
         return False, "docker found but not running (optional)"
 
 
@@ -459,7 +477,13 @@ def _heal(results: dict[str, Any]) -> bool:
                 print(f"  [hint] {pip_name}: this environment has no pip; run `uv pip install {pip_name}`")
                 continue
             print(f"  ...    installing {pip_name} ({' '.join(installer[-3:])}) ...")
-            rc = subprocess.run([*installer, pip_name]).returncode
+            from ._interactive import LayerMissingError, launcher
+
+            try:
+                rc = launcher("Installing missing packages").run([*installer, pip_name]).returncode
+            except LayerMissingError as e:
+                print(f"  [skip] {pip_name}: {e}")
+                continue
             print(f"  [{'ok' if rc == 0 else 'fail'}]   install {pip_name}")
             fixed_any = fixed_any or rc == 0
         elif label == "morie version":

@@ -231,7 +231,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         context: list[dict[str, str]] | None = None,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -244,8 +244,8 @@ class LocalOllama:
             User message.
         model : str, optional
             Override the default model.
-        system : str, optional
-            System prompt.
+        instructions : str, optional
+            Instructions for the model (sent as the system prompt).
         context : list, optional
             Prior messages as ``[{"role": "user", "content": "..."}, ...]``.
         temperature : float
@@ -258,7 +258,7 @@ class LocalOllama:
         str
             The assistant's response text.
         """
-        messages = self._build_messages(prompt, system, context)
+        messages = self._build_messages(prompt, instructions, context)
         resp = httpx.post(
             f"{self.base_url}/api/chat",
             json={
@@ -284,7 +284,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         context: list[dict[str, str]] | None = None,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -296,7 +296,7 @@ class LocalOllama:
         str
             Content chunks as they arrive from the model.
         """
-        messages = self._build_messages(prompt, system, context)
+        messages = self._build_messages(prompt, instructions, context)
         with httpx.stream(
             "POST",
             f"{self.base_url}/api/chat",
@@ -333,7 +333,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         stream: bool = False,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -348,8 +348,8 @@ class LocalOllama:
                 "num_predict": num_predict,
             },
         }
-        if system:
-            payload["system"] = system
+        if instructions:
+            payload["system"] = instructions
 
         if stream:
             return self._generate_stream(payload)
@@ -388,12 +388,12 @@ class LocalOllama:
     @staticmethod
     def _build_messages(
         prompt: str,
-        system: str | None,
+        instructions: str | None,
         context: list[dict[str, str]] | None,
     ) -> list[dict[str, str]]:
         messages: list[dict[str, str]] = []
-        if system:
-            messages.append({"role": "system", "content": system})
+        if instructions:
+            messages.append({"role": "system", "content": instructions})
         if context:
             messages.extend(context)
         messages.append({"role": "user", "content": prompt})

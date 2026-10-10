@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import os
 import struct
-import subprocess
 import sys
 
 from ._containers import DescriptiveResult
@@ -22,10 +21,12 @@ def view_image(path: str) -> None:
     """
     if not os.path.isfile(path):
         raise FileNotFoundError(f"Image not found: {path}")
+    from .._interactive import launcher
+
     if sys.platform == "darwin":
-        subprocess.run(["open", path], check=True)
+        launcher("Opening the image viewer").run(["open", path], check=True)
     elif sys.platform.startswith("linux"):
-        subprocess.run(["xdg-open", path], check=True)
+        launcher("Opening the image viewer").run(["xdg-open", path], check=True)
     else:
         os.startfile(path)
 

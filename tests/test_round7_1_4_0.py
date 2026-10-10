@@ -182,30 +182,52 @@ def test_array_kernels_return_morie_arrays_so_no_numpy_is_needed():
 
 def test_the_r_bridge_uses_the_r_package_whose_version_matches(monkeypatch):
     import subprocess
+    import warnings
 
-    import morie.modules as m
-    from morie import __version__
-
-    monkeypatch.setattr(m, "_rscript_bin", lambda: "Rscript")
-    monkeypatch.setattr(m, "_R_READY", None)
-    monkeypatch.setattr(m, "_R_PACKAGE", None)
-    monkeypatch.delenv("MORIE_ALLOW_R_VERSION_MISMATCH", raising=False)
-    out = f"rmorie 1.3.4\nmorie {__version__}\n"
-    monkeypatch.setattr(m.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, out, ""))
-    m._r_route_ready()
-    assert m._R_PACKAGE == "morie"
-    monkeypatch.setattr(m, "_R_READY", None)
-    monkeypatch.setattr(m.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, "rmorie 1.3.4\n", ""))
     import pytest
 
-    with pytest.raises(RuntimeError, match="R rmorie 1.3.4 is installed, but this is morie"):
+    import morie.modules as m
+    from morie import __version__, _launch
+
+    def probe(out):
+        monkeypatch.setattr(_launch, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, out, ""))
+        for name in ("_R_READY", "_R_PACKAGE", "_R_VERSION_MATCH", "_R_MISMATCH_NOTE"):
+            monkeypatch.setattr(m, name, None)
+        monkeypatch.setattr(m, "_R_WARNED", False)
+
+    monkeypatch.setattr(m, "_rscript_bin", lambda: "Rscript")
+    monkeypatch.setattr(m, "__version__", "1.4.3", raising=False)
+    monkeypatch.delenv("MORIE_ALLOW_R_VERSION_MISMATCH", raising=False)
+    monkeypatch.setattr("morie.__version__", "1.4.3")
+
+    probe("rmorie 1.3.4\nmorie 1.4.3\n")
+    m._r_route_ready()
+    assert m._R_PACKAGE == "morie" and m._R_VERSION_MATCH
+
+    # another version only: by default it is used, with one warning that says how to change that
+    monkeypatch.setenv("MORIE_R_VERSION_MISMATCH", "warn")
+    probe("rmorie 1.3.4\n")
+    with pytest.warns(RuntimeWarning, match="using R rmorie 1.3.4 with morie 1.4.3"):
         m._r_route_ready()
+    assert m._R_PACKAGE == "rmorie" and not m._R_VERSION_MATCH
+
+    monkeypatch.setenv("MORIE_R_VERSION_MISMATCH", "quiet")
+    probe("rmorie 1.3.4\n")
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        m._r_route_ready()
+
+    monkeypatch.setenv("MORIE_R_VERSION_MISMATCH", "strict")
+    probe("rmorie 1.3.4\n")
+    with pytest.raises(RuntimeError, match="r.mismatch is strict"):
+        m._r_route_ready()
+    assert __version__  # the package itself still imports
 
 
 def test_a_python_capable_module_takes_the_python_route_when_r_is_another_version(monkeypatch):
     import morie.modules as m
 
-    def mismatch():
+    def mismatch(**_):
         raise RuntimeError(
             "R rmorie 1.3.4 is installed, but this is morie 1.4.0: the R-backed modules need the same version"
         )
@@ -421,7 +443,9 @@ def test_doctor_fix_without_pip_says_what_to_run(monkeypatch, capsys):
     monkeypatch.setattr(importlib.util, "find_spec", lambda n, *a, **k: None if n == "pip" else real(n, *a, **k))
     monkeypatch.setattr("shutil.which", lambda n: None)
     ran = []
-    monkeypatch.setattr(doctor.subprocess, "run", lambda *a, **k: ran.append(a))
+    from morie import _launch
+
+    monkeypatch.setattr(_launch, "run", lambda *a, **k: ran.append(a))
     doctor._heal({"checks": [{"label": "import scipy", "passed": False}]})
     out = capsys.readouterr().out
     assert "no pip; run `uv pip install scipy`" in out and not ran
@@ -481,10 +505,10 @@ def test_convert_checkpoint_names_a_file_that_is_not_one(monkeypatch, tmp_path, 
 def test_percysuits_names_an_unreachable_ssh_host(monkeypatch, capsys):
     import subprocess
 
-    from morie import runner
+    from morie import _launch, runner
 
     monkeypatch.setattr(
-        subprocess,
+        _launch,
         "run",
         lambda *a, **k: subprocess.CompletedProcess(
             a, 255, "", "ssh: connect to host 127.0.0.1 port 22: Connection refused"
@@ -733,7 +757,9 @@ def test_r_module_synthetic_notes_reach_the_user(monkeypatch, tmp_path):
     monkeypatch.setattr(m, "_rscript_bin", lambda: "Rscript")
     monkeypatch.setattr(m, "_R_PACKAGE", "morie")
     note = "mapq-psychometrics: runs on the deterministic synthetic MAPQII panel (n = 400); not findings"
-    monkeypatch.setattr(m.subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, "", note + "\n"))
+    from morie import _launch
+
+    monkeypatch.setattr(_launch, "run", lambda *a, **k: subprocess.CompletedProcess(a, 0, "", note + "\n"))
     monkeypatch.setattr(m, "_load_written_outputs", lambda name, out: {})
     with pytest.warns(UserWarning, match="synthetic MAPQII panel"):
         m._run_r_module("mapq-psychometrics", cpads_csv=str(tmp_path / "x.csv"), output_dir=tmp_path)

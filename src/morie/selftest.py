@@ -343,18 +343,11 @@ def _test_r_available():
     if shutil.which("Rscript") is None:
         return "SKIP: Rscript not found"
 
-    import subprocess
+    from ._interactive import launcher
 
     try:
-        out = (
-            subprocess.check_output(
-                ["Rscript", "-e", "cat(R.version.string)"],
-                stderr=subprocess.STDOUT,
-                timeout=5,
-            )
-            .decode()
-            .strip()
-        )
+        sp = launcher("The R self-test")
+        out = sp.check_output(sp.r_cmd("cat(R.version.string)"), stderr=sp.STDOUT, timeout=5).decode().strip()
         return f"R: {out}"
     except Exception as exc:
         return f"SKIP: R check failed: {exc}"

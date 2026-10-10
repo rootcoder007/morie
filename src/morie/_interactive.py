@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""The interactive layer (polyglot REPL, agent, TUI, ``morie exec``) for installed copies.
+"""The interactive layer (polyglot REPL, agent, TUI, ``morie exec``, program launcher) for installed copies.
 
-Five modules stay out of the published wheel and sdist on purpose: they execute
-code that a person or a model types, and package scanners flag that surface
-(see ``wheel.exclude`` in pyproject.toml). ``morie interactive install`` fetches
+Six modules stay out of the published wheel and sdist on purpose: five execute
+code that a person or a model types, and ``_launch`` starts every other program
+morie uses (R, Docker, the editor, the C compiler, pip, ssh, gcloud, quarto).
+Package scanners flag both surfaces (see ``wheel.exclude`` in pyproject.toml). ``morie interactive install`` fetches
 those files for the installed version from the tagged source on GitHub, checks
 each one against the SHA-256 manifest that ships inside the wheel, and places
 them in a per-user directory that ``import morie`` adds to the package path.
@@ -22,7 +23,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-FILES: tuple[str, ...] = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")
+FILES: tuple[str, ...] = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py", "_launch.py")
 RAW_URL = "https://raw.githubusercontent.com/rootcoder007/morie/{ref}/src/morie/{name}"
 _MANIFEST = Path(__file__).with_name("_interactive_manifest.json")
 _RELEASE = re.compile(r"^\d+\.\d+\.\d+$")
@@ -116,6 +117,68 @@ def changed_files(d: Path | None = None) -> list[str]:
     if not expected:
         return []
     return [n for n in FILES if not (d / n).is_file() or sha256_of(d / n) != expected.get(n)]
+
+
+class LayerMissingError(RuntimeError):
+    """A feature needs the interactive layer, and it is not installed for this user."""
+
+
+def _offer_install(what: str) -> bool:
+    """Say how to add the layer; on a terminal offer to add it now. True when it was just installed."""
+    changed = changed_files()
+    if changed:
+        print(
+            f"{what} is not loaded: {', '.join(changed)} changed since the verified install "
+            "(`morie interactive status` shows it; `morie interactive install` restores it)."
+        )
+        return False
+    print(f"{what} is not bundled in this install. Run `morie interactive install` to add it for this user.")
+    interactive = (
+        sys.stdin is not None
+        and sys.stdin.isatty()
+        and sys.stdout.isatty()
+        and not os.environ.get("MORIE_NO_PROMPT", "").strip()
+    )
+    if not interactive:
+        return False
+    try:
+        answer = input("Add it now? [y/N] ").strip().lower()
+    except (EOFError, KeyboardInterrupt):
+        print()
+        return False
+    if answer not in ("y", "yes") or install() != 0:
+        return False
+    import morie
+
+    activate(morie.__path__, morie.__version__)
+    return True
+
+
+def launcher(what: str = "This command", *, offer: bool = True):
+    """The module that starts other programs (``_launch``, part of the interactive layer).
+
+    The published package never starts a program itself: R, Docker, the editor, the C compiler,
+    pip, ssh and the rest all go through ``_launch``, which ``morie interactive install`` adds.
+    ``what`` names the feature in the message shown when the layer is missing. Raises
+    :class:`LayerMissingError` when it is missing and not installed on the spot. ``offer=False``
+    raises at once, without printing or prompting: for optional probes that have a fallback.
+    """
+    try:
+        from morie import _launch
+
+        return _launch
+    except ImportError:
+        pass
+    if offer and _offer_install(what):
+        try:
+            from morie import _launch
+
+            return _launch
+        except ImportError:
+            pass
+    raise LayerMissingError(
+        f"{what} starts another program, which needs the interactive layer: run `morie interactive install`"
+    )
 
 
 def _download(url: str, dest: Path, label: str) -> None:
@@ -213,7 +276,11 @@ def install(
     if _textual_available():
         out("morie repl, morie exec, morie agent and morie tui work now.")
     else:
-        out('morie repl, morie exec and morie agent work now; morie tui also needs: pip install "morie[interactive]"')
+        out(
+            "morie repl, exec and agent work now, as do the features that start other programs "
+            "(R and the R bridge, Docker, morie edit, doctor --fix, notebooks); "
+            'morie tui also needs: pip install "morie[interactive]"'
+        )
     out("Remove it again with: morie interactive remove")
     return 0
 

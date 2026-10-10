@@ -30,7 +30,6 @@ import json
 import logging
 import os
 import shutil
-import subprocess
 import textwrap
 import time
 from dataclasses import dataclass, field
@@ -140,10 +139,16 @@ def _run_command(
     timeout: int = 600,
     cwd: str | Path | None = None,
 ) -> tuple[int, str, str, float]:
-    """Run a subprocess and return (returncode, stdout, stderr, duration)."""
+    """Run a command and return (returncode, stdout, stderr, duration)."""
+    from ._interactive import LayerMissingError, launcher
+
     start = time.monotonic()
     try:
-        result = subprocess.run(
+        sp = launcher("Rendering notebooks")
+    except LayerMissingError as e:
+        return -1, "", str(e), time.monotonic() - start
+    try:
+        result = sp.run(
             cmd,
             capture_output=True,
             text=True,
@@ -152,7 +157,7 @@ def _run_command(
         )
         elapsed = time.monotonic() - start
         return result.returncode, result.stdout, result.stderr, elapsed
-    except subprocess.TimeoutExpired:
+    except sp.TimeoutExpired:
         elapsed = time.monotonic() - start
         return -1, "", f"Command timed out after {timeout}s", elapsed
     except FileNotFoundError:
