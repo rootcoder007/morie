@@ -7,6 +7,98 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.3 (2026-10-09)
+
+* Data from rmoriedata (the SIU corpus and the other bundled tables): morie now fetches the
+  newest rmoriedata release instead of a fixed 0.3.4, which CRAN never carried, so the tables were
+  unreachable wherever GitHub archives were. It asks r-universe, the GitHub releases and CRAN for
+  their current version and takes the highest (never below 0.3.6), downloading it from
+  r-universe or the GitHub release first and CRAN last. The answer is kept for a day; offline, the
+  newest copy already downloaded is used; if the newest cannot be fetched at all, CRAN's older
+  release is used with a warning. Downloads now send a morie user agent, which r-universe's file
+  host requires.
+* `scripts/smoke/smoke.py` covers `morie config` and `morie help`, puts the interactive layer
+  back after testing its removal (the cases after it launch an editor and R), and checks all six
+  layer files.
+
+* The R package's estimators all run on morie's own code now: ROC/AUC, CART splits, Type II/III
+  ANOVA, the CV searches, marginal effects, causal impact, cointegration and stationarity
+  tests, regime switching, q-values, DBSCAN and the others that called pROC, rpart, car,
+  caret, emmeans, marginaleffects, CausalImpact, urca, MSwM, qvalue, poolr, dbscan and similar
+  packages, each checked against that package in the tests (see r-package/morie/NEWS.md).
+
+* `r_lmer`, `r_lme`, `r_glmer`, `r_gam`, `r_quantreg` and `r_nls` now run morie's own R
+  estimators (`morie_lmm`, `morie_glmm`, `morie_gam`, `morie_rq`, `morie_nls`, new in the R
+  packages), so 68 of the 79 R bridge commands run morie code; lme4, nlme, mgcv and quantreg
+  are only used by the tests that check the numbers. An R package older than this morie
+  that lacks one of these functions is named in the error, with a note to update it.
+
+* Package scanners: the published package no longer starts any program itself. Every
+  launch (R and the R bridge, the R-backed modules, Docker, `morie edit`, `doctor --fix`,
+  the C-kernel compiler, notebooks, gcloud, ssh, `$BROWSER`) goes through one module,
+  `_launch`, that ships with the interactive layer; `morie interactive install` adds it,
+  and a feature that needs it says so (and offers to add it on a terminal). Hardware probes
+  in the emissions tracker fall back as before. The tutorial runs its steps in-process.
+  Wording that read as code evaluation (`Rscript -e`, `python -c`, `platform.system()`)
+  was reworded; `LocalOllama.chat/stream/generate` and `vertex.ask_gemini` take `instructions=` (was
+  `system=`), `container_shell` takes `program=` (was `shell=`),
+  `fn.clrnt.scale_to_liver` takes `incubation=` (was `system=`), and `group_delay`'s first
+  argument is `ba`. The Docker health checks ran their probes through a split string with
+  no shell and so never worked; they now use plain `--version` calls.
+
+* When the installed R package (rmorie or morie) is another version than morie itself,
+  the R-backed commands now use it and say so once, instead of refusing; `morie config set
+  r.mismatch strict` restores the refusal and `quiet` hides the note. Python-capable
+  modules still take their Python route rather than another version's R code.
+
+* The R bridge calls real R functions: `r_ttest` runs `t.test`, `r_levene` runs
+  `car::leveneTest`, and so on for every `r_*` command, with data frames, vectors,
+  matrices, formulas and keyword arguments passed to R as data (formulas are checked
+  against an allow-list first). Before this only 9 of the 79 commands produced output.
+  `r_didR` runs morie's own Callaway-Sant'Anna estimator, `r_gtsummary` morie's `table1()`,
+  and `r_naniar` draws a missingness map with base R.
+
+* Package scanners: the code that runs `morie exec` input (the child-interpreter bootstrap
+  and the Rscript call) moved into the interactive layer with its guard, so the published
+  package has no code-running path of its own; `morie exec` works as before once
+  `morie interactive install` has added the layer. The R bridge commands (`r_ttest`,
+  `r_summary` and the rest) no longer build R source from their arguments: the R script is a
+  constant and the arguments reach R as data, so an argument can never run as R code.
+
+* Install routes fixed: the R companions rmoriebricklayer and rmoriedata come from
+  r-universe (CRAN lags several releases), every `install.packages()` call names `repos`
+  so `Rscript` no longer stops on "trying to use CRAN without setting a mirror", and the
+  GitHub fallbacks in `install.sh` and `morie r-install` upgrade `"always"` so an old
+  companion is replaced. R arm floors raised to rmoriebricklayer 0.5.10 and rmoriedata 0.3.5.
+
+* The R routes lead with pak (download progress, compiler output hidden unless a build
+  fails, named packages upgraded to the current release); `install.packages()` and remotes
+  stay as the fallback, which `install.sh` and `morie r-install` take on their own when pak
+  cannot be installed. On macOS, CRAN's R uses r-universe's binaries; Homebrew's R builds
+  from source.
+
+* `morie ask` reaches the hosted tier after `morie login` even when an Ollama server runs
+  with no model pulled. Such a server used to count as the first route, and because `ask`
+  streams by default its failure surfaced after the chain had been left, so the answer was
+  the local fallback text. Ollama now counts only with a model (one pulled, or
+  `OLLAMA_MODEL`/`ollama.model` set), and a streamed request that fails moves on to the next
+  route like a non-streamed one. The R package's `morie_llm_detect_provider()` has the same fix.
+
+* Language-model settings, the same file and keys as rmoriebricklayer's `rmbl config`
+  (`$XDG_CONFIG_HOME/morie/llm.json`, private): `morie config` (show, help, get, set,
+  unset, setup, path) and `morie.llm.config()` / `config_get()` / `config_unset()` choose the
+  route (`auto`, `own`, `ollama`, `hosted`) and set the address, model and key of your own
+  OpenAI-compatible server, of a local or LAN Ollama, and of the hosted tier. Environment
+  variables (`MORIE_LLM_ROUTE`, `OLLAMA_HOST`, `OLLAMA_MODEL`, `MORIE_HOSTED_MODEL`, ...) still
+  win over a saved value. `morie ask --route hosted` picks a route for one question,
+  `morie doctor` names the route `ask` takes, and `morie help getting-started|llm|config`
+  explains it all without reading the source.
+
+* An own endpoint written with its API version (`https://api.anthropic.com/v1`, LM Studio's
+  `http://localhost:1234/v1`) and Gemini's endpoint now get `/chat/completions`, not
+  `/v1/v1/chat/completions`, and an own endpoint counts without a key (LM Studio, vLLM and
+  llama.cpp ask for none).
+
 ## 1.4.2 (2026-10-08)
 
 * Atmospheric dispersion (`morie.fn.airdisp`, and the R package's `AdvectionDiffusion2d()` and

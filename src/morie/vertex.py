@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -79,15 +78,18 @@ def _access_token(cfg: VertexConfig) -> str:
     now = time.time()
     if _TOKEN_CACHE["token"] and now < _TOKEN_CACHE["expires_at"]:
         return _TOKEN_CACHE["token"]
+    from ._interactive import launcher
+
+    sp = launcher("Getting a Google Cloud access token (gcloud)")
     try:
-        out = subprocess.run(
+        out = sp.run(
             [cfg.gcloud_path, "auth", "print-access-token"],
             check=True,
             capture_output=True,
             text=True,
             timeout=30,
         ).stdout.strip()
-    except subprocess.CalledProcessError as exc:
+    except sp.CalledProcessError as exc:
         raise RuntimeError(f"gcloud print-access-token failed: {exc.stderr.strip()}") from exc
     except FileNotFoundError as exc:
         raise RuntimeError(f"gcloud not found at {cfg.gcloud_path}. Set GCLOUD_PATH env var.") from exc
@@ -102,7 +104,7 @@ def ask_gemini(
     prompt: str,
     *,
     model: str | None = None,
-    system: str | None = None,
+    instructions: str | None = None,
     temperature: float = 0.1,
     max_output_tokens: int = 2048,
     timeout_s: float = 120.0,
@@ -117,9 +119,9 @@ def ask_gemini(
     model : str, optional
         Model override. Defaults to VERTEX_MODEL env or
         ``gemini-2.5-flash``.
-    system : str, optional
-        System instruction (persona, constraints). Matches the
-        ``systemInstruction`` field on the Gemini REST API.
+    instructions : str, optional
+        Instructions for the model (persona, constraints), sent as the
+        ``systemInstruction`` field of the Gemini REST API.
     temperature : float, default 0.1
         Deterministic for scientific work. Match morie.llm default.
     max_output_tokens : int, default 2048
@@ -160,9 +162,9 @@ def ask_gemini(
             "maxOutputTokens": int(max_output_tokens),
         },
     }
-    if system:
+    if instructions:
         payload["systemInstruction"] = {
-            "parts": [{"text": system}],
+            "parts": [{"text": instructions}],
         }
 
     with _httpx.Client(timeout=timeout_s) as client:

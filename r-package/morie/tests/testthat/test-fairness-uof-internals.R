@@ -55,10 +55,6 @@ test_that(".xai_predict errors on length mismatch", {
                regexp = "one prediction per row")
 })
 
-test_that(".xai_have_iml returns logical", {
-  expect_type(morie:::.xai_have_iml(), "logical")
-})
-
 # ====================================================== fairness_simulation.R
 
 test_that(".sim_result builds a morie_fairness_result list", {
@@ -82,16 +78,6 @@ test_that(".fairness_backend returns a backend list or NULL", {
           "rmorie slim build: no fairness_gan internal helpers")
   out <- morie:::.fairness_backend()
   expect_true(is.null(out) || is.list(out))
-})
-
-test_that(".fairness_no_backend_result builds a 'no backend' result", {
-  skip_if(!exists(".fairness_result", envir = asNamespace("morie"), inherits = FALSE),
-          "rmorie slim build: no fairness_gan internal helpers")
-  out <- morie:::.fairness_no_backend_result(
-    title = "GAN", call = "demo",
-    note = "No backend available")
-  expect_type(out, "list")
-  expect_s3_class(out, "morie_fairness_result")
 })
 
 test_that(".fairness_he_init builds He-init MLP params with correct shapes", {

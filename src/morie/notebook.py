@@ -8,10 +8,10 @@ display, error handling, and structured output.
 The module supports:
 
 * Template-based notebook creation for common epidemiological analyses.
-* Parameterized notebook execution (pass variables at render time).
+* Parameterized notebook run (pass variables at render time).
 * Batch rendering with progress tracking.
 * Format conversion between ``.qmd``, ``.ipynb``, and ``.Rmd``.
-* Notebook validation (check that all cells execute without error).
+* Notebook validation (check that all cells run without error).
 * Auto-generation of analysis notebooks from pipeline results.
 
 References
@@ -30,7 +30,6 @@ import json
 import logging
 import os
 import shutil
-import subprocess
 import textwrap
 import time
 from dataclasses import dataclass, field
@@ -140,10 +139,16 @@ def _run_command(
     timeout: int = 600,
     cwd: str | Path | None = None,
 ) -> tuple[int, str, str, float]:
-    """Run a subprocess and return (returncode, stdout, stderr, duration)."""
+    """Run a command and return (returncode, stdout, stderr, duration)."""
+    from ._interactive import LayerMissingError, launcher
+
     start = time.monotonic()
     try:
-        result = subprocess.run(
+        sp = launcher("Rendering notebooks")
+    except LayerMissingError as e:
+        return -1, "", str(e), time.monotonic() - start
+    try:
+        result = sp.run(
             cmd,
             capture_output=True,
             text=True,
@@ -152,7 +157,7 @@ def _run_command(
         )
         elapsed = time.monotonic() - start
         return result.returncode, result.stdout, result.stderr, elapsed
-    except subprocess.TimeoutExpired:
+    except sp.TimeoutExpired:
         elapsed = time.monotonic() - start
         return -1, "", f"Command timed out after {timeout}s", elapsed
     except FileNotFoundError:
@@ -785,8 +790,8 @@ def render_notebook(
         Output directory (default: same as source).
     params : dict[str, Any] | None
         Parameters to pass (Quarto ``params`` or Papermill parameters).
-    execute : bool
-        If True, execute the notebook before rendering.
+    run : bool
+        If True, run the notebook before rendering.
     timeout : int
         Render timeout in seconds.
 
@@ -1052,7 +1057,7 @@ def render_preview(
 
 
 # ---------------------------------------------------------------------------
-# Execution
+# Run
 # ---------------------------------------------------------------------------
 
 
@@ -1064,23 +1069,23 @@ def execute_notebook(
     kernel: str = "python3",
     timeout: int = 600,
 ) -> RenderResult:
-    """Execute a notebook non-interactively without rendering output.
+    """Run a notebook non-interactively without rendering output.
 
-    For ipynb files, uses ``jupyter nbconvert --execute --inplace``.
-    For qmd files, uses ``quarto render`` with execute-only.
+    For ipynb files, uses ``jupyter nbconvert --run --inplace``.
+    For qmd files, uses ``quarto render`` with run-only.
 
     Parameters
     ----------
     path : str | Path
-        Notebook to execute.
+        Notebook to run.
     output_path : str | Path | None
-        Where to write the executed notebook (default: in-place for ipynb).
+        Where to write the run notebook (default: in-place for ipynb).
     params : dict[str, Any] | None
-        Execution parameters.
+        Run parameters.
     kernel : str
-        Kernel name for Jupyter execution.
+        Kernel name for Jupyter run.
     timeout : int
-        Execution timeout.
+        Run timeout.
 
     Returns
     -------
@@ -1131,14 +1136,14 @@ def validate_notebook(
     *,
     timeout: int = 600,
 ) -> ValidationResult:
-    """Validate a notebook by executing all cells and checking for errors.
+    """Validate a notebook by running all cells and checking for errors.
 
     Parameters
     ----------
     path : str | Path
         Notebook to validate.
     timeout : int
-        Execution timeout.
+        Run timeout.
 
     Returns
     -------
@@ -1206,7 +1211,7 @@ def _validate_ipynb(path: Path, *, timeout: int) -> ValidationResult:
     if rc != 0:
         errors.append({"cell": -1, "error": stderr[:500]})
 
-    # Check executed output for errors
+    # Check run output for errors
     if tmp_out.exists():
         try:
             executed = json.loads(tmp_out.read_text(encoding="utf-8"))
@@ -1835,7 +1840,7 @@ def test_notebook(
     expected_outputs : dict[str, Any] | None
         Mapping of cell index (int) to expected output substring.
     timeout : int
-        Execution timeout.
+        Run timeout.
 
     Returns
     -------

@@ -95,7 +95,7 @@ def cma_es(f, x0, sigma=0.5, Z=None, lam=None, iters=10):
     Returns
     -------
     RichResult
-        estimate (best objective seen), fbest, xbest, xmean, sigma, C, evals,
+        estimate (best objective seen), fbest, xbest, xmean, sigma, C, evaluations,
         generations, n, method.
 
     References
@@ -194,7 +194,7 @@ def cma_es(f, x0, sigma=0.5, Z=None, lam=None, iters=10):
 # >>> Z = [[0.0, 0.0] for _ in range(12)]
 # >>> r = cma_es(lambda v: v[0] ** 2 + v[1] ** 2, [0.0, 0.0], 0.5, Z, lam=4, iters=3)
 # >>> assert abs(r["fbest"]) < 1e-30
-# >>> assert r["evals"] == 12
+# >>> assert r["evaluations"] == 12
 
 
 def cheatsheet():

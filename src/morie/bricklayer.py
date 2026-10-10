@@ -5,8 +5,8 @@ the morie family.
 Python is already present (you ran ``morie``), so this focuses on the
 *other* ecosystems:
 
-* R: ``rmorie`` from r-universe, which pulls ``rmoriedata`` +
-  ``rmoriebricklayer`` as dependencies.
+* R: ``rmorie``, ``rmoriedata`` and ``rmoriebricklayer``, all from
+  r-universe (CRAN carries older companions).
 * the ``rmorie`` command-line launcher ships inside rmorie;
   ``rmorie::install_cli()`` links it onto PATH.
 
@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import importlib.util
 import shutil
-import subprocess
 import sys
 
 RUNIV = "https://rootcoder007.r-universe.dev"
@@ -31,14 +30,40 @@ GITHUB_REPO = "rootcoder007/morie"
 GITHUB_SUBDIR = "r-package/morie"
 
 
+def _pak_or(pak_call: str, fallback: str) -> str:
+    """R code that runs ``pak_call`` with pak (installing pak first when absent)
+    and falls back to ``fallback`` when pak cannot be installed or fails."""
+    return (
+        "if (!tryCatch({ "
+        f"if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = '{CRAN}'); "
+        f"pak::repo_add(rootcoder007 = '{RUNIV}'); {pak_call}; TRUE "
+        "}, error = function(e) { "
+        "message('pak did not finish (', conditionMessage(e), '); falling back to install.packages()'); FALSE "
+        f"}})) {{ {fallback} }}; "
+    )
+
+
 def _r_install_expr(github: bool = False) -> str:
     """The R expression that installs the R side.
 
-    Default: rmorie from r-universe (prebuilt binaries, pulls rmoriedata and
-    rmoriebricklayer). ``github``: this repository's own R arm, built from
-    source with remotes (needs a C/C++ toolchain and rmoriebricklayer).
+    Default: rmorie from r-universe (prebuilt binaries), with its companions
+    rmoriebricklayer and rmoriedata named explicitly. ``github``: this
+    repository's own R arm, built from source (needs a C/C++ toolchain).
+
+    pak does the install (progress bars, compiler output hidden unless a build
+    fails, named packages upgraded to the current release); plain
+    ``install.packages()`` / remotes is the fallback when pak is unavailable.
+    Every fallback call carries ``repos``: under ``Rscript`` there is no
+    mirror chooser, so a bare ``install.packages()`` stops with "trying to use
+    CRAN without setting a mirror". r-universe comes first because CRAN
+    carries older companions, and the companions are named (and remotes
+    upgrades ``"always"``) because an older copy already installed satisfies
+    a dependency check and would otherwise be kept.
     """
     from . import __version__ as v
+
+    repos = f"c('{RUNIV}','{CRAN}')"
+    remotes = f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos = '{CRAN}'); "
 
     if github:
         # pinned to this release's tag, as the r-universe route is: the default branch
@@ -47,21 +72,29 @@ def _r_install_expr(github: bool = False) -> str:
         import re
 
         ref = f"@v{v}" if re.match(r"^\d+\.\d+\.\d+$", v) else ""
-        return (
-            'if (!requireNamespace("remotes", quietly = TRUE)) '
-            f"install.packages('remotes', repos='{CRAN}'); "
-            f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', upgrade = 'never')"
+        return _pak_or(
+            f"pak::pkg_install(c('rmoriebricklayer', 'rmoriedata', '{GITHUB_REPO}/{GITHUB_SUBDIR}{ref}'))",
+            f"install.packages(c('rmoriebricklayer','rmoriedata'), repos = {repos}); "
+            + remotes
+            + f"remotes::install_github('{GITHUB_REPO}{ref}', subdir = '{GITHUB_SUBDIR}', "
+            f"repos = {repos}, upgrade = 'always')",
         )
 
     # the R arm must be the same release as morie: r-universe first, its release tag when r-universe
     # serves another version (it lags a release by a build cycle)
     return (
-        f"install.packages('rmorie', repos=c('{RUNIV}','{CRAN}')); "
-        "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
-        f"if (have() != '{v}') {{ "
-        f"if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes', repos='{CRAN}'); "
-        f"remotes::install_github('rootcoder007/rmorie@v{v}', upgrade = 'never') }}; "
-        f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
+        _pak_or(
+            "pak::pkg_install(c('rmoriebricklayer', 'rmoriedata', 'rmorie'))",
+            f"install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos = {repos})",
+        )
+        + "have <- function() tryCatch(as.character(utils::packageVersion('rmorie')), error = function(e) ''); "
+        + f"if (have() != '{v}') {{ "
+        + _pak_or(
+            f"pak::pkg_install('rootcoder007/rmorie@v{v}')",
+            remotes + f"remotes::install_github('rootcoder007/rmorie@v{v}', repos = {repos}, upgrade = 'always')",
+        )
+        + "}; "
+        + f"if (have() != '{v}') stop('rmorie {v} is not published yet')"
     )
 
 
@@ -84,9 +117,13 @@ def _r_eval_ok(expr: str) -> bool:
     rs = _rscript()
     if not rs:
         return False
+    from ._interactive import LayerMissingError, launcher
+
     try:
-        return subprocess.run([rs, "-e", expr], capture_output=True).returncode == 0
-    except OSError:
+        return (
+            launcher("Checking the R side", offer=False).r_expr(expr, rscript=rs, capture_output=True).returncode == 0
+        )
+    except (OSError, LayerMissingError):
         return False
 
 
@@ -164,7 +201,7 @@ def run(args) -> int:
     print("morie family status:")
     _mark(py_ok, "morie            (Python / this interpreter)")
     _mark(r_ok, "rmorie + data + bricklayer  (R / r-universe)")
-    _mark(cli_ok, "rmorie launcher  (rmorie on PATH; Rscript -e 'rmorie::install_cli()')")
+    _mark(cli_ok, "rmorie launcher  (rmorie on PATH; in R: rmorie::install_cli())")
     _mark(tc_ok, "C/C++ toolchain  (cc + c++ -- REQUIRED for the compiled core)")
 
     if not _py_backend_ok():
@@ -187,8 +224,8 @@ def run(args) -> int:
 
     if r_ok and not cli_ok:
         print(
-            "note: the rmorie launcher is not on PATH; put it there with "
-            "Rscript -e 'rmorie::install_cli()' (then: rmorie login, rmorie models, rmorie ask ...)"
+            "note: the rmorie launcher is not on PATH; put it there by running "
+            "rmorie::install_cli() in R (then: rmorie login, rmorie models, rmorie ask ...)"
         )
 
     if r_ok and not getattr(args, "github", False):
@@ -198,14 +235,14 @@ def run(args) -> int:
     github = bool(getattr(args, "github", False))
     expr = _r_install_expr(github)
     if not _rscript():
-        print("R is not installed. Install R first (https://cloud.r-project.org), then:")
-        print(f'  Rscript -e "{expr}"')
+        print("R is not installed. Install R first (https://cloud.r-project.org), then run this in R:")
+        print(f"  {expr}")
         return 0
 
     if not getattr(args, "yes", False):
         if not sys.stdin.isatty():
-            print("Non-interactive; not installing. Re-run with --yes, or:")
-            print(f'  Rscript -e "{expr}"')
+            print("Non-interactive; not installing. Re-run with --yes, or run this in R:")
+            print(f"  {expr}")
             return 0
         what = (
             "this repository's R arm (r-package/morie) from GitHub"
@@ -217,10 +254,11 @@ def run(args) -> int:
             print("Skipped. Re-run `morie bricklayer` anytime.")
             return 0
 
+    from ._interactive import launcher
     from ._progress import run_step
 
     rc = run_step(
-        [_rscript(), "-e", expr],
+        launcher("Installing the R side").r_cmd(expr, rscript=_rscript()),
         "installing the R side from GitHub (compiles; minutes)"
         if github
         else "installing rmorie, rmoriedata, rmoriebricklayer",

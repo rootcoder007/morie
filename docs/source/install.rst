@@ -70,17 +70,29 @@ R
 
 The R side of the family is published as ``rmorie`` (with its companions
 ``rmoriebricklayer``, the shared C/C++ core, and ``rmoriedata``, the data
-corpus). ``rmoriebricklayer`` and ``rmoriedata`` are on CRAN; all three are
-served from r-universe:
+corpus). All three are served from r-universe; CRAN carries older
+companions, so keep r-universe first and name them, which replaces an older
+copy already installed:
 
 .. code-block:: r
 
-   install.packages(
-     "rmorie",
-     repos = c("https://rootcoder007.r-universe.dev",
-               "https://cloud.r-project.org")
-   )
+   if (!requireNamespace("pak", quietly = TRUE)) {
+     install.packages("pak", repos = "https://cloud.r-project.org")
+   }
+   pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+   pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
    library(rmorie)
+
+From a terminal, or without pak (keep ``repos``: ``Rscript`` has no mirror
+chooser):
+
+.. code-block:: sh
+
+   Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))'
+   Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
+
+On macOS, CRAN's R installs r-universe's prebuilt binaries; Homebrew's R
+cannot use them and compiles every package from source.
 
 The copy under ``r-package/morie`` in the repository is the same code under
 the package name ``morie``; it is what the R API pages on this site are
@@ -88,7 +100,9 @@ built from, and it installs from source with
 
 .. code-block:: r
 
-   install.packages(c("rmoriebricklayer", "rmoriedata"))
+   install.packages(c("rmoriebricklayer", "rmoriedata"),
+                    repos = c("https://rootcoder007.r-universe.dev",
+                              "https://cloud.r-project.org"))
    install.packages("r-package/morie", repos = NULL, type = "source")
 
 Either way, every exported function is called ``morie_*``.

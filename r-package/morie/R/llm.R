@@ -176,7 +176,9 @@ if (nzchar(v)) v else NULL }
 
 #' Probe a local Ollama instance
 #' @param timeout Probe timeout in seconds.
-#' @return Logical scalar -- TRUE when reachable.
+#' @return Logical scalar -- TRUE when the server answers and has a model to
+#'   use (one pulled, or \code{OLLAMA_MODEL} set); a server with nothing
+#'   pulled is not a usable route.
 #' @examples
 #' # \dontrun (not \donttest): this reaches the network. \donttest
 #' # examples ARE run by pkgdown and by CRAN's --run-donttest.
@@ -192,8 +194,13 @@ morie_llm_probe_ollama <- function(timeout = 2) {
   cache <- .morie_llm_cache$ollama_cached
   if (!is.null(cache)) return(cache)  # a cached answer needs no HTTP client
   if (.morie_llm_no_net()) return(FALSE)
-  st <- .morie_llm_http(paste0(.morie_llm_ollama_base(), "/api/tags"), timeout = timeout)$status
-  out <- st > 0L && st < 400L
+  res <- .morie_llm_http(paste0(.morie_llm_ollama_base(), "/api/tags"), timeout = timeout)
+  out <- res$status > 0L && res$status < 400L
+  # a server with nothing pulled cannot answer: it is not a route unless
+  # OLLAMA_MODEL names a model, so the chain moves on (to the hosted tier)
+  if (out && !nzchar(.morie_llm_env("OLLAMA_MODEL"))) {
+    out <- length(.morie_llm_http_json(res)$models %||% list()) > 0L
+  }
   .morie_llm_cache$ollama_cached <- out
   out
 }
@@ -928,7 +935,7 @@ morie_llm_provider_show <- function() {
   } else {
     k <- as.character(d$api_key %||% "")
     message("Endpoint: ", d$api_base_url, "\nModel:    ", d$api_model %||% "server default",
-            "\nKey:      ", substr(k, 1, 4), "...", substr(k, nchar(k) - 2, nchar(k)), " (", nchar(k), " chars)")
+            "\nKey:      ", if (nzchar(k)) "set" else "(not set)")
   }
   invisible(d[c("api_base_url", "api_key", "api_model")])
 }

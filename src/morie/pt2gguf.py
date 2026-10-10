@@ -7,7 +7,7 @@ Supports optional TurboQuant weight compression during conversion.
 TRUST MODEL -- what this module can do to your machine
 ------------------------------------------------------
 This converter deserializes two files: a PyTorch ``.pt`` checkpoint and a
-``tokenizer.pkl``. Both formats can, in the general case, execute arbitrary
+``tokenizer.pkl``. Both formats can, in the general case, run arbitrary
 code when loaded. This module defends against that by default:
 
 * the checkpoint is read by ``morie._pt_reader`` under the same
@@ -271,7 +271,7 @@ def convert(checkpoint_path, output_path, tokenizer_dir=None, turbo_bits=0):
     # containers resolve, anything else refuses to unpickle -- with no
     # torch (and therefore no numpy) anywhere. Verified value-exact
     # against torch 2.13 including float16/bfloat16 and strided views.
-    # _exec_guard carries the interactive exec surface and is excluded
+    # _exec_guard carries the interactive run surface and is excluded
     # from the published wheel, so it is absent for installed users. The
     # trust gate itself is one environment read; keep it here rather than
     # let a missing import decide a security question. Fails closed.

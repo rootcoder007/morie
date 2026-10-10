@@ -58,10 +58,11 @@ Pick any one channel — each installs the current ``morie`` release:
    # 4. Docker (zero local dependencies)
    docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
-   # 5. R package: rmorie (r-universe; its companions rmoriebricklayer
-   #    and rmoriedata are on CRAN)
-   install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev",
-                                        "https://cloud.r-project.org"))
+   # 5. R package: rmorie and its companions rmoriebricklayer and
+   #    rmoriedata, all from r-universe (CRAN's companions are older)
+   install.packages("pak", repos = "https://cloud.r-project.org")
+   pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+   pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
 
 .. note::
 

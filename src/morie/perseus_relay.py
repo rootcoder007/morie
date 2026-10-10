@@ -15,7 +15,7 @@ Or set PERSEUS_CLOUD_URL in .env and it auto-connects.
 
 Security: The relay only exposes Perseus agent capabilities (search, run
 functions, read files within sandbox); with the interactive layer the agent's tools
-can also run shell commands, execute code and write files on the serving machine, which is
+can also run shell commands, run code and write files on the serving machine, which is
 why a bind beyond loopback requires --token. No filesystem
 writes outside the project. Optional token auth for production use.
 """

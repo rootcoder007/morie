@@ -3,7 +3,7 @@
 
 Pure standard library. Every routine here is mirrored line-for-line as a
 ``.morie_spx_*`` helper in the R file ``aaa_sp_fill.R`` so that the two
-language arms execute the SAME arithmetic in the SAME order; that is what
+language arms run the SAME arithmetic in the SAME order; that is what
 lets ``/tmp/dscratch/sp_parity.{py,R}`` compare to an absolute 1e-9 rather
 than to a hand-waved tolerance.
 

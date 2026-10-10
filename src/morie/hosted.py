@@ -20,6 +20,9 @@ MORIE_HOSTED_KEY
     Override the stored key (CI, containers).
 MORIE_HOSTED_MODEL
     Model name; the gateway only serves the cloud models of the server.
+
+The address and model can also be saved with ``morie config set hosted.url|hosted.model``
+(``$XDG_CONFIG_HOME/morie/llm.json``); a variable that is set wins over the saved value.
 """
 
 from __future__ import annotations
@@ -29,7 +32,6 @@ import json
 import os
 import shlex
 import stat
-import subprocess
 import sys
 import time
 import webbrowser
@@ -53,6 +55,11 @@ def hosted_base_url() -> str | None:
     """
     if "MORIE_HOSTED_BASE_URL" in os.environ:
         url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
+    else:
+        from .llm_config import saved_value
+
+        url = saved_value("hosted.url")  # `morie config set hosted.url ...`
+    if url is not None:
         if url.lower() in ("off", "none", "disabled"):
             return None
         return url.rstrip("/") or None
@@ -76,9 +83,11 @@ def hosted_auth_url() -> str:
 
 def hosted_model() -> str:
     """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the services document, else the built-in default)."""
-    env = os.environ.get("MORIE_HOSTED_MODEL", "").strip()
-    if env:
-        return env
+    from .llm_config import value
+
+    chosen = value("hosted.model")  # MORIE_HOSTED_MODEL, else `morie config set hosted.model ...`
+    if chosen:
+        return chosen
     from . import services
 
     return str(services.llm().get("default_model") or "") or DEFAULT_HOSTED_MODEL
@@ -233,18 +242,24 @@ def _open_browser(uri: str) -> None:
     """
     if not _can_open_browser():
         return
-    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)):
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        sp = launcher("Opening $BROWSER", offer=False)
+    except LayerMissingError:
+        sp = None  # without the launcher the standard webbrowser module below opens it
+    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)) if sp else ():
         try:
             cmd = shlex.split(entry)
         except ValueError:
             continue
         cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
         try:
-            subprocess.Popen(
+            sp.start(
                 cmd,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdin=sp.DEVNULL,
+                stdout=sp.DEVNULL,
+                stderr=sp.DEVNULL,
                 start_new_session=True,
             )
             return

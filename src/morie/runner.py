@@ -79,7 +79,7 @@ def execute_pipeline(
     """
     Run the specified epidemiologic analysis modules.
 
-    :param modules: A list of module names to execute, defaults to None.
+    :param modules: A list of module names to run, defaults to None.
     :type modules: list[str], optional
     :param silent: If True, skips the safety confirmation prompt, defaults to False.
     :type silent: bool, optional
@@ -189,7 +189,13 @@ def execute_pipeline(
 
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
-    parser = argparse.ArgumentParser(description="MORIE package runner")
+    parser = argparse.ArgumentParser(
+        description="MORIE package runner",
+        epilog=(
+            "New here? morie help getting-started. Language models: morie help llm. "
+            "Settings: morie help config. Each command has its own --help."
+        ),
+    )
     parser.add_argument("--version", action="version", version=f"morie {__version__}")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -260,6 +266,12 @@ def build_parser() -> argparse.ArgumentParser:
     ask_cmd.add_argument("question", help="Question to answer")
     ask_cmd.add_argument("--context", help="Optional context string")
     ask_cmd.add_argument("--model", default=None, help="Override the LLM model name")
+    ask_cmd.add_argument(
+        "--route",
+        default=None,
+        choices=("auto", "own", "ollama", "hosted"),
+        help="Which route to use for this question (default: the saved route, else auto; morie help llm)",
+    )
     ask_cmd.add_argument(
         "--no-stream",
         action="store_true",
@@ -485,7 +497,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Execute code inline, from stdin, or create-and-open (co) a file",
     )
     exec_cmd.add_argument("code", nargs="?", default=None, help="Code string, or 'co' for create-and-open mode")
-    exec_cmd.add_argument("-c", dest="code_opt", default=None, metavar="CODE", help="Code string, as python -c")
+    exec_cmd.add_argument(
+        "-c", dest="code_opt", default=None, metavar="CODE", help="Code given on the command line instead of in a file"
+    )
     exec_cmd.add_argument("filename", nargs="?", default=None, help="Filename for 'co' mode (e.g. test.py)")
     exec_cmd.add_argument("--lang", choices=["python", "r"], default="python", help="Language (default: python)")
     exec_cmd.add_argument("--file", default=None, dest="exec_file", help="Read code from file instead")
@@ -597,6 +611,24 @@ def build_parser() -> argparse.ArgumentParser:
     except ImportError:
         pass
 
+    # ── config: the language-model settings (route, addresses, models, keys) ──
+    from .llm_config import CLI_ACTIONS as _CFG_ACTIONS
+
+    cfg_cmd = subparsers.add_parser(
+        "config",
+        help="Show or change the language-model settings: route, Ollama/own/hosted address, model, key",
+        description=(
+            "Language-model settings, saved in $XDG_CONFIG_HOME/morie/llm.json (shared with rmoriebricklayer). "
+            "An environment variable that is set wins over a saved value. morie config help explains each key."
+        ),
+        epilog="Examples: morie config set route hosted | morie config set ollama.model qwen3:8b | morie config setup",
+    )
+    cfg_cmd.add_argument("action", nargs="?", default="show", choices=_CFG_ACTIONS, help="default: show")
+    cfg_cmd.add_argument("rest", nargs="*", metavar="KEY [VALUE]", help="the setting (and its value, for set)")
+
+    help_cmd = subparsers.add_parser("help", help="Guides: getting-started, llm, config (morie help TOPIC)")
+    help_cmd.add_argument("topic", nargs="?", default=None, help="getting-started, llm, config or commands")
+
     # ── provider: attach your own OpenAI-compatible endpoint ───────────
     prov = subparsers.add_parser(
         "provider",
@@ -671,8 +703,8 @@ def build_parser() -> argparse.ArgumentParser:
     template_cmd.add_argument("--force", action="store_true", help="replace an existing output file")
 
     # ── pull: one-line CLI shortcuts to named morie.datasets loaders ───
-    # This is the non-coder entry point.  Users never have to write
-    # `python -c "import morie.datasets ..."` — they say
+    # This is the non-coder entry point.  Users never have to write a Python
+    # one-liner that imports morie.datasets; they say
     #   morie pull tps-major --year 2024 --out file.csv
     # and a DataFrame lands on disk.
     pull_cmd = subparsers.add_parser(
@@ -1362,6 +1394,26 @@ def _main_impl() -> int:
             return _llm_exit_code(payload)
         return 0
 
+    if args.command == "config":
+        from .llm_config import cli as _config_cli
+
+        return _config_cli(args.action, args.rest)
+
+    if args.command == "help":
+        from .cli_help import show as _help_show
+
+        if (args.topic or "").strip().lower() in ("commands", "all"):
+            parser.print_help()
+            return 0
+        text = _help_show(args.topic)
+        if text is None:
+            from .cli_help import topics_text
+
+            print(f"morie help: no topic '{args.topic}'\n{topics_text()}", file=sys.stderr)
+            return 2
+        print(text)
+        return 0
+
     if args.command == "ask":
         use_stream = not getattr(args, "no_stream", False)
         payload = ask_percy(
@@ -1369,6 +1421,7 @@ def _main_impl() -> int:
             context=args.context,
             model=getattr(args, "model", None),
             stream=use_stream,
+            route=getattr(args, "route", None),
         )
         if use_stream:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
@@ -2476,12 +2529,9 @@ def _main_impl() -> int:
 
 def _handle_exec(args: argparse.Namespace) -> int:
     # TRUST BOUNDARY: 'morie exec' runs code the LOCAL USER supplies on
-    # their own machine -- same trust model as `python -c` / `Rscript -e`.
-    # It never executes remote or network-supplied code. Set
+    # their own machine -- the same trust model as running a script they wrote.
+    # It never runs remote or network-supplied code. Set
     # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
-    import os
-    import subprocess
-    import tempfile
 
     # usage errors in the arguments themselves come first, on any install
     if getattr(args, "code_opt", None) is not None and args.code is not None:
@@ -2493,14 +2543,14 @@ def _handle_exec(args: argparse.Namespace) -> int:
         return 2
 
     # Absent from the published wheel by design: without the guard module
-    # there is no exec surface to authorise, so refuse rather than raise
+    # there is no run surface to authorise, so refuse rather than raise
     # ModuleNotFoundError at the user.
     try:
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
     except ModuleNotFoundError:
         if not _add_interactive_layer(getattr(args, "verb", "'morie exec'")):
             return 1
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
 
     try:
         ensure_exec_allowed("'morie exec'")
@@ -2528,63 +2578,9 @@ def _handle_exec(args: argparse.Namespace) -> int:
         print("No code provided: morie exec CODE | --file PATH", file=sys.stderr)
         return 2
 
-    if args.lang == "r":
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".R", delete=False) as f:
-            f.write(code)
-            tmp = f.name
-        try:
-            return subprocess.call(["Rscript", tmp])
-        finally:
-            os.unlink(tmp)
-
-    # The code runs in a child interpreter with the same names the in-process version offered
-    # (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution, and a crash
-    # in the user's code cannot take the CLI down with it. The user's own file is run in place,
-    # so tracebacks, __file__, sys.argv and sys.path[0] are what `python FILE` gives; inline code
-    # goes to a temporary file first (its line numbers are still the user's).
-    boot = (
-        "import os, runpy, sys\n"
-        "g = {}\n"
-        "try:\n"
-        "    from morie.fn import _array_core as np, _frame_core as pd\n"
-        "    g.update(np=np, pd=pd)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "try:\n"
-        "    from morie import fn\n"
-        "    from morie.fn._registry import REGISTRY\n"
-        "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "path, shown = sys.argv[1], sys.argv[2]\n"
-        "sys.argv = [path] if shown == path else ['-c']\n"
-        "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
-        "try:\n"
-        "    runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
-        "except SystemExit:\n"
-        "    raise\n"
-        "except BaseException as e:\n"
-        "    import traceback\n"
-        # drop the runner's own frames: the traceback starts at the user's code, as `python FILE` shows
-        "    tb = e.__traceback__\n"
-        "    while tb is not None and tb.tb_frame.f_code.co_filename != path:\n"
-        "        tb = tb.tb_next\n"
-        "    te = traceback.TracebackException(type(e), e, tb or e.__traceback__)\n"
-        "    for fs in te.stack:\n"
-        "        if fs.filename == path:\n"
-        "            fs.filename = shown\n"
-        "    sys.stderr.write(''.join(te.format()))\n"
-        "    sys.exit(130 if isinstance(e, KeyboardInterrupt) else 1)\n"
-    )
-    if args.exec_file:
-        cmd = [sys.executable, "-c", boot, args.exec_file, args.exec_file]
-        return subprocess.run(cmd, check=False).returncode
-    with tempfile.TemporaryDirectory() as d:
-        tmp = os.path.join(d, "morie_exec.py")
-        with open(tmp, "w", encoding="utf-8") as f:
-            f.write(code)
-        # inline code is reported as python -c reports it: File "<string>"
-        return subprocess.run([sys.executable, "-c", boot, tmp, "<string>"], check=False).returncode
+    # The code runs in a child interpreter (Python) or Rscript (R). That runner lives in the
+    # interactive layer with the guard, so the published package has no code-running path itself.
+    return run_user_code(code, args.lang, args.exec_file)
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:
@@ -2920,10 +2916,16 @@ def _handle_percysuits(args: argparse.Namespace) -> int:
 
 def _percysuits_get_installed_ssh(ssh_target: str):
     import json as _json
-    import subprocess
+
+    from ._interactive import LayerMissingError, launcher
 
     try:
-        result = subprocess.run(
+        sp = launcher("Reaching Ollama over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return None, None
+    try:
+        result = sp.run(
             ["ssh", ssh_target, "curl -s http://localhost:11434/api/tags"],
             capture_output=True,
             text=True,
@@ -2953,17 +2955,22 @@ def _percysuits_get_installed_ssh(ssh_target: str):
 
 
 def _percysuits_pull_ssh(ssh_target: str, to_pull: list) -> int:
-    import subprocess
+    from ._interactive import LayerMissingError, launcher
 
+    try:
+        sp = launcher("Pulling models over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return 1
     pulled = 0
     failed = []
     for i, (name, size, _cat, _desc) in enumerate(to_pull, 1):
         print(f"[{i}/{len(to_pull)}] {name} ({size}) ...")
         try:
-            proc = subprocess.Popen(
+            proc = sp.start(
                 ["ssh", ssh_target, f"ollama pull {name}"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                stdout=sp.PIPE,
+                stderr=sp.STDOUT,
                 text=True,
             )
             for line in proc.stdout:

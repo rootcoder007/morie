@@ -1341,8 +1341,9 @@ def _read_with_progress(resp, label: str | None) -> bytes:
 
 def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: str | None = None) -> dict:
     """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff,
-    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection), which
-    escaped every handler before and ended the pull."""
+    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection, or a body
+    cut off without an error, which then fails to parse), which escaped every handler before and
+    ended the pull."""
     import sys as _sys
     import time as _time
     from http.client import HTTPException
@@ -1359,7 +1360,8 @@ def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: s
             if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
                 raise
             logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
-        except (HTTPException, ConnectionError, TimeoutError) as exc:
+        except (HTTPException, ConnectionError, TimeoutError, json.JSONDecodeError, UnicodeDecodeError) as exc:
+            # a body cut off without an error from the connection ends in JSON that does not parse
             if attempt == attempts - 1:
                 raise
             _sys.stderr.write(
@@ -1842,32 +1844,114 @@ def _find_local_file(rel: str) -> Path | None:
     return None
 
 
-RMORIEDATA_VERSION = "0.3.4"
-# The release this morie was built against: CRAN once it carries it, the
-# GitHub release tag (the same tarball contents) meanwhile. morie 1.4.0
-# read CRAN's 0.3.3, whose SIU corpus predates the 2026-10 recrawl
-# (police_service empty in every French row); rmorie 1.4.0 ships 0.3.4.
-RMORIEDATA_TARBALL = f"https://cran.r-project.org/src/contrib/rmoriedata_{RMORIEDATA_VERSION}.tar.gz"
-RMORIEDATA_SOURCES = (
-    RMORIEDATA_TARBALL,
-    f"https://github.com/rootcoder007/rmoriedata/archive/refs/tags/v{RMORIEDATA_VERSION}.tar.gz",
+RMORIEDATA_MIN_VERSION = "0.3.6"
+# rmoriedata is fetched at its newest release: the highest version that r-universe, the GitHub
+# releases or CRAN report, never older than RMORIEDATA_MIN_VERSION (the release this morie was
+# built against; morie 1.4.0 read CRAN's 0.3.3, whose SIU corpus predates the 2026-10 recrawl).
+# The answer is kept for a day, so ordinary use makes no extra request; offline, the newest copy
+# already in the cache is used.
+RMORIEDATA_LATEST_SOURCES = (
+    "https://rootcoder007.r-universe.dev/src/contrib/PACKAGES",
+    "https://api.github.com/repos/rootcoder007/rmoriedata/releases/latest",
+    "https://cran.r-project.org/src/contrib/PACKAGES",
 )
+RMORIEDATA_CHECK_HOURS = 24
 
 
-def _rmoriedata_extdata(timeout: int = 120) -> Path:
-    """The ``inst/extdata`` of rmoriedata, fetched once from CRAN into the user cache.
+def _ua_headers() -> dict:
+    """r-universe's file host (r2.ropensci.org) refuses Python's default user agent with 403."""
+    from morie import __version__
 
-    rmoriedata is the family's data package on CRAN; its tables are plain
-    CSV files, so Python reads them without R. The tarball is 6.8 MB.
-    """
-    root = _user_cache_dir() / "rmoriedata" / RMORIEDATA_VERSION
-    ext = root / "extdata"
-    if (ext / "_catalog.csv").exists():
-        return ext
+    return {"User-Agent": f"morie/{__version__}"}
+
+
+def _get_text(url: str, timeout: int) -> str:
+    from urllib.request import Request
+
+    with urlopen(Request(url, headers=_ua_headers()), timeout=timeout) as resp:
+        return resp.read().decode("utf-8", "replace")
+
+
+def _rmoriedata_sources(version: str) -> tuple[str, ...]:
+    """Where the source tarball of one rmoriedata version lives, tried in this order: r-universe and
+    the GitHub release carry new releases first; CRAN lags behind."""
+    return (
+        f"https://rootcoder007.r-universe.dev/src/contrib/rmoriedata_{version}.tar.gz",
+        f"https://github.com/rootcoder007/rmoriedata/archive/refs/tags/v{version}.tar.gz",
+        f"https://cran.r-project.org/src/contrib/rmoriedata_{version}.tar.gz",
+    )
+
+
+def _cran_rmoriedata_version(timeout: int = 20) -> str | None:
+    """The rmoriedata version CRAN carries now (it lags behind r-universe and GitHub)."""
+    try:
+        body = _get_text(RMORIEDATA_LATEST_SOURCES[-1], timeout)
+    except Exception:  # noqa: BLE001 - CRAN unreachable
+        return None
+    m = re.search(r"^Package: rmoriedata\s*\nVersion: ([0-9.]+)", body, re.M)
+    return m.group(1) if m else None
+
+
+def _version_key(v: str) -> tuple[int, ...]:
+    return tuple(int(p) for p in re.findall(r"\d+", v))
+
+
+def _rmoriedata_latest_version(timeout: int = 20) -> str | None:
+    """The newest rmoriedata any source reports, or None when none answers."""
+    import json as _json
+
+    found: list[str] = []
+    for url in RMORIEDATA_LATEST_SOURCES:
+        try:
+            body = _get_text(url, timeout)
+        except Exception:  # noqa: BLE001 - an unreachable source is skipped
+            continue
+        if urlparse(url).hostname == "api.github.com":
+            try:
+                tag = str(_json.loads(body).get("tag_name", ""))
+            except ValueError:
+                tag = ""
+            if re.fullmatch(r"v?\d+(\.\d+)+", tag):
+                found.append(tag.lstrip("v"))
+        else:
+            m = re.search(r"^Package: rmoriedata\s*\nVersion: ([0-9.]+)", body, re.M)
+            if m:
+                found.append(m.group(1))
+    return max(found, key=_version_key) if found else None
+
+
+def _rmoriedata_version(base: Path) -> str:
+    """The rmoriedata version to use: the newest release (checked once a day), at least the minimum."""
+    import json as _json
+    import time
+
+    stamp = base / "latest.json"
+    cached = sorted(
+        (d.name for d in base.glob("*") if d.is_dir() and (d / "extdata" / "_catalog.csv").exists()),
+        key=_version_key,
+    )
+    try:
+        info = _json.loads(stamp.read_text(encoding="utf-8"))
+        if time.time() - float(info["checked"]) < RMORIEDATA_CHECK_HOURS * 3600:
+            return max(str(info["version"]), RMORIEDATA_MIN_VERSION, key=_version_key)
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    latest = _rmoriedata_latest_version()
+    if latest is None:  # offline: the newest copy already here, else the minimum
+        return max([RMORIEDATA_MIN_VERSION, *cached], key=_version_key)
+    try:
+        base.mkdir(parents=True, exist_ok=True)
+        stamp.write_text(_json.dumps({"version": latest, "checked": time.time()}), encoding="utf-8")
+    except OSError:
+        pass
+    return max(latest, RMORIEDATA_MIN_VERSION, key=_version_key)
+
+
+def _rmoriedata_download(version: str, sources: tuple[str, ...], ext: Path, timeout: int) -> Exception | None:
+    """Fetch one rmoriedata version's tarball from the first source that has it and unpack its
+    inst/extdata into ``ext``. Returns None on success, else the last error."""
     import tarfile
     import tempfile
-
-    root.mkdir(parents=True, exist_ok=True)
     from urllib.error import HTTPError, URLError
 
     from ._progress import download_url
@@ -1875,31 +1959,27 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
     with tempfile.TemporaryDirectory() as tmp:
         tgz = Path(tmp) / "rmoriedata.tar.gz"
         last: Exception | None = None
-        for url in RMORIEDATA_SOURCES:
-            logger.info("Fetching rmoriedata %s (%s)...", RMORIEDATA_VERSION, url)
+        for url in sources:
+            logger.info("Fetching rmoriedata %s (%s)...", version, url)
             try:
                 download_url(
                     url,
                     tgz,
-                    f"rmoriedata {RMORIEDATA_VERSION}",
+                    f"rmoriedata {version}",
                     timeout=timeout,
+                    headers=_ua_headers(),
                     opener=lambda req, timeout: urlopen(req, timeout=timeout),
                 )
                 last = None
                 break
             except HTTPError as exc:
-                last = exc  # CRAN does not carry this version yet: try the release tag
+                last = exc  # this source does not carry the version: try the next one
                 continue
             except (URLError, OSError, TimeoutError) as exc:
                 last = exc
                 break
         if last is not None:
-            host = ", ".join(u.split("/")[2] for u in RMORIEDATA_SOURCES)
-            raise RuntimeError(
-                f"could not fetch rmoriedata {RMORIEDATA_VERSION} ({last}). The SIU corpus and the other "
-                f"rmoriedata tables are downloaded once from {host} into {root}; connect to the "
-                "network (or copy that directory from another machine) and try again."
-            ) from last
+            return last
         with tarfile.open(tgz) as tf:
             members = [m for m in tf.getmembers() if "/inst/extdata/" in m.name and not m.name.endswith("/")]
             for m in members:
@@ -1911,8 +1991,46 @@ def _rmoriedata_extdata(timeout: int = 120) -> Path:
                 if fh is not None:
                     target.write_bytes(fh.read())
     if not (ext / "_catalog.csv").exists():
-        raise RuntimeError("the rmoriedata tarball carried no extdata catalog")
-    return ext
+        return RuntimeError("the rmoriedata tarball carried no extdata catalog")
+    return None
+
+
+def _rmoriedata_extdata(timeout: int = 120) -> Path:
+    """The ``inst/extdata`` of the newest rmoriedata, fetched once into the user cache.
+
+    rmoriedata is the family's data package; its tables are plain CSV files, so Python reads them
+    without R. The newest release comes from r-universe or the GitHub release (under 10 MB); when
+    neither can be reached, CRAN's copy (which lags behind) is used, with a warning.
+    """
+    base = _user_cache_dir() / "rmoriedata"
+    version = _rmoriedata_version(base)
+    ext = base / version / "extdata"
+    if (ext / "_catalog.csv").exists():
+        return ext
+    sources = _rmoriedata_sources(version)
+    err = _rmoriedata_download(version, sources, ext, timeout)
+    if err is None:
+        return ext
+    # the newest release could not be fetched: CRAN's (older) release, if it has one
+    cran = _cran_rmoriedata_version()
+    if cran and cran != version:
+        cran_ext = base / cran / "extdata"
+        if (cran_ext / "_catalog.csv").exists() or _rmoriedata_download(
+            cran, (_rmoriedata_sources(cran)[-1],), cran_ext, timeout
+        ) is None:
+            import warnings
+
+            warnings.warn(
+                f"could not fetch rmoriedata {version} ({err}); using CRAN's older {cran} instead",
+                stacklevel=2,
+            )
+            return cran_ext
+    host = ", ".join(u.split("/")[2] for u in sources)
+    raise RuntimeError(
+        f"could not fetch rmoriedata {version} ({err}). The SIU corpus and the other rmoriedata "
+        f"tables are downloaded once from {host} into {base / version}; connect to the network "
+        "(or copy that directory from another machine) and try again."
+    ) from err
 
 
 def list_rmoriedata(timeout: int = 120) -> list[dict]:
@@ -2316,7 +2434,7 @@ def _load_dataset_raw(
         return df
 
     # 2c. rmoriedata (CRAN): read the slug from the package's extdata,
-    #     fetched once from CRAN as a source tarball. No R needed.
+    #     fetched once as a source tarball (CRAN, r-universe or GitHub). No R needed.
     slug = entry.get("rmoriedata")
     if slug:
         df = load_rmoriedata(slug, timeout=timeout)

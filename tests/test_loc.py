@@ -164,7 +164,7 @@ def test_chat_with_system_prompt():
     mock_resp.raise_for_status = MagicMock()
     mock_resp.json.return_value = {"message": {"content": "ok"}, "done": True}
     with patch("morie.loc.httpx.post", return_value=mock_resp) as mock_post:
-        LocalOllama().chat("test", system="You are helpful")
+        LocalOllama().chat("test", instructions="You are helpful")
     body = mock_post.call_args.kwargs.get("json") or mock_post.call_args[1].get("json")
     messages = body["messages"]
     assert messages[0]["role"] == "system"

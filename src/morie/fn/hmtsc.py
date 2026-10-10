@@ -28,7 +28,7 @@ def _apply(op, x):
 def trace(model, example_inputs):
     """Record a typed graph by running `model`'s ops on `example_inputs`.
 
-    This is what tracing *is*: the ops are executed once and the observed
+    This is what tracing *is*: the ops are run once and the observed
     input/output shapes are frozen into the graph. Control flow that
     depends on the data is therefore invisible to the trace -- the known
     limitation of ``torch.jit.trace`` -- so the graph is only valid for
@@ -66,7 +66,7 @@ def trace(model, example_inputs):
 
 
 def run_graph(graph, x):
-    """Re-execute a traced graph, enforcing the recorded shapes."""
+    """Re-run a traced graph, enforcing the recorded shapes."""
     a = np.asarray(x, dtype=float)
     if a.ndim == 1:
         a = a.reshape(1, -1)
@@ -93,7 +93,7 @@ def geron_torchscript(model, example_inputs):
     and tracing runs them once on `example_inputs`, freezing each node's
     input and output shape into a static graph.
 
-    The round trip is then verified: the graph is re-executed and its
+    The round trip is then verified: the graph is re-run and its
     output compared with the eager run, and re-running it at a different
     feature width raises instead of silently broadcasting. That is the
     real property of a traced graph -- it is specialised to the shapes it

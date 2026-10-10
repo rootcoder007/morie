@@ -788,7 +788,8 @@ def compile_semipar_lib(
         Path to compiled library, or None on failure.
     """
     import shutil
-    import subprocess
+
+    from ._interactive import LayerMissingError, launcher
 
     cc = shutil.which("cc") or shutil.which("clang") or shutil.which("gcc")
     if cc is None:
@@ -820,9 +821,14 @@ def compile_semipar_lib(
         cmd += ["-framework", "Accelerate"]
 
     try:
-        subprocess.run(cmd, check=True, capture_output=True, text=True)
+        sp = launcher("Compiling the C kernels")
+    except LayerMissingError as e:
+        logger.warning("%s", e)
+        return None
+    try:
+        sp.run(cmd, check=True, capture_output=True, text=True)
         logger.info("Compiled semipar_kernels to %s", output)
         return output
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+    except (sp.CalledProcessError, FileNotFoundError) as e:
         logger.warning("Compilation failed: %s", e)
         return None

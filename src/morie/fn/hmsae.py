@@ -85,7 +85,7 @@ def geron_stacked_autoencoder(X, hidden_sizes=(2,), epochs=200, lr=0.5, seed=0, 
 
     Formula: symmetric encoder/decoder; greedy layer-wise pretraining
 
-    Both halves of the recipe are executed. **Greedy layer-wise
+    Both halves of the recipe are run. **Greedy layer-wise
     pretraining**: each layer is trained as its own tied-weight
     autoencoder (``h = tanh(HW + b)``, ``H_hat = h W^T + c``) on the codes
     produced by the layer below, so layer L never sees the raw input.

@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -49,8 +48,15 @@ def main() -> None:
         )
         sys.exit(1)
 
+    from ._interactive import LayerMissingError, launcher
+
     try:
-        result = subprocess.run([binary] + sys.argv[1:])
+        sp = launcher("Starting TIDE")
+    except LayerMissingError as e:
+        print(e, file=sys.stderr)
+        sys.exit(1)
+    try:
+        result = sp.run([binary] + sys.argv[1:])
         sys.exit(result.returncode)
     except KeyboardInterrupt:
         sys.exit(130)

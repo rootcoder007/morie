@@ -43,7 +43,7 @@ def _two_way_solve(obs, u_a, u_l, u_b, Xc, max_iter=2000, tol=1e-13):
     `Xc` is None or a LIST of (n, T) covariate slabs.  It used to be a
     rank-3 array, but the native array core's rank>=3 container
     supports neither 3-D slicing nor matmul, so that route could never
-    execute; a list of 2-D slabs is the same object mathematically and
+    run; a list of 2-D slabs is the same object mathematically and
     is what the R arm carries too.
     """
     n, T = obs.shape

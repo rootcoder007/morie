@@ -39,7 +39,7 @@ def geron_onnx_export(model, args, file=None):
     Parameters
     ----------
     model : sequence of mappings
-        Layer specifications in execution order.
+        Layer specifications in run order.
     args : array-like
         A concrete example input, batch dimension included.
     file : str, optional

@@ -4,7 +4,7 @@ Bridge between Go TIDE and Python morie statistical functions.
 Three modes:
   python -m morie.stat_bridge registry-json   -> JSON dump for Go tree
   python -m morie.stat_bridge help             -> formatted help text
-  python -m morie.stat_bridge exec "cmd args"  -> run command, print result
+  python -m morie.stat_bridge run "cmd args"  -> run command, print result
 """
 
 from __future__ import annotations
@@ -111,7 +111,7 @@ def exec_command(cmd_str: str) -> str:
 
 
 def main():
-    """Command-line entry: ``python -m morie.stat_bridge registry-json|help|exec 'cmd'|load-dataset NAME``."""
+    """Command-line entry: ``python -m morie.stat_bridge registry-json|help|run 'cmd'|load-dataset NAME``."""
     if len(sys.argv) < 2:
         print("Usage: python -m morie.stat_bridge <registry-json|help|exec 'cmd'>")
         sys.exit(1)

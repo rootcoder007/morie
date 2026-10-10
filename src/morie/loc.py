@@ -8,10 +8,12 @@ This module backs the ``ollama`` provider slot in :mod:`morie.llm`.
 
 Environment Variables
 ---------------------
-OLLAMA_BASE_URL : str
+OLLAMA_HOST, OLLAMA_BASE_URL : str
     Override the Ollama endpoint.  Default: ``http://localhost:11434``.
-MORIE_OLLAMA_MODEL : str
+OLLAMA_MODEL, MORIE_OLLAMA_MODEL : str
     Override the default local model.  Default: ``gemma4:e2b``.
+
+Both can be saved instead with ``morie config set ollama.url|ollama.model``.
 """
 
 from __future__ import annotations
@@ -19,7 +21,6 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
-import os
 from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
@@ -86,8 +87,11 @@ class LocalOllama:
         model: str | None = None,
         timeout: float = _REQUEST_TIMEOUT,
     ):
-        self.base_url = (base_url or os.environ.get("OLLAMA_BASE_URL", "").strip() or _DEFAULT_BASE_URL).rstrip("/")
-        self._model_override = model or os.environ.get("MORIE_OLLAMA_MODEL", "").strip() or _DEFAULT_MODEL
+        from .llm_config import ollama_url, value
+
+        # OLLAMA_HOST / OLLAMA_BASE_URL / the saved ollama.url (`morie config`), the same server `morie ask` uses
+        self.base_url = (base_url or ollama_url() or _DEFAULT_BASE_URL).rstrip("/")
+        self._model_override = model or value("ollama.model") or _DEFAULT_MODEL
         self.timeout = timeout
         self._model_detected: str | None = None
 
@@ -227,7 +231,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         context: list[dict[str, str]] | None = None,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -240,8 +244,8 @@ class LocalOllama:
             User message.
         model : str, optional
             Override the default model.
-        system : str, optional
-            System prompt.
+        instructions : str, optional
+            Instructions for the model (sent as the system prompt).
         context : list, optional
             Prior messages as ``[{"role": "user", "content": "..."}, ...]``.
         temperature : float
@@ -254,7 +258,7 @@ class LocalOllama:
         str
             The assistant's response text.
         """
-        messages = self._build_messages(prompt, system, context)
+        messages = self._build_messages(prompt, instructions, context)
         resp = httpx.post(
             f"{self.base_url}/api/chat",
             json={
@@ -280,7 +284,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         context: list[dict[str, str]] | None = None,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -292,7 +296,7 @@ class LocalOllama:
         str
             Content chunks as they arrive from the model.
         """
-        messages = self._build_messages(prompt, system, context)
+        messages = self._build_messages(prompt, instructions, context)
         with httpx.stream(
             "POST",
             f"{self.base_url}/api/chat",
@@ -329,7 +333,7 @@ class LocalOllama:
         prompt: str,
         *,
         model: str | None = None,
-        system: str | None = None,
+        instructions: str | None = None,
         stream: bool = False,
         temperature: float = 0.1,
         num_predict: int = 4096,
@@ -344,8 +348,8 @@ class LocalOllama:
                 "num_predict": num_predict,
             },
         }
-        if system:
-            payload["system"] = system
+        if instructions:
+            payload["system"] = instructions
 
         if stream:
             return self._generate_stream(payload)
@@ -384,12 +388,12 @@ class LocalOllama:
     @staticmethod
     def _build_messages(
         prompt: str,
-        system: str | None,
+        instructions: str | None,
         context: list[dict[str, str]] | None,
     ) -> list[dict[str, str]]:
         messages: list[dict[str, str]] = []
-        if system:
-            messages.append({"role": "system", "content": system})
+        if instructions:
+            messages.append({"role": "system", "content": instructions})
         if context:
             messages.extend(context)
         messages.append({"role": "user", "content": prompt})

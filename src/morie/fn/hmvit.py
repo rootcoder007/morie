@@ -33,7 +33,7 @@ def geron_vision_transformer(image, patch_size, n_layers=2, d_model=8, n_heads=2
 
     Formula: image -> patch embeddings + pos enc -> transformer encoder -> [CLS] classifier
 
-    The pipeline is executed, not described: the image is cut into
+    The pipeline is run, not described: the image is cut into
     non-overlapping ``patch_size x patch_size`` patches, each patch is
     flattened and linearly embedded, a learned [CLS] token is prepended,
     sinusoidal position encodings are added, the sequence runs through

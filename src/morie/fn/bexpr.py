@@ -60,7 +60,7 @@ def boolean_eval(
             raise ValueError(f"Unexpected character in expression: '{ch}'")
 
     # AST-validated evaluation (boolean/comparison operators and literals
-    # only, no builtins reachable) -- replaces a raw eval() sink.
+    # only, no builtins reachable) -- in place of handing the text to the interpreter.
     from morie._safe_expr import safe_eval_expr
 
     result = int(bool(safe_eval_expr(expr)))

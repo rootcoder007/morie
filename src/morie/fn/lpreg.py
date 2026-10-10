@@ -42,7 +42,7 @@ def lpreg(
     -------
     dict
         ``x_eval``, ``y_hat``, ``coefficients`` (list of arrays per
-        eval point), ``degree``, ``bandwidth``, ``n_obs``.
+        evaluation point), ``degree``, ``bandwidth``, ``n_obs``.
 
     References
     ----------

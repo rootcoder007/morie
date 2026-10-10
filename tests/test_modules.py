@@ -111,7 +111,7 @@ def test_run_module_materialises_dataset_key_and_cached_pumf_for_the_r_bridge(mo
         return {"ok": pd.DataFrame({"x": [1]})}
 
     monkeypatch.setattr(modules, "_run_r_module", fake_bridge)
-    monkeypatch.setattr(modules, "_r_route_ready", lambda: None)  # the bridge is faked; R need not exist
+    monkeypatch.setattr(modules, "_r_route_ready", lambda **_: None)  # the bridge is faked; R need not exist
     monkeypatch.setattr("morie.data.load_dataset", lambda key, **kw: pd.DataFrame({"k": [key]}))
     monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
     modules.run_module("descriptive-statistics", dataset_key="ocp21")
