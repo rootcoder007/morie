@@ -1341,8 +1341,9 @@ def _read_with_progress(resp, label: str | None) -> bytes:
 
 def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: str | None = None) -> dict:
     """GET a JSON document; a 409/429/5xx answer (the datastore under load) is retried with backoff,
-    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection), which
-    escaped every handler before and ended the pull."""
+    and so is a page whose transfer drops part-way (IncompleteRead, a reset connection, or a body
+    cut off without an error, which then fails to parse), which escaped every handler before and
+    ended the pull."""
     import sys as _sys
     import time as _time
     from http.client import HTTPException
@@ -1359,7 +1360,8 @@ def _urlopen_json_with_retry(url: str, timeout: int, attempts: int = 4, label: s
             if exc.code not in (409, 429, 500, 502, 503, 504) or attempt == attempts - 1:
                 raise
             logger.warning("CKAN answered %d; retrying in %.0f s", exc.code, delay)
-        except (HTTPException, ConnectionError, TimeoutError) as exc:
+        except (HTTPException, ConnectionError, TimeoutError, json.JSONDecodeError, UnicodeDecodeError) as exc:
+            # a body cut off without an error from the connection ends in JSON that does not parse
             if attempt == attempts - 1:
                 raise
             _sys.stderr.write(
