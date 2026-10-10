@@ -359,6 +359,10 @@ morie_matching_abadie_imbens_kernel_cpp <- function(y, t, treated_pos, control_p
     .Call(`_morie_morie_rlm_cpp`, X, y, k, maxit, acc)
 }
 
+.rqn_fnb_impl <- function(X, y, tau, beta, eps, maxit) {
+    .Call(`_morie_rqn_fnb_impl`, X, y, tau, beta, eps, maxit)
+}
+
 .morie_sobol_cpp <- function(n, d) {
     .Call(`_morie_morie_sobol_cpp`, n, d)
 }
