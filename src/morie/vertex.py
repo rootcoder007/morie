@@ -104,7 +104,7 @@ def ask_gemini(
     prompt: str,
     *,
     model: str | None = None,
-    system: str | None = None,
+    instructions: str | None = None,
     temperature: float = 0.1,
     max_output_tokens: int = 2048,
     timeout_s: float = 120.0,
@@ -119,9 +119,9 @@ def ask_gemini(
     model : str, optional
         Model override. Defaults to VERTEX_MODEL env or
         ``gemini-2.5-flash``.
-    system : str, optional
-        System instruction (persona, constraints). Matches the
-        ``systemInstruction`` field on the Gemini REST API.
+    instructions : str, optional
+        Instructions for the model (persona, constraints), sent as the
+        ``systemInstruction`` field of the Gemini REST API.
     temperature : float, default 0.1
         Deterministic for scientific work. Match morie.llm default.
     max_output_tokens : int, default 2048
@@ -162,9 +162,9 @@ def ask_gemini(
             "maxOutputTokens": int(max_output_tokens),
         },
     }
-    if system:
+    if instructions:
         payload["systemInstruction"] = {
-            "parts": [{"text": system}],
+            "parts": [{"text": instructions}],
         }
 
     with _httpx.Client(timeout=timeout_s) as client:

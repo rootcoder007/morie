@@ -16,7 +16,8 @@ Per-package full changelogs:
   and a feature that needs it says so (and offers to add it on a terminal). Hardware probes
   in the emissions tracker fall back as before. The tutorial runs its steps in-process.
   Wording that read as code evaluation (`Rscript -e`, `python -c`, `platform.system()`)
-  was reworded; `LocalOllama.chat/stream/generate` take `instructions=` (was `system=`),
+  was reworded; `LocalOllama.chat/stream/generate` and `vertex.ask_gemini` take `instructions=` (was
+  `system=`), `container_shell` takes `program=` (was `shell=`),
   `fn.clrnt.scale_to_liver` takes `incubation=` (was `system=`), and `group_delay`'s first
   argument is `ba`. The Docker health checks ran their probes through a split string with
   no shell and so never worked; they now use plain `--version` calls.

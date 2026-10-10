@@ -126,7 +126,7 @@ def run_step(cmd: list[str], label: str, *, env: dict | None = None, cwd: str | 
         stream.flush()
         return rc
     with tempfile.TemporaryFile("w+", encoding="utf-8", errors="replace") as log:
-        proc = sp.Popen(cmd, env=env, cwd=cwd, stdout=log, stderr=sp.STDOUT)
+        proc = sp.start(cmd, env=env, cwd=cwd, stdout=log, stderr=sp.STDOUT)
         i = 0
         width = 0
         last = ""

@@ -1026,7 +1026,7 @@ def _r_stage_error(exc: BaseException) -> bool:
         from . import _launch
     except ImportError:  # no launcher, so it cannot have raised this
         return False
-    return isinstance(exc, _launch.SubprocessError)
+    return isinstance(exc, _launch.LaunchError)
 
 
 def _r_mismatch_mode() -> str:

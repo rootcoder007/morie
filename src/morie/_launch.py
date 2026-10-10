@@ -29,6 +29,9 @@ from subprocess import (  # noqa: F401 - re-exported for call sites
     run,
 )
 
+start = Popen  # a program that keeps running while morie reads its output
+LaunchError = SubprocessError  # any error the launcher raises
+
 
 def r_cmd(expr: str, *, rscript: str = "Rscript", options: tuple[str, ...] = ()) -> list[str]:
     """The command line that runs one R expression: ``[rscript, *options, "-e", expr]``."""
@@ -55,9 +58,11 @@ __all__ = [
     "TimeoutExpired",
     "call",
     "check_call",
+    "LaunchError",
     "check_output",
     "r_cmd",
     "r_expr",
     "run",
+    "start",
     "subprocess",
 ]

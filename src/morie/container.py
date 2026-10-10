@@ -712,7 +712,7 @@ def exec_in_container(
 def container_shell(
     container: str,
     *,
-    shell: str = "/bin/bash",
+    program: str = "/bin/bash",
 ) -> DockerResult:
     """Open an interactive shell in a running container.
 
@@ -720,14 +720,14 @@ def container_shell(
     ----------
     container : str
         Container name or ID.
-    shell : str
-        Shell binary (default ``/bin/bash``).
+    program : str
+        The shell program to start (default ``/bin/bash``).
 
     Returns
     -------
     DockerResult
     """
-    return exec_in_container(container, shell, interactive=True)
+    return exec_in_container(container, program, interactive=True)
 
 
 def stop_container(
