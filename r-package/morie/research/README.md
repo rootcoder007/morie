@@ -90,5 +90,5 @@ assumption holds in Toronto, Ontario, or anywhere else.
 
 ```
 cd ~/work/researchproofs && lake build && lake env lean Audit.lean
-cd ~/work/researchproofs && lake build && lake env lean Audit.lean
+cd ~/work/rmorie-research && Rscript -e 'testthat::test_dir("tests/testthat", filter = "feedback-loop|fairness-bounds|dark-figure|spillover|concentration|research-p268|meta-pooling|logit-separation|bounds-confidence|cheeger|ecological-bounds|sentence-mts|contagion-extinction|judge-iv|disparity-decomposition|court-backlog|incapacitation|selective-labels|regression-to-mean")'
 ```
