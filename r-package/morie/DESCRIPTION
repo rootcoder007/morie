@@ -231,7 +231,8 @@ Suggests:
     WRS2,
     xgboost,
     xml2,
-    remotes
+    remotes,
+    insight
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues

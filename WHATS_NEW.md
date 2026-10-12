@@ -9,6 +9,10 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Research ledger: `hotspot_threshold()` (the Short-Brantingham reaction-diffusion model's unique
+  homogeneous steady state, its dispersion relation P k^2 - Q k + R and the explicit stability
+  inequality 3 eps D rho <= omega + eta A / z, Lean `Research.P4.Hotspot`); the same function in the
+  R mirror. Lean now 69 files, 361 audited theorems, 0 sorry.
 * Research ledger, twelve more items closed (Lean: 341 audited theorems, 0 sorry): `feedback_loop_envelope()`
   (the discovery urn's share has variance at most a/(4(r0+b0)) at every horizon, a Chebyshev band),
   `spillover_ring_bound()` (the bias of a d-ring spillover analysis is bounded by the outer ring's

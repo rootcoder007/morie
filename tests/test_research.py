@@ -1269,3 +1269,41 @@ def test_rank_persistence_null_parity():
     assert close(big["mean"], 256 / 158) and big["p_value"] < 1e-4
     with pytest.raises(ValueError):
         R.rank_persistence_null(5, 6)
+
+
+def test_hotspot_threshold_parity():
+    p = dict(A0=1, omega=1, eps=2, D=1, gamma=1, eta=0.01, z=1)
+    r = R.hotspot_threshold(**p)
+    B, A, rho = r["steady"]["B"], r["steady"]["A"], r["steady"]["rho"]
+    assert abs(-p["omega"] * B + p["eps"] * p["D"] * rho * (p["A0"] + B)) < 1e-12  # steady_iff
+    assert abs(-rho * (p["A0"] + B) + p["gamma"]) < 1e-12
+    assert (round(B, 12), round(A, 12), round(rho, 12)) == (2.0, 3.0, round(1 / 3, 12))
+    ks = [0.0, 0.5, 2.0, 10.0]
+    tab = R.hotspot_threshold(**p, k=ks)["dispersion"]
+    a = -p["omega"] + p["eps"] * p["D"] * rho
+    b = p["eps"] * p["D"] * A
+    c0, c1, d = -rho, 2 * p["D"] * rho / A, -A
+    d1, d2 = p["eta"] * p["D"] / p["z"], p["D"]
+    for row in tab:  # det_eq
+        k = row["k"]
+        by_hand = (a - d1 * k) * (d - d2 * k) - b * (c0 + c1 * k)
+        assert abs(row["det"] - by_hand) < 1e-12
+        assert abs(row["det"] - (r["P"] * k * k - r["Q"] * k + r["R"])) < 1e-12
+        assert row["trace"] < 0  # tr_neg
+    assert abs(r["R"] - p["omega"] * A) < 1e-12  # R_eq
+    assert abs(r["Q"] - p["D"] * (3 * p["eps"] * p["D"] * rho - p["omega"] - p["eta"] * A / p["z"])) < 1e-12
+    assert r["unstable"] and r["Q"] > 0 and r["Q"] ** 2 > 4 * r["P"] * r["R"]  # hotspots_above_threshold
+    assert r["det_crit"] < 0 and r["growth_crit"] > 0
+    tr_c = (a - d1 * r["k_crit"]) + (d - d2 * r["k_crit"])
+    assert abs(r["growth_crit"] ** 2 - tr_c * r["growth_crit"] + r["det_crit"]) < 1e-10  # unstable_iff
+    r0 = R.hotspot_threshold(**{**p, "eps": 0}, k=ks)  # no_hotspots_without_reinforcement
+    assert not r0["unstable"] and all(row["det"] > 0 for row in r0["dispersion"])
+    rb = R.hotspot_threshold(**{**p, "eps": 0.2, "eta": 0.5}, k=ks)  # no_hotspots_below_threshold
+    assert rb["threshold"]["reinforcement"] <= rb["threshold"]["decay_plus_diffusion"]
+    assert not rb["unstable"] and all(row["det"] > 0 for row in rb["dispersion"])
+    import pytest
+
+    with pytest.raises(ValueError, match="A0"):
+        R.hotspot_threshold(0, 1, 1, 1, 1, 0.1)
+    with pytest.raises(ValueError, match="eps"):
+        R.hotspot_threshold(1, 1, -1, 1, 1, 0.1)

@@ -548,3 +548,101 @@ def rank_persistence_null(n: int, k: int, observed=None) -> dict:
             "Research.P7.Persistence.overlap_prob_sum",
         ),
     }
+
+
+def hotspot_threshold(
+    A0: float, omega: float, eps: float, D: float, gamma: float, eta: float, z: float = 1.0, k=None
+) -> dict:
+    """Hot-spot threshold of the Short-Brantingham model (``Research.P4.Hotspot``).
+
+    The uniform steady state is B = eps D gamma / omega, A = A0 + B, rho = gamma / A
+    (``steady_iff``); the mode-k determinant is P k^2 - Q k + R with P = eta D^2 / z,
+    Q = D (3 eps D rho - omega - eta A / z), R = omega A, and the trace is negative, so a mode
+    grows iff the determinant is negative (``unstable_iff``). Q <= 0 means no hot spots at any
+    wavelength (``no_hotspots_below_threshold``); Q > 0 with Q^2 > 4 P R makes the critical
+    mode k* = Q / (2 P) grow (``hotspots_above_threshold``).
+
+    Examples
+    --------
+    >>> hotspot_threshold(A0=1, omega=1, eps=2, D=1, gamma=1, eta=0.01)["unstable"]
+    True
+    >>> hotspot_threshold(A0=1, omega=1, eps=0, D=1, gamma=1, eta=0.01)["unstable"]
+    False
+    """
+    import math
+
+    def one(x, name, lower, strict=True):
+        try:
+            v = float(x)
+        except (TypeError, ValueError):
+            raise ValueError(f"{name} must be a single finite number") from None
+        if not math.isfinite(v) or (v <= lower if strict else v < lower):
+            raise ValueError(f"{name} must be a single finite number {'above' if strict else 'at least'} {lower}")
+        return v
+
+    A0 = one(A0, "A0", 0)
+    omega = one(omega, "omega", 0)
+    eps = one(eps, "eps", 0, strict=False)
+    D = one(D, "D", 0)
+    gamma = one(gamma, "gamma", 0)
+    eta = one(eta, "eta", 0, strict=False)
+    z = one(z, "z", 0)
+    Bbar = eps * D * gamma / omega
+    Abar = A0 + Bbar
+    rhobar = gamma / Abar
+    a = -omega + eps * D * rhobar
+    b = eps * D * Abar
+    c0 = -rhobar
+    c1 = 2 * D * rhobar / Abar
+    d = -Abar
+    d1 = eta * D / z
+    d2 = D
+    P = d1 * d2
+    Q = a * d2 + d * d1 + b * c1
+    R = a * d - b * c0
+
+    def tr_k(kk):
+        return (a - d1 * kk) + (d - d2 * kk)
+
+    def det_k(kk):
+        return (a - d1 * kk) * (d - d2 * kk) - b * (c0 + c1 * kk)
+
+    def growth_k(kk):
+        t = tr_k(kk)
+        dd = det_k(kk)
+        return (t + math.sqrt(max(t * t - 4 * dd, 0.0))) / 2
+
+    lhs = 3 * eps * D * rhobar
+    rhs = omega + eta * Abar / z
+    if P > 0:
+        unstable = Q > 0 and Q * Q > 4 * P * R
+        k_crit = Q / (2 * P) if Q > 0 else None
+    else:
+        unstable = Q > 0
+        k_crit = 2 * R / Q if Q > 0 else None
+    det_crit = None if k_crit is None else det_k(k_crit)
+    growth_crit = None if k_crit is None else growth_k(k_crit)
+    dispersion = None
+    if k is not None:
+        ks = [float(v) for v in k]
+        if any(v != v or v < 0 for v in ks):
+            raise ValueError("k must be non-negative wavenumbers-squared")
+        dispersion = [{"k": v, "trace": tr_k(v), "det": det_k(v), "growth": growth_k(v)} for v in ks]
+    return {
+        "steady": {"B": Bbar, "A": Abar, "rho": rhobar},
+        "P": P,
+        "Q": Q,
+        "R": R,
+        "threshold": {"reinforcement": lhs, "decay_plus_diffusion": rhs},
+        "unstable": unstable,
+        "k_crit": k_crit,
+        "det_crit": det_crit,
+        "growth_crit": growth_crit,
+        "dispersion": dispersion,
+        "theorems": (
+            "Research.P4.Hotspot.steady_iff",
+            "Research.P4.Hotspot.unstable_iff",
+            "Research.P4.Hotspot.no_hotspots_below_threshold",
+            "Research.P4.Hotspot.hotspots_above_threshold",
+        ),
+    }
