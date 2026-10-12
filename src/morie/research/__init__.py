@@ -48,7 +48,7 @@ from morie.research.judge_iv import judge_iv, judge_iv_population, judge_slope_t
 from morie.research.lecam import two_point_bound
 from morie.research.logit_separation import logit_separation
 from morie.research.meta_pooling import meta_dl_bias, meta_hksj, meta_random_effects
-from morie.research.recording_map import detection_rate_shift, recording_map
+from morie.research.recording_map import detection_rate_shift, recording_map, recording_regimes
 from morie.research.regression_to_mean import hotspot_shrinkage, regression_to_mean, shrinkage_loss
 from morie.research.selection import (
     age_crime_aggregate,
@@ -61,7 +61,7 @@ from morie.research.selection import (
     probability_of_necessity,
     relative_risk_from_or,
 )
-from morie.research.selective_labels import selective_labels
+from morie.research.selective_labels import selective_labels, selective_labels_judges
 from morie.research.sentence_bounds import (
     bounds_confidence,
     contaminated_bounds,
@@ -131,9 +131,11 @@ __all__ = [
     "probability_of_necessity",
     "ranking_resolution",
     "recording_map",
+    "recording_regimes",
     "regression_to_mean",
     "relative_risk_from_or",
     "selective_labels",
+    "selective_labels_judges",
     "sentence_effect_bounds",
     "sentence_effect_mtr",
     "sentence_effect_mts",

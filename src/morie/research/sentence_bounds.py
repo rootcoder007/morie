@@ -205,6 +205,8 @@ def bounds_confidence(lower, upper, se_lower, se_upper, level=0.95) -> dict:
             "Research.P11.im_cutoff_antitone",
             "Research.P11.im_cutoff_between",
             "Research.P11.two_sided_overcovers",
+            "Research.P11.im_cutoff_exists",
+            "Research.P11.im_cutoff_unique",
         ],
     }
 

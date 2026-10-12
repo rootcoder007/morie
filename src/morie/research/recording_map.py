@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from morie.fn import _array_core as np
 
-__all__ = ["recording_map", "detection_rate_shift"]
+__all__ = ["recording_map", "detection_rate_shift", "recording_regimes"]
 
 
 def recording_map(M, counts, names=None) -> dict:
@@ -80,4 +80,70 @@ def detection_rate_shift(detected, total, n, d, q) -> dict:
         "rate_after": (detected + q * n * (1 - d)) / total,
         "rise": rise,
         "theorem": "Research.P9.detection_rate_rises",
+    }
+
+
+def recording_regimes(recorded, cuffed_share=0.1, true_total=None, names=None) -> dict:
+    """Two recording regimes from one recorded series (``Research.P9.regimes_not_identified``,
+    ``second_source_separates``).
+
+    The identity map on true counts equal to the series and the map ``(1 - eps) I`` on
+    ``recorded / (1 - eps)`` both reproduce the series; only a second source that fixes the
+    true total tells them apart.
+
+    Examples
+    --------
+    >>> two = recording_regimes([70, 430], cuffed_share=0.2)
+    >>> (two["reclassification"]["true_total"], two["cuffing"]["true_total"], two["identified_from_series"])
+    (500.0, 625.0, False)
+    >>> recording_regimes([70, 430], true_total=550)["second_source"]["regime"]
+    'cuffing'
+    """
+    r = np.asarray(recorded, dtype=float)
+    if r.ndim != 1 or r.shape[0] == 0 or np.any(np.isnan(r)) or np.any(r < 0):
+        raise ValueError("recorded must be non-negative counts")
+    if not (0 < cuffed_share < 1):
+        raise ValueError("cuffed_share must lie in (0, 1)")
+    k = r.shape[0]
+    if names is None:
+        names = [str(i) for i in range(k)]
+    ident = np.eye(k)
+    cuff = (1 - cuffed_share) * ident
+    counts_cuff = r / (1 - cuffed_share)
+    recorded_total = float(r.sum())
+    second = None
+    if true_total is not None:
+        tt = float(true_total)
+        if np.isnan(tt) or tt < 0:
+            raise ValueError("true_total must be a single non-negative number")
+        tol = 1e-9 * max(1.0, tt)
+        if abs(recorded_total - tt) <= tol:
+            regime = "reclassification"
+        elif recorded_total < tt:
+            regime = "cuffing"
+        else:
+            regime = "inconsistent"
+        second = {
+            "true_total": tt,
+            "dropped_mass": max(0.0, tt - recorded_total),
+            "regime": regime,
+            "consistent": recorded_total <= tt + tol,
+        }
+    return {
+        "recorded": {names[i]: float(r[i]) for i in range(k)},
+        "recorded_total": recorded_total,
+        "reclassification": {
+            "M": [[float(v) for v in row] for row in ident],
+            "counts": {names[i]: float(r[i]) for i in range(k)},
+            "true_total": recorded_total,
+        },
+        "cuffing": {
+            "M": [[float(v) for v in row] for row in cuff],
+            "counts": {names[i]: float(counts_cuff[i]) for i in range(k)},
+            "true_total": float(counts_cuff.sum()),
+            "share": float(cuffed_share),
+        },
+        "identified_from_series": False,
+        "second_source": second,
+        "theorems": ["Research.P9.regimes_not_identified", "Research.P9.second_source_separates"],
     }

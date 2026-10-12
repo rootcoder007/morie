@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from morie.fn import _array_core as np
 
-__all__ = ["selective_labels"]
+__all__ = ["selective_labels", "selective_labels_judges"]
 
 
 def selective_labels(y, released, rule_released, weights=None) -> dict:
@@ -65,5 +65,66 @@ def selective_labels(y, released, rule_released, weights=None) -> dict:
             "Research.P18.unobserved_bounds",
             "Research.P18.unobserved_width",
             "Research.P18.unobserved_ends_attained",
+        ],
+    }
+
+
+def selective_labels_judges(y, released, rule_released, weights=None, names=None) -> dict:
+    """Selective labels across judges ordered from strictest to most lenient
+    (``Research.P18.chain_width_antitone``, ``chain_contraction``, ``chain_width_zero_iff``).
+
+    ``released`` holds one release indicator per judge (a list of columns, or an n x k
+    matrix). With nested release sets the interval narrows with leniency; the most lenient
+    judge gives the sharpest interval, a point exactly when the rule's set lies inside it.
+
+    Examples
+    --------
+    >>> y = [0, 1, 0, 1, 1, 0]
+    >>> judges = [[True, True, False, False, False, False], [True, True, True, True, False, False]]
+    >>> r = selective_labels_judges(y, judges, [True, True, True, False, False, False])
+    >>> ([round(w, 12) for w in r["widths"]], r["nested"], r["identified"], round(r["rule_rate"], 12))
+    ([0.333333333333, 0.0], True, True, 0.333333333333)
+    """
+    y = np.asarray(y, dtype=float)
+    n = y.shape[0]
+    rel = np.asarray([[bool(v) for v in col] for col in released])
+    if rel.ndim != 2 or rel.shape[1] != n or rel.shape[0] == 0:
+        if rel.ndim == 2 and rel.shape[0] == n:
+            rel = rel.T
+        else:
+            raise ValueError("released must have one entry per defendant for every judge")
+    k = rel.shape[0]
+    if names is None:
+        names = [f"judge{j + 1}" for j in range(k)]
+    w = np.ones(n) if weights is None else np.asarray(weights, dtype=float)
+    nested = all(not np.any(rel[j] & ~rel[j + 1]) for j in range(k - 1))
+    per = [selective_labels(y, rel[j], rule_released, weights) for j in range(k)]
+    widths = [p["width"] for p in per]
+    best = int(min(range(k), key=lambda j: widths[j]))
+    return {
+        "judges": [
+            {
+                "judge": names[j],
+                "release_share": float(np.sum(w[rel[j]])) / float(np.sum(w)),
+                "lower": per[j]["bounds"]["lower"],
+                "upper": per[j]["bounds"]["upper"],
+                "width": widths[j],
+                "identified": per[j]["identified"],
+            }
+            for j in range(k)
+        ],
+        "widths": widths,
+        "nested": nested,
+        "best": names[best],
+        "identified": per[best]["identified"],
+        "rule_rate": per[best]["rule_rate"],
+        "bounds": per[best]["bounds"],
+        "width": widths[best],
+        "theorems": [
+            "Research.P18.unobserved_mass_antitone",
+            "Research.P18.interval_width_antitone",
+            "Research.P18.chain_contraction",
+            "Research.P18.chain_width_antitone",
+            "Research.P18.chain_width_zero_iff",
         ],
     }

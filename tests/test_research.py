@@ -1012,3 +1012,84 @@ def test_two_point_bound_theorems_and_parity():
     assert same["tv"] == 0 and same["bound"] == 0.5
     far = R.two_point_bound([1, 0], [0, 1], 0, 1)
     assert far["tv"] == 1 and far["bound"] == 0
+
+
+# ----------------------------------------------------------------- P9 regimes, P11 cutoff, P18 chain
+
+
+def test_recording_regimes_and_second_source():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(60, seed=9)]
+    for k in range(10):
+        m = 2 + k % 4
+        r = [500 * u[k * 5 + i] for i in range(m)]
+        eps = 0.05 + 0.85 * u[50 + k]
+        two = R.recording_regimes(r, cuffed_share=eps)
+        rec_a = [sum(two["reclassification"]["M"][i][j] * r[j] for j in range(m)) for i in range(m)]
+        cc = list(two["cuffing"]["counts"].values())
+        rec_b = [sum(two["cuffing"]["M"][i][j] * cc[j] for j in range(m)) for i in range(m)]
+        assert all(close(a, b) for a, b in zip(rec_a, r)) and all(close(a, b) for a, b in zip(rec_b, r))
+        assert close(two["reclassification"]["true_total"], sum(r))
+        assert close(two["cuffing"]["true_total"], sum(r) / (1 - eps))  # regimes_not_identified
+        assert two["cuffing"]["true_total"] > two["reclassification"]["true_total"]
+        assert not two["identified_from_series"]
+        assert R.recording_regimes(r, eps, true_total=sum(r))["second_source"]["regime"] == "reclassification"
+        sec = R.recording_regimes(r, eps, true_total=two["cuffing"]["true_total"])["second_source"]
+        assert sec["regime"] == "cuffing" and close(sec["dropped_mass"], two["cuffing"]["true_total"] - sum(r))
+        assert R.recording_regimes(r, eps, true_total=sum(r) / 2)["second_source"]["regime"] == "inconsistent"
+    with pytest.raises(ValueError, match="non-negative"):
+        R.recording_regimes([1, -1])
+    with pytest.raises(ValueError, match="cuffed_share"):
+        R.recording_regimes([1, 2], cuffed_share=1)
+
+
+def test_imbens_manski_cutoff_exists_and_is_unique():
+    from morie.fn._rng import random_uniform
+    from morie.fn._stats_core import norm
+
+    u = [float(v) for v in random_uniform(40, seed=11)]
+    for k in range(20):
+        delta, alpha = 6 * u[k], 0.01 + 0.29 * u[20 + k]
+
+        def f(c):
+            return float(norm.cdf(c + delta)) - float(norm.cdf(-c)) - (1 - alpha)
+
+        z1, z2 = float(norm.ppf(1 - alpha)), float(norm.ppf(1 - alpha / 2))
+        assert f(z1 - 1e-9) <= 1e-12 and f(z2 + 1e-9) >= -1e-12  # im_cutoff_exists (a sign change)
+        r = R.bounds_confidence(0, delta * 0.1, 0.1, 0.1, 1 - alpha)
+        assert close(f(r["cutoff"]), 0, 1e-9)
+        assert all(abs(f(r["cutoff"] + d)) > 1e-6 for d in (-1, -0.1, 0.1, 1))  # im_cutoff_unique
+        assert "Research.P11.im_cutoff_exists" in r["theorems"]
+
+
+def test_selective_labels_judges_chain():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(1500, seed=23)]
+    n = 250
+    risk = u[:n]
+    y = [1 if u[n + i] < risk[i] else 0 for i in range(n)]
+    w = [0.5 + 1.5 * u[2 * n + i] for i in range(n)]
+    for k in range(10):
+        cuts = sorted(0.3 + 0.65 * u[750 + 5 * k + j] for j in range(4))
+        judges = [[r < ct for r in risk] for ct in cuts]
+        rule = [r < 0.2 + 0.8 * u[800 + k] for r in risk]
+        res = R.selective_labels_judges(y, judges, rule, w)
+        assert res["nested"]
+        assert all(b <= a + 1e-12 for a, b in zip(res["widths"], res["widths"][1:]))  # chain_width_antitone
+        for j in range(4):
+            width_j = sum(w[i] for i in range(n) if rule[i] and not judges[j][i]) / sum(
+                w[i] for i in range(n) if rule[i]
+            )
+            assert close(res["judges"][j]["width"], width_j)
+            assert (res["judges"][j]["width"] == 0) == (not any(rule[i] and not judges[j][i] for i in range(n)))
+        inside_union = not any(rule[i] and not any(judges[j][i] for j in range(4)) for i in range(n))
+        assert res["judges"][3]["identified"] == inside_union  # chain_contraction
+        assert res["best"] == res["judges"][min(range(4), key=lambda j: res["widths"][j])]["judge"]
+    nonnested = R.selective_labels_judges(
+        y, [[r < 0.6 for r in risk], [r > 0.3 for r in risk]], [r < 0.5 for r in risk]
+    )
+    assert not nonnested["nested"] and close(nonnested["width"], min(nonnested["widths"]))
+    with pytest.raises(ValueError, match="one entry per defendant"):
+        R.selective_labels_judges(y, [[True] * 10], [r < 0.5 for r in risk])

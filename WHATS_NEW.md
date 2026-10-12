@@ -9,6 +9,10 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Research ledger: `recording_regimes()` (one recorded series, two regimes; a second source
+  separates them), `selective_labels_judges()` (judges nested by leniency: the identified
+  interval narrows along the chain) and the Imbens-Manski cutoff's existence and uniqueness,
+  each backed by new Lean theorems (273 in all, 0 sorry) mirrored in the R package.
 * Data from rmoriedata (the SIU corpus and the other bundled tables): morie now fetches the
   newest rmoriedata release instead of a fixed 0.3.4, which CRAN never carried, so the tables were
   unreachable wherever GitHub archives were. It asks r-universe, the GitHub releases and CRAN for
