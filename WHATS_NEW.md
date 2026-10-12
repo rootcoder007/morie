@@ -9,7 +9,11 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
-* Research ledger, eight more items closed (Lean: 312 audited theorems, 0 sorry): `veil_of_darkness()`
+* Research ledger, twelve more items closed (Lean: 341 audited theorems, 0 sorry): `feedback_loop_envelope()`
+  (the discovery urn's share has variance at most a/(4(r0+b0)) at every horizon, a Chebyshev band),
+  `spillover_ring_bound()` (the bias of a d-ring spillover analysis is bounded by the outer ring's
+  exposure share), `rank_persistence_null()` (the hypergeometric law of two top-k sets' overlap),
+  `veil_of_darkness()`
   (the daylight-to-darkness odds ratio is the relative visible-race factor, a sign test),
   `dark_figure_no_interaction()` (the never-listed cell of three lists and its exp(-t) sensitivity),
   `shrinkage_factor_error()`, `concentration_null_bound()` (the Gini is at most the coefficient of
