@@ -1093,3 +1093,179 @@ def test_selective_labels_judges_chain():
     assert not nonnested["nested"] and close(nonnested["width"], min(nonnested["widths"]))
     with pytest.raises(ValueError, match="one entry per defendant"):
         R.selective_labels_judges(y, [[True] * 10], [r < 0.5 for r in risk])
+
+
+# ----------------------------------------------------------------- 2026-10-12 closures (R/ledger_1_4_3.R)
+
+
+def test_veil_of_darkness_parity():
+    # R: morie_veil_of_darkness(c(white = 400, black = 200), c(white = 300, black = 100))$bias_ratio -> 1, 1.5
+    r = R.veil_of_darkness({"white": 400, "black": 200}, {"white": 300, "black": 100})
+    assert close(r["bias_ratio"]["white"], 1) and close(r["bias_ratio"]["black"], 1.5)
+    assert r["sign"] == {"white": "lower", "black": "higher"}
+    assert close(r["share_day"]["black"], 200 / 600) and close(r["share_night"]["black"], 100 / 400)
+    # odds_ratio_identifies_bias on a synthetic road: exposures and dark propensities cancel
+    E, rr, d = {"w": 1000, "b": 400}, {"w": 0.03, "b": 0.05}, {"w": 0.1, "b": 0.5}
+    night = {g: E[g] * rr[g] for g in E}
+    day = {g: night[g] * (1 + d[g]) for g in E}
+    v = R.veil_of_darkness(day, night)
+    assert close(v["bias_ratio"]["b"], 1.5 / 1.1)
+    k = {"w": 1.2, "b": 0.8}
+    v2 = R.veil_of_darkness({g: day[g] * k[g] for g in E}, night, exposure_shift=k)
+    assert close(v2["bias_ratio_adjusted"]["b"], 1.5 / 1.1)  # exposure_shift_confounds, divided out
+    v3 = R.veil_of_darkness({g: day[g] * 2 for g in E}, night)
+    assert close(v3["bias_ratio"]["b"], v["bias_ratio"]["b"])  # bias_not_absolute
+    assert R.veil_of_darkness(night, night)["sign"]["b"] == "equal"
+    with pytest.raises(ValueError):
+        R.veil_of_darkness(day, {"w": 1})
+
+
+def test_dark_figure_no_interaction_parity():
+    # R: morie_dark_figure_no_interaction(...)$missing 400, $total 738
+    cells = {"n100": 120, "n010": 80, "n001": 60, "n110": 30, "n101": 24, "n011": 16, "n111": 8}
+    r = R.dark_figure_no_interaction(cells, interaction=[-0.5, 0.0, 0.5])
+    assert close(r["missing"], 400) and close(r["total"], 738)
+    assert close(r["sensitivity"][0]["missing"], 400 * math.exp(0.5))  # missing_cell_with_interaction
+    assert close(r["sensitivity"][1]["total"], 738)
+    with pytest.raises(ValueError):
+        R.dark_figure_no_interaction({"n100": 1})
+
+
+def test_shrinkage_factor_error_parity():
+    # R: morie_shrinkage_factor_error(c(3, 5, 9, 2, 7, 4), 5, total_variance = 6):
+    #    B_hat 0.882352941176471, S_y_hat 5.66666666666667, S_y_se 2.91753320460968, error 0.0490196078431372,
+    #    B_interval lower 0.434717095850777
+    r = R.shrinkage_factor_error([3, 5, 9, 2, 7, 4], noise_variance=5, total_variance=6)
+    assert close(r["B_hat"], 0.882352941176471, 1e-12) and close(r["S_y_hat"], 5.66666666666667, 1e-12)
+    assert close(r["S_y_se"], 2.91753320460968, 1e-12) and close(r["error"], 0.0490196078431372, 1e-12)
+    assert close(r["B_interval"][0], 0.434717095850777, 1e-12)
+    assert r["bound_holds"]
+    # bhat_error: the algebraic form
+    assert close(r["error"], 5 * (6 - r["S_y_hat"]) / (6 * r["S_y_hat"]))
+    with pytest.raises(ValueError):
+        R.shrinkage_factor_error([2, 2, 2], 1)
+
+
+def test_concentration_null_bound_parity():
+    # R: gini 0.666666666666667, cv_bound 0.988826464946089, null_bound 0.483045891539648
+    r = R.concentration_null_bound([0, 0, 1, 2, 9, 0, 3], n_sim=300, seed=3)
+    assert close(r["gini"], 0.666666666666667, 1e-12)
+    assert close(r["cv_bound"], 0.988826464946089, 1e-12)
+    assert close(r["null_bound"], 0.483045891539648, 1e-12)
+    assert r["gini"] <= r["cv_bound"] and 0 <= r["p_value"] <= 1
+    # gini_le_cv on random counts
+    import random as _r
+
+    g = _r.Random(4)
+    for _ in range(30):
+        x = [sum(1 for _ in range(int(g.random() * 12))) for _ in range(g.randint(4, 20))]
+        if sum(x) == 0:
+            continue
+        m = sum(x) / len(x)
+        v = sum((xi - m) ** 2 for xi in x) / len(x)
+        assert R.concentration_gini(x) <= math.sqrt(v / 2) / m + 1e-12
+
+
+def test_deterrence_logcost_and_wald_parity():
+    p, s, c = [0.2, 0.5, 0.8, 0.4], [2, 5, 3, 8], [1, 4, 2, 6]
+    y = [2 - 0.8 * (math.log(pi) + math.log(si) - 0.1 * ci) for pi, si, ci in zip(p, s, c)]
+    r = R.deterrence_logcost(p, s, c, y, rho=0.1)
+    # R: coefficients 2, -0.8, -0.8, 0.08; implied_discount 0.1; expected_cost[1] 0.3619349672143838
+    for k, v in (("(Intercept)", 2), ("log_p", -0.8), ("log_s", -0.8), ("c", 0.08)):
+        assert close(r["coefficients"][k], v, 1e-9)
+    assert close(r["implied_discount"], 0.1, 1e-9)
+    assert close(r["expected_cost"][0], 0.3619349672143838, 1e-12)
+    assert close(r["log_expected_cost"][0], math.log(r["expected_cost"][0]))
+    assert not R.deterrence_logcost(p, [5, 5, 5, 5], c)["identified"]
+    with pytest.raises(ValueError):
+        R.deterrence_logcost(p, [5, 5, 5, 5], c, y)
+    # R: morie_wald_iv(c(1,3,2,4), c(0,1,0,1), c(0,1,0,1)) -> beta 2, cov_zy 0.5, cov_zp 0.25, alpha 1.5
+    w = R.wald_iv([1, 3, 2, 4], [0, 1, 0, 1], [0, 1, 0, 1])
+    assert close(w["beta"], 2) and close(w["cov_zy"], 0.5) and close(w["cov_zp"], 0.25) and close(w["alpha"], 1.5)
+    dead = R.wald_iv([1, 3, 2, 4], [0, 1, 0, 1], [1, 1, 1, 1])
+    assert not dead["relevant"] and math.isnan(dead["beta"])
+
+
+def test_rif_quantile_parity():
+    # R: morie_rif_quantile(1:8, 0.5, q = 4, f = 0.125): mean_rif 4, recentering 0, F_q 0.5
+    r = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8], 0.5, q=4, f=0.125)
+    assert close(r["mean_rif"], 4) and close(r["recentering"], 0) and close(r["F_q"], 0.5)
+    assert close(r["rif"][0], 4 + (0.5 - 1) / 0.125)
+    # off the quantile: rif_quantile_avg
+    r2 = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8], 0.5, q=2, f=0.3)
+    assert close(r2["mean_rif"], 2 + (0.5 - 2 / 8) / 0.3)
+    # the default evaluation point is the weighted sample quantile (R: q = 4 for 0.4 on 1..8, 11); the kernel
+    # density value is R's binned density() there (0.108405051452871) against the exact Gaussian sum here
+    r3 = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8, 11], 0.4)
+    assert close(r3["q"], 4) and close(r3["f"], 0.108405051452871, 2e-3)
+    g = R.rif_gap([1, 2, 3, 4, 5, 6, 7, 8], [2, 4, 6, 8, 10, 12, 14, 16], 0.5)
+    assert close(g["gap"], g["quantile_gap"] + g["recentering_gap"])  # rif_gap
+    with pytest.raises(ValueError):
+        R.rif_quantile([1, 2, 3], 1.2)
+
+
+def test_contagion_moment_witness_and_panel_cov_parity():
+    w = R.contagion_moment_witness(lambda m, v: v / m)
+    assert w["mean"] == (1.0, 1.0) and w["variance"] == (1.0, 1.0) and w["statistic"] == (1.0, 1.0)
+    assert close(w["zero_probability"][0], 0.5) and close(w["zero_probability"][1], 1 / 3)
+    # R: morie_age_crime_type_cov(c(0.2, 0.3, 0.5), c(1, 2, 4), c(3, 1, 2))$cross_cov -0.12
+    t = R.age_crime_type_cov([0.2, 0.3, 0.5], [1, 2, 4], [3, 1, 2])
+    assert close(t["cross_cov"], -0.12, 1e-12) and not t["one_type"]
+    assert close(R.age_crime_type_cov([0.5, 0.5], [1, 3], [3, 1])["cross_cov"], -1)  # two_type_cov
+    assert R.age_crime_type_cov([0.5, 0.5], [2, 2], [2, 2])["one_type"]
+    # R: morie_age_crime_panel_cov(c(1,3,0,2,5,1), c(2,0,4,1,1,3))$cross_cov -1.66666666666667
+    pc = R.age_crime_panel_cov([1, 3, 0, 2, 5, 1], [2, 0, 4, 1, 1, 3], n_perm=50)
+    assert close(pc["cross_cov"], -1.66666666666667, 1e-12) and 0 < pc["p_value"] <= 1
+    with pytest.raises(ValueError):
+        R.age_crime_type_cov([0.5, 0.6], [1, 2], [1, 2])
+
+
+def test_feedback_loop_envelope_parity():
+    # R: morie_feedback_loop_envelope(1, 1, 1, n = 40): law uniform 1/41, variance mean(((1 + 0:40)/42 - 0.5)^2)
+    e = R.feedback_loop_envelope(1, 1, 1, n=40)
+    assert all(close(v, 1 / 41) for v in e["law"])
+    assert close(e["variance_n"], sum(((1 + j) / 42 - 0.5) ** 2 for j in range(41)) / 41)
+    assert close(e["mean_n"], 0.5) and close(e["variance_bound"], 1 / 8) and e["variance_n"] < 1 / 8
+    for r0, b0, a in ((1, 99, 1), (5, 3, 2), (0.5, 2, 0.7)):
+        for n in (0, 1, 10, 60):
+            e = R.feedback_loop_envelope(r0, b0, a, n=n, t=0.2)
+            assert close(sum(e["law"]), 1)
+            assert close(e["mean_n"], e["share0"])  # mean_const
+            assert e["variance_n"] <= e["variance_bound"] + 1e-12  # var_le
+            assert e["exit_n"] <= e["chebyshev_bound"] + 1e-12  # chebyshev
+    e1 = R.feedback_loop_envelope(2, 3, 1, n=1)
+    assert close(e1["variance_n"], 0.4 * 0.6 * (1 / 6) ** 2)  # step_var
+    with pytest.raises(ValueError):
+        R.feedback_loop_envelope(0, 1, 1)
+
+
+def test_spillover_ring_bound_parity():
+    # R test: path of 5 units, one treated uniformly, outer ring = distance exactly 2
+    n = 5
+    outer = lambda t, i: abs(t - i) == 2  # noqa: E731
+    share = [sum(outer(t, i) for t in range(1, n + 1)) / n for i in range(1, n + 1)]
+    gamma = [0.5, -1, 2, 0, 1.5]
+    exact = sum(sum(g * outer(t, i) for g, i in zip(gamma, range(1, n + 1))) / n for t in range(1, n + 1)) / n
+    r = R.spillover_ring_bound(share, gamma_max=2, gamma=gamma)
+    assert close(r["expected_gap"], exact) and abs(r["expected_gap"]) <= r["bound"]
+    assert close(r["bound"], 2 * sum(share) / n)
+    assert R.spillover_ring_bound(share, gamma_max=2, gamma=[0] * n)["expected_gap"] == 0
+    with pytest.raises(ValueError):
+        R.spillover_ring_bound(share, gamma_max=1, gamma=gamma)
+
+
+def test_rank_persistence_null_parity():
+    from itertools import combinations
+
+    n, k = 7, 3
+    sets = list(combinations(range(1, n + 1), k))
+    overlaps = [len(set(range(1, k + 1)) & set(B)) for B in sets]
+    r = R.rank_persistence_null(n, k, observed=2)
+    for j in range(k + 1):
+        assert close(r["probability"][j], overlaps.count(j) / len(sets))
+    assert close(sum(r["probability"]), 1) and close(r["mean"], k * k / n)
+    assert close(r["p_value"], sum(o >= 2 for o in overlaps) / len(sets))
+    big = R.rank_persistence_null(158, 16, observed=9)
+    assert close(big["mean"], 256 / 158) and big["p_value"] < 1e-4
+    with pytest.raises(ValueError):
+        R.rank_persistence_null(5, 6)

@@ -9,6 +9,13 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Research ledger, eight more items closed (Lean: 312 audited theorems, 0 sorry): `veil_of_darkness()`
+  (the daylight-to-darkness odds ratio is the relative visible-race factor, a sign test),
+  `dark_figure_no_interaction()` (the never-listed cell of three lists and its exp(-t) sensitivity),
+  `shrinkage_factor_error()`, `concentration_null_bound()` (the Gini is at most the coefficient of
+  variation over sqrt(2)), `deterrence_logcost()` and `wald_iv()`, `rif_quantile()` and `rif_gap()`,
+  `contagion_moment_witness()` (equal first two moments, different zero mass), `age_crime_type_cov()`
+  and `age_crime_panel_cov()`; the same functions in the R mirror.
 * Research ledger: `recording_regimes()` (one recorded series, two regimes; a second source
   separates them), `selective_labels_judges()` (judges nested by leniency: the identified
   interval narrows along the chain) and the Imbens-Manski cutoff's existence and uniqueness,

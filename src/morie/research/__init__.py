@@ -43,6 +43,22 @@ from morie.research.feedback_loop import (
     feedback_loop_sim,
     feedback_loop_urn_law,
 )
+from morie.research.identification import (
+    age_crime_panel_cov,
+    age_crime_type_cov,
+    concentration_null_bound,
+    contagion_moment_witness,
+    dark_figure_no_interaction,
+    deterrence_logcost,
+    feedback_loop_envelope,
+    rank_persistence_null,
+    rif_gap,
+    rif_quantile,
+    shrinkage_factor_error,
+    spillover_ring_bound,
+    veil_of_darkness,
+    wald_iv,
+)
 from morie.research.incapacitation import incapacitation, incapacitation_career
 from morie.research.judge_iv import judge_iv, judge_iv_population, judge_slope_test
 from morie.research.lecam import two_point_bound
@@ -78,6 +94,20 @@ from morie.research.spillover import (
 )
 
 __all__ = [
+    "age_crime_panel_cov",
+    "feedback_loop_envelope",
+    "rank_persistence_null",
+    "spillover_ring_bound",
+    "age_crime_type_cov",
+    "concentration_null_bound",
+    "contagion_moment_witness",
+    "dark_figure_no_interaction",
+    "deterrence_logcost",
+    "rif_gap",
+    "rif_quantile",
+    "shrinkage_factor_error",
+    "veil_of_darkness",
+    "wald_iv",
     "age_crime_aggregate",
     "backlog_censoring",
     "bounds_confidence",
