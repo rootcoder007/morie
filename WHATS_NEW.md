@@ -9,6 +9,17 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Research ledger: `morie.research.library_scan2` ports the third library-scan batch (23
+  functions from `nb_matches_zip` to `run_length_bound`), each returning the Lean theorem it
+  computes from; the same functions in the R mirror. Lean now 103 files, 517 audited theorems,
+  0 sorry; every item of the library scan has a formalised core.
+* Research ledger: `morie.research.library_scan` ports the second library-scan batch
+  (`attenuation_two_regressor`, `friedman_urn`, `ruin_probability`, `cox_overdispersion`,
+  `zip_vuong_boundary`, `nonresponse_region`, `instrumental_inequality`, `misclassified_rd`,
+  `misclassified_contrast`, `sensitivity_amplification`, `design_effect_direction`,
+  `ht_elephant`, `attractiveness_contraction`, `inspection_game`), each returning the Lean
+  theorem it computes from; the same functions in the R mirror. Lean now 83 files, 434
+  audited theorems, 0 sorry.
 * Research ledger: `dark_figure_comparable()` (the recording rate is identified only on the
   survey-comparable offence set, with the dark-figure interval for the rest, Lean
   `Research.P1.Comparable`); the urn share converges a.s. and in mean (Lean `Research.P4.Martingale`);

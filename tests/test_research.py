@@ -1327,3 +1327,443 @@ def test_dark_figure_comparable_parity():
         R.dark_figure_comparable(1000, 1200, 300)
     with pytest.raises(ValueError, match="lam"):
         R.dark_figure_comparable(1000, 400, 300, lam=0)
+
+
+def test_attenuation_two_regressor_parity():
+    r = R.attenuation_two_regressor(1.5, -0.5, 1, 2, 0.6, 0.5)
+    assert r["theorem"] == "Research.P5.Attenuation.two_regressor_coeffs"
+    assert abs((1 + 0.5) * r["b1"] + 0.6 * r["b2"] - (1.5 * 1 - 0.5 * 0.6)) < 1e-12  # normal_equations
+    assert abs(0.6 * r["b1"] + 2 * r["b2"] - (1.5 * 0.6 - 0.5 * 2)) < 1e-12
+    assert abs(r["dstar"] - (1.5 * 2 - 0.36)) < 1e-12
+    assert abs(r["bias_b2"] - 1.5 * 0.5 * 0.6 / r["dstar"]) < 1e-12
+    assert r["bias_b2_sign"] == "positive" and abs(r["reliability"] - 1 / 1.5) < 1e-12
+    for args in ((0, -0.5, 1, 2, 0.6, 0.5), (1.5, -0.5, 1, 2, 0.6, 0), (1.5, -0.5, 1, 2, 0, 0.5)):
+        assert R.attenuation_two_regressor(*args)["bias_b2"] == 0  # error_free_biased_iff
+    assert R.attenuation_two_regressor(-1.5, -0.5, 1, 2, 0.6, 0.5)["bias_b2_sign"] == "negative"  # bias_sign
+    import pytest
+
+    with pytest.raises(ValueError, match="positive variances"):
+        R.attenuation_two_regressor(1, 1, 0, 1)
+    with pytest.raises(ValueError, match="s12"):
+        R.attenuation_two_regressor(1, 1, 1, 1, s12=1)
+
+
+def test_friedman_urn_and_ruin_parity():
+    u = R.friedman_urn(9, 1, 200)
+    assert u["theorem"] == "Research.P4.Friedman.meanDiff_succ" and u["mean_diff"][0] == 8
+    for n in range(200):  # meanDiff_succ
+        assert abs(u["mean_diff"][n + 1] - u["mean_diff"][n] * (1 - 1 / (10 + n))) < 1e-12
+    assert abs(u["mean_share"][-1] - 0.5) < 0.01
+    b, r = 7, 3
+    f = lambda b, r: (b - r) * (b + r - 1)  # noqa: E731
+    assert abs(b / (b + r) * f(b, r + 1) + r / (b + r) * f(b + 1, r) - f(b, r)) < 1e-12  # friedman_step
+    p, N = 0.4, 12
+    pr = R.ruin_probability(p, N)
+    rho = 0.6 / 0.4
+    assert pr["theorem"] == "Research.P4.Ruin.ruin_harmonic" and abs(pr["rho"] - rho) < 1e-12
+    q = pr["prob"]
+    assert q[0] == 1 and abs(q[N]) < 1e-12  # ruin_boundary
+    for k in range(1, N):  # ruin_harmonic
+        assert abs(q[k] - (p * q[k + 1] + (1 - p) * q[k - 1])) < 1e-12
+    for k in range(N + 1):  # optional_stopping_identity
+        assert abs(rho**k - (q[k] + (1 - q[k]) * rho**N)) < 1e-9
+    assert abs(p * rho**5 + (1 - p) * rho**3 - rho**4) < 1e-12  # deMoivre_step
+    sym = R.ruin_probability(0.5, N)["prob"]
+    assert all(abs(sym[k] - (1 - k / N)) < 1e-12 for k in range(N + 1))  # ruin_symmetric
+    assert R.ruin_probability(p, N, 3)["prob"] == [(rho**3 - rho**N) / (1 - rho**N)]
+    import pytest
+
+    with pytest.raises(ValueError, match="b0"):
+        R.friedman_urn(1, 0)
+    with pytest.raises(ValueError, match="0..N"):
+        R.ruin_probability(0.3, 5, 6)
+
+
+def test_cox_overdispersion_and_vuong_parity():
+    r = R.cox_overdispersion([0.7, 0.3], [1, 5])
+    m = 0.7 + 1.5
+    assert r["theorem"] == "Research.P7.Cox.total_variance" and abs(r["mean"] - m) < 1e-12
+    assert abs(r["intensity_var"] - (0.7 * (1 - m) ** 2 + 0.3 * (5 - m) ** 2)) < 1e-12
+    assert abs(r["variance"] - (r["mean"] + r["intensity_var"])) < 1e-12  # total_variance
+    assert r["variance"] > r["mean"] and not r["constant_intensity"]  # variance_ge_mean
+    c0 = R.cox_overdispersion([2, 3], [4, 4])
+    assert abs(c0["variance"] - c0["mean"]) < 1e-12 and c0["constant_intensity"]  # equality_iff_constant
+    c1 = R.cox_overdispersion([1, 0], [2, 9])
+    assert abs(c1["variance"] - c1["mean"]) < 1e-12 and c1["constant_intensity"]
+    v = R.zip_vuong_boundary([0, 0, 1, 2, 0, 3])
+    assert v["theorem"] == "Research.P7.Cox.llr_zero" and v["llr"] == [0.0] * 6 and v["sd"] == 0  # llr_zero
+    assert v["statistic"] != v["statistic"]
+    import pytest
+
+    with pytest.raises(ValueError, match="non-negative weights"):
+        R.cox_overdispersion([1, -1], [1, 2])
+    with pytest.raises(ValueError, match="integers"):
+        R.zip_vuong_boundary([1.5, 2])
+
+
+def test_nonresponse_region_and_iv_inequality_parity():
+    r = R.nonresponse_region(0.4, [0.106, 0.5, 0.9, 1])
+    assert r["theorem"] == "Research.P1.Nonresponse.region_width"
+    assert r["width"] == [1 - x for x in (0.106, 0.5, 0.9, 1)]  # region_width
+    assert all(abs(u - lam - w) < 1e-12 for u, lam, w in zip(r["upper"], r["lower"], r["width"]))
+    assert abs(r["width"][0] - 0.894) < 1e-12
+    assert (
+        abs(0.5 * 0.4 + 0.5 * 0 - r["lower"][1]) < 1e-12 and abs(0.5 * 0.4 + 0.5 * 1 - r["upper"][1]) < 1e-12
+    )  # region_sharp
+    import random
+
+    rng = random.Random(3)
+    nz, nx, ny, nu = 3, 2, 3, 4
+    pu = [rng.random() for _ in range(nu)]
+    pu = [v / sum(pu) for v in pu]
+    px = [[[rng.random() for _ in range(nx)] for _ in range(nu)] for _ in range(nz)]
+    px = [[[v / sum(row) for v in row] for row in zz] for zz in px]
+    py = [[[rng.random() for _ in range(ny)] for _ in range(nu)] for _ in range(nx)]
+    py = [[[v / sum(row) for v in row] for row in xx] for xx in py]
+    p = [
+        [[sum(pu[u] * px[z][u][x] * py[x][u][y] for u in range(nu)) for z in range(nz)] for x in range(nx)]
+        for y in range(ny)
+    ]
+    r = R.instrumental_inequality(p)
+    assert r["theorem"] == "Research.P8.IVInequality.instrumental_inequality"
+    assert r["passes"] and r["max"] <= 1  # instrumental_inequality
+    bad = [[[1.0, 0.0], [0.0, 0.0]], [[0.0, 1.0], [0.0, 0.0]]]
+    b = R.instrumental_inequality(bad)
+    assert not b["passes"] and b["per_x"] == [2.0, 0.0]
+    import pytest
+
+    with pytest.raises(ValueError, match="sum to one"):
+        R.instrumental_inequality([[[2.0, 0.0]]])
+    with pytest.raises(ValueError, match="lie in"):
+        R.nonresponse_region(1.2, 0.5)
+
+
+def test_misclassification_parity():
+    r = R.misclassified_rd(0.3, 0.1, 0.4, 0.8, 0.9)
+    d1, d0 = 0.4 * 0.8 + 0.6 * 0.1, 0.4 * 0.2 + 0.6 * 0.9
+    assert r["theorem"] == "Research.P2.Misclassification.binary_attenuation"
+    assert abs(r["measured_rd"] - (0.8 + 0.9 - 1) * 0.2 * 0.4 * 0.6 / (d1 * d0)) < 1e-12  # binary_attenuation
+    assert abs(r["measured_rd"] - r["factor"] * r["true_rd"]) < 1e-12
+    assert r["sign_kept"] and abs(r["measured_rd"]) < abs(r["true_rd"])  # binary_sign
+    assert abs(R.misclassified_rd(0.3, 0.1, 0.4, 1, 1)["measured_rd"] - 0.2) < 1e-12
+    assert abs(R.misclassified_rd(0.3, 0.1, 0.4, 0.5, 0.5)["measured_rd"]) < 1e-12
+    w = R.misclassified_contrast([0, 0.5, 1], ["high", "low", "high"])
+    assert w["theorem"] == "Research.P2.Misclassification.ordinal_witness"
+    assert w["true_contrast"] == 1 and w["measured_contrast"] == 0  # ordinal_witness
+    rv = R.misclassified_contrast([0, 0.5, 1], ["high", "high", "low"])
+    assert rv["measured_contrast"] == 0.25 - 1 and rv["reversed"]  # ordinal_reversal
+    import pytest
+
+    with pytest.raises(ValueError, match="prevalence"):
+        R.misclassified_rd(0.3, 0.1, 1, 0.8, 0.9)
+    with pytest.raises(ValueError, match="both appear"):
+        R.misclassified_contrast([0, 1], ["a", "b"])
+
+
+def test_amplification_and_design_effect_parity():
+    g = R.sensitivity_amplification(Lambda=[2, 3, 5], Delta=4)
+    assert g["theorem"] == "Research.P11.Amplification.level_curve"
+    assert all(abs(gg - (lam * 4 + 1) / (lam + 4)) < 1e-12 for gg, lam in zip(g["Gamma"], (2, 3, 5)))
+    assert g["Gamma"] == R.sensitivity_amplification(Lambda=4, Delta=[2, 3, 5])["Gamma"]  # symmetric
+    assert all(1 <= gg <= min(lam, 4) for gg, lam in zip(g["Gamma"], (2, 3, 5)))  # ge_one, le_min
+    assert g["Gamma"] == sorted(g["Gamma"])  # mono_left
+    cv = R.sensitivity_amplification(Gamma=2, Lambda=[3, 4, 10])
+    assert all(abs(d - (lam * 2 - 1) / (lam - 2)) < 1e-12 for d, lam in zip(cv["Delta"], (3, 4, 10)))  # level_curve
+    back = R.sensitivity_amplification(Lambda=cv["Lambda"], Delta=cv["Delta"])["Gamma"]
+    assert all(abs(v - 2) < 1e-12 for v in back)
+    assert abs(R.sensitivity_amplification(Gamma=2, Delta=5)["Lambda"][0] - 3) < 1e-12
+    d = R.design_effect_direction(0.1, 20)
+    assert d["theorem"] == "Research.P13.Design.quad_form"
+    assert abs(d["deff_cluster_level"] - 2.9) < 1e-12 and abs(d["deff_within_balanced"] - 0.9) < 1e-12
+    assert abs(d["icc_floor"] + 1 / 19) < 1e-12  # icc_lower_bound
+    xc = [[2] * 4, [-1] * 4, [3] * 4]
+    assert abs(R.design_effect_direction(0.1, 4, xc)["ratio"] - 1.3) < 1e-12  # cluster_level
+    xb = [[1, -1], [2, -2], [0.5, -0.5]]
+    assert abs(R.design_effect_direction(0.1, 2, xb)["ratio"] - 0.9) < 1e-12  # within_balanced
+    import random
+
+    rng = random.Random(1)
+    x = [[rng.gauss(0, 1) for _ in range(4)] for _ in range(3)]
+    dq = R.design_effect_direction(0.3, 4, x)
+    by_hand = sum(v * (0.7 * v + 0.3 * sum(row)) for row in x for v in row)  # quad_form
+    assert abs(dq["quad"] - by_hand) < 1e-12
+    ind = [[1] * 4, [0] * 4, [0] * 4]
+    assert abs(R.design_effect_direction(-1 / 3, 4, ind)["quad"]) < 1e-12  # quad_indicator at the floor
+    import pytest
+
+    with pytest.raises(ValueError, match="exactly two"):
+        R.sensitivity_amplification(Lambda=2)
+    with pytest.raises(ValueError, match="must exceed"):
+        R.sensitivity_amplification(Gamma=2, Lambda=2)
+    with pytest.raises(ValueError, match="lie in"):
+        R.design_effect_direction(-0.6, 3)
+    with pytest.raises(ValueError, match="M columns"):
+        R.design_effect_direction(0.1, 3, [[1, 1]])
+
+
+def test_basu_contraction_inspection_parity():
+    t, pi = [1, 2, 3, 100], [0.5, 0.5, 0.5, 0.01]
+    r = R.ht_elephant(t, pi, bound=1e4)
+    assert r["theorem"] == "Research.P3.Basu.ht_variance" and r["mean"] == 106  # ht_mean
+    assert all(abs(a - b * b * (1 - c) / c) < 1e-9 for a, b, c in zip(r["terms"], t, pi))  # ht_variance
+    assert abs(r["variance"] - sum(r["terms"])) < 1e-9
+    assert r["elephant"] == 3 and abs(r["pi_elephant"] - 100**2 / (2 * (1e4 + 100**2))) < 1e-12
+    assert r["term_elephant"] > 1e4 and r["pi_elephant"] < 1  # elephant_unbounded
+    assert sum(r["terms"][:3]) <= sum(v * v / q for v, q in zip(t[:3], pi[:3]))  # ratio_bounded
+    S = [[0.5, 0.5, 0], [0.5, 0, 0.5], [0, 0.5, 0.5]]
+    c = R.attractiveness_contraction(S, 0.2, 0.3, [5, 1, 0], 6)
+    assert c["theorem"] == "Research.P4.Contraction.decay"
+    assert all(a <= b + 1e-12 for a, b in zip(c["sup_norm"], c["sup_bound"]))  # decay
+    assert c["doubly_stochastic"] and all(abs(v - 0.8**k * 6) < 1e-12 for k, v in enumerate(c["total"]))  # update_total
+    assert abs(c["feedback_threshold"] - 0.25) < 1e-12  # feedback_gain
+    assert 0.8 * (1 + 0.3) > 1 and not 0.8 * (1 + 0.2) > 1
+    c2 = R.attractiveness_contraction([[1, 0], [0.5, 0.5]], 0, 1, [1, 3], 2)
+    assert not c2["doubly_stochastic"] and c2["sup_norm"][1] == 2 and c2["feedback_threshold"] == 0
+    g = R.inspection_game(1, [0.5, 0.3, 0.2], 2000, 0.01)
+    assert g["theorem"] == "Research.P8.Inspection.conserved" and abs(g["dV_dt"]) < 1e-15  # conserved
+    assert abs(sum(g["field"])) < 1e-15  # simplex_invariant / payoff_zero_sum
+    assert g["invariant_drift"] < 1e-8
+    assert all(abs(sum(row) - 1) < 1e-10 for row in g["trajectory"])
+    assert max(abs(row[0] - 0.5) for row in g["trajectory"]) > 0.1
+    c3 = R.inspection_game(2, [1 / 3, 1 / 3, 1 / 3], 10)
+    assert c3["field"] == [0, 0, 0] and all(
+        abs(v - 1 / 3) < 1e-12 for v in c3["trajectory"][-1]
+    )  # interior_fixed_point
+    import pytest
+
+    with pytest.raises(ValueError, match="unit row sums"):
+        R.attractiveness_contraction([[2, 0], [0, 1]], 0.2, 0.3, [1, 1])
+    with pytest.raises(ValueError, match="three shares"):
+        R.inspection_game(1, [0.5, 0.5])
+    with pytest.raises(ValueError, match="bound"):
+        R.ht_elephant(t, pi, bound=0)
+
+
+def test_scan2_zero_inflation_gamma_blocking_adjustment_parity():
+    import math
+
+    import pytest
+
+    r = R.nb_matches_zip(0.3, 2)
+    assert r["theorem"] == "Research.P7.ZeroInflation.nb_matches_zip"
+    assert abs(r["mean"] - 1.4) < 1e-12 and abs(r["zip_zero"] - (0.3 + 0.7 * math.exp(-2))) < 1e-12
+    assert math.exp(-r["mean"]) < r["zip_zero"] < 1  # zip_zero_gt_poisson, zip_zero_lt_one
+    assert abs(r["nb_zero"] - r["zip_zero"]) < 1e-9  # nb_matches_zip
+    with pytest.raises(ValueError, match="pi"):
+        R.nb_matches_zip(1, 2)
+    g = R.gamma_bound(70, 100, [1, 1.5, 2, 7 / 3, 3])
+    assert g["theorem"] == "Research.P5.Gamma.gamma_star_kills" and abs(g["gamma_star"] - 70 / 30) < 1e-12
+    wm = g["worst"]["worst_mean"]
+    assert wm == sorted(wm) and abs(wm[3] - 70) < 1e-12  # worst_mean_mono, worst_mean_at_gamma_star
+    assert g["worst"]["survives"] == [True, True, True, False, False]
+    with pytest.raises(ValueError, match="T must"):
+        R.gamma_bound(100, 100)
+    b = R.blocking_crossover(0.5, 1, 10, rho=[0.02, 0.3, 0.9])
+    assert b["theorem"] == "Research.P3.Blocking.paired_better_iff"
+    assert b["c_paired"] > b["c_unpaired"] and b["crossover"] > 0  # crossover_pos
+    assert abs(b["c_paired"] - 1.8331129) < 1e-5 and abs(b["c_unpaired"] - 1.7340636) < 1e-5
+    assert b["paired_better"] == [x > b["crossover"] for x in (0.02, 0.3, 0.9)]  # paired_better_iff
+    a = R.adjustment_variances(1, 0, 1, 1, 0.8)
+    assert a["theorem"] == "Research.P3.Adjustment.adjusted_minus_unadjusted" and a["adjustment_hurts"]
+    assert abs(a["adjusted_minus_unadjusted"] - (3 * 0.8 - 2) / 0.2) < 1e-12  # adjusted_worse
+    assert not R.adjustment_variances(1, 0, 1, 1, 0.6)["adjustment_hurts"]
+    for p in (0.3, 0.5, 0.7):
+        s = R.adjustment_variances(1.2, -0.4, 0.5, 2, p)
+        assert s["lin"] <= s["unadjusted"] and s["lin"] <= s["adjusted"]  # lin_le_*
+    s = R.adjustment_variances(1.2, -0.4, 0.5, 2, 0.5)
+    assert s["adjusted"] <= s["unadjusted"]  # adjusted_le_unadjusted_balanced
+
+
+def test_scan2_budget_outcome_spatial_bounds_parity():
+    import math
+
+    import pytest
+
+    o = R.budget_optimum(math.sqrt, lambda s: 2 * math.log1p(s), 10)
+    assert o["theorem"] == "Research.P8.Budget.interior_optimum" and o["interior"]
+    assert o["value"] > o["corner_values"]["stick"] and o["value"] > o["corner_values"]["carrot"]
+    f = o["grid"]["objective"]
+    assert all(f[i] >= (f[i - 1] + f[i + 1]) / 2 - 1e-12 for i in range(1, len(f) - 1))  # concave_sum
+    assert not R.budget_optimum(lambda t: 0.01 * t, lambda s: s, 1)["interior"]
+    t = R.outcome_test({"A": {"q": [0.3, 0.9], "w": [1, 1], "t": 0.5}, "B": {"q": [0.9], "w": [1], "t": 0.2}})
+    assert t["theorem"] == "Research.P2.OutcomeTest.infra_marginality"
+    assert (
+        t["A"]["hit_rate"] == t["B"]["hit_rate"] == 0.9 and t["A"]["stop_rate"] == 0.5 and t["B"]["stop_rate"] == 1
+    )  # infra_marginality
+    t2 = R.outcome_test({"A": {"q": [0.3, 0.9], "w": [1, 1], "t": 0.5}, "B": {"q": [0.6, 0.9], "w": [1, 1], "t": 0.5}})
+    assert t2["A"]["hit_rate"] != t2["B"]["hit_rate"]  # equal_thresholds_unequal_hits
+    q = [(i + 0.5) / 1000 for i in range(1000)]
+    u = R.outcome_test({"U": {"q": q, "w": [1] * 1000, "t": 0.4}})
+    assert abs(u["U"]["hit_rate"] - 0.7) < 1e-3  # uniform_hit_rate
+    with pytest.raises(ValueError, match="q in"):
+        R.outcome_test({"A": {"q": [2], "w": [1], "t": 0.1}})
+    s = R.spatial_omission(0.4, [1, 2], [[1, 0.5], [0.5, 1]], 0.05, 50)
+    assert s["theorem"] == "Research.P3.Spatial.lag_regressor_correlated"
+    assert (
+        abs(s["lag_covariance"] - 0.4 / 0.84) < 1e-12
+        and abs(s["var_ols"] - 7 / 25) < 1e-12
+        and abs(s["var_gls"] - 0.25) < 1e-12
+    )
+    assert s["gls_more_precise"] and abs(s["fwer"] - (1 - 0.95**50)) < 1e-12  # gls_more_precise, fwer
+    nb = R.iv_natural_bounds(0.8, 0.3, 0.6, 0.4)
+    assert nb["theorem"] == "Research.P8.NaturalBounds.width" and abs(nb["width"] - 0.5) < 1e-12  # width
+    ate = lambda q1, q0: (0.6 * 0.8 + q1 * 0.2) - (0.4 * 0.7 + q0 * 0.3)  # noqa: E731
+    assert abs(ate(0, 1) - nb["lower"]) < 1e-12 and abs(ate(1, 0) - nb["upper"]) < 1e-12  # bounds_attained
+    assert (
+        R.iv_natural_bounds(1, 0, 0.6, 0.4)["width"] == 0
+        and abs(R.iv_natural_bounds(0.5, 0.5, 0.6, 0.4)["width"] - 1) < 1e-12
+    )
+    d = R.design_sensitivity(0.7)
+    assert d["theorem"] == "Research.P5.DesignSensitivity.design_sensitivity_exists_unique"
+    assert abs(d["gamma_tilde"] - 7 / 3) < 1e-8 and d["limiting_power"]["power"] == [
+        1.0,
+        1.0,
+        0.0,
+    ]  # eventually_reject/accept
+    with pytest.raises(ValueError, match="no effect"):
+        R.design_sensitivity(0.4)
+
+
+def test_scan2_moran_exposure_thinning_chernoff_walk_parity():
+    import math
+    import random
+
+    import pytest
+
+    W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    m = R.moran_trend(W, [1, 2, 3, 4])
+    assert m["theorem"] == "Research.P7.MoranTrend.residual_moran_ratio"
+    assert abs(m["I"] - 1 / 3) < 1e-12 and abs(m["null_expectation"] + 1 / 3) < 1e-12  # trend_witness
+    n = 12
+    Wn = [[1.0 if abs(i - j) == 1 else 0.0 for j in range(n)] for i in range(n)]
+    X = [[1.0, float(i + 1)] for i in range(n)]
+    rng = random.Random(5)
+    y = [2 + 0.5 * (i + 1) + rng.gauss(0, 1) for i in range(n)]
+    mr = R.moran_trend(Wn, y, X)
+    assert "I_residual" in mr and abs(mr["residual_expectation"]) < 1  # residual_moran_ratio form
+    with pytest.raises(ValueError, match="n x n"):
+        R.moran_trend(W, [1, 2, 3])
+    e = R.exposure_positivity(0.5, [1, 5, 10, 30])
+    assert e["theorem"] == "Research.P3.Exposure.exposure_prob_tendsto_zero"
+    assert e["prob_all_treated"] == [0.5**d for d in (1, 5, 10, 30)] and e["ht_weight"][-1] == 2.0**30
+    stats = [rng.gauss(0, 1) for _ in range(200)]
+    pv = R.permutation_valid(stats, [0.01, 0.05, 0.1, 0.5])
+    assert pv["theorem"] == "Research.P3.Exposure.permutation_valid" and all(pv["levels"]["valid"])  # permutation_valid
+    assert R.permutation_valid([1, 1, 1, 2], [0.5])["levels"]["rejection_share"] == [0.25]
+    t = R.thinning_identification(5, 0.3)
+    assert (
+        t["theorem"] == "Research.P1.Thinning.not_identified" and t["recorded_rate"] == 1.5 and t["pgf_check"]
+    )  # thinned_pgf
+    assert t["alternative"]["lam"] * t["alternative"]["gamma"] == 1.5 and t["alternative"]["lam"] != 5  # not_identified
+    s, u = 0.4, 0.7
+    assert (
+        abs(math.exp(5 * ((0.3 * s + 0.7 * u) - 1)) - math.exp(1.5 * (s - 1)) * math.exp(3.5 * (u - 1))) < 1e-12
+    )  # joint_pgf_factorises
+    c = R.poisson_chernoff(20, [0.25, 0.5, 1])
+    assert c["theorem"] == "Research.P7.Chernoff.poisson_chernoff"
+    assert all(r > 0 for r in c["rate"]) and all(
+        a <= b for a, b in zip(c["exact"], c["bound"])
+    )  # rate_pos, poisson_chernoff
+    adj = [[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 1, 0, 0]]
+    w = R.random_walk_exposure(adj)
+    assert w["theorem"] == "Research.P3.RandomWalk.stationary" and w["undirected"] and w["stationary"]  # stationary
+    assert abs(sum(w["pi"]) - 1) < 1e-12 and w["pi"] == [2 / 8, 3 / 8, 2 / 8, 1 / 8]  # stationary_sum_one
+    dd = R.random_walk_exposure([[0, 1, 1], [0, 0, 1], [1, 0, 0]])
+    assert not dd["undirected"] and not dd["stationary"]  # directed_fails
+    with pytest.raises(ValueError, match="out-edge"):
+        R.random_walk_exposure([[0, 0], [0, 0]])
+
+
+def test_scan2_extremal_tail_calibration_bellman_budget_cusum_parity():
+    import math
+    import random
+
+    import pytest
+
+    x = R.extremal_index_clusters(4, 2, [10, 100, 100000])
+    assert x["theorem"] == "Research.P10.ExtremalIndex.extremal_index" and x["theta"] == 0.25
+    assert abs(x["limit_cluster"] ** 4 - x["limit_iid"]) < 1e-12  # extremal_index
+    assert abs(x["table"]["cluster"][2] - math.exp(-0.5)) < 1e-4 and abs(x["table"]["iid"][2] - math.exp(-2)) < 1e-4
+    tr = R.tail_ratio(
+        [5, 10, 20, 40], q=0.7, alpha=1.5, r=3, counts=[1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60]
+    )
+    assert tr["theorem"] == "Research.P7.TailShape.nb_pmf_ratio_tendsto_zero"
+    assert tr["geometric"] == [0.7**k for k in (5, 10, 20, 40)] and all(abs(p - 2**-1.5) < 1e-15 for p in tr["power"])
+    assert (
+        all(a <= b for a, b in zip(tr["nb_pmf_ratio"], tr["nb_bound"])) and tr["nb_pmf_ratio"][-1] < 1e-3
+    )  # nb_pmf_ratio_le, tendsto
+    assert (
+        abs(
+            tr["empirical"][0]
+            - (
+                sum(1 for v in [1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60] if v > 10)
+                / sum(1 for v in [1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60] if v > 5)
+            )
+        )
+        < 1e-12
+    )
+    cf = R.calibration_flip(0.05, 0.2, [0.3, 0.5, 0.8])
+    assert cf["theorem"] == "Research.P5.DataProcessing.calibration_incompatible"
+    assert all(abs(0.05 + 0.9 * a - r) < 1e-12 for a, r in zip(cf["true_A"], cf["r"]))  # calibrated_to_D_true_rate
+    assert (
+        cf["incompatible"] == [True, False, True]
+        and cf["true_A"][0] != cf["true_B"][0]
+        and cf["recorded_A"][2] != cf["recorded_B"][2]
+    )
+    dp = R.bayes_risk_dpi([[0.3, 0.1, 0.05], [0.1, 0.2, 0.25]], [0, 1], [1, 1, 2])
+    assert (
+        dp["theorem"] == "Research.P5.DataProcessing.bayes_risk_data_processing"
+        and dp["dpi_holds"]
+        and dp["risk_D"] <= dp["risk_R"]
+    )
+    assert (
+        abs(R.bayes_risk_dpi([[0.3, 0.1, 0.05], [0.1, 0.2, 0.25]], [0, 1], [1, 2, 3])["risk_R"] - dp["risk_D"]) < 1e-12
+    )
+    r = [[1, 0], [0.5, 0.5], [1, 1]]
+    p = [[[0, 1, 0], [0, 0, 1]], [[0, 1, 0], [0, 1, 0]], [[0, 0, 1], [0, 0, 1]]]
+    b = R.bellman_value(r, p, 0.9)
+    assert (
+        b["theorem"] == "Research.P4.Bellman.bellman_contracting"
+        and b["converged"]
+        and b["contraction_ratio"] <= 0.9 + 1e-6
+    )  # bellman_lipschitz
+    assert (
+        abs(b["value"][1] - 5) < 1e-6
+        and abs(b["value"][2] - 10) < 1e-6
+        and abs(b["value"][0] - 9) < 1e-6
+        and b["policy"][0] == 1
+    )
+    q = [[r[s][a] + 0.9 * sum(p[s][a][t] * b["value"][t] for t in range(3)) for a in range(2)] for s in range(3)]
+    assert all(abs(max(row) - v) < 1e-6 for row, v in zip(q, b["value"]))  # fixed point
+    me = R.myopic_example([0.5, 2 / 3, 0.9])
+    assert me["theorem"] == "Research.P4.Bellman.myopic_suboptimal" and me["patient_better"] == [
+        False,
+        False,
+        True,
+    ]  # myopic_suboptimal
+    br = R.budget_rule([1, 1, 1], [0.5, 0.2, -0.1], 1.5)
+    assert br["theorem"] == "Research.P5.BudgetRule.threshold_optimal" and br["rule"] == [1.0, 0.5, 0.0]
+    assert (
+        abs(br["value"] - 0.6) < 1e-12 and br["stochastic_needed"] and br["best_deterministic"] == 0.5
+    )  # stochastic_needed
+    rng = random.Random(9)
+    for _ in range(200):  # threshold_optimal
+        d = [rng.random() for _ in range(3)]
+        if sum(d) > 1.5:
+            d = [v * 1.5 / sum(d) for v in d]
+        assert sum(a * b for a, b in zip(d, (0.5, 0.2, -0.1))) <= br["value"] + 1e-12
+    rl = R.run_length_bound(0.01)
+    assert rl["theorem"] == "Research.P10.Cusum.mean_run_length_ge" and rl["J"] == 100 and rl["bound"] == 50
+    assert (
+        abs(rl["partial_sum"] - sum(1 - n * 0.01 for n in range(100))) < 1e-12 and rl["partial_sum"] >= rl["bound"]
+    )  # partial_sum_ge_half
+    N = []
+    for _ in range(4000):  # stop_prob_le
+        k = 0
+        while rng.random() >= 0.05:
+            k += 1
+        N.append(k)
+    for n in (0, 3, 10):
+        assert sum(1 for v in N if v <= n) / 4000 <= (n + 1) * 0.05 + 0.03
+    with pytest.raises(ValueError, match="must not exceed 1"):
+        R.run_length_bound(0.5, J=3)
