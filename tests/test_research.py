@@ -1307,3 +1307,23 @@ def test_hotspot_threshold_parity():
         R.hotspot_threshold(0, 1, 1, 1, 1, 0.1)
     with pytest.raises(ValueError, match="eps"):
         R.hotspot_threshold(1, 1, -1, 1, 1, 0.1)
+
+
+def test_dark_figure_comparable_parity():
+    r = R.dark_figure_comparable(VA=1000, RA=400, RB=300, lam=0.5)
+    assert r["rate_A"] == 0.4  # rate_on_A
+    assert abs(r["rate_upper"] - 700 / 1300) < 1e-12  # total_rate_le
+    assert r["total"] == (1300.0, 1000 + 300 / 0.2)  # total_interval
+    assert r["dark_figure"] == (600.0, 600 + 300 * (1 / 0.2 - 1))  # dark_interval
+    assert abs(r["width"] - 300 * (1 - 0.2) / 0.2) < 1e-12  # dark_figure_width
+    for VB in (300.0, 800.0, 1500.0):
+        assert r["rate_upper"] >= 700 / (1000 + VB)
+        assert r["total"][0] <= 1000 + VB <= r["total"][1]
+    z = R.dark_figure_comparable(VA=1000, RA=1000, RB=300, lam=1)
+    assert z["width"] == 0 and z["dark_figure"] == (0.0, 0.0)
+    import pytest
+
+    with pytest.raises(ValueError, match="exceeds"):
+        R.dark_figure_comparable(1000, 1200, 300)
+    with pytest.raises(ValueError, match="lam"):
+        R.dark_figure_comparable(1000, 400, 300, lam=0)

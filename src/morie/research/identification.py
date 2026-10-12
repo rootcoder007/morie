@@ -646,3 +646,56 @@ def hotspot_threshold(
             "Research.P4.Hotspot.hotspots_above_threshold",
         ),
     }
+
+
+def dark_figure_comparable(VA: float, RA: float, RB: float, lam: float = 1.0) -> dict:
+    """The dark figure from a survey covering only the offence set A (``Research.P1.Comparable``).
+
+    The survey identifies VA and so r_A = RA / VA (``rate_on_A``); the overall rate is at most
+    (RA + RB) / (VA + RB) (``total_rate_le``) and has no positive lower bound without an
+    assumption on B. Under r_B >= lam r_A the total count lies in [VA + RB, VA + RB/(lam r_A)]
+    (``total_interval``) and the dark figure in [VA - RA, VA - RA + RB (1/(lam r_A) - 1)]
+    (``dark_interval``), an interval of width RB (1 - lam r_A)/(lam r_A) (``dark_figure_width``).
+
+    Examples
+    --------
+    >>> r = dark_figure_comparable(VA=1000, RA=400, RB=300, lam=0.5)
+    >>> (r["rate_A"], r["total"], r["dark_figure"], r["width"])
+    (0.4, (1300.0, 2500.0), (600.0, 1800.0), 1200.0)
+    """
+    import math
+
+    def num(x, name):
+        try:
+            v = float(x)
+        except (TypeError, ValueError):
+            raise ValueError(f"{name} must be a single finite number") from None
+        if not math.isfinite(v) or v < 0:
+            raise ValueError(f"{name} must be a single finite number at least 0")
+        return v
+
+    VA, RA, RB, lam = num(VA, "VA"), num(RA, "RA"), num(RB, "RB"), num(lam, "lam")
+    if VA <= 0:
+        raise ValueError("VA must be positive: the survey must see some comparable offences")
+    if RA > VA:
+        raise ValueError("RA exceeds VA: a record is an offence, so the recorded count cannot exceed the true one")
+    if lam <= 0 or lam > 1:
+        raise ValueError("lam must be in (0, 1]")
+    rate_A = RA / VA
+    if rate_A <= 0:
+        raise ValueError("RA must be positive for the bound: with nothing recorded on A, lam r_A = 0")
+    k = lam * rate_A
+    return {
+        "rate_A": rate_A,
+        "rate_upper": (RA + RB) / (VA + RB),
+        "total": (VA + RB, VA + RB / k),
+        "dark_figure": (VA - RA, VA - RA + RB * (1 / k - 1)),
+        "width": RB * (1 - k) / k,
+        "theorems": (
+            "Research.P1.Comparable.rate_on_A",
+            "Research.P1.Comparable.total_rate_le",
+            "Research.P1.Comparable.total_interval",
+            "Research.P1.Comparable.dark_interval",
+            "Research.P1.Comparable.dark_figure_width",
+        ),
+    }

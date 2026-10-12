@@ -57,6 +57,7 @@ from morie.research.identification import (
     shrinkage_factor_error,
     spillover_ring_bound,
     hotspot_threshold,
+    dark_figure_comparable,
     veil_of_darkness,
     wald_iv,
 )
@@ -100,6 +101,7 @@ __all__ = [
     "rank_persistence_null",
     "spillover_ring_bound",
     "hotspot_threshold",
+    "dark_figure_comparable",
     "age_crime_type_cov",
     "concentration_null_bound",
     "contagion_moment_witness",

@@ -9,6 +9,11 @@ Per-package full changelogs:
 
 ## 1.4.3 (2026-10-09)
 
+* Research ledger: `dark_figure_comparable()` (the recording rate is identified only on the
+  survey-comparable offence set, with the dark-figure interval for the rest, Lean
+  `Research.P1.Comparable`); the urn share converges a.s. and in mean (Lean `Research.P4.Martingale`);
+  the NCVS 1992-2022 file (ICPSR 38604) is served at data.rmorie.com as `ncvs_38604/*`
+  (`morie pull ncvs_38604/incident`). Lean now 71 files, 377 audited theorems, 0 sorry.
 * Research ledger: `hotspot_threshold()` (the Short-Brantingham reaction-diffusion model's unique
   homogeneous steady state, its dispersion relation P k^2 - Q k + R and the explicit stability
   inequality 3 eps D rho <= omega + eta A / z, Lean `Research.P4.Hotspot`); the same function in the
