@@ -16,7 +16,7 @@ from morie.research.concentration import (
     concentration_gini,
 )
 from morie.research.contagion import contagion_branching, contagion_extinction
-from morie.research.court_backlog import backlog_censoring, court_backlog
+from morie.research.court_backlog import backlog_censoring, backlog_published, court_backlog
 from morie.research.dark_figure import (
     dark_figure_bounds,
     dark_figure_breakdown,
@@ -62,7 +62,7 @@ from morie.research.identification import (
     wald_iv,
 )
 from morie.research.incapacitation import incapacitation, incapacitation_career
-from morie.research.judge_iv import judge_iv, judge_iv_population, judge_slope_test
+from morie.research.judge_iv import judge_iv, judge_iv_population, judge_monotonicity, judge_slope_test
 from morie.research.lecam import two_point_bound
 from morie.research.library_scan import (
     attenuation_two_regressor,
@@ -192,6 +192,7 @@ __all__ = [
     "wald_iv",
     "age_crime_aggregate",
     "backlog_censoring",
+    "backlog_published",
     "bounds_confidence",
     "cheeger_bound",
     "collider_arrest",
@@ -235,6 +236,7 @@ __all__ = [
     "judge_iv",
     "judge_iv_population",
     "judge_slope_test",
+    "judge_monotonicity",
     "logit_rescale",
     "logit_separation",
     "meta_dl_bias",

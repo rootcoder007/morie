@@ -816,6 +816,91 @@ def test_backlog_censoring_theorems_and_parity():
     assert not c["understates"] and c["bias_lower"] < 0
 
 
+def test_judge_monotonicity_nested_and_crossing():
+    import random
+
+    rng = random.Random(7)
+    thr = {"J1": 0.2, "J2": 0.3, "J3": 0.4, "J4": 0.5, "J5": 0.6, "J6": 0.7}
+    judge = [f"J{1 + i % 6}" for i in range(6000)]
+    group = ["abc"[i // 2000] for i in range(6000)]
+    u = [rng.random() for _ in range(6000)]
+    d = [int(ui < thr[j]) for ui, j in zip(u, judge)]
+    r = R.judge_monotonicity(judge, d, group)
+    assert r["summary"]["significant"] == 0 and r["summary"]["comparisons"] == 45
+    assert all(g["slope"] > 0 for g in r["by_group"]) and r["judges"][0]["judge"] == "J6"
+    c = r["comparisons"][0]
+    pp = (c["group_rate_stricter"] * c["n_stricter"] + c["group_rate_lenient"] * c["n_lenient"]) / (
+        c["n_stricter"] + c["n_lenient"]
+    )
+    z = (c["group_rate_lenient"] - c["group_rate_stricter"]) / math.sqrt(
+        pp * (1 - pp) * (1 / c["n_stricter"] + 1 / c["n_lenient"])
+    )
+    assert close(c["z"], z)
+    d2 = [int(ui < 0.05) if (j == "J6" and g == "c") else di for ui, j, g, di in zip(u, judge, group, d)]
+    r2 = R.judge_monotonicity(judge, d2, group)
+    sig = [x for x in r2["comparisons"] if x["significant"]]
+    assert sig and all("J6" in (x["stricter"], x["lenient"]) for x in sig)
+    sl = {g["group"]: g["slope"] for g in r2["by_group"]}
+    assert sl["c"] < min(sl["a"], sl["b"])
+    for x in r2["comparisons"]:  # Holm: adjusted at least raw, at most one
+        assert x["p_value"] - 1e-15 <= x["p_adjusted"] <= 1.0
+
+
+def test_judge_monotonicity_errors():
+    for args, kw, msg in [
+        (([1, 2, 3], [0, 1], [1, 2, 3]), {}, "equal length"),
+        ((["a", None], [0, 1], [1, 2]), {}, "missing"),
+        ((["a", "b"], [0, 2], [1, 2]), {}, "0/1"),
+        ((["a", "b"], [0, 1], [1, 2]), {"min_n": 0}, "min_n"),
+        ((["a", "b"], [0, 1], [1, 2]), {"alpha": 1}, "alpha"),
+        ((["a", "b"], [0, 1], [1, 2]), {"adjust": "bh"}, "holm"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.judge_monotonicity(*args, **kw)
+
+
+def test_backlog_published_little_and_bands_parity():
+    r = R.backlog_published(
+        21265, 30, 148904, 175, band_shares=[[0.808, 0.105, 0.034, 0.053]], band_floors=[0, 304, 456, 548]
+    )[0]
+    lam = 21265 / 30
+    assert close(r["filing_rate"], lam) and close(r["implied_mean_days"], 148904 / lam)
+    assert close(r["ratio"], (148904 / lam) / 175) and close(r["little_backlog"], lam * 175)
+    assert close(r["band_floor_bound"], 0.105 * 304 + 0.034 * 456 + 0.053 * 548)  # band_floor_shares
+    # band_floor_le_mean on a docket whose cases sit at or above their floors
+    floors = [0, 304, 456, 548]
+    band = [0, 0, 1, 2, 3, 3, 1, 0]
+    dur = [floors[b] + 7.0 * (i + 1) for i, b in enumerate(band)]
+    sh = [band.count(k) / len(band) for k in range(4)]
+    bb = R.backlog_published(1, 1, 0, sum(dur) / len(dur), band_shares=[sh], band_floors=floors)[0]
+    assert bb["band_floor_bound"] <= sum(dur) / len(dur)
+    assert close(bb["band_floor_bound"], sum(floors[b] for b in band) / len(band))
+    w = R.backlog_published([300, 300, 300], 30, 450, 45)
+    assert [round(x["ratio"], 12) for x in w] == [1.0, 1.0, 1.0] and "band_floor_bound" not in w[0]
+
+
+def test_backlog_published_errors():
+    for args, msg in [
+        ((float("nan"), 30, 1, 1), "finite"),
+        ((0, 30, 1, 1), "positive"),
+        ((1, 30, -1, 1), "non-negative"),
+        (([1, 2, 3], [1, 2], 1, 1), "length 1 or 3"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.backlog_published(*args)
+    for kw, msg in [
+        (dict(band_shares=[[0.5, 0.5], [0.5, 0.5]]), "one row per window"),
+        (dict(band_shares=[[0.5, 0.5]]), "one lower edge"),
+        (dict(band_shares=[[-0.5, 1.5]], band_floors=[0, 1]), "non-negative"),
+        (dict(band_shares=[[0.2, 0.2]], band_floors=[0, 1]), "sum to 1"),
+        (dict(band_shares=[[0.5, 0.5]], band_floors=[5, 1]), "increasing"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.backlog_published(1, 1, 1, 1, **kw)
+    with pytest.raises(ValueError, match="finite"):
+        R.backlog_published("a", 1, 1, 1)
+
+
 # ----------------------------------------------------------------- P17 replacement and desistance (P17Replacement.lean)
 
 

@@ -14,7 +14,7 @@ import math
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
-__all__ = ["judge_iv_population", "judge_iv", "judge_slope_test"]
+__all__ = ["judge_iv_population", "judge_iv", "judge_slope_test", "judge_monotonicity"]
 
 _THEOREMS = [
     "Research.P14.itt_decomposition",
@@ -222,5 +222,117 @@ def judge_slope_test(judge, d, y, weights=None, lo=None, hi=None) -> dict:
             "Research.P14Slope.outcome_diff",
             "Research.P14Slope.slope_bound",
             "Research.P14Slope.violation_refutes_monotonicity",
+        ],
+    }
+
+
+def judge_monotonicity(judge, d, group, min_n=30, adjust="holm", alpha=0.05) -> dict:
+    """Do judges' leniency rankings hold inside every subgroup? (``Research.P14Slope.subgroup_propensity_mono``,
+    ``subgroup_reversal_refutes``, ``crossing_refutes_both``).
+
+    R parity: ``morie_judge_monotonicity`` (Holm adjustment, pooled one-sided two-proportion test).
+
+    Examples
+    --------
+    >>> r = judge_monotonicity(["a"] * 4 + ["b"] * 4, [1, 1, 1, 0, 0, 0, 0, 1], ["g"] * 8, min_n=1)
+    >>> (r["summary"]["comparisons"], r["summary"]["significant"])
+    (1, 0)
+    """
+    n = len(judge)
+    if len(d) != n or len(group) != n:
+        raise ValueError("judge, d and group must have equal length")
+    if any(v is None or (isinstance(v, float) and v != v) for v in list(judge) + list(d) + list(group)):
+        raise ValueError("no missing values allowed")
+    if any(v not in (0, 1) for v in d):
+        raise ValueError("d must be 0/1")
+    if min_n < 1:
+        raise ValueError("min_n must be a positive number")
+    if not 0 < alpha < 1:
+        raise ValueError("alpha must be in (0, 1)")
+    if adjust != "holm":
+        raise ValueError("only adjust='holm' is implemented")
+    judge = [str(j) for j in judge]
+    group = [str(g) for g in group]
+    tot, cnt = {}, {}
+    for j, v in zip(judge, d):
+        tot[j] = tot.get(j, 0) + v
+        cnt[j] = cnt.get(j, 0) + 1
+    rate = {j: tot[j] / cnt[j] for j in tot}
+    judges = sorted(({"judge": j, "rate": rate[j], "n": cnt[j]} for j in rate), key=lambda r: (-r["rate"], r["judge"]))
+    comps, by_group = [], []
+    for g in sorted(set(group)):
+        gt, gc = {}, {}
+        for j, v, gg in zip(judge, d, group):
+            if gg == g:
+                gt[j] = gt.get(j, 0) + v
+                gc[j] = gc.get(j, 0) + 1
+        keep = sorted(j for j in gc if gc[j] >= min_n)
+        if len(keep) >= 2:
+            w = [gc[j] for j in keep]
+            x = [rate[j] for j in keep]
+            y = [gt[j] / gc[j] for j in keep]
+            sw = math.fsum(w)
+            mx = math.fsum(wi * xi for wi, xi in zip(w, x)) / sw
+            my = math.fsum(wi * yi for wi, yi in zip(w, y)) / sw
+            sxx = math.fsum(wi * (xi - mx) ** 2 for wi, xi in zip(w, x))
+            slope = (
+                math.fsum(wi * (xi - mx) * (yi - my) for wi, xi, yi in zip(w, x, y)) / sxx if sxx > 0 else float("nan")
+            )
+            by_group.append({"group": g, "judges": len(keep), "cases": int(sw), "slope": slope})
+        for a_i in range(len(keep)):
+            for b_i in range(a_i + 1, len(keep)):
+                a, b = keep[a_i], keep[b_i]
+                if rate[a] == rate[b]:
+                    continue
+                hi, lo = (a, b) if rate[a] > rate[b] else (b, a)
+                ph, pl = gt[hi] / gc[hi], gt[lo] / gc[lo]
+                nh, nl = gc[hi], gc[lo]
+                pp = (ph * nh + pl * nl) / (nh + nl)
+                se = math.sqrt(pp * (1 - pp) * (1 / nh + 1 / nl))
+                z = (pl - ph) / se if se > 0 else 0.0
+                comps.append(
+                    {
+                        "group": g,
+                        "stricter": hi,
+                        "lenient": lo,
+                        "rate_stricter": rate[hi],
+                        "rate_lenient": rate[lo],
+                        "group_rate_stricter": ph,
+                        "group_rate_lenient": pl,
+                        "n_stricter": nh,
+                        "n_lenient": nl,
+                        "z": z,
+                        "p_value": 0.5 * math.erfc(z / math.sqrt(2)),
+                    }
+                )
+    m = len(comps)
+    order = sorted(range(m), key=lambda i: comps[i]["p_value"])
+    adj, running = [0.0] * m, 0.0
+    for rank, i in enumerate(order):
+        running = max(running, min(1.0, (m - rank) * comps[i]["p_value"]))
+        adj[i] = running
+    for c, a_ in zip(comps, adj):
+        c["p_adjusted"] = a_
+        c["reversed"] = c["group_rate_stricter"] < c["group_rate_lenient"]
+        c["significant"] = a_ < alpha
+    sig = [c for c in comps if c["significant"]]
+    summary = {
+        "comparisons": m,
+        "reversed": sum(c["reversed"] for c in comps),
+        "share_reversed": (sum(c["reversed"] for c in comps) / m) if m else float("nan"),
+        "significant": len(sig),
+        "pairs_refuted": len({(c["stricter"], c["lenient"]) for c in sig}),
+        "judges_involved": len({c["stricter"] for c in sig} | {c["lenient"] for c in sig}),
+    }
+    return {
+        "judges": judges,
+        "comparisons": comps,
+        "summary": summary,
+        "by_group": by_group,
+        "theorems": [
+            "Research.P14Slope.propensity_mono",
+            "Research.P14Slope.subgroup_propensity_mono",
+            "Research.P14Slope.subgroup_reversal_refutes",
+            "Research.P14Slope.crossing_refutes_both",
         ],
     }
