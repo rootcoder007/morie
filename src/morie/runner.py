@@ -269,7 +269,7 @@ def build_parser() -> argparse.ArgumentParser:
     ask_cmd.add_argument(
         "--route",
         default=None,
-        choices=("auto", "own", "ollama", "hosted"),
+        choices=__import__("morie.llm_config", fromlist=["ROUTES"]).ROUTES,
         help="Which route to use for this question (default: the saved route, else auto; morie help llm)",
     )
     ask_cmd.add_argument(
@@ -301,7 +301,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--remote",
         action="store_true",
         help="Use a Perseus relay you run (PERSEUS_CLOUD_URL, or `morie serve` on MORIE_PI_HOST); "
-        "without Ollama, percy already answers through the hosted tier after `morie login`",
+        "without Ollama, percy answers through your own endpoint or a provider key",
     )
     percy_talk.add_argument("--local", action="store_true", help="Force local Ollama only (no network)")
     percy_talk.add_argument("--pi", default=None, help="Connect to Pi (e.g. --pi host or MORIE_PI_HOST)")
@@ -318,7 +318,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     login_cmd = subparsers.add_parser(
         "login",
-        help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub, or --email for a code by email; stores a per-user key",
+        help="Sign in for the curated tables at data.rmorie.com with GitHub, or --email for a code by email; stores a per-user data key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
     login_cmd.add_argument(
@@ -340,7 +340,7 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="KEY",
         help="Store a key you already have (from the website or your email); prompts when KEY is omitted",
     )
-    subparsers.add_parser("logout", help="Forget the hosted LLM key")
+    subparsers.add_parser("logout", help="Forget the stored data key")
     inter = subparsers.add_parser(
         "interactive",
         help="Add, inspect or remove the interactive layer (polyglot REPL, agent, TUI, exec) that the published package leaves out",
@@ -366,7 +366,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     inter_sub.add_parser("status", help="Show where the layer lives and whether it is active for this version")
     inter_sub.add_parser("remove", help="Delete the per-user copy of the layer")
-    subparsers.add_parser("models", help="List the models you can ask: the hosted tier for your key, then local Ollama")
+    models_cmd = subparsers.add_parser("models", help="List the models the route `ask` takes offers (or --route ROUTE)")
+    models_cmd.add_argument("--route", default=None, help="own, ollama or a provider id (default: the route ask takes)")
 
     doctor_cmd = subparsers.add_parser(
         "doctor",
@@ -1537,8 +1538,8 @@ def _main_impl() -> int:
                     print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
             else:
                 print(
-                    "Curated tables at data.rmorie.com appear here once you hold a MORIE key: issued on request at "
-                    "https://rmorie.com/access (`morie login --token`), or `morie login` (GitHub) / `morie login --email you@example.com`."
+                    "Curated tables at data.rmorie.com appear here once you hold a MORIE data key: `morie login` "
+                    "(GitHub) or `morie login --email you@example.com`; a key you were given: `morie login --token`."
                 )
         return 0
 
@@ -2242,21 +2243,28 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "models":
-        from .hosted import models_lines
+        from . import llm as _llm
+        from . import providers as _prov
 
-        for line in models_lines():
-            print(line)
-        from .hosted import provider_line
-
-        own = provider_line()
-        if own:
-            print(own)
-        print(_local_models_line())
-        print("Pick one per call with `morie ask --model NAME ...`, or set MORIE_HOSTED_MODEL / MORIE_OLLAMA_MODEL.")
-        from . import hosted as _hosted
-
-        if getattr(_hosted, "_hosted_failure", None) == "rejected":
-            return 1  # the hosted line above already says the key was rejected and what to do
+        try:
+            prov = _llm.detect_available_provider(getattr(args, "route", None))
+        except ValueError as exc:
+            print(f"morie models: {exc}")
+            return 2
+        if prov == _llm._PROVIDER_LOCAL:
+            print(_llm.route_summary())
+            return 1
+        current = _llm._provider_model(prov)
+        if prov == _llm._PROVIDER_OLLAMA:
+            names = [t["name"] for t in (_llm._ollama_tags() or [])]
+        elif prov == _llm._PROVIDER_API:
+            names = [current]
+        else:
+            names = _prov.list_models(prov) or [current]
+        print(f"{_llm._provider_label(prov)}; the model in use is marked *:")
+        for n in names:
+            print(f"  {'*' if n == current else ' '} {n}")
+        print("Pick one per call with `morie ask --model NAME ...`, or save it: morie config set <route>.model NAME")
         return 0
 
     if args.command == "provider":
@@ -2777,7 +2785,7 @@ def _handle_percy(args: argparse.Namespace) -> int:
         if base_url is None and cloud_url is None and not getattr(args, "local", False):
             from .llm import detect_available_provider
 
-            # the tool-calling agent needs Ollama; without one the hosted tier (or your endpoint) answers
+            # the tool-calling agent needs Ollama; without one your endpoint or a provider key answers
             if detect_available_provider() != "ollama":
                 raise RuntimeError("no Ollama server answers")
         agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
@@ -2786,7 +2794,7 @@ def _handle_percy(args: argparse.Namespace) -> int:
             raise RuntimeError("no Ollama server answers at " + str(base_url or "the default address"))
     except Exception as exc:
         # Perseus's tool-calling agent needs a local Ollama; without one, answer
-        # through the provider chain (hosted tier, your own endpoint, ...)
+        # through the route chain (your own endpoint, a provider key)
         question = getattr(args, "question", None)
         if question is None:
             print('Give the question on the command line: morie percy "..."  (or run `morie chat`)', file=sys.stderr)

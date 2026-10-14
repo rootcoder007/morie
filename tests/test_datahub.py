@@ -2,6 +2,7 @@
 """data.rmorie.com: key handling, manifest cache, download + dataset-store cache, list_datasets rows."""
 
 import gzip
+import hashlib
 import io
 import json
 from urllib.error import HTTPError
@@ -19,6 +20,9 @@ class _Resp(io.BytesIO):
         return False
 
 
+# the table as served, byte for byte (mtime 0: the same bytes every run), and its digest
+CSV_GZ = gzip.compress(b"id,type\n1,THEFT\n2,BATTERY\n3,THEFT\n", mtime=0)
+
 MANIFEST = {
     "generated_utc": "2026-10-01T00:00:00Z",
     "datasets": [
@@ -29,7 +33,7 @@ MANIFEST = {
             "rows": 3,
             "columns": ["id", "type"],
             "bytes_gz": 10,
-            "sha256": "x",
+            "sha256_gz": hashlib.sha256(CSV_GZ).hexdigest(),
             "source": "bigquery-public-data.chicago_crime.crime",
             "meta": {"description": "Chicago Police incidents"},
         }
@@ -52,7 +56,9 @@ def hub(tmp_path, monkeypatch):
         if req.full_url.endswith("/manifest.json"):
             return _Resp(json.dumps(MANIFEST).encode())
         if req.full_url.endswith("/chicago_crime/incidents.csv.gz"):
-            return _Resp(gzip.compress(b"id,type\n1,THEFT\n2,BATTERY\n3,THEFT\n"))
+            return _Resp(CSV_GZ)
+        if "/icpsr_" in req.full_url:
+            raise HTTPError(req.full_url, 403, "Forbidden", {}, None)
         raise HTTPError(req.full_url, 404, "Not Found", {}, None)
 
     monkeypatch.setattr(datahub, "urlopen", fake_urlopen)
@@ -108,3 +114,40 @@ def test_empty_cached_table_is_refetched(hub, monkeypatch, tmp_path):
     data.cache_store(pd.DataFrame({"id": [], "type": []}), datahub.hosted_table_name("chicago_crime/incidents"), db)
     df = datahub.load_hosted_dataset("chicago_crime/incidents", db_path=db)
     assert len(df) == 3  # the empty cached copy was ignored and the edge copy fetched
+
+
+def test_a_download_that_does_not_match_the_manifest_digest_is_refused(hub, monkeypatch, tmp_path):
+    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
+    bad = json.loads(json.dumps(MANIFEST))
+    bad["datasets"][0]["sha256_gz"] = "0" * 64
+    monkeypatch.setattr(datahub, "hosted_manifest", lambda refresh=False: bad)
+    with pytest.raises(ValueError, match="does not match the SHA-256"):
+        datahub.load_hosted_dataset("chicago_crime/incidents", db_path=tmp_path / "c.db")
+    out = tmp_path / "out.csv"
+    with pytest.raises(ValueError, match="does not match the SHA-256"):
+        datahub.hosted_to_csv("chicago_crime/incidents", out)
+    # a digest field that is not a digest: the file cannot be trusted, said as such
+    bad["datasets"][0]["sha256_gz"] = "not-a-digest"
+    with pytest.raises(ValueError, match="not a SHA-256 hex digest"):
+        datahub.load_hosted_dataset("chicago_crime/incidents", db_path=tmp_path / "c.db")
+    # a manifest with no digest for the table: it loads (nothing to check against)
+    del bad["datasets"][0]["sha256_gz"]
+    assert len(datahub.load_hosted_dataset("chicago_crime/incidents", db_path=tmp_path / "c2.db")) == 3
+
+
+def test_a_matching_digest_loads_and_a_prefixed_one_is_read(hub, monkeypatch, tmp_path):
+    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
+    m = json.loads(json.dumps(MANIFEST))
+    m["datasets"][0]["sha256"] = "sha256:" + m["datasets"][0].pop("sha256_gz").upper()
+    monkeypatch.setattr(datahub, "hosted_manifest", lambda refresh=False: m)
+    rows, ncol = datahub.hosted_to_csv("chicago_crime/incidents", tmp_path / "o.csv")
+    assert (rows, ncol) == (3, 2)
+
+
+def test_a_restricted_table_names_its_terms(hub, monkeypatch):
+    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
+    with pytest.raises(datahub.DataHubAuthError, match="restricted table: accept its terms") as e:
+        datahub._get("/icpsr_21600/w1.csv.gz")
+    assert "https://data.example.test/terms" in str(e.value)
+    assert "login` again" in datahub._refusal_message(401, "/icpsr_21600/w1.csv.gz")
+    assert "login` again" in datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")

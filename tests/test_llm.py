@@ -17,7 +17,6 @@ from morie.llm import (
     _PROVIDER_API,
     _PROVIDER_LOCAL,
     _PROVIDER_OLLAMA,
-    _PROVIDER_OPENAI,
     _build_messages,
     _format_context_block,
     _local_fallback,
@@ -34,7 +33,7 @@ from morie.llm import (
 
 
 class TestDetectAvailableProvider:
-    """Test the provider detection chain: ollama -> api -> openai -> local."""
+    """The route chain: own endpoint -> each provider with a key -> ollama -> local."""
 
     def test_ollama_detected_when_running(self, monkeypatch):
         """When Ollama health check passes, provider should be 'ollama'."""
@@ -61,7 +60,7 @@ class TestDetectAvailableProvider:
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test-key")
 
         with patch("morie.llm._probe_ollama", return_value=False):
-            assert detect_available_provider() == _PROVIDER_OPENAI
+            assert detect_available_provider() == "openai"
 
     def test_local_when_nothing_configured(self, monkeypatch):
         """When no provider is available, detection returns 'local'."""
@@ -73,13 +72,17 @@ class TestDetectAvailableProvider:
         with patch("morie.llm._probe_ollama", return_value=False):
             assert detect_available_provider() == _PROVIDER_LOCAL
 
-    def test_ollama_takes_priority_over_api(self, monkeypatch):
-        """Even with API keys set, Ollama should be preferred if available."""
+    def test_own_endpoint_and_keys_take_priority_over_ollama(self, monkeypatch):
+        """What the user set up on purpose comes before an Ollama that merely answers."""
         monkeypatch.setenv("LLM_API_BASE_URL", "https://example.com/v1")
         monkeypatch.setenv("LLM_API_KEY", "test-key")
         monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
 
         with patch("morie.llm._probe_ollama", return_value=True):
+            assert detect_available_provider() == _PROVIDER_API
+            monkeypatch.delenv("LLM_API_BASE_URL")
+            assert detect_available_provider() == "openai"
+            monkeypatch.delenv("OPENAI_API_KEY")
             assert detect_available_provider() == _PROVIDER_OLLAMA
 
     def test_api_takes_priority_over_openai(self, monkeypatch):
@@ -281,8 +284,8 @@ class TestAsk:
             call_args = mock_req.call_args
             assert "localhost:11434" in call_args[0][0]
 
-    def test_fallback_chain_on_ollama_failure(self, monkeypatch):
-        """When Ollama is detected but the request fails, fall through to API."""
+    def test_fallback_chain_on_own_endpoint_failure(self, monkeypatch):
+        """When your endpoint is chosen but the request fails, fall through to Ollama."""
         monkeypatch.setenv("OLLAMA_MODEL", "gemma4:e2b")
         monkeypatch.setenv("LLM_API_BASE_URL", "https://example.com/v1")
         monkeypatch.setenv("LLM_API_KEY", "test-key")
@@ -291,15 +294,15 @@ class TestAsk:
         mock_response_ok = MagicMock()
         mock_response_ok.status_code = 200
         mock_response_ok.raise_for_status = MagicMock()
-        mock_response_ok.json.return_value = {"choices": [{"message": {"content": "Answer from API"}}]}
+        mock_response_ok.json.return_value = {"choices": [{"message": {"content": "Answer from Ollama"}}]}
 
         call_count = 0
 
         def side_effect(base_url, model, messages, **kwargs):
             nonlocal call_count
             call_count += 1
-            if "localhost" in base_url:
-                raise ConnectionError("Ollama down")
+            if "example.com" in base_url:
+                raise ConnectionError("endpoint down")
             return mock_response_ok
 
         with (
@@ -307,8 +310,8 @@ class TestAsk:
             patch("morie.llm._request_completion", side_effect=side_effect),
         ):
             result = ask("What is AIPW?")
-            assert result == "Answer from API"
-            assert call_count == 2  # Ollama attempt + API attempt
+            assert result == "Answer from Ollama"
+            assert call_count == 2  # endpoint attempt + Ollama attempt
 
 
 # ---------------------------------------------------------------------------

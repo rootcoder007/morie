@@ -1,54 +1,41 @@
-"""Ollama-first LLM integration layer for the MORIE package.
+"""Language models for MORIE: the one you bring.
 
-Provides a provider chain that attempts local Ollama inference first, then
-Gemini (Google), then a generic OpenAI-compatible endpoint (e.g. Qwen via
-OpenRouter, GPT-OSS models via Together/Groq), then the official OpenAI API, and finally a
-local help-text fallback that requires no network access.
+Nothing is hosted by the project and no prompt goes anywhere you did not set up. ``ask`` uses,
+in the automatic order (``route = auto``), the same one rmoriebricklayer uses:
 
-HTTP-based providers use ``httpx`` against OpenAI-compatible endpoints.
+    1. own       -- your own OpenAI-compatible server (LM Studio, vLLM, llama.cpp, a gateway)
+    2. provider  -- the first provider whose key is set: OpenAI, Anthropic, Google Gemini,
+                    OpenRouter, Groq, Together, Fireworks, DeepSeek, Mistral, xAI, Cerebras,
+                    Perplexity, Hugging Face, OpenCode Zen, Cohere, NVIDIA (``morie.providers``)
+    3. ollama    -- an Ollama server (``ollama serve``) with a model pulled
+    4. local     -- MORIE's keyword help, marked as such, no network
+
+Anthropic's Messages API and Gemini's ``generateContent`` are spoken natively; the rest are
+OpenAI-compatible (``httpx``).
 
 Environment Variables
 ---------------------
-OLLAMA_BASE_URL : str
-    Base URL for a running Ollama instance.  Default: ``http://localhost:11434``
-GEMINI_API_KEY : str
-    Google AI Studio API key.  Free-tier keys work for development.
-    Model defaults to ``gemini-2.0-flash``.
-GEMINI_MODEL : str
-    Override the Gemini model (e.g. ``gemini-1.5-pro``).  Optional.
-LLM_API_BASE_URL : str
-    Base URL for any OpenAI-compatible API (e.g., OpenRouter, Together, Groq).
-    Use this to point at Qwen, Mistral, GPT-OSS, or any hosted model.
-LLM_API_KEY : str
-    API key for the endpoint at ``LLM_API_BASE_URL``.
-OPENAI_API_KEY : str
-    API key for the official OpenAI API at ``https://api.openai.com``.
+ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, GROQ_API_KEY, ... : str
+    A provider's key (``morie.providers.PRESETS`` lists every one); its model is
+    ``MORIE_<PROVIDER>_MODEL``, else the provider's default.
 MORIE_LLM_ROUTE : str
-    ``auto`` (default), ``own``, ``ollama`` or ``hosted``: force the route ``ask`` takes.
+    ``auto`` (default), ``own``, ``ollama`` or a provider id: force the route ``ask`` takes.
 OLLAMA_HOST, OLLAMA_MODEL, OLLAMA_API_KEY : str
-    The Ollama server (``OLLAMA_BASE_URL`` is still read), its model and an optional key.
+    The Ollama server (``OLLAMA_BASE_URL`` is still read), its model and an optional key
+    (``OLLAMA_HOST=https://ollama.com`` with an Ollama key reaches Ollama's own cloud).
 MORIE_LLM_BASE_URL, MORIE_LLM_API_KEY, MORIE_LLM_MODEL : str
-    Your own OpenAI-compatible server (the ``LLM_API_*`` names above are still read).
+    Your own OpenAI-compatible server (``LLM_API_BASE_URL`` / ``LLM_API_KEY`` are still read).
 
 Every one of these can be saved instead with ``morie config set KEY VALUE`` or
-:func:`config` (``$XDG_CONFIG_HOME/morie/llm.json``); a variable that is set wins over
-the saved value. ``morie config help`` lists them, ``morie doctor`` says which route
-``ask`` takes.
-
-Provider priority (auto-detected at runtime, ``route = auto``):
-    1. Ollama    -- local, private, no API key needed; only when it has a model
-                    (one pulled, or ``OLLAMA_MODEL`` set): a server with nothing
-                    pulled is skipped
-    2. Gemini    -- Google AI, generous free tier
-    3. API       -- your own OpenAI-compatible endpoint (Qwen, GPT-OSS, Groq, LM Studio, ...)
-    4. OpenAI    -- official OpenAI API
-    5. hosted    -- the hosted MORIE tier, after ``morie login``
-    6. local     -- static help text, no network required
+:func:`config` (``$XDG_CONFIG_HOME/morie/llm.json``, the file rmoriebricklayer's ``rmbl config``
+writes too); a variable that is set wins over the saved value. ``morie config help`` lists them,
+``morie doctor`` says which route ``ask`` takes.
 
 References
 ----------
 * Ollama API docs: https://github.com/ollama/ollama/blob/main/docs/api.md
-* Gemini OpenAI-compatible API: https://ai.google.dev/gemini-api/docs/openai
+* Anthropic Messages API: https://docs.anthropic.com/en/api/messages
+* Gemini generateContent: https://ai.google.dev/api/generate-content
 * OpenAI Chat Completions API: https://platform.openai.com/docs/api-reference/chat
 """
 
@@ -66,6 +53,7 @@ from typing import Any
 import httpx
 
 from . import llm_config as _cfg
+from . import providers as _providers
 from .cpads import cpads_contract
 from .llm_config import config, config_get, config_path, config_unset  # noqa: F401 -- public API
 from .modules import MODULE_SPECS
@@ -78,19 +66,10 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_OLLAMA_BASE_URL = "http://localhost:11434"
 DEFAULT_OLLAMA_MODEL = ""  # Auto-detected from running Ollama instance
-DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
 DEFAULT_API_MODEL = "google/gemma-3-27b-it"
-DEFAULT_OPENAI_MODEL = "gpt-4o-mini"
-
-OPENAI_BASE_URL = "https://api.openai.com"
-# Gemini exposes an OpenAI-compatible endpoint; no extra SDK required.
-GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
 
 _PROVIDER_OLLAMA = "ollama"
-_PROVIDER_HOSTED = "hosted"
-_PROVIDER_GEMINI = "gemini"
-_PROVIDER_API = "api"
-_PROVIDER_OPENAI = "openai"
+_PROVIDER_API = "own"  # your own OpenAI-compatible endpoint ("api" is still accepted)
 _PROVIDER_LOCAL = "local"
 
 # Timeout for the quick health-check probe (seconds).
@@ -266,38 +245,7 @@ def _own_ready() -> bool:
     return bool(_api_base_url())
 
 
-def _openai_key() -> str | None:
-    """Return the OPENAI_API_KEY."""
-    return os.environ.get("OPENAI_API_KEY", "").strip() or None
-
-
-def _gemini_key() -> str | None:
-    """Return the GEMINI_API_KEY for Google AI Studio."""
-    return os.environ.get("GEMINI_API_KEY", "").strip() or None
-
-
-def _gemini_model() -> str:
-    """Return the configured Gemini model name."""
-    return os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL).strip()
-
-
 _ollama_cached: bool | None = None
-
-
-def _hosted_ready() -> bool:
-    """True when the user logged in to the hosted tier and its gateway answers."""
-    from .hosted import probe_hosted
-
-    return probe_hosted()
-
-
-def _hosted_attempt(model: str | None) -> tuple[str, str, str | None] | None:
-    from .hosted import hosted_base_url, hosted_key, hosted_model_available
-
-    base, key = hosted_base_url(), hosted_key()
-    if base and key:
-        return (base, model or hosted_model_available(), key)
-    return None
 
 
 def _probe_ollama(timeout: float = _PROBE_TIMEOUT) -> bool:
@@ -305,8 +253,8 @@ def _probe_ollama(timeout: float = _PROBE_TIMEOUT) -> bool:
 
     A server with nothing pulled cannot answer a question, so it is not a usable
     route unless a model is named (``OLLAMA_MODEL`` or ``morie config set
-    ollama.model``): the automatic order then moves on to your own keys and the
-    hosted tier instead of stopping at an Ollama that can only fail.
+    ollama.model``): the automatic order then ends with MORIE's keyword help instead
+    of stopping at an Ollama that can only fail.
 
     The result is cached for the process lifetime to avoid repeated 2-second
     network timeouts on every call to :func:`detect_available_provider`.
@@ -334,82 +282,56 @@ def _route_name(route: str | None) -> str:
     if route is None:
         return _cfg.route()
     r = str(route).strip().lower()
+    if r == "api":
+        r = "own"
+    if r == "hosted":
+        raise ValueError(_providers.RETIRED)
     if r not in _cfg.ROUTES:
         raise ValueError(f"route must be one of: {', '.join(_cfg.ROUTES)}")
     return r
 
 
-def _hosted_configured() -> bool:
-    from .hosted import hosted_base_url, hosted_key
-
-    try:
-        return bool(hosted_base_url() and hosted_key())
-    except Exception:  # noqa: BLE001 - a services document that cannot be read
-        return False
-
-
 def detect_available_provider(route: str | None = None) -> str:
-    """Detect which LLM provider is currently available.
+    """Which language model ``ask`` would use: the one you brought.
 
     ``route`` (else ``MORIE_LLM_ROUTE``, else the route saved with ``morie config set route``)
-    forces one: ``"ollama"``, ``"hosted"``, or ``"own"`` (your endpoint, else your Gemini or
-    OpenAI key). With ``"auto"`` (the default) the order is a local model first, then every key
-    of the user's own, then the hosted MORIE tier as a last resort:
+    forces one: ``"own"`` (your OpenAI-compatible endpoint), ``"ollama"``, or a provider id
+    (``"anthropic"``, ``"openai"``, ``"gemini"``, ``"groq"``, ...; ``morie.providers.IDS``). With
+    ``"auto"`` (the default) the order is the one rmoriebricklayer uses:
 
-    1. **ollama**  -- a local Ollama instance answers and has a model (one pulled,
-       or ``OLLAMA_MODEL`` set). A server with nothing pulled is skipped.
-    2. **gemini**  -- ``GEMINI_API_KEY`` is set.
-    3. **api**     -- your own OpenAI-compatible endpoint is set (``morie config set own.url``,
-       ``MORIE_LLM_BASE_URL``/``LLM_API_BASE_URL``, or ``morie provider set``).
-    4. **openai**  -- ``OPENAI_API_KEY`` is set.
-    5. **hosted**  -- the user holds a MORIE key (issued on request at
-       https://rmorie.com/access, or minted by ``morie login``) and the hosted
-       gateway, found through the signed services document, answers.
-    6. **local**   -- no live provider; MORIE will return static help text.
+    1. **own**     -- your own endpoint is set (``morie config set own.url``, ``MORIE_LLM_BASE_URL``).
+    2. a **provider** whose key is set (``ANTHROPIC_API_KEY``, ``OPENAI_API_KEY``, ... or
+       ``morie config set <provider>.key``), in the order of ``morie.providers.PRESETS``.
+    3. **ollama**  -- an Ollama server answers and has a model (one pulled, or ``OLLAMA_MODEL``).
+    4. **local**   -- nothing is set up: the answer is MORIE's keyword help, marked as such.
+
+    Nothing is hosted by the project: no prompt goes anywhere you did not set up.
 
     Returns
     -------
     str
-        One of ``"ollama"``, ``"hosted"``, ``"gemini"``, ``"api"``,
-        ``"openai"``, or ``"local"``.
+        ``"own"``, ``"ollama"``, a provider id, or ``"local"``.
 
     Examples
     --------
-    >>> provider = detect_available_provider()
-    >>> provider in ("ollama", "hosted", "gemini", "api", "openai", "local")
+    >>> detect_available_provider() in ("own", "ollama", "local", *__import__("morie.providers").providers.IDS)
     True
     """
     r = _route_name(route)
     if r == "ollama":
         # forced: used even with nothing pulled (the request then says what is missing)
         return _PROVIDER_OLLAMA if _ollama_base_url() else _PROVIDER_LOCAL
-    if r == "hosted":
-        return _PROVIDER_HOSTED if _hosted_configured() else _PROVIDER_LOCAL
     if r == "own":
-        if _own_ready():
-            return _PROVIDER_API
-        if _gemini_key():
-            return _PROVIDER_GEMINI
-        if _openai_key():
-            return _PROVIDER_OPENAI
-        return _PROVIDER_LOCAL
-
-    if _ollama_base_url() and _probe_ollama():
-        return _PROVIDER_OLLAMA
-
-    if _gemini_key():
-        return _PROVIDER_GEMINI
-
+        return _PROVIDER_API if _own_ready() else _PROVIDER_LOCAL
+    if r in _providers.IDS:
+        return r if _providers.key(r) else _PROVIDER_LOCAL
     if _own_ready():
         return _PROVIDER_API
-
-    if _openai_key():
-        return _PROVIDER_OPENAI
-
-    # the hosted tier is a last resort, behind every key of the user's own
-    if _hosted_ready():
-        return _PROVIDER_HOSTED
-
+    keyed = _providers.with_key()
+    if keyed:
+        return keyed[0]
+    if _ollama_base_url() and _probe_ollama():
+        return _PROVIDER_OLLAMA
     return _PROVIDER_LOCAL
 
 
@@ -417,34 +339,21 @@ def _provider_model(provider: str) -> str:
     """The model a provider would be asked with (no network beyond the probes already made)."""
     if provider == _PROVIDER_OLLAMA:
         return _ollama_model()
-    if provider == _PROVIDER_GEMINI:
-        return _gemini_model()
     if provider == _PROVIDER_API:
         return _api_model()
-    if provider == _PROVIDER_OPENAI:
-        return os.environ.get("MORIE_OPENAI_MODEL", DEFAULT_OPENAI_MODEL).strip()
-    if provider == _PROVIDER_HOSTED:
-        from .hosted import hosted_model_available
-
-        return hosted_model_available()
+    if provider in _providers.IDS:
+        return _providers.model(provider)
     return ""
 
 
-_PROVIDER_LABEL = {
-    _PROVIDER_OLLAMA: "Ollama",
-    _PROVIDER_GEMINI: "Gemini",
-    _PROVIDER_API: "API",
-    _PROVIDER_OPENAI: "OpenAI",
-    _PROVIDER_HOSTED: "Hosted",
-}
-
-_PROVIDER_ROUTE_NAME = {
-    _PROVIDER_OLLAMA: "local Ollama",
-    _PROVIDER_GEMINI: "your Gemini key",
-    _PROVIDER_API: "your own endpoint",
-    _PROVIDER_OPENAI: "your OpenAI key",
-    _PROVIDER_HOSTED: "hosted MORIE tier",
-}
+def _provider_label(provider: str) -> str:
+    if provider == _PROVIDER_OLLAMA:
+        return "Ollama"
+    if provider == _PROVIDER_API:
+        return "own endpoint"
+    if provider in _providers.IDS:
+        return _providers.preset(provider).label
+    return provider
 
 
 def detect_provider_and_model(route: str | None = None) -> tuple[str, str]:
@@ -453,12 +362,12 @@ def detect_provider_and_model(route: str | None = None) -> tuple[str, str]:
     Returns
     -------
     tuple[str, str]
-        ``(provider_key, display_label)`` -- e.g. ``("gemini", "Gemini:gemini-2.5-flash")``.
+        ``(provider_key, display_label)`` -- e.g. ``("anthropic", "Anthropic:claude-opus-5-5")``.
     """
     provider = detect_available_provider(route)
     if provider == _PROVIDER_LOCAL:
         return provider, "local fallback (no LLM)"
-    return provider, f"{_PROVIDER_LABEL[provider]}:{_provider_model(provider)}"
+    return provider, f"{_provider_label(provider)}:{_provider_model(provider)}"
 
 
 def detect_model_display() -> dict[str, str]:
@@ -468,30 +377,36 @@ def detect_model_display() -> dict[str, str]:
     -------
     dict[str, str]
         Keys: ``inner``, ``outer``, ``model``, ``provider``.
-        HomeScreen format: ``LLM: {inner} [{outer}]``
     """
-    provider = detect_available_provider()
-    if provider == _PROVIDER_LOCAL:
-        return {"inner": "LOCAL", "outer": "FALLBACK", "model": "", "provider": provider}
-    model = _provider_model(provider)
-    return {"inner": _PROVIDER_LABEL[provider].upper(), "outer": model.upper(), "model": model, "provider": provider}
+    provider, label = detect_provider_and_model()
+    model = label.split(":", 1)[1] if ":" in label else label
+    return {"inner": model, "outer": model, "model": model, "provider": provider}
 
 
 def route_status() -> list[dict[str, str]]:
-    """One row per route (own endpoint, local Ollama, hosted tier): ``route``, ``status``, ``detail``."""
+    """One row per route (own endpoint, each provider with a key, local Ollama): ``route``, ``status``, ``detail``."""
     rows = []
     own = _api_base_url()
-    if own:
-        rows.append({"route": "own endpoint", "status": "configured", "detail": f"{own}  model: {_api_model()}"})
-    else:
-        keys = [n for n, v in (("GEMINI_API_KEY", _gemini_key()), ("OPENAI_API_KEY", _openai_key())) if v]
+    rows.append(
+        {"route": "own endpoint", "status": "configured", "detail": f"{own}  model: {_api_model()}"}
+        if own
+        else {
+            "route": "own endpoint",
+            "status": "not set",
+            "detail": "`morie config set own.url URL` (and own.model, own.key) for any OpenAI-compatible server",
+        }
+    )
+    keyed = _providers.with_key()
+    for pid in keyed:
+        p = _providers.preset(pid)
+        rows.append({"route": p.label, "status": "key set", "detail": f"{p.base}  model: {_providers.model(pid)}"})
+    rest = [p for p in _providers.PRESETS if p.id not in keyed]
+    if rest:
         rows.append(
             {
-                "route": "own endpoint",
-                "status": "keys" if keys else "not set",
-                "detail": (", ".join(keys) + " set")
-                if keys
-                else "`morie config set own.url URL` (and own.model, own.key) for any OpenAI-compatible server",
+                "route": "other providers",
+                "status": "no key",
+                "detail": ", ".join(f"{p.id} ({p.key_env})" for p in rest),
             }
         )
     base = _ollama_base_url()
@@ -505,7 +420,8 @@ def route_status() -> list[dict[str, str]]:
                 {
                     "route": "local Ollama",
                     "status": "not running",
-                    "detail": f"{base} (install Ollama and pull a model, or `morie config set ollama.url ADDRESS`)",
+                    "detail": f"{base} (start it with `ollama serve`; or install Ollama and pull a model, "
+                    "or `morie config set ollama.url ADDRESS`)",
                 }
             )
         elif not tags and not named:
@@ -525,44 +441,23 @@ def route_status() -> list[dict[str, str]]:
                     "detail": f"{base}  models: {names} (default {_ollama_model()})",
                 }
             )
-    from . import hosted
-
-    try:
-        hbase = hosted.hosted_base_url()
-    except Exception as exc:  # noqa: BLE001
-        hbase, why = None, str(exc)
-    else:
-        why = "hosted.url = off or MORIE_HOSTED_BASE_URL empty, or switched off in the services document"
-    if not hbase:
-        rows.append({"route": "hosted MORIE tier", "status": "disabled", "detail": why})
-    elif not hosted.hosted_key():
-        rows.append({"route": "hosted MORIE tier", "status": "not logged in", "detail": f"{hbase}  (`morie login`)"})
-    elif hosted.probe_hosted():
-        listed = hosted.hosted_models() or []
-        tail = f"  models: {', '.join(listed)}" if listed else ""
-        rows.append(
-            {
-                "route": "hosted MORIE tier",
-                "status": "key stored",
-                "detail": f"{hbase}{tail} (default {hosted.hosted_model_available()})",
-            }
-        )
-    else:
-        rows.append({"route": "hosted MORIE tier", "status": "key stored", "detail": hosted.hosted_problem_line()})
     return rows
 
 
 def route_summary(route: str | None = None) -> str:
-    """One line on the route ``ask`` takes now, e.g. ``ask uses: hosted MORIE tier, model minimax-m3:cloud``."""
+    """One line on the route ``ask`` takes now, e.g. ``ask uses: Anthropic, model claude-opus-5-5``."""
     r = _route_name(route)
     provider = detect_available_provider(r)
     forced = "" if r == "auto" else f"  (route = {r})"
     if provider == _PROVIDER_LOCAL:
         if r == "auto":
-            return "ask has no route yet: `morie login` for the hosted tier, or `morie config setup`"
+            return (
+                "ask has no route yet: set a provider's key (e.g. ANTHROPIC_API_KEY), start Ollama "
+                "(`ollama serve`) with a model, or `morie config setup`"
+            )
         return f"ask has no route: route = {r} is not set up here (`morie config` shows the settings)"
     model = _provider_model(provider) or "(none)"
-    return f"ask uses: {_PROVIDER_ROUTE_NAME[provider]}, model {model}{forced}"
+    return f"ask uses: {_provider_label(provider)}, model {model}{forced}"
 
 
 # -- Thinking word synonyms -------------------------------------------------
@@ -987,6 +882,8 @@ def _chat_url(base_url: str) -> str:
     """The chat-completions URL for a base: ``BASE/chat/completions`` when the base already ends in
     an API version (``.../v1``, Gemini's ``.../v1beta/openai``), else ``BASE/v1/chat/completions``."""
     base = base_url.rstrip("/")
+    if base in {p.base for p in _providers.PRESETS}:
+        return f"{base}/chat/completions"  # a provider's documented base, as it is (Perplexity has no /v1)
     if re.search(r"/v\d+[a-z0-9]*(/openai)?$", base, re.I):
         return f"{base}/chat/completions"
     return f"{base}/v1/chat/completions"
@@ -1037,7 +934,7 @@ def _request_completion(
         "stream": stream,
     }
 
-    # reasoning models (the hosted default) spend tokens thinking before answering: give them room,
+    # reasoning models spend tokens thinking before answering: give them room,
     # or the answer comes back as an empty "content" with the budget gone
     payload["max_tokens"] = max_tokens
     if "localhost" in base_url or "127.0.0.1" in base_url:
@@ -1164,7 +1061,7 @@ def _stream_completion(
         "stream": True,
     }
 
-    # reasoning models (the hosted default) spend tokens thinking before answering: give them room,
+    # reasoning models spend tokens thinking before answering: give them room,
     # or the answer comes back as an empty "content" with the budget gone
     payload["max_tokens"] = 4096
     if "localhost" in base_url or "127.0.0.1" in base_url:
@@ -1202,24 +1099,21 @@ The analyses do not need a model:
   - morie run-module <name>     Run one module
   - morie pipeline --all -y     Run the full analysis pipeline
 
-To get answers from a model, enable one of these (tried in this order):
+To get answers from a model, bring one (tried in this order):
 
-  1. A local Ollama (private, no key):
+  1. Your own OpenAI-compatible server (LM Studio, vLLM, llama.cpp, a gateway):
+       morie config set own.url http://localhost:1234/v1
+
+  2. A provider's key (OpenAI, Anthropic, Gemini, OpenRouter, Groq, Mistral and more):
+       export ANTHROPIC_API_KEY="..."       # or: morie config set anthropic.key
+       export OPENAI_API_KEY="..."          # any provider: morie config help lists them
+
+  3. A local Ollama (private, no key):
        curl -fsSL https://ollama.com/install.sh | sh
+       ollama serve                         # if it is not running as a service
        ollama pull gemma4:e2b
 
-  2. The hosted MORIE tier at https://llm.rmorie.com (one key per user,
-     rate-limited, nothing you send is stored):
-       morie login                          # GitHub device flow
-       morie login --email you@example.com  # a code sent to your inbox
-       morie login --token                  # paste a key from the website
-
-  3. Your own key:
-       export GEMINI_API_KEY="..."                              # Gemini
-       export LLM_API_BASE_URL="..." LLM_API_KEY="..."          # any OpenAI-compatible endpoint
-       export OPENAI_API_KEY="..."                              # OpenAI
-
-`morie doctor` reports what is reachable from here.
+`morie config setup` walks through it; `morie doctor` reports what is reachable from here.
 """
 
 
@@ -1272,56 +1166,60 @@ def _local_fallback(prompt: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-class ModelNotOnKeyError(RuntimeError):
-    """The hosted gateway refused a model the caller named: it is not on this key."""
+def _tagged_attempts(provider: str, model: str | None) -> list[tuple[str, str, str, str, str | None]]:
+    """The ordered (route, api, base_url, model, api_key) attempts, starting at ``provider``.
 
-
-def _model_not_on_key(exc: Exception, base_url: str, model: str | None) -> bool:
-    """A named model the hosted gateway answers 403/404 for: say so rather than try the next provider."""
-    if not model or not isinstance(exc, httpx.HTTPStatusError):
-        return False
-    hosted = _hosted_attempt(model)
-    return bool(hosted) and base_url == hosted[0] and exc.response.status_code in (403, 404)
-
-
-def _tagged_attempts(provider: str, model: str | None) -> list[tuple[str, str, str, str | None]]:
-    """The ordered (route, base_url, model, api_key) attempts for a provider.
-
-    ``route`` is ``ollama``, ``own`` (your endpoint or keys) or ``hosted``. An attempt with no
-    model to ask (an Ollama with nothing pulled and no ``OLLAMA_MODEL``) is left out: it could
-    only fail, and with streaming its failure would surface after the chain had already chosen it.
+    ``route`` is ``own``, ``ollama`` or a provider id; ``api`` is ``openai``, ``anthropic`` or
+    ``gemini``. After the first choice come the other routes that are set up, in the automatic
+    order, so a refused key or a dead server falls through to the next. An attempt with no model
+    to ask is left out: it could only fail.
     """
-    attempts: list[tuple[str, str, str, str | None]] = []
-    own_chain = {
-        _PROVIDER_OLLAMA: (_PROVIDER_GEMINI, _PROVIDER_API, _PROVIDER_OPENAI),
-        _PROVIDER_GEMINI: (_PROVIDER_GEMINI, _PROVIDER_API, _PROVIDER_OPENAI),
-        _PROVIDER_API: (_PROVIDER_API, _PROVIDER_OPENAI),
-        _PROVIDER_OPENAI: (_PROVIDER_OPENAI,),
-    }.get(provider, ())
-    if provider == _PROVIDER_OLLAMA and _ollama_base_url():
-        attempts.append(("ollama", _ollama_base_url(), model or _ollama_model(), _ollama_key()))  # type: ignore[arg-type]
-    # the user's own keys, then the hosted tier, if the first choice fails at request time
-    for p in own_chain:
-        if p == _PROVIDER_GEMINI and _gemini_key():
-            attempts.append(("own", GEMINI_BASE_URL, model or _gemini_model(), _gemini_key()))
-        elif p == _PROVIDER_API and _own_ready():
-            attempts.append(("own", _api_base_url(), model or _api_model(), _api_key()))  # type: ignore[arg-type]
-        elif p == _PROVIDER_OPENAI and _openai_key():
-            attempts.append(("own", OPENAI_BASE_URL, model or DEFAULT_OPENAI_MODEL, _openai_key()))
-    if provider in (_PROVIDER_OLLAMA, _PROVIDER_HOSTED) or own_chain:
-        hosted = _hosted_attempt(model)
-        if hosted:
-            attempts.append(("hosted", *hosted))
-    return [a for a in attempts if a[2]]
+    order: list[str] = []
+    if _own_ready():
+        order.append(_PROVIDER_API)
+    order += _providers.with_key()
+    if _ollama_base_url() and (provider == _PROVIDER_OLLAMA or _probe_ollama()):
+        order.append(_PROVIDER_OLLAMA)
+    if provider in order:
+        order.remove(provider)
+        order.insert(0, provider)
+    elif provider == _PROVIDER_OLLAMA and _ollama_base_url():
+        order.insert(0, provider)
+    attempts: list[tuple[str, str, str, str, str | None]] = []
+    first = True
+    for r in order:
+        m = model if first else None  # a named model belongs to the route it was named for
+        first = False
+        if r == _PROVIDER_API:
+            attempts.append((r, "openai", _api_base_url(), m or _api_model(), _api_key()))  # type: ignore[arg-type]
+        elif r == _PROVIDER_OLLAMA:
+            attempts.append((r, "openai", _ollama_base_url(), m or _ollama_model(), _ollama_key()))  # type: ignore[arg-type]
+        else:
+            pr = _providers.preset(r)
+            attempts.append((r, pr.api, pr.base, m or _providers.model(r), _providers.key(r)))
+    return [a for a in attempts if a[3] and a[2]]
 
 
-def _provider_attempts(provider: str, model: str | None) -> list[tuple[str, str, str | None]]:
-    """The ordered (base_url, model, api_key) attempts for a provider, the same for ask() and ask_multi()."""
+def _provider_attempts(provider: str, model: str | None) -> list[tuple[str, str, str, str | None]]:
+    """The ordered (api, base_url, model, api_key) attempts, the same for ask() and ask_multi()."""
     return [a[1:] for a in _tagged_attempts(provider, model)]
 
 
-def _attempts_for(provider: str, model: str | None, route: str) -> list[tuple[str, str, str | None]]:
-    """The attempts, kept to the forced route when one is set (no falling back to another route)."""
+class NoModelError(ValueError):
+    """A provider whose key is set but whose model is not: said with how to name one."""
+
+
+def _attempts_for(provider: str, model: str | None, route: str) -> list[tuple[str, str, str, str | None]]:
+    """The attempts, kept to the forced route when one is set (no falling back to another route).
+
+    A provider with a key and no model (one without a default, and no ``MORIE_<ID>_MODEL`` or
+    ``<id>.model``) is an error that says how to name one, as rmoriebricklayer says it: asking it
+    could only fail, and falling through would hide why."""
+    if provider in _providers.IDS and not (model or _providers.model(provider)):
+        raise NoModelError(
+            f"{_providers.preset(provider).label} has no model set: `morie config set {provider}.model NAME` "
+            f"(or {_providers.model_env(provider)}); `morie models --route {provider}` lists them"
+        )
     tagged = _tagged_attempts(provider, model)
     if route != "auto":
         tagged = [a for a in tagged if a[0] == route]
@@ -1329,7 +1227,7 @@ def _attempts_for(provider: str, model: str | None, route: str) -> list[tuple[st
 
 
 def _run_attempts(
-    attempts: list[tuple[str, str, str | None]],
+    attempts: list[tuple[str, str, str, str | None]],
     messages: list[dict[str, str]],
     *,
     stream: bool,
@@ -1343,9 +1241,15 @@ def _run_attempts(
     instead of failing in the caller after the chain has already been left.
     """
     last_error: Exception | None = None
-    for base_url, req_model, api_key in attempts:
+    for api, base_url, req_model, api_key in attempts:
         try:
             logger.debug("Attempting LLM request: base_url=%s model=%s stream=%s", base_url, req_model, stream)
+            if api != "openai":
+                # Anthropic's and Gemini's own APIs: one answer, handed over whole when streaming
+                text = _providers.chat_native(api, base_url, api_key, req_model, messages, timeout=timeout)
+                if not text.strip():
+                    raise EmptyAnswerError(f"{req_model} at {base_url} returned no text")
+                return iter([text]) if stream else text
             if stream:
                 # _stream_completion keeps the httpx connection open while the generator is live
                 gen = iter(_stream_completion(base_url, req_model, messages, api_key=api_key, timeout=timeout))
@@ -1355,10 +1259,6 @@ def _run_attempts(
                 return itertools.chain([first], gen)
             return _completion_text(base_url, req_model, messages, api_key=api_key, timeout=timeout)
         except (httpx.HTTPError, httpx.TimeoutException, OSError, KeyError, EmptyAnswerError) as exc:
-            if _model_not_on_key(exc, base_url, model):
-                raise ModelNotOnKeyError(
-                    f"model {model!r} is not available on your hosted key; `morie models` lists the ones it can use"
-                ) from None
             last_error = exc
             logger.warning("Provider at %s failed: %s. Trying next provider.", base_url, exc)
     if last_error is not None:
@@ -1379,9 +1279,9 @@ def ask(
 ) -> str | Iterator[str]:
     """Send a prompt to the best available LLM provider and return the response.
 
-    The provider chain is: Ollama (local, when it has a model) -> your own keys and
-    OpenAI-compatible endpoint -> the hosted MORIE tier -> local fallback. Each provider
-    is tried in order; on failure the next is attempted.
+    The route chain is the one you brought: your own OpenAI-compatible endpoint -> each
+    provider whose key is set -> Ollama -> MORIE's keyword help. Each is tried in order; on
+    failure the next is attempted (a forced ``route`` never falls back to another one).
 
     Parameters
     ----------
@@ -1398,11 +1298,11 @@ def ask(
         Override the model identifier.  When ``None``, a sensible default is
         chosen per provider.
     provider : str | None
-        Force a specific provider (``"ollama"``, ``"api"``, ``"openai"``,
-        ``"local"``).  When ``None``, :func:`detect_available_provider` is
-        used to auto-detect.
+        Force a specific provider (``"own"``, ``"ollama"``, a provider id such as
+        ``"anthropic"``, or ``"local"``).  When ``None``, :func:`detect_available_provider`
+        is used to auto-detect.
     route : str | None
-        ``"auto"``, ``"own"``, ``"ollama"`` or ``"hosted"``. When ``None``, the
+        ``"auto"``, ``"own"``, ``"ollama"`` or a provider id. When ``None``, the
         route saved with ``morie config set route`` (or ``MORIE_LLM_ROUTE``) applies,
         else ``"auto"``. A forced route never falls back to another one.
     system_prompt : str | None
@@ -1419,7 +1319,7 @@ def ask(
 
     Examples
     --------
-    Needs a provider (a stored MORIE key, a local Ollama, or a provider key):
+    Needs a model you brought (a provider's key, your own server, or a local Ollama):
 
     >>> # Non-streaming (returns full text)
     >>> response = ask("What is AIPW?")  # doctest: +SKIP
@@ -1431,6 +1331,8 @@ def ask(
     ...     print(chunk, end="")
     """
     r = _route_name(route)
+    if provider == "api":
+        provider = _PROVIDER_API
     if provider is None:
         provider = detect_available_provider() if route is None else detect_available_provider(r)
 
@@ -1497,7 +1399,7 @@ def ask_multi(
     provider : str | None
         Force a specific provider.  Auto-detected when ``None``.
     route : str | None
-        ``"auto"``, ``"own"``, ``"ollama"`` or ``"hosted"``; ``None`` uses the saved route.
+        ``"auto"``, ``"own"``, ``"ollama"`` or a provider id; ``None`` uses the saved route.
     timeout : float
         HTTP request timeout in seconds.
 
@@ -1507,6 +1409,8 @@ def ask_multi(
         The LLM response text (or a streaming iterator).
     """
     r = _route_name(route)
+    if provider == "api":
+        provider = _PROVIDER_API
     if provider is None:
         provider = detect_available_provider() if route is None else detect_available_provider(r)
 

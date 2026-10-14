@@ -12,9 +12,9 @@ value, so a one-off ``OLLAMA_MODEL=qwen3:8b morie ask ...`` still works. Older n
 already read (``OLLAMA_BASE_URL``, ``MORIE_OLLAMA_MODEL``, ``LLM_API_BASE_URL``, ``LLM_API_KEY``,
 ``MORIE_API_MODEL``) are still accepted.
 
-The hosted key is never stored in ``llm.json``: setting ``hosted.key`` goes through the login
-path (:func:`morie.hosted.store_token`), which checks the key with the gateway before it is
-kept in ``credentials.json``.
+Language models are brought by the user: a provider's key (``<provider>.key``, saved privately,
+never printed), a local Ollama, or an OpenAI-compatible server of one's own. Nothing is hosted
+by the project. The MORIE key in ``credentials.json`` opens the curated tables only.
 """
 
 from __future__ import annotations
@@ -27,7 +27,10 @@ import stat
 import warnings
 from pathlib import Path
 
-ROUTES = ("auto", "own", "ollama", "hosted")
+from .providers import IDS as PROVIDER_IDS
+from .providers import PRESETS, RETIRED, model_env
+
+ROUTES = ("auto", "own", "ollama", *PROVIDER_IDS)
 _OFF = ("off", "none", "disabled")
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 
@@ -36,8 +39,8 @@ SPEC: dict[str, tuple[tuple[str, ...], bool, str]] = {
     "route": (
         ("MORIE_LLM_ROUTE",),
         False,
-        "which route `ask` uses: auto (local Ollama with a model, then your own endpoint or keys, "
-        "then the hosted tier), own, ollama or hosted",
+        "which route `ask` uses: auto (your own endpoint, then each provider with a key, then Ollama), "
+        "own, ollama or a provider",
     ),
     "own.url": (
         ("MORIE_LLM_BASE_URL", "LLM_API_BASE_URL"),
@@ -56,23 +59,22 @@ SPEC: dict[str, tuple[tuple[str, ...], bool, str]] = {
         False,
         "Ollama model to use (default: the first one pulled)",
     ),
-    "ollama.key": (("OLLAMA_API_KEY",), True, "API key for an Ollama server that wants one"),
-    "hosted.url": (
-        ("MORIE_HOSTED_BASE_URL",),
-        False,
-        "hosted MORIE tier address (default: from the signed services document); off to skip it",
-    ),
-    "hosted.model": (
-        ("MORIE_HOSTED_MODEL",),
-        False,
-        "hosted model (default: the tier's default; `morie models` lists them)",
-    ),
-    "hosted.key": (
-        ("MORIE_HOSTED_KEY",),
-        True,
-        "your MORIE key (stored by `morie login`; checked with the gateway before it is saved)",
-    ),
+    "ollama.key": (("OLLAMA_API_KEY",), True, "API key for an Ollama server that wants one (ollama.com)"),
 }
+# one key and one model per provider (bring your own key), named as rmoriebricklayer names them
+for _p in PRESETS:
+    SPEC[f"{_p.id}.key"] = (
+        tuple(e for e in (_p.key_env, _p.alt_env) if e),
+        True,
+        f"your {_p.label} API key (sent only to {_p.base})",
+    )
+    SPEC[f"{_p.id}.model"] = (
+        (model_env(_p.id),),
+        False,
+        f"{_p.label} model to use (default {_p.default_model})"
+        if _p.default_model
+        else f"{_p.label} model to use (`morie models --route {_p.id}` lists them)",
+    )
 SPEC["r.mismatch"] = (
     ("MORIE_R_VERSION_MISMATCH",),
     False,
@@ -138,10 +140,8 @@ def env_value(key: str) -> str | None:
 
 
 def saved_value(key: str) -> str | None:
-    """The value saved in ``llm.json`` (never the hosted key, which lives in credentials.json)."""
+    """The value saved in ``llm.json``."""
     k = _normalise_key(key)
-    if k == "hosted.key":
-        return None
     v = read_config().get(k, "").strip()
     return v or None
 
@@ -177,11 +177,6 @@ def source(key: str) -> str:
     k = _normalise_key(key)
     if env_value(k):
         return "environment"
-    if k == "hosted.key":
-        from .hosted import read_credentials
-
-        stored = read_credentials().get("hosted_key")
-        return "saved" if isinstance(stored, str) and stored.strip() else "default"
     if saved_value(k):
         return "saved"
     if k in ("own.url", "own.key", "own.model"):
@@ -221,37 +216,26 @@ def effective(key: str) -> str:
     if k == "ollama.key":
         v = value("ollama.key")
         return mask(v)
-    from . import hosted
+    from . import providers
 
-    if k == "hosted.url":
-        try:
-            return hosted.hosted_base_url() or "off"
-        except Exception as exc:  # noqa: BLE001 - shown, not raised
-            return f"(unavailable: {exc})"
-    if k == "hosted.model":
-        try:
-            return hosted.hosted_model()
-        except Exception:  # noqa: BLE001
-            return hosted.DEFAULT_HOSTED_MODEL
-    v = hosted.hosted_key()
-    return mask(v)
+    pid, _, what = k.partition(".")
+    if what == "key":
+        return mask(providers.key(pid))
+    return providers.model(pid) or "(see `morie models --route " + pid + "`)"
 
 
 def _check(key: str, v: str) -> str:
     """Validate (and tidy) one value before it is saved; raises ``ValueError``."""
     if key == "route":
         v = v.lower()
+        if v == "hosted":
+            raise ValueError(RETIRED)
         if v not in ROUTES:
             raise ValueError(f"route must be one of: {', '.join(ROUTES)}")
     elif key == "own.url":
         if not is_off(v) and not re.match(r"^https?://[^/\s]+", v, re.I):
             raise ValueError("own.url must be an http(s):// address, e.g. http://localhost:1234/v1")
         v = v.rstrip("/")
-    elif key == "hosted.url":
-        if not is_off(v):
-            if not v.lower().startswith("https://"):
-                raise ValueError("hosted.url must be an https:// address (your key is sent to it), or off")
-            v = v.rstrip("/")
     elif key == "r.mismatch":
         v = v.lower()
         if v not in R_MISMATCH_MODES:
@@ -283,7 +267,7 @@ def format_table(rows: list[dict[str, str]] | None = None) -> str:
     out = []
     for r in rows:
         tag = "" if r["source"] == "default" else f"({r['source']})"
-        out.append(f"  {r['key']:<13} {r['value']:<44} {tag}".rstrip())
+        out.append(f"  {r['key']:<17} {r['value']:<44} {tag}".rstrip())
     return "\n".join(out)
 
 
@@ -301,11 +285,11 @@ def config(settings: dict | None = None, /, **kwargs) -> ConfigTable:
 
     With no arguments nothing is written and the table of settings is returned. Pass settings as
     keyword arguments with ``_`` for the dot (``own_url=...``) or as a dict with the dotted keys
-    (``{"own.url": ...}``). ``None`` or ``""`` removes a saved setting. ``hosted_key`` is checked
-    with the gateway and stored in ``credentials.json`` (``None`` logs out).
+    (``{"own.url": ...}``). ``None`` or ``""`` removes a saved setting.
 
-    Keys: route (auto, own, ollama, hosted), own.url, own.key, own.model, ollama.url,
-    ollama.model, ollama.key, hosted.url, hosted.model, hosted.key.
+    Keys: route (auto, own, ollama or a provider id), own.url, own.key, own.model, ollama.url,
+    ollama.model, ollama.key, and ``<provider>.key`` / ``<provider>.model`` for each provider
+    (openai, anthropic, gemini, openrouter, groq, ...; ``morie.providers.IDS``).
 
     Returns
     -------
@@ -315,7 +299,7 @@ def config(settings: dict | None = None, /, **kwargs) -> ConfigTable:
     Examples
     --------
     >>> from morie.llm import config
-    >>> config(route="hosted", hosted_model="gpt-oss-120b:cf")  # doctest: +SKIP
+    >>> config(route="anthropic", anthropic_model="claude-opus-5-5")  # doctest: +SKIP
     >>> config(ollama_url="http://192.168.1.20:11434", ollama_model="qwen3:8b")  # doctest: +SKIP
     >>> config(route=None)  # back to the automatic order  # doctest: +SKIP
     """
@@ -327,14 +311,6 @@ def config(settings: dict | None = None, /, **kwargs) -> ConfigTable:
         changed: list[str] = []
         for k, v in items.items():
             text = "" if v is None else str(v).strip()
-            if k == "hosted.key":
-                from . import hosted
-
-                if text:
-                    hosted.store_token(text, echo=lambda *_: None)
-                else:
-                    hosted.logout(echo=lambda *_: None)
-                continue
             if text:
                 data[k] = _check(k, text)
             else:
@@ -373,10 +349,6 @@ def _reset_caches() -> None:
         from . import llm
 
         llm._reset_route_cache()
-    with contextlib.suppress(Exception):
-        from . import hosted
-
-        hosted.reset_probe_cache()
 
 
 # ---------------------------------------------------------------------------
@@ -391,14 +363,14 @@ def _examples() -> str:
     return "\n".join(
         [
             "Examples:",
-            "  morie config set route hosted                          always use the hosted tier",
-            "  morie config set hosted.model gpt-oss-120b:cf          its model (`morie models` lists them)",
+            "  morie config set anthropic.key                         prompts for the key (not echoed)",
+            "  morie config set route anthropic                       always use it",
             "  morie config set ollama.url http://192.168.1.20:11434  Ollama on another machine",
             "  morie config set ollama.model qwen3:8b",
             "  morie config set own.url http://localhost:1234/v1      LM Studio, vLLM, llama.cpp ...",
             "  morie config set own.key                               prompts for the key (not echoed)",
             "  morie config unset route                               back to the automatic order",
-            '  morie ask --route hosted "..."                         one question, one route',
+            '  morie ask --route groq "..."                           one question, one route',
         ]
     )
 
@@ -407,8 +379,8 @@ def help_text() -> str:
     """What every setting means (``morie config help``)."""
     lines = []
     for k, (envs, _secret, text) in SPEC.items():
-        lines.append(f"  {k:<13} {text}")
-        lines.append(f"  {'':<13} (environment variable {' or '.join(envs)})")
+        lines.append(f"  {k:<17} {text}")
+        lines.append(f"  {'':<17} (environment variable {' or '.join(envs)})")
     lines += [
         "",
         f"Saved in {config_path()} (private, 0600). A variable that is set wins over a saved value.",
@@ -440,7 +412,7 @@ def cli(action: str | None, rest: list[str] | None = None, *, out=print, ask=inp
         out(format_table())
         out(
             f"\nSaved in {config_path()}. An environment variable that is set wins over a saved value.\n"
-            "Change one:  morie config set route hosted\n"
+            "Change one:  morie config set route anthropic\n"
             "Walk through all of them:  morie config setup\n"
             "What each one means:  morie config help"
         )
@@ -507,29 +479,37 @@ def setup(*, out=print, ask=input, secret_ask=None) -> int:
         except (ValueError, RuntimeError, OSError) as exc:
             out(f"  not saved: {exc}")
 
-    out("Language-model setup. Press Enter to keep the value in [brackets].\n")
-    r = q("Which should `ask` use: auto, hosted, ollama or own", route()).lower()
+    out("Language-model setup: bring your own key, or run a model locally. Enter keeps the value in [brackets].\n")
+    out(f"Providers: {', '.join(PROVIDER_IDS)}")
+    r = q("Which should `ask` use: auto, own, ollama or a provider", route()).lower()
+    if r == "hosted":
+        out(f"  {RETIRED}; using auto")
+        r = "auto"
     if r not in ROUTES:
         out(f"  '{r}' is not a route; using auto")
         r = "auto"
     save(route=None if r == "auto" else r)
-    from . import hosted
+    from . import providers
 
-    if r in ("auto", "hosted"):
-        if not hosted.hosted_key():
-            out("\nThe hosted tier needs a MORIE key: `morie login` (GitHub) or `morie login --email ADDRESS`,")
-            out("or paste one issued at https://rmorie.com/access here.")
-            k = secret_ask("MORIE key (Enter to skip): ").strip()
-            if k:
-                save(**{"hosted.key": k})
-        if hosted.hosted_key():
-            listed = hosted.hosted_models() or []
+    pids = [r] if r in PROVIDER_IDS else []
+    if r == "auto":
+        pid = q("\nA provider whose key you have (Enter to skip)", "").lower()
+        if pid and pid not in PROVIDER_IDS:
+            out(f"  '{pid}' is not a provider; skipped")
+        elif pid:
+            pids = [pid]
+    for pid in pids:
+        label = providers.preset(pid).label
+        k = secret_ask(f"{label} key (Enter to skip or to keep): ").strip()
+        if k:
+            save(**{f"{pid}.key": k})
+        if providers.key(pid):
+            listed = providers.list_models(pid)
             if listed:
-                out(f"Models: {', '.join(listed)}")
-            current = effective("hosted.model")
-            m = q("Hosted model", current)
-            if m != current or saved_value("hosted.model"):
-                save(**{"hosted.model": m})
+                out(f"Models: {', '.join(listed[:30])}{' ...' if len(listed) > 30 else ''}")
+            m = q(f"{label} model", providers.model(pid))
+            if m and m != providers.preset(pid).default_model:
+                save(**{f"{pid}.model": m})
     if r in ("auto", "ollama"):
         u = q("\nOllama address (off to skip Ollama)", effective("ollama.url"))
         save(**{"ollama.url": None if u == DEFAULT_OLLAMA_URL else u})

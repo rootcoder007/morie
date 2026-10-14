@@ -10,8 +10,8 @@ Resolution order: a fresh cached copy; the live document (fetched, verified, new
 the cache); the stale cached copy (verified); the copy bundled with the package; and
 finally a document with every mode ``"off"``.
 
-The hosted tier is a last resort behind a local model or the user's own API key; keys are
-personal and issued on request at https://rmorie.com/access.
+No language model is hosted (the document's ``llm`` block is off, or absent); the ``data``
+block names the curated tables and the sign-in that issues their personal key.
 """
 
 from __future__ import annotations
@@ -94,8 +94,8 @@ def off_document() -> dict:
     return {
         "version": 1,
         "issued": "1970-01-01T00:00:00Z",
-        "notice": "The hosted MORIE services could not be verified from this machine. "
-        "Local models and your own API keys keep working.",
+        "notice": "The MORIE data service could not be verified from this machine. "
+        "Language models are yours to bring and keep working.",
         "llm": {
             "mode": "off",
             "base_url": "",
@@ -107,6 +107,7 @@ def off_document() -> dict:
         "data": {
             "mode": "off",
             "base_url": "",
+            "auth_url": "",
             "license": "https://rmorie.com/data-license",
             "request_access": ACCESS_URL,
         },
@@ -157,9 +158,11 @@ def parse(doc_bytes: bytes) -> dict | None:
         return None
     if not isinstance(d, dict) or d.get("version") != 1:
         return None
-    llm, data = d.get("llm"), d.get("data")
+    # no language model is hosted any more: the llm block may be absent (then it is off)
+    llm, data = d.get("llm", off_document()["llm"]), d.get("data")
     if not isinstance(llm, dict) or not isinstance(data, dict):
         return None
+    d["llm"] = llm
     if llm.get("mode") not in ("off", "key") or data.get("mode") not in ("off", "key"):
         return None
     if _time(d.get("issued")) is None:
@@ -168,6 +171,7 @@ def parse(doc_bytes: bytes) -> dict | None:
         not _url_ok(llm.get("base_url", ""))
         or not _url_ok(llm.get("auth_url", ""))
         or not _url_ok(data.get("base_url", ""))
+        or not _url_ok(data.get("auth_url", ""))
     ):
         return None
     models = llm.get("models") or []
@@ -236,7 +240,7 @@ def forget() -> None:
 
 
 def services(refresh: bool = False, max_age: float = 86400, timeout: float = 20.0, offline: bool = False) -> dict:
-    """The hosted MORIE services as the project site currently describes them.
+    """The MORIE services (the curated tables) as the project site currently describes them.
 
     Returns the parsed document with an extra ``"_source"`` key: ``"live"``, ``"cache"``,
     ``"bundled"`` or ``"off"``. ``offline=True`` never fetches (the cached copy, then the
@@ -299,5 +303,9 @@ def data() -> dict:
 
 
 def access_hint() -> str:
-    """One line on how to get a hosted key."""
-    return f"keys are personal and issued on request at {llm().get('request_access') or ACCESS_URL}; store one with `morie login --token`"
+    """One line on how to get a data key."""
+    ask = data().get("request_access") or llm().get("request_access") or ACCESS_URL
+    return (
+        "`morie login` signs in with GitHub or an emailed code; a key you were given: "
+        f"`morie login --token`; or ask at {ask}"
+    )

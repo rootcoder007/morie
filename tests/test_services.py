@@ -37,6 +37,7 @@ def doc(
             "data": {
                 "mode": data_mode,
                 "base_url": data_base,
+                "auth_url": (data_base + "/auth") if data_base else "",
                 "license": "https://rmorie.com/data-license",
                 "request_access": "https://rmorie.com/access",
             },
@@ -80,11 +81,11 @@ def test_bundled_document_verifies_with_the_pinned_key(tmp_path, monkeypatch):
     services.forget()
     s = services.services(offline=True)
     assert s["_source"] == "bundled"
-    assert s["llm"]["mode"] == "key" and s["llm"]["base_url"] == "https://llm.rmorie.com"
-    assert s["llm"]["auth_url"] == "https://llm.rmorie.com/auth"
-    assert s["llm"]["default_model"] in s["llm"]["models"]
+    # no language model is hosted: the tier is off, and the data service signs its users in itself
+    assert s["llm"]["mode"] == "off"
     assert s["data"]["mode"] == "key" and s["data"]["base_url"] == "https://data.rmorie.com"
-    assert "last resort" in s["notice"]
+    assert s["data"]["auth_url"] == "https://data.rmorie.com/auth"
+    assert "bring your own key" in s["notice"]
     p = services._bundled_path()
     b = bytearray(p.read_bytes())
     assert services.verify(bytes(b), p.with_suffix(".sig").read_text())
@@ -104,23 +105,31 @@ def test_live_document_is_verified_cached_then_served_from_cache(svc, monkeypatc
     monkeypatch.setattr(services, "_download", lambda *a: pytest.fail("must not fetch"))
     s2 = services.services()
     assert s2["_source"] == "cache" and s2["llm"] == s["llm"]
-    # the hosted helpers follow the document
+    # the data key follows the document: bound to the data service, signed in at its own auth
     from morie import datahub, hosted
 
     hosted.reset_probe_cache()
-    assert hosted.hosted_base_url() == "https://gw.example.org"
-    assert hosted.hosted_auth_url() == "https://gw.example.org/auth"
-    assert hosted.hosted_model() == "test-model:cloud"
+    assert hosted.hosted_base_url() == "https://tables.example.org"
+    assert hosted.hosted_auth_url() == "https://tables.example.org/auth"
     assert datahub.data_url() == "https://tables.example.org"
     # env overrides still win
-    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "https://mine.example.org/")
-    monkeypatch.setenv("MORIE_HOSTED_MODEL", "local:latest")
+    monkeypatch.setenv("MORIE_HOSTED_AUTH_URL", "https://signin.example.org/")
     monkeypatch.setenv("MORIE_DATA_URL", "https://d.example.org")
-    assert hosted.hosted_base_url() == "https://mine.example.org"
-    assert hosted.hosted_model() == "local:latest"
+    assert hosted.hosted_auth_url() == "https://signin.example.org"
     assert datahub.data_url() == "https://d.example.org"
-    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "off")
-    assert hosted.hosted_base_url() is None
+
+
+def test_a_document_without_the_retired_llm_block_is_read_as_off(svc, monkeypatch):
+    d = json.loads(doc())
+    del d["llm"]
+    b = json.dumps(d).encode()
+    serve(monkeypatch, {services.SERVICES_URL: b, SIG_URL: sign(b)})
+    s = services.services()
+    assert s["_source"] == "live" and s["llm"]["mode"] == "off"
+    assert s["data"]["base_url"] == "https://tables.example.org"
+    # a data sign-in address that is not https is refused like every other address
+    d["data"]["auth_url"] = "http://tables.example.org/auth"
+    assert services.parse(json.dumps(d).encode()) is None
 
 
 def test_stale_cache_refreshes_and_an_older_live_document_is_a_rollback(svc, monkeypatch):

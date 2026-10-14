@@ -190,28 +190,17 @@ Verifying the install
 LLM provider setup
 ------------------
 
-The assistant (``morie ask``, ``morie chat``, ``morie percy``) tries
-providers in this order and uses the first one that answers. Nothing
-needs configuring for the first and last tiers.
+The assistant (``morie ask``, ``morie chat``, ``morie percy``) uses the model you bring, in
+this order; nothing is hosted for you (details in :doc:`hosted`):
 
-1. **Ollama** (local, private): install with
-   ``curl -fsSL https://ollama.com/install.sh | sh``; the model is
-   auto-detected from the running instance (``morie percysuits`` pulls the
-   Perseus models). Override with ``MORIE_OLLAMA_MODEL``.
-2. **Gemini**: ``export GEMINI_API_KEY=...`` (key at
-   `aistudio.google.com <https://aistudio.google.com>`_); default model
-   ``gemini-2.5-flash`` (``GEMINI_MODEL`` overrides).
-3. **Any OpenAI-compatible endpoint**: ``LLM_API_BASE_URL`` plus
-   ``LLM_API_KEY``.
-4. **OpenAI**: ``export OPENAI_API_KEY=...``; default model ``gpt-4o-mini``.
-5. **Hosted MORIE tier** (``https://llm.rmorie.com``), the last resort when
-   nothing above answers: request a key at https://rmorie.com/access and
-   store it with ``morie login --token`` (``morie login``, the GitHub
-   sign-in, and ``morie login --email you@example.com`` remain for accounts
-   that have them). The key is stored owner-only in
-   ``$XDG_CONFIG_HOME/morie/credentials.json`` (``~/.config/morie/`` by
-   default) and shared with the R package. Rate-limited per key; no
-   prompts or responses are stored. Details in :doc:`hosted`.
-6. **Local fallback**: automatic. Keyword-matched help text, no network.
+1. **Your own OpenAI-compatible server** (LM Studio, vLLM, llama.cpp, a gateway):
+   ``morie config set own.url http://localhost:1234/v1`` (and ``own.model``, ``own.key``).
+2. **A provider's key**: ``export ANTHROPIC_API_KEY=...`` (or ``OPENAI_API_KEY``,
+   ``GEMINI_API_KEY``, ``GROQ_API_KEY``, ... 16 providers), or ``morie config set
+   anthropic.key``; the model is ``MORIE_<PROVIDER>_MODEL`` or ``<provider>.model``.
+3. **Ollama** (local, private): install with ``curl -fsSL https://ollama.com/install.sh | sh``,
+   start it (``ollama serve``, the app, or its service) and pull a model; the first one pulled is
+   used unless ``OLLAMA_MODEL`` names another (``morie percysuits`` pulls the Perseus models).
+4. **Local fallback**: automatic. Keyword-matched help text, no network.6. **Local fallback**: automatic. Keyword-matched help text, no network.
 
 Run ``morie doctor`` to see which providers are currently available.

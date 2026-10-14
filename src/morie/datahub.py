@@ -4,8 +4,8 @@
 The MORIE project materialises public BigQuery datasets (Chicago crime, EPA
 air quality, census, FEC, FDA, NOAA, ...) and serves them as CSV from the
 edge (Cloudflare R2 behind a Worker), so they are reachable whenever the
-internet is, with the same key ``morie login`` stores for the hosted model
-tier. ``/manifest.json`` lists every table with its rows, columns, size,
+internet is, with the personal data key ``morie login`` stores (shared with
+rmorie, rmoriedata and rmoriebricklayer). ``/manifest.json`` lists every table with its rows, columns, size,
 SHA-256 and the BigQuery source it was built from; ``/<db>/<table>.csv.gz``
 is the table. Downloads are cached in the dataset store, so a key is
 needed once per table, not per call.
@@ -14,8 +14,10 @@ needed once per table, not per call.
 from __future__ import annotations
 
 import gzip
+import hashlib
 import json
 import os
+import re
 import shutil
 import tempfile
 import time
@@ -73,11 +75,7 @@ def _manifest_cache_path() -> Path:
 def _open(path: str, timeout: int = 60):
     key = _key()
     if not key:
-        raise DataHubAuthError(
-            "the curated tables need your MORIE key: keys are personal and issued on request at "
-            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
-            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
-        )
+        raise DataHubAuthError(_no_key_message())
     req = Request(
         data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
     )
@@ -85,7 +83,7 @@ def _open(path: str, timeout: int = 60):
         return urlopen(req, timeout=timeout)
     except HTTPError as exc:
         if exc.code in (401, 403):
-            raise DataHubAuthError("data.rmorie.com rejected the stored key; run `morie login` again.") from exc
+            raise DataHubAuthError(_refusal_message(exc.code, path)) from exc
         raise
 
 
@@ -100,11 +98,7 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
 
     key = _key()
     if not key:
-        raise DataHubAuthError(
-            "the curated tables need your MORIE key: keys are personal and issued on request at "
-            "https://rmorie.com/access (store one with `morie login --token`); `morie login` (GitHub) or "
-            "`morie login --email you@example.com` also sign in (R: `rmorie login`)."
-        )
+        raise DataHubAuthError(_no_key_message())
     try:
         return download_url(
             data_url() + path,
@@ -116,8 +110,68 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
         )
     except HTTPError as exc:
         if exc.code in (401, 403):
-            raise DataHubAuthError("data.rmorie.com rejected the stored key; run `morie login` again.") from exc
+            raise DataHubAuthError(_refusal_message(exc.code, path)) from exc
         raise
+
+
+def _no_key_message() -> str:
+    from .hosted import access_hint
+
+    return f"the curated tables need your MORIE data key: {access_hint()} (R: `rmorie login`)."
+
+
+# the tables that open only once their terms are accepted (ICPSR, NCVS 38604, a2aj)
+_RESTRICTED = re.compile(r"^/?(icpsr_|ncvs_38604|a2aj_)")
+
+
+def _refusal_message(code: int, path: str) -> str:
+    """A 401 is a key the service no longer accepts; a 403 on a restricted table is terms not yet
+    accepted, said with where to accept them."""
+    if code == 403 and _RESTRICTED.match(path):
+        return (
+            f"{path.strip('/').split('.')[0]} is a restricted table: accept its terms of use once at "
+            f"{data_url()}/terms (signed in with the same account), then try again."
+        )
+    return "data.rmorie.com rejected the stored key; run `morie login` again."
+
+
+def _manifest_digest(key: str) -> str | None:
+    """The SHA-256 the manifest lists for ``key`` (of the compressed file as served; the field is
+    sha256_gz, sha256 or sha), None when it lists none. A field that is not a digest is an error:
+    the file cannot be trusted then (the same rule as rmoriebricklayer and rmoriedata)."""
+    try:
+        m = hosted_manifest()
+    except Exception:  # noqa: BLE001 - no manifest: the download itself reports the problem
+        m = cached_manifest() or {}
+    for d in m.get("datasets", []):
+        if d.get("key") != key:
+            continue
+        for f in ("sha256_gz", "sha256", "sha"):
+            if f not in d or d[f] is None:
+                continue
+            v = d[f]
+            v = v[len("sha256:") :] if isinstance(v, str) and v.startswith("sha256:") else v
+            if isinstance(v, str) and re.fullmatch(r"[0-9a-fA-F]{64}", v):
+                return v.lower()
+            raise ValueError(f"the manifest's {f} for {key} is not a SHA-256 hex digest ({v!r})")
+    return None
+
+
+def _check_digest(path: Path, key: str) -> None:
+    """The downloaded file against the manifest's SHA-256; a mismatch removes it and stops."""
+    want = _manifest_digest(key)
+    if want is None:
+        return
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    if h.hexdigest() != want:
+        path.unlink(missing_ok=True)
+        raise ValueError(
+            f"{key}: the downloaded file does not match the SHA-256 the manifest lists "
+            f"(got {h.hexdigest()[:16]}..., expected {want[:16]}...); nothing was loaded, try again"
+        )
 
 
 def offline() -> bool:
@@ -185,6 +239,7 @@ def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh:
         gz = Path(tmp) / "table.csv.gz"
         csv_path = Path(tmp) / "table.csv"
         _get_to_file(f"/{db}/{tbl}.csv.gz", gz, key, timeout=600)
+        _check_digest(gz, key)
         with gzip.open(gz, "rb") as src, csv_path.open("wb") as out:
             shutil.copyfileobj(src, out, 1 << 20)
         df = pd.read_csv(str(csv_path), low_memory=False)
@@ -230,6 +285,7 @@ def hosted_to_csv(key: str, out: str | Path) -> tuple[int, int]:
     with tempfile.TemporaryDirectory() as tmp:
         gz = Path(tmp) / "table.csv.gz"
         _get_to_file(f"/{db}/{tbl}.csv.gz", gz, key, timeout=600)
+        _check_digest(gz, key)
         with (
             gzip.open(gz, "rt", encoding="utf-8", newline="") as src,
             out.open("w", encoding="utf-8", newline="") as dst,

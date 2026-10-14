@@ -1,5 +1,20 @@
 # morie 1.4.3 - 2026-10-09
 
+* Language models are not hosted any more: bring your own. In Python, `morie ask`, `chat`,
+  `percy`, `models`, `config` and `doctor` (and `morie.llm.ask()`) use your own OpenAI-compatible
+  server, then the first provider whose key is set (OpenAI, Anthropic, Google Gemini,
+  OpenRouter, Groq, Together, Fireworks, DeepSeek, Mistral, xAI, Cerebras, Perplexity, Hugging
+  Face, OpenCode Zen, Cohere, NVIDIA; `morie.providers`), then an Ollama server; Anthropic and
+  Gemini are spoken natively. Keys and models are saved privately with
+  `morie config set <provider>.key|.model` in the `llm.json` rmoriebricklayer's `rmbl config`
+  reads too, and `morie config setup` asks for a provider, its key and its model. A provider
+  with a key and no model says how to name one; `route = "hosted"` says the tier is retired.
+  The R arm follows rmorie (through rmoriebricklayer's routes).
+* `morie login` is for the curated tables at data.rmorie.com only, signing in at the data
+  service's own `/auth`; every downloaded table is checked against the SHA-256 the manifest
+  lists, and a restricted table (ICPSR, NCVS 38604, a2aj) says where to accept its terms. The
+  bundled signed services document is the 2026-10-14 one (no language-model block in use).
+
 * Every estimator now runs on the package's own code; the reference packages are used only by
   tests that check the numbers (the opt-in `backend =` of `morie_taphonomy_bhm()` and
   `morie_causal_weighting()`'s methods beyond glm/ps/cbps/ebal are the two exceptions you ask

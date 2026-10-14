@@ -77,12 +77,14 @@ To be explicit, pass ``--dataset KEY`` (any catalog key) or
 Curated tables at data.rmorie.com
 ---------------------------------
 
-Beyond the open portals, the project keeps 160 curated databases built from BigQuery public datasets, plus the Health Infobase tables and the OTIS research files, all from
+Beyond the open portals, the project keeps 175 curated databases (716 tables on 2026-10-13):
+BigQuery public datasets, the survey, court and justice data of its research ledger, the Health
+Infobase tables and the OTIS research files, the BigQuery ones from
 Google BigQuery public datasets (Chicago crime, EPA air quality, US census,
 FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...) and serves
 their tables from the edge at https://data.rmorie.com. They open with the
-same key ``morie login --token`` stores for the hosted model tier (issued on
-request at https://rmorie.com/access, under https://rmorie.com/data-license),
+personal data key ``morie login`` stores (GitHub or an emailed code; or ask at
+https://rmorie.com/access), under https://rmorie.com/data-license,
 and they do not
 depend on any project machine being up.
 

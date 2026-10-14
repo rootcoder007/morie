@@ -58,4 +58,4 @@ def test_no_agent_uses_provider_chain(mock_ask):
 @patch("morie.perseus.ask_percy", return_value=NOTHING)
 def test_nothing_reachable_is_503(mock_ask):
     code, data = answer_question(None, "q")
-    assert code == 503 and "morie login" in data["error"] and data["backend"] == "local_fallback"
+    assert code == 503 and "morie config setup" in data["error"] and data["backend"] == "local_fallback"

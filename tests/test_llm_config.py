@@ -1,10 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Saved LLM settings (`morie config`, morie.llm.config) and route selection.
-
-The bug these guard against: a user logged in to the hosted tier, with an Ollama
-server running but nothing pulled, got "no model" from `morie ask` because the
-empty Ollama counted as a route and the hosted tier was never reached. No test
-touches the network or $HOME: XDG_CONFIG_HOME is a temp dir and httpx is mocked.
+"""Saved LLM settings (`morie config`, morie.llm.config) and route selection: the model is the
+user's own (an endpoint, a provider's key, or Ollama); nothing is hosted. No test touches the
+network or $HOME: XDG_CONFIG_HOME is a temp dir and httpx is mocked.
 """
 
 from __future__ import annotations
@@ -16,10 +13,10 @@ import stat
 import httpx
 import pytest
 
-from morie import cli_help, hosted, llm, llm_config, services
+from morie import cli_help, hosted, llm, llm_config, providers
 
-HOSTED = "https://llm.example.org"
 OLLAMA = "http://localhost:11434"
+GROQ = providers.preset("groq").base
 _ENV = (
     "MORIE_LLM_ROUTE",
     "MORIE_LLM_BASE_URL",
@@ -33,12 +30,8 @@ _ENV = (
     "OLLAMA_MODEL",
     "MORIE_OLLAMA_MODEL",
     "OLLAMA_API_KEY",
-    "MORIE_HOSTED_BASE_URL",
-    "MORIE_HOSTED_MODEL",
     "MORIE_HOSTED_KEY",
-    "GEMINI_API_KEY",
-    "OPENAI_API_KEY",
-    "MORIE_OPENAI_MODEL",
+    *(e for p in providers.PRESETS for e in (p.key_env, p.alt_env, providers.model_env(p.id)) if e),
 )
 
 
@@ -47,10 +40,6 @@ def xdg(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
     for v in _ENV:
         monkeypatch.delenv(v, raising=False)
-    # the services document would be read from a cache or the bundled copy; pin it
-    monkeypatch.setattr(
-        services, "llm", lambda: {"mode": "key", "base_url": HOSTED, "default_model": "minimax-m3:cloud"}
-    )
     llm._reset_route_cache()
     hosted.reset_probe_cache()
     yield tmp_path
@@ -58,8 +47,8 @@ def xdg(tmp_path, monkeypatch):
     hosted.reset_probe_cache()
 
 
-def _fake_get(ollama_models, hosted_models=("minimax-m3:cloud", "gpt-oss-120b:cf"), seen=None):
-    """httpx.get for Ollama /api/tags (None: not running) and the hosted /v1/models."""
+def _fake_get(ollama_models, seen=None):
+    """httpx.get for Ollama /api/tags (None: not running)."""
 
     def get(url, headers=None, timeout=None, **kw):
         if seen is not None:
@@ -69,40 +58,42 @@ def _fake_get(ollama_models, hosted_models=("minimax-m3:cloud", "gpt-oss-120b:cf
             if ollama_models is None:
                 raise httpx.ConnectError("refused", request=req)
             return httpx.Response(200, json={"models": [{"name": m, "size": 1} for m in ollama_models]}, request=req)
-        if url.endswith("/v1/models"):
-            return httpx.Response(200, json={"data": [{"id": m} for m in hosted_models]}, request=req)
         raise AssertionError(f"unexpected GET {url}")
 
     return get
 
 
-def _login(xdg):
-    hosted.write_credentials({"hosted_key": "sk-hosted-123456"})
-
-
 # ---------------------------------------------------------------------------
-# the reported bug: an empty Ollama must not hide the hosted tier
+# the automatic order: own endpoint, each provider with a key, then Ollama
 # ---------------------------------------------------------------------------
 
 
-def test_empty_ollama_is_skipped_for_the_hosted_tier(xdg, monkeypatch):
-    _login(xdg)
+def test_an_empty_ollama_is_skipped(xdg, monkeypatch):
     monkeypatch.setattr(httpx, "get", _fake_get([]))
     assert llm._ollama_tags() == []
     assert llm._probe_ollama() is False
-    assert llm.detect_available_provider() == "hosted"
-    assert "hosted MORIE tier" in llm.route_summary()
+    assert llm.detect_available_provider() == "local"
+    assert "ask has no route yet" in llm.route_summary()
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    assert llm.detect_available_provider() == "groq"
+    assert llm.route_summary().startswith("ask uses: Groq")
 
 
-def test_ollama_with_a_model_still_comes_first(xdg, monkeypatch):
-    _login(xdg)
+def test_a_provider_key_comes_before_ollama_and_own_before_both(xdg, monkeypatch):
     monkeypatch.setattr(httpx, "get", _fake_get(["gemma4:e2b"]))
     assert llm.detect_available_provider() == "ollama"
     assert llm._ollama_model() == "gemma4:e2b"
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    assert llm.detect_available_provider() == "groq"
+    llm.config(own_url="http://localhost:1234/v1")
+    assert llm.detect_available_provider() == "own"
+    rows = {r["route"]: r for r in llm.route_status()}
+    assert rows["own endpoint"]["status"] == "configured"
+    assert rows["Groq"]["status"] == "key set"
+    assert rows["local Ollama"]["status"] == "available"
 
 
 def test_named_ollama_model_or_forced_route_uses_an_empty_server(xdg, monkeypatch):
-    _login(xdg)
     monkeypatch.setattr(httpx, "get", _fake_get([]))
     assert llm.detect_available_provider(route="ollama") == "ollama"
     monkeypatch.setenv("OLLAMA_MODEL", "qwen3:8b")
@@ -116,27 +107,25 @@ def _sse(*chunks):
     return "\n\n".join([*lines, "data: [DONE]"]) + "\n\n"
 
 
-def test_streamed_ask_reaches_the_hosted_tier_past_an_empty_ollama(xdg, monkeypatch):
-    """`morie ask` streams by default: the end-to-end path the user hit."""
-    _login(xdg)
+def test_streamed_ask_reaches_the_provider_past_an_empty_ollama(xdg, monkeypatch):
+    """`morie ask` streams by default: the end-to-end path through percy."""
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-123456")
     monkeypatch.setattr(httpx, "get", _fake_get([]))
     monkeypatch.setattr(llm, "_retrieve_relevant_source", lambda q: "")
     posted = []
 
     def fake_stream(method, url, json=None, headers=None, timeout=None):
         posted.append((url, json["model"], headers.get("Authorization")))
-        req = httpx.Request(method, url)
-        if not url.startswith(HOSTED):
-            return httpx.Response(404, json={"error": "model not found"}, request=req)
-        return httpx.Response(200, text=_sse("Hello", " there"), request=req)
+        return httpx.Response(200, text=_sse("Hello", " there"), request=httpx.Request(method, url))
 
     monkeypatch.setattr(httpx, "stream", lambda *a, **k: _Ctx(fake_stream(*a, **k)))
+    monkeypatch.setenv("MORIE_GROQ_MODEL", "llama-x")
     from morie.perseus import ask_percy
 
     payload = ask_percy("hi", stream=True, use_agent=False)
     assert "".join(payload["output_stream"]) == "Hello there"
     assert payload["mode"] == "live_api"
-    assert posted == [(f"{HOSTED}/v1/chat/completions", "minimax-m3:cloud", "Bearer sk-hosted-123456")]
+    assert posted == [(f"{GROQ}/chat/completions", "llama-x", "Bearer gsk-123456")]
 
 
 class _Ctx:
@@ -152,43 +141,88 @@ class _Ctx:
         return False
 
 
-def test_a_streamed_failure_falls_through_to_the_next_provider(xdg, monkeypatch):
-    """Before: the first streamed attempt was returned unstarted, so its failure never reached the chain."""
-    _login(xdg)
-    monkeypatch.setenv("OLLAMA_MODEL", "gone:latest")
+def test_a_streamed_failure_falls_through_to_the_next_route(xdg, monkeypatch):
+    """The first streamed attempt is primed, so its failure reaches the chain."""
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setenv("MORIE_GROQ_MODEL", "llama-x")
     monkeypatch.setattr(httpx, "get", _fake_get(["other:1b"]))
     monkeypatch.setattr(llm, "_retrieve_relevant_source", lambda q: "")
     calls = []
 
     def fake_stream(base_url, model, messages, *, api_key=None, timeout=0):
         calls.append(base_url)
-        if base_url == OLLAMA:
+        if base_url == GROQ:
             req = httpx.Request("POST", base_url)
-            raise httpx.HTTPStatusError("404", request=req, response=httpx.Response(404, request=req))
-        yield "from hosted"
+            raise httpx.HTTPStatusError("401", request=req, response=httpx.Response(401, request=req))
+        yield "from ollama"
 
     monkeypatch.setattr(llm, "_stream_completion", fake_stream)
-    out = llm.ask("q", stream=True)
-    assert list(out) == ["from hosted"]
-    assert calls == [OLLAMA, HOSTED]
+    assert list(llm.ask("q", stream=True)) == ["from ollama"]
+    assert calls == [GROQ, OLLAMA]
+
+
+def test_anthropic_and_gemini_are_asked_in_their_own_format(xdg, monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-1")
+    monkeypatch.setattr(httpx, "get", _fake_get(None))
+    monkeypatch.setattr(llm, "_retrieve_relevant_source", lambda q: "")
+    seen = []
+
+    def fake_post(url, json=None, headers=None, timeout=None):
+        seen.append((url, json, headers))
+        req = httpx.Request("POST", url)
+        if "anthropic" in url:
+            return httpx.Response(200, json={"content": [{"type": "text", "text": "from claude"}]}, request=req)
+        return httpx.Response(
+            200, json={"candidates": [{"content": {"parts": [{"text": "from gemini"}]}}]}, request=req
+        )
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    assert llm.ask("q") == "from claude"
+    url, body, hdr = seen[-1]
+    assert url == "https://api.anthropic.com/v1/messages"
+    assert hdr["x-api-key"] == "sk-ant-1" and hdr["anthropic-version"] == "2023-06-01"
+    assert body["model"] == "claude-opus-5-5" and body["messages"][-1]["role"] == "user"
+    assert isinstance(body.get("system"), (str, list))
+    assert list(llm.ask("q", stream=True)) == ["from claude"]
+    monkeypatch.delenv("ANTHROPIC_API_KEY")
+    monkeypatch.setenv("GEMINI_API_KEY", "g-1")
+    monkeypatch.setenv("MORIE_GEMINI_MODEL", "gemini-x")
+    assert llm.ask("q") == "from gemini"
+    url, body, hdr = seen[-1]
+    assert url == "https://generativelanguage.googleapis.com/v1beta/models/gemini-x:generateContent"
+    assert hdr == {"x-goog-api-key": "g-1"} and "systemInstruction" in body
+
+
+def test_a_provider_without_a_model_says_how_to_name_one(xdg, monkeypatch):
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setattr(httpx, "get", _fake_get(None))
+    with pytest.raises(llm.NoModelError, match="groq.model"):
+        llm._attempts_for("groq", None, "auto")
+    assert llm._attempts_for("groq", "named-now", "groq")[0][2] == "named-now"
 
 
 def test_a_forced_route_never_falls_back(xdg, monkeypatch):
-    _login(xdg)
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setenv("MORIE_GROQ_MODEL", "llama-x")
     monkeypatch.setattr(httpx, "get", _fake_get(["gemma4:e2b"]))
-    llm_config.config(route="hosted")
-    assert llm.detect_available_provider() == "hosted"
-    assert llm._attempts_for("hosted", None, "hosted") == [(HOSTED, "minimax-m3:cloud", "sk-hosted-123456")]
-    # route = ollama keeps to Ollama: the hosted tier is not tried behind it
-    attempts = llm._attempts_for("ollama", None, "ollama")
-    assert [a[0] for a in attempts] == [OLLAMA]
-    # auto keeps the fallback chain
-    assert [a[0] for a in llm._attempts_for("ollama", None, "auto")] == [OLLAMA, HOSTED]
+    llm_config.config(route="groq")
+    assert llm.detect_available_provider() == "groq"
+    assert [a[1] for a in llm._attempts_for("groq", None, "groq")] == [GROQ]
+    assert [a[1] for a in llm._attempts_for("ollama", None, "ollama")] == [OLLAMA]
+    # auto keeps the fallback chain, from the chosen route on
+    assert [a[1] for a in llm._attempts_for("groq", None, "auto")] == [GROQ, OLLAMA]
+    # a model named for the call belongs to the first route only
+    att = llm._attempts_for("groq", "custom-model", "auto")
+    assert att[0][2] == "custom-model" and att[1][2] == "gemma4:e2b"
 
 
-def test_forced_hosted_without_a_key_is_local(xdg, monkeypatch):
+def test_hosted_is_retired_and_an_unset_provider_is_local(xdg, monkeypatch):
     monkeypatch.setattr(httpx, "get", _fake_get(["gemma4:e2b"]))
-    assert llm.detect_available_provider(route="hosted") == "local"
+    with pytest.raises(ValueError, match="retired"):
+        llm.detect_available_provider(route="hosted")
+    with pytest.raises(ValueError, match="retired"):
+        llm.config(route="hosted")
+    assert llm.detect_available_provider(route="anthropic") == "local"  # no key: nothing to ask
     with pytest.raises(ValueError):
         llm.detect_available_provider(route="cloud")
 
@@ -214,7 +248,7 @@ def test_saved_settings_are_private_and_apply(xdg, monkeypatch):
         ollama_url="192.168.1.20:11434/",
         ollama_model="qwen3:8b",
         ollama_key="ok-12345678",
-        **{"hosted.model": "gpt-oss-120b:cf"},
+        **{"anthropic.model": "claude-x"},
     )
     path = xdg / "morie" / "llm.json"
     assert path == llm.config_path()
@@ -226,11 +260,11 @@ def test_saved_settings_are_private_and_apply(xdg, monkeypatch):
     assert rows["route"]["source"] == "saved" and rows["ollama.key"]["value"] == "set"
     assert llm._ollama_base_url() == "http://192.168.1.20:11434"
     assert llm._ollama_model() == "qwen3:8b"
-    assert hosted.hosted_model() == "gpt-oss-120b:cf"
+    assert providers.model("anthropic") == "claude-x"
     llm._ollama_tags()
     assert seen == [("http://192.168.1.20:11434/api/tags", "Bearer ok-12345678")]
     assert llm.config_get("ollama.key") == "set"  # no character of a key is ever shown
-    llm.config_unset("route", "ollama.url", "ollama.model", "ollama.key", "hosted.model")
+    llm.config_unset("route", "ollama.url", "ollama.model", "ollama.key", "anthropic.model")
     assert not path.exists()
     assert llm.config_get("route") == "auto"
 
@@ -250,8 +284,10 @@ def test_an_environment_variable_wins_and_warns(xdg, monkeypatch):
     assert llm._ollama_base_url() == "http://box:11434"
     monkeypatch.setenv("OLLAMA_HOST", "0.0.0.0:11434")
     assert llm._ollama_base_url() == "http://0.0.0.0:11434"
+    monkeypatch.setenv("MORIE_LLM_ROUTE", "mistral")
+    assert llm_config.route() == "mistral"
     monkeypatch.setenv("MORIE_LLM_ROUTE", "hosted")
-    assert llm_config.route() == "hosted"
+    assert llm_config.route() == "auto"  # a retired or unknown route in the environment is not followed
 
 
 def test_ollama_off_skips_it(xdg, monkeypatch):
@@ -268,8 +304,8 @@ def test_bad_values_are_refused(xdg):
         llm.config(route="cloud")
     with pytest.raises(ValueError, match="own.url"):
         llm.config(own_url="localhost:1234")
-    with pytest.raises(ValueError, match="https"):
-        llm.config(hosted_url="http://llm.example.org")
+    with pytest.raises(KeyError, match="unknown setting"):
+        llm.config(hosted_url="https://llm.example.org")
     with pytest.raises(KeyError, match="unknown setting"):
         llm.config(colour="blue")
     assert not llm.config_path().exists()
@@ -278,10 +314,10 @@ def test_bad_values_are_refused(xdg):
 def test_own_endpoint_settings(xdg, monkeypatch):
     monkeypatch.setattr(httpx, "get", _fake_get(None))
     llm.config(own_url="http://localhost:1234/v1", own_model="my-model")
-    assert llm.detect_available_provider() == "api"  # a local server needs no key
+    assert llm.detect_available_provider() == "own"  # a local server needs no key
     assert llm._api_model() == "my-model"
-    attempts = llm._provider_attempts("api", None)
-    assert attempts[0] == ("http://localhost:1234/v1", "my-model", None)
+    attempts = llm._provider_attempts("own", None)
+    assert attempts[0] == ("openai", "http://localhost:1234/v1", "my-model", None)
     assert llm._chat_url("http://localhost:1234/v1") == "http://localhost:1234/v1/chat/completions"
     # the endpoint attached with `morie provider set` still counts, behind a saved own.url
     hosted.write_credentials({"api_base_url": "https://attached.example/v1", "api_key": "k"})
@@ -292,30 +328,20 @@ def test_own_endpoint_settings(xdg, monkeypatch):
 
 def test_chat_url():
     assert llm._chat_url("http://localhost:11434") == "http://localhost:11434/v1/chat/completions"
-    assert llm._chat_url("https://llm.rmorie.com/") == "https://llm.rmorie.com/v1/chat/completions"
-    assert llm._chat_url("https://api.anthropic.com/v1") == "https://api.anthropic.com/v1/chat/completions"
-    assert llm._chat_url(llm.GEMINI_BASE_URL) == llm.GEMINI_BASE_URL + "/chat/completions"
+    assert llm._chat_url("https://api.openai.com/v1") == "https://api.openai.com/v1/chat/completions"
+    # a provider's documented base, as it is: Perplexity's has no version
+    assert llm._chat_url("https://api.perplexity.ai") == "https://api.perplexity.ai/chat/completions"
+    assert llm._chat_url("https://api.groq.com/openai/v1") == "https://api.groq.com/openai/v1/chat/completions"
 
 
-def test_hosted_key_goes_through_the_login_path(xdg, monkeypatch):
-    stored = []
-    monkeypatch.setattr(hosted, "store_token", lambda tok, echo=None: stored.append(tok) or tok)
-    llm.config(hosted_key="sk-new-key-1234")
-    assert stored == ["sk-new-key-1234"]
-    assert not llm.config_path().exists()  # the key never lands in llm.json
-    hosted.write_credentials({"hosted_key": "sk-new-key-1234"})
-    assert llm_config.source("hosted.key") == "saved"
-    llm.config(hosted_key=None)
-    assert hosted.hosted_key() is None
-
-
-def test_saved_hosted_url(xdg, monkeypatch):
-    llm.config(hosted_url="https://gw.example.org/")
-    assert hosted.hosted_base_url() == "https://gw.example.org"
-    llm.config(hosted_url="off")
-    assert hosted.hosted_base_url() is None
-    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "https://env.example.org")
-    assert hosted.hosted_base_url() == "https://env.example.org"
+def test_a_provider_key_is_saved_privately_and_never_shown(xdg, monkeypatch):
+    llm.config(anthropic_key="sk-ant-secret-123")
+    assert providers.key("anthropic") == "sk-ant-secret-123"
+    assert llm.config_get("anthropic.key") == "set"
+    assert "sk-ant-secret" not in str(llm.config())
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-env")
+    assert providers.key("anthropic") == "sk-env"  # the environment wins
+    assert llm_config.source("anthropic.key") == "environment"
 
 
 # ---------------------------------------------------------------------------
@@ -325,9 +351,10 @@ def test_saved_hosted_url(xdg, monkeypatch):
 
 def test_config_cli(xdg, monkeypatch):
     out = []
-    assert llm_config.cli("set", ["route", "hosted"], out=out.append) == 0
-    assert out[-1] == "route = hosted"
-    assert llm_config.cli("get", ["route"], out=out.append) == 0 and out[-1] == "hosted"
+    assert llm_config.cli("set", ["route", "anthropic"], out=out.append) == 0
+    assert out[-1] == "route = anthropic"
+    assert llm_config.cli("get", ["route"], out=out.append) == 0 and out[-1] == "anthropic"
+    assert llm_config.cli("set", ["route", "hosted"], out=out.append) == 1 and "retired" in out[-1]
     assert llm_config.cli("set", ["route", "nope"], out=out.append) == 1
     assert "route must be one of" in out[-1]
     assert llm_config.cli("set", ["ollama_model"], out=out.append) == 2  # a non-secret needs a value
@@ -342,14 +369,16 @@ def test_config_cli(xdg, monkeypatch):
 
 
 def test_config_setup_wizard(xdg, monkeypatch):
-    _login(xdg)
-    monkeypatch.setattr(httpx, "get", _fake_get([]))
-    answers = iter(["hosted", "gpt-oss-120b:cf"])
+    monkeypatch.setattr(httpx, "get", _fake_get(None))
+    monkeypatch.setattr(providers, "list_models", lambda pid, timeout=10.0: ["llama-a", "llama-b"])
+    answers = iter(["groq", "llama-b"])
     out = []
-    assert llm_config.setup(out=out.append, ask=lambda p: next(answers), secret_ask=lambda p: "") == 0
+    assert llm_config.setup(out=out.append, ask=lambda p: next(answers), secret_ask=lambda p: "gsk-wizard-1") == 0
     data = json.loads(llm.config_path().read_text())
-    assert data == {"route": "hosted", "hosted.model": "gpt-oss-120b:cf"}
-    assert any("ask uses: hosted MORIE tier, model gpt-oss-120b:cf" in line for line in out)
+    assert data == {"route": "groq", "groq.key": "gsk-wizard-1", "groq.model": "llama-b"}
+    assert any("Models: llama-a, llama-b" in line for line in out)
+    assert any("ask uses: Groq, model llama-b" in line for line in out)
+    assert not any("gsk-wizard-1" in line for line in out)
 
 
 def test_runner_parses_config_help_and_route():
@@ -359,7 +388,9 @@ def test_runner_parses_config_help_and_route():
     a = p.parse_args(["config", "set", "ollama.url", "http://box:11434"])
     assert (a.command, a.action, a.rest) == ("config", "set", ["ollama.url", "http://box:11434"])
     assert p.parse_args(["config"]).action == "show"
-    assert p.parse_args(["ask", "--route", "hosted", "hi"]).route == "hosted"
+    assert p.parse_args(["ask", "--route", "groq", "hi"]).route == "groq"
+    with pytest.raises(SystemExit):
+        p.parse_args(["ask", "--route", "hosted", "hi"])
     assert p.parse_args(["help", "llm"]).topic == "llm"
     with pytest.raises(SystemExit):
         p.parse_args(["ask", "--route", "cloud", "hi"])
@@ -388,9 +419,9 @@ def test_ask_route_flag_reaches_the_provider_choice(xdg, monkeypatch, capsys):
         return {"mode": "live_api", "model": "m", "output_text": "ok"}
 
     monkeypatch.setattr(runner, "ask_percy", fake_ask_percy)
-    monkeypatch.setattr("sys.argv", ["morie", "ask", "--no-stream", "--route", "hosted", "hi"])
+    monkeypatch.setattr("sys.argv", ["morie", "ask", "--no-stream", "--route", "anthropic", "hi"])
     assert runner._main_impl() == 0
-    assert seen["route"] == "hosted"
+    assert seen["route"] == "anthropic"
     assert perseus.ask_percy.__kwdefaults__["route"] is None
 
 
@@ -405,9 +436,14 @@ def test_help_topics():
 def test_doctor_reports_the_route(xdg, monkeypatch):
     from morie import doctor
 
-    _login(xdg)
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setenv("MORIE_GROQ_MODEL", "llama-x")
     monkeypatch.setattr(httpx, "get", _fake_get([]))
     ok, detail = doctor._check_ollama()
     assert not ok and "no model pulled" in detail
     ok, detail = doctor._check_route()
-    assert ok and detail.startswith("ask uses: hosted MORIE tier, model minimax-m3:cloud")
+    assert ok and detail.startswith("ask uses: Groq, model llama-x")
+    ok, detail = doctor._check_providers()
+    assert ok and "groq (model llama-x)" in detail
+    ok, detail = doctor._check_data_key()
+    assert not ok and "morie login" in detail
