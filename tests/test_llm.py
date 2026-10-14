@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import os
 from unittest.mock import MagicMock, patch
+from urllib.parse import urlsplit
 
 from morie.llm import (
     _PROVIDER_API,
@@ -301,7 +302,7 @@ class TestAsk:
         def side_effect(base_url, model, messages, **kwargs):
             nonlocal call_count
             call_count += 1
-            if "example.com" in base_url:
+            if urlsplit(base_url).hostname == "example.com":
                 raise ConnectionError("endpoint down")
             return mock_response_ok
 
