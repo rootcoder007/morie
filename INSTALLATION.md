@@ -595,5 +595,5 @@ remove.packages(c("rmorie", "rmoriebricklayer", "rmoriedata"))
 - PyPI: <https://pypi.org/project/morie/>
 - `import morie` checks PyPI once a day for a newer release; set `MORIE_NO_UPDATE_CHECK=1` to disable it.
 - r-universe: <https://rootcoder007.r-universe.dev/rmorie>
-- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com>; hosted models (last resort, key on request at <https://rmorie.com/access>): <https://llm.rmorie.com>
+- Website: <https://rmorie.com>; curated data: <https://data.rmorie.com> (sign in for a free data key at <https://rmorie.com/access>). No language model is hosted: `morie ask` uses your own provider key, your own server, or a local Ollama.
 - Homebrew tap: <https://github.com/rootcoder007/homebrew-morie>

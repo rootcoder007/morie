@@ -209,7 +209,7 @@ def test_email_login_can_have_the_key_mailed(isolated_home, monkeypatch):
 
 def test_only_a_public_https_page_is_opened():
     assert hosted._browsable("https://github.com/login/device")
-    assert hosted._browsable("https://llm.rmorie.com:8443/auth/x")
+    assert hosted._browsable("https://data.rmorie.com:8443/auth/x")
     for u in (
         "http://github.com/login/device",
         "https://127.0.0.1/",
