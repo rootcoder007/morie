@@ -44,7 +44,7 @@ Imports:
   utils,
   graphics,
   Rcpp,
-  rmoriebricklayer (>= 0.5.12),
+  rmoriebricklayer (>= 0.5.13),
   rmoriedata (>= 0.3.6)
 LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
@@ -232,7 +232,9 @@ Suggests:
     xgboost,
     xml2,
     remotes,
-    insight
+    insight,
+    detectseparation,
+    nnet
 VignetteBuilder: knitr
 URL: https://github.com/rootcoder007/morie
 BugReports: https://github.com/rootcoder007/morie/issues
@@ -248,7 +250,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
-    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v0.5.12,
+    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v0.5.13,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
 Additional_repositories:

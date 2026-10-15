@@ -1,7 +1,8 @@
 # morie 1.4.3 - 2026-10-09
 
-* Needs rmoriebricklayer 0.5.12 and rmoriedata 0.3.6, whose language-model layer this
-  release is built on; CI installs rmoriebricklayer from its v0.5.12 tag, not a branch.
+* Needs rmoriebricklayer 0.5.13 (its live progress bars and the language-model layer this
+  release is built on) and rmoriedata 0.3.6; CI installs rmoriebricklayer from its v0.5.13
+  tag, not a branch.
 * Language models are not hosted any more: bring your own. In Python, `morie ask`, `chat`,
   `percy`, `models`, `config` and `doctor` (and `morie.llm.ask()`) use your own OpenAI-compatible
   server, then the first provider whose key is set (OpenAI, Anthropic, Google Gemini,
