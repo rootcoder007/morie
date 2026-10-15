@@ -5,6 +5,8 @@ Algorithm source: mgwr (Oshan, Li, Kang, Wolf & Fotheringham), mgwr/search.py
 (Fotheringham, Yang & Kang 2017) is paywalled and was not read.
 """
 
+import functools
+
 import pytest
 
 from morie.fn import _array_core as np
@@ -24,6 +26,17 @@ def _two_scales(n=35, seed=13):
     return X, y, coords
 
 
+# eight seeds of this fixture back the two majority claims below; each MGWR fit takes
+# ~16 s on the pure-Python array core, so the fits are made once and shared
+_MAJORITY_SEEDS = (5, 11, 13, 17, 23, 29, 31, 37)
+
+
+@functools.cache
+def _two_scales_fit(seed):
+    X, y, coords = _two_scales(seed=seed)
+    return X, y, coords, mgwr(X, y, coords, max_iter=40)
+
+
 def _one_scale(n=35, seed=13):
     rs = np.random.RandomState(seed)
     coords = np.column_stack([rs.uniform(0, 10, n), rs.uniform(0, 10, n)])
@@ -39,6 +52,8 @@ def test_one_bandwidth_per_covariate():
     assert np.all(np.asarray(r["bandwidths"]) > 0)
 
 
+# eight full backfits: ~130 s alone on l14, past fn-sampled's 120 s default
+@pytest.mark.timeout(900)
 def test_covariates_at_different_scales_get_different_bandwidths():
     """This is the entire claim MGWR makes over single-bandwidth GWR.
 
@@ -49,9 +64,8 @@ def test_covariates_at_different_scales_get_different_bandwidths():
     seeds of this fixture the intercept took the wider kernel in six.
     """
     hits = 0
-    for seed in (5, 11, 13, 17, 23, 29, 31, 37):
-        X, y, coords = _two_scales(seed=seed)
-        bws = mgwr(X, y, coords, max_iter=40)["bandwidths"]
+    for seed in _MAJORITY_SEEDS:
+        bws = _two_scales_fit(seed)[3]["bandwidths"]
         hits += bws[0] > bws[1]
     assert hits >= 6
 
@@ -156,15 +170,15 @@ def test_local_coefficients_have_one_column_per_covariate():
     assert np.shape(r["local_coefficients"]) == X.shape
 
 
+@pytest.mark.timeout(900)  # the same eight backfits, shared when run in the same worker
 def test_mgwr_usually_fits_better_than_the_gwr_it_started_from():
     """Not a theorem -- bandwidths are chosen per covariate by AICc, not to
     minimise total RSS, and backfitting has no global optimality guarantee.
     Measured: MGWR beat single-bandwidth GWR on 7 of 8 seeds, the exception
     being the boundary case above."""
     wins = 0
-    for seed in (5, 11, 13, 17, 23, 29, 31, 37):
-        X, y, coords = _two_scales(seed=seed)
-        r = mgwr(X, y, coords, max_iter=40)
+    for seed in _MAJORITY_SEEDS:
+        X, y, coords, r = _two_scales_fit(seed)
         gwr_rss = float(np.sum(gwr_fit(y, X, pairwise_distances(coords), r["bandwidth_gwr"])["resid"] ** 2))
         wins += r["rss"] < gwr_rss
     assert wins >= 6
