@@ -454,7 +454,7 @@ def safe_shell_run(command: str, *, timeout: int = 30, cwd: str | None = None) -
         allowed = ", ".join(sorted(_SHELL_ALLOWLIST))
         raise ExecGuardError(f"'{binary}' is not on the command allowlist ({allowed})")
     return subprocess.run(  # noqa: S603 -- shlex-tokenized, allowlisted, shell=False
-        argv, capture_output=True, text=True, timeout=timeout, cwd=cwd
+        argv, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout, cwd=cwd
     )
 
 

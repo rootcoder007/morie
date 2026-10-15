@@ -826,7 +826,7 @@ def compile_semipar_lib(
         logger.warning("%s", e)
         return None
     try:
-        sp.run(cmd, check=True, capture_output=True, text=True)
+        sp.run(cmd, check=True, capture_output=True, text=True, encoding="utf-8", errors="replace")
         logger.info("Compiled semipar_kernels to %s", output)
         return output
     except (sp.CalledProcessError, FileNotFoundError) as e:

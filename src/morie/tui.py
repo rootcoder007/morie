@@ -3087,6 +3087,8 @@ if _TEXTUAL_AVAILABLE:
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                     bufsize=0,
                 )
                 log.write("[green]R: persistent session started[/green]")
@@ -3493,6 +3495,8 @@ if _TEXTUAL_AVAILABLE:
                         ["Rscript", "-e", code],
                         capture_output=True,
                         text=True,
+                        encoding="utf-8",
+                        errors="replace",
                         timeout=30,
                     )
                     if result.stdout.strip():
@@ -3716,6 +3720,8 @@ if _TEXTUAL_AVAILABLE:
                     [self._user_shell, "-c", cmd],
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                     timeout=30,
                     cwd=str(Path.cwd()),
                     env=env,

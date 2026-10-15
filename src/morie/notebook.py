@@ -152,6 +152,8 @@ def _run_command(
             cmd,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout,
             cwd=str(cwd) if cwd else None,
         )

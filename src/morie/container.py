@@ -202,6 +202,8 @@ def _run_docker(
             cmd,
             capture_output=capture,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout,
             env=run_env,
         )
@@ -1007,7 +1009,14 @@ def environment_diff(
 
     try:
         r_result = launcher("Reading the R version", offer=False).r_expr(
-            "cat(R.version.string)", rscript="R", options=("--slave",), capture_output=True, text=True, timeout=15
+            "cat(R.version.string)",
+            rscript="R",
+            options=("--slave",),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=15,
         )
         host_r = r_result.stdout.strip() if r_result.returncode == 0 else "not available"
     except (LayerMissingError, OSError):

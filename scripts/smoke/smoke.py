@@ -3,7 +3,9 @@
 
 No mocks. This is what a person gets after `pip install morie` on a machine that has
 nothing on it: no datasets, no cache, no key (unless MORIE_SMOKE_KEY is set, which
-unlocks the hosted-tier and data.rmorie.com cases). Run it with the package installed:
+unlocks the data.rmorie.com cases). Language models are bring-your-own-key: the runner has
+none, so every model verb must say how to set one up and never pretend to answer. Run it
+with the package installed:
 
     python scripts/smoke/smoke.py            # exit 0 = every case passed
     python scripts/smoke/smoke.py --list     # the cases
@@ -68,7 +70,7 @@ class Smoke:
         )
 
     def run_llm(self, *args: str) -> subprocess.CompletedProcess:
-        """A hosted-tier call. Every runner of every package asks on the shared key at once, so a 429 is retried once after a pause."""
+        """A language-model call; a 429 from a provider is retried once after a pause."""
         r = self.run(*args)
         if r.returncode != 0 and "429" in (r.stdout + r.stderr):
             time.sleep(45)
@@ -137,12 +139,9 @@ def c_doctor(s: Smoke):
 @case("models")
 def c_models(s: Smoke):
     r = s.run("models")
-    check(r.returncode == 0, r.stderr[-300:])
-    if not KEY:
-        check("login" in (r.stdout + r.stderr).lower(), "without a key, models must point at morie login")
-    else:
-        # the gateway serves additional AI models (ids ending in :cf) beside the ollama.com ones
-        check(":cf" in r.stdout, "no :cf model listed: " + r.stdout[-300:])
+    # no model is hosted: with no provider key, own server or Ollama, models says how to set one up
+    out = r.stdout + r.stderr
+    check(r.returncode == 1 and "morie config setup" in out, "models without a route: " + out[-300:])
 
 
 @case("provider")
@@ -154,7 +153,7 @@ def c_provider(s: Smoke):
     r = s.run("provider", "show")
     check("api.example.org/v1" in r.stdout and "sk-smoke-1234567" not in r.stdout, r.stdout)
     r = s.run("models")
-    check("Your endpoint" in r.stdout, r.stdout[:300])
+    check("own endpoint" in r.stdout and "* demo" in r.stdout, r.stdout[:300])
     r = s.run("provider", "unset")
     check(r.returncode == 0, r.stderr[-300:])
     check("No endpoint" in s.run("provider", "show").stdout, "unset did not clear the endpoint")
@@ -197,29 +196,20 @@ def c_help(s: Smoke):
 
 
 def _answered(r, verb: str) -> None:
-    """With a key: a model answered (exit 0). Without: the local fallback text, exit 1 by design. Never empty."""
+    """No language model on the runner: the local fallback text, exit 1 by design. Never empty."""
     check(r.stdout.strip(), f"{verb} printed nothing: " + r.stderr[-300:])
-    if KEY:
-        check(
-            r.returncode == 0,
-            f"{verb} with a key did not get a model answer: stdout={r.stdout[-200:]!r} stderr={r.stderr[-300:]!r}",
-        )
-    else:
-        check(
-            r.returncode == 1 and "fallback" in r.stderr,
-            f"{verb} without a key must say it fell back: " + r.stderr[-300:],
-        )
+    check(
+        r.returncode == 1 and "fallback" in r.stderr,
+        f"{verb} without a model must say it fell back: " + r.stderr[-300:],
+    )
 
 
 @case("ask")
 def c_ask(s: Smoke):
     _answered(s.run_llm("ask", "--no-stream", "What does the power-design module compute?"), "ask")
     # one of the additional models, named per call
-    r = s.run_llm("ask", "--no-stream", "--model", "gpt-oss-120b:cf", "Reply with the single word pong.")
-    if KEY:
-        _answered(r, "ask --model gpt-oss-120b:cf")
-    else:
-        check(r.returncode != 0, "without a key, ask must not claim an answer")
+    r = s.run_llm("ask", "--no-stream", "--model", "demo-model", "Reply with the single word pong.")
+    check(r.returncode != 0, "without a model route, ask --model must not claim an answer")
 
 
 def _agent_case(s: Smoke, verb: str, *args: str) -> None:
@@ -665,16 +655,10 @@ def c_serve(s: Smoke):
                 code, body = resp.status, json.load(resp)
         except urllib.error.HTTPError as exc:
             code, body = exc.code, json.load(exc)
-        if KEY:
-            check(
-                code == 200 and body.get("text", "").strip() and "LLM request failed" not in body["text"],
-                f"relay answer with a key: {code} {str(body)[:300]}",
-            )
-        else:
-            check(
-                code == 503 or (code == 200 and body.get("backend") not in (None, "local_fallback")),
-                f"without a key the relay must say 503, not pretend: {code} {str(body)[:300]}",
-            )
+        check(
+            code == 503 and "morie config setup" in str(body),
+            f"without a model the relay must say 503 and how to set one up, not pretend: {code} {str(body)[:300]}",
+        )
     finally:
         proc.terminate()
         try:

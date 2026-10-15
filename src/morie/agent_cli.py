@@ -60,5 +60,5 @@ def agent(
     args.append(task)
     from ._interactive import launcher
 
-    proc = launcher("The rmorie agent").run(args, capture_output=True, text=True)
+    proc = launcher("The rmorie agent").run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return (proc.stdout + proc.stderr).strip()

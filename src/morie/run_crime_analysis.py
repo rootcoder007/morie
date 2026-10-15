@@ -113,7 +113,13 @@ def render_figures() -> dict[str, str]:
     if r_script.exists():
         try:
             r = launcher("Rendering figures with R").r_expr(
-                f'source("{r_script}"); morie_render_all()', capture_output=True, text=True, timeout=300, cwd=PROJECT
+                f'source("{r_script}"); morie_render_all()',
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=300,
+                cwd=PROJECT,
             )
             print(r.stdout[-2000:])
             if r.returncode == 0:

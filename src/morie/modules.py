@@ -456,7 +456,16 @@ def _run_r_module(
             f"--output-dir={output_dir}",
         ]
         env = dict(os.environ, MORIE_R_PACKAGE=_R_PACKAGE) if _R_PACKAGE else None
-        proc = _sp().run(cmd, cwd=str(output_dir), check=False, capture_output=True, text=True, env=env)
+        proc = _sp().run(
+            cmd,
+            cwd=str(output_dir),
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            env=env,
+        )
         if proc.returncode != 0:
             raise RuntimeError(
                 f"R-backed module run failed for {module_name}.\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
@@ -1074,6 +1083,8 @@ def _r_route_ready(*, warn: bool = True) -> None:
         stdin=sp.DEVNULL,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=120,
     )
     found = [ln.split()[:2] for ln in probe.stdout.splitlines() if len(ln.split()) >= 2]

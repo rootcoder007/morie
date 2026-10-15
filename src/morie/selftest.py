@@ -305,9 +305,12 @@ def _test_multiple_testing():
 def _test_llm_detection():
     """Test LLM provider detection."""
     from morie.llm import detect_available_provider
+    from morie.providers import IDS
 
     provider = detect_available_provider()
-    valid = ("ollama", "hosted", "gemini", "api", "openai", "local")  # the chain's order
+    # what detect_available_provider() returns now: your own endpoint, Ollama, a provider id or local
+    # ("own" and the provider ids failed here: the list was the retired hosted chain's)
+    valid = ("own", "ollama", "local", *IDS)
     if provider not in valid:
         raise RuntimeError(f"Unknown provider: {provider}")
     return f"LLM provider: {provider}"

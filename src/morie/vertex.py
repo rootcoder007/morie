@@ -87,6 +87,8 @@ def _access_token(cfg: VertexConfig) -> str:
             check=True,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=30,
         ).stdout.strip()
     except sp.CalledProcessError as exc:

@@ -240,7 +240,14 @@ def _total_ram_gb():
     except OSError:
         pass
     try:
-        out = _sp().run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, timeout=5)
+        out = _sp().run(
+            ["sysctl", "-n", "hw.memsize"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
         return int(out.stdout.strip()) / (1024**3)
     except Exception:
         return 16.0
@@ -308,7 +315,14 @@ def _cpu_brand_native():
     except OSError:
         pass
     try:
-        out = _sp().run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True, timeout=5)
+        out = _sp().run(
+            ["sysctl", "-n", "machdep.cpu.brand_string"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
         if out.stdout.strip():
             return out.stdout.strip()
     except Exception:
@@ -357,6 +371,8 @@ def _read_powermetrics(duration_ms: int = 500) -> tuple[float, float]:
             ["powermetrics", "-n", "1", "--samplers", "cpu_power", "-i", str(duration_ms)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=5,
         )
         text = result.stdout + result.stderr
@@ -380,6 +396,8 @@ def _cpu_tdp_fallback() -> float:
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=2,
             )
             brand = result.stdout.strip()
@@ -627,6 +645,8 @@ def _get_cpu_model() -> str:
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=3,
             )
             return result.stdout.strip() or platform.processor()
@@ -976,7 +996,16 @@ def write_capsule(
         "cat('BUNDLED')"
     )
     try:
-        proc = _sp().r_expr(expr, rscript=rscript, options=("--vanilla",), capture_output=True, text=True, timeout=120)
+        proc = _sp().r_expr(
+            expr,
+            rscript=rscript,
+            options=("--vanilla",),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=120,
+        )
     except Exception:
         return result
     if proc.returncode == 0 and "BUNDLED" in proc.stdout:

@@ -2937,6 +2937,8 @@ def _percysuits_get_installed_ssh(ssh_target: str):
             ["ssh", ssh_target, "curl -s http://localhost:11434/api/tags"],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=20,
         )
         if result.returncode == 255:  # ssh's own failure: the host, not Ollama
@@ -2980,6 +2982,8 @@ def _percysuits_pull_ssh(ssh_target: str, to_pull: list) -> int:
                 stdout=sp.PIPE,
                 stderr=sp.STDOUT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             for line in proc.stdout:
                 stripped = line.rstrip()

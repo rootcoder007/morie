@@ -631,7 +631,15 @@ def call(command: str, *args: Any, timeout: float | None = None, **kwargs: Any) 
         script = root / "bridge.R"
         script.write_text(_R_SCRIPT, encoding="utf-8")
         try:
-            out = sp.run([exe, str(script), str(root)], capture_output=True, text=True, timeout=timeout, check=False)
+            out = sp.run(
+                [exe, str(script), str(root)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout,
+                check=False,
+            )
         except sp.TimeoutExpired as e:
             raise RBridgeError(f"{command}: R took longer than {timeout:g} s (set MORIE_R_TIMEOUT)") from e
     if out.returncode != 0:
