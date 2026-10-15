@@ -4,10 +4,10 @@
 [![R-CMD-check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![rOpenSci review](https://img.shields.io/badge/rOpenSci-under_review_%23770-orange)](https://github.com/ropensci/software-review/issues/770)
-[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
+[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com)
 <!-- badges: end -->
 
-Website: <https://rmorie.com> · Hosted LLM tier: <https://llm.rmorie.com> (`morie_llm_login()`, or `rmorie login` after `install_cli()`).
+Website: <https://rmorie.com>
 
 `morie` is a dual-language (R + Python) scientific computing package for
 causal inference, sampling, psychometrics, point-process modeling, and
@@ -159,10 +159,12 @@ function.
   points (13,655 exports in all), each with a test that recomputes its
   value, and the same names in the Python package, checked against each
   other in CI.
-- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first, then
-  your own keys, then <https://llm.rmorie.com> as a last resort; the key is
-  issued on request at <https://rmorie.com/access> and stored with
-  `morie_llm_login(token = )`.
+- **Language models: bring your own** — `morie_llm_ask()` and `rmorie ask`
+  use the model you set up through rmoriebricklayer: a provider's key (OpenAI,
+  Anthropic, Google Gemini, OpenRouter, Groq, Mistral and more), an
+  OpenAI-compatible server of your own, or a local Ollama. None is hosted.
+  `rmorie config setup` walks through it; `morie_llm_login()` signs in for the
+  curated data tables only.
 - **Command line inside the package** — `install_cli()` puts `rmorie` on
   your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
 - **Policing, search and staffing** — police operations research, search
