@@ -8,6 +8,8 @@ Poole KT (2005), *Spatial Models of Parliamentary Voting*, Ch 3-4.
 """
 
 import math
+from itertools import repeat
+from operator import add, mul
 
 from . import _array_core as np
 from ._richresult import RichResult
@@ -21,8 +23,10 @@ def _Phi(t):
     return 0.5 * math.erfc(-t / math.sqrt(2.0))
 
 
-_PHI = np.vectorize(_Phi)
 _CLIP = 1e-9
+_HI = 1 - _CLIP
+_SQ2 = math.sqrt(2.0)
+_SQ2PI = math.sqrt(2 * math.pi)
 
 
 def _utility_gap(x, zy, zn, beta):
@@ -32,9 +36,24 @@ def _utility_gap(x, zy, zn, beta):
     return beta * (dn - dy)
 
 
-def _loglik(votes, obs, eta):
-    p = np.clip(_PHI(np.clip(eta, -8, 8)), _CLIP, 1 - _CLIP)
-    return float(np.sum(obs * (votes * np.log(p) + (1 - votes) * np.log(1 - p))))
+def _solve_small(A, g):
+    """Gaussian elimination with partial pivoting on a small dense system."""
+    p = len(g)
+    M = [list(row) + [gv] for row, gv in zip(A, g)]
+    for c in range(p):
+        piv = max(range(c, p), key=lambda r: abs(M[r][c]))
+        if M[piv][c] == 0.0:  # exactly singular (ridge=0): least-norm answer
+            return (np.linalg.pinv(np.asarray(A, dtype=float)) @ np.asarray(g, dtype=float)).tolist()
+        M[c], M[piv] = M[piv], M[c]
+        for r in range(c + 1, p):
+            f = M[r][c] / M[c][c]
+            if f:
+                for k in range(c, p + 1):
+                    M[r][k] -= f * M[c][k]
+    out = [0.0] * p
+    for c in range(p - 1, -1, -1):
+        out[c] = (M[c][p] - sum(M[c][k] * out[k] for k in range(c + 1, p))) / M[c][c]
+    return out
 
 
 def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250, tol=1e-7, seed=0, ridge=1e-3, start="svd"):
@@ -182,28 +201,52 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250, tol=1e-7
         raise ValueError('start must be "svd" or "random".')
     a = np.zeros(m)
 
-    def probit_fit(design, y_row, start, offset=None):
-        """Probit Fisher scoring with an optional fixed offset."""
-        b = start.copy()
-        off = np.zeros(y_row.size) if offset is None else offset
+    # The half-steps run on plain lists. Every fit is tiny (n_dims or
+    # n_dims + 1 parameters) and there are n + m of them per sweep, so
+    # routing each one through array objects spent nearly all the time
+    # building arrays: ~10 s per sweep on a 120 x 220 chamber, which is
+    # what pushed the fits past the test timeout. The arithmetic is the
+    # same Fisher scoring, six passes per fit, on per-fit columns.
+    Yl = Y.tolist()
+    obsl = obs.tolist()
+    xl = x.tolist()
+    wl = w.tolist()
+    al = a.tolist()
+
+    def probit_fit(rows, y_row, b, off):
+        """Probit Fisher scoring with a fixed offset (lists in, list out)."""
+        b = list(b)
+        p = len(b)
+        cols = [[d[q] for d in rows] for q in range(p)]
+        cross = [[list(map(mul, cols[q], cols[r])) for r in range(q + 1)] for q in range(p)]
         for _ in range(6):
-            eta = np.clip(design @ b + off, -8, 8)
-            pr = np.clip(_PHI(eta), _CLIP, 1 - _CLIP)
-            ph = np.maximum(np.exp(-0.5 * eta**2) / math.sqrt(2 * math.pi), 1e-10)
-            wt = ph**2 / (pr * (1 - pr))
-            z = eta - off + (y_row - pr) / ph
-            A = (design.T * wt) @ design + ridge * np.eye(design.shape[1])
-            g = (design.T * wt) @ z
-            try:
-                nb = np.linalg.solve(A, g)
-            except np.linalg.LinAlgError:
-                nb = np.linalg.pinv(A) @ g
-            if not np.all(np.isfinite(nb)):
+            eta = off
+            for q in range(p):
+                eta = list(map(add, eta, map(mul, cols[q], repeat(b[q]))))
+            wts = []
+            zts = []
+            for e, yv, o in zip(eta, y_row, off):
+                e = 8.0 if e > 8.0 else (-8.0 if e < -8.0 else e)
+                pr = 0.5 * math.erfc(-e / _SQ2)
+                pr = _CLIP if pr < _CLIP else (_HI if pr > _HI else pr)
+                ph = math.exp(-0.5 * e * e) / _SQ2PI
+                if ph < 1e-10:
+                    ph = 1e-10
+                wt = ph * ph / (pr * (1 - pr))
+                wts.append(wt)
+                zts.append(wt * (e - o + (yv - pr) / ph))
+            g = [sum(map(mul, zts, cols[q])) for q in range(p)]
+            A = [[0.0] * p for _ in range(p)]
+            for q in range(p):
+                for r in range(q + 1):
+                    A[q][r] = A[r][q] = sum(map(mul, wts, cross[q][r]))
+                A[q][q] += ridge
+            nb = _solve_small(A, g)
+            if not all(math.isfinite(v) for v in nb):
                 break
-            step = nb - b
-            nrm = float(np.max(np.abs(step)))
+            nrm = max(abs(u - v) for u, v in zip(nb, b))
             if nrm > 5.0:
-                nb = b + step * (5.0 / nrm)
+                nb = [v + (u - v) * (5.0 / nrm) for u, v in zip(nb, b)]
             b = nb
         return b
 
@@ -213,25 +256,38 @@ def wnominate_alternating(votes, n_dims=1, polarity=None, max_iter=250, tol=1e-7
     converged = False
     for it in range(1, int(max_iter) + 1):  # noqa: B007 - read after the loop
         for i in range(n):
-            oi = obs[i]
-            if int(oi.sum()) < n_dims + 1:
+            js = [j for j in range(m) if obsl[i][j]]
+            if len(js) < n_dims + 1:
                 continue
-            x[i] = probit_fit(w[oi], Y[i, oi], x[i], offset=a[oi])
+            yi = Yl[i]
+            xl[i] = probit_fit([wl[j] for j in js], [yi[j] for j in js], xl[i], [al[j] for j in js])
         for j in range(m):
-            oj = obs[:, j]
-            if int(oj.sum()) < n_dims + 2:
+            iis = [i for i in range(n) if obsl[i][j]]
+            if len(iis) < n_dims + 2:
                 continue
-            D = np.column_stack([np.ones(int(oj.sum())), x[oj]])
-            bj = probit_fit(D, Y[oj, j], np.r_[a[j], w[j]])
-            a[j], w[j] = bj[0], bj[1:]
+            bj = probit_fit([[1.0, *xl[i]] for i in iis], [Yl[i][j] for i in iis], [al[j], *wl[j]], [0.0] * len(iis))
+            al[j], wl[j] = bj[0], bj[1:]
 
-        ll = _loglik(Y, obs, a[None, :] + x @ w.T)
+        terms = []
+        wcols = [[wj[q] for wj in wl] for q in range(n_dims)]
+        for i in range(n):
+            eta = al
+            for q in range(n_dims):
+                eta = list(map(add, eta, map(mul, wcols[q], repeat(xl[i][q]))))
+            for e, yv, ov in zip(eta, Yl[i], obsl[i]):
+                if ov:
+                    pr = min(max(_Phi(min(max(e, -8.0), 8.0)), _CLIP), _HI)
+                    terms.append(math.log(pr) if yv else math.log(1 - pr))
+        ll = math.fsum(terms)
         delta = abs(ll - ll_old)
         if delta < tol * (1.0 + abs(ll_old)):
             ll_old = ll
             converged = True
             break
         ll_old = ll
+    x = np.asarray(xl, dtype=float).reshape(n, n_dims)
+    w = np.asarray(wl, dtype=float).reshape(m, n_dims)
+    a = np.asarray(al, dtype=float)
 
     # normalise: eta is invariant to x -> (x - mu)/s with w -> s w and
     # a -> a + mu.w, so centre and scale are free and fixed by convention

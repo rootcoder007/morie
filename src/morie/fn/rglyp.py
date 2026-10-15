@@ -9,6 +9,43 @@ from ._richresult import RichResult, with_describe_pointer
 __all__ = ["rangayyan_lyapunov"]
 
 
+def _nearest_outside_window(pts, theiler):
+    """Index of each point's nearest neighbour with ``|i - j| > theiler``.
+
+    Exact, and the same answer as an argmin over the full distance matrix
+    (ties go to the lower index). The matrix itself is M x M x m: at the
+    6000-sample series of Rosenstein's Table 1 that is 72 million array
+    elements, which exhausted memory before the argmin ran. Instead the
+    points are sorted on the first coordinate and each search walks out
+    from its own position, stopping once the first-coordinate gap alone
+    exceeds the best distance found -- no farther point can be closer.
+    """
+    M = len(pts)
+    order = sorted(range(M), key=lambda k: pts[k][0])
+    pos = [0] * M
+    for r, k in enumerate(order):
+        pos[k] = r
+    out = [0] * M
+    for i in range(M):
+        p = pts[i]
+        p0 = p[0]
+        best, arg = float("inf"), -1
+        for step in (1, -1):
+            r = pos[i] + step
+            while 0 <= r < M:
+                j = order[r]
+                g = pts[j][0] - p0
+                if g * g > best:
+                    break
+                if abs(i - j) > theiler:
+                    d2 = sum((u - v) ** 2 for u, v in zip(pts[j], p))
+                    if d2 < best or (d2 == best and j < arg):
+                        best, arg = d2, j
+                r += step
+        out[i] = arg
+    return out
+
+
 def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10, dt=1.0):
     """Largest Lyapunov exponent via Rosenstein's algorithm.
 
@@ -115,11 +152,8 @@ def rangayyan_lyapunov(x, m=3, tau=1, max_t=None, theiler=10, dt=1.0):
         raise ValueError(f"`dt` must be positive, got {dt}.")
     if max_t is None:
         max_t = min(M // 4, 100)
-    d = np.linalg.norm(Y[:, None, :] - Y[None, :, :], axis=2)
     iv = np.arange(M)
-    mask = np.abs(iv[:, None] - iv[None, :]) <= theiler
-    d = np.where(mask, np.inf, d)
-    nn = np.argmin(d, axis=1)
+    nn = np.asarray(_nearest_outside_window(Y.tolist(), theiler), dtype=int)
     div = np.full(max_t, np.nan)
     for t in range(max_t):
         ok = (iv + t < M) & (nn + t < M)

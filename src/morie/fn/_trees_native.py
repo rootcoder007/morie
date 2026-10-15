@@ -28,6 +28,9 @@ machine. *Annals of Statistics*, 29(5), 1189-1232.
 
 from __future__ import annotations
 
+import math
+from itertools import accumulate
+
 from . import _array_core as np
 
 __all__ = ["gb_fit", "gb_predict"]
@@ -47,54 +50,65 @@ def _leaf_weight(G, H, lam, alpha):
     return -_soft_threshold(G, alpha) / (H + lam)
 
 
-def _best_split(X, g, h, idx, min_node, lam, gamma_pen):
-    """Best (feature, threshold) for one node, or None if no split helps."""
-    G, H = g[idx].sum(), h[idx].sum()
+def _best_split(Xc, g, h, idx, min_node, lam, gamma_pen):
+    """Best (feature, threshold) for one node, or None if no split helps.
+
+    ``Xc`` is the design as a list of columns, ``g``/``h`` and ``idx`` are
+    lists. The node search runs once per node of every tree, so as array
+    expressions (fancy indexing, argsort, cumsum per column) it was most of
+    a boosting fit; the arithmetic below is the same, element by element:
+    exactly rounded node totals, running prefix sums in sorted order, the
+    stable (mergesort) order, and the first maximiser of the gain.
+    """
+    G = math.fsum(g[i] for i in idx)
+    H = math.fsum(h[i] for i in idx)
     parent = G * G / (H + lam)
+    n = len(idx)
     best = None
-    for j in range(X.shape[1]):
-        v = X[idx, j]
-        o = np.argsort(v, kind="mergesort")
-        vs = v[o]
-        gs = np.cumsum(g[idx][o])
-        hs = np.cumsum(h[idx][o])
-        n = vs.size
-        if n < 2:
-            continue
+    if n < 2:
+        return best
+    for j, col in enumerate(Xc):
+        o = sorted(idx, key=col.__getitem__)
+        vs = [col[i] for i in o]
+        gs = list(accumulate(g[i] for i in o))
+        hs = list(accumulate(h[i] for i in o))
         # Only positions where the value actually changes are valid splits.
-        cut = np.flatnonzero(vs[:-1] < vs[1:])
-        cut = cut[(cut + 1 >= min_node) & (n - cut - 1 >= min_node)]
-        if cut.size == 0:
+        cut = [c for c in range(n - 1) if vs[c] < vs[c + 1] and c + 1 >= min_node and n - c - 1 >= min_node]
+        if not cut:
             continue
-        GL, HL = gs[cut], hs[cut]
-        GR, HR = G - GL, H - HL
-        gain = 0.5 * (GL * GL / (HL + lam) + GR * GR / (HR + lam) - parent) - gamma_pen
-        k = int(np.argmax(gain))
-        if gain[k] > 0 and (best is None or gain[k] > best[0]):
-            best = (float(gain[k]), j, float((vs[cut[k]] + vs[cut[k] + 1]) / 2))
+        gain = []
+        for c in cut:
+            GL, HL = gs[c], hs[c]
+            GR, HR = G - GL, H - HL
+            gain.append(0.5 * (GL * GL / (HL + lam) + GR * GR / (HR + lam) - parent) - gamma_pen)
+        top = max(gain)
+        k = gain.index(top)
+        if top > 0 and (best is None or top > best[0]):
+            best = (float(top), j, float((vs[cut[k]] + vs[cut[k] + 1]) / 2))
     return best
 
 
-def _grow(X, g, h, idx, depth, max_depth, min_node, lam, alpha, gamma_pen, imp):
-    G, H = g[idx].sum(), h[idx].sum()
+def _grow(Xc, g, h, idx, depth, max_depth, min_node, lam, alpha, gamma_pen, imp):
+    G, H = math.fsum(g[i] for i in idx), math.fsum(h[i] for i in idx)
     leaf = {"leaf": True, "w": _leaf_weight(G, H, lam, alpha)}
-    if depth >= max_depth or idx.size < 2 * min_node:
+    if depth >= max_depth or len(idx) < 2 * min_node:
         return leaf
-    s = _best_split(X, g, h, idx, min_node, lam, gamma_pen)
+    s = _best_split(Xc, g, h, idx, min_node, lam, gamma_pen)
     if s is None:
         return leaf
     gain, j, thr = s
     imp[j] += gain
-    left = idx[X[idx, j] <= thr]
-    right = idx[X[idx, j] > thr]
-    if left.size == 0 or right.size == 0:
+    col = Xc[j]
+    left = [i for i in idx if col[i] <= thr]
+    right = [i for i in idx if col[i] > thr]
+    if not left or not right:
         return leaf
     return {
         "leaf": False,
         "j": j,
         "thr": thr,
-        "left": _grow(X, g, h, left, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
-        "right": _grow(X, g, h, right, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
+        "left": _grow(Xc, g, h, left, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
+        "right": _grow(Xc, g, h, right, depth + 1, max_depth, min_node, lam, alpha, gamma_pen, imp),
     }
 
 
@@ -148,6 +162,7 @@ def gb_fit(
         pbar = min(max(float(yv.mean()), 1e-6), 1 - 1e-6)
         f0 = float(np.log(pbar / (1 - pbar)))
     f = np.full(n, f0)
+    Xc = [list(c) for c in zip(*X.tolist())]
     trees = []
     for _ in range(int(n_estimators)):
         if task == "regression":
@@ -158,10 +173,10 @@ def gb_fit(
             g = pr - yv
             h = np.maximum(pr * (1 - pr), 1e-6)
         tree = _grow(
-            X,
-            g,
-            h,
-            np.arange(n),
+            Xc,
+            g.tolist(),
+            h.tolist(),
+            list(range(n)),
             0,
             int(max_depth),
             int(min_node),

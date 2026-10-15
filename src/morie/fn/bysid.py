@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Bayesian ideal-point estimation (Armstrong Ch 5)."""
 
+import math
+
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -76,17 +78,34 @@ def bayesian_ideal_points(x, n_iter: int = 400, burn: int = 100, seed: int = 0, 
     mask = ~np.isnan(M)
     Msafe = np.where(mask, M, 0.0)
 
+    mask_l = mask.tolist()
+    msafe_l = Msafe.tolist()
+
     def _cellwise_ll(xv, av, bv):
-        """Per-cell log-likelihood, zero where the vote is missing."""
-        Z = av[None, :] * (xv[:, None] - bv[None, :])
-        P = _logistic(Z)
-        return np.where(mask, Msafe * np.log(P + 1e-12) + (1 - Msafe) * np.log(1 - P + 1e-12), 0.0)
+        """Per-cell log-likelihood, zero where the vote is missing.
+
+        Plain lists, cell by cell: the sampler evaluates this five times a
+        sweep, and as n x m array expressions it was nearly all the run
+        time. Same formula as _logistic and the masked Bernoulli term.
+        """
+        al, bl = av.tolist(), bv.tolist()
+        rows = []
+        for xi, mrow, vrow in zip(xv.tolist(), mask_l, msafe_l):
+            row = []
+            for a, b, ok, y in zip(al, bl, mrow, vrow):
+                z = a * (xi - b)
+                p = 1.0 / (1.0 + math.exp(-min(max(z, -30.0), 30.0)))
+                row.append(y * math.log(p + 1e-12) + (1 - y) * math.log(1 - p + 1e-12) if ok else 0.0)
+            rows.append(row)
+        return rows
 
     def row_ll(xv, av, bv):
-        return _cellwise_ll(xv, av, bv).sum(axis=1)  # (n,) -- x_i touches row i only
+        # (n,) -- x_i touches row i only
+        return np.asarray([math.fsum(r) for r in _cellwise_ll(xv, av, bv)], dtype=float)
 
     def col_ll(xv, av, bv):
-        return _cellwise_ll(xv, av, bv).sum(axis=0)  # (m,) -- a_j, b_j touch column j only
+        # (m,) -- a_j, b_j touch column j only
+        return np.asarray([math.fsum(c) for c in zip(*_cellwise_ll(xv, av, bv))], dtype=float)
 
     # Metropolis-within-Gibbs: x_i enters only row i and a_j/b_j only column j, so
     # each coordinate is accepted or rejected on its own likelihood.  A single

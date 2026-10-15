@@ -317,16 +317,32 @@ def bats_filter(z, spec, theta, x0, long_run_b=0.0):
     i += spec.p
     elag = [float(x0[i + j]) for j in range(spec.q)]
 
+    # Loop invariants bound once: the filter runs ~15 times per likelihood
+    # evaluation (fit_seed_state) and the attribute lookups, the property
+    # call and the per-step cos/sin of fixed frequencies were most of its
+    # cost. Every arithmetic expression below is the one it replaces.
+    trig = spec.trigonometric
+    rper = range(len(spec.periods))
+    rp, rq = range(spec.p), range(spec.q)
+    has_p, has_q, use_trend = bool(spec.p), bool(spec.q), spec.use_trend
+    one_period = len(spec.periods) == 1
+    no_arma = not (has_p or has_q)
+    if trig:
+        harm = spec.harmonics
+        cs_tab = [[math.cos(v) for v in lam[a]] for a in rper]
+        sn_tab = [[math.sin(v) for v in lam[a]] for a in rper]
     resid = []
     fitted = []
     for t in range(n):
-        if spec.trigonometric:
-            seas = sum(sum(s[a]) for a in range(len(spec.periods)))
+        # sum() of one term is 0 + term and of none is the int 0, spelled
+        # out for the common shapes so no generator is built per step
+        if one_period:
+            seas = 0 + (sum(s[0]) if trig else buf[0][0])
         else:
-            seas = sum(buf[a][0] for a in range(len(spec.periods)))
+            seas = sum(sum(s[a]) for a in rper) if trig else sum(buf[a][0] for a in rper)
         # w' x_{t-1} plus the ARMA part of d_t that is already known
         base = lev + phi * trend + seas
-        darma = sum(ar[j] * dlag[j] for j in range(spec.p)) + sum(ma[j] * elag[j] for j in range(spec.q))
+        darma = 0 if no_arma else sum(ar[j] * dlag[j] for j in rp) + sum(ma[j] * elag[j] for j in rq)
         pred = base + darma
         eps = z[t] - pred
         d = darma + eps
@@ -334,27 +350,28 @@ def bats_filter(z, spec, theta, x0, long_run_b=0.0):
         resid.append(eps)
 
         new_lev = lev + phi * trend + alpha * d
-        new_trend = (1.0 - phi) * long_run_b + phi * trend + beta * d if spec.use_trend else 0.0
-        if spec.trigonometric:
-            for a in range(len(spec.periods)):
+        new_trend = (1.0 - phi) * long_run_b + phi * trend + beta * d if use_trend else 0.0
+        if trig:
+            for a in rper:
                 g1 = gam[0][a]
                 g2 = gam[1][a]
-                for j in range(spec.harmonics[a]):
-                    c = math.cos(lam[a][j])
-                    sn = math.sin(lam[a][j])
-                    sj = s[a][j]
-                    sjs = sstar[a][j]
-                    s[a][j] = sj * c + sjs * sn + g1 * d
-                    sstar[a][j] = -sj * sn + sjs * c + g2 * d
+                sa, ssa, ca, na = s[a], sstar[a], cs_tab[a], sn_tab[a]
+                for j in range(harm[a]):
+                    c = ca[j]
+                    sn = na[j]
+                    sj = sa[j]
+                    sjs = ssa[j]
+                    sa[j] = sj * c + sjs * sn + g1 * d
+                    ssa[j] = -sj * sn + sjs * c + g2 * d
         else:
-            for a in range(len(spec.periods)):
+            for a in rper:
                 oldest = buf[a].pop(0)
                 buf[a].append(oldest + gam[a] * d)
         lev = new_lev
         trend = new_trend
-        if spec.p:
+        if has_p:
             dlag = [d] + dlag[:-1]
-        if spec.q:
+        if has_q:
             elag = [eps] + elag[:-1]
 
     carry = {"level": lev, "trend": trend, "dlag": dlag, "elag": elag}

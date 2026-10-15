@@ -102,6 +102,5 @@ what a constant baseline attributes to self-excitation is seasonal.
 Reference
 ---------
 
-The full methodology and Toronto application will appear in a
-forthcoming companion paper (in preparation; will be linked here
-once publicly available with a DOI or preprint URL).
+The functions above implement the methodology; their docstrings give the
+estimators, the references they follow and the assumptions they make.

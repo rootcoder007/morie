@@ -46,8 +46,7 @@ def _one_scale(n=35, seed=13):
 
 
 def test_one_bandwidth_per_covariate():
-    X, y, coords = _two_scales()
-    r = mgwr(X, y, coords, max_iter=40)
+    X, y, coords, r = _two_scales_fit(13)  # the default fixture seed
     assert np.shape(r["bandwidths"]) == (X.shape[1],)
     assert np.all(np.asarray(r["bandwidths"]) > 0)
 
@@ -70,6 +69,9 @@ def test_covariates_at_different_scales_get_different_bandwidths():
     assert hits >= 6
 
 
+# three of the shared backfits (seeds 13, 5, 29); alone that is ~50 s on l14 and
+# it was the test that ran them first in the full run, where it hit 120 s
+@pytest.mark.timeout(900)
 def test_backfitting_matches_the_reference_and_separates_the_scales():
     """Checked against the authors' implementation, PySAL mgwr 2.2.1
     (Sel_BW(multi=True, kernel="gaussian", fixed=True) on the same
@@ -81,20 +83,17 @@ def test_backfitting_matches_the_reference_and_separates_the_scales():
     implementation finds the narrow slope bandwidth the sin(x) slope
     calls for (AICc 83.96, RSS 1.48), so there the scales separate."""
     for seed, ref in ((13, (4.93, 1.99)), (5, (1.53, 0.79))):
-        X, y, coords = _two_scales(seed=seed)
-        r = mgwr(X, y, coords, max_iter=40)
+        r = _two_scales_fit(seed)[3]
         assert r["converged"] is True
         assert np.asarray(r["bandwidths"]).tolist() == pytest.approx(ref, abs=0.02)
-    X, y, coords = _two_scales(seed=29)
-    r = mgwr(X, y, coords, max_iter=40)
+    r = _two_scales_fit(29)[3]
     bws = np.asarray(r["bandwidths"])
     assert r["converged"] is True and r["at_search_boundary"] is False
     assert bws[1] < bws[0] / 1.5  # the fast-varying slope is narrower
 
 
 def test_a_healthy_fit_is_not_flagged_at_the_boundary():
-    X, y, coords = _two_scales(seed=5)
-    r = mgwr(X, y, coords, max_iter=40)
+    r = _two_scales_fit(5)[3]
     assert r["at_search_boundary"] is False
     assert r["n_iter"] > 3
 

@@ -64,12 +64,11 @@ def _norm_ppf(p):
     different accuracy answering the same question.  Now there is one.
     The import is local so this module still loads without _rng.
     """
-    from ._rng import normal_quantile as _ppnd16
+    from ._rng import normal_quantile_scalar as _ppnd16
 
     if not (0.0 < p < 1.0):
         raise ValueError("p must lie strictly inside (0, 1)")
-    z = _ppnd16(p)
-    return float(z if not hasattr(z, "_flat") else list(z._flat())[0])
+    return float(_ppnd16(p))
 
 
 def _gammainc_p(a, x):

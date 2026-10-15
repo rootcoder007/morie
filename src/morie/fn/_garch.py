@@ -24,6 +24,9 @@ unconstrained reparameterisation, which keeps the parameters inside
 their stationarity region without a constrained optimiser.
 """
 
+import math
+import operator
+
 from . import _array_core as np
 from . import _stats_core as stats
 from ._sci_core import optimize, special
@@ -48,8 +51,13 @@ def garch_recursion(eps, params, spec="garch"):
     n = eps.size
     if n < 10:
         raise ValueError(f"need at least 10 observations, got {n}.")
-    s2 = np.empty(n)
+    # The recursions run on plain lists. Each step reads and writes single
+    # elements, and doing that through array objects made every likelihood
+    # evaluation cost ~n array-element round trips; the optimisers call it
+    # thousands of times. Same arithmetic, element for element.
+    s2 = [0.0] * n
     s2[0] = max(float(np.var(eps)), 1e-12)
+    eps = eps.tolist()
 
     if spec == "garch":
         w, a, b = params["omega"], params["alpha"], params["beta"]
@@ -62,12 +70,12 @@ def garch_recursion(eps, params, spec="garch"):
             s2[t] = w + b * s2[t - 1] + (1.0 - b) * eps[t - 1] ** 2
     elif spec == "egarch":
         w, a, g, b = params["omega"], params["alpha"], params["gamma"], params["beta"]
-        ls2 = np.empty(n)
-        ls2[0] = np.log(s2[0])
+        ls2 = [0.0] * n
+        ls2[0] = float(np.log(s2[0]))
         for t in range(1, n):
-            z = eps[t - 1] / np.sqrt(np.exp(ls2[t - 1]))
+            z = eps[t - 1] / float(np.sqrt(np.exp(ls2[t - 1])))
             ls2[t] = w + b * ls2[t - 1] + a * (abs(z) - _SQRT_2_PI) + g * z
-        s2 = np.exp(np.clip(ls2, -50, 50))
+        s2 = np.exp(np.clip(np.asarray(ls2, dtype=float), -50, 50))
     elif spec in ("gjr", "tgarch"):
         w, a, g, b = params["omega"], params["alpha"], params["gamma"], params["beta"]
         for t in range(1, n):
@@ -81,11 +89,11 @@ def garch_recursion(eps, params, spec="garch"):
             params["beta"],
             params["delta"],
         )
-        sd = np.empty(n)
+        sd = [0.0] * n
         sd[0] = s2[0] ** (d / 2.0)
         for t in range(1, n):
             sd[t] = w + a * (abs(eps[t - 1]) - g * eps[t - 1]) ** d + b * sd[t - 1]
-        s2 = np.maximum(sd, 1e-300) ** (2.0 / d)
+        s2 = np.maximum(np.asarray(sd, dtype=float), 1e-300) ** (2.0 / d)
     elif spec == "cgarch":
         # Engle-Lee component model: a slow permanent component q_t and
         # a transitory deviation, so persistence splits in two.
@@ -96,23 +104,25 @@ def garch_recursion(eps, params, spec="garch"):
             params["alpha"],
             params["beta"],
         )
-        q = np.empty(n)
+        q = [0.0] * n
         q[0] = s2[0]
         for t in range(1, n):
             q[t] = w + rho * q[t - 1] + phi * (eps[t - 1] ** 2 - s2[t - 1])
             s2[t] = q[t] + a * (eps[t - 1] ** 2 - q[t - 1]) + b * (s2[t - 1] - q[t - 1])
             s2[t] = max(s2[t], 1e-12)
-        return np.maximum(s2, 1e-12), q
+        return np.maximum(np.asarray(s2, dtype=float), 1e-12), np.asarray(q, dtype=float)
     else:  # figarch
         d, b, phi = params["d"], params["beta"], params["phi"]
         w = params["omega"]
         trunc = int(params.get("trunc", 50))
-        lam = _figarch_weights(d, b, phi, trunc)
+        lam = _figarch_weights(d, b, phi, trunc).tolist()
+        e2r = [v**2 for v in reversed(eps)]  # e2r[n - t + j] = eps[t - 1 - j] ** 2
         for t in range(1, n):
             k = min(t, trunc)
-            s2[t] = w + float(np.dot(lam[:k], eps[t - 1 :: -1][:k] ** 2))
+            # np.dot of two 1-D float vectors is the exactly rounded fsum
+            s2[t] = w + math.fsum(map(operator.mul, lam[:k], e2r[n - t : n - t + k]))
             s2[t] = max(s2[t], 1e-12)
-    return np.maximum(s2, 1e-12)
+    return np.maximum(np.asarray(s2, dtype=float), 1e-12)
 
 
 def _figarch_weights(d, beta, phi, trunc):
@@ -207,23 +217,36 @@ _X0 = {
 
 
 def _loglik(eps, s2, dist="normal", nu=8.0):
-    """Gaussian, Student-t or GED conditional log-likelihood."""
+    """Gaussian, Student-t or GED conditional log-likelihood.
+
+    Summed term by term over plain lists (the exactly rounded sum, as
+    np.sum gives): the optimisers evaluate this thousands of times and
+    the array version built half a dozen n-element arrays per call.
+    ``s2`` must be positive, which every caller guarantees.
+    """
+    el = np.asarray(eps, dtype=float).ravel().tolist()
+    sl = np.asarray(s2, dtype=float).ravel().tolist()
     if dist == "normal":
-        return float(-0.5 * np.sum(np.log(2 * np.pi * s2) + eps**2 / s2))
+        tp = 2 * math.pi
+        return float(-0.5 * math.fsum(math.log(tp * v) + e**2 / v for e, v in zip(el, sl)))
     if dist == "t":
         if nu <= 2:
             return -np.inf
         # standardised t: unit variance, so scale by sqrt((nu-2)/nu)
         c = special.gammaln((nu + 1) / 2) - special.gammaln(nu / 2) - 0.5 * np.log(np.pi * (nu - 2))
-        z2 = eps**2 / s2
-        return float(np.sum(c - 0.5 * np.log(s2) - (nu + 1) / 2 * np.log1p(z2 / (nu - 2))))
+        h = (nu + 1) / 2
+        return float(math.fsum(c - 0.5 * math.log(v) - h * math.log1p(e**2 / v / (nu - 2)) for e, v in zip(el, sl)))
     if dist == "ged":
         if nu <= 0:
             return -np.inf
         lam = np.sqrt(2 ** (-2 / nu) * special.gamma(1 / nu) / special.gamma(3 / nu))
-        z = eps / np.sqrt(s2)
         c = np.log(nu) - np.log(lam) - (1 + 1 / nu) * np.log(2) - special.gammaln(1 / nu)
-        return float(np.sum(c - 0.5 * np.log(s2) - 0.5 * np.abs(z / lam) ** nu))
+        try:
+            return float(
+                math.fsum(c - 0.5 * math.log(v) - 0.5 * abs(e / math.sqrt(v) / lam) ** nu for e, v in zip(el, sl))
+            )
+        except OverflowError:  # |z / lam| ** nu overflowed: numpy gives inf, so the sum is -inf
+            return -np.inf
     raise ValueError(f"dist must be 'normal', 't' or 'ged', got {dist!r}.")
 
 
@@ -495,25 +518,31 @@ def ms_garch_fit(r, n_regimes=2, max_iter=60):
             P[i] = ex / ex.sum()
         return pars, P
 
+    el = e.tolist()
+
     def filt(x):
+        # Hamilton filter on K-vectors held as lists: per time step the
+        # array-object version paid a dozen K-element array constructions,
+        # times n steps, times thousands of Nelder-Mead evaluations.
         pars, P = unpack(x)
-        xi = np.full(K, 1.0 / K)
-        s2 = np.full(K, v)
+        Pl = P.tolist()
+        pr = [(float(o), float(a), float(b)) for o, a, b in pars]
+        xi = [1.0 / K] * K
+        s2 = [v] * K
         ll = 0.0
         for t in range(n):
             if t:
-                sbar = float(xi @ s2)
-                for j in range(K):
-                    o, a, b = pars[j]
-                    s2[j] = max(o + a * e[t - 1] ** 2 + b * sbar, 1e-12)
-            xi = xi @ P
-            dens = np.exp(-0.5 * e[t] ** 2 / s2) / np.sqrt(2 * np.pi * s2)
-            num = xi * dens
-            tot = num.sum()
-            if not np.isfinite(tot) or tot <= 0:
+                sbar = math.fsum(xi[j] * s2[j] for j in range(K))
+                e2 = el[t - 1] ** 2
+                s2 = [max(o + a * e2 + b * sbar, 1e-12) for o, a, b in pr]
+            xi = [math.fsum(xi[i] * Pl[i][j] for i in range(K)) for j in range(K)]
+            et2 = el[t] ** 2
+            num = [xi[j] * (math.exp(-0.5 * et2 / s2[j]) / math.sqrt(2 * math.pi * s2[j])) for j in range(K)]
+            tot = math.fsum(num)
+            if not math.isfinite(tot) or tot <= 0:
                 return 1e10, None, None
-            ll += np.log(tot)
-            xi = num / tot
+            ll += math.log(tot)
+            xi = [u / tot for u in num]
         return -ll, pars, P
 
     x0 = []

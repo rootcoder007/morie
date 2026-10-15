@@ -75,9 +75,8 @@ Quick start
 References
 ----------
 
-The Hawkes-process methodology applied to these data will appear in a
-forthcoming companion paper (in preparation; will be linked here once
-publicly available with a DOI or preprint URL).
+The Hawkes-process methodology applied to these data is described in
+:doc:`hawkes`.
 
 The statistical-physics components follow the D'Orsogna-Perc (2015)
 review and the references cited therein.

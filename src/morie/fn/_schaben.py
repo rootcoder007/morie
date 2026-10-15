@@ -47,6 +47,9 @@ semivariogram estimators and corresponding kriging predictors",
 suite precisely because it shows this happening.
 """
 
+import functools
+import math
+
 from . import _array_core as np
 
 __all__ = [
@@ -83,9 +86,16 @@ def pair_differences(coords, z):
         raise ValueError(f"coords has {int(P.shape[0])} rows for {int(n)} values.")
     if n < 2:
         raise ValueError(f"need at least 2 locations, got {int(n)}.")
-    i, j = np.triu_indices(n, k=1)
-    h = np.sqrt(np.sum((P[i] - P[j]) ** 2, axis=1))
-    return h, zz[i] - zz[j]
+    # one pass over plain lists: fancy-indexing the n(n-1)/2 pairs through
+    # array objects took ~4 s per call at n = 220 on the array core
+    pts, zl = P.tolist(), zz.tolist()
+    h, dz = [], []
+    for i in range(n):
+        pi, zi = pts[i], zl[i]
+        for j in range(i + 1, n):
+            h.append(math.sqrt(sum((u - v) ** 2 for u, v in zip(pi, pts[j]))))
+            dz.append(zi - zl[j])
+    return np.asarray(h, dtype=float), np.asarray(dz, dtype=float)
 
 
 def lag_bins(h, bins=None, cutoff=None, tol=None):
@@ -126,15 +136,22 @@ def _grouped(h, diff, bins, cutoff, exact):
     """
     if exact:
         uniq = np.unique(np.round(h, 12))
-        groups = [np.isclose(h, u) for u in uniq]
+        groups = [np.flatnonzero(np.isclose(h, u)) for u in uniq]
         return uniq, groups
     edges, idx, inside = lag_bins(h, bins, cutoff)
+    # one pass assigning pairs to classes, instead of a full boolean mask
+    # (and the mean through it) per class
+    members = [[] for _ in range(len(edges) - 1)]
+    for k, (b, ok) in enumerate(zip(idx.tolist(), inside.tolist())):
+        b = int(b)
+        if ok and 0 <= b < len(members):
+            members[b].append(k)
+    hl = h.tolist()
     centres, groups = [], []
-    for b in range(len(edges) - 1):
-        m = inside & (idx == b)
-        if m.any():
-            centres.append(float(np.mean(h[m])))
-            groups.append(m)
+    for mem in members:
+        if mem:
+            centres.append(math.fsum(hl[k] for k in mem) / len(mem))
+            groups.append(np.asarray(mem, dtype=int))
     return np.asarray(centres), groups
 
 
@@ -154,7 +171,7 @@ def matheron(coords, z, bins=None, cutoff=None, exact=False):
     h, d = pair_differences(coords, z)
     centres, groups = _grouped(h, d, bins, cutoff, exact)
     gam = np.array([float(np.mean(d[m] ** 2) / 2.0) for m in groups])
-    npair = np.array([int(m.sum()) for m in groups])
+    npair = np.array([int(m.size) for m in groups])
     var = np.where(npair > 0, 2.0 * gam**2 / np.maximum(npair, 1), np.nan)
     return centres, gam, npair, var
 
@@ -190,7 +207,7 @@ def cressie_hawkins(coords, z, bins=None, cutoff=None, exact=False):
     centres, groups = _grouped(h, d, bins, cutoff, exact)
     gam, npair = [], []
     for m in groups:
-        nh = int(m.sum())
+        nh = int(m.size)
         root = float(np.mean(np.sqrt(np.abs(d[m]))))
         gam.append(0.5 * root**4 / (0.457 + 0.494 / nh))
         npair.append(nh)
@@ -219,6 +236,33 @@ def variogram_model(h, model, nugget, psill, rng):
     else:
         g = np.minimum(h / a, 1.0)
     return np.where(h <= 0, 0.0, nugget + psill * g)
+
+
+def _model_list(hs, model, nugget, psill, rng):
+    """:func:`variogram_model` on a list of separations, as a list.
+
+    Same formulas; the optimiser objectives call it tens of thousands of
+    times on short vectors, where array-object overhead dominated.
+    """
+    if model not in MODELS:
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
+    a = max(float(rng), 1e-12)
+    out = []
+    for h in hs:
+        if h <= 0:
+            out.append(0.0)
+            continue
+        if model == "exponential":
+            g = 1.0 - math.exp(-3.0 * h / a)
+        elif model == "gaussian":
+            g = 1.0 - math.exp(-3.0 * (h / a) ** 2)
+        elif model == "spherical":
+            t = min(max(h / a, 0.0), 1.0)
+            g = 1.5 * t - 0.5 * t**3
+        else:
+            g = min(h / a, 1.0)
+        out.append(nugget + psill * g)
+    return out
 
 
 def wls_weights(npair, gamma_model):
@@ -300,16 +344,21 @@ def fit_variogram_wls(centres, gam, npair, model="exponential", weights="cressie
     centres, gam, npair = centres[ok], gam[ok], npair[ok]
     if centres.size < 3:
         raise ValueError(f"need at least 3 usable lag classes to fit 3 parameters, got {int(centres.size)}.")
+    if model not in MODELS:
+        raise ValueError(f"model must be one of {MODELS}, got {model!r}.")
     theta = _start(centres, gam)
+    cl, gl = centres.tolist(), gam.tolist()
     w = np.ones_like(gam) if weights == "ols" else None
     prev = None
     for it in range(int(max_reweight)):  # noqa: B007 - read after the loop
         ww = w if w is not None else wls_weights(npair, variogram_model(centres, model, *theta))
 
-        def obj(p, ww=ww):
-            t = np.exp(p)
-            r = gam - variogram_model(centres, model, t[0], t[1], t[2])
-            return float(np.sum(ww * r**2))
+        wl = ww.tolist()
+
+        def obj(p, ww=wl):
+            t = [math.exp(v) for v in p.tolist()]
+            fit = _model_list(cl, model, t[0], t[1], t[2])
+            return math.fsum(w_ * (g_ - f_) ** 2 for w_, g_, f_ in zip(ww, gl, fit))
 
         best, _ = _nelder_mead(obj, np.log(np.maximum(theta, 1e-10)))
         theta = np.exp(best)
@@ -358,6 +407,7 @@ def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e
     """
     h, d = pair_differences(coords, z)
     t3 = d**2
+    hl, t3l = h.tolist(), t3.tolist()
     theta = np.array(
         [
             max(0.1 * float(np.var(z)), 1e-8),
@@ -384,10 +434,12 @@ def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e
         g_cur = np.maximum(variogram_model(h, model, theta[0], theta[1], theta[2]), 1e-12)
         w = 1.0 / (8.0 * g_cur**2)
 
-        def obj(p, w=w):
-            t = np.exp(p)
-            g = variogram_model(h, model, t[0], t[1], t[2])
-            return float(np.sum(w * (t3 - 2.0 * g) ** 2))
+        wl = w.tolist()
+
+        def obj(p, w=wl):
+            t = [math.exp(v) for v in p.tolist()]
+            g = _model_list(hl, model, t[0], t[1], t[2])
+            return math.fsum(w_ * (t_ - 2.0 * g_) ** 2 for w_, t_, g_ in zip(w, t3l, g))
 
         best, val = _nelder_mead(obj, np.log(np.maximum(theta, 1e-10)))
         theta = np.exp(best)
@@ -426,12 +478,34 @@ def composite_likelihood_fit(coords, z, model="exponential", max_iter=60, tol=1e
     }
 
 
-def _cov_matrix(coords, model, nugget, psill, rng):
+@functools.lru_cache(maxsize=8)
+def _distance_rows(pts):
+    """Pairwise distances of a tuple of point tuples: (rows, array)."""
+    rows = tuple(tuple(math.sqrt(sum((u - v) ** 2 for u, v in zip(p, q))) for q in pts) for p in pts)
+    return rows, np.asarray(rows, dtype=float)
+
+
+def _cov_matrix(coords, model, nugget, psill, rng, jitter=False, n=None):
+    # The likelihood fits evaluate this ~1000 times on the same sites.
+    # The distances are computed once per site set (cached), and the
+    # covariance is filled from them with the scalar model: rebuilding
+    # the n x n x d difference tensor through array objects at every
+    # evaluation was 75% of a 290 s ML fit at n = 70.
     P = np.atleast_2d(np.asarray(coords, dtype=float))
-    D = np.sqrt(np.sum((P[:, None, :] - P[None, :, :]) ** 2, axis=2))
+    # one row per site, oriented as pair_differences does: 1-D coords
+    # arrive as a single row and are n points on a line, not one point
+    # in n dimensions (which gave a 1 x 1 "covariance" broadcast to n x n)
+    if n is not None and P.shape[0] != n and P.shape[1] == n:
+        P = P.T
+    Dl, D = _distance_rows(tuple(map(tuple, P.tolist())))
     sill = nugget + psill
-    C = sill - variogram_model(D, model, nugget, psill, rng)
-    return C, D
+    C = [[sill - g for g in _model_list(row, model, nugget, psill, rng)] for row in Dl]
+    if jitter:  # C + I * 1e-10 * max(tr(C) / n, 1e-12), added in place
+        n = len(C)
+        eps = 1e-10 * max(math.fsum(C[i][i] for i in range(n)) / n, 1e-12)
+        for i in range(n):
+            C[i][i] += eps
+    return np.asarray(C, dtype=float), D
 
 
 def gaussian_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
@@ -449,8 +523,7 @@ def gaussian_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
     """
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
-    C, _ = _cov_matrix(coords, model, nugget, psill, rng)
-    C = C + np.eye(n) * 1e-10 * max(float(np.trace(C)) / n, 1e-12)
+    C, _ = _cov_matrix(coords, model, nugget, psill, rng, jitter=True, n=n)
     try:
         L = np.linalg.cholesky(C)
     except np.linalg.LinAlgError:
@@ -485,8 +558,7 @@ def reml_neg2loglik(coords, z, model, nugget, psill, rng, X=None):
     """
     zz = np.asarray(z, dtype=float).ravel()
     n = zz.size
-    C, _ = _cov_matrix(coords, model, nugget, psill, rng)
-    C = C + np.eye(n) * 1e-10 * max(float(np.trace(C)) / n, 1e-12)
+    C, _ = _cov_matrix(coords, model, nugget, psill, rng, jitter=True, n=n)
     Xd = np.ones((n, 1)) if X is None else np.atleast_2d(np.asarray(X, dtype=float))
     if Xd.shape[0] != n:
         Xd = Xd.T

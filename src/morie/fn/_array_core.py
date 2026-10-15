@@ -26,6 +26,7 @@ import builtins as _bi
 import cmath as _cmath
 import contextlib
 import math as _math
+import operator as _operator
 import re
 import struct as _struct
 import warnings as _warnings
@@ -3732,14 +3733,54 @@ class _SplitMix64:
             return marr(out)
 
         def one():
-            u1 = _pymax(self.uniform(), 1e-300)
-            u2 = self.uniform()
+            # self._u() is uniform() at its defaults without the
+            # parameter-broadcast wrapper, which cost far more than the draw
+            u1 = _pymax(self._u(), 1e-300)
+            u2 = self._u()
             return loc + scale * _math.sqrt(-2 * _math.log(u1)) * _math.cos(2 * _math.pi * u2)
 
+        if isinstance(size, (int, tuple, list)) and not isinstance(size, bool):
+            dims = (int(size),) if isinstance(size, int) else tuple(int(d) for d in size)
+            if 1 <= len(dims) <= 2:
+                # The same draws in the same order with the SplitMix64 step
+                # inlined on a local state: per variate, two method calls
+                # and the _fill/_num round trip cost more than the
+                # arithmetic (Box-Muller is ~1/3 of a draw's time).
+                total = 1
+                for d_ in dims:
+                    total *= d_
+                st = self.state
+                mask, gold = 0xFFFFFFFFFFFFFFFF, 0x9E3779B97F4A7C15
+                c1, c2, two53 = 0xBF58476D1CE4E5B9, 0x94D049BB133111EB, 1 << 53
+                sqrt, log, cos, tau = _math.sqrt, _math.log, _math.cos, 2 * _math.pi
+                flat = []
+                for _ in range(total):
+                    st = (st + gold) & mask
+                    z = ((st ^ (st >> 30)) * c1) & mask
+                    z = ((z ^ (z >> 27)) * c2) & mask
+                    u1 = ((z ^ (z >> 31)) >> 11) / two53
+                    st = (st + gold) & mask
+                    z = ((st ^ (st >> 30)) * c1) & mask
+                    z = ((z ^ (z >> 27)) * c2) & mask
+                    u2 = ((z ^ (z >> 31)) >> 11) / two53
+                    flat.append(loc + scale * sqrt(-2 * log(_pymax(u1, 1e-300))) * cos(tau * u2))
+                self.state = st
+                if len(dims) == 1:
+                    return marr(flat)
+                n_, m_ = dims
+                return marr([flat[i * m_ : (i + 1) * m_] for i in range(n_)])
         return self._fill(one, size)
 
     def _u(self):
         return (self._next() >> 11) / (1 << 53)
+
+    def _z(self):
+        """normal() at loc 0, scale 1 -- the same expression and the same
+        two uniforms -- without the parameter-broadcast wrapper, for the
+        samplers that draw one standard normal at a time internally."""
+        u1 = _pymax(self._u(), 1e-300)
+        u2 = self._u()
+        return 0.0 + 1.0 * _math.sqrt(-2 * _math.log(u1)) * _math.cos(2 * _math.pi * u2)
 
     def poisson(self, lam=1.0, size=None):
         # numpy draws one variate per element of an array-valued lam
@@ -3760,7 +3801,7 @@ class _SplitMix64:
                     k += 1
             # normal approximation + correction for large lambda
             while True:
-                v = L + _math.sqrt(L) * self.normal()
+                v = L + _math.sqrt(L) * self._z()
                 if v >= 0:
                     return float(int(v + 0.5))
 
@@ -3789,7 +3830,7 @@ class _SplitMix64:
         def one():
             h = self._u() - 0.5
             s = 1.0 if h > 0 else (-1.0 if h < 0 else 0.0)
-            return float(loc) - float(scale) * s * _math.log(_pymax(1.0 - 2.0 * abs(h), 1e-300))
+            return float(loc) - float(scale) * s * _math.log(_pymax(1.0 - 2.0 * _bi.abs(h), 1e-300))
 
         return self._fill(one, size)
 
@@ -3829,7 +3870,7 @@ class _SplitMix64:
             if nn * _bi.min(pp, 1.0 - pp) < 30.0:
                 return float(_bi.sum(1 for _ in range(nn) if self._u() < pp))
             while True:  # normal approx, clipped
-                v = nn * pp + _math.sqrt(nn * pp * (1 - pp)) * self.normal()
+                v = nn * pp + _math.sqrt(nn * pp * (1 - pp)) * self._z()
                 k = int(v + 0.5)
                 if 0 <= k <= nn:
                     return float(k)
@@ -4160,18 +4201,18 @@ class _SplitMix64:
         # via Gamma(a+1) * U^(1/a)
         a = float(shape)
         if a < 1.0:
-            u = self.random()
+            u = self._u()
             while u <= 0.0:
-                u = self.random()
+                u = self._u()
             return self._gamma_variate(a + 1.0) * u ** (1.0 / a)
         d = a - 1.0 / 3.0
         c = 1.0 / _math.sqrt(9.0 * d)
         while True:
-            x = self.normal()
+            x = self._z()
             v = (1.0 + c * x) ** 3
             if v <= 0.0:
                 continue
-            u = self.random()
+            u = self._u()
             if u < 1.0 - 0.0331 * x**4:
                 return d * v
             if u > 0.0 and _math.log(u) < 0.5 * x * x + d * (1.0 - v + _math.log(v)):
@@ -4226,7 +4267,7 @@ class _SplitMix64:
             wl, pl = list(w), list(pool)
             for _ in range(k):
                 t = _pysum(wl)
-                u = self.random() * t
+                u = self._u() * t
                 c = 0.0
                 pick = len(wl) - 1
                 for i2, wv in enumerate(wl):
@@ -4311,7 +4352,7 @@ def _rng_param_broadcast(meth):
             args = args[:_size_at]
         keys = list(kw)
         vals = list(args) + [kw[k] for k in keys]
-        if not any(_arr(v) for v in vals):
+        if not _bi.any(_arr(v) for v in vals):
             return meth(self, *args, size=size, **kw)
         arrs = broadcast_arrays(*[asarray(v) if _arr(v) else asarray([float(v)]) for v in vals])
         shape = tuple(arrs[0].shape)
@@ -4509,7 +4550,7 @@ logaddexp = _FoldUfunc(_logaddexp_call, _logaddexp2, -_math.inf)
 
 
 def tile(x, reps):
-    if isinstance(x, (list, tuple, oarr)) and x and any(isinstance(v, str) for v in x):
+    if isinstance(x, (list, tuple, oarr)) and x and _bi.any(isinstance(v, str) for v in x):
         r = reps[-1] if isinstance(reps, (list, tuple)) else reps
         return oarr(list(x) * int(r))
     a = asarray(x)
@@ -4680,7 +4721,7 @@ def squeeze(x, axis=None):
 
 
 def repeat(x, reps, axis=None):
-    if isinstance(x, (list, tuple, oarr)) and x and any(isinstance(v, str) for v in x):
+    if isinstance(x, (list, tuple, oarr)) and x and _bi.any(isinstance(v, str) for v in x):
         # numpy: string / object input stays object dtype
         rl = [int(v) for v in asarray(reps)._flat()] if isinstance(reps, (list, tuple, marr)) else [int(reps)] * len(x)
         return oarr([v for v, r in zip(x, rl) for _ in range(r)])
@@ -4797,9 +4838,9 @@ class _LinalgExt:
             def nrm(m, which):
                 rows = m.data if len(m.shape) == 2 else [m.data]
                 if which in (1, -1):  # max/min absolute column sum
-                    sums = [_fsum(abs(r[j]) for r in rows) for j in range(len(rows[0]))]
+                    sums = [_fsum(_bi.abs(r[j]) for r in rows) for j in range(len(rows[0]))]
                 else:  # max/min absolute row sum
-                    sums = [_fsum(abs(v) for v in r) for r in rows]
+                    sums = [_fsum(_bi.abs(v) for v in r) for r in rows]
                 return _bi.max(sums) if which in (1, inf) else _bi.min(sums)
 
             key = 1 if p in (1, -1) else inf
@@ -5005,10 +5046,18 @@ def _jacobi_eigh(a):
         vals, vecs = _sym_eigh(m, want_vectors=True)
         return vals, vecs
     v = [[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)]
+    prev_off = _INF
     for _sweep in range(100):
         off = _math.sqrt(_fsum(m[i][j] ** 2 for i in range(n) for j in range(n) if i != j))
-        if off < 1e-14:
+        # Each rotation lowers the off-diagonal norm, so a sweep that does
+        # not lower it has reached the rounding floor. The absolute 1e-14
+        # alone is below that floor once ||M|| exceeds ~10 (it sits at
+        # ~1e-15 ||M||), and such matrices used to run all 100 sweeps
+        # after converging in eight: 0.16 s per 20 x 20 call instead of
+        # 0.01 s. Matrices that reach 1e-14 stop exactly where they did.
+        if off < 1e-14 or off >= prev_off:
             break
+        prev_off = off
         for p_ in range(n - 1):
             for q_ in range(p_ + 1, n):
                 if _bi.abs(m[p_][q_]) < 1e-300:
@@ -5017,18 +5066,20 @@ def _jacobi_eigh(a):
                 t = (1.0 if theta >= 0 else -1.0) / (_bi.abs(theta) + _math.sqrt(theta * theta + 1.0))
                 c = 1.0 / _math.sqrt(t * t + 1.0)
                 s = t * c
-                for k in range(n):
-                    mkp, mkq = m[k][p_], m[k][q_]
-                    m[k][p_] = c * mkp - s * mkq
-                    m[k][q_] = s * mkp + c * mkq
-                for k in range(n):
-                    mpk, mqk = m[p_][k], m[q_][k]
-                    m[p_][k] = c * mpk - s * mqk
-                    m[q_][k] = s * mpk + c * mqk
-                for k in range(n):
-                    vkp, vkq = v[k][p_], v[k][q_]
-                    v[k][p_] = c * vkp - s * vkq
-                    v[k][q_] = s * vkp + c * vkq
+                # same rotations, element for element; the rows are bound
+                # once and the row update is a comprehension, instead of
+                # re-indexing m[k] / m[p_] for every element
+                for row in m:
+                    mkp, mkq = row[p_], row[q_]
+                    row[p_] = c * mkp - s * mkq
+                    row[q_] = s * mkp + c * mkq
+                mp, mq = m[p_], m[q_]
+                m[p_] = [c * x - s * y for x, y in zip(mp, mq)]
+                m[q_] = [s * x + c * y for x, y in zip(mp, mq)]
+                for row in v:
+                    vkp, vkq = row[p_], row[q_]
+                    row[p_] = c * vkp - s * vkq
+                    row[q_] = s * vkp + c * vkq
     vals = [m[i][i] for i in range(n)]
     return vals, v
 
@@ -5287,7 +5338,7 @@ arccos = _uf(_ieee(_math.acos))
 # numpy 2: the sign of a complex number is z / |z| (0 at 0)
 sign = _uf(
     lambda v: (
-        (v / abs(v) if v != 0 else 0j)
+        (v / _bi.abs(v) if v != 0 else 0j)
         if isinstance(v, complex)
         else (v if v != v else (0.0 if v == 0 else (1.0 if v > 0 else -1.0)))
     )
@@ -6821,7 +6872,7 @@ def _newaxis_index(x, key):
     """
     if key is None or key is Ellipsis:
         key = (key,)
-    if not isinstance(key, tuple) or not any(k is None or k is Ellipsis for k in key):
+    if not isinstance(key, tuple) or not _bi.any(k is None or k is Ellipsis for k in key):
         return NotImplemented
     nd = len(x.shape)
     used = _bi.sum(1 for k in key if k is not None and k is not Ellipsis)
@@ -6952,12 +7003,12 @@ def block(rows):
     flat list of 1-D blocks concatenates to a 1-D array, as numpy does."""
     if isinstance(rows, marr):
         return marr(rows)  # an array is its own block
-    if not any(isinstance(r, (list, tuple)) for r in rows):
+    if not _bi.any(isinstance(r, (list, tuple)) for r in rows):
         parts = [asarray(b) for b in rows]
-        if all(len(p_.shape) == 1 for p_ in parts):
+        if _bi.all(len(p_.shape) == 1 for p_ in parts):
             return marr([v for p_ in parts for v in p_.data])
         return hstack(parts)
-    if all(isinstance(r, (list, tuple)) and all(isinstance(v, (int, float)) for v in r) for r in rows):
+    if _bi.all(isinstance(r, (list, tuple)) and _bi.all(isinstance(v, (int, float)) for v in r) for r in rows):
         return marr([list(map(float, r)) for r in rows])  # nested scalars
     out = []
     for row in rows:
@@ -7899,7 +7950,7 @@ class _RClass:
                 raise ValueError("r_ slice syntax is not supported; pass arange(...) explicitly")
             items.append(item)
         arrays = [asarray(it) if not isinstance(it, (int, float, complex)) else None for it in items]
-        if any(a is not None and len(a.shape) >= 2 for a in arrays):
+        if _bi.any(a is not None and len(a.shape) >= 2 for a in arrays):
             # numpy: with a 2-D operand r_ concatenates along axis 0, so a
             # (n, p) block and a [[...]] row stack into (n + 1, p) rows
             rows = []
@@ -8372,8 +8423,11 @@ def _cholesky(a):
     n = len(m)
     low = [[0.0] * n for _ in range_(n)]
     for i in range_(n):
+        li = low[i]
         for j in range_(i + 1):
-            s = _fsum(low[i][k] * low[j][k] for k in range_(j))
+            # the same exactly-rounded sum; map over row slices instead of
+            # an indexed generator (3x faster, identical result)
+            s = _fsum(list(map(_operator.mul, li[:j], low[j][:j])))
             if i == j:
                 val = m[i][i] - s
                 if val <= 0:
@@ -9168,7 +9222,7 @@ def correlate(a, v, mode="valid"):
     # valid: |n - m| + 1 lags where the shorter input sits fully inside
     # the longer one; numpy gives the same count whichever is shorter.
     lo = _bi.min(n, m) - 1
-    return marr(full[lo : lo + abs(n - m) + 1])
+    return marr(full[lo : lo + _bi.abs(n - m) + 1])
 
 
 def unwrap(p, discont=None, axis=-1, period=2 * _math.pi):
@@ -10602,7 +10656,7 @@ def _golub_welsch(n, off, mu0):
     # symmetrise numerically: the rules are exactly symmetric about 0
     for i in range(n // 2):
         j = n - 1 - i
-        m = 0.5 * (abs(nodes[i]) + abs(nodes[j]))
+        m = 0.5 * (_bi.abs(nodes[i]) + _bi.abs(nodes[j]))
         nodes[i], nodes[j] = -m, m
         wm = 0.5 * (weights[i] + weights[j])
         weights[i] = weights[j] = wm
@@ -10853,8 +10907,8 @@ def _hqr_eigvals(A):
     while not done:
         done = True
         for i in range(n):
-            r = _fsum(abs(a[i][j]) for j in range(n) if j != i)
-            c = _fsum(abs(a[j][i]) for j in range(n) if j != i)
+            r = _fsum(_bi.abs(a[i][j]) for j in range(n) if j != i)
+            c = _fsum(_bi.abs(a[j][i]) for j in range(n) if j != i)
             if c != 0.0 and r != 0.0:
                 g = r / radix
                 f = 1.0
@@ -10898,7 +10952,7 @@ def _hqr_eigvals(A):
     # Francis double-shift QR on the Hessenberg matrix
     wr = [0.0] * n
     wi = [0.0] * n
-    anorm = _fsum(abs(a[i][j]) for i in range(n) for j in range(_bi.max(i - 1, 0), n))
+    anorm = _fsum(_bi.abs(a[i][j]) for i in range(n) for j in range(_bi.max(i - 1, 0), n))
     nn = n - 1
     t = 0.0
     p = q = r = 0.0
@@ -10907,10 +10961,10 @@ def _hqr_eigvals(A):
         while True:
             ell = nn
             while ell >= 1:
-                s = abs(a[ell - 1][ell - 1]) + abs(a[ell][ell])
+                s = _bi.abs(a[ell - 1][ell - 1]) + _bi.abs(a[ell][ell])
                 if s == 0.0:
                     s = anorm
-                if abs(a[ell][ell - 1]) + s == s:
+                if _bi.abs(a[ell][ell - 1]) + s == s:
                     a[ell][ell - 1] = 0.0
                     break
                 ell -= 1
@@ -10925,7 +10979,7 @@ def _hqr_eigvals(A):
             if ell == nn - 1:
                 p = 0.5 * (y - x)
                 q = p * p + w
-                z = _math.sqrt(abs(q))
+                z = _math.sqrt(_bi.abs(q))
                 x += t
                 if q >= 0.0:
                     z = p + (z if p >= 0 else -z)
@@ -10945,7 +10999,7 @@ def _hqr_eigvals(A):
                 t += x
                 for i in range(nn + 1):
                     a[i][i] -= x
-                s = abs(a[nn][nn - 1]) + abs(a[nn - 1][nn - 2])
+                s = _bi.abs(a[nn][nn - 1]) + _bi.abs(a[nn - 1][nn - 2])
                 y = x = 0.75 * s
                 w = -0.4375 * s * s
             its += 1
@@ -10957,14 +11011,14 @@ def _hqr_eigvals(A):
                 p = (r * s - w) / a[m + 1][m] + a[m][m + 1]
                 q = a[m + 1][m + 1] - z - r - s
                 r = a[m + 2][m + 1]
-                s = abs(p) + abs(q) + abs(r)
+                s = _bi.abs(p) + _bi.abs(q) + _bi.abs(r)
                 p /= s
                 q /= s
                 r /= s
                 if m == ell:
                     break
-                u = abs(a[m][m - 1]) * (abs(q) + abs(r))
-                v = abs(p) * (abs(a[m - 1][m - 1]) + abs(z) + abs(a[m + 1][m + 1]))
+                u = _bi.abs(a[m][m - 1]) * (_bi.abs(q) + _bi.abs(r))
+                v = _bi.abs(p) * (_bi.abs(a[m - 1][m - 1]) + _bi.abs(z) + _bi.abs(a[m + 1][m + 1]))
                 if u + v == v:
                     break
                 m -= 1
@@ -10980,7 +11034,7 @@ def _hqr_eigvals(A):
                     r = 0.0
                     if k != nn - 1:
                         r = a[k + 2][k - 1]
-                    x = abs(p) + abs(q) + abs(r)
+                    x = _bi.abs(p) + _bi.abs(q) + _bi.abs(r)
                     if x != 0.0:
                         p /= x
                         q /= x
@@ -11024,7 +11078,7 @@ def _cplx_solve(M, b):
     n = len(M)
     A = [list(M[i]) + [b[i]] for i in range(n)]
     for c in range(n):
-        piv = _bi.max(range(c, n), key=lambda i: abs(A[i][c]))
+        piv = _bi.max(range(c, n), key=lambda i: _bi.abs(A[i][c]))
         A[c], A[piv] = A[piv], A[c]
         d = A[c][c]
         if d == 0:
@@ -11050,7 +11104,7 @@ def _eigvec_for(A, lam, avoid=()):
     multi-dimensional eigenspace yields independent vectors instead of
     the same one again."""
     n = len(A)
-    scale = _bi.max(1.0, _bi.max(abs(A[i][j]) for i in range(n) for j in range(n)))
+    scale = _bi.max(1.0, _bi.max(_bi.abs(A[i][j]) for i in range(n) for j in range(n)))
     shift = lam + (1e-10 * scale) * (1 + 1j if isinstance(lam, complex) and lam.imag != 0 else 1)
     M = [[A[i][j] - (shift if i == j else 0) for j in range(n)] for i in range(n)]
     k0 = len(avoid)
@@ -11065,10 +11119,10 @@ def _eigvec_for(A, lam, avoid=()):
     v = _deflate(v)
     for _ in range(4):
         v = _deflate(_cplx_solve(M, v))
-        nrm = _math.sqrt(_fsum(abs(u) ** 2 for u in v)) or 1.0
+        nrm = _math.sqrt(_fsum(_bi.abs(u) ** 2 for u in v)) or 1.0
         v = [u / nrm for u in v]
-    k = _bi.max(range(n), key=lambda i: abs(v[i]))
-    ph = v[k] / abs(v[k]) if v[k] != 0 else 1
+    k = _bi.max(range(n), key=lambda i: _bi.abs(v[i]))
+    ph = v[k] / _bi.abs(v[k]) if v[k] != 0 else 1
     v = [u / ph for u in v]
     return v
 
@@ -11099,10 +11153,10 @@ def _eig_general(a):
         return _eig_charpoly(a)
     vals = _hqr_eigvals(rows)
     real = _bi.all(v.imag == 0.0 for v in vals)
-    scale = _bi.max(1.0, _bi.max(abs(v) for v in vals))
+    scale = _bi.max(1.0, _bi.max(_bi.abs(v) for v in vals))
     vecs = []
     for i, v in enumerate(vals):
-        same = [vecs[j] for j in range(i) if abs(vals[j] - v) <= 1e-8 * scale]
+        same = [vecs[j] for j in range(i) if _bi.abs(vals[j] - v) <= 1e-8 * scale]
         vecs.append(_eigvec_for(rows, v.real if real else v, same))
     if real:
         w = marr([v.real for v in vals])
@@ -11152,15 +11206,15 @@ def _eigh_any(a, UPLO="L"):
     order = sorted(range(2 * n), key=lambda k: wl[k])
     cand = [(wl[k], [complex(Vl[i][k], Vl[n + i][k]) for i in range(n)]) for k in order]
     vals, vecs = [], []
-    tol = 1e-9 * _bi.max(1.0, _bi.max(abs(v) for v in wl))
+    tol = 1e-9 * _bi.max(1.0, _bi.max(_bi.abs(v) for v in wl))
     for lam, v in cand:
         # the embedding gives each eigenvalue twice (v and i v); project
         # out the vectors already kept for the same eigenvalue
         for k, u in enumerate(vecs):
-            if abs(lam - vals[k]) <= 1e3 * tol:
+            if _bi.abs(lam - vals[k]) <= 1e3 * tol:
                 c = _fsum(x.conjugate() * y for x, y in zip(u, v))
                 v = [y - c * x for x, y in zip(u, v)]
-        nrm = _math.sqrt(_fsum(abs(x) ** 2 for x in v))
+        nrm = _math.sqrt(_fsum(_bi.abs(x) ** 2 for x in v))
         if nrm > 1e-6 and len(vals) < n:
             vals.append(lam)
             vecs.append([x / nrm for x in v])

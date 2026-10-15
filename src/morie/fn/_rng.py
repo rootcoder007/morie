@@ -49,6 +49,8 @@ Correctness is checked against the published Known Answer Tests rather than
 asserted -- see the test suite.
 """
 
+import math
+
 from . import _array_core as np
 
 __all__ = []
@@ -218,6 +220,38 @@ def normal_quantile(p):
         val = np.where(near, _poly(_C, rr) / _poly(_D, rr), _poly(_E, rr) / _poly(_F, rr))
         out[tail] = np.where(qt < 0.0, -val, val)
     return out
+
+
+def normal_quantile_scalar(p):
+    """:func:`normal_quantile` for one float, returning a float.
+
+    The same AS 241 branches and the same operation order, on Python
+    floats. Callers drawing one variate at a time (truncated-normal Gibbs
+    steps, per-frequency spectral draws) spent ~1 ms per call building
+    one-element arrays for every polynomial step.
+    """
+    p = float(p)
+    if not 0.0 < p < 1.0:
+        raise ValueError("`p` must lie strictly inside (0, 1)")
+    q = p - 0.5
+
+    def poly(coef, x):
+        out = coef[-1]
+        for c in coef[-2::-1]:
+            out = out * x + c
+        return out
+
+    if abs(q) <= 0.425:
+        r = 0.180625 - q * q
+        return q * poly(_A, r) / poly(_B, r)
+    r = math.sqrt(-math.log(p if q < 0.0 else 1.0 - p))
+    if r <= 5.0:
+        rr = r - 1.6
+        val = poly(_C, rr) / poly(_D, rr)
+    else:
+        rr = r - 5.0
+        val = poly(_E, rr) / poly(_F, rr)
+    return -val if q < 0.0 else val
 
 
 def random_normal(n, seed=0, stream=0):

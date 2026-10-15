@@ -4,32 +4,38 @@
 from . import _array_core as np
 from ._did import ols_fit
 from ._richresult import RichResult
+from ._spdiag import eigen_logdet, eigenvalues
 
 __all__ = ["schabenberger_sar_ml"]
 
 MODELS = ("lag", "error")
 
 
-def _concentrated(y, X, W, rho, model):
+def _concentrated(y, X, Wy, WX, rho, model, ev):
     """Profile beta and sigma^2 out at a given rho, returning -2 logL.
 
     Both models concentrate to a one-dimensional problem in the
     autoregressive parameter, which is why a scan plus refinement is
     reliable here where a general optimiser is not.
+
+    ``Wy = W y`` and ``WX = W X`` are computed once by the caller:
+    ``(I - rho W) v = v - rho W v``, so no n x n matrix is formed per
+    trial rho, and ln|I - rho W| comes from the eigenvalues ``ev`` of W
+    (Ord 1975). Forming I - rho W, multiplying by it and factorising it
+    at each of ~300 trial values was what timed the 200-site fits out.
     """
     n = y.size
-    A = np.eye(n) - rho * W
-    sign, logdetA = np.linalg.slogdet(A)
+    sign, logdetA = eigen_logdet(ev, rho)
     if sign <= 0:
         return np.inf, None, np.nan
     if model == "lag":
         # Y = rho W Y + X beta + eps
-        ystar = A @ y
+        ystar = y - rho * Wy
         beta = ols_fit(X, ystar)
         r = ystar - X @ beta
     else:
         # Y = X beta + u, u = rho W u + eps: whiten both sides by A
-        Xs, ys = A @ X, A @ y
+        Xs, ys = X - rho * WX, y - rho * Wy
         beta = ols_fit(Xs, ys)
         r = ys - Xs @ beta
     s2 = float(r @ r) / n
@@ -142,13 +148,15 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
         raise ValueError("w must have a zero diagonal; a site cannot be its own neighbour.")
 
     rs = bool(np.allclose(W.sum(axis=1), 1.0))
-    ev = np.linalg.eigvals(W).real
+    evc = eigenvalues(W)
+    Wy_, WX_ = W @ yy, W @ X
+    ev = np.array([v.real for v in evc])
     lo = 1.0 / ev.min() if ev.min() < 0 else -0.999
     hi = 1.0 / ev.max() if ev.max() > 0 else 0.999
     lo, hi = float(lo) + 1e-6, float(hi) - 1e-6
 
     grid = np.linspace(lo, hi, int(n_grid))
-    vals = np.array([_concentrated(yy, X, W, r, model)[0] for r in grid])
+    vals = np.array([_concentrated(yy, X, Wy_, WX_, r, model, evc)[0] for r in grid])
     k = int(np.argmin(vals))
     a = grid[max(k - 1, 0)]
     b = grid[min(k + 1, grid.size - 1)]
@@ -156,7 +164,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
     gr = (np.sqrt(5.0) - 1.0) / 2.0
     c, d = b - gr * (b - a), a + gr * (b - a)
     for _ in range(200):
-        if _concentrated(yy, X, W, c, model)[0] < _concentrated(yy, X, W, d, model)[0]:
+        if _concentrated(yy, X, Wy_, WX_, c, model, evc)[0] < _concentrated(yy, X, Wy_, WX_, d, model, evc)[0]:
             b, d = d, c
             c = b - gr * (b - a)
         else:
@@ -165,7 +173,7 @@ def schabenberger_sar_ml(x, y, w, model="error", n_grid=201):
         if abs(b - a) < 1e-12:
             break
     rho = float(0.5 * (a + b))
-    neg2, beta, s2 = _concentrated(yy, X, W, rho, model)
+    neg2, beta, s2 = _concentrated(yy, X, Wy_, WX_, rho, model, evc)
 
     # asymptotic covariance from the analytic information matrix of
     # (beta, sigma^2, rho) -- Ord (1975) for the error model, Anselin

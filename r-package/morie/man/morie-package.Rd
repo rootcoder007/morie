@@ -45,17 +45,10 @@ person-year regional-transition count)
 }
 }
 
-\section{Companion papers}{
+\section{Citation}{
 
-If you use morie in your work, please cite the relevant companion
-papers (see \code{citation("morie")} for the full bibliography):
-\itemize{
-\item morie (R software paper)
-\item morie (Python software paper)
-\item MRM framework paper
-\item Hawkes-process methodology paper
-\item Empirical applications paper
-}
+If you use morie in your work, please cite the software; see
+\code{citation("morie")}.
 }
 
 \section{Key external citations used by MRM modules}{
