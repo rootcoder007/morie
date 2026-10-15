@@ -1,5 +1,13 @@
 # morie 1.4.3 - 2026-10-09
 
+* Live progress in the long-running work, through rmoriebricklayer 0.5.13's
+  `bricklayer_progress()`: the bootstraps (`morie_boot()`, `morie_boot_run()`, `morie_tsboot()`,
+  `morie_bootstrap_sample()`), the honest causal forest and its bootstrap, the random forests,
+  the DML cross-fitting (`morie_otis_irm_dml()`, `morie_dml_clustered()`,
+  `morie_caus_dml_partial_lin()`), `super_learner()`, `morie_otis_aipw_superlearner()` and the
+  ten-estimator OTIS run. The bar shows only when someone is watching (an interactive session,
+  or `options(morie.progress = TRUE)`), after the work has run for a moment; nested work shows
+  one bar, and `options(morie.quiet = TRUE)` silences it.
 * Needs rmoriebricklayer 0.5.13 (its live progress bars and the language-model layer this
   release is built on) and rmoriedata 0.3.6; CI installs rmoriebricklayer from its v0.5.13
   tag, not a branch.
