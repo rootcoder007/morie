@@ -333,6 +333,37 @@ def build_parser() -> argparse.ArgumentParser:
         "--to-email", action="store_true", help="With --email: have the key emailed to you instead of stored here"
     )
     login_cmd.add_argument(
+        "--accept-terms",
+        action="store_true",
+        help="Accept the data access terms (https://data.rmorie.com/terms) without the prompt",
+    )
+    login_cmd.add_argument("--name", default=None, help="Your name (asked for when not given; required for a new key)")
+    login_cmd.add_argument(
+        "--affiliation", default=None, metavar="ORG", help="Your university, employer or organisation"
+    )
+    login_cmd.add_argument(
+        "--reason",
+        default=None,
+        metavar="TEXT",
+        help="Why you need the data, a sentence or two (required for a new key)",
+    )
+    login_cmd.add_argument(
+        "--restricted",
+        action="store_true",
+        default=None,
+        help="Also accept Schedule B, for the restricted tables (needs the supervisor options)",
+    )
+    login_cmd.add_argument(
+        "--supervisor-name", default=None, metavar="NAME", help="Supervisor, chair, director or coordinator"
+    )
+    login_cmd.add_argument(
+        "--supervisor-role",
+        default=None,
+        choices=("supervisor", "chair", "director", "coordinator", "other"),
+        help="Their role",
+    )
+    login_cmd.add_argument("--supervisor-email", default=None, metavar="ADDRESS", help="Their email address")
+    login_cmd.add_argument(
         "--token",
         nargs="?",
         const="",
@@ -2176,7 +2207,7 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "login":
-        from .hosted import device_login, email_login, store_token
+        from .hosted import device_login, email_login, signin_profile, store_token
 
         if getattr(args, "to_email", False) and not getattr(args, "email", None):
             print("--to-email needs --email ADDRESS (the key is emailed to that address)", file=sys.stderr)
@@ -2215,10 +2246,25 @@ def _main_impl() -> int:
                         return 1
                     if input("Continue? [y/N] ").strip().lower() not in ("y", "yes"):
                         return 1
+                if getattr(args, "email", None) and "@" not in args.email:
+                    raise ValueError("an email address is required")
+                # a new key: the terms are accepted and who is asking is said before any sign-in starts
+                profile = signin_profile(
+                    accept_terms=getattr(args, "accept_terms", False),
+                    name=getattr(args, "name", None),
+                    affiliation=getattr(args, "affiliation", None),
+                    purpose=getattr(args, "reason", None),
+                    restricted=getattr(args, "restricted", None),
+                    supervisor_name=getattr(args, "supervisor_name", None),
+                    supervisor_role=getattr(args, "supervisor_role", None),
+                    supervisor_email=getattr(args, "supervisor_email", None),
+                )
                 if getattr(args, "email", None):
-                    email_login(args.email, to_email=getattr(args, "to_email", False))
+                    email_login(args.email, to_email=getattr(args, "to_email", False), profile=profile)
                 else:
-                    device_login(open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty())
+                    device_login(
+                        open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty(), profile=profile
+                    )
         except Exception as exc:  # network or user abandoned the flow
             print(f"login failed: {exc}")
             return 1

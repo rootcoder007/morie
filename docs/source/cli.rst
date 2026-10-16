@@ -126,7 +126,7 @@ that says it is one. Nothing is hosted for you.
 ``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
    Store or mint the data key for the curated tables at data.rmorie.com
    (:doc:`hosted`; no model uses it). With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
-   it). ``--email`` asks for a 6-digit code sent to that address;
+   it). ``--email`` asks for a one-time code sent to that address;
    ``--to-email`` additionally has the key itself emailed to you instead
    of stored on this machine. ``--token`` stores a key you already have
    (prompts for it when ``KEY`` is omitted) and checks it with the data

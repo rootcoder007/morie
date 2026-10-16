@@ -7,6 +7,18 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.4 (2026-10-16)
+
+* A new data key needs the data access terms accepted first. `morie login` shows the terms summary
+  and their address, asks `Do you accept ...? [y/N]`, then asks for your name, organisation
+  (optional) and why you need the data; the restricted tables (Schedule B: ICPSR, NCVS 38604, A2AJ
+  case law) also need a supervisor, department chair, director or coordinator and their email.
+  In a script: `--accept-terms --name NAME --reason TEXT` (plus `--affiliation`, `--restricted`,
+  `--supervisor-name`, `--supervisor-role`, `--supervisor-email`); in Python,
+  `morie.hosted.signin_profile()` builds what `device_login()` and `email_login()` send.
+  `morie login --token` with a key you already hold is unchanged. The R arm does the same through
+  rmoriebricklayer 0.5.14.
+
 ## 1.4.3 (2026-10-09)
 
 * Research ledger: `morie.research.library_scan2` ports the third library-scan batch (23

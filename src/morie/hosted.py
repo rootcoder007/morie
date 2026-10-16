@@ -21,6 +21,7 @@ from __future__ import annotations
 import contextlib
 import json
 import os
+import re
 import shlex
 import stat
 import sys
@@ -226,7 +227,114 @@ def _browsable(uri: object) -> bool:
         return True
 
 
-def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
+SUPERVISOR_ROLES = ("supervisor", "chair", "director", "coordinator", "other")
+_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def terms_info() -> dict:
+    """The current version of the data access terms and where to read them, from the sign-in
+    service (``GET {data}/terms.json``). Raises RuntimeError when they cannot be read."""
+    base = hosted_auth_url().rstrip("/")
+    base = base[: -len("/auth")] if base.endswith("/auth") else base
+    try:
+        r = httpx.get(f"{base}/terms.json", timeout=20.0)
+        body = r.json() if r.status_code == 200 else {}
+    except Exception:  # noqa: BLE001 - any failure is the same answer: the terms are unreadable
+        body = {}
+    version = body.get("version") if isinstance(body, dict) else None
+    if not isinstance(version, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", version):
+        raise RuntimeError(
+            f"could not read the data access terms from {base}/terms.json; try again, or sign in at {base}/"
+        )
+    url = body.get("url") if isinstance(body.get("url"), str) else f"{base}/terms"
+    return {"version": version, "url": url}
+
+
+def signin_profile(
+    accept_terms: bool = False,
+    name: str | None = None,
+    affiliation: str | None = None,
+    purpose: str | None = None,
+    restricted: bool | None = None,
+    supervisor_name: str | None = None,
+    supervisor_role: str | None = None,
+    supervisor_email: str | None = None,
+    ask=input,
+    echo=_say,
+) -> dict:
+    """What a new key needs said first, before any sign-in starts.
+
+    The data access terms are accepted (``[y/N]`` at the prompt, or ``accept_terms=True``), then a
+    name and the reason for needing the data are given, and, for the restricted tables (Schedule B:
+    ICPSR, NCVS 38604, A2AJ case law), a supervisor, department chair, director or coordinator with
+    their role and email. Arguments win; anything missing is asked with ``ask``; a missing required
+    answer raises ValueError, so no request that could issue a key is made. The data service checks
+    the same things. Returns the fields sent with the sign-in.
+    """
+    from . import __version__
+
+    terms = terms_info()
+    if not accept_terms:
+        echo(
+            f"Data access terms, version {terms['version']} ({terms['url']}). In short:\n"
+            "  - the key is for you alone; keep it private;\n"
+            "  - use the tables for research, teaching, journalism, policy work or analysis;\n"
+            "  - do not redistribute the tables themselves; cite each source as its licence asks;\n"
+            "  - no warranty, and you cover claims that come from your misuse;\n"
+            "  - a register of who holds each key is kept, and may be disclosed where the law requires."
+        )
+        answer = ask(f"Do you accept the data access terms, version {terms['version']}? [y/N]: ").strip().lower()
+        if answer not in ("y", "yes"):
+            raise ValueError(
+                f"the data access terms were not accepted, so no key was issued; read them at {terms['url']} "
+                "and accept with `morie login --accept-terms`"
+            )
+
+    def given(value, prompt):
+        return value.strip() if isinstance(value, str) else ask(prompt).strip()
+
+    def need(what, flag):
+        raise ValueError(f"{what} is needed for a key: pass {flag} or answer the prompt")
+
+    nm = given(name, "Your name: ")
+    if len(nm) < 2:
+        need("your name", "--name")
+    af = given(affiliation, "Your university, employer or organisation (Enter to skip): ")
+    pu = given(purpose, "Why you need the data (a sentence or two): ")
+    if len(pu) < 20:
+        need("the reason you need the data, a sentence or two,", "--reason")
+    if restricted is None:
+        prompt = "Also open the restricted tables (ICPSR, NCVS 38604, A2AJ case law) under Schedule B? [y/N]: "
+        restricted = ask(prompt).strip().lower() in ("y", "yes")
+    out = {
+        "accept_terms": terms["version"],
+        "name": nm,
+        "purpose": pu,
+        "accept_restricted": bool(restricted),
+        "client": f"morie/{__version__}",
+    }
+    if af:
+        out["affiliation"] = af
+    if restricted:
+        sn = given(supervisor_name, "Your supervisor's, department chair's, director's or coordinator's name: ")
+        if not sn:
+            need(
+                "for the restricted tables, a supervisor's, chair's, director's or coordinator's name",
+                "--supervisor-name",
+            )
+        sr = given(supervisor_role, f"Their role ({', '.join(SUPERVISOR_ROLES)}): ").lower()
+        if sr not in SUPERVISOR_ROLES:
+            need(f"their role, one of {', '.join(SUPERVISOR_ROLES)},", "--supervisor-role")
+        se = given(supervisor_email, "Their email: ").lower()
+        if not _EMAIL.match(se):
+            need("their email address", "--supervisor-email")
+        out.update({"supervisor_name": sn, "supervisor_role": sr, "supervisor_email": se})
+    return out
+
+
+def device_login(
+    open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say, profile: dict | None = None
+) -> str:
     """Run the GitHub device flow against the data service's sign-in.
 
     1. ``POST {auth}/device/code`` returns ``user_code``, ``verification_uri``,
@@ -235,9 +343,12 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
        possible); the CLI polls ``POST {auth}/device/token`` until the
        service has verified the sign-in and minted a key.
     3. The key is stored 0600 in :func:`credentials_path` and returned.
+
+    ``profile`` is what :func:`signin_profile` returned: the accepted terms and who is asking, which
+    the service needs before it issues a key.
     """
     auth = hosted_auth_url()
-    start = httpx.post(f"{auth}/device/code", timeout=15.0)
+    start = httpx.post(f"{auth}/device/code", json=profile or {}, timeout=15.0)
     if start.status_code >= 400:
         raise RuntimeError(f"the sign-in service answered {start.status_code}")
     info = start.json()
@@ -298,24 +409,27 @@ def store_token(token: str, echo=_say) -> str:
     raise ValueError(f"the data service could not be reached to check that key ({why}); nothing stored, try again")
 
 
-def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
+def email_login(
+    email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False, profile: dict | None = None
+) -> str:
     """Sign in with an emailed one-time code instead of GitHub.
 
-    ``POST {auth}/email/code`` sends a 6-digit code (10 minutes, single use);
+    ``POST {auth}/email/code`` sends a one-time code (10 minutes, single use);
     the user types it (or passes ``code``), ``POST {auth}/email/verify``
     returns the key, stored like the device-flow one. With ``to_email`` the
     service emails the key instead of returning it; nothing is stored and the
-    user pastes it later with ``morie login --token``.
+    user pastes it later with ``morie login --token``. ``profile`` is what
+    :func:`signin_profile` returned, sent with the request for the code.
     """
     auth = hosted_auth_url()
     email = (email or "").strip().lower()
     if "@" not in email:
         raise ValueError("an email address is required")
     if code is None:
-        r = httpx.post(f"{auth}/email/code", json={"email": email}, timeout=20.0)
+        r = httpx.post(f"{auth}/email/code", json={"email": email, **(profile or {})}, timeout=20.0)
         if r.status_code != 200:
             raise RuntimeError(r.json().get("error", f"the sign-in service answered {r.status_code}"))
-        echo(f"A 6-digit code was sent to {email} (valid for 10 minutes).")
+        echo(f"A one-time code (like ABCDE-FGHJK) was sent to {email}; it is valid for 10 minutes.")
         code = ask("Enter the code: ").strip()
     payload = {"email": email, "code": code}
     if to_email:

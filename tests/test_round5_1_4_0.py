@@ -822,6 +822,7 @@ def test_login_while_signed_in_warns_and_needs_force(monkeypatch, capsys):
     monkeypatch.setattr(hosted, "read_credentials", lambda: {"hosted_key": "sk-x", "hosted_user": "someone"})
     started = []
     monkeypatch.setattr(hosted, "device_login", lambda **k: started.append(1))
+    monkeypatch.setattr(hosted, "signin_profile", lambda **k: {})  # the terms step has its own tests
     monkeypatch.setattr(runner, "_stdin_is_terminal", lambda: False)
     monkeypatch.setattr(sys, "argv", ["morie", "login", "--no-browser"])
     assert runner.main() == 1 and started == []

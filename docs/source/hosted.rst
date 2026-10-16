@@ -51,7 +51,7 @@ The curated tables at https://data.rmorie.com open with a personal key, which no
 .. code-block:: bash
 
    morie login                                   # GitHub device flow
-   morie login --email you@example.com           # a 6-digit code sent to your inbox
+   morie login --email you@example.com           # a one-time code sent to your inbox
    morie login --no-browser                      # server / SSH: a link and a code for any device
    morie login --token                           # a key you were given (checked before it is kept)
    morie logout

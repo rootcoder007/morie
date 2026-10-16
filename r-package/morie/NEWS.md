@@ -1,3 +1,11 @@
+# morie 1.4.4 - 2026-10-16
+
+* A new data key needs the data access terms accepted first: `morie_llm_login()` (through
+  rmoriebricklayer 0.5.14) shows the terms, asks `Do you accept ...? [y/N]`, and then asks for your
+  name, organisation and why you need the data; the restricted tables also need a supervisor,
+  department chair, director or coordinator. Pass them as arguments (`accept_terms = TRUE`,
+  `name = `, `purpose = `, ...) or answer at the console.
+
 # morie 1.4.3 - 2026-10-09
 
 * Live progress in the long-running work, through rmoriebricklayer 0.5.13's

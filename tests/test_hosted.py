@@ -155,7 +155,7 @@ def test_email_login_sends_code_then_stores_key(isolated_home, monkeypatch):
     assert key == "sk-mail"
     assert posts[0][1] == {"email": "vee@example.com"}
     assert hosted.hosted_key() == "sk-mail"
-    assert any("6-digit" in line for line in lines)
+    assert any("one-time code" in line for line in lines)
 
 
 def test_email_login_reports_service_errors(isolated_home, monkeypatch):

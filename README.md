@@ -125,7 +125,7 @@ morie interactive install
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.4.3 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.4.4 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
@@ -184,9 +184,9 @@ name `morie`), tracking every commit here; build it from source (needs a C++
 toolchain):
 
 ```sh
-Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.3"))'
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.4"))'
 # without pak
-Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie", repos = repos, upgrade = "always")'
+Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.4", subdir = "r-package/morie", repos = repos, upgrade = "always")'
 ```
 
 Or let morie run either install for you: `morie r-install` (r-universe) or
