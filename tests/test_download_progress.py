@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import io
 
+import pytest
+
 from morie._progress import Progress, fmt_bytes, stream_to_file
 
 
@@ -58,6 +60,7 @@ def test_stream_to_file(tmp_path, monkeypatch):
     assert n == len(payload) and dest.read_bytes() == payload
 
 
+@pytest.mark.interactive
 def test_run_step_off_a_terminal(monkeypatch, capsys):
     import sys
 

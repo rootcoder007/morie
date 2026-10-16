@@ -5,7 +5,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from morie import _launch, vertex
+# vertex starts gcloud through the interactive layer, which the wheel leaves out
+pytest.importorskip("morie._launch", reason="the interactive layer is not installed (`morie interactive install`)")
+
+from morie import _launch, vertex  # noqa: E402
 
 
 @pytest.fixture(autouse=True)

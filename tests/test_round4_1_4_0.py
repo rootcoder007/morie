@@ -294,6 +294,7 @@ def test_power_rows_keep_gender_labels_a_frame_already_holds():
 
 
 @pytest.mark.skipif(sys.platform == "win32", reason="POSIX shell-style $BROWSER entries")
+@pytest.mark.interactive
 def test_login_browser_open_does_not_wait_for_the_browser(tmp_path, monkeypatch):
     import time
 

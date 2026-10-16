@@ -98,6 +98,7 @@ def test_a_data_frame_and_formula_reach_r_as_data():
 
 
 @needs_r
+@pytest.mark.interactive
 def test_arguments_never_run_as_r_code():
     out = rb.call("r_summary", 'x"); print("INJECTED')
     # the string arrives as one value: "Length Class Mode ... character", or from R 4.6 on
@@ -110,6 +111,7 @@ def test_arguments_never_run_as_r_code():
 
 
 @needs_r
+@pytest.mark.interactive
 def test_r_errors_and_missing_packages_are_reported():
     with pytest.raises(rb.RBridgeError, match="r_ttest"):
         rb.call("r_ttest", [1.0])  # t.test needs more than one value

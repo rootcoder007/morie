@@ -180,6 +180,7 @@ def test_array_kernels_return_morie_arrays_so_no_numpy_is_needed():
     assert len(_jit.bootstrap_mean_jit([1.0, 2.0, 3.0], 7, 1)) == 7
 
 
+@pytest.mark.interactive
 def test_the_r_bridge_uses_the_r_package_whose_version_matches(monkeypatch):
     import subprocess
     import warnings
@@ -434,6 +435,7 @@ def test_r_install_pins_the_r_arm_to_this_version():
     assert f"have() != '{__version__}'" in expr
 
 
+@pytest.mark.interactive
 def test_doctor_fix_without_pip_says_what_to_run(monkeypatch, capsys):
     import importlib.util
 
@@ -502,6 +504,7 @@ def test_convert_checkpoint_names_a_file_that_is_not_one(monkeypatch, tmp_path, 
     assert "is not a PyTorch checkpoint (a .pt file is a zip archive)" in err and "Traceback" not in err
 
 
+@pytest.mark.interactive
 def test_percysuits_names_an_unreachable_ssh_host(monkeypatch, capsys):
     import subprocess
 
@@ -747,6 +750,7 @@ def test_selftest_dataset_check_fetches_nothing(monkeypatch):
     assert selftest._test_datasets().startswith("Datasets:")
 
 
+@pytest.mark.interactive
 def test_r_module_synthetic_notes_reach_the_user(monkeypatch, tmp_path):
     import subprocess
 

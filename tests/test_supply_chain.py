@@ -168,6 +168,7 @@ def test_no_runpy_in_the_shipped_package():
     assert hits == [], hits
 
 
+@pytest.mark.interactive
 def test_the_r_bridge_passes_arguments_as_data():
     import shutil
 

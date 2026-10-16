@@ -97,6 +97,28 @@ _TRIVIAL_PATTERNS = {
 _TRIVIAL_HITS: set[str] = set()
 
 
+# The interactive layer (morie._launch and the modules that start other programs) is left out of the
+# wheel and installed on demand (`morie interactive install`). A test that needs it is marked
+# `interactive` and skipped where it is absent: the release's wheel test ran nine of them and failed.
+def _interactive_layer_present() -> bool:
+    import importlib.util
+
+    return importlib.util.find_spec("morie._launch") is not None
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "interactive: needs the interactive layer (not in the wheel)")
+
+
+def pytest_collection_modifyitems(config, items):
+    if _interactive_layer_present():
+        return
+    skip = pytest.mark.skip(reason="the interactive layer is not installed (`morie interactive install`)")
+    for item in items:
+        if "interactive" in item.keywords:
+            item.add_marker(skip)
+
+
 @pytest.fixture(autouse=True)
 def _warn_trivial_assertions(request):
     """Record tests that only use trivially-true assertions."""

@@ -13,6 +13,7 @@ from morie.editor import edit_file
 STUB = "import sys\nopen(sys.argv[1], 'a').write('print(6 * 7)\\n')\n"
 
 
+@pytest.mark.interactive
 def test_edit_file_honours_editor_with_arguments(tmp_path, monkeypatch):
     stub = tmp_path / "stub_editor.py"
     stub.write_text(STUB)

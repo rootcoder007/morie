@@ -3,6 +3,8 @@
 
 import inspect
 
+import pytest
+
 import morie.doctor as doctor
 
 
@@ -26,6 +28,7 @@ def test_pip_name_mapping():
     assert doctor._PIP_NAME["sklearn"] == "scikit-learn"
 
 
+@pytest.mark.interactive
 def test_heal_pip_installs_failed_imports(monkeypatch):
     calls = []
 

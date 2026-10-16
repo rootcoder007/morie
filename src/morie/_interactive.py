@@ -123,6 +123,16 @@ class LayerMissingError(RuntimeError):
     """A feature needs the interactive layer, and it is not installed for this user."""
 
 
+def _can_prompt() -> bool:
+    """A person at a terminal who can be asked (and MORIE_NO_PROMPT unset)."""
+    return (
+        sys.stdin is not None
+        and sys.stdin.isatty()
+        and sys.stdout.isatty()
+        and not os.environ.get("MORIE_NO_PROMPT", "").strip()
+    )
+
+
 def _offer_install(what: str) -> bool:
     """Say how to add the layer; on a terminal offer to add it now. True when it was just installed."""
     changed = changed_files()
@@ -133,13 +143,7 @@ def _offer_install(what: str) -> bool:
         )
         return False
     print(f"{what} is not bundled in this install. Run `morie interactive install` to add it for this user.")
-    interactive = (
-        sys.stdin is not None
-        and sys.stdin.isatty()
-        and sys.stdout.isatty()
-        and not os.environ.get("MORIE_NO_PROMPT", "").strip()
-    )
-    if not interactive:
+    if not _can_prompt():
         return False
     try:
         answer = input("Add it now? [y/N] ").strip().lower()
@@ -169,7 +173,9 @@ def launcher(what: str = "This command", *, offer: bool = True):
         return _launch
     except ImportError:
         pass
-    if offer and _offer_install(what):
+    # the offer is made only where it can be taken: off a terminal its printed line and the error
+    # below said the same thing twice (`morie edit` without the layer; 1.4.3 wheel check)
+    if offer and (_can_prompt() or changed_files()) and _offer_install(what):
         try:
             from morie import _launch
 
