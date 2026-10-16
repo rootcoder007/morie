@@ -1759,7 +1759,78 @@ def _load_hosted_file(entry: dict, matched: str):
     return df
 
 
+# The file each open.canada.ca survey resource serves, pinned so a portal whose metadata API is down
+# (2026-10-16: resource_show unreachable, the datastore answering 504) still leads to the file and
+# to its Wayback Machine snapshot. Mirrors .MORIE_CKAN_FILES in rmorie.
+CKAN_FILES: dict[str, str] = {
+    "d2639429-c304-45a6-90b3-770562f4d46d": "https://open.canada.ca/data/dataset/736fa9b2-62e4-4e31-aea4-51869605b363/resource/d2639429-c304-45a6-90b3-770562f4d46d/download/cpads-2021-2022-pumf2.csv",
+    "262e6163-ba41-4562-bd2b-8996e738b1d4": "https://open.canada.ca/data/dataset/b65cb40c-10e8-4332-ae4e-0f1cc134f53f/resource/262e6163-ba41-4562-bd2b-8996e738b1d4/download/ccs_pumf_2018to2022_final.csv",
+    "100c5845-664e-4c66-be15-3625ce236d8b": "https://open.canada.ca/data/dataset/6c240c79-c857-4fd4-bbd6-b1fd7f04fdbc/resource/100c5845-664e-4c66-be15-3625ce236d8b/download/pumf_ccs_2023_rev.csv",
+    "420925be-399a-473b-8be3-26875a1c132a": "https://open.canada.ca/data/dataset/2abe0796-c3e6-443b-a5c5-74e770e9fbe0/resource/420925be-399a-473b-8be3-26875a1c132a/download/ccs_pumf_2024-002.csv",
+    "f6761337-47e9-455a-a3c4-ea8516aa634f": "https://open.canada.ca/data/dataset/1f15ca45-8bfd-4f9c-9ec6-2c0c440e69c2/resource/f6761337-47e9-455a-a3c4-ea8516aa634f/download/2021-22-cstads-ectade-pumf-fmgd-data-donnees-.csv",
+    "ebdc36e1-910d-4685-81a3-6acfe44729bc": "https://open.canada.ca/data/dataset/1f15ca45-8bfd-4f9c-9ec6-2c0c440e69c2/resource/ebdc36e1-910d-4685-81a3-6acfe44729bc/download/202122-cstads-ectade-pumf-fmgd-bootstrap-weights-poids-de-bootstrap.csv",
+    "81a3adf0-61d0-4691-afba-588fa5f563da": "https://open.canada.ca/data/dataset/1f15ca45-8bfd-4f9c-9ec6-2c0c440e69c2/resource/81a3adf0-61d0-4691-afba-588fa5f563da/download/202324-csads-ecade-pumf-fmgd-data-donnees.csv",
+    "c2c1795b-4501-49ba-9dd1-5b8360cc3b2e": "https://open.canada.ca/data/dataset/65e2d45e-efc6-4c29-9a9b-db59bc96aa0e/resource/c2c1795b-4501-49ba-9dd1-5b8360cc3b2e/download/csus2023_pumf_final.csv",
+    "7d19d47a-5f42-4447-b735-aa4d677ad5ed": "https://open.canada.ca/data/dataset/65e2d45e-efc6-4c29-9a9b-db59bc96aa0e/resource/7d19d47a-5f42-4447-b735-aa4d677ad5ed/download/csus2023_pumf_bwt.csv",
+}
+
+
 def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
+    """A CKAN survey resource as a table: live (pinned URL if the portal's metadata is down, then its
+    Wayback snapshot), else the data.rmorie.com mirror checked against its SHA-256.
+    Mirrors rmorie's .morie_ckan_resource_file()."""
+    try:
+        return _ckan_resource_file_live(resource_id, dataset_key, timeout)
+    except Exception as live_exc:  # noqa: BLE001 - any failure of the live route falls to the mirror
+        logger.warning("%s; trying the data.rmorie.com mirror", live_exc)
+        try:
+            return _ckan_mirror(resource_id, dataset_key)
+        except Exception as mirror_exc:  # noqa: BLE001
+            raise RuntimeError(f"{live_exc}; the data.rmorie.com mirror: {mirror_exc}") from mirror_exc
+
+
+def _ckan_mirror(resource_id: str, dataset_key: str) -> pd.DataFrame:
+    """A survey PUMF from data.rmorie.com/files/open_canada/ (gzipped), used only when it matches the
+    SHA-256 that index.json records for the original."""
+    import gzip
+    import hashlib
+    import shutil
+
+    from . import datahub
+
+    idx = json.loads(datahub._get("/files/open_canada/index.json"))
+    hit = None
+    for name, e in (idx.get("files") or {}).items():
+        if (resource_id and e.get("ckan_resource_id") == resource_id) or name == dataset_key:
+            hit = e
+            break
+    if hit is None:
+        raise RuntimeError(f"it holds no copy of {dataset_key}")
+    d = _user_cache_dir() / "ckan-mirror"
+    d.mkdir(parents=True, exist_ok=True)
+    csv = d / hit["file"].removesuffix(".gz")
+
+    def sha(p: Path) -> str:
+        h = hashlib.sha256()
+        with open(p, "rb") as fh:
+            for chunk in iter(lambda: fh.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    if not csv.exists() or sha(csv) != hit["sha256"].lower():
+        gz = d / hit["file"]
+        datahub._get_to_file("/files/open_canada/" + hit["file"], gz, dataset_key)
+        with gzip.open(gz, "rb") as zin, open(csv, "wb") as out:
+            shutil.copyfileobj(zin, out, 8 << 20)
+        gz.unlink()
+        if sha(csv) != hit["sha256"].lower():
+            csv.unlink()
+            raise RuntimeError(f"its copy of {dataset_key} does not match the SHA-256 it records")
+    logger.info("Read %s from the data.rmorie.com mirror (%s, SHA-256 checked)", dataset_key, hit.get("original_name"))
+    return pd.read_csv(csv, low_memory=False)
+
+
+def _ckan_resource_file_live(resource_id: str, dataset_key: str, timeout: int = 60) -> pd.DataFrame:
     """Download a CKAN resource that has no datastore and read it as a table.
 
     The resource URL comes from ``resource_show``. A zip (StatCan's
@@ -1771,7 +1842,15 @@ def _ckan_resource_file(resource_id: str, dataset_key: str, timeout: int = 60) -
     import zipfile
 
     meta_url = f"{DEFAULT_CKAN_API_BASE.rsplit('/', 1)[0]}/resource_show?id={resource_id}"
-    meta = json.loads(urlopen(meta_url, timeout=timeout).read().decode())
+    try:
+        meta = json.loads(urlopen(meta_url, timeout=timeout).read().decode())
+    except (OSError, ValueError) as exc:
+        if resource_id not in CKAN_FILES:
+            raise RuntimeError(
+                f"open.canada.ca could not be reached ({exc}); nothing cached for {dataset_key}"
+            ) from exc
+        logger.warning("open.canada.ca could not be reached (%s); using the pinned file URL", exc)
+        meta = {"result": {"url": CKAN_FILES[resource_id]}}
     url = (meta.get("result") or {}).get("url") or ""
     if not url:
         raise RuntimeError(f"CKAN returned 0 records for {dataset_key} and resource {resource_id} has no file URL")

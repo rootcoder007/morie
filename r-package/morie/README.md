@@ -216,20 +216,20 @@ install.packages("r-package/morie", repos = NULL, type = "source")
 # or straight from GitHub, at the tag of your morie, with pak
 install.packages("pak", repos = repos)
 pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
-pak::pkg_install("rootcoder007/morie/r-package/morie@v1.4.4")
+pak::pkg_install("rootcoder007/morie/r-package/morie@v1.4.5")
 
 # or the same with remotes
 install.packages("remotes", repos = repos)
-remotes::install_github("rootcoder007/morie@v1.4.4", subdir = "r-package/morie",
+remotes::install_github("rootcoder007/morie@v1.4.5", subdir = "r-package/morie",
                         repos = repos, upgrade = "always")
 ```
 
 From a terminal:
 
 ```sh
-Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.4"))'
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.5"))'
 # without pak
-Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.4", subdir = "r-package/morie", repos = repos, upgrade = "always")'
+Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.5", subdir = "r-package/morie", repos = repos, upgrade = "always")'
 ```
 
 The assistant bridge supports a local fallback through the Python
@@ -365,7 +365,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 1.4.4},
+  note    = {R package version 1.4.5},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```

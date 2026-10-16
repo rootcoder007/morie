@@ -7,6 +7,14 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.4.5 (2026-10-16)
+
+* When open.canada.ca is down, the survey PUMFs (CPADS, the Canadian Cannabis Survey, CSADS,
+  CSUS) still load, in Python and in R: each resource's file URL is pinned, so the live file and
+  then its Wayback Machine snapshot are tried without the portal's metadata API, and after that
+  the data.rmorie.com mirror, used only when it matches the SHA-256 recorded for the original
+  (2026-10-16: the portal timed out and its datastore answered 504).
+
 ## 1.4.4 (2026-10-16)
 
 * A new data key needs the data access terms accepted first. `morie login` shows the terms summary
