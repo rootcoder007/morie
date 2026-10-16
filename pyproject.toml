@@ -92,6 +92,7 @@ docs = [
 
 [project.urls]
 Homepage      = "https://rootcoder007.github.io/morie/"
+Website       = "https://rmorie.com"
 Documentation = "https://rootcoder007.github.io/morie/"
 "Source code" = "https://github.com/rootcoder007/morie"
 "Issue tracker" = "https://github.com/rootcoder007/morie/issues"

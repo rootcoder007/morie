@@ -236,7 +236,8 @@ Suggests:
     detectseparation,
     nnet
 VignetteBuilder: knitr
-URL: https://github.com/rootcoder007/morie
+URL: https://github.com/rootcoder007/morie,
+    https://rmorie.com
 BugReports: https://github.com/rootcoder007/morie/issues
 Config/testthat/edition: 3
 Config/testthat/parallel: true
