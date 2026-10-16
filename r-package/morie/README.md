@@ -4,10 +4,10 @@
 [![R-CMD-check](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/rootcoder007/morie/actions/workflows/r-cmd-check.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![rOpenSci review](https://img.shields.io/badge/rOpenSci-under_review_%23770-orange)](https://github.com/ropensci/software-review/issues/770)
-[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
+[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com)
 <!-- badges: end -->
 
-Website: <https://rmorie.com> · Hosted LLM tier: <https://llm.rmorie.com> (`morie_llm_login()`, or `rmorie login` after `install_cli()`).
+Website: <https://rmorie.com>
 
 `morie` is a dual-language (R + Python) scientific computing package for
 causal inference, sampling, psychometrics, point-process modeling, and
@@ -159,10 +159,12 @@ function.
   points (13,655 exports in all), each with a test that recomputes its
   value, and the same names in the Python package, checked against each
   other in CI.
-- **Hosted LLM tier** — `morie_llm_ask()` uses a local Ollama first, then
-  your own keys, then <https://llm.rmorie.com> as a last resort; the key is
-  issued on request at <https://rmorie.com/access> and stored with
-  `morie_llm_login(token = )`.
+- **Language models: bring your own** — `morie_llm_ask()` and `rmorie ask`
+  use the model you set up through rmoriebricklayer: a provider's key (OpenAI,
+  Anthropic, Google Gemini, OpenRouter, Groq, Mistral and more), an
+  OpenAI-compatible server of your own, or a local Ollama. None is hosted.
+  `rmorie config setup` walks through it; `morie_llm_login()` signs in for the
+  curated data tables only.
 - **Command line inside the package** — `install_cli()` puts `rmorie` on
   your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
 - **Policing, search and staffing** — police operations research, search
@@ -198,20 +200,36 @@ function.
 
 ## Install
 
-From local source:
+This package (`morie`) is not published on r-universe or CRAN; its
+published R distribution is [rmorie](https://github.com/rootcoder007/rmorie).
+Install this copy from source. Its companions, rmoriebricklayer and
+rmoriedata, come from r-universe (CRAN carries older versions):
 
 ```r
+repos <- c(rootcoder007 = "https://rootcoder007.r-universe.dev",
+           CRAN         = "https://cloud.r-project.org")
+install.packages(c("rmoriebricklayer", "rmoriedata"), repos = repos)
+
+# from a clone, at the repository root
 install.packages("r-package/morie", repos = NULL, type = "source")
+
+# or straight from GitHub, at the tag of your morie, with pak
+install.packages("pak", repos = repos)
+pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+pak::pkg_install("rootcoder007/morie/r-package/morie@v1.4.3")
+
+# or the same with remotes
+install.packages("remotes", repos = repos)
+remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie",
+                        repos = repos, upgrade = "always")
 ```
 
-From r-universe (development snapshot):
+From a terminal:
 
-```r
-install.packages(
-  "morie",
-  repos = c(rootcoder007 = "https://rootcoder007.r-universe.dev",
-            CRAN     = "https://cloud.r-project.org")
-)
+```sh
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.3"))'
+# without pak
+Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie", repos = repos, upgrade = "always")'
 ```
 
 The assistant bridge supports a local fallback through the Python
@@ -347,7 +365,7 @@ Run `citation("morie")` after installation. Please cite the software:
   title   = {morie: Multi-domain Open Research and Inferential Estimation},
   author  = {Ruhela, Vansh Singh},
   year    = {2026},
-  note    = {R package version 1.4.2},
+  note    = {R package version 1.4.3},
   url     = {https://github.com/rootcoder007/morie}
 }
 ```

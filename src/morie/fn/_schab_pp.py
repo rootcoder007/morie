@@ -263,17 +263,24 @@ def cross_k_function(points1, points2, region, r, correction="ripley"):
     area = region_area(region)
     lam1, lam2 = n1 / area, n2 / area
 
-    d = np.linalg.norm(p1[:, None, :] - p2[None, :, :], axis=-1)
-    if correction == "none":
-        winv = np.ones_like(d)
+    d = np.linalg.norm(p1[:, None, :] - p2[None, :, :], axis=-1).ravel()
+    # Only pairs within the largest h ever enter a sum, so the edge weights
+    # are computed for those alone (same pairs, same row-major order, same
+    # per-pair arithmetic). Weighting all n1 * n2 pairs spent most of the
+    # work on pairs no sum reads: at n = 400 and h <= 0.25 in the unit
+    # square about four in five of the 160 000.
+    keep = np.flatnonzero(d <= float(np.max(r))) if r.size else np.zeros(0, dtype=int)
+    dk = d[keep]
+    if correction == "none" or dk.size == 0:
+        winv = np.ones_like(dk)
     else:
-        pts = np.repeat(p1, n2, axis=0)
-        w = ripley_weights(pts, region, d.ravel()).reshape(d.shape)
+        pts = p1[keep // n2]  # row i of pair k = i * n2 + j
+        w = ripley_weights(pts, region, dk)
         winv = np.where(w > 0, 1.0 / np.where(w > 0, w, 1.0), 0.0)
 
     out = np.empty_like(r)
     for m, h in enumerate(r):
-        out[m] = winv[d <= h].sum() / (lam1 * lam2 * area)
+        out[m] = winv[dk <= h].sum() / (lam1 * lam2 * area)
     return out
 
 

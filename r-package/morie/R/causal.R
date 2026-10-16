@@ -14,9 +14,9 @@
 #' (WeightIt, AIPW, grf, stdReg, DoubleML, EValue, rbounds, sandwich) are
 #' used only by the cross-validation tests.
 #'
-#' Two functions reach an optional package by design, and say so:
-#' \code{morie_causal_impact()} is a named pass-through to
-#' \pkg{CausalImpact} (Bayesian structural time series), and
+#' \code{morie_causal_impact()} fits its Bayesian structural time series
+#' natively (Gibbs sampler, R/causal_impact_native.R). One function reaches
+#' an optional package by design, and says so:
 #' \code{morie_causal_weighting()} uses \pkg{WeightIt} only for a weighting
 #' method this package has no engine for (glm, cbps and ATT entropy
 #' balancing are native).
@@ -29,12 +29,6 @@ NULL
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
-
-#' Internal helper: Causal Have Causalimpact
-#' @noRd
-.causal_have_causalimpact <- function() {
-  requireNamespace("CausalImpact", quietly = TRUE)
-}
 
 # Internal helper: Fit Propensity
 # @noRd
@@ -203,15 +197,6 @@ NULL
   } else {
     .mor_ps_irls(X, y, lam = 0)
   }
-}
-
-#' Internal helper: Fit Propensity Weightit
-#' @noRd
-.fit_propensity_weightit <- function(data, treatment, covariates) {
-  # WeightIt's method = "glm" IS a logistic propensity fit -- the
-  # native .fit_propensity computes the identical scores, so the
-  # delegation was pure overhead (module 15).
-  .fit_propensity(data, treatment, covariates)
 }
 
 #' Internal helper: Clip Ps
@@ -1148,17 +1133,15 @@ morie_estimate_late <- function(data, treatment, outcome, instrument,
 #' For a risk ratio \eqn{RR < 1}, use \eqn{1/RR} before applying the
 #' formula.
 #'
-#' Thin wrapper over \code{EValue::evalue()} when \pkg{EValue} is
-#' installed; falls back to the inline closed-form computation
-#' otherwise. Both arms produce numerically identical answers
-#' (the formula above is the EValue closed-form for RR estimands).
+#' Computed in closed form; the formula above is the one
+#' \code{EValue::evalue()} uses for RR estimands, so the two agree.
 #'
 #' @param rr Risk ratio estimate (> 0). Supply > 1; if < 1, pass its
 #'   reciprocal.
 #' @param rr_lower Lower bound of the 95\% CI (used to compute
 #'   E-value for CI).
-#' @return Named list: `morie_e_value`, `e_value_ci` (for the CI
-#'   bound).
+#' @return Named list: `e_value` (for the point estimate),
+#'   `e_value_ci` (for the CI bound).
 #' @export
 #' @references
 #'   VanderWeele TJ, Ding P (2017). Sensitivity analysis in
@@ -1170,13 +1153,8 @@ morie_e_value <- function(rr, rr_lower = NULL) {
   if (!is.numeric(rr) || length(rr) != 1L || is.na(rr) || rr <= 0) {
     stop("rr must be a single positive risk ratio", call. = FALSE)
   }
-  if (!is.null(rr_lower) && (!is.numeric(rr_lower) || is.na(rr_lower) || rr_lower <= 0)) {
-    stop("rr_lower must be a positive risk ratio", call. = FALSE)
-  }
-  if (!is.numeric(rr) || length(rr) != 1L || is.na(rr) || rr <= 0) {
-    stop("rr must be a single positive risk ratio", call. = FALSE)
-  }
-  if (!is.null(rr_lower) && (!is.numeric(rr_lower) || is.na(rr_lower) || rr_lower <= 0)) {
+  if (!is.null(rr_lower) && (!is.numeric(rr_lower) || length(rr_lower) != 1L ||
+                             is.na(rr_lower) || rr_lower <= 0)) {
     stop("rr_lower must be a positive risk ratio", call. = FALSE)
   }
   # Module 26: the Ding-VanderWeele closed form is exact; a CI bound
@@ -1187,7 +1165,7 @@ morie_e_value <- function(rr, rr_lower = NULL) {
   }
   ev <- compute_e(rr)
   ev_ci <- if (!is.null(rr_lower)) compute_e(rr_lower) else NA_real_
-  list(morie_e_value = ev, e_value_ci = ev_ci)
+  list(e_value = ev, e_value_ci = ev_ci)
 }
 
 
@@ -1359,38 +1337,6 @@ morie_estimate_g_computation <- function(data, treatment, outcome,
 # Double Machine Learning -- PLR + IRM
 # ---------------------------------------------------------------------------
 
-# Internal: hand-rolled cross-fit ridge fallback when DoubleML R package is
-# unavailable. Implements a partially linear regression (PLR) cross-fit on
-# residualised outcome and treatment using ridge regression with a fixed
-# lambda (lightweight; not for high-precision inference).
-#' Internal helper: Dml Xfit Ridge
-#' @noRd
-.dml_xfit_ridge <- function(X, y, n_folds = 5L, lambda = 1.0,
-                            random_state = 42L) {
-  n <- nrow(X)
-  p <- ncol(X)
-  .morie_local_seed(random_state)
-  folds <- sample(rep(seq_len(n_folds), length.out = n))
-  pred <- numeric(n)
-  Xs <- scale(X)
-  center <- attr(Xs, "scaled:center")
-  scl <- attr(Xs, "scaled:scale")
-  scl[scl == 0] <- 1
-  Xs[, ] <- sweep(sweep(X, 2, center, "-"), 2, scl, "/")
-  for (k in seq_len(n_folds)) {
-    te <- which(folds == k)
-    tr <- setdiff(seq_len(n), te)
-    Xt <- Xs[tr, , drop = FALSE]
-    yt <- y[tr]
-    yc <- mean(yt)
-    A <- crossprod(Xt) + lambda * diag(p)
-    b <- crossprod(Xt, yt - yc)
-    beta <- tryCatch(solve(A, b), error = function(e) .morie_ginv(A) %*% b)
-    pred[te] <- as.numeric(Xs[te, , drop = FALSE] %*% beta) + yc
-  }
-  pred
-}
-
 #' Internal helper: Dml Prepare Xy
 #' @noRd
 .dml_prepare_xy <- function(data, treatment, outcome, covariates) {
@@ -1467,98 +1413,102 @@ morie_estimate_double_ml <- function(data, outcome, treatment, covariates,
 # morie_estimate_irm lives in R/irm.R (single definition).
 
 
-# Helper: closed-form ridge fit on (X_tr, y_tr) and predict at X_te.
-#' Internal helper: Dml Xfit Ridge Predict
-#' @noRd
-.dml_xfit_ridge_predict <- function(X_tr, y_tr, X_te, lambda = 1.0) {
-  p <- ncol(X_tr)
-  ctr <- colMeans(X_tr)
-  scl <- apply(X_tr, 2, stats::sd)
-  scl[scl == 0 | !is.finite(scl)] <- 1
-  Xs_tr <- sweep(sweep(X_tr, 2, ctr, "-"), 2, scl, "/")
-  Xs_te <- sweep(sweep(X_te, 2, ctr, "-"), 2, scl, "/")
-  yc <- mean(y_tr)
-  A <- crossprod(Xs_tr) + lambda * diag(p)
-  b <- crossprod(Xs_tr, y_tr - yc)
-  beta <- tryCatch(solve(A, b),
-                   error = function(e) .morie_ginv(A) %*% b)
-  as.numeric(Xs_te %*% beta) + yc
-}
-
-
 # ---------------------------------------------------------------------------
 # Phase 1.h new extenders: previously-unmapped CRAN dependencies
 # ---------------------------------------------------------------------------
 
 #' Bayesian structural time-series intervention analysis
 #'
-#' Thin wrapper around \code{CausalImpact::CausalImpact()} (Brodersen
-#' et al. 2015). Fits a Bayesian structural time-series counterfactual
-#' to a single-series treatment using the pre-intervention window and
-#' reports the post-intervention causal effect with credible
-#' intervals.
+#' Native Bayesian structural time-series counterfactual in the manner of
+#' CausalImpact (Brodersen et al. 2015). The response is modelled over the
+#' pre-period as a local level plus a static regression on the
+#' concurrent covariates,
+#' \deqn{y_t = \mu_t + x_t'\beta + \varepsilon_t,\quad
+#'   \mu_{t+1} = \mu_t + \eta_t,}
+#' with \eqn{\varepsilon_t \sim N(0, \sigma^2)} and
+#' \eqn{\eta_t \sim N(0, \sigma_\mu^2)}, after standardising every column
+#' on the pre-period (CausalImpact's \code{standardize.data = TRUE}). A
+#' Gibbs sampler alternates (i) forward-filter backward-sampling of the
+#' level path, with the post-period response treated as missing,
+#' (ii) the conjugate normal draw of \eqn{\beta}, and (iii) inverse-gamma
+#' draws of \eqn{\sigma^2} and \eqn{\sigma_\mu^2}. Priors follow the bsts
+#' defaults CausalImpact uses: level sd prior with guess
+#' \code{prior.level.sd} (0.01) times the sd of y, 32 prior observations
+#' and upper limit sd(y); observation sd prior with guess
+#' \eqn{\sqrt{1 - 0.8}} sd(y) and 50 prior observations (expected
+#' \eqn{R^2 = 0.8}) when there are covariates, upper limit 1.2 sd(y);
+#' initial level \eqn{N(y_1, sd(y)^2)}. \strong{Simplification:} bsts'
+#' spike-and-slab coefficient prior is replaced by its slab alone,
+#' \eqn{\beta \mid \sigma^2 \sim N(0, \sigma^2 \Omega^{-1})} with
+#' \eqn{\Omega = 0.01\,(0.5 X'X/n + 0.5\,\mathrm{diag}(X'X/n))}, so every
+#' covariate is kept (no variable selection). The first 10 percent of the
+#' draws are discarded as burn-in. The posterior predictive of the
+#' counterfactual (level path + regression + observation noise, back on the
+#' original scale) gives the summary table: \code{Actual}, \code{Pred},
+#' \code{Pred.lower}/\code{upper}/\code{sd}, \code{AbsEffect} and
+#' \code{RelEffect} with interval and sd, \code{alpha}, and \code{p}, the
+#' posterior tail-area probability of the observed post-period sum
+#' (smaller tail, CausalImpact's \code{(+1)}-corrected rule). Results are
+#' reproducible under \code{set.seed()} or \code{model_args$seed}.
+#' CausalImpact itself (with its Boom dependency) is not used and was not
+#' available to cross-validate against; the tests check coverage of a
+#' known effect, the no-effect case and agreement with a Kalman filter.
 #'
-#' Hard-errors if \pkg{CausalImpact} is not installed -- the upstream
-#' Kalman-filter + slab-and-spike machinery has no compact inline
-#' equivalent. The wrapper is documented as an extender so that
-#' downstream rmorie callers have a stable \code{morie_*} entry point
-#' to the package.
-#'
-#' @param data A data frame, matrix, or \code{zoo} object whose first
-#'   column is the outcome and remaining columns are concurrent
+#' @param data A data frame or matrix (or a \code{zoo} series) whose
+#'   first column is the outcome and remaining columns are concurrent
 #'   covariate predictors.
-#' @param pre_period Integer length-2 vector giving the start and end
-#'   row indices (or time indices for \code{zoo}) of the
-#'   pre-intervention window.
-#' @param post_period Integer length-2 vector giving the start and end
-#'   row indices of the post-intervention window.
-#' @param model_args Optional named list passed to
-#'   \code{CausalImpact::CausalImpact()}'s \code{model.args} argument
-#'   (e.g. \code{list(niter = 1000L)}).
+#' @param pre_period Length-2 vector giving the first and last row (or,
+#'   for a \code{zoo} series, time index) of the pre-intervention window.
+#' @param post_period Length-2 vector giving the first and last row (or
+#'   time index) of the post-intervention window.
+#' @param model_args Optional named list of sampler settings, as in
+#'   CausalImpact's \code{model.args}: \code{niter} (default 1000),
+#'   \code{prior.level.sd} (0.01), \code{standardize.data} (\code{TRUE}),
+#'   \code{seed} (\code{NULL}: use the session RNG). \code{nseasons > 1}
+#'   and \code{dynamic.regression = TRUE} are not supported and error.
 #' @param alpha Posterior credible-interval coverage (default 0.05,
 #'   meaning 95 percent intervals).
 #' @return Named list with elements \code{average_effect},
-#'   \code{cumulative_effect}, \code{ci_lower}, \code{ci_upper},
-#'   \code{posterior_prob_causal}, and \code{summary} (the upstream
-#'   \code{CausalImpact} summary matrix), plus the original
-#'   \code{impact} object.
+#'   \code{cumulative_effect}, \code{ci_lower}, \code{ci_upper} (interval
+#'   of the average effect), \code{posterior_prob_causal} (the tail-area
+#'   probability \code{p}, as before), \code{summary} (the
+#'   \code{Average} / \code{Cumulative} summary data frame), and
+#'   \code{impact}: a native \code{"morie_causal_impact"} list with
+#'   \code{summary}, \code{series} (pointwise predictions and effects with
+#'   intervals over the analysed window), \code{y_samples} (posterior
+#'   predictive draws for the post-period), \code{model} (posterior draws
+#'   of the coefficients and standard deviations, burn-in, settings),
+#'   \code{pre_period}, \code{post_period} and \code{alpha}. It replaces
+#'   the former \code{CausalImpact} object.
 #' @export
 #' @references
 #'   Brodersen KH, Gallusser F, Koehler J, Remy N, Scott SL (2015).
 #'   Inferring causal impact using Bayesian structural time-series
 #'   models. *Annals of Applied Statistics*, 9(1):247-274.
+#'
+#'   Scott SL, Varian HR (2014). Predicting the present with Bayesian
+#'   structural time series. *International Journal of Mathematical
+#'   Modelling and Numerical Optimisation*, 5(1-2):4-23.
 #' @examples
 #' set.seed(1)
-#' if (requireNamespace("CausalImpact", quietly = TRUE)) {
-#'   morie_causal_impact(data = data.frame(y = rnorm(10), x = rnorm(10)),
-#'       pre_period = c(1, 5), post_period = c(6, 10))
-#' }
+#' x <- cumsum(rnorm(60))
+#' y <- 2 + 0.8 * x + rnorm(60, sd = 0.3)
+#' y[41:60] <- y[41:60] + 2
+#' res <- morie_causal_impact(data.frame(y = y, x = x),
+#'   pre_period = c(1, 40), post_period = c(41, 60),
+#'   model_args = list(niter = 300)
+#' )
+#' res$summary
 morie_causal_impact <- function(data, pre_period, post_period,
                                 model_args = NULL, alpha = 0.05) {
-  if (!.causal_have_causalimpact()) {
-    stop(
-      "morie_causal_impact requires the 'CausalImpact' package. ",
-      "Install with install.packages('CausalImpact').",
-      call. = FALSE
-    )
-  }
-  ci_args <- list(
-    data = data,
-    pre.period = pre_period,
-    post.period = post_period,
-    alpha = alpha
-  )
-  if (!is.null(model_args)) {
-    ci_args$model.args <- model_args
-  }
-  impact <- do.call(CausalImpact::CausalImpact, ci_args)
+  impact <- .ci_native(data, pre_period, post_period, model_args, alpha)
   smry <- impact$summary
   list(
     average_effect = as.numeric(smry["Average", "AbsEffect"]),
     cumulative_effect = as.numeric(smry["Cumulative", "AbsEffect"]),
     ci_lower = as.numeric(smry["Average", "AbsEffect.lower"]),
     ci_upper = as.numeric(smry["Average", "AbsEffect.upper"]),
-    posterior_prob_causal = as.numeric(impact$summary$p[1L]),
+    posterior_prob_causal = as.numeric(smry$p[1L]),
     summary = smry,
     impact = impact
   )
@@ -1571,8 +1521,9 @@ morie_causal_impact <- function(data, pre_period, post_period,
 #' this package has engines for run natively and give the same weights
 #' whatever is installed: \code{"glm"} / \code{"ps"} (logistic propensity
 #' weights, \code{\link{morie_weight_ps}}), \code{"cbps"}
-#' (\code{\link{morie_weight_cbps}}) and, for the ATT, \code{"ebal"} /
-#' \code{"entropy"} (\code{\link{morie_weight_entropy}}). Any other method
+#' (\code{\link{morie_weight_cbps}}), \code{"ebal"} / \code{"entropy"}
+#' (\code{\link{morie_weight_entropy}} for the ATT, \code{\link{morie_weightit}}
+#' otherwise) and \code{"ipt"} (\code{\link{morie_weightit}}). Any other method
 #' (\code{"energy"}, \code{"optweight"}, \code{"bart"}, ...) is passed to
 #' \code{WeightIt::weightit()}, which must then be installed; the error says
 #' so and names the native methods.
@@ -1582,7 +1533,7 @@ morie_causal_impact <- function(data, pre_period, post_period,
 #'   or continuous depending on \code{method}).
 #' @param covariates Character vector of covariate names.
 #' @param method One of \code{"glm"}, \code{"cbps"}, \code{"ebal"},
-#'   \code{"ps"}, \code{"energy"}, \code{"optweight"}, or any other
+#'   \code{"ipt"}, \code{"ps"}, \code{"energy"}, \code{"optweight"}, or any other
 #'   method accepted by \code{WeightIt::weightit()}.
 #' @param estimand One of \code{"ATE"}, \code{"ATT"}, \code{"ATC"};
 #'   defaults to \code{"ATE"}.
@@ -1610,18 +1561,21 @@ morie_causal_weighting <- function(data, treatment, covariates,
   native <- switch(method,
     glm = , ps = morie_weight_ps(data, treatment, covariates, estimand = estimand),
     cbps = morie_weight_cbps(data, treatment, covariates, estimand = estimand),
-    ebal = , entropy = if (estimand == "ATT") morie_weight_entropy(data, treatment, covariates) else NULL,
+    ebal = , entropy = if (estimand == "ATT") morie_weight_entropy(data, treatment, covariates) else
+      morie_weightit(data, treatment, covariates, method = "ebal", estimand = estimand),
+    ipt = morie_weightit(data, treatment, covariates, method = "ipt", estimand = estimand),
     NULL
   )
   if (!is.null(native)) {
     wt <- native$weights
-    return(list(weights = wt, propensity_scores = native$propensity, method = method,
+    ps <- if (is.null(native$propensity)) native$ps else native$propensity
+    return(list(weights = wt, propensity_scores = ps, method = method,
                 estimand = estimand, ess = sum(wt)^2 / sum(wt^2), weightit = NULL))
   }
   # a method this package has no engine for: WeightIt's, explicitly
   if (!requireNamespace("WeightIt", quietly = TRUE)) {
     stop(sprintf("method = \"%s\" (estimand %s) is WeightIt's; install.packages(\"WeightIt\"), ", method, estimand),
-         "or use a native method: \"glm\", \"cbps\", or \"ebal\" for the ATT", call. = FALSE)
+         "or use a native method: \"glm\", \"cbps\", \"ebal\" or \"ipt\"", call. = FALSE)
   }
   formula <- stats::as.formula(paste(treatment, "~", paste(covariates, collapse = " + ")))
   w <- WeightIt::weightit(formula, data = data, method = method, estimand = estimand, ...)

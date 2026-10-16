@@ -29,17 +29,13 @@ morie_sample_size(
 }
 \arguments{
 \item{p_star, se_max, u_crit, s_star, l_max, cv_star, r_max}{Frequentist
-pieces. @param design_effect,n_si Design-effect pieces.}
+pieces.}
 
-\item{design_effect}{See Usage.}
+\item{design_effect, n_si}{Design-effect pieces.}
 
-\item{n_si}{See Usage.}
+\item{p, z, n, c, d}{Beta posterior pieces.}
 
-\item{p, z, n, c, d}{Beta posterior pieces. @param v,l Interval pieces.}
-
-\item{v}{See Usage.}
-
-\item{l}{See Usage.}
+\item{v, l}{Interval pieces.}
 
 \item{lengths, probs, coverages, alpha}{ALC/ACC pieces.}
 }

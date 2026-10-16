@@ -104,27 +104,29 @@ class Progress:
 
 
 def run_step(cmd: list[str], label: str, *, env: dict | None = None, cwd: str | None = None) -> int:
-    """Run a long subprocess (an R install, a pip upgrade) behind a spinner.
+    """Run a long command (an R install, a pip upgrade) behind a spinner.
 
     On a terminal: one live line with a spinner, the elapsed seconds and the command's last
     output line; the full output is kept and shown only when the command fails. Off a
     terminal (logs, CI): the output streams through unchanged between a start and an end line.
     """
-    import subprocess
     import tempfile
 
+    from ._interactive import launcher
+
+    sp = launcher(label[:1].upper() + label[1:])
     stream = sys.stderr
     tty = bool(getattr(stream, "isatty", lambda: False)()) and not _progress_off()
     t0 = time.monotonic()
     if not tty:
         stream.write(f"-> {label} ...\n")
         stream.flush()
-        rc = subprocess.run(cmd, env=env, cwd=cwd).returncode
+        rc = sp.run(cmd, env=env, cwd=cwd).returncode
         stream.write(f"{'ok' if rc == 0 else 'FAILED'}  {label} ({time.monotonic() - t0:.0f} s)\n")
         stream.flush()
         return rc
     with tempfile.TemporaryFile("w+", encoding="utf-8", errors="replace") as log:
-        proc = subprocess.Popen(cmd, env=env, cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
+        proc = sp.start(cmd, env=env, cwd=cwd, stdout=log, stderr=sp.STDOUT)
         i = 0
         width = 0
         last = ""

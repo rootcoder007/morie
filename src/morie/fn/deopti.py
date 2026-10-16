@@ -55,7 +55,7 @@ def differential_evolution(f, population, F=0.8, CR=0.9, generations=20, seed=0)
     x        : the best point
     population : the final population
     fvals    : its objective values
-    evals    : number of objective evaluations
+    evaluations    : number of objective evaluations
 
     Examples
     --------

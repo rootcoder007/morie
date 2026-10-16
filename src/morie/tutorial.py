@@ -1,7 +1,7 @@
 """morie.tutorial — interactive first-time-user walkthrough.
 
 Reached via ``morie tutorial`` on the CLI.  Walks the user through
-the same sequence documented in TUTORIAL.md but executes each step
+the same sequence documented in TUTORIAL.md but runs each step
 live and prompts before continuing, so a non-coder doesn't have to
 copy-paste from a markdown file in another window.
 
@@ -9,9 +9,9 @@ Design notes:
 
   * Each step prints a short explanation, runs its command(s)
     in-process, then pauses for ``[Enter] continue / [s]kip / [q]uit``.
-  * Commands are invoked via subprocess against the same `morie`
-    binary that's running this tutorial (sys.executable + -m morie.runner),
-    so the user sees the same output they would type by hand.
+  * Commands run through the same entry point as the `morie` command
+    (morie.runner.main, in this process), so the user sees the same
+    output they would type by hand.
   * No external state — output lands in ``~/morie-tutorial-<date>/``
     so re-running the tutorial doesn't overwrite a previous attempt.
 """
@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import datetime as _dt
 import shutil as _shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -45,10 +44,19 @@ def _prompt() -> str:
 
 def _run(cmd: list[str]) -> int:
     """Run a morie subcommand in-process, streaming its output."""
-    full = [sys.executable, "-m", "morie.runner", *cmd]
+    from .runner import main
+
     print(f"  $ morie {' '.join(cmd)}")
     print()
-    return subprocess.run(full, check=False).returncode
+    saved = sys.argv
+    sys.argv = ["morie", *cmd]
+    try:
+        rc = main()
+    except SystemExit as e:
+        rc = e.code if isinstance(e.code, int) else (0 if e.code is None else 1)
+    finally:
+        sys.argv = saved
+    return int(rc or 0)
 
 
 def run() -> int:

@@ -1106,7 +1106,10 @@ morie_siu_audit_case <- function(case_number,
 #'   \code{html_excerpt} (a 240-character window around the first
 #'   occurrence of either value in the cleaned report text). When
 #'   parser and external disagree, the \code{html_excerpt} is the
-#'   tie-breaker.
+#'   tie-breaker. Mapped fields whose external column or morie field
+#'   does not exist are skipped and listed in the
+#'   \code{"unmatched_fields"} attribute; when none match, the
+#'   function stops and names them.
 #' @examples
 #' \donttest{
 #' if (requireNamespace("rmoriedata", quietly = TRUE)) withAutoprint({
@@ -1199,6 +1202,17 @@ morie_siu_compare <- function(case_number, external,
     tolower(x)
   }
 
+  ext_ok <- names(field_map) %in% names(e_row)
+  fld_ok <- vapply(field_map, function(f) f %in% names(audit$row), logical(1))
+  unmatched <- c(
+    sprintf("external column '%s' not found", names(field_map)[!ext_ok]),
+    sprintf("morie field '%s' not found",
+            unlist(field_map, use.names = FALSE)[ext_ok & !fld_ok])
+  )
+  if (!any(ext_ok & fld_ok)) {
+    stop("no field_map entry matches: ", paste(unmatched, collapse = "; "),
+         call. = FALSE)
+  }
   rows <- lapply(names(field_map), function(k) {
     fld <- field_map[[k]]
     if (!(k %in% names(e_row)) || !(fld %in% names(audit$row))) {
@@ -1221,6 +1235,7 @@ morie_siu_compare <- function(case_number, external,
   })
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
+  if (length(unmatched)) attr(out, "unmatched_fields") <- unmatched
   out
 }
 
@@ -1236,7 +1251,8 @@ morie_siu_compare <- function(case_number, external,
 # Providers are configured via env vars so secrets never appear in
 # the package or in chat:
 #   GEMINI_API_KEY (or GOOGLE_API_KEY) -> Gemini
-#   the stored hosted key (morie_llm_login) -> llm.rmorie.com ("hosted")
+#   "route" -> the model you set up for rmoriebricklayer (a provider key, Ollama, your server);
+#   a provider id ("anthropic", "groq", ...) -> that provider, through rmoriebricklayer
 #   ANTHROPIC_API_KEY  -> Claude
 # Both functions hard-fail with a clear message if the relevant env
 # var is missing.
@@ -1269,6 +1285,10 @@ morie_siu_compare <- function(case_number, external,
   if (!is.finite(t) || t < 1L) 600L else t
 }
 
+# the first element of a reply list, or NULL when the provider sent none (an empty
+# candidates / content / choices array is "empty text", not a subscript error)
+.siu_first <- function(x) if (length(x)) x[[1L]] else NULL
+
 #' Internal helper: Siu Llm Providers
 #' @noRd
 .siu_llm_providers <- function() {
@@ -1293,7 +1313,7 @@ morie_siu_compare <- function(case_number, external,
         )
       },
       extract = function(resp) {
-        x <- resp$candidates[[1L]]$content$parts[[1L]]$text
+        x <- .siu_first(.siu_first(resp$candidates)$content$parts)$text
         if (is.null(x)) stop("Gemini returned empty text", call. = FALSE)
         x
       }
@@ -1316,7 +1336,7 @@ morie_siu_compare <- function(case_number, external,
         )
       },
       extract = function(resp) {
-        x <- resp$content[[1L]]$text
+        x <- .siu_first(resp$content)$text
         if (is.null(x)) stop("Claude returned empty text", call. = FALSE)
         x
       }
@@ -1382,7 +1402,7 @@ morie_siu_compare <- function(case_number, external,
         )
       },
       extract = function(resp) {
-        x <- resp$candidates[[1L]]$content$parts[[1L]]$text
+        x <- .siu_first(.siu_first(resp$candidates)$content$parts)$text
         if (is.null(x)) stop("Vertex returned empty text", call. = FALSE)
         x
       }
@@ -1407,7 +1427,7 @@ morie_siu_compare <- function(case_number, external,
         # Optional bearer token, for hosted Ollama-compatible APIs
         # (e.g. hosted inference gateways) that require auth. Local
         # Ollama at localhost:11434 doesn't need it.
-        api_key <- Sys.getenv("OLLAMA_API_KEY", unset = "")
+        api_key <- .morie_llm_ollama_key() %||% ""  # OLLAMA_API_KEY, else `rmorie config set ollama.key`
         if (nzchar(api_key)) {
           headers[["authorization"]] <- paste("Bearer", api_key)
         }
@@ -1472,30 +1492,8 @@ morie_siu_compare <- function(case_number, external,
         )
       },
       extract = function(resp) {
-        x <- resp$choices[[1L]]$message$content
+        x <- .siu_first(resp$choices)$message$content
         if (is.null(x)) stop("OpenAI returned empty text", call. = FALSE)
-        x
-      }
-    ),
-    hosted = list(
-      # the hosted MORIE tier (llm.rmorie.com), with the key morie_llm_login() stored
-      env_required = "MORIE_HOSTED_KEY_OR_LOGIN",
-      build = function(env, prompt) {
-        base <- sub("/+$", "", .morie_llm_hosted_base())
-        list(
-          url = paste0(base, "/v1/chat/completions"),
-          headers = list("authorization" = paste("Bearer", env[["MORIE_HOSTED_KEY_OR_LOGIN"]]),
-                         "content-type" = "application/json"),
-          body = list(
-            model = Sys.getenv("MORIE_HOSTED_MODEL", unset = attr(morie_llm_hosted_models(), "default") %||% "default"),
-            temperature = 0,
-            messages = list(list(role = "user", content = prompt))
-          )
-        )
-      },
-      extract = function(resp) {
-        x <- resp$choices[[1L]]$message$content
-        if (is.null(x)) stop("the hosted tier returned empty text", call. = FALSE)
         x
       }
     ),
@@ -1509,7 +1507,7 @@ morie_siu_compare <- function(case_number, external,
       build = function(env, prompt) {
         base <- sub("/+$", "", env[["MORIE_LLM_BASE_URL"]])
         headers <- list("content-type" = "application/json")
-        key <- Sys.getenv("MORIE_LLM_API_KEY", unset = "")
+        key <- .morie_llm_setting("own.key") %||% ""  # MORIE_LLM_API_KEY, else `rmorie config set own.key`
         if (nzchar(key)) {
           headers[["authorization"]] <- paste("Bearer", key)
         }
@@ -1517,18 +1515,14 @@ morie_siu_compare <- function(case_number, external,
           url = paste0(base, "/chat/completions"),
           headers = headers,
           body = list(
-            model = if (nzchar(Sys.getenv("MORIE_LLM_MODEL", ""))) {
-              Sys.getenv("MORIE_LLM_MODEL")
-            } else {
-              "default"
-            },
+            model = .morie_llm_setting("own.model") %||% "default",
             temperature = 0,
             messages = list(list(role = "user", content = prompt))
           )
         )
       },
       extract = function(resp) {
-        x <- resp$choices[[1L]]$message$content
+        x <- .siu_first(resp$choices)$message$content
         if (is.null(x)) {
           stop("OpenAI-compatible endpoint returned empty text",
                call. = FALSE)
@@ -1551,6 +1545,13 @@ morie_siu_compare <- function(case_number, external,
 .siu_llm_call_one <- function(model, prompt,
                               timeout_s = .siu_llm_default_timeout()) {
   providers <- .siu_llm_providers()
+  # "route" (or a provider rmoriebricklayer knows that is not in the table) asks the model you set up
+  if (identical(model, "route") ||
+      (!model %in% names(providers) && model %in% rmoriebricklayer::bricklayer_llm_providers()$id)) {
+    return(rmoriebricklayer::bricklayer_llm_chat(list(list(role = "user", content = prompt)),
+                                                 route = if (identical(model, "route")) NULL else model,
+                                                 timeout = timeout_s))
+  }
   if (!model %in% names(providers)) {
     stop("Unknown LLM model: '", model, "'. Available: ",
       paste(names(providers), collapse = ", "),
@@ -1562,13 +1563,12 @@ morie_siu_compare <- function(case_number, external,
   # that's the zero-config "install ollama, pull a model, done"
   # path. All other providers still hard-require their API key env.
   if (p$env_required == "OLLAMA_HOST_OR_DEFAULT") {
-    env_val <- Sys.getenv("OLLAMA_HOST", unset = "")
-    if (!nzchar(env_val)) env_val <- "http://localhost:11434"
-  } else if (p$env_required == "MORIE_HOSTED_KEY_OR_LOGIN") {
-    env_val <- .morie_llm_hosted_key() %||% ""
+    env_val <- .morie_llm_ollama_base()  # OLLAMA_HOST, else `rmorie config set ollama.url`, else localhost
+  } else if (p$env_required == "MORIE_LLM_BASE_URL") {
+    env_val <- .morie_llm_setting("own.url") %||% ""  # the env var, else `rmorie config set own.url`
     if (!nzchar(env_val)) {
-      stop("not logged in to the hosted MORIE tier; run morie_llm_login() or morie_llm_login(email = \"you@example.com\") (shell: `rmorie login [--email ...]`) first, ",
-           "or use model = \"ollama\" with a local Ollama daemon.", call. = FALSE)
+      stop("no OpenAI-compatible endpoint is set: MORIE_LLM_BASE_URL, or `rmorie config set own.url URL` ",
+           "(R: morie_llm_config(own.url = ...))", call. = FALSE)
     }
   } else {
     env_val <- Sys.getenv(p$env_required, unset = "")
@@ -1806,7 +1806,9 @@ morie_siu_compare <- function(case_number, external,
 #' hard-coded, never passed as function arguments -- so secrets do
 #' not leak into call traces, logs, or scripts. Set
 #' \code{GEMINI_API_KEY} (or \code{GOOGLE_API_KEY}) for Gemini, the key stored by
-#' \code{\link{morie_llm_login}} for \code{"hosted"}, \code{ANTHROPIC_API_KEY} for
+#' \code{"route"} for the model you set up with \code{\link{morie_llm_config}} (a
+#' provider's key, Ollama or your own server; a provider id such as
+#' \code{"groq"} names one), \code{ANTHROPIC_API_KEY} for
 #' Claude, or \code{OLLAMA_HOST} (e.g.
 #' \code{"http://localhost:11434"} or an OpenAI-compatible base URL) plus
 #' optionally \code{OLLAMA_MODEL} (else the first model the server serves) for
@@ -1815,11 +1817,12 @@ morie_siu_compare <- function(case_number, external,
 #' @param case_number An SIU case number (e.g. \code{"17-OVI-201"}).
 #' @param model One of \code{"ollama"} (default; free, runs locally,
 #'   zero-config when an Ollama daemon is on \code{localhost:11434}),
-#'   \code{"gemini"} (paid), or \code{"claude"} (paid). A character
-#'   vector enables fail-over: the first model whose call succeeds
-#'   wins. The default \code{c("ollama", "gemini")} tries the local
-#'   free model first and only escalates to paid Gemini if Ollama
-#'   isn't installed or fails -- so morie costs $0 to use as long
+#'   \code{"route"} (the model you set up), \code{"gemini"} (paid), or
+#'   \code{"claude"} (paid). A character vector enables fail-over: the
+#'   first model whose call succeeds wins. The default
+#'   \code{c("ollama", "route", "gemini")} tries the local free model
+#'   first, then the model you set up, and only then paid Gemini -- so
+#'   morie costs $0 to use as long
 #'   as you have a free Gemma / Qwen / Llama running locally
 #'   (e.g. \code{ollama pull <model>}).
 #' @param cache_dir Directory holding the harvester's SIU.csv and
@@ -1847,7 +1850,7 @@ morie_siu_compare <- function(case_number, external,
 #' \dontshow{\}) # examplesIf}
 #' @export
 morie_siu_llm_extract <- function(case_number,
-                                  model = c("ollama", "hosted", "gemini"),
+                                  model = c("ollama", "route", "gemini"),
                                   cache_dir = file.path(tempdir(), "morie", "siu"),
                                   max_html_chars = 80000L,
                                   mock_response_text = NULL) {
@@ -1870,14 +1873,18 @@ morie_siu_llm_extract <- function(case_number,
         drid)), error = function(e) "")
     }
     if (is.null(audit)) {
-      # Minimal row from the lightweight scraper cache when present.
+      # Minimal row from the lightweight scraper cache when present; the
+      # bookkeeping fields below need a drid and an nrid, so the resolved
+      # drid (NA when unresolved) and the cache row's nrid are carried too
       csv <- file.path(cache_dir, "SIU.csv")
       row <- if (file.exists(csv)) {
         d <- utils::read.csv(csv, stringsAsFactors = FALSE)
         d[d$case_number == case_number, , drop = FALSE]
       } else data.frame(case_number = case_number,
                         stringsAsFactors = FALSE)
-      audit <- list(row = row, report_html = html)
+      if (!nrow(row)) row <- data.frame(case_number = case_number, stringsAsFactors = FALSE)
+      nrid <- if ("nrid" %in% names(row)) suppressWarnings(as.integer(row$nrid[1L])) else NA_integer_
+      audit <- list(row = row, drid = as.integer(drid), nrid = nrid, report_html = html)
     }
   }
   if (!nzchar(html)) {
@@ -2004,14 +2011,18 @@ morie_siu_anomaly_check <- function(case_number,
         drid)), error = function(e) "")
     }
     if (is.null(audit)) {
-      # Minimal row from the lightweight scraper cache when present.
+      # Minimal row from the lightweight scraper cache when present; the
+      # bookkeeping fields below need a drid and an nrid, so the resolved
+      # drid (NA when unresolved) and the cache row's nrid are carried too
       csv <- file.path(cache_dir, "SIU.csv")
       row <- if (file.exists(csv)) {
         d <- utils::read.csv(csv, stringsAsFactors = FALSE)
         d[d$case_number == case_number, , drop = FALSE]
       } else data.frame(case_number = case_number,
                         stringsAsFactors = FALSE)
-      audit <- list(row = row, report_html = html)
+      if (!nrow(row)) row <- data.frame(case_number = case_number, stringsAsFactors = FALSE)
+      nrid <- if ("nrid" %in% names(row)) suppressWarnings(as.integer(row$nrid[1L])) else NA_integer_
+      audit <- list(row = row, drid = as.integer(drid), nrid = nrid, report_html = html)
     }
   }
   if (!nzchar(html)) {
@@ -2099,7 +2110,8 @@ morie_siu_anomaly_check <- function(case_number,
   if (is.null(rows)) {
     return(deterministic())
   }
-  if (is.null(rows) || (is.data.frame(rows) && !nrow(rows))) {
+  # an empty JSON array parses to an empty list, not a zero-row frame
+  if (is.null(rows) || !length(rows) || (is.data.frame(rows) && !nrow(rows))) {
     return(data.frame(
       field = character(0), parser_value = character(0),
       verdict = character(0), reason = character(0),
@@ -2162,6 +2174,16 @@ morie_siu_sanity_check <- function(df) {
     )
   }
   stopifnot(is.data.frame(df), "case_number" %in% names(df))
+  out_case <- df$case_number
+  out_drid <- if (!is.null(df$drid)) df$drid else rep(NA_character_, nrow(df))
+  # A missing value (numeric NA, logical NA, character NA or "") is not a
+  # format error: normalise every column to character with "" for missing,
+  # so a default read.csv() and a colClasses = "character" read agree.
+  df[] <- lapply(df, function(v) {
+    v <- trimws(as.character(v))
+    v[is.na(v)] <- ""
+    v
+  })
 
   check_case <- function(v) {
     bad <- nzchar(v) & !grepl("^[0-9]{2}-[A-Z]{2,4}-[0-9]{3}$", v)
@@ -2266,8 +2288,8 @@ morie_siu_sanity_check <- function(df) {
     function(x) sum(nzchar(x)), integer(1)
   )
   out <- data.frame(
-    case_number = df$case_number,
-    drid = if (!is.null(df$drid)) df$drid else rep(NA_character_, nrow(df)),
+    case_number = out_case,
+    drid = out_drid,
     issues_count = issues_count,
     issues = collapsed,
     stringsAsFactors = FALSE
@@ -2614,7 +2636,7 @@ morie_siu_translate_fr_to_en <- function(
 #' attr(audit, "examples")[[audit$field[1L]]]
 #' \dontshow{\}) # examplesIf}
 #' @export
-morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "hosted", "gemini"),
+morie_siu_audit_columns <- function(case_numbers, model = c("ollama", "route", "gemini"),
                                     cache_dir = file.path(tempdir(), "morie", "siu"),
                                     max_html_chars = 80000L,
                                     max_examples_per_field = 5L,

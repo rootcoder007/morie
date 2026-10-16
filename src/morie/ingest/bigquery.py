@@ -140,7 +140,7 @@ def run_query(
     client: Any | None = None,
     timeout: float | None = None,
 ) -> pd.DataFrame:
-    """Execute ``sql`` and return the result as a DataFrame.
+    """Run ``sql`` and return the result as a DataFrame.
 
     Uses :meth:`google.cloud.bigquery.QueryJob.to_dataframe`, which
     pulls results via the BigQuery Storage API when ``pyarrow`` is

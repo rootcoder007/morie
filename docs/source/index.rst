@@ -58,10 +58,11 @@ Pick any one channel — each installs the current ``morie`` release:
    # 4. Docker (zero local dependencies)
    docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
-   # 5. R package: rmorie (r-universe; its companions rmoriebricklayer
-   #    and rmoriedata are on CRAN)
-   install.packages("rmorie", repos = c("https://rootcoder007.r-universe.dev",
-                                        "https://cloud.r-project.org"))
+   # 5. R package: rmorie and its companions rmoriebricklayer and
+   #    rmoriedata, all from r-universe (CRAN's companions are older)
+   install.packages("pak", repos = "https://cloud.r-project.org")
+   pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+   pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
 
 .. note::
 
@@ -230,11 +231,10 @@ for function reference.
   district maps. (See CITATION.cff for the companion Hawkes paper.)
 
 **LLM + assistant**
-  Providers in order: a local Ollama (private, tried first) → your own
-  Gemini / OpenAI-compatible / OpenAI keys → the hosted MORIE tier at
-  ``llm.rmorie.com`` as a last resort (key on request at rmorie.com/access,
-  stored with ``morie login --token``; rate-limited, nothing stored) → a
-  keyword-matched local fallback that needs no network.
+  The model you bring, in order: your own OpenAI-compatible server → a
+  provider whose key is set (OpenAI, Anthropic, Gemini, OpenRouter, Groq,
+  Mistral and more) → an Ollama server → a keyword-matched local fallback
+  that needs no network. Nothing is hosted for you.
   See :doc:`hosted`. Vendored TurboQuant KV-cache compression. Polyglot
   REPL bridges variables across Python ↔ R ↔ shell ↔ 12 other
   languages.
@@ -334,9 +334,8 @@ navigation, every page on this site is listed below — top to bottom:
 - :doc:`install` — Installation instructions for Python, R, macOS,
   Linux, Windows, plus LLM provider setup.
 - :doc:`cli` — Reference for every ``morie …`` subcommand.
-- :doc:`hosted` — The hosted LLM tier, a last resort: requesting a key,
-  storing it, the signed services document, limits, what is and is not
-  stored.
+- :doc:`hosted` — Language models (bring your own: providers, your own
+  server, Ollama) and the data key for the curated tables.
 - :doc:`methods/index` — Statistical-methods reference. Estimands,
   causal estimators, survey statistics, spatial methods, Hawkes
   processes, statistical physics of crime, OTIS / TPS / SIU

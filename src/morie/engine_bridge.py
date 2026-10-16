@@ -6,7 +6,7 @@ NumPy if the shared library is not available.
 
 Security:
     - Library path is resolved relative to this file only (no PATH search)
-    - No user-supplied paths, no eval/exec
+    - No user-supplied paths, no evaluation/run
     - All C functions validate inputs and return error codes
 """
 

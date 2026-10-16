@@ -7,8 +7,8 @@ under the Jahn settlement framework.  The 29 datasets in the
 official A01RCDD release fall into 4 series:
 
     a-series (1 dataset)    -- Restrictive confinement detailed
-                              (the canonical per-day record file used
-                              in Ruhela 2026 OTIS-RC)
+                              (the canonical per-day record file of
+                              the OTIS-RC analyses)
     b-series (9 datasets)   -- Segregation placement records
     c-series (12 datasets)  -- Individuals in segregation & restrictive
                               confinement
@@ -109,7 +109,7 @@ def _r(d: OtisDataset) -> None:
     DATASET_REGISTRY[d.id] = d
 
 
-# ── a-series: Restrictive confinement detailed (Ruhela 2026 primary) ──
+# ── a-series: Restrictive confinement detailed (the canonical OTIS-RC file) ──
 _r(
     OtisDataset(
         id="a01",

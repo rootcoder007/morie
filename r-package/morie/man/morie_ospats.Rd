@@ -24,17 +24,13 @@ morie_ospats(
 )
 }
 \arguments{
-\item{gamma_bar_h}{Mean semivariances. @param weights,n_h Strata.}
+\item{gamma_bar_h}{Mean semivariances.}
 
-\item{weights}{See Usage.}
+\item{weights, n_h}{Strata.}
 
-\item{n_h}{See Usage.}
+\item{n}{Total sample size.}
 
-\item{n}{Total sample size. @param s_h,c_h Allocation pieces.}
-
-\item{s_h}{See Usage.}
-
-\item{c_h}{See Usage.}
+\item{s_h, c_h}{Allocation pieces.}
 
 \item{zhat_i, zhat_j, r2, s2_i, s2_j, s2_ij}{Pairwise pieces.}
 

@@ -405,7 +405,7 @@ morie_otis_aipw_ate <- function(df, treatment, outcome, covariates,
 #' caliper \code{match_caliper_sd * SD(e)} and treated units taken in
 #' decreasing score -- MatchIt's matcher, which this package implements
 #' natively -- then fits IRM-DML on the matched subset (the MatchIt-then-DML
-#' pipeline of OTIS-RC/notez1a.qmd).
+#' pipeline).
 #'
 #' @param df A data frame.
 #' @param treatment Binary treatment column name.
@@ -485,7 +485,10 @@ morie_otis_irm_dml <- function(df, treatment, outcome, covariates,
   e_hat <- numeric(n)
   mu1_hat <- numeric(n)
   mu0_hat <- numeric(n)
+  pg <- rmoriebricklayer::bricklayer_progress("IRM-DML", n_folds)
+  on.exit(pg$done(), add = TRUE)
   for (k in seq_len(n_folds)) {
+    pg$update(k - 1L, info = sprintf("fold %d/%d", k, n_folds))
     test <- which(folds == k)
     train <- setdiff(seq_len(n), test)
     beta_p <- .otis_logit_fit(X[train, , drop = FALSE], d[train])
@@ -697,9 +700,7 @@ morie_otis_classify_mandela_combo <- function(mh, sr, sw,
 #' Ruhela's primary alert-complexity -> regional-volatility builder
 #'
 #' Implements Ruhela's "ac >= 2 -> vm" RF (Ruhela Formulation): the
-#' 8-state combo encoding documented in OTIS-RC/notez1a.qmd and used
-#' for the published \code{res_pool} / \code{res_by_year} / \code{res_all}
-#' estimates. Per \code{(UniqueIndividual_ID, EndFiscalYear)}, the
+#' 8-state encoding of the three alert flags. Per \code{(UniqueIndividual_ID, EndFiscalYear)}, the
 #' alert-state \emph{complexity} \code{ac} is the number of distinct
 #' alert combos with positive support across that person-year's rows
 #' (NOT the max of simultaneous flags -- see the Naive arm for that
@@ -844,8 +845,7 @@ morie_otis_make_pair_alert_to_volatility_all <- function(df) {
 #' Same as \code{morie_otis_make_pair_alert_to_volatility_ruhela()} but
 #' auto-loads a01 (Restrictive Confinement Detailed) via the registered
 #' \code{morie_otis_load()} loader when \code{df = NULL}. a01 is the
-#' canonical file the published OTIS-RC \code{res_pool} /
-#' \code{res_by_year} / \code{res_all} are computed on.
+#' canonical file for this formulation.
 #'
 #' @param df Optional OTIS a01 data.frame. If \code{NULL}, attempts to
 #'   resolve via \code{morie_otis_load()}.
@@ -1139,7 +1139,10 @@ morie_otis_causal_grid <- function(df = NULL, seed = 123L) {
 #' \code{morie_weight_super}): propensity from
 #' \{ridge-logistic, quadratic logistic, base rate\} and per-arm
 #' outcome regressions from \{OLS, cross-validated ridge, mean\},
-#' with ranger random forests joining both stacks when installed.
+#' plus rmorie's native random forest in both stacks (200 CART trees,
+#' \code{mtry} = \eqn{\lfloor\sqrt p\rfloor}; minimum node size 10 for the
+#' probability forest, 5 for regression), so the learner library is the
+#' same on every install.
 #' Stacking weights come from inner 3-fold cross-validated
 #' predictions inside every outer training fold, so no fold ever
 #' sees its own outcome.
@@ -1176,7 +1179,6 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
   n <- length(y)
   n_treated <- sum(d)
   p_treat <- mean(d)
-  have_ranger <- requireNamespace("ranger", quietly = TRUE)
 
   ps_learners <- list(
     ridge_logit = function(tr, te)
@@ -1206,21 +1208,19 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
                               X[te, , drop = FALSE], n_folds = 3L),
     mean = function(yy, tr, te) rep(mean(yy[tr]), length(te))
   )
-  if (have_ranger) {
-    ps_learners$forest <- function(tr, te) {
-      fit <- ranger::ranger(t ~ .,
-        data = data.frame(t = factor(d[tr]), X[tr, , drop = FALSE]),
-        probability = TRUE, num.trees = 200L)
-      stats::predict(fit,
-        data = data.frame(X[te, , drop = FALSE]))$predictions[, "1"]
-    }
-    reg_learners$forest <- function(yy, tr, te) {
-      fit <- ranger::ranger(y ~ .,
-        data = data.frame(y = yy[tr], X[tr, , drop = FALSE]),
-        num.trees = 200L)
-      stats::predict(fit,
-        data = data.frame(X[te, , drop = FALSE]))$predictions
-    }
+  # Native random forest (trees_native.R, ESL Algorithm 15.1): a
+  # probability forest (regression trees on 0/1) for the propensity and a
+  # regression forest for each outcome arm.
+  rf_mtry <- max(1L, floor(sqrt(ncol(X))))
+  ps_learners$forest <- function(tr, te) {
+    fit <- .morie_rf_fit(X[tr, , drop = FALSE], d[tr], task = "regression",
+                         n_estimators = 200L, mtry = rf_mtry, min_node = 10L)
+    .morie_rf_predict(fit, X[te, , drop = FALSE])
+  }
+  reg_learners$forest <- function(yy, tr, te) {
+    fit <- .morie_rf_fit(X[tr, , drop = FALSE], yy[tr], task = "regression",
+                         n_estimators = 200L, mtry = rf_mtry, min_node = 5L)
+    .morie_rf_predict(fit, X[te, , drop = FALSE])
   }
 
   # Inner-CV NNLS stacking within a training index set, then predict
@@ -1276,11 +1276,16 @@ morie_otis_aipw_superlearner <- function(df, treatment, outcome,
   e_hat <- numeric(n)
   mu1_hat <- numeric(n)
   mu0_hat <- numeric(n)
+  pg <- rmoriebricklayer::bricklayer_progress("SuperLearner AIPW", 3L * n_folds)
+  on.exit(pg$done(), add = TRUE)
   for (k in seq_len(n_folds)) {
     test <- which(folds == k)
     train <- setdiff(seq_len(n), test)
+    pg$update(3L * (k - 1L), info = sprintf("fold %d/%d: propensity", k, n_folds))
     e_hat[test] <- stack_ps(train, test)
+    pg$update(3L * (k - 1L) + 1L, info = sprintf("fold %d/%d: treated outcome", k, n_folds))
     mu1_hat[test] <- stack_reg(y, train[d[train] == 1L], test)
+    pg$update(3L * (k - 1L) + 2L, info = sprintf("fold %d/%d: control outcome", k, n_folds))
     mu0_hat[test] <- stack_reg(y, train[d[train] == 0L], test)
   }
 
@@ -1527,9 +1532,31 @@ morie_otis_gcomputation <- function(df, treatment, outcome, covariates,
     mean(X1 %*% b - X0 %*% b)
   }
   ate <- contrast(seq_len(n))
+  # The outcome model is additive in d, so mu1 - mu0 is b[d] for every row and the contrast
+  # is that coefficient. A replicate is then the weighted least-squares fit with the
+  # bootstrap counts as weights: a p x p solve, not a QR of a copied n x p matrix (on
+  # OTIS a01, 65k rows, 200 replicates took 99 s). Same draws, so the same replicates.
+  # Centring every non-intercept column (the intercept absorbs it) and scaling it to unit sd
+  # leaves b[d] unchanged up to its scale and keeps X'WX well conditioned: raw, a fiscal-year
+  # column near 2020 is all but collinear with the intercept and qr() calls it rank deficient.
+  icpt <- which(colnames(Xfull) == "(Intercept)")
+  Xs <- Xfull
+  sc <- rep(1, ncol(Xs))
+  for (j in setdiff(seq_len(ncol(Xs)), icpt)) {
+    v <- Xs[, j] - mean(Xs[, j])
+    sc[j] <- stats::sd(v)
+    if (sc[j] > 0) Xs[, j] <- v / sc[j] else sc[j] <- 1
+  }
+  boot_coef <- function(rows) {
+    w <- tabulate(rows, n)
+    XtW <- t(Xs * w)
+    q <- qr(XtW %*% Xs)
+    b <- qr.coef(q, XtW %*% y)
+    if (q$rank < ncol(Xs) || is.na(b[1L])) contrast(rows) else b[1L] / sc[1L]
+  }
   .morie_local_seed(seed)
   boot <- vapply(seq_len(n_bootstrap), function(i)
-    tryCatch(contrast(sample.int(n, n, replace = TRUE)),
+    tryCatch(boot_coef(sample.int(n, n, replace = TRUE)),
              error = function(e) NA_real_), numeric(1))
   boot <- boot[!is.na(boot)]
   se <- if (length(boot) > 1L) stats::sd(boot) else NA_real_

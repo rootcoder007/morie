@@ -25,6 +25,8 @@ bibliographic details, and the formulas here have not been
 re-verified against them.
 """
 
+import math
+
 from . import _array_core as np
 
 __all__ = [
@@ -130,11 +132,21 @@ def s_scale(r, c=TUKEY_C_BREAKDOWN, b=0.5, max_iter=200, tol=1e-12):
     s = mad_scale(r)
     if s <= 0:
         s = float(np.mean(np.abs(r))) or 1.0
+    # The iteration runs on a plain list: it takes ~50 steps per call and
+    # the S-estimator calls it once per random subset, so building arrays
+    # for rho(r/s) at every step was nearly all of an S fit's time. Same
+    # arithmetic as tukey_rho and np.mean (exactly rounded sum / n).
+    rl = r.tolist()
+    n = len(rl)
     for _ in range(int(max_iter)):
-        m = float(np.mean(tukey_rho(r / s, c)))
+        terms = []
+        for x in rl:
+            v = min(max(x / s / c, -1.0), 1.0)
+            terms.append(1.0 - (1.0 - v**2) ** 3)
+        m = math.fsum(terms) / n
         if m <= 0:
             return 0.0
-        new = s * np.sqrt(m / b)
+        new = s * math.sqrt(m / b)
         if abs(new - s) < tol * s:
             return float(new)
         s = new

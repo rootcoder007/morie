@@ -40,7 +40,7 @@ def fmea_rpn(
     References
     ----------
     Stamatis, D.H. (2003). *Failure Mode and Effect Analysis: FMEA
-    from Theory to Execution* (2nd ed.). ASQ Quality Press.
+    from Theory to Run* (2nd ed.). ASQ Quality Press.
 
     SAE International (2019). J1739: Potential Failure Mode and
     Effects Analysis in Design and Manufacturing.

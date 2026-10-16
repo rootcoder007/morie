@@ -12,7 +12,7 @@ The R package ships **native causal-inference engines** — matching (nearest/Ma
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![rmorie on r-universe](https://rootcoder007.r-universe.dev/badges/rmorie)](https://rootcoder007.r-universe.dev/rmorie)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com) [![Hosted LLM](https://img.shields.io/badge/hosted%20LLM-llm.rmorie.com-0066cc.svg)](https://llm.rmorie.com)
+[![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com)
 
 > The `morie` command line checks PyPI once a day for a newer release (fail-silent,
 > cached); `import morie` makes no network request. Set `MORIE_NO_UPDATE_CHECK=1` to disable it.
@@ -87,7 +87,7 @@ python -c "import morie; print(morie.__version__)"
 morie interactive install
 ```
 
-For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages('rmorie', repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
+For the R package, install **rmorie** (the R distribution of morie): `Rscript -e "install.packages(c('rmoriebricklayer','rmoriedata','rmorie'), repos=c('https://rootcoder007.r-universe.dev','https://cloud.r-project.org'))"`
 
 Prefer a package manager? If `winget --version` works on your machine, `winget install -e --id Python.Python.3.12` (and `RProject.R`) installs the prerequisites in one line each — but `winget` is absent from many Windows installs, so the installer steps above are the reliable default. The full Windows walkthrough, including fixes for common errors (`python` opening the Microsoft Store, PowerShell execution policy, long-path), is in **[INSTALLATION.md](https://github.com/rootcoder007/morie/blob/main/INSTALLATION.md)**.
 
@@ -125,7 +125,7 @@ morie interactive install
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.4.2 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.4.3 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.
@@ -155,22 +155,38 @@ A source checkout has all of this already. Offline: `morie interactive install
 The R distribution of morie is the **[rmorie](https://github.com/rootcoder007/rmorie)** package.
 
 ```r
-# rmorie comes from r-universe (prebuilt binaries for macOS and Windows,
-# source on Linux); its companions rmoriebricklayer and rmoriedata are on CRAN
-install.packages(
-  "rmorie",
-  repos = c(
-    rootcoder007 = "https://rootcoder007.r-universe.dev",
-    CRAN     = "https://cloud.r-project.org"
-  )
-)
-install.packages(c("rmoriebricklayer", "rmoriedata"))
+# rmorie and its companions rmoriebricklayer and rmoriedata all come from
+# r-universe (prebuilt binaries for macOS and Windows, source on Linux). CRAN
+# carries older companions, so name them: pak upgrades named packages to the
+# current release, replacing an older copy already installed.
+if (!requireNamespace("pak", quietly = TRUE)) {
+  install.packages("pak", repos = "https://cloud.r-project.org")
+}
+pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev")
+pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))
+```
 
-# The same R code also lives in this repository as r-package/morie (package
-# name "morie"), tracking every commit here; build it from source with remotes
-# (needs a C++ toolchain and rmoriebricklayer):
-# install.packages("remotes")
-remotes::install_github("rootcoder007/morie@v1.4.2", subdir = "r-package/morie")  # the tag of your morie
+From a terminal (single quotes outside, double quotes inside, so the shell
+passes the R code through untouched):
+
+```sh
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rmorie"))'
+# without pak (keep repos: Rscript has no mirror chooser)
+Rscript -e 'install.packages(c("rmoriebricklayer", "rmoriedata", "rmorie"), repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))'
+```
+
+On macOS, CRAN's R (from <https://cloud.r-project.org/bin/macosx/>) installs r-universe's prebuilt
+binaries in seconds. Homebrew's R cannot use them, so there every package is
+compiled from source.
+
+The same R code also lives in this repository as `r-package/morie` (package
+name `morie`), tracking every commit here; build it from source (needs a C++
+toolchain):
+
+```sh
+Rscript -e 'if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "https://cloud.r-project.org"); pak::repo_add(rootcoder007 = "https://rootcoder007.r-universe.dev"); pak::pkg_install(c("rmoriebricklayer", "rmoriedata", "rootcoder007/morie/r-package/morie@v1.4.3"))'
+# without pak
+Rscript -e 'repos <- c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"); install.packages(c("rmoriebricklayer", "rmoriedata", "remotes"), repos = repos); remotes::install_github("rootcoder007/morie@v1.4.3", subdir = "r-package/morie", repos = repos, upgrade = "always")'
 ```
 
 Or let morie run either install for you: `morie r-install` (r-universe) or
@@ -209,13 +225,13 @@ morie explain power_two_proportion_gender.csv        # how to read an output tab
 morie list-datasets                                  # 71 catalog keys + the curated tables after login
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login --token                                  # the key issued at rmorie.com/access: hosted model tier + data.rmorie.com
-morie login                                          # GitHub sign-in, for accounts that have one
+morie login                                          # the data key for data.rmorie.com: GitHub sign-in
 morie login --email you@example.com                  # an emailed code instead: type it at the prompt
+morie login --token                                  # a key you were given
 morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
+morie config setup                                   # bring a model: a provider key, your own server, or Ollama
 morie ask "which module fits a treatment-control design?"
-morie provider set --base-url https://api.openai.com/v1 --key sk-...   # or your own model endpoint
 morie emissions --seconds 5 --country CAN            # energy + CO2 of this machine, sealed in a capsule
 morie pipeline --modules power-design -y             # modules + emissions tracking + capsule
 morie verify-pollution --pollutant no2 --demo        # pollution -> health causal pipeline
@@ -280,9 +296,9 @@ For the planned roadmap see [ROADMAP.md](https://github.com/rootcoder007/morie/b
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
-- **Curated data**: <https://data.rmorie.com> — the BigQuery-built tables, opened by the same key, issued on request at <https://rmorie.com/access>; `/browse` for SQL in the browser.
+- **Curated data**: <https://data.rmorie.com> — the curated tables, opened by a personal data key (`morie login`: GitHub or an emailed code; or ask at <https://rmorie.com/access>), each checked against its SHA-256; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
-- **Hosted LLM tier**: <https://llm.rmorie.com> — the last resort behind `morie ask`, after a local Ollama and every key of your own. Keys are issued on request at <https://rmorie.com/access> and stored with `morie login --token`; `morie login` (GitHub) and `morie login --email you@example.com` still work for accounts that have them. The endpoints and the model list come from a signed services document the package verifies before use, so they can change without a release. On a server or over SSH, `morie login --no-browser` prints a link and a code to open on any device (1.4.0 opens no browser there on its own); `morie models` lists the models on your key and `morie ask --model NAME` picks one; see the [hosted tier docs](https://rootcoder007.github.io/morie/hosted.html). The tier serves ollama.com cloud models and additional AI models (kimi-k2.6:cf, kimi-k2.7-code:cf, deepseek-v4-pro:cf, deepseek-v4-flash:cf, glm-5.2:cf, glm-5.3:cf, glm-5.3-flash:cf, gpt-oss-120b:cf, gpt-oss-20b:cf, llama-4-scout:cf, qwen3.8-27b:cf, nemotron-3-120b:cf and gemma-4-26b:cf); a rate-limited cloud model falls back to one of them.
+- **Language models**: none are hosted; bring your own. `morie ask` uses your own OpenAI-compatible server, then a provider whose key is set (OpenAI, Anthropic, Google Gemini, OpenRouter, Groq, Mistral and more, 16 in all), then an Ollama server (`ollama serve`); `morie config setup` walks through it and `morie doctor` says which route answers. The same settings file serves rmoriebricklayer's `rmbl config`. See the [language-model docs](https://rootcoder007.github.io/morie/hosted.html).
 
 ## Citation
 

@@ -53,7 +53,25 @@ jobs:
       - name: System libs for rmoriebricklayer source build
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
-        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        run: |
+          install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
@@ -64,7 +82,25 @@ jobs:
           needs: coverage
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
-        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        run: |
+          install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
       - name: Run covr
         # quiet = FALSE on purpose: this step runs ~2h (it instruments
@@ -107,7 +143,25 @@ jobs:
       - name: System libs for rmoriebricklayer source build
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
-        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        run: |
+          install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
@@ -117,7 +171,25 @@ jobs:
           extra-packages: any::lintr github::stan-dev/cmdstanr
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
-        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        run: |
+          install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
       - name: Run lintr
         run: |
@@ -148,7 +220,25 @@ jobs:
       - name: System libs for rmoriebricklayer source build
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
-        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        run: |
+          install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
@@ -158,7 +248,25 @@ jobs:
           extra-packages: any::goodpractice any::rcmdcheck any::covr any::cyclocomp any::lintr
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
-        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        run: |
+          install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
       - name: Run goodpractice
         run: |
@@ -205,7 +313,25 @@ jobs:
       - name: System libs for rmoriebricklayer source build
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libssl-dev
       - name: Pre-install rmoriebricklayer (transitive via rmoriedata; r-universe)
-        run: install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+        run: |
+          install.packages("rmoriebricklayer", repos = c("https://rootcoder007.r-universe.dev", "https://cloud.r-project.org"))
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
@@ -228,7 +354,25 @@ jobs:
         shell: Rscript {0}
 
       - name: Reinstall rmoriebricklayer (overwrite any cache-restored 0.2.0)
-        run: install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+        run: |
+          install.packages("rmoriebricklayer", repos = "https://rootcoder007.r-universe.dev")
+          # r-universe serves the released build; a branch that raises the floor in DESCRIPTION is
+          # ahead of it, so the floor and the branch are read from DESCRIPTION and built from GitHub
+          # when the installed build is older (pak honours Remotes, install.packages() does not)
+          desc <- read.dcf(if (file.exists("r-package/morie/DESCRIPTION")) "r-package/morie/DESCRIPTION" else "DESCRIPTION")
+          imports <- gsub("[[:space:]]+", " ", c(desc[1, intersect(c("Imports", "Depends"), colnames(desc))], ""))
+          floor <- sub(".*rmoriebricklayer \\(>= ([0-9.]+)\\).*", "\\1", paste(imports, collapse = " "))
+          if (!grepl("^[0-9.]+$", floor)) floor <- "0.0.0"
+          remotes <- if ("Remotes" %in% colnames(desc)) desc[1, "Remotes"] else ""
+          ref <- sub(".*rmorie-bricklayer@([A-Za-z0-9._/-]+).*", "\\1", remotes)
+          if (identical(ref, remotes) || !grepl("^[A-Za-z0-9._/-]+$", ref)) ref <- "main"
+          if (!nzchar(system.file(package = "rmoriebricklayer")) ||
+              utils::packageVersion("rmoriebricklayer") < floor) {
+            tf <- tempfile(fileext = ".tar.gz")
+            download.file(sprintf("https://github.com/rootcoder007/rmorie-bricklayer/archive/%s.tar.gz", ref),
+                          tf, mode = "wb", quiet = TRUE)
+            install.packages(tf, repos = NULL, type = "source")
+          }
         shell: Rscript {0}
       - name: Run pkgcheck
         env:
@@ -274,7 +418,7 @@ jobs:
           '
 
       - name: Upload pkgcheck markdown
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pkgcheck-markdown
           path: r-package/morie/pkgcheck.md

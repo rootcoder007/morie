@@ -1,4 +1,4 @@
-"""Numerical correctness eval harness for morie.fn.
+"""Numerical correctness evaluation harness for morie.fn.
 
 Goal: gate every fn behind a golden test before PyPI release. Without a
 gate, the fn/ tree balloons faster than correctness can be verified, and
@@ -201,7 +201,7 @@ def run_golden(callable_path: str, fn_name: str, source: str, cases: Iterable[Go
     for case in cases:
         try:
             actual = fn(**case.inputs)
-        except Exception as e:  # noqa: BLE001 -- eval gate must capture all
+        except Exception as e:  # noqa: BLE001 -- evaluation gate must capture all
             report.results.append(CaseResult(case=case, actual=None, status="error", detail=f"{type(e).__name__}: {e}"))
             continue
         if _is_stub(actual):

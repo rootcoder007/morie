@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from . import _array_core as np
 from ._containers import SpatialResult
+from ._spdiag import eigen_logdet, eigenvalues
 
 
 def sar_lag_model(
@@ -49,7 +50,8 @@ def sar_lag_model(
     W = np.asarray(W, dtype=np.float64)
     n = len(Z)
 
-    eigs = np.real(np.linalg.eigvals(W))
+    evc = eigenvalues(W)
+    eigs = np.array([v.real for v in evc])
     rho_min = 1.0 / min(eigs.min(), -0.01) + 0.01
     rho_max = 1.0 / max(eigs.max(), 0.01) - 0.01
     rho_grid = np.linspace(max(rho_min, -0.99), min(rho_max, 0.99), 50)
@@ -68,7 +70,7 @@ def sar_lag_model(
         sigma2 = np.sum(resid**2) / n
         if sigma2 <= 0:
             continue
-        sign, logdet = np.linalg.slogdet(A)
+        sign, logdet = eigen_logdet(evc, rho)  # Ord (1975): O(n) per rho, not an LU
         if sign <= 0:
             continue
         ll = -0.5 * n * np.log(2 * np.pi * sigma2) + logdet - 0.5 * n

@@ -67,20 +67,33 @@ def schabenberger_wiener_khinchin(cov_func, omega=None, h_max=200.0, n=40001):
     # the range there makes the answer worse, not better.
     dh = float(h[1] - h[0])
     w_nyq = 0.5 * np.pi / dh
-    wide = np.linspace(-w_nyq, w_nyq, 20001)
-    sw = np.array([np.trapezoid(np.cos(w * h) * ch, h) / (2 * np.pi) for w in wide])
+    # integral of s over [-w_nyq, w_nyq] by the trapezoid rule on a
+    # 20001-node omega grid. Both rules are linear, so the order of the
+    # two sums can be swapped, and the omega rule applied to cos(omega h)
+    # has a closed form (a Dirichlet kernel):
+    #   sum_k cos(w_k h) = sin(K d h / 2) / sin(d h / 2),  K nodes, step d,
+    # minus half of each endpoint term. That is the same discrete double
+    # sum, but O(n) rather than the O(n * 20001) = 8e8 cosines the
+    # explicit 20001 x 40001 table took -- many minutes on the array core.
+    K = 20001
+    dw = 2.0 * w_nyq / (K - 1)
+    half = 0.5 * dw * h
+    sh = np.sin(half)
+    dirichlet = np.where(sh == 0, float(K), np.sin(K * half) / np.where(sh == 0, 1.0, sh))
+    rule_w = dw * (dirichlet - np.cos(w_nyq * h))
+    integrated = float(np.trapezoid(rule_w * ch, h) / (2 * np.pi))
     return RichResult(
         title="Wiener-Khinchin pair",
         summary_lines=[
             ("C(0)", var),
-            ("integral of s", float(np.trapezoid(sw, wide))),
+            ("integral of s", integrated),
             ("Nyquist omega", float(w_nyq)),
         ],
         payload={
             "omega": omega,
             "spectral_density": s,
             "variance": var,
-            "integrated_density": float(np.trapezoid(sw, wide)),
+            "integrated_density": integrated,
             "nyquist_omega": float(w_nyq),
         },
     )

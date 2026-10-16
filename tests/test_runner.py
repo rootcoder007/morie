@@ -101,16 +101,27 @@ def test_main_lists_modules(monkeypatch, capsys):
     assert "power-design" in captured.out
 
 
-def test_models_verb_prints_hosted_and_local_lists(monkeypatch, capsys):
-    import morie.runner as runner
-    from morie import hosted
+def test_models_verb_lists_the_route_models(monkeypatch, capsys):
+    from morie import llm, providers
 
-    monkeypatch.setattr(hosted, "models_lines", lambda: ["Hosted tier (x); default marked *:", "  * m:cloud"])
-    monkeypatch.setattr(runner, "_local_models_line", lambda: "Local Ollama: not reachable at http://localhost:11434")
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setenv("MORIE_GROQ_MODEL", "llama-b")
+    monkeypatch.setenv("OLLAMA_HOST", "off")
+    monkeypatch.delenv("MORIE_LLM_BASE_URL", raising=False)
+    monkeypatch.delenv("LLM_API_BASE_URL", raising=False)
+    monkeypatch.setattr(providers, "list_models", lambda pid, timeout=10.0: ["llama-a", "llama-b"])
+    llm._reset_route_cache()
     monkeypatch.setattr("sys.argv", ["morie", "models"])
     assert main() == 0
     out = capsys.readouterr().out
-    assert "  * m:cloud" in out and "Local Ollama: not reachable" in out and "morie ask --model NAME" in out
+    assert "Groq; the model in use is marked *:" in out and "  * llama-b" in out and "    llama-a" in out
+    monkeypatch.setattr("sys.argv", ["morie", "models", "--route", "hosted"])
+    assert main() == 2
+    assert "retired" in capsys.readouterr().out
+    monkeypatch.delenv("GROQ_API_KEY")
+    monkeypatch.setattr("sys.argv", ["morie", "models"])
+    assert main() == 1
+    assert "ask has no route" in capsys.readouterr().out
 
 
 def test_main_impl_does_not_shadow_path():

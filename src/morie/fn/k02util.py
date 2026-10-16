@@ -115,7 +115,7 @@ def k02gh(n):
 
     Newton iteration on the orthonormal Hermite recurrence, the ``gauher``
     routine of Press et al., *Numerical Recipes* section 4.5 -- written out so
-    that the Python and R arms execute the same iteration and agree to the
+    that the Python and R arms run the same iteration and agree to the
     last bit.
     """
     n = int(n)

@@ -3,6 +3,7 @@
 from . import _array_core as np
 from ._containers import DescriptiveResult
 from ._sci_core import optimize
+from ._spdiag import eigen_logdet, eigenvalues
 
 
 def spatial_lag(y: np.ndarray, X: np.ndarray, W: np.ndarray) -> DescriptiveResult:
@@ -32,7 +33,8 @@ def spatial_lag(y: np.ndarray, X: np.ndarray, W: np.ndarray) -> DescriptiveResul
         X = X.reshape(-1, 1)
     if W.shape != (n, n) or X.shape[0] != n:
         raise ValueError("Dimension mismatch.")
-    eigenvalues_W = np.real(np.linalg.eigvals(W))
+    evc = eigenvalues(W)
+    eigenvalues_W = np.array([v.real for v in evc])
     rho_min, rho_max = 1.0 / min(eigenvalues_W.min(), -0.01), 1.0 / max(eigenvalues_W.max(), 0.01)
     rho_min, rho_max = max(rho_min, -0.99), min(rho_max, 0.99)
 
@@ -42,7 +44,7 @@ def spatial_lag(y: np.ndarray, X: np.ndarray, W: np.ndarray) -> DescriptiveResul
         e = y_star - X @ beta
         sigma2 = np.dot(e, e) / n
         ll = -n / 2 * np.log(2 * np.pi * sigma2) - np.sum(e**2) / (2 * sigma2)
-        sign, logdet = np.linalg.slogdet(np.eye(n) - rho * W)
+        sign, logdet = eigen_logdet(evc, rho)  # Ord (1975): O(n) per rho, not an LU
         if sign > 0:
             ll += logdet
         return -ll

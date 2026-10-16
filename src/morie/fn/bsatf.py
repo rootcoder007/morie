@@ -147,34 +147,46 @@ def _tfneed(x, name="x", minlen=2):
 
 
 def _tfdft(x):
-    """Direct DFT.  X[k] = sum_n x[n] exp(-j 2 pi k n / N).  O(N^2)."""
+    """Direct DFT.  X[k] = sum_n x[n] exp(-j 2 pi k n / N).  O(N^2).
+
+    Deliberately not an FFT: the R arm (.tf_dft) sums the same terms the
+    same way, so the two agree to the bit. The per-term expressions are
+    unchanged; each cos(w n) and sin(w n) is now evaluated once per term
+    (it was evaluated twice, once for each part) and the real and
+    imaginary parts are split out once, not type-tested per term.
+    """
     n = len(x)
+    a = [v.real if isinstance(v, complex) else v for v in x]
+    b = [v.imag if isinstance(v, complex) else 0.0 for v in x]
+    idx = range(n)
     out = []
     for k in range(n):
         w = -2.0 * pi * k / n
+        cs = [cos(w * i) for i in idx]
+        sn = [sin(w * i) for i in idx]
         # (a + jb)(cos + j sin) = (a cos - b sin) + j(a sin + b cos)
-        re = fsum(
-            (v.real if isinstance(v, complex) else v) * cos(w * i)
-            - (v.imag if isinstance(v, complex) else 0.0) * sin(w * i)
-            for i, v in enumerate(x)
-        )
-        im = fsum(
-            (v.real if isinstance(v, complex) else v) * sin(w * i)
-            + (v.imag if isinstance(v, complex) else 0.0) * cos(w * i)
-            for i, v in enumerate(x)
-        )
+        re = fsum([av * c - bv * s_ for av, bv, c, s_ in zip(a, b, cs, sn)])
+        im = fsum([av * s_ + bv * c for av, bv, c, s_ in zip(a, b, cs, sn)])
         out.append(complex(re, im))
     return out
 
 
 def _tfidft(X):
-    """Direct inverse DFT.  x[n] = (1/N) sum_k X[k] exp(+j 2 pi k n / N)."""
+    """Direct inverse DFT.  x[n] = (1/N) sum_k X[k] exp(+j 2 pi k n / N).
+
+    Same terms as before (and as the R arm), each trig value computed once.
+    """
     n = len(X)
+    a = [v.real for v in X]
+    b = [v.imag for v in X]
+    idx = range(n)
     out = []
     for i in range(n):
         w = 2.0 * pi * i / n
-        re = fsum(X[k].real * cos(w * k) - X[k].imag * sin(w * k) for k in range(n))
-        im = fsum(X[k].imag * cos(w * k) + X[k].real * sin(w * k) for k in range(n))
+        cs = [cos(w * k) for k in idx]
+        sn = [sin(w * k) for k in idx]
+        re = fsum([av * c - bv * s_ for av, bv, c, s_ in zip(a, b, cs, sn)])
+        im = fsum([bv * c + av * s_ for av, bv, c, s_ in zip(a, b, cs, sn)])
         out.append(complex(re / n, im / n))
     return out
 

@@ -949,6 +949,8 @@ class PolyglotEngine:
                 # swallowed `stop("boom")` and could fill up and block R)
                 stderr=subprocess.STDOUT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 bufsize=1,
             )
             return True
@@ -965,6 +967,8 @@ class PolyglotEngine:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 bufsize=1,
             )
             return True
@@ -981,6 +985,8 @@ class PolyglotEngine:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 bufsize=1,
                 env={**os.environ, "NODE_NO_READLINE": "1"},
             )
@@ -1253,6 +1259,8 @@ class PolyglotEngine:
                 ["Rscript", "-e", code],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=_run_timeout(),
             )
             return ExecResult(
@@ -1319,6 +1327,8 @@ class PolyglotEngine:
                 [self._shell, "-c", code],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=_run_timeout(),
                 env={**os.environ, **{k: str(v) for k, v in self._py_ns.items() if isinstance(v, str | int | float)}},
             )
@@ -1373,6 +1383,8 @@ class PolyglotEngine:
                 ["julia", "-e", code],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=_run_timeout(),
             )
             return ExecResult(
@@ -1418,6 +1430,8 @@ class PolyglotEngine:
                 ["node", "-e", code],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=_run_timeout(),
             )
             return ExecResult(
@@ -1441,14 +1455,26 @@ class PolyglotEngine:
         try:
             if run_cmd is not None:
                 comp = subprocess.run(
-                    compile_cmd + [tmp.name], capture_output=True, text=True, timeout=_compile_timeout()
+                    compile_cmd + [tmp.name],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=_compile_timeout(),
                 )
                 if comp.returncode != 0:
                     return ExecResult(language=lang, stderr=comp.stderr, success=False)
-                result = subprocess.run(run_cmd, capture_output=True, text=True, timeout=_run_timeout())
+                result = subprocess.run(
+                    run_cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=_run_timeout()
+                )
             else:
                 result = subprocess.run(
-                    compile_cmd + [tmp.name], capture_output=True, text=True, timeout=_compile_timeout()
+                    compile_cmd + [tmp.name],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=_compile_timeout(),
                 )
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
@@ -1470,7 +1496,14 @@ class PolyglotEngine:
         with tempfile.NamedTemporaryFile(suffix=".go", mode="w", delete=False) as tmp:
             tmp.write(code)
         try:
-            result = subprocess.run(["go", "run", tmp.name], capture_output=True, text=True, timeout=_compile_timeout())
+            result = subprocess.run(
+                ["go", "run", tmp.name],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_compile_timeout(),
+            )
             return ExecResult(language="go", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
@@ -1490,11 +1523,18 @@ class PolyglotEngine:
         out_bin = tmp.name.replace(".rs", "")
         try:
             comp = subprocess.run(
-                ["rustc", tmp.name, "-o", out_bin], capture_output=True, text=True, timeout=_compile_timeout()
+                ["rustc", tmp.name, "-o", out_bin],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language="rust", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                [out_bin], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=_run_timeout()
+            )
             return ExecResult(
                 language="rust", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1519,11 +1559,18 @@ class PolyglotEngine:
         out_bin = tmp.name.replace(".c", "")
         try:
             comp = subprocess.run(
-                ["cc", tmp.name, "-o", out_bin, "-lm"], capture_output=True, text=True, timeout=_compile_timeout()
+                ["cc", tmp.name, "-o", out_bin, "-lm"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language="c", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                [out_bin], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=_run_timeout()
+            )
             return ExecResult(language="c", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(
@@ -1547,11 +1594,15 @@ class PolyglotEngine:
                 ["c++", "-std=c++17", tmp.name, "-o", out_bin],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=_compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language="cpp", stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                [out_bin], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=_run_timeout()
+            )
             return ExecResult(
                 language="cpp", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1572,7 +1623,14 @@ class PolyglotEngine:
         with tempfile.NamedTemporaryFile(suffix=".ml", mode="w", delete=False) as tmp:
             tmp.write(code)
         try:
-            result = subprocess.run(["ocaml", tmp.name], capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                ["ocaml", tmp.name],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_run_timeout(),
+            )
             return ExecResult(
                 language="ocaml", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1588,7 +1646,14 @@ class PolyglotEngine:
 
     def _exec_lua(self, code: str) -> ExecResult:
         try:
-            result = subprocess.run(["lua", "-e", code], capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                ["lua", "-e", code],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_run_timeout(),
+            )
             return ExecResult(
                 language="lua", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1602,7 +1667,14 @@ class PolyglotEngine:
     def _exec_typescript(self, code: str) -> ExecResult:
         for runner in (["npx", "tsx", "-e"], ["npx", "ts-node", "-e"], ["deno", "eval"]):
             try:
-                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=_run_timeout())
+                result = subprocess.run(
+                    runner + [code],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=_run_timeout(),
+                )
                 return ExecResult(
                     language="typescript", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
@@ -1626,6 +1698,8 @@ class PolyglotEngine:
                 ["pdflatex", "-interaction=nonstopmode", "-output-directory", tmpdir, tex_path],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=60,
             )
             pdf_path = os.path.join(tmpdir, "input.pdf")
@@ -1649,7 +1723,9 @@ class PolyglotEngine:
         db_url = os.environ.get("MORIE_PGURL", os.environ.get("DATABASE_URL", ""))
         cmd = ["psql", db_url, "-c", code] if db_url else ["psql", "-c", code]
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=_run_timeout())
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=_run_timeout()
+            )
             return ExecResult(
                 language="psql", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
             )
@@ -1662,7 +1738,9 @@ class PolyglotEngine:
 
     def _exec_oneshot(self, code: str, lang: str, cmd: list, timeout: int = 30) -> ExecResult:
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+            result = subprocess.run(
+                cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout
+            )
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} not found", success=False)
@@ -1675,7 +1753,14 @@ class PolyglotEngine:
         with tempfile.NamedTemporaryFile(suffix=ext, mode="w", delete=False) as tmp:
             tmp.write(code)
         try:
-            result = subprocess.run(run_cmd + [tmp.name], capture_output=True, text=True, timeout=timeout)
+            result = subprocess.run(
+                run_cmd + [tmp.name],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout,
+            )
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} not found", success=False)
@@ -1698,11 +1783,20 @@ class PolyglotEngine:
                 compile_cmd + [tmp.name, "-o", out_bin],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=timeout or _compile_timeout(),
             )
             if comp.returncode != 0:
                 return ExecResult(language=lang, stderr=comp.stderr, success=False)
-            result = subprocess.run([out_bin], capture_output=True, text=True, timeout=timeout or _run_timeout())
+            result = subprocess.run(
+                [out_bin],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout or _run_timeout(),
+            )
             return ExecResult(language=lang, stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0)
         except FileNotFoundError:
             return ExecResult(language=lang, stderr=f"{lang} compiler not found", success=False)
@@ -1732,11 +1826,23 @@ class PolyglotEngine:
         try:
             with open(java_path, "w") as f:
                 f.write(code)
-            comp = subprocess.run(["javac", java_path], capture_output=True, text=True, timeout=_compile_timeout())
+            comp = subprocess.run(
+                ["javac", java_path],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_compile_timeout(),
+            )
             if comp.returncode != 0:
                 return ExecResult(language="java", stderr=comp.stderr, success=False)
             result = subprocess.run(
-                ["java", "-cp", tmpdir, "Main"], capture_output=True, text=True, timeout=_run_timeout()
+                ["java", "-cp", tmpdir, "Main"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_run_timeout(),
             )
             return ExecResult(
                 language="java", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
@@ -1771,7 +1877,12 @@ class PolyglotEngine:
             tmp.write(code)
         try:
             result = subprocess.run(
-                ["nim", "r", "--hints:off", tmp.name], capture_output=True, text=True, timeout=_run_timeout()
+                ["nim", "r", "--hints:off", tmp.name],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=_run_timeout(),
             )
             return ExecResult(
                 language="nim", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
@@ -1801,7 +1912,14 @@ class PolyglotEngine:
     def _exec_scheme(self, code: str) -> ExecResult:
         for runner in (["racket", "-e"], ["guile", "-c"], ["chicken-csi", "-e"]):
             try:
-                result = subprocess.run(runner + [code], capture_output=True, text=True, timeout=_run_timeout())
+                result = subprocess.run(
+                    runner + [code],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=_run_timeout(),
+                )
                 return ExecResult(
                     language="scheme", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
@@ -1822,7 +1940,14 @@ class PolyglotEngine:
     def _exec_powershell(self, code: str) -> ExecResult:
         for ps in ("pwsh", "powershell"):
             try:
-                result = subprocess.run([ps, "-Command", code], capture_output=True, text=True, timeout=_run_timeout())
+                result = subprocess.run(
+                    [ps, "-Command", code],
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    timeout=_run_timeout(),
+                )
                 return ExecResult(
                     language="powershell", stdout=result.stdout, stderr=result.stderr, success=result.returncode == 0
                 )
@@ -1849,6 +1974,8 @@ class PolyglotEngine:
                 ["Rscript", "-e", f'rmarkdown::render("{tmp.name}", quiet=TRUE)'],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=120,
             )
             html_path = tmp.name.replace(".Rmd", ".html")

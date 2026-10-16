@@ -14,7 +14,6 @@ import importlib
 import importlib.util
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -48,7 +47,7 @@ def _check_import(package: str) -> tuple[bool, str]:
 
 
 def _check_interactive_layer() -> tuple[bool, str]:
-    """The repl/exec/agent/edit/tui verbs need five modules the wheel leaves out."""
+    """The repl/run/agent/edit/tui verbs need five modules the wheel leaves out."""
     try:
         from . import _interactive as inter
 
@@ -62,9 +61,26 @@ def _check_interactive_layer() -> tuple[bool, str]:
             return True, f"installed for morie {iv} in {d}"
         if have:
             return False, f"installed for morie {iv} (this is {inter.package_version()}): morie interactive install"
-        return False, "not installed (morie repl/exec/agent/edit/tui): morie interactive install"
+        return (
+            False,
+            "not installed (morie repl/exec/agent/edit/tui, and R, Docker and the other programs morie starts): morie interactive install",
+        )
     except Exception as exc:
         return False, f"error: {exc}"
+
+
+def _probe(cmd: list[str]) -> str | None:
+    """A program's version line, or None when the launcher (interactive layer) is not installed."""
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        sp = launcher("Checking program versions", offer=False)
+    except LayerMissingError:
+        return None
+    return sp.check_output(cmd, stderr=sp.STDOUT, timeout=5).decode().strip()
+
+
+_NO_LAUNCHER = "found (its version shows once `morie interactive install` has run)"
 
 
 def _check_r() -> tuple[bool, str]:
@@ -72,33 +88,49 @@ def _check_r() -> tuple[bool, str]:
     if rscript is None:
         return False, "Rscript not found (optional)"
     try:
-        out = subprocess.check_output(["Rscript", "--version"], stderr=subprocess.STDOUT, timeout=5).decode().strip()
+        out = _probe(["Rscript", "--version"])
+        if out is None:
+            return True, _NO_LAUNCHER
         # "R scripting front-end version 4.4.1 (2024-06-14)"
         version = out.split("version")[-1].strip().split()[0] if "version" in out else out
         return True, version
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+    except Exception:  # noqa: BLE001 - a non-zero exit, a timeout or an OS error: it did not run
         return False, "Rscript found but failed to run"
 
 
 def _check_ollama() -> tuple[bool, str]:
+    """The Ollama server ollama.url names (OLLAMA_HOST, else localhost): its models, or why it is not used."""
+    from . import llm
+
+    base = llm._ollama_base_url()
+    if not base:
+        return False, "switched off (ollama.url = off)"
+    tags = llm._ollama_tags()
+    if tags is None:
+        return False, f"not reachable at {base} (optional)"
+    if not tags:
+        if llm._cfg.value("ollama.model"):
+            return True, f"running at {base}, no models listed; ollama.model = {llm._ollama_model()}"
+        return False, f"running at {base} but no model pulled, so ask skips it (`ollama pull gemma4:e2b`)"
+    labels = [t["name"] for t in tags[:3]]
+    more = f" (+{len(tags) - 3} more)" if len(tags) > 3 else ""
+    return True, f"{', '.join(labels)}{more}; default {llm._ollama_model()}"
+
+
+def _check_route() -> tuple[bool, str]:
+    """The route `morie ask` takes now (route = auto|own|ollama|<provider>, `morie config`)."""
+    from .llm import route_summary
+
     try:
-        from .loc import LocalOllama
-
-        client = LocalOllama()
-        if not client.is_running():
-            return False, f"not reachable at {client.base_url} (optional)"
-        models = client.list_models()
-        if not models:
-            return True, "running (no models pulled)"
-        labels = [f"{m.name} ({m.quantization})" if m.quantization else m.name for m in models[:3]]
-        return True, ", ".join(labels)
-    except Exception:
-        url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-        return False, f"not reachable at {url} (optional)"
+        line = route_summary()
+    except Exception as exc:  # noqa: BLE001 - a bad saved route, an unreadable services document
+        return False, f"error: {exc}"
+    return (not line.startswith("ask has no route")), f"{line}; change: morie config set route auto|own|ollama|PROVIDER"
 
 
-def _check_hosted() -> tuple[bool, str]:
-    """The hosted tier: logged in and answering, logged in but unreachable, or not logged in."""
+def _check_data_key() -> tuple[bool, str]:
+    """The data key for data.rmorie.com: signed in and accepted, signed in but refused or
+    unreachable, or not signed in (the curated tables only; no model uses it)."""
     from .hosted import status
 
     try:
@@ -106,40 +138,37 @@ def _check_hosted() -> tuple[bool, str]:
     except Exception as exc:  # pragma: no cover - defensive
         return False, f"error: {exc}"
     if not s["base_url"]:
-        return False, "disabled (MORIE_HOSTED_BASE_URL is empty)"
+        return False, "the services document switches the data service off"
     if not s["logged_in"]:
-        return False, "not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
+        return (
+            False,
+            "not signed in (optional, for the curated tables) -- `morie login` or `morie login --email ADDRESS`",
+        )
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
         from .hosted import hosted_problem_line
 
         return False, f"{hosted_problem_line()}{who}"
-    from .hosted import hosted_model_available, hosted_models
-
-    listed = hosted_models() or []
-    tail = f"; models: {', '.join(listed)} (default {hosted_model_available()})" if listed else ""
-    return True, f"logged in{who}, gateway answering{tail}"
+    return True, f"signed in{who}; {s['base_url']} accepts the key"
 
 
-def _check_gemini() -> tuple[bool, str]:
-    key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if key:
-        model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        return True, f"key set, model={model}"
-    return False, "GEMINI_API_KEY not set (optional)"
+def _check_providers() -> tuple[bool, str]:
+    """The providers whose key is set (bring your own key)."""
+    from . import providers
+
+    keyed = providers.with_key()
+    if keyed:
+        return True, ", ".join(f"{p} (model {providers.model(p) or 'see morie models'})" for p in keyed)
+    return False, "no provider key set (optional): ANTHROPIC_API_KEY, OPENAI_API_KEY, ... or `morie config setup`"
 
 
 def _check_openai_compat() -> tuple[bool, str]:
-    base = os.environ.get("LLM_API_BASE_URL", "").strip()
-    key = os.environ.get("LLM_API_KEY", "").strip()
-    if base and key:
-        return True, base
-    return False, "LLM_API_BASE_URL / LLM_API_KEY not set (optional)"
+    from .llm import _api_base_url, _api_model
 
-
-def _check_openai() -> tuple[bool, str]:
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    return (True, "key set") if key else (False, "OPENAI_API_KEY not set (optional)")
+    base = _api_base_url()
+    if base:
+        return True, f"{base} (model {_api_model()})"
+    return False, "not set (optional): morie config set own.url URL, or morie provider set"
 
 
 def _check_datasets() -> tuple[bool, str]:
@@ -169,9 +198,9 @@ def _check_docker() -> tuple[bool, str]:
     if docker is None:
         return False, "docker not found (optional)"
     try:
-        out = subprocess.check_output(["docker", "--version"], stderr=subprocess.STDOUT, timeout=5).decode().strip()
-        return True, out
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+        out = _probe(["docker", "--version"])
+        return True, _NO_LAUNCHER if out is None else out
+    except Exception:  # noqa: BLE001 - a non-zero exit, a timeout or an OS error: it did not run
         return False, "docker found but not running (optional)"
 
 
@@ -283,17 +312,17 @@ def run_checks() -> dict[str, Any]:
     ok, detail = _check_ollama()
     _add("Ollama (local)", ok, detail, required=False)
 
-    ok, detail = _check_hosted()
-    _add("Hosted LLM (llm.rmorie.com)", ok, detail, required=False)
-
-    ok, detail = _check_gemini()
-    _add("Gemini API key", ok, detail, required=False)
+    ok, detail = _check_providers()
+    _add("Provider keys", ok, detail, required=False)
 
     ok, detail = _check_openai_compat()
-    _add("OpenAI-compat API", ok, detail, required=False)
+    _add("Own endpoint", ok, detail, required=False)
 
-    ok, detail = _check_openai()
-    _add("OpenAI API key", ok, detail, required=False)
+    ok, detail = _check_data_key()
+    _add("Data key (data.rmorie.com)", ok, detail, required=False)
+
+    ok, detail = _check_route()
+    _add("LLM route (morie ask)", ok, detail, required=False)
 
     # Data
     ok, detail = _check_datasets()
@@ -442,7 +471,13 @@ def _heal(results: dict[str, Any]) -> bool:
                 print(f"  [hint] {pip_name}: this environment has no pip; run `uv pip install {pip_name}`")
                 continue
             print(f"  ...    installing {pip_name} ({' '.join(installer[-3:])}) ...")
-            rc = subprocess.run([*installer, pip_name]).returncode
+            from ._interactive import LayerMissingError, launcher
+
+            try:
+                rc = launcher("Installing missing packages").run([*installer, pip_name]).returncode
+            except LayerMissingError as e:
+                print(f"  [skip] {pip_name}: {e}")
+                continue
             print(f"  [{'ok' if rc == 0 else 'fail'}]   install {pip_name}")
             fixed_any = fixed_any or rc == 0
         elif label == "morie version":

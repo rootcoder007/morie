@@ -12,7 +12,7 @@ publication record is pharmacogenetics rather than clearance prediction. It
 is one of the wave's fabricated references and is not cited here.
 
 The paper's subject is a failure, not a method: scaling in vitro clearance to
-the whole liver *systematically underpredicts*, and the underprediction gets
+the whole liver *consistently underpredicts*, and the underprediction gets
 worse as in vivo clearance rises. This module implements the pipeline it
 uses to establish that, so the bias can be measured on the caller's own data
 rather than assumed away.
@@ -85,7 +85,7 @@ __all__ = [
     "blood_from_plasma",
 ]
 
-#: The paper's physiological scaling constants, by species and system.
+#: The paper's physiological scaling constants, by species and incubation.
 CONSTANTS = {
     "human": {
         "microsomes_pbsf": 40.0,  # mg microsomal protein / g liver
@@ -141,24 +141,30 @@ def blood_from_plasma(cl_plasma, fu_plasma, blood_plasma_ratio=None, charge="neu
     return float(cl_plasma) / rb, float(fu_plasma) / rb, rb
 
 
-def scale_to_liver(clint_in_vitro, fu_incubation, system="hepatocytes", species="human", pbsf=None, liver_weight=None):
+def scale_to_liver(
+    clint_in_vitro, fu_incubation, incubation="hepatocytes", species="human", pbsf=None, liver_weight=None
+):
     r"""Equation 3: scale in vitro :math:`CL_{int}` to predicted in vivo
     :math:`CL_{int,u}`.
 
-    Units follow the system: per :math:`10^6` cells for hepatocytes, per mg
+    Units follow the incubation: per :math:`10^6` cells for hepatocytes, per mg
     microsomal protein for microsomes, so the product with the PBSF and the
     liver weight lands in ml/min/kg.
     """
     if species not in CONSTANTS:
         raise ValueError("clrnt: species must be 'human' or 'rat'")
-    if system not in ("hepatocytes", "microsomes"):
-        raise ValueError("clrnt: system must be 'hepatocytes' or 'microsomes'")
+    if incubation not in ("hepatocytes", "microsomes"):
+        raise ValueError("clrnt: incubation must be 'hepatocytes' or 'microsomes'")
     if not 0.0 < float(fu_incubation) <= 1.0:
         raise ValueError("clrnt: the incubational unbound fraction must lie in (0, 1]")
     c = CONSTANTS[species]
-    p = (c["hepatocytes_pbsf"] if system == "hepatocytes" else c["microsomes_pbsf"]) if pbsf is None else float(pbsf)
+    p = (
+        (c["hepatocytes_pbsf"] if incubation == "hepatocytes" else c["microsomes_pbsf"])
+        if pbsf is None
+        else float(pbsf)
+    )
     lw = c["liver_weight"] if liver_weight is None else float(liver_weight)
-    if system == "hepatocytes":
+    if incubation == "hepatocytes":
         p = p / 1e6  # CLint is quoted per 10^6 cells
     return float(clint_in_vitro) * p * lw / float(fu_incubation)
 
@@ -230,7 +236,7 @@ def clrnt(
     fu_blood=None,
     log_pd=None,
     fu_incubation=None,
-    system="hepatocytes",
+    incubation="hepatocytes",
     species="human",
     liver_model="well_stirred",
     protein=1.0,
@@ -322,22 +328,22 @@ def clrnt(
         if lp is None:
             raise ValueError("clrnt: give either fu_incubation or log_pd so equations 1-2 can estimate it")
         fu_inc = [
-            fu_microsomes(lp[i], protein) if system == "microsomes" else fu_hepatocytes(lp[i], volume_ratio)
+            fu_microsomes(lp[i], protein) if incubation == "microsomes" else fu_hepatocytes(lp[i], volume_ratio)
             for i in range(n)
         ]
 
-    predicted = [scale_to_liver(cl_in[i], fu_inc[i], system, species) for i in range(n)]
+    predicted = [scale_to_liver(cl_in[i], fu_inc[i], incubation, species) for i in range(n)]
 
     payload = {
         "estimate": predicted[0] if single else predicted,
         "predicted": predicted[0] if single else predicted,
         "fu_incubation": fu_inc[0] if single else fu_inc,
-        "system": system,
+        "incubation": incubation,
         "species": species,
         "liver_model": liver_model,
         "constants": dict(CONSTANTS[species]),
         "blood_plasma_ratio": rb_used,
-        "note": "predictions of this kind are systematically LOW and the "
+        "note": "predictions of this kind are consistently LOW and the "
         "shortfall grows with in vivo clearance (Wood, Houston & "
         "Hallifax 2017); the accuracy block is how you measure it "
         "on your own data",

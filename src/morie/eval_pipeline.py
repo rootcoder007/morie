@@ -1,4 +1,4 @@
-"""Higher-level eval pipeline -- end-to-end integration gates over
+"""Higher-level evaluation pipeline -- end-to-end integration gates over
 BigQuery-mirrored datasets, each pinned to a published ground-truth
 claim about a headline coefficient or shape statistic.
 
@@ -17,7 +17,7 @@ Why this exists alongside ``morie.eval``:
     coefficient in range X" -- sourced from a peer-reviewed paper or a
     government report. When a gate fails, the bug is somewhere in the
     chain (data loading, canonicalisation, the model fit, the SE
-    formula); the eval points at the broken integration even when
+    formula); the evaluation points at the broken integration even when
     every per-fn unit test still passes.
 
 The harness ships seed gates against well-known public datasets. New
@@ -79,7 +79,7 @@ def _in_band(value: float, lo: float | None, hi: float | None) -> bool:
 
 
 def run_gate(g: DatasetGate) -> GateResult:
-    """Execute one gate end-to-end.  Catches all exceptions so the
+    """Run one gate end-to-end.  Catches all exceptions so the
     suite reports per-gate, not a single hard failure."""
     try:
         actual = g.runner(g.slug)

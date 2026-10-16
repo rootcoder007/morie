@@ -16,7 +16,7 @@ from morie.research.concentration import (
     concentration_gini,
 )
 from morie.research.contagion import contagion_branching, contagion_extinction
-from morie.research.court_backlog import backlog_censoring, court_backlog
+from morie.research.court_backlog import backlog_censoring, backlog_published, court_backlog
 from morie.research.dark_figure import (
     dark_figure_bounds,
     dark_figure_breakdown,
@@ -43,12 +43,71 @@ from morie.research.feedback_loop import (
     feedback_loop_sim,
     feedback_loop_urn_law,
 )
+from morie.research.identification import (
+    age_crime_panel_cov,
+    age_crime_type_cov,
+    concentration_null_bound,
+    contagion_moment_witness,
+    dark_figure_comparable,
+    dark_figure_no_interaction,
+    deterrence_logcost,
+    feedback_loop_envelope,
+    hotspot_threshold,
+    rank_persistence_null,
+    rif_gap,
+    rif_quantile,
+    shrinkage_factor_error,
+    spillover_ring_bound,
+    veil_of_darkness,
+    wald_iv,
+)
 from morie.research.incapacitation import incapacitation, incapacitation_career
-from morie.research.judge_iv import judge_iv, judge_iv_population, judge_slope_test
+from morie.research.judge_iv import judge_iv, judge_iv_population, judge_monotonicity, judge_slope_test
 from morie.research.lecam import two_point_bound
+from morie.research.library_scan import (
+    attenuation_two_regressor,
+    attractiveness_contraction,
+    cox_overdispersion,
+    design_effect_direction,
+    friedman_urn,
+    ht_elephant,
+    inspection_game,
+    instrumental_inequality,
+    misclassified_contrast,
+    misclassified_rd,
+    nonresponse_region,
+    ruin_probability,
+    sensitivity_amplification,
+    zip_vuong_boundary,
+)
+from morie.research.library_scan2 import (
+    adjustment_variances,
+    bayes_risk_dpi,
+    bellman_value,
+    blocking_crossover,
+    budget_optimum,
+    budget_rule,
+    calibration_flip,
+    design_sensitivity,
+    exposure_positivity,
+    extremal_index_clusters,
+    gamma_bound,
+    iv_natural_bounds,
+    moran_trend,
+    myopic_example,
+    nb_matches_zip,
+    outcome_test,
+    permutation_valid,
+    poisson_chernoff,
+    random_walk_exposure,
+    run_length_bound,
+    spatial_omission,
+    tail_ratio,
+    thinning_identification,
+)
 from morie.research.logit_separation import logit_separation
 from morie.research.meta_pooling import meta_dl_bias, meta_hksj, meta_random_effects
-from morie.research.recording_map import detection_rate_shift, recording_map
+from morie.research.recording_map import detection_rate_shift, recording_map, recording_regimes
 from morie.research.regression_to_mean import hotspot_shrinkage, regression_to_mean, shrinkage_loss
 from morie.research.selection import (
     age_crime_aggregate,
@@ -61,7 +120,7 @@ from morie.research.selection import (
     probability_of_necessity,
     relative_risk_from_or,
 )
-from morie.research.selective_labels import selective_labels
+from morie.research.selective_labels import selective_labels, selective_labels_judges
 from morie.research.sentence_bounds import (
     bounds_confidence,
     contaminated_bounds,
@@ -78,8 +137,62 @@ from morie.research.spillover import (
 )
 
 __all__ = [
+    "nb_matches_zip",
+    "gamma_bound",
+    "blocking_crossover",
+    "adjustment_variances",
+    "budget_optimum",
+    "outcome_test",
+    "spatial_omission",
+    "iv_natural_bounds",
+    "design_sensitivity",
+    "moran_trend",
+    "exposure_positivity",
+    "permutation_valid",
+    "thinning_identification",
+    "poisson_chernoff",
+    "random_walk_exposure",
+    "extremal_index_clusters",
+    "tail_ratio",
+    "calibration_flip",
+    "bayes_risk_dpi",
+    "bellman_value",
+    "myopic_example",
+    "budget_rule",
+    "run_length_bound",
+    "attenuation_two_regressor",
+    "friedman_urn",
+    "ruin_probability",
+    "cox_overdispersion",
+    "zip_vuong_boundary",
+    "nonresponse_region",
+    "instrumental_inequality",
+    "misclassified_rd",
+    "misclassified_contrast",
+    "sensitivity_amplification",
+    "design_effect_direction",
+    "ht_elephant",
+    "attractiveness_contraction",
+    "inspection_game",
+    "age_crime_panel_cov",
+    "feedback_loop_envelope",
+    "rank_persistence_null",
+    "spillover_ring_bound",
+    "hotspot_threshold",
+    "dark_figure_comparable",
+    "age_crime_type_cov",
+    "concentration_null_bound",
+    "contagion_moment_witness",
+    "dark_figure_no_interaction",
+    "deterrence_logcost",
+    "rif_gap",
+    "rif_quantile",
+    "shrinkage_factor_error",
+    "veil_of_darkness",
+    "wald_iv",
     "age_crime_aggregate",
     "backlog_censoring",
+    "backlog_published",
     "bounds_confidence",
     "cheeger_bound",
     "collider_arrest",
@@ -123,6 +236,7 @@ __all__ = [
     "judge_iv",
     "judge_iv_population",
     "judge_slope_test",
+    "judge_monotonicity",
     "logit_rescale",
     "logit_separation",
     "meta_dl_bias",
@@ -131,9 +245,11 @@ __all__ = [
     "probability_of_necessity",
     "ranking_resolution",
     "recording_map",
+    "recording_regimes",
     "regression_to_mean",
     "relative_risk_from_or",
     "selective_labels",
+    "selective_labels_judges",
     "sentence_effect_bounds",
     "sentence_effect_mtr",
     "sentence_effect_mts",

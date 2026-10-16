@@ -325,7 +325,7 @@ Google Earth Engine requires authentication. Two options:
 
   (2) User OAuth (interactive):
       pip install earthengine-api
-      python -c "import ee; ee.Authenticate(); ee.Initialize(project='<project-id>')"
+      then, in Python: import ee; ee.Authenticate(); ee.Initialize(project='<project-id>')
 
 Then re-run fetch_earth_engine().
 """

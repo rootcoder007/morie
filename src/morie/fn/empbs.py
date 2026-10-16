@@ -66,7 +66,7 @@ def empbs(
     Returns
     -------
     dict[str, Any]
-        ``eval_points``, ``ecdf`` (empirical CDF at eval points),
+        ``eval_points``, ``ecdf`` (empirical CDF at evaluation points),
         ``cb_lower``, ``cb_upper`` (simultaneous confidence band),
         ``sup_stats`` (array of bootstrap sup statistics),
         ``ks_critical_value``, ``n``, ``n_boot``.

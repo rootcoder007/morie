@@ -15,7 +15,7 @@ Or set PERSEUS_CLOUD_URL in .env and it auto-connects.
 
 Security: The relay only exposes Perseus agent capabilities (search, run
 functions, read files within sandbox); with the interactive layer the agent's tools
-can also run shell commands, execute code and write files on the serving machine, which is
+can also run shell commands, run code and write files on the serving machine, which is
 why a bind beyond loopback requires --token. No filesystem
 writes outside the project. Optional token auth for production use.
 """
@@ -156,7 +156,7 @@ class PerseusCloudClient:
 
 def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
     """Answer through the local tool-calling agent when it works, otherwise through the
-    provider chain (hosted tier, your own endpoint, ...). 503 when nothing answered: a
+    route chain (your own endpoint, a provider key, Ollama). 503 when nothing answered: a
     relay must never hand a client "LLM request failed" with status 200."""
     if agent is not None:
         try:
@@ -179,7 +179,7 @@ def answer_question(agent: Any, question: str) -> tuple[int, dict[str, Any]]:
     text = str(payload.get("output_text") or "")
     if payload.get("mode") == "local_fallback":
         return 503, {
-            "error": "no LLM backend reachable: run `morie login` (GitHub, or --email you@example.com) for the hosted tier or start Ollama",
+            "error": "no language model set up: a provider's key (e.g. ANTHROPIC_API_KEY), your own server, or Ollama (`morie config setup`)",
             "text": text,
             "tool_calls": [],
             "iterations": 0,

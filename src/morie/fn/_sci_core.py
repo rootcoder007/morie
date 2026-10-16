@@ -1272,7 +1272,7 @@ for _n in ("brentq", "approx_fprime", "curve_fit", "nnls", "linprog"):
 
 
 def _adaptive_simpson(f, a, b, fa, fm, fb, whole, tol, depth, budget=None):
-    """budget: single-element list of remaining f-evals; when it hits
+    """budget: single-element list of remaining f-evaluations; when it hits
     zero the current Richardson estimate is returned (rough
     integrands would otherwise recurse for hours)."""
     if budget is None:

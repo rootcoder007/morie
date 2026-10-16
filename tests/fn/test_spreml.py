@@ -78,6 +78,12 @@ def test_the_gradient_is_the_derivative_it_claims_to_be():
     assert np.max(np.abs(grad - num) / np.maximum(np.abs(num), 1e-12)) < 1e-6
 
 
+# 107 s on l14 (was ~290 s before the distance cache and the direct dR/da in
+# _schab_reml). Nearly all of it is replicate s = 1, whose REML optimum is
+# on the boundary nugget = 0: the logit-scale BFGS walks toward it until
+# max_iter, ~3165 likelihood evaluations at ~35 ms. The R arm runs the same
+# iteration, so the stopping rule is left as it is.
+@pytest.mark.timeout(600)
 def test_recovers_the_range_and_the_mean_over_replicates():
     """Judged over replicates, not one draw. The nugget is weakly identified
     at this sample size -- it trades off against microscale variation -- so

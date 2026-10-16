@@ -1,6 +1,8 @@
 # morie.fn -- function file (rootcoder007/morie)
 """Ordered-response maximum-score estimator."""
 
+from bisect import bisect_left
+
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -97,6 +99,7 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None, n_
     # W = sum_{m=0}^{M-1} I(Y* > alpha_m); alpha_0 = -inf contributes 1,
     # and Y = m means Y* passed exactly m of the finite cut-points
     W = 1.0 + yi.astype(float)
+    Wl = W.tolist()
 
     known = thresholds is not None
     if known:
@@ -131,8 +134,12 @@ def horowitz_ordered_max_score(x, y, thresholds=None, smoothed=False, h=None, n_
             Wim = (yi[:, None] > np.arange(M - 1)[None, :]).astype(float)
             s = np.sum((2.0 * Wim - 1.0) * stats.norm.cdf((v[:, None] - a[None, :]) / hh))
             return -s / n
-        pred = 1.0 + np.sum(v[:, None] > a[None, :], axis=1)
-        return float(np.mean(np.abs(W - pred)))
+        # pred_i = 1 + #{k : v_i > a_k}; the cut-points are sorted, so the
+        # count is a bisection. Broadcasting v against a built an n x (M-1)
+        # array per evaluation, and the d = 2 grid scan evaluates 2001
+        # times. Every term is an integer, so the sum is exact either way.
+        al = a.tolist()
+        return sum(abs(w - 1.0 - bisect_left(al, vi)) for w, vi in zip(Wl, v.tolist())) / n
 
     if known:
         # only beta is free, so the shared scale-normalised routine

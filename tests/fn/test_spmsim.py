@@ -5,6 +5,8 @@ Algorithm source: mgwr (Oshan, Li, Kang, Wolf & Fotheringham), mgwr/search.py
 (Fotheringham, Yang & Kang 2017) is paywalled and was not read.
 """
 
+import functools
+
 import pytest
 
 from morie.fn import _array_core as np
@@ -24,6 +26,17 @@ def _two_scales(n=35, seed=13):
     return X, y, coords
 
 
+# eight seeds of this fixture back the two majority claims below; each MGWR fit takes
+# ~16 s on the pure-Python array core, so the fits are made once and shared
+_MAJORITY_SEEDS = (5, 11, 13, 17, 23, 29, 31, 37)
+
+
+@functools.cache
+def _two_scales_fit(seed):
+    X, y, coords = _two_scales(seed=seed)
+    return X, y, coords, mgwr(X, y, coords, max_iter=40)
+
+
 def _one_scale(n=35, seed=13):
     rs = np.random.RandomState(seed)
     coords = np.column_stack([rs.uniform(0, 10, n), rs.uniform(0, 10, n)])
@@ -33,12 +46,13 @@ def _one_scale(n=35, seed=13):
 
 
 def test_one_bandwidth_per_covariate():
-    X, y, coords = _two_scales()
-    r = mgwr(X, y, coords, max_iter=40)
+    X, y, coords, r = _two_scales_fit(13)  # the default fixture seed
     assert np.shape(r["bandwidths"]) == (X.shape[1],)
     assert np.all(np.asarray(r["bandwidths"]) > 0)
 
 
+# eight full backfits: ~130 s alone on l14, past fn-sampled's 120 s default
+@pytest.mark.timeout(900)
 def test_covariates_at_different_scales_get_different_bandwidths():
     """This is the entire claim MGWR makes over single-bandwidth GWR.
 
@@ -49,13 +63,15 @@ def test_covariates_at_different_scales_get_different_bandwidths():
     seeds of this fixture the intercept took the wider kernel in six.
     """
     hits = 0
-    for seed in (5, 11, 13, 17, 23, 29, 31, 37):
-        X, y, coords = _two_scales(seed=seed)
-        bws = mgwr(X, y, coords, max_iter=40)["bandwidths"]
+    for seed in _MAJORITY_SEEDS:
+        bws = _two_scales_fit(seed)[3]["bandwidths"]
         hits += bws[0] > bws[1]
     assert hits >= 6
 
 
+# three of the shared backfits (seeds 13, 5, 29); alone that is ~50 s on l14 and
+# it was the test that ran them first in the full run, where it hit 120 s
+@pytest.mark.timeout(900)
 def test_backfitting_matches_the_reference_and_separates_the_scales():
     """Checked against the authors' implementation, PySAL mgwr 2.2.1
     (Sel_BW(multi=True, kernel="gaussian", fixed=True) on the same
@@ -67,20 +83,17 @@ def test_backfitting_matches_the_reference_and_separates_the_scales():
     implementation finds the narrow slope bandwidth the sin(x) slope
     calls for (AICc 83.96, RSS 1.48), so there the scales separate."""
     for seed, ref in ((13, (4.93, 1.99)), (5, (1.53, 0.79))):
-        X, y, coords = _two_scales(seed=seed)
-        r = mgwr(X, y, coords, max_iter=40)
+        r = _two_scales_fit(seed)[3]
         assert r["converged"] is True
         assert np.asarray(r["bandwidths"]).tolist() == pytest.approx(ref, abs=0.02)
-    X, y, coords = _two_scales(seed=29)
-    r = mgwr(X, y, coords, max_iter=40)
+    r = _two_scales_fit(29)[3]
     bws = np.asarray(r["bandwidths"])
     assert r["converged"] is True and r["at_search_boundary"] is False
     assert bws[1] < bws[0] / 1.5  # the fast-varying slope is narrower
 
 
 def test_a_healthy_fit_is_not_flagged_at_the_boundary():
-    X, y, coords = _two_scales(seed=5)
-    r = mgwr(X, y, coords, max_iter=40)
+    r = _two_scales_fit(5)[3]
     assert r["at_search_boundary"] is False
     assert r["n_iter"] > 3
 
@@ -156,15 +169,15 @@ def test_local_coefficients_have_one_column_per_covariate():
     assert np.shape(r["local_coefficients"]) == X.shape
 
 
+@pytest.mark.timeout(900)  # the same eight backfits, shared when run in the same worker
 def test_mgwr_usually_fits_better_than_the_gwr_it_started_from():
     """Not a theorem -- bandwidths are chosen per covariate by AICc, not to
     minimise total RSS, and backfitting has no global optimality guarantee.
     Measured: MGWR beat single-bandwidth GWR on 7 of 8 seeds, the exception
     being the boundary case above."""
     wins = 0
-    for seed in (5, 11, 13, 17, 23, 29, 31, 37):
-        X, y, coords = _two_scales(seed=seed)
-        r = mgwr(X, y, coords, max_iter=40)
+    for seed in _MAJORITY_SEEDS:
+        X, y, coords, r = _two_scales_fit(seed)
         gwr_rss = float(np.sum(gwr_fit(y, X, pairwise_distances(coords), r["bandwidth_gwr"])["resid"] ** 2))
         wins += r["rss"] < gwr_rss
     assert wins >= 6

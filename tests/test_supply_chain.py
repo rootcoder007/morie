@@ -12,7 +12,7 @@ import pytest
 
 SRC = Path(__file__).resolve().parents[1] / "src" / "morie"
 # the interactive layer is excluded from the wheel (pyproject wheel.exclude) and is the one place that runs user code
-LAYER = {"polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py"}
+LAYER = {"polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py", "_launch.py"}
 
 
 def _shipped_py():
@@ -151,3 +151,66 @@ def test_morie_exec_runs_in_a_child_interpreter(tmp_path):
     if "not bundled" in r.stdout:
         pytest.skip("interactive layer absent")
     assert "42" in r.stdout and r.returncode == 3
+
+
+def test_no_runpy_in_the_shipped_package():
+    # `morie exec` runs user code through the interactive layer (_exec_guard.run_user_code), never the wheel itself
+    hits = []
+    for p in _shipped_py():
+        tree = ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import | ast.ImportFrom):
+                names = [a.name for a in node.names] + ([node.module] if isinstance(node, ast.ImportFrom) else [])
+                if "runpy" in names:
+                    hits.append(f"{p.relative_to(SRC)}:{node.lineno}")
+            if isinstance(node, ast.Constant) and isinstance(node.value, str) and "runpy" in node.value:
+                hits.append(f"{p.relative_to(SRC)}:{node.lineno}")
+    assert hits == [], hits
+
+
+def test_the_r_bridge_passes_arguments_as_data():
+    import shutil
+
+    from morie import stat_commands
+
+    if not shutil.which("Rscript"):
+        pytest.skip("Rscript not on PATH")
+    stat_commands._register_r_bridge()
+    out = stat_commands.COMMAND_REGISTRY["r_summary"].handler_repl('x"); print("INJECTED')
+    # the string arrives as one value: "Length Class Mode ... character", or from R 4.6 on
+    # "Length N.unique ... Max.nchar" with its 20 characters
+    assert "INJECTED" not in out and ("character" in out or "nchar" in out)
+    # a Python number arrives as an R number, a string as an R string (what the repr()-built calls gave)
+    assert "numeric" in stat_commands.COMMAND_REGISTRY["r_class"].handler_repl(3.5)
+    assert "character" in stat_commands.COMMAND_REGISTRY["r_class"].handler_repl("3.5")
+
+
+def test_the_shipped_package_starts_no_program_itself():
+    # every program morie starts (R, Docker, the editor, the compiler, pip, ssh...) goes through
+    # morie._launch, which ships with the interactive layer (morie._interactive.launcher)
+    hits = []
+    for p in _shipped_py():
+        tree = ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import | ast.ImportFrom):
+                names = [a.name for a in node.names] + ([node.module] if isinstance(node, ast.ImportFrom) else [])
+                if any(n in ("subprocess", "pty") or (n or "").startswith("subprocess.") for n in names):
+                    hits.append(f"{p.relative_to(SRC)}:{node.lineno} imports {names}")
+            if (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.value, ast.Name)
+                and node.value.id == "os"
+                and node.attr in ("system", "popen", "execv", "execvp", "spawnv")
+            ):
+                hits.append(f"{p.relative_to(SRC)}:{node.lineno} os.{node.attr}")
+            if isinstance(node, ast.Constant) and node.value in ("-e", "-c") and not _is_cli_option(node, tree):
+                hits.append(f"{p.relative_to(SRC)}:{node.lineno} {node.value!r} argument")
+    assert hits == [], hits
+
+
+def _is_cli_option(node, tree):
+    """``-c`` declared as morie's own command-line option (``add_argument("-c", ...)``) is not a launch."""
+    for call in ast.walk(tree):
+        if isinstance(call, ast.Call) and getattr(call.func, "attr", "") == "add_argument" and node in call.args:
+            return True
+    return False

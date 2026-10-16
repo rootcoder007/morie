@@ -816,6 +816,91 @@ def test_backlog_censoring_theorems_and_parity():
     assert not c["understates"] and c["bias_lower"] < 0
 
 
+def test_judge_monotonicity_nested_and_crossing():
+    import random
+
+    rng = random.Random(7)
+    thr = {"J1": 0.2, "J2": 0.3, "J3": 0.4, "J4": 0.5, "J5": 0.6, "J6": 0.7}
+    judge = [f"J{1 + i % 6}" for i in range(6000)]
+    group = ["abc"[i // 2000] for i in range(6000)]
+    u = [rng.random() for _ in range(6000)]
+    d = [int(ui < thr[j]) for ui, j in zip(u, judge)]
+    r = R.judge_monotonicity(judge, d, group)
+    assert r["summary"]["significant"] == 0 and r["summary"]["comparisons"] == 45
+    assert all(g["slope"] > 0 for g in r["by_group"]) and r["judges"][0]["judge"] == "J6"
+    c = r["comparisons"][0]
+    pp = (c["group_rate_stricter"] * c["n_stricter"] + c["group_rate_lenient"] * c["n_lenient"]) / (
+        c["n_stricter"] + c["n_lenient"]
+    )
+    z = (c["group_rate_lenient"] - c["group_rate_stricter"]) / math.sqrt(
+        pp * (1 - pp) * (1 / c["n_stricter"] + 1 / c["n_lenient"])
+    )
+    assert close(c["z"], z)
+    d2 = [int(ui < 0.05) if (j == "J6" and g == "c") else di for ui, j, g, di in zip(u, judge, group, d)]
+    r2 = R.judge_monotonicity(judge, d2, group)
+    sig = [x for x in r2["comparisons"] if x["significant"]]
+    assert sig and all("J6" in (x["stricter"], x["lenient"]) for x in sig)
+    sl = {g["group"]: g["slope"] for g in r2["by_group"]}
+    assert sl["c"] < min(sl["a"], sl["b"])
+    for x in r2["comparisons"]:  # Holm: adjusted at least raw, at most one
+        assert x["p_value"] - 1e-15 <= x["p_adjusted"] <= 1.0
+
+
+def test_judge_monotonicity_errors():
+    for args, kw, msg in [
+        (([1, 2, 3], [0, 1], [1, 2, 3]), {}, "equal length"),
+        ((["a", None], [0, 1], [1, 2]), {}, "missing"),
+        ((["a", "b"], [0, 2], [1, 2]), {}, "0/1"),
+        ((["a", "b"], [0, 1], [1, 2]), {"min_n": 0}, "min_n"),
+        ((["a", "b"], [0, 1], [1, 2]), {"alpha": 1}, "alpha"),
+        ((["a", "b"], [0, 1], [1, 2]), {"adjust": "bh"}, "holm"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.judge_monotonicity(*args, **kw)
+
+
+def test_backlog_published_little_and_bands_parity():
+    r = R.backlog_published(
+        21265, 30, 148904, 175, band_shares=[[0.808, 0.105, 0.034, 0.053]], band_floors=[0, 304, 456, 548]
+    )[0]
+    lam = 21265 / 30
+    assert close(r["filing_rate"], lam) and close(r["implied_mean_days"], 148904 / lam)
+    assert close(r["ratio"], (148904 / lam) / 175) and close(r["little_backlog"], lam * 175)
+    assert close(r["band_floor_bound"], 0.105 * 304 + 0.034 * 456 + 0.053 * 548)  # band_floor_shares
+    # band_floor_le_mean on a docket whose cases sit at or above their floors
+    floors = [0, 304, 456, 548]
+    band = [0, 0, 1, 2, 3, 3, 1, 0]
+    dur = [floors[b] + 7.0 * (i + 1) for i, b in enumerate(band)]
+    sh = [band.count(k) / len(band) for k in range(4)]
+    bb = R.backlog_published(1, 1, 0, sum(dur) / len(dur), band_shares=[sh], band_floors=floors)[0]
+    assert bb["band_floor_bound"] <= sum(dur) / len(dur)
+    assert close(bb["band_floor_bound"], sum(floors[b] for b in band) / len(band))
+    w = R.backlog_published([300, 300, 300], 30, 450, 45)
+    assert [round(x["ratio"], 12) for x in w] == [1.0, 1.0, 1.0] and "band_floor_bound" not in w[0]
+
+
+def test_backlog_published_errors():
+    for args, msg in [
+        ((float("nan"), 30, 1, 1), "finite"),
+        ((0, 30, 1, 1), "positive"),
+        ((1, 30, -1, 1), "non-negative"),
+        (([1, 2, 3], [1, 2], 1, 1), "length 1 or 3"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.backlog_published(*args)
+    for kw, msg in [
+        (dict(band_shares=[[0.5, 0.5], [0.5, 0.5]]), "one row per window"),
+        (dict(band_shares=[[0.5, 0.5]]), "one lower edge"),
+        (dict(band_shares=[[-0.5, 1.5]], band_floors=[0, 1]), "non-negative"),
+        (dict(band_shares=[[0.2, 0.2]], band_floors=[0, 1]), "sum to 1"),
+        (dict(band_shares=[[0.5, 0.5]], band_floors=[5, 1]), "increasing"),
+    ]:
+        with pytest.raises(ValueError, match=msg):
+            R.backlog_published(1, 1, 1, 1, **kw)
+    with pytest.raises(ValueError, match="finite"):
+        R.backlog_published("a", 1, 1, 1)
+
+
 # ----------------------------------------------------------------- P17 replacement and desistance (P17Replacement.lean)
 
 
@@ -1012,3 +1097,758 @@ def test_two_point_bound_theorems_and_parity():
     assert same["tv"] == 0 and same["bound"] == 0.5
     far = R.two_point_bound([1, 0], [0, 1], 0, 1)
     assert far["tv"] == 1 and far["bound"] == 0
+
+
+# ----------------------------------------------------------------- P9 regimes, P11 cutoff, P18 chain
+
+
+def test_recording_regimes_and_second_source():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(60, seed=9)]
+    for k in range(10):
+        m = 2 + k % 4
+        r = [500 * u[k * 5 + i] for i in range(m)]
+        eps = 0.05 + 0.85 * u[50 + k]
+        two = R.recording_regimes(r, cuffed_share=eps)
+        rec_a = [sum(two["reclassification"]["M"][i][j] * r[j] for j in range(m)) for i in range(m)]
+        cc = list(two["cuffing"]["counts"].values())
+        rec_b = [sum(two["cuffing"]["M"][i][j] * cc[j] for j in range(m)) for i in range(m)]
+        assert all(close(a, b) for a, b in zip(rec_a, r)) and all(close(a, b) for a, b in zip(rec_b, r))
+        assert close(two["reclassification"]["true_total"], sum(r))
+        assert close(two["cuffing"]["true_total"], sum(r) / (1 - eps))  # regimes_not_identified
+        assert two["cuffing"]["true_total"] > two["reclassification"]["true_total"]
+        assert not two["identified_from_series"]
+        assert R.recording_regimes(r, eps, true_total=sum(r))["second_source"]["regime"] == "reclassification"
+        sec = R.recording_regimes(r, eps, true_total=two["cuffing"]["true_total"])["second_source"]
+        assert sec["regime"] == "cuffing" and close(sec["dropped_mass"], two["cuffing"]["true_total"] - sum(r))
+        assert R.recording_regimes(r, eps, true_total=sum(r) / 2)["second_source"]["regime"] == "inconsistent"
+    with pytest.raises(ValueError, match="non-negative"):
+        R.recording_regimes([1, -1])
+    with pytest.raises(ValueError, match="cuffed_share"):
+        R.recording_regimes([1, 2], cuffed_share=1)
+
+
+def test_imbens_manski_cutoff_exists_and_is_unique():
+    from morie.fn._rng import random_uniform
+    from morie.fn._stats_core import norm
+
+    u = [float(v) for v in random_uniform(40, seed=11)]
+    for k in range(20):
+        delta, alpha = 6 * u[k], 0.01 + 0.29 * u[20 + k]
+
+        def f(c):
+            return float(norm.cdf(c + delta)) - float(norm.cdf(-c)) - (1 - alpha)
+
+        z1, z2 = float(norm.ppf(1 - alpha)), float(norm.ppf(1 - alpha / 2))
+        assert f(z1 - 1e-9) <= 1e-12 and f(z2 + 1e-9) >= -1e-12  # im_cutoff_exists (a sign change)
+        r = R.bounds_confidence(0, delta * 0.1, 0.1, 0.1, 1 - alpha)
+        assert close(f(r["cutoff"]), 0, 1e-9)
+        assert all(abs(f(r["cutoff"] + d)) > 1e-6 for d in (-1, -0.1, 0.1, 1))  # im_cutoff_unique
+        assert "Research.P11.im_cutoff_exists" in r["theorems"]
+
+
+def test_selective_labels_judges_chain():
+    from morie.fn._rng import random_uniform
+
+    u = [float(v) for v in random_uniform(1500, seed=23)]
+    n = 250
+    risk = u[:n]
+    y = [1 if u[n + i] < risk[i] else 0 for i in range(n)]
+    w = [0.5 + 1.5 * u[2 * n + i] for i in range(n)]
+    for k in range(10):
+        cuts = sorted(0.3 + 0.65 * u[750 + 5 * k + j] for j in range(4))
+        judges = [[r < ct for r in risk] for ct in cuts]
+        rule = [r < 0.2 + 0.8 * u[800 + k] for r in risk]
+        res = R.selective_labels_judges(y, judges, rule, w)
+        assert res["nested"]
+        assert all(b <= a + 1e-12 for a, b in zip(res["widths"], res["widths"][1:]))  # chain_width_antitone
+        for j in range(4):
+            width_j = sum(w[i] for i in range(n) if rule[i] and not judges[j][i]) / sum(
+                w[i] for i in range(n) if rule[i]
+            )
+            assert close(res["judges"][j]["width"], width_j)
+            assert (res["judges"][j]["width"] == 0) == (not any(rule[i] and not judges[j][i] for i in range(n)))
+        inside_union = not any(rule[i] and not any(judges[j][i] for j in range(4)) for i in range(n))
+        assert res["judges"][3]["identified"] == inside_union  # chain_contraction
+        assert res["best"] == res["judges"][min(range(4), key=lambda j: res["widths"][j])]["judge"]
+    nonnested = R.selective_labels_judges(
+        y, [[r < 0.6 for r in risk], [r > 0.3 for r in risk]], [r < 0.5 for r in risk]
+    )
+    assert not nonnested["nested"] and close(nonnested["width"], min(nonnested["widths"]))
+    with pytest.raises(ValueError, match="one entry per defendant"):
+        R.selective_labels_judges(y, [[True] * 10], [r < 0.5 for r in risk])
+
+
+# ----------------------------------------------------------------- 2026-10-12 closures (R/ledger_1_4_3.R)
+
+
+def test_veil_of_darkness_parity():
+    # R: morie_veil_of_darkness(c(white = 400, black = 200), c(white = 300, black = 100))$bias_ratio -> 1, 1.5
+    r = R.veil_of_darkness({"white": 400, "black": 200}, {"white": 300, "black": 100})
+    assert close(r["bias_ratio"]["white"], 1) and close(r["bias_ratio"]["black"], 1.5)
+    assert r["sign"] == {"white": "lower", "black": "higher"}
+    assert close(r["share_day"]["black"], 200 / 600) and close(r["share_night"]["black"], 100 / 400)
+    # odds_ratio_identifies_bias on a synthetic road: exposures and dark propensities cancel
+    E, rr, d = {"w": 1000, "b": 400}, {"w": 0.03, "b": 0.05}, {"w": 0.1, "b": 0.5}
+    night = {g: E[g] * rr[g] for g in E}
+    day = {g: night[g] * (1 + d[g]) for g in E}
+    v = R.veil_of_darkness(day, night)
+    assert close(v["bias_ratio"]["b"], 1.5 / 1.1)
+    k = {"w": 1.2, "b": 0.8}
+    v2 = R.veil_of_darkness({g: day[g] * k[g] for g in E}, night, exposure_shift=k)
+    assert close(v2["bias_ratio_adjusted"]["b"], 1.5 / 1.1)  # exposure_shift_confounds, divided out
+    v3 = R.veil_of_darkness({g: day[g] * 2 for g in E}, night)
+    assert close(v3["bias_ratio"]["b"], v["bias_ratio"]["b"])  # bias_not_absolute
+    assert R.veil_of_darkness(night, night)["sign"]["b"] == "equal"
+    with pytest.raises(ValueError):
+        R.veil_of_darkness(day, {"w": 1})
+
+
+def test_dark_figure_no_interaction_parity():
+    # R: morie_dark_figure_no_interaction(...)$missing 400, $total 738
+    cells = {"n100": 120, "n010": 80, "n001": 60, "n110": 30, "n101": 24, "n011": 16, "n111": 8}
+    r = R.dark_figure_no_interaction(cells, interaction=[-0.5, 0.0, 0.5])
+    assert close(r["missing"], 400) and close(r["total"], 738)
+    assert close(r["sensitivity"][0]["missing"], 400 * math.exp(0.5))  # missing_cell_with_interaction
+    assert close(r["sensitivity"][1]["total"], 738)
+    with pytest.raises(ValueError):
+        R.dark_figure_no_interaction({"n100": 1})
+
+
+def test_shrinkage_factor_error_parity():
+    # R: morie_shrinkage_factor_error(c(3, 5, 9, 2, 7, 4), 5, total_variance = 6):
+    #    B_hat 0.882352941176471, S_y_hat 5.66666666666667, S_y_se 2.91753320460968, error 0.0490196078431372,
+    #    B_interval lower 0.434717095850777
+    r = R.shrinkage_factor_error([3, 5, 9, 2, 7, 4], noise_variance=5, total_variance=6)
+    assert close(r["B_hat"], 0.882352941176471, 1e-12) and close(r["S_y_hat"], 5.66666666666667, 1e-12)
+    assert close(r["S_y_se"], 2.91753320460968, 1e-12) and close(r["error"], 0.0490196078431372, 1e-12)
+    assert close(r["B_interval"][0], 0.434717095850777, 1e-12)
+    assert r["bound_holds"]
+    # bhat_error: the algebraic form
+    assert close(r["error"], 5 * (6 - r["S_y_hat"]) / (6 * r["S_y_hat"]))
+    with pytest.raises(ValueError):
+        R.shrinkage_factor_error([2, 2, 2], 1)
+
+
+def test_concentration_null_bound_parity():
+    # R: gini 0.666666666666667, cv_bound 0.988826464946089, null_bound 0.483045891539648
+    r = R.concentration_null_bound([0, 0, 1, 2, 9, 0, 3], n_sim=300, seed=3)
+    assert close(r["gini"], 0.666666666666667, 1e-12)
+    assert close(r["cv_bound"], 0.988826464946089, 1e-12)
+    assert close(r["null_bound"], 0.483045891539648, 1e-12)
+    assert r["gini"] <= r["cv_bound"] and 0 <= r["p_value"] <= 1
+    # gini_le_cv on random counts
+    import random as _r
+
+    g = _r.Random(4)
+    for _ in range(30):
+        x = [sum(1 for _ in range(int(g.random() * 12))) for _ in range(g.randint(4, 20))]
+        if sum(x) == 0:
+            continue
+        m = sum(x) / len(x)
+        v = sum((xi - m) ** 2 for xi in x) / len(x)
+        assert R.concentration_gini(x) <= math.sqrt(v / 2) / m + 1e-12
+
+
+def test_deterrence_logcost_and_wald_parity():
+    p, s, c = [0.2, 0.5, 0.8, 0.4], [2, 5, 3, 8], [1, 4, 2, 6]
+    y = [2 - 0.8 * (math.log(pi) + math.log(si) - 0.1 * ci) for pi, si, ci in zip(p, s, c)]
+    r = R.deterrence_logcost(p, s, c, y, rho=0.1)
+    # R: coefficients 2, -0.8, -0.8, 0.08; implied_discount 0.1; expected_cost[1] 0.3619349672143838
+    for k, v in (("(Intercept)", 2), ("log_p", -0.8), ("log_s", -0.8), ("c", 0.08)):
+        assert close(r["coefficients"][k], v, 1e-9)
+    assert close(r["implied_discount"], 0.1, 1e-9)
+    assert close(r["expected_cost"][0], 0.3619349672143838, 1e-12)
+    assert close(r["log_expected_cost"][0], math.log(r["expected_cost"][0]))
+    assert not R.deterrence_logcost(p, [5, 5, 5, 5], c)["identified"]
+    with pytest.raises(ValueError):
+        R.deterrence_logcost(p, [5, 5, 5, 5], c, y)
+    # R: morie_wald_iv(c(1,3,2,4), c(0,1,0,1), c(0,1,0,1)) -> beta 2, cov_zy 0.5, cov_zp 0.25, alpha 1.5
+    w = R.wald_iv([1, 3, 2, 4], [0, 1, 0, 1], [0, 1, 0, 1])
+    assert close(w["beta"], 2) and close(w["cov_zy"], 0.5) and close(w["cov_zp"], 0.25) and close(w["alpha"], 1.5)
+    dead = R.wald_iv([1, 3, 2, 4], [0, 1, 0, 1], [1, 1, 1, 1])
+    assert not dead["relevant"] and math.isnan(dead["beta"])
+
+
+def test_rif_quantile_parity():
+    # R: morie_rif_quantile(1:8, 0.5, q = 4, f = 0.125): mean_rif 4, recentering 0, F_q 0.5
+    r = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8], 0.5, q=4, f=0.125)
+    assert close(r["mean_rif"], 4) and close(r["recentering"], 0) and close(r["F_q"], 0.5)
+    assert close(r["rif"][0], 4 + (0.5 - 1) / 0.125)
+    # off the quantile: rif_quantile_avg
+    r2 = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8], 0.5, q=2, f=0.3)
+    assert close(r2["mean_rif"], 2 + (0.5 - 2 / 8) / 0.3)
+    # the default evaluation point is the weighted sample quantile (R: q = 4 for 0.4 on 1..8, 11); the kernel
+    # density value is R's binned density() there (0.108405051452871) against the exact Gaussian sum here
+    r3 = R.rif_quantile([1, 2, 3, 4, 5, 6, 7, 8, 11], 0.4)
+    assert close(r3["q"], 4) and close(r3["f"], 0.108405051452871, 2e-3)
+    g = R.rif_gap([1, 2, 3, 4, 5, 6, 7, 8], [2, 4, 6, 8, 10, 12, 14, 16], 0.5)
+    assert close(g["gap"], g["quantile_gap"] + g["recentering_gap"])  # rif_gap
+    with pytest.raises(ValueError):
+        R.rif_quantile([1, 2, 3], 1.2)
+
+
+def test_contagion_moment_witness_and_panel_cov_parity():
+    w = R.contagion_moment_witness(lambda m, v: v / m)
+    assert w["mean"] == (1.0, 1.0) and w["variance"] == (1.0, 1.0) and w["statistic"] == (1.0, 1.0)
+    assert close(w["zero_probability"][0], 0.5) and close(w["zero_probability"][1], 1 / 3)
+    # R: morie_age_crime_type_cov(c(0.2, 0.3, 0.5), c(1, 2, 4), c(3, 1, 2))$cross_cov -0.12
+    t = R.age_crime_type_cov([0.2, 0.3, 0.5], [1, 2, 4], [3, 1, 2])
+    assert close(t["cross_cov"], -0.12, 1e-12) and not t["one_type"]
+    assert close(R.age_crime_type_cov([0.5, 0.5], [1, 3], [3, 1])["cross_cov"], -1)  # two_type_cov
+    assert R.age_crime_type_cov([0.5, 0.5], [2, 2], [2, 2])["one_type"]
+    # R: morie_age_crime_panel_cov(c(1,3,0,2,5,1), c(2,0,4,1,1,3))$cross_cov -1.66666666666667
+    pc = R.age_crime_panel_cov([1, 3, 0, 2, 5, 1], [2, 0, 4, 1, 1, 3], n_perm=50)
+    assert close(pc["cross_cov"], -1.66666666666667, 1e-12) and 0 < pc["p_value"] <= 1
+    with pytest.raises(ValueError):
+        R.age_crime_type_cov([0.5, 0.6], [1, 2], [1, 2])
+
+
+def test_feedback_loop_envelope_parity():
+    # R: morie_feedback_loop_envelope(1, 1, 1, n = 40): law uniform 1/41, variance mean(((1 + 0:40)/42 - 0.5)^2)
+    e = R.feedback_loop_envelope(1, 1, 1, n=40)
+    assert all(close(v, 1 / 41) for v in e["law"])
+    assert close(e["variance_n"], sum(((1 + j) / 42 - 0.5) ** 2 for j in range(41)) / 41)
+    assert close(e["mean_n"], 0.5) and close(e["variance_bound"], 1 / 8) and e["variance_n"] < 1 / 8
+    for r0, b0, a in ((1, 99, 1), (5, 3, 2), (0.5, 2, 0.7)):
+        for n in (0, 1, 10, 60):
+            e = R.feedback_loop_envelope(r0, b0, a, n=n, t=0.2)
+            assert close(sum(e["law"]), 1)
+            assert close(e["mean_n"], e["share0"])  # mean_const
+            assert e["variance_n"] <= e["variance_bound"] + 1e-12  # var_le
+            assert e["exit_n"] <= e["chebyshev_bound"] + 1e-12  # chebyshev
+    e1 = R.feedback_loop_envelope(2, 3, 1, n=1)
+    assert close(e1["variance_n"], 0.4 * 0.6 * (1 / 6) ** 2)  # step_var
+    with pytest.raises(ValueError):
+        R.feedback_loop_envelope(0, 1, 1)
+
+
+def test_spillover_ring_bound_parity():
+    # R test: path of 5 units, one treated uniformly, outer ring = distance exactly 2
+    n = 5
+    outer = lambda t, i: abs(t - i) == 2  # noqa: E731
+    share = [sum(outer(t, i) for t in range(1, n + 1)) / n for i in range(1, n + 1)]
+    gamma = [0.5, -1, 2, 0, 1.5]
+    exact = sum(sum(g * outer(t, i) for g, i in zip(gamma, range(1, n + 1))) / n for t in range(1, n + 1)) / n
+    r = R.spillover_ring_bound(share, gamma_max=2, gamma=gamma)
+    assert close(r["expected_gap"], exact) and abs(r["expected_gap"]) <= r["bound"]
+    assert close(r["bound"], 2 * sum(share) / n)
+    assert R.spillover_ring_bound(share, gamma_max=2, gamma=[0] * n)["expected_gap"] == 0
+    with pytest.raises(ValueError):
+        R.spillover_ring_bound(share, gamma_max=1, gamma=gamma)
+
+
+def test_rank_persistence_null_parity():
+    from itertools import combinations
+
+    n, k = 7, 3
+    sets = list(combinations(range(1, n + 1), k))
+    overlaps = [len(set(range(1, k + 1)) & set(B)) for B in sets]
+    r = R.rank_persistence_null(n, k, observed=2)
+    for j in range(k + 1):
+        assert close(r["probability"][j], overlaps.count(j) / len(sets))
+    assert close(sum(r["probability"]), 1) and close(r["mean"], k * k / n)
+    assert close(r["p_value"], sum(o >= 2 for o in overlaps) / len(sets))
+    big = R.rank_persistence_null(158, 16, observed=9)
+    assert close(big["mean"], 256 / 158) and big["p_value"] < 1e-4
+    with pytest.raises(ValueError):
+        R.rank_persistence_null(5, 6)
+
+
+def test_hotspot_threshold_parity():
+    p = dict(A0=1, omega=1, eps=2, D=1, gamma=1, eta=0.01, z=1)
+    r = R.hotspot_threshold(**p)
+    B, A, rho = r["steady"]["B"], r["steady"]["A"], r["steady"]["rho"]
+    assert abs(-p["omega"] * B + p["eps"] * p["D"] * rho * (p["A0"] + B)) < 1e-12  # steady_iff
+    assert abs(-rho * (p["A0"] + B) + p["gamma"]) < 1e-12
+    assert (round(B, 12), round(A, 12), round(rho, 12)) == (2.0, 3.0, round(1 / 3, 12))
+    ks = [0.0, 0.5, 2.0, 10.0]
+    tab = R.hotspot_threshold(**p, k=ks)["dispersion"]
+    a = -p["omega"] + p["eps"] * p["D"] * rho
+    b = p["eps"] * p["D"] * A
+    c0, c1, d = -rho, 2 * p["D"] * rho / A, -A
+    d1, d2 = p["eta"] * p["D"] / p["z"], p["D"]
+    for row in tab:  # det_eq
+        k = row["k"]
+        by_hand = (a - d1 * k) * (d - d2 * k) - b * (c0 + c1 * k)
+        assert abs(row["det"] - by_hand) < 1e-12
+        assert abs(row["det"] - (r["P"] * k * k - r["Q"] * k + r["R"])) < 1e-12
+        assert row["trace"] < 0  # tr_neg
+    assert abs(r["R"] - p["omega"] * A) < 1e-12  # R_eq
+    assert abs(r["Q"] - p["D"] * (3 * p["eps"] * p["D"] * rho - p["omega"] - p["eta"] * A / p["z"])) < 1e-12
+    assert r["unstable"] and r["Q"] > 0 and r["Q"] ** 2 > 4 * r["P"] * r["R"]  # hotspots_above_threshold
+    assert r["det_crit"] < 0 and r["growth_crit"] > 0
+    tr_c = (a - d1 * r["k_crit"]) + (d - d2 * r["k_crit"])
+    assert abs(r["growth_crit"] ** 2 - tr_c * r["growth_crit"] + r["det_crit"]) < 1e-10  # unstable_iff
+    r0 = R.hotspot_threshold(**{**p, "eps": 0}, k=ks)  # no_hotspots_without_reinforcement
+    assert not r0["unstable"] and all(row["det"] > 0 for row in r0["dispersion"])
+    rb = R.hotspot_threshold(**{**p, "eps": 0.2, "eta": 0.5}, k=ks)  # no_hotspots_below_threshold
+    assert rb["threshold"]["reinforcement"] <= rb["threshold"]["decay_plus_diffusion"]
+    assert not rb["unstable"] and all(row["det"] > 0 for row in rb["dispersion"])
+    import pytest
+
+    with pytest.raises(ValueError, match="A0"):
+        R.hotspot_threshold(0, 1, 1, 1, 1, 0.1)
+    with pytest.raises(ValueError, match="eps"):
+        R.hotspot_threshold(1, 1, -1, 1, 1, 0.1)
+
+
+def test_dark_figure_comparable_parity():
+    r = R.dark_figure_comparable(VA=1000, RA=400, RB=300, lam=0.5)
+    assert r["rate_A"] == 0.4  # rate_on_A
+    assert abs(r["rate_upper"] - 700 / 1300) < 1e-12  # total_rate_le
+    assert r["total"] == (1300.0, 1000 + 300 / 0.2)  # total_interval
+    assert r["dark_figure"] == (600.0, 600 + 300 * (1 / 0.2 - 1))  # dark_interval
+    assert abs(r["width"] - 300 * (1 - 0.2) / 0.2) < 1e-12  # dark_figure_width
+    for VB in (300.0, 800.0, 1500.0):
+        assert r["rate_upper"] >= 700 / (1000 + VB)
+        assert r["total"][0] <= 1000 + VB <= r["total"][1]
+    z = R.dark_figure_comparable(VA=1000, RA=1000, RB=300, lam=1)
+    assert z["width"] == 0 and z["dark_figure"] == (0.0, 0.0)
+    import pytest
+
+    with pytest.raises(ValueError, match="exceeds"):
+        R.dark_figure_comparable(1000, 1200, 300)
+    with pytest.raises(ValueError, match="lam"):
+        R.dark_figure_comparable(1000, 400, 300, lam=0)
+
+
+def test_attenuation_two_regressor_parity():
+    r = R.attenuation_two_regressor(1.5, -0.5, 1, 2, 0.6, 0.5)
+    assert r["theorem"] == "Research.P5.Attenuation.two_regressor_coeffs"
+    assert abs((1 + 0.5) * r["b1"] + 0.6 * r["b2"] - (1.5 * 1 - 0.5 * 0.6)) < 1e-12  # normal_equations
+    assert abs(0.6 * r["b1"] + 2 * r["b2"] - (1.5 * 0.6 - 0.5 * 2)) < 1e-12
+    assert abs(r["dstar"] - (1.5 * 2 - 0.36)) < 1e-12
+    assert abs(r["bias_b2"] - 1.5 * 0.5 * 0.6 / r["dstar"]) < 1e-12
+    assert r["bias_b2_sign"] == "positive" and abs(r["reliability"] - 1 / 1.5) < 1e-12
+    for args in ((0, -0.5, 1, 2, 0.6, 0.5), (1.5, -0.5, 1, 2, 0.6, 0), (1.5, -0.5, 1, 2, 0, 0.5)):
+        assert R.attenuation_two_regressor(*args)["bias_b2"] == 0  # error_free_biased_iff
+    assert R.attenuation_two_regressor(-1.5, -0.5, 1, 2, 0.6, 0.5)["bias_b2_sign"] == "negative"  # bias_sign
+    import pytest
+
+    with pytest.raises(ValueError, match="positive variances"):
+        R.attenuation_two_regressor(1, 1, 0, 1)
+    with pytest.raises(ValueError, match="s12"):
+        R.attenuation_two_regressor(1, 1, 1, 1, s12=1)
+
+
+def test_friedman_urn_and_ruin_parity():
+    u = R.friedman_urn(9, 1, 200)
+    assert u["theorem"] == "Research.P4.Friedman.meanDiff_succ" and u["mean_diff"][0] == 8
+    for n in range(200):  # meanDiff_succ
+        assert abs(u["mean_diff"][n + 1] - u["mean_diff"][n] * (1 - 1 / (10 + n))) < 1e-12
+    assert abs(u["mean_share"][-1] - 0.5) < 0.01
+    b, r = 7, 3
+    f = lambda b, r: (b - r) * (b + r - 1)  # noqa: E731
+    assert abs(b / (b + r) * f(b, r + 1) + r / (b + r) * f(b + 1, r) - f(b, r)) < 1e-12  # friedman_step
+    p, N = 0.4, 12
+    pr = R.ruin_probability(p, N)
+    rho = 0.6 / 0.4
+    assert pr["theorem"] == "Research.P4.Ruin.ruin_harmonic" and abs(pr["rho"] - rho) < 1e-12
+    q = pr["prob"]
+    assert q[0] == 1 and abs(q[N]) < 1e-12  # ruin_boundary
+    for k in range(1, N):  # ruin_harmonic
+        assert abs(q[k] - (p * q[k + 1] + (1 - p) * q[k - 1])) < 1e-12
+    for k in range(N + 1):  # optional_stopping_identity
+        assert abs(rho**k - (q[k] + (1 - q[k]) * rho**N)) < 1e-9
+    assert abs(p * rho**5 + (1 - p) * rho**3 - rho**4) < 1e-12  # deMoivre_step
+    sym = R.ruin_probability(0.5, N)["prob"]
+    assert all(abs(sym[k] - (1 - k / N)) < 1e-12 for k in range(N + 1))  # ruin_symmetric
+    assert R.ruin_probability(p, N, 3)["prob"] == [(rho**3 - rho**N) / (1 - rho**N)]
+    import pytest
+
+    with pytest.raises(ValueError, match="b0"):
+        R.friedman_urn(1, 0)
+    with pytest.raises(ValueError, match="0..N"):
+        R.ruin_probability(0.3, 5, 6)
+
+
+def test_cox_overdispersion_and_vuong_parity():
+    r = R.cox_overdispersion([0.7, 0.3], [1, 5])
+    m = 0.7 + 1.5
+    assert r["theorem"] == "Research.P7.Cox.total_variance" and abs(r["mean"] - m) < 1e-12
+    assert abs(r["intensity_var"] - (0.7 * (1 - m) ** 2 + 0.3 * (5 - m) ** 2)) < 1e-12
+    assert abs(r["variance"] - (r["mean"] + r["intensity_var"])) < 1e-12  # total_variance
+    assert r["variance"] > r["mean"] and not r["constant_intensity"]  # variance_ge_mean
+    c0 = R.cox_overdispersion([2, 3], [4, 4])
+    assert abs(c0["variance"] - c0["mean"]) < 1e-12 and c0["constant_intensity"]  # equality_iff_constant
+    c1 = R.cox_overdispersion([1, 0], [2, 9])
+    assert abs(c1["variance"] - c1["mean"]) < 1e-12 and c1["constant_intensity"]
+    v = R.zip_vuong_boundary([0, 0, 1, 2, 0, 3])
+    assert v["theorem"] == "Research.P7.Cox.llr_zero" and v["llr"] == [0.0] * 6 and v["sd"] == 0  # llr_zero
+    assert v["statistic"] != v["statistic"]
+    import pytest
+
+    with pytest.raises(ValueError, match="non-negative weights"):
+        R.cox_overdispersion([1, -1], [1, 2])
+    with pytest.raises(ValueError, match="integers"):
+        R.zip_vuong_boundary([1.5, 2])
+
+
+def test_nonresponse_region_and_iv_inequality_parity():
+    r = R.nonresponse_region(0.4, [0.106, 0.5, 0.9, 1])
+    assert r["theorem"] == "Research.P1.Nonresponse.region_width"
+    assert r["width"] == [1 - x for x in (0.106, 0.5, 0.9, 1)]  # region_width
+    assert all(abs(u - lam - w) < 1e-12 for u, lam, w in zip(r["upper"], r["lower"], r["width"]))
+    assert abs(r["width"][0] - 0.894) < 1e-12
+    assert (
+        abs(0.5 * 0.4 + 0.5 * 0 - r["lower"][1]) < 1e-12 and abs(0.5 * 0.4 + 0.5 * 1 - r["upper"][1]) < 1e-12
+    )  # region_sharp
+    import random
+
+    rng = random.Random(3)
+    nz, nx, ny, nu = 3, 2, 3, 4
+    pu = [rng.random() for _ in range(nu)]
+    pu = [v / sum(pu) for v in pu]
+    px = [[[rng.random() for _ in range(nx)] for _ in range(nu)] for _ in range(nz)]
+    px = [[[v / sum(row) for v in row] for row in zz] for zz in px]
+    py = [[[rng.random() for _ in range(ny)] for _ in range(nu)] for _ in range(nx)]
+    py = [[[v / sum(row) for v in row] for row in xx] for xx in py]
+    p = [
+        [[sum(pu[u] * px[z][u][x] * py[x][u][y] for u in range(nu)) for z in range(nz)] for x in range(nx)]
+        for y in range(ny)
+    ]
+    r = R.instrumental_inequality(p)
+    assert r["theorem"] == "Research.P8.IVInequality.instrumental_inequality"
+    assert r["passes"] and r["max"] <= 1  # instrumental_inequality
+    bad = [[[1.0, 0.0], [0.0, 0.0]], [[0.0, 1.0], [0.0, 0.0]]]
+    b = R.instrumental_inequality(bad)
+    assert not b["passes"] and b["per_x"] == [2.0, 0.0]
+    import pytest
+
+    with pytest.raises(ValueError, match="sum to one"):
+        R.instrumental_inequality([[[2.0, 0.0]]])
+    with pytest.raises(ValueError, match="lie in"):
+        R.nonresponse_region(1.2, 0.5)
+
+
+def test_misclassification_parity():
+    r = R.misclassified_rd(0.3, 0.1, 0.4, 0.8, 0.9)
+    d1, d0 = 0.4 * 0.8 + 0.6 * 0.1, 0.4 * 0.2 + 0.6 * 0.9
+    assert r["theorem"] == "Research.P2.Misclassification.binary_attenuation"
+    assert abs(r["measured_rd"] - (0.8 + 0.9 - 1) * 0.2 * 0.4 * 0.6 / (d1 * d0)) < 1e-12  # binary_attenuation
+    assert abs(r["measured_rd"] - r["factor"] * r["true_rd"]) < 1e-12
+    assert r["sign_kept"] and abs(r["measured_rd"]) < abs(r["true_rd"])  # binary_sign
+    assert abs(R.misclassified_rd(0.3, 0.1, 0.4, 1, 1)["measured_rd"] - 0.2) < 1e-12
+    assert abs(R.misclassified_rd(0.3, 0.1, 0.4, 0.5, 0.5)["measured_rd"]) < 1e-12
+    w = R.misclassified_contrast([0, 0.5, 1], ["high", "low", "high"])
+    assert w["theorem"] == "Research.P2.Misclassification.ordinal_witness"
+    assert w["true_contrast"] == 1 and w["measured_contrast"] == 0  # ordinal_witness
+    rv = R.misclassified_contrast([0, 0.5, 1], ["high", "high", "low"])
+    assert rv["measured_contrast"] == 0.25 - 1 and rv["reversed"]  # ordinal_reversal
+    import pytest
+
+    with pytest.raises(ValueError, match="prevalence"):
+        R.misclassified_rd(0.3, 0.1, 1, 0.8, 0.9)
+    with pytest.raises(ValueError, match="both appear"):
+        R.misclassified_contrast([0, 1], ["a", "b"])
+
+
+def test_amplification_and_design_effect_parity():
+    g = R.sensitivity_amplification(Lambda=[2, 3, 5], Delta=4)
+    assert g["theorem"] == "Research.P11.Amplification.level_curve"
+    assert all(abs(gg - (lam * 4 + 1) / (lam + 4)) < 1e-12 for gg, lam in zip(g["Gamma"], (2, 3, 5)))
+    assert g["Gamma"] == R.sensitivity_amplification(Lambda=4, Delta=[2, 3, 5])["Gamma"]  # symmetric
+    assert all(1 <= gg <= min(lam, 4) for gg, lam in zip(g["Gamma"], (2, 3, 5)))  # ge_one, le_min
+    assert g["Gamma"] == sorted(g["Gamma"])  # mono_left
+    cv = R.sensitivity_amplification(Gamma=2, Lambda=[3, 4, 10])
+    assert all(abs(d - (lam * 2 - 1) / (lam - 2)) < 1e-12 for d, lam in zip(cv["Delta"], (3, 4, 10)))  # level_curve
+    back = R.sensitivity_amplification(Lambda=cv["Lambda"], Delta=cv["Delta"])["Gamma"]
+    assert all(abs(v - 2) < 1e-12 for v in back)
+    assert abs(R.sensitivity_amplification(Gamma=2, Delta=5)["Lambda"][0] - 3) < 1e-12
+    d = R.design_effect_direction(0.1, 20)
+    assert d["theorem"] == "Research.P13.Design.quad_form"
+    assert abs(d["deff_cluster_level"] - 2.9) < 1e-12 and abs(d["deff_within_balanced"] - 0.9) < 1e-12
+    assert abs(d["icc_floor"] + 1 / 19) < 1e-12  # icc_lower_bound
+    xc = [[2] * 4, [-1] * 4, [3] * 4]
+    assert abs(R.design_effect_direction(0.1, 4, xc)["ratio"] - 1.3) < 1e-12  # cluster_level
+    xb = [[1, -1], [2, -2], [0.5, -0.5]]
+    assert abs(R.design_effect_direction(0.1, 2, xb)["ratio"] - 0.9) < 1e-12  # within_balanced
+    import random
+
+    rng = random.Random(1)
+    x = [[rng.gauss(0, 1) for _ in range(4)] for _ in range(3)]
+    dq = R.design_effect_direction(0.3, 4, x)
+    by_hand = sum(v * (0.7 * v + 0.3 * sum(row)) for row in x for v in row)  # quad_form
+    assert abs(dq["quad"] - by_hand) < 1e-12
+    ind = [[1] * 4, [0] * 4, [0] * 4]
+    assert abs(R.design_effect_direction(-1 / 3, 4, ind)["quad"]) < 1e-12  # quad_indicator at the floor
+    import pytest
+
+    with pytest.raises(ValueError, match="exactly two"):
+        R.sensitivity_amplification(Lambda=2)
+    with pytest.raises(ValueError, match="must exceed"):
+        R.sensitivity_amplification(Gamma=2, Lambda=2)
+    with pytest.raises(ValueError, match="lie in"):
+        R.design_effect_direction(-0.6, 3)
+    with pytest.raises(ValueError, match="M columns"):
+        R.design_effect_direction(0.1, 3, [[1, 1]])
+
+
+def test_basu_contraction_inspection_parity():
+    t, pi = [1, 2, 3, 100], [0.5, 0.5, 0.5, 0.01]
+    r = R.ht_elephant(t, pi, bound=1e4)
+    assert r["theorem"] == "Research.P3.Basu.ht_variance" and r["mean"] == 106  # ht_mean
+    assert all(abs(a - b * b * (1 - c) / c) < 1e-9 for a, b, c in zip(r["terms"], t, pi))  # ht_variance
+    assert abs(r["variance"] - sum(r["terms"])) < 1e-9
+    assert r["elephant"] == 3 and abs(r["pi_elephant"] - 100**2 / (2 * (1e4 + 100**2))) < 1e-12
+    assert r["term_elephant"] > 1e4 and r["pi_elephant"] < 1  # elephant_unbounded
+    assert sum(r["terms"][:3]) <= sum(v * v / q for v, q in zip(t[:3], pi[:3]))  # ratio_bounded
+    S = [[0.5, 0.5, 0], [0.5, 0, 0.5], [0, 0.5, 0.5]]
+    c = R.attractiveness_contraction(S, 0.2, 0.3, [5, 1, 0], 6)
+    assert c["theorem"] == "Research.P4.Contraction.decay"
+    assert all(a <= b + 1e-12 for a, b in zip(c["sup_norm"], c["sup_bound"]))  # decay
+    assert c["doubly_stochastic"] and all(abs(v - 0.8**k * 6) < 1e-12 for k, v in enumerate(c["total"]))  # update_total
+    assert abs(c["feedback_threshold"] - 0.25) < 1e-12  # feedback_gain
+    assert 0.8 * (1 + 0.3) > 1 and not 0.8 * (1 + 0.2) > 1
+    c2 = R.attractiveness_contraction([[1, 0], [0.5, 0.5]], 0, 1, [1, 3], 2)
+    assert not c2["doubly_stochastic"] and c2["sup_norm"][1] == 2 and c2["feedback_threshold"] == 0
+    g = R.inspection_game(1, [0.5, 0.3, 0.2], 2000, 0.01)
+    assert g["theorem"] == "Research.P8.Inspection.conserved" and abs(g["dV_dt"]) < 1e-15  # conserved
+    assert abs(sum(g["field"])) < 1e-15  # simplex_invariant / payoff_zero_sum
+    assert g["invariant_drift"] < 1e-8
+    assert all(abs(sum(row) - 1) < 1e-10 for row in g["trajectory"])
+    assert max(abs(row[0] - 0.5) for row in g["trajectory"]) > 0.1
+    c3 = R.inspection_game(2, [1 / 3, 1 / 3, 1 / 3], 10)
+    assert c3["field"] == [0, 0, 0] and all(
+        abs(v - 1 / 3) < 1e-12 for v in c3["trajectory"][-1]
+    )  # interior_fixed_point
+    import pytest
+
+    with pytest.raises(ValueError, match="unit row sums"):
+        R.attractiveness_contraction([[2, 0], [0, 1]], 0.2, 0.3, [1, 1])
+    with pytest.raises(ValueError, match="three shares"):
+        R.inspection_game(1, [0.5, 0.5])
+    with pytest.raises(ValueError, match="bound"):
+        R.ht_elephant(t, pi, bound=0)
+
+
+def test_scan2_zero_inflation_gamma_blocking_adjustment_parity():
+    import math
+
+    import pytest
+
+    r = R.nb_matches_zip(0.3, 2)
+    assert r["theorem"] == "Research.P7.ZeroInflation.nb_matches_zip"
+    assert abs(r["mean"] - 1.4) < 1e-12 and abs(r["zip_zero"] - (0.3 + 0.7 * math.exp(-2))) < 1e-12
+    assert math.exp(-r["mean"]) < r["zip_zero"] < 1  # zip_zero_gt_poisson, zip_zero_lt_one
+    assert abs(r["nb_zero"] - r["zip_zero"]) < 1e-9  # nb_matches_zip
+    with pytest.raises(ValueError, match="pi"):
+        R.nb_matches_zip(1, 2)
+    g = R.gamma_bound(70, 100, [1, 1.5, 2, 7 / 3, 3])
+    assert g["theorem"] == "Research.P5.Gamma.gamma_star_kills" and abs(g["gamma_star"] - 70 / 30) < 1e-12
+    wm = g["worst"]["worst_mean"]
+    assert wm == sorted(wm) and abs(wm[3] - 70) < 1e-12  # worst_mean_mono, worst_mean_at_gamma_star
+    assert g["worst"]["survives"] == [True, True, True, False, False]
+    with pytest.raises(ValueError, match="T must"):
+        R.gamma_bound(100, 100)
+    b = R.blocking_crossover(0.5, 1, 10, rho=[0.02, 0.3, 0.9])
+    assert b["theorem"] == "Research.P3.Blocking.paired_better_iff"
+    assert b["c_paired"] > b["c_unpaired"] and b["crossover"] > 0  # crossover_pos
+    assert abs(b["c_paired"] - 1.8331129) < 1e-5 and abs(b["c_unpaired"] - 1.7340636) < 1e-5
+    assert b["paired_better"] == [x > b["crossover"] for x in (0.02, 0.3, 0.9)]  # paired_better_iff
+    a = R.adjustment_variances(1, 0, 1, 1, 0.8)
+    assert a["theorem"] == "Research.P3.Adjustment.adjusted_minus_unadjusted" and a["adjustment_hurts"]
+    assert abs(a["adjusted_minus_unadjusted"] - (3 * 0.8 - 2) / 0.2) < 1e-12  # adjusted_worse
+    assert not R.adjustment_variances(1, 0, 1, 1, 0.6)["adjustment_hurts"]
+    for p in (0.3, 0.5, 0.7):
+        s = R.adjustment_variances(1.2, -0.4, 0.5, 2, p)
+        assert s["lin"] <= s["unadjusted"] and s["lin"] <= s["adjusted"]  # lin_le_*
+    s = R.adjustment_variances(1.2, -0.4, 0.5, 2, 0.5)
+    assert s["adjusted"] <= s["unadjusted"]  # adjusted_le_unadjusted_balanced
+
+
+def test_scan2_budget_outcome_spatial_bounds_parity():
+    import math
+
+    import pytest
+
+    o = R.budget_optimum(math.sqrt, lambda s: 2 * math.log1p(s), 10)
+    assert o["theorem"] == "Research.P8.Budget.interior_optimum" and o["interior"]
+    assert o["value"] > o["corner_values"]["stick"] and o["value"] > o["corner_values"]["carrot"]
+    f = o["grid"]["objective"]
+    assert all(f[i] >= (f[i - 1] + f[i + 1]) / 2 - 1e-12 for i in range(1, len(f) - 1))  # concave_sum
+    assert not R.budget_optimum(lambda t: 0.01 * t, lambda s: s, 1)["interior"]
+    t = R.outcome_test({"A": {"q": [0.3, 0.9], "w": [1, 1], "t": 0.5}, "B": {"q": [0.9], "w": [1], "t": 0.2}})
+    assert t["theorem"] == "Research.P2.OutcomeTest.infra_marginality"
+    assert (
+        t["A"]["hit_rate"] == t["B"]["hit_rate"] == 0.9 and t["A"]["stop_rate"] == 0.5 and t["B"]["stop_rate"] == 1
+    )  # infra_marginality
+    t2 = R.outcome_test({"A": {"q": [0.3, 0.9], "w": [1, 1], "t": 0.5}, "B": {"q": [0.6, 0.9], "w": [1, 1], "t": 0.5}})
+    assert t2["A"]["hit_rate"] != t2["B"]["hit_rate"]  # equal_thresholds_unequal_hits
+    q = [(i + 0.5) / 1000 for i in range(1000)]
+    u = R.outcome_test({"U": {"q": q, "w": [1] * 1000, "t": 0.4}})
+    assert abs(u["U"]["hit_rate"] - 0.7) < 1e-3  # uniform_hit_rate
+    with pytest.raises(ValueError, match="q in"):
+        R.outcome_test({"A": {"q": [2], "w": [1], "t": 0.1}})
+    s = R.spatial_omission(0.4, [1, 2], [[1, 0.5], [0.5, 1]], 0.05, 50)
+    assert s["theorem"] == "Research.P3.Spatial.lag_regressor_correlated"
+    assert (
+        abs(s["lag_covariance"] - 0.4 / 0.84) < 1e-12
+        and abs(s["var_ols"] - 7 / 25) < 1e-12
+        and abs(s["var_gls"] - 0.25) < 1e-12
+    )
+    assert s["gls_more_precise"] and abs(s["fwer"] - (1 - 0.95**50)) < 1e-12  # gls_more_precise, fwer
+    nb = R.iv_natural_bounds(0.8, 0.3, 0.6, 0.4)
+    assert nb["theorem"] == "Research.P8.NaturalBounds.width" and abs(nb["width"] - 0.5) < 1e-12  # width
+    ate = lambda q1, q0: (0.6 * 0.8 + q1 * 0.2) - (0.4 * 0.7 + q0 * 0.3)  # noqa: E731
+    assert abs(ate(0, 1) - nb["lower"]) < 1e-12 and abs(ate(1, 0) - nb["upper"]) < 1e-12  # bounds_attained
+    assert (
+        R.iv_natural_bounds(1, 0, 0.6, 0.4)["width"] == 0
+        and abs(R.iv_natural_bounds(0.5, 0.5, 0.6, 0.4)["width"] - 1) < 1e-12
+    )
+    d = R.design_sensitivity(0.7)
+    assert d["theorem"] == "Research.P5.DesignSensitivity.design_sensitivity_exists_unique"
+    assert abs(d["gamma_tilde"] - 7 / 3) < 1e-8 and d["limiting_power"]["power"] == [
+        1.0,
+        1.0,
+        0.0,
+    ]  # eventually_reject/accept
+    with pytest.raises(ValueError, match="no effect"):
+        R.design_sensitivity(0.4)
+
+
+def test_scan2_moran_exposure_thinning_chernoff_walk_parity():
+    import math
+    import random
+
+    import pytest
+
+    W = [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0]]
+    m = R.moran_trend(W, [1, 2, 3, 4])
+    assert m["theorem"] == "Research.P7.MoranTrend.residual_moran_ratio"
+    assert abs(m["I"] - 1 / 3) < 1e-12 and abs(m["null_expectation"] + 1 / 3) < 1e-12  # trend_witness
+    n = 12
+    Wn = [[1.0 if abs(i - j) == 1 else 0.0 for j in range(n)] for i in range(n)]
+    X = [[1.0, float(i + 1)] for i in range(n)]
+    rng = random.Random(5)
+    y = [2 + 0.5 * (i + 1) + rng.gauss(0, 1) for i in range(n)]
+    mr = R.moran_trend(Wn, y, X)
+    assert "I_residual" in mr and abs(mr["residual_expectation"]) < 1  # residual_moran_ratio form
+    with pytest.raises(ValueError, match="n x n"):
+        R.moran_trend(W, [1, 2, 3])
+    e = R.exposure_positivity(0.5, [1, 5, 10, 30])
+    assert e["theorem"] == "Research.P3.Exposure.exposure_prob_tendsto_zero"
+    assert e["prob_all_treated"] == [0.5**d for d in (1, 5, 10, 30)] and e["ht_weight"][-1] == 2.0**30
+    stats = [rng.gauss(0, 1) for _ in range(200)]
+    pv = R.permutation_valid(stats, [0.01, 0.05, 0.1, 0.5])
+    assert pv["theorem"] == "Research.P3.Exposure.permutation_valid" and all(pv["levels"]["valid"])  # permutation_valid
+    assert R.permutation_valid([1, 1, 1, 2], [0.5])["levels"]["rejection_share"] == [0.25]
+    t = R.thinning_identification(5, 0.3)
+    assert (
+        t["theorem"] == "Research.P1.Thinning.not_identified" and t["recorded_rate"] == 1.5 and t["pgf_check"]
+    )  # thinned_pgf
+    assert t["alternative"]["lam"] * t["alternative"]["gamma"] == 1.5 and t["alternative"]["lam"] != 5  # not_identified
+    s, u = 0.4, 0.7
+    assert (
+        abs(math.exp(5 * ((0.3 * s + 0.7 * u) - 1)) - math.exp(1.5 * (s - 1)) * math.exp(3.5 * (u - 1))) < 1e-12
+    )  # joint_pgf_factorises
+    c = R.poisson_chernoff(20, [0.25, 0.5, 1])
+    assert c["theorem"] == "Research.P7.Chernoff.poisson_chernoff"
+    assert all(r > 0 for r in c["rate"]) and all(
+        a <= b for a, b in zip(c["exact"], c["bound"])
+    )  # rate_pos, poisson_chernoff
+    adj = [[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 0], [0, 1, 0, 0]]
+    w = R.random_walk_exposure(adj)
+    assert w["theorem"] == "Research.P3.RandomWalk.stationary" and w["undirected"] and w["stationary"]  # stationary
+    assert abs(sum(w["pi"]) - 1) < 1e-12 and w["pi"] == [2 / 8, 3 / 8, 2 / 8, 1 / 8]  # stationary_sum_one
+    dd = R.random_walk_exposure([[0, 1, 1], [0, 0, 1], [1, 0, 0]])
+    assert not dd["undirected"] and not dd["stationary"]  # directed_fails
+    with pytest.raises(ValueError, match="out-edge"):
+        R.random_walk_exposure([[0, 0], [0, 0]])
+
+
+def test_scan2_extremal_tail_calibration_bellman_budget_cusum_parity():
+    import math
+    import random
+
+    import pytest
+
+    x = R.extremal_index_clusters(4, 2, [10, 100, 100000])
+    assert x["theorem"] == "Research.P10.ExtremalIndex.extremal_index" and x["theta"] == 0.25
+    assert abs(x["limit_cluster"] ** 4 - x["limit_iid"]) < 1e-12  # extremal_index
+    assert abs(x["table"]["cluster"][2] - math.exp(-0.5)) < 1e-4 and abs(x["table"]["iid"][2] - math.exp(-2)) < 1e-4
+    tr = R.tail_ratio(
+        [5, 10, 20, 40], q=0.7, alpha=1.5, r=3, counts=[1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60]
+    )
+    assert tr["theorem"] == "Research.P7.TailShape.nb_pmf_ratio_tendsto_zero"
+    assert tr["geometric"] == [0.7**k for k in (5, 10, 20, 40)] and all(abs(p - 2**-1.5) < 1e-15 for p in tr["power"])
+    assert (
+        all(a <= b for a, b in zip(tr["nb_pmf_ratio"], tr["nb_bound"])) and tr["nb_pmf_ratio"][-1] < 1e-3
+    )  # nb_pmf_ratio_le, tendsto
+    assert (
+        abs(
+            tr["empirical"][0]
+            - (
+                sum(1 for v in [1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60] if v > 10)
+                / sum(1 for v in [1] * 50 + [3] * 30 + [8] * 15 + [20, 25, 30, 40, 60] if v > 5)
+            )
+        )
+        < 1e-12
+    )
+    cf = R.calibration_flip(0.05, 0.2, [0.3, 0.5, 0.8])
+    assert cf["theorem"] == "Research.P5.DataProcessing.calibration_incompatible"
+    assert all(abs(0.05 + 0.9 * a - r) < 1e-12 for a, r in zip(cf["true_A"], cf["r"]))  # calibrated_to_D_true_rate
+    assert (
+        cf["incompatible"] == [True, False, True]
+        and cf["true_A"][0] != cf["true_B"][0]
+        and cf["recorded_A"][2] != cf["recorded_B"][2]
+    )
+    dp = R.bayes_risk_dpi([[0.3, 0.1, 0.05], [0.1, 0.2, 0.25]], [0, 1], [1, 1, 2])
+    assert (
+        dp["theorem"] == "Research.P5.DataProcessing.bayes_risk_data_processing"
+        and dp["dpi_holds"]
+        and dp["risk_D"] <= dp["risk_R"]
+    )
+    assert (
+        abs(R.bayes_risk_dpi([[0.3, 0.1, 0.05], [0.1, 0.2, 0.25]], [0, 1], [1, 2, 3])["risk_R"] - dp["risk_D"]) < 1e-12
+    )
+    r = [[1, 0], [0.5, 0.5], [1, 1]]
+    p = [[[0, 1, 0], [0, 0, 1]], [[0, 1, 0], [0, 1, 0]], [[0, 0, 1], [0, 0, 1]]]
+    b = R.bellman_value(r, p, 0.9)
+    assert (
+        b["theorem"] == "Research.P4.Bellman.bellman_contracting"
+        and b["converged"]
+        and b["contraction_ratio"] <= 0.9 + 1e-6
+    )  # bellman_lipschitz
+    assert (
+        abs(b["value"][1] - 5) < 1e-6
+        and abs(b["value"][2] - 10) < 1e-6
+        and abs(b["value"][0] - 9) < 1e-6
+        and b["policy"][0] == 1
+    )
+    q = [[r[s][a] + 0.9 * sum(p[s][a][t] * b["value"][t] for t in range(3)) for a in range(2)] for s in range(3)]
+    assert all(abs(max(row) - v) < 1e-6 for row, v in zip(q, b["value"]))  # fixed point
+    me = R.myopic_example([0.5, 2 / 3, 0.9])
+    assert me["theorem"] == "Research.P4.Bellman.myopic_suboptimal" and me["patient_better"] == [
+        False,
+        False,
+        True,
+    ]  # myopic_suboptimal
+    br = R.budget_rule([1, 1, 1], [0.5, 0.2, -0.1], 1.5)
+    assert br["theorem"] == "Research.P5.BudgetRule.threshold_optimal" and br["rule"] == [1.0, 0.5, 0.0]
+    assert (
+        abs(br["value"] - 0.6) < 1e-12 and br["stochastic_needed"] and br["best_deterministic"] == 0.5
+    )  # stochastic_needed
+    rng = random.Random(9)
+    for _ in range(200):  # threshold_optimal
+        d = [rng.random() for _ in range(3)]
+        if sum(d) > 1.5:
+            d = [v * 1.5 / sum(d) for v in d]
+        assert sum(a * b for a, b in zip(d, (0.5, 0.2, -0.1))) <= br["value"] + 1e-12
+    rl = R.run_length_bound(0.01)
+    assert rl["theorem"] == "Research.P10.Cusum.mean_run_length_ge" and rl["J"] == 100 and rl["bound"] == 50
+    assert (
+        abs(rl["partial_sum"] - sum(1 - n * 0.01 for n in range(100))) < 1e-12 and rl["partial_sum"] >= rl["bound"]
+    )  # partial_sum_ge_half
+    N = []
+    for _ in range(4000):  # stop_prob_le
+        k = 0
+        while rng.random() >= 0.05:
+            k += 1
+        N.append(k)
+    for n in (0, 3, 10):
+        assert sum(1 for v in N if v <= n) / 4000 <= (n + 1) * 0.05 + 0.03
+    with pytest.raises(ValueError, match="must not exceed 1"):
+        R.run_length_bound(0.5, J=3)

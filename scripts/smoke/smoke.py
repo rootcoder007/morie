@@ -3,7 +3,9 @@
 
 No mocks. This is what a person gets after `pip install morie` on a machine that has
 nothing on it: no datasets, no cache, no key (unless MORIE_SMOKE_KEY is set, which
-unlocks the hosted-tier and data.rmorie.com cases). Run it with the package installed:
+unlocks the data.rmorie.com cases). Language models are bring-your-own-key: the runner has
+none, so every model verb must say how to set one up and never pretend to answer. Run it
+with the package installed:
 
     python scripts/smoke/smoke.py            # exit 0 = every case passed
     python scripts/smoke/smoke.py --list     # the cases
@@ -68,7 +70,7 @@ class Smoke:
         )
 
     def run_llm(self, *args: str) -> subprocess.CompletedProcess:
-        """A hosted-tier call. Every runner of every package asks on the shared key at once, so a 429 is retried once after a pause."""
+        """A language-model call; a 429 from a provider is retried once after a pause."""
         r = self.run(*args)
         if r.returncode != 0 and "429" in (r.stdout + r.stderr):
             time.sleep(45)
@@ -137,12 +139,9 @@ def c_doctor(s: Smoke):
 @case("models")
 def c_models(s: Smoke):
     r = s.run("models")
-    check(r.returncode == 0, r.stderr[-300:])
-    if not KEY:
-        check("login" in (r.stdout + r.stderr).lower(), "without a key, models must point at morie login")
-    else:
-        # the gateway serves additional AI models (ids ending in :cf) beside the ollama.com ones
-        check(":cf" in r.stdout, "no :cf model listed: " + r.stdout[-300:])
+    # no model is hosted: with no provider key, own server or Ollama, models says how to set one up
+    out = r.stdout + r.stderr
+    check(r.returncode == 1 and "morie config setup" in out, "models without a route: " + out[-300:])
 
 
 @case("provider")
@@ -154,36 +153,63 @@ def c_provider(s: Smoke):
     r = s.run("provider", "show")
     check("api.example.org/v1" in r.stdout and "sk-smoke-1234567" not in r.stdout, r.stdout)
     r = s.run("models")
-    check("Your endpoint" in r.stdout, r.stdout[:300])
+    check("own endpoint" in r.stdout and "* demo" in r.stdout, r.stdout[:300])
     r = s.run("provider", "unset")
     check(r.returncode == 0, r.stderr[-300:])
     check("No endpoint" in s.run("provider", "show").stdout, "unset did not clear the endpoint")
 
 
+@case("config")
+def c_config(s: Smoke):
+    r = s.run("config")
+    check(r.returncode == 0 and "route" in r.stdout and "r.mismatch" in r.stdout, r.stdout[:300] + r.stderr[-300:])
+    path = s.run("config", "path").stdout.strip()
+    check(path.startswith(s.env["XDG_CONFIG_HOME"]), f"config path is not under XDG_CONFIG_HOME: {path!r}")
+    check(s.run("config", "set", "r.mismatch", "strict").returncode == 0, "config set r.mismatch strict failed")
+    check(s.run("config", "get", "r.mismatch").stdout.strip() == "strict", "config get did not read the saved value")
+    r = s.run("config", "set", "r.mismatch", "bogus")
+    check(r.returncode != 0 and "one of" in (r.stdout + r.stderr), "an invalid r.mismatch value was accepted")
+    s.run("config", "unset", "r.mismatch")
+    check(s.run("config", "get", "r.mismatch").stdout.strip() == "warn", "unset did not restore the default (warn)")
+    # a key is stored but never printed back
+    check(s.run("config", "set", "own.key", "sk-smoke-secret-999").returncode == 0, "config set own.key failed")
+    shown = s.run("config").stdout + s.run("config", "get", "own.key").stdout
+    check("sk-smoke-secret-999" not in shown and "set" in shown, "the stored key was printed")
+    s.run("config", "unset", "own.key")
+    check("(not set)" in s.run("config", "get", "own.key").stdout, "unset did not forget the key")
+
+
+@case("help")
+def c_help(s: Smoke):
+    r = s.run("help")
+    check(r.returncode == 0 and "getting-started" in r.stdout and "commands" in r.stdout, r.stdout[:300])
+    for topic, marker in (
+        ("getting-started", "morie doctor"),
+        ("llm", "ask"),
+        ("config", "r.mismatch"),
+        ("commands", "interactive"),
+    ):
+        r = s.run("help", topic)
+        check(r.returncode == 0 and marker in r.stdout, f"help {topic}: " + r.stdout[:200] + r.stderr[-200:])
+    r = s.run("help", "no-such-topic")
+    check(r.returncode == 2 and "no topic" in (r.stdout + r.stderr), "an unknown help topic did not exit 2")
+
+
 def _answered(r, verb: str) -> None:
-    """With a key: a model answered (exit 0). Without: the local fallback text, exit 1 by design. Never empty."""
+    """No language model on the runner: the local fallback text, exit 1 by design. Never empty."""
     check(r.stdout.strip(), f"{verb} printed nothing: " + r.stderr[-300:])
-    if KEY:
-        check(
-            r.returncode == 0,
-            f"{verb} with a key did not get a model answer: stdout={r.stdout[-200:]!r} stderr={r.stderr[-300:]!r}",
-        )
-    else:
-        check(
-            r.returncode == 1 and "fallback" in r.stderr,
-            f"{verb} without a key must say it fell back: " + r.stderr[-300:],
-        )
+    check(
+        r.returncode == 1 and "fallback" in r.stderr,
+        f"{verb} without a model must say it fell back: " + r.stderr[-300:],
+    )
 
 
 @case("ask")
 def c_ask(s: Smoke):
     _answered(s.run_llm("ask", "--no-stream", "What does the power-design module compute?"), "ask")
     # one of the additional models, named per call
-    r = s.run_llm("ask", "--no-stream", "--model", "gpt-oss-120b:cf", "Reply with the single word pong.")
-    if KEY:
-        _answered(r, "ask --model gpt-oss-120b:cf")
-    else:
-        check(r.returncode != 0, "without a key, ask must not claim an answer")
+    r = s.run_llm("ask", "--no-stream", "--model", "demo-model", "Reply with the single word pong.")
+    check(r.returncode != 0, "without a model route, ask --model must not claim an answer")
 
 
 def _agent_case(s: Smoke, verb: str, *args: str) -> None:
@@ -321,19 +347,23 @@ def c_interactive(s: Smoke):
     r = s.run("interactive", "status")
     check(r.returncode == 0 and "interactive layer directory" in r.stdout, r.stdout[-300:] + r.stderr[-300:])
     src = Path(__file__).resolve().parents[2] / "src" / "morie"
-    if all((src / n).is_file() for n in ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py")):
-        r = s.run("interactive", "install", "--from", str(src))  # offline, from this checkout
-    else:
-        r = s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
-        if r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
-            RESULTS.append(
-                (
-                    "interactive",
-                    "SKIP",
-                    "no checkout beside the suite and the release tag is not downloadable from here",
-                )
+    from_checkout = all((src / n).is_file() for n in _LAYER_FILES)
+
+    def install():
+        if from_checkout:
+            return s.run("interactive", "install", "--from", str(src))  # offline, from this checkout
+        return s.run("interactive", "install")  # the suite runs from an installed copy: fetch the release tag
+
+    r = install()
+    if not from_checkout and r.returncode != 0 and ("does not exist" in r.stdout or "download of" in r.stdout):
+        RESULTS.append(
+            (
+                "interactive",
+                "SKIP",
+                "no checkout beside the suite and the release tag is not downloadable from here",
             )
-            return
+        )
+        return
     check(r.returncode == 0 and "Installed the interactive layer" in r.stdout, r.stdout[-400:] + r.stderr[-300:])
     r = s.run("interactive", "status")
     check("active" in r.stdout, "status after install: " + r.stdout[-300:])
@@ -346,6 +376,9 @@ def c_interactive(s: Smoke):
         _source_tree_only(r.stdout + r.stderr) or "42" in r.stdout,
         "exec after remove: " + r.stdout[-300:] + r.stderr[-300:],
     )
+    # put it back, as a user would: the cases after this one launch programs (an editor, R)
+    r = install()
+    check(r.returncode == 0 and "active" in s.run("interactive", "status").stdout, "reinstall: " + r.stdout[-300:])
 
 
 @case("logout")
@@ -432,6 +465,9 @@ def c_pull(s: Smoke):
         )
         return
     r = s.run("run-module", "descriptive-statistics", "--output-dir", "out1")
+    if r.returncode != 0 and _source_tree_only(r.stdout + r.stderr):
+        RESULTS.append(("pull -> module", "SKIP", "the R-backed modules need the interactive layer, not installed"))
+        return
     check(r.returncode == 0, r.stderr[-400:])
     check("SYNTHETIC" not in r.stderr.upper(), "after the pull the module still used the synthetic frame")
 
@@ -541,9 +577,16 @@ def _r_arm_ok() -> bool:
     return _R_ARM
 
 
+_LAYER_FILES = ("polyglot.py", "agent.py", "tui.py", "_exec_guard.py", "repl_init.py", "_launch.py")
+
+
 def _source_tree_only(text: str) -> bool:
-    """The exec/REPL layer is excluded from the wheel on purpose; its verbs must refuse honestly."""
-    return "not bundled in this install" in text or "not available in this build" in text
+    """The interactive layer is excluded from the wheel on purpose; what needs it must refuse honestly."""
+    return (
+        "not bundled in this install" in text
+        or "not available in this build" in text
+        or "needs the interactive layer" in text
+    )
 
 
 @case("edit")
@@ -560,6 +603,11 @@ def c_edit(s: Smoke):
         text=True,
         timeout=300,
     )
+    if _source_tree_only(r.stdout + r.stderr) and not (s.work / "f.py").exists():
+        # starting the editor is itself a launch, which the interactive layer provides
+        check(r.returncode != 0, "edit must fail when the interactive layer is missing")
+        RESULTS.append(("edit", "SKIP", "the interactive layer is not installed; the honest message was verified"))
+        return
     check("print(6 * 7)" in (s.work / "f.py").read_text(), "the editor stub did not write the file: " + r.stderr[-300:])
     if _source_tree_only(r.stdout + r.stderr):
         check(r.returncode != 0, "--run must fail when exec is not in this build")
@@ -607,16 +655,10 @@ def c_serve(s: Smoke):
                 code, body = resp.status, json.load(resp)
         except urllib.error.HTTPError as exc:
             code, body = exc.code, json.load(exc)
-        if KEY:
-            check(
-                code == 200 and body.get("text", "").strip() and "LLM request failed" not in body["text"],
-                f"relay answer with a key: {code} {str(body)[:300]}",
-            )
-        else:
-            check(
-                code == 503 or (code == 200 and body.get("backend") not in (None, "local_fallback")),
-                f"without a key the relay must say 503, not pretend: {code} {str(body)[:300]}",
-            )
+        check(
+            code == 503 and "morie config setup" in str(body),
+            f"without a model the relay must say 503 and how to set one up, not pretend: {code} {str(body)[:300]}",
+        )
     finally:
         proc.terminate()
         try:

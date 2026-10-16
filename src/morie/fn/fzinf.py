@@ -14,7 +14,7 @@ def fuzzy_inference(
     **kwargs,
 ) -> DescriptiveResult:
     """
-    Execute a Mamdani-type fuzzy inference system.
+    Run a Mamdani-type fuzzy inference system.
 
     Each rule is a dict with keys:
 

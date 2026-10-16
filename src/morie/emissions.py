@@ -21,7 +21,6 @@ import logging
 import os
 import platform
 import re
-import subprocess
 import sys
 import time
 import uuid
@@ -51,6 +50,13 @@ _WORLD_AVERAGE_G_KWH = 475.0
 # Loaded lazily from JSON files
 _GLOBAL_ENERGY_MIX: dict[str, Any] = {}
 _ENERGY_MIX_LOADED = False
+
+
+def _sp():
+    """The program launcher (interactive layer), without a prompt: every caller here has a fallback."""
+    from ._interactive import launcher
+
+    return launcher("Reading hardware details", offer=False)
 
 
 def _load_energy_data() -> None:
@@ -234,9 +240,14 @@ def _total_ram_gb():
     except OSError:
         pass
     try:
-        import subprocess
-
-        out = subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True, timeout=5)
+        out = _sp().run(
+            ["sysctl", "-n", "hw.memsize"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
         return int(out.stdout.strip()) / (1024**3)
     except Exception:
         return 16.0
@@ -304,9 +315,14 @@ def _cpu_brand_native():
     except OSError:
         pass
     try:
-        import subprocess
-
-        out = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True, timeout=5)
+        out = _sp().run(
+            ["sysctl", "-n", "machdep.cpu.brand_string"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
         if out.stdout.strip():
             return out.stdout.strip()
     except Exception:
@@ -351,10 +367,12 @@ def _read_powermetrics(duration_ms: int = 500) -> tuple[float, float]:
     is unavailable or requires sudo.
     """
     try:
-        result = subprocess.run(
+        result = _sp().run(
             ["powermetrics", "-n", "1", "--samplers", "cpu_power", "-i", str(duration_ms)],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=5,
         )
         text = result.stdout + result.stderr
@@ -374,10 +392,12 @@ def _cpu_tdp_fallback() -> float:
     brand = ""
     if sys.platform == "darwin":
         try:
-            result = subprocess.run(
+            result = _sp().run(
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=2,
             )
             brand = result.stdout.strip()
@@ -621,10 +641,12 @@ def _detect_location() -> tuple[str, str, str, float, float]:
 def _get_cpu_model() -> str:
     try:
         if sys.platform == "darwin":
-            result = subprocess.run(
+            result = _sp().run(
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=3,
             )
             return result.stdout.strip() or platform.processor()
@@ -925,7 +947,6 @@ def write_capsule(
     """
     import json
     import shutil
-    import subprocess
 
     out_dir = Path(output_dir)
     csv_path = out_dir / csv_name
@@ -975,7 +996,16 @@ def write_capsule(
         "cat('BUNDLED')"
     )
     try:
-        proc = subprocess.run([rscript, "--vanilla", "-e", expr], capture_output=True, text=True, timeout=120)
+        proc = _sp().r_expr(
+            expr,
+            rscript=rscript,
+            options=("--vanilla",),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=120,
+        )
     except Exception:
         return result
     if proc.returncode == 0 and "BUNDLED" in proc.stdout:

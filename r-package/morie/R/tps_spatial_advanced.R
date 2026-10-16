@@ -11,7 +11,7 @@
 #'   \item \code{\link{morie_tps_getis_ord_g_star}}: local
 #'     Getis-Ord Gi* hot/cold-spot z-scores.
 #'   \item \code{\link{morie_tps_dbscan_clusters}}: density-based
-#'     clusters on lat/long (via \pkg{dbscan}, optional).
+#'     clusters on lat/long (native DBSCAN).
 #'   \item \code{\link{morie_tps_polygon_morans_i}}: polygon-aware
 #'     Moran's I from an \pkg{sf} object's actual polygon centroids
 #'     (instead of the centroid-only k-NN approximation in
@@ -25,7 +25,7 @@
 #' Polygon functions accept either an \pkg{sf} object (gated with
 #' \code{requireNamespace("sf")}) or a plain data.frame carrying
 #' precomputed centroid columns. KNN graphs prefer \pkg{FNN}; DBSCAN
-#' requires the optional \pkg{dbscan} package; spatial autocorrelation
+#' runs on the package's native implementation; spatial autocorrelation
 #' tests can optionally be delegated to \pkg{spdep}.
 #'
 #' @name tps_spatial_advanced
@@ -57,16 +57,39 @@ NULL
 }
 
 
+#' Internal helper: Toronto WGS84 bounding box for TPS events
+#' @noRd
+.tps_toronto_bbox <- c(lat_min = 43.55, lat_max = 43.90,
+                       lon_min = -79.65, lon_max = -79.10)
+
+#' Internal helper: which TPS coordinates are usable
+#'
+#' TPS writes (0, 0) for an unknown location. That placeholder, missing
+#' values and any point outside the Toronto bounding box are not usable.
+#' @noRd
+.tps_coord_ok <- function(lat, lon) {
+  lat <- suppressWarnings(as.numeric(lat))
+  lon <- suppressWarnings(as.numeric(lon))
+  b <- .tps_toronto_bbox
+  !is.na(lat) & !is.na(lon) &
+    lat >= b[["lat_min"]] & lat <= b[["lat_max"]] &
+    lon >= b[["lon_min"]] & lon <= b[["lon_max"]]
+}
+
 #' Internal helper: Tps Coords
+#'
+#' Usable (lat, lon) matrix; attribute `n_dropped` counts rows dropped by
+#' `.tps_coord_ok()`.
 #' @noRd
 .tps_coords <- function(df, lat_col, lon_col) {
   if (!all(c(lat_col, lon_col) %in% names(df))) {
-    return(matrix(numeric(0), 0L, 2L))
+    return(structure(matrix(numeric(0), 0L, 2L), n_dropped = 0L))
   }
   a <- df[, c(lat_col, lon_col), drop = FALSE]
-  a <- a[stats::complete.cases(a), , drop = FALSE]
-  a <- a[a[[lat_col]] != 0 & a[[lon_col]] != 0, , drop = FALSE]
-  as.matrix(a)
+  ok <- .tps_coord_ok(a[[lat_col]], a[[lon_col]])
+  a <- a[ok, , drop = FALSE]
+  a[] <- lapply(a, as.numeric)
+  structure(as.matrix(a), n_dropped = sum(!ok))
 }
 
 
@@ -141,6 +164,7 @@ morie_tps_ripley_k <- function(df,
   title <- sprintf("Ripley's K -- %s", ds_name)
 
   coords <- .tps_coords(df, lat_col, lon_col)
+  n_drop <- attr(coords, "n_dropped")
   n0 <- nrow(coords)
   if (n0 < 50L) {
     return(.tps_adv_result(
@@ -212,6 +236,7 @@ morie_tps_ripley_k <- function(df,
     title, call,
     summary_lines = list(
       `Points used` = as.integer(n),
+      `Dropped (no / out-of-Toronto location)` = as.integer(n_drop),
       `Bounding-box area (km^2)` = round(area_km2, 2),
       `Intensity (pts/km^2)` = round(intensity, 3),
       `Radii (km)` = paste(radii_km, collapse = ", "),
@@ -220,6 +245,7 @@ morie_tps_ripley_k <- function(df,
     warnings = character(0),
     interpretation = interp,
     n = as.integer(n),
+    n_dropped_coords = as.integer(n_drop),
     intensity = intensity,
     area_km2 = area_km2,
     table = tbl,
@@ -288,7 +314,7 @@ morie_tps_getis_ord_g_star <- function(df,
   counts <- counts[toupper(as.character(counts)) != "NSA"]
   counts <- sort(table(counts), decreasing = TRUE)
 
-  keep <- stats::complete.cases(df[, c(hood_col, lat_col, lon_col)])
+  keep <- !is.na(df[[hood_col]]) & .tps_coord_ok(df[[lat_col]], df[[lon_col]])
   d <- df[keep, , drop = FALSE]
   cent <- aggregate(d[, c(lat_col, lon_col)], by = list(d[[hood_col]]), mean)
   rownames(cent) <- as.character(cent[[1L]])
@@ -385,9 +411,14 @@ morie_tps_getis_ord_g_star <- function(df,
 
 #' DBSCAN density clusters on lat/long
 #'
-#' Requires the optional \pkg{dbscan} package. Coordinates are
-#' projected to km via the small-angle latitude factor so \code{eps_km}
-#' is interpretable as a kilometre-scale radius.
+#' Runs the package's native DBSCAN (Ester et al. 1996; same core-point
+#' rule, \code{<= eps} neighbourhoods counting the point itself, and
+#' border points joining the first cluster that reaches them, as
+#' \code{dbscan::dbscan}). Coordinates are projected to km via the
+#' small-angle latitude factor so \code{eps_km} is interpretable as a
+#' kilometre-scale radius. Cluster ids are 1-based in discovery order;
+#' noise is 0.  The neighbour search is quadratic in the number of
+#' points, so large inputs are capped by \code{max_n}.
 #'
 #' @param df Incident-level data.frame.
 #' @param ds_name Tag for the result title.
@@ -398,14 +429,12 @@ morie_tps_getis_ord_g_star <- function(df,
 #' @return A named list with the per-cluster table, the count of
 #'   noise points, and the largest-cluster size.
 #' @examples
-#' if (requireNamespace("dbscan", quietly = TRUE)) {
-#'   set.seed(2026)
-#'   df <- data.frame(
-#'     LAT_WGS84 = c(rnorm(60, 43.65, 0.005), rnorm(60, 43.70, 0.005)),
-#'     LONG_WGS84 = c(rnorm(60, -79.40, 0.005), rnorm(60, -79.38, 0.005))
-#'   )
-#'   morie_tps_dbscan_clusters(df, eps_km = 0.5, min_samples = 5L)
-#' }
+#' set.seed(2026)
+#' df <- data.frame(
+#'   LAT_WGS84 = c(rnorm(60, 43.65, 0.005), rnorm(60, 43.70, 0.005)),
+#'   LONG_WGS84 = c(rnorm(60, -79.40, 0.005), rnorm(60, -79.38, 0.005))
+#' )
+#' morie_tps_dbscan_clusters(df, eps_km = 0.5, min_samples = 5L)
 #' @export
 morie_tps_dbscan_clusters <- function(df,
                                        ds_name = "?",
@@ -421,19 +450,8 @@ morie_tps_dbscan_clusters <- function(df,
   )
   title <- sprintf("DBSCAN density clusters -- %s", ds_name)
 
-  if (!requireNamespace("dbscan", quietly = TRUE)) {
-    return(.tps_adv_result(
-      title, call,
-      warnings = "optional package 'dbscan' not installed",
-      interpretation = paste(
-        "No analysis: the optional 'dbscan' package is required for",
-        "this callable. Install with install.packages('dbscan')."
-      ),
-      n = 0L
-    ))
-  }
-
   coords <- .tps_coords(df, lat_col, lon_col)
+  n_drop <- attr(coords, "n_dropped")
   n0 <- nrow(coords)
   if (n0 < 50L) {
     return(.tps_adv_result(
@@ -455,8 +473,11 @@ morie_tps_dbscan_clusters <- function(df,
   coords_km <- cbind(coords[, 1L] * km_per_deg_lat,
                      coords[, 2L] * km_per_deg_lon)
 
-  db <- dbscan::dbscan(coords_km, eps = eps_km, minPts = as.integer(min_samples))
-  labels <- db$cluster
+  # Native DBSCAN labels are 0-based with -1 for noise; shift to the
+  # 1-based / 0-noise convention used below.
+  db <- .morie_dbscan_native(coords_km, eps = eps_km,
+                             min_samples = as.integer(min_samples))
+  labels <- db$labels + 1L
   n_clusters <- length(setdiff(unique(labels), 0L))
   n_noise <- sum(labels == 0L)
 
@@ -494,6 +515,7 @@ morie_tps_dbscan_clusters <- function(df,
     title, call,
     summary_lines = list(
       `Points clustered` = as.integer(n),
+      `Dropped (no / out-of-Toronto location)` = as.integer(n_drop),
       `eps (km)` = eps_km,
       `min_samples` = as.integer(min_samples),
       `Clusters discovered` = as.integer(n_clusters),
@@ -503,6 +525,7 @@ morie_tps_dbscan_clusters <- function(df,
     warnings = character(0),
     interpretation = interp,
     n = as.integer(n),
+    n_dropped_coords = as.integer(n_drop),
     n_clusters = as.integer(n_clusters),
     n_noise = as.integer(n_noise),
     largest_cluster = as.integer(largest),
@@ -996,15 +1019,13 @@ morie_tps_moran_sweep_heatmap <- function(polygons,
 #' @return \code{x}, invisibly.
 #' @examples
 #' \donttest{
-#' if (requireNamespace("dbscan", quietly = TRUE)) {
-#'   set.seed(2026)
-#'   df <- data.frame(
-#'     LAT_WGS84 = c(rnorm(60, 43.65, 0.005), rnorm(60, 43.70, 0.005)),
-#'     LONG_WGS84 = c(rnorm(60, -79.40, 0.005), rnorm(60, -79.38, 0.005))
-#'   )
-#'   obj <- morie_tps_dbscan_clusters(df, eps_km = 0.5, min_samples = 5L)
-#'   print(obj)
-#' }
+#' set.seed(2026)
+#' df <- data.frame(
+#'   LAT_WGS84 = c(rnorm(60, 43.65, 0.005), rnorm(60, 43.70, 0.005)),
+#'   LONG_WGS84 = c(rnorm(60, -79.40, 0.005), rnorm(60, -79.38, 0.005))
+#' )
+#' obj <- morie_tps_dbscan_clusters(df, eps_km = 0.5, min_samples = 5L)
+#' print(obj)
 #' }
 #' @export
 print.morie_tps_spatial_advanced_result <- function(x, ...) {

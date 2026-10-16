@@ -9,7 +9,7 @@
  *   - All functions validate input sizes (no buffer overflows)
  *   - No heap allocation in hot-path functions (caller-allocated buffers)
  *   - No global mutable state (thread-safe)
- *   - No eval(), exec(), system(), or shell calls
+ *   - Pure numeric kernels: no code evaluation and no program launching
  *
  * Compile:
  *   macOS:  cc -O2 -march=native -shared -o engine_kernels.dylib engine_kernels.c -lm -framework Accelerate

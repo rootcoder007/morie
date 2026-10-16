@@ -18,11 +18,9 @@ morie_greg_variance(
 )
 }
 \arguments{
-\item{e}{Residuals. @param n,n_population Sizes.}
+\item{e}{Residuals.}
 
-\item{n}{See Usage.}
-
-\item{n_population}{See Usage.}
+\item{n, n_population}{Sizes.}
 
 \item{x_k, xbar_true, xbar_sample, s2_x}{Simple g-weight pieces.}
 

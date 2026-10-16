@@ -82,7 +82,7 @@ def brier(
     scalar_eval = np.isscalar(eval_time)
     eval_times = np.atleast_1d(np.asarray(eval_time, dtype=float))
     if predicted_survival.ndim == 1:
-        # Single eval time: predicted_survival is shape (n,)
+        # Single evaluation time: predicted_survival is shape (n,)
         if len(eval_times) > 1:
             raise ValueError("predicted_survival must be 2D for multiple eval_times.")
         pred_2d = predicted_survival[:, None]

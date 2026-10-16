@@ -7,7 +7,7 @@ import math
 
 from . import _array_core as np
 from ._richresult import RichResult
-from ._rng import normal_quantile, random_uniform
+from ._rng import normal_quantile_scalar, random_uniform
 
 __all__ = ["turning_bands"]
 
@@ -143,9 +143,9 @@ def turning_bands(
             rad = []
             for m in range(M):
                 z3 = [
-                    float(normal_quantile(ur[m])),
-                    float(normal_quantile(ue[2 * m])),
-                    float(normal_quantile(ue[2 * m + 1])),
+                    normal_quantile_scalar(ur[m]),
+                    normal_quantile_scalar(ue[2 * m]),
+                    normal_quantile_scalar(ue[2 * m + 1]),
                 ]
                 rad.append(math.sqrt(2.0) / range_ * math.sqrt(sum(v * v for v in z3)))
         else:

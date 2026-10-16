@@ -112,11 +112,10 @@ See :doc:`learn/datasets` for the walk-through.
 Assistant and LLM
 -----------------
 
-Every assistant verb answers through the same provider chain: a local
-Ollama server, then an endpoint you attached with ``provider set``, then
-``GEMINI_API_KEY`` / ``OPENAI_API_KEY``, then the hosted tier as the last
-resort (when a key is stored), then a local keyword fallback that says it is
-one.
+Every assistant verb answers through the model you brought (:doc:`hosted`): your own
+OpenAI-compatible server, then each provider whose key is set (``ANTHROPIC_API_KEY``,
+``OPENAI_API_KEY``, ...), then an Ollama server with a model, then a local keyword fallback
+that says it is one. Nothing is hosted for you.
 
 ``ask QUESTION`` / ``agent QUESTION`` / ``percy QUESTION`` (alias ``perseus``)
    Ask the MORIE assistant (streams by default; ``--no-stream``,
@@ -125,20 +124,19 @@ one.
    through the chain instead of printing a connection error.
 
 ``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
-   Store or mint the key for the hosted LLM tier (:doc:`hosted`); keys are
-   issued on request at https://rmorie.com/access and pasted with
-   ``--token``. With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
+   Store or mint the data key for the curated tables at data.rmorie.com
+   (:doc:`hosted`; no model uses it). With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
    it). ``--email`` asks for a 6-digit code sent to that address;
    ``--to-email`` additionally has the key itself emailed to you instead
    of stored on this machine. ``--token`` stores a key you already have
-   (prompts for it when ``KEY`` is omitted) and probes the gateway once.
-   A key the gateway rejects (401/403) is reported as "run ``morie login``
-   again", not as the gateway being unreachable.
+   (prompts for it when ``KEY`` is omitted) and checks it with the data
+   service before it is kept. A key the service rejects (401) is reported as
+   "run ``morie login`` again", not as the service being unreachable.
 
-``models``
-   List the models you can ask: the endpoint you attached (if any), the
-   hosted tier's list for your key (the default marked ``*``), then the
-   local Ollama server's. Pick one per call with ``morie ask --model NAME``.
+``models [--route ROUTE]``
+   List the models the route ``ask`` takes offers (or another route's), the
+   one in use marked ``*``. Pick one per call with ``morie ask --model NAME``
+   or save it with ``morie config set PROVIDER.model NAME``.
 
 ``provider set --base-url URL --key KEY [--model NAME]`` / ``provider show`` / ``provider unset``
    Attach your own OpenAI-compatible endpoint: OpenAI, Anthropic's
@@ -149,7 +147,7 @@ one.
    ``MORIE_API_MODEL`` in the environment take precedence.
 
 ``logout``
-   Forget the stored hosted key.
+   Forget the stored data key.
 
 ``chat``
    Interactive chat REPL with slash commands (``--agent`` loads a persona).
@@ -199,9 +197,9 @@ Environment
 -----------
 
 ``doctor``
-   Diagnostics for LLM providers (local Ollama, the hosted tier at
-   ``llm.rmorie.com``, an attached endpoint, configured keys), datasets, R
-   and Docker; ``--fix`` tries to remediate.
+   Diagnostics for the language-model routes (your own endpoint, provider
+   keys, Ollama, the route ``ask`` takes), the data key, datasets, R and
+   Docker; ``--fix`` tries to remediate.
 
 ``selftest``
    Quick smoke test of every subsystem (also the Docker health check).

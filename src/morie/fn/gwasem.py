@@ -201,7 +201,7 @@ def reml_variance(y, kinship, covariates=None, ml=False):
     r"""Step 2: estimate :math:`\sigma_a^2, \sigma_e^2` in equation 6.
 
     Returns ``{"sigma_a2", "sigma_e2", "delta", "pseudo_heritability",
-    "loglik", "loglik_null", "lrt", "evals", "evecs"}``, where
+    "loglik", "loglik_null", "lrt", "evaluations", "evecs"}``, where
     ``loglik_null`` is the same likelihood at :math:`\sigma_a^2 = 0` and
     ``lrt`` the statistic for :math:`H_0: \sigma_a^2 = 0`.
     """

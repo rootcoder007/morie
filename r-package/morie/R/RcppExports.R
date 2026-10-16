@@ -359,6 +359,10 @@ morie_matching_abadie_imbens_kernel_cpp <- function(y, t, treated_pos, control_p
     .Call(`_morie_morie_rlm_cpp`, X, y, k, maxit, acc)
 }
 
+.rqn_fnb_impl <- function(X, y, tau, beta, eps, maxit) {
+    .Call(`_morie_rqn_fnb_impl`, X, y, tau, beta, eps, maxit)
+}
+
 .morie_sobol_cpp <- function(n, d) {
     .Call(`_morie_morie_sobol_cpp`, n, d)
 }
@@ -419,8 +423,8 @@ morie_svm_decision_cpp <- function(SV, coef, rho, Xnew, kernel_type, gamma, coef
 
 #' Grow one regression / second-order tree (compiled)
 #' @noRd
-morie_tree_fit_cpp <- function(X, g, h, max_depth, min_node, mtry, lambda, alpha, gamma_pen) {
-    .Call(`_morie_morie_tree_fit_cpp`, X, g, h, max_depth, min_node, mtry, lambda, alpha, gamma_pen)
+morie_tree_fit_cpp <- function(X, g, h, max_depth, min_node, mtry, lambda, alpha, gamma_pen, cnt = numeric(0)) {
+    .Call(`_morie_morie_tree_fit_cpp`, X, g, h, max_depth, min_node, mtry, lambda, alpha, gamma_pen, cnt)
 }
 
 #' Predict from a flattened tree (compiled)

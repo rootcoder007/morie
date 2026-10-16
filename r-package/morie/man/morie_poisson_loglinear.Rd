@@ -23,20 +23,13 @@ morie_poisson_loglinear(
 )
 }
 \arguments{
-\item{mu_hat, n, z}{Score interval pieces. @param b0,bs,xs Log link.}
+\item{mu_hat, n, z}{Score interval pieces.}
 
-\item{b0}{See Usage.}
+\item{b0, bs, xs}{Log link.}
 
-\item{bs}{See Usage.}
+\item{exposure}{Rate-model exposure t.}
 
-\item{xs}{See Usage.}
-
-\item{exposure}{Rate-model exposure t. @param beta_x_i,beta_z_j,
-beta_xz_ij Loglinear cell parameters.}
-
-\item{beta_x_i}{See Usage.}
-
-\item{beta_z_j}{See Usage.}
+\item{beta_x_i, beta_z_j, }{beta_xz_ij Loglinear cell parameters.}
 
 \item{beta_xz_ij}{See Usage.}
 

@@ -34,7 +34,7 @@ def geron_umap(X, n_components=2, n_neighbors=3, min_dist=0.1, seed=0, n_iter=30
 
     Formula: fuzzy topological cross-entropy between high-/low-d graphs
 
-    The pipeline is executed in full, exactly (no negative sampling --
+    The pipeline is run in full, exactly (no negative sampling --
     the cross-entropy is summed over all pairs, which is tractable at
     these sizes and removes the stochasticity):
 

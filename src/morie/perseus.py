@@ -17,7 +17,7 @@ from typing import Any
 
 from .cpads import cpads_contract
 from .llm import (
-    ModelNotOnKeyError,
+    NoModelError,
     _FallbackText,
     agent_available,  # noqa: F401 -- re-exported
     build_morie_context,
@@ -44,32 +44,25 @@ def build_prompt(question: str, context: str | None = None) -> str:
 
 def _how_to_get_a_model() -> str:
     """The three routes to a live model, with the one that applies to this machine first."""
-    from .hosted import hosted_failure, hosted_key
+    lines = [
+        "To get answers from a model, bring one (tried in this order):",
+        "  1. your own OpenAI-compatible server: `morie config set own.url http://localhost:1234/v1` "
+        "(LM Studio, vLLM, llama.cpp, a company gateway).",
+        "  2. a provider's key: ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, GROQ_API_KEY, ... "
+        "in the environment, or `morie config set anthropic.key` (asked for, saved privately).",
+        "  3. a local Ollama: start it (`ollama serve`) and `ollama pull gemma4:e2b`; pick a model with "
+        "`morie ask --model NAME`.",
+        "  `morie config setup` walks through it; `morie doctor` says what answers from here.",
+    ]
+    from .llm_config import route as _saved_route
 
-    lines = ["To get answers from a model (tried in this order):"]
-    if hosted_key() and hosted_failure() == "rejected":
+    forced = _saved_route()
+    if forced != "auto":
         lines.append(
-            "  1. hosted MORIE tier: you are signed in but the gateway rejected the key "
-            "(reset, or replaced by a newer sign-in). Run `morie login` again."
+            f"  route = {forced} is set (MORIE_LLM_ROUTE or `morie config`), so only that route is tried; "
+            "`morie config unset route` goes back to the automatic order."
         )
-    elif hosted_key():
-        lines.append(
-            "  1. hosted MORIE tier: you are signed in but https://llm.rmorie.com was not "
-            "reachable from here. Check the network, then `morie doctor`."
-        )
-    else:
-        lines.append(
-            "  1. hosted MORIE tier (free, sign in with GitHub or email): `morie login`; "
-            "after that `morie ask` uses it automatically and `morie models` lists what you can ask."
-        )
-    lines.append(
-        "  2. a local Ollama: install it, then `ollama pull gemma4:e2b` (or any model; pick with `morie ask --model NAME`)."
-    )
-    lines.append(
-        "  3. your own model: `morie provider set --base-url URL --key KEY [--model NAME]` for any "
-        "OpenAI-compatible endpoint (OpenAI, Anthropic's https://api.anthropic.com/v1, OpenRouter, "
-        "LM Studio, vLLM ...), or GEMINI_API_KEY / OPENAI_API_KEY in the environment."
-    )
+    lines.append("`morie config setup` walks through every setting (route, addresses, models, keys).")
     lines.append(
         "`morie doctor` shows which of these answers from this machine. Until one does, "
         "`morie list-modules`, `morie explain FILE` and `morie cheatsheet` describe the modules, "
@@ -147,17 +140,21 @@ def ask_percy(
     allow_fallback: bool = True,
     stream: bool = False,
     use_agent: bool = True,
+    route: str | None = None,
 ) -> dict[str, Any]:
     """Query Perseus via the LLM provider chain.
 
     When ``use_agent=True`` (default) and Ollama is available, Perseus uses the
-    full agentic loop with 13 tools (search, execute, read/write, shell, data).
+    full agentic loop with 13 tools (search, run, read/write, shell, data).
     Falls back to simple LLM chat or static text when tools are unavailable.
 
     Returns a dict with ``mode``, ``model``, and either ``output_text`` (str)
     or ``output_stream`` (Iterator[str]).
+
+    ``route`` (``"auto"``, ``"own"``, ``"ollama"``, ``"hosted"``) forces the route; ``None``
+    uses the one saved with ``morie config set route`` (else auto).
     """
-    provider = detect_available_provider()
+    provider = detect_available_provider() if route is None else detect_available_provider(route)
 
     if use_agent and provider == "ollama":
         agent_result = _try_agent(question, stream=stream, model=model)
@@ -188,6 +185,7 @@ def ask_percy(
             stream=stream,
             model=model,
             provider=provider,
+            route=route,
             system_prompt=system_prompt,
         )
 
@@ -211,8 +209,8 @@ def ask_percy(
             result["output_text"] = output
         return result
 
-    except ModelNotOnKeyError as exc:
-        # a model the key does not offer: the answer is that sentence, not the local setup text
+    except NoModelError as exc:
+        # a provider with a key and no model: the answer is how to name one, not the setup text
         msg = str(exc)
         result = {"mode": "error", "model": model, "failed": True}
         if stream:

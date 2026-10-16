@@ -1,25 +1,19 @@
-"""The hosted MORIE inference tier at llm.rmorie.com.
+"""The MORIE data key: the personal key that opens the curated tables at data.rmorie.com.
 
-An authenticated, rate-limited OpenAI-compatible endpoint run by the
-project (LiteLLM in front of an Ollama server). It is the last resort in
-the provider chain, after a local Ollama and after every cloud API key of
-the user's own, and it only ever speaks when the user has a key: issued on
-request at https://rmorie.com/access and stored with ``morie login --token``,
-or minted by ``morie login`` (GitHub device flow) or ``morie login --email``,
-with mode 0600 under the XDG config directory. Its address comes from the
-signed services document (``morie.services``), not from a constant here. Nothing is sent anywhere without
-that key, and no anonymous endpoint is contacted.
+No language model is hosted by the project any more (the tier at llm.rmorie.com is retired; a
+model is brought by the user, see :mod:`morie.providers`). What remains here is the key for
+the curated tables: minted by ``morie login`` (GitHub device flow) or ``morie login --email``
+at the data service's own sign-in, or given and stored with ``morie login --token``; checked
+with the service before it is kept; stored 0600 in ``$XDG_CONFIG_HOME/morie/credentials.json``,
+the file rmorie, rmoriedata and rmoriebricklayer read too. The addresses come from the signed
+services document (``morie.services``).
 
 Environment
 -----------
-MORIE_HOSTED_BASE_URL
-    Override the endpoint (``https://llm.rmorie.com``; the request layer adds
-    ``/v1/chat/completions``). An empty string
-    disables the tier.
 MORIE_HOSTED_KEY
     Override the stored key (CI, containers).
-MORIE_HOSTED_MODEL
-    Model name; the gateway only serves the cloud models of the server.
+MORIE_HOSTED_AUTH_URL
+    Override the sign-in service (``https://data.rmorie.com/auth``).
 """
 
 from __future__ import annotations
@@ -29,7 +23,6 @@ import json
 import os
 import shlex
 import stat
-import subprocess
 import sys
 import time
 import webbrowser
@@ -37,51 +30,31 @@ from pathlib import Path
 
 import httpx
 
-DEFAULT_HOSTED_BASE_URL = "https://llm.rmorie.com"
-DEFAULT_HOSTED_AUTH_URL = "https://llm.rmorie.com/auth"
-DEFAULT_HOSTED_MODEL = "minimax-m3:cloud"
-_PROBE_TIMEOUT = 2.0
+DEFAULT_DATA_BASE_URL = "https://data.rmorie.com"
+DEFAULT_HOSTED_AUTH_URL = "https://data.rmorie.com/auth"
+_PROBE_TIMEOUT = 5.0
 
 
 def hosted_base_url() -> str | None:
-    """The hosted endpoint, or None when disabled.
-
-    ``MORIE_HOSTED_BASE_URL`` overrides ("" or "off" disables); otherwise the signed
-    services document decides (``morie.services``), and a document with the tier
-    switched off disables it here too. The tier is a last resort behind a local model
-    or your own API key; keys are issued on request at https://rmorie.com/access.
-    """
-    if "MORIE_HOSTED_BASE_URL" in os.environ:
-        url = os.environ["MORIE_HOSTED_BASE_URL"].strip()
-        if url.lower() in ("off", "none", "disabled"):
-            return None
-        return url.rstrip("/") or None
+    """The data service the key belongs to (the services document's ``data.base_url``), or None
+    when the document switches it off. A key is only ever sent there."""
     from . import services
 
-    llm = services.llm()
-    if llm.get("mode") != "key" or not llm.get("base_url"):
+    d = services.data()
+    if d.get("mode") != "key" or not d.get("base_url"):
         return None
-    return str(llm["base_url"]).rstrip("/")
+    return str(d["base_url"]).rstrip("/")
 
 
 def hosted_auth_url() -> str:
-    """Base URL of the hosted-tier login service (``MORIE_HOSTED_AUTH_URL``, else the services document), without a trailing slash."""
+    """The sign-in service (``MORIE_HOSTED_AUTH_URL``, else the services document's data
+    ``auth_url``), without a trailing slash."""
     env = os.environ.get("MORIE_HOSTED_AUTH_URL", "").strip()
     if env:
         return env.rstrip("/")
     from . import services
 
-    return (str(services.llm().get("auth_url") or "") or DEFAULT_HOSTED_AUTH_URL).rstrip("/")
-
-
-def hosted_model() -> str:
-    """Default model on the hosted tier (``MORIE_HOSTED_MODEL``, else the services document, else the built-in default)."""
-    env = os.environ.get("MORIE_HOSTED_MODEL", "").strip()
-    if env:
-        return env
-    from . import services
-
-    return str(services.llm().get("default_model") or "") or DEFAULT_HOSTED_MODEL
+    return (str(services.data().get("auth_url") or "") or DEFAULT_HOSTED_AUTH_URL).rstrip("/")
 
 
 def access_hint() -> str:
@@ -129,25 +102,20 @@ def hosted_key() -> str | None:
 
 
 _hosted_cached: bool | None = None
-_hosted_models: list[str] | None = None  # what the gateway listed for this key, once probed
 _hosted_failure: str | None = None
 
 
 def reset_probe_cache() -> None:
-    """Forget the cached hosted-tier probe (reachability, model list, last failure) so the next call probes again."""
-    global _hosted_cached, _hosted_models, _hosted_failure
+    """Forget the cached key check (accepted, last failure) so the next call checks again."""
+    global _hosted_cached, _hosted_failure
     _hosted_cached = None
-    _hosted_models = None
     _hosted_failure = None
 
 
 def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
-    """True when the user is logged in and the gateway accepts the key.
-
-    Cached for the process lifetime like the Ollama probe; never called
-    without a key, so a fresh install makes no network request here.
-    """
-    global _hosted_cached, _hosted_models, _hosted_failure
+    """True when a key is stored and the data service accepts it (``/v1/whoami``; a service
+    without it answers ``/manifest.json``). Cached for the process; never called without a key."""
+    global _hosted_cached, _hosted_failure
     if _hosted_cached is not None:
         return _hosted_cached
     base, key = hosted_base_url(), hosted_key()
@@ -155,13 +123,13 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
         _hosted_cached = False
         return False
     try:
-        resp = httpx.get(f"{base}/v1/models", headers={"Authorization": f"Bearer {key}"}, timeout=timeout)
+        hdr = {"Authorization": f"Bearer {key}"}
+        resp = httpx.get(f"{base}/v1/whoami", headers=hdr, timeout=timeout)
+        if resp.status_code == 404:
+            resp = httpx.get(f"{base}/manifest.json", headers=hdr, timeout=timeout)
         _hosted_cached = resp.status_code < 400
         if _hosted_cached:
             _hosted_failure = None
-            with contextlib.suppress(Exception):
-                ids = [m.get("id") for m in resp.json().get("data", [])]
-                _hosted_models = [m for m in ids if isinstance(m, str) and m] or None
         else:
             _hosted_failure = "rejected" if resp.status_code in (401, 403) else f"http {resp.status_code}"
     except Exception:
@@ -171,42 +139,20 @@ def probe_hosted(timeout: float = _PROBE_TIMEOUT) -> bool:
 
 
 def hosted_failure() -> str | None:
-    """Why the last probe failed: "rejected" (401/403: the key is no longer
-    valid at the gateway), "network", "http NNN", or None when it succeeded."""
+    """Why the last check failed: "rejected" (401/403: the key is no longer valid), "network",
+    "http NNN", or None when it succeeded."""
     probe_hosted()
     return _hosted_failure
 
 
 def hosted_problem_line(cli: str = "morie") -> str:
-    """One sentence for a logged-in user whose probe failed, with the remedy."""
+    """One sentence for a signed-in user whose key check failed, with the remedy."""
     why = hosted_failure()
     if why == "rejected":
-        return (
-            f"logged in, but the gateway rejected the key (it was reset or replaced "
-            f"by a newer sign-in): run `{cli} login` again"
-        )
+        return f"signed in, but the data service rejected the key (reset or replaced by a newer sign-in): run `{cli} login` again"
     if why in (None, "network"):
-        return "logged in, gateway not reachable from this machine (network)"
-    return f"logged in, gateway answered {why}: try again, or `{cli} login`"
-
-
-def hosted_models() -> list[str] | None:
-    """The models the gateway lists for this key (None until a successful probe)."""
-    probe_hosted()
-    return _hosted_models
-
-
-def hosted_model_available() -> str:
-    """The configured model, or the gateway's first model when the configured one is not offered.
-
-    Cloud models get retired upstream; a stale default must not turn every
-    hosted request into a 400. Nothing is fetched beyond the probe already made.
-    """
-    wanted = hosted_model()
-    listed = hosted_models()
-    if listed and wanted not in listed:
-        return listed[0]
-    return wanted
+        return "signed in; the data service is not reachable from this machine (network)"
+    return f"signed in; the data service answered {why}: try again, or `{cli} login`"
 
 
 def _say(msg: str) -> None:
@@ -233,18 +179,24 @@ def _open_browser(uri: str) -> None:
     """
     if not _can_open_browser():
         return
-    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)):
+    from ._interactive import LayerMissingError, launcher
+
+    try:
+        sp = launcher("Opening $BROWSER", offer=False)
+    except LayerMissingError:
+        sp = None  # without the launcher the standard webbrowser module below opens it
+    for entry in filter(None, os.environ.get("BROWSER", "").split(os.pathsep)) if sp else ():
         try:
             cmd = shlex.split(entry)
         except ValueError:
             continue
         cmd = [c.replace("%s", uri) for c in cmd] if any("%s" in c for c in cmd) else [*cmd, uri]
         try:
-            subprocess.Popen(
+            sp.start(
                 cmd,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                stdin=sp.DEVNULL,
+                stdout=sp.DEVNULL,
+                stderr=sp.DEVNULL,
                 start_new_session=True,
             )
             return
@@ -275,7 +227,7 @@ def _browsable(uri: object) -> bool:
 
 
 def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say) -> str:
-    """Run the GitHub device flow against the gateway's auth service.
+    """Run the GitHub device flow against the data service's sign-in.
 
     1. ``POST {auth}/device/code`` returns ``user_code``, ``verification_uri``,
        ``device_code`` and ``interval``.
@@ -322,10 +274,10 @@ def device_login(open_browser: bool = True, poll_max_seconds: float = 600.0, ech
 
 
 def store_token(token: str, echo=_say) -> str:
-    """Store a key obtained elsewhere (the landing page, or one emailed by the gateway).
+    """Store a data key obtained elsewhere (one emailed, or given on request).
 
-    The key is trimmed, written to the shared credentials file and probed once;
-    a key the gateway rejects is still stored but the user is told.
+    The key is checked with the data service first; a key it refuses, or one that cannot be
+    checked, is not kept (the credentials file is left as it was).
     """
     token = (token or "").strip()
     if not token:
@@ -336,14 +288,14 @@ def store_token(token: str, echo=_say) -> str:
     path = write_credentials(data)
     reset_probe_cache()
     if probe_hosted():
-        echo(f"Token stored in {path}; the gateway accepts it.")
+        echo(f"Key stored in {path}; the data service accepts it.")
         return token
     why = hosted_failure()
-    write_credentials(previous)  # nothing is kept that the gateway refused
+    write_credentials(previous)  # nothing is kept that the data service refused
     reset_probe_cache()
     if why == "rejected":
-        raise ValueError("the gateway rejected that key; nothing stored (check it, or run `morie login` again)")
-    raise ValueError(f"the gateway could not be reached to check that key ({why}); nothing stored, try again")
+        raise ValueError("the data service rejected that key; nothing stored (check it, or run `morie login` again)")
+    raise ValueError(f"the data service could not be reached to check that key ({why}); nothing stored, try again")
 
 
 def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_email: bool = False) -> str:
@@ -352,7 +304,7 @@ def email_login(email: str, code: str | None = None, ask=input, echo=_say, to_em
     ``POST {auth}/email/code`` sends a 6-digit code (10 minutes, single use);
     the user types it (or passes ``code``), ``POST {auth}/email/verify``
     returns the key, stored like the device-flow one. With ``to_email`` the
-    gateway emails the key instead of returning it; nothing is stored and the
+    service emails the key instead of returning it; nothing is stored and the
     user pastes it later with ``morie login --token``.
     """
     auth = hosted_auth_url()
@@ -398,30 +350,12 @@ def logout(echo=_say) -> bool:
         with contextlib.suppress(FileNotFoundError):
             credentials_path().unlink()
     reset_probe_cache()
-    echo("Hosted key removed." if had else "No hosted key was stored.")
+    echo("Data key removed." if had else "No data key was stored.")
     return had
 
 
-def models_lines() -> list[str]:
-    """What `morie models` prints for the hosted tier: every model this key may ask, default marked."""
-    s = status()
-    if not s["base_url"]:
-        return ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
-    if not s["logged_in"]:
-        return [
-            f"Hosted tier ({DEFAULT_HOSTED_BASE_URL}): not logged in -- run `morie login` (GitHub) or `morie login --email you@example.com`"
-        ]
-    if not s["reachable"]:
-        return [f"Hosted tier ({s['base_url']}): {hosted_problem_line()}"]
-    default = hosted_model_available()
-    who = f", logged in as {s['user']}" if s.get("user") else ""
-    lines = [f"Hosted tier ({s['base_url']}){who}; default marked *:"]
-    lines += [f"  {'*' if m == default else ' '} {m}" for m in hosted_models() or []]
-    return lines
-
-
 def status() -> dict:
-    """What `morie doctor` reports: endpoint, whether a key is present, whether it works."""
+    """What `morie doctor` reports for the data key: the service, whether a key is stored, whether it works."""
     key = hosted_key()
     return {
         "base_url": hosted_base_url(),

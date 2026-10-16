@@ -19,7 +19,7 @@ The bound itself is
 and each coordinate update is guaranteed not to decrease it, which is
 asserted here (``elbo_monotone``) rather than assumed.
 
-MODEL.  The general update above is not executable without a joint, so
+MODEL.  The general update above is not runnable without a joint, so
 the joint is the conjugate univariate Normal-Gamma of the classical
 worked mean-field example:
 

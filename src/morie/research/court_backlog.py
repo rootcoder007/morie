@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-__all__ = ["court_backlog", "backlog_censoring"]
+__all__ = ["court_backlog", "backlog_censoring", "backlog_published"]
 
 
 def court_backlog(arrivals, dispositions, horizon=None, target_backlog=None) -> dict:
@@ -123,3 +123,75 @@ def backlog_censoring(disposed, pending_ages) -> dict:
             "Research.P16Censoring.no_upper_bound",
         ],
     }
+
+
+def backlog_published(received, days, pending, mean_days, band_shares=None, band_floors=None) -> list:
+    """Published court statistics read through Little's law (``Research.P16.little_target``,
+    ``Research.P16Censoring.disposed_understates``, ``band_floor_le_mean``).
+
+    R parity: ``morie_backlog_published``.
+
+    Examples
+    --------
+    >>> r = backlog_published(21265, 30, 148904, 175, band_shares=[[0.808, 0.105, 0.034, 0.053]],
+    ...                       band_floors=[0, 304, 456, 548])[0]
+    >>> (round(r["implied_mean_days"], 4), round(r["ratio"], 6), round(r["band_floor_bound"], 3))
+    (210.0691, 1.200395, 76.468)
+    """
+
+    def vec(x, name, pos=True):
+        v = list(x) if isinstance(x, (list, tuple)) else [x]
+        try:
+            v = [float(e) for e in v]
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{name} must be finite numbers") from exc
+        if any(not math.isfinite(e) for e in v):
+            raise ValueError(f"{name} must be finite numbers")
+        if pos and any(e <= 0 for e in v):
+            raise ValueError(f"{name} must be positive")
+        if not pos and any(e < 0 for e in v):
+            raise ValueError(f"{name} must be non-negative")
+        return v
+
+    cols = [
+        vec(received, "received"),
+        vec(days, "days"),
+        vec(pending, "pending", pos=False),
+        vec(mean_days, "mean_days"),
+    ]
+    n = max(len(c) for c in cols)
+    for c, name in zip(cols, ["received", "days", "pending", "mean_days"]):
+        if len(c) not in (1, n):
+            raise ValueError(f"{name} must have length 1 or {n}")
+    rec, dy, pend, md = ([c[0]] * n if len(c) == 1 else c for c in cols)
+    shares = None
+    if band_shares is not None:
+        shares = [list(map(float, r)) for r in band_shares]
+        if len(shares) == 1 and n > 1:
+            shares = shares * n
+        if len(shares) != n:
+            raise ValueError(f"band_shares must have one row per window ({n})")
+        if band_floors is None or len(band_floors) != len(shares[0]):
+            raise ValueError("band_floors must give one lower edge per band")
+        if any(e != e or e < 0 for r in shares for e in r):
+            raise ValueError("band_shares must be non-negative")
+        if any(abs(sum(r) - 1) > 0.01 for r in shares):
+            raise ValueError("each row of band_shares must sum to 1 (within rounding)")
+        fl = [float(f) for f in band_floors]
+        if any(f != f or f < 0 for f in fl) or any(fl[i] > fl[i + 1] for i in range(len(fl) - 1)):
+            raise ValueError("band_floors must be non-negative and increasing")
+    out = []
+    for i in range(n):
+        rate = rec[i] / dy[i]
+        row = {
+            "filing_rate": rate,
+            "implied_mean_days": pend[i] / rate,
+            "published_mean_days": md[i],
+            "ratio": (pend[i] / rate) / md[i],
+            "little_backlog": rate * md[i],
+            "pending": pend[i],
+        }
+        if shares is not None:
+            row["band_floor_bound"] = math.fsum(s * f for s, f in zip(shares[i], fl)) / math.fsum(shares[i])
+        out.append(row)
+    return out

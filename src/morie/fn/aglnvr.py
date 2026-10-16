@@ -9,6 +9,7 @@ masters chess, shogi and Go through self-play*, Science
 """
 
 import math
+import operator
 
 from . import _array_core as np
 from ._richresult import RichResult
@@ -30,7 +31,8 @@ def effective_sample_size(x, max_lag=None):
 
     Returns
     -------
-    dict with ``ess``, ``rho``, ``tau_int``, ``n_lags_used``.
+    dict with ``ess``, ``rho`` (the autocorrelations at lags 0, 1, ...
+    up to the last lag the sequence evaluated), ``tau_int``, ``n_lags_used``.
     """
     v = np.asarray(x, dtype=float).ravel()
     v = v[np.isfinite(v)]
@@ -43,16 +45,25 @@ def effective_sample_size(x, max_lag=None):
         return {"ess": float(n), "rho": np.zeros(0), "tau_int": 1.0, "n_lags_used": 0}
     m = int(n // 2) if max_lag is None else min(int(max_lag), n - 1)
     # autocovariance by direct summation; n is a training run, not a
-    # signal, so the FFT is not worth the wrap-around care it needs
-    rho = np.empty(m + 1)
-    rho[0] = 1.0
-    for k in range(1, m + 1):
-        rho[k] = float(c[:-k] @ c[k:]) / denom
+    # signal, so the FFT is not worth the wrap-around care it needs.
+    # Lags are computed only as Geyer's sequence asks for them: the
+    # estimator never reads past the first non-positive pair, and
+    # evaluating all n/2 lags up front was O(n^2) -- 2e8 products for
+    # n = 20000, past the 120 s test timeout on the array core.
+    cl = c.tolist()
+    rho = [1.0]
+
+    def _lag(k):
+        while len(rho) <= k:
+            j = len(rho)
+            rho.append(math.fsum(map(operator.mul, cl[:-j], cl[j:])) / denom)
+        return rho[k]
+
     total = 0.0
     used = 0
     k = 1
     while k + 1 <= m:
-        pair = rho[k] + rho[k + 1]
+        pair = _lag(k) + _lag(k + 1)
         if pair <= 0:
             break
         total += pair
@@ -60,7 +71,7 @@ def effective_sample_size(x, max_lag=None):
         k += 2
     tau = 1.0 + 2.0 * total
     tau = max(tau, 1e-12)
-    return {"ess": float(n / tau), "rho": rho, "tau_int": float(tau), "n_lags_used": used}
+    return {"ess": float(n / tau), "rho": np.asarray(rho), "tau_int": float(tau), "n_lags_used": used}
 
 
 def alphazero_loss_var(losses, value_loss=None, policy_loss=None, reg_loss=None, alpha=0.05):

@@ -9,7 +9,8 @@
 
 #' Shared parameters for morie_survey_* design-based estimators
 #'
-#' Roxygen-only block holding the @param entries shared across the
+#' Roxygen-only block holding the
+#' @param entries shared across the
 #' survey family (HT, Hajek, ratio, calibration, post-stratification,
 #' subpopulation, complex-design GLM, mean). Functions reference these
 #' via `@inheritParams morie_survey_params`.
@@ -291,8 +292,11 @@ morie_survey_ratio <- function(y, x, weights, X_population_total) {
 
 #' Post-stratification weights (sample-to-population alignment)
 #'
-#' Delegates to `survey::postStratify()` when given a design; otherwise
-#' computes raw post-stratification factors in base R.
+#' Computes the post-stratification factors natively in base R: each
+#' unit in stratum \eqn{h} gets \eqn{(N_h / N) / (n_h / n)}, the ratio of
+#' the population share to the sample share (the adjustment
+#' `survey::postStratify()` applies to equal starting weights). No package
+#' is called.
 #' @inheritParams morie_survey_params
 #' @return A numeric vector of post-stratification weights.
 #' @examples

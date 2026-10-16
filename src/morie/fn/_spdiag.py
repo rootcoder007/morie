@@ -59,6 +59,41 @@ def logdet(W, a):
     return _logdet(_mat(W), float(a)) if a else 0.0
 
 
+def eigen_logdet(ev, a):
+    """``(sign, log|det(I - a W)|)`` from the eigenvalues ``ev`` of ``W``.
+
+    Ord (1975): ``det(I - a W) = prod_i (1 - a lambda_i)``, so once the
+    eigenvalues are known every trial ``a`` costs O(n) instead of an
+    O(n^3) factorisation. Complex eigenvalues come in conjugate pairs
+    whose product is positive, so only the real ones can flip the sign.
+    """
+    a = float(a)
+    ld = 0.0
+    neg = 0
+    for v in ev:
+        z = 1.0 - a * complex(v)
+        mod = abs(z)
+        if mod == 0.0:
+            return 0.0, float("-inf")
+        ld += math.log(mod)
+        if z.real < 0 and abs(z.imag) <= 1e-12 * mod:
+            neg += 1
+    return (-1.0 if neg % 2 else 1.0), ld
+
+
+def eigenvalues(W):
+    """Eigenvalues of ``W`` as a list of complex numbers, for :func:`eigen_logdet`.
+
+    An exactly symmetric ``W`` takes the symmetric solver, ten times
+    faster than the general one at n = 200.
+    """
+    A = np.asarray(W, dtype=float)
+    rows = A.tolist()
+    if all(rows[i][j] == rows[j][i] for i in range(len(rows)) for j in range(i)):
+        return [complex(v) for v in np.linalg.eigvalsh(A).tolist()]
+    return [complex(v) for v in np.linalg.eigvals(A).tolist()]
+
+
 def bounds(W):
     """``(1 / min Re(ev), 1 / max Re(ev))`` over the eigenvalues of ``W`` (spatialreg's search interval)."""
     ev = [complex(v).real for v in np.linalg.eigvals(np.asarray(_mat(W), dtype=float)).tolist()]

@@ -79,7 +79,7 @@ def execute_pipeline(
     """
     Run the specified epidemiologic analysis modules.
 
-    :param modules: A list of module names to execute, defaults to None.
+    :param modules: A list of module names to run, defaults to None.
     :type modules: list[str], optional
     :param silent: If True, skips the safety confirmation prompt, defaults to False.
     :type silent: bool, optional
@@ -189,7 +189,13 @@ def execute_pipeline(
 
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
-    parser = argparse.ArgumentParser(description="MORIE package runner")
+    parser = argparse.ArgumentParser(
+        description="MORIE package runner",
+        epilog=(
+            "New here? morie help getting-started. Language models: morie help llm. "
+            "Settings: morie help config. Each command has its own --help."
+        ),
+    )
     parser.add_argument("--version", action="version", version=f"morie {__version__}")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -261,6 +267,12 @@ def build_parser() -> argparse.ArgumentParser:
     ask_cmd.add_argument("--context", help="Optional context string")
     ask_cmd.add_argument("--model", default=None, help="Override the LLM model name")
     ask_cmd.add_argument(
+        "--route",
+        default=None,
+        choices=__import__("morie.llm_config", fromlist=["ROUTES"]).ROUTES,
+        help="Which route to use for this question (default: the saved route, else auto; morie help llm)",
+    )
+    ask_cmd.add_argument(
         "--no-stream",
         action="store_true",
         default=False,
@@ -289,7 +301,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--remote",
         action="store_true",
         help="Use a Perseus relay you run (PERSEUS_CLOUD_URL, or `morie serve` on MORIE_PI_HOST); "
-        "without Ollama, percy already answers through the hosted tier after `morie login`",
+        "without Ollama, percy answers through your own endpoint or a provider key",
     )
     percy_talk.add_argument("--local", action="store_true", help="Force local Ollama only (no network)")
     percy_talk.add_argument("--pi", default=None, help="Connect to Pi (e.g. --pi host or MORIE_PI_HOST)")
@@ -306,7 +318,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     login_cmd = subparsers.add_parser(
         "login",
-        help="Sign in to the hosted MORIE LLM tier (llm.rmorie.com) with GitHub, or --email for a code by email; stores a per-user key",
+        help="Sign in for the curated tables at data.rmorie.com with GitHub, or --email for a code by email; stores a per-user data key",
     )
     login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
     login_cmd.add_argument(
@@ -328,7 +340,7 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="KEY",
         help="Store a key you already have (from the website or your email); prompts when KEY is omitted",
     )
-    subparsers.add_parser("logout", help="Forget the hosted LLM key")
+    subparsers.add_parser("logout", help="Forget the stored data key")
     inter = subparsers.add_parser(
         "interactive",
         help="Add, inspect or remove the interactive layer (polyglot REPL, agent, TUI, exec) that the published package leaves out",
@@ -354,7 +366,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     inter_sub.add_parser("status", help="Show where the layer lives and whether it is active for this version")
     inter_sub.add_parser("remove", help="Delete the per-user copy of the layer")
-    subparsers.add_parser("models", help="List the models you can ask: the hosted tier for your key, then local Ollama")
+    models_cmd = subparsers.add_parser("models", help="List the models the route `ask` takes offers (or --route ROUTE)")
+    models_cmd.add_argument("--route", default=None, help="own, ollama or a provider id (default: the route ask takes)")
 
     doctor_cmd = subparsers.add_parser(
         "doctor",
@@ -485,7 +498,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Execute code inline, from stdin, or create-and-open (co) a file",
     )
     exec_cmd.add_argument("code", nargs="?", default=None, help="Code string, or 'co' for create-and-open mode")
-    exec_cmd.add_argument("-c", dest="code_opt", default=None, metavar="CODE", help="Code string, as python -c")
+    exec_cmd.add_argument(
+        "-c", dest="code_opt", default=None, metavar="CODE", help="Code given on the command line instead of in a file"
+    )
     exec_cmd.add_argument("filename", nargs="?", default=None, help="Filename for 'co' mode (e.g. test.py)")
     exec_cmd.add_argument("--lang", choices=["python", "r"], default="python", help="Language (default: python)")
     exec_cmd.add_argument("--file", default=None, dest="exec_file", help="Read code from file instead")
@@ -597,6 +612,24 @@ def build_parser() -> argparse.ArgumentParser:
     except ImportError:
         pass
 
+    # ── config: the language-model settings (route, addresses, models, keys) ──
+    from .llm_config import CLI_ACTIONS as _CFG_ACTIONS
+
+    cfg_cmd = subparsers.add_parser(
+        "config",
+        help="Show or change the language-model settings: route, Ollama/own/hosted address, model, key",
+        description=(
+            "Language-model settings, saved in $XDG_CONFIG_HOME/morie/llm.json (shared with rmoriebricklayer). "
+            "An environment variable that is set wins over a saved value. morie config help explains each key."
+        ),
+        epilog="Examples: morie config set route hosted | morie config set ollama.model qwen3:8b | morie config setup",
+    )
+    cfg_cmd.add_argument("action", nargs="?", default="show", choices=_CFG_ACTIONS, help="default: show")
+    cfg_cmd.add_argument("rest", nargs="*", metavar="KEY [VALUE]", help="the setting (and its value, for set)")
+
+    help_cmd = subparsers.add_parser("help", help="Guides: getting-started, llm, config (morie help TOPIC)")
+    help_cmd.add_argument("topic", nargs="?", default=None, help="getting-started, llm, config or commands")
+
     # ── provider: attach your own OpenAI-compatible endpoint ───────────
     prov = subparsers.add_parser(
         "provider",
@@ -671,8 +704,8 @@ def build_parser() -> argparse.ArgumentParser:
     template_cmd.add_argument("--force", action="store_true", help="replace an existing output file")
 
     # ── pull: one-line CLI shortcuts to named morie.datasets loaders ───
-    # This is the non-coder entry point.  Users never have to write
-    # `python -c "import morie.datasets ..."` — they say
+    # This is the non-coder entry point.  Users never have to write a Python
+    # one-liner that imports morie.datasets; they say
     #   morie pull tps-major --year 2024 --out file.csv
     # and a DataFrame lands on disk.
     pull_cmd = subparsers.add_parser(
@@ -1362,6 +1395,26 @@ def _main_impl() -> int:
             return _llm_exit_code(payload)
         return 0
 
+    if args.command == "config":
+        from .llm_config import cli as _config_cli
+
+        return _config_cli(args.action, args.rest)
+
+    if args.command == "help":
+        from .cli_help import show as _help_show
+
+        if (args.topic or "").strip().lower() in ("commands", "all"):
+            parser.print_help()
+            return 0
+        text = _help_show(args.topic)
+        if text is None:
+            from .cli_help import topics_text
+
+            print(f"morie help: no topic '{args.topic}'\n{topics_text()}", file=sys.stderr)
+            return 2
+        print(text)
+        return 0
+
     if args.command == "ask":
         use_stream = not getattr(args, "no_stream", False)
         payload = ask_percy(
@@ -1369,6 +1422,7 @@ def _main_impl() -> int:
             context=args.context,
             model=getattr(args, "model", None),
             stream=use_stream,
+            route=getattr(args, "route", None),
         )
         if use_stream:
             return _llm_exit_code(payload, _drain_stream(payload["output_stream"]))
@@ -1484,8 +1538,8 @@ def _main_impl() -> int:
                     print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
             else:
                 print(
-                    "Curated tables at data.rmorie.com appear here once you hold a MORIE key: issued on request at "
-                    "https://rmorie.com/access (`morie login --token`), or `morie login` (GitHub) / `morie login --email you@example.com`."
+                    "Curated tables at data.rmorie.com appear here once you hold a MORIE data key: `morie login` "
+                    "(GitHub) or `morie login --email you@example.com`; a key you were given: `morie login --token`."
                 )
         return 0
 
@@ -2189,21 +2243,28 @@ def _main_impl() -> int:
         return 0
 
     if args.command == "models":
-        from .hosted import models_lines
+        from . import llm as _llm
+        from . import providers as _prov
 
-        for line in models_lines():
-            print(line)
-        from .hosted import provider_line
-
-        own = provider_line()
-        if own:
-            print(own)
-        print(_local_models_line())
-        print("Pick one per call with `morie ask --model NAME ...`, or set MORIE_HOSTED_MODEL / MORIE_OLLAMA_MODEL.")
-        from . import hosted as _hosted
-
-        if getattr(_hosted, "_hosted_failure", None) == "rejected":
-            return 1  # the hosted line above already says the key was rejected and what to do
+        try:
+            prov = _llm.detect_available_provider(getattr(args, "route", None))
+        except ValueError as exc:
+            print(f"morie models: {exc}")
+            return 2
+        if prov == _llm._PROVIDER_LOCAL:
+            print(_llm.route_summary())
+            return 1
+        current = _llm._provider_model(prov)
+        if prov == _llm._PROVIDER_OLLAMA:
+            names = [t["name"] for t in (_llm._ollama_tags() or [])]
+        elif prov == _llm._PROVIDER_API:
+            names = [current]
+        else:
+            names = _prov.list_models(prov) or [current]
+        print(f"{_llm._provider_label(prov)}; the model in use is marked *:")
+        for n in names:
+            print(f"  {'*' if n == current else ' '} {n}")
+        print("Pick one per call with `morie ask --model NAME ...`, or save it: morie config set <route>.model NAME")
         return 0
 
     if args.command == "provider":
@@ -2476,12 +2537,9 @@ def _main_impl() -> int:
 
 def _handle_exec(args: argparse.Namespace) -> int:
     # TRUST BOUNDARY: 'morie exec' runs code the LOCAL USER supplies on
-    # their own machine -- same trust model as `python -c` / `Rscript -e`.
-    # It never executes remote or network-supplied code. Set
+    # their own machine -- the same trust model as running a script they wrote.
+    # It never runs remote or network-supplied code. Set
     # MORIE_NO_EXEC=1 (CI, shared hosts) to disable it entirely.
-    import os
-    import subprocess
-    import tempfile
 
     # usage errors in the arguments themselves come first, on any install
     if getattr(args, "code_opt", None) is not None and args.code is not None:
@@ -2493,14 +2551,14 @@ def _handle_exec(args: argparse.Namespace) -> int:
         return 2
 
     # Absent from the published wheel by design: without the guard module
-    # there is no exec surface to authorise, so refuse rather than raise
+    # there is no run surface to authorise, so refuse rather than raise
     # ModuleNotFoundError at the user.
     try:
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
     except ModuleNotFoundError:
         if not _add_interactive_layer(getattr(args, "verb", "'morie exec'")):
             return 1
-        from morie._exec_guard import ExecGuardError, ensure_exec_allowed
+        from morie._exec_guard import ExecGuardError, ensure_exec_allowed, run_user_code
 
     try:
         ensure_exec_allowed("'morie exec'")
@@ -2528,63 +2586,9 @@ def _handle_exec(args: argparse.Namespace) -> int:
         print("No code provided: morie exec CODE | --file PATH", file=sys.stderr)
         return 2
 
-    if args.lang == "r":
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".R", delete=False) as f:
-            f.write(code)
-            tmp = f.name
-        try:
-            return subprocess.call(["Rscript", tmp])
-        finally:
-            os.unlink(tmp)
-
-    # The code runs in a child interpreter with the same names the in-process version offered
-    # (np, pd, fn, REGISTRY): the library itself contains no dynamic code execution, and a crash
-    # in the user's code cannot take the CLI down with it. The user's own file is run in place,
-    # so tracebacks, __file__, sys.argv and sys.path[0] are what `python FILE` gives; inline code
-    # goes to a temporary file first (its line numbers are still the user's).
-    boot = (
-        "import os, runpy, sys\n"
-        "g = {}\n"
-        "try:\n"
-        "    from morie.fn import _array_core as np, _frame_core as pd\n"
-        "    g.update(np=np, pd=pd)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "try:\n"
-        "    from morie import fn\n"
-        "    from morie.fn._registry import REGISTRY\n"
-        "    g.update(fn=fn, REGISTRY=REGISTRY)\n"
-        "except ImportError:\n"
-        "    pass\n"
-        "path, shown = sys.argv[1], sys.argv[2]\n"
-        "sys.argv = [path] if shown == path else ['-c']\n"
-        "sys.path[0] = os.path.dirname(os.path.abspath(path))\n"
-        "try:\n"
-        "    runpy.run_path(path, init_globals=g, run_name='__morie_exec__')\n"
-        "except SystemExit:\n"
-        "    raise\n"
-        "except BaseException as e:\n"
-        "    import traceback\n"
-        # drop the runner's own frames: the traceback starts at the user's code, as `python FILE` shows
-        "    tb = e.__traceback__\n"
-        "    while tb is not None and tb.tb_frame.f_code.co_filename != path:\n"
-        "        tb = tb.tb_next\n"
-        "    te = traceback.TracebackException(type(e), e, tb or e.__traceback__)\n"
-        "    for fs in te.stack:\n"
-        "        if fs.filename == path:\n"
-        "            fs.filename = shown\n"
-        "    sys.stderr.write(''.join(te.format()))\n"
-        "    sys.exit(130 if isinstance(e, KeyboardInterrupt) else 1)\n"
-    )
-    if args.exec_file:
-        cmd = [sys.executable, "-c", boot, args.exec_file, args.exec_file]
-        return subprocess.run(cmd, check=False).returncode
-    with tempfile.TemporaryDirectory() as d:
-        tmp = os.path.join(d, "morie_exec.py")
-        with open(tmp, "w", encoding="utf-8") as f:
-            f.write(code)
-        # inline code is reported as python -c reports it: File "<string>"
-        return subprocess.run([sys.executable, "-c", boot, tmp, "<string>"], check=False).returncode
+    # The code runs in a child interpreter (Python) or Rscript (R). That runner lives in the
+    # interactive layer with the guard, so the published package has no code-running path itself.
+    return run_user_code(code, args.lang, args.exec_file)
 
 
 def _handle_exec_co(args: argparse.Namespace) -> int:
@@ -2781,7 +2785,7 @@ def _handle_percy(args: argparse.Namespace) -> int:
         if base_url is None and cloud_url is None and not getattr(args, "local", False):
             from .llm import detect_available_provider
 
-            # the tool-calling agent needs Ollama; without one the hosted tier (or your endpoint) answers
+            # the tool-calling agent needs Ollama; without one your endpoint or a provider key answers
             if detect_available_provider() != "ollama":
                 raise RuntimeError("no Ollama server answers")
         agent = create_agent(model=model, base_url=base_url, cloud_url=cloud_url, cloud_token=cloud_token)
@@ -2790,7 +2794,7 @@ def _handle_percy(args: argparse.Namespace) -> int:
             raise RuntimeError("no Ollama server answers at " + str(base_url or "the default address"))
     except Exception as exc:
         # Perseus's tool-calling agent needs a local Ollama; without one, answer
-        # through the provider chain (hosted tier, your own endpoint, ...)
+        # through the route chain (your own endpoint, a provider key)
         question = getattr(args, "question", None)
         if question is None:
             print('Give the question on the command line: morie percy "..."  (or run `morie chat`)', file=sys.stderr)
@@ -2920,13 +2924,21 @@ def _handle_percysuits(args: argparse.Namespace) -> int:
 
 def _percysuits_get_installed_ssh(ssh_target: str):
     import json as _json
-    import subprocess
+
+    from ._interactive import LayerMissingError, launcher
 
     try:
-        result = subprocess.run(
+        sp = launcher("Reaching Ollama over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return None, None
+    try:
+        result = sp.run(
             ["ssh", ssh_target, "curl -s http://localhost:11434/api/tags"],
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=20,
         )
         if result.returncode == 255:  # ssh's own failure: the host, not Ollama
@@ -2953,18 +2965,25 @@ def _percysuits_get_installed_ssh(ssh_target: str):
 
 
 def _percysuits_pull_ssh(ssh_target: str, to_pull: list) -> int:
-    import subprocess
+    from ._interactive import LayerMissingError, launcher
 
+    try:
+        sp = launcher("Pulling models over SSH")
+    except LayerMissingError as exc:
+        print(f"ERROR: {exc}")
+        return 1
     pulled = 0
     failed = []
     for i, (name, size, _cat, _desc) in enumerate(to_pull, 1):
         print(f"[{i}/{len(to_pull)}] {name} ({size}) ...")
         try:
-            proc = subprocess.Popen(
+            proc = sp.start(
                 ["ssh", ssh_target, f"ollama pull {name}"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                stdout=sp.PIPE,
+                stderr=sp.STDOUT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             for line in proc.stdout:
                 stripped = line.rstrip()

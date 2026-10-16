@@ -183,10 +183,10 @@ morie_twostage_design <- function(s_w, s_b, c1, c2, v_max = NA,
 #'
 #' Equation 8.2 of Brus (2022): sum((z_k/p_k - t_hat)^2)/(n(n-1)).
 #'
-#' @param z Sample values. @param p Draw probabilities. @param t_hat
+#' @param z Sample values.
+#' @param p Draw probabilities.
+#' @param t_hat
 #'   Estimated total.
-#' @param p See Usage.
-#' @param t_hat See Usage.
 #' @return Numeric variance estimate.
 #' @export
 #' @examples
@@ -274,13 +274,12 @@ morie_model_assisted <- function(m_all = NULL, z_sample = NULL,
 #'
 #' Equations 10.13, 10.14, 10.17, 10.18, 10.25, 10.42 of Brus (2022).
 #'
-#' @param e Residuals. @param n,n_population Sizes.
+#' @param e Residuals.
+#' @param n,n_population Sizes.
 #' @param x_k,xbar_true,xbar_sample,s2_x Simple g-weight pieces.
 #' @param g g-weights for the weighted variance.
 #' @param pi Inclusion probabilities (calibration-residual route).
 #' @param ratio If TRUE return the N^2 S2(e)/n ratio-total variance.
-#' @param n See Usage.
-#' @param n_population See Usage.
 #' @return List with s2_e, variance, g_weight, g_variance, ratio_variance,
 #'   mc_variance (as supplied).
 #' @examples
@@ -432,13 +431,11 @@ morie_balanced_twophase <- function(t_pi_z = NA, t_x_true = NA,
 #' 12.25, 12.27 of Brus (2022).
 #'
 #' @param p_star,se_max,u_crit,s_star,l_max,cv_star,r_max Frequentist
-#'   pieces. @param design_effect,n_si Design-effect pieces.
-#' @param p,z,n,c,d Beta posterior pieces. @param v,l Interval pieces.
+#'   pieces.
+#' @param design_effect,n_si Design-effect pieces.
+#' @param p,z,n,c,d Beta posterior pieces.
+#' @param v,l Interval pieces.
 #' @param lengths,probs,coverages,alpha ALC/ACC pieces.
-#' @param design_effect See Usage.
-#' @param n_si See Usage.
-#' @param v See Usage.
-#' @param l See Usage.
 #' @return List with the requested sample sizes and criteria.
 #' @export
 #' @examples
@@ -494,15 +491,13 @@ morie_sample_size <- function(p_star = NA, se_max = NA, u_crit = NA,
 #' 13.16 (untagged on the web) and the Ospats objective as 13.17 (web
 #' 13.16).
 #'
-#' @param gamma_bar_h Mean semivariances. @param weights,n_h Strata.
-#' @param n Total sample size. @param s_h,c_h Allocation pieces.
+#' @param gamma_bar_h Mean semivariances.
+#' @param weights,n_h Strata.
+#' @param n Total sample size.
+#' @param s_h,c_h Allocation pieces.
 #' @param zhat_i,zhat_j,r2,s2_i,s2_j,s2_ij Pairwise pieces.
 #' @param d2_upper_sum,n_h_units Stratum-variance pieces.
 #' @param per_stratum_sums,n_population Objective pieces.
-#' @param weights See Usage.
-#' @param n_h See Usage.
-#' @param s_h See Usage.
-#' @param c_h See Usage.
 #' @return List with stsi_variance, equal_area_variance, alloc_variance,
 #'   objective_o, d2, stratum_variance, ospats_objective (as supplied).
 #' @export
@@ -553,16 +548,12 @@ morie_ospats <- function(gamma_bar_h = NULL, weights = NULL, n_h = NULL,
 #' distance parameters) pins this form; the printed exp term is a display
 #' typo.
 #'
-#' @param cov_ss,cov_s0 Kriging system pieces. @param sigma2,lam,nu
-#'   Variance pieces. @param gamma_s0 Semivariance form pieces.
-#' @param h,c0,c1,phi Semivariogram pieces. @param z,mu,cov Likelihood.
-#' @param sigma2 See Usage.
-#' @param lam See Usage.
-#' @param nu See Usage.
-#' @param gamma_s0 See Usage.
-#' @param z See Usage.
-#' @param mu See Usage.
-#' @param cov See Usage.
+#' @param cov_ss,cov_s0 Kriging system pieces.
+#' @param sigma2,lam,nu
+#'   Variance pieces.
+#' @param gamma_s0 Semivariance form pieces.
+#' @param h,c0,c1,phi Semivariogram pieces.
+#' @param z,mu,cov Likelihood.
 #' @return List with lam, nu, v_ok_cov, v_ok_gamma, gamma_h, loglik.
 #' @export
 #' @examples
@@ -632,19 +623,14 @@ morie_kriging <- function(cov_ss = NULL, cov_s0 = NULL, sigma2 = NA,
 #' kriging variance, expected squared prediction shift, and the
 #' estimation-adjusted criterion.
 #'
-#' @param mu,a_i,b_ij,c_ijk,eps Nested pieces. @param a,da_list REML
-#'   pieces. @param cov_theta,dv_dtheta VKV pieces. @param v_ok,e_tau2 AKV
-#'   pieces. @param dlam_dtheta,a_mat Tau2 pieces. @param akv,vkv EAC.
-#' @param a See Usage.
-#' @param da_list See Usage.
-#' @param cov_theta See Usage.
-#' @param dv_dtheta See Usage.
-#' @param v_ok See Usage.
-#' @param e_tau2 See Usage.
-#' @param dlam_dtheta See Usage.
-#' @param a_mat See Usage.
-#' @param akv See Usage.
-#' @param vkv See Usage.
+#' @param mu,a_i,b_ij,c_ijk,eps Nested pieces.
+#' @param a,da_list REML
+#'   pieces.
+#' @param cov_theta,dv_dtheta VKV pieces.
+#' @param v_ok,e_tau2 AKV
+#'   pieces.
+#' @param dlam_dtheta,a_mat Tau2 pieces.
+#' @param akv,vkv EAC.
 #' @return List with nested, fisher_info, vkv, akv, e_tau2, eac.
 #' @export
 #' @examples
@@ -704,16 +690,13 @@ morie_variogram_design <- function(mu = NA, a_i = NA, b_ij = NA,
 #' 20.3), classification indicator (25.8).
 #'
 #' @param sigma2,n,rho_bar,s2,n_population Chapter 26 pieces.
-#' @param xbar_d,beta_hat,v_d Small-area pieces. @param times Trend.
-#' @param x,c_mat,zhat GLS pieces. @param beta0,beta1,x_val Model 16.1.
-#' @param x_design,z_obs OLS pieces. @param sigma2_eps,x0 Prediction var.
+#' @param xbar_d,beta_hat,v_d Small-area pieces.
+#' @param times Trend.
+#' @param x,c_mat,zhat GLS pieces.
+#' @param beta0,beta1,x_val Model 16.1.
+#' @param x_design,z_obs OLS pieces.
+#' @param sigma2_eps,x0 Prediction var.
 #' @param c_hat,c_true,u Classification pieces.
-#' @param times See Usage.
-#' @param beta0 See Usage.
-#' @param beta1 See Usage.
-#' @param x_val See Usage.
-#' @param sigma2_eps See Usage.
-#' @param x0 See Usage.
 #' @return List of the requested quantities.
 #' @export
 #' @examples

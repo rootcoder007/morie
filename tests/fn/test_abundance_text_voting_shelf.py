@@ -7,6 +7,7 @@ Veitch, Sridhar and Blei (2020) arXiv:1905.12741; Xiao et al (2016)
 Rosenthal (1985) *AJPS* 29:357-384.
 """
 
+import functools
 import math
 
 import pytest
@@ -536,9 +537,21 @@ def chamber(n=120, m=220, dims=1, seed=3, beta=2.0):
     return (rng.random((n, m)) < p).astype(float), truth
 
 
-def test_ideal_points_are_recovered_in_one_dimension():
+@functools.cache
+def fit_1d():
+    """The default one-dimensional fit, shared by the tests that read it.
+
+    W-NOMINATE is n + m small probit fits per sweep and this chamber takes
+    39 sweeps; on the pure-Python array core one fit measured 31-39 s on
+    l14 under load, so fitting it afresh in each of five tests was what
+    pushed the file past its timeouts.
+    """
     V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
+    return V, truth, wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
+
+
+def test_ideal_points_are_recovered_in_one_dimension():
+    V, truth, out = fit_1d()
     r = abs(float(np.corrcoef(out["ideal_points"][:, 0], truth[:, 0])[0, 1]))
     assert r > 0.95
     assert out["converged"] is True
@@ -547,8 +560,7 @@ def test_ideal_points_are_recovered_in_one_dimension():
 def test_the_svd_start_reaches_a_better_optimum_than_a_random_one():
     # the objective is not jointly concave, so the start matters: from
     # noise the fit sits at a materially worse likelihood
-    V, truth = chamber()
-    good = wnominate_alternating(V, n_dims=1, start="svd", polarity=int(np.argmax(truth[:, 0])))
+    V, truth, good = fit_1d()  # start="svd" is the default
     poor = wnominate_alternating(V, n_dims=1, start="random", seed=1, max_iter=60, polarity=int(np.argmax(truth[:, 0])))
     assert good["log_likelihood"] > poor["log_likelihood"]
     # a higher likelihood need not mean a closer correlation with the truth (here 0.977 against
@@ -557,6 +569,10 @@ def test_the_svd_start_reaches_a_better_optimum_than_a_random_one():
     assert r_good > 0.95
 
 
+# 192 alternating sweeps of 340 small probit fits each: 157 s (194 s
+# unprofiled at load 9) on l14 with the list-based half-steps in wnoma.
+# The work is the sweep count, not overhead -- numpy needs the same 192.
+@pytest.mark.timeout(600)
 def test_ideal_points_are_recovered_in_two_dimensions_up_to_rotation():
     V, truth = chamber(dims=2)
     out = wnominate_alternating(V, n_dims=2, polarity=int(np.argmax(truth[:, 0])))
@@ -568,9 +584,8 @@ def test_ideal_points_are_recovered_in_two_dimensions_up_to_rotation():
 
 
 def test_polarity_fixes_the_otherwise_arbitrary_sign():
-    V, truth = chamber()
+    V, truth, a = fit_1d()
     k = int(np.argmax(truth[:, 0]))
-    a = wnominate_alternating(V, n_dims=1, polarity=k)
     b = wnominate_alternating(V, n_dims=1, polarity=k, seed=99)
     assert a["ideal_points"][k, 0] > 0
     assert b["ideal_points"][k, 0] > 0
@@ -584,8 +599,7 @@ def test_without_polarity_the_sign_is_reported_as_arbitrary():
 
 
 def test_the_configuration_is_normalised():
-    V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
+    _, _, out = fit_1d()
     x = out["ideal_points"]
     assert float(np.mean(x)) == pytest.approx(0.0, abs=1e-9)
     assert math.sqrt(float(np.mean(np.sum(x**2, axis=1)))) == pytest.approx(1.0, abs=1e-9)
@@ -600,8 +614,7 @@ def test_unanimous_rollcalls_are_dropped():
 
 
 def test_classification_beats_the_modal_baseline():
-    V, truth = chamber()
-    out = wnominate_alternating(V, n_dims=1, polarity=int(np.argmax(truth[:, 0])))
+    _, _, out = fit_1d()
     assert out["correct_classification"] > out["modal_baseline"]
     assert out["aggregate_pre"] > 0.3
 

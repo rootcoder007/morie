@@ -57,11 +57,25 @@ the restricted likelihood maximised here.
 Everything here is internal.
 """
 
+import functools
+
 from . import _array_core as np
 from ._schab_gn import semivariogram_jacobian
-from ._schab_vario import correlogram
+from ._schab_vario import PRACTICAL_RANGE_C, correlogram
 
 __all__ = []
+
+
+@functools.lru_cache(maxsize=8)
+def _distances(pts):
+    """Pairwise distances of a tuple of point tuples (cached).
+
+    The REML search evaluates the likelihood hundreds of times on the same
+    sites; rebuilding the n x n x d difference array each time cost more
+    than the rest of the evaluation.
+    """
+    c = np.asarray(pts, dtype=float)
+    return np.linalg.norm(c[:, None, :] - c[None, :, :], axis=-1)
 
 
 def correlation_matrix(coords, nugget_ratio, rng, model):
@@ -73,7 +87,7 @@ def correlation_matrix(coords, nugget_ratio, rng, model):
     Sigma(theta) = sigma^2 Sigma(theta*).
     """
     coords = np.atleast_2d(np.asarray(coords, dtype=float))
-    d = np.linalg.norm(coords[:, None, :] - coords[None, :, :], axis=-1)
+    d = _distances(tuple(map(tuple, coords.tolist()))).copy()
     r = correlogram(d, rng, model)
     sigma = (1.0 - nugget_ratio) * r
     sigma[np.diag_indices_from(sigma)] = 1.0
@@ -85,12 +99,30 @@ def _dsigma(d, r, nugget_ratio, rng, model):
 
     d/dxi is I - R, and d/da is (1 - xi) dR/da; dR/da is the same expression
     the Gauss-Newton Jacobian uses, so the two fitters share one derivation.
+    For the three models that Jacobian covers it is evaluated here directly
+    on the R already in hand (same formula, element by element) instead of
+    building the full three-column Jacobian of all n^2 lags and keeping one
+    column, which was half of every REML evaluation.
     """
     n = d.shape[0]
     d_xi = -r.copy()
     d_xi[np.diag_indices_from(d_xi)] = 0.0
-    flat = semivariogram_jacobian(d.ravel(), 0.0, 1.0, rng, model)[:, 2]
-    dr_da = (-flat).reshape(n, n)  # jacobian column is -sill * dR/da at sill = 1
+    c = PRACTICAL_RANGE_C
+    if model in ("exponential", "gaussian", "spherical"):
+        hv, rv = d.ravel().tolist(), r.ravel().tolist()
+        if model == "exponential":  # R = exp(-c h / a)
+            k = rng**2
+            dr = [t * (c * h / k) if h != 0.0 else 0.0 for h, t in zip(hv, rv)]
+        elif model == "gaussian":  # R = exp(-c (h/a)^2)
+            k = rng**3
+            dr = [t * (2.0 * c * h**2 / k) if h != 0.0 else 0.0 for h, t in zip(hv, rv)]
+        else:  # R = 1 - 1.5u + 0.5u^3 inside the range
+            k2, k4 = rng**2, rng**4
+            dr = [1.5 * h / k2 - 1.5 * h**3 / k4 if (h <= rng and h != 0.0) else 0.0 for h in hv]
+        dr_da = np.asarray(dr, dtype=float).reshape(n, n)
+    else:
+        flat = semivariogram_jacobian(d.ravel(), 0.0, 1.0, rng, model)[:, 2]
+        dr_da = (-flat).reshape(n, n)  # jacobian column is -sill * dR/da at sill = 1
     d_a = (1.0 - nugget_ratio) * dr_da
     d_a[np.diag_indices_from(d_a)] = 0.0
     return d_xi, d_a
@@ -152,7 +184,7 @@ def fit_reml(coords, z, X, model="exponential", start=(0.1, None), max_iter=200,
     Sec. 5.5.2 sanctions "Newton-Raphson, Quasi-Newton, or some other
     suitable algorithm"; BFGS needs only the gradient, which is analytic
     here, so no finite-difference step enters and the two language arms
-    execute the same steps. The line search is Armijo backtracking with the
+    run the same steps. The line search is Armijo backtracking with the
     textbook constants c1 = 1e-4 and rho = 1/2 (Nocedal & Wright), fixed
     rather than tuned.
     """

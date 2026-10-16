@@ -1,4 +1,4 @@
-"""The hosted tier: credentials file, probe, provider order, device-flow login."""
+"""The data key: credentials file, key check, sign-in; and that it never makes a model route."""
 
 import json
 import os
@@ -52,43 +52,61 @@ def test_probe_uses_bearer_key_and_caches(isolated_home, monkeypatch):
 
     def fake_get(url, headers=None, timeout=None):
         seen.append((url, headers["Authorization"]))
-        return httpx.Response(200, json={"data": []})
+        return httpx.Response(200, json={"user": "gh:vee"})
 
     monkeypatch.setattr(httpx, "get", fake_get)
     assert hosted.probe_hosted() is True
     assert hosted.probe_hosted() is True
-    assert seen == [(hosted.DEFAULT_HOSTED_BASE_URL + "/v1/models", "Bearer sk-abc")]
+    assert seen == [(hosted.hosted_base_url() + "/v1/whoami", "Bearer sk-abc")]
+    assert hosted.hosted_base_url() == hosted.DEFAULT_DATA_BASE_URL
 
 
-def test_provider_order_puts_hosted_after_local_ollama_and_after_every_cloud_key(isolated_home, monkeypatch):
-    for k in ("GEMINI_API_KEY", "LLM_API_BASE_URL", "LLM_API_KEY", "OPENAI_API_KEY"):
+def test_probe_falls_back_to_the_manifest_and_names_a_refusal(isolated_home, monkeypatch):
+    hosted.write_credentials({"hosted_key": "sk-abc"})
+    seen = []
+
+    def fake_get(url, headers=None, timeout=None):
+        seen.append(url.rsplit("/", 1)[-1])
+        return httpx.Response(404) if url.endswith("/v1/whoami") else httpx.Response(401)
+
+    monkeypatch.setattr(httpx, "get", fake_get)
+    assert hosted.probe_hosted() is False
+    assert seen == ["whoami", "manifest.json"]
+    assert hosted.hosted_failure() == "rejected"
+    assert "login" in hosted.hosted_problem_line()
+
+
+def test_the_data_key_is_not_a_model_route(isolated_home, monkeypatch):
+    from morie import providers
+
+    for p in providers.PRESETS:
+        for e in (p.key_env, p.alt_env):
+            if e:
+                monkeypatch.delenv(e, raising=False)
+    for k in ("LLM_API_BASE_URL", "MORIE_LLM_BASE_URL", "MORIE_LLM_ROUTE"):
         monkeypatch.delenv(k, raising=False)
-    assert llm.detect_available_provider() == "local"
+    monkeypatch.setenv("OLLAMA_HOST", "off")
     hosted.write_credentials({"hosted_key": "sk-abc"})
-    monkeypatch.setattr(httpx, "get", lambda *a, **k: httpx.Response(200, json={"data": []}))
-    hosted.reset_probe_cache()
-    assert llm.detect_available_provider() == "hosted"
-    monkeypatch.setenv("GEMINI_API_KEY", "g")
-    assert llm.detect_available_provider() == "gemini"
-    monkeypatch.delenv("GEMINI_API_KEY")
-    monkeypatch.setenv("OPENAI_API_KEY", "o")
-    assert llm.detect_available_provider() == "openai"
-    # and in the fallback chain the hosted tier is the last attempt
-    attempts = llm._provider_attempts("openai", None)
-    assert [a[0] for a in attempts][-1] == hosted.hosted_base_url()
-    monkeypatch.delenv("OPENAI_API_KEY")
-    llm._ollama_cached = True
-    assert llm.detect_available_provider() == "ollama"
-    assert "rmorie.com/access" in hosted.access_hint()
+    assert llm.detect_available_provider() == "local"  # a data key opens tables, never a model
+    monkeypatch.setenv("GROQ_API_KEY", "g")
+    assert llm.detect_available_provider() == "groq"
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "a")
+    assert llm.detect_available_provider() == "anthropic"  # the table's order
+    monkeypatch.setenv("MORIE_LLM_BASE_URL", "http://localhost:1234/v1")
+    assert llm.detect_available_provider() == "own"  # your own endpoint first
+    with pytest.raises(ValueError, match="retired"):
+        llm.detect_available_provider("hosted")
+    assert "morie login" in hosted.access_hint()
 
 
-def test_empty_base_url_disables_the_tier(isolated_home, monkeypatch):
+def test_a_data_service_switched_off_sends_no_key(isolated_home, monkeypatch):
+    from morie import services
+
     hosted.write_credentials({"hosted_key": "sk-abc"})
-    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "")
+    monkeypatch.setattr(services, "data", lambda: {"mode": "off", "base_url": ""})
+    monkeypatch.setattr(httpx, "get", lambda *a, **k: pytest.fail("no request when the service is off"))
     assert hosted.hosted_base_url() is None
     assert hosted.probe_hosted() is False
-    monkeypatch.setenv("MORIE_HOSTED_BASE_URL", "OFF")  # the spelling that works on Windows too
-    assert hosted.hosted_base_url() is None
 
 
 def test_device_login_polls_until_key_and_stores_it(isolated_home, monkeypatch):
@@ -159,7 +177,7 @@ def test_store_token_writes_the_key_and_probes_it(isolated_home, monkeypatch):
 
     def fake_get(url, headers=None, timeout=None):
         seen["auth"] = headers["Authorization"]
-        return httpx.Response(200, json={"data": []})
+        return httpx.Response(200, json={"user": "gh:vee"})
 
     monkeypatch.setattr(httpx, "get", fake_get)
     lines = []
@@ -189,57 +207,9 @@ def test_email_login_can_have_the_key_mailed(isolated_home, monkeypatch):
     assert "morie login --token" in lines[0]
 
 
-def test_hosted_model_falls_back_to_what_the_gateway_lists(isolated_home, monkeypatch):
-    hosted.write_credentials({"hosted_key": "sk-abc"})
-    listed = {"data": [{"id": "gemma4:31b-cloud"}, {"id": "minimax-m3:cloud"}]}
-    monkeypatch.setattr(httpx, "get", lambda url, headers=None, timeout=None: httpx.Response(200, json=listed))
-    monkeypatch.setenv("MORIE_HOSTED_MODEL", "qwen3.5:397b-cloud")  # retired upstream
-    assert hosted.hosted_model() == "qwen3.5:397b-cloud"
-    assert hosted.hosted_model_available() == "gemma4:31b-cloud"
-    monkeypatch.setenv("MORIE_HOSTED_MODEL", "minimax-m3:cloud")
-    assert hosted.hosted_model_available() == "minimax-m3:cloud"
-    hosted.reset_probe_cache()
-    monkeypatch.setattr(httpx, "get", lambda url, headers=None, timeout=None: httpx.Response(500))
-    monkeypatch.setenv("MORIE_HOSTED_MODEL", "anything:cloud")
-    assert hosted.hosted_model_available() == "anything:cloud"  # no list known: keep the configured name
-
-
-def test_models_lines_cover_every_hosted_state(monkeypatch):
-    from morie import hosted
-
-    monkeypatch.setattr(
-        hosted, "status", lambda: {"base_url": None, "logged_in": False, "user": "", "reachable": False}
-    )
-    assert hosted.models_lines() == ["Hosted tier: disabled (MORIE_HOSTED_BASE_URL is empty)"]
-    monkeypatch.setattr(
-        hosted,
-        "status",
-        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": False, "user": "", "reachable": False},
-    )
-    assert "not logged in" in hosted.models_lines()[0]
-    monkeypatch.setattr(
-        hosted,
-        "status",
-        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": True, "user": "gh:vee", "reachable": False},
-    )
-    assert hosted.models_lines()[0].startswith("Hosted tier (https://llm.rmorie.com): logged in, gateway not reachable")
-    monkeypatch.setattr(
-        hosted,
-        "status",
-        lambda: {"base_url": "https://llm.rmorie.com", "logged_in": True, "user": "gh:vee", "reachable": True},
-    )
-    monkeypatch.setattr(hosted, "hosted_models", lambda: ["a:cloud", "b:cloud"])
-    monkeypatch.setattr(hosted, "hosted_model_available", lambda: "b:cloud")
-    assert hosted.models_lines() == [
-        "Hosted tier (https://llm.rmorie.com), logged in as gh:vee; default marked *:",
-        "    a:cloud",
-        "  * b:cloud",
-    ]
-
-
 def test_only_a_public_https_page_is_opened():
     assert hosted._browsable("https://github.com/login/device")
-    assert hosted._browsable("https://llm.rmorie.com:8443/auth/x")
+    assert hosted._browsable("https://data.rmorie.com:8443/auth/x")
     for u in (
         "http://github.com/login/device",
         "https://127.0.0.1/",

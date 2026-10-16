@@ -714,13 +714,13 @@ def test_encrypt_to_a_keystore_name_needs_no_password(tmp_path):
         load_public_key("nobody", path=ks)
 
 
-def test_chat_and_ask_share_the_provider_chain_with_the_hosted_tier(monkeypatch):
+def test_chat_and_ask_share_the_route_chain(monkeypatch):
     import morie.llm as llm
 
-    monkeypatch.setattr(llm, "_hosted_attempt", lambda model: ("https://llm.example.invalid/v1", model or "m", "k"))
-    for prov in ("hosted", "ollama"):
-        bases = [a[0] for a in llm._provider_attempts(prov, None)]
-        assert "https://llm.example.invalid/v1" in bases, prov
+    monkeypatch.setenv("MORIE_LLM_BASE_URL", "https://own.example.invalid/v1")
+    monkeypatch.setenv("MORIE_LLM_MODEL", "m")
+    monkeypatch.setenv("OLLAMA_HOST", "off")
+    assert [a[1] for a in llm._provider_attempts("own", None)] == ["https://own.example.invalid/v1"]
     seen = []
 
     def fake(base_url, model, messages, **kw):
@@ -728,33 +728,26 @@ def test_chat_and_ask_share_the_provider_chain_with_the_hosted_tier(monkeypatch)
         return "PONG"
 
     monkeypatch.setattr(llm, "_completion_text", fake)
-    assert llm.ask_multi([{"role": "user", "content": "hi"}], provider="hosted") == "PONG"
-    assert seen[0][0] == "https://llm.example.invalid/v1"
+    assert llm.ask_multi([{"role": "user", "content": "hi"}], provider="own") == "PONG"
+    assert llm.ask_multi([{"role": "user", "content": "hi"}], provider="api") == "PONG"  # the old name
+    assert seen[0][0] == "https://own.example.invalid/v1"
 
 
-def test_a_model_not_on_the_key_is_one_clear_error(monkeypatch):
-    import httpx
-
+def test_a_provider_with_no_model_is_one_clear_answer(monkeypatch):
     import morie.llm as llm
-
-    base = "https://llm.example.invalid/v1"
-    monkeypatch.setattr(llm, "_hosted_attempt", lambda model: (base, model or "m", "k"))
-    req = httpx.Request("POST", base + "/chat/completions")
-
-    def refuse(*a, **k):
-        raise httpx.HTTPStatusError("403", request=req, response=httpx.Response(403, request=req))
-
-    monkeypatch.setattr(llm, "_completion_text", refuse)
-    with pytest.raises(llm.ModelNotOnKeyError, match="not available on your hosted key"):
-        llm.ask("hi", provider="hosted", model="nosuch-model")
-    from morie.perseus import ask_percy
-
-    monkeypatch.setattr(llm, "detect_available_provider", lambda: "hosted")
     import morie.perseus as pz
+    from morie import providers
 
-    monkeypatch.setattr(pz, "detect_available_provider", lambda: "hosted")
-    payload = ask_percy("hi", model="nosuch-model", stream=False)
-    assert payload["failed"] and "not available on your hosted key" in payload["output_text"]
+    for p in providers.PRESETS:
+        monkeypatch.delenv(providers.model_env(p.id), raising=False)
+    monkeypatch.setenv("GROQ_API_KEY", "gsk-1")
+    monkeypatch.setenv("OLLAMA_HOST", "off")
+    monkeypatch.setenv("XDG_CONFIG_HOME", "/nonexistent-morie-test")
+    with pytest.raises(llm.NoModelError, match="morie config set groq.model"):
+        llm.ask("hi", provider="groq")
+    monkeypatch.setattr(pz, "detect_available_provider", lambda *a, **k: "groq")
+    payload = pz.ask_percy("hi", stream=False, use_agent=False)
+    assert payload["failed"] and "groq.model" in payload["output_text"]
 
 
 def test_a_custom_system_prompt_keeps_the_module_list():

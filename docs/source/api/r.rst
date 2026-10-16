@@ -14,7 +14,7 @@ points; this page lists the ones a first analysis reaches for. The
 complete reference, one page per function, is the pkgdown site at
 https://rootcoder007.github.io/rmorie/reference/ .
 
-Assistant, hosted LLM tier and command line
+Assistant (your own model) and command line
 -------------------------------------------
 
 The R side of :doc:`../hosted`: the provider chain, the key and the

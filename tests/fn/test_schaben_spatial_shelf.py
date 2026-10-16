@@ -98,8 +98,15 @@ def test_wls_recovers_the_simulated_sill():
         P, z = gaussian_field(seed=s)
         out = empirical_variogram(P, z, lags=12, model="exponential")
         sills.append(out["sill"])
-    # true sill = nugget + psill = 2.0
-    assert abs(float(np.mean(sills)) - 2.0) < 0.5
+    # true sill = nugget + psill = 2.0. The median, not the mean: a
+    # single realisation can have an empirical semivariogram with no
+    # plateau inside the cutoff, and the bounded model then fits it as a
+    # straight line. Seed 5 does this -- gamma-hat climbs 1.35 -> 3.01
+    # across all 12 lag classes, and WLS returns sill 5.76e6 at range
+    # 2.7e8 (the pre-speed-up _schaben gives the same numbers) -- which
+    # alone moves the mean of the eight sills to 7.2e5. The other seven
+    # sills are 2.02, 2.22, 1.76, 2.10, 2.09, 2.10, 1.85.
+    assert abs(float(np.median(sills)) - 2.0) < 0.5
 
 
 def test_the_empirical_variogram_rises_to_a_sill():

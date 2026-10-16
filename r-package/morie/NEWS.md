@@ -1,3 +1,93 @@
+# morie 1.4.3 - 2026-10-09
+
+* Live progress in the long-running work, through rmoriebricklayer 0.5.13's
+  `bricklayer_progress()`: the bootstraps (`morie_boot()`, `morie_boot_run()`, `morie_tsboot()`,
+  `morie_bootstrap_sample()`), the honest causal forest and its bootstrap, the random forests,
+  the DML cross-fitting (`morie_otis_irm_dml()`, `morie_dml_clustered()`,
+  `morie_caus_dml_partial_lin()`), `super_learner()`, `morie_otis_aipw_superlearner()` and the
+  ten-estimator OTIS run. The bar shows only when someone is watching (an interactive session,
+  or `options(morie.progress = TRUE)`), after the work has run for a moment; nested work shows
+  one bar, and `options(morie.quiet = TRUE)` silences it.
+* Needs rmoriebricklayer 0.5.13 (its live progress bars and the language-model layer this
+  release is built on) and rmoriedata 0.3.6; CI installs rmoriebricklayer from its v0.5.13
+  tag, not a branch.
+* Language models are not hosted any more: bring your own. In Python, `morie ask`, `chat`,
+  `percy`, `models`, `config` and `doctor` (and `morie.llm.ask()`) use your own OpenAI-compatible
+  server, then the first provider whose key is set (OpenAI, Anthropic, Google Gemini,
+  OpenRouter, Groq, Together, Fireworks, DeepSeek, Mistral, xAI, Cerebras, Perplexity, Hugging
+  Face, OpenCode Zen, Cohere, NVIDIA; `morie.providers`), then an Ollama server; Anthropic and
+  Gemini are spoken natively. Keys and models are saved privately with
+  `morie config set <provider>.key|.model` in the `llm.json` rmoriebricklayer's `rmbl config`
+  reads too, and `morie config setup` asks for a provider, its key and its model. A provider
+  with a key and no model says how to name one; `route = "hosted"` says the tier is retired.
+  The R arm follows rmorie (through rmoriebricklayer's routes).
+* `morie login` is for the curated tables at data.rmorie.com only, signing in at the data
+  service's own `/auth`; every downloaded table is checked against the SHA-256 the manifest
+  lists, and a restricted table (ICPSR, NCVS 38604, a2aj) says where to accept its terms. The
+  bundled signed services document is the 2026-10-14 one (no language-model block in use).
+
+* Every estimator now runs on the package's own code; the reference packages are used only by
+  tests that check the numbers (the opt-in `backend =` of `morie_taphonomy_bhm()` and
+  `morie_causal_weighting()`'s methods beyond glm/ps/cbps/ebal are the two exceptions you ask
+  for by name). Newly native, each with tests against the package it replaces:
+  `morie_roc_auc_score()` (pROC's thresholds and AUC), `morie_decision_tree_split()` (rpart's
+  CART, surrogates included), `anova_table()` Type II/III (car::Anova), `morie_grid_search_cv()`
+  and `morie_random_search_cv()` (caret's folds, draws and scores, with native lm, glm, ridge
+  and glmnet learners), `morie_effects_emmeans()`, `_predictions()`, `_comparisons()`,
+  `_slopes()` and `_tidy()` (emmeans, marginaleffects and broom for lm and glm),
+  `morie_causal_impact()` (a Bayesian structural time series by Gibbs sampling, with
+  CausalImpact's priors and summary), `morie_eg_coint()`, `morie_johansen_cointegration()` and
+  `morie_ts_stationarity()` (urca's ADF, Johansen and a new KPSS), `morie_regime_switching()`
+  (MSwM's EM), `storey_q()`, `estimate_pi0()` and the p-value combiners (qvalue, poolr),
+  `jackknife()` and `morie_rsample_bootstraps()`, the superlearners' random forest, the
+  Aldrich-McKelvey and blackbox scalings (basicspace), `morie_logit_separation()`'s LP
+  (lpSolve), `morie_matching_estimate_propensity(model = "gbm")` (gbm with bag.fraction = 1),
+  DBSCAN in the TPS clustering and rendering functions (dbscan, including points exactly eps
+  apart), `gam_smoother()` (mgcv), and the pseudoinverse in the geron learners (MASS).
+  Before, several of these gave different results depending on which packages were installed,
+  and some stopped when one was missing. The fairness GAN functions no longer require torch,
+  which they never used.
+* Changed results and shapes: `morie_rsample_bootstraps()` returns a `morie_bootstraps` data
+  frame; `morie_effects_emmeans()` a data frame shaped like emmeans' summary;
+  `morie_regime_switching()` returns the log-likelihood (not its negative) and n smoothed
+  probabilities; `storey_q()` estimates pi0 over a lambda grid by default, as qvalue does;
+  `n_effective_tests()` rounds down as poolr does; the CV searches report the chosen
+  candidate's score (the regression score was the worst one before).
+* DBSCAN's neighbour search uses a grid of eps-sized cells in one to three dimensions:
+  30,000 points cluster in about a second instead of half a minute.
+* New native estimators, written in R with no outside package: `morie_lmm()` (linear mixed
+  models as `lme4::lmer`, with `nlme::lme`'s `random =` form and containment degrees of
+  freedom), `morie_glmm()` (binomial and Poisson GLMMs by the Laplace approximation, as
+  `lme4::glmer`), `morie_gam()` (thin plate and cubic regression splines with GCV, UBRE or
+  REML smoothness selection, as `mgcv::gam`), `morie_rq()` (quantile regression by
+  Frisch-Newton interior point or Barrodale-Roberts, with nid, iid, kernel and bootstrap
+  standard errors, as `quantreg::rq`) and `morie_nls()` (Gauss-Newton and Levenberg-Marquardt,
+  as `stats::nls`). Each has `print`, `summary`, `coef`, `vcov`, `fitted`, `residuals` and
+  `logLik` methods, and tests that check it against the reference package when that is
+  installed. Mixed models factor one small block per group level (a Schur complement
+  handles a second grouping factor) instead of a dense n x n matrix, so a model that took
+  14 s with the previous dense code takes about 1 s; a two-smooth GAM on 10,000 rows takes
+  under a second.
+* Install routes: rmoriebricklayer and rmoriedata now come from r-universe everywhere
+  (README, INSTALLATION.md, the Sphinx install pages, `install.sh`, and `morie r-install`).
+  The docs said they were on CRAN, where both lag several releases, and `install.sh`
+  installed them from there. Every `install.packages()` call names `repos`, because under
+  `Rscript` there is no mirror chooser and a bare call stops with "trying to use CRAN
+  without setting a mirror". The GitHub fallbacks use `upgrade = "always"`, so an older
+  companion already installed is replaced instead of kept.
+* The R routes lead with pak (download progress, compiler output hidden unless a build
+  fails, named packages upgraded to the current release); `install.packages()` and remotes
+  stay as the fallback, which `install.sh` and `morie r-install` take on their own when pak
+  cannot be installed. On macOS, CRAN's R uses r-universe's binaries; Homebrew's R builds
+  from source.
+* This package's README no longer offers `install.packages("morie")` from r-universe,
+  which publishes no `morie` package; it installs from source or from GitHub at the tag.
+* `morie_llm_detect_provider()` no longer picks an Ollama server with nothing pulled:
+  `morie_llm_probe_ollama()` is TRUE only when the server answers and has a model (one
+  pulled, or `OLLAMA_MODEL` set), so the automatic route goes on to the next route instead
+  of to an Ollama that can only fail. The same fix landed in rmoriebricklayer and in
+  morie's Python side.
+
 # morie 1.4.2 - 2026-10-08
 
 * Atmospheric dispersion, after rmoriebricklayer 0.5.10's stress test (the formulas are

@@ -44,7 +44,7 @@ def geron_semisupervised_cluster(X, X_labeled, y_labeled, n_clusters=2, seed=0, 
 
     Formula: label cluster representatives; propagate to members
 
-    Géron's label-propagation recipe, executed: cluster the unlabeled
+    Géron's label-propagation recipe, run: cluster the unlabeled
     pool, find each cluster's **representative instance** -- the real
     data point closest to the centroid, never the centroid itself, since
     a centroid is usually not a valid instance -- take that

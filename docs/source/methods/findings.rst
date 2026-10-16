@@ -34,8 +34,7 @@ Hawkes self-exciting point processes (post-2014 TPS)
   Kwan-Chen-Dunsmuir (2024).
 
 Computed via ``morie.tps_hawkes_advanced.compare_hawkes_kernels``;
-see :doc:`hawkes` for the methodology and the companion paper
-(see ``CITATION.cff`` for the bibentry).
+see :doc:`hawkes` for the methodology.
 
 OTIS placements (Ontario Tracking and Information System)
 ---------------------------------------------------------
