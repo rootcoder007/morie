@@ -68,11 +68,11 @@ The capsule
 the method and its sources, the environment (interpreter, platform,
 packages). ``capsule_bundle.json`` holds the SHA-256 of the CSV and the
 manifest under an ML-DSA-44 signature; ``rmorie::morie_emissions_verify()``
-or ``rmoriebricklayer::capsule_bundle_verify()`` re-hashes the files and
+or ``rmoriebricklayer::cpsbndlvrf()`` re-hashes the files and
 checks it, so a changed byte in either file fails. The Python package signs
 through R when ``Rscript`` with ``rmoriebricklayer`` is installed and
 otherwise writes the manifest only and says "unsigned".
 
 The signing key is generated per run unless you pass your own
-(``key = rmoriebricklayer::fips_keygen()`` in R), so by default the capsule
+(``key = rmoriebricklayer::fipskg()`` in R), so by default the capsule
 proves the files are unchanged since sealing, not who sealed them.

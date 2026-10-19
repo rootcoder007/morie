@@ -1285,7 +1285,7 @@ def cache_list(db_path: str | Path | None = None) -> list[dict[str, Any]]:
 def wayback_snapshot_url(url: str, timestamp: str | None = None, timeout: int = 15) -> str | None:
     """The closest Internet Archive snapshot of ``url`` (https), or None.
 
-    Mirrors ``rmoriebricklayer::wayback_snapshot_url()``: asks
+    Mirrors ``rmoriebricklayer::wbsnpurl()``: asks
     ``archive.org/wayback/available`` and returns the snapshot URL only when
     the archive reports it available.
     """
@@ -2130,7 +2130,7 @@ def load_rmoriedata(slug: str, timeout: int = 120) -> pd.DataFrame:
     """Load one rmoriedata table by slug (``list_rmoriedata()`` lists them).
 
     Reads the CSV (or CSV.gz) that rmoriedata ships, applying the column
-    names from its schema exactly as ``rmoriedata::morie_data_load()`` does.
+    names from its schema exactly as ``rmoriedata::mdload()`` does.
     """
     import csv
     import gzip

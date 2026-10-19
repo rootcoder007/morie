@@ -7,6 +7,13 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.5.0 (2026-10-19)
+
+* The R package mirrors rmorie 1.5.0: it needs rmoriebricklayer 1.0.0 and rmoriedata 0.4.0 and
+  calls them by their new short names (`rmoriebricklayer::siuprs()`, `rmoriedata::mdload()` and
+  so on). CI builds both from GitHub when r-universe still serves an older build.
+* The citations give the author's given names in full ("Ruhela VS").
+
 ## 1.4.5 (2026-10-16)
 
 * When open.canada.ca is down, the survey PUMFs (CPADS, the Canadian Cannabis Survey, CSADS,

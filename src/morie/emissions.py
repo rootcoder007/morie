@@ -936,11 +936,11 @@ def write_capsule(
     Writes ``emissions_manifest.json``: a bricklayer manifest (``meta`` with
     the measurements, the method and its sources, ``results`` empty,
     ``environment`` with the interpreter and platform) that
-    ``rmoriebricklayer::bricklayer_json_from_json()`` reads back as a
+    ``rmoriebricklayer::fromjs()`` reads back as a
     manifest. When ``Rscript`` and the rmoriebricklayer package are
     available the manifest and the CSV are then bundled and signed with a
     per-run ML-DSA-44 key into ``capsule_bundle.json``
-    (``rmoriebricklayer::capsule_bundle()``), which ``capsule_bundle_verify()``
+    (``rmoriebricklayer::cpsbndl()``), which ``cpsbndlvrf()``
     or ``rmorie::morie_emissions_verify()`` checks: a verifier learns the two
     files have not changed since sealing. Without R the manifest alone is
     written and ``signed`` is False -- said so, never pretended.
@@ -989,9 +989,9 @@ def write_capsule(
     expr = (
         "suppressPackageStartupMessages(library(rmoriebricklayer));"
         f"d <- {json.dumps(str(out_dir))};"
-        "m <- bricklayer_json_from_json(paste(readLines(file.path(d, 'emissions_manifest.json'), warn = FALSE), collapse = '\\n'));"
-        "key <- fips_keygen('ML-DSA-44');"
-        f"capsule_bundle(d, m, key, files = c({json.dumps(csv_name)}, 'emissions_manifest.json'),"
+        "m <- fromjs(paste(readLines(file.path(d, 'emissions_manifest.json'), warn = FALSE), collapse = '\\n'));"
+        "key <- fipskg('ML-DSA-44');"
+        f"cpsbndl(d, m, key, files = c({json.dumps(csv_name)}, 'emissions_manifest.json'),"
         f" note = {json.dumps('morie emissions run ' + data.run_id)});"
         "cat('BUNDLED')"
     )

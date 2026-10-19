@@ -52,7 +52,7 @@ def test_stay_summary_matches_r_conventions():
     assert s.n == 5
     assert s.total_days == pytest.approx(110.0)
     assert s.mean == pytest.approx(22.0)
-    # Values taken from rmoriebricklayer::stay_summary(c(1,2,3,4,100)),
+    # Values taken from rmoriebricklayer::staysmry(c(1,2,3,4,100)),
     # not from this implementation. R's sd() is the SAMPLE sd (n - 1).
     assert s.sd == pytest.approx(43.6176569751, abs=1e-9)
     assert s.se == pytest.approx(19.5064092031, abs=1e-9)

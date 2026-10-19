@@ -4,7 +4,7 @@
 morie already ships a native LLM layer (``morie.ask`` / ``morie.llm``). This
 is the *ecosystem-uniform* entry point that shells out to the optional
 ``rmorie`` CLI agent — the same agent ``rmorie::agent`` /
-``rmoriedata::ask`` / ``rmoriebricklayer::agent_bundle`` call — so every MORIE
+``rmoriedata::mdask`` / ``rmoriebricklayer::agentbndl`` call — so every MORIE
 package exposes one consistent agent. Optional dependency: needs the
 ``rmorie`` binary on PATH and, for cloud backends, ``RMORIE_AGENT_API_KEY`` in
 the environment (the key is never passed as an argument).

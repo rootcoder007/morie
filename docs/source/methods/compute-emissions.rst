@@ -58,7 +58,7 @@ Provenance
 Each run is sealed in a bricklayer capsule: ``emissions_manifest.json``
 (measurements, method, sources, environment) and ``capsule_bundle.json``
 (SHA-256 of the CSV and the manifest under an ML-DSA-44 signature;
-``rmoriebricklayer::capsule_bundle()``). ``rmorie::morie_emissions_verify()``
+``rmoriebricklayer::cpsbndl()``). ``rmorie::morie_emissions_verify()``
 checks it. The key is per run unless supplied, which makes the capsule a
 proof of integrity, not of authorship.
 

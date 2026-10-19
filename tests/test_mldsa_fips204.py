@@ -2,7 +2,7 @@
 
 The OpenSSL vectors are the ones rmoriebricklayer tests against (deterministic signatures over
 the message 01 02 ... 20 with the context "release"); the seeded key digests are
-rmoriebricklayer's fips_keygen(<scheme>, seed = as.raw(0:31)).
+rmoriebricklayer's fipskg(<scheme>, seed = as.raw(0:31)).
 """
 
 from __future__ import annotations

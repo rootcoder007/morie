@@ -267,7 +267,7 @@ def _resolve_method(method: str, kernel_kind: str) -> str:
 
 def _soe_window(t, T, kernel_kind):
     """The sum-of-exponentials window: r = (u + c)/R in [delta, 1] for Lomax (c <= 100 in the fit),
-    r = u/R from the smallest gap for gamma -- as rmoriebricklayer's core_hawkes_fit."""
+    r = u/R from the smallest gap for gamma -- as rmoriebricklayer's chwkfit."""
     if kernel_kind == "lomax":
         return float(T) + 100.0, 1e-3 / (float(T) + 100.0)
     tl = [float(v) for v in t]
@@ -278,7 +278,7 @@ def _soe_window(t, T, kernel_kind):
 def _core_fit(t, T, kernel_kind, baseline_kind, method, eps, x0, bounds):
     """The whole fit in the compiled core (projected BFGS on the analytic gradient,
     morie::core::hawkes_fit_pbfgs): (theta, nll), or None without the core. The same routine
-    rmoriebricklayer's core_hawkes_fit calls, so both arms reach the same optimum."""
+    rmoriebricklayer's chwkfit calls, so both arms reach the same optimum."""
     from .tps_hawkes_jit import HAS_CORE, _f64
 
     if not HAS_CORE:
@@ -416,7 +416,7 @@ def fit_hawkes_general(
         theta, nll_em, n_iter = hawkes_em(t, T, kernel_kind, baseline_kind, x0, bounds)
         # EM converges linearly: its steps shrink long before it reaches the maximum, so a small
         # step is not a stop. Finish with the projected BFGS from EM's point, as
-        # rmoriebricklayer's core_hawkes_fit; it only moves uphill. The likelihood route is the
+        # rmoriebricklayer's chwkfit; it only moves uphill. The likelihood route is the
         # kernel's own "auto" one (exact for exponential, truncate for Weibull, sum of
         # exponentials for Lomax and gamma): the full O(n^2) Lomax sum made this polish the
         # slowest part of the fit.
@@ -553,7 +553,7 @@ def _time_rescaling_residuals(
 
 def splitmix_uniforms(n: int, seed: int) -> list[float]:
     """n uniforms on [0, 1) from splitmix64 (Steele, Lea & Flood 2014): the same numbers as
-    ``rmoriebricklayer::core_uniforms(n, seed)``, so the R and Python arms draw identical values
+    ``rmoriebricklayer::cunif(n, seed)``, so the R and Python arms draw identical values
     where their results must agree (the within-day jitter of tied dates, a subsample).
 
     Examples:

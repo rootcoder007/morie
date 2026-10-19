@@ -201,11 +201,33 @@ inline void trimmed_ipw_weights(const double *treat, const double *propensity,
     }
 }
 
+// An unbiased draw from [0, s), s >= 1: Lemire's multiply-and-reject ("Fast random integer
+// generation in an interval", ACM TOMACS 2019) on mt19937_64's raw outputs, whose sequence the
+// standard fixes. std::uniform_int_distribution's algorithm is the library's choice, so a seed
+// drew different resamples under libstdc++ (Linux, Windows) and libc++ (macOS). The 64x64->128
+// multiply is written out: no __int128 on every compiler.
+inline std::uint64_t bounded_draw(std::mt19937_64 &rng, std::uint64_t s) {
+    auto mul = [](std::uint64_t x, std::uint64_t y, std::uint64_t &hi, std::uint64_t &lo) {
+        const std::uint64_t x0 = x & 0xFFFFFFFFULL, x1 = x >> 32, y0 = y & 0xFFFFFFFFULL, y1 = y >> 32;
+        const std::uint64_t p00 = x0 * y0, p01 = x0 * y1, p10 = x1 * y0, p11 = x1 * y1;
+        const std::uint64_t mid = (p00 >> 32) + (p01 & 0xFFFFFFFFULL) + (p10 & 0xFFFFFFFFULL);
+        hi = p11 + (p01 >> 32) + (p10 >> 32) + (mid >> 32);
+        lo = (mid << 32) | (p00 & 0xFFFFFFFFULL);
+    };
+    std::uint64_t hi, lo;
+    mul(static_cast<std::uint64_t>(rng()), s, hi, lo);
+    if (lo < s) {
+        const std::uint64_t t = (0 - s) % s;   // 2^64 mod s
+        while (lo < t) mul(static_cast<std::uint64_t>(rng()), s, hi, lo);
+    }
+    return hi;
+}
+
 // Bootstrap-replicate means: B resamples of size n drawn with
 // replacement from `a`, each replicate's mean written to out[b].
-// Uses std::mt19937_64 seeded with `seed` -- fully reproducible for a
-// given seed. (There is intentionally no pure-numpy equivalent: a
-// different RNG would silently change the replicates.)
+// Uses std::mt19937_64 seeded with `seed` and bounded_draw() above, so the resamples are the
+// same on every platform. (There is intentionally no pure-numpy equivalent: a different RNG
+// would silently change the replicates.)
 inline void bootstrap_mean(const double *a, std::size_t n, std::size_t B,
                            unsigned long long seed, double *out) {
     if (n == 0) {
@@ -213,13 +235,21 @@ inline void bootstrap_mean(const double *a, std::size_t n, std::size_t B,
         return;
     }
     std::mt19937_64 rng(seed);
-    std::uniform_int_distribution<std::size_t> idx(0, n - 1);
+    const std::uint64_t n64 = static_cast<std::uint64_t>(n);
+    // the interrupt hook (when the host installed one) after about every 2^20 draws: a poll
+    // every few milliseconds of work at any n; it touches neither the generator nor the sums,
+    // so the replicates are the same with and without it
+    const std::size_t poll_every = n >= (std::size_t(1) << 20) ? 1 : (std::size_t(1) << 20) / n;
     for (std::size_t b = 0; b < B; ++b) {
         long double s = 0.0L;
         for (std::size_t i = 0; i < n; ++i) {
-            s += a[idx(rng)];
+            s += a[static_cast<std::size_t>(bounded_draw(rng, n64))];
         }
         out[b] = static_cast<double>(s / static_cast<long double>(n));
+        if ((b + 1) % poll_every == 0) {
+            void (*h)() = interrupt_hook();
+            if (h) h();
+        }
     }
 }
 
@@ -338,29 +368,54 @@ inline double hawkes_ll_lomax_const(const double *t, std::size_t n, double T,
     return -(log_sum - integral);
 }
 
+// log(x^a e^-x / Gamma(a)), the prefactor of both expansions below. For a
+// large shape the plain a*log(x) - x - lgamma(a) cancels terms of size
+// 1e7 (at a = 1e6) and keeps nine digits; written through Stirling's
+// series for lgamma(a) the large terms cancel analytically:
+// a*(log1p(t) - t) + log(a)/2 - log(2 pi)/2 - stirlerr(a), t = (x - a)/a.
+inline double gamma_log_prefactor(double a, double x) {
+    if (a < 10.0) return -x + a * std::log(x) - std::lgamma(a);
+    const double t = (x - a) / a;
+    const double ia = 1.0 / a, ia2 = ia * ia;
+    const double stirlerr =
+        ia * (1.0 / 12.0 - ia2 * (1.0 / 360.0 - ia2 * (1.0 / 1260.0 - ia2 / 1680.0)));
+    return a * (std::log1p(t) - t) + 0.5 * std::log(a) - 0.91893853320467274178 - stirlerr;
+}
+
 // Regularized lower incomplete gamma P(a, x): series for x < a+1,
 // continued fraction (Lentz) otherwise (Numerical Recipes 6.2). Used
-// by the gamma-kernel Hawkes compensator integral.
+// by the gamma-kernel Hawkes compensator integral. Near x = a both need
+// on the order of sqrt(a) terms: a fixed 200 gave P(1e4, 1e4) = 0.4786
+// (pgamma 0.5013) and P(1e6, 1e6) = 0.0797, so the cap grows with a.
 inline double gamma_cdf_regularized(double a, double x) {
     if (x <= 0.0) return 0.0;
-    const double gln = std::lgamma(a);
+    /* a NaN or a negative shape takes the old cap (no cast of a NaN) */
+    const double acap = (a > 0.0 && a < 1e12) ? a : (a >= 1e12 ? 1e12 : 0.0);
+    const int itmax = 200 + static_cast<int>(20.0 * std::sqrt(acap));
+    const double lpre = gamma_log_prefactor(a, x);
     if (x < a + 1.0) {
         double ap = a;
         double sum = 1.0 / a;
         double delta = sum;
-        for (int i = 0; i < 200; ++i) {
+        for (int i = 0; i < itmax; ++i) {
             ap += 1.0;
             delta *= x / ap;
             sum += delta;
-            if (std::fabs(delta) < std::fabs(sum) * 1e-12) break;
+            // the terms fall at least geometrically from here, by r = x / (ap + 1), so the tail is
+            // at most delta * r / (1 - r): near x = a, r is close to 1 and that tail is ~ sqrt(a)
+            // terms, which a stop at the first term below 1e-12 of the sum left out (1.4e-10 at
+            // a = 1e6). For r below one half the rule is the plain one, as it always was.
+            const double r = x / (ap + 1.0);
+            const double tail = r < 0.5 ? 1.0 : r / (1.0 - r);
+            if (std::fabs(delta) * tail < std::fabs(sum) * 1e-12) break;
         }
-        return sum * std::exp(-x + a * std::log(x) - gln);
+        return sum * std::exp(lpre);
     }
     double b = x + 1.0 - a;
     double c = 1.0 / 1e-30;
     double d = 1.0 / b;
     double h = d;
-    for (int i = 1; i <= 200; ++i) {
+    for (int i = 1; i <= itmax; ++i) {
         const double an = -static_cast<double>(i) * (static_cast<double>(i) - a);
         b += 2.0;
         d = an * d + b;
@@ -372,7 +427,7 @@ inline double gamma_cdf_regularized(double a, double x) {
         h *= delta;
         if (std::fabs(delta - 1.0) < 1e-12) break;
     }
-    return 1.0 - std::exp(-x + a * std::log(x) - gln) * h;
+    return 1.0 - std::exp(lpre) * h;
 }
 
 // Negative log-likelihood: gamma triggering kernel, constant baseline.
@@ -1366,8 +1421,11 @@ inline void hawkes_rescaled(const double *t, std::size_t n, double T, int bkind,
             Q[i] = q;
         }
     }
-    // cumulative baseline on the grid, then linear interpolation at the events
-    const std::size_t m = std::max<std::size_t>(256, static_cast<std::size_t>(T) + 1);
+    // cumulative baseline on the grid, then linear interpolation at the events. A constant baseline
+    // is linear and exact on any grid: one point a time unit was 2^31 points for a horizon of 2^31 (a
+    // process killed for memory; CRAN stress test of 0.5.14). The sinusoidal one keeps a point a day,
+    // its horizon capped where it is read.
+    const std::size_t m = bkind == 0 ? 256 : std::max<std::size_t>(256, static_cast<std::size_t>(T) + 1);
     const double step = T / static_cast<double>(m - 1);
     std::vector<double> cum(m, 0.0), val(m);
     for (std::size_t q = 0; q < m; ++q) {
@@ -1378,6 +1436,7 @@ inline void hawkes_rescaled(const double *t, std::size_t n, double T, int bkind,
         if (q) cum[q] = cum[q - 1] + 0.5 * (val[q] + val[q - 1]) * step;
     }
     auto cumB = [&](double x) {
+        if (std::isnan(x)) return x;   /* a NaN cast to size_t is undefined behaviour (UBSan) */
         if (x <= 0.0) return 0.0;
         if (x >= T) return cum[m - 1];
         const double pos = x / step;
