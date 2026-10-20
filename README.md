@@ -125,7 +125,7 @@ morie interactive install
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.5.0 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.5.1 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.

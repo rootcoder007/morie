@@ -1,3 +1,8 @@
+# morie 1.5.1 - 2026-10-20
+
+* No change to the R package; its version follows the Python package, which adds data capsules
+  (`morie.capsule`).
+
 # morie 1.5.0 - 2026-10-19
 
 * Needs rmoriebricklayer 1.0.0 and rmoriedata 0.4.0, and calls them by their new short names

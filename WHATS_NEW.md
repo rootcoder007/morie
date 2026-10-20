@@ -7,17 +7,20 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.5.1 (2026-10-20)
+
+* `morie.capsule` and `morie capsule init|pin|verify|sign|drift` author, pin, verify, sign and
+  drift-check data capsules in the format rmoriebricklayer 1.0.0 verifies and rmbl-action checks:
+  provenance records, results manifests (the same canonical JSON and digest as `mnfdgst()`),
+  HMAC-signed `capsule_bundle.json` bundles and the `cpsdrft()` statistics, without R. Bundles
+  signed with ML-DSA, SLH-DSA or XMSS keys are verified by the R package and the action.
+
 ## 1.5.0 (2026-10-19)
 
 * The R package mirrors rmorie 1.5.0: it needs rmoriebricklayer 1.0.0 and rmoriedata 0.4.0 and
   calls them by their new short names (`rmoriebricklayer::siuprs()`, `rmoriedata::mdload()` and
   so on). CI builds both from GitHub when r-universe still serves an older build.
 * The citations give the author's given names in full ("Ruhela VS").
-* `morie.capsule` and `morie capsule init|pin|verify|sign|drift` author, pin, verify, sign and
-  drift-check data capsules in the format rmoriebricklayer 1.0.0 verifies and rmbl-action checks:
-  provenance records, results manifests (the same canonical JSON and digest as `mnfdgst()`),
-  HMAC-signed `capsule_bundle.json` bundles and the `cpsdrft()` statistics, without R. Bundles
-  signed with ML-DSA, SLH-DSA or XMSS keys are verified by the R package and the action.
 
 ## 1.4.5 (2026-10-16)
 

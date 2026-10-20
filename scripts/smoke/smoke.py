@@ -523,6 +523,29 @@ def c_pollution(s: Smoke):
     check(json.loads(r.stdout)["pipeline"]["paf"] > 0, "json mode")
 
 
+@case("capsule")
+def c_capsule(s: Smoke):
+    d = s.work / "capsule"
+    d.mkdir()
+    (d / "d.csv").write_text("id,g\n1,a\n2,b\n3,a\n", encoding="utf-8")
+    r = s.run("capsule", "init", str(d / "d.csv"), "--url", "https://example.org/d.csv", "--json")
+    check(r.returncode == 0 and json.loads(r.stdout)["resource"]["row_count_data_rows"] == 3, r.stdout + r.stderr)
+    r = s.run("capsule", "verify", str(d), "--json")
+    check(r.returncode == 0 and json.loads(r.stdout)["ok"] is True, r.stdout[-400:])
+    s.env["MORIE_CAPSULE_KEY"] = "smoke-shared-secret"
+    try:
+        r = s.run("capsule", "sign", str(d))
+        check(r.returncode == 0 and (d / "capsule_bundle.json").exists(), r.stdout + r.stderr)
+        check(s.run("capsule", "verify", str(d)).returncode == 0, "signed capsule did not verify")
+        (d / "d.csv").write_text("id,g\n1,a\n2,b\n9,a\n", encoding="utf-8")
+        check(s.run("capsule", "verify", str(d)).returncode == 1, "edited data verified")
+    finally:
+        s.env.pop("MORIE_CAPSULE_KEY", None)
+    r = s.run("capsule", "drift", str(d / "d.csv"), str(d / "d.csv"))
+    check(r.returncode == 0, r.stdout[-400:] + r.stderr[-400:])
+    check(s.run("capsule", "verify", str(s.work / "no-such-dir")).returncode == 2, "missing dir not exit 2")
+
+
 @case("crypto")
 def c_crypto(s: Smoke):
     r = s.run("crypto", "keygen", "--name", "smoke", "--output", "keys")
