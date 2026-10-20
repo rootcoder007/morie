@@ -401,9 +401,7 @@ out <- list(ok = cpsbndlvrf('{d}/capsule_bundle.json', '{d}', man = m)$ok, publi
     assert out["ok"] is True
     m = cps.read_manifest(d / "manifest.json")
     chk = cps.verify_bundle(str(d / "capsule_bundle.json"), d, manifest=m, public_key=out["public"])
-    rows = dict(_rows(chk))
-    assert all(ok for c, ok in rows.items() if c != "attestation:signature"), chk
-    assert rows["attestation:signature"] is False  # ML-DSA is verified by the R package, not here
+    assert chk["ok"] is True, chk  # morie verifies ML-DSA itself
 
 
 @needs_r
@@ -470,3 +468,264 @@ out <- list(column = cl$column, type = cl$type, statistic = cl$statistic, p_valu
     assert py["anydrft"] == out["anydrft"]
     xs = [float(r[0]) for r in list(csv.reader(pathlib.Path(cur).read_text().splitlines()))[1:]]
     assert cps.benford(xs)["statistic"] == pytest.approx(out["benford"], rel=1e-12)
+
+
+# ------------------------------------------------------------------ post-quantum schemes
+
+
+@pytest.fixture
+def xrec(tmp_path, monkeypatch):
+    """A private XMSS used-index record (shared by morie and, through the env, by R)."""
+    p = tmp_path / "rec" / "xmss_used_indices.txt"
+    monkeypatch.setenv("RMBL_XMSS_INDEX_FILE", str(p))
+    return p
+
+
+PQ = ["ML-DSA-44", "xmss-sha256"]
+
+
+def _pqkey(scheme):
+    return cps.keygen(scheme, height=3)
+
+
+def _tamper_sig(path):
+    b = json.loads(path.read_text())
+    s = b["attestation"]["signature"]["signature"]
+    b["attestation"]["signature"]["signature"] = ("0" if s[0] != "0" else "1") + s[1:]
+    path.write_text(json.dumps(b, indent=2))
+
+
+@pytest.mark.parametrize("scheme", PQ)
+def test_pq_sign_verify(scheme, xrec):
+    k = _pqkey(scheme)
+    pub = cps.public_key(k)
+    assert "secret" not in pub and "skseed" not in pub and "skprf" not in pub
+    s = cps.sign("a manifest digest", k)
+    assert s["scheme"] == scheme
+    assert cps.verify_signature("a manifest digest", s, pub)
+    assert cps.verify_signature("a manifest digest", s, k)
+    assert not cps.verify_signature("a manifest digesT", s, pub)
+    assert not cps.verify_signature("a manifest digest", s, cps.public_key(_pqkey(scheme)))
+    bad = dict(s, signature=("0" if s["signature"][0] != "0" else "1") + s["signature"][1:])
+    assert not cps.verify_signature("a manifest digest", bad, pub)
+    assert not cps.verify_signature("a manifest digest", {"scheme": "hmac", "signature": "00"}, pub)
+    with pytest.raises(ValueError, match="does not match"):
+        cps.sign("m", k, scheme="hmac")
+    with pytest.raises(ValueError, match="needs a key from keygen"):
+        cps.sign("m", "secret", scheme=scheme)
+    if scheme == "xmss-sha256":
+        assert list(s) == ["scheme", "signature", "auth", "index", "root", "height", "randomizer", "wire"]
+        assert s["index"] == 0 and k["next_index"] == 1
+    else:
+        assert list(s) == ["scheme", "signature", "context", "prehash"]
+        c = cps.sign("m", k, context="release", prehash="sha512")
+        assert c["context"] == "cmVsZWFzZQ==" and c["prehash"] == "sha512"
+        assert cps.verify_signature("m", c, pub, context="release")
+        assert not cps.verify_signature("m", c, pub, context="staging")
+        assert not cps.verify_signature("m", c, pub, context="release", prehash="none")
+
+
+def test_xmss_index_never_reused(xrec, tmp_path):
+    k = cps.keygen("xmss-sha256", height=2)
+    assert xrec.read_text().endswith("\t-1\n")
+    stale = dict(k)
+    cps.sign("one", k)
+    with pytest.raises(ValueError, match="index 0 of this key was already used"):
+        cps.sign("two", stale)  # a stale copy of the key
+    cps.write_key(k, tmp_path / "k.json")
+    k2 = cps.read_key(tmp_path / "k.json")
+    assert k2["next_index"] == 1 and cps.sign("two", k2)["index"] == 1
+    for _ in range(2):
+        cps.sign("more", k2)
+    with pytest.raises(ValueError, match="exhausted"):
+        cps.sign("five", k2)
+    # a key the record does not know may not sign from index 0
+    k3 = dict(cps.keygen("xmss-sha256", height=1), skseed="ab" * 32)
+    with pytest.raises(ValueError, match="not in the used-index record"):
+        cps.sign("x", k3)
+    lines = xrec.read_text().splitlines()
+    assert all(ln.startswith("k:") and len(ln.split("\t")[0]) == 66 for ln in lines)
+
+
+@pytest.mark.parametrize("scheme", PQ)
+def test_pq_bundle_roundtrip(scheme, xrec, tmp_path):
+    d = _capsule(tmp_path / "c")
+    m = cps.record(cps.manifest({"project": "p"}, env=False), "n", 5, 5)
+    cps.write_manifest(m, d / "manifest.json")
+    k = _pqkey(scheme)
+    b = cps.bundle(d, m, k, note="pq")
+    a = b["attestation"]
+    assert a["scheme"] == scheme and a["public"] == cps.key_id(k)
+    path = d / "capsule_bundle.json"
+    assert cps.verify_bundle(str(path), d, manifest=m, public_key=cps.public_key(k))["ok"]
+    other = _pqkey(scheme)
+    assert not cps.verify_bundle(str(path), d, public_key=cps.key_id(other))["ok"]
+    # the attestation names another key: its signature no longer verifies
+    j = json.loads(path.read_text())
+    j["attestation"]["public"] = cps.key_id(other)
+    path.write_text(json.dumps(j))
+    assert dict(_rows(cps.verify_bundle(str(path), d)))["attestation:signature"] is False
+    cps.bundle(d, m, k)
+    _tamper_sig(path)
+    assert dict(_rows(cps.verify_bundle(str(path), d)))["attestation:signature"] is False
+    with pytest.raises(ValueError, match="hmac attestation takes no"):
+        cps.attest(m, KEY, context="x")
+
+
+@pytest.mark.parametrize("scheme", PQ)
+def test_pq_cli(scheme, xrec, tmp_path, capsys, monkeypatch):
+    from morie.capsule.cli import run
+    from morie.runner import build_parser
+
+    def cli(*a):
+        return run(build_parser().parse_args(["capsule", *a]))
+
+    d = tmp_path / "c"
+    d.mkdir()
+    f = _csv(d / "d.csv", ["id"], [[1], [2]])
+    assert cli("init", f, "--url", "https://example.org") == 0
+    capsys.readouterr()
+    kf = tmp_path / "key.json"
+    assert cli("keygen", "--scheme", scheme, "--height", "3", "--out", str(kf), "--json") == 0
+    pub = json.loads(capsys.readouterr().out)["public"]
+    assert oct(kf.stat().st_mode & 0o777) == "0o600" or os.name == "nt"
+    assert cli("keygen", "--scheme", scheme, "--out", str(kf)) == 2  # never overwritten
+    assert cli("sign", str(d), "--scheme", scheme, "--key-file", str(kf)) == 0
+    assert cli("verify", str(d), "--public-key", pub) == 0
+    assert cli("verify", str(d), "--public-key", "00" * 32) == 1
+    assert (
+        cli("sign", str(d), "--scheme", "ML-DSA-65" if scheme != "ML-DSA-65" else "ML-DSA-44", "--key-file", str(kf))
+        == 2
+    )
+    if scheme == "xmss-sha256":
+        assert json.loads(kf.read_text())["next_index"] == 1
+        monkeypatch.setenv("MORIE_CAPSULE_KEY", kf.read_text())
+        assert cli("sign", str(d), "--scheme", scheme) == 2  # state needs a file
+        assert cli("sign", str(d), "--scheme", scheme, "--key-file", str(kf)) == 0
+        assert json.loads(kf.read_text())["next_index"] == 2
+    else:
+        monkeypatch.setenv("MORIE_CAPSULE_KEY", kf.read_text())
+        assert cli("sign", str(d), "--scheme", scheme, "--context", "release", "--prehash", "sha256") == 0
+        assert cli("verify", str(d), "--public-key", pub) == 0
+    _tamper_sig(d / "capsule_bundle.json")
+    assert cli("verify", str(d)) == 1
+
+
+# ------------------------------------------------------------------ post-quantum, cross-checks with R
+
+
+@needs_r
+def test_xmss_bytes_match_r(xrec, tmp_path):
+    from morie.crypto import _xmss
+
+    s1, s2, s3 = "11" * 32, "22" * 32, "33" * 32
+    out = _r(
+        tmp_path,
+        f"""
+k <- pqckg(3, '{s1}', '{s2}', '{s3}')
+xmssregkey(k)
+s <- cpssign('a manifest digest', k)
+out <- list(root = k$root, wire = s$wire, sig = s$signature, auth = s$auth, r = s$randomizer)
+""",
+    )
+    b1, b2, b3 = (bytes.fromhex(x) for x in (s1, s2, s3))
+    assert _xmss.keygen_root(b1, b2, 3).hex() == out["root"]
+    mine = _xmss.sign(b1, b3, b2, 3, 0, b"a manifest digest")
+    assert (mine["wire"], mine["signature"], mine["auth"], mine["randomizer"]) == (
+        out["wire"],
+        out["sig"],
+        out["auth"],
+        out["r"],
+    )
+    # and the shared record now refuses index 0 of that key in morie too
+    k = {
+        "root": out["root"],
+        "pubseed": s2,
+        "skseed": s1,
+        "skprf": s3,
+        "height": 3,
+        "next_index": 0,
+        "capacity": 8,
+        "scheme": "xmss-sha256",
+    }
+    with pytest.raises(ValueError, match="index 0 of this key was already used"):
+        cps.sign("another message", k)
+
+
+def _r_bundle_check(tmp_path, d, keyexp):
+    return _r(
+        tmp_path,
+        f"""
+v <- cpsbndlvrf('{d}/capsule_bundle.json', '{d}', keyexp = '{keyexp}')
+out <- list(ok = v$ok, check = v$checks$check, pass = v$checks$ok)
+""",
+    )
+
+
+@needs_r
+@pytest.mark.parametrize("scheme", PQ)
+def test_r_verifies_morie_pq_bundle(scheme, xrec, tmp_path):
+    d = _capsule(tmp_path / "c")
+    m = cps.record(cps.manifest({"project": "p"}, env=False), "n", 5, 5)
+    cps.write_manifest(m, d / "manifest.json")
+    k = _pqkey(scheme)
+    if scheme == "xmss-sha256":
+        cps.bundle(d, m, k, note="from morie")
+    else:
+        cps.bundle(d, m, k, note="from morie", context="release 2026-10", prehash="sha512")
+    pub = cps.key_id(k)
+    out = _r_bundle_check(tmp_path, d, pub)
+    assert out["ok"] is True, out
+    assert list(zip(out["check"], out["pass"])) == _rows(
+        cps.verify_bundle(str(d / "capsule_bundle.json"), d, public_key=pub)
+    )
+    # wrong key: R refuses the pin, and the signature row is still good
+    out = _r_bundle_check(tmp_path, d, cps.key_id(_pqkey(scheme)))
+    rows = dict(zip(out["check"], out["pass"]))
+    assert out["ok"] is False and rows["attestation:key_as_expected"] is False
+    # a tampered signature byte fails on both sides
+    _tamper_sig(d / "capsule_bundle.json")
+    out = _r_bundle_check(tmp_path, d, pub)
+    assert out["ok"] is False and dict(zip(out["check"], out["pass"]))["attestation:signature"] is False
+    assert dict(_rows(cps.verify_bundle(str(d / "capsule_bundle.json"), d)))["attestation:signature"] is False
+
+
+@needs_r
+@pytest.mark.parametrize("scheme", PQ)
+def test_morie_verifies_r_pq_bundle(scheme, xrec, tmp_path):
+    d = _capsule(tmp_path / "c")
+    keyc = "pqckg(3)" if scheme == "xmss-sha256" else f"fipskg('{scheme}')"
+    extra = "" if scheme == "xmss-sha256" else ", ctx = 'release 2026-10', prehash = 'sha512'"
+    out = _r(
+        tmp_path,
+        f"""
+m <- suppressMessages(recrd(mkmnf(list(project = 'p'), env = FALSE), 'n', obs = 5, expd = 5))
+wrmnfjs(m, '{d}/manifest.json')
+k <- {keyc}
+b <- cpsbndl('{d}', m, k, note = 'from R'{extra})
+v <- cpsbndlvrf('{d}/capsule_bundle.json', '{d}', man = m)
+pub <- if (inherits(k, 'bricklayer_signing_key')) paste0(k$root, k$pubseed) else k$public
+other <- {keyc}
+op <- if (inherits(other, 'bricklayer_signing_key')) paste0(other$root, other$pubseed) else other$public
+out <- list(ok = v$ok, public = pub, other = op)
+""",
+    )
+    assert out["ok"] is True
+    path = str(d / "capsule_bundle.json")
+    m = cps.read_manifest(d / "manifest.json")
+    chk = cps.verify_bundle(path, d, manifest=m, public_key=out["public"])
+    assert chk["ok"] is True, chk
+    # wrong key
+    rows = dict(_rows(cps.verify_bundle(path, d, public_key=out["other"])))
+    assert rows["attestation:key_as_expected"] is False and rows["attestation:signature"] is True
+    j = json.loads(pathlib.Path(path).read_text())
+    j["attestation"]["public"] = out["other"]
+    pathlib.Path(path + ".other").write_text(json.dumps(j))
+    assert dict(_rows(cps.verify_bundle(path + ".other", d)))["attestation:signature"] is False
+    os.remove(path + ".other")
+    # tampered data and a tampered signature byte
+    with open(d / "d.csv", "a") as fh:
+        fh.write("9,a,1\n")
+    assert dict(_rows(cps.verify_bundle(path, d)))["file:d.csv"] is False
+    _tamper_sig(pathlib.Path(path))
+    assert dict(_rows(cps.verify_bundle(path, d)))["attestation:signature"] is False

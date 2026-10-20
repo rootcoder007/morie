@@ -231,15 +231,34 @@ Data capsules
 ``capsule verify DIR``
    The checks of ``rmoriebricklayer::vrfcps()``, and of ``cpsbndlvrf()`` on
    ``capsule_bundle.json`` when present (``--key-env VAR`` or
-   ``--key-file FILE`` supplies the HMAC key, ``--public-key HEX`` pins it).
+   ``--key-file FILE`` supplies the HMAC key; ``--public-key HEX`` pins the
+   key: an hmac key id, or the ML-DSA or XMSS public key ``capsule keygen``
+   printed). An ML-DSA or XMSS signature is verified under the public key
+   the bundle carries, so it needs no key.
 
-``capsule sign DIR``
+``capsule keygen --scheme SCHEME --out FILE``
+   A new ``ML-DSA-44``, ``ML-DSA-65``, ``ML-DSA-87`` (FIPS 204) or
+   ``xmss-sha256`` (RFC 8391; ``--height H``, 1-16, signs ``2^H`` bundles,
+   default 10) signing key, written as JSON readable by its owner only (the
+   fields of ``fipskg()`` / ``pqckg()``; never overwritten). Prints the
+   public key; ``--public-out FILE`` also writes it as JSON.
+
+``capsule sign DIR [--scheme SCHEME]``
    Write ``capsule_bundle.json``: every file's SHA-256, the digest of
-   ``manifest.json``, and an HMAC attestation over them, with the key from
+   ``manifest.json``, and an attestation over them, as ``cpsbndl()`` writes
+   it. ``--scheme hmac`` (the default) signs with the shared secret in
    ``$MORIE_CAPSULE_KEY`` (or ``--key-env`` / ``--key-file``; never on the
-   command line). rmoriebricklayer >= 1.0.0 (srr) verifies such a bundle,
-   the HMAC signature included, with the shared key
-   (``cpsbndlvrf(key = ...)``); ``capsule verify`` with the key checks it.
+   command line); rmoriebricklayer >= 1.0.0 (srr) verifies it with the
+   shared key (``cpsbndlvrf(key = ...)``). ``--scheme ML-DSA-44|65|87`` and
+   ``--scheme xmss-sha256`` sign with a key from ``capsule keygen`` (or an R
+   key written with ``tojs()``), from the same places; ``--context`` and
+   ``--prehash`` apply to ML-DSA. ``cpsbndlvrf()`` verifies these bundles
+   with no key, and rmoriebricklayer's bundles of these schemes verify
+   here. An XMSS key must be a ``--key-file``: its ``next_index`` is
+   written back after each signature, and the used-index record morie
+   shares with rmoriebricklayer (``RMBL_XMSS_INDEX_FILE``, else
+   ``xmss_used_indices.txt`` in ``tools::R_user_dir("rmoriebricklayer",
+   "config")``) refuses an index already used.
 
 ``capsule drift REF CUR``
    Compare a capsule's pinned CSV (or any CSV) with a current one, column by

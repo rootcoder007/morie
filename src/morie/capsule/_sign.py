@@ -1,16 +1,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""HMAC signatures, attestations and signed capsule bundles in
-rmoriebricklayer's format (``cpssign()``/``cpsvrf()``, ``cpsatst()``,
-``cpsbndl()``/``cpsbndlvrf()``).
+"""Signatures, attestations and signed capsule bundles in rmoriebricklayer's
+format (``cpssign()``/``cpsvrf()``, ``cpsatst()``, ``cpsbndl()``/``cpsbndlvrf()``).
 
-morie signs with the ``hmac`` scheme only: HMAC-SHA-256 (RFC 2104) of the
-message's UTF-8 bytes under a shared secret, exactly ``chmac(key, msg)``.
-The scheme takes no context (``cpssign()`` ignores one for ``hmac``), so an
-attestation's ``context`` is ``""`` and its ``prehash`` ``"none"``. Bundles
-signed with ML-DSA, SLH-DSA or XMSS keys are verified by
-``rmoriebricklayer::cpsbndlvrf()`` and the rmbl-action; :func:`verify_bundle`
-checks their file digests and attestation digest and reports their
-signature as not verifiable here.
+Three kinds of key, as in the R package:
+
+* a shared secret (a string or bytes): scheme ``hmac``, HMAC-SHA-256 (RFC 2104)
+  of the message's UTF-8 bytes, exactly ``chmac(key, msg)``. It takes no
+  context, so an attestation's ``context`` is ``""`` and its ``prehash``
+  ``"none"``;
+* an ML-DSA key (FIPS 204) from :func:`keygen` or ``fipskg()``: schemes
+  ``ML-DSA-44``, ``ML-DSA-65``, ``ML-DSA-87``, with an optional context
+  string and pre-hash;
+* an XMSS key (RFC 8391) from :func:`keygen` or ``pqckg()``: scheme
+  ``xmss-sha256``, ``2^height`` signatures and never two at one index.
+
+The key objects, signatures and the used-index record are the R package's
+own (see :mod:`morie.capsule._pq`): a bundle signed here verifies with
+``cpsbndlvrf()`` and the rmbl-action, and one signed there verifies here.
+Bundles signed with SLH-DSA keys are verified by the R package; here their
+signature row fails with that said.
 """
 
 from __future__ import annotations
@@ -22,11 +30,16 @@ import json
 import os
 import re
 
+from . import _pq
 from ._json import pretty
 from ._manifest import digest
 from ._prov import safe_rel, sha256file
 
 __all__ = [
+    "keygen",
+    "public_key",
+    "read_key",
+    "write_key",
     "sign",
     "verify_signature",
     "key_id",
@@ -54,21 +67,61 @@ def _now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def sign(message, key, scheme: str | None = None) -> dict:
-    """``{"scheme": "hmac", "signature": <64 hex>}``: HMAC-SHA-256 of ``message`` under ``key``,
-    the object ``cpssign(message, key, scheme = "hmac")`` returns. ``scheme`` may only
-    be ``"hmac"`` (or ``None``): the post-quantum schemes are signed by the R package."""
+def keygen(scheme: str = "ML-DSA-65", height: int = 10) -> dict:
+    """A new post-quantum signing key, as ``fipskg(scheme)`` or, for ``"xmss-sha256"``,
+    ``pqckg(height)`` returns it (a dict with the R object's fields). Save it with
+    :func:`write_key`; give others :func:`public_key`.
+
+    >>> k = keygen("ML-DSA-44")
+    >>> s = sign("a manifest digest", k)
+    >>> s["scheme"], verify_signature("a manifest digest", s, public_key(k))
+    ('ML-DSA-44', True)
+    """
+    return _pq.keygen(scheme, height)
+
+
+public_key = _pq.public_key
+read_key = _pq.read_key
+write_key = _pq.write_key
+
+
+def sign(message, key, scheme: str | None = None, context=None, prehash: str = "none") -> dict:
+    """The object ``cpssign(message, key, ...)`` returns.
+
+    With a shared secret (a string or bytes), ``{"scheme": "hmac", "signature": <64 hex>}``:
+    HMAC-SHA-256 of ``message`` under ``key``. With a key from :func:`keygen` (or a key file of
+    ``fipskg()`` / ``pqckg()``), its scheme's signature; ``context`` (a string or bytes, at most
+    255 bytes) and ``prehash`` (``"none"``, ``"sha256"``, ``"sha512"``, ...) apply to ML-DSA.
+    An XMSS key's ``next_index`` is advanced in place: save the key after signing.
+    ``scheme``, when given, must be the key's.
+
+    >>> sign("what do ya want for nothing?", "Jefe")["signature"][:16]
+    '5bdcc146bf60754e'
+    """
+    if isinstance(key, dict):
+        if scheme not in (None, key.get("scheme")):
+            raise ValueError(f"`scheme = {scheme!r}` does not match the key's scheme {key.get('scheme')!r}")
+        ctx = b"" if context is None else _bytes(context, "context")
+        return _pq.sign(_bytes(message, "message"), key, ctx, prehash)
     if scheme not in (None, "hmac"):
-        raise ValueError(f"morie signs with scheme 'hmac' only; sign {scheme} with rmoriebricklayer::cpssign()")
+        raise ValueError(f"scheme {scheme} needs a key from keygen() (or fipskg() / pqckg()), not a shared secret")
     k = _bytes(key, "key")
     if not k:
         raise ValueError("`key` must not be empty")
     return {"scheme": "hmac", "signature": hmac.new(k, _bytes(message, "message"), hashlib.sha256).hexdigest()}
 
 
-def verify_signature(message, sig, key) -> bool:
-    """``True`` when ``sig`` (from :func:`sign`) is a valid HMAC of ``message`` under ``key``;
-    compared in constant time. A malformed signature is ``False``, as in ``cpsvrf()``."""
+def verify_signature(message, sig, key, context=None, prehash: str | None = None) -> bool:
+    """``True`` when ``sig`` (from :func:`sign` or ``cpssign()``) is valid for ``message`` under
+    ``key``: the shared secret for ``hmac`` (compared in constant time), else the public (or
+    signing) key, with the ``context`` it was signed with. A malformed signature is ``False``,
+    as in ``cpsvrf()``."""
+    if isinstance(key, dict):
+        try:
+            ctx = b"" if context is None else _bytes(context, "context")
+            return _pq.verify(_bytes(message, "message"), sig, key, ctx, prehash)
+        except TypeError:
+            return False
     if not isinstance(sig, dict) or sig.get("scheme") != "hmac":
         return False
     tag = sig.get("signature")
@@ -82,8 +135,11 @@ def verify_signature(message, sig, key) -> bool:
 
 
 def key_id(key) -> str:
-    """The attestation's ``public`` field for an HMAC key: HMAC-SHA-256 of ``"public"``
-    under the key. It names the key (so a verifier can pin it) without revealing it."""
+    """The attestation's ``public`` field. For an HMAC key, HMAC-SHA-256 of ``"public"`` under
+    the key: it names the key (so a verifier can pin it) without revealing it. For an ML-DSA
+    key its public key, for an XMSS key ``root || pubseed``."""
+    if isinstance(key, dict):
+        return _pq.public_hex(key)
     return sign("public", key)["signature"]
 
 
@@ -91,27 +147,38 @@ def _payload_digest(payload: dict) -> str:
     return digest({k: payload[k] for k in _FIELDS})
 
 
-def attest(manifest, key, note: str | None = None) -> dict:
-    """An attestation over ``digest(manifest)``, in the field order ``cpsatst()`` writes:
+def attest(manifest, key, note: str | None = None, context: str | None = None, prehash: str = "none") -> dict:
+    """An attestation over ``digest(manifest)``, as ``cpsatst()`` writes it, in its field order:
     ``digest``, ``scheme``, ``public``, ``context``, ``prehash``, ``note``,
     ``signed_utc``, ``signature``. The signature is over the SHA-256 (hex) of
-    the canonical JSON of the first seven fields."""
+    the canonical JSON of the first seven fields. ``context`` and ``prehash`` are bound into
+    an ML-DSA signature (XMSS records them and its signature does not use them); an hmac
+    attestation takes neither."""
+    scheme = key.get("scheme") if isinstance(key, dict) else "hmac"
+    if scheme == "hmac" and (context is not None or prehash != "none"):
+        raise ValueError("an hmac attestation takes no `context` and no `prehash`")
+    if context is not None and not isinstance(context, str):
+        raise TypeError("`context` must be a string")
     payload = {
         "digest": digest(manifest),
-        "scheme": "hmac",
+        "scheme": scheme,
         "public": key_id(key),
-        "context": "",
-        "prehash": "none",
+        "context": "" if context is None else context,
+        "prehash": prehash,
         "note": "" if note is None else str(note),
         "signed_utc": _now(),
     }
-    return {**payload, "signature": sign(_payload_digest(payload), key)}
+    signed = _payload_digest(payload)
+    # XMSS records a context and pre-hash and its signature does not use them, as in cpsatst()
+    sig = sign(signed, key, context=context, prehash=prehash) if scheme in _pq.MLDSA else sign(signed, key)
+    return {**payload, "signature": sig}
 
 
-def check_attestation(att: dict, manifest, key=None, public_key: str | None = None) -> dict:
+def check_attestation(att: dict, manifest, key=None, public_key=None) -> dict:
     """The rows ``cpschkatst()`` reports: ``attestation_complete``, ``manifest_digest``,
-    ``key_as_expected`` (with ``public_key``, the expected ``public`` hex) and ``signature``. An ``hmac``
-    signature needs ``key``; other schemes are verified by the R package."""
+    ``key_as_expected`` (with ``public_key``: the expected ``public`` hex, or a key object) and
+    ``signature``. An ``hmac`` signature needs the shared ``key``; an ML-DSA or XMSS one is
+    verified under the public key the attestation carries (pin it with ``public_key``)."""
     rows = []
 
     def note(check, ok, detail=""):
@@ -127,7 +194,8 @@ def check_attestation(att: dict, manifest, key=None, public_key: str | None = No
     ok = got == att.get("digest")
     note("manifest_digest", ok, got if ok else f"attested {att.get('digest', '(missing)')}, manifest is {got}")
     if public_key is not None:
-        kok = str(public_key).lower() == str(att.get("public", "")).lower()
+        want = _pq.public_hex(public_key) if isinstance(public_key, dict) else str(public_key)
+        kok = want.lower() == str(att.get("public", "")).lower()
         note(
             "key_as_expected",
             kok,
@@ -136,11 +204,21 @@ def check_attestation(att: dict, manifest, key=None, public_key: str | None = No
             else "the attestation carries a different key from the one expected",
         )
     ok, detail = False, ""
-    if not missing:
+    if not missing and att.get("scheme") in _pq.SCHEMES:
+        sig = att["signature"]
+        pub = _pq.from_attestation(att["scheme"], att["public"], sig.get("height") if isinstance(sig, dict) else None)
+        if pub is None:
+            detail = "the attested public key is not usable for this scheme"
+        elif att["scheme"] == _pq.XMSS:
+            ok = verify_signature(_payload_digest(att), sig, pub)
+        else:
+            ctx = att["context"] if isinstance(att["context"], str) and att["context"] else None
+            ok = verify_signature(_payload_digest(att), sig, pub, context=ctx, prehash=str(att["prehash"]))
+    elif not missing:
         if att.get("scheme") != "hmac":
             detail = (
                 f"scheme {att.get('scheme')}: verified by rmoriebricklayer::cpsbndlvrf() or the rmbl-action;"
-                " morie verifies hmac"
+                " morie verifies hmac, ML-DSA and XMSS"
             )
         elif key is None:
             detail = "an hmac signature needs the shared key"
@@ -171,21 +249,39 @@ def _inner(b: dict) -> dict:
     }
 
 
-def bundle(dir, manifest, key, files=None, note: str | None = None, path=None) -> dict:
+def bundle(
+    dir,
+    manifest,
+    key,
+    files=None,
+    note: str | None = None,
+    path=None,
+    context: str | None = None,
+    prehash: str = "none",
+) -> dict:
     """Sign a whole capsule into ``capsule_bundle.json``, as ``cpsbndl()`` does.
 
     Hashes ``files`` (default: every regular file under ``dir``, dotfiles
     included, except the bundle itself), sorted, records ``digest(manifest)`` and the
-    time, and signs the lot with :func:`attest` under the HMAC ``key``. The
+    time, and signs the lot with :func:`attest` under ``key`` (a shared secret, or an
+    ML-DSA or XMSS key from :func:`keygen`; ``context`` and ``prehash`` as there). The
     file has the R package's layout (``files``, ``manifest_digest``,
     ``bundled_utc``, ``attestation``) and is written to ``path`` (default
-    ``dir/capsule_bundle.json``). Returns the bundle.
+    ``dir/capsule_bundle.json``). Returns the bundle. An XMSS key is advanced in place:
+    save it (:func:`write_key`) before signing again.
 
-    rmoriebricklayer >= 1.0.0 (srr) verifies such a bundle, its ``hmac``
-    attestation included, with the shared key: ``cpsbndlvrf(key = ...)``
-    (``cpschkatst(key = ...)`` for an attestation alone). Without the key, or
-    with an older rmoriebricklayer build, its ``attestation:signature`` row
-    fails; :func:`verify_bundle` with the key checks it too.
+    ``rmoriebricklayer::cpsbndlvrf()`` verifies such a bundle: an ML-DSA or XMSS one
+    under the public key it carries (``keyexp =`` pins it), an ``hmac`` one with the
+    shared key (``key =``, rmoriebricklayer >= 1.0.0 (srr)). :func:`verify_bundle`
+    checks it here.
+
+    >>> import tempfile, pathlib
+    >>> d = pathlib.Path(tempfile.mkdtemp())
+    >>> _ = (d / "d.csv").write_text("x\\n1\\n")
+    >>> k = keygen("ML-DSA-44")
+    >>> b = bundle(d, {"meta": {}, "results": []}, k)
+    >>> b["attestation"]["scheme"], verify_bundle(str(d / BUNDLE), d, public_key=public_key(k))["ok"]
+    ('ML-DSA-44', True)
     """
     cpsdir = os.fspath(dir)
     if not os.path.isdir(cpsdir):
@@ -205,7 +301,7 @@ def bundle(dir, manifest, key, files=None, note: str | None = None, path=None) -
         p = os.path.join(cpsdir, f)
         entries.append({"path": f, "sha256": sha256file(p), "size_bytes": os.path.getsize(p)})
     b = {"files": entries, "manifest_digest": digest(manifest), "bundled_utc": _now()}
-    b["attestation"] = attest(_inner(b), key, note=note)
+    b["attestation"] = attest(_inner(b), key, note=note, context=context, prehash=prehash)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(pretty(b) + "\n")
     return b
@@ -220,13 +316,15 @@ def read_bundle(path) -> dict:
     return b
 
 
-def verify_bundle(bundle, dir, manifest=None, key=None, public_key: str | None = None) -> dict:
+def verify_bundle(bundle, dir, manifest=None, key=None, public_key=None) -> dict:
     """Check a bundle against a directory, as ``cpsbndlvrf()`` does.
 
     ``bundle`` is a path or a bundle from :func:`read_bundle`. Rows:
     ``file:<path>`` per listed file (digest), ``no_unlisted_files``, the
     ``attestation:*`` rows of :func:`check_attestation` and, with ``manifest``,
-    ``manifest_digest``. Returns ``{"ok", "checks"}``.
+    ``manifest_digest``. ``key`` is the shared secret of an ``hmac`` bundle; ``public_key``
+    (hex or a key object) pins the key any bundle must be signed with. Returns
+    ``{"ok", "checks"}``.
     """
     own_rel = BUNDLE
     cpsdir = os.fspath(dir)

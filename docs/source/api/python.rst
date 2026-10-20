@@ -415,12 +415,26 @@ Federal SIU, crime feeds and forensics
 Data capsules
 -------------
 
-Provenance records, results manifests, HMAC-signed bundles and drift
+Provenance records, results manifests, signed bundles and drift
 checks in the format rmoriebricklayer verifies (``vrfcps()``,
 ``cpsbndlvrf()``, ``mnfrcmp()``, ``cpsdrft()``) and the
-``rootcoder007/rmbl-action`` GitHub Action checks. morie signs with the
-``hmac`` scheme; bundles signed with ML-DSA, SLH-DSA or XMSS keys are
-verified by the R package and the action.
+``rootcoder007/rmbl-action`` GitHub Action checks. morie signs and verifies
+with ``hmac`` (a shared secret), ML-DSA (``ML-DSA-44``, ``ML-DSA-65``,
+``ML-DSA-87``, FIPS 204) and XMSS (``xmss-sha256``, RFC 8391), with the
+keys, signatures and attestations of ``fipskg()``, ``pqckg()``,
+``cpssign()`` and ``cpsatst()`` byte for byte, so a bundle signed on
+either side verifies on the other; an XMSS key shares rmoriebricklayer's
+used-index record and never signs one index twice. Bundles signed with
+SLH-DSA keys are verified by the R package and the action.
+
+.. code-block:: python
+
+   from morie import capsule
+
+   key = capsule.keygen("ML-DSA-65")          # or "xmss-sha256", height=10
+   capsule.write_key(key, "key.json")         # SECRET; capsule.public_key(key) is not
+   capsule.bundle("dir", capsule.read_manifest("dir/manifest.json"), key)
+   capsule.verify_bundle("dir/capsule_bundle.json", "dir", public_key=capsule.public_key(key))
 
 .. automodule:: morie.capsule
    :members:

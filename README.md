@@ -288,13 +288,16 @@ emissions CSV layout and the capsule format, so they mix in one workflow.
 ### Data capsules
 
 `morie.capsule` (`write`, `verify`, `sign`, `bundle`, `drift`, `manifest`, `compare`, ...) and
-`morie capsule init|pin|verify|sign|drift` author and check capsules in the rmoriebricklayer /
+`morie capsule init|pin|verify|keygen|sign|drift` author and check capsules in the rmoriebricklayer /
 rmbl-action format. Their twins in rmorie are `morie_capsule_write()` and so on:
 the same words name the same things: `write`/`verify`/`sign`/`bundle`/`drift`/`manifest`/`compare`
 take the same arguments and defaults, return the same fields, and verification gives the same
-check rows (those of `rmoriebricklayer::vrfcps()`). The deliberate differences: morie signs with
-`hmac` (a shared secret) only, so its `sign()` and `bundle()` have no `context`, `prehash` or
-`deterministic` (rmorie also signs with ML-DSA, SLH-DSA and XMSS keys); rmorie's results checks
+check rows (those of `rmoriebricklayer::vrfcps()`). Both sign with `hmac` (a shared secret), ML-DSA
+(`ML-DSA-44`, `ML-DSA-65`, `ML-DSA-87`) and XMSS (`xmss-sha256`) keys, byte-compatible either way
+(`morie capsule keygen --scheme ML-DSA-65 --out key.json`, then
+`morie capsule sign DIR --scheme ML-DSA-65 --key-file key.json`). The deliberate differences:
+morie's `sign()` and `bundle()` have no `deterministic`, and SLH-DSA keys sign only in rmorie;
+rmorie's results checks
 are a data frame, morie's a list of dicts; rmorie's drift takes the capsule directory (`dir`) and
 a data frame or CSV as `current`, morie's takes `ref` (a capsule directory or a CSV) and a CSV;
 rmorie pins only a CSV, morie any file (a row count for a CSV); morie also has `load`, `pin`,

@@ -11,21 +11,36 @@ read and verified by the R package rmoriebricklayer (``vrfcps()``,
 * Provenance: :func:`write`, :func:`load`, :func:`pin`, :func:`verify`.
 * Manifests: :func:`manifest`, :func:`record`, :func:`write_manifest`,
   :func:`read_manifest`, :func:`canon`, :func:`digest`, :func:`compare`.
-* Signing: :func:`sign`, :func:`verify_signature`, :func:`attest`,
-  :func:`bundle`, :func:`read_bundle`, :func:`verify_bundle`. morie signs
-  with the ``hmac`` scheme (a shared secret) in this version; bundles signed
-  with ML-DSA, SLH-DSA or XMSS keys are verified by the R package and the
-  action, not here.
+* Signing: :func:`keygen`, :func:`public_key`, :func:`read_key`,
+  :func:`write_key`, :func:`sign`, :func:`verify_signature`, :func:`attest`,
+  :func:`bundle`, :func:`read_bundle`, :func:`verify_bundle`, with a shared
+  secret (``hmac``), an ML-DSA key (``ML-DSA-44``, ``ML-DSA-65``,
+  ``ML-DSA-87``) or an XMSS key (``xmss-sha256``), byte-compatible with
+  ``fipskg()``, ``pqckg()`` and ``cpssign()``. Bundles signed with SLH-DSA
+  keys are verified by the R package and the action, not here.
 * Drift: :func:`drift`, :func:`benford`.
 
 The same commands are on the command line as ``morie capsule init | pin |
-verify | sign | drift``.
+verify | keygen | sign | drift``.
 """
 
 from ._drift import benford, drift
 from ._manifest import canon, compare, digest, manifest, read_manifest, record, write_manifest
 from ._prov import load, pin, sha256file, verify, write
-from ._sign import attest, bundle, check_attestation, key_id, read_bundle, sign, verify_bundle, verify_signature
+from ._sign import (
+    attest,
+    bundle,
+    check_attestation,
+    key_id,
+    keygen,
+    public_key,
+    read_bundle,
+    read_key,
+    sign,
+    verify_bundle,
+    verify_signature,
+    write_key,
+)
 
 __all__ = [
     "attest",
@@ -37,10 +52,13 @@ __all__ = [
     "digest",
     "drift",
     "key_id",
+    "keygen",
     "load",
     "manifest",
     "pin",
+    "public_key",
     "read_bundle",
+    "read_key",
     "read_manifest",
     "record",
     "sha256file",
@@ -49,5 +67,6 @@ __all__ = [
     "verify_bundle",
     "verify_signature",
     "write",
+    "write_key",
     "write_manifest",
 ]

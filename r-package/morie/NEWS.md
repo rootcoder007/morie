@@ -1,6 +1,11 @@
 # morie 1.5.1 - 2026-10-20
 
-* Its version follows the Python package, which adds data capsules (`morie.capsule`).
+* Its version follows the Python package, which adds data capsules (`morie.capsule`). They sign
+  with ML-DSA (`ML-DSA-44`, `ML-DSA-65`, `ML-DSA-87`) and XMSS (`xmss-sha256`) keys as well as
+  `hmac`, in rmoriebricklayer's key, signature and attestation formats
+  (`morie capsule keygen`, `morie capsule sign --scheme ...`): `cpsbndlvrf()` verifies bundles
+  signed by morie and morie verifies bundles signed by `cpsbndl()`. An XMSS key shares
+  rmoriebricklayer's used-index record, so neither signs an index the other has used.
 * `morie_llm_login()` passes `accept_terms`, `affiliation`, `purpose`, `restricted` and the
   `supervisor_*` arguments to rmoriebricklayer 1.0.0 under its names (`accter`, `affil`, ...);
   they were refused as unused arguments.
