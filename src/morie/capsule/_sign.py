@@ -181,10 +181,11 @@ def bundle(dir, manifest, key, files=None, note: str | None = None, path=None) -
     ``bundled_utc``, ``attestation``) and is written to ``path`` (default
     ``dir/capsule_bundle.json``). Returns the bundle.
 
-    rmoriebricklayer 1.0.0 and the rmbl-action check every file and digest of
-    such a bundle but cannot yet check an ``hmac`` attestation: their
-    ``attestation:signature`` row fails. Verify the signature with
-    :func:`verify_bundle` (or R's ``cpsvrf()`` over the payload digest).
+    rmoriebricklayer >= 1.0.0 (srr) verifies such a bundle, its ``hmac``
+    attestation included, with the shared key: ``cpsbndlvrf(key = ...)``
+    (``cpschkatst(key = ...)`` for an attestation alone). Without the key, or
+    with an older rmoriebricklayer build, its ``attestation:signature`` row
+    fails; :func:`verify_bundle` with the key checks it too.
     """
     cpsdir = os.fspath(dir)
     if not os.path.isdir(cpsdir):

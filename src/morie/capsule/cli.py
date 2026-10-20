@@ -125,8 +125,8 @@ def _sign_cmd(args) -> int:
     man = _manifest.read_manifest(mpath) if os.path.exists(mpath) else _manifest.manifest(env=False)
     b = _sign.bundle(d, man, _key(args, True), note=args.note)
     print(
-        "note: rmoriebricklayer 1.0.0 and rmbl-action check this bundle's files and digests, but report its"
-        " hmac signature as not verifiable; `morie capsule verify --key-env ...` checks it",
+        "note: the hmac signature needs the shared key: rmoriebricklayer >= 1.0.0 (srr) verifies it with"
+        " cpsbndlvrf(key = ...), and `morie capsule verify --key-env ...` checks it",
         file=sys.stderr,
     )
     _out(

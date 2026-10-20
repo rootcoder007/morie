@@ -362,11 +362,12 @@ def test_r_checks_morie_hmac_bundle(tmp_path):
         f"""
 b <- cpsbndlrd('{d}/capsule_bundle.json')
 m <- fromjs('{d}/manifest.json', simplifyVector = FALSE)
-v <- cpsbndlvrf(b, '{d}', man = m)
+haskey <- "key" %in% names(formals(cpsbndlvrf))
+v <- if (haskey) cpsbndlvrf(b, '{d}', man = m, key = '{KEY}') else cpsbndlvrf(b, '{d}', man = m)
 pl <- unclass(b$attestation)[c('digest','scheme','public','context','prehash','note','signed_utc')]
 signed <- csha256(charToRaw(mnfcanon(pl)))
-out <- list(check = v$checks$check, pass = v$checks$ok, detail = v$checks$detail,
-            sig = cpsvrf(signed, b$attestation$signature, '{KEY}'),
+out <- list(check = v$checks$check, pass = v$checks$ok, detail = v$checks$detail, haskey = haskey,
+            ok = v$ok, sig = cpsvrf(signed, b$attestation$signature, '{KEY}'),
             tag = chmac('{KEY}', signed), mdig = mnfdgst(m))
 """,
     )
@@ -376,8 +377,12 @@ out <- list(check = v$checks$check, pass = v$checks$ok, detail = v$checks$detail
     # ...and the HMAC itself through its own cpsvrf()/chmac() over the same payload digest
     assert out["sig"] is True and out["tag"] == a["signature"]["signature"]
     assert out["mdig"] == b["manifest_digest"]
-    # rmoriebricklayer 1.0.0 has no hmac attestation key, so its signature row is a FAIL
-    assert rows["attestation:signature"] is False
+    if out["haskey"]:
+        # rmoriebricklayer with cpsbndlvrf(key = ): the hmac attestation verifies with the shared key
+        assert rows["attestation:signature"] is True and out["ok"] is True, out
+    else:
+        # older 1.0.0 builds have no hmac attestation key, so their signature row is a FAIL
+        assert rows["attestation:signature"] is False
 
 
 @needs_r

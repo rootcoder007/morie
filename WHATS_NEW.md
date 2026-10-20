@@ -13,7 +13,12 @@ Per-package full changelogs:
   drift-check data capsules in the format rmoriebricklayer 1.0.0 verifies and rmbl-action checks:
   provenance records, results manifests (the same canonical JSON and digest as `mnfdgst()`),
   HMAC-signed `capsule_bundle.json` bundles and the `cpsdrft()` statistics, without R. Bundles
-  signed with ML-DSA, SLH-DSA or XMSS keys are verified by the R package and the action.
+  signed with ML-DSA, SLH-DSA or XMSS keys are verified by the R package and the action;
+  rmoriebricklayer >= 1.0.0 (srr) verifies morie's HMAC bundles with the shared key
+  (`cpsbndlvrf(key = ...)`).
+* `emissions.write_capsule()` documents that any other file in `output_dir` fails the
+  `no_unlisted_files` check of `cpsbndlvrf()` (the bundle lists only the CSV and the manifest), so
+  each run needs a directory of its own.
 
 ## 1.5.0 (2026-10-19)
 

@@ -237,9 +237,9 @@ Data capsules
    Write ``capsule_bundle.json``: every file's SHA-256, the digest of
    ``manifest.json``, and an HMAC attestation over them, with the key from
    ``$MORIE_CAPSULE_KEY`` (or ``--key-env`` / ``--key-file``; never on the
-   command line). rmoriebricklayer 1.0.0 and rmbl-action check the files
-   and digests of such a bundle but report the HMAC signature itself as
-   not verifiable; ``capsule verify`` with the key checks it.
+   command line). rmoriebricklayer >= 1.0.0 (srr) verifies such a bundle,
+   the HMAC signature included, with the shared key
+   (``cpsbndlvrf(key = ...)``); ``capsule verify`` with the key checks it.
 
 ``capsule drift REF CUR``
    Compare a capsule's pinned CSV (or any CSV) with a current one, column by

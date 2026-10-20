@@ -285,6 +285,25 @@ packages share the credentials file, the CPADS resolution order, the
 emissions CSV layout and the capsule format, so they mix in one workflow.
 `morie r-install` installs the R side from Python.
 
+### Data capsules
+
+`morie.capsule` (`write`, `verify`, `sign`, `bundle`, `drift`, `manifest`, `compare`, ...) and
+`morie capsule init|pin|verify|sign|drift` author and check capsules in the rmoriebricklayer /
+rmbl-action format. Their twins in rmorie are `morie_capsule_write()` and so on:
+the same words name the same things: `write`/`verify`/`sign`/`bundle`/`drift`/`manifest`/`compare`
+take the same arguments and defaults, return the same fields, and verification gives the same
+check rows (those of `rmoriebricklayer::vrfcps()`). The deliberate differences: morie signs with
+`hmac` (a shared secret) only, so its `sign()` and `bundle()` have no `context`, `prehash` or
+`deterministic` (rmorie also signs with ML-DSA, SLH-DSA and XMSS keys); rmorie's results checks
+are a data frame, morie's a list of dicts; rmorie's drift takes the capsule directory (`dir`) and
+a data frame or CSV as `current`, morie's takes `ref` (a capsule directory or a CSV) and a CSV;
+rmorie pins only a CSV, morie any file (a row count for a CSV); morie also has `load`, `pin`,
+`record`, `canon`, `digest` and the attestation helpers, which in R are rmoriebricklayer's own
+(`loadprov()`, `recrd()`, `mnfcanon()`, `mnfdgst()`, `cpsatst()`); and the command line
+`morie capsule init|pin|verify|sign|drift` exits 0 (verified, no drift), 1 (a check failed or
+drift) or 2 (an error), where the R functions return a result with `$ok` (or `$anydrft`) and
+stop on an error.
+
 ## What's new
 
 Per-release user-facing changes are now in [WHATS_NEW.md](https://github.com/rootcoder007/morie/blob/main/WHATS_NEW.md).

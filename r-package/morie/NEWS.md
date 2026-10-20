@@ -1,7 +1,15 @@
 # morie 1.5.1 - 2026-10-20
 
-* No change to the R package; its version follows the Python package, which adds data capsules
-  (`morie.capsule`).
+* Its version follows the Python package, which adds data capsules (`morie.capsule`).
+* `morie_llm_login()` passes `accept_terms`, `affiliation`, `purpose`, `restricted` and the
+  `supervisor_*` arguments to rmoriebricklayer 1.0.0 under its names (`accter`, `affil`, ...);
+  they were refused as unused arguments.
+* `morie_download()` returns the path, and errors when the live file and the Wayback Machine
+  both fail (it returned `TRUE` or `FALSE`, and `FALSE` silently). `attempt_wayback = TRUE` looks
+  a snapshot up; it switched the fallback off, so the CKAN file route never reached the archive.
+* `morie_emissions_verify()` documents that any other file in the directory fails the
+  `no_unlisted_files` check, and `morie_emissions_start()` points to `rmoriebricklayer::pqckg()`
+  (there is no `pqc_keygen()`).
 
 # morie 1.5.0 - 2026-10-19
 
