@@ -217,6 +217,40 @@ Environment
    repository's own R arm, ``r-package/morie``, built from source with
    remotes. Same options as ``bricklayer``.
 
+Data capsules
+-------------
+
+``capsule init CSV --url URL``
+   Pin a CSV: write ``data_provenance.json`` beside it (name, source URL and
+   retrieval date, the file's SHA-256, size and data rows; ``--script FILE``
+   pins an analysis script too).
+
+``capsule pin DIR``
+   Re-pin a capsule's provenance to its files as they are now.
+
+``capsule verify DIR``
+   The checks of ``rmoriebricklayer::vrfcps()``, and of ``cpsbndlvrf()`` on
+   ``capsule_bundle.json`` when present (``--key-env VAR`` or
+   ``--key-file FILE`` supplies the HMAC key, ``--public-key HEX`` pins it).
+
+``capsule sign DIR``
+   Write ``capsule_bundle.json``: every file's SHA-256, the digest of
+   ``manifest.json``, and an HMAC attestation over them, with the key from
+   ``$MORIE_CAPSULE_KEY`` (or ``--key-env`` / ``--key-file``; never on the
+   command line). rmoriebricklayer 1.0.0 and rmbl-action check the files
+   and digests of such a bundle but report the HMAC signature itself as
+   not verifiable; ``capsule verify`` with the key checks it.
+
+``capsule drift REF CUR``
+   Compare a capsule's pinned CSV (or any CSV) with a current one, column by
+   column: Kolmogorov-Smirnov or chi-square, population stability index,
+   Jensen-Shannon divergence, added and removed columns, and Benford's law
+   on the numeric columns.
+
+Every ``capsule`` command takes ``--json``; the exit status is 0 when
+everything verified (no drift), 1 when a check failed or drift was found,
+and 2 on a usage or input error, as in rmbl-action.
+
 Verification pipelines
 ----------------------
 

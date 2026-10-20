@@ -677,6 +677,11 @@ def build_parser() -> argparse.ArgumentParser:
     prov_sub.add_parser("show", help="what is attached")
     prov_sub.add_parser("unset", help="detach it")
 
+    # ── capsule: data capsules in the rmoriebricklayer / rmbl-action format ─
+    from morie.capsule.cli import register_subparser as _cps_register
+
+    _cps_register(subparsers)
+
     # ── bricklayer: offer to install the rest of the morie family ──────
     try:
         from morie.bricklayer import register_subparser as _bl_register
@@ -1583,6 +1588,11 @@ def _main_impl() -> int:
         from .verify_earth_engine import handle_verify_earth_engine
 
         return handle_verify_earth_engine(args)
+
+    if args.command == "capsule":
+        from .capsule.cli import run as _cps_run
+
+        return _cps_run(args)
 
     if args.command in ("bricklayer", "r-install"):
         from .bricklayer import run as _bl_run

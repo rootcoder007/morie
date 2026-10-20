@@ -942,8 +942,11 @@ def write_capsule(
     per-run ML-DSA-44 key into ``capsule_bundle.json``
     (``rmoriebricklayer::cpsbndl()``), which ``cpsbndlvrf()``
     or ``rmorie::morie_emissions_verify()`` checks: a verifier learns the two
-    files have not changed since sealing. Without R the manifest alone is
-    written and ``signed`` is False -- said so, never pretended.
+    files have not changed since sealing. The bundle lists only those two
+    files, so ``cpsbndlvrf()`` fails its ``no_unlisted_files`` row in a
+    directory that holds anything else (another run, say): give each run
+    its own ``output_dir``. Without R the manifest alone is written and
+    ``signed`` is False -- said so, never pretended.
     """
     import json
     import shutil

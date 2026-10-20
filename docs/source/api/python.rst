@@ -412,6 +412,20 @@ Federal SIU, crime feeds and forensics
    :undoc-members:
    :show-inheritance:
 
+Data capsules
+-------------
+
+Provenance records, results manifests, HMAC-signed bundles and drift
+checks in the format rmoriebricklayer verifies (``vrfcps()``,
+``cpsbndlvrf()``, ``mnfrcmp()``, ``cpsdrft()``) and the
+``rootcoder007/rmbl-action`` GitHub Action checks. morie signs with the
+``hmac`` scheme; bundles signed with ML-DSA, SLH-DSA or XMSS keys are
+verified by the R package and the action.
+
+.. automodule:: morie.capsule
+   :members:
+   :imported-members:
+
 Datasets, ingestion and data hygiene
 ------------------------------------
 
