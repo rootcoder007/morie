@@ -68,7 +68,7 @@ jobs:
   # a place to surface the VERSION stamp downstream jobs read.
   setup:
     name: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.meta.outputs.version }}
     steps:
@@ -141,7 +141,7 @@ jobs:
       - wheels
       - codeql
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Tabulate per-leaf results
         run: |

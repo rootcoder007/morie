@@ -32,9 +32,9 @@ jobs:
         # catch platform-specific bugs (path separators, line endings,
         # BLAS / numpy wheel availability) without exploding compute.
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             python-version: "3.10"
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             python-version: "3.14"
           - os: macos-latest
             python-version: "3.14"
@@ -89,13 +89,13 @@ jobs:
           python -c "import os, sys; sys.exit(0 if os.path.exists('morie-ci-smoke/power_summary.csv') else 1)"
         shell: bash
 
-  # Debian portability leg. ubuntu-latest does NOT prove Debian (different
+  # Debian portability leg. ubuntu-24.04 does NOT prove Debian (different
   # glibc/toolchain/BLAS snapshots), and morie ships .deb artifacts via
   # release-debrpm.yml — so the test suite must actually pass on Debian.
   # python:3.13-bookworm is the official Debian 12 image.
   test-debian:
     name: Py 3.13 / debian-bookworm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container: python:3.13-bookworm
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -126,7 +126,7 @@ jobs:
   # release-debrpm.yml, so the suite must pass on Fedora.
   test-fedora:
     name: Py 3.13 / fedora-42
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container: fedora:42
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -166,7 +166,7 @@ jobs:
   #   -o requirements-lock.txt
   supply-chain-lock:
     name: Supply-chain lock (hash-verified deps)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -196,7 +196,7 @@ jobs:
 
   test-r:
     name: R tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

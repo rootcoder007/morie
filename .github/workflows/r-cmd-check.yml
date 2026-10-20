@@ -47,9 +47,9 @@ jobs:
           # to windows-2025-vs2026 by 2026-06-15). Pinning to a specific
           # release sticks us on an older image once `latest` rolls.
           - { os: windows-latest, r: '4.6.1' }
-          - { os: ubuntu-latest,  r: '4.6.1' }
-          - { os: ubuntu-latest,  r: 'devel', allow_failure: true }
-          - { os: ubuntu-latest,  r: 'oldrel-1' }
+          - { os: ubuntu-24.04,  r: '4.6.1' }
+          - { os: ubuntu-24.04,  r: 'devel', allow_failure: true }
+          - { os: ubuntu-24.04,  r: 'oldrel-1' }
 
     env:
       # R-devel has no binary packages, so that cell compiles the whole
@@ -292,8 +292,8 @@ jobs:
   # The default R-CMD-check matrix above does NOT set MORIE_PG_TEST,
   # so the PG block correctly skips there.
   R-CMD-check-postgres:
-    runs-on: ubuntu-latest
-    name: ubuntu-latest (release) + postgres-15
+    runs-on: ubuntu-24.04
+    name: ubuntu-24.04 (release) + postgres-15
 
     services:
       postgres:

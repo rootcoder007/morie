@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   drift-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         # SHA-pinned to v5 to match every other workflow in this

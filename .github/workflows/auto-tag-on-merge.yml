@@ -47,7 +47,7 @@ permissions:
 jobs:
   check:
     name: Check version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       should-release: ${{ steps.gate.outputs.should_release }}
       version: ${{ steps.ver.outputs.version }}
@@ -87,7 +87,7 @@ jobs:
     name: Verify release build
     needs: check
     if: needs.check.outputs.should-release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -129,7 +129,7 @@ jobs:
     name: Verify tests pass (gates the tag)
     needs: check
     if: needs.check.outputs.should-release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -232,7 +232,7 @@ jobs:
     name: Require the CI matrices to be green
     needs: check
     if: needs.check.outputs.should-release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
     steps:
@@ -271,7 +271,7 @@ jobs:
     name: Tag + fire publish chain
     needs: [check, verify, test, ci]
     if: needs.check.outputs.should-release == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write   # push the tag
       actions: write    # dispatch the publish workflows

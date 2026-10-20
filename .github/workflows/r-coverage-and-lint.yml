@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   coverage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: covr + codecov upload
 
     env:
@@ -145,7 +145,7 @@ jobs:
         continue-on-error: true
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: lintr
 
     env:
@@ -252,7 +252,7 @@ jobs:
   # Manually fire from the Actions tab before rOpenSci submission.
   goodpractice:
     if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: goodpractice (manual only)
 
     env:
@@ -355,7 +355,7 @@ jobs:
   # the Actions tab before rOpenSci submission.
   pkgcheck:
     if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: rOpenSci pkgcheck (manual only)
     # Advisory pre-submission audit; non-gating because srr's
     # update_msg_paths() crashes on any srr message without a
