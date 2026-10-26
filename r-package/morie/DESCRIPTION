@@ -251,7 +251,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
-    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.0.0,
+    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.0.2,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
 Additional_repositories:

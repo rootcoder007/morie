@@ -933,11 +933,85 @@ def _did_panel_att(dy, D, X, est_method):
     return float(att_t - att_c), inf_t - inf_c
 
 
-def _did_mboot_se(IF, biters, seed):
-    """Mammen multiplier-bootstrap SE (did::mboot): IQR / (z.75 - z.25)."""
+def _did_drdid_rc(y, post, D, X):
+    """Locally efficient doubly robust DiD for repeated cross-sections.
+
+    The ATT and influence function of ``DRDID::drdid_rc`` (Sant'Anna and
+    Zhao 2020): a logistic propensity model plus four outcome regressions
+    (control/treated x pre/post). Mirrors R's ``.morie_drdid_rc_native``;
+    the pre-period regression terms enter with a minus sign (Appendix B;
+    DRDID 1.4.0 corrected the same sign).
+    """
+    ps, lin_ps = _did_ps_fit(D, X)
+    m_c0, l_c0 = _did_or_fit(y, X, ((D == 0) & (post == 0)).astype(float))
+    m_c1, l_c1 = _did_or_fit(y, X, ((D == 0) & (post == 1)).astype(float))
+    m_t0, l_t0 = _did_or_fit(y, X, ((D == 1) & (post == 0)).astype(float))
+    m_t1, l_t1 = _did_or_fit(y, X, ((D == 1) & (post == 1)).astype(float))
+    mu_c = post * m_c1 + (1 - post) * m_c0
+    w_tpre, w_tpost = D * (1 - post), D * post
+    w_cpre = ps * (1 - D) * (1 - post) / (1 - ps)
+    w_cpost = ps * (1 - D) * post / (1 - ps)
+    w_d, w_dt1, w_dt0 = D, D * post, D * (1 - post)
+
+    def mean_x(w):
+        return np.mean(w[:, None] * X, axis=0)
+
+    e_tpre = w_tpre * (y - mu_c) / np.mean(w_tpre)
+    e_tpost = w_tpost * (y - mu_c) / np.mean(w_tpost)
+    e_cpre = w_cpre * (y - mu_c) / np.mean(w_cpre)
+    e_cpost = w_cpost * (y - mu_c) / np.mean(w_cpost)
+    e_dpost = w_d * (m_t1 - m_c1) / np.mean(w_d)
+    e_dt1 = w_dt1 * (m_t1 - m_c1) / np.mean(w_dt1)
+    e_dpre = w_d * (m_t0 - m_c0) / np.mean(w_d)
+    e_dt0 = w_dt0 * (m_t0 - m_c0) / np.mean(w_dt0)
+    a = {
+        k: float(np.mean(v))
+        for k, v in dict(
+            tpre=e_tpre, tpost=e_tpost, cpre=e_cpre, cpost=e_cpost, dpost=e_dpost, dt1=e_dt1, dpre=e_dpre, dt0=e_dt0
+        ).items()
+    }
+    att = (a["tpost"] - a["tpre"]) - (a["cpost"] - a["cpre"]) + (a["dpost"] - a["dt1"]) - (a["dpre"] - a["dt0"])
+    inf_tpre = e_tpre - w_tpre * a["tpre"] / np.mean(w_tpre)
+    inf_tpost = e_tpost - w_tpost * a["tpost"] / np.mean(w_tpost)
+    inf_t_or = l_c1 @ (-mean_x(w_tpost) / np.mean(w_tpost)) - l_c0 @ (-mean_x(w_tpre) / np.mean(w_tpre))
+    inf_t = inf_tpost - inf_tpre + inf_t_or
+    inf_cpre = e_cpre - w_cpre * a["cpre"] / np.mean(w_cpre)
+    inf_cpost = e_cpost - w_cpost * a["cpost"] / np.mean(w_cpost)
+    M2_pre = np.mean((w_cpre * (y - mu_c - a["cpre"]))[:, None] * X, axis=0) / np.mean(w_cpre)
+    M2_post = np.mean((w_cpost * (y - mu_c - a["cpost"]))[:, None] * X, axis=0) / np.mean(w_cpost)
+    inf_c_ps = lin_ps @ (M2_post - M2_pre)
+    inf_c_or = l_c1 @ (-mean_x(w_cpost) / np.mean(w_cpost)) - l_c0 @ (-mean_x(w_cpre) / np.mean(w_cpre))
+    inf_c = inf_cpost - inf_cpre + inf_c_ps + inf_c_or
+    inf_eff = ((e_dpost - w_d * a["dpost"] / np.mean(w_d)) - (e_dt1 - w_dt1 * a["dt1"] / np.mean(w_dt1))) - (
+        (e_dpre - w_d * a["dpre"] / np.mean(w_d)) - (e_dt0 - w_dt0 * a["dt0"] / np.mean(w_dt0))
+    )
+    mom_post = np.mean((w_d / np.mean(w_d) - w_dt1 / np.mean(w_dt1))[:, None] * X, axis=0)
+    mom_pre = np.mean((w_d / np.mean(w_d) - w_dt0 / np.mean(w_dt0))[:, None] * X, axis=0)
+    inf_or = (l_t1 - l_c1) @ mom_post - (l_t0 - l_c0) @ mom_pre
+    IF = inf_t - inf_c + inf_eff + inf_or
+    return float(att), IF
+
+
+def _did_mboot_se(IF, biters, seed, cluster=None):
+    """Mammen multiplier-bootstrap SE (did::mboot): IQR / (z.75 - z.25).
+
+    With ``cluster`` the influence function is averaged within each cluster
+    (in order of first appearance) before the multipliers are drawn, as R's
+    ``.morie_did_mboot`` does.
+    """
     IF = np.asarray(IF, dtype=float)
     if IF.ndim == 1:
         IF = IF[:, None]
+    if cluster is not None:
+        cl = np.asarray(cluster)
+        _, first, inv = np.unique(cl, return_index=True, return_inverse=True)
+        order = np.argsort(first)
+        rank = np.empty_like(order)
+        rank[order] = np.arange(len(order))
+        idx = rank[inv]
+        sums = np.zeros((len(order), IF.shape[1]))
+        np.add.at(sums, idx, IF)
+        IF = sums / np.bincount(idx)[:, None]
     n = IF.shape[0]
     rng = np.random.default_rng(seed)
     sq5 = math.sqrt(5)
@@ -1421,6 +1495,8 @@ def did_doubly_robust(
     """
     rng = np.random.default_rng(seed)
     df = data.dropna(subset=[outcome, treatment, post] + covariates).copy()
+    if ps_model == "logistic" and or_model == "linear":
+        return _did_dr_native(data, df, outcome, treatment, post, covariates, cluster, n_bootstrap, seed, alpha)
 
     d = df[treatment].values.astype(float)
     p = df[post].values.astype(float)
@@ -1515,6 +1591,39 @@ def did_doubly_robust(
     p_val = float(2 * stats.norm.sf(abs(t_val)))
     ci_lo, ci_hi = _make_ci(est, se_est, alpha)
 
+    return DiDResult(
+        estimate=est,
+        std_error=se_est,
+        t_stat=t_val,
+        p_value=p_val,
+        ci_lower=ci_lo,
+        ci_upper=ci_hi,
+        n_treated=int(d.sum()),
+        n_control=int((1 - d).sum()),
+        method="did_doubly_robust",
+    )
+
+
+def _did_dr_native(data, df, outcome, treatment, post, covariates, cluster, n_bootstrap, seed, alpha):
+    """``did_doubly_robust`` with a logistic propensity and linear outcome
+    models: the locally efficient estimator and its influence-function SE,
+    or a multiplier-bootstrap SE (clustered when asked), exactly as R's
+    ``morie_did_doubly_robust``."""
+    d = df[treatment].values.astype(float)
+    p = df[post].values.astype(float)
+    y = df[outcome].values.astype(float)
+    X = np.column_stack([np.ones(len(df)), df[covariates].values.astype(float)])
+    est, IF = _did_drdid_rc(y, p, d, X)
+    n = len(IF)
+    se_est = float(np.std(IF, ddof=1) * math.sqrt(n - 1) / n)
+    if n_bootstrap > 0:
+        cl = data.loc[df.index, cluster].values if cluster is not None and cluster in data.columns else None
+        mb = float(_did_mboot_se(IF, n_bootstrap, seed, cluster=cl)[0])
+        if math.isfinite(mb) and mb > 0:
+            se_est = mb
+    t_val = est / se_est if se_est > 0 else 0.0
+    p_val = float(2 * stats.norm.sf(abs(t_val)))
+    ci_lo, ci_hi = _make_ci(est, se_est, alpha)
     return DiDResult(
         estimate=est,
         std_error=se_est,

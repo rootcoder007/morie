@@ -9,6 +9,12 @@ Per-package full changelogs:
 
 ## 1.5.1 (2026-10-20)
 
+* `did.did_doubly_robust()` is now the locally efficient estimator (DRDID's `drdid_rc`) that the R
+  packages use, with the influence-function standard error and, with `n_bootstrap`, the same
+  clustered multiplier bootstrap: Python, rmorie and morie's R arm give the same estimate and standard
+  error (1.3756811741 and 0.1143777196 on the reference data). It was the traditional estimator
+  (`drdid_rc1`) with a bootstrap-only standard error, so its estimates change slightly. The R arm's
+  repeated-cross-section influence function takes the corrected pre-period sign (DRDID 1.4.0).
 * `morie.capsule` and `morie capsule init|pin|verify|sign|drift` author, pin, verify, sign and
   drift-check data capsules in the format rmoriebricklayer 1.0.0 verifies and rmbl-action checks:
   provenance records, results manifests (the same canonical JSON and digest as `mnfdgst()`),

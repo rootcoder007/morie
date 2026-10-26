@@ -2,7 +2,7 @@
 
 References: R ``did::att_gt(y, t, id, g, xformla = ~x, est_method = m,
 control_group = "nevertreated", bstrap = FALSE, base_period = "varying")``
-and ``DRDID::drdid_rc1(y, post, D, cbind(1, x1, x2), boot = FALSE)`` on the
+and ``DRDID::drdid_rc(y, post, D, cbind(1, x1, x2))`` (DRDID 1.4.0) on the
 deterministic data built below (never-treated coded 0 for R, inf here).
 """
 
@@ -67,7 +67,7 @@ def test_doubly_robust_is_not_the_outcome_regression():
     assert abs(r["att"][0] - REF["outcome_regression"][(3, 3)]) > 1e-4
 
 
-def test_did_doubly_robust_matches_drdid_rc1():
+def test_did_doubly_robust_matches_drdid_rc():
     rows = []
     for i in range(600):
         x1 = math.sin(1.3 * i)
@@ -76,8 +76,16 @@ def test_did_doubly_robust_matches_drdid_rc1():
         post = i % 2
         y = 1.0 + 0.5 * x1 - 0.8 * x2 + 0.7 * post + 0.4 * d + 1.3 * d * post + 0.9 * math.sin(5.3 * i)
         rows.append({"y": y, "d": d, "post": post, "x1": x1, "x2": x2})
-    r = did.did_doubly_robust(pd.DataFrame(rows), "y", "d", "post", ["x1", "x2"], n_bootstrap=2)
-    assert abs(r.estimate - 1.3769830934895855) <= 1e-10
+    # DRDID 1.4.0 drdid_rc(y, post, D, cbind(1, x1, x2)), the locally efficient
+    # estimator rmorie's morie_did_doubly_robust() uses (1.0.3 NEWS): ATT and
+    # influence-function SE, the SE with the corrected pre-period sign
+    r = did.did_doubly_robust(pd.DataFrame(rows), "y", "d", "post", ["x1", "x2"], n_bootstrap=0)
+    assert abs(r.estimate - 1.3756811741438) <= 1e-10
+    assert abs(r.std_error - 0.1143777196) <= 1e-9
+    # the multiplier bootstrap (and its clustered form) gives a finite SE
+    rows2 = [dict(rw, g=i % 30) for i, rw in enumerate(rows)]
+    b = did.did_doubly_robust(pd.DataFrame(rows2), "y", "d", "post", ["x1", "x2"], cluster="g", n_bootstrap=199)
+    assert b.estimate == r.estimate and math.isfinite(b.std_error) and b.std_error > 0
 
 
 def test_twfe_and_event_study_match_fixest():

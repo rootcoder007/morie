@@ -1,5 +1,11 @@
 # morie 1.5.1 - 2026-10-20
 
+* The doubly robust difference in differences for repeated cross-sections (`morie_did_doubly_robust()`)
+  gave a wrong influence function and so a wrong standard error: the comparison group's pre-period
+  outcome regression entered with the wrong sign. It now takes the sign of Sant'Anna and Zhao (2020,
+  Appendix B), as DRDID 1.4.0 corrected; point estimates are unchanged. The R arm also takes rmorie
+  1.5.1's data capsules (`morie_capsule_*()`), the stat-bridge verify fix and the `gsrch` fix, and
+  pins rmoriebricklayer v1.0.2 in `Remotes` (v1.0.0 there conflicted with rmoriedata's pin).
 * Its version follows the Python package, which adds data capsules (`morie.capsule`). They sign
   with ML-DSA (`ML-DSA-44`, `ML-DSA-65`, `ML-DSA-87`) and XMSS (`xmss-sha256`) keys as well as
   `hmac`, in rmoriebricklayer's key, signature and attestation formats
