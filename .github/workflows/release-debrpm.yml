@@ -325,8 +325,13 @@ jobs:
         env:
           VERSION: ${{ steps.ver.outputs.VERSION }}
         run: |
+          # pip reads the simple index, not the JSON API, and the upload puts the
+          # wheels first and the sdist last: wait until pip's index lists the sdist,
+          # then a minute more so every file is served
           for i in $(seq 1 120); do
-            if curl -fsS -o /dev/null "https://pypi.org/pypi/morie/${VERSION}/json"; then
+            if curl -fsS -H 'Cache-Control: no-cache' "https://pypi.org/simple/morie/" \
+                | grep -q "morie-${VERSION}.tar.gz"; then
+              sleep 60
               echo "PyPI has morie ${VERSION}"; exit 0
             fi
             sleep 30
