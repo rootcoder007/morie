@@ -72,6 +72,27 @@ morie interactive install
 
 Activate the venv (`source ~/.venvs/morie/bin/activate`) in each new shell, or call `~/.venvs/morie/bin/morie` directly.
 
+### Debian, Ubuntu, Fedora — apt / dnf
+
+Debian, Ubuntu and Fedora can install the `morie` command (it lives in its own venv under `/opt/morie`) from the signed
+[apt-morie](https://github.com/rootcoder007/apt-morie) repository, which also
+covers dnf4, RHEL and yum:
+
+```bash
+# Debian / Ubuntu
+sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://rootcoder007.github.io/apt-morie/key.gpg \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/rootcoder007.gpg
+echo "deb [signed-by=/etc/apt/keyrings/rootcoder007.gpg] https://rootcoder007.github.io/apt-morie/apt stable main" \
+  | sudo tee /etc/apt/sources.list.d/morie.list
+sudo apt update
+sudo apt install morie
+
+# Fedora 41+
+sudo dnf config-manager addrepo --from-repofile=https://rootcoder007.github.io/apt-morie/rpm/morie.repo
+sudo dnf install morie
+```
+
 ### Recommended — Windows
 
 Windows doesn't ship `curl`, `bash`, `python`, or `R`, so the Linux/macOS one-liner above won't run there. The path that works on **any** Windows with no prerequisites:
@@ -125,7 +146,7 @@ morie interactive install
 docker run --rm ghcr.io/rootcoder007/morie:latest morie --help
 
 # Pin to a specific version (recommended for reproducibility)
-docker run --rm ghcr.io/rootcoder007/morie:1.5.1 morie --help
+docker run --rm ghcr.io/rootcoder007/morie:1.5.2 morie --help
 ```
 
 Published on every release with a versioned tag, a major.minor tag and `:latest` (linux/amd64). Requires only Docker — no Python, no pip.

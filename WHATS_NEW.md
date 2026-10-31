@@ -7,6 +7,12 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.5.2 (2026-10-30)
+
+* The `morie` command installed by the .deb and .rpm packages failed with
+  "No module named morie.__main__". The launcher now runs the package's own `morie`
+  console script.
+
 ## 1.5.1 (2026-10-20)
 
 * `did.did_doubly_robust()` is now the locally efficient estimator (DRDID's `drdid_rc`) that the R
