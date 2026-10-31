@@ -318,6 +318,22 @@ jobs:
         run: |
           gpg --armor --export "${GPG_KEYID}" > public/key.gpg
 
+      # the packages install morie from PyPI (pip install morie==VERSION), so
+      # they reach apt and dnf only once PyPI has that version; pypi-publish
+      # runs alongside this workflow on the same tag
+      - name: Wait for morie ${{ steps.ver.outputs.VERSION }} on PyPI
+        env:
+          VERSION: ${{ steps.ver.outputs.VERSION }}
+        run: |
+          for i in $(seq 1 120); do
+            if curl -fsS -o /dev/null "https://pypi.org/pypi/morie/${VERSION}/json"; then
+              echo "PyPI has morie ${VERSION}"; exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::PyPI has no morie ${VERSION} after 60 minutes; not publishing packages that cannot install"
+          exit 1
+
       - name: Deploy to rootcoder007/apt-morie (cross-repo)
         # apt/dnf moved out of morie itself in 2026-05-26: served from
         # https://rootcoder007.github.io/apt-morie/ via its own
