@@ -15,7 +15,16 @@ Per-package full changelogs:
 * `morie pull ocp21` (and every table read through the open.canada.ca datastore) kept only
   the first 1,000 rows: the datastore now serves at most 1,000 records a request, and the
   reader stopped at the first page shorter than the 32,000 it asked for. It now reads on to
-  the total the datastore reports (40,931 rows for CPADS 2021-22).
+  the total the datastore reports (40,931 rows for CPADS 2021-22). The R package reads the same
+  datastores the same way: `morie_datasets_cpads()` and the Toronto and Montreal readers page on
+  past each portal's limit instead of stopping at its first page.
+* The README shows how to install morie and the R packages rmorie, rmoriedata and rmoriebricklayer
+  from the signed apt and dnf repository (https://rootcoder007.github.io/apt-morie/) on Debian,
+  Ubuntu, Fedora and RHEL.
+* The apt and dnf packages reach that repository only once PyPI has the same version (they install
+  morie from PyPI), and publishing them no longer deletes the repository's own workflows or the
+  `repo_gpgcheck=1` line of its `morie.repo`, which had dropped the R packages from the apt index.
+* certifi 2026.10.23 in the locked dependencies.
 
 ## 1.5.1 (2026-10-20)
 
