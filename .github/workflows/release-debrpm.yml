@@ -298,14 +298,8 @@ jobs:
           mkdir -p "${REPO}/packages"
           cp artifacts/rpm/*.rpm "${REPO}/packages/"
           createrepo_c "${REPO}"
-          cat > "${REPO}/morie.repo" <<'EOF'
-          [morie]
-          name=morie (rootcoder007)
-          baseurl=https://rootcoder007.github.io/apt-morie/rpm
-          enabled=1
-          gpgcheck=1
-          gpgkey=https://rootcoder007.github.io/apt-morie/key.gpg
-          EOF
+          # rpm/morie.repo is apt-morie's own file (with repo_gpgcheck=1);
+          # keep_files leaves it in place
 
       - name: Sign repomd.xml
         env:
@@ -339,4 +333,8 @@ jobs:
           publish_branch: main
           force_orphan: false
           keep_files: true
+          # the default (.github) deletes apt-morie's own workflows, among
+          # them publish.yml, which this push starts to rebuild the apt and
+          # dnf metadata from the whole pool (the R packages included)
+          exclude_assets: ""
           commit_message: "Publish apt/dnf repo for v${{ steps.ver.outputs.VERSION }}"
