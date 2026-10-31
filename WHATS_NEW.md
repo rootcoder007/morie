@@ -21,8 +21,8 @@ Per-package full changelogs:
 * The README shows how to install morie and the R packages rmorie, rmoriedata and rmoriebricklayer
   from the signed apt and dnf repository (https://rootcoder007.github.io/apt-morie/) on Debian,
   Ubuntu, Fedora and RHEL.
-* The apt and dnf packages reach that repository only once PyPI has the same version (they install
-  morie from PyPI), and publishing them no longer deletes the repository's own workflows or the
+* The apt and dnf packages reach that repository only once PyPI has the same version (their install step fetches
+  the Python package from PyPI), and publishing them no longer deletes the repository's own workflows or the
   `repo_gpgcheck=1` line of its `morie.repo`, which had dropped the R packages from the apt index.
 * certifi 2026.10.23 in the locked dependencies.
 
