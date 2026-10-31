@@ -372,3 +372,43 @@ def test_a_ckan_page_cut_off_mid_transfer_is_fetched_again(monkeypatch, capsys):
     assert len(calls) == 3
     err = capsys.readouterr().err
     assert "JSONDecodeError" in err and "IncompleteRead" in err
+
+
+def test_ckan_pages_past_a_server_page_cap(monkeypatch):
+    """open.canada.ca serves 1,000 records a request whatever limit is asked; read to the total."""
+    import morie.data as data
+
+    total = 2500
+    seen = []
+
+    def fake(url, timeout, **_kw):
+        q = dict(kv.split("=", 1) for kv in url.split("?", 1)[1].split("&"))
+        off = int(q["offset"])
+        seen.append(off)
+        rows = [{"a": i} for i in range(off, min(off + 1000, total))]
+        return {"result": {"records": rows, "total": total, "limit": 1000}}
+
+    monkeypatch.setattr(data, "_ckan_source", lambda key: ({"resource_id": "rid", "metadata_url": ""}, "tbl", False))
+    monkeypatch.setattr(data, "_urlopen_json_with_retry", fake)
+    monkeypatch.setattr(data, "cache_store", lambda df, name, db=None, **_kw: None)
+    df = data.fetch_ckan_to_cache("ocs22bt")
+    assert len(df) == total and list(df["a"]) == list(range(total))
+    assert seen == [0, 1000, 2000]
+
+
+def test_ckan_without_a_total_stops_on_a_short_page(monkeypatch):
+    import morie.data as data
+
+    seen = []
+
+    def fake(url, timeout, **_kw):
+        off = int(url.rsplit("offset=", 1)[1])
+        seen.append(off)
+        rows = [{"a": i} for i in range(off, min(off + 1000, 1500))]
+        return {"result": {"records": rows, "limit": 1000}}
+
+    monkeypatch.setattr(data, "_ckan_source", lambda key: ({"resource_id": "rid", "metadata_url": ""}, "tbl", False))
+    monkeypatch.setattr(data, "_urlopen_json_with_retry", fake)
+    monkeypatch.setattr(data, "cache_store", lambda df, name, db=None, **_kw: None)
+    assert len(data.fetch_ckan_to_cache("ocs22bt")) == 1500
+    assert seen == [0, 1000]

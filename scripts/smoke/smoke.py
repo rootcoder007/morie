@@ -592,6 +592,8 @@ def _r_arm_ok() -> bool:
                     ["Rscript", "-e", "quit(status = as.integer(!requireNamespace('morie', quietly = TRUE)))"],
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                     timeout=300,
                 )
                 _R_ARM = r.returncode == 0
@@ -624,6 +626,8 @@ def c_edit(s: Smoke):
         env=env,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=300,
     )
     if _source_tree_only(r.stdout + r.stderr) and not (s.work / "f.py").exists():
@@ -777,7 +781,14 @@ def c_readme_python(s: Smoke):
     check(blocks, "README has no python blocks")
     for i, code in enumerate(blocks, 1):
         r = subprocess.run(
-            [sys.executable, "-c", code], cwd=s.work, env=s.env, capture_output=True, text=True, timeout=900
+            [sys.executable, "-c", code],
+            cwd=s.work,
+            env=s.env,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=900,
         )
         check(r.returncode == 0, f"README python block {i} failed: " + r.stderr[-500:])
 

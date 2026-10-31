@@ -12,6 +12,10 @@ Per-package full changelogs:
 * The `morie` command installed by the .deb and .rpm packages failed with
   "No module named morie.__main__". The launcher now runs the package's own `morie`
   console script.
+* `morie pull ocp21` (and every table read through the open.canada.ca datastore) kept only
+  the first 1,000 rows: the datastore now serves at most 1,000 records a request, and the
+  reader stopped at the first page shorter than the 32,000 it asked for. It now reads on to
+  the total the datastore reports (40,931 rows for CPADS 2021-22).
 
 ## 1.5.1 (2026-10-20)
 

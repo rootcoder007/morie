@@ -1421,10 +1421,11 @@ def fetch_ckan_to_cache(
         else:
             raise ValueError(f"No resources found for {dataset_key}")
 
-    # The DataStore API caps one request at 32,000 records, so page with
-    # ``offset`` until a short page (or the reported total) says we are
-    # done. A single request used to return the first 32,000 of the
-    # 40,931 CPADS rows and call it the dataset.
+    # The DataStore API caps one request (32,000 records once, 1,000 on
+    # open.canada.ca since late 2026: it answers with the limit it used), so
+    # page with ``offset`` until the reported total is read. A short page ends
+    # the read only when the server gives no total. Stopping at the first page
+    # shorter than the limit asked for kept 1,000 of the 40,931 CPADS rows.
     from ._progress import Progress
 
     records: list[dict] = []
@@ -1463,7 +1464,12 @@ def fetch_ckan_to_cache(
                     want = max_records if want is None else min(want, max_records)
                 prog = Progress(f"{dataset_key} (CKAN datastore)", want, unit="rows")
             prog.update(len(batch))
-        if len(batch) < limit or (isinstance(total, int) and len(records) >= total):
+        if not batch:
+            break
+        if isinstance(total, int):
+            if len(records) >= total:
+                break
+        elif len(batch) < (result.get("limit") if isinstance(result.get("limit"), int) else limit):
             break
         if max_records is not None and len(records) >= max_records:
             break
