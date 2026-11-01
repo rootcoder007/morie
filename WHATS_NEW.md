@@ -7,6 +7,15 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.5.3 (2026-11-01)
+
+* The R package's SQL cache is SQLite only: it no longer uses 'duckdb' (removed from Suggests), which
+  has no CRAN binary for Intel Macs and so compiled from source for over an hour on every check there.
+  The default cache (Parquet or .rds files) is unchanged; a `.duckdb` cache left by an older version is
+  named in an error instead of being opened.
+* The apt and dnf repository is at https://apt.rmorie.com/ (the README and the packaging notes use
+  it; the old rootcoder007.github.io/apt-morie address still works).
+
 ## 1.5.2 (2026-10-30)
 
 * The `morie` command installed by the .deb and .rpm packages failed with
@@ -19,7 +28,7 @@ Per-package full changelogs:
   datastores the same way: `morie_datasets_cpads()` and the Toronto and Montreal readers page on
   past each portal's limit instead of stopping at its first page.
 * The README shows how to install morie and the R packages rmorie, rmoriedata and rmoriebricklayer
-  from the signed apt and dnf repository (https://rootcoder007.github.io/apt-morie/) on Debian,
+  from the signed apt and dnf repository (https://apt.rmorie.com/) on Debian,
   Ubuntu, Fedora and RHEL.
 * The apt and dnf packages reach that repository only once PyPI has the same version (their install step fetches
   the Python package from PyPI), and publishing them no longer deletes the repository's own workflows or the

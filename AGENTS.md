@@ -120,8 +120,8 @@ not reintroduce them.
   proprietary. **Different rules apply there** — read its AGENTS.md
   before editing.
 - **[rootcoder007/apt-morie](https://github.com/rootcoder007/apt-morie)** —
-  apt/dnf package repository, served via GitHub Pages at
-  `https://rootcoder007.github.io/apt-morie/`. Auto-published by
+  apt/dnf package repository, served at
+  `https://apt.rmorie.com/`. Auto-published by
   `release-debrpm.yml` on every `v*` tag.
 
 ## Working conventions

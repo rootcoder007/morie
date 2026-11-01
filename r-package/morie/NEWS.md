@@ -1,3 +1,12 @@
+# morie 1.5.3 - 2026-11-01
+
+* The SQL cache is SQLite only: morie no longer uses 'duckdb' (removed from Suggests). 'duckdb' 2.0.0
+  has no CRAN binary for Intel Macs, so every check there compiled it from source for over an hour.
+  The default cache (Parquet or .rds files) is unchanged; `morie_db_connect()` and `db_path =` open a
+  SQLite file, and a `.duckdb` path left by an older version is named in an error instead of being
+  opened. A DuckDB connection you open yourself can still be passed as `con =`.
+* Version kept in step with the Python package (1.5.3).
+
 # morie 1.5.2 - 2026-10-30
 
 * The CKAN datastore readers (`morie_datasets_cpads(mode = "datastore_search")`,
