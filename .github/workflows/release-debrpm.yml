@@ -339,7 +339,28 @@ jobs:
           echo "::error::PyPI has no morie ${VERSION} after 60 minutes; not publishing packages that cannot install"
           exit 1
 
+      - name: Skip versions already in the published pool
+        # A version in the pool must never change: apt and dnf check each
+        # file against the signed index, and the CDN in front of
+        # apt.rmorie.com caches pool files for a day, so rebuilding the same
+        # version (as a moved tag does; the build is not byte-for-byte
+        # reproducible) makes installs fail with "Hash Sum mismatch" until
+        # the cache expires. A tag push for a version the pool already has
+        # deploys nothing; run the workflow by hand to replace it on purpose.
+        id: have
+        env:
+          VERSION: ${{ steps.ver.outputs.VERSION }}
+        run: |
+          url="https://apt.rmorie.com/apt/pool/main/morie_${VERSION}_amd64.deb"
+          if [ "${GITHUB_EVENT_NAME}" = push ] && curl -fsI --retry 3 "$url" >/dev/null 2>&1; then
+            echo "morie ${VERSION} is already published; not replacing it"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Deploy to rootcoder007/apt-morie (cross-repo)
+        if: steps.have.outputs.skip != 'true'
         # apt/dnf moved out of morie itself in 2026-05-26: served from
         # https://rootcoder007.github.io/apt-morie/ via its own
         # GitHub Pages site. Cross-repo push requires a fine-grained
