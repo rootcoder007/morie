@@ -1,0 +1,11 @@
+# Codecov status checks. A pull request or push passes codecov/patch
+# when at least 80% of the lines it adds or changes are covered by the
+# tests; the project check keeps its default (no drop from the base).
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+    patch:
+      default:
+        target: 80%
