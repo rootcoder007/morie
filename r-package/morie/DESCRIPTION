@@ -89,7 +89,6 @@ Suggests:
     dlm,
     DoubleML,
     DRDID,
-    duckdb,
     ebal,
     elasticnet,
     emmeans,

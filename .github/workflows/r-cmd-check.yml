@@ -402,7 +402,6 @@ jobs:
             any::rcmdcheck
             github::stan-dev/cmdstanr
             any::RPostgres
-            any::duckdb
             any::withr
           needs: check
 
@@ -424,7 +423,6 @@ jobs:
             any::rcmdcheck
             github::stan-dev/cmdstanr
             any::RPostgres
-            any::duckdb
             any::withr
           needs: check
 
