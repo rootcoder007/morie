@@ -349,7 +349,7 @@ File,Line,Status,Version,Context
 ./r-package/morie/DESCRIPTION,47,STALE_OR_DEP,1.0.0,"rmoriebricklayer (>= 1.0.0);"
 ./r-package/morie/DESCRIPTION,48,STALE_OR_DEP,0.4.0,"rmoriedata (>= 0.4.0)"
 ./r-package/morie/DESCRIPTION,219,STALE_OR_DEP,3.0.0,"testthat (>= 3.0.0);"
-./r-package/morie/DESCRIPTION,253,STALE_OR_DEP,1.0.2,"rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.0.2;"
+./r-package/morie/DESCRIPTION,253,STALE_OR_DEP,1.1.0,"rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.1.0;"
 ./r-package/morie/DESCRIPTION,258,STALE_OR_DEP,8.0.0,"Config/roxygen2/version: 8.0.0"
 ./r-package/morie/NEWS.md,1,CURRENT,1.5.3,"# morie 1.5.3 - 2026-11-01"
 ./r-package/morie/NEWS.md,3,STALE_OR_DEP,2.0.0,"* The SQL cache is SQLite only: morie no longer uses 'duckdb' (removed from Suggests). 'duckdb' 2.0.0"
