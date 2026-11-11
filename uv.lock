@@ -581,7 +581,7 @@ wheels = [
 
 [[package]]
 name = "morie"
-version = "1.5.3"
+version = "1.5.4"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },

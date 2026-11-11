@@ -151,3 +151,26 @@ def test_a_restricted_table_names_its_terms(hub, monkeypatch):
     assert "https://data.example.test/terms" in str(e.value)
     assert "login` again" in datahub._refusal_message(401, "/icpsr_21600/w1.csv.gz")
     assert "login` again" in datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")
+
+
+def test_no_key_needed_when_the_service_is_open(hub, monkeypatch):
+    calls = []
+
+    def open_urlopen(req, timeout=0):
+        calls.append(req.headers.get("Authorization"))
+        if req.full_url.endswith("/manifest.json"):
+            return _Resp(json.dumps(MANIFEST).encode())
+        raise HTTPError(req.full_url, 404, "Not Found", {}, None)
+
+    monkeypatch.setattr(datahub, "urlopen", open_urlopen)
+    assert datahub.hosted_manifest()["datasets"][0]["key"] == "chicago_crime/incidents"
+    assert calls == [None]
+
+
+def test_icpsr_410_points_to_icpsr(hub, monkeypatch):
+    def gone(req, timeout=0):
+        raise HTTPError(req.full_url, 410, "Gone", {}, None)
+
+    monkeypatch.setattr(datahub, "urlopen", gone)
+    with pytest.raises(datahub.DataHubAuthError, match="download it from ICPSR"):
+        datahub.hosted_manifest(refresh=True)

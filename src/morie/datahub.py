@@ -72,19 +72,35 @@ def _manifest_cache_path() -> Path:
     return _user_cache_dir() / "data_rmorie_manifest.json"
 
 
-def _open(path: str, timeout: int = 60):
+def _headers() -> dict:
+    """No sign-in is needed; a key stored earlier is still sent."""
+    h = {"User-Agent": "morie/1 (+https://rmorie.com)"}
     key = _key()
-    if not key:
-        raise DataHubAuthError(_no_key_message())
-    req = Request(
-        data_url() + path, headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"}
-    )
+    if key:
+        h["Authorization"] = f"Bearer {key}"
+    return h
+
+
+def _http_error(exc: HTTPError, path: str) -> Exception:
+    if exc.code == 410:
+        return DataHubAuthError(
+            f"{path.strip('/')} is not served by data.rmorie.com: ICPSR's terms do not allow "
+            "redistribution; download it from ICPSR (https://www.icpsr.umich.edu)"
+        )
+    if exc.code in (401, 403):
+        return DataHubAuthError(_refusal_message(exc.code, path))
+    return exc
+
+
+def _open(path: str, timeout: int = 60):
+    req = Request(data_url() + path, headers=_headers())
     try:
         return urlopen(req, timeout=timeout)
     except HTTPError as exc:
-        if exc.code in (401, 403):
-            raise DataHubAuthError(_refusal_message(exc.code, path)) from exc
-        raise
+        err = _http_error(exc, path)
+        if err is exc:
+            raise
+        raise err from exc
 
 
 def _get(path: str, timeout: int = 60) -> bytes:
@@ -96,28 +112,20 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
     """Stream a gateway file to ``dest`` with progress; a dropped transfer is resumed."""
     from ._progress import download_url
 
-    key = _key()
-    if not key:
-        raise DataHubAuthError(_no_key_message())
     try:
         return download_url(
             data_url() + path,
             dest,
             label,
             timeout=timeout,
-            headers={"Authorization": f"Bearer {key}", "User-Agent": "morie/1 (+https://rmorie.com)"},
+            headers=_headers(),
             opener=lambda req, timeout: urlopen(req, timeout=timeout),
         )
     except HTTPError as exc:
-        if exc.code in (401, 403):
-            raise DataHubAuthError(_refusal_message(exc.code, path)) from exc
-        raise
-
-
-def _no_key_message() -> str:
-    from .hosted import access_hint
-
-    return f"the curated tables need your MORIE data key: {access_hint()} (R: `rmorie login`)."
+        err = _http_error(exc, path)
+        if err is exc:
+            raise
+        raise err from exc
 
 
 # the tables that open only once their terms are accepted (ICPSR, NCVS 38604, a2aj)
@@ -132,6 +140,8 @@ def _refusal_message(code: int, path: str) -> str:
             f"{path.strip('/').split('.')[0]} is a restricted table: accept its terms of use once at "
             f"{data_url()}/terms (signed in with the same account), then try again."
         )
+    if not _key():
+        return f"data.rmorie.com asked for a key for {path.strip('/')}: run `morie login` once, or update the package."
     return "data.rmorie.com rejected the stored key; run `morie login` again."
 
 
