@@ -22,7 +22,7 @@ Asking questions (needs a language model; see `morie help llm`):
   morie ask "how do I run an IPW analysis?"
   morie models                  the models the route offers
 
-The curated tables at data.rmorie.com: `morie login` (GitHub; --email for a code).
+The curated tables at data.rmorie.com need no sign-in: `morie list-datasets`, `morie pull db/table`.
 
 Settings: `morie help config`. Every command has its own --help (morie ask --help).""",
     ),

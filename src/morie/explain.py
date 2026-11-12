@@ -233,7 +233,7 @@ morie cheat sheet
 
 {t("cheatsheet.pull")}
   morie pull tps-major --year 2024 --out tps-2024.csv
-  morie pull chicago_crime/incidents --out incidents.csv   # curated tables at data.rmorie.com (after morie login, GitHub or --email)
+  morie pull chicago_crime/incidents --out incidents.csv   # curated tables at data.rmorie.com (no sign-in)
   morie pull tps-shootings --year 2024
   morie pull tps-homicide --year 2024
   morie pull tps-layers                                   # registry
@@ -249,7 +249,7 @@ morie cheat sheet
 {t("cheatsheet.help")}
   morie config setup              Bring a model: a provider key, your own server, or Ollama
   morie models                    The models the route `ask` takes offers
-  morie login                     Sign in for the curated tables (GitHub or email)
+  morie login                     Store a data key (optional: the curated tables need none)
   morie ask "I have a treatment-control design; what module fits?"
   morie ask --model NAME "..."    Pick one model for this question
   morie provider set --base-url URL --key KEY [--model NAME]

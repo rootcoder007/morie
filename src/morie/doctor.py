@@ -130,7 +130,8 @@ def _check_route() -> tuple[bool, str]:
 
 def _check_data_key() -> tuple[bool, str]:
     """The data key for data.rmorie.com: signed in and accepted, signed in but refused or
-    unreachable, or not signed in (the curated tables only; no model uses it)."""
+    unreachable, or none stored, which is fine: the curated tables open without sign-in (no
+    model uses the key either)."""
     from .hosted import status
 
     try:
@@ -140,10 +141,7 @@ def _check_data_key() -> tuple[bool, str]:
     if not s["base_url"]:
         return False, "the services document switches the data service off"
     if not s["logged_in"]:
-        return (
-            False,
-            "not signed in (optional, for the curated tables) -- `morie login` or `morie login --email ADDRESS`",
-        )
+        return True, "no key stored; none needed: the curated tables open without sign-in"
     who = f" as {s['user']}" if s.get("user") else ""
     if not s["reachable"]:
         from .hosted import hosted_problem_line

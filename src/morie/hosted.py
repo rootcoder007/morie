@@ -1,8 +1,8 @@
-"""The MORIE data key: the personal key that opens the curated tables at data.rmorie.com.
+"""The MORIE data key for data.rmorie.com, optional: the curated tables open without sign-in.
 
-No language model is hosted by the project any more (the tier at llm.rmorie.com is retired; a
-model is brought by the user, see :mod:`morie.providers`). What remains here is the key for
-the curated tables: minted by ``morie login`` (GitHub device flow) or ``morie login --email``
+No language model is hosted by the project any more (a model is brought by the user, see
+:mod:`morie.providers`). What remains here is the personal data key, which the open tables do
+not need and which is still sent when stored: minted by ``morie login`` (GitHub device flow) or ``morie login --email``
 at the data service's own sign-in, or given and stored with ``morie login --token``; checked
 with the service before it is kept; stored 0600 in ``$XDG_CONFIG_HOME/morie/credentials.json``,
 the file rmorie, rmoriedata and rmoriebricklayer read too. The addresses come from the signed

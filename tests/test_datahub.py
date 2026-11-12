@@ -47,6 +47,8 @@ def hub(tmp_path, monkeypatch):
     monkeypatch.setattr(hosted, "credentials_path", lambda: tmp_path / "credentials.json")
     monkeypatch.delenv("MORIE_HOSTED_KEY", raising=False)
     monkeypatch.setenv("MORIE_DATA_URL", "https://data.example.test")
+    # the services document names that address, so a stored key is sent there
+    monkeypatch.setattr(hosted, "hosted_base_url", lambda: "https://data.example.test")
     calls = []
 
     def fake_urlopen(req, timeout=0):
@@ -91,7 +93,7 @@ def test_manifest_is_cached_and_download_is_cached_in_the_store(hub, monkeypatch
     assert sum(u.endswith(".csv.gz") for u, _ in hub) == 1  # served from the dataset store the second time
     rows = {d["key"]: d for d in data.list_datasets(db_path=db)}
     hubrow = rows["chicago_crime/incidents"]
-    assert hubrow["route"] == "data.rmorie.com (your MORIE key)" and hubrow["cached"] and hubrow["rows"] == 3
+    assert hubrow["route"] == "data.rmorie.com (no sign-in)" and hubrow["cached"] and hubrow["rows"] == 3
     assert "ocp21" in rows
 
 
@@ -174,3 +176,39 @@ def test_icpsr_410_points_to_icpsr(hub, monkeypatch):
     monkeypatch.setattr(datahub, "urlopen", gone)
     with pytest.raises(datahub.DataHubAuthError, match="download it from ICPSR"):
         datahub.hosted_manifest(refresh=True)
+
+
+def test_the_key_goes_only_to_the_services_address(hub, monkeypatch, caplog):
+    seen = []
+
+    def record(req, timeout=0):
+        seen.append(dict(req.header_items()))
+        return _Resp(json.dumps(MANIFEST).encode())
+
+    monkeypatch.setattr(datahub, "urlopen", record)
+    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
+    monkeypatch.setenv("MORIE_DATA_URL", "https://elsewhere.example.test")
+    datahub.hosted_manifest(refresh=True)
+    assert "Authorization" not in seen[-1]
+    assert "the stored key is not sent" in caplog.text
+    # data.rmorie.com serves a keyless table only to a package User-Agent
+    import re
+
+    assert re.match(r"^(rmoriebricklayer|rmoriedata|rmorie|morie)/\d", seen[-1]["User-agent"], re.I)
+    monkeypatch.setenv("MORIE_DATA_URL", "https://data.example.test/")
+    datahub.hosted_manifest(refresh=True)
+    assert seen[-1]["Authorization"] == "Bearer sk-good"
+
+
+def test_list_datasets_shows_the_curated_tables_without_a_key(hub, monkeypatch, capsys):
+    from morie.runner import main
+
+    def open_urlopen(req, timeout=0):
+        assert req.headers.get("Authorization") is None
+        return _Resp(json.dumps(MANIFEST).encode())
+
+    monkeypatch.setattr(datahub, "urlopen", open_urlopen)
+    monkeypatch.setattr("sys.argv", ["morie", "list-datasets"])
+    assert main() == 0
+    out = capsys.readouterr().out
+    assert "chicago_crime/incidents" in out and "no sign-in needed" in out

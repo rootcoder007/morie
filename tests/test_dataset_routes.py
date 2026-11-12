@@ -25,7 +25,7 @@ def isolated(tmp_path, monkeypatch):
 def test_routes_name_a_source_for_the_health_infobase_and_otis_keys():
     cat = data.DATASET_CATALOG
     assert data.dataset_route(cat["hibua"]).startswith("health-infobase.canada.ca (or data.rmorie.com)")
-    assert data.dataset_route(cat["hibp"]) == "data.rmorie.com (your MORIE key)"
+    assert data.dataset_route(cat["hibp"]) == "data.rmorie.com (no sign-in)"
     assert data.dataset_route(cat["otisfin"]).startswith("data.rmorie.com file")
     assert data.dataset_route(cat["otisloc"]) == "data.ontario.ca"
     assert data.dataset_route(cat["mapq"]).startswith("own file")
@@ -51,17 +51,22 @@ def test_health_infobase_table_comes_from_the_portal_zip(isolated, monkeypatch):
     assert list(df.columns) == ["question", "label", "colpercent"] and len(df) == 2
 
 
-def test_health_infobase_falls_back_to_the_hosted_copy_and_asks_for_a_login(isolated, monkeypatch):
+def test_health_infobase_falls_back_to_the_hosted_copy_without_a_login(isolated, monkeypatch):
     def failing(url, dest, timeout=60, label=None):
         raise OSError("portal down")
 
     monkeypatch.setattr(data, "_download_file", failing)
     from morie import datahub, hosted
 
+    # no key stored: the hosted copy opens without sign-in; when it fails too, both failures are named
     monkeypatch.setattr(hosted, "hosted_key", lambda: None)
-    with pytest.raises(RuntimeError, match="morie login"):
+
+    def hub_down(key, db_path=None, refresh=False):
+        raise OSError("hub down")
+
+    monkeypatch.setattr(datahub, "load_hosted_dataset", hub_down)
+    with pytest.raises(RuntimeError, match="portal down.*hib/csus_cannabis.*hub down"):
         data.load_dataset("hibub", db_path=isolated / "c.db")
-    monkeypatch.setattr(hosted, "hosted_key", lambda: "sk-test")
     monkeypatch.setattr(
         datahub, "load_hosted_dataset", lambda key, db_path=None, refresh=False: pd.DataFrame({"k": [key]})
     )

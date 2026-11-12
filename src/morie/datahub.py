@@ -1,14 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""Curated datasets at data.rmorie.com, opened by the MORIE key.
+"""Curated datasets at data.rmorie.com, with no sign-in.
 
 The MORIE project materialises public BigQuery datasets (Chicago crime, EPA
 air quality, census, FEC, FDA, NOAA, ...) and serves them as CSV from the
 edge (Cloudflare R2 behind a Worker), so they are reachable whenever the
-internet is, with the personal data key ``morie login`` stores (shared with
-rmorie, rmoriedata and rmoriebricklayer). ``/manifest.json`` lists every table with its rows, columns, size,
-SHA-256 and the BigQuery source it was built from; ``/<db>/<table>.csv.gz``
-is the table. Downloads are cached in the dataset store, so a key is
-needed once per table, not per call.
+internet is. No key is needed; a request carries the package User-Agent the
+service asks of keyless downloads, and a key stored earlier with ``morie login``
+(shared with rmorie, rmoriedata and rmoriebricklayer) is still sent, to the
+services document's address only. ``/manifest.json`` lists every table with its
+rows, columns, size, SHA-256 and the BigQuery source it was built from;
+``/<db>/<table>.csv.gz`` is the table. Downloads are cached in the dataset
+store, so a table is fetched once, not per call.
 """
 
 from __future__ import annotations
@@ -73,11 +75,24 @@ def _manifest_cache_path() -> Path:
 
 
 def _headers() -> dict:
-    """No sign-in is needed; a key stored earlier is still sent."""
+    """No sign-in is needed; a key stored earlier is still sent, but only to the address the
+    signed services document names (``hosted.hosted_base_url``): a key issued by data.rmorie.com
+    does not follow ``MORIE_DATA_URL`` to another host (as rmoriebricklayer's ``dload()``)."""
     h = {"User-Agent": "morie/1 (+https://rmorie.com)"}
     key = _key()
     if key:
-        h["Authorization"] = f"Bearer {key}"
+        from .hosted import hosted_base_url
+
+        if data_url() == hosted_base_url():
+            h["Authorization"] = f"Bearer {key}"
+        else:
+            import logging
+
+            logging.getLogger(__name__).warning(
+                "MORIE_DATA_URL=%s is not the curated-data address of the services document; "
+                "the stored key is not sent to it",
+                data_url(),
+            )
     return h
 
 
@@ -324,7 +339,7 @@ def hosted_entries(manifest: dict | None) -> list[dict]:
                 "type": "hosted",
                 "cached": False,
                 "rows": d.get("rows"),
-                "route": "data.rmorie.com (your MORIE key)",
+                "route": "data.rmorie.com (no sign-in)",
                 "table_name": hosted_table_name(d["key"]),
             }
         )

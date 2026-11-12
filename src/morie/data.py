@@ -1696,20 +1696,16 @@ def _direct_or_hosted(entry: dict, matched: str, db_path, timeout: int = 60) -> 
     hk = entry.get("hosted_key")
     if df is None and hk:
         from .datahub import load_hosted_dataset
-        from .hosted import hosted_key
 
-        if hosted_key():
+        # the data.rmorie.com copy opens without sign-in
+        try:
             df = load_hosted_dataset(hk, db_path=db_path)
-        elif err is not None:
+        except Exception as exc:
+            if err is None:
+                raise
             raise RuntimeError(
-                f"{matched}: the portal download failed ({err}); the data.rmorie.com copy ({hk}) "
-                "opens with your MORIE key: run `morie login` (GitHub) or `morie login --email you@example.com` once."
-            ) from err
-        else:
-            raise RuntimeError(
-                f"{matched} is served from data.rmorie.com as {hk}: run `morie login` (GitHub) or `morie login --email you@example.com` once, then "
-                f"`morie pull {matched}` (or `morie pull {hk}`)."
-            )
+                f"{matched}: the portal download failed ({err}), and so did the data.rmorie.com copy ({hk}): {exc}"
+            ) from exc
     if df is None:
         assert err is not None
         raise err
@@ -2423,12 +2419,12 @@ def _load_dataset_raw(
         from .datahub import is_hosted_key, load_hosted_dataset
 
         if is_hosted_key(key):
-            # a curated table at data.rmorie.com (db/table), opened by the MORIE key
+            # a curated table at data.rmorie.com (db/table), no sign-in needed
             return load_hosted_dataset(key, db_path=db_path)
         available = ", ".join(sorted(DATASET_CATALOG))
         raise KeyError(
             f"Unknown dataset key: {key!r}. Available: {available}; "
-            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them after `morie login`, GitHub or --email)."
+            "curated tables at data.rmorie.com use db/table keys (morie list-datasets shows them; no sign-in needed)."
         )
 
     entry = DATASET_CATALOG[matched]
@@ -2636,7 +2632,9 @@ def list_datasets(db_path: str | Path | None = None, *, hosted: bool = True) -> 
     try:
         from .hosted import hosted_key
 
-        # hosted=False: the copy already on disk only (selftest promises no downloads)
+        # hosted=False: the copy already on disk only (selftest promises no downloads). The tables
+        # need no key; without one this reads the copy the last fetch left (`morie list-datasets`
+        # fetches it), so a call makes no request of its own for a user without a key
         manifest = hosted_manifest() if hosted and hosted_key() else cached_manifest()
     except DataHubAuthError:
         manifest = cached_manifest()
@@ -2669,7 +2667,7 @@ def dataset_route(entry: dict) -> str:
         host = urlparse(entry["download_url"]).netloc
         return host + (" (or data.rmorie.com)" if entry.get("hosted_key") else "")
     if entry.get("hosted_key"):
-        return "data.rmorie.com (your MORIE key)"
+        return "data.rmorie.com (no sign-in)"
     if entry.get("hosted_file"):
         return "data.rmorie.com file (an R object: rmorie loads it, morie saves it)"
     if entry.get("source") in CKAN_DATASETS:
@@ -2701,11 +2699,7 @@ def dataset_info(key: str) -> dict:
                 manifest = None
         row = next((d for d in (manifest or {}).get("datasets", []) if d.get("key") == key), None)
         if row is None:
-            hint = (
-                ""
-                if manifest
-                else " (no data.rmorie.com manifest at hand: run `morie login`, then `morie list-datasets`)"
-            )
+            hint = "" if manifest else " (no data.rmorie.com manifest at hand: run `morie list-datasets` while online)"
             raise KeyError(f"Unknown dataset key: {key!r}{hint}")
         info = hosted_entries({"datasets": [row]})[0]
         info["meta"] = row.get("meta") or {}

@@ -1533,7 +1533,11 @@ def _main_impl() -> int:
 
     if args.command == "list-datasets":
         from .data import list_datasets
+        from .datahub import hosted_manifest
 
+        # the curated tables need no key: fetch their list (cached a day) so list_datasets() has it
+        with contextlib.suppress(Exception):  # offline: the local list still prints
+            hosted_manifest()
         datasets = list_datasets()
         kw = max(20, max((len(d["key"]) for d in datasets), default=20))
         print(f"{'Key':<{kw}} {'Type':<12} {'Rows':>10}  {'Route'}")
@@ -1559,9 +1563,7 @@ def _main_impl() -> int:
         )
         n_hub = sum(d["type"] == "hosted" for d in datasets)
         if n_hub:
-            print(
-                f"{n_hub} curated tables at data.rmorie.com (db/table keys), opened by your MORIE key: morie pull KEY"
-            )
+            print(f"{n_hub} curated tables at data.rmorie.com (db/table keys), no sign-in needed: morie pull KEY")
         else:
             from .hosted import hosted_key
 
@@ -1574,8 +1576,8 @@ def _main_impl() -> int:
                     print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
             else:
                 print(
-                    "Curated tables at data.rmorie.com appear here once you hold a MORIE data key: `morie login` "
-                    "(GitHub) or `morie login --email you@example.com`; a key you were given: `morie login --token`."
+                    "Curated tables at data.rmorie.com (no sign-in needed) appear here once their list is "
+                    "fetched; it could not be reached just now."
                 )
         return 0
 

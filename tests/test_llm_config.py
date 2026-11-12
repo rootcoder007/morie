@@ -446,4 +446,4 @@ def test_doctor_reports_the_route(xdg, monkeypatch):
     ok, detail = doctor._check_providers()
     assert ok and "groq (model llama-x)" in detail
     ok, detail = doctor._check_data_key()
-    assert not ok and "morie login" in detail
+    assert ok and "none needed" in detail
