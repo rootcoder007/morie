@@ -74,7 +74,7 @@ See :doc:`learn/datasets` for the walk-through.
    health-infobase.canada.ca, ECCC NAPS whose Canada-wide hourly keys take
    about ten minutes, Toronto Police ArcGIS), ``rmoriedata`` on CRAN,
    data.rmorie.com (the Health Infobase fallback copy and the OTIS research
-   environments; the curated tables join the list once a key from rmorie.com/access is stored with ``morie login --token``),
+   environments, and the curated tables, which need no sign-in),
    or "own file: data/..." for the one key that is your own research file
    (the MAPQ workbook), placed under ``$MORIE_DATA_DIR`` keeping that
    relative path.
@@ -124,8 +124,8 @@ that says it is one. Nothing is hosted for you.
    through the chain instead of printing a connection error.
 
 ``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
-   Store or mint the data key for the curated tables at data.rmorie.com
-   (:doc:`hosted`; no model uses it). With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
+   Store or mint the data key for data.rmorie.com (:doc:`hosted`): optional,
+   since the curated tables open without sign-in; a stored key is still sent. No model uses it. With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
    it). ``--email`` asks for a one-time code sent to that address;
    ``--to-email`` additionally has the key itself emailed to you instead
    of stored on this machine. ``--token`` stores a key you already have

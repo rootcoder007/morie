@@ -243,10 +243,10 @@ verbs as `rmorie` (see below).
 morie list-modules                                   # the 23 analysis modules
 morie run-module power-design --output-dir out/      # one module, its tables as CSV
 morie explain power_two_proportion_gender.csv        # how to read an output table
-morie list-datasets                                  # 71 catalog keys + the curated tables after login
+morie list-datasets                                  # 71 catalog keys + the curated tables (no sign-in)
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login                                          # the data key for data.rmorie.com: GitHub sign-in
+morie login                                          # optional data key for data.rmorie.com (the tables need none)
 morie login --email you@example.com                  # an emailed code instead: type it at the prompt
 morie login --token                                  # a key you were given
 morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
@@ -276,8 +276,7 @@ the reviewed SIU corpus from the
 (fetched as a source tarball, no R needed). One key, the MAPQ workbook, is
 your own file: put it under a data directory and point `MORIE_DATA_DIR` at
 it, keeping the relative path that `morie list-datasets` shows. The curated
-tables at data.rmorie.com join the list once a key (issued on request at
-<https://rmorie.com/access>) is stored with `morie login --token`.
+tables at data.rmorie.com are in the list too; they need no sign-in.
 
 ```python
 from morie.data import list_rmoriedata, load_rmoriedata
@@ -288,9 +287,10 @@ siu = load_rmoriedata("siu_directors_reports")  # 5,157 reviewed SIU reports
 Beyond the catalog, the project keeps **160 databases materialised from
 Google BigQuery public datasets, plus the Health Infobase tables and the OTIS research files** (Chicago crime, EPA air quality, US
 census, FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...),
-served from the edge at <https://data.rmorie.com> and opened by the key
-`morie login --token` stores (issued on request at <https://rmorie.com/access>,
-under <https://rmorie.com/data-license>). `morie list-datasets` shows their `db/table` keys
+served from the edge at <https://data.rmorie.com> with no sign-in (under
+<https://rmorie.com/data-license>; a key stored earlier with `morie login` is still sent).
+ICPSR studies are not served there (ICPSR's terms do not allow redistribution).
+`morie list-datasets` shows their `db/table` keys
 with the route "data.rmorie.com"; `morie pull db/table` and
 `load_dataset("db/table")` fetch one (cached locally), and
 `https://data.rmorie.com/browse` runs SQL on any of them in the browser.
@@ -339,7 +339,7 @@ For the planned roadmap see [ROADMAP.md](https://github.com/rootcoder007/morie/b
 Full documentation is at [rootcoder007.github.io/morie](https://rootcoder007.github.io/morie/).
 
 - **Website**: <https://rmorie.com> — the MORIE family (rmorie, morie, rmoriebricklayer, rmoriedata) in one place.
-- **Curated data**: <https://data.rmorie.com> — the curated tables, opened by a personal data key (`morie login`: GitHub or an emailed code; or ask at <https://rmorie.com/access>), each checked against its SHA-256; `/browse` for SQL in the browser.
+- **Curated data**: <https://data.rmorie.com> — the curated tables, with no sign-in, each checked against its SHA-256; `/browse` for SQL in the browser.
 - **CLI reference**: [cli](https://rootcoder007.github.io/morie/cli.html); learn pages for [datasets](https://rootcoder007.github.io/morie/learn/datasets.html), [emissions and capsules](https://rootcoder007.github.io/morie/learn/emissions.html) and [the R command line](https://rootcoder007.github.io/morie/learn/r-cli.html).
 - **Language models**: none are hosted; bring your own. `morie ask` uses your own OpenAI-compatible server, then a provider whose key is set (OpenAI, Anthropic, Google Gemini, OpenRouter, Groq, Mistral and more, 16 in all), then an Ollama server (`ollama serve`); `morie config setup` walks through it and `morie doctor` says which route answers. The same settings file serves rmoriebricklayer's `rmbl config`. See the [language-model docs](https://rootcoder007.github.io/morie/hosted.html).
 

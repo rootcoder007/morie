@@ -204,8 +204,8 @@ for function reference.
   OTIS research environments from data.rmorie.com and the reviewed SIU
   corpus from ``rmoriedata`` on CRAN. One, the MAPQ workbook, is your own
   file, resolved through ``MORIE_DATA_DIR``; ``morie list-datasets`` shows
-  the route of every key and the curated data.rmorie.com tables once a key
-  from https://rmorie.com/access is stored with ``morie login --token``.
+  the route of every key and the curated data.rmorie.com tables, which
+  need no sign-in.
   Small synthetic
   samples of the core tables ship in the wheel for tests and tutorials.
   Auto dataset-profiling for arbitrary tabular input

@@ -46,7 +46,8 @@ an error that says so.
 The data key
 ------------
 
-The curated tables at https://data.rmorie.com open with a personal key, which no model uses:
+The curated tables at https://data.rmorie.com open without sign-in. A personal key, which no
+model uses, can still be stored and is then sent with every download:
 
 .. code-block:: bash
 
@@ -60,6 +61,8 @@ The sign-in addresses come from the signed services document (``morie.services``
 with a pinned ML-DSA-44 key before use. The key is stored owner-only in
 ``$XDG_CONFIG_HOME/morie/credentials.json`` and shared with rmorie, rmoriedata and
 rmoriebricklayer; ``MORIE_HOSTED_KEY`` overrides it (CI, containers). Every table is checked
-against the SHA-256 the manifest lists before it is used. The restricted tables (ICPSR,
-NCVS 38604, a2aj) open once you accept their terms at https://data.rmorie.com/terms; until then
-the download says so.
+against the SHA-256 the manifest lists before it is used. A request without a key carries the
+package User-Agent the service asks of keyless downloads; the key goes only to the address the
+services document names, never to another ``MORIE_DATA_URL``. ICPSR studies (and the NCVS 38604
+extract) are not served (ICPSR's terms do not allow redistribution); asking for one says where
+to get it.
