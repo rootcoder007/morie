@@ -9,6 +9,8 @@
  */
 #include "morie_c_api.h"
 
+/* the build is Release by default, whose NDEBUG would turn every assert below into nothing */
+#undef NDEBUG
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -54,6 +56,13 @@ int main(void) {
     double g1 = morie_gamma_cdf_regularized(2.0, 1.0);
     double g2 = morie_gamma_cdf_regularized(2.0, 5.0);
     assert(g1 > 0.0 && g1 < 1.0 && g2 > g1 && g2 < 1.0);
+
+    /* far below a large shape: R pgamma(1e-8, 30) and pgamma(3, 30), printed with
+     * %.17g, to 1e-12 relative (log1p(t) with t near -1 lost six digits here) */
+    double gt = morie_gamma_cdf_regularized(30.0, 1e-8);
+    assert(fabs(gt / 3.7699875923321556e-273 - 1.0) < 1e-12);
+    gt = morie_gamma_cdf_regularized(30.0, 3.0);
+    assert(fabs(gt / 4.2770477214268944e-20 - 1.0) < 1e-12);
 
     /* degenerate input -> NaN, not crash */
     assert(isnan(morie_mean(x, 0)));
