@@ -71,6 +71,8 @@ def _quantile7(sorted_v, p):
     if j >= n - 1:
         return sorted_v[n - 1]
     g = h - j
+    if g == 0:
+        return sorted_v[j]  # as quantile(type = 7): no weight, so an infinite neighbour gives no NaN
     return sorted_v[j] * (1.0 - g) + sorted_v[j + 1] * g
 
 

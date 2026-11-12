@@ -45,6 +45,8 @@ def _quantile_interp(sorted_x, p):
     if j >= n - 1:
         return sorted_x[n - 1]
     g = h - j
+    if g == 0:
+        return sorted_x[j]  # as quantile(type = 7): no weight, so an infinite neighbour gives no NaN
     return sorted_x[j] * (1.0 - g) + sorted_x[j + 1] * g
 
 

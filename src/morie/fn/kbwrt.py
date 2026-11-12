@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 from ._richresult import RichResult
 
 __all__ = ["kbwrt"]
@@ -37,7 +39,7 @@ def _q7(xs, p):
     h = (len(xs) - 1) * p
     lo = int(math.floor(h))
     hi = min(lo + 1, len(xs) - 1)
-    return xs[lo] + (h - lo) * (xs[hi] - xs[lo])
+    return lerp7(xs[lo], xs[hi], h - lo)
 
 
 def kbwrt(data, *, kernel: str = "gaussian") -> dict:

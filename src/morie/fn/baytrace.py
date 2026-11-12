@@ -1,5 +1,7 @@
 """Running trace summaries for MCMC chains."""
 
+from morie._q7 import lerp7
+
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -16,7 +18,7 @@ def _quantile7(sorted_vals, p):
     if lo >= n - 1:
         return sorted_vals[n - 1]
     frac = h - lo
-    return sorted_vals[lo] + frac * (sorted_vals[lo + 1] - sorted_vals[lo])
+    return lerp7(sorted_vals[lo], sorted_vals[lo + 1], frac)
 
 
 def trace_plot(chains, probs=(0.025, 0.5, 0.975)):

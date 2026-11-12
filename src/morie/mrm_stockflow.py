@@ -35,6 +35,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import date, datetime
 
+from morie._q7 import lerp7
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
 
@@ -171,7 +172,7 @@ def _quantile_type7(x: list[float], p: float) -> float:
     h = (n - 1) * p
     lo = int(h)
     hi = min(lo + 1, n - 1)
-    return s[lo] + (h - lo) * (s[hi] - s[lo])
+    return lerp7(s[lo], s[hi], h - lo)
 
 
 def stay_summary(days_per_person, conf_level: float = 0.95) -> StaySummary:

@@ -95,6 +95,8 @@ scope.
 
 import math
 
+from morie._q7 import lerp7
+
 from . import _array_core as np
 from ._richresult import RichResult
 
@@ -394,7 +396,7 @@ def _quantile(v, pr):
     pos = pr * (len(s) - 1)
     lo = int(math.floor(pos))
     hi = min(lo + 1, len(s) - 1)
-    return s[lo] + (pos - lo) * (s[hi] - s[lo])
+    return lerp7(s[lo], s[hi], pos - lo)
 
 
 def deseq2(

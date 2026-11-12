@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 from ._qpcore import solve, ssum
 from ._richresult import RichResult
 from ._rng import random_normal, random_uniform
@@ -37,7 +39,7 @@ def _d(a, b):
 def _q7(s, p):
     h = (len(s) - 1) * p
     lo = math.floor(h)
-    return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
+    return lerp7(s[lo], s[min(lo + 1, len(s) - 1)], h - lo)
 
 
 def normal_score(z) -> RichResult:

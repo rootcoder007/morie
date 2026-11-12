@@ -22,6 +22,8 @@ import math
 import os
 import re
 
+from morie._q7 import lerp7
+
 from . import _csv
 
 __all__ = ["drift", "benford", "ks", "psi"]
@@ -101,7 +103,7 @@ def _q7(v: list[float], p: float) -> float:
     lo = math.floor(h)
     if lo >= n - 1:
         return v[-1]
-    return v[lo] + (h - lo) * (v[lo + 1] - v[lo])
+    return lerp7(v[lo], v[lo + 1], h - lo)
 
 
 def psi(x: list[float], y: list[float], bins: int = 10, eps: float = 1e-6) -> dict:

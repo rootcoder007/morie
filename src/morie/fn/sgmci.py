@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 from ._containers import DescriptiveResult
 from ._rng import random_uniform
 
@@ -38,7 +40,7 @@ def _q7(xs, p):
     h = (len(xs) - 1) * p
     lo = int(math.floor(h))
     hi = min(lo + 1, len(xs) - 1)
-    return xs[lo] + (h - lo) * (xs[hi] - xs[lo])
+    return lerp7(xs[lo], xs[hi], h - lo)
 
 
 def monte_carlo_spatial_test(Z, coords, stat_fn=None, n_sim=999, seed=42):

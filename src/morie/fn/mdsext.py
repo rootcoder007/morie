@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 from . import _array_core as np
 from ._qpcore import inverse, ssum
 from ._richresult import RichResult
@@ -347,7 +349,7 @@ def _quantile7(x, q):
     s = sorted(x)
     h = (len(s) - 1) * q
     lo = math.floor(h)
-    return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
+    return lerp7(s[lo], s[min(lo + 1, len(s) - 1)], h - lo)
 
 
 def mds_bootstrap(

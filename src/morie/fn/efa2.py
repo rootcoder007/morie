@@ -3,6 +3,8 @@
 
 import math
 
+from morie._q7 import lerp7
+
 from ._mlfa import corr_matrix, eigh_desc, fa_statistic, mlfa_fit, to_corr
 from ._rng import random_normal
 
@@ -23,7 +25,7 @@ def _quantile7(v, q):
     s = sorted(v)
     h = (len(s) - 1) * q
     lo = math.floor(h)
-    return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
+    return lerp7(s[lo], s[min(lo + 1, len(s) - 1)], h - lo)
 
 
 def _map(R, ev, V, power):

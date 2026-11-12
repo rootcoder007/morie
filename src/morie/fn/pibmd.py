@@ -80,6 +80,8 @@ Science* **35**(2), 234-253, doi:10.1214/19-STS731.
 
 import math
 
+from morie._q7 import lerp7
+
 from . import _s03core as k
 from ._richresult import RichResult
 
@@ -318,7 +320,7 @@ def _quantile(sorted_v, u):
     h = (n - 1) * u
     lo = int(math.floor(h))
     hi = min(lo + 1, n - 1)
-    return sorted_v[lo] + (h - lo) * (sorted_v[hi] - sorted_v[lo])
+    return lerp7(sorted_v[lo], sorted_v[hi], h - lo)
 
 
 def cheatsheet():

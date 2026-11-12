@@ -10,6 +10,8 @@ from __future__ import annotations
 import heapq
 import math
 
+from morie._q7 import lerp7
+
 from ._qpcore import inverse, solve, ssum
 from ._richresult import RichResult
 from ._rng import random_uniform
@@ -37,7 +39,7 @@ def _quantile7(v, q):
     s = sorted(v)
     h = (len(s) - 1) * q
     lo = math.floor(h)
-    return s[lo] + (h - lo) * (s[min(lo + 1, len(s) - 1)] - s[lo])
+    return lerp7(s[lo], s[min(lo + 1, len(s) - 1)], h - lo)
 
 
 def _hull(P):

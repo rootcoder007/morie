@@ -14,6 +14,8 @@ last bit and then stop on different sweeps.
 
 import math
 
+from morie._q7 import lerp7
+
 from . import _tail1core as C
 
 __all__ = []
@@ -54,7 +56,7 @@ def quantile7(x, p):
     h = (n - 1) * p
     lo = int(math.floor(h))
     hi = min(lo + 1, n - 1)
-    return x[lo] + (h - lo) * (x[hi] - x[lo])
+    return lerp7(x[lo], x[hi], h - lo)
 
 
 def order(x):

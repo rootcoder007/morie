@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 __all__: list[str] = []
 
 
@@ -319,7 +321,7 @@ def quantile7(v, p):
     h = (n - 1) * p
     lo = int(math.floor(h))
     hi = lo + 1 if lo + 1 < n else n - 1
-    return s[lo] + (h - lo) * (s[hi] - s[lo])
+    return lerp7(s[lo], s[hi], h - lo)
 
 
 def rank_avg(v):

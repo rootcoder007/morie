@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import math
 
+from morie._q7 import lerp7
+
 from . import _array_core as np
 from ._qpcore import inverse, solve, ssum
 from ._rng import random_uniform
@@ -224,7 +226,7 @@ def quantile7(x, q):
     h = (len(s) - 1) * q
     lo = math.floor(h)
     hi = min(lo + 1, len(s) - 1)
-    return s[lo] + (h - lo) * (s[hi] - s[lo])
+    return lerp7(s[lo], s[hi], h - lo)
 
 
 def sd(x):

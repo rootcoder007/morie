@@ -16,6 +16,7 @@ from __future__ import annotations
 import math
 from statistics import NormalDist
 
+from morie._q7 import lerp7
 from morie.fn import _array_core as np
 
 _N01 = NormalDist()
@@ -125,7 +126,7 @@ def _quantile(v, p):
     h = (len(s) - 1) * p
     lo = math.floor(h)
     hi = min(lo + 1, len(s) - 1)
-    return s[lo] + (h - lo) * (s[hi] - s[lo])
+    return lerp7(s[lo], s[hi], h - lo)
 
 
 # --- Bayesian Aldrich-McKelvey ------------------------------------------------
