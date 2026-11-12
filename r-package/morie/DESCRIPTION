@@ -44,7 +44,7 @@ Imports:
   utils,
   graphics,
   Rcpp,
-  rmoriebricklayer (>= 1.0.0),
+  rmoriebricklayer (>= 1.1.1),
   rmoriedata (>= 0.4.0)
 LinkingTo: Rcpp, RcppArmadillo, rmoriebricklayer
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
@@ -250,7 +250,7 @@ biocViews:
   MultipleComparison,
   Visualization
 Remotes:
-    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.1.0,
+    rmoriebricklayer=rootcoder007/rmorie-bricklayer@v1.1.1,
   rootcoder007/rmoriedata,
   synth-inference/synthdid
 Additional_repositories:
