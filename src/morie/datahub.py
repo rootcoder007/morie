@@ -89,6 +89,33 @@ def urlopen(req, timeout=60):
     return _OPENER.open(req, timeout=timeout)
 
 
+_BUSY = (429, 500, 502, 503, 504)
+
+
+def _wait(exc: HTTPError, attempt: int) -> float:
+    """Seconds before asking again: the server's Retry-After (at most a minute), else 1, 2, 4."""
+    try:
+        asked = float((exc.headers or {}).get("Retry-After", ""))
+    except (TypeError, ValueError):
+        asked = 0.0
+    return min(asked, 60.0) if asked > 0 else float(2**attempt)
+
+
+def _ask(req, timeout=60):
+    """``urlopen`` that asks a busy service again, up to three more times: data.rmorie.com
+    answers 429 past its per-address rate (a lab behind one address, ``pull --all``) and 503
+    when many clients fetch the same table, both with Retry-After."""
+    import time
+
+    for attempt in range(4):
+        try:
+            return urlopen(req, timeout=timeout)
+        except HTTPError as exc:
+            if exc.code not in _BUSY or attempt == 3:
+                raise
+            time.sleep(_wait(exc, attempt))
+
+
 # what data.rmorie.com does not serve: ICPSR's terms forbid redistribution
 _UNSERVED = re.compile(r"^/?(icpsr_|ncvs_38604(/|\.|$))")
 
@@ -164,7 +191,7 @@ def _open(path: str, timeout: int = 60):
         raise DataHubAuthError(why)
     req = Request(data_url() + path, headers=_headers())
     try:
-        return urlopen(req, timeout=timeout)
+        return _ask(req, timeout=timeout)
     except HTTPError as exc:
         # `from None`: the first error's text may carry the key
         raise _http_error(exc, path) from None
@@ -189,7 +216,7 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
             label,
             timeout=timeout,
             headers=_headers(),
-            opener=lambda req, timeout: urlopen(req, timeout=timeout),
+            opener=lambda req, timeout: _ask(req, timeout=timeout),
         )
     except HTTPError as exc:
         raise _http_error(exc, path) from None

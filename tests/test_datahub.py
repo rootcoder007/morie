@@ -215,3 +215,39 @@ def test_list_datasets_shows_the_curated_tables_without_a_key(hub, monkeypatch, 
     assert main() == 0
     out = capsys.readouterr().out
     assert "chicago_crime/incidents" in out and "no sign-in needed" in out
+
+
+def test_a_busy_service_is_asked_again_after_the_wait_it_names(hub, monkeypatch):
+    import time
+
+    waits, answers = [], [429, 503, 200]
+
+    def busy(req, timeout=0):
+        code = answers.pop(0)
+        if code != 200:
+            raise HTTPError(req.full_url, code, "busy", {"Retry-After": "600" if code == 429 else "5"}, None)
+        return _Resp(json.dumps(MANIFEST).encode())
+
+    monkeypatch.setattr(datahub, "urlopen", busy)
+    monkeypatch.setattr(time, "sleep", waits.append)
+    assert datahub.hosted_manifest(refresh=True)["datasets"][0]["key"] == "chicago_crime/incidents"
+    assert waits == [60.0, 5.0]  # Retry-After, at most a minute
+    # no Retry-After: 1, 2, 4 seconds, then the error itself
+    answers[:] = [500, 500, 500, 500]
+    waits.clear()
+
+    def down(req, timeout=0):
+        raise HTTPError(req.full_url, answers.pop(0), "down", {}, None)
+
+    monkeypatch.setattr(datahub, "urlopen", down)
+    with pytest.raises(HTTPError):
+        datahub.hosted_manifest(refresh=True)
+    assert waits == [1.0, 2.0, 4.0] and answers == []
+    # a refusal is not asked again
+    waits.clear()
+    monkeypatch.setattr(
+        datahub, "urlopen", lambda req, timeout=0: (_ for _ in ()).throw(HTTPError(req.full_url, 404, "no", {}, None))
+    )
+    with pytest.raises(Exception):  # noqa: B017, PT011
+        datahub.hosted_manifest(refresh=True)
+    assert waits == []
