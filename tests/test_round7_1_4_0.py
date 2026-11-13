@@ -529,28 +529,6 @@ def test_percysuits_names_an_unreachable_ssh_host(monkeypatch, capsys):
     assert "cannot reach nobody@127.0.0.1 over SSH: ssh: connect to host" in capsys.readouterr().out
 
 
-def test_login_to_email_needs_an_address(monkeypatch, capsys):
-    from morie import runner
-
-    monkeypatch.setattr("sys.argv", ["morie", "login", "--to-email"])
-    assert runner.main() == 2
-    assert "--to-email needs --email ADDRESS" in capsys.readouterr().err
-
-
-def test_login_token_reads_a_piped_key(monkeypatch):
-    import io
-
-    from morie import hosted, runner
-
-    stored = []
-    monkeypatch.setattr(hosted, "store_token", lambda t: stored.append(t))
-    monkeypatch.setattr(runner, "_stdin_is_terminal", lambda: False)
-    monkeypatch.setattr("sys.stdin", io.StringIO("sk-piped\n"))
-    monkeypatch.setattr("sys.argv", ["morie", "login", "--token"])
-    assert runner.main() == 0
-    assert stored == ["sk-piped"]
-
-
 def test_pull_reports_no_network_in_the_users_language(monkeypatch, capsys):
     from urllib.error import URLError
 
@@ -751,9 +729,8 @@ def test_ingest_siu_asks_for_out_before_downloading(monkeypatch):
 
 
 def test_selftest_dataset_check_fetches_nothing(monkeypatch):
-    from morie import datahub, hosted, selftest
+    from morie import datahub, selftest
 
-    monkeypatch.setattr(hosted, "hosted_key", lambda: "sk-test")
     monkeypatch.setattr(datahub, "hosted_manifest", lambda *a, **k: (_ for _ in ()).throw(AssertionError("fetched")))
     assert selftest._test_datasets().startswith("Datasets:")
 

@@ -68,10 +68,3 @@ def test_positional_paths_for_profile_and_sample():
     assert p.parse_args(["profile-dataset", "data.csv"]).path == "data.csv"
     assert p.parse_args(["sample", "data.csv", "--n", "5"]).path == "data.csv"
     assert p.parse_args(["sample", "--csv", "data.csv", "--n", "5"]).csv == "data.csv"
-
-
-def test_hosted_failure_wording(monkeypatch):
-    monkeypatch.setattr(hosted, "hosted_failure", lambda: "rejected")
-    assert "run `morie login` again" in hosted.hosted_problem_line()
-    monkeypatch.setattr(hosted, "hosted_failure", lambda: "network")
-    assert "not reachable" in hosted.hosted_problem_line()

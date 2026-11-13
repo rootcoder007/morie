@@ -300,12 +300,3 @@ def llm() -> dict:
 def data() -> dict:
     """The ``data`` block of the current document (offline: cache, then bundled)."""
     return services(offline=True)["data"]
-
-
-def access_hint() -> str:
-    """One line on how to get a data key."""
-    ask = data().get("request_access") or llm().get("request_access") or ACCESS_URL
-    return (
-        "`morie login` signs in with GitHub or an emailed code; a key you were given: "
-        f"`morie login --token`; or ask at {ask}"
-    )

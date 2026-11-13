@@ -43,7 +43,6 @@ jobs:
       - name: smoke
         shell: bash
         env:
-          MORIE_SMOKE_KEY: ${{ secrets.MORIE_SMOKE_KEY }}
           MORIE_SMOKE_CACHE: ${{ runner.temp }}/smoke-cache
         run: '"$SMOKE_PY" scripts/smoke/smoke.py'
       - name: docs drift
@@ -79,6 +78,5 @@ jobs:
         run: R CMD INSTALL r-package/morie
       - name: smoke (morie R arm)
         env:
-          MORIE_SMOKE_KEY: ${{ secrets.MORIE_SMOKE_KEY }}
           MORIE_SMOKE_PKG: morie
         run: Rscript r-package/morie/inst/smoke/smoke.R

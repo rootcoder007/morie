@@ -161,12 +161,6 @@ def _isolate_hosted_credentials(tmp_path, monkeypatch):
     """
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "xdg"))
     monkeypatch.delenv("MORIE_HOSTED_KEY", raising=False)
-    try:
-        from morie import hosted
-
-        hosted.reset_probe_cache()
-    except Exception:  # pragma: no cover - import guard
-        pass
     yield
 
 

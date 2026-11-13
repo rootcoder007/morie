@@ -105,17 +105,13 @@ def test_live_document_is_verified_cached_then_served_from_cache(svc, monkeypatc
     monkeypatch.setattr(services, "_download", lambda *a: pytest.fail("must not fetch"))
     s2 = services.services()
     assert s2["_source"] == "cache" and s2["llm"] == s["llm"]
-    # the data key follows the document: bound to the data service, signed in at its own auth
+    # the data address follows the document
     from morie import datahub, hosted
 
-    hosted.reset_probe_cache()
     assert hosted.hosted_base_url() == "https://tables.example.org"
-    assert hosted.hosted_auth_url() == "https://tables.example.org/auth"
     assert datahub.data_url() == "https://tables.example.org"
     # env overrides still win
-    monkeypatch.setenv("MORIE_HOSTED_AUTH_URL", "https://signin.example.org/")
     monkeypatch.setenv("MORIE_DATA_URL", "https://d.example.org")
-    assert hosted.hosted_auth_url() == "https://signin.example.org"
     assert datahub.data_url() == "https://d.example.org"
 
 
@@ -203,7 +199,6 @@ def test_a_document_that_does_not_verify_is_ignored_at_every_step(svc, monkeypat
         assert not services._cache_path().exists(), name
     from morie import datahub, hosted
 
-    hosted.reset_probe_cache()
     assert hosted.hosted_base_url() is None
     with pytest.raises(RuntimeError, match="not available right now.*rmorie.com/access"):
         datahub.data_url()
@@ -238,7 +233,6 @@ def test_offline_memo_is_per_process_and_a_refresh_replaces_it(svc, monkeypatch)
     assert services.services(offline=True)["_source"] == "off"
     assert services.services()["_source"] == "live"
     assert services.services(offline=True)["_source"] == "live"
-    assert "rmorie.com/access" in services.access_hint()
 
 
 def test_the_signature_url_of_a_mirror_without_a_json_suffix():

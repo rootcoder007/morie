@@ -163,10 +163,10 @@ function.
   use the model you set up through rmoriebricklayer: a provider's key (OpenAI,
   Anthropic, Google Gemini, OpenRouter, Groq, Mistral and more), an
   OpenAI-compatible server of your own, or a local Ollama. None is hosted.
-  `rmorie config setup` walks through it; `morie_llm_login()` signs in for the
-  curated data tables only.
+  `rmorie config setup` walks through it. The curated data tables need no
+  sign-in.
 - **Command line inside the package** — `install_cli()` puts `rmorie` on
-  your PATH: `rmorie login`, `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
+  your PATH: `rmorie doctor`, `rmorie ask`, `rmorie analyze`.
 - **Policing, search and staffing** — police operations research, search
   theory for search and rescue, calls-for-service staffing, CrimeStat
   journey-to-crime, risk terrain modelling, the Crime Severity Index.

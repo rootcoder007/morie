@@ -83,7 +83,7 @@ Infobase tables and the OTIS research files, the BigQuery ones from
 Google BigQuery public datasets (Chicago crime, EPA air quality, US census,
 FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...) and serves
 their tables from the edge at https://data.rmorie.com. They open without
-sign-in (a key stored earlier with ``morie login`` is still sent), under
+sign-in or a key, under
 https://rmorie.com/data-license,
 and they do not
 depend on any project machine being up.

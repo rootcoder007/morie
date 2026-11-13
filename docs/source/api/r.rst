@@ -24,8 +24,6 @@ The R side of :doc:`../hosted`: the provider chain, the key and the
 .. r:function:: morie_llm_detect_provider
 .. r:function:: morie_llm_probe_ollama
 .. r:function:: morie_llm_probe_hosted
-.. r:function:: morie_llm_login
-.. r:function:: morie_llm_logout
 .. r:function:: morie_llm_provider_set
 .. r:function:: morie_cli
 .. r:function:: install_cli

@@ -249,7 +249,6 @@ morie cheat sheet
 {t("cheatsheet.help")}
   morie config setup              Bring a model: a provider key, your own server, or Ollama
   morie models                    The models the route `ask` takes offers
-  morie login                     Store a data key (optional: the curated tables need none)
   morie ask "I have a treatment-control design; what module fits?"
   morie ask --model NAME "..."    Pick one model for this question
   morie provider set --base-url URL --key KEY [--model NAME]

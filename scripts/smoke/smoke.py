@@ -2,8 +2,7 @@
 """Clean-user smoke suite: every `morie` verb run for real, in an empty HOME, with assertions.
 
 No mocks. This is what a person gets after `pip install morie` on a machine that has
-nothing on it: no datasets, no cache, no key (unless MORIE_SMOKE_KEY is set, which
-unlocks the data.rmorie.com cases). Language models are bring-your-own-key: the runner has
+nothing on it: no datasets, no cache, no key. Language models are bring-your-own-key: the runner has
 none, so every model verb must say how to set one up and never pretend to answer. Run it
 with the package installed:
 
@@ -30,7 +29,6 @@ from pathlib import Path
 
 NOT_RUNNABLE: dict[str, str] = {}  # every verb has a case; a verb that cannot work here must say so honestly
 
-KEY = os.environ.get("MORIE_SMOKE_KEY", "").strip()
 RESULTS: list[tuple[str, str, str]] = []  # (verb, status, detail)
 
 
@@ -48,7 +46,6 @@ class Smoke:
                 "XDG_CACHE_HOME": os.environ.get("MORIE_SMOKE_CACHE", str(home / "cache")),
                 "MORIE_EMISSIONS_OFFLINE": "1",
                 "MORIE_NO_UPDATE_CHECK": "1",
-                "MORIE_HOSTED_KEY": KEY,
                 "PYTHONIOENCODING": "utf-8",
             }
         )
@@ -113,14 +110,12 @@ def c_list_modules(s: Smoke):
 def c_list_datasets(s: Smoke):
     r = s.run("list-datasets")
     check(r.returncode == 0 and "ocp21" in r.stdout, r.stderr[-300:])
-    if KEY:
-        check("data.rmorie.com" in r.stdout, "hosted rows missing although a key is set")
 
 
 @case("cheatsheet")
 def c_cheatsheet(s: Smoke):
     r = s.run("cheatsheet")
-    check(r.returncode == 0 and "morie login" in r.stdout and "provider set" in r.stdout, r.stdout[:200])
+    check(r.returncode == 0 and "morie login" not in r.stdout and "provider set" in r.stdout, r.stdout[:200])
 
 
 @case("explain")
@@ -331,16 +326,6 @@ def c_tutorial(s: Smoke):
     check(r.returncode == 2 and "the tutorial is interactive" in r.stderr, r.stdout[:200] + r.stderr[-200:])
 
 
-@case("login")
-def c_login(s: Smoke):
-    if not KEY:
-        RESULTS.append(("login", "SKIP", "MORIE_SMOKE_KEY not set"))
-        return
-    r = s.run("login", "--token", KEY)
-    check(r.returncode == 0 and "accepted" in (r.stdout + r.stderr).lower() or r.returncode == 0, r.stdout + r.stderr)
-    check((s.home / "cfg" / "morie" / "credentials.json").exists(), "credentials file not written")
-
-
 @case("interactive")
 def c_interactive(s: Smoke):
     """The source-tree-only layer can be added to an installed copy: status, offline install from this checkout, exec works, remove."""
@@ -379,12 +364,6 @@ def c_interactive(s: Smoke):
     # put it back, as a user would: the cases after this one launch programs (an editor, R)
     r = install()
     check(r.returncode == 0 and "active" in s.run("interactive", "status").stdout, "reinstall: " + r.stdout[-300:])
-
-
-@case("logout")
-def c_logout(s: Smoke):
-    r = s.run("logout")
-    check(r.returncode == 0, r.stderr[-300:])
 
 
 @case("generate-template")
@@ -451,14 +430,12 @@ def c_pull(s: Smoke):
     check(r.returncode == 0, "pull ocp21 failed: " + r.stderr[-400:])
     rows = _lines(s.work / "cpads.csv") - 1
     check(rows > 40000, f"CPADS PUMF has {rows} rows; expected ~40,931")
-    if KEY:
-        r = s.run("pull", "fec_cm_2020/fec_cm_2020", "--out", "fec.csv", timeout=900)
-        check(
-            r.returncode == 0 and _lines(s.work / "fec.csv") > 1000,
-            "data.rmorie.com pull failed: " + r.stderr[-400:] + r.stdout[-200:],
-        )
-    else:
-        RESULTS.append(("pull data.rmorie.com", "SKIP", "MORIE_SMOKE_KEY not set"))
+    # a curated table: no sign-in, no key
+    r = s.run("pull", "fec_cm_2020/fec_cm_2020", "--out", "fec.csv", timeout=900)
+    check(
+        r.returncode == 0 and _lines(s.work / "fec.csv") > 1000,
+        "data.rmorie.com pull failed: " + r.stderr[-400:] + r.stdout[-200:],
+    )
     if not _r_arm_ok():
         RESULTS.append(
             ("pull -> module", "SKIP", "no Rscript, or no R 'morie' package, on this runner (the modules are R-backed)")

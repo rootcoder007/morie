@@ -128,26 +128,14 @@ def _check_route() -> tuple[bool, str]:
     return (not line.startswith("ask has no route")), f"{line}; change: morie config set route auto|own|ollama|PROVIDER"
 
 
-def _check_data_key() -> tuple[bool, str]:
-    """The data key for data.rmorie.com: signed in and accepted, signed in but refused or
-    unreachable, or none stored, which is fine: the curated tables open without sign-in (no
-    model uses the key either)."""
-    from .hosted import status
+def _check_data() -> tuple[bool, str]:
+    """The curated tables at data.rmorie.com: open, with no sign-in and no key."""
+    from .hosted import hosted_base_url
 
-    try:
-        s = status()
-    except Exception as exc:  # pragma: no cover - defensive
-        return False, f"error: {exc}"
-    if not s["base_url"]:
+    base = hosted_base_url()
+    if not base:
         return False, "the services document switches the data service off"
-    if not s["logged_in"]:
-        return True, "no key stored; none needed: the curated tables open without sign-in"
-    who = f" as {s['user']}" if s.get("user") else ""
-    if not s["reachable"]:
-        from .hosted import hosted_problem_line
-
-        return False, f"{hosted_problem_line()}{who}"
-    return True, f"signed in{who}; {s['base_url']} accepts the key"
+    return True, f"{base}: open, no sign-in and no key"
 
 
 def _check_providers() -> tuple[bool, str]:
@@ -316,8 +304,8 @@ def run_checks() -> dict[str, Any]:
     ok, detail = _check_openai_compat()
     _add("Own endpoint", ok, detail, required=False)
 
-    ok, detail = _check_data_key()
-    _add("Data key (data.rmorie.com)", ok, detail, required=False)
+    ok, detail = _check_data()
+    _add("Curated tables (data.rmorie.com)", ok, detail, required=False)
 
     ok, detail = _check_route()
     _add("LLM route (morie ask)", ok, detail, required=False)

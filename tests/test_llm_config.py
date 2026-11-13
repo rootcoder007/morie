@@ -41,10 +41,8 @@ def xdg(tmp_path, monkeypatch):
     for v in _ENV:
         monkeypatch.delenv(v, raising=False)
     llm._reset_route_cache()
-    hosted.reset_probe_cache()
     yield tmp_path
     llm._reset_route_cache()
-    hosted.reset_probe_cache()
 
 
 def _fake_get(ollama_models, seen=None):
@@ -445,5 +443,5 @@ def test_doctor_reports_the_route(xdg, monkeypatch):
     assert ok and detail.startswith("ask uses: Groq, model llama-x")
     ok, detail = doctor._check_providers()
     assert ok and "groq (model llama-x)" in detail
-    ok, detail = doctor._check_data_key()
-    assert ok and "none needed" in detail
+    ok, detail = doctor._check_data()
+    assert ok and "no sign-in and no key" in detail

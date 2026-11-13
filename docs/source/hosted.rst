@@ -1,5 +1,5 @@
-Language models and the data key
-================================
+Language models and the curated tables
+======================================
 
 Language models: bring your own
 -------------------------------
@@ -43,26 +43,19 @@ A provider with a key but no model set (and no default) is not asked: ``ask`` sa
 one. The hosted tier that used to answer at ``llm.rmorie.com`` is retired; ``route = hosted`` is
 an error that says so.
 
-The data key
-------------
+The curated tables
+------------------
 
-The curated tables at https://data.rmorie.com open without sign-in. A personal key, which no
-model uses, can still be stored and is then sent with every download:
+The curated tables at https://data.rmorie.com open without sign-in and without a key; none is
+read or sent (a key an earlier version stored stays in its file, unread):
 
 .. code-block:: bash
 
-   morie login                                   # GitHub device flow
-   morie login --email you@example.com           # a one-time code sent to your inbox
-   morie login --no-browser                      # server / SSH: a link and a code for any device
-   morie login --token                           # a key you were given (checked before it is kept)
-   morie logout
+   morie list-datasets
+   morie pull chicago_crime/incidents --out incidents.csv
 
-The sign-in addresses come from the signed services document (``morie.services``), verified
-with a pinned ML-DSA-44 key before use. The key is stored owner-only in
-``$XDG_CONFIG_HOME/morie/credentials.json`` and shared with rmorie, rmoriedata and
-rmoriebricklayer; ``MORIE_HOSTED_KEY`` overrides it (CI, containers). Every table is checked
-against the SHA-256 the manifest lists before it is used. A request without a key carries the
-package User-Agent the service asks of keyless downloads; the key goes only to the address the
-services document names, never to another ``MORIE_DATA_URL``. ICPSR studies (and the NCVS 38604
-extract) are not served (ICPSR's terms do not allow redistribution); asking for one says where
-to get it.
+The service's address comes from the signed services document (``morie.services``), verified
+with a pinned ML-DSA-44 key before use. Every table is checked against the SHA-256 the manifest
+lists before it is used. A request carries the package User-Agent the service asks of
+downloads. ICPSR studies (and the NCVS 38604 extract) are not served (ICPSR's terms do not
+allow redistribution); asking for one says where to get it.

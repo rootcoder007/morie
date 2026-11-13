@@ -47,14 +47,12 @@ def hub(tmp_path, monkeypatch):
     monkeypatch.setattr(hosted, "credentials_path", lambda: tmp_path / "credentials.json")
     monkeypatch.delenv("MORIE_HOSTED_KEY", raising=False)
     monkeypatch.setenv("MORIE_DATA_URL", "https://data.example.test")
-    # the services document names that address, so a stored key is sent there
     monkeypatch.setattr(hosted, "hosted_base_url", lambda: "https://data.example.test")
     calls = []
 
     def fake_urlopen(req, timeout=0):
         calls.append((req.full_url, req.headers.get("Authorization")))
-        if req.headers.get("Authorization") != "Bearer sk-good":
-            raise HTTPError(req.full_url, 401, "Unauthorized", {}, None)
+        assert req.headers.get("Authorization") is None  # no key is ever sent
         if req.full_url.endswith("/manifest.json"):
             return _Resp(json.dumps(MANIFEST).encode())
         if req.full_url.endswith("/chicago_crime/incidents.csv.gz"):
@@ -67,15 +65,13 @@ def hub(tmp_path, monkeypatch):
     return calls
 
 
-def test_no_key_is_a_clear_error(hub):
+def test_a_refusal_is_a_clear_error(hub, monkeypatch):
     # a refusal no longer sends anyone to sign in: the curated tables need none
+    def refuse(req, timeout=0):
+        raise HTTPError(req.full_url, 401, "Unauthorized", {}, None)
+
+    monkeypatch.setattr(datahub, "urlopen", refuse)
     with pytest.raises(datahub.DataHubAuthError, match="need no sign-in: update the package"):
-        datahub.hosted_manifest()
-
-
-def test_rejected_key_says_login_again(hub, monkeypatch):
-    monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-stale")
-    with pytest.raises(datahub.DataHubAuthError, match="forget the key with `morie logout`"):
         datahub.hosted_manifest()
 
 
@@ -85,7 +81,7 @@ def test_manifest_is_cached_and_download_is_cached_in_the_store(hub, monkeypatch
     assert m["datasets"][0]["key"] == "chicago_crime/incidents"
     assert datahub.hosted_manifest()["datasets"] == m["datasets"]  # second call: cache file, no request
     assert sum(u.endswith("/manifest.json") for u, _ in hub) == 1
-    assert all(a == "Bearer sk-good" for _, a in hub)
+    assert all(a is None for _, a in hub)  # the key in the environment is not read
     db = tmp_path / "cache.db"
     df = data.load_dataset("chicago_crime/incidents", db_path=db)
     assert list(df.columns) == ["id", "type"] and len(df) == 3
@@ -155,7 +151,8 @@ def test_a_restricted_table_names_its_terms(hub, monkeypatch):
         datahub._get("/icpsr_21600/w1.csv.gz")
     assert len(hub) == before and "terms of use" not in str(e.value)
     assert "download it from ICPSR" in datahub._refusal_message(401, "/icpsr_21600/w1.csv.gz")
-    assert "morie logout" in datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")
+    said = datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")
+    assert "need no sign-in" in said and "morie log" not in said
 
 
 def test_no_key_needed_when_the_service_is_open(hub, monkeypatch):
@@ -185,7 +182,7 @@ def test_icpsr_410_points_to_icpsr(hub, monkeypatch):
     )
 
 
-def test_the_key_goes_only_to_the_services_address(hub, monkeypatch, caplog):
+def test_no_key_is_sent_to_any_address(hub, monkeypatch, caplog):
     seen = []
 
     def record(req, timeout=0):
@@ -194,17 +191,16 @@ def test_the_key_goes_only_to_the_services_address(hub, monkeypatch, caplog):
 
     monkeypatch.setattr(datahub, "urlopen", record)
     monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
-    monkeypatch.setenv("MORIE_DATA_URL", "https://elsewhere.example.test")
-    datahub.hosted_manifest(refresh=True)
-    assert "Authorization" not in seen[-1]
-    assert "the stored key is not sent" in caplog.text
-    # data.rmorie.com serves a keyless table only to a package User-Agent
+    hosted.credentials_path().write_text(json.dumps({"hosted_key": "sk-stored"}))
+    for url in ("https://elsewhere.example.test", "https://data.example.test/"):
+        monkeypatch.setenv("MORIE_DATA_URL", url)
+        datahub.hosted_manifest(refresh=True)
+        assert "Authorization" not in seen[-1] and "sk-" not in json.dumps(seen[-1])
+    assert "key" not in caplog.text
+    # data.rmorie.com serves a table only to a package User-Agent
     import re
 
     assert re.match(r"^(rmoriebricklayer|rmoriedata|rmorie|morie)/\d", seen[-1]["User-agent"], re.I)
-    monkeypatch.setenv("MORIE_DATA_URL", "https://data.example.test/")
-    datahub.hosted_manifest(refresh=True)
-    assert seen[-1]["Authorization"] == "Bearer sk-good"
 
 
 def test_list_datasets_shows_the_curated_tables_without_a_key(hub, monkeypatch, capsys):

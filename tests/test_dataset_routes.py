@@ -56,10 +56,9 @@ def test_health_infobase_falls_back_to_the_hosted_copy_without_a_login(isolated,
         raise OSError("portal down")
 
     monkeypatch.setattr(data, "_download_file", failing)
-    from morie import datahub, hosted
+    from morie import datahub
 
     # no key stored: the hosted copy opens without sign-in; when it fails too, both failures are named
-    monkeypatch.setattr(hosted, "hosted_key", lambda: None)
 
     def hub_down(key, db_path=None, refresh=False):
         raise OSError("hub down")

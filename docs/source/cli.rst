@@ -123,16 +123,6 @@ that says it is one. Nothing is hosted for you.
    local tool-calling agent when Ollama is present and otherwise answer
    through the chain instead of printing a connection error.
 
-``login [--no-browser] [--email ADDRESS [--to-email]] [--token [KEY]]``
-   Store or mint the data key for data.rmorie.com (:doc:`hosted`): optional,
-   since the curated tables open without sign-in; a stored key is still sent. No model uses it. With no options: the GitHub device flow (``--no-browser`` prints the URL instead of opening
-   it). ``--email`` asks for a one-time code sent to that address;
-   ``--to-email`` additionally has the key itself emailed to you instead
-   of stored on this machine. ``--token`` stores a key you already have
-   (prompts for it when ``KEY`` is omitted) and checks it with the data
-   service before it is kept. A key the service rejects (401) is reported as
-   "run ``morie login`` again", not as the service being unreachable.
-
 ``models [--route ROUTE]``
    List the models the route ``ask`` takes offers (or another route's), the
    one in use marked ``*``. Pick one per call with ``morie ask --model NAME``
@@ -145,9 +135,6 @@ that says it is one. Nothing is hosted for you.
    that serves ``/chat/completions``. The setting lives in the credentials
    file both languages read; ``LLM_API_BASE_URL``, ``LLM_API_KEY`` and
    ``MORIE_API_MODEL`` in the environment take precedence.
-
-``logout``
-   Forget the stored data key.
 
 ``chat``
    Interactive chat REPL with slash commands (``--agent`` loads a persona).
@@ -198,7 +185,7 @@ Environment
 
 ``doctor``
    Diagnostics for the language-model routes (your own endpoint, provider
-   keys, Ollama, the route ``ask`` takes), the data key, datasets, R and
+   keys, Ollama, the route ``ask`` takes), the curated tables, datasets, R and
    Docker; ``--fix`` tries to remediate.
 
 ``selftest``

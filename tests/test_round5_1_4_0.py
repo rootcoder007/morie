@@ -815,23 +815,6 @@ def test_whole_number_float_columns_are_written_as_integers():
     assert "100.0" not in df.to_csv(index=False)
 
 
-def test_login_while_signed_in_warns_and_needs_force(monkeypatch, capsys):
-    import morie.hosted as hosted
-    from morie import runner
-
-    monkeypatch.setattr(hosted, "read_credentials", lambda: {"hosted_key": "sk-x", "hosted_user": "someone"})
-    started = []
-    monkeypatch.setattr(hosted, "device_login", lambda **k: started.append(1))
-    monkeypatch.setattr(hosted, "signin_profile", lambda **k: {})  # the terms step has its own tests
-    monkeypatch.setattr(runner, "_stdin_is_terminal", lambda: False)
-    monkeypatch.setattr(sys, "argv", ["morie", "login", "--no-browser"])
-    assert runner.main() == 1 and started == []
-    err = capsys.readouterr().err
-    assert "signed in as someone" in err and "--force" in err
-    monkeypatch.setattr(sys, "argv", ["morie", "login", "--no-browser", "--force"])
-    assert runner.main() == 0 and started == [1]
-
-
 def test_every_module_table_has_an_explanation(tmp_path):
     from morie.explain import describe
     from morie.modules import MODULE_SPECS

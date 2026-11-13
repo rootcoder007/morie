@@ -110,8 +110,8 @@ def test_refusals_no_longer_send_anyone_to_sign_in(hub, monkeypatch):
     for code in (401, 403):
         said = datahub._refusal_message(code, "/open/t.csv.gz")
         assert "need no sign-in" in said and "morie login" not in said and "terms" not in said
-    monkeypatch.setenv("MORIE_HOSTED_KEY", KEY)
-    assert "morie logout" in datahub._refusal_message(401, "/open/t.csv.gz")
+    monkeypatch.setenv("MORIE_HOSTED_KEY", KEY)  # not read: the wording is the same
+    assert "morie log" not in datahub._refusal_message(401, "/open/t.csv.gz")
 
 
 def test_the_key_does_not_follow_a_redirect():
@@ -167,84 +167,6 @@ def test_no_form_of_the_key_survives_redaction(i):
     assert KEY[3:20] not in said and "[redacted]" in said
     assert redact("nothing here", KEY) == "nothing here"
     assert redact("short secrets are left", "abc") == "short secrets are left"
-
-
-def test_an_error_from_the_data_service_does_not_repeat_the_key(hub, monkeypatch):
-    monkeypatch.setenv("MORIE_HOSTED_KEY", KEY)
-
-    def boom(req, timeout=0):
-        raise HTTPError(req.full_url, 500, f"Internal echo {KEY} / {base64.b64encode(KEY.encode()).decode()}", {}, None)
-
-    monkeypatch.setattr(datahub, "urlopen", boom)
-    with pytest.raises(HTTPError) as e:
-        datahub._get("/open/t.csv.gz")
-    text = (
-        str(e.value) + repr(e.value.__cause__) + repr(e.value.__context__ if not e.value.__suppress_context__ else "")
-    )
-    assert KEY not in text and "[redacted]" in str(e.value) and e.value.code == 500
-
-
-def test_the_poll_interval_is_bounded():
-    f = hosted._poll_interval
-    assert [f(v) for v in (1, 5, 60, "7")] == [1.0, 5.0, 60.0, 7.0]
-    assert [f(v) for v in (0, -1, 0.5, 61, 1e6, float("nan"), float("inf"), "abc", None, [])] == [5.0] * 10
-    assert f(1e9, 12.0) == 12.0
-
-
-def test_the_device_poll_never_sleeps_past_its_deadline(hub, monkeypatch):
-    slept = []
-
-    class R:
-        def __init__(self, code, body):
-            self.status_code, self._b, self.text = code, body, json.dumps(body)
-
-        def json(self):
-            return self._b
-
-    def post(url, json=None, timeout=0):
-        if url.endswith("/device/code"):
-            return R(
-                200,
-                {
-                    "user_code": "U",
-                    "verification_uri": "https://x.example",
-                    "device_code": "dc-" + "b" * 30,
-                    "interval": 1e6,
-                },
-            )
-        return R(428, {"interval": 0})
-
-    monkeypatch.setattr(hosted.httpx, "post", post)
-    monkeypatch.setattr(hosted, "hosted_auth_url", lambda: "https://auth.example.test")
-    monkeypatch.setattr(hosted.time, "sleep", lambda s: slept.append(s))
-    clock = iter(range(0, 10_000, 2))
-    monkeypatch.setattr(hosted.time, "monotonic", lambda: next(clock))
-    with pytest.raises(TimeoutError):
-        hosted.device_login(echo=lambda *a: None, open_browser=False, poll_max_seconds=20)
-    assert slept and max(slept) <= 5.0 and min(slept) >= 0.0
-
-
-def test_a_sign_in_error_does_not_repeat_the_device_code(hub, monkeypatch):
-    code = "dc-" + "b" * 30
-
-    class R:
-        def __init__(self, status, body):
-            self.status_code, self._b, self.text = status, body, json.dumps(body)
-
-        def json(self):
-            return self._b
-
-    def post(url, json=None, timeout=0):
-        if url.endswith("/device/code"):
-            return R(200, {"user_code": "U", "verification_uri": "https://x.example", "device_code": code})
-        return R(400, {"error": f"bad device_code {code}"})
-
-    monkeypatch.setattr(hosted.httpx, "post", post)
-    monkeypatch.setattr(hosted, "hosted_auth_url", lambda: "https://auth.example.test")
-    monkeypatch.setattr(hosted.time, "sleep", lambda s: None)
-    with pytest.raises(RuntimeError) as e:
-        hosted.device_login(echo=lambda *a: None, open_browser=False)
-    assert code not in str(e.value) and "answered 400" in str(e.value)
 
 
 def _gz(text):
@@ -321,32 +243,6 @@ def test_an_r_object_is_checked_against_the_recorded_digest(tmp_path, monkeypatc
     monkeypatch.setattr(data, "_r_object_frame", lambda p: "frame")
     assert data._load_hosted_file(entry, "x") == "frame"
     assert (tmp_path / "cache" / "x.rds").read_bytes() == body
-
-
-def test_sign_in_asks_nothing_for_restricted_tables(monkeypatch):
-    monkeypatch.setattr(hosted, "terms_info", lambda: {"version": "2026-01-01", "url": "https://x.example/terms"})
-    said = []
-    asked = []
-
-    def ask(prompt):
-        asked.append(prompt)
-        return {"Your name: ": "Ada"}.get(
-            prompt, "Thesis chapter on court delays in Ontario." if "Why" in prompt else ""
-        )
-
-    p = hosted.signin_profile(accept_terms=True, restricted=True, ask=ask, echo=said.append)
-    assert p["accept_restricted"] is False and not any(k.startswith("supervisor") for k in p)
-    assert not any("Schedule B" in a or "supervisor" in a for a in asked)
-    assert any("no longer served" in s for s in said)
-
-
-@pytest.mark.parametrize(
-    "bad", ["", "has space in it", "tab\tinside-the-key", "x" * 600, None, 12345678, "line\nbreak-key"]
-)
-def test_an_unusable_key_from_sign_in_is_not_stored(bad):
-    with pytest.raises(RuntimeError, match="unusable key"):
-        hosted._usable_key(bad)
-    assert hosted._usable_key(KEY) == KEY
 
 
 def test_gamma_and_zeta_at_infinity():

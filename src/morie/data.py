@@ -2656,15 +2656,12 @@ def list_datasets(db_path: str | Path | None = None, *, hosted: bool = True) -> 
                 "route": dataset_route(entry),
             }
         )
-    from .datahub import DataHubAuthError, cached_manifest, hosted_entries, hosted_manifest
+    from .datahub import DataHubAuthError, cached_manifest, hosted_entries
 
     try:
-        from .hosted import hosted_key
-
-        # hosted=False: the copy already on disk only (selftest promises no downloads). The tables
-        # need no key; without one this reads the copy the last fetch left (`morie list-datasets`
-        # fetches it), so a call makes no request of its own for a user without a key
-        manifest = hosted_manifest() if hosted and hosted_key() else cached_manifest()
+        # the copy the last fetch left (`morie list-datasets` fetches it): a call makes no request
+        # of its own (selftest promises no downloads)
+        manifest = cached_manifest()
     except DataHubAuthError:
         manifest = cached_manifest()
     except Exception as exc:  # noqa: BLE001 - offline: the local list still prints

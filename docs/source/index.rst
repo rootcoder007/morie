@@ -335,7 +335,7 @@ navigation, every page on this site is listed below — top to bottom:
   Linux, Windows, plus LLM provider setup.
 - :doc:`cli` — Reference for every ``morie …`` subcommand.
 - :doc:`hosted` — Language models (bring your own: providers, your own
-  server, Ollama) and the data key for the curated tables.
+  server, Ollama) and the curated tables, which need no sign-in.
 - :doc:`methods/index` — Statistical-methods reference. Estimands,
   causal estimators, survey statistics, spatial methods, Hawkes
   processes, statistical physics of crime, OTIS / TPS / SIU

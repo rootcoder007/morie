@@ -419,8 +419,8 @@ def run_selftest() -> int:
     print()
 
     t0_total = time.monotonic()
-    # offline, as the README promises: with a stored key the dataset checks fetched the
-    # data.rmorie.com manifest (170 KB); now they read the copy on disk, if any
+    # offline, as the README promises: the dataset checks read the copy of the
+    # data.rmorie.com manifest on disk, if any
     import os
 
     was = os.environ.get("MORIE_OFFLINE")

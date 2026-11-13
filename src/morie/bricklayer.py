@@ -225,7 +225,7 @@ def run(args) -> int:
     if r_ok and not cli_ok:
         print(
             "note: the rmorie launcher is not on PATH; put it there by running "
-            "rmorie::install_cli() in R (then: rmorie login, rmorie models, rmorie ask ...)"
+            "rmorie::install_cli() in R (then: rmorie models, rmorie ask ...)"
         )
 
     if r_ok and not getattr(args, "github", False):

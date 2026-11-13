@@ -316,62 +316,6 @@ def build_parser() -> argparse.ArgumentParser:
     relay_cmd.add_argument("--token", default=None, help="Require auth token for API access")
     relay_cmd.add_argument("--bind", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
 
-    login_cmd = subparsers.add_parser(
-        "login",
-        help="Sign in for the curated tables at data.rmorie.com with GitHub, or --email for a code by email; stores a per-user data key",
-    )
-    login_cmd.add_argument("--no-browser", action="store_true", help="Print the sign-in URL instead of opening it")
-    login_cmd.add_argument(
-        "--force",
-        action="store_true",
-        help="Sign in again even when signed in (the new key replaces the old one everywhere)",
-    )
-    login_cmd.add_argument(
-        "--email", default=None, metavar="ADDRESS", help="Sign in with a code emailed to this address instead of GitHub"
-    )
-    login_cmd.add_argument(
-        "--to-email", action="store_true", help="With --email: have the key emailed to you instead of stored here"
-    )
-    login_cmd.add_argument(
-        "--accept-terms",
-        action="store_true",
-        help="Accept the data access terms (https://data.rmorie.com/terms) without the prompt",
-    )
-    login_cmd.add_argument("--name", default=None, help="Your name (asked for when not given; required for a new key)")
-    login_cmd.add_argument(
-        "--affiliation", default=None, metavar="ORG", help="Your university, employer or organisation"
-    )
-    login_cmd.add_argument(
-        "--reason",
-        default=None,
-        metavar="TEXT",
-        help="Why you need the data, a sentence or two (required for a new key)",
-    )
-    login_cmd.add_argument(
-        "--restricted",
-        action="store_true",
-        default=None,
-        help="No longer used: the restricted tables are not served (kept so that older commands still run)",
-    )
-    login_cmd.add_argument(
-        "--supervisor-name", default=None, metavar="NAME", help="Supervisor, chair, director or coordinator"
-    )
-    login_cmd.add_argument(
-        "--supervisor-role",
-        default=None,
-        choices=("supervisor", "chair", "director", "coordinator", "other"),
-        help="Their role",
-    )
-    login_cmd.add_argument("--supervisor-email", default=None, metavar="ADDRESS", help="Their email address")
-    login_cmd.add_argument(
-        "--token",
-        nargs="?",
-        const="",
-        default=None,
-        metavar="KEY",
-        help="Store a key you already have (from the website or your email); prompts when KEY is omitted",
-    )
-    subparsers.add_parser("logout", help="Forget the stored data key")
     inter = subparsers.add_parser(
         "interactive",
         help="Add, inspect or remove the interactive layer (polyglot REPL, agent, TUI, exec) that the published package leaves out",
@@ -1565,20 +1509,10 @@ def _main_impl() -> int:
         if n_hub:
             print(f"{n_hub} curated tables at data.rmorie.com (db/table keys), no sign-in needed: morie pull KEY")
         else:
-            from .hosted import hosted_key
-
-            if hosted_key():
-                from .hosted import hosted_failure, probe_hosted
-
-                if not probe_hosted() and hosted_failure() == "rejected":
-                    print("data.rmorie.com rejected the stored key; run `morie login` again (GitHub, or --email).")
-                else:
-                    print("data.rmorie.com was not reachable just now; its tables appear once a fetch succeeds.")
-            else:
-                print(
-                    "Curated tables at data.rmorie.com (no sign-in needed) appear here once their list is "
-                    "fetched; it could not be reached just now."
-                )
+            print(
+                "Curated tables at data.rmorie.com (no sign-in needed) appear here once their list is "
+                "fetched; it could not be reached just now."
+            )
         return 0
 
     if args.command == "verify-pollution":
@@ -2218,70 +2152,6 @@ def _main_impl() -> int:
             return 1
         return 0
 
-    if args.command == "login":
-        from .hosted import device_login, email_login, signin_profile, store_token
-
-        if getattr(args, "to_email", False) and not getattr(args, "email", None):
-            print("--to-email needs --email ADDRESS (the key is emailed to that address)", file=sys.stderr)
-            return 2
-        try:
-            if getattr(args, "token", None) is not None:
-                token = args.token
-                if not token:
-                    if not _stdin_is_terminal():
-                        # piped (`echo KEY | morie login --token`, kept out of the shell history)
-                        token = sys.stdin.readline().strip()
-                        if not token:
-                            print(
-                                "no key on stdin and no terminal to paste it into: `morie login --token KEY`",
-                                file=sys.stderr,
-                            )
-                            return 1
-                    else:
-                        import getpass
-
-                        token = getpass.getpass("Paste your MORIE key: ")
-                store_token(token)
-            else:
-                from .hosted import read_credentials
-
-                creds = read_credentials()
-                if creds.get("hosted_key") and not getattr(args, "force", False):
-                    who = f" as {creds['hosted_user']}" if creds.get("hosted_user") else ""
-                    print(
-                        f"You are signed in{who}. A new sign-in replaces this key here and on every other "
-                        "machine that uses it (one key per account).",
-                        file=sys.stderr,
-                    )
-                    if not (_stdin_is_terminal() and sys.stdout.isatty()):
-                        print("pass --force to sign in again anyway", file=sys.stderr)
-                        return 1
-                    if input("Continue? [y/N] ").strip().lower() not in ("y", "yes"):
-                        return 1
-                if getattr(args, "email", None) and "@" not in args.email:
-                    raise ValueError("an email address is required")
-                # a new key: the terms are accepted and who is asking is said before any sign-in starts
-                profile = signin_profile(
-                    accept_terms=getattr(args, "accept_terms", False),
-                    name=getattr(args, "name", None),
-                    affiliation=getattr(args, "affiliation", None),
-                    purpose=getattr(args, "reason", None),
-                    restricted=getattr(args, "restricted", None),
-                    supervisor_name=getattr(args, "supervisor_name", None),
-                    supervisor_role=getattr(args, "supervisor_role", None),
-                    supervisor_email=getattr(args, "supervisor_email", None),
-                )
-                if getattr(args, "email", None):
-                    email_login(args.email, to_email=getattr(args, "to_email", False), profile=profile)
-                else:
-                    device_login(
-                        open_browser=not getattr(args, "no_browser", False) and sys.stdout.isatty(), profile=profile
-                    )
-        except Exception as exc:  # network or user abandoned the flow
-            print(f"login failed: {exc}")
-            return 1
-        return 0
-
     if args.command == "interactive":
         from . import _interactive
 
@@ -2293,12 +2163,6 @@ def _main_impl() -> int:
         if sub == "remove":
             return _interactive.remove()
         return _interactive.status()
-
-    if args.command == "logout":
-        from .hosted import logout
-
-        logout()
-        return 0
 
     if args.command == "models":
         from . import llm as _llm

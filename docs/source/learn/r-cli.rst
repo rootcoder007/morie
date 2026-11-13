@@ -24,7 +24,7 @@ Verbs, grouped as in :doc:`../cli`:
 - data: ``list-datasets``, ``pull KEY`` / ``pull --all``,
   ``download-bootstrap``, ``ingest ckan|tps|siu|a2aj``, ``profile-dataset``,
   ``sample``;
-- assistant: ``login``, ``logout``, ``models``, ``doctor``, ``ask``,
+- assistant: ``models``, ``doctor``, ``ask``,
   ``percy`` / ``agent``, ``chat``, ``provider set|show|unset``,
   ``percysuits``;
 - emissions and pollution: ``emissions``, ``verify-pollution``;

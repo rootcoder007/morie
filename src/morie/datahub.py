@@ -4,10 +4,8 @@
 The MORIE project materialises public BigQuery datasets (Chicago crime, EPA
 air quality, census, FEC, FDA, NOAA, ...) and serves them as CSV from the
 edge (Cloudflare R2 behind a Worker), so they are reachable whenever the
-internet is. No key is needed; a request carries the package User-Agent the
-service asks of keyless downloads, and a key stored earlier with ``morie login``
-(shared with rmorie, rmoriedata and rmoriebricklayer) is still sent, to the
-services document's address only. ``/manifest.json`` lists every table with its
+internet is. No key is needed and none is sent; a request carries the package
+User-Agent the service asks of downloads. ``/manifest.json`` lists every table with its
 rows, columns, size, SHA-256 and the BigQuery source it was built from;
 ``/<db>/<table>.csv.gz`` is the table. Downloads are cached in the dataset
 store, so a table is fetched once, not per call.
@@ -71,8 +69,8 @@ def data_url() -> str:
 
 
 class _NoAuthRedirect(HTTPRedirectHandler):
-    """A redirect never carries the key on: urllib copies ``Authorization`` to the new address,
-    which may be another host (rmoriebricklayer drops credentials on every hop too)."""
+    """A redirect never carries an ``Authorization`` header on: urllib copies one to the new
+    address, which may be another host. None is sent here; this holds if a caller adds one."""
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         new = super().redirect_request(req, fp, code, msg, headers, newurl)
@@ -136,12 +134,6 @@ def _refuse_unserved(key: str) -> None:
         raise DataHubAuthError(why)
 
 
-def _key() -> str | None:
-    from .hosted import hosted_key
-
-    return hosted_key()
-
-
 def _manifest_cache_path() -> Path:
     from .data import _user_cache_dir
 
@@ -149,25 +141,8 @@ def _manifest_cache_path() -> Path:
 
 
 def _headers() -> dict:
-    """No sign-in is needed; a key stored earlier is still sent, but only to the address the
-    signed services document names (``hosted.hosted_base_url``): a key issued by data.rmorie.com
-    does not follow ``MORIE_DATA_URL`` to another host (as rmoriebricklayer's ``dload()``)."""
-    h = {"User-Agent": "morie/1 (+https://rmorie.com)"}
-    key = _key()
-    if key:
-        from .hosted import hosted_base_url
-
-        if data_url() == hosted_base_url():
-            h["Authorization"] = f"Bearer {key}"
-        else:
-            import logging
-
-            logging.getLogger(__name__).warning(
-                "MORIE_DATA_URL=%s is not the curated-data address of the services document; "
-                "the stored key is not sent to it",
-                data_url(),
-            )
-    return h
+    """No sign-in and no key: only the package User-Agent the service asks of downloads."""
+    return {"User-Agent": "morie/1 (+https://rmorie.com)"}
 
 
 def _http_error(exc: HTTPError, path: str) -> Exception:
@@ -179,12 +154,8 @@ def _http_error(exc: HTTPError, path: str) -> Exception:
         )
     if exc.code in (401, 403):
         return DataHubAuthError(_refusal_message(exc.code, path))
-    # any other answer: the server's words, without the key if it echoed it
-    from ._redact import redact
-
-    key = _key()
-    said = redact(str(exc.reason), key) if key else str(exc.reason)
-    return HTTPError(exc.url, exc.code, said, exc.headers, None)
+    # any other answer: the server's words (no key was sent, so none can be echoed)
+    return HTTPError(exc.url, exc.code, str(exc.reason), exc.headers, None)
 
 
 def _open(path: str, timeout: int = 60):
@@ -229,14 +200,9 @@ def _refusal_message(code: int, path: str) -> str:
     why = unserved(path.strip("/"))
     if why:
         return why
-    if not _key():
-        return (
-            f"data.rmorie.com refused {path.strip('/')} (HTTP {code}). The curated tables need no "
-            "sign-in: update the package (pip install -U morie), then try again."
-        )
     return (
-        f"data.rmorie.com refused the stored key (HTTP {code}). The curated tables need no sign-in: "
-        "forget the key with `morie logout`, then try again."
+        f"data.rmorie.com refused {path.strip('/')} (HTTP {code}). The curated tables need no "
+        "sign-in: update the package (pip install -U morie), then try again."
     )
 
 

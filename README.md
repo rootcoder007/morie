@@ -246,10 +246,6 @@ morie explain power_two_proportion_gender.csv        # how to read an output tab
 morie list-datasets                                  # 71 catalog keys + the curated tables (no sign-in)
 morie pull ocp21 --out cpads.csv                     # the real CPADS PUMF, cached; modules use it from then on
 morie pull --all --out datasets/                     # every catalog dataset
-morie login                                          # optional data key for data.rmorie.com (the tables need none)
-morie login --email you@example.com                  # an emailed code instead: type it at the prompt
-morie login --token                                  # a key you were given
-morie login --no-browser                             # server / SSH / no browser: prints a link + code for any device
 morie pull chicago_crime/incidents --out incidents.csv   # a curated table (8.6M rows)
 morie config setup                                   # bring a model: a provider key, your own server, or Ollama
 morie ask "which module fits a treatment-control design?"
@@ -287,8 +283,8 @@ siu = load_rmoriedata("siu_directors_reports")  # 5,157 reviewed SIU reports
 Beyond the catalog, the project keeps **160 databases materialised from
 Google BigQuery public datasets, plus the Health Infobase tables and the OTIS research files** (Chicago crime, EPA air quality, US
 census, FEC, FDA, NOAA, NHTSA, Hacker News, Ethereum, World Bank, ...),
-served from the edge at <https://data.rmorie.com> with no sign-in (under
-<https://rmorie.com/data-license>; a key stored earlier with `morie login` is still sent).
+served from the edge at <https://data.rmorie.com> with no sign-in and no key (under
+<https://rmorie.com/data-license>).
 ICPSR studies are not served there (ICPSR's terms do not allow redistribution).
 `morie list-datasets` shows their `db/table` keys
 with the route "data.rmorie.com"; `morie pull db/table` and
