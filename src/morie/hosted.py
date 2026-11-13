@@ -332,6 +332,20 @@ def signin_profile(
     return out
 
 
+def _poll_interval(value, default: float = 5.0) -> float:
+    """The seconds between sign-in polls: the service's figure when it is 1 to 60, else 5.
+
+    Examples:
+        >>> _poll_interval(3), _poll_interval(0), _poll_interval(1e6), _poll_interval("abc"), _poll_interval(None)
+        (3.0, 5.0, 5.0, 5.0, 5.0)
+    """
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return default
+    return f if 1.0 <= f <= 60.0 else default
+
+
 def device_login(
     open_browser: bool = True, poll_max_seconds: float = 600.0, echo=_say, profile: dict | None = None
 ) -> str:
@@ -356,10 +370,12 @@ def device_login(
     echo(f"Sign in at {uri} and enter the code: {user_code}  (no GitHub? run: morie login --email you@example.com)")
     if open_browser and _browsable(uri):
         _open_browser(uri)
-    interval = float(info.get("interval", 5))
+    from ._redact import redact
+
+    interval = _poll_interval(info.get("interval"))
     deadline = time.monotonic() + poll_max_seconds
     while time.monotonic() < deadline:
-        time.sleep(interval)
+        time.sleep(max(0.0, min(interval, deadline - time.monotonic())))
         poll = httpx.post(f"{auth}/device/token", json={"device_code": info["device_code"]}, timeout=15.0)
         if poll.status_code == 200:
             body = poll.json()
@@ -377,10 +393,15 @@ def device_login(
                 echo(f"Logged in as {body.get('user', 'user')}; key stored in {path}")
                 return body["api_key"]
         elif poll.status_code == 428:  # authorization_pending / slow_down
-            interval = float(poll.json().get("interval", interval))
+            try:
+                said = poll.json().get("interval")
+            except Exception:  # noqa: BLE001 - no JSON body: the interval stays
+                said = None
+            interval = _poll_interval(said, interval)
             continue
         else:
-            raise RuntimeError(f"the sign-in service answered {poll.status_code}: {poll.text[:120]}")
+            text = redact(poll.text, str(info["device_code"]))[:120]
+            raise RuntimeError(f"the sign-in service answered {poll.status_code}: {text}")
     raise TimeoutError("the sign-in was not completed in time; run `morie login` again")
 
 

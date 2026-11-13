@@ -981,7 +981,15 @@ def _completion_text(
         resp = _request_completion(
             base_url, model, messages, api_key=api_key, stream=False, timeout=timeout, max_tokens=budget
         )
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            if not api_key:
+                raise
+            from ._redact import redact
+
+            # the same error, without the key if the provider's answer repeated it
+            raise httpx.HTTPStatusError(redact(str(exc), api_key), request=exc.request, response=exc.response) from None
         text = _extract_text(resp)
         if text.strip():
             return text

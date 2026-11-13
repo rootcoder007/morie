@@ -25,7 +25,7 @@ import tempfile
 import time
 from pathlib import Path
 from urllib.error import HTTPError
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from morie.fn import _frame_core as pd
 
@@ -60,6 +60,72 @@ def data_url() -> str:
             f"(see {data.get('request_access') or 'https://rmorie.com/access'})"
         )
     return str(data["base_url"]).rstrip("/")
+
+
+class _NoAuthRedirect(HTTPRedirectHandler):
+    """A redirect never carries the key on: urllib copies ``Authorization`` to the new address,
+    which may be another host (rmoriebricklayer drops credentials on every hop too)."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new is not None:
+            for store in (new.headers, new.unredirected_hdrs):
+                for name in [h for h in store if h.lower() == "authorization"]:
+                    del store[name]
+        return new
+
+
+_OPENER = build_opener(_NoAuthRedirect)
+
+
+def urlopen(req, timeout=60):
+    """Open ``req`` with the redirect rule above (tests replace this name)."""
+    return _OPENER.open(req, timeout=timeout)
+
+
+# what data.rmorie.com does not serve: ICPSR's terms forbid redistribution
+_UNSERVED = re.compile(r"^/?(icpsr_|ncvs_38604(/|\.|$))")
+
+
+def unserved(key: str, entry: dict | None = None) -> str | None:
+    """Why ``key`` is not served, or None when it is.
+
+    The ICPSR studies and NCVS 38604 are not redistributed, and neither is a table the manifest
+    marks restricted or gives an access other than open or public. Such a table is not listed, and
+    asking for it is refused before any request is made (as rmoriebricklayer does).
+
+    Examples:
+        >>> unserved("chicago_crime/incidents") is None, "ICPSR" in unserved("icpsr_99999/fake")
+        (True, True)
+    """
+    if _UNSERVED.match(key):
+        return (
+            f"{key.strip('/')} is not served by data.rmorie.com: ICPSR's terms do not allow "
+            "redistribution; download it from ICPSR (https://www.icpsr.umich.edu)"
+        )
+    e = entry if isinstance(entry, dict) else {}
+    meta = e.get("meta") if isinstance(e.get("meta"), dict) else {}
+    access = e.get("access", meta.get("access"))
+    open_access = access is None or (isinstance(access, str) and access.strip().lower() in ("", "open", "public"))
+    if e.get("restricted") is True or meta.get("restricted") is True or not open_access:
+        src = e.get("source")
+        return (
+            f"{key.strip('/')} is not served by data.rmorie.com: its source does not allow "
+            "redistribution; get it from its source" + (f" ({src})" if isinstance(src, str) and src else "")
+        )
+    return None
+
+
+def _refuse_unserved(key: str) -> None:
+    """Raise for a table that is not served, from the manifest at hand (no request is made)."""
+    try:
+        m = cached_manifest() or {}
+    except Exception:  # noqa: BLE001 - an unreadable cache: the key's own name still decides
+        m = {}
+    entry = next((d for d in m.get("datasets", []) if isinstance(d, dict) and d.get("key") == key), None)
+    why = unserved(key, entry)
+    if why:
+        raise DataHubAuthError(why)
 
 
 def _key() -> str | None:
@@ -99,23 +165,30 @@ def _headers() -> dict:
 def _http_error(exc: HTTPError, path: str) -> Exception:
     if exc.code == 410:
         return DataHubAuthError(
-            f"{path.strip('/')} is not served by data.rmorie.com: ICPSR's terms do not allow "
-            "redistribution; download it from ICPSR (https://www.icpsr.umich.edu)"
+            unserved(path.strip("/"))
+            or f"{path.strip('/')} is no longer served by data.rmorie.com: its source does not allow "
+            "redistribution; get it from its source"
         )
     if exc.code in (401, 403):
         return DataHubAuthError(_refusal_message(exc.code, path))
-    return exc
+    # any other answer: the server's words, without the key if it echoed it
+    from ._redact import redact
+
+    key = _key()
+    said = redact(str(exc.reason), key) if key else str(exc.reason)
+    return HTTPError(exc.url, exc.code, said, exc.headers, None)
 
 
 def _open(path: str, timeout: int = 60):
+    why = unserved(path.strip("/"))
+    if why:
+        raise DataHubAuthError(why)
     req = Request(data_url() + path, headers=_headers())
     try:
         return urlopen(req, timeout=timeout)
     except HTTPError as exc:
-        err = _http_error(exc, path)
-        if err is exc:
-            raise
-        raise err from exc
+        # `from None`: the first error's text may carry the key
+        raise _http_error(exc, path) from None
 
 
 def _get(path: str, timeout: int = 60) -> bytes:
@@ -127,6 +200,9 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
     """Stream a gateway file to ``dest`` with progress; a dropped transfer is resumed."""
     from ._progress import download_url
 
+    why = unserved(path.strip("/"))
+    if why:
+        raise DataHubAuthError(why)
     try:
         return download_url(
             data_url() + path,
@@ -137,27 +213,23 @@ def _get_to_file(path: str, dest: Path, label: str, timeout: int = 600) -> int:
             opener=lambda req, timeout: urlopen(req, timeout=timeout),
         )
     except HTTPError as exc:
-        err = _http_error(exc, path)
-        if err is exc:
-            raise
-        raise err from exc
-
-
-# the tables that open only once their terms are accepted (ICPSR, NCVS 38604, a2aj)
-_RESTRICTED = re.compile(r"^/?(icpsr_|ncvs_38604|a2aj_)")
+        raise _http_error(exc, path) from None
 
 
 def _refusal_message(code: int, path: str) -> str:
-    """A 401 is a key the service no longer accepts; a 403 on a restricted table is terms not yet
-    accepted, said with where to accept them."""
-    if code == 403 and _RESTRICTED.match(path):
-        return (
-            f"{path.strip('/').split('.')[0]} is a restricted table: accept its terms of use once at "
-            f"{data_url()}/terms (signed in with the same account), then try again."
-        )
+    """What a 401 or 403 means now that the curated tables need no sign-in."""
+    why = unserved(path.strip("/"))
+    if why:
+        return why
     if not _key():
-        return f"data.rmorie.com asked for a key for {path.strip('/')}: run `morie login` once, or update the package."
-    return "data.rmorie.com rejected the stored key; run `morie login` again."
+        return (
+            f"data.rmorie.com refused {path.strip('/')} (HTTP {code}). The curated tables need no "
+            "sign-in: update the package (pip install -U morie), then try again."
+        )
+    return (
+        f"data.rmorie.com refused the stored key (HTTP {code}). The curated tables need no sign-in: "
+        "forget the key with `morie logout`, then try again."
+    )
 
 
 def _manifest_digest(key: str) -> str | None:
@@ -182,15 +254,47 @@ def _manifest_digest(key: str) -> str | None:
     return None
 
 
+def _manifest_lists(key: str) -> bool:
+    """True when a manifest at hand lists ``key``."""
+    try:
+        m = hosted_manifest()
+    except Exception:  # noqa: BLE001 - no manifest now: the cached one, if any
+        m = cached_manifest() or {}
+    return any(isinstance(d, dict) and d.get("key") == key for d in m.get("datasets", []))
+
+
 def _check_digest(path: Path, key: str) -> None:
-    """The downloaded file against the manifest's SHA-256; a mismatch removes it and stops."""
+    """The downloaded file against the manifest's SHA-256; a mismatch removes it and stops.
+
+    A table the manifest lists without a digest is loaded with a warning. A table no manifest
+    lists (none could be fetched, and none is cached) cannot be checked, and is not loaded.
+    """
     want = _manifest_digest(key)
     if want is None:
+        if not _manifest_lists(key):
+            path.unlink(missing_ok=True)
+            raise ValueError(
+                f"{key}: no manifest lists this table (data.rmorie.com's manifest could not be read), "
+                "so the download cannot be checked; nothing was loaded, try again"
+            )
+        import warnings
+
+        warnings.warn(
+            f"{key}: the manifest lists no SHA-256 for this table, so the download was not checked",
+            stacklevel=3,
+        )
         return
     h = hashlib.sha256()
     with path.open("rb") as fh:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
             h.update(chunk)
+    if h.hexdigest() != want:
+        # the table may have been rebuilt since the manifest was cached: read the manifest again, once
+        try:
+            hosted_manifest(refresh=True)
+            want = _manifest_digest(key) or want
+        except Exception:  # noqa: BLE001 - no fresh manifest: the mismatch stands
+            pass
     if h.hexdigest() != want:
         path.unlink(missing_ok=True)
         raise ValueError(
@@ -249,6 +353,7 @@ def load_hosted_dataset(key: str, *, db_path: str | Path | None = None, refresh:
 
     if not is_hosted_key(key):
         raise KeyError(f"{key!r} is not a data.rmorie.com key (expected db/table; see `morie list-datasets`)")
+    _refuse_unserved(key)  # before the cache: a copy kept from before is not handed out either
     table = hosted_table_name(key)
     if not refresh:
         try:
@@ -302,6 +407,7 @@ def hosted_to_csv(key: str, out: str | Path) -> tuple[int, int]:
     """
     import csv
 
+    _refuse_unserved(key)
     _check_known(key)
     db, tbl = key.split("/", 1)
     out = Path(out)
@@ -329,6 +435,8 @@ def hosted_entries(manifest: dict | None) -> list[dict]:
     """Catalog-shaped rows for ``list_datasets()``."""
     out = []
     for d in (manifest or {}).get("datasets", []):
+        if unserved(d["key"], d):
+            continue  # not served, so not offered
         out.append(
             {
                 "key": d["key"],

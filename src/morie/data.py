@@ -1810,7 +1810,11 @@ def _ckan_mirror(resource_id: str, dataset_key: str) -> pd.DataFrame:
         raise RuntimeError(f"it holds no copy of {dataset_key}")
     d = _user_cache_dir() / "ckan-mirror"
     d.mkdir(parents=True, exist_ok=True)
-    csv = d / hit["file"].removesuffix(".gz")
+    name = hit.get("file")
+    if not isinstance(name, str) or Path(name).name != name or name in ("", ".", ".."):
+        # the index is the server's: a name with a folder in it would write outside the cache
+        raise RuntimeError(f"its index names an unusable file for {dataset_key} ({name!r})")
+    csv = d / name.removesuffix(".gz")
 
     def sha(p: Path) -> str:
         h = hashlib.sha256()
@@ -2688,9 +2692,11 @@ def _cache_rows(table: str, db_path: str | Path | None = None) -> int | None:
 
 def dataset_info(key: str) -> dict:
     """Return full metadata for a dataset: a catalog key, or a curated ``db/table`` key."""
-    from .datahub import cached_manifest, hosted_entries, hosted_manifest, is_hosted_key
+    from .datahub import cached_manifest, hosted_entries, hosted_manifest, is_hosted_key, unserved
 
     if is_hosted_key(key):
+        if unserved(key):
+            raise KeyError(unserved(key))
         manifest = cached_manifest()
         if manifest is None:
             try:
@@ -2701,6 +2707,8 @@ def dataset_info(key: str) -> dict:
         if row is None:
             hint = "" if manifest else " (no data.rmorie.com manifest at hand: run `morie list-datasets` while online)"
             raise KeyError(f"Unknown dataset key: {key!r}{hint}")
+        if unserved(key, row):
+            raise KeyError(unserved(key, row))
         info = hosted_entries({"datasets": [row]})[0]
         info["meta"] = row.get("meta") or {}
     else:

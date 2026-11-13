@@ -68,13 +68,14 @@ def hub(tmp_path, monkeypatch):
 
 
 def test_no_key_is_a_clear_error(hub):
-    with pytest.raises(datahub.DataHubAuthError, match="morie login"):
+    # a refusal no longer sends anyone to sign in: the curated tables need none
+    with pytest.raises(datahub.DataHubAuthError, match="need no sign-in: update the package"):
         datahub.hosted_manifest()
 
 
 def test_rejected_key_says_login_again(hub, monkeypatch):
     monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-stale")
-    with pytest.raises(datahub.DataHubAuthError, match="login` again"):
+    with pytest.raises(datahub.DataHubAuthError, match="forget the key with `morie logout`"):
         datahub.hosted_manifest()
 
 
@@ -148,11 +149,13 @@ def test_a_matching_digest_loads_and_a_prefixed_one_is_read(hub, monkeypatch, tm
 
 def test_a_restricted_table_names_its_terms(hub, monkeypatch):
     monkeypatch.setenv("MORIE_HOSTED_KEY", "sk-good")
-    with pytest.raises(datahub.DataHubAuthError, match="restricted table: accept its terms") as e:
+    # an ICPSR table is not served: it is refused before any request, with where to get it
+    before = len(hub)
+    with pytest.raises(datahub.DataHubAuthError, match="download it from ICPSR") as e:
         datahub._get("/icpsr_21600/w1.csv.gz")
-    assert "https://data.example.test/terms" in str(e.value)
-    assert "login` again" in datahub._refusal_message(401, "/icpsr_21600/w1.csv.gz")
-    assert "login` again" in datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")
+    assert len(hub) == before and "terms of use" not in str(e.value)
+    assert "download it from ICPSR" in datahub._refusal_message(401, "/icpsr_21600/w1.csv.gz")
+    assert "morie logout" in datahub._refusal_message(403, "/chicago_crime/incidents.csv.gz")
 
 
 def test_no_key_needed_when_the_service_is_open(hub, monkeypatch):
@@ -174,8 +177,12 @@ def test_icpsr_410_points_to_icpsr(hub, monkeypatch):
         raise HTTPError(req.full_url, 410, "Gone", {}, None)
 
     monkeypatch.setattr(datahub, "urlopen", gone)
-    with pytest.raises(datahub.DataHubAuthError, match="download it from ICPSR"):
+    # a 410 names ICPSR for an ICPSR table only
+    with pytest.raises(datahub.DataHubAuthError, match="no longer served by data.rmorie.com"):
         datahub.hosted_manifest(refresh=True)
+    assert "download it from ICPSR" in str(
+        datahub._http_error(HTTPError("u", 410, "Gone", {}, None), "/icpsr_21600/w1.csv.gz")
+    )
 
 
 def test_the_key_goes_only_to_the_services_address(hub, monkeypatch, caplog):
