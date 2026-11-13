@@ -265,11 +265,12 @@ def signin_profile(
     """What a new key needs said first, before any sign-in starts.
 
     The data access terms are accepted (``[y/N]`` at the prompt, or ``accept_terms=True``), then a
-    name and the reason for needing the data are given, and, for the restricted tables (Schedule B:
-    ICPSR, NCVS 38604, A2AJ case law), a supervisor, department chair, director or coordinator with
-    their role and email. Arguments win; anything missing is asked with ``ask``; a missing required
-    answer raises ValueError, so no request that could issue a key is made. The data service checks
-    the same things. Returns the fields sent with the sign-in.
+    name and the reason for needing the data are given. Arguments win; anything missing is asked
+    with ``ask``; a missing required answer raises ValueError, so no request that could issue a key
+    is made. The data service checks the same things. Returns the fields sent with the sign-in.
+
+    ``restricted`` and the supervisor arguments are kept so that older calls still run, and are not
+    used: the restricted tables are no longer served, so nothing is asked or sent for them.
     """
     from . import __version__
 
@@ -303,33 +304,34 @@ def signin_profile(
     pu = given(purpose, "Why you need the data (a sentence or two): ")
     if len(pu) < 20:
         need("the reason you need the data, a sentence or two,", "--reason")
-    if restricted is None:
-        prompt = "Also open the restricted tables (ICPSR, NCVS 38604, A2AJ case law) under Schedule B? [y/N]: "
-        restricted = ask(prompt).strip().lower() in ("y", "yes")
+    if restricted:
+        echo(
+            "The restricted tables (ICPSR, NCVS 38604) are no longer served by data.rmorie.com; "
+            "get them from their sources. Nothing more is asked for them."
+        )
     out = {
         "accept_terms": terms["version"],
         "name": nm,
         "purpose": pu,
-        "accept_restricted": bool(restricted),
+        "accept_restricted": False,  # nothing restricted is served any more
         "client": f"morie/{__version__}",
     }
     if af:
         out["affiliation"] = af
-    if restricted:
-        sn = given(supervisor_name, "Your supervisor's, department chair's, director's or coordinator's name: ")
-        if not sn:
-            need(
-                "for the restricted tables, a supervisor's, chair's, director's or coordinator's name",
-                "--supervisor-name",
-            )
-        sr = given(supervisor_role, f"Their role ({', '.join(SUPERVISOR_ROLES)}): ").lower()
-        if sr not in SUPERVISOR_ROLES:
-            need(f"their role, one of {', '.join(SUPERVISOR_ROLES)},", "--supervisor-role")
-        se = given(supervisor_email, "Their email: ").lower()
-        if not _EMAIL.match(se):
-            need("their email address", "--supervisor-email")
-        out.update({"supervisor_name": sn, "supervisor_role": sr, "supervisor_email": se})
     return out
+
+
+def _usable_key(value) -> str:
+    """The key the sign-in service returned, or RuntimeError when it is not one that can be stored
+    and sent in a header (not text, empty, very long, or with spaces or control characters).
+
+    Examples:
+        >>> _usable_key("sk-" + "a" * 20)
+        'sk-aaaaaaaaaaaaaaaaaaaa'
+    """
+    if not isinstance(value, str) or not re.fullmatch(r"[\x21-\x7e]{1,512}", value):
+        raise RuntimeError("the sign-in service returned an unusable key; nothing was stored, try again")
+    return value
 
 
 def _poll_interval(value, default: float = 5.0) -> float:
@@ -380,6 +382,7 @@ def device_login(
         if poll.status_code == 200:
             body = poll.json()
             if body.get("api_key"):
+                _usable_key(body["api_key"])
                 data = read_credentials()
                 data.update(
                     {
@@ -464,6 +467,7 @@ def email_login(
             raise RuntimeError("the sign-in service did not confirm the email")
         echo(f"Your key was emailed to {email}. Store it with: morie login --token")
         return ""
+    _usable_key(body.get("api_key"))
     data = read_credentials()
     data.update(
         {"hosted_key": body["api_key"], "hosted_user": body.get("user", ""), "hosted_base_url": hosted_base_url()}

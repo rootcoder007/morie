@@ -102,13 +102,15 @@ def _get_json(
         parsed = r.json()
     except ValueError:
         parsed = None
+    from .._redact import redact
+
     if r.status_code >= 400:
-        detail = r.text[:200]
+        detail = r.text
         if isinstance(parsed, dict):
             detail = parsed.get("message") or parsed.get("error") or detail
-        raise CanLIIError(f"{path} -> HTTP {r.status_code}: {detail}")
+        raise CanLIIError(f"{path} -> HTTP {r.status_code}: {redact(detail, query['api_key'])[:200]}")
     if parsed is None:
-        raise CanLIIError(f"{path} returned non-JSON: {r.text[:120]}")
+        raise CanLIIError(f"{path} returned non-JSON: {redact(r.text, query['api_key'])[:120]}")
     return parsed
 
 

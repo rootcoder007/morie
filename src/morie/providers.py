@@ -202,7 +202,15 @@ def chat_native(
     else:
         raise ValueError(f"not a native API: {api}")
     resp = httpx.post(url, json=body, headers=headers(api, api_key), timeout=timeout)
-    resp.raise_for_status()
+    try:
+        resp.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        if not api_key:
+            raise
+        from ._redact import redact
+
+        # the same error, without the key if the provider's answer repeated it
+        raise httpx.HTTPStatusError(redact(str(exc), api_key), request=exc.request, response=exc.response) from None
     return parse(resp.json())
 
 

@@ -290,3 +290,127 @@ def test_a_mismatch_reads_the_manifest_again_once(hub, monkeypatch):
     with pytest.raises(ValueError, match="does not match"):
         datahub._check_digest(f, "open/t")
     assert not f.exists()
+
+
+# ---- the rest of the audit ----
+
+
+def test_the_data_url_override_is_https_or_this_machine(monkeypatch):
+    for ok in ("https://data.example.test/", "http://127.0.0.1:8080", "http://localhost:9"):
+        monkeypatch.setenv("MORIE_DATA_URL", ok)
+        assert datahub.data_url() == ok.rstrip("/")
+    for bad in ("http://data.example.test", "ftp://x.example", "data.example.test", "http://10.0.0.5"):
+        monkeypatch.setenv("MORIE_DATA_URL", bad)
+        with pytest.raises(ValueError, match="must be an https address"):
+            datahub.data_url()
+
+
+def test_an_r_object_is_checked_against_the_recorded_digest(tmp_path, monkeypatch):
+    body = b"not the recorded file"
+    monkeypatch.setattr(data, "_data_dir_candidates", lambda: [tmp_path])
+    monkeypatch.setattr(datahub, "_get_to_file", lambda path, dest, label, timeout=600: dest.write_bytes(body))
+    entry = {"local_path": "data/cache/x.rds", "hosted_file": "otis/x.rds", "hosted_sha256": "0" * 64}
+    with pytest.raises(RuntimeError, match="does not match the SHA-256 this package records"):
+        data._load_hosted_file(entry, "x")
+    assert not any(tmp_path.rglob("x.rds*"))
+    # the three hosted R objects each record one
+    hosted_files = [e for e in data.DATASET_CATALOG.values() if e.get("hosted_file")]
+    assert hosted_files and all(len(e.get("hosted_sha256", "")) == 64 for e in hosted_files)
+    # the right bytes are kept under the final name (what follows is the reader's business)
+    entry["hosted_sha256"] = hashlib.sha256(body).hexdigest()
+    monkeypatch.setattr(data, "_r_object_frame", lambda p: "frame")
+    assert data._load_hosted_file(entry, "x") == "frame"
+    assert (tmp_path / "cache" / "x.rds").read_bytes() == body
+
+
+def test_sign_in_asks_nothing_for_restricted_tables(monkeypatch):
+    monkeypatch.setattr(hosted, "terms_info", lambda: {"version": "2026-01-01", "url": "https://x.example/terms"})
+    said = []
+    asked = []
+
+    def ask(prompt):
+        asked.append(prompt)
+        return {"Your name: ": "Ada"}.get(
+            prompt, "Thesis chapter on court delays in Ontario." if "Why" in prompt else ""
+        )
+
+    p = hosted.signin_profile(accept_terms=True, restricted=True, ask=ask, echo=said.append)
+    assert p["accept_restricted"] is False and not any(k.startswith("supervisor") for k in p)
+    assert not any("Schedule B" in a or "supervisor" in a for a in asked)
+    assert any("no longer served" in s for s in said)
+
+
+@pytest.mark.parametrize(
+    "bad", ["", "has space in it", "tab\tinside-the-key", "x" * 600, None, 12345678, "line\nbreak-key"]
+)
+def test_an_unusable_key_from_sign_in_is_not_stored(bad):
+    with pytest.raises(RuntimeError, match="unusable key"):
+        hosted._usable_key(bad)
+    assert hosted._usable_key(KEY) == KEY
+
+
+def test_gamma_and_zeta_at_infinity():
+    import math
+
+    from morie.fn import _rrng_core, _stats_core, _tail1core
+
+    assert _stats_core._gammainc_p(2.0, math.inf) == 1.0
+    assert _stats_core._gammainc_q(2.0, math.inf) == 0.0
+    assert _tail1core._gammap(2.0, math.inf) == 1.0
+    assert _tail1core.pgamma(math.inf, 2.0) == 1.0
+    assert _rrng_core.pgamma(math.inf, 2.0) == 1.0
+    assert _rrng_core.pgamma(math.inf, 2.0, lower_tail=False) == 0.0
+    # the upper tail is computed directly: 1 - p gave 0 here
+    q = _rrng_core.pgamma(60.0, 2.0, lower_tail=False)
+    assert q == pytest.approx(61.0 * math.exp(-60.0), rel=1e-10) and q > 0
+    assert _rrng_core.pgamma(1.5, 2.0, lower_tail=False) == pytest.approx(2.5 * math.exp(-1.5), rel=1e-12)
+    assert _stats_core._Zipf._zeta(math.inf) == 1.0
+    assert _stats_core._Zipf._zeta(2.0) == pytest.approx(math.pi**2 / 6, rel=1e-9)
+
+
+def test_a_density_of_huge_values_fails_with_words():
+    from morie.fn._stats_core import gaussian_kde
+
+    for bad in ([1e300, -1e300, 5e299], [1.0, float("inf"), 2.0], [1.0, float("nan"), 2.0]):
+        with pytest.raises(ValueError, match="finite and below 1e150"):
+            gaussian_kde(bad)
+    assert gaussian_kde([1.0, 2.0, 4.0, 7.0]).n == 4
+
+
+def test_a_line_break_in_a_markdown_cell_stays_in_its_row():
+    from morie import reporting
+    from morie.fn import _frame_core as pd
+
+    md = reporting._df_markdown(pd.DataFrame({"a": ["line1\nline2", "x|y"], "b": ["p\r\nq", "z"]}))
+    lines = md.split("\n")
+    assert len(lines) == 4 and "line1<br>line2" in lines[2] and "p<br>q" in lines[2] and "x\\|y" in lines[3]
+
+
+def test_a_bundle_lists_only_files_inside_the_capsule(tmp_path):
+    from morie.capsule import _sign
+
+    cps = tmp_path / "cps"
+    cps.mkdir()
+    (cps / "a.txt").write_text("a")
+    (tmp_path / "secret.txt").write_text("s")
+    key = _sign.keygen() if hasattr(_sign, "keygen") else None
+    if key is None:
+        pytest.skip("no key generator at this name")
+    for bad in (["../secret.txt"], [str(tmp_path / "secret.txt")], ["a.txt", "../secret.txt"]):
+        with pytest.raises(ValueError, match="not files inside"):
+            _sign.bundle(str(cps), {"m": 1}, key, files=bad)
+
+
+def test_an_ingest_error_does_not_repeat_the_key(monkeypatch):
+    import httpx
+
+    from morie.ingest import canlii
+
+    def handler(request):
+        return httpx.Response(500, text=f"upstream said api_key={KEY} is bad")
+
+    with pytest.raises(canlii.CanLIIError) as e:
+        canlii._get_json(
+            "caseBrowse/en/", {}, api_key=KEY, timeout=5, user_agent="t", transport=httpx.MockTransport(handler)
+        )
+    assert KEY not in str(e.value) and "[redacted]" in str(e.value)

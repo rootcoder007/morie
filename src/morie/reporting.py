@@ -85,7 +85,8 @@ def _table_rows(df: Any) -> tuple[list[str], list[list[str]]]:
 
 def _df_markdown(df: Any) -> str:
     cols, rows = _table_rows(df)
-    esc = [[c.replace("|", "\\|") for c in r] for r in [cols, *rows]]
+    # a line break inside a cell would end the table row
+    esc = [[re.sub(r"\r\n|\r|\n", "<br>", c.replace("|", "\\|")) for c in r] for r in [cols, *rows]]
     lines = ["| " + " | ".join(esc[0]) + " |", "|" + "|".join("---" for _ in cols) + "|"]
     lines += ["| " + " | ".join(r) + " |" for r in esc[1:]]
     return "\n".join(lines)

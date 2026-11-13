@@ -179,7 +179,9 @@ def ask_gemini(
             json=payload,
         )
     if r.status_code != 200:
-        raise RuntimeError(f"Vertex API returned {r.status_code}: {r.text[:400]}")
+        from ._redact import redact
+
+        raise RuntimeError(f"Vertex API returned {r.status_code}: {redact(r.text, token)[:400]}")
     data = r.json()
     try:
         parts = data["candidates"][0]["content"]["parts"]

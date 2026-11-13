@@ -365,6 +365,8 @@ def _gammap(a, x):
     """Regularised lower incomplete gamma P(a, x)."""
     if x <= 0.0:
         return 0.0
+    if math.isinf(x):
+        return 1.0  # the limit; the continued fraction would give nan
     gln = math.lgamma(a)
     if x < a + 1.0:
         ap, s, d = a, 1.0 / a, 1.0 / a

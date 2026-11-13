@@ -409,8 +409,9 @@ def pgamma(q, shape, rate=1.0, lower_tail=True):
         v = float(v)
         if v <= 0:
             return 0.0 if lower_tail else 1.0
-        p = s._gammainc_p(shape, rate * v)
-        return p if lower_tail else 1.0 - p
+        if not lower_tail:
+            return s._gammainc_q(shape, rate * v)  # computed directly: 1 - p loses a small tail
+        return s._gammainc_p(shape, rate * v)
 
     return _elem(one, q)
 

@@ -351,7 +351,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--restricted",
         action="store_true",
         default=None,
-        help="Also accept Schedule B, for the restricted tables (needs the supervisor options)",
+        help="No longer used: the restricted tables are not served (kept so that older commands still run)",
     )
     login_cmd.add_argument(
         "--supervisor-name", default=None, metavar="NAME", help="Supervisor, chair, director or coordinator"

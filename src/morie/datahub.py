@@ -50,6 +50,14 @@ def data_url() -> str:
     """
     env = os.environ.get("MORIE_DATA_URL", "").strip()
     if env:
+        from urllib.parse import urlsplit
+
+        u = urlsplit(env)
+        here = u.hostname in ("127.0.0.1", "localhost", "::1")
+        if not u.hostname or (u.scheme != "https" and not (u.scheme == "http" and here)):
+            raise ValueError(
+                f"MORIE_DATA_URL must be an https address (plain http is accepted for this machine only): {env!r}"
+            )
         return env.rstrip("/")
     from . import services
 

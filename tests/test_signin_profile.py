@@ -81,32 +81,29 @@ def test_name_and_reason_are_required(monkeypatch):
 
 
 def test_schedule_b_needs_a_supervisor_with_role_and_email(monkeypatch):
+    # the restricted tables are no longer served: Schedule B is not asked for or sent, and the
+    # supervisor arguments of older calls are accepted and left out
     monkeypatch.setattr(hosted, "terms_info", lambda: TERMS)
     base = dict(accept_terms=True, name="Ada", affiliation="Uni", purpose="Thesis chapter on court delays in Ontario.")
-    with pytest.raises(ValueError, match="supervisor's, chair's, director's or coordinator's name"):
-        hosted.signin_profile(restricted=True, ask=answers(""), **base)
-    with pytest.raises(ValueError, match="their role, one of supervisor, chair"):
-        hosted.signin_profile(restricted=True, supervisor_name="Dr B", supervisor_role="boss", ask=answers(""), **base)
-    with pytest.raises(ValueError, match="their email address"):
-        hosted.signin_profile(
-            restricted=True, supervisor_name="Dr B", supervisor_role="Chair", supervisor_email="nope", **base
-        )
+    said = []
+    p = hosted.signin_profile(restricted=True, ask=answers(""), echo=said.append, **base)
+    assert p["accept_restricted"] is False and "supervisor_name" not in p
+    assert any("no longer served" in s for s in said)
     p = hosted.signin_profile(
         restricted=True, supervisor_name="Dr B", supervisor_role="Chair", supervisor_email="B@Uni.example", **base
     )
-    assert p["accept_restricted"] is True and p["affiliation"] == "Uni"
-    assert (p["supervisor_name"], p["supervisor_role"], p["supervisor_email"]) == ("Dr B", "chair", "b@uni.example")
+    assert p["accept_restricted"] is False and p["affiliation"] == "Uni"
+    assert not any(k.startswith("supervisor") for k in p)
 
 
 def test_schedule_b_chosen_at_the_prompt_asks_for_the_supervisor(monkeypatch):
+    # no Schedule B prompt is left: the three answers are all that is asked
     monkeypatch.setattr(hosted, "terms_info", lambda: TERMS)
     p = hosted.signin_profile(
         accept_terms=True,
-        ask=answers(
-            "Ada", "Uni", "Thesis chapter on court delays in Ontario.", "y", "Dr B", "director", "b@uni.example"
-        ),
+        ask=answers("Ada", "Uni", "Thesis chapter on court delays in Ontario."),
     )
-    assert p["accept_restricted"] is True and p["supervisor_role"] == "director"
+    assert p["accept_restricted"] is False and "supervisor_role" not in p
 
 
 def test_the_profile_goes_with_the_sign_in_requests(monkeypatch, tmp_path):

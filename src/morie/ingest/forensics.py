@@ -199,7 +199,9 @@ def fetch_nibrs(
                     f"FBI CDE rejected the API key (HTTP {r.status_code}). Verify your key at {FBI_CDE_SIGNUP_URL}."
                 )
             if r.status_code >= 400:
-                raise ForensicsError(f"FBI CDE NIBRS -> HTTP {r.status_code}: {r.text[:200]} (url={url})")
+                from .._redact import redact
+
+                raise ForensicsError(f"FBI CDE NIBRS -> HTTP {r.status_code}: {redact(r.text, key)[:200]} (url={url})")
             payload = r.json()
             # CDE wraps records in either "results" or "data"; handle both.
             batch = payload.get("results") or payload.get("data") or []

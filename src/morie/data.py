@@ -661,6 +661,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "large_file": False,
         "local_path": "data/cache/correctional_stats_report_environment1b.RData",
         "hosted_file": "otis/correctional_stats_report_environment1b.RData",
+        "hosted_sha256": "31dfadd959c8b24f085ee33323d4f61a5b8ee752c2989ef2e6b36b5e9c2692f4",
         "table_name": "otis",
         "ckan_resource_id": "",
     },
@@ -674,6 +675,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "large_file": True,
         "local_path": "data/cache/dt_expanded.rds",
         "hosted_file": "otis/dt_expanded.rds",
+        "hosted_sha256": "bd2a00ff0790d4e48921a77813b6bbf0386a89e63c6dd4cf961ab2fea3d0f77b",
         "table_name": "otisexp",
         "ckan_resource_id": "",
     },
@@ -687,6 +689,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "large_file": True,
         "local_path": "data/cache/finne_env.RData",
         "hosted_file": "otis/finne_env.RData",
+        "hosted_sha256": "fcfa578b69e3eb6f544b01db770ad996542902f8d22d66b56457fe34b3cfbef9",
         "table_name": "otisfin",
         "ckan_resource_id": "",
     },
@@ -1753,7 +1756,29 @@ def _load_hosted_file(entry: dict, matched: str):
     dest = _data_dir_candidates()[0] / tail
     if not dest.exists():
         dest.parent.mkdir(parents=True, exist_ok=True)
-        _get_to_file("/files/" + entry["hosted_file"], dest, label=matched)
+        # the manifest does not list these files: the catalogue records their SHA-256 instead
+        part = dest.with_name(dest.name + ".part")
+        _get_to_file("/files/" + entry["hosted_file"], part, label=matched)
+        want = entry.get("hosted_sha256")
+        if want:
+            import hashlib
+
+            h = hashlib.sha256()
+            with open(part, "rb") as fh:
+                for chunk in iter(lambda: fh.read(1 << 20), b""):
+                    h.update(chunk)
+            if h.hexdigest() != want.lower():
+                part.unlink(missing_ok=True)
+                raise RuntimeError(
+                    f"{matched}: the downloaded file does not match the SHA-256 this package records for it "
+                    f"(got {h.hexdigest()[:16]}..., expected {want[:16]}...); nothing was kept. Try again, or "
+                    "update the package if the file was rebuilt."
+                )
+        else:
+            import warnings
+
+            warnings.warn(f"{matched}: no SHA-256 is recorded for this file, so it was not checked", stacklevel=2)
+        part.replace(dest)
     # a data frame in it is read natively (no R needed); anything else is saved for R
     df = _r_object_frame(dest)
     if df is None:

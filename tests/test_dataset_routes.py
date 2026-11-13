@@ -86,6 +86,10 @@ def test_an_r_object_is_saved_and_the_user_is_told_where(isolated, monkeypatch):
         return 3
 
     monkeypatch.setattr(datahub, "_get_to_file", fake_get)
+    # the stand-in bytes, as the digest the catalogue records for this file
+    import hashlib
+
+    monkeypatch.setitem(data.DATASET_CATALOG["otisexp"], "hosted_sha256", hashlib.sha256(b"RDS").hexdigest())
     with pytest.raises(NotImplementedError, match="rmorie::morie_load_dataset\\('otisexp'\\)"):
         data.load_dataset("otisexp", db_path=isolated / "c.db")
     assert (isolated / "data" / "cache" / "dt_expanded.rds").read_bytes() == b"RDS"

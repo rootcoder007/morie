@@ -289,10 +289,18 @@ def bundle(
     path = os.fspath(path) if path is not None else os.path.join(cpsdir, BUNDLE)
     if files is None:
         own = os.path.realpath(path)
-        files = [f for f in _listing(cpsdir) if os.path.realpath(os.path.join(cpsdir, f)) != own]
+        # a link that leaves the folder is not part of the capsule (a check would refuse it)
+        files = [
+            f
+            for f in _listing(cpsdir)
+            if os.path.realpath(os.path.join(cpsdir, f)) != own and safe_rel(f, cpsdir) is not None
+        ]
     files = sorted(str(f) for f in files)
     if not files:
         raise ValueError("no files to bundle")
+    outside = [f for f in files if safe_rel(f, cpsdir) is None]
+    if outside:
+        raise ValueError("these are not files inside `dir`: " + ", ".join(outside[:5]))
     absent = [f for f in files if not os.path.exists(os.path.join(cpsdir, f))]
     if absent:
         raise FileNotFoundError("these files are not in `dir`: " + ", ".join(absent[:5]))

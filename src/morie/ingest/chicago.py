@@ -92,7 +92,9 @@ def _socrata_get(
     with httpx.Client(timeout=timeout, headers=headers, follow_redirects=True) as c:
         r = c.get(resource_url, params=params)
         if r.status_code >= 400:
-            raise ChicagoError(f"socrata GET -> HTTP {r.status_code}: {r.text[:200]}")
+            from .._redact import redact
+
+            raise ChicagoError(f"socrata GET -> HTTP {r.status_code}: {redact(r.text, app_token)[:200]}")
         payload = r.json()
         if isinstance(payload, dict) and "error" in payload:
             raise ChicagoError(f"socrata error: {payload}")

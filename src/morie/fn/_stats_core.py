@@ -77,6 +77,8 @@ def _gammainc_p(a, x):
         raise ValueError("invalid arguments")
     if x == 0:
         return 0.0
+    if _math.isinf(x):
+        return 1.0  # the limit; the series below would give inf - inf
     ln_pre = a * _math.log(x) - x - _math.lgamma(a)
     if x < a + 1.0:
         term = 1.0 / a
@@ -120,6 +122,8 @@ def _gammainc_q(a, x):
         raise ValueError("invalid arguments")
     if x == 0:
         return 1.0
+    if _math.isinf(x):
+        return 0.0
     if x < a + 1.0:
         return 1.0 - _gammainc_p(a, x)
     return _math.exp(_log_gammainc_q_cf(a, x))
@@ -3092,6 +3096,11 @@ class gaussian_kde:
             self.dataset = [[float(v) for v in dataset]]
         self.d = len(self.dataset)
         self.n = len(self.dataset[0])
+        if any(not _math.isfinite(v) or abs(v) > 1e150 for r in self.dataset for v in r):
+            # the squared deviations below would overflow
+            raise ValueError(
+                "gaussian_kde: the data must be finite and below 1e150 in size to give a bandwidth; rescale it"
+            )
         factor = self.n ** (-1.0 / (self.d + 4)) if bw_method in (None, "scott") else float(bw_method)
         self.factor = factor
         # data covariance (ddof=1)
@@ -5458,6 +5467,8 @@ class _Zipf(_Dist):
 
     @staticmethod
     def _zeta(a):
+        if _math.isinf(a):
+            return 1.0  # the limit: only the first term is left
         # direct sum plus the Euler-Maclaurin tail
         N = 2000
         s = _math.fsum(k ** (-a) for k in range(1, N + 1))

@@ -397,7 +397,15 @@ def test_a_hosted_r_object_is_saved_in_the_data_dir_in_effect(monkeypatch, tmp_p
     monkeypatch.setenv("MORIE_DATA_DIR", str(tmp_path / "chosen"))
     monkeypatch.chdir(tmp_path)
     got = []
-    monkeypatch.setattr(datahub, "_get_to_file", lambda path, dest, **k: got.append(dest) or dest.write_bytes(b"new"))
+    # the download lands under a .part name and is renamed once its digest checks
+    import hashlib
+
+    monkeypatch.setitem(entry, "hosted_sha256", hashlib.sha256(b"new").hexdigest())
+    monkeypatch.setattr(
+        datahub,
+        "_get_to_file",
+        lambda path, dest, **k: got.append(dest.with_name(dest.name.removesuffix(".part"))) or dest.write_bytes(b"new"),
+    )
     with pytest.raises(data.RObjectSavedError) as e:
         data.load_dataset(key)
     assert str(tmp_path / "chosen") in str(e.value)
