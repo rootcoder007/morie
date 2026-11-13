@@ -348,4 +348,10 @@ jobs:
         # local_mocked_bindings() needs to find the bindings it replaces
         # (a bare env = new.env(parent = asNamespace('morie')) errored with
         # "No packages loaded with pkgload"). Serial, as before.
-        run: Rscript -e "Sys.setenv(TESTTHAT_PARALLEL = 'FALSE'); testthat::test_dir('r-package/morie/tests/testthat', package = 'morie', load_package = 'installed', stop_on_failure = TRUE)"
+        # The files run in batches, each in a fresh R process (tests/testthat.R), so that the
+        # memory of one long R process does not grow over the whole suite.
+        working-directory: r-package/morie/tests
+        env:
+          NOT_CRAN: "true"
+          TESTTHAT_PARALLEL: "FALSE"
+        run: Rscript testthat.R
