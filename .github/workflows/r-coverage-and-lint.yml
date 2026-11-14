@@ -27,6 +27,9 @@ permissions:
 
 jobs:
   coverage:
+    # started by hand only: under coverage the whole suite does not finish
+    # inside the six-hour limit of a hosted runner
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     name: covr + codecov upload
 
