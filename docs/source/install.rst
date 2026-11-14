@@ -1,7 +1,7 @@
 Installation
 ============
 
-MORIE targets Python 3.10 or newer and R 4.3 or newer. The two languages are
+MORIE targets Python 3.11.5 or newer and R 4.3 or newer. The two languages are
 independent: install the one you use, or both for the dual-language pipeline.
 
 .. note::
@@ -158,7 +158,7 @@ into a virtual environment; it needs only the stock ``python3``:
 
 Activate the venv in each new shell (``source ~/.venvs/morie/bin/activate``)
 or call ``~/.venvs/morie/bin/morie`` directly. Other distributions: ``pip
-install morie`` in any Python 3.10+ environment.
+install morie`` in any Python 3.11.5+ environment.
 
 Windows
 -------

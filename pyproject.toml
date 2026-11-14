@@ -12,7 +12,7 @@ authors = [
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11.5"
 keywords = [
     "MRM",
     "MRM modules",
@@ -38,7 +38,7 @@ classifiers = [
     "Intended Audience :: Legal Industry",
     "Intended Audience :: Education",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.14",
     "Programming Language :: R",
@@ -185,7 +185,7 @@ sdist.include = ["/libmorie/", "/CMakeLists.txt", "/scripts/bundle_fn.py", "/LIC
 
 [tool.cibuildwheel]
 # Build CPython wheels for the supported range; skip musl, 32-bit, PyPy.
-build = "cp310-* cp311-* cp312-* cp313-* cp314-*"
+build = "cp311-* cp312-* cp313-* cp314-*"
 skip = "*-musllinux* *_i686 *-win32"
 build-frontend = "build"
 

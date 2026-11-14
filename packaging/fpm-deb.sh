@@ -64,7 +64,7 @@ fpm -s dir -t deb \
   --url "https://github.com/rootcoder007/morie" \
   --license "AGPL-3.0-or-later" \
   --description "Multi-domain Open Research and Inferential Estimation (morie)." \
-  --depends "python3 (>= 3.10)" \
+  --depends "python3 (>= 3.11.5)" \
   --depends "python3-venv" \
   --depends "python3-pip" \
   --after-install staging/deb-scripts/postinst \

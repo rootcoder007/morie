@@ -11,8 +11,8 @@ MORIE 森
 .. image:: https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg
    :alt: License: AGPL-3.0-or-later
 
-.. image:: https://img.shields.io/badge/python-3.10%2B-blue.svg
-   :alt: Python 3.10+
+.. image:: https://img.shields.io/badge/python-3.11.5%2B-blue.svg
+   :alt: Python 3.11.5+
 
 .. image:: https://img.shields.io/badge/R-4.3%2B-276DC3.svg
    :alt: R 4.3+
@@ -43,7 +43,7 @@ Pick any one channel — each installs the current ``morie`` release:
    # 1. One-line installer (Linux / macOS / WSL) — detects pip + R, installs both
    curl -fsSL https://rootcoder007.github.io/morie/install.sh | bash
 
-   # 2. PyPI (any platform with Python ≥3.10)
+   # 2. PyPI (any platform with Python ≥3.11.5)
    pip install morie                  # 71 catalogued datasets, 15,222 morie.fn callables
    pip install "morie[interactive]"   # + Terminal IDE (TUI)
    morie interactive install          # the REPL, exec, agent and TUI modules, once per user

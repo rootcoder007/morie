@@ -7,6 +7,10 @@ Per-package full changelogs:
 - **Python package:** see commit history + git tags
 - **Auto-generated version-stamp inventory:** [VERSION_INVENTORY.csv](https://github.com/rootcoder007/morie/blob/main/VERSION_INVENTORY.csv)
 
+## 1.5.4 (unreleased)
+
+- Python 3.11.5 or newer is required (was 3.10). Python 3.10 reached its end of life in October 2026, and the HTML selector library that `beautifulsoup4` depends on (`soupsieve`) fixed three denial-of-service flaws only in releases that need Python 3.11.5. The last release for older Pythons is 1.5.3.
+
 ## 1.5.3 (2026-11-01)
 
 * The R package's SQL cache is SQLite only: it no longer uses 'duckdb' (removed from Suggests), which

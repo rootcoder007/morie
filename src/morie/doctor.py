@@ -25,9 +25,9 @@ from typing import Any
 
 def _check_python_version() -> tuple[bool, str]:
     v = sys.version_info
-    ok = (v.major, v.minor) >= (3, 10)
+    ok = (v.major, v.minor, v.micro) >= (3, 11, 5)
     label = f"{v.major}.{v.minor}.{v.micro}"
-    return ok, label if ok else f"{label} (need >= 3.10)"
+    return ok, label if ok else f"{label} (need >= 3.11.5)"
 
 
 def _check_import(package: str) -> tuple[bool, str]:

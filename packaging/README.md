@@ -46,7 +46,7 @@ Each package installs:
 - `/usr/local/bin/morie` &mdash; thin bash launcher.
 - `/opt/morie/venv/` &mdash; private virtualenv populated by the post-install
   scriptlet via `pip install morie==<VERSION>` (depends on system `python3
-  >= 3.10`).
+  >= 3.11.5`).
 
 This keeps system Python untouched and lets us ship a single binary-agnostic
 package per architecture.

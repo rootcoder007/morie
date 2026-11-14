@@ -118,7 +118,7 @@ install_python() {
         echo "    /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
         echo "  Then re-run this script.  Alternatively, download Python from https://www.python.org/downloads/"
       else
-        echo "  Please install Python 3.10+ manually from https://www.python.org/downloads/ and re-run."
+        echo "  Please install Python 3.11.5+ manually from https://www.python.org/downloads/ and re-run."
       fi
       return 1 ;;
   esac

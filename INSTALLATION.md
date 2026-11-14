@@ -19,7 +19,7 @@ Several steps run in a terminal. To open one:
 - **macOS** — press `Cmd+Space`, type `Terminal`, press `Enter`.
 - **Linux** — press `Ctrl+Alt+T`, or find **Terminal** in your apps.
 
-### Python 3.10+  — *needed for: `pip`, the Windows path*
+### Python 3.11.5+  — *needed for: `pip`, the Windows path*
 
 Runs morie. Official source: **<https://www.python.org/downloads/>**.
 
@@ -113,7 +113,7 @@ installed and working. Pick by what you have:
 - **macOS or Linux** — the
   [curl one-liner](#1-curl-one-liner-linux--macos--wsl) is simplest; it
   needs only `curl` and `bash` (Step 1).
-- **You already have Python ≥3.10** — `pip install morie`
+- **You already have Python ≥3.11.5** — `pip install morie`
   ([section 4](#4-pypi-manual-pip)).
 - **You want the R package** — install **R** (Step 1), then
   [section 6](#6-r-r-universe).
@@ -133,7 +133,7 @@ environment — the comparison table first, then full steps for each.
 | 1 | **Curl one-liner** | Linux / macOS / WSL, no Python or pip yet | `curl`, `bash` |
 | 2 | **Windows** | Native Windows 10 / 11 | nothing — official `.exe` installers |
 | 3 | **Homebrew tap** | macOS or Linuxbrew users | Homebrew |
-| 4 | **PyPI (pip)** | You already manage your own venv | Python ≥3.10, pip |
+| 4 | **PyPI (pip)** | You already manage your own venv | Python ≥3.11.5, pip |
 | 5 | **Docker (GHCR)** | Zero-install or CI/CD | Docker |
 | 6 | **R (r-universe)** | You want the R package | R ≥4.3 |
 
@@ -285,7 +285,7 @@ brew upgrade morie
 
 ## 4. PyPI (manual `pip`)
 
-This path assumes you already have a working Python ≥3.10 with `pip` and a venv.
+This path assumes you already have a working Python ≥3.11.5 with `pip` and a venv.
 
 ```bash
 python3 -m venv ~/.venvs/morie

@@ -11,7 +11,7 @@ The R package ships **native causal-inference engines** — matching (nearest/Ma
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-a42e2b.svg)](https://github.com/rootcoder007/morie/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/morie.svg)](https://pypi.org/project/morie/)
 [![rmorie on r-universe](https://rootcoder007.r-universe.dev/badges/rmorie)](https://rootcoder007.r-universe.dev/rmorie)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11.5+](https://img.shields.io/badge/python-3.11.5+-blue.svg)](https://www.python.org/downloads/)
 [![Website](https://img.shields.io/badge/website-rmorie.com-1d1d1f.svg)](https://rmorie.com)
 
 > The `morie` command line checks PyPI once a day for a newer release (fail-silent,
@@ -38,7 +38,7 @@ morie is a Python (and R) package — once Python is present it is `pip install 
 
 - **Windows** — install Python from [python.org](https://www.python.org/downloads/) (on the first screen tick **Add python.exe to PATH**), then `pip install morie`. Full walkthrough: [Windows](#recommended--windows) below. Windows has no `curl`/`bash`, so the one-liner does not apply there.
 - **macOS / Linux** — the one-liner below sets up everything. It needs `curl` and `bash`, which macOS has built in and most Linux ships.
-- **Already have Python ≥3.10** — just `pip install morie` (on Debian, Ubuntu and Raspberry Pi OS use the venv three-liner below; their system `pip` refuses to install into `/usr`). The estimators take a pandas DataFrame, a CSV path, or a dict of columns; pandas is optional (morie ships its own frame core).
+- **Already have Python ≥3.11.5** — just `pip install morie` (on Debian, Ubuntu and Raspberry Pi OS use the venv three-liner below; their system `pip` refuses to install into `/usr`). The estimators take a pandas DataFrame, a CSV path, or a dict of columns; pandas is optional (morie ships its own frame core).
 
 ### For terminal users — one-liner (Linux / macOS / WSL)
 

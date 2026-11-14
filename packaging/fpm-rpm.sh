@@ -62,7 +62,7 @@ fpm -s dir -t rpm \
   --url "https://github.com/rootcoder007/morie" \
   --license "AGPL-3.0-or-later" \
   --description "Multi-domain Open Research and Inferential Estimation (morie)." \
-  --depends "python3 >= 3.10" \
+  --depends "python3 >= 3.11.5" \
   --depends "python3-pip" \
   --rpm-summary "morie: Multi-domain Open Research and Inferential Estimation" \
   --rpm-dist  "el" \
