@@ -31,7 +31,7 @@ and the `morie_match_result` / result-object shapes do not change.
 | 7 | morie_matching_cardinality (native) | designmatch | DONE (already native: caliper sweep over module-1 engine; balance-guarantee tests added) |
 | 8 | IPW family (ipw.R + investigation.R survey-free) | survey::svyglm | DONE (svyglm reproduced to 1e-6; 2-5x faster) |
 | 9 | morie_matching_doubly_robust / morie_estimate_aipw | survey | DONE (verified already native: base stats lm/glm + bootstrap/IF SEs; no survey at runtime) |
-| 10 | morie_estimate_double_ml / morie_estimate_irm (native) | DoubleML/mlr3/ranger | DONE (native-only; 40-60x faster; CI-overlap agreement with DoubleML) |
+| 10 | morie_estimate_double_ml / morie_estimate_irm (native) | DoubleML/mlr3/ranger | DONE (native-only, ridge nuisances; 24-61x faster than DoubleML with ranger forests, which are different learners; CI-overlap agreement with DoubleML) |
 | 11 | (not exported in morie) | grf | N/A here — see rmorie branch |
 | 12 | meta-learners T/S/X/DR | — (new) | planned |
 | 13 | morie_dag / identify / estimate / refute | — (new) | planned |
