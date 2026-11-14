@@ -1,3 +1,8 @@
+# morie 1.5.4
+
+* `morie_read_parquet()` and `morie_write_parquet()` are brought up to rmoriedata 0.4.3's copy of the same code. The reader checks every read against the file: a damaged or truncated file stops with an error that starts with `parquet:` (it could stop with base-R errors such as "subscript out of bounds", loop on a footer claiming 2^56 entries, or overflow the stack), and page CRCs, page sizes, value counts and row counts are checked, with caps on rows and page size (options `rmoriedata.parquet_max_rows` and `rmoriedata.parquet_max_page_bytes`). It reads GZIP and ZSTD pages as well as Snappy, ZSTD through a Zstandard decoder in the package written from RFC 8878 (no dictionaries), so files written with `compression = "zstd"` by nanoparquet, arrow or DuckDB read with no other package; Snappy is decoded in C. Duplicate column names are kept apart with a warning. LIST columns are read as before. The writer writes GZIP by default (`compression = "snappy"` or `NULL` as before; its Snappy now compresses), keeps `NaN`, stores a CRC with every page, and refuses, naming the column, duplicate names, strings that are not valid UTF-8, list, complex, raw, `difftime`, `integer64`, matrix and data frame columns, dates and times out of Parquet's range or infinite, and pages over 2^31 - 1 bytes. Dates and times are written down to the whole day and millisecond as R prints them.
+* Version kept in step with the Python package (1.5.4).
+
 # morie 1.5.3 - 2026-11-01
 
 * The SQL cache is SQLite only: morie no longer uses 'duckdb' (removed from Suggests). 'duckdb' 2.0.0
