@@ -1,4 +1,4 @@
-"""Fresh-user test, round 5 (morie 1.4.0 sdist on l14, 2026-10-03): each finding with its fix."""
+"""Fresh-user test, round 5 (morie 1.4.0 sdist, 2026-10-03): each finding with its fix."""
 
 from __future__ import annotations
 

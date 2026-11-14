@@ -1,4 +1,4 @@
-"""Round-4 findings of the 1.4.0 fresh-user test agent (l14, 2026-10-03), each with its fix."""
+"""Round-4 findings of the 1.4.0 fresh-user test agents (2026-10-03), each with its fix."""
 
 from __future__ import annotations
 

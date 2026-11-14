@@ -2,8 +2,7 @@
 
 Rootcoder007, started 2026-09-21. Fresh start: nothing here is
 taken from earlier MRP/VSR work; those results are a later reproducibility
-target inside rmorie, not the seed. Workspace: l14 `~/work/rmorie-research`
-(branch `research`), Lean project to be created as `~/work/researchproofs`.
+target inside rmorie, not the seed. Workspace: branch `research`; the Lean project is `research/lean`.
 
 Selection rule: a problem is on this list if the field itself calls it
 unsolved AND a correct, machine-checked method would change what the field
@@ -249,7 +248,7 @@ or of the initial condition?
   process: the share converges to a random limit (uniform on (0, 1)) fixed
   by early luck. R: `morie_feedback_loop_urn_law()`. Still open: the
   unequal-rate urn (a Rubin-type reinforcement theorem; the library has no
-  source for it, see LIBRARY-SCAN-2026-09-21.md C1–C3), the Azuma drift
+  source for it), the Azuma drift
   envelope, and the a.s. convergence statement itself (needs Mathlib's
   martingale convergence on a genuine filtered space).
 
@@ -476,7 +475,7 @@ implementation, C++ network kernels), then P7, P6, P2, P8.
 
 ## Library scan (2026-09-21)
 
-Three readers went through the criminology, statistics and mathematics shelves of the WD library and the full-text corpus index; 74 candidate problems with page citations, and a ten-step priority queue, are in research/LIBRARY-SCAN-2026-09-21.md. First in the queue: the stochastic urn for P4 (martingale share, Friedman contrast, Azuma drift envelope), then the Jensen sharpening of the P7 Poisson null and Cox overdispersion, then the Petersen/Chapman floor and k-list non-identification for P1.
+Three readers went through the criminology, statistics and mathematics shelves of the reference library and the full-text corpus index, and listed 74 candidate problems with page citations and a ten-step priority queue. First in the queue: the stochastic urn for P4 (martingale share, Friedman contrast, Azuma drift envelope), then the Jensen sharpening of the P7 Poisson null and Cox overdispersion, then the Petersen/Chapman floor and k-list non-identification for P1.
 
 
 - Progress 2026-09-21 (comparative statics): `Research.P8.certainty_monotone`,

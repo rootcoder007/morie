@@ -1,7 +1,7 @@
 """morie frame core: pandas subset (DataFrame / Series + module fns).
 
 Native replacement for the pandas surface morie uses (inventory
-l14:/tmp/pd_inventory.json + /tmp/pd_methods.json: DataFrame 1726,
+pd_inventory.json + pd_methods.json: DataFrame 1726,
 Series 374, read_csv 87, concat/to_datetime/crosstab/qcut/get_dummies/
 cut ...; methods dominated by sum/mean/astype/dropna/groupby/loc/values).
 Pure Python, list-backed columns.  Equivalence-tested against pandas in

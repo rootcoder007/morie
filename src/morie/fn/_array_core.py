@@ -2,7 +2,7 @@
 
 De-numpy campaign phase 2 foundation.  This module implements, in pure
 Python, the primitives that cover the bulk of morie.fn's numpy usage
-(the l14 inventory: 321,553 call sites, top-40 attrs = 96.3%).  Modules
+(the inventory: 321,553 call sites, top-40 attrs = 96.3%).  Modules
 switch by replacing `import numpy as np` with
 `from morie.fn import _array_core as np` — call sites keep their `np.`
 spelling.  C kernels in morie_core will back these entry points later;

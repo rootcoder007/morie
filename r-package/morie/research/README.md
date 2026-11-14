@@ -8,8 +8,7 @@ signed off.
 - `LEDGER.md`: the eight problems, each with estimand, identifying
   assumptions, what must be proved, what "cracked" means, sources, and a
   progress log.
-- `lean/`: the Lean 4 sources (Mathlib, project `~/work/researchproofs`
-  on l14). `Audit.lean` prints the axioms of every theorem; all depend on
+- `lean/`: the Lean 4 sources (Mathlib, project `researchproofs`). `Audit.lean` prints the axioms of every theorem; all depend on
   `propext`, `Classical.choice`, `Quot.sound` only, and no file contains
   `sorry`.
 

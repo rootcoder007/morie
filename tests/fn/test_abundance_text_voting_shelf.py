@@ -543,7 +543,7 @@ def fit_1d():
 
     W-NOMINATE is n + m small probit fits per sweep and this chamber takes
     39 sweeps; on the pure-Python array core one fit measured 31-39 s on
-    l14 under load, so fitting it afresh in each of five tests was what
+    the test machine under load, so fitting it afresh in each of five tests was what
     pushed the file past its timeouts.
     """
     V, truth = chamber()
@@ -570,7 +570,7 @@ def test_the_svd_start_reaches_a_better_optimum_than_a_random_one():
 
 
 # 192 alternating sweeps of 340 small probit fits each: 157 s (194 s
-# unprofiled at load 9) on l14 with the list-based half-steps in wnoma.
+# unprofiled at load 9) on the test machine with the list-based half-steps in wnoma.
 # The work is the sweep count, not overhead -- numpy needs the same 192.
 @pytest.mark.timeout(600)
 def test_ideal_points_are_recovered_in_two_dimensions_up_to_rotation():

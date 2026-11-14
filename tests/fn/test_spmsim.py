@@ -51,7 +51,7 @@ def test_one_bandwidth_per_covariate():
     assert np.all(np.asarray(r["bandwidths"]) > 0)
 
 
-# eight full backfits: ~130 s alone on l14, past fn-sampled's 120 s default
+# eight full backfits: ~130 s alone on the test machine, past fn-sampled's 120 s default
 @pytest.mark.timeout(900)
 def test_covariates_at_different_scales_get_different_bandwidths():
     """This is the entire claim MGWR makes over single-bandwidth GWR.
@@ -69,7 +69,7 @@ def test_covariates_at_different_scales_get_different_bandwidths():
     assert hits >= 6
 
 
-# three of the shared backfits (seeds 13, 5, 29); alone that is ~50 s on l14 and
+# three of the shared backfits (seeds 13, 5, 29); alone that is ~50 s on the test machine and
 # it was the test that ran them first in the full run, where it hit 120 s
 @pytest.mark.timeout(900)
 def test_backfitting_matches_the_reference_and_separates_the_scales():

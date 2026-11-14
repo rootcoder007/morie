@@ -55,6 +55,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: No working notes or tool settings are tracked
+        run: sh scripts/audit/check_private.sh
+
       - name: R undefined-symbol check (both package roots)
         run: Rscript scripts/audit/check_r_undefined.R r-package/morie
 
