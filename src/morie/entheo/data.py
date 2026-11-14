@@ -1,7 +1,8 @@
 """
 morie.entheo.data -- Data fetchers for the DMT-imaging dataset.
 
-Primary path: local mirror at ``/Volumes/VSR/rootcoderfiles/DMT_Imaging``
+Primary path: a local mirror at ``$MORIE_DMT_IMAGING_ROOT`` (default
+``~/.cache/morie/DMT_Imaging``)
 (Carhart-Harris / Timmermann; 20 subjects EEG-fMRI; 15 motion-survived).
 
 Fallback path: OpenNeuro mirror (network-guarded; in v0.4.0-alpha we
@@ -33,7 +34,7 @@ __all__ = ["load_dmt_imaging", "dmt_imaging_root", "list_subjects"]
 
 # 15-of-20 motion-survived per the manuscript & README; the remaining
 # 5 (04, 05, 20, 21, 24) are absent on disk.
-_DEFAULT_LOCAL_ROOT = "/Volumes/VSR/rootcoderfiles/DMT_Imaging"
+_DEFAULT_LOCAL_ROOT = os.path.join(os.path.expanduser("~"), ".cache", "morie", "DMT_Imaging")
 _ENV_OVERRIDE = "MORIE_DMT_IMAGING_ROOT"
 _SUBJECT_RE = re.compile(r"^LongS(\d{2})(DMT|PCB)\.mat$")
 

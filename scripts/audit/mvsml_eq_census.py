@@ -8,6 +8,7 @@ separator."""
 import collections
 import glob
 import json
+import os
 import re
 import sys
 
@@ -17,7 +18,7 @@ from morie._pdf_reader import PdfReader
 CH = {"1": 1, "35": 2, "71": 3, "109": 4, "141": 5, "171": 6, "209": 7, "251": 8}
 
 found = collections.defaultdict(dict)
-for p in sorted(glob.glob("/home/rootcoder/work/ledger/mvsml_pdf/*.pdf")):
+for p in sorted(glob.glob(os.path.join(os.environ.get("MVSML_PDF_DIR", "mvsml_pdf"), "*.pdf"))):
     m = re.search(r"Pages (\d+)-(\d+)", p)
     ch = CH.get(m.group(1))
     if ch is None:

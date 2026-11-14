@@ -1,7 +1,7 @@
 # Three-way parity: R arm vs values computed by the Python arm.
 # Expected values are read from /tmp/py_st_values.json, produced by the
 # Python side on the same inputs.
-source("/home/rootcoder/work/morie/r-package/morie/R/aaa_schab_st_shared.R")
+source("r-package/morie/R/aaa_schab_st_shared.R")
 
 py <- jsonlite::fromJSON("/tmp/py_st_values.json")
 FAIL <- character(0)

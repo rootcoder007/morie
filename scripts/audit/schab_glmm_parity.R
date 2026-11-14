@@ -1,5 +1,5 @@
 # Three-way parity: the R arm against values computed by the Python arm.
-source("/home/rootcoder/work/morie/r-package/morie/R/aaa_schab_glmm_shared.R")
+source("r-package/morie/R/aaa_schab_glmm_shared.R")
 
 py <- jsonlite::fromJSON("/tmp/py_glmm_values.json")
 FAIL <- character(0)

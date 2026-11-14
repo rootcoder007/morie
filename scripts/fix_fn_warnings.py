@@ -9,7 +9,7 @@ import os
 import re
 import warnings
 
-FN_DIR = "/Volumes/VSR/rootcoderfiles/morie-feature/src/morie/fn"
+FN_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "morie", "fn")
 SKIP = {
     "__init__.py",
     "_cfa_engine.py",

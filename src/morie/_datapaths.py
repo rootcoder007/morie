@@ -3,7 +3,7 @@
 
 The dataset loaders in ``morie.arsau_datasets`` / ``morie.otis_datasets``
 must NEVER hardcode absolute paths from the maintainer's workstation
-(e.g. ``/Volumes/VSR/...``). Other people install morie from PyPI /
+(an external drive, say). Other people install morie from PyPI /
 r-universe / CRAN. Their files live wherever they put them.
 
 This module provides one function — :func:`resolve_data_dir` — which

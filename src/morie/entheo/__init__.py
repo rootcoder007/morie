@@ -19,7 +19,7 @@ metrics:
 
 Data location: the dataset is read from a local mirror at
 ``$MORIE_DMT_IMAGING_ROOT`` (default
-``/Volumes/VSR/rootcoderfiles/DMT_Imaging``). When the mirror is
+``~/.cache/morie/DMT_Imaging``). When the mirror is
 absent or ``scipy.io`` / ``pymatreader`` is unavailable, a
 deterministic synthetic fixture is returned so downstream pipelines
 keep running in CI.
