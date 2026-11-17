@@ -707,7 +707,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "ckan_resource_id": "",
     },
     # ── OTIS public release per-table CSVs (used by morie.mrm_otis_*) ──
-    # CKAN resource IDs are from data.ontario.ca/dataset/data-on-inmates-in-ontario;
+    # CKAN resource IDs are from data.ontario.ca/dataset/jahn-settlement-data-inmates-ontario;
     # fetched on first use by the existing morie CKAN downloader.
     "otisb01": {
         "name": "OTIS b01: Segregation – Detailed Dataset",

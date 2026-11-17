@@ -38,3 +38,23 @@ def test_interpretation_names_every_estimator():
     src = inspect.getsource(oa.analyze_a01_ruhela_formulations)
     assert "IRM-DML and the MatchIt-then-DoubleML pipeline is the strongest" in src
     assert "(ATE, nonparametric), then-DoubleML" not in src
+
+
+def test_ckan_lookup_uses_the_package_id(monkeypatch):
+    # the dataset was renamed; its old address answers 404, its id does not change
+    import io
+    import json
+    import urllib.request
+
+    from morie import otis_datasets as od
+
+    seen = []
+    body = {"success": True, "result": {"resources": [{"name": "a01_x", "url": "https://h/a01_x.csv"}]}}
+
+    def fake_open(url, timeout=None):
+        seen.append(url)
+        return io.BytesIO(json.dumps(body).encode())
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_open)
+    assert od._ckan_resource_index() == {"a01_x": "https://h/a01_x.csv"}
+    assert seen == [od.OTIS_CKAN_BASE + "/package_show?id=09f7fc65-d3bb-4ca8-8b84-1cdc3ef73c36"]

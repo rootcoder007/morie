@@ -35,10 +35,10 @@ Public API:
 References
 ----------
 Ministry of the Solicitor General. Data on Inmates in Ontario.
-  https://data.ontario.ca/dataset/data-on-inmates-in-ontario
+  https://data.ontario.ca/dataset/jahn-settlement-data-inmates-ontario
 Ministry of the Solicitor General. Restrictive Confinement,
   Segregation and Deaths in Custody Data Dictionary, 2025-11-03.
-  https://data.ontario.ca/dataset/data-on-inmates-in-ontario/resource/d83fe893-9634-4794-a0c1-c17bf619a95a
+  https://data.ontario.ca/dataset/jahn-settlement-data-inmates-ontario/resource/d83fe893-9634-4794-a0c1-c17bf619a95a
 """
 
 from __future__ import annotations
@@ -634,7 +634,9 @@ def list_otis_datasets() -> list[tuple[str, str, int]]:
 # ── CKAN downloader ────────────────────────────────────────────────
 
 
-OTIS_CKAN_PACKAGE = "data-on-inmates-in-ontario"
+# the package id: the dataset was renamed (data-on-inmates-in-ontario, now
+# jahn-settlement-data-inmates-ontario) and only the id survives a rename
+OTIS_CKAN_PACKAGE = "09f7fc65-d3bb-4ca8-8b84-1cdc3ef73c36"
 OTIS_CKAN_BASE = "https://data.ontario.ca/api/3/action"
 
 
