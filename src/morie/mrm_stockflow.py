@@ -38,6 +38,7 @@ from datetime import date, datetime
 from morie._q7 import lerp7
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
+from morie.otis_datasets import otis_cols
 
 __all__ = [
     "StockFlowResult",
@@ -339,10 +340,7 @@ def _columns(data, cols: list[str], what: str) -> dict:
     if data is None:
         raise ValueError(f"`{what}` must not be None")
     if hasattr(data, "columns"):
-        have = list(data.columns)
-        missing = [c for c in cols if c not in have]
-        if missing:
-            raise ValueError(f"`{what}` is missing column(s): {', '.join(missing)}")
+        data = otis_cols(data, need=cols, what=f"`{what}`")
         return {c: list(data[c]) for c in cols}
     rows = list(data)
     if not rows or not all(hasattr(r, "keys") for r in rows):
@@ -415,7 +413,7 @@ def mrm_otis_stock_flow(
         plc = _columns(placements, need, "placements")
         has_count = False
         if hasattr(placements, "columns"):
-            has_count = placement_col in list(placements.columns)
+            has_count = placement_col in list(otis_cols(placements, want=[placement_col]).columns)
         else:
             rows = list(placements)
             has_count = bool(rows) and placement_col in rows[0]

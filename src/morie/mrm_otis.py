@@ -30,6 +30,7 @@ from dataclasses import dataclass
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as stats
+from morie.otis_datasets import otis_cols
 
 __all__ = [
     "mrm_classify_mandela",
@@ -45,7 +46,7 @@ def _gini(x: np.ndarray) -> float:
     n = x.size
     if n == 0 or x.sum() == 0:
         return float("nan")
-    return float((2.0 * np.arange(1, n + 1).dot(x) - (n + 1) * x.sum()) / (n * x.sum()))
+    return float((2.0 * (np.arange(1, n + 1) * x).sum() - (n + 1) * x.sum()) / (n * x.sum()))
 
 
 def _hill_mle(x: np.ndarray, x_min: float) -> float:
@@ -93,7 +94,8 @@ def mrm_otis_placement_concentration(
         n_individuals, n_placements, mean_per_individual, gini,
         hill_alpha, top_pct_share.
     """
-    df = pd.coerce_frame(data).copy()
+    need = [year_col, band_col, count_col, *([gender_col] if gender_col else [])]
+    df = otis_cols(pd.coerce_frame(data), need=need, what="mrm_otis_placement_concentration").copy()
     if gender_col and gender_keep is not None:
         df = df[df[gender_col].isin(list(gender_keep))]
     df["_midpt"] = df[band_col].map(_band_to_midpoint)
@@ -161,6 +163,7 @@ def mrm_otis_seg_duration_km(
         DataFrame with per-stratum n, mean, median, q25, fraction above
         the Mandela threshold, and median duration among those above.
     """
+    data = otis_cols(data, need=[duration_col, *(group_cols or [])], what="mrm_otis_seg_duration_km")
     if group_cols is None:
         groups = [("pooled", data)]
     else:
@@ -222,6 +225,7 @@ def mrm_otis_mortification_cooccurrence(
     ),
 ) -> pd.DataFrame:
     """Pairwise Cramer's V of OTIS b01 alert columns."""
+    data = otis_cols(data, need=list(alert_cols), what="mrm_otis_mortification_cooccurrence")
     cols = list(alert_cols)
     bins = {c: (data[c].astype(str) == "Yes").astype(int).values for c in cols}
     rows = []
@@ -275,6 +279,7 @@ def mrm_otis_region_locality(
     region_recent_col: str = "Region_MostRecentPlacement",
 ) -> RegionLocalityResult:
     """OTIS b01 region locality: chi-square + Cramer's V + diagonal share."""
+    data = otis_cols(data, need=[region_at_col, region_recent_col], what="mrm_otis_region_locality")
     tbl = pd.crosstab(data[region_at_col], data[region_recent_col])
     arr = tbl.values
     chi2, p, dof, _ = stats.chi2_contingency(arr, correction=False)
@@ -349,6 +354,16 @@ def mrm_classify_mandela(
     """
     if denominator not in {"row", "individual_any", "individual_cumulative"}:
         raise ValueError(f"unknown denominator {denominator!r}")
+    data = otis_cols(
+        data,
+        want=[
+            duration_col,
+            year_col,
+            id_col,
+            *alert_cols,
+            *([meaningful_contact_col] if meaningful_contact_col else []),
+        ],
+    )
     if denominator != "row" and id_col not in data.columns:
         raise KeyError(f"id_col {id_col!r} required when denominator != 'row'")
     if duration_col not in data.columns or year_col not in data.columns:

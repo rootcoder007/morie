@@ -709,11 +709,12 @@ DATASET_CATALOG: dict[str, dict] = {
     # ── OTIS public release per-table CSVs (used by morie.mrm_otis_*) ──
     # CKAN resource IDs are from data.ontario.ca/dataset/jahn-settlement-data-inmates-ontario;
     # fetched on first use by the existing morie CKAN downloader.
+    # No year label: Ontario adds a fiscal year to these files each release.
     "otisb01": {
         "name": "OTIS b01: Segregation – Detailed Dataset",
         "source": "otis",
         "survey": "b01",
-        "year": "2023-2025",
+        "year": "",
         "format": "csv",
         "type": "correctional",
         "large_file": False,
@@ -725,7 +726,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "name": "OTIS b09: Individuals in Segregation - Number of Placements",
         "source": "otis",
         "survey": "b09",
-        "year": "2023-2025",
+        "year": "",
         "format": "csv",
         "type": "correctional",
         "large_file": False,
@@ -737,7 +738,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "name": "OTIS c11: Individuals in Segregation/RC by Aggregate Length",
         "source": "otis",
         "survey": "c11",
-        "year": "2023-2025",
+        "year": "",
         "format": "csv",
         "type": "correctional",
         "large_file": False,
@@ -749,7 +750,7 @@ DATASET_CATALOG: dict[str, dict] = {
         "name": "OTIS a01: Restrictive Confinement – Detailed Dataset",
         "source": "otis",
         "survey": "a01",
-        "year": "2023-2025",
+        "year": "",
         "format": "csv",
         "type": "correctional",
         "large_file": False,

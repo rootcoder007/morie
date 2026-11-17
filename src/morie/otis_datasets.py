@@ -574,7 +574,9 @@ _r(
     OtisDataset(
         id="d06",
         series="d",
-        csv_filename="d06_deaths_in_custody_cause_of_death_by_alert_by_institution.csv",
+        # Ontario renamed this file in the 2026-10-30 release (it was
+        # ..._by_alert_by_institution.csv)
+        csv_filename="d06_deaths_in_custody_cause_of_death_by_alert.csv",
         description="Custodial deaths × alert × medical cause",
         columns=("Year", "Alert_Type", "MedicalCauseOfDeath", "Number_CustodialDeaths"),
         panel=False,
@@ -624,6 +626,73 @@ def load_otis_dataset(dataset_id: str, data_dir: Path | str | None = None, *, do
                 f"$MORIE_OTIS_DIR to a directory holding the 29 CSVs."
             )
     return pd.read_csv(p)
+
+
+class OtisColumnError(KeyError, ValueError):
+    """An OTIS table lacks a column the analysis needs, or holds two that
+    read as one."""
+
+    def __str__(self) -> str:
+        return str(self.args[0]) if self.args else ""
+
+
+_COLMAP: list[tuple[str, str, str]] | None = None
+
+
+def _otis_colmap() -> list[tuple[str, str, str]]:
+    """(table, old name, new name) for every column of the 29 tables.
+
+    Ontario republished the OTIS files on 2026-10-30 with every column
+    renamed; ``data/otis_colmap.csv`` holds the pairs.
+    """
+    global _COLMAP
+    if _COLMAP is None:
+        import csv
+
+        with (Path(__file__).parent / "data" / "otis_colmap.csv").open(newline="", encoding="utf-8") as f:
+            _COLMAP = [(r["table"], r["old"], r["new"]) for r in csv.DictReader(f)]
+    return _COLMAP
+
+
+def otis_cols(df, need=(), want=(), table: str | None = None, what: str | None = None):
+    """Bring an OTIS table to the column names the code expects.
+
+    Each expected name is looked up, in order, as the exact name; then as
+    a name equal to it without regard to case or underscores; then as the
+    new name Ontario gave it (``_otis_colmap``). The column found is
+    renamed to the expected name. Two columns that resolve to one expected
+    name are refused, naming both. A name in ``need`` still missing after
+    that raises ``OtisColumnError`` naming it and the names the table has.
+    ``table`` (``"b01"``) adds every name of that table to ``want``.
+    """
+    if not hasattr(df, "columns"):
+        return df  # not a frame: nothing to rename, the caller's own checks apply
+    colmap = _otis_colmap()
+    what = what or (f"the OTIS {table} table" if table else "the OTIS table")
+
+    def key(s) -> str:
+        return str(s).replace("_", "").lower()
+
+    have = [str(c) for c in df.columns]
+    hk = [key(c) for c in have]
+    taken: set[int] = set()
+    ren: dict[str, str] = {}
+    miss: list[str] = []
+    for e in dict.fromkeys([*need, *want, *(o for t, o, _ in colmap if t == table)]):
+        alts = {key(n) for _, o, n in colmap if o == e}
+        hit = [i for i, c in enumerate(have) if c == e or hk[i] == key(e) or hk[i] in alts]
+        if len(hit) > 1:
+            raise OtisColumnError(f"{what}: columns {' and '.join(have[i] for i in hit)} all resolve to {e}; keep one")
+        if not hit or hit[0] in taken:
+            if e in need:
+                miss.append(e)
+            continue
+        taken.add(hit[0])
+        if have[hit[0]] != e:
+            ren[have[hit[0]]] = e
+    if miss:
+        raise OtisColumnError(f"{what}: missing column(s): {', '.join(miss)}; the table has: {', '.join(have)}")
+    return df.rename(columns=ren) if ren else df
 
 
 def list_otis_datasets() -> list[tuple[str, str, int]]:

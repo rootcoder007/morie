@@ -33,6 +33,8 @@ from pathlib import Path
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
 
+from .otis_datasets import otis_cols
+
 
 def project_root() -> Path:
     """Resolve the repo root for OTIS data/output paths.
@@ -153,6 +155,7 @@ def rplace(
     -------
     RplRes
     """
+    df = otis_cols(df, need=[year_col, age_col, region_col], want=[id_col, gender_col])
     # the OTIS export holds end_fiscal_year as text ("2024"); compare as numbers
     years = pd.to_numeric(df[year_col], errors="coerce")
     mask = (years == year) & df[age_col].notna() & df[region_col].notna()
@@ -209,7 +212,7 @@ def astcmb(
     -------
     AstRes
     """
-    data = df.copy()
+    data = otis_cols(df, need=[*alert_cols, id_col, year_col], want=[np_col]).copy()
 
     # Binarize if needed
     for col in alert_cols:
@@ -285,6 +288,7 @@ def volat(
     >>> (r.mean, r.median)
     (1.2, 1.0)
     """
+    df = otis_cols(df, need=[id_col, year_col, regA_col, regB_col])
 
     def _count_regions(group):
         regions = set(group[regA_col].dropna()) | set(group[regB_col].dropna())
@@ -319,6 +323,7 @@ def rctrnd(
     -------
     DataFrame with columns: year, region, n_individuals, n_placements
     """
+    df = otis_cols(df, need=[year_col, region_col, id_col])
     trends = (
         df.groupby([year_col, region_col])
         .agg(
@@ -344,6 +349,7 @@ def otdesc(
     dict with keys: n_total, n_by_year, n_by_region, n_by_age,
     n_by_gender, placement_dist
     """
+    df = otis_cols(df, need=[id_col, year_col], want=["region_at_time_of_placement", "age_category", "gender"])
     result = {}
     result["n_total"] = df[id_col].nunique()
     result["n_records"] = len(df)
@@ -405,7 +411,7 @@ def otdml(
     keep = [outcome, treatment] + covariates
     if cluster and cluster not in keep:
         keep = keep + [cluster]
-    data = df[keep].dropna().copy()
+    data = otis_cols(df, need=keep)[keep].dropna().copy()
     cluster_ids = data.pop(cluster).values if cluster else None
 
     # Encode categoricals as dummies

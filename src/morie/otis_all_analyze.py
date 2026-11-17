@@ -54,6 +54,7 @@ from .otis import project_root
 from .otis_datasets import (
     DATASET_REGISTRY,
     load_otis_dataset,
+    otis_cols,
 )
 
 PROJECT = project_root()
@@ -134,7 +135,11 @@ def _year_trend(df: pd.DataFrame, value: str, year_col: str | None = None) -> di
 
 def analyze_b01(df: pd.DataFrame | None = None) -> RichResult:
     """Person-level segregation placements (76,934 rows)."""
-    df = df if df is not None else load_otis_dataset("b01")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b01"),
+        need=["EndFiscalYear", "UniqueIndividual_ID", "NumberConsecutiveDays_Segregation", "Number_Of_Placements"],
+        table="b01",
+    )
     summary = _summary_lines(df, "b01")
     summary.append(("Unique individuals", int(df["UniqueIndividual_ID"].nunique())))
     summary.append(("Mean consecutive days", float(df["NumberConsecutiveDays_Segregation"].mean())))
@@ -176,7 +181,11 @@ def analyze_b01(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b02(df: pd.DataFrame | None = None) -> RichResult:
     """Aggregate days in segregation per person per year."""
-    df = df if df is not None else load_otis_dataset("b02")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b02"),
+        need=["EndFiscalYear", "Gender", "Region_MostRecentPlacement", "TotalAggregatedDays_Segregation"],
+        table="b02",
+    )
     summary = _summary_lines(df, "b02")
     days = pd.to_numeric(df["TotalAggregatedDays_Segregation"], errors="coerce").dropna()
     summary.append(("Mean total days", float(days.mean())))
@@ -195,7 +204,17 @@ def analyze_b02(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b03(df: pd.DataFrame | None = None) -> RichResult:
     """Segregation placements by alert × institution."""
-    df = df if df is not None else load_otis_dataset("b03")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b03"),
+        need=[
+            "EndFiscalYear",
+            "Region_AtTimeOfPlacement",
+            "Alert_Type",
+            "Alert_Presence",
+            "Number_SegregationPlacements",
+        ],
+        table="b03",
+    )
     summary = _summary_lines(df, "b03")
     return RichResult(
         title="b03 -- Segregation placements by alert/hold flag × institution",
@@ -209,7 +228,11 @@ def analyze_b03(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b04(df: pd.DataFrame | None = None) -> RichResult:
     """Placement durations (max/median/mode) by region & gender."""
-    df = df if df is not None else load_otis_dataset("b04")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b04"),
+        need=["EndFiscalYear", "Region_AtTimeOfPlacement", "Measure", "NumberConsecutiveDays_Segregation"],
+        table="b04",
+    )
     summary = _summary_lines(df, "b04")
     return RichResult(
         title="b04 -- Placement durations by region & gender",
@@ -223,7 +246,11 @@ def analyze_b04(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b05(df: pd.DataFrame | None = None) -> RichResult:
     """Distribution of placements by binned duration."""
-    df = df if df is not None else load_otis_dataset("b05")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b05"),
+        need=["EndFiscalYear", "Consecutive_Duration", "Number_SegregationPlacements"],
+        table="b05",
+    )
     summary = _summary_lines(df, "b05")
     return RichResult(
         title="b05 -- Distribution of placements by binned duration",
@@ -236,7 +263,11 @@ def analyze_b05(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b06(df: pd.DataFrame | None = None) -> RichResult:
     """Reasons for placement × institution × gender."""
-    df = df if df is not None else load_otis_dataset("b06")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b06"),
+        need=["EndFiscalYear", "Gender", "Reason", "Number_SegregationPlacements"],
+        table="b06",
+    )
     summary = _summary_lines(df, "b06")
     return RichResult(
         title="b06 -- Reasons for placement by institution & gender",
@@ -250,7 +281,17 @@ def analyze_b06(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b07(df: pd.DataFrame | None = None) -> RichResult:
     """Alerts × gender."""
-    df = df if df is not None else load_otis_dataset("b07")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b07"),
+        need=[
+            "EndFiscalYear",
+            "Alert_Type",
+            "Gender",
+            "Number_Segregation_Placements_Without_Alert",
+            "Number_Segregation_Placements_With_Alert",
+        ],
+        table="b07",
+    )
     summary = _summary_lines(df, "b07")
     rows = []
     for _, r in df.iterrows():
@@ -274,7 +315,11 @@ def analyze_b07(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b08(df: pd.DataFrame | None = None) -> RichResult:
     """Durations (median/mode) by institution & gender."""
-    df = df if df is not None else load_otis_dataset("b08")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b08"),
+        need=["EndFiscalYear", "Institution_AtTimeOfPlacement", "Measure", "NumberConsecutiveDays_Segregation"],
+        table="b08",
+    )
     summary = _summary_lines(df, "b08")
     return RichResult(
         title="b08 -- Placement durations by institution & gender",
@@ -295,7 +340,11 @@ def analyze_b08(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_b09(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals by number of segregation placements × gender."""
-    df = df if df is not None else load_otis_dataset("b09")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b09"),
+        need=["EndFiscalYear", "NumberPlacements_Segregation", "Gender", "NumberIndividuals_Segregation"],
+        table="b09",
+    )
     summary = _summary_lines(df, "b09")
     return RichResult(
         title="b09 -- Individuals by number of placements × gender",
@@ -311,7 +360,17 @@ def analyze_b09(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c01(df: pd.DataFrame | None = None) -> RichResult:
     """Total individuals × custody/RC/seg × gender."""
-    df = df if df is not None else load_otis_dataset("c01")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c01"),
+        need=[
+            "EndFiscalYear",
+            "Gender",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ],
+        table="c01",
+    )
     summary = _summary_lines(df, "c01")
     # Compute RC/custody and seg/custody rates
     rate_rows = []
@@ -345,7 +404,11 @@ def analyze_c01(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c02(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals in RC/seg by institution."""
-    df = df if df is not None else load_otis_dataset("c02")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c02"),
+        need=["EndFiscalYear", "Institution_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"],
+        table="c02",
+    )
     summary = _summary_lines(df, "c02")
     return RichResult(
         title="c02 -- Individuals in RC/seg by institution × region × gender",
@@ -365,7 +428,17 @@ def analyze_c02(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c03(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × race × gender."""
-    df = df if df is not None else load_otis_dataset("c03")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c03"),
+        need=[
+            "EndFiscalYear",
+            "Race",
+            "NumberIndividuals_InCustody",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ],
+        table="c03",
+    )
     summary = _summary_lines(df, "c03")
     # Compute race-disparity ratios: RC/custody and seg/custody by race
     by_race = df.groupby("Race", as_index=False).agg(
@@ -410,7 +483,11 @@ def analyze_c03(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c04(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × race × region."""
-    df = df if df is not None else load_otis_dataset("c04")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c04"),
+        need=["EndFiscalYear", "Race", "Region_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"],
+        table="c04",
+    )
     summary = _summary_lines(df, "c04")
     return RichResult(
         title="c04 -- Individuals in RC/seg × race × region",
@@ -423,7 +500,11 @@ def analyze_c04(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c05(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × religion × region."""
-    df = df if df is not None else load_otis_dataset("c05")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c05"),
+        need=["EndFiscalYear", "Religion", "Region_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"],
+        table="c05",
+    )
     summary = _summary_lines(df, "c05")
     return RichResult(
         title="c05 -- Individuals in RC/seg × religion × region",
@@ -436,7 +517,16 @@ def analyze_c05(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c06(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × age × region."""
-    df = df if df is not None else load_otis_dataset("c06")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c06"),
+        need=[
+            "EndFiscalYear",
+            "Age_Category",
+            "Region_MostRecentPlacement",
+            "NumberIndividuals_RestrictiveConfinement",
+        ],
+        table="c06",
+    )
     summary = _summary_lines(df, "c06")
     return RichResult(
         title="c06 -- Individuals in RC/seg × age category × region",
@@ -450,7 +540,17 @@ def analyze_c06(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c07(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × alerts × gender."""
-    df = df if df is not None else load_otis_dataset("c07")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c07"),
+        need=[
+            "EndFiscalYear",
+            "Alert_Type",
+            "Gender",
+            "NumberIndividuals_RestrictiveConfinement",
+            "NumberIndividuals_Segregation",
+        ],
+        table="c07",
+    )
     summary = _summary_lines(df, "c07")
     return RichResult(
         title="c07 -- Individuals in custody/RC/seg × alert type × gender",
@@ -464,7 +564,11 @@ def analyze_c07(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c08(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × religion × gender."""
-    df = df if df is not None else load_otis_dataset("c08")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c08"),
+        need=["EndFiscalYear", "Religion", "Gender", "NumberIndividuals_RestrictiveConfinement"],
+        table="c08",
+    )
     summary = _summary_lines(df, "c08")
     return RichResult(
         title="c08 -- Individuals × religion × gender",
@@ -477,7 +581,11 @@ def analyze_c08(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c09(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals × age × gender."""
-    df = df if df is not None else load_otis_dataset("c09")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c09"),
+        need=["EndFiscalYear", "Age_Category", "Gender", "NumberIndividuals_RestrictiveConfinement"],
+        table="c09",
+    )
     summary = _summary_lines(df, "c09")
     return RichResult(
         title="c09 -- Individuals × age category × gender",
@@ -490,7 +598,16 @@ def analyze_c09(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c10(df: pd.DataFrame | None = None) -> RichResult:
     """RC/seg aggregate durations by institution."""
-    df = df if df is not None else load_otis_dataset("c10")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c10"),
+        need=[
+            "EndFiscalYear",
+            "Institution_MostRecentPlacement",
+            "Measure",
+            "TotalAggregatedDays_RestrictiveConfinement",
+        ],
+        table="c10",
+    )
     summary = _summary_lines(df, "c10")
     return RichResult(
         title="c10 -- RC/seg aggregate durations by institution",
@@ -511,7 +628,11 @@ def analyze_c10(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c11(df: pd.DataFrame | None = None) -> RichResult:
     """Individuals by aggregate-duration bin."""
-    df = df if df is not None else load_otis_dataset("c11")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c11"),
+        need=["EndFiscalYear", "Aggregate_Duration", "NumberIndividuals_RestrictiveConfinement"],
+        table="c11",
+    )
     summary = _summary_lines(df, "c11")
     return RichResult(
         title="c11 -- Individuals by binned aggregate duration",
@@ -524,7 +645,11 @@ def analyze_c11(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_c12(df: pd.DataFrame | None = None) -> RichResult:
     """RC/seg aggregate durations by region & gender."""
-    df = df if df is not None else load_otis_dataset("c12")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c12"),
+        need=["EndFiscalYear", "Region_MostRecentPlacement", "Measure", "TotalAggregatedDays_RestrictiveConfinement"],
+        table="c12",
+    )
     summary = _summary_lines(df, "c12")
     return RichResult(
         title="c12 -- RC/seg aggregate durations by region & gender",
@@ -543,7 +668,18 @@ def analyze_c12(df: pd.DataFrame | None = None) -> RichResult:
 
 def analyze_d01(df: pd.DataFrame | None = None) -> RichResult:
     """Person-level deaths in custody."""
-    df = df if df is not None else load_otis_dataset("d01")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("d01"),
+        need=[
+            "Year",
+            "UniqueIndividual_ID",
+            "Region_AtTimeOfDeath",
+            "HousingUnit_Type",
+            "MedicalCauseofDeath",
+            "MeansofDeath",
+        ],
+        table="d01",
+    )
     summary = _summary_lines(df, "d01")
     summary.append(("Distinct individuals", int(df["UniqueIndividual_ID"].nunique())))
     # Real CSV uses MedicalCauseofDeath / MeansofDeath (lowercase o);
@@ -580,7 +716,9 @@ def analyze_d01(df: pd.DataFrame | None = None) -> RichResult:
 
 def _d_simple(ds_id: str, by: str) -> callable:
     def _fn(df: pd.DataFrame | None = None) -> RichResult:
-        df = df if df is not None else load_otis_dataset(ds_id)
+        df = otis_cols(
+            df if df is not None else load_otis_dataset(ds_id), need=["Year", by, "Number_CustodialDeaths"], table=ds_id
+        )
         meta = DATASET_REGISTRY[ds_id]
         return RichResult(
             title=f"{ds_id} -- {meta.description}",
@@ -615,7 +753,11 @@ def analyze_d06(df: pd.DataFrame | None = None) -> RichResult:
     Returns:
         A ``RichResult`` with the dataset summary and the cause-by-alert crosstab.
     """
-    df = df if df is not None else load_otis_dataset("d06")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("d06"),
+        need=["Year", "Alert_Type", "MedicalCauseOfDeath", "Number_CustodialDeaths"],
+        table="d06",
+    )
     return RichResult(
         title="d06 -- Custodial deaths × alert × medical cause",
         summary_lines=_summary_lines(df, "d06"),
@@ -634,12 +776,16 @@ def analyze_d07(df: pd.DataFrame | None = None) -> RichResult:
     Returns:
         A ``RichResult`` with the dataset summary and the housing-unit-by-alert crosstab.
     """
-    df = df if df is not None else load_otis_dataset("d07")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("d07"),
+        need=["Year", "Alert_Type", "Housing_Type", "Number_CustodialDeaths"],
+        table="d07",
+    )
     return RichResult(
         title="d07 -- Custodial deaths × alert × housing unit",
         summary_lines=_summary_lines(df, "d07"),
         tables=[
-            _crosstab(df, "HousingUnit_Type", "Alert_Type", "Number_CustodialDeaths") or {},
+            _crosstab(df, "Housing_Type", "Alert_Type", "Number_CustodialDeaths") or {},
         ],
     )
 
@@ -1386,6 +1532,7 @@ def analyze_a01_ruhela_formulations(
 
     if df is None:
         df = load_otis_dataset("a01")
+    df = otis_cols(df, table="a01")
     return _ruhela_formulations_on(
         df,
         ds_id="a01",
@@ -1435,6 +1582,7 @@ def analyze_b01_ruhela_formulations(
 
     if df is None:
         df = load_otis_dataset("b01")
+    df = otis_cols(df, table="b01")
     return _ruhela_formulations_on(
         df,
         ds_id="b01",
@@ -1498,6 +1646,7 @@ def analyze_b02_ruhela_formulations(
 
     if df is None:
         df = load_otis_dataset("b02")
+    df = otis_cols(df, table="b02")
     work = df.dropna(
         subset=[
             "Gender",
@@ -1680,6 +1829,7 @@ def analyze_a01_ruhela_per_year(
 
     if df is None:
         df = load_otis_dataset("a01")
+    df = otis_cols(df, table="a01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_a01(df)
     return analyze_ruhela_per_year(
         data, ds_id="a01", treatment=T, outcome=Y, covariates=cov, cluster_col="EndFiscalYear"
@@ -1695,6 +1845,7 @@ def analyze_b01_ruhela_per_year(
 
     if df is None:
         df = load_otis_dataset("b01")
+    df = otis_cols(df, table="b01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_ruhela(df)
     return analyze_ruhela_per_year(
         data, ds_id="b01", treatment=T, outcome=Y, covariates=cov, cluster_col="EndFiscalYear"
@@ -1982,6 +2133,7 @@ def analyze_b03_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b03")
+    df = otis_cols(df, table="b03")
     work = df.dropna(subset=["Alert_Presence", "Number_SegregationPlacements"]).copy()
     work["T_alert"] = (
         work["Alert_Presence"].astype(str).str.strip().str.lower().isin(["yes", "y", "true", "1"]).astype(int)
@@ -2023,6 +2175,7 @@ def analyze_b07_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b07")
+    df = otis_cols(df, table="b07")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -2077,6 +2230,7 @@ def analyze_c01_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c01")
+    df = otis_cols(df, table="c01")
     work = df.dropna(subset=["EndFiscalYear", "Gender", "NumberIndividuals_RestrictiveConfinement"]).copy()
     work["T_female"] = _female_indicator(work["Gender"])
     return _ruhela_aggregate_on(
@@ -2113,6 +2267,7 @@ def analyze_c07_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c07")
+    df = otis_cols(df, table="c07")
     work = df.dropna(
         subset=["EndFiscalYear", "Alert_Type", "Gender", "NumberIndividuals_RestrictiveConfinement"]
     ).copy()
@@ -2158,6 +2313,7 @@ def analyze_b06_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b06")
+    df = otis_cols(df, table="b06")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -2201,6 +2357,7 @@ def analyze_c03_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c03")
+    df = otis_cols(df, table="c03")
     work = df.dropna(subset=["EndFiscalYear", "Race", "Gender", "NumberIndividuals_RestrictiveConfinement"]).copy()
     work["T_indigenous"] = (work["Race"].astype(str).str.lower() == "indigenous").astype(int)
     return _ruhela_aggregate_on(
@@ -2233,6 +2390,7 @@ def analyze_c04_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c04")
+    df = otis_cols(df, table="c04")
     work = df.dropna(
         subset=["EndFiscalYear", "Race", "Region_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"]
     ).copy()
@@ -2267,6 +2425,7 @@ def analyze_c06_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c06")
+    df = otis_cols(df, table="c06")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -2302,6 +2461,7 @@ def analyze_c09_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c09")
+    df = otis_cols(df, table="c09")
     work = df.dropna(
         subset=["EndFiscalYear", "Age_Category", "Gender", "NumberIndividuals_RestrictiveConfinement"]
     ).copy()
@@ -2338,6 +2498,7 @@ def _a01_ruhela_cell_frame(df: pd.DataFrame | None = None) -> tuple[pd.DataFrame
 
     if df is None:
         df = load_otis_dataset("a01")
+    df = otis_cols(df, table="a01")
     data, _, _, _ = oc.make_pair_alert_to_volatility_ruhela(df)
     return data, ["Gender", "Age_Category", "EndFiscalYear"]
 
@@ -2448,6 +2609,7 @@ def _b01_ruhela_cell_frame(df: pd.DataFrame | None = None) -> pd.DataFrame:
 
     if df is None:
         df = load_otis_dataset("b01")
+    df = otis_cols(df, table="b01")
     data, _, _, _ = oc.make_pair_alert_to_volatility_ruhela(df)
     return data
 
@@ -2555,6 +2717,7 @@ def analyze_a01_ruhela_subgroup_female(
 
     if df is None:
         df = load_otis_dataset("a01")
+    df = otis_cols(df, table="a01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_ruhela(df)
     sub = data[_female_indicator(data["Gender"]) == 1].copy()
     if sub.shape[0] < 100:
@@ -2591,6 +2754,7 @@ def analyze_a01_ruhela_subgroup_male(
 
     if df is None:
         df = load_otis_dataset("a01")
+    df = otis_cols(df, table="a01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_ruhela(df)
     sub = data[_female_indicator(data["Gender"]) == 0].copy()
     cov_no_gender = [c for c in cov if c != "Gender"]
@@ -2624,6 +2788,7 @@ def analyze_b01_ruhela_subgroup_female(
 
     if df is None:
         df = load_otis_dataset("b01")
+    df = otis_cols(df, table="b01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_ruhela(df)
     sub = data[_female_indicator(data["Gender"]) == 1].copy()
     if sub.shape[0] < 100:
@@ -2660,6 +2825,7 @@ def analyze_b01_ruhela_subgroup_male(
 
     if df is None:
         df = load_otis_dataset("b01")
+    df = otis_cols(df, table="b01")
     data, T, Y, cov = oc.make_pair_alert_to_volatility_ruhela(df)
     sub = data[_female_indicator(data["Gender"]) == 0].copy()
     cov_no_gender = [c for c in cov if c != "Gender"]
@@ -2696,6 +2862,7 @@ def analyze_b02_ruhela_alt_region(
 
     if df is None:
         df = load_otis_dataset("b02")
+    df = otis_cols(df, table="b02")
     work = df.dropna(
         subset=[
             "Gender",
@@ -2732,6 +2899,7 @@ def analyze_b02_ruhela_alt_age(
 
     if df is None:
         df = load_otis_dataset("b02")
+    df = otis_cols(df, table="b02")
     work = df.dropna(
         subset=[
             "Gender",
@@ -2775,6 +2943,7 @@ def analyze_c05_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c05")
+    df = otis_cols(df, table="c05")
     work = df.dropna(
         subset=["EndFiscalYear", "Religion", "Region_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"]
     ).copy()
@@ -2810,6 +2979,7 @@ def analyze_c08_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c08")
+    df = otis_cols(df, table="c08")
     work = df.dropna(subset=["EndFiscalYear", "Religion", "Gender", "NumberIndividuals_RestrictiveConfinement"]).copy()
     excluded = {"christian", "no religion", "unknown or not reported"}
     work["T_minority_religion"] = (~work["Religion"].astype(str).str.strip().str.lower().isin(excluded)).astype(int)
@@ -2845,6 +3015,7 @@ def analyze_b04_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b04")
+    df = otis_cols(df, table="b04")
     work = df.dropna(
         subset=["EndFiscalYear", "Region_AtTimeOfPlacement", "Gender", "Measure", "NumberConsecutiveDays_Segregation"]
     ).copy()
@@ -2886,6 +3057,7 @@ def analyze_b08_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b08")
+    df = otis_cols(df, table="b08")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -2938,6 +3110,7 @@ def analyze_b09_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("b09")
+    df = otis_cols(df, table="b09")
     work = df.dropna(
         subset=["EndFiscalYear", "NumberPlacements_Segregation", "Gender", "NumberIndividuals_Segregation"]
     ).copy()
@@ -2974,6 +3147,7 @@ def analyze_c02_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c02")
+    df = otis_cols(df, table="c02")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -3020,6 +3194,7 @@ def analyze_c10_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c10")
+    df = otis_cols(df, table="c10")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -3063,6 +3238,7 @@ def analyze_c12_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c12")
+    df = otis_cols(df, table="c12")
     work = df.dropna(
         subset=[
             "EndFiscalYear",
@@ -3111,6 +3287,7 @@ def analyze_c11_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("c11")
+    df = otis_cols(df, table="c11")
     work = df.dropna(subset=["EndFiscalYear", "Aggregate_Duration", "NumberIndividuals_RestrictiveConfinement"]).copy()
     long_bins = {
         "16 to 20 days",
@@ -3156,6 +3333,7 @@ def analyze_c01_ruhela_aggregate_region_cluster(df: pd.DataFrame | None = None) 
 
     if df is None:
         df = load_otis_dataset("c01")
+    df = otis_cols(df, table="c01")
     work = df.dropna(subset=["EndFiscalYear", "Gender", "NumberIndividuals_RestrictiveConfinement"]).copy()
     work["T_female"] = _female_indicator(work["Gender"])
     return _ruhela_aggregate_on(
@@ -3191,6 +3369,7 @@ def analyze_c04_ruhela_aggregate_region_cluster(df: pd.DataFrame | None = None) 
 
     if df is None:
         df = load_otis_dataset("c04")
+    df = otis_cols(df, table="c04")
     work = df.dropna(
         subset=["EndFiscalYear", "Race", "Region_MostRecentPlacement", "NumberIndividuals_RestrictiveConfinement"]
     ).copy()
@@ -3227,6 +3406,7 @@ def analyze_d02_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("d02")
+    df = otis_cols(df, table="d02")
     work = df.dropna(subset=["Year", "Gender", "Number_CustodialDeaths"]).copy()
     work["T_female"] = _female_indicator(work["Gender"])
     return _ruhela_aggregate_on(
@@ -3254,6 +3434,7 @@ def analyze_d03_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("d03")
+    df = otis_cols(df, table="d03")
     work = df.dropna(subset=["Year", "Race", "Number_CustodialDeaths"]).copy()
     work["T_indigenous"] = (work["Race"].astype(str).str.lower() == "indigenous").astype(int)
     return _ruhela_aggregate_on(
@@ -3282,6 +3463,7 @@ def analyze_d04_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("d04")
+    df = otis_cols(df, table="d04")
     work = df.dropna(subset=["Year", "Religion", "Number_CustodialDeaths"]).copy()
     excluded = {"christian", "no religion", "unknown or not reported"}
     work["T_minority_religion"] = (~work["Religion"].astype(str).str.strip().str.lower().isin(excluded)).astype(int)
@@ -3310,6 +3492,7 @@ def analyze_d05_ruhela_aggregate(
 
     if df is None:
         df = load_otis_dataset("d05")
+    df = otis_cols(df, table="d05")
     work = df.dropna(subset=["Year", "Age_Category", "Number_CustodialDeaths"]).copy()
     work["T_50plus"] = _age_50plus_indicator(work["Age_Category"])
     return _ruhela_aggregate_on(
@@ -3904,7 +4087,11 @@ def analyze_b05_mandela_classification(
     proportions of placements ≤15 days (solitary) vs ≥16 days (torture)
     per fiscal year + a federal-vs-provincial comparison.
     """
-    df = df if df is not None else load_otis_dataset("b05")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("b05"),
+        need=["EndFiscalYear", "Consecutive_Duration", "Number_SegregationPlacements"],
+        table="b05",
+    )
     df = df.copy()
     df["mandela_class"] = df["Consecutive_Duration"].astype(str).apply(_classify_otis_bins)
 
@@ -4000,7 +4187,11 @@ def analyze_c11_mandela_classification(
     confinement and segregation-only views; the latter is the more
     conservative and directly comparable to Sprott-Doob federal SIUs.
     """
-    df = df if df is not None else load_otis_dataset("c11")
+    df = otis_cols(
+        df if df is not None else load_otis_dataset("c11"),
+        need=["EndFiscalYear", "Aggregate_Duration", "NumberIndividuals_RestrictiveConfinement"],
+        table="c11",
+    )
     df = df.copy()
     df["mandela_class"] = df["Aggregate_Duration"].astype(str).apply(_classify_otis_bins)
 
@@ -4312,7 +4503,7 @@ def analyze_c_aggregate(
     ]
     for ds, r_col, c_col in slices:
         try:
-            df = load_otis_dataset(ds)
+            df = otis_cols(load_otis_dataset(ds), table=ds)
             table, stats = _contingency_chi2(df, row=r_col, col=c_col, value=contingency_value)
         except Exception as e:  # noqa: BLE001
             stats = {
@@ -4384,7 +4575,7 @@ def analyze_d_aggregate() -> RichResult:
     payloads: dict = {}
 
     # 1. Yearly counts from d01 (canonical per-death record)
-    d01 = load_otis_dataset("d01")
+    d01 = otis_cols(load_otis_dataset("d01"), table="d01")
     yearly = d01.dropna(subset=["Year"]).groupby("Year").size().rename("n_deaths")
     yearly_rows = []
     for y, n in yearly.items():
@@ -4424,14 +4615,14 @@ def analyze_d_aggregate() -> RichResult:
             }
 
     # 3. d06 Alert × MedicalCauseOfDeath
-    d06 = load_otis_dataset("d06")
+    d06 = otis_cols(load_otis_dataset("d06"), table="d06")
     table_d06, stats_d06 = _contingency_chi2(
         d06, row="Alert_Type", col="MedicalCauseOfDeath", value="Number_CustodialDeaths"
     )
     payloads["d06_chi2"] = stats_d06
 
     # 4. d07 Alert × Housing_Type
-    d07 = load_otis_dataset("d07")
+    d07 = otis_cols(load_otis_dataset("d07"), table="d07")
     table_d07, stats_d07 = _contingency_chi2(d07, row="Alert_Type", col="Housing_Type", value="Number_CustodialDeaths")
     payloads["d07_chi2"] = stats_d07
 
@@ -4580,9 +4771,12 @@ def analyze_a01_with_csi_context(
         except (ValueError, KeyError) as e:
             csi_load_errors.append(f"rebase_to_year={rebase_to_year} failed: {e}")
 
-    # Restrict to OTIS overlap (2023-2025)
-    otis_years = {2023, 2024, 2025}
+    # Restrict to the years both inputs hold, not a fixed list: each OTIS release adds one
+    a01 = otis_cols(df if df is not None else load_otis_dataset("a01"), need=["EndFiscalYear"], table="a01")
+    otis_years = sorted({int(y) for y in pd.to_numeric(a01["EndFiscalYear"], errors="coerce").dropna()})
     overlap = by_year_full[by_year_full["year"].isin(otis_years)] if "year" in by_year_full.columns else by_year_full
+    if overlap.empty:
+        csi_load_errors.append(f"no year in both inputs: OTIS {otis_years}")
 
     csi_table_rows = []
     for _, r in overlap.iterrows():
@@ -4604,6 +4798,7 @@ def analyze_a01_with_csi_context(
             "-- Years with CSI data",
             sorted(by_year_full["year"].astype(int).tolist()) if "year" in by_year_full.columns else "n/a",
         ),
+        ("-- Years in both (shown)", sorted(int(y) for y in overlap["year"]) if "year" in overlap.columns else "n/a"),
     ]
     interpretation = (
         (otis_result.interpretation or "") + "\n\n"

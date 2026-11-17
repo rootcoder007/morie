@@ -143,6 +143,7 @@ from morie.fn import _frame_core as pd
 from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
+from .otis_datasets import otis_cols
 
 # ── Estimator return type ──────────────────────────────────────────
 
@@ -1446,6 +1447,7 @@ def otis_per_year_irm_dml(
     PLR, SuperLearner-AIPW). Roughly 7× the per-year runtime.
     """
     out: dict = {}
+    df = otis_cols(df, need=[year_col])
     for yr, sub in df.groupby(year_col):
         if not full_battery:
             try:
@@ -1594,6 +1596,21 @@ def make_pair_alert_to_volatility_ruhela(df: pd.DataFrame) -> tuple[pd.DataFrame
         Y = "Y_vm_count"    integer count, regional transfer count
         covariates = ["Gender", "Age_Category", "EndFiscalYear"]
     """
+    df = otis_cols(
+        df,
+        need=[
+            "UniqueIndividual_ID",
+            "EndFiscalYear",
+            "Gender",
+            "Age_Category",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+            "SuicideWatch_Alert",
+        ],
+        table="b01",
+    )
     base = (
         df[
             [
@@ -1669,6 +1686,21 @@ def make_pair_alert_to_volatility_naive(df: pd.DataFrame) -> tuple[pd.DataFrame,
     on sign and rough magnitude, the substantive conclusion is
     invariant to the operationalisation.
     """
+    df = otis_cols(
+        df,
+        need=[
+            "UniqueIndividual_ID",
+            "EndFiscalYear",
+            "Gender",
+            "Age_Category",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+            "SuicideWatch_Alert",
+        ],
+        table="b01",
+    )
     base = (
         df[
             [
@@ -1815,6 +1847,20 @@ def make_pair_a(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     subsequent suicide-risk-alert occurrence, conditional on
     demographics and region?
     """
+    df = otis_cols(
+        df,
+        need=[
+            "UniqueIndividual_ID",
+            "EndFiscalYear",
+            "Gender",
+            "Age_Category",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+        ],
+        table="b01",
+    )
     base = (
         df[
             [
@@ -1845,6 +1891,22 @@ def make_pair_b(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     Outcome Y_b = 1 iff this individual has ≥2 placements (proxy for
     any future readmission).
     """
+    df = otis_cols(
+        df,
+        need=[
+            "UniqueIndividual_ID",
+            "EndFiscalYear",
+            "Gender",
+            "Age_Category",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "MentalHealth_Alert",
+            "SuicideRisk_Alert",
+            "SuicideWatch_Alert",
+            "Number_Of_Placements",
+        ],
+        table="b01",
+    )
     base = (
         df[
             [
@@ -1880,6 +1942,20 @@ def make_pair_c(df: pd.DataFrame) -> tuple[pd.DataFrame, str, str, list[str]]:
     Outcome Y_c = NumberConsecutiveDays_Segregation (continuous,
     truncated at the 99th percentile to dampen the long tail).
     """
+    df = otis_cols(
+        df,
+        need=[
+            "UniqueIndividual_ID",
+            "EndFiscalYear",
+            "Gender",
+            "Age_Category",
+            "Region_AtTimeOfPlacement",
+            "Region_MostRecentPlacement",
+            "MentalHealth_Alert",
+            "NumberConsecutiveDays_Segregation",
+        ],
+        table="b01",
+    )
     base = (
         df[
             [

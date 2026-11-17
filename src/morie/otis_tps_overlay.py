@@ -30,16 +30,16 @@ DEFAULT_OUT = PROJECT / "data/manifest/outputs/overlay"
 
 
 def _safe_load_otis_b01() -> pd.DataFrame:
-    from .otis_datasets import load_otis_dataset
+    from .otis_datasets import load_otis_dataset, otis_cols
 
-    return load_otis_dataset("b01")
+    return otis_cols(load_otis_dataset("b01"), table="b01")
 
 
 def _safe_load_otis_c01() -> pd.DataFrame:
     """c01 = total individuals in custody/RC/seg by gender × year."""
-    from .otis_datasets import load_otis_dataset
+    from .otis_datasets import load_otis_dataset, otis_cols
 
-    return load_otis_dataset("c01")
+    return otis_cols(load_otis_dataset("c01"), table="c01")
 
 
 def _safe_load_tps(name: str, *, sample_rows: int | None = 50_000) -> pd.DataFrame:
@@ -50,7 +50,9 @@ def _safe_load_tps(name: str, *, sample_rows: int | None = 50_000) -> pd.DataFra
 
 def _toronto_region_seg_by_year(df_b01: pd.DataFrame) -> pd.Series:
     """Total Toronto-region segregation placements per fiscal year."""
-    df = df_b01.copy()
+    from .otis_datasets import otis_cols
+
+    df = otis_cols(df_b01, table="b01").copy()
     if "Region_AtTimeOfPlacement" in df.columns:
         df = df[df["Region_AtTimeOfPlacement"] == "Toronto"]
     if "EndFiscalYear" not in df.columns:
@@ -128,7 +130,8 @@ def yoy_correlation(tps_categories: list[str] | None = None, *, sample_rows: int
             "Positive r = years with more Toronto-region segregation placements "
             "in OTIS coincide with more reported TPS incidents in that "
             "category. This is association, NOT causation. Toronto OTIS data "
-            "covers only 2023–2025, so common-year samples are small."
+            f"covers {len(seg)} year(s) here ({', '.join(str(int(y)) for y in seg.index)}), "
+            "so common-year samples are small."
         ),
     )
 

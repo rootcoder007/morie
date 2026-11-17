@@ -48,6 +48,7 @@ from collections.abc import Iterable
 
 from morie.fn import _array_core as np
 from morie.fn import _frame_core as pd
+from morie.otis_datasets import otis_cols
 
 __all__ = ["mrm_otis_mandela_spectrum"]
 
@@ -121,6 +122,12 @@ def mrm_otis_mandela_spectrum(
         On the real data, ``pd.read_csv`` the b01 file from the OTIS
         release and pass it the same way.
     """
+    alert_cols = list(alert_cols)
+    data = otis_cols(
+        pd.coerce_frame(data), need=[duration_col, year_col, id_col], want=alert_cols, what="mrm_otis_mandela_spectrum"
+    )
+    if c11_data is not None:
+        c11_data = otis_cols(c11_data, want=[year_col], table="c11")
     df = pd.coerce_frame(data).copy()
     dur = pd.to_numeric(df[duration_col], errors="coerce")
     df["_dur"] = dur

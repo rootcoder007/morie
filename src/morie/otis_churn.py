@@ -39,6 +39,7 @@ from morie.fn import _stats_core as sps
 
 from .fn._richresult import RichResult
 from .otis import project_root
+from .otis_datasets import otis_cols
 
 PROJECT = project_root()
 DEFAULT_OUT = PROJECT / "data/manifest/outputs/otis_churn"
@@ -109,7 +110,7 @@ def repeat_placement_concentration(df: pd.DataFrame | None = None) -> RichResult
 
     Uses OTIS b09 (NumberPlacements × NumberIndividuals).
     """
-    df = df if df is not None else _load("b09")
+    df = otis_cols(df if df is not None else _load("b09"), table="b09")
     if "NumberPlacements_Segregation" not in df.columns:
         return RichResult(title="Repeat-placement concentration", warnings=["b09 columns missing"])
     # Reconstruct individual-level placement count vector
@@ -186,7 +187,7 @@ def within_year_placement_count(df: pd.DataFrame | None = None) -> RichResult:
     a fiscal year -- Goffman's intra-year cycling. Cross-year readmission
     is **not measurable** in OTIS by design. See OTIS_LINKAGE.md.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     needed = {"UniqueIndividual_ID", "EndFiscalYear"}
     if not needed.issubset(df.columns):
         return RichResult(title="Within-year placement count", warnings=["b01 missing required cols"])
@@ -244,7 +245,7 @@ def within_year_region_diversity(df: pd.DataFrame | None = None) -> RichResult:
     (`YYYY-XXXXX-AA`), this metric measures **intra-year** region
     cycling only -- not multi-year mobility. See OTIS_LINKAGE.md.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     if "Region_AtTimeOfPlacement" not in df.columns or "UniqueIndividual_ID" not in df.columns:
         return RichResult(title="Within-year region diversity", warnings=["b01 missing region/individual cols"])
     g = df.dropna(subset=["UniqueIndividual_ID", "Region_AtTimeOfPlacement"])
@@ -290,7 +291,7 @@ def mortification_cooccurrence(df: pd.DataFrame | None = None) -> RichResult:
     """Goffman's 'mortification of self' is operationalised here as
     concurrent stigmatising-alert flags on a single placement.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     cols = ["MentalHealth_Alert", "SuicideRisk_Alert", "SuicideWatch_Alert"]
     have = [c for c in cols if c in df.columns]
     if len(have) < 2:
@@ -354,7 +355,7 @@ def disciplinary_medical_overlap(df: pd.DataFrame | None = None) -> RichResult:
     classifies the same person via *medical* AND *disciplinary*
     rationales. We look at co-occurrence on individual records.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     disc_cols = [c for c in df.columns if c.startswith("SegReason_Disciplinary")]
     med_cols = [c for c in df.columns if c.startswith("SegReason_") and "Medical" in c]
     if not disc_cols or not med_cols:
@@ -404,7 +405,7 @@ def embedding_distribution(df: pd.DataFrame | None = None) -> RichResult:
     """TotalAggregatedDays_Segregation distribution per individual per
     fiscal year. Compare lognormal vs Pareto fit via AIC.
     """
-    df = df if df is not None else _load("b02")
+    df = otis_cols(df if df is not None else _load("b02"), table="b02")
     if "TotalAggregatedDays_Segregation" not in df.columns:
         return RichResult(title="Embedding distribution", warnings=["b02 missing TotalAggregatedDays"])
     days = pd.to_numeric(df["TotalAggregatedDays_Segregation"], errors="coerce").dropna()
@@ -473,7 +474,7 @@ def _binarise(s: pd.Series) -> pd.Series:
 
 def intra_year_transition_matrix(df: pd.DataFrame | None = None) -> RichResult:
     """Intra-year region-to-region transition matrix from OTIS placements."""
-    df = df if df is not None else _load("a01")
+    df = otis_cols(df if df is not None else _load("a01"), table="a01")
     needed = {"UniqueIndividual_ID", "EndFiscalYear", "Region_AtTimeOfPlacement"}
     if not needed.issubset(df.columns):
         return RichResult(title="Intra-year region transition matrix", warnings=["a01 missing required cols"])
@@ -561,7 +562,7 @@ def path_complexity_gini(df: pd.DataFrame | None = None) -> RichResult:
     per-year Gini coefficients, exposing where Goffmanian cycling is
     most concentrated.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     needed = {"UniqueIndividual_ID", "EndFiscalYear", "Region_AtTimeOfPlacement"}
     if not needed.issubset(df.columns):
         return RichResult(title="Path complexity Gini", warnings=["b01 missing required cols"])
@@ -624,7 +625,7 @@ def region_alert_state_richness(df: pd.DataFrame | None = None) -> RichResult:
     distinct *role-zones* (region paired with alert presentation) does
     a person traverse within one fiscal year?
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     needed = {
         "UniqueIndividual_ID",
         "EndFiscalYear",
@@ -679,7 +680,7 @@ def regC_demog_contingency(df: pd.DataFrame | None = None) -> RichResult:
     """Multi-region path indicator (regC = number of distinct regions
     visited within FY) × Gender × Age contingency, with chi² + Cramer's V.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     needed = {"UniqueIndividual_ID", "EndFiscalYear", "Region_AtTimeOfPlacement", "Gender", "Age_Category"}
     if not needed.issubset(df.columns):
         return RichResult(title="Multi-region path × demographics", warnings=["b01 missing required cols"])
@@ -780,7 +781,7 @@ def irr_glmm_vm(df: pd.DataFrame | None = None) -> RichResult:
     scale). Provides Poisson and NB2 IRR side by side as a robustness
     pair.
     """
-    df = df if df is not None else _load("b01")
+    df = otis_cols(df if df is not None else _load("b01"), table="b01")
     try:
         from morie.fn import _glm_core as sm
         from morie.fn._glm_core import formula as smf
