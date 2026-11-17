@@ -6,7 +6,7 @@ Three layers, mirroring the R ecosystem exactly:
 * :func:`siu_reports` -- the panel-reviewed corpus shipped by the
   'rmoriedata' R package (5,157 reports x 65 columns; 2,182 English
   entries read and cross-audited by a multi-agent review panel),
-  downloaded once with a pinned SHA-256 and cached. Reviewed reports are
+  downloaded once, checked against the SHA-256 rmoriedata lists for it, and cached. Reviewed reports are
   NEVER re-derived.
 * :func:`siu_resolve_so` -- subject-official counts: the verified corpus
   answers first; unreviewed text falls back to the zero-wrong rule
@@ -41,8 +41,25 @@ __all__ = [
 # ---------------------------------------------------------------- corpus
 
 _CORPUS_URL = "https://raw.githubusercontent.com/rootcoder007/rmoriedata/main/inst/extdata/siu_directors_reports.csv.gz"
-# SHA-256 of the corpus snapshot this build trusts (bricklayer-style pin).
-_CORPUS_SHA256 = "9fc08bb8030723e50e14b29dc6f3b07cb495761f4028906ea6e053f18e5509a9"
+# rmoriedata lists the SHA-256 of every file it ships in _checksums.csv beside the corpus; the
+# digest is read from there at run time, so a corpus refresh in rmoriedata needs no release here.
+_CHECKSUMS_URL = _CORPUS_URL.rsplit("/", 1)[0] + "/_checksums.csv"
+_CORPUS_NAME = "siu_directors_reports.csv.gz"
+
+
+def _corpus_sha256() -> str:
+    """The corpus SHA-256 that rmoriedata's ``_checksums.csv`` lists right now."""
+    import csv
+    import io
+
+    import httpx
+
+    r = httpx.get(_CHECKSUMS_URL, timeout=60, follow_redirects=True)
+    r.raise_for_status()
+    for row in csv.DictReader(io.StringIO(r.text)):
+        if row.get("path") == _CORPUS_NAME and re.fullmatch(r"[0-9a-fA-F]{64}", row.get("sha256") or ""):
+            return row["sha256"].lower()
+    raise RuntimeError(f"rmoriedata's checksum list ({_CHECKSUMS_URL}) gives no SHA-256 for {_CORPUS_NAME}")
 
 
 def _cache_dir() -> Path:
@@ -58,7 +75,7 @@ def siu_reports(update: bool = False, cache_dir: str | Path | None = None):
     The verified corpus is the single source of truth: reviewed rows carry
     ``panel_reviewed == True`` and their ``number_of_subject_officials``
     values were verified by the multi-agent panel. ``update=True`` only
-    re-downloads the snapshot (same SHA-256 pin); it never re-derives
+    re-downloads the snapshot (checked the same way); it never re-derives
     reviewed values.
     """
     from morie.fn import _frame_core as pd
@@ -71,11 +88,17 @@ def siu_reports(update: bool = False, cache_dir: str | Path | None = None):
         r = httpx.get(_CORPUS_URL, timeout=120, follow_redirects=True)
         r.raise_for_status()
         digest = hashlib.sha256(r.content).hexdigest()
-        if digest != _CORPUS_SHA256:
+        # the list is read again once before a mismatch is final: the corpus and its list
+        # may have been replaced a moment apart
+        want = _corpus_sha256()
+        if digest != want:
+            want = _corpus_sha256()
+        if digest != want:
             raise RuntimeError(
-                "SIU corpus integrity check failed: expected sha256 "
-                f"{_CORPUS_SHA256[:16]}..., got {digest[:16]}... -- refusing "
-                "to cache an unverified snapshot."
+                "SIU corpus integrity check failed: rmoriedata lists sha256 "
+                f"{want[:16]}... for it, the download has {digest[:16]}... -- refusing "
+                "to cache an unverified snapshot. Run again; if it still fails, the "
+                "file was altered in transit."
             )
         dest.write_bytes(r.content)
     with gzip.open(dest, "rt", encoding="utf-8") as fh:

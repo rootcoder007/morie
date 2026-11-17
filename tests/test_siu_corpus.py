@@ -128,3 +128,84 @@ def test_so_subject_officer_and_subject_official_count_the_same_people():
         "SO #1 declined. SO #2 was interviewed.",
     ):
         assert resolve_subject_officials(txt)[0] == 2, txt
+
+
+def _fake_get(corpus, listings, calls):
+    """httpx.get stand-in: the corpus bytes, then each checksum listing in turn."""
+    import httpx
+
+    from morie.siu import corpus as c
+
+    def get(url, **_kw):
+        calls.append(url)
+        if url == c._CORPUS_URL:
+            body = corpus
+        else:
+            body = listings.pop(0).encode()
+        return httpx.Response(200, content=body, request=httpx.Request("GET", url))
+
+    return get
+
+
+def _listing(digest):
+    return f'"path","bytes","sha256"\n"siu_directors_reports.csv.gz",1,"{digest}"\n'
+
+
+def _corpus_bytes():
+    import gzip
+
+    return gzip.compress(b"drid,panel_reviewed,number_of_subject_officials\n7,TRUE,2\n")
+
+
+def test_siu_reports_checks_the_listed_digest(tmp_path, monkeypatch):
+    import hashlib
+
+    import httpx
+
+    body = _corpus_bytes()
+    calls = []
+    monkeypatch.setattr(httpx, "get", _fake_get(body, [_listing(hashlib.sha256(body).hexdigest())], calls))
+    from morie.siu.corpus import siu_reports
+
+    df = siu_reports(cache_dir=tmp_path)
+    assert list(df["drid"]) == [7]
+    assert len(calls) == 2
+
+
+def test_siu_reports_rereads_the_listing_once(tmp_path, monkeypatch):
+    import hashlib
+
+    import httpx
+
+    body = _corpus_bytes()
+    good = hashlib.sha256(body).hexdigest()
+    calls = []
+    monkeypatch.setattr(httpx, "get", _fake_get(body, [_listing("0" * 64), _listing(good)], calls))
+    from morie.siu.corpus import siu_reports
+
+    assert len(siu_reports(cache_dir=tmp_path)) == 1
+    assert len(calls) == 3
+
+
+def test_siu_reports_refuses_a_mismatch(tmp_path, monkeypatch):
+    import httpx
+
+    calls = []
+    monkeypatch.setattr(httpx, "get", _fake_get(_corpus_bytes(), [_listing("0" * 64), _listing("1" * 64)], calls))
+    from morie.siu.corpus import siu_reports
+
+    with pytest.raises(RuntimeError, match="integrity check failed"):
+        siu_reports(cache_dir=tmp_path)
+    assert not (tmp_path / "siu_directors_reports.csv.gz").exists()
+    assert len(calls) == 3
+
+
+def test_siu_reports_needs_a_listed_digest(tmp_path, monkeypatch):
+    import httpx
+
+    calls = []
+    monkeypatch.setattr(httpx, "get", _fake_get(_corpus_bytes(), ['"path","bytes","sha256"\n'], calls))
+    from morie.siu.corpus import siu_reports
+
+    with pytest.raises(RuntimeError, match="gives no SHA-256"):
+        siu_reports(cache_dir=tmp_path)
