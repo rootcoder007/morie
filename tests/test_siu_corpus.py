@@ -138,10 +138,7 @@ def _fake_get(corpus, listings, calls):
 
     def get(url, **_kw):
         calls.append(url)
-        if url == c._CORPUS_URL:
-            body = corpus
-        else:
-            body = listings.pop(0).encode()
+        body = corpus if url == c._CORPUS_URL else listings.pop(0).encode()
         return httpx.Response(200, content=body, request=httpx.Request("GET", url))
 
     return get
