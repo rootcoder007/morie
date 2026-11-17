@@ -6103,7 +6103,7 @@ File,Line,Status,Version,Context
 ./src/morie/notebook.py,762,STALE_OR_DEP,3.11.0,"language_info: {name: python; version: 3.11.0};"
 ./src/morie/otis_all_analyze.py,4718,STALE_OR_DEP,0.9.5.4,"# ── Deprecation aliases: pre-0.9.5.4 names (Doob → MRM chi-square rename) ──"
 ./src/morie/otis_all_analyze.py,4725,STALE_OR_DEP,0.9.5.4,"morie 0.9.5.4 because the underlying chi-square family is not"
-./src/morie/otis_datasets.py,735,STALE_OR_DEP,0.9.5.5,"# ── Dictionary-aware introspection (added v0.9.5.5) ─────────────────"
+./src/morie/otis_datasets.py,737,STALE_OR_DEP,0.9.5.5,"# ── Dictionary-aware introspection (added v0.9.5.5) ─────────────────"
 ./src/morie/perseus_relay.py,198,STALE_OR_DEP,127.0.0.1,"def serve(port: int = 8421; token: str | None = None; bind: str = 127.0.0.1):"
 ./src/morie/perseus_relay.py,246,STALE_OR_DEP,127.0.0.1,"parser.add_argument(--bind; default=127.0.0.1)"
 ./src/morie/runner.py,317,STALE_OR_DEP,127.0.0.1,"relay_cmd.add_argument(--bind; default=127.0.0.1; help=Bind address (default: 127.0.0.1))"
